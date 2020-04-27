@@ -49,6 +49,12 @@ public class AcmeCA extends ConfigElement {
 
     private String renewBeforeExpiration;
 
+    private String certCheckerSchedule;
+
+    private String certCheckerErrorSchedule;
+
+    private boolean disableMinRenewWindow;
+
     /**
      * @return the accountContact
      */
@@ -259,6 +265,33 @@ public class AcmeCA extends ConfigElement {
         this.renewBeforeExpiration = renewBeforeExpiration;
     }
 
+    public String getCertCheckerSchedule() {
+        return certCheckerSchedule;
+    }
+
+    @XmlAttribute(name = "certCheckerSchedule")
+    public void setCertCheckerSchedule(String certCheckerSchedule) {
+        this.certCheckerSchedule = certCheckerSchedule;
+    }
+
+    public String getCertCheckerErrorSchedule() {
+        return certCheckerErrorSchedule;
+    }
+
+    @XmlAttribute(name = "certCheckerErrorSchedule")
+    public void setCertCheckerErrorSchedule(String certCheckerErrorSchedule) {
+        this.certCheckerErrorSchedule = certCheckerErrorSchedule;
+    }
+
+    @XmlAttribute(name = "disableMinRenewWindow")
+    public void setDisableMinRenewWindow(boolean disableMinRenewWindow) {
+        this.disableMinRenewWindow = disableMinRenewWindow;
+    }
+
+    public boolean isDisableMinRenewWindow() {
+        return disableMinRenewWindow;
+    }
+
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
@@ -277,6 +310,12 @@ public class AcmeCA extends ConfigElement {
         if (acmeTransportConfig != null) {
             sb.append("acmeTransportConfig=\"").append(acmeTransportConfig).append("\" ");;
         }
+        if (certCheckerSchedule != null) {
+            sb.append("certCheckerSchedule=\"").append(certCheckerSchedule).append("\" ");;
+        }
+        if (certCheckerErrorSchedule != null) {
+            sb.append("certCheckerErrorSchedule=\"").append(certCheckerErrorSchedule).append("\" ");;
+        }
         if (challengeRetries != null) {
             sb.append("challengeRetries=\"").append(challengeRetries).append("\" ");;
         }
@@ -285,6 +324,9 @@ public class AcmeCA extends ConfigElement {
         }
         if (directoryURI != null) {
             sb.append("directoryURI=\"").append(directoryURI).append("\" ");;
+        }
+        if (disableMinRenewWindow) {
+            sb.append("disableMinRenewWindow=\"").append(disableMinRenewWindow).append("\" ");;
         }
         if (domainKeyFile != null) {
             sb.append("domainKeyFile=\"").append(domainKeyFile).append("\" ");;
@@ -298,14 +340,14 @@ public class AcmeCA extends ConfigElement {
         if (orderRetryWait != null) {
             sb.append("orderRetryWait=\"").append(orderRetryWait).append("\" ");;
         }
+        if (renewBeforeExpiration != null) {
+            sb.append("renewBeforeExpiration=\"").append(renewBeforeExpiration).append("\" ");;
+        }
         if (subjectDN != null) {
             sb.append("subjectDN=\"").append(subjectDN).append("\" ");;
         }
         if (validFor != null) {
             sb.append("validFor=\"").append(validFor).append("\" ");;
-        }
-        if (renewBeforeExpiration != null) {
-            sb.append("renewBeforeExpiration=\"").append(renewBeforeExpiration).append("\" ");;
         }
 
         sb.append("}");

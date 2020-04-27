@@ -52,6 +52,13 @@ public class AcmeConstants {
 	public static final String REVOCATION_PREFER_CRLS = "preferCRLs";
 	public static final String REVOCATION_DISABLE_FALLBACK = "disableFallback";
 	
+	// Certificate checker configuration options, currently intended to be internal only
+	public static final String CERT_CHECKER_SCHEDULE = "certCheckerSchedule";
+	public static final String CERT_CHECKER_ERROR_SCHEDULE = "certCheckerErrorSchedule";
+	
+	// Allow immediate requests for certificate renewal
+	public static final String DISABLE_MIN_RENEW_WINDOW = "disableMinRenewWindow";
+
 	/*
 	 * End constants that match the metatype fields
 	 */
@@ -70,10 +77,13 @@ public class AcmeConstants {
 	
 	public static final long RENEW_CERT_MIN = 15000L; // Minimum allowed time to check for expiration
 	public static final Long RENEW_CERT_MIN_WARN_LEVEL = 60000L; // The renew time that we'll put out a warning that you've picked a very low renew time
-	public static final int RENEW_DEFAULT_DAYS = 7;
-	public static final Long RENEW_DEFAULT_MS = TimeUnit.DAYS.toMillis(RENEW_DEFAULT_DAYS);  // 604800000L; 
+	public static final Long RENEW_DEFAULT_MS = TimeUnit.DAYS.toMillis(7L);  // 604800000L; 
 	public static final double RENEW_DIVISOR = .5;
 	public static final long CHALLENGE_POLL_DEFAULT = 120000l;
 	public static final long ORDER_POLL_DEFAULT = 120000l;
+
+
+	public static final Long SCHEDULER_MS = TimeUnit.HOURS.toMillis(24L);
+	public static final Long SCHEDULER_ERROR_MS = TimeUnit.HOURS.toMillis(1L);
 
 }

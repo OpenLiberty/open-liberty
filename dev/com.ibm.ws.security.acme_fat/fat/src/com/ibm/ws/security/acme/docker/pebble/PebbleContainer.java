@@ -12,9 +12,11 @@
 package com.ibm.ws.security.acme.docker.pebble;
 
 import static junit.framework.Assert.fail;
+import static org.junit.Assert.assertFalse;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.Map.Entry;
 
 import org.testcontainers.Testcontainers;
@@ -88,6 +90,8 @@ public class PebbleContainer extends CAContainer {
 		this.withExposedPorts(getDnsManagementPort(), getAcmeListenPort());
 		this.withNetwork(network);
 		this.withLogConsumer(PebbleContainer::log);
+		this.withStartupAttempts(3);
+		this.withStartupTimeout(Duration.ofSeconds(60));
 
 		Testcontainers.exposeHostPorts(5002);
 
@@ -167,5 +171,31 @@ public class PebbleContainer extends CAContainer {
 	public String getOcspResponderUrl() {
 		throw new UnsupportedOperationException(
 				getClass().getSimpleName() + " does not provider support for an OCSP responder.");
+	}
+
+
+	@Override
+	public void startDNSServer() {
+		challtestsrv.start();
+		Log.info(PebbleContainer.class, "startDNSServer", "DNS server started.");
+	}
+
+	@Override
+	public void stopDNSServer() {
+		Log.info(PebbleContainer.class, "stopDNSServer", "DNS server stopping.");
+
+		challtestsrv.stop();
+
+		long stoptime = System.currentTimeMillis() + 60000;
+		while (challtestsrv.isRunning() && (stoptime > System.currentTimeMillis())) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				
+			}
+		}
+
+		assertFalse("The DNS server chould have stopped", challtestsrv.isRunning());
+		Log.info(PebbleContainer.class, "stopDNSServer", "DNS server stopped.");
 	}
 }

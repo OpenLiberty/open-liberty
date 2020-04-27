@@ -211,4 +211,16 @@ public class BoulderContainer extends CAContainer {
 	public String getOcspResponderUrl() {
 		return "http://" + this.getContainerIpAddress() + ":" + this.getMappedPort(OCSP_PORT);
 	}
+
+	@Override
+	public void startDNSServer() {
+		throw new UnsupportedOperationException(
+				getClass().getSimpleName() + " does not provider support for starting the DNS server.");
+	}
+
+	@Override
+	public void stopDNSServer() {
+		throw new UnsupportedOperationException(
+				getClass().getSimpleName() + " does not provider support for stopping the DNS server.");
+	}
 }

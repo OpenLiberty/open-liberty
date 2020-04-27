@@ -15,6 +15,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertThat;
 
 import java.math.BigInteger;
@@ -26,6 +27,7 @@ import javax.xml.bind.DatatypeConverter;
 import org.apache.http.Header;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -45,9 +47,12 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.acme.docker.CAContainer;
 import com.ibm.ws.security.acme.docker.boulder.BoulderContainer;
+import com.ibm.ws.security.acme.docker.pebble.PebbleContainer;
+import com.ibm.ws.security.acme.internal.util.AcmeConstants;
 import com.ibm.ws.security.acme.internal.web.AcmeCaRestHandler;
 import com.ibm.ws.security.acme.utils.AcmeFatUtils;
 
+import componenttest.annotation.CheckForLeakedPasswords;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -75,6 +80,10 @@ public class AcmeRevocationTest {
 	private static final String ADMIN_USER = "administrator";
 
 	private static final String ADMIN_PASS = "adminpass";
+	
+	private static final String DOMAIN = "domain1.com"; // Set to domain1.com as it has a high rate limit on certificate requests
+	
+	public static final long SCHEDULE_TIME = AcmeConstants.RENEW_CERT_MIN + 2000;
 
 	@Rule
 	public TestName testName = new TestName();
@@ -113,7 +122,7 @@ public class AcmeRevocationTest {
 		 */
 		ServerConfiguration configuration = originalServerConfig.clone();
 		configureAcmeRevocation(configuration, true);
-		AcmeFatUtils.configureAcmeCA(server, boulder, configuration, false, "domain.com");
+		AcmeFatUtils.configureAcmeCA(server, boulder, configuration, false, DOMAIN);
 
 		try {
 
@@ -173,7 +182,7 @@ public class AcmeRevocationTest {
 		 */
 		ServerConfiguration configuration = originalServerConfig.clone();
 		configureAcmeRevocation(configuration, false);
-		AcmeFatUtils.configureAcmeCA(server, boulder, configuration, false, "domain.com");
+		AcmeFatUtils.configureAcmeCA(server, boulder, configuration, false, DOMAIN);
 
 		try {
 
@@ -233,7 +242,7 @@ public class AcmeRevocationTest {
 		 * Configure the acmeCA-2.0 feature.
 		 */
 		ServerConfiguration configuration = originalServerConfig.clone();
-		AcmeFatUtils.configureAcmeCA(server, boulder, configuration, false, "domain.com");
+		AcmeFatUtils.configureAcmeCA(server, boulder, configuration, false, DOMAIN);
 
 		try {
 
@@ -339,4 +348,75 @@ public class AcmeRevocationTest {
 			}
 		}
 	}
+	
+	/**
+	 * Revoke the certificate and ensure that the scheduler thread renews it.
+	 * 
+	 */
+	@Test
+	@CheckForLeakedPasswords(AcmeFatUtils.CACERTS_TRUSTSTORE_PASSWORD)
+	public void autoRenewOnRevoke() throws Exception {
+		Certificate[] startingCertificateChain = null;
+
+		/*
+		 * Configure the acmeCA-2.0 feature.
+		 * 
+		 */
+
+		ServerConfiguration configuration = originalServerConfig.clone();
+		configureAcmeRevocation(configuration, true);
+		configuration.getAcmeCA().setCertCheckerSchedule(SCHEDULE_TIME + "ms");
+		
+		AcmeFatUtils.configureAcmeCA(server, boulder, configuration, DOMAIN);
+
+		/***********************************************************************
+		 * TEST: The server generates a certificate normally. We revoke it and
+		 * verify that the certificate checker automatically renews it.
+		 * 
+		 **********************************************************************/
+
+		try {
+			Log.info(this.getClass(), testName.getMethodName(), "TEST: Revoke certificate and check that we auto renew it.");
+
+			/*
+			 * Start the server and wait for acme to determine the certificate was good.
+			 */
+			server.startServer();
+			AcmeFatUtils.waitForAcmeAppToStart(server);
+			AcmeFatUtils.waitForSslEndpoint(server);
+
+
+
+			/*
+			 * Verify that the server is using a certificate signed by the CA.
+			 */
+			startingCertificateChain = AcmeFatUtils.assertAndGetServerCertificate(server, boulder);
+
+			/*
+			 * Revoke the certificate
+			 */
+			revokeCertificate();
+
+			/*
+			 * Wait for the cert checker to run and update
+			 */
+			assertNotNull("Should log message that the certificate was revoked",
+					server.waitForStringInLogUsingMark("CWPKI2067I", (SCHEDULE_TIME * 3)) );
+
+			assertNotNull("Should log message that the certificate was renewed",
+					server.waitForStringInLogUsingMark("CWPKI2007I", (SCHEDULE_TIME * 3)) );
+
+			AcmeFatUtils.waitForNewCert(server, boulder, startingCertificateChain);
+
+
+		} finally {
+			Log.info(this.getClass(), testName.getMethodName(), "TEST: Shutdown.");
+
+			/*
+			 * Stop the server.
+			 */
+			server.stopServer();
+		}
+	}
+
 }

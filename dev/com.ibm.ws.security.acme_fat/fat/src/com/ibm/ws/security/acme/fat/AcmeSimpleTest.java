@@ -10,13 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.security.acme.fat;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.fail;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -48,6 +49,7 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.acme.docker.CAContainer;
 import com.ibm.ws.security.acme.docker.pebble.PebbleContainer;
+import com.ibm.ws.security.acme.internal.util.AcmeConstants;
 import com.ibm.ws.security.acme.utils.AcmeFatUtils;
 
 import componenttest.annotation.AllowedFFDC;
@@ -367,6 +369,7 @@ public class AcmeSimpleTest {
 		configuration.getFeatureManager().getFeatures().remove("acmeCA-2.0");
 		configuration.getFeatureManager().getFeatures().add("transportSecurity-1.0");
 		configuration.getFeatureManager().getFeatures().add("servlet-4.0");
+		configuration.getAcmeCA().setCertCheckerSchedule(AcmeConstants.RENEW_CERT_MIN + "ms");
 		AcmeFatUtils.configureAcmeCA(server, caContainer, configuration, useAcmeURIs(), DOMAINS_1);
 
 		try {
@@ -421,6 +424,8 @@ public class AcmeSimpleTest {
 			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration, useAcmeURIs(), DOMAINS_1);
 			AcmeFatUtils.waitAcmeFeatureUninstall(server);
 
+			long timeElapsed = System.currentTimeMillis();
+
 			/*
 			 * Verify that the server is still using a certificate signed by the
 			 * CA. The default certificate generator doesn't update the
@@ -431,6 +436,13 @@ public class AcmeSimpleTest {
 			BigInteger serial1 = ((X509Certificate) certificates1[0]).getSerialNumber();
 			BigInteger serial2 = ((X509Certificate) certificates2[0]).getSerialNumber();
 			assertEquals("Expected same certificate after removing acmeCA-2.0 feature.", serial1, serial2);
+			
+			/*
+			 * Check log for the amount of time it would take to wake up/run the scheduler
+			 */
+			assertNull("Should not have found the cert checker waking up: " + AcmeFatUtils.ACME_CHECKER_TRACE,
+					server.waitForStringInTrace(AcmeFatUtils.ACME_CHECKER_TRACE, AcmeConstants.RENEW_CERT_MIN - timeElapsed + 1000));
+			
 			Log.info(this.getClass(), testName.getMethodName(), "TEST 2: FINISH");
 
 			/***********************************************************************
@@ -454,6 +466,13 @@ public class AcmeSimpleTest {
 			serial1 = ((X509Certificate) certificates2[0]).getSerialNumber();
 			serial2 = ((X509Certificate) certificates3[0]).getSerialNumber();
 			assertEquals("Expected same certificate after re-adding the acmeCA-2.0 feature.", serial1, serial2);
+
+			/**
+			 * Make sure the scheduler started again
+			 */
+			assertNotNull("Should have found the cert checker waking up: " + AcmeFatUtils.ACME_CHECKER_TRACE,
+					server.waitForStringInTrace(AcmeFatUtils.ACME_CHECKER_TRACE));
+
 			Log.info(this.getClass(), testName.getMethodName(), "TEST 3: FINISH");
 
 		} finally {
@@ -507,6 +526,11 @@ public class AcmeSimpleTest {
 		acmeCA.setAcmeTransportConfig(acmeTransportConfig);
 		acmeCA.setDomainKeyFile(unreadableFile.getAbsolutePath());
 		acmeCA.setSubjectDN("cn=baddomain.com");
+		/*
+		 * Check that we reset the minimum levels
+		 */
+		acmeCA.setCertCheckerSchedule("2ms");
+		acmeCA.setCertCheckerErrorSchedule("2ms");
 		AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
 
 		try {
@@ -687,10 +711,16 @@ public class AcmeSimpleTest {
 			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
 			AcmeFatUtils.waitForSslToCreateKeystore(server);
 
+			assertNotNull("Should have found the cert checker waking up after updates: " + AcmeFatUtils.ACME_CHECKER_TRACE,
+					server.waitForStringInTrace(AcmeFatUtils.ACME_CHECKER_TRACE));
+			
+			assertNotNull("Should have found warning that the certCheckerScheduler time was reset", server.findStringsInLogs("CWPKI2070W"));
+			assertNotNull("Should have found warning that the certCheckerErrorScheduler time was reset", server.findStringsInLogs("CWPKI2071W"));
+
 		} finally {
 			server.stopServer("CWWKG0095E", "CWWKE0701E", "CWPKI2016E", "CWPKI2020E", "CWPKI2021E", "CWPKI2022E",
 					"CWPKI2023E", "CWPKI2008E", "CWPKI2037E", "CWPKI2039E", "CWPKI2040E", "CWPKI2041E", "CWPKI2042E",
-					"CWPKI0823E", "CWPKI0828E");
+					"CWPKI0823E", "CWPKI0828E", "CWPKI2070W", "CWPKI2071W");
 			/*
 			 * Running on Sun produces some additional errors on the invalid directory URI,
 			 * added them to the stop list
