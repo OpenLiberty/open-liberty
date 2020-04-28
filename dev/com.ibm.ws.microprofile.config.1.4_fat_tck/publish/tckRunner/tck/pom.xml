@@ -58,7 +58,7 @@
         <dependency>
             <groupId>org.eclipse.microprofile.config</groupId>
             <artifactId>microprofile-config-tck</artifactId>
-            <version>${microprofile.config.version}</version>
+            <version>2.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
