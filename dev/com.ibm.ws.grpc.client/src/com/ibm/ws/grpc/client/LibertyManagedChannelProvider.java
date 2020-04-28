@@ -10,14 +10,27 @@
  *******************************************************************************/
 package com.ibm.ws.grpc.client;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.grpc.client.config.GrpcClientConfigHolder;
+import com.ibm.ws.grpc.client.security.LibertyGrpcClientOutSSLSupport;
+
+import io.grpc.ClientInterceptor;
 import io.grpc.ManagedChannelProvider;
 import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder;
+import io.grpc.netty.shaded.io.netty.handler.ssl.SslContext;
 
 /**
- * io.grpc.ManagedChannelProvider that adds a LibertyClientInterceptor to all
- * calls and delegates to the NettyChannelBuilder
+ * io.grpc.ManagedChannelProvider that takes care of any required Liberty
+ * configuration, and then delegates to the NettyChannelBuilder
  */
 public class LibertyManagedChannelProvider extends ManagedChannelProvider {
+	
+    private static final TraceComponent tc = Tr.register(LibertyManagedChannelProvider.class);
 
 	@Override
 	public boolean isAvailable() {
@@ -31,11 +44,90 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 
 	@Override
 	public NettyChannelBuilder builderForAddress(String name, int port) {
-		return NettyChannelBuilder.forAddress(name, port).intercept(new LibertyClientInterceptor());
+
+		NettyChannelBuilder builder = NettyChannelBuilder.forAddress(name, port);
+		configureLibertyBuilder(builder, name + String.valueOf(port));
+
+		return builder;
 	}
 
 	@Override
 	public NettyChannelBuilder builderForTarget(String target) {
-		return NettyChannelBuilder.forTarget(target).intercept(new LibertyClientInterceptor());
+		NettyChannelBuilder builder = NettyChannelBuilder.forTarget(target);
+		configureLibertyBuilder(builder, target);
+		return builder;
+	}
+
+	private void configureLibertyBuilder(NettyChannelBuilder builder, String target) {
+		addLibertyInterceptors(builder);
+		addUserInterceptors(builder, target);
+		addLibertySSLConfig(builder, target);
+		addKeepAliveConfiguration(builder, target);
+		addMaxInboundMessageSize(builder, target);
+	}
+
+	private void addLibertyInterceptors(NettyChannelBuilder builder) {
+		builder.intercept(new LibertyClientInterceptor());
+	}
+
+	private void addLibertySSLConfig(NettyChannelBuilder builder, String target) {
+		SslContext context = LibertyGrpcClientOutSSLSupport.getOutboundClientSSLContext(target);
+		if (context != null) {
+			builder.sslContext(context);
+		}
+	}
+
+	private void addKeepAliveConfiguration(NettyChannelBuilder builder, String target) {
+		String keepAliveTime = GrpcClientConfigHolder.getKeepAliveTime(target);
+		String keepAlive = GrpcClientConfigHolder.getEnableKeepAlive(target);
+		String keepAliveTimeout = GrpcClientConfigHolder.getKeepAliveTimeout(target);
+
+		if (keepAliveTime != null && !keepAliveTime.isEmpty()) {
+			int time = Integer.parseInt(keepAliveTime);
+			builder.keepAliveTime(time, TimeUnit.SECONDS);
+		}
+		if (keepAlive != null && !keepAlive.isEmpty()) {
+			Boolean enabled = Boolean.parseBoolean(keepAlive);
+			builder.keepAliveWithoutCalls(enabled);
+		}
+		if (keepAliveTimeout != null && !keepAliveTimeout.isEmpty()) {
+			int timeout = Integer.parseInt(keepAliveTimeout);
+			builder.keepAliveTimeout(timeout, TimeUnit.SECONDS);
+		}
+	}
+	
+	private void addMaxInboundMessageSize(NettyChannelBuilder builder, String target) {
+		String maxMsgSizeString = GrpcClientConfigHolder.getMaxInboundMessageSize(target);
+		if (maxMsgSizeString != null && !maxMsgSizeString.isEmpty()) {
+			int maxSize = Integer.parseInt(maxMsgSizeString);
+			if (maxSize == -1) {
+				builder.maxInboundMessageSize(Integer.MAX_VALUE);
+			} else if (maxSize > 0) {
+				builder.maxInboundMessageSize(maxSize);
+			}
+		}
+	}
+
+	private void addUserInterceptors(NettyChannelBuilder builder, String target) {
+		String interceptorListString = GrpcClientConfigHolder.getClientInterceptors(target);
+
+		if (interceptorListString != null) {
+			// TODO: wildcard support
+			List<String> items = Arrays.asList(interceptorListString.split("\\s*,\\s*"));
+			if (!items.isEmpty()) {
+				for (String className : items) {
+					try {
+						// use the app classloader to load the interceptor
+						ClassLoader cl = Thread.currentThread().getContextClassLoader();
+						Class<?> clazz = Class.forName(className, true, cl);
+						ClientInterceptor interceptor = (ClientInterceptor) clazz.newInstance();
+						builder.intercept(interceptor);
+					} catch (ClassNotFoundException | InstantiationException | IllegalAccessException  e) {
+						// TODO: proper warning message
+						Tr.warning(tc, "Could not load user Interceptor due to ", e);
+					}
+				}
+			}
+		}
 	}
 }
