@@ -277,7 +277,7 @@ public class CxfClientPropsTestServlet extends FATServlet {
         client = ClientBuilder.newBuilder()
                         .property("client.ChunkingThreshold", "40000")
                         .build();
-        response = client.target("http://localhost:" + req.getServerPort() + "/cxfClientPropsApp/resource/chunking2")
+        response = client.target("http://localhost:" + req.getServerPort() + "/cxfClientPropsApp/resource/chunking")
                        .request().header("Expect", "100-continue")
                        .post(Entity.text(sb.toString()));
         status = response.getStatus();
