@@ -58,6 +58,11 @@ installFeature.option-key.--verbose=\
 installFeature.option-desc.--verbose=\
 \tDisplay additional debug information while the action runs.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--acceptLicense=\
+\ \ \ \ --acceptLicense
+installFeature.option-desc.--acceptLicense=\
+\tAccepts the license agreement.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--noCache=\
 \ \ \ \ --noCache
 installFeature.option-desc.--noCache=\
@@ -83,8 +88,24 @@ installServerFeatures.option-key.--verbose=\
 installServerFeatures.option-desc.--verbose=\
 \tDisplay additional debug information while the action runs.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--acceptLicense=\
+\ \ \ \ --acceptLicense
+installServerFeatures.option-desc.--acceptLicense=\
+\tAccepts the license agreement.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--noCache=\
 \ \ \ \ --noCache
 installServerFeatures.option-desc.--noCache=\
 \tFeatures installed from a remote repository                          \n\
 \t(for example, Maven Central) are not cached locally.
+#--------- VIEWSETTINGS ACTION ----------------------------------------#
+viewSettings.desc=\
+\tView the repositories and proxy settings.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+viewSettings.option-key.--viewValidationMessages=\
+\ \ \ \ --viewValidationMessages
+viewSettings.option-desc.--viewValidationMessages=\
+\tUse this option to display the detailed messages from the            \n\
+\tvalidation of the configured featureUtility.properties file.           \n\
+\tEach message contains an error code, the line number where the error \n\
+\twas found, and the cause of the error.

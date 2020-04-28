@@ -44,7 +44,8 @@ instrument.disabled: true
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.kernel.feature.cmdline;version=latest,\
-	com.ibm.ws.kernel.feature.core;version=latest
+	com.ibm.ws.kernel.feature.core;version=latest,\
+	org.glassfish.javax.json
 
 
 -testpath: \
