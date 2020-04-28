@@ -19,6 +19,8 @@ package jakarta.el;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,6 +34,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ImportHandler {
 
     private static final Map<String,Set<String>> standardPackages = new HashMap<>();
+
+    private static final boolean IS_SECURITY_ENABLED =
+    (System.getSecurityManager() != null);
 
     static {
         // Servlet 5.0
@@ -452,7 +457,21 @@ public class ImportHandler {
              * for the case where the class does exist is a lot less than the
              * overhead we save by not calling loadClass().
              */
-            if (cl.getResource(path) == null) {
+            Boolean isResourceNull;
+            if (IS_SECURITY_ENABLED) {
+                isResourceNull = AccessController.doPrivileged(
+                    new PrivilegedAction<Boolean>() {
+
+                    @Override
+                    public Boolean run() {
+                        return cl.getResource(path) == null;
+                    }
+                    
+                });
+            } else {
+                isResourceNull =  cl.getResource(path) == null;
+            }
+            if (isResourceNull) {
                 return null;
             }
         } catch (ClassCircularityError cce) {
