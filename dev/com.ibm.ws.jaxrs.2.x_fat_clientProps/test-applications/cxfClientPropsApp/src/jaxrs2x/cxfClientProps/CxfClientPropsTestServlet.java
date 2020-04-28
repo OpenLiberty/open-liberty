@@ -274,7 +274,7 @@ public class CxfClientPropsTestServlet extends FATServlet {
         client = ClientBuilder.newBuilder()
                         .property("client.ChunkingThreshold", "40000")
                         .build();
-        response = client.target("http://localhost:" + req.getServerPort() + "/cxfClientPropsApp/resource/chunking")
+        response = client.target("http://localhost:" + req.getServerPort() + "/cxfClientPropsApp/resource/chunking2")
                        .request().header("Expect", "100-continue")
                        .post(Entity.text(sb.toString()));
         status = response.getStatus();
@@ -283,7 +283,23 @@ public class CxfClientPropsTestServlet extends FATServlet {
         // If a 100 response is received then no data will be sent.
         assertEquals(100,status);
         assertEquals("", result);
+        
+/*        
+        When the client is using the Expect: 100-Continue feature, the following events occur:
 
+            The request initiates a TCP connection to the server.
+            When the connection to the server is established, the request--including the headers, the Expect: 100-Continue header, without the request body--is then transmitted to the server.
+            The client then waits for a response from the server.                
+                If the status code is 100-Continue, the request body is sent to the server.
+            The client will then wait for a response from the server (comprised of response headers and a response body).            
+*/
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException ex) {
+            // ignore 
+        }
+        
+        client.close();
     }
 
     @Test

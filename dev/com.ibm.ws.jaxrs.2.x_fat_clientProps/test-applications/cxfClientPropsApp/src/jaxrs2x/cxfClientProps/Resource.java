@@ -62,6 +62,14 @@ public class Resource extends Application {
         return contentLength == null ? "CHUNKING" : contentLength + ":" + actualLength;
     }
     
+    //Add a second chunking method to handle the 100-continue
+    @POST
+    @Path("/chunking2")
+    public Response chunking2(String entity) {
+        _log.info("chunking2 100-continue");
+        return Response.ok().build();
+    }
+    
     @GET
     @Path("echo/{param}")
     public String echo(@PathParam("param") String param) {        
