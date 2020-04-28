@@ -108,6 +108,9 @@ public class HPELHideMessagesTest {
         if (backup != null && backup.exists()) {
             server.getServerConfigurationFile().copyFromSource(backup);
         }
+        if (server != null && server.isStarted()) {
+            server.stopServer();
+        }
     }
 
 }
