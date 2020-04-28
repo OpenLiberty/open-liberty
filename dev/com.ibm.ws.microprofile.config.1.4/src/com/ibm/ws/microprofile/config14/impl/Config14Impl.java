@@ -185,7 +185,7 @@ public class Config14Impl extends AbstractConfig implements WebSphereConfig {
 
     @Override
     public <T> Optional<Converter<T>> getConverter(Class<T> forType) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
 }

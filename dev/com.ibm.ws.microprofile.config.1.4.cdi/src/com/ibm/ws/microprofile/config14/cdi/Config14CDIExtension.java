@@ -47,6 +47,12 @@ public class Config14CDIExtension extends Config12CDIExtension implements Extens
     }
 
     @Override
+    protected void addConfigBean(AfterBeanDiscovery abd, BeanManager beanManager) {
+        Config14ConfigBean configBean = new Config14ConfigBean(beanManager);
+        abd.addBean(configBean);
+    }
+
+    @Override
     protected <T> void addConfigPropertyBean(AfterBeanDiscovery abd, BeanManager beanManager, Type beanType, Class<T> clazz) {
         ConfigPropertyBean<T> converterBean = new ConfigPropertyBean<T>(beanManager, beanType, clazz, Config14PropertyLiteral.INSTANCE);
         abd.addBean(converterBean);
@@ -78,4 +84,5 @@ public class Config14CDIExtension extends Config12CDIExtension implements Extens
             Tr.error(tc, "unable.to.process.observer.injection.point.CWMCG5006E", pot.getObserverMethod().getBeanClass());
         }
     }
+
 }

@@ -45,7 +45,7 @@ public class DelegatingConfig implements Config {
         return getDelegate().getValue(arg0, arg1);
     }
 
-    private Config getDelegate() {
+    protected Config getDelegate() {
         return ConfigProvider.getConfig();
     }
 

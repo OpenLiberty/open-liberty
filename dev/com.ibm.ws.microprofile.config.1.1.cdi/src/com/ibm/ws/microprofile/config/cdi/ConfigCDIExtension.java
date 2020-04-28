@@ -96,8 +96,8 @@ public class ConfigCDIExtension implements Extension, WebSphereCDIExtension {
     }
 
     void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager beanManager) {
-        ConfigBean configBean = new ConfigBean(beanManager);
-        abd.addBean(configBean);
+
+        addConfigBean(abd, beanManager);
 
         validInjectionTypes.removeAll(badInjectionTypes);
 
@@ -116,6 +116,11 @@ public class ConfigCDIExtension implements Extension, WebSphereCDIExtension {
                 abd.addDefinitionError(e);
             }
         }
+    }
+
+    protected void addConfigBean(AfterBeanDiscovery abd, BeanManager beanManager) {
+        ConfigBean configBean = new ConfigBean(beanManager);
+        abd.addBean(configBean);
     }
 
     protected Throwable processParameterizedType(String propertyName, String defaultValue, ParameterizedType pType, ClassLoader classLoader) {
