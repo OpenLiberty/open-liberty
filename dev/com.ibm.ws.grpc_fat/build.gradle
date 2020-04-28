@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,67 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-// Define G:A:V coordinates of each dependency
+// configure protobuf-gradle-plugin and liberty-gradle-plugin
+buildscript {
+  //repositories {
+  //  mavenLocal()
+  //  mavenCentral()    
+  //}
+  dependencies {
+    //classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.12'
+    //classpath 'com.google.gradle:osdetector-gradle-plugin:1.6.2'
+    classpath 'io.openliberty.tools:liberty-gradle-plugin:3.0'
+  }
+}
+
+
+plugins {	
+    id 'war'
+    id "eclipse-wtp"
+    id "com.google.protobuf" version "0.8.12"
+    id "com.google.osdetector" version "1.6.2"
+}
+
+
 dependencies {
-  requiredLibs 'commons-logging:commons-logging:1.1.3'
+ 
+    // test
+    testImplementation 'commons-httpclient:commons-httpclient:3.1'
+    testImplementation 'junit:junit:4.12'
+	
+	// provided
+    providedCompile 'com.google.protobuf:protobuf-java:3.11.4'
+    providedCompile 'com.google.protobuf:protobuf-java-util:3.11.4'
+    providedCompile 'io.grpc:grpc-protobuf:1.28.1'
+    providedCompile 'io.grpc:grpc-stub:1.28.1'
+    providedCompile 'io.grpc:grpc-services:1.28.1'
+    providedCompile 'javax.annotation:javax.annotation-api:1.2'
+    providedCompile 'io.grpc:grpc-netty-shaded:1.28.1'
+    
+    providedCompile 'jakarta.platform:jakarta.jakartaee-api:8.0.0'
+    providedCompile 'org.eclipse.microprofile:microprofile:3.2'
+    
+}
+
+protobuf {
+	
+    protoc { artifact = "com.google.protobuf:protoc:3.11.4" }
+    plugins {
+        grpc { artifact = "io.grpc:protoc-gen-grpc-java:1.28.1" }
+    }
+    generateProtoTasks {
+        all()*.plugins { 
+        			grpc {} 
+        		}
+    }
+}
+
+// Inform IDE Eclipse about the generated code.
+sourceSets {
+    main {
+        java {
+            srcDirs 'build/generated/source/proto/main/grpc'
+            srcDirs 'build/generated/source/proto/main/java'
+        }
+    }
 }
