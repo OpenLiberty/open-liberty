@@ -93,7 +93,7 @@ public class JPA20QueryLockMode_WEB extends JPAFATServletClient {
 
     private static void setupTestApplication() throws Exception {
         WebArchive webApp = ShrinkWrap.create(WebArchive.class, appName + ".war");
-        webApp.addPackages(true, "suite.r80.base.common.datamodel.entities");
+        webApp.addPackages(true, "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model");
         webApp.addPackages(true, "com.ibm.ws.jpa.fvt.jpa20.querylockmode.testlogic");
         webApp.addPackages(true, "com.ibm.ws.jpa.fvt.jpa20.querylockmode.web");
         ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + appFolder + "/" + appName + ".war");

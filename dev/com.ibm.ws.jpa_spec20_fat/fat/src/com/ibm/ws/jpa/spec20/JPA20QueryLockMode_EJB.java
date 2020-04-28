@@ -97,7 +97,7 @@ public class JPA20QueryLockMode_EJB extends JPAFATServletClient {
 
     private static void setupTestApplication() throws Exception {
         JavaArchive ejbApp = ShrinkWrap.create(JavaArchive.class, appName + ".jar");
-        ejbApp.addPackages(true, "suite.r80.base.common.datamodel.entities");
+        ejbApp.addPackages(true, "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model");
         ejbApp.addPackages(true, "com.ibm.ws.jpa.fvt.jpa20.querylockmode.ejblocal");
         ejbApp.addPackages(true, "com.ibm.ws.jpa.fvt.jpa20.querylockmode.testlogic");
         ShrinkHelper.addDirectory(ejbApp, RESOURCE_ROOT + appFolder + "/" + appName + ".jar");
