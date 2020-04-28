@@ -51,6 +51,7 @@ public class InstallFeatureAction implements ActionHandler {
         private String fromDir;
         private String toDir;
         private Boolean noCache;
+        private Boolean acceptLicense;
         private ProgressBar progressBar;
 
         @Override 
@@ -81,7 +82,8 @@ public class InstallFeatureAction implements ActionHandler {
                 if ((rc = validateFromDir(this.fromDir)) != ReturnCode.OK) {
                         return rc;
                 }
-                this.noCache = args.getOption("noCache") != null;
+                this.noCache = args.getOption("nocache") != null;
+                this.acceptLicense = args.getOption("acceptlicense") != null;
 
                 this.progressBar = ProgressBar.getInstance();
 
@@ -139,23 +141,23 @@ public class InstallFeatureAction implements ActionHandler {
 
         // call the install kernel to verify we are installing at least 1 new asset
         private void checkAssetsNotInstalled(List<String> assetIds) throws InstallException {
-                installKernel.checkAssetsNotInstalled(assetIds);
+        	installKernel.checkAssetsNotInstalled(assetIds);
         }
 
 
         private ExitCode install() {
-                try {
-                        featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(fromDir)
-                                        .setFeaturesToInstall(featureNames).setNoCache(noCache).build();
-                        featureUtility.installFeatures();
-                } catch (InstallException e) {
-                        logger.log(Level.SEVERE, e.getMessage(), e);
-                        return FeatureUtilityExecutor.returnCode(e.getRc());
-                } catch (Throwable e) {
-                        logger.log(Level.SEVERE, e.getMessage(), e);
-                        return FeatureUtilityExecutor.returnCode(InstallException.IO_FAILURE);
-                }
-                return ReturnCode.OK;
+        	try {
+            	featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(fromDir)
+                	.setFeaturesToInstall(featureNames).setNoCache(noCache).setlicenseAccepted(acceptLicense).build();
+            	featureUtility.installFeatures();
+        	} catch (InstallException e) {
+            	logger.log(Level.SEVERE, e.getMessage(), e);
+            	return FeatureUtilityExecutor.returnCode(e.getRc());
+            } catch (Throwable e) {
+            	logger.log(Level.SEVERE, e.getMessage(), e);
+            	return FeatureUtilityExecutor.returnCode(InstallException.IO_FAILURE);
+            }
+            return ReturnCode.OK;
         }
 
 
