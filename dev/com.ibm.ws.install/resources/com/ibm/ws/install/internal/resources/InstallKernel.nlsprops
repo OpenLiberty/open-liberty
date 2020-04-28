@@ -866,7 +866,7 @@ ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS=CWWKF1409E: Unable to find the followi
 ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS.explanation=The JSON files cannot be found locally or on the configured Maven repository.
 ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS.useraction=Ensure that you have network connection and the JSON files exist on the configured Maven repository.
 
-ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY=CWWKF1410E: The feature {0} cannot be installed to {1} {2} edition because it only applies to the editions {3}
+ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY=CWWKF1410E: The {0} feature cannot be installed to {1} {2} edition because it only applies to the {3} edition.
 ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.explanation=The feature is not applicable to the edition of the installed product.
 ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.useraction=Install features that are supported by the product edition.
 
