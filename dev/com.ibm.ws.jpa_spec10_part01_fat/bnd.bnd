@@ -15,6 +15,7 @@ bVersion=1.0
 src: \
     fat/src,\
     test-applications/callback/src,\
+    test-applications/entitymanager/src,\
     test-applications/inheritance/src,\
     test-applications/olgh10310/src,\
     test-applications/olgh11795/src,\
