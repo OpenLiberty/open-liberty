@@ -47,7 +47,6 @@ public class PostgreSQLTest extends FATServletClient {
                     .withDatabaseName(POSTGRES_DB)
                     .withUsername(POSTGRES_USER)
                     .withPassword(POSTGRES_PASS)
-                    .withExposedPorts(5432)
                     .withConfigOption("max_prepared_transactions", "2")
                     .withLogConsumer(PostgreSQLTest::log);
 
@@ -81,8 +80,8 @@ public class PostgreSQLTest extends FATServletClient {
     public static void tearDown() throws Exception {
         server.stopServer("DSRA0302E", // DSRA0302E:  XAException occurred.  Error code is: XAER_RMFAIL (-7).  Exception is: Error rolling back prepared transaction.
                           "DSRA0304E", // DSRA0304E:  XAException occurred. XAException contents and details are: Caused by org.postgresql.util.PSQLException: This connection has been closed.
-                          "J2CA0027E"  // J2CA0027E: An exception occurred while invoking rollback on an XA Resource Adapter from DataSource jdbc/postgres/xa
-                          );
+                          "J2CA0027E" // J2CA0027E: An exception occurred while invoking rollback on an XA Resource Adapter from DataSource jdbc/postgres/xa
+        );
     }
 
     private static void log(OutputFrame frame) {

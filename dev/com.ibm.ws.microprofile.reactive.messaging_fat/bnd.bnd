@@ -28,8 +28,8 @@ fat.project: true
 	com.ibm.websphere.javaee.jsonb.1.0;version=latest,\
 	com.ibm.ws.org.slf4j.api.1.7.7;version=latest,\
 	org.apache.kafka:kafka-clients;version=2.3.0,\
-	org.testcontainers:testcontainers;version=1.12.3,\
-	org.testcontainers:kafka;version=1.12.3,\
+	org.testcontainers:testcontainers;version=1.14.0,\
+	org.testcontainers:kafka;version=1.14.0,\
 	org.rnorth.duct-tape:duct-tape;version=1.0.7,\
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
 	org.testng:testng;version=6.14.3,\
