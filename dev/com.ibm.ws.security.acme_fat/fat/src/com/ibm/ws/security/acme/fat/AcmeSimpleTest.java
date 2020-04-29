@@ -36,7 +36,6 @@ import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -97,18 +96,11 @@ public class AcmeSimpleTest {
 		}
 	}
 
-	@Before
-	public void beforeTest() throws Exception {
-		/*
-		 * Configure mock DNS server.
-		 */
-		AcmeFatUtils.configureDnsForDomains(caContainer, DOMAINS_ALL);
-	}
-
 	@After
 	public void afterTest() throws Exception {
 		/*
-		 * Clear the DNS records for the domain.
+		 * Clear the DNS records for the domain. Required since a few of the
+		 * tests setup invalid A records to test failure scenarios.
 		 */
 		AcmeFatUtils.clearDnsForDomains(caContainer, DOMAINS_ALL);
 
@@ -164,7 +156,7 @@ public class AcmeSimpleTest {
 			 */
 			server.startServer();
 			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
-			AcmeFatUtils.waitForSSLToCreateKeystore(server);
+			AcmeFatUtils.waitForSslToCreateKeystore(server);
 			AcmeFatUtils.waitForSslEndpoint(server);
 
 			/*
@@ -281,7 +273,7 @@ public class AcmeSimpleTest {
 			 */
 			server.startServer();
 			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
-			AcmeFatUtils.waitForSSLToCreateKeystore(server);
+			AcmeFatUtils.waitForSslToCreateKeystore(server);
 			AcmeFatUtils.waitForSslEndpoint(server);
 
 			/*
@@ -383,7 +375,7 @@ public class AcmeSimpleTest {
 			 * installed.
 			 */
 			server.startServer();
-			AcmeFatUtils.waitForSSLToCreateKeystore(server);
+			AcmeFatUtils.waitForSslToCreateKeystore(server);
 			AcmeFatUtils.waitForSslEndpoint(server);
 
 			/*
@@ -692,7 +684,7 @@ public class AcmeSimpleTest {
 			acmeCA.setDirectoryURI(caContainer.getAcmeDirectoryURI(false));
 			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
 			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
-			AcmeFatUtils.waitForSSLToCreateKeystore(server);
+			AcmeFatUtils.waitForSslToCreateKeystore(server);
 
 		} finally {
 			server.stopServer("CWWKG0095E", "CWWKE0701E", "CWPKI2016E", "CWPKI2020E", "CWPKI2021E", "CWPKI2022E",
@@ -731,7 +723,7 @@ public class AcmeSimpleTest {
 			Log.info(AcmeSimpleTest.class, testName.getMethodName(), "Starting server.");
 			server.startServer();
 			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
-			AcmeFatUtils.waitForSSLToCreateKeystore(server);
+			AcmeFatUtils.waitForSslToCreateKeystore(server);
 			AcmeFatUtils.waitForSslEndpoint(server);
 
 			Certificate[] certificates = AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
@@ -832,12 +824,12 @@ public class AcmeSimpleTest {
 		ServerConfiguration configuration = ORIGINAL_CONFIG.clone();
 
 		/*
-		 * Configure the acmeCA-2.0 feature. Remove "domain2.com" from the mock
-		 * DNS server. Any attempt to validate ownership of this domain is going
-		 * to fail.
+		 * Configure the acmeCA-2.0 feature. Point domain2.com to an invalid
+		 * address. Any attempt to validate ownership of this domain is going to
+		 * fail.
 		 */
 		AcmeFatUtils.configureAcmeCA(server, caContainer, configuration, useAcmeURIs(), DOMAINS_2);
-		AcmeFatUtils.clearDnsForDomains(caContainer, "domain2.com");
+		caContainer.addDnsARecord("domain2.com", "127.0.0.1");
 
 		try {
 			/***********************************************************************
@@ -914,6 +906,82 @@ public class AcmeSimpleTest {
 		ks.load(null, AcmeFatUtils.PEBBLE_TRUSTSTORE_PASSWORD.toCharArray());
 		ks.store(new FileOutputStream(new File(server.getServerRoot() + "/resources/security/key.p12")),
 				AcmeFatUtils.PEBBLE_TRUSTSTORE_PASSWORD.toCharArray());
+
+		AcmeFatUtils.configureAcmeCA(server, caContainer, configuration, useAcmeURIs(), DOMAINS_1);
+
+		try {
+			/***********************************************************************
+			 * 
+			 * Start the server.
+			 * 
+			 **********************************************************************/
+			Log.info(AcmeSimpleTest.class, testName.getMethodName(), "Starting server.");
+			server.startServer();
+			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
+			AcmeFatUtils.waitForSslEndpoint(server);
+			AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
+
+		} finally {
+			server.stopServer();
+		}
+	}
+
+	/**
+	 * Make sure if the parent directory for the account key pair does not
+	 * exist, that we can create it.
+	 * 
+	 * @throws Exception
+	 *             if there was an unforeseen error
+	 */
+	@Test
+	@CheckForLeakedPasswords(AcmeFatUtils.PEBBLE_TRUSTSTORE_PASSWORD)
+	public void account_keypair_directory_does_not_exist() throws Exception {
+		ServerConfiguration configuration = ORIGINAL_CONFIG.clone();
+
+		/*
+		 * Configure ACME to use an non-existent directory for the account key
+		 * pair file.
+		 */
+		AcmeCA acmeCA = configuration.getAcmeCA();
+		acmeCA.setAccountKeyFile(server.getServerRoot() + "directory/does/not/exist/acmeAccountKey.p12");
+
+		AcmeFatUtils.configureAcmeCA(server, caContainer, configuration, useAcmeURIs(), DOMAINS_1);
+
+		try {
+			/***********************************************************************
+			 * 
+			 * Start the server.
+			 * 
+			 **********************************************************************/
+			Log.info(AcmeSimpleTest.class, testName.getMethodName(), "Starting server.");
+			server.startServer();
+			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
+			AcmeFatUtils.waitForSslEndpoint(server);
+			AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
+
+		} finally {
+			server.stopServer();
+		}
+	}
+
+	/**
+	 * Make sure if the parent directory for the account key pair does not
+	 * exist, that we can create it.
+	 * 
+	 * @throws Exception
+	 *             if there was an unforeseen error
+	 */
+	@Test
+	@CheckForLeakedPasswords(AcmeFatUtils.PEBBLE_TRUSTSTORE_PASSWORD)
+	public void domain_keypair_directory_does_not_exist() throws Exception {
+		ServerConfiguration configuration = ORIGINAL_CONFIG.clone();
+
+		/*
+		 * Configure ACME to use an non-existent directory for the domain key
+		 * pair file.
+		 */
+		AcmeCA acmeCA = configuration.getAcmeCA();
+		acmeCA.setDomainKeyFile(server.getServerRoot() + "directory/does/not/exist/acmeDomainKey.p12");
 
 		AcmeFatUtils.configureAcmeCA(server, caContainer, configuration, useAcmeURIs(), DOMAINS_1);
 
