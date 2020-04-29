@@ -12,9 +12,9 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-Bundle-Name: gRPC 1.0
+Bundle-Name: Liberty gRPC
 Bundle-SymbolicName: com.ibm.ws.grpc
-Bundle-Description: gRPC version 1.0
+Bundle-Description: Libery gRPC, version ${bVersion}
 
 -dsannotations: \
   com.ibm.ws.grpc.servlet.GrpcServerComponent
