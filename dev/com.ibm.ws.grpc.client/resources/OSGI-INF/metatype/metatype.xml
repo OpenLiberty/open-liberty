@@ -25,12 +25,12 @@
          
         <AD id="target" name="%target" description="%target.desc" required="true" type="String" />
         <AD id="authnToken" name="%authnToken" description="%authnToken.desc" required="false" type="String" />
-        <AD id="headersToPropagate" name="headersToPropagate" description="%headersToPropagate.desc" required="false" type="String" />
+        <AD id="headersToPropagate" name="%headersToPropagate" description="%headersToPropagate.desc" required="false" type="String" />
         <AD id="enableKeepAlive" name="%enableKeepAlive" description="%enableKeepAlive.desc" required="false" type="Boolean" />
         <AD id="keepAliveTime" name="%keepAliveTime" description="%keepAliveTime.desc" required="false" type="Integer" />
         <AD id="keepAliveTimeout" name="%keepAliveTimeout" description="%keepAliveTimeout.desc" required="false" type="Integer" />
         <AD id="maxInboundMessageSize" name="%maxInboundMessageSize" description="%maxInboundMessageSize.desc" required="false" type="Integer" />
-        <AD id="clientInterceptors" name="clientInterceptors" description="%clientInterceptors.desc" required="false" type="String" />
+        <AD id="clientInterceptors" name="%clientInterceptors" description="%clientInterceptors.desc" required="false" type="String" />
         <AD id="sslConfig" name="%sslConfig" description="%sslConfig.desc" required="false" type="String" />
         <AD id="other" name="%other" description="%other.desc" required="false" type="String" />
 
