@@ -41,7 +41,7 @@ public class GrpcClientConfigHolder {
 
 	// a cached map of search results
 	// that have been processed to look up the best match for the uri strings
-	private static volatile Map<String, Map<String, String>> resolvedConfigInfo = new HashMap<>();
+	private static volatile Map<String, Map<String, String>> resolvedConfigInfoCache = new HashMap<>();
 
 	private static boolean wildcardsPresentInConfigInfo = false;
 
@@ -58,7 +58,7 @@ public class GrpcClientConfigHolder {
 	public static synchronized void addConfig(String id, String uri, Map<String, String> params) {
 		uriMap.put(id, uri);
 		configInfo.put(uri, params);
-		resolvedConfigInfo.clear();
+		resolvedConfigInfoCache.clear();
 		if (uri.endsWith("*")) {
 			wildcardsPresentInConfigInfo = true;
 		}
@@ -75,7 +75,7 @@ public class GrpcClientConfigHolder {
 			configInfo.remove(uri);
 		}
 		uriMap.remove(objectId);
-		resolvedConfigInfo.clear();
+		resolvedConfigInfoCache.clear();
 	}
 
 	public static String getHeaderPropagationSupport(String uri) {
@@ -174,8 +174,8 @@ public class GrpcClientConfigHolder {
 		}
 
 		// look in the cache in case we've resolved this before
-		synchronized (resolvedConfigInfo) {
-			Map<String, String> props = resolvedConfigInfo.get(uri);
+		synchronized (resolvedConfigInfoCache) {
+			Map<String, String> props = resolvedConfigInfoCache.get(uri);
 			if (props != null) {
 				if (debug) {
 					Tr.debug(tc, "getUriprops cache hit, uri: " + uri + "props: " + props);
@@ -203,7 +203,7 @@ public class GrpcClientConfigHolder {
 				Tr.debug(tc, "getUriprops no wildcards, cache and return what we've got: " + mergedProps);
 			}
 			synchronized (GrpcClientConfigHolder.class) {
-				resolvedConfigInfo.put(uri, mergedProps);
+				resolvedConfigInfoCache.put(uri, mergedProps);
 			}
 			return (mergedProps.isEmpty() ? null : mergedProps);
 		}
@@ -236,7 +236,7 @@ public class GrpcClientConfigHolder {
 			}
 			// at this point everything has been merged, cache and return what we have.
 			// if there was no match anywhere, this is an empty map.
-			resolvedConfigInfo.put(uri, mergedProps);
+			resolvedConfigInfoCache.put(uri, mergedProps);
 			if (debug) {
 				Tr.debug(tc, "getUriprops final result for uri: " + uri + "values: " + mergedProps);
 			}

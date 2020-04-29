@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.grpc.client;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -29,8 +30,8 @@ import io.grpc.netty.shaded.io.netty.handler.ssl.SslContext;
  * configuration, and then delegates to the NettyChannelBuilder
  */
 public class LibertyManagedChannelProvider extends ManagedChannelProvider {
-	
-    private static final TraceComponent tc = Tr.register(LibertyManagedChannelProvider.class);
+
+	private static final TraceComponent tc = Tr.register(LibertyManagedChannelProvider.class);
 
 	@Override
 	public boolean isAvailable() {
@@ -95,7 +96,7 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 			builder.keepAliveTimeout(timeout, TimeUnit.SECONDS);
 		}
 	}
-	
+
 	private void addMaxInboundMessageSize(NettyChannelBuilder builder, String target) {
 		String maxMsgSizeString = GrpcClientConfigHolder.getMaxInboundMessageSize(target);
 		if (maxMsgSizeString != null && !maxMsgSizeString.isEmpty()) {
@@ -120,11 +121,14 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 						// use the app classloader to load the interceptor
 						ClassLoader cl = Thread.currentThread().getContextClassLoader();
 						Class<?> clazz = Class.forName(className, true, cl);
-						ClientInterceptor interceptor = (ClientInterceptor) clazz.newInstance();
+						ClientInterceptor interceptor = (ClientInterceptor) clazz.getDeclaredConstructor()
+								.newInstance();
 						builder.intercept(interceptor);
-					} catch (ClassNotFoundException | InstantiationException | IllegalAccessException  e) {
+					} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+							| IllegalArgumentException | InvocationTargetException | NoSuchMethodException
+							| SecurityException e) {
 						// TODO: proper warning message
-						Tr.warning(tc, "Could not load user Interceptor due to ", e);
+						Tr.warning(tc, "Could not load user-defined Interceptor", e);
 					}
 				}
 			}

@@ -52,10 +52,10 @@ public class LibertyGrpcAuthPropagationSupport {
 
 		switch (authSupport) {
 		case GrpcClientConstants.JWT:
-			handleOAuthTokens(headers, true);
+			handleOAuthTokensCommon(headers, GrpcOAuthPropagationHelper.getJwtToken());
 			break;
 		case GrpcClientConstants.OAUTH:
-			handleOAuthTokens(headers, false);
+			handleOAuthTokensCommon(headers, GrpcOAuthPropagationHelper.getAccessToken());
 			break;
 //		case GrpcClientConstants.MPJWT:
 //			break;
@@ -86,14 +86,9 @@ public class LibertyGrpcAuthPropagationSupport {
 	 * See
 	 * com.ibm.ws.jaxrs20.client.security.oauth.LibertyJaxRsClientOAuthInterceptor
 	 */
-	private static void handleOAuthTokens(Metadata headers, boolean jwt) {
+	private static void handleOAuthTokensCommon(Metadata headers, String accessToken) {
 		// retrieve the token from the Subject in current thread
 		try {
-			// this interceptor must depend on the appSecurity feature to use
-			// WebSecurityHelper.getSSOCookieFromSSOToken()
-			String accessToken = !jwt ? GrpcOAuthPropagationHelper.getAccessToken()
-					: GrpcOAuthPropagationHelper.getJwtToken();
-
 			if (accessToken != null && !accessToken.isEmpty()) {
 				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 					Tr.debug(tc, "Retrieved an OAuth access/jwt token. About to set a request cookie: " + accessToken);
