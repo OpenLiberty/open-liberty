@@ -254,6 +254,9 @@ public class CxfClientPropsTestServlet extends FATServlet {
                        .readEntity(String.class);
         assertEquals("30000:30000", result);
         
+/* This testcase is commented out since it verifies incorrect behavior by the JDK (that they will not fix).   The JAXRS client should never receive a 100 response, however in certain circumstances it does.   
+ * Customers may continue to hit this issue
+ *         
         // Repeating the tests but adding the "Expect", "100-continue" header.  In this case a 100 will
         // be sent prior to the 200 containing the output.  The JDK will catch and handle this 100 and 
         // JAXRS will only get the 200 response when in streaming mode (which for now is only chunking).  
@@ -283,7 +286,7 @@ public class CxfClientPropsTestServlet extends FATServlet {
         // If a 100 response is received then no data will be sent.
         assertEquals(100,status);
         assertEquals("", result);
-
+*/
     }
 
     @Test
