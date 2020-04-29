@@ -12,7 +12,7 @@
 bVersion=1.0
 
 Bundle-Name: gRPC Client 1.0.
-Bundle-SymbolicName: com.ibm.ws.grpc.client.1.0
+Bundle-SymbolicName: com.ibm.ws.grpc.client
 Bundle-Description: gRPC Client, version 1.0
 
 Import-Package: !sun.*,\
@@ -66,12 +66,12 @@ instrument.disabled: true
 
 -buildpath: \
   com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+  com.ibm.websphere.security;version=latest,\
   com.ibm.ws.grpc.common;version=latest,\
-  com.ibm.ws.webcontainer,\
-  com.ibm.ws.logging.core,\
-  org.osgi.service.component.annotations,\
-  io.grpc:grpc-netty-shaded;version=1.27.0,\
-  com.ibm.websphere.security
+  com.ibm.ws.webcontainer;version=latest,\
+  com.ibm.ws.logging.core;version=latest,\
+  org.osgi.service.component.annotations;version=latest,\
+  io.grpc:grpc-netty-shaded;version=1.27.0
 
 -fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
 

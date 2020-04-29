@@ -20,6 +20,7 @@ import javax.security.auth.Subject;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.security.WSSecurityException;
 import com.ibm.websphere.security.auth.WSSubject;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
