@@ -61,6 +61,7 @@ instrument.classesExcludes: com/ibm/ws/security/token/internal/resources/*.class
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.ws.logging,\
 	com.ibm.ws.kernel.service,\
+	com.ibm.ws.kernel.boot.core;version=latest, \
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.ws.common.encoder,\
