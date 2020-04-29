@@ -11,25 +11,44 @@
 
 // configure protobuf-gradle-plugin and liberty-gradle-plugin
 buildscript {
-  //repositories {
-  //  mavenLocal()
-  //  mavenCentral()    
-  //}
+    repositories.clear()
+    repositories {
+        if (isUsingArtifactory) {
+            maven {
+                credentials {
+                    username userProps.getProperty("artifactory.download.user")
+                    password userProps.getProperty("artifactory.download.token")
+                }
+                url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote")
+            }
+        } else {
+            mavenCentral()
+        }
+    }
   dependencies {
-    //classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.12'
-    //classpath 'com.google.gradle:osdetector-gradle-plugin:1.6.2'
+    classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.12'
     classpath 'io.openliberty.tools:liberty-gradle-plugin:3.0'
   }
 }
-
-
 plugins {	
     id 'war'
     id "eclipse-wtp"
-    id "com.google.protobuf" version "0.8.12"
-    id "com.google.osdetector" version "1.6.2"
 }
-
+apply plugin: 'com.google.protobuf'
+repositories.clear()
+repositories {
+    if (isUsingArtifactory) {
+        maven {
+            credentials {
+                username userProps.getProperty("artifactory.download.user")
+                password userProps.getProperty("artifactory.download.token")
+            }
+            url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote")
+        }
+    } else {
+        mavenCentral()
+    }
+}
 
 dependencies {
  
