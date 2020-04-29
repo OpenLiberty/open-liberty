@@ -1,2 +1,2 @@
-DELETE FROM ${schemaname}.SimpleParentEntityOLGH11795;
-DELETE FROM ${schemaname}.SimpleChildEntityOLGH11795;
+DELETE FROM SimpleParentEntityOLGH11795;
+DELETE FROM SimpleChildEntityOLGH11795;
