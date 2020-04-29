@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.injection.fat;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -18,6 +21,8 @@ import org.junit.runner.RunWith;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -50,7 +55,7 @@ public class RepeatableEnvEntryTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification();
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.injection.fat.RepeatableEnvEntryServer")).andWith(new JakartaEE9Action().forServers("com.ibm.ws.injection.fat.RepeatableEnvEntryServer").fullFATOnly());
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -69,9 +74,23 @@ public class RepeatableEnvEntryTest extends FATServletClient {
 //
 //        ShrinkHelper.exportDropinAppToServer(server, RepeatableEnvEntryMixTest);
 
+        // Since not using ShrinkWrap, manually transform the application if required
+        if (JakartaEE9Action.isActive()) {
+            transformJakartaEE9App(server, "dropins", "RepeatableEnvEntryMixTest.ear");
+        }
+
         server.addInstalledAppForValidation("RepeatableEnvEntryMixTest");
 
         server.startServer();
+    }
+
+    private static void transformJakartaEE9App(LibertyServer server, String path, String filename) throws Exception {
+        String localLocation = "publish/servers/" + server.getServerName() + "/" + path;
+
+        Path localAppPath = Paths.get(localLocation + "/" + filename);
+        JakartaEE9Action.transformApp(localAppPath);
+
+        server.copyFileToLibertyServerRoot(localLocation, path, filename);
     }
 
     @AfterClass
@@ -82,7 +101,7 @@ public class RepeatableEnvEntryTest extends FATServletClient {
     }
 
     private final void runTest(String path) throws Exception {
-        FATServletClient.runTest(server, path, testName.getMethodName());
+        FATServletClient.runTest(server, path, getTestMethodSimpleName());
     }
 
     @Test
