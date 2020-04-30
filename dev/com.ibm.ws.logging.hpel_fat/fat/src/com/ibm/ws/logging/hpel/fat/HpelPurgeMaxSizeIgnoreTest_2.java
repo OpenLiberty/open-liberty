@@ -256,8 +256,6 @@ public class HpelPurgeMaxSizeIgnoreTest_2 {
         if (backup != null && backup.exists()) {
             server.getServerConfigurationFile().copyFromSource(backup);
         }
-        RemoteFile bootstrapFile = server.getServerBootstrapPropertiesFile();
-        bootstrapFile.delete();
         // call the super
     }
 
