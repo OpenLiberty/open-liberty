@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.grpc_fat;
+package com.ibm.ws.grpc;
 
 import io.grpc.stub.StreamObserver;
 import io.grpc.examples.helloworld.GreeterGrpc;

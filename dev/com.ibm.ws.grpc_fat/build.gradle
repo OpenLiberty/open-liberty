@@ -86,9 +86,22 @@ protobuf {
 // Inform IDE Eclipse about the generated code.
 sourceSets {
     main {
+    	proto {
+    		srcDirs 'test-applications/helloworld/helloworld_client/src/proto'
+    		}
         java {
-            srcDirs 'build/generated/source/proto/main/grpc'
-            srcDirs 'build/generated/source/proto/main/java'
+            srcDirs 'test-applications/helloworld/helloworld_client/src/java'
         }
     }
 }
+
+//sourceSets {
+//   main {
+//    	proto {
+//    		srcDirs 'test-applications/helloworld/helloworld_servlet/src/proto'
+//    		}
+//        java {
+//            srcDirs 'test-applications/helloworld/helloworld_servlet/src/java'
+//        }
+//    }
+//}
