@@ -25,6 +25,7 @@ import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_CONNECT
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_ENABLED;
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_HOST;
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_INIT_POOL_SIZE;
+import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_JNDI_OUTPUT_ENABLED;
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_MAX_POOL_SIZE;
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_POOL_TIME_OUT;
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_POOL_WAIT_TIME;
@@ -408,6 +409,11 @@ public class LdapConnection {
          * Set the connection timeout.
          */
         iContextManager.setReadTimeout((Long) configProps.get(CONFIG_PROP_READ_TIMEOUT));
+
+        /*
+         * Set JNDI packet output to system out
+         */
+        iContextManager.setJndiOutputEnabled((Boolean) configProps.get(CONFIG_PROP_JNDI_OUTPUT_ENABLED));
 
         /*
          * Determine referral handling behavior. Initially the attribute was spelled missing an 'r' so

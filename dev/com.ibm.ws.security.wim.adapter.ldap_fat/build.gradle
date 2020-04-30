@@ -130,7 +130,8 @@ autoFVT.doLast {
     'com.ibm.ws.security.wim.adapter.ldap.fat.readtimeout',
     'com.ibm.ws.security.wim.adapter.ldap.fat.racf.sdbm',
     'com.ibm.ws.security.wim.adapter.ldap.fat.return.to.primary',
-    'com.ibm.ws.security.wim.adapter.ldap.fat.racf.sdbm.basic'
+    'com.ibm.ws.security.wim.adapter.ldap.fat.racf.sdbm.basic',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.jndi.output'
   ]
   servers.each { server ->
     copy { 
