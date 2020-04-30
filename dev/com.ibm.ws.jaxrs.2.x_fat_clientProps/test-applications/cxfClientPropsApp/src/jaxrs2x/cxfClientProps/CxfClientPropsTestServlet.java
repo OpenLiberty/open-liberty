@@ -42,14 +42,23 @@ import componenttest.app.FATServlet;
 @WebServlet(urlPatterns = "/CxfClientPropsTestServlet")
 public class CxfClientPropsTestServlet extends FATServlet {
     private final static Logger _log = Logger.getLogger(CxfClientPropsTestServlet.class.getName());
-    private static final long defaultMargin = 6000;
+    private static final long defaultMargin = 14000;
     private final static String proxyPort = "8888";
     private final static String proxyHost = "127.0.0.1";
-    private final static String myHost = "1.1.1.1";    
+    private final static String myHost = "1.1.1.1";
+    private static final long aixMargin = 61000;    
     
     private static final boolean isZOS() {
         String osName = System.getProperty("os.name");
         if (osName.contains("OS/390") || osName.contains("z/OS") || osName.contains("zOS")) {
+            return true;
+        }
+        return false;
+    }
+    
+    private static final boolean isAIX() {
+        String osName = System.getProperty("os.name");
+        if (osName.toLowerCase().contains("AIX".toLowerCase())) {
             return true;
         }
         return false;
@@ -90,6 +99,9 @@ public class CxfClientPropsTestServlet extends FATServlet {
         String target = null;
         long CXF_TIMEOUT = 5000;
         long MARGIN = defaultMargin;
+        if (isAIX()) {
+            MARGIN = aixMargin;
+        }        
         
         Client client = ClientBuilder.newBuilder()
                                      .property("client.ConnectionTimeout", CXF_TIMEOUT)
@@ -123,6 +135,9 @@ public class CxfClientPropsTestServlet extends FATServlet {
         final String m = "testCXFReadTimeout";
         long CXF_TIMEOUT = 5000;
         long MARGIN = defaultMargin;
+        if (isAIX()) {
+            MARGIN = aixMargin;
+        }    
         
         Client client = ClientBuilder.newBuilder()
                                      .property("client.ReceiveTimeout", CXF_TIMEOUT)
@@ -152,6 +167,10 @@ public class CxfClientPropsTestServlet extends FATServlet {
         long IBM_TIMEOUT = 5000;
         long MARGIN = defaultMargin;
         long CXF_TIMEOUT = 20000;
+        if (isAIX()) {
+            MARGIN = aixMargin;
+        }    
+        
         Client client = ClientBuilder.newBuilder()
                                      .property("com.ibm.ws.jaxrs.client.connection.timeout", IBM_TIMEOUT)
                                      .property("client.ConnectionTimeout", CXF_TIMEOUT)
@@ -186,6 +205,10 @@ public class CxfClientPropsTestServlet extends FATServlet {
         long IBM_TIMEOUT = 5000;
         long MARGIN = defaultMargin;
         long CXF_TIMEOUT = 20000;
+        if (isAIX()) {
+            MARGIN = aixMargin;
+        }    
+        
         Client client = ClientBuilder.newBuilder()
                                      .property("com.ibm.ws.jaxrs.client.receive.timeout", IBM_TIMEOUT)
                                      .property("client.ReceiveTimeout", CXF_TIMEOUT)
