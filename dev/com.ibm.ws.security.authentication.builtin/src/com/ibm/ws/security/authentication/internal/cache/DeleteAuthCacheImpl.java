@@ -25,7 +25,6 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.authentication.cache.DeleteAuthCache;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.authentication.cache.AuthCacheService;
 
 /**
@@ -39,22 +38,6 @@ public class DeleteAuthCacheImpl extends StandardMBean implements DeleteAuthCach
 
     private static final TraceComponent tc = Tr.register(AuthCacheServiceImpl.class);
 
-    /********* BETA FENCING CODE. REMOVE WHEN GA (START) *******/
-    private static boolean issuedBetaMessage = false;
-
-    private static void betaFenceCheck() throws UnsupportedOperationException {
-        if (!ProductInfo.getBetaEdition()) {
-            throw new UnsupportedOperationException("This method is beta and is not avalible");
-        } else {
-            if (!issuedBetaMessage) {
-                Tr.info(tc, "BETA: A beta method has been invoked for the class " + DeleteAuthCacheImpl.class.getName() + " for the first time.");
-                issuedBetaMessage = !issuedBetaMessage;
-            }
-        }
-    }
-
-    /********* BETA FENCING CODE. REMOVE WHEN GA (END) *******/
-
     private BundleContext bContext;
 
     private AuthCacheService authCacheService;
@@ -67,12 +50,8 @@ public class DeleteAuthCacheImpl extends StandardMBean implements DeleteAuthCach
         super(DeleteAuthCache.class);
     }
 
-    @Deprecated
     @Override
     public void removeAllEntries() {
-
-        betaFenceCheck();
-
         if (authCacheService != null) {
             authCacheService.removeAllEntries();
         }
