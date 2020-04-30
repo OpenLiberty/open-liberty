@@ -51,6 +51,7 @@ import org.shredzone.acme4j.util.KeyPairUtils;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.acme.docker.CAContainer;
+import com.ibm.ws.security.acme.docker.boulder.BoulderContainer;
 import com.ibm.ws.security.acme.docker.pebble.PebbleContainer;
 import com.ibm.ws.security.acme.internal.web.AcmeCaRestHandler;
 import com.ibm.ws.security.acme.utils.AcmeFatUtils;
@@ -84,20 +85,24 @@ public class AcmeCaRestHandlerTest {
 	private static final String UNAUTHORIZED_PASS = "unauthorizedpass";
 
 	@ClassRule
-	public static CAContainer pebble = new PebbleContainer();
+	public static CAContainer pebble = new BoulderContainer();
 
-	private static final String CONTENT_TYPE = "application/json";
-
-	private static final String JSON_ACCOUNT_REGEN_KEYPAIR_VALID = "{\"" + AcmeCaRestHandler.JSON_OPERATION_KEY
-			+ "\":\"" + AcmeCaRestHandler.JSON_OPERATION_REGEN_ACCT_KEY_PAIR + "\"}";
-	private static final String JSON_ACCOUNT_REGEN_KEYPAIR_INVALID = "{\"" + AcmeCaRestHandler.JSON_OPERATION_KEY
+	private static final String JSON_ACCOUNT_REGEN_KEYPAIR_VALID = "{\"" + AcmeCaRestHandler.OP_KEY + "\":\""
+			+ AcmeCaRestHandler.OP_RENEW_ACCT_KEY_PAIR + "\"}";
+	private static final String JSON_ACCOUNT_REGEN_KEYPAIR_INVALID = "{\"" + AcmeCaRestHandler.OP_KEY
 			+ "\":\"invalid\"}";
 	private static final String JSON_EMPTY = "{}";
 
-	private static final String JSON_CERT_REGEN_VALID = "{\"" + AcmeCaRestHandler.JSON_OPERATION_KEY + "\":\""
-			+ AcmeCaRestHandler.JSON_OPERATION_REGEN_CERT + "\"}";
-	private static final String JSON_CERT_REGEN_INVALID = "{\"" + AcmeCaRestHandler.JSON_OPERATION_KEY
-			+ "\":\"invalid\"}";
+	private static final String JSON_CERT_REGEN = "{\"" + AcmeCaRestHandler.OP_KEY + "\":\""
+			+ AcmeCaRestHandler.OP_RENEW_CERT + "\"}";
+	private static final String JSON_CERT_INVALID_OP = "{\"" + AcmeCaRestHandler.OP_KEY + "\":\"invalid\"}";
+
+	private static final String JSON_CERT_REVOKE_DEFAULT_REASON = "{\"" + AcmeCaRestHandler.OP_KEY + "\":\""
+			+ AcmeCaRestHandler.OP_REVOKE_CERT + "\"}";
+	private static final String JSON_CERT_REVOKE_VALID_REASON = "{\"" + AcmeCaRestHandler.OP_KEY + "\":\""
+			+ AcmeCaRestHandler.OP_REVOKE_CERT + "\",\"" + AcmeCaRestHandler.REASON_KEY + "\":\"superseded\"}";
+	private static final String JSON_CERT_REVOKE_INVALID_REASON = "{\"" + AcmeCaRestHandler.OP_KEY + "\":\""
+			+ AcmeCaRestHandler.OP_REVOKE_CERT + "\",\"" + AcmeCaRestHandler.REASON_KEY + "\":\"invalid\"}";
 
 	private static final String CONTENT_TYPE_HTML = "text/html";
 	private static final String CONTENT_TYPE_JSON = "application/json";
@@ -163,7 +168,7 @@ public class AcmeCaRestHandlerTest {
 		KeyPair keyPair1 = KeyPairUtils.readKeyPair(
 				new FileReader(new File(server.getServerRoot() + "/resources/security/acmeAccountKey.pem")));
 		String jsonResponse = performPost(ACCOUNT_ENDPOINT, 200, CONTENT_TYPE_JSON, ADMIN_USER, ADMIN_PASS,
-				CONTENT_TYPE, JSON_ACCOUNT_REGEN_KEYPAIR_VALID);
+				CONTENT_TYPE_JSON, JSON_ACCOUNT_REGEN_KEYPAIR_VALID);
 		assertJsonResponse(jsonResponse, 200);
 		KeyPair keyPair2 = KeyPairUtils.readKeyPair(
 				new FileReader(new File(server.getServerRoot() + "/resources/security/acmeAccountKey.pem")));
@@ -174,7 +179,7 @@ public class AcmeCaRestHandlerTest {
 		/*
 		 * Do it one more time.
 		 */
-		jsonResponse = performPost(ACCOUNT_ENDPOINT, 200, CONTENT_TYPE_JSON, ADMIN_USER, ADMIN_PASS, CONTENT_TYPE,
+		jsonResponse = performPost(ACCOUNT_ENDPOINT, 200, CONTENT_TYPE_JSON, ADMIN_USER, ADMIN_PASS, CONTENT_TYPE_JSON,
 				JSON_ACCOUNT_REGEN_KEYPAIR_VALID);
 		assertJsonResponse(jsonResponse, 200);
 		KeyPair keyPair3 = KeyPairUtils.readKeyPair(
@@ -201,35 +206,35 @@ public class AcmeCaRestHandlerTest {
 	@Test
 	public void account_endpoint_post_no_content() throws Exception {
 		String jsonResponse = performPost(ACCOUNT_ENDPOINT, 400, CONTENT_TYPE_JSON, ADMIN_USER, ADMIN_PASS,
-				CONTENT_TYPE, null);
+				CONTENT_TYPE_JSON, null);
 		assertJsonResponse(jsonResponse, 400);
 	}
 
 	@Test
 	public void account_endpoint_post_empty_json() throws Exception {
 		String jsonResponse = performPost(ACCOUNT_ENDPOINT, 400, CONTENT_TYPE_JSON, ADMIN_USER, ADMIN_PASS,
-				CONTENT_TYPE, JSON_EMPTY);
+				CONTENT_TYPE_JSON, JSON_EMPTY);
 		assertJsonResponse(jsonResponse, 400);
 	}
 
 	@Test
 	public void account_endpoint_post_invalid_operation() throws Exception {
 		String jsonResponse = performPost(ACCOUNT_ENDPOINT, 400, CONTENT_TYPE_JSON, ADMIN_USER, ADMIN_PASS,
-				CONTENT_TYPE, JSON_ACCOUNT_REGEN_KEYPAIR_INVALID);
+				CONTENT_TYPE_JSON, JSON_ACCOUNT_REGEN_KEYPAIR_INVALID);
 		assertJsonResponse(jsonResponse, 400);
 	}
 
 	@Test
 	public void account_endpoint_post_reader_unauthorized() throws Exception {
 		String jsonResponse = performPost(ACCOUNT_ENDPOINT, 403, CONTENT_TYPE_JSON, READER_USER, READER_PASS,
-				CONTENT_TYPE, JSON_ACCOUNT_REGEN_KEYPAIR_VALID);
+				CONTENT_TYPE_JSON, JSON_ACCOUNT_REGEN_KEYPAIR_VALID);
 		assertJsonResponse(jsonResponse, 403);
 	}
 
 	@Test
 	public void account_endpoint_post_unauthorized_user() throws Exception {
 		String jsonResponse = performPost(ACCOUNT_ENDPOINT, 403, CONTENT_TYPE_JSON, UNAUTHORIZED_USER,
-				UNAUTHORIZED_PASS, CONTENT_TYPE, JSON_ACCOUNT_REGEN_KEYPAIR_VALID);
+				UNAUTHORIZED_PASS, CONTENT_TYPE_JSON, JSON_ACCOUNT_REGEN_KEYPAIR_VALID);
 		assertJsonResponse(jsonResponse, 403);
 	}
 
@@ -269,7 +274,7 @@ public class AcmeCaRestHandlerTest {
 	}
 
 	@Test
-	public void certificate_endpoint_post_admin_authorized() throws Exception {
+	public void certificate_endpoint_post_renew_certificate() throws Exception {
 		/*
 		 * Get certificate info first.
 		 */
@@ -279,7 +284,7 @@ public class AcmeCaRestHandlerTest {
 		 * Request a new certificate.
 		 */
 		String jsonResponse = performPost(CERTIFICATE_ENDPOINT, 200, CONTENT_TYPE_JSON, ADMIN_USER, ADMIN_PASS,
-				CONTENT_TYPE, JSON_CERT_REGEN_VALID);
+				CONTENT_TYPE_JSON, JSON_CERT_REGEN);
 		assertJsonResponse(jsonResponse, 200);
 		AcmeFatUtils.waitForAcmeToCreateCertificate(server);
 		AcmeFatUtils.waitForSslEndpoint(server);
@@ -295,51 +300,84 @@ public class AcmeCaRestHandlerTest {
 	}
 
 	@Test
+	public void certificate_endpoint_post_revoke_certificate() throws Exception {
+		/*
+		 * Revoke with invalid reason.
+		 */
+		String jsonResponse = performPost(CERTIFICATE_ENDPOINT, 400, CONTENT_TYPE_JSON, ADMIN_USER, ADMIN_PASS,
+				CONTENT_TYPE_JSON, JSON_CERT_REVOKE_INVALID_REASON);
+		assertJsonResponse(jsonResponse, 400);
+
+		/*
+		 * Revoke with unspecified / default reason.
+		 */
+		jsonResponse = performPost(CERTIFICATE_ENDPOINT, 200, CONTENT_TYPE_JSON, ADMIN_USER, ADMIN_PASS,
+				CONTENT_TYPE_JSON, JSON_CERT_REVOKE_DEFAULT_REASON);
+		assertJsonResponse(jsonResponse, 200);
+
+		/*
+		 * Request a new certificate.
+		 */
+		jsonResponse = performPost(CERTIFICATE_ENDPOINT, 200, CONTENT_TYPE_JSON, ADMIN_USER, ADMIN_PASS,
+				CONTENT_TYPE_JSON, JSON_CERT_REGEN);
+		assertJsonResponse(jsonResponse, 200);
+		AcmeFatUtils.waitForAcmeToCreateCertificate(server);
+		AcmeFatUtils.waitForSslEndpoint(server);
+
+		/*
+		 * Revoke with a valid reason.
+		 */
+		jsonResponse = performPost(CERTIFICATE_ENDPOINT, 200, CONTENT_TYPE_JSON, ADMIN_USER, ADMIN_PASS,
+				CONTENT_TYPE_JSON, JSON_CERT_REVOKE_VALID_REASON);
+		assertJsonResponse(jsonResponse, 200);
+	}
+
+	@Test
 	public void certificate_endpoint_post_invalid_content_type() throws Exception {
 		String jsonResponse = performPost(CERTIFICATE_ENDPOINT, 415, CONTENT_TYPE_JSON, ADMIN_USER, ADMIN_PASS,
-				"application/invalid", JSON_CERT_REGEN_VALID);
+				"application/invalid", JSON_CERT_REGEN);
 		assertJsonResponse(jsonResponse, 415);
 	}
 
 	@Test
 	public void certificate_endpoint_post_no_content_type() throws Exception {
 		String jsonResponse = performPost(CERTIFICATE_ENDPOINT, 415, CONTENT_TYPE_JSON, ADMIN_USER, ADMIN_PASS, null,
-				JSON_CERT_REGEN_VALID);
+				JSON_CERT_REGEN);
 		assertJsonResponse(jsonResponse, 415);
 	}
 
 	@Test
 	public void certificate_endpoint_post_no_content() throws Exception {
 		String jsonResponse = performPost(CERTIFICATE_ENDPOINT, 400, CONTENT_TYPE_JSON, ADMIN_USER, ADMIN_PASS,
-				CONTENT_TYPE, null);
+				CONTENT_TYPE_JSON, null);
 		assertJsonResponse(jsonResponse, 400);
 	}
 
 	@Test
 	public void certificate_endpoint_post_empty_json() throws Exception {
 		String jsonResponse = performPost(CERTIFICATE_ENDPOINT, 400, CONTENT_TYPE_JSON, ADMIN_USER, ADMIN_PASS,
-				CONTENT_TYPE, JSON_EMPTY);
+				CONTENT_TYPE_JSON, JSON_EMPTY);
 		assertJsonResponse(jsonResponse, 400);
 	}
 
 	@Test
 	public void certificate_endpoint_post_invalid_operation() throws Exception {
 		String jsonResponse = performPost(CERTIFICATE_ENDPOINT, 400, CONTENT_TYPE_JSON, ADMIN_USER, ADMIN_PASS,
-				CONTENT_TYPE, JSON_CERT_REGEN_INVALID);
+				CONTENT_TYPE_JSON, JSON_CERT_INVALID_OP);
 		assertJsonResponse(jsonResponse, 400);
 	}
 
 	@Test
 	public void certificate_endpoint_post_reader_unauthorized() throws Exception {
 		String jsonResponse = performPost(CERTIFICATE_ENDPOINT, 403, CONTENT_TYPE_JSON, READER_USER, READER_PASS,
-				CONTENT_TYPE, JSON_CERT_REGEN_VALID);
+				CONTENT_TYPE_JSON, JSON_CERT_REGEN);
 		assertJsonResponse(jsonResponse, 403);
 	}
 
 	@Test
 	public void certificate_endpoint_post_unauthorized_user() throws Exception {
 		String jsonResponse = performPost(CERTIFICATE_ENDPOINT, 403, CONTENT_TYPE_JSON, UNAUTHORIZED_USER,
-				UNAUTHORIZED_PASS, CONTENT_TYPE, JSON_CERT_REGEN_VALID);
+				UNAUTHORIZED_PASS, CONTENT_TYPE_JSON, JSON_CERT_REGEN);
 		assertJsonResponse(jsonResponse, 403);
 	}
 
@@ -401,8 +439,8 @@ public class AcmeCaRestHandlerTest {
 
 	@Test
 	public void root_endpoint_post_method_not_allowed() throws Exception {
-		String jsonResponse = performPost(ROOT_ENDPOINT, 405, CONTENT_TYPE_JSON, ADMIN_USER, ADMIN_PASS, CONTENT_TYPE,
-				JSON_ACCOUNT_REGEN_KEYPAIR_VALID);
+		String jsonResponse = performPost(ROOT_ENDPOINT, 405, CONTENT_TYPE_JSON, ADMIN_USER, ADMIN_PASS,
+				CONTENT_TYPE_JSON, JSON_ACCOUNT_REGEN_KEYPAIR_VALID);
 		assertJsonResponse(jsonResponse, 405);
 	}
 

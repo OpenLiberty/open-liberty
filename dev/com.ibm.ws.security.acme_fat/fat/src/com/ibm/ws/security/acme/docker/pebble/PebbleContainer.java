@@ -122,8 +122,8 @@ public class PebbleContainer extends CAContainer {
 	}
 
 	@Override
-	public String getAcmeDirectoryURI(boolean usePebbleURI) {
-		if (usePebbleURI) {
+	public String getAcmeDirectoryURI(boolean useAcmeURI) {
+		if (useAcmeURI) {
 			/*
 			 * The "acme://pebble/<host>:<port>" will tell acme4j to load the
 			 * PebbleAcmeProvider and PebbleHttpConnector, which will trust
@@ -161,5 +161,11 @@ public class PebbleContainer extends CAContainer {
 	protected String getDnsManagementAddress() {
 		return "http://" + challtestsrv.getContainerIpAddress() + ":"
 				+ challtestsrv.getMappedPort(CHALL_MANAGEMENT_PORT);
+	}
+
+	@Override
+	public String getOcspResponderUrl() {
+		throw new UnsupportedOperationException(
+				getClass().getSimpleName() + " does not provider support for an OCSP responder.");
 	}
 }

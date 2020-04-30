@@ -67,6 +67,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.acme.AcmeCaException;
 import com.ibm.ws.security.acme.AcmeCertificate;
+import com.ibm.ws.security.acme.internal.exceptions.IllegalRevocationReasonException;
 import com.ibm.ws.security.acme.internal.util.AcmeConstants;
 
 /**
@@ -380,8 +381,8 @@ public class AcmeClient {
 		Certificate certificate = order.getCertificate();
 
 		/*
-		 * Check whether the notBefore time is in the future. This might happen if the
-		 * time on the local system is off.
+		 * Check whether the notBefore time is in the future. This might happen
+		 * if the time on the local system is off.
 		 */
 		X509Certificate x509Cert = certificate.getCertificate();
 		if (x509Cert.getNotBefore().after(Calendar.getInstance().getTime())) {
@@ -775,7 +776,7 @@ public class AcmeClient {
 	 * @throws AcmeCaException
 	 *             if there was an error preparing the HTTP-01 challenge.
 	 */
-	public Challenge prepareHttpChallenge(Authorization auth) throws AcmeCaException {
+	private Challenge prepareHttpChallenge(Authorization auth) throws AcmeCaException {
 		/*
 		 * Find a single HTTP-01 challenge
 		 */
@@ -801,11 +802,18 @@ public class AcmeClient {
 	 * 
 	 * @param certificate
 	 *            The certificate to revoke.
+	 * @param reason
+	 *            The reason the certificate is being revoked. The following
+	 *            reason are supported: UNSPECIFIED, KEY_COMPROMISE,
+	 *            CA_COMPROMISE, AFFILIATION_CHANGED, SUPERSEDED,
+	 *            CESSATION_OF_OPERATIONS, CERTIFICATE_HOLD, REMOVE_FROM_CRL,
+	 *            PRIVILEGE_WITHDRAWN and AA_COMPROMISE. If null, the reason
+	 *            "UNSPECIFIED" will be used.
 	 * @throws AcmeCaException
 	 *             if there was an issue revoking the certificate.
 	 */
-	@FFDCIgnore(AcmeException.class)
-	public void revoke(X509Certificate certificate) throws AcmeCaException {
+	@FFDCIgnore({ AcmeException.class, IllegalArgumentException.class })
+	public void revoke(X509Certificate certificate, String reason) throws AcmeCaException {
 
 		if (certificate == null) {
 			return;
@@ -830,12 +838,22 @@ public class AcmeClient {
 		Account acct = getExistingAccount(session, accountKeyPair);
 
 		if (acct != null) {
+			RevocationReason revocationReason = RevocationReason.UNSPECIFIED;
+			if (reason != null) {
+				try {
+					revocationReason = RevocationReason.valueOf(reason.toUpperCase());
+				} catch (IllegalArgumentException e) {
+					throw new IllegalRevocationReasonException(Tr.formatMessage(tc, "CWPKI2046E", e.getMessage()), e);
+				}
+			}
+
 			/*
 			 * Login and revoke the certificate.
 			 */
 			Login login = new Login(acct.getLocation(), accountKeyPair, session);
 			try {
-				Certificate.revoke(login, certificate, RevocationReason.SUPERSEDED);
+				Certificate.revoke(login, certificate, revocationReason);
+				Tr.info(tc, Tr.formatMessage(tc, "CWPKI2038I", certificate.getSerialNumber().toString(16)));
 			} catch (AcmeException e) {
 				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2024E", acmeConfig.getDirectoryURI(),
 						certificate.getSerialNumber().toString(16), e.getMessage()), e);

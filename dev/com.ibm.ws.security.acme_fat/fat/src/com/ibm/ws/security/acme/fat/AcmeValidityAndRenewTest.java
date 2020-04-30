@@ -83,7 +83,7 @@ public class AcmeValidityAndRenewTest {
 	 * @throws Exception If the test failed for some reason.
 	 */
 	@Test
-	@CheckForLeakedPasswords(AcmeFatUtils.PEBBLE_TRUSTSTORE_PASSWORD)
+	@CheckForLeakedPasswords(AcmeFatUtils.CACERTS_TRUSTSTORE_PASSWORD)
 	public void serverBelowMinRenew() throws Exception {
 		final String methodName = "serverBelowMinRenew";
 
@@ -138,7 +138,7 @@ public class AcmeValidityAndRenewTest {
 	 * @throws Exception If the test failed for some reason.
 	 */
 	@Test
-	@CheckForLeakedPasswords(AcmeFatUtils.PEBBLE_TRUSTSTORE_PASSWORD)
+	@CheckForLeakedPasswords(AcmeFatUtils.CACERTS_TRUSTSTORE_PASSWORD)
 	public void serverBelowWarnRenew() throws Exception {
 		final String methodName = "serverBelowWarnRenew";
 
@@ -192,7 +192,7 @@ public class AcmeValidityAndRenewTest {
 	 * @throws Exception
 	 */
 	@Test
-	@CheckForLeakedPasswords(AcmeFatUtils.PEBBLE_TRUSTSTORE_PASSWORD)
+	@CheckForLeakedPasswords(AcmeFatUtils.CACERTS_TRUSTSTORE_PASSWORD)
 	public void serverRenewLongerThanValidity() throws Exception {
 		final String methodName = "serverRenewLongerThanValidity";
 
@@ -250,7 +250,7 @@ public class AcmeValidityAndRenewTest {
 	 * 
 	 */
 	@Test
-	@CheckForLeakedPasswords(AcmeFatUtils.PEBBLE_TRUSTSTORE_PASSWORD)
+	@CheckForLeakedPasswords(AcmeFatUtils.CACERTS_TRUSTSTORE_PASSWORD)
 	public void serverRenewOnRestart() throws Exception {
 		final String methodName = "serverRenewOnRestart";
 		Certificate[] startingCertificateChain = null, endingCertificateChain = null;

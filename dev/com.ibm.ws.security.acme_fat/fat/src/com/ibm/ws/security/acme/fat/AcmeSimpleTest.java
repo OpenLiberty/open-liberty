@@ -131,7 +131,7 @@ public class AcmeSimpleTest {
 	 *             If the test failed for some reason.
 	 */
 	@Test
-	@CheckForLeakedPasswords(AcmeFatUtils.PEBBLE_TRUSTSTORE_PASSWORD)
+	@CheckForLeakedPasswords(AcmeFatUtils.CACERTS_TRUSTSTORE_PASSWORD)
 	public void startup_server() throws Exception {
 
 		Certificate[] startingCertificateChain = null, endingCertificateChain = null;
@@ -211,7 +211,7 @@ public class AcmeSimpleTest {
 			/*
 			 * Stop the server.
 			 */
-			server.stopServer();
+			server.stopServer("CWPKI2058W");
 		}
 
 		/***********************************************************************
@@ -253,12 +253,12 @@ public class AcmeSimpleTest {
 			/*
 			 * Stop the server.
 			 */
-			server.stopServer("CWPKI2038W");
+			server.stopServer();
 		}
 	}
 
 	@Test
-	@CheckForLeakedPasswords(AcmeFatUtils.PEBBLE_TRUSTSTORE_PASSWORD)
+	@CheckForLeakedPasswords(AcmeFatUtils.CACERTS_TRUSTSTORE_PASSWORD)
 	public void update_domains() throws Exception {
 
 		/*
@@ -349,12 +349,12 @@ public class AcmeSimpleTest {
 			/*
 			 * Stop the server.
 			 */
-			server.stopServer();
+			server.stopServer("CWPKI2058W");
 		}
 	}
 
 	@Test
-	@CheckForLeakedPasswords(AcmeFatUtils.PEBBLE_TRUSTSTORE_PASSWORD)
+	@CheckForLeakedPasswords(AcmeFatUtils.CACERTS_TRUSTSTORE_PASSWORD)
 	public void toggle_acme_feature() throws Exception {
 
 		/*
@@ -459,7 +459,7 @@ public class AcmeSimpleTest {
 			/*
 			 * Stop the server.
 			 */
-			server.stopServer("CWPKI2038W");
+			server.stopServer("CWPKI2058W");
 		}
 	}
 
@@ -473,7 +473,7 @@ public class AcmeSimpleTest {
 	 *             If there was an unforeseen error.
 	 */
 	@Test
-	@CheckForLeakedPasswords(AcmeFatUtils.PEBBLE_TRUSTSTORE_PASSWORD)
+	@CheckForLeakedPasswords(AcmeFatUtils.CACERTS_TRUSTSTORE_PASSWORD)
 	@AllowedFFDC(value = { "java.io.IOException", "java.security.KeyStoreException",
 			"com.ibm.websphere.ssl.SSLException", "org.shredzone.acme4j.exception.AcmeNetworkException",
 			"java.io.FileNotFoundException" })
@@ -658,7 +658,7 @@ public class AcmeSimpleTest {
 			 * 
 			 **********************************************************************/
 			Log.info(AcmeSimpleTest.class, testName.getMethodName(), "Test 12 - invalid truststore password");
-			acmeTransportConfig.setTrustStore("resources/security/pebble-truststore.p12");
+			acmeTransportConfig.setTrustStore("resources/security/cacerts.p12");
 			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
 			assertNotNull("Expected CWPKI2016E in logs.", server.waitForStringInLog("CWPKI2016E"));
 
@@ -669,7 +669,7 @@ public class AcmeSimpleTest {
 			 * 
 			 **********************************************************************/
 			Log.info(AcmeSimpleTest.class, testName.getMethodName(), "Test 13 - invalid directoryURI");
-			acmeTransportConfig.setTrustStorePassword(AcmeFatUtils.PEBBLE_TRUSTSTORE_PASSWORD);
+			acmeTransportConfig.setTrustStorePassword(AcmeFatUtils.CACERTS_TRUSTSTORE_PASSWORD);
 			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
 			assertNotNull("Expected CWPKI2016E in logs.",
 					server.waitForStringInLog("CWPKI2016E.*https://invalid.com/directory"));
@@ -688,8 +688,7 @@ public class AcmeSimpleTest {
 
 		} finally {
 			server.stopServer("CWWKG0095E", "CWWKE0701E", "CWPKI2016E", "CWPKI2020E", "CWPKI2021E", "CWPKI2022E",
-					"CWPKI2023E", "CWPKI2008E", "CWPKI2037E", "CWPKI2038W", "CWPKI2039E", "CWPKI2040E", "CWPKI2041E",
-					"CWPKI2042E");
+					"CWPKI2023E", "CWPKI2008E", "CWPKI2037E", "CWPKI2039E", "CWPKI2040E", "CWPKI2041E", "CWPKI2042E");
 		}
 	}
 
@@ -698,7 +697,7 @@ public class AcmeSimpleTest {
 	 * certificate.
 	 */
 	@Test
-	@CheckForLeakedPasswords(AcmeFatUtils.PEBBLE_TRUSTSTORE_PASSWORD)
+	@CheckForLeakedPasswords(AcmeFatUtils.CACERTS_TRUSTSTORE_PASSWORD)
 	public void update_subjectdn() throws Exception {
 
 		ServerConfiguration configuration = ORIGINAL_CONFIG.clone();
@@ -798,7 +797,7 @@ public class AcmeSimpleTest {
 			assertThat("Certificates should have not changed.", serial1, equalTo(serial2));
 
 		} finally {
-			server.stopServer();
+			server.stopServer("CWPKI2058W");
 		}
 	}
 
@@ -817,7 +816,7 @@ public class AcmeSimpleTest {
 	 *             if the test fails for some unforeseen reason.
 	 */
 	@Test
-	@CheckForLeakedPasswords(AcmeFatUtils.PEBBLE_TRUSTSTORE_PASSWORD)
+	@CheckForLeakedPasswords(AcmeFatUtils.CACERTS_TRUSTSTORE_PASSWORD)
 	@ExpectedFFDC({ "com.ibm.ws.security.acme.AcmeCaException" })
 	public void startup_failure_recover() throws Exception {
 
@@ -894,7 +893,7 @@ public class AcmeSimpleTest {
 	 *             if the test fails for some unforeseen reason.
 	 */
 	@Test
-	@CheckForLeakedPasswords(AcmeFatUtils.PEBBLE_TRUSTSTORE_PASSWORD)
+	@CheckForLeakedPasswords(AcmeFatUtils.CACERTS_TRUSTSTORE_PASSWORD)
 	public void keystore_exists_without_default_alias() throws Exception {
 
 		ServerConfiguration configuration = ORIGINAL_CONFIG.clone();
@@ -903,9 +902,9 @@ public class AcmeSimpleTest {
 		 * Create a keystore that is empty.
 		 */
 		KeyStore ks = KeyStore.getInstance("PKCS12");
-		ks.load(null, AcmeFatUtils.PEBBLE_TRUSTSTORE_PASSWORD.toCharArray());
+		ks.load(null, AcmeFatUtils.CACERTS_TRUSTSTORE_PASSWORD.toCharArray());
 		ks.store(new FileOutputStream(new File(server.getServerRoot() + "/resources/security/key.p12")),
-				AcmeFatUtils.PEBBLE_TRUSTSTORE_PASSWORD.toCharArray());
+				AcmeFatUtils.CACERTS_TRUSTSTORE_PASSWORD.toCharArray());
 
 		AcmeFatUtils.configureAcmeCA(server, caContainer, configuration, useAcmeURIs(), DOMAINS_1);
 
@@ -934,7 +933,7 @@ public class AcmeSimpleTest {
 	 *             if there was an unforeseen error
 	 */
 	@Test
-	@CheckForLeakedPasswords(AcmeFatUtils.PEBBLE_TRUSTSTORE_PASSWORD)
+	@CheckForLeakedPasswords(AcmeFatUtils.CACERTS_TRUSTSTORE_PASSWORD)
 	public void account_keypair_directory_does_not_exist() throws Exception {
 		ServerConfiguration configuration = ORIGINAL_CONFIG.clone();
 
@@ -972,7 +971,7 @@ public class AcmeSimpleTest {
 	 *             if there was an unforeseen error
 	 */
 	@Test
-	@CheckForLeakedPasswords(AcmeFatUtils.PEBBLE_TRUSTSTORE_PASSWORD)
+	@CheckForLeakedPasswords(AcmeFatUtils.CACERTS_TRUSTSTORE_PASSWORD)
 	public void domain_keypair_directory_does_not_exist() throws Exception {
 		ServerConfiguration configuration = ORIGINAL_CONFIG.clone();
 

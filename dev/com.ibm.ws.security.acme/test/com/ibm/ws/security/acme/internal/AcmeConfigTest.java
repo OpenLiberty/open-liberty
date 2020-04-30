@@ -16,6 +16,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.net.URI;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
@@ -67,8 +68,12 @@ public class AcmeConfigTest {
 
 	@Test
 	public void constructor_accountKeyFile_unreadable() throws Exception {
-		
-		Assume.assumeTrue(!System.getProperty("os.name", "unknown").toLowerCase().contains("windows")); // windows not enforcing the setReadable
+
+		Assume.assumeTrue(!System.getProperty("os.name", "unknown").toLowerCase().contains("windows")); // windows
+																										// not
+																										// enforcing
+																										// the
+																										// setReadable
 
 		expectedException.expect(AcmeCaException.class);
 		expectedException.expectMessage("CWPKI2021E");
@@ -86,8 +91,12 @@ public class AcmeConfigTest {
 
 	@Test
 	public void constructor_accountKeyFile_unwritable() throws Exception {
-		
-		Assume.assumeTrue(!System.getProperty("os.name", "unknown").toLowerCase().contains("windows")); // windows not enforcing the setWritable
+
+		Assume.assumeTrue(!System.getProperty("os.name", "unknown").toLowerCase().contains("windows")); // windows
+																										// not
+																										// enforcing
+																										// the
+																										// setWritable
 
 		expectedException.expect(AcmeCaException.class);
 		expectedException.expectMessage("CWPKI2023E");
@@ -158,8 +167,12 @@ public class AcmeConfigTest {
 
 	@Test
 	public void constructor_domainKeyFile_unreadable() throws Exception {
-		
-		Assume.assumeTrue(!System.getProperty("os.name", "unknown").toLowerCase().contains("windows")); // windows not enforcing the setReadable
+
+		Assume.assumeTrue(!System.getProperty("os.name", "unknown").toLowerCase().contains("windows")); // windows
+																										// not
+																										// enforcing
+																										// the
+																										// setReadable
 
 		expectedException.expect(AcmeCaException.class);
 		expectedException.expectMessage("CWPKI2020E");
@@ -178,8 +191,12 @@ public class AcmeConfigTest {
 
 	@Test
 	public void constructor_domainKeyFile_unwritable() throws Exception {
-		
-		Assume.assumeTrue(!System.getProperty("os.name", "unknown").toLowerCase().contains("windows")); // windows not enforcing the setWritable
+
+		Assume.assumeTrue(!System.getProperty("os.name", "unknown").toLowerCase().contains("windows")); // windows
+																										// not
+																										// enforcing
+																										// the
+																										// setWritable
 
 		expectedException.expect(AcmeCaException.class);
 		expectedException.expectMessage("CWPKI2022E");
@@ -323,6 +340,11 @@ public class AcmeConfigTest {
 		properties.put(AcmeConstants.TRANSPORT_CONFIG + ".0." + AcmeConstants.TRANSPORT_TRUST_STORE_PASSWORD,
 				new SerializableProtectedString("acmepassword".toCharArray()));
 		properties.put(AcmeConstants.TRANSPORT_CONFIG + ".0." + AcmeConstants.TRANSPORT_TRUST_STORE_TYPE, "PKCS12");
+		properties.put(AcmeConstants.REVOCATION_CHECKER + ".0." + AcmeConstants.REVOCATION_CHECKER_ENABLED, false);
+		properties.put(AcmeConstants.REVOCATION_CHECKER + ".0." + AcmeConstants.REVOCATION_DISABLE_FALLBACK, true);
+		properties.put(AcmeConstants.REVOCATION_CHECKER + ".0." + AcmeConstants.REVOCATION_OCSP_RESPONDER_URL,
+				"http://localhost:4001");
+		properties.put(AcmeConstants.REVOCATION_CHECKER + ".0." + AcmeConstants.REVOCATION_PREFER_CRLS, true);
 		properties.put(AcmeConstants.VALID_FOR, 5L);
 		properties.put(AcmeConstants.RENEW_BEFORE_EXPIRATION, 691200000L); // 8 days
 
@@ -358,6 +380,11 @@ public class AcmeConfigTest {
 		
 		assertEquals(691200000L, acmeConfig.getRenewBeforeExpirationMs().longValue());
 		assertTrue("Auto-renewal should be enabled", acmeConfig.isAutoRenewOnExpiration());
+
+		assertTrue(acmeConfig.isDisableFallback());
+		assertEquals(Boolean.FALSE, acmeConfig.isRevocationCheckerEnabled());
+		assertEquals(URI.create("http://localhost:4001"), acmeConfig.getOcspResponderUrl());
+		assertTrue(acmeConfig.isPreferCrls());
 	}
 	
 	@Test
@@ -426,5 +453,20 @@ public class AcmeConfigTest {
 		properties.put(AcmeConstants.DOMAIN, new String[] { "domain1.com", "domain2.com" });
 
 		return properties;
+	}
+
+	@Test
+	public void constructor_ocspReponderUrl_invalid() throws Exception {
+
+		expectedException.expect(AcmeCaException.class);
+		expectedException.expectMessage("CWPKI2062E");
+
+		Map<String, Object> properties = new HashMap<String, Object>();
+		properties.put(AcmeConstants.ACCOUNT_KEY_FILE, "account.key");
+		properties.put(AcmeConstants.DIR_URI, "https://localhost:443/dir");
+		properties.put(AcmeConstants.DOMAIN, new String[] { "domain1.com", "domain2.com" });
+		properties.put(AcmeConstants.DOMAIN_KEY_FILE, "domain.key");
+		properties.put(AcmeConstants.REVOCATION_CHECKER + ".0." + AcmeConstants.REVOCATION_OCSP_RESPONDER_URL, ":");
+		new AcmeConfig(properties);
 	}
 }

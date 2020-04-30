@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.jose4j.json.JsonUtil;
+import org.jose4j.json.internal.json_simple.JSONObject;
 import org.jose4j.lang.JoseException;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -43,6 +44,7 @@ import com.ibm.ws.management.security.ManagementSecurityConstants;
 import com.ibm.ws.security.acme.AcmeCaException;
 import com.ibm.ws.security.acme.AcmeProvider;
 import com.ibm.ws.security.acme.internal.AcmeClient.AcmeAccount;
+import com.ibm.ws.security.acme.internal.exceptions.IllegalRevocationReasonException;
 import com.ibm.ws.ssl.KeyStoreService;
 import com.ibm.wsspi.rest.handler.RESTHandler;
 import com.ibm.wsspi.rest.handler.RESTRequest;
@@ -69,9 +71,12 @@ public class AcmeCaRestHandler implements RESTHandler {
 	private static final String HTTP_GET = "GET";
 	private static final String HTTP_POST = "POST";
 
-	public static final String JSON_OPERATION_KEY = "operation";
-	public static final String JSON_OPERATION_REGEN_CERT = "renewCertificate";
-	public static final String JSON_OPERATION_REGEN_ACCT_KEY_PAIR = "renewAccountKeyPair";
+	public static final String OP_KEY = "operation";
+	public static final String REASON_KEY = "reason";
+
+	public static final String OP_RENEW_CERT = "renewCertificate";
+	public static final String OP_REVOKE_CERT = "revokeCertificate";
+	public static final String OP_RENEW_ACCT_KEY_PAIR = "renewAccountKeyPair";
 
 	@Override
 	public void handleRequest(RESTRequest request, RESTResponse response) throws IOException {
@@ -106,7 +111,7 @@ public class AcmeCaRestHandler implements RESTHandler {
 	private void handleRoot(RESTRequest request, RESTResponse response) throws IOException {
 		String method = request.getMethod();
 		if (!HTTP_GET.equalsIgnoreCase(method)) {
-			commitJsonResponse(response, 405, "The method '" + method + "' is not supported.");
+			commitJsonResponse(response, 405, Tr.formatMessage(tc, "REST_METHOD_NOT_SUPPORTED", method));
 			return;
 		}
 
@@ -194,7 +199,7 @@ public class AcmeCaRestHandler implements RESTHandler {
 			 */
 			String contentType = request.getContentType();
 			if (contentType == null || !contentType.contains("application/json")) {
-				commitJsonResponse(response, 415, "The request's content type header was not 'application/json'.");
+				commitJsonResponse(response, 415, Tr.formatMessage(tc, "REST_INVALID_CONTENT_TYPE"));
 				return;
 			}
 
@@ -204,22 +209,20 @@ public class AcmeCaRestHandler implements RESTHandler {
 			Map<String, Object> jsonMap = getContentAsJsonMap(request);
 			String operation = getOperation(jsonMap);
 			if (operation == null) {
-				commitJsonResponse(response, 400, "The 'operation' JSON key was not specified.");
+				commitJsonResponse(response, 400, Tr.formatMessage(tc, "REST_MISSING_OPERATION"));
 				return;
 			}
 
 			/*
 			 * Request to generate a new account key pair?
 			 */
-			if (JSON_OPERATION_REGEN_ACCT_KEY_PAIR.equals(operation)) {
+			if (OP_RENEW_ACCT_KEY_PAIR.equals(operation)) {
 
 				/*
 				 * Requires there be a AcmeProvider.
 				 */
-				AcmeProvider acmeProvider = acmeProviderRef.get();
+				AcmeProvider acmeProvider = getAcmeProvider(response);
 				if (acmeProvider == null) {
-					commitJsonResponse(response, 500,
-							"There was no AcmeProvider service registered with the REST handler.");
 					return;
 				}
 
@@ -235,12 +238,12 @@ public class AcmeCaRestHandler implements RESTHandler {
 				/*
 				 * Do nothing.
 				 */
-				commitJsonResponse(response, 400, "The operation '" + operation + "' is not supported.");
+				commitJsonResponse(response, 400, Tr.formatMessage(tc, "REST_OPERATION_NOT_SUPPORTED", operation));
 				return;
 			}
 
 		} else {
-			commitJsonResponse(response, 405, "The method '" + method + "' is not supported.");
+			commitJsonResponse(response, 405, Tr.formatMessage(tc, "REST_METHOD_NOT_SUPPORTED", method));
 			return;
 		}
 	}
@@ -255,7 +258,7 @@ public class AcmeCaRestHandler implements RESTHandler {
 	 * @throws IOException
 	 *             If there was an issue processing the request.
 	 */
-	@FFDCIgnore(AcmeCaException.class)
+	@FFDCIgnore({ AcmeCaException.class, IllegalRevocationReasonException.class })
 	private void handleCertificate(RESTRequest request, RESTResponse response) throws IOException {
 		String method = request.getMethod();
 		if (HTTP_GET.equalsIgnoreCase(method)) {
@@ -297,7 +300,7 @@ public class AcmeCaRestHandler implements RESTHandler {
 			 */
 			String contentType = request.getContentType();
 			if (contentType == null || !contentType.contains("application/json")) {
-				commitJsonResponse(response, 415, "The request's content type header was not 'application/json'.");
+				commitJsonResponse(response, 415, Tr.formatMessage(tc, "REST_INVALID_CONTENT_TYPE"));
 				return;
 			}
 
@@ -307,21 +310,19 @@ public class AcmeCaRestHandler implements RESTHandler {
 			Map<String, Object> jsonMap = getContentAsJsonMap(request);
 			String operation = getOperation(jsonMap);
 			if (operation == null) {
-				commitJsonResponse(response, 400, "The 'operation' JSON key was not specified.");
+				commitJsonResponse(response, 400, Tr.formatMessage(tc, "REST_MISSING_OPERATION"));
 				return;
 			}
 
 			/*
 			 * Request to generate a new account key pair?
 			 */
-			if (JSON_OPERATION_REGEN_CERT.equalsIgnoreCase(operation)) {
+			if (OP_RENEW_CERT.equalsIgnoreCase(operation)) {
 				/*
 				 * Requires there be a AcmeProvider.
 				 */
-				AcmeProvider acmeProvider = acmeProviderRef.get();
+				AcmeProvider acmeProvider = getAcmeProvider(response);
 				if (acmeProvider == null) {
-					commitJsonResponse(response, 500,
-							"There was no AcmeProvider service registered with the REST handler.");
 					return;
 				}
 
@@ -333,15 +334,37 @@ public class AcmeCaRestHandler implements RESTHandler {
 					commitJsonResponse(response, 500, e.getMessage());
 					return;
 				}
+			} else if (OP_REVOKE_CERT.equalsIgnoreCase(operation)) {
+				/*
+				 * Requires there be a AcmeProvider.
+				 */
+				AcmeProvider acmeProvider = getAcmeProvider(response);
+				if (acmeProvider == null) {
+					return;
+				}
+
+				String reason = getRevocationReason(jsonMap);
+
+				try {
+					acmeProvider.revokeCertificate(reason);
+					commitJsonResponse(response, 200, null);
+					return;
+				} catch (IllegalRevocationReasonException e) {
+					commitJsonResponse(response, 400, e.getMessage());
+					return;
+				} catch (AcmeCaException e) {
+					commitJsonResponse(response, 500, e.getMessage());
+					return;
+				}
 			} else {
 				/*
 				 * Do nothing.
 				 */
-				commitJsonResponse(response, 400, "The operation '" + operation + "' is not supported.");
+				commitJsonResponse(response, 400, Tr.formatMessage(tc, "REST_OPERATION_NOT_SUPPORTED", operation));
 				return;
 			}
 		} else {
-			commitJsonResponse(response, 405, "The method '" + method + "' is not supported.");
+			commitJsonResponse(response, 405, Tr.formatMessage(tc, "REST_METHOD_NOT_SUPPORTED"));
 			return;
 		}
 	}
@@ -471,7 +494,24 @@ public class AcmeCaRestHandler implements RESTHandler {
 	@FFDCIgnore(ClassCastException.class)
 	private static String getOperation(Map<String, Object> jsonMap) {
 		try {
-			return (String) jsonMap.get(JSON_OPERATION_KEY);
+			return (String) jsonMap.get(OP_KEY);
+		} catch (ClassCastException e) {
+			return null;
+		}
+	}
+
+	/**
+	 * Get the reason for the revocation.
+	 * 
+	 * @param jsonMap
+	 *            The JSON map.
+	 * @return the requested operation.
+	 * 
+	 */
+	@FFDCIgnore(ClassCastException.class)
+	private static String getRevocationReason(Map<String, Object> jsonMap) {
+		try {
+			return (String) jsonMap.get(REASON_KEY);
 		} catch (ClassCastException e) {
 			return null;
 		}
@@ -496,7 +536,7 @@ public class AcmeCaRestHandler implements RESTHandler {
 		 * Add error message if present.
 		 */
 		if (errorMessage != null) {
-			sb.append(", \"message\":\"").append(errorMessage).append("\"");
+			sb.append(", \"message\":\"").append(JSONObject.escape(errorMessage)).append("\"");
 		}
 		sb.append("}");
 
@@ -504,6 +544,26 @@ public class AcmeCaRestHandler implements RESTHandler {
 		response.setContentType("application/json");
 		response.setContentLength(sb.length());
 		response.getOutputStream().write(sb.toString().getBytes());
+	}
+
+	/**
+	 * Get the {@link AcmeProvider} instance. Commits an error response if one
+	 * is not registered.
+	 * 
+	 * @param response
+	 *            The response to commit the response to if the instance is not
+	 *            registered.
+	 * @return The {@link AcmeProvider} instance.
+	 * @throws IOException
+	 *             If the response could not be committed.
+	 */
+	private AcmeProvider getAcmeProvider(RESTResponse response) throws IOException {
+		AcmeProvider acmeProvider = acmeProviderRef.get();
+		if (acmeProvider == null) {
+			commitJsonResponse(response, 500, Tr.formatMessage(tc, "REST_NO_ACME_SERVICE"));
+			return null;
+		}
+		return acmeProvider;
 	}
 
 	/**
@@ -522,7 +582,7 @@ public class AcmeCaRestHandler implements RESTHandler {
 		boolean hasAdminRole = request.isUserInRole(ManagementSecurityConstants.ADMINISTRATOR_ROLE_NAME);
 
 		if (!hasAdminRole) {
-			commitJsonResponse(response, 403, "Forbidden");
+			commitJsonResponse(response, 403, Tr.formatMessage(tc, "REST_FORBIDDEN"));
 		}
 
 		return hasAdminRole;
@@ -547,7 +607,7 @@ public class AcmeCaRestHandler implements RESTHandler {
 				|| request.isUserInRole(ManagementSecurityConstants.READER_ROLE_NAME);
 
 		if (!hasReadRole) {
-			commitJsonResponse(response, 403, "Forbidden");
+			commitJsonResponse(response, 403, Tr.formatMessage(tc, "REST_FORBIDDEN"));
 		}
 
 		return hasReadRole;

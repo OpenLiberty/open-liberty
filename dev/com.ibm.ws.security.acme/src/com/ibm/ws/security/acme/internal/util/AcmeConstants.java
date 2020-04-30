@@ -47,6 +47,13 @@ public class AcmeConstants {
 	// Renewal configuration options
 	public static final String RENEW_BEFORE_EXPIRATION = "renewBeforeExpiration";
 
+	// Revocation checker configuration.
+	public static final String REVOCATION_CHECKER = "acmeRevocationChecker";
+	public static final String REVOCATION_CHECKER_ENABLED = "enabled";
+	public static final String REVOCATION_OCSP_RESPONDER_URL = "ocspResponderUrl";
+	public static final String REVOCATION_PREFER_CRLS = "preferCRLs";
+	public static final String REVOCATION_DISABLE_FALLBACK = "disableFallback";
+	
 	/*
 	 * End constants that match the metatype fields
 	 */

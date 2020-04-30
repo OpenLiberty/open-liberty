@@ -25,7 +25,7 @@ public class BoulderDriver extends AbstractCADriver {
 		BoulderDriver driver = new BoulderDriver();
 
 		/*
-		 * Start the Pebble environment.
+		 * Start the Boulder environment.
 		 */
 		driver.initialize();
 
