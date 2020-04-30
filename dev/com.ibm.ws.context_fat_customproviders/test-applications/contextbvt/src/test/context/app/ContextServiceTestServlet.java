@@ -91,13 +91,6 @@ public class ContextServiceTestServlet extends FATServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        // TODO remove this workaround for injection intermittently not working
-        if (mapContextSvc == null)
-            try {
-                mapContextSvc = InitialContext.doLookup("concurrent/MapContextSvc");
-            } catch (NamingException x) {
-                throw new ServletException(x);
-            }
     }
 
     /**
