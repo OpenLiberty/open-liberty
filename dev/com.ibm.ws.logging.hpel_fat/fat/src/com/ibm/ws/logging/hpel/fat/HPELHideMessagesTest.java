@@ -66,7 +66,8 @@ public class HPELHideMessagesTest {
             CommonTasks.writeLogMsg(Level.INFO, "HPEL is not enabled on " + server.getServerName() + ", attempting to enable.");
             CommonTasks.setHpelEnabled(server, true);
             // Restart now to complete switching to HPEL
-            server.restartServer();
+            server.stopServer();
+            server.startServer();
 
         }
 
@@ -78,8 +79,7 @@ public class HPELHideMessagesTest {
         // Setting the server.xml with the hideMessages logging attribute
         server.updateServerConfiguration(new File(server.pathToAutoFVTTestFiles, "server-HPELHideMessagesTest.xml"));
         // Restart server
-        server.stopServer();
-        server.startServer();
+        server.restartServer();
     }
 
     /**
