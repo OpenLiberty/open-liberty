@@ -31,7 +31,7 @@ Import-Package: \
     io.opentracing.tag;version=0.31.0,\
     io.opentracing.util;version=0.31.0,\
     io.opentracing.noop;version=0.31.0,\
-    org.eclipse.microprofile.config.*;version="[1.0,2)",\
+    org.eclipse.microprofile.config.*;version="[1.0,3)",\
     *
 
 

@@ -26,7 +26,7 @@ Web-ContextPath: /openapi
 # packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
     !com.ibm.ws.microprofile.openapi.impl, \
-	org.eclipse.microprofile.config.*;version="[1.0,2)",\
+	org.eclipse.microprofile.config.*;version="[1.0,3)",\
 	javax.xml.bind.annotation;version=!,\
 	*
     
