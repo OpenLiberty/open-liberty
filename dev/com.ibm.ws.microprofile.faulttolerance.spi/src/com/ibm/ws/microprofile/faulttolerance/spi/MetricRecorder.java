@@ -22,33 +22,26 @@ import org.eclipse.microprofile.faulttolerance.Bulkhead;
 public interface MetricRecorder {
 
     /**
-     * Called when a method returns
+     * Called when a method returns a value
      * <p>
      * This should be called once per invocation, just before the result is returned to the caller
      */
-    public void incrementInvocationCount();
+    public void incrementInvocationSuccessCount(FallbackOccurred fallbackOccurred);
 
     /**
-     * Called when a method fails
+     * Called when a method throws an exception
      * <p>
      * This should be called once per invocation, just before the result is returned to the caller
      */
-    public void incrementInvocationFailedCount();
+    public void incrementInvocationFailedCount(FallbackOccurred fallbackOccurred);
 
     /**
-     * Called when a method with {@code @Retry} returns successfully without retrying
+     * Called when a method with {@code @Retry} returns
+     *
+     * @param resultCategory  the retry category of the final retry attempt
+     * @param retriesOccurred whether any retries were needed
      */
-    public void incrementRetryCallsSuccessImmediateCount();
-
-    /**
-     * Called when a method with {@code @Retry} returns successfully after one or more retries
-     */
-    public void incrementRetryCallsSuccessRetriesCount();
-
-    /**
-     * Called when a method with {@code @Retry} fails despite retrying
-     */
-    public void incrementRetryCallsFailureCount();
+    public void incrementRetryCalls(RetryResultCategory resultCategory, RetriesOccurred retriesOccurred);
 
     /**
      * Called when a method with {@code @Retry} retries
@@ -134,9 +127,14 @@ public interface MetricRecorder {
      */
     public void recordBulkheadExecutionTime(long executionTime);
 
-    /**
-     * Called when a fallback method or handler is called
-     */
-    public void incrementFallbackCalls();
+    public enum RetriesOccurred {
+        WITH_RETRIES,
+        NO_RETRIES
+    }
+
+    public enum FallbackOccurred {
+        WITH_FALLBACK,
+        NO_FALLBACK
+    }
 
 }
