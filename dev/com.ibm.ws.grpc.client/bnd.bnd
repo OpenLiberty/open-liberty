@@ -11,9 +11,9 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-Bundle-Name: gRPC Client 1.0.
+Bundle-Name: gRPC Client
 Bundle-SymbolicName: com.ibm.ws.grpc.client
-Bundle-Description: gRPC Client, version 1.0
+Bundle-Description: Liberty gRPC Client, version ${bVersion}
 
 Import-Package: !sun.*,\
   !com.google.code.gson,\

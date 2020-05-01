@@ -37,7 +37,7 @@ tested.features:\
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
 	com.ibm.ws.grpc.client;version=latest,\
 	com.ibm.ws.grpc.common;version=latest,\
-	com.ibm.ws.grpc.servlet.1.0;version=latest,\
+	com.ibm.ws.grpc;version=latest,\
 	com.ibm.ws.transport.http;version=latest,\
 	com.google.protobuf;version=latest,\
 	commons-logging:commons-logging;version=1.1.3

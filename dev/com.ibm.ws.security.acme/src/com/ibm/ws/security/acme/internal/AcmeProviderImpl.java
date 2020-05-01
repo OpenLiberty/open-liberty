@@ -55,6 +55,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.acme.AcmeCaException;
 import com.ibm.ws.security.acme.AcmeCertificate;
 import com.ibm.ws.security.acme.AcmeProvider;
+import com.ibm.ws.security.acme.internal.AcmeClient.AcmeAccount;
 import com.ibm.ws.ssl.JSSEProviderFactory;
 import com.ibm.ws.ssl.KeyStoreService;
 
@@ -82,7 +83,12 @@ public class AcmeProviderImpl implements AcmeProvider {
 	private static AcmeConfig acmeConfig;
 
 	@Override
-	public void refreshCertificate() throws AcmeCaException {
+	public void renewAccountKeyPair() throws AcmeCaException {
+		acmeClient.renewAccountKeyPair();
+	}
+
+	@Override
+	public void renewCertificate() throws AcmeCaException {
 		checkAndInstallCertificate(true, null, null, null);
 	}
 
@@ -615,6 +621,11 @@ public class AcmeProviderImpl implements AcmeProvider {
 		return chainArray;
 	}
 
+	@Override
+	public AcmeAccount getAccount() throws AcmeCaException {
+		return acmeClient.getAccount();
+	}
+
 	/**
 	 * Get the leaf certificate from the certificate chain.
 	 * 
@@ -789,6 +800,11 @@ public class AcmeProviderImpl implements AcmeProvider {
 		try {
 			acmeConfig = new AcmeConfig(properties);
 			acmeClient = new AcmeClient(acmeConfig);
+
+			/*
+			 * Update the account.
+			 */
+			acmeClient.updateAccount();
 		} catch (AcmeCaException e) {
 			Tr.error(tc, e.getMessage()); // AcmeCaExceptions are localized.
 		}
@@ -830,6 +846,11 @@ public class AcmeProviderImpl implements AcmeProvider {
 			 * always honor them.
 			 */
 			checkAndInstallCertificate(false, null, null, null);
+
+			/*
+			 * Update the account.
+			 */
+			acmeClient.updateAccount();
 		} catch (AcmeCaException e) {
 			Tr.error(tc, e.getMessage()); // AcmeCaExceptions are localized.
 		}

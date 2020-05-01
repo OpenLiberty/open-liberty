@@ -60,6 +60,22 @@ public class AccountsPayableService {
                                              .build(BankAccountClient.class);
     }
     
+    private static final boolean isZOS() {
+        String osName = System.getProperty("os.name");
+        if (osName.contains("OS/390") || osName.contains("z/OS") || osName.contains("zOS")) {
+            return true;
+        }
+        return false;
+    }
+    
+    private static final boolean isAIX() {
+        String osName = System.getProperty("os.name");
+        if (osName.toLowerCase().contains("AIX".toLowerCase())) {
+            return true;
+        }
+        return false;
+    }
+    
     @GET
     @Path("/accounts")
     public List<AccountInfo> getAllAccounts() {
@@ -93,6 +109,14 @@ public class AccountsPayableService {
     @Path("/pay")
     public Double pay(@QueryParam("acct")String acctNumber, Payment payment) throws UnknownAccountException, InsufficientFundsException {
         
+        int myTimeout = AsyncTestServlet.TIMEOUT;
+        if (isAIX()) {
+            myTimeout = AsyncTestServlet.TIMEOUT * 2;
+        }
+        if (isZOS()) {
+            myTimeout = AsyncTestServlet.TIMEOUT * 3;
+        }
+        
         Double balance = accountBalances.get(acctNumber);
         if (balance == null) {
             throw new UnknownAccountException();
@@ -102,14 +126,14 @@ public class AccountsPayableService {
         try {
             Double remainingBalanceInAccount = bankAccountClient.withdraw(paymentAmt)
                                                                 .toCompletableFuture()
-                                                                .get(AsyncTestServlet.TIMEOUT, TimeUnit.SECONDS);
+                                                                .get(myTimeout, TimeUnit.SECONDS);
             _log.info("balance remaining in bank after withdrawal: " + remainingBalanceInAccount);
         } catch (ExecutionException | InterruptedException | TimeoutException ex) {
             Throwable t = ex.getCause();
             if (t != null && t instanceof InsufficientFundsException) {
                 throw (InsufficientFundsException) t;
             }
-            _log.log(Level.WARNING, "Caught unexpected exception: ", t);
+            _log.log(Level.WARNING, "Caught unexpected exception: " + ex + " with cause " + t);
         }
 
         Double remainingBalance = balance - paymentAmt;

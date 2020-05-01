@@ -22,6 +22,7 @@ import com.ibm.websphere.security.WebSphereRuntimePermission;
 import com.ibm.websphere.security.auth.InvalidTokenException;
 import com.ibm.websphere.security.auth.TokenExpiredException;
 import com.ibm.websphere.security.auth.ValidationFailedException;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.token.TokenManager;
 import com.ibm.ws.security.token.internal.ValidationResultImpl;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -41,6 +42,22 @@ public class WSSecurityPropagationHelper {
     private static final AtomicServiceReference<TokenManager> tokenManagerRef = new AtomicServiceReference<TokenManager>("tokenManager");
     private final static WebSphereRuntimePermission VALIDATE_TOKEN = new WebSphereRuntimePermission("validateLTPAToken");
 
+    // Flag tells us if the message for a call to a beta method has been issued
+    private static boolean issuedBetaMessage = false;
+
+    private static void betaFenceCheck() throws UnsupportedOperationException {
+        // Not running beta edition, throw exception
+        if (!ProductInfo.getBetaEdition()) {
+            throw new UnsupportedOperationException("This method is beta and is not available.");
+        } else {
+            // Running beta exception, issue message if we haven't already issued one for this class
+            if (!issuedBetaMessage) {
+                Tr.info(tc, "BETA: A beta method has been invoked for the class WSSecurityPropagationHelper for the first time.");
+                issuedBetaMessage = !issuedBetaMessage;
+            }
+        }
+    }
+
     /**
      * <p>
      * This method validates an LTPA token and will return a ValidationResult object.
@@ -55,7 +72,9 @@ public class WSSecurityPropagationHelper {
      * @return ValidationResult
      * @exception ValidationFailedException
      **/
+    @Deprecated
     public static ValidationResult validateToken(byte[] token) throws ValidationFailedException {
+        betaFenceCheck();
         ValidationResult validationResult = null;
         java.lang.SecurityManager sm = System.getSecurityManager();
         if (sm != null) {

@@ -37,8 +37,8 @@ fat.test.databases: true
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
 	org.osgi.service.component.annotations;version=latest,\
-	org.testcontainers:database-commons;version=1.12.3,\
-	org.testcontainers:jdbc;version=1.12.3,\
-	org.testcontainers:testcontainers;version=1.12.3,\
+	org.testcontainers:database-commons;version=1.14.0,\
+	org.testcontainers:jdbc;version=1.14.0,\
+	org.testcontainers:testcontainers;version=1.14.0,\
 	org.rnorth.duct-tape:duct-tape;version=1.0.7,\
 	org.slf4j:slf4j-api;version=1.7.7

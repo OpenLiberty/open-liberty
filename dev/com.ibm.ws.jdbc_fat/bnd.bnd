@@ -41,6 +41,6 @@ fat.test.databases: true
 	com.ibm.websphere.appserver.api.security,\
 	com.ibm.websphere.appserver.api.securityClient,\
 	org.apache.derby:derby;version=10.11.1.1,\
-	org.testcontainers:database-commons;version=1.12.3,\
-	org.testcontainers:jdbc;version=1.12.3,\
-	org.testcontainers:testcontainers;version=1.12.3
+	org.testcontainers:database-commons;version=1.14.0,\
+	org.testcontainers:jdbc;version=1.14.0,\
+	org.testcontainers:testcontainers;version=1.14.0

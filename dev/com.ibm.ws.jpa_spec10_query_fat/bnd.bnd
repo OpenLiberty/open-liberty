@@ -44,8 +44,8 @@ tested.features: jdbc-4.0, beanvalidation-1.1, jpa-2.0, el-3.0
 	com.ibm.websphere.javaee.transaction.1.2;version=latest,\
 	com.ibm.websphere.javaee.validation.2.0;version=latest,\
 	com.ibm.websphere.appserver.thirdparty.eclipselink;version=latest,\
-	org.testcontainers:database-commons;version=1.12.3,\
-	org.testcontainers:jdbc;version=1.12.3,\
-	org.testcontainers:testcontainers;version=1.12.3,\
+	org.testcontainers:database-commons;version=1.14.0,\
+	org.testcontainers:jdbc;version=1.14.0,\
+	org.testcontainers:testcontainers;version=1.14.0,\
 	org.rnorth.duct-tape:duct-tape;version=1.0.7,\
 	org.slf4j:slf4j-api;version=1.7.7

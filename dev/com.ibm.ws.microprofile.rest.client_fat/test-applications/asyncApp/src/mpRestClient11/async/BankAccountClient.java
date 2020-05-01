@@ -19,6 +19,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 @Path("/bank")
 @Produces(MediaType.APPLICATION_JSON)
@@ -27,8 +28,15 @@ public interface BankAccountClient {
 
     @GET
     CompletionStage<Double> currentBalance();
-    
+
     @DELETE
     @Path("/{amt}")
     CompletionStage<Double> withdraw(@PathParam("amt") Double amount) throws InsufficientFundsException;
+
+    @GET
+    CompletionStage<Response> currentBalanceResponse();
+
+    @DELETE
+    @Path("/{amt}")
+    CompletionStage<Response> withdrawResponse(@PathParam("amt") Double amount) throws InsufficientFundsException;
 }

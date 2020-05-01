@@ -10,12 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.http.channel.h2internal;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 
@@ -43,13 +40,10 @@ import com.ibm.ws.http.channel.h2internal.frames.FrameSettings;
 import com.ibm.ws.http.channel.h2internal.frames.FrameWindowUpdate;
 import com.ibm.ws.http.channel.h2internal.frames.utils;
 import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderField;
-import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderTable;
 import com.ibm.ws.http.channel.h2internal.hpack.H2Headers;
 import com.ibm.ws.http.channel.h2internal.hpack.HpackConstants;
-import com.ibm.ws.http.channel.h2internal.hpack.HpackConstants.LiteralIndexType;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
-import com.ibm.ws.http2.Http2Stream;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
 import com.ibm.wsspi.channelfw.VirtualConnection;
@@ -61,7 +55,7 @@ import com.ibm.wsspi.tcpchannel.TCPRequestContext;
  * Represents an independent HTTP/2 stream
  * Thread safety is guaranteed via processNextFrame(), which handles new read or write frames on this stream
  */
-public class H2StreamProcessor implements Http2Stream {
+public class H2StreamProcessor {
 
     /** RAS tracing variable */
     private static final TraceComponent tc = Tr.register(H2StreamProcessor.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
@@ -2040,7 +2034,6 @@ public class H2StreamProcessor implements Http2Stream {
         return count;
     }
 
-    @Override
     public int getId() {
         return myID;
     }
@@ -2067,101 +2060,6 @@ public class H2StreamProcessor implements Http2Stream {
                 return true;
             default:
                 return false;
-        }
-    }
-
-    @Override
-    public void writeHeaders(Map<String, String> pseudoHeaders, Map<String, String> headers, boolean endOfHeaders, boolean endOfStream) {
-
-        H2HeaderTable h2WriteTable = muxLink.getWriteTable();
-        ByteArrayOutputStream headerStream = new ByteArrayOutputStream();
-
-        // write pseudo headers first
-        for (String header : pseudoHeaders.keySet()) {
-            try {
-                headerStream.write(H2Headers.encodeHeader(h2WriteTable, header, pseudoHeaders.get(header), LiteralIndexType.NOINDEXING));
-            } catch (CompressionException | IOException e) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "writeHeaders: encountered a problem writing on stream " + streamId() + " with error " + e.getMessage());
-                }
-                cancel(e, 0x3);
-            }
-        }
-
-        for (String header : headers.keySet()) {
-            try {
-                headerStream.write(H2Headers.encodeHeader(h2WriteTable, header, headers.get(header), LiteralIndexType.NOINDEXING));
-            } catch (CompressionException | IOException e) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "writeHeaders: encountered a problem writing on stream " + streamId() + " with error " + e.getMessage());
-                }
-                cancel(e, 0x3);
-            }
-        }
-        try {
-            // EOH=true, EOS=false
-            FrameHeaders headersFrame = new FrameHeaders(getId(), headerStream.toByteArray(), false, true);
-            processNextFrame(headersFrame, Constants.Direction.WRITING_OUT);
-        } catch (ProtocolException | StreamClosedException | FlowControlException e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "writeHeaders: encountered a problem writing on stream " + streamId() + " with error " + e.getMessage());
-            }
-            cancel(e, 0x3);
-        }
-    }
-
-    @Override
-    public void writeTrailers(Map<String, String> headers) {
-        H2HeaderTable h2WriteTable = muxLink.getWriteTable();
-        ByteArrayOutputStream headerStream = new ByteArrayOutputStream();
-        try {
-            for (String header : headers.keySet()) {
-                headerStream.write(H2Headers.encodeHeader(h2WriteTable, header, headers.get(header), LiteralIndexType.NOINDEXING));
-            }
-            // EOH=true, EOS=true
-            FrameHeaders headersFrame = new FrameHeaders(this.getId(), headerStream.toByteArray(), true, true);
-            processNextFrame(headersFrame, Constants.Direction.WRITING_OUT);
-        } catch (ProtocolException | StreamClosedException | FlowControlException | IOException | CompressionException e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "writeTrailers: encountered a problem writing on stream " + streamId() + " with error " + e.getMessage());
-            }
-            cancel(e, 0x3);
-        }
-    }
-
-    @Override
-    public void cancel(Exception reason, int code) {
-        FrameRstStream reset = new FrameRstStream(getId(), code, false);
-        try {
-            processNextFrame(reset, Constants.Direction.WRITING_OUT);
-        } catch (ProtocolException | StreamClosedException | FlowControlException e) {
-            muxLink.closeConnectionLink(e, true);
-        }
-    }
-
-    @Override
-    public void writeData(byte[] buffer, boolean endOfStream) {
-        int maxFrameSize = this.muxLink.getRemoteConnectionSettings().maxFrameSize;
-        int written = 0;
-        int remaining = 0;
-        int currentBufferSize = 0;
-        boolean localEndOfStream = false;
-        while (written < buffer.length) {
-            remaining = buffer.length - written;
-            currentBufferSize = maxFrameSize >= remaining ? remaining : maxFrameSize;
-            byte[] localWriteBuffer = Arrays.copyOfRange(buffer, written, written + currentBufferSize);
-            written += currentBufferSize;
-            localEndOfStream = (written == buffer.length) && endOfStream;
-            FrameData localDataFrame = new FrameData(getId(), localWriteBuffer, 0, localEndOfStream, false, false);
-            try {
-                processNextFrame(localDataFrame, Constants.Direction.WRITING_OUT);
-
-            } catch (ProtocolException | StreamClosedException | FlowControlException e) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "writeData: failed to write data on stream " + streamId() + " with error " + e.getErrorString());
-                }
-                cancel(e, e.getErrorCode());
-            }
         }
     }
 }

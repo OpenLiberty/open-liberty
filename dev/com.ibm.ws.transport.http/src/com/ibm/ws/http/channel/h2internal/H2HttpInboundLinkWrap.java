@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.ibm.websphere.ras.Tr;
@@ -38,9 +37,6 @@ import com.ibm.ws.http.channel.internal.inbound.HttpInboundChannel;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundLink;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http2.GrpcServletServices;
-import com.ibm.ws.http2.Http2ConnectionHandler;
-import com.ibm.ws.http2.Http2Consumers;
-import com.ibm.ws.http2.Http2StreamHandler;
 import com.ibm.ws.http2.upgrade.H2Exception;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.channelfw.ConnectionLink;
@@ -90,39 +86,7 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
     public void ready(VirtualConnection inVC) {
 
         if (getHTTPContext().isH2Connection()) {
-            Set<Http2ConnectionHandler> handlers = Http2Consumers.getHandlers();
-
-            if (handlers != null) {
-                String requestContentType = getContentType().toLowerCase();
-
-                // find the first Handler that can process the requested content type
-                for (Http2ConnectionHandler handler : handlers) {
-                    if (containsIgnoreCase(handler.getSupportedContentTypes(), requestContentType)) {
-
-                        // TODO: don't use the state map
-                        inVC.getStateMap().put(HTTP2_HANDLER_SELECTED, "true");
-                        super.ready(inVC);
-
-                        // init the handler's stream and send down any request headers and data
-                        Http2StreamHandler stream = handler.onStreamCreated(this.getRequest(),
-                                                                            this.muxLink.getStream(streamID), muxLink);
-                        if (stream != null) {
-                            stream.headersReady();
-                            try {
-                                WsByteBuffer buf = httpInboundServiceContextImpl.getRequestBodyBuffers()[0];
-                                // pass the stream body data and end of stream state
-                                stream.dataReady(buf, this.muxLink.getStream(streamID).isHalfClosed());
-                                return;
-                            } catch (IOException e) {
-                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                    Tr.debug(tc, "ready caught exception : " + e.getMessage());
-                                }
-                            }
-                        }
-                        break;
-                    }
-                }
-            } else if (GrpcServletServices.getServletGrpcServices() != null) {
+            if (GrpcServletServices.getServletGrpcServices() != null) {
 
                 Map<String, GrpcServletServices.ServiceInformation> servicePaths = GrpcServletServices.getServletGrpcServices();
                 if (servicePaths != null && !servicePaths.isEmpty()) {
@@ -571,16 +535,5 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
             }
         }
         return null;
-    }
-
-    private boolean containsIgnoreCase(Set<String> set, String match) {
-        if (set == null)
-            return false;
-        for (String current : set) {
-            if (current.equalsIgnoreCase(match)) {
-                return true;
-            }
-        }
-        return false;
     }
 }
