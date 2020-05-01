@@ -1,0 +1,76 @@
+###############################################################################
+# Copyright (c) 2010, 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.featureUtility/resources/com/ibm/ws/install/featureUtility/internal/resources/FeatureUtilitySampleConfiguration.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+# Only need to translate the commented lines (lines that start with '##') below.
+# The following keywords do not need to be translated.
+
+SAMPLE_CONFIG=\
+######################################################################\n\
+## ## Define the Maven Central mirror repository##\n\
+## By default featureUtility downloads from Maven Central. Users\n\
+## can set up a mirror of the Maven Central Repository and\n\
+## override the featureUtility default Maven Central connection\n\
+## with the mirror repository.\n\
+## -------------------------------------------------------------------\n\
+#mavenCentralMirror.url=http://w3.mycompany.com/pub/maven2\n\
+\n\
+## Specify the credentials of the Maven Central mirror repository, if required.\n\
+## For enhanced security, encode the value of the .password\n\
+## property by using the securityUtility encode action.\n\
+## If you do not set the user and password, you receive a prompt\n\
+## to provide them.\n\
+## -------------------------------------------------------------------\n\
+#mavenCentralMirror.user=username\n\
+#mavenCentralMirror.password=myPassword\n\
+\n\
+######################################################################\n\
+## ## Using custom remote repositories ##\n\
+## featureUtility can install remote Maven on-premises repositories. Provide\n\
+## a repository name and the URL to each remote Maven on-premise repository\n\
+## that contains Liberty feature artifacts.\n\
+## The repositories are accessed in the order that they are specified.\n\
+## -------------------------------------------------------------------\n\
+#remoteRepositoryName1.url=http://w3.mycompany.com/repository\n\
+#remoteRepositoryName2.url=http://w3.mycompany.com/secure/repository\n\
+\n\
+## Specify the credentials of each repository, if required.\n\
+## For enhanced security, encode the value of the .password\n\
+## property by using the securityUtility encode action.\n\
+## If you do not set the user and password, you receive a prompt\n\
+## to provide them.\n\
+## -------------------------------------------------------------------\n\
+#remoteRepositoryName2.user=username\n\
+#remoteRepositoryName2.password=myPassword\n\
+\n\
+######################################################################\n\
+## ## Using a proxy server (optional) ##\n\
+## If you use a proxy server to access the internet,\n\
+## specify values for the proxy settings properties.\n\
+## For enhanced security, encode the value of the proxyPassword\n\
+## property by using the securityUtility encode action.\n\
+## If you do not set the proxyUser and proxyPassword properties,\n\
+## you receive a prompt to provide them.\n\
+## -------------------------------------------------------------------\n\
+#proxyHost=hostName\n\
+#proxyPort=3128\n\
+#proxyUser=proxyUsername\n\
+#proxyPassword=myProxyPassword\n\
+\n\
+######################################################################\n\
+## ## Define the Maven local repository ##\n\
+## The location of the default Maven local repository can be changed.\n\
+## The default location is ${user.home}/.m2/repository/.\n\
+## -------------------------------------------------------------------\n\
+#featureLocalRepo=/home/my_local/repository

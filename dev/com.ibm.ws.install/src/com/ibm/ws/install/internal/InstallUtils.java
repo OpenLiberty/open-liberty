@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -539,16 +539,20 @@ public class InstallUtils {
         }
 
         @Override
-        public void printInfoMessage(String message) {}
+        public void printInfoMessage(String message) {
+        }
 
         @Override
-        public void printlnInfoMessage(String message) {}
+        public void printlnInfoMessage(String message) {
+        }
 
         @Override
-        public void printErrorMessage(String errorMessage) {}
+        public void printErrorMessage(String errorMessage) {
+        }
 
         @Override
-        public void printlnErrorMessage(String errorMessage) {}
+        public void printlnErrorMessage(String errorMessage) {
+        }
 
     }
 
@@ -1087,7 +1091,7 @@ public class InstallUtils {
 
         String editionCodeUpperCase = editionCode.toUpperCase();
         if (editionCodeUpperCase.equals("BASE"))
-            return "";
+            return "Base";
         else if (editionCodeUpperCase.equals("BASE_ILAN"))
             return "(ILAN)";
         else if (editionCodeUpperCase.equals("DEVELOPERS"))
@@ -1103,7 +1107,7 @@ public class InstallUtils {
         else if (editionCodeUpperCase.equals("ZOS"))
             return "z/OS";
         else if (editionCodeUpperCase.equals("LIBERTY"))
-            return "";
+            return "Base";
         else if (editionCodeUpperCase.startsWith("LIBERTY "))
             return editionCode.substring("LIBERTY ".length());
         else {
@@ -1201,7 +1205,6 @@ public class InstallUtils {
         return licensesToAccept;
     }
 
-    
     public static void setServerXmlInstallTrue() {
         isServerXmlInstallation = true;
     }
@@ -1214,7 +1217,6 @@ public class InstallUtils {
     public static boolean isServerXmlInstall() {
         return isServerXmlInstallation;
     }
-
 
 
 
