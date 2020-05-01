@@ -11,15 +11,14 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-fat.minimum.java.level: 11
-
 src: \
 	fat/src,\
 	test-applications/app1/src,\
-	test-applications/helloworld/helloworld_client/src,\
-	ltest-applications/helloworld/helloworld_servlet/src
+	test-applications/helloworld_client/src,\
+	test-applications/helloworld_servlet/src
 
 fat.project: true
+fat.minimum.java.level: 11
 
 
 # Define additional tested features that are NOT present in any XML files in this bucket.

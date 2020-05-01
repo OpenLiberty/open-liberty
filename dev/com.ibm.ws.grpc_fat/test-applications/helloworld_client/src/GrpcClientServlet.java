@@ -1,4 +1,4 @@
-package com.ibm.ws.grpc_fat;
+package helloworld.client;
 
 import io.grpc.examples.helloworld.GreeterGrpc;
 import io.grpc.examples.helloworld.HelloReply;

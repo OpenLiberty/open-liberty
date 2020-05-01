@@ -87,21 +87,11 @@ protobuf {
 sourceSets {
     main {
     	proto {
-    		srcDirs 'test-applications/helloworld/helloworld_client/src/proto'
+    		srcDirs 'test-applications/helloworld_client/proto'
     		}
         java {
-            srcDirs 'test-applications/helloworld/helloworld_client/src/java'
+            srcDirs 'test-applications/helloworld_client/src/java'
+            srcDirs 'test-applications/helloworld_servlet/src/java'
         }
     }
 }
-
-//sourceSets {
-//   main {
-//    	proto {
-//    		srcDirs 'test-applications/helloworld/helloworld_servlet/src/proto'
-//    		}
-//        java {
-//            srcDirs 'test-applications/helloworld/helloworld_servlet/src/java'
-//        }
-//    }
-//}
