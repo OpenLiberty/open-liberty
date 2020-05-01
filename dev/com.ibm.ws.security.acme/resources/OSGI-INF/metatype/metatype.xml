@@ -41,6 +41,9 @@
 
   <!-- Transport configuration. -->
   <AD id="acmeTransportConfig"  name="internal" description="internal use only" type="String"  required="false" ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.security.acme.transport" />
+  
+  <!-- Renewal configuration options -->
+  <AD id="renewBeforeExpiration"     name="internal" description="internal use only" type="String" required="false" ibm:type="duration" default="7d" />
 
  </OCD>
   

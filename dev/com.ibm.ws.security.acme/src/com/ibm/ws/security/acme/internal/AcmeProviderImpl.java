@@ -56,6 +56,7 @@ import com.ibm.ws.security.acme.AcmeCaException;
 import com.ibm.ws.security.acme.AcmeCertificate;
 import com.ibm.ws.security.acme.AcmeProvider;
 import com.ibm.ws.security.acme.internal.AcmeClient.AcmeAccount;
+import com.ibm.ws.security.acme.internal.util.AcmeConstants;
 import com.ibm.ws.ssl.JSSEProviderFactory;
 import com.ibm.ws.ssl.KeyStoreService;
 
@@ -285,9 +286,24 @@ public class AcmeProviderImpl implements AcmeProvider {
 		 * 5. TODO More?
 		 * </pre>
 		 */
-		return existingCertChain == null || existingCertChain.isEmpty() || isExpired(existingCertChain)
-				|| isRevoked(existingCertChain) || hasWrongDomains(existingCertChain)
-				|| hasWrongSubjectRDNs(existingCertChain);
+
+		boolean isExpired = false;
+		if (isExpired(existingCertChain)) {
+			X509Certificate x590Certificate = existingCertChain.get(0);
+			if (acmeConfig.isAutoRenewOnExpiration()) {
+				isExpired = true;
+				Tr.info(tc, "CWPKI2052I", x590Certificate.getSerialNumber().toString(16),
+						x590Certificate.getNotAfter().toInstant().toString(), acmeConfig.getDirectoryURI());
+			} else {
+				// log that the certificate is expired, even if we can't renew it
+				Tr.warning(tc, "CWPKI2053W", x590Certificate.getSerialNumber().toString(16),
+						x590Certificate.getNotAfter().toInstant().toString());
+
+			}
+		}
+
+		return existingCertChain == null || existingCertChain.isEmpty() || isExpired || isRevoked(existingCertChain)
+				|| hasWrongDomains(existingCertChain) || hasWrongSubjectRDNs(existingCertChain);
 	}
 
 	/**
@@ -521,12 +537,12 @@ public class AcmeProviderImpl implements AcmeProvider {
 	 */
 	private boolean isExpired(List<X509Certificate> certificateChain) {
 		X509Certificate certificate = getLeafCertificate(certificateChain);
-		if (certificateChain == null) {
+		if (certificate == null) {
 			return false;
 		}
 
 		/*
-		 * Certificates not after date.
+		 * Certificate's not after date.
 		 */
 		Date notAfter = certificate.getNotAfter();
 
@@ -538,11 +554,17 @@ public class AcmeProviderImpl implements AcmeProvider {
 
 		/*
 		 * Get a date where we want to refresh the certificate.
+		 * Convert to milliseconds. The cal.add method requires an int and we can overflow int
+		 * with the getRenewBeforeExpirationMs
 		 */
-		cal.setTime(notAfter);
-		cal.add(Calendar.DAY_OF_MONTH, -7); // TODO Hard-coded
+		long refreshTime = notAfter.getTime() - acmeConfig.getRenewBeforeExpirationMs();
+		cal.setTimeInMillis(refreshTime);
 		Date refreshDate = cal.getTime();
 
+		if (tc.isDebugEnabled()) {
+			Tr.debug(tc,
+					"isExpired: notAfter: " + notAfter + ", calculated renew Date: " + refreshDate + ", compared to now: " + now);
+		}
 		/*
 		 * Consider the certificate expired if the refresh date has elapsed.
 		 */
@@ -866,4 +888,5 @@ public class AcmeProviderImpl implements AcmeProvider {
 	public void setAcmeApplicationStateListener(AcmeApplicationStateListener acmeApplicationStateListener) {
 		applicationStateListenerRef.set(acmeApplicationStateListener);
 	}
+
 }
