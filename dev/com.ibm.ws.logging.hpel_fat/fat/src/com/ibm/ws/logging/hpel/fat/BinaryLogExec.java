@@ -78,14 +78,6 @@ public class BinaryLogExec {
         assumeTrue(!skipTest());
         ShrinkHelper.defaultDropinApp(server, "LogFat", "com.ibm.ws.logging.hpel");
         ShrinkHelper.defaultDropinApp(server, "HpelFat", "com.ibm.ws.logging.hpel.servlet");
-        if (!CommonTasks.isHpelEnabled(server)) {
-            // HPEL is not enabled.
-            CommonTasks.writeLogMsg(Level.INFO, "HPEL is not enabled on " + server.getServerName() + ", attempting to enable.");
-            CommonTasks.setHpelEnabled(server, true);
-            // RestartServer now to complete switching to HPEL
-            server.restartServer();
-
-        }
 
         // Liberty profile root is the install root.
         rProfRootDir = new RemoteFile(server.getMachine(), server.getInstallRoot());

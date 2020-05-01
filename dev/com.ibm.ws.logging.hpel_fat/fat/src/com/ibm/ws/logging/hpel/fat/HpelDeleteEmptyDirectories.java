@@ -74,13 +74,6 @@ public class HpelDeleteEmptyDirectories {
         // Confirm HPEL is enabled
         ShrinkHelper.defaultDropinApp(server, "LogFat", "com.ibm.ws.logging.hpel");
         ShrinkHelper.defaultDropinApp(server, "HpelFat", "com.ibm.ws.logging.hpel.servlet");
-        if (!CommonTasks.isHpelEnabled(server)) {
-            // HPEL is not enabled.
-            CommonTasks.writeLogMsg(Level.INFO, "HPEL is not enabled on " + server.getServerName() + ", attempting to enable.");
-            CommonTasks.setHpelEnabled(server, true);
-            server.stopServer();
-            server.startServer();
-        }
 
         backup = new RemoteFile(server.getMachine(), new File(server.getServerRoot(), "server-backup.xml").getPath());
         if (!backup.exists()) {

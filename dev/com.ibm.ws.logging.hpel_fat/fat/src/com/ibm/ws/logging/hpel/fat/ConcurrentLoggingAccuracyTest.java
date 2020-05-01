@@ -65,16 +65,6 @@ public class ConcurrentLoggingAccuracyTest {
         ShrinkHelper.defaultDropinApp(server, "LogFat", "com.ibm.ws.logging.hpel");
         ShrinkHelper.defaultDropinApp(server, "HpelFat", "com.ibm.ws.logging.hpel.servlet");
 
-        // Confirm HPEL is enabled
-        if (!CommonTasks.isHpelEnabled(server)) {
-            // HPEL is not enabled.
-            CommonTasks.writeLogMsg(Level.INFO, "HPEL is not enabled on " + server.getServerName() + ", attempting to enable.");
-            CommonTasks.setHpelEnabled(server, true);
-            // if HPEL was not enabled, make sure trace spec is not valid to ensure restart below.
-            CommonTasks.setHpelTraceSpec(server, null);
-
-        }
-
         /*
          * Since we have multiple test methods in this test case, we will only restart if the spec is not already set to
          * what we need. This will avoid extra server restarts which adds to the bucket execution time.
@@ -87,7 +77,7 @@ public class ConcurrentLoggingAccuracyTest {
 
             // need to restart the application server now
             // stopServer Server first.
-            CommonTasks.writeLogMsg(Level.INFO, "Bouncing server for new spec to take effect. stopServerping application server");
+            CommonTasks.writeLogMsg(Level.INFO, "Bouncing server for new spec to take effect. stopping application server");
             server.stopServer();
 
             Thread.sleep(10000); // stopServer operation blocks, but want short pause before restarting.
