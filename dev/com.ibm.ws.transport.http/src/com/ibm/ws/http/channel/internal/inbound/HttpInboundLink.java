@@ -80,7 +80,6 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
     protected List<ConnectionReadyCallback> appSides = null;
     /** Flag on whether this link has been marked for HTTP/2 */
     private boolean alreadyH2Upgraded = false;
-    protected final String HTTP2_HANDLER_SELECTED = "h2handler";
 
     /**
      * Constructor for an HTTP inbound link object.
@@ -478,11 +477,7 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
                 return;
             }
         }
-        // TODO: HTTP/2 handlers should get picked up during the discrimination process.
-        // for now we skip that if any handler has been registered.
-        if (!vc.getStateMap().containsKey(HTTP2_HANDLER_SELECTED)) {
-            handleDiscrimination();
-        }
+        handleDiscrimination();
     }
 
     /**

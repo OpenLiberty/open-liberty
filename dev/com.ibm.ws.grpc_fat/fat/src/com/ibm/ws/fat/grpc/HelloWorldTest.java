@@ -68,8 +68,8 @@ public class HelloWorldTest extends FATServletClient {
         assertTrue("Expected the grpc feature 'grpcClient-1.0' to be enabled but was not: " + features,
                    features.contains("grpcClient-1.0"));
 
-        assertTrue("Expected the grpc feature 'grpcServlet-1.0' to be enabled but was not: " + features,
-                   features.contains("grpcServlet-1.0"));
+        assertTrue("Expected the grpc feature 'grpc-1.0' to be enabled but was not: " + features,
+                   features.contains("grpc-1.0"));
     }
 
     @Test
