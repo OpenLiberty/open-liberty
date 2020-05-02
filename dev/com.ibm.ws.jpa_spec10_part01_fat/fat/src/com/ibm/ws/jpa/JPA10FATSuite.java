@@ -19,10 +19,8 @@ import com.ibm.ws.jpa.spec10.Callback_EJB;
 import com.ibm.ws.jpa.spec10.Callback_Web;
 import com.ibm.ws.jpa.spec10.Inheritance_EJB;
 import com.ibm.ws.jpa.spec10.Inheritance_Web;
-import com.ibm.ws.jpa.spec10.TestOLGH10310_EJB;
-import com.ibm.ws.jpa.spec10.TestOLGH10310_Web;
-import com.ibm.ws.jpa.spec10.TestOLGH11795_EJB;
-import com.ibm.ws.jpa.spec10.TestOLGH11795_Web;
+import com.ibm.ws.jpa.spec10.JPA10EntityManager_EJB;
+import com.ibm.ws.jpa.spec10.JPA10EntityManager_Web;
 
 /**
  * Test cases for functionality introduced with JPA 1.0.
@@ -31,12 +29,10 @@ import com.ibm.ws.jpa.spec10.TestOLGH11795_Web;
 @SuiteClasses({
                 Callback_EJB.class,
                 Callback_Web.class,
+                JPA10EntityManager_EJB.class,
+                JPA10EntityManager_Web.class,
                 Inheritance_EJB.class,
-                Inheritance_Web.class,
-                TestOLGH10310_Web.class,
-                TestOLGH10310_EJB.class,
-                TestOLGH11795_Web.class,
-                TestOLGH11795_EJB.class
+                Inheritance_Web.class
 })
 public class JPA10FATSuite {
 

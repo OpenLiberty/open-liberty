@@ -16,12 +16,21 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.jpa.spec10.TestOLGH10310_EJB;
+import com.ibm.ws.jpa.spec10.TestOLGH10310_Web;
+import com.ibm.ws.jpa.spec10.TestOLGH11795_EJB;
+import com.ibm.ws.jpa.spec10.TestOLGH11795_Web;
+
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                 JPA10FATSuite.class,
+                TestOLGH10310_Web.class,
+                TestOLGH10310_EJB.class,
+                TestOLGH11795_Web.class,
+                TestOLGH11795_EJB.class,
                 componenttest.custom.junit.runner.AlwaysPassesTest.class
 })
 public class FATSuite {
