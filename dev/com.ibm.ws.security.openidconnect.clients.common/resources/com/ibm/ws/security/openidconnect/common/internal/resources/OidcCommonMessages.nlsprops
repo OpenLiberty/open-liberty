@@ -129,7 +129,7 @@ JWK_ENDPOINT_MISSING_ERR.useraction=Set the jwkEndpointUrl attribute to the URL 
 #OIDC_FAILED_RUN_AS_SUBJCET.useraction=Make sure the server is configured and started properly.
 
 #0=OIDC client ID, 1=sub claim of the token, 2=Current clock time, 3=Token expiration time, 4=Token issued at time
-OIDC_JWT_VERIFY_STATE_ERR=CWWKS1773E: Validation failed for the token requested by [{0}] for the user [{1}] because the token is outside of its valid range. This might have been caused by either the current time [{2}] being after the token expiration time [{3}] or the issue time [{4}] being too far away from the current time [{2}].
+OIDC_JWT_VERIFY_STATE_ERR=CWWKS1773E: Validation failed for the token requested by the [{0}] OpenID Connect client for the [{1}] user because the token is outside of its valid range. This error occurs either because the [{2}] current time is after the [{3}] token expiration time or because the [{4}] issue time is too far away from the [{2}] current time.
 OIDC_JWT_VERIFY_STATE_ERR.explanation=A token can not be validated because the current time shown is not between the token issue and expiration times.
 OIDC_JWT_VERIFY_STATE_ERR.useraction=Make sure that OpenID Connect client (relying party or RP) and OpenID Connect provider (OP) system clocks are in sync (if they are on two systems).
 
