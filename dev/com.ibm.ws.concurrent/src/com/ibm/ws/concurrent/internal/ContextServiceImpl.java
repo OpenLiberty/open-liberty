@@ -118,9 +118,14 @@ public class ContextServiceImpl implements //
     private ComponentContext componentContext;
 
     /**
-     * Jakarta EE versiom if Jakarta EE 9 or higher. If 0, assume a lesser EE spec version.
+     * Jakarta EE version if Jakarta EE 9 or higher. If 0, assume a lesser EE spec version.
      */
-    private int eeVersion;
+    private volatile int eeVersion;
+
+    /**
+     * Tracks the most recently bound EE version service reference. Only use this within the set/unsetEEVersion methods.
+     */
+    private ServiceReference<JavaEEVersion> eeVersionRef;
 
     /**
      * Lock for reading and updating configuration.
@@ -762,7 +767,7 @@ public class ContextServiceImpl implements //
      */
     @Reference(service = JavaEEVersion.class,
                cardinality = ReferenceCardinality.OPTIONAL,
-               policy = ReferencePolicy.STATIC,
+               policy = ReferencePolicy.DYNAMIC,
                policyOption = ReferencePolicyOption.GREEDY)
     protected void setEEVersion(ServiceReference<JavaEEVersion> ref) {
         String version = (String) ref.getProperty("version");
@@ -773,6 +778,7 @@ public class ContextServiceImpl implements //
             String major = dot > 0 ? version.substring(0, dot) : version;
             eeVersion = Integer.parseInt(major);
         }
+        eeVersionRef = ref;
     }
 
     /**
@@ -809,7 +815,10 @@ public class ContextServiceImpl implements //
      * @param ref reference to the service
      */
     protected void unsetEEVersion(ServiceReference<JavaEEVersion> ref) {
-        eeVersion = 0;
+        if (eeVersionRef == ref) {
+            eeVersionRef = null;
+            eeVersion = 0;
+        }
     }
 
     /**
