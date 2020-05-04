@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,10 +22,6 @@ import com.ibm.wsspi.injectionengine.InjectionException;
 import com.ibm.wsspi.webcontainer.WCCustomProperties;
 import com.ibm.wsspi.webcontainer.logging.LoggerFactory;
 
-
-/**
- *
- */
 public class AnnotationHelper {
     
     WebApp wrapper = null;
@@ -42,6 +38,8 @@ public class AnnotationHelper {
     // PI30335: this inject() provides options to delay post construct invocation
     // If delayPostConstruct is true, doPostConstruct will not be called
     public ManagedObject inject(Object obj, boolean delayPostConstruct) throws RuntimeException {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) 
+            logger.entering(CLASS_NAME, "inject(Object,boolean)", "obj = " + obj + ", delayPostConstruct = " + delayPostConstruct);
         
         ManagedObject mo = null;
         Throwable th = null;
@@ -94,6 +92,10 @@ public class AnnotationHelper {
                 }
             }
         }
+        
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))
+            logger.exiting(CLASS_NAME, "inject(Object,boolean)");
+        
         return mo;
     }
     
@@ -181,6 +183,9 @@ public class AnnotationHelper {
 
     // PI30335: Perform post construct independently of inject().
     public void doDelayedPostConstruct(Object obj) {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) 
+            logger.entering(CLASS_NAME, "doDelayedPostConstruct", "obj = " + obj);
+        
         // after injection then PostConstruct annotated methods on the host object needs to be invoked.
         // in WAS7 no RuntimeException is thrown at all, set THROW_POSTCONSTRUCT_EXCEPTION=false to reverse back to V7
         Throwable t = wrapper.invokeAnnotTypeOnObjectAndHierarchy(obj, ANNOT_TYPE.POST_CONSTRUCT);
@@ -203,6 +208,9 @@ public class AnnotationHelper {
     public void doPreDestroy(Object obj) {
         try { 
             if (wrapper != null) {
+                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
+                    logger.logp (Level.FINE, CLASS_NAME, "doPreDestroy", "obj = "+ obj);
+                }
  
                 wrapper.performPreDestroy(obj);
         
@@ -223,13 +231,20 @@ public class AnnotationHelper {
         if (o == null || mo == null) {
             throw new IllegalArgumentException("Neither the tag nor the managed object may be null");
         }
+
         cdiCreationContextMap.put(o, mo);
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
+            logger.logp (Level.FINE, CLASS_NAME, "addTagHandlerToCdiMap", "add managedObject=[" + mo + "], object=[" + mo.getObject() +"], mapSize ["+cdiCreationContextMap.size()+"], this ["+ this +"]");
+        }
     }
     
     public void cleanUpTagHandlerFromCdiMap(Object o) {
         ManagedObject mo = cdiCreationContextMap.remove(o);
         if (mo!=null) {
-            mo.release();        
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
+                logger.logp (Level.FINE, CLASS_NAME, "cleanUpTagHandlerFromCdiMap", "remove managedObject=[" + mo + "], object=[" + mo.getObject() +"], mapSize ["+cdiCreationContextMap.size()+"], this ["+ this +"]");
+            }
+            mo.release();
         }
     }
 
