@@ -20,9 +20,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import app1.web.TestServletA;
 import componenttest.annotation.Server;
-import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -43,17 +41,17 @@ import componenttest.topology.utils.FATServletClient;
 @RunWith(FATRunner.class)
 public class HelloWorldTest extends FATServletClient {
 
-    public static final String APP_NAME = "app1";
+    public static final String APP_NAME = "helloworldtest";
 
-    @Server("FATServer")
-    @TestServlet(servlet = TestServletA.class, contextRoot = APP_NAME)
+    @Server("HelloWorldServer")
+    //@TestServlet(servlet = GrpcClientServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
 
-        // There are two apps in the dropins folder, one client and one servlet
         server.startServer();
+
     }
 
     @AfterClass

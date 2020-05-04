@@ -11,16 +11,17 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-fat.minimum.java.level: 11
-
 src: \
 	fat/src,\
-	test-applications/app1/src
+	test-applications/app1/src,\
+	test-applications/helloworld_client/src,\
+	test-applications/helloworld_servlet/src
 
 fat.project: true
+fat.minimum.java.level: 11
+
 
 # Define additional tested features that are NOT present in any XML files in this bucket.
-# In this case, servlet-4.0 is added programatically at runtime by the RepeatTests rule.
 tested.features:\
 	servlet-4.0
 
@@ -33,11 +34,19 @@ tested.features:\
 # For all project names that match the pattern "*_fat*", dependencies for junit,
 # fattest.simplicity, and componenttest-1.0 will be automatically added to the buildpath
 -buildpath: \
-	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
-	com.ibm.ws.grpc.client;version=latest,\
-	com.ibm.ws.grpc.common;version=latest,\
-	com.ibm.ws.grpc;version=latest,\
-	com.ibm.ws.transport.http;version=latest,\
-	com.google.protobuf;version=latest,\
-	commons-logging:commons-logging;version=1.1.3
+	com.ibm.websphere.javaee.servlet.4.0;version=latest, \
+	com.ibm.ws.grpc.client;version=latest, \
+	com.ibm.ws.grpc.common;version=latest, \
+	com.ibm.ws.grpc;version=latest, \
+	commons-logging:commons-logging;version=1.1.3, \
+	com.ibm.ws.org.slf4j.api.1.7.7, \
+	io.grpc:grpc-api;version=1.27.0, \
+	io.grpc:grpc-census;version=1.27.0, \
+	io.grpc:grpc-context;version=1.27.0, \
+	io.grpc:grpc-core;version=1.27.0, \
+	io.grpc:grpc-protobuf;version=1.27.0, \
+	io.grpc:grpc-protobuf-lite;version=1.27.0, \
+	io.grpc:grpc-stub;version=1.27.0
+#	com.google.protobuf:protobuf-java;version=3.11.1, \
+#	com.google.protobuf:protobuf-java-util;version=3.11.4
+
