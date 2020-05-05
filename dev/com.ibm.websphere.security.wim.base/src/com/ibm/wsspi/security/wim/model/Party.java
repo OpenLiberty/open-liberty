@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,44 +23,42 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
-
 /**
  * <p>Java class for Party complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
- * <pre>
- * &lt;complexType name="Party">
- * &lt;complexContent>
- * &lt;extension base="{http://www.ibm.com/websphere/wim}RolePlayer">
- * &lt;/extension>
- * &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- * 
- * <p> The Party object extends the RolePlayer object, and represents a Party which is extended by Person,
- * Group, OrgContainer and LoginAccount.
- * 
- **/
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Party")
+ *
+ * <p> The Party object extends the {@link RolePlayer} object, and represents a Party which is extended by {@link Person},
+ * {@link Group}, {@link OrgContainer} and {@link LoginAccount}.
+ */
+@XmlAccessorType(XmlAccessType.NONE)
+@XmlType(name = Party.TYPE_NAME)
 @XmlSeeAlso({
-             Group.class,
-             OrgContainer.class,
-             Person.class,
-             LoginAccount.class
+              Group.class,
+              OrgContainer.class,
+              Person.class,
+              LoginAccount.class
 })
-public class Party
-                extends RolePlayer
-{
+public class Party extends RolePlayer {
 
-    private static List mandatoryProperties = null;
-    private static List transientProperties = null;
-    private static List propertyNames = null;
-    private static HashMap dataTypeMap = null;
-    private static ArrayList superTypeList = null;
-    private static HashSet subTypeList = null;
+    /** The type name for this data type. */
+    public static final String TYPE_NAME = "Party";
+
+    /** The list of mandatory properties. */
+    private static List<String> mandatoryProperties = null;
+
+    /** The list of transient properties. */
+    private static List<String> transientProperties = null;
+
+    /** The list of properties that comprise this type. */
+    private static List<String> propertyNames = null;
+
+    /** A mapping of property names to data types. */
+    private static HashMap<String, String> dataTypeMap = null;
+
+    /** A list of super-types of this type. */
+    private static ArrayList<String> superTypeList = null;
+
+    /** A set of sub-types of this type. */
+    private static HashSet<String> subTypeSet = null;
 
     static {
         setMandatoryPropertyNames();
@@ -72,42 +70,28 @@ public class Party
     }
 
     @Override
-    public Object get(String propName) {
-        return super.get(propName);
-    }
-
-    @Override
-    public boolean isSet(String propName) {
-        return super.isSet(propName);
-    }
-
-    @Override
-    public void set(String propName, Object value) {
-        super.set(propName, value);
-    }
-
-    @Override
-    public void unset(String propName) {
-        super.unset(propName);
-    }
-
-    @Override
     public String getTypeName() {
-        return "Party";
+        return TYPE_NAME;
     }
 
+    /**
+     * Set the list of mandatory properties.
+     */
     private static synchronized void setMandatoryPropertyNames() {
         if (mandatoryProperties != null) {
             return;
         }
-        mandatoryProperties = new ArrayList();
+        mandatoryProperties = new ArrayList<String>();
     }
 
+    /**
+     * Set the list of transient properties.
+     */
     private static synchronized void setTransientPropertyNames() {
         if (transientProperties != null) {
             return;
         }
-        transientProperties = new ArrayList();
+        transientProperties = new ArrayList<String>();
         transientProperties.addAll(RolePlayer.getTransientProperties());
     }
 
@@ -135,51 +119,66 @@ public class Party
         }
     }
 
-    protected static List getTransientProperties() {
+    /**
+     * Get the list of transient properties.
+     *
+     * @return List of transient properties.
+     */
+    protected static List<String> getTransientProperties() {
         if (transientProperties == null) {
             setTransientPropertyNames();
         }
-        return transientProperties;
+        return Collections.unmodifiableList(transientProperties);
     }
 
-    public static synchronized List getPropertyNames(String entityTypeName) {
+    /**
+     * Get the list of property names for this type.
+     *
+     * @param entityTypeName The entity type name.
+     * @return The list of property names.
+     */
+    public static synchronized List<String> getPropertyNames(String entityTypeName) {
         if (propertyNames != null) {
             return propertyNames;
         } else {
-            {
-                List names = new ArrayList();
-                names.addAll(RolePlayer.getPropertyNames("RolePlayer"));
-                propertyNames = Collections.unmodifiableList(names);
-                return propertyNames;
-            }
+            List<String> names = new ArrayList<String>();
+            names.addAll(RolePlayer.getPropertyNames(RolePlayer.TYPE_NAME));
+            propertyNames = Collections.unmodifiableList(names);
+            return propertyNames;
         }
     }
 
+    /**
+     * Create the property name to data type mapping.
+     */
     private static synchronized void setDataTypeMap() {
         if (dataTypeMap == null) {
-            dataTypeMap = new HashMap();
+            dataTypeMap = new HashMap<String, String>();
         }
     }
 
     @Override
     public String getDataType(String propName) {
         if (dataTypeMap.containsKey(propName)) {
-            return ((String) dataTypeMap.get(propName));
+            return (dataTypeMap.get(propName));
         } else {
             return super.getDataType(propName);
         }
     }
 
+    /**
+     * Create the list of super-types for this type.
+     */
     private static synchronized void setSuperTypes() {
         if (superTypeList == null) {
-            superTypeList = new ArrayList();
+            superTypeList = new ArrayList<String>();
         }
-        superTypeList.add("RolePlayer");
-        superTypeList.add("Entity");
+        superTypeList.add(RolePlayer.TYPE_NAME);
+        superTypeList.add(Entity.TYPE_NAME);
     }
 
     @Override
-    public ArrayList getSuperTypes() {
+    public ArrayList<String> getSuperTypes() {
         if (superTypeList == null) {
             setSuperTypes();
         }
@@ -191,27 +190,29 @@ public class Party
         return superTypeList.contains(superTypeName);
     }
 
+    /**
+     * Create the set of sub-types for this type.
+     */
     private static synchronized void setSubTypes() {
-        if (subTypeList == null) {
-            subTypeList = new HashSet();
+        if (subTypeSet == null) {
+            subTypeSet = new HashSet<String>();
         }
-        subTypeList.add("Group");
-        subTypeList.add("OrgContainer");
-        subTypeList.add("LoginAccount");
-        subTypeList.add("Person");
-        subTypeList.add("PersonAccount");
+        subTypeSet.add(Group.TYPE_NAME);
+        subTypeSet.add(OrgContainer.TYPE_NAME);
+        subTypeSet.add(LoginAccount.TYPE_NAME);
+        subTypeSet.add(Person.TYPE_NAME);
+        subTypeSet.add(PersonAccount.TYPE_NAME);
     }
 
-    public static HashSet getSubTypes() {
-        if (subTypeList == null) {
+    /**
+     * Get the set of sub-types for this type.
+     *
+     * @return The set of sub-types.
+     */
+    public static HashSet<String> getSubTypes() {
+        if (subTypeSet == null) {
             setSubTypes();
         }
-        return subTypeList;
+        return subTypeSet;
     }
-
-    @Override
-    public String toString() {
-        return WIMTraceHelper.trace(this);
-    }
-
 }

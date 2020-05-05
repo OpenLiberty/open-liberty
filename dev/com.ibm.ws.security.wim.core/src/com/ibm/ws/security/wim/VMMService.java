@@ -31,7 +31,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.wim.Service;
 import com.ibm.websphere.security.wim.ras.WIMMessageKey;
-import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 import com.ibm.ws.bnd.metatype.annotation.Ext;
 import com.ibm.ws.security.registry.UserRegistry;
 import com.ibm.ws.security.registry.UserRegistryChangeListener;
@@ -188,7 +187,7 @@ public class VMMService implements Service, RealmConfigChangeListener {
         Root result = null;
         result = new Root();
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, METHODNAME + " " + WIMTraceHelper.trace(result));
+            Tr.debug(tc, METHODNAME + " " + result);
         }
         return result;
     }
@@ -203,11 +202,11 @@ public class VMMService implements Service, RealmConfigChangeListener {
         final String METHODNAME = "get";
         Root result = null;
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, METHODNAME + " " + WIMTraceHelper.trace(root));
+            Tr.debug(tc, METHODNAME + " " + root);
         }
         result = profileManager.get(root);
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, METHODNAME + " " + WIMTraceHelper.trace(result));
+            Tr.debug(tc, METHODNAME + " " + result);
         }
         return result;
     }
@@ -222,11 +221,11 @@ public class VMMService implements Service, RealmConfigChangeListener {
         final String METHODNAME = "search";
         Root result = null;
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, METHODNAME + " " + WIMTraceHelper.trace(root));
+            Tr.debug(tc, METHODNAME + " " + root);
         }
         result = profileManager.search(root);
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, METHODNAME + " " + WIMTraceHelper.trace(result));
+            Tr.debug(tc, METHODNAME + " " + result);
         }
         return result;
     }
@@ -241,11 +240,11 @@ public class VMMService implements Service, RealmConfigChangeListener {
         final String METHODNAME = "login";
         Root result = null;
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, METHODNAME + " " + WIMTraceHelper.trace(root));
+            Tr.debug(tc, METHODNAME + " " + root);
         }
         result = profileManager.login(root);
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, METHODNAME + " " + WIMTraceHelper.trace(result));
+            Tr.debug(tc, METHODNAME + " " + result);
         }
         return result;
     }
@@ -304,11 +303,11 @@ public class VMMService implements Service, RealmConfigChangeListener {
         final String METHODNAME = "delete";
         Root result = null;
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, METHODNAME + " " + WIMTraceHelper.trace(root));
+            Tr.debug(tc, METHODNAME + " " + root);
         }
         result = profileManager.delete(root);
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, METHODNAME + " " + WIMTraceHelper.trace(result));
+            Tr.debug(tc, METHODNAME + " " + result);
         }
         return result;
     }
@@ -323,11 +322,11 @@ public class VMMService implements Service, RealmConfigChangeListener {
         final String METHODNAME = "create";
         Root result = null;
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, METHODNAME + " " + WIMTraceHelper.trace(root));
+            Tr.debug(tc, METHODNAME + " " + root);
         }
         result = profileManager.create(root);
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, METHODNAME + " " + WIMTraceHelper.trace(result));
+            Tr.debug(tc, METHODNAME + " " + result);
         }
         return result;
     }

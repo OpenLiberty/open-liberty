@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,54 +19,65 @@ import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
-
-import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 
 /**
  * <p>Java class for RolePlayer complex type.
  *
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p> The RolePlayer object extends from the {@link Entity} object.
  *
- * <pre>
- * &lt;complexType name="RolePlayer">
- * &lt;complexContent>
- * &lt;extension base="{http://www.ibm.com/websphere/wim}Entity">
- * &lt;sequence>
- * &lt;element name="partyRoles" type="{http://www.ibm.com/websphere/wim}PartyRole" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;/sequence>
- * &lt;/extension>
- * &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- *
- * <p> The RolePlay object extends from the Entity object. It has all of the properties defined by the
- * Entity object, and in addition, contains the "partyRoles" property:
+ * <p>Below is a list of supported properties for {@link Locality}.
  *
  * <ul>
  * <li><b>partyroles</b>: a containment property which is used to link the party roles the role player is
- * playing. <b>partyRoles</b> may contain multiple PartyRole objects since a role player can play multiple roles.
+ * playing. <b>partyRoles</b> may contain multiple {@link PartyRole} objects since a role player can play multiple roles.</li>
+ * </ul>
+ *
+ * <p>In addition to the properties in the list above, all properties from the super-class {@link Entity} and its
+ * super-classes are supported.
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "RolePlayer", propOrder = {
-                                            "partyRoles"
+@XmlAccessorType(XmlAccessType.NONE)
+@XmlType(name = RolePlayer.TYPE_NAME, propOrder = {
+                                                    "partyRoles"
 })
 @XmlSeeAlso({
-              com.ibm.wsspi.security.wim.model.PartyRole.class,
+              PartyRole.class,
               Party.class
 })
 public class RolePlayer extends Entity {
+
+    /** The type name for this data type. */
+    public static final String TYPE_NAME = "RolePlayer";
+
+    /** Property name constant for the <b>partyRoles</b> property. */
     private static final String PROP_PARTY_ROLES = "partyRoles";
 
-    protected List<com.ibm.wsspi.security.wim.model.PartyRole> partyRoles;
+    /**
+     * Used to link the party roles the role player is
+     * playing. <b>partyRoles</b> may contain multiple {@link PartyRole} objects since a role player can play multiple roles.
+     */
+    @XmlElement(name = PROP_PARTY_ROLES)
+    protected List<PartyRole> partyRoles;
 
-    private static List mandatoryProperties = null;
-    private static List transientProperties = null;
-    private static List propertyNames = null;
-    private static HashMap dataTypeMap = null;
-    private static ArrayList superTypeList = null;
-    private static HashSet subTypeList = null;
+    /** A list of mandatory properties. */
+    private static List<String> mandatoryProperties = null;
+
+    /** A list of transient properties. */
+    private static List<String> transientProperties = null;
+
+    /** The list of properties that comprise this type. */
+    private static List<String> propertyNames = null;
+
+    /** A mapping of property names to data types. */
+    private static HashMap<String, String> dataTypeMap = null;
+
+    /** A list of super-types of this type. */
+    private static ArrayList<String> superTypeList = null;
+
+    /** A set of sub-types of this type. */
+    private static HashSet<String> subTypeSet = null;
 
     /** The set of multi-valued properties for this entity type. */
     private static final Set<String> MULTI_VALUED_PROPERTIES;
@@ -83,13 +94,13 @@ public class RolePlayer extends Entity {
     }
 
     /**
-     * Gets the value of the partyRoles property.
+     * Gets the value of the <b>partyRoles</b> property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the partyRoles property.
+     * returned list will be present inside the object.
+     * This is why there is not a <CODE>set</CODE> method for the <b>partyRoles</b> property.
      *
      * <p>
      * For example, to add a new item, do as follows:
@@ -98,23 +109,32 @@ public class RolePlayer extends Entity {
      * getPartyRoles().add(newItem);
      * </pre>
      *
-     *
      * <p>
-     * Objects of the following type(s) are allowed in the list {@link com.ibm.wsspi.security.wim.model.PartyRole }
+     * Objects of the following type(s) are allowed in the list {@link PartyRole }
      *
-     *
+     * @return
+     *         returned object is {@link List}
      */
-    public List<com.ibm.wsspi.security.wim.model.PartyRole> getPartyRoles() {
+    public List<PartyRole> getPartyRoles() {
         if (partyRoles == null) {
-            partyRoles = new ArrayList<com.ibm.wsspi.security.wim.model.PartyRole>();
+            partyRoles = new ArrayList<PartyRole>();
         }
         return this.partyRoles;
     }
 
+    /**
+     * Returns true if the <b>partyRoles</b> property is set; false, otherwise.
+     *
+     * @return
+     *         returned object is {@link boolean }
+     */
     public boolean isSetPartyRoles() {
         return ((this.partyRoles != null) && (!this.partyRoles.isEmpty()));
     }
 
+    /**
+     * Resets the <b>partyRoles</b> property to null.
+     */
     public void unsetPartyRoles() {
         this.partyRoles = null;
     }
@@ -138,7 +158,7 @@ public class RolePlayer extends Entity {
     @Override
     public void set(String propName, Object value) {
         if (propName.equals(PROP_PARTY_ROLES)) {
-            getPartyRoles().add(((com.ibm.wsspi.security.wim.model.PartyRole) value));
+            getPartyRoles().add(((PartyRole) value));
         }
         super.set(propName, value);
     }
@@ -153,21 +173,27 @@ public class RolePlayer extends Entity {
 
     @Override
     public String getTypeName() {
-        return "RolePlayer";
+        return TYPE_NAME;
     }
 
+    /**
+     * Set the list of mandatory property names.
+     */
     private static synchronized void setMandatoryPropertyNames() {
         if (mandatoryProperties != null) {
             return;
         }
-        mandatoryProperties = new ArrayList();
+        mandatoryProperties = new ArrayList<String>();
     }
 
+    /**
+     * Set the list of transient property names.
+     */
     private static synchronized void setTransientPropertyNames() {
         if (transientProperties != null) {
             return;
         }
-        transientProperties = new ArrayList();
+        transientProperties = new ArrayList<String>();
         transientProperties.addAll(Entity.getTransientProperties());
     }
 
@@ -195,52 +221,67 @@ public class RolePlayer extends Entity {
         }
     }
 
-    protected static List getTransientProperties() {
+    /**
+     * Get the list of transient properties.
+     *
+     * @return The list of transient properties.
+     */
+    protected static List<String> getTransientProperties() {
         if (transientProperties == null) {
             setTransientPropertyNames();
         }
         return transientProperties;
     }
 
-    public static synchronized List getPropertyNames(String entityTypeName) {
-        if (propertyNames != null) {
-            return propertyNames;
-        } else {
-            {
-                List names = new ArrayList();
-                names.add(PROP_PARTY_ROLES);
-                names.addAll(Entity.getPropertyNames("Entity"));
-                propertyNames = Collections.unmodifiableList(names);
-                return propertyNames;
-            }
+    /**
+     * Gets a list of all supported properties for this type.
+     *
+     * @param entityTypeName
+     *            allowed object is {@link String}
+     * @return
+     *         returned object is {@link List}
+     */
+    public static synchronized List<String> getPropertyNames(String entityTypeName) {
+        if (propertyNames == null) {
+            List<String> names = new ArrayList<String>();
+            names.add(PROP_PARTY_ROLES);
+            names.addAll(Entity.getPropertyNames(Entity.TYPE_NAME));
+            propertyNames = Collections.unmodifiableList(names);
         }
+        return propertyNames;
     }
 
+    /**
+     * Create the property name to data type mapping.
+     */
     private static synchronized void setDataTypeMap() {
         if (dataTypeMap == null) {
-            dataTypeMap = new HashMap();
+            dataTypeMap = new HashMap<String, String>();
         }
-        dataTypeMap.put(PROP_PARTY_ROLES, "PartyRole");
+        dataTypeMap.put(PROP_PARTY_ROLES, PartyRole.TYPE_NAME);
     }
 
     @Override
     public String getDataType(String propName) {
         if (dataTypeMap.containsKey(propName)) {
-            return ((String) dataTypeMap.get(propName));
+            return (dataTypeMap.get(propName));
         } else {
             return super.getDataType(propName);
         }
     }
 
+    /**
+     * Create the list of super-types for this type.
+     */
     private static synchronized void setSuperTypes() {
         if (superTypeList == null) {
-            superTypeList = new ArrayList();
+            superTypeList = new ArrayList<String>();
         }
-        superTypeList.add("Entity");
+        superTypeList.add(Entity.TYPE_NAME);
     }
 
     @Override
-    public ArrayList getSuperTypes() {
+    public ArrayList<String> getSuperTypes() {
         if (superTypeList == null) {
             setSuperTypes();
         }
@@ -252,29 +293,32 @@ public class RolePlayer extends Entity {
         return superTypeList.contains(superTypeName);
     }
 
+    /**
+     * Create the set of sub-types for this type.
+     */
     private static synchronized void setSubTypes() {
-        if (subTypeList == null) {
-            subTypeList = new HashSet();
+        if (subTypeSet == null) {
+            subTypeSet = new HashSet<String>();
         }
-        subTypeList.add("Group");
-        subTypeList.add("Party");
-        subTypeList.add("PartyRole");
-        subTypeList.add("OrgContainer");
-        subTypeList.add("LoginAccount");
-        subTypeList.add("Person");
-        subTypeList.add("PersonAccount");
+        subTypeSet.add(Group.TYPE_NAME);
+        subTypeSet.add(Party.TYPE_NAME);
+        subTypeSet.add(PartyRole.TYPE_NAME);
+        subTypeSet.add(OrgContainer.TYPE_NAME);
+        subTypeSet.add(LoginAccount.TYPE_NAME);
+        subTypeSet.add(Person.TYPE_NAME);
+        subTypeSet.add(PersonAccount.TYPE_NAME);
     }
 
-    public static HashSet getSubTypes() {
-        if (subTypeList == null) {
+    /**
+     * Get the set of sub-types for this type.
+     *
+     * @return the set of sub-types.
+     */
+    public static HashSet<String> getSubTypes() {
+        if (subTypeSet == null) {
             setSubTypes();
         }
-        return subTypeList;
-    }
-
-    @Override
-    public String toString() {
-        return WIMTraceHelper.trace(this);
+        return subTypeSet;
     }
 
     @Override

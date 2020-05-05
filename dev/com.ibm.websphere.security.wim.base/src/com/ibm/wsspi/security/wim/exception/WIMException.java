@@ -14,7 +14,7 @@ package com.ibm.wsspi.security.wim.exception;
  * Base class representing a virtual member manager exception. This can be extended to create
  * component specific exceptions.
  *
- **/
+ */
 public class WIMException extends Exception {
 
     private static final long serialVersionUID = 2213794407328217976L;
@@ -22,41 +22,48 @@ public class WIMException extends Exception {
     private String messageKey = null;
 
     /**
-     * Default Constructor
-     **/
+     * Constructs a WIMException with no message key, no detail message, and no cause.
+     */
     public WIMException() {
         super();
     }
 
     /**
-     * Creates the WIMException.
+     * Constructs a WIMException with the specified message key and detail message.
      *
-     * @param message The message or message key of the exception.
-     **/
+     * @param key The message key.
+     * @param message The detail message.
+     */
     public WIMException(String key, String message) {
         super(message);
         messageKey = key;
     }
 
+    /**
+     * Constructs a WIMException with the specified detail message.
+     *
+     * @param message The detail message.
+     */
     public WIMException(String message) {
         super(message);
     }
 
     /**
-     * Creates the WIMException.
+     * Constructs a WIMException with the specified cause.
      *
      * @param cause The cause of the exception.
-     **/
+     */
     public WIMException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * Creates the WIMException.
+     * Constructs a WIMException with the specified message key, detail message, and cause.
      *
-     * @param message The error message.
+     * @param key The message key
+     * @param message The detail message.
      * @param cause The cause of the exception.
-     **/
+     */
     public WIMException(String key, String message, Throwable cause) {
         super(message, cause);
         messageKey = key;
@@ -64,6 +71,8 @@ public class WIMException extends Exception {
 
     /**
      * Return the message key.
+     *
+     * @return The message key.
      **/
     public String getMessageKey() {
         return messageKey;

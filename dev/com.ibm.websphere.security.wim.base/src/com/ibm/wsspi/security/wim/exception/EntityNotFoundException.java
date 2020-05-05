@@ -15,29 +15,37 @@ public class EntityNotFoundException extends WIMApplicationException {
     private static final long serialVersionUID = -2654047111029186430L;
 
     /**
-     *
+     * Constructs a EntityNotFoundException with no message key, no detail message, and no cause.
      */
     public EntityNotFoundException() {
         super();
     }
 
     /**
-     * @param message
+     * Constructs a EntityNotFoundException with the specified message key and detail message.
+     *
+     * @param key The message key.
+     * @param message The detail message.
      */
     public EntityNotFoundException(String key, String message) {
         super(key, message);
     }
 
     /**
-     * @param cause
+     * Constructs a EntityNotFoundException with the specified cause.
+     *
+     * @param cause The cause.
      */
     public EntityNotFoundException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * @param message
-     * @param cause
+     * Constructs a EntityNotFoundException with the specified message key, detail message, and cause.
+     *
+     * @param key The message key.
+     * @param message The detail message.
+     * @param cause The cause.
      */
     public EntityNotFoundException(String key, String message, Throwable cause) {
         super(key, message, cause);

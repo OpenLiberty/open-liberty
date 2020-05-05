@@ -15,29 +15,37 @@ public class EntityTypeNotSupportedException extends WIMApplicationException {
     private static final long serialVersionUID = -763052045976696867L;
 
     /**
-     *
+     * Constructs a EntityTypeNotSupportedException with no message key, no detail message, and no cause.
      */
     public EntityTypeNotSupportedException() {
         super();
     }
 
     /**
-     * @param message
+     * Constructs a EntityTypeNotSupportedException with the specified message key and detail message.
+     *
+     * @param key The message key.
+     * @param message The detail message.
      */
     public EntityTypeNotSupportedException(String key, String message) {
         super(key, message);
     }
 
     /**
-     * @param cause
+     * Constructs a EntityTypeNotSupportedException with the specified cause.
+     *
+     * @param cause The cause.
      */
     public EntityTypeNotSupportedException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * @param message
-     * @param cause
+     * Constructs a EntityTypeNotSupportedException with the specified message key, detail message, and cause.
+     *
+     * @param key The message key.
+     * @param message The detail message.
+     * @param cause The cause.
      */
     public EntityTypeNotSupportedException(String key, String message, Throwable cause) {
         super(key, message, cause);

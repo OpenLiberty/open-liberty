@@ -11,42 +11,44 @@
 package com.ibm.wsspi.security.wim.exception;
 
 /**
- * Member Manager application exception to indicate that the attribute specified by the caller is invalid.
+ * Virtual Member Manager application exception to indicate that the attribute specified by the caller is invalid.
  */
 public class InvalidPropertyException extends WIMApplicationException {
 
     private static final long serialVersionUID = 1960694189457977904L;
 
     /**
-     * Creates the Invalid Attribute Exception
+     * Constructs a InvalidInitPropertyException with no message key, no detail message, and no cause.
      */
     public InvalidPropertyException() {
         super();
     }
 
     /**
-     * Creates the Invalid Attribute Exception
+     * Constructs a InvalidInitPropertyException with the specified message key and detail message.
      *
-     * @param message The message or message key of the exception.
+     * @param key The message key.
+     * @param message The detail message.
      */
     public InvalidPropertyException(String key, String message) {
         super(key, message);
     }
 
     /**
-     * Creates the Invalid Attribute Exception
+     * Constructs a InvalidInitPropertyException with the specified message key, detail message, and cause.
      *
-     * @param message The message or message key of the exception.
-     * @param cause The cause of the exception.
+     * @param key The message key.
+     * @param message The detail message.
+     * @param cause The cause.
      */
     public InvalidPropertyException(String key, String message, Throwable cause) {
         super(key, message, cause);
     }
 
     /**
-     * Creates the Invalid Attribute Exception
+     * Constructs a InvalidInitPropertyException with the specified cause.
      *
-     * @param cause The cause of the exception.
+     * @param cause The cause.
      */
     public InvalidPropertyException(Throwable cause) {
         super(cause);

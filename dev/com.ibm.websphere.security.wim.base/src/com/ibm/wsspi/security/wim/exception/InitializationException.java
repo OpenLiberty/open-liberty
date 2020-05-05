@@ -15,29 +15,37 @@ public class InitializationException extends WIMApplicationException {
     private static final long serialVersionUID = -720095445717591596L;
 
     /**
-     *
+     * Constructs a InitializationException with no message key, no detail message, and no cause.
      */
     public InitializationException() {
         super();
     }
 
     /**
-     * @param message
+     * Constructs a InitializationException with the specified message key and detail message.
+     *
+     * @param key The message key.
+     * @param message The detail message.
      */
     public InitializationException(String key, String message) {
         super(key, message);
     }
 
     /**
-     * @param cause
+     * Constructs a InitializationException with the specified cause.
+     *
+     * @param cause The cause.
      */
     public InitializationException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * @param message
-     * @param cause
+     * Constructs a InitializationException with the specified message key, detail message, and cause.
+     *
+     * @param key The message key.
+     * @param message The detail message.
+     * @param cause The cause.
      */
     public InitializationException(String key, String message, Throwable cause) {
         super(key, message, cause);

@@ -15,29 +15,37 @@ public class DuplicateLogonIdException extends WIMApplicationException {
     private static final long serialVersionUID = 5846647269430489180L;
 
     /**
-     *
+     * Constructs a DuplicateLogonIdException with no message key, no detail message, and no cause.
      */
     public DuplicateLogonIdException() {
         super();
     }
 
     /**
-     * @param message
+     * Constructs a DuplicateLogonIdException with the specified message key and detail message.
+     *
+     * @param key The message key.
+     * @param message The detail message.
      */
     public DuplicateLogonIdException(String key, String message) {
         super(key, message);
     }
 
     /**
-     * @param cause
+     * Constructs a DuplicateLogonIdException with the specified cause.
+     *
+     * @param cause The cause.
      */
     public DuplicateLogonIdException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * @param message
-     * @param cause
+     * Constructs a DuplicateLogonIdException with the specified message key, detail message, and cause.
+     *
+     * @param key The message key.
+     * @param message The detail message.
+     * @param cause The cause.
      */
     public DuplicateLogonIdException(String key, String message, Throwable cause) {
         super(key, message, cause);

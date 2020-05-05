@@ -15,29 +15,37 @@ public class MissingSearchControlException extends WIMApplicationException {
     private static final long serialVersionUID = -7939657696993993837L;
 
     /**
-     *
+     * Constructs a MissingSearchControlException with no message key, no detail message, and no cause.
      */
     public MissingSearchControlException() {
         super();
     }
 
     /**
-     * @param message
+     * Constructs a MissingSearchControlException with the specified message key and detail message.
+     *
+     * @param key The message key.
+     * @param message The detail message.
      */
     public MissingSearchControlException(String key, String message) {
         super(key, message);
     }
 
     /**
-     * @param cause
+     * Constructs a MissingSearchControlException with the specified cause.
+     *
+     * @param cause The cause.
      */
     public MissingSearchControlException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * @param message
-     * @param cause
+     * Constructs a MissingSearchControlException with the specified message key, detail message, and cause.
+     *
+     * @param key The message key.
+     * @param message The detail message.
+     * @param cause The cause.
      */
     public MissingSearchControlException(String key, String message, Throwable cause) {
         super(key, message, cause);

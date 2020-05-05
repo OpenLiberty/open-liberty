@@ -16,7 +16,6 @@ import com.ibm.wsspi.security.wim.exception.WIMException;
 import com.ibm.wsspi.security.wim.model.Root;
 
 /**
- * <p>
  * <i>CustomRepository</i> interface (<code>com.ibm.wsspi.security.wim.CustomRepository</code>)
  * is used to implement the custom repository as a user feature.
  * <ul>
@@ -27,11 +26,9 @@ import com.ibm.wsspi.security.wim.model.Root;
  * schema does not already have pre-defined.
  * </li>
  * </ul>
- * </p>
- * 
- * @ibm-spi
+ *
  * @see com.ibm.websphere.security.UserRegistry
- **/
+ */
 public interface CustomRepository {
     //From former RepositoryConfiguration
 
@@ -50,10 +47,10 @@ public interface CustomRepository {
      * For example, PropertyControl is used for returning the properties of the
      * entity/entities. GroupMembershipControl is used for returning groups the
      * entity/entities belongs to.
-     * 
+     *
      * @param root The root data object containing the request information.
      * @return The root data object containing the requested information.
-     * @throws WIMException
+     * @throws WIMException If there was an error retrieving the specified entities.
      */
     Root get(Root root) throws WIMException;
 
@@ -69,10 +66,10 @@ public interface CustomRepository {
      * For example, you want get uid, cn for all the people whose sn equals to "Doe".
      * The search expression is also included in the SearchControl. If you want to
      * use the paged search function, the PageControl is needed.
-     * 
+     *
      * @param root the root data object containing the control(s) related to search.
      * @return the root data object containing the entities matching the search expression.
-     * @throws WIMException
+     * @throws WIMException If there was an error searching for the specified entities.
      */
     Root search(Root root) throws WIMException;
 
@@ -80,30 +77,28 @@ public interface CustomRepository {
      * Authenticates the account data object in the specified root data object.
      * User can be authenticated either using loginId/password or using X509Certificate.
      * The successfully authenticated account data object will be returned with requested properties. <br>
-     * 
+     *
      * @param root the root data object containing the account to authenticate.
      * @return the root data object containing the account which is successfully authenticated.
-     * @throws WIMException
+     * @throws WIMException If there was an error authenticating the user.
      */
     Root login(Root root) throws WIMException;
 
     /**
      * Returns the realm name
-     * 
-     * @return
+     *
+     * @return The realm name.
      */
     String getRealm();
 
     /**
      * Delete the entity specified in the root data object.
-     * 
+     *
      * @param root The root data object which contains the entity to delete.
      *            The identifier of the entity should be specified.
-     * 
      * @return The root data object containing the deleted entity and its descendants
      *         (if there are any), with their identifiers.
-     * 
-     * @throws WIMException
+     * @throws WIMException If there was an error deleting the specified entity.
      */
     Root delete(Root root) throws WIMException;
 
@@ -114,10 +109,10 @@ public interface CustomRepository {
      * can be added under the root data object along with the properties.<br>
      * The output root data object of the create method contains the created entity data object
      * which contains its identifier.
-     * 
+     *
      * @param root The root data object which contains the entity to be created.
      * @return The root data object which contains the created entity and its identifier.
-     * @throws WIMException
+     * @throws WIMException If there was an error creating the specified entity.
      */
     Root create(Root root) throws WIMException;
 
@@ -125,10 +120,10 @@ public interface CustomRepository {
      * Updates entity specified in the root data object.
      * The caller can create an empty root data object and specify
      * the changes needed. All the changes will replace the existing values.
-     * 
+     *
      * @param root The root data object containing entity with changes need to update.
      * @return The root data object containing the updated entity with its identifier.
-     * @throws WIMException
+     * @throws WIMException If there was an error updating the specified entity.
      */
     Root update(Root root) throws WIMException;
 

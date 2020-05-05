@@ -1395,7 +1395,7 @@ public interface WIMMessageKey {
     String INVALID_NS_PREFIX_FOR_ENTITY_TYPE_OR_PROPERTY = "INVALID_NS_PREFIX_FOR_ENTITY_TYPE_OR_PROPERTY";
 
     /**
-     * Command failed since prefix for the namespace URI '<Variable formatSpec="{0}">ns_URI</Variable>' is not provided.
+     * Command failed since prefix for the namespace URI '&lt;Variable formatSpec="{0}"&gt;ns_URI&lt;/Variable&gt;' is not provided.
      */
     String NO_NS_PREFIX_FOR_NS_URI = "NO_NS_PREFIX_FOR_NS_URI";
 
@@ -1426,22 +1426,22 @@ public interface WIMMessageKey {
     String CERTIFICATE_GENERATE_FAILED = "CERTIFICATE_GENERATE_FAILED";
 
     /**
-     * Attribute mapping for <attribute_name> is not defined for one or more specified entity types.
+     * Attribute mapping for &lt;attribute_name&gt; is not defined for one or more specified entity types.
      */
     String ATTRIBUTE_MAPPING_NOT_DEFINED_FOR_ENTITY_TYPE = "ATTRIBUTE_MAPPING_NOT_DEFINED_FOR_ENTITY_TYPE";
 
     /**
-     * Attribute mapping for <attribute_name> already exists for one or more specified entity types.
+     * Attribute mapping for &lt;attribute_name&gt; already exists for one or more specified entity types.
      */
     String ATTRIBUTE_MAPPING_ALREADY_EXISTS_FOR_ENTITY_TYPE = "ATTRIBUTE_MAPPING_ALREADY_EXISTS_FOR_ENTITY_TYPE";
 
     /**
-     * Common attribute mapping for <attribute_name> already exists.
+     * Common attribute mapping for &lt;attribute_name&gt; already exists.
      */
     String COMMON_ATTRIBUTE_MAPPING_ALREADY_EXISTS = "COMMON_ATTRIBUTE_MAPPING_ALREADY_EXISTS";
 
     /**
-     * Common attribute mapping for <attribute_name> can not be added.
+     * Common attribute mapping for &lt;attribute_name&gt; can not be added.
      */
     String INVALID_COMMON_ATTRIBUTE_MAPPING = "INVALID_COMMON_ATTRIBUTE_MAPPING";
 

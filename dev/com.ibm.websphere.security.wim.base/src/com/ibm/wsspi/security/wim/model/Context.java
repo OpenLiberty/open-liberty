@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,34 +26,19 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 
 /**
  * <p>Java class for Context complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
- * <pre>
- * &lt;complexType name="Context">
- * &lt;complexContent>
- * &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- * &lt;sequence>
- * &lt;element name="key" type="{http://www.w3.org/2001/XMLSchema}string"/>
- * &lt;element name="value" type="{http://www.w3.org/2001/XMLSchema}anySimpleType"/>
- * b &lt;/sequence>
- * &lt;/restriction>
- * &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- * 
+ *
  * <p> The Context object is used for storing contextual information.
- * 
+ *
  * <p> A client may communicate contextual information to VMM. For example, when creating a Person,
  * the client application may need to specify the realm to create the Person under. The realm itself is not a
- * part of the Person object's data. Another example is VMM may need the client application to pass in an ip
+ * part of the Person object's data. Another example is VMM may need the client application to pass in an IP
  * address.
- * 
+ *
  * <p> The Context object is used for storing this contextual information. The Context object supports
- * arbitrary key -> object mappings in order to support attributes that are not already pre-defined in the VMM schema
- * 
+ * arbitrary key -&gt; object mappings in order to support attributes that are not already pre-defined in the VMM schema
+ *
  * <p> The Context object consists of key-value pair mappings of contextual information.
- * 
+ *
  * <ul>
  * <li><b>key</b>: specifies the name of a contextual property. The following are two examples
  * of possible keys: realm, ipAddress</li>
@@ -62,22 +47,49 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * either be a single value or multi-valued.</li>
  * </ul>
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Context", propOrder = {
-                                        "key",
-                                        "value"
+@XmlAccessorType(XmlAccessType.NONE)
+@XmlType(name = Context.TYPE_NAME, propOrder = {
+                                                 "key",
+                                                 "value"
 })
 public class Context {
 
-    @XmlElement(required = true)
+    /** The type name for this data type. */
+    public static final String TYPE_NAME = "Context";
+
+    /** Property name constant for the <b>key</b> property. */
+    private static final String PROP_KEY = "key";
+
+    /** Property name constant for the <b>value</b> property. */
+    private static final String PROP_VALUE = "value";
+
+    /**
+     * The name of a contextual property. The following are two examples
+     * of possible keys: realm, ipAddress
+     */
+    @XmlElement(name = PROP_KEY, required = true)
     protected String key;
-    @XmlElement(required = true)
+
+    /**
+     * The value of a contextual property. Since value can be a String or
+     * any arbitrary object, the type of the property value is <b>anySimpleType</b>. This property can
+     * either be a single value or multi-valued.
+     */
+    @XmlElement(name = PROP_VALUE, required = true)
     @XmlSchemaType(name = "anySimpleType")
     protected Object value;
-    private static List propertyNames = null;
-    private static HashMap dataTypeMap = null;
-    private static ArrayList superTypeList = null;
-    private static HashSet subTypeList = null;
+
+    /** The list of properties that comprise this type. */
+    private static List<String> propertyNames = null;
+
+    /** A mapping of property names to data types. */
+    private static HashMap<String, String> dataTypeMap = null;
+
+    /** A list of super-types of this type. */
+    private static ArrayList<String> superTypeList = null;
+
+    /** A set of sub-types of this type. */
+    private static HashSet<String> subTypeSet = null;
 
     static {
         setDataTypeMap();
@@ -87,10 +99,9 @@ public class Context {
 
     /**
      * Gets the value of the <b>key</b> property.
-     * 
+     *
      * @return
      *         possible object is {@link String }
-     * 
      */
     public String getKey() {
         return key;
@@ -98,10 +109,9 @@ public class Context {
 
     /**
      * Sets the value of the <b>key</b> property.
-     * 
+     *
      * @param value
      *            allowed object is {@link String }
-     * 
      */
     public void setKey(String value) {
         this.key = value;
@@ -109,10 +119,9 @@ public class Context {
 
     /**
      * Returns true if the <b>key</b> property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
      */
     public boolean isSetKey() {
         return (this.key != null);
@@ -120,10 +129,9 @@ public class Context {
 
     /**
      * Gets the value of the <b>value</b> property.
-     * 
+     *
      * @return
      *         possible object is {@link Object }
-     * 
      */
     public Object getValue() {
         return value;
@@ -131,10 +139,9 @@ public class Context {
 
     /**
      * Sets the value of the <b>value</b> property.
-     * 
+     *
      * @param value
      *            allowed object is {@link Object }
-     * 
      */
     public void setValue(Object value) {
         this.value = value;
@@ -142,10 +149,9 @@ public class Context {
 
     /**
      * Returns true if the <b>value</b> property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
      */
     public boolean isSetValue() {
         return (this.value != null);
@@ -153,19 +159,18 @@ public class Context {
 
     /**
      * Gets the value of the requested property
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
-     * 
+     *
      * @return
      *         returned object is {@link Object}
-     * 
      */
     public Object get(String propName) {
-        if (propName.equals("key")) {
+        if (propName.equals(PROP_KEY)) {
             return getKey();
         }
-        if (propName.equals("value")) {
+        if (propName.equals(PROP_VALUE)) {
             return getValue();
         }
         return null;
@@ -173,16 +178,17 @@ public class Context {
 
     /**
      * Returns true if the requested property is set; false, otherwise.
-     * 
+     *
+     * @param propName
+     *            The name of the property to check if is set.
      * @return
      *         returned object is {@link boolean }
-     * 
      */
     public boolean isSet(String propName) {
-        if (propName.equals("key")) {
+        if (propName.equals(PROP_KEY)) {
             return isSetKey();
         }
-        if (propName.equals("value")) {
+        if (propName.equals(PROP_VALUE)) {
             return isSetValue();
         }
         return false;
@@ -190,103 +196,104 @@ public class Context {
 
     /**
      * Sets the value of the provided property to the provided value.
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
      * @param value
      *            allowed object is {@link Object}
-     * 
      */
     public void set(String propName, Object value) {
-        if (propName.equals("key")) {
+        if (propName.equals(PROP_KEY)) {
             setKey(((String) value));
         }
-        if (propName.equals("value")) {
+        if (propName.equals(PROP_VALUE)) {
             setValue(value);
         }
     }
 
     /**
      * Sets the value of provided property to null.
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
-     * 
      */
     public void unset(String propName) {}
 
     /**
-     * Gets the name of this model object, <b>Context</b>
-     * 
+     * Gets the name of this type.
+     *
      * @return
      *         returned object is {@link String}
      */
     public String getTypeName() {
-        return "Context";
+        return TYPE_NAME;
     }
 
     /**
-     * Gets a list of all supported properties for this model object, <b>Context</b>
-     * 
+     * Gets a list of all supported properties for this type.
+     *
      * @param entityTypeName
      *            allowed object is {@link String}
-     * 
+     *
      * @return
      *         returned object is {@link List}
      */
-    public static synchronized List getPropertyNames(String entityTypeName) {
+    public static synchronized List<String> getPropertyNames(String entityTypeName) {
         if (propertyNames != null) {
             return propertyNames;
         } else {
-            {
-                List names = new ArrayList();
-                names.add("key");
-                names.add("value");
-                propertyNames = Collections.unmodifiableList(names);
-                return propertyNames;
-            }
+            List<String> names = new ArrayList<String>();
+            names.add(PROP_KEY);
+            names.add(PROP_VALUE);
+            propertyNames = Collections.unmodifiableList(names);
+            return propertyNames;
         }
-    }
-
-    private static synchronized void setDataTypeMap() {
-        if (dataTypeMap == null) {
-            dataTypeMap = new HashMap();
-        }
-        dataTypeMap.put("key", "String");
-        dataTypeMap.put("value", "Object");
     }
 
     /**
-     * Gets the Java type of the value of the provided property. For example: String, List
-     * 
+     * Create the property name to data type mapping.
+     */
+    private static synchronized void setDataTypeMap() {
+        if (dataTypeMap == null) {
+            dataTypeMap = new HashMap<String, String>();
+        }
+        dataTypeMap.put(PROP_KEY, "String");
+        dataTypeMap.put(PROP_VALUE, "Object");
+    }
+
+    /**
+     * Gets the Java type of the value of the provided property. For example: String
+     *
      * @param propName
      *            allowed object is {@link String}
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */
     public String getDataType(String propName) {
         if (dataTypeMap.containsKey(propName)) {
-            return ((String) dataTypeMap.get(propName));
+            return (dataTypeMap.get(propName));
         } else {
             return null;
         }
     }
 
+    /**
+     * Create the list of super-types for this entity type.
+     */
     private static synchronized void setSuperTypes() {
         if (superTypeList == null) {
-            superTypeList = new ArrayList();
+            superTypeList = new ArrayList<String>();
         }
     }
 
     /**
-     * Gets a list of any model objects which this model object, <b>Context</b> is
-     * an extension of.
-     * 
+     * Gets a list of any types which this type is an extension of.
+     *
      * @return
      *         returned object is {@link ArrayList}
      */
-    public ArrayList getSuperTypes() {
+    public ArrayList<String> getSuperTypes() {
         if (superTypeList == null) {
             setSuperTypes();
         }
@@ -294,11 +301,10 @@ public class Context {
     }
 
     /**
-     * Returns a true if the provided model object is one that this
-     * model object extends; false, otherwise.
-     * 
+     * Returns a true if the provided type is one that this type extends; false, otherwise.
+     *
      * @param superTypeName
-     * 
+     *
      *            allowed object is {@link String}
      * @return
      *         returned object is {@link boolean}
@@ -307,34 +313,30 @@ public class Context {
         return superTypeList.contains(superTypeName);
     }
 
+    /**
+     * Create the list of sub-types for this type.
+     */
     private static synchronized void setSubTypes() {
-        if (subTypeList == null) {
-            subTypeList = new HashSet();
+        if (subTypeSet == null) {
+            subTypeSet = new HashSet<String>();
         }
     }
 
     /**
-     * Gets a set of any model objects which extend this model object, <b>Context</b>
-     * 
+     * Gets a set of any types which extend this type.
+     *
      * @return
      *         returned object is {@link HashSet}
      */
-    public static HashSet getSubTypes() {
-        if (subTypeList == null) {
+    public static HashSet<String> getSubTypes() {
+        if (subTypeSet == null) {
             setSubTypes();
         }
-        return subTypeList;
+        return subTypeSet;
     }
 
-    /**
-     * Returns this model object, <b>Context</b>, and its contents as a String
-     * 
-     * @return
-     *         returned object is {@link String}
-     */
     @Override
     public String toString() {
-        return WIMTraceHelper.trace(this);
+        return WIMTraceHelper.traceJaxb(this);
     }
-
 }

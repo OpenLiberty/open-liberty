@@ -14,4 +14,15 @@
 @org.osgi.annotation.versioning.Version("1.1")
 @com.ibm.websphere.ras.annotation.TraceOptions(traceGroup = com.ibm.websphere.security.wim.util.TraceConstants.TRACE_GROUP,
                                                messageBundle = com.ibm.websphere.security.wim.util.TraceConstants.MESSAGE_BUNDLE)
+@javax.xml.bind.annotation.XmlSchema(namespace = SchemaConstants.WIM_NS_URI,
+                                     attributeFormDefault = XmlNsForm.UNQUALIFIED,
+                                     elementFormDefault = XmlNsForm.QUALIFIED,
+                                     xmlns = { @XmlNs(prefix = SchemaConstants.WIM_NS_PREFIX, namespaceURI = SchemaConstants.WIM_NS_URI),
+                                               @XmlNs(prefix = "xsd", namespaceURI = "http://www.w3.org/2001/XMLSchema"),
+                                               @XmlNs(prefix = "xsi", namespaceURI = "http://www.w3.org/2001/XMLSchema-instance") })
 package com.ibm.wsspi.security.wim.model;
+
+import javax.xml.bind.annotation.XmlNs;
+import javax.xml.bind.annotation.XmlNsForm;
+
+import com.ibm.wsspi.security.wim.SchemaConstants;

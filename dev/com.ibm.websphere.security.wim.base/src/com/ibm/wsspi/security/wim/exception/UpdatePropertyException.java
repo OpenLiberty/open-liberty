@@ -15,29 +15,37 @@ public class UpdatePropertyException extends WIMApplicationException {
     private static final long serialVersionUID = 6449986048740351789L;
 
     /**
-     *
+     * Constructs a UpdatePropertyException with no message key, no detail message, and no cause.
      */
     public UpdatePropertyException() {
         super();
     }
 
     /**
-     * @param message
+     * Constructs a UpdatePropertyException with the specified message key and detail message.
+     *
+     * @param key The message key.
+     * @param message The detail message.
      */
     public UpdatePropertyException(String key, String message) {
         super(key, message);
     }
 
     /**
-     * @param cause
+     * Constructs a UpdatePropertyException with the specified cause.
+     *
+     * @param cause The cause.
      */
     public UpdatePropertyException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * @param message
-     * @param cause
+     * Constructs a UpdatePropertyException with the specified message key, detail message, and cause.
+     *
+     * @param key The message key.
+     * @param message The detail message.
+     * @param cause The cause.
      */
     public UpdatePropertyException(String key, String message, Throwable cause) {
         super(key, message, cause);

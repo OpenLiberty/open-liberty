@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,39 +20,33 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
-
 /**
  * <p>Java class for ExternalNameControl complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
- * <pre>
- * &lt;complexType name="ExternalNameControl">
- * &lt;complexContent>
- * &lt;extension base="{http://www.ibm.com/websphere/wim}Control">
- * &lt;/extension>
- * &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- * 
- * <p> The ExternalNameControl object extends the Control object.
- * 
+ *
+ * <p> The ExternalNameControl object extends the {@link Control} object.
+ *
  * <p> By default, VMM requires the caller to identify an entity by either the uniqueId or uniqueName.
- * If ExternalNameControl is specified in the input Root object, the caller can use the externalName
+ * If ExternalNameControl is specified in the input {@link Root} object, the caller can use the externalName
  * to identify the entity.
- * 
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ExternalNameControl")
-public class ExternalNameControl
-                extends Control
-{
+@XmlAccessorType(XmlAccessType.NONE)
+@XmlType(name = ExternalNameControl.TYPE_NAME)
+public class ExternalNameControl extends Control {
 
-    private static List propertyNames = null;
-    private static HashMap dataTypeMap = null;
-    private static ArrayList superTypeList = null;
-    private static HashSet subTypeList = null;
+    /** The type name for this data type. */
+    public static final String TYPE_NAME = "ExternalNameControl";
+
+    /** The list of properties that comprise this type. */
+    private static List<String> propertyNames = null;
+
+    /** A mapping of property names to data types. */
+    private static HashMap<String, String> dataTypeMap = null;
+
+    /** A list of super-types of this type. */
+    private static ArrayList<String> superTypeList = null;
+
+    /** A set of sub-types of this type. */
+    private static HashSet<String> subTypeSet = null;
 
     static {
         setDataTypeMap();
@@ -61,180 +55,94 @@ public class ExternalNameControl
     }
 
     /**
-     * Gets the value of the requested property
-     * 
-     * @param propName
-     *            allowed object is {@link String}
-     * 
-     * @return
-     *         returned object is {@link Object}
-     * 
-     */
-    @Override
-    public Object get(String propName) {
-        return super.get(propName);
-    }
-
-    /**
-     * Returns true if the requested property is set; false, otherwise.
-     * 
-     * @return
-     *         returned object is {@link boolean }
-     * 
-     */
-    @Override
-    public boolean isSet(String propName) {
-        return super.isSet(propName);
-    }
-
-    /**
-     * Sets the value of the provided property to the provided value.
-     * 
-     * @param propName
-     *            allowed object is {@link String}
-     * @param value
-     *            allowed object is {@link Object}
-     * 
-     */
-    @Override
-    public void set(String propName, Object value) {
-        super.set(propName, value);
-    }
-
-    /**
-     * Sets the value of provided property to null.
-     * 
-     * @param propName
-     *            allowed object is {@link String}
-     * 
-     */
-    @Override
-    public void unset(String propName) {
-        super.unset(propName);
-    }
-
-    /**
-     * Gets the name of this model object, <b>ExternalNameControl</b>
-     * 
+     * Gets the name of this type.
+     *
      * @return
      *         returned object is {@link String}
      */
     @Override
     public String getTypeName() {
-        return "ExternalNameControl";
+        return TYPE_NAME;
     }
 
     /**
-     * Gets a list of all supported properties for this model object, <b>ExternalNameControl</b>
-     * 
+     * Gets a list of all supported properties for this type.
+     *
      * @param entityTypeName
      *            allowed object is {@link String}
-     * 
+     *
      * @return
      *         returned object is {@link List}
      */
-    public static synchronized List getPropertyNames(String entityTypeName) {
-        if (propertyNames != null) {
-            return propertyNames;
-        } else {
-            {
-                List names = new ArrayList();
-                names.addAll(Control.getPropertyNames("Control"));
-                propertyNames = Collections.unmodifiableList(names);
-                return propertyNames;
-            }
+    public static synchronized List<String> getPropertyNames(String entityTypeName) {
+        if (propertyNames == null) {
+            List<String> names = new ArrayList<String>();
+            names.addAll(Control.getPropertyNames(Control.TYPE_NAME));
+            propertyNames = Collections.unmodifiableList(names);
         }
-    }
-
-    private static synchronized void setDataTypeMap() {
-        if (dataTypeMap == null) {
-            dataTypeMap = new HashMap();
-        }
+        return propertyNames;
     }
 
     /**
-     * Gets the Java type of the value of the provided property. For example: String, List
-     * 
-     * @param propName
-     *            allowed object is {@link String}
-     * 
-     * @return
-     *         returned object is {@link String}
+     * Create the property name to data type mapping.
      */
+    private static synchronized void setDataTypeMap() {
+        if (dataTypeMap == null) {
+            dataTypeMap = new HashMap<String, String>();
+        }
+    }
+
     @Override
     public String getDataType(String propName) {
         if (dataTypeMap.containsKey(propName)) {
-            return ((String) dataTypeMap.get(propName));
+            return (dataTypeMap.get(propName));
         } else {
             return super.getDataType(propName);
         }
     }
 
+    /**
+     * Create the list of super-types for this type.
+     */
     private static synchronized void setSuperTypes() {
         if (superTypeList == null) {
-            superTypeList = new ArrayList();
+            superTypeList = new ArrayList<String>();
         }
-        superTypeList.add("Control");
+        superTypeList.add(Control.TYPE_NAME);
     }
 
-    /**
-     * Gets a list of any model objects which this model object, <b>ExternalNameControl</b>, is
-     * an extension of.
-     * 
-     * @return
-     *         returned object is {@link ArrayList}
-     */
     @Override
-    public ArrayList getSuperTypes() {
+    public ArrayList<String> getSuperTypes() {
         if (superTypeList == null) {
             setSuperTypes();
         }
         return superTypeList;
     }
 
-    /**
-     * Returns a true if the provided model object is one that this
-     * model object extends; false, otherwise.
-     * 
-     * @param superTypeName
-     * 
-     *            allowed object is {@link String}
-     * @return
-     *         returned object is {@link boolean}
-     */
     @Override
     public boolean isSubType(String superTypeName) {
         return superTypeList.contains(superTypeName);
     }
 
+    /**
+     * Create the set of sub-types for this type.
+     */
     private static synchronized void setSubTypes() {
-        if (subTypeList == null) {
-            subTypeList = new HashSet();
+        if (subTypeSet == null) {
+            subTypeSet = new HashSet<String>();
         }
     }
 
     /**
-     * Gets a set of any model objects which extend this model object, <b>ExternalNameControl</b>
-     * 
+     * Gets a set of any types which extend this type.
+     *
      * @return
      *         returned object is {@link HashSet}
      */
-    public static HashSet getSubTypes() {
-        if (subTypeList == null) {
+    public static HashSet<String> getSubTypes() {
+        if (subTypeSet == null) {
             setSubTypes();
         }
-        return subTypeList;
+        return subTypeSet;
     }
-
-    /**
-     * Returns this model object, <b>ExternalNameControl</b>, and its contents as a String
-     * 
-     * @return
-     *         returned object is {@link String}
-     */
-    @Override
-    public String toString() {
-        return WIMTraceHelper.trace(this);
-    }
-
 }

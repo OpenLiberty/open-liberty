@@ -37,8 +37,8 @@ public interface ProfileServiceLite extends SchemaConstants {
      *
      * @param root The root data object containing the request information.
      * @return The root data object containing the requested information.
-     * @throws WIMException
-     * @throws RemoteException
+     * @throws WIMException If there was an error retrieving the specified entities.
+     * @throws RemoteException If there was an error making a remote call.
      */
     Root get(Root root) throws WIMException, RemoteException;
 
@@ -57,8 +57,8 @@ public interface ProfileServiceLite extends SchemaConstants {
      *
      * @param root the root data object containing the control(s) related to search.
      * @return the root data object containing the entities matching the search expression.
-     * @throws WIMException
-     * @throws RemoteException
+     * @throws WIMException If there was an error searching for the specified entities.
+     * @throws RemoteException If there was an error making a remote call.
      */
     Root search(Root root) throws WIMException, RemoteException;
 
@@ -70,8 +70,8 @@ public interface ProfileServiceLite extends SchemaConstants {
      *
      * @param root the root data object containing the LoginAccount to authenticate.
      * @return the root data object containing the LoginAccount which is successfully authenticated.
-     * @throws WIMException
-     * @throws RemoteException
+     * @throws WIMException If there was an error authenticating the user.
+     * @throws RemoteException If there was an error making a remote call.
      */
     Root login(Root root) throws WIMException, RemoteException;
 
@@ -84,8 +84,8 @@ public interface ProfileServiceLite extends SchemaConstants {
      * @return The root data object containing the deleted entity and its descendants
      *         (if there are any), with their identifiers.
      *
-     * @throws WIMException
-     * @throws RemoteException
+     * @throws WIMException If there was an error deleting the specified entity.
+     * @throws RemoteException If there was an error making a remote call.
      */
     Root delete(Root root) throws WIMException, RemoteException;
 
@@ -98,8 +98,8 @@ public interface ProfileServiceLite extends SchemaConstants {
      *
      * @param root The root data object which contains the entity to be created.
      * @return The root data object which contains the created entity and its identifier.
-     * @throws WIMException
-     * @throws RemoteException
+     * @throws WIMException If there was an error creating the specified entity.
+     * @throws RemoteException If there was an error making a remote call.
      */
     Root create(Root root) throws WIMException, RemoteException;
 
@@ -110,8 +110,8 @@ public interface ProfileServiceLite extends SchemaConstants {
      *
      * @param root The root data object containing entity with changes need to update.
      * @return The root data object containing the updated entity with its identifier.
-     * @throws WIMException
-     * @throws RemoteException
+     * @throws WIMException If there was an error updating the specified entity.
+     * @throws RemoteException If there was an error making a remote call.
      */
     Root update(Root root) throws WIMException, RemoteException;
 }

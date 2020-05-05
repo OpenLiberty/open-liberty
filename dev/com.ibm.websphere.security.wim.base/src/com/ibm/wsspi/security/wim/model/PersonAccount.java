@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,243 +22,615 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.wim.ras.WIMMessageKey;
-import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
+import com.ibm.websphere.security.wim.util.ExtendedPropertyXmlAdapter;
 
 /**
  * <p>Java class for PersonAccount complex type.
  *
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>The PersonAccount object extends the {@link LoginAccount} object, and represents an account with person properties.
+ *
+ * <p>A PersonAccount object allows the schema of a person and his login accounts, defined by the
+ * respective {@link LoginAccount} objects, to be kept independent of each other. For example, the set of properties on a PersonAccount
+ * may not need to be exactly the same as the set of person-specific properties on each of that person's
+ * {@link LoginAccount} entities.
+ *
+ * <p>Below is a table of supported properties for {@link PersonAccount}.
+ *
+ * <p>
+ * <ul>
+ * <li><b>uid</b>: contains a computer system login name for the PersonAccount.</li>
+ * <li><b>cn</b>: contains names of a PersonAccount.</li>
+ * <li><b>sn</b>: contains name strings for the family names of a PersonAccount.</li>
+ * <li><b>preferredLanguage</b>: contains the preferred written or spoken language for a PersonAccount.</li>
+ * <li><b>displayName</b>: contains the preferred name of a PersonAccount to be used for display.</li>
+ * <li><b>initials</b>: contains strings of initials of some or all of an individual's names, except the surname(s).</li>
+ * <li><b>mail</b>: contains an email address for the PersonAccount.</li>
+ * <li><b>ibmPrimaryEmail</b>: contains the primary email address for the PersonAccount.</li>
+ * <li><b>jpegPhoto</b>: contains JPEG photos for the PersonAccount.</li>
+ * <li><b>labeledURI</b>: contains URIs with optional labels.</li>
+ * <li><b>carLicense</b>: contains vehicle license or registration plate for the PersonAccount.</li>
+ * <li><b>telephoneNumber</b>: contains telephone numbers for the PersonAccount.</li>
+ * <li><b>facsimileTelephoneNumber</b>: contains telephone numbers for facsimile terminals.</li>
+ * <li><b>pager</b>: contains pager numbers for the PersonAccount.</li>
+ * <li><b>mobile</b>: contains mobile numbers for the PersonAccount.</li>
+ * <li><b>homePostalAddress</b>: contains home addresses used by a Postal Service.</li>
+ * <li><b>postalAddress</b>: contains addresses used by a Postal Service.</li>
+ * <li><b>roomNumber</b>: contains the room number for the PersonAccount.</li>
+ * <li><b>l</b>: a short form for the <b>localityName</b>.</li>
+ * <li><b>localityName</b>: contains the name of a locality, such as a city, county or other geographic region.</li>
+ * <li><b>st</b>: a short form for <b>stateOrProvinceName</b>.</li>
+ * <li><b>stateOrProvinceName</b>: contains the full name of a state or province (stateOrProvinceName).</li>
+ * <li><b>street</b>: contains the physical address of the object to which the entry corresponds, such as an address for package delivery.</li>
+ * <li><b>postalCode</b>: contains codes used by a Postal Service to identify postal service zones.</li>
+ * <li><b>city</b>: contains the city.</li>
+ * <li><b>employeeType</b>: contains the employee type for the PersonAccount.</li>
+ * <li><b>employeeNumber</b>: contains the employee number for the PersonAccount.</li>
+ * <li><b>manager</b>: contains an identifier for the PersonAccount's manager.</li>
+ * <li><b>secretary</b>: contains an identifier for the PersonAccount's secretary.</li>
+ * <li><b>departmentNumber</b>: identifies a department within an organization.</li>
+ * <li><b>title</b>: contains the title of a person in their organizational context.</li>
+ * <li><b>ibmJobTitle</b>: contains the job title for the PersonAccount.</li>
+ * <li><b>c</b>: short form for the <b>countryName</b> property.</li>
+ * <li><b>countryName</b>: defines the name of the country.</li>
+ * <li><b>givenName</b>: contains name strings that are the part of a person's name that is not their surname.</li>
+ * <li><b>homeStreet</b>: contains the home street address for the PersonAccount.</li>
+ * <li><b>homeCity</b>: contains the home city for the PersonAccount.</li>
+ * <li><b>homeStateOrProvinceName</b>: contains the home state or province name for the PersonAccount.</li>
+ * <li><b>homePostalCode</b>: contains the home postal code for the PersonAccount.</li>
+ * <li><b>homeCountryName</b>: contains the home country name for the PersonAccount.</li>
+ * <li><b>businessStreet</b>: contains the business street address for the PersonAccount.</li>
+ * <li><b>businessCity</b>: contains the business city for the PersonAccount.</li>
+ * <li><b>businessStateOrProvinceName</b>: contains the business state or province name for the PersonAccount.</li>
+ * <li><b>businessPostalCode</b>: contains the business postal code for the PersonAccount.</li>
+ * <li><b>businessCountryName</b>: contains the business country name for the PersonAccount.</li>
+ * <li><b>description</b>: contains human-readable descriptive phrases about the PersonAccount.</li>
+ * <li><b>businessCategory</b>: describes the kinds of business performed by a PersonAccount.</li>
+ * <li><b>seeAlso</b>: contains the distinguished names of objects that are related to this PersonAccount.</li>
+ * <li><b>kerberosId</b>: contains the Kerberos ID for the PersonAccount.</li>
+ * <li><b>photoURL</b>: contains a URL for a photo of the PersonAccount.</li>
+ * <li><b>photoURLThumbnail</b>: contains a URL for a thumbnail image of the PersonAccount.</li>
+ * <li><b>middleName</b>: contains name strings that comprise the person's middle name.</li>
+ * <li><b>honorificPrefix</b>: contains name strings that comprise the PersonAccounts honorary prefix(es).</li>
+ * <li><b>honorificSuffix</b>: contains name strings that comprise the PersonAccounts honorary suffix(es).</li>
+ * <li><b>nickName</b>: contains a nick name for the PersonAccount.</li>
+ * <li><b>profileUrl</b>: contains a URL to the PersonAccount's profile.</li>
+ * <li><b>timezone</b>: contains the timezone for the PersonAccount.</li>
+ * <li><b>locale</b>: contains the preferred locale for a PersonAccount.</li>
+ * <li><b>ims</b>: contains instant messaging addresses for the PersonAccount.</li>
+ * <li><b>active</b>: describes whether the PersonAccount is active.</li>
+ * </ul>
+ *
+ * <p/>
+ * In addition to the properties in the table above, all properties from the super-class {@link LoginAccount} and its
+ * super-classes are supported.
+ *
+ * <p/>
+ * The {@link PersonAccount} schema can be extended by including extended properties in the server.xml configuration. For example,
+ * the following server.xml configuration would create the extended property "myProperty" of type String in {@link PersonAccount}.
+ *
+ * <code>
  *
  * <pre>
- * &lt;complexType name="PersonAccount">
- * &lt;complexContent>
- * &lt;extension base="{http://www.ibm.com/websphere/wim}LoginAccount">
- * &lt;group ref="{http://www.ibm.com/websphere/wim}PersonPropertyGroup"/>
- * &lt;/extension>
- * &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;federatedRepository&gt;
+ *     &lt;extendedProperty name="myProperty" dataType="String" entityType="PersonAccount" multiValued="false" /&gt;
+ * &lt;/federatedRepository&gt;
  * </pre>
  *
- * <p> The PersonAccount object extends the LoginAccount object, and represents an account with
- * person properties.
- *
- * <p> In addition to support the properties defined by the LoginAccount object, principalName, password, realm and certificate,
- * the PersonAccount defines the additional properties associated with this entity object such as uid, cn, sn, displayName, and
- * email.
- *
- * <p> A PersonAccount object allows the schema of a person and his login accounts, defined by the
- * respective LoginAccount objects, to be kept independent of each other. For example, the set of properties on a PersonAccount
- * may not need to be exactly the same as the set of person-specific properties on each of that person's
- * LoginAccount entities.
- *
- *
+ * </code>
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "PersonAccount", propOrder = {
-                                               "uid",
-                                               "cn",
-                                               "sn",
-                                               "preferredLanguage",
-                                               "displayName",
-                                               "initials",
-                                               "mail",
-                                               "ibmPrimaryEmail",
-                                               "jpegPhoto",
-                                               "labeledURI",
-                                               "carLicense",
-                                               "telephoneNumber",
-                                               "facsimileTelephoneNumber",
-                                               "pager",
-                                               "mobile",
-                                               "homePostalAddress",
-                                               "postalAddress",
-                                               "roomNumber",
-                                               "l",
-                                               "localityName",
-                                               "st",
-                                               "stateOrProvinceName",
-                                               "street",
-                                               "postalCode",
-                                               "city",
-                                               "employeeType",
-                                               "employeeNumber",
-                                               "manager",
-                                               "secretary",
-                                               "departmentNumber",
-                                               "title",
-                                               "ibmJobTitle",
-                                               "c",
-                                               "countryName",
-                                               "givenName",
-                                               "homeStreet",
-                                               "homeCity",
-                                               "homeStateOrProvinceName",
-                                               "homePostalCode",
-                                               "homeCountryName",
-                                               "businessStreet",
-                                               "businessCity",
-                                               "businessStateOrProvinceName",
-                                               "businessPostalCode",
-                                               "businessCountryName",
-                                               "description",
-                                               "businessCategory",
-                                               "seeAlso",
-                                               "kerberosId",
-                                               "photoURL",
-                                               "photoURLThumbnail",
-                                               "middleName",
-                                               "honorificPrefix",
-                                               "honorificSuffix",
-                                               "nickName",
-                                               "profileUrl",
-                                               "timezone",
-                                               "locale",
-                                               "ims",
-                                               "active"
+@XmlAccessorType(XmlAccessType.NONE)
+@XmlType(name = PersonAccount.TYPE_NAME, propOrder = {
+                                                       "uid",
+                                                       "cn",
+                                                       "sn",
+                                                       "preferredLanguage",
+                                                       "displayName",
+                                                       "initials",
+                                                       "mail",
+                                                       "ibmPrimaryEmail",
+                                                       "jpegPhoto",
+                                                       "labeledURI",
+                                                       "carLicense",
+                                                       "telephoneNumber",
+                                                       "facsimileTelephoneNumber",
+                                                       "pager",
+                                                       "mobile",
+                                                       "homePostalAddress",
+                                                       "postalAddress",
+                                                       "roomNumber",
+                                                       "l",
+                                                       "localityName",
+                                                       "st",
+                                                       "stateOrProvinceName",
+                                                       "street",
+                                                       "postalCode",
+                                                       "city",
+                                                       "employeeType",
+                                                       "employeeNumber",
+                                                       "manager",
+                                                       "secretary",
+                                                       "departmentNumber",
+                                                       "title",
+                                                       "ibmJobTitle",
+                                                       "c",
+                                                       "countryName",
+                                                       "givenName",
+                                                       "homeStreet",
+                                                       "homeCity",
+                                                       "homeStateOrProvinceName",
+                                                       "homePostalCode",
+                                                       "homeCountryName",
+                                                       "businessStreet",
+                                                       "businessCity",
+                                                       "businessStateOrProvinceName",
+                                                       "businessPostalCode",
+                                                       "businessCountryName",
+                                                       "description",
+                                                       "businessCategory",
+                                                       "seeAlso",
+                                                       "kerberosId",
+                                                       "photoURL",
+                                                       "photoURLThumbnail",
+                                                       "middleName",
+                                                       "honorificPrefix",
+                                                       "honorificSuffix",
+                                                       "nickName",
+                                                       "profileUrl",
+                                                       "timezone",
+                                                       "locale",
+                                                       "ims",
+                                                       "active",
+                                                       "extendedProperties"
 })
 public class PersonAccount extends LoginAccount {
+
     private static final TraceComponent tc = Tr.register(PersonAccount.class);
 
+    /** The type name for this data type. */
+    public static final String TYPE_NAME = "PersonAccount";
+
+    /** Property name constant for the <b>uid</b> property. */
     private static final String PROP_UID = "uid";
+
+    /** Property name constant for the <b>cn</b> property. */
     private static final String PROP_CN = "cn";
+
+    /** Property name constant for the <b>sn</b> property. */
     private static final String PROP_SN = "sn";
+
+    /** Property name constant for the <b>preferredLanguage</b> property. */
     private static final String PROP_PREFERRED_LANGUAGE = "preferredLanguage";
+
+    /** Property name constant for the <b>displayName</b> property. */
     private static final String PROP_DISPLAY_NAME = "displayName";
+
+    /** Property name constant for the <b>initials</b> property. */
     private static final String PROP_INITIALS = "initials";
+
+    /** Property name constant for the <b>mail</b> property. */
     private static final String PROP_MAIL = "mail";
+
+    /** Property name constant for the <b>ibmPrimaryEmail</b> property. */
     private static final String PROP_IBM_PRIMARY_EMAIL = "ibmPrimaryEmail";
+
+    /** Property name constant for the <b>jpegPhoto</b> property. */
     private static final String PROP_JPEG_PHOTO = "jpegPhoto";
+
+    /** Property name constant for the <b>labeledURI</b> property. */
     private static final String PROP_LABELED_URI = "labeledURI";
+
+    /** Property name constant for the <b>carLicense</b> property. */
     private static final String PROP_CAR_LICENSE = "carLicense";
+
+    /** Property name constant for the <b>telephoneNumber</b> property. */
     private static final String PROP_TELEPHONE_NUMBER = "telephoneNumber";
+
+    /** Property name constant for the <b>facsimileTelephoneNumber</b> property. */
     private static final String PROP_FACSIMILE_TELEPHONE_NUMBER = "facsimileTelephoneNumber";
+
+    /** Property name constant for the <b>pager</b> property. */
     private static final String PROP_PAGER = "pager";
+
+    /** Property name constant for the <b>mobile</b> property. */
     private static final String PROP_MOBILE = "mobile";
+
+    /** Property name constant for the <b>homePostalAddress</b> property. */
     private static final String PROP_HOME_POSTAL_ADDRESS = "homePostalAddress";
+
+    /** Property name constant for the <b>postalAddress</b> property. */
     private static final String PROP_POSTAL_ADDRESS = "postalAddress";
+
+    /** Property name constant for the <b>roomNumber</b> property. */
     private static final String PROP_ROOM_NUMBER = "roomNumber";
+
+    /** Property name constant for the <b>l</b> property. */
     private static final String PROP_L = "l";
+
+    /** Property name constant for the <b>localityName</b> property. */
     private static final String PROP_LOCALITY_NAME = "localityName";
+
+    /** Property name constant for the <b>st</b> property. */
     private static final String PROP_ST = "st";
+
+    /** Property name constant for the <b>stateOrProvinceName</b> property. */
     private static final String PROP_STATE_OR_PROVINCE_NAME = "stateOrProvinceName";
+
+    /** Property name constant for the <b>street</b> property. */
     private static final String PROP_STREET = "street";
+
+    /** Property name constant for the <b>postalCode</b> property. */
     private static final String PROP_POSTAL_CODE = "postalCode";
+
+    /** Property name constant for the <b>city</b> property. */
     private static final String PROP_CITY = "city";
+
+    /** Property name constant for the <b>employeeType</b> property. */
     private static final String PROP_EMPLOYEE_TYPE = "employeeType";
+
+    /** Property name constant for the <b>employeeNumber</b> property. */
     private static final String PROP_EMPLOYEE_NUMBER = "employeeNumber";
+
+    /** Property name constant for the <b>manager</b> property. */
     private static final String PROP_MANAGER = "manager";
+
+    /** Property name constant for the <b>secretary</b> property. */
     private static final String PROP_SECRETARY = "secretary";
+
+    /** Property name constant for the <b>departmentNumber</b> property. */
     private static final String PROP_DEPARTMENT_NUMBER = "departmentNumber";
+
+    /** Property name constant for the <b>title</b> property. */
     private static final String PROP_TITLE = "title";
+
+    /** Property name constant for the <b>ibmJobTitle</b> property. */
     private static final String PROP_IBM_JOB_TITLE = "ibmJobTitle";
+
+    /** Property name constant for the <b>c</b> property. */
     private static final String PROP_C = "c";
+
+    /** Property name constant for the <b>countryName</b> property. */
     private static final String PROP_COUNTRY_NAME = "countryName";
+
+    /** Property name constant for the <b>givenName</b> property. */
     private static final String PROP_GIVEN_NAME = "givenName";
+
+    /** Property name constant for the <b>homeStreet</b> property. */
     private static final String PROP_HOME_STREET = "homeStreet";
+
+    /** Property name constant for the <b>homeCity</b> property. */
     private static final String PROP_HOME_CITY = "homeCity";
+
+    /** Property name constant for the <b>homeStateOrProvinceName</b> property. */
     private static final String PROP_HOME_STATE_OR_PROVINCE_NAME = "homeStateOrProvinceName";
+
+    /** Property name constant for the <b>homePostalCode</b> property. */
     private static final String PROP_HOME_POSTAL_CODE = "homePostalCode";
+
+    /** Property name constant for the <b>homeCountryName</b> property. */
     private static final String PROP_HOME_COUNTRY_NAME = "homeCountryName";
+
+    /** Property name constant for the <b>businessStreet</b> property. */
     private static final String PROP_BUSINESS_STREET = "businessStreet";
+
+    /** Property name constant for the <b>businessCity</b> property. */
     private static final String PROP_BUSINESS_CITY = "businessCity";
+
+    /** Property name constant for the <b>businessStateOrProvinceName</b> property. */
     private static final String PROP_BUSINESS_STATE_OR_PROVINCE_NAME = "businessStateOrProvinceName";
+
+    /** Property name constant for the <b>businessPostalCode</b> property. */
     private static final String PROP_BUSINESS_POSTAL_CODE = "businessPostalCode";
+
+    /** Property name constant for the <b>businessCountryName</b> property. */
     private static final String PROP_BUSINESS_COUNTRY_NAME = "businessCountryName";
+
+    /** Property name constant for the <b>description</b> property. */
     private static final String PROP_DESCRIPTION = "description";
+
+    /** Property name constant for the <b>businessCategory</b> property. */
     private static final String PROP_BUSINESS_CATEGORY = "businessCategory";
+
+    /** Property name constant for the <b>seeAlso</b> property. */
     private static final String PROP_SEE_ALSO = "seeAlso";
+
+    /** Property name constant for the <b>kerberosId</b> property. */
     private static final String PROP_KERBEROS_ID = "kerberosId";
+
+    /** Property name constant for the <b>photoURL</b> property. */
     private static final String PROP_PHOTO_URL = "photoURL";
+
+    /** Property name constant for the <b>photoURLThumbnail</b> property. */
     private static final String PROP_PHOTO_URL_THUMBNAIL = "photoURLThumbnail";
+
+    /** Property name constant for the <b>middleName</b> property. */
     private static final String PROP_MIDDLE_NAME = "middleName";
+
+    /** Property name constant for the <b>honorificPrefix</b> property. */
     private static final String PROP_HONORIFIC_PREFIX = "honorificPrefix";
+
+    /** Property name constant for the <b>honorificSuffix</b> property. */
     private static final String PROP_HONORIFIC_SUFFIX = "honorificSuffix";
+
+    /** Property name constant for the <b>nickName</b> property. */
     private static final String PROP_NICK_NAME = "nickName";
+
+    /** Property name constant for the <b>profileUrl</b> property. */
     private static final String PROP_PROFILE_URL = "profileUrl";
+
+    /** Property name constant for the <b>timezone</b> property. */
     private static final String PROP_TIMEZONE = "timezone";
+
+    /** Property name constant for the <b>locale</b> property. */
     private static final String PROP_LOCALE = "locale";
+
+    /** Property name constant for the <b>ims</b> property. */
     private static final String PROP_IMS = "ims";
+
+    /** Property name constant for the <b>active</b> property. */
     private static final String PROP_ACTIVE = "active";
 
+    /** Contains a computer system login name for the PersonAccount. */
+    @XmlElement(name = PROP_UID)
     protected String uid;
+
+    /** Contains names of a PersonAccount. */
+    @XmlElement(name = PROP_CN)
     protected String cn;
+
+    /** Contains name strings for the family names of a PersonAccount. */
+    @XmlElement(name = PROP_SN)
     protected String sn;
+
+    /** Contains the preferred written or spoken language for a PersonAccount. */
+    @XmlElement(name = PROP_PREFERRED_LANGUAGE)
     protected String preferredLanguage;
+
+    /** Contains the preferred name of a PersonAccount to be used for display. */
+    @XmlElement(name = PROP_DISPLAY_NAME)
     protected List<String> displayName;
+
+    /** Contains strings of initials of some or all of an individual's names, except the surname(s). */
+    @XmlElement(name = PROP_INITIALS)
     protected List<String> initials;
+
+    /** Contains an email address for the PersonAccount. */
+    @XmlElement(name = PROP_MAIL)
     protected String mail;
-    @XmlElement(name = "ibm-primaryEmail")
+
+    /** Contains the primary email address for the PersonAccount. */
+    @XmlElement(name = PROP_IBM_PRIMARY_EMAIL)
     protected String ibmPrimaryEmail;
+
+    /** Contains JPEG photos for the PersonAccount. */
+    @XmlElement(name = PROP_JPEG_PHOTO)
     protected List<byte[]> jpegPhoto;
+
+    /** Contains URIs with optional labels. */
+    @XmlElement(name = PROP_LABELED_URI)
     protected String labeledURI;
+
+    /** Contains vehicle license or registration plate for the PersonAccount. */
+    @XmlElement(name = PROP_CAR_LICENSE)
     protected List<String> carLicense;
+
+    /** Contains telephone numbers for the PersonAccount. */
+    @XmlElement(name = PROP_TELEPHONE_NUMBER)
     protected List<String> telephoneNumber;
+
+    /** Contains telephone numbers for facsimile terminals. */
+    @XmlElement(name = PROP_FACSIMILE_TELEPHONE_NUMBER)
     protected List<String> facsimileTelephoneNumber;
+
+    /** Contains pager numbers for the PersonAccount. */
+    @XmlElement(name = PROP_PAGER)
     protected List<String> pager;
+
+    /** Contains mobile numbers for the PersonAccount. */
+    @XmlElement(name = PROP_MOBILE)
     protected List<String> mobile;
+
+    /** Contains home addresses used by a Postal Service. */
+    @XmlElement(name = PROP_HOME_POSTAL_ADDRESS)
     protected List<String> homePostalAddress;
+
+    /** Contains addresses used by a Postal Service. */
+    @XmlElement(name = PROP_POSTAL_ADDRESS)
     protected List<String> postalAddress;
+
+    /** Contains the room number for the PersonAccount. */
+    @XmlElement(name = PROP_ROOM_NUMBER)
     protected List<String> roomNumber;
+
+    /** A short form for the <b>localityName</b>. */
+    @XmlElement(name = PROP_L)
     protected List<String> l;
+
+    /** Contains the name of a locality, such as a city, county or other geographic region. */
+    @XmlElement(name = PROP_LOCALITY_NAME)
     protected List<String> localityName;
+
+    /** A short form for <b>stateOrProvinceName</b>. */
+    @XmlElement(name = PROP_ST)
     protected List<String> st;
+
+    /** Contains the full name of a state or province (stateOrProvinceName). */
+    @XmlElement(name = PROP_STATE_OR_PROVINCE_NAME)
     protected List<String> stateOrProvinceName;
+
+    /** Contains the physical address of the object to which the entry corresponds, such as an address for package delivery. */
+    @XmlElement(name = PROP_STREET)
     protected List<String> street;
+
+    /** Contains codes used by a Postal Service to identify postal service zones. */
+    @XmlElement(name = PROP_POSTAL_CODE)
     protected List<String> postalCode;
+
+    /** Contains the city. */
+    @XmlElement(name = PROP_CITY)
     protected List<String> city;
+
+    /** Contains the employee type for the PersonAccount. */
+    @XmlElement(name = PROP_EMPLOYEE_TYPE)
     protected String employeeType;
+
+    /** Contains the employee number for the PersonAccount. */
+    @XmlElement(name = PROP_EMPLOYEE_NUMBER)
     protected String employeeNumber;
-    protected List<com.ibm.wsspi.security.wim.model.IdentifierType> manager;
-    protected List<com.ibm.wsspi.security.wim.model.IdentifierType> secretary;
+
+    /** Contains an identifier for the PersonAccount's manager. */
+    @XmlElement(name = PROP_MANAGER)
+    protected List<IdentifierType> manager;
+
+    /** Contains an identifier for the PersonAccount's secretary. */
+    @XmlElement(name = PROP_SECRETARY)
+    protected List<IdentifierType> secretary;
+
+    /** Identifies a department within an organization. */
+    @XmlElement(name = PROP_DEPARTMENT_NUMBER)
     protected List<String> departmentNumber;
+
+    /** Contains the title of a person in their organizational context. */
+    @XmlElement(name = PROP_TITLE)
     protected List<String> title;
-    @XmlElement(name = "ibm-jobTitle")
+
+    /** Contains the job title for the PersonAccount. */
+    @XmlElement(name = PROP_IBM_JOB_TITLE)
     protected List<String> ibmJobTitle;
+
+    /** Short form for the <b>countryName</b> property. */
+    @XmlElement(name = PROP_C)
     protected List<String> c;
+
+    /** Defines the name of the country. */
+    @XmlElement(name = PROP_COUNTRY_NAME)
     protected List<String> countryName;
+
+    /** Contains name strings that are the part of a person's name that is not their surname. */
+    @XmlElement(name = PROP_GIVEN_NAME)
     protected List<String> givenName;
+
+    /** Contains the home street address for the PersonAccount. */
+    @XmlElement(name = PROP_HOME_STREET)
     protected String homeStreet;
+
+    /** Contains the home city for the PersonAccount. */
+    @XmlElement(name = PROP_HOME_CITY)
     protected String homeCity;
+
+    /** Contains the home state or province name for the PersonAccount. */
+    @XmlElement(name = PROP_HOME_STATE_OR_PROVINCE_NAME)
     protected String homeStateOrProvinceName;
+
+    /** Contains the home postal code for the PersonAccount. */
+    @XmlElement(name = PROP_HOME_POSTAL_CODE)
     protected String homePostalCode;
+
+    /** Contains the home country name for the PersonAccount. */
+    @XmlElement(name = PROP_HOME_COUNTRY_NAME)
     protected String homeCountryName;
+
+    /** Contains the business street address for the PersonAccount. */
+    @XmlElement(name = PROP_BUSINESS_STREET)
     protected String businessStreet;
+
+    /** Contains the business city for the PersonAccount. */
+    @XmlElement(name = PROP_BUSINESS_CITY)
     protected String businessCity;
+
+    /** Contains the business state or province name for the PersonAccount. */
+    @XmlElement(name = PROP_BUSINESS_STATE_OR_PROVINCE_NAME)
     protected String businessStateOrProvinceName;
+
+    /** Contains the business postal code for the PersonAccount. */
+    @XmlElement(name = PROP_BUSINESS_POSTAL_CODE)
     protected String businessPostalCode;
+
+    /** Contains the business country name for the PersonAccount. */
+    @XmlElement(name = PROP_BUSINESS_COUNTRY_NAME)
     protected String businessCountryName;
+
+    /** Contains human-readable descriptive phrases about the PersonAccount. */
+    @XmlElement(name = PROP_DESCRIPTION)
     protected List<String> description;
+
+    /** Describes the kinds of business performed by a PersonAccount. */
+    @XmlElement(name = PROP_BUSINESS_CATEGORY)
     protected List<String> businessCategory;
+
+    /** Contains the distinguished names of objects that are related to this PersonAccount. */
+    @XmlElement(name = PROP_SEE_ALSO)
     protected List<String> seeAlso;
+
+    /** Contains the Kerberos ID for the PersonAccount. */
+    @XmlElement(name = PROP_KERBEROS_ID)
     protected String kerberosId;
+
+    /** Contains a URL for a photo of the PersonAccount. */
+    @XmlElement(name = PROP_PHOTO_URL)
     protected String photoURL;
+
+    /** Contains a URL for a thumbnail image of the PersonAccount. */
+    @XmlElement(name = PROP_PHOTO_URL_THUMBNAIL)
     protected String photoURLThumbnail;
+
+    /** Contains name strings that comprise the person's middle name. */
+    @XmlElement(name = PROP_MIDDLE_NAME)
     protected String middleName;
+
+    /** Contains name strings that comprise the PersonAccounts honorary prefix(es). */
+    @XmlElement(name = PROP_HONORIFIC_PREFIX)
     protected String honorificPrefix;
+
+    /** Contains name strings that comprise the PersonAccounts honorary suffix(es). */
+    @XmlElement(name = PROP_HONORIFIC_SUFFIX)
     protected String honorificSuffix;
+
+    /** Contains a nick name for the PersonAccount. */
+    @XmlElement(name = PROP_NICK_NAME)
     protected String nickName;
+
+    /** Contains a URL to the PersonAccount's profile. */
+    @XmlElement(name = PROP_PROFILE_URL)
     protected String profileUrl;
+
+    /** Contains the timezone for the PersonAccount. */
+    @XmlElement(name = PROP_TIMEZONE)
     protected String timezone;
+
+    /** Contains the preferred locale for a PersonAccount. */
+    @XmlElement(name = PROP_LOCALE)
     protected String locale;
+
+    /** Contains instant messaging addresses for the PersonAccount. */
+    @XmlElement(name = PROP_IMS)
     protected List<String> ims;
+
+    /** Describes whether the PersonAccount is active. */
+    @XmlElement(name = PROP_ACTIVE)
     protected Boolean active;
 
-    private static List mandatoryProperties = null;
-    private static List transientProperties = null;
-    private static List propertyNames = null;
-    private static HashMap dataTypeMap = null;
-    private static ArrayList superTypeList = null;
-    private static HashSet subTypeList = null;
-    protected Map<String, Object> extendedPropertiesValue = new HashMap<String, Object>(); // TODO Should this be private?
+    /** Map to hold extended property values. */
+    @XmlElement(name = "extendedProperties")
+    @XmlJavaTypeAdapter(ExtendedPropertyXmlAdapter.class)
+    protected Map<String, Object> extendedProperties = new HashMap<String, Object>();
+
+    private static List<String> mandatoryProperties = null;
+    private static List<String> transientProperties = null;
+    private static List<String> propertyNames = null;
+    private static HashMap<String, String> dataTypeMap = null;
+    private static ArrayList<String> superTypeList = null;
+    private static HashSet<String> subTypeSet = null;
+
     private static Map<String, String> extendedPropertiesDataType = new HashMap<String, String>();
     private static Map<String, Object> extendedPropertiesDefaultValue = new HashMap<String, Object>();
     private static Set<String> extendedMultiValuedProperties = new HashSet<String>();
 
-    /** The set of multi-valued properties for this entity type. */
+    /** The set of multi-valued properties for this type. */
     private static final Set<String> MULTI_VALUED_PROPERTIES;
 
     static {
@@ -303,117 +675,129 @@ public class PersonAccount extends LoginAccount {
     }
 
     /**
-     * Gets the value of the uid property.
+     * Gets the value of the <b>uid</b> property.
      *
      * @return
      *         possible object is {@link String }
-     *
      */
     public String getUid() {
         return uid;
     }
 
     /**
-     * Sets the value of the uid property.
+     * Sets the value of the <b>uid</b> property.
      *
      * @param value
      *            allowed object is {@link String }
-     *
      */
     public void setUid(String value) {
         this.uid = value;
     }
 
+    /**
+     * Check if the <b>uid</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetUid() {
         return (this.uid != null);
     }
 
     /**
-     * Gets the value of the cn property.
+     * Gets the value of the <b>cn</b> property.
      *
      * @return
      *         possible object is {@link String }
-     *
      */
     public String getCn() {
         return cn;
     }
 
     /**
-     * Sets the value of the cn property.
+     * Sets the value of the <b>cn</b> property.
      *
      * @param value
      *            allowed object is {@link String }
-     *
      */
     public void setCn(String value) {
         this.cn = value;
     }
 
+    /**
+     * Check if the <b>cn</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetCn() {
         return (this.cn != null);
     }
 
     /**
-     * Gets the value of the sn property.
+     * Gets the value of the <b>sn</b> property.
      *
      * @return
      *         possible object is {@link String }
-     *
      */
     public String getSn() {
         return sn;
     }
 
     /**
-     * Sets the value of the sn property.
+     * Sets the value of the <b>sn</b> property.
      *
      * @param value
      *            allowed object is {@link String }
-     *
      */
     public void setSn(String value) {
         this.sn = value;
     }
 
+    /**
+     * Check if the <b>sn</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetSn() {
         return (this.sn != null);
     }
 
     /**
-     * Gets the value of the preferredLanguage property.
+     * Gets the value of the <b>preferredLanguage</b> property.
      *
      * @return
      *         possible object is {@link String }
-     *
      */
     public String getPreferredLanguage() {
         return preferredLanguage;
     }
 
     /**
-     * Sets the value of the preferredLanguage property.
+     * Sets the value of the <b>preferredLanguage</b> property.
      *
      * @param value
      *            allowed object is {@link String }
-     *
      */
     public void setPreferredLanguage(String value) {
         this.preferredLanguage = value;
     }
 
+    /**
+     * Check if the <b>preferredLanguage</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetPreferredLanguage() {
         return (this.preferredLanguage != null);
     }
 
     /**
-     * Gets the value of the displayName property.
+     * Gets the value of the <b>displayName</b> property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the displayName property.
+     * returned list will be present inside the object.
+     * This is why there is not a <CODE>set</CODE> method for the <b>displayName</b> property.
      *
      * <p>
      * For example, to add a new item, do as follows:
@@ -422,11 +806,11 @@ public class PersonAccount extends LoginAccount {
      * getDisplayName().add(newItem);
      * </pre>
      *
-     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
      *
-     *
+     * @return
+     *         returned object is {@link List}
      */
     public List<String> getDisplayName() {
         if (displayName == null) {
@@ -435,22 +819,30 @@ public class PersonAccount extends LoginAccount {
         return this.displayName;
     }
 
+    /**
+     * Check if the <b>displayName</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetDisplayName() {
         return ((this.displayName != null) && (!this.displayName.isEmpty()));
     }
 
+    /**
+     * Unset the <b>displayName</b> property.
+     */
     public void unsetDisplayName() {
         this.displayName = null;
     }
 
     /**
-     * Gets the value of the initials property.
+     * Gets the value of the <b>initials</b> property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the initials property.
+     * returned list will be present inside the object.
+     * This is why there is not a <CODE>set</CODE> method for the <b>initials</b> property.
      *
      * <p>
      * For example, to add a new item, do as follows:
@@ -459,11 +851,11 @@ public class PersonAccount extends LoginAccount {
      * getInitials().add(newItem);
      * </pre>
      *
-     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
      *
-     *
+     * @return
+     *         returned object is {@link List}
      */
     public List<String> getInitials() {
         if (initials == null) {
@@ -472,74 +864,88 @@ public class PersonAccount extends LoginAccount {
         return this.initials;
     }
 
+    /**
+     * Check if the <b>initials</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetInitials() {
         return ((this.initials != null) && (!this.initials.isEmpty()));
     }
 
+    /**
+     * Unset the <b>initials</b> property.
+     */
     public void unsetInitials() {
         this.initials = null;
     }
 
     /**
-     * Gets the value of the mail property.
+     * Gets the value of the <b>mail</b> property.
      *
      * @return
      *         possible object is {@link String }
-     *
      */
     public String getMail() {
         return mail;
     }
 
     /**
-     * Sets the value of the mail property.
+     * Sets the value of the <b>mail</b> property.
      *
      * @param value
      *            allowed object is {@link String }
-     *
      */
     public void setMail(String value) {
         this.mail = value;
     }
 
+    /**
+     * Check if the <b>mail</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetMail() {
         return (this.mail != null);
     }
 
     /**
-     * Gets the value of the ibmPrimaryEmail property.
+     * Gets the value of the <b>ibmPrimaryEmail</b> property.
      *
      * @return
      *         possible object is {@link String }
-     *
      */
     public String getIbmPrimaryEmail() {
         return ibmPrimaryEmail;
     }
 
     /**
-     * Sets the value of the ibmPrimaryEmail property.
+     * Sets the value of the <b>ibmPrimaryEmail</b> property.
      *
      * @param value
      *            allowed object is {@link String }
-     *
      */
     public void setIbmPrimaryEmail(String value) {
         this.ibmPrimaryEmail = value;
     }
 
+    /**
+     * Check if the <b>ibmPrimaryEmail</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetIbmPrimaryEmail() {
         return (this.ibmPrimaryEmail != null);
     }
 
     /**
-     * Gets the value of the jpegPhoto property.
+     * Gets the value of the <b>jpegPhoto</b> property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the jpegPhoto property.
+     * returned list will be present inside the object.
+     * This is why there is not a <CODE>set</CODE> method for the <b>jpegPhoto</b> property.
      *
      * <p>
      * For example, to add a new item, do as follows:
@@ -548,11 +954,12 @@ public class PersonAccount extends LoginAccount {
      * getJpegPhoto().add(newItem);
      * </pre>
      *
-     *
      * <p>
      * Objects of the following type(s) are allowed in the list
      * byte[]
      *
+     * @return
+     *         returned object is {@link List}
      */
     public List<byte[]> getJpegPhoto() {
         if (jpegPhoto == null) {
@@ -561,48 +968,59 @@ public class PersonAccount extends LoginAccount {
         return this.jpegPhoto;
     }
 
+    /**
+     * Check if the <b>jpegPhoto</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetJpegPhoto() {
         return ((this.jpegPhoto != null) && (!this.jpegPhoto.isEmpty()));
     }
 
+    /**
+     * Unset the <b>jpegPhoto</b> property.
+     */
     public void unsetJpegPhoto() {
         this.jpegPhoto = null;
     }
 
     /**
-     * Gets the value of the labeledURI property.
+     * Gets the value of the <b>labeledURI</b> property.
      *
      * @return
      *         possible object is {@link String }
-     *
      */
     public String getLabeledURI() {
         return labeledURI;
     }
 
     /**
-     * Sets the value of the labeledURI property.
+     * Sets the value of the <b>labeledURI</b> property.
      *
      * @param value
      *            allowed object is {@link String }
-     *
      */
     public void setLabeledURI(String value) {
         this.labeledURI = value;
     }
 
+    /**
+     * Check if the <b>labeledURI</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetLabeledURI() {
         return (this.labeledURI != null);
     }
 
     /**
-     * Gets the value of the carLicense property.
+     * Gets the value of the <b>carLicense</b> property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the carLicense property.
+     * returned list will be present inside the object.
+     * This is why there is not a <CODE>set</CODE> method for the <b>carLicense</b> property.
      *
      * <p>
      * For example, to add a new item, do as follows:
@@ -611,11 +1029,11 @@ public class PersonAccount extends LoginAccount {
      * getCarLicense().add(newItem);
      * </pre>
      *
-     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
      *
-     *
+     * @return
+     *         returned object is {@link List}
      */
     public List<String> getCarLicense() {
         if (carLicense == null) {
@@ -624,22 +1042,30 @@ public class PersonAccount extends LoginAccount {
         return this.carLicense;
     }
 
+    /**
+     * Check if the <b>carLicense</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetCarLicense() {
         return ((this.carLicense != null) && (!this.carLicense.isEmpty()));
     }
 
+    /**
+     * Unset the <b>carLicense</b> property.
+     */
     public void unsetCarLicense() {
         this.carLicense = null;
     }
 
     /**
-     * Gets the value of the telephoneNumber property.
+     * Gets the value of the <b>telephoneNumber</b> property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the telephoneNumber property.
+     * returned list will be present inside the object.
+     * This is why there is not a <CODE>set</CODE> method for the <b>telephoneNumber</b> property.
      *
      * <p>
      * For example, to add a new item, do as follows:
@@ -648,11 +1074,11 @@ public class PersonAccount extends LoginAccount {
      * getTelephoneNumber().add(newItem);
      * </pre>
      *
-     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
      *
-     *
+     * @return
+     *         returned object is {@link List}
      */
     public List<String> getTelephoneNumber() {
         if (telephoneNumber == null) {
@@ -661,22 +1087,30 @@ public class PersonAccount extends LoginAccount {
         return this.telephoneNumber;
     }
 
+    /**
+     * Check if the <b>telephoneNumber</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetTelephoneNumber() {
         return ((this.telephoneNumber != null) && (!this.telephoneNumber.isEmpty()));
     }
 
+    /**
+     * Unset the <b>telephoneNumber</b> property.
+     */
     public void unsetTelephoneNumber() {
         this.telephoneNumber = null;
     }
 
     /**
-     * Gets the value of the facsimileTelephoneNumber property.
+     * Gets the value of the <b>facsimileTelephoneNumber</b> property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the facsimileTelephoneNumber property.
+     * returned list will be present inside the object.
+     * This is why there is not a <CODE>set</CODE> method for the <b>facsimileTelephoneNumber</b> property.
      *
      * <p>
      * For example, to add a new item, do as follows:
@@ -685,11 +1119,11 @@ public class PersonAccount extends LoginAccount {
      * getFacsimileTelephoneNumber().add(newItem);
      * </pre>
      *
-     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
      *
-     *
+     * @return
+     *         returned object is {@link List}
      */
     public List<String> getFacsimileTelephoneNumber() {
         if (facsimileTelephoneNumber == null) {
@@ -698,22 +1132,30 @@ public class PersonAccount extends LoginAccount {
         return this.facsimileTelephoneNumber;
     }
 
+    /**
+     * Check if the <b>facsimileTelephoneNumber</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetFacsimileTelephoneNumber() {
         return ((this.facsimileTelephoneNumber != null) && (!this.facsimileTelephoneNumber.isEmpty()));
     }
 
+    /**
+     * Unset the <b>facsimileTelephoneNumber</b> property.
+     */
     public void unsetFacsimileTelephoneNumber() {
         this.facsimileTelephoneNumber = null;
     }
 
     /**
-     * Gets the value of the pager property.
+     * Gets the value of the <b>pager</b> property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the pager property.
+     * returned list will be present inside the object.
+     * This is why there is not a <CODE>set</CODE> method for the <b>pager</b> property.
      *
      * <p>
      * For example, to add a new item, do as follows:
@@ -722,11 +1164,11 @@ public class PersonAccount extends LoginAccount {
      * getPager().add(newItem);
      * </pre>
      *
-     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
      *
-     *
+     * @return
+     *         returned object is {@link List}
      */
     public List<String> getPager() {
         if (pager == null) {
@@ -735,22 +1177,30 @@ public class PersonAccount extends LoginAccount {
         return this.pager;
     }
 
+    /**
+     * Check if the <b>pager</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetPager() {
         return ((this.pager != null) && (!this.pager.isEmpty()));
     }
 
+    /**
+     * Unset the <b>pager</b> property.
+     */
     public void unsetPager() {
         this.pager = null;
     }
 
     /**
-     * Gets the value of the mobile property.
+     * Gets the value of the <b>mobile</b> property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the mobile property.
+     * returned list will be present inside the object.
+     * This is why there is not a <CODE>set</CODE> method for the <b>mobile</b> property.
      *
      * <p>
      * For example, to add a new item, do as follows:
@@ -759,11 +1209,11 @@ public class PersonAccount extends LoginAccount {
      * getMobile().add(newItem);
      * </pre>
      *
-     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
      *
-     *
+     * @return
+     *         returned object is {@link List}
      */
     public List<String> getMobile() {
         if (mobile == null) {
@@ -772,22 +1222,30 @@ public class PersonAccount extends LoginAccount {
         return this.mobile;
     }
 
+    /**
+     * Check if the <b>mobile</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetMobile() {
         return ((this.mobile != null) && (!this.mobile.isEmpty()));
     }
 
+    /**
+     * Unset the <b>mobile</b> property.
+     */
     public void unsetMobile() {
         this.mobile = null;
     }
 
     /**
-     * Gets the value of the homePostalAddress property.
+     * Gets the value of the <b>homePostalAddress</b> property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the homePostalAddress property.
+     * returned list will be present inside the object.
+     * This is why there is not a <CODE>set</CODE> method for the <b>homePostalAddress</b> property.
      *
      * <p>
      * For example, to add a new item, do as follows:
@@ -796,11 +1254,11 @@ public class PersonAccount extends LoginAccount {
      * getHomePostalAddress().add(newItem);
      * </pre>
      *
-     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
      *
-     *
+     * @return
+     *         returned object is {@link List}
      */
     public List<String> getHomePostalAddress() {
         if (homePostalAddress == null) {
@@ -809,22 +1267,30 @@ public class PersonAccount extends LoginAccount {
         return this.homePostalAddress;
     }
 
+    /**
+     * Check if the <b>homePostalAddress</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetHomePostalAddress() {
         return ((this.homePostalAddress != null) && (!this.homePostalAddress.isEmpty()));
     }
 
+    /**
+     * Unset the <b>homePostalAddress</b> property.
+     */
     public void unsetHomePostalAddress() {
         this.homePostalAddress = null;
     }
 
     /**
-     * Gets the value of the postalAddress property.
+     * Gets the value of the <b>postalAddress</b> property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the postalAddress property.
+     * returned list will be present inside the object.
+     * This is why there is not a <CODE>set</CODE> method for the <b>postalAddress</b> property.
      *
      * <p>
      * For example, to add a new item, do as follows:
@@ -833,11 +1299,11 @@ public class PersonAccount extends LoginAccount {
      * getPostalAddress().add(newItem);
      * </pre>
      *
-     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
      *
-     *
+     * @return
+     *         returned object is {@link List}
      */
     public List<String> getPostalAddress() {
         if (postalAddress == null) {
@@ -846,22 +1312,30 @@ public class PersonAccount extends LoginAccount {
         return this.postalAddress;
     }
 
+    /**
+     * Check if the <b>postalAddress</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetPostalAddress() {
         return ((this.postalAddress != null) && (!this.postalAddress.isEmpty()));
     }
 
+    /**
+     * Unset the <b>postalAddress</b> property.
+     */
     public void unsetPostalAddress() {
         this.postalAddress = null;
     }
 
     /**
-     * Gets the value of the roomNumber property.
+     * Gets the value of the <b>roomNumber</b> property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the roomNumber property.
+     * returned list will be present inside the object.
+     * This is why there is not a <CODE>set</CODE> method for the <b>roomNumber</b> property.
      *
      * <p>
      * For example, to add a new item, do as follows:
@@ -870,11 +1344,11 @@ public class PersonAccount extends LoginAccount {
      * getRoomNumber().add(newItem);
      * </pre>
      *
-     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
      *
-     *
+     * @return
+     *         returned object is {@link List}
      */
     public List<String> getRoomNumber() {
         if (roomNumber == null) {
@@ -883,22 +1357,30 @@ public class PersonAccount extends LoginAccount {
         return this.roomNumber;
     }
 
+    /**
+     * Check if the <b>roomNumber</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetRoomNumber() {
         return ((this.roomNumber != null) && (!this.roomNumber.isEmpty()));
     }
 
+    /**
+     * Unset the <b>roomNumber</b> property.
+     */
     public void unsetRoomNumber() {
         this.roomNumber = null;
     }
 
     /**
-     * Gets the value of the l property.
+     * Gets the value of the <b>l</b> property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the l property.
+     * returned list will be present inside the object.
+     * This is why there is not a <CODE>set</CODE> method for the <b>l</b> property.
      *
      * <p>
      * For example, to add a new item, do as follows:
@@ -907,11 +1389,11 @@ public class PersonAccount extends LoginAccount {
      * getL().add(newItem);
      * </pre>
      *
-     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
      *
-     *
+     * @return
+     *         returned object is {@link List}
      */
     public List<String> getL() {
         if (l == null) {
@@ -920,10 +1402,18 @@ public class PersonAccount extends LoginAccount {
         return this.l;
     }
 
+    /**
+     * Check if the <b>l</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetL() {
         return ((this.l != null) && (!this.l.isEmpty()));
     }
 
+    /**
+     * Unset the <b>l</b> property.
+     */
     public void unsetL() {
         this.l = null;
     }
@@ -934,7 +1424,7 @@ public class PersonAccount extends LoginAccount {
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
+     * returned list will be present inside the object.
      * This is why there is not a <CODE>set</CODE> method for the localityName property.
      *
      * <p>
@@ -944,11 +1434,11 @@ public class PersonAccount extends LoginAccount {
      * getLocalityName().add(newItem);
      * </pre>
      *
-     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
      *
-     *
+     * @return
+     *         returned object is {@link List}
      */
     public List<String> getLocalityName() {
         if (localityName == null) {
@@ -957,22 +1447,30 @@ public class PersonAccount extends LoginAccount {
         return this.localityName;
     }
 
+    /**
+     * Check if the <b>localityName</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetLocalityName() {
         return ((this.localityName != null) && (!this.localityName.isEmpty()));
     }
 
+    /**
+     * Unset the <b>localityName</b> property.
+     */
     public void unsetLocalityName() {
         this.localityName = null;
     }
 
     /**
-     * Gets the value of the st property.
+     * Gets the value of the <b>st</b> property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the st property.
+     * returned list will be present inside the object.
+     * This is why there is not a <CODE>set</CODE> method for the <b>st</b> property.
      *
      * <p>
      * For example, to add a new item, do as follows:
@@ -981,11 +1479,11 @@ public class PersonAccount extends LoginAccount {
      * getSt().add(newItem);
      * </pre>
      *
-     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
      *
-     *
+     * @return
+     *         returned object is {@link List}
      */
     public List<String> getSt() {
         if (st == null) {
@@ -994,22 +1492,30 @@ public class PersonAccount extends LoginAccount {
         return this.st;
     }
 
+    /**
+     * Check if the <b>st</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetSt() {
         return ((this.st != null) && (!this.st.isEmpty()));
     }
 
+    /**
+     * Unset the <b>st</b> property.
+     */
     public void unsetSt() {
         this.st = null;
     }
 
     /**
-     * Gets the value of the stateOrProvinceName property.
+     * Gets the value of the <b>stateOrProvinceName</b> property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the stateOrProvinceName property.
+     * returned list will be present inside the object.
+     * This is why there is not a <CODE>set</CODE> method for the <b>stateOrProvinceName</b> property.
      *
      * <p>
      * For example, to add a new item, do as follows:
@@ -1018,11 +1524,11 @@ public class PersonAccount extends LoginAccount {
      * getStateOrProvinceName().add(newItem);
      * </pre>
      *
-     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
      *
-     *
+     * @return
+     *         returned object is {@link List}
      */
     public List<String> getStateOrProvinceName() {
         if (stateOrProvinceName == null) {
@@ -1031,22 +1537,30 @@ public class PersonAccount extends LoginAccount {
         return this.stateOrProvinceName;
     }
 
+    /**
+     * Check if the <b>stateOrProvinceName</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetStateOrProvinceName() {
         return ((this.stateOrProvinceName != null) && (!this.stateOrProvinceName.isEmpty()));
     }
 
+    /**
+     * Unset the <b>stateOrProvinceName</b> property.
+     */
     public void unsetStateOrProvinceName() {
         this.stateOrProvinceName = null;
     }
 
     /**
-     * Gets the value of the street property.
+     * Gets the value of the <b>street</b> property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the street property.
+     * returned list will be present inside the object.
+     * This is why there is not a <CODE>set</CODE> method for the <b>street</b> property.
      *
      * <p>
      * For example, to add a new item, do as follows:
@@ -1055,11 +1569,11 @@ public class PersonAccount extends LoginAccount {
      * getStreet().add(newItem);
      * </pre>
      *
-     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
      *
-     *
+     * @return
+     *         returned object is {@link List}
      */
     public List<String> getStreet() {
         if (street == null) {
@@ -1068,22 +1582,30 @@ public class PersonAccount extends LoginAccount {
         return this.street;
     }
 
+    /**
+     * Check if the <b>street</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetStreet() {
         return ((this.street != null) && (!this.street.isEmpty()));
     }
 
+    /**
+     * Unset the <b>street</b> property.
+     */
     public void unsetStreet() {
         this.street = null;
     }
 
     /**
-     * Gets the value of the postalCode property.
+     * Gets the value of the <b>postalCode</b> property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the postalCode property.
+     * returned list will be present inside the object.
+     * This is why there is not a <CODE>set</CODE> method for the <b>postalCode</b> property.
      *
      * <p>
      * For example, to add a new item, do as follows:
@@ -1092,11 +1614,11 @@ public class PersonAccount extends LoginAccount {
      * getPostalCode().add(newItem);
      * </pre>
      *
-     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
      *
-     *
+     * @return
+     *         returned object is {@link List}
      */
     public List<String> getPostalCode() {
         if (postalCode == null) {
@@ -1105,22 +1627,30 @@ public class PersonAccount extends LoginAccount {
         return this.postalCode;
     }
 
+    /**
+     * Check if the <b>postalCode</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetPostalCode() {
         return ((this.postalCode != null) && (!this.postalCode.isEmpty()));
     }
 
+    /**
+     * Unset the <b>postalCode</b> property.
+     */
     public void unsetPostalCode() {
         this.postalCode = null;
     }
 
     /**
-     * Gets the value of the city property.
+     * Gets the value of the <b>city</b> property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the city property.
+     * returned list will be present inside the object.
+     * This is why there is not a <CODE>set</CODE> method for the <b>city</b> property.
      *
      * <p>
      * For example, to add a new item, do as follows:
@@ -1129,11 +1659,11 @@ public class PersonAccount extends LoginAccount {
      * getCity().add(newItem);
      * </pre>
      *
-     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
      *
-     *
+     * @return
+     *         returned object is {@link List}
      */
     public List<String> getCity() {
         if (city == null) {
@@ -1142,10 +1672,18 @@ public class PersonAccount extends LoginAccount {
         return this.city;
     }
 
+    /**
+     * Check if the <b>city</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetCity() {
         return ((this.city != null) && (!this.city.isEmpty()));
     }
 
+    /**
+     * Unset the <b>city</b> property.
+     */
     public void unsetCity() {
         this.city = null;
     }
@@ -1155,7 +1693,6 @@ public class PersonAccount extends LoginAccount {
      *
      * @return
      *         possible object is {@link String }
-     *
      */
     public String getEmployeeType() {
         return employeeType;
@@ -1166,50 +1703,57 @@ public class PersonAccount extends LoginAccount {
      *
      * @param value
      *            allowed object is {@link String }
-     *
      */
     public void setEmployeeType(String value) {
         this.employeeType = value;
     }
 
+    /**
+     * Check if the <b>employeeType</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetEmployeeType() {
         return (this.employeeType != null);
     }
 
     /**
-     * Gets the value of the employeeNumber property.
+     * Gets the value of the <b>employeeNumber</b> property.
      *
      * @return
      *         possible object is {@link String }
-     *
      */
     public String getEmployeeNumber() {
         return employeeNumber;
     }
 
     /**
-     * Sets the value of the employeeNumber property.
+     * Sets the value of the <b>employeeNumber</b> property.
      *
      * @param value
      *            allowed object is {@link String }
-     *
      */
     public void setEmployeeNumber(String value) {
         this.employeeNumber = value;
     }
 
+    /**
+     * Check if the <b>employeeNumber</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetEmployeeNumber() {
         return (this.employeeNumber != null);
     }
 
     /**
-     * Gets the value of the manager property.
+     * Gets the value of the <b>manager</b> property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the manager property.
+     * returned list will be present inside the object.
+     * This is why there is not a <CODE>set</CODE> method for the <b>manager</b> property.
      *
      * <p>
      * For example, to add a new item, do as follows:
@@ -1218,35 +1762,43 @@ public class PersonAccount extends LoginAccount {
      * getManager().add(newItem);
      * </pre>
      *
-     *
      * <p>
-     * Objects of the following type(s) are allowed in the list {@link com.ibm.wsspi.security.wim.model.IdentifierType }
+     * Objects of the following type(s) are allowed in the list {@link IdentifierType }
      *
-     *
+     * @return
+     *         returned object is {@link List}
      */
-    public List<com.ibm.wsspi.security.wim.model.IdentifierType> getManager() {
+    public List<IdentifierType> getManager() {
         if (manager == null) {
-            manager = new ArrayList<com.ibm.wsspi.security.wim.model.IdentifierType>();
+            manager = new ArrayList<IdentifierType>();
         }
         return this.manager;
     }
 
+    /**
+     * Check if the <b>manager</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetManager() {
         return ((this.manager != null) && (!this.manager.isEmpty()));
     }
 
+    /**
+     * Unset the <b>manager</b> property.
+     */
     public void unsetManager() {
         this.manager = null;
     }
 
     /**
-     * Gets the value of the secretary property.
+     * Gets the value of the <b>secretary</b> property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the secretary property.
+     * returned list will be present inside the object.
+     * This is why there is not a <CODE>set</CODE> method for the <b>secretary</b> property.
      *
      * <p>
      * For example, to add a new item, do as follows:
@@ -1255,35 +1807,43 @@ public class PersonAccount extends LoginAccount {
      * getSecretary().add(newItem);
      * </pre>
      *
-     *
      * <p>
-     * Objects of the following type(s) are allowed in the list {@link com.ibm.wsspi.security.wim.model.IdentifierType }
+     * Objects of the following type(s) are allowed in the list {@link IdentifierType }
      *
-     *
+     * @return
+     *         returned object is {@link List}
      */
-    public List<com.ibm.wsspi.security.wim.model.IdentifierType> getSecretary() {
+    public List<IdentifierType> getSecretary() {
         if (secretary == null) {
-            secretary = new ArrayList<com.ibm.wsspi.security.wim.model.IdentifierType>();
+            secretary = new ArrayList<IdentifierType>();
         }
         return this.secretary;
     }
 
+    /**
+     * Check if the <b>secretary</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetSecretary() {
         return ((this.secretary != null) && (!this.secretary.isEmpty()));
     }
 
+    /**
+     * Unset the <b>secretary</b> property.
+     */
     public void unsetSecretary() {
         this.secretary = null;
     }
 
     /**
-     * Gets the value of the departmentNumber property.
+     * Gets the value of the <b>departmentNumber</b> property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the departmentNumber property.
+     * returned list will be present inside the object.
+     * This is why there is not a <CODE>set</CODE> method for the <b>departmentNumber</b> property.
      *
      * <p>
      * For example, to add a new item, do as follows:
@@ -1292,11 +1852,11 @@ public class PersonAccount extends LoginAccount {
      * getDepartmentNumber().add(newItem);
      * </pre>
      *
-     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
      *
-     *
+     * @return
+     *         returned object is {@link List}
      */
     public List<String> getDepartmentNumber() {
         if (departmentNumber == null) {
@@ -1305,22 +1865,30 @@ public class PersonAccount extends LoginAccount {
         return this.departmentNumber;
     }
 
+    /**
+     * Check if the <b>departmentNumber</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetDepartmentNumber() {
         return ((this.departmentNumber != null) && (!this.departmentNumber.isEmpty()));
     }
 
+    /**
+     * Unset the <b>departmentNumber</b> property.
+     */
     public void unsetDepartmentNumber() {
         this.departmentNumber = null;
     }
 
     /**
-     * Gets the value of the title property.
+     * Gets the value of the <b>title</b> property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the title property.
+     * returned list will be present inside the object.
+     * This is why there is not a <CODE>set</CODE> method for the <b>title</b> property.
      *
      * <p>
      * For example, to add a new item, do as follows:
@@ -1329,11 +1897,11 @@ public class PersonAccount extends LoginAccount {
      * getTitle().add(newItem);
      * </pre>
      *
-     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
      *
-     *
+     * @return
+     *         returned object is {@link List}
      */
     public List<String> getTitle() {
         if (title == null) {
@@ -1342,22 +1910,30 @@ public class PersonAccount extends LoginAccount {
         return this.title;
     }
 
+    /**
+     * Check if the <b>title</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetTitle() {
         return ((this.title != null) && (!this.title.isEmpty()));
     }
 
+    /**
+     * Unset the <b>title</b> property.
+     */
     public void unsetTitle() {
         this.title = null;
     }
 
     /**
-     * Gets the value of the ibmJobTitle property.
+     * Gets the value of the <b>ibmJobTitle</b> property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the ibmJobTitle property.
+     * returned list will be present inside the object.
+     * This is why there is not a <CODE>set</CODE> method for the <b>ibmJobTitle</b> property.
      *
      * <p>
      * For example, to add a new item, do as follows:
@@ -1366,11 +1942,11 @@ public class PersonAccount extends LoginAccount {
      * getIbmJobTitle().add(newItem);
      * </pre>
      *
-     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
      *
-     *
+     * @return
+     *         returned object is {@link List}
      */
     public List<String> getIbmJobTitle() {
         if (ibmJobTitle == null) {
@@ -1379,22 +1955,30 @@ public class PersonAccount extends LoginAccount {
         return this.ibmJobTitle;
     }
 
+    /**
+     * Check if the <b>ibmJobTitle</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetIbmJobTitle() {
         return ((this.ibmJobTitle != null) && (!this.ibmJobTitle.isEmpty()));
     }
 
+    /**
+     * Unset the <b>ibmJobTitle</b> property.
+     */
     public void unsetIbmJobTitle() {
         this.ibmJobTitle = null;
     }
 
     /**
-     * Gets the value of the c property.
+     * Gets the value of the <b>c</b> property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the c property.
+     * returned list will be present inside the object.
+     * This is why there is not a <CODE>set</CODE> method for the <b>c</b> property.
      *
      * <p>
      * For example, to add a new item, do as follows:
@@ -1403,11 +1987,11 @@ public class PersonAccount extends LoginAccount {
      * getC().add(newItem);
      * </pre>
      *
-     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
      *
-     *
+     * @return
+     *         returned object is {@link List}
      */
     public List<String> getC() {
         if (c == null) {
@@ -1416,22 +2000,30 @@ public class PersonAccount extends LoginAccount {
         return this.c;
     }
 
+    /**
+     * Check if the <b>c</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetC() {
         return ((this.c != null) && (!this.c.isEmpty()));
     }
 
+    /**
+     * Unset the <b>c</b> property.
+     */
     public void unsetC() {
         this.c = null;
     }
 
     /**
-     * Gets the value of the countryName property.
+     * Gets the value of the <b>countryName</b> property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the countryName property.
+     * returned list will be present inside the object.
+     * This is why there is not a <CODE>set</CODE> method for the <b>countryName</b> property.
      *
      * <p>
      * For example, to add a new item, do as follows:
@@ -1440,11 +2032,11 @@ public class PersonAccount extends LoginAccount {
      * getCountryName().add(newItem);
      * </pre>
      *
-     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
      *
-     *
+     * @return
+     *         returned object is {@link List}
      */
     public List<String> getCountryName() {
         if (countryName == null) {
@@ -1453,22 +2045,30 @@ public class PersonAccount extends LoginAccount {
         return this.countryName;
     }
 
+    /**
+     * Check if the <b>countryName</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetCountryName() {
         return ((this.countryName != null) && (!this.countryName.isEmpty()));
     }
 
+    /**
+     * Unset the <b>countryName</b> property.
+     */
     public void unsetCountryName() {
         this.countryName = null;
     }
 
     /**
-     * Gets the value of the givenName property.
+     * Gets the value of the <b>givenName</b> property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the givenName property.
+     * returned list will be present inside the object.
+     * This is why there is not a <CODE>set</CODE> method for the <b>givenName</b> property.
      *
      * <p>
      * For example, to add a new item, do as follows:
@@ -1477,11 +2077,11 @@ public class PersonAccount extends LoginAccount {
      * getGivenName().add(newItem);
      * </pre>
      *
-     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
      *
-     *
+     * @return
+     *         returned object is {@link List}
      */
     public List<String> getGivenName() {
         if (givenName == null) {
@@ -1490,22 +2090,30 @@ public class PersonAccount extends LoginAccount {
         return this.givenName;
     }
 
+    /**
+     * Check if the <b>givenName</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetGivenName() {
         return ((this.givenName != null) && (!this.givenName.isEmpty()));
     }
 
+    /**
+     * Unset the <b>givenName</b> property.
+     */
     public void unsetGivenName() {
         this.givenName = null;
     }
 
     /**
-     * Gets the value of the description property.
+     * Gets the value of the <b>description</b> property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the description property.
+     * returned list will be present inside the object.
+     * This is why there is not a <CODE>set</CODE> method for the <b>description</b> property.
      *
      * <p>
      * For example, to add a new item, do as follows:
@@ -1514,11 +2122,11 @@ public class PersonAccount extends LoginAccount {
      * getDescription().add(newItem);
      * </pre>
      *
-     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
      *
-     *
+     * @return
+     *         returned object is {@link List}
      */
     public List<String> getDescription() {
         if (description == null) {
@@ -1527,22 +2135,30 @@ public class PersonAccount extends LoginAccount {
         return this.description;
     }
 
+    /**
+     * Check if the <b>description</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetDescription() {
         return ((this.description != null) && (!this.description.isEmpty()));
     }
 
+    /**
+     * Unset the <b>description</b> property.
+     */
     public void unsetDescription() {
         this.description = null;
     }
 
     /**
-     * Gets the value of the businessCategory property.
+     * Gets the value of the <b>businessCategory</b> property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the businessCategory property.
+     * returned list will be present inside the object.
+     * This is why there is not a <CODE>set</CODE> method for the <b>businessCategory</b> property.
      *
      * <p>
      * For example, to add a new item, do as follows:
@@ -1551,11 +2167,11 @@ public class PersonAccount extends LoginAccount {
      * getBusinessCategory().add(newItem);
      * </pre>
      *
-     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
      *
-     *
+     * @return
+     *         returned object is {@link List}
      */
     public List<String> getBusinessCategory() {
         if (businessCategory == null) {
@@ -1564,22 +2180,30 @@ public class PersonAccount extends LoginAccount {
         return this.businessCategory;
     }
 
+    /**
+     * Check if the <b>businessCategory</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetBusinessCategory() {
         return ((this.businessCategory != null) && (!this.businessCategory.isEmpty()));
     }
 
+    /**
+     * Unset the <b>businessCategory</b> property.
+     */
     public void unsetBusinessCategory() {
         this.businessCategory = null;
     }
 
     /**
-     * Gets the value of the seeAlso property.
+     * Gets the value of the <b>seeAlso</b> property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the seeAlso property.
+     * returned list will be present inside the object.
+     * This is why there is not a <CODE>set</CODE> method for the <b>seeAlso</b> property.
      *
      * <p>
      * For example, to add a new item, do as follows:
@@ -1588,11 +2212,11 @@ public class PersonAccount extends LoginAccount {
      * getSeeAlso().add(newItem);
      * </pre>
      *
-     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
      *
-     *
+     * @return
+     *         returned object is {@link List}
      */
     public List<String> getSeeAlso() {
         if (seeAlso == null) {
@@ -1601,68 +2225,82 @@ public class PersonAccount extends LoginAccount {
         return this.seeAlso;
     }
 
+    /**
+     * Check if the <b>seeAlso</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetSeeAlso() {
         return ((this.seeAlso != null) && (!this.seeAlso.isEmpty()));
     }
 
+    /**
+     * Unset the <b>seeAlso</b> property.
+     */
     public void unsetSeeAlso() {
         this.seeAlso = null;
     }
 
     /**
-     * Gets the value of the kerberosId property.
+     * Gets the value of the <b>kerberosId</b> property.
      *
      * @return
      *         possible object is {@link String }
-     *
      */
     public String getKerberosId() {
         return kerberosId;
     }
 
     /**
-     * Sets the value of the kerberosId property.
+     * Sets the value of the <b>kerberosId</b> property.
      *
      * @param value
      *            allowed object is {@link String }
-     *
      */
     public void setKerberosId(String value) {
         this.kerberosId = value;
     }
 
+    /**
+     * Check if the <b>kerberosId</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetKerberosId() {
         return (this.kerberosId != null);
     }
 
     /**
-     * Gets the value of the photoURL property.
+     * Gets the value of the <b>photoURL</b> property.
      *
      * @return
      *         possible object is {@link String }
-     *
      */
     public String getPhotoUrl() {
         return photoURL;
     }
 
     /**
-     * Sets the value of the photoURL property.
+     * Sets the value of the <b>photoURL</b> property.
      *
      * @param value
      *            allowed object is {@link String }
-     *
      */
     public void setPhotoUrl(String value) {
         this.photoURL = value;
     }
 
+    /**
+     * Check if the <b>photoUrl</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetPhotoUrl() {
         return (this.photoURL != null);
     }
 
     /**
-     * Gets the value of the photoURLThumbnail property.
+     * Gets the value of the <b>photoURLThumbnail</b> property.
      *
      * @return
      *         possible object is {@link String }
@@ -1673,7 +2311,7 @@ public class PersonAccount extends LoginAccount {
     }
 
     /**
-     * Sets the value of the photoURLThumbnail property.
+     * Sets the value of the <b>photoURLThumbnail</b> property.
      *
      * @param value
      *            allowed object is {@link String }
@@ -1683,470 +2321,669 @@ public class PersonAccount extends LoginAccount {
         this.photoURLThumbnail = value;
     }
 
+    /**
+     * Check if the <b>photoURLThumbnail</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetPhotoUrlThumbnail() {
         return (this.photoURLThumbnail != null);
     }
 
     /**
-     * Gets the value of the honorificSuffix property.
+     * Gets the value of the <b>honorificSuffix</b> property.
      *
      * @return
      *         possible object is {@link String }
-     *
      */
     public String getHonorificSuffix() {
         return honorificSuffix;
     }
 
     /**
-     * Sets the value of the honorificSuffix property.
+     * Sets the value of the <b>honorificSuffix</b> property.
      *
      * @param value
      *            allowed object is {@link String }
-     *
      */
     public void setHonorificSuffix(String value) {
         this.honorificSuffix = value;
     }
 
+    /**
+     * Check if the <b>honorificSuffix</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetHonorificSuffix() {
         return (this.honorificSuffix != null);
     }
 
+    /**
+     * Unset the <b>honorificSuffix</b> property.
+     */
     public void unsetHonorificSuffix() {
         this.honorificSuffix = null;
     }
 
     /**
-     * Gets the value of the honorificPrefix property.
+     * Gets the value of the <b>honorificPrefix</b> property.
      *
      * @return
      *         possible object is {@link String }
-     *
      */
     public String getHonorificPrefix() {
         return honorificPrefix;
     }
 
     /**
-     * Sets the value of the honorificPrefix property.
+     * Sets the value of the <b>honorificPrefix</b> property.
      *
      * @param value
      *            allowed object is {@link String }
-     *
      */
     public void setHonorificPrefix(String value) {
         this.honorificPrefix = value;
     }
 
+    /**
+     * Check if the <b>honorificPrefix</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetHonorificPrefix() {
         return (this.honorificPrefix != null);
     }
 
+    /**
+     * Unset the <b>honorificPrefix</b> property.
+     */
     public void unsetHonorificPrefix() {
         this.honorificPrefix = null;
     }
 
     /**
-     * Gets the value of the middleName property.
+     * Gets the value of the <b>middleName</b> property.
      *
      * @return
      *         possible object is {@link String }
-     *
      */
     public String getMiddleName() {
         return middleName;
     }
 
     /**
-     * Sets the value of the middleName property.
+     * Sets the value of the <b>middleName</b> property.
      *
      * @param value
      *            allowed object is {@link String }
-     *
      */
     public void setMiddleName(String value) {
         this.middleName = value;
     }
 
+    /**
+     * Check if the <b>middleName</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetMiddleName() {
         return (this.middleName != null);
     }
 
+    /**
+     * Unset the <b>middleName</b> property.
+     */
     public void unsetMiddleName() {
         this.middleName = null;
     }
 
     /**
-     * Gets the value of the nickName property.
+     * Gets the value of the <b>nickName</b> property.
      *
      * @return
      *         possible object is {@link String }
-     *
      */
     public String getNickName() {
         return nickName;
     }
 
     /**
-     * Sets the value of the nickName property.
+     * Sets the value of the <b>nickName</b> property.
      *
      * @param value
      *            allowed object is {@link String }
-     *
      */
     public void setNickName(String value) {
         this.nickName = value;
     }
 
+    /**
+     * Check if the <b>nickName</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetNickName() {
         return (this.nickName != null);
     }
 
+    /**
+     * Unset the <b>nickName</b> property.
+     */
     public void unsetNickName() {
         this.nickName = null;
     }
 
     /**
-     * Gets the value of the profileUrl property.
+     * Gets the value of the <b>profileUrl</b> property.
      *
      * @return
      *         possible object is {@link String }
-     *
      */
     public String getProfileUrl() {
         return profileUrl;
     }
 
     /**
-     * Sets the value of the profileUrl property.
+     * Sets the value of the <b>profileUrl</b> property.
      *
      * @param value
      *            allowed object is {@link String }
-     *
      */
     public void setProfileUrl(String value) {
         this.profileUrl = value;
     }
 
+    /**
+     * Check if the <b>profileUrl</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetProfileUrl() {
         return (this.profileUrl != null);
     }
 
+    /**
+     * Unset the <b>profileUrl</b> property.
+     */
     public void unsetProfileUrl() {
         this.profileUrl = null;
     }
 
     /**
-     * Gets the value of the timezone property.
+     * Gets the value of the <b>timezone</b> property.
      *
      * @return
      *         possible object is {@link String }
-     *
      */
     public String getTimezone() {
         return timezone;
     }
 
     /**
-     * Sets the value of the timezone property.
+     * Sets the value of the <b>timezone</b> property.
      *
      * @param value
      *            allowed object is {@link String }
-     *
      */
     public void setTimezone(String value) {
         this.timezone = value;
     }
 
+    /**
+     * Check if the <b>timezone</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetTimzone() {
         return (this.timezone != null);
     }
 
+    /**
+     * Unset the <b>timezone</b> property.
+     */
     public void unsetTimezone() {
         this.timezone = null;
     }
 
     /**
-     * Gets the value of the locale property.
+     * Gets the value of the <b>locale</b> property.
      *
      * @return
      *         possible object is {@link String }
-     *
      */
     public String getLocale() {
         return locale;
     }
 
     /**
-     * Sets the value of the locale property.
+     * Sets the value of the <b>locale</b> property.
      *
      * @param value
      *            allowed object is {@link String }
-     *
      */
     public void setLocale(String value) {
         this.locale = value;
     }
 
+    /**
+     * Check if the <b>locale</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetLocale() {
         return (this.locale != null);
     }
 
+    /**
+     * Unset the <b>locale</b> property.
+     */
     public void unsetLocale() {
         this.locale = null;
     }
 
     /**
-     * Gets the value of the active property.
+     * Gets the value of the <b>active</b> property.
      *
      * @return
      *         possible object is {@link String }
-     *
      */
     public Boolean getActive() {
         return active;
     }
 
     /**
-     * Sets the value of the active property.
+     * Sets the value of the <b>active</b> property.
      *
      * @param value
      *            allowed object is {@link String }
-     *
      */
     public void setActive(Boolean value) {
         this.active = value;
     }
 
+    /**
+     * Check if the <b>active</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetActive() {
         return (this.active != null);
     }
 
+    /**
+     * Unset the <b>active</b> property.
+     */
     public void unsetActive() {
         this.active = null;
     }
 
     /**
-     * @return the homeStreet
+     * Gets the value of the <b>homeStreet</b> property.
+     *
+     * @return
+     *         possible object is {@link String }
      */
     public String getHomeStreet() {
         return homeStreet;
     }
 
     /**
-     * @param homeStreet the homeStreet to set
+     * Sets the value of the <b>homeStreet</b> property.
+     *
+     * @param value
+     *            allowed object is {@link String }
      */
-    public void setHomeStreet(String homeStreet) {
-        this.homeStreet = homeStreet;
+    public void setHomeStreet(String value) {
+        this.homeStreet = value;
     }
 
+    /**
+     * Check if the <b>homeStreet</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetHomeStreet() {
         return (this.homeStreet != null);
     }
 
+    /**
+     * Unset the <b>homeStreet</b> property.
+     */
     public void unsetHomeStreet() {
         homeStreet = null;
     }
 
     /**
-     * @return the homeCity
+     * Gets the value of the <b>homeCity</b> property.
+     *
+     * @return
+     *         possible object is {@link String }
      */
     public String getHomeCity() {
         return homeCity;
     }
 
     /**
-     * @param homeCity the homeCity to set
+     * Sets the value of the <b>homeCity</b> property.
+     *
+     * @param value
+     *            allowed object is {@link String }
      */
-    public void setHomeCity(String homeCity) {
-        this.homeCity = homeCity;
+    public void setHomeCity(String value) {
+        this.homeCity = value;
     }
 
+    /**
+     * Check if the <b>homeCity</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetHomeCity() {
         return (this.homeCity != null);
     }
 
+    /**
+     * Unset the <b>homeCity</b> property.
+     */
     public void unsetHomeCity() {
         homeCity = null;
     }
 
     /**
-     * @return the homeStateOrProvinceName
+     * Gets the value of the <b>homeStateOrProvinceName</b> property.
+     *
+     * @return
+     *         possible object is {@link String }
      */
     public String getHomeStateOrProvinceName() {
         return homeStateOrProvinceName;
     }
 
     /**
-     * @param homeStateOrProvinceName the homeStateOrProvinceName to set
+     * Sets the value of the <b>homeStateOrProvinceName</b> property.
+     *
+     * @param value
+     *            allowed object is {@link String }
      */
-    public void setHomeStateOrProvinceName(String homeStateOrProvinceName) {
-        this.homeStateOrProvinceName = homeStateOrProvinceName;
+    public void setHomeStateOrProvinceName(String value) {
+        this.homeStateOrProvinceName = value;
     }
 
+    /**
+     * Check if the <b>homeStateOrProvinceName</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetHomeStateOrProvinceName() {
         return (this.homeStateOrProvinceName != null);
     }
 
+    /**
+     * Unset the <b>homeStateOrProvinceName</b> property.
+     */
     public void unsetHomeStateOrProvinceName() {
         homeStateOrProvinceName = null;
     }
 
     /**
-     * @return the homePostalCode
+     * Gets the value of the <b>homePostalCode</b> property.
+     *
+     * @return
+     *         possible object is {@link String }
      */
     public String getHomePostalCode() {
         return homePostalCode;
     }
 
     /**
-     * @param homePostalCode the homePostalCode to set
+     * Sets the value of the <b>homePostalCode</b> property.
+     *
+     * @param value
+     *            allowed object is {@link String }
      */
-    public void setHomePostalCode(String homePostalCode) {
-        this.homePostalCode = homePostalCode;
+    public void setHomePostalCode(String value) {
+        this.homePostalCode = value;
     }
 
+    /**
+     * Check if the <b>homePostalCode</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetHomePostalCode() {
         return (this.homePostalCode != null);
     }
 
+    /**
+     * Unset the <b>homePostalCode</b> property.
+     */
     public void unsetHomePostalCode() {
         homePostalCode = null;
     }
 
     /**
-     * @return the homeCountryName
+     * Gets the value of the <b>homeCountryName</b> property.
+     *
+     * @return
+     *         possible object is {@link String }
      */
     public String getHomeCountryName() {
         return homeCountryName;
     }
 
     /**
-     * @param homeCountryName the homeCountryName to set
+     * Sets the value of the <b>homeCountryName</b> property.
+     *
+     * @param value
+     *            allowed object is {@link String }
      */
-    public void setHomeCountryName(String homeCountryName) {
-        this.homeCountryName = homeCountryName;
+    public void setHomeCountryName(String value) {
+        this.homeCountryName = value;
     }
 
+    /**
+     * Check if the <b>homeCountryName</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetHomeCountryName() {
         return (this.homeCountryName != null);
     }
 
+    /**
+     * Unset the <b>homeCountryName</b> property.
+     */
     public void unsetHomeCountryName() {
         homeCountryName = null;
     }
 
     /**
-     * @return the businessStreet
+     * Gets the value of the <b>businessStreet</b> property.
+     *
+     * @return
+     *         possible object is {@link String }
      */
     public String getBusinessStreet() {
         return businessStreet;
     }
 
     /**
-     * @param businessStreet the businessStreet to set
+     * Sets the value of the <b>businessStreet</b> property.
+     *
+     * @param value
+     *            allowed object is {@link String }
      */
-    public void setBusinessStreet(String businessStreet) {
-        this.businessStreet = businessStreet;
+    public void setBusinessStreet(String value) {
+        this.businessStreet = value;
     }
 
+    /**
+     * Check if the <b>businessStreet</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetBusinessStreet() {
         return (this.businessStreet != null);
     }
 
+    /**
+     * Unset the <b>businessStreet</b> property.
+     */
     public void unsetBusinessStreet() {
         businessStreet = null;
     }
 
     /**
-     * @return the businessCity
+     * Gets the value of the <b>businessCity</b> property.
+     *
+     * @return
+     *         possible object is {@link String }
      */
     public String getBusinessCity() {
         return businessCity;
     }
 
     /**
-     * @param businessCity the businessCity to set
+     * Sets the value of the <b>businessCity</b> property.
+     *
+     * @param value
+     *            allowed object is {@link String }
      */
-    public void setBusinessCity(String businessCity) {
-        this.businessCity = businessCity;
+    public void setBusinessCity(String value) {
+        this.businessCity = value;
     }
 
+    /**
+     * Check if the <b>businessCity</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetBusinessCity() {
         return (this.businessCity != null);
     }
 
+    /**
+     * Unset the <b>businessCity</b> property.
+     */
     public void unsetBusinessCity() {
         businessCity = null;
     }
 
     /**
-     * @return the businessStateOrProvinceName
+     * Gets the value of the <b>businessStateOrProvinceName</b> property.
+     *
+     * @return
+     *         possible object is {@link String }
      */
     public String getBusinessStateOrProvinceName() {
         return businessStateOrProvinceName;
     }
 
     /**
-     * @param businessStateOrProvinceName the businessStateOrProvinceName to set
+     * Sets the value of the <b>businessStateOrProvinceName</b> property.
+     *
+     * @param value
+     *            allowed object is {@link String }
      */
-    public void setBusinessStateOrProvinceName(String businessStateOrProvinceName) {
-        this.businessStateOrProvinceName = businessStateOrProvinceName;
+    public void setBusinessStateOrProvinceName(String value) {
+        this.businessStateOrProvinceName = value;
     }
 
+    /**
+     * Check if the <b>businessStateOrProvinceName</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetBusinessStateOrProvinceName() {
         return (this.businessStateOrProvinceName != null);
     }
 
+    /**
+     * Unset the <b>businessStateOrProvinceName</b> property.
+     */
     public void unsetBusinessStateOrProvinceName() {
         businessStateOrProvinceName = null;
     }
 
     /**
-     * @return the businessPostalCode
+     * Gets the value of the <b>businessPostalCode</b> property.
+     *
+     * @return
+     *         possible object is {@link String }
      */
     public String getBusinessPostalCode() {
         return businessPostalCode;
     }
 
     /**
-     * @param businessPostalCode the businessPostalCode to set
+     * Sets the value of the <b>businessPostalCode</b> property.
+     *
+     * @param value
+     *            allowed object is {@link String }
      */
-    public void setBusinessPostalCode(String businessPostalCode) {
-        this.businessPostalCode = businessPostalCode;
+    public void setBusinessPostalCode(String value) {
+        this.businessPostalCode = value;
     }
 
+    /**
+     * Check if the <b>businessPostalCode</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetBusinessPostalCode() {
         return (this.businessPostalCode != null);
     }
 
+    /**
+     * Unset the <b>businessPostalCode</b> property.
+     */
     public void unsetBusinessPostalCode() {
         businessPostalCode = null;
     }
 
     /**
-     * @return the businessCountryName
+     * Gets the value of the <b>businessCountryName</b> property.
+     *
+     * @return
+     *         possible object is {@link String }
      */
     public String getBusinessCountryName() {
         return businessCountryName;
     }
 
     /**
-     * @param businessCountryName the businessCountryName to set
+     * Sets the value of the <b>businessCountryName</b> property.
+     *
+     * @param value
+     *            allowed object is {@link String }
      */
-    public void setBusinessCountryName(String businessCountryName) {
-        this.businessCountryName = businessCountryName;
+    public void setBusinessCountryName(String value) {
+        this.businessCountryName = value;
     }
 
+    /**
+     * Check if the <b>businessCountryName</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetBusinessCountryName() {
         return (this.businessCountryName != null);
     }
 
+    /**
+     * Unset the <b>businesCountryName</b> property.
+     */
     public void unsetBusinessCountryName() {
         businessCountryName = null;
     }
 
+    /**
+     * Gets the value of the <b>ims</b> property.
+     *
+     * @return
+     *         possible object is {@link String }
+     */
     public List<String> getIMs() {
         if (ims == null) {
             ims = new ArrayList<String>();
@@ -2154,10 +2991,18 @@ public class PersonAccount extends LoginAccount {
         return this.ims;
     }
 
+    /**
+     * Check if the <b>ims</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetIMs() {
         return ((this.ims != null) && (!this.ims.isEmpty()));
     }
 
+    /**
+     * Unset the <b>ims</b> property.
+     */
     public void unsetIMs() {
         this.ims = null;
     }
@@ -2648,10 +3493,10 @@ public class PersonAccount extends LoginAccount {
             setEmployeeNumber(((String) value));
         }
         if (propName.equals(PROP_MANAGER)) {
-            getManager().add(((com.ibm.wsspi.security.wim.model.IdentifierType) value));
+            getManager().add(((IdentifierType) value));
         }
         if (propName.equals(PROP_SECRETARY)) {
-            getSecretary().add(((com.ibm.wsspi.security.wim.model.IdentifierType) value));
+            getSecretary().add(((IdentifierType) value));
         }
         if (propName.equals(PROP_DEPARTMENT_NUMBER)) {
             getDepartmentNumber().add(((String) value));
@@ -2918,20 +3763,26 @@ public class PersonAccount extends LoginAccount {
         return "PersonAccount";
     }
 
+    /**
+     * Create the list of mandatory property names.
+     */
     private static synchronized void setMandatoryPropertyNames() {
         if (mandatoryProperties != null) {
             return;
         }
-        mandatoryProperties = new ArrayList();
+        mandatoryProperties = new ArrayList<String>();
         mandatoryProperties.add(PROP_SN);
         mandatoryProperties.add(PROP_CN);
     }
 
+    /**
+     * Create the list of transient property names.
+     */
     private static synchronized void setTransientPropertyNames() {
         if (transientProperties != null) {
             return;
         }
-        transientProperties = new ArrayList();
+        transientProperties = new ArrayList<String>();
         transientProperties.addAll(LoginAccount.getTransientProperties());
     }
 
@@ -2959,96 +3810,112 @@ public class PersonAccount extends LoginAccount {
         }
     }
 
-    protected static List getTransientProperties() {
+    /**
+     * Get the list of transient property names.
+     *
+     * @return The list of transient property names.
+     */
+    protected static List<String> getTransientProperties() {
         if (transientProperties == null) {
             setTransientPropertyNames();
         }
         return transientProperties;
     }
 
+    /**
+     * Re-initialize the property names.
+     */
     public static synchronized void reInitializePropertyNames() {
         propertyNames = null;
         Entity.reInitializePropertyNames();
     }
 
-    public static synchronized List getPropertyNames(String entityTypeName) {
-        if (propertyNames != null) {
-            return propertyNames;
-        } else {
-            {
-                List names = new ArrayList();
-                names.add(PROP_UID);
-                names.add(PROP_CN);
-                names.add(PROP_SN);
-                names.add(PROP_PREFERRED_LANGUAGE);
-                names.add(PROP_DISPLAY_NAME);
-                names.add(PROP_INITIALS);
-                names.add(PROP_MAIL);
-                names.add(PROP_IBM_PRIMARY_EMAIL);
-                names.add(PROP_JPEG_PHOTO);
-                names.add(PROP_LABELED_URI);
-                names.add(PROP_CAR_LICENSE);
-                names.add(PROP_TELEPHONE_NUMBER);
-                names.add(PROP_FACSIMILE_TELEPHONE_NUMBER);
-                names.add(PROP_PAGER);
-                names.add(PROP_MOBILE);
-                names.add(PROP_HOME_POSTAL_ADDRESS);
-                names.add(PROP_POSTAL_ADDRESS);
-                names.add(PROP_ROOM_NUMBER);
-                names.add(PROP_L);
-                names.add(PROP_LOCALITY_NAME);
-                names.add(PROP_ST);
-                names.add(PROP_STATE_OR_PROVINCE_NAME);
-                names.add(PROP_STREET);
-                names.add(PROP_POSTAL_CODE);
-                names.add(PROP_CITY);
-                names.add(PROP_EMPLOYEE_TYPE);
-                names.add(PROP_EMPLOYEE_NUMBER);
-                names.add(PROP_MANAGER);
-                names.add(PROP_SECRETARY);
-                names.add(PROP_DEPARTMENT_NUMBER);
-                names.add(PROP_TITLE);
-                names.add(PROP_IBM_JOB_TITLE);
-                names.add(PROP_C);
-                names.add(PROP_COUNTRY_NAME);
-                names.add(PROP_GIVEN_NAME);
-                names.add(PROP_DESCRIPTION);
-                names.add(PROP_BUSINESS_CATEGORY);
-                names.add(PROP_SEE_ALSO);
-                names.add(PROP_KERBEROS_ID);
-                names.add(PROP_PHOTO_URL);
-                names.add(PROP_PHOTO_URL_THUMBNAIL);
-                names.add(PROP_MIDDLE_NAME);
-                names.add(PROP_HONORIFIC_PREFIX);
-                names.add(PROP_HONORIFIC_SUFFIX);
-                names.add(PROP_NICK_NAME);
-                names.add(PROP_PROFILE_URL);
-                names.add(PROP_TIMEZONE);
-                names.add(PROP_LOCALE);
-                names.add(PROP_ACTIVE);
-                names.add(PROP_HOME_STREET);
-                names.add(PROP_HOME_CITY);
-                names.add(PROP_HOME_STATE_OR_PROVINCE_NAME);
-                names.add(PROP_HOME_POSTAL_CODE);
-                names.add(PROP_HOME_COUNTRY_NAME);
-                names.add(PROP_BUSINESS_STREET);
-                names.add(PROP_BUSINESS_CITY);
-                names.add(PROP_BUSINESS_STATE_OR_PROVINCE_NAME);
-                names.add(PROP_BUSINESS_POSTAL_CODE);
-                names.add(PROP_BUSINESS_COUNTRY_NAME);
-                names.add(PROP_IMS);
-                if (extendedPropertiesDataType != null && extendedPropertiesDataType.keySet().size() > 0)
-                    names.addAll(extendedPropertiesDataType.keySet());
-                names.addAll(LoginAccount.getPropertyNames("LoginAccount"));
-                propertyNames = Collections.unmodifiableList(names);
-                return propertyNames;
+    /**
+     * Get the list of property names for the provided type.
+     *
+     * @param entityTypeName the type name.
+     * @return The list of property names.
+     */
+    public static synchronized List<String> getPropertyNames(String entityTypeName) {
+        if (propertyNames == null) {
+            List<String> names = new ArrayList<String>();
+            names.add(PROP_UID);
+            names.add(PROP_CN);
+            names.add(PROP_SN);
+            names.add(PROP_PREFERRED_LANGUAGE);
+            names.add(PROP_DISPLAY_NAME);
+            names.add(PROP_INITIALS);
+            names.add(PROP_MAIL);
+            names.add(PROP_IBM_PRIMARY_EMAIL);
+            names.add(PROP_JPEG_PHOTO);
+            names.add(PROP_LABELED_URI);
+            names.add(PROP_CAR_LICENSE);
+            names.add(PROP_TELEPHONE_NUMBER);
+            names.add(PROP_FACSIMILE_TELEPHONE_NUMBER);
+            names.add(PROP_PAGER);
+            names.add(PROP_MOBILE);
+            names.add(PROP_HOME_POSTAL_ADDRESS);
+            names.add(PROP_POSTAL_ADDRESS);
+            names.add(PROP_ROOM_NUMBER);
+            names.add(PROP_L);
+            names.add(PROP_LOCALITY_NAME);
+            names.add(PROP_ST);
+            names.add(PROP_STATE_OR_PROVINCE_NAME);
+            names.add(PROP_STREET);
+            names.add(PROP_POSTAL_CODE);
+            names.add(PROP_CITY);
+            names.add(PROP_EMPLOYEE_TYPE);
+            names.add(PROP_EMPLOYEE_NUMBER);
+            names.add(PROP_MANAGER);
+            names.add(PROP_SECRETARY);
+            names.add(PROP_DEPARTMENT_NUMBER);
+            names.add(PROP_TITLE);
+            names.add(PROP_IBM_JOB_TITLE);
+            names.add(PROP_C);
+            names.add(PROP_COUNTRY_NAME);
+            names.add(PROP_GIVEN_NAME);
+            names.add(PROP_DESCRIPTION);
+            names.add(PROP_BUSINESS_CATEGORY);
+            names.add(PROP_SEE_ALSO);
+            names.add(PROP_KERBEROS_ID);
+            names.add(PROP_PHOTO_URL);
+            names.add(PROP_PHOTO_URL_THUMBNAIL);
+            names.add(PROP_MIDDLE_NAME);
+            names.add(PROP_HONORIFIC_PREFIX);
+            names.add(PROP_HONORIFIC_SUFFIX);
+            names.add(PROP_NICK_NAME);
+            names.add(PROP_PROFILE_URL);
+            names.add(PROP_TIMEZONE);
+            names.add(PROP_LOCALE);
+            names.add(PROP_ACTIVE);
+            names.add(PROP_HOME_STREET);
+            names.add(PROP_HOME_CITY);
+            names.add(PROP_HOME_STATE_OR_PROVINCE_NAME);
+            names.add(PROP_HOME_POSTAL_CODE);
+            names.add(PROP_HOME_COUNTRY_NAME);
+            names.add(PROP_BUSINESS_STREET);
+            names.add(PROP_BUSINESS_CITY);
+            names.add(PROP_BUSINESS_STATE_OR_PROVINCE_NAME);
+            names.add(PROP_BUSINESS_POSTAL_CODE);
+            names.add(PROP_BUSINESS_COUNTRY_NAME);
+            names.add(PROP_IMS);
+
+            if (extendedPropertiesDataType != null && extendedPropertiesDataType.keySet().size() > 0) {
+                names.addAll(extendedPropertiesDataType.keySet());
             }
+
+            names.addAll(LoginAccount.getPropertyNames(LoginAccount.TYPE_NAME));
+            propertyNames = Collections.unmodifiableList(names);
         }
+        return propertyNames;
     }
 
+    /**
+     * Create the property name to data type mapping.
+     */
     private static synchronized void setDataTypeMap() {
         if (dataTypeMap == null) {
-            dataTypeMap = new HashMap();
+            dataTypeMap = new HashMap<String, String>();
         }
         dataTypeMap.put(PROP_UID, "String");
         dataTypeMap.put(PROP_CN, "String");
@@ -3077,8 +3944,8 @@ public class PersonAccount extends LoginAccount {
         dataTypeMap.put(PROP_CITY, "String");
         dataTypeMap.put(PROP_EMPLOYEE_TYPE, "String");
         dataTypeMap.put(PROP_EMPLOYEE_NUMBER, "String");
-        dataTypeMap.put(PROP_MANAGER, "IdentifierType");
-        dataTypeMap.put(PROP_SECRETARY, "IdentifierType");
+        dataTypeMap.put(PROP_MANAGER, IdentifierType.TYPE_NAME);
+        dataTypeMap.put(PROP_SECRETARY, IdentifierType.TYPE_NAME);
         dataTypeMap.put(PROP_DEPARTMENT_NUMBER, "String");
         dataTypeMap.put(PROP_TITLE, "String");
         dataTypeMap.put(PROP_IBM_JOB_TITLE, "String");
@@ -3115,7 +3982,7 @@ public class PersonAccount extends LoginAccount {
     @Override
     public String getDataType(String propName) {
         if (dataTypeMap.containsKey(propName)) {
-            return ((String) dataTypeMap.get(propName));
+            return (dataTypeMap.get(propName));
         } else if (extendedPropertiesDataType.containsKey(propName)) {
             return extendedPropertiesDataType.get(propName);
         } else {
@@ -3123,18 +3990,21 @@ public class PersonAccount extends LoginAccount {
         }
     }
 
+    /**
+     * Create the list of super-types for this type.
+     */
     private static synchronized void setSuperTypes() {
         if (superTypeList == null) {
-            superTypeList = new ArrayList();
+            superTypeList = new ArrayList<String>();
         }
-        superTypeList.add("LoginAccount");
-        superTypeList.add("Party");
-        superTypeList.add("RolePlayer");
-        superTypeList.add("Entity");
+        superTypeList.add(LoginAccount.TYPE_NAME);
+        superTypeList.add(Party.TYPE_NAME);
+        superTypeList.add(RolePlayer.TYPE_NAME);
+        superTypeList.add(Entity.TYPE_NAME);
     }
 
     @Override
-    public ArrayList getSuperTypes() {
+    public ArrayList<String> getSuperTypes() {
         if (superTypeList == null) {
             setSuperTypes();
         }
@@ -3146,22 +4016,36 @@ public class PersonAccount extends LoginAccount {
         return superTypeList.contains(superTypeName);
     }
 
+    /**
+     * Create the set of sub-types for this type.
+     */
     private static synchronized void setSubTypes() {
-        if (subTypeList == null) {
-            subTypeList = new HashSet();
+        if (subTypeSet == null) {
+            subTypeSet = new HashSet<String>();
         }
     }
 
-    public static HashSet getSubTypes() {
-        if (subTypeList == null) {
+    /**
+     * Get the sub-types for this type.
+     *
+     * @return The set of sub-types.
+     */
+    public static HashSet<String> getSubTypes() {
+        if (subTypeSet == null) {
             setSubTypes();
         }
-        return subTypeList;
+        return subTypeSet;
     }
 
+    /**
+     * Get the value for an extended property.
+     *
+     * @param propName The property name for the extended property.
+     * @return The value for the property.
+     */
     private Object getExtendedProperty(String propName) {
-        if (extendedPropertiesValue.containsKey(propName))
-            return extendedPropertiesValue.get(propName);
+        if (extendedProperties.containsKey(propName))
+            return extendedProperties.get(propName);
         else if (extendedPropertiesDefaultValue.containsKey(propName))
             return extendedPropertiesDefaultValue.get(propName);
         else
@@ -3169,21 +4053,25 @@ public class PersonAccount extends LoginAccount {
     }
 
     /**
-     * @param property
-     * @return
+     * Check if an extended property is set.
+     *
+     * @param property The name of the extended property.
+     * @return True if the property is set; otherwise, false.
      */
     private boolean isSetExtendedProperty(String property) {
-        if (extendedPropertiesValue.containsKey(property) || extendedPropertiesDefaultValue.containsKey(property))
+        if (extendedProperties.containsKey(property) || extendedPropertiesDefaultValue.containsKey(property))
             return true;
         else
             return false;
     }
 
     /**
-     * @param property
+     * Unset the extended property.
+     *
+     * @param property The property name of the extended property to unset.
      */
     private void unSetExtendedProperty(String property) {
-        extendedPropertiesValue.remove(property);
+        extendedProperties.remove(property);
     }
 
     /**
@@ -3193,20 +4081,21 @@ public class PersonAccount extends LoginAccount {
      * @param value The value to set.
      * @throws ClassCastException If the value was not of the correct data type.
      */
+    @SuppressWarnings("unchecked")
     private void setExtendedProperty(String property, Object value) {
         String dataType = extendedPropertiesDataType.get(property);
         String valueClass = value.getClass().getSimpleName();
 
         if (dataType.equals(valueClass) && !extendedMultiValuedProperties.contains(property)) {
-            extendedPropertiesValue.put(property, value);
+            extendedProperties.put(property, value);
         } else if (dataType.equals(valueClass) && extendedMultiValuedProperties.contains(property)) {
             if (value instanceof List) {
-                extendedPropertiesValue.put(property, value);
+                extendedProperties.put(property, value);
             } else {
-                List<Object> values = (List<Object>) extendedPropertiesValue.get(property);
+                List<Object> values = (List<Object>) extendedProperties.get(property);
                 if (values == null) {
                     values = new ArrayList<Object>();
-                    extendedPropertiesValue.put(property, values);
+                    extendedProperties.put(property, values);
                 }
                 values.add(value);
             }
@@ -3215,11 +4104,6 @@ public class PersonAccount extends LoginAccount {
             String msg = "Could not set extended property for PersonAccount property '" + property + "'. " + type + " is incompatible with " + dataType;
             throw new ClassCastException(msg);
         }
-    }
-
-    @Override
-    public String toString() {
-        return WIMTraceHelper.trace(this);
     }
 
     /**
@@ -3234,7 +4118,6 @@ public class PersonAccount extends LoginAccount {
      *            <ul><li>allowed object is a {@link boolean}</li></ul>
      * @param defaultValue: defines the default value for this property
      *            <ul><li>allowed object is a {@link Object}</li></ul>
-     *
      */
     public static void addExtendedProperty(String propName, String dataType, boolean multiValued, Object defaultValue) {
         if (dataType == null || "null".equalsIgnoreCase(dataType))

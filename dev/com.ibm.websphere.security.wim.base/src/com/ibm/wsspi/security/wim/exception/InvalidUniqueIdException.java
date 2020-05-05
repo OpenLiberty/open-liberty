@@ -15,29 +15,37 @@ public class InvalidUniqueIdException extends WIMApplicationException {
     private static final long serialVersionUID = 824956923164999219L;
 
     /**
-     *
+     * Constructs a InvalidUniqueIdException with no message key, no detail message, and no cause.
      */
     public InvalidUniqueIdException() {
         super();
     }
 
     /**
-     * @param message
+     * Constructs a InvalidUniqueIdException with the specified message key and detail message.
+     *
+     * @param key The message key.
+     * @param message The detail message.
      */
     public InvalidUniqueIdException(String key, String message) {
         super(key, message);
     }
 
     /**
-     * @param cause
+     * Constructs a InvalidUniqueIdException with the specified cause.
+     *
+     * @param cause The cause.
      */
     public InvalidUniqueIdException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * @param message
-     * @param cause
+     * Constructs a InvalidUniqueIdException with the specified message key, detail message, and cause.
+     *
+     * @param key The message key.
+     * @param message The detail message.
+     * @param cause The cause.
      */
     public InvalidUniqueIdException(String key, String message, Throwable cause) {
         super(key, message, cause);

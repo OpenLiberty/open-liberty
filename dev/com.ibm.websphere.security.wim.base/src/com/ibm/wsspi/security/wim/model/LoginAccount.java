@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,81 +19,100 @@ import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 
 /**
  * <p>Java class for LoginAccount complex type.
  *
  * <p>The following schema fragment specifies the expected content contained within this class.
  *
- * <pre>
- * &lt;complexType name="LoginAccount">
- * &lt;complexContent>
- * &lt;extension base="{http://www.ibm.com/websphere/wim}Party">
- * &lt;sequence>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}principalName" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}password" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}realm" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}certificate" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;/sequence>
- * &lt;/extension>
- * &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- *
- *
- * <p> The LoginAccount object is extended from the Party object, and ultimately the RolePlayer object,
+ * <p>The LoginAccount object is extended from the {@link Party} object, and ultimately the {@link RolePlayer} object,
  * to enable LoginAccounts to play roles.
  *
- * <p> The LoginAccount object is an entity type which contains the common properties for all sub-types of this
- * object. It has the following properties defined:
+ * <p>Below is a list of supported properties for {@link LoginAccount}.
  *
  * <ul>
- *
  * <li><b>principalName</b>: specifies the name of the user associated with this LoginAccount.</li>
- *
  * <li><b>password</b>: specifies the password for the user specified in <b>principalName</b>.</li>
- *
  * <li><b>realm</b>: specifies the realm in which this user exists.</li>
- *
- * <li><b>certificate</b> property specifies the certificate the user may be authenticated with.</li>
+ * <li><b>certificate</b>: specifies the certificate(s) a user may be authenticated with.</li>
  * </ul>
  *
- * <p> A principal may have multiple LoginAccounts.
+ * <p>In addition to the properties in the list above, all properties from the super-class {@link Party} and its
+ * super-classes are supported.
  *
+ * <p>A principal may have multiple LoginAccounts.
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "LoginAccount", propOrder = {
-                                              "principalName",
-                                              "password",
-                                              "realm",
-                                              "certificate"
+@XmlAccessorType(XmlAccessType.NONE)
+@XmlType(name = LoginAccount.TYPE_NAME, propOrder = {
+                                                      "principalName",
+                                                      "password",
+                                                      "realm",
+                                                      "certificate"
 })
 @XmlSeeAlso({ PersonAccount.class })
 public class LoginAccount extends Party {
+
+    /** The type name for this data type. */
+    public static final String TYPE_NAME = "LoginAccount";
+
+    /** Property name constant for the <b>principalName</b> property. */
     private static final String PROP_PRINCIPAL_NAME = "principalName";
+
+    /** Property name constant for the <b>password</b> property. */
     private static final String PROP_PASSWORD = "password";
+
+    /** Property name constant for the <b>realm</b> property. */
     private static final String PROP_REALM = "realm";
+
+    /** Property name constant for the <b>certificate</b> property. */
     private static final String PROP_CERTIFICATE = "certificate";
 
+    /**
+     * The name of the user associated with this LoginAccount.
+     */
+    @XmlElement(name = PROP_PRINCIPAL_NAME)
     protected String principalName;
+
+    /**
+     * The password for the user specified in <b>principalName</b>.
+     */
+    @XmlElement(name = PROP_PASSWORD)
     protected byte[] password;
+
+    /**
+     * The realm in which this user exists.
+     */
+    @XmlElement(name = PROP_REALM)
     protected String realm;
+
+    /**
+     * The certificate(s) a user may be authenticated with.
+     */
+    @XmlElement(name = PROP_CERTIFICATE)
     protected List<byte[]> certificate;
 
-    private static List mandatoryProperties = null;
-    private static List transientProperties = null;
-    private static List propertyNames = null;
-    private static HashMap dataTypeMap = null;
-    private static ArrayList superTypeList = null;
-    private static HashSet subTypeList = null;
-    private final static TraceComponent tc = Tr.register(LoginAccount.class);
+    /** List of mandatory properties. */
+    private static List<String> mandatoryProperties = null;
+
+    /** List of transient properties. */
+    private static List<String> transientProperties = null;
+
+    /** The list of properties that comprise this type. */
+    private static List<String> propertyNames = null;
+
+    /** A mapping of property names to data types. */
+    private static HashMap<String, String> dataTypeMap = null;
+
+    /** A list of super-types of this type. */
+    private static ArrayList<String> superTypeList = null;
+
+    /** A set of sub-types of this type. */
+    private static HashSet<String> subTypeSet = null;
 
     /** The set of multi-valued properties for this entity type. */
     private static final Set<String> MULTI_VALUED_PROPERTIES;
@@ -115,7 +134,6 @@ public class LoginAccount extends Party {
      *
      * @return
      *         possible object is {@link String }
-     *
      */
     public String getPrincipalName() {
         return principalName;
@@ -126,7 +144,6 @@ public class LoginAccount extends Party {
      *
      * @param value
      *            allowed object is {@link String }
-     *
      */
     public void setPrincipalName(String value) {
         this.principalName = value;
@@ -137,15 +154,13 @@ public class LoginAccount extends Party {
      *
      * @return
      *         returned object is {@link boolean}
-     *
      */
-
     public boolean isSetPrincipalName() {
         return (this.principalName != null);
     }
 
     /**
-     * Gets the value of the ><b>password</b> property.
+     * Gets the value of the <b>password</b> property.
      *
      * @return
      *         possible object is
@@ -173,9 +188,7 @@ public class LoginAccount extends Party {
      *
      * @return
      *         returned object is {@link boolean}
-     *
      */
-
     public boolean isSetPassword() {
         return (this.password != null);
     }
@@ -185,7 +198,6 @@ public class LoginAccount extends Party {
      *
      * @return
      *         possible object is {@link String }
-     *
      */
     public String getRealm() {
         return realm;
@@ -196,7 +208,6 @@ public class LoginAccount extends Party {
      *
      * @param value
      *            allowed object is {@link String }
-     *
      */
     public void setRealm(String value) {
         this.realm = value;
@@ -207,9 +218,7 @@ public class LoginAccount extends Party {
      *
      * @return
      *         returned object is {@link boolean}
-     *
      */
-
     public boolean isSetRealm() {
         return (this.realm != null);
     }
@@ -220,7 +229,7 @@ public class LoginAccount extends Party {
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
+     * returned list will be present inside the object.
      * This is why there is not a <CODE>set</CODE> method for the certificate property.
      *
      * <p>
@@ -235,6 +244,8 @@ public class LoginAccount extends Party {
      * Objects of the following type(s) are allowed in the list
      * byte[]
      *
+     * @return
+     *         returned object is {@link List}
      */
     public List<byte[]> getCertificate() {
         if (certificate == null) {
@@ -248,9 +259,7 @@ public class LoginAccount extends Party {
      *
      * @return
      *         returned object is {@link boolean}
-     *
      */
-
     public boolean isSetCertificate() {
         return ((this.certificate != null) && (!this.certificate.isEmpty()));
     }
@@ -261,17 +270,6 @@ public class LoginAccount extends Party {
     public void unsetCertificate() {
         this.certificate = null;
     }
-
-    /**
-     * Gets the value of the requested property
-     *
-     * @param propName
-     *            allowed object is {@link String}
-     *
-     * @return
-     *         returned object is {@link Object}
-     *
-     */
 
     @Override
     public Object get(String propName) {
@@ -290,14 +288,6 @@ public class LoginAccount extends Party {
         return super.get(propName);
     }
 
-    /**
-     * Returns true if the requested property is set; false, otherwise.
-     *
-     * @return
-     *         returned object is {@link boolean }
-     *
-     */
-
     @Override
     public boolean isSet(String propName) {
         if (propName.equals(PROP_PRINCIPAL_NAME)) {
@@ -315,15 +305,6 @@ public class LoginAccount extends Party {
         return super.isSet(propName);
     }
 
-    /**
-     * Sets the value of the provided property to the provided value.
-     *
-     * @param propName
-     *            allowed object is {@link String}
-     * @param value
-     *            allowed object is {@link Object}
-     *
-     */
     @Override
     public void set(String propName, Object value) {
         if (propName.equals(PROP_PRINCIPAL_NAME)) {
@@ -341,14 +322,6 @@ public class LoginAccount extends Party {
         super.set(propName, value);
     }
 
-    /**
-     * Sets the value of provided property to null.
-     *
-     * @param propName
-     *            allowed object is {@link String}
-     *
-     */
-
     @Override
     public void unset(String propName) {
         if (propName.equals(PROP_CERTIFICATE)) {
@@ -357,30 +330,29 @@ public class LoginAccount extends Party {
         super.unset(propName);
     }
 
-    /**
-     * Gets the name of this model object, <b>LoginAccount</b>
-     *
-     * @return
-     *         returned object is {@link String}
-     */
-
     @Override
     public String getTypeName() {
         return "LoginAccount";
     }
 
+    /**
+     * Set the list of mandatory properties.
+     */
     private static synchronized void setMandatoryPropertyNames() {
         if (mandatoryProperties != null) {
             return;
         }
-        mandatoryProperties = new ArrayList();
+        mandatoryProperties = new ArrayList<String>();
     }
 
+    /**
+     * Set the list of transient properties.
+     */
     private static synchronized void setTransientPropertyNames() {
         if (transientProperties != null) {
             return;
         }
-        transientProperties = new ArrayList();
+        transientProperties = new ArrayList<String>();
         transientProperties.add(PROP_CERTIFICATE);
         transientProperties.addAll(Party.getTransientProperties());
     }
@@ -390,11 +362,7 @@ public class LoginAccount extends Party {
         if (mandatoryProperties == null) {
             setMandatoryPropertyNames();
         }
-        if (mandatoryProperties.contains(propName)) {
-            return true;
-        } else {
-            return false;
-        }
+        return mandatoryProperties.contains(propName);
     }
 
     @Override
@@ -402,50 +370,50 @@ public class LoginAccount extends Party {
         if (transientProperties == null) {
             setTransientPropertyNames();
         }
-        if (transientProperties.contains(propName)) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    protected static List getTransientProperties() {
-        if (transientProperties == null) {
-            setTransientPropertyNames();
-        }
-        return transientProperties;
+        return transientProperties.contains(propName);
     }
 
     /**
-     * Gets a list of all supported properties for this model object, <b>LoginAccount</b>
+     * Get the list of transient properties.
+     *
+     * @return The list of transient properties.
+     */
+    protected static List<String> getTransientProperties() {
+        if (transientProperties == null) {
+            setTransientPropertyNames();
+        }
+        return Collections.unmodifiableList(transientProperties);
+    }
+
+    /**
+     * Gets a list of all supported properties for this type.
      *
      * @param entityTypeName
      *            allowed object is {@link String}
-     *
      * @return
      *         returned object is {@link List}
      */
-
-    public static synchronized List getPropertyNames(String entityTypeName) {
+    public static synchronized List<String> getPropertyNames(String entityTypeName) {
         if (propertyNames != null) {
             return propertyNames;
         } else {
-            {
-                List names = new ArrayList();
-                names.add(PROP_PRINCIPAL_NAME);
-                names.add(PROP_PASSWORD);
-                names.add(PROP_REALM);
-                names.add(PROP_CERTIFICATE);
-                names.addAll(Party.getPropertyNames("Party"));
-                propertyNames = Collections.unmodifiableList(names);
-                return propertyNames;
-            }
+            List<String> names = new ArrayList<String>();
+            names.add(PROP_PRINCIPAL_NAME);
+            names.add(PROP_PASSWORD);
+            names.add(PROP_REALM);
+            names.add(PROP_CERTIFICATE);
+            names.addAll(Party.getPropertyNames(Party.TYPE_NAME));
+            propertyNames = Collections.unmodifiableList(names);
+            return propertyNames;
         }
     }
 
+    /**
+     * Create the property name to data type mapping.
+     */
     private static synchronized void setDataTypeMap() {
         if (dataTypeMap == null) {
-            dataTypeMap = new HashMap();
+            dataTypeMap = new HashMap<String, String>();
         }
         dataTypeMap.put(PROP_PRINCIPAL_NAME, "String");
         dataTypeMap.put(PROP_PASSWORD, "byte[]");
@@ -453,96 +421,61 @@ public class LoginAccount extends Party {
         dataTypeMap.put(PROP_CERTIFICATE, "byte[]");
     }
 
-    /**
-     * Gets the Java type of the value of the provided property. For example: String, List
-     *
-     * @param propName
-     *            allowed object is {@link String}
-     *
-     * @return
-     *         returned object is {@link String}
-     */
-
     @Override
     public String getDataType(String propName) {
         if (dataTypeMap.containsKey(propName)) {
-            return ((String) dataTypeMap.get(propName));
+            return (dataTypeMap.get(propName));
         } else {
             return super.getDataType(propName);
         }
     }
 
+    /**
+     * Create the list of super-types for this type.
+     */
     private static synchronized void setSuperTypes() {
         if (superTypeList == null) {
-            superTypeList = new ArrayList();
+            superTypeList = new ArrayList<String>();
         }
-        superTypeList.add("Party");
-        superTypeList.add("RolePlayer");
-        superTypeList.add("Entity");
+        superTypeList.add(Party.TYPE_NAME);
+        superTypeList.add(RolePlayer.TYPE_NAME);
+        superTypeList.add(Entity.TYPE_NAME);
     }
 
-    /**
-     * Gets a list of any model objects which this model object, <b>LoginAccount</b>, is
-     * an extension of.
-     *
-     * @return
-     *         returned object is {@link ArrayList}
-     */
     @Override
-    public ArrayList getSuperTypes() {
+    public ArrayList<String> getSuperTypes() {
         if (superTypeList == null) {
             setSuperTypes();
         }
         return superTypeList;
     }
 
-    /**
-     * Returns a true if the provided model object is one that this
-     * model object extends; false, otherwise.
-     *
-     * @param superTypeName
-     *
-     *            allowed object is {@link String}
-     * @return
-     *         returned object is {@link boolean}
-     */
     @Override
     public boolean isSubType(String superTypeName) {
         return superTypeList.contains(superTypeName);
     }
 
+    /**
+     * Create the list of sub-types for this type.
+     */
     private static synchronized void setSubTypes() {
-        if (subTypeList == null) {
-            subTypeList = new HashSet();
+        if (subTypeSet == null) {
+            subTypeSet = new HashSet<String>();
         }
-        subTypeList.add("PersonAccount");
-
+        subTypeSet.add(PersonAccount.TYPE_NAME);
     }
 
     /**
-     * Gets a set of any model objects which extend this model object, <b>LoginAccount</b>
+     * Gets a set of any types which extend this type.
      *
      * @return
      *         returned object is {@link HashSet}
      */
-
-    public static HashSet getSubTypes() {
-        if (subTypeList == null) {
+    public static HashSet<String> getSubTypes() {
+        if (subTypeSet == null) {
             setSubTypes();
         }
-        return subTypeList;
-    }
-
-    /**
-     * Returns this model object, <b>LoginAccount</b>, and its contents as a String
-     *
-     * @return
-     *         returned object is {@link String}
-     */
-
-    @Override
-    public String toString() {
-        return WIMTraceHelper.trace(this);
+        return subTypeSet;
     }
 
     @Override
