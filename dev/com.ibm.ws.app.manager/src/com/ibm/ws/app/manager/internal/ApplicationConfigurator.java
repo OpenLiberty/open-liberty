@@ -2016,6 +2016,14 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
                         _appFromName.remove(oldAppName);
                     }
 
+                    ApplicationStateCoordinator.updateStartingAppStatus(removedAppPid, ApplicationStateCoordinator.AppStatus.REMOVED);
+                    ApplicationStateCoordinator.updateStoppingAppStatus(removedAppPid, ApplicationStateCoordinator.AppStatus.REMOVED);
+                    List<String> blockedPids = _blockedPidsFromName.get(oldAppName);
+                    if (blockedPids != null && !blockedPids.isEmpty()) {
+                        String blockedPid = blockedPids.remove(0);
+                        ApplicationConfig blockedConfig = _blockedConfigFromPid.remove(blockedPid);
+                        processUpdate(blockedPid, blockedConfig);
+                    }
                     if (cleanCache) {
                         File f = new File(getCacheDir(), removedAppPid);
                         cleanCacheDirectory(f);
@@ -2025,14 +2033,6 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
                         cleanCacheDirectory(f);
                     }
 
-                    ApplicationStateCoordinator.updateStartingAppStatus(removedAppPid, ApplicationStateCoordinator.AppStatus.REMOVED);
-                    ApplicationStateCoordinator.updateStoppingAppStatus(removedAppPid, ApplicationStateCoordinator.AppStatus.REMOVED);
-                    List<String> blockedPids = _blockedPidsFromName.get(oldAppName);
-                    if (blockedPids != null && !blockedPids.isEmpty()) {
-                        String blockedPid = blockedPids.remove(0);
-                        ApplicationConfig blockedConfig = _blockedConfigFromPid.remove(blockedPid);
-                        processUpdate(blockedPid, blockedConfig);
-                    }
                 }
             }
 

@@ -1345,6 +1345,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
                         return;
                     case REMOVED:
                         _asmHelper.switchApplicationState(_appConfig.get(), ApplicationState.INSTALLED);
+                        _appMonitor.removeApplication(_appConfig.get().getConfigPid());
                         ApplicationDependency removedFuture = null;
                         while ((removedFuture = _notifyAppRemoved.poll()) != null) {
                             resolveDependency(removedFuture);
