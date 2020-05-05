@@ -18,8 +18,8 @@ Bundle-Description: SmallRye implementation of MicroProfile GraphQL
 
 Import-Package: \
   graphql.util,\
+  org.eclipse.microprofile.metrics;resolution:=optional,\
   !io.smallrye.metrics,\
-  !org.eclipse.microprofile.metrics,\
   *
 
 Export-Package: \

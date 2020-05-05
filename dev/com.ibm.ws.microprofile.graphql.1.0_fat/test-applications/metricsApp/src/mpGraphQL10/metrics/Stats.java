@@ -32,9 +32,9 @@ public class Stats {
         }
     }
 
-    @JsonbProperty("mp_graphql_mpGraphQL10.metrics.MyGraphQLEndpoint.getCountWidget")
+    @JsonbProperty("mp_graphql_Query_getCountWidget")
     private SimpleTimerStat count;
-    @JsonbProperty("mp_graphql_mpGraphQL10.metrics.MyGraphQLEndpoint.getTimeWidget")
+    @JsonbProperty("mp_graphql_Query_getTimeWidget")
     private SimpleTimerStat time;
 
     public SimpleTimerStat getCount() {
