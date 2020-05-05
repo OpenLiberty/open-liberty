@@ -50,7 +50,8 @@ public class LPSTest extends WSATTest {
 				+ server.getHttpDefaultPort();
 		server2 = LibertyServerFactory
 				.getLibertyServer("MigrationServer2");
-		BASE_URL2 = "http://" + server2.getHostname() + ":9992";
+		server2.setHttpDefaultPort(9992);
+		BASE_URL2 = "http://" + server2.getHostname() + ":" + server2.getHttpDefaultPort();
 
 		if (server != null && server.isStarted()){
 			server.stopServer();

@@ -47,6 +47,7 @@ public class EJBCDITest extends DBTestBase {
 				.getLibertyServer("WSATEJB_Client");
 		server1 = LibertyServerFactory
 				.getLibertyServer("WSATEJB_Server1");
+		server1.setHttpDefaultPort(server1Port);
 		
 		DBTestBase.initWSATTest(client);
 		DBTestBase.initWSATTest(server1);
@@ -57,7 +58,7 @@ public class EJBCDITest extends DBTestBase {
 		CLient_URL = "http://" + client.getHostname() + ":"
 				+ client.getHttpDefaultPort();
 		Server1_URL = "http://" + server1.getHostname() + ":"
-				+ server1Port;
+				+ server1.getHttpDefaultPort();
 
 		if (client != null && !client.isStarted()) {
 			client.startServer();
