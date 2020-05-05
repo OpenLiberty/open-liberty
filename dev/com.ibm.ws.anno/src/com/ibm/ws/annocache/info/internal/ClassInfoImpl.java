@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,9 +37,14 @@ public abstract class ClassInfoImpl extends InfoImpl implements ClassInfo {
         }
     }
 
+    // Used, in particular, by 'ClassInfoCache.addClassInfo(NonDelayedClassInfo)'
+    // to select classes to place in the higher retention store of java classes.    
     public static boolean isJavaClass(String name) {
-        return (name.startsWith(PackageInfo.JAVA_CLASS_PREFIX) ||
-                name.startsWith(PackageInfo.JAVAX_EJB_CLASS_PREFIX) || name.startsWith(PackageInfo.JAVAX_SERVLET_CLASS_PREFIX));
+        return ( name.startsWith(PackageInfo.JAVA_CLASS_PREFIX) ||
+                 name.startsWith(PackageInfo.JAVAX_EJB_CLASS_PREFIX) ||
+                 name.startsWith(PackageInfo.JAVAX_SERVLET_CLASS_PREFIX) ||
+                 name.startsWith(PackageInfo.JAKARTA_EJB_CLASS_PREFIX) ||
+                 name.startsWith(PackageInfo.JAKARTA_SERVLET_CLASS_PREFIX) );
     }
 
     // Instance state ...
