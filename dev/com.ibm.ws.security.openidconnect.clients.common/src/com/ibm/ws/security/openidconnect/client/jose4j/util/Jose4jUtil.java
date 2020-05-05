@@ -440,7 +440,7 @@ public class Jose4jUtil {
             }
             if (accessToken != null) {
                 customProperties.put(Constants.ACCESS_TOKEN, accessToken);
-                customProperties.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, accessToken.hashCode());
+                customProperties.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, String.valueOf(accessToken.hashCode()));
                 customProperties.put(AuthenticationConstants.INTERNAL_ASSERTION_KEY, Boolean.TRUE);
             }
 
