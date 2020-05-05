@@ -76,6 +76,8 @@ public class JSF22MiscellaneousTests {
 
         ShrinkHelper.exportDropinAppToServer(jsf22MiscellaneousServer, JSF22MiscellaneousEar);
 
+        ShrinkHelper.defaultDropinApp(jsf22MiscellaneousServer, "FunctionMapper.war", "com.ibm.ws.jsf23.fat.functionmapper");
+
         jsf22MiscellaneousServer.startServer(JSF22MiscellaneousTests.class.getSimpleName() + ".log");
     }
 
@@ -433,6 +435,28 @@ public class JSF22MiscellaneousTests {
             if (!page.asText().contains("ExpressionFactory-instance test passed")) {
                 Assert.fail("The JSP and JSF (Application) ExpressionFactory objects were not the same " + page.asText());
             }
+        }
+    }
+
+      /**
+     * 
+     * Ensure FunctionMapper is set on the ELContext 
+     * - MyFaces 4333
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testFunctionMapper() throws Exception {
+        String contextRoot = "FunctionMapper";
+        try (WebClient webClient = new WebClient()) {
+    
+            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, contextRoot, "index.xhtml");
+
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
+
+            page = page.getElementById("form1:button1").click();
+
+            assertTrue("Function Mapper is null!", page.asText().contains("FunctionMapper Exists (Expecting true): true"));
         }
     }
 }
