@@ -475,10 +475,10 @@ public class ConsoleFormatTest {
         }
     }
 
-    private static void setServerConfiguration(LibertyServer Server, String consoleFormat, boolean useTraceSpec, boolean useIsoDateFormat,
+    private static void setServerConfiguration(LibertyServer libertyServer, String consoleFormat, boolean useTraceSpec, boolean useIsoDateFormat,
                                                RemoteFile consoleLogFile) throws Exception {
         Logging loggingObj;
-        ServerConfiguration serverConfig = Server.getServerConfiguration();
+        ServerConfiguration serverConfig = libertyServer.getServerConfiguration();
         loggingObj = serverConfig.getLogging();
         if (useTraceSpec) {
             loggingObj.setTraceSpecification(TRACE_SPEC);
@@ -487,9 +487,9 @@ public class ConsoleFormatTest {
             loggingObj.setIsoDateFormat(useIsoDateFormat);
         }
         loggingObj.setConsoleFormat(consoleFormat);
-        Server.setMarkToEndOfLog(consoleLogFile);
-        Server.updateServerConfiguration(serverConfig);
-        Server.waitForConfigUpdateInLogUsingMark(null);
+        libertyServer.setMarkToEndOfLog(consoleLogFile);
+        libertyServer.updateServerConfiguration(serverConfig);
+        libertyServer.waitForConfigUpdateInLogUsingMark(null);
     }
 
     private static boolean isStringinDevFormat(String text) {
@@ -500,10 +500,10 @@ public class ConsoleFormatTest {
         return Pattern.compile(SIMPLE_FORMAT_REGEX_PATTERN).matcher(text).find();
     }
 
-    private void setInBootstrapPropertiesFile(LibertyServer Server, RemoteFile bootstrapFile, String key, String value) throws Exception {
+    private void setInBootstrapPropertiesFile(LibertyServer libertyServer, RemoteFile bootstrapFile, String key, String value) throws Exception {
         // Stop server, if running...
-        if (Server != null && Server.isStarted()) {
-            Server.stopServer(EXPECTED_FAILURES);
+        if (libertyServer != null && libertyServer.isStarted()) {
+            libertyServer.stopServer(EXPECTED_FAILURES);
         }
 
         // Update bootstrap.properties file with consoleFormat=simple
@@ -514,7 +514,7 @@ public class ConsoleFormatTest {
         writeProperties(newBootstrapProps, out);
 
         // Start server...
-        Server.startServer();
+        libertyServer.startServer();
     }
 
     private static void hitWebPage(String contextRoot, String servletName, boolean failureAllowed, String params) throws MalformedURLException, IOException, ProtocolException {
