@@ -60,7 +60,7 @@ public class InstallFeatureAction implements ActionHandler {
 
         @Override
         public ExitCode handleTask(PrintStream stdout, PrintStream stderr, Arguments args) {
-                if(args.getPositionalArguments().isEmpty()){
+                if(args.getPositionalArguments().isEmpty() || args.getPositionalArguments().removeIf(arg -> (arg == null || arg.trim().equals("")))){
                         FeatureAction.help.handleTask(new ArgumentsImpl(new String[] { "help", FeatureAction.getEnum(args.getAction()).toString() }));
                         return ReturnCode.BAD_ARGUMENT;
                 }
