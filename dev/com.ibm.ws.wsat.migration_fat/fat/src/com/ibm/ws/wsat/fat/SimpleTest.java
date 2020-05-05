@@ -11,7 +11,6 @@
 package com.ibm.ws.wsat.fat;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -49,7 +48,8 @@ public class SimpleTest extends WSATTest {
 		BASE_URL = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort();
 
 		server2 = LibertyServerFactory.getLibertyServer("MigrationServer2");
-		BASE_URL2 = "http://" + server2.getHostname() + ":9992";
+		server2.setHttpDefaultPort(9992);
+		BASE_URL2 = "http://" + server2.getHostname() + ":" + server2.getHttpDefaultPort();
 
 		if (server != null && server.isStarted()){
 			server.stopServer();

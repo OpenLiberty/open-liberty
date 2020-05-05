@@ -36,23 +36,28 @@ import componenttest.topology.utils.HttpUtils;
 @AllowedFFDC(value = { "javax.transaction.SystemException" })
 public class ComplexTest extends WSATTest {
 
-	private static LibertyServer server = LibertyServerFactory
-			.getLibertyServer("MigrationServer1");
-	private static String BASE_URL = "http://" + server.getHostname() + ":"
-			+ server.getHttpDefaultPort();
+	private static LibertyServer server;
+	private static String BASE_URL;
 
-	private static LibertyServer server2 = LibertyServerFactory
-			.getLibertyServer("MigrationServer2");
-	private static String BASE_URL2 = "http://" + server2.getHostname() + ":9992";
+	private static LibertyServer server2;
+	private static String BASE_URL2;
 
-	private static LibertyServer server3 = LibertyServerFactory
-			.getLibertyServer("MigrationServer3");
-	private static String BASE_URL3 = "http://" + server3.getHostname() + ":9993";
+	private static LibertyServer server3;
+	private static String BASE_URL3;
 
 	private final static int REQUEST_TIMEOUT = 60;
 
 	@BeforeClass
 	public static void beforeTests() throws Exception {
+		server = LibertyServerFactory.getLibertyServer("MigrationServer1");
+		BASE_URL = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort();
+		server2 = LibertyServerFactory.getLibertyServer("MigrationServer2");
+		server2.setHttpDefaultPort(9992);
+		BASE_URL2 = "http://" + server2.getHostname() + ":" + server2.getHttpDefaultPort();
+		server3 = LibertyServerFactory.getLibertyServer("MigrationServer3");
+		server3.setHttpDefaultPort(9993);
+		BASE_URL3 = "http://" + server3.getHostname() + ":" + server3.getHttpDefaultPort();
+
 		if (server != null && server.isStarted()){
 			server.stopServer();
 		}
