@@ -47,8 +47,7 @@ Import-Package: javax.annotation;version="1.1",javax.el;version="1.0";re\
  ,org.jboss.weld.security.spi;version="[3.1,5)",org.jboss.weld.seria\
  lization.spi;version="[3.1,5)",org.jboss.weld.serialization.spi.helpers\
  ;version="[3.1,5)",org.xml.sax,org.xml.sax.helpers,org.jboss.logging.an\
- notations;resolution:=optional,org.jboss.logging;version="[3.2,4)";pack\
- ageType=was_internal
+ notations;resolution:=optional,org.jboss.logging;version="[3.2,4)"
 
 Service-Component: \
   com.ibm.ws.weld.deserializationClassProvider;\

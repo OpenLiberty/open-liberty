@@ -1,0 +1,25 @@
+#*******************************************************************************
+# Copyright (c) 2018, 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+# IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+-include= jar:${fileuri;${repo;org.jboss.weld:weld-osgi-bundle;4.0.0.Alpha12}}!/META-INF/MANIFEST.MF,bnd.overrides
+
+Bundle-SymbolicName: com.ibm.ws.org.jboss.weld4; singleton:=true
+
+-includeresource: \
+  @${repo;org.jboss.weld:weld-osgi-bundle;4.0.0.Alpha2;EXACT}
+
+instrument.disabled: true
+
+-buildpath: \
+	org.jboss.weld:weld-osgi-bundle;version=4.0.0.Alpha2, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest
