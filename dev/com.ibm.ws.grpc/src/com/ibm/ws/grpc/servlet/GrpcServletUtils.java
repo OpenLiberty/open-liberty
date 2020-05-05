@@ -63,7 +63,9 @@ public class GrpcServletUtils {
 		byteArrays.add(GrpcServletUtils.LIBERTY_AUTH_KEY.name().getBytes(StandardCharsets.US_ASCII));
 		byteArrays.add((String.valueOf(req.hashCode())).getBytes(StandardCharsets.US_ASCII));
 		authMap.put(String.valueOf(req.hashCode()), authorized);
-		System.out.println("addLibertyAuthHeader " + req.hashCode() + " authorized " + authorized);
+		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+			Tr.debug(tc, "adding " + req.hashCode() + "to authMap with value " + authorized);
+		}
 	}
 
 	/**
@@ -186,7 +188,7 @@ public class GrpcServletUtils {
 		if (key == null) {
 			return false;
 		}
-		return authMap.remove(key);
+		else return Boolean.TRUE.equals(authMap.remove(key));
 	}
 
 	/**
@@ -245,6 +247,9 @@ public class GrpcServletUtils {
 			int maxInboundMsgSize = GrpcServiceConfigHolder.getMaxInboundMessageSize(name);
 			if (maxInboundMsgSize != -1) {
 				serverBuilder.maxInboundMessageSize(maxInboundMsgSize);
+			}
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+				Tr.debug(tc, "gRPC service " + name + " has been registered");
 			}
 		}
 	}

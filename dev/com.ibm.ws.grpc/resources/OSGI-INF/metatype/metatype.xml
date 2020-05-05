@@ -24,9 +24,9 @@
          -->
          
         <AD id="serviceName" name="serviceName" description="serviceName" required="true" type="String" />
-        <AD id="httpEndpoints" name="%httpEndpoints" description="%enableKeepAlive.desc" required="false" type="String" />
+        <AD id="httpEndpoints" name="%httpEndpoints" description="%httpEndpoints.desc" required="false" type="String" />
         <AD id="maxInboundMessageSize" name="%maxInboundMessageSize" description="%maxInboundMessageSize.desc" required="false" type="Integer" />
-        <AD id="serviceInterceptors" name="%clientInterceptors" description="%clientInterceptors.desc" required="false" type="String" />
+        <AD id="serviceInterceptors" name="%serviceInterceptors" description="%serviceInterceptors.desc" required="false" type="String" />
         <AD id="other" name="%other" description="%other.desc" required="false" type="String" />
 
     </OCD>
