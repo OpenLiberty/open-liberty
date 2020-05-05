@@ -542,7 +542,9 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
     public void addSSOCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp) {
         if (!allowToAddCookieToResponse(req))
             return;
-        addJwtSsoCookiesToResponse(subject, req, resp);
+        if (!JwtSSOTokenHelper.isDisableJwtCookie()) {
+            addJwtSsoCookiesToResponse(subject, req, resp);
+        }
 
         if (!JwtSSOTokenHelper.shouldAlsoIncludeLtpaCookie()) {
             return;
