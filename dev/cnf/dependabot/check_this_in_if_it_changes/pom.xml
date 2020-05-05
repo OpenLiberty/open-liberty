@@ -639,22 +639,22 @@
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-graphql</artifactId>
-      <version>1.0.1</version>
+      <version>1.0.2</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-graphql-schema-builder</artifactId>
-      <version>1.0.1</version>
+      <version>1.0.2</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-graphql-schema-model</artifactId>
-      <version>1.0.1</version>
+      <version>1.0.2</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-graphql-servlet</artifactId>
-      <version>1.0.1</version>
+      <version>1.0.2</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye.reactive</groupId>
@@ -1764,7 +1764,7 @@
     <dependency>
       <groupId>org.eclipse.microprofile.graphql</groupId>
       <artifactId>microprofile-graphql-api</artifactId>
-      <version>1.0.1</version>
+      <version>1.0.2</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.health</groupId>

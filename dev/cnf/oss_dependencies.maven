@@ -123,10 +123,10 @@ io.opentracing:opentracing-util:0.31.0
 io.perfmark:perfmark-api:0.20.1
 io.projectreactor:reactor-core:3.1.8.RELEASE
 io.reactivex.rxjava2:rxjava:2.2.13
-io.smallrye:smallrye-graphql:1.0.1
-io.smallrye:smallrye-graphql-schema-builder:1.0.1
-io.smallrye:smallrye-graphql-schema-model:1.0.1
-io.smallrye:smallrye-graphql-servlet:1.0.1
+io.smallrye:smallrye-graphql:1.0.2
+io.smallrye:smallrye-graphql-schema-builder:1.0.2
+io.smallrye:smallrye-graphql-schema-model:1.0.2
+io.smallrye:smallrye-graphql-servlet:1.0.2
 io.smallrye.reactive:smallrye-reactive-converter-api:1.0.10
 io.smallrye.reactive:smallrye-reactive-messaging-provider:1.0.8
 io.smallrye.reactive:smallrye-reactive-streams-operators:1.0.10
@@ -349,7 +349,7 @@ org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-api:1.0
 org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-api:1.1
 org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-api:2.0.1
 org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-api:2.1
-org.eclipse.microprofile.graphql:microprofile-graphql-api:1.0.1
+org.eclipse.microprofile.graphql:microprofile-graphql-api:1.0.2
 org.eclipse.microprofile.health:microprofile-health-api:2.0.1
 org.eclipse.microprofile.health:microprofile-health-api:2.1
 org.eclipse.microprofile.health:microprofile-health-api:2.2-RC2

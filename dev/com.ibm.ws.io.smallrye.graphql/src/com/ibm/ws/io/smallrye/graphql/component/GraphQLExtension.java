@@ -94,9 +94,13 @@ public class GraphQLExtension implements Extension, WebSphereCDIExtension {
         return beanManager;
     }
 
+    private final static boolean SECURITY_MANAGER_ENABLED = System.getSecurityManager() != null;
     static ClassLoader getContextClassLoader() {
-        return AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> {
-            return Thread.currentThread().getContextClassLoader();
-        });
+        if (SECURITY_MANAGER_ENABLED) {
+            return AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> {
+                return Thread.currentThread().getContextClassLoader();
+            });
+        }
+        return Thread.currentThread().getContextClassLoader();
     }
 }
