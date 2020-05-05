@@ -17,7 +17,8 @@ Bundle-SymbolicName: com.ibm.ws.grpc
 Bundle-Description: Libery gRPC, version ${bVersion}
 
 -dsannotations: \
-  com.ibm.ws.grpc.servlet.GrpcServerComponent
+  com.ibm.ws.grpc.servlet.GrpcServerComponent,\
+  com.ibm.ws.grpc.config.GrpcServiceConfigImpl
 
 Import-Package: !sun.*,\
   !com.google.code.gson,\
@@ -25,11 +26,16 @@ Import-Package: !sun.*,\
   *
 
 Export-Package: io.grpc.servlet,\
+  com.ibm.ws.grpc.config,\
   com.ibm.ws.grpc.servlet
 
 javac.args.release: current
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=11))"
+
+Include-Resource: \
+  OSGI-INF=resources/OSGI-INF, \
+  OSGI-INF/metatype/metatype.xml=resources/OSGI-INF/metatype/metatype.xml
 
 -buildpath: \
   com.ibm.ws.container.service;version=latest,\
@@ -51,7 +57,8 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=11))"
   com.ibm.ws.webcontainer,\
   com.google.code.findbugs:jsr305;version=3.0.2,\
   com.google.guava:guava;version=27.0.1,\
-  com.ibm.ws.security.authorization.util
+  com.ibm.ws.security.authorization.util,\
+  org.osgi.service.component.annotations;version=latest
 
 -testpath: \
     org.hamcrest:hamcrest-all;version=1.3, \

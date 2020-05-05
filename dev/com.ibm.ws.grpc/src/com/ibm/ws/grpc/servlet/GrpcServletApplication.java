@@ -3,6 +3,7 @@ package com.ibm.ws.grpc.servlet;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.ibm.ws.grpc.config.GrpcServiceConfigImpl;
 import com.ibm.ws.http2.GrpcServletServices;
 
 /**
@@ -10,16 +11,17 @@ import com.ibm.ws.http2.GrpcServletServices;
  */
 class GrpcServletApplication {
 
-	Set<String> serviceNames = new HashSet<String>();
-	Set<String> serviceClassNames = new HashSet<String>();
+	private Set<String> serviceNames = new HashSet<String>();
+	private Set<String> serviceClassNames = new HashSet<String>();
+	private String j2eeAppName;
 
 	/**
 	 * Add a service name to context path mapping
+	 * 
 	 * @param String serviceName
 	 * @param String ontextPath
 	 */
 	void addServiceName(String serviceName, String contextPath, Class<?> clazz) {
-
 		serviceNames.add(serviceName);
 		if (serviceName != null && contextPath != null && clazz != null) {
 			GrpcServletServices.addServletGrpcService(serviceName, contextPath, clazz);
@@ -27,8 +29,9 @@ class GrpcServletApplication {
 	}
 
 	/**
-	 * Add the set of class names that contain gRPC services.
-	 * These classes will be initialized by Libery during startup.
+	 * Add the set of class names that contain gRPC services. These classes will be
+	 * initialized by Liberty during startup.
+	 * 
 	 * @param Set<String> service class names
 	 */
 	void addServiceClassName(String name) {
@@ -43,15 +46,27 @@ class GrpcServletApplication {
 	}
 
 	/**
-	 * Unregister and clean up any associated services and mappings 
+	 * Set the current J2EE application name and register it with
+	 * GrpcServiceConfigImpl
+	 * 
+	 * @param name
+	 */
+	void setAppName(String name) {
+		j2eeAppName = name;
+		GrpcServiceConfigImpl.addApplication(j2eeAppName);
+	}
+
+	/**
+	 * Unregister and clean up any associated services and mappings
 	 */
 	void destroy() {
 		for (String service : serviceNames) {
 			GrpcServletServices.removeServletGrpcService(service);
 		}
+		if (j2eeAppName != null) {
+			GrpcServiceConfigImpl.removeApplication(j2eeAppName);
+		}
 		serviceNames = null;
 		serviceClassNames = null;
 	}
 }
-
-

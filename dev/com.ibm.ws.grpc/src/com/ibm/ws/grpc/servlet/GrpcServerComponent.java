@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.grpc.servlet;
 
 import java.lang.reflect.Constructor;
@@ -31,7 +41,10 @@ import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.grpc.Utils;
+import com.ibm.ws.grpc.config.GrpcServiceConfigImpl;
 import com.ibm.ws.kernel.feature.FeatureProvisioner;
+import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
@@ -101,6 +114,12 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
 							}
 						}
 						if (!grpcServiceClasses.isEmpty()) {
+							// keep track of the current application so that we can restart it if <grpcService/> is updated
+					        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+					        if (cmd != null) {
+				        		currentApp.setAppName(cmd.getJ2EEName().getApplication());
+					        }
+
 							// pass all of our grpc service implementors into a new GrpcServlet
 							// and register that new Servlet on this context
 							GrpcServlet grpcServlet = new GrpcServlet(

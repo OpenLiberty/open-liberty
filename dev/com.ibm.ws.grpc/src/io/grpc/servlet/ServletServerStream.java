@@ -310,18 +310,21 @@ final class ServletServerStream extends AbstractServerStream {
         return; // let the servlet timeout, the container will sent RST_STREAM automatically
       }
       transportState.runOnTransportThread(() -> transportState.transportReportStatus(status));
+
+      // Liberty change: pass the actual status and skip countdown timer
+      close(status.withCause(status.asRuntimeException()), new Metadata());
       // There is no way to RST_STREAM with CANCEL code, so write trailers instead
-      close(Status.CANCELLED.withCause(status.asRuntimeException()), new Metadata());
-      CountDownLatch countDownLatch = new CountDownLatch(1);
+      //close(Status.CANCELLED.withCause(status.asRuntimeException()), new Metadata());
+//      CountDownLatch countDownLatch = new CountDownLatch(1);
       transportState.runOnTransportThread(() -> {
         asyncCtx.complete();
-        countDownLatch.countDown();
+//        countDownLatch.countDown();
       });
-      try {
-        countDownLatch.await(5, TimeUnit.SECONDS);
-      } catch (InterruptedException e) {
-        Thread.currentThread().interrupt();
-      }
+//      try {
+//        countDownLatch.await(5, TimeUnit.SECONDS);
+//      } catch (InterruptedException e) {
+//        Thread.currentThread().interrupt();
+//      }
     }
   }
 
