@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.servlet.ServletContainerInitializer;
@@ -41,6 +42,7 @@ import graphql.schema.GraphQLSchema;
 
 import io.smallrye.graphql.bootstrap.Bootstrap;
 import io.smallrye.graphql.execution.ExecutionService;
+import io.smallrye.graphql.execution.SchemaPrinter;
 import io.smallrye.graphql.schema.SchemaBuilder;
 import io.smallrye.graphql.schema.model.Schema;
 import io.smallrye.graphql.servlet.ExecutionServlet;
@@ -111,7 +113,7 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
         GraphQLSchema graphQLSchema = null;
         try {
             IndexInitializer indexInitializer = new IndexInitializer();
-            IndexView index = indexInitializer.createIndex(webinfClassesUrl);
+            IndexView index = indexInitializer.createIndex(Collections.singleton(webinfClassesUrl));
             Schema schema = SchemaBuilder.build(index);
             graphQLSchema = Bootstrap.bootstrap(schema);
         } catch (Throwable t) {
@@ -136,14 +138,14 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
                                    .orElse(false);
             }
 
-            public List<String> getBlackList() {
-                return ConfigFacade.getOptionalValue(ConfigKey.EXCEPTION_BLACK_LIST, List.class)
-                                   .orElse(Collections.EMPTY_LIST);
+            public Optional<List<String>> getBlackList() {
+                return Optional.ofNullable(ConfigFacade.getOptionalValue(ConfigKey.EXCEPTION_BLACK_LIST, List.class)
+                                                       .orElse(null));
             }
 
-            public List<String> getWhiteList() {
-                return ConfigFacade.getOptionalValue(ConfigKey.EXCEPTION_WHITE_LIST, List.class)
-                                   .orElse(Collections.EMPTY_LIST);
+            public Optional<List<String>> getWhiteList() {
+                return Optional.ofNullable(ConfigFacade.getOptionalValue(ConfigKey.EXCEPTION_WHITE_LIST, List.class)
+                                                       .orElse(null));
             }
 
             public boolean isAllowGet() {
@@ -169,7 +171,8 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
         ExecutionServlet execServlet = new ExecutionServlet(executionService, config);
         ServletRegistration.Dynamic execServletReg = ctx.addServlet("ExecutionServlet", execServlet);
         execServletReg.addMapping(path + "/*");
-        ServletRegistration.Dynamic schemaServletReg = ctx.addServlet("SchemaServlet", new SchemaServlet());
+        SchemaPrinter printer = new SchemaPrinter(config);
+        ServletRegistration.Dynamic schemaServletReg = ctx.addServlet("SchemaServlet", new SchemaServlet(printer));
         schemaServletReg.addMapping(path + "/schema.graphql");
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
