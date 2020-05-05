@@ -24,6 +24,7 @@ import com.ibm.ws.security.saml.SsoSamlService;
 import com.ibm.ws.security.saml.error.SamlException;
 import com.ibm.ws.security.saml.sso20.internal.utils.ForwardRequestInfo;
 import com.ibm.ws.security.saml.sso20.internal.utils.HttpRequestInfo;
+import com.ibm.ws.security.saml.sso20.internal.utils.InitialRequestUtil;
 import com.ibm.ws.security.saml.sso20.internal.utils.RequestUtil;
 import com.ibm.ws.security.saml.sso20.internal.utils.SamlUtil;
 import com.ibm.wsspi.security.tai.TAIResult;
@@ -38,7 +39,7 @@ public class Unsolicited {
                                                         TraceConstants.MESSAGE_BUNDLE);
 
     SsoSamlService ssoService = null;
-
+    InitialRequestUtil irUtil = new InitialRequestUtil();
     /**
      * @param service
      */
@@ -68,11 +69,15 @@ public class Unsolicited {
         }
         String targetId = SamlUtil.generateRandom(); // no need to Base64 encode
         HttpRequestInfo cachingRequestInfo = new HttpRequestInfo(req);
-
         RequestUtil.cacheRequestInfo(targetId, ssoService, cachingRequestInfo);
+        irUtil.handleSerializingInitialRequest(req, resp, Constants.IDP_INITAL + targetId, ssoService);
+        //WebSSOUtils webssoutils = new WebSSOUtils();
+        //webssoutils.saveTargetAndRequestUrlAndParameters(req, resp, Constants.COOKIE_INITIAL, Constants.IDP_INITAL + targetId);
         TAIResult result = redirectToUserDefinedLoginPageURL(req, resp, targetId, decodedLoginPageUrl, cachingRequestInfo);
         return result;
     }
+
+
 
     /**
      * @param req

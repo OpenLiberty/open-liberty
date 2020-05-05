@@ -104,6 +104,21 @@ public class HttpRequestInfo implements Serializable {
             Tr.debug(tc, "Request: method (" + this.method + ") savedParams:" + this.savedPostParams);
         }
     }
+    
+    public HttpRequestInfo(String reqUrl, String requestURL, String method, String strInResponseToId, String formlogout, HashMap postParams) {
+        this.reqUrl = reqUrl;
+        this.requestURL = requestURL;
+        this.method = method;
+        this.strInResponseToId = strInResponseToId;
+        this.formLogoutExitPage = formlogout;
+        
+        if (METHOD_POST.equalsIgnoreCase(this.method) && formLogoutExitPage == null) {  
+                this.savedPostParams = postParams;                
+        }
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Request: method (" + this.method + ") savedParams:" + this.savedPostParams);
+        }
+    }
 
     public String getFormLogoutExitPage() {
         return this.formLogoutExitPage;

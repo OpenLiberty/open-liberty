@@ -30,6 +30,7 @@ import com.ibm.ws.security.saml.TraceConstants;
 import com.ibm.ws.security.saml.error.SamlException;
 import com.ibm.ws.security.saml.sso20.binding.BasicMessageContext;
 import com.ibm.ws.security.saml.sso20.internal.utils.HttpRequestInfo;
+import com.ibm.ws.security.saml.sso20.internal.utils.InitialRequestUtil;
 import com.ibm.ws.security.saml.sso20.internal.utils.SamlUtil;
 import com.ibm.ws.security.saml.sso20.internal.utils.UserData;
 
@@ -42,6 +43,7 @@ public class SolicitedHandler {
     SsoRequest samlRequest;
     Map<String, Object> parameters;
     SsoSamlService ssoService;
+    InitialRequestUtil irUtil = new InitialRequestUtil();
 
     public SolicitedHandler(HttpServletRequest request,
                             HttpServletResponse response,
@@ -83,6 +85,9 @@ public class SolicitedHandler {
             Cache cache = ssoService.getAcsCookieCache(samlRequest.getProviderName());
             // Cache won't be null, since getAcsCookieCache does not return null
             HttpRequestInfo requestInfo = msgCtx.getCachedRequestInfo();
+            if (requestInfo == null) {
+                requestInfo = irUtil.recreateHttpRequestInfo(relayState, request, response, ssoService);
+            }
             DateTime authnRequestExpiredTime = requestInfo.getBirthTime().plus(ssoService.getConfig().getAuthnRequestTime());
             if (authnRequestExpiredTime.isBeforeNow()) {
                 // authnRequest expires
