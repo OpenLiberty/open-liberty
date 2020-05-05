@@ -109,24 +109,6 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
             }
         }
 
-        
-        GraphQLSchema graphQLSchema = null;
-        try {
-            IndexInitializer indexInitializer = new IndexInitializer();
-            IndexView index = indexInitializer.createIndex(Collections.singleton(webinfClassesUrl));
-            Schema schema = SchemaBuilder.build(index);
-            graphQLSchema = Bootstrap.bootstrap(schema);
-        } catch (Throwable t) {
-            Tr.error(tc, "ERROR_GENERATING_SCHEMA_CWMGQ0001E", ctx.getServletContextName());
-            throw new ServletException(t);
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "SmallRye GraphQL initialized");
-        }
-
-        ctx.setAttribute(SchemaServlet.SCHEMA_PROP, graphQLSchema);
-
         GraphQLConfig config = new GraphQLConfig() {
             public String getDefaultErrorMessage() {
                 return ConfigFacade.getOptionalValue(ConfigKey.DEFAULT_ERROR_MESSAGE, String.class)
@@ -153,17 +135,34 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
                                    .orElse(false);
             }
 
+            @FFDCIgnore({Throwable.class})
             public boolean isMetricsEnabled() {
-                return ConfigFacade.getOptionalValue("smallrye.graphql.metrics.enabled", boolean.class)
-                                   .orElse(false);
+                try {
+                    return null != Class.forName("org.eclipse.microprofile.metrics.SimpleTimer");
+                } catch (Throwable t) {
+                    return false;
+                }
             }
         };
-        //config.setPrintDataFetcherException(true);
-        //config.setDefaultErrorMessage("Server Error");
-        //config.setBlackList(Arrays.asList("**empty**"));
-        //config.setWhiteList(Arrays.asList("**empty**"));
+        
+        GraphQLSchema graphQLSchema = null;
+        try {
+            IndexInitializer indexInitializer = new IndexInitializer();
+            IndexView index = indexInitializer.createIndex(Collections.singleton(webinfClassesUrl));
+            Schema schema = SchemaBuilder.build(index);
+            graphQLSchema = Bootstrap.bootstrap(schema, config);
+        } catch (Throwable t) {
+            Tr.error(tc, "ERROR_GENERATING_SCHEMA_CWMGQ0001E", ctx.getServletContextName());
+            throw new ServletException(t);
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "SmallRye GraphQL initialized");
+        }
+
+        ctx.setAttribute(SchemaServlet.SCHEMA_PROP, graphQLSchema);
+
         ExecutionService executionService = new ExecutionService(config, graphQLSchema);
-        //executionService.init();
         
         String path = "/" + ConfigFacade.getOptionalValue("mp.graphql.contextpath", String.class)
                                         .filter(s -> {return s.replaceAll("/", "").length() > 0;})
