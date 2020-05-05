@@ -8,4 +8,4 @@ Subsystem-Name: JakartaMail 1.6
 -features=\
   io.openliberty.jakarta.activation-2.0
 kind=noship
-edition=core
+edition=full

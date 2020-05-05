@@ -12,7 +12,7 @@
 bVersion=1.0
 
 
-Bundle-SymbolicName: com.ibm.websphere.jakarta.cdi.3.0; singleton:=true
+Bundle-SymbolicName: io.openliberty.jakarta.cdi.3.0; singleton:=true
 
 Export-Package: jakarta.decorator; version=3.0, \
  jakarta.enterprise.context; version=3.0, \
@@ -26,7 +26,7 @@ Export-Package: jakarta.decorator; version=3.0, \
  jakarta.enterprise.inject.spi.configurator; version=3.0, \
  jakarta.enterprise.util; version=3.0, \
  jakarta.inject; version=2.0
- 
+
 
 Import-Package:  jakarta.el; version="[4.0.0,5.0.0)", \
  jakarta.decorator; version=3.0, \
@@ -55,4 +55,3 @@ publish.wlp.jar.suffix: dev/api/spec
 -buildpath: \
 	jakarta.inject:jakarta.inject-api;version=2.0.0,\
 	jakarta.enterprise:jakarta.enterprise.cdi-api;version=3.0.0
-	

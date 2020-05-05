@@ -9,7 +9,6 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-
 // Define G:A:V coordinates of each dependency
 dependencies {
   requiredLibs 'org.apache.derby:derbynet:10.11.1.1', 'net.sf.jtidy:jtidy:9.3.8'

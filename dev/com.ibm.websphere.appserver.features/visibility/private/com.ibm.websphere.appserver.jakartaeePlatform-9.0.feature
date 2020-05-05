@@ -4,5 +4,5 @@ IBM-Process-Types: client, server
 -bundles=com.ibm.ws.jakartaee.platform.v9, \
  com.ibm.ws.javaee.version
 kind=noship
-edition=core
+edition=full
 WLP-Activation-Type: parallel

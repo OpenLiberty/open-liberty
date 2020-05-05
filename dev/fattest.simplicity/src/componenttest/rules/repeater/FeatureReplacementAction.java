@@ -58,6 +58,13 @@ public class FeatureReplacementAction implements RepeatTestAction {
         return new EE8FeatureReplacementAction();
     }
 
+    /**
+     * Remove the EE7 and EE8 features; replace them with the EE9 features
+     */
+    public static FeatureReplacementAction EE9_FEATURES() {
+        return new JakartaEE9Action();
+    }
+
     private boolean forceAddFeatures = true;
     private int minJavaLevel = 7;
     protected String currentID = null;
