@@ -208,6 +208,8 @@
             required="false" type="Boolean" default="true" />
         <AD id="displayName" name="%displayName" description="%displayName.desc"
             required="false" type="String" default="GitHub" /> 
+        <AD id="userApiNeedsSpecialHeader" name="internal" description="internal use only" required="false" 
+             type="Boolean" default="true" />
         <AD id="website" name="%website" description="%website.desc" required="false" type="String" ibm:type="token" default="https://github.com" />
         <AD id="tokenEndpointAuthMethod" name="%tokenEndpointAuthMethod" description="%tokenEndpointAuthMethod.desc" required="false"
              type="String" default="client_secret_post" >
