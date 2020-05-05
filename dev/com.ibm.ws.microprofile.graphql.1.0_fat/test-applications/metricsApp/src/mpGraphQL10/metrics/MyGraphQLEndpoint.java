@@ -15,10 +15,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.eclipse.microprofile.graphql.Query;
 import org.eclipse.microprofile.graphql.GraphQLApi;
 
 @GraphQLApi
+@ApplicationScoped
 public class MyGraphQLEndpoint {
     private static Logger LOG = Logger.getLogger(MyGraphQLEndpoint.class.getName());
 

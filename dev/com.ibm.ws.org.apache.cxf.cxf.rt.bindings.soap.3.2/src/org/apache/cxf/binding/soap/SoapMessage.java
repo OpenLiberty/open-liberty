@@ -22,9 +22,12 @@ package org.apache.cxf.binding.soap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 
+import org.apache.cxf.common.jaxb.JAXBUtils;
+import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.headers.Header;
 import org.apache.cxf.helpers.CastUtils;
 import org.apache.cxf.message.Message;
@@ -34,6 +37,10 @@ public class SoapMessage extends MessageImpl {
     private static final long serialVersionUID = 6310906412722265578L;
     private SoapVersion version;
 
+    // Liberty Change
+    private static final Logger LOG = LogUtils.getL7dLogger(SoapMessage.class);
+    // End Liberty Change
+    
     public SoapMessage(Message message) {
         super(message);
         setVersion(Soap11.getInstance());
@@ -57,6 +64,7 @@ public class SoapMessage extends MessageImpl {
         if (heads == null) {
             heads = new ArrayList<>();
             put(Header.HEADER_LIST, heads);
+            
         }
         return heads;
     }

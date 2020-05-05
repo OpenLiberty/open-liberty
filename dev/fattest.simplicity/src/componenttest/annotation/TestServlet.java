@@ -15,8 +15,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import javax.servlet.http.HttpServlet;
-
 @Target({ ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TestServlet {
@@ -40,6 +38,6 @@ public @interface TestServlet {
     /**
      * The servlet class to scan for '@Test' annotations, which will be invoked automatically via HTTP GET request
      */
-    Class<? extends HttpServlet> servlet();
+    Class<?> servlet();
 
 }

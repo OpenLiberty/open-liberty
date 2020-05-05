@@ -5,6 +5,7 @@ singleton=true
 IBM-App-ForceRestart: install, \
   uninstall
 IBM-API-Package: \
+  com.ibm.ws.grpc.client; type="internal", \
   io.grpc.netty.shaded.io.grpc.netty; type="internal", \
   io.grpc.netty.shaded.io.netty.bootstrap; type="internal", \
   io.grpc.netty.shaded.io.netty.buffer; type="internal", \
@@ -21,8 +22,8 @@ Subsystem-Name: gRPC Server 1.0
   com.ibm.websphere.appserver.internal.slf4j-1.7.7, \
   com.ibm.websphere.appserver.servlet-4.0
 -bundles=\
-  com.ibm.ws.grpc.common.1.0, \
-  com.ibm.ws.grpc.client.1.0, \
+  com.ibm.ws.grpc.common, \
+  com.ibm.ws.grpc.client, \
   com.ibm.ws.org.apache.commons.logging.1.0.3
 kind=noship
 edition=full

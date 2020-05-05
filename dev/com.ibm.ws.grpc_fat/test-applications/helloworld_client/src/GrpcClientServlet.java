@@ -1,0 +1,127 @@
+package helloworld.client;
+
+import io.grpc.examples.helloworld.GreeterGrpc;
+import io.grpc.examples.helloworld.HelloReply;
+import io.grpc.examples.helloworld.HelloRequest;
+
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+@WebServlet(name = "grpcClient", urlPatterns = { "/grpcClient" }, loadOnStartup = 1)
+public class GrpcClientServlet extends HttpServlet {
+
+    private static final long serialVersionUID = 1L;
+
+    private static final Logger logger = LoggerFactory.getLogger(GrpcClientServlet.class);
+
+    ManagedChannel channel;
+    private GreeterGrpc.GreeterBlockingStub greetingService;
+
+    private void startService(String address, int port) {
+        // The client side gRPC code will use a gRPC ManagedChannel to connect to the gRPC server 
+        // side service. Server side is configured to be listening on port 6565.
+        channel = ManagedChannelBuilder.forAddress(address , port).usePlaintext().build();
+        
+        // build the stub for client to use to make gRPC calls to the server side service
+        greetingService = GreeterGrpc.newBlockingStub(channel);
+    }
+
+    private void stopService() {
+        channel.shutdownNow();
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest reqest, HttpServletResponse response) 
+            throws ServletException, IOException {
+
+        // set response headers
+        response.setContentType("text/html");
+        response.setCharacterEncoding("UTF-8");
+        // create HTML form
+        PrintWriter writer = response.getWriter();
+        writer.append("<!DOCTYPE html>\r\n")
+                .append("<html>\r\n")
+                .append("               <head>\r\n")
+                .append("                       <title>gRPC Client</title>\r\n")
+                .append("               </head>\r\n")
+                .append("               <body>\r\n")
+                .append("                       <h3>gRPC helloworld client example</h3>\r\n")
+                .append("                       <form action=\"grpcClient\" method=\"POST\">\r\n")
+                .append("                               Enter your name: \r\n")
+                .append("                               <input type=\"text\" name=\"user\" />\r\n\r\n")
+                .append("                               <br/>")
+                .append("                               Enter the address of the target service: \r\n")
+                .append("                               <input type=\"text\" value=\"localhost\" name=\"address\" />\r\n\r\n")
+                .append("                               <br/>")
+                .append("                               Enter the port of the target service: \r\n")
+                .append("                               <input type=\"text\" value=\"9080\" name=\"port\" />\r\n\r\n")
+                .append("                               <br/>")
+                .append("                               <br/>")
+                .append("                               <input type=\"submit\" value=\"Submit\" />\r\n")
+                .append("                       </form>\r\n")
+                .append("               </body>\r\n")
+                .append("</html>\r\n");
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        String user = request.getParameter("user");
+        String address = request.getParameter("address");
+        int port = Integer.parseInt(request.getParameter("port"));
+
+        startService(address, port);
+        
+        // client side of the gRPC service is accessed via this servlet
+        // create a gRPC User message to send to the server side service
+        // the User class is derived from the HelloWorld.proto file being compiled into java code               
+        HelloRequest person = HelloRequest.newBuilder().setName(user).build();
+
+        // greetingService class is derived from HelloWorld.proto file being compiled into java code
+        // Remote Procedure Call the greetUser method on the greetingService, more than one gRPC
+        // message can be return, so read all responses into an Iterator
+        HelloReply greeting = greetingService.sayHello(person);
+
+        response.setContentType("text/html");
+        response.setCharacterEncoding("UTF-8");
+        
+        // create HTML response
+        PrintWriter writer = response.getWriter();
+        writer.append("<!DOCTYPE html>\r\n")
+                .append("<html>\r\n")
+                .append("               <head>\r\n")
+                .append("                       <title>Welcome message</title>\r\n")
+                .append("               </head>\r\n")
+                .append("               <body>\r\n");
+        if (user != null && !user.trim().isEmpty()) {
+            writer.append("<h3>gRPC service response</h3>\r\n");
+            writer.append(greeting.toString());
+        } else {
+            writer.append("     You did not enter a name!\r\n");
+        }
+        writer.append("\r\n")
+        .append("                               <br/>\r\n")
+        .append("                               <br/>\r\n")
+        .append("<form><input type=\"button\" value=\"Go back!\" onclick=\"history.back()\"></form>")
+        .append("               </body>\r\n")
+        .append("</html>\r\n");
+
+        stopService();
+    }   
+}

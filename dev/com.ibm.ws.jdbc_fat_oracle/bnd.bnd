@@ -15,6 +15,7 @@ bVersion=1.0
 src: \
 	fat/src,\
 	test-applications/oraclejdbcfat/src,\
+	test-applications/oracletracefat/src,\
 	test-applications/oracleucpfat/src
 	
 fat.project: true
@@ -27,10 +28,10 @@ fat.project: true
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
     org.rnorth.duct-tape:duct-tape;version=1.0.7,\
-    org.testcontainers:database-commons;version=1.12.3,\
-    org.testcontainers:jdbc;version=1.12.3,\
-    org.testcontainers:oracle-xe;version=1.12.3,\
-    org.testcontainers:testcontainers;version=1.12.3,\
+    org.testcontainers:database-commons;version=1.14.0,\
+    org.testcontainers:jdbc;version=1.14.0,\
+    org.testcontainers:oracle-xe;version=1.14.0,\
+    org.testcontainers:testcontainers;version=1.14.0,\
     org.slf4j:slf4j-api;version=1.7.7,\
     com.oracle.ojdbc:ojdbc8_g;version=19.3.0.0,\
     com.oracle.ojdbc:ucp;version=19.3.0.0

@@ -13,11 +13,11 @@ package com.ibm.ws.security.acme;
 import java.io.File;
 import java.security.KeyStore;
 import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.util.List;
 
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.crypto.certificateutil.DefaultSSLCertificateCreator;
+import com.ibm.ws.security.acme.internal.AcmeClient.AcmeAccount;
 
 /**
  * An interface to define the methods that an ACME 2.0 OSGi service will
@@ -33,10 +33,25 @@ public interface AcmeProvider {
 	 *            The path to generate the new keystore.
 	 * @param password
 	 *            The password for the generated keystore and certificate.
+	 * @param keyStoreType
+	 *            The keystore type.
+	 * @param keyStoreProvider
+	 *            the keystore provider.
 	 * @see DefaultSSLCertificateCreator#createDefaultSSLCertificate(String,
 	 *      String, int, String, int, String, List)
 	 */
-	public File createDefaultSSLCertificate(String filePath, String password) throws CertificateException;
+	public File createDefaultSSLCertificate(String filePath, String password, String keyStoreType,
+			String keyStoreProvider) throws CertificateException;
+
+	/**
+	 * Get the ACME account from the ACME CA server for the configured account
+	 * key file.
+	 * 
+	 * @throws AcmeCaException
+	 *             If there is an issue getting the ACME account.
+	 * @return The account from the ACME CA server.
+	 */
+	public AcmeAccount getAccount() throws AcmeCaException;
 
 	/**
 	 * Get the HTTP-01 challenge authorization for the specified challenge
@@ -53,7 +68,17 @@ public interface AcmeProvider {
 	public String getHttp01Authorization(String token) throws AcmeCaException;
 
 	/**
-	 * Refresh the certificate. This will force a refresh of the certificate by
+	 * Renew the account key pair. This will force a replace of the current
+	 * account key pair that is used to access the current account. This is
+	 * useful when the current account key pair may have been compromised.
+	 * 
+	 * @throws AcmeCaException
+	 *             If there was an error refreshing the account key pair.
+	 */
+	public void renewAccountKeyPair() throws AcmeCaException;
+
+	/**
+	 * Renew the certificate. This will force a renew of the certificate by
 	 * first requesting a new certificate and then revoking the current
 	 * certificate.
 	 * 
@@ -61,7 +86,7 @@ public interface AcmeProvider {
 	 *             If there was an error requesting a new certificate or
 	 *             revoking the old certificate.
 	 */
-	public void refreshCertificate() throws AcmeCaException;
+	public void renewCertificate() throws AcmeCaException;
 
 	/**
 	 * Updates the default SSL certificate. It is expected that if the default

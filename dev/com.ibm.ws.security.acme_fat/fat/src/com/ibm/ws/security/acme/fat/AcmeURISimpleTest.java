@@ -13,13 +13,9 @@ package com.ibm.ws.security.acme.fat;
 import org.junit.runner.RunWith;
 import org.testcontainers.shaded.org.bouncycastle.util.test.SimpleTest;
 
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.ws.security.acme.utils.AcmeFatUtils;
-
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.topology.impl.LibertyServer;
 
 /**
  * Same as {@link SimpleTest}, but uses the acme://* URI instead of an HTTPS
@@ -30,11 +26,7 @@ import componenttest.topology.impl.LibertyServer;
 public class AcmeURISimpleTest extends AcmeSimpleTest {
 
 	@Override
-	protected void configureAcmeCA(LibertyServer server, ServerConfiguration originalConfig, String... domains)
-			throws Exception {
-		/*
-		 * Always request an acme://* URI.
-		 */
-		AcmeFatUtils.configureAcmeCA(server, originalConfig, true, domains);
+	protected boolean useAcmeURIs() {
+		return true;
 	}
 }

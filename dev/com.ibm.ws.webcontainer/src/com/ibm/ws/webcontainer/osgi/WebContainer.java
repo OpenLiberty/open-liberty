@@ -18,7 +18,6 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
@@ -26,7 +25,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
@@ -844,6 +842,9 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
             if ((cause!=null) && (cause instanceof MetaDataException)) {
                 m = (MetaDataException) cause;
                 //don't log a FFDC here as we already logged an exception
+            } else if ( instance.get() == null ) {
+                // The web container is deactivated, let the upstream call handle this
+                m = new MetaDataException(e);
             } else {
                 m = new MetaDataException(e);
                 FFDCWrapper.processException(e, getClass().getName(), "createModuleMetaData", new Object[] { webModule, this });//this throws the exception
@@ -856,6 +857,9 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
     }
 
     private WebApp createWebApp(ModuleInfo moduleInfo, WebAppConfiguration webAppConfig) {
+        if (instance.get() == null ) {
+            throw new IllegalStateException("The web container has been deactivated");
+        }
         ReferenceContext referenceContext = injectionEngineSRRef.getServiceWithException().getCommonReferenceContext(webAppConfig.getMetaData());
         ManagedObjectService managedObjectService = managedObjectServiceSRRef.getServiceWithException();
         

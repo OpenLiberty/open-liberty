@@ -88,7 +88,8 @@ public class Failover1ServerCoordinatedPollingTest extends FATServletClient {
             "javax.transaction.xa.XAException", // rollback/abort path
             "javax.persistence.PersistenceException", // caused by RollbackException
             "javax.persistence.ResourceException", // connection error event on retry
-            "java.lang.IllegalStateException" // for EclipseLink retry after connection has been aborted due to rollback
+            "java.lang.IllegalStateException", // for EclipseLink retry after connection has been aborted due to rollback
+            "java.lang.NullPointerException" // can happen when task execution overlaps removal of executor
     })
     @Test
     public void testMultipleInstancesCompeteToRunManyLateTasksPC() throws Exception {
@@ -225,16 +226,12 @@ public class Failover1ServerCoordinatedPollingTest extends FATServletClient {
             } finally {
                 // Stop the server here so that expected warnings/errors can be processed by this test
                 server.stopServer(
-                        "CWWKC1500W.*IncTask_testMultipleInstancesCompeteToRunManyLateTasksPC", // Rolled back task ... The task is scheduled to retry after ...
-                        "CWWKC1501W.*IncTask_testMultipleInstancesCompeteToRunManyLateTasksPC", // Rolled back task ... due to failure ... The task is scheduled to retry after ...
-                        "CWWKC1502W.*IncTask_testMultipleInstancesCompeteToRunManyLateTasksPC", // Rolled back task ...
-                        "CWWKC1503W.*IncTask_testMultipleInstancesCompeteToRunManyLateTasksPC", // Rolled back task ... due to failure ...
-                        "DSRA0302E.*XA_RBROLLBACK", // XAException occurred.  Error code is: XA_RBROLLBACK (100)
-                        "DSRA0304E", // XAException occurred. XAException contents and details are...
-                        "J2CA0021E", // tolerating connectionErrorOccurred from JDBC driver
-                        "J2CA0027E", // tolerating exception for xa.commit failure between driver and database
-                        "J2CA0079E", // Method cleanup has detected an invalid state ...
-                        "J2CA0088W" // ManagedConnection is in an invalid state
+                        "CWWKC1500W.*", // Rolled back task [id or name]. The task is scheduled to retry after ...
+                        "CWWKC1501W.*", // Rolled back task [id or name] due to failure ... The task is scheduled to retry after ...
+                        "CWWKC1502W.*", // Rolled back task [id or name]
+                        "CWWKC1503W.*", // Rolled back task [id or name] due to failure ...
+                        "DSRA*", // various errors possible due to rollback or usage during shutdown
+                        "J2CA*" // various errors possible due to rollback or usage during shutdown
                         );
                 server.startServer();
             }
@@ -249,7 +246,7 @@ public class Failover1ServerCoordinatedPollingTest extends FATServletClient {
     // If scheduled task execution happens to be attempted while persistentExecutors are being removed, it might fail.
     // This is expected. After the configuration update completes, tasks will be able to run again successfully
     // and pass the test.
-    @AllowedFFDC("java.lang.IllegalStateException")
+    @AllowedFFDC({ "java.lang.IllegalStateException", "java.lang.NullPointerException" })
     @Test
     public void testMultipleInstancesCompeteToRunOneLateTaskPC() throws Exception {
         // Schedule on the only instance that is currently able to run tasks

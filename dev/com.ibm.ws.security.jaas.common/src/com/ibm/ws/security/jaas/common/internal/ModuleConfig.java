@@ -27,7 +27,6 @@ public @interface ModuleConfig {
     String className();
 
     @AttributeDefinition(name = "%classProviderRef", description = "%classProviderRef.desc", required = false)
-    @Ext.Beta // TODO remove once it is time to GA this attribute
     @Ext.ReferencePid("com.ibm.ws.app.manager")
     String classProviderRef();
 

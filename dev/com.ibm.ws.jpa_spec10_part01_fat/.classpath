@@ -2,8 +2,10 @@
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
 	<classpathentry kind="src" path="test-applications/callback/src"/>
+	<classpathentry kind="src" path="test-applications/entitymanager/src"/>
 	<classpathentry kind="src" path="test-applications/inheritance/src"/>
 	<classpathentry kind="src" path="test-applications/olgh10310/src"/>
+	<classpathentry kind="src" path="test-applications/olgh11795/src"/>
 	<classpathentry kind="src" path="test-applications/helpers/DatabaseManagement/src"/>
 	<classpathentry kind="src" path="test-framework/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>

@@ -20,8 +20,8 @@ public class OAuth20Request {
     public static enum EndpointType {
         authorize, token, introspect, revoke, discovery, userinfo, registration, check_session_iframe, end_session, coverage_map, proxy, jwk, logout, app_password, app_token, personalTokenManagement, usersTokenManagement, clientManagement, clientMetatype;
 
-        public static String app_password_effective_name = app_password.name() + "s";
-        public static String app_token_effective_name = app_token.name() + "s";
+        public static String app_password_effective_name = app_password.name().replace("_", "-") + "s";
+        public static String app_token_effective_name = app_token.name().replace("_", "-") + "s";
 
     };
 

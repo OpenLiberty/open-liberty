@@ -146,7 +146,7 @@ public class TargetsVisitorClassImpl extends ClassVisitor {
         Set<String> i_selectAnnotationClassNames,
         boolean recordDetail) {
 
-        super(Opcodes.ASM7);
+        super(Opcodes.ASM8);
 
         String methodName = "<init>";
         this.hashText = getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
@@ -910,7 +910,7 @@ public class TargetsVisitorClassImpl extends ClassVisitor {
 
     protected class AnnoFieldVisitor extends FieldVisitor {
         public AnnoFieldVisitor() {
-            super(Opcodes.ASM7);
+            super(Opcodes.ASM8);
         }
 
         // A field annotation.  Needs to be recorded.
@@ -971,7 +971,7 @@ public class TargetsVisitorClassImpl extends ClassVisitor {
 
     protected class AnnoMethodVisitor extends MethodVisitor {
         public AnnoMethodVisitor() {
-            super(Opcodes.ASM7);
+            super(Opcodes.ASM8);
         }
 
         // A method annotation.  Needs to be recorded.
@@ -1029,7 +1029,7 @@ public class TargetsVisitorClassImpl extends ClassVisitor {
     // end the processing of the current class.  Otherwise, start a new stage of
     // visiting the method.
 
-    // Per: ASM 4 (ASM4-guide.pdf):
+    // Per: ASM 4 (ASM8-guide.pdf):
     //
     // 2.1.4. Method descriptors
     // A method descriptor is a list of type descriptors that describe the parameter

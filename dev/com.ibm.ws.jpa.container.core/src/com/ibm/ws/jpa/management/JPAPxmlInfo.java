@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2013 IBM Corporation and others.
+ * Copyright (c) 2006, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ import static com.ibm.ws.jpa.management.JPAConstants.JPA_RESOURCE_BUNDLE_NAME;
 import static com.ibm.ws.jpa.management.JPAConstants.JPA_TRACE_GROUP;
 import static com.ibm.ws.jpa.management.JPAConstants.PERSISTENCE_XML_RESOURCE_NAME;
 
-import java.io.PrintWriter;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -276,7 +275,7 @@ class JPAPxmlInfo {
         return toStringBuilder(new StringBuilder()).toString();
     }
 
-    void doIntrospect(PrintWriter out) {
+    void doIntrospect() {
         final Map<String, JPAPUnitInfo> ivPuListCopy = new HashMap<String, JPAPUnitInfo>();
         synchronized (ivPuList) {
             ivPuListCopy.putAll(ivPuList);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,17 +16,17 @@ import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.sql.ShardingKeyBuilder;
 
-import javax.resource.spi.ConnectionManager;
 import javax.sql.CommonDataSource;
 import javax.sql.DataSource;
 
+import com.ibm.ws.jca.adapter.WSConnectionManager;
 import com.ibm.ws.rsadapter.impl.WSConnectionRequestInfoImpl;
 import com.ibm.ws.rsadapter.impl.WSManagedConnectionFactoryImpl;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcDataSource;
 
 public class WSJdbc43DataSource extends WSJdbcDataSource implements DataSource {
 
-    public WSJdbc43DataSource(WSManagedConnectionFactoryImpl mcf, ConnectionManager connMgr) {
+    public WSJdbc43DataSource(WSManagedConnectionFactoryImpl mcf, WSConnectionManager connMgr) {
         super(mcf, connMgr);
     }
 

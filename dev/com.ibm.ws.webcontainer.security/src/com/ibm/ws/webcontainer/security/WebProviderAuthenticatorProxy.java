@@ -669,7 +669,9 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
             }
             SingleSignonToken ssoToken = ssoCh.getDefaultSSOTokenFromSubject(subject);
             if (accessToken != null && ssoToken != null) {
-                ssoToken.addAttribute(OidcClient.OIDC_ACCESS_TOKEN, accessToken);
+                if (ssoToken.getAttributes(OidcClient.OIDC_ACCESS_TOKEN) == null || ssoToken.getAttributes(OidcClient.OIDC_ACCESS_TOKEN).length < 1) {
+                    ssoToken.addAttribute(OidcClient.OIDC_ACCESS_TOKEN, accessToken);
+                }
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "Successfully added the access token to the single sign on token  = ", accessToken);
                 }

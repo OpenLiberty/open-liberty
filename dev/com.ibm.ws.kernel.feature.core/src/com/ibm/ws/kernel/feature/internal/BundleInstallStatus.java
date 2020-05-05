@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 IBM Corporation and others.
+ * Copyright (c) 2009, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
@@ -30,7 +31,7 @@ import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
  * B) A list of Strings naming bundles that could not be located, and
  * C) A map of String-Exception pairs for bundles that caused exceptions
  * when being loaded.
- * 
+ *
  * <p>
  * It is up to the caller to use this information to provide appropriate diagnostics.
  */
@@ -44,6 +45,8 @@ public class BundleInstallStatus {
     protected volatile IllegalStateException invalidContextEx = null;
 
     private Map<String, Throwable> installExceptions = null;
+    private Collection<Bundle> bundlesDelta = null;
+    private Collection<Bundle> bundlesRemovedDelta = null;
 
     @Trivial
     public boolean contextIsValid() {
@@ -138,6 +141,20 @@ public class BundleInstallStatus {
         missingFeatures.add(bundleKey);
     }
 
+    public void addBundleAddedDelta(Bundle bundle) {
+        if (bundlesDelta == null)
+            bundlesDelta = new TreeSet<Bundle>(sortByStartLevel);
+
+        bundlesDelta.add(bundle);
+    }
+
+    public void addBundleRemovedDelta(Bundle bundle) {
+        if (bundlesRemovedDelta == null)
+            bundlesRemovedDelta = new HashSet<Bundle>();
+
+        bundlesRemovedDelta.add(bundle);
+    }
+
     public void addBundleToStart(Bundle bundle) {
         if (bundlesToStart == null)
             bundlesToStart = new TreeSet<Bundle>(sortByStartLevel);
@@ -198,5 +215,16 @@ public class BundleInstallStatus {
                + ",installExceptions=" + installExceptions
                + ",conflictingFeatures=" + conflictFeatures
                + "]";
+    }
+
+    /**
+     * @return
+     */
+    public Collection<Bundle> getBundlesAddedDelta() {
+        return this.bundlesDelta;
+    }
+
+    public Collection<Bundle> getBundlesRemovedDelta() {
+        return this.bundlesRemovedDelta;
     }
 }

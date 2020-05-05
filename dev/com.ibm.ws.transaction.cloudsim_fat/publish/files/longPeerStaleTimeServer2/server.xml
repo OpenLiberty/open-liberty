@@ -33,8 +33,8 @@
       enableHADBPeerLocking="true"
       timeBetweenHeartbeats="3"
       peerTimeBeforeStale="300"
-      leaseLength="20"
-      leaseCheckInterval="25"
+      leaseLength="5"
+      leaseCheckInterval="10"
     />
     <application location="transaction.war"/>
 	<dataSource id="tranlogDataSource" 

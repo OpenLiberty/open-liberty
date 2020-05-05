@@ -22,7 +22,7 @@ import org.eclipse.microprofile.graphql.Name;
 public class WidgetClientObject {
 
     private String name;
-    @Name("qty")
+    @JsonbProperty("qty")
     @Description("Number of units to ship")
     private int quantity = -1;
     private double weight = -1.0;

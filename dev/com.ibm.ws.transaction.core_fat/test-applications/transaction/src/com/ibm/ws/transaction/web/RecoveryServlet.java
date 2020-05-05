@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,8 +26,12 @@ import com.ibm.tx.jta.ut.util.XAResourceInfoFactory;
 
 import componenttest.app.FATServlet;
 
+@SuppressWarnings("serial")
 @WebServlet("/RecoveryServlet")
 public class RecoveryServlet extends FATServlet {
+
+    /* Tran timeout for test setup */
+    private static final int SETUP_TIMEOUT = 300; // 5 mins
 
     /**  */
     private static final String filter = "(testfilter=jon)";
@@ -49,6 +53,7 @@ public class RecoveryServlet extends FATServlet {
         final Serializable xaResInfo2 = XAResourceInfoFactory
                         .getXAResourceInfo(1);
 
+        tm.setTransactionTimeout(SETUP_TIMEOUT);
         try {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance()
@@ -98,6 +103,7 @@ public class RecoveryServlet extends FATServlet {
         final Serializable xaResInfo2 = XAResourceInfoFactory
                         .getXAResourceInfo(1);
 
+        tm.setTransactionTimeout(SETUP_TIMEOUT);
         try {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance()
@@ -152,6 +158,7 @@ public class RecoveryServlet extends FATServlet {
         final Serializable xaResInfo2 = XAResourceInfoFactory
                         .getXAResourceInfo(1);
 
+        tm.setTransactionTimeout(SETUP_TIMEOUT);
         try {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance()
@@ -204,6 +211,7 @@ public class RecoveryServlet extends FATServlet {
         final Serializable xaResInfo3 = XAResourceInfoFactory
                         .getXAResourceInfo(2);
 
+        tm.setTransactionTimeout(SETUP_TIMEOUT);
         try {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance()
@@ -263,6 +271,7 @@ public class RecoveryServlet extends FATServlet {
         final Serializable xaResInfo2 = XAResourceInfoFactory.getXAResourceInfo(1);
         final Serializable xaResInfo3 = XAResourceInfoFactory.getXAResourceInfo(2);
 
+        tm.setTransactionTimeout(SETUP_TIMEOUT);
         try {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo1).setPrepareAction(XAException.XA_RBROLLBACK);
@@ -313,6 +322,7 @@ public class RecoveryServlet extends FATServlet {
         final Serializable xaResInfo2 = XAResourceInfoFactory.getXAResourceInfo(1);
         final Serializable xaResInfo3 = XAResourceInfoFactory.getXAResourceInfo(2);
 
+        tm.setTransactionTimeout(SETUP_TIMEOUT);
         try {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance().getXAResource(xaResInfo1);
@@ -362,6 +372,7 @@ public class RecoveryServlet extends FATServlet {
         final Serializable xaResInfo1 = XAResourceInfoFactory.getXAResourceInfo(0);
         final Serializable xaResInfo2 = XAResourceInfoFactory.getXAResourceInfo(1);
 
+        tm.setTransactionTimeout(SETUP_TIMEOUT);
         try {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo1).setCommitAction(XAResourceImpl.DIE);
@@ -403,6 +414,7 @@ public class RecoveryServlet extends FATServlet {
         final Serializable xaResInfo1 = XAResourceInfoFactory.getXAResourceInfo(0);
         final Serializable xaResInfo2 = XAResourceInfoFactory.getXAResourceInfo(1);
 
+        tm.setTransactionTimeout(SETUP_TIMEOUT);
         try {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance().getXAResource(xaResInfo1);
@@ -444,6 +456,7 @@ public class RecoveryServlet extends FATServlet {
         final Serializable xaResInfo1 = XAResourceInfoFactory.getXAResourceInfo(0);
         final Serializable xaResInfo2 = XAResourceInfoFactory.getXAResourceInfo(1);
 
+        tm.setTransactionTimeout(SETUP_TIMEOUT);
         try {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo1).setRollbackAction(XAResourceImpl.DIE);
@@ -485,6 +498,7 @@ public class RecoveryServlet extends FATServlet {
         final Serializable xaResInfo1 = XAResourceInfoFactory.getXAResourceInfo(0);
         final Serializable xaResInfo2 = XAResourceInfoFactory.getXAResourceInfo(1);
 
+        tm.setTransactionTimeout(SETUP_TIMEOUT);
         try {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance().getXAResource(xaResInfo1);
@@ -526,6 +540,7 @@ public class RecoveryServlet extends FATServlet {
         final Serializable xaResInfo1 = XAResourceInfoFactory.getXAResourceInfo(0);
         final Serializable xaResInfo2 = XAResourceInfoFactory.getXAResourceInfo(1);
 
+        tm.setTransactionTimeout(SETUP_TIMEOUT);
         try {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo1).setCommitAction(XAResourceImpl.DIE);
@@ -571,6 +586,7 @@ public class RecoveryServlet extends FATServlet {
         final Serializable xaResInfo1 = XAResourceInfoFactory.getXAResourceInfo(0);
         final Serializable xaResInfo2 = XAResourceInfoFactory.getXAResourceInfo(1);
 
+        tm.setTransactionTimeout(SETUP_TIMEOUT);
         try {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo1).setCommitAction(XAResourceImpl.DIE);
@@ -616,6 +632,7 @@ public class RecoveryServlet extends FATServlet {
         final Serializable xaResInfo1 = XAResourceInfoFactory.getXAResourceInfo(0);
         final Serializable xaResInfo2 = XAResourceInfoFactory.getXAResourceInfo(1);
 
+        tm.setTransactionTimeout(SETUP_TIMEOUT);
         try {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo1).setCommitAction(XAResourceImpl.DIE);
@@ -661,6 +678,7 @@ public class RecoveryServlet extends FATServlet {
         final Serializable xaResInfo1 = XAResourceInfoFactory.getXAResourceInfo(0);
         final Serializable xaResInfo2 = XAResourceInfoFactory.getXAResourceInfo(1);
 
+        tm.setTransactionTimeout(SETUP_TIMEOUT);
         try {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo1).setCommitAction(XAResourceImpl.DIE);
@@ -707,6 +725,7 @@ public class RecoveryServlet extends FATServlet {
         final Serializable xaResInfo2 = XAResourceInfoFactory.getXAResourceInfo(1);
         final Serializable xaResInfo3 = XAResourceInfoFactory.getXAResourceInfo(2);
 
+        tm.setTransactionTimeout(SETUP_TIMEOUT);
         try {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo1).setPrepareAction(XAException.XA_RBROLLBACK);
@@ -757,6 +776,7 @@ public class RecoveryServlet extends FATServlet {
         final Serializable xaResInfo2 = XAResourceInfoFactory.getXAResourceInfo(1);
         final Serializable xaResInfo3 = XAResourceInfoFactory.getXAResourceInfo(2);
 
+        tm.setTransactionTimeout(SETUP_TIMEOUT);
         try {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo1).setPrepareAction(XAException.XA_RBROLLBACK);
@@ -807,6 +827,7 @@ public class RecoveryServlet extends FATServlet {
         final Serializable xaResInfo2 = XAResourceInfoFactory.getXAResourceInfo(1);
         final Serializable xaResInfo3 = XAResourceInfoFactory.getXAResourceInfo(2);
 
+        tm.setTransactionTimeout(SETUP_TIMEOUT);
         try {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo1).setPrepareAction(XAException.XA_RBROLLBACK);
@@ -857,6 +878,7 @@ public class RecoveryServlet extends FATServlet {
         final Serializable xaResInfo2 = XAResourceInfoFactory.getXAResourceInfo(1);
         final Serializable xaResInfo3 = XAResourceInfoFactory.getXAResourceInfo(2);
 
+        tm.setTransactionTimeout(SETUP_TIMEOUT);
         try {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo1).setPrepareAction(XAException.XA_RBROLLBACK);
@@ -903,6 +925,8 @@ public class RecoveryServlet extends FATServlet {
                             HttpServletResponse response) throws Exception {
         final ExtendedTransactionManager tm = TransactionManagerFactory.getTransactionManager();
         XAResourceImpl.clear();
+
+        tm.setTransactionTimeout(SETUP_TIMEOUT);
         try {
             tm.begin();
 
@@ -946,6 +970,8 @@ public class RecoveryServlet extends FATServlet {
                             HttpServletResponse response) throws Exception {
         final ExtendedTransactionManager tm = TransactionManagerFactory.getTransactionManager();
         XAResourceImpl.clear();
+
+        tm.setTransactionTimeout(SETUP_TIMEOUT);
         try {
             tm.begin();
 
@@ -989,6 +1015,8 @@ public class RecoveryServlet extends FATServlet {
                             HttpServletResponse response) throws Exception {
         final ExtendedTransactionManager tm = TransactionManagerFactory.getTransactionManager();
         XAResourceImpl.clear();
+
+        tm.setTransactionTimeout(SETUP_TIMEOUT);
         try {
             tm.begin();
 
@@ -1032,6 +1060,8 @@ public class RecoveryServlet extends FATServlet {
                             HttpServletResponse response) throws Exception {
         final ExtendedTransactionManager tm = TransactionManagerFactory.getTransactionManager();
         XAResourceImpl.clear();
+
+        tm.setTransactionTimeout(SETUP_TIMEOUT);
         try {
             tm.begin();
 
@@ -1079,6 +1109,7 @@ public class RecoveryServlet extends FATServlet {
         final Serializable xaResInfo2 = XAResourceInfoFactory.getXAResourceInfo(1);
         final Serializable xaResInfo3 = XAResourceInfoFactory.getXAResourceInfo(2);
 
+        tm.setTransactionTimeout(SETUP_TIMEOUT);
         try {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo1).setCommitAction(XAResourceImpl.DIE);

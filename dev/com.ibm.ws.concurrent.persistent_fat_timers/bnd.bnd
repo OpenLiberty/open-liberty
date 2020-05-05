@@ -28,13 +28,14 @@ fat.test.databases: true
 
 -buildpath: \
 	fattest.databases;version=latest,\
+	org.slf4j:slf4j-api;version=1.7.7,\
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
 	com.ibm.ws.concurrent.persistent;version=latest,\
 	com.ibm.websphere.javaee.ejb.3.1,\
-	org.testcontainers:database-commons;version=1.12.3,\
-	org.testcontainers:jdbc;version=1.12.3,\
-	org.testcontainers:testcontainers;version=1.12.3
+	org.testcontainers:database-commons;version=1.14.0,\
+	org.testcontainers:jdbc;version=1.14.0,\
+	org.testcontainers:testcontainers;version=1.14.0
 	

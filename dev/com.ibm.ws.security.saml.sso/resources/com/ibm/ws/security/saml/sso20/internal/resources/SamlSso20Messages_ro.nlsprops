@@ -28,15 +28,15 @@ POST_LOGOUT_PAGE_FAILURE_TEXT=Este posibil s\u0103 nu fi\u0163i complet delogat.
 #Message prefix block: CWWKS5000 - CWWKS5099
 SAML20_CONFIG_PROCESSED=CWWKS5000I: Configura\u0163ia SAML Web SSO Versiunea 2.0 [{0}] a fost procesat\u0103 cu succes.
 SAML20_CONFIG_PROCESSED.explanation=Configura\u0163ia SAML Web SSO Versiunea 2.0 a fost procesat\u0103 cu succes.
-SAML20_CONFIG_PROCESSED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+SAML20_CONFIG_PROCESSED.useraction=Nicio ac\u0163iune nu este necesar\u0103.
 
 SAML20_CONFIG_MODIFIED=CWWKS5001I: Configura\u0163ia SAML Web SSO Versiunea 2.0 [{0}] a fost procesat\u0103 cu succes.
 SAML20_CONFIG_MODIFIED.explanation=Configura\u0163ia SAML Web SSO Versiunea 2.0 a fost procesat\u0103 cu succes.
-SAML20_CONFIG_MODIFIED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+SAML20_CONFIG_MODIFIED.useraction=Nicio ac\u0163iune nu este necesar\u0103.
 
 SAML20_ENDPOINT_SERVICE_ACTIVATED=CWWKS5002I: Serviciul pentru punctul final SAML Web SSO Versiunea 2.0 este activat.
 SAML20_ENDPOINT_SERVICE_ACTIVATED.explanation=Serviciul pentru punctul final SAML Web SSO Versiunea 2.0 este activat.
-SAML20_ENDPOINT_SERVICE_ACTIVATED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+SAML20_ENDPOINT_SERVICE_ACTIVATED.useraction=Nicio ac\u0163iune nu este necesar\u0103.
 
 # web RequestFilter
 SAML20_INVALID_ACS_URL=CWWKS5003E: Punctul final cerut pentru [{0}] nu este suportat \u00een acest furnizor de servicii (service provider - SP) SAML Web Single Sign-On (SSO). 
@@ -90,7 +90,7 @@ SAML20_POST_LOGOUT_URL_NOT_VALID.useraction=Asigura\u0163i-v\u0103 c\u0103 valoa
 
 SAML20_CONFIG_DEACTIVATED=CWWKS5016I: Configura\u0163ia SAML Web SSO Versiunea 2.0 [{0}] a fost dezactivat\u0103 cu succes.
 SAML20_CONFIG_DEACTIVATED.explanation=Configura\u0163ia SAML Web SSO Versiunea 2.0 a fost dezactivat\u0103 cu succes.
-SAML20_CONFIG_DEACTIVATED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+SAML20_CONFIG_DEACTIVATED.useraction=Nicio ac\u0163iune nu este necesar\u0103.
 
 # CWWKS5017E removed (using SAML20_DECODE_SAML_RESPONSE_FAILURE_LOG/CWWKS5018E instead)
 # {0} = Error message text
@@ -133,7 +133,7 @@ ACCESS_FILE_INFO_ERROR.useraction=Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul e
 
 SAML20_IDP_METADATA_FILE_CHANGED=CWWKS5038I: Fi\u015fierul de metadate pentru furnizorul de identitate (IdP) [{1}] pentru furnizorul de servicii (SP - service provider) [{0}] a fost modificat.
 SAML20_IDP_METADATA_FILE_CHANGED.explanation=Fi\u015fierul de metadate IdP a fost actualizat cu noile date de configurare pentru IdP; furnizor de servicii (SP) va re\u00eenc\u0103rca fi\u015fierul.
-SAML20_IDP_METADATA_FILE_CHANGED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+SAML20_IDP_METADATA_FILE_CHANGED.useraction=Nicio ac\u0163iune nu este necesar\u0103.
 
 SAML20_SP_UNSOLICITED_WITH_IN_RESPONSE_TO=CWWKS5040E: Atributul InResponseTo [{0}] nu este permis \u00eentr-un r\u0103spuns SAML nesolicitat.
 SAML20_SP_UNSOLICITED_WITH_IN_RESPONSE_TO.explanation=R\u0103spunsul SAML nesolicitat con\u0163ine un atribut InResponseTo.  Aceast\u0103 condi\u0163ie nu este permis\u0103.
@@ -217,12 +217,12 @@ SAML20_NO_BEARER_FOUND.explanation= Revendicarea trebuie s\u0103 con\u0163in\u01
 SAML20_NO_BEARER_FOUND.useraction=Contacta\u0163i administratorul IdP pentru a v\u0103 asigura c\u0103 IdP-ul este configurat corespunz\u0103tor.
 
 SAML20_NO_INRESPONSETO=CWWKS5067E: R\u0103spunsul SAML [{0}] con\u0163ine un atribut InResponseTo [{1}] care nu este valid. Valoarea a\u015fteptat\u0103 pentru InResponseTo este [{2}].
-SAML20_NO_INRESPONSETO.explanation=R\u0103spunsul SAML indicat are o valoare de atribut InResponseTo nevalid.   
+SAML20_NO_INRESPONSETO.explanation=R\u0103spunsul SAML indicat are o valoare de atribut InResponseTo care nu este valid\u0103.   
 SAML20_NO_INRESPONSETO.useraction=Contacta\u0163i administratorul IdP administrator pentru a v\u0103 asigura c\u0103 IdP-ul este configurat corespunz\u0103tor, astfel \u00eenc\u00e2t s\u0103 se poat\u0103 emite o valoare corect\u0103 de atribut InResponseTo.
 
 # similar to the tWas messages
 # Example: {0} = realm
-SAML20_ATTRIBUTE_ERR=CWWKS5068E: Aser\u0163iunea SAML nu con\u0163ine un atribut [{0}].  Este necesar un atribut [{0}].  
+SAML20_ATTRIBUTE_ERR=CWWKS5068E: Revendicarea SAML nu con\u0163ine un element [{0}].  Un element [{0}] este necesar.  
 SAML20_ATTRIBUTE_ERR.explanation=Aser\u0163iunea SAML nu are un atribut necesar la momentul rul\u0103rii.
 SAML20_ATTRIBUTE_ERR.useraction=Atributul necesar trebuie s\u0103 fie ad\u0103ugat la revendicarea SAML.  Contacta\u0163i administratorul furnizorului de identitate (IdP) pentru a v\u0103 asigura c\u0103 IdP-ul este configurat corespunz\u0103tor sau configura\u0163i furnizorul de servicii (SP) sau TAI-ul pentru a defini o valoare pentru atribut.
 
@@ -296,7 +296,7 @@ RS_SAML_TRUSTED_ISSUERS_ERROR.useraction=\u00cenl\u0103tura\u0163i trustedIssuer
 # 0=Boolean value (i.e. "true" or "false"), 1=Configuration attribute names, 2=Configuration ID
 SAML_CONFIG_IGNORE_ATTRIBUTES=CWWKS5207W: Atributul inboundPropagation este setat la [{0}] \u00een configura\u0163ia samlWebSso20 [{2}]. Atributele [{1}] vor fi ignorate \u00een timpul proces\u0103rii.
 SAML_CONFIG_IGNORE_ATTRIBUTES.explanation=Configura\u0163ia samlWebSso20 este setat\u0103 s\u0103 setat\u0103 s\u0103 proceseze fie propagarea la intrare a jetonului SAML, fie SAML Web SSO, dar nu am\u00e2ndou\u0103. Atributele listate sunt ignorate la tratarea cererilor web cu configura\u0163ia SAML specificat\u0103.
-SAML_CONFIG_IGNORE_ATTRIBUTES.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+SAML_CONFIG_IGNORE_ATTRIBUTES.useraction=Nicio ac\u0163iune nu este necesar\u0103.
 
 SAML_BAD_INBOUND_SAML_TOKEN=CWWKS5208E: Aser\u0163iunea SAML de intrare nu este valid\u0103 [{0}].
 SAML_BAD_INBOUND_SAML_TOKEN.explanation=Aser\u0163iunea SAML, care este con\u0163inut\u0103 \u00een antetul cererii HTTP, nu este valid\u0103 \u015fi nu poate fi parsat\u0103 corespunz\u0103tor.
@@ -324,7 +324,7 @@ POST_LOGOUT_PAGE_MISSING_MESSAGE_CONTEXT.useraction=Verifica\u0163i istoricele s
 # do not translate HTTP-POST, SingleLogoutService
 SAML20_SLOENDPOINT_NOT_IN_METADATA=CWWKS5214E: SAML Single Logout Service pentru furnizorul {0} nu poate ob\u0163ine URL-ul punctului final Single Logout Service al Identity Provider (IdP) din metadatele IdP.
 SAML20_SLOENDPOINT_NOT_IN_METADATA.explanation=URL-ul punctului final Single Logout Service al Identity Provider (IdP) nu a putut fi ob\u0163inut din metadatele IdP.
-SAML20_SLOENDPOINT_NOT_IN_METADATA.useraction=Verifica\u0163i c\u0103 fi\u015fierul de metadate IdP con\u0163ine o intrare SingleLogoutService cu o legare HTTP-POST \u015fi o loca\u0163ie care specific\u0103 un URL valid.
+SAML20_SLOENDPOINT_NOT_IN_METADATA.useraction=Verifica\u0163i dac\u0103 fi\u015fierul de metadate IdP con\u0163ine o intrare SingleLogoutService cu o legare HTTP-POST \u015fi o loca\u0163ie care specific\u0103 un URL valid.
 
 LOGOUT_CANNOT_PERFORM_SLO=CWWKS5215E: Serviciul de delogare nu poate finaliza SAML Single Logout din moment ce acesta nu poate localiza un furnizor de servicii unic. Totu\u015fi, furnizorii \u00een serviciu ai sesiunii de securitate utilizator sunt \u015fter\u015fi. Furnizorii de servicii disponibili sunt [{0}].
 LOGOUT_CANNOT_PERFORM_SLO.explanation=Exist\u0103 instan\u0163e multiple de furnizori de servicii configurate \u00een serverul Liberty. Serverul Liberty nu poate localiza un furnizor de servicii unic pentru a ini\u0163ializa SAML Single Logout. Numai furnizorii \u00een serviciu ai sesiunii de securitate utilizator sunt \u015fter\u015fi.

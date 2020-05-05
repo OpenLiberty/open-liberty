@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2018 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method; 
 import java.lang.reflect.Proxy;
 import java.security.AccessController;
@@ -23,7 +22,6 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.sql.Connection;
 import java.sql.Driver;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.SQLNonTransientConnectionException;
 import java.sql.Statement;
@@ -79,7 +77,6 @@ import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.DSConfig; 
 import com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException;
-import com.ibm.ws.rsadapter.jdbc.WSJdbcDataSource; 
 import com.ibm.ws.rsadapter.jdbc.WSJdbcTracer;
 
 /**
@@ -356,7 +353,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         if (isTraceOn && tc.isEntryEnabled()) 
             Tr.entry(this, tc, "createConnectionFactory", connMgr); 
 
-        DataSource connFactory = jdbcRuntime.newDataSource(this, connMgr);
+        DataSource connFactory = jdbcRuntime.newDataSource(this, (WSConnectionManager) connMgr);
 
         if (isTraceOn && tc.isEntryEnabled())
             Tr.exit(this, tc, "createConnectionFactory", connFactory); 

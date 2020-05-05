@@ -362,4 +362,44 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
         // TODO Auto-generated method stub
         return 10;
     }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getLightweightTransientErrorRetryTime()
+     */
+    @Override
+    public int getLightweightTransientErrorRetryTime() {
+        return 1;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getLightweightTransientErrorRetryAttempts()
+     */
+    @Override
+    public int getLightweightTransientErrorRetryAttempts() {
+        return 2;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getStandardTransientErrorRetryTime()
+     */
+    @Override
+    public int getStandardTransientErrorRetryTime() {
+        return 10;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getStandardTransientErrorRetryAttempts()
+     */
+    @Override
+    public int getStandardTransientErrorRetryAttempts() {
+        return 180;
+    }
 }

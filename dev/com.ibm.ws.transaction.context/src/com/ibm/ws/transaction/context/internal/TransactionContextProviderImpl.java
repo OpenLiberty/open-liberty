@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,12 +17,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 
-import javax.enterprise.concurrent.ManagedTask;
-
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
 import com.ibm.ws.Transaction.UOWCurrent;
+import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.threadcontext.ThreadContext;
@@ -35,6 +34,11 @@ import com.ibm.wsspi.threadcontext.jca.JCAContextProvider;
  * Transaction context service provider.
  */
 public class TransactionContextProviderImpl implements JCAContextProvider, ThreadContextProvider {
+    /**
+     * Jakarta EE versiom if Jakarta EE 9 or higher. If 0, assume a lesser EE spec version.
+     */
+    int eeVersion;
+
     /**
      * Reference to the transaction inflow manager.
      */
@@ -63,21 +67,34 @@ public class TransactionContextProviderImpl implements JCAContextProvider, Threa
     /** {@inheritDoc} */
     @Override
     public ThreadContext captureThreadContext(Map<String, String> execProps, Map<String, ?> threadContextConfig) {
-        String value = execProps == null ? null : execProps.get(ManagedTask.TRANSACTION);
-        if (value == null || ManagedTask.SUSPEND.equals(value))
+        // Determine the value of the ManagedTask.TRANSACTION execution property, if present
+        String key, value;
+        if (execProps == null) {
+            key = null;
+            value = null;
+        } else if (eeVersion < 9) { // prefer javax
+            value = execProps.get(key = "javax.enterprise.concurrent.TRANSACTION");
+            if (value == null)
+                value = execProps.get(key = "jakarta.enterprise.concurrent.TRANSACTION");
+        } else { // prefer jakarta
+            value = execProps.get(key = "jakarta.enterprise.concurrent.TRANSACTION");
+            if (value == null)
+                value = execProps.get(key = "javax.enterprise.concurrent.TRANSACTION");
+        }
+        if (value == null || "SUSPEND".equals(value)) // ManagedTask.SUSPEND
             return new TransactionContextImpl(true);
-        else if (ManagedTask.USE_TRANSACTION_OF_EXECUTION_THREAD.equals(value))
+        else if ("USE_TRANSACTION_OF_EXECUTION_THREAD".equals(value)) // ManagedTask.USE_TRANSACTION_OF_EXECUTION_THREAD
             return new TransactionContextImpl(false);
         else if ("PROPAGATE".equals(value)) {
             UOWCurrent uowCurrent = (UOWCurrent) transactionManager;
             if (uowCurrent.getUOWType() == UOWCurrent.UOW_GLOBAL) {
-                // Per spec, IllegalStateException could be reaised here to reject all propagation of transactions
+                // Per spec, IllegalStateException could be raised here to reject all propagation of transactions
                 // However, we allow propagation as long as the transaction isn't used in parallel.
                 return new SerialTransactionContextImpl();
             } else
                 return new TransactionContextImpl(true);
         } else
-            throw new IllegalArgumentException(ManagedTask.TRANSACTION + '=' + value);
+            throw new IllegalArgumentException(key + '=' + value);
     }
 
     /** {@inheritDoc} */
@@ -94,13 +111,27 @@ public class TransactionContextProviderImpl implements JCAContextProvider, Threa
         try {
             context = (TransactionContextImpl) in.readObject();
 
-            String value = info == null ? null : info.getExecutionProperty(ManagedTask.TRANSACTION);
-            if (value == null || ManagedTask.SUSPEND.equals(value))
+            // Determine the value of the ManagedTask.TRANSACTION execution property, if present
+            String key, value;
+            if (info == null) {
+                key = null;
+                value = null;
+            } else if (eeVersion < 9) { // prefer javax
+                value = info.getExecutionProperty(key = "javax.enterprise.concurrent.TRANSACTION");
+                if (value == null)
+                    value = info.getExecutionProperty(key = "jakarta.enterprise.concurrent.TRANSACTION");
+            } else { // prefer jakarta
+                value = info.getExecutionProperty(key = "jakarta.enterprise.concurrent.TRANSACTION");
+                if (value == null)
+                    value = info.getExecutionProperty(key = "javax.enterprise.concurrent.TRANSACTION");
+            }
+
+            if (value == null || "SUSPEND".equals(value)) // ManagedTask.SUSPEND
                 context.suspendTranOfExecutionThread = true;
-            else if (ManagedTask.USE_TRANSACTION_OF_EXECUTION_THREAD.equals(value))
+            else if ("USE_TRANSACTION_OF_EXECUTION_THREAD".equals(value)) // ManagedTask.USE_TRANSACTION_OF_EXECUTION_THREAD
                 context.suspendTranOfExecutionThread = false;
             else
-                throw new IllegalArgumentException(ManagedTask.TRANSACTION + '=' + value);
+                throw new IllegalArgumentException(key + '=' + value);
         } finally {
             in.close();
         }
@@ -137,6 +168,22 @@ public class TransactionContextProviderImpl implements JCAContextProvider, Threa
     }
 
     /**
+     * Declarative Services method for setting the Jakarta/Java EE version
+     *
+     * @param ref reference to the service
+     */
+    protected void setEEVersion(ServiceReference<JavaEEVersion> ref) {
+        String version = (String) ref.getProperty("version");
+        if (version == null) {
+            eeVersion = 0;
+        } else {
+            int dot = version.indexOf('.');
+            String major = dot > 0 ? version.substring(0, dot) : version;
+            eeVersion = Integer.parseInt(major);
+        }
+    }
+
+    /**
      * Declarative Services method for setting the TransactionInflowManager service
      *
      * @param ref reference to the service
@@ -150,6 +197,15 @@ public class TransactionContextProviderImpl implements JCAContextProvider, Threa
      */
     protected void setTransactionManager(EmbeddableWebSphereTransactionManager tm) {
         transactionManager = tm;
+    }
+
+    /**
+     * Declarative Services method for unsetting the Jakarta/Java EE version
+     *
+     * @param ref reference to the service
+     */
+    protected void unsetEEVersion(ServiceReference<JavaEEVersion> ref) {
+        eeVersion = 0;
     }
 
     /**

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
+	<classpathentry kind="src" path="test-bundles/xaflowcallback/src"/>
 	<classpathentry kind="src" path="test-applications/transaction/src"/>
 	<classpathentry kind="src" path="test-applications/transactionscoped/src"/>
 	<classpathentry exported="true" kind="con" path="aQute.bnd.classpath.container"/>

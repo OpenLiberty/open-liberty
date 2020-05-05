@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -50,7 +50,6 @@ public class SpnegoAuthenticator {
 
             String reqHostName = getReqHostName(req, spnegoConfig);
             result = krb5Util.processSpnegoToken(resp, tokenByte, reqHostName, spnegoConfig);
-
         } catch (AuthenticationException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Unexpected exception:", new Object[] { e });

@@ -1,6 +1,14 @@
-/**
+/*******************************************************************************
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
 package com.ibm.ws.jpa.ormdiagnostics;
 
 import java.io.BufferedInputStream;
@@ -15,7 +23,6 @@ import org.junit.Assert;
 
 import com.ibm.websphere.simplicity.LocalFile;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.jpa.ormdiagnostics.tests.TestEARLibertyDump;
 
 /**
  * Utility class that understands the string format JPARuntimeInspector uses to display data
@@ -37,7 +44,7 @@ public class ORMIntrospectorHelper {
 
         boolean roots = true;
         for (String pUnitRoot : pUnitRoots) {
-            roots = input.contains("wsjpa:wsjar:file:.../" + pUnitRoot);
+            roots = input.contains(pUnitRoot);
         }
         Assert.assertTrue(input.contains(targetString1) && roots);
     }
@@ -48,14 +55,13 @@ public class ORMIntrospectorHelper {
     }
 
     public static void verifyApplicationArchives(final List<String> expectedArchives, final String input) {
-        boolean foundAll = true;
         String content = "   Application Modules and Archives:" + newLine;
 
         for (String ea : expectedArchives) {
             content += "     " + ea + newLine;
         }
 
-        Assert.assertTrue(foundAll);
+        Assert.assertTrue(input.contains(content));
     }
 
     public static void verifyPersistentClasses(final List<JPAClass> classes, final String input) {
@@ -63,7 +69,7 @@ public class ORMIntrospectorHelper {
         for (JPAClass clazz : classes) {
             final String content = "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" + newLine +
                                    "Class: " + clazz.getClassName() + newLine +
-                                   "Location: wsjpa:wsjar:file:.../" + clazz.getLocation() + newLine +
+                                   "Location: " + clazz.getLocation() + newLine +
                                    newLine +
                                    clazz.getContent();
             roots = input.contains(content);
@@ -89,13 +95,13 @@ public class ORMIntrospectorHelper {
                         }
                     }
 
-                    Log.info(TestEARLibertyDump.class, "extractJPAIntrospection", "Returning Data (" + baos.size() + " bytes)");
+                    Log.info(ORMIntrospectorHelper.class, "extractJPAIntrospection", "Returning Data (" + baos.size() + " bytes)");
                     return baos.toString();
                 }
             }
         }
 
-        Log.info(TestEARLibertyDump.class, "extractJPAIntrospection", "Failed to find JPARuntimeInspector.txt");
+        Log.info(ORMIntrospectorHelper.class, "extractJPAIntrospection", "Failed to find JPARuntimeInspector.txt");
         return null;
     }
 

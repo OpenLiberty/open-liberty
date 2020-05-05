@@ -179,6 +179,14 @@ public interface NameSpaceBinder<T> {
     void bindDefaultEJBLocal(T bindingObject, HomeRecord hr);
 
     /**
+     * Adds the default remote legacy bindings to root
+     *
+     * @param bindingObject the EJB Binding information
+     * @param hr the HomeRecord of the EJB
+     */
+    void bindDefaultEJBRemote(T bindingObject, HomeRecord hr);
+
+    /**
      * Undoes the bindings from ejblocal namespace.
      */
     void unbindEJBLocal(List<String> names) throws NamingException;
@@ -189,8 +197,12 @@ public interface NameSpaceBinder<T> {
      * @param bindingObject - the EJBBinding
      * @param hr - the bean home record
      * @param local - if it is a local bean
+     * @param generateDisambiguatedSimpleBindingNames - A boolean, which when true
+     *            will cause any generated simple binding names to be
+     *            constructed to include "#<interfaceName>" at the end
+     *            of the binding name.
      */
-    void bindSimpleBindingName(T bindingObject, HomeRecord hr, boolean local);
+    void bindSimpleBindingName(T bindingObject, HomeRecord hr, boolean local, boolean generateDisambiguatedSimpleBindingNames);
 
     /**
      * Binds the localHomeBindingName custom binding
@@ -212,4 +224,10 @@ public interface NameSpaceBinder<T> {
      * Undoes the bindings from local namespace.
      */
     void unbindLocalColonEJB(List<String> names) throws NamingException;
+
+    /**
+     * Undoes the root remote bindings.
+     */
+    void unbindRemote(List<String> names);
+
 }

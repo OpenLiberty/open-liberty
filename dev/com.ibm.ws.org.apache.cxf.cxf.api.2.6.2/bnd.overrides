@@ -11,7 +11,7 @@ DynamicImport-Package: \
   javax.xml.ws, \
   javax.xml.ws.*, \
   org.apache.cxf.bus;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.*;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.*;version="[2.6.2,2.6.3)"
 
 Export-Package: \
   !org.apache.cxf.internal, \
@@ -168,7 +168,7 @@ Import-Package: \
   org.apache.ws.commons.schema.extensions, \
   org.apache.ws.commons.schema.resolver, \
   org.apache.ws.commons.schema.utils, \
-  org.objectweb.asm;resolution:=optional;version="[2.0,8)", \
+  org.objectweb.asm;resolution:=optional, \
   org.osgi.framework, \
   org.osgi.service.cm, \
   org.osgi.util.tracker, \

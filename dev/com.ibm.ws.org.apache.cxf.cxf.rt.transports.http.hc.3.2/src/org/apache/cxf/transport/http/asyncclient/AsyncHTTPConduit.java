@@ -62,6 +62,7 @@ import org.apache.cxf.io.CacheAndWriteOutputStream;
 import org.apache.cxf.io.CachedOutputStream;
 import org.apache.cxf.io.CopyingOutputStream;
 import org.apache.cxf.message.Message;
+import org.apache.cxf.message.MessageImpl;
 import org.apache.cxf.message.MessageUtils;
 import org.apache.cxf.service.model.EndpointInfo;
 import org.apache.cxf.transport.http.Address;
@@ -206,11 +207,11 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
             LOG.fine("Asynchronous connection to " + uri.toString() + " has been set up");
         }
         message.put("http.scheme", uri.getScheme());
-        String httpRequestMethod =
-            (String)message.get(Message.HTTP_REQUEST_METHOD);
+        //Liberty code change start
+        String httpRequestMethod = (String) ((MessageImpl) message).getHttpRequestMethod();
         if (httpRequestMethod == null) {
             httpRequestMethod = "POST";
-            message.put(Message.HTTP_REQUEST_METHOD, httpRequestMethod);
+            ((MessageImpl) message).setHttpRequestMethod(httpRequestMethod);
         }
         final CXFHttpRequest e = new CXFHttpRequest(httpRequestMethod);
         BasicHttpEntity entity = new BasicHttpEntity() {
@@ -219,7 +220,8 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
             }
         };
         entity.setChunked(true);
-        entity.setContentType((String)message.get(Message.CONTENT_TYPE));
+        entity.setContentType((String) ((MessageImpl) message).getContentType());
+        //Liberty code change end
         e.setURI(uri);
 
         e.setEntity(entity);
@@ -731,7 +733,9 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
                 throw new IOException("Could not verify host " + url.getHost());
             }
 
-            String method = (String)outMessage.get(Message.HTTP_REQUEST_METHOD);
+            //Liberty code change start
+            String method = (String)((MessageImpl) outMessage).getHttpRequestMethod();
+            //Liberty code change end
             String cipherSuite = null;
             Certificate[] localCerts = null;
             Principal principal = null;

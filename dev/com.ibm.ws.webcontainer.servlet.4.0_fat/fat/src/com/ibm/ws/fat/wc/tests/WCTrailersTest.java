@@ -27,7 +27,7 @@ import org.apache.hc.core5.http.HttpHost;
 import org.apache.hc.core5.http.impl.bootstrap.HttpRequester;
 import org.apache.hc.core5.http.impl.bootstrap.RequesterBootstrap;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
-import org.apache.hc.core5.http.io.entity.HttpEntityWithTrailers;
+import org.apache.hc.core5.http.io.entity.HttpEntities;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.apache.hc.core5.http.message.BasicClassicHttpRequest;
 import org.apache.hc.core5.http.message.BasicHeader;
@@ -151,10 +151,10 @@ public class WCTrailersTest extends LoggingTest {
             requestUri += parameters;
 
         ClassicHttpRequest request = new BasicClassicHttpRequest("POST", requestUri);
-        BasicHeader[] trailers = { new BasicHeader("t1", "TestTrailer1"), new BasicHeader("t2", "TestTrailer2"),
-                                   new BasicHeader("t3", "TestTrailer3") };
+        Header[] trailers = { new BasicHeader("t1", "TestTrailer1"), new BasicHeader("t2", "TestTrailer2"),
+                              new BasicHeader("t3", "TestTrailer3") };
 
-        HttpEntity requestBody = new HttpEntityWithTrailers(new StringEntity("Chunked message with trailers", ContentType.TEXT_PLAIN), trailers);
+        HttpEntity requestBody = HttpEntities.create("Chunked message with trailers", ContentType.TEXT_PLAIN, trailers[0], trailers[1], trailers[2]);
         request.setEntity(requestBody);
 
         LOG.info(">> Request URI: " + request.getUri());
@@ -170,7 +170,7 @@ public class WCTrailersTest extends LoggingTest {
             assertFalse("Response contains as failure message", responseText.contains("FAIL"));
             assertTrue("Response does not contain as pass message", responseText.contains("PASS"));
 
-            for (BasicHeader trailerHeader : trailers) {
+            for (Header trailerHeader : trailers) {
                 assertTrue("Response indicates a trailer header was not received:" + trailerHeader.getName(),
                            responseText.contains(trailerHeader.getValue()));
             }

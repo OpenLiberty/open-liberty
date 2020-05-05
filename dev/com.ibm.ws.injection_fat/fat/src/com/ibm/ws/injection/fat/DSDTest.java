@@ -77,7 +77,7 @@ public class DSDTest extends FATServletClient {
     @AfterClass
     public static void cleanUp() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer();
+            server.stopServer("CWWKN0005W");
         }
     }
 }

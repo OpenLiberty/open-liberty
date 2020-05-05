@@ -1,0 +1,1 @@
+CREATE TABLE ${schemaname}.JPA20QueryUnwrapEntity (id NUMBER NOT NULL, strData VARCHAR2(255), version NUMBER, PRIMARY KEY (id));

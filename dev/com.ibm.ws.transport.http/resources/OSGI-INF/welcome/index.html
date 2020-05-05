@@ -873,8 +873,14 @@
 				}
 			}
 		}
-		
-        doVersionCheck(latestReleasedVersion);
+
+        try {
+			if (latestReleasedVersion) {
+			    doVersionCheck(latestReleasedVersion);
+            }
+        } catch (ex) {
+            console.error("Failed to to load https://openliberty.io/latestVersion.js");
+        }
 
 		var url = getUrl();
 		externalizedStrings(url).then(function(response) {

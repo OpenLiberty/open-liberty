@@ -65,7 +65,6 @@ public class PostgreSQLSSLTest extends FATServletClient {
                                     .withDatabaseName(POSTGRES_DB)
                                     .withUsername(POSTGRES_USER)
                                     .withPassword(POSTGRES_PASS)
-                                    .withExposedPorts(5432)
                                     .withConfigOption("ssl", "on")
                                     .withConfigOption("ssl_cert_file", "/var/lib/postgresql/server.crt")
                                     .withConfigOption("ssl_key_file", "/var/lib/postgresql/server.key")

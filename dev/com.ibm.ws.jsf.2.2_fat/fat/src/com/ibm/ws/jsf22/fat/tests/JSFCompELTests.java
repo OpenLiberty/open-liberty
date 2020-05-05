@@ -88,7 +88,6 @@ public class JSFCompELTests {
     }
 
     protected void verifyXmlResponse(String contextRoot, String resource, String expectedResponse) throws Exception {
-        //return server.verifyResponse(createWebBrowserForTestCase(), resource, expectedResponse);
         try (WebClient webClient = new WebClient()) {
 
             URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, resource);
@@ -105,7 +104,6 @@ public class JSFCompELTests {
     }
 
     protected void verifyResponse(String contextRoot, String resource, String... expectedResponseStrings) throws Exception {
-        //return server.verifyResponse(createWebBrowserForTestCase(), resource, expectedResponseStrings);
         try (WebClient webClient = new WebClient()) {
 
             URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, resource);
@@ -127,7 +125,6 @@ public class JSFCompELTests {
     ///Jira http://java.net/jira/browse/JAVASERVERFACES_SPEC_PUBLIC-1043
     @Test
     public void testELResolverOrderAndComponentSystemEvent() throws Exception {
-        // Use the SharedServer to verify a response.
         String[] expectedInResponse = {
                                         "The order and number of ELResolvers from the CompositeELResolver are correct!",
                                         "Invoked JSF 2.2 new methods in ComponentSystemEvent, isAppropriateListener() and processListener()"
@@ -232,7 +229,7 @@ public class JSFCompELTests {
                                         "64",
                                         "12",
         };
-        // Use the SharedServer to verify a response.
+
         this.verifyResponse(contextRoot, "EL30Lambda.xhtml", expectedInResponse);
     }
 

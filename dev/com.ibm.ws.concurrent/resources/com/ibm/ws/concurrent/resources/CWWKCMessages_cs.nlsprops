@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2014 IBM Corporation and others.
+# Copyright (c) 2012, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -22,7 +22,7 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWCK1100 to CWWCK1149 except those specifically identified as moved
+# All messages must use the range CWWCK1100 to CWWCK1199 except those specifically identified as moved
 
 # Moved from com.ibm.ws.context
 CWWKC1000.unrecognized.property=CWWKC1000E: Prvek konfigurace {0} obsahuje nezn\u00e1m\u00fd atribut {1}.
@@ -79,3 +79,7 @@ CWWKC1120.future.get.rejected.useraction=Aktualizujte aplikaci, abyste se vyhnul
 CWWKC1130.xprop.value.invalid=CWWKC1130E: \u00daloha odeslan\u00e1 spravovan\u00e9mu prov\u00e1d\u011bc\u00edmu modulu {0} obsahuje vlastnost proveden\u00ed {1} s hodnotou {2}, kter\u00e1 je pro spravovan\u00e9 prov\u00e1d\u011bc\u00ed moduly neplatn\u00e1.
 CWWKC1130.xprop.value.invalid.explanation=N\u011bkter\u00e9 hodnoty vlastnosti proveden\u00ed nejsou platn\u00e9 pro spravovan\u00e9 prov\u00e1d\u011bc\u00ed moduly, ale mohou b\u00fdt platn\u00e9 pro jin\u00e9 typy prost\u0159edk\u016f, nap\u0159. pro kontextovou slu\u017ebu nebo spravovanou tov\u00e1rnu na podprocesy.
 CWWKC1130.xprop.value.invalid.useraction=Aktualizujte aplikaci tak, aby byla tato vlastnost proveden\u00ed vynech\u00e1na, nebo ji nastavte na platnou hodnotu.
+
+CWWKC1156.not.supported=CWWKC1156E: Po\u017eadovan\u00e1 operace nen\u00ed k dispozici jako statick\u00e1 metoda v implementaci spravovan\u00e9ho prov\u00e1d\u011bc\u00edho modulu CompletetableFuture. M\u00edsto toho pou\u017eijte n\u00e1sleduj\u00edc\u00ed operaci: {0}.
+CWWKC1156.not.supported.explanation=Implementace spravovan\u00e9ho prov\u00e1d\u011bc\u00edho CompletetableFuture neposkytuje ekvivalenty statick\u00e9 metody pro statick\u00e9 metody CompletableFuture.
+CWWKC1156.not.supported.useraction=Aktualizujte aplikaci tak, aby pou\u017e\u00edvala metodu doporu\u010denou ve zpr\u00e1v\u011b na m\u00edst\u011b po\u017eadovan\u00e9 operace.

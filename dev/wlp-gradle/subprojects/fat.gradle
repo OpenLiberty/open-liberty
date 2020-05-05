@@ -41,6 +41,7 @@ configurations {
   jdbcDrivers { transitive = false; }
   databaseRotationDrivers
   derby
+  jakartaTransformer
 }
 
 dependencies {
@@ -53,13 +54,13 @@ dependencies {
 		'org.apache.derby:derby:10.11.1.1',
 		'com.oracle.ojdbc:ojdbc8_g:19.3.0.0'
 
-  databaseRotationDrivers 'org.testcontainers:testcontainers:1.12.3',
-       'org.testcontainers:database-commons:1.12.3',
-       'org.testcontainers:jdbc:1.12.3',
-       'org.testcontainers:oracle-xe:1.12.3',
-       'org.testcontainers:mssqlserver:1.12.3',
-       'org.testcontainers:postgresql:1.12.3',
-       'org.testcontainers:db2:1.12.3',
+  databaseRotationDrivers 'org.testcontainers:testcontainers:1.14.0',
+       'org.testcontainers:database-commons:1.14.0',
+       'org.testcontainers:jdbc:1.14.0',
+       'org.testcontainers:oracle-xe:1.14.0',
+       'org.testcontainers:mssqlserver:1.14.0',
+       'org.testcontainers:postgresql:1.14.0',
+       'org.testcontainers:db2:1.14.0',
        'org.apache.commons:commons-compress:1.18',
        'org.rnorth.duct-tape:duct-tape:1.0.7',
        'org.rnorth.visible-assertions:visible-assertions:2.1.2',
@@ -67,11 +68,37 @@ dependencies {
        'net.java.dev.jna:jna:5.2.0',
        'org.slf4j:slf4j-api:1.7.7',
        'org.slf4j:slf4j-jdk14:1.7.7'
+
+  jakartaTransformer 'biz.aQute.bnd:biz.aQute.bndlib:4.3.1',
+        'commons-cli:commons-cli:1.4',
+        'org.slf4j:slf4j-simple:1.7.29',
+        'org.slf4j:slf4j-api:1.7.26',
+        'com.ibm.ws:jakartaee-transformer:0.0.7'
 }
 
 task addRequiredLibraries(type: Copy) {
   mustRunAfter jar
   from configurations.requiredLibs
+  into new File(autoFvtDir, 'lib')
+}
+
+task addJakartaTransformerRules {
+  mustRunAfter jar
+
+  doLast{
+    copy {
+      from project(':wlp-jakartaee-transform').file('rules')
+      include 'jakarta*.properties'
+      into new File(autoFvtDir, 'autoFVT-templates')
+    }
+  }
+}
+
+task addJakartaTransformer(type: Copy) {
+  mustRunAfter jar
+  dependsOn addJakartaTransformerRules
+
+  from configurations.jakartaTransformer
   into new File(autoFvtDir, 'lib')
 }
 
@@ -382,6 +409,9 @@ task runfat(type: Exec) {
   mustRunAfter buildfat
   mustRunAfter cleanBeforeRun
   environment System.getProperties()
+  //Add fat.test.localrun to JVM environment.
+  //Not accessible during builds since tests are run on child systems with a different JVM
+  environment "fat.test.localrun", "true"
   if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
     executable "cmd"
     args '/c', 'ant', "-f", new File(autoFvtDir, 'TestBuild.xml')
@@ -390,11 +420,7 @@ task runfat(type: Exec) {
     args "-f", new File(autoFvtDir, 'TestBuild.xml')
   }
 
-  doLast {
-    //This should be set during the execution phase and not the configuration stage
-    //Only set this property to true if the runfat task is called (which should only happen when calling buildandrun)
-    System.setProperty("fat.test.localrun", "true");
-    
+  doLast {    
     // We can have this here because this task only ever runs locally, and thus is OK to unconditionally fail
     // the build. If we ever run FATs in remote builds, we should also gate this on a property like 
     // 'is.running.remote.build' so we don't fail the entire build whenever a testcase fails
@@ -496,13 +522,13 @@ build {
 }
 
 buildfat {
-  dependsOn cleanFat
-  dependsOn assemble
-  dependsOn build
-  dependsOn zipProjectFVT
+ dependsOn cleanFat
+ dependsOn assemble
+ dependsOn build
+ dependsOn zipProjectFVT
 }
 
 task buildandrun {
-  dependsOn buildfat
-  dependsOn runfat
+ dependsOn buildfat
+ dependsOn runfat
 }

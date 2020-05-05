@@ -159,7 +159,7 @@ public class PluginGenerator {
     private File cachedFile;
 
     private static final boolean CHANGE_TRANSFORMER;
-
+    
     static {
         if (!JavaInfo.vendor().equals(Vendor.IBM)) {
             CHANGE_TRANSFORMER = false;
@@ -529,7 +529,7 @@ public class PluginGenerator {
                         for (TransportData currentTransport : sd.transports) {
                             Element tElem = output.createElement("Transport");
                             String hostname = currentTransport.host;
-
+                            
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                 Tr.debug(tc, "Adding the Transport definition " + hostname);
                             }
@@ -538,7 +538,6 @@ public class PluginGenerator {
                             tElem.setAttribute("Hostname", hostname);
                             String transportPort = Integer.toString(currentTransport.port);
                             tElem.setAttribute("Port", transportPort);
-
                             if (currentTransport.isSslEnabled) {
                                 tElem.setAttribute("Protocol", "https");
 
@@ -1866,6 +1865,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
             if (config.get("ESIEnableToPassCookies") != null) {
                 ESIEnableToPassCookies = (Boolean) config.get("ESIEnableToPassCookies");
             } // PI76699 End
+                
             TrustedProxyEnable = (Boolean) config.get("trustedProxyEnable");
             String proxyList = (String) config.get("trustedProxyGroup");
             if (proxyList != null) {

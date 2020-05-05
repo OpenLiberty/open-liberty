@@ -19,7 +19,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.security.KeyStore;
@@ -50,13 +49,14 @@ import org.apache.http.protocol.HttpCoreContext;
 import org.apache.http.ssl.SSLContextBuilder;
 
 import com.ibm.websphere.simplicity.config.AcmeCA;
+import com.ibm.websphere.simplicity.config.AcmeCA.AcmeTransportConfig;
 import com.ibm.websphere.simplicity.config.HttpEndpoint;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.crypto.certificateutil.DefaultSSLCertificateCreator;
 import com.ibm.ws.crypto.certificateutil.keytool.KeytoolSSLCertificateCreator;
-import com.ibm.ws.security.acme.docker.PebbleContainer;
-import com.ibm.ws.security.acme.fat.FATSuite;
+import com.ibm.ws.security.acme.docker.CAContainer;
+import com.ibm.ws.security.acme.docker.pebble.PebbleContainer;
 
 import componenttest.topology.impl.LibertyServer;
 
@@ -83,21 +83,6 @@ public class AcmeFatUtils {
 	public static X509Certificate getX509Certificate(byte pemBytes[]) throws CertificateException {
 		CertificateFactory cf = CertificateFactory.getInstance("X.509");
 		return (X509Certificate) cf.generateCertificate(new ByteArrayInputStream(pemBytes));
-	}
-
-	/**
-	 * Get an X.509 certificate from a PEM certificate.
-	 * 
-	 * @param pemBytes
-	 *            The bytes that comprise the PEM certificate.
-	 * @return The X.509 certificate.
-	 * @throws CertificateException
-	 *             If the certificate could not be generated from the passed in
-	 *             PEM bytes.
-	 */
-	public static X509Certificate getX509Certificate(InputStream in) throws CertificateException {
-		CertificateFactory cf = CertificateFactory.getInstance("X.509");
-		return (X509Certificate) cf.generateCertificate(in);
 	}
 
 	/**
@@ -238,9 +223,9 @@ public class AcmeFatUtils {
 	 * @throws Exception
 	 *             IF there was an error updating the configuration.
 	 */
-	public static void configureAcmeCA(LibertyServer server, ServerConfiguration originalConfig, String... domains)
-			throws Exception {
-		configureAcmeCA(server, originalConfig, false, domains);
+	public static void configureAcmeCA(LibertyServer server, CAContainer caContainer,
+			ServerConfiguration originalConfig, String... domains) throws Exception {
+		configureAcmeCA(server, caContainer, originalConfig, false, domains);
 	}
 
 	/**
@@ -251,15 +236,15 @@ public class AcmeFatUtils {
 	 *            Liberty server to update.
 	 * @param originalConfig
 	 *            The original configuration to update from.
-	 * @param userAcmeURIs
+	 * @param useAcmeURIs
 	 *            Use "acme://" style URIs for ACME providers.
 	 * @param domains
 	 *            Domains to request the certificate for.
 	 * @throws Exception
 	 *             IF there was an error updating the configuration.
 	 */
-	public static void configureAcmeCA(LibertyServer server, ServerConfiguration originalConfig, boolean useAcmeURIs,
-			String... domains) throws Exception {
+	public static void configureAcmeCA(LibertyServer server, CAContainer caContainer,
+			ServerConfiguration originalConfig, boolean useAcmeURIs, String... domains) throws Exception {
 		/*
 		 * Choose which configuration to update.
 		 */
@@ -270,15 +255,8 @@ public class AcmeFatUtils {
 		 * Configure the acmeCA-2.0 feature.
 		 */
 		AcmeCA acmeCA = clone.getAcmeCA();
-		acmeCA.setDirectoryURI(FATSuite.pebble.getAcmeDirectoryURI(useAcmeURIs));
 		acmeCA.setDomain(Arrays.asList(domains));
-		acmeCA.setAcceptTermsOfService(true);
-
-		if (!useAcmeURIs) {
-			acmeCA.getAcmeTransportConfig()
-					.setTrustStore("${server.config.dir}/resources/security/pebble-truststore.p12");
-			acmeCA.getAcmeTransportConfig().setTrustStorePassword(PEBBLE_TRUSTSTORE_PASSWORD);
-		}
+		configureAcmeCaConnection(caContainer.getAcmeDirectoryURI(useAcmeURIs), acmeCA);
 
 		/*
 		 * The defaultHttpEndpoint needs to point to the port the CA has been
@@ -286,7 +264,61 @@ public class AcmeFatUtils {
 		 */
 		HttpEndpoint endpoint = new HttpEndpoint();
 		endpoint.setId("defaultHttpEndpoint");
-		endpoint.setHttpPort(String.valueOf(PebbleContainer.HTTP_PORT));
+		endpoint.setHttpPort(String.valueOf(caContainer.getHttpPort()));
+		endpoint.setHttpsPort("${bvt.prop.HTTP_default.secure}");
+		endpoint.setHost("*");
+		clone.getHttpEndpoints().add(endpoint);
+
+		/*
+		 * Apply the configuration.
+		 */
+		AcmeFatUtils.updateConfigDynamically(server, clone);
+	}
+
+	/**
+	 * Configure the connection related information for the ACME CA server.
+	 * 
+	 * @param directoryUri
+	 *            Use "acme://" style URIs for ACME providers.
+	 * @param acmeCA
+	 *            The {@link AcmeCA} instance to update.
+	 */
+	public static void configureAcmeCaConnection(String directoryUri, AcmeCA acmeCA) {
+		acmeCA.setDirectoryURI(directoryUri);
+		if (!directoryUri.startsWith("acme")) {
+			AcmeTransportConfig acmeTransportConfig = new AcmeTransportConfig();
+			acmeTransportConfig.setTrustStore("${server.config.dir}/resources/security/pebble-truststore.p12");
+			acmeTransportConfig.setTrustStorePassword(PEBBLE_TRUSTSTORE_PASSWORD);
+			acmeCA.setAcmeTransportConfig(acmeTransportConfig);
+		}
+	}
+
+	/**
+	 * Convenience method for dynamically configuring the acmeCA-2.0
+	 * configuration. This method will NOT modify any ACME CA config.
+	 * 
+	 * @param server
+	 *            Liberty server to update.
+	 * @param originalConfig
+	 *            The original configuration to update from.
+	 * @throws Exception
+	 *             IF there was an error updating the configuration.
+	 */
+	public static void configureAcmeCA(LibertyServer server, CAContainer caContainer,
+			ServerConfiguration originalConfig) throws Exception {
+		/*
+		 * Choose which configuration to update.
+		 */
+		ServerConfiguration clone = ((originalConfig != null) ? originalConfig : server.getServerConfiguration())
+				.clone();
+
+		/*
+		 * The defaultHttpEndpoint needs to point to the port the CA has been
+		 * configured to send HTTP-01 challenges to.
+		 */
+		HttpEndpoint endpoint = new HttpEndpoint();
+		endpoint.setId("defaultHttpEndpoint");
+		endpoint.setHttpPort(String.valueOf(caContainer.getHttpPort()));
 		endpoint.setHttpsPort("${bvt.prop.HTTP_default.secure}");
 		endpoint.setHost("*");
 		clone.getHttpEndpoints().add(endpoint);
@@ -306,7 +338,7 @@ public class AcmeFatUtils {
 	 * @throws Exception
 	 *             If there was an error communicating with the mock DNS server.
 	 */
-	public static void configureDnsForDomains(String... domains) throws Exception {
+	public static void configureDnsForDomains(CAContainer container, String... domains) throws Exception {
 
 		Log.info(AcmeFatUtils.class, "configureDnsForDomains(String...)",
 				"Configuring DNS with the following domains: " + domains);
@@ -317,8 +349,8 @@ public class AcmeFatUtils {
 			 * responds on AAAA (IPv6) responses before A (IPv4) responses, and
 			 * we don't currently have the testcontainer host's IPv6 address.
 			 */
-			FATSuite.challtestsrv.addARecord(domain, FATSuite.pebble.getClientHost());
-			FATSuite.challtestsrv.addAAAARecord(domain, "");
+			container.addDnsARecord(domain, container.getClientHost());
+			container.addDnsAAAARecord(domain, "");
 		}
 	}
 
@@ -330,7 +362,7 @@ public class AcmeFatUtils {
 	 * @throws Exception
 	 *             If there was an error communicating with the mock DNS server.
 	 */
-	public static void clearDnsForDomains(String... domains) throws Exception {
+	public static void clearDnsForDomains(CAContainer dnscontainer, String... domains) throws Exception {
 
 		Log.info(AcmeFatUtils.class, "clearDnsForDomains(String...)",
 				"Clearning the following domains from the DNS: " + domains);
@@ -341,8 +373,8 @@ public class AcmeFatUtils {
 			 * responds on AAAA (IPv6) responses before A (IPv4) responses, and
 			 * we don't currently have the testcontainer host's IPv6 address.
 			 */
-			FATSuite.challtestsrv.clearARecord(domain);
-			FATSuite.challtestsrv.clearAAAARecord(domain);
+			dnscontainer.clearDnsARecord(domain);
+			dnscontainer.clearDnsAAAARecord(domain);
 		}
 	}
 
@@ -352,20 +384,20 @@ public class AcmeFatUtils {
 	 * @param server
 	 *            The server to check.
 	 */
-	public static final void waitForAcmeToCreateCertificate(LibertyServer server) {
+	public static final void waitForSslToCreateKeystore(LibertyServer server) {
 		assertNotNull("ACME did not create a new certificate.",
 				server.waitForStringInLog("CWPKI0803A: SSL certificate created"));
 	}
 
 	/**
-	 * Wait for the ACME service to report that the certificate has been
-	 * replaced.
+	 * Wait for the ACME service to report that a new certificate has been
+	 * created.
 	 * 
 	 * @param server
+	 *            The server to check.
 	 */
-	public static final void waitForAcmeToReplaceCertificate(LibertyServer server) {
-		assertNotNull("ACME did not update replace the certificate.",
-				server.waitForStringInLog("CWPKI2007I"));
+	public static final void waitForAcmeToCreateCertificate(LibertyServer server) {
+		assertNotNull("ACME did not create the certificate.", server.waitForStringInLog("CWPKI2007I"));
 	}
 
 	/**
@@ -444,7 +476,7 @@ public class AcmeFatUtils {
 		 * Generate the new keystore with the self-signed certificate.
 		 */
 		KeytoolSSLCertificateCreator creator = new KeytoolSSLCertificateCreator();
-		certFile = creator.createDefaultSSLCertificate(filePath, SELF_SIGNED_KEYSTORE_PASSWORD,
+		certFile = creator.createDefaultSSLCertificate(filePath, SELF_SIGNED_KEYSTORE_PASSWORD, "PKCS12", null,
 				DefaultSSLCertificateCreator.DEFAULT_VALIDITY, "cn=localhost",
 				DefaultSSLCertificateCreator.DEFAULT_SIZE, DefaultSSLCertificateCreator.SIGALG, null);
 
@@ -459,6 +491,8 @@ public class AcmeFatUtils {
 	/**
 	 * Assert that the server is using a certificate signed by the ACME CA.
 	 * 
+	 * @param <assertAndGetServerCertificate>
+	 * 
 	 * @param server
 	 *            the liberty server to communicate with.
 	 * @return the server's current TLS certificate chain.
@@ -466,14 +500,14 @@ public class AcmeFatUtils {
 	 *             If the server is not using a certificate signed by the ACME
 	 *             CA.
 	 */
-	public static final Certificate[] assertAndGetServerCertificate(LibertyServer server) throws Exception {
+	public static final <assertAndGetServerCertificate> Certificate[] assertAndGetServerCertificate(
+			LibertyServer server, CAContainer container) throws Exception {
 		final String methodName = "assertServerCertificate()";
 
 		/*
 		 * Get the CA's intermediate certificate.
 		 */
-		X509Certificate caCertificate = AcmeFatUtils
-				.getX509Certificate(FATSuite.pebble.getAcmeCaIntermediateCertificate());
+		X509Certificate caCertificate = AcmeFatUtils.getX509Certificate(container.getAcmeCaIntermediateCertificate());
 
 		/*
 		 * Make a request to the root context just to grab the certificate.

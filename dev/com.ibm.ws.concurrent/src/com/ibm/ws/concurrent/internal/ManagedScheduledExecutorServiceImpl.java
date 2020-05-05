@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2018 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,10 +20,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import javax.enterprise.concurrent.ManagedExecutorService;
-import javax.enterprise.concurrent.ManagedScheduledExecutorService;
-import javax.enterprise.concurrent.Trigger;
-
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -34,33 +30,37 @@ import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrency.policy.ConcurrencyPolicy;
+import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator;
 import com.ibm.wsspi.resource.ResourceFactory;
 import com.ibm.wsspi.threadcontext.ThreadContextProvider;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
-/**
- * All declarative services annotations on this class are ignored.
- * The annotations on
- * com.ibm.ws.concurrent.ee.ManagedScheduledExecutorServiceImpl and
- * com.ibm.ws.concurrent.mp.ManagedScheduledExecutorImpl
- * apply instead.
- */
 @Component(configurationPid = "com.ibm.ws.concurrent.managedScheduledExecutorService", configurationPolicy = ConfigurationPolicy.REQUIRE,
-           service = { ExecutorService.class, ManagedExecutorService.class, ResourceFactory.class, ApplicationRecycleComponent.class, ScheduledExecutorService.class,
-                       ManagedScheduledExecutorService.class },
-           reference = @Reference(name = ManagedExecutorServiceImpl.APP_RECYCLE_SERVICE, service = ApplicationRecycleCoordinator.class),
+           service = { ExecutorService.class, //
+                       jakarta.enterprise.concurrent.ManagedExecutorService.class, //
+                       javax.enterprise.concurrent.ManagedExecutorService.class, //
+                       ResourceFactory.class, ApplicationRecycleComponent.class, //
+                       ScheduledExecutorService.class, //
+                       jakarta.enterprise.concurrent.ManagedScheduledExecutorService.class, //
+                       javax.enterprise.concurrent.ManagedScheduledExecutorService.class },
+           reference = @Reference(name = "ApplicationRecycleCoordinator", service = ApplicationRecycleCoordinator.class),
            property = { "creates.objectClass=java.util.concurrent.ExecutorService",
                         "creates.objectClass=java.util.concurrent.ScheduledExecutorService",
+                        "creates.objectClass=jakarta.enterprise.concurrent.ManagedExecutorService",
+                        "creates.objectClass=jakarta.enterprise.concurrent.ManagedScheduledExecutorService",
                         "creates.objectClass=javax.enterprise.concurrent.ManagedExecutorService",
                         "creates.objectClass=javax.enterprise.concurrent.ManagedScheduledExecutorService" })
-public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceImpl implements ManagedScheduledExecutorService {
+public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceImpl implements //
+                jakarta.enterprise.concurrent.ManagedScheduledExecutorService, javax.enterprise.concurrent.ManagedScheduledExecutorService {
+
     private static final TraceComponent tc = Tr.register(ManagedScheduledExecutorServiceImpl.class);
 
     /**
@@ -136,12 +136,26 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
     }
 
     /**
+     * @see jakarta.enterprise.concurrent.ManagedScheduledExecutorService#schedule(java.util.concurrent.Callable, jakarta.enterprise.concurrent.Trigger)
+     */
+    @Override
+    public <V> ScheduledFuture<V> schedule(Callable<V> task, jakarta.enterprise.concurrent.Trigger trigger) {
+        if (trigger == null)
+            throw new NullPointerException(jakarta.enterprise.concurrent.Trigger.class.getName());
+
+        ScheduledTask<V> scheduledTask = new ScheduledTask<V>(this, task, true, trigger);
+        if (futures.add(scheduledTask.future) && ++futureCount % FUTURE_PURGE_INTERVAL == 0)
+            purgeFutures();
+        return scheduledTask.future;
+    }
+
+    /**
      * @see javax.enterprise.concurrent.ManagedScheduledExecutorService#schedule(java.util.concurrent.Callable, javax.enterprise.concurrent.Trigger)
      */
     @Override
-    public <V> ScheduledFuture<V> schedule(Callable<V> task, Trigger trigger) {
+    public <V> ScheduledFuture<V> schedule(Callable<V> task, javax.enterprise.concurrent.Trigger trigger) {
         if (trigger == null)
-            throw new NullPointerException(Trigger.class.getName());
+            throw new NullPointerException(javax.enterprise.concurrent.Trigger.class.getName());
 
         ScheduledTask<V> scheduledTask = new ScheduledTask<V>(this, task, true, trigger);
         if (futures.add(scheduledTask.future) && ++futureCount % FUTURE_PURGE_INTERVAL == 0)
@@ -161,12 +175,26 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
     }
 
     /**
+     * @see jakarta.enterprise.concurrent.ManagedScheduledExecutorService#schedule(java.lang.Runnable, jakarta.enterprise.concurrent.Trigger)
+     */
+    @Override
+    public ScheduledFuture<?> schedule(Runnable task, jakarta.enterprise.concurrent.Trigger trigger) {
+        if (trigger == null)
+            throw new NullPointerException(jakarta.enterprise.concurrent.Trigger.class.getName());
+
+        ScheduledTask<?> scheduledTask = new ScheduledTask<Void>(this, task, false, trigger);
+        if (futures.add(scheduledTask.future) && ++futureCount % FUTURE_PURGE_INTERVAL == 0)
+            purgeFutures();
+        return scheduledTask.future;
+    }
+
+    /**
      * @see javax.enterprise.concurrent.ManagedScheduledExecutorService#schedule(java.lang.Runnable, javax.enterprise.concurrent.Trigger)
      */
     @Override
-    public ScheduledFuture<?> schedule(Runnable task, Trigger trigger) {
+    public ScheduledFuture<?> schedule(Runnable task, javax.enterprise.concurrent.Trigger trigger) {
         if (trigger == null)
-            throw new NullPointerException(Trigger.class.getName());
+            throw new NullPointerException(javax.enterprise.concurrent.Trigger.class.getName());
 
         ScheduledTask<?> scheduledTask = new ScheduledTask<Void>(this, task, false, trigger);
         if (futures.add(scheduledTask.future) && ++futureCount % FUTURE_PURGE_INTERVAL == 0)
@@ -217,6 +245,15 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
     }
 
     @Override
+    @Reference(service = JavaEEVersion.class,
+               cardinality = ReferenceCardinality.OPTIONAL,
+               policy = ReferencePolicy.STATIC,
+               policyOption = ReferencePolicyOption.GREEDY)
+    protected void setEEVersion(ServiceReference<JavaEEVersion> ref) {
+        super.setEEVersion(ref);
+    }
+
+    @Override
     @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, target = "(id=unbound)")
     @Trivial
     protected void setLongRunningPolicy(ConcurrencyPolicy svc) {
@@ -246,6 +283,11 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
     @Trivial
     protected void unsetContextService(ServiceReference<WSContextService> ref) {
         super.unsetContextService(ref);
+    }
+
+    @Override
+    protected void unsetEEVersion(ServiceReference<JavaEEVersion> ref) {
+        super.unsetEEVersion(ref);
     }
 
     @Override

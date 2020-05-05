@@ -141,6 +141,52 @@ sourceSets {
   }
 }
 
+configurations {
+  jakartaeeTransformJars
+}
+
+dependencies {
+  jakartaeeTransformJars 'biz.aQute.bnd:biz.aQute.bndlib:4.3.1',
+                          'commons-cli:commons-cli:1.4',
+                          'org.slf4j:slf4j-simple:1.7.29',
+                          'org.slf4j:slf4j-api:1.7.26',
+                          'com.ibm.ws:jakartaee-transformer:0.0.8'
+                        }
+
+
+
+task jakartaeeTransform {
+  mustRunAfter project.tasks.jar
+  if (parseBoolean(bnd('jakartaeeMe', 'true'))) {
+    doLast {
+      fileTree(project.buildDir).matching { include '*jakarta.jar' }.each { delete it }
+      FileTree bundles = fileTree(project.buildDir).matching {include '*.jar' }        
+            bundles.each { bundleJar ->
+                javaexec {
+                    classpath configurations.jakartaeeTransformJars
+                    main = "com.ibm.ws.jakarta.transformer.JakartaTransformer"
+                    args = [ project.buildDir.path + '/' + bundleJar.name, 
+                          (project.buildDir.path + '/' + bundleJar.name).replaceAll('.jar',".jakarta.jar"),
+                          "-tr",
+                          bndWorkspace.getProject('wlp-jakartaee-transform').getFile('rules/jakarta-renames.properties').path,
+                          "-ts",
+                          bndWorkspace.getProject('wlp-jakartaee-transform').getFile('rules/jakarta-selections.properties').path,
+                          "-tv",
+                          bndWorkspace.getProject('wlp-jakartaee-transform').getFile('rules/jakarta-versions.properties').path,
+                           "-tb",
+                          bndWorkspace.getProject('wlp-jakartaee-transform').getFile('rules/jakarta-bundles.properties').path,
+                           "-td",
+                          bndWorkspace.getProject('wlp-jakartaee-transform').getFile('rules/jakarta-direct.properties').path,
+                           "-tf",
+                          bndWorkspace.getProject('wlp-jakartaee-transform').getFile('rules/jakarta-xml-master.properties').path]
+                }
+          }
+      }
+    }
+}
+
+assemble.dependsOn(jakartaeeTransform)
+
 compileJava {
   if (!parseBoolean(bnd('instrument.disabled', 'false'))) {
     inputs.files { rasInstrumentationInputFiles() }

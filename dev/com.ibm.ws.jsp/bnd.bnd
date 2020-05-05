@@ -15,6 +15,8 @@ Bundle-Name: WAS JSP
 Bundle-SymbolicName: com.ibm.ws.jsp
 Bundle-Description: WAS JSP 2.2, version ${bVersion}
 
+jakartaeeMe: true
+
 -dsannotations= \
   com.ibm.ws.jsp.webcontainerext.JSPExtensionFactory
 

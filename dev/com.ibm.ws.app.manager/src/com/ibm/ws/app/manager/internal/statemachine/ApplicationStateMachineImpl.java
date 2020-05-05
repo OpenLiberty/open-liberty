@@ -205,6 +205,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
         if (_tc.isEventEnabled()) {
             Tr.event(_tc, asmLabel() + "recycle: interruptible=" + isInterruptible());
         }
+
         CancelableCompletionListenerWrapper<Boolean> cl = completionListener.getAndSet(null);
         if (cl != null) {
             cl.cancel();
@@ -419,9 +420,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
                 }
                 return null;
             } else {
-                if (_currentAction.getAndSet(null) == null) {
-                    return null;
-                }
+                _currentAction.getAndSet(null);
                 return immediateCallbackResult.getAndSet(null);
             }
         }
@@ -875,6 +874,9 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
                         }
                         setNonInterruptible();
                         queuedAction = _queuedActions.poll();
+                        if (_tc.isDebugEnabled()) {
+                            Tr.debug(_tc, asmLabel() + "run: next queued action: " + queuedAction);
+                        }
                     }
                 }
                 if (callbackReceivedState != null) {
@@ -912,8 +914,13 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
             Tr.event(_tc, asmLabel() + "queueStateChange: interruptible=" + isInterruptible());
         }
         synchronized (_interruptibleLock) {
-            _queuedActions.add(new QueuedStateChangeAction(action, _qscaCounter.getAndIncrement()));
+            QueuedStateChangeAction qa = new QueuedStateChangeAction(action, _qscaCounter.getAndIncrement());
+            _queuedActions.add(qa);
+            if (_tc.isDebugEnabled()) {
+                Tr.debug(_tc, asmLabel() + "queueStateChange: added action " + qa);
+            }
         }
+
         _executorService.execute(this);
     }
 
@@ -1116,6 +1123,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
     }
 
     private void performAction(StateChangeAction action) {
+
         assertNonInterruptible();
         final InternalState currentState = getInternalState();
 
@@ -1170,6 +1178,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
             default:
                 throw new IllegalStateException("currentState");
         }
+
     }
 
     private void cleanupActions() {

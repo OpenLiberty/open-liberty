@@ -25,5 +25,6 @@
 
     <javaPermission className="java.util.PropertyPermission" name="bvt.prop.HTTP_default" actions="read"/>
     <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
-
+    <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+    <javaPermission className="java.util.PropertyPermission" name="test.clients" actions="read"/>
 </server>

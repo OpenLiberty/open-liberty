@@ -11,6 +11,7 @@
 
 configurations {
     runPebble { extendsFrom runtime }
+    runBoulder { extendsFrom runtime }
 }
 
 dependencies {
@@ -19,7 +20,7 @@ dependencies {
                'org.rnorth.visible-assertions:visible-assertions:2.1.2',
                'org.rnorth:tcp-unix-socket-proxy:1.0.2',
                'net.java.dev.jna:jna:5.2.0',
-               'org.testcontainers:testcontainers:1.12.3',
+               'org.testcontainers:testcontainers:1.14.0',
                'org.slf4j:slf4j-api:1.7.7',
                'org.slf4j:slf4j-jdk14:1.7.7',
                'org.apache.httpcomponents:httpclient:4.5.5',
@@ -31,6 +32,11 @@ dependencies {
                project(':com.ibm.ws.crypto.certificateutil')
                
   runPebble    'net.java.dev.jna:jna:5.2.0',
+               'org.rnorth.visible-assertions:visible-assertions:2.1.2',
+               'org.apache.commons:commons-compress:1.19',
+               'commons-logging:commons-logging:1.1.1'
+               
+  runBoulder   'net.java.dev.jna:jna:5.2.0',
                'org.rnorth.visible-assertions:visible-assertions:2.1.2',
                'org.apache.commons:commons-compress:1.19',
                'commons-logging:commons-logging:1.1.1'
@@ -49,11 +55,27 @@ autoFVT.doLast {
   }
 }
 
+tasks.withType(JavaExec) {
+    /* 
+     * Assign all Java system properties from the command line to the JavaExec task.
+     */
+    systemProperties System.properties
+}
+
 task runPebble(type: JavaExec) {
     group = "Execution"
     description = "Start a Pebble ACME CA server with a mock DNS server."
     
     workingDir = 'build/libs/autoFVT'
     classpath = files(sourceSets.main.runtimeClasspath, configurations.runPebble)
-    main = "com.ibm.ws.security.acme.docker.PebbleDriver"
+    main = "com.ibm.ws.security.acme.docker.pebble.PebbleDriver"
+}
+
+task runBoulder(type: JavaExec) {
+    group = "Execution"
+    description = "Start a Boulder ACME CA server with a mock DNS server."
+    
+    workingDir = 'build/libs/autoFVT'
+    classpath = files(sourceSets.main.runtimeClasspath, configurations.runBoulder)
+    main = "com.ibm.ws.security.acme.docker.boulder.BoulderDriver"
 }
