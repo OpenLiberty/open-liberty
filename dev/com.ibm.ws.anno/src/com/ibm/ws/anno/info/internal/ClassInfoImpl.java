@@ -13,12 +13,11 @@ package com.ibm.ws.anno.info.internal;
 import java.util.List;
 
 import com.ibm.wsspi.anno.info.ClassInfo;
-import com.ibm.wsspi.anno.info.PackageInfo;
 
 public abstract class ClassInfoImpl extends InfoImpl implements ClassInfo {
 
     @SuppressWarnings("hiding")
-	public static final String CLASS_NAME = ClassInfoImpl.class.getName();
+    public static final String CLASS_NAME = ClassInfoImpl.class.getName();
 
     //
 
@@ -42,14 +41,44 @@ public abstract class ClassInfoImpl extends InfoImpl implements ClassInfo {
         }
     }
 
+    /**
+     * <p>Naming constant: The prefix for the <code>java</code> package,
+     * (with a trailing ".").</p>
+     */
+    private static final String JAVA_CLASS_PREFIX = "java.";
+
+    /**
+     * <p>Naming constant: The prefix for the <code>javax.ejb</code> package,
+     * (with a trailing ".").</p>
+     */
+    private static final String JAVAX_EJB_CLASS_PREFIX = "javax.ejb.";
+
+    /**
+     * <p>Naming constant: The prefix for the <code>javax.servlet</code> package,
+     * (with a trailing ".").</p>
+     */
+    private static final String JAVAX_SERVLET_CLASS_PREFIX = "javax.servlet.";
+
+    /**
+     * <p>Naming constant: The prefix for the <code>jakarta.ejb</code> package,
+     * (with a trailing ".").</p>
+     */
+    private static final String JAKARTA_EJB_CLASS_PREFIX = "jakarta.ejb.";
+
+    /**
+     * <p>Naming constant: The prefix for the <code>jakarta.servlet</code> package,
+     * (with a trailing ".").</p>
+     */
+    private static final String JAKARTA_SERVLET_CLASS_PREFIX = "jakarta.servlet.";
+
     // Used, in particular, by 'ClassInfoCache.addClassInfo(NonDelayedClassInfo)'
     // to select classes to place in the higher retention store of java classes.
     public static boolean isJavaClass(String name) {
-        return ( name.startsWith(PackageInfo.JAVA_CLASS_PREFIX) ||
-                 name.startsWith(PackageInfo.JAVAX_EJB_CLASS_PREFIX) ||
-                 name.startsWith(PackageInfo.JAVAX_SERVLET_CLASS_PREFIX) ||
-                 name.startsWith(PackageInfo.JAKARTA_EJB_CLASS_PREFIX) ||
-                 name.startsWith(PackageInfo.JAKARTA_SERVLET_CLASS_PREFIX) );
+        return ( name.startsWith(JAVA_CLASS_PREFIX) ||
+                 name.startsWith(JAVAX_EJB_CLASS_PREFIX) ||
+                 name.startsWith(JAVAX_SERVLET_CLASS_PREFIX) ||
+                 name.startsWith(JAKARTA_EJB_CLASS_PREFIX) ||
+                 name.startsWith(JAKARTA_SERVLET_CLASS_PREFIX) );
     }
 
     // Instance state ...

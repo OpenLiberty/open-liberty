@@ -16,55 +16,36 @@ package com.ibm.wsspi.anno.info;
  * <p>The name and qualified name of a package info object are the same.</p>
  */
 public interface PackageInfo extends Info {
-	// jakarta review: used by com.ibm.ws.anno.info.internal.ClassInfoImpl.isJavaClass(String)
+    // jakarta review: No longer used.
+    // See com.ibm.ws.anno.info.internal.ClassInfoImpl.isJavaClass(String)
     /**
      * <p>Naming constant: The prefix for the <code>java</code> package,
      * (with a trailing ".").</p>
      */
     String JAVA_CLASS_PREFIX = "java.";
 
-	// jakarta review: no current uses
+    // jakarta review: no current uses
     /**
      * <p>Naming constant: The prefix for the <code>javax</code> package,
      * (with a trailing ".").</p>
      */
     String JAVAX_CLASS_PREFIX = "javax.";
 
-	// jakarta review: used by com.ibm.ws.anno.info.internal.ClassInfoImpl.isJavaClass(String)
-    // Used, in particular, by 'ClassInfoCache.addClassInfo(NonDelayedClassInfo)'
-    // to select classes to place in the higher retention store of java classes.
+    // jakarta review: No longer used.
+    // See com.ibm.ws.anno.info.internal.ClassInfoImpl.isJavaClass(String)
     /**
      * <p>Naming constant: The prefix for the <code>javax.ejb</code> package,
      * (with a trailing ".").</p>
      */
     String JAVAX_EJB_CLASS_PREFIX = "javax.ejb.";
 
-    // jakarta review: used by com.ibm.ws.anno.info.internal.ClassInfoImpl.isJavaClass(String)
-    // Used, in particular, by 'ClassInfoCache.addClassInfo(NonDelayedClassInfo)'
-    // to select classes to place in the higher retention store of java classes.    
-    /**
-     * <p>Naming constant: The prefix for the <code>jakarta.ejb</code> package,
-     * (with a trailing ".").</p>
-     */
-    String JAKARTA_EJB_CLASS_PREFIX = "jakarta.ejb.";
-
-    // jakarta review: used by com.ibm.ws.anno.info.internal.ClassInfoImpl.isJavaClass(String)
-    // Used, in particular, by 'ClassInfoCache.addClassInfo(NonDelayedClassInfo)'
-    // to select classes to place in the higher retention store of java classes.    
+    // jakarta review: No longer used.
+    // See com.ibm.ws.anno.info.internal.ClassInfoImpl.isJavaClass(String)
     /**
      * <p>Naming constant: The prefix for the <code>javax.servlet</code> package,
      * (with a trailing ".").</p>
      */
     String JAVAX_SERVLET_CLASS_PREFIX = "javax.servlet.";
-
-    // jakarta review: used by com.ibm.ws.anno.info.internal.ClassInfoImpl.isJavaClass(String)
-    // Used, in particular, by 'ClassInfoCache.addClassInfo(NonDelayedClassInfo)'
-    // to select classes to place in the higher retention store of java classes.    
-    /**
-     * <p>Naming constant: The prefix for the <code>jakarta.servlet</code> package,
-     * (with a trailing ".").</p>
-     */
-    String JAKARTA_SERVLET_CLASS_PREFIX = "jakarta.servlet.";
 
     /**
      * <p>Tell if this package info was created to represent a package which
