@@ -168,9 +168,14 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
     private ServiceReference<WSContextService> contextSvcRef;
 
     /**
-     * Jakarta EE versiom if Jakarta EE 9 or higher. If 0, assume a lesser EE spec version.
+     * Jakarta EE version if Jakarta EE 9 or higher. If 0, assume a lesser EE spec version.
      */
-    int eeVersion;
+    volatile int eeVersion;
+
+    /**
+     * Tracks the most recently bound EE version service reference. Only use this within the set/unsetEEVersion methods.
+     */
+    private ServiceReference<JavaEEVersion> eeVersionRef;
 
     /**
      * Liberty executor
@@ -1024,6 +1029,7 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
             String major = dot > 0 ? version.substring(0, dot) : version;
             eeVersion = Integer.parseInt(major);
         }
+        eeVersionRef = ref;
     }
 
     /**
@@ -1256,7 +1262,10 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
      * @param ref reference to the service
      */
     protected void unsetEEVersion(ServiceReference<JavaEEVersion> ref) {
-        eeVersion = 0;
+        if (eeVersionRef == ref) {
+            eeVersionRef = null;
+            eeVersion = 0;
+        }
     }
 
     /**
