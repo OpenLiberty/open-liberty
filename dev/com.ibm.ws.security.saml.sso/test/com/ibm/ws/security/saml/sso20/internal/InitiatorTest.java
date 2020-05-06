@@ -18,6 +18,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -55,6 +56,8 @@ import com.ibm.ws.security.saml.sso20.binding.BasicMessageContext;
 import com.ibm.ws.security.saml.sso20.binding.BasicMessageContextBuilder;
 import com.ibm.ws.security.saml.sso20.common.CommonMockObjects;
 import com.ibm.ws.security.saml.sso20.internal.utils.ForwardRequestInfo;
+import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
+import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.wsspi.security.tai.TAIResult;
 
 import test.common.SharedOutputManager;
@@ -73,6 +76,10 @@ public class InitiatorTest {
     private static final HttpServletRequest request = common.getServletRequest();
 
     private static final HttpSession session = common.getSession();
+    private static final WebAppSecurityConfig webAppSecConfig = common.getWebAppSecConfig();
+    static {
+        WebAppSecurityCollaboratorImpl.setGlobalWebAppSecurityConfig(webAppSecConfig);
+    }
 
     private static Initiator initiator;
 
@@ -94,6 +101,7 @@ public class InitiatorTest {
     private static final PrintWriter out = mockery.mock(PrintWriter.class, "out");
     private static final Cache cache = common.getCache();
     private static final String PROVIDER_ID = "b07b804c";
+    private static final String DEFAULT_KS_PASS = "Liberty";
 
     private static List<SingleSignOnService> listSingleSignOnServices = new ArrayList<SingleSignOnService>();
 
@@ -161,6 +169,8 @@ public class InitiatorTest {
                 will(returnValue(true));
                 allowing(ssoService).getProviderId();
                 will(returnValue(PROVIDER_ID));
+                allowing(ssoService).getDefaultKeyStorePassword();
+                will(returnValue(DEFAULT_KS_PASS));
                 allowing(ssoService).getConfig();
                 will(returnValue(ssoConfig));
                 one(ssoService).getAcsCookieCache(PROVIDER_ID);
@@ -171,6 +181,7 @@ public class InitiatorTest {
                 one(response).setHeader(with(any(String.class)), with(any(String.class)));
                 one(response).setDateHeader(with(any(String.class)), with(any(Integer.class)));
                 one(response).setContentType(with(any(String.class)));
+                allowing(response).addCookie(with(any(Cookie.class)));
                 one(response).getWriter();
                 will(returnValue(out));
 
@@ -235,6 +246,10 @@ public class InitiatorTest {
                 one(serializerOut).setCharacterStream(with(any(Writer.class)));
 
                 one(cache).put(with(any(String.class)), with(any(ForwardRequestInfo.class)));
+                allowing(webAppSecConfig).getSSORequiresSSL();
+                will(returnValue(true));
+                allowing(webAppSecConfig).getSameSiteCookie();
+                allowing(webAppSecConfig).createReferrerURLCookieHandler();
 
             }
         });

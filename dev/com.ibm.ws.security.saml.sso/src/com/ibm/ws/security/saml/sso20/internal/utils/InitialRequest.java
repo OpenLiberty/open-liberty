@@ -51,8 +51,9 @@ public class InitialRequest implements Serializable {
     String requestURL = null; // The requestURL with query string
     String method = null;
     String strInResponseToId;
+    boolean isFormLogoutExitPage = false;
     String formLogoutExitPage = null;
-    String postParams = null;
+    String postParams = "";
     HashMap savedPostParams = null;
      
     public static final String ATTRIB_HASH_MAP = "ServletRequestWrapperHashmap"; 
@@ -76,12 +77,13 @@ public class InitialRequest implements Serializable {
         this.reqUrl = request.getRequestURL().toString(); // keep this for restore the saved parameters (on SAMLReqponseTai)
         WebSSOUtils webssoutils = new WebSSOUtils();
         this.requestURL = webssoutils.getRequestUrlWithEncodedQueryString(request);
-       
         this.method = request.getMethod();
         this.strInResponseToId = SamlUtil.generateRandomID();
-        
-        formLogoutExitPage = (String) request.getAttribute("FormLogoutExitPage");
-        if (METHOD_POST.equalsIgnoreCase(this.method) && formLogoutExitPage == null) {
+        this.formLogoutExitPage = (String) request.getAttribute("FormLogoutExitPage");
+        if (this.formLogoutExitPage != null) {
+            isFormLogoutExitPage = true;
+        }
+        if (METHOD_POST.equalsIgnoreCase(this.method) && this.formLogoutExitPage == null) {
             try {
                 postParams = serializePostParams((IExtendedRequest)request);
             } catch (IllegalStateException | IOException e) {
@@ -143,8 +145,15 @@ public class InitialRequest implements Serializable {
         requestURL = aInputStream.readUTF();
         method = aInputStream.readUTF();
         strInResponseToId = aInputStream.readUTF();
-        formLogoutExitPage = aInputStream.readUTF();
-        postParams = aInputStream.readUTF();
+        isFormLogoutExitPage = aInputStream.readBoolean();
+        if (isFormLogoutExitPage) {
+            formLogoutExitPage = aInputStream.readUTF();
+        } else if(METHOD_POST.equalsIgnoreCase(this.method)) {
+            formLogoutExitPage = null;
+            postParams = aInputStream.readUTF();
+        }
+        //formLogoutExitPage = aInputStream.readUTF();
+        //postParams = aInputStream.readUTF();
         
     }
  
@@ -154,8 +163,14 @@ public class InitialRequest implements Serializable {
         aOutputStream.writeUTF(requestURL);
         aOutputStream.writeUTF(method);
         aOutputStream.writeUTF(strInResponseToId);
-        aOutputStream.writeUTF(formLogoutExitPage);
-        aOutputStream.writeUTF(postParams);
+        aOutputStream.writeBoolean(isFormLogoutExitPage);
+        if (isFormLogoutExitPage) {
+            aOutputStream.writeUTF(formLogoutExitPage);
+        } else if(METHOD_POST.equalsIgnoreCase(this.method)) {
+            aOutputStream.writeUTF(postParams);
+        }
+        
+        
         //aOutputStream.writeObject(savedPostParams);
     }
     
