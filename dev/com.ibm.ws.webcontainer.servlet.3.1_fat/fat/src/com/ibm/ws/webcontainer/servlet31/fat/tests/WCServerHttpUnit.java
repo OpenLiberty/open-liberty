@@ -89,7 +89,6 @@ public class WCServerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testSendContentLengthLong65536L_test() throws Exception {
         String resp = sendPostRequest(65536L);
         assertTrue(resp.contains("PASS"));
@@ -107,7 +106,6 @@ public class WCServerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testReceiveContentLengthLong65536L_test() throws Exception {
         assertTrue(getPostResponse(65536L));
     }
@@ -230,7 +228,6 @@ public class WCServerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testRelativeRedirect() throws Exception {
         WebConversation wc = new WebConversation();
         String contextRoot = "/TestServlet31";
@@ -258,7 +255,6 @@ public class WCServerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testAbsoluteRedirect() throws Exception {
         WebConversation wc = new WebConversation();
         String contextRoot = "/TestServlet31";
@@ -272,7 +268,6 @@ public class WCServerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testNetworkRedirect() throws Exception {
         WebConversation wc = new WebConversation();
         String contextRoot = "/TestServlet31";
@@ -286,7 +281,6 @@ public class WCServerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testSessionCookieConfig() throws Exception {
         WebConversation wc = new WebConversation();
         String contextRoot = "/TestServlet31";
@@ -301,34 +295,29 @@ public class WCServerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testRequestWithTwoParamters() throws Exception {
         testParamaters("?NumberOfOtherParameters=1&FirstParameter=value", "value");
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testRequestWithSevenParamters() throws Exception {
         testParamaters("?NumberOfOtherParameters=6&FirstParameter=myValue&myValue=ParamNoEqual&ParamNoEqual&FirstAfterParamNoEqual=anotherOne&anotherOne=theLastOne&theLastOne=Pass",
                        "Pass");
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testRequestWithNoValueNoEqualParamaters() throws Exception {
         testParamaters("?NumberOfOtherParameters=5&FirstParameter=ParamNoEqual&ParamNoEqual&FirstAfterParamNoEqual=ParamNoValue&ParamNoValue=&FirstAfterParamNoValue=finished",
                        "finished");
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testRequestWithNoValueAsLastParamater() throws Exception {
         testParamaters("?NumberOfOtherParameters=2&FirstParameter=ParamNoValue&ParamNoValue=",
                        "EmptyString");
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testRequestWithNoEqualAsLastParamater() throws Exception {
         testParamaters("?NumberOfOtherParameters=2&FirstParameter=ParamNoEqual&ParamNoEqual",
                        "EmptyString");
@@ -348,7 +337,6 @@ public class WCServerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testRequestParamsInPostRequest16() throws Exception {
 
         String initialParams = "NumberOfOtherParameters=6&FirstParameter=myValue&myValue=anotherOne&anotherOne=ParamNoEqual&ParamNoEqual&FirstAfterParamNoEqual=ReallyReallyLongParamaterValue&ReallyReallyLongParamaterValue=";
@@ -357,7 +345,6 @@ public class WCServerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testRequestParamsInPostRequest16Encoded() throws Exception {
 
         String initialParams = "NumberOfOtherParameters=6&FirstParameter=myValue&myValue=anotherOne&anotherOne=ParamNoEqual&ParamNoEqual&FirstAfterParamNoEqual=ReallyReallyLongParamaterValue&ReallyReallyLongParamaterValue=";
@@ -366,7 +353,6 @@ public class WCServerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testRequestParamsInPostRequest50() throws Exception {
 
         // When parameters are loaded into buffer of 32 bytes this test ensures that
@@ -379,7 +365,6 @@ public class WCServerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testRequestParamsInPostRequest50Encoded() throws Exception {
 
         // When parameters are loaded into buffer of 32 bytes this test ensures that
@@ -392,7 +377,6 @@ public class WCServerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testRequestParamsInPostRequest80() throws Exception {
 
         // When parameters are loaded into buffer of 32 bytes this test ensures that
@@ -405,7 +389,6 @@ public class WCServerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testRequestParamsInPostRequest80Encoded() throws Exception {
 
         // When parameters are loaded into buffer of 32 bytes this test ensures that
@@ -418,7 +401,6 @@ public class WCServerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testRequestParamsInPostRequest64minus() throws Exception {
 
         // When parameters are loaded into buffer of 32 bytes this test ensures that
@@ -434,7 +416,6 @@ public class WCServerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testRequestParamsInPostRequest64minusEncoded() throws Exception {
 
         // When parameters are loaded into buffer of 32 bytes this test ensures that
@@ -450,7 +431,6 @@ public class WCServerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testRequestParamsInPostRequest63minus() throws Exception {
 
         // When parameters are loaded into buffer of 32 bytes this test ensures that
@@ -468,7 +448,6 @@ public class WCServerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testRequestParamsInPostRequest63minusEncoded() throws Exception {
 
         // When parameters are loaded into buffer of 32 bytes this test ensures that
@@ -486,7 +465,6 @@ public class WCServerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testRequestParamsInPostRequestLongKey1() throws Exception {
 
         // When parameters are loaded into buffer of 32 bytes this test ensures that
@@ -500,7 +478,6 @@ public class WCServerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testRequestParamsInPostRequestLongKey1Encoded() throws Exception {
 
         // When parameters are loaded into buffer of 32 bytes this test ensures that
@@ -514,7 +491,6 @@ public class WCServerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testRequestParamsInPostRequestLongKey2() throws Exception {
 
         // When parameters are loaded into buffer of 32 bytes this test ensures that
@@ -526,7 +502,6 @@ public class WCServerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testRequestParamsInPostRequestLongKey2Encoded() throws Exception {
 
         // When parameters are loaded into buffer of 32 bytes this test ensures that
@@ -538,7 +513,6 @@ public class WCServerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testRequestParamsInPostRequestLongKey3() throws Exception {
 
         // When parameters are loaded into buffer of 32 bytes this test ensures that
@@ -552,7 +526,6 @@ public class WCServerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testRequestParamsInPostRequestLongKey3Encoded() throws Exception {
 
         // When parameters are loaded into buffer of 32 bytes this test ensures that
@@ -566,7 +539,6 @@ public class WCServerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testRequestParamsInPostRequestNoEqualNoValue() throws Exception {
 
         // When parameters are loaded into buffer of 32 bytes this test ensures that
@@ -578,7 +550,6 @@ public class WCServerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testRequestParamsInPostRequestNoEqualNoValueEncoded() throws Exception {
 
         // When parameters are loaded into buffer of 32 bytes this test ensures that
@@ -590,7 +561,6 @@ public class WCServerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testRequestParamsInPostRequestNoEqualLast() throws Exception {
 
         // When parameters are loaded into buffer of 32 bytes this test ensures that
@@ -601,7 +571,6 @@ public class WCServerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testRequestParamsInPostRequestNoEqualLastEncoded() throws Exception {
 
         // When parameters are loaded into buffer of 32 bytes this test ensures that
@@ -612,7 +581,6 @@ public class WCServerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testRequestParamsInPostRequestNoValueLast() throws Exception {
 
         // When parameters are loaded into buffer of 32 bytes this test ensures that
@@ -623,7 +591,6 @@ public class WCServerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testRequestParamsInPostRequestNoValueLastEncoded() throws Exception {
 
         // When parameters are loaded into buffer of 32 bytes this test ensures that
@@ -729,7 +696,6 @@ public class WCServerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     @ExpectedFFDC("javax.servlet.ServletException")
     public void testDefaultErrorPage() throws Exception {
 
@@ -770,7 +736,6 @@ public class WCServerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testReaderFirstValidCharset() throws Exception {
 
         String text = getResponse("/GetReaderFirstTest?valid_charset=true", "charset=US-ASCII");
@@ -781,7 +746,6 @@ public class WCServerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testReaderFirstInValidCharset() throws Exception {
 
         String text = getResponse("/GetReaderFirstTest?valid_charset=false", "charset=blobby");
@@ -791,7 +755,6 @@ public class WCServerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testReaderSecondValidCharset() throws Exception {
 
         String text = getResponse("/GetReaderSecondTest?valid_charset=true", "charset=US-ASCII");
@@ -800,7 +763,6 @@ public class WCServerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testReaderSecondInValidCharset() throws Exception {
 
         String text = getResponse("/GetReaderSecondTest?valid_charset=false", "charset=blobby");
