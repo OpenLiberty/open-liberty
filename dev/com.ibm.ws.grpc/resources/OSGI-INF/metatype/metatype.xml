@@ -15,25 +15,25 @@
                    localization="OSGI-INF/l10n/metatype">
 
     <!-- id gets mapped to configuration class impl in Designate element below --> 
-    <OCD id="com.ibm.ws.grpc.serviceConfig.metatype" name="%serviceConfig" description="%serviceConfig.desc"
-         ibm:alias="grpcService" >
+    <OCD id="com.ibm.ws.grpc.serverConfig.metatype" name="%serverConfig" description="%serverConfig.desc"
+         ibm:alias="grpc" >
          
          <!-- the following lines will define defaults and variable types for these parameters.
               Also drives the documentation for them based on metatype.properties 
               and makes pretty panels in wdt. 
          -->
          
-        <AD id="serviceName" name="serviceName" description="serviceName" required="true" type="String" />
+        <AD id="target" name="%target" description="%target" required="true" type="String" />
         <AD id="httpEndpoints" name="%httpEndpoints" description="%httpEndpoints.desc" required="false" type="String" />
         <AD id="maxInboundMessageSize" name="%maxInboundMessageSize" description="%maxInboundMessageSize.desc" required="false" type="Integer" />
-        <AD id="serviceInterceptors" name="%serviceInterceptors" description="%serviceInterceptors.desc" required="false" type="String" />
+        <AD id="serverInterceptors" name="%serverInterceptors" description="%serverInterceptors.desc" required="false" type="String" />
         <AD id="other" name="%other" description="%other.desc" required="false" type="String" />
 
     </OCD>
 
     <!-- factoryPid allows multiple instances in server.xml, activate will be called multiple times --> 
-    <Designate factoryPid="com.ibm.ws.grpc.serviceConfig">       <!-- matches pid in java file -->                        
-        <Object ocdref="com.ibm.ws.grpc.serviceConfig.metatype" /> <!-- matches id of ocd above --> 
+    <Designate factoryPid="com.ibm.ws.grpc.serverConfig">       <!-- matches pid in java file -->
+        <Object ocdref="com.ibm.ws.grpc.serverConfig.metatype" /> <!-- matches id of ocd above -->
     </Designate>
 
 

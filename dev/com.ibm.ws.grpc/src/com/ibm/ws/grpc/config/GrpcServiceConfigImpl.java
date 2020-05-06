@@ -35,7 +35,7 @@ import com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator;
  * Adapted from com.ibm.ws.jaxrs20.clientconfig.JAXRSClientConfig
  */
 @Component(immediate = true, service = { GrpcServiceConfig.class,
-		ApplicationRecycleComponent.class }, configurationPid = "com.ibm.ws.grpc.serviceConfig", configurationPolicy = ConfigurationPolicy.REQUIRE, property = {
+		ApplicationRecycleComponent.class }, configurationPid = "com.ibm.ws.grpc.serverConfig", configurationPolicy = ConfigurationPolicy.REQUIRE, property = {
 				"service.vendor=IBM" })
 public class GrpcServiceConfigImpl implements GrpcServiceConfig, ApplicationRecycleComponent {
 	private static final TraceComponent tc = Tr.register(GrpcServiceConfigImpl.class);
@@ -68,7 +68,7 @@ public class GrpcServiceConfigImpl implements GrpcServiceConfig, ApplicationRecy
 		propertiesToRemove.add("service.pid");
 		propertiesToRemove.add("service.vendor");
 		propertiesToRemove.add("service.factoryPid");
-		propertiesToRemove.add(GrpcConfigConstants.SERVICE_NAME_PROP);
+		propertiesToRemove.add(GrpcConfigConstants.TARGET_PROP);
 	}
 
 	/**
@@ -113,15 +113,15 @@ public class GrpcServiceConfigImpl implements GrpcServiceConfig, ApplicationRecy
 	private String getServiceName(Map<String, Object> props) {
 		if (props == null)
 			return null;
-		if (props.keySet().contains(GrpcConfigConstants.SERVICE_NAME_PROP)) {
-			return (props.get(GrpcConfigConstants.SERVICE_NAME_PROP).toString());
+		if (props.keySet().contains(GrpcConfigConstants.TARGET_PROP)) {
+			return (props.get(GrpcConfigConstants.TARGET_PROP).toString());
 		} else {
 			return null;
 		}
 	}
 
 	/**
-	 * Invoked when <grpcService/> element is first processed; the new configuration
+	 * Invoked when <grpc/> element is first processed; the new configuration
 	 * is processed and added to the GrpcServiceConfigHolder
 	 */
 	@Activate

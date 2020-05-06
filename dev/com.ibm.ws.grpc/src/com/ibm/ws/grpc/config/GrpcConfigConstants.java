@@ -14,8 +14,8 @@ package com.ibm.ws.grpc.config;
  * Config-related constants
  */
 public class GrpcConfigConstants {
-    public static final String SERVICE_NAME_PROP = "serviceName";
+    public static final String TARGET_PROP = "target";
     public static final String HTTP_ENDPOINTS_PROP = "httpEndpoints";
     public static final String MAX_INBOUND_MSG_SIZE_PROP = "maxInboundMessageSize";
-    public static final String SERVICE_INTERCEPTORS_PROP = "serviceInterceptors";
+    public static final String SERVER_INTERCEPTORS_PROP = "serverInterceptors";
 }

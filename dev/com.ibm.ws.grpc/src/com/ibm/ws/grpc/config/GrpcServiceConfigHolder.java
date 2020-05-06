@@ -75,7 +75,7 @@ public class GrpcServiceConfigHolder {
 	public static String getServiceInterceptors(String uri) {
 		Map<String, String> props = getURIProps(uri);
 		if (props != null) {
-			return props.get(GrpcConfigConstants.SERVICE_INTERCEPTORS_PROP);
+			return props.get(GrpcConfigConstants.SERVER_INTERCEPTORS_PROP);
 		} else {
 			return null;
 		}
