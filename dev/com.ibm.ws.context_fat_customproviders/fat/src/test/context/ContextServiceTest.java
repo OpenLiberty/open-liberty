@@ -55,9 +55,6 @@ public class ContextServiceTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer(
-                          "CWNEN0046W.*javax", // TODO temporarily ignore until transformer supports deployment descriptors
-                          "CWNEN0047W.*javax" // TODO temporarily ignore until transformer supports deployment descriptors
-        );
+        server.stopServer();
     }
 }
