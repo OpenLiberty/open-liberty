@@ -18,15 +18,15 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.context.spi.CreationalContext;
 
-import io.smallrye.graphql.lookup.LookupService;
+import io.smallrye.graphql.spi.LookupService;
 
 
-public class CDIDelegateImpl implements LookupService {
-    private static Logger LOG = Logger.getLogger(CDIDelegateImpl.class.getName());
+public class CDILookupServiceImpl implements LookupService {
+    private static Logger LOG = Logger.getLogger(CDILookupServiceImpl.class.getName());
 
     @Override
     public String getName() {
-        return "Liberty CDIDelegateImpl";
+        return "Liberty CDILookupServiceImpl";
     }
 
     @Override
