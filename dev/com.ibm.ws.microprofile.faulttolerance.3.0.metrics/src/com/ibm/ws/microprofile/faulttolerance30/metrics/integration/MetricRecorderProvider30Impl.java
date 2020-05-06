@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.faulttolerance.metrics.integration;
+package com.ibm.ws.microprofile.faulttolerance30.metrics.integration;
 
 import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 

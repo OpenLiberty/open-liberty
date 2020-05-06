@@ -20,7 +20,7 @@ Bundle-Description:MicroProfile Fault Tolerance 3.0 metrics integration, version
 WS-TraceGroup: FAULTTOLERANCE
 
 -dsannotations: \
-        com.ibm.ws.microprofile.faulttolerance.metrics.integration.MetricRecorderProvider30Impl
+        com.ibm.ws.microprofile.faulttolerance30.metrics.integration.MetricRecorderProvider30Impl
 
 -buildpath: \
         com.ibm.ws.logging;version=latest, \

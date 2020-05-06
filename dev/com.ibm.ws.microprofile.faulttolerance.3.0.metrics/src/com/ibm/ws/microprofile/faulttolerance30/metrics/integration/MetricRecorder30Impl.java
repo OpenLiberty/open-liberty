@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.faulttolerance.metrics.integration;
+package com.ibm.ws.microprofile.faulttolerance30.metrics.integration;
 
 import static com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder.FallbackOccurred.NO_FALLBACK;
 import static com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder.FallbackOccurred.WITH_FALLBACK;
@@ -45,12 +45,30 @@ import com.ibm.ws.microprofile.faulttolerance.spi.RetryResultCategory;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
 
 /**
- *
+ * Records Fault Tolerance metrics for the FT 3.0 spec
+ * <p>
+ * The FT 3.0 spec changes from using lots of separate metrics to using fewer metrics but storing multiple values by using tags.
+ * From a recording perspective, this introduces very little change as we just treat each combination of name and tag as a separate metric.
+ * <p>
+ * This class initializes all of the metrics for the method up front in the constructor and stores them in fields so that we don't have to register or look up metrics while the
+ * method is running.
+ * <p>
+ * In some cases, where a metric has tags with lots of values, we use an EnumSet to store the metrics for each tag combination.
+ * <p>
+ * In other cases, where a metric has few or no possible tag values, we just use a separate field for each tag combination.
  */
 public class MetricRecorder30Impl implements MetricRecorder {
 
+    /**
+     * Constant map from a {@link RetryResultCategory} to its corresponding metric {@link Tag}
+     */
     private static final EnumMap<RetryResultCategory, Tag> RETRY_RESULT_TAGS = new EnumMap<>(RetryResultCategory.class);
+
+    /**
+     * Constant map from a {@link RetriesOccurred} to its corresponding metric {@link Tag}
+     */
     private static final EnumMap<RetriesOccurred, Tag> RETRIES_OCCURRED_TAGS = new EnumMap<>(RetriesOccurred.class);
+
     static {
         RETRY_RESULT_TAGS.put(NO_EXCEPTION, new Tag("retryResult", "valueReturned"));
         RETRY_RESULT_TAGS.put(EXCEPTION_IN_ABORT_ON, new Tag("retryResult", "exceptionNotRetryable"));
@@ -87,11 +105,18 @@ public class MetricRecorder30Impl implements MetricRecorder {
     @SuppressWarnings("unused")
     private final Gauge<Long> bulkheadQueuePopulation;
     private final Histogram bulkheadQueueWaitTimeHistogram;
+
     private LongSupplier concurrentExecutionCountSupplier = null;
     private LongSupplier queuePopulationSupplier = null;
+
+    /*
+     * Fields storing required state for circuit breaker metrics
+     */
     private long openNanos;
     private long halfOpenNanos;
     private long closedNanos;
+    private CircuitBreakerState circuitBreakerState = CircuitBreakerState.CLOSED;
+    protected long lastCircuitBreakerTransitionTime;
 
     private enum CircuitBreakerState {
         CLOSED,
@@ -102,9 +127,13 @@ public class MetricRecorder30Impl implements MetricRecorder {
     public MetricRecorder30Impl(String methodName, MetricRegistry registry, RetryPolicy retryPolicy, CircuitBreakerPolicy circuitBreakerPolicy, TimeoutPolicy timeoutPolicy,
                                 BulkheadPolicy bulkheadPolicy, FallbackPolicy fallbackPolicy, AsyncType isAsync) {
 
+        /*
+         * Register all of the metrics required for this method and store them in fields
+         */
+
+        // Every metric uses this tag to identify the method it's reporting metrics for
         Tag methodTag = new Tag("method", methodName);
 
-        // The invocation metrics in MP 3.0 don't map exactly to the MetricRecorder interface, so this is a bit messy
         if (retryPolicy != null || timeoutPolicy != null || circuitBreakerPolicy != null || bulkheadPolicy != null || fallbackPolicy != null) {
             Metadata invocationsMetadata = Metadata.builder().withName("ft.invocations.total").withType(COUNTER).build();
             Tag valueReturnedTag = new Tag("result", "valueReturned");
@@ -113,6 +142,8 @@ public class MetricRecorder30Impl implements MetricRecorder {
             invocationFailedCounter = new EnumMap<>(FallbackOccurred.class);
 
             if (fallbackPolicy != null) {
+                // If there's a fallback policy we need four metrics to cover the combinations of
+                // fallbackUsed = [true|false] and result = [valueReturned|exceptionThrown]
                 Tag withFallbackTag = new Tag("fallbackUsed", "true");
                 Tag withoutFallbackTag = new Tag("fallbackUsed", "false");
 
@@ -122,6 +153,8 @@ public class MetricRecorder30Impl implements MetricRecorder {
                 invocationFailedCounter.put(NO_FALLBACK, registry.counter(invocationsMetadata, methodTag, exceptionThrownTag, withoutFallbackTag));
                 invocationFailedCounter.put(WITH_FALLBACK, registry.counter(invocationsMetadata, methodTag, exceptionThrownTag, withFallbackTag));
             } else {
+                // If there's no fallback, then we only need two metrics to cover the combinations of
+                // fallbackUsed = [none] and result = [valueReturned|exceptionThrown]
                 Tag noFallbackTag = new Tag("fallbackUsed", "none");
 
                 Counter invocationSuccess = registry.counter(invocationsMetadata, methodTag, valueReturnedTag, noFallbackTag);
@@ -219,9 +252,6 @@ public class MetricRecorder30Impl implements MetricRecorder {
 
         lastCircuitBreakerTransitionTime = System.nanoTime();
     }
-
-    private CircuitBreakerState circuitBreakerState = CircuitBreakerState.CLOSED;
-    protected long lastCircuitBreakerTransitionTime;
 
     /** {@inheritDoc} */
     @Trivial
