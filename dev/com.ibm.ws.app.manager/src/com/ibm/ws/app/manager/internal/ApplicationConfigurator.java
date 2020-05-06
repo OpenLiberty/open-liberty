@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.app.manager.internal;
 
+import java.io.File;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -468,6 +469,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         _appManagerReadyDependency = null;
         _appManagerRARSupportDependency = null;
         final Set<NamedApplication> appsToStop;
+
         synchronized (this) {
             appsToStop = new HashSet<NamedApplication>(_appFromName.values());
             _appFromName.clear();
@@ -479,6 +481,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         for (NamedApplication app : appsToStop) {
             uninstallApp(app);
         }
+
         synchronized (this) {
             UpdateEpisodeState episode = _currentEpisode;
             if (episode != null) {
@@ -1142,6 +1145,31 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         }
     }
 
+    private boolean cleanCache(File cacheDir, Set<String> excludedPids) {
+        if (cacheDir == null || !cacheDir.isDirectory())
+            return false;
+
+        boolean result = true;
+        for (File pidDirectory : cacheDir.listFiles()) {
+            if (!excludedPids.contains(pidDirectory.getName())) {
+                result &= cleanCacheDirectory(pidDirectory);
+            }
+        }
+        return result;
+    }
+
+    private boolean cleanCacheDirectory(File f) {
+        if (f.isDirectory()) {
+            boolean result = true;
+            for (File child : f.listFiles()) {
+                result &= cleanCacheDirectory(child);
+            }
+            return result &= f.delete();
+        } else {
+            return f.delete();
+        }
+    }
+
     // called only from synchronized methods
     private void processDeletion(String pid) {
         // find the running app for this pid
@@ -1170,7 +1198,19 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         }
 
         // uninstall the app currently running with this pid
-        uninstallApp(appFromPid);
+        uninstallApp(appFromPid, true);
+    }
+
+    private File getCacheDir() {
+        return _locAdmin.getBundleFile(this, "cache");
+    }
+
+    private File getCacheAdaptDir() {
+        return _locAdmin.getBundleFile(this, "cacheAdapt");
+    }
+
+    private File getCacheOverlayDir() {
+        return _locAdmin.getBundleFile(this, "cacheOverlay");
     }
 
     private void processUpdateWithNameChange(final String pid, final ApplicationConfig newAppConfig, final NamedApplication appFromPid) {
@@ -1936,6 +1976,11 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         _appFromPid.clear();
         _blockedConfigFromPid.clear();
         _blockedPidsFromName.clear();
+
+        cleanCache(getCacheAdaptDir(), appPids);
+        cleanCache(getCacheOverlayDir(), appPids);
+        cleanCache(getCacheDir(), appPids);
+
         ApplicationStateCoordinator.setStoppingAppPids(appPids);
         for (NamedApplication app : _appsToShutdown) {
             uninstallApp(app);
@@ -1944,6 +1989,10 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
     }
 
     private ApplicationDependency uninstallApp(final NamedApplication appFromPid) {
+        return uninstallApp(appFromPid, false);
+    }
+
+    private ApplicationDependency uninstallApp(final NamedApplication appFromPid, boolean cleanCache) {
         final String oldAppName = appFromPid.getAppName();
         ApplicationDependency appRemoved = createDependency("resolves when app " + oldAppName + " is removed");
         // uninstall the currently running app with this pid
@@ -1966,6 +2015,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
                     if (_appFromName.containsKey(oldAppName) && _appFromName.get(oldAppName).equals(appFromPid)) {
                         _appFromName.remove(oldAppName);
                     }
+
                     ApplicationStateCoordinator.updateStartingAppStatus(removedAppPid, ApplicationStateCoordinator.AppStatus.REMOVED);
                     ApplicationStateCoordinator.updateStoppingAppStatus(removedAppPid, ApplicationStateCoordinator.AppStatus.REMOVED);
                     List<String> blockedPids = _blockedPidsFromName.get(oldAppName);
@@ -1974,6 +2024,15 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
                         ApplicationConfig blockedConfig = _blockedConfigFromPid.remove(blockedPid);
                         processUpdate(blockedPid, blockedConfig);
                     }
+                    if (cleanCache) {
+                        File f = new File(getCacheDir(), removedAppPid);
+                        cleanCacheDirectory(f);
+                        f = new File(getCacheAdaptDir(), removedAppPid);
+                        cleanCacheDirectory(f);
+                        f = new File(getCacheOverlayDir(), removedAppPid);
+                        cleanCacheDirectory(f);
+                    }
+
                 }
             }
 
