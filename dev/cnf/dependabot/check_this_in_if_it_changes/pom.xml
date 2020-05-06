@@ -712,6 +712,11 @@
       <version>2.0.0-RC1</version>
     </dependency>
     <dependency>
+      <groupId>jakarta.jws</groupId>
+      <artifactId>jakarta.jws-api</artifactId>
+      <version>3.0.0-RC2</version>
+    </dependency>
+    <dependency>
       <groupId>jakarta.servlet</groupId>
       <artifactId>jakarta.servlet-api</artifactId>
       <version>5.0.0-M1</version>
