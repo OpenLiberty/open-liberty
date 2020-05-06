@@ -186,6 +186,10 @@ class Server extends Thread
 class Client extends Thread
 {
   protected AtomicInteger counter = new AtomicInteger(0);
+  protected AtomicInteger count_is_closed = new AtomicInteger(0);
+  protected AtomicInteger count_not_eos = new AtomicInteger(0);
+  protected AtomicInteger count_eos = new AtomicInteger(0);
+  protected AtomicInteger count_exception = new AtomicInteger(0);
   protected Server  server;
 
   void report(SocketChannel sc,Object ... args)
@@ -309,6 +313,7 @@ class Client extends Thread
                 if (rc.socket().isClosed())
                 {
                   report(rc,"Ready channel is closed");
+                  count_is_closed.incrementAndGet();
                 }
                 else // if (sk.isReadable())
                 {
@@ -323,6 +328,11 @@ class Client extends Thread
                                 +(0<num_read?",buffer[0]="+b3.get(0):"")
                                 +(1<num_read?",buffer[1]="+b3.get(1):"")
                                 );
+                      count_not_eos.incrementAndGet();
+                    }
+                    else
+                    {
+                      count_eos.incrementAndGet();
                     }
                   }
                   catch (IOException ioe)
@@ -331,6 +341,7 @@ class Client extends Thread
                     {
                       report(rc,"Exception when reading: ",ioe.getMessage());
                     }
+                    count_exception.incrementAndGet();
                   }
                 }
               }
@@ -350,8 +361,14 @@ class Client extends Thread
         }
       }.start();
     }
-    report(null,"Client main loop ended; server.cont="+server.cont.get()+",counter="+counter.get());
     server.cont.set(false);    // make sure the server gives up when there won't be a client trying to connect
+    report(null,"Client main loop ended; server.cont="+server.cont.get());
+    try { Thread.sleep(1000); } catch (InterruptedException e) {}
+    report(null,"counter............ "+counter.get());
+    report(null,"count_is_closed.... "+count_is_closed.get());
+    report(null,"count_not_eos...... "+count_not_eos.get());
+    report(null,"count_eos.......... "+count_eos.get());
+    report(null,"count_exception.... "+count_exception.get());
     Util.TRACE_EXIT();
   }
 };
