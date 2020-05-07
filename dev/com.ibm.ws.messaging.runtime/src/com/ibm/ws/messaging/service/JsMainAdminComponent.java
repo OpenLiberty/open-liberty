@@ -13,6 +13,6 @@ package com.ibm.ws.messaging.service;
 /**
  * Represents the Message Engine for OSGi.
  */
-public interface JSMainAdminComponent {
+public interface JsMainAdminComponent {
 
 }

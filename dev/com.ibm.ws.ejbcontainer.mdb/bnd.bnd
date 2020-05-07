@@ -27,8 +27,12 @@ jakartaeeMe: true
 # ...so we use Require-Bundle to allow multiple classpaths to be searched.
 Require-Bundle: com.ibm.ws.container.service
 
+#  Do not introduce a runtime dependency com.ibm.ws.messaging.* 
+#  and com.ibm.ws.sib.*
 Import-Package: \
   !com.ibm.websphere.pmi.*, \
+  !com.ibm.ws.messaging.*, \
+  !com.ibm.ws.sib.*, \
   com.ibm.websphere.csi, \
   com.ibm.ws.container.service.app.deploy, \
   com.ibm.ws.container.service.metadata, \
