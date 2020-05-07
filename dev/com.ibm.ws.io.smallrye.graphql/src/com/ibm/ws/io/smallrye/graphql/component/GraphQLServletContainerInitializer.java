@@ -58,6 +58,9 @@ import org.jboss.jandex.IndexView;
 public class GraphQLServletContainerInitializer implements ServletContainerInitializer {
     private static final TraceComponent tc = Tr.register(GraphQLServletContainerInitializer.class);
 
+    public static final String EXECUTION_SERVLET_NAME = "ExecutionServlet";
+    public static final String SCHEMA_SERVLET_NAME = "SchemaServlet";
+
     @FFDCIgnore({Throwable.class})
     public void onStartup(Set<Class<?>> classes, ServletContext ctx) throws ServletException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -168,10 +171,10 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
                                         .filter(s -> {return s.replaceAll("/", "").length() > 0;})
                                         .orElse("graphql");
         ExecutionServlet execServlet = new ExecutionServlet(executionService, config);
-        ServletRegistration.Dynamic execServletReg = ctx.addServlet("ExecutionServlet", execServlet);
+        ServletRegistration.Dynamic execServletReg = ctx.addServlet(EXECUTION_SERVLET_NAME, execServlet);
         execServletReg.addMapping(path + "/*");
         SchemaPrinter printer = new SchemaPrinter(config);
-        ServletRegistration.Dynamic schemaServletReg = ctx.addServlet("SchemaServlet", new SchemaServlet(printer));
+        ServletRegistration.Dynamic schemaServletReg = ctx.addServlet(SCHEMA_SERVLET_NAME, new SchemaServlet(printer));
         schemaServletReg.addMapping(path + "/schema.graphql");
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

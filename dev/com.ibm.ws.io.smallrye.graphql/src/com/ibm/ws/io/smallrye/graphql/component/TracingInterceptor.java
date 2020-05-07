@@ -25,6 +25,7 @@ import org.eclipse.microprofile.graphql.GraphQLApi;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 @Trivial
 @Dependent
@@ -36,6 +37,7 @@ public class TracingInterceptor {
     private final static TraceComponent tc = Tr.register(TracingInterceptor.class);
 
     @AroundInvoke
+    @FFDCIgnore({Exception.class})
     public Object logInvocation(InvocationContext ctx) throws Exception {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Method m = ctx.getMethod();
@@ -44,6 +46,9 @@ public class TracingInterceptor {
             Object returnObj = null;
             try {
                 returnObj = ctx.proceed();
+            } catch (Exception e) {
+                Tr.debug(tc, "Caught exception", e);
+                throw e;
             } finally {
                 Tr.debug(tc, "Invoked: " + fqMethodName, returnObj);
             }
