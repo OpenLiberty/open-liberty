@@ -178,14 +178,7 @@ public class WCServerTest extends LoggingTest {
                 ShrinkHelper.exportAppToServer(SHARED_SERVER.getLibertyServer(), TestServletMappingAnnoApp);
           }
         
-        /*
-         * Specify the deploy options to be server only. With this, we start with a clean state on the
-         * Shared server every time it starts up. Then we deploy the apps as necessary without validating
-         * if the app is already there.
-         */
-        // Drop apps to server
-        // ShrinkHelper.exportAppToServer(SHARED_SERVER.getLibertyServer(), TestServletMappingApp, options);
-        // ShrinkHelper.exportAppToServer(SHARED_SERVER.getLibertyServer(), TestServletMappingAnnoApp, options);
+        
         SHARED_SERVER.startIfNotStarted();
 
         SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + TEST_SERVLET_31_APP_NAME);
@@ -226,7 +219,6 @@ public class WCServerTest extends LoggingTest {
      *                       if something goes horribly wrong
      */
     @Test
-    //@Mode(TestMode.FULL)
     @SkipForRepeat("SERVLET-4.0")
     public void testServlet31() throws Exception {
         WebResponse response = this.verifyResponse("/TestServlet31/MyServlet", "Hello World");
@@ -243,7 +235,6 @@ public class WCServerTest extends LoggingTest {
      *                       if something goes horribly wrong
      */
     @Test
-    //@Mode(TestMode.FULL)
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     public void testServlet40() throws Exception {
         WebResponse response = this.verifyResponse("/TestServlet31/MyServlet", "Hello World");
@@ -254,7 +245,6 @@ public class WCServerTest extends LoggingTest {
     }
 
     @Test
-    //@Mode(TestMode.FULL)
     public void testProgrammaticallyAddedServlet() throws Exception {
         // 130998: This tests that the servlet that was programmatically
         // added with a different servlet name in "MyServletContextListener"
@@ -342,7 +332,6 @@ public class WCServerTest extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testRequestedSessionId() throws Exception {
         WebBrowser wb = createWebBrowserForTestCase();
         this.verifyResponse(wb, "/TestServlet31/SessionIdTest;jsessionid=mysessionid",
@@ -351,7 +340,6 @@ public class WCServerTest extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testGetServerInfo() throws Exception {
         WebBrowser wb = createWebBrowserForTestCase();
 
@@ -376,7 +364,6 @@ public class WCServerTest extends LoggingTest {
      *                       if validation fails, or if an unexpected error occurs
      */
     @Test
-    //@Mode(TestMode.FULL)
     public void testResponseReset() throws Exception {
         WebBrowser wb = createWebBrowserForTestCase();
         String url = "/TestServlet31/ResponseReset?firstType=pWriter&secondType=pWriter";
@@ -433,7 +420,6 @@ public class WCServerTest extends LoggingTest {
 
         LibertyServer wlp = SHARED_SERVER.getLibertyServer();
         wlp.setMarkToEndOfLog();
-//        SHARED_SERVER.setExpectedErrors("SRVE9016E:.*", "CWWKZ0002E:.*");
 
         wlp.saveServerConfiguration();
         // copy server.xml for TestServletMapping.war
@@ -490,7 +476,6 @@ public class WCServerTest extends LoggingTest {
      * @throws Exception
      */
     @Test
-    @Mode(TestMode.LITE)
     public void testProgrammaticListenerAddition() throws Exception {
 
         // Drive a request to the SimpleTestServlet to initialize the application
@@ -513,7 +498,6 @@ public class WCServerTest extends LoggingTest {
      * exception is thrown in this scenario.
      */
     @Test
-    @Mode(TestMode.LITE)
     public void testServletContextCreateListenerBadListener() throws Exception {
 
         // Make sure the test framework knows that SRVE9014E is expected
