@@ -15,6 +15,9 @@ import java.security.cert.X509Certificate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.naming.OperationNotSupportedException;
+
+import org.apache.http.MethodNotSupportedException;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -274,7 +277,7 @@ public abstract class CAContainer extends GenericContainer<CAContainer> {
 	 * @throws IOException
 	 */
 	public void addDnsARecord(String host, String address) throws IOException {
-		final String METHOD_NAME = "addARecord";
+		final String METHOD_NAME = "addDnsARecord";
 
 		try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
 
@@ -317,7 +320,7 @@ public abstract class CAContainer extends GenericContainer<CAContainer> {
 	 * @throws IOException
 	 */
 	public void addDnsAAAARecord(String host, String address) throws IOException {
-		final String METHOD_NAME = "addAAAARecord";
+		final String METHOD_NAME = "addDnsAAAARecord";
 
 		try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
 
@@ -397,7 +400,7 @@ public abstract class CAContainer extends GenericContainer<CAContainer> {
 	 * @throws IOException
 	 */
 	public void clearDnsARecord(String host) throws IOException {
-		final String METHOD_NAME = "clearARecord(String)";
+		final String METHOD_NAME = "clearDnsARecord(String)";
 
 		try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
 			/*
@@ -549,12 +552,12 @@ public abstract class CAContainer extends GenericContainer<CAContainer> {
 	/**
 	 * Get the URI to the ACME CA's directory.
 	 * 
-	 * @param usePebbleURI
+	 * @param useAcmeURI
 	 *            Use the "acme://pebble" style URI instead of the generic
 	 *            "https:" URI. This param is ignored for Boulder.
 	 * @return The URI to the ACME CA's directory.
 	 */
-	public abstract String getAcmeDirectoryURI(boolean usePebbleURI);
+	public abstract String getAcmeDirectoryURI(boolean useAcmeURI);
 
 	/**
 	 * Get the IP address for the container as seen from the container network.
@@ -659,4 +662,13 @@ public abstract class CAContainer extends GenericContainer<CAContainer> {
 			}
 		}
 	}
+
+	/**
+	 * Get the OCSP responder URL for this {@link CAContainer}.
+	 * 
+	 * @return the OCSP responder URL.
+	 * @throws UnsupportedOperationException
+	 *             if the container does not support an OCSP responder.
+	 */
+	public abstract String getOcspResponderUrl();
 }

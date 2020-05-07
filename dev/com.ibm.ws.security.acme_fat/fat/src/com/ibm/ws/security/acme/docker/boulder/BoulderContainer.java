@@ -47,7 +47,9 @@ public class BoulderContainer extends CAContainer {
 	 * otherwise need to be copied at runtime. This saves 8+ minutes per run.
 	 */
 
-	private static final String FILE_MINICA_PEM = "lib/LibertyFATTestFiles/boulder.minica.pem";
+	private static final int OCSP_PORT = 4002;
+
+	private static final String FILE_INTERMEDIATE_PEM = "lib/LibertyFATTestFiles/boulder.intermediate.pem";
 
 	public final Network bluenet = Network.builder().createNetworkCmdModifier(cmd -> {
 		cmd.withDriver("bridge");
@@ -90,11 +92,11 @@ public class BoulderContainer extends CAContainer {
 	 * top of boulder-tools-go.
 	 */
 	public BoulderContainer() {
-		super(DOCKER_IMAGE, 5002, 4001, 8055);
+		super(DOCKER_IMAGE, 5002, 4431, 8055);
 
 		/*
 		 * Need to expose the HTTP port that is used to answer the HTTP-01
-		 * challenge.
+		 * challenge on the client.
 		 */
 		Testcontainers.exposeHostPorts(getHttpPort());
 		start();
@@ -132,7 +134,7 @@ public class BoulderContainer extends CAContainer {
 				.withWorkingDirectory("/go/src/github.com/letsencrypt/boulder")
 				.withCommand("/go/src/github.com/letsencrypt/boulder/test/entrypoint.sh").withNetworkAliases("boulder")
 				.withCreateContainerCmdModifier(cmd -> cmd.withHostName("boulder"))
-				.withExposedPorts(getDnsManagementPort(), getAcmeListenPort())
+				.withExposedPorts(getDnsManagementPort(), getAcmeListenPort(), OCSP_PORT)
 				.withLogConsumer(o -> System.out.print("[BOL] " + o.getUtf8String()))
 				.withStartupTimeout(Duration.ofMinutes(3));
 	}
@@ -179,7 +181,7 @@ public class BoulderContainer extends CAContainer {
 
 	@Override
 	public byte[] getAcmeCaIntermediateCertificate() throws Exception {
-		return Files.readAllBytes(new File(FILE_MINICA_PEM).toPath());
+		return Files.readAllBytes(new File(FILE_INTERMEDIATE_PEM).toPath());
 	}
 
 	@Override
@@ -188,8 +190,8 @@ public class BoulderContainer extends CAContainer {
 	}
 
 	@Override
-	public String getAcmeDirectoryURI(boolean usePebbleURI) {
-		return "http://" + this.getContainerIpAddress() + ":" + this.getMappedPort(getAcmeListenPort()) + "/directory";
+	public String getAcmeDirectoryURI(boolean useAcmeURI) {
+		return "https://" + this.getContainerIpAddress() + ":" + this.getMappedPort(getAcmeListenPort()) + "/directory";
 	}
 
 	@Override
@@ -203,5 +205,10 @@ public class BoulderContainer extends CAContainer {
 			throw new IllegalStateException("Didn't find IP address for challtestsrv server.");
 		}
 		return intraContainerIpAddress;
+	}
+
+	@Override
+	public String getOcspResponderUrl() {
+		return "http://" + this.getContainerIpAddress() + ":" + this.getMappedPort(OCSP_PORT);
 	}
 }

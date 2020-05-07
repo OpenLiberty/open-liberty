@@ -13,6 +13,7 @@ package com.ibm.ws.security.acme.internal;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -67,6 +68,12 @@ public class AcmeConfig {
 	// Renew configuration options
 	private Long renewBeforeExpirationMs = AcmeConstants.RENEW_DEFAULT_MS;
 	private boolean autoRenewOnExpiration = true;
+
+	// Revocation checker related fields.
+	private URI ocspResponderUrl = null;
+	private Boolean revocationCheckerEnabled = null;
+	private Boolean preferCRLs = false;
+	private Boolean disableFallback = false;
 
 	/**
 	 * Create a new {@link AcmeConfig} instance.
@@ -134,6 +141,49 @@ public class AcmeConfig {
 		}
 		
 		setRenewBeforeExpirationMs(getLongValue(properties, AcmeConstants.RENEW_BEFORE_EXPIRATION), true);
+
+		/*
+		 * Get revocation checker configuration.
+		 */
+		List<Map<String, Object>> revocationChecker = Nester.nest(AcmeConstants.REVOCATION_CHECKER, properties);
+		if (!revocationChecker.isEmpty()) {
+			Map<String, Object> revocationProps = revocationChecker.get(0);
+
+			/*
+			 * The responder URL must be a valid URI.
+			 */
+			String url = getStringValue(revocationProps, AcmeConstants.REVOCATION_OCSP_RESPONDER_URL);
+			if (url != null) {
+				try {
+					ocspResponderUrl = URI.create(url);
+				} catch (IllegalArgumentException e) {
+					throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2062E", url));
+				}
+			}
+
+			revocationCheckerEnabled = getBooleanValue(revocationProps, AcmeConstants.REVOCATION_CHECKER_ENABLED);
+			preferCRLs = getBooleanValue(revocationProps, AcmeConstants.REVOCATION_PREFER_CRLS);
+			disableFallback = getBooleanValue(revocationProps, AcmeConstants.REVOCATION_DISABLE_FALLBACK);
+		}
+	}
+
+	/**
+	 * Get a {@link Boolean} value from the config properties.
+	 * 
+	 * @param configProps
+	 *            The configuration properties passed in by declarative
+	 *            services.
+	 * @param property
+	 *            The property to lookup.
+	 * @return The {@link Boolean} value, or null if it doesn't exist.
+	 */
+	@Trivial
+	private static Boolean getBooleanValue(Map<String, Object> configProps, String property) {
+		Object value = configProps.get(property);
+		if (value == null) {
+			return null;
+		}
+		return (Boolean) value;
 	}
 
 	/**
@@ -262,6 +312,13 @@ public class AcmeConfig {
 	}
 
 	/**
+	 * @return the disableFallback
+	 */
+	public Boolean isDisableFallback() {
+		return (disableFallback == null) ? false : disableFallback;
+	}
+
+	/**
 	 * @return the domains
 	 */
 	public List<String> getDomains() {
@@ -290,6 +347,13 @@ public class AcmeConfig {
 	}
 
 	/**
+	 * @return the ocspResponderUrl
+	 */
+	public URI getOcspResponderUrl() {
+		return ocspResponderUrl;
+	}
+
+	/**
 	 * @return the orderRetries
 	 */
 	public Integer getOrderRetries() {
@@ -301,6 +365,13 @@ public class AcmeConfig {
 	 */
 	public Long getOrderRetryWaitMs() {
 		return orderRetryWaitMs;
+	}
+
+	/**
+	 * @return the preferCRLs
+	 */
+	public Boolean isPreferCrls() {
+		return (preferCRLs == null) ? false : preferCRLs;
 	}
 
 	/**
@@ -322,6 +393,13 @@ public class AcmeConfig {
 	 */
 	public String getDomainKeyFile() {
 		return domainKeyFile;
+	}
+
+	/**
+	 * @return the revocationCheckerEnabled
+	 */
+	public Boolean isRevocationCheckerEnabled() {
+		return (revocationCheckerEnabled == null) ? true : revocationCheckerEnabled;
 	}
 
 	/**
