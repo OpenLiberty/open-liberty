@@ -2,7 +2,7 @@
 symbolicName=com.ibm.websphere.appserver.transaction-2.0
 visibility=protected
 singleton=true
-IBM-API-Package: javax.transaction;  type="spec", \
+IBM-API-Package: jakarta.transaction;  type="spec", \
  javax.transaction.xa;  type="spec", \
  com.ibm.wsspi.uow;  type="ibm-api", \
  com.ibm.websphere.jtaextensions;  type="ibm-api", \
@@ -12,8 +12,8 @@ IBM-API-Package: javax.transaction;  type="spec", \
  com.ibm.ws.LocalTransaction.resources;  type="internal"
 IBM-SPI-Package: com.ibm.wsspi.tx
 IBM-API-Service: com.ibm.wsspi.uow.UOWManager, \
- javax.transaction.TransactionSynchronizationRegistry, \
- javax.transaction.UserTransaction
+ jakarta.transaction.TransactionSynchronizationRegistry, \
+ jakarta.transaction.UserTransaction
 -features=com.ibm.websphere.appserver.jakarta.connector.internal-2.0, \
  com.ibm.websphere.appserver.jakarta.cdi-3.0; apiJar=false, \
  com.ibm.websphere.appserver.jta-2.0, \
