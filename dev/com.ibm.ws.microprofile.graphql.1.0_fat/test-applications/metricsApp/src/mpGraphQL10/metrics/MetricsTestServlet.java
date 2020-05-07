@@ -110,7 +110,7 @@ public class MetricsTestServlet extends FATServlet {
         assertEquals("Count", widget.getName());
         assertEquals(3, widget.getCount());
         
-        Stats stats = statsBuilder.build(StatsClient.class).getVendorStats();
+        Stats stats = statsBuilder.register(LoggingFilter.class).build(StatsClient.class).getVendorStats();
         assertNotNull(stats);
         assertEquals(3, stats.getCount().getCount());
     }
