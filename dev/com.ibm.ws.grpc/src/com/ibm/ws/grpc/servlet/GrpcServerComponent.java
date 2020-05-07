@@ -41,7 +41,6 @@ import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.grpc.Utils;
-import com.ibm.ws.grpc.config.GrpcServiceConfigImpl;
 import com.ibm.ws.kernel.feature.FeatureProvisioner;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
@@ -120,16 +119,17 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
 				        		currentApp.setAppName(cmd.getJ2EEName().getApplication());
 					        }
 
-							// pass all of our grpc service implementors into a new GrpcServlet
-							// and register that new Servlet on this context
-							GrpcServlet grpcServlet = new GrpcServlet(
-									new ArrayList<BindableService>(grpcServiceClasses.values()));
-							ServletRegistration.Dynamic servletRegistration = sc.addServlet("grpcServlet", grpcServlet);
-							servletRegistration.setAsyncSupported(true);
-
 							// register URL mappings for each gRPC service we've registered
 							for (BindableService service : grpcServiceClasses.values()) {
 								String serviceName = service.bindService().getServiceDescriptor().getName();
+
+								// pass all of our grpc service implementors into a new GrpcServlet
+								// and register that new Servlet on this context
+								GrpcServlet grpcServlet = new GrpcServlet(
+										new ArrayList<BindableService>(grpcServiceClasses.values()));
+								ServletRegistration.Dynamic servletRegistration = sc.addServlet("grpcServlet" + ":" + serviceName, grpcServlet);
+								servletRegistration.setAsyncSupported(true);
+
 								String urlPattern = "/" + serviceName + "/*";
 								servletRegistration.addMapping(urlPattern);
 								// keep track of this service name -> application path mapping

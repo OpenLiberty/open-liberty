@@ -243,7 +243,6 @@ public class GrpcServletUtils {
 			serverBuilder.addService(ServerInterceptors.intercept(service, interceptors));
 
 			// set the max inbound msg size, if it's configured
-			// TODO: this should be done per service, rather than per server
 			int maxInboundMsgSize = GrpcServiceConfigHolder.getMaxInboundMessageSize(name);
 			if (maxInboundMsgSize != -1) {
 				serverBuilder.maxInboundMessageSize(maxInboundMsgSize);
