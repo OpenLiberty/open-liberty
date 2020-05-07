@@ -117,8 +117,6 @@ connected_user_database=Conectado: {3}{4}Usuario: {0}{3}{4}Base de datos: {1}  V
 
 connected_user_database_driver=Conectado: {0}{6}Usuario: {1}{6}Base de datos: {2}  Versi\u00f3n: {3}{6}Controlador: {4}  Versi\u00f3n: {5}
 
-connecting=conectando({0})
-
 corrupted_session_announcement=SessionID: {0}  El gestor de descubrimiento ha recibido un anuncio de sesi\u00f3n da\u00f1ado - ignorando.
 
 create_default_dbms_tables_not_supported=El valor CMP nativa de WLS "crear-tablas-dbms-predeterminadas" no est\u00e1 soportado directamente en la CMP EclipseLink. Consulte el documento de migraci\u00f3n para ver detalles.
@@ -158,8 +156,6 @@ deprecated_property=la propiedad {1} est\u00e1 en desuso, la propiedad {0} se de
 descriptor_named_query_cannot_be_added=No se puede a\u00f1adir un descriptor con el nombre de consulta cuyo conflicto de nombre con una consulta existente. Consulta que se va a a\u00f1adir: [{0}] se denomina: [{1}] con argumentos [{2}].
 
 dir_cleaned_for_mw_files=Los archivos y subdirectorios en el directorio{0} se han suprimido para poder crear un directorio limpio para los nuevos archivos de proyecto del entorno de trabajo de correlaci\u00f3n EclipseLink generados
-
-disconnect=desconectar
 
 do_select_before_insert_not_supported=La funci\u00f3n CMP nativa Oc4j "seleccionar-antes-insertar" en la entidad ({0}) no est\u00e1 soportada directamente en la CMP EclipseLink. Consulte el documento de migraci\u00f3n para ver detalles.
 
@@ -332,10 +328,6 @@ locking_mode_not_valid=La modalidad de bloqueo ({1}) en la entidad({0} en orion-
 locking_required_for_database_change_notification=La entidad {0} no est\u00e1 utilizando el bloqueo de versi\u00f3n, pero tiene varias tablas o relaciones y est\u00e1 utilizando la notificaci\u00f3n de cambio de la base de datos Oracle, los cambios en relaciones o tablas secundarias pueden no invalidar la cach\u00e9.
 
 log_file_under_output_dir=Hay un archivo de registro llamado ({0}) en el directorio de salida ({1}).
-
-login_successful=Inicio de sesi\u00f3n de {0} correcto
-
-logout_successful=Cierre de sesi\u00f3n de {0} correcto
 
 mapping_not_supported_by_mw=La correlaci\u00f3n EclipseLink {0} no est\u00e1 soportada por el entorno de correlaci\u00f3n
 
@@ -654,8 +646,6 @@ query_has_joined_attribute_outside_fetch_group={0}: el atributo unido[{1}] no es
 received_corrupt_announcement=Aviso: el gestor de descubrimiento podr\u00eda no procesar el anuncio de servicio debido a {0} - se ignora el anuncio
 
 received_unexpected_message_type=Se ha recibido un tipo de mensaje inesperado: {0} del tema: {1}; se ignora
-
-reconnecting=reconectando({0})
 
 register_new_for_persist=Se ha llamado la operaci\u00f3n PERSIST en: {0}.
 

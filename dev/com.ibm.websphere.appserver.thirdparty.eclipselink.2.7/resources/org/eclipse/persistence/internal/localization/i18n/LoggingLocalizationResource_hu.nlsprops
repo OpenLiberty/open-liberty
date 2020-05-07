@@ -117,8 +117,6 @@ connected_user_database=Csatlakoztatott: {3}{4}Felhaszn\u00e1l\u00f3: {0}{3}{4}A
 
 connected_user_database_driver=Csatlakoztatott: {0}{6}Felhaszn\u00e1l\u00f3: {1}{6}Adatb\u00e1zis: {2}  V\u00e1ltozat: {3}{6}Meghajt\u00f3: {4}  V\u00e1ltozat: {5}
 
-connecting=csatlakoz\u00e1s({0})
-
 corrupted_session_announcement=SessionID: {0}  Felt\u00e9rk\u00e9pez\u00e9s-kezel\u0151 s\u00e9r\u00fclt munkamenet-k\u00f6zlem\u00e9nyt kapott - mell\u0151z\u00e9s.
 
 create_default_dbms_tables_not_supported=A WLS "create-default-dbms-tables" nat\u00edv CMP be\u00e1ll\u00edt\u00e1s\u00e1t az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
@@ -158,8 +156,6 @@ deprecated_property=a(z) {1} tulajdons\u00e1g elavult, a(z) {0} tulajdons\u00e1g
 descriptor_named_query_cannot_be_added=Nem adhat\u00f3 hozz\u00e1 a le\u00edr\u00f3 \u00e1ltal megnevezett lek\u00e9rdez\u00e9s, melynek neve \u00fctk\u00f6zik egy megl\u00e9v\u0151 lek\u00e9rdez\u00e9ssel. Hozz\u00e1adand\u00f3 lek\u00e9rdez\u00e9s: [{0}] neve: [{1}] argumentumai: [{2}].
 
 dir_cleaned_for_mw_files=A(z) {0} c\u00edmjegyz\u00e9k alatti f\u00e1jlok \u00e9s alk\u00f6nyvt\u00e1rak t\u00f6rl\u00e9sre ker\u00fcltek, hogy tiszta k\u00f6nyvt\u00e1r legyen l\u00e9trehozva az \u00fajonnan el\u0151\u00e1ll\u00edtott EclipseLink Lek\u00e9pez\u00e9si munkater\u00fclet projektf\u00e1jlok sz\u00e1m\u00e1ra
-
-disconnect=sz\u00e9tkapcsol\u00e1s
 
 do_select_before_insert_not_supported=Az Oc4j "do-select-before-insert" nat\u00edv CMP funkci\u00f3j\u00e1t a(z) ({0}) entit\u00e1son az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
 
@@ -332,10 +328,6 @@ locking_mode_not_valid=A(z) ({1}) z\u00e1rol\u00e1si m\u00f3d a(z) ({0}) entit\u
 locking_required_for_database_change_notification=A(z) {0} entit\u00e1s nem haszn\u00e1l verzi\u00f3z\u00e1rol\u00e1st, azonban t\u00f6bb t\u00e1bl\u00e1val vagy viszonnyal rendelkezik, \u00e9s Oracle adatb\u00e1zist haszn\u00e1l; lehet, hogy a viszonyok vagy m\u00e1sodlagos t\u00e1bl\u00e1k m\u00f3dos\u00edt\u00e1sai a gyors\u00edt\u00f3t\u00e1rat nem \u00e9rv\u00e9nytelen\u00edtik.
 
 log_file_under_output_dir=L\u00e9tezik egy ({0}) nev\u0171 napl\u00f3f\u00e1jl a(z) ({1}) kimeneti k\u00f6nyvt\u00e1rban.
-
-login_successful={0} bejelentkez\u00e9s sikeres
-
-logout_successful={0} kijelentkez\u00e9s sikeres
 
 mapping_not_supported_by_mw=A(z) {0} EclipseLink lek\u00e9pez\u00e9st a lek\u00e9pez\u00e9si munkater\u00fclet nem t\u00e1mogatja
 
@@ -654,8 +646,6 @@ query_has_joined_attribute_outside_fetch_group={0}: a(z) [{1}] \u00f6sszef\u00e9
 received_corrupt_announcement=Figyelmeztet\u00e9s: A felt\u00e9rk\u00e9pez\u00e9s-kezel\u0151 nem tudott feldolgozni szervizk\u00f6zlem\u00e9nyt {0} miatt - k\u00f6zlem\u00e9ny figyelmen k\u00edv\u00fcl hagy\u00e1sa
 
 received_unexpected_message_type=Nem v\u00e1rt {0} \u00fczenett\u00edpus fogad\u00e1sa a(z) {1} t\u00e9mak\u00f6rb\u0151l; figyelmen k\u00edv\u00fcl hagy\u00e1s
-
-reconnecting=\u00fajracsatlakoz\u00e1s({0})
 
 register_new_for_persist=PERSIST m\u0171velet h\u00edv\u00e1sa a k\u00f6vetkez\u0151n: {0}.
 

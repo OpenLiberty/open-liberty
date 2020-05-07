@@ -117,8 +117,6 @@ connected_user_database=Conectat: {3}{4}Utilizator: {0}{3}{4}Baz\u0103 de date: 
 
 connected_user_database_driver=Conectat: {0}{6}Utilizator: {1}{6}Baz\u0103 de date: {2}  Versiune: {3}{6}Driver: {4}  Versiune: {5}
 
-connecting=conectare ({0})
-
 corrupted_session_announcement=SessionID: {0} Managerul de descoperire a primit un anun\u0163 de sesiune corupt - se ignor\u0103.
 
 create_default_dbms_tables_not_supported=Setarea WLS native CMP "create-default-dbms-tables" nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
@@ -158,8 +156,6 @@ deprecated_property=proprietatea {1} este perimat\u0103, ar trebui folosit\u0103
 descriptor_named_query_cannot_be_added=Nu se poate ad\u0103uga o interogare numit\u0103 de descriptor, al c\u0103rei nume intr\u0103 \u00een conflict cu o interogare existent\u0103. Interogare de ad\u0103ugat: [{0}] se nume\u015fte: [{1}] cu argumentele [{2}].
 
 dir_cleaned_for_mw_files=Fi\u015fierele \u015fi subdirectoarele de sub directorul {0} au fost \u015fterse pentru a crea un director curat pentru fi\u015fierele de proiect nou generate Banc de lucru mapare EclipseLink
-
-disconnect=deconectare
 
 do_select_before_insert_not_supported=Caracteristica Oc4j native CMP "do-select-before-insert" pe entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
 
@@ -332,10 +328,6 @@ locking_mode_not_valid=Modul de blocare({1}) pe entitatea ({0} \u00een orion-ejb
 locking_required_for_database_change_notification=Entitatea {0} nu folose\u015fte blocarea versiunii, dar are mai multe tabele sau rela\u0163ii \u015fi folose\u015fte notificarea modific\u0103rilor bazei de date Oracle, modific\u0103rile asupra rela\u0163iilor sau tabelelor secundare nu ar putea invalida cache-ul.
 
 log_file_under_output_dir=Exist\u0103 un fi\u015fier istoric numit ({0}) \u00een directorul de ie\u015fire ({1}).
-
-login_successful=Logare {0} cu succes
-
-logout_successful=Delogare {0} cu succes
 
 mapping_not_supported_by_mw=Maparea EclipseLink {0} nu este suportat\u0103 de bancul de lucru de mapare
 
@@ -654,8 +646,6 @@ query_has_joined_attribute_outside_fetch_group={0}: atributul unit [{1}] nu este
 received_corrupt_announcement=Avertisment: Managerul de descoperire nu a putut procesa anun\u0163ul serviciului din cauza {0} - se ignor\u0103 anun\u0163ul
 
 received_unexpected_message_type=S-a primit un tip de mesaj nea\u015fteptat: {0} de la subiectul: {1}; se ignor\u0103
-
-reconnecting=reconectarea ({0})
 
 register_new_for_persist=Opera\u0163ia PERSIST apelat\u0103 pe: {0}.
 
