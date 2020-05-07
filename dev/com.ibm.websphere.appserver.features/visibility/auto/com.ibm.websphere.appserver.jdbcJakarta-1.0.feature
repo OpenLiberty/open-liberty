@@ -6,4 +6,4 @@ IBM-Provision-Capability:\
 IBM-Install-Policy: when-satisfied
 -bundles=com.ibm.ws.jdbc.jakarta
 kind=noship
-edition=core
+edition=full
