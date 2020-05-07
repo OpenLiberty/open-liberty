@@ -54,7 +54,7 @@ import com.ibm.ws.injectionengine.osgi.util.JNDIHelper;
 import com.ibm.ws.jca.service.AdminObjectService;
 import com.ibm.ws.jca.service.EndpointActivationService;
 import com.ibm.ws.kernel.feature.ServerStartedPhase2;
-import com.ibm.ws.messaging.service.JSMainAdminComponent;
+import com.ibm.ws.messaging.service.JsMainAdminComponent;
 import com.ibm.ws.runtime.metadata.MetaDataSlot;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
@@ -329,8 +329,11 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
      *
      * @param jsMainAdminComponent which has been defined.
      */
-    @Reference(cardinality = ReferenceCardinality.MULTIPLE)
-    protected void setMessagingRuntimeService(JSMainAdminComponent jsMainAdminComponent) {
+    @Reference(cardinality = ReferenceCardinality.MULTIPLE,
+               service = JsMainAdminComponent.class)
+    // Use service = JsMainAdminComponent.class instead of making the parameter type JsMainAdminComponentImpl
+    // and introducing a runtime dependency on JsMainAdminComponentImpl, and Sib in general.
+    protected void setMessagingRuntimeService(Object jsMainAdminComponent) {
         final String methodName = "setMessagingRuntimeService";
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, methodName, new Object[] { this, jsMainAdminComponent });
