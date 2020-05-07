@@ -847,6 +847,8 @@ public class FATTest extends AbstractAppManagerTest {
         } finally {
             pathsToCleanup.add(server.getServerRoot() + "/" + DROPINS_FISH_DIR);
             server.stopServer("CWWKZ0005E");
+            server.uninstallSystemFeature("test.app.notifications");
+            server.uninstallSystemBundle("test.app.notifications");
         }
     }
 
