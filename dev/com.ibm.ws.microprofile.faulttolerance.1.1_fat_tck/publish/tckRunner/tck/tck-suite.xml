@@ -73,6 +73,7 @@
                      // BulkheadMetricTest
                      !method.getName().startsWith("bulkheadMetricAsyncTest") &&
                      !method.getName().startsWith("bulkheadMetricHistogramTest") &&
+                     !method.getName().startsWith("bulkheadMetricRejectionTest") &&
                      
                      // TimeoutMetricTest
                      !method.getDeclaringClass().getSimpleName().equals("TimeoutMetricTest") &&
