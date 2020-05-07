@@ -13,55 +13,65 @@ package com.ibm.ws.fat.grpc;
 
 import static org.junit.Assert.assertTrue;
 
+import java.net.URL;
 import java.util.Set;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
+
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlForm;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
-/**
- * Example Shrinkwrap FAT project:
- * <li> Application packaging is done in the @BeforeClass, instead of ant scripting.
- * <li> Injects servers via @Server annotation. Annotation value corresponds to the
- * server directory name in 'publish/servers/%annotation_value%' where ports get
- * assigned to the LibertyServer instance when the 'testports.properties' does not
- * get used.
- * <li> Specifies an @RunWith(FATRunner.class) annotation. Traditionally this has been
- * added to bytecode automatically by ant.
- * <li> Uses the @TestServlet annotation to define test servlets. Notice that not all @Test
- * methods are defined in this class. All of the @Test methods are defined on the test
- * servlet referenced by the annotation, and will be run whenever this test class runs.
- */
 @RunWith(FATRunner.class)
 public class HelloWorldTest extends FATServletClient {
 
-    public static final String APP_NAME = "helloworldtest";
+    protected static final Class<?> c = HelloWorldTest.class;
 
-    @Server("HelloWorldServer")
-    //@TestServlet(servlet = GrpcClientServlet.class, contextRoot = APP_NAME)
-    public static LibertyServer server;
+    @Rule
+    public TestName name = new TestName();
+
+    @Server("helloWorldServer")
+    public static LibertyServer helloWorldServer;
 
     @BeforeClass
     public static void setUp() throws Exception {
+        // add all classes from com.ibm.ws.grpc.fat.helloworld.service and io.grpc.examples.helloworld
+        // to a new app HelloWorldService.war
+        ShrinkHelper.defaultDropinApp(helloWorldServer, "HelloWorldService.war",
+                                      "com.ibm.ws.grpc.fat.helloworld.service",
+                                      "io.grpc.examples.helloworld");
 
-        server.startServer();
+        // add all classes from com.ibm.ws.grpc.fat.helloworld.client and io.grpc.examples.helloworld
+        // to a new app HelloWorldClient.war
+        ShrinkHelper.defaultDropinApp(helloWorldServer, "HelloWorldClient.war",
+                                      "com.ibm.ws.grpc.fat.helloworld.client",
+                                      "io.grpc.examples.helloworld");
 
+        helloWorldServer.startServer(HelloWorldTest.class.getSimpleName() + ".log");
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        helloWorldServer.stopServer();
     }
 
     @Test
     public void featuresEnabled() throws Exception {
-        Set<String> features = server.getServerConfiguration().getFeatureManager().getFeatures();
+        Set<String> features = helloWorldServer.getServerConfiguration().getFeatureManager().getFeatures();
 
         assertTrue("Expected the grpc feature 'grpcClient-1.0' to be enabled but was not: " + features,
                    features.contains("grpcClient-1.0"));
@@ -70,10 +80,50 @@ public class HelloWorldTest extends FATServletClient {
                    features.contains("grpc-1.0"));
     }
 
+    /**
+     * Tests a basic gRPC helloworld app. HelloWorldClient.war contains a servlet that can be
+     * used to connect to a gRPC service that will deployed via HelloWorldService.war.
+     *
+     * @throws Exception
+     */
     @Test
-    public void helloWorld() throws Exception {
-        assertTrue("True expected to be true but was not: ",
-                   true);
-    }
+    public void testHelloWorld() throws Exception {
+        String contextRoot = "HelloWorldClient";
+        try (WebClient webClient = new WebClient()) {
 
+            // Construct the URL for the test
+            URL url = GrpcTestUtils.createHttpUrl(helloWorldServer, contextRoot, "grpcClient");
+
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
+
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
+
+            assertTrue("the servlet was not loaded correctly",
+                       page.asText().contains("gRPC helloworld client example"));
+
+            HtmlForm form = page.getFormByName("form1");
+
+            // set a name, which we'll expect the RPC to return
+            HtmlTextInput inputText = (HtmlTextInput) form.getInputByName("user");
+            inputText.setValueAttribute("us3r1");
+
+            // set the port
+            HtmlTextInput inputPort = (HtmlTextInput) form.getInputByName("port");
+            inputPort.setValueAttribute(String.valueOf(helloWorldServer.getHttpDefaultPort()));
+
+            // set the hostname
+            HtmlTextInput inputHost = (HtmlTextInput) form.getInputByName("address");
+            inputHost.setValueAttribute(helloWorldServer.getHostname());
+
+            // submit, and execute the RPC
+            HtmlSubmitInput submitButton = form.getInputByName("submit");
+            page = submitButton.click();
+
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            assertTrue("the gRPC request did not complete correctly", page.asText().contains("us3r1"));
+        }
+    }
 }
