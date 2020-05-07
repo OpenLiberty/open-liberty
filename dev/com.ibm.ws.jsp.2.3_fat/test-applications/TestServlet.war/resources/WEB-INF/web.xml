@@ -15,6 +15,6 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
 
-  <display-name>TestJSP2.3</display-name>
+  <display-name>TestServlet</display-name>
     
 </web-app>
