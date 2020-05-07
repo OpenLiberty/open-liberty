@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2019 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -312,6 +312,9 @@ public class WCCustomProperties {
 
     //19.0.0.8
     public static boolean GET_REAL_PATH_RETURNS_QUALIFIED_PATH;
+    
+    //20.0.0.8
+    public static boolean DECODE_URL_PLUS_SIGN;
 
     static {
         setCustomPropertyVariables(); //initilizes all the variables
@@ -789,6 +792,9 @@ public class WCCustomProperties {
 
         // 19.0.0.8
         GET_REAL_PATH_RETURNS_QUALIFIED_PATH = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.getrealpathreturnsqualifiedpath", "true")).booleanValue();
+        
+        // 20.0.0.8
+        DECODE_URL_PLUS_SIGN = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.decodeurlplussign", "true")).booleanValue();
     }
 
     private static void setCustomizedDefaultValues(){

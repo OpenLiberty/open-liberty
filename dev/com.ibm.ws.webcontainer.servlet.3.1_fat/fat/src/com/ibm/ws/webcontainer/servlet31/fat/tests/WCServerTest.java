@@ -503,6 +503,39 @@ public class WCServerTest extends LoggingTest {
 
     }
 
+                 
+    /**
+     * This test case verifies a plus in a URL is decoded to a space when default
+     * decodeUrlPlusSign = "true" is in effect.
+     */
+    @Test
+    @Mode(TestMode.FULL)
+    public void testDecodeUrlPlusSignDefault() throws Exception {
+        this.verifyResponse("/TestServlet31/noplus+sign.html", "This file has a space in the name");
+    }
+
+
+    /**
+     * This test case verifies that WC property decodeUrlPlusSign="false" leaves "+" undecoded.
+     * For servlet-3.1 and servlet-4.0, the default for decodeUrlPlusSign has been true,
+     * which decodes "+" to blank.
+     */
+    @Test
+    @Mode(TestMode.FULL)
+    public void testDecodeUrlPlusSign() throws Exception {
+        LibertyServer wlp = SHARED_SERVER.getLibertyServer();
+        wlp.setMarkToEndOfLog();
+        wlp.saveServerConfiguration();
+        wlp.setServerConfigurationFile("decodeUrlPlusSign_false.server.xml");
+        String logmsg = wlp.waitForStringInLogUsingMark("CWWKG0017I: The server configuration was successfully updated");
+        LOG.info("testDecodeUrlPlusSign: server.xml updated for false case");
+        this.verifyResponse("/TestServlet31/plus+sign.html", "This file has a plus sign in the name");
+
+        wlp.restoreServerConfiguration();
+        LOG.info("testDecodeUrlPlusSign: server.xml restored");
+    }
+
+
     /*
      * (non-Javadoc)
      *
