@@ -33,7 +33,6 @@ instrument.classesExcludes: com/ibm/ws/jaxrs20/ejb/internal/resources/*.class
 	org.apache.cxf.cxf-rt-frontend-jaxrs;strategy=exact;version=3.1.18,\
 	com.ibm.ws.jaxrs.2.0.common;version=latest,\
 	com.ibm.ws.jaxrs.2.0.server;version=latest,\
-	com.ibm.ws.jaxrs.2.0.web;version=latest,\
 	com.ibm.ws.ejbcontainer;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.ws.adaptable.module;version=latest,\

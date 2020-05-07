@@ -42,7 +42,6 @@ instrument.classesExcludes: com/ibm/ws/jaxrs20/cdi/internal/resources/*.class
 	com.ibm.ws.managedobject;version=latest,\
 	com.ibm.ws.adaptable.module;version=latest,\
 	com.ibm.ws.webcontainer;version=latest,\
-	com.ibm.ws.jaxrs.2.0.web;version=latest,\
 	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
 	com.ibm.websphere.appserver.spi.logging,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\

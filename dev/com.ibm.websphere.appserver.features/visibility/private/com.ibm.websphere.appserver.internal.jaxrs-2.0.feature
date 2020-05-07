@@ -18,7 +18,7 @@ Subsystem-Name: Internal Java RESTful Services 2.0
  com.ibm.ws.jaxrs.2.0.common, \
  com.ibm.ws.jaxrs.2.x.config, \
  com.ibm.ws.org.apache.ws.xmlschema.core.2.0.3, \
- com.ibm.ws.jaxrs.2.0.web, \
+ com.ibm.ws.jaxrs.web, \
  com.ibm.ws.jaxrs.2.0.server, \
  com.ibm.ws.jaxrs.2.0.client
 -jars=com.ibm.ws.jaxrs.2.0.tools
