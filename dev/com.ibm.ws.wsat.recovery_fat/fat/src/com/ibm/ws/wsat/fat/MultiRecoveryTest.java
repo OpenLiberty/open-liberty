@@ -39,30 +39,34 @@ import componenttest.topology.utils.HttpUtils;
 @AllowedFFDC(value = { "javax.transaction.SystemException", "javax.transaction.xa.XAException" })
 @Mode(TestMode.FULL)
 public class MultiRecoveryTest {
-	private static LibertyServer server = LibertyServerFactory
-			.getLibertyServer("WSATRecovery1");
-	private static String BASE_URL = "http://" + server.getHostname() + ":"
-			+ server.getHttpDefaultPort();
-	private static LibertyServer server2 = LibertyServerFactory
-			.getLibertyServer("WSATRecovery2");
-	private static String BASE_URL2 = "http://" + server2.getHostname() + ":9992";
+	private static LibertyServer server;
+	private static String BASE_URL;
+	private static LibertyServer server2;
+	private static String BASE_URL2;
+
 	private final static int REQUEST_TIMEOUT = 10;
 	private final static int START_TIMEOUT = 120000; // in ms
 
 	@BeforeClass
 	public static void beforeTests() throws Exception {
+		server = LibertyServerFactory.getLibertyServer("WSATRecovery1");
+		BASE_URL = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort();
+		server2 = LibertyServerFactory.getLibertyServer("WSATRecovery2");
+		server2.setHttpDefaultPort(9992);
+		BASE_URL2 = "http://" + server2.getHostname() + ":" + server2.getHttpDefaultPort();
+
 		if (server != null && server.isStarted()){
 			server.stopServer(true, true);
 		}
-		
+
 		if (server2 != null && server2.isStarted()){
 			server2.stopServer(true, true);
 		}
 
-    ShrinkHelper.defaultDropinApp(server, "recoveryClient", "com.ibm.ws.wsat.fat.client.recovery.*");
-    ShrinkHelper.defaultDropinApp(server, "recoveryServer", "com.ibm.ws.wsat.fat.server.*");
-    ShrinkHelper.defaultDropinApp(server2, "recoveryClient", "com.ibm.ws.wsat.fat.client.recovery.*");
-    ShrinkHelper.defaultDropinApp(server2, "recoveryServer", "com.ibm.ws.wsat.fat.server.*");
+		ShrinkHelper.defaultDropinApp(server, "recoveryClient", "com.ibm.ws.wsat.fat.client.recovery.*");
+		ShrinkHelper.defaultDropinApp(server, "recoveryServer", "com.ibm.ws.wsat.fat.server.*");
+		ShrinkHelper.defaultDropinApp(server2, "recoveryClient", "com.ibm.ws.wsat.fat.client.recovery.*");
+		ShrinkHelper.defaultDropinApp(server2, "recoveryServer", "com.ibm.ws.wsat.fat.server.*");
 	}
 	
 	@AfterClass
@@ -105,7 +109,7 @@ public class MultiRecoveryTest {
 	
 	@Test
 	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException" })
-  @Mode(TestMode.LITE)
+	@Mode(TestMode.LITE)
 	public void WSTXMPR001AFVT() throws Exception {
 		recoveryTest("101","server1", 30 /* needs review */);
 	}

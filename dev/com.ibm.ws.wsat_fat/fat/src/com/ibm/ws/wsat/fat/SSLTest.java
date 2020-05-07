@@ -97,7 +97,7 @@ public class SSLTest extends DBTestBase {
 	}
 
 	@Test
-  @Mode(TestMode.LITE)
+    @Mode(TestMode.LITE)
 	public void testSSL_AllCommitByProxy() {
 		client.waitForStringInLog("CWLIB0206I");
 		final String testURL = "/" + appName + "/ClientServlet";
@@ -107,8 +107,6 @@ public class SSLTest extends DBTestBase {
 				+ commit + ":" + basicURL + ":"
 				+ server2Port;
 		commonTest(appName, wsatURL, goodResult, "1");
-		String result = client.waitForStringInLog("CWLIB0206I", 5000);
-		assertTrue(result != null && !result.isEmpty());
 	}
 
 	@Test
