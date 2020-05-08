@@ -20,6 +20,7 @@
 package org.apache.cxf.jaxrs.interceptor;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -249,7 +250,8 @@ public class JAXRSInInterceptor extends AbstractPhaseInterceptor<Message> {
 
             } catch (WebApplicationException ex) {
                 if (JAXRSUtils.noResourceMethodForOptions(ex.getResponse(), httpMethod)) {
-                    Response response = JAXRSUtils.createResponse(resources, null, null, 200, true);
+                 // Use the matched ClassResourceInfo so that the options request returns the allowed headers for this ClassResourceInfo not the allowed headers for all of the ClassResourceInfos 
+                    Response response = JAXRSUtils.createResponse(new ArrayList<ClassResourceInfo>(matchedResources.keySet()), null, null, 200, true);
                     exchange.put(Response.class, response);
                     return;
                 } else {
