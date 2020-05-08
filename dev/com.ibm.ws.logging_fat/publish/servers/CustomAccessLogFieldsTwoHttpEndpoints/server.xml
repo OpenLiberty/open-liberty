@@ -23,6 +23,13 @@
 		  		  host="*">
 		<accessLogging logFormat='%a %b %C %D %{header}i %{Content-Type}o %r %t %{t}W %u'/>
     </httpEndpoint>
+
+    <httpEndpoint id="secondaryHttpEndpoint"
+                  httpPort="${bvt.prop.HTTP_secondary}"
+                  httpsPort="${bvt.prop.HTTP_secondary.secure}"
+		  		  host="*">
+        <accessLogging logFormat='%h %H %A %B %m %p %{R}W %s %U' filePath="test.log"/>
+    </httpEndpoint>
     
     <quickStartSecurity userName="admin" userPassword="adminpwd"/>
     <keyStore id="defaultKeyStore" password="Liberty" />

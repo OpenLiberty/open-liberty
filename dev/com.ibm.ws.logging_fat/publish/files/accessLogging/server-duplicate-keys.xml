@@ -14,18 +14,14 @@
 
 	<featureManager>
 	   <feature>jsp-2.3</feature>
-	   <feature>mpMetrics-2.0</feature>
     </featureManager>
 
 	<httpEndpoint id="defaultHttpEndpoint"
                   httpPort="${bvt.prop.HTTP_default}"
                   httpsPort="${bvt.prop.HTTP_default.secure}"
 		  		  host="*">
-		<accessLogging logFormat='%a %b %C %D %{header}i %{Content-Type}o %r %t %{t}W %u'/>
+	   <accessLogging logFormat='%a %a %{cookie}C %{cookie}C'/>
     </httpEndpoint>
-    
-    <quickStartSecurity userName="admin" userPassword="adminpwd"/>
-    <keyStore id="defaultKeyStore" password="Liberty" />
     
     <logging jsonAccessLogFields="logFormat"/>
     
