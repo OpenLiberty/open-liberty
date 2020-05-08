@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,16 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.graphql.fat;
 
-import java.util.List;
-
-import static org.hamcrest.core.IsCollectionContaining.hasItem;
-import static org.hamcrest.core.StringContains.containsString;
-import static org.junit.Assert.assertThat;
-
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -27,34 +20,40 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import mpGraphQL10.voidQuery.VoidQueryTestServlet;
+
+import mpGraphQL10.rolesAuth.RolesAuthTestServlet;
+
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 @RunWith(FATRunner.class)
-public class VoidQueryTest {
+public class RolesAuthTest extends FATServletClient {
 
-    private static final String SERVER = "mpGraphQL10.voidQuery";
-    private static final String APP_NAME = "voidQueryApp";
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(new FeatureReplacementAction("appSecurity-3.0", "appSecurity-2.0"));
+
+    private static final String SERVER = "mpGraphQL10.rolesAuth";
+    private static final String APP_NAME = "rolesAuthApp";
 
     @Server(SERVER)
-    @TestServlet(servlet = VoidQueryTestServlet.class, contextRoot = APP_NAME)
+    @TestServlet(servlet = RolesAuthTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultDropinApp(server, APP_NAME, "mpGraphQL10.voidQuery");
+        WebArchive webArchive = ShrinkHelper.buildDefaultApp(APP_NAME, "mpGraphQL10.rolesAuth");
+        FATSuite.addSmallRyeGraphQLClientLibraries(webArchive);
+
+        ShrinkHelper.exportDropinAppToServer(server, webArchive);
         server.startServer();
     }
 
-    @Test
-    public void checkForStartFailureMessage() throws Exception {
-        String expectedErrorMsg = server.waitForStringInLog("CWMGQ0001E");
-        assertThat(expectedErrorMsg, containsString(APP_NAME));
-    }
-    
     @AfterClass
     public static void afterClass() throws Exception {
-        server.stopServer("CWWWC0001W", "SRVE0190E", "CWMGQ0001E", "CWWWC0002W");
+        server.stopServer();
     }
 }
