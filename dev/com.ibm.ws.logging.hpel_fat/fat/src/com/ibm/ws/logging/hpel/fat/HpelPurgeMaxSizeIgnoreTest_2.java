@@ -95,8 +95,7 @@ public class HpelPurgeMaxSizeIgnoreTest_2 {
         NumberFormat nf = NumberFormat.getInstance();
 
         CommonTasks.addBootstrapProperty(server, "com.ibm.hpel.trace.purgeMaxSize", "91");
-        //restart?
-//        server.restartServer();
+
         if (!server.isStarted()) {
             server.startServer();
         }
@@ -244,7 +243,6 @@ public class HpelPurgeMaxSizeIgnoreTest_2 {
         RemoteFile[] allBinaryLogFiles = dirToCheck.list(true);
         for (RemoteFile i : allBinaryLogFiles) {
             totalBinaryLogRepositorySize += i.length();
-//            }
         }
         return totalBinaryLogRepositorySize;
     }

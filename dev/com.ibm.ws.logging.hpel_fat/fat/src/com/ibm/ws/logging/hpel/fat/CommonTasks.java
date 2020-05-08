@@ -27,7 +27,9 @@ package com.ibm.ws.logging.hpel.fat;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.util.Properties;
 import java.util.Set;
@@ -379,7 +381,9 @@ public class CommonTasks {
             return false;
         }
         Properties bootstrapProps = new Properties();
-        bootstrapProps.load(bootstrapFile.openForReading());
+        InputStream is = bootstrapFile.openForReading();
+        bootstrapProps.load(is);
+        is.close();
         String logProvider = bootstrapProps.getProperty("websphere.log.provider");
         return logProvider != null && logProvider.startsWith("binaryLogging-");
 //        if (getUnifiedLoggingService(aServer) == null) {
@@ -902,7 +906,9 @@ public class CommonTasks {
         RemoteFile bootstrapFile = server.getServerBootstrapPropertiesFile();
         Properties bootstrapProps = new Properties();
         bootstrapProps.setProperty(propertyName, propertyValue);
-        bootstrapProps.store(bootstrapFile.openForWriting(true), null);
+        OutputStream os = bootstrapFile.openForWriting(true);
+        bootstrapProps.store(os, null);
+        os.close();
 
     }
 
