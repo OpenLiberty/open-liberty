@@ -397,6 +397,7 @@ public class AcmeFatUtils {
 	 *            The server to check.
 	 */
 	public static final void waitForAcmeToCreateCertificate(LibertyServer server) {
+		assertNotNull("ACME did not fetch the certificate.", server.waitForStringInLog("CWPKI2064I"));
 		assertNotNull("ACME did not create the certificate.", server.waitForStringInLog("CWPKI2007I"));
 	}
 

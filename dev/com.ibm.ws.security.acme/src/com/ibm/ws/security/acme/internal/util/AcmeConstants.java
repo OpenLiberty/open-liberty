@@ -27,10 +27,8 @@ public class AcmeConstants {
 	public static final String SUBJECT_DN = "subjectDN";
 
 	// Challenge and order related fields.
-	public static final String CHALL_RETRIES = "challengeRetries";
-	public static final String CHALL_RETRY_WAIT = "challengeRetryWait";
-	public static final String ORDER_RETRIES = "orderRetries";
-	public static final String ORDER_RETRY_WAIT = "orderRetryWait";
+	public static final String CHALL_POLL_TIMEOUT = "challengePollTimeout";
+	public static final String ORDER_POLL_TIMEOUT = "orderPollTimeout";
 
 	// ACME account related fields.
 	public static final String ACCOUNT_KEY_FILE = "accountKeyFile";
@@ -75,5 +73,7 @@ public class AcmeConstants {
 	public static final int RENEW_DEFAULT_DAYS = 7;
 	public static final Long RENEW_DEFAULT_MS = TimeUnit.DAYS.toMillis(RENEW_DEFAULT_DAYS);  // 604800000L; 
 	public static final double RENEW_DIVISOR = .5;
+	public static final long CHALLENGE_POLL_DEFAULT = 120000l;
+	public static final long ORDER_POLL_DEFAULT = 120000l;
 
 }

@@ -285,3 +285,11 @@ CWPKI2061E.useraction=Ensure that the certificate is a valid X.509 certificate. 
 CWPKI2062E=CWPKI2062E: The {0} OCSP responder URL defined in the server configuration is not a valid URI. If defined, it must be a valid URI to override the OSCP responder URL contained in the certificate.
 CWPKI2062E.explanation=Certificate revocation checking requires a valid OCSP responder URL.
 CWPKI2062E.useraction=Provide a valid OCSP responder URL in the server configuration.
+
+CWPKI2063E=CWPKI2063E: The ACME certificate authority at the {0} URI updated its terms of service and now requires the user to agree to the new terms of service at the following URI before it processes any further requests: {1}
+CWPKI2063E.explanation=The certificate authority updated its terms of service and requires user interaction.
+CWPKI2063E.useraction=Review the provided terms of service.
+
+CWPKI2064I=CWPKI2064I: The ACME service retrieved the certificate with the {0} serial number from the {1} URI in {2} seconds.
+CWPKI2064I.explanation=The ACME service successfully requested a certificate.
+CWPKI2064I.useraction=No action is required.
