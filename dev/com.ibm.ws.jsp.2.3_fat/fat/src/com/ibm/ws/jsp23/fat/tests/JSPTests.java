@@ -34,7 +34,9 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.topology.impl.LibertyServer;
+
 
 /**
  * Tests to execute on the jspServer that use HttpUnit/HttpClient
@@ -168,7 +170,7 @@ public class JSPTests {
         assertEquals("Expected " + 500 + " status code was not returned!",
                      500, response.getResponseCode());
 
-        assertTrue("The response did not contain: javax.el.MethodNotFoundException", response.getText().contains("el.MethodNotFoundException"));
+        this.verifyExceptionInResponse("el.MethodNotFoundException", response.getText());
     }
 
     /**
@@ -192,7 +194,8 @@ public class JSPTests {
 
         assertEquals("Expected " + 500 + " status code was not returned!",
                      500, response.getResponseCode());
-        assertTrue("The response did not contain: javax.el.PropertyNotFoundException", response.getText().contains("el.PropertyNotFoundException"));
+
+        this.verifyExceptionInResponse("el.PropertyNotFoundException", response.getText());
     }
 
     /**
@@ -216,7 +219,8 @@ public class JSPTests {
 
         assertEquals("Expected " + 500 + " status code was not returned!",
                      500, response.getResponseCode());
-        assertTrue("The response did not contain: javax.el.PropertyNotWritableException", response.getText().contains("el.PropertyNotWritableException"));
+
+        this.verifyExceptionInResponse("el.PropertyNotWritableException", response.getText());
     }
 
     /**
@@ -244,7 +248,8 @@ public class JSPTests {
 
         assertEquals("Expected " + 500 + " status code was not returned!",
                      500, response.getResponseCode());
-        assertTrue("The response did not contain: javax.el.PropertyNotWritableException", response.getText().contains("el.PropertyNotWritableException"));
+
+        this.verifyExceptionInResponse("el.PropertyNotWritableException", response.getText());
     }
 
     /**
@@ -706,7 +711,6 @@ public class JSPTests {
      *                       if something goes wrong
      */
     @Test
-    @SkipForRepeat("EE9_FEATURES") // Test needs to handle jakarta in response 
     public void testJSP23ResolutionVariableProperties() throws Exception {
         String[] expectedInResponse = { "class org.apache.el.stream.StreamELResolverImpl",
                                         "class javax.el.StaticFieldELResolver",
@@ -721,7 +725,13 @@ public class JSPTests {
                                         "Testing StreamELResolver with distinct method (Expected: [1, 4, 3, 2, 5]): [1, 4, 3, 2, 5]",
                                         "Testing StreamELResolver with filter method (Expected: [4, 3, 5, 3]): [4, 3, 5, 3]" };
 
+        if(RepeatTestFilter.CURRENT_REPEAT_ACTION == "EE9_FEATURES"){
+           for(int i = 0; i < expectedInResponse.length; i++) {
+            expectedInResponse[i] = expectedInResponse[i].replace("javax.el", "jakarta.el");
+           }
+        } 
         this.verifyStringsInResponse(TestEL_APP_NAME, "ResolutionVariablesPropertiesServlet", expectedInResponse);
+
     }
 
     /**
@@ -780,5 +790,15 @@ public class JSPTests {
         String responseText = response.getText();
 
         assertTrue("The response did not contain: " + expectedResponseString, responseText.contains(expectedResponseString));
+    }
+
+    private void verifyExceptionInResponse(String expectedException, String responseText) throws Exception {
+        if(RepeatTestFilter.CURRENT_REPEAT_ACTION == "EE9_FEATURES"){
+            expectedException = "jakarta." + expectedException;
+        } else {
+            expectedException = "javax." + expectedException;
+        }
+
+        assertTrue("The response did not contain: " + expectedException, responseText.contains(expectedException));
     }
 }
