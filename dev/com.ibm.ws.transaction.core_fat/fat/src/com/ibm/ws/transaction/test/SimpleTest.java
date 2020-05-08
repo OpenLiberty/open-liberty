@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package com.ibm.ws.transaction.test;
 
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
+import java.util.Arrays;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -23,6 +24,7 @@ import com.ibm.ws.transaction.web.SimpleServlet;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -56,6 +58,14 @@ public class SimpleTest extends FATServletClient {
         // Automatically includes resources under 'test-applications/APP_NAME/resources/' folder
         // Exports the resulting application to the ${server.config.dir}/apps/ directory
         ShrinkHelper.defaultApp(server, APP_NAME, "com.ibm.ws.transaction.*");
+
+        // TODO: Revisit this after all features required by this FAT suite are available.
+        // The test-specific public features, txtest-x.y, are not in the repeatable EE feature
+        // set. And, the ejb-4.0 feature is not yet available to enable transactions-2.0 and
+        // jdbc-4.3.  The following sets the appropriate features for the EE9 repeatable tests.
+        if (JakartaEE9Action.isActive()) {
+            server.changeFeatures(Arrays.asList("jca-2.0", "txtest-2.0", "servlet-5.0", "componenttest-2.0", "osgiconsole-1.0", "jndi-1.0"));
+        }
 
         server.startServer();
     }
