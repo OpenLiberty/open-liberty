@@ -44,7 +44,7 @@ public class HelloWorldTest extends FATServletClient {
     @Rule
     public TestName name = new TestName();
 
-    @Server("helloWorldServer")
+    @Server("HelloWorldServer")
     public static LibertyServer helloWorldServer;
 
     @BeforeClass
