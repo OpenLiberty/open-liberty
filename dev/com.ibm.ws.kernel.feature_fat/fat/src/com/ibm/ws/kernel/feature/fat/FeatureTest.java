@@ -32,7 +32,6 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
-import com.ibm.ws.kernel.feature.fat.TestUtils;
 
 @RunWith(FATRunner.class)
 public class FeatureTest {
@@ -121,6 +120,7 @@ public class FeatureTest {
         server.deleteFileFromLibertyInstallRoot("lib/bundleJavaEight_1.0.0.jar");
         server.deleteFileFromLibertyInstallRoot("lib/bundleJavaNine_1.0.0.jar");
 
+        server.deleteFileFromLibertyInstallRoot("lib/features/includeClientFeature-1.0.mf");
         Log.exiting(c, METHOD_NAME);
     }
 
