@@ -37,6 +37,7 @@ import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -601,11 +602,7 @@ public class AcmeSimpleTest {
 			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
 			assertNotNull("Expected CWPKI2042E in logs.", server.waitForStringInLog("CWPKI2042E"));
 
-			if (System.getProperty("os.name").toLowerCase().startsWith("win")) {
-				// windows not enforcing the setReadable/setWriteable
-				Log.info(AcmeSimpleTest.class, testName.getMethodName(),
-						"Skipping unreadable/unwriteable file tests on Windows: "
-								+ System.getProperty("os.name", "unknown"));
+			if (AcmeFatUtils.isWindows(testName.getMethodName())) {
 				acmeCA.setSubjectDN("cn=domain1.com");
 				acmeCA.setAccountKeyFile(null);
 			} else {

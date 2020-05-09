@@ -55,6 +55,8 @@ public class AcmeCA extends ConfigElement {
 
     private boolean disableMinRenewWindow;
 
+    private boolean disableRenewOnNewHistory;
+
     /**
      * @return the accountContact
      */
@@ -292,6 +294,15 @@ public class AcmeCA extends ConfigElement {
         return disableMinRenewWindow;
     }
 
+    @XmlAttribute(name = "disableRenewOnNewHistory")
+    public void setDisableRenewOnNewHistory(boolean disableRenewOnNewHistory) {
+        this.disableRenewOnNewHistory = disableRenewOnNewHistory;
+    }
+
+    public boolean isDisableRenewOnNewHistory() {
+        return disableRenewOnNewHistory;
+    }
+
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
@@ -327,6 +338,9 @@ public class AcmeCA extends ConfigElement {
         }
         if (disableMinRenewWindow) {
             sb.append("disableMinRenewWindow=\"").append(disableMinRenewWindow).append("\" ");;
+        }
+        if (disableRenewOnNewHistory) {
+            sb.append("disableRenewOnNewHistory=\"").append(disableRenewOnNewHistory).append("\" ");;
         }
         if (domainKeyFile != null) {
             sb.append("domainKeyFile=\"").append(domainKeyFile).append("\" ");;
