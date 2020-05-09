@@ -10,9 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.graphql.fat;
 
+import java.io.File;
+
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -27,7 +31,13 @@ import org.junit.runners.Suite.SuiteClasses;
                 InputFieldsTest.class,
                 MetricsTest.class,
                 OutputFieldsTest.class,
+                RolesAuthTest.class,
                 TypesTest.class,
                 VoidQueryTest.class
 })
-public class FATSuite {}
+public class FATSuite {
+    public static void addSmallRyeGraphQLClientLibraries(WebArchive webArchive) {
+        File libs = new File("publish/shared/resources/smallryeGraphQLClient/");
+        webArchive.addAsLibraries(libs.listFiles());
+    }
+}
