@@ -28,6 +28,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.web.XAFlowServlet;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -46,6 +47,7 @@ import componenttest.topology.utils.FATServletClient;
  * servlet referenced by the annotation, and will be run whenever this test class runs.
  */
 @RunWith(FATRunner.class)
+@SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
 public class XAFlowTest extends FATServletClient {
 
     public static final String APP_NAME = "transaction";

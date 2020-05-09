@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,6 +43,7 @@ import componenttest.topology.utils.FATServletClient;
  * servlet referenced by the annotation, and will be run whenever this test class runs.
  */
 @RunWith(FATRunner.class)
+@SkipForRepeat({ SkipForRepeat.EE8_FEATURES, SkipForRepeat.EE9_FEATURES })
 public class XATest extends FATServletClient {
 
     public static final String APP_NAME = "transaction";
@@ -69,7 +70,6 @@ public class XATest extends FATServletClient {
     }
 
     @Test
-    @SkipForRepeat(componenttest.annotation.SkipForRepeat.EE8_FEATURES)
     public void testSetTransactionTimeoutReturnsTrue() throws Exception {
         server.setMarkToEndOfLog();
         runTest(server, SERVLET_NAME, testName.getMethodName());
@@ -79,7 +79,6 @@ public class XATest extends FATServletClient {
     }
 
     @Test
-    @SkipForRepeat(componenttest.annotation.SkipForRepeat.EE8_FEATURES)
     public void testSetTransactionTimeoutReturnsFalse() throws Exception {
         server.setMarkToEndOfLog();
         runTest(server, SERVLET_NAME, testName.getMethodName());
@@ -89,7 +88,6 @@ public class XATest extends FATServletClient {
     }
 
     @Test
-    @SkipForRepeat(componenttest.annotation.SkipForRepeat.EE8_FEATURES)
     @ExpectedFFDC(value = { "javax.transaction.xa.XAException" })
     public void testSetTransactionTimeoutThrowsException() throws Exception {
         server.setMarkToEndOfLog();

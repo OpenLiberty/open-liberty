@@ -25,6 +25,7 @@ import com.ibm.ws.transaction.web.RecoveryServlet;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -47,6 +48,7 @@ import componenttest.topology.utils.FATServletClient;
  */
 @Mode
 @RunWith(FATRunner.class)
+@SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
 public class RecoveryTest extends FATServletClient {
 
     public static final String APP_NAME = "transaction";

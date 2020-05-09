@@ -18,12 +18,10 @@ package io.grpc.servlet;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.grpc.servlet.LibertyAuthorizationInterceptor;
+import com.ibm.ws.grpc.servlet.GrpcServletUtils;
 
 import io.grpc.BindableService;
 import io.grpc.ExperimentalApi;
-import io.grpc.ServerInterceptor;
-import io.grpc.ServerInterceptors;
 
 import java.io.IOException;
 import java.util.List;
@@ -63,12 +61,7 @@ public class GrpcServlet extends HttpServlet {
 
   private static ServletAdapter loadServices(List<? extends BindableService> bindableServices) {
     ServletServerBuilder serverBuilder = new ServletServerBuilder();
-
-    // add Liberty auth interceptor to every service
-    for (BindableService service : bindableServices) {
-      serverBuilder.addService(ServerInterceptors.intercept(service, new LibertyAuthorizationInterceptor()));
-    }
-
+    GrpcServletUtils.addServices(bindableServices, serverBuilder);
     return serverBuilder.buildServletAdapter();
   }
 

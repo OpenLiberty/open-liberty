@@ -1,7 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.jta-2.0
-visibility=public
-IBM-ShortName: jta-2.0
+visibility=protected
 singleton=true
 IBM-API-Package: jakarta.transaction;  type="spec", \
  javax.transaction.xa;  type="spec"
