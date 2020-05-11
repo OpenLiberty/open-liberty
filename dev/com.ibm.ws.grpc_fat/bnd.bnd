@@ -13,13 +13,11 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-	test-applications/app1/src,\
-	test-applications/helloworld_client/src,\
-	test-applications/helloworld_servlet/src
+	test-applications/HelloWorldClient.war/src,\
+	test-applications/HelloWorldService.war/src
 
 fat.project: true
 fat.minimum.java.level: 11
-
 
 # Define additional tested features that are NOT present in any XML files in this bucket.
 tested.features:\
@@ -46,7 +44,9 @@ tested.features:\
 	io.grpc:grpc-core;version=1.27.0, \
 	io.grpc:grpc-protobuf;version=1.27.0, \
 	io.grpc:grpc-protobuf-lite;version=1.27.0, \
-	io.grpc:grpc-stub;version=1.27.0
+	io.grpc:grpc-stub;version=1.27.0, \
+    net.sourceforge.htmlunit:htmlunit;version=2.20,\
+    xml-apis:xml-apis;version=1.4.01
 #	com.google.protobuf:protobuf-java;version=3.11.1, \
 #	com.google.protobuf:protobuf-java-util;version=3.11.4
 
