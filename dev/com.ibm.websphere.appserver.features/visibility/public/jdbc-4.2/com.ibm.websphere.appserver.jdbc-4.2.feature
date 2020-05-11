@@ -12,8 +12,6 @@ Subsystem-Name: Java Database Connectivity 4.2
  com.ibm.websphere.appserver.connectionManagement-1.0, \
  com.ibm.websphere.appserver.requestProbes-1.0
 -bundles=\
- com.ibm.ws.jdbc.4.1, \
- com.ibm.ws.jdbc.4.2, \
  com.ibm.ws.jdbc.4.2.feature
 kind=ga
 edition=core
