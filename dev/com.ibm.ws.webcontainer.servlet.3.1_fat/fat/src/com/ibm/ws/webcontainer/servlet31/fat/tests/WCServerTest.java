@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
+import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -219,7 +222,7 @@ public class WCServerTest extends LoggingTest {
      *                       if something goes horribly wrong
      */
     @Test
-    @SkipForRepeat("SERVLET-4.0")
+    @SkipForRepeat({"SERVLET-4.0", EE9_FEATURES})
     public void testServlet31() throws Exception {
         WebResponse response = this.verifyResponse("/TestServlet31/MyServlet", "Hello World");
 
@@ -235,7 +238,7 @@ public class WCServerTest extends LoggingTest {
      *                       if something goes horribly wrong
      */
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @SkipForRepeat({NO_MODIFICATION, EE9_FEATURES})
     public void testServlet40() throws Exception {
         WebResponse response = this.verifyResponse("/TestServlet31/MyServlet", "Hello World");
 
@@ -390,7 +393,7 @@ public class WCServerTest extends LoggingTest {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat("SERVLET-4.0")
+    @SkipForRepeat({"SERVLET-4.0", EE9_FEATURES})
     public void testServlet31ContextMinorVersion() throws Exception {
         this.verifyResponse("/TestServlet31/MyServlet?TestMinorVersion=true",
                             "minorVersion: 1");
@@ -402,7 +405,7 @@ public class WCServerTest extends LoggingTest {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @SkipForRepeat({NO_MODIFICATION, EE9_FEATURES})
     public void testServlet40ContextMinorVersion() throws Exception {
         this.verifyResponse("/TestServlet31/MyServlet?TestMinorVersion=true",
                             "minorVersion: 0");

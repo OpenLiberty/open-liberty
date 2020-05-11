@@ -43,6 +43,7 @@ import com.ibm.ws.webcontainer.servlet31.fat.tests.WCServerHttpUnit;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.WCServerTest;
 
 import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 
 /**
@@ -55,7 +56,7 @@ import componenttest.rules.repeater.RepeatTests;
                 AsyncWriteListenerHttpUnit.class, 
                 UpgradeWriteListenerHttpUnit.class, 
                 UpgradeReadListenerHttpUnit.class, 
-                UpgradeReadWriteTimeoutHttpUnit.class, 
+                UpgradeReadWriteTimeoutHttpUnit.class,
                 VHServerHttpUnit.class, 
                 WCServerHttpUnit.class, 
                 JSPServerHttpUnit.class, 
@@ -90,6 +91,7 @@ public class FATSuite {
                     .andWith(new FeatureReplacementAction(removeFeatures, addFeatures)
                                     .withID("SERVLET-4.0")
                                     .forceAddFeatures(false)
-                                    .withMinJavaLevel(8));
+                                    .withMinJavaLevel(8))
+                    .andWith(new JakartaEE9Action());
 
 }

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+
 import java.util.logging.Logger;
 import java.util.Set;
 
@@ -26,6 +28,7 @@ import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebBrowser;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -36,6 +39,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * Verify that we get an expected response from a CDI server with no injection
  */
 @RunWith(FATRunner.class)
+@SkipForRepeat(EE9_FEATURES)
 public class CDINoInjectionTest extends LoggingTest {
     
     private static final Logger LOG = Logger.getLogger(CDINoInjectionTest.class.getName());
