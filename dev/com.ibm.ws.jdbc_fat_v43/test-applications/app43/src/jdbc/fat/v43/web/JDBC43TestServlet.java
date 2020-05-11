@@ -19,6 +19,8 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.security.AccessController;
+import java.security.PrivilegedExceptionAction;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ConnectionBuilder;
@@ -194,8 +196,9 @@ public class JDBC43TestServlet extends FATServlet {
      */
     public void testCompletionStageCachesUnsharedAutocommitConnectionAcrossServletBoundaryPart1() throws Exception {
         final Connection con = unsharablePool1DataSource.getConnection();
-        CompletableFuture<Statement> stage = CompletableFuture
-                        .completedFuture(con.createStatement())
+        CompletableFuture<Statement> creationStage = AccessController
+                        .doPrivileged((PrivilegedExceptionAction<CompletableFuture<Statement>>) () -> CompletableFuture.completedFuture(con.createStatement()));
+        CompletableFuture<Statement> stage = creationStage
                         .thenApply(s -> {
                             try {
                                 s.executeUpdate("INSERT INTO STREETS VALUES ('Meadow Crossing Road SW', 'Rochester', 'MN')");
@@ -264,8 +267,9 @@ public class JDBC43TestServlet extends FATServlet {
     public void testCompletionStageCachesUnsharedManualCommitConnectionAcrossServletBoundaryPart1() throws Exception {
         final Connection con = unsharablePool1DataSource.getConnection();
         con.setAutoCommit(false);
-        CompletableFuture<Statement> stage = CompletableFuture
-                        .completedFuture(con.createStatement())
+        CompletableFuture<Statement> creationStage = AccessController
+                        .doPrivileged((PrivilegedExceptionAction<CompletableFuture<Statement>>) () -> CompletableFuture.completedFuture(con.createStatement()));
+        CompletableFuture<Statement> stage = creationStage
                         .thenApply(s -> {
                             try {
                                 s.executeUpdate("INSERT INTO STREETS VALUES ('Century Valley Road NE', 'Rochester', 'MN')");
