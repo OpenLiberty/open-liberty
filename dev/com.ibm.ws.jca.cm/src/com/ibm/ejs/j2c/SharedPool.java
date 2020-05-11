@@ -585,7 +585,7 @@ public final class SharedPool {
 
         synchronized (sharedLockObject) {
 
-            sizeDifference = mcWrapperListSize; //set to the orginal size
+            sizeDifference = mcWrapperListSize; //set to the original size
             if (mcWrapperListSize == 1) {
                 /*
                  * If there is only one mcWrapper in the list, the odds of it
