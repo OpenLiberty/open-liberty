@@ -44,6 +44,7 @@ import com.ibm.ws.http.channel.h2internal.hpack.H2Headers;
 import com.ibm.ws.http.channel.h2internal.hpack.HpackConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
+import com.ibm.ws.http2.GrpcServletServices;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
 import com.ibm.wsspi.channelfw.VirtualConnection;
@@ -1042,6 +1043,9 @@ public class H2StreamProcessor {
         }
     }
 
+    //WDW-ClientStreaming
+    private int tempDataCount = 0;
+
     private void processOpen(Constants.Direction direction) throws ProtocolException, FlowControlException, CompressionException, Http2Exception {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "processOpen entry: stream " + myID);
@@ -1053,11 +1057,49 @@ public class H2StreamProcessor {
                 updateStreamState(StreamState.HALF_CLOSED_REMOTE);
             }
             if (frameType == FrameTypes.DATA) {
-                getBodyFromFrame();
-                if (currentFrame.flagEndStreamSet()) {
-                    processCompleteData();
-                    setReadyForRead();
+                //WDW-ClientStreaming
+                if (GrpcServletServices.grpcInUse == false) {
+                    getBodyFromFrame();
+                    if (currentFrame.flagEndStreamSet()) {
+                        processCompleteData();
+                        setReadyForRead();
+                    }
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "processOpen: calling processCompleteData() getEndStream returns: " + this.getEndStream());
+                    }
+                    if (tempDataCount == 0) {
+                        tempDataCount++;
+                        getBodyFromFrame();
+                        processCompleteData();
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "processOpen: first time in. calling setReadyForRead() getEndStream returns: " + this.getEndStream());
+                        }
+                        setReadyForRead();
+                    } else {
+                        dataPayload = null;
+                        streamReadReady.clear();
+                        getBodyFromFrame();
+                        WsByteBuffer buf = processCompleteData();
+                        // need to integrate this better
+                        if (buf != null) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "calling setNewBodyBuffer with: " + buf);
+                            }
+                            h2HttpInboundLinkWrap.setAndStoreNewBodyBuffer(buf);
+                        } else {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "did not call setNewBodyBuffer. buf was null");
+                            }
+                        }
+
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "processOpen: calling setReadyForRead() getEndStream returns: " + this.getEndStream());
+                        }
+                        setReadyForRead();
+                    }
                 }
+
             } else if (frameType == FrameTypes.CONTINUATION ||
                        (frameType == FrameTypes.HEADERS)) {
                 // if this is a header frame, it must be trailer data
@@ -1307,14 +1349,14 @@ public class H2StreamProcessor {
                 // As an HTTP/2 server, and not a client, this code should not receive a PUSH_PROMISE frame
                 throw new ProtocolException("PUSH_PROMISE Frame Received on server side");
 
-            //case PING:   PING frame is not stream based.
-            //      break;
+                //case PING:   PING frame is not stream based.
+                //      break;
 
-            //case GOAWAY:   GOAWAY is not stream based, but does have some stream awareness, see spec.
-            //      break;
+                //case GOAWAY:   GOAWAY is not stream based, but does have some stream awareness, see spec.
+                //      break;
 
-            // case SETTINGS:  Setting is not stream based.
-            //      break;
+                // case SETTINGS:  Setting is not stream based.
+                //      break;
 
             case WINDOW_UPDATE:
                 if (state == StreamState.IDLE && myID != 0) {
@@ -1617,7 +1659,9 @@ public class H2StreamProcessor {
      *
      * @throws ProtocolException
      */
-    private void processCompleteData() throws ProtocolException {
+    //WDW-ClientStreaming
+    // private void processCompleteData() throws ProtocolException {
+    private WsByteBuffer processCompleteData() throws ProtocolException {
         WsByteBufferPoolManager bufManager = HttpDispatcher.getBufferManager();
         WsByteBuffer buf = bufManager.allocate(getByteCount(dataPayload));
         for (byte[] bytes : dataPayload) {
@@ -1641,6 +1685,9 @@ public class H2StreamProcessor {
         }
         this.h2HttpInboundLinkWrap.setH2ContentLength(actualContentLength);
         moveDataIntoReadBufferArray(buf);
+
+        //WDW-ClientStreaming
+        return buf;
     }
 
     /**
@@ -1686,7 +1733,12 @@ public class H2StreamProcessor {
                     h2HttpInboundLinkWrap.ready(this.h2HttpInboundLinkWrap.vc);
                 }
             } finally {
-                headersCompleted = false;
+                //WDW-ClientStreaming
+                //headersCompleted = false;
+                if (getEndStream()) {
+                    headersCompleted = false;
+                }
+
                 waitingForWebContainer = false;
             }
         }
@@ -1716,7 +1768,7 @@ public class H2StreamProcessor {
     /**
      * Read the HTTP header and data bytes for this stream
      *
-     * @param numBytes       the number of bytes to read
+     * @param numBytes the number of bytes to read
      * @param requestBuffers an array of buffers to copy the read data into
      * @return this stream's VirtualConnection or null if too many bytes were requested
      */
@@ -1785,7 +1837,7 @@ public class H2StreamProcessor {
     /**
      * Read the http header and data bytes for this stream
      *
-     * @param numBytes       the number of bytes requested
+     * @param numBytes the number of bytes requested
      * @param requestBuffers an array of buffers to copy the read data into
      * @return the number of bytes that were actually copied into requestBuffers
      */
@@ -2062,4 +2114,10 @@ public class H2StreamProcessor {
                 return false;
         }
     }
+
+    //WDW-ClientStreaming
+    public boolean getEndStream() {
+        return this.endStream;
+    }
+
 }

@@ -50,6 +50,7 @@ import com.ibm.ws.http.channel.h2internal.hpack.HpackConstants.LiteralIndexType;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundLink;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
+import com.ibm.ws.http2.GrpcServletServices;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferUtils;
 import com.ibm.wsspi.channelfw.InterChannelCallback;
@@ -5051,7 +5052,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      *
      * @param buffer
      */
-    private void storeBuffer(WsByteBuffer buffer) {
+    //WDW-ClientStreaming
+    // private void storeBuffer(WsByteBuffer buffer) {
+    public void storeBuffer(WsByteBuffer buffer) {
         this.storage.add(buffer);
     }
 
@@ -5665,6 +5668,45 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             Tr.exit(tc, "handleH2LinkPreload()");
         }
 
+    }
+
+    //WDW-ClientStreaming
+    public int getGRPCEndStream() {
+        int ret = 0;
+        H2HttpInboundLinkWrap link = null;
+
+        if (GrpcServletServices.grpcInUse == false) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getGRPCEndStream(): returning: 0 - GrpcServletServices.grpcInUse is false");
+            }
+            return 0;
+        }
+
+        HttpInboundServiceContextImpl context = (HttpInboundServiceContextImpl) this;
+        if (context.getLink() instanceof H2HttpInboundLinkWrap) {
+            link = (H2HttpInboundLinkWrap) context.getLink();
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getGRPCEndStream(): returning: 0 - LinkWrap not detected");
+            }
+            return 0;
+        }
+
+        if (link instanceof H2HttpInboundLinkWrap) {
+            //for now we know it is stream 3
+            int streamId = link.getStreamId();
+            H2StreamProcessor hsp = link.muxLink.getStreamProcessor(streamId);
+            if (hsp.getEndStream()) {
+                ret = 2;
+            } else {
+                ret = 1;
+            }
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "getGRPCEndStream(): returning: " + ret);
+        }
+        return ret;
     }
 
 }
