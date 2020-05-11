@@ -35,17 +35,21 @@ public class EE9PackageReplacementHelper {
 
     private static final Logger Log = Logger.getLogger(EE9PackageReplacementHelper.class.getName());
 
-    public EE9PackageReplacementHelper(String rulesPath){
-            Properties appProps = new Properties();
-            try {
-                appProps.load(new FileInputStream(rulesPath));
-                packageRenameRules = (Map) appProps;
-            } catch (Exception e) {
-                Log.warning("Error occured when reading in " + rulesPath);
-                e.printStackTrace();
-            }
+    public EE9PackageReplacementHelper(String rulesPath) {
+        Properties appProps = new Properties();
+        try {
+            appProps.load(new FileInputStream(rulesPath));
+            packageRenameRules = (Map) appProps;
+        } catch (Exception e) {
+            Log.warning("Error occured when reading in " + rulesPath);
+            e.printStackTrace();
+        }
     }
 
+    public EE9PackageReplacementHelper() {
+            this(System.getProperty("user.dir") + "/autoFVT-templates/" + "jakarta-renames.properties");
+    }
+    
     public String replacePackages(String text) {
         return replacePackages(text, this.packageRenameRules);
     }

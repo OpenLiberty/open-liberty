@@ -57,6 +57,7 @@ import componenttest.exception.TopologyException;
 import componenttest.logging.ffdc.IgnoredFFDCs;
 import componenttest.logging.ffdc.IgnoredFFDCs.IgnoredFFDC;
 import componenttest.rules.repeater.EE9PackageReplacementHelper;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.impl.LibertyServerWrapper;
@@ -628,10 +629,13 @@ public class FATRunner extends BlockJUnit4ClassRunner {
 
         ExpectedFFDC ffdc = m.getAnnotation(ExpectedFFDC.class);
         if (ffdc != null) {
-            if (RepeatTestFilter.CURRENT_REPEAT_ACTION == "EE9_FEATURES") {
+            if (JakartaEE9Action.isActive()) {
                 String[] exceptionClasses = ffdc.value();
                 for (String exceptionClass : exceptionClasses) {
-                    exceptionClass = getEE9Helper().replacePackages(exceptionClass);
+                    if(ee9Helper == null){
+                        ee9Helper = new EE9PackageReplacementHelper();
+                    }
+                    exceptionClass = ee9Helper.replacePackages(exceptionClass);
                     annotationListPerClass.add(exceptionClass);
                 }
             } else if (RepeatTestFilter.CURRENT_REPEAT_ACTION != null) {
@@ -675,10 +679,13 @@ public class FATRunner extends BlockJUnit4ClassRunner {
 
         for (AllowedFFDC ffdc : ffdcs) {
             if (ffdc != null) {
-                if (RepeatTestFilter.CURRENT_REPEAT_ACTION == "EE9_FEATURES") {
+                if (JakartaEE9Action.isActive()) {
                     String[] exceptionClasses = ffdc.value();
                     for (String exceptionClass : exceptionClasses) {
-                        exceptionClass = getEE9Helper().replacePackages(exceptionClass);
+                        if(ee9Helper == null){
+                            ee9Helper = new EE9PackageReplacementHelper();
+                        }
+                        exceptionClass = ee9Helper.replacePackages(exceptionClass);
                         annotationListPerClass.add(exceptionClass);
                     }
                 } else if (RepeatTestFilter.CURRENT_REPEAT_ACTION != null) {
@@ -755,6 +762,7 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                 serverField.set(testClass, serv);
                 Log.info(c, method, "Injected LibertyServer " + serv.getServerName() + " to class " + testClass.getCanonicalName());
             } catch (Exception e) {
+                
                 throw new RuntimeException(e);
             }
         }
@@ -847,13 +855,5 @@ public class FATRunner extends BlockJUnit4ClassRunner {
             }
             errors.removeAll(remove);
         }
-    }
-
-    public EE9PackageReplacementHelper getEE9Helper(){
-        if (ee9Helper == null) {
-            String rulesPath = System.getProperty("user.dir") + "/autoFVT-templates/" + "jakarta-renames.properties";
-            ee9Helper = new EE9PackageReplacementHelper(rulesPath);
-        }
-        return ee9Helper;
     }
 }
