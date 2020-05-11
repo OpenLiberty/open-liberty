@@ -34,8 +34,8 @@ Import-Package: \
         com.ibm.websphere.ssl, \
         com.ibm.wsspi.collector.manager, \
         com.ibm.ws.collector, \
-        com.ibm.ws.lumberjack,\
-        com.ibm.ws.http.logging.internal
+        com.ibm.ws.lumberjack, \
+        com.ibm.ws.logging.data
 
 Private-Package: \
         com.ibm.ws.logstash.collector.internal*
@@ -55,5 +55,4 @@ Include-Resource: \
 	com.ibm.wsspi.org.osgi.service.component;version=latest,\
 	com.ibm.ws.collector.manager;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	com.ibm.ws.transport.http
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

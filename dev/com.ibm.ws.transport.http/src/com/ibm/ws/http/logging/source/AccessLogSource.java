@@ -416,7 +416,10 @@ public class AccessLogSource implements Source {
         Set<String> fieldName = new HashSet<String>();
         for (FormatSegment fs : parsedFormat) {
             if (fs.log != null) {
-                if (!fieldName.add(fs.log.getName()))
+                String format = fs.log.getName(); // e.g. will look like "%i", "%a"
+                if (format.equals("%i") || format.equals("%o") || format.equals("%C"))
+                    break;
+                if (!fieldName.add(format))
                     // Making it null will remove the duplicate print without messing around with the array dimensions
                     fs.log = null;
             }
@@ -434,13 +437,14 @@ public class AccessLogSource implements Source {
             String formatString = ((AccessLogRecordDataExt) recordData).getFormatString();
             // A parsed version of the logFormat
             FormatSegment[] parsedFormat = ((AccessLogRecordDataExt) recordData).getParsedFormat();
-            removeDuplicates(parsedFormat);
             jsonAccessLogFieldsConfig = AccessLogConfig.jsonAccessLogFieldsConfig;
+            jsonAccessLogFieldsLogstashConfig = AccessLogConfig.jsonAccessLogFieldsLogstashConfig;
 
             Configuration config = new Configuration(formatString, jsonAccessLogFieldsConfig, jsonAccessLogFieldsLogstashConfig);
 
             SetterFormatter currentSF = setterFormatterMap.get(config);
             if (currentSF == null) {
+                removeDuplicates(parsedFormat);
                 currentSF = createSetterFormatter(config, parsedFormat, seq);
                 setterFormatterMap.put(config, currentSF);
             }
