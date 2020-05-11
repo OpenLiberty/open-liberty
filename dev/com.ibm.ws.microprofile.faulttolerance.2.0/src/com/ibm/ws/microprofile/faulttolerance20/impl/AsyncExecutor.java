@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance20.impl;
 
+import static com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder.FallbackOccurred.NO_FALLBACK;
+import static com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder.FallbackOccurred.WITH_FALLBACK;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,6 +41,7 @@ import com.ibm.ws.microprofile.faulttolerance.spi.Executor;
 import com.ibm.ws.microprofile.faulttolerance.spi.FTExecutionContext;
 import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder;
+import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder.FallbackOccurred;
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
 import com.ibm.ws.microprofile.faulttolerance.utils.FTDebug;
@@ -122,7 +126,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
         circuitBreaker = FaultToleranceStateFactory.INSTANCE.createCircuitBreakerState(cbPolicy, metricRecorder);
         this.timeoutPolicy = timeoutPolicy;
         this.executorService = executorService;
-        fallback = FaultToleranceStateFactory.INSTANCE.createFallbackState(fallbackPolicy, metricRecorder);
+        fallback = FaultToleranceStateFactory.INSTANCE.createFallbackState(fallbackPolicy);
         bulkhead = FaultToleranceStateFactory.INSTANCE.createAsyncBulkheadState(executorService, bulkheadPolicy, metricRecorder);
         this.metricRecorder = metricRecorder;
         this.contextService = contextService;
@@ -402,7 +406,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
                 }
             }
 
-            processEndOfExecution(executionContext, result);
+            processEndOfExecution(executionContext, result, NO_FALLBACK);
 
         } catch (Throwable t) {
             // This method is used as a general error handler, so we need some special logic in case something goes wrong while handling the error
@@ -412,10 +416,11 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
         }
     }
 
-    private void processEndOfExecution(AsyncExecutionContextImpl<W> executionContext, MethodResult<W> result) {
-        metricRecorder.incrementInvocationCount();
+    private void processEndOfExecution(AsyncExecutionContextImpl<W> executionContext, MethodResult<W> result, FallbackOccurred fallbackOccurred) {
         if (result.isFailure()) {
-            metricRecorder.incrementInvocationFailedCount();
+            metricRecorder.incrementInvocationFailedCount(fallbackOccurred);
+        } else {
+            metricRecorder.incrementInvocationSuccessCount(fallbackOccurred);
         }
 
         setResult(executionContext, result);
@@ -456,7 +461,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
                 }
             }
 
-            processEndOfExecution(executionContext, fallbackResult);
+            processEndOfExecution(executionContext, fallbackResult, WITH_FALLBACK);
 
         } catch (Throwable t) {
             // Handle any unexpected exceptions

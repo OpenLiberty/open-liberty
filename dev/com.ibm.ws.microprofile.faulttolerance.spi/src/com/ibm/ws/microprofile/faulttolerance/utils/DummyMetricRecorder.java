@@ -14,6 +14,7 @@ import java.util.function.LongSupplier;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder;
+import com.ibm.ws.microprofile.faulttolerance.spi.RetryResultCategory;
 
 /**
  * A {@link MetricRecorder} which does nothing
@@ -34,11 +35,11 @@ public final class DummyMetricRecorder implements MetricRecorder {
 
     /** {@inheritDoc} */
     @Override
-    public void incrementInvocationCount() {}
+    public void incrementInvocationSuccessCount(FallbackOccurred fallbackOccurred) {}
 
     /** {@inheritDoc} */
     @Override
-    public void incrementInvocationFailedCount() {}
+    public void incrementInvocationFailedCount(FallbackOccurred fallbackOccurred) {}
 
     /** {@inheritDoc} */
     @Override
@@ -50,15 +51,7 @@ public final class DummyMetricRecorder implements MetricRecorder {
 
     /** {@inheritDoc} */
     @Override
-    public void incrementRetryCallsSuccessImmediateCount() {}
-
-    /** {@inheritDoc} */
-    @Override
-    public void incrementRetryCallsSuccessRetriesCount() {}
-
-    /** {@inheritDoc} */
-    @Override
-    public void incrementRetryCallsFailureCount() {}
+    public void incrementRetryCalls(RetryResultCategory resultCategory, RetriesOccurred retriesOccurred) {}
 
     /** {@inheritDoc} */
     @Override
@@ -115,9 +108,5 @@ public final class DummyMetricRecorder implements MetricRecorder {
     /** {@inheritDoc} */
     @Override
     public void setBulkheadQueuePopulationSupplier(LongSupplier concurrentExecutionCountSupplier) {}
-
-    /** {@inheritDoc} */
-    @Override
-    public void incrementFallbackCalls() {}
 
 }
