@@ -334,8 +334,6 @@ public class BaseTraceService implements TrService {
         }
 
         applyJsonFields(trConfig.getjsonFields());
-        // lg265
-        TraceComponent tc = Tr.register(LogTraceData.class, NLSConstants.GROUP, NLSConstants.LOGGING_NLS);
         jsonAccessLogFields = trConfig.getjsonAccessLogFields();
 
         if (jsonAccessLogFields != AccessLogConfig.jsonAccessLogFieldsConfig) {
