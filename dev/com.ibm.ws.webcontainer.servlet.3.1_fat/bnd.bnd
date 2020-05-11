@@ -52,9 +52,6 @@ tested.features:\
 	servlet-4.0,\
 	cdi-2.0,\
 
-javac.source: 1.7
-javac.target: 1.7
-
 -buildpath: \
     com.ibm.websphere.javaee.cdi.1.2;version=latest,\
     com.ibm.websphere.javaee.servlet.3.1;version=latest,\
@@ -68,4 +65,4 @@ javac.target: 1.7
     org.apache.httpcomponents:httpcore;strategy=exact;version=4.1.2,\
     com.ibm.ws.webcontainer.security_test.servlets;version=latest,\
     com.ibm.websphere.javaee.annotation.1.2;version=latest,\
-    com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
+    com.ibm.websphere.javaee.interceptor.1.2;version=latest
