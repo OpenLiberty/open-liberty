@@ -24,9 +24,9 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.security.authentication.cache.DeleteAuthCache;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.authentication.cache.AuthCacheService;
-import com.ibm.ws.security.authentication.cache.DeleteAuthCache;
 
 /**
  * The implementation of DeleteAuthCache MBean which can be used to

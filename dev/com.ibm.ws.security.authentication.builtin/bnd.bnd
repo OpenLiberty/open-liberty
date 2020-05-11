@@ -128,6 +128,7 @@ instrument.classesExcludes: com/ibm/ws/security/authentication/internal/resource
 	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.kernel.boot,\
 	com.ibm.ws.security.mp.jwt.proxy;version=latest,\
+	com.ibm.websphere.security.authentication;version=latest,\
 	org.eclipse.osgi,\
 	osgi.core
 
