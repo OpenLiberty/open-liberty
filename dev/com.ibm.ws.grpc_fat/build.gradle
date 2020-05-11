@@ -107,3 +107,14 @@ sourceSets {
         }
     }
 }
+
+assemble.doLast {
+    copy {
+       from "build/libs/generated/source/proto/main/java"
+          into "generated-src"
+    }
+    copy {
+       from "build/libs/generated/source/proto/main/grpc"
+          into "generated-src"
+    }
+}
