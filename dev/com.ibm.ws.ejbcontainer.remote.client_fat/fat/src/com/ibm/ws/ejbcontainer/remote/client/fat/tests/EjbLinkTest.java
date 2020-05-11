@@ -53,14 +53,6 @@ public class EjbLinkTest extends FATServletClient {
     public static void beforeClass() throws Exception {
         // Use ShrinkHelper to build the Ears & Wars
 
-        //#################### InitTxRecoveryLogApp.ear (Automatically initializes transaction recovery logs)
-        JavaArchive InitTxRecoveryLogEJBJar = ShrinkHelper.buildJavaArchive("InitTxRecoveryLogEJB.jar", "com.ibm.ws.ejbcontainer.init.recovery.ejb.");
-
-        EnterpriseArchive InitTxRecoveryLogApp = ShrinkWrap.create(EnterpriseArchive.class, "InitTxRecoveryLogApp.ear");
-        InitTxRecoveryLogApp.addAsModule(InitTxRecoveryLogEJBJar);
-
-        ShrinkHelper.exportDropinAppToServer(server, InitTxRecoveryLogApp);
-
         //#################### StatefulAnnRemoteTest.ear
         JavaArchive EjbLinkBean = ShrinkHelper.buildJavaArchive("EjbLinkBean.jar", "com.ibm.ws.ejbcontainer.ejblink.ejb.");
         EjbLinkBean = (JavaArchive) ShrinkHelper.addDirectory(EjbLinkBean, "test-applications/EjbLinkBean.jar/resources");
@@ -92,6 +84,16 @@ public class EjbLinkTest extends FATServletClient {
         // verify the appSecurity-2.0 feature is ready
         assertNotNull("Security service did not report it was ready", server.waitForStringInLogUsingMark("CWWKS0008I"));
         assertNotNull("LTPA configuration did not report it was ready", server.waitForStringInLogUsingMark("CWWKS4105I"));
+
+        //#################### InitTxRecoveryLogApp.ear (Automatically initializes transaction recovery logs)
+        JavaArchive InitTxRecoveryLogEJBJar = ShrinkHelper.buildJavaArchive("InitTxRecoveryLogEJB.jar", "com.ibm.ws.ejbcontainer.init.recovery.ejb.");
+
+        EnterpriseArchive InitTxRecoveryLogApp = ShrinkWrap.create(EnterpriseArchive.class, "InitTxRecoveryLogApp.ear");
+        InitTxRecoveryLogApp.addAsModule(InitTxRecoveryLogEJBJar);
+
+        // Only after the server has started and appSecurity-2.0 feature is ready,
+        // then allow the @Startup InitTxRecoveryLog bean to start.
+        ShrinkHelper.exportDropinAppToServer(server, InitTxRecoveryLogApp);
 
         client.addIgnoreErrors("CWWKC0105W");
         client.startClient();
