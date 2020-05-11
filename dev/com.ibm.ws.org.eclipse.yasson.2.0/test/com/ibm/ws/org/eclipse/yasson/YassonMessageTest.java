@@ -23,7 +23,7 @@ import test.common.OSSMessageTest;
 public class YassonMessageTest extends OSSMessageTest {
 
     public YassonMessageTest() {
-        super("yasson-1", "com.ibm.ws.org.eclipse.yasson.2", "yasson-messages.properties");
+        super("yasson-2", "com.ibm.ws.org.eclipse.yasson.2", "yasson-messages.properties");
     }
 
 }
