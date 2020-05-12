@@ -27,6 +27,8 @@ import com.ibm.ws.jpa.spec10.JPA10EntityManager_Web;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
+//                JPA10Example_WEB.class,
+//                JPA10Example_EJB.class,
                 Callback_EJB.class,
                 Callback_Web.class,
                 JPA10EntityManager_EJB.class,

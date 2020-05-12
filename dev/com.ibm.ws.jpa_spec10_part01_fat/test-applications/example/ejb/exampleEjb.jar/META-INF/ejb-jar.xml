@@ -19,8 +19,8 @@
     <enterprise-beans>
         <!-- Stateful Session Bean, PC: AM-JTA, AM-RL, CM-TS -->
         <session>
-            <ejb-name>OLGH10310SFEJB</ejb-name>
-            <business-local>com.ibm.ws.jpa.olgh10310.ejblocal.OLGH10310SFEJBLocal</business-local>
+            <ejb-name>ExampleSFEJB</ejb-name>
+            <business-local>com.ibm.ws.jpa.example.ejblocal.ExampleSFEJBLocal</business-local>
             <ejb-class>com.ibm.ws.testtooling.vehicle.ejb.BMTEJBTestVehicle</ejb-class>
             <session-type>Stateful</session-type>
             <remove-method>
@@ -30,13 +30,13 @@
             </remove-method>
             <transaction-type>Bean</transaction-type>
             <resource-ref>
-                <res-ref-name>jdbc/JPA_JTA_DS</res-ref-name>
+                <res-ref-name>jdbc/JPA_DS</res-ref-name>
                 <res-type>javax.sql.DataSource</res-type>
                 <res-auth>Container</res-auth>
                 <res-sharing-scope>Shareable</res-sharing-scope>
             </resource-ref>
             <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTA_DS</res-ref-name>
+                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
                 <res-type>javax.sql.DataSource</res-type>
                 <res-auth>Container</res-auth>
                 <res-sharing-scope>Shareable</res-sharing-scope>
@@ -45,28 +45,28 @@
             <!-- Persistence Context Definitions -->
             <persistence-context-ref>
                 <description>Transaction-Scoped Persistence Context</description>
-                <persistence-context-ref-name>jpa/OLGH10310_CMTS</persistence-context-ref-name>
-                <persistence-unit-name>OLGH10310_JTA</persistence-unit-name>
+                <persistence-context-ref-name>jpa/Example_CMTS</persistence-context-ref-name>
+                <persistence-unit-name>EXAMPLE_JTA</persistence-unit-name>
                 <persistence-context-type>Transaction</persistence-context-type>
             </persistence-context-ref>
 
             <persistence-unit-ref>
                 <description>Application-Managed JTA-Tran Persistence Context</description>
-                <persistence-unit-ref-name>jpa/OLGH10310_AMJTA</persistence-unit-ref-name>
-                <persistence-unit-name>OLGH10310_JTA</persistence-unit-name>
+                <persistence-unit-ref-name>jpa/Example_AMJTA</persistence-unit-ref-name>
+                <persistence-unit-name>EXAMPLE_JTA</persistence-unit-name>
             </persistence-unit-ref>
 
             <persistence-unit-ref>
                 <description>Application-Managed RL-Tran Persistence Context</description>
-                <persistence-unit-ref-name>jpa/OLGH10310_AMRL</persistence-unit-ref-name>
-                <persistence-unit-name>OLGH10310_RL</persistence-unit-name>
+                <persistence-unit-ref-name>jpa/Example_AMRL</persistence-unit-ref-name>
+                <persistence-unit-name>EXAMPLE_RL</persistence-unit-name>
             </persistence-unit-ref>
         </session>
 
         <!-- Stateful Session Bean, PC: CM-ES -->
         <session>
-            <ejb-name>OLGH10310SFExEJB</ejb-name>
-            <business-local>com.ibm.ws.jpa.olgh10310.ejblocal.OLGH10310SFExEJBLocal</business-local>
+            <ejb-name>ExampleSFExEJB</ejb-name>
+            <business-local>com.ibm.ws.jpa.example.ejblocal.ExampleSFExEJBLocal</business-local>
             <ejb-class>com.ibm.ws.testtooling.vehicle.ejb.BMTEJBTestVehicle</ejb-class>
             <session-type>Stateful</session-type>
             <remove-method>
@@ -76,13 +76,13 @@
             </remove-method>
             <transaction-type>Bean</transaction-type>
             <resource-ref>
-                <res-ref-name>jdbc/JPA_JTA_DS</res-ref-name>
+                <res-ref-name>jdbc/JPA_DS</res-ref-name>
                 <res-type>javax.sql.DataSource</res-type>
                 <res-auth>Container</res-auth>
                 <res-sharing-scope>Shareable</res-sharing-scope>
             </resource-ref>
             <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTA_DS</res-ref-name>
+                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
                 <res-type>javax.sql.DataSource</res-type>
                 <res-auth>Container</res-auth>
                 <res-sharing-scope>Shareable</res-sharing-scope>
@@ -90,27 +90,27 @@
 
             <!-- Persistence Context Definitions -->
             <persistence-context-ref>
-                <persistence-context-ref-name>jpa/OLGH10310_CMEX</persistence-context-ref-name>
-                <persistence-unit-name>OLGH10310_JTA</persistence-unit-name>
+                <persistence-context-ref-name>jpa/Example_CMEX</persistence-context-ref-name>
+                <persistence-unit-name>EXAMPLE_JTA</persistence-unit-name>
                 <persistence-context-type>Extended</persistence-context-type>
             </persistence-context-ref>
         </session>
 
         <!-- Stateless Session Bean, PC: AM-JTA, AM-RL, CM-TS -->
         <session>
-            <ejb-name>OLGH10310SLEJB</ejb-name>
-            <business-local>com.ibm.ws.jpa.olgh10310.ejblocal.OLGH10310SLEJBLocal</business-local>
+            <ejb-name>ExampleSLEJB</ejb-name>
+            <business-local>com.ibm.ws.jpa.example.ejblocal.ExampleSLEJBLocal</business-local>
             <ejb-class>com.ibm.ws.testtooling.vehicle.ejb.BMTEJBTestVehicle</ejb-class>
             <session-type>Stateless</session-type>
             <transaction-type>Bean</transaction-type>
             <resource-ref>
-                <res-ref-name>jdbc/JPA_JTA_DS</res-ref-name>
+                <res-ref-name>jdbc/JPA_DS</res-ref-name>
                 <res-type>javax.sql.DataSource</res-type>
                 <res-auth>Container</res-auth>
                 <res-sharing-scope>Shareable</res-sharing-scope>
             </resource-ref>
             <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTA_DS</res-ref-name>
+                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
                 <res-type>javax.sql.DataSource</res-type>
                 <res-auth>Container</res-auth>
                 <res-sharing-scope>Shareable</res-sharing-scope>
@@ -119,21 +119,21 @@
             <!-- Persistence Context Definitions -->
             <persistence-context-ref>
                 <description>Transaction-Scoped Persistence Context</description>
-                <persistence-context-ref-name>jpa/OLGH10310_CMTS</persistence-context-ref-name>
-                <persistence-unit-name>OLGH10310_JTA</persistence-unit-name>
+                <persistence-context-ref-name>jpa/Example_CMTS</persistence-context-ref-name>
+                <persistence-unit-name>EXAMPLE_JTA</persistence-unit-name>
                 <persistence-context-type>Transaction</persistence-context-type>
             </persistence-context-ref>
 
             <persistence-unit-ref>
                 <description>Application-Managed JTA-Tran Persistence Context</description>
-                <persistence-unit-ref-name>jpa/OLGH10310_AMJTA</persistence-unit-ref-name>
-                <persistence-unit-name>OLGH10310_JTA</persistence-unit-name>
+                <persistence-unit-ref-name>jpa/Example_AMJTA</persistence-unit-ref-name>
+                <persistence-unit-name>EXAMPLE_JTA</persistence-unit-name>
             </persistence-unit-ref>
 
             <persistence-unit-ref>
                 <description>Application-Managed RL-Tran Persistence Context</description>
-                <persistence-unit-ref-name>jpa/OLGH10310_AMRL</persistence-unit-ref-name>
-                <persistence-unit-name>OLGH10310_RL</persistence-unit-name>
+                <persistence-unit-ref-name>jpa/Example_AMRL</persistence-unit-ref-name>
+                <persistence-unit-name>EXAMPLE_RL</persistence-unit-name>
             </persistence-unit-ref>
         </session>
     </enterprise-beans>

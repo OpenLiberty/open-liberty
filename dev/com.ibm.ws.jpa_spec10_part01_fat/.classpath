@@ -3,6 +3,7 @@
 	<classpathentry kind="src" path="fat/src"/>
 	<classpathentry kind="src" path="test-applications/callback/src"/>
 	<classpathentry kind="src" path="test-applications/entitymanager/src"/>
+	<classpathentry kind="src" path="test-applications/example/src"/>
 	<classpathentry kind="src" path="test-applications/inheritance/src"/>
 	<classpathentry kind="src" path="test-applications/olgh10310/src"/>
 	<classpathentry kind="src" path="test-applications/olgh11795/src"/>
