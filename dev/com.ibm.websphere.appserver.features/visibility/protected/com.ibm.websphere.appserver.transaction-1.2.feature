@@ -24,7 +24,7 @@ IBM-API-Service: com.ibm.wsspi.uow.UOWManager, \
  com.ibm.websphere.appserver.containerServices-1.0, \
  com.ibm.websphere.appserver.javax.annotation-1.2; ibm.tolerates:=1.3; apiJar=false, \
  com.ibm.websphere.appserver.anno-1.0, \
- com.ibm.websphere.appserver.javaeeCompatible-8.0; ibm.tolerates:="6.0,7.0"
+ com.ibm.websphere.appserver.eeCompatible-8.0; ibm.tolerates:="6.0,7.0"
 -bundles=com.ibm.ws.tx.jta.extensions, \
  com.ibm.ws.transaction; start-phase:=CONTAINER_LATE, \
  com.ibm.tx.jta, \
