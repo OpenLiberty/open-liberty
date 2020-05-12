@@ -29,18 +29,18 @@ import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.FATSuite;
 import com.ibm.ws.jpa.JPAFATServletClient;
-import com.ibm.ws.jpa.fvt.relationships.manyXmany.testlogic.tests.ejb.TestManyXManyBidirectional_EJB_SFEX_Servlet;
-import com.ibm.ws.jpa.fvt.relationships.manyXmany.testlogic.tests.ejb.TestManyXManyBidirectional_EJB_SF_Servlet;
-import com.ibm.ws.jpa.fvt.relationships.manyXmany.testlogic.tests.ejb.TestManyXManyBidirectional_EJB_SL_Servlet;
-import com.ibm.ws.jpa.fvt.relationships.manyXmany.testlogic.tests.ejb.TestManyXManyCollectionType_EJB_SFEX_Servlet;
-import com.ibm.ws.jpa.fvt.relationships.manyXmany.testlogic.tests.ejb.TestManyXManyCollectionType_EJB_SF_Servlet;
-import com.ibm.ws.jpa.fvt.relationships.manyXmany.testlogic.tests.ejb.TestManyXManyCollectionType_EJB_SL_Servlet;
-import com.ibm.ws.jpa.fvt.relationships.manyXmany.testlogic.tests.ejb.TestManyXManyCompoundPK_EJB_SFEX_Servlet;
-import com.ibm.ws.jpa.fvt.relationships.manyXmany.testlogic.tests.ejb.TestManyXManyCompoundPK_EJB_SF_Servlet;
-import com.ibm.ws.jpa.fvt.relationships.manyXmany.testlogic.tests.ejb.TestManyXManyCompoundPK_EJB_SL_Servlet;
-import com.ibm.ws.jpa.fvt.relationships.manyXmany.testlogic.tests.ejb.TestManyXManyUnidirectional_EJB_SFEX_Servlet;
-import com.ibm.ws.jpa.fvt.relationships.manyXmany.testlogic.tests.ejb.TestManyXManyUnidirectional_EJB_SF_Servlet;
-import com.ibm.ws.jpa.fvt.relationships.manyXmany.testlogic.tests.ejb.TestManyXManyUnidirectional_EJB_SL_Servlet;
+import com.ibm.ws.jpa.fvt.relationships.manyXmany.tests.ejb.TestManyXManyBidirectional_EJB_SFEX_Servlet;
+import com.ibm.ws.jpa.fvt.relationships.manyXmany.tests.ejb.TestManyXManyBidirectional_EJB_SF_Servlet;
+import com.ibm.ws.jpa.fvt.relationships.manyXmany.tests.ejb.TestManyXManyBidirectional_EJB_SL_Servlet;
+import com.ibm.ws.jpa.fvt.relationships.manyXmany.tests.ejb.TestManyXManyCollectionType_EJB_SFEX_Servlet;
+import com.ibm.ws.jpa.fvt.relationships.manyXmany.tests.ejb.TestManyXManyCollectionType_EJB_SF_Servlet;
+import com.ibm.ws.jpa.fvt.relationships.manyXmany.tests.ejb.TestManyXManyCollectionType_EJB_SL_Servlet;
+import com.ibm.ws.jpa.fvt.relationships.manyXmany.tests.ejb.TestManyXManyCompoundPK_EJB_SFEX_Servlet;
+import com.ibm.ws.jpa.fvt.relationships.manyXmany.tests.ejb.TestManyXManyCompoundPK_EJB_SF_Servlet;
+import com.ibm.ws.jpa.fvt.relationships.manyXmany.tests.ejb.TestManyXManyCompoundPK_EJB_SL_Servlet;
+import com.ibm.ws.jpa.fvt.relationships.manyXmany.tests.ejb.TestManyXManyUnidirectional_EJB_SFEX_Servlet;
+import com.ibm.ws.jpa.fvt.relationships.manyXmany.tests.ejb.TestManyXManyUnidirectional_EJB_SF_Servlet;
+import com.ibm.ws.jpa.fvt.relationships.manyXmany.tests.ejb.TestManyXManyUnidirectional_EJB_SL_Servlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -151,7 +151,7 @@ public class Relationships_ManyXMany_EJB extends JPAFATServletClient {
         ShrinkHelper.addDirectory(ejbApp, RESOURCE_ROOT + appFolder + "/" + appName + ".jar");
 
         WebArchive webApp = ShrinkWrap.create(WebArchive.class, appName + ".war");
-        webApp.addPackages(true, "com.ibm.ws.jpa.fvt.relationships.manyXmany.testlogic.tests.ejb");
+        webApp.addPackages(true, "com.ibm.ws.jpa.fvt.relationships.manyXmany.tests.ejb");
         ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + appFolder + "/" + appName + ".war");
 
         final JavaArchive testApiJar = buildTestAPIJar();

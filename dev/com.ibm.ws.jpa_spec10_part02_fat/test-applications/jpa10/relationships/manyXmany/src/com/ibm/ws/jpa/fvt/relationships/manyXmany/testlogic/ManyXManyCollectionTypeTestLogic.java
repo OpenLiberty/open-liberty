@@ -66,19 +66,15 @@ public class ManyXManyCollectionTypeTestLogic extends AbstractTestLogic {
         }
 
         // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        ManyXManyCollectionEntityEnum targetEntityAType = ManyXManyCollectionEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
+        Class<?> entityAClass = (Class<?>) testExecCtx.getProperties().get("EntityAName");
+        if (entityAClass == null) {
+            Assert.fail("Invalid Entity-A type specified ('" + entityAClass + "').  Cannot execute the test.");
             return;
         }
 
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        ManyXManyCollectionEntityEnum targetEntityBType = ManyXManyCollectionEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
+        Class<?> entityBClass = (Class<?>) testExecCtx.getProperties().get("EntityBName");
+        if (entityBClass == null) {
+            Assert.fail("Invalid Entity-B type specified ('" + entityBClass + "').  Cannot execute the test.");
             return;
         }
 
@@ -102,30 +98,30 @@ public class ManyXManyCollectionTypeTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Construct a new entity instances
-            System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() + " (id=1)...");
-            IContainerTypeEntityA new_entityA = (IContainerTypeEntityA) constructNewEntityObject(targetEntityAType);
+            System.out.println("Creating new object instance of " + entityAClass + " (id=1)...");
+            IContainerTypeEntityA new_entityA = (IContainerTypeEntityA) constructNewEntityObject(entityAClass);
             new_entityA.setId(1);
             new_entityA.setName("Dr. Peabody");
 
             System.out.println("Persisting " + new_entityA);
             jpaResource.getEm().persist(new_entityA);
 
-            System.out.println("Creating " + entityBIdList.length + " instances of " + targetEntityBType.getEntityName() + "...");
+            System.out.println("Creating " + entityBIdList.length + " instances of " + entityBClass + "...");
 
             for (int index = 0; index < entityBIdList.length; index++) {
                 int id = entityBIdList[index];
                 String name = entityBNameList[index];
 
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() + " (id=" + id + ")...");
-                IContainerTypeEntityB new_entityB = (IContainerTypeEntityB) constructNewEntityObject(targetEntityBType);
+                System.out.println("Creating new object instance of " + entityBClass + " (id=" + id + ")...");
+                IContainerTypeEntityB new_entityB = (IContainerTypeEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(id);
                 new_entityB.setName(name);
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Establishing relationship between " + targetEntityAType.getEntityName() + "(id=1)" +
-                                   " and " + targetEntityBType.getEntityName() + " (id=" + id + "), using " +
+                System.out.println("Establishing relationship between " + entityAClass + "(id=1)" +
+                                   " and " + entityBClass + " (id=" + id + "), using " +
                                    ((useGenericCollection == true) ? "Generic Collection" : "Non-Generic Collection") +
                                    "...");
                 if (useGenericCollection) {
@@ -149,8 +145,8 @@ public class ManyXManyCollectionTypeTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=1)...");
-            IContainerTypeEntityA find_entityA = (IContainerTypeEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), 1);
+            System.out.println("Finding " + entityAClass + " (id=1)...");
+            IContainerTypeEntityA find_entityA = (IContainerTypeEntityA) jpaResource.getEm().find(entityAClass, 1);
             System.out.println("Object returned by find: " + find_entityA);
 
             // Verify that em.find() returned an object. (1 point)
@@ -275,19 +271,15 @@ public class ManyXManyCollectionTypeTestLogic extends AbstractTestLogic {
         }
 
         // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        ManyXManyCollectionEntityEnum targetEntityAType = ManyXManyCollectionEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
+        Class<?> entityAClass = (Class<?>) testExecCtx.getProperties().get("EntityAName");
+        if (entityAClass == null) {
+            Assert.fail("Invalid Entity-A type specified ('" + entityAClass + "').  Cannot execute the test.");
             return;
         }
 
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        ManyXManyCollectionEntityEnum targetEntityBType = ManyXManyCollectionEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
+        Class<?> entityBClass = (Class<?>) testExecCtx.getProperties().get("EntityBName");
+        if (entityBClass == null) {
+            Assert.fail("Invalid Entity-B type specified ('" + entityBClass + "').  Cannot execute the test.");
             return;
         }
 
@@ -310,30 +302,30 @@ public class ManyXManyCollectionTypeTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Construct a new entity instances
-            System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() + " (id=1)...");
-            IContainerTypeEntityA new_entityA = (IContainerTypeEntityA) constructNewEntityObject(targetEntityAType);
+            System.out.println("Creating new object instance of " + entityAClass + " (id=1)...");
+            IContainerTypeEntityA new_entityA = (IContainerTypeEntityA) constructNewEntityObject(entityAClass);
             new_entityA.setId(1);
             new_entityA.setName("Dr. Peabody");
 
             System.out.println("Persisting " + new_entityA);
             jpaResource.getEm().persist(new_entityA);
 
-            System.out.println("Creating " + entityBIdList.length + " instances of " + targetEntityBType.getEntityName() + "...");
+            System.out.println("Creating " + entityBIdList.length + " instances of " + entityBClass + "...");
 
             for (int index = 0; index < entityBIdList.length; index++) {
                 int id = entityBIdList[index];
                 String name = entityBNameList[index];
 
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() + " (id=" + id + ")...");
-                IContainerTypeEntityB new_entityB = (IContainerTypeEntityB) constructNewEntityObject(targetEntityBType);
+                System.out.println("Creating new object instance of " + entityBClass + " (id=" + id + ")...");
+                IContainerTypeEntityB new_entityB = (IContainerTypeEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(id);
                 new_entityB.setName(name);
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Establishing relationship between " + targetEntityAType.getEntityName() + "(id=1)" +
-                                   " and " + targetEntityBType.getEntityName() + " (id=" + id + "), using " +
+                System.out.println("Establishing relationship between " + entityAClass + "(id=1)" +
+                                   " and " + entityBClass + " (id=" + id + "), using " +
                                    ((useGenericSet == true) ? "Generic Set" : "Non-Generic Set") +
                                    "...");
                 if (useGenericSet) {
@@ -357,8 +349,8 @@ public class ManyXManyCollectionTypeTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=1)...");
-            IContainerTypeEntityA find_entityA = (IContainerTypeEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), 1);
+            System.out.println("Finding " + entityAClass + " (id=1)...");
+            IContainerTypeEntityA find_entityA = (IContainerTypeEntityA) jpaResource.getEm().find(entityAClass, 1);
             System.out.println("Object returned by find: " + find_entityA);
 
             // Verify that em.find() returned an object. (1 point)
@@ -463,7 +455,7 @@ public class ManyXManyCollectionTypeTestLogic extends AbstractTestLogic {
      *
      * Test passes if all steps execute correctly.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void testListType(
                              TestExecutionContext testExecCtx,
                              TestExecutionResources testExecResources,
@@ -483,19 +475,15 @@ public class ManyXManyCollectionTypeTestLogic extends AbstractTestLogic {
         }
 
         // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        ManyXManyCollectionEntityEnum targetEntityAType = ManyXManyCollectionEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
+        Class<?> entityAClass = (Class<?>) testExecCtx.getProperties().get("EntityAName");
+        if (entityAClass == null) {
+            Assert.fail("Invalid Entity-A type specified ('" + entityAClass + "').  Cannot execute the test.");
             return;
         }
 
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        ManyXManyCollectionEntityEnum targetEntityBType = ManyXManyCollectionEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
+        Class<?> entityBClass = (Class<?>) testExecCtx.getProperties().get("EntityBName");
+        if (entityBClass == null) {
+            Assert.fail("Invalid Entity-B type specified ('" + entityBClass + "').  Cannot execute the test.");
             return;
         }
 
@@ -518,30 +506,30 @@ public class ManyXManyCollectionTypeTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Construct a new entity instances
-            System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() + " (id=1)...");
-            IContainerTypeEntityA new_entityA = (IContainerTypeEntityA) constructNewEntityObject(targetEntityAType);
+            System.out.println("Creating new object instance of " + entityAClass + " (id=1)...");
+            IContainerTypeEntityA new_entityA = (IContainerTypeEntityA) constructNewEntityObject(entityAClass);
             new_entityA.setId(1);
             new_entityA.setName("Dr. Peabody");
 
             System.out.println("Persisting " + new_entityA);
             jpaResource.getEm().persist(new_entityA);
 
-            System.out.println("Creating " + entityBIdList.length + " instances of " + targetEntityBType.getEntityName() + "...");
+            System.out.println("Creating " + entityBIdList.length + " instances of " + entityBClass + "...");
 
             for (int index = 0; index < entityBIdList.length; index++) {
                 int id = entityBIdList[index];
                 String name = entityBNameList[index];
 
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() + " (id=" + id + ")...");
-                IContainerTypeEntityB new_entityB = (IContainerTypeEntityB) constructNewEntityObject(targetEntityBType);
+                System.out.println("Creating new object instance of " + entityBClass + " (id=" + id + ")...");
+                IContainerTypeEntityB new_entityB = (IContainerTypeEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(id);
                 new_entityB.setName(name);
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Establishing relationship between " + targetEntityAType.getEntityName() + "(id=1)" +
-                                   " and " + targetEntityBType.getEntityName() + " (id=" + id + "), using " +
+                System.out.println("Establishing relationship between " + entityAClass + "(id=1)" +
+                                   " and " + entityBClass + " (id=" + id + "), using " +
                                    ((useGenericList == true) ? "Generic List" : "Non-Generic List") +
                                    "...");
                 if (useGenericList) {
@@ -565,8 +553,8 @@ public class ManyXManyCollectionTypeTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=1)...");
-            IContainerTypeEntityA find_entityA = (IContainerTypeEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), 1);
+            System.out.println("Finding " + entityAClass + " (id=1)...");
+            IContainerTypeEntityA find_entityA = (IContainerTypeEntityA) jpaResource.getEm().find(entityAClass, 1);
             System.out.println("Object returned by find: " + find_entityA);
 
             // Verify that em.find() returned an object. (1 point)
@@ -694,19 +682,15 @@ public class ManyXManyCollectionTypeTestLogic extends AbstractTestLogic {
         }
 
         // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        ManyXManyCollectionEntityEnum targetEntityAType = ManyXManyCollectionEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
+        Class<?> entityAClass = (Class<?>) testExecCtx.getProperties().get("EntityAName");
+        if (entityAClass == null) {
+            Assert.fail("Invalid Entity-A type specified ('" + entityAClass + "').  Cannot execute the test.");
             return;
         }
 
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        ManyXManyCollectionEntityEnum targetEntityBType = ManyXManyCollectionEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
+        Class<?> entityBClass = (Class<?>) testExecCtx.getProperties().get("EntityBName");
+        if (entityBClass == null) {
+            Assert.fail("Invalid Entity-B type specified ('" + entityBClass + "').  Cannot execute the test.");
             return;
         }
 
@@ -726,30 +710,30 @@ public class ManyXManyCollectionTypeTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Construct a new entity instances
-            System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() + " (id=1)...");
-            IContainerTypeEntityA new_entityA = (IContainerTypeEntityA) constructNewEntityObject(targetEntityAType);
+            System.out.println("Creating new object instance of " + entityAClass + " (id=1)...");
+            IContainerTypeEntityA new_entityA = (IContainerTypeEntityA) constructNewEntityObject(entityAClass);
             new_entityA.setId(1);
             new_entityA.setName("Dr. Peabody");
 
             System.out.println("Persisting " + new_entityA);
             jpaResource.getEm().persist(new_entityA);
 
-            System.out.println("Creating " + entityBIdList.length + " instances of " + targetEntityBType.getEntityName() + "...");
+            System.out.println("Creating " + entityBIdList.length + " instances of " + entityBClass + "...");
 
             for (int index = 0; index < entityBIdList.length; index++) {
                 int id = entityBIdList[index];
                 String name = entityBNameList[index];
 
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() + " (id=" + id + ")...");
-                IContainerTypeEntityB new_entityB = (IContainerTypeEntityB) constructNewEntityObject(targetEntityBType);
+                System.out.println("Creating new object instance of " + entityBClass + " (id=" + id + ")...");
+                IContainerTypeEntityB new_entityB = (IContainerTypeEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(id);
                 new_entityB.setName(name);
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Establishing relationship between " + targetEntityAType.getEntityName() + "(id=1)" +
-                                   " and " + targetEntityBType.getEntityName() + " (id=" + id + "), using Ordered List");
+                System.out.println("Establishing relationship between " + entityAClass + "(id=1)" +
+                                   " and " + entityBClass + " (id=" + id + "), using Ordered List");
                 new_entityA.insertOrderedListTypeField(new_entityB);
             }
 
@@ -767,8 +751,8 @@ public class ManyXManyCollectionTypeTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=1)...");
-            IContainerTypeEntityA find_entityA = (IContainerTypeEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), 1);
+            System.out.println("Finding " + entityAClass + " (id=1)...");
+            IContainerTypeEntityA find_entityA = (IContainerTypeEntityA) jpaResource.getEm().find(entityAClass, 1);
             System.out.println("Object returned by find: " + find_entityA);
 
             // Verify that em.find() returned an object. (1 point)
@@ -912,19 +896,15 @@ public class ManyXManyCollectionTypeTestLogic extends AbstractTestLogic {
         }
 
         // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        ManyXManyCollectionEntityEnum targetEntityAType = ManyXManyCollectionEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
+        Class<?> entityAClass = (Class<?>) testExecCtx.getProperties().get("EntityAName");
+        if (entityAClass == null) {
+            Assert.fail("Invalid Entity-A type specified ('" + entityAClass + "').  Cannot execute the test.");
             return;
         }
 
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        ManyXManyCollectionEntityEnum targetEntityBType = ManyXManyCollectionEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
+        Class<?> entityBClass = (Class<?>) testExecCtx.getProperties().get("EntityBName");
+        if (entityBClass == null) {
+            Assert.fail("Invalid Entity-B type specified ('" + entityBClass + "').  Cannot execute the test.");
             return;
         }
 
@@ -947,30 +927,30 @@ public class ManyXManyCollectionTypeTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Construct a new entity instances
-            System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() + " (id=1)...");
-            IContainerTypeEntityA new_entityA = (IContainerTypeEntityA) constructNewEntityObject(targetEntityAType);
+            System.out.println("Creating new object instance of " + entityAClass + " (id=1)...");
+            IContainerTypeEntityA new_entityA = (IContainerTypeEntityA) constructNewEntityObject(entityAClass);
             new_entityA.setId(1);
             new_entityA.setName("Dr. Peabody");
 
             System.out.println("Persisting " + new_entityA);
             jpaResource.getEm().persist(new_entityA);
 
-            System.out.println("Creating " + entityBIdList.length + " instances of " + targetEntityBType.getEntityName() + "...");
+            System.out.println("Creating " + entityBIdList.length + " instances of " + entityBClass + "...");
 
             for (int index = 0; index < entityBIdList.length; index++) {
                 int id = entityBIdList[index];
                 String name = entityBNameList[index];
 
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() + " (id=" + id + ")...");
-                IContainerTypeEntityB new_entityB = (IContainerTypeEntityB) constructNewEntityObject(targetEntityBType);
+                System.out.println("Creating new object instance of " + entityBClass + " (id=" + id + ")...");
+                IContainerTypeEntityB new_entityB = (IContainerTypeEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(id);
                 new_entityB.setName(name);
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Establishing relationship between " + targetEntityAType.getEntityName() + "(id=1)" +
-                                   " and " + targetEntityBType.getEntityName() + " (id=" + id + "), using " +
+                System.out.println("Establishing relationship between " + entityAClass + "(id=1)" +
+                                   " and " + entityBClass + " (id=" + id + "), using " +
                                    ((useGenericMap == true) ? "Generic Map" : "Non-Generic Map") +
                                    "...");
                 if (useGenericMap) {
@@ -994,8 +974,8 @@ public class ManyXManyCollectionTypeTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=1)...");
-            IContainerTypeEntityA find_entityA = (IContainerTypeEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), 1);
+            System.out.println("Finding " + entityAClass + " (id=1)...");
+            IContainerTypeEntityA find_entityA = (IContainerTypeEntityA) jpaResource.getEm().find(entityAClass, 1);
             System.out.println("Object returned by find: " + find_entityA);
 
             // Verify that em.find() returned an object. (1 point)
@@ -1122,19 +1102,15 @@ public class ManyXManyCollectionTypeTestLogic extends AbstractTestLogic {
         }
 
         // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        ManyXManyCollectionEntityEnum targetEntityAType = ManyXManyCollectionEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
+        Class<?> entityAClass = (Class<?>) testExecCtx.getProperties().get("EntityAName");
+        if (entityAClass == null) {
+            Assert.fail("Invalid Entity-A type specified ('" + entityAClass + "').  Cannot execute the test.");
             return;
         }
 
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        ManyXManyCollectionEntityEnum targetEntityBType = ManyXManyCollectionEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
+        Class<?> entityBClass = (Class<?>) testExecCtx.getProperties().get("EntityBName");
+        if (entityBClass == null) {
+            Assert.fail("Invalid Entity-B type specified ('" + entityBClass + "').  Cannot execute the test.");
             return;
         }
 
@@ -1157,30 +1133,30 @@ public class ManyXManyCollectionTypeTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Construct a new entity instances
-            System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() + " (id=1)...");
-            IContainerTypeEntityA new_entityA = (IContainerTypeEntityA) constructNewEntityObject(targetEntityAType);
+            System.out.println("Creating new object instance of " + entityAClass + " (id=1)...");
+            IContainerTypeEntityA new_entityA = (IContainerTypeEntityA) constructNewEntityObject(entityAClass);
             new_entityA.setId(1);
             new_entityA.setName("Dr. Peabody");
 
             System.out.println("Persisting " + new_entityA);
             jpaResource.getEm().persist(new_entityA);
 
-            System.out.println("Creating " + entityBIdList.length + " instances of " + targetEntityBType.getEntityName() + "...");
+            System.out.println("Creating " + entityBIdList.length + " instances of " + entityBClass + "...");
 
             for (int index = 0; index < entityBIdList.length; index++) {
                 int id = entityBIdList[index];
                 String name = entityBNameList[index];
 
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() + " (id=" + id + ")...");
-                IContainerTypeEntityB new_entityB = (IContainerTypeEntityB) constructNewEntityObject(targetEntityBType);
+                System.out.println("Creating new object instance of " + entityBClass + " (id=" + id + ")...");
+                IContainerTypeEntityB new_entityB = (IContainerTypeEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(id);
                 new_entityB.setName(name);
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Establishing relationship between " + targetEntityAType.getEntityName() + "(id=1)" +
-                                   " and " + targetEntityBType.getEntityName() + " (id=" + id + "), using " +
+                System.out.println("Establishing relationship between " + entityAClass + "(id=1)" +
+                                   " and " + entityBClass + " (id=" + id + "), using " +
                                    ((useGenericMap == true) ? "Generic Map" : "Non-Generic Map") +
                                    "...");
                 if (useGenericMap) {
@@ -1204,8 +1180,8 @@ public class ManyXManyCollectionTypeTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=1)...");
-            IContainerTypeEntityA find_entityA = (IContainerTypeEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), 1);
+            System.out.println("Finding " + entityAClass + " (id=1)...");
+            IContainerTypeEntityA find_entityA = (IContainerTypeEntityA) jpaResource.getEm().find(entityAClass, 1);
             System.out.println("Object returned by find: " + find_entityA);
 
             // Verify that em.find() returned an object. (1 point)

@@ -18,25 +18,31 @@ import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
+import com.ibm.ws.jpa.fvt.relationships.manyXone.entities.nooptional.annotation.MONoOptEntityA;
+import com.ibm.ws.jpa.fvt.relationships.manyXone.entities.nooptional.annotation.MONoOptEntityB;
+import com.ibm.ws.jpa.fvt.relationships.manyXone.entities.nooptional.xml.XMLMONoOptEntityA;
+import com.ibm.ws.jpa.fvt.relationships.manyXone.entities.nooptional.xml.XMLMONoOptEntityB;
+import com.ibm.ws.jpa.fvt.relationships.manyXone.entities.uni.annotation.MOUniEntityA;
+import com.ibm.ws.jpa.fvt.relationships.manyXone.entities.uni.annotation.MOUniEntityB;
+import com.ibm.ws.jpa.fvt.relationships.manyXone.entities.uni.xml.XMLMOUniEntityA;
+import com.ibm.ws.jpa.fvt.relationships.manyXone.entities.uni.xml.XMLMOUniEntityB;
+import com.ibm.ws.jpa.fvt.relationships.manyXone.testlogic.ManyXOneUnidirectionalTestLogic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.vehicle.web.EJBTestVehicleServlet;
 
 import componenttest.annotation.ExpectedFFDC;
 
-@SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TestManyXOneUnidirectional_EJB_SL_Servlet")
 public class TestManyXOneUnidirectional_EJB_SL_Servlet extends EJBTestVehicleServlet {
-    private final String testLogicClassName = "com.ibm.ws.jpa.fvt.relationships.manyXone.testlogic.ManyXOneUnidirectionalTestLogic";
-
-    private final HashMap<String, JPAPersistenceContext> jpaPctxMap = new HashMap<String, JPAPersistenceContext>();
-
-    private final static String ejbJNDIName = "ejb/ManyXOneSLEJB";
+    private static final long serialVersionUID = 1L;
 
     @PostConstruct
     private void initFAT() {
+        testClassName = ManyXOneUnidirectionalTestLogic.class.getName();
+        ejbJNDIName = "ejb/ManyXOneSLEJB";
+
         jpaPctxMap.put("test-jpa-resource-amjta",
                        new JPAPersistenceContext("test-jpa-resource-amjta", PersistenceContextType.APPLICATION_MANAGED_JTA, PersistenceInjectionType.JNDI, "java:comp/env/jpa/ManyXOne_Uni_AMJTA"));
         jpaPctxMap.put("test-jpa-resource-amrl",
@@ -73,108 +79,84 @@ public class TestManyXOneUnidirectional_EJB_SL_Servlet extends EJBTestVehicleSer
     public void jpa10_Relationships_ManyXOne_Unidirectional_001_Ano_AMJTA_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_001_Ano_AMJTA_EJB_SL";
         final String testMethod = "testManyXOneUni001";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "MOUniEntityA");
-        properties.put("EntityBName", "MOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", MOUniEntityA.class);
+        properties.put("EntityBName", MOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_001_XML_AMJTA_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_001_XML_AMJTA_EJB_SL";
         final String testMethod = "testManyXOneUni001";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLMOUniEntityA");
-        properties.put("EntityBName", "XMLMOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLMOUniEntityA.class);
+        properties.put("EntityBName", XMLMOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_001_Ano_AMRL_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_001_Ano_AMRL_EJB_SL";
         final String testMethod = "testManyXOneUni001";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "MOUniEntityA");
-        properties.put("EntityBName", "MOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", MOUniEntityA.class);
+        properties.put("EntityBName", MOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_001_XML_AMRL_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_001_XML_AMRL_EJB_SL";
         final String testMethod = "testManyXOneUni001";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLMOUniEntityA");
-        properties.put("EntityBName", "XMLMOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLMOUniEntityA.class);
+        properties.put("EntityBName", XMLMOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_001_Ano_CMTS_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_001_Ano_CMTS_EJB_SL";
         final String testMethod = "testManyXOneUni001";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "MOUniEntityA");
-        properties.put("EntityBName", "MOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", MOUniEntityA.class);
+        properties.put("EntityBName", MOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_001_XML_CMTS_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_001_XML_CMTS_EJB_SL";
         final String testMethod = "testManyXOneUni001";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLMOUniEntityA");
-        properties.put("EntityBName", "XMLMOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLMOUniEntityA.class);
+        properties.put("EntityBName", XMLMOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     /*
@@ -197,108 +179,84 @@ public class TestManyXOneUnidirectional_EJB_SL_Servlet extends EJBTestVehicleSer
     public void jpa10_Relationships_ManyXOne_Unidirectional_002_Ano_AMJTA_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_002_Ano_AMJTA_EJB_SL";
         final String testMethod = "testManyXOneUni002";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "MOUniEntityA");
-        properties.put("EntityBName", "MOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", MOUniEntityA.class);
+        properties.put("EntityBName", MOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_002_XML_AMJTA_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_002_XML_AMJTA_EJB_SL";
         final String testMethod = "testManyXOneUni002";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLMOUniEntityA");
-        properties.put("EntityBName", "XMLMOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLMOUniEntityA.class);
+        properties.put("EntityBName", XMLMOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_002_Ano_AMRL_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_002_Ano_AMRL_EJB_SL";
         final String testMethod = "testManyXOneUni002";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "MOUniEntityA");
-        properties.put("EntityBName", "MOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", MOUniEntityA.class);
+        properties.put("EntityBName", MOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_002_XML_AMRL_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_002_XML_AMRL_EJB_SL";
         final String testMethod = "testManyXOneUni002";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLMOUniEntityA");
-        properties.put("EntityBName", "XMLMOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLMOUniEntityA.class);
+        properties.put("EntityBName", XMLMOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_002_Ano_CMTS_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_002_Ano_CMTS_EJB_SL";
         final String testMethod = "testManyXOneUni002";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "MOUniEntityA");
-        properties.put("EntityBName", "MOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", MOUniEntityA.class);
+        properties.put("EntityBName", MOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_002_XML_CMTS_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_002_XML_CMTS_EJB_SL";
         final String testMethod = "testManyXOneUni002";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLMOUniEntityA");
-        properties.put("EntityBName", "XMLMOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLMOUniEntityA.class);
+        properties.put("EntityBName", XMLMOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     /*
@@ -326,108 +284,84 @@ public class TestManyXOneUnidirectional_EJB_SL_Servlet extends EJBTestVehicleSer
     public void jpa10_Relationships_ManyXOne_Unidirectional_003_Ano_AMJTA_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_003_Ano_AMJTA_EJB_SL";
         final String testMethod = "testManyXOneUni003";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "MONoOptEntityA");
-        properties.put("EntityBName", "MONoOptEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", MONoOptEntityA.class);
+        properties.put("EntityBName", MONoOptEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
 //    @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_003_XML_AMJTA_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_003_XML_AMJTA_EJB_SL";
         final String testMethod = "testManyXOneUni003";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLMONoOptEntityA");
-        properties.put("EntityBName", "XMLMONoOptEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLMONoOptEntityA.class);
+        properties.put("EntityBName", XMLMONoOptEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
 //    @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_003_Ano_AMRL_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_003_Ano_AMRL_EJB_SL";
         final String testMethod = "testManyXOneUni003";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "MONoOptEntityA");
-        properties.put("EntityBName", "MONoOptEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", MONoOptEntityA.class);
+        properties.put("EntityBName", MONoOptEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
 //    @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_003_XML_AMRL_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_003_XML_AMRL_EJB_SL";
         final String testMethod = "testManyXOneUni003";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLMONoOptEntityA");
-        properties.put("EntityBName", "XMLMONoOptEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLMONoOptEntityA.class);
+        properties.put("EntityBName", XMLMONoOptEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
 //    @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_003_Ano_CMTS_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_003_Ano_CMTS_EJB_SL";
         final String testMethod = "testManyXOneUni003";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "MONoOptEntityA");
-        properties.put("EntityBName", "MONoOptEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", MONoOptEntityA.class);
+        properties.put("EntityBName", MONoOptEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
 //    @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_003_XML_CMTS_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_003_XML_CMTS_EJB_SL";
         final String testMethod = "testManyXOneUni003";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLMONoOptEntityA");
-        properties.put("EntityBName", "XMLMONoOptEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLMONoOptEntityA.class);
+        properties.put("EntityBName", XMLMONoOptEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     /*
@@ -461,108 +395,84 @@ public class TestManyXOneUnidirectional_EJB_SL_Servlet extends EJBTestVehicleSer
     public void jpa10_Relationships_ManyXOne_Unidirectional_004_Ano_AMJTA_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_004_Ano_AMJTA_EJB_SL";
         final String testMethod = "testManyXOneUni004";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "MOUniEntityA");
-        properties.put("EntityBName", "MOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", MOUniEntityA.class);
+        properties.put("EntityBName", MOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_004_XML_AMJTA_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_004_XML_AMJTA_EJB_SL";
         final String testMethod = "testManyXOneUni004";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLMOUniEntityA");
-        properties.put("EntityBName", "XMLMOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLMOUniEntityA.class);
+        properties.put("EntityBName", XMLMOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_004_Ano_AMRL_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_004_Ano_AMRL_EJB_SL";
         final String testMethod = "testManyXOneUni004";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "MOUniEntityA");
-        properties.put("EntityBName", "MOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", MOUniEntityA.class);
+        properties.put("EntityBName", MOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_004_XML_AMRL_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_004_XML_AMRL_EJB_SL";
         final String testMethod = "testManyXOneUni004";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLMOUniEntityA");
-        properties.put("EntityBName", "XMLMOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLMOUniEntityA.class);
+        properties.put("EntityBName", XMLMOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_004_Ano_CMTS_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_004_Ano_CMTS_EJB_SL";
         final String testMethod = "testManyXOneUni004";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "MOUniEntityA");
-        properties.put("EntityBName", "MOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", MOUniEntityA.class);
+        properties.put("EntityBName", MOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_004_XML_CMTS_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_004_XML_CMTS_EJB_SL";
         final String testMethod = "testManyXOneUni004";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLMOUniEntityA");
-        properties.put("EntityBName", "XMLMOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLMOUniEntityA.class);
+        properties.put("EntityBName", XMLMOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     /*
@@ -673,18 +583,14 @@ public class TestManyXOneUnidirectional_EJB_SL_Servlet extends EJBTestVehicleSer
     public void jpa10_Relationships_ManyXOne_Unidirectional_005_Ano_AMJTA_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_005_Ano_AMJTA_EJB_SL";
         final String testMethod = "testManyXOneUni005";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "MOUniEntityA");
-        properties.put("EntityBName", "MOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", MOUniEntityA.class);
+        properties.put("EntityBName", MOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
@@ -692,54 +598,42 @@ public class TestManyXOneUnidirectional_EJB_SL_Servlet extends EJBTestVehicleSer
     public void jpa10_Relationships_ManyXOne_Unidirectional_005_XML_AMJTA_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_005_XML_AMJTA_EJB_SL";
         final String testMethod = "testManyXOneUni005";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLMOUniEntityA");
-        properties.put("EntityBName", "XMLMOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLMOUniEntityA.class);
+        properties.put("EntityBName", XMLMOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_005_Ano_AMRL_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_005_Ano_AMRL_EJB_SL";
         final String testMethod = "testManyXOneUni005";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "MOUniEntityA");
-        properties.put("EntityBName", "MOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", MOUniEntityA.class);
+        properties.put("EntityBName", MOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_005_XML_AMRL_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_005_XML_AMRL_EJB_SL";
         final String testMethod = "testManyXOneUni005";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLMOUniEntityA");
-        properties.put("EntityBName", "XMLMOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLMOUniEntityA.class);
+        properties.put("EntityBName", XMLMOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
@@ -747,18 +641,14 @@ public class TestManyXOneUnidirectional_EJB_SL_Servlet extends EJBTestVehicleSer
     public void jpa10_Relationships_ManyXOne_Unidirectional_005_Ano_CMTS_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_005_Ano_CMTS_EJB_SL";
         final String testMethod = "testManyXOneUni005";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "MOUniEntityA");
-        properties.put("EntityBName", "MOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", MOUniEntityA.class);
+        properties.put("EntityBName", MOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
@@ -766,18 +656,14 @@ public class TestManyXOneUnidirectional_EJB_SL_Servlet extends EJBTestVehicleSer
     public void jpa10_Relationships_ManyXOne_Unidirectional_005_XML_CMTS_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_005_XML_CMTS_EJB_SL";
         final String testMethod = "testManyXOneUni005";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLMOUniEntityA");
-        properties.put("EntityBName", "XMLMOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLMOUniEntityA.class);
+        properties.put("EntityBName", XMLMOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     /*
@@ -847,108 +733,84 @@ public class TestManyXOneUnidirectional_EJB_SL_Servlet extends EJBTestVehicleSer
     public void jpa10_Relationships_ManyXOne_Unidirectional_006_Ano_AMJTA_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_006_Ano_AMJTA_EJB_SL";
         final String testMethod = "testManyXOneUni006";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "MOUniEntityA");
-        properties.put("EntityBName", "MOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", MOUniEntityA.class);
+        properties.put("EntityBName", MOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_006_XML_AMJTA_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_006_XML_AMJTA_EJB_SL";
         final String testMethod = "testManyXOneUni006";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLMOUniEntityA");
-        properties.put("EntityBName", "XMLMOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLMOUniEntityA.class);
+        properties.put("EntityBName", XMLMOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_006_Ano_AMRL_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_006_Ano_AMRL_EJB_SL";
         final String testMethod = "testManyXOneUni006";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "MOUniEntityA");
-        properties.put("EntityBName", "MOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", MOUniEntityA.class);
+        properties.put("EntityBName", MOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_006_XML_AMRL_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_006_XML_AMRL_EJB_SL";
         final String testMethod = "testManyXOneUni006";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLMOUniEntityA");
-        properties.put("EntityBName", "XMLMOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLMOUniEntityA.class);
+        properties.put("EntityBName", XMLMOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_006_Ano_CMTS_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_006_Ano_CMTS_EJB_SL";
         final String testMethod = "testManyXOneUni006";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "MOUniEntityA");
-        properties.put("EntityBName", "MOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", MOUniEntityA.class);
+        properties.put("EntityBName", MOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_006_XML_CMTS_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_006_XML_CMTS_EJB_SL";
         final String testMethod = "testManyXOneUni006";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLMOUniEntityA");
-        properties.put("EntityBName", "XMLMOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLMOUniEntityA.class);
+        properties.put("EntityBName", XMLMOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     /*
@@ -978,108 +840,84 @@ public class TestManyXOneUnidirectional_EJB_SL_Servlet extends EJBTestVehicleSer
     public void jpa10_Relationships_ManyXOne_Unidirectional_007_Ano_AMJTA_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_007_Ano_AMJTA_EJB_SL";
         final String testMethod = "testManyXOneUni007";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "MOUniEntityA");
-        properties.put("EntityBName", "MOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", MOUniEntityA.class);
+        properties.put("EntityBName", MOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_007_XML_AMJTA_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_007_XML_AMJTA_EJB_SL";
         final String testMethod = "testManyXOneUni007";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLMOUniEntityA");
-        properties.put("EntityBName", "XMLMOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLMOUniEntityA.class);
+        properties.put("EntityBName", XMLMOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_007_Ano_AMRL_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_007_Ano_AMRL_EJB_SL";
         final String testMethod = "testManyXOneUni007";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "MOUniEntityA");
-        properties.put("EntityBName", "MOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", MOUniEntityA.class);
+        properties.put("EntityBName", MOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_007_XML_AMRL_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_007_XML_AMRL_EJB_SL";
         final String testMethod = "testManyXOneUni007";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLMOUniEntityA");
-        properties.put("EntityBName", "XMLMOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLMOUniEntityA.class);
+        properties.put("EntityBName", XMLMOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_007_Ano_CMTS_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_007_Ano_CMTS_EJB_SL";
         final String testMethod = "testManyXOneUni007";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "MOUniEntityA");
-        properties.put("EntityBName", "MOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", MOUniEntityA.class);
+        properties.put("EntityBName", MOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_007_XML_CMTS_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_007_XML_CMTS_EJB_SL";
         final String testMethod = "testManyXOneUni007";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLMOUniEntityA");
-        properties.put("EntityBName", "XMLMOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLMOUniEntityA.class);
+        properties.put("EntityBName", XMLMOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     /*
@@ -1103,108 +941,84 @@ public class TestManyXOneUnidirectional_EJB_SL_Servlet extends EJBTestVehicleSer
     public void jpa10_Relationships_ManyXOne_Unidirectional_008_Ano_AMJTA_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_008_Ano_AMJTA_EJB_SL";
         final String testMethod = "testManyXOneUni008";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "MOUniEntityA");
-        properties.put("EntityBName", "MOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", MOUniEntityA.class);
+        properties.put("EntityBName", MOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_008_XML_AMJTA_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_008_XML_AMJTA_EJB_SL";
         final String testMethod = "testManyXOneUni008";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLMOUniEntityA");
-        properties.put("EntityBName", "XMLMOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLMOUniEntityA.class);
+        properties.put("EntityBName", XMLMOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_008_Ano_AMRL_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_008_Ano_AMRL_EJB_SL";
         final String testMethod = "testManyXOneUni008";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "MOUniEntityA");
-        properties.put("EntityBName", "MOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", MOUniEntityA.class);
+        properties.put("EntityBName", MOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_008_XML_AMRL_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_008_XML_AMRL_EJB_SL";
         final String testMethod = "testManyXOneUni008";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLMOUniEntityA");
-        properties.put("EntityBName", "XMLMOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLMOUniEntityA.class);
+        properties.put("EntityBName", XMLMOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_008_Ano_CMTS_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_008_Ano_CMTS_EJB_SL";
         final String testMethod = "testManyXOneUni008";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "MOUniEntityA");
-        properties.put("EntityBName", "MOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", MOUniEntityA.class);
+        properties.put("EntityBName", MOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_008_XML_CMTS_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_008_XML_CMTS_EJB_SL";
         final String testMethod = "testManyXOneUni008";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLMOUniEntityA");
-        properties.put("EntityBName", "XMLMOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLMOUniEntityA.class);
+        properties.put("EntityBName", XMLMOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     /*
@@ -1231,108 +1045,84 @@ public class TestManyXOneUnidirectional_EJB_SL_Servlet extends EJBTestVehicleSer
     public void jpa10_Relationships_ManyXOne_Unidirectional_009_Ano_AMJTA_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_009_Ano_AMJTA_EJB_SL";
         final String testMethod = "testManyXOneUni009";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "MOUniEntityA");
-        properties.put("EntityBName", "MOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", MOUniEntityA.class);
+        properties.put("EntityBName", MOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_009_XML_AMJTA_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_009_XML_AMJTA_EJB_SL";
         final String testMethod = "testManyXOneUni009";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLMOUniEntityA");
-        properties.put("EntityBName", "XMLMOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLMOUniEntityA.class);
+        properties.put("EntityBName", XMLMOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_009_Ano_AMRL_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_009_Ano_AMRL_EJB_SL";
         final String testMethod = "testManyXOneUni009";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "MOUniEntityA");
-        properties.put("EntityBName", "MOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", MOUniEntityA.class);
+        properties.put("EntityBName", MOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_009_XML_AMRL_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_009_XML_AMRL_EJB_SL";
         final String testMethod = "testManyXOneUni009";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLMOUniEntityA");
-        properties.put("EntityBName", "XMLMOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLMOUniEntityA.class);
+        properties.put("EntityBName", XMLMOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_009_Ano_CMTS_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_009_Ano_CMTS_EJB_SL";
         final String testMethod = "testManyXOneUni009";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "MOUniEntityA");
-        properties.put("EntityBName", "MOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", MOUniEntityA.class);
+        properties.put("EntityBName", MOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_009_XML_CMTS_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_009_XML_CMTS_EJB_SL";
         final String testMethod = "testManyXOneUni009";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLMOUniEntityA");
-        properties.put("EntityBName", "XMLMOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLMOUniEntityA.class);
+        properties.put("EntityBName", XMLMOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     /*
@@ -1359,108 +1149,84 @@ public class TestManyXOneUnidirectional_EJB_SL_Servlet extends EJBTestVehicleSer
     public void jpa10_Relationships_ManyXOne_Unidirectional_010_Ano_AMJTA_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_010_Ano_AMJTA_EJB_SL";
         final String testMethod = "testManyXOneUni010";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "MOUniEntityA");
-        properties.put("EntityBName", "MOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", MOUniEntityA.class);
+        properties.put("EntityBName", MOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_010_XML_AMJTA_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_010_XML_AMJTA_EJB_SL";
         final String testMethod = "testManyXOneUni010";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLMOUniEntityA");
-        properties.put("EntityBName", "XMLMOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLMOUniEntityA.class);
+        properties.put("EntityBName", XMLMOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_010_Ano_AMRL_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_010_Ano_AMRL_EJB_SL";
         final String testMethod = "testManyXOneUni010";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "MOUniEntityA");
-        properties.put("EntityBName", "MOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", MOUniEntityA.class);
+        properties.put("EntityBName", MOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_010_XML_AMRL_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_010_XML_AMRL_EJB_SL";
         final String testMethod = "testManyXOneUni010";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLMOUniEntityA");
-        properties.put("EntityBName", "XMLMOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLMOUniEntityA.class);
+        properties.put("EntityBName", XMLMOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_010_Ano_CMTS_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_010_Ano_CMTS_EJB_SL";
         final String testMethod = "testManyXOneUni010";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "MOUniEntityA");
-        properties.put("EntityBName", "MOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", MOUniEntityA.class);
+        properties.put("EntityBName", MOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_010_XML_CMTS_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_010_XML_CMTS_EJB_SL";
         final String testMethod = "testManyXOneUni010";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLMOUniEntityA");
-        properties.put("EntityBName", "XMLMOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLMOUniEntityA.class);
+        properties.put("EntityBName", XMLMOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     /*
@@ -1487,107 +1253,83 @@ public class TestManyXOneUnidirectional_EJB_SL_Servlet extends EJBTestVehicleSer
     public void jpa10_Relationships_ManyXOne_Unidirectional_TestCardinality001_Ano_AMJTA_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_TestCardinality001_Ano_AMJTA_EJB_SL";
         final String testMethod = "testCardinality001";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "MOUniEntityA");
-        properties.put("EntityBName", "MOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", MOUniEntityA.class);
+        properties.put("EntityBName", MOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_TestCardinality001_XML_AMJTA_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_TestCardinality001_XML_AMJTA_EJB_SL";
         final String testMethod = "testCardinality001";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLMOUniEntityA");
-        properties.put("EntityBName", "XMLMOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLMOUniEntityA.class);
+        properties.put("EntityBName", XMLMOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_TestCardinality001_Ano_AMRL_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_TestCardinality001_Ano_AMRL_EJB_SL";
         final String testMethod = "testCardinality001";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "MOUniEntityA");
-        properties.put("EntityBName", "MOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", MOUniEntityA.class);
+        properties.put("EntityBName", MOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_TestCardinality001_XML_AMRL_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_TestCardinality001_XML_AMRL_EJB_SL";
         final String testMethod = "testCardinality001";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLMOUniEntityA");
-        properties.put("EntityBName", "XMLMOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLMOUniEntityA.class);
+        properties.put("EntityBName", XMLMOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_TestCardinality001_Ano_CMTS_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_TestCardinality001_Ano_CMTS_EJB_SL";
         final String testMethod = "testCardinality001";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "MOUniEntityA");
-        properties.put("EntityBName", "MOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", MOUniEntityA.class);
+        properties.put("EntityBName", MOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_Unidirectional_TestCardinality001_XML_CMTS_EJB_SL() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_Unidirectional_TestCardinality001_XML_CMTS_EJB_SL";
         final String testMethod = "testCardinality001";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLMOUniEntityA");
-        properties.put("EntityBName", "XMLMOUniEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLMOUniEntityA.class);
+        properties.put("EntityBName", XMLMOUniEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 }

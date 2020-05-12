@@ -22,6 +22,7 @@ import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
 import com.ibm.ws.testtooling.vehicle.resources.TestExecutionResources;
 
 public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
+
     /**
      * Verify basic Many-to-Many service by creating EntityA and EntityB, and
      * add EntityB to the collection EntityA.defaultRelationship.
@@ -45,6 +46,7 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
      *
      * Points: 10
      */
+    @SuppressWarnings("rawtypes")
     public void testManyXManyUni001(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
                                     Object managedComponentObject) throws Throwable {
         // Verify parameters
@@ -62,19 +64,15 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        ManyXManyEntityEnum targetEntityAType = ManyXManyEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
+        Class<?> entityAClass = (Class<?>) testExecCtx.getProperties().get("EntityAName");
+        if (entityAClass == null) {
+            Assert.fail("Invalid Entity-A type specified ('" + entityAClass + "').  Cannot execute the test.");
             return;
         }
 
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        ManyXManyEntityEnum targetEntityBType = ManyXManyEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
+        Class<?> entityBClass = (Class<?>) testExecCtx.getProperties().get("EntityBName");
+        if (entityBClass == null) {
+            Assert.fail("Invalid Entity-B type specified ('" + entityBClass + "').  Cannot execute the test.");
             return;
         }
 
@@ -94,21 +92,21 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Construct a new entity instances
-            System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() + " (id=1)...");
-            IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+            System.out.println("Creating new object instance of " + entityBClass + " (id=1)...");
+            IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
             new_entityB.setId(1);
             new_entityB.setName("Entity B");
 
             System.out.println("Persisting " + new_entityB);
             jpaResource.getEm().persist(new_entityB);
 
-            System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() + " (id=1)...");
-            IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+            System.out.println("Creating new object instance of " + entityAClass + " (id=1)...");
+            IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
             new_entityA.setId(1);
             new_entityA.setName("Entity A");
 
-            System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                               targetEntityBType.getEntityName() + " via the 'direct' relationship field...");
+            System.out.println("Creating relationship between " + entityAClass + " and " +
+                               entityBClass + " via the 'direct' relationship field...");
             new_entityA.insertDefaultRelationshipField(new_entityB);
 
             System.out.println("Persisting " + new_entityA);
@@ -129,8 +127,8 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=1)...");
-            IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), 1);
+            System.out.println("Finding " + entityAClass + " (id=1)...");
+            IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, 1);
             System.out.println("Object returned by find: " + find_entityA);
 
             // Verify that em.find() returned an object. (1 point)
@@ -152,31 +150,31 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
             // Examine the defaultRelationship field of EntityA.  It should not be null, should have an id=1, and
             // its name field should have a value of "Entity B". (6 points)
             System.out.println(
-                               "Looking in " + targetEntityAType.getEntityName() +
+                               "Looking in " + entityAClass +
                                "(id=1)'s defaultRelationship collection for " +
-                               targetEntityBType.getEntityName() + "...");
+                               entityBClass + "...");
             Collection drCollection = find_entityA.getDefaultRelationshipCollectionField();
             Assert.assertNotNull(
-                                 "Assert that " + targetEntityAType.getEntityName() + "(id=1).defaultRelationship is not null.",
+                                 "Assert that " + entityAClass + "(id=1).defaultRelationship is not null.",
                                  drCollection);
             Assert.assertEquals(
-                                "Assert that " + targetEntityAType.getEntityName() + "(id=1).defaultRelationship.size() == 1",
+                                "Assert that " + entityAClass + "(id=1).defaultRelationship.size() == 1",
                                 1,
                                 drCollection.size());
 
             IEntityB dr_entityB = (IEntityB) drCollection.iterator().next();
             Assert.assertNotNull(
-                                 "Assert that an " + targetEntityBType.getEntityName() + " was extracted from the defaultRelationship.",
+                                 "Assert that an " + entityBClass + " was extracted from the defaultRelationship.",
                                  dr_entityB);
             Assert.assertNotSame(
-                                 "Assert the extracted " + targetEntityBType.getEntityName() + " is not the same as the  original object",
+                                 "Assert the extracted " + entityBClass + " is not the same as the  original object",
                                  new_entityB,
                                  dr_entityB);
             Assert.assertTrue(
-                              "Assert the extracted " + targetEntityBType.getEntityName() + " is managed by the persistence context.",
+                              "Assert the extracted " + entityBClass + " is managed by the persistence context.",
                               jpaResource.getEm().contains(dr_entityB));
             Assert.assertEquals(
-                                "Assert the extracted " + targetEntityBType.getEntityName() + "'s id is 1",
+                                "Assert the extracted " + entityBClass + "'s id is 1",
                                 dr_entityB.getId(),
                                 1);
 
@@ -274,6 +272,7 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
      * 7) Verify that UniEntityB(id=1) still has the new value
      *
      */
+    @SuppressWarnings("rawtypes")
     public void testManyXManyUni002(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
                                     Object managedComponentObject) throws Throwable {
         // Verify parameters
@@ -290,19 +289,15 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        ManyXManyEntityEnum targetEntityAType = ManyXManyEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
+        Class<?> entityAClass = (Class<?>) testExecCtx.getProperties().get("EntityAName");
+        if (entityAClass == null) {
+            Assert.fail("Invalid Entity-A type specified ('" + entityAClass + "').  Cannot execute the test.");
             return;
         }
 
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        ManyXManyEntityEnum targetEntityBType = ManyXManyEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
+        Class<?> entityBClass = (Class<?>) testExecCtx.getProperties().get("EntityBName");
+        if (entityBClass == null) {
+            Assert.fail("Invalid Entity-B type specified ('" + entityBClass + "').  Cannot execute the test.");
             return;
         }
 
@@ -338,22 +333,22 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("NOT Persisting " + new_entityB + "...");
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'direct' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'direct' relationship field...");
                 new_entityA.insertDefaultRelationshipField(new_entityB);
 
                 System.out.println("Persisting " + new_entityA + " (persist should not cascade) ...");
@@ -411,23 +406,23 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'direct' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'direct' relationship field...");
                 new_entityA.insertDefaultRelationshipField(new_entityB);
 
                 System.out.println("Persisting " + new_entityA);
@@ -446,10 +441,10 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 // EntityA's removal.
                 System.out.println(
                                    "Entities have been persisted to the database, with a many-to-many relationship between " +
-                                   targetEntityAType.getEntityName() + " and " + targetEntityBType.getEntityName() +
+                                   entityAClass + " and " + entityBClass +
                                    " established.  The relationship is configured to not cascade remove operations, so " +
-                                   targetEntityBType.getEntityName() + " should survive " +
-                                   targetEntityAType.getEntityName() + "'s removal.");
+                                   entityBClass + " should survive " +
+                                   entityAClass + "'s removal.");
 
                 System.out.println("Beginning new transaction...");
                 jpaResource.getTj().beginTransaction();
@@ -458,12 +453,12 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                     jpaResource.getEm().joinTransaction();
                 }
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
 
-                System.out.println("Removing " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
+                System.out.println("Removing " + entityAClass + " (id=" + pkey + ")...");
                 jpaResource.getEm().remove(find_entityA);
 
                 System.out.println("Committing transaction...");
@@ -474,16 +469,16 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Verify that EntityA has been removed, and that EntityB has not been removed.
-                System.out.println("Verify that " + targetEntityAType.getEntityName() + " has been removed, and that " +
-                                   targetEntityBType.getEntityName() + " has not been removed");
+                System.out.println("Verify that " + entityAClass + " has been removed, and that " +
+                                   entityBClass + " has not been removed");
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA2 = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA2 = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA2);
                 Assert.assertNull("Assert that the find operation did return null", find_entityA2);
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityB);
 
@@ -521,23 +516,23 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'direct' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'direct' relationship field...");
                 new_entityA.insertDefaultRelationshipField(new_entityB);
 
                 System.out.println("Persisting " + new_entityA);
@@ -558,8 +553,8 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 System.out.println(
                                    "Entities have been persisted to the databae, with a many-to-many relationship between " +
                                    "remove operations are not cascaded across entity relationships, " +
-                                   targetEntityAType.getEntityName() + " should survive " +
-                                   targetEntityBType.getEntityName() + "'s removal.");
+                                   entityAClass + " should survive " +
+                                   entityBClass + "'s removal.");
 
                 System.out.println("Beginning new transaction...");
                 jpaResource.getTj().beginTransaction();
@@ -568,12 +563,12 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                     jpaResource.getEm().joinTransaction();
                 }
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityB);
 
-                System.out.println("Removing " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
+                System.out.println("Removing " + entityBClass + " (id=" + pkey + ")...");
                 jpaResource.getEm().remove(find_entityB);
 
                 System.out.println("Committing transaction...");
@@ -584,16 +579,16 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Verify that EntityB has been removed, and that EntityA has not been removed.
-                System.out.println("Verify that " + targetEntityBType.getEntityName() + " has been removed, and that " +
-                                   targetEntityAType.getEntityName() + " has not been removed");
+                System.out.println("Verify that " + entityBClass + " has been removed, and that " +
+                                   entityAClass + " has not been removed");
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB2);
                 Assert.assertNull("Assert that the find operation did return null", find_entityB2);
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
 
@@ -630,23 +625,23 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'direct' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'direct' relationship field...");
                 new_entityA.insertDefaultRelationshipField(new_entityB);
 
                 System.out.println("Persisting " + new_entityA);
@@ -669,8 +664,8 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 // (name field should contain original value)
                 System.out.println(
                                    "Merge EntityA(id=" + pkey + ") into the persistence context and verify that the default field of the " +
-                                   "copy of " + targetEntityAType.getEntityName() + "returned by the merge operation reflects " +
-                                   "the state of " + targetEntityBType.getEntityName() + "(id=" + pkey + ") in the database " +
+                                   "copy of " + entityAClass + "returned by the merge operation reflects " +
+                                   "the state of " + entityBClass + "(id=" + pkey + ") in the database " +
                                    "(name field should contain original value).");
 
                 System.out.println("Beginning new transaction...");
@@ -686,7 +681,7 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                                      new_entityA, mergedEntityA);
                 Assert.assertTrue("Assert object returned by merge() is not detached.", jpaResource.getEm().contains(mergedEntityA));
                 Assert.assertEquals(
-                                    "Assert " + targetEntityAType.getEntityName() + " returned by merge() has the updated field.",
+                                    "Assert " + entityAClass + " returned by merge() has the updated field.",
                                     "New Entity A Name",
                                     mergedEntityA.getName());
 
@@ -694,18 +689,18 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 // persisted.
                 Collection dcCollection = mergedEntityA.getDefaultRelationshipCollectionField();
                 Assert.assertNotNull(
-                                     "Assert " + targetEntityAType.getEntityName() + ".getDefaultRelationshipCollectionField() " +
+                                     "Assert " + entityAClass + ".getDefaultRelationshipCollectionField() " +
                                      " is not null",
                                      dcCollection);
                 Assert.assertEquals("Assert the collection has a size of 1.", 1, dcCollection.size());
 
                 System.out.println(
-                                   "Extracting " + targetEntityBType.getEntityName() + " from the merged " +
-                                   targetEntityAType.getEntityName() + "'s DefaultRelationshipCollectionField collection.");
+                                   "Extracting " + entityBClass + " from the merged " +
+                                   entityAClass + "'s DefaultRelationshipCollectionField collection.");
                 IEntityB entityBFromMergedEntityA = (IEntityB) dcCollection.iterator().next();
                 Assert.assertNotNull("Assert the extraction from the collection did not return a null", entityBFromMergedEntityA);
                 Assert.assertTrue(
-                                  "Assert that " + targetEntityBType.getEntityName() + " is managed.",
+                                  "Assert that " + entityBClass + " is managed.",
                                   jpaResource.getEm().contains(entityBFromMergedEntityA));
                 Assert.assertNotSame("Assert that this is not the original entity object",
                                      new_entityB, entityBFromMergedEntityA);
@@ -724,17 +719,17 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 // Verify that the database state is correct.
                 System.out.println("Verify that the database state is correct...");
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
                 Assert.assertEquals(
-                                    "Assert " + targetEntityAType.getEntityName() + " has the updated field.",
+                                    "Assert " + entityAClass + " has the updated field.",
                                     "New Entity A Name",
                                     find_entityA.getName());
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB2);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityB2);
                 Assert.assertEquals(
@@ -774,23 +769,23 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'direct' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'direct' relationship field...");
                 new_entityA.insertDefaultRelationshipField(new_entityB);
 
                 System.out.println("Persisting " + new_entityA);
@@ -817,8 +812,8 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 // owner side of the relationship.  The refresh operation should not cascade to the entity on
                 // the inverse side of the relationship, so the change to its name field should remain.
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
                 Assert.assertTrue("Assert that the entity is managed.", jpaResource.getEm().contains(find_entityA));
@@ -829,13 +824,13 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
 
                 // Extract EntityB from EntityA's relationship
                 System.out.println(
-                                   "Extracting " + targetEntityBType.getEntityName() + " from the merged " +
-                                   targetEntityAType.getEntityName() + "'s DefaultRelationshipCollectionField collection.");
+                                   "Extracting " + entityBClass + " from the merged " +
+                                   entityAClass + "'s DefaultRelationshipCollectionField collection.");
                 Collection dcCollection = find_entityA.getDefaultRelationshipCollectionField();
                 IEntityB entityBFromEntityA = (IEntityB) dcCollection.iterator().next();
                 Assert.assertNotNull("Assert the extraction from the collection did not return a null", entityBFromEntityA);
                 Assert.assertTrue(
-                                  "Assert that " + targetEntityBType.getEntityName() + " is managed.",
+                                  "Assert that " + entityBClass + " is managed.",
                                   jpaResource.getEm().contains(entityBFromEntityA));
                 Assert.assertNotSame("Assert that this is not the original entity object",
                                      new_entityB, entityBFromEntityA);
@@ -846,11 +841,11 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 entityBFromEntityA.setName("New Entity B Name");
 
                 Assert.assertEquals(
-                                    "Assert mutation took hold in " + targetEntityAType.getEntityName() + "...",
+                                    "Assert mutation took hold in " + entityAClass + "...",
                                     "New Entity A Name",
                                     find_entityA.getName());
                 Assert.assertEquals(
-                                    "Assert mutation took hold in " + targetEntityBType.getEntityName() + "...",
+                                    "Assert mutation took hold in " + entityBClass + "...",
                                     "New Entity B Name",
                                     entityBFromEntityA.getName());
 
@@ -864,11 +859,11 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().refresh(find_entityA);
 
                 Assert.assertEquals(
-                                    "Assert mutation in " + targetEntityAType.getEntityName() + " was undone by refresh()...",
+                                    "Assert mutation in " + entityAClass + " was undone by refresh()...",
                                     "Entity A",
                                     find_entityA.getName());
                 Assert.assertEquals(
-                                    "Assert mutation remains in " + targetEntityBType.getEntityName() + "...",
+                                    "Assert mutation remains in " + entityBClass + "...",
                                     "New Entity B Name",
                                     entityBFromEntityA.getName());
             }
@@ -959,19 +954,15 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        ManyXManyEntityEnum targetEntityAType = ManyXManyEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
+        Class<?> entityAClass = (Class<?>) testExecCtx.getProperties().get("EntityAName");
+        if (entityAClass == null) {
+            Assert.fail("Invalid Entity-A type specified ('" + entityAClass + "').  Cannot execute the test.");
             return;
         }
 
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        ManyXManyEntityEnum targetEntityBType = ManyXManyEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
+        Class<?> entityBClass = (Class<?>) testExecCtx.getProperties().get("EntityBName");
+        if (entityBClass == null) {
+            Assert.fail("Invalid Entity-B type specified ('" + entityBClass + "').  Cannot execute the test.");
             return;
         }
 
@@ -1009,22 +1000,22 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("NOT Persisting " + new_entityB + "...");
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'cascadeAll' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'cascadeAll' relationship field...");
                 new_entityA.insertCascadeAllField(new_entityB);
 
                 System.out.println("Persisting " + new_entityA + " (persist should cascade) ...");
@@ -1033,7 +1024,7 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 System.out.println("Committing transaction (no Exception should not be thrown)...");
                 jpaResource.getTj().commitTransaction();
 
-                System.out.println("Clear persistence context, then reload " + targetEntityAType.getEntityName() +
+                System.out.println("Clear persistence context, then reload " + entityAClass +
                                    " to verify that both entities have been persisted and the relationship is intact.");
                 // Clear persistence context
                 System.out.println("Clearing persistence context...");
@@ -1046,8 +1037,8 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                     jpaResource.getEm().joinTransaction();
                 }
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
                 Assert.assertTrue("Assert that the entity is managed.", jpaResource.getEm().contains(find_entityA));
@@ -1057,8 +1048,8 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                                      find_entityA);
 
                 // Extract EntityB from EntityA's relationship
-                System.out.println("Extracting " + targetEntityBType.getEntityName() + " from the merged " +
-                                   targetEntityAType.getEntityName() + "'s CascadeAllCollectionField collection.");
+                System.out.println("Extracting " + entityBClass + " from the merged " +
+                                   entityAClass + "'s CascadeAllCollectionField collection.");
                 Collection caCollection = find_entityA.getCascadeAllCollectionField();
                 Assert.assertNotNull("Assert that CascadeAllCollectionField is not null.", caCollection);
                 Assert.assertEquals("Assert that CascadeAllCollectionField has size of 1.", 1, caCollection.size());
@@ -1066,7 +1057,7 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 IEntityB entityBFromEntityACACollection = (IEntityB) caCollection.iterator().next();
                 Assert.assertNotNull("Assert the extraction from the collection did not return a null", entityBFromEntityACACollection);
                 Assert.assertTrue(
-                                  "Assert that " + targetEntityBType.getEntityName() + " is managed.",
+                                  "Assert that " + entityBClass + " is managed.",
                                   jpaResource.getEm().contains(entityBFromEntityACACollection));
                 Assert.assertNotSame("Assert that this is not the original entity object",
                                      new_entityB, entityBFromEntityACACollection);
@@ -1110,23 +1101,23 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'cascadeAll' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'cascadeAll' relationship field...");
                 new_entityA.insertCascadeAllField(new_entityB);
 
                 System.out.println("Persisting " + new_entityA);
@@ -1145,10 +1136,10 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 // EntityA's removal.
                 System.out.println(
                                    "Entities have been persisted to the database, with a many-to-many relationship between " +
-                                   targetEntityAType.getEntityName() + " and " + targetEntityBType.getEntityName() +
+                                   entityAClass + " and " + entityBClass +
                                    "established.  Since the relationship is configured with CASCADE ALL, the remove operation " +
-                                   "on " + targetEntityAType.getEntityName() + " should cascade across the relationship, " +
-                                   " causing " + targetEntityBType.getEntityName() + " to also become removed.");
+                                   "on " + entityAClass + " should cascade across the relationship, " +
+                                   " causing " + entityBClass + " to also become removed.");
 
                 System.out.println("Beginning new transaction...");
                 jpaResource.getTj().beginTransaction();
@@ -1157,17 +1148,17 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                     jpaResource.getEm().joinTransaction();
                 }
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityB);
 
-                System.out.println("Removing " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
+                System.out.println("Removing " + entityAClass + " (id=" + pkey + ")...");
                 jpaResource.getEm().remove(find_entityA);
 
                 System.out.println("Committing transaction...");
@@ -1178,16 +1169,16 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Verify that EntityA has been removed, and that EntityB has not been removed.
-                System.out.println("Verify that " + targetEntityAType.getEntityName() + " has been removed, and that " +
-                                   targetEntityBType.getEntityName() + " has also been removed.");
+                System.out.println("Verify that " + entityAClass + " has been removed, and that " +
+                                   entityBClass + " has also been removed.");
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA2 = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA2 = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA2);
                 Assert.assertNull("Assert that the find operation did return null", find_entityA2);
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB2);
                 Assert.assertNull("Assert that the find operation did return null", find_entityB2);
 
@@ -1225,23 +1216,23 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'cascadeAll' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'cascadeAll' relationship field...");
                 new_entityA.insertCascadeAllField(new_entityB);
 
                 System.out.println("Persisting " + new_entityA);
@@ -1264,8 +1255,8 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 // (name field should contain mutated value)
                 System.out.println(
                                    "Merge EntityA(id=" + pkey + ") into the persistence context and verify that the cascadeAll field of the " +
-                                   "copy of " + targetEntityAType.getEntityName() + " returned by the merge operation reflects " +
-                                   "the state of " + targetEntityBType.getEntityName() + "(id=" + pkey + ") that was changed " +
+                                   "copy of " + entityAClass + " returned by the merge operation reflects " +
+                                   "the state of " + entityBClass + "(id=" + pkey + ") that was changed " +
                                    "(name field should contain mutated value).");
 
                 System.out.println("Beginning new transaction...");
@@ -1281,25 +1272,25 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                                      new_entityA, mergedEntityA);
                 Assert.assertTrue("Assert object returned by merge() is not detached.", jpaResource.getEm().contains(mergedEntityA));
                 Assert.assertEquals(
-                                    "Assert " + targetEntityAType.getEntityName() + " returned by merge() has the updated field.",
+                                    "Assert " + entityAClass + " returned by merge() has the updated field.",
                                     "New Entity A Name",
                                     mergedEntityA.getName());
 
                 // Verify that the EntityB referenced by the merged EntityA contains mutated data
                 Collection caCollection = mergedEntityA.getCascadeAllCollectionField();
                 Assert.assertNotNull(
-                                     "Assert " + targetEntityAType.getEntityName() + ".getCascadeAllCollectionField() " +
+                                     "Assert " + entityAClass + ".getCascadeAllCollectionField() " +
                                      " is not null",
                                      caCollection);
                 Assert.assertEquals("Assert the collection has a size of 1.", 1, caCollection.size());
 
                 System.out.println(
-                                   "Extracting " + targetEntityBType.getEntityName() + " from the merged " +
-                                   targetEntityAType.getEntityName() + "'s CascadeAllRelationshipCollectionField collection.");
+                                   "Extracting " + entityBClass + " from the merged " +
+                                   entityAClass + "'s CascadeAllRelationshipCollectionField collection.");
                 IEntityB entityBFromMergedEntityA = (IEntityB) caCollection.iterator().next();
                 Assert.assertNotNull("Assert the extraction from the collection did not return a null", entityBFromMergedEntityA);
                 Assert.assertTrue(
-                                  "Assert that " + targetEntityBType.getEntityName() + " is managed.",
+                                  "Assert that " + entityBClass + " is managed.",
                                   jpaResource.getEm().contains(entityBFromMergedEntityA));
                 Assert.assertNotSame("Assert that this is not the original entity object",
                                      new_entityB, entityBFromMergedEntityA);
@@ -1318,17 +1309,17 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 // Verify that the database state is correct.
                 System.out.println("Verify that the database state is correct...");
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
                 Assert.assertEquals(
-                                    "Assert " + targetEntityAType.getEntityName() + " has the updated field.",
+                                    "Assert " + entityAClass + " has the updated field.",
                                     "New Entity A Name",
                                     find_entityA.getName());
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB2);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityB2);
                 Assert.assertEquals(
@@ -1370,23 +1361,23 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'cascadeAll' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'cascadeAll' relationship field...");
                 new_entityA.insertCascadeAllField(new_entityB);
 
                 System.out.println("Persisting " + new_entityA);
@@ -1413,8 +1404,8 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 // owner side of the relationship.  The refresh operation should cascade to the entity on
                 // the inverse side of the relationship, so the change to its name field should be lost.
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
                 Assert.assertTrue("Assert that the entity is managed.", jpaResource.getEm().contains(find_entityA));
@@ -1425,13 +1416,13 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
 
                 // Extract EntityB from EntityA's relationship
                 System.out.println(
-                                   "Extracting " + targetEntityBType.getEntityName() + " from the merged " +
-                                   targetEntityAType.getEntityName() + "'s CascadeAllRelationshipCollectionField collection.");
+                                   "Extracting " + entityBClass + " from the merged " +
+                                   entityAClass + "'s CascadeAllRelationshipCollectionField collection.");
                 Collection caCollection = find_entityA.getCascadeAllCollectionField();
                 IEntityB entityBFromEntityA = (IEntityB) caCollection.iterator().next();
                 Assert.assertNotNull("Assert the extraction from the collection did not return a null", entityBFromEntityA);
                 Assert.assertTrue(
-                                  "Assert that " + targetEntityBType.getEntityName() + " is managed.",
+                                  "Assert that " + entityBClass + " is managed.",
                                   jpaResource.getEm().contains(entityBFromEntityA));
                 Assert.assertNotSame("Assert that this is not the original entity object",
                                      new_entityB, entityBFromEntityA);
@@ -1442,11 +1433,11 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 entityBFromEntityA.setName("New Entity B Name");
 
                 Assert.assertEquals(
-                                    "Assert mutation took hold in " + targetEntityAType.getEntityName() + "...",
+                                    "Assert mutation took hold in " + entityAClass + "...",
                                     "New Entity A Name",
                                     find_entityA.getName());
                 Assert.assertEquals(
-                                    "Assert mutation took hold in " + targetEntityBType.getEntityName() + "...",
+                                    "Assert mutation took hold in " + entityBClass + "...",
                                     "New Entity B Name",
                                     entityBFromEntityA.getName());
 
@@ -1460,11 +1451,11 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().refresh(find_entityA);
 
                 Assert.assertEquals(
-                                    "Assert mutation in " + targetEntityAType.getEntityName() + " was undone by refresh()...",
+                                    "Assert mutation in " + entityAClass + " was undone by refresh()...",
                                     "Entity A",
                                     find_entityA.getName());
                 Assert.assertEquals(
-                                    "Assert mutation in " + targetEntityBType.getEntityName() + " was undone...",
+                                    "Assert mutation in " + entityBClass + " was undone...",
                                     "Entity B",
                                     entityBFromEntityA.getName());
             }
@@ -1515,19 +1506,15 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        ManyXManyEntityEnum targetEntityAType = ManyXManyEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
+        Class<?> entityAClass = (Class<?>) testExecCtx.getProperties().get("EntityAName");
+        if (entityAClass == null) {
+            Assert.fail("Invalid Entity-A type specified ('" + entityAClass + "').  Cannot execute the test.");
             return;
         }
 
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        ManyXManyEntityEnum targetEntityBType = ManyXManyEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
+        Class<?> entityBClass = (Class<?>) testExecCtx.getProperties().get("EntityBName");
+        if (entityBClass == null) {
+            Assert.fail("Invalid Entity-B type specified ('" + entityBClass + "').  Cannot execute the test.");
             return;
         }
 
@@ -1565,22 +1552,22 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("NOT Persisting " + new_entityB + "...");
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'cascadePersist' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'cascadePersist' relationship field...");
                 new_entityA.insertCascadePersistField(new_entityB);
 
                 System.out.println("Persisting " + new_entityA + " (persist should cascade) ...");
@@ -1589,7 +1576,7 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 System.out.println("Committing transaction (no Exception should not be thrown)...");
                 jpaResource.getTj().commitTransaction();
 
-                System.out.println("Clear persistence context, then reload " + targetEntityAType.getEntityName() +
+                System.out.println("Clear persistence context, then reload " + entityAClass +
                                    " to verify that both entities have been persisted and the relationship is intact.");
                 // Clear persistence context
                 System.out.println("Clearing persistence context...");
@@ -1602,8 +1589,8 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                     jpaResource.getEm().joinTransaction();
                 }
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
                 Assert.assertTrue("Assert that the entity is managed.", jpaResource.getEm().contains(find_entityA));
@@ -1613,8 +1600,8 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                                      find_entityA);
 
                 // Extract EntityB from EntityA's relationship
-                System.out.println("Extracting " + targetEntityBType.getEntityName() + " from the merged " +
-                                   targetEntityAType.getEntityName() + "'s CascadePersistCollectionField collection.");
+                System.out.println("Extracting " + entityBClass + " from the merged " +
+                                   entityAClass + "'s CascadePersistCollectionField collection.");
                 Collection cpCollection = find_entityA.getCascadePersistCollectionField();
                 Assert.assertNotNull("Assert that CascadePersistCollectionField is not null.", cpCollection);
                 Assert.assertEquals("Assert that CascadePersistCollectionField has size of 1.", 1, cpCollection.size());
@@ -1622,7 +1609,7 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 IEntityB entityBFromEntityACPCollection = (IEntityB) cpCollection.iterator().next();
                 Assert.assertNotNull("Assert the extraction from the collection did not return a null", entityBFromEntityACPCollection);
                 Assert.assertTrue(
-                                  "Assert that " + targetEntityBType.getEntityName() + " is managed.",
+                                  "Assert that " + entityBClass + " is managed.",
                                   jpaResource.getEm().contains(entityBFromEntityACPCollection));
                 Assert.assertNotSame("Assert that this is not the original entity object",
                                      new_entityB, entityBFromEntityACPCollection);
@@ -1662,23 +1649,23 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'cascadePersist' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'cascadePersist' relationship field...");
                 new_entityA.insertCascadePersistField(new_entityB);
 
                 System.out.println("Persisting " + new_entityA);
@@ -1697,10 +1684,10 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 // EntityA's removal.
                 System.out.println(
                                    "Entities have been persisted to the database, with a many-to-many relationship between " +
-                                   targetEntityAType.getEntityName() + " and " + targetEntityBType.getEntityName() +
+                                   entityAClass + " and " + entityBClass +
                                    " established.  The relationship is configured to not cascade remove operations, so " +
-                                   targetEntityBType.getEntityName() + " should survive " +
-                                   targetEntityAType.getEntityName() + "'s removal.");
+                                   entityBClass + " should survive " +
+                                   entityAClass + "'s removal.");
 
                 System.out.println("Beginning new transaction...");
                 jpaResource.getTj().beginTransaction();
@@ -1709,12 +1696,12 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                     jpaResource.getEm().joinTransaction();
                 }
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
 
-                System.out.println("Removing " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
+                System.out.println("Removing " + entityAClass + " (id=" + pkey + ")...");
                 jpaResource.getEm().remove(find_entityA);
 
                 System.out.println("Committing transaction...");
@@ -1725,16 +1712,16 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Verify that EntityA has been removed, and that EntityB has not been removed.
-                System.out.println("Verify that " + targetEntityAType.getEntityName() + " has been removed, and that " +
-                                   targetEntityBType.getEntityName() + " has not been removed");
+                System.out.println("Verify that " + entityAClass + " has been removed, and that " +
+                                   entityBClass + " has not been removed");
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA2 = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA2 = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA2);
                 Assert.assertNull("Assert that the find operation did return null", find_entityA2);
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityB);
 
@@ -1772,23 +1759,23 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'cascadePersist' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'cascadePersist' relationship field...");
                 new_entityA.insertCascadePersistField(new_entityB);
 
                 System.out.println("Persisting " + new_entityA);
@@ -1809,8 +1796,8 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 System.out.println(
                                    "Entities have been persisted to the databae, with a many-to-many relationship between " +
                                    "remove operations are not cascaded across entity relationships, " +
-                                   targetEntityAType.getEntityName() + " should survive " +
-                                   targetEntityBType.getEntityName() + "'s removal.");
+                                   entityAClass + " should survive " +
+                                   entityBClass + "'s removal.");
 
                 System.out.println("Beginning new transaction...");
                 jpaResource.getTj().beginTransaction();
@@ -1819,12 +1806,12 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                     jpaResource.getEm().joinTransaction();
                 }
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityB);
 
-                System.out.println("Removing " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
+                System.out.println("Removing " + entityBClass + " (id=" + pkey + ")...");
                 jpaResource.getEm().remove(find_entityB);
 
                 System.out.println("Committing transaction...");
@@ -1835,16 +1822,16 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Verify that EntityB has been removed, and that EntityA has not been removed.
-                System.out.println("Verify that " + targetEntityBType.getEntityName() + " has been removed, and that " +
-                                   targetEntityAType.getEntityName() + " has not been removed");
+                System.out.println("Verify that " + entityBClass + " has been removed, and that " +
+                                   entityAClass + " has not been removed");
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB2);
                 Assert.assertNull("Assert that the find operation did return null", find_entityB2);
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
 
@@ -1881,23 +1868,23 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'cascadePersist' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'cascadePersist' relationship field...");
                 new_entityA.insertCascadePersistField(new_entityB);
 
                 System.out.println("Persisting " + new_entityA);
@@ -1920,8 +1907,8 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 // (name field should contain original value)
                 System.out.println(
                                    "Merge EntityA(id=" + pkey + ") into the persistence context and verify that the cascadePersist field of the " +
-                                   "copy of " + targetEntityAType.getEntityName() + "returned by the merge operation reflects " +
-                                   "the state of " + targetEntityBType.getEntityName() + "(id=" + pkey + ") in the database " +
+                                   "copy of " + entityAClass + "returned by the merge operation reflects " +
+                                   "the state of " + entityBClass + "(id=" + pkey + ") in the database " +
                                    "(name field should contain original value).");
 
                 System.out.println("Beginning new transaction...");
@@ -1937,7 +1924,7 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                                      new_entityA, mergedEntityA);
                 Assert.assertTrue("Assert object returned by merge() is not detached.", jpaResource.getEm().contains(mergedEntityA));
                 Assert.assertEquals(
-                                    "Assert " + targetEntityAType.getEntityName() + " returned by merge() has the updated field.",
+                                    "Assert " + entityAClass + " returned by merge() has the updated field.",
                                     "New Entity A Name",
                                     mergedEntityA.getName());
 
@@ -1945,18 +1932,18 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 // persisted.
                 Collection cpCollection = mergedEntityA.getCascadePersistCollectionField();
                 Assert.assertNotNull(
-                                     "Assert " + targetEntityAType.getEntityName() + ".getCascadePersistRelationshipCollectionField() " +
+                                     "Assert " + entityAClass + ".getCascadePersistRelationshipCollectionField() " +
                                      " is not null",
                                      cpCollection);
                 Assert.assertEquals("Assert the collection has a size of 1.", 1, cpCollection.size());
 
                 System.out.println(
-                                   "Extracting " + targetEntityBType.getEntityName() + " from the merged " +
-                                   targetEntityAType.getEntityName() + "'s CascadePersistRelationshipCollectionField collection.");
+                                   "Extracting " + entityBClass + " from the merged " +
+                                   entityAClass + "'s CascadePersistRelationshipCollectionField collection.");
                 IEntityB entityBFromMergedEntityA = (IEntityB) cpCollection.iterator().next();
                 Assert.assertNotNull("Assert the extraction from the collection did not return a null", entityBFromMergedEntityA);
                 Assert.assertTrue(
-                                  "Assert that " + targetEntityBType.getEntityName() + " is managed.",
+                                  "Assert that " + entityBClass + " is managed.",
                                   jpaResource.getEm().contains(entityBFromMergedEntityA));
                 Assert.assertNotSame("Assert that this is not the original entity object",
                                      new_entityB, entityBFromMergedEntityA);
@@ -1975,17 +1962,17 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 // Verify that the database state is correct.
                 System.out.println("Verify that the database state is correct...");
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
                 Assert.assertEquals(
-                                    "Assert " + targetEntityAType.getEntityName() + " has the updated field.",
+                                    "Assert " + entityAClass + " has the updated field.",
                                     "New Entity A Name",
                                     find_entityA.getName());
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB2);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityB2);
                 Assert.assertEquals(
@@ -2025,23 +2012,23 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'cascadePersist' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'cascadePersist' relationship field...");
                 new_entityA.insertCascadePersistField(new_entityB);
 
                 System.out.println("Persisting " + new_entityA);
@@ -2068,8 +2055,8 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 // owner side of the relationship.  The refresh operation should not cascade to the entity on
                 // the inverse side of the relationship, so the change to its name field should remain.
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
                 Assert.assertTrue("Assert that the entity is managed.", jpaResource.getEm().contains(find_entityA));
@@ -2080,13 +2067,13 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
 
                 // Extract EntityB from EntityA's relationship
                 System.out.println(
-                                   "Extracting " + targetEntityBType.getEntityName() + " from the merged " +
-                                   targetEntityAType.getEntityName() + "'s CascadePersistRelationshipCollectionField collection.");
+                                   "Extracting " + entityBClass + " from the merged " +
+                                   entityAClass + "'s CascadePersistRelationshipCollectionField collection.");
                 Collection cpCollection = find_entityA.getCascadePersistCollectionField();
                 IEntityB entityBFromEntityA = (IEntityB) cpCollection.iterator().next();
                 Assert.assertNotNull("Assert the extraction from the collection did not return a null", entityBFromEntityA);
                 Assert.assertTrue(
-                                  "Assert that " + targetEntityBType.getEntityName() + " is managed.",
+                                  "Assert that " + entityBClass + " is managed.",
                                   jpaResource.getEm().contains(entityBFromEntityA));
                 Assert.assertNotSame("Assert that this is not the original entity object",
                                      new_entityB, entityBFromEntityA);
@@ -2097,11 +2084,11 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 entityBFromEntityA.setName("New Entity B Name");
 
                 Assert.assertEquals(
-                                    "Assert mutation took hold in " + targetEntityAType.getEntityName() + "...",
+                                    "Assert mutation took hold in " + entityAClass + "...",
                                     "New Entity A Name",
                                     find_entityA.getName());
                 Assert.assertEquals(
-                                    "Assert mutation took hold in " + targetEntityBType.getEntityName() + "...",
+                                    "Assert mutation took hold in " + entityBClass + "...",
                                     "New Entity B Name",
                                     entityBFromEntityA.getName());
 
@@ -2115,11 +2102,11 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().refresh(find_entityA);
 
                 Assert.assertEquals(
-                                    "Assert mutation in " + targetEntityAType.getEntityName() + " was undone by refresh()...",
+                                    "Assert mutation in " + entityAClass + " was undone by refresh()...",
                                     "Entity A",
                                     find_entityA.getName());
                 Assert.assertEquals(
-                                    "Assert mutation remains in " + targetEntityBType.getEntityName() + "...",
+                                    "Assert mutation remains in " + entityBClass + "...",
                                     "New Entity B Name",
                                     entityBFromEntityA.getName());
             }
@@ -2166,19 +2153,15 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        ManyXManyEntityEnum targetEntityAType = ManyXManyEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
+        Class<?> entityAClass = (Class<?>) testExecCtx.getProperties().get("EntityAName");
+        if (entityAClass == null) {
+            Assert.fail("Invalid Entity-A type specified ('" + entityAClass + "').  Cannot execute the test.");
             return;
         }
 
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        ManyXManyEntityEnum targetEntityBType = ManyXManyEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
+        Class<?> entityBClass = (Class<?>) testExecCtx.getProperties().get("EntityBName");
+        if (entityBClass == null) {
+            Assert.fail("Invalid Entity-B type specified ('" + entityBClass + "').  Cannot execute the test.");
             return;
         }
 
@@ -2214,22 +2197,22 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("NOT Persisting " + new_entityB + "...");
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'cascadeRemove' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'cascadeRemove' relationship field...");
                 new_entityA.insertCascadeRemoveField(new_entityB);
 
                 System.out.println("Persisting " + new_entityA + " (persist should not cascade) ...");
@@ -2291,23 +2274,23 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'cascadeRemove' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'cascadeRemove' relationship field...");
                 new_entityA.insertCascadeRemoveField(new_entityB);
 
                 System.out.println("Persisting " + new_entityA);
@@ -2326,10 +2309,10 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 // EntityA's removal.
                 System.out.println(
                                    "Entities have been persisted to the database, with a many-to-many relationship between " +
-                                   targetEntityAType.getEntityName() + " and " + targetEntityBType.getEntityName() +
+                                   entityAClass + " and " + entityBClass +
                                    "established.  Since the relationship is configured with CASCADE REMOVE, the remove operation " +
-                                   "on " + targetEntityAType.getEntityName() + " should cascade across the relationship, " +
-                                   " causing " + targetEntityBType.getEntityName() + " to also become removed.");
+                                   "on " + entityAClass + " should cascade across the relationship, " +
+                                   " causing " + entityBClass + " to also become removed.");
 
                 System.out.println("Beginning new transaction...");
                 jpaResource.getTj().beginTransaction();
@@ -2338,17 +2321,17 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                     jpaResource.getEm().joinTransaction();
                 }
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityB);
 
-                System.out.println("Removing " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
+                System.out.println("Removing " + entityAClass + " (id=" + pkey + ")...");
                 jpaResource.getEm().remove(find_entityA);
 
                 System.out.println("Committing transaction...");
@@ -2359,16 +2342,16 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Verify that EntityA has been removed, and that EntityB has not been removed.
-                System.out.println("Verify that " + targetEntityAType.getEntityName() + " has been removed, and that " +
-                                   targetEntityBType.getEntityName() + " has also been removed.");
+                System.out.println("Verify that " + entityAClass + " has been removed, and that " +
+                                   entityBClass + " has also been removed.");
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA2 = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA2 = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA2);
                 Assert.assertNull("Assert that the find operation did return null", find_entityA2);
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB2);
                 Assert.assertNull("Assert that the find operation did return null", find_entityB2);
 
@@ -2404,23 +2387,23 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'cascadeRemove' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'cascadeRemove' relationship field...");
                 new_entityA.insertCascadeRemoveField(new_entityB);
 
                 System.out.println("Persisting " + new_entityA);
@@ -2443,8 +2426,8 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 // (name field should contain original value)
                 System.out.println(
                                    "Merge EntityA(id=" + pkey + ") into the persistence context and verify that the cascadeRemove field of the " +
-                                   "copy of " + targetEntityAType.getEntityName() + "returned by the merge operation reflects " +
-                                   "the state of " + targetEntityBType.getEntityName() + "(id=" + pkey + ") in the database " +
+                                   "copy of " + entityAClass + "returned by the merge operation reflects " +
+                                   "the state of " + entityBClass + "(id=" + pkey + ") in the database " +
                                    "(name field should contain original value).");
 
                 System.out.println("Beginning new transaction...");
@@ -2460,7 +2443,7 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                                      new_entityA, mergedEntityA);
                 Assert.assertTrue("Assert object returned by merge() is not detached.", jpaResource.getEm().contains(mergedEntityA));
                 Assert.assertEquals(
-                                    "Assert " + targetEntityAType.getEntityName() + " returned by merge() has the updated field.",
+                                    "Assert " + entityAClass + " returned by merge() has the updated field.",
                                     "New Entity A Name",
                                     mergedEntityA.getName());
 
@@ -2468,18 +2451,18 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 // persisted.
                 Collection crCollection = mergedEntityA.getCascadeRemoveCollectionField();
                 Assert.assertNotNull(
-                                     "Assert " + targetEntityAType.getEntityName() + ".getCascadeRemoveCollectionField() " +
+                                     "Assert " + entityAClass + ".getCascadeRemoveCollectionField() " +
                                      " is not null",
                                      crCollection);
                 Assert.assertEquals("Assert the collection has a size of 1.", 1, crCollection.size());
 
                 System.out.println(
-                                   "Extracting " + targetEntityBType.getEntityName() + " from the merged " +
-                                   targetEntityAType.getEntityName() + "'s CascadeRemoveRelationshipCollectionField collection.");
+                                   "Extracting " + entityBClass + " from the merged " +
+                                   entityAClass + "'s CascadeRemoveRelationshipCollectionField collection.");
                 IEntityB entityBFromMergedEntityA = (IEntityB) crCollection.iterator().next();
                 Assert.assertNotNull("Assert the extraction from the collection did not return a null", entityBFromMergedEntityA);
                 Assert.assertTrue(
-                                  "Assert that " + targetEntityBType.getEntityName() + " is managed.",
+                                  "Assert that " + entityBClass + " is managed.",
                                   jpaResource.getEm().contains(entityBFromMergedEntityA));
                 Assert.assertNotSame("Assert that this is not the original entity object",
                                      new_entityB, entityBFromMergedEntityA);
@@ -2498,17 +2481,17 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 // Verify that the database state is correct.
                 System.out.println("Verify that the database state is correct...");
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
                 Assert.assertEquals(
-                                    "Assert " + targetEntityAType.getEntityName() + " has the updated field.",
+                                    "Assert " + entityAClass + " has the updated field.",
                                     "New Entity A Name",
                                     find_entityA.getName());
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB2);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityB2);
                 Assert.assertEquals(
@@ -2548,23 +2531,23 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'cascadeRemove' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'cascadeRemove' relationship field...");
                 new_entityA.insertCascadeRemoveField(new_entityB);
 
                 System.out.println("Persisting " + new_entityA);
@@ -2591,8 +2574,8 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 // owner side of the relationship.  The refresh operation should not cascade to the entity on
                 // the inverse side of the relationship, so the change to its name field should remain.
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
                 Assert.assertTrue("Assert that the entity is managed.", jpaResource.getEm().contains(find_entityA));
@@ -2603,13 +2586,13 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
 
                 // Extract EntityB from EntityA's relationship
                 System.out.println(
-                                   "Extracting " + targetEntityBType.getEntityName() + " from the merged " +
-                                   targetEntityAType.getEntityName() + "'s CascadeRemoveRelationshipCollectionField collection.");
+                                   "Extracting " + entityBClass + " from the merged " +
+                                   entityAClass + "'s CascadeRemoveRelationshipCollectionField collection.");
                 Collection crCollection = find_entityA.getCascadeRemoveCollectionField();
                 IEntityB entityBFromEntityA = (IEntityB) crCollection.iterator().next();
                 Assert.assertNotNull("Assert the extraction from the collection did not return a null", entityBFromEntityA);
                 Assert.assertTrue(
-                                  "Assert that " + targetEntityBType.getEntityName() + " is managed.",
+                                  "Assert that " + entityBClass + " is managed.",
                                   jpaResource.getEm().contains(entityBFromEntityA));
                 Assert.assertNotSame("Assert that this is not the original entity object",
                                      new_entityB, entityBFromEntityA);
@@ -2620,11 +2603,11 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 entityBFromEntityA.setName("New Entity B Name");
 
                 Assert.assertEquals(
-                                    "Assert mutation took hold in " + targetEntityAType.getEntityName() + "...",
+                                    "Assert mutation took hold in " + entityAClass + "...",
                                     "New Entity A Name",
                                     find_entityA.getName());
                 Assert.assertEquals(
-                                    "Assert mutation took hold in " + targetEntityBType.getEntityName() + "...",
+                                    "Assert mutation took hold in " + entityBClass + "...",
                                     "New Entity B Name",
                                     entityBFromEntityA.getName());
 
@@ -2638,11 +2621,11 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().refresh(find_entityA);
 
                 Assert.assertEquals(
-                                    "Assert mutation in " + targetEntityAType.getEntityName() + " was undone by refresh()...",
+                                    "Assert mutation in " + entityAClass + " was undone by refresh()...",
                                     "Entity A",
                                     find_entityA.getName());
                 Assert.assertEquals(
-                                    "Assert mutation remains in " + targetEntityBType.getEntityName() + "...",
+                                    "Assert mutation remains in " + entityBClass + "...",
                                     "New Entity B Name",
                                     entityBFromEntityA.getName());
             }
@@ -2691,19 +2674,15 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        ManyXManyEntityEnum targetEntityAType = ManyXManyEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
+        Class<?> entityAClass = (Class<?>) testExecCtx.getProperties().get("EntityAName");
+        if (entityAClass == null) {
+            Assert.fail("Invalid Entity-A type specified ('" + entityAClass + "').  Cannot execute the test.");
             return;
         }
 
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        ManyXManyEntityEnum targetEntityBType = ManyXManyEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
+        Class<?> entityBClass = (Class<?>) testExecCtx.getProperties().get("EntityBName");
+        if (entityBClass == null) {
+            Assert.fail("Invalid Entity-B type specified ('" + entityBClass + "').  Cannot execute the test.");
             return;
         }
 
@@ -2739,22 +2718,22 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("NOT Persisting " + new_entityB + "...");
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'cascadeMerge' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'cascadeMerge' relationship field...");
                 new_entityA.insertCascadeMergeField(new_entityB);
 
                 System.out.println("Persisting " + new_entityA + " (persist should not cascade) ...");
@@ -2812,23 +2791,23 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'cascadeMerge' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'cascadeMerge' relationship field...");
                 new_entityA.insertCascadeMergeField(new_entityB);
 
                 System.out.println("Persisting " + new_entityA);
@@ -2847,10 +2826,10 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 // EntityA's removal.
                 System.out.println(
                                    "Entities have been persisted to the database, with a many-to-many relationship between " +
-                                   targetEntityAType.getEntityName() + " and " + targetEntityBType.getEntityName() +
+                                   entityAClass + " and " + entityBClass +
                                    " established.  The relationship is configured to not cascade remove operations, so " +
-                                   targetEntityBType.getEntityName() + " should survive " +
-                                   targetEntityAType.getEntityName() + "'s removal.");
+                                   entityBClass + " should survive " +
+                                   entityAClass + "'s removal.");
 
                 System.out.println("Beginning new transaction...");
                 jpaResource.getTj().beginTransaction();
@@ -2859,12 +2838,12 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                     jpaResource.getEm().joinTransaction();
                 }
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
 
-                System.out.println("Removing " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
+                System.out.println("Removing " + entityAClass + " (id=" + pkey + ")...");
                 jpaResource.getEm().remove(find_entityA);
 
                 System.out.println("Committing transaction...");
@@ -2875,16 +2854,16 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Verify that EntityA has been removed, and that EntityB has not been removed.
-                System.out.println("Verify that " + targetEntityAType.getEntityName() + " has been removed, and that " +
-                                   targetEntityBType.getEntityName() + " has not been removed");
+                System.out.println("Verify that " + entityAClass + " has been removed, and that " +
+                                   entityBClass + " has not been removed");
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA2 = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA2 = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA2);
                 Assert.assertNull("Assert that the find operation did return null", find_entityA2);
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityB);
 
@@ -2922,23 +2901,23 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'cascadeMerge' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'cascadeMerge' relationship field...");
                 new_entityA.insertCascadeMergeField(new_entityB);
 
                 System.out.println("Persisting " + new_entityA);
@@ -2959,8 +2938,8 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 System.out.println(
                                    "Entities have been persisted to the databae, with a many-to-many relationship between " +
                                    "remove operations are not cascaded across entity relationships, " +
-                                   targetEntityAType.getEntityName() + " should survive " +
-                                   targetEntityBType.getEntityName() + "'s removal.");
+                                   entityAClass + " should survive " +
+                                   entityBClass + "'s removal.");
 
                 System.out.println("Beginning new transaction...");
                 jpaResource.getTj().beginTransaction();
@@ -2969,12 +2948,12 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                     jpaResource.getEm().joinTransaction();
                 }
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityB);
 
-                System.out.println("Removing " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
+                System.out.println("Removing " + entityBClass + " (id=" + pkey + ")...");
                 jpaResource.getEm().remove(find_entityB);
 
                 System.out.println("Committing transaction...");
@@ -2985,16 +2964,16 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Verify that EntityB has been removed, and that EntityA has not been removed.
-                System.out.println("Verify that " + targetEntityBType.getEntityName() + " has been removed, and that " +
-                                   targetEntityAType.getEntityName() + " has not been removed");
+                System.out.println("Verify that " + entityBClass + " has been removed, and that " +
+                                   entityAClass + " has not been removed");
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB2);
                 Assert.assertNull("Assert that the find operation did return null", find_entityB2);
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
 
@@ -3033,23 +3012,23 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'cascadeMerge' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'cascadeMerge' relationship field...");
                 new_entityA.insertCascadeMergeField(new_entityB);
 
                 System.out.println("Persisting " + new_entityA);
@@ -3072,8 +3051,8 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 // (name field should contain mutated value)
                 System.out.println(
                                    "Merge EntityA(id=" + pkey + ") into the persistence context and verify that the cascadeMerge field of the " +
-                                   "copy of " + targetEntityAType.getEntityName() + " returned by the merge operation reflects " +
-                                   "the state of " + targetEntityBType.getEntityName() + "(id=" + pkey + ") that was changed " +
+                                   "copy of " + entityAClass + " returned by the merge operation reflects " +
+                                   "the state of " + entityBClass + "(id=" + pkey + ") that was changed " +
                                    "(name field should contain mutated value).");
 
                 System.out.println("Beginning new transaction...");
@@ -3089,25 +3068,25 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                                      new_entityA, mergedEntityA);
                 Assert.assertTrue("Assert object returned by merge() is not detached.", jpaResource.getEm().contains(mergedEntityA));
                 Assert.assertEquals(
-                                    "Assert " + targetEntityAType.getEntityName() + " returned by merge() has the updated field.",
+                                    "Assert " + entityAClass + " returned by merge() has the updated field.",
                                     "New Entity A Name",
                                     mergedEntityA.getName());
 
                 // Verify that the EntityB referenced by the merged EntityA contains mutated data
                 Collection cmCollection = mergedEntityA.getCascadeMergeCollectionField();
                 Assert.assertNotNull(
-                                     "Assert " + targetEntityAType.getEntityName() + ".getCascadeMergeCollectionField() " +
+                                     "Assert " + entityAClass + ".getCascadeMergeCollectionField() " +
                                      " is not null",
                                      cmCollection);
                 Assert.assertEquals("Assert the collection has a size of 1.", 1, cmCollection.size());
 
                 System.out.println(
-                                   "Extracting " + targetEntityBType.getEntityName() + " from the merged " +
-                                   targetEntityAType.getEntityName() + "'s CascadeMergeRelationshipCollectionField collection.");
+                                   "Extracting " + entityBClass + " from the merged " +
+                                   entityAClass + "'s CascadeMergeRelationshipCollectionField collection.");
                 IEntityB entityBFromMergedEntityA = (IEntityB) cmCollection.iterator().next();
                 Assert.assertNotNull("Assert the extraction from the collection did not return a null", entityBFromMergedEntityA);
                 Assert.assertTrue(
-                                  "Assert that " + targetEntityBType.getEntityName() + " is managed.",
+                                  "Assert that " + entityBClass + " is managed.",
                                   jpaResource.getEm().contains(entityBFromMergedEntityA));
                 Assert.assertNotSame("Assert that this is not the original entity object",
                                      new_entityB, entityBFromMergedEntityA);
@@ -3126,17 +3105,17 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 // Verify that the database state is correct.
                 System.out.println("Verify that the database state is correct...");
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
                 Assert.assertEquals(
-                                    "Assert " + targetEntityAType.getEntityName() + " has the updated field.",
+                                    "Assert " + entityAClass + " has the updated field.",
                                     "New Entity A Name",
                                     find_entityA.getName());
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB2);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityB2);
                 Assert.assertEquals(
@@ -3176,23 +3155,23 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'cascadeMerge' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'cascadeMerge' relationship field...");
                 new_entityA.insertCascadeMergeField(new_entityB);
 
                 System.out.println("Persisting " + new_entityA);
@@ -3219,8 +3198,8 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 // owner side of the relationship.  The refresh operation should not cascade to the entity on
                 // the inverse side of the relationship, so the change to its name field should remain.
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
                 Assert.assertTrue("Assert that the entity is managed.", jpaResource.getEm().contains(find_entityA));
@@ -3231,13 +3210,13 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
 
                 // Extract EntityB from EntityA's relationship
                 System.out.println(
-                                   "Extracting " + targetEntityBType.getEntityName() + " from the merged " +
-                                   targetEntityAType.getEntityName() + "'s CascadeMergeRelationshipCollectionField collection.");
+                                   "Extracting " + entityBClass + " from the merged " +
+                                   entityAClass + "'s CascadeMergeRelationshipCollectionField collection.");
                 Collection cmCollection = find_entityA.getCascadeMergeCollectionField();
                 IEntityB entityBFromEntityA = (IEntityB) cmCollection.iterator().next();
                 Assert.assertNotNull("Assert the extraction from the collection did not return a null", entityBFromEntityA);
                 Assert.assertTrue(
-                                  "Assert that " + targetEntityBType.getEntityName() + " is managed.",
+                                  "Assert that " + entityBClass + " is managed.",
                                   jpaResource.getEm().contains(entityBFromEntityA));
                 Assert.assertNotSame("Assert that this is not the original entity object",
                                      new_entityB, entityBFromEntityA);
@@ -3248,11 +3227,11 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 entityBFromEntityA.setName("New Entity B Name");
 
                 Assert.assertEquals(
-                                    "Assert mutation took hold in " + targetEntityAType.getEntityName() + "...",
+                                    "Assert mutation took hold in " + entityAClass + "...",
                                     "New Entity A Name",
                                     find_entityA.getName());
                 Assert.assertEquals(
-                                    "Assert mutation took hold in " + targetEntityBType.getEntityName() + "...",
+                                    "Assert mutation took hold in " + entityBClass + "...",
                                     "New Entity B Name",
                                     entityBFromEntityA.getName());
 
@@ -3266,11 +3245,11 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().refresh(find_entityA);
 
                 Assert.assertEquals(
-                                    "Assert mutation in " + targetEntityAType.getEntityName() + " was undone by refresh()...",
+                                    "Assert mutation in " + entityAClass + " was undone by refresh()...",
                                     "Entity A",
                                     find_entityA.getName());
                 Assert.assertEquals(
-                                    "Assert mutation remains in " + targetEntityBType.getEntityName() + "...",
+                                    "Assert mutation remains in " + entityBClass + "...",
                                     "New Entity B Name",
                                     entityBFromEntityA.getName());
             }
@@ -3319,19 +3298,15 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        ManyXManyEntityEnum targetEntityAType = ManyXManyEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
+        Class<?> entityAClass = (Class<?>) testExecCtx.getProperties().get("EntityAName");
+        if (entityAClass == null) {
+            Assert.fail("Invalid Entity-A type specified ('" + entityAClass + "').  Cannot execute the test.");
             return;
         }
 
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        ManyXManyEntityEnum targetEntityBType = ManyXManyEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
+        Class<?> entityBClass = (Class<?>) testExecCtx.getProperties().get("EntityBName");
+        if (entityBClass == null) {
+            Assert.fail("Invalid Entity-B type specified ('" + entityBClass + "').  Cannot execute the test.");
             return;
         }
 
@@ -3367,22 +3342,22 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("NOT Persisting " + new_entityB + "...");
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'cascadeRefresh' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'cascadeRefresh' relationship field...");
                 new_entityA.insertCascadeRefreshField(new_entityB);
 
                 System.out.println("Persisting " + new_entityA + " (persist should not cascade) ...");
@@ -3440,23 +3415,23 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'cascadeRefresh' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'cascadeRefresh' relationship field...");
                 new_entityA.insertCascadeRefreshField(new_entityB);
 
                 System.out.println("Persisting " + new_entityA);
@@ -3475,10 +3450,10 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 // EntityA's removal.
                 System.out.println(
                                    "Entities have been persisted to the database, with a many-to-many relationship between " +
-                                   targetEntityAType.getEntityName() + " and " + targetEntityBType.getEntityName() +
+                                   entityAClass + " and " + entityBClass +
                                    " established.  The relationship is configured to not cascade remove operations, so " +
-                                   targetEntityBType.getEntityName() + " should survive " +
-                                   targetEntityAType.getEntityName() + "'s removal.");
+                                   entityBClass + " should survive " +
+                                   entityAClass + "'s removal.");
 
                 System.out.println("Beginning new transaction...");
                 jpaResource.getTj().beginTransaction();
@@ -3487,12 +3462,12 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                     jpaResource.getEm().joinTransaction();
                 }
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
 
-                System.out.println("Removing " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
+                System.out.println("Removing " + entityAClass + " (id=" + pkey + ")...");
                 jpaResource.getEm().remove(find_entityA);
 
                 System.out.println("Committing transaction...");
@@ -3503,16 +3478,16 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Verify that EntityA has been removed, and that EntityB has not been removed.
-                System.out.println("Verify that " + targetEntityAType.getEntityName() + " has been removed, and that " +
-                                   targetEntityBType.getEntityName() + " has not been removed");
+                System.out.println("Verify that " + entityAClass + " has been removed, and that " +
+                                   entityBClass + " has not been removed");
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA2 = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA2 = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA2);
                 Assert.assertNull("Assert that the find operation did return null", find_entityA2);
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityB);
 
@@ -3550,23 +3525,23 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'cascadeRefresh' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'cascadeRefresh' relationship field...");
                 new_entityA.insertCascadeRefreshField(new_entityB);
 
                 System.out.println("Persisting " + new_entityA);
@@ -3587,8 +3562,8 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 System.out.println(
                                    "Entities have been persisted to the databae, with a many-to-many relationship between " +
                                    "remove operations are not cascaded across entity relationships, " +
-                                   targetEntityAType.getEntityName() + " should survive " +
-                                   targetEntityBType.getEntityName() + "'s removal.");
+                                   entityAClass + " should survive " +
+                                   entityBClass + "'s removal.");
 
                 System.out.println("Beginning new transaction...");
                 jpaResource.getTj().beginTransaction();
@@ -3597,12 +3572,12 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                     jpaResource.getEm().joinTransaction();
                 }
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityB);
 
-                System.out.println("Removing " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
+                System.out.println("Removing " + entityBClass + " (id=" + pkey + ")...");
                 jpaResource.getEm().remove(find_entityB);
 
                 System.out.println("Committing transaction...");
@@ -3613,16 +3588,16 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Verify that EntityB has been removed, and that EntityA has not been removed.
-                System.out.println("Verify that " + targetEntityBType.getEntityName() + " has been removed, and that " +
-                                   targetEntityAType.getEntityName() + " has not been removed");
+                System.out.println("Verify that " + entityBClass + " has been removed, and that " +
+                                   entityAClass + " has not been removed");
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB2);
                 Assert.assertNull("Assert that the find operation did return null", find_entityB2);
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
 
@@ -3659,23 +3634,23 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'cascadeRefresh' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'cascadeRefresh' relationship field...");
                 new_entityA.insertCascadeRefreshField(new_entityB);
 
                 System.out.println("Persisting " + new_entityA);
@@ -3698,8 +3673,8 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 // (name field should contain original value)
                 System.out.println(
                                    "Merge EntityA(id=" + pkey + ") into the persistence context and verify that the cascadeRefresh field of the " +
-                                   "copy of " + targetEntityAType.getEntityName() + " returned by the merge operation reflects " +
-                                   "the state of " + targetEntityBType.getEntityName() + "(id=" + pkey + ") in the database " +
+                                   "copy of " + entityAClass + " returned by the merge operation reflects " +
+                                   "the state of " + entityBClass + "(id=" + pkey + ") in the database " +
                                    "(name field should contain original value).");
 
                 System.out.println("Beginning new transaction...");
@@ -3715,7 +3690,7 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                                      new_entityA, mergedEntityA);
                 Assert.assertTrue("Assert object returned by merge() is not detached.", jpaResource.getEm().contains(mergedEntityA));
                 Assert.assertEquals(
-                                    "Assert " + targetEntityAType.getEntityName() + " returned by merge() has the updated field.",
+                                    "Assert " + entityAClass + " returned by merge() has the updated field.",
                                     "New Entity A Name",
                                     mergedEntityA.getName());
 
@@ -3723,18 +3698,18 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 // persisted.
                 Collection crCollection = mergedEntityA.getCascadeRefreshCollectionField();
                 Assert.assertNotNull(
-                                     "Assert " + targetEntityAType.getEntityName() + ".getCascadeRefreshCollectionField() " +
+                                     "Assert " + entityAClass + ".getCascadeRefreshCollectionField() " +
                                      " is not null",
                                      crCollection);
                 Assert.assertEquals("Assert the collection has a size of 1.", 1, crCollection.size());
 
                 System.out.println(
-                                   "Extracting " + targetEntityBType.getEntityName() + " from the merged " +
-                                   targetEntityAType.getEntityName() + "'s CascadeRefreshRelationshipCollectionField collection.");
+                                   "Extracting " + entityBClass + " from the merged " +
+                                   entityAClass + "'s CascadeRefreshRelationshipCollectionField collection.");
                 IEntityB entityBFromMergedEntityA = (IEntityB) crCollection.iterator().next();
                 Assert.assertNotNull("Assert the extraction from the collection did not return a null", entityBFromMergedEntityA);
                 Assert.assertTrue(
-                                  "Assert that " + targetEntityBType.getEntityName() + " is managed.",
+                                  "Assert that " + entityBClass + " is managed.",
                                   jpaResource.getEm().contains(entityBFromMergedEntityA));
                 Assert.assertNotSame("Assert that this is not the original entity object",
                                      new_entityB, entityBFromMergedEntityA);
@@ -3753,17 +3728,17 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 // Verify that the database state is correct.
                 System.out.println("Verify that the database state is correct...");
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
                 Assert.assertEquals(
-                                    "Assert " + targetEntityAType.getEntityName() + " has the updated field.",
+                                    "Assert " + entityAClass + " has the updated field.",
                                     "New Entity A Name",
                                     find_entityA.getName());
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB2);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityB2);
                 Assert.assertEquals(
@@ -3805,23 +3780,23 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'cascadeRefresh' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'cascadeRefresh' relationship field...");
                 new_entityA.insertCascadeRefreshField(new_entityB);
 
                 System.out.println("Persisting " + new_entityA);
@@ -3848,8 +3823,8 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 // owner side of the relationship.  The refresh operation should cascade to the entity on
                 // the inverse side of the relationship, so the change to its name field should be lost.
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
                 Assert.assertTrue("Assert that the entity is managed.", jpaResource.getEm().contains(find_entityA));
@@ -3860,13 +3835,13 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
 
                 // Extract EntityB from EntityA's relationship
                 System.out.println(
-                                   "Extracting " + targetEntityBType.getEntityName() + " from the merged " +
-                                   targetEntityAType.getEntityName() + "'s CascadeRefreshRelationshipCollectionField collection.");
+                                   "Extracting " + entityBClass + " from the merged " +
+                                   entityAClass + "'s CascadeRefreshRelationshipCollectionField collection.");
                 Collection crCollection = find_entityA.getCascadeRefreshCollectionField();
                 IEntityB entityBFromEntityA = (IEntityB) crCollection.iterator().next();
                 Assert.assertNotNull("Assert the extraction from the collection did not return a null", entityBFromEntityA);
                 Assert.assertTrue(
-                                  "Assert that " + targetEntityBType.getEntityName() + " is managed.",
+                                  "Assert that " + entityBClass + " is managed.",
                                   jpaResource.getEm().contains(entityBFromEntityA));
                 Assert.assertNotSame("Assert that this is not the original entity object",
                                      new_entityB, entityBFromEntityA);
@@ -3877,11 +3852,11 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 entityBFromEntityA.setName("New Entity B Name");
 
                 Assert.assertEquals(
-                                    "Assert mutation took hold in " + targetEntityAType.getEntityName() + "...",
+                                    "Assert mutation took hold in " + entityAClass + "...",
                                     "New Entity A Name",
                                     find_entityA.getName());
                 Assert.assertEquals(
-                                    "Assert mutation took hold in " + targetEntityBType.getEntityName() + "...",
+                                    "Assert mutation took hold in " + entityBClass + "...",
                                     "New Entity B Name",
                                     entityBFromEntityA.getName());
 
@@ -3895,11 +3870,11 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().refresh(find_entityA);
 
                 Assert.assertEquals(
-                                    "Assert mutation in " + targetEntityAType.getEntityName() + " was undone by refresh()...",
+                                    "Assert mutation in " + entityAClass + " was undone by refresh()...",
                                     "Entity A",
                                     find_entityA.getName());
                 Assert.assertEquals(
-                                    "Assert mutation in " + targetEntityBType.getEntityName() + " was undone...",
+                                    "Assert mutation in " + entityBClass + " was undone...",
                                     "Entity B",
                                     entityBFromEntityA.getName());
             }
@@ -3927,7 +3902,7 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
-            Assert.fail("ManyXManyUnidirectionalTestLogic.testTemplate(): Missing context and/or resources.  Cannot execute the test.");
+            Assert.fail("ManyXManyUnidirectionalTestLogic.testCardinality001(): Missing context and/or resources.  Cannot execute the test.");
             return;
         }
 
@@ -3939,25 +3914,21 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        ManyXManyEntityEnum targetEntityAType = ManyXManyEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
+        Class<?> entityAClass = (Class<?>) testExecCtx.getProperties().get("EntityAName");
+        if (entityAClass == null) {
+            Assert.fail("Invalid Entity-A type specified ('" + entityAClass + "').  Cannot execute the test.");
             return;
         }
 
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        ManyXManyEntityEnum targetEntityBType = ManyXManyEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
+        Class<?> entityBClass = (Class<?>) testExecCtx.getProperties().get("EntityBName");
+        if (entityBClass == null) {
+            Assert.fail("Invalid Entity-B type specified ('" + entityBClass + "').  Cannot execute the test.");
             return;
         }
 
         // Execute Test Case
         try {
-            System.out.println("ManyXManyUnidirectionalTestLogic.testTemplate(): Begin");
+            System.out.println("ManyXManyUnidirectionalTestLogic.testCardinality001(): Begin");
 
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -3971,32 +3942,32 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Construct new entity instances
-            System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() + " (id=1)...");
-            IEntityB new_entityB1 = (IEntityB) constructNewEntityObject(targetEntityBType);
+            System.out.println("Creating new object instance of " + entityBClass + " (id=1)...");
+            IEntityB new_entityB1 = (IEntityB) constructNewEntityObject(entityBClass);
             new_entityB1.setId(1);
             new_entityB1.setName("Entity B");
 
             System.out.println("Persisting " + new_entityB1);
             jpaResource.getEm().persist(new_entityB1);
 
-            System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() + " (id=2)...");
-            IEntityB new_entityB2 = (IEntityB) constructNewEntityObject(targetEntityBType);
+            System.out.println("Creating new object instance of " + entityBClass + " (id=2)...");
+            IEntityB new_entityB2 = (IEntityB) constructNewEntityObject(entityBClass);
             new_entityB2.setId(2);
             new_entityB2.setName("Entity B");
 
             System.out.println("Persisting " + new_entityB2);
             jpaResource.getEm().persist(new_entityB2);
 
-            System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() + " (id=1)...");
-            IEntityA new_entityA1 = (IEntityA) constructNewEntityObject(targetEntityAType);
+            System.out.println("Creating new object instance of " + entityAClass + " (id=1)...");
+            IEntityA new_entityA1 = (IEntityA) constructNewEntityObject(entityAClass);
             new_entityA1.setId(1);
             new_entityA1.setName("Entity A");
 
             System.out.println("Persisting " + new_entityA1);
             jpaResource.getEm().persist(new_entityA1);
 
-            System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() + " (id=2)...");
-            IEntityA new_entityA2 = (IEntityA) constructNewEntityObject(targetEntityAType);
+            System.out.println("Creating new object instance of " + entityAClass + " (id=2)...");
+            IEntityA new_entityA2 = (IEntityA) constructNewEntityObject(entityAClass);
             new_entityA2.setId(2);
             new_entityA2.setName("Entity A");
 
@@ -4005,20 +3976,20 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
 
             System.out.println("Establish object relationships...");
 
-            System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + "(id=1) and " +
-                               targetEntityBType.getEntityName() + "(id=1) via the 'direct' relationship field...");
+            System.out.println("Creating relationship between " + entityAClass + "(id=1) and " +
+                               entityBClass + "(id=1) via the 'direct' relationship field...");
             new_entityA1.insertDefaultRelationshipField(new_entityB1);
 
-            System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + "(id=1) and " +
-                               targetEntityBType.getEntityName() + "(id=2) via the 'direct' relationship field...");
+            System.out.println("Creating relationship between " + entityAClass + "(id=1) and " +
+                               entityBClass + "(id=2) via the 'direct' relationship field...");
             new_entityA1.insertDefaultRelationshipField(new_entityB2);
 
-            System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + "(id=2) and " +
-                               targetEntityBType.getEntityName() + "(id=1) via the 'direct' relationship field...");
+            System.out.println("Creating relationship between " + entityAClass + "(id=2) and " +
+                               entityBClass + "(id=1) via the 'direct' relationship field...");
             new_entityA2.insertDefaultRelationshipField(new_entityB1);
 
-            System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + "(id=2) and " +
-                               targetEntityBType.getEntityName() + "(id=2) via the 'direct' relationship field...");
+            System.out.println("Creating relationship between " + entityAClass + "(id=2) and " +
+                               entityBClass + "(id=2) via the 'direct' relationship field...");
             new_entityA2.insertDefaultRelationshipField(new_entityB2);
 
             System.out.println("All entities created, relationships established.  Committing transaction...");
@@ -4035,8 +4006,8 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            System.out.println("Finding " + targetEntityAType.getEntityName() + "(id=1)...");
-            IEntityA find_entityA1 = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), 1);
+            System.out.println("Finding " + entityAClass + "(id=1)...");
+            IEntityA find_entityA1 = (IEntityA) jpaResource.getEm().find(entityAClass, 1);
             System.out.println("Object returned by find: " + find_entityA1);
 
             // Verify that em.find() returned an object. (1 point)
@@ -4055,8 +4026,8 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
                                 find_entityA1.getId(),
                                 1);
 
-            System.out.println("Finding " + targetEntityAType.getEntityName() + "(id=2)...");
-            IEntityA find_entityA2 = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), 2);
+            System.out.println("Finding " + entityAClass + "(id=2)...");
+            IEntityA find_entityA2 = (IEntityA) jpaResource.getEm().find(entityAClass, 2);
             System.out.println("Object returned by find: " + find_entityA2);
 
             // Verify that em.find() returned an object. (2 point)
@@ -4081,22 +4052,22 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
 
             Collection<IEntityB> dcCollectionA1 = find_entityA1.getDefaultRelationshipCollectionField();
             Assert.assertNotNull(
-                                 "Assert " + targetEntityAType.getEntityName() +
+                                 "Assert " + entityAClass +
                                  "(id=1)'s DefaultRelationshipCollectionField is not null.",
                                  dcCollectionA1);
             Assert.assertEquals(
-                                "Assert " + targetEntityAType.getEntityName() +
+                                "Assert " + entityAClass +
                                 "(id=1)'s DefaultRelationshipCollectionField is 2.",
                                 2,
                                 dcCollectionA1.size());
 
             Collection<IEntityB> dcCollectionA2 = find_entityA2.getDefaultRelationshipCollectionField();
             Assert.assertNotNull(
-                                 "Assert " + targetEntityAType.getEntityName() +
+                                 "Assert " + entityAClass +
                                  "(id=2)'s DefaultRelationshipCollectionField is not null.",
                                  dcCollectionA2);
             Assert.assertEquals(
-                                "Assert " + targetEntityAType.getEntityName() +
+                                "Assert " + entityAClass +
                                 "(id=2)'s DefaultRelationshipCollectionField is 2.",
                                 2,
                                 dcCollectionA2.size());
@@ -4107,7 +4078,7 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
             for (IEntityB entityB : dcCollectionA1) {
                 int targetIndex = entityB.getId() - 1;
                 if (targetIndex < 0 || targetIndex >= entityA1Collection.length) {
-                    Assert.fail("Found unexpected Entity in " + targetEntityAType.getEntityName()
+                    Assert.fail("Found unexpected Entity in " + entityAClass
                                 + "(id=1)'s DefaultRelationshipCollectionField: " + entityB);
                 } else {
                     entityA1Collection[targetIndex] = true;
@@ -4117,7 +4088,7 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
             for (IEntityB entityB : dcCollectionA2) {
                 int targetIndex = entityB.getId() - 1;
                 if (targetIndex < 0 || targetIndex >= entityA2Collection.length) {
-                    Assert.fail("Found unexpected Entity in " + targetEntityAType.getEntityName()
+                    Assert.fail("Found unexpected Entity in " + entityAClass
                                 + "(id=2)'s DefaultRelationshipCollectionField: " + entityB);
                 } else {
                     entityA2Collection[targetIndex] = true;
@@ -4127,8 +4098,8 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
             int bIndex1 = 1;
             for (boolean bool : entityA1Collection) {
                 Assert.assertTrue(
-                                  "Assert " + targetEntityAType.getEntityName() + "(id=1) contains a reference to " +
-                                  targetEntityAType.getEntityName() + "(id=" + bIndex1 + ")",
+                                  "Assert " + entityAClass + "(id=1) contains a reference to " +
+                                  entityAClass + "(id=" + bIndex1 + ")",
                                   bool);
                 bIndex1++;
             }
@@ -4136,15 +4107,15 @@ public class ManyXManyUnidirectionalTestLogic extends AbstractTestLogic {
             int bIndex2 = 1;
             for (boolean bool : entityA2Collection) {
                 Assert.assertTrue(
-                                  "Assert " + targetEntityAType.getEntityName() + "(id=2) contains a reference to " +
-                                  targetEntityAType.getEntityName() + "(id=" + bIndex2 + ")",
+                                  "Assert " + entityAClass + "(id=2) contains a reference to " +
+                                  entityAClass + "(id=" + bIndex2 + ")",
                                   bool);
                 bIndex2++;
             }
 
             System.out.println("Ending test.");
         } finally {
-            System.out.println("ManyXManyUnidirectionalTestLogic.testTemplate(): End");
+            System.out.println("ManyXManyUnidirectionalTestLogic.testCardinality001(): End");
         }
     }
 }

@@ -29,10 +29,10 @@ import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.FATSuite;
 import com.ibm.ws.jpa.JPAFATServletClient;
-import com.ibm.ws.jpa.fvt.relationships.manyXmany.testlogic.tests.web.TestManyXManyBidirectionalServlet;
-import com.ibm.ws.jpa.fvt.relationships.manyXmany.testlogic.tests.web.TestManyXManyCollectionTypeServlet;
-import com.ibm.ws.jpa.fvt.relationships.manyXmany.testlogic.tests.web.TestManyXManyCompoundPKServlet;
-import com.ibm.ws.jpa.fvt.relationships.manyXmany.testlogic.tests.web.TestManyXManyUnidirectionalServlet;
+import com.ibm.ws.jpa.fvt.relationships.manyXmany.tests.web.TestManyXManyBidirectionalServlet;
+import com.ibm.ws.jpa.fvt.relationships.manyXmany.tests.web.TestManyXManyCollectionTypeServlet;
+import com.ibm.ws.jpa.fvt.relationships.manyXmany.tests.web.TestManyXManyCompoundPKServlet;
+import com.ibm.ws.jpa.fvt.relationships.manyXmany.tests.web.TestManyXManyUnidirectionalServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -131,7 +131,7 @@ public class Relationships_ManyXMany_Web extends JPAFATServletClient {
         webApp.addPackages(true, "com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.uni.annotation");
         webApp.addPackages(true, "com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.uni.xml");
         webApp.addPackages(true, "com.ibm.ws.jpa.fvt.relationships.manyXmany.testlogic");
-        webApp.addPackages(true, "com.ibm.ws.jpa.fvt.relationships.manyXmany.testlogic.tests.web");
+        webApp.addPackages(true, "com.ibm.ws.jpa.fvt.relationships.manyXmany.tests.web");
         ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + appFolder + "/" + appName + ".war");
 
         final JavaArchive testApiJar = buildTestAPIJar();

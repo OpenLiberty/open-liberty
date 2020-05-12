@@ -18,23 +18,29 @@ import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
+import com.ibm.ws.jpa.fvt.relationships.oneXmany.entities.compoundpk.annotated.EmbedIDOMEntityA;
+import com.ibm.ws.jpa.fvt.relationships.oneXmany.entities.compoundpk.annotated.EmbedIDOMEntityB;
+import com.ibm.ws.jpa.fvt.relationships.oneXmany.entities.compoundpk.annotated.IDClassOMEntityA;
+import com.ibm.ws.jpa.fvt.relationships.oneXmany.entities.compoundpk.annotated.IDClassOMEntityB;
+import com.ibm.ws.jpa.fvt.relationships.oneXmany.entities.compoundpk.xml.XMLEmbedIDOMEntityA;
+import com.ibm.ws.jpa.fvt.relationships.oneXmany.entities.compoundpk.xml.XMLEmbedIDOMEntityB;
+import com.ibm.ws.jpa.fvt.relationships.oneXmany.entities.compoundpk.xml.XMLIDClassOMEntityA;
+import com.ibm.ws.jpa.fvt.relationships.oneXmany.entities.compoundpk.xml.XMLIDClassOMEntityB;
+import com.ibm.ws.jpa.fvt.relationships.oneXmany.testlogic.OneXManyCompoundPKTestLogic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.vehicle.web.EJBTestVehicleServlet;
 
-@SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TestOneXManyCompoundPK_EJB_SFEX_Servlet")
 public class TestOneXManyCompoundPK_EJB_SFEX_Servlet extends EJBTestVehicleServlet {
-    private final String testLogicClassName = "com.ibm.ws.jpa.fvt.relationships.oneXmany.testlogic.OneXManyCompoundPKTestLogic";
-
-    private final HashMap<String, JPAPersistenceContext> jpaPctxMap = new HashMap<String, JPAPersistenceContext>();
-
-    private final static String ejbJNDIName = "ejb/OneXManySFExEJB";
+    private static final long serialVersionUID = 1L;
 
     @PostConstruct
     private void initFAT() {
+        testClassName = OneXManyCompoundPKTestLogic.class.getName();
+        ejbJNDIName = "ejb/OneXManySFExEJB";
+
         jpaPctxMap.put("test-jpa-resource-cmex",
                        new JPAPersistenceContext("test-jpa-resource-cmex", PersistenceContextType.CONTAINER_MANAGED_ES, PersistenceInjectionType.JNDI, "java:comp/env/jpa/OneXMany_CompoundPK_CMEX"));
     }
@@ -63,71 +69,55 @@ public class TestOneXManyCompoundPK_EJB_SFEX_Servlet extends EJBTestVehicleServl
     public void jpa10_Relationships_OneXMany_CompoundPK_Embeddable_001_Ano_CMEX_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_CompoundPK_Embeddable_001_Ano_CMEX_EJB_SF";
         final String testMethod = "testOneXManyCompoundPK001";
+        final String testResource = "test-jpa-resource-cmex";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmex"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "EmbedIDOMEntityA");
-        properties.put("EntityBName", "EmbedIDOMEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", EmbedIDOMEntityA.class);
+        properties.put("EntityBName", EmbedIDOMEntityB.class);
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_CompoundPK_Embeddable_001_XML_CMEX_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_CompoundPK_Embeddable_001_XML_CMEX_EJB_SF";
         final String testMethod = "testOneXManyCompoundPK001";
+        final String testResource = "test-jpa-resource-cmex";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmex"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLEmbedIDOMEntityA");
-        properties.put("EntityBName", "XMLEmbedIDOMEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLEmbedIDOMEntityA.class);
+        properties.put("EntityBName", XMLEmbedIDOMEntityB.class);
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_CompoundPK_IDClass_001_Ano_CMEX_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_CompoundPK_IDClass_001_Ano_CMEX_EJB_SF";
         final String testMethod = "testOneXManyCompoundPK001";
+        final String testResource = "test-jpa-resource-cmex";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmex"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "IDClassOMEntityA");
-        properties.put("EntityBName", "IDClassOMEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", IDClassOMEntityA.class);
+        properties.put("EntityBName", IDClassOMEntityB.class);
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_CompoundPK_IDClass_001_XML_CMEX_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_CompoundPK_IDClass_001_XML_CMEX_EJB_SF";
         final String testMethod = "testOneXManyCompoundPK001";
+        final String testResource = "test-jpa-resource-cmex";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmex"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLIDClassOMEntityA");
-        properties.put("EntityBName", "XMLIDClassOMEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLIDClassOMEntityA.class);
+        properties.put("EntityBName", XMLIDClassOMEntityB.class);
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 }

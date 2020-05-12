@@ -18,22 +18,25 @@ import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
+import com.ibm.ws.jpa.fvt.relationships.oneXmany.entities.containertype.annotated.OMContainerTypeEntityA;
+import com.ibm.ws.jpa.fvt.relationships.oneXmany.entities.containertype.annotated.OMContainerTypeEntityB;
+import com.ibm.ws.jpa.fvt.relationships.oneXmany.entities.containertype.xml.XMLOMContainerTypeEntityA;
+import com.ibm.ws.jpa.fvt.relationships.oneXmany.entities.containertype.xml.XMLOMContainerTypeEntityB;
+import com.ibm.ws.jpa.fvt.relationships.oneXmany.testlogic.OneXManyCollectionTypeTestLogic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.vehicle.web.EJBTestVehicleServlet;
 
-@SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TestOneXManyCollectionType_EJB_SF_Servlet")
 public class TestOneXManyCollectionType_EJB_SF_Servlet extends EJBTestVehicleServlet {
-    private final String testLogicClassName = "com.ibm.ws.jpa.fvt.relationships.oneXmany.testlogic.OneXManyCollectionTypeTestLogic";
-    private final HashMap<String, JPAPersistenceContext> jpaPctxMap = new HashMap<String, JPAPersistenceContext>();
-
-    private final static String ejbJNDIName = "ejb/OneXManySFEJB";
+    private static final long serialVersionUID = 1L;
 
     @PostConstruct
     private void initFAT() {
+        testClassName = OneXManyCollectionTypeTestLogic.class.getName();
+        ejbJNDIName = "ejb/OneXManySFEJB";
+
         jpaPctxMap.put("test-jpa-resource-amjta",
                        new JPAPersistenceContext("test-jpa-resource-amjta", PersistenceContextType.APPLICATION_MANAGED_JTA, PersistenceInjectionType.JNDI, "java:comp/env/jpa/OneXMany_Collection_AMJTA"));
         jpaPctxMap.put("test-jpa-resource-amrl",
@@ -61,228 +64,180 @@ public class TestOneXManyCollectionType_EJB_SF_Servlet extends EJBTestVehicleSer
     public void jpa10_Relationships_OneXMany_CollectionType_GENERIC_001_Ano_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_CollectionType_GENERIC_001_Ano_AMJTA_EJB_SF";
         final String testMethod = "testCollectionType";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "OMContainerTypeEntityA");
-        properties.put("EntityBName", "OMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", OMContainerTypeEntityA.class);
+        properties.put("EntityBName", OMContainerTypeEntityB.class);
         properties.put("UseGenericCollection", "true");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_CollectionType_GENERIC_001_XML_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_CollectionType_GENERIC_001_XML_AMJTA_EJB_SF";
         final String testMethod = "testCollectionType";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLOMContainerTypeEntityA");
-        properties.put("EntityBName", "XMLOMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLOMContainerTypeEntityA.class);
+        properties.put("EntityBName", XMLOMContainerTypeEntityB.class);
         properties.put("UseGenericCollection", "true");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_CollectionType_GENERIC_001_Ano_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_CollectionType_GENERIC_001_Ano_AMRL_EJB_SF";
         final String testMethod = "testCollectionType";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "OMContainerTypeEntityA");
-        properties.put("EntityBName", "OMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", OMContainerTypeEntityA.class);
+        properties.put("EntityBName", OMContainerTypeEntityB.class);
         properties.put("UseGenericCollection", "true");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_CollectionType_GENERIC_001_XML_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_CollectionType_GENERIC_001_XML_AMRL_EJB_SF";
         final String testMethod = "testCollectionType";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLOMContainerTypeEntityA");
-        properties.put("EntityBName", "XMLOMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLOMContainerTypeEntityA.class);
+        properties.put("EntityBName", XMLOMContainerTypeEntityB.class);
         properties.put("UseGenericCollection", "true");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_CollectionType_GENERIC_001_Ano_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_CollectionType_GENERIC_001_Ano_CMTS_EJB_SF";
         final String testMethod = "testCollectionType";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "OMContainerTypeEntityA");
-        properties.put("EntityBName", "OMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", OMContainerTypeEntityA.class);
+        properties.put("EntityBName", OMContainerTypeEntityB.class);
         properties.put("UseGenericCollection", "true");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_CollectionType_GENERIC_001_XML_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_CollectionType_GENERIC_001_XML_CMTS_EJB_SF";
         final String testMethod = "testCollectionType";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLOMContainerTypeEntityA");
-        properties.put("EntityBName", "XMLOMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLOMContainerTypeEntityA.class);
+        properties.put("EntityBName", XMLOMContainerTypeEntityB.class);
         properties.put("UseGenericCollection", "true");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_CollectionType_NONGENERIC_001_Ano_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_CollectionType_NONGENERIC_001_Ano_AMJTA_EJB_SF";
         final String testMethod = "testCollectionType";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "OMContainerTypeEntityA");
-        properties.put("EntityBName", "OMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", OMContainerTypeEntityA.class);
+        properties.put("EntityBName", OMContainerTypeEntityB.class);
         properties.put("UseGenericCollection", "false");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_CollectionType_NONGENERIC_001_XML_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_CollectionType_NONGENERIC_001_XML_AMJTA_EJB_SF";
         final String testMethod = "testCollectionType";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLOMContainerTypeEntityA");
-        properties.put("EntityBName", "XMLOMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLOMContainerTypeEntityA.class);
+        properties.put("EntityBName", XMLOMContainerTypeEntityB.class);
         properties.put("UseGenericCollection", "false");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_CollectionType_NONGENERIC_001_Ano_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_CollectionType_NONGENERIC_001_Ano_AMRL_EJB_SF";
         final String testMethod = "testCollectionType";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "OMContainerTypeEntityA");
-        properties.put("EntityBName", "OMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", OMContainerTypeEntityA.class);
+        properties.put("EntityBName", OMContainerTypeEntityB.class);
         properties.put("UseGenericCollection", "false");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_CollectionType_NONGENERIC_001_XML_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_CollectionType_NONGENERIC_001_XML_AMRL_EJB_SF";
         final String testMethod = "testCollectionType";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLOMContainerTypeEntityA");
-        properties.put("EntityBName", "XMLOMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLOMContainerTypeEntityA.class);
+        properties.put("EntityBName", XMLOMContainerTypeEntityB.class);
         properties.put("UseGenericCollection", "false");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_CollectionType_NONGENERIC_001_Ano_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_CollectionType_NONGENERIC_001_Ano_CMTS_EJB_SF";
         final String testMethod = "testCollectionType";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "OMContainerTypeEntityA");
-        properties.put("EntityBName", "OMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", OMContainerTypeEntityA.class);
+        properties.put("EntityBName", OMContainerTypeEntityB.class);
         properties.put("UseGenericCollection", "false");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_CollectionType_NONGENERIC_001_XML_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_CollectionType_NONGENERIC_001_XML_CMTS_EJB_SF";
         final String testMethod = "testCollectionType";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLOMContainerTypeEntityA");
-        properties.put("EntityBName", "XMLOMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLOMContainerTypeEntityA.class);
+        properties.put("EntityBName", XMLOMContainerTypeEntityB.class);
         properties.put("UseGenericCollection", "false");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     /*
@@ -304,228 +259,180 @@ public class TestOneXManyCollectionType_EJB_SF_Servlet extends EJBTestVehicleSer
     public void jpa10_Relationships_OneXMany_SetType_GENERIC_001_Ano_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_SetType_GENERIC_001_Ano_AMJTA_EJB_SF";
         final String testMethod = "testSetType";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "OMContainerTypeEntityA");
-        properties.put("EntityBName", "OMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", OMContainerTypeEntityA.class);
+        properties.put("EntityBName", OMContainerTypeEntityB.class);
         properties.put("UseGenericSet", "true");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_SetType_GENERIC_001_XML_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_SetType_GENERIC_001_XML_AMJTA_EJB_SF";
         final String testMethod = "testSetType";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLOMContainerTypeEntityA");
-        properties.put("EntityBName", "XMLOMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLOMContainerTypeEntityA.class);
+        properties.put("EntityBName", XMLOMContainerTypeEntityB.class);
         properties.put("UseGenericSet", "true");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_SetType_GENERIC_001_Ano_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_SetType_GENERIC_001_Ano_AMRL_EJB_SF";
         final String testMethod = "testSetType";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "OMContainerTypeEntityA");
-        properties.put("EntityBName", "OMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", OMContainerTypeEntityA.class);
+        properties.put("EntityBName", OMContainerTypeEntityB.class);
         properties.put("UseGenericSet", "true");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_SetType_GENERIC_001_XML_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_SetType_GENERIC_001_XML_AMRL_EJB_SF";
         final String testMethod = "testSetType";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLOMContainerTypeEntityA");
-        properties.put("EntityBName", "XMLOMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLOMContainerTypeEntityA.class);
+        properties.put("EntityBName", XMLOMContainerTypeEntityB.class);
         properties.put("UseGenericSet", "true");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_SetType_GENERIC_001_Ano_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_SetType_GENERIC_001_Ano_CMTS_EJB_SF";
         final String testMethod = "testSetType";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "OMContainerTypeEntityA");
-        properties.put("EntityBName", "OMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", OMContainerTypeEntityA.class);
+        properties.put("EntityBName", OMContainerTypeEntityB.class);
         properties.put("UseGenericSet", "true");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_SetType_GENERIC_001_XML_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_SetType_GENERIC_001_XML_CMTS_EJB_SF";
         final String testMethod = "testSetType";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLOMContainerTypeEntityA");
-        properties.put("EntityBName", "XMLOMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLOMContainerTypeEntityA.class);
+        properties.put("EntityBName", XMLOMContainerTypeEntityB.class);
         properties.put("UseGenericSet", "true");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_SetType_NONGENERIC_001_Ano_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_SetType_NONGENERIC_001_Ano_AMJTA_EJB_SF";
         final String testMethod = "testSetType";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "OMContainerTypeEntityA");
-        properties.put("EntityBName", "OMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", OMContainerTypeEntityA.class);
+        properties.put("EntityBName", OMContainerTypeEntityB.class);
         properties.put("UseGenericSet", "false");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_SetType_NONGENERIC_001_XML_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_SetType_NONGENERIC_001_XML_AMJTA_EJB_SF";
         final String testMethod = "testSetType";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLOMContainerTypeEntityA");
-        properties.put("EntityBName", "XMLOMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLOMContainerTypeEntityA.class);
+        properties.put("EntityBName", XMLOMContainerTypeEntityB.class);
         properties.put("UseGenericSet", "false");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_SetType_NONGENERIC_001_Ano_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_SetType_NONGENERIC_001_Ano_AMRL_EJB_SF";
         final String testMethod = "testSetType";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "OMContainerTypeEntityA");
-        properties.put("EntityBName", "OMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", OMContainerTypeEntityA.class);
+        properties.put("EntityBName", OMContainerTypeEntityB.class);
         properties.put("UseGenericSet", "false");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_SetType_NONGENERIC_001_XML_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_SetType_NONGENERIC_001_XML_AMRL_EJB_SF";
         final String testMethod = "testSetType";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLOMContainerTypeEntityA");
-        properties.put("EntityBName", "XMLOMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLOMContainerTypeEntityA.class);
+        properties.put("EntityBName", XMLOMContainerTypeEntityB.class);
         properties.put("UseGenericSet", "false");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_SetType_NONGENERIC_001_Ano_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_SetType_NONGENERIC_001_Ano_CMTS_EJB_SF";
         final String testMethod = "testSetType";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "OMContainerTypeEntityA");
-        properties.put("EntityBName", "OMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", OMContainerTypeEntityA.class);
+        properties.put("EntityBName", OMContainerTypeEntityB.class);
         properties.put("UseGenericSet", "false");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_SetType_NONGENERIC_001_XML_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_SetType_NONGENERIC_001_XML_CMTS_EJB_SF";
         final String testMethod = "testSetType";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLOMContainerTypeEntityA");
-        properties.put("EntityBName", "XMLOMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLOMContainerTypeEntityA.class);
+        properties.put("EntityBName", XMLOMContainerTypeEntityB.class);
         properties.put("UseGenericSet", "false");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     /*
@@ -547,228 +454,180 @@ public class TestOneXManyCollectionType_EJB_SF_Servlet extends EJBTestVehicleSer
     public void jpa10_Relationships_OneXMany_ListType_GENERIC_001_Ano_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_ListType_GENERIC_001_Ano_AMJTA_EJB_SF";
         final String testMethod = "testListType";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "OMContainerTypeEntityA");
-        properties.put("EntityBName", "OMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", OMContainerTypeEntityA.class);
+        properties.put("EntityBName", OMContainerTypeEntityB.class);
         properties.put("UseGenericList", "true");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_ListType_GENERIC_001_XML_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_ListType_GENERIC_001_XML_AMJTA_EJB_SF";
         final String testMethod = "testListType";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLOMContainerTypeEntityA");
-        properties.put("EntityBName", "XMLOMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLOMContainerTypeEntityA.class);
+        properties.put("EntityBName", XMLOMContainerTypeEntityB.class);
         properties.put("UseGenericList", "true");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_ListType_GENERIC_001_Ano_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_ListType_GENERIC_001_Ano_AMRL_EJB_SF";
         final String testMethod = "testListType";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "OMContainerTypeEntityA");
-        properties.put("EntityBName", "OMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", OMContainerTypeEntityA.class);
+        properties.put("EntityBName", OMContainerTypeEntityB.class);
         properties.put("UseGenericList", "true");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_ListType_GENERIC_001_XML_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_ListType_GENERIC_001_XML_AMRL_EJB_SF";
         final String testMethod = "testListType";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLOMContainerTypeEntityA");
-        properties.put("EntityBName", "XMLOMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLOMContainerTypeEntityA.class);
+        properties.put("EntityBName", XMLOMContainerTypeEntityB.class);
         properties.put("UseGenericList", "true");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_ListType_GENERIC_001_Ano_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_ListType_GENERIC_001_Ano_CMTS_EJB_SF";
         final String testMethod = "testListType";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "OMContainerTypeEntityA");
-        properties.put("EntityBName", "OMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", OMContainerTypeEntityA.class);
+        properties.put("EntityBName", OMContainerTypeEntityB.class);
         properties.put("UseGenericList", "true");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_ListType_GENERIC_001_XML_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_ListType_GENERIC_001_XML_CMTS_EJB_SF";
         final String testMethod = "testListType";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLOMContainerTypeEntityA");
-        properties.put("EntityBName", "XMLOMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLOMContainerTypeEntityA.class);
+        properties.put("EntityBName", XMLOMContainerTypeEntityB.class);
         properties.put("UseGenericList", "true");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_ListType_NONGENERIC_001_Ano_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_ListType_NONGENERIC_001_Ano_AMJTA_EJB_SF";
         final String testMethod = "testListType";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "OMContainerTypeEntityA");
-        properties.put("EntityBName", "OMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", OMContainerTypeEntityA.class);
+        properties.put("EntityBName", OMContainerTypeEntityB.class);
         properties.put("UseGenericList", "false");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_ListType_NONGENERIC_001_XML_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_ListType_NONGENERIC_001_XML_AMJTA_EJB_SF";
         final String testMethod = "testListType";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLOMContainerTypeEntityA");
-        properties.put("EntityBName", "XMLOMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLOMContainerTypeEntityA.class);
+        properties.put("EntityBName", XMLOMContainerTypeEntityB.class);
         properties.put("UseGenericList", "false");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_ListType_NONGENERIC_001_Ano_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_ListType_NONGENERIC_001_Ano_AMRL_EJB_SF";
         final String testMethod = "testListType";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "OMContainerTypeEntityA");
-        properties.put("EntityBName", "OMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", OMContainerTypeEntityA.class);
+        properties.put("EntityBName", OMContainerTypeEntityB.class);
         properties.put("UseGenericList", "false");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_ListType_NONGENERIC_001_XML_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_ListType_NONGENERIC_001_XML_AMRL_EJB_SF";
         final String testMethod = "testListType";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLOMContainerTypeEntityA");
-        properties.put("EntityBName", "XMLOMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLOMContainerTypeEntityA.class);
+        properties.put("EntityBName", XMLOMContainerTypeEntityB.class);
         properties.put("UseGenericList", "false");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_ListType_NONGENERIC_001_Ano_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_ListType_NONGENERIC_001_Ano_CMTS_EJB_SF";
         final String testMethod = "testListType";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "OMContainerTypeEntityA");
-        properties.put("EntityBName", "OMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", OMContainerTypeEntityA.class);
+        properties.put("EntityBName", OMContainerTypeEntityB.class);
         properties.put("UseGenericList", "false");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_ListType_NONGENERIC_001_XML_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_ListType_NONGENERIC_001_XML_CMTS_EJB_SF";
         final String testMethod = "testListType";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLOMContainerTypeEntityA");
-        properties.put("EntityBName", "XMLOMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLOMContainerTypeEntityA.class);
+        properties.put("EntityBName", XMLOMContainerTypeEntityB.class);
         properties.put("UseGenericList", "false");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     /*
@@ -793,216 +652,168 @@ public class TestOneXManyCollectionType_EJB_SF_Servlet extends EJBTestVehicleSer
     public void jpa10_Relationships_OneXMany_ListType_Ordered_GENERIC_001_Ano_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_ListType_Ordered_GENERIC_001_Ano_AMJTA_EJB_SF";
         final String testMethod = "testOrderedListType";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "OMContainerTypeEntityA");
-        properties.put("EntityBName", "OMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", OMContainerTypeEntityA.class);
+        properties.put("EntityBName", OMContainerTypeEntityB.class);
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_ListType_Ordered_GENERIC_001_XML_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_ListType_Ordered_GENERIC_001_XML_AMJTA_EJB_SF";
         final String testMethod = "testOrderedListType";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLOMContainerTypeEntityA");
-        properties.put("EntityBName", "XMLOMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLOMContainerTypeEntityA.class);
+        properties.put("EntityBName", XMLOMContainerTypeEntityB.class);
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_ListType_Ordered_GENERIC_001_Ano_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_ListType_Ordered_GENERIC_001_Ano_AMRL_EJB_SF";
         final String testMethod = "testOrderedListType";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "OMContainerTypeEntityA");
-        properties.put("EntityBName", "OMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", OMContainerTypeEntityA.class);
+        properties.put("EntityBName", OMContainerTypeEntityB.class);
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_ListType_Ordered_GENERIC_001_XML_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_ListType_Ordered_GENERIC_001_XML_AMRL_EJB_SF";
         final String testMethod = "testOrderedListType";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLOMContainerTypeEntityA");
-        properties.put("EntityBName", "XMLOMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLOMContainerTypeEntityA.class);
+        properties.put("EntityBName", XMLOMContainerTypeEntityB.class);
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_ListType_Ordered_GENERIC_001_Ano_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_ListType_Ordered_GENERIC_001_Ano_CMTS_EJB_SF";
         final String testMethod = "testOrderedListType";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "OMContainerTypeEntityA");
-        properties.put("EntityBName", "OMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", OMContainerTypeEntityA.class);
+        properties.put("EntityBName", OMContainerTypeEntityB.class);
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_ListType_Ordered_GENERIC_001_XML_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_ListType_Ordered_GENERIC_001_XML_CMTS_EJB_SF";
         final String testMethod = "testOrderedListType";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLOMContainerTypeEntityA");
-        properties.put("EntityBName", "XMLOMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLOMContainerTypeEntityA.class);
+        properties.put("EntityBName", XMLOMContainerTypeEntityB.class);
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_ListType_Ordered_NONGENERIC_001_Ano_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_ListType_Ordered_NONGENERIC_001_Ano_AMJTA_EJB_SF";
         final String testMethod = "testOrderedListType";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "OMContainerTypeEntityA");
-        properties.put("EntityBName", "OMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", OMContainerTypeEntityA.class);
+        properties.put("EntityBName", OMContainerTypeEntityB.class);
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_ListType_Ordered_NONGENERIC_001_XML_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_ListType_Ordered_NONGENERIC_001_XML_AMJTA_EJB_SF";
         final String testMethod = "testOrderedListType";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLOMContainerTypeEntityA");
-        properties.put("EntityBName", "XMLOMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLOMContainerTypeEntityA.class);
+        properties.put("EntityBName", XMLOMContainerTypeEntityB.class);
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_ListType_Ordered_NONGENERIC_001_Ano_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_ListType_Ordered_NONGENERIC_001_Ano_AMRL_EJB_SF";
         final String testMethod = "testOrderedListType";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "OMContainerTypeEntityA");
-        properties.put("EntityBName", "OMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", OMContainerTypeEntityA.class);
+        properties.put("EntityBName", OMContainerTypeEntityB.class);
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_ListType_Ordered_NONGENERIC_001_XML_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_ListType_Ordered_NONGENERIC_001_XML_AMRL_EJB_SF";
         final String testMethod = "testOrderedListType";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLOMContainerTypeEntityA");
-        properties.put("EntityBName", "XMLOMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLOMContainerTypeEntityA.class);
+        properties.put("EntityBName", XMLOMContainerTypeEntityB.class);
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_ListType_Ordered_NONGENERIC_001_Ano_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_ListType_Ordered_NONGENERIC_001_Ano_CMTS_EJB_SF";
         final String testMethod = "testOrderedListType";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "OMContainerTypeEntityA");
-        properties.put("EntityBName", "OMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", OMContainerTypeEntityA.class);
+        properties.put("EntityBName", OMContainerTypeEntityB.class);
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_ListType_Ordered_NONGENERIC_001_XML_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_ListType_Ordered_NONGENERIC_001_XML_CMTS_EJB_SF";
         final String testMethod = "testOrderedListType";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLOMContainerTypeEntityA");
-        properties.put("EntityBName", "XMLOMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLOMContainerTypeEntityA.class);
+        properties.put("EntityBName", XMLOMContainerTypeEntityB.class);
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     /*
@@ -1024,228 +835,180 @@ public class TestOneXManyCollectionType_EJB_SF_Servlet extends EJBTestVehicleSer
     public void jpa10_Relationships_OneXMany_MapType_GENERIC_001_Ano_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_MapType_GENERIC_001_Ano_AMJTA_EJB_SF";
         final String testMethod = "testMapType";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "OMContainerTypeEntityA");
-        properties.put("EntityBName", "OMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", OMContainerTypeEntityA.class);
+        properties.put("EntityBName", OMContainerTypeEntityB.class);
         properties.put("UseGenericMap", "true");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_MapType_GENERIC_001_XML_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_MapType_GENERIC_001_XML_AMJTA_EJB_SF";
         final String testMethod = "testMapType";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLOMContainerTypeEntityA");
-        properties.put("EntityBName", "XMLOMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLOMContainerTypeEntityA.class);
+        properties.put("EntityBName", XMLOMContainerTypeEntityB.class);
         properties.put("UseGenericMap", "true");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_MapType_GENERIC_001_Ano_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_MapType_GENERIC_001_Ano_AMRL_EJB_SF";
         final String testMethod = "testMapType";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "OMContainerTypeEntityA");
-        properties.put("EntityBName", "OMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", OMContainerTypeEntityA.class);
+        properties.put("EntityBName", OMContainerTypeEntityB.class);
         properties.put("UseGenericMap", "true");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_MapType_GENERIC_001_XML_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_MapType_GENERIC_001_XML_AMRL_EJB_SF";
         final String testMethod = "testMapType";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLOMContainerTypeEntityA");
-        properties.put("EntityBName", "XMLOMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLOMContainerTypeEntityA.class);
+        properties.put("EntityBName", XMLOMContainerTypeEntityB.class);
         properties.put("UseGenericMap", "true");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_MapType_GENERIC_001_Ano_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_MapType_GENERIC_001_Ano_CMTS_EJB_SF";
         final String testMethod = "testMapType";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "OMContainerTypeEntityA");
-        properties.put("EntityBName", "OMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", OMContainerTypeEntityA.class);
+        properties.put("EntityBName", OMContainerTypeEntityB.class);
         properties.put("UseGenericMap", "true");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_MapType_GENERIC_001_XML_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_MapType_GENERIC_001_XML_CMTS_EJB_SF";
         final String testMethod = "testMapType";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLOMContainerTypeEntityA");
-        properties.put("EntityBName", "XMLOMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLOMContainerTypeEntityA.class);
+        properties.put("EntityBName", XMLOMContainerTypeEntityB.class);
         properties.put("UseGenericMap", "true");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
 //    @Test
     public void jpa10_Relationships_OneXMany_MapType_NONGENERIC_001_Ano_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_MapType_NONGENERIC_001_Ano_AMJTA_EJB_SF";
         final String testMethod = "testMapType";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "OMContainerTypeEntityA");
-        properties.put("EntityBName", "OMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", OMContainerTypeEntityA.class);
+        properties.put("EntityBName", OMContainerTypeEntityB.class);
         properties.put("UseGenericMap", "false");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
 //    @Test
     public void jpa10_Relationships_OneXMany_MapType_NONGENERIC_001_XML_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_MapType_NONGENERIC_001_XML_AMJTA_EJB_SF";
         final String testMethod = "testMapType";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLOMContainerTypeEntityA");
-        properties.put("EntityBName", "XMLOMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLOMContainerTypeEntityA.class);
+        properties.put("EntityBName", XMLOMContainerTypeEntityB.class);
         properties.put("UseGenericMap", "false");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
 //    @Test
     public void jpa10_Relationships_OneXMany_MapType_NONGENERIC_001_Ano_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_MapType_NONGENERIC_001_Ano_AMRL_EJB_SF";
         final String testMethod = "testMapType";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "OMContainerTypeEntityA");
-        properties.put("EntityBName", "OMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", OMContainerTypeEntityA.class);
+        properties.put("EntityBName", OMContainerTypeEntityB.class);
         properties.put("UseGenericMap", "false");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
 //    @Test
     public void jpa10_Relationships_OneXMany_MapType_NONGENERIC_001_XML_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_MapType_NONGENERIC_001_XML_AMRL_EJB_SF";
         final String testMethod = "testMapType";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLOMContainerTypeEntityA");
-        properties.put("EntityBName", "XMLOMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLOMContainerTypeEntityA.class);
+        properties.put("EntityBName", XMLOMContainerTypeEntityB.class);
         properties.put("UseGenericMap", "false");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
 //    @Test
     public void jpa10_Relationships_OneXMany_MapType_NONGENERIC_001_Ano_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_MapType_NONGENERIC_001_Ano_CMTS_EJB_SF";
         final String testMethod = "testMapType";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "OMContainerTypeEntityA");
-        properties.put("EntityBName", "OMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", OMContainerTypeEntityA.class);
+        properties.put("EntityBName", OMContainerTypeEntityB.class);
         properties.put("UseGenericMap", "false");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
 //    @Test
     public void jpa10_Relationships_OneXMany_MapType_NONGENERIC_001_XML_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_MapType_NONGENERIC_001_XML_CMTS_EJB_SF";
         final String testMethod = "testMapType";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLOMContainerTypeEntityA");
-        properties.put("EntityBName", "XMLOMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLOMContainerTypeEntityA.class);
+        properties.put("EntityBName", XMLOMContainerTypeEntityB.class);
         properties.put("UseGenericMap", "false");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     /*
@@ -1267,227 +1030,179 @@ public class TestOneXManyCollectionType_EJB_SF_Servlet extends EJBTestVehicleSer
     public void jpa10_Relationships_OneXMany_MapType_WithKey_GENERIC_001_Ano_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_MapType_WithKey_GENERIC_001_Ano_AMJTA_EJB_SF";
         final String testMethod = "testMapWithKeyType";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "OMContainerTypeEntityA");
-        properties.put("EntityBName", "OMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", OMContainerTypeEntityA.class);
+        properties.put("EntityBName", OMContainerTypeEntityB.class);
         properties.put("UseGenericMap", "true");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_MapType_WithKey_GENERIC_001_XML_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_MapType_WithKey_GENERIC_001_XML_AMJTA_EJB_SF";
         final String testMethod = "testMapWithKeyType";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLOMContainerTypeEntityA");
-        properties.put("EntityBName", "XMLOMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLOMContainerTypeEntityA.class);
+        properties.put("EntityBName", XMLOMContainerTypeEntityB.class);
         properties.put("UseGenericMap", "true");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_MapType_WithKey_GENERIC_001_Ano_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_MapType_WithKey_GENERIC_001_Ano_AMRL_EJB_SF";
         final String testMethod = "testMapWithKeyType";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "OMContainerTypeEntityA");
-        properties.put("EntityBName", "OMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", OMContainerTypeEntityA.class);
+        properties.put("EntityBName", OMContainerTypeEntityB.class);
         properties.put("UseGenericMap", "true");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_MapType_WithKey_GENERIC_001_XML_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_MapType_WithKey_GENERIC_001_XML_AMRL_EJB_SF";
         final String testMethod = "testMapWithKeyType";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLOMContainerTypeEntityA");
-        properties.put("EntityBName", "XMLOMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLOMContainerTypeEntityA.class);
+        properties.put("EntityBName", XMLOMContainerTypeEntityB.class);
         properties.put("UseGenericMap", "true");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_MapType_WithKey_GENERIC_001_Ano_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_MapType_WithKey_GENERIC_001_Ano_CMTS_EJB_SF";
         final String testMethod = "testMapWithKeyType";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "OMContainerTypeEntityA");
-        properties.put("EntityBName", "OMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", OMContainerTypeEntityA.class);
+        properties.put("EntityBName", OMContainerTypeEntityB.class);
         properties.put("UseGenericMap", "true");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_MapType_WithKey_GENERIC_001_XML_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_MapType_WithKey_GENERIC_001_XML_CMTS_EJB_SF";
         final String testMethod = "testMapWithKeyType";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLOMContainerTypeEntityA");
-        properties.put("EntityBName", "XMLOMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLOMContainerTypeEntityA.class);
+        properties.put("EntityBName", XMLOMContainerTypeEntityB.class);
         properties.put("UseGenericMap", "true");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_MapType_WithKey_NONGENERIC_001_Ano_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_MapType_WithKey_NONGENERIC_001_Ano_AMJTA_EJB_SF";
         final String testMethod = "testMapWithKeyType";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "OMContainerTypeEntityA");
-        properties.put("EntityBName", "OMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", OMContainerTypeEntityA.class);
+        properties.put("EntityBName", OMContainerTypeEntityB.class);
         properties.put("UseGenericMap", "false");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_MapType_WithKey_NONGENERIC_001_XML_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_MapType_WithKey_NONGENERIC_001_XML_AMJTA_EJB_SF";
         final String testMethod = "testMapWithKeyType";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLOMContainerTypeEntityA");
-        properties.put("EntityBName", "XMLOMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLOMContainerTypeEntityA.class);
+        properties.put("EntityBName", XMLOMContainerTypeEntityB.class);
         properties.put("UseGenericMap", "false");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_MapType_WithKey_NONGENERIC_001_Ano_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_MapType_WithKey_NONGENERIC_001_Ano_AMRL_EJB_SF";
         final String testMethod = "testMapWithKeyType";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "OMContainerTypeEntityA");
-        properties.put("EntityBName", "OMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", OMContainerTypeEntityA.class);
+        properties.put("EntityBName", OMContainerTypeEntityB.class);
         properties.put("UseGenericMap", "false");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_MapType_WithKey_NONGENERIC_001_XML_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_MapType_WithKey_NONGENERIC_001_XML_AMRL_EJB_SF";
         final String testMethod = "testMapWithKeyType";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLOMContainerTypeEntityA");
-        properties.put("EntityBName", "XMLOMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLOMContainerTypeEntityA.class);
+        properties.put("EntityBName", XMLOMContainerTypeEntityB.class);
         properties.put("UseGenericMap", "false");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_MapType_WithKey_NONGENERIC_001_Ano_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_MapType_WithKey_NONGENERIC_001_Ano_CMTS_EJB_SF";
         final String testMethod = "testMapWithKeyType";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "OMContainerTypeEntityA");
-        properties.put("EntityBName", "OMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", OMContainerTypeEntityA.class);
+        properties.put("EntityBName", OMContainerTypeEntityB.class);
         properties.put("UseGenericMap", "false");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXMany_MapType_WithKey_NONGENERIC_001_XML_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_Relationships_OneXMany_MapType_WithKey_NONGENERIC_001_XML_CMTS_EJB_SF";
         final String testMethod = "testMapWithKeyType";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLOMContainerTypeEntityA");
-        properties.put("EntityBName", "XMLOMContainerTypeEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLOMContainerTypeEntityA.class);
+        properties.put("EntityBName", XMLOMContainerTypeEntityB.class);
         properties.put("UseGenericMap", "false");
 
         executeDDL("JPA10_ONEXMANY_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 }

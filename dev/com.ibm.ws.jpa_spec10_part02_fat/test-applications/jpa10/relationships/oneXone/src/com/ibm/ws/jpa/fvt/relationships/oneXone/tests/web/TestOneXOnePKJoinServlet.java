@@ -22,16 +22,20 @@ import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
+import com.ibm.ws.jpa.fvt.relationships.oneXone.entities.pkjoincolumn.annotation.PKJoinOOEntityA;
+import com.ibm.ws.jpa.fvt.relationships.oneXone.entities.pkjoincolumn.annotation.PKJoinOOEntityB;
+import com.ibm.ws.jpa.fvt.relationships.oneXone.entities.pkjoincolumn.xml.XMLPKJoinOOEnA;
+import com.ibm.ws.jpa.fvt.relationships.oneXone.entities.pkjoincolumn.xml.XMLPKJoinOOEnB;
 import com.ibm.ws.jpa.fvt.relationships.oneXone.testlogic.OneXOnePKJoinTestLogic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
 
-@SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TestOneXOnePKJoinServlet")
 public class TestOneXOnePKJoinServlet extends JPATestServlet {
+    private static final long serialVersionUID = 1L;
+
     // Container Managed Transaction Scope
     @PersistenceContext(unitName = "OneXOne_PKJoinColumn_JTA")
     private EntityManager cmtsEm;
@@ -44,12 +48,10 @@ public class TestOneXOnePKJoinServlet extends JPATestServlet {
     @PersistenceUnit(unitName = "OneXOne_PKJoinColumn_RL")
     private EntityManagerFactory amrlEmf;
 
-    private final String testLogicClassName = OneXOnePKJoinTestLogic.class.getName();
-
-    private final HashMap<String, JPAPersistenceContext> jpaPctxMap = new HashMap<String, JPAPersistenceContext>();
-
     @PostConstruct
     private void initFAT() {
+        testClassName = OneXOnePKJoinTestLogic.class.getName();
+
         jpaPctxMap.put("test-jpa-resource-amjta",
                        new JPAPersistenceContext("test-jpa-resource-amjta", PersistenceContextType.APPLICATION_MANAGED_JTA, PersistenceInjectionType.FIELD, "amjtaEmf"));
         jpaPctxMap.put("test-jpa-resource-amrl",
@@ -62,108 +64,83 @@ public class TestOneXOnePKJoinServlet extends JPATestServlet {
     public void jpa10_Relationships_OneXOne_PKJoin_001_Ano_AMJTA_Web() throws Exception {
         final String testName = "jpa10_Relationships_OneXOne_PKJoin_001_Ano_AMJTA_Web";
         final String testMethod = "testPKJoin001";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "PKJoinOOEntityA");
-        properties.put("EntityBName", "PKJoinOOEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", PKJoinOOEntityA.class);
+        properties.put("EntityBName", PKJoinOOEntityB.class);
 
         executeDDL("JPA10_ONEXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXOne_PKJoin_001_XML_AMJTA_Web() throws Exception {
         final String testName = "jpa10_Relationships_OneXOne_PKJoin_001_XML_AMJTA_Web";
         final String testMethod = "testPKJoin001";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLPKJoinOOEntityA");
-        properties.put("EntityBName", "XMLPKJoinOOEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLPKJoinOOEnA.class);
+        properties.put("EntityBName", XMLPKJoinOOEnB.class);
 
         executeDDL("JPA10_ONEXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXOne_PKJoin_001_Ano_AMRL_Web() throws Exception {
         final String testName = "jpa10_Relationships_OneXOne_PKJoin_001_Ano_AMRL_Web";
         final String testMethod = "testPKJoin001";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "PKJoinOOEntityA");
-        properties.put("EntityBName", "PKJoinOOEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", PKJoinOOEntityA.class);
+        properties.put("EntityBName", PKJoinOOEntityB.class);
 
         executeDDL("JPA10_ONEXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXOne_PKJoin_001_XML_AMRL_Web() throws Exception {
         final String testName = "jpa10_Relationships_OneXOne_PKJoin_001_XML_AMRL_Web";
         final String testMethod = "testPKJoin001";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLPKJoinOOEntityA");
-        properties.put("EntityBName", "XMLPKJoinOOEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLPKJoinOOEnA.class);
+        properties.put("EntityBName", XMLPKJoinOOEnB.class);
 
         executeDDL("JPA10_ONEXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXOne_PKJoin_001_Ano_CMTS_Web() throws Exception {
         final String testName = "jpa10_Relationships_OneXOne_PKJoin_001_Ano_CMTS_Web";
         final String testMethod = "testPKJoin001";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "PKJoinOOEntityA");
-        properties.put("EntityBName", "PKJoinOOEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", PKJoinOOEntityA.class);
+        properties.put("EntityBName", PKJoinOOEntityB.class);
 
         executeDDL("JPA10_ONEXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_OneXOne_PKJoin_001_XML_CMTS_Web() throws Exception {
         final String testName = "jpa10_Relationships_OneXOne_PKJoin_001_XML_CMTS_Web";
         final String testMethod = "testPKJoin001";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLPKJoinOOEntityA");
-        properties.put("EntityBName", "XMLPKJoinOOEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLPKJoinOOEnA.class);
+        properties.put("EntityBName", XMLPKJoinOOEnB.class);
 
         executeDDL("JPA10_ONEXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
-
 }

@@ -37,19 +37,15 @@ public class OneXOnePKJoinTestLogic extends AbstractTestLogic {
         }
 
         // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        OneXOnePKJoinEntityEnum targetEntityAType = OneXOnePKJoinEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
+        Class<?> entityAClass = (Class<?>) testExecCtx.getProperties().get("EntityAName");
+        if (entityAClass == null) {
+            Assert.fail("Invalid Entity-A type specified ('" + entityAClass + "').  Cannot execute the test.");
             return;
         }
 
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        OneXOnePKJoinEntityEnum targetEntityBType = OneXOnePKJoinEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
+        Class<?> entityBClass = (Class<?>) testExecCtx.getProperties().get("EntityBName");
+        if (entityBClass == null) {
+            Assert.fail("Invalid Entity-B type specified ('" + entityBClass + "').  Cannot execute the test.");
             return;
         }
 
@@ -69,32 +65,32 @@ public class OneXOnePKJoinTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Construct a new entity instances
-            System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() + " (id=1)...");
-            IPKJoinEntityA new_entityA1 = (IPKJoinEntityA) constructNewEntityObject(targetEntityAType);
+            System.out.println("Creating new object instance of " + entityAClass + " (id=1)...");
+            IPKJoinEntityA new_entityA1 = (IPKJoinEntityA) constructNewEntityObject(entityAClass);
             new_entityA1.setId(1);
             new_entityA1.setStrVal("Latveria");
 
             System.out.println("Persisting " + new_entityA1);
             jpaResource.getEm().persist(new_entityA1);
 
-            System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() + " (id=2)...");
-            IPKJoinEntityA new_entityA2 = (IPKJoinEntityA) constructNewEntityObject(targetEntityAType);
+            System.out.println("Creating new object instance of " + entityAClass + " (id=2)...");
+            IPKJoinEntityA new_entityA2 = (IPKJoinEntityA) constructNewEntityObject(entityAClass);
             new_entityA2.setId(2);
             new_entityA2.setStrVal("Elbonia");
 
             System.out.println("Persisting " + new_entityA2);
             jpaResource.getEm().persist(new_entityA2);
 
-            System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() + " (id=1)...");
-            IPKJoinEntityB new_entityB1 = (IPKJoinEntityB) constructNewEntityObject(targetEntityBType);
+            System.out.println("Creating new object instance of " + entityBClass + " (id=1)...");
+            IPKJoinEntityB new_entityB1 = (IPKJoinEntityB) constructNewEntityObject(entityBClass);
             new_entityB1.setId(1);
             new_entityB1.setIntVal(007);
 
             System.out.println("Persisting " + new_entityB1);
             jpaResource.getEm().persist(new_entityB1);
 
-            System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() + " (id=2)...");
-            IPKJoinEntityB new_entityB2 = (IPKJoinEntityB) constructNewEntityObject(targetEntityBType);
+            System.out.println("Creating new object instance of " + entityBClass + " (id=2)...");
+            IPKJoinEntityB new_entityB2 = (IPKJoinEntityB) constructNewEntityObject(entityBClass);
             new_entityB2.setId(2);
             new_entityB2.setIntVal(42);
 
@@ -116,8 +112,8 @@ public class OneXOnePKJoinTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=1)...");
-            IPKJoinEntityA find_entityA1 = (IPKJoinEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), 1);
+            System.out.println("Finding " + entityAClass + " (id=1)...");
+            IPKJoinEntityA find_entityA1 = (IPKJoinEntityA) jpaResource.getEm().find(entityAClass, 1);
             System.out.println("Object returned by find: " + find_entityA1);
 
             // Perform basic verifications on EntityA(id=1) (4 points)
@@ -135,8 +131,8 @@ public class OneXOnePKJoinTestLogic extends AbstractTestLogic {
                                 1);
 
             // Perform basic verifications on EntityA(id=2) (4 points)
-            System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=2)...");
-            IPKJoinEntityA find_entityA2 = (IPKJoinEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), 2);
+            System.out.println("Finding " + entityAClass + " (id=2)...");
+            IPKJoinEntityA find_entityA2 = (IPKJoinEntityA) jpaResource.getEm().find(entityAClass, 2);
             System.out.println("Object returned by find: " + find_entityA2);
             Assert.assertNotNull("Assert that the find operation did not return null", find_entityA2);
             Assert.assertNotSame(

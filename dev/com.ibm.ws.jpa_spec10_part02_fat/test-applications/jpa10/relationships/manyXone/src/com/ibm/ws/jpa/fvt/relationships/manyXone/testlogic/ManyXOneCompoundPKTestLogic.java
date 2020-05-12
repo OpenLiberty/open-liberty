@@ -21,6 +21,7 @@ import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
 import com.ibm.ws.testtooling.vehicle.resources.TestExecutionResources;
 
 public class ManyXOneCompoundPKTestLogic extends AbstractTestLogic {
+
     /**
      * Verify that the JPA provider can manage ManyXOne relationships where the
      * entity on the inverse side of the relationship has a compound (ID Class) primary key.
@@ -61,19 +62,15 @@ public class ManyXOneCompoundPKTestLogic extends AbstractTestLogic {
         }
 
         // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        ManyXOneCompoundPKEntityEnum targetEntityAType = ManyXOneCompoundPKEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
+        Class<?> entityAClass = (Class<?>) testExecCtx.getProperties().get("EntityAName");
+        if (entityAClass == null) {
+            Assert.fail("Invalid Entity-A type specified ('" + entityAClass + "').  Cannot execute the test.");
             return;
         }
 
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        ManyXOneCompoundPKEntityEnum targetEntityBType = ManyXOneCompoundPKEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
+        Class<?> entityBClass = (Class<?>) testExecCtx.getProperties().get("EntityBName");
+        if (entityBClass == null) {
+            Assert.fail("Invalid Entity-B type specified ('" + entityBClass + "').  Cannot execute the test.");
             return;
         }
 
@@ -93,14 +90,14 @@ public class ManyXOneCompoundPKTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Construct a new entity instances
-            System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() + " (id=1)...");
-            ICompoundPKManyXOneEntityA new_entityA = (ICompoundPKManyXOneEntityA) constructNewEntityObject(targetEntityAType);
+            System.out.println("Creating new object instance of " + entityAClass + " (id=1)...");
+            ICompoundPKManyXOneEntityA new_entityA = (ICompoundPKManyXOneEntityA) constructNewEntityObject(entityAClass);
             new_entityA.setId(1);
             new_entityA.setUserName("username");
             new_entityA.setPassword("password");
 
-            System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() + " (id=1)...");
-            ICompoundPKManyXOneEntityB new_entityB = (ICompoundPKManyXOneEntityB) constructNewEntityObject(targetEntityBType);
+            System.out.println("Creating new object instance of " + entityBClass + " (id=1)...");
+            ICompoundPKManyXOneEntityB new_entityB = (ICompoundPKManyXOneEntityB) constructNewEntityObject(entityBClass);
             new_entityB.setIdField(1);
             new_entityB.setCountryField("Latveria");
             new_entityB.setName("Professor Plum");
@@ -111,8 +108,8 @@ public class ManyXOneCompoundPKTestLogic extends AbstractTestLogic {
             System.out.println("Persisting " + new_entityB);
             jpaResource.getEm().persist(new_entityB);
 
-            System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                               targetEntityBType.getEntityName() + " via the 'direct' relationship field...");
+            System.out.println("Creating relationship between " + entityAClass + " and " +
+                               entityBClass + " via the 'direct' relationship field...");
             new_entityA.setIdentityField(new_entityB);
 
             System.out.println("Both entities created, relationship established.  Committing transaction...");
@@ -130,8 +127,8 @@ public class ManyXOneCompoundPKTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=1)...");
-            ICompoundPKManyXOneEntityA find_entityA = (ICompoundPKManyXOneEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), 1);
+            System.out.println("Finding " + entityAClass + " (id=1)...");
+            ICompoundPKManyXOneEntityA find_entityA = (ICompoundPKManyXOneEntityA) jpaResource.getEm().find(entityAClass, 1);
             System.out.println("Object returned by find: " + find_entityA);
 
             // Verify that em.find() returned an object. (1 point)
@@ -158,22 +155,22 @@ public class ManyXOneCompoundPKTestLogic extends AbstractTestLogic {
                                 find_entityA.getPassword(),
                                 "password");
 
-            System.out.println("Accessing " + targetEntityBType.getEntityName() + "(id=1) through " +
-                               targetEntityAType.getEntityName() + "'s identity field...");
+            System.out.println("Accessing " + entityBClass + "(id=1) through " +
+                               entityAClass + "'s identity field...");
 
             ICompoundPKManyXOneEntityB dr_entityB = find_entityA.getIdentityField();
             Assert.assertNotNull(
-                                 "Assert that an " + targetEntityBType.getEntityName() + " was extracted from the identity relationship.",
+                                 "Assert that an " + entityBClass + " was extracted from the identity relationship.",
                                  dr_entityB);
             Assert.assertNotSame(
-                                 "Assert the extracted " + targetEntityBType.getEntityName() + " is not the same as the  original object",
+                                 "Assert the extracted " + entityBClass + " is not the same as the  original object",
                                  new_entityB,
                                  dr_entityB);
             Assert.assertTrue(
-                              "Assert the extracted " + targetEntityBType.getEntityName() + " is managed by the persistence context.",
+                              "Assert the extracted " + entityBClass + " is managed by the persistence context.",
                               jpaResource.getEm().contains(dr_entityB));
             Assert.assertEquals(
-                                "Assert the extracted " + targetEntityBType.getEntityName() + "'s id is 1",
+                                "Assert the extracted " + entityBClass + "'s id is 1",
                                 dr_entityB.getIdField(),
                                 1);
             Assert.assertEquals(

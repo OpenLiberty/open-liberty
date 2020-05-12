@@ -27,6 +27,7 @@ import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
 import com.ibm.ws.testtooling.vehicle.resources.TestExecutionResources;
 
 public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
+
     /**
      * Verify basic One-to-One service by creating UniEntityA and UniEntityB, and
      * link UniEntityA.defaultRelationship to the instance of UniEntityB.
@@ -68,19 +69,15 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        OneXOneBidirectionalEntityEnum targetEntityAType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
+        Class<?> entityAClass = (Class<?>) testExecCtx.getProperties().get("EntityAName");
+        if (entityAClass == null) {
+            Assert.fail("Invalid Entity-A type specified ('" + entityAClass + "').  Cannot execute the test.");
             return;
         }
 
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        OneXOneBidirectionalEntityEnum targetEntityBType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
+        Class<?> entityBClass = (Class<?>) testExecCtx.getProperties().get("EntityBName");
+        if (entityBClass == null) {
+            Assert.fail("Invalid Entity-B type specified ('" + entityBClass + "').  Cannot execute the test.");
             return;
         }
 
@@ -100,21 +97,21 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Construct a new entity instances
-            System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() + " (id=1)...");
-            IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+            System.out.println("Creating new object instance of " + entityBClass + " (id=1)...");
+            IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
             new_entityB.setId(1);
             new_entityB.setName("Entity B");
 
             System.out.println("Persisting " + new_entityB);
             jpaResource.getEm().persist(new_entityB);
 
-            System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() + " (id=1)...");
-            IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+            System.out.println("Creating new object instance of " + entityAClass + " (id=1)...");
+            IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
             new_entityA.setId(1);
             new_entityA.setName("Entity A");
 
-            System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                               targetEntityBType.getEntityName() + " via the 'b1' relationship field...");
+            System.out.println("Creating relationship between " + entityAClass + " and " +
+                               entityBClass + " via the 'b1' relationship field...");
             new_entityA.setB1Field(new_entityB);
 
             System.out.println("Persisting " + new_entityA);
@@ -135,8 +132,8 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=1)...");
-            IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), 1);
+            System.out.println("Finding " + entityAClass + " (id=1)...");
+            IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, 1);
             System.out.println("Object returned by find: " + find_entityA);
 
             // Verify that em.find() returned an object. (1 point)
@@ -164,22 +161,22 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             // Examine the b1 field of EntityA.  It should not be null, should have an id=1, and
             // its name field should have a value of "Entity B".
             System.out.println(
-                               "Fetching " + targetEntityBType.getEntityName() +
-                               "(id=1) from " + targetEntityBType.getEntityName() + "(id=1)'s b1 field...");
+                               "Fetching " + entityBClass +
+                               "(id=1) from " + entityBClass + "(id=1)'s b1 field...");
 
             IEntityB dr_entityB = find_entityA.getB1Field();
             Assert.assertNotNull(
-                                 "Assert that an " + targetEntityBType.getEntityName() + " was extracted from the b1.",
+                                 "Assert that an " + entityBClass + " was extracted from the b1.",
                                  dr_entityB);
             Assert.assertNotSame(
-                                 "Assert the extracted " + targetEntityBType.getEntityName() + " is not the same as the  original object",
+                                 "Assert the extracted " + entityBClass + " is not the same as the  original object",
                                  new_entityB,
                                  dr_entityB);
             Assert.assertFalse(
-                               "Assert the extracted " + targetEntityBType.getEntityName() + " is not managed by the persistence context.",
+                               "Assert the extracted " + entityBClass + " is not managed by the persistence context.",
                                jpaResource.getEm().contains(dr_entityB));
             Assert.assertEquals(
-                                "Assert the extracted " + targetEntityBType.getEntityName() + "'s id is 1",
+                                "Assert the extracted " + entityBClass + "'s id is 1",
                                 dr_entityB.getId(),
                                 1);
 
@@ -223,19 +220,15 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        OneXOneBidirectionalEntityEnum targetEntityAType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
+        Class<?> entityAClass = (Class<?>) testExecCtx.getProperties().get("EntityAName");
+        if (entityAClass == null) {
+            Assert.fail("Invalid Entity-A type specified ('" + entityAClass + "').  Cannot execute the test.");
             return;
         }
 
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        OneXOneBidirectionalEntityEnum targetEntityBType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
+        Class<?> entityBClass = (Class<?>) testExecCtx.getProperties().get("EntityBName");
+        if (entityBClass == null) {
+            Assert.fail("Invalid Entity-B type specified ('" + entityBClass + "').  Cannot execute the test.");
             return;
         }
 
@@ -255,21 +248,21 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Construct a new entity instances
-            System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() + " (id=1)...");
-            IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+            System.out.println("Creating new object instance of " + entityBClass + " (id=1)...");
+            IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
             new_entityB.setId(1);
             new_entityB.setName("Entity B");
 
             System.out.println("Persisting " + new_entityB);
             jpaResource.getEm().persist(new_entityB);
 
-            System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() + " (id=1)...");
-            IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+            System.out.println("Creating new object instance of " + entityAClass + " (id=1)...");
+            IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
             new_entityA.setId(1);
             new_entityA.setName("Entity A");
 
-            System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                               targetEntityBType.getEntityName() + " via the 'b2' relationship field...");
+            System.out.println("Creating relationship between " + entityAClass + " and " +
+                               entityBClass + " via the 'b2' relationship field...");
             new_entityA.setB2Field(new_entityB);
 
             System.out.println("Persisting " + new_entityA);
@@ -290,8 +283,8 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=1)...");
-            IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), 1);
+            System.out.println("Finding " + entityAClass + " (id=1)...");
+            IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, 1);
             System.out.println("Object returned by find: " + find_entityA);
 
             // Verify that em.find() returned an object. (1 point)
@@ -319,22 +312,22 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             // Examine the b2 field of EntityA.  It should not be null, should have an id=1, and
             // its name field should have a value of "Entity B".
             System.out.println(
-                               "Fetching " + targetEntityBType.getEntityName() +
-                               "(id=1) from " + targetEntityBType.getEntityName() + "(id=1)'s b2 field...");
+                               "Fetching " + entityBClass +
+                               "(id=1) from " + entityBClass + "(id=1)'s b2 field...");
 
             IEntityB dr_entityB = find_entityA.getB2Field();
             Assert.assertNotNull(
-                                 "Assert that an " + targetEntityBType.getEntityName() + " was extracted from the b2 Relationship.",
+                                 "Assert that an " + entityBClass + " was extracted from the b2 Relationship.",
                                  dr_entityB);
             Assert.assertNotSame(
-                                 "Assert the extracted " + targetEntityBType.getEntityName() + " is not the same as the  original object",
+                                 "Assert the extracted " + entityBClass + " is not the same as the  original object",
                                  new_entityB,
                                  dr_entityB);
             Assert.assertFalse(
-                               "Assert the extracted " + targetEntityBType.getEntityName() + " is not managed by the persistence context.",
+                               "Assert the extracted " + entityBClass + " is not managed by the persistence context.",
                                jpaResource.getEm().contains(dr_entityB));
             Assert.assertEquals(
-                                "Assert the extracted " + targetEntityBType.getEntityName() + "'s id is 1",
+                                "Assert the extracted " + entityBClass + "'s id is 1",
                                 dr_entityB.getId(),
                                 1);
 
@@ -389,19 +382,15 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        OneXOneBidirectionalEntityEnum targetEntityAType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
+        Class<?> entityAClass = (Class<?>) testExecCtx.getProperties().get("EntityAName");
+        if (entityAClass == null) {
+            Assert.fail("Invalid Entity-A type specified ('" + entityAClass + "').  Cannot execute the test.");
             return;
         }
 
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        OneXOneBidirectionalEntityEnum targetEntityBType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
+        Class<?> entityBClass = (Class<?>) testExecCtx.getProperties().get("EntityBName");
+        if (entityBClass == null) {
+            Assert.fail("Invalid Entity-B type specified ('" + entityBClass + "').  Cannot execute the test.");
             return;
         }
 
@@ -423,8 +412,8 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 System.out.println("Clearing persistence context...");
                 jpaResource.getEm().clear();
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() + " (id=1)...");
-                INoOptEntityA new_entityA = (INoOptEntityA) constructNewEntityObject(targetEntityAType);
+                System.out.println("Creating new object instance of " + entityAClass + " (id=1)...");
+                INoOptEntityA new_entityA = (INoOptEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(1);
                 new_entityA.setName("Entity A");
 
@@ -467,21 +456,21 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() + " (id=1)...");
-                INoOptEntityA new_entityA = (INoOptEntityA) constructNewEntityObject(targetEntityAType);
+                System.out.println("Creating new object instance of " + entityAClass + " (id=1)...");
+                INoOptEntityA new_entityA = (INoOptEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(1);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() + " (id=1)...");
-                INoOptEntityB new_entityB = (INoOptEntityB) constructNewEntityObject(targetEntityBType);
+                System.out.println("Creating new object instance of " + entityBClass + " (id=1)...");
+                INoOptEntityB new_entityB = (INoOptEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(1);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'b' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'b' relationship field...");
                 new_entityA.setBField(new_entityB);
 
                 System.out.println("Persisting " + new_entityA);
@@ -504,8 +493,8 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                     jpaResource.getEm().joinTransaction();
                 }
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=1)...");
-                INoOptEntityA find_entityA = (INoOptEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), 1);
+                System.out.println("Finding " + entityAClass + " (id=1)...");
+                INoOptEntityA find_entityA = (INoOptEntityA) jpaResource.getEm().find(entityAClass, 1);
                 System.out.println("Object returned by find: " + find_entityA);
 
                 // Verify that em.find() returned an object. (1 point)
@@ -582,19 +571,15 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        OneXOneBidirectionalEntityEnum targetEntityAType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
+        Class<?> entityAClass = (Class<?>) testExecCtx.getProperties().get("EntityAName");
+        if (entityAClass == null) {
+            Assert.fail("Invalid Entity-A type specified ('" + entityAClass + "').  Cannot execute the test.");
             return;
         }
 
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        OneXOneBidirectionalEntityEnum targetEntityBType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
+        Class<?> entityBClass = (Class<?>) testExecCtx.getProperties().get("EntityBName");
+        if (entityBClass == null) {
+            Assert.fail("Invalid Entity-B type specified ('" + entityBClass + "').  Cannot execute the test.");
             return;
         }
 
@@ -614,24 +599,24 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Construct a new entity instances
-            System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() + " (id=1)...");
-            IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+            System.out.println("Creating new object instance of " + entityAClass + " (id=1)...");
+            IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
             new_entityA.setId(1);
             new_entityA.setName("Entity A");
 
             System.out.println("Persisting " + new_entityA);
             jpaResource.getEm().persist(new_entityA);
 
-            System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() + " (id=1)...");
-            IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+            System.out.println("Creating new object instance of " + entityBClass + " (id=1)...");
+            IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
             new_entityB.setId(1);
             new_entityB.setName("Entity B");
 
             System.out.println("Persisting " + new_entityB);
             jpaResource.getEm().persist(new_entityB);
 
-            System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                               targetEntityBType.getEntityName() + " via the 'b4' relationship field...");
+            System.out.println("Creating relationship between " + entityAClass + " and " +
+                               entityBClass + " via the 'b4' relationship field...");
             new_entityA.setB4Field(new_entityB);
 
             System.out.println("Both entities created, relationship established.  Committing transaction...");
@@ -650,8 +635,8 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=1)...");
-            IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), 1);
+            System.out.println("Finding " + entityAClass + " (id=1)...");
+            IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, 1);
             System.out.println("Object returned by find: " + find_entityA);
             Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
             Assert.assertNotSame("Assert find did not return the original object,", new_entityA, find_entityA);
@@ -660,7 +645,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             System.out.println("Examining the IEntityB associated with EntityA(id=1)'s lazy relationship field...");
             IEntityB entityLazy = find_entityA.getB4Field();
             Assert.assertNotNull(
-                                 "Assert that " + targetEntityAType.getEntityName() + "'s lazy relationship is not null.",
+                                 "Assert that " + entityAClass + "'s lazy relationship is not null.",
                                  entityLazy);
             Assert.assertEquals("Assert the entity has the expected identity.", 1, entityLazy.getId());
 
@@ -680,8 +665,8 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=1)...");
-            IEntityA find_entityA2 = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), 1);
+            System.out.println("Finding " + entityAClass + " (id=1)...");
+            IEntityA find_entityA2 = (IEntityA) jpaResource.getEm().find(entityAClass, 1);
             System.out.println("Object returned by find: " + find_entityA2);
             Assert.assertNotNull("Assert that the find operation did not return null", find_entityA2);
             Assert.assertNotSame("Assert find did not return the original object,", new_entityA, find_entityA2);
@@ -709,7 +694,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                                      entityLazy2);
             } else {
                 Assert.assertNull(
-                                  "Assert that " + targetEntityAType.getEntityName() + "'s lazy relationship is null.",
+                                  "Assert that " + entityAClass + "'s lazy relationship is null.",
                                   entityLazy2);
             }
 
@@ -843,19 +828,15 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        OneXOneBidirectionalEntityEnum targetEntityAType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
+        Class<?> entityAClass = (Class<?>) testExecCtx.getProperties().get("EntityAName");
+        if (entityAClass == null) {
+            Assert.fail("Invalid Entity-A type specified ('" + entityAClass + "').  Cannot execute the test.");
             return;
         }
 
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        OneXOneBidirectionalEntityEnum targetEntityBType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
+        Class<?> entityBClass = (Class<?>) testExecCtx.getProperties().get("EntityBName");
+        if (entityBClass == null) {
+            Assert.fail("Invalid Entity-B type specified ('" + entityBClass + "').  Cannot execute the test.");
             return;
         }
 
@@ -891,22 +872,22 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("NOT Persisting " + new_entityB + "...");
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'b1' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'b1' relationship field...");
                 new_entityA.setB1Field(new_entityB);
 
                 System.out.println("Persisting " + new_entityA + " (persist should not cascade) ...");
@@ -963,23 +944,23 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'b1' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'b1' relationship field...");
                 new_entityA.setB1Field(new_entityB);
 
                 System.out.println("Persisting " + new_entityA);
@@ -998,10 +979,10 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 // EntityA's removal.
                 System.out.println(
                                    "Entities have been persisted to the database, with a one-to-one relationship between " +
-                                   targetEntityAType.getEntityName() + " and " + targetEntityBType.getEntityName() +
+                                   entityAClass + " and " + entityBClass +
                                    " established.  The relationship is configured to not cascade remove operations, so " +
-                                   targetEntityBType.getEntityName() + " should survive " +
-                                   targetEntityAType.getEntityName() + "'s removal.");
+                                   entityBClass + " should survive " +
+                                   entityAClass + "'s removal.");
 
                 System.out.println("Beginning new transaction...");
                 jpaResource.getTj().beginTransaction();
@@ -1010,12 +991,12 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                     jpaResource.getEm().joinTransaction();
                 }
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
 
-                System.out.println("Removing " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
+                System.out.println("Removing " + entityAClass + " (id=" + pkey + ")...");
                 jpaResource.getEm().remove(find_entityA);
 
                 System.out.println("Committing transaction...");
@@ -1026,16 +1007,16 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Verify that EntityA has been removed, and that EntityB has not been removed.
-                System.out.println("Verify that " + targetEntityAType.getEntityName() + " has been removed, and that " +
-                                   targetEntityBType.getEntityName() + " has not been removed");
+                System.out.println("Verify that " + entityAClass + " has been removed, and that " +
+                                   entityBClass + " has not been removed");
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA2 = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA2 = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA2);
                 Assert.assertNull("Assert that the find operation did return null", find_entityA2);
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityB);
 
@@ -1073,23 +1054,23 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'b1' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'b1' relationship field...");
                 new_entityA.setB1Field(new_entityB);
 
                 System.out.println("Persisting " + new_entityA);
@@ -1110,8 +1091,8 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 System.out.println(
                                    "Entities have been persisted to the databae, with a one-to-one relationship between " +
                                    "remove operations are not cascaded across entity relationships, " +
-                                   targetEntityAType.getEntityName() + " should survive " +
-                                   targetEntityBType.getEntityName() + "'s removal.");
+                                   entityAClass + " should survive " +
+                                   entityBClass + "'s removal.");
 
                 System.out.println("Beginning new transaction...");
                 jpaResource.getTj().beginTransaction();
@@ -1120,12 +1101,12 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                     jpaResource.getEm().joinTransaction();
                 }
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityB);
 
-                System.out.println("Removing " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
+                System.out.println("Removing " + entityBClass + " (id=" + pkey + ")...");
                 jpaResource.getEm().remove(find_entityB);
 
                 System.out.println("Committing transaction...");
@@ -1136,16 +1117,16 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Verify that EntityB has been removed, and that EntityA has not been removed.
-                System.out.println("Verify that " + targetEntityBType.getEntityName() + " has been removed, and that " +
-                                   targetEntityAType.getEntityName() + " has not been removed");
+                System.out.println("Verify that " + entityBClass + " has been removed, and that " +
+                                   entityAClass + " has not been removed");
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB2);
                 Assert.assertNull("Assert that the find operation did return null", find_entityB2);
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
 
@@ -1182,23 +1163,23 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'b1' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'b1' relationship field...");
                 new_entityA.setB1Field(new_entityB);
 
                 System.out.println("Persisting " + new_entityA);
@@ -1221,8 +1202,8 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 // (name field should contain original value)
                 System.out.println(
                                    "Merge EntityA(id=" + pkey + ") into the persistence context and verify that the default field of the " +
-                                   "copy of " + targetEntityAType.getEntityName() + "returned by the merge operation reflects " +
-                                   "the state of " + targetEntityBType.getEntityName() + "(id=" + pkey + ") in the database " +
+                                   "copy of " + entityAClass + "returned by the merge operation reflects " +
+                                   "the state of " + entityBClass + "(id=" + pkey + ") in the database " +
                                    "(name field should contain original value).");
 
                 System.out.println("Beginning new transaction...");
@@ -1238,19 +1219,19 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                                      new_entityA, mergedEntityA);
                 Assert.assertTrue("Assert object returned by merge() is not detached.", jpaResource.getEm().contains(mergedEntityA));
                 Assert.assertEquals(
-                                    "Assert " + targetEntityAType.getEntityName() + " returned by merge() has the updated field.",
+                                    "Assert " + entityAClass + " returned by merge() has the updated field.",
                                     "New Entity A Name",
                                     mergedEntityA.getName());
 
                 // Verify that the EntityB referenced by the merged EntityA contains data unmodified from when it was
                 // persisted.
                 System.out.println(
-                                   "Extracting " + targetEntityBType.getEntityName() + " from the merged " +
-                                   targetEntityAType.getEntityName() + "'s default b1 field.");
+                                   "Extracting " + entityBClass + " from the merged " +
+                                   entityAClass + "'s default b1 field.");
                 IEntityB entityBFromMergedEntityA = mergedEntityA.getB1Field();
                 Assert.assertNotNull("Assert the extraction from the collection did not return a null", entityBFromMergedEntityA);
                 Assert.assertTrue(
-                                  "Assert that " + targetEntityBType.getEntityName() + " is managed.",
+                                  "Assert that " + entityBClass + " is managed.",
                                   jpaResource.getEm().contains(entityBFromMergedEntityA));
                 Assert.assertNotSame("Assert that this is not the original entity object",
                                      new_entityB, entityBFromMergedEntityA);
@@ -1269,17 +1250,17 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 // Verify that the database state is correct.
                 System.out.println("Verify that the database state is correct...");
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
                 Assert.assertEquals(
-                                    "Assert " + targetEntityAType.getEntityName() + " has the updated field.",
+                                    "Assert " + entityAClass + " has the updated field.",
                                     "New Entity A Name",
                                     find_entityA.getName());
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB2);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityB2);
                 Assert.assertEquals(
@@ -1319,23 +1300,23 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'b1' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'b1' relationship field...");
                 new_entityA.setB1Field(new_entityB);
 
                 System.out.println("Persisting " + new_entityA);
@@ -1362,8 +1343,8 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 // owner side of the relationship.  The refresh operation should not cascade to the entity on
                 // the inverse side of the relationship, so the change to its name field should remain.
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
                 Assert.assertTrue("Assert that the entity is managed.", jpaResource.getEm().contains(find_entityA));
@@ -1374,12 +1355,12 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
 
                 // Extract EntityB from EntityA's relationship
                 System.out.println(
-                                   "Extracting " + targetEntityBType.getEntityName() + " from the merged " +
-                                   targetEntityAType.getEntityName() + "'s b1 relationship field.");
+                                   "Extracting " + entityBClass + " from the merged " +
+                                   entityAClass + "'s b1 relationship field.");
                 IEntityB entityBFromEntityA = find_entityA.getB1Field();
                 Assert.assertNotNull("Assert the extraction from the collection did not return a null", entityBFromEntityA);
                 Assert.assertTrue(
-                                  "Assert that " + targetEntityBType.getEntityName() + " is managed.",
+                                  "Assert that " + entityBClass + " is managed.",
                                   jpaResource.getEm().contains(entityBFromEntityA));
                 Assert.assertNotSame("Assert that this is not the original entity object",
                                      new_entityB, entityBFromEntityA);
@@ -1390,11 +1371,11 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 entityBFromEntityA.setName("New Entity B Name");
 
                 Assert.assertEquals(
-                                    "Assert mutation took hold in " + targetEntityAType.getEntityName() + "...",
+                                    "Assert mutation took hold in " + entityAClass + "...",
                                     "New Entity A Name",
                                     find_entityA.getName());
                 Assert.assertEquals(
-                                    "Assert mutation took hold in " + targetEntityBType.getEntityName() + "...",
+                                    "Assert mutation took hold in " + entityBClass + "...",
                                     "New Entity B Name",
                                     entityBFromEntityA.getName());
 
@@ -1408,11 +1389,11 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().refresh(find_entityA);
 
                 Assert.assertEquals(
-                                    "Assert mutation in " + targetEntityAType.getEntityName() + " was undone by refresh()...",
+                                    "Assert mutation in " + entityAClass + " was undone by refresh()...",
                                     "Entity A",
                                     find_entityA.getName());
                 Assert.assertEquals(
-                                    "Assert mutation remains in " + targetEntityBType.getEntityName() + "...",
+                                    "Assert mutation remains in " + entityBClass + "...",
                                     "New Entity B Name",
                                     entityBFromEntityA.getName());
             }
@@ -1503,19 +1484,15 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        OneXOneBidirectionalEntityEnum targetEntityAType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
+        Class<?> entityAClass = (Class<?>) testExecCtx.getProperties().get("EntityAName");
+        if (entityAClass == null) {
+            Assert.fail("Invalid Entity-A type specified ('" + entityAClass + "').  Cannot execute the test.");
             return;
         }
 
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        OneXOneBidirectionalEntityEnum targetEntityBType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
+        Class<?> entityBClass = (Class<?>) testExecCtx.getProperties().get("EntityBName");
+        if (entityBClass == null) {
+            Assert.fail("Invalid Entity-B type specified ('" + entityBClass + "').  Cannot execute the test.");
             return;
         }
 
@@ -1553,22 +1530,22 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("NOT Persisting " + new_entityB + "...");
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'cascadeAll' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'cascadeAll' relationship field...");
                 new_entityA.setB5caField(new_entityB);
 
                 System.out.println("Persisting " + new_entityA + " (persist should cascade) ...");
@@ -1577,7 +1554,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 System.out.println("Committing transaction (no Exception should not be thrown)...");
                 jpaResource.getTj().commitTransaction();
 
-                System.out.println("Clear persistence context, then reload " + targetEntityAType.getEntityName() +
+                System.out.println("Clear persistence context, then reload " + entityAClass +
                                    " to verify that both entities have been persisted and the relationship is intact.");
 
                 // Clear persistence context
@@ -1591,8 +1568,8 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                     jpaResource.getEm().joinTransaction();
                 }
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
                 Assert.assertTrue("Assert that the entity is managed.", jpaResource.getEm().contains(find_entityA));
@@ -1603,13 +1580,13 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
 
                 // Extract EntityB from EntityA's relationship
                 System.out.println(
-                                   "Extracting " + targetEntityBType.getEntityName() + " from the merged " +
-                                   targetEntityAType.getEntityName() + "'s cascadeAll relationship field.");
+                                   "Extracting " + entityBClass + " from the merged " +
+                                   entityAClass + "'s cascadeAll relationship field.");
                 IEntityB entityBFromEntityACACollection = find_entityA.getB5caField();
 
                 Assert.assertNotNull("Assert the extraction from the collection did not return a null", entityBFromEntityACACollection);
                 Assert.assertTrue(
-                                  "Assert that " + targetEntityBType.getEntityName() + " is managed.",
+                                  "Assert that " + entityBClass + " is managed.",
                                   jpaResource.getEm().contains(entityBFromEntityACACollection));
                 Assert.assertNotSame("Assert that this is not the original entity object",
                                      new_entityB, entityBFromEntityACACollection);
@@ -1653,23 +1630,23 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'cascadeAll' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'cascadeAll' relationship field...");
                 new_entityA.setB5caField(new_entityB);
 
                 System.out.println("Persisting " + new_entityA);
@@ -1688,10 +1665,10 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 // EntityA's removal.
                 System.out.println(
                                    "Entities have been persisted to the database, with a one-to-one relationship between " +
-                                   targetEntityAType.getEntityName() + " and " + targetEntityBType.getEntityName() +
+                                   entityAClass + " and " + entityBClass +
                                    "established.  Since the relationship is configured with CASCADE ALL, the remove operation " +
-                                   "on " + targetEntityAType.getEntityName() + " should cascade across the relationship, " +
-                                   " causing " + targetEntityBType.getEntityName() + " to also become removed.");
+                                   "on " + entityAClass + " should cascade across the relationship, " +
+                                   " causing " + entityBClass + " to also become removed.");
 
                 System.out.println("Beginning new transaction...");
                 jpaResource.getTj().beginTransaction();
@@ -1700,17 +1677,17 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                     jpaResource.getEm().joinTransaction();
                 }
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityB);
 
-                System.out.println("Removing " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
+                System.out.println("Removing " + entityAClass + " (id=" + pkey + ")...");
                 jpaResource.getEm().remove(find_entityA);
 
                 System.out.println("Committing transaction...");
@@ -1721,16 +1698,16 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Verify that EntityA has been removed, and that EntityB has not been removed.
-                System.out.println("Verify that " + targetEntityAType.getEntityName() + " has been removed, and that " +
-                                   targetEntityBType.getEntityName() + " has also been removed.");
+                System.out.println("Verify that " + entityAClass + " has been removed, and that " +
+                                   entityBClass + " has also been removed.");
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA2 = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA2 = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA2);
                 Assert.assertNull("Assert that the find operation did return null", find_entityA2);
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB2);
                 Assert.assertNull("Assert that the find operation did return null", find_entityB2);
 
@@ -1768,23 +1745,23 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'cascadeAll' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'cascadeAll' relationship field...");
                 new_entityA.setB5caField(new_entityB);
 
                 System.out.println("Persisting " + new_entityA);
@@ -1807,8 +1784,8 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 // (name field should contain mutated value)
                 System.out.println(
                                    "Merge EntityA(id=" + pkey + ") into the persistence context and verify that the cascadeAll field of the " +
-                                   "copy of " + targetEntityAType.getEntityName() + " returned by the merge operation reflects " +
-                                   "the state of " + targetEntityBType.getEntityName() + "(id=" + pkey + ") that was changed " +
+                                   "copy of " + entityAClass + " returned by the merge operation reflects " +
+                                   "the state of " + entityBClass + "(id=" + pkey + ") that was changed " +
                                    "(name field should contain mutated value).");
 
                 System.out.println("Beginning new transaction...");
@@ -1824,19 +1801,19 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                                      new_entityA, mergedEntityA);
                 Assert.assertTrue("Assert object returned by merge() is not detached.", jpaResource.getEm().contains(mergedEntityA));
                 Assert.assertEquals(
-                                    "Assert " + targetEntityAType.getEntityName() + " returned by merge() has the updated field.",
+                                    "Assert " + entityAClass + " returned by merge() has the updated field.",
                                     "New Entity A Name",
                                     mergedEntityA.getName());
 
                 // Verify that the EntityB referenced by the merged EntityA contains mutated data
                 System.out.println(
-                                   "Extracting " + targetEntityBType.getEntityName() + " from the merged " +
-                                   targetEntityAType.getEntityName() + "'s cascadeAll relationship field.");
+                                   "Extracting " + entityBClass + " from the merged " +
+                                   entityAClass + "'s cascadeAll relationship field.");
                 IEntityB entityBFromMergedEntityA = mergedEntityA.getB5caField();
 
                 Assert.assertNotNull("Assert the extraction from the collection did not return a null", entityBFromMergedEntityA);
                 Assert.assertTrue(
-                                  "Assert that " + targetEntityBType.getEntityName() + " is managed.",
+                                  "Assert that " + entityBClass + " is managed.",
                                   jpaResource.getEm().contains(entityBFromMergedEntityA));
                 Assert.assertNotSame("Assert that this is not the original entity object",
                                      new_entityB, entityBFromMergedEntityA);
@@ -1855,17 +1832,17 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 // Verify that the database state is correct.
                 System.out.println("Verify that the database state is correct...");
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
                 Assert.assertEquals(
-                                    "Assert " + targetEntityAType.getEntityName() + " has the updated field.",
+                                    "Assert " + entityAClass + " has the updated field.",
                                     "New Entity A Name",
                                     find_entityA.getName());
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB2);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityB2);
                 Assert.assertEquals(
@@ -1907,23 +1884,23 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'cascadeAll' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'cascadeAll' relationship field...");
                 new_entityA.setB5caField(new_entityB);
 
                 System.out.println("Persisting " + new_entityA);
@@ -1950,8 +1927,8 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 // owner side of the relationship.  The refresh operation should cascade to the entity on
                 // the inverse side of the relationship, so the change to its name field should be lost.
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
                 Assert.assertTrue("Assert that the entity is managed.", jpaResource.getEm().contains(find_entityA));
@@ -1962,13 +1939,13 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
 
                 // Extract EntityB from EntityA's relationship
                 System.out.println(
-                                   "Extracting " + targetEntityBType.getEntityName() + " from the merged " +
-                                   targetEntityAType.getEntityName() + "'s cascadeAll relationship field.");
+                                   "Extracting " + entityBClass + " from the merged " +
+                                   entityAClass + "'s cascadeAll relationship field.");
                 IEntityB entityBFromEntityA = find_entityA.getB5caField();
 
                 Assert.assertNotNull("Assert the extraction from the collection did not return a null", entityBFromEntityA);
                 Assert.assertTrue(
-                                  "Assert that " + targetEntityBType.getEntityName() + " is managed.",
+                                  "Assert that " + entityBClass + " is managed.",
                                   jpaResource.getEm().contains(entityBFromEntityA));
                 Assert.assertNotSame("Assert that this is not the original entity object",
                                      new_entityB, entityBFromEntityA);
@@ -1979,11 +1956,11 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 entityBFromEntityA.setName("New Entity B Name");
 
                 Assert.assertEquals(
-                                    "Assert mutation took hold in " + targetEntityAType.getEntityName() + "...",
+                                    "Assert mutation took hold in " + entityAClass + "...",
                                     "New Entity A Name",
                                     find_entityA.getName());
                 Assert.assertEquals(
-                                    "Assert mutation took hold in " + targetEntityBType.getEntityName() + "...",
+                                    "Assert mutation took hold in " + entityBClass + "...",
                                     "New Entity B Name",
                                     entityBFromEntityA.getName());
 
@@ -1997,11 +1974,11 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().refresh(find_entityA);
 
                 Assert.assertEquals(
-                                    "Assert mutation in " + targetEntityAType.getEntityName() + " was undone by refresh()...",
+                                    "Assert mutation in " + entityAClass + " was undone by refresh()...",
                                     "Entity A",
                                     find_entityA.getName());
                 Assert.assertEquals(
-                                    "Assert mutation in " + targetEntityBType.getEntityName() + " was undone...",
+                                    "Assert mutation in " + entityBClass + " was undone...",
                                     "Entity B",
                                     entityBFromEntityA.getName());
             }
@@ -2052,19 +2029,15 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        OneXOneBidirectionalEntityEnum targetEntityAType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
+        Class<?> entityAClass = (Class<?>) testExecCtx.getProperties().get("EntityAName");
+        if (entityAClass == null) {
+            Assert.fail("Invalid Entity-A type specified ('" + entityAClass + "').  Cannot execute the test.");
             return;
         }
 
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        OneXOneBidirectionalEntityEnum targetEntityBType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
+        Class<?> entityBClass = (Class<?>) testExecCtx.getProperties().get("EntityBName");
+        if (entityBClass == null) {
+            Assert.fail("Invalid Entity-B type specified ('" + entityBClass + "').  Cannot execute the test.");
             return;
         }
 
@@ -2102,22 +2075,22 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("NOT Persisting " + new_entityB + "...");
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'cascadePersist' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'cascadePersist' relationship field...");
                 new_entityA.setB5cpField(new_entityB);
 
                 System.out.println("Persisting " + new_entityA + " (persist should cascade) ...");
@@ -2126,7 +2099,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 System.out.println("Committing transaction (no Exception should not be thrown)...");
                 jpaResource.getTj().commitTransaction();
 
-                System.out.println("Clear persistence context, then reload " + targetEntityAType.getEntityName() +
+                System.out.println("Clear persistence context, then reload " + entityAClass +
                                    " to verify that both entities have been persisted and the relationship is intact.");
 
                 // Clear persistence context
@@ -2140,8 +2113,8 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                     jpaResource.getEm().joinTransaction();
                 }
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
                 Assert.assertTrue("Assert that the entity is managed.", jpaResource.getEm().contains(find_entityA));
@@ -2152,13 +2125,13 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
 
                 // Extract EntityB from EntityA's relationship
                 System.out.println(
-                                   "Extracting " + targetEntityBType.getEntityName() + " from the merged " +
-                                   targetEntityAType.getEntityName() + "'s cascadePersist relationship field.");
+                                   "Extracting " + entityBClass + " from the merged " +
+                                   entityAClass + "'s cascadePersist relationship field.");
                 IEntityB entityBFromEntityACACollection = find_entityA.getB5cpField();
 
                 Assert.assertNotNull("Assert the extraction from the collection did not return a null", entityBFromEntityACACollection);
                 Assert.assertTrue(
-                                  "Assert that " + targetEntityBType.getEntityName() + " is managed.",
+                                  "Assert that " + entityBClass + " is managed.",
                                   jpaResource.getEm().contains(entityBFromEntityACACollection));
                 Assert.assertNotSame("Assert that this is not the original entity object",
                                      new_entityB, entityBFromEntityACACollection);
@@ -2211,19 +2184,15 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        OneXOneBidirectionalEntityEnum targetEntityAType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
+        Class<?> entityAClass = (Class<?>) testExecCtx.getProperties().get("EntityAName");
+        if (entityAClass == null) {
+            Assert.fail("Invalid Entity-A type specified ('" + entityAClass + "').  Cannot execute the test.");
             return;
         }
 
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        OneXOneBidirectionalEntityEnum targetEntityBType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
+        Class<?> entityBClass = (Class<?>) testExecCtx.getProperties().get("EntityBName");
+        if (entityBClass == null) {
+            Assert.fail("Invalid Entity-B type specified ('" + entityBClass + "').  Cannot execute the test.");
             return;
         }
 
@@ -2262,23 +2231,23 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'cascadeRemove' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'cascadeRemove' relationship field...");
                 new_entityA.setB5rmField(new_entityB);
 
                 System.out.println("Persisting " + new_entityA);
@@ -2297,10 +2266,10 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 // EntityA's removal.
                 System.out.println(
                                    "Entities have been persisted to the database, with a one-to-one relationship between " +
-                                   targetEntityAType.getEntityName() + " and " + targetEntityBType.getEntityName() +
+                                   entityAClass + " and " + entityBClass +
                                    "established.  Since the relationship is configured with CASCADE REMOVE, the remove operation " +
-                                   "on " + targetEntityAType.getEntityName() + " should cascade across the relationship, " +
-                                   " causing " + targetEntityBType.getEntityName() + " to also become removed.");
+                                   "on " + entityAClass + " should cascade across the relationship, " +
+                                   " causing " + entityBClass + " to also become removed.");
 
                 System.out.println("Beginning new transaction...");
                 jpaResource.getTj().beginTransaction();
@@ -2309,17 +2278,17 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                     jpaResource.getEm().joinTransaction();
                 }
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityB);
 
-                System.out.println("Removing " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
+                System.out.println("Removing " + entityAClass + " (id=" + pkey + ")...");
                 jpaResource.getEm().remove(find_entityA);
 
                 System.out.println("Committing transaction...");
@@ -2330,16 +2299,16 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Verify that EntityA has been removed, and that EntityB has not been removed.
-                System.out.println("Verify that " + targetEntityAType.getEntityName() + " has been removed, and that " +
-                                   targetEntityBType.getEntityName() + " has also been removed.");
+                System.out.println("Verify that " + entityAClass + " has been removed, and that " +
+                                   entityBClass + " has also been removed.");
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA2 = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA2 = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA2);
                 Assert.assertNull("Assert that the find operation did return null", find_entityA2);
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB2);
                 Assert.assertNull("Assert that the find operation did return null", find_entityB2);
 
@@ -2391,19 +2360,15 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        OneXOneBidirectionalEntityEnum targetEntityAType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
+        Class<?> entityAClass = (Class<?>) testExecCtx.getProperties().get("EntityAName");
+        if (entityAClass == null) {
+            Assert.fail("Invalid Entity-A type specified ('" + entityAClass + "').  Cannot execute the test.");
             return;
         }
 
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        OneXOneBidirectionalEntityEnum targetEntityBType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
+        Class<?> entityBClass = (Class<?>) testExecCtx.getProperties().get("EntityBName");
+        if (entityBClass == null) {
+            Assert.fail("Invalid Entity-B type specified ('" + entityBClass + "').  Cannot execute the test.");
             return;
         }
 
@@ -2440,23 +2405,23 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'cascadeMerge' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'cascadeMerge' relationship field...");
                 new_entityA.setB5cmField(new_entityB);
 
                 System.out.println("Persisting " + new_entityA);
@@ -2479,8 +2444,8 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 // (name field should contain mutated value)
                 System.out.println(
                                    "Merge EntityA(id=" + pkey + ") into the persistence context and verify that the cascadeAll field of the " +
-                                   "copy of " + targetEntityAType.getEntityName() + " returned by the merge operation reflects " +
-                                   "the state of " + targetEntityBType.getEntityName() + "(id=" + pkey + ") that was changed " +
+                                   "copy of " + entityAClass + " returned by the merge operation reflects " +
+                                   "the state of " + entityBClass + "(id=" + pkey + ") that was changed " +
                                    "(name field should contain mutated value).");
 
                 System.out.println("Beginning new transaction...");
@@ -2496,19 +2461,19 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                                      new_entityA, mergedEntityA);
                 Assert.assertTrue("Assert object returned by merge() is not detached.", jpaResource.getEm().contains(mergedEntityA));
                 Assert.assertEquals(
-                                    "Assert " + targetEntityAType.getEntityName() + " returned by merge() has the updated field.",
+                                    "Assert " + entityAClass + " returned by merge() has the updated field.",
                                     "New Entity A Name",
                                     mergedEntityA.getName());
 
                 // Verify that the EntityB referenced by the merged EntityA contains mutated data
                 System.out.println(
-                                   "Extracting " + targetEntityBType.getEntityName() + " from the merged " +
-                                   targetEntityAType.getEntityName() + "'s cascadeMerge relationship field.");
+                                   "Extracting " + entityBClass + " from the merged " +
+                                   entityAClass + "'s cascadeMerge relationship field.");
                 IEntityB entityBFromMergedEntityA = mergedEntityA.getB5cmField();
 
                 Assert.assertNotNull("Assert the extraction from the collection did not return a null", entityBFromMergedEntityA);
                 Assert.assertTrue(
-                                  "Assert that " + targetEntityBType.getEntityName() + " is managed.",
+                                  "Assert that " + entityBClass + " is managed.",
                                   jpaResource.getEm().contains(entityBFromMergedEntityA));
                 Assert.assertNotSame("Assert that this is not the original entity object",
                                      new_entityB, entityBFromMergedEntityA);
@@ -2527,17 +2492,17 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 // Verify that the database state is correct.
                 System.out.println("Verify that the database state is correct...");
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
                 Assert.assertEquals(
-                                    "Assert " + targetEntityAType.getEntityName() + " has the updated field.",
+                                    "Assert " + entityAClass + " has the updated field.",
                                     "New Entity A Name",
                                     find_entityA.getName());
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB2);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityB2);
                 Assert.assertEquals(
@@ -2593,19 +2558,15 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        OneXOneBidirectionalEntityEnum targetEntityAType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
+        Class<?> entityAClass = (Class<?>) testExecCtx.getProperties().get("EntityAName");
+        if (entityAClass == null) {
+            Assert.fail("Invalid Entity-A type specified ('" + entityAClass + "').  Cannot execute the test.");
             return;
         }
 
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        OneXOneBidirectionalEntityEnum targetEntityBType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
+        Class<?> entityBClass = (Class<?>) testExecCtx.getProperties().get("EntityBName");
+        if (entityBClass == null) {
+            Assert.fail("Invalid Entity-B type specified ('" + entityBClass + "').  Cannot execute the test.");
             return;
         }
 
@@ -2642,23 +2603,23 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+                IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'cascadeRefresh' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'cascadeRefresh' relationship field...");
                 new_entityA.setB5rfField(new_entityB);
 
                 System.out.println("Persisting " + new_entityA);
@@ -2685,8 +2646,8 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 // owner side of the relationship.  The refresh operation should cascade to the entity on
                 // the inverse side of the relationship, so the change to its name field should be lost.
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
                 Assert.assertTrue("Assert that the entity is managed.", jpaResource.getEm().contains(find_entityA));
@@ -2697,13 +2658,13 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
 
                 // Extract EntityB from EntityA's relationship
                 System.out.println(
-                                   "Extracting " + targetEntityBType.getEntityName() + " from the merged " +
-                                   targetEntityAType.getEntityName() + "'s cascadeRefresh relationship field.");
+                                   "Extracting " + entityBClass + " from the merged " +
+                                   entityAClass + "'s cascadeRefresh relationship field.");
                 IEntityB entityBFromEntityA = find_entityA.getB5rfField();
 
                 Assert.assertNotNull("Assert the extraction from the collection did not return a null", entityBFromEntityA);
                 Assert.assertTrue(
-                                  "Assert that " + targetEntityBType.getEntityName() + " is managed.",
+                                  "Assert that " + entityBClass + " is managed.",
                                   jpaResource.getEm().contains(entityBFromEntityA));
                 Assert.assertNotSame("Assert that this is not the original entity object",
                                      new_entityB, entityBFromEntityA);
@@ -2714,11 +2675,11 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 entityBFromEntityA.setName("New Entity B Name");
 
                 Assert.assertEquals(
-                                    "Assert mutation took hold in " + targetEntityAType.getEntityName() + "...",
+                                    "Assert mutation took hold in " + entityAClass + "...",
                                     "New Entity A Name",
                                     find_entityA.getName());
                 Assert.assertEquals(
-                                    "Assert mutation took hold in " + targetEntityBType.getEntityName() + "...",
+                                    "Assert mutation took hold in " + entityBClass + "...",
                                     "New Entity B Name",
                                     entityBFromEntityA.getName());
 
@@ -2732,11 +2693,11 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().refresh(find_entityA);
 
                 Assert.assertEquals(
-                                    "Assert mutation in " + targetEntityAType.getEntityName() + " was undone by refresh()...",
+                                    "Assert mutation in " + entityAClass + " was undone by refresh()...",
                                     "Entity A",
                                     find_entityA.getName());
                 Assert.assertEquals(
-                                    "Assert mutation in " + targetEntityBType.getEntityName() + " was undone...",
+                                    "Assert mutation in " + entityBClass + " was undone...",
                                     "Entity B",
                                     entityBFromEntityA.getName());
             }
@@ -2774,19 +2735,15 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        OneXOneBidirectionalEntityEnum targetEntityAType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
+        Class<?> entityAClass = (Class<?>) testExecCtx.getProperties().get("EntityAName");
+        if (entityAClass == null) {
+            Assert.fail("Invalid Entity-A type specified ('" + entityAClass + "').  Cannot execute the test.");
             return;
         }
 
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        OneXOneBidirectionalEntityEnum targetEntityBType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
+        Class<?> entityBClass = (Class<?>) testExecCtx.getProperties().get("EntityBName");
+        if (entityBClass == null) {
+            Assert.fail("Invalid Entity-B type specified ('" + entityBClass + "').  Cannot execute the test.");
             return;
         }
 
@@ -2806,24 +2763,24 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Construct new entity instances
-            System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() + " (id=1)...");
-            ICardinalEntityB new_entityB1 = (ICardinalEntityB) constructNewEntityObject(targetEntityBType);
+            System.out.println("Creating new object instance of " + entityBClass + " (id=1)...");
+            ICardinalEntityB new_entityB1 = (ICardinalEntityB) constructNewEntityObject(entityBClass);
             new_entityB1.setId(1);
             new_entityB1.setName("Entity B");
 
             System.out.println("Persisting " + new_entityB1);
             jpaResource.getEm().persist(new_entityB1);
 
-            System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() + " (id=1)...");
-            ICardinalEntityA new_entityA1 = (ICardinalEntityA) constructNewEntityObject(targetEntityAType);
+            System.out.println("Creating new object instance of " + entityAClass + " (id=1)...");
+            ICardinalEntityA new_entityA1 = (ICardinalEntityA) constructNewEntityObject(entityAClass);
             new_entityA1.setId(1);
             new_entityA1.setName("Entity A");
 
             System.out.println("Persisting " + new_entityA1);
             jpaResource.getEm().persist(new_entityA1);
 
-            System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + "(id=1) and " +
-                               targetEntityBType.getEntityName() + "(id=1) via the 'b' relationship field...");
+            System.out.println("Creating relationship between " + entityAClass + "(id=1) and " +
+                               entityBClass + "(id=1) via the 'b' relationship field...");
             new_entityA1.setBField(new_entityB1);
 
             System.out.println("All entities created, relationships established.  Committing transaction...");
@@ -2840,17 +2797,17 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() + " (id=2)...");
-            ICardinalEntityA new_entityA2 = (ICardinalEntityA) constructNewEntityObject(targetEntityAType);
+            System.out.println("Creating new object instance of " + entityAClass + " (id=2)...");
+            ICardinalEntityA new_entityA2 = (ICardinalEntityA) constructNewEntityObject(entityAClass);
             new_entityA2.setId(2);
             new_entityA2.setName("Entity B");
 
             System.out.println("Persisting " + new_entityA2);
             jpaResource.getEm().persist(new_entityA2);
 
-            ICardinalEntityB find_entityB = (ICardinalEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), 1);
-            System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + "(id=2) and " +
-                               targetEntityBType.getEntityName() + "(id=1) via the 'b' relationship field...");
+            ICardinalEntityB find_entityB = (ICardinalEntityB) jpaResource.getEm().find(entityBClass, 1);
+            System.out.println("Creating relationship between " + entityAClass + "(id=2) and " +
+                               entityBClass + "(id=1) via the 'b' relationship field...");
             new_entityA2.setBField(find_entityB);
 
             System.out.println("New entity created, relationships established.  Committing transaction (PersistenceException should be thrown)...");
@@ -2926,19 +2883,15 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        OneXOneBidirectionalEntityEnum targetEntityAType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
+        Class<?> entityAClass = (Class<?>) testExecCtx.getProperties().get("EntityAName");
+        if (entityAClass == null) {
+            Assert.fail("Invalid Entity-A type specified ('" + entityAClass + "').  Cannot execute the test.");
             return;
         }
 
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        OneXOneBidirectionalEntityEnum targetEntityBType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
+        Class<?> entityBClass = (Class<?>) testExecCtx.getProperties().get("EntityBName");
+        if (entityBClass == null) {
+            Assert.fail("Invalid Entity-B type specified ('" + entityBClass + "').  Cannot execute the test.");
             return;
         }
 
@@ -2958,24 +2911,24 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Construct a new entity instances
-            System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() + " (id=1)...");
-            IEntityBBi new_entityB = (IEntityBBi) constructNewEntityObject(targetEntityBType);
+            System.out.println("Creating new object instance of " + entityBClass + " (id=1)...");
+            IEntityBBi new_entityB = (IEntityBBi) constructNewEntityObject(entityBClass);
             new_entityB.setId(1);
             new_entityB.setName("Entity B");
 
             System.out.println("Persisting " + new_entityB);
             jpaResource.getEm().persist(new_entityB);
 
-            System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() + " (id=1)...");
-            IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+            System.out.println("Creating new object instance of " + entityAClass + " (id=1)...");
+            IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
             new_entityA.setId(1);
             new_entityA.setName("Entity A");
 
             System.out.println("Persisting " + new_entityA);
             jpaResource.getEm().persist(new_entityA);
 
-            System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                               targetEntityBType.getEntityName() + " via the 'b1' relationship field...");
+            System.out.println("Creating relationship between " + entityAClass + " and " +
+                               entityBClass + " via the 'b1' relationship field...");
             new_entityA.setB1Field(new_entityB);
             new_entityB.setEntityAField(new_entityA);
 
@@ -2993,8 +2946,8 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=1)...");
-            IEntityBBi find_entityB = (IEntityBBi) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), 1);
+            System.out.println("Finding " + entityBClass + " (id=1)...");
+            IEntityBBi find_entityB = (IEntityBBi) jpaResource.getEm().find(entityBClass, 1);
             System.out.println("Object returned by find: " + find_entityB);
 
             // Verify that em.find() returned an object. (1 point)
@@ -3016,7 +2969,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             IEntityA extractedEntityA = find_entityB.getEntityAField();
             Assert.assertNotNull("Assert the extraction from the collection did not return a null", extractedEntityA);
             Assert.assertTrue(
-                              "Assert that " + targetEntityAType.getEntityName() + " is managed.",
+                              "Assert that " + entityAClass + " is managed.",
                               jpaResource.getEm().contains(extractedEntityA));
             Assert.assertNotSame("Assert that this is not the original entity object",
                                  new_entityA, extractedEntityA);
@@ -3128,19 +3081,15 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        OneXOneBidirectionalEntityEnum targetEntityAType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
+        Class<?> entityAClass = (Class<?>) testExecCtx.getProperties().get("EntityAName");
+        if (entityAClass == null) {
+            Assert.fail("Invalid Entity-A type specified ('" + entityAClass + "').  Cannot execute the test.");
             return;
         }
 
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        OneXOneBidirectionalEntityEnum targetEntityBType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
+        Class<?> entityBClass = (Class<?>) testExecCtx.getProperties().get("EntityBName");
+        if (entityBClass == null) {
+            Assert.fail("Invalid Entity-B type specified ('" + entityBClass + "').  Cannot execute the test.");
             return;
         }
 
@@ -3176,22 +3125,22 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityBBi new_entityB = (IEntityBBi) constructNewEntityObject(targetEntityBType);
+                IEntityBBi new_entityB = (IEntityBBi) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("NOT Persisting " + new_entityB + "...");
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'b1' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'b1' relationship field...");
                 new_entityA.setB1Field(new_entityB);
                 new_entityB.setEntityAField(new_entityA);
 
@@ -3250,23 +3199,23 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityBBi new_entityB = (IEntityBBi) constructNewEntityObject(targetEntityBType);
+                IEntityBBi new_entityB = (IEntityBBi) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'b1' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'b1' relationship field...");
                 new_entityA.setB1Field(new_entityB);
                 new_entityB.setEntityAField(new_entityA);
 
@@ -3286,10 +3235,10 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 // EntityA's removal.
                 System.out.println(
                                    "Entities have been persisted to the database, with a many-to-many relationship between " +
-                                   targetEntityAType.getEntityName() + " and " + targetEntityBType.getEntityName() +
+                                   entityAClass + " and " + entityBClass +
                                    " established.  The relationship is configured to not cascade remove operations, so " +
-                                   targetEntityAType.getEntityName() + " should survive " +
-                                   targetEntityBType.getEntityName() + "'s removal.");
+                                   entityAClass + " should survive " +
+                                   entityBClass + "'s removal.");
 
                 System.out.println("Beginning new transaction...");
                 jpaResource.getTj().beginTransaction();
@@ -3298,12 +3247,12 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                     jpaResource.getEm().joinTransaction();
                 }
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityBBi find_entityB = (IEntityBBi) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityBBi find_entityB = (IEntityBBi) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityB);
 
-                System.out.println("Removing " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
+                System.out.println("Removing " + entityBClass + " (id=" + pkey + ")...");
                 jpaResource.getEm().remove(find_entityB);
 
                 System.out.println("Committing transaction...");
@@ -3314,16 +3263,16 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Verify that EntityB has been removed, and that EntityA has not been removed.
-                System.out.println("Verify that " + targetEntityBType.getEntityName() + " has been removed, and that " +
-                                   targetEntityAType.getEntityName() + " has not been removed");
+                System.out.println("Verify that " + entityBClass + " has been removed, and that " +
+                                   entityAClass + " has not been removed");
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB2);
                 Assert.assertNull("Assert that the find operation did return null", find_entityB2);
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
 
@@ -3359,23 +3308,23 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityBBi new_entityB = (IEntityBBi) constructNewEntityObject(targetEntityBType);
+                IEntityBBi new_entityB = (IEntityBBi) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'b1' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'b1' relationship field...");
                 new_entityA.setB1Field(new_entityB);
                 new_entityB.setEntityAField(new_entityA);
 
@@ -3399,8 +3348,8 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 // (name field should contain original value)
                 System.out.println(
                                    "Merge EntityB(id=" + pkey + ") into the persistence context and verify that the default field of the " +
-                                   "copy of " + targetEntityBType.getEntityName() + "returned by the merge operation reflects " +
-                                   "the state of " + targetEntityAType.getEntityName() + "(id=" + pkey + ") in the database " +
+                                   "copy of " + entityBClass + "returned by the merge operation reflects " +
+                                   "the state of " + entityAClass + "(id=" + pkey + ") in the database " +
                                    "(name field should contain original value).");
 
                 System.out.println("Beginning new transaction...");
@@ -3416,7 +3365,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                                      new_entityB, mergedEntityB);
                 Assert.assertTrue("Assert object returned by merge() is not detached.", jpaResource.getEm().contains(mergedEntityB));
                 Assert.assertEquals(
-                                    "Assert " + targetEntityBType.getEntityName() + " returned by merge() has the updated field.",
+                                    "Assert " + entityBClass + " returned by merge() has the updated field.",
                                     "New Entity B Name",
                                     mergedEntityB.getName());
 
@@ -3425,7 +3374,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 IEntityA entityAFromMergedEntityB = mergedEntityB.getEntityAField();
                 Assert.assertNotNull("Assert the extraction from the collection did not return a null", entityAFromMergedEntityB);
                 Assert.assertTrue(
-                                  "Assert that " + targetEntityAType.getEntityName() + " is managed.",
+                                  "Assert that " + entityAClass + " is managed.",
                                   jpaResource.getEm().contains(entityAFromMergedEntityB));
                 Assert.assertNotSame("Assert that this is not the original entity object",
                                      new_entityA, entityAFromMergedEntityB);
@@ -3444,8 +3393,8 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 // Verify that the database state is correct.
                 System.out.println("Verify that the database state is correct...");
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
                 Assert.assertEquals(
@@ -3453,12 +3402,12 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                                     "Entity A",
                                     find_entityA.getName());
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB2);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityB2);
                 Assert.assertEquals(
-                                    "Assert " + targetEntityBType.getEntityName() + " has the updated field.",
+                                    "Assert " + entityBClass + " has the updated field.",
                                     "New Entity B Name",
                                     find_entityB2.getName());
 
@@ -3494,23 +3443,23 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityBBi new_entityB = (IEntityBBi) constructNewEntityObject(targetEntityBType);
+                IEntityBBi new_entityB = (IEntityBBi) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'b1' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'b1' relationship field...");
                 new_entityA.setB1Field(new_entityB);
                 new_entityB.setEntityAField(new_entityA);
 
@@ -3538,8 +3487,8 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 // owner side of the relationship.  The refresh operation should not cascade to the entity on
                 // the inverse side of the relationship, so the change to its name field should remain.
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityBBi find_entityB = (IEntityBBi) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityBBi find_entityB = (IEntityBBi) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityB);
                 Assert.assertTrue("Assert that the entity is managed.", jpaResource.getEm().contains(find_entityB));
@@ -3552,7 +3501,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 IEntityA entityAFromEntityB = find_entityB.getEntityAField();
                 Assert.assertNotNull("Assert the extraction from the collection did not return a null", entityAFromEntityB);
                 Assert.assertTrue(
-                                  "Assert that " + targetEntityAType.getEntityName() + " is managed.",
+                                  "Assert that " + entityAClass + " is managed.",
                                   jpaResource.getEm().contains(entityAFromEntityB));
                 Assert.assertNotSame("Assert that this is not the original entity object",
                                      new_entityA, entityAFromEntityB);
@@ -3563,11 +3512,11 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 find_entityB.setName("New Entity B Name");
 
                 Assert.assertEquals(
-                                    "Assert mutation took hold in " + targetEntityBType.getEntityName() + "...",
+                                    "Assert mutation took hold in " + entityBClass + "...",
                                     "New Entity A Name",
                                     entityAFromEntityB.getName());
                 Assert.assertEquals(
-                                    "Assert mutation took hold in " + targetEntityAType.getEntityName() + "...",
+                                    "Assert mutation took hold in " + entityAClass + "...",
                                     "New Entity B Name",
                                     find_entityB.getName());
 
@@ -3581,11 +3530,11 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().refresh(find_entityB);
 
                 Assert.assertEquals(
-                                    "Assert mutation in " + targetEntityBType.getEntityName() + " was undone by refresh()...",
+                                    "Assert mutation in " + entityBClass + " was undone by refresh()...",
                                     "Entity B",
                                     find_entityB.getName());
                 Assert.assertEquals(
-                                    "Assert mutation remains in " + targetEntityAType.getEntityName() + "...",
+                                    "Assert mutation remains in " + entityAClass + "...",
                                     "New Entity A Name",
                                     entityAFromEntityB.getName());
             }
@@ -3673,19 +3622,15 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        OneXOneBidirectionalEntityEnum targetEntityAType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
+        Class<?> entityAClass = (Class<?>) testExecCtx.getProperties().get("EntityAName");
+        if (entityAClass == null) {
+            Assert.fail("Invalid Entity-A type specified ('" + entityAClass + "').  Cannot execute the test.");
             return;
         }
 
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        OneXOneBidirectionalEntityEnum targetEntityBType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
+        Class<?> entityBClass = (Class<?>) testExecCtx.getProperties().get("EntityBName");
+        if (entityBClass == null) {
+            Assert.fail("Invalid Entity-B type specified ('" + entityBClass + "').  Cannot execute the test.");
             return;
         }
 
@@ -3725,21 +3670,21 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityBBi new_entityB = (IEntityBBi) constructNewEntityObject(targetEntityBType);
+                IEntityBBi new_entityB = (IEntityBBi) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
                 System.out.println("NOT Persisting " + new_entityA + "...");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'b5ca' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'b5ca' relationship field...");
                 new_entityA.setB5caField(new_entityB);
                 new_entityB.setEntityAField(new_entityA);
 
@@ -3805,23 +3750,23 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityBBi new_entityB = (IEntityBBi) constructNewEntityObject(targetEntityBType);
+                IEntityBBi new_entityB = (IEntityBBi) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'b5ca' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'b5ca' relationship field...");
                 new_entityA.setB5caField(new_entityB);
                 new_entityB.setEntityAField(new_entityA);
 
@@ -3841,10 +3786,10 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 // EntityA's removal.
                 System.out.println(
                                    "Entities have been persisted to the database, with a many-to-many relationship between " +
-                                   targetEntityAType.getEntityName() + " and " + targetEntityBType.getEntityName() +
+                                   entityAClass + " and " + entityBClass +
                                    "established.  While EntityA's relationship is CASCADE:ALL, EntityB's is not, so the remove operation " +
-                                   "on " + targetEntityBType.getEntityName() + " should not cascade across the relationship, " +
-                                   " so " + targetEntityAType.getEntityName() + " should not become removed.");
+                                   "on " + entityBClass + " should not cascade across the relationship, " +
+                                   " so " + entityAClass + " should not become removed.");
 
                 System.out.println("Beginning new transaction...");
                 jpaResource.getTj().beginTransaction();
@@ -3853,12 +3798,12 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                     jpaResource.getEm().joinTransaction();
                 }
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityBBi find_entityB = (IEntityBBi) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityBBi find_entityB = (IEntityBBi) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityB);
 
-                System.out.println("Removing " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
+                System.out.println("Removing " + entityBClass + " (id=" + pkey + ")...");
                 jpaResource.getEm().remove(find_entityB);
 
                 System.out.println("Committing transaction...");
@@ -3869,16 +3814,16 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Verify that EntityB has been removed, and that EntityA has not been removed.
-                System.out.println("Verify that " + targetEntityBType.getEntityName() + " has been removed, and that " +
-                                   targetEntityAType.getEntityName() + " has not been removed");
+                System.out.println("Verify that " + entityBClass + " has been removed, and that " +
+                                   entityAClass + " has not been removed");
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB2);
                 Assert.assertNull("Assert that the find operation did return null", find_entityB2);
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
 
@@ -3922,23 +3867,23 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityBBi new_entityB = (IEntityBBi) constructNewEntityObject(targetEntityBType);
+                IEntityBBi new_entityB = (IEntityBBi) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'b5ca' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'b5ca' relationship field...");
                 new_entityA.setB5caField(new_entityB);
                 new_entityB.setEntityAField(new_entityA);
 
@@ -3962,8 +3907,8 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 // (name field should contain original value)
                 System.out.println(
                                    "Merge EntityB(id=" + pkey + ") into the persistence context and verify that the default field of the " +
-                                   "copy of " + targetEntityBType.getEntityName() + "returned by the merge operation reflects " +
-                                   "the state of " + targetEntityAType.getEntityName() + "(id=" + pkey + ") in the database " +
+                                   "copy of " + entityBClass + "returned by the merge operation reflects " +
+                                   "the state of " + entityAClass + "(id=" + pkey + ") in the database " +
                                    "(name field should contain original value).");
 
                 System.out.println("Beginning new transaction...");
@@ -3979,7 +3924,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                                      new_entityB, mergedEntityB);
                 Assert.assertTrue("Assert object returned by merge() is not detached.", jpaResource.getEm().contains(mergedEntityB));
                 Assert.assertEquals(
-                                    "Assert " + targetEntityBType.getEntityName() + " returned by merge() has the updated field.",
+                                    "Assert " + entityBClass + " returned by merge() has the updated field.",
                                     "New Entity B Name",
                                     mergedEntityB.getName());
 
@@ -3988,7 +3933,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 IEntityA entityAFromMergedEntityB = mergedEntityB.getEntityAField();
                 Assert.assertNotNull("Assert the extraction from the collection did not return a null", entityAFromMergedEntityB);
                 Assert.assertTrue(
-                                  "Assert that " + targetEntityAType.getEntityName() + " is managed.",
+                                  "Assert that " + entityAClass + " is managed.",
                                   jpaResource.getEm().contains(entityAFromMergedEntityB));
                 Assert.assertNotSame("Assert that this is not the original entity object",
                                      new_entityA, entityAFromMergedEntityB);
@@ -4007,8 +3952,8 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 // Verify that the database state is correct.
                 System.out.println("Verify that the database state is correct...");
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
                 Assert.assertEquals(
@@ -4016,12 +3961,12 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                                     "Entity A",
                                     find_entityA.getName());
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB2);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityB2);
                 Assert.assertEquals(
-                                    "Assert " + targetEntityBType.getEntityName() + " has the updated field.",
+                                    "Assert " + entityBClass + " has the updated field.",
                                     "New Entity B Name",
                                     find_entityB2.getName());
 
@@ -4065,23 +4010,23 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityBBi new_entityB = (IEntityBBi) constructNewEntityObject(targetEntityBType);
+                IEntityBBi new_entityB = (IEntityBBi) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'b5ca' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'b5ca' relationship field...");
                 new_entityA.setB5caField(new_entityB);
                 new_entityB.setEntityAField(new_entityA);
 
@@ -4109,8 +4054,8 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 // owner side of the relationship.  The refresh operation should not cascade to the entity on
                 // the inverse side of the relationship, so the change to its name field should remain.
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityBBi find_entityB = (IEntityBBi) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityBBi find_entityB = (IEntityBBi) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityB);
                 Assert.assertTrue("Assert that the entity is managed.", jpaResource.getEm().contains(find_entityB));
@@ -4123,7 +4068,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 IEntityA entityAFromEntityB = find_entityB.getEntityAField();
                 Assert.assertNotNull("Assert the extraction from the collection did not return a null", entityAFromEntityB);
                 Assert.assertTrue(
-                                  "Assert that " + targetEntityAType.getEntityName() + " is managed.",
+                                  "Assert that " + entityAClass + " is managed.",
                                   jpaResource.getEm().contains(entityAFromEntityB));
                 Assert.assertNotSame("Assert that this is not the original entity object",
                                      new_entityA, entityAFromEntityB);
@@ -4134,11 +4079,11 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 find_entityB.setName("New Entity B Name");
 
                 Assert.assertEquals(
-                                    "Assert mutation took hold in " + targetEntityBType.getEntityName() + "...",
+                                    "Assert mutation took hold in " + entityBClass + "...",
                                     "New Entity A Name",
                                     entityAFromEntityB.getName());
                 Assert.assertEquals(
-                                    "Assert mutation took hold in " + targetEntityAType.getEntityName() + "...",
+                                    "Assert mutation took hold in " + entityAClass + "...",
                                     "New Entity B Name",
                                     find_entityB.getName());
 
@@ -4152,11 +4097,11 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().refresh(find_entityB);
 
                 Assert.assertEquals(
-                                    "Assert mutation in " + targetEntityBType.getEntityName() + " was undone by refresh()...",
+                                    "Assert mutation in " + entityBClass + " was undone by refresh()...",
                                     "Entity B",
                                     find_entityB.getName());
                 Assert.assertEquals(
-                                    "Assert mutation remains in " + targetEntityAType.getEntityName() + "...",
+                                    "Assert mutation remains in " + entityAClass + "...",
                                     "New Entity A Name",
                                     entityAFromEntityB.getName());
             }
@@ -4206,19 +4151,15 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        OneXOneBidirectionalEntityEnum targetEntityAType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
+        Class<?> entityAClass = (Class<?>) testExecCtx.getProperties().get("EntityAName");
+        if (entityAClass == null) {
+            Assert.fail("Invalid Entity-A type specified ('" + entityAClass + "').  Cannot execute the test.");
             return;
         }
 
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        OneXOneBidirectionalEntityEnum targetEntityBType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
+        Class<?> entityBClass = (Class<?>) testExecCtx.getProperties().get("EntityBName");
+        if (entityBClass == null) {
+            Assert.fail("Invalid Entity-B type specified ('" + entityBClass + "').  Cannot execute the test.");
             return;
         }
 
@@ -4258,21 +4199,21 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityBBi new_entityB = (IEntityBBi) constructNewEntityObject(targetEntityBType);
+                IEntityBBi new_entityB = (IEntityBBi) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
                 System.out.println("NOT Persisting " + new_entityA + "...");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'b5cp' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'b5cp' relationship field...");
                 new_entityA.setB5cpField(new_entityB);
                 new_entityB.setEntityAField(new_entityA);
 
@@ -4345,19 +4286,15 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        OneXOneBidirectionalEntityEnum targetEntityAType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
+        Class<?> entityAClass = (Class<?>) testExecCtx.getProperties().get("EntityAName");
+        if (entityAClass == null) {
+            Assert.fail("Invalid Entity-A type specified ('" + entityAClass + "').  Cannot execute the test.");
             return;
         }
 
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        OneXOneBidirectionalEntityEnum targetEntityBType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
+        Class<?> entityBClass = (Class<?>) testExecCtx.getProperties().get("EntityBName");
+        if (entityBClass == null) {
+            Assert.fail("Invalid Entity-B type specified ('" + entityBClass + "').  Cannot execute the test.");
             return;
         }
 
@@ -4400,23 +4337,23 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityBBi new_entityB = (IEntityBBi) constructNewEntityObject(targetEntityBType);
+                IEntityBBi new_entityB = (IEntityBBi) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'b5rm' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'b5rm' relationship field...");
                 new_entityA.setB5rmField(new_entityB);
                 new_entityB.setEntityAField(new_entityA);
 
@@ -4436,10 +4373,10 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 // EntityA's removal.
                 System.out.println(
                                    "Entities have been persisted to the database, with a many-to-many relationship between " +
-                                   targetEntityAType.getEntityName() + " and " + targetEntityBType.getEntityName() +
+                                   entityAClass + " and " + entityBClass +
                                    "established.  While EntityA's relationship is CASCADE:REMOVE, EntityB's is not, so the remove operation " +
-                                   "on " + targetEntityBType.getEntityName() + " should not cascade across the relationship, " +
-                                   " so " + targetEntityAType.getEntityName() + " should not become removed.");
+                                   "on " + entityBClass + " should not cascade across the relationship, " +
+                                   " so " + entityAClass + " should not become removed.");
 
                 System.out.println("Beginning new transaction...");
                 jpaResource.getTj().beginTransaction();
@@ -4448,12 +4385,12 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                     jpaResource.getEm().joinTransaction();
                 }
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityBBi find_entityB = (IEntityBBi) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityBBi find_entityB = (IEntityBBi) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityB);
 
-                System.out.println("Removing " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
+                System.out.println("Removing " + entityBClass + " (id=" + pkey + ")...");
                 jpaResource.getEm().remove(find_entityB);
 
                 System.out.println("Committing transaction...");
@@ -4464,16 +4401,16 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Verify that EntityB has been removed, and that EntityA has not been removed.
-                System.out.println("Verify that " + targetEntityBType.getEntityName() + " has been removed, and that " +
-                                   targetEntityAType.getEntityName() + " has not been removed");
+                System.out.println("Verify that " + entityBClass + " has been removed, and that " +
+                                   entityAClass + " has not been removed");
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB2);
                 Assert.assertNull("Assert that the find operation did return null", find_entityB2);
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
 
@@ -4533,19 +4470,15 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        OneXOneBidirectionalEntityEnum targetEntityAType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
+        Class<?> entityAClass = (Class<?>) testExecCtx.getProperties().get("EntityAName");
+        if (entityAClass == null) {
+            Assert.fail("Invalid Entity-A type specified ('" + entityAClass + "').  Cannot execute the test.");
             return;
         }
 
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        OneXOneBidirectionalEntityEnum targetEntityBType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
+        Class<?> entityBClass = (Class<?>) testExecCtx.getProperties().get("EntityBName");
+        if (entityBClass == null) {
+            Assert.fail("Invalid Entity-B type specified ('" + entityBClass + "').  Cannot execute the test.");
             return;
         }
 
@@ -4580,23 +4513,23 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityBBi new_entityB = (IEntityBBi) constructNewEntityObject(targetEntityBType);
+                IEntityBBi new_entityB = (IEntityBBi) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'b5cm' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'b5cm' relationship field...");
                 new_entityA.setB5cmField(new_entityB);
                 new_entityB.setEntityAField(new_entityA);
 
@@ -4620,8 +4553,8 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 // (name field should contain original value)
                 System.out.println(
                                    "Merge EntityB(id=" + pkey + ") into the persistence context and verify that the default field of the " +
-                                   "copy of " + targetEntityBType.getEntityName() + "returned by the merge operation reflects " +
-                                   "the state of " + targetEntityAType.getEntityName() + "(id=" + pkey + ") in the database " +
+                                   "copy of " + entityBClass + "returned by the merge operation reflects " +
+                                   "the state of " + entityAClass + "(id=" + pkey + ") in the database " +
                                    "(name field should contain original value).");
 
                 System.out.println("Beginning new transaction...");
@@ -4637,7 +4570,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                                      new_entityB, mergedEntityB);
                 Assert.assertTrue("Assert object returned by merge() is not detached.", jpaResource.getEm().contains(mergedEntityB));
                 Assert.assertEquals(
-                                    "Assert " + targetEntityBType.getEntityName() + " returned by merge() has the updated field.",
+                                    "Assert " + entityBClass + " returned by merge() has the updated field.",
                                     "New Entity B Name",
                                     mergedEntityB.getName());
 
@@ -4646,7 +4579,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 IEntityA entityAFromMergedEntityB = mergedEntityB.getEntityAField();
                 Assert.assertNotNull("Assert the extraction from the collection did not return a null", entityAFromMergedEntityB);
                 Assert.assertTrue(
-                                  "Assert that " + targetEntityAType.getEntityName() + " is managed.",
+                                  "Assert that " + entityAClass + " is managed.",
                                   jpaResource.getEm().contains(entityAFromMergedEntityB));
                 Assert.assertNotSame("Assert that this is not the original entity object",
                                      new_entityA, entityAFromMergedEntityB);
@@ -4665,8 +4598,8 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 // Verify that the database state is correct.
                 System.out.println("Verify that the database state is correct...");
 
-                System.out.println("Finding " + targetEntityAType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), pkey);
+                System.out.println("Finding " + entityAClass + " (id=" + pkey + ")...");
+                IEntityA find_entityA = (IEntityA) jpaResource.getEm().find(entityAClass, pkey);
                 System.out.println("Object returned by find: " + find_entityA);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
                 Assert.assertEquals(
@@ -4674,12 +4607,12 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                                     "Entity A",
                                     find_entityA.getName());
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityB find_entityB2 = (IEntityB) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB2);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityB2);
                 Assert.assertEquals(
-                                    "Assert " + targetEntityBType.getEntityName() + " has the updated field.",
+                                    "Assert " + entityBClass + " has the updated field.",
                                     "New Entity B Name",
                                     find_entityB2.getName());
 
@@ -4734,19 +4667,15 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        OneXOneBidirectionalEntityEnum targetEntityAType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
+        Class<?> entityAClass = (Class<?>) testExecCtx.getProperties().get("EntityAName");
+        if (entityAClass == null) {
+            Assert.fail("Invalid Entity-A type specified ('" + entityAClass + "').  Cannot execute the test.");
             return;
         }
 
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        OneXOneBidirectionalEntityEnum targetEntityBType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
+        Class<?> entityBClass = (Class<?>) testExecCtx.getProperties().get("EntityBName");
+        if (entityBClass == null) {
+            Assert.fail("Invalid Entity-B type specified ('" + entityBClass + "').  Cannot execute the test.");
             return;
         }
 
@@ -4781,23 +4710,23 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityBClass +
                                    " (id=" + pkey + ")...");
-                IEntityBBi new_entityB = (IEntityBBi) constructNewEntityObject(targetEntityBType);
+                IEntityBBi new_entityB = (IEntityBBi) constructNewEntityObject(entityBClass);
                 new_entityB.setId(pkey);
                 new_entityB.setName("Entity B");
 
                 System.out.println("Persisting " + new_entityB);
                 jpaResource.getEm().persist(new_entityB);
 
-                System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() +
+                System.out.println("Creating new object instance of " + entityAClass +
                                    " (id=" + pkey + ")...");
-                IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+                IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
                 new_entityA.setId(pkey);
                 new_entityA.setName("Entity A");
 
-                System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                                   targetEntityBType.getEntityName() + " via the 'b5rf' relationship field...");
+                System.out.println("Creating relationship between " + entityAClass + " and " +
+                                   entityBClass + " via the 'b5rf' relationship field...");
                 new_entityA.setB5rfField(new_entityB);
                 new_entityB.setEntityAField(new_entityA);
 
@@ -4825,8 +4754,8 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 // owner side of the relationship.  The refresh operation should not cascade to the entity on
                 // the inverse side of the relationship, so the change to its name field should remain.
 
-                System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=" + pkey + ")...");
-                IEntityBBi find_entityB = (IEntityBBi) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), pkey);
+                System.out.println("Finding " + entityBClass + " (id=" + pkey + ")...");
+                IEntityBBi find_entityB = (IEntityBBi) jpaResource.getEm().find(entityBClass, pkey);
                 System.out.println("Object returned by find: " + find_entityB);
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entityB);
                 Assert.assertTrue("Assert that the entity is managed.", jpaResource.getEm().contains(find_entityB));
@@ -4839,7 +4768,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 IEntityA entityAFromEntityB = find_entityB.getEntityAField();
                 Assert.assertNotNull("Assert the extraction from the collection did not return a null", entityAFromEntityB);
                 Assert.assertTrue(
-                                  "Assert that " + targetEntityAType.getEntityName() + " is managed.",
+                                  "Assert that " + entityAClass + " is managed.",
                                   jpaResource.getEm().contains(entityAFromEntityB));
                 Assert.assertNotSame("Assert that this is not the original entity object",
                                      new_entityA, entityAFromEntityB);
@@ -4850,11 +4779,11 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 find_entityB.setName("New Entity B Name");
 
                 Assert.assertEquals(
-                                    "Assert mutation took hold in " + targetEntityBType.getEntityName() + "...",
+                                    "Assert mutation took hold in " + entityBClass + "...",
                                     "New Entity A Name",
                                     entityAFromEntityB.getName());
                 Assert.assertEquals(
-                                    "Assert mutation took hold in " + targetEntityAType.getEntityName() + "...",
+                                    "Assert mutation took hold in " + entityAClass + "...",
                                     "New Entity B Name",
                                     find_entityB.getName());
 
@@ -4868,11 +4797,11 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().refresh(find_entityB);
 
                 Assert.assertEquals(
-                                    "Assert mutation in " + targetEntityBType.getEntityName() + " was undone by refresh()...",
+                                    "Assert mutation in " + entityBClass + " was undone by refresh()...",
                                     "Entity B",
                                     find_entityB.getName());
                 Assert.assertEquals(
-                                    "Assert mutation remains in " + targetEntityAType.getEntityName() + "...",
+                                    "Assert mutation remains in " + entityAClass + "...",
                                     "New Entity A Name",
                                     entityAFromEntityB.getName());
             }
@@ -4911,19 +4840,15 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        OneXOneBidirectionalEntityEnum targetEntityAType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
+        Class<?> entityAClass = (Class<?>) testExecCtx.getProperties().get("EntityAName");
+        if (entityAClass == null) {
+            Assert.fail("Invalid Entity-A type specified ('" + entityAClass + "').  Cannot execute the test.");
             return;
         }
 
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        OneXOneBidirectionalEntityEnum targetEntityBType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
+        Class<?> entityBClass = (Class<?>) testExecCtx.getProperties().get("EntityBName");
+        if (entityBClass == null) {
+            Assert.fail("Invalid Entity-B type specified ('" + entityBClass + "').  Cannot execute the test.");
             return;
         }
 
@@ -4943,24 +4868,24 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Construct new entity instances
-            System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() + " (id=1)...");
-            ICardinalEntityBBi new_entityB1 = (ICardinalEntityBBi) constructNewEntityObject(targetEntityBType);
+            System.out.println("Creating new object instance of " + entityBClass + " (id=1)...");
+            ICardinalEntityBBi new_entityB1 = (ICardinalEntityBBi) constructNewEntityObject(entityBClass);
             new_entityB1.setId(1);
             new_entityB1.setName("Entity B");
 
             System.out.println("Persisting " + new_entityB1);
             jpaResource.getEm().persist(new_entityB1);
 
-            System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() + " (id=1)...");
-            ICardinalEntityA new_entityA1 = (ICardinalEntityA) constructNewEntityObject(targetEntityAType);
+            System.out.println("Creating new object instance of " + entityAClass + " (id=1)...");
+            ICardinalEntityA new_entityA1 = (ICardinalEntityA) constructNewEntityObject(entityAClass);
             new_entityA1.setId(1);
             new_entityA1.setName("Entity A");
 
             System.out.println("Persisting " + new_entityA1);
             jpaResource.getEm().persist(new_entityA1);
 
-            System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + "(id=1) and " +
-                               targetEntityBType.getEntityName() + "(id=1) via the 'a' relationship field...");
+            System.out.println("Creating relationship between " + entityAClass + "(id=1) and " +
+                               entityBClass + "(id=1) via the 'a' relationship field...");
             new_entityA1.setBField(new_entityB1);
             new_entityB1.setAField(new_entityA1);
 
@@ -4978,17 +4903,17 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() + " (id=2)...");
-            ICardinalEntityBBi new_entityB2 = (ICardinalEntityBBi) constructNewEntityObject(targetEntityBType);
+            System.out.println("Creating new object instance of " + entityBClass + " (id=2)...");
+            ICardinalEntityBBi new_entityB2 = (ICardinalEntityBBi) constructNewEntityObject(entityBClass);
             new_entityB2.setId(2);
             new_entityB2.setName("Entity B");
 
             System.out.println("Persisting " + new_entityB2);
             jpaResource.getEm().persist(new_entityB2);
 
-            ICardinalEntityA find_entityA = (ICardinalEntityA) jpaResource.getEm().find(resolveEntityClass(targetEntityAType), 1);
-            System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + "(id=2) and " +
-                               targetEntityBType.getEntityName() + "(id=1) via the 'a' relationship field...");
+            ICardinalEntityA find_entityA = (ICardinalEntityA) jpaResource.getEm().find(entityAClass, 1);
+            System.out.println("Creating relationship between " + entityAClass + "(id=2) and " +
+                               entityBClass + "(id=1) via the 'a' relationship field...");
             new_entityB2.setAField(find_entityA);
 
             System.out.println("New entity created, relationships established.  Committing transaction (PersistenceException should be thrown)...");
@@ -5057,19 +4982,15 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        OneXOneBidirectionalEntityEnum targetEntityAType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
+        Class<?> entityAClass = (Class<?>) testExecCtx.getProperties().get("EntityAName");
+        if (entityAClass == null) {
+            Assert.fail("Invalid Entity-A type specified ('" + entityAClass + "').  Cannot execute the test.");
             return;
         }
 
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        OneXOneBidirectionalEntityEnum targetEntityBType = OneXOneBidirectionalEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
+        Class<?> entityBClass = (Class<?>) testExecCtx.getProperties().get("EntityBName");
+        if (entityBClass == null) {
+            Assert.fail("Invalid Entity-B type specified ('" + entityBClass + "').  Cannot execute the test.");
             return;
         }
 
@@ -5089,24 +5010,24 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Construct a new entity instances
-            System.out.println("Creating new object instance of " + targetEntityAType.getEntityName() + " (id=1)...");
-            IEntityA new_entityA = (IEntityA) constructNewEntityObject(targetEntityAType);
+            System.out.println("Creating new object instance of " + entityAClass + " (id=1)...");
+            IEntityA new_entityA = (IEntityA) constructNewEntityObject(entityAClass);
             new_entityA.setId(1);
             new_entityA.setName("Entity A");
 
             System.out.println("Persisting " + new_entityA);
             jpaResource.getEm().persist(new_entityA);
 
-            System.out.println("Creating new object instance of " + targetEntityBType.getEntityName() + " (id=1)...");
-            IEntityB new_entityB = (IEntityB) constructNewEntityObject(targetEntityBType);
+            System.out.println("Creating new object instance of " + entityBClass + " (id=1)...");
+            IEntityB new_entityB = (IEntityB) constructNewEntityObject(entityBClass);
             new_entityB.setId(1);
             new_entityB.setName("Entity B");
 
             System.out.println("Persisting " + new_entityB);
             jpaResource.getEm().persist(new_entityB);
 
-            System.out.println("Creating relationship between " + targetEntityAType.getEntityName() + " and " +
-                               targetEntityBType.getEntityName() + " via the 'b4' relationship field...");
+            System.out.println("Creating relationship between " + entityAClass + " and " +
+                               entityBClass + " via the 'b4' relationship field...");
             new_entityA.setB4Field(new_entityB);
 
             System.out.println("Both entities created, relationship established.  Committing transaction...");
@@ -5124,8 +5045,8 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
 //                jpaResource.getEm().joinTransaction();
 //            }
 
-            System.out.println("Finding " + targetEntityBType.getEntityName() + " (id=1)...");
-            IEntityBBi find_entityB = (IEntityBBi) jpaResource.getEm().find(resolveEntityClass(targetEntityBType), 1);
+            System.out.println("Finding " + entityBClass + " (id=1)...");
+            IEntityBBi find_entityB = (IEntityBBi) jpaResource.getEm().find(entityBClass, 1);
 
             // Clear persistence context
             System.out.println("Clearing persistence context...");
@@ -5139,7 +5060,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             System.out.println("Examining the IEntityA associated with EntityB(id=1)'s entityAField relationship field...");
             IEntityA entityNotExpectedToBeLazy = find_entityB.getEntityAField();
             Assert.assertNotNull(
-                                 "Assert that " + targetEntityBType.getEntityName() + "'s entityAField relationship is not null.",
+                                 "Assert that " + entityBClass + "'s entityAField relationship is not null.",
                                  entityNotExpectedToBeLazy);
             Assert.assertEquals("Assert the entity has the expected identity.", 1, entityNotExpectedToBeLazy.getId());
 

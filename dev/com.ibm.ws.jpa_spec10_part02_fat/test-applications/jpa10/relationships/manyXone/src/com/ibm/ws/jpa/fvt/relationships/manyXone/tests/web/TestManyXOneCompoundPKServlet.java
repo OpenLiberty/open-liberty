@@ -22,16 +22,24 @@ import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
+import com.ibm.ws.jpa.fvt.relationships.manyXone.entities.compoundpk.annotation.EmbedIDMOEntityA;
+import com.ibm.ws.jpa.fvt.relationships.manyXone.entities.compoundpk.annotation.EmbedIDMOEntityB;
+import com.ibm.ws.jpa.fvt.relationships.manyXone.entities.compoundpk.annotation.IDClassMOEntityA;
+import com.ibm.ws.jpa.fvt.relationships.manyXone.entities.compoundpk.annotation.IDClassMOEntityB;
+import com.ibm.ws.jpa.fvt.relationships.manyXone.entities.compoundpk.xml.XMLEmbedIDMOEntityA;
+import com.ibm.ws.jpa.fvt.relationships.manyXone.entities.compoundpk.xml.XMLEmbedIDMOEntityB;
+import com.ibm.ws.jpa.fvt.relationships.manyXone.entities.compoundpk.xml.XMLIDClassMOEntityA;
+import com.ibm.ws.jpa.fvt.relationships.manyXone.entities.compoundpk.xml.XMLIDClassMOEntityB;
 import com.ibm.ws.jpa.fvt.relationships.manyXone.testlogic.ManyXOneCompoundPKTestLogic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
 
-@SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TestManyXOneCompoundPKServlet")
 public class TestManyXOneCompoundPKServlet extends JPATestServlet {
+    private static final long serialVersionUID = 1L;
+
     // Container Managed Transaction Scope
     @PersistenceContext(unitName = "ManyXOne_CompoundPK_JTA")
     private EntityManager mxoCompoundPKEm;
@@ -44,12 +52,10 @@ public class TestManyXOneCompoundPKServlet extends JPATestServlet {
     @PersistenceUnit(unitName = "ManyXOne_CompoundPK_RL")
     private EntityManagerFactory mxoCompoundPKEmfRL;
 
-    private final String testLogicClassName = ManyXOneCompoundPKTestLogic.class.getName();
-
-    private final HashMap<String, JPAPersistenceContext> jpaPctxMap = new HashMap<String, JPAPersistenceContext>();
-
     @PostConstruct
     private void initFAT() {
+        testClassName = ManyXOneCompoundPKTestLogic.class.getName();
+
         jpaPctxMap.put("test-jpa-resource-amjta",
                        new JPAPersistenceContext("test-jpa-resource-amjta", PersistenceContextType.APPLICATION_MANAGED_JTA, PersistenceInjectionType.FIELD, "mxoCompoundPKEmf"));
         jpaPctxMap.put("test-jpa-resource-amrl",
@@ -82,216 +88,167 @@ public class TestManyXOneCompoundPKServlet extends JPATestServlet {
     public void jpa10_Relationships_ManyXOne_CompoundPK_Embeddable_001_Ano_AMJTA_Web() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_CompoundPK_Embeddable_001_Ano_AMJTA_Web";
         final String testMethod = "testManyXOneCompoundPK001";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "EmbedIDMOEntityA");
-        properties.put("EntityBName", "EmbedIDMOEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", EmbedIDMOEntityA.class);
+        properties.put("EntityBName", EmbedIDMOEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_CompoundPK_Embeddable_001_XML_AMJTA_Web() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_CompoundPK_Embeddable_001_XML_AMJTA_Web";
         final String testMethod = "testManyXOneCompoundPK001";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLEmbedIDMOEntityA");
-        properties.put("EntityBName", "XMLEmbedIDMOEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLEmbedIDMOEntityA.class);
+        properties.put("EntityBName", XMLEmbedIDMOEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_CompoundPK_Embeddable_001_Ano_AMRL_Web() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_CompoundPK_Embeddable_001_Ano_AMRL_Web";
         final String testMethod = "testManyXOneCompoundPK001";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "EmbedIDMOEntityA");
-        properties.put("EntityBName", "EmbedIDMOEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", EmbedIDMOEntityA.class);
+        properties.put("EntityBName", EmbedIDMOEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_CompoundPK_Embeddable_001_XML_AMRL_Web() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_CompoundPK_Embeddable_001_XML_AMRL_Web";
         final String testMethod = "testManyXOneCompoundPK001";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLEmbedIDMOEntityA");
-        properties.put("EntityBName", "XMLEmbedIDMOEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLEmbedIDMOEntityA.class);
+        properties.put("EntityBName", XMLEmbedIDMOEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_CompoundPK_Embeddable_001_Ano_CMTS_Web() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_CompoundPK_Embeddable_001_Ano_CMTS_Web";
         final String testMethod = "testManyXOneCompoundPK001";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "EmbedIDMOEntityA");
-        properties.put("EntityBName", "EmbedIDMOEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", EmbedIDMOEntityA.class);
+        properties.put("EntityBName", EmbedIDMOEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_CompoundPK_Embeddable_001_XML_CMTS_Web() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_CompoundPK_Embeddable_001_XML_CMTS_Web";
         final String testMethod = "testManyXOneCompoundPK001";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLEmbedIDMOEntityA");
-        properties.put("EntityBName", "XMLEmbedIDMOEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLEmbedIDMOEntityA.class);
+        properties.put("EntityBName", XMLEmbedIDMOEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_CompoundPK_IDClass_001_Ano_AMJTA_Web() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_CompoundPK_IDClass_001_Ano_AMJTA_Web";
         final String testMethod = "testManyXOneCompoundPK001";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "IDClassMOEntityA");
-        properties.put("EntityBName", "IDClassMOEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", IDClassMOEntityA.class);
+        properties.put("EntityBName", IDClassMOEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_CompoundPK_IDClass_001_XML_AMJTA_Web() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_CompoundPK_IDClass_001_XML_AMJTA_Web";
         final String testMethod = "testManyXOneCompoundPK001";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLIDClassMOEntityA");
-        properties.put("EntityBName", "XMLIDClassMOEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLIDClassMOEntityA.class);
+        properties.put("EntityBName", XMLIDClassMOEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_CompoundPK_IDClass_001_Ano_AMRL_Web() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_CompoundPK_IDClass_001_Ano_AMRL_Web";
         final String testMethod = "testManyXOneCompoundPK001";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "IDClassMOEntityA");
-        properties.put("EntityBName", "IDClassMOEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", IDClassMOEntityA.class);
+        properties.put("EntityBName", IDClassMOEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_CompoundPK_IDClass_001_XML_AMRL_Web() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_CompoundPK_IDClass_001_XML_AMRL_Web";
         final String testMethod = "testManyXOneCompoundPK001";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLIDClassMOEntityA");
-        properties.put("EntityBName", "XMLIDClassMOEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLIDClassMOEntityA.class);
+        properties.put("EntityBName", XMLIDClassMOEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_CompoundPK_IDClass_001_Ano_CMTS_Web() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_CompoundPK_IDClass_001_Ano_CMTS_Web";
         final String testMethod = "testManyXOneCompoundPK001";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "IDClassMOEntityA");
-        properties.put("EntityBName", "IDClassMOEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", IDClassMOEntityA.class);
+        properties.put("EntityBName", IDClassMOEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_Relationships_ManyXOne_CompoundPK_IDClass_001_XML_CMTS_Web() throws Exception {
         final String testName = "jpa10_Relationships_ManyXOne_CompoundPK_IDClass_001_XML_CMTS_Web";
         final String testMethod = "testManyXOneCompoundPK001";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityAName", "XMLIDClassMOEntityA");
-        properties.put("EntityBName", "XMLIDClassMOEntityB");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityAName", XMLIDClassMOEntityA.class);
+        properties.put("EntityBName", XMLIDClassMOEntityB.class);
 
         executeDDL("JPA10_MANYXONE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
-
 }
