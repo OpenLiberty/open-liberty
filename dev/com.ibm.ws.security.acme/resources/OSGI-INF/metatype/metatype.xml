@@ -29,10 +29,8 @@
    <AD id="subjectDN"             name="internal" description="internal use only" type="String"  required="false" />
   
    <!-- Challenge and order related fields. -->
-   <AD id="challengeRetries"      name="internal" description="internal use only" type="Integer" required="false" default="10" />
-   <AD id="challengeRetryWait"    name="internal" description="internal use only" type="String"  required="false" ibm:type="duration" default="5s" />
-   <AD id="orderRetries"          name="internal" description="internal use only" type="Integer" required="false" default="10" />
-   <AD id="orderRetryWait"        name="internal" description="internal use only" type="String"  required="false" ibm:type="duration" default="3s" />
+   <AD id="challengePollTimeout"  name="%challengePollTimeout" description="%challengePollTimeout.desc" type="String"  required="false" ibm:type="duration" default="120s" />
+   <AD id="orderPollTimeout"      name="%orderPollTimeout"     description="%orderPollTimeout.desc"     type="String"  required="false" ibm:type="duration" default="120s" />
 
    <!-- ACME account related fields. -->
    <AD id="accountKeyFile"        name="internal" description="internal use only" type="String"  required="false" default="${server.output.dir}/resources/security/acmeAccountKey.pem" />
