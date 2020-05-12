@@ -1,0 +1,56 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: WAS Security SSO 1.0
+Bundle-SymbolicName: com.ibm.ws.security.sso
+Bundle-Description: WAS Security SSO 1.0, version=${bVersion}
+
+#
+# Produce a JakartaEE compliant JAR.
+#
+jakartaeeMe: true
+#jakartaee.transform.jar.name=io.openliberty.security.sso.internal.jar
+#JakartaEE-Bundle-Name: Security Single Sign-On Implementation
+#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.sso.internal
+#JakartaEE-Bundle-Description: Security Single Sign-On Implementation, version=2.0
+#JakartaEE-Bundle-Version: 2.0
+
+WS-TraceGroup: SSO
+
+# For each exported package, create (in that package) a package-info.java...
+# file, and place an @version javadoc tag in package-level javadoc. 
+# Append ";provide:=true" if this bundle also provides an implementation
+# for the exported API.
+ 
+Export-Package: com.ibm.ws.security.sso;provide:=true
+
+
+Import-Package: !*.internal.*, *
+         
+-dsannotations: com.ibm.ws.security.sso.SSOAuthFilterImpl
+
+-dsannotations-inherit: true
+
+-buildpath: \
+    com.ibm.ws.security.token.ltpa;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.ws.security.authentication.filter;version=latest,\
+	com.ibm.ws.webcontainer.security;version=latest,\
+	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.filemonitor,\
+	com.ibm.websphere.appserver.spi.kernel.service,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
