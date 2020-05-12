@@ -1,0 +1,19 @@
+<server description="openTracingServer">
+
+  <featureManager>
+    <feature>mpOpenTracing-2.0</feature>
+    <feature>usr:opentracingMock-2.0</feature>
+    <feature>componenttest-1.0</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+
+  <application location="serviceApp.war">
+    <classloader apiTypeVisibility="+third-party"/>
+  </application>
+
+  <!-- Turn this on for the FAT: That provides good diagnostics in case -->
+  <!-- of a failure, and means that trace code is tested. -->
+  <logging traceSpecification="*=info:com.ibm.ws.opentracing*=all:com.ibm.ws.microprofile.opentracing*=all" maxFileSize="100" maxFiles="1" />
+  
+</server>
