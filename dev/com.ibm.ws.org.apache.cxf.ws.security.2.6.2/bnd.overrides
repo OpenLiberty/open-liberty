@@ -27,7 +27,7 @@ Export-Package: \
 Import-Package:  \
   org.apache.cxf.*;version="[2.6.2,2.6.3)", \
   javax.xml.*, \
-  org.apache.ws.*, \
+  org.apache.ws.*;version="[1.6.7,1.6.19)", \
   com.ibm.websphere.ras, \
   com.ibm.websphere.ras.annotation, \
   com.ibm.ws.ffdc, \
@@ -35,7 +35,14 @@ Import-Package:  \
   org.apache.neethi.*, \
   org.w3c.*, \
   javax.security.*, \
-  javax.net.*
+  javax.net.*, \
+  org.opensaml.common, \
+  org.opensaml.saml2.core.*, \
+  org.eclipse.jetty.*, \
+  org.glassfish.grizzly.*
+  
+DynamicImport-Package: \
+  org.bouncycastle.jce.provider
 
 Archiver-Version:
 Build-Jdk:

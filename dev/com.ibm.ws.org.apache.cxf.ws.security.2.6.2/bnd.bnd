@@ -10,7 +10,7 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-ws-security;2.6.2;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
-cxfVersion=2.6.2
+cxfVersion=2.6.2-ibm-s20180529-1900
     
 -includeresource: \
     @${repo;org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/!META-INF/maven/*, \

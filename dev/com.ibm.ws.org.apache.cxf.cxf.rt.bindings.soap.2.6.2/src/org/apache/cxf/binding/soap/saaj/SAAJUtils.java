@@ -20,6 +20,8 @@
 package org.apache.cxf.binding.soap.saaj;
 
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import javax.xml.namespace.QName;
 import javax.xml.soap.SOAPBody;
@@ -31,9 +33,11 @@ import javax.xml.soap.SOAPHeader;
 import javax.xml.soap.SOAPMessage;
 
 import org.w3c.dom.Element;
-
+import org.w3c.dom.Node;
 import org.apache.cxf.common.util.StringUtils;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 /**
  *
  */
@@ -77,6 +81,16 @@ public final class SAAJUtils {
     }
 
     public static Element adjustPrefix(Element e, String prefix) {
+        return AccessController.doPrivileged(new PrivilegedAction<Element>() {
+            @Override
+            public Element run()   {
+                return adjustPrefixInternal(e, prefix);
+            }
+        });
+
+    }
+    
+    private static Element adjustPrefixInternal(Element e, String prefix) {
         if (prefix == null) {
             prefix = "";
         }
@@ -90,6 +104,7 @@ public final class SAAJUtils {
                        "com.sun.org.apache.xerces.internal.dom.ElementNSImpl")) {
                     //since java9 159 SOAPPart1_1Impl.getDocumentElement not return SOAPElement
                     try {
+                        
                         Method method = e.getClass().getMethod("removeAttribute", String.class);
                         method.invoke(e, "xmlns:" + s);
                     } catch (Exception ex) {

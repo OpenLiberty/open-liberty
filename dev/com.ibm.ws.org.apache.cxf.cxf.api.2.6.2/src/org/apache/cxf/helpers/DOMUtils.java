@@ -27,6 +27,8 @@ import java.io.StringReader;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -447,7 +449,7 @@ public final class DOMUtils {
     /**
      * Get the first direct child with a given type
      */
-    public static Element getFirstElement(Node parent) {
+    private static Element getFirstElementInternal(Node parent) {
         Node n = parent.getFirstChild();
         while (n != null && Node.ELEMENT_NODE != n.getNodeType()) {
             n = n.getNextSibling();
@@ -458,7 +460,21 @@ public final class DOMUtils {
         return (Element)n;
     }
 
-    public static Element getNextElement(Element el) {
+    /**
+     * Wrapper of Get the first direct child with a given type method to elevate access rights
+     * @param node The original node we need check
+     * @return The DOM Element
+     */
+    public static Element getFirstElement(final Node parent) {
+        return AccessController.doPrivileged(new PrivilegedAction<Element>() {
+            @Override
+            public Element run()   {
+                return getFirstElementInternal(parent);
+            }
+        });
+    }
+    
+    private static Element getNextElementInternal(Element el) {
         Node nd = el.getNextSibling();
         while (nd != null) {
             if (nd.getNodeType() == Node.ELEMENT_NODE) {
@@ -467,6 +483,20 @@ public final class DOMUtils {
             nd = nd.getNextSibling();
         }
         return null;
+    }
+    
+    /**
+     * Wrapper of Get the next element
+     * @param node The original element we need take as base
+     * @return The DOM Element
+     */
+    public static Element getNextElement(final Element el) {
+        return AccessController.doPrivileged(new PrivilegedAction<Element>() {
+            @Override
+            public Element run()   {
+                return getNextElementInternal(el);
+            }
+        });
     }
 
     /**
@@ -790,7 +820,7 @@ public final class DOMUtils {
      * @param node The original node we need check
      * @return The DOM node
      */
-    public static Node getDomElement(Node node) {
+    private static Node getDomElementInternal(Node node) {
         if (node != null && isJava9SAAJ()) {
             //java9 hack since EA 159
             try {
@@ -803,6 +833,21 @@ public final class DOMUtils {
             }
         }
         return node;
+    }
+    
+    /**
+     * Wrapper of getDomElementInternal method to elevate access rights
+     * @param node The original node we need check
+     * @return The DOM node
+     * @throws Exception 
+     */
+    public static Node getDomElement(Node node) {
+        return AccessController.doPrivileged(new PrivilegedAction<Node>() {
+            @Override
+            public Node run()   {
+                return getDomElementInternal(node);
+            }
+        });
     }
 
     private static void findAllElementsByTagNameNS(Element el, String nameSpaceURI, String localName,
