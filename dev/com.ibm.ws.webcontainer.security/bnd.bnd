@@ -91,6 +91,7 @@ instrument.classesExcludes: com/ibm/ws/webcontainer/security/resources/*.class
 	com.ibm.ws.webcontainer;version=latest,\
 	com.ibm.ws.security.credentials;version=latest,\
 	com.ibm.websphere.security;version=latest,\
+	com.ibm.ws.security.authentication.filter;version=latest,\
 	com.ibm.ws.security.authentication.tai;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
 	com.ibm.ws.javaee.dd;version=latest,\

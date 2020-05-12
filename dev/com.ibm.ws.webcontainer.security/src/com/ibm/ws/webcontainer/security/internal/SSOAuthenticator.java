@@ -25,6 +25,7 @@ import com.ibm.ws.security.authentication.AuthenticationData;
 import com.ibm.ws.security.authentication.AuthenticationException;
 import com.ibm.ws.security.authentication.AuthenticationService;
 import com.ibm.ws.security.authentication.WSAuthenticationData;
+import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.authentication.utility.JaasLoginConfigConstants;
 import com.ibm.ws.security.jwtsso.token.proxy.JwtSSOTokenHelper;
 import com.ibm.ws.webcontainer.security.AuthResult;
@@ -38,6 +39,7 @@ import com.ibm.ws.webcontainer.security.WebAuthenticator;
 import com.ibm.ws.webcontainer.security.WebRequest;
 import com.ibm.ws.webcontainer.security.metadata.LoginConfiguration;
 import com.ibm.ws.webcontainer.security.metadata.SecurityMetadata;
+import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 /**
  * This class perform authentication for web request using single sign on cookie.
@@ -52,12 +54,15 @@ public class SSOAuthenticator implements WebAuthenticator {
     private static final String ACCESS_TOKEN = "access_token";
     private static final String LTPA_OID = "oid:1.3.18.0.2.30.2";
     private static final String JWT_OID = "oid:1.3.18.0.2.30.3"; // ?????
+    public final static String KEY_FILTER = "authenticationFilter";
 
     private static final TraceComponent tc = Tr.register(SSOAuthenticator.class);
     private final AuthenticationService authenticationService;
     private final WebAppSecurityConfig webAppSecurityConfig;
     private final SSOCookieHelper ssoCookieHelper;
     private final String challengeType;
+
+    protected final AtomicServiceReference<AuthenticationFilter> authFilterServiceRef = new AtomicServiceReference<AuthenticationFilter>(KEY_FILTER);
 
     /**
      * @param authenticationServ
@@ -122,6 +127,28 @@ public class SSOAuthenticator implements WebAuthenticator {
             return authResult;
         }
 
+        if (!isAuthFilterAccept(req)) {
+            return authResult;
+        }
+
+        authResult = handleLtpaSSO(req, res, cookies);
+        if (authResult != null && authResult.getStatus() == AuthResult.SUCCESS) {
+            return authResult;
+        }
+
+        ssoCookieHelper.createLogoutCookies(req, res);
+        return authResult;
+    }
+
+    /**
+     * @param req
+     * @param res
+     * @param authResult
+     * @param cookies
+     * @return
+     */
+    private AuthenticationResult handleLtpaSSO(HttpServletRequest req, HttpServletResponse res, Cookie[] cookies) {
+        AuthenticationResult authResult = null;
         String cookieName = ssoCookieHelper.getSSOCookiename();
         String[] hdrVals = CookieHelper.getCookieValues(cookies, cookieName);
         boolean useOnlyCustomCookieName = webAppSecurityConfig != null && webAppSecurityConfig.isUseOnlyCustomCookieName();
@@ -154,8 +181,6 @@ public class SSOAuthenticator implements WebAuthenticator {
                 }
             }
         }
-
-        ssoCookieHelper.createLogoutCookies(req, res);
         return authResult;
     }
 
@@ -300,4 +325,19 @@ public class SSOAuthenticator implements WebAuthenticator {
         return null;
     }
 
+    /*
+     */
+    protected boolean isAuthFilterAccept(HttpServletRequest req) {
+        AuthenticationFilter authFilter = authFilterServiceRef.getService();
+//        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+//            Tr.debug(tc, "authFilter:" + authFilter);
+//        }
+        if (authFilter != null) {
+            return authFilter.isAccepted(req);
+        }
+//        if (tc.isDebugEnabled()) {
+//            Tr.debug(tc, "Authentication filter service is not avaliale, all HTTP LTPA SSO requests will be processed");
+//        }
+        return true;
+    }
 }

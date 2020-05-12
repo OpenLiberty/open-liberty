@@ -26,6 +26,11 @@
             default="120m" />
         <AD id="monitorInterval" name="%ltpa.monitorInterval" description="%ltpa.monitorInterval.desc"
             required="false" type="String" ibm:type="duration" default="0ms" />
+            
+        <AD id="authFilterRef" name="%authFilterRef" description="%authFilterRef.desc" 
+            ibm:type="pid" ibm:reference="com.ibm.ws.security.authentication.filter" required="false" type="String"  />
+        <AD id="authenticationFilter.target" name="internal" description="internal use only"
+            required="false" type="String"  default="(service.pid=${authFilterRef})" />         
     </OCD>
 
     <Designate pid="com.ibm.ws.security.token.ltpa.LTPAConfiguration">
