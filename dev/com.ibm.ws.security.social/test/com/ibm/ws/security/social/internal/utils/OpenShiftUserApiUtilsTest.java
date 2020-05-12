@@ -132,7 +132,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
     @Test
     public void userKeyDoesNotExist() {
         try {
-            userApiUtils.modifyExistingResponseToJSON("{\"kind\":\"TokenReview\",\"apiVersion\":\"authentication.k8s.io/v1\",\"metadata\":{\"creationTimestamp\":null},\"spec\":{\"token\":\"OR4SdSuy-8NRK8NEiYXxxDu01DZcT6jPj5RJ32CDA_c\"},\"status\":{\"authenticated\":\"true\"}}");
+            userApiUtils.modifyExistingResponseToJSON("{\"kind\":\"TokenReview\",\"apiVersion\":\"authentication.k8s.io/v1\",\"metadata\":{\"creationTimestamp\":null},\"spec\":{\"token\":\"OR4SdSuy-8NRK8NEiYXxxDu01DZcT6jPj5RJ32CDA_c\"},\"status\":{\"authenticated\":true}}");
             fail();
         } catch (SocialLoginException e) {
             verifyException(e, CWWKS5374E_KUBERNETES_USER_API_RESPONSE_MISSING_KEY);
@@ -1078,6 +1078,54 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
     }
 
     @Test
+    public void test_getBooleanValueFromJson_emptyJsonResponse() {
+        String key = "myKey";
+        JsonObject input = Json.createObjectBuilder().build();
+        try {
+            boolean result = userApiUtils.getBooleanValueFromJson(input, key);
+            fail("Should have thrown an exception but got: " + result);
+        } catch (SocialLoginException e) {
+            verifyExceptionWithInserts(e, CWWKS5385E_JSON_MISSING_KEY, key);
+        }
+    }
+
+    @Test
+    public void test_getBooleanValueFromJson_missingKey() {
+        String key = "myKey";
+        JsonObject input = Json.createObjectBuilder().add("1", "value").add(key + "2", "other value").build();
+        try {
+            boolean result = userApiUtils.getBooleanValueFromJson(input, key);
+            fail("Should have thrown an exception but got: " + result);
+        } catch (SocialLoginException e) {
+            verifyExceptionWithInserts(e, CWWKS5385E_JSON_MISSING_KEY, key);
+        }
+    }
+
+    @Test
+    public void test_getBooleanValueFromJson_keyValueNotBoolean() {
+        String key = "myKey";
+        JsonObject input = Json.createObjectBuilder().add(key, "value").build();
+        try {
+            boolean result = userApiUtils.getBooleanValueFromJson(input, key);
+            fail("Should have thrown an exception but got: " + result);
+        } catch (SocialLoginException e) {
+            verifyException(e, CWWKS5386E_JSON_ENTRY_WRONG_JSON_TYPE);
+        }
+    }
+
+    @Test
+    public void test_getBooleanValueFromJson() {
+        try {
+            String key = "myKey";
+            JsonObject input = Json.createObjectBuilder().add(key, true).build();
+            boolean result = userApiUtils.getBooleanValueFromJson(input, key);
+            assertTrue("Value for key \"" + key + "\" did not match expected value.", result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
     public void test_modifyUsername_nullUsernameAttribute() {
         try {
             JsonObject input = Json.createObjectBuilder().build();
@@ -1241,7 +1289,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
         mockery.checking(new Expectations() {
             {
                 one(config).getUserNameAttribute();
-                will(returnValue (userNameAttribute));
+                will(returnValue(userNameAttribute));
             }
         });
         JsonObject result = null;
@@ -1253,7 +1301,6 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
         assertEquals("Output should have matched the original user metadata object, but did not.", userMetadata, result);
     }
 
-   
     @Test
     public void test_addProjectNameAsGroup_singleCharacterProject() {
         JsonObject userMetadata = Json.createObjectBuilder().add("name", "p:username").add("groups", "group123").build();
@@ -1276,17 +1323,18 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
         }
         assertEquals("Groups entry in result did not match the expected value.", groupsValue, result.getString(groupNameAttribute));
     }
+
     @Test
     public void test_addProjectNameAsGroup_nullGroupNameAttribute() {
         JsonObject userMetadata = Json.createObjectBuilder().add("name", "p:username").add("groups", "group123").build();
         final String userNameAttribute = "name";
-        
+
         mockery.checking(new Expectations() {
             {
                 one(config).getUserNameAttribute();
                 will(returnValue(userNameAttribute));
                 one(config).getGroupNameAttribute();
-                will(returnValue (null) );
+                will(returnValue(null));
             }
         });
         JsonObject result = null;
@@ -1297,7 +1345,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
         }
         assertEquals("Output should have matched the original user metadata object, but did not.", userMetadata, result);
     }
-    
+
     @Test
     public void test_addProjectNameAsGroup() {
         JsonObject userMetadata = Json.createObjectBuilder().add("name", "myproject:userA").add("groups", "groupABC").build();
@@ -1320,23 +1368,5 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
         }
         assertEquals("Groups entry in result did not match the expected value.", groupsValue, result.getString(groupNameAttribute));
     }
-
-//    @Test
-//    public void test_addGroupsToResult_groupsReplacesExistingEntryInJson() {
-//        final String groupNameAttribute = "groups";
-//        JsonArray groupsValue = Json.createArrayBuilder().add("group1").add("group2").build();
-//        JsonObject userMetadata = Json.createObjectBuilder().add(groupNameAttribute, "value").add("other key", 42).build();
-//        JsonObject rawResponse = Json.createObjectBuilder().add(groupNameAttribute, groupsValue).build();
-//        mockery.checking(new Expectations() {
-//            {
-//                one(config).getGroupNameAttribute();
-//                will(returnValue(groupNameAttribute));
-//            }
-//        });
-//        JsonObject result = userApiUtils.addGroupsToResult(userMetadata, rawResponse);
-//        assertNotSame("Output should not have matched the original user metadata object, but did.", userMetadata, result);
-//        assertTrue("Output was missing the entry for the groups data. Result was " + result, result.containsKey(groupNameAttribute));
-//        assertEquals("Groups entry in result did not match the expected value.", groupsValue, result.getJsonArray(groupNameAttribute));
-//    }
 
 }
