@@ -218,7 +218,7 @@ public class VerifyRepositoryAccuracy {
         CommonTasks.writeLogMsg(Level.INFO, "Creating the trace entries");
         CommonTasks.createLogEntries(server, loggerName, logMessage, null, logCount, CommonTasks.TRACE, -1);
 
-        Thread.sleep(10 * 1000); // sleep for 10 seconds
+        Thread.sleep(15 * 1000); // sleep for 10 seconds
 
         // Get the logs from the server to check what is in them
         CommonTasks.writeLogMsg(Level.INFO, "Getting the trace logs from the server");
