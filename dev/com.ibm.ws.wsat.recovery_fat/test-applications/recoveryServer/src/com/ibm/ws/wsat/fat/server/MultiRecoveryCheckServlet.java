@@ -35,13 +35,15 @@ public class MultiRecoveryCheckServlet extends HttpServlet {
 
 			XAResourceImpl.printState();
 			
-			// There should be no transactions running on the participant at this point
-			final int txCount = XAResourceImpl.transactionCount();
+			int	txCount = XAResourceImpl.transactionCount();
 
-			if (txCount > 0) {
-				throw new ServletException("There are " + txCount + " global transactions still running!");
-			} else {
-				System.out.println("There are " + txCount + " global transactions still running!");
+			while (txCount != 0) {
+				try {
+					System.out.println("Waiting for " + txCount + " transaction" + (txCount == 1 ? "" : "s") + " to finish.");
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+				}
+				txCount = XAResourceImpl.transactionCount();
 			}
 
 			switch (number) {

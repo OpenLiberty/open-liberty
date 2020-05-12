@@ -83,16 +83,12 @@ public class MultiRecoveryTest {
 	public void beforeTest() throws Exception {
         if (server != null && !server.isStarted()){
        	 	server.setServerStartTimeout(START_TIMEOUT);
-            server.startServer(true);
-            assertNotNull("Need to wait for 'smarter planet' message (WSATRecovery1 is ready).",
-                    server.waitForStringInLog("CWWKF0011I", START_TIMEOUT));
+            server.startServerAndValidate(false,false,true);
 		}
 		
 		if (server2 != null && !server2.isStarted()){
 			server2.setServerStartTimeout(START_TIMEOUT);
-			server2.startServer(true);
-			assertNotNull("Need to wait for 'smarter planet' message (WSATRecovery2 is ready).",
-                    server2.waitForStringInLog("CWWKF0011I", START_TIMEOUT));
+			server2.startServerAndValidate(false,false,true);
 		}
 	}
 	
@@ -111,7 +107,7 @@ public class MultiRecoveryTest {
 	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException" })
 	@Mode(TestMode.LITE)
 	public void WSTXMPR001AFVT() throws Exception {
-		recoveryTest("101","server1", 30 /* needs review */);
+		recoveryTest("101","server1");
 	}
 	
 	@Test
@@ -121,7 +117,7 @@ public class MultiRecoveryTest {
 	// Got Exception WTRN0049W during test
 	// Report javax.transaction.SystemException
 	public void WSTXMPR001BFVT() throws Exception {
-		recoveryTest("102","server2", 30 /* needs review */);
+		recoveryTest("102","server2");
 		// Stop server1 here because there's a possibility of WTRN0049W
 		if (server != null && server.isStarted()) {
             server.stopServer("WTRN0049W"); //ensure server has stopped
@@ -130,13 +126,13 @@ public class MultiRecoveryTest {
 	
 	@Test
 	public void WSTXMPR001CFVT() throws Exception {
-		recoveryTest("103","both", 30 /* needs review */);
+		recoveryTest("103","both");
 	}
 	
 	@Test
-  @Mode(TestMode.LITE)
+    @Mode(TestMode.LITE)
 	public void WSTXMPR002AFVT() throws Exception {
-		recoveryTest("201","server1", 30 /* needs review */);
+		recoveryTest("201","server1");
 	}
 	
 	@Test
@@ -146,7 +142,7 @@ public class MultiRecoveryTest {
 	// Got Exception WTRN0049W and Warning WTRN0046E during test
 	// Report javax.transaction.SystemException 
 	public void WSTXMPR002BFVT() throws Exception {
-		recoveryTest("202","server2", 30 /* needs review */);
+		recoveryTest("202","server2");
 		// Stop server1 here because there's a possibility of WTRN0049W and WTRN0046E
 		if (server != null && server.isStarted()) {
 			server.stopServer("WTRN0049W", "WTRN0046E"); //ensure server has stopped
@@ -155,20 +151,20 @@ public class MultiRecoveryTest {
 	
 	@Test
 	public void WSTXMPR002CFVT() throws Exception {
-		recoveryTest("203","both", 30 /* needs review */);
+		recoveryTest("203","both");
 	}
 
 	@Test
-  @Mode(TestMode.LITE)
+    @Mode(TestMode.LITE)
 	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException" })
 	public void WSTXMPR003AFVT() throws Exception {
-		recoveryTest("301","server1", 30 /* needs review */);
+		recoveryTest("301","server1");
 	}
 
 	@Test
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
 	public void WSTXMPR003BFVT() throws Exception {
-		recoveryTest("302","server2", 30 /* needs review */);
+		recoveryTest("302","server2");
 		// Stop server2 here because there's a possibility of WTRN0094W
 		if (server2 != null && server2.isStarted()) {
 			server2.stopServer("WTRN0094W"); //ensure server has stopped
@@ -177,20 +173,20 @@ public class MultiRecoveryTest {
 	
 	@Test
 	public void WSTXMPR003CFVT() throws Exception {
-		recoveryTest("303","both", 30 /* needs review */);
+		recoveryTest("303","both");
 	}
 	
 	@Test
-  @Mode(TestMode.LITE)
+    @Mode(TestMode.LITE)
 	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException"/*, "com.ibm.ws.wsat.service.WSATException" */})
 	public void WSTXMPR004AFVT() throws Exception {
-		recoveryTest("401","server1", 30 /* needs review */);
+		recoveryTest("401","server1");
 	}
 	
 	@Test
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
 	public void WSTXMPR004BFVT() throws Exception {
-		recoveryTest("402","server2", 30 /* needs review */);
+		recoveryTest("402","server2");
 		if (server2 != null && server2.isStarted()) {
             server2.stopServer("WTRN0094W"); //ensure server has stopped
         }
@@ -198,14 +194,14 @@ public class MultiRecoveryTest {
 	
 	@Test
 	public void WSTXMPR004CFVT() throws Exception {
-		recoveryTest("403","both", 30 /* needs review */);
+		recoveryTest("403","both");
 	}
 	
 	@Test
-  @Mode(TestMode.LITE)
+    @Mode(TestMode.LITE)
 	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException"/*, "com.ibm.ws.wsat.service.WSATException" */})
 	public void WSTXMPR005AFVT() throws Exception {
-		recoveryTest("501","server1", 30 /* needs review */);
+		recoveryTest("501","server1");
 	}
 	
 	@Test
@@ -216,7 +212,7 @@ public class MultiRecoveryTest {
 	// Expect XAException and RollbackException
 	// Report javax.transaction.SystemException 
 	public void WSTXMPR005BFVT() throws Exception {
-		recoveryTest("502","server2", 30 /* needs review */);
+		recoveryTest("502","server2");
 		if (server != null && server.isStarted()) {
             server.stopServer("WTRN0046E", "WTRN0049W"); //ensure server has stopped
         }
@@ -228,21 +224,21 @@ public class MultiRecoveryTest {
 	@Test
 	//@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException" })
 	public void WSTXMPR005CFVT() throws Exception {
-		recoveryTest("503","both", 30 /* needs review */);
+		recoveryTest("503","both");
 	}
 	
 	@Test
-  @Mode(TestMode.LITE)
+    @Mode(TestMode.LITE)
 	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException" })
 	public void WSTXMPR006AFVT() throws Exception {
-		recoveryTest("601","server1", 30 /* needs review */);
+		recoveryTest("601","server1");
 	}
 	
 	@Test
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
 	@AllowedFFDC(value = { "javax.transaction.SystemException" })
 	public void WSTXMPR006BFVT() throws Exception {
-		recoveryTest("602","server2", 30 /* needs review */);
+		recoveryTest("602","server2");
 		if (server != null && server.isStarted()) {
             server.stopServer("WTRN0046E", "WTRN0049W"); //ensure server has stopped
         }
@@ -253,14 +249,14 @@ public class MultiRecoveryTest {
 	
 	@Test
 	public void WSTXMPR006CFVT() throws Exception {
-		recoveryTest("603","both", 30 /* needs review */);
+		recoveryTest("603","both");
 	}
 	
 	@Test
-  @Mode(TestMode.LITE)
+    @Mode(TestMode.LITE)
 	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.SystemException" })
 	public void WSTXMPR007AFVT() throws Exception {
-		recoveryTest("701","server1", 30 /* needs review */);
+		recoveryTest("701","server1");
 		if (server != null && server.isStarted()) {
 			server.stopServer("WTRN0048W"); //ensure server has stopped
 		}
@@ -271,7 +267,7 @@ public class MultiRecoveryTest {
 	@AllowedFFDC(value = { "javax.transaction.SystemException", "java.util.concurrent.RejectedExecutionException", "com.ibm.ws.Transaction.JTA.HeuristicHazardException" })
 	// JDK8: Allow HeuristicHazardException
 	public void WSTXMPR007BFVT() throws Exception {
-		recoveryTest("702","server2", 45);
+		recoveryTest("702","server2");
 		if (server != null && server.isStarted()) {
 			server.stopServer("WTRN0048W"); //ensure server has stopped
 		}
@@ -287,17 +283,17 @@ public class MultiRecoveryTest {
 	// Report javax.transaction.SystemException
 	// JDK8: Allow HeuristicHazardException
 	public void WSTXMPR007CFVT() throws Exception {
-		recoveryTest("703","both", 0);
+		recoveryTest("703","both");
 		if (server != null && server.isStarted()) {
 			server.stopServer("WTRN0048W"); //ensure server has stopped
 		}
 	}
 	
 	@Test
-  @Mode(TestMode.LITE)
+    @Mode(TestMode.LITE)
 	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.SystemException" })
 	public void WSTXMPR008AFVT() throws Exception {
-		recoveryTest("801","server1", 30 /* needs review */);
+		recoveryTest("801","server1");
 		if (server != null && server.isStarted()) {
 			server.stopServer("WTRN0048W"); //ensure server has stopped
 		}
@@ -308,7 +304,7 @@ public class MultiRecoveryTest {
 	@AllowedFFDC(value = { "javax.transaction.SystemException", "com.ibm.ws.Transaction.JTA.HeuristicHazardException" })
 	// JDK8: Allow HeuristicHazardException
 	public void WSTXMPR008BFVT() throws Exception {
-		recoveryTest("802","server2", 45 /* needs review */);
+		recoveryTest("802","server2");
 		if (server != null && server.isStarted()) {
 			server.stopServer("WTRN0048W"); //ensure server has stopped
 		}
@@ -324,17 +320,17 @@ public class MultiRecoveryTest {
 	// Report javax.transaction.SystemException
 	// JDK8: Allow HeuristicHazardException
 	public void WSTXMPR008CFVT() throws Exception {
-		recoveryTest("803","both", 30 /* needs review */);
+		recoveryTest("803","both");
 		if (server != null && server.isStarted()) {
 			server.stopServer("WTRN0048W"); //ensure server has stopped
 		}
 	}
 	
 	@Test
-  @Mode(TestMode.LITE)
+    @Mode(TestMode.LITE)
 	@AllowedFFDC(value = {"javax.transaction.xa.XAException", "javax.xml.ws.WebServiceException"})
 	public void WSTXMPR009AFVT() throws Exception {
-		recoveryTest("901","server1", 30 /* needs review */);
+		recoveryTest("901","server1");
 		if (server != null && server.isStarted()) {
 			server.stopServer("WTRN0048W"); //ensure server has stopped
 		}
@@ -347,7 +343,7 @@ public class MultiRecoveryTest {
 		//at com.ibm.ws.wsat.tm.impl.ParticipantResource.commit(ParticipantResource.java:114)
 		//Perhaps this can be ignored
 	public void WSTXMPR009BFVT() throws Exception {
-		recoveryTest("902","server2", 30 /* needs review */);
+		recoveryTest("902","server2");
 		if (server != null && server.isStarted()) {
 			server.stopServer("WTRN0048W"); //ensure server has stopped
 		}
@@ -359,17 +355,17 @@ public class MultiRecoveryTest {
 	//Caused by: com.ibm.tx.jta.XAResourceNotAvailableException
 	//Need review on whether it is expected
 	public void WSTXMPR009CFVT() throws Exception {
-		recoveryTest("903","both", 30 /* needs review */);
+		recoveryTest("903","both");
 		if (server != null && server.isStarted()) {
 			server.stopServer("WTRN0048W"); //ensure server has stopped
 		}
 	}
 	
 	@Test
-  @Mode(TestMode.LITE)
+    @Mode(TestMode.LITE)
 	@AllowedFFDC(value = {"javax.transaction.xa.XAException", "javax.xml.ws.WebServiceException"})
 	public void WSTXMPR010AFVT() throws Exception {
-		recoveryTest("1001","server1", 30 /* needs review */);
+		recoveryTest("1001","server1");
 		if (server != null && server.isStarted()) {
 			server.stopServer("WTRN0048W"); //ensure server has stopped
 		}
@@ -383,7 +379,7 @@ public class MultiRecoveryTest {
 	// at com.ibm.ws.wsat.tm.impl.ParticipantResource.commit(ParticipantResource.java:114)
 	// Perhaps this can be ignored
 	public void WSTXMPR010BFVT() throws Exception {
-		recoveryTest("1002","server2", 30 /* needs review */);
+		recoveryTest("1002","server2");
 		if (server != null && server.isStarted()) {
 			server.stopServer("WTRN0048W"); //ensure server has stopped
 		}
@@ -399,44 +395,44 @@ public class MultiRecoveryTest {
 	// Add @ExpectedFFDC(value = {"javax.transaction.xa.XAException"})
 	// Because javax.transaction.xa.XAException > at com.ibm.tx.jta.embeddable.impl.WSATParticipantWrapper.commit(WSATParticipantWrapper.java:118)
 	public void WSTXMPR010CFVT() throws Exception {
-		recoveryTest("1003","both", 30 /* needs review */);
+		recoveryTest("1003","both");
 		if (server != null && server.isStarted()) {
 			server.stopServer("WTRN0048W"); //ensure server has stopped
 		}
 	}
 	
 	@Test
-  @Mode(TestMode.LITE)
+    @Mode(TestMode.LITE)
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
 	public void WSTXMPR011AFVT() throws Exception {
-		recoveryTest("1101","server1", 0);
+		recoveryTest("1101","server1");
 	}
 	
 	@Test
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
 	public void WSTXMPR011BFVT() throws Exception {
-		recoveryTest("1102","server2", 0);
+		recoveryTest("1102","server2");
 	}
 	
 	@Test
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
 	public void WSTXMPR011CFVT() throws Exception {
-		recoveryTest("1103","both", 0);
+		recoveryTest("1103","both");
 	}
 	
 	@Test
-  @Mode(TestMode.LITE)
+    @Mode(TestMode.LITE)
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
 	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException" })
 	public void WSTXMPR012AFVT() throws Exception {
-		recoveryTest("1201","server1", 30 /* needs review */);
+		recoveryTest("1201","server1");
 	}
 	
 	@Test
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
 	@AllowedFFDC(value = {"javax.transaction.SystemException" })
 	public void WSTXMPR012BFVT() throws Exception {
-		recoveryTest("1202","server2", 30 /* needs review */);
+		recoveryTest("1202","server2");
 		if (server != null && server.isStarted()) {
             server.stopServer("WTRN0049W"); //ensure server has stopped
         }
@@ -445,21 +441,21 @@ public class MultiRecoveryTest {
 	@Test
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
 	public void WSTXMPR012CFVT() throws Exception {
-		recoveryTest("1203","both", 30 /* needs review */);
+		recoveryTest("1203","both");
 	}
 	
 	@Test
-  @Mode(TestMode.LITE)
+    @Mode(TestMode.LITE)
 	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException" })
 	public void WSTXMPR013AFVT() throws Exception {
-		recoveryTest("1301","server1", 30 /* needs review */);
+		recoveryTest("1301","server1");
 	}
 	
 	@Test
 	@AllowedFFDC(value = {"javax.transaction.xa.XAException","javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException" })
 	@ExpectedFFDC(value = {"javax.transaction.RollbackException"})
 	public void WSTXMPR013BFVT() throws Exception {
-		recoveryTest("1302","server2", 30 /* needs review */);
+		recoveryTest("1302","server2");
 		// Stop server2 here because there's a possibility of WTRN0094W
 				if (server2 != null && server2.isStarted()) {
 		            server2.stopServer("WTRN0094W"); //ensure server has stopped
@@ -468,13 +464,13 @@ public class MultiRecoveryTest {
 	
 	@Test
 	public void WSTXMPR013CFVT() throws Exception {
-		recoveryTest("1303","both", 30 /* needs review */);
+		recoveryTest("1303","both");
 	}
 	
 	@Test
-  @Mode(TestMode.LITE)
+    @Mode(TestMode.LITE)
 	public void WSTXMPR014AFVT() throws Exception {
-		recoveryTest("1401","server1", 30 /* needs review */);
+		recoveryTest("1401","server1");
 	}
 	
 	@Test
@@ -482,7 +478,7 @@ public class MultiRecoveryTest {
 	@AllowedFFDC(value = {"javax.transaction.SystemException", "java.util.concurrent.RejectedExecutionException", "com.ibm.ws.Transaction.JTA.HeuristicHazardException" })
 	// JDK8: Allow HeuristicHazardException
 	public void WSTXMPR014BFVT() throws Exception {
-		recoveryTest("1402","server2", 45);
+		recoveryTest("1402","server2");
 		if (server != null && server.isStarted()) {
           server.stopServer("WTRN0048W"); //ensure server has stopped
 		}
@@ -491,46 +487,46 @@ public class MultiRecoveryTest {
 	@Test
 	@AllowedFFDC(value = {"javax.transaction.xa.XAException"})
 	public void WSTXMPR014CFVT() throws Exception {
-		recoveryTest("1403","both", 30 /* needs review */);
+		recoveryTest("1403","both");
 		if (server2 != null && server2.isStarted()) {
 	          server2.stopServer("WTRN0048W", "WTRN0094W"); //ensure server has stopped
 			}
 	}
 	
 	@Test
-  @Mode(TestMode.LITE)
+    @Mode(TestMode.LITE)
 	public void WSTXMPR015AFVT() throws Exception {
-		recoveryTest("1501","server1", 30 /* needs review */);
+		recoveryTest("1501","server1");
 	}
 	
 	@Test
 	@AllowedFFDC(value = {"javax.transaction.xa.XAException" })
 	public void WSTXMPR015BFVT() throws Exception {
-		recoveryTest("1502","server2", 30 /* needs review */);
+		recoveryTest("1502","server2");
 	}
 	
 	@Test
 	public void WSTXMPR015CFVT() throws Exception {
-		recoveryTest("1503","both", 30 /* needs review */);
+		recoveryTest("1503","both");
 	}
 	
 	@Test
-  @Mode(TestMode.LITE)
+    @Mode(TestMode.LITE)
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
 	public void WSTXMPR016AFVT() throws Exception {
-		recoveryTest("1601","server1", 30 /* needs review */);
+		recoveryTest("1601","server1");
 	}
 	
 	@Test
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
 	public void WSTXMPR016BFVT() throws Exception {
-		recoveryTest("1602","server2", 30 /* needs review */);
+		recoveryTest("1602","server2");
 	}
 	
 	@Test
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
 	public void WSTXMPR016CFVT() throws Exception {
-		recoveryTest("1603","both", 30 /* needs review */);
+		recoveryTest("1603","both");
 	}
 	
 	
@@ -540,15 +536,15 @@ public class MultiRecoveryTest {
 	 */
 	
 	@Test
-  @Mode(TestMode.LITE)
+    @Mode(TestMode.LITE)
 	public void WSTXLPS301AFVT() throws Exception {
-		recoveryTest("3011","server1", 30 /* needs review */);
+		recoveryTest("3011","server1");
 	}
 	
 	@Test
 	@AllowedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.SystemException"})
 	public void WSTXLPS301BFVT() throws Exception {
-		recoveryTest("3012","server2", 30 /* needs review */);
+		recoveryTest("3012","server2");
 		if (server != null && server.isStarted()) {
 			server.stopServer("WTRN0049W"); //ensure server has stopped
 		}
@@ -556,19 +552,19 @@ public class MultiRecoveryTest {
 	
 	@Test
 	public void WSTXLPS301CFVT() throws Exception {
-		recoveryTest("3013","both", 30 /* needs review */);
+		recoveryTest("3013","both");
 	}
 	
 	@Test
-  @Mode(TestMode.LITE)
+    @Mode(TestMode.LITE)
 	public void WSTXLPS302AFVT() throws Exception {
-		recoveryTest("3021","server1", 30 /* needs review */);
+		recoveryTest("3021","server1");
 	}
 	
 	@Test
 	@AllowedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.SystemException"})
 	public void WSTXLPS302BFVT() throws Exception {
-		recoveryTest("3022","server2", 30 /* needs review */);
+		recoveryTest("3022","server2");
 		if (server != null && server.isStarted()) {
 			server.stopServer("WTRN0049W"); //ensure server has stopped
 		}
@@ -576,18 +572,18 @@ public class MultiRecoveryTest {
 	
 	@Test
 	public void WSTXLPS302CFVT() throws Exception {
-		recoveryTest("3023","both", 30 /* needs review */);
+		recoveryTest("3023","both");
 	}
 	
 	@Test
-  @Mode(TestMode.LITE)
+    @Mode(TestMode.LITE)
 	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException"})
 	public void WSTXLPS303AFVT() throws Exception {
-		recoveryTest("3031","server1", 30 /* needs review */);
+		recoveryTest("3031","server1");
 	}
 	
 	
-	protected void recoveryTest(String id, String startServer, int sleepSeconds) throws Exception {
+	protected void recoveryTest(String id, String startServer) throws Exception {
         final String method = "recoveryTest";
         String result = null;
         String logKeyword = "Jordan said in test: ";
@@ -621,12 +617,6 @@ public class MultiRecoveryTest {
                 server2.waitForStringInTrace(str);
         }
         System.out.println(logKeyword + "restarted server: " + startServer);
-
-        // Some tests need to wait for retries etc 
-        if (sleepSeconds > 0) {
-        	Thread.sleep(sleepSeconds * 1000);
-        	System.out.println(logKeyword + "sleeped : " + sleepSeconds + "s");
-        }
 
         Log.info(this.getClass(), method, "calling checkRec" + id);
         try
@@ -748,11 +738,11 @@ public class MultiRecoveryTest {
 	}
 	
 	private boolean restartServer(LibertyServer server) throws Exception{
-		final String method = "recoveryTest";
+		final String method = "restartServer";
 		server.waitForStringInLog("Dump State:");
 		System.out.println("Restart Server " + server.getServerName());
-		server.stopServer(true, true);
-		ProgramOutput po = server.startServerAndValidate(false, true, true);
+		server.stopServer(false, false);
+		ProgramOutput po = server.startServerAndValidate(false, false, true);
         if (po.getReturnCode() != 0) {
         	server.stopServer(true, true);
             Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
