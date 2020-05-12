@@ -43,7 +43,7 @@ import com.ibm.wsspi.security.ltpa.TokenFactory;
  * is finished creating the LTPA keys.
  * <p>
  * This class collaborates very closely with the LTPAKeyCreator.
- * 
+ *
  * @see LTPAKeyCreateTask
  */
 public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedActionable {
@@ -55,6 +55,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     static final String KEY_CHANGE_SERVICE = "ltpaKeysChangeNotifier";
     static final String DEFAULT_CONFIG_LOCATION = "${server.config.dir}/resources/security/ltpa.keys";
     static final String DEFAULT_OUTPUT_LOCATION = "${server.output.dir}/resources/security/ltpa.keys";
+    static final String KEY_AUTH_FILTER_REF = "authFilterRef";
     private final AtomicServiceReference<WsLocationAdmin> locationService = new AtomicServiceReference<WsLocationAdmin>(KEY_LOCATION_SERVICE);
     private final AtomicServiceReference<ExecutorService> executorService = new AtomicServiceReference<ExecutorService>(KEY_EXECUTOR_SERVICE);
     private final AtomicServiceReference<LTPAKeysChangeNotifier> ltpaKeysChangeNotifierService = new AtomicServiceReference<LTPAKeysChangeNotifier>(KEY_CHANGE_SERVICE);
@@ -73,6 +74,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     private final ReentrantReadWriteLock reentrantReadWriteLock = new ReentrantReadWriteLock();;
     private final WriteLock writeLock = reentrantReadWriteLock.writeLock();
     private final ReadLock readLock = reentrantReadWriteLock.readLock();
+    private String authFilterRef;
 
     protected void setExecutorService(ServiceReference<ExecutorService> ref) {
         executorService.setReference(ref);
@@ -114,6 +116,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         keyPassword = sps == null ? null : new String(sps.getChars());
         keyTokenExpiration = (Long) props.get(CFG_KEY_TOKEN_EXPIRATION);
         monitorInterval = (Long) props.get(CFG_KEY_MONITOR_INTERVAL);
+        authFilterRef = (String) props.get(KEY_AUTH_FILTER_REF);
         resolveActualKeysFileLocation();
     }
 
@@ -181,6 +184,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
 
     /**
      * When the configuration is modified,
+     *
      * <pre>
      * 1. If file name and expiration changed,
      * then remove the file monitor registration and reload LTPA keys.
@@ -242,7 +246,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
 
     /**
      * Sets the LTPA file monitor registration.
-     * 
+     *
      * @param ltpaFileMonitorRegistration
      */
     protected void setFileMonitorRegistration(ServiceRegistration<FileMonitor> ltpaFileMonitorRegistration) {
@@ -253,7 +257,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
      * Retrieves the BundleContext, assuming we're still valid. If we've been
      * deactivated, then the registration no longer needs / can happen and in
      * that case return null.
-     * 
+     *
      * @return The BundleContext if available, {@code null} otherwise.
      */
     @Override
@@ -274,7 +278,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
      * <p>
      * It is possible this method never gets called if the LTPA keys could not
      * be read or created.
-     * 
+     *
      * @param registration ServiceRegistration to eventually unregister
      */
     void setRegistration(ServiceRegistration<LTPAConfiguration> registration) {
@@ -286,7 +290,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
      * <p>
      * The LTPAKeyCreator will create the TokenFactory which corresponds to
      * this instance of the LTPAConfiguration.
-     * 
+     *
      * @param factory TokenFactory which corresponds to this configuration
      */
     void setTokenFactory(TokenFactory factory) {
@@ -316,7 +320,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
      * <p>
      * The LTPAKeyCreator will create the LTPAKeyInfoManager and set it
      * within the LTPAConfigurationImpl instance.
-     * 
+     *
      * @param ltpaKeyInfoManager
      */
     void setLTPAKeyInfoManager(LTPAKeyInfoManager ltpaKeyInfoManager) {
