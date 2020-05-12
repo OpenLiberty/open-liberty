@@ -45,7 +45,7 @@ Subsystem-Category: JavaEE8Application
  com.ibm.websphere.appserver.httptransport-1.0, \
  com.ibm.websphere.appserver.jakarta.servlet-5.0, \
  com.ibm.websphere.appserver.requestProbes-1.0, \
- com.ibm.websphere.appserver.eeCompatible-9.0, \
+ com.ibm.websphere.appserver.javaeeCompatible-9.0, \
  com.ibm.websphere.appserver.servlet-servletSpi1.0, \
  com.ibm.websphere.appserver.javaeeddSchema-1.0
 -bundles=com.ibm.ws.app.manager.war, \
