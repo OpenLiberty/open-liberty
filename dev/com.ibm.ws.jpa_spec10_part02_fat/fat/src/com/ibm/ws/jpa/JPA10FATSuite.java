@@ -15,6 +15,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.jpa.spec10.JPA10EmbeddableBasic_EJB;
+import com.ibm.ws.jpa.spec10.JPA10EmbeddableBasic_WEB;
+import com.ibm.ws.jpa.spec10.JPA10EmbeddableNested_EJB;
+import com.ibm.ws.jpa.spec10.JPA10EmbeddableNested_WEB;
+import com.ibm.ws.jpa.spec10.JPA10EmbeddableRelationship_EJB;
+import com.ibm.ws.jpa.spec10.JPA10EmbeddableRelationship_WEB;
 import com.ibm.ws.jpa.spec10.Relationships_ManyXMany_EJB;
 import com.ibm.ws.jpa.spec10.Relationships_ManyXMany_Web;
 import com.ibm.ws.jpa.spec10.Relationships_ManyXOne_EJB;
@@ -37,7 +43,13 @@ import com.ibm.ws.jpa.spec10.Relationships_OneXOne_Web;
                 Relationships_OneXMany_Web.class,
                 Relationships_OneXMany_EJB.class,
                 Relationships_OneXOne_EJB.class,
-                Relationships_OneXOne_Web.class
+                Relationships_OneXOne_Web.class,
+                JPA10EmbeddableBasic_EJB.class,
+                JPA10EmbeddableBasic_WEB.class,
+                JPA10EmbeddableNested_EJB.class,
+                JPA10EmbeddableNested_WEB.class,
+                JPA10EmbeddableRelationship_EJB.class,
+                JPA10EmbeddableRelationship_WEB.class
 })
 public class JPA10FATSuite {
 

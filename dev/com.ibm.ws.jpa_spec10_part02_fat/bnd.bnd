@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -11,22 +11,20 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-
 src: \
     fat/src,\
     test-applications/helpers/DatabaseManagement/src,\
     test-applications/jpa10/relationships/manyXmany/src,\
     test-applications/jpa10/relationships/manyXone/src,\
     test-applications/jpa10/relationships/oneXmany/src,\
-    test-applications/jpa10/relationships/oneXone/src
+    test-applications/jpa10/relationships/oneXone/src,\
+    test-applications/embeddable/basic/src,\
+    test-applications/embeddable/nested/src,\
+    test-applications/embeddable/relationship/src
 
 fat.project: true
 fat.test.databases: true
-tested.features: jdbc-4.0, beanvalidation-1.1, jpa-2.0, el-3.0, persistence-3.0, servlet-5.0, cdi-3.0, beanValidation-3.0, enterpriseBeansLite-4.0
-
-# Uncomment to test against alternative databases
-# Options: Derby, Postgres, DB2, Oracle, SQLServer
-#fat.bucket.db.type: Postgres
+tested.features: jdbc-4.0, beanvalidation-1.1, jpa-2.0, el-3.0, jpa-3.0, servlet-5.0, cdi-3.0, beanValidation-3.0, enterpriseBeansLite-4.0
 
 # Uncomment to use remote docker host to simulate continuous build behavior.
 #fat.test.use.remote.docker: true
