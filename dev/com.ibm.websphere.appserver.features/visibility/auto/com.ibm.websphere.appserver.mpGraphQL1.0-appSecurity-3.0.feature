@@ -8,5 +8,5 @@ IBM-Provision-Capability: \
 -bundles=com.ibm.ws.microprofile.graphql.authorization,\
   com.ibm.ws.security.authorization.util
 IBM-Install-Policy: when-satisfied
-kind=beta
+kind=ga
 edition=core
