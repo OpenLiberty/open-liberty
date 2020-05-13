@@ -146,7 +146,8 @@ public class TAIServiceImpl implements TAIService {
         if (afterSso) {
             invokeAfterSSOTais.put(id, tai);
         }
-        disableLtpaCookieTais.put(id, true);
+
+        disableLtpaCookieTais.put(id, disableLtpaCookie);
     }
 
     @Override
