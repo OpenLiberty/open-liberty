@@ -21,6 +21,7 @@ import java.net.URL;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -28,6 +29,7 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.exception.TopologyException;
@@ -37,6 +39,7 @@ import componenttest.topology.utils.HttpUtils;
 
 @AllowedFFDC(value = { "javax.transaction.SystemException" })
 @Mode(TestMode.FULL)
+@RunWith(FATRunner.class)
 public class SingleRecoveryTest {
 	private static LibertyServer server = LibertyServerFactory
 			.getLibertyServer("WSATSingleRecovery");
