@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,9 +15,6 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
-
-import javax.enterprise.concurrent.ManagedExecutorService;
-import javax.enterprise.concurrent.ManagedScheduledExecutorService;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -45,7 +42,8 @@ public class TestResource implements ResourceFactory {
     }
 
     @Deactivate
-    protected void deactivate() {}
+    protected void deactivate() {
+    }
 
     // Used by test.concurrent.app.EEConcurrencyUtilsTestServlet.testServiceRankings
     // in order to perform a test that queries the service registry.
@@ -68,12 +66,18 @@ public class TestResource implements ResourceFactory {
                     if (!"com.ibm.ws.threading.internal.ScheduledExecutorImpl".equals(componentName))
                         throw new Exception("Unexpected ScheduledExecutorService with highest service.ranking: " + schedExecSvcRef);
 
-                    ServiceReference<ManagedExecutorService> mgdExecSvcRef = bundleContext.getServiceReference(ManagedExecutorService.class);
+                    ServiceReference<?> mgdExecSvcRef = bundleContext.getServiceReference("jakarta.enterprise.concurrent.ManagedExecutorService");
+                    if (mgdExecSvcRef == null)
+                        mgdExecSvcRef = bundleContext.getServiceReference("javax.enterprise.concurrent.ManagedExecutorService");
+
                     String displayId = (String) mgdExecSvcRef.getProperty("config.displayId");
                     if (!"managedExecutorService[DefaultManagedExecutorService]".equals(displayId))
                         throw new Exception("Unexpected ManagedExecutorService with highest service.ranking: " + displayId);
 
-                    ServiceReference<ManagedScheduledExecutorService> mgdSchedExecSvcRef = bundleContext.getServiceReference(ManagedScheduledExecutorService.class);
+                    ServiceReference<?> mgdSchedExecSvcRef = bundleContext.getServiceReference("java.enterprise.concurrent.ManagedScheduledExecutorService");
+                    if (mgdSchedExecSvcRef == null)
+                        mgdSchedExecSvcRef = bundleContext.getServiceReference("jakarta.enterprise.concurrent.ManagedScheduledExecutorService");
+
                     displayId = (String) mgdSchedExecSvcRef.getProperty("config.displayId");
                     if (!"managedScheduledExecutorService[DefaultManagedScheduledExecutorService]".equals(displayId))
                         throw new Exception("Unexpected ManagedScheduledExecutorService with highest service.ranking: " + displayId);

@@ -15,6 +15,8 @@ Bundle-Name: Transaction context service
 Bundle-SymbolicName: com.ibm.ws.transaction.context
 Bundle-Description: Transaction context service; version=${bVersion}
 
+jakartaeeMe: true
+
 WS-TraceGroup: Transaction
 
 DynamicImport-Package: javax.resource.spi.work
