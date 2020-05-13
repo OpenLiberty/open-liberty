@@ -100,10 +100,21 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
         List<String> session = new ArrayList<>();
         String sessionID = appA.sessionPut("testInvalidationTimeoutTwoServer-foo", "bar", session, true);
         appB.sessionGet("testInvalidationTimeoutTwoServer-foo", "bar", session);
+
+        // Create two threads to check both serverA and serverB for the "notified of sessionDestroyed for..." message.
+        // Then use invokeAny to wait for one of the servers to destroy the session via timeout.
+        ExecutorService pool = Executors.newFixedThreadPool(2);
+        Callable<String> serverAResult = () -> {
+            return serverA.waitForStringInLog("notified of sessionDestroyed for " + sessionID, 5 * 60 * 1000);
+        };
+        Callable<String> serverBResult = () -> {
+            return serverB.waitForStringInLog("notified of sessionDestroyed for " + sessionID, 5 * 60 * 1000);
+        };
         // Wait until we see one of the session listeners sessionDestroyed() event fire indicating that the session has timed out
+        String result = pool.invokeAny(Arrays.asList(serverAResult, serverBResult), 5 * 60 * 1000 * 2, TimeUnit.MILLISECONDS);
 
         assertNotNull("Expected to find message from a session listener indicating the session expired",
-                      serverA.waitForStringInLog("notified of sessionDestroyed for " + sessionID, 5 * 60 * 1000));
+                      result);
         // Verify that repeating the same sessionGet() as before does not locate the expired session
         appB.sessionGet("testInvalidationTimeoutTwoServer-foo", null, session);
     }
@@ -177,10 +188,10 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
         // Then use invokeAny to wait for one of the servers to destroy the session via timeout.
         ExecutorService pool = Executors.newFixedThreadPool(2);
         Callable<String> serverAResult = () -> {
-            return serverA.waitForStringInLog("notified of sessionDestroyed for " + sessionID, 1 * 60 * 1000);
+            return serverA.waitForStringInLog("notified of sessionDestroyed for " + sessionID, 5 * 60 * 1000);
         };
         Callable<String> serverBResult = () -> {
-            return serverB.waitForStringInLog("notified of sessionDestroyed for " + sessionID, 1 * 60 * 1000);
+            return serverB.waitForStringInLog("notified of sessionDestroyed for " + sessionID, 5 * 60 * 1000);
         };
         String result = pool.invokeAny(Arrays.asList(serverAResult, serverBResult), 5 * 60 * 1000 * 2, TimeUnit.MILLISECONDS);
 
