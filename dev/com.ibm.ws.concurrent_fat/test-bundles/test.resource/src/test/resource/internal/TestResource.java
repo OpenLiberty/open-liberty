@@ -74,7 +74,7 @@ public class TestResource implements ResourceFactory {
                     if (!"managedExecutorService[DefaultManagedExecutorService]".equals(displayId))
                         throw new Exception("Unexpected ManagedExecutorService with highest service.ranking: " + displayId);
 
-                    ServiceReference<?> mgdSchedExecSvcRef = bundleContext.getServiceReference("java.enterprise.concurrent.ManagedScheduledExecutorService");
+                    ServiceReference<?> mgdSchedExecSvcRef = bundleContext.getServiceReference("javax.enterprise.concurrent.ManagedScheduledExecutorService");
                     if (mgdSchedExecSvcRef == null)
                         mgdSchedExecSvcRef = bundleContext.getServiceReference("jakarta.enterprise.concurrent.ManagedScheduledExecutorService");
 
