@@ -10,22 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs.fat.options;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
 @ApplicationPath("options")
 public class OptionsApplication extends Application {
-
-    @Override
-    public Set<Class<?>> getClasses() {
-        Set<Class<?>> classes = new HashSet<Class<?>>();
-        classes.add(OptionsResource.class);
-        classes.add(OptionsResource2.class);
-        classes.add(OptionsTestServlet.class);
-        return classes;
-    }
-
 }

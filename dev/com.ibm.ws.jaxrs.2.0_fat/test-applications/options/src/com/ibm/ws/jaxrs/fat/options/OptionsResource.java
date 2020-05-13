@@ -36,6 +36,11 @@ public class OptionsResource {
         return Response.ok().build();
     }
 
+    @GET
+    @Path("three/{id1}/{id2}/{id3}")
+    public Response three(@PathParam("id1") String id1,@PathParam("id2") String id2, @PathParam("id3") String id3) {
+        return Response.ok(id1).build();
+    }
 }
 
 

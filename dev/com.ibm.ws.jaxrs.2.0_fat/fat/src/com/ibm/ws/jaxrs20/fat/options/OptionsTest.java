@@ -25,19 +25,14 @@ import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
 public class OptionsTest {
-
-    private static final String appName = "optionsApp";
-    private static final String optionswar = "options";
     private static final String app = "options";
 
     @Server("com.ibm.ws.jaxrs.fat.options")
     @TestServlet(servlet = OptionsTestServlet.class, contextRoot = app)
-//    @TestServlet(servlet = OptionsTestServlet.class)
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-//        ShrinkHelper.defaultDropinApp(server, optionswar, "com.ibm.ws.jaxrs.fat.options");
         ShrinkHelper.defaultDropinApp(server, app, "com.ibm.ws.jaxrs.fat.options");
 
         // Make sure we don't fail because we try to start an
@@ -55,54 +50,4 @@ public class OptionsTest {
             server.stopServer();
         }
     }
-/*
-    private int getPort() {
-        return server.getHttpDefaultPort();
-    }
-
-    private String getHost() {
-        return server.getHostname();
-    }
-
-    @Test
-    public void testSimple() throws IOException {
-        runGetMethod(200, "/options/rest/helloworld", "Hello World");
-    }
-
-    private StringBuilder runGetMethod(int exprc, String requestUri, String testOut)
-                    throws IOException {
-        URL url = new URL("http://" + getHost() + ":" + getPort() + requestUri);
-        int retcode;
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        try {
-            con.setDoInput(true);
-            con.setDoOutput(true);
-            con.setUseCaches(false);
-            con.setRequestMethod("GET");
-
-            retcode = con.getResponseCode();
-
-            InputStream is = con.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
-
-            String sep = System.getProperty("line.separator");
-            StringBuilder lines = new StringBuilder();
-            for (String line = br.readLine(); line != null; line = br
-                            .readLine())
-                lines.append(line).append(sep);
-
-            if (lines.indexOf(testOut) < 0)
-                fail("Missing success message in output. " + lines);
-
-            if (retcode != exprc)
-                fail("Bad return Code from Get. Expected " + exprc + "Got"
-                     + retcode);
-
-            return lines;
-        } finally {
-            con.disconnect();
-        }
-    }
-    */
 }

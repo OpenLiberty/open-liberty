@@ -264,8 +264,10 @@ public class JAXRSInInterceptor extends AbstractPhaseInterceptor<Message> {
 
         } catch (WebApplicationException ex) {
             if (JAXRSUtils.noResourceMethodForOptions(ex.getResponse(), httpMethod)) {
+                //Liberty Change start
                 // Use the matched ClassResourceInfo so that the options request returns the allowed headers for this ClassResourceInfo not the allowed headers for all of the ClassResourceInfos 
-                Response response = JAXRSUtils.createResponse(new ArrayList<ClassResourceInfo>(matchedResources.keySet()), null, null, 200, true);
+                Response response = JAXRSUtils.createResponse(new ArrayList<ClassResourceInfo>(matchedResources.keySet()), message, null, 200, true);
+              //Liberty Change end
                 exchange.put(Response.class, response);
                 return;
             }

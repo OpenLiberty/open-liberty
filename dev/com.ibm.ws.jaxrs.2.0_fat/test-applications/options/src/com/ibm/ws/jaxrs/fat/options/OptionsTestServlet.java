@@ -11,9 +11,8 @@
 package com.ibm.ws.jaxrs.fat.options;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
-import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -30,9 +29,6 @@ import componenttest.app.FATServlet;
 
 @WebServlet(urlPatterns = "/OptionsTestServlet")
 public class OptionsTestServlet extends FATServlet {
-
-    private static final String clz = "OptionsTestServlet";
-    private static final Logger LOG = Logger.getLogger(OptionsTestServlet.class.getName());
 
     private Client client;
 
@@ -53,13 +49,13 @@ public class OptionsTestServlet extends FATServlet {
         Response response = target(req, "/options/options/test").request().options();
         assertEquals(200, response.getStatus());
         System.out.println("testOptions Allowed headers are : " + response.getHeaderString("Allow"));
-        assertTrue(response.getHeaderString("Allow").contains("GET"));
-        assertTrue(response.getHeaderString("Allow").contains("PUT"));
+        assertFalse(response.getHeaderString("Allow").contains("GET"));
+        assertFalse(response.getHeaderString("Allow").contains("PUT"));
         assertTrue(response.getHeaderString("Allow").contains("POST"));
         assertTrue(response.getHeaderString("Allow").contains("OPTIONS"));
-        assertTrue(response.getHeaderString("Allow").contains("HEAD"));
-        assertTrue(!(response.getHeaderString("Allow").contains("DELETE")));
-        assertTrue(!(response.getHeaderString("Allow").contains("PATCH")));
+        assertFalse(response.getHeaderString("Allow").contains("HEAD"));
+        assertFalse(response.getHeaderString("Allow").contains("DELETE"));
+        assertFalse(response.getHeaderString("Allow").contains("PATCH"));
 
     }
 
@@ -69,26 +65,67 @@ public class OptionsTestServlet extends FATServlet {
         Response response = target(req, "/options/options/test2/1").request().options();
         assertEquals(200, response.getStatus());
         System.out.println("testOptions2 Allowed headers are : " + response.getHeaderString("Allow"));
-        assertTrue(!(response.getHeaderString("Allow").contains("GET")));
-        assertTrue(!(response.getHeaderString("Allow").contains("PUT")));
-        assertTrue(!(response.getHeaderString("Allow").contains("POST")));
+        assertFalse(response.getHeaderString("Allow").contains("GET"));
+        assertFalse(response.getHeaderString("Allow").contains("PUT"));
+        assertFalse(response.getHeaderString("Allow").contains("POST"));
         assertTrue(response.getHeaderString("Allow").contains("DELETE"));
-        assertTrue(!(response.getHeaderString("Allow").contains("PATCH")));
+        assertFalse(response.getHeaderString("Allow").contains("PATCH"));
         assertTrue(response.getHeaderString("Allow").contains("OPTIONS"));
-        assertTrue(!(response.getHeaderString("Allow").contains("HEAD")));
+        assertFalse(response.getHeaderString("Allow").contains("HEAD"));
 
     }
 
+    @Test
+    public void testOptions3(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
+        Response response = target(req, "/options/options/test/1").request().options();
+        assertEquals(200, response.getStatus());
+        System.out.println("testOptions Allowed headers are : " + response.getHeaderString("Allow"));
+        assertTrue(response.getHeaderString("Allow").contains("GET"));
+        assertTrue(response.getHeaderString("Allow").contains("PUT"));
+        assertFalse(response.getHeaderString("Allow").contains("POST"));
+        assertTrue(response.getHeaderString("Allow").contains("OPTIONS"));
+        assertTrue(response.getHeaderString("Allow").contains("HEAD"));
+        assertFalse(response.getHeaderString("Allow").contains("DELETE"));
+        assertFalse(response.getHeaderString("Allow").contains("PATCH"));
 
+    }
 
+    @Test
+    public void testOptions4(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
+        Response response = target(req, "/options/options/test/three/1/2/3").request().options();
+        assertEquals(200, response.getStatus());
+        System.out.println("testOptions Allowed headers are : " + response.getHeaderString("Allow"));
+        assertTrue(response.getHeaderString("Allow").contains("GET"));
+        assertFalse(response.getHeaderString("Allow").contains("PUT"));
+        assertFalse(response.getHeaderString("Allow").contains("POST"));
+        assertTrue(response.getHeaderString("Allow").contains("OPTIONS"));
+        assertTrue(response.getHeaderString("Allow").contains("HEAD"));
+        assertFalse(response.getHeaderString("Allow").contains("DELETE"));
+        assertFalse(response.getHeaderString("Allow").contains("PATCH"));
+
+    }
+
+    @Test
+    public void testOptions5(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+
+        Response response = target(req, "/options/options/test3/all/1").request().options();
+        assertEquals(200, response.getStatus());
+        System.out.println("testOptions Allowed headers are : " + response.getHeaderString("Allow"));
+        assertTrue(response.getHeaderString("Allow").contains("GET"));
+        assertTrue(response.getHeaderString("Allow").contains("PUT"));
+        assertTrue(response.getHeaderString("Allow").contains("POST"));
+        assertTrue(response.getHeaderString("Allow").contains("OPTIONS"));
+        assertTrue(response.getHeaderString("Allow").contains("HEAD"));
+        assertTrue(response.getHeaderString("Allow").contains("DELETE"));
+        assertFalse(response.getHeaderString("Allow").contains("PATCH"));
+
+    }
 
     private WebTarget target(HttpServletRequest request, String path) {
         String base = "http://" + request.getServerName() + ':' + request.getServerPort();
         System.out.println("target : " + base + path);
         return client.target(base + path);
     }
-
-
 }

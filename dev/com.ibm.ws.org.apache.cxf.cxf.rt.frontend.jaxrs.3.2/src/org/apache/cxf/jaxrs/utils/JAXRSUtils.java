@@ -636,11 +636,37 @@ public final class JAXRSUtils {
 
     public static Response createResponse(List<ClassResourceInfo> cris, Message msg,
                                           String responseMessage, int status, boolean addAllow) {
+        String messagePath = HttpUtils.getPathToMatch(msg, true);     // Liberty Change
         ResponseBuilder rb = toResponseBuilder(status);
         if (addAllow) {
             Set<String> allowedMethods = new HashSet<>();
             for (ClassResourceInfo cri : cris) {
-                allowedMethods.addAll(cri.getAllowedMethods());
+                //Liberty Change start
+                String criPath = cri.getPath().value();
+                
+                for (OperationResourceInfo ori : cri.getMethodDispatcher().getOperationResourceInfos()) {                    
+                    String oriPath = ori.getURITemplate().getValue();
+                    String fullPath = criPath + oriPath;                    
+                    String messagePathMatch = HttpUtils.getPathToMatch(messagePath,fullPath,true);
+                    String fullPathMatch = HttpUtils.getPathToMatch(fullPath,messagePath,true);
+                    String httpMethod = ori.getHttpMethod(); 
+
+                    if ("/".equalsIgnoreCase(messagePathMatch)) {                       
+                        allowedMethods.add(httpMethod);
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Adding Allow Header with equal paths " + httpMethod);
+                        }
+                    } else if (countMatches(messagePathMatch,"/") == countMatches(fullPathMatch,"/") 
+                                    && messagePathMatch.startsWith(criPath)
+                                    && fullPathMatch.startsWith(criPath)  ) {                       
+                        allowedMethods.add(httpMethod);
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Adding Allow Header with equal path param " + httpMethod);
+                        }
+                    }
+                }
+                //Liberty Change start
+
             }
 
             for (String m : allowedMethods) {
@@ -2011,6 +2037,29 @@ public final class JAXRSUtils {
         final byte[] copiedBytes = baos.toByteArray();
         m.setContent(InputStream.class, new ByteArrayInputStream(copiedBytes));
         return new ByteArrayInputStream(copiedBytes);
+    }
+    
+    private static boolean isEmpty(String s) {
+        return s == null || s.length() == 0;
+    }
+
+    private static int countMatches(String text, String str) {
+        if (isEmpty(text) || isEmpty(str)) {
+                return 0;
+        }
+
+        int index = 0, count = 0;
+        while (true) {
+                index = text.indexOf(str, index);
+                if (index != -1) {
+                        count ++;
+                        index += str.length();
+                } else {
+                        break;
+                }
+        }
+
+        return count;
     }
     // Liberty change end
 }
