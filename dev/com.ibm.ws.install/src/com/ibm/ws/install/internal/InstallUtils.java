@@ -663,10 +663,10 @@ public class InstallUtils {
         return null;
     }
 
-    public static Collection<String> getFeatures(InputStream serverXMLInputStream, String xml) throws InstallException {
+    public static Collection<String> getFeatures(File serverXml, String xml) throws InstallException {
         Collection<String> features = new ArrayList<String>();
-        try {
-            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(serverXMLInputStream);
+        try (InputStream is = new FileInputStream(serverXml)){
+            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(is);
             Element element = doc.getDocumentElement();
             NodeList fmList = element.getElementsByTagName("featureManager");
             for (int i = 0; i < fmList.getLength(); i++) {
