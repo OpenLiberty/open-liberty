@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,14 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi.extension;
-
 /**
- * This is a *marker* interface for Weld Runtime extension. All runtime extensions need to register a service
- * under this interface. This bundle will find all of the services and then get hold of the bundle classloader and
- * pass onto Weld.
- * <p>
- * This interface has been deprecated. CDIExtensionMetadata should be used instead.
+ * @version 1.0
  */
-@Deprecated
-public interface WebSphereCDIExtension {}
+@org.osgi.annotation.versioning.Version("1.0")
+@TraceOptions(traceGroup = "JCDI", messageBundle = "com.ibm.ws.cdi.internal.resources.CDI")
+package io.openliberty.cdi.spi;
+
+import com.ibm.websphere.ras.annotation.TraceOptions;
+
