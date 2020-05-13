@@ -15,8 +15,8 @@ copyPiiFiles {
 }
 
 // This task removes the non-tranformed build jar from the build image.
-// The transformed jar remains published.  Remote or disable this task 
-// when modifying this project to build the yasson release artifact 
+// The transformed jar remains published.  Remote or disable this task
+// when modifying this project to build the yasson release artifact
 // acquired from maven central.
 task retractWLPJars(type: Delete) {
     dependsOn publishWLPJars
