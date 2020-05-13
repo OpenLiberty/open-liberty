@@ -44,7 +44,7 @@ public class JDBC43Test extends FATServletClient {
     @ClassRule
     public static RepeatTests r = RepeatTests
                     .withoutModification()
-                    ;// TODO .andWith(new JakartaEE9Action());
+                    .andWith(new JakartaEE9Action());
 
     @Server("com.ibm.ws.jdbc.fat.v43")
     @TestServlets({

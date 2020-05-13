@@ -1,7 +1,7 @@
 package com.ibm.tx.jta.impl;
 
 /*******************************************************************************
- * Copyright (c) 2002, 2018 IBM Corporation and others.
+ * Copyright (c) 2002, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1665,17 +1665,21 @@ public class RecoveryManager implements Runnable {
     public void run() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "run");
+
+        final String serverName = _failureScopeController.serverName();
+
         try {
+
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "Performing recovery for " + _failureScopeController.serverName());
+                Tr.debug(tc, "Performing recovery for " + serverName);
 
             // Lets update our entry in the leaseLog early
             if (_leaseLog != null) {
                 // TODO - need a sensible lease time
                 try {
                     //Don't update the server lease if this is a peer rather than local server.
-                    if (_localRecoveryIdentity.equals(_failureScopeController.serverName()))
-                        _leaseLog.updateServerLease(_failureScopeController.serverName(), _recoveryGroup, true);
+                    if (_localRecoveryIdentity.equals(serverName))
+                        _leaseLog.updateServerLease(serverName, _recoveryGroup, true);
                 } catch (Exception exc) {
                     FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.run", "1698", this);
                     Tr.error(tc, "WTRN0112_LOG_OPEN_FAILURE", _leaseLog);
@@ -2028,7 +2032,7 @@ public class RecoveryManager implements Runnable {
             performResync(_XAEntries);
         } finally {
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "Performed recovery for " + _failureScopeController.serverName());
+                Tr.debug(tc, "Performed recovery for " + serverName);
         }
 
         if (tc.isEntryEnabled())

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,9 +14,14 @@ import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -30,7 +35,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 /**
- * Tests related to Session Cache Timeouts, using a server with the following session settings:
+ * Tests related to Session Cache Timeouts, using two servers with the following session settings:
  * invalidationTimeout="5s"
  * reaperPollInterval="30" //Min allowed to not receive random poll interval between 30-60s
  */
@@ -50,7 +55,9 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         appA = new SessionCacheApp(serverA, false, "session.cache.infinispan.web", "session.cache.infinispan.web.listener1");
-        appB = new SessionCacheApp(serverB, false, "session.cache.infinispan.web"); // no HttpSessionListeners are registered by this app
+
+        // severB requires a listener as sessions created on serverA can be destroyed on serverB via a timeout. See test testCacheInvalidationTwoServer.
+        appB = new SessionCacheApp(serverB, false, "session.cache.infinispan.web", "session.cache.infinispan.web.listener1");
         serverB.useSecondaryHTTPPort();
         String rand = UUID.randomUUID().toString();
         Map<String, String> options = serverA.getJvmOptionsAsMap();
@@ -99,10 +106,21 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
         List<String> session = new ArrayList<>();
         String sessionID = appA.sessionPut("testInvalidationTimeoutTwoServer-foo", "bar", session, true);
         appB.sessionGet("testInvalidationTimeoutTwoServer-foo", "bar", session);
+
+        // Create two threads to check both serverA and serverB for the "notified of sessionDestroyed for..." message.
+        // Then use invokeAny to wait for one of the servers to destroy the session via timeout.
+        ExecutorService pool = Executors.newFixedThreadPool(2);
+        Callable<String> serverAResult = () -> {
+            return serverA.waitForStringInLog("notified of sessionDestroyed for " + sessionID, 5 * 60 * 1000);
+        };
+        Callable<String> serverBResult = () -> {
+            return serverB.waitForStringInLog("notified of sessionDestroyed for " + sessionID, 5 * 60 * 1000);
+        };
         // Wait until we see one of the session listeners sessionDestroyed() event fire indicating that the session has timed out
+        String result = pool.invokeAny(Arrays.asList(serverAResult, serverBResult), 5 * 60 * 1000 * 2, TimeUnit.MILLISECONDS);
 
         assertNotNull("Expected to find message from a session listener indicating the session expired",
-                      serverA.waitForStringInLog("notified of sessionDestroyed for " + sessionID, 5 * 60 * 1000));
+                      result);
         // Verify that repeating the same sessionGet() as before does not locate the expired session
         appB.sessionGet("testInvalidationTimeoutTwoServer-foo", null, session);
     }
@@ -171,8 +189,20 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
     public void testCacheInvalidationTwoServer() throws Exception {
         List<String> session = new ArrayList<>();
         String sessionID = appA.sessionPut("testCacheInvalidationTwoServer-foo", "bar", session, true);
+
+        // Create two threads to check both serverA and serverB for the "notified of sessionDestroyed for..." message.
+        // Then use invokeAny to wait for one of the servers to destroy the session via timeout.
+        ExecutorService pool = Executors.newFixedThreadPool(2);
+        Callable<String> serverAResult = () -> {
+            return serverA.waitForStringInLog("notified of sessionDestroyed for " + sessionID, 5 * 60 * 1000);
+        };
+        Callable<String> serverBResult = () -> {
+            return serverB.waitForStringInLog("notified of sessionDestroyed for " + sessionID, 5 * 60 * 1000);
+        };
+        String result = pool.invokeAny(Arrays.asList(serverAResult, serverBResult), 5 * 60 * 1000 * 2, TimeUnit.MILLISECONDS);
+
         assertNotNull("Expected to find message from a session listener indicating the session expired",
-                      serverA.waitForStringInLog("notified of sessionDestroyed for " + sessionID, 5 * 60 * 1000));
+                      result);
         appB.invokeServlet("cacheCheck&key=testCacheInvalidationTwoServer-foo&sid=" + sessionID, session);
         appA.invokeServlet("cacheCheck&key=testCacheInvalidationTwoServer-foo&sid=" + sessionID, session);
     }

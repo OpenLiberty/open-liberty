@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="/com.ibm.ws.org.osgi.annotation.versioning/generated/com.ibm.ws.org.osgi.annotation.versioning.jar">
+		<attributes>
+			<attribute name="bsn" value="com.ibm.ws.org.osgi.annotation.versioning.jar"/>
+			<attribute name="type" value="PROJECT"/>
+			<attribute name="project" value="com.ibm.ws.org.osgi.annotation.versioning"/>
+			<attribute name="version" value="latest"/>
+			<attribute name="index_location" value="platform:/plugin/bndtools.builder/org/bndtools/builder/classpath/empty.index"/>
+		</attributes>
+		<accessrules>
+			<accessrule kind="accessible" pattern="org/osgi/annotation/versioning/*"/>
+			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
+		</accessrules>
+	</classpathentry>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
