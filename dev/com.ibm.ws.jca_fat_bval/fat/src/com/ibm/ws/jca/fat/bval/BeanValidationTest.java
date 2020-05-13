@@ -16,13 +16,17 @@ import static org.junit.Assert.fail;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Set;
 
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
@@ -33,8 +37,11 @@ import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
 public class BeanValidationTest extends FATServletClient {
+
+    private static ServerConfiguration originalServerConfig;
     private static final String BVAL_APP = "jca-bval";
     private static final String BVAL_RAR = "BValRA";
+    private static final Set<String> appNames = Collections.singleton(BVAL_APP);
 
     @Server("com.ibm.ws.jca.fat.bval")
     public static LibertyServer server;
@@ -45,7 +52,23 @@ public class BeanValidationTest extends FATServletClient {
         ShrinkHelper.defaultApp(server, BVAL_APP, "web", "web.mdb");
         ShrinkHelper.defaultRar(server, BVAL_RAR, "com.ibm.bval.jca.adapter");
 
+        originalServerConfig = server.getServerConfiguration().clone();
+        server.addInstalledAppForValidation(BVAL_APP);
         server.startServer();
+    }
+
+    /**
+     * Before running each test, restore to the original configuration.
+     *
+     * @throws Exception
+     */
+    @Before
+    public void setUpPerTest() throws Exception {
+        server.updateServerConfiguration(originalServerConfig);
+        if (!server.isStarted())
+            server.startServer();
+        else
+            server.waitForConfigUpdateInLogUsingMark(appNames);
     }
 
     @AfterClass

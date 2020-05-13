@@ -21,4 +21,5 @@
     <javaPermission className="java.lang.RuntimePermission" name="getProtectionDomain"/>
     <javaPermission className="java.util.logging.LoggingPermission" name="control" actions=""/>
     <javaPermission className="java.util.PropertyPermission" name="bvt.prop.HTTP_default" actions="read"/>
+    <javaPermission className="java.util.PropertyPermission" name="os.name" actions="read"/>
 </server>

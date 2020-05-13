@@ -247,7 +247,7 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
     @Override
     @Reference(service = JavaEEVersion.class,
                cardinality = ReferenceCardinality.OPTIONAL,
-               policy = ReferencePolicy.STATIC,
+               policy = ReferencePolicy.DYNAMIC,
                policyOption = ReferencePolicyOption.GREEDY)
     protected void setEEVersion(ServiceReference<JavaEEVersion> ref) {
         super.setEEVersion(ref);

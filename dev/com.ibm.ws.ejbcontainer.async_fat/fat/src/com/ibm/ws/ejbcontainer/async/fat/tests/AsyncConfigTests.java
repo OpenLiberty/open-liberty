@@ -12,7 +12,7 @@ package com.ibm.ws.ejbcontainer.async.fat.tests;
 
 import static junit.framework.Assert.assertNotNull;
 
-import java.util.Collections;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -52,17 +52,11 @@ public class AsyncConfigTests extends AbstractTest {
     @ClassRule
     public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.async.fat.AsyncConfigServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.async.fat.AsyncConfigServer"));
 
+    private static Set<String> installedApps;
+
     @BeforeClass
     public static void beforeClass() throws Exception {
         // Use ShrinkHelper to build the Ears & Wars
-
-        //#################### InitTxRecoveryLogApp.ear (Automatically initializes transaction recovery logs)
-        JavaArchive InitTxRecoveryLogEJBJar = ShrinkHelper.buildJavaArchive("InitTxRecoveryLogEJB.jar", "com.ibm.ws.ejbcontainer.init.recovery.ejb.");
-
-        EnterpriseArchive InitTxRecoveryLogApp = ShrinkWrap.create(EnterpriseArchive.class, "InitTxRecoveryLogApp.ear");
-        InitTxRecoveryLogApp.addAsModule(InitTxRecoveryLogEJBJar);
-
-        ShrinkHelper.exportDropinAppToServer(server, InitTxRecoveryLogApp);
 
         //#################### AsyncConfigTestApp.ear
         JavaArchive AsyncConfigTestEJB = ShrinkHelper.buildJavaArchive("AsyncConfigTestEJB.jar", "com.ibm.ws.ejbcontainer.async.fat.config.ejb.");
@@ -80,6 +74,20 @@ public class AsyncConfigTests extends AbstractTest {
         // verify the appSecurity-2.0 feature is ready
         assertNotNull("Security service did not report it was ready", server.waitForStringInLogUsingMark("CWWKS0008I"));
         assertNotNull("LTPA configuration did not report it was ready", server.waitForStringInLogUsingMark("CWWKS4105I"));
+
+        //#################### InitTxRecoveryLogApp.ear (Automatically initializes transaction recovery logs)
+        JavaArchive InitTxRecoveryLogEJBJar = ShrinkHelper.buildJavaArchive("InitTxRecoveryLogEJB.jar", "com.ibm.ws.ejbcontainer.init.recovery.ejb.");
+
+        EnterpriseArchive InitTxRecoveryLogApp = ShrinkWrap.create(EnterpriseArchive.class, "InitTxRecoveryLogApp.ear");
+        InitTxRecoveryLogApp.addAsModule(InitTxRecoveryLogEJBJar);
+
+        // Only after the server has started and appSecurity-2.0 feature is ready,
+        // then allow the @Startup InitTxRecoveryLog bean to start.
+        ShrinkHelper.exportDropinAppToServer(server, InitTxRecoveryLogApp);
+
+        // Save list of applications for server updates
+        installedApps = server.listAllInstalledAppsForValidation();
+        logger.info("Installed applications = " + installedApps);
     }
 
     @AfterClass
@@ -170,6 +178,6 @@ public class AsyncConfigTests extends AbstractTest {
 
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton("AsyncConfigTestApp"));
+        server.waitForConfigUpdateInLogUsingMark(installedApps);
     }
 }

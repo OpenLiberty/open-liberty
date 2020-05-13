@@ -14,8 +14,8 @@
 <persistence 
     xmlns="http://java.sun.com/xml/ns/persistence"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
-    version="1.0">
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+    version="2.0">
 
     <persistence-unit name="CriteriaQuery_JTA">
         <jta-data-source>jdbc/JPA_DS</jta-data-source>
@@ -24,7 +24,7 @@
             <property name="eclipselink.logging.parameters" value="true"/>
 
             <property name="openjpa.jdbc.DBDictionary" value="StoreCharsAsNumbers=false"/>
-            <property name="openjpa.ConnectionFactoryProperties" value="PrintParameters=true" />
+            <property name="openjpa.ConnectionFactoryProperties" value="PrintParameters=True, PrettyPrint=true, PrettyPrintLineLength=72"/>
         </properties>
     </persistence-unit>
 
@@ -34,7 +34,7 @@
             <property name="eclipselink.logging.parameters" value="true"/>
 
             <property name="openjpa.jdbc.DBDictionary" value="StoreCharsAsNumbers=false"/>
-            <property name="openjpa.ConnectionFactoryProperties" value="PrintParameters=true" />
+            <property name="openjpa.ConnectionFactoryProperties" value="PrintParameters=True, PrettyPrint=true, PrettyPrintLineLength=72"/>
         </properties>
     </persistence-unit>
 </persistence>

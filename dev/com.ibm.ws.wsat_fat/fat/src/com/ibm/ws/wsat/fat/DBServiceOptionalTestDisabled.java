@@ -83,6 +83,7 @@ public class DBServiceOptionalTestDisabled extends DBTestBase {
 				.getLibertyServer("WSATDBDisabled_Client");
 		server1 = LibertyServerFactory
 				.getLibertyServer("WSATDBDisabled_Server1");
+		server1.setHttpDefaultPort(server1Port);
 
 		DBTestBase.initWSATTest(client);
 		DBTestBase.initWSATTest(server1);
@@ -90,7 +91,7 @@ public class DBServiceOptionalTestDisabled extends DBTestBase {
 		CLient_URL = "http://" + client.getHostname() + ":"
 				+ client.getHttpDefaultPort();
 		Server1_URL = "http://" + server1.getHostname() + ":"
-				+ server1Port;
+				+ server1.getHttpDefaultPort();
 
 		// Test URL
 		// ATAssertion exists on Operation level in WSDL

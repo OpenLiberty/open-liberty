@@ -12,23 +12,37 @@
 package com.ibm.ws.security.acme.internal;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URI;
+import java.net.URL;
+import java.nio.file.Files;
 import java.security.AccessController;
 import java.security.KeyPair;
+import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.security.cert.X509Certificate;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.naming.ldap.Rdn;
 
 import org.shredzone.acme4j.Account;
+import org.shredzone.acme4j.Account.EditableAccount;
 import org.shredzone.acme4j.AccountBuilder;
 import org.shredzone.acme4j.Authorization;
 import org.shredzone.acme4j.Certificate;
@@ -41,6 +55,7 @@ import org.shredzone.acme4j.Status;
 import org.shredzone.acme4j.challenge.Challenge;
 import org.shredzone.acme4j.challenge.Http01Challenge;
 import org.shredzone.acme4j.exception.AcmeException;
+import org.shredzone.acme4j.exception.AcmeProtocolException;
 import org.shredzone.acme4j.exception.AcmeRetryAfterException;
 import org.shredzone.acme4j.exception.AcmeServerException;
 import org.shredzone.acme4j.util.CSRBuilder;
@@ -52,6 +67,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.acme.AcmeCaException;
 import com.ibm.ws.security.acme.AcmeCertificate;
+import com.ibm.ws.security.acme.internal.exceptions.IllegalRevocationReasonException;
 import com.ibm.ws.security.acme.internal.util.AcmeConstants;
 
 /**
@@ -75,6 +91,16 @@ public class AcmeClient {
 	 * domain the certificate is being generated for.
 	 */
 	private final Map<String, String> httpTokenToAuthzMap = new HashMap<String, String>();
+
+	/**
+	 * Read / write lock for the account key file. This is used to ensure
+	 * multiple threads are not trying to update the file at the same time, or
+	 * that we are not updating the file and reading from the file at the same
+	 * time. Currently, we don't use the same mechanism for the domain key as
+	 * the domain key doesn't currently have a REST endpoint that allows the it
+	 * to be regenerated.
+	 */
+	private final static ReadWriteLock accountKeyPairFileRWLock = new ReentrantReadWriteLock();
 
 	/**
 	 * Create a new {@link AcmeClient} instance.
@@ -204,7 +230,7 @@ public class AcmeClient {
 		/*
 		 * Load the account key file. If there is no key file, create a new one.
 		 */
-		KeyPair accountKeyPair = loadOrCreateAccountKeyPair();
+		KeyPair accountKeyPair = getAccountKeyPair(false);
 
 		/*
 		 * Create a session to the ACME CA directory service.
@@ -219,7 +245,7 @@ public class AcmeClient {
 		/*
 		 * Create a key pair for the domains.
 		 */
-		KeyPair domainKeyPair = loadOrCreateDomainKeyPair();
+		KeyPair domainKeyPair = getDomainKeyPair();
 
 		/*
 		 * Stop now if this is a dry run.
@@ -355,15 +381,65 @@ public class AcmeClient {
 		Certificate certificate = order.getCertificate();
 
 		/*
-		 * Check whether the notBefore time is in the future. This might happen if the
-		 * time on the local system is off.
+		 * Check whether the notBefore time is in the future. This might happen
+		 * if the time on the local system is off.
 		 */
 		X509Certificate x509Cert = certificate.getCertificate();
 		if (x509Cert.getNotBefore().after(Calendar.getInstance().getTime())) {
 			Tr.warning(tc, "CWPKI2045W", x509Cert.getSerialNumber().toString(16), acmeConfig.getDirectoryURI(),
 					x509Cert.getNotBefore().toInstant().toString());
 		}
+
+		checkRenewTimeAgainstCertValidityPeriod(certificate.getCertificate().getNotBefore(),
+				certificate.getCertificate().getNotAfter(),
+				certificate.getCertificate().getSerialNumber().toString(16));
+
 		return new AcmeCertificate(domainKeyPair, x509Cert, certificate.getCertificateChain());
+	}
+
+	/**
+	 * Get the account that is configured for this client. This is the account
+	 * that is bound to the configured account key.
+	 * 
+	 * @return The account or null if it was not found.
+	 * @throws AcmeCaException
+	 *             if there was an error requesting the account.
+	 */
+	public AcmeAccount getAccount() throws AcmeCaException {
+		return new AcmeAccount(getAccount(null));
+	}
+
+	/**
+	 * Get the account that is configured for this client. This is the account
+	 * that is bound to the configured account key.
+	 * 
+	 * @param session
+	 *            The session to use to request the account from the ACME CA
+	 *            server. If null, a new session will be created.
+	 * @return The account or null if it was not found.
+	 * @throws AcmeCaException
+	 *             if there was an error requesting the account.
+	 */
+	private Account getAccount(Session session) throws AcmeCaException {
+		/*
+		 * Load the account key file.
+		 */
+		KeyPair accountKeyPair = loadAccountKeyPair();
+		if (accountKeyPair == null) {
+			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2025W", acmeConfig.getDirectoryURI()));
+		}
+
+		/*
+		 * Create a session to the ACME CA directory service.
+		 */
+		if (session == null) {
+			session = getNewSession();
+		}
+
+		/*
+		 * Get the Account.
+		 */
+		return getExistingAccount(session, accountKeyPair);
 	}
 
 	/**
@@ -378,7 +454,7 @@ public class AcmeClient {
 	 *             if there was an issue requesting an existing account.
 	 */
 	@FFDCIgnore({ AcmeServerException.class })
-	private Account findExistingAccount(Session session, KeyPair accountKey) throws AcmeCaException {
+	private Account getExistingAccount(Session session, KeyPair accountKey) throws AcmeCaException {
 		try {
 			return new AccountBuilder().useKeyPair(accountKey).onlyExisting().create(session);
 		} catch (AcmeServerException e) {
@@ -410,7 +486,7 @@ public class AcmeClient {
 		/*
 		 * Find an existing account.
 		 */
-		Account account = findExistingAccount(session, accountKey);
+		Account account = getExistingAccount(session, accountKey);
 
 		/*
 		 * If there is no existing account, create one.
@@ -493,24 +569,36 @@ public class AcmeClient {
 	 */
 	@FFDCIgnore(IOException.class)
 	private KeyPair loadAccountKeyPair() throws AcmeCaException {
+		/*
+		 * Obtain the read lock. If another thread holds the write lock, we will
+		 * wait until it is done.
+		 */
+		accountKeyPairFileRWLock.readLock().lock();
 
-		File accountKeyFile = null;
-		if (acmeConfig.getAccountKeyFile() != null) {
-			accountKeyFile = new File(acmeConfig.getAccountKeyFile());
-		}
-
-		if (accountKeyFile != null && accountKeyFile.exists()) {
-			/*
-			 * If there is a key file, read it
-			 */
-			try (FileReader fr = new FileReader(accountKeyFile)) {
-				return KeyPairUtils.readKeyPair(fr);
-			} catch (IOException e) {
-				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2021E", accountKeyFile, e.getMessage()), e);
+		try {
+			File accountKeyFile = null;
+			if (acmeConfig.getAccountKeyFile() != null) {
+				accountKeyFile = new File(acmeConfig.getAccountKeyFile());
 			}
-		}
 
-		return null;
+			if (accountKeyFile != null && accountKeyFile.exists()) {
+				/*
+				 * If there is a key file, read it
+				 */
+				try (FileReader fr = new FileReader(accountKeyFile)) {
+					return KeyPairUtils.readKeyPair(fr);
+				} catch (IOException e) {
+					throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2021E", accountKeyFile, e.getMessage()), e);
+				}
+			}
+
+			return null;
+		} finally {
+			/*
+			 * Always release the read lock.
+			 */
+			accountKeyPairFileRWLock.readLock().unlock();
+		}
 	}
 
 	/**
@@ -546,54 +634,75 @@ public class AcmeClient {
 	 * Loads a account key pair from the user account key file. If the file does
 	 * not exist, a new key pair is generated and saved.
 	 * <p>
+	 * If <code>force</code> is set to true, a new key pair is generated and
+	 * saved.
+	 * <p>
 	 * Keep this key pair in a safe place! In a production environment, you will
 	 * not be able to access your account again if you should lose the key pair.
 	 *
+	 * @param force
+	 *            force generation of a new key pair.
 	 * @return Account's {@link KeyPair}.
 	 * @throws AcmeCaException
 	 *             if there was an error reading or writing the account key pair
 	 *             file.
 	 */
 	@FFDCIgnore(IOException.class)
-	private KeyPair loadOrCreateAccountKeyPair() throws AcmeCaException {
+	private KeyPair getAccountKeyPair(boolean force) throws AcmeCaException {
 
-		/*
-		 * See if we have an account KeyPair already.
-		 */
-		KeyPair accountKeyPair = loadAccountKeyPair();
+		KeyPair accountKeyPair = null;
+		if (!force) {
+			/*
+			 * See if we have an account KeyPair already.
+			 */
+			accountKeyPair = loadAccountKeyPair();
+		}
 
 		/*
 		 * If we don't have an account KeyPair already, generate one.
 		 */
 		if (accountKeyPair == null) {
 			/*
-			 * If there is none, create a new key pair and save it
+			 * Obtain the write lock.
 			 */
-			accountKeyPair = KeyPairUtils.createKeyPair(AcmeConstants.KEY_SIZE);
+			accountKeyPairFileRWLock.writeLock().lock();
 
-			File accountKeyFile = null;
-			if (acmeConfig.getAccountKeyFile() != null) {
-				accountKeyFile = new File(acmeConfig.getAccountKeyFile());
-
+			try {
 				/*
-				 * Create parent directories if the abstract path contains
-				 * parent directories.
+				 * If there is none, create a new key pair and save it
 				 */
-				if (accountKeyFile.getParentFile() != null) {
-					accountKeyFile.getParentFile().mkdirs();
+				accountKeyPair = KeyPairUtils.createKeyPair(AcmeConstants.KEY_SIZE);
+
+				File accountKeyFile = null;
+				if (acmeConfig.getAccountKeyFile() != null) {
+					accountKeyFile = new File(acmeConfig.getAccountKeyFile());
+
+					/*
+					 * Create parent directories if the abstract path contains
+					 * parent directories.
+					 */
+					if (accountKeyFile.getParentFile() != null) {
+						accountKeyFile.getParentFile().mkdirs();
+					}
 				}
-			}
-			if (accountKeyFile != null) {
-				try (FileWriter fw = new FileWriter(accountKeyFile)) {
-					KeyPairUtils.writeKeyPair(accountKeyPair, fw);
-				} catch (IOException e) {
-					throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2023E", acmeConfig.getDirectoryURI(),
-							accountKeyFile, e.getMessage()), e);
+				if (accountKeyFile != null) {
+					try (FileWriter fw = new FileWriter(accountKeyFile)) {
+						KeyPairUtils.writeKeyPair(accountKeyPair, fw);
+					} catch (IOException e) {
+						throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2023E", acmeConfig.getDirectoryURI(),
+								accountKeyFile, e.getMessage()), e);
+					}
 				}
+			} finally {
+				/*
+				 * Always release the write lock.
+				 */
+				accountKeyPairFileRWLock.writeLock().unlock();
 			}
 		}
 
 		return accountKeyPair;
+
 	}
 
 	/**
@@ -609,7 +718,7 @@ public class AcmeClient {
 	 *             file.
 	 */
 	@FFDCIgnore(IOException.class)
-	private KeyPair loadOrCreateDomainKeyPair() throws AcmeCaException {
+	private KeyPair getDomainKeyPair() throws AcmeCaException {
 
 		/*
 		 * See if we have an domain KeyPair already.
@@ -667,7 +776,7 @@ public class AcmeClient {
 	 * @throws AcmeCaException
 	 *             if there was an error preparing the HTTP-01 challenge.
 	 */
-	public Challenge prepareHttpChallenge(Authorization auth) throws AcmeCaException {
+	private Challenge prepareHttpChallenge(Authorization auth) throws AcmeCaException {
 		/*
 		 * Find a single HTTP-01 challenge
 		 */
@@ -693,11 +802,18 @@ public class AcmeClient {
 	 * 
 	 * @param certificate
 	 *            The certificate to revoke.
+	 * @param reason
+	 *            The reason the certificate is being revoked. The following
+	 *            reason are supported: UNSPECIFIED, KEY_COMPROMISE,
+	 *            CA_COMPROMISE, AFFILIATION_CHANGED, SUPERSEDED,
+	 *            CESSATION_OF_OPERATIONS, CERTIFICATE_HOLD, REMOVE_FROM_CRL,
+	 *            PRIVILEGE_WITHDRAWN and AA_COMPROMISE. If null, the reason
+	 *            "UNSPECIFIED" will be used.
 	 * @throws AcmeCaException
 	 *             if there was an issue revoking the certificate.
 	 */
-	@FFDCIgnore(AcmeException.class)
-	public void revoke(X509Certificate certificate) throws AcmeCaException {
+	@FFDCIgnore({ AcmeException.class, IllegalArgumentException.class })
+	public void revoke(X509Certificate certificate, String reason) throws AcmeCaException {
 
 		if (certificate == null) {
 			return;
@@ -719,15 +835,25 @@ public class AcmeClient {
 		/*
 		 * Get the Account.
 		 */
-		Account acct = findExistingAccount(session, accountKeyPair);
+		Account acct = getExistingAccount(session, accountKeyPair);
 
 		if (acct != null) {
+			RevocationReason revocationReason = RevocationReason.UNSPECIFIED;
+			if (reason != null) {
+				try {
+					revocationReason = RevocationReason.valueOf(reason.toUpperCase());
+				} catch (IllegalArgumentException e) {
+					throw new IllegalRevocationReasonException(Tr.formatMessage(tc, "CWPKI2046E", e.getMessage()), e);
+				}
+			}
+
 			/*
 			 * Login and revoke the certificate.
 			 */
 			Login login = new Login(acct.getLocation(), accountKeyPair, session);
 			try {
-				Certificate.revoke(login, certificate, RevocationReason.SUPERSEDED);
+				Certificate.revoke(login, certificate, revocationReason);
+				Tr.info(tc, Tr.formatMessage(tc, "CWPKI2038I", certificate.getSerialNumber().toString(16)));
 			} catch (AcmeException e) {
 				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2024E", acmeConfig.getDirectoryURI(),
 						certificate.getSerialNumber().toString(16), e.getMessage()), e);
@@ -833,5 +959,346 @@ public class AcmeClient {
 		}
 
 		return rootMessage;
+	}
+
+	/**
+	 * Renew the account key pair and back up the existing key pair to disk.
+	 * 
+	 * @throws AcmeCaException
+	 *             if there was an error replacing the account key pair.
+	 */
+	public void renewAccountKeyPair() throws AcmeCaException {
+
+		/*
+		 * Obtain the write lock. We will hold this the entire length of the
+		 * operation.
+		 */
+		accountKeyPairFileRWLock.writeLock().lock();
+
+		try {
+			/*
+			 * Get the account.
+			 */
+			Account acct = getAccount(null);
+			if (acct != null) {
+				/*
+				 * Copy the existing account key pair.
+				 */
+				File backupFile = null;
+				try {
+					String datestamp = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
+					File existingFile = new File(acmeConfig.getAccountKeyFile());
+					String backupFilename = existingFile.getParent() + File.separatorChar + datestamp + "-"
+							+ existingFile.getName();
+					copyFile(acmeConfig.getAccountKeyFile(), backupFilename);
+
+					/*
+					 * Indicate that we have copied the file by setting the
+					 * copied file to non-null.
+					 */
+					backupFile = new File(backupFilename);
+				} catch (IOException e) {
+					throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2050E", e.getMessage()), e);
+				}
+
+				/*
+				 * Force creation of a new account key pair. This will write it
+				 * to the existing key pair file.
+				 */
+				KeyPair keyPair = null;
+				try {
+					keyPair = getAccountKeyPair(true);
+				} catch (AcmeCaException e) {
+					/*
+					 * We failed to generate a new file. Remove the backup file.
+					 */
+					deleteFile(backupFile);
+					throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2047E", e.getMessage()), e);
+				}
+
+				/*
+				 * Associate the new key pair to the account.
+				 */
+				try {
+					acct.changeKey(keyPair);
+				} catch (AcmeException e) {
+					/*
+					 * The ACME CA server refused to update the key pair.
+					 * Restore the previous key pair file.
+					 */
+					try {
+						copyFile(backupFile.getAbsolutePath(), acmeConfig.getAccountKeyFile());
+						deleteFile(backupFile);
+					} catch (IOException e1) {
+						/*
+						 * The user is going to need to manually replace the
+						 * file.
+						 */
+						Tr.error(tc, "CWPKI2049E", acmeConfig.getAccountKeyFile(), backupFile.getAbsolutePath());
+					}
+					throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2047E", e.getMessage()), e);
+				}
+
+				Tr.info(tc, Tr.formatMessage(tc, "CWPKI2048I", backupFile.getAbsolutePath()));
+
+			} else {
+				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2026W", acmeConfig.getDirectoryURI()));
+			}
+
+		} finally {
+			/*
+			 * Always unlock the write lock.
+			 */
+			accountKeyPairFileRWLock.writeLock().unlock();
+		}
+	}
+
+	/**
+	 * Delete the specified file.
+	 * 
+	 * @param file
+	 *            file to delete.
+	 */
+	private static void deleteFile(File file) {
+		AccessController.doPrivileged(new PrivilegedAction<Void>() {
+
+			@Override
+			public Void run() {
+				file.delete();
+				return null;
+			}
+
+		});
+	}
+
+	/**
+	 * Copy the specified source file to the specified destination.
+	 * 
+	 * @param source
+	 *            The source file path.
+	 * @param destination
+	 *            The destination file path.
+	 * @throws IOException
+	 *             if there was an error copying the file.
+	 */
+	private static void copyFile(String source, String destination) throws IOException {
+		try {
+			AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
+
+				@Override
+				public Void run() throws IOException {
+					OutputStream out = new FileOutputStream(new File(destination));
+
+					try {
+						Files.copy(new File(source).toPath(), out);
+					} finally {
+						out.close();
+					}
+					return null;
+				}
+
+			});
+		} catch (PrivilegedActionException e) {
+			throw (IOException) e.getException();
+		}
+	}
+
+	/**
+	 * Update the account with the latest account information.
+	 * 
+	 * @throws AcmeCaException
+	 */
+	@FFDCIgnore(AcmeException.class)
+	public void updateAccount() throws AcmeCaException {
+
+		/*
+		 * Get the account.
+		 */
+		Account acct = getAccount(null);
+
+		if (acct != null) {
+			List<String> configContacts = (acmeConfig.getAccountContacts() == null) ? Collections.emptyList()
+					: acmeConfig.getAccountContacts();
+			List<URI> acctContacts = (acct.getContacts() == null) ? Collections.emptyList() : acct.getContacts();
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+				Tr.debug(tc, "Existing account contacts: " + acctContacts);
+			}
+
+			/*
+			 * Do we require an update?
+			 */
+			boolean requiresUpdate = acctContacts.size() != configContacts.size();
+			if (!requiresUpdate) {
+				/* Size is the same, but are the contents? */
+				for (String contact : configContacts) {
+					if (!acctContacts.contains(URI.create(contact))) {
+						requiresUpdate = true;
+						break;
+					}
+				}
+			}
+
+			if (requiresUpdate) {
+				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+					Tr.debug(tc, "Account requires updating.");
+				}
+
+				/*
+				 * Login and update the contacts.
+				 */
+				try {
+					EditableAccount editableAcct = acct.modify();
+
+					/*
+					 * Clear the current contacts on the account.
+					 */
+					List<URI> editableContacts = editableAcct.getContacts();
+					if (editableContacts != null) {
+						editableContacts.clear();
+					}
+
+					/*
+					 * Add the configured contacts to the account.
+					 */
+					if (configContacts != null) {
+						for (String contact : configContacts) {
+							editableAcct.addContact(URI.create(contact));
+						}
+					}
+
+					editableAcct.commit();
+				} catch (AcmeException e) {
+					throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2033E", acct.getLocation(),
+							acmeConfig.getDirectoryURI(), e.getMessage()), e);
+				}
+			}
+		} else {
+			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2026W", acmeConfig.getDirectoryURI()));
+		}
+	}
+
+	/**
+	 * Internal class to wrap an {@link Account} object from Acme4J. This will
+	 * keep Acme4J import solely in this class.
+	 */
+	@Trivial
+	public class AcmeAccount {
+		private final Account account;
+
+		/**
+		 * Create a new {@link AcmeAccount} instance.
+		 * 
+		 * @param account
+		 *            The account to wrap.
+		 */
+		private AcmeAccount(Account account) {
+			this.account = account;
+		}
+
+		/**
+		 * Get the account contacts.
+		 * 
+		 * @return The list of contact {@link URI}s.
+		 */
+		public List<URI> getContacts() {
+			return account.getContacts();
+		}
+
+		/**
+		 * Get the account location.
+		 * 
+		 * @return account location.
+		 */
+		public URL getLocation() {
+			return account.getLocation();
+		}
+
+		/**
+		 * Get the list of account orders.
+		 * 
+		 * @return list of account orders.
+		 */
+		@FFDCIgnore(AcmeProtocolException.class)
+		public List<String> getOrders() {
+			Iterator<Order> orders;
+			try {
+				orders = account.getOrders();
+				if (orders == null) {
+					return Collections.emptyList();
+				}
+			} catch (AcmeProtocolException e) {
+				/* Can happens if there are no orders. */
+				return Collections.emptyList();
+			}
+
+			List<String> ordersList = new ArrayList<String>();
+			while (orders.hasNext()) {
+				Order order = orders.next();
+				ordersList.add(order.getJSON().toString());
+			}
+			return ordersList;
+		}
+
+		/**
+		 * Get the account status.
+		 * 
+		 * @return account status.
+		 */
+		public String getStatus() {
+			return account.getStatus().toString();
+		}
+
+		/**
+		 * Get whether the account has agreed to the terms of service.
+		 * 
+		 * @return whether the account has agreed to the terms of service
+		 */
+		public Boolean getTermsOfServiceAgreed() {
+			return account.getTermsOfServiceAgreed();
+		}
+
+		@Override
+		public String toString() {
+			return super.toString() + "{" + account.getLocation() + "}";
+		}
+	}
+	
+	/**
+	 * Check that the valid period of the certificate works with the configured renewBeforeExpiration. Adjust the
+	 * renew timing if necessary.
+	 * 
+	 * @param notBefore
+	 * @param notAfter
+	 * @param serialNumber
+	 */
+	protected void checkRenewTimeAgainstCertValidityPeriod(Date notBefore, Date notAfter, String serialNumber) {
+		long notBeforems = notBefore.getTime();
+		long notAfterms = notAfter.getTime();
+
+		long validityPeriod = notAfterms - notBeforems;
+		
+		long renewBeforeExpirationMs = acmeConfig.getRenewBeforeExpirationMs();
+		if (tc.isDebugEnabled()) {
+			Tr.debug(tc, "Validity versus renew check", notBeforems, notAfterms, validityPeriod, renewBeforeExpirationMs);
+		}
+		
+		/*
+		 * If the renewBeforeExpirationMs is longer than the validityPeriod, reset it so we can make a best effort at fetching a new
+		 * certificate prior to expiration.
+		 */
+		if (validityPeriod <= renewBeforeExpirationMs) {
+			if (validityPeriod <= AcmeConstants.RENEW_CERT_MIN) { // less than the minimum renew, reset to min.
+				Tr.warning(tc, "CWPKI2056W", serialNumber,  AcmeConstants.RENEW_CERT_MIN + "ms", validityPeriod, AcmeConstants.RENEW_CERT_MIN + "ms");
+				acmeConfig.setRenewBeforeExpirationMs(AcmeConstants.RENEW_CERT_MIN, false);
+			} else if (validityPeriod <= AcmeConstants.RENEW_DEFAULT_MS) { // less than the default period, reset to half the time.
+				long resetRenew = Math.round(validityPeriod * AcmeConstants.RENEW_DIVISOR);
+				long priorRenew = renewBeforeExpirationMs;
+				acmeConfig.setRenewBeforeExpirationMs(resetRenew <= AcmeConstants.RENEW_CERT_MIN ? AcmeConstants.RENEW_CERT_MIN : resetRenew, false); // floor is still the min renew
+				Tr.warning(tc, "CWPKI2054W", priorRenew  +"ms", serialNumber, validityPeriod, renewBeforeExpirationMs+ "ms");
+			} else { // reset to the default renew time.
+				Tr.warning(tc, "CWPKI2054W", renewBeforeExpirationMs +"ms", serialNumber, validityPeriod + "ms", AcmeConstants.RENEW_DEFAULT_MS + "ms");
+				acmeConfig.setRenewBeforeExpirationMs(AcmeConstants.RENEW_DEFAULT_MS, false);
+			}
+		}
 	}
 }

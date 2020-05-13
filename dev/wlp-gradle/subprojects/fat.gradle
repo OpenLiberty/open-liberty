@@ -54,13 +54,13 @@ dependencies {
 		'org.apache.derby:derby:10.11.1.1',
 		'com.oracle.ojdbc:ojdbc8_g:19.3.0.0'
 
-  databaseRotationDrivers 'org.testcontainers:testcontainers:1.12.3',
-       'org.testcontainers:database-commons:1.12.3',
-       'org.testcontainers:jdbc:1.12.3',
-       'org.testcontainers:oracle-xe:1.12.3',
-       'org.testcontainers:mssqlserver:1.12.3',
-       'org.testcontainers:postgresql:1.12.3',
-       'org.testcontainers:db2:1.12.3',
+  databaseRotationDrivers 'org.testcontainers:testcontainers:1.14.0',
+       'org.testcontainers:database-commons:1.14.0',
+       'org.testcontainers:jdbc:1.14.0',
+       'org.testcontainers:oracle-xe:1.14.0',
+       'org.testcontainers:mssqlserver:1.14.0',
+       'org.testcontainers:postgresql:1.14.0',
+       'org.testcontainers:db2:1.14.0',
        'org.apache.commons:commons-compress:1.18',
        'org.rnorth.duct-tape:duct-tape:1.0.7',
        'org.rnorth.visible-assertions:visible-assertions:2.1.2',
@@ -73,7 +73,7 @@ dependencies {
         'commons-cli:commons-cli:1.4',
         'org.slf4j:slf4j-simple:1.7.29',
         'org.slf4j:slf4j-api:1.7.26',
-        'com.ibm.ws:jakartaee-transformer:0.0.7'
+        'com.ibm.ws:jakartaee-transformer:0.0.9'
 }
 
 task addRequiredLibraries(type: Copy) {

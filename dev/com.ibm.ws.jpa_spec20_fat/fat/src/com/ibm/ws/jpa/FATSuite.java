@@ -21,13 +21,7 @@ import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                JPA20Cache_WEB.class,
-                JPA20CriteriaQuery_EJB.class,
-                JPA20CriteriaQuery_WEB.class,
-                JPA20OrderColumn_EJB.class,
-                JPA20OrderColumn_WEB.class,
-                JPA20QueryLockMode_EJB.class,
-                JPA20QueryLockMode_WEB.class,
+                JPA20FATSuite.class,
                 TestOLGH9018_EJB.class,
                 TestOLGH9018_WEB.class,
                 TestOLGH9339_EJB.class,

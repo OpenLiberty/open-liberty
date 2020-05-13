@@ -51,10 +51,12 @@ public class MultiServerTest extends WSATTest {
 				+ server.getHttpDefaultPort();
 		server2 = LibertyServerFactory
 				.getLibertyServer("MultiServerTest");
-		BASE_URL2 = "http://" + server2.getHostname() + ":9888";
+		server2.setHttpDefaultPort(9888);
+		BASE_URL2 = "http://" + server2.getHostname() + ":" + server2.getHttpDefaultPort();
 		server3 = LibertyServerFactory
 				.getLibertyServer("ThirdServer");
-		BASE_URL3 = "http://" + server3.getHostname() + ":9988";
+		server3.setHttpDefaultPort(9988);
+		BASE_URL3 = "http://" + server3.getHostname() + ":" + server3.getHttpDefaultPort();
 
 		DBTestBase.initWSATTest(server);
 		DBTestBase.initWSATTest(server2);

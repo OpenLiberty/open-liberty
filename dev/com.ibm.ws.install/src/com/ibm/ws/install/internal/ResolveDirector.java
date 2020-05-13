@@ -695,7 +695,7 @@ class ResolveDirector extends AbstractDirector {
                     if (res.getType().equals(ResourceType.FEATURE)) {
                         EsaResource esa = (EsaResource) res;
                         if (esa.getInstallPolicy().toString().equalsIgnoreCase("WHEN_SATISFIED")) {
-                            autoFeatures.add(res);
+                            autoFeatures.addAll(resList);
                         }
                     }
                 }

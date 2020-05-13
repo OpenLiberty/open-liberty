@@ -34,6 +34,7 @@ tested.features: opentracing-1.0
 	com.ibm.ws.io.opentracing.opentracing-api;version=latest, \
 	io.opentracing:opentracing-mock;version=0.30.0, \
 	io.opentracing:opentracing-util;version=0.30.0, \
+	com.ibm.ws.jaxrs.defaultexceptionmapper;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
 	com.ibm.wsspi.org.osgi.service.component;version=latest, \
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \

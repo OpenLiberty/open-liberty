@@ -1,0 +1,20 @@
+DROP TABLE ${schemaname}.Jpa2Address;
+DROP TABLE ${schemaname}.Jpa2Person;
+DROP TABLE ${schemaname}.JPAAddressBean;
+DROP TABLE ${schemaname}.JPACustomerPartTab;
+DROP TABLE ${schemaname}.JPADeptBean;
+DROP TABLE ${schemaname}.JPAEmpBean;
+DROP TABLE ${schemaname}.JPALineItemPartTab;
+DROP TABLE ${schemaname}.JPAOrderPartTab;
+DROP TABLE ${schemaname}.JPAPartTab;
+DROP TABLE ${schemaname}.JPAProductPartTab;
+DROP TABLE ${schemaname}.JPAProjectBean;
+DROP TABLE ${schemaname}.JPASupplierparttab;
+DROP TABLE ${schemaname}.JPASupplierparttab_JPAPartTab;
+DROP TABLE ${schemaname}.JPATaskBean;
+DROP TABLE ${schemaname}.JPATaskBean_JPAEmpBean;
+DROP TABLE ${schemaname}.JPATypeTestBean;
+DROP TABLE ${schemaname}.JPAUsagePartTab;
+DROP TABLE ${schemaname}.JPAXYZ;
+DROP TABLE ${schemaname}.Person_residences;
+

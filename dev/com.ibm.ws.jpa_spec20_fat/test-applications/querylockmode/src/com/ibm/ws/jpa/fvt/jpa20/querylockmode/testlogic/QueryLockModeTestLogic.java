@@ -19,12 +19,11 @@ import javax.persistence.Query;
 
 import org.junit.Assert;
 
+import com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.*;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
 import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
 import com.ibm.ws.testtooling.vehicle.resources.TestExecutionResources;
-
-import suite.r80.base.common.datamodel.entities.*;
 
 public class QueryLockModeTestLogic extends AbstractTestLogic {
     @SuppressWarnings("deprecation")

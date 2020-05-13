@@ -1,303 +1,362 @@
 /*
- * Copyright (c) 2012, 2020 Oracle and/or its affiliates and others.
- * All rights reserved.
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0, which is available at
- * http://www.eclipse.org/legal/epl-2.0.
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * This Source Code may also be made available under the following Secondary
- * Licenses when the conditions for such availability set forth in the
- * Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
- * version 2 with the GNU Classpath Exception, which is available at
- * https://www.gnu.org/software/classpath/license.html.
- *
- * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 package jakarta.el;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
- * Provides an API for using Jakarta Expression Language in a stand-alone environment.
- *
- * <p>
- * This class provides a direct and simple interface for
- * <ul>
- * <li>Evaluating Jakarta Expression Language expressions.</li>
- * <li>Assigning values to beans or setting a bean property.</li>
- * <li>Setting a {@link ValueExpression} to a Jakarta Expression Language variable.</li>
- * <li>Defining a static method as Jakarta Expression Language function.</li>
- * <li>Defining an object instance as Jakarta Expression Language name.
- * </ul>
- *
- * <p>
- * This API is not a replacement for the APIs in Jakarta Expression Language 2.2. Containers that maintain Jakarta
- * Expression Language environments can continue to do so, without using this API.
- *
- * <p>
- * For Jakarta Expression Language users who want to manipulate Jakarta Expression Language environments, like adding
- * custom {@link ELResolver}s, {@link ELManager} can be used.
- *
- * <h3>Scope and Life Cycle</h3>
- * <p>
- * Since it maintains the state of the Jakarta Expression Language environments, <code>ELProcessor</code> is not thread
- * safe. In the simplest case, an instance can be created and destroyed before and after evaluating Jakarta Expression
- * Language expressions. A more general usage is to use an instance of <code>ELProcessor</code> for a session, so that
- * the user can configure the Jakarta Expression Language evaluation environment for that session.
- * </p>
- *
- * <h3>Automatic Bracketing of Expressions</h3>
- * <p>
- * A note about the Jakarta Expression Language expressions strings used in the class. The strings allowed in the methods
- * {@link ELProcessor#getValue}, {@link ELProcessor#setValue}, and {@link ELProcessor#setVariable} are limited to
- * non-composite expressions, i.e. expressions of the form ${...} or #{...} only. Also, it is not necessary (in fact not
- * allowed) to bracket the expression strings with ${ or #{ and } in these methods: they will be automatically
- * bracketed. This reduces the visual cluster, without any lost of functionalities (thanks to the addition of the
- * concatenation operator).
- *
- * <h3>Example</h3> The following code snippet illustrates the use of ELProcessor to define a bean and evaluate its
- * property. <blockquote>
- *
- * <pre>
- * ELProcessor elp = new ELProcessor();
- * elp.defineBean("employee", new Employee("Charlie Brown"));
- * String name = elp.eval("employee.name");
- * </pre>
- *
- * </blockquote>
- *
- * @since Jakarta Expression Language 3.0
+ * @since EL 3.0
  */
 public class ELProcessor {
 
-    private ELManager elManager = new ELManager();
-    private ExpressionFactory factory = ELManager.getExpressionFactory();
-
-    /**
-     * Return the ELManager used for Jakarta Expression Language processing.
-     *
-     * @return The ELManager used for Jakarta Expression Language processing.
-     */
-    public ELManager getELManager() {
-        return elManager;
+    private static final Set<String> PRIMITIVES = new HashSet<>();
+    static {
+        PRIMITIVES.add("boolean");
+        PRIMITIVES.add("byte");
+        PRIMITIVES.add("char");
+        PRIMITIVES.add("double");
+        PRIMITIVES.add("float");
+        PRIMITIVES.add("int");
+        PRIMITIVES.add("long");
+        PRIMITIVES.add("short");
     }
 
-    /**
-     * Evaluates an Jakarta Expression Language expression.
-     *
-     * @param expression The Jakarta Expression Language expression to be evaluated.
-     * @return The result of the expression evaluation.
-     */
+    private static final String[] EMPTY_STRING_ARRAY = new String[0];
+
+    private final ELManager manager = new ELManager();
+    private final ELContext context = manager.getELContext();
+    private final ExpressionFactory factory = ELManager.getExpressionFactory();
+
+
+    public ELManager getELManager() {
+        return manager;
+    }
+
+
     public Object eval(String expression) {
         return getValue(expression, Object.class);
     }
 
-    /**
-     * Evaluates an Jakarta Expression Language expression, and coerces the result to the specified type.
-     *
-     * @param expression The Jakarta Expression Language expression to be evaluated.
-     * @param expectedType Specifies the type that the resultant evaluation will be coerced to.
-     * @return The result of the expression evaluation.
-     */
+
     public Object getValue(String expression, Class<?> expectedType) {
-        ValueExpression exp = factory.createValueExpression(elManager.getELContext(), bracket(expression), expectedType);
-        return exp.getValue(elManager.getELContext());
+        ValueExpression ve = factory.createValueExpression(
+                context, bracket(expression), expectedType);
+        return ve.getValue(context);
     }
 
-    /**
-     * Sets an expression with a new value. The target expression is evaluated, up to the last property resolution, and the
-     * resultant (base, property) pair is set to the provided value.
-     *
-     * @param expression The target expression
-     * @param value The new value to set.
-     * 
-     * @throws PropertyNotFoundException if one of the property resolutions failed because a specified variable or property
-     * does not exist or is not readable.
-     * @throws PropertyNotWritableException if the final variable or property resolution failed because the specified
-     * variable or property is not writable.
-     * @throws ELException if an exception was thrown while attempting to set the property or variable. The thrown exception
-     * must be included as the cause property of this exception, if available.
-     */
+
     public void setValue(String expression, Object value) {
-        ValueExpression exp = factory.createValueExpression(elManager.getELContext(), bracket(expression), Object.class);
-        exp.setValue(elManager.getELContext(), value);
+        ValueExpression ve = factory.createValueExpression(
+                context, bracket(expression), Object.class);
+        ve.setValue(context, value);
     }
 
-    /**
-     * Assign a Jakarta Expression Language expression to a Jakarta Expression Language variable. The expression is parsed,
-     * but not evaluated, and the parsed expression is mapped to the Jakarta Expression Language variable in the local
-     * variable map. Any previously assigned expression to the same variable will be replaced. If the expression is
-     * <code>null</code>, the variable will be removed.
-     *
-     * @param var The name of the variable.
-     * @param expression The Jakarta Expression Language expression to be assigned to the variable.
-     */
-    public void setVariable(String var, String expression) {
-        ValueExpression exp = factory.createValueExpression(elManager.getELContext(), bracket(expression), Object.class);
-        elManager.setVariable(var, exp);
+
+    public void setVariable(String variable, String expression) {
+        if (expression == null) {
+            manager.setVariable(variable, null);
+        } else {
+            ValueExpression ve = factory.createValueExpression(
+                    context, bracket(expression), Object.class);
+            manager.setVariable(variable, ve);
+        }
     }
 
-    /**
-     * Define a Jakarta Expression Language function in the local function mapper.
-     *
-     * @param prefix The namespace for the function or "" for no namesapce.
-     * @param function The name of the function. If empty (""), the method name is used as the function name.
-     * @param className The full Java class name that implements the function.
-     * @param method The name (specified without parenthesis) or the signature (as in the Java Language Spec) of the static
-     * method that implements the function. If the name (e.g. "sum") is given, the first declared method in class that
-     * matches the name is selected. If the signature (e.g. "int sum(int, int)" ) is given, then the declared method with
-     * the signature is selected.
-     *
-     * @throws NullPointerException if any of the arguments is null.
-     * @throws ClassNotFoundException if the specified class does not exists.
-     * @throws NoSuchMethodException if the method (with or without the signature) is not a declared method of the class, or
-     * if the method signature is not valid, or if the method is not a static method.
-     */
-    public void defineFunction(String prefix, String function, String className, String method) throws ClassNotFoundException, NoSuchMethodException {
-        if (prefix == null || function == null || className == null || method == null) {
-            throw new NullPointerException("Null argument for defineFunction");
+
+    public void defineFunction(String prefix, String function, String className,
+            String methodName) throws ClassNotFoundException,
+            NoSuchMethodException {
+
+        if (prefix == null || function == null || className == null ||
+                methodName == null) {
+            throw new NullPointerException(Util.message(
+                    context, "elProcessor.defineFunctionNullParams"));
         }
 
-        Method meth = null;
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        if (loader == null) {
-            loader = getClass().getClassLoader();
+        // Check the imports
+        Class<?> clazz = context.getImportHandler().resolveClass(className);
+
+        if (clazz == null) {
+            clazz = Class.forName(className, true, Util.getContextClassLoader());
         }
 
-        Class<?> klass = Class.forName(className, false, loader);
-        int j = method.indexOf('(');
-        if (j < 0) {
-            // Just a name is given
-            for (Method m : klass.getDeclaredMethods()) {
-                if (m.getName().equals(method)) {
-                    meth = m;
+        if (!Modifier.isPublic(clazz.getModifiers())) {
+            throw new ClassNotFoundException(Util.message(context,
+                    "elProcessor.defineFunctionInvalidClass", className));
+        }
+
+        MethodSignature sig =
+                new MethodSignature(context, methodName, className);
+
+        if (function.length() == 0) {
+            function = sig.getName();
+        }
+
+        // Only returns public methods. Java 9+ access is checked below.
+        Method methods[] = clazz.getMethods();
+        JreCompat jreCompat = JreCompat.getInstance();
+
+        for (Method method : methods) {
+            if (!Modifier.isStatic(method.getModifiers())) {
+                continue;
+            }
+            if (!jreCompat.canAcccess(null, method)) {
+                continue;
+            }
+            if (method.getName().equals(sig.getName())) {
+                if (sig.getParamTypeNames() == null) {
+                    // Only a name provided, no signature so map the first
+                    // method declared
+                    manager.mapFunction(prefix, function, method);
+                    return;
+                }
+                if (sig.getParamTypeNames().length != method.getParameterTypes().length) {
+                    continue;
+                }
+                if (sig.getParamTypeNames().length == 0) {
+                    manager.mapFunction(prefix, function, method);
+                    return;
+                } else {
+                    Class<?>[] types = method.getParameterTypes();
+                    String[] typeNames = sig.getParamTypeNames();
+                    if (types.length == typeNames.length) {
+                        boolean match = true;
+                        for (int i = 0; i < types.length; i++) {
+                            if (i == types.length -1 && method.isVarArgs()) {
+                                String typeName = typeNames[i];
+                                if (typeName.endsWith("...")) {
+                                    typeName = typeName.substring(0, typeName.length() - 3);
+                                    if (!typeName.equals(types[i].getName())) {
+                                        match = false;
+                                    }
+                                } else {
+                                    match = false;
+                                }
+                            } else if (!types[i].getName().equals(typeNames[i])) {
+                                match = false;
+                                break;
+                            }
+                        }
+                        if (match) {
+                            manager.mapFunction(prefix, function, method);
+                            return;
+                        }
+                    }
                 }
             }
-            if (meth == null) {
-                throw new NoSuchMethodException("Bad method name: " + method);
-            }
-        } else {
-            // method is the signature
-            // First get the method name, ignore the return type
-            int p = method.indexOf(' ');
-            if (p < 0) {
-                throw new NoSuchMethodException("Bad method signature: " + method);
-            }
-
-            String methodName = method.substring(p + 1, j).trim();
-
-            // Extract parameter types
-            p = method.indexOf(')', j + 1);
-            if (p < 0) {
-                throw new NoSuchMethodException("Bad method signature: " + method);
-            }
-            String[] params = method.substring(j + 1, p).split(",");
-            Class<?>[] paramTypes = new Class<?>[params.length];
-            for (int i = 0; i < params.length; i++) {
-                paramTypes[i] = toClass(params[i], loader);
-            }
-            meth = klass.getDeclaredMethod(methodName, paramTypes);
-        }
-        if (!Modifier.isStatic(meth.getModifiers())) {
-            throw new NoSuchMethodException("The method specified in defineFunction must be static: " + meth);
         }
 
-        if (function.equals("")) {
-            function = method;
-        }
-
-        elManager.mapFunction(prefix, function, meth);
+        throw new NoSuchMethodException(Util.message(context,
+                "elProcessor.defineFunctionNoMethod", methodName, className));
     }
 
+
     /**
-     * Define a Jakarta Expression Language function in the local function mapper.
+     * Map a method to a function name.
      *
-     * @param prefix The namespace for the function or "" for no namesapce.
-     * @param function The name of the function. If empty (""), the method name is used as the function name.
-     * @param method The <code>java.lang.reflect.Method</code> instance of the method that implements the function.
-     * 
-     * @throws NullPointerException if any of the arguments is null.
-     * @throws NoSuchMethodException if the method is not a static method
+     * @param prefix    Function prefix
+     * @param function  Function name
+     * @param method    Method
+     *
+     * @throws NullPointerException
+     *              If any of the arguments are null
+     * @throws NoSuchMethodException
+     *              If the method is not static
      */
-    public void defineFunction(String prefix, String function, Method method) throws NoSuchMethodException {
+    public void defineFunction(String prefix, String function, Method method)
+            throws java.lang.NoSuchMethodException {
+
         if (prefix == null || function == null || method == null) {
-            throw new NullPointerException("Null argument for defineFunction");
-        }
-        if (!Modifier.isStatic(method.getModifiers())) {
-            throw new NoSuchMethodException("The method specified in defineFunction must be static: " + method);
-        }
-        if (function.equals("")) {
-            function = method.getName();
+            throw new NullPointerException(Util.message(
+                    context, "elProcessor.defineFunctionNullParams"));
         }
 
-        elManager.mapFunction(prefix, function, method);
+        int modifiers = method.getModifiers();
+
+        // Check for static, public method and module access for Java 9+
+        JreCompat jreCompat = JreCompat.getInstance();
+        if (!Modifier.isStatic(modifiers) || !jreCompat.canAcccess(null, method)) {
+            throw new NoSuchMethodException(Util.message(context,
+                    "elProcessor.defineFunctionInvalidMethod", method.getName(),
+                    method.getDeclaringClass().getName()));
+        }
+
+        manager.mapFunction(prefix, function, method);
     }
 
-    /**
-     * Define a bean in a local bean repository, hiding other beans of the same name.
-     *
-     * @param name The name of the bean
-     * @param bean The bean instance to be defined. If <code>null</code>, the name will be removed from the local bean
-     * repository.
-     */
+
     public void defineBean(String name, Object bean) {
-        elManager.defineBean(name, bean);
+        manager.defineBean(name, bean);
     }
 
-    /**
-     * Return the Class object associated with the class or interface with the given name.
-     */
-    private static Class<?> toClass(String type, ClassLoader loader) throws ClassNotFoundException {
-        Class<?> c = null;
-        int i0 = type.indexOf('[');
-        int dims = 0;
-        if (i0 > 0) {
-            // This is an array. Count the dimensions
-            for (int i = 0; i < type.length(); i++) {
-                if (type.charAt(i) == '[') {
-                    dims++;
+
+    private static String bracket(String expression) {
+        return "${" + expression + "}";
+    }
+
+    private static class MethodSignature {
+
+        private final String name;
+        private final String[] parameterTypeNames;
+
+        public MethodSignature(ELContext context, String methodName,
+                String className) throws NoSuchMethodException {
+
+            int paramIndex = methodName.indexOf('(');
+
+            if (paramIndex == -1) {
+                name = methodName.trim();
+                parameterTypeNames = null;
+            } else {
+                String returnTypeAndName = methodName.substring(0, paramIndex).trim();
+                // Assume that the return type and the name are separated by
+                // whitespace. Given the use of trim() above, there should only
+                // be one sequence of whitespace characters.
+                int wsPos = -1;
+                for (int i = 0; i < returnTypeAndName.length(); i++) {
+                    if (Character.isWhitespace(returnTypeAndName.charAt(i))) {
+                        wsPos = i;
+                        break;
+                    }
+                }
+                if (wsPos == -1) {
+                    throw new NoSuchMethodException();
+                }
+                name = returnTypeAndName.substring(wsPos).trim();
+
+                String paramString = methodName.substring(paramIndex).trim();
+                // We know the params start with '(', check they end with ')'
+                if (!paramString.endsWith(")")) {
+                    throw new NoSuchMethodException(Util.message(context,
+                            "elProcessor.defineFunctionInvalidParameterList",
+                            paramString, methodName, className));
+                }
+                // Trim '(' and ')'
+                paramString = paramString.substring(1, paramString.length() - 1).trim();
+                if (paramString.length() == 0) {
+                    parameterTypeNames = EMPTY_STRING_ARRAY;
+                } else {
+                    parameterTypeNames = paramString.split(",");
+                    ImportHandler importHandler = context.getImportHandler();
+                    for (int i = 0; i < parameterTypeNames.length; i++) {
+                        String parameterTypeName = parameterTypeNames[i].trim();
+                        int dimension = 0;
+                        int bracketPos = parameterTypeName.indexOf('[');
+                        if (bracketPos > -1) {
+                            String parameterTypeNameOnly =
+                                    parameterTypeName.substring(0, bracketPos).trim();
+                            while (bracketPos > -1) {
+                                dimension++;
+                                bracketPos = parameterTypeName.indexOf('[', bracketPos+ 1);
+                            }
+                            parameterTypeName = parameterTypeNameOnly;
+                        }
+                        boolean varArgs = false;
+                        if (parameterTypeName.endsWith("...")) {
+                            varArgs = true;
+                            dimension = 1;
+                            parameterTypeName = parameterTypeName.substring(
+                                    0, parameterTypeName.length() -3).trim();
+                        }
+                        boolean isPrimitive = PRIMITIVES.contains(parameterTypeName);
+                        if (isPrimitive && dimension > 0) {
+                            // When in an array, class name changes for primitive
+                            switch(parameterTypeName)
+                            {
+                                case "boolean":
+                                    parameterTypeName = "Z";
+                                    break;
+                                case "byte":
+                                    parameterTypeName = "B";
+                                    break;
+                                case "char":
+                                    parameterTypeName = "C";
+                                    break;
+                                case "double":
+                                    parameterTypeName = "D";
+                                    break;
+                                case "float":
+                                    parameterTypeName = "F";
+                                    break;
+                                case "int":
+                                    parameterTypeName = "I";
+                                    break;
+                                case "long":
+                                    parameterTypeName = "J";
+                                    break;
+                                case "short":
+                                    parameterTypeName = "S";
+                                    break;
+                                default:
+                                    // Should never happen
+                                    break;
+                            }
+                        } else  if (!isPrimitive &&
+                                !parameterTypeName.contains(".")) {
+                            Class<?> clazz = importHandler.resolveClass(
+                                    parameterTypeName);
+                            if (clazz == null) {
+                                throw new NoSuchMethodException(Util.message(
+                                        context,
+                                        "elProcessor.defineFunctionInvalidParameterTypeName",
+                                        parameterTypeNames[i], methodName,
+                                        className));
+                            }
+                            parameterTypeName = clazz.getName();
+                        }
+                        if (dimension > 0) {
+                            // Convert to array form of class name
+                            StringBuilder sb = new StringBuilder();
+                            for (int j = 0; j < dimension; j++) {
+                                sb.append('[');
+                            }
+                            if (!isPrimitive) {
+                                sb.append('L');
+                            }
+                            sb.append(parameterTypeName);
+                            if (!isPrimitive) {
+                                sb.append(';');
+                            }
+                            parameterTypeName = sb.toString();
+                        }
+                        if (varArgs) {
+                            parameterTypeName += "...";
+                        }
+                        parameterTypeNames[i] = parameterTypeName;
+                    }
                 }
             }
-            type = type.substring(0, i0);
+
         }
 
-        if ("boolean".equals(type)) {
-            c = boolean.class;
-        } else if ("char".equals(type)) {
-            c = char.class;
-        } else if ("byte".equals(type)) {
-            c = byte.class;
-        } else if ("short".equals(type)) {
-            c = short.class;
-        } else if ("int".equals(type)) {
-            c = int.class;
-        } else if ("long".equals(type)) {
-            c = long.class;
-        } else if ("float".equals(type)) {
-            c = float.class;
-        } else if ("double".equals(type)) {
-            c = double.class;
-        } else {
-            c = loader.loadClass(type);
+        public String getName() {
+            return name;
         }
 
-        if (dims == 0) {
-            return c;
+        /**
+         * @return <code>null</code> if just the method name was specified, an
+         *         empty List if an empty parameter list was specified - i.e. ()
+         *         - otherwise an ordered list of parameter type names
+         */
+        public String[] getParamTypeNames() {
+            return parameterTypeNames;
         }
-
-        if (dims == 1) {
-            return java.lang.reflect.Array.newInstance(c, 1).getClass();
-        }
-
-        // Array of more than i dimension
-        return Array.newInstance(c, new int[dims]).getClass();
-    }
-
-    private String bracket(String expression) {
-        return "${" + expression + '}';
     }
 }

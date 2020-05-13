@@ -682,13 +682,12 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
                     "testTasksAreRunning&taskId=" + taskIdA + "&taskId=" + taskIdB + "&jndiName=persistent/execRF&test=testRemoveFailOverEnablementWhileServerIsStopped[3]");
 
             server.stopServer(
-                    // rollback due to transaction timeout
-                    "DSRA0304E.*",
-                    "DSRA0302E.*XA_RBROLLBACK",
-                    "J2CA0079E",
-                    "J2CA0088W",
-                    "CWWKC1503W.*IncTask_testRemoveFailOverEnablementWhileServerIsStopped"
-                     // might also need to allow for expected warnings if the server shuts down while a task is running
+                    "CWWKC1500W.*", // Rolled back task [id or name]. The task is scheduled to retry after ...
+                    "CWWKC1501W.*", // Rolled back task [id or name] due to failure ... The task is scheduled to retry after ...
+                    "CWWKC1502W.*", // Rolled back task [id or name]
+                    "CWWKC1503W.*", // Rolled back task [id or name] due to failure ...
+                    "DSRA*", // various errors possible due to rollback or usage during shutdown
+                    "J2CA*" // various errors possible due to rollback or usage during shutdown
                     );
 
             // Disable fail over

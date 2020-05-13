@@ -25,9 +25,13 @@ import javax.ws.rs.core.MediaType;
 @Consumes(MediaType.APPLICATION_JSON)
 public class BankAccountService {
     private final static Logger _log = Logger.getLogger(BankAccountService.class.getName());
-    
-    static Double balance = 1300.75;
-    
+
+    static Double balance;
+
+    static void setBalance(double d) {
+        balance = d;
+    }
+
     @GET
     public Double currentBalance() {
         synchronized (balance) {
@@ -35,7 +39,7 @@ public class BankAccountService {
             return balance;
         }
     }
-    
+
     @DELETE
     @Path("/{amt}")
     public Double withdraw(@PathParam("amt") Double amount) throws InsufficientFundsException {
@@ -47,6 +51,5 @@ public class BankAccountService {
             _log.info("withdraw " + amount + " " + balance);
             return balance;
         }
-        
     }
 }

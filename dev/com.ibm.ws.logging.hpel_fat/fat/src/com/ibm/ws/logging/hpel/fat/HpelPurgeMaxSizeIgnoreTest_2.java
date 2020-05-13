@@ -75,15 +75,6 @@ public class HpelPurgeMaxSizeIgnoreTest_2 {
         assumeTrue(!skipTest());
         ShrinkHelper.defaultDropinApp(server, "LogFat", "com.ibm.ws.logging.hpel");
         ShrinkHelper.defaultDropinApp(server, "HpelFat", "com.ibm.ws.logging.hpel.servlet");
-        if (!CommonTasks.isHpelEnabled(server)) {
-            // HPEL is not enabled.
-            CommonTasks.writeLogMsg(Level.INFO, "HPEL is not enabled on " + server.getServerName() + ", attempting to enable.");
-            CommonTasks.setHpelEnabled(server, true);
-            // RestartServer now to complete switching to HPEL
-            server.stopServer();
-            server.startServer();
-
-        }
 
         // Setting the bootstrap with trace specification to get the trace logs.
         CommonTasks.addBootstrapProperty(server, "com.ibm.ws.logging.trace.specification", "*=fine=enabled");
@@ -265,7 +256,6 @@ public class HpelPurgeMaxSizeIgnoreTest_2 {
         if (backup != null && backup.exists()) {
             server.getServerConfigurationFile().copyFromSource(backup);
         }
-
         // call the super
     }
 

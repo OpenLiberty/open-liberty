@@ -49,7 +49,7 @@ import componenttest.app.FATServlet;
 @WebServlet(urlPatterns = "/AsyncTestServlet")
 public class AsyncTestServlet extends FATServlet {
     private final static Logger _log = Logger.getLogger(AsyncTestServlet.class.getName());
-    final static int TIMEOUT = 10;
+    final static int TIMEOUT = 15;
     final static int MULTISTAGE_TIMEOUT = 120;
 
     final static String URI_CONTEXT_ROOT = "http://localhost:" + Integer.getInteger("bvt.prop.HTTP_default") + "/asyncApp/";
@@ -61,6 +61,7 @@ public class AsyncTestServlet extends FATServlet {
     public void before() {
         assertNotNull(executor);
         App.executorService.compareAndSet(null, executor);
+        BankAccountService.setBalance(1300.75);
     }
 
     @Override
@@ -168,7 +169,7 @@ public class AsyncTestServlet extends FATServlet {
                         .executorService(executor)
                         .baseUri(URI.create(URI_CONTEXT_ROOT))
                         .build(BankAccountClient.class);
-        
+
         List<String> uris = Collections.synchronizedList(new ArrayList<>());
         Handler auditLog = new Handler(){
 
@@ -187,21 +188,21 @@ public class AsyncTestServlet extends FATServlet {
                 // no-op
             }};
         RestClientAuditLogger._log.addHandler(auditLog);
-        
+
         acctsPayable.getAllAccounts().toCompletableFuture().get(TIMEOUT, TimeUnit.SECONDS);
         assertEquals(1, uris.size());
         assertTrue(uris.get(0).contains("/accountsPayable/accounts"));
-        
+
         bank.currentBalance().toCompletableFuture().get(TIMEOUT, TimeUnit.SECONDS);
         assertEquals(2, uris.size());
         assertTrue(uris.get(1).contains("/bank"));
-        
+
         acctsPayable.getAllAccounts().toCompletableFuture().get(TIMEOUT, TimeUnit.SECONDS);
         assertEquals(3, uris.size());
         assertTrue(uris.get(2).contains("/accountsPayable/accounts"));
         assertTrue("UniqueURIFilter not invoked", !uris.get(0).equals(uris.get(2)));
     }
-    
+
     @Test
     public void testCompletionStageCompletesExceptionally(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         BankAccountClient bank = RestClientBuilder.newBuilder()
@@ -240,6 +241,19 @@ public class AsyncTestServlet extends FATServlet {
         assertNotNull(t);
         assertEquals(InsufficientFundsException.class.getName(), t.getClass().getName());
         assertEquals(-1.0, exceptionValue, 0.0);
-        
+    }
+
+    @Test
+    public void testCompletionStageWithResponseType() throws Exception {
+        final double expected = 28380.79;
+        BankAccountService.setBalance(expected);
+        BankAccountClient bank = RestClientBuilder.newBuilder()
+                        .register(DoubleReader.class)
+                        .register(InsufficientFundsExceptionMapper.class)
+                        .executorService(executor)
+                        .baseUri(URI.create(URI_CONTEXT_ROOT))
+                        .build(BankAccountClient.class);
+        Double d = bank.currentBalanceResponse().toCompletableFuture().get().readEntity(Double.class);
+        assertEquals(expected, d, 0.001);
     }
 }

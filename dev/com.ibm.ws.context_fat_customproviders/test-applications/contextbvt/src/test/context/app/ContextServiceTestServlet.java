@@ -51,6 +51,8 @@ import javax.enterprise.concurrent.ContextService;
 import javax.enterprise.concurrent.ManagedTask;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
@@ -83,6 +85,11 @@ public class ContextServiceTestServlet extends FATServlet {
     public void destroy() {
         AccessController.doPrivileged((PrivilegedAction<?>) () -> unmanagedExecutor.shutdownNow());
         super.destroy();
+    }
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
     }
 
     /**

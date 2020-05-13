@@ -36,8 +36,10 @@ public class DBWithoutAssertionTest extends DBTestBase {
 				.getLibertyServer("WSATDB_Client");
 		server1 = LibertyServerFactory
 				.getLibertyServer("WSATDB_Server1");
+		server1.setHttpDefaultPort(server1Port);
 		server2 = LibertyServerFactory
 				.getLibertyServer("WSATDB_Server2");
+		server2.setHttpDefaultPort(server2Port);
 
 		DBTestBase.initWSATTest(client);
 		DBTestBase.initWSATTest(server1);
@@ -50,9 +52,9 @@ public class DBWithoutAssertionTest extends DBTestBase {
 		CLient_URL = "http://" + client.getHostname() + ":"
 				+ client.getHttpDefaultPort();
 		Server1_URL = "http://" + server1.getHostname() + ":"
-				+ server1Port;
+				+ server1.getHttpDefaultPort();
 		Server2_URL = "http://" + server2.getHostname() + ":"
-				+ server2Port;
+				+ server2.getHttpDefaultPort();
 		
 		if (client != null && !client.isStarted()) {
 			client.startServer();

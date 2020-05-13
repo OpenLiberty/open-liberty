@@ -51,7 +51,7 @@ public final class BootstrapChildFirstURLClassloader extends URLClassLoader {
     // com.ibm.ws.kernel.internal.classloader.BootstrapChildFirstJarClassloader
     // Any changes must be made to both sources
     @Override
-    protected synchronized Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+    protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
         if (name == null || name.length() == 0)
             return null;
 
@@ -60,27 +60,24 @@ public final class BootstrapChildFirstURLClassloader extends URLClassLoader {
             return super.loadClass(name, resolve);
         }
 
+        Class<?> result = null;
         synchronized (getClassLoadingLock(name)) {
-            Class<?> result = null;
-
             result = findLoadedClass(name);
             if (result == null) {
                 try {
                     // Try to load the class from this classpath
                     result = findClass(name);
                 } catch (ClassNotFoundException cnfe) {
-                    if (parent == null || resolve) {
-                        result = super.loadClass(name, resolve);
-                    } else {
-                        // calling using this way to avoid calling findLoadedClass
-                        // and findClass again
-                        result = parent.loadClass(name);
-                    }
+                    // load from parent below
                 }
             }
-
-            return result;
         }
+
+        if (result == null) {
+            result = parent.loadClass(name);
+        }
+
+        return result;
     }
 
     @Override

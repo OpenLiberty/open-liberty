@@ -41,3 +41,5 @@ WS-TraceGroup: JCDI
 	com.ibm.websphere.appserver.spi.logging;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
 	org.eclipse.osgi
+
+jakartaeeMe: true

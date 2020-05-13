@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.transaction.web.OnePCDisabledServlet;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -37,6 +38,7 @@ import componenttest.topology.utils.FATServletClient;
  * servlet referenced by the annotation, and will be run whenever this test class runs.
  */
 @RunWith(FATRunner.class)
+@SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
 public class OnePCDisabledTest extends FATServletClient {
 
     public static final String APP_NAME = "transaction";

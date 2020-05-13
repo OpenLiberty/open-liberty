@@ -23,7 +23,7 @@ Subsystem-Name: gRPC Server 1.0
   com.ibm.websphere.appserver.servlet-4.0
 -bundles=\
   com.ibm.ws.grpc.common, \
-  com.ibm.ws.grpc.client.1.0, \
+  com.ibm.ws.grpc.client, \
   com.ibm.ws.org.apache.commons.logging.1.0.3
 kind=noship
 edition=full

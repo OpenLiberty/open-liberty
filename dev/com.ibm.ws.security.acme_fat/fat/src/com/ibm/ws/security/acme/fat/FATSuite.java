@@ -13,13 +13,19 @@ package com.ibm.ws.security.acme.fat;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+
 import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 
 @RunWith(Suite.class)
-@SuiteClasses({ AcmeClientTest.class, AcmeSimpleTest.class, AcmeURISimpleTest.class, AcmeBoulderSimpleTest.class, AcmeConfigBringUp.class, AcmeCaRestHandlerTest.class
+@SuiteClasses({ AcmeClientTest.class, 
+	AcmeSimpleTest.class,
+	AcmeURISimpleTest.class,
+	AcmeBoulderSimpleTest.class,  
+	AcmeCaRestHandlerTest.class, 
+	AcmeValidityAndRenewTest.class,
+	AcmeRevocationTest.class
 	 })
 public class FATSuite {
-
 
 	/*
 	 * This static block should be the first static initialization in this class
@@ -29,6 +35,5 @@ public class FATSuite {
 	static {
 		ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
 	}
-
 
 }

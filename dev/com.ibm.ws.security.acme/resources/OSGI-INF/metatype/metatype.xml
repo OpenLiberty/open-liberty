@@ -16,32 +16,38 @@
                    localization="OSGI-INF/l10n/metatype">
 
  <Designate pid="com.ibm.ws.security.acme.config">
-  <Object ocdref="com.ibm.ws.security.acme.config.metatype"/>
+   <Object ocdref="com.ibm.ws.security.acme.config.metatype"/>
  </Designate>
 
  <OCD id="com.ibm.ws.security.acme.config.metatype" ibm:alias="acmeCA" name="internal" description="internal use only">
  
-  <AD id="directoryURI"         name="internal" description="internal use only" type="String"  required="true" />
+   <AD id="directoryURI"          name="internal" description="internal use only" type="String"  required="true" />
 
-  <!-- CSR related fields. -->
-  <AD id="domain"               name="internal" description="internal use only" type="String"  required="true"  cardinality="2147483647" />
-  <AD id="validFor"             name="internal" description="internal use only" type="String"  required="false" ibm:type="duration" />
-  <AD id="subjectDN"            name="internal" description="internal use only" type="String"  required="false" />
+   <!-- CSR related fields. -->
+   <AD id="domain"                name="internal" description="internal use only" type="String"  required="true"  cardinality="2147483647" />
+   <AD id="validFor"              name="internal" description="internal use only" type="String"  required="false" ibm:type="duration" />
+   <AD id="subjectDN"             name="internal" description="internal use only" type="String"  required="false" />
   
-  <!-- Challenge and order related fields. -->
-  <AD id="challengeRetries"     name="internal" description="internal use only" type="Integer" required="false" default="10" />
-  <AD id="challengeRetryWait"   name="internal" description="internal use only" type="String"  required="false" ibm:type="duration" default="5s" />
-  <AD id="orderRetries"         name="internal" description="internal use only" type="Integer" required="false" default="10" />
-  <AD id="orderRetryWait"       name="internal" description="internal use only" type="String"  required="false" ibm:type="duration" default="3s" />
+   <!-- Challenge and order related fields. -->
+   <AD id="challengeRetries"      name="internal" description="internal use only" type="Integer" required="false" default="10" />
+   <AD id="challengeRetryWait"    name="internal" description="internal use only" type="String"  required="false" ibm:type="duration" default="5s" />
+   <AD id="orderRetries"          name="internal" description="internal use only" type="Integer" required="false" default="10" />
+   <AD id="orderRetryWait"        name="internal" description="internal use only" type="String"  required="false" ibm:type="duration" default="3s" />
 
-  <!-- ACME account related fields. -->
-  <AD id="accountKeyFile"       name="internal" description="internal use only" type="String"  required="false" default="${server.output.dir}/resources/security/acmeAccountKey.pem" />
-  <AD id="accountContact"       name="internal" description="internal use only" type="String"  required="false" cardinality="2147483647" />
-  <AD id="domainKeyFile"        name="internal" description="internal use only" type="String"  required="false" default="${server.output.dir}/resources/security/acmeDomainKey.pem" />
+   <!-- ACME account related fields. -->
+   <AD id="accountKeyFile"        name="internal" description="internal use only" type="String"  required="false" default="${server.output.dir}/resources/security/acmeAccountKey.pem" />
+   <AD id="accountContact"        name="internal" description="internal use only" type="String"  required="false" cardinality="2147483647" />
+   <AD id="domainKeyFile"         name="internal" description="internal use only" type="String"  required="false" default="${server.output.dir}/resources/security/acmeDomainKey.pem" />
 
-  <!-- Transport configuration. -->
-  <AD id="acmeTransportConfig"  name="internal" description="internal use only" type="String"  required="false" ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.security.acme.transport" />
+   <!-- Transport configuration. -->
+   <AD id="acmeTransportConfig"   name="internal" description="internal use only" type="String"  required="false" ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.security.acme.transport" />
 
+   <!-- Renewal configuration options -->
+   <AD id="renewBeforeExpiration" name="internal" description="internal use only" type="String" required="false" ibm:type="duration" default="7d" />
+  
+   <!-- Revocation checker configuration. -->
+   <AD id="acmeRevocationChecker" name="internal" description="internal use only" type="String"  required="false" ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.security.acme.revocation" />
+  
  </OCD>
   
  <Designate factoryPid="com.ibm.ws.security.acme.transport">
@@ -53,6 +59,17 @@
    <AD id="trustStore"           name="internal" description="internal use only" required="false" type="String" />
    <AD id="trustStorePassword"   name="internal" description="internal use only" required="false" type="String" ibm:type="password" />
    <AD id="trustStoreType"       name="internal" description="internal use only" required="false" type="String" />
+ </OCD>
+
+ <Designate factoryPid="com.ibm.ws.security.acme.revocation">
+   <Object ocdref="com.ibm.ws.security.acme.revocation.metatype" />
+ </Designate>
+
+ <OCD id="com.ibm.ws.security.acme.revocation.metatype" name="internal" description="internal use only" ibm:alias="acmeRevocationChecker">
+   <AD id="enabled"              name="internal" description="internal use only" type="Boolean" required="false" default="true" />
+   <AD id="ocspResponderUrl"     name="internal" description="internal use only" type="String"  required="false" />
+   <AD id="preferCRLs"           name="internal" description="internal use only" type="Boolean" required="false" default="false" />
+   <AD id="disableFallback"      name="internal" description="internal use only" type="Boolean" required="false" default="false" />
  </OCD>
 
 </metatype:MetaData>

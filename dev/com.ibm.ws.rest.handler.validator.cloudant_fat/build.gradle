@@ -16,7 +16,7 @@ configurations {
 }
 
 dependencies {
-  requiredLibs            'org.testcontainers:testcontainers:1.12.3',
+  requiredLibs            'org.testcontainers:testcontainers:1.14.0',
                           'org.rnorth.duct-tape:duct-tape:1.0.7',
                           'org.rnorth.visible-assertions:visible-assertions:2.1.2',
                           'net.java.dev.jna:jna:5.2.0',

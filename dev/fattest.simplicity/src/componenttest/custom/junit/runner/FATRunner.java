@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -56,6 +56,7 @@ import componenttest.annotation.processor.TestServletProcessor;
 import componenttest.exception.TopologyException;
 import componenttest.logging.ffdc.IgnoredFFDCs;
 import componenttest.logging.ffdc.IgnoredFFDCs.IgnoredFFDC;
+import componenttest.rules.repeater.EE9PackageReplacementHelper;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.impl.LibertyServerWrapper;
@@ -81,6 +82,8 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                                                                       new SystemPropertyFilter(),
                                                                       new JavaLevelFilter()
     };
+
+    private static EE9PackageReplacementHelper ee9Helper;
 
     private static final Set<String> classesUsingFATRunner = new HashSet<String>();
 
@@ -622,13 +625,32 @@ public class FATRunner extends BlockJUnit4ClassRunner {
     public List<String> getExpectedFFDCAnnotationFromTest(FrameworkMethod m) {
 
         ArrayList<String> annotationListPerClass = new ArrayList<String>();
+
         ExpectedFFDC ffdc = m.getAnnotation(ExpectedFFDC.class);
         if (ffdc != null) {
-            String[] exceptionClasses = ffdc.value();
-            for (String exceptionClass : exceptionClasses) {
-                annotationListPerClass.add(exceptionClass);
+            if (RepeatTestFilter.CURRENT_REPEAT_ACTION == "EE9_FEATURES") {
+                String[] exceptionClasses = ffdc.value();
+                for (String exceptionClass : exceptionClasses) {
+                    exceptionClass = getEE9Helper().replacePackages(exceptionClass);
+                    annotationListPerClass.add(exceptionClass);
+                }
+            } else if (RepeatTestFilter.CURRENT_REPEAT_ACTION != null) {
+                for (String repeatAction : ffdc.repeatAction()) {
+                    if (repeatAction.equals(ExpectedFFDC.ALL_REPEAT_ACTIONS) || repeatAction.equals(RepeatTestFilter.CURRENT_REPEAT_ACTION)) {
+                        String[] exceptionClasses = ffdc.value();
+                        for (String exceptionClass : exceptionClasses) {
+                            annotationListPerClass.add(exceptionClass);
+                        }
+                    }
+                }
+            } else {
+                String[] exceptionClasses = ffdc.value();
+                for (String exceptionClass : exceptionClasses) {
+                    annotationListPerClass.add(exceptionClass);
+                }
             }
         }
+
         return annotationListPerClass;
 
     }
@@ -636,32 +658,47 @@ public class FATRunner extends BlockJUnit4ClassRunner {
     private Set<String> getAllowedFFDCAnnotationFromTest(FrameworkMethod m) {
 
         Set<String> annotationListPerClass = new HashSet<String>();
-        AllowedFFDC methodFFDC = m.getAnnotation(AllowedFFDC.class);
-        if (methodFFDC != null) {
-            String[] exceptionClasses = methodFFDC.value();
-            for (String exceptionClass : exceptionClasses) {
-                annotationListPerClass.add(exceptionClass);
-            }
-        }
 
+        // Method
+        Set<AllowedFFDC> ffdcs = new HashSet<AllowedFFDC>();
+        ffdcs.add(m.getAnnotation(AllowedFFDC.class));
+
+        // Declaring Class
         Class<?> declaringClass = m.getMethod().getDeclaringClass();
-        AllowedFFDC servletFFDC = declaringClass.getAnnotation(AllowedFFDC.class);
-        if (servletFFDC != null) {
-            String[] exceptionClasses = servletFFDC.value();
-            for (String exceptionClass : exceptionClasses) {
-                annotationListPerClass.add(exceptionClass);
-            }
-        }
+        ffdcs.add(declaringClass.getAnnotation(AllowedFFDC.class));
+
+        // Test Class
         Class<?> testClass = getTestClass().getJavaClass();
         if (!declaringClass.equals(testClass)) {
-            AllowedFFDC classFFDC = testClass.getAnnotation(AllowedFFDC.class);
-            if (classFFDC != null) {
-                String[] exceptionClasses = classFFDC.value();
-                for (String exceptionClass : exceptionClasses) {
-                    annotationListPerClass.add(exceptionClass);
+            ffdcs.add(testClass.getAnnotation(AllowedFFDC.class));
+        }
+
+        for (AllowedFFDC ffdc : ffdcs) {
+            if (ffdc != null) {
+                if (RepeatTestFilter.CURRENT_REPEAT_ACTION == "EE9_FEATURES") {
+                    String[] exceptionClasses = ffdc.value();
+                    for (String exceptionClass : exceptionClasses) {
+                        exceptionClass = getEE9Helper().replacePackages(exceptionClass);
+                        annotationListPerClass.add(exceptionClass);
+                    }
+                } else if (RepeatTestFilter.CURRENT_REPEAT_ACTION != null) {
+                    for (String repeatAction : ffdc.repeatAction()) {
+                        if (repeatAction.equals(AllowedFFDC.ALL_REPEAT_ACTIONS) || repeatAction.equals(RepeatTestFilter.CURRENT_REPEAT_ACTION)) {
+                            String[] exceptionClasses = ffdc.value();
+                            for (String exceptionClass : exceptionClasses) {
+                                annotationListPerClass.add(exceptionClass);
+                            }
+                        }
+                    }
+                } else {
+                    String[] exceptionClasses = ffdc.value();
+                    for (String exceptionClass : exceptionClasses) {
+                        annotationListPerClass.add(exceptionClass);
+                    }
                 }
             }
         }
+
         return annotationListPerClass;
 
     }
@@ -810,5 +847,13 @@ public class FATRunner extends BlockJUnit4ClassRunner {
             }
             errors.removeAll(remove);
         }
+    }
+
+    public EE9PackageReplacementHelper getEE9Helper(){
+        if (ee9Helper == null) {
+            String rulesPath = System.getProperty("user.dir") + "/autoFVT-templates/" + "jakarta-renames.properties";
+            ee9Helper = new EE9PackageReplacementHelper(rulesPath);
+        }
+        return ee9Helper;
     }
 }

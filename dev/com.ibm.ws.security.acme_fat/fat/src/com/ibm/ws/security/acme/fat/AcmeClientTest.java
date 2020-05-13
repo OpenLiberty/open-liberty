@@ -14,9 +14,9 @@ package com.ibm.ws.security.acme.fat;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.security.KeyStore;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
@@ -30,6 +30,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.acme.AcmeCaException;
 import com.ibm.ws.security.acme.AcmeCertificate;
@@ -66,25 +67,24 @@ public class AcmeClientTest {
 
 	@ClassRule
 	public static CAContainer pebble = new PebbleContainer();
-	
 
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
-	
+
 	@BeforeClass
 	public static void beforeClass() throws Exception {
-	
+
 		/*
 		 * Start a simple HTTP server to respond to challenges.
 		 */
 		challengeServer = new HttpChallengeServer(pebble.getHttpPort());
-		
+
 		try {
 			challengeServer.start();
 		} catch (IOException e) {
 			Log.error(AcmeClientTest.class, "beforeClass", e);
 		}
-		
+
 		try {
 			/*
 			 * Create temp files that we can use to create file paths.
@@ -127,8 +127,7 @@ public class AcmeClientTest {
 			 * verify that the generated certificate is actually signed by the
 			 * root and intermediate certificates.
 			 */
-			intermediateCertificate = AcmeFatUtils
-					.getX509Certificate(pebble.getAcmeCaIntermediateCertificate());
+			intermediateCertificate = AcmeFatUtils.getX509Certificate(pebble.getAcmeCaIntermediateCertificate());
 			Log.info(AcmeClientTest.class, "<cinit>",
 					"Pebble Intermediate Cert: " + String.valueOf(intermediateCertificate));
 
@@ -137,7 +136,8 @@ public class AcmeClientTest {
 			 * This is static and required to be used to talk to ACME over
 			 * HTTPS.
 			 */
-			Certificate acmeHttpsCert = AcmeFatUtils.getX509Certificate(new FileInputStream(new File(FILE_MINICA_PEM)));
+			Certificate acmeHttpsCert = AcmeFatUtils
+					.getX509Certificate(Files.readAllBytes(new File(FILE_MINICA_PEM).toPath()));
 			Log.info(AcmeClientTest.class, "<cinit>", "ACME HTTPS Cert: " + String.valueOf(acmeHttpsCert));
 
 			/*
@@ -147,12 +147,11 @@ public class AcmeClientTest {
 			ks.load(null, null);
 			ks.setCertificateEntry("acme-https", acmeHttpsCert);
 			ks.store(new FileOutputStream(TRUSTSTORE_FILE), TRUSTSTORE_PASSWORD.toCharArray());
-			
+
 		} catch (Exception e) {
 			Log.error(AcmeClientTest.class, "<cinit>", e);
 		}
 	}
-	
 
 	@AfterClass
 	public static void afterClass() throws Exception {
@@ -161,6 +160,7 @@ public class AcmeClientTest {
 			challengeServer = null;
 		}
 	}
+
 	/**
 	 * Fetch a certificate for a single domain.
 	 * 
@@ -177,9 +177,7 @@ public class AcmeClientTest {
 		/*
 		 * Get the certificate from the ACME CA server.
 		 */
-		AcmeCertificate newCertificate = acmeClient
-				.fetchCertificate(false);
-
+		AcmeCertificate newCertificate = acmeClient.fetchCertificate(false);
 
 		/*
 		 * Verify that the certificate returned from the ACME CA is signed by
@@ -229,11 +227,12 @@ public class AcmeClientTest {
 		 * Create an AcmeService to test.
 		 */
 		AcmeClient acmeClient = createClient(TEST_DOMAIN_1);
+
 		/*
 		 * Get the certificate from the ACME CA server.
 		 */
-		AcmeCertificate newCertificate = acmeClient
-				.fetchCertificate(false);
+		AcmeCertificate newCertificate = acmeClient.fetchCertificate(false);
+
 		/*
 		 * The certificate should be valid.
 		 */
@@ -243,7 +242,7 @@ public class AcmeClientTest {
 		/*
 		 * Revoke the certificate.
 		 */
-		acmeClient.revoke(newCertificate.getCertificate());
+		acmeClient.revoke(newCertificate.getCertificate(), null);
 
 		/*
 		 * The certificate should now be revoked.
@@ -251,11 +250,10 @@ public class AcmeClientTest {
 		assertEquals("The new certificate should be revoked.", "Revoked",
 				pebble.getAcmeCertificateStatus(newCertificate.getCertificate()));
 	}
-	
+
 	/**
-	 * Create the AcmeClient using the directory URI and
-	 * Account information. Also set the AcmeClient on
-	 * the challenge server.
+	 * Create the AcmeClient using the directory URI and Account information.
+	 * Also set the AcmeClient on the challenge server.
 	 * 
 	 * @return the created AcmeClient
 	 */
@@ -264,22 +262,22 @@ public class AcmeClientTest {
 		challengeServer.setAcmeClient(ac);
 		return ac;
 	}
-	
+
 	/**
- 	 * Get a {@link AcmeConfig} instance for the test.
- 	 * 
- 	 * @param domains
- 	 *            Domains to configure.
- 	 * @return The {@link AcmeConfig} instance.
- 	 * @throws AcmeCaException
- 	 *             If the instance could not be created.
- 	 */
- 	private static AcmeConfig getAcmeConfig(String... domains) throws AcmeCaException {
- 		Map<String, Object> acmeProperties = new HashMap<String, Object>();
- 		acmeProperties.put(AcmeConstants.DOMAIN, domains);
- 		acmeProperties.put(AcmeConstants.DIR_URI, pebble.getAcmeDirectoryURI(true));
- 		acmeProperties.put(AcmeConstants.ACCOUNT_KEY_FILE, FILE_ACCOUNT_KEY);
- 		acmeProperties.put(AcmeConstants.DOMAIN_KEY_FILE, FILE_DOMAIN_KEY);
- 		return new AcmeConfig(acmeProperties);
- 	}
+	 * Get a {@link AcmeConfig} instance for the test.
+	 * 
+	 * @param domains
+	 *            Domains to configure.
+	 * @return The {@link AcmeConfig} instance.
+	 * @throws AcmeCaException
+	 *             If the instance could not be created.
+	 */
+	private static AcmeConfig getAcmeConfig(String... domains) throws AcmeCaException {
+		Map<String, Object> acmeProperties = new HashMap<String, Object>();
+		acmeProperties.put(AcmeConstants.DOMAIN, domains);
+		acmeProperties.put(AcmeConstants.DIR_URI, pebble.getAcmeDirectoryURI(true));
+		acmeProperties.put(AcmeConstants.ACCOUNT_KEY_FILE, FILE_ACCOUNT_KEY);
+		acmeProperties.put(AcmeConstants.DOMAIN_KEY_FILE, FILE_DOMAIN_KEY);
+		return new AcmeConfig(acmeProperties);
+	}
 }

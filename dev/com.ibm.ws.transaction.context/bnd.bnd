@@ -26,11 +26,12 @@ Service-Component: \
     implementation:=com.ibm.ws.transaction.context.internal.TransactionContextProviderImpl; \
     provide:='com.ibm.wsspi.threadcontext.ThreadContextProvider,com.ibm.wsspi.threadcontext.jca.JCAContextProvider'; \
     configuration-policy:=ignore;\
-    EEVersion='com.ibm.ws.javaee.version.JavaEEVersion';\
+    eEVersion='com.ibm.ws.javaee.version.JavaEEVersion?';\
     transactionInflowManager=com.ibm.tx.jta.TransactionInflowManager;\
     transactionManager=com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager; \
-    greedy:='EEVersion';\
-    optional:='EEVersion';\
+    dynamic:='eEVersion';\
+    greedy:='eEVersion';\
+    optional:='eEVersion';\
     properties:='\
      alwaysCaptureThreadContext:Boolean=true,\
      type=javax.resource.spi.work.TransactionContext'

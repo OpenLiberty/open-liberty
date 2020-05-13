@@ -78,14 +78,6 @@ public class VerifyRepositoryAccuracy {
         // Confirm HPEL is enabled
         ShrinkHelper.defaultDropinApp(server, "LogFat", "com.ibm.ws.logging.hpel");
         ShrinkHelper.defaultDropinApp(server, "HpelFat", "com.ibm.ws.logging.hpel.servlet");
-        if (!CommonTasks.isHpelEnabled(server)) {
-            // HPEL is not enabled.
-            CommonTasks.writeLogMsg(Level.INFO, "HPEL is not enabled on " + server.getServerName() + ", attempting to enable.");
-            CommonTasks.setHpelEnabled(server, true);
-            // if HPEL was not enabled, make sure trace spec is not valid to ensure restartServer below.
-            CommonTasks.setHpelTraceSpec(server, null);
-
-        }
         /*
          * Since we have multiple test methods in this test case, we will only restartServer if the spec is not already set to
          * what we need. This will avoid extra server restartServers which adds to the bucket execution time.

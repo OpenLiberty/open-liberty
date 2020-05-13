@@ -213,9 +213,9 @@ public class OAuth20EndpointServices {
         }
         if (tc.isDebugEnabled()) {
             if (oauth20Provider != null) {
-                Tr.debug(tc, "OAUTH20 _SSO OP WILL NOT PROCESS THE REQUEST");
+              Tr.debug(tc, "OAUTH20 _SSO OP PROCESS HAS ENDED.");
             } else {
-                Tr.debug(tc, "OAUTH20 _SSO OP PROCESS HAS ENDED.");
+              Tr.debug(tc, "OAUTH20 _SSO OP WILL NOT PROCESS THE REQUEST");
             }
         }
     }
