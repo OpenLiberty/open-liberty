@@ -47,8 +47,6 @@
         <AD id="invokeAfterSSO" name="%invokeAfterSSO" description="%invokeAfterSSO.desc"
             required="true" type="Boolean"
             default="true" />
-        <AD id="disableLtpaCookie" ibm:beta="true" name="internal" description="internal use only"
-            required="false" type="Boolean" default="false"/> 
         <AD id="libraryRef" name="%libraryRef" description="%libraryRef.desc"
             ibm:type="pid" ibm:reference="com.ibm.ws.classloading.sharedlibrary"
             required="true" type="String" />            

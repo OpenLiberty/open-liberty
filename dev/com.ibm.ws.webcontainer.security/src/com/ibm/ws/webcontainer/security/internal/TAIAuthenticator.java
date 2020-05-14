@@ -158,10 +158,10 @@ public class TAIAuthenticator implements WebAuthenticator {
     }
 
     private void getUserFeatureInterceptorWithNoTaiConfigured() {
-        Set<String> interceptorIds = interceptorServiceRef.keySet();
-        for (String interceptorId : interceptorIds) {
-            TrustAssociationInterceptor tai = interceptorServiceRef.getService(interceptorId);
-            getProperties(interceptorId, tai);
+        Set<String> ids = interceptorServiceRef.keySet();
+        for (String id : ids) {
+            TrustAssociationInterceptor tai = interceptorServiceRef.getService(id);
+            getProperties(id, tai);
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -171,15 +171,18 @@ public class TAIAuthenticator implements WebAuthenticator {
         }
     }
 
-    private void getProperties(String interceptorId, TrustAssociationInterceptor interceptor) {
-        TAIUtil taiUtil = new TAIUtil(interceptorServiceRef, interceptorId);
+    private void getProperties(String id, TrustAssociationInterceptor interceptor) {
+        TAIUtil taiUtil = new TAIUtil(interceptorServiceRef, id);
         if (taiUtil.isInvokeBeforeSSO()) {
-            invokeBeforeSSOTais.put(interceptorId, interceptor);
+            invokeBeforeSSOTais.put(id, interceptor);
         }
         if (taiUtil.isInvokeAfterSSO()) {
-            invokeAfterSSOTais.put(interceptorId, interceptor);
+            invokeAfterSSOTais.put(id, interceptor);
         }
-        disableLtpaCookieTais.put(interceptorId, taiUtil.isDisableLtpaCookie());
+        if (taiUtil.isDisableLtpaCookie() != null) {
+            disableLtpaCookieTais.put(id, ((Boolean) taiUtil.isDisableLtpaCookie()).booleanValue());
+        }
+
     }
 
     /**

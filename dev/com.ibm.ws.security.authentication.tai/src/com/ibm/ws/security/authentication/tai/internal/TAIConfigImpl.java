@@ -25,7 +25,7 @@ public class TAIConfigImpl implements TAIConfig {
     static final String KEY_INVOKE_FOR_UNPROTECTED_URI = "invokeForUnprotectedURI";
     static final String KEY_INVOKE_FOR_FORM_LOGIN = "invokeForFormLogin";
     static final String KEY_FAIL_OVER_TO_APP_AUTH_TYPE = "failOverToAppAuthType";
-    static final String KEY_DISABLE_LTPA_COOKIE = "disableLtpaCookie";
+    public static final String KEY_DISABLE_LTPA_COOKIE = "disableLtpaCookie";
 
     private boolean failOverToAppAuthType = false;
     private boolean invokeForUnprotectedURI = false;

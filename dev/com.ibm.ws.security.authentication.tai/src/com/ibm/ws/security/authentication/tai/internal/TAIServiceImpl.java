@@ -120,7 +120,7 @@ public class TAIServiceImpl implements TAIService {
      */
     private void processSharedLibrary(String id, InterceptorConfigImpl itcConf) {
         TrustAssociationInterceptor tai = itcConf.getInterceptorInstance(this);
-        updateTaiMaps(id, tai, itcConf.isInvokeBeforeSSO(), itcConf.isInvokeAfterSSO(), itcConf.isDisableLtpaCookie());
+        updateTaiMaps(id, tai, itcConf.isInvokeBeforeSSO(), itcConf.isInvokeAfterSSO(), null);
     }
 
     /**
@@ -139,15 +139,15 @@ public class TAIServiceImpl implements TAIService {
      * @param afterSso
      * @param disableLtpaCookie
      */
-    private void updateTaiMaps(String id, TrustAssociationInterceptor tai, boolean beforeSso, boolean afterSso, boolean disableLtpaCookie) {
+    private void updateTaiMaps(String id, TrustAssociationInterceptor tai, boolean beforeSso, boolean afterSso, Object disableLtpaCookie) {
         if (beforeSso) {
             invokeBeforeSSOTais.put(id, tai);
         }
         if (afterSso) {
             invokeAfterSSOTais.put(id, tai);
         }
-
-        disableLtpaCookieTais.put(id, disableLtpaCookie);
+        if (disableLtpaCookie != null)
+            disableLtpaCookieTais.put(id, ((Boolean) disableLtpaCookie).booleanValue());
     }
 
     @Override

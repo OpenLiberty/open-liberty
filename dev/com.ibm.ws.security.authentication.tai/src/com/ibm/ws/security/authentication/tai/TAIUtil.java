@@ -14,6 +14,7 @@ import org.osgi.framework.ServiceReference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.security.authentication.tai.internal.InterceptorConfigImpl;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.security.tai.TrustAssociationInterceptor;
 
@@ -23,10 +24,10 @@ import com.ibm.wsspi.security.tai.TrustAssociationInterceptor;
  */
 public class TAIUtil {
     private static final TraceComponent tc = Tr.register(TAIUtil.class);
-
+    public static final String KEY_DISABLE_LTPA_COOKIE = "disableLtpaCookie";
     private boolean invokeBeforeSSO = false;
     private boolean invokeAfterSSO = false;
-    private boolean disableLtpaCookie = false;
+    private Object disableLtpaCookie = null;
 
     public TAIUtil(ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor> interceptorServiceRef,
                    String interceptorId) {
@@ -41,23 +42,20 @@ public class TAIUtil {
      * @param interceptorId
      */
     public void processUserFeatureTaiProps(ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor> interceptorServiceRef,
-                             String interceptorId) {
+                                           String interceptorId) {
         invokeBeforeSSO = false;
         invokeAfterSSO = false;
         disableLtpaCookie = false;
 
         ServiceReference<TrustAssociationInterceptor> taiServiceRef = interceptorServiceRef.getReference(interceptorId);
 
-        Object beforeSsoProp = taiServiceRef.getProperty(TAIConfig.KEY_INVOKE_BEFORE_SSO);
-        Object afterSsoProp = taiServiceRef.getProperty(TAIConfig.KEY_INVOKE_AFTER_SSO);
-
-        Object disableLtpaCookieProp = taiServiceRef.getProperty(TAIConfig.KEY_DISABLE_LTPA_COOKIE);
-        if (disableLtpaCookieProp != null)
-            disableLtpaCookie = (Boolean) disableLtpaCookieProp;
+        Object beforeSsoProp = taiServiceRef.getProperty(InterceptorConfigImpl.KEY_INVOKE_BEFORE_SSO);
+        Object afterSsoProp = taiServiceRef.getProperty(InterceptorConfigImpl.KEY_INVOKE_AFTER_SSO);
+        disableLtpaCookie = taiServiceRef.getProperty(KEY_DISABLE_LTPA_COOKIE);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "User feature interceptor properties of " + interceptorId);
-            Tr.debug(tc, "beforeSsoProp=" + beforeSsoProp + " afterSsoProp=" + afterSsoProp + " disableLtpaCookieProp=" + disableLtpaCookieProp);
+            Tr.debug(tc, "beforeSsoProp=" + beforeSsoProp + " afterSsoProp=" + afterSsoProp + " disableLtpaCookie=" + disableLtpaCookie);
         }
 
         /*
@@ -117,7 +115,7 @@ public class TAIUtil {
         return invokeAfterSSO;
     }
 
-    public boolean isDisableLtpaCookie() {
+    public Object isDisableLtpaCookie() {
         return disableLtpaCookie;
     }
 }

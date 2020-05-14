@@ -52,7 +52,6 @@ public class InterceptorConfigImplTest {
     static final String KEY_ENABLED = "enabled";
     static final String KEY_INVOKE_BEFORE_SSO = "invokeBeforeSSO";
     static final String KEY_INVOKE_AFTER_SSO = "invokeAfterSSO";
-    static final String KEY_DISABLE_LTPA_COOKIE = "disableLtpaCookie";
 
     static final String KEY_CONFIGURATION_ADMIN = "configurationAdmin";
     static final String KEY_SHARED_LIB = "sharedLib";
@@ -170,7 +169,6 @@ public class InterceptorConfigImplTest {
         props.put(KEY_ENABLED, value);
         props.put(KEY_INVOKE_BEFORE_SSO, value);
         props.put(KEY_INVOKE_AFTER_SSO, value);
-        props.put(KEY_DISABLE_LTPA_COOKIE, value);
         props.put(KEY_LIBRARY_REF, "libraryRef");
         return props;
     }

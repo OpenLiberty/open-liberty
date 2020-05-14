@@ -31,7 +31,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.WebTrustAssociationException;
 import com.ibm.websphere.security.WebTrustAssociationFailedException;
-import com.ibm.ws.security.authentication.tai.TAIConfig;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.library.Library;
@@ -56,6 +55,9 @@ import com.ibm.wsspi.security.tai.TrustAssociationInterceptor;
 public class InterceptorConfigImpl implements TrustAssociationInterceptor, ConfigurationListener {
     private static final TraceComponent tc = Tr.register(InterceptorConfigImpl.class);
 
+    public static final String KEY_INVOKE_BEFORE_SSO = "invokeBeforeSSO";
+    public static final String KEY_INVOKE_AFTER_SSO = "invokeAfterSSO";
+
     static final String KEY_ID = "id";
     static final String KEY_CLASS_NAME = "className";
     static final String KEY_ENABLED = "enabled";
@@ -68,7 +70,6 @@ public class InterceptorConfigImpl implements TrustAssociationInterceptor, Confi
     private String className = null;
     private boolean invokeBeforeSSO = false;
     private boolean invokeAfterSSO = false;
-    private boolean disableLtpaCookie = false;
     private TrustAssociationInterceptor interceptorInstance = null;
     private final Properties properties = new Properties();
 
@@ -126,13 +127,12 @@ public class InterceptorConfigImpl implements TrustAssociationInterceptor, Confi
         if ((Boolean) props.get(KEY_ENABLED)) {
             id = (String) props.get(KEY_ID);
             className = (String) props.get(KEY_CLASS_NAME);
-            invokeBeforeSSO = (Boolean) props.get(TAIConfig.KEY_INVOKE_BEFORE_SSO);
-            invokeAfterSSO = (Boolean) props.get(TAIConfig.KEY_INVOKE_AFTER_SSO);
-            disableLtpaCookie = (Boolean) props.get(TAIConfig.KEY_DISABLE_LTPA_COOKIE);
+            invokeBeforeSSO = (Boolean) props.get(KEY_INVOKE_BEFORE_SSO);
+            invokeAfterSSO = (Boolean) props.get(KEY_INVOKE_AFTER_SSO);
             pid = (String) props.get(CFG_KEY_PROPERTIES_PID);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Shared liberty interceptor config - interceptors element: ");
-                Tr.debug(tc, "  invokeBeforeSSO=" + invokeBeforeSSO + " invokeAfterSSO=" + invokeAfterSSO + " disableLtpaCookie=" + disableLtpaCookie);
+                Tr.debug(tc, "  invokeBeforeSSO=" + invokeBeforeSSO + " invokeAfterSSO=" + invokeAfterSSO);
             }
             processProperties();
             initInterceptor();
@@ -199,11 +199,6 @@ public class InterceptorConfigImpl implements TrustAssociationInterceptor, Confi
     /** {@inheritDoc} */
     public boolean isInvokeAfterSSO() {
         return invokeAfterSSO;
-    }
-
-    /** {@inheritDoc} */
-    public boolean isDisableLtpaCookie() {
-        return disableLtpaCookie;
     }
 
     /** {@inheritDoc} */

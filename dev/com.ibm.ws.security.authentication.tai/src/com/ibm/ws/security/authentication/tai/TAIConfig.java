@@ -15,12 +15,6 @@ package com.ibm.ws.security.authentication.tai;
  */
 public interface TAIConfig {
 
-    public static final String KEY_INVOKE_BEFORE_SSO = "invokeBeforeSSO";
-
-    public static final String KEY_INVOKE_AFTER_SSO = "invokeAfterSSO";
-
-    public static final String KEY_DISABLE_LTPA_COOKIE = "disableLtpaCookie";
-
     public boolean isFailOverToAppAuthType();
 
     public boolean isInvokeForUnprotectedURI();
