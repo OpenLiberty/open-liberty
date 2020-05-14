@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2015 IBM Corporation and others.
+ * Copyright (c) 2010, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1557,6 +1557,7 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
     public static final int SPEC_LEVEL_30 = 30;
     public static final int SPEC_LEVEL_31 = 31;
     public static final int SPEC_LEVEL_40 = 40;
+    public static final int SPEC_LEVEL_50 = 50;
     private static final int DEFAULT_SPEC_LEVEL = 30;
     
     private static int loadedContainerSpecLevel = SPEC_LEVEL_UNLOADED;

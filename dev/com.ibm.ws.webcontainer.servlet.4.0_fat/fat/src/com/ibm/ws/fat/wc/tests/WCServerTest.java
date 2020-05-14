@@ -27,6 +27,7 @@ import com.ibm.ws.fat.util.browser.WebResponse;
 import com.ibm.ws.fat.wc.WCApplicationHelper;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 
 /**
  * All Servlet 4.0 tests with all applicable server features enabled.
@@ -118,7 +119,11 @@ public class WCServerTest extends LoggingTest {
 
     @Test
     public void testServletContextMajorMinorVersion() throws Exception {
-        this.verifyResponse("/TestServlet40/MyServlet?TestMajorMinorVersion=true", "majorVersion: 4");
+        String majorVersionExpectedResult = "majorVersion: 4";
+        if (JakartaEE9Action.isActive()) {
+            majorVersionExpectedResult = "majorVersion: 5";
+        }
+        this.verifyResponse("/TestServlet40/MyServlet?TestMajorMinorVersion=true", majorVersionExpectedResult);
 
         this.verifyResponse("/TestServlet40/MyServlet?TestMajorMinorVersion=true", "minorVersion: 0");
     }
