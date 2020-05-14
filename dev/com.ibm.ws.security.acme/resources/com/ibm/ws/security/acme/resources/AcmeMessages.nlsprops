@@ -29,7 +29,7 @@
 REST_METHOD_NOT_SUPPORTED=The HTTP method ''{0}'' is not supported.
 REST_OPERATION_NOT_SUPPORTED=The operation ''{0}'' is not supported.
 REST_FORBIDDEN=Forbidden
-REST_INVALID_CONTENT_TYPE=The request's content-type header was not ''application/json''.
+REST_INVALID_CONTENT_TYPE=The request's content-type header was not 'application/json'.
 REST_MISSING_OPERATION=The operation was not specified for the request.
 REST_NO_ACME_SERVICE=An AcmeProvider service was not registered.
 ###############################################################################
@@ -230,11 +230,11 @@ CWPKI2048I=CWPKI2048I: The account key pair renewal is successful. The old accou
 CWPKI2048I.explanation=The previous account key pair is no longer associated with the account and is backed up to a file. The new account key pair replaced the old account key pair file.
 CWPKI2048I.useraction=No action is required.
 
-CWPKI2049E=CWPKI2049E: The account key pair didn't renew or restore to the existing key pair file. Manually replace the {0} account key pair file with the {1} account key pair file.
+CWPKI2049E=CWPKI2049E: The account key pair didn''t renew or restore to the existing key pair file. Manually replace the {0} account key pair file with the {1} account key pair file.
 CWPKI2049E.explanation=The key pair didn't renew or restore to the old key pair file.
 CWPKI2049E.useraction=Manually replace the account key pair files as directed in the message.
 
-CWPKI2050E=CWPKI2050E: The existing account key pair file didn't back up during while the account key pair renewal. The error is ''{0}''.
+CWPKI2050E=CWPKI2050E: The existing account key pair file didn''t back up during while the account key pair renewal. The error is ''{0}''.
 CWPKI2050E.explanation=The existing account key pair file could not be backed up. 
 CWPKI2050E.useraction=Ensure that the directory that contains the existing account key pair file is writable. Review the error message for details on the failure.
 
@@ -262,7 +262,7 @@ CWPKI2056W=CWPKI2056W: The validity period of the certificate with {0} serial nu
 CWPKI2056W.explanation=The validity period is shorter than the minimum renew time. The certificate expires before a new certificate is requested.
 CWPKI2056W.useraction=To avoid certificate expiration, request a certificate with a longer validity period. If the certificate authority supports a custom validity period, set the validFor property in the server configuration.
 
-CWPKI2057E=CWPKI2057E: Certificate revocation status checking didn't create a CertPathValidator to validate the certificate. The error is ''{0}}''.
+CWPKI2057E=CWPKI2057E: Certificate revocation status checking didn''t create a CertPathValidator to validate the certificate. The error is ''{0}}''.
 CWPKI2057E.explanation=The certificate revocation checker needs to build a CertPathValidator to check OCSP and CRLs revocation status.
 CWPKI2057E.useraction=Review the status message and error for details.
 
@@ -274,22 +274,14 @@ CWPKI2059I=CWPKI2059I: Certificate revocation status checking found that the cer
 CWPKI2059I.explanation=The ACME service found that the certificate was marked revoked by either a CRL or OSCP responder. 
 CWPKI2059I.useraction=No action is required.
 
-CWPKI2060E=CWPKI2060E: The OCSP URL from the certificate with the {0} serial number wasn't retrieved. The error is: ''{1}''.
+CWPKI2060E=CWPKI2060E: The OCSP URL from the certificate with the {0} serial number wasn''t retrieved. The error is: ''{1}''.
 CWPKI2060E.explanation=The OCSP URL was not retrieved.
 CWPKI2060E.useraction=Ensure that the certificate is a valid X.509 certificate. If it is not valid, request a new certificate.
 
-CWPKI2061E=CWPKI2061E: The CRL distribution points from the certificate with the {0} serial number weren't retrieved. The error is ''{1}''.
+CWPKI2061E=CWPKI2061E: The CRL distribution points from the certificate with the {0} serial number weren''t retrieved. The error is ''{1}''.
 CWPKI2061E.explanation=The CRL distribution points were not retrieved.
 CWPKI2061E.useraction=Ensure that the certificate is a valid X.509 certificate. If it is not valid, request a new certificate.
 
 CWPKI2062E=CWPKI2062E: The {0} OCSP responder URL defined in the server configuration is not a valid URI. If defined, it must be a valid URI to override the OSCP responder URL contained in the certificate.
 CWPKI2062E.explanation=Certificate revocation checking requires a valid OCSP responder URL.
 CWPKI2062E.useraction=Provide a valid OCSP responder URL in the server configuration.
-
-CWPKI2063E=CWPKI2063E: The ACME certificate authority at the {0} URI updated its terms of service and now requires the user to agree to the new terms of service at the following URI before it processes any further requests: {1}
-CWPKI2063E.explanation=The certificate authority updated its terms of service and requires user interaction.
-CWPKI2063E.useraction=Review the provided terms of service.
-
-CWPKI2064I=CWPKI2064I: The ACME service retrieved the certificate with the {0} serial number from the {1} URI in {2} seconds.
-CWPKI2064I.explanation=The ACME service successfully requested a certificate.
-CWPKI2064I.useraction=No action is required.
