@@ -40,6 +40,7 @@ Export-Package: \
 -dsannotations-inherit: true
 -dsannotations: \
 	com.ibm.ws.microprofile.metrics.MetricsConfig,\
+	com.ibm.ws.microprofile.metrics.BaseMetrics,\
 	com.ibm.ws.microprofile.metrics23.helper.WriterFactoryImpl23,\
 	com.ibm.ws.microprofile.metrics23.impl.SharedMetricRegistries23,\
 	com.ibm.ws.microprofile.metrics.ApplicationListener
