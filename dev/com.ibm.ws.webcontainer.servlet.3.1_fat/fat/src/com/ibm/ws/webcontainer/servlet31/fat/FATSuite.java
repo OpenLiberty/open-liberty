@@ -74,8 +74,8 @@ import componenttest.rules.repeater.RepeatTests;
 })
 public class FATSuite {
     
-    static Set<String> removeFeatures = new HashSet<>(Arrays.asList("servlet-3.1", "cdi-1.2", "jsp-2.2"));
-    static Set<String> addFeatures = new HashSet<>(Arrays.asList("servlet-4.0", "jsp-2.3", "cdi-2.0"));
+    static Set<String> removeFeatures = new HashSet<>(Arrays.asList("servlet-3.1", "cdi-1.2", "jsp-2.2", "javaee-7.0"));
+    static Set<String> addFeatures = new HashSet<>(Arrays.asList("servlet-4.0", "jsp-2.3", "cdi-2.0", "javaee-8.0"));
 
     /**
      * @see {@link FatLogHandler#generateHelpFile()}
