@@ -23,6 +23,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -30,6 +31,7 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
@@ -38,6 +40,7 @@ import componenttest.topology.utils.HttpUtils;
 
 @AllowedFFDC(value = { "javax.transaction.SystemException", "javax.transaction.xa.XAException" })
 @Mode(TestMode.FULL)
+@RunWith(FATRunner.class)
 public class MultiRecoveryTest {
 	private static LibertyServer server;
 	private static String BASE_URL;
