@@ -689,7 +689,7 @@
     <dependency>
       <groupId>jakarta.ejb</groupId>
       <artifactId>jakarta.ejb-api</artifactId>
-      <version>4.0.0-RC1</version>
+      <version>4.0.0-RC2</version>
     </dependency>
     <dependency>
       <groupId>jakarta.enterprise</groupId>
