@@ -20,7 +20,6 @@ import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 @SuiteClasses({ AcmeClientTest.class, 
 	AcmeSimpleTest.class,
 	AcmeURISimpleTest.class,
-	AcmeBoulderSimpleTest.class,  
 	AcmeCaRestHandlerTest.class, 
 	AcmeValidityAndRenewTest.class,
 	AcmeRevocationTest.class
