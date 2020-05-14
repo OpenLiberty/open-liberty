@@ -59,11 +59,6 @@ public class TestOLGH11795Servlet extends JPATestServlet {
         final String testMethod = "testJoinColumnWithSameDuplicateName";
         final String testResource = "test-jpa-resource-amjta";
 
-        // TODO: Disable this test for JPA 2.2 testing. But will be fixed when ECL 2.7 is updated
-        if (isUsingJPA22Feature()) {
-            return;
-        }
-
         executeTest(testName, testMethod, testResource);
     }
 
@@ -73,11 +68,6 @@ public class TestOLGH11795Servlet extends JPATestServlet {
         final String testMethod = "testJoinColumnWithSameDuplicateName";
         final String testResource = "test-jpa-resource-amrl";
 
-        // TODO: Disable this test for JPA 2.2 testing. But will be fixed when ECL 2.7 is updated
-        if (isUsingJPA22Feature()) {
-            return;
-        }
-
         executeTest(testName, testMethod, testResource);
     }
 
@@ -86,11 +76,6 @@ public class TestOLGH11795Servlet extends JPATestServlet {
         final String testName = "jpa_spec10_olgh11795_testJoinColumnWithSameDuplicateName_CMTS_Web";
         final String testMethod = "testJoinColumnWithSameDuplicateName";
         final String testResource = "test-jpa-resource-cmts";
-
-        // TODO: Disable this test for JPA 2.2 testing. But will be fixed when ECL 2.7 is updated
-        if (isUsingJPA22Feature()) {
-            return;
-        }
 
         executeTest(testName, testMethod, testResource);
     }
