@@ -674,12 +674,32 @@
     <dependency>
       <groupId>io.smallrye.config</groupId>
       <artifactId>smallrye-config</artifactId>
-      <version>1.6.1</version>
+      <version>1.8.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye.config</groupId>
       <artifactId>smallrye-config-common</artifactId>
-      <version>1.6.1</version>
+      <version>1.8.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>io.smallrye.common</groupId>
+      <artifactId>smallrye-common-annotation</artifactId>
+      <version>1.0.2</version>
+    </dependency>
+    <dependency>
+      <groupId>io.smallrye.common</groupId>
+      <artifactId>smallrye-common-expression</artifactId>
+      <version>1.0.2</version>
+    </dependency>
+    <dependency>
+      <groupId>io.smallrye.common</groupId>
+      <artifactId>smallrye-common-constraint</artifactId>
+      <version>1.0.2</version>
+    </dependency>
+    <dependency>
+      <groupId>io.smallrye.common</groupId>
+      <artifactId>smallrye-common-function</artifactId>
+      <version>1.0.2</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye.reactive</groupId>
@@ -1820,6 +1840,11 @@
       <groupId>org.eclipse.microprofile.config</groupId>
       <artifactId>microprofile-config-api</artifactId>
       <version>1.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.microprofile.config</groupId>
+      <artifactId>microprofile-config-api</artifactId>
+      <version>2.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.context-propagation</groupId>

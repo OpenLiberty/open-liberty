@@ -11,12 +11,16 @@
 package com.ibm.ws.microprofile.config.smallrye;
 
 import java.io.IOException;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
+import io.smallrye.config.OLSmallRyeConfigBuilder;
+import io.smallrye.config.SmallRyeConfigBuilder;
 import io.smallrye.config.SmallRyeConfigProviderResolver;
 
 @Component(service = ConfigProviderResolver.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" }, immediate = true)
@@ -38,4 +42,18 @@ public class OLSmallRyeConfigProviderResolver extends SmallRyeConfigProviderReso
     public void deactivate(ComponentContext cc) throws IOException {
         ConfigProviderResolver.setInstance(null);
     }
+
+    @Override
+    public SmallRyeConfigBuilder getBuilder() {
+        SmallRyeConfigBuilder builder = null;
+        final SecurityManager sm = System.getSecurityManager();
+        if (sm != null) {
+            builder = AccessController.doPrivileged((PrivilegedAction<SmallRyeConfigBuilder>) OLSmallRyeConfigBuilder::new);
+        } else {
+            builder = new OLSmallRyeConfigBuilder();
+        }
+
+        return builder;
+    }
+
 }

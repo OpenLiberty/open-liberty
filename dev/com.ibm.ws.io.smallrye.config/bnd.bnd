@@ -46,15 +46,21 @@ Import-Package: \
 
 Private-Package: \
   com.ibm.ws.microprofile.config.smallrye, \
-  io.smallrye.config.*
+  io.smallrye.config.*,\
+  io.smallrye.common.*
 
 -buildpath: \
-  io.smallrye.config:smallrye-config;strategy=exact;version=1.6.1, \
-  io.smallrye.config:smallrye-config-common;strategy=exact;version=1.6.1, \
+  io.smallrye.config:smallrye-config;strategy=exact;version=1.8.1.SNAPSHOT, \
+  io.smallrye.config:smallrye-config-common;strategy=exact;version=1.8.1.SNAPSHOT, \
+  io.smallrye.common:smallrye-common-annotation;strategy=exact;version=1.0.2, \
+  io.smallrye.common:smallrye-common-expression;strategy=exact;version=1.0.2, \
+  io.smallrye.common:smallrye-common-constraint;strategy=exact;version=1.0.2, \
+  io.smallrye.common:smallrye-common-function;strategy=exact;version=1.0.2, \
   com.ibm.websphere.javaee.cdi.1.2;version=latest, \
   com.ibm.websphere.javaee.annotation.1.2;version=latest, \
-  com.ibm.websphere.org.eclipse.microprofile.config.1.4;version=latest, \
+  com.ibm.websphere.org.eclipse.microprofile.config.2.0;version=latest, \
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.ws.cdi.interfaces;version=latest,\
-  com.ibm.websphere.org.osgi.service.component;version=latest
+  com.ibm.websphere.org.osgi.service.component;version=latest,\
+  com.ibm.ws.org.jboss.logging;version=latest
