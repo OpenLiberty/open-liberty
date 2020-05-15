@@ -67,6 +67,7 @@ public class TAIServiceImpl implements TAIService {
     protected synchronized void activate(ComponentContext cc, Map<String, Object> props) {
         interceptorServiceRef.activate(cc);
         taiConfig = new TAIConfigImpl(props);
+        initAllTAIs(null);
     }
 
     protected synchronized void modified(Map<String, Object> props) {
