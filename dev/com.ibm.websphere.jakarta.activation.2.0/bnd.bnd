@@ -21,13 +21,13 @@ Private-Package: \
 
 instrument.disabled: true
 
-Include-Resource: \
-   @${repo;jakarta.activation:jakarta.activation-api;2.0.0-RC3}!/META-INF/NOTICE
+#Include-Resource: \
+#   @${repo;*activation*:jakarta.activation-api;2.0.0-RC3}!/META-INF/NOTICE 
 
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-    jakarta.activation:jakarta.activation-api;version=2.0.0-RC3 \
-    com.sun.activation:jakarta.activation;version=2.0.0-RC3
+    jakarta.activation:jakarta.activation-api;version=2.0 \
+    com.sun.activation:jakarta.activation;version=2.0
     
     

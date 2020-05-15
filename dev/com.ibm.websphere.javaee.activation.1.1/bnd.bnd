@@ -11,6 +11,7 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+jakartaMe: true
 
 Bundle-SymbolicName: com.ibm.websphere.javaee.activation.1.1; singleton:=true
 
