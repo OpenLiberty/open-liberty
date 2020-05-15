@@ -132,6 +132,7 @@ io.smallrye:smallrye-graphql-servlet:1.0.2
 io.smallrye.reactive:smallrye-reactive-converter-api:1.0.10
 io.smallrye.reactive:smallrye-reactive-messaging-provider:1.0.8
 io.smallrye.reactive:smallrye-reactive-streams-operators:1.0.10
+jakarta.activation:jakarta.activation-api:2.0.0-RC3
 jakarta.annotation:jakarta.annotation-api:2.0.0-RC1
 jakarta.ejb:jakarta.ejb-api:4.0.0-RC2
 jakarta.enterprise:jakarta.enterprise.cdi-api:3.0.0-M1
