@@ -212,6 +212,11 @@ public class OpenShiftUserApiUtils {
         if (statusResponse.containsKey("error")) {
             throw new SocialLoginException("KUBERNETES_USER_API_RESPONSE_ERROR", null, new Object[] { statusResponse.get("error") });
         }
+        if (statusResponse.containsKey("authenticated")) {
+            if (!getBooleanValueFromJson(statusResponse, "authenticated")) {
+                throw new SocialLoginException("USER_API_RESPONSE_NOT_AUTHENTICATED", null, null);
+            }
+        }
         if (statusResponse.containsKey("user")) {
             JsonValue userInnerMapValue = statusResponse.get("user");
             if (userInnerMapValue.getValueType() != ValueType.OBJECT) {
@@ -288,6 +293,17 @@ public class OpenShiftUserApiUtils {
         return json.getString(key);
     }
 
+    boolean getBooleanValueFromJson(JsonObject json, String key) throws SocialLoginException {
+        if (!json.containsKey(key)) {
+            throw new SocialLoginException("JSON_MISSING_KEY", null, new Object[] { key, json });
+        }
+        JsonValue rawValue = json.get(key);
+        if (rawValue.getValueType() != ValueType.TRUE && rawValue.getValueType() != ValueType.FALSE) {
+            throw new SocialLoginException("JSON_ENTRY_WRONG_JSON_TYPE", null, new Object[] { key, "BOOLEAN", rawValue.getValueType(), json });
+        }
+        return json.getBoolean(key);
+    }
+
     JsonObject modifyUsername(JsonObject metadataEntry) throws SocialLoginException {
         JsonObject result = metadataEntry;
         String userNameAttribute = config.getUserNameAttribute();
@@ -303,15 +319,15 @@ public class OpenShiftUserApiUtils {
         }
         return result;
     }
-    
+
     JsonObject addProjectNameAsGroup(JsonObject metadataEntry) throws SocialLoginException {
         JsonObject result = metadataEntry;
         String userNameAttribute = config.getUserNameAttribute();
         String username = getStringValueFromJson(metadataEntry, userNameAttribute);
-        int index = username.indexOf(":");        
+        int index = username.indexOf(":");
         if (index >= 0) {
             String group = null;
-            group = username.substring(0,index);
+            group = username.substring(0, index);
             if (group != null && !group.isEmpty()) {
                 String groupNameAttribute = config.getGroupNameAttribute();
                 if (groupNameAttribute != null) {
@@ -321,7 +337,7 @@ public class OpenShiftUserApiUtils {
                 }
             }
         }
-        
+
         return result;
     }
 
