@@ -89,7 +89,6 @@ public class WCGetMappingTest extends LoggingTest {
     @Test
     @Mode(TestMode.FULL)
     public void test_HttpServletRequestGetMapping_ContextRootMapping_Forward() throws Exception {
-        Thread.sleep(1000);
         SHARED_SERVER.verifyResponse(createWebBrowserForTestCase(), "/TestGetMapping/pathFwdMatch?dispatchPath=/",
                                      "Mapping values: mappingMatch: CONTEXT_ROOT matchValue:  pattern:  servletName: GetMappingTestServlet");
     }
