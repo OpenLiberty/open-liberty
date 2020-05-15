@@ -11,6 +11,7 @@
 package com.ibm.ws.microprofile.metrics.monitor;
 
 import java.lang.management.ManagementFactory;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -145,9 +146,13 @@ public class MonitorMetrics {
 			//Example of expected Mbean property name=ApplicationName/fully.qualified.class.name/methodSignature(java.lang.String)
 			if (subString.contains("name=")) {
 				mbeanNameProperty = subString.split("/");
+				if (mbeanNameProperty.length > 3) {
+					mbeanNameProperty = Arrays.copyOfRange(mbeanNameProperty,mbeanNameProperty.length-3,mbeanNameProperty.length);
+				} else {
+					mbeanNameProperty[0] = mbeanNameProperty[0].substring(mbeanNameProperty[0].indexOf("=") + 1,
+							mbeanNameProperty[0].length());
 
-				mbeanNameProperty[0] = mbeanNameProperty[0].substring(mbeanNameProperty[0].indexOf("=") + 1,
-						mbeanNameProperty[0].length());
+				}
 
 				// blank method
 				mbeanNameProperty[2] = mbeanNameProperty[2].replaceAll("\\(\\)", "");
@@ -155,8 +160,8 @@ public class MonitorMetrics {
 				mbeanNameProperty[2] = mbeanNameProperty[2].replaceAll("\\(", "_");
 				// second bracket is removed
 				mbeanNameProperty[2] = mbeanNameProperty[2].replaceAll("\\)", "");
-
 				break;
+				
 			}
 		}
 		return mbeanNameProperty;
