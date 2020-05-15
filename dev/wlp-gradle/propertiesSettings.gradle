@@ -48,6 +48,7 @@ def setProperties = { props ->
     boolean isRelease           = props.getProperty('is.release') == null               ? false : 'true'.equalsIgnoreCase(props.getProperty('is.release'))
     boolean isPublicPublishing  = props.getProperty('is.public.publishing') == null     ? false : 'true'.equalsIgnoreCase(props.getProperty('is.public.publishing'))
     boolean isUnittestsDisabled = props.getProperty('disable.run.runUnitTests') == null ? false : 'true'.equalsIgnoreCase(props.getProperty('disable.run.runUnitTests'))
+    boolean isIFIXBuild         = props.getProperty('ghe.build.type') == null           ? false : props.getProperty('ghe.build.type').toLowerCase().contains("ifix")
 
     props.setProperty('is.automated.build',       isAutomatedBuild.toString())
     props.setProperty('is.personal',              isPersonal.toString())
@@ -65,6 +66,7 @@ def setProperties = { props ->
         rootProject.ext.isAutomatedBuild    = isAutomatedBuild
         rootProject.ext.isPersonal          = isPersonal
         rootProject.ext.isContinuousBuild   = isContinuousBuild
+        rootProject.ext.isIFIXBuild         = isIFIXBuild
         rootProject.ext.isRelease           = isRelease
         rootProject.ext.isPublicPublishing  = isPublicPublishing
         rootProject.ext.isUnittestsDisabled = isUnittestsDisabled
