@@ -676,20 +676,32 @@ public class InstallUtils {
         try (InputStream is = new FileInputStream(serverXml)){
             Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(is);
             Element element = doc.getDocumentElement();
-
-            NodeList includeList = element.getElementsByTagName("include");
-            System.out.println(includeList.getLength());
-
-            for (int i = 0; i < includeList.getLength(); i++) {
-                Node includeNode = includeList.item(i);
-                System.out.println("node: " + includeNode.getNodeName());
-                System.out.println("attrs : " + includeNode.getAttributes());
-                Element includeElement = (Element) includeNode;
-                String location = includeElement.getAttribute("location");
-                if(!newLocations.contains(location) && !visitedServerXmls.contains(location)){
-                    newLocations.add(location);
+            NodeList childs = doc.getChildNodes();
+            for(int i =0; i < childs.getLength(); i++){
+                if (childs.item(i).getNodeType() == Node.ELEMENT_NODE) {
+                    Element el = (Element) childs.item(i);
+                    if(el.getNodeName().equals("include")){
+                        String location = el.getAttribute("location");
+                        if(!newLocations.contains(location) && !visitedServerXmls.contains(location)){
+                            newLocations.add(location);
+                        }
+                    }
                 }
+
             }
+//            NodeList includeList = element.getElementsByTagName("include");
+//            System.out.println(includeList.getLength());
+//
+//            for (int i = 0; i < includeList.getLength(); i++) {
+//                Node includeNode = includeList.item(i);
+//                System.out.println("node: " + includeNode.getNodeName());
+//                System.out.println("attrs : " + includeNode.getAttributes());
+//                Element includeElement = (Element) includeNode;
+//                String location = includeElement.getAttribute("location");
+//                if(!newLocations.contains(location) && !visitedServerXmls.contains(location)){
+//                    newLocations.add(location);
+//                }
+//            }
             System.out.println("locations: " +newLocations);
 
             NodeList fmList = element.getElementsByTagName("featureManager");
