@@ -121,7 +121,8 @@ public class DatabaseContainerFactory {
 					break;
 	            case Oracle:          	
 	            	cont = (JdbcDatabaseContainer<?>) clazz.getConstructor(String.class).newInstance("kyleaure/oracle-18.4.0-xe-prebuilt:1.0");
-	                break;
+	                cont.withExposedPorts(1521, 5500, 8080); // need to manually expose ports due to regression in 1.14.0
+	            	break;
 	            case Postgres:
 	            	cont = (JdbcDatabaseContainer<?>) clazz.getConstructor().newInstance();
 	            	//This allows postgres by default to participate in XA transactions (2PC). 

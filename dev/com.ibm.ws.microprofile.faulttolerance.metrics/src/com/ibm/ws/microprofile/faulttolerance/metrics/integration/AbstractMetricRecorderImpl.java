@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder;
 import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorderProvider.AsyncType;
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
+import com.ibm.ws.microprofile.faulttolerance.spi.RetryResultCategory;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
 
 /**
@@ -173,45 +174,56 @@ public abstract class AbstractMetricRecorderImpl implements MetricRecorder {
     /** {@inheritDoc} */
     @Trivial
     @Override
-    public void incrementInvocationCount() {
+    public void incrementInvocationSuccessCount(FallbackOccurred fallbackOccurred) {
         if (invocationCounter != null) {
             invocationCounter.inc();
         }
+        if (fallbackOccurred == FallbackOccurred.WITH_FALLBACK) {
+            fallbackCalls.inc();
+        }
     }
 
     /** {@inheritDoc} */
     @Trivial
     @Override
-    public void incrementInvocationFailedCount() {
+    public void incrementInvocationFailedCount(FallbackOccurred fallbackOccurred) {
+        if (invocationCounter != null) {
+            invocationCounter.inc();
+        }
         if (invocationFailedCounter != null) {
             invocationFailedCounter.inc();
         }
+        if (fallbackOccurred == FallbackOccurred.WITH_FALLBACK) {
+            fallbackCalls.inc();
+        }
     }
 
-    /** {@inheritDoc} */
-    @Trivial
     @Override
-    public void incrementRetryCallsSuccessImmediateCount() {
+    public void incrementRetryCalls(RetryResultCategory resultCategory, RetriesOccurred retriesOccurred) {
         if (retryCallsSuccessImmediateCounter != null) {
-            retryCallsSuccessImmediateCounter.inc();
-        }
-    }
+            switch (resultCategory) {
+                case EXCEPTION_IN_ABORT_ON:
+                case NO_EXCEPTION:
+                case EXCEPTION_NOT_IN_RETRY_ON:
+                    // success
+                    if (retriesOccurred == RetriesOccurred.WITH_RETRIES) {
+                        retryCallsSuccessRetryCounter.inc();
+                    } else {
+                        retryCallsSuccessImmediateCounter.inc();
+                    }
+                    break;
 
-    /** {@inheritDoc} */
-    @Trivial
-    @Override
-    public void incrementRetryCallsSuccessRetriesCount() {
-        if (retryCallsSuccessRetryCounter != null) {
-            retryCallsSuccessRetryCounter.inc();
-        }
-    }
+                case MAX_DURATION_REACHED:
+                case MAX_RETRIES_REACHED:
+                    // failure
+                    retryCallsFailureCounter.inc();
+                    break;
 
-    /** {@inheritDoc} */
-    @Trivial
-    @Override
-    public void incrementRetryCallsFailureCount() {
-        if (retryCallsFailureCounter != null) {
-            retryCallsFailureCounter.inc();
+                case EXCEPTION_IN_RETRY_ON:
+                    // not valid for final retry attempt
+                default:
+                    // do nothing
+            }
         }
     }
 
@@ -418,13 +430,6 @@ public abstract class AbstractMetricRecorderImpl implements MetricRecorder {
         if (bulkheadExecutionDuration != null) {
             bulkheadExecutionDuration.update(executionTime);
         }
-    }
-
-    /** {@inheritDoc} */
-    @Trivial
-    @Override
-    public void incrementFallbackCalls() {
-        fallbackCalls.inc();
     }
 
     @FFDCIgnore(IllegalArgumentException.class)

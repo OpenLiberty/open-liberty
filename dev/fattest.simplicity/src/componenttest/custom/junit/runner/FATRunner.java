@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -56,6 +56,8 @@ import componenttest.annotation.processor.TestServletProcessor;
 import componenttest.exception.TopologyException;
 import componenttest.logging.ffdc.IgnoredFFDCs;
 import componenttest.logging.ffdc.IgnoredFFDCs.IgnoredFFDC;
+import componenttest.rules.repeater.EE9PackageReplacementHelper;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.impl.LibertyServerWrapper;
@@ -81,6 +83,8 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                                                                       new SystemPropertyFilter(),
                                                                       new JavaLevelFilter()
     };
+
+    private static EE9PackageReplacementHelper ee9Helper;
 
     private static final Set<String> classesUsingFATRunner = new HashSet<String>();
 
@@ -625,7 +629,16 @@ public class FATRunner extends BlockJUnit4ClassRunner {
 
         ExpectedFFDC ffdc = m.getAnnotation(ExpectedFFDC.class);
         if (ffdc != null) {
-            if (RepeatTestFilter.CURRENT_REPEAT_ACTION != null) {
+            if (JakartaEE9Action.isActive()) {
+                String[] exceptionClasses = ffdc.value();
+                for (String exceptionClass : exceptionClasses) {
+                    if(ee9Helper == null){
+                        ee9Helper = new EE9PackageReplacementHelper();
+                    }
+                    exceptionClass = ee9Helper.replacePackages(exceptionClass);
+                    annotationListPerClass.add(exceptionClass);
+                }
+            } else if (RepeatTestFilter.CURRENT_REPEAT_ACTION != null) {
                 for (String repeatAction : ffdc.repeatAction()) {
                     if (repeatAction.equals(ExpectedFFDC.ALL_REPEAT_ACTIONS) || repeatAction.equals(RepeatTestFilter.CURRENT_REPEAT_ACTION)) {
                         String[] exceptionClasses = ffdc.value();
@@ -666,7 +679,16 @@ public class FATRunner extends BlockJUnit4ClassRunner {
 
         for (AllowedFFDC ffdc : ffdcs) {
             if (ffdc != null) {
-                if (RepeatTestFilter.CURRENT_REPEAT_ACTION != null) {
+                if (JakartaEE9Action.isActive()) {
+                    String[] exceptionClasses = ffdc.value();
+                    for (String exceptionClass : exceptionClasses) {
+                        if(ee9Helper == null){
+                            ee9Helper = new EE9PackageReplacementHelper();
+                        }
+                        exceptionClass = ee9Helper.replacePackages(exceptionClass);
+                        annotationListPerClass.add(exceptionClass);
+                    }
+                } else if (RepeatTestFilter.CURRENT_REPEAT_ACTION != null) {
                     for (String repeatAction : ffdc.repeatAction()) {
                         if (repeatAction.equals(AllowedFFDC.ALL_REPEAT_ACTIONS) || repeatAction.equals(RepeatTestFilter.CURRENT_REPEAT_ACTION)) {
                             String[] exceptionClasses = ffdc.value();
@@ -740,6 +762,7 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                 serverField.set(testClass, serv);
                 Log.info(c, method, "Injected LibertyServer " + serv.getServerName() + " to class " + testClass.getCanonicalName());
             } catch (Exception e) {
+                
                 throw new RuntimeException(e);
             }
         }

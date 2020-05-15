@@ -25,6 +25,8 @@ public class AcmeCA extends ConfigElement {
 
     private String accountKeyFile;
 
+    private AcmeRevocationChecker acmeRevocationChecker;
+
     private AcmeTransportConfig acmeTransportConfig;
 
     private Integer challengeRetries;
@@ -45,6 +47,8 @@ public class AcmeCA extends ConfigElement {
 
     private String validFor; // Duration
 
+    private String renewBeforeExpiration;
+
     /**
      * @return the accountContact
      */
@@ -57,6 +61,13 @@ public class AcmeCA extends ConfigElement {
      */
     public String getAccountKeyFile() {
         return accountKeyFile;
+    }
+
+    /**
+     * @return the acmeRevocationChecker
+     */
+    public AcmeRevocationChecker getAcmeRevocationChecker() {
+        return acmeRevocationChecker;
     }
 
     /**
@@ -146,6 +157,14 @@ public class AcmeCA extends ConfigElement {
     }
 
     /**
+     * @param acmeRevocationChecker the acmeRevocationChecker to set
+     */
+    @XmlElement(name = "acmeRevocationChecker")
+    public void setAcmeRevocationChecker(AcmeRevocationChecker acmeRevocationChecker) {
+        this.acmeRevocationChecker = acmeRevocationChecker;
+    }
+
+    /**
      * @param acmeTransportConfig the acmeTransportConfig to set
      */
     @XmlElement(name = "acmeTransportConfig")
@@ -225,6 +244,21 @@ public class AcmeCA extends ConfigElement {
         this.validFor = validFor;
     }
 
+    /**
+     * @return the renewBeforeExpiration
+     */
+    public String getRenewBeforeExpiration() {
+        return renewBeforeExpiration;
+    }
+
+    /**
+     * @param renewBeforeExpiration the renewBeforeExpiration to set
+     */
+    @XmlAttribute(name = "renewBeforeExpiration")
+    public void setRenewBeforeExpiration(String renewBeforeExpiration) {
+        this.renewBeforeExpiration = renewBeforeExpiration;
+    }
+
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
@@ -236,6 +270,9 @@ public class AcmeCA extends ConfigElement {
         }
         if (accountKeyFile != null) {
             sb.append("accountKeyFile=\"").append(accountKeyFile).append("\" ");;
+        }
+        if (acmeRevocationChecker != null) {
+            sb.append("acmeRevocationChecker=\"").append(acmeRevocationChecker).append("\" ");;
         }
         if (acmeTransportConfig != null) {
             sb.append("acmeTransportConfig=\"").append(acmeTransportConfig).append("\" ");;
@@ -266,6 +303,9 @@ public class AcmeCA extends ConfigElement {
         }
         if (validFor != null) {
             sb.append("validFor=\"").append(validFor).append("\" ");;
+        }
+        if (renewBeforeExpiration != null) {
+            sb.append("renewBeforeExpiration=\"").append(renewBeforeExpiration).append("\" ");;
         }
 
         sb.append("}");
@@ -363,6 +403,104 @@ public class AcmeCA extends ConfigElement {
             }
             if (trustStoreType != null) {
                 sb.append("trustStoreType=\"").append(trustStoreType).append("\" ");;
+            }
+
+            sb.append("}");
+
+            return sb.toString();
+        }
+    }
+
+    /**
+     * ACME certificate revocation checker for the acmeCA-2.0 feature.
+     */
+    public static class AcmeRevocationChecker {
+
+        private Boolean enabled;
+
+        private String ocspResponderUrl;
+
+        private Boolean preferCRLs;
+
+        private Boolean disableFallback;
+
+        /**
+         * @return the ocspResponderUrl
+         */
+        public Boolean getEnabled() {
+            return enabled;
+        }
+
+        /**
+         * @return the ocspResponderUrl
+         */
+        public String getOcspResponderUrl() {
+            return ocspResponderUrl;
+        }
+
+        /**
+         * @return the preferCRLs
+         */
+        public Boolean getPreferCRLs() {
+            return preferCRLs;
+        }
+
+        /**
+         * @return the disableFallback
+         */
+        public Boolean getDisableFallback() {
+            return disableFallback;
+        }
+
+        /**
+         * @param enabled the enabled to set
+         */
+        @XmlAttribute(name = "enabled")
+        public void setEnabled(Boolean enabled) {
+            this.enabled = enabled;
+        }
+
+        /**
+         * @param ocspResponderUrl the ocspResponderUrl to set
+         */
+        @XmlAttribute(name = "ocspResponderUrl")
+        public void setOcspResponderUrl(String ocspResponderUrl) {
+            this.ocspResponderUrl = ocspResponderUrl;
+        }
+
+        /**
+         * @param preferCRLs the preferCRLs to set
+         */
+        @XmlAttribute(name = "preferCRLs")
+        public void setPreferCRLs(Boolean preferCRLs) {
+            this.preferCRLs = preferCRLs;
+        }
+
+        /**
+         * @param disableFallback the disableFallback to set
+         */
+        @XmlAttribute(name = "disableFallback")
+        public void setDisableFallback(Boolean disableFallback) {
+            this.disableFallback = disableFallback;
+        }
+
+        @Override
+        public String toString() {
+            StringBuffer sb = new StringBuffer();
+
+            sb.append(getClass().getSimpleName()).append("{ ");
+
+            if (enabled != null) {
+                sb.append("enabled=\"").append(enabled).append("\" ");;
+            }
+            if (disableFallback != null) {
+                sb.append("disableFallback=\"").append(disableFallback).append("\" ");;
+            }
+            if (ocspResponderUrl != null) {
+                sb.append("ocspResponderUrl=\"").append(ocspResponderUrl).append("\" ");;
+            }
+            if (preferCRLs != null) {
+                sb.append("preferCRLs=\"").append(preferCRLs).append("\" ");;
             }
 
             sb.append("}");

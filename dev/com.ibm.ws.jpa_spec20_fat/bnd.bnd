@@ -17,10 +17,13 @@ src: \
     test-applications/cache/src,\
     test-applications/common/src,\
     test-applications/criteriaquery/src,\
+    test-applications/entitymanager/src,\
+    test-applications/example/src,\
     test-applications/olgh9018/src,\
     test-applications/olgh9339/src,\
     test-applications/olgh10515/src,\
     test-applications/ordercolumn/src,\
+    test-applications/query/src,\
     test-applications/querylockmode/src,\
     test-applications/helpers/DatabaseManagement/src,\
     test-framework/src

@@ -11,9 +11,9 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-Bundle-Name: gRPC Client 1.0.
-Bundle-SymbolicName: com.ibm.ws.grpc.client.1.0
-Bundle-Description: gRPC Client, version 1.0
+Bundle-Name: gRPC Client
+Bundle-SymbolicName: com.ibm.ws.grpc.client
+Bundle-Description: Liberty gRPC Client, version ${bVersion}
 
 Import-Package: !sun.*,\
   !com.google.code.gson,\
@@ -40,9 +40,14 @@ javac.args.release: current
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=11))"
 
-# include the service providers
+-dsannotations: com.ibm.ws.grpc.client.config.GrpcClientConfigImpl
+
+# include the service providers and metatype
 Include-Resource: \
-  META-INF=@src/META-INF
+  META-INF=@src/META-INF, \
+  OSGI-INF=resources/OSGI-INF, \
+  OSGI-INF/metatype/metatype.xml=resources/OSGI-INF/metatype/metatype.xml
+
 
 # expose the service providers to be consumed by grpc-common bundle
 Service-Component: \
@@ -61,8 +66,24 @@ instrument.disabled: true
 
 -buildpath: \
   com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+  com.ibm.websphere.security;version=latest,\
   com.ibm.ws.grpc.common;version=latest,\
-  com.ibm.ws.webcontainer,\
+  com.ibm.ws.webcontainer;version=latest,\
+  com.ibm.ws.logging.core;version=latest,\
+  org.osgi.service.component.annotations;version=latest,\
   io.grpc:grpc-netty-shaded;version=1.27.0
 
 -fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
+
+-testpath: \
+  org.hamcrest:hamcrest-all;version=1.3, \
+  org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
+  org.jmock:jmock;strategy=exact;version=2.5.1, \
+  ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+  com.ibm.ws.junit.extensions;version=latest, \
+  cglib:cglib-nodep;version=3.3.0, \
+  org.jmock:jmock-legacy;version=2.5.0, \
+  com.ibm.ws.org.objenesis:objenesis;version=1.0, \
+  com.ibm.ws.logging;version=latest, \
+  com.ibm.ws.kernel.boot;version=latest,\
+  com.ibm.websphere.org.osgi.core;version=latest

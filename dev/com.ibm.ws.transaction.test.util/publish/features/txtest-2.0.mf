@@ -1,0 +1,12 @@
+Subsystem-ManifestVersion: 1
+IBM-Test-Feature: true
+Subsystem-SymbolicName: txtest-2.0; visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Content: com.ibm.ws.transaction.test.util.jakarta; version="[1,1.0.100)"; location:="lib/com.ibm.ws.transaction.test.util.jakarta.jar",
+ com.ibm.websphere.jakartaee.transaction.2.0; version="[1,1.0.100)"; location:="dev/api/spec/,lib/", 
+ com.ibm.ws.tx.embeddable.jakarta;  version="[1,1.1.100)" 
+Subsystem-Type: osgi.subsystem.feature
+IBM-Feature-Version: 2
+IBM-API-Package: com.ibm.tx.jta.ut.util; type="internal",
+ com.ibm.ws.cloudtx.ut.util; type="internal",
+ com.ibm.ws.tx.jta.embeddable; type="internal"

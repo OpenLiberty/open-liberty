@@ -17,7 +17,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-  AlwaysPassesTest.class,
+	AlwaysPassesTest.class,
 	SingleRecoveryTest.class,
 	MultiRecoveryTest.class,
 })

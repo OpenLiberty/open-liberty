@@ -902,8 +902,12 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
      * @return
      * @throws WIMException
      */
+    @Trivial // parentDO can be very large, override entry / exit to avoid printing out such a large object to trace
     private Entity createEntityFromLdapEntry(Object parentDO, String propName, LdapEntry ldapEntry, List<String> propNames) throws WIMException {
         final String METHODNAME = "createEntityFromLdapEntry";
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, METHODNAME, (parentDO == null) ? "null" : parentDO.getClass(), propName, ldapEntry, propNames);
+        }
 
         String outEntityType = ldapEntry.getType();
         Entity outEntity = null;
@@ -961,6 +965,10 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
             }
         } else {
             populateEntity(outEntity, propNames, ldapEntry.getAttributes());
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, METHODNAME, outEntity);
         }
         return outEntity;
     }

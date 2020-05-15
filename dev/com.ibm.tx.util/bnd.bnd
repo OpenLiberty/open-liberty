@@ -42,3 +42,5 @@ instrument.disabled: true
 	com.ibm.websphere.org.osgi.service.component;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
 	com.ibm.ws.kernel.service;version=latest
+	
+jakartaeeMe: true

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,6 +43,7 @@ public abstract class FeatureUtilityToolTest {
     private static String unzipDestination;
 
     private static Properties wlpVersionProps;
+    private static Properties featureUtilityProps;
     private static String originalWlpVersion;
     private static String originalWlpEdition;
     private static String originalWlpInstallType;
@@ -106,6 +107,18 @@ public abstract class FeatureUtilityToolTest {
         Log.exiting(c, methodName);
         return unzipDestination + "/wlp";
     }
+    
+    public String unzipToInstallRootFatWlp(String zipFile) throws IOException {
+    	String fileDest = installRoot + "/../featureUtility_fat_wlp_repo/";
+    	File uz = new File(fileDest);
+    	if(uz.exists()){
+            TestUtils.deleteFolder(uz);
+        }
+        uz.mkdirs();
+    	ZipFile destFile = new ZipFile(pathToAutoFVTTestFiles + "/" + zipFile);
+        TestUtils.unzipFileIntoDirectory(destFile, new File(fileDest));
+        return fileDest + destFile.getName();
+    }
 
     /**
      * Delete the wlp.zip and new feature utility wlp folder
@@ -143,6 +156,26 @@ public abstract class FeatureUtilityToolTest {
     public static void copyFileToMinifiedRoot(String extendedPath, String fileName) throws Exception {
         LibertyFileManager.copyFileIntoLiberty(server.getMachine(), minifiedRoot + "/" + extendedPath, (pathToAutoFVTTestFiles + "/" + fileName));
     }
+    
+    public static void writeToProps(String remoteFileName, String property, String value) throws Exception {
+        OutputStream os = null;
+        featureUtilityProps = new Properties();
+        try {
+            RemoteFile rf = new RemoteFile(server.getMachine(), remoteFileName);
+            os = rf.openForWriting(false);
+            featureUtilityProps.setProperty(property, value);
+            Log.info(c, "writeToProps", "Set the " + property + " to : " + value);
+            featureUtilityProps.store(os, null);
+            os.close();
+        } finally {
+            try {
+                os.close();
+            } catch (IOException e) {
+                // ignore we are trying to close.
+            }
+        }
+		
+	}
 
     private static boolean isClosedLibertyWlp(){
         return new File(installRoot + "/lib/versions/WebSphereApplicationServer.properties").exists();
@@ -153,8 +186,8 @@ public abstract class FeatureUtilityToolTest {
      *
      * @return previous wlp version. ex: returns 19.0.0.11 if the current version is 19.0.0.12
      */
-    protected static String getPreviousWlpVersion(){
-        String version = originalWlpVersion;
+    protected static String getPreviousWlpVersion() throws IOException {
+        String version = getCurrentWlpVersion();
         String [] split = version.split("\\.");
         String year = split[0];
         String month = split[3];
@@ -172,7 +205,6 @@ public abstract class FeatureUtilityToolTest {
         return String.format("%s.%s.%s.%s", newYear, split[1], split[2], newMonth);
 
     }
-
 
 
 
@@ -205,14 +237,53 @@ public abstract class FeatureUtilityToolTest {
             Log.info(c, "getWlpVersion", "com.ibm.websphere.productEdition : " + originalWlpEdition);
             Log.info(c, "getWlpVersion", "com.ibm.websphere.productInstallType : " + originalWlpInstallType);
         } finally {
-                try {
-                    assert fIn != null;
-                    fIn.close();
-                } catch (IOException e) {
-                    // ignore we are trying to close.
-                }
+            try {
+                assert fIn != null;
+                fIn.close();
+            } catch (IOException e) {
+                // ignore we are trying to close.
             }
         }
+    }
+
+    public static String getCurrentWlpVersion() throws IOException {
+        File wlpVersionPropFile = new File(minifiedRoot + "/lib/versions/openliberty.properties");
+        wlpVersionPropFile.setReadable(true);
+
+        FileInputStream fIn = null;
+        wlpVersionProps = new Properties();
+        try {
+            fIn = new FileInputStream(wlpVersionPropFile);
+            wlpVersionProps.load(fIn);
+            return wlpVersionProps.getProperty("com.ibm.websphere.productVersion");
+
+        } finally {
+            try {
+                assert fIn != null;
+                fIn.close();
+            } catch (IOException e) {
+                // ignore we are trying to close.
+            }
+        }
+    }
+
+    public static String getClosedLibertyWlpEdition() throws IOException {
+        File wlpVersionPropFile = new File(minifiedRoot + "/lib/versions/WebSphereApplicationServer.properties");
+        Log.info(c, "getWlpEdition", "wlpVersionPropFile exists : " + wlpVersionPropFile.exists());
+        if(!wlpVersionPropFile.exists()) return null;
+
+        
+        wlpVersionPropFile.setReadable(true);
+        Properties wlpProps = new Properties();
+        String wlpEdition = null;
+        try(FileInputStream fIn2 = new FileInputStream(wlpVersionPropFile)){
+            wlpProps.load(fIn2);
+            wlpEdition = wlpProps.getProperty("com.ibm.websphere.productEdition");
+            Log.info(c, "getWlpEdition", "com.ibm.websphere.productEdition : " + wlpEdition);
+        }
+        return wlpEdition;
+    }
+
 
     protected static void replaceWlpProperties(String version) throws Exception {
         OutputStream os = null;
@@ -266,6 +337,7 @@ public abstract class FeatureUtilityToolTest {
 //        Log.info(c, testcase, "repository.description.url: " + TestUtils.repositoryDescriptionUrl);
         Log.info(c, testcase, "command: " + root + "/bin/" + command + " " + args);
         ProgramOutput po = server.getMachine().execute(root + "/bin/" + command, params, root, envProps);
+        Log.info(c, testcase, po.getStderr());
         Log.info(c, testcase, po.getStdout());
         Log.info(c, testcase, command + " command exit code: " + po.getReturnCode());
         return po;
@@ -279,5 +351,28 @@ public abstract class FeatureUtilityToolTest {
         Log.info(c, methodName, "DELETED FOLDERS: /lib/features, /lafiles? VALUES: " + features + ", " + lafiles);
 
         return features && lafiles;
+    }
+    
+    protected static boolean deleteProps(String methodName) throws IOException {
+        // delete /lib/features and /lafiles
+        boolean etc = TestUtils.deleteFolder(new File(minifiedRoot + "/etc"));
+        boolean props = new File(minifiedRoot+"/lib/versions/WebSphereApplicationServer.properties").delete();
+
+        Log.info(c, methodName, "DELETED files/folders: /etc, /lib/versions/WebSphereApplicationServer.properties? VALUES: " + etc + ", " + props);
+
+        return etc && props;
+    }
+    
+    protected static boolean deleteRepo(String methodName) throws IOException {
+    	boolean repo = TestUtils.deleteFolder(new File(minifiedRoot + "/repo"));
+    	return repo;
+    }
+
+    protected static boolean deleteEtcFolder(String methodName){
+        boolean etc = TestUtils.deleteFolder(new File(minifiedRoot + "/etc"));
+        Log.info(c, methodName, "DELETED files/folders: /etc ? VALUE: " + etc);
+
+        return etc;
+
     }
 }

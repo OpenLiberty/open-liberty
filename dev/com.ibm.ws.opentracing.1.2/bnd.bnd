@@ -20,6 +20,7 @@ WS-TraceGroup: OPENTRACING
 
 -dsannotations: com.ibm.ws.opentracing.OpentracingUserFeatureAccessService, \
                 com.ibm.ws.opentracing.OpentracingJaxRsProviderRegister, \
+                com.ibm.ws.opentracing.OpentracingJaxRsEMCallbackImpl, \
                 com.ibm.ws.opentracing.OpentracingService
                 
 Import-Package: \
@@ -47,6 +48,7 @@ Private-Package: com.ibm.ws.opentracing.resources
         com.ibm.ws.logging;version=latest, \
         com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
         com.ibm.ws.jaxrs.2.0.common;version=latest, \
+        com.ibm.ws.jaxrs.defaultexceptionmapper;version=latest, \
         com.ibm.wsspi.org.osgi.service.component;version=latest, \
         com.ibm.wsspi.org.osgi.core;version=latest, \
         com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \

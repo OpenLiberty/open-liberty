@@ -19,7 +19,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.security.KeyStore;
@@ -68,7 +67,7 @@ public class AcmeFatUtils {
 
 	public static final String PEER_CERTIFICATES = "PEER_CERTIFICATES";
 	public static final String SELF_SIGNED_KEYSTORE_PASSWORD = "acmepassword";
-	public static final String PEBBLE_TRUSTSTORE_PASSWORD = "acmepassword";
+	public static final String CACERTS_TRUSTSTORE_PASSWORD = "acmepassword";
 	public static final String DEFAULT_KEYSTORE_PASSWORD = "acmepassword";
 
 	/**
@@ -84,21 +83,6 @@ public class AcmeFatUtils {
 	public static X509Certificate getX509Certificate(byte pemBytes[]) throws CertificateException {
 		CertificateFactory cf = CertificateFactory.getInstance("X.509");
 		return (X509Certificate) cf.generateCertificate(new ByteArrayInputStream(pemBytes));
-	}
-
-	/**
-	 * Get an X.509 certificate from a PEM certificate.
-	 * 
-	 * @param pemBytes
-	 *            The bytes that comprise the PEM certificate.
-	 * @return The X.509 certificate.
-	 * @throws CertificateException
-	 *             If the certificate could not be generated from the passed in
-	 *             PEM bytes.
-	 */
-	public static X509Certificate getX509Certificate(InputStream in) throws CertificateException {
-		CertificateFactory cf = CertificateFactory.getInstance("X.509");
-		return (X509Certificate) cf.generateCertificate(in);
 	}
 
 	/**
@@ -239,8 +223,8 @@ public class AcmeFatUtils {
 	 * @throws Exception
 	 *             IF there was an error updating the configuration.
 	 */
-	public static void configureAcmeCA(LibertyServer server, CAContainer caContainer, ServerConfiguration originalConfig, String... domains)
-			throws Exception {
+	public static void configureAcmeCA(LibertyServer server, CAContainer caContainer,
+			ServerConfiguration originalConfig, String... domains) throws Exception {
 		configureAcmeCA(server, caContainer, originalConfig, false, domains);
 	}
 
@@ -259,8 +243,8 @@ public class AcmeFatUtils {
 	 * @throws Exception
 	 *             IF there was an error updating the configuration.
 	 */
-	public static void configureAcmeCA(LibertyServer server, CAContainer caContainer, ServerConfiguration originalConfig, boolean useAcmeURIs,
-			String... domains) throws Exception {
+	public static void configureAcmeCA(LibertyServer server, CAContainer caContainer,
+			ServerConfiguration originalConfig, boolean useAcmeURIs, String... domains) throws Exception {
 		/*
 		 * Choose which configuration to update.
 		 */
@@ -303,8 +287,8 @@ public class AcmeFatUtils {
 		acmeCA.setDirectoryURI(directoryUri);
 		if (!directoryUri.startsWith("acme")) {
 			AcmeTransportConfig acmeTransportConfig = new AcmeTransportConfig();
-			acmeTransportConfig.setTrustStore("${server.config.dir}/resources/security/pebble-truststore.p12");
-			acmeTransportConfig.setTrustStorePassword(PEBBLE_TRUSTSTORE_PASSWORD);
+			acmeTransportConfig.setTrustStore("${server.config.dir}/resources/security/cacerts.p12");
+			acmeTransportConfig.setTrustStorePassword(CACERTS_TRUSTSTORE_PASSWORD);
 			acmeCA.setAcmeTransportConfig(acmeTransportConfig);
 		}
 	}
@@ -320,7 +304,8 @@ public class AcmeFatUtils {
 	 * @throws Exception
 	 *             IF there was an error updating the configuration.
 	 */
-	public static void configureAcmeCA(LibertyServer server, CAContainer caContainer, ServerConfiguration originalConfig) throws Exception {
+	public static void configureAcmeCA(LibertyServer server, CAContainer caContainer,
+			ServerConfiguration originalConfig) throws Exception {
 		/*
 		 * Choose which configuration to update.
 		 */
@@ -364,8 +349,8 @@ public class AcmeFatUtils {
 			 * responds on AAAA (IPv6) responses before A (IPv4) responses, and
 			 * we don't currently have the testcontainer host's IPv6 address.
 			 */
-			container.addARecord(domain, container.getClientHost());
-			container.addAAAARecord(domain, "");
+			container.addDnsARecord(domain, container.getClientHost());
+			container.addDnsAAAARecord(domain, "");
 		}
 	}
 
@@ -388,8 +373,8 @@ public class AcmeFatUtils {
 			 * responds on AAAA (IPv6) responses before A (IPv4) responses, and
 			 * we don't currently have the testcontainer host's IPv6 address.
 			 */
-			dnscontainer.clearARecord(domain);
-			dnscontainer.clearAAAARecord(domain);
+			dnscontainer.clearDnsARecord(domain);
+			dnscontainer.clearDnsAAAARecord(domain);
 		}
 	}
 
@@ -399,7 +384,7 @@ public class AcmeFatUtils {
 	 * @param server
 	 *            The server to check.
 	 */
-	public static final void waitForSSLToCreateKeystore(LibertyServer server) {
+	public static final void waitForSslToCreateKeystore(LibertyServer server) {
 		assertNotNull("ACME did not create a new certificate.",
 				server.waitForStringInLog("CWPKI0803A: SSL certificate created"));
 	}
@@ -412,6 +397,7 @@ public class AcmeFatUtils {
 	 *            The server to check.
 	 */
 	public static final void waitForAcmeToCreateCertificate(LibertyServer server) {
+		assertNotNull("ACME did not fetch the certificate.", server.waitForStringInLog("CWPKI2064I"));
 		assertNotNull("ACME did not create the certificate.", server.waitForStringInLog("CWPKI2007I"));
 	}
 
@@ -428,7 +414,7 @@ public class AcmeFatUtils {
 	}
 
 	/**
-	 * Wait for the ACME auhtorization web application to start.
+	 * Wait for the ACME authorization web application to start.
 	 * 
 	 * @param server
 	 *            The server to check.
@@ -436,6 +422,16 @@ public class AcmeFatUtils {
 	public static final void waitForAcmeAppToStart(LibertyServer server) {
 		assertNotNull("ACME authorization web application did not start.", server
 				.waitForStringInTrace("ACME authorization web application has started and is available for requests"));
+	}
+
+	/**
+	 * Wait for the ACME authorization web application to start.
+	 * 
+	 * @param server
+	 *            The server to check.
+	 */
+	public static final void waitForAcmeToRevokeCert(LibertyServer server) {
+		assertNotNull("ACME failed to revoke the certificate.", server.waitForStringInLog("CWPKI2038I"));
 	}
 
 	/**
@@ -505,6 +501,7 @@ public class AcmeFatUtils {
 
 	/**
 	 * Assert that the server is using a certificate signed by the ACME CA.
+	 * 
 	 * @param <assertAndGetServerCertificate>
 	 * 
 	 * @param server
@@ -514,14 +511,14 @@ public class AcmeFatUtils {
 	 *             If the server is not using a certificate signed by the ACME
 	 *             CA.
 	 */
-	public static final <assertAndGetServerCertificate> Certificate[] assertAndGetServerCertificate(LibertyServer server, CAContainer container) throws Exception {
+	public static final <assertAndGetServerCertificate> Certificate[] assertAndGetServerCertificate(
+			LibertyServer server, CAContainer container) throws Exception {
 		final String methodName = "assertServerCertificate()";
 
 		/*
 		 * Get the CA's intermediate certificate.
 		 */
-		X509Certificate caCertificate = AcmeFatUtils
-				.getX509Certificate(container.getAcmeCaIntermediateCertificate());
+		X509Certificate caCertificate = AcmeFatUtils.getX509Certificate(container.getAcmeCaIntermediateCertificate());
 
 		/*
 		 * Make a request to the root context just to grab the certificate.

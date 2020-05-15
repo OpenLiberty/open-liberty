@@ -15,26 +15,14 @@ Bundle-SymbolicName: com.ibm.ws.org.eclipse.yasson.2.0
 
 Export-Package: \
   org.eclipse.yasson;version=2.0;thread-context=true
-
+  
 Import-Package: \
   !javax.naming, \
-  !jakarta.json.bind.spi, \
-  com.ibm.wsspi.classloading, \
-  javax.enterprise.context.spi, \
-  javax.enterprise.inject.spi, \
-  javax.json.bind;version="[1.0,2)", \
-  javax.json.bind.spi;version="[1.0,2)", \
-  javax.json.bind.adapter;version="[1.0,2)", \
-  javax.json.bind.annotation;version="[1.0,2)", \
-  javax.json.bind.config;version="[1.0,2)", \
-  javax.json.bind.serializer;version="[1.0,2)", \
-  javax.json, \
-  javax.json.spi, \
-  javax.json.stream, \
-  javax.xml.datatype
+  com.ibm.wsspi.classloading,\
+  *
 
 # Use config-policy=require on the ResourceProvider so the META-INF/service is only
-# exposed to applications if one of the public jsonb-1.0 features are enabled
+# exposed to applications if one of the public jsonb-2.0 features are enabled
 Service-Component:\
   com.ibm.ws.org.eclipse.yasson.JsonBindingProvider;\
     implementation:=org.eclipse.yasson.JsonBindingProvider;\

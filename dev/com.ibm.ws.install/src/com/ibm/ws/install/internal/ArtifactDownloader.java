@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.install.internal;
 
 import java.io.BufferedOutputStream;
@@ -40,16 +50,16 @@ public class ArtifactDownloader {
     private final Logger logger = InstallLogUtils.getInstallLogger();
 
     private final ProgressBar progressBar = ProgressBar.getInstance();
-    private static Map<String, String> envMap = null;
+    private static Map<String, Object> envMap = null;
 
-    public void synthesizeAndDownloadFeatures(List<String> mavenCoords, String dLocation, String repo) throws InstallException {
+    public void synthesizeAndDownloadFeatures(List<String> mavenCoords, String dLocation, MavenRepository repository) throws InstallException {
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_CONTACTING_MAVEN_REPO"));
         checkValidProxy();
         configureProxyAuthentication();
-        configureAuthentication();
+        configureAuthentication(repository);
 
         downloadedFiles.clear();
-        repo = FormatUrlSuffix(repo);
+        String repo = FormatUrlSuffix(repository.getRepositoryUrl());
         List<String> featureURLs = ArtifactDownloaderUtils.acquireFeatureURLs(mavenCoords, repo);
         List<String> missingFeatures;
         dLocation = FormatPathSuffix(dLocation);
@@ -87,8 +97,8 @@ public class ArtifactDownloader {
             progressBar.updateMethodMap("downloadArtifact", individualSize);
             logger.info(Messages.INSTALL_KERNEL_MESSAGES.getMessage("MSG_BEGINNING_DOWNLOAD_FEATURES"));
             for (String coords : mavenCoords) {
-                synthesizeAndDownload(coords, "esa", dLocation, repo, false);
-                synthesizeAndDownload(coords, "pom", dLocation, repo, false);
+                synthesizeAndDownload(coords, "esa", dLocation, repository, false);
+                synthesizeAndDownload(coords, "pom", dLocation, repository, false);
 
                 // update progress bar, drain the downloadArtifacts total size
                 updateProgress(individualSize);
@@ -119,10 +129,10 @@ public class ArtifactDownloader {
         return result;
     }
 
-    public void synthesizeAndDownload(String mavenCoords, String filetype, String dLocation, String repo, boolean individualDownload) throws InstallException {
+    public void synthesizeAndDownload(String mavenCoords, String filetype, String dLocation, MavenRepository repository, boolean individualDownload) throws InstallException {
         configureProxyAuthentication();
-        configureAuthentication();
-        repo = FormatUrlSuffix(repo);
+        configureAuthentication(repository);
+        String repo = FormatUrlSuffix(repository.getRepositoryUrl());
         dLocation = FormatPathSuffix(dLocation);
         String groupId = ArtifactDownloaderUtils.getGroupId(mavenCoords).replace(".", "/") + "/";
         String artifactId = ArtifactDownloaderUtils.getartifactId(mavenCoords);
@@ -154,7 +164,7 @@ public class ArtifactDownloader {
             if (individualDownload && ArtifactDownloaderUtils.fileIsMissing(urlLocation, envMap)) {
                 throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO", ArtifactDownloaderUtils.getFileNameFromURL(urlLocation), filetype + " file", repo); //ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO
             } else {
-                download(urlLocation, dLocation, groupId, artifactId, version, filename, checksumFormats);
+                download(urlLocation, dLocation, groupId, artifactId, version, filename, checksumFormats, repository);
             }
         } catch (IOException e) {
             throw new InstallException(e.getMessage());
@@ -163,12 +173,12 @@ public class ArtifactDownloader {
     }
 
     private void download(String urlLocation, String dLocation, String groupId, String artifactId, String version, String filename,
-                          String[] checksumFormats) throws IOException, InstallException {
+                          String[] checksumFormats, MavenRepository mavenRepository) throws IOException, InstallException {
         try {
             URI uriLoc = new URI(urlLocation);
             File fileLoc = new File(ArtifactDownloaderUtils.getFileLocation(dLocation, groupId, artifactId, version, filename));
 
-            downloadInternal(uriLoc, fileLoc);
+            downloadInternal(uriLoc, fileLoc, mavenRepository);
 
             downloadedFiles.add(fileLoc);
             boolean someChecksumExists = false;
@@ -242,19 +252,62 @@ public class ArtifactDownloader {
         }
     }
 
-    private void configureAuthentication() {
-        if (envMap.get("FEATURE_REPO_USER") != null && envMap.get("FEATURE_REPO_PASSWORD") != null
-            && envMap.get("https.proxyUser") == null) {
+    private void configureAuthentication(final MavenRepository repository) {
+        if (repository.getUserId() != null && repository.getPassword() != null &&
+            envMap.get("https.proxyUser") == null) {
             Authenticator.setDefault(new Authenticator() {
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(envMap.get("FEATURE_REPO_USER"), envMap.get("FEATURE_REPO_PASSWORD").toCharArray());
+                    return new PasswordAuthentication(repository.getUserId(), repository.getPassword().toCharArray());
                 }
             });
         }
     }
 
-    private void downloadInternal(URI address, File destination) throws IOException, InstallException {
+    /**
+     * Tests the connection of a MavenRepository. If the server returns 404, then this will return false.
+     *
+     * @return
+     */
+    protected boolean testConnection(MavenRepository repository, List<String> mavenCoords) {
+        configureProxyAuthentication();
+        configureAuthentication(repository);
+        List<String> featureURLs = ArtifactDownloaderUtils.acquireFeatureURLs(mavenCoords, repository.getRepositoryUrl());
+        try {
+            int responseCode = ArtifactDownloaderUtils.exists(featureURLs.get(0), envMap);
+            logger.fine("Response code: " + responseCode);
+            if (responseCode != 404) {
+                // repo is fine for use
+                return true;
+            }
+        } catch (IOException e) {
+
+        }
+        return false;
+    }
+
+    /**
+     * Tests the connection of a MavenRepository. If the server returns 404, then this will return false.
+     *
+     * @return
+     */
+    protected boolean testConnection(MavenRepository repository) {
+        configureProxyAuthentication();
+        configureAuthentication(repository);
+        try {
+            int responseCode = ArtifactDownloaderUtils.exists(repository.getRepositoryUrl(), envMap);
+            logger.fine("Response code: " + responseCode);
+            if (responseCode != 404) {
+                // repo is fine for use
+                return true;
+            }
+        } catch (IOException e) {
+
+        }
+        return false;
+    }
+
+    private void downloadInternal(URI address, File destination, MavenRepository repository) throws IOException, InstallException {
         OutputStream out = null;
         URLConnection conn;
         InputStream in = null;
@@ -267,15 +320,15 @@ public class ArtifactDownloader {
                                                  destination.toString());
             }
             if (envMap.get("https.proxyUser") != null) {
-                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(envMap.get("https.proxyHost"), Integer.parseInt(envMap.get("https.proxyPort"))));
+                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("https.proxyHost"), Integer.parseInt((String) envMap.get("https.proxyPort"))));
                 conn = url.openConnection(proxy);
             } else if (envMap.get("http.proxyUser") != null) {
-                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(envMap.get("http.proxyHost"), Integer.parseInt(envMap.get("http.proxyPort"))));
+                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("http.proxyHost"), Integer.parseInt((String) envMap.get("http.proxyPort"))));
                 conn = url.openConnection(proxy);
             } else {
                 conn = url.openConnection();
             }
-            addBasicAuthentication(address, conn);
+            addBasicAuthentication(address, conn, repository);
             final String userAgentValue = calculateUserAgent();
             conn.setRequestProperty("User-Agent", userAgentValue);
             conn.connect();
@@ -311,8 +364,8 @@ public class ArtifactDownloader {
         return String.format("%s/%s (%s;%s;%s) (%s;%s;%s)", appName, appVersion, osName, osVersion, osArch, javaVendor, javaVersion, javaVendorVersion);
     }
 
-    private void addBasicAuthentication(URI address, URLConnection conn) throws IOException {
-        String userInfo = calculateUserInfo(address);
+    private void addBasicAuthentication(URI address, URLConnection conn, MavenRepository repository) throws IOException {
+        String userInfo = calculateUserInfo(address, repository);
         if (userInfo == null) {
             return;
         }
@@ -336,18 +389,20 @@ public class ArtifactDownloader {
         }
     }
 
-    private String calculateUserInfo(URI uri) {
-
-        if (envMap.get("FEATURE_REPO_USER") != null && envMap.get("FEATURE_REPO_PASSWORD") != null) {
-            return envMap.get("FEATURE_REPO_USER") + ':' + envMap.get("FEATURE_REPO_PASSWORD");
+    private String calculateUserInfo(URI uri, MavenRepository repository) {
+        if (repository.getUserId() != null && repository.getPassword() != null) {
+            return repository.getUserId() + ":" + repository.getPassword();
         }
+//        if (envMap.get("FEATURE_REPO_USER") != null && envMap.get("FEATURE_REPO_PASSWORD") != null) {
+//            return (String)envMap.get("FEATURE_REPO_USER") + ':' + (String)envMap.get("FEATURE_REPO_PASSWORD");
+//        }
         return uri.getUserInfo();
     }
 
     private static class SystemPropertiesProxyAuthenticator extends Authenticator {
         @Override
         protected PasswordAuthentication getPasswordAuthentication() {
-            return new PasswordAuthentication(envMap.get("https.proxyUser"), envMap.get("https.proxyPassword").toCharArray());
+            return new PasswordAuthentication((String) envMap.get("https.proxyUser"), ((String) envMap.get("https.proxyPassword")).toCharArray());
         }
     }
 
@@ -377,14 +432,14 @@ public class ArtifactDownloader {
 
     public void checkValidProxy() throws InstallException {
 
-        String proxyPort = envMap.get("https.proxyPort");
+        String proxyPort = (String) envMap.get("https.proxyPort");
         if (envMap.get("https.proxyUser") != null) {
             int proxyPortnum = Integer.parseInt(proxyPort);
-            if (envMap.get("https.proxyHost").isEmpty()) {
+            if (((String) envMap.get("https.proxyHost")).isEmpty()) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_HOST_MISSING");
             } else if (proxyPortnum < 0 || proxyPortnum > 65535) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_INVALID_PROXY_PORT", proxyPort);
-            } else if (envMap.get("https.proxyPassword").isEmpty() ||
+            } else if (((String) envMap.get("https.proxyPassword")).isEmpty() ||
                        envMap.get("https.proxyPassword") == null) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_PWD_MISSING");
             }
@@ -396,11 +451,11 @@ public class ArtifactDownloader {
 
     }
 
-    public void setEnvMap(Map<String, String> envMap) {
+    public void setEnvMap(Map<String, Object> envMap) {
         this.envMap = envMap;
     }
 
-    public Map<String, String> getEnvMap() {
+    public Map<String, Object> getEnvMap() {
         return this.envMap;
     }
 

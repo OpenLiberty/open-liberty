@@ -11,6 +11,8 @@
 
 package com.ibm.ws.security.acme.internal.util;
 
+import java.util.concurrent.TimeUnit;
+
 public class AcmeConstants {
 
 	public static final String ACME_CONFIG_PID = "com.ibm.ws.security.acme.config";
@@ -25,10 +27,8 @@ public class AcmeConstants {
 	public static final String SUBJECT_DN = "subjectDN";
 
 	// Challenge and order related fields.
-	public static final String CHALL_RETRIES = "challengeRetries";
-	public static final String CHALL_RETRY_WAIT = "challengeRetryWait";
-	public static final String ORDER_RETRIES = "orderRetries";
-	public static final String ORDER_RETRY_WAIT = "orderRetryWait";
+	public static final String CHALL_POLL_TIMEOUT = "challengePollTimeout";
+	public static final String ORDER_POLL_TIMEOUT = "orderPollTimeout";
 
 	// ACME account related fields.
 	public static final String ACCOUNT_KEY_FILE = "accountKeyFile";
@@ -41,7 +41,17 @@ public class AcmeConstants {
 	public static final String TRANSPORT_TRUST_STORE = "trustStore";
 	public static final String TRANSPORT_TRUST_STORE_PASSWORD = "trustStorePassword";
 	public static final String TRANSPORT_TRUST_STORE_TYPE = "trustStoreType";
+	
+	// Renewal configuration options
+	public static final String RENEW_BEFORE_EXPIRATION = "renewBeforeExpiration";
 
+	// Revocation checker configuration.
+	public static final String REVOCATION_CHECKER = "acmeRevocationChecker";
+	public static final String REVOCATION_CHECKER_ENABLED = "enabled";
+	public static final String REVOCATION_OCSP_RESPONDER_URL = "ocspResponderUrl";
+	public static final String REVOCATION_PREFER_CRLS = "preferCRLs";
+	public static final String REVOCATION_DISABLE_FALLBACK = "disableFallback";
+	
 	/*
 	 * End constants that match the metatype fields
 	 */
@@ -57,4 +67,13 @@ public class AcmeConstants {
 
 	public static final String ACCOUNT_TYPE = "account";
 	public static final String DOMAIN_TYPE = "domain";
+	
+	public static final long RENEW_CERT_MIN = 15000L; // Minimum allowed time to check for expiration
+	public static final Long RENEW_CERT_MIN_WARN_LEVEL = 60000L; // The renew time that we'll put out a warning that you've picked a very low renew time
+	public static final int RENEW_DEFAULT_DAYS = 7;
+	public static final Long RENEW_DEFAULT_MS = TimeUnit.DAYS.toMillis(RENEW_DEFAULT_DAYS);  // 604800000L; 
+	public static final double RENEW_DIVISOR = .5;
+	public static final long CHALLENGE_POLL_DEFAULT = 120000l;
+	public static final long ORDER_POLL_DEFAULT = 120000l;
+
 }

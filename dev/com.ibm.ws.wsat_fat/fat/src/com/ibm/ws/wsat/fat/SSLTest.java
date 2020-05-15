@@ -37,8 +37,10 @@ public class SSLTest extends DBTestBase {
 				.getLibertyServer("WSATSSL_Client");
 		server1 = LibertyServerFactory
 				.getLibertyServer("WSATSSL_Server1");
+		server1.setHttpDefaultPort(server1Port);
 		server2 = LibertyServerFactory
 				.getLibertyServer("WSATSSL_Server2");
+		server2.setHttpDefaultPort(server2Port);
 
 		DBTestBase.initWSATTest(client);
 		DBTestBase.initWSATTest(server1);
@@ -51,9 +53,9 @@ public class SSLTest extends DBTestBase {
 		CLient_URL = "http://" + client.getHostname() + ":"
 				+ client.getHttpDefaultPort();
 		Server1_URL = "http://" + server1.getHostname() + ":"
-				+ server1Port;
+				+ server1.getHttpDefaultPort();
 		Server2_URL = "http://" + server2.getHostname() + ":"
-				+ server2Port;
+				+ server2.getHttpDefaultPort();
 
 		if (client != null && !client.isStarted()) {
 			client.startServer();
@@ -95,7 +97,7 @@ public class SSLTest extends DBTestBase {
 	}
 
 	@Test
-  @Mode(TestMode.LITE)
+    @Mode(TestMode.LITE)
 	public void testSSL_AllCommitByProxy() {
 		client.waitForStringInLog("CWLIB0206I");
 		final String testURL = "/" + appName + "/ClientServlet";
@@ -105,8 +107,6 @@ public class SSLTest extends DBTestBase {
 				+ commit + ":" + basicURL + ":"
 				+ server2Port;
 		commonTest(appName, wsatURL, goodResult, "1");
-		String result = client.waitForStringInLog("CWLIB0206I", 5000);
-		assertTrue(result != null && !result.isEmpty());
 	}
 
 	@Test

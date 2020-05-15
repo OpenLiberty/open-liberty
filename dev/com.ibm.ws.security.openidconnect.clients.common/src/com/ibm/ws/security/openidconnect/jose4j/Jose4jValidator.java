@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -173,7 +173,7 @@ public class Jose4jValidator {
             if (issuedAt.isAfter(expiration) ||
                     !JsonTokenUtil.isCurrentTimeInInterval(clockSkewInSeconds, issuedAt.getMillis(), expiration.getMillis())) {
 
-                Object[] objects = new Object[] { this.clientId, new Instant(System.currentTimeMillis()), expiration, issuedAt };
+                Object[] objects = new Object[] { this.clientId, jwtClaims.getSubject(), new Instant(System.currentTimeMillis()), expiration, issuedAt };
 
                 String failMsg = Tr.formatMessage(tc, "OIDC_JWT_VERIFY_STATE_ERR", objects);
                 oidcClientRequest.setRsFailMsg(OidcCommonClientRequest.EXPIRED_TOKEN, failMsg);

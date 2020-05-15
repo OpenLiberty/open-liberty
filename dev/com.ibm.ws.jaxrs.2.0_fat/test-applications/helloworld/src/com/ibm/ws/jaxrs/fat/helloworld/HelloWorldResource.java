@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -51,6 +52,21 @@ public class HelloWorldResource {
         // Note that if null is returned from a resource method, a HTTP 204 (No
         // Content) status code response is sent.
         return HelloWorldResource.message;
+    }
+
+    /**
+     * Processes a GET request with a regex encased in parentheses.
+     * See https://github.com/OpenLiberty/open-liberty/issues/11893.
+     *
+     * @return the stored message
+     */
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path("/{uniqueid : ([0-9a-t]{8}|[0-9a-t]{11})}/{testString}")
+    public String getMessage(@PathParam("uniqueid") String uniqueid,
+                             @PathParam("testString") String testString) {
+        System.out.println("Jim... " +  HelloWorldResource.message + ":" + uniqueid + ":" + testString);
+        return HelloWorldResource.message + ":" + uniqueid + ":" + testString;
     }
 
     /**

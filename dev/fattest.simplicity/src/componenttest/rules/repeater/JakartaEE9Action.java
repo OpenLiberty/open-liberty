@@ -26,7 +26,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.jakarta.transformer.JakartaTransformer;
-
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.topology.impl.LibertyServer;
@@ -41,28 +40,62 @@ import componenttest.topology.utils.FileUtils;
  * </ol>
  */
 public class JakartaEE9Action extends FeatureReplacementAction {
-
     private static final Class<?> c = JakartaEE9Action.class;
 
     public static final String ID = "EE9_FEATURES";
 
-    static final String[] EE9_FEATURES_ARRAY = { "jakartaee-9.0", "webProfile-9.0", "jakartaeeClient-9.0", "componenttest-2.0",
-                                                 "beanValidation-3.0", "cdi-3.0", "concurrent-2.0",
-                                                 "el-4.0", "javaMail-2.0", "jaxrs-3.0", "jaxrsClient-3.0",
-                                                 "jpa-3.0", "jsonp-2.0", "jsonb-2.0", "jsonpContainer-2.0", "jsonbContainer-2.0",
-                                                 "jsf-3.0", "jsp-3.0", "servlet-5.0"
+    // Point-in-time list of enabled JakartaEE9 features.
+    // This list is of only the currently enabled features.
+    //
+    // FAT tests use a mix of enabled features and not yet enabled
+    // features, which is necessary for the FATs to run.
+
+    static final String[] EE9_FEATURES_ARRAY = {
+      "jakartaee-9.0",
+      "webProfile-9.0",
+      "jakartaeeClient-9.0",
+      "componenttest-2.0", // replaces "componenttest-1.0"
+      "beanValidation-3.0",
+      "cdi-3.0",
+      "concurrent-2.0",
+      "el-4.0",
+      "javaMail-2.0",
+      "jaxrs-3.0",
+      "jaxrsClient-3.0",
+      "jpa-3.0",
+      "jsonp-2.0",
+      "jsonb-2.0",
+      "jsonpContainer-2.0",
+      "jsonbContainer-2.0",
+      "jsf-3.0",
+      "jsp-3.0",
+      "servlet-5.0"
     };
 
-    public static final Set<String> EE9_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE9_FEATURES_ARRAY)));
+    public static final Set<String> EE9_FEATURE_SET =
+        Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE9_FEATURES_ARRAY)));
 
-//    private Function<Set<Path>, Set<Path>> selectPathsFunction;
+    private static Set<String> removeFeatures() {
+        Set<String> removeFeatures = new HashSet<>(EE7FeatureReplacementAction.EE7_FEATURE_SET);
+        removeFeatures.addAll(EE8FeatureReplacementAction.EE8_FEATURE_SET);
+        removeFeatures.add("componenttest-1.0"); // replaced by "componenttest-2.0"
+        return removeFeatures;
+    }
 
     public JakartaEE9Action() {
-        super(removeFeatures(), EE9_FEATURE_SET);
+        // Remove the EE7 and EE8 features; replace them with the EE9 features
+        super( JakartaEE9Action.removeFeatures(), EE9_FEATURE_SET );
         withMinJavaLevel(8);
         forceAddFeatures(false);
         withID(ID);
     }
+
+    @Override
+    public String toString() {
+        return "JakartaEE9 FAT repeat action";
+    }
+
+    //
 
     @Override
     public JakartaEE9Action addFeature(String addFeature) {
@@ -114,17 +147,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
         return (JakartaEE9Action) super.forClients(clientNames);
     }
 
-    @Override
-    public String toString() {
-        return "Set all features and applications to Jakarta EE9 compatibility";
-    }
-
-    private static Set<String> removeFeatures() {
-        Set<String> removeFeatures = new HashSet<>(EE7FeatureReplacementAction.EE7_FEATURE_SET);
-        removeFeatures.addAll(EE8FeatureReplacementAction.EE8_FEATURE_SET);
-        removeFeatures.add("componenttest-1.0");
-        return removeFeatures;
-    }
+    //
 
     @Override
     public void setup() throws Exception {
@@ -146,9 +169,11 @@ public class JakartaEE9Action extends FeatureReplacementAction {
     }
 
     /**
-     * Invokes the Jakarta transformer on a given application (ear or war).
-     * After completion, the transformed application will be available at the $appPath,
-     * and the original application will be available at <server>/backup/
+     * Invoke the Jakarta transformer on an application (ear or war).
+     *
+     * A backup of the original application is placed under "&lt;server&gt;/backup".
+     * ".jakarta" is appended to name the initially transformed application.  However,
+     * that application is renamed to the initial application name.
      *
      * @param appPath The application path to be transformed to Jakarta
      */
@@ -188,26 +213,48 @@ public class JakartaEE9Action extends FeatureReplacementAction {
             throw new RuntimeException(e);
         }
 
+        // The rules are copied from 'open-liberty/dev/wlp-jakartaee-transform/rules' to
+        // the user 'autoFVT-templates' folder.
+        //
+        //   jakarta-selections.properties
+        //   jakarta-renames.properties
+        //   jakarta-versions.properties
+        //   jakarta-bundles.properties
+        //   jakarta-direct.properties
+        //   jakarta-xml-master.properties
+        //   (other xml properties files as referenced by 'jakarta-xml-master.properties'
+
         String transformerRulesRoot = System.getProperty("user.dir") + "/autoFVT-templates/";
         try {
             // Invoke the jakarta transformer
-            String[] args = new String[11];
+            String[] args = new String[15];
+
             args[0] = appPath.toAbsolutePath().toString(); // input
             args[1] = outputPath.toAbsolutePath().toString(); // output
+
             args[2] = "-v"; // verbose
-            args[3] = "-tr"; // override default properties in transformer jar
+
+            // override jakarta default properties, which are
+            // packaged in the transformer jar
+            args[3] = "-tr"; // package-renames
             args[4] = transformerRulesRoot + "jakarta-renames.properties";
-            args[5] = "-ts";
+            args[5] = "-ts"; // file selections and omissions
             args[6] = transformerRulesRoot + "jakarta-selections.properties";
-            args[7] = "-tv";
+            args[7] = "-tv"; // package version updates
             args[8] = transformerRulesRoot + "jakarta-versions.properties";
-            args[9] = "-tb";
+            args[9] = "-tb"; // bundle identity updates
             args[10] = transformerRulesRoot + "jakarta-bundles.properties";
+            args[11] = "-td"; // exact java string constant updates
+            args[12] = transformerRulesRoot + "jakarta-direct.properties";
+            args[13] = "-tf"; // master xml subsitution file
+            args[14] = transformerRulesRoot + "jakarta-xml-master.properties";
+
+            // Note the use of 'com.ibm.ws.JakartaTransformer'.
+            // 'org.eclipse.transformer.Transformer' might also be used instead.
 
             JakartaTransformer.main(args);
 
             if (outputPath.toFile().exists()) {
-
                 Path backupAppPath = backupPath.resolve(appPath.getFileName());
                 if (!Files.exists(backupAppPath)) {
                     Files.createFile(backupAppPath);
@@ -233,5 +280,4 @@ public class JakartaEE9Action extends FeatureReplacementAction {
             }
         }
     }
-
 }

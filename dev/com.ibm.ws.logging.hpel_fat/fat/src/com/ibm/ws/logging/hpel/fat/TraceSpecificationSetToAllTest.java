@@ -39,7 +39,7 @@ import componenttest.topology.utils.HttpUtils;
 @RunWith(FATRunner.class)
 public class TraceSpecificationSetToAllTest {
 
-    @Server("HpelServer")
+    @Server("HpelServer2")
     public static LibertyServer server;
     private static final int CONN_TIMEOUT = 60;
     private final Class<?> c = TraceSpecificationSetToAllTest.class;
@@ -53,17 +53,8 @@ public class TraceSpecificationSetToAllTest {
     public static void setUp() throws Exception {
         ShrinkHelper.defaultDropinApp(server, "LogFat", "com.ibm.ws.logging.hpel");
         ShrinkHelper.defaultDropinApp(server, "HpelFat", "com.ibm.ws.logging.hpel.servlet");
-        if (!CommonTasks.isHpelEnabled(server)) {
-            // HPEL is not enabled.
-            CommonTasks.writeLogMsg(Level.INFO, "HPEL is not enabled on " + server.getServerName() + ", attempting to enable.");
-            CommonTasks.setHpelEnabled(server, true);
-            // if HPEL was not enabled, make sure trace spec is not valid to ensure restart below.
-
-        }
 
         CommonTasks.setHpelTraceSpec(server, traceSpecification);
-
-        CommonTasks.addBootstrapProperty(server, "com.ibm.ws.logging.trace.specification", "com.ibm.ws.logging.*=all:com.ibm.ws.org.*=all=enabled");
 
         CommonTasks.writeLogMsg(Level.INFO, "Bouncing server for new spec to take effect. Stopping application server");
         server.stopServer();

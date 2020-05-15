@@ -1,0 +1,41 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: MicroProfile Metrics Support for MP GraphQL
+Bundle-SymbolicName: com.ibm.ws.microprofile.graphql.metrics.1.0
+Bundle-Description: MicroProfile Metrics Support for MP GraphQL
+
+Export-Package: \
+  com.ibm.ws.microprofile.graphql.metrics.component;thread-context=true
+
+Include-Resource: \
+  META-INF=resources/META-INF
+
+src: src/
+
+
+Service-Component: \
+  com.ibm.ws.io.smallrye.graphql.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=optional; \
+    properties:="resources=META-INF/services/io.smallrye.graphql.spi.MetricsService"
+
+-buildpath: \
+  io.smallrye:smallrye-graphql;strategy=exact;version=1.0.2,\
+  com.ibm.websphere.org.eclipse.microprofile.metrics.2.3;version=latest,\
+  com.ibm.ws.logging;version=latest,\
+  com.ibm.ws.microprofile.metrics.cdi.2.3,\
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+ 

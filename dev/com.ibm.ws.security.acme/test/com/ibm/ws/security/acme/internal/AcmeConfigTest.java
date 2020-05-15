@@ -12,8 +12,11 @@
 package com.ibm.ws.security.acme.internal;
 
 import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.net.URI;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
@@ -65,8 +68,12 @@ public class AcmeConfigTest {
 
 	@Test
 	public void constructor_accountKeyFile_unreadable() throws Exception {
-		
-		Assume.assumeTrue(!System.getProperty("os.name", "unknown").toLowerCase().contains("windows")); // windows not enforcing the setReadable
+
+		Assume.assumeTrue(!System.getProperty("os.name", "unknown").toLowerCase().contains("windows")); // windows
+																										// not
+																										// enforcing
+																										// the
+																										// setReadable
 
 		expectedException.expect(AcmeCaException.class);
 		expectedException.expectMessage("CWPKI2021E");
@@ -84,8 +91,12 @@ public class AcmeConfigTest {
 
 	@Test
 	public void constructor_accountKeyFile_unwritable() throws Exception {
-		
-		Assume.assumeTrue(!System.getProperty("os.name", "unknown").toLowerCase().contains("windows")); // windows not enforcing the setWritable
+
+		Assume.assumeTrue(!System.getProperty("os.name", "unknown").toLowerCase().contains("windows")); // windows
+																										// not
+																										// enforcing
+																										// the
+																										// setWritable
 
 		expectedException.expect(AcmeCaException.class);
 		expectedException.expectMessage("CWPKI2023E");
@@ -156,8 +167,12 @@ public class AcmeConfigTest {
 
 	@Test
 	public void constructor_domainKeyFile_unreadable() throws Exception {
-		
-		Assume.assumeTrue(!System.getProperty("os.name", "unknown").toLowerCase().contains("windows")); // windows not enforcing the setReadable
+
+		Assume.assumeTrue(!System.getProperty("os.name", "unknown").toLowerCase().contains("windows")); // windows
+																										// not
+																										// enforcing
+																										// the
+																										// setReadable
 
 		expectedException.expect(AcmeCaException.class);
 		expectedException.expectMessage("CWPKI2020E");
@@ -176,8 +191,12 @@ public class AcmeConfigTest {
 
 	@Test
 	public void constructor_domainKeyFile_unwritable() throws Exception {
-		
-		Assume.assumeTrue(!System.getProperty("os.name", "unknown").toLowerCase().contains("windows")); // windows not enforcing the setWritable
+
+		Assume.assumeTrue(!System.getProperty("os.name", "unknown").toLowerCase().contains("windows")); // windows
+																										// not
+																										// enforcing
+																										// the
+																										// setWritable
 
 		expectedException.expect(AcmeCaException.class);
 		expectedException.expectMessage("CWPKI2022E");
@@ -308,20 +327,25 @@ public class AcmeConfigTest {
 		Map<String, Object> properties = new HashMap<String, Object>();
 		properties.put(AcmeConstants.ACCOUNT_CONTACT, new String[] { "mailto://pacman@mail.com" });
 		properties.put(AcmeConstants.ACCOUNT_KEY_FILE, "account.key");
-		properties.put(AcmeConstants.CHALL_RETRIES, 1);
-		properties.put(AcmeConstants.CHALL_RETRY_WAIT, 2L);
+		properties.put(AcmeConstants.CHALL_POLL_TIMEOUT, 2L);
 		properties.put(AcmeConstants.DIR_URI, "https://localhost:443/dir");
 		properties.put(AcmeConstants.DOMAIN_KEY_FILE, "domain.key");
 		properties.put(AcmeConstants.DOMAIN, new String[] { "domain1.com", "domain2.com" });
-		properties.put(AcmeConstants.ORDER_RETRIES, 3);
-		properties.put(AcmeConstants.ORDER_RETRY_WAIT, 4L);
+		properties.put(AcmeConstants.ORDER_POLL_TIMEOUT, 4L);
 		properties.put(AcmeConstants.SUBJECT_DN, "cn=domain1.com,ou=liberty,o=ibm.com");
 		properties.put(AcmeConstants.TRANSPORT_CONFIG + ".0." + AcmeConstants.TRANSPORT_PROTOCOL, "SSL");
 		properties.put(AcmeConstants.TRANSPORT_CONFIG + ".0." + AcmeConstants.TRANSPORT_TRUST_STORE, "truststore.p12");
 		properties.put(AcmeConstants.TRANSPORT_CONFIG + ".0." + AcmeConstants.TRANSPORT_TRUST_STORE_PASSWORD,
 				new SerializableProtectedString("acmepassword".toCharArray()));
 		properties.put(AcmeConstants.TRANSPORT_CONFIG + ".0." + AcmeConstants.TRANSPORT_TRUST_STORE_TYPE, "PKCS12");
+		properties.put(AcmeConstants.REVOCATION_CHECKER + ".0." + AcmeConstants.REVOCATION_CHECKER_ENABLED, false);
+		properties.put(AcmeConstants.REVOCATION_CHECKER + ".0." + AcmeConstants.REVOCATION_DISABLE_FALLBACK, true);
+		properties.put(AcmeConstants.REVOCATION_CHECKER + ".0." + AcmeConstants.REVOCATION_OCSP_RESPONDER_URL,
+				"http://localhost:4001");
+		properties.put(AcmeConstants.REVOCATION_CHECKER + ".0." + AcmeConstants.REVOCATION_PREFER_CRLS, true);
 		properties.put(AcmeConstants.VALID_FOR, 5L);
+		properties.put(AcmeConstants.RENEW_BEFORE_EXPIRATION, 691200000L); // 8
+																			// days
 
 		/*
 		 * Instantiate the ACME configuration.
@@ -333,14 +357,12 @@ public class AcmeConfigTest {
 		 */
 		assertEquals("mailto://pacman@mail.com", acmeConfig.getAccountContacts().get(0));
 		assertEquals("account.key", acmeConfig.getAccountKeyFile());
-		assertEquals(1, acmeConfig.getChallengeRetries().intValue());
-		assertEquals(2L, acmeConfig.getChallengeRetryWaitMs().longValue());
+		assertEquals(2L, acmeConfig.getChallengePollTimeoutMs().longValue());
 		assertEquals("https://localhost:443/dir", acmeConfig.getDirectoryURI());
 		assertEquals("domain.key", acmeConfig.getDomainKeyFile());
 		assertEquals("domain1.com", acmeConfig.getDomains().get(0));
 		assertEquals("domain2.com", acmeConfig.getDomains().get(1));
-		assertEquals(3, acmeConfig.getOrderRetries().intValue());
-		assertEquals(4L, acmeConfig.getOrderRetryWaitMs().intValue());
+		assertEquals(4L, acmeConfig.getOrderPollTimeoutMs().intValue());
 
 		SSLConfig sslConfig = acmeConfig.getSSLConfig();
 		assertEquals("SSL", sslConfig.getProperty(Constants.SSLPROP_PROTOCOL));
@@ -352,6 +374,36 @@ public class AcmeConfigTest {
 		assertEquals("ou=liberty", acmeConfig.getSubjectDN().get(1).toString());
 		assertEquals("o=ibm.com", acmeConfig.getSubjectDN().get(2).toString());
 		assertEquals(5L, acmeConfig.getValidForMs().longValue());
+
+		assertEquals(691200000L, acmeConfig.getRenewBeforeExpirationMs().longValue());
+		assertTrue("Auto-renewal should be enabled", acmeConfig.isAutoRenewOnExpiration());
+
+		assertTrue(acmeConfig.isDisableFallback());
+		assertEquals(Boolean.FALSE, acmeConfig.isRevocationCheckerEnabled());
+		assertEquals(URI.create("http://localhost:4001"), acmeConfig.getOcspResponderUrl());
+		assertTrue(acmeConfig.isPreferCrls());
+	}
+
+	@Test
+	public void constructor_validConfig_disableRenew() throws Exception {
+
+		/*
+		 * Create a properties map.
+		 */
+		Map<String, Object> properties = getBasicConfig();
+		properties.put(AcmeConstants.RENEW_BEFORE_EXPIRATION, -1L);
+
+		/*
+		 * Instantiate the ACME configuration.
+		 */
+		AcmeConfig acmeConfig = new AcmeConfig(properties);
+
+		/*
+		 * Verify values. A negative or zero renew disables auto-renew
+		 */
+
+		assertEquals(0L, acmeConfig.getRenewBeforeExpirationMs().longValue());
+		assertFalse("Auto-renewal should be disabled", acmeConfig.isAutoRenewOnExpiration());
 	}
 
 	@Test
@@ -362,14 +414,13 @@ public class AcmeConfigTest {
 		 */
 		Map<String, Object> properties = new HashMap<String, Object>();
 		properties.put(AcmeConstants.ACCOUNT_KEY_FILE, "account.key");
-		properties.put(AcmeConstants.CHALL_RETRIES, -1);
-		properties.put(AcmeConstants.CHALL_RETRY_WAIT, -2L);
+		properties.put(AcmeConstants.CHALL_POLL_TIMEOUT, -2L);
 		properties.put(AcmeConstants.DIR_URI, "https://localhost:443/dir");
 		properties.put(AcmeConstants.DOMAIN_KEY_FILE, "domain.key");
 		properties.put(AcmeConstants.DOMAIN, new String[] { "domain1.com", "domain2.com" });
-		properties.put(AcmeConstants.ORDER_RETRIES, -3);
-		properties.put(AcmeConstants.ORDER_RETRY_WAIT, -4L);
+		properties.put(AcmeConstants.ORDER_POLL_TIMEOUT, -4L);
 		properties.put(AcmeConstants.VALID_FOR, -5L);
+		properties.put(AcmeConstants.RENEW_BEFORE_EXPIRATION, AcmeConstants.RENEW_CERT_MIN - 10);
 
 		/*
 		 * Instantiate the ACME configuration.
@@ -379,10 +430,35 @@ public class AcmeConfigTest {
 		/*
 		 * Verify values.
 		 */
-		assertEquals(10, acmeConfig.getChallengeRetries().intValue());
-		assertEquals(5000L, acmeConfig.getChallengeRetryWaitMs().longValue());
-		assertEquals(10, acmeConfig.getOrderRetries().intValue());
-		assertEquals(3000L, acmeConfig.getOrderRetryWaitMs().intValue());
+		assertEquals(0L, acmeConfig.getChallengePollTimeoutMs().longValue());
+		assertEquals(0L, acmeConfig.getOrderPollTimeoutMs().intValue());
 		assertEquals(null, acmeConfig.getValidForMs());
+		assertEquals(AcmeConstants.RENEW_CERT_MIN, acmeConfig.getRenewBeforeExpirationMs().longValue());
+		assertTrue("Auto-renewal should be enabled", acmeConfig.isAutoRenewOnExpiration());
+	}
+
+	private Map<String, Object> getBasicConfig() {
+		Map<String, Object> properties = new HashMap<String, Object>();
+		properties.put(AcmeConstants.ACCOUNT_KEY_FILE, "account.key");
+		properties.put(AcmeConstants.DIR_URI, "https://localhost:443/dir");
+		properties.put(AcmeConstants.DOMAIN_KEY_FILE, "domain.key");
+		properties.put(AcmeConstants.DOMAIN, new String[] { "domain1.com", "domain2.com" });
+
+		return properties;
+	}
+
+	@Test
+	public void constructor_ocspReponderUrl_invalid() throws Exception {
+
+		expectedException.expect(AcmeCaException.class);
+		expectedException.expectMessage("CWPKI2062E");
+
+		Map<String, Object> properties = new HashMap<String, Object>();
+		properties.put(AcmeConstants.ACCOUNT_KEY_FILE, "account.key");
+		properties.put(AcmeConstants.DIR_URI, "https://localhost:443/dir");
+		properties.put(AcmeConstants.DOMAIN, new String[] { "domain1.com", "domain2.com" });
+		properties.put(AcmeConstants.DOMAIN_KEY_FILE, "domain.key");
+		properties.put(AcmeConstants.REVOCATION_CHECKER + ".0." + AcmeConstants.REVOCATION_OCSP_RESPONDER_URL, ":");
+		new AcmeConfig(properties);
 	}
 }

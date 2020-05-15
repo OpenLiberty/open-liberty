@@ -1,0 +1,23 @@
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="Server for testing JavaServer Pages 2.3">
+
+    <include location="../fatTestPorts.xml"/>
+    
+    <featureManager>
+        <feature>jsp-2.3</feature>
+        <feature>cdi-1.2</feature>
+    </featureManager>
+    
+    <logging traceSpecification="*=info=enabled:com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:HTTPChannel=all:TCPChannel=all:GenericBNF=all:com.ibm.ws.jsp*=all" maxFileSize="32" maxFiles="24" traceFormat="BASIC"/> 
+ 
+    
+</server>

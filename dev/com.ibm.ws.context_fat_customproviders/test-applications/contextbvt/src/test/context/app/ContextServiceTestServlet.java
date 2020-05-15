@@ -66,7 +66,6 @@ import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.ThreadContextDeserializer;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
-import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.app.FATServlet;
 
@@ -91,13 +90,6 @@ public class ContextServiceTestServlet extends FATServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        // TODO remove this workaround for injection intermittently not working
-        if (mapContextSvc == null)
-            try {
-                mapContextSvc = InitialContext.doLookup("concurrent/MapContextSvc");
-            } catch (NamingException x) {
-                throw new ServletException(x);
-            }
     }
 
     /**
@@ -105,7 +97,6 @@ public class ContextServiceTestServlet extends FATServlet {
      * then default context is applied to the thread.
      */
     @Test
-    @AllowedFFDC("java.lang.ClassNotFoundException") // TODO remove once resource injection is consistently working for Jakarta
     public void testApplyDefaultContextForAllContextTypes() throws Exception {
         List<ServiceReference<?>> serviceRefs = new LinkedList<ServiceReference<?>>();
 
@@ -176,7 +167,6 @@ public class ContextServiceTestServlet extends FATServlet {
      * then default context is applied to the thread.
      */
     @Test
-    @AllowedFFDC("java.lang.ClassNotFoundException") // TODO remove once resource injection is consistently working for Jakarta
     public void testApplyDefaultContextForUnconfiguredContextTypes() throws Exception {
         List<ServiceReference<?>> serviceRefs = new LinkedList<ServiceReference<?>>();
 
@@ -245,7 +235,6 @@ public class ContextServiceTestServlet extends FATServlet {
      * Test thread context that we captured from a service component activate method.
      */
     @Test
-    @AllowedFFDC("java.lang.ClassNotFoundException") // TODO remove once resource injection is consistently working for Jakarta
     public void testCaptureContextOfServiceComponent() throws Exception {
         ServiceReference<Executor> svcRef = bundleContext.getServiceReferences(Executor.class, "(owner=myThreadFactory)").iterator().next();
         Executor contextualExecutor = bundleContext.getService(svcRef);
@@ -284,7 +273,6 @@ public class ContextServiceTestServlet extends FATServlet {
      * Test classloader context
      */
     @Test
-    @AllowedFFDC("java.lang.ClassNotFoundException") // TODO remove once resource injection is consistently working for Jakarta
     public void testClassloaderContext() throws Exception {
         final String className = AppTask.class.getName();
 
@@ -342,7 +330,6 @@ public class ContextServiceTestServlet extends FATServlet {
      * Test context propagation of the "map" context
      */
     @Test
-    @AllowedFFDC("java.lang.ClassNotFoundException") // TODO remove once resource injection is consistently working for Jakarta
     public void testContextSnapshot() throws Exception {
         List<ServiceReference<?>> serviceRefs = new LinkedList<ServiceReference<?>>();
         @SuppressWarnings("rawtypes")
@@ -388,7 +375,6 @@ public class ContextServiceTestServlet extends FATServlet {
      * Contextualize a task interface defined by the application.
      */
     @Test
-    @AllowedFFDC("java.lang.ClassNotFoundException") // TODO remove once resource injection is consistently working for Jakarta
     public void testContextualizeAppDefinedClass() throws Exception {
         List<ServiceReference<?>> serviceRefs = new LinkedList<ServiceReference<?>>();
         @SuppressWarnings("rawtypes")
@@ -445,7 +431,6 @@ public class ContextServiceTestServlet extends FATServlet {
      * Verify that the contextualMethods setting properly controls which methods are invoked with context.
      */
     @Test
-    @AllowedFFDC("java.lang.ClassNotFoundException") // TODO remove once resource injection is consistently working for Jakarta
     public void testContextualMethods() throws Exception {
         List<ServiceReference<?>> serviceRefs = new LinkedList<ServiceReference<?>>();
         @SuppressWarnings("rawtypes")
@@ -513,7 +498,6 @@ public class ContextServiceTestServlet extends FATServlet {
      * Test capture and propagation of a "numeration" context with a configured attribute (radix=2)
      */
     @Test
-    @AllowedFFDC("java.lang.ClassNotFoundException") // TODO remove once resource injection is consistently working for Jakarta
     public void testContextWithConfiguredAttribute() throws Exception {
         List<ServiceReference<?>> serviceRefs = new LinkedList<ServiceReference<?>>();
         ServiceReference<?> numSvcRef = bundleContext.getServiceReference("test.numeration.NumerationService");
@@ -560,7 +544,6 @@ public class ContextServiceTestServlet extends FATServlet {
      * Test default classloader context
      */
     @Test
-    @AllowedFFDC("java.lang.ClassNotFoundException") // TODO remove once resource injection is consistently working for Jakarta
     public void testDefaultClassloaderContext() throws Exception {
         final String className = AppTask.class.getName();
 
@@ -600,7 +583,6 @@ public class ContextServiceTestServlet extends FATServlet {
      * Test default Java EE metadata context
      */
     @Test
-    @AllowedFFDC("java.lang.ClassNotFoundException") // TODO remove once resource injection is consistently working for Jakarta
     public void testDefaultJEEMetadataContext() throws Exception {
         final Callable<?> javaCompLookup = new Callable<Object>() {
             @Override
@@ -634,7 +616,6 @@ public class ContextServiceTestServlet extends FATServlet {
      * Try to use a context that has configuration errors.
      */
     @Test
-    @AllowedFFDC("java.lang.ClassNotFoundException") // TODO remove once resource injection is consistently working for Jakarta
     public void testErrorsInConfig() throws Exception {
         List<ServiceReference<?>> serviceRefs = new LinkedList<ServiceReference<?>>();
         @SuppressWarnings("rawtypes")
@@ -707,7 +688,6 @@ public class ContextServiceTestServlet extends FATServlet {
      * Serialize it and deserialize it, and make sure it works.
      */
     @Test
-    @AllowedFFDC("java.lang.ClassNotFoundException") // TODO remove once resource injection is consistently working for Jakarta
     public void testGetContext() throws Exception {
         List<ServiceReference<?>> serviceRefs = new LinkedList<ServiceReference<?>>();
         ServiceReference<Appendable> bufferSvcRef = bundleContext.getServiceReference(Appendable.class);
@@ -762,7 +742,6 @@ public class ContextServiceTestServlet extends FATServlet {
      * Test ContextService.getExecutionProperties
      */
     @Test
-    @AllowedFFDC("java.lang.ClassNotFoundException") // TODO remove once resource injection is consistently working for Jakarta
     public void testGetExecutionProperties() throws Exception {
         Map<String, String> execProps;
 
@@ -844,7 +823,6 @@ public class ContextServiceTestServlet extends FATServlet {
      * Confirm that we don't hang when baseContextRef causes an infinite loop of dependencies
      */
     @Test
-    @AllowedFFDC("java.lang.ClassNotFoundException") // TODO remove once resource injection is consistently working for Jakarta
     public void testInfiniteBaseContext() throws Exception {
         List<ServiceReference<?>> serviceRefs = new LinkedList<ServiceReference<?>>();
         try {
@@ -871,7 +849,6 @@ public class ContextServiceTestServlet extends FATServlet {
      * Contextualize a task to run on an unmanaged thread
      */
     @Test
-    @AllowedFFDC("java.lang.ClassNotFoundException") // TODO remove once resource injection is consistently working for Jakarta
     public void testJEEMetadataContext() throws Exception {
         final Callable<?> javaCompLookup = new Callable<Object>() {
             @Override
@@ -915,7 +892,6 @@ public class ContextServiceTestServlet extends FATServlet {
      * Test context propagation of different "numeration" contexts in combination
      */
     @Test
-    @AllowedFFDC("java.lang.ClassNotFoundException") // TODO remove once resource injection is consistently working for Jakarta
     public void testMultipleContextServices() throws Exception {
         List<ServiceReference<?>> serviceRefs = new LinkedList<ServiceReference<?>>();
         // Get the numeration service
@@ -1016,7 +992,6 @@ public class ContextServiceTestServlet extends FATServlet {
      * Tests of contextual proxy for multiple interfaces.
      */
     @Test
-    @AllowedFFDC("java.lang.ClassNotFoundException") // TODO remove once resource injection is consistently working for Jakarta
     public void testMultipleInterfaces() throws Exception {
         // no interfaces
         try {
@@ -1148,7 +1123,6 @@ public class ContextServiceTestServlet extends FATServlet {
      * Test that when context isn't specified, it should neither be propagated nor removed from the thread.
      */
     @Test
-    @AllowedFFDC("java.lang.ClassNotFoundException") // TODO remove once resource injection is consistently working for Jakarta
     public void testNoContext() throws Exception {
         List<ServiceReference<?>> serviceRefs = new LinkedList<ServiceReference<?>>();
         @SuppressWarnings("rawtypes")
@@ -1208,7 +1182,6 @@ public class ContextServiceTestServlet extends FATServlet {
      * and removed after.
      */
     @Test
-    @AllowedFFDC("java.lang.ClassNotFoundException") // TODO remove once resource injection is consistently working for Jakarta
     public void testOrderOfContextPropagation() throws Exception {
         List<ServiceReference<?>> serviceRefs = new LinkedList<ServiceReference<?>>();
         ServiceReference<Appendable> bufferSvcRef = bundleContext.getServiceReference(Appendable.class);
@@ -1323,7 +1296,6 @@ public class ContextServiceTestServlet extends FATServlet {
      * Programmatically specify additional thread context to capture.
      */
     @Test
-    @AllowedFFDC("java.lang.ClassNotFoundException") // TODO remove once resource injection is consistently working for Jakarta
     public void testProgrammaticallyAddContextConfiguration() throws Exception {
         List<ServiceReference<?>> serviceRefs = new LinkedList<ServiceReference<?>>();
 
@@ -1461,7 +1433,6 @@ public class ContextServiceTestServlet extends FATServlet {
      */
     @ExpectedFFDC(value = "java.util.concurrent.RejectedExecutionException")
     @Test
-    @AllowedFFDC("java.lang.ClassNotFoundException") // TODO remove once resource injection is consistently working for Jakarta
     public void testRejectedExecutionException() throws Exception {
         List<ServiceReference<?>> serviceRefs = new LinkedList<ServiceReference<?>>();
         try {
@@ -1544,7 +1515,6 @@ public class ContextServiceTestServlet extends FATServlet {
      * Submit contextual tasks to a thread pool
      */
     @Test
-    @AllowedFFDC("java.lang.ClassNotFoundException") // TODO remove once resource injection is consistently working for Jakarta
     public void testRunOnThreadPool() throws Exception {
         List<ServiceReference<?>> serviceRefs = new LinkedList<ServiceReference<?>>();
         @SuppressWarnings("rawtypes")
@@ -1616,7 +1586,6 @@ public class ContextServiceTestServlet extends FATServlet {
      * Serialize a contextual task. Then deserialize it and use it.
      */
     @Test
-    @AllowedFFDC("java.lang.ClassNotFoundException") // TODO remove once resource injection is consistently working for Jakarta
     public void testSerialization() throws Exception {
         List<ServiceReference<?>> serviceRefs = new LinkedList<ServiceReference<?>>();
         ServiceReference<Appendable> bufferSvcRef = bundleContext.getServiceReference(Appendable.class);
@@ -1673,7 +1642,6 @@ public class ContextServiceTestServlet extends FATServlet {
      * Verify that DefaultContextService gets returned before any configured ContextService.
      */
     @Test
-    @AllowedFFDC("java.lang.ClassNotFoundException") // TODO remove once resource injection is consistently working for Jakarta
     public void testServiceRanking() throws Exception {
         ServiceReference<WSContextService> ref1 = bundleContext.getServiceReference(WSContextService.class);
         WSContextService svc1 = bundleContext.getService(ref1);
@@ -1701,7 +1669,6 @@ public class ContextServiceTestServlet extends FATServlet {
      * Error path tests for contextual proxy for a single interface.
      */
     @Test
-    @AllowedFFDC("java.lang.ClassNotFoundException") // TODO remove once resource injection is consistently working for Jakarta
     public void testSingleInterface() throws Exception {
         // null instance
         try {
@@ -1750,7 +1717,6 @@ public class ContextServiceTestServlet extends FATServlet {
      * and allows for us to test serialization/deserialization of context.
      */
     @Test
-    @AllowedFFDC("java.lang.ClassNotFoundException") // TODO remove once resource injection is consistently working for Jakarta
     public void testThreadFactory() throws Exception {
         List<ServiceReference<?>> serviceRefs = new LinkedList<ServiceReference<?>>();
         @SuppressWarnings("rawtypes")
@@ -1815,7 +1781,6 @@ public class ContextServiceTestServlet extends FATServlet {
      * Submit a task that implements WSIdentifiable and verify that the owner and taskName are honored.
      */
     @Test
-    @AllowedFFDC("java.lang.ClassNotFoundException") // TODO remove once resource injection is consistently working for Jakarta
     public void testWSIdentifiable() throws Exception {
         List<ServiceReference<?>> serviceRefs = new LinkedList<ServiceReference<?>>();
         ServiceReference<Appendable> bufferSvcRef = bundleContext.getServiceReference(Appendable.class);

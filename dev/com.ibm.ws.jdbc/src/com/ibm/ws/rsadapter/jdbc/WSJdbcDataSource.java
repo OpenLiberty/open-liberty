@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2017 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 
 import javax.resource.ResourceException;
-import javax.resource.spi.ConnectionManager;
 import javax.resource.spi.ConnectionRequestInfo;
 import javax.sql.DataSource;
 
@@ -68,7 +67,7 @@ public class WSJdbcDataSource extends WSJdbcWrapper implements DataSource, FFDCS
      * @param mcf ManagedConnectionFactory implementation that created this data source.
      * @param connMgr connection manager that manages connections from this data source.
      */
-    public WSJdbcDataSource(WSManagedConnectionFactoryImpl mcf, ConnectionManager connMgr) 
+    public WSJdbcDataSource(WSManagedConnectionFactoryImpl mcf, WSConnectionManager connMgr)
     {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); 
 
@@ -76,7 +75,7 @@ public class WSJdbcDataSource extends WSJdbcWrapper implements DataSource, FFDCS
             Tr.entry(this, tc, "<init>", mcf, connMgr);
 
         this.mcf = mcf;
-        cm = (WSConnectionManager) connMgr;
+        cm = connMgr;
         resRefInfo = cm.getResourceRefInfo(); 
         dsConfig = mcf.dsConfig; 
 

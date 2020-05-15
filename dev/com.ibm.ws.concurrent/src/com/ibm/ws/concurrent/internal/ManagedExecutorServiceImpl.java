@@ -135,9 +135,14 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     private final AtomicReference<Map<String, String>> defaultExecutionProperties = new AtomicReference<Map<String, String>>();
 
     /**
-     * Jakarta EE versiom if Jakarta EE 9 or higher. If 0, assume a lesser EE spec version.
+     * Jakarta EE version if Jakarta EE 9 or higher. If 0, assume a lesser EE spec version.
      */
-    int eeVersion;
+    volatile int eeVersion;
+
+    /**
+     * Tracks the most recently bound EE version service reference. Only use this within the set/unsetEEVersion methods.
+     */
+    private ServiceReference<JavaEEVersion> eeVersionRef;
 
     /**
      * Hash code for this instance.
@@ -567,7 +572,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
      */
     @Reference(service = JavaEEVersion.class,
                cardinality = ReferenceCardinality.OPTIONAL,
-               policy = ReferencePolicy.STATIC,
+               policy = ReferencePolicy.DYNAMIC,
                policyOption = ReferencePolicyOption.GREEDY)
     protected void setEEVersion(ServiceReference<JavaEEVersion> ref) {
         String version = (String) ref.getProperty("version");
@@ -578,6 +583,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
             String major = dot > 0 ? version.substring(0, dot) : version;
             eeVersion = Integer.parseInt(major);
         }
+        eeVersionRef = ref;
     }
 
     /**
@@ -717,7 +723,10 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
      * @param ref reference to the service
      */
     protected void unsetEEVersion(ServiceReference<JavaEEVersion> ref) {
-        eeVersion = 0;
+        if (eeVersionRef == ref) {
+            eeVersionRef = null;
+            eeVersion = 0;
+        }
     }
 
     /**

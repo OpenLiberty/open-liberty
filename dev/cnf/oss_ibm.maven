@@ -2,7 +2,7 @@ com.ibm.ws.commons-collections:commons-collections:3.2.1
 com.ibm.ws:geronimo-validation:1.1
 com.ibm.ws.internal.prereq.java:java.rtSunKrb5:1.8.0
 com.ibm.ws.internal.prereq.java:java.ibmjgssprovider:1.8.0
-com.ibm.ws:jakartaee-transformer:0.0.7
+com.ibm.ws:jakartaee-transformer:0.0.9
 com.ibm.ws.javax.j2ee:connector:1.6
 com.ibm.ws.javax.j2ee:el:2.2
 com.ibm.ws.javax.j2ee:jaxrpc:1.0
@@ -30,7 +30,7 @@ com.ibm.ws.org.eclipse.platform:org.eclipse.equinox.coordinator:1.3.600.v2018082
 com.ibm.ws.org.eclipse.platform:org.eclipse.equinox.metatype:1.5.200.v20191008-0645
 com.ibm.ws.org.eclipse.platform:org.eclipse.equinox.region:1.4.600.v20190911-1340
 com.ibm.ws.org.eclipse.platform:org.eclipse.osgi:3.15.200.v20200214-1600
-com.ibm.ws.org.apache.aries.jndi:org.apache.aries.jndi.core:1.0.3.ibm.s20180216.1834
+com.ibm.ws.org.apache.aries.jndi:org.apache.aries.jndi.core:1.1.0.ibm20200428-1
 com.ibm.ws.org.apache.bval:org.apache.bval.bundle:1.1.2
 com.ibm.ws.org.apache.commons:commons-compress:1.16.1
 com.ibm.ws.org.apache.cxf:cxf-api:2.6.2.ibm-s20190122-2227
@@ -54,7 +54,6 @@ com.ibm.ws.org.apache.cxf:cxf-rt-ws-policy:2.6.2.ibm-s20190515-1254
 com.ibm.ws.org.apache.cxf:cxf-tools-common:3.2.0.20170814-175354-499
 com.ibm.ws.org.apache.cxf:cxf-tools-wadlto-jaxrs:3.2.0.20170814-175516-496
 com.ibm.ws.org.apache.el:jasper-el:2.2
-com.ibm.ws.org.apache.felix:org.apache.felix.scr:2.1.17.ibm20200407-1
 com.ibm.ws.org.apache.geronimo.specs:geronimo-annotation_1.1_spec:1.0.1
 com.ibm.ws.org.apache.geronimo.specs:geronimo-interceptor_1.1_spec:1.0
 com.ibm.ws.org.apache.geronimo.specs:geronimo-jpa_2.0_spec:1.1
@@ -94,12 +93,12 @@ org.apache.santuario:xmlsec:1.5.2-ibm
 org.apache.ws.security:wss4j:1.6.7-ibm-s20130913-2015
 org.eclipse.microprofile.graphql:microprofile-graphql-api:1.0.0-20191203
 org.eclipse.microprofile.graphql:microprofile-graphql-tck:1.0.0-20191203
-org.eclipse.persistence:org.eclipse.persistence.antlr:2.7.6-b7c9978
-org.eclipse.persistence:org.eclipse.persistence.asm:2.7.6-b7c9978
-org.eclipse.persistence:org.eclipse.persistence.core:2.7.6-b7c9978
-org.eclipse.persistence:org.eclipse.persistence.jpa.jpql:2.7.6-b7c9978
-org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen:2.7.6-b7c9978
-org.eclipse.persistence:org.eclipse.persistence.jpa:2.7.6-b7c9978
+org.eclipse.persistence:org.eclipse.persistence.antlr:2.7.7-69f2c2b
+org.eclipse.persistence:org.eclipse.persistence.asm:2.7.7-69f2c2b
+org.eclipse.persistence:org.eclipse.persistence.core:2.7.7-69f2c2b
+org.eclipse.persistence:org.eclipse.persistence.jpa.jpql:2.7.7-69f2c2b
+org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen:2.7.7-69f2c2b
+org.eclipse.persistence:org.eclipse.persistence.jpa:2.7.7-69f2c2b
 org.openid4java:openid4java:0.9.7-ibm-s20130624-1827
 org.opensaml:opensaml:2.6.6
 org.opensaml:openws:1.5.6

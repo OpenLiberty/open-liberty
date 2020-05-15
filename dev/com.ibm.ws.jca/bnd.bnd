@@ -127,7 +127,7 @@ Service-Component: \
     connectorService='com.ibm.ws.jca.cm.ConnectorService';\
     contextProvider='com.ibm.wsspi.threadcontext.jca.JCAContextProvider';\
     contextService='com.ibm.wsspi.threadcontext.WSContextService';\
-    EEVersion='com.ibm.ws.javaee.version.JavaEEVersion';\
+    eEVersion='com.ibm.ws.javaee.version.JavaEEVersion';\
     executorService='java.util.concurrent.ExecutorService';\
     futureMonitor='com.ibm.ws.threading.FutureMonitor';\
     requiredContextProvider='com.ibm.wsspi.threadcontext.jca.JCAContextProvider';\
@@ -136,9 +136,10 @@ Service-Component: \
     tranSyncRegistry='javax.transaction.TransactionSynchronizationRegistry';\
     jcaSecurityContextService=com.ibm.ws.jca.security.JCASecurityContext;\
     configuration-policy:=require;\
-    greedy:='beanValidationService,contextProvider,EEVersion,jcaSecurityContextService';\
+    dynamic:='eEVersion';\
+    greedy:='beanValidationService,contextProvider,eEVersion,jcaSecurityContextService';\
     multiple:='contextProvider,requiredContextProvider';\
-    optional:='beanValidationService,contextProvider,EEVersion,requiredContextProvider,jcaSecurityContextService';\
+    optional:='beanValidationService,contextProvider,eEVersion,requiredContextProvider,jcaSecurityContextService';\
     properties:="contextService.target=(id=unbound),executorService.target=(id=unbound),requiredContextProvider.target=(id=unbound),resourceAdapterService.target=(id=unbound)",\
   com.ibm.ws.jca.sslHelper;\
     implementation:=com.ibm.ws.jca.internal.SSLHelperImpl;\

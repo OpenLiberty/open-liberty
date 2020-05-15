@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,112 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-// Define G:A:V coordinates of each dependency
+// configure protobuf-gradle-plugin and liberty-gradle-plugin
+buildscript {
+    repositories.clear()
+    repositories {
+        if (isUsingArtifactory) {
+            maven {
+                credentials {
+                    username userProps.getProperty("artifactory.download.user")
+                    password userProps.getProperty("artifactory.download.token")
+                }
+                url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote")
+            }
+        } else {
+            mavenCentral()
+        }
+    }
+  dependencies {
+    classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.12'
+    classpath 'io.openliberty.tools:liberty-gradle-plugin:3.0'
+  }
+}
+plugins {	
+    id 'war'
+    id "eclipse-wtp"
+}
+apply plugin: 'com.google.protobuf'
+repositories.clear()
+repositories {
+    if (isUsingArtifactory) {
+        maven {
+            credentials {
+                username userProps.getProperty("artifactory.download.user")
+                password userProps.getProperty("artifactory.download.token")
+            }
+            url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote")
+        }
+    } else {
+        mavenCentral()
+    }
+}
+
 dependencies {
-  requiredLibs 'commons-logging:commons-logging:1.1.3'
+ 
+    // test
+    testImplementation 'commons-httpclient:commons-httpclient:3.1'
+    testImplementation 'junit:junit:4.12'
+	
+	// provided
+    providedCompile 'com.google.protobuf:protobuf-java:3.11.4'
+    providedCompile 'com.google.protobuf:protobuf-java-util:3.11.4'
+    providedCompile 'io.grpc:grpc-protobuf:1.28.1'
+    providedCompile 'io.grpc:grpc-stub:1.28.1'
+    providedCompile 'io.grpc:grpc-services:1.28.1'
+    providedCompile 'javax.annotation:javax.annotation-api:1.2'
+    providedCompile 'io.grpc:grpc-netty-shaded:1.28.1'
+    
+    providedCompile 'jakarta.platform:jakarta.jakartaee-api:8.0.0'
+    providedCompile 'org.eclipse.microprofile:microprofile:3.2'
+    
+    // test runtime 
+    requiredLibs 'net.sourceforge.cssparser:cssparser:0.9.23',
+      'net.sourceforge.htmlunit:htmlunit:2.20',
+      'net.sourceforge.htmlunit:htmlunit-core-js:2.17',
+      'org.apache.commons:commons-lang3:3.8',
+      'commons-codec:commons-codec:1.11',
+      'org.apache.httpcomponents:httpmime:4.5.3',
+      'org.apache.httpcomponents:httpclient:4.5.4',
+      'org.apache.httpcomponents:httpcore:4.4.9',
+      'commons-codec:commons-codec:1.6',
+      'commons-logging:commons-logging:1.1.3',
+      'xml-apis:xml-apis:1.4.01'
+}
+
+protobuf {
+	
+    protoc { artifact = "com.google.protobuf:protoc:3.11.4" }
+    plugins {
+        grpc { artifact = "io.grpc:protoc-gen-grpc-java:1.28.1" }
+    }
+    generateProtoTasks {
+        all()*.plugins { 
+        			grpc {} 
+        		}
+    }
+}
+
+// Inform IDE Eclipse about the generated code.
+sourceSets {
+    main {
+    	proto {
+    		srcDirs 'test-applications/HelloWorldService.war/resources/proto'
+    		}
+        java {
+            srcDirs 'test-applications/HelloWorldClient.war/src/java'
+            srcDirs 'test-applications/HelloWorldService.war/src/java'
+        }
+    }
+}
+
+assemble.doLast {
+    copy {
+       from "build/libs/generated/source/proto/main/java"
+          into "generated-src"
+    }
+    copy {
+       from "build/libs/generated/source/proto/main/grpc"
+          into "generated-src"
+    }
 }

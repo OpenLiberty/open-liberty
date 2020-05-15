@@ -23,8 +23,20 @@
 # The term "certificate authority" is in reference to SSL/TLS certificate providers.
 # The URI parameter in these messages is for the ACME certificate authority, such as https://sampleCAProvider.org/directory
 
+###############################################################################
+# REST response messages
+###############################################################################
+REST_METHOD_NOT_SUPPORTED=The HTTP method ''{0}'' is not supported.
+REST_OPERATION_NOT_SUPPORTED=The operation ''{0}'' is not supported.
+REST_FORBIDDEN=Forbidden
+REST_INVALID_CONTENT_TYPE=The request's content-type header was not ''application/json''.
+REST_MISSING_OPERATION=The operation was not specified for the request.
+REST_NO_ACME_SERVICE=An AcmeProvider service was not registered.
+###############################################################################
+
 FILE_NOT_READABLE=the file is not readable
-FILE_NOT_WRITABLE=the file is not writable
+FILE_NOT_WRITABLE=the file or its parent directory is not writable
+
 
 CWPKI2001E=CWPKI2001E: The ACME certificate authority at the {0} URI responded that the authorization challenge failed for the {1} domain. The challenge status is {2}.  The error is ''{3}''.
 CWPKI2001E.explanation=The challenge status indicated that the authorization challenge request failed and a certificate cannot be created.
@@ -122,13 +134,13 @@ CWPKI2024E=CWPKI2024E: The ACME service failed to revoke the requested certifica
 CWPKI2024E.explanation=A certificate revoke request failed. The certificate might not be revoked and could still be in use.
 CWPKI2024E.useraction=Review the error message for details on the failure.
 
-CWPKI2025W=CWPKI2025W: The ACME service received a certificate revoke request, but the account key pair for the ACME certificate authority at the {0} URI could not be loaded.
-CWPKI2025W.explanation=The certificate revoke request failed because the account key pair could not be loaded.
-CWPKI2025W.useraction=Review the log for any earlier errors for details on the failure. Review the keystore file to verify that the certificate exists.
+CWPKI2025W=CWPKI2025W: The ACME service cannot load the account key pair for the ACME certificate authority at the {0} URI.
+CWPKI2025W.explanation=The request failed because the account key pair could not be loaded.
+CWPKI2025W.useraction=Review the log for any earlier errors for details on the failure.
 
-CWPKI2026W=CWPKI2026W: The ACME service received a certificate revoke request, but the account was not found at the ACME certificate authority at the {0} URI.
-CWPKI2026W.explanation=The certificate revoke request failed because the account was not found.
-CWPKI2026W.useraction=Review the certificate authority URI. Review the keystore file to verify that the certificate exists.
+CWPKI2026W=CWPKI2026W: The ACME service cannot find the account at the ACME certificate authority at the {0} URI.
+CWPKI2026W.explanation=The request failed because the account was not found.
+CWPKI2026W.useraction=Review the certificate authority URI.
 
 CWPKI2027E=CWPKI2027E: The {0} file path for the ACME service is null or empty. The path provided is ''{1}''.
 CWPKI2027E.explanation=The file path was null or empty and cannot be used for the domain and account keys.
@@ -154,9 +166,9 @@ CWPKI2032E=CWPKI2032E: The certificate subject alternative names in the default 
 CWPKI2032E.explanation=The certificate is an invalid DER-encoded certificate or contains unsupported DER features.
 CWPKI2032E.useraction=Review the error message for details on the failure. Revoke or remove the invalid certificate.
 
-#CWPKI2033E=CWPKI2033E: The ACME service could not find the certificate for the {0} alias in the {1} keystore. The error is ''{2}''.
-#CWPKI2033E.explanation=A certificate authority signed certificate is stored in the default keystore and replaces any existing default certificate, but keystore or default certificate could not be accessed.
-#CWPKI2033E.useraction=Review the error message for details on the failure.
+CWPKI2033E=CWPKI2033E: The ACME service cannot update the {0} account for the ACME certificate authority at the {1} URI. The error is ''{2}''.
+CWPKI2033E.explanation=The request to update the account failed due to the specified error.
+CWPKI2033E.useraction=Review the error message for details on the failure. Verify that the account key file is for a valid account.
 
 CWPKI2034E=CWPKI2034E: The ACME service could not create a keystore instance. The error is ''{0}''.
 CWPKI2034E.explanation=The ACME service fetched a new certificate, but creating or initializing a keystore for storing the certificate failed.
@@ -174,9 +186,9 @@ CWPKI2037E=CWPKI2037E: The domains for the ACME service were either null or empt
 CWPKI2037E.explanation=The domains were either null or empty and cannot be used.
 CWPKI2037E.useraction=Provide at least one non-null, non-empty domain in the configuration.
 
-CWPKI2038W=CWPKI2038W: The ACME service was unable to revoke the certificate with serial number {0}. The error is ''{1}.''
-CWPKI2038W.explanation=The ACME service attempted to revoke the certificate, but was unable to.
-CWPKI2038W.useraction=Review the error message for details on the failure. The certificate will need to be revoked manually.
+CWPKI2038I=CWPKI2038I: The ACME service revoked the certificate with the {0} serial number. The certificate is no longer valid.
+CWPKI2038I.explanation=The ACME service revoked the certificate and the certificate is no longer valid.
+CWPKI2038I.useraction=No action is required.
 
 CWPKI2039E=CWPKI2039E: The ''{0}'' distinguished name (DN) defined by subjectDN contains a ''{1}'' cn relative distinguished name (RDN) value that does not match any of the defined domains.
 CWPKI2039E.explanation=If the cn RDN value is included in the DN, it must match one of the defined domains.
@@ -202,7 +214,82 @@ CWPKI2044E=CWPKI2044E: The certificate is not an X.509 certificate. The certific
 CWPKI2044E.explanation=The ACME service expects all certificates in the certificate chain to be X.509 certificates.
 CWPKI2044E.useraction=Ensure that all the certificates in the certificate chain are X.509 certificates and try again.
 
-# {2} is a time stamp
 CWPKI2045W=CWPKI2045W: The certificate with {0} serial number that is signed by the ACME certificate authority at the {1} URI is not valid until {2}.
 CWPKI2045W.explanation=The valid period on the certificate is in the future. SSL/TLS requests fail until the current date and time are within the range that is specified by the valid period on the certificate.
 CWPKI2045W.useraction=Update the local time on the server if the time is incorrect.
+
+CWPKI2046E=CWPKI2046E: The certificate {0} revocation reason is invalid. Supported revocation reasons are: unspecified, key_compromise, ca_compromise, affiliation_changed, superseded, cessation_of_operations, certificate_hold, remove_from_crl, privilege_withdrawn and aa_compromise.
+CWPKI2046E.explanation=The specified revocation reason is not supported.
+CWPKI2046E.useraction=Retry the request with a valid revocation reason.
+
+CWPKI2047E=CWPKI2047E: Failed to register the new account key pair with the ACME certificate authority. The error is ''{0}''.
+CWPKI2047E.explanation=The ACME certificate authority returned an error during the account key pair renewal.
+CWPKI2047E.useraction=Ensure that the existing account key pair is valid. Review the error message for details on the failure. 
+
+CWPKI2048I=CWPKI2048I: The account key pair renewal is successful. The old account key pair backed up to the {0} file.
+CWPKI2048I.explanation=The previous account key pair is no longer associated with the account and is backed up to a file. The new account key pair replaced the old account key pair file.
+CWPKI2048I.useraction=No action is required.
+
+CWPKI2049E=CWPKI2049E: The account key pair didn't renew or restore to the existing key pair file. Manually replace the {0} account key pair file with the {1} account key pair file.
+CWPKI2049E.explanation=The key pair didn't renew or restore to the old key pair file.
+CWPKI2049E.useraction=Manually replace the account key pair files as directed in the message.
+
+CWPKI2050E=CWPKI2050E: The existing account key pair file didn't back up during while the account key pair renewal. The error is ''{0}''.
+CWPKI2050E.explanation=The existing account key pair file could not be backed up. 
+CWPKI2050E.useraction=Ensure that the directory that contains the existing account key pair file is writable. Review the error message for details on the failure.
+
+CWPKI2051W=CWPKI2051W: The renewBeforeExpiration property was set to {0} which is shorter than the minimum renew time. The renewBeforeExpiration property is reset to {1}.
+CWPKI2051W.explanation=The value for the renewBeforeExpiration property was below the minimum duration to request a new certificate and is reset to the minimum renew time. This could have a negative impact on server performance.
+CWPKI2051W.useraction=To avoid this warning message, set the renewBeforeExpiration property in the server configuration to a duration that is longer than the minimum renew time. To use the default setting, remove the renewBeforeExpiration property from the server configuration.
+
+CWPKI2052I=CWPKI2052I: The certificate with {0} serial number expires on {1}. The ACME service will request a new certificate from the ACME certificate authority at the {2} URI.
+CWPKI2052I.explanation=The ACME service requests a new certificate based on the renewBeforeExpiration property in the server configuration and the expiration date of the certificate. If the renewBeforeExpiration property is not configured, the default value is used.
+CWPKI2052I.useraction=No action is required.
+
+CWPKI2053W=CWPKI2053W: The certificate with {0} serial number expired on {1}. The ACME service is not configured to automatically request a new certificate.
+CWPKI2053W.explanation=The TLS/SSL requests cannot complete because the certificate expired.
+CWPKI2053W.useraction=Update the renewBeforeExpiration property in the server configuration to a value greater than 0 to automatically request a new certificate or use the ACME REST interface to request a new certificate.
+
+CWPKI2054W=CWPKI2054W: The renewBeforeExpiration property was set to {0}, which is equal to or longer than the validity period of the certificate with {1} serial number. The validity period of the certificate is {2}. The renewBeforeExpiration property is reset to {3}.
+CWPKI2054W.explanation=The value of the renewBeforeExpiration property was longer than the validity period of the certificate. The renewBeforeExpiration property is reset to the default value.
+CWPKI2054W.useraction=To avoid this warning message, set the renewBeforeExpiration property in the server configuration to an amount that is less than the length of the validity period of the certificate. To use the default setting, remove the renewBeforeExpiration property.
+
+CWPKI2055W=CWPKI2055W: The renewBeforeExpiration property is set to a short amount of time. The ACME service makes frequent requests for a new certificate. The renewBeforeExpiration property is {0}.
+CWPKI2055W.explanation=Frequent certificate requests can have a negative impact on server performance. The number of requests can also exceed the number allowed by the certificate authority.
+CWPKI2055W.useraction=To avoid this warning message, set the renewBeforeExpiration property in the server configuration to a longer duration. To use the default setting, remove the renewBeforeExpiration property from the server configuration.
+
+CWPKI2056W=CWPKI2056W: The validity period of the certificate with {0} serial number is shorter than the {1} minimum renew time. The validity period of the certification is {2}. The renewBeforeExpiration property is reset to {3}.
+CWPKI2056W.explanation=The validity period is shorter than the minimum renew time. The certificate expires before a new certificate is requested.
+CWPKI2056W.useraction=To avoid certificate expiration, request a certificate with a longer validity period. If the certificate authority supports a custom validity period, set the validFor property in the server configuration.
+
+CWPKI2057E=CWPKI2057E: Certificate revocation status checking didn't create a CertPathValidator to validate the certificate. The error is ''{0}}''.
+CWPKI2057E.explanation=The certificate revocation checker needs to build a CertPathValidator to check OCSP and CRLs revocation status.
+CWPKI2057E.useraction=Review the status message and error for details.
+
+CWPKI2058W=CWPKI2058W: Certificate revocation status checking ignored soft failures. Revocation checking might be incomplete. The failures are: ''{0}''.
+CWPKI2058W.explanation=Soft failures include network errors. The ACME service ignores soft errors as they might be temporary glitches. 
+CWPKI2058W.useraction=If this message is encountered consistently, the cause of the failure must be resolved as it might prevent proper revocation status checking. Otherwise, this warning can be safely ignored.  
+
+CWPKI2059I=CWPKI2059I: Certificate revocation status checking found that the certificate with the {0} serial number is revoked.
+CWPKI2059I.explanation=The ACME service found that the certificate was marked revoked by either a CRL or OSCP responder. 
+CWPKI2059I.useraction=No action is required.
+
+CWPKI2060E=CWPKI2060E: The OCSP URL from the certificate with the {0} serial number wasn't retrieved. The error is: ''{1}''.
+CWPKI2060E.explanation=The OCSP URL was not retrieved.
+CWPKI2060E.useraction=Ensure that the certificate is a valid X.509 certificate. If it is not valid, request a new certificate.
+
+CWPKI2061E=CWPKI2061E: The CRL distribution points from the certificate with the {0} serial number weren't retrieved. The error is ''{1}''.
+CWPKI2061E.explanation=The CRL distribution points were not retrieved.
+CWPKI2061E.useraction=Ensure that the certificate is a valid X.509 certificate. If it is not valid, request a new certificate.
+
+CWPKI2062E=CWPKI2062E: The {0} OCSP responder URL defined in the server configuration is not a valid URI. If defined, it must be a valid URI to override the OSCP responder URL contained in the certificate.
+CWPKI2062E.explanation=Certificate revocation checking requires a valid OCSP responder URL.
+CWPKI2062E.useraction=Provide a valid OCSP responder URL in the server configuration.
+
+CWPKI2063E=CWPKI2063E: The ACME certificate authority at the {0} URI updated its terms of service and now requires the user to agree to the new terms of service at the following URI before it processes any further requests: {1}
+CWPKI2063E.explanation=The certificate authority updated its terms of service and requires user interaction.
+CWPKI2063E.useraction=Review the provided terms of service.
+
+CWPKI2064I=CWPKI2064I: The ACME service retrieved the certificate with the {0} serial number from the {1} URI in {2} seconds.
+CWPKI2064I.explanation=The ACME service successfully requested a certificate.
+CWPKI2064I.useraction=No action is required.

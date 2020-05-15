@@ -29,7 +29,7 @@ public class PSProcessStatusImpl implements ProcessStatus {
 
     /**
      * @param pid the pid, or the empty string if {@link #isPossiblyRunning} should
-     *                always return true
+     *            always return true
      */
     public PSProcessStatusImpl(String pid) {
         this.pid = pid;
@@ -68,6 +68,7 @@ public class PSProcessStatusImpl implements ProcessStatus {
             }
 
             p.waitFor();
+            Debug.println("Exit code: " + p.exitValue());
             if (p.exitValue() == 0)
                 return State.YES;
             else
