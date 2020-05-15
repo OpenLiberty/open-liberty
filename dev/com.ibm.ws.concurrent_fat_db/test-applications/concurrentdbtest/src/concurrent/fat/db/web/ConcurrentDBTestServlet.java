@@ -21,24 +21,24 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Resource;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.sql.DataSource;
-import javax.transaction.NotSupportedException;
-import javax.transaction.SystemException;
-import javax.transaction.UserTransaction;
-
-import org.junit.Test;
-
-import componenttest.app.FATDatabaseServlet;
-
+import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.concurrent.ManagedExecutors;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.concurrent.ManagedTask;
 import jakarta.enterprise.concurrent.ManagedTaskListener;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.transaction.NotSupportedException;
+import jakarta.transaction.SystemException;
+import jakarta.transaction.UserTransaction;
+
+import javax.sql.DataSource;
+
+import org.junit.Test;
+
+import componenttest.app.FATDatabaseServlet;
 
 @SuppressWarnings("serial")
 @WebServlet("/*")
