@@ -121,7 +121,7 @@ public class ServerAsset implements Comparable<ServerAsset> {
 
         return Collections.unmodifiableCollection(requiredFeatures);
     }
-    
+
     public String getServerName() {
         return serverName;
     }

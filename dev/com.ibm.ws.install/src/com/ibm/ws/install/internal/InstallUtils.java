@@ -663,11 +663,35 @@ public class InstallUtils {
         return null;
     }
 
-    public static Collection<String> getFeatures(File serverXml, String xml) throws InstallException {
-        Collection<String> features = new ArrayList<String>();
+
+
+    public static Set<String> getFeatures(File serverXml, String xml, List<String> visitedServerXmls) throws InstallException {
+        System.out.println("Processing server: " + serverXml);
+        Set<String> features = new HashSet<String>();
+        List<String> newLocations = new ArrayList<>();
+
+        if(visitedServerXmls.contains(serverXml.getAbsolutePath())) {
+            return features;
+        }
         try (InputStream is = new FileInputStream(serverXml)){
             Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(is);
             Element element = doc.getDocumentElement();
+
+            NodeList includeList = element.getElementsByTagName("include");
+            System.out.println(includeList.getLength());
+
+            for (int i = 0; i < includeList.getLength(); i++) {
+                Node includeNode = includeList.item(i);
+                System.out.println("node: " + includeNode.getNodeName());
+                System.out.println("attrs : " + includeNode.getAttributes());
+                Element includeElement = (Element) includeNode;
+                String location = includeElement.getAttribute("location");
+                if(!newLocations.contains(location) && !visitedServerXmls.contains(location)){
+                    newLocations.add(location);
+                }
+            }
+            System.out.println("locations: " +newLocations);
+
             NodeList fmList = element.getElementsByTagName("featureManager");
             for (int i = 0; i < fmList.getLength(); i++) {
                 Node fm = fmList.item(i);
@@ -679,8 +703,15 @@ public class InstallUtils {
                 }
             }
         } catch (Exception e) {
-            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_INVALID_SERVER_XML", xml, e.getMessage()), e, InstallException.IO_FAILURE);
+            // do nothing
+//            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_INVALID_SERVER_XML", xml, e.getMessage()), e, InstallException.IO_FAILURE);
         }
+        visitedServerXmls.add(serverXml.getAbsolutePath());
+        for(String filepath : newLocations){
+            File file = new File(filepath);
+            features.addAll(getFeatures(file, file.getName(), visitedServerXmls));
+        }
+
         return features;
     }
 
