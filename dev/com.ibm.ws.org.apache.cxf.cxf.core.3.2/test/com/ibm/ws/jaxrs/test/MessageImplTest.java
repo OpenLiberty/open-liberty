@@ -101,6 +101,29 @@ public class MessageImplTest {
         }
     }    
  
+    @Test
+    public void testToString() {
+        // propertyValues entry
+        MessageImpl m = new MessageImpl();
+        m.setSseEventSink("foo");
+        assertEquals("{javax.ws.rs.sse.SseEventSink=foo}", m.toString());
+        
+        // custom entry
+        m = new MessageImpl();
+        m.put("hello", "world");
+        assertEquals("{hello=world}", m.toString());
+        
+        // entries of each type (propertyValues entries should always precede other entries)
+        m = new MessageImpl();
+        m.put("hello2", "world2");
+        m.setSseEventSink("bar");
+        assertEquals("{javax.ws.rs.sse.SseEventSink=bar, hello2=world2}", m.toString());
+        
+        // empty message impl
+        m = new MessageImpl();
+        assertEquals("{}", m.toString());
+    }
+
     @SuppressWarnings({ "unchecked", "serial" })
     private void exerciseMethods(MessageImpl message, String propertyKey, Method getter, Method setter, Method remove, Method contains, Class<?> type) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         assertNull(message.get(propertyKey));
