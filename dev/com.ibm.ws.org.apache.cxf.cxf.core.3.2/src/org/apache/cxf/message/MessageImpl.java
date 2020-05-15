@@ -1400,9 +1400,13 @@ public class MessageImpl extends StringMapImpl implements Message {
             }
         }
         try {
-            forEach((k, v) -> { sb.append(k).append("=").append(v).append(", "); });
+            super.forEach((k, v) -> { sb.append(k).append("=").append(v).append(", "); });
         } catch (ConcurrentModificationException ex) {
             sb.append(" ConcurrentModificationException caught!");
+        }
+        int len = sb.length();
+        if (len > 3) {
+            sb.setLength(len-2); //remove trailing comma and space
         }
         sb.append("}");
         return sb.toString();
