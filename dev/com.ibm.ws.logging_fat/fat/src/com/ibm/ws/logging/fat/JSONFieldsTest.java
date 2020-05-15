@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,6 +43,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 @RunWith(FATRunner.class)
 public class JSONFieldsTest {
     private static Class<?> c = JSONFieldsTest.class;
+    private static final int LOG_WAIT_TIMEOUT = 15 * 1000;
 
     private static final String MESSAGE_LOG = "logs/messages.log";
     private static final String SERVER_NAME_XML = "com.ibm.ws.logging.fieldnamexml";
@@ -166,14 +167,14 @@ public class JSONFieldsTest {
 
         setServerConfiguration(true, "message:", server_xml);
         server_xml.setMarkToEndOfLog();
-        assertNull("The message field name was not omitted in messages.log.", server_xml.waitForStringInLogUsingMark("\"message\""));
+        assertNull("The message field name was not omitted in messages.log.", server_xml.waitForStringInLogUsingMark("\"message\"", LOG_WAIT_TIMEOUT));
 
         setServerConfiguration(true, "", server_xml);
         assertNotNull("The message field name was not re-added in messages.log.", server_xml.waitForStringInLogUsingMark("\"message\""));
 
         setServerConfiguration(true, "ibm_datetime:", server_xml);
         server_xml.setMarkToEndOfLog();
-        assertNull("The ibm_datetime field name was not omitted in messages.log.", server_xml.waitForStringInLogUsingMark("\"ibm_datetime\""));
+        assertNull("The ibm_datetime field name was not omitted in messages.log.", server_xml.waitForStringInLogUsingMark("\"ibm_datetime\"", LOG_WAIT_TIMEOUT));
 
         setServerConfiguration(true, "", server_xml);
         assertNotNull("The ibm_datetime field name was not re-added in messages.log.", server_xml.waitForStringInLogUsingMark("\"ibm_datetime\""));
@@ -250,7 +251,7 @@ public class JSONFieldsTest {
         setServerConfiguration(true, "message:", server_xml);
 
         //check omission
-        assertNull("The message field names were not omitted in messages.log.", server_xml.waitForStringInLogUsingMark("\"message\""));
+        assertNull("The message field names were not omitted in messages.log.", server_xml.waitForStringInLogUsingMark("\"message\"", LOG_WAIT_TIMEOUT));
 
         //rename
         setServerConfiguration(true, "message:log2", server_xml);
@@ -269,7 +270,8 @@ public class JSONFieldsTest {
         server_xml.setMarkToEndOfLog();
 
         //check both fields are omitted
-        assertNull("The message and ibm_datetime field names were not omitted in messages.log.", server_xml.waitForStringInLogUsingMark("\"message\".*\"ibm_datetime\""));
+        assertNull("The message and ibm_datetime field names were not omitted in messages.log.",
+                   server_xml.waitForStringInLogUsingMark("\"message\".*\"ibm_datetime\"", LOG_WAIT_TIMEOUT));
 
         //add datetime back
         setServerConfiguration(true, "message:", server_xml);
@@ -287,7 +289,8 @@ public class JSONFieldsTest {
         server_xml.setMarkToEndOfLog();
 
         //check datetime is removed for liberty_message
-        assertNull("The ibm_datetime field name was not omitted in messages.log.", server_xml.waitForStringInLogUsingMark("\"type\":\"liberty_message\".*\"ibm_datetime\""));
+        assertNull("The ibm_datetime field name was not omitted in messages.log.",
+                   server_xml.waitForStringInLogUsingMark("\"type\":\"liberty_message\".*\"ibm_datetime\"", LOG_WAIT_TIMEOUT));
 
     }
 
@@ -308,9 +311,9 @@ public class JSONFieldsTest {
         //omit extension fields
         setServerConfiguration(true, "ext_testExtension:", server_xml);
         getHttpServlet("/extFields/CreateLogs", server_xml); //see omitted field
-        assertNull("The extension field name was not omitted", server_xml.waitForStringInLogUsingMark("ext_testExtension"));
+        assertNull("The extension field name was not omitted", server_xml.waitForStringInLogUsingMark("ext_testExtension", LOG_WAIT_TIMEOUT));
         getHttpServlet("/extFields/CreateLogs", server_xml); //see if field value is still there in case not omitted
-        assertNull("The extension field name was not omitted", server_xml.waitForStringInLogUsingMark("MY_EXTENSION"));
+        assertNull("The extension field name was not omitted", server_xml.waitForStringInLogUsingMark("MY_EXTENSION", LOG_WAIT_TIMEOUT));
 
         server_xml.setMarkToEndOfLog();
 
@@ -323,9 +326,9 @@ public class JSONFieldsTest {
         getHttpServlet("/extFields/removeExtFields", server_xml);
         server_xml.setMarkToEndOfLog();
         getHttpServlet("/extFields/CreateLogs", server_xml);
-        assertNull("The extension field name was not unregistered", server_xml.waitForStringInLogUsingMark("ext_testExtension"));
+        assertNull("The extension field name was not unregistered", server_xml.waitForStringInLogUsingMark("ext_testExtension", LOG_WAIT_TIMEOUT));
         getHttpServlet("/extFields/CreateLogs", server_xml); //just to make sure last rename field is not present
-        assertNull("The extension field name was not unregistered", server_xml.waitForStringInLogUsingMark("RENAME"));
+        assertNull("The extension field name was not unregistered", server_xml.waitForStringInLogUsingMark("RENAME", LOG_WAIT_TIMEOUT));
 
     }
 
