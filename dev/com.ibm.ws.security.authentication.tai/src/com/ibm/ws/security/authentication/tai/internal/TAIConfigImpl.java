@@ -31,6 +31,8 @@ public class TAIConfigImpl implements TAIConfig {
     private boolean invokeForUnprotectedURI = false;
     private boolean invokeForFormLogin = false;
     private boolean disableLtpaCookie = false;
+    private String id = null;
+    static final String KEY_ID = "id";
 
     public TAIConfigImpl(Map<String, Object> props) {
         processConfig(props);
@@ -42,12 +44,20 @@ public class TAIConfigImpl implements TAIConfig {
     void processConfig(Map<String, Object> props) {
         if (props == null)
             return;
+        id = (String) props.get(KEY_ID);
         invokeForUnprotectedURI = (Boolean) props.get(KEY_INVOKE_FOR_UNPROTECTED_URI);
         invokeForFormLogin = (Boolean) props.get(KEY_INVOKE_FOR_FORM_LOGIN);
         failOverToAppAuthType = (Boolean) props.get(KEY_FAIL_OVER_TO_APP_AUTH_TYPE);
         disableLtpaCookie = (Boolean) props.get(KEY_DISABLE_LTPA_COOKIE);
+        printTaiConfig();
+    }
+
+    /**
+     *
+     */
+    public void printTaiConfig() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "TAI configuration - trustAssociation element:  ");
+            Tr.debug(tc, "TAI configuration ID: " + id);
             Tr.debug(tc, "  invokeForUnprotectedURI=" + invokeForUnprotectedURI + " invokeForFormLogin=" + invokeForFormLogin + " failOverToAppAuthType=" + failOverToAppAuthType
                          + " disableLtpaCookie=" + disableLtpaCookie);
         }

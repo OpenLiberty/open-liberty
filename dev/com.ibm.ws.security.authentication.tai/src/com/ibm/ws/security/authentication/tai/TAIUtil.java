@@ -55,7 +55,7 @@ public class TAIUtil {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "User feature interceptor properties of " + interceptorId);
-            Tr.debug(tc, "beforeSsoProp=" + beforeSsoProp + " afterSsoProp=" + afterSsoProp + " disableLtpaCookie=" + disableLtpaCookie);
+            Tr.debug(tc, "     beforeSsoProp=" + beforeSsoProp + " afterSsoProp=" + afterSsoProp + " disableLtpaCookie=" + disableLtpaCookie);
         }
 
         /*
@@ -76,8 +76,8 @@ public class TAIUtil {
             invokeAfterSSO = (Boolean) afterSsoProp;
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "User feature interceptor properties:  ");
-            Tr.debug(tc, "  invokeBeforeSSO=" + invokeBeforeSSO + " invokeAfterSSO=" + invokeAfterSSO + " disableLtpaCookie=" + disableLtpaCookie);
+            Tr.debug(tc, "User feature interceptor properties " + interceptorId);
+            Tr.debug(tc, "     invokeBeforeSSO=" + invokeBeforeSSO + " invokeAfterSSO=" + invokeAfterSSO + " disableLtpaCookie=" + disableLtpaCookie);
         }
     }
 

@@ -112,6 +112,7 @@ public class TAIServiceImpl implements TAIService {
             Tr.debug(tc, "invokeBeforeSSOTais " + invokeBeforeSSOTais.toString());
             Tr.debug(tc, "invokeAfterSSOTais  " + invokeAfterSSOTais.toString());
             Tr.debug(tc, "disableLtpaCookieTais " + disableLtpaCookieTais.toString());
+            taiConfig.printTaiConfig();
         }
     }
 
