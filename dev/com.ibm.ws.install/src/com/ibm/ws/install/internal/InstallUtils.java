@@ -689,20 +689,6 @@ public class InstallUtils {
                 }
 
             }
-//            NodeList includeList = element.getElementsByTagName("include");
-//            System.out.println(includeList.getLength());
-//
-//            for (int i = 0; i < includeList.getLength(); i++) {
-//                Node includeNode = includeList.item(i);
-//                System.out.println("node: " + includeNode.getNodeName());
-//                System.out.println("attrs : " + includeNode.getAttributes());
-//                Element includeElement = (Element) includeNode;
-//                String location = includeElement.getAttribute("location");
-//                if(!newLocations.contains(location) && !visitedServerXmls.contains(location)){
-//                    newLocations.add(location);
-//                }
-//            }
-            System.out.println("locations: " +newLocations);
 
             NodeList fmList = element.getElementsByTagName("featureManager");
             for (int i = 0; i < fmList.getLength(); i++) {
@@ -715,8 +701,7 @@ public class InstallUtils {
                 }
             }
         } catch (Exception e) {
-            // do nothing
-//            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_INVALID_SERVER_XML", xml, e.getMessage()), e, InstallException.IO_FAILURE);
+            logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_INVALID_SERVER_XML", xml, e.getMessage()));
         }
         visitedServerXmls.add(serverXml.getAbsolutePath());
         for(String filepath : newLocations){
