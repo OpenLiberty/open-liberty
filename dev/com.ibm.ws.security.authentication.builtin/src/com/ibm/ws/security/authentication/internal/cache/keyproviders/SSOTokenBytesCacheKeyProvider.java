@@ -19,7 +19,6 @@ import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.security.authentication.cache.CacheContext;
 import com.ibm.ws.security.authentication.cache.CacheKeyProvider;
 import com.ibm.ws.security.authentication.internal.SSOTokenHelper;
-import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.wsspi.security.token.SingleSignonToken;
 
 /**
@@ -36,20 +35,15 @@ public class SSOTokenBytesCacheKeyProvider implements CacheKeyProvider {
     private String getSingleSignonTokenBytes(final Subject subject) {
         String base64EncodedSSOTokenBytes = null;
 
-        SubjectHelper subjectHelper = new SubjectHelper();
-
-        if (!subjectHelper.isDisableLtpaCookie(subject)) {
-            SingleSignonToken ssoToken = AccessController.doPrivileged(new PrivilegedAction<SingleSignonToken>() {
-                @Override
-                public SingleSignonToken run() {
-                    return SSOTokenHelper.getSSOToken(subject);
-                }
-            });
-            if (ssoToken != null) {
-                base64EncodedSSOTokenBytes = Base64Coder.toString(Base64Coder.base64Encode(ssoToken.getBytes()));
+        SingleSignonToken ssoToken = AccessController.doPrivileged(new PrivilegedAction<SingleSignonToken>() {
+            @Override
+            public SingleSignonToken run() {
+                return SSOTokenHelper.getSSOToken(subject);
             }
+        });
+        if (ssoToken != null) {
+            base64EncodedSSOTokenBytes = Base64Coder.toString(Base64Coder.base64Encode(ssoToken.getBytes()));
         }
-
         return base64EncodedSSOTokenBytes;
     }
 }
