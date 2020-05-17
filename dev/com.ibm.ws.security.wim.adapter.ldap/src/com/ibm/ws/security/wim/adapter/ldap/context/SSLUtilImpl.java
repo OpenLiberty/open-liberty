@@ -32,10 +32,10 @@ import javax.naming.Context;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.websphere.security.wim.ConfigConstants;
 import com.ibm.websphere.security.wim.ras.WIMMessageHelper;
 import com.ibm.websphere.security.wim.ras.WIMMessageKey;
 import com.ibm.websphere.ssl.JSSEHelper;
+import com.ibm.ws.security.wim.adapter.ldap.LdapConstants;
 import com.ibm.wsspi.security.wim.exception.WIMException;
 import com.ibm.wsspi.security.wim.exception.WIMSystemException;
 
@@ -109,7 +109,7 @@ public class SSLUtilImpl {
                 }
             });
         } catch (PrivilegedActionException e) {
-            String msg = Tr.formatMessage(tc, WIMMessageKey.INVALID_INIT_PROPERTY, WIMMessageHelper.generateMsgParms(ConfigConstants.CONFIG_PROP_SSL_CONFIGURATION));
+            String msg = Tr.formatMessage(tc, WIMMessageKey.INVALID_INIT_PROPERTY, WIMMessageHelper.generateMsgParms(LdapConstants.CONFIG_PROP_SSL_CONFIGURATION));
             throw new WIMSystemException(WIMMessageKey.INVALID_INIT_PROPERTY, msg, e);
         }
 

@@ -93,7 +93,7 @@
              LDAP filters by server type.
         -->
         <AD id="activedFilters" name="%activedFilters" description="%activedFilters.desc"
-            required="false" type="String" ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.security.registry.ldap.internal.filters.actived"/>
+            required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.security.registry.ldap.internal.filters.actived"/>
         <AD id="customFilters" name="%customFilters" description="%customFilters.desc"
             required="false" type="String" ibm:flat="true"  ibm:type="pid" ibm:reference="com.ibm.ws.security.registry.ldap.internal.filters.custom"/>
         <AD id="domino50Filters" name="%domino50Filters" description="%domino50Filters.desc"
@@ -109,6 +109,7 @@
         <AD id="securewayFilters" name="%securewayFilters" description="%securewayFilters.desc"
             required="false" type="String" ibm:flat="true"  ibm:type="pid" ibm:reference="com.ibm.ws.security.registry.ldap.internal.filters.secureway"/>
         
+        <AD id="activedFilters.target" type="String" default="(service.pid=${actifedFilters})" ibm:final="true" name="internal" description="internal use only"/>
         <!-- VMM ported entries -->
         <!-- Removed Adapter class name -->
         <!-- Added name attribute -->

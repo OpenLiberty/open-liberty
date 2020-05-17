@@ -14,6 +14,7 @@ package com.ibm.ws.security.wim.adapter.ldap;
  * Constants used by LDAP repository.
  */
 public interface LdapConstants {
+    String LDAP_DEFAULT_ADPTER_CLASS = "com.ibm.ws.wim.adapter.ldap.LdapAdapter";
 
     /**
      * The name of LDAP Distinguished Name.
@@ -30,6 +31,11 @@ public interface LdapConstants {
      * The separator used in LDAP Distinguished Name.
      */
     String LDAP_DN_SEPARATOR = ",";
+
+    /**
+     * Initial context factory class provided by SUN JNDI LDAP Provider
+     */
+    String LDAP_SUN_SPI = "com.sun.jndi.ldap.LdapCtxFactory";
 
     /**
      * The Distinguished Name LDAP data type, used in WIM external id attribute map.
@@ -212,6 +218,22 @@ public interface LdapConstants {
 
     short LDAP_OPERATOR_LE = 5;
 
+    String LDAP_ENV_PROP_FACTORY_SOCKET = "java.naming.ldap.factory.socket";
+
+    String LDAP_ENV_PROP_DEREF_ALIASES = "java.naming.ldap.derefAliases";
+
+    String LDAP_ENV_PROP_CONNECT_POOL = "com.sun.jndi.ldap.connect.pool";
+
+    String LDAP_ENV_PROP_CONNECT_TIMEOUT = "com.sun.jndi.ldap.connect.timeout";
+
+    String LDAP_ENV_PROP_READ_TIMEOUT = "com.sun.jndi.ldap.read.timeout";
+
+    String LDAP_ENV_PROP_ATTRIBUTES_BINARY = "java.naming.ldap.attributes.binary";
+
+    String LDAP_URL_PREFIX = "ldap://";
+
+    String LDAP_URL_SSL_PREFIX = "ldaps://";
+
     String IDS_LDAP_SERVER = "IBM TIVOLI DIRECTORY SERVER";
 
     String NOVELL_LDAP_SERVER = "NOVELL EDIRECTORY";
@@ -227,4 +249,186 @@ public interface LdapConstants {
     String SECUREWAY_LDAP_SERVER = "IBM SECUREWAY DIRECTORY SERVER";
 
     String CUSTOM_LDAP_SERVER = "CUSTOM";
+
+    String CONFIG_PROP_SUPPORT_CHANGE_LOG = "supportChangeLog";
+
+    String CONFIG_SUPPORT_CHANGE_LOG_NATIVE = "native";
+    String CONFIG_VALUE_FILTER_DESCRIPTOR_MODE = "CERTIFICATE_FILTER";
+    String CONFIG_PROP_NAME = "name";
+    String CONFIG_PROP_SYNTAX = "syntax";
+    String CONFIG_PROP_PROPERTY_NAME = "propertyName";
+    String CONFIG_PROP_ENTITY_TYPES = "entityTypes";
+    String CONFIG_PROP_ENTITY_TYPE = "entityType";
+    String CONFIG_PROP_DEFAULT_VALUE = "defaultValue";
+    String CONFIG_PROP_DEFAULT_ATTRIBUTE = "substituteWithValueOf";
+
+    /**
+     * Constant for Ignore case in Ldap config
+     */
+    static final Object CONFIG_IGNORE_CASE = "ignoreCase";
+    /**
+     * The constant for attributes cache configuration tag.
+     */
+    static final String ATTRIBUTES_CACHE_CONFIG = "attributesCache";
+    /**
+     * The constant for cache configuration tag.
+     */
+    static final String CACHE_CONFIG = "ldapCache";
+    /**
+     * The constant for context pool configuration tag.
+     */
+    static final String CONFIG_CONTEXT_POOL = "contextPool";
+    String CONFIG_PROP_READ_TIMEOUT = "timeout";
+    /**
+     * Define whether or not write operations are allowed on secondary servers.
+     * default value is false.
+     */
+    String CONFIG_PROP_ALLOW_WRITE_TO_SECONDARY_SERVERS = "allowWriteToSecondaryServers";
+    String CONFIG_PROP_ATTRIBUTE_RANGE_STEP = "attributeRangeStep";
+    String CONFIG_PROP_ATTRIBUTE_SIZE_LIMIT = "sizeLimit";
+    String CONFIG_PROP_BIND_DN = "bindDN";
+    String CONFIG_PROP_BIND_PASSWORD = "bindPassword";
+    String CONFIG_PROP_CACHE_SIZE = "size";
+    String CONFIG_PROP_CACHE_TIME_OUT = "timeout";
+    /**
+     * Define how long will LDAP adapter aborts the connection attempt if the connection cannot be established.
+     * Unit is second. By default, this timeout period is the network (TCP) timeout value, which is in the order of a few minutes.
+     */
+    String CONFIG_PROP_CONNECT_TIMEOUT = "connectTimeout";
+    String CONFIG_PROP_ENABLED = "enabled";
+    String CONFIG_PROP_HOST = "host";
+    String CONFIG_PROP_INIT_POOL_SIZE = "initialSize";
+    String CONFIG_PROP_MAX_POOL_SIZE = "maxSize";
+    String CONFIG_PROP_POOL_TIME_OUT = "timeout";
+    String CONFIG_PROP_POOL_WAIT_TIME = "waitTime";
+    String CONFIG_PROP_PORT = "port";
+    String CONFIG_PROP_PREF_POOL_SIZE = "preferredSize";
+    /**
+     * Define the polling interval for testing primary server availability so that can return back to primary server.
+     * The polling is only enabled if the returnToPrimaryServer is set true.
+     * Unit is minute. Default value is 15 minutes.
+     * value less than 0 means there is no polling.
+     */
+    String CONFIG_PROP_PRIMARY_SERVER_QUERY_TIME_INTERVAL = "primaryServerQueryTimeInterval";
+    String CONFIG_PROP_REFERAL = "referal";
+    String CONFIG_PROP_REFERRAL = "referral";
+    /**
+     * Define whether or not automatically return back to the primary server if it is available again after failing over to secondary server.
+     * default value is false.
+     */
+    String CONFIG_PROP_RETURN_TO_PRIMARY_SERVER = "returnToPrimaryServer";
+    String CONFIG_PROP_SEARCH_COUNT_LIMIT = "searchCountLimit";
+    String CONFIG_PROP_SEARCH_PAGE_SIZE = "searchPageSize";
+    String CONFIG_PROP_SEARCH_RESULTS_SIZE_LIMIT = "resultsSizeLimit";
+    String CONFIG_PROP_SEARCH_TIME_OUT = "searchTimeout";
+    String CONFIG_PROP_SERVER_TTL_ATTRIBUTE = "serverTTLAttribute";
+    String CONFIG_PROP_SSL_ENABLED = "sslEnabled";
+    /**
+     * Constant for Reuse Connection in Ldap Config
+     */
+    static final String CONFIG_REUSE_CONNECTION = "reuseConnection";
+    /**
+     * The constant for search results cache configuration tag.
+     */
+    static final String SEARCH_CACHE_CONFIG = "searchResultsCache";
+    String CONFIG_PROP_LDAP_SERVER_TYPE = "ldapType";
+    String CONFIG_LDAP_IDS52 = "IDS52";
+    String CONFIG_PROP_CERTIFICATE_MAP_MODE = "certificateMapMode";
+    String CONFIG_VALUE_CUSTOM_MODE = "CUSTOM";
+    String CONFIG_VALUE_CERT_NOT_SUPPORTED_MODE = "NOT_SUPPORTED";
+    String CONFIG_VALUE_EXTACT_DN_MODE = "EXACT_DN";
+    String[] CONFIG_PROP_CERTIFICATE_MAP_MODE_VALUES = {
+                                                         CONFIG_VALUE_EXTACT_DN_MODE, CONFIG_VALUE_FILTER_DESCRIPTOR_MODE, CONFIG_VALUE_CUSTOM_MODE,
+                                                         CONFIG_VALUE_CERT_NOT_SUPPORTED_MODE
+    };
+    String CONFIG_PROP_CERTIFICATE_FILTER = "certificateFilter";
+    String CONFIG_PROP_CERTIFICATE_MAPPER_ID = "certificateMapperId";
+    /**
+     * Constant for Timestamp Format in Ldap Config
+     */
+    static final String TIMESTAMP_FORMAT = "timestampFormat";
+    String CONFIG_PROP_LOGIN_PROPERTIES = "loginProperty";
+    String CONFIG_PROP_TRANSLATE_RDN = "translateRDN";
+    /**
+     * Custom property if set indicates to VMM that it needs encode certain characters while creating search expression.
+     */
+    String CONFIG_CUSTOM_PROP_USE_ENCODING_IN_SEARCH_EXPRESSION = "useEncodingInSearchExpression";
+    /**
+     * Constant for AD filters
+     */
+    static final String CONFIG_ACTIVE_DIRECTORY_FILTERS = "activedFilters";
+    /**
+     * Constant for Custom filters
+     */
+    static final String CONFIG_CUSTOM_FILTERS = "customFilters";
+    /**
+     * Constant for Domino filters
+     */
+    static final String CONFIG_DOMINO_FILTERS = "domino50Filters";
+    /**
+     * Constant for Novell filters
+     */
+    static final String CONFIG_NOVELL_DIRECTORY_FILTERS = "edirectoryFilters";
+    /**
+     * Constant for TDS filters
+     */
+    static final String CONFIG_TDS_FILTERS = "idsFilters";
+    /**
+     * Constant for Sun filters
+     */
+    static final String CONFIG_SUN_DIRECTORY_FILTERS = "iplanetFilters";
+    /**
+     * Constant for Netscape filters
+     */
+    static final String CONFIG_NETSCAPE_DIRECTORY_FILTERS = "netscapeFilters";
+    /**
+     * Constant for Secureway filters
+     */
+    static final String CONFIG_SECUREWAY_DIRECTORY_FILTERS = "securewayFilters";
+    /**
+     * Constant for userFilter
+     */
+    static final String CONFIG_USER_FILTER = "userFilter";
+    /**
+     * Constant for groupFilter
+     */
+    static final String CONFIG_GROUP_FILTER = "groupFilter";
+    /**
+     * Constant for userIdMap
+     */
+    static final String CONFIG_USER_ID_FILTER = "userIdMap";
+    /**
+     * Constant for groupIdMap
+     */
+    static final String CONFIG_GROUP_ID_FILTER = "groupIdMap";
+    /**
+     * Constant for groupMemberIdMap
+     */
+    static final String CONFIG_GROUP_MEMBER_ID_FILTER = "groupMemberIdMap";
+
+    String CONFIG_DO_ATTRIBUTE_CONFIGUARTION = "attributeConfiguration";
+    String CONFIG_DO_ATTRIBUTES = "attribute";
+    String CONFIG_DO_PROPERTIES_NOT_SUPPORTED = "propertyNotSupported";
+    String CONFIG_DO_EXTERNAL_ID_ATTRIBUTE = "externalIdAttribute";
+    String CONFIG_PROP_AUTO_GENERATE = "autoGenerate";
+    String CONFIG_LDAP_IDS4 = "IDS4";
+    String CONFIG_DO_MEMBERSHIP_ATTRIBUTES = "membershipAttribute";
+    String CONFIG_PROP_SCOPE = "scope";
+    String CONFIG_DO_MEMBER_ATTRIBUTES = "memberAttribute";
+    String CONFIG_PROP_DUMMY_MEMBER = "dummyMember";
+    String CONFIG_DO_DYNAMIC_MEMBER_ATTRIBUTES = "dynamicMemberAttribute";
+    String CONFIG_PROP_SEARCHFILTER = "searchFilter";
+    /**
+     * The name of the data object in vmm configuration data graph which represents definitive object classes.
+     */
+    String CONFIG_DO_OBJECTCLASS = "objectClass";
+    /**
+     * The name of the data object in vmm configuration data graph which represents the RDN properties of the supported entity types.
+     */
+    String CONFIG_DO_RDN_PROPERTY = "rdnProperty";
+    String CONFIG_PROP_SEARCHBASES = "searchBase";
+
+    // LDAP Adapter related configuration
+    String CONFIG_PROP_SSL_CONFIGURATION = "sslConfiguration";
+
 }

@@ -26,11 +26,11 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.security.CertificateMapFailedException;
 import com.ibm.websphere.security.X509CertificateMapper;
-import com.ibm.websphere.security.wim.ConfigConstants;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.wim.LdapRegistry;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.com.unboundid.InMemoryLDAPServer;
+import com.ibm.ws.security.wim.adapter.ldap.LdapConstants;
 import com.ibm.ws.webcontainer.security.test.servlets.ClientCertAuthClient;
 import com.unboundid.ldap.sdk.Entry;
 
@@ -627,7 +627,7 @@ public class CustomCertificateMapperInFeatureTest {
         ldap.setBindDN(InMemoryLDAPServer.getBindDN());
         ldap.setBindPassword(InMemoryLDAPServer.getBindPassword());
         ldap.setLdapType("Custom");
-        ldap.setCertificateMapMode(ConfigConstants.CONFIG_VALUE_CERT_NOT_SUPPORTED_MODE);
+        ldap.setCertificateMapMode(LdapConstants.CONFIG_VALUE_CERT_NOT_SUPPORTED_MODE);
         server.getLdapRegistries().add(ldap);
 
         updateConfigDynamically(myServer, server);

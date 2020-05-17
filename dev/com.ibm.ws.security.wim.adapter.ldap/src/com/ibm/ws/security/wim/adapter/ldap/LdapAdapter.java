@@ -88,7 +88,6 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.X509CertificateMapper;
 import com.ibm.websphere.security.auth.WSSubject;
 import com.ibm.websphere.security.cred.WSCredential;
-import com.ibm.websphere.security.wim.ConfigConstants;
 import com.ibm.websphere.security.wim.Service;
 import com.ibm.websphere.security.wim.ras.WIMMessageHelper;
 import com.ibm.websphere.security.wim.ras.WIMMessageKey;
@@ -235,7 +234,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
         reposId = (String) configProps.get(KEY_ID);
         reposRealm = (String) configProps.get(REALM);
 
-        if (String.valueOf(configProps.get(ConfigConstants.CONFIG_PROP_SUPPORT_CHANGE_LOG)).equalsIgnoreCase(ConfigConstants.CONFIG_SUPPORT_CHANGE_LOG_NATIVE)) {
+        if (String.valueOf(configProps.get(LdapConstants.CONFIG_PROP_SUPPORT_CHANGE_LOG)).equalsIgnoreCase(LdapConstants.CONFIG_SUPPORT_CHANGE_LOG_NATIVE)) {
             //Construct a change handler depending on the type of LDAP repository
             changeHandler = ChangeHandlerFactory.getChangeHandler(iLdapConn);
         }
@@ -2905,13 +2904,13 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
         String filter = null;
         String certMapMode = iLdapConfigMgr.getCertificateMapMode();
 
-        if (ConfigConstants.CONFIG_VALUE_CERT_NOT_SUPPORTED_MODE.equalsIgnoreCase(certMapMode)) {
+        if (LdapConstants.CONFIG_VALUE_CERT_NOT_SUPPORTED_MODE.equalsIgnoreCase(certMapMode)) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Certificate authentication has been disabled for this LDAP registry.");
             }
             String msg = Tr.formatMessage(tc, WIMMessageKey.LDAP_REGISTRY_CERT_IGNORED);
             throw new CertificateMapNotSupportedException(WIMMessageKey.LDAP_REGISTRY_CERT_IGNORED, msg);
-        } else if (ConfigConstants.CONFIG_VALUE_CUSTOM_MODE.equalsIgnoreCase(certMapMode)) {
+        } else if (LdapConstants.CONFIG_VALUE_CUSTOM_MODE.equalsIgnoreCase(certMapMode)) {
             String mapping;
             try {
                 X509CertificateMapper mapper = iCertificateMapperRef.get();
@@ -2951,7 +2950,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
             if (dn == null) {
                 filter = mapping;
             }
-        } else if (ConfigConstants.CONFIG_VALUE_FILTER_DESCRIPTOR_MODE.equalsIgnoreCase(certMapMode)) {
+        } else if (LdapConstants.CONFIG_VALUE_FILTER_DESCRIPTOR_MODE.equalsIgnoreCase(certMapMode)) {
             filter = iLdapConfigMgr.getCertificateLDAPFilter(certs[0]).trim();
         } else {
             dn = LdapHelper.getValidDN(certs[0].getSubjectX500Principal().getName());

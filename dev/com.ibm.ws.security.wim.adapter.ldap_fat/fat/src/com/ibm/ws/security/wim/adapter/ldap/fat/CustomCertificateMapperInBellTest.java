@@ -26,7 +26,6 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.security.CertificateMapFailedException;
 import com.ibm.websphere.security.X509CertificateMapper;
-import com.ibm.websphere.security.wim.ConfigConstants;
 import com.ibm.websphere.simplicity.config.Bell;
 import com.ibm.websphere.simplicity.config.File;
 import com.ibm.websphere.simplicity.config.Library;
@@ -34,6 +33,7 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.wim.LdapRegistry;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.com.unboundid.InMemoryLDAPServer;
+import com.ibm.ws.security.wim.adapter.ldap.LdapConstants;
 import com.ibm.ws.webcontainer.security.test.servlets.ClientCertAuthClient;
 import com.unboundid.ldap.sdk.Entry;
 
@@ -238,7 +238,7 @@ public class CustomCertificateMapperInBellTest {
      * Verify programmatic APIs.
      *
      * @param loginUser The user that logged in.
-     * @param response The response from the HTTPS request.
+     * @param response  The response from the HTTPS request.
      */
     private static void verifyProgrammaticAPIValues(String loginUser, String response) {
         assertTrue("Failed to find expected getAuthType: " + loginUser, response.contains("getAuthType: " + AUTH_TYPE_CERT));
@@ -660,7 +660,7 @@ public class CustomCertificateMapperInBellTest {
         ldap.setBindDN(InMemoryLDAPServer.getBindDN());
         ldap.setBindPassword(InMemoryLDAPServer.getBindPassword());
         ldap.setLdapType("Custom");
-        ldap.setCertificateMapMode(ConfigConstants.CONFIG_VALUE_CERT_NOT_SUPPORTED_MODE);
+        ldap.setCertificateMapMode(LdapConstants.CONFIG_VALUE_CERT_NOT_SUPPORTED_MODE);
         server.getLdapRegistries().add(ldap);
 
         /*

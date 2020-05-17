@@ -26,7 +26,6 @@ import java.util.Set;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.audit.context.AuditManager;
-import com.ibm.websphere.security.wim.ConfigConstants;
 import com.ibm.websphere.security.wim.Service;
 import com.ibm.websphere.security.wim.ras.WIMMessageHelper;
 import com.ibm.websphere.security.wim.ras.WIMMessageKey;
@@ -227,7 +226,7 @@ public class URBridge implements Repository {
         try {
             reposId = (String) configProps.get(KEY_ID);
 
-            setCustomProperties((List<Map<String, String>>) configProps.get(ConfigConstants.CONFIG_DO_CUSTOM_PROPERTIES));
+            setCustomProperties((List<Map<String, String>>) configProps.get(URBridgeConstants.CONFIG_DO_CUSTOM_PROPERTIES));
             setMapping();
             setBaseEntry(configProps);
             setConfigEntityMapping(configProps);
@@ -321,9 +320,9 @@ public class URBridge implements Repository {
         Iterator<Map<String, String>> itr = propList.iterator();
         while (itr.hasNext()) {
             Map<String, String> propMap = itr.next();
-            String propName = propMap.get(ConfigConstants.CONFIG_PROP_NAME);
+            String propName = propMap.get(URBridgeConstants.CONFIG_PROP_NAME);
             // String propValue = expandVar(propMap.get(ConfigConstants.CONFIG_PROP_VALUE));
-            String propValue = propMap.get(ConfigConstants.CONFIG_PROP_VALUE);
+            String propValue = propMap.get(URBridgeConstants.CONFIG_PROP_VALUE);
             customPropertyMap.put(propName, propValue);
         }
 

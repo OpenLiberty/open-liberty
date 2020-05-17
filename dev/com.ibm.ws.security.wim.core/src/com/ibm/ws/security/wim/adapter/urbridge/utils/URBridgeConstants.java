@@ -31,4 +31,21 @@ public interface URBridgeConstants {
     public static final String DISPLAY_NAME = "displayName";
 
     public static final String CUSTOM_REGISTRY_IMPL_CLASS = "registryImplClass";
+
+    /**
+     * The name of the property in vmm configuration data graph which represents a name.
+     */
+    String CONFIG_PROP_NAME = "name";
+
+    /**
+     * The type name of the custom properties type.
+     */
+    String CONFIG_DO_CUSTOM_PROPERTIES = "CustomProperties";
+
+    // LDAP Adapter related configuration
+    String CONFIG_PROP_SSL_CONFIGURATION = "sslConfiguration";
+
+    String CONFIG_PROP_VALUE = "value";
+
+    String CONFIG_PROP_OBJECTCLASS = "objectClass";
 }
