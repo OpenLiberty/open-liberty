@@ -141,7 +141,7 @@ public class Jose4jUtil {
             }
 
             Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
-            if (clientConfig.isIncludeCustomCacheKeyInSubject() || clientConfig.isDisableLtpaCookie()) {
+            if (clientConfig.allowCustomCacheKey() || clientConfig.isIncludeCustomCacheKeyInSubject() || clientConfig.isDisableLtpaCookie()) {
                 long storingTime = new Date().getTime();
                 String customCacheKey = oidcClientRequest.getAndSetCustomCacheKeyValue(); //username + tokenStr.toString().hashCode();
                 customProperties.put(ClientConstants.CREDENTIAL_STORING_TIME_MILLISECONDS, Long.valueOf(storingTime));

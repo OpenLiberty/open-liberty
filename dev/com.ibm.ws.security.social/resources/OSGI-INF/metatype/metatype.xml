@@ -78,6 +78,7 @@
         <AD id="nonceEnabled" name="internal" description="internal use only" required="false" type="Boolean" default="true" />
         <AD id="realmName" name="internal" description="internal use only" required="false" type="String" ibm:type="token" />
         <AD id="includeCustomCacheKeyInSubject" name="internal" description="internal use only" required="false" type="Boolean" default="true" />
+        <AD id="allowCustomCacheKey" name="%allowCustomCacheKey" description="%allowCustomCacheKey.desc" required="false" type="Boolean" default="true"/>
         <AD id="resource" name="internal" description="internal use only" required="false" type="String" cardinality="2147483647" />
         <AD id="useSystemPropertiesForHttpClientConnections" name="%useSystemPropertiesForHttpClientConnections" description="%useSystemPropertiesForHttpClientConnections.desc" required="false" type="Boolean" default="false"/>
         <AD id="forwardLoginParameter" name="internal" description="internal use only" required="false" type="String" cardinality="2147483647" />
@@ -346,6 +347,7 @@
             required="false" type="Boolean" default="false" />
         <AD id="accessTokenHeaderName" name="%accessTokenHeaderName" description="%accessTokenHeaderName.desc"
             required="false" type="String" />
+        <AD id="allowCustomCacheKey" name="%allowCustomCacheKey" description="%allowCustomCacheKey.desc" required="false" type="Boolean" default="true"/>
     </OCD>
 
     <Designate factoryPid="com.ibm.ws.security.social.oauth2login">

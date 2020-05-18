@@ -98,6 +98,8 @@ public interface ConvergedClientConfig {
 
     public boolean isIncludeCustomCacheKeyInSubject();
 
+    public boolean allowCustomCacheKey();
+    
     public boolean isIncludeIdTokenInSubject();
 
     public boolean isDisableLtpaCookie();

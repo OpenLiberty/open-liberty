@@ -107,8 +107,10 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
     public static final String KEY_NONCE_ENABLED = "nonceEnabled";
 
     public static final String KEY_INCLUDE_CUSTOM_CACHE_KEY_IN_SUBJECT = "includeCustomCacheKeyInSubject";
-
+    
+    public static final String KEY_ALLOW_CUSTOM_CACHE_KEY = "allowCustomCacheKey";
     private boolean includeCustomCacheKeyInSubject = true;
+    private boolean allowCustomCacheKey = true;
 
     public static final String KEY_AUTHZ_PARAM = "authzParameter";
     public static final String KEY_TOKEN_PARAM = "tokenParameter";
@@ -187,6 +189,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
         this.nonce = configUtils.getBooleanConfigAttribute(props, KEY_NONCE_ENABLED, this.nonce);
         this.realmName = configUtils.getConfigAttribute(props, KEY_realmName);
         this.includeCustomCacheKeyInSubject = configUtils.getBooleanConfigAttribute(props, KEY_INCLUDE_CUSTOM_CACHE_KEY_IN_SUBJECT, this.includeCustomCacheKeyInSubject);
+        this.allowCustomCacheKey = configUtils.getBooleanConfigAttribute(props, KEY_ALLOW_CUSTOM_CACHE_KEY, this.allowCustomCacheKey);
         this.resource = configUtils.getConfigAttribute(props, KEY_resource);
 
         authzRequestParamMap = populateCustomRequestParameterMap(props, KEY_AUTHZ_PARAM);
@@ -720,6 +723,12 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
     @Override
     public boolean isIncludeCustomCacheKeyInSubject() {
         return false;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public boolean allowCustomCacheKey() {
+        return allowCustomCacheKey;
     }
 
     /** {@inheritDoc} */
