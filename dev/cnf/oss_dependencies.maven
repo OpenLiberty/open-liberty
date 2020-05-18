@@ -160,6 +160,7 @@ jakarta.transaction:jakarta.transaction-api:2.0.0-RC1
 jakarta.xml.bind:jakarta.xml.bind-api:3.0.0-RC3
 jakarta.xml.soap:jakarta.xml.soap-api:2.0.0-RC3
 jakarta.xml.ws:jakarta.xml.ws-api:3.0.0-RC3
+jakarta.validation:jakarta.validation-api:3.0.0-M1
 javax.activation:activation:1.1
 javax.annotation:javax.annotation-api:1.2
 javax.annotation:javax.annotation-api:1.3.1
@@ -430,7 +431,9 @@ org.glassfish.jaxb:jaxb-xjc:3.0.0-M3
 org.hamcrest:hamcrest-all:1.3
 org.hibernate.common:hibernate-commons-annotations:5.1.0.Final
 org.hibernate.validator:hibernate-validator-cdi:6.1.1.Final
+org.hibernate.validator:hibernate-validator-cdi:7.0.0.Alpha2
 org.hibernate.validator:hibernate-validator:6.1.1.Final
+org.hibernate.validator:hibernate-validator:7.0.0.Alpha2
 org.hibernate:hibernate-core:5.2.17.Final
 org.hibernate:hibernate-search-engine:5.11.2.Final
 org.jacoco:org.jacoco.agent:0.7.9
