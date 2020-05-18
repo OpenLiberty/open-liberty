@@ -19,6 +19,7 @@ fat.project: true
 
 -buildpath: \
 	com.ibm.websphere.jakarta.concurrency.2.0;version=latest,\
-	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
-	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-	com.ibm.websphere.javaee.transaction.1.1;version=latest
+	com.ibm.websphere.jakarta.annotation.2.0;version=latest,\
+	com.ibm.websphere.jakartaee.servlet.5.0;version=latest,\
+	com.ibm.websphere.jakartaee.transaction.2.0;version=latest,\
+	com.ibm.ws.componenttest.2.0;version=latest
