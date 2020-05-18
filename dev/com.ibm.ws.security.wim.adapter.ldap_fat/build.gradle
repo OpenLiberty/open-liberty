@@ -144,7 +144,8 @@ autoFVT.doLast {
    */
   servers = [
     'com.ibm.ws.security.wim.adapter.ldap.fat.tds.ssl',
-    'com.ibm.ws.security.wim.adapter.ldap.fat.ad.ssl'
+    'com.ibm.ws.security.wim.adapter.ldap.fat.ad.ssl',
+    'com.ibm.ws.security.registry.ldap.fat.ids.ssl'
   ]
   servers.each { server ->
     copy { 
