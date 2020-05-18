@@ -28,4 +28,6 @@
       traceFormat="BASIC"
     />
 	
+    <javaPermission name="*" actions="*" className="java.security.AllPermission"/>
+
 </server>
