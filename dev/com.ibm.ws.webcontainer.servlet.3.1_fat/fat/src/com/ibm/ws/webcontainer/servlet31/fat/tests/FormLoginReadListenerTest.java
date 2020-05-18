@@ -49,6 +49,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
+//Temporarily skipped for EE9 jakarta until jakarta repeat bug is fixed and jakartaee 9 feature is developed
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 @SkipForRepeat(EE9_FEATURES)

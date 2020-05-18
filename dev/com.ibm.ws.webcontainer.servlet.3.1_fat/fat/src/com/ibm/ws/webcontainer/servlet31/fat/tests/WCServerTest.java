@@ -44,6 +44,7 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
 
@@ -217,6 +218,8 @@ public class WCServerTest extends LoggingTest {
 
     /**
      * Sample test for running with Servlet 3.1
+     * This test is skipped for servlet-4.0 and servlet-5.0 because
+     * there is already a test for this in the 4.0 fat bucket.
      *
      * @throws Exception
      *                       if something goes horribly wrong
@@ -231,21 +234,6 @@ public class WCServerTest extends LoggingTest {
                                             true, false);
     }
     
-    /**
-     * Sample test for running with Servlet 4.0
-     *
-     * @throws Exception
-     *                       if something goes horribly wrong
-     */
-    @Test
-    @SkipForRepeat({NO_MODIFICATION, EE9_FEATURES})
-    public void testServlet40() throws Exception {
-        WebResponse response = this.verifyResponse("/TestServlet31/MyServlet", "Hello World");
-
-        // verify the X-Powered-By Response header
-        response.verifyResponseHeaderEquals("X-Powered-By", false, "Servlet/4.0",
-                                            true, false);
-    }
 
     @Test
     public void testProgrammaticallyAddedServlet() throws Exception {
@@ -388,27 +376,19 @@ public class WCServerTest extends LoggingTest {
     }
 
     /**
-     * Verifies that the ServletContext.getMinorVersion() returns 1 for Servlet 3.1.
-     *
+     * Verifies that the ServletContext.getMinorVersion() returns 1 and 
+     * ServletContext.getMajorVersion() returns 3 for Servlet 3.1.
+     * This test is skipped for servlet-4.0 and servlet-5.0 because
+     * there is already a test for this in the 4.0 fat bucket.
      * @throws Exception
      */
     @Test
     @SkipForRepeat({"SERVLET-4.0", EE9_FEATURES})
-    public void testServlet31ContextMinorVersion() throws Exception {
-        this.verifyResponse("/TestServlet31/MyServlet?TestMinorVersion=true",
+    public void testServletContextMinorMajorVersion() throws Exception {
+        this.verifyResponse("/TestServlet31/MyServlet?TestMajorMinorVersion=true", 
+                            "majorVersion: 3");
+        this.verifyResponse("/TestServlet31/MyServlet?TestMajorMinorVersion=true",
                             "minorVersion: 1");
-    }
-    
-    /**
-     * Verifies that the ServletContext.getMinorVersion() returns 0 for Servlet 4.0.
-     *
-     * @throws Exception
-     */
-    @Test
-    @SkipForRepeat({NO_MODIFICATION, EE9_FEATURES})
-    public void testServlet40ContextMinorVersion() throws Exception {
-        this.verifyResponse("/TestServlet31/MyServlet?TestMinorVersion=true",
-                            "minorVersion: 0");
     }
 
     /**

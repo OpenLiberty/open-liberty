@@ -68,6 +68,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * <ul>
  * <li>Decorator (not implemented)
  * </ul>
+ * Temporarily skipped for EE9 jakarta until cdi-3.0 feature is developed
  */
 @RunWith(FATRunner.class)
 @SkipForRepeat(EE9_FEATURES)

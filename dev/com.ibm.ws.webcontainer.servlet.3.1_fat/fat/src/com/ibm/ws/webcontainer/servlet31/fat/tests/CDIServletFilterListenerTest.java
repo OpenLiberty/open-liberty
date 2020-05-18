@@ -37,6 +37,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * CDI Test
  *
  * Tests Servlet Filter/Listener Injection
+ * Temporarily skipped for EE9 jakarta until cdi-3.0 feature is developed
  */
 @RunWith(FATRunner.class)
 @SkipForRepeat(EE9_FEATURES)

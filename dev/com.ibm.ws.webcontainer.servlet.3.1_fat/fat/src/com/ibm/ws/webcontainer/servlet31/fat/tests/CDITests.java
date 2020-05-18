@@ -33,6 +33,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
+//Temporarily skipped for EE9 jakarta until cdi-3.0 feature is developed
 @RunWith(FATRunner.class)
 @SkipForRepeat(EE9_FEATURES)
 public class CDITests extends LoggingTest {
