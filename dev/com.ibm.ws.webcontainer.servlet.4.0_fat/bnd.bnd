@@ -20,6 +20,7 @@ src: \
 	test-applications/TestEncoding.war/src, \
 	test-applications/TestPushBuilderSecurity.war/src, \
 	test-applications/ServletPathDefaultMapping.war/src, \
+	test-applications/TestBadServletContextListener.war/src, \
 	test-applications/TestGetMappingSlashStar.war/src, \
 	test-applications/SCIExceptionTest.jar/src, \
 	test-applications/SCIFilterServletNameMapping.jar/src, \

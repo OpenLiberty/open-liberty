@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2017 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1038,12 +1038,28 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
             } catch (Throwable th) {
                 // pk435011
                 logger.logp(Level.SEVERE, CLASS_NAME, "initialize", "error.notifying.listeners.of.WebApp.start", new Object[] { th });
-                if (WCCustomProperties.STOP_APP_STARTUP_ON_LISTENER_EXCEPTION) {          //PI58875
+                if (WCCustomProperties.STOP_APP_STARTUP_ON_LISTENER_EXCEPTION) { //PI58875
                     if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
                         logger.logp(Level.FINE, CLASS_NAME, "initialize", "rethrowing exception due to stopAppStartupOnListenerException");
+
+                    if (moduleConfig instanceof com.ibm.ws.webcontainer.osgi.container.DeployedModule) {
+                        // complete the notification here for app manager
+                        ((com.ibm.ws.webcontainer.osgi.container.DeployedModule) moduleConfig).initTaskFailed();
+                    }
+
                     throw th;
                 }
             }
+
+            if (moduleConfig instanceof com.ibm.ws.webcontainer.osgi.container.DeployedModule) {
+                // complete the notification here for app manager
+                ((com.ibm.ws.webcontainer.osgi.container.DeployedModule) moduleConfig).initTaskComplete();
+                
+                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+                    logger.logp(Level.FINE, CLASS_NAME, "initialize", "set future done for deployedModule -->" + moduleConfig);
+                }
+            }
+            
             commonInitializationFinally(extensionFactories); // NEVER INVOKED BY
             // WEBSPHERE
             // APPLICATION
