@@ -556,9 +556,13 @@ ssl.create.certificate.end=CWPKI0803A: Certifik\u00e1t SSL byl vytvo\u0159en za 
 ssl.create.certificate.end.explanation=Certifik\u00e1t SSL byl vygenerov\u00e1n v zadan\u00e9m \u010dase.
 ssl.create.certificate.end.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 #--------------------------------------------------------------------------------------------------
-ssl.create.certificate.error=CWPKI0804E: Chyba p\u0159i vytv\u00e1\u0159en\u00ed certifik\u00e1tu SSL. Nelze vytvo\u0159it soubor s kl\u00ed\u010di SSL: {0}
+ssl.create.certificate.error=CWPKI0804E: Chyba p\u0159i vytv\u00e1\u0159en\u00ed certifik\u00e1tu SSL. {0}
 ssl.create.certificate.error.explanation=Certifik\u00e1t SSL nelze v zadan\u00e9m um\u00edst\u011bn\u00ed vytvo\u0159it.
 ssl.create.certificate.error.useraction=Zajist\u011bte, aby k um\u00edst\u011bn\u00ed mohl p\u0159istupovat proces serveru. Ud\u00e1losti FFDC mohou nazna\u010dovat z\u00e1va\u017enou chybu p\u0159i generov\u00e1n\u00ed nebo na\u010d\u00edt\u00e1n\u00ed kl\u00ed\u010d\u016f.
+
+# Messages for the CWPKI0804E message descriptor {0}.
+ssl.create.certificate.error.reason1=Nelze vytvo\u0159it soubor s kl\u00ed\u010di SSL: {0}
+ssl.create.certificate.error.reason2=Chyba je: {0}
 #--------------------------------------------------------------------------------------------------
 ssl.default.keystore.config.error=CWPKI0805E: Chyb\u00ed povinn\u00e9 heslo v\u00fdchoz\u00edho \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f.
 ssl.default.keystore.config.error.explanation=V konfiguraci \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f nen\u00ed zad\u00e1no heslo pro v\u00fdchoz\u00ed \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f.

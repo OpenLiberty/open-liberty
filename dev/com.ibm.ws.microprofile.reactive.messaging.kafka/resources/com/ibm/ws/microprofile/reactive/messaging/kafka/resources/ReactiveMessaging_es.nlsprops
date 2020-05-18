@@ -60,6 +60,16 @@ kafka.library.not.present.CWMRX1006E=CWMRX1006E: Las clases del archivo JAR kafk
 kafka.library.not.present.CWMRX1006E.explanation=Las aplicaciones que utilizan el cliente Reactive Messaging Kafka Client deben proporcionar el archivo JAR kafka-clients y sus dependencias. Pueden proporcionar este archivo y sus dependencias empaquet\u00e1ndolo como una biblioteca o proporcion\u00e1ndolo como una biblioteca compartida.
 kafka.library.not.present.CWMRX1006E.useraction=Empaquete el archivo JAR kafka-clients y sus dependencias como bibliotecas en la aplicaci\u00f3n o como una biblioteca compartida. El archivo JAR kafka-clients se puede descargar desde el sitio web de Apache Kafka o desde Maven Central.
 
+# A Kafka incoming connector for the {0} channel cannot be created. The error is {1}
+kafka.create.incoming.error.CWMRX1007E=CWMRX1007E: No se puede crear un conector entrante de Kafka para el canal {0}. El error es {1}
+kafka.create.incoming.error.CWMRX1007E.explanation=Un error que ocurri\u00f3 cuando el conector de Kafka fue configurado para un canal de mensajer\u00eda reactiva entrante impide el funcionamiento normal de la mensajer\u00eda reactiva de MicroProfile.
+kafka.create.incoming.error.CWMRX1007E.useraction=Revise el mensaje de error, el archivo message.log del servidor y los registros FFDC para identificar el problema.
+
+# A Kafka outgoing connector for the {0} channel cannot be created. The error is {1}
+kafka.create.outgoing.error.CWMRX1008E=CWMRX1008E: No se puede crear un conector saliente de Kafka para el canal {0}. El error es {1}
+kafka.create.outgoing.error.CWMRX1008E.explanation=Un error que ocurri\u00f3 cuando el conector de Kafka fue configurado para un canal de mensajer\u00eda reactiva saliente impide el funcionamiento normal de la mensajer\u00eda reactiva de MicroProfile.
+kafka.create.outgoing.error.CWMRX1008E.useraction=Revise el mensaje de error, el archivo message.log del servidor y los registros FFDC para identificar el problema.
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message
 #-----------------------------------------------------------------------------------------------------------------------------

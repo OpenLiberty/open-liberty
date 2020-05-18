@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2018 IBM Corporation and others.
+# Copyright (c) 2013, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -128,8 +128,8 @@ JWK_ENDPOINT_MISSING_ERR.useraction=Nastavte atribut jwkEndpointUrl na adresu UR
 #OIDC_FAILED_RUN_AS_SUBJCET.explanation=An exception occurred while getting the RunAsSubject.
 #OIDC_FAILED_RUN_AS_SUBJCET.useraction=Make sure the server is configured and started properly.
 
-#0=OIDC client ID, 1=Current clock time, 2=Token expiration time, 3=Token issued at time
-OIDC_JWT_VERIFY_STATE_ERR=CWWKS1773E: Nezda\u0159ilo se ov\u011b\u0159en\u00ed tokenu po\u017eadovan\u00e9ho [{0}], proto\u017ee token je mimo sv\u016fj platn\u00fd rozsah. M\u016f\u017ee to b\u00fdt zp\u016fsobeno t\u00edm, \u017ee v aktu\u00e1ln\u00edm \u010dase [{1}] ji\u017e vypr\u0161ela platnost tokenu platn\u00e9ho do [{2}], nebo \u017ee je \u010das vyd\u00e1n\u00ed [{3}] p\u0159\u00edli\u0161 vzd\u00e1len\u00fd od \u010dasu aktu\u00e1ln\u00edho [{1}].
+#0=OIDC client ID, 1=sub claim of the token, 2=Current clock time, 3=Token expiration time, 4=Token issued at time
+OIDC_JWT_VERIFY_STATE_ERR=CWWKS1773E: Ov\u011b\u0159en\u00ed tokenu, kter\u00fd vy\u017eaduje klient [{0}] OpenID Connect pro u\u017eivatele [{1}], se nezda\u0159ilo, proto\u017ee token je mimo platn\u00fd rozsah. K t\u00e9to chyb\u011b do\u0161lo bu\u010f proto, \u017ee aktu\u00e1ln\u00ed \u010das [{2}] je \u010das po vypr\u0161en\u00ed platnosti tokenu [{3}], nebo proto, \u017ee \u010das vyd\u00e1n\u00ed [{4}] je p\u0159\u00edli\u0161 daleko od aktu\u00e1ln\u00edho \u010dasu [{2}].
 OIDC_JWT_VERIFY_STATE_ERR.explanation=Token nelze ov\u011b\u0159it, proto\u017ee zobrazovan\u00fd aktu\u00e1ln\u00ed \u010das se nenach\u00e1z\u00ed mezi \u010dasem vyd\u00e1n\u00edm tokenu a vypr\u0161en\u00edm jeho platnosti.
 OIDC_JWT_VERIFY_STATE_ERR.useraction=Ujist\u011bte se, \u017ee jsou syst\u00e9mov\u00e9 hodiny klienta OpenID Connect (z\u00e1visl\u00e9 strany (RP)) synchronizovan\u00e9 s hodinami syst\u00e9mu poskytovatele OpenID Connect (OP) (pokud se nach\u00e1z\u00ed v r\u016fzn\u00fdch syst\u00e9mech).
 

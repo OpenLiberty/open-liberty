@@ -322,7 +322,7 @@ security.oauth20.front.end.error=CWOAU0073E: A ap\u0103rut o eroare de autentifi
 security.oauth20.front.end.error.explanation=Ar putea lipsi informa\u0163ii din cerere, serverul ar putea \u00eent\u00e2lni o eroare intern\u0103 sau alt\u0103 eroare ar putea \u00eempiedica serverul s\u0103 autentifice cu succes utilizatorul.
 security.oauth20.front.end.error.useraction=Contacta\u0163i administratorul de sistem pentru a rezolva problema.
 
-security.oauth20.endpoint.resowner.apppassword.error=CWOAU0074E: Cererea de schimb de parole aplica\u0163ie pentru utilizatorul {0} nu s-a finalizat deoarece parola de aplica\u0163ie nu a putut fi verificat\u0103. Parola de aplica\u0163ie este fie incorect\u0103, expirat\u0103 sau revocat\u0103, fie ID-ul de client furnizat nu este valid.
+security.oauth20.endpoint.resowner.apppassword.error=CWOAU0074E: Cererea de schimbare a parolei de aplica\u0163ie pentru utilizatorul {0} nu a fost finalizat\u0103 deoarece furnizorul OAuth nu a putut verifica parola de aplica\u0163ie. Parola de aplica\u0163ie este fie incorect\u0103, fie expirat\u0103, fie revocat\u0103, fie ID-ul de client furnizat sau ID-ul de utilizator nu este valid.
 security.oauth20.endpoint.resowner.apppassword.error.explanation=Furnizorul OAuth nu a putut s\u0103 verifice parola de aplica\u0163ie.
 security.oauth20.endpoint.resowner.apppassword.error.useraction=Confirma\u0163i c\u0103 parola de aplica\u0163ie este valid\u0103, nu este expirat\u0103 \u015fi nu a fost revocat\u0103. De asemenea, confirma\u0163i c\u0103 ID-ul de client din jetonul de acces este acela\u015fi cu ID-ul de client din antetul de autorizare.
 

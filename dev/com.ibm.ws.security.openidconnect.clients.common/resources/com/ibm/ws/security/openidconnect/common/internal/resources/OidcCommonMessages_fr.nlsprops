@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2018 IBM Corporation and others.
+# Copyright (c) 2013, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -128,8 +128,8 @@ JWK_ENDPOINT_MISSING_ERR.useraction=D\u00e9finissez l'attribut jwkEndpointUrl su
 #OIDC_FAILED_RUN_AS_SUBJCET.explanation=An exception occurred while getting the RunAsSubject.
 #OIDC_FAILED_RUN_AS_SUBJCET.useraction=Make sure the server is configured and started properly.
 
-#0=OIDC client ID, 1=Current clock time, 2=Token expiration time, 3=Token issued at time
-OIDC_JWT_VERIFY_STATE_ERR=CWWKS1773E: La validation a \u00e9chou\u00e9 pour le jeton demand\u00e9 par [{0}] vu que le jeton est en dehors de sa plage valide. Cela peut \u00eatre d\u00fb au fait que l''heure en cours [{1}] est post\u00e9rieure \u00e0 l''heure d''expiration du jeton [{2}] ou l''heure du probl\u00e8me [{3}] est trop \u00e9loign\u00e9e de l''heure en cours [{1}].
+#0=OIDC client ID, 1=sub claim of the token, 2=Current clock time, 3=Token expiration time, 4=Token issued at time
+OIDC_JWT_VERIFY_STATE_ERR=CWWKS1773E: La validation a \u00e9chou\u00e9 pour le jeton demand\u00e9 par le client OpenID Connect [{0}] pour l''utilisateur [{1}] car le jeton n''est pas compris dans la plage valide. Cette erreur survient car l''heure en cours [{2}] est ult\u00e9rieure \u00e0 l''heure d''expiration du jeton [{3}] ou car l''heure d''\u00e9mission [{4}] est trop lointaine par rapport \u00e0 l''heure en cours [{2}].
 OIDC_JWT_VERIFY_STATE_ERR.explanation=Un jeton n'a pas pu \u00eatre valid\u00e9 vu que l'heure actuelle affich\u00e9e n'est pas comprise entre son heure d'\u00e9mission et son heure d'expiration.
 OIDC_JWT_VERIFY_STATE_ERR.useraction=Assurez-vous que les horloges syst\u00e8me du client OpenID Connect (partie utilisatrice ou RP) et du fournisseur OpenID Connect (OP) sont synchronis\u00e9s (si elles se trouvent sur deux syst\u00e8mes).
 

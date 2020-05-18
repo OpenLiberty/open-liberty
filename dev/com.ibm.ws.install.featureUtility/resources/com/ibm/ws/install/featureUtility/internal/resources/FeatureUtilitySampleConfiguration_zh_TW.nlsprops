@@ -1,0 +1,75 @@
+###############################################################################
+# Copyright (c) 2010, 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.featureUtility/resources/com/ibm/ws/install/featureUtility/internal/resources/FeatureUtilitySampleConfiguration.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+# Only need to translate the commented lines (lines that start with '##') below.
+# The following keywords do not need to be translated.
+
+SAMPLE_CONFIG=######################################################################\n\
+## ## \u5b9a\u7fa9 Maven Central \u93e1\u6620\u5132\u5b58\u5eab ##\n\
+## \u4f9d\u9810\u8a2d\uff0cfeatureUtility \u6703\u5f9e Maven Central \u4e0b\u8f09\u3002\u4f7f\u7528\u8005\n\
+## \u53ef\u4ee5\u8a2d\u5b9a\u300cMaven Central \u5132\u5b58\u5eab\u300d\u7684\u93e1\u6620\uff0c\u4e26\n\
+## \u4f7f\u7528\u8a72\u93e1\u6620\u5132\u5b58\u5eab\u4f86\u7f6e\u63db featureUtility \u9810\u8a2d\n\
+## Maven Central \u9023\u7dda\u3002\n\
+## -------------------------------------------------------------------\n\
+#mavenCentralMirror.url=http://w3.mycompany.com/pub/maven2\n\
+\n\
+## \u5fc5\u8981\u7684\u8a71\uff0c\u8acb\u6307\u5b9a Maven Central \u93e1\u6620\u5132\u5b58\u5eab\u7684\u8a8d\u8b49\u3002\n\
+## \u70ba\u4e86\u52a0\u5f37\u5b89\u5168\uff0c\u8acb\u4f7f\u7528 securityUtility \u7de8\u78bc\u52d5\u4f5c\uff0c\n\
+## \u4f86\u7de8\u78bc .password \u5167\u5bb9\u7684\u503c\u3002\n\
+## \u5982\u679c\u60a8\u6c92\u6709\u8a2d\u5b9a\u4f7f\u7528\u8005\u548c\u5bc6\u78bc\uff0c\u6703\u63d0\u793a\u60a8\n\
+## \u63d0\u4f9b\u5b83\u5011\u3002\n\
+## -------------------------------------------------------------------\n\
+#mavenCentralMirror.user=username\n\
+#mavenCentralMirror.password=myPassword\n\
+\n\
+######################################################################\n\
+## ## \u4f7f\u7528\u81ea\u8a02\u9060\u7aef\u5132\u5b58\u5eab ##\n\
+## featureUtility \u53ef\u4ee5\u5b89\u88dd\u9060\u7aef Maven \u5167\u90e8\u90e8\u7f72\u5132\u5b58\u5eab\u3002\u63d0\u4f9b\n\
+## \u5132\u5b58\u5eab\u540d\u7a31\u4ee5\u53ca\u6bcf\u4e00\u500b\u5305\u542b Liberty \u7279\u6027\u69cb\u4ef6\u4e4b\n\
+## \u9060\u7aef Maven \u5167\u90e8\u90e8\u7f72\u5132\u5b58\u5eab\u7684 URL\u3002\n\
+## \u5b58\u53d6\u5132\u5b58\u5eab\u6642\uff0c\u662f\u4f9d\u7167\u5176\u6307\u5b9a\u7684\u9806\u5e8f\u3002\n\
+## -------------------------------------------------------------------\n\
+#remoteRepositoryName1.url=http://w3.mycompany.com/repository\n\
+#remoteRepositoryName2.url=http://w3.mycompany.com/secure/repository\n\
+\n\
+## \u5fc5\u8981\u7684\u8a71\uff0c\u8acb\u6307\u5b9a\u6bcf\u4e00\u500b\u5132\u5b58\u5eab\u7684\u8a8d\u8b49\u3002\n\
+## \u70ba\u4e86\u52a0\u5f37\u5b89\u5168\uff0c\u8acb\u4f7f\u7528 securityUtility \u7de8\u78bc\u52d5\u4f5c\uff0c\n\
+## \u4f86\u7de8\u78bc .password \u5167\u5bb9\u7684\u503c\u3002\n\
+## \u5982\u679c\u60a8\u6c92\u6709\u8a2d\u5b9a\u4f7f\u7528\u8005\u548c\u5bc6\u78bc\uff0c\u6703\u63d0\u793a\u60a8\n\
+## \u63d0\u4f9b\u5b83\u5011\u3002\n\
+## -------------------------------------------------------------------\n\
+#remoteRepositoryName2.user=username\n\
+#remoteRepositoryName2.password=myPassword\n\
+\n\
+######################################################################\n\
+## ## \u4f7f\u7528 Proxy \u4f3a\u670d\u5668\uff08\u9078\u7528\uff09##\n\
+## \u5982\u679c\u60a8\u4f7f\u7528 Proxy \u4f3a\u670d\u5668\u4f86\u5b58\u53d6\u7db2\u969b\u7db2\u8def\uff0c\n\
+## \u8acb\u6307\u5b9a Proxy \u8a2d\u5b9a\u5167\u5bb9\u7684\u503c\u3002\n\
+## \u70ba\u4e86\u52a0\u5f37\u5b89\u5168\uff0c\u8acb\u4f7f\u7528 securityUtility \u7de8\u78bc\u52d5\u4f5c\uff0c\n\
+## \u4f86\u7de8\u78bc proxyPassword \u5167\u5bb9\u7684\u503c\u3002\n\
+## \u5982\u679c\u4e0d\u8a2d\u5b9a proxyUser \u548c proxyPassword \u5167\u5bb9\uff0c\n\
+## \u5247\u7cfb\u7d71\u6703\u63d0\u793a\u60a8\u63d0\u4f9b\u5b83\u5011\u3002\n\
+## -------------------------------------------------------------------\n\
+#proxyHost=hostName\n\
+#proxyPort=3128\n\
+#proxyUser=proxyUsername\n\
+#proxyPassword=myProxyPassword\n\
+\n\
+######################################################################\n\
+## ## \u5b9a\u7fa9 Maven \u672c\u7aef\u5132\u5b58\u5eab ##\n\
+## \u53ef\u4ee5\u8b8a\u66f4\u9810\u8a2d Maven \u672c\u7aef\u5132\u5b58\u5eab\u7684\u4f4d\u7f6e\u3002\n\
+## \u9810\u8a2d\u4f4d\u7f6e\u70ba ${user.home}/.m2/repository/\u3002\n\
+## -------------------------------------------------------------------\n\
+#featureLocalRepo=/home/my_local/repository
