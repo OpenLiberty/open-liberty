@@ -942,7 +942,8 @@ public class AcmeSimpleTest {
 		 * pair file.
 		 */
 		AcmeCA acmeCA = configuration.getAcmeCA();
-		acmeCA.setAccountKeyFile(server.getServerRoot() + "directory/does/not/exist/acmeAccountKey.p12");
+		String filePath = server.getServerRoot() + "/resources/directory/does/not/exist/acmeAccountKey.p12";
+		acmeCA.setAccountKeyFile(filePath);
 
 		AcmeFatUtils.configureAcmeCA(server, caContainer, configuration, useAcmeURIs(), DOMAINS_1);
 
@@ -960,6 +961,14 @@ public class AcmeSimpleTest {
 
 		} finally {
 			server.stopServer();
+
+			/*
+			 * Delete the file.
+			 */
+			File f = new File(filePath);
+			if (f.exists()) {
+				f.delete();
+			}
 		}
 	}
 
@@ -980,7 +989,8 @@ public class AcmeSimpleTest {
 		 * pair file.
 		 */
 		AcmeCA acmeCA = configuration.getAcmeCA();
-		acmeCA.setDomainKeyFile(server.getServerRoot() + "directory/does/not/exist/acmeDomainKey.p12");
+		String filePath = server.getServerRoot() + "/resources/directory/does/not/exist/acmeDomainKey.p12";
+		acmeCA.setDomainKeyFile(filePath);
 
 		AcmeFatUtils.configureAcmeCA(server, caContainer, configuration, useAcmeURIs(), DOMAINS_1);
 
@@ -998,6 +1008,14 @@ public class AcmeSimpleTest {
 
 		} finally {
 			server.stopServer();
+
+			/*
+			 * Delete the file.
+			 */
+			File f = new File(filePath);
+			if (f.exists()) {
+				f.delete();
+			}
 		}
 	}
 }

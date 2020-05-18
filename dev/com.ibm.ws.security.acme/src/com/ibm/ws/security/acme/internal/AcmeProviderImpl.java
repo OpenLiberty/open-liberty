@@ -172,7 +172,12 @@ public class AcmeProviderImpl implements AcmeProvider {
 				} else {
 					keyStore.setKeyEntry(DEFAULT_ALIAS, acmeCertificate.getKeyPair().getPrivate(),
 							password.toCharArray(), chainArr);
-					keyStore.store(new FileOutputStream(keyStoreFile), password.toCharArray());
+					FileOutputStream fos = new FileOutputStream(keyStoreFile);
+					try {
+						keyStore.store(fos, password.toCharArray());
+					} finally {
+						fos.close();
+					}
 				}
 			} catch (CertificateException | KeyStoreException | NoSuchAlgorithmException | IOException ex) {
 				throw new AcmeCaException(
@@ -759,7 +764,11 @@ public class AcmeProviderImpl implements AcmeProvider {
 				file.getParentFile().mkdirs();
 			}
 			FileOutputStream fos = new FileOutputStream(file);
-			keyStore.store(fos, password.toCharArray());
+			try {
+				keyStore.store(fos, password.toCharArray());
+			} finally {
+				fos.close();
+			}
 
 		} catch (KeyStoreException | NoSuchAlgorithmException | IOException e) {
 			throw new CertificateException(Tr.formatMessage(tc, "CWPKI2035E", file.getName(), e.getMessage()), e);
