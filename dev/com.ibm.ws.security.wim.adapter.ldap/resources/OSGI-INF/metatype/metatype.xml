@@ -57,7 +57,8 @@
             type="String" default="${count(sslRef)}"/>
         <AD id="SSLSupport.target" name="internal" description="internal use only"
             type="String" default="(repertoirePIDs=${sslRef})"/>
-            
+        <AD id="jndiOutputEnabled" name="internal" description="internal use only"
+            required="false" type="Boolean" default="false"/>     
         <AD id="searchTimeout" name="%searchTimeout" description="%searchTimeout.desc"
             required="false" type="String" ibm:type="duration" default="1m"/>
         <AD id="searchCountLimit" name="internal" description="internal use only"

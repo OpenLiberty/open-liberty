@@ -681,6 +681,7 @@ public class ContextManagerTest {
         cm.setSSLEnabled(true);
         cm.setConnectTimeout(12345l);
         cm.setReadTimeout(12345l);
+        cm.setJndiOutputEnabled(true);
         cm.addFailoverServer("localhost", failoverLdapServer.getLdapServer().getPort());
         cm.setContextPool(true, 0, 1, 3, 1000l, 2000l);
         cm.setWriteToSecondary(true);
@@ -697,6 +698,7 @@ public class ContextManagerTest {
         assertTrue("Did not find SSL Enabled in toString: " + toString, toString.contains("iSSLEnabled=true"));
         assertTrue("Did not find Connect Timeout in toString: " + toString, toString.contains("iConnectTimeout=12345"));
         assertTrue("Did not find Read Timeout in toString: " + toString, toString.contains("iReadTimeout=12345"));
+        assertTrue("Did not find JndiOutputEnabled in toString: " + toString, toString.contains("iJndiOutputEnabled=true"));
         assertTrue("Did not find Primary Server in toString: " + toString, toString.contains("iPrimaryServer=localhost:" + primaryLdapServer.getLdapServer().getPort()));
         assertTrue("Did not find Failover Servers in toString: " + toString,
                    toString.contains("iFailoverServers=[localhost:" + failoverLdapServer.getLdapServer().getPort() + "]"));
