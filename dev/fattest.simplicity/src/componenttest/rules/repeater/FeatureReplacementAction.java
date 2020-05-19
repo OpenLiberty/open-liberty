@@ -390,18 +390,54 @@ public class FeatureReplacementAction implements RepeatTestAction {
             LibertyClientFactory.getLibertyClient(clientName);
     }
 
-    private static String getReplacementFeature(String originalFeature, Set<String> featuresToAdd) {
+    /**
+     * Obtain the replacement for a feature for this replacement action.
+     * 
+     * The lookup uses the base feature name, which is the feature name up to
+     * the first '-' character.
+     * 
+     * If EE9 replacement is active, allow the base feature name to be replaced
+     * with an EE9 replacement.
+     * 
+     * If no replacement is located, answer null, which indicates that the feature
+     * should be removed instead of being replaced.
+     *
+     * Feature names are required to have a '-', for example, "servlet-3.1".  Null
+     * is answered for feature names which do not have a '-'.
+     *
+     * @param originalFeature The feature name which is to be replaced.
+     * @param replacementFeatures Table of replacement features.
+     *
+     * @return The replacement feature name.  Null if no replacement is available.
+     */
+    private static String getReplacementFeature(String originalFeature, Set<String> replacementFeatures) {
+        String methodName = "getReplacementFeature";
         // Example: servlet-3.1 --> servlet-4.0
-        String featureBasename = originalFeature.substring(0, originalFeature.indexOf('-') + 1); // "servlet-"
-        if(JakartaEE9Action.isActive() && featuresWithNameChangeOnEE9.containsKey(originalFeature.substring(0, originalFeature.indexOf('-')))){ // Found a feature to replace to jakarta namespace on EE9
-            featureBasename = featuresWithNameChangeOnEE9.get(originalFeature.substring(0, originalFeature.indexOf('-')));
-            featureBasename += "-";
+        int dashOffset = originalFeature.indexOf('-');
+        if ( dashOffset == -1 ) {
+            Log.info(c, methodName, "Remove feature [ " + originalFeature +  " ]: No '-' was found.");
+            return null;
         }
-        for (String featureToAdd : featuresToAdd)
-            if (featureToAdd.contains(featureBasename)) // "servlet-4.0".contains("servlet-")
-                return featureToAdd;
+        // "servlet-3.1" ==> "servlet"
+        String baseFeature = originalFeature.substring(0, dashOffset);
+        if ( JakartaEE9Action.isActive() ) {
+            String ee9BaseFeature = featuresWithNameChangeOnEE9.get(baseFeature);
+            if ( ee9BaseFeature != null ) {
+                Log.info(c, methodName, "Replace base feature [ " + baseFeature +  " ] with EE9 feature [ " + ee9BaseFeature + " ]");
+                baseFeature = ee9BaseFeature;
+            }
+        }
+        baseFeature += "-";
+        // "servlet-4.0".contains("servlet-")
+        for ( String replacementFeature : replacementFeatures ) {
+            if ( replacementFeature.contains(baseFeature) )  {
+                Log.info(c, methodName, "Replace feature [ " + originalFeature +  " ] with [ " + replacementFeature + " ]");
+                return replacementFeature;
+            }
+        }
         // We may need to remove a feature without adding any replacement
         // (e.g. jsonb-1.0 is EE8 only) so in this case return null
+        Log.info(c, methodName, "Remove feature [ " + originalFeature +  " ]: No replacement is available");
         return null;
     }
 
