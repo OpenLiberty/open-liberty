@@ -53,6 +53,7 @@ import com.ibm.ws.security.acme.utils.AcmeFatUtils;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.CheckForLeakedPasswords;
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -818,6 +819,8 @@ public class AcmeSimpleTest {
 	@Test
 	@CheckForLeakedPasswords(AcmeFatUtils.CACERTS_TRUSTSTORE_PASSWORD)
 	@ExpectedFFDC({ "com.ibm.ws.security.acme.AcmeCaException" })
+	@MinimumJavaLevel(javaLevel = 9)
+	/* Minimum Java Level to avoid a known/fixed IBM Java 8 bug with an empty keystore, IJ19292. When the builds move to 8SR6, we can run this test again */
 	public void startup_failure_recover() throws Exception {
 
 		ServerConfiguration configuration = ORIGINAL_CONFIG.clone();
@@ -894,6 +897,8 @@ public class AcmeSimpleTest {
 	 */
 	@Test
 	@CheckForLeakedPasswords(AcmeFatUtils.CACERTS_TRUSTSTORE_PASSWORD)
+	@MinimumJavaLevel(javaLevel = 9)
+	/* Minimum Java Level to avoid a known/fixed IBM Java 8 bug with an empty keystore, IJ19292. When the builds move to 8SR6, we can run this test again */
 	public void keystore_exists_without_default_alias() throws Exception {
 
 		ServerConfiguration configuration = ORIGINAL_CONFIG.clone();
