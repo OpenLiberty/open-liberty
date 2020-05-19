@@ -18,7 +18,7 @@ src: \
 fat.project: true
 
 tested.features:\
-	el-4.0,\
+    el-4.0,\
     servlet-5.0,\
     componenttest-2.0
 
