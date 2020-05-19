@@ -15,8 +15,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeSet;
@@ -42,6 +45,15 @@ public class FeatureReplacementAction implements RepeatTestAction {
 
     static final String ALL_SERVERS = "ALL_SERVERS";
     static final String ALL_CLIENTS = "ALL_CLIENTS";
+
+    private static final Map<String, String> featuresWithNameChangeOnEE9;
+
+    static {
+        Map<String, String> featureNameMapping = new HashMap<String, String>(4);
+        featureNameMapping.put("javaee", "jakartaee");
+        featureNameMapping.put("javaeeClient", "jakartaeeClient");
+        featuresWithNameChangeOnEE9 = Collections.unmodifiableMap(featureNameMapping);
+    }
 
     /**
      * Replaces any Java EE 8 features with the Java EE 7 equivalent feature.
@@ -381,6 +393,10 @@ public class FeatureReplacementAction implements RepeatTestAction {
     private static String getReplacementFeature(String originalFeature, Set<String> featuresToAdd) {
         // Example: servlet-3.1 --> servlet-4.0
         String featureBasename = originalFeature.substring(0, originalFeature.indexOf('-') + 1); // "servlet-"
+        if(JakartaEE9Action.isActive() && featuresWithNameChangeOnEE9.containsKey(originalFeature.substring(0, originalFeature.indexOf('-')))){ // Found a feature to replace to jakarta namespace on EE9
+            featureBasename = featuresWithNameChangeOnEE9.get(originalFeature.substring(0, originalFeature.indexOf('-')));
+            featureBasename += "-";
+        }
         for (String featureToAdd : featuresToAdd)
             if (featureToAdd.contains(featureBasename)) // "servlet-4.0".contains("servlet-")
                 return featureToAdd;
