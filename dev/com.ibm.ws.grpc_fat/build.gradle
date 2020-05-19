@@ -97,13 +97,21 @@ protobuf {
 
 // Inform IDE Eclipse about the generated code.
 sourceSets {
-    main {
+	main {
     	proto {
     		srcDirs 'test-applications/HelloWorldService.war/resources/proto'
-    		}
+        }
         java {
             srcDirs 'test-applications/HelloWorldClient.war/src/java'
             srcDirs 'test-applications/HelloWorldService.war/src/java'
+       }
+	}
+    main {
+        proto {
+            srcDirs 'test-applications/BeerService.war/resources/proto'
+        }
+        java {
+            srcDirs 'test-applications/BeerService.war/src/java'
         }
     }
 }

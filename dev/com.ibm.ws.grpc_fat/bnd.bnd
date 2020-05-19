@@ -14,7 +14,8 @@ bVersion=1.0
 src: \
 	fat/src,\
 	test-applications/HelloWorldClient.war/src,\
-	test-applications/HelloWorldService.war/src
+	test-applications/HelloWorldService.war/src, \
+	test-applications/FavoriteBeerService.war/src
 
 javac.args.release: current
 fat.project: true

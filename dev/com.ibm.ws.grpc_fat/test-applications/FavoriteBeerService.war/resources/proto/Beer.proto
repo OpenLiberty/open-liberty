@@ -1,0 +1,56 @@
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.grpc.examples.beer";
+option java_outer_classname = "BeerProto";
+
+
+package serverBeer;
+
+// The beer service definition.
+service BeerService {
+
+	// Add a beer to the collection - unary
+	rpc addBeer (Beer) returns (BeerResponse) {}
+	
+	// Delete a beer from the collection - unary
+	rpc deleteBeer (Beer) returns (BeerResponse) {}
+
+	// Get the best beer of this type
+	rpc getBestBeer (BeerType) returns (Beer) {}
+	
+	//Get a list of all the beers
+    rpc getBeers (BeerRequest) returns (stream Beer) {}
+}
+	
+
+// The request message containing the type of beer
+message BeerResponse {
+  	bool done = 1;
+}
+
+// The response message containing beer name
+message Beer {
+  	string beerName = 1;
+  	BeerType beerType = 2;
+  	float beerRating = 3;
+}
+
+enum BeerType{
+    LAGER = 0; // default
+  	IPA = 1;
+  	ALE = 2;
+  	STOUT = 3;
+  	PORTER = 4;
+  	WITBIER = 5;
+}
