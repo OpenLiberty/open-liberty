@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,8 +19,13 @@ public class EE8FeatureReplacementAction extends FeatureReplacementAction {
 
     public static final String ID = "EE8_FEATURES";
 
+    static final String[] EE8_FEATURES_ARRAY = { "javaee-8.0", "webProfile-8.0", "javaeeClient-8.0", "servlet-4.0", "javaMail-1.6", "cdi-2.0", "jpa-2.2",
+                                                 "beanValidation-2.0", "jaxrs-2.1", "jaxrsClient-2.1", "jsf-2.3", "appSecurity-3.0", "jsonp-1.1", "jsonb-1.0", "jsonpContainer-1.1",
+                                                 "jsonbContainer-1.0", "el-3.0", "jsp-2.3", "concurrent-1.0" };
+    public static final Set<String> EE8_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE8_FEATURES_ARRAY)));
+
     public EE8FeatureReplacementAction() {
-        super(EEFeaturesSets.ALL_EE_FEATURE_SET, EEFeaturesSets.EE8_FEATURE_SET);
+        super(EE7FeatureReplacementAction.EE7_FEATURE_SET, EE8_FEATURE_SET);
         withMinJavaLevel(8);
         forceAddFeatures(false);
         withID(ID);

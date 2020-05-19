@@ -44,9 +44,47 @@ public class JakartaEE9Action extends FeatureReplacementAction {
 
     public static final String ID = "EE9_FEATURES";
 
+    // Point-in-time list of enabled JakartaEE9 features.
+    // This list is of only the currently enabled features.
+    //
+    // FAT tests use a mix of enabled features and not yet enabled
+    // features, which is necessary for the FATs to run.
+
+    static final String[] EE9_FEATURES_ARRAY = {
+      "jakartaee-9.0",
+      "webProfile-9.0",
+      "jakartaeeClient-9.0",
+      "componenttest-2.0", // replaces "componenttest-1.0"
+      "beanValidation-3.0",
+      "cdi-3.0",
+      "concurrent-2.0",
+      "el-4.0",
+      "javaMail-2.0",
+      "jaxrs-3.0",
+      "jaxrsClient-3.0",
+      "jpa-3.0",
+      "jsonp-2.0",
+      "jsonb-2.0",
+      "jsonpContainer-2.0",
+      "jsonbContainer-2.0",
+      "jsf-3.0",
+      "jsp-3.0",
+      "servlet-5.0"
+    };
+
+    public static final Set<String> EE9_FEATURE_SET =
+        Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE9_FEATURES_ARRAY)));
+
+    private static Set<String> removeFeatures() {
+        Set<String> removeFeatures = new HashSet<>(EE7FeatureReplacementAction.EE7_FEATURE_SET);
+        removeFeatures.addAll(EE8FeatureReplacementAction.EE8_FEATURE_SET);
+        removeFeatures.add("componenttest-1.0"); // replaced by "componenttest-2.0"
+        return removeFeatures;
+    }
+
     public JakartaEE9Action() {
         // Remove the EE7 and EE8 features; replace them with the EE9 features
-        super( EEFeaturesSets.ALL_EE_FEATURE_SET, EEFeaturesSets.EE9_FEATURE_SET );
+        super( JakartaEE9Action.removeFeatures(), EE9_FEATURE_SET );
         withMinJavaLevel(8);
         forceAddFeatures(false);
         withID(ID);
