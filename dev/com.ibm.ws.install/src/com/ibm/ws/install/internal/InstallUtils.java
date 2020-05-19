@@ -26,6 +26,9 @@ import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.FileChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
@@ -665,15 +668,16 @@ public class InstallUtils {
 
 
 
-    public static Set<String> getFeatures(File serverXml, String xml, List<String> visitedServerXmls) throws InstallException {
-        System.out.println("Processing server: " + serverXml);
+    public static Set<String> getFeatures(Path serverXml, String xml, List<String> visitedServerXmls) throws IOException {
+        Path realServerXml = serverXml.normalize();
+        logger.log(Level.FINE, "Processing server: " + realServerXml);
         Set<String> features = new HashSet<String>();
         List<String> newLocations = new ArrayList<>();
 
-        if(visitedServerXmls.contains(serverXml.getAbsolutePath())) {
+        if(visitedServerXmls.contains(realServerXml.toString())) {
             return features;
         }
-        try (InputStream is = new FileInputStream(serverXml)){
+        try (InputStream is = Files.newInputStream(realServerXml)){
             Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(is);
             Element element = doc.getDocumentElement();
             NodeList childs = doc.getChildNodes();
@@ -703,10 +707,10 @@ public class InstallUtils {
         } catch (Exception e) {
             logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_INVALID_SERVER_XML", xml, e.getMessage()));
         }
-        visitedServerXmls.add(serverXml.getAbsolutePath());
+        visitedServerXmls.add(realServerXml.toString());
         for(String filepath : newLocations){
-            File file = new File(filepath);
-            features.addAll(getFeatures(file, file.getName(), visitedServerXmls));
+            Path path = Paths.get(filepath);
+            features.addAll(getFeatures(path, path.getFileName().toString(), visitedServerXmls));
         }
 
         return features;
