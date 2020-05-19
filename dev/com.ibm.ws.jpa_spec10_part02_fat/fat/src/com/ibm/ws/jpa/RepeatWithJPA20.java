@@ -17,7 +17,7 @@ import java.util.Set;
 
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.rules.repeater.EEFeaturesSets;
+import componenttest.rules.repeater.EE7FeatureReplacementAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -29,13 +29,13 @@ public class RepeatWithJPA20 extends FeatureReplacementAction {
     public static final String ID = "JPA20_FEATURES";
 
     public RepeatWithJPA20() {
-        super(EEFeaturesSets.EE7_FEATURE_SET, featuresToAdd());
+        super(EE7FeatureReplacementAction.EE7_FEATURE_SET, featuresToAdd());
         forceAddFeatures(false);
         this.withID(ID);
     }
 
     private static Set<String> featuresToAdd() {
-        Set<String> addFeatures = new HashSet<>(EEFeaturesSets.EE7_FEATURE_SET);
+        Set<String> addFeatures = new HashSet<>(EE7FeatureReplacementAction.EE7_FEATURE_SET);
         addFeatures.remove("jpa-2.1");
         addFeatures.add("jpa-2.0");
         return addFeatures;

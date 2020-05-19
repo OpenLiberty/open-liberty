@@ -65,7 +65,6 @@ public class FeatureReplacementAction implements RepeatTestAction {
     private final Set<String> clients = new HashSet<>(Arrays.asList(ALL_CLIENTS));
     private final Set<String> removeFeatures = new HashSet<>();
     private final Set<String> addFeatures = new HashSet<>();
-    private final Set<String> forceAddExtraFeatures = new HashSet<>();
     private TestMode testRunMode = TestMode.LITE;
 
     public FeatureReplacementAction() {}
@@ -355,9 +354,6 @@ public class FeatureReplacementAction implements RepeatTestAction {
                     }
                 }
             }
-
-            features.addAll(forceAddExtraFeatures);
-
             Log.info(c, m, "Resulting features: " + features);
 
             if (isServerConfig) {
