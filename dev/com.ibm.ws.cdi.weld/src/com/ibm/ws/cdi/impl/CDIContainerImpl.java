@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.cdi.impl;
 
-import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
@@ -643,7 +642,7 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
                                                        + " was registered as an extension via the WebSphereCDIExtensionMetaData interface. But it does not implement javax.enterprise.inject.spi.Extension");
                 }
                 extensions.add(clazz.getDeclaredConstructor().newInstance());
-            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+            } catch (Exception e) {
                 Tr.error(tc, "spi.extension.failed.to.construct.CWOWB10010E", clazz.getCanonicalName(), e.toString());
             }
         }
