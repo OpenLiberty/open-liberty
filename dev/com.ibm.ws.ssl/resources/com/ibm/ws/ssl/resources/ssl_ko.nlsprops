@@ -557,9 +557,13 @@ ssl.create.certificate.end=CWPKI0803A: {0}\ucd08 \ud6c4\uc5d0 \uc791\uc131\ub41c
 ssl.create.certificate.end.explanation=SSL \uc778\uc99d\uc11c\uac00 \uc9c0\uc815\ub41c \uc2dc\uac04 \ub0b4\uc5d0 \uc0dd\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
 ssl.create.certificate.end.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 #--------------------------------------------------------------------------------------------------
-ssl.create.certificate.error=CWPKI0804E: SSL \uc778\uc99d\uc11c \uc791\uc131 \uc624\ub958. SSL \ud0a4 \ud30c\uc77c\uc744 \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. {0}
+ssl.create.certificate.error=CWPKI0804E: SSL \uc778\uc99d\uc11c \uc791\uc131 \uc624\ub958. {0}
 ssl.create.certificate.error.explanation=SSL \uc778\uc99d\uc11c\uac00 \uc9c0\uc815\ub41c \uc704\uce58\uc5d0\uc11c \uc791\uc131\ub420 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 ssl.create.certificate.error.useraction=\uc11c\ubc84 \ud504\ub85c\uc138\uc2a4\uc5d0\uc11c \ud574\ub2f9 \uc704\uce58\uc5d0 \uc561\uc138\uc2a4\ud560 \uc218 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. FFDC\uac00 \ud0a4 \uc0dd\uc131 \ub610\ub294 \ub85c\ub4dc \uc911 \uce58\uba85\uc801 \uc624\ub958\ub97c \ud45c\uc2dc\ud560 \uc218\ub3c4 \uc788\uc2b5\ub2c8\ub2e4.
+
+# Messages for the CWPKI0804E message descriptor {0}.
+ssl.create.certificate.error.reason1=SSL \ud0a4 \ud30c\uc77c\uc744 \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. {0}
+ssl.create.certificate.error.reason2=\uc624\ub958\ub294 {0}\uc785\ub2c8\ub2e4.
 #--------------------------------------------------------------------------------------------------
 ssl.default.keystore.config.error=CWPKI0805E: \uae30\ubcf8 \ud0a4 \uc800\uc7a5\uc18c\uac00 \ub204\ub77d\ub418\uba74 \ube44\ubc00\ubc88\ud638\uac00 \ud544\uc694\ud569\ub2c8\ub2e4.
 ssl.default.keystore.config.error.explanation=\ud0a4 \uc800\uc7a5\uc18c \uad6c\uc131\uc774 \uae30\ubcf8 \ud0a4 \uc800\uc7a5\uc18c\uc5d0 \ub300\ud574 \ube44\ubc00\ubc88\ud638\ub97c \uc9c0\uc815\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.

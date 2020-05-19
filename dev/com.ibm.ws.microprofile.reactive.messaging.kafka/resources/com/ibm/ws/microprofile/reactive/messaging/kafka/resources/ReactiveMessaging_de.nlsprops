@@ -60,6 +60,16 @@ kafka.library.not.present.CWMRX1006E=CWMRX1006E: Klassen aus der kafka-clients-J
 kafka.library.not.present.CWMRX1006E.explanation=Anwendungen, die den Reactive-Messaging-Kafka-Client verwenden, m\u00fcssen die kafka-clients-JAR-Datei und die zugeh\u00f6rigen Abh\u00e4ngigkeiten bereitstellen. Diese Datei und die zugeh\u00f6rigen Abh\u00e4ngigkeiten k\u00f6nnen entweder als gepackte Bibliothek innerhalb der Anwendung oder als gemeinsam genutzte Bibliothek bereitgestellt werden.
 kafka.library.not.present.CWMRX1006E.useraction=Packen Sie die kafka-clients-JAR-Datei und die zugeh\u00f6rigen Abh\u00e4ngigkeiten als Bibliotheken in Ihrer Anwendung oder als gemeinsam genutzte Bibliothek. Die kafka-clients-JAR-Datei kann von der Apache Kafka-Website oder von Maven Central heruntergeladen werden.
 
+# A Kafka incoming connector for the {0} channel cannot be created. The error is {1}
+kafka.create.incoming.error.CWMRX1007E=CWMRX1007E: Ein eingehender Kafka-Connector f\u00fcr den Kanal {0} kann nicht erstellt werden. Fehler: {1}
+kafka.create.incoming.error.CWMRX1007E.explanation=Ein Fehler, der bei der Konfiguration des Kafka-Connectors f\u00fcr einen eingehenden Reactive-Messaging-Kanal aufgetreten ist, verhindert die normale Ausf\u00fchrung von MicroProfile Reactive Messaging.
+kafka.create.incoming.error.CWMRX1007E.useraction=Ermitteln Sie das Problem anhand der Fehlernachricht, der Protokolldatei f\u00fcr Servernachrichten und der FFDC-Protokolldateien.
+
+# A Kafka outgoing connector for the {0} channel cannot be created. The error is {1}
+kafka.create.outgoing.error.CWMRX1008E=CWMRX1008E: Ein abgehender Kafka-Connector f\u00fcr den Kanal {0} kann nicht erstellt werden. Fehler: {1}
+kafka.create.outgoing.error.CWMRX1008E.explanation=Ein Fehler, der bei der Konfiguration des Kafka-Connectors f\u00fcr einen abgehenden Reactive-Messaging-Kanal aufgetreten ist, verhindert die normale Ausf\u00fchrung von MicroProfile Reactive Messaging.
+kafka.create.outgoing.error.CWMRX1008E.useraction=Ermitteln Sie das Problem anhand der Fehlernachricht, der Protokolldatei f\u00fcr Servernachrichten und der FFDC-Protokolldateien.
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message
 #-----------------------------------------------------------------------------------------------------------------------------

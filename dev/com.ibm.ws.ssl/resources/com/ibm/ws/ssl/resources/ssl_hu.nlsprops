@@ -556,9 +556,13 @@ ssl.create.certificate.end=CWPKI0803A: SSL tan\u00fas\u00edtv\u00e1ny l\u00e9tre
 ssl.create.certificate.end.explanation=Az SSL tan\u00fas\u00edtv\u00e1ny el\u0151\u00e1ll\u00edt\u00e1sra ker\u00fclt a megadott id\u0151 alatt.
 ssl.create.certificate.end.useraction=Nincs teend\u0151.
 #--------------------------------------------------------------------------------------------------
-ssl.create.certificate.error=CWPKI0804E: SSL tan\u00fas\u00edtv\u00e1ny l\u00e9trehoz\u00e1si hiba. Nem lehet l\u00e9trehozni az SSL kulcsf\u00e1jlt: {0}
+ssl.create.certificate.error=CWPKI0804E: SSL tan\u00fas\u00edtv\u00e1ny l\u00e9trehoz\u00e1si hiba. {0}
 ssl.create.certificate.error.explanation=Az SSL tan\u00fas\u00edtv\u00e1nyt nem lehet l\u00e9trehozni a megadott helyen.
 ssl.create.certificate.error.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a hely a kiszolg\u00e1l\u00f3 feldolgoz sz\u00e1m\u00e1ra hozz\u00e1f\u00e9rhet\u0151. Az esetleges FFDC-k a kulcsok el\u0151\u00e1ll\u00edt\u00e1sa vagy bet\u00f6lt\u00e9se k\u00f6zben bek\u00f6vetkezett s\u00falyos hib\u00e1t jelezhetnek.
+
+# Messages for the CWPKI0804E message descriptor {0}.
+ssl.create.certificate.error.reason1=Nem lehet l\u00e9trehozni az SSL kulcsf\u00e1jlt: {0}
+ssl.create.certificate.error.reason2=A hiba a k\u00f6vetkez\u0151: {0}
 #--------------------------------------------------------------------------------------------------
 ssl.default.keystore.config.error=CWPKI0805E: Az alap\u00e9rtelmezett kulcst\u00e1rol\u00f3hoz sz\u00fcks\u00e9ges jelsz\u00f3 hi\u00e1nyzik.
 ssl.default.keystore.config.error.explanation=A kulcst\u00e1rol\u00f3 konfigur\u00e1ci\u00f3ja nem ad meg jelsz\u00f3t az alap\u00e9rtelmezett kulcst\u00e1rol\u00f3hoz.

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2018 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -601,6 +601,9 @@ MSG_VALIDATION_INVALID_URL=N\u00e1sleduj\u00edc\u00ed adresa URL je neplatn\u00e
 MSG_VALIDATION_UNSUPPORT_PROTOCOL=Pro n\u00e1sleduj\u00edc\u00ed \u00falo\u017ei\u0161t\u011b nen\u00ed podporov\u00e1n protokol URL: {0}. Podporovan\u00e9 protokoly jsou HTTP, HTTPS a soubor. Zkontrolujte, zda je adresa URL zad\u00e1na spr\u00e1vn\u011b.
 MSG_VALIDATION_INVALID_HOST=N\u00e1sleduj\u00edc\u00ed hostitel serveru proxy je neplatn\u00fd: {0}. Zadejte platn\u00fd n\u00e1zev hostitele serveru proxy HTTP. P\u0159edpona http:// nen\u00ed nutn\u00e1.
 
+# Message for find action
+MSG_NO_FEATURES_FOUND=Nebyly nalezeny \u017e\u00e1dn\u00e9 funkce.
+
 VALIDATION_INVALID_VALUE=Nepodporovan\u00e1 hodnota
 VALIDATION_INVALID_KEY=Nepodporovan\u00fd n\u00e1zev vlastnosti
 VALIDATION_EMPTY_KEY=Pr\u00e1zdn\u00fd n\u00e1zev vlastnosti
@@ -846,6 +849,26 @@ ERROR_INCOMPATIBLE_FEATURES.useraction=Odeberte jednu z funkc\u00ed a zopakujte 
 ERROR_INCOMPATIBLE_FEATURES_SINGLETON=CWWKF1405E: Funkce typu singleton {0} a {1} jsou vz\u00e1jemn\u011b nekompatibiln\u00ed, a nemohou b\u00fdt instalov\u00e1ny sou\u010dasn\u011b.
 ERROR_INCOMPATIBLE_FEATURES_SINGLETON.explanation=Funkce nemohou b\u00fdt nainstalov\u00e1ny sou\u010dasn\u011b.
 ERROR_INCOMPATIBLE_FEATURES_SINGLETON.useraction=Odeberte jednu z funkc\u00ed a zopakujte operaci.
+
+ERROR_FAILED_TO_UNPACK_LICENSE=CWWKF1406E: Nelze rozbalit licen\u010dn\u00ed bal\u00edk se sou\u0159adnicemi Maven {0} z \u00falo\u017ei\u0161t\u011b, cesta k souboru {1}.
+ERROR_FAILED_TO_UNPACK_LICENSE.explanation=Licen\u010dn\u00ed bal\u00edk nelze rozbalit do instalace wlp.
+ERROR_FAILED_TO_UNPACK_LICENSE.useraction=Ujist\u011bte se, \u017ee m\u00e1te spr\u00e1vn\u00e1 opr\u00e1vn\u011bn\u00ed ke \u010dten\u00ed z \u00falo\u017ei\u0161t\u011b.
+
+ERROR_FAILED_TO_READ_LICENSE=CWWKF1407E: Nelze zpracovat soubor s licencemi v um\u00edst\u011bn\u00ed souboru {0}.
+ERROR_FAILED_TO_READ_LICENSE.explanation=Nelze zpracovat soubor s licencemi pro informace o p\u0159ijet\u00ed licence.
+ERROR_FAILED_TO_READ_LICENSE.useraction=Ujist\u011bte se, \u017ee m\u00e1te spr\u00e1vn\u00e1 opr\u00e1vn\u011bn\u00ed ke \u010dten\u00ed ze souboru s licencemi.
+
+ERROR_FAILED_TO_FIND_WEBSPHERE_JSON=CWWKF1408E: Nelze nal\u00e9zt soubor Websphere JSON v um\u00edst\u011bn\u00ed souboru {0}.
+ERROR_FAILED_TO_FIND_WEBSPHERE_JSON.explanation=Nelze nal\u00e9zt soubor Websphere JSON.
+ERROR_FAILED_TO_FIND_WEBSPHERE_JSON.useraction=Ujist\u011bte se, \u017ee m\u00e1te s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed a opr\u00e1vn\u011bn\u00ed k z\u00e1pisu do nakonfigurovan\u00e9ho lok\u00e1ln\u00edho adres\u00e1\u0159e Maven.
+
+ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS=CWWKF1409E: Nebylo mo\u017en\u00e9 vyhledat n\u00e1sleduj\u00edc\u00ed soubory JSON funkce lok\u00e1ln\u011b nebo v nakonfigurovan\u00e9m \u00falo\u017ei\u0161ti Maven: {0}.
+ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS.explanation=Soubory JSON nelze naj\u00edt lok\u00e1ln\u011b nebo v nakonfigurovan\u00e9m \u00falo\u017ei\u0161ti Maven.
+ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS.useraction=Ujist\u011bte se, \u017ee m\u00e1te s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed a v nakonfigurovan\u00e9m \u00falo\u017ei\u0161ti Maven existuj\u00ed soubory JSON.
+
+ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY=CWWKF1410E: Funkci {0} nelze nainstalovat do vyd\u00e1n\u00ed {1} {2}, proto\u017ee se vztahuje pouze na vyd\u00e1n\u00ed {3}.
+ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.explanation=Funkce nen\u00ed pro aktu\u00e1ln\u00ed vyd\u00e1n\u00ed instalovan\u00e9ho produktu pou\u017eiteln\u00e1.
+ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.useraction=Nainstalujte funkce, kter\u00e9 dan\u00e9 vyd\u00e1n\u00ed produktu podporuje.
 
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: Funkce byla \u00fasp\u011b\u0161n\u011b sta\u017eena.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=Funkce byla sta\u017eena.

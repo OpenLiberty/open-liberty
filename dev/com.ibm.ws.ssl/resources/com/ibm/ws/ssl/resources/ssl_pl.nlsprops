@@ -604,10 +604,14 @@ ssl.create.certificate.end=CWPKI0803A: Certyfikat SSL zosta\u0142 utworzony w {0
 ssl.create.certificate.end.explanation=Certyfikat SSL zosta\u0142 wygenerowany w podanym czasie.
 ssl.create.certificate.end.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 #--------------------------------------------------------------------------------------------------
-ssl.create.certificate.error=CWPKI0804E: Podczas tworzenia certyfikatu SSL wyst\u0105pi\u0142 b\u0142\u0105d. Nie mo\u017cna utworzy\u0107 pliku kluczy SSL: {0}
+ssl.create.certificate.error=CWPKI0804E: Podczas tworzenia certyfikatu SSL wyst\u0105pi\u0142 b\u0142\u0105d. {0}
 ssl.create.certificate.error.explanation=W podanym po\u0142o\u017ceniu nie mo\u017cna utworzy\u0107 certyfikatu SSL.
 ssl.create.certificate.error.useraction=Upewnij si\u0119, czy to \
 po\u0142o\u017cenie jest dost\u0119pne dla procesu serwera. Dane przechwytywania FFDC mog\u0105 wskazywa\u0107 na b\u0142\u0105d krytyczny podczas generowania lub \u0142adowania kluczy.
+
+# Messages for the CWPKI0804E message descriptor {0}.
+ssl.create.certificate.error.reason1=Nie mo\u017cna utworzy\u0107 pliku kluczy SSL: {0}
+ssl.create.certificate.error.reason2=B\u0142\u0105d: {0}.
 #--------------------------------------------------------------------------------------------------
 ssl.default.keystore.config.error=CWPKI0805E: W przypadku braku domy\u015blnego magazynu kluczy has\u0142o jest wymagane.
 ssl.default.keystore.config.error.explanation=Konfiguracja magazynu kluczy nie okre\u015bla has\u0142a dla domy\u015blnego magazynu kluczy.

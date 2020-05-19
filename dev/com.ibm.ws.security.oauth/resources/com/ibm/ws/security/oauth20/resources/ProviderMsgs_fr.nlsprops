@@ -322,7 +322,7 @@ security.oauth20.front.end.error=CWOAU0073E: Une erreur d'authentification s'est
 security.oauth20.front.end.error.explanation=Il se peut que des informations manquent dans la demande, que le serveur ait rencontr\u00e9 une erreur interne, ou qu'une autre erreur ait emp\u00each\u00e9 le serveur d'authentifier l'utilisateur.
 security.oauth20.front.end.error.useraction=Contactez l'administrateur syst\u00e8me afin de r\u00e9soudre le probl\u00e8me.
 
-security.oauth20.endpoint.resowner.apppassword.error=CWOAU0074E: La demande d''\u00e9change du mot de passe de l''application pour l''utilisateur {0} n''a pas abouti car le mot de passe de l''application n''a pas pu \u00eatre v\u00e9rifi\u00e9. Il est incorrect, a expir\u00e9 ou a \u00e9t\u00e9 r\u00e9voqu\u00e9, ou l''ID client fourni n''est pas valide.
+security.oauth20.endpoint.resowner.apppassword.error=CWOAU0074E: La demande d''\u00e9change du mot de passe de l''application pour l''utilisateur {0} n''a pas abouti car le fournisseur OAuth n''a pas pu v\u00e9rifier le mot de passe de l''application. Le mot de passe de l''application est incorrect, a expir\u00e9 ou a \u00e9t\u00e9 r\u00e9voqu\u00e9, ou l''ID client ou l''ID utilisateur fourni n''est pas valide.
 security.oauth20.endpoint.resowner.apppassword.error.explanation=Le fournisseur OAuth n'a pas pu v\u00e9rifier le mot de passe de l'application.
 security.oauth20.endpoint.resowner.apppassword.error.useraction=V\u00e9rifiez que le mot de passe de l'application est valide, qu'il n'a pas expir\u00e9, et qu'il n'a pas \u00e9t\u00e9 r\u00e9voqu\u00e9. De plus, v\u00e9rifiez que l'ID client indiqu\u00e9 dans le jeton d'acc\u00e8s est identique \u00e0 l'ID client indiqu\u00e9 dans l'en-t\u00eate d'autorisation.
 

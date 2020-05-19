@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2018 IBM Corporation and others.
+# Copyright (c) 2013, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -128,8 +128,8 @@ JWK_ENDPOINT_MISSING_ERR.useraction=Configure o atributo jwkEndpointUrl para a U
 #OIDC_FAILED_RUN_AS_SUBJCET.explanation=An exception occurred while getting the RunAsSubject.
 #OIDC_FAILED_RUN_AS_SUBJCET.useraction=Make sure the server is configured and started properly.
 
-#0=OIDC client ID, 1=Current clock time, 2=Token expiration time, 3=Token issued at time
-OIDC_JWT_VERIFY_STATE_ERR=CWWKS1773E: A valida\u00e7\u00e3o falhou para o token solicitado por [{0}] porque o token est\u00e1 fora de seu intervalo v\u00e1lido. Isso pode ter sido causado pelo hor\u00e1rio atual [{1}] ser posterior ao prazo de expira\u00e7\u00e3o do token [{2}] ou o hor\u00e1rio de emiss\u00e3o [{3}] ser muito longe do hor\u00e1rio atual [{1}].
+#0=OIDC client ID, 1=sub claim of the token, 2=Current clock time, 3=Token expiration time, 4=Token issued at time
+OIDC_JWT_VERIFY_STATE_ERR=CWWKS1773E: Falha na valida\u00e7\u00e3o do token solicitado pelo cliente OpenID Connect [{0}] para o usu\u00e1rio [{1}] porque o token est\u00e1 fora do seu intervalo v\u00e1lido. Esse erro ocorre porque o hor\u00e1rio atual [{2}] \u00e9 posterior ao hor\u00e1rio de expira\u00e7\u00e3o do token [{3}] ou porque o hor\u00e1rio de emiss\u00e3o do [{4}] est\u00e1 muito distante do hor\u00e1rio atual [{2}].
 OIDC_JWT_VERIFY_STATE_ERR.explanation=Um token n\u00e3o pode ser validado porque o hor\u00e1rio atual mostrado n\u00e3o est\u00e1 entre os hor\u00e1rios de emiss\u00e3o e expira\u00e7\u00e3o do token.
 OIDC_JWT_VERIFY_STATE_ERR.useraction=Certifique-se de que os rel\u00f3gios do sistema do cliente OpenID Connect (relying party ou RP) e do provedor OpenID Connect (OP) estejam em sincroniza\u00e7\u00e3o (se estiverem em dois sistemas).
 

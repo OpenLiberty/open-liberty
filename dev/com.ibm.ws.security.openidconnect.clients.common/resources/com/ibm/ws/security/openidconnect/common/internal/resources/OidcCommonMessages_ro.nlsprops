@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2018 IBM Corporation and others.
+# Copyright (c) 2013, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -128,8 +128,8 @@ JWK_ENDPOINT_MISSING_ERR.useraction=Seta\u0163i atributul jwkEndpointUrl la URL-
 #OIDC_FAILED_RUN_AS_SUBJCET.explanation=An exception occurred while getting the RunAsSubject.
 #OIDC_FAILED_RUN_AS_SUBJCET.useraction=Make sure the server is configured and started properly.
 
-#0=OIDC client ID, 1=Current clock time, 2=Token expiration time, 3=Token issued at time
-OIDC_JWT_VERIFY_STATE_ERR=CWWKS1773E: Validarea a e\u015fuat pentru jetonul cerut de c\u0103tre [{0}] pentru c\u0103 jetonul este \u00een afara intervalului valid. Aceasta ar putea fi cauzat\u0103 fie de faptul c\u0103 ora curent\u0103 [{1}] este dup\u0103 ora de expirare a jetonului [{2}], fie de faptul c\u0103 ora de emitere [{3}] este prea \u00eendep\u0103rtat\u0103 de ora curent\u0103 [{1}].
+#0=OIDC client ID, 1=sub claim of the token, 2=Current clock time, 3=Token expiration time, 4=Token issued at time
+OIDC_JWT_VERIFY_STATE_ERR=CWWKS1773E: Validarea a e\u015fuat pentru jetonul cerut de clientul OpenID Connect [{0}] pentru utilizatorul [{1}] deoarece jetonul este \u00een afara intervalului s\u0103u valid. Aceast\u0103 eroare are loc fie pentru c\u0103 timpul curent [{2}] este dup\u0103 timpul de expirare al jetonului [{3}], fie pentru c\u0103 timpul de emitere [{4}] este prea dep\u0103rtat de ora curent\u0103 [{2}].
 OIDC_JWT_VERIFY_STATE_ERR.explanation=Un jeton nu poate fi validat deoarece ora curent\u0103 afi\u015fat\u0103 nu este \u00eentre orele de lansare jeton \u015fi de expirare.
 OIDC_JWT_VERIFY_STATE_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 ceasurile de sistem al clientului OpenID Connect (partea intermediar\u0103 de \u00eencredere sau RP) \u015fi al furnizorului OpenID Connect (OP) sunt sincronizate (dac\u0103 sunt pe dou\u0103 sisteme).
 

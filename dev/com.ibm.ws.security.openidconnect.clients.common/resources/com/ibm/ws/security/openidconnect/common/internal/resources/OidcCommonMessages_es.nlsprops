@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2018 IBM Corporation and others.
+# Copyright (c) 2013, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -128,8 +128,8 @@ JWK_ENDPOINT_MISSING_ERR.useraction=Establezca el atributo jwkEndpointUrl en la 
 #OIDC_FAILED_RUN_AS_SUBJCET.explanation=An exception occurred while getting the RunAsSubject.
 #OIDC_FAILED_RUN_AS_SUBJCET.useraction=Make sure the server is configured and started properly.
 
-#0=OIDC client ID, 1=Current clock time, 2=Token expiration time, 3=Token issued at time
-OIDC_JWT_VERIFY_STATE_ERR=CWWKS1773E: La validaci\u00f3n ha fallado para la se\u00f1al solicitada por [{0}] porque la se\u00f1al est\u00e1 fuera del rango v\u00e1lido. Esto puede deberse a que la hora actual [{1}] es posterior a la hora de caducidad de la se\u00f1al [{2}] o a que la hora de emisi\u00f3n [{3}] est\u00e1 demasiado alejada de la hora actual [{1}].
+#0=OIDC client ID, 1=sub claim of the token, 2=Current clock time, 3=Token expiration time, 4=Token issued at time
+OIDC_JWT_VERIFY_STATE_ERR=CWWKS1773E: La validaci\u00f3n ha fallado para la se\u00f1al solicitada por el cliente de OpenID Connect [{0}] para el usuario [{1}] porque la se\u00f1al est\u00e1 fuera del rango v\u00e1lido. Este error se produce porque la hora actual [{2}] es posterior a la hora de caducidad de la se\u00f1al [{3}] o porque la hora de emisi\u00f3n [{4}] queda demasiado lejos de la hora actual [{2}].
 OIDC_JWT_VERIFY_STATE_ERR.explanation=No se puede validar una se\u00f1al porque la hora actual mostrada no est\u00e1 entre las horas de emisi\u00f3n y de caducidad de la se\u00f1al.
 OIDC_JWT_VERIFY_STATE_ERR.useraction=Aseg\u00farese de que los relojes del sistema del cliente de OpenID Connect (parte dependiente o RP) y del proveedor de OpenID Connect (OP) est\u00e1n sincronizados (si est\u00e1n en dos sistemas).
 

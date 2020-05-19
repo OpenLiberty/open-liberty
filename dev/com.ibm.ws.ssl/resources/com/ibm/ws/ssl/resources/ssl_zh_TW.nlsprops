@@ -573,9 +573,13 @@ ssl.create.certificate.end=CWPKI0803A: \u5df2\u5728 {0} \u79d2\u5167\u5efa\u7acb
 ssl.create.certificate.end.explanation=\u5df2\u5728\u6307\u5b9a\u7684\u6642\u9593\u91cf\u5167\u7522\u751f SSL \u6191\u8b49\u3002
 ssl.create.certificate.end.useraction=\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
 #--------------------------------------------------------------------------------------------------
-ssl.create.certificate.error=CWPKI0804E: SSL \u6191\u8b49\u5efa\u7acb\u932f\u8aa4\u3002\u7121\u6cd5\u5efa\u7acb SSL \u91d1\u9470\u6a94\uff1a{0}
+ssl.create.certificate.error=CWPKI0804E: SSL \u6191\u8b49\u5efa\u7acb\u932f\u8aa4\u3002{0}
 ssl.create.certificate.error.explanation=\u7121\u6cd5\u5728\u6307\u5b9a\u7684\u4f4d\u7f6e\u4e0a\u5efa\u7acb SSL \u6191\u8b49\u3002
 ssl.create.certificate.error.useraction=\u8acb\u78ba\u5b9a\u4f3a\u670d\u5668\u7a0b\u5e8f\u53ef\u5b58\u53d6\u8a72\u4f4d\u7f6e\u3002\u4efb\u4f55 FFDC \u53ef\u80fd\u6703\u6307\u51fa\u5728\u7522\u751f\u6216\u8f09\u5165\u91d1\u9470\u6642\u767c\u751f\u56b4\u91cd\u932f\u8aa4\u3002
+
+# Messages for the CWPKI0804E message descriptor {0}.
+ssl.create.certificate.error.reason1=\u7121\u6cd5\u5efa\u7acb SSL \u91d1\u9470\u6a94\uff1a{0}
+ssl.create.certificate.error.reason2=\u932f\u8aa4\u70ba\uff1a{0}
 #--------------------------------------------------------------------------------------------------
 ssl.default.keystore.config.error=CWPKI0805E: \u5982\u679c\u907a\u5931\u9810\u8a2d\u91d1\u9470\u5132\u5b58\u5eab\uff0c\u5247\u9700\u8981\u5bc6\u78bc\u3002
 ssl.default.keystore.config.error.explanation=\u91d1\u9470\u5132\u5b58\u5eab\u914d\u7f6e\u6c92\u6709\u6307\u5b9a\u9810\u8a2d\u91d1\u9470\u5132\u5b58\u5eab\u7684\u5bc6\u78bc\u3002

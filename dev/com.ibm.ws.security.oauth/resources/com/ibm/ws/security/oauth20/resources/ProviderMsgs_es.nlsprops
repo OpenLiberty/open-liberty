@@ -322,7 +322,7 @@ security.oauth20.front.end.error=CWOAU0073E: Se ha producido un error de autenti
 security.oauth20.front.end.error.explanation=Es posible que falte informaci\u00f3n en la solicitud, el servidor puede haber experimentado un error interno o se ha producido alg\u00fan otro error que impide que el servidor autentique correctamente al usuario.
 security.oauth20.front.end.error.useraction=Contacte con el administrador del sistema para resolver el problema.
 
-security.oauth20.endpoint.resowner.apppassword.error=CWOAU0074E: La solicitud de intercambio de contrase\u00f1a de aplicaci\u00f3n del usuario {0} no se ha completado porque no se ha podido verificar la contrase\u00f1a de aplicaci\u00f3n. La contrase\u00f1a de aplicaci\u00f3n es incorrecta, ha caducado o se ha revocado, o el ID de cliente proporcionado no es v\u00e1lido.
+security.oauth20.endpoint.resowner.apppassword.error=CWOAU0074E: La solicitud de intercambio de contrase\u00f1a de aplicaci\u00f3n del usuario {0} no se ha completado porque el proveedor OAuth no ha podido verificar la contrase\u00f1a de aplicaci\u00f3n. La contrase\u00f1a de aplicaci\u00f3n es incorrecta, ha caducado o se ha revocado, o el ID de cliente o el ID de usuario proporcionado no es v\u00e1lido.
 security.oauth20.endpoint.resowner.apppassword.error.explanation=El proveedor OAuth no ha podido verificar la contrase\u00f1a de aplicaci\u00f3n.
 security.oauth20.endpoint.resowner.apppassword.error.useraction=Confirme que la contrase\u00f1a de aplicaci\u00f3n es v\u00e1lida, no ha caducado y que no se ha revocado. Adem\u00e1s, confirme que el ID de cliente en la se\u00f1al de acceso es la misma que el ID de cliente la cabecera de autorizaci\u00f3n.
 
