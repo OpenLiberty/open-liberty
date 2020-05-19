@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2017 IBM Corporation and others.
+ * Copyright (c) 2001, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -73,7 +73,7 @@ import com.ibm.websphere.ras.TraceComponent;
  */
 public class WSStateManager {
     // these are transaction states
-    // There could be multiple connection handles with thier own connection
+    // There could be multiple connection handles with their own connection
     // states
     public static final int NO_TRANSACTION_ACTIVE = 0;
 
@@ -162,7 +162,7 @@ public class WSStateManager {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         if (isTraceOn && tc.isEntryEnabled()) 
-            Tr.entry(this, tc, methodName, getStateAsString());
+            Tr.entry(this, tc, methodName, getStateAsString() + " Action: " + actions[newAction]);
 
         switch (newAction) {
         // Allow only NO_TRANSACTION_ACTIVE -> GLOBAL_TRANSACTION_ACTIVE

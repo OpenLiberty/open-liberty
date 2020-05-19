@@ -11,9 +11,12 @@
 package com.ibm.ws.grpc.servlet;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.AccessDeniedException;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,23 +25,35 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.grpc.config.GrpcServiceConfigHolder;
 import com.ibm.ws.http2.GrpcServletServices;
 import com.ibm.ws.http2.GrpcServletServices.ServiceInformation;
 import com.ibm.ws.security.authorization.util.RoleMethodAuthUtil;
 import com.ibm.ws.security.authorization.util.UnauthenticatedException;
 
+import io.grpc.BindableService;
 import io.grpc.Metadata;
+import io.grpc.ServerInterceptor;
+import io.grpc.ServerInterceptors;
+import io.grpc.servlet.ServletServerBuilder;
 
 public class GrpcServletUtils {
 
+	private static final TraceComponent tc = Tr.register(GrpcServletUtils.class);
+
 	public final static String LIBERTY_AUTH_KEY_STRING = "libertyAuthCheck";
-	public final static Map<String, Boolean> authMap = new ConcurrentHashMap<String, Boolean>();
+	private final static Map<String, Boolean> authMap = new ConcurrentHashMap<String, Boolean>();
 	public static final Metadata.Key<String> LIBERTY_AUTH_KEY = Metadata.Key.of(LIBERTY_AUTH_KEY_STRING,
 			Metadata.ASCII_STRING_MARSHALLER);
 
+	private static final LibertyAuthorizationInterceptor authInterceptor = new LibertyAuthorizationInterceptor();
+
 	/**
-	 * Helper method to add the "authorized" flag to the byte arrays that will get built into Metadata
+	 * Helper method to add the "authorized" flag to the byte arrays that will get
+	 * built into Metadata
 	 * 
 	 * @param byteArrays
 	 * @param req
@@ -48,6 +63,9 @@ public class GrpcServletUtils {
 		byteArrays.add(GrpcServletUtils.LIBERTY_AUTH_KEY.name().getBytes(StandardCharsets.US_ASCII));
 		byteArrays.add((String.valueOf(req.hashCode())).getBytes(StandardCharsets.US_ASCII));
 		authMap.put(String.valueOf(req.hashCode()), authorized);
+		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+			Tr.debug(tc, "adding " + req.hashCode() + "to authMap with value " + authorized);
+		}
 	}
 
 	/**
@@ -104,10 +122,11 @@ public class GrpcServletUtils {
 		}
 		return null;
 	}
-	
+
 	/**
-	 * Checks if a given request is authorized to access the requested method, by scanning the requested method 
-	 * for @DenyAll, @RolesAllowed, or @AllowAll and validating the request's Subject
+	 * Checks if a given request is authorized to access the requested method, by
+	 * scanning the requested method for @DenyAll, @RolesAllowed, or @AllowAll and
+	 * validating the request's Subject
 	 * 
 	 * @param req
 	 * @param res
@@ -145,7 +164,8 @@ public class GrpcServletUtils {
 		return false;
 	}
 
-	private static void handleMessage(HttpServletRequest req, String path) throws UnauthenticatedException, AccessDeniedException {
+	private static void handleMessage(HttpServletRequest req, String path)
+			throws UnauthenticatedException, AccessDeniedException {
 
 		Method method = GrpcServletUtils.getTargetMethod(path);
 		if (method == null) {
@@ -156,5 +176,80 @@ public class GrpcServletUtils {
 			return;
 		}
 		throw new AccessDeniedException("Unauthorized");
+	}
+
+	/**
+	 * 
+	 * @param key the LIBERTY_AUTH_KEY to check
+	 * @return the authorization value for the key in GrpcServletUtils.authMap, or
+	 *         false if the key is null
+	 */
+	public static boolean isAuthorized(String key) {
+		if (key == null) {
+			return false;
+		}
+		else return Boolean.TRUE.equals(authMap.remove(key));
+	}
+
+	/**
+	 * @param service name
+	 * @return the list of server interceptors registered for a given service, or an
+	 *         empty list if none are registered
+	 */
+	public static List<ServerInterceptor> getUserInterceptors(String service) {
+		List<ServerInterceptor> interceptors = new LinkedList<ServerInterceptor>();
+		String interceptorListString = GrpcServiceConfigHolder.getServiceInterceptors(service);
+
+		if (interceptorListString != null) {
+			// TODO: wildcard support
+			List<String> items = Arrays.asList(interceptorListString.split("\\s*,\\s*"));
+			if (!items.isEmpty()) {
+				for (String className : items) {
+					try {
+						// use the app classloader to load the interceptor
+						ClassLoader cl = Thread.currentThread().getContextClassLoader();
+						Class<?> clazz = Class.forName(className, true, cl);
+						ServerInterceptor interceptor = (ServerInterceptor) clazz.getDeclaredConstructor()
+								.newInstance();
+						interceptors.add(interceptor);
+					} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+							| IllegalArgumentException | InvocationTargetException | NoSuchMethodException
+							| SecurityException e) {
+						// TODO: proper warning message
+						Tr.warning(tc, "Could not load user-defined Interceptor", e);
+					}
+				}
+			}
+		}
+		return interceptors;
+	}
+
+	/**
+	 * Register grpc services with a ServletServerBuilder and apply liberty-specific
+	 * configurations
+	 * 
+	 * @param bindableServices
+	 * @param serverBuilder
+	 */
+	public static void addServices(List<? extends BindableService> bindableServices,
+			ServletServerBuilder serverBuilder) {
+		for (BindableService service : bindableServices) {
+			String name = service.bindService().getServiceDescriptor().getName();
+
+			// set any user-defined server interceptors and add the service
+			List<ServerInterceptor> interceptors = GrpcServletUtils.getUserInterceptors(name);
+			// add Liberty auth interceptor to every service
+			interceptors.add(authInterceptor);
+			serverBuilder.addService(ServerInterceptors.intercept(service, interceptors));
+
+			// set the max inbound msg size, if it's configured
+			int maxInboundMsgSize = GrpcServiceConfigHolder.getMaxInboundMessageSize(name);
+			if (maxInboundMsgSize != -1) {
+				serverBuilder.maxInboundMessageSize(maxInboundMsgSize);
+			}
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+				Tr.debug(tc, "gRPC service " + name + " has been registered");
+			}
+		}
 	}
 }

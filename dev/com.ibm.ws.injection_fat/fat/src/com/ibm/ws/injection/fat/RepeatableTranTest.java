@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,14 +10,21 @@
  *******************************************************************************/
 package com.ibm.ws.injection.fat;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Set;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
+
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -52,7 +59,7 @@ public class RepeatableTranTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification();
+    public static RepeatTests r = RepeatTests.withoutModification().andWith(new JakartaEE9Action().forServers("com.ibm.ws.injection.fat.RepeatableTranServer").fullFATOnly());
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -71,9 +78,34 @@ public class RepeatableTranTest extends FATServletClient {
 //
 //        ShrinkHelper.exportDropinAppToServer(server, RepeatableTransactionTest);
 
+        // Since not using ShrinkWrap, manually transform the application if required
+        if (JakartaEE9Action.isActive()) {
+            transformJakartaEE9App(server, "dropins", "RepeatableTransactionTest.ear");
+
+            // And switch to JDBC 4.1 just for some variety (JDBC not tied to EE level)
+            ServerConfiguration config = server.getServerConfiguration();
+            Set<String> features = config.getFeatureManager().getFeatures();
+            for (String feature : features) {
+                if (feature.startsWith("jdbc-")) {
+                    features.remove(feature);
+                }
+            }
+            features.add("jdbc-4.1");
+            server.updateServerConfiguration(config);
+        }
+
         server.addInstalledAppForValidation("RepeatableTransactionTest");
 
         server.startServer();
+    }
+
+    private static void transformJakartaEE9App(LibertyServer server, String path, String filename) throws Exception {
+        String localLocation = "publish/servers/" + server.getServerName() + "/" + path;
+
+        Path localAppPath = Paths.get(localLocation + "/" + filename);
+        JakartaEE9Action.transformApp(localAppPath);
+
+        server.copyFileToLibertyServerRoot(localLocation, path, filename);
     }
 
     @AfterClass
@@ -84,7 +116,7 @@ public class RepeatableTranTest extends FATServletClient {
     }
 
     private final void runTest(String path) throws Exception {
-        FATServletClient.runTest(server, path, testName.getMethodName());
+        FATServletClient.runTest(server, path, getTestMethodSimpleName());
     }
 
     @Test

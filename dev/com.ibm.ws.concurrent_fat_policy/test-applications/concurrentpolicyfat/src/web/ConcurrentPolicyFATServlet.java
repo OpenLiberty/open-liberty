@@ -32,21 +32,22 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
+import jakarta.enterprise.concurrent.AbortedException;
+import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
+import jakarta.enterprise.concurrent.ManagedTask;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.transaction.TransactionSynchronizationRegistry;
+import jakarta.transaction.UserTransaction;
+
 import javax.naming.NamingException;
-import javax.servlet.annotation.WebServlet;
-import javax.transaction.TransactionSynchronizationRegistry;
-import javax.transaction.UserTransaction;
 
 import org.junit.After;
 import org.junit.Test;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.app.FATServlet;
-import jakarta.enterprise.concurrent.AbortedException;
-import jakarta.enterprise.concurrent.ManagedExecutorService;
-import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
-import jakarta.enterprise.concurrent.ManagedTask;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/ConcurrentPolicyFATServlet")

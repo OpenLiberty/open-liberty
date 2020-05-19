@@ -34,6 +34,7 @@ import javax.sql.ConnectionPoolDataSource;
 import javax.sql.DataSource;
 import javax.sql.XADataSource;
 import javax.transaction.RollbackException;
+import javax.transaction.Status;
 import javax.transaction.UserTransaction;
 
 import org.junit.Test;
@@ -238,9 +239,9 @@ public class SQLServerTestServlet extends FATServlet {
         try {
             Connection con = ds.getConnection();
             try {
-                Statement stmt = con.createStatement();
-                stmt.executeQuery("SELECT STRVAL FROM MYTABLE WHERE ID=0").close();
-                con.createStatement().execute("WAITFOR DELAY '00:00:16'"); // 16 seconds
+                con.createStatement().executeQuery("SELECT STRVAL FROM MYTABLE WHERE ID=0").close(); //perform db operation
+                con.createStatement().execute("WAITFOR DELAY '00:00:16'"); // Wait for 16 seconds
+
                 /*
                  * FIXME currently executing the WAITFOR statement above DOES causes a transaction timeout,
                  * and the connection to abort on the liberty side. The abort does not seem to go down to the database.
@@ -261,10 +262,33 @@ public class SQLServerTestServlet extends FATServlet {
             }
         } finally {
             try {
+                /*
+                 * Due to timing issues we may found ourselves in a situation where the database has reported a transaction timeout,
+                 * and ends the WAITFOR statement early. We continue on to close our connections. At this point we are in a TRANSACTION_ENDING state.
+                 * We attempt to call tran.commit(), but at this point the transaction hasn't yet registered the timeout.
+                 *
+                 * During the commit, the com.ibm.tx.jta.embeddable.impl.EmbeddableTimeoutManager reports the transaction has timed out (~10 seconds after
+                 * the timeout has actually occurred), and our state is changed to NO_TRANSACTION_ACTIVE (though I do not see this in the trace).
+                 *
+                 * The commit continues to process, and tries to update the state to NO_TRANSACTION_ACTIVE, but NO_TRANSACTION_ACTIVE > NO_TRANSACTION_ACTIVE
+                 * is invalid and a SystemException is thrown.
+                 */
+
+                int delaySeconds = Boolean.getBoolean("fat.test.localrun") ? 1 : 5;
+                for (int retry = 0; retry < 3 && tran.getStatus() != Status.STATUS_MARKED_ROLLBACK; retry++) {
+                    System.out.println("Preparing to commit.  Retry=" + retry);
+                    Thread.sleep(TimeUnit.SECONDS.toMillis(delaySeconds));
+                }
+
+                //Debug info in-case our delay timing needs to be updated in the future.
+                long duration = System.nanoTime() - start;
+                System.out.println("Transaction open for " + TimeUnit.NANOSECONDS.toSeconds(duration) + " seconds");
+
                 tran.commit();
                 committed = true;
             } catch (RollbackException x) {
-                // pass
+                System.out.println("tran.commit() threw a RollbackException as expected.");
+                x.printStackTrace(System.out);
             }
         }
 

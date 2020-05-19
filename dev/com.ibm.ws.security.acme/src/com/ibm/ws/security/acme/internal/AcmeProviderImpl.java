@@ -56,7 +56,6 @@ import com.ibm.ws.security.acme.AcmeCaException;
 import com.ibm.ws.security.acme.AcmeCertificate;
 import com.ibm.ws.security.acme.AcmeProvider;
 import com.ibm.ws.security.acme.internal.AcmeClient.AcmeAccount;
-import com.ibm.ws.security.acme.internal.util.AcmeConstants;
 import com.ibm.ws.ssl.JSSEProviderFactory;
 import com.ibm.ws.ssl.KeyStoreService;
 
@@ -91,6 +90,11 @@ public class AcmeProviderImpl implements AcmeProvider {
 	@Override
 	public void renewCertificate() throws AcmeCaException {
 		checkAndInstallCertificate(true, null, null, null);
+	}
+
+	@Override
+	public void revokeCertificate(String reason) throws AcmeCaException {
+		revoke(getConfiguredDefaultCertificateChain(), reason);
 	}
 
 	/**
@@ -181,7 +185,7 @@ public class AcmeProviderImpl implements AcmeProvider {
 			 */
 			if (existingCertChain != null) {
 				try {
-					revoke(existingCertChain);
+					revoke(existingCertChain, "SUPERSEDED");
 				} catch (AcmeCaException e) {
 					if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
 						Tr.debug(tc, "Failed to revoke the certificate.", existingCertChain);
@@ -214,21 +218,19 @@ public class AcmeProviderImpl implements AcmeProvider {
 	 * 
 	 * @param certificateChain
 	 *            The certificate chain with the leaf certificate to revoke.
+	 * @param reason
+	 *            The reason the certificate is being revoked. The following
+	 *            reason are supported: UNSPECIFIED, KEY_COMPROMISE,
+	 *            CA_COMPROMISE, AFFILIATION_CHANGED, SUPERSEDED,
+	 *            CESSATION_OF_OPERATIONS, CERTIFICATE_HOLD, REMOVE_FROM_CRL,
+	 *            PRIVILEGE_WITHDRAWN and AA_COMPROMISE. If null, the reason
+	 *            "UNSPECIFIED" will be used.
 	 * @throws AcmeCaException
 	 *             If there was an error revoking the certificate.
 	 */
-	@FFDCIgnore({ AcmeCaException.class })
-	public void revoke(List<X509Certificate> certificateChain) throws AcmeCaException {
+	public void revoke(List<X509Certificate> certificateChain, String reason) throws AcmeCaException {
 		X509Certificate certificate = getLeafCertificate(certificateChain);
-
-		try {
-			getAcmeClient().revoke(certificate);
-		} catch (AcmeCaException e) {
-			if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-				Tr.warning(tc, "CWPKI2038W", certificate.getSerialNumber().toString(16), e.getMessage());
-			}
-			throw e;
-		}
+		getAcmeClient().revoke(certificate, reason);
 	}
 
 	/**
@@ -285,8 +287,10 @@ public class AcmeProviderImpl implements AcmeProvider {
 		 * 4. Certificate exists, but is for the wrong domain, or a new domain has been added.
 		 * 5. TODO More?
 		 * </pre>
+		 * 
+		 * Check revocation last, as it is the most expensive call since it will
+		 * make call outs to the OCSP responder and CRL distribution points.
 		 */
-
 		boolean isExpired = false;
 		if (isExpired(existingCertChain)) {
 			X509Certificate x590Certificate = existingCertChain.get(0);
@@ -302,8 +306,9 @@ public class AcmeProviderImpl implements AcmeProvider {
 			}
 		}
 
-		return existingCertChain == null || existingCertChain.isEmpty() || isExpired || isRevoked(existingCertChain)
-				|| hasWrongDomains(existingCertChain) || hasWrongSubjectRDNs(existingCertChain);
+		return existingCertChain == null || existingCertChain.isEmpty() || isExpired
+				|| hasWrongDomains(existingCertChain) || hasWrongSubjectRDNs(existingCertChain)
+                                || isRevoked(existingCertChain);
 	}
 
 	/**
@@ -577,33 +582,12 @@ public class AcmeProviderImpl implements AcmeProvider {
 	 * @param certificateChain
 	 *            The certificate chain to check.
 	 * @return True if the certificate has been revoked, false otherwise.
+	 * @throws AcmeCaException
 	 */
-	private boolean isRevoked(List<X509Certificate> certificateChain) {
+	private boolean isRevoked(List<X509Certificate> certificateChain) throws AcmeCaException {
 
-		// try {
-		// CertificateFactory certificateFactory =
-		// CertificateFactory.getInstance("X.509");
-		// CertPath certPath =
-		// certificateFactory.generateCertPath(certificateChain);
-		// CertPathValidator validator = CertPathValidator.getInstance("PKIX");
-		// PKIXParameters params = new PKIXParameters(keystore);
-		// params.setRevocationEnabled(true);
-		//
-		// if (!Boolean.valueOf(Security.getProperty("ocsp.enabled"))) {
-		// Tr.warning(tc,
-		// "ABCDEFGH: OCSP certificate revocation checking is not enabled.
-		// Certificate revocate checking will be limited to CRLs only.");
-		// }
-		//
-		// PKIXCertPathValidatorResult r = (PKIXCertPathValidatorResult)
-		// validator.validate(certPath, params);
-		// return true;
-		//
-		// } catch (NoSuchAlgorithmException e) {
-		//
-		// }
-
-		return false;
+		CertificateRevocationChecker checker = new CertificateRevocationChecker(acmeConfig);
+		return checker.isRevoked(certificateChain);
 	}
 
 	/**
@@ -655,7 +639,7 @@ public class AcmeProviderImpl implements AcmeProvider {
 	 *            The certificate chain.
 	 * @return The leaf certificate.
 	 */
-	private static X509Certificate getLeafCertificate(List<X509Certificate> certificateChain) {
+	public static X509Certificate getLeafCertificate(List<X509Certificate> certificateChain) {
 		if (certificateChain != null && !certificateChain.isEmpty()) {
 			return certificateChain.get(0);
 		}

@@ -1,0 +1,30 @@
+<server>
+   <featureManager>
+     <feature>componenttest-1.0</feature>
+     <feature>mpRestClient-1.2</feature>
+     <feature>mpGraphQL-1.0</feature>
+     <feature>jaxrsClient-2.1</feature>
+     <feature>jsonp-1.1</feature>
+     <feature>jsonb-1.0</feature>
+     <feature>appSecurity-3.0</feature>
+   </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <basicRegistry id="basic" realm="WebRealm">
+     <user name="user1" password="user1pwd" />
+     <user name="user2" password="user2pwd" />
+     <user name="user1a" password="user1pwd" />
+     <user name="user2a" password="user2pwd" />
+     <group name="Role1">
+       <member name="user1"/>
+     </group>
+     <group name="Role2">
+       <member name="user2"/>
+     </group>
+   </basicRegistry>
+
+    <!--  Required to read the server's port system property -->
+   <javaPermission className="java.util.PropertyPermission"  name="*" actions="read" />
+
+  </server> 

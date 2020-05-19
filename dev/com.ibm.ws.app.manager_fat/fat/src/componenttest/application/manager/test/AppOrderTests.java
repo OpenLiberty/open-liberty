@@ -169,6 +169,7 @@ public class AppOrderTests extends AbstractAppManagerTest {
         server.copyFileToLibertyServerRoot(PUBLISH_FILES, APPS_DIR, SLOW_APP);
         server.copyFileToLibertyServerRoot(PUBLISH_FILES, APPS_DIR, SNOOP_WAR);
         server.copyFileToLibertyServerRoot(PUBLISH_FILES, APPS_DIR, APP_J2EE_EAR);
+        server.copyFileToLibertyServerRoot(PUBLISH_FILES, APPS_DIR, TEST_WAR_APPLICATION);
 
         server.setServerConfigurationFile("/appOrder/complex.xml");
         server.startServer(method + ".log");

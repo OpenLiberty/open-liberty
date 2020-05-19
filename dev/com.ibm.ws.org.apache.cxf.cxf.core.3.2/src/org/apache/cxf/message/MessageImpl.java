@@ -24,6 +24,7 @@ import java.util.AbstractMap;
 import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -31,6 +32,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.Spliterator;
+import java.util.Map.Entry;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -53,6 +55,7 @@ import org.apache.cxf.transport.http.AbstractHTTPDestination;
 import org.apache.cxf.transport.https.CertConstraints;
 
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 public class MessageImpl extends StringMapImpl implements Message {
     private static final long serialVersionUID = -3020763696429459865L;
@@ -1384,6 +1387,29 @@ public class MessageImpl extends StringMapImpl implements Message {
     }
     public String[] getPropertyNames() {
         return propertyNames;
+    }
+
+    @FFDCIgnore(ConcurrentModificationException.class)
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append('{');
+        for (int i=0; i<TOTAL; i++) {
+            if (propertyValues[i] != NOT_FOUND) {
+                sb.append(propertyNames[i]).append("=").append(propertyValues[i]).append(", ");
+            }
+        }
+        try {
+            super.forEach((k, v) -> { sb.append(k).append("=").append(v).append(", "); });
+        } catch (ConcurrentModificationException ex) {
+            sb.append(" ConcurrentModificationException caught!");
+        }
+        int len = sb.length();
+        if (len > 3) {
+            sb.setLength(len-2); //remove trailing comma and space
+        }
+        sb.append("}");
+        return sb.toString();
     }
     //Liberty code change end
 }

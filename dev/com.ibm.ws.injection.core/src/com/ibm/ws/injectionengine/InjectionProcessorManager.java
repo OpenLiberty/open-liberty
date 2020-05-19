@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2015 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -324,13 +324,16 @@ public class InjectionProcessorManager
                                                                                        Class<?> klass)
                     throws InjectionException
     {
+        final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         Class<A> annClass = provider.getAnnotationClass();
+        if (isTraceOn && tc.isDebugEnabled())
+            Tr.debug(tc, "looking for annotation : " + annClass);
         if (annClass != null)
         {
             A ann = klass.getAnnotation(annClass);
             if (ann != null)
             {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                if (isTraceOn && tc.isDebugEnabled())
                     Tr.debug(tc, "found class annotation " + toStringSecure(ann));
 
                 InjectionProcessor<A, AS> processor = getProcessor(processorIndex, provider);
@@ -338,6 +341,8 @@ public class InjectionProcessorManager
             }
 
             Class<AS> pluralAnnClass = provider.getAnnotationsClass();
+            if (isTraceOn && tc.isDebugEnabled())
+                Tr.debug(tc, "looking for annotation(s) : " + pluralAnnClass);
             if (pluralAnnClass != null)
             {
                 AS pluralAnn = klass.getAnnotation(pluralAnnClass);
@@ -350,7 +355,7 @@ public class InjectionProcessorManager
                     {
                         for (A singleAnn : singleAnns)
                         {
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                            if (isTraceOn && tc.isDebugEnabled())
                                 Tr.debug(tc, "found plural class annotation " + toStringSecure(singleAnn));
                             addOrMergeInjectionBinding(processorIndex, processor, klass, null, singleAnn);
                         }

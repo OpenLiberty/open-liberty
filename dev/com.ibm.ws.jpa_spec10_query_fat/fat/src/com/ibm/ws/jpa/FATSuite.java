@@ -30,6 +30,9 @@ import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
                 TestOLGH8014_Web.class,
                 TestOLGH8294_EJB.class,
                 TestOLGH8294_Web.class,
+                TestSVLQuery_Web.class,
+                TestSVLQuery_Bulkupdate_Web.class,
+                TestSVLLoopAnoQuery_Web.class,
                 componenttest.custom.junit.runner.AlwaysPassesTest.class
 })
 public class FATSuite {

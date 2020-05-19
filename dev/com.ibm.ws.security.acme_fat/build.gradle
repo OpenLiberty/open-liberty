@@ -44,12 +44,12 @@ dependencies {
 
 autoFVT.doLast {
   /*
-   * Copy the pebble truststore(s) into all test servers.
+   * Copy the CACERTS truststore(s) into all test servers.
    */
    new File("${projectDir}/publish/servers").eachDir { server ->
     copy { 
       from 'publish/files/'
-      include 'pebble-truststore.*'
+      include 'cacerts.*'
       into new File(autoFvtDir, 'publish/servers/' + server.name + '/resources/security')
     }
   }

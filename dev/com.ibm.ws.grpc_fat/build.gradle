@@ -68,6 +68,18 @@ dependencies {
     providedCompile 'jakarta.platform:jakarta.jakartaee-api:8.0.0'
     providedCompile 'org.eclipse.microprofile:microprofile:3.2'
     
+    // test runtime 
+    requiredLibs 'net.sourceforge.cssparser:cssparser:0.9.23',
+      'net.sourceforge.htmlunit:htmlunit:2.20',
+      'net.sourceforge.htmlunit:htmlunit-core-js:2.17',
+      'org.apache.commons:commons-lang3:3.8',
+      'commons-codec:commons-codec:1.11',
+      'org.apache.httpcomponents:httpmime:4.5.3',
+      'org.apache.httpcomponents:httpclient:4.5.4',
+      'org.apache.httpcomponents:httpcore:4.4.9',
+      'commons-codec:commons-codec:1.6',
+      'commons-logging:commons-logging:1.1.3',
+      'xml-apis:xml-apis:1.4.01'
 }
 
 protobuf {
@@ -87,11 +99,22 @@ protobuf {
 sourceSets {
     main {
     	proto {
-    		srcDirs 'test-applications/helloworld_client/proto'
+    		srcDirs 'test-applications/HelloWorldService.war/resources/proto'
     		}
         java {
-            srcDirs 'test-applications/helloworld_client/src/java'
-            srcDirs 'test-applications/helloworld_servlet/src/java'
+            srcDirs 'test-applications/HelloWorldClient.war/src/java'
+            srcDirs 'test-applications/HelloWorldService.war/src/java'
         }
+    }
+}
+
+assemble.doLast {
+    copy {
+       from "build/libs/generated/source/proto/main/java"
+          into "generated-src"
+    }
+    copy {
+       from "build/libs/generated/source/proto/main/grpc"
+          into "generated-src"
     }
 }

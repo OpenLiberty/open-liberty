@@ -116,8 +116,6 @@ connected_user_database=Verbunden: {3}{4}Benutzer: {0}{3}{4}Datenbank: {1} Versi
 
 connected_user_database_driver=Verbunden: {0}{6}Benutzer: {1}{6}Datenbank: {2}  Version: {3}{6}Treiber: {4}  Version: {5}
 
-connecting=({0}) wird verbunden
-
 corrupted_session_announcement=Sitzungs-ID: {0}  Discovery Manager hat eine fehlerhafte Sitzungsank\u00fcndigung empfangen. Wird ignoriert.
 
 create_default_dbms_tables_not_supported=Die native WLS-CMP-Einstellung "create-default-dbms-tables" wird in EclipseLink CMP nicht direkt unterst\u00fctzt. Weitere Einzelheiten finden Sie in der Ver\u00f6ffentlichung zur Migration.
@@ -157,8 +155,6 @@ deprecated_property=Die Eigenschaft {1} wird nicht weiter unterst\u00fctzt. Verw
 descriptor_named_query_cannot_be_added=Es kann kein Deskriptor mit einer benannten Abfrage (NamedQuery) hinzugef\u00fcgt werden, wenn dies zu einem Namenskonflikt mit einer vorhandenen Abfrage f\u00fchrt. Die hinzuzuf\u00fcgende Abfrage [{0}] hat den Namen [{1}] und die Argumente [{2}].
 
 dir_cleaned_for_mw_files=Es wurden Dateien und Unterverzeichnisse im Verzeichnis {0} gel\u00f6scht, um f\u00fcr die neu generierten EclipseLink Mapping Workbench-Projektdateien ein bereinigtes Verzeichnis zu erstellen.
-
-disconnect=Verbindung trennen
 
 do_select_before_insert_not_supported=Das native Oc4j-CMP-Feature "do-select-before-insert" f\u00fcr entity({0}) wird in EclipseLink CMP nicht direkt unterst\u00fctzt. Weitere Einzelheiten finden Sie in der Ver\u00f6ffentlichung zur Migration.
 
@@ -330,10 +326,6 @@ locking_mode_not_valid=Locking mode({1}) on entity({0} in orion-ejb-jar.xml is n
 locking_required_for_database_change_notification=Die Entit\u00e4t {0} verwendet keine Versionssperrung, aber hat mehrere Tabellen und Beziehungen und verwendet Oracle-Datenbank\u00e4nderungsbenachrichtigung. \u00c4nderungen an Beziehungen oder sekund\u00e4ren Tabellen invalidieren m\u00f6glicherweise nicht den Cache.
 
 log_file_under_output_dir=Es befindet sich eine Protokolldatei mit dem Namen ({0}) im Ausgabeverzeichnis ({1}).
-
-login_successful={0}-Anmeldung erfolgreich
-
-logout_successful={0}-Abmeldung erfolgreich
 
 mapping_not_supported_by_mw=Die EclipseLink-Zuordnung {0} wird von Mapping Workbench nicht unterst\u00fctzt.
 
@@ -652,8 +644,6 @@ query_has_joined_attribute_outside_fetch_group={0}: Das verkn\u00fcpfte Attribut
 received_corrupt_announcement=Warnung: Der Discovery Manager konnte die Serviceank\u00fcndigung nicht verarbeiten. Grund: {0} - Die Ank\u00fcndigung wird ignoriert.
 
 received_unexpected_message_type=Nicht erwarteter Nachrichtentyp wurde empfangen: {0} von Topic: {1}. Wird ignoriert.
-
-reconnecting=({0}) wird erneut verbunden
 
 register_new_for_persist=PERSIST-Operationsaufruf: {0}.
 

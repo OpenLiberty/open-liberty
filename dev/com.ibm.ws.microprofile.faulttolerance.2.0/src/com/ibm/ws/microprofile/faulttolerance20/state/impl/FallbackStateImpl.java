@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,6 @@ package com.ibm.ws.microprofile.faulttolerance20.state.impl;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
-import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder;
 import com.ibm.ws.microprofile.faulttolerance20.impl.MethodResult;
 import com.ibm.ws.microprofile.faulttolerance20.impl.SyncExecutionContextImpl;
 import com.ibm.ws.microprofile.faulttolerance20.state.FallbackState;
@@ -23,12 +22,9 @@ public class FallbackStateImpl implements FallbackState {
     private final static TraceComponent tc = Tr.register(FallbackStateImpl.class);
 
     private final FallbackPolicy policy;
-    private final MetricRecorder metricRecorder;
 
-    public FallbackStateImpl(FallbackPolicy policy, MetricRecorder metricRecorder) {
+    public FallbackStateImpl(FallbackPolicy policy) {
         this.policy = policy;
-        this.metricRecorder = metricRecorder;
-
     }
 
     @SuppressWarnings("unchecked")
@@ -37,8 +33,6 @@ public class FallbackStateImpl implements FallbackState {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Execution {0} calling fallback", executionContext.getId());
         }
-
-        metricRecorder.incrementFallbackCalls();
 
         executionContext.setFailure(result.getFailure());
         try {

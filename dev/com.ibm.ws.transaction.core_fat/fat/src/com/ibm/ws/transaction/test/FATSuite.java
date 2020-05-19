@@ -16,6 +16,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -38,5 +39,6 @@ public class FATSuite {
     // First without any modifications, then again with all features upgraded to their EE8 equivalents.
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE8_FEATURES());
+                    .andWith(FeatureReplacementAction.EE8_FEATURES())
+                    .andWith(new JakartaEE9Action());
 }

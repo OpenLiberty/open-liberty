@@ -17,11 +17,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 
+import javax.enterprise.concurrent.ManagedTask;
+
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
 import com.ibm.ws.Transaction.UOWCurrent;
-import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.threadcontext.ThreadContext;
@@ -34,10 +35,15 @@ import com.ibm.wsspi.threadcontext.jca.JCAContextProvider;
  * Transaction context service provider.
  */
 public class TransactionContextProviderImpl implements JCAContextProvider, ThreadContextProvider {
-    /**
-     * Jakarta EE versiom if Jakarta EE 9 or higher. If 0, assume a lesser EE spec version.
-     */
-    int eeVersion;
+    // Constant for ManagedTask.TRANSACTION in whichever of Jakarta vs Java EE is NOT enabled
+    private static final String OTHER_SPEC_TRANSACTION_CONSTANT;
+    static {
+        int dot = ManagedTask.TRANSACTION.indexOf('.');
+        OTHER_SPEC_TRANSACTION_CONSTANT = new StringBuilder(46 - dot) //
+                        .append(dot == 5 ? "jakarta" : "javax") //
+                        .append(".enterprise.concurrent.TRANSACTION") //
+                        .toString();
+    }
 
     /**
      * Reference to the transaction inflow manager.
@@ -72,18 +78,14 @@ public class TransactionContextProviderImpl implements JCAContextProvider, Threa
         if (execProps == null) {
             key = null;
             value = null;
-        } else if (eeVersion < 9) { // prefer javax
-            value = execProps.get(key = "javax.enterprise.concurrent.TRANSACTION");
+        } else { // prefer the enabled spec
+            value = execProps.get(key = ManagedTask.TRANSACTION);
             if (value == null)
-                value = execProps.get(key = "jakarta.enterprise.concurrent.TRANSACTION");
-        } else { // prefer jakarta
-            value = execProps.get(key = "jakarta.enterprise.concurrent.TRANSACTION");
-            if (value == null)
-                value = execProps.get(key = "javax.enterprise.concurrent.TRANSACTION");
+                value = execProps.get(key = OTHER_SPEC_TRANSACTION_CONSTANT);
         }
-        if (value == null || "SUSPEND".equals(value)) // ManagedTask.SUSPEND
+        if (value == null || ManagedTask.SUSPEND.equals(value))
             return new TransactionContextImpl(true);
-        else if ("USE_TRANSACTION_OF_EXECUTION_THREAD".equals(value)) // ManagedTask.USE_TRANSACTION_OF_EXECUTION_THREAD
+        else if (ManagedTask.USE_TRANSACTION_OF_EXECUTION_THREAD.equals(value))
             return new TransactionContextImpl(false);
         else if ("PROPAGATE".equals(value)) {
             UOWCurrent uowCurrent = (UOWCurrent) transactionManager;
@@ -116,19 +118,15 @@ public class TransactionContextProviderImpl implements JCAContextProvider, Threa
             if (info == null) {
                 key = null;
                 value = null;
-            } else if (eeVersion < 9) { // prefer javax
-                value = info.getExecutionProperty(key = "javax.enterprise.concurrent.TRANSACTION");
+            } else { // prefer the enabled spec
+                value = info.getExecutionProperty(key = ManagedTask.TRANSACTION);
                 if (value == null)
-                    value = info.getExecutionProperty(key = "jakarta.enterprise.concurrent.TRANSACTION");
-            } else { // prefer jakarta
-                value = info.getExecutionProperty(key = "jakarta.enterprise.concurrent.TRANSACTION");
-                if (value == null)
-                    value = info.getExecutionProperty(key = "javax.enterprise.concurrent.TRANSACTION");
+                    value = info.getExecutionProperty(key = OTHER_SPEC_TRANSACTION_CONSTANT);
             }
 
-            if (value == null || "SUSPEND".equals(value)) // ManagedTask.SUSPEND
+            if (value == null || ManagedTask.SUSPEND.equals(value))
                 context.suspendTranOfExecutionThread = true;
-            else if ("USE_TRANSACTION_OF_EXECUTION_THREAD".equals(value)) // ManagedTask.USE_TRANSACTION_OF_EXECUTION_THREAD
+            else if (ManagedTask.USE_TRANSACTION_OF_EXECUTION_THREAD.equals(value))
                 context.suspendTranOfExecutionThread = false;
             else
                 throw new IllegalArgumentException(key + '=' + value);
@@ -168,22 +166,6 @@ public class TransactionContextProviderImpl implements JCAContextProvider, Threa
     }
 
     /**
-     * Declarative Services method for setting the Jakarta/Java EE version
-     *
-     * @param ref reference to the service
-     */
-    protected void setEEVersion(ServiceReference<JavaEEVersion> ref) {
-        String version = (String) ref.getProperty("version");
-        if (version == null) {
-            eeVersion = 0;
-        } else {
-            int dot = version.indexOf('.');
-            String major = dot > 0 ? version.substring(0, dot) : version;
-            eeVersion = Integer.parseInt(major);
-        }
-    }
-
-    /**
      * Declarative Services method for setting the TransactionInflowManager service
      *
      * @param ref reference to the service
@@ -197,15 +179,6 @@ public class TransactionContextProviderImpl implements JCAContextProvider, Threa
      */
     protected void setTransactionManager(EmbeddableWebSphereTransactionManager tm) {
         transactionManager = tm;
-    }
-
-    /**
-     * Declarative Services method for unsetting the Jakarta/Java EE version
-     *
-     * @param ref reference to the service
-     */
-    protected void unsetEEVersion(ServiceReference<JavaEEVersion> ref) {
-        eeVersion = 0;
     }
 
     /**

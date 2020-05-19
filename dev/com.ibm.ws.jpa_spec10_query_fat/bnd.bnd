@@ -17,6 +17,7 @@ src: \
     test-applications/common/src,\
     test-applications/olgh8014/src,\
     test-applications/olgh8294/src,\
+    test-applications/svlquery/src,\
     test-applications/helpers/DatabaseManagement/src,\
     test-framework/src
 

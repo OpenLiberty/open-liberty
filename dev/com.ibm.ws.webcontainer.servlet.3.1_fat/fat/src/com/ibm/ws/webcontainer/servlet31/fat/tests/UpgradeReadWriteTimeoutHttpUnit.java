@@ -41,6 +41,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * The Servlet 3.1 test bucket class to test out the custom properties added for Servlet 3.1
  */
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class UpgradeReadWriteTimeoutHttpUnit extends LoggingTest {
 
     private static final Logger LOG = Logger.getLogger(UpgradeReadWriteTimeoutHttpUnit.class.getName());
@@ -84,7 +85,6 @@ public class UpgradeReadWriteTimeoutHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.FULL)
     public void testUpgradeReadListenerTimeout() throws IOException, InterruptedException {
 
         try {
@@ -165,7 +165,6 @@ public class UpgradeReadWriteTimeoutHttpUnit extends LoggingTest {
      * is set to 5 seconds
      */
     @Test
-    @Mode(TestMode.FULL)
     public void testUpgradeWriteListenerTimeout() throws IOException, InterruptedException {
 
         try {

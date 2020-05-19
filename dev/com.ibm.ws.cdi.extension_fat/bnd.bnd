@@ -26,7 +26,9 @@ src: \
 	test-applications/multipleWarEmbeddedJar.jar/src,\
 	test-applications/multipleWarNoBeans.war/src,\
 	test-bundles/cdi.helloworld.extension/src, \
-	test-applications/observeProcessProducerMethod.war/src
+	test-bundles/cdi.spi.extension/src, \
+	test-applications/observeProcessProducerMethod.war/src, \
+	test-applications/SPIExtension.war/src
 	
 tested.features:\
 	cdi-2.0,\

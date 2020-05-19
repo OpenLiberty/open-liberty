@@ -16,7 +16,7 @@ IBM-App-ForceRestart: uninstall, \
 IBM-ShortName: jaxrsClient-2.1
 Subsystem-Name: Java RESTful Services Client 2.1
 -features=com.ibm.websphere.appserver.jaxrs.common-2.1, \
- com.ibm.websphere.appserver.javaeeCompatible-8.0, \
+ com.ibm.websphere.appserver.eeCompatible-8.0, \
  com.ibm.websphere.appserver.concurrent.mp-1.0; ibm.tolerates:="1.1"
 -bundles=com.ibm.ws.jaxrs.2.0.client, \
 com.ibm.ws.cxf.client

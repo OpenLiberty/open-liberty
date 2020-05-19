@@ -1,0 +1,31 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion: 1.1
+
+Bundle-Name: WebSphere Transaction API
+Bundle-Description: WebSphere Transaction API, version ${bVersion}
+Bundle-SymbolicName: com.ibm.websphere.appserver.api.transaction.2.0
+
+Import-Package: com.ibm.tx.jta,com.ibm.websphere.jtaextensions,com.ibm.websphere.uow,com.ibm.wsspi.uow
+
+Export-Package: com.ibm.tx.jta,com.ibm.websphere.jtaextensions,com.ibm.websphere.uow,com.ibm.wsspi.uow
+
+-includeresource: {META-INF/maven/com.ibm.websphere.appserver.api/com.ibm.websphere.appserver.api.transaction.2.0/pom.xml=com.ibm.websphere.appserver.api.transaction.2.0.pom}
+
+publish.wlp.jar.suffix: dev/api/ibm
+
+jakartaeeMe: true
+
+-buildpath: \
+  com.ibm.tx.core, \
+  com.ibm.ws.tx.embeddable, \
+  com.ibm.ws.tx.jta.extensions

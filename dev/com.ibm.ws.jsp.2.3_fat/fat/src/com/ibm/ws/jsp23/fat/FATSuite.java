@@ -19,10 +19,12 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.fat.util.FatLogHandler;
 import com.ibm.ws.jsp23.fat.tests.JSP23JSP22ServerTest;
 import com.ibm.ws.jsp23.fat.tests.JSPJava8Test;
+import com.ibm.ws.jsp23.fat.tests.JSPCdiTest;
 import com.ibm.ws.jsp23.fat.tests.JSPTests;
 
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
+import componenttest.rules.repeater.JakartaEE9Action;
 
 /**
  * JSP 2.3 Tests
@@ -33,6 +35,7 @@ import componenttest.rules.repeater.RepeatTests;
 @SuiteClasses({
                 JSPTests.class,
                 JSPJava8Test.class,
+                JSPCdiTest.class,
                 JSP23JSP22ServerTest.class
 })
 public class FATSuite {
@@ -54,5 +57,6 @@ public class FATSuite {
                     .andWith(new FeatureReplacementAction("cdi-1.2", "cdi-2.0")
                                     .withID("CDI-2.0")
                                     .forceAddFeatures(false)
-                                    .withMinJavaLevel(8));
+                                    .withMinJavaLevel(8))
+                    .andWith(new JakartaEE9Action());
 }

@@ -27,7 +27,6 @@ import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -46,7 +45,7 @@ import io.opentracing.tag.Tags;
  *
  * <p>This implementation is stateless. A single container filter is used by all applications.</p> *
  */
-public class OpentracingContainerFilter implements ContainerRequestFilter, ContainerResponseFilter, ExceptionMapper<Throwable> {
+public class OpentracingContainerFilter implements ContainerRequestFilter, ContainerResponseFilter {
     private static final TraceComponent tc = Tr.register(OpentracingContainerFilter.class);
 
     public static final String SERVER_SPAN_PROP_ID = OpentracingContainerFilter.class.getName() + ".Span";
@@ -273,13 +272,4 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
         }
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public Response toResponse(Throwable exception) {
-        Tr.warning(tc, "OPENTRACING_UNHANDLED_JAXRS_EXCEPTION", exception);
-        if (exception instanceof WebApplicationException) {
-            return Response.fromResponse(((WebApplicationException) exception).getResponse()).header(EXCEPTION_KEY, exception).build();
-        }
-        return Response.serverError().header(EXCEPTION_KEY, exception).build();
-    }
 }

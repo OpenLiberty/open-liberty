@@ -89,6 +89,24 @@ public interface AcmeProvider {
 	public void renewCertificate() throws AcmeCaException;
 
 	/**
+	 * Revoke the certificate.
+	 * 
+	 * @param reason
+	 *            The reason the certificate is being revoked. The following
+	 *            reason are supported: UNSPECIFIED, KEY_COMPROMISE,
+	 *            CA_COMPROMISE, AFFILIATION_CHANGED, SUPERSEDED,
+	 *            CESSATION_OF_OPERATIONS, CERTIFICATE_HOLD, REMOVE_FROM_CRL,
+	 *            PRIVILEGE_WITHDRAWN and AA_COMPROMISE. If null, the reason
+	 *            "UNSPECIFIED" will be used.
+	 * @throws IllegalRevocationReasonException
+	 *             Thrown if the supplied reason is not one of the supported
+	 *             revocation reasons.
+	 * @throws AcmeCaException
+	 *             If there was an error revoking the certificate.
+	 */
+	public void revokeCertificate(String reason) throws AcmeCaException;
+
+	/**
 	 * Updates the default SSL certificate. It is expected that if the default
 	 * certificate is replaced, that both the {@link KeyStore} and the file are
 	 * updated with the new certificate.

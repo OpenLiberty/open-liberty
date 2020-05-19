@@ -227,10 +227,12 @@ public class AcmeClientTest {
 		 * Create an AcmeService to test.
 		 */
 		AcmeClient acmeClient = createClient(TEST_DOMAIN_1);
+
 		/*
 		 * Get the certificate from the ACME CA server.
 		 */
 		AcmeCertificate newCertificate = acmeClient.fetchCertificate(false);
+
 		/*
 		 * The certificate should be valid.
 		 */
@@ -240,7 +242,7 @@ public class AcmeClientTest {
 		/*
 		 * Revoke the certificate.
 		 */
-		acmeClient.revoke(newCertificate.getCertificate());
+		acmeClient.revoke(newCertificate.getCertificate(), null);
 
 		/*
 		 * The certificate should now be revoked.

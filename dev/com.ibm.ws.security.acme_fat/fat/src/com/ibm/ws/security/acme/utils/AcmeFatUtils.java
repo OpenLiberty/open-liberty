@@ -67,7 +67,7 @@ public class AcmeFatUtils {
 
 	public static final String PEER_CERTIFICATES = "PEER_CERTIFICATES";
 	public static final String SELF_SIGNED_KEYSTORE_PASSWORD = "acmepassword";
-	public static final String PEBBLE_TRUSTSTORE_PASSWORD = "acmepassword";
+	public static final String CACERTS_TRUSTSTORE_PASSWORD = "acmepassword";
 	public static final String DEFAULT_KEYSTORE_PASSWORD = "acmepassword";
 
 	/**
@@ -287,8 +287,8 @@ public class AcmeFatUtils {
 		acmeCA.setDirectoryURI(directoryUri);
 		if (!directoryUri.startsWith("acme")) {
 			AcmeTransportConfig acmeTransportConfig = new AcmeTransportConfig();
-			acmeTransportConfig.setTrustStore("${server.config.dir}/resources/security/pebble-truststore.p12");
-			acmeTransportConfig.setTrustStorePassword(PEBBLE_TRUSTSTORE_PASSWORD);
+			acmeTransportConfig.setTrustStore("${server.config.dir}/resources/security/cacerts.p12");
+			acmeTransportConfig.setTrustStorePassword(CACERTS_TRUSTSTORE_PASSWORD);
 			acmeCA.setAcmeTransportConfig(acmeTransportConfig);
 		}
 	}
@@ -397,6 +397,7 @@ public class AcmeFatUtils {
 	 *            The server to check.
 	 */
 	public static final void waitForAcmeToCreateCertificate(LibertyServer server) {
+		assertNotNull("ACME did not fetch the certificate.", server.waitForStringInLog("CWPKI2064I"));
 		assertNotNull("ACME did not create the certificate.", server.waitForStringInLog("CWPKI2007I"));
 	}
 
@@ -413,7 +414,7 @@ public class AcmeFatUtils {
 	}
 
 	/**
-	 * Wait for the ACME auhtorization web application to start.
+	 * Wait for the ACME authorization web application to start.
 	 * 
 	 * @param server
 	 *            The server to check.
@@ -421,6 +422,16 @@ public class AcmeFatUtils {
 	public static final void waitForAcmeAppToStart(LibertyServer server) {
 		assertNotNull("ACME authorization web application did not start.", server
 				.waitForStringInTrace("ACME authorization web application has started and is available for requests"));
+	}
+
+	/**
+	 * Wait for the ACME authorization web application to start.
+	 * 
+	 * @param server
+	 *            The server to check.
+	 */
+	public static final void waitForAcmeToRevokeCert(LibertyServer server) {
+		assertNotNull("ACME failed to revoke the certificate.", server.waitForStringInLog("CWPKI2038I"));
 	}
 
 	/**

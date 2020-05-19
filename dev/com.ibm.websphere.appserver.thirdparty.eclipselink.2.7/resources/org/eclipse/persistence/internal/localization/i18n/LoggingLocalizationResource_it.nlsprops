@@ -117,8 +117,6 @@ connected_user_database=Connesso: {3}{4} Utente: {0}{3}{4} Database: {1}  Versio
 
 connected_user_database_driver=Connesso: {0}{6} Utente: {1}{6} Database: {2}  Versione: {3}{6} Driver: {4}  Versione: {5}
 
-connecting=connessione di ({0})
-
 corrupted_session_announcement=ID sessione: {0} il gestore rilevamento ha ricevuto un annuncio di sessione corrotto, viene ignorato.
 
 create_default_dbms_tables_not_supported=L''impostazione CMP nativa  WLS "create-default-dbms-tables" non \u00e8 direttamente supportata in CMP EclipseLink. Per i dettagli consultare il documento sulla migrazione.
@@ -158,8 +156,6 @@ deprecated_property=propriet\u00e0 {1} obsoleta, va utilizzata la propriet\u00e0
 descriptor_named_query_cannot_be_added=Impossibile aggiungere una query descrittore denominata il cui nome \u00e8 in conflitto con una query esistente. Query da aggiungere: [{0}] nominata: [{1}] con argomenti [{2}].
 
 dir_cleaned_for_mw_files=I file e le sottodirectory nella directory {0} sono stati eliminati in modo da creare una directory pulita per i nuovi file del progetto workbench di associazione EclipseLink.
-
-disconnect=disconnetti
 
 do_select_before_insert_not_supported=La funzione CMP nativa Oc4j "do-select-before-insert" sull''entit\u00e0\u00a0({0}) non \u00e8 direttamente supportata in CMP  EclipseLink. Per i dettagli consultare il documento sulla migrazione.
 
@@ -332,10 +328,6 @@ locking_mode_not_valid=Modalit\u00e0 di blocco ({1}) sull''entit\u00e0 ({0}) in 
 locking_required_for_database_change_notification=L''entit\u00e0 {0} non sta utilizzando il blocco della versione, ma ha pi\u00f9 tabelle o relazioni, e sta utilizzando la notifica di modifica del database Oracle, \u00e8 possibile che le modifiche alle relazioni o alle tabelle secondarie non invalidino la cache.
 
 log_file_under_output_dir=Esiste un file di log denominato ({0}) nella directory di output ({1}).
-
-login_successful=Login a {0} riuscito
-
-logout_successful=Logout da {0} riuscito
 
 mapping_not_supported_by_mw=L''associazione EclipseLink {0} non \u00e8 supportata dal workbench di associazione
 
@@ -654,8 +646,6 @@ query_has_joined_attribute_outside_fetch_group={0}: attributo unito [{1}] non in
 received_corrupt_announcement=Avvertenza: il gestore rilevamento non \u00e8 stato in grado di elaborare l''annuncio di servizio a causa di {0} \u2013 l''annuncio viene ignorato
 
 received_unexpected_message_type=Tipo di messaggio non previsto ricevuto: {0} dal topic: {1}; verr\u00e0 ignorato
-
-reconnecting=riconnessione di ({0})
 
 register_new_for_persist=Operazione PERSIST chiamata su: {0}.
 

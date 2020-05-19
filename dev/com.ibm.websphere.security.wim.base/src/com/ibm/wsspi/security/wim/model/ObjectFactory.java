@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,8 @@ import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 /**
  * This object contains factory methods for each
  * Java content interface and Java element interface
@@ -32,6 +34,7 @@ import javax.xml.namespace.QName;
  *
  */
 @XmlRegistry
+@Trivial
 public class ObjectFactory {
 
     private final static QName _SeeAlso_QNAME = new QName("http://www.ibm.com/websphere/wim", "seeAlso");

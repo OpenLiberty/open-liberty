@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.app.manager.internal;
 
+import java.io.File;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,6 +64,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.app.manager.AppMessageHelper;
 import com.ibm.ws.app.manager.ApplicationManager;
 import com.ibm.ws.app.manager.ApplicationStateCoordinator;
+import com.ibm.ws.app.manager.ApplicationStateCoordinator.AppStatus;
 import com.ibm.ws.app.manager.internal.lifecycle.ServiceReg;
 import com.ibm.ws.app.manager.internal.monitor.AppMonitorConfigurator;
 import com.ibm.ws.app.manager.internal.statemachine.ApplicationStateMachine;
@@ -309,6 +311,8 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
     private final Map<String, List<String>> _blockedPidsFromName = new HashMap<String, List<String>>();
     private final Map<String, List<ApplicationDependency>> _startAfterDependencies = new HashMap<String, List<ApplicationDependency>>();
 
+    private final Set<String> reportedCycles = new HashSet<String>();
+
     /**
      * An instance of this class exists with each type of application we have
      * encountered. We keep track of the presence of support for that type
@@ -468,6 +472,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         _appManagerReadyDependency = null;
         _appManagerRARSupportDependency = null;
         final Set<NamedApplication> appsToStop;
+
         synchronized (this) {
             appsToStop = new HashSet<NamedApplication>(_appFromName.values());
             _appFromName.clear();
@@ -479,6 +484,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         for (NamedApplication app : appsToStop) {
             uninstallApp(app);
         }
+
         synchronized (this) {
             UpdateEpisodeState episode = _currentEpisode;
             if (episode != null) {
@@ -921,7 +927,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         for (NamedApplication app : getNamedApps()) {
             sb.append("  ");
             app.describe(sb);
-            sb.append("\n");
+            sb.append("\n\n");
         }
         out.print(sb.toString());
     }
@@ -1142,6 +1148,31 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         }
     }
 
+    private boolean cleanCache(File cacheDir, Set<String> excludedPids) {
+        if (cacheDir == null || !cacheDir.isDirectory())
+            return false;
+
+        boolean result = true;
+        for (File pidDirectory : cacheDir.listFiles()) {
+            if (!excludedPids.contains(pidDirectory.getName())) {
+                result &= cleanCacheDirectory(pidDirectory);
+            }
+        }
+        return result;
+    }
+
+    private boolean cleanCacheDirectory(File f) {
+        if (f.isDirectory()) {
+            boolean result = true;
+            for (File child : f.listFiles()) {
+                result &= cleanCacheDirectory(child);
+            }
+            return result &= f.delete();
+        } else {
+            return f.delete();
+        }
+    }
+
     // called only from synchronized methods
     private void processDeletion(String pid) {
         // find the running app for this pid
@@ -1170,7 +1201,19 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         }
 
         // uninstall the app currently running with this pid
-        uninstallApp(appFromPid);
+        uninstallApp(appFromPid, true);
+    }
+
+    private File getCacheDir() {
+        return _locAdmin.getBundleFile(this, "cache");
+    }
+
+    private File getCacheAdaptDir() {
+        return _locAdmin.getBundleFile(this, "cacheAdapt");
+    }
+
+    private File getCacheOverlayDir() {
+        return _locAdmin.getBundleFile(this, "cacheOverlay");
     }
 
     private void processUpdateWithNameChange(final String pid, final ApplicationConfig newAppConfig, final NamedApplication appFromPid) {
@@ -1355,16 +1398,16 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         private final RuntimeUpdateNotification appsStoppedNotification;
         private final RuntimeUpdateNotification appsStartingNotification;
         private final RuntimeUpdateNotification appsInstallCalledNotification;
-        //private final RuntimeUpdateNotification appsStartedNotification;
+
         private final ApplicationDependency appsStopping;
         private final ApplicationDependency appsStopped;
         private final ApplicationDependency appsStarting;
         private final ApplicationDependency appsInstallCalled;
-        //private final ApplicationDependency appsStarted;
+
         private final ApplicationDependency rarsHaveStarted;
         private final List<ApplicationDependency> appsStoppedFutures = new ArrayList<ApplicationDependency>();
         private final Map<ApplicationDependency, ApplicationStateMachine> appsInstallCalledFutures = new HashMap<ApplicationDependency, ApplicationStateMachine>();
-        //private final List<ApplicationDependency> appsStartedFutures = new ArrayList<ApplicationDependency>();
+
         private final List<ApplicationDependency> rarAppsStartedFutures = new ArrayList<ApplicationDependency>();
         private final Map<String, ApplicationDependency> appStoppedFutureMap = new HashMap<String, ApplicationDependency>();
         private Set<ApplicationRecycleContext> unregisteredContexts;
@@ -1375,16 +1418,16 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
             appsStoppedNotification = _runtimeUpdateManager.createNotification(RuntimeUpdateNotification.APPLICATIONS_STOPPED);
             appsStartingNotification = _runtimeUpdateManager.createNotification(RuntimeUpdateNotification.APPLICATIONS_STARTING, true);
             appsInstallCalledNotification = _runtimeUpdateManager.createNotification(RuntimeUpdateNotification.APPLICATIONS_INSTALL_CALLED, true);
-            //appsStartedNotification = _runtimeUpdateManager.createNotification(RuntimeUpdateNotification.APPLICATIONS_STARTED);
+
             if (appsStoppedNotification == null || appsStartingNotification == null ||
-                appsInstallCalledNotification == null /* || appsStartedNotification == null */) {
+                appsInstallCalledNotification == null) {
                 throw new IllegalStateException();
             }
             this.appsStopping = createDependency("resolves when applications are stopping");
             this.appsStopped = new ApplicationDependency(_futureMonitor, appsStoppedNotification.getFuture(), "resolves when applications have stopped");
             this.appsStarting = new ApplicationDependency(_futureMonitor, appsStartingNotification.getFuture(), "resolves when applications can start");
             this.appsInstallCalled = new ApplicationDependency(_futureMonitor, appsInstallCalledNotification.getFuture(), "resolves when install has been called for all applications");
-            //this.appsStarted = new ApplicationDependency(_futureMonitor, appsStartedNotification.getFuture(), "resolves when all applications have started");
+
             this.rarsHaveStarted = createDependency("resolves when all resource adapters have started");
             appsStopping.onCompletion(new CompletionListener<Boolean>() {
                 @Override
@@ -1549,6 +1592,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         UpdateEpisodeState dropReference() {
             final boolean droppingLastRef = refCount.decrementAndGet() == 0;
             if (droppingLastRef) {
+                checkForCycles();
                 CancelableCompletionListenerWrapper<Boolean> listener = completionListener.getAndSet(null);
                 if (listener != null) {
                     listener.cancel();
@@ -1570,9 +1614,6 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
                 appStartingFutures.add(_appManagerReadyDependency);
                 appStartingFutures.add(rarsHaveStarted);
             }
-
-            if (containsCycles(app))
-                return;
 
             final Collection<ApplicationDependency> startAfterFutures = new LinkedList<ApplicationDependency>();
             for (String dependency : appConfig.getStartAfter()) {
@@ -1635,51 +1676,6 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
                 }
             });
             app.getStateMachine().configure(appConfig, appStartingFutures, startAfterFutures, stoppedFuture, startingFuture, installCalledFuture, startedFuture);
-
-        }
-
-        private class CycleException extends Exception {
-
-            /**  */
-            private static final long serialVersionUID = 3260293053577638179L;
-        }
-
-        @FFDCIgnore(CycleException.class)
-        private boolean containsCycles(NamedApplication app) {
-            LinkedList<NamedApplication> existing = new LinkedList<NamedApplication>();
-            existing.add(app);
-            try {
-                checkForCycles(app, existing);
-                return false;
-            } catch (CycleException ex) {
-                return true;
-            }
-        }
-
-        private void checkForCycles(NamedApplication app, LinkedList<NamedApplication> existing) throws CycleException {
-            for (String pid : app.getConfig().getStartAfter()) {
-                NamedApplication dependency = _appFromPid.get(pid);
-                if (dependency != null) {
-                    // Don't worry about dependency == null, either it was reported by config as invalid
-                    // or it hasn't arrived yet. The cycle will be found from some other application.
-
-                    if (existing.contains(dependency)) {
-                        String names = "";
-                        for (int i = 0; i < existing.size(); i++) {
-                            names = names + existing.get(i).getAppName() + " ";
-                        }
-                        Tr.error(_tc, "error.startAfter.cycle", names);
-                        throw new CycleException();
-                    }
-
-                    existing.add(dependency);
-
-                    checkForCycles(dependency, existing);
-
-                    existing.removeLast();
-
-                }
-            }
 
         }
 
@@ -1936,6 +1932,11 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         _appFromPid.clear();
         _blockedConfigFromPid.clear();
         _blockedPidsFromName.clear();
+
+        cleanCache(getCacheAdaptDir(), appPids);
+        cleanCache(getCacheOverlayDir(), appPids);
+        cleanCache(getCacheDir(), appPids);
+
         ApplicationStateCoordinator.setStoppingAppPids(appPids);
         for (NamedApplication app : _appsToShutdown) {
             uninstallApp(app);
@@ -1944,6 +1945,10 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
     }
 
     private ApplicationDependency uninstallApp(final NamedApplication appFromPid) {
+        return uninstallApp(appFromPid, false);
+    }
+
+    private ApplicationDependency uninstallApp(final NamedApplication appFromPid, boolean cleanCache) {
         final String oldAppName = appFromPid.getAppName();
         ApplicationDependency appRemoved = createDependency("resolves when app " + oldAppName + " is removed");
         // uninstall the currently running app with this pid
@@ -1966,6 +1971,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
                     if (_appFromName.containsKey(oldAppName) && _appFromName.get(oldAppName).equals(appFromPid)) {
                         _appFromName.remove(oldAppName);
                     }
+
                     ApplicationStateCoordinator.updateStartingAppStatus(removedAppPid, ApplicationStateCoordinator.AppStatus.REMOVED);
                     ApplicationStateCoordinator.updateStoppingAppStatus(removedAppPid, ApplicationStateCoordinator.AppStatus.REMOVED);
                     List<String> blockedPids = _blockedPidsFromName.get(oldAppName);
@@ -1974,6 +1980,15 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
                         ApplicationConfig blockedConfig = _blockedConfigFromPid.remove(blockedPid);
                         processUpdate(blockedPid, blockedConfig);
                     }
+                    if (cleanCache) {
+                        File f = new File(getCacheDir(), removedAppPid);
+                        cleanCacheDirectory(f);
+                        f = new File(getCacheAdaptDir(), removedAppPid);
+                        cleanCacheDirectory(f);
+                        f = new File(getCacheOverlayDir(), removedAppPid);
+                        cleanCacheDirectory(f);
+                    }
+
                 }
             }
 
@@ -1996,4 +2011,62 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         }
 
     }
+
+    private class CycleException extends Exception {
+
+        /**  */
+        private static final long serialVersionUID = 3260293053577638179L;
+    }
+
+    @FFDCIgnore(CycleException.class)
+    private boolean containsCycles(NamedApplication app) {
+        LinkedList<NamedApplication> existing = new LinkedList<NamedApplication>();
+        existing.add(app);
+        try {
+            checkForCycles(app, existing);
+            return false;
+        } catch (CycleException ex) {
+            return true;
+        }
+    }
+
+    private void checkForCycles() {
+        for (Map.Entry<String, NamedApplication> entry : _appFromPid.entrySet()) {
+            if (containsCycles(entry.getValue())) {
+                ApplicationStateCoordinator.updateStartingAppStatus(entry.getKey(), AppStatus.CYCLE);
+            }
+
+        }
+    }
+
+    private void checkForCycles(NamedApplication app, LinkedList<NamedApplication> existing) throws CycleException {
+        for (String pid : app.getConfig().getStartAfter()) {
+            NamedApplication dependency = _appFromPid.get(pid);
+            if (dependency != null) {
+                // Don't worry about dependency == null, either it was reported by config as invalid
+                // or it hasn't arrived yet. The cycle will be found from some other application.
+
+                if (existing.contains(dependency)) {
+                    if (reportedCycles.add(app.getAppName())) {
+                        String names = "";
+                        for (int i = 0; i < existing.size(); i++) {
+                            names = names + existing.get(i).getAppName() + " ";
+                            reportedCycles.add(existing.get(i).getAppName());
+                        }
+                        Tr.error(_tc, "error.startAfter.cycle", names);
+                    }
+                    throw new CycleException();
+                }
+
+                existing.add(dependency);
+
+                checkForCycles(dependency, existing);
+
+                existing.removeLast();
+
+            }
+        }
+
+    }
+
 }

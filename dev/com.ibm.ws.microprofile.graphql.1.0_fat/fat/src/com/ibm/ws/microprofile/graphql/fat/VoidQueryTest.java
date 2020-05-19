@@ -55,6 +55,6 @@ public class VoidQueryTest {
     
     @AfterClass
     public static void afterClass() throws Exception {
-        server.stopServer("CWWWC0001W", "SRVE0190E", "CWMGQ0001E");
+        server.stopServer("CWWWC0001W", "SRVE0190E", "CWMGQ0001E", "CWWWC0002W");
     }
 }

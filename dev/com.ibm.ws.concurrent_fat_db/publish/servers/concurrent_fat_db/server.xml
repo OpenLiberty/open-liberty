@@ -12,9 +12,9 @@
 
 	<featureManager>
 	    <feature>concurrent-2.0</feature>
-	    <feature>jdbc-4.1</feature>
-	    <feature>servlet-3.1</feature>
-	    <feature>componenttest-1.0</feature>
+	    <feature>jdbc-4.2</feature>
+	    <feature>servlet-5.0</feature>
+	    <feature>componenttest-2.0</feature>
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>

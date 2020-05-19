@@ -20,12 +20,11 @@ import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 @SuiteClasses({ AcmeClientTest.class, 
 	AcmeSimpleTest.class,
 	AcmeURISimpleTest.class,
-	AcmeBoulderSimpleTest.class,  
 	AcmeCaRestHandlerTest.class, 
-	AcmeValidityAndRenewTest.class
+	AcmeValidityAndRenewTest.class,
+	AcmeRevocationTest.class
 	 })
 public class FATSuite {
-
 
 	/*
 	 * This static block should be the first static initialization in this class
@@ -35,6 +34,5 @@ public class FATSuite {
 	static {
 		ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
 	}
-
 
 }

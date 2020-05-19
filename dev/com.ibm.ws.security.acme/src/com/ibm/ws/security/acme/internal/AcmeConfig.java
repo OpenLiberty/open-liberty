@@ -12,14 +12,11 @@
 package com.ibm.ws.security.acme.internal;
 
 import java.io.File;
-import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
@@ -48,10 +45,8 @@ public class AcmeConfig {
 	private List<Rdn> subjectDN = new ArrayList<Rdn>();
 
 	// Challenge and order related fields.
-	private Integer challengeRetries = 10;
-	private Long challengeRetryWaitMs = 5000L;
-	private Integer orderRetries = 10;
-	private Long orderRetryWaitMs = 3000L;
+	private Long challengePollTimeoutMs = AcmeConstants.CHALLENGE_POLL_DEFAULT;
+	private Long orderPollTimeoutMs = AcmeConstants.ORDER_POLL_DEFAULT;
 
 	// ACME account related fields.
 	private String accountKeyFile = null;
@@ -63,10 +58,16 @@ public class AcmeConfig {
 	private String trustStore = null;
 	private SerializableProtectedString trustStorePassword = null;
 	private String trustStoreType = null;
-	
+
 	// Renew configuration options
 	private Long renewBeforeExpirationMs = AcmeConstants.RENEW_DEFAULT_MS;
 	private boolean autoRenewOnExpiration = true;
+
+	// Revocation checker related fields.
+	private URI ocspResponderUrl = null;
+	private Boolean revocationCheckerEnabled = null;
+	private Boolean preferCRLs = false;
+	private Boolean disableFallback = false;
 
 	/**
 	 * Create a new {@link AcmeConfig} instance.
@@ -104,10 +105,10 @@ public class AcmeConfig {
 
 		setValidFor(getLongValue(properties, AcmeConstants.VALID_FOR));
 		processSubjectDN(getStringValue(properties, AcmeConstants.SUBJECT_DN));
-		setChallengeRetries(getIntegerValue(properties, AcmeConstants.CHALL_RETRIES));
-		setChallengeRetryWait(getLongValue(properties, AcmeConstants.CHALL_RETRY_WAIT));
-		setOrderRetries(getIntegerValue(properties, AcmeConstants.ORDER_RETRIES));
-		setOrderRetryWait(getLongValue(properties, AcmeConstants.ORDER_RETRY_WAIT));
+		Long temp = getLongValue(properties, AcmeConstants.CHALL_POLL_TIMEOUT);
+		challengePollTimeoutMs = Math.max(0, (temp == null) ? AcmeConstants.CHALLENGE_POLL_DEFAULT : temp);
+		temp = getLongValue(properties, AcmeConstants.ORDER_POLL_TIMEOUT);
+		orderPollTimeoutMs = Math.max(0, (temp == null) ? AcmeConstants.ORDER_POLL_DEFAULT : temp);
 		accountContacts = getStringList(properties, AcmeConstants.ACCOUNT_CONTACT);
 
 		/*
@@ -132,8 +133,51 @@ public class AcmeConfig {
 					AcmeConstants.TRANSPORT_TRUST_STORE_PASSWORD);
 			trustStoreType = getStringValue(transportProps, AcmeConstants.TRANSPORT_TRUST_STORE_TYPE);
 		}
-		
+
 		setRenewBeforeExpirationMs(getLongValue(properties, AcmeConstants.RENEW_BEFORE_EXPIRATION), true);
+
+		/*
+		 * Get revocation checker configuration.
+		 */
+		List<Map<String, Object>> revocationChecker = Nester.nest(AcmeConstants.REVOCATION_CHECKER, properties);
+		if (!revocationChecker.isEmpty()) {
+			Map<String, Object> revocationProps = revocationChecker.get(0);
+
+			/*
+			 * The responder URL must be a valid URI.
+			 */
+			String url = getStringValue(revocationProps, AcmeConstants.REVOCATION_OCSP_RESPONDER_URL);
+			if (url != null) {
+				try {
+					ocspResponderUrl = URI.create(url);
+				} catch (IllegalArgumentException e) {
+					throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2062E", url));
+				}
+			}
+
+			revocationCheckerEnabled = getBooleanValue(revocationProps, AcmeConstants.REVOCATION_CHECKER_ENABLED);
+			preferCRLs = getBooleanValue(revocationProps, AcmeConstants.REVOCATION_PREFER_CRLS);
+			disableFallback = getBooleanValue(revocationProps, AcmeConstants.REVOCATION_DISABLE_FALLBACK);
+		}
+	}
+
+	/**
+	 * Get a {@link Boolean} value from the config properties.
+	 * 
+	 * @param configProps
+	 *            The configuration properties passed in by declarative
+	 *            services.
+	 * @param property
+	 *            The property to lookup.
+	 * @return The {@link Boolean} value, or null if it doesn't exist.
+	 */
+	@Trivial
+	private static Boolean getBooleanValue(Map<String, Object> configProps, String property) {
+		Object value = configProps.get(property);
+		if (value == null) {
+			return null;
+		}
+		return (Boolean) value;
 	}
 
 	/**
@@ -262,6 +306,13 @@ public class AcmeConfig {
 	}
 
 	/**
+	 * @return the disableFallback
+	 */
+	public Boolean isDisableFallback() {
+		return (disableFallback == null) ? false : disableFallback;
+	}
+
+	/**
 	 * @return the domains
 	 */
 	public List<String> getDomains() {
@@ -276,31 +327,31 @@ public class AcmeConfig {
 	}
 
 	/**
-	 * @return the challengeRetries
+	 * @return the challengePollTimeoutMs
 	 */
-	public Integer getChallengeRetries() {
-		return challengeRetries;
+	public Long getChallengePollTimeoutMs() {
+		return challengePollTimeoutMs;
 	}
 
 	/**
-	 * @return the challengeRetryWaitMs
+	 * @return the ocspResponderUrl
 	 */
-	public Long getChallengeRetryWaitMs() {
-		return challengeRetryWaitMs;
+	public URI getOcspResponderUrl() {
+		return ocspResponderUrl;
 	}
 
 	/**
-	 * @return the orderRetries
+	 * @return the orderPollTimeoutMs
 	 */
-	public Integer getOrderRetries() {
-		return orderRetries;
+	public Long getOrderPollTimeoutMs() {
+		return orderPollTimeoutMs;
 	}
 
 	/**
-	 * @return the orderRetryWaitMs
+	 * @return the preferCRLs
 	 */
-	public Long getOrderRetryWaitMs() {
-		return orderRetryWaitMs;
+	public Boolean isPreferCrls() {
+		return (preferCRLs == null) ? false : preferCRLs;
 	}
 
 	/**
@@ -322,6 +373,13 @@ public class AcmeConfig {
 	 */
 	public String getDomainKeyFile() {
 		return domainKeyFile;
+	}
+
+	/**
+	 * @return the revocationCheckerEnabled
+	 */
+	public Boolean isRevocationCheckerEnabled() {
+		return (revocationCheckerEnabled == null) ? true : revocationCheckerEnabled;
 	}
 
 	/**
@@ -448,9 +506,10 @@ public class AcmeConfig {
 			}
 		}
 	}
-	
+
 	/**
-	 * Set the amount of time before certificate expiration to renew the certificate
+	 * Set the amount of time before certificate expiration to renew the
+	 * certificate
 	 * 
 	 * @param retries
 	 *            The number of time to try to update a challenge.
@@ -459,78 +518,36 @@ public class AcmeConfig {
 	protected void setRenewBeforeExpirationMs(Long ms, boolean printWarning) {
 		autoRenewOnExpiration = true;
 		if (ms != null) {
-			if (ms <= 0) { // disable auto renew
+			if (ms <= 0) {
+				/*
+				 * disable auto renew
+				 */
 				this.renewBeforeExpirationMs = 0L;
 				autoRenewOnExpiration = false;
 				if (tc.isDebugEnabled()) {
-					Tr.debug(tc, "Auto renewal of the certificate is disabled, renewBeforeExpirationMs was configured to " + ms);
+					Tr.debug(tc,
+							"Auto renewal of the certificate is disabled, renewBeforeExpirationMs was configured to "
+									+ ms);
 				}
-			} else if (ms < AcmeConstants.RENEW_CERT_MIN) { // too low of a timeout, reset to the min rewew allowed
+			} else if (ms < AcmeConstants.RENEW_CERT_MIN) {
+				/*
+				 * too low of a timeout, reset to the min rewew allowed
+				 */
 				this.renewBeforeExpirationMs = AcmeConstants.RENEW_CERT_MIN;
-				Tr.warning(tc, "CWPKI2051W", ms  +"ms", AcmeConstants.RENEW_CERT_MIN +"ms");
-			} else { 
+				Tr.warning(tc, "CWPKI2051W", ms + "ms", AcmeConstants.RENEW_CERT_MIN + "ms");
+			} else {
 				this.renewBeforeExpirationMs = ms;
-				
+
 				if (printWarning) {
-					if (ms < AcmeConstants.RENEW_CERT_MIN_WARN_LEVEL) { // we have a really low time configured. Allow it, but print a general warning.
-						Tr.warning(tc, "CWPKI2055W", renewBeforeExpirationMs +"ms");
+					if (ms < AcmeConstants.RENEW_CERT_MIN_WARN_LEVEL) {
+						/*
+						 * we have a really low time configured. Allow it, but
+						 * print a general warning.
+						 */
+						Tr.warning(tc, "CWPKI2055W", renewBeforeExpirationMs + "ms");
 					}
 				}
 			}
-		}
-	}
-
-	/**
-	 * Set the number of times to try to update a challenge before failing.
-	 * 
-	 * @param retries
-	 *            The number of time to try to update a challenge.
-	 */
-	@Trivial
-	private void setChallengeRetries(Integer retries) {
-		if (retries != null && retries >= 0) {
-			this.challengeRetries = retries;
-		}
-	}
-
-	/**
-	 * Set the amount of time, in milliseconds, to wait to retry updating the
-	 * challenge.
-	 * 
-	 * @param retryWaitMs
-	 *            The time to wait before re-trying to update a challenge.
-	 */
-	@Trivial
-	private void setChallengeRetryWait(Long retryWaitMs) {
-		if (retryWaitMs != null && retryWaitMs >= 0) {
-			this.challengeRetryWaitMs = retryWaitMs;
-		}
-	}
-
-	/**
-	 * Set the number of times to try to update an order before failing.
-	 * 
-	 * @param retries
-	 *            The number of time to try to update an order.
-	 */
-	@Trivial
-	private void setOrderRetries(Integer retries) {
-		if (retries != null && retries >= 0) {
-			this.orderRetries = retries;
-		}
-	}
-
-	/**
-	 * Set the amount of time, in milliseconds, to wait to retry updating the
-	 * order.
-	 * 
-	 * @param retryWaitMs
-	 *            The time to wait before re-trying to update an order.
-	 */
-	@Trivial
-	private void setOrderRetryWait(Long retryWaitMs) {
-		if (retryWaitMs != null && retryWaitMs >= 0) {
-			this.orderRetryWaitMs = retryWaitMs;
 		}
 	}
 
@@ -547,14 +564,14 @@ public class AcmeConfig {
 			this.validForMs = validForMs;
 		}
 	}
-	
+
 	/**
 	 * @return the renewBeforeExpirationMs
 	 */
 	public Long getRenewBeforeExpirationMs() {
 		return renewBeforeExpirationMs;
 	}
-	
+
 	/**
 	 * If renewBeforeExpiration is set to zero or less, automatic renewal on
 	 * certificate expiration is disabled.

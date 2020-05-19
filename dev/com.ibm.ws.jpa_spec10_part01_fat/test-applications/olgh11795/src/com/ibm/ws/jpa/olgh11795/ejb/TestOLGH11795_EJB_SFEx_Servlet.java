@@ -41,11 +41,6 @@ public class TestOLGH11795_EJB_SFEx_Servlet extends EJBTestVehicleServlet {
         final String testMethod = "testJoinColumnWithSameDuplicateName";
         final String testResource = "test-jpa-resource-cmex";
 
-        // TODO: Disable this test for JPA 2.2 testing. But will be fixed when ECL 2.7 is updated
-        if (isUsingJPA22Feature()) {
-            return;
-        }
-
         executeTest(testName, testMethod, testResource);
     }
 }
