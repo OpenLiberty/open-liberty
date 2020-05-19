@@ -43,14 +43,11 @@ public class BaseMetrics {
     public MBeanServer mbs;
     protected static Set<String> gcObjectNames = new HashSet<String>();
 
-    public static SharedMetricRegistries SHARED_METRIC_REGISTRY;
+    private static SharedMetricRegistries SHARED_METRIC_REGISTRY;
 
     @Reference
     public void setSharedMetricRegistries(SharedMetricRegistries sharedMetricRegistry) {
         BaseMetrics.SHARED_METRIC_REGISTRY = sharedMetricRegistry;
-    }
-
-    public BaseMetrics() {
     }
 
     @Activate
