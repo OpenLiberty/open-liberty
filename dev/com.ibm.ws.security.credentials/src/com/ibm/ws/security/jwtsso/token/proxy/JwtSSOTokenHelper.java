@@ -191,7 +191,7 @@ public class JwtSSOTokenHelper {
         if (jwtSSOTokenProxyRef.getService() != null) {
             return jwtSSOTokenProxyRef.getService().isDisableJwtCookie();
         }
-        return true;
+        return false;
 
     }
 }
