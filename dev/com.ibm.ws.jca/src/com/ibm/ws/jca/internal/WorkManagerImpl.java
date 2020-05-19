@@ -14,7 +14,6 @@ import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
 
 import javax.resource.spi.UnavailableException;
 import javax.resource.spi.work.ExecutionContext;
@@ -28,7 +27,7 @@ import javax.resource.spi.work.WorkRejectedException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.threading.RunnableWithContext;
+import com.ibm.ws.threading.CallableWithContext;
 
 /**
  * Implementation of J2C WorkManager for WebSphere Application Server
@@ -166,7 +165,7 @@ public final class WorkManagerImpl implements WorkManager {
 
             WorkProxy workProxy = new WorkProxy(work, startTimeout, execContext, workListener, bootstrapContext, runningWork, true);
 
-            Future f = bootstrapContext.execSvc.submit((RunnableWithContext)workProxy);
+            Future f = bootstrapContext.execSvc.submit((CallableWithContext<Void>) workProxy);
 
             if (futures.add(f) && futures.size() % FUTURE_PURGE_INTERVAL == 0)
                 purgeFutures();
@@ -246,10 +245,9 @@ public final class WorkManagerImpl implements WorkManager {
 
             WorkProxy workProxy = new WorkProxy(work, startTimeout, execContext, workListener, bootstrapContext, runningWork, true);
 
-            FutureTask<Void> futureTask = new FutureTask<Void>(workProxy);
-            bootstrapContext.execSvc.executeGlobal(futureTask);
+            Future f = bootstrapContext.execSvc.submit((CallableWithContext<Void>) workProxy);
 
-            if (futures.add(futureTask) && futures.size() % FUTURE_PURGE_INTERVAL == 0)
+            if (futures.add(f) && futures.size() % FUTURE_PURGE_INTERVAL == 0)
                 purgeFutures();
         } catch (WorkException ex) {
             throw ex;
