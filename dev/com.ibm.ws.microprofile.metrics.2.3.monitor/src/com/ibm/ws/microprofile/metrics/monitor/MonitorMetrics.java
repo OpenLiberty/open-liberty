@@ -143,14 +143,20 @@ public class MonitorMetrics {
 		for (String subString : objectName.split(",")) {
 			subString = subString.trim();
 			
-			//Example of expected Mbean property name=ApplicationName/fully.qualified.class.name/methodSignature(java.lang.String)
 			if (subString.contains("name=")) {
 				mbeanNameProperty = subString.split("/");
-				if (mbeanNameProperty.length > 3) {
+				//Expected Mbean property in EAR files name=(<application_name>)/<module_name>/<fully_qualified_class_name>/<method_signature>
+				if (mbeanNameProperty.length == 4) {
 					mbeanNameProperty = Arrays.copyOfRange(mbeanNameProperty,mbeanNameProperty.length-3,mbeanNameProperty.length);
-				} else {
+				
+				}
+				//Example of expected Mbean property in WAR files name=<resolved_application_name>/<fully_qualified_class_name>/<method_signature>
+				else if (mbeanNameProperty.length == 3) {
 					mbeanNameProperty[0] = mbeanNameProperty[0].substring(mbeanNameProperty[0].indexOf("=") + 1,
 							mbeanNameProperty[0].length());
+
+				} else {
+		            throw new IllegalArgumentException("Mbean Name Property should be of length 3 or 4");
 
 				}
 
