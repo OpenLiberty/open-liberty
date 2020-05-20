@@ -1,0 +1,118 @@
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMC
+#COMPONENTNAMEFOR CWMMC MicroProfile OpenAPI API
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+validationMessage=Messaggio: {0}, ubicazione: {1}
+
+callbackURLTemplateEmpty=Il template URL dell'oggetto Callback \u00e8 vuoto e non \u00e8 un URL valido
+callbackInvalidSubstitutionVariables=L''oggetto Callback contiene variabili di sostituzione non valide: \"{0}\"
+callbackMustBeRuntimeExpression=L''oggetto Callback deve contenere un''espressione di runtime valida come definita nella specifica OpenAPI. Il valore \"{0}\" specificato per l''espressione runtime non \u00e8 valido
+callbackInvalidURL=L''oggetto Callback deve contenere un URL valido. Il valore \"{0}\" specificato per l''URL non \u00e8 valido
+callbackInvalidPathItem=L''oggetto Callback deve contenere un elemento di percorso valido. Il valore dell''elemento percorso associato alla chiave \"{0}\" non \u00e8 un valore valido
+
+contactInvalidURL=L''oggetto Contatto deve contenere un URL valido. Il valore \"{0}\" specificato per l''URL non \u00e8 valido
+contactInvalidEmail=L''oggetto Contatto deve contenere un indirizzo email valido. Il valore \"{0}\" specificato per l''indirizzo email non \u00e8 valido
+
+exampleOnlyValueOrExternalValue=L''oggetto Esempio \"{0}\" specifica sia il campo \"value\" che \"externalValue\". Specificare solo un campo
+
+externalDocumentationInvalidURL=L''oggetto Documentazione esterna deve contenere un URL valido. Il valore \"{0}\" specificato per l''URL non \u00e8 valido
+
+infoTermsOfServiceInvalidURL=L''oggetto Info deve contenere un URL valido. Il valore \"{0}\" specificato per il campo \"termsOfService\" non \u00e8 un URL valido
+invalidUrl=L''oggetto \"{0}\" deve contenere un URL valido. Il valore \"{1}\" specificato per l''URL non \u00e8 valido
+invalidUri=Il valore \"{0}\" specificato per l''URI non \u00e8 valido. Il valore deve essere sotto forma di un URI assoluto
+
+invalidExtensionName=Il nome dell''estensione \"{0}\" deve iniziare con \"x-\"
+
+headerExampleOrExamples=L''oggetto Intestazione \"{0}\" non pu\u00f2 avere entrambi i campi \"esempi\" e \"esempio\". Specificare solo un campo
+headerSchemaAndContent=L''oggetto Intestazione \"{0}\" deve contenere una propriet\u00e0 schema o una propriet\u00e0 contenuto, ma non entrambe.
+headerSchemaOrContent=L''oggetto Intestazione \"{0}\" deve contenere una propriet\u00e0 schema o una propriet\u00e0 contenuto.
+headerContentMap=L''associazione \"contenuto\" nell''oggetto Intestazione \"{0}\" deve contenere solo una voce
+
+licenseInvalidURL=L''oggetto Licenza deve contenere un URL valido. Il valore \"{0}\" specificato per l''URL non \u00e8 valido
+
+linkOperationRefInvalidOrMissing=L''oggetto Link \"{0}\" ha specificato un campo relativo \"operationRef\" con valore \"{1}\" che punta a un oggetto Operazione non valido
+linkOperationRefAndId=L''oggetto Link \"{0}\" definisce il campo \"operationRef\" e il campo \"operationId\",  che si escludono a vicenda
+linkOperationIdInvalid=L''oggetto Link ha specificato un campo \"operationId\" con valore \"{0}\"  che punta a un oggetto Operazione che non esiste
+linkMustSpecifyOperationRefOrId=L''oggetto Link \"{0}\" deve essere identificato utilizzando \"operationRef\" o \"operationId\"
+
+mediaTypeExampleOrExamples=L'oggetto MediaType non pu\u00f2 avere entrambi i campi \"esempi\" e \"esempio\". Specificare solo un campo
+mediaTypeEncodingProperty=La propriet\u00e0 di codifica \"{0}\" specificata nell''oggetto MediaType non esiste nello schema come propriet\u00e0.
+mediaTypeEmptySchema=La propriet\u00e0 di codifica specificata non pu\u00f2 essere convalidata perch\u00e9 la propriet\u00e0 schema corrispondente \u00e8 null
+
+oAuthFlowInvalidURL=L''oggetto Flusso OAuth deve contenere un URL valido. Il valore \"{0}\" specificato per l''URL non \u00e8 valido
+
+nonApplicableField=Il campo \"{0}\" non \u00e8 applicabile per \"{1}\" di tipo \"{2}\"
+nonApplicableFieldWithValue=Il campo \"{0}\" con valore \"{1}\" non \u00e8 applicabile per \"{2}\" di tipo \"{3}\"
+
+nullOrEmptyKeyInMap=L'associazione contiene una chiave non valida. Un'associazione non dovrebbe avere chiavi vuote o null
+nullValueInMap=L''associazione specifica un valore non valido per la chiave \"{0}\". Un''associazione non dovrebbe avere valori null
+
+openAPIVersionInvalid=L''oggetto OpenAPI deve contenere una versione della specifica OpenAPI valida. Il valore \"{0}\" specificato per la versione della specifica OpenAPI non \u00e8 valido
+openAPITagIsNotUnique=L''oggetto OpenAPI deve contenere nomi tag univoci. Il nome tag \"{0}\" non \u00e8 univoco
+
+operationIdsMustBeUnique=Trovato pi\u00f9 di un oggetto Operazione con valore \"{0}\" per il campo \"operationId\". \"operationId\" deve essere univoco tra tutte le operazioni descritte nell''API
+
+parameterInFieldInvalid=Il valore \"{0}\" specificato per il campo \"in\" dell''oggetto Parametro \"{1}\" non \u00e8 valido. I valori possibili sono \"query\", \"header\", \"path\" o \"cookie\"
+parameterExampleOrExamples=L''oggetto Parametro \"{0}\" specifica sia un campo \"esempio\" che un campo \"esempi\". Specificare solo un campo
+parameterSchemaOrContent=L''oggetto Parametro \"{0}\" non contiene una propriet\u00e0 \"schema\" o una propriet\u00e0 \"contenuto\"
+parameterSchemaAndContent=L''oggetto Parametro \"{0}\" non deve contenere una propriet\u00e0 \"schema\" e una propriet\u00e0 \"contenuto\"
+parameterContentMapMustNotBeEmpty=L''associazione \"contenuto\" nell''oggetto Parametro \"{0}\" deve contenere solo una voce
+
+pathItemInvalidRef=L''oggetto Elemento percorso ha un valore $ref \"{0}\" non valido per l''elemento del percorso \"{1}\". \u00c8 necessario che un riferimento a un elemento percorso sia esterno
+pathItemRequiredField=L''oggetto Elemento percorso deve contenere un percorso valido. Il parametro percorso \"{0}\" dal percorso \"{1}\" non contiene il campo \"required\" oppure il relativo valore non \u00e8 \"true\"
+pathItemDuplicate=L''oggetto Elemento percorso deve contenere un percorso valido. Il percorso \"{0}\" definisce un parametro \"{1}\" duplicato al livello del percorso: \"{2}\"
+pathItemParameterNotDeclaredSingle=L''oggetto Elemento percorso deve contenere un percorso valido. Il percorso \"{0}\" definisce il parametro di percorso \"{1}\" che non \u00e8 dichiarato
+pathItemParameterNotDeclaredMultiple=L''oggetto Elemento percorso deve contenere un percorso valido. Il percorso \"{0}\" definisce parametri del percorso \"{1}\" non dichiarati: \"{2}\"
+pathItemOperationRequiredField=L''oggetto Elemento percorso deve contenere un percorso valido. Il percorso del parametro \"{0}\" dall''operazione \"{1}\" del percorso \"{2}\" non contiene il campo \"required\" oppure il relativo valore non \u00e8 \"true\"
+pathItemOperationDuplicate=L''oggetto Elemento percorso deve contenere un percorso valido. L''operazione \"{0}\" dal percorso \"{1}\" definisce un parametro \"{2}\" duplicato: \"{3}\"
+pathItemOperationNullParameter=L''oggetto Elemento percorso deve contenere un percorso valido. L''elenco dei parametri dall''operazione \"{0}\" dal percorso \"{1}\" contiene un parametro null
+pathItemOperationParameterNotDeclaredSingle=L''oggetto Elemento percorso deve contenere un percorso valido. L''operazione \"{0}\" dal percorso \"{1}\" definisce un parametro di percorso non dichiarato: \"{2}\"
+pathItemOperationParameterNotDeclaredMultiple=L''oggetto Elemento percorso deve contenere un percorso valido. L''operazione \"{0}\" dal percorso \"{1}\" definisce \"{2}\" parametri del percorso non dichiarati: \"{3}\"
+pathItemOperationNoPathParameterDeclared=L''oggetto Elemento percorso deve contenere un percorso valido. L''operazione \"{0}\" del percorso \"{1}\" non definisce un parametro di percorso dichiarato: \"{2}\"
+pathItemInvalidFormat=L''oggetto Elemento percorso deve contenere un percorso valido. Il formato del percorso \"{0}\" non \u00e8 valido
+
+pathsRequiresSlash=L''oggetto Percorsi contiene un percorso non valido. Il valore percorso \"{0}\" non inizia con un carattere barra
+
+referenceExternalOrExtension=Il valore \"{0}\" \u00e8 un riferimento esterno o un''estensione. La convalida non \u00e8 disponibile
+referenceNotPartOfModel=Il valore di riferimento \"{0}\" non \u00e8 definito nell''oggetto Componenti
+referenceNotValid=Il valore di riferimento \"{0}\" non \u00e8 valido
+referenceNotValidFormat=Il valore di riferimento \"{0}\" non \u00e8 in un formato valido
+referenceNull=Il valore di riferimento \u00e8 null
+referenceToObjectInvalid=Il valore \"{0}\" \u00e8 un riferimento non valido
+
+responseMustContainOneCode=L'oggetto Risposte deve contenere almeno un codice di risposta.
+responseShouldContainSuccess=Affinch\u00e9 l'operazione abbia esito positivo, l'oggetto Risposte deve contenere almeno un codice di risposta
+
+securityRequirementNotDeclared=Il nome \"{0}\" fornito per l''oggetto Requisito di sicurezza non corrisponde a uno schema di sicurezza dichiarato.
+securityRequirementScopeNamesRequired=L''oggetto Requisito di sicurezza \"{0}\" deve essere un elenco di nomi ambito richiesti per l''esecuzione
+securityRequirementFieldNotEmpty=Il campo \"{0}\" dell''oggetto Requisito di sicurezza deve essere vuoto, invece \u00e8: \"{1}\"
+securityRequirementIsEmpty=L'oggetto Requisito di sicurezza non deve essere vuoto
+
+securitySchemeInFieldInvalid=L''oggetto Schema di sicurezza \"{0}\" non \u00e8 valido. Il valore del campo \"in\" \u00e8 \"{1}\", ma deve essere uno tra (\"query\", \"header\", \"cookie\")
+securitySchemeInvalidURL=L''oggetto Schema di sicurezza deve contenere un URL valido. Il valore \"{0}\" specificato per l''URL non \u00e8 valido
+
+schemaTypeArrayNullItems=L'oggetto Schema di tipo \"array\" deve avere la propriet\u00e0 \"items\" definita
+schemaReadOnlyOrWriteOnly=L'oggetto Schema non deve avere entrambi i campi \"readOnly\" e \"writeOnly\" impostati su true
+schemaMultipleOfLessThanOne=L'oggetto Schema deve eavere la propriet\u00e0 \"multipleOf\" impostata su un numero necessariamente maggiore di zero
+schemaPropertyLessThanZero=La propriet\u00e0 \"{0}\" dell''oggetto Schema deve essere  maggiore o uguale a zero
+schemaTypeDoesNotMatchProperty=La propriet\u00e0 \"{0}\" non \u00e8 appropriata per l''oggetto Schema di tipo \"{1}\"
+
+keyNotARegex=Il nome \"{0}\" dichiarato nell''oggetto Componente non \u00e8 valido. Deve corrispondere all''espressione regolare definita dalla specifica OpenAPI
+
+serverVariableNotDefined=La variabile \"{0}\" nell''oggetto Server non \u00e8 definita
+serverInvalidURL=L''oggetto Server deve contenere un URL valido. Il valore \"{0}\" specificato per l''URL non \u00e8 valido
+
+requiredFieldMissing=Il campo obbligatorio \"{0}\" manca o \u00e8 impostato su un valore non valido

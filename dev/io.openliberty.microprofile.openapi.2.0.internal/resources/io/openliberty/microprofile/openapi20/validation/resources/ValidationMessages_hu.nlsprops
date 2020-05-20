@@ -1,0 +1,118 @@
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMC
+#COMPONENTNAMEFOR CWMMC MicroProfile OpenAPI API
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+validationMessage=\u00dczenet: {0}, Hely: {1}
+
+callbackURLTemplateEmpty=A Callback objektum URL sablonja \u00fcres, vagy nem egy \u00e9rv\u00e9nyes URL c\u00edm
+callbackInvalidSubstitutionVariables=A Callback objektum \u00e9rv\u00e9nytelen helyettes\u00edt\u0151 v\u00e1ltoz\u00f3kat tartalmaz: \"{0}\"
+callbackMustBeRuntimeExpression=A Callback objektumnak \u00e9rv\u00e9nyes fut\u00e1si kifejez\u00e9st kell tartalmaznia az OpenAPI specifik\u00e1ci\u00f3ban meghat\u00e1rozott form\u00e1ban. A fut\u00e1si k\u00f6rnyezet kifejez\u00e9shez megadott \"{0}\" \u00e9rt\u00e9k \u00e9rv\u00e9nytelen
+callbackInvalidURL=A Callback objektumnak \u00e9rv\u00e9nyes URL c\u00edmet kell tartalmaznia. Az URL c\u00edmhez megadott \"{0}\" \u00e9rt\u00e9k \u00e9rv\u00e9nytelen
+callbackInvalidPathItem=A Callback objektumnak \u00e9rv\u00e9nyes \u00fatvonal elemet kell tartalmaznia. A(z) \"{0}\" kulcshoz t\u00e1rs\u00edtott \u00fatvonal elem \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen
+
+contactInvalidURL=A Contact objektumnak \u00e9rv\u00e9nyes URL c\u00edmet kell tartalmaznia. Az URL c\u00edmhez megadott \"{0}\" \u00e9rt\u00e9k \u00e9rv\u00e9nytelen
+contactInvalidEmail=A Contact objektumnak \u00e9rv\u00e9nyes e-mail c\u00edmet kell tartalmaznia. Az e-mail c\u00edmhez megadott \"{0}\" \u00e9rt\u00e9k \u00e9rv\u00e9nytelen
+
+exampleOnlyValueOrExternalValue=A(z) \"{0}\" Example objektum a \"value\" \u00e9s az \"externalValue\" mez\u0151t is megadja. Csak egyetlen mez\u0151t adjon meg
+
+externalDocumentationInvalidURL=Az External Documentation objektumnak \u00e9rv\u00e9nyes URL c\u00edmet kell tartalmaznia. Az URL c\u00edmhez megadott \"{0}\" \u00e9rt\u00e9k \u00e9rv\u00e9nytelen
+
+infoTermsOfServiceInvalidURL=Az Info objektumnak \u00e9rv\u00e9nyes URL c\u00edmet kell tartalmaznia. A \"termsOfService\" mez\u0151h\u00f6z megadott \"{0}\" \u00e9rt\u00e9k nem \u00e9rv\u00e9nyes URL
+invalidUrl=A(z) \"{0}\" objektumnak \u00e9rv\u00e9nyes URL c\u00edmet kell tartalmaznia. Az URL c\u00edmhez megadott \"{1}\" \u00e9rt\u00e9k \u00e9rv\u00e9nytelen
+invalidUri=Az URI azonos\u00edt\u00f3hoz megadott \"{0}\" \u00e9rt\u00e9k \u00e9rv\u00e9nytelen. Az \u00e9rt\u00e9knek abszol\u00fat URI form\u00e1tum\u00fanak kell lennie
+
+invalidExtensionName=A(z) \"{0}\" kiterjeszt\u00e9s nev\u00e9nek \"x-\" el\u0151taggal kell kezd\u0151dnie
+
+headerExampleOrExamples=A(z) \"{0}\" Header objektum nem tartalmazhat egyszerre \"examples\" \u00e9s \"example\" mez\u0151ket. Csak egyetlen mez\u0151t adjon meg
+headerSchemaAndContent=A(z) \"{0}\" Header objektumnak tartalmaznia kell egy schema tulajdons\u00e1got vagy egy content tulajdons\u00e1got, de nem tartalmazhatja mindkett\u0151t
+headerSchemaOrContent=A(z) \"{0}\" Header objektumnak vagy egy schema tulajdons\u00e1got, vagy egy content tulajdons\u00e1got kell tartalmaznia
+headerContentMap=A \"content\" t\u00e9rk\u00e9p a(z) \"{0}\" Header objektumon bel\u00fcl csak egy bejegyz\u00e9st tartalmazhat
+
+licenseInvalidURL=A License objektumnak \u00e9rv\u00e9nyes URL c\u00edmet kell tartalmaznia. Az URL c\u00edmhez megadott \"{0}\" \u00e9rt\u00e9k \u00e9rv\u00e9nytelen
+
+linkOperationRefInvalidOrMissing=A(z) \"{0}\" Link objektum egy relat\u00edv \"operationRef\" mez\u0151t adott meg \"{1}\" \u00e9rt\u00e9kkel, amely egy \u00e9rv\u00e9nytelen Operation objektumra mutat
+linkOperationRefAndId=A(z) \"{0}\" Link objektum meghat\u00e1roz egy \"operationRef\" mez\u0151t \u00e9s egy \"operationId\" mez\u0151t, amelyek egym\u00e1st k\u00f6lcs\u00f6n\u00f6sen kiz\u00e1rj\u00e1k
+linkOperationIdInvalid=A Link objektum megadott egy \"operationId\" mez\u0151t \"{0}\" \u00e9rt\u00e9kkel, amely egy nem l\u00e9tez\u0151 Operation objektumra mutat
+linkMustSpecifyOperationRefOrId=A(z) \"{0}\" Link objektumot vagy egy \"operationRef\" vagy egy \"operationId\" mez\u0151vel kell azonos\u00edtani
+
+mediaTypeExampleOrExamples=A MediaType objektum nem tartalmazhatja az \"examples\" \u00e9s az \"example\" mez\u0151t is. Csak egyetlen mez\u0151t adjon meg
+mediaTypeEncodingProperty=A MediaType objektumban megadott \"{0}\" k\u00f3dol\u00e1si tulajdons\u00e1g nem l\u00e9tezik a s\u00e9m\u00e1ban tulajdons\u00e1gk\u00e9nt
+mediaTypeEmptySchema=A megadott k\u00f3dol\u00e1si tulajdons\u00e1g nem \u00e9rv\u00e9nyes\u00edthet\u0151, mivel a megfelel\u0151 s\u00e9matulajdons\u00e1g null\u00e9rt\u00e9k\u0171
+
+oAuthFlowInvalidURL=Az OAuth objektumnak \u00e9rv\u00e9nyes URL c\u00edmet kell tartalmaznia. Az URL c\u00edmhez megadott \"{0}\" \u00e9rt\u00e9k \u00e9rv\u00e9nytelen
+
+nonApplicableField=A(z) \"{0}\" mez\u0151 nem alkalmazhat\u00f3 a(z) \"{2}\" t\u00edpus\u00fa \"{1}\" eset\u00e9n
+nonApplicableFieldWithValue=A(z) \"{1}\" \u00e9rt\u00e9k\u0171 \"{0}\" mez\u0151 nem alkalmazhat\u00f3 a(z) \"{3}\" t\u00edpus\u00fa \"{2}\" eset\u00e9n
+
+nullOrEmptyKeyInMap=A t\u00e9rk\u00e9p egy \u00e9rv\u00e9nytelen kulcsot tartalmaz. Egy t\u00e9rk\u00e9p nem tartalmazhat \u00fcres vagy null kulcsokat
+nullValueInMap=A t\u00e9rk\u00e9p egy \u00e9rv\u00e9nytelen \u00e9rt\u00e9ket ad meg a(z) \"{0}\" kulcshoz. Egy t\u00e9rk\u00e9p nem tartalmazhat null\u00e9rt\u00e9keket
+
+openAPIVersionInvalid=Az OpenAPI objektumnak \u00e9rv\u00e9nyes OpenAPI specifik\u00e1ci\u00f3v\u00e1ltozatot kell tartalmaznia. Az OpenAPI specifik\u00e1ci\u00f3v\u00e1ltozathoz megadott \"{0}\" \u00e9rt\u00e9k \u00e9rv\u00e9nytelen
+openAPITagIsNotUnique=Az OpenAPI objektumnak egyedi c\u00edmkeneveket kell tartalmaznia. A(z) \"{0}\" c\u00edmken\u00e9v nem egyedi
+
+operationIdsMustBeUnique=T\u00f6bb olyan Operation objektum tal\u00e1lhat\u00f3, amelyn\u00e9l az \"operationId\" mez\u0151 \u00e9rt\u00e9ke \"{0}\". Az \"operationId\" mez\u0151nek egyedinek kell lennie az API-ban le\u00edrt minden m\u0171velet tekintet\u00e9ben
+
+parameterInFieldInvalid=A(z) \"{1}\" Parameter objektum \"in\" mez\u0151j\u00e9hez megadott \"{0}\" \u00e9rt\u00e9k \u00e9rv\u00e9nytelen. A lehets\u00e9ges \u00e9rt\u00e9kek: \"query\", \"header\", \"path\" vagy \"cookie\"
+parameterExampleOrExamples=A(z) \"{0}\" Parameter objektum egyar\u00e1nt megad egy \"example\" mez\u0151t \u00e9s egy \"examples\" mez\u0151t. Csak egyetlen mez\u0151t adjon meg
+parameterSchemaOrContent=A(z) \"{0}\" Parameter objektum nem tartalmaz egy \"schema\" tulajdons\u00e1got vagy egy \"content\" tulajdons\u00e1got
+parameterSchemaAndContent=A(z) \"{0}\" Parameter objektumnak tartalmaznia kell egy \"schema\" tulajdons\u00e1got vagy egy \"content\" tulajdons\u00e1got
+parameterContentMapMustNotBeEmpty=A \"content\" t\u00e9rk\u00e9p a(z) \"{0}\" Parameter objektumon bel\u00fcl csak egy bejegyz\u00e9st tartalmazhat
+
+pathItemInvalidRef=A Path Item objektum \u00e9rv\u00e9nytelen $ref \"{0}\" \u00e9rt\u00e9ket tartalmaz a(z) \"{1}\" \u00fatvonal elem eset\u00e9ben. Az \u00fatvonal elem hivatkoz\u00e1sa csak k\u00fcls\u0151 lehet
+pathItemRequiredField=A Path Item objektumnak \u00e9rv\u00e9nyes \u00fatvonalat kell tartalmaznia. A(z) \"{0}\" \u00fatvonal param\u00e9ter a(z) \"{1}\" \u00fatvonalban nem tartalmazza a \"required\" mez\u0151t vagy annak \u00e9rt\u00e9ke nem \"true\"
+pathItemDuplicate=A Path Item objektumnak \u00e9rv\u00e9nyes \u00fatvonalat kell tartalmaznia. A(z) \"{0}\" \u00fatvonal t\u00f6bbsz\u00f6r\u00f6s \"{1}\" param\u00e9tert hat\u00e1roz meg \u00fatvonal szinten: \"{2}\"
+pathItemParameterNotDeclaredSingle=A Path Item objektumnak \u00e9rv\u00e9nyes \u00fatvonalat kell tartalmaznia. A(z) \"{0}\" \u00fatvonal \"{1}\" \u00fatvonal param\u00e9tert hat\u00e1roz meg, amely nincs deklar\u00e1lva
+pathItemParameterNotDeclaredMultiple=A Path Item objektumnak \u00e9rv\u00e9nyes \u00fatvonalat kell tartalmaznia. A(z) \"{0}\" \u00fatvonal \"{1}\" \u00fatvonal param\u00e9tert hat\u00e1roz meg, amelyek nincsenek deklar\u00e1lva: \"{2}\"
+pathItemOperationRequiredField=A Path Item objektumnak \u00e9rv\u00e9nyes \u00fatvonalat kell tartalmaznia. A(z) \"{0}\" \u00fatvonal param\u00e9ter a(z) \"{2}\"  \u00fatvonal \"{1}\" m\u0171velet\u00e9ben nem tartalmazza a \"required\" mez\u0151t vagy annak \u00e9rt\u00e9ke nem \"true\"
+pathItemOperationDuplicate=A Path Item objektumnak \u00e9rv\u00e9nyes \u00fatvonalat kell tartalmaznia. A(z) \"{0}\" m\u0171velet a(z) \"{1}\" \u00fatvonalban t\u00f6bbsz\u00f6r\u00f6s \"{2}\" param\u00e9tert hat\u00e1roz meg: \"{3}\"
+pathItemOperationNullParameter=A Path Item objektumnak \u00e9rv\u00e9nyes \u00fatvonalat kell tartalmaznia. A(z) \"{1}\" \u00fatvonal \"{0}\" m\u0171velet\u00e9nek param\u00e9terlist\u00e1ja null\u00e9rt\u00e9k\u0171 param\u00e9tert tartalmaz
+pathItemOperationParameterNotDeclaredSingle=A Path Item objektumnak \u00e9rv\u00e9nyes \u00fatvonalat kell tartalmaznia. A(z) \"{1}\" \u00fatvonal \"{0}\" m\u0171velete egy \u00fatvonal param\u00e9tert hat\u00e1roz meg, amely nincs deklar\u00e1lva: \"{2}\"
+pathItemOperationParameterNotDeclaredMultiple=A Path Item objektumnak \u00e9rv\u00e9nyes \u00fatvonalat kell tartalmaznia. A(z) \"{1}\" \u00fatvonal \"{0}\" m\u0171velete \"{2}\" \u00fatvonal param\u00e9tert hat\u00e1roz meg, amelyek nincsenek deklar\u00e1lva: \"{3}\"
+pathItemOperationNoPathParameterDeclared=A Path Item objektumnak \u00e9rv\u00e9nyes \u00fatvonalat kell tartalmaznia. A(z) \"{1}\" \u00fatvonal \"{0}\" m\u0171velete nem hat\u00e1roz meg deklar\u00e1lt \u00fatvonal param\u00e9tert: \"{2}\"
+pathItemInvalidFormat=A Path Item objektumnak \u00e9rv\u00e9nyes \u00fatvonalat kell tartalmaznia. A(z) \"{0}\" \u00fatvonal form\u00e1tuma \u00e9rv\u00e9nytelen
+
+pathsRequiresSlash=A Paths objektum \u00e9rv\u00e9nytelen \u00fatvonalat tartalmaz. A(z) \"{0}\" \u00fatvonal \u00e9rt\u00e9k nem oszt\u00e1sjellel kezd\u0151dik
+
+referenceExternalOrExtension=A(z) \"{0}\" \u00e9rt\u00e9k k\u00fcls\u0151 hivatkoz\u00e1s vagy kiterjeszt\u00e9s. Nincs el\u00e9rhet\u0151 \u00e9rv\u00e9nyes\u00edt\u00e9s
+referenceNotPartOfModel=A(z) \"{0}\" hivatkoz\u00e1s \u00e9rt\u00e9k nem a Components objektumon bel\u00fcl van meghat\u00e1rozva
+referenceNotValid=A(z) \"{0}\" hivatkoz\u00e1s \u00e9rt\u00e9k \u00e9rv\u00e9nytelen
+referenceNotValidFormat=A(z) \"{0}\" hivatkoz\u00e1s \u00e9rt\u00e9k form\u00e1tuma \u00e9rv\u00e9nytelen
+referenceNull=A hivatkoz\u00e1s \u00e9rt\u00e9k null
+referenceToObjectInvalid=A(z) \"{0}\" \u00e9rt\u00e9k egy \u00e9rv\u00e9nytelen hivatkoz\u00e1s
+
+responseMustContainOneCode=A Responses objektumnak legal\u00e1bb egy v\u00e1laszk\u00f3dot tartalmaznia kell
+responseShouldContainSuccess=A Responses objektumnak a sikeres m\u0171k\u00f6d\u00e9shez legal\u00e1bb egy v\u00e1laszk\u00f3dot tartalmaznia kell
+
+securityRequirementNotDeclared=A Security Requirement objektumhoz megadott \"{0}\" n\u00e9v nem felel meg a deklar\u00e1lt biztons\u00e1gi s\u00e9m\u00e1nak
+securityRequirementScopeNamesRequired=A(z) \"{0}\" Security Requirement objektumnak a v\u00e9grehajt\u00e1shoz sz\u00fcks\u00e9ges hat\u00f3k\u00f6rnevek list\u00e1j\u00e1t kellene megadnia
+securityRequirementFieldNotEmpty=A Security Requirement objektum \"{0}\" mez\u0151j\u00e9nek \u00fcresnek kellene lennie, azonban az \u00e9rt\u00e9ke \"{1}\"
+securityRequirementIsEmpty=A Security Requirement objektum nem lehet \u00fcres
+
+securitySchemeInFieldInvalid=A(z) \"{0}\" Security Scheme objektum \u00e9rv\u00e9nytelen. Az \"in\" mez\u0151 \u00e9rt\u00e9ke \"{1}\", de csak a k\u00f6vetkez\u0151k egyike lehet: (\"query\", \"header\", \"cookie\")
+securitySchemeInvalidURL=Az Security Scheme objektumnak \u00e9rv\u00e9nyes URL c\u00edmet kell tartalmaznia. Az URL c\u00edmhez megadott \"{0}\" \u00e9rt\u00e9k \u00e9rv\u00e9nytelen
+
+schemaTypeArrayNullItems=Az \"array\" t\u00edpus\u00fa Schema objektumhoz meg kell hat\u00e1rozni az \"items\" tulajdons\u00e1got
+schemaReadOnlyOrWriteOnly=A Schema objektum nem tartalmazhat egyszerre true \u00e9rt\u00e9kre be\u00e1ll\u00edtott \"readOnly\" \u00e9s \"writeOnly\" mez\u0151ket
+schemaMultipleOfLessThanOne=A Schema objektumnak tartalmaznia kell a \"multipleOf\" tulajdons\u00e1got, amely szigor\u00faan egy null\u00e1n\u00e1l nagyobb sz\u00e1mra van be\u00e1ll\u00edtva
+schemaPropertyLessThanZero=A Schema objektum \"{0}\" tulajdons\u00e1ga csak null\u00e1n\u00e1l nagyobb vagy egyenl\u0151 lehet
+schemaTypeDoesNotMatchProperty=A(z) \"{0}\" tulajdons\u00e1g nem megfelel\u0151 a(z) \"{1}\" t\u00edpus\u00fa Schema objektumhoz
+
+keyNotARegex=A Components objektumon bel\u00fcl deklar\u00e1lt \"{0}\" n\u00e9v \u00e9rv\u00e9nytelen. Meg kell felelnie az OpenAPI specifik\u00e1ci\u00f3 \u00e1ltal megadott regul\u00e1ris kifejez\u00e9snek
+
+serverVariableNotDefined=A(z) \"{0}\" v\u00e1ltoz\u00f3 a Server objektumban nincs meghat\u00e1rozva
+serverInvalidURL=A Server objektumnak \u00e9rv\u00e9nyes URL c\u00edmet kell tartalmaznia. Az URL c\u00edmhez megadott \"{0}\" \u00e9rt\u00e9k \u00e9rv\u00e9nytelen
+
+requiredFieldMissing=A(z) \"{0}\" k\u00f6telez\u0151 mez\u0151 hi\u00e1nyzik vagy \u00e9rv\u00e9nytelen \u00e9rt\u00e9kre van \u00e1ll\u00edtva

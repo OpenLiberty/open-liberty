@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
+	<classpathentry kind="src" path="test-applications/appWithStaticDoc/src"/>
 	<classpathentry kind="src" path="test-applications/appWithAnnotations/src"/>
 	<classpathentry kind="src" path="test-applications/pure-jaxrs/src"/>
 	<classpathentry kind="src" path="test-applications/complete-flow/src"/>
