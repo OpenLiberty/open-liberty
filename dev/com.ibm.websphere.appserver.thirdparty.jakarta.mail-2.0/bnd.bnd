@@ -1,0 +1,41 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-SymbolicName: com.ibm.websphere.appserver.thirdparty.jakarta.mail-2.0
+Bundle-Name: WebSphere Jakarta Mail Third-Party API
+Bundle-Description: WebSphere Jakarta Mail Third-Party API, version ${bVersion}
+
+Export-Package:\
+  com.sun.mail;version="2.0.0", \
+  com.sun.mail.auth;version="2.0.0", \
+  com.sun.mail.imap;version="2.0.0", \
+  com.sun.mail.imap.protocol;version="2.0.0", \
+  com.sun.mail.iap;version="2.0.0", \
+  com.sun.mail.pop3;version="2.0.0", \
+  com.sun.mail.smtp;version="2.0.0", \
+  com.sun.mail.util;version="2.0.0", \
+  com.sun.mail.util.logging;version="2.0.0", \
+  com.sun.mail.handlers;version="2.0.0"
+
+Import-Package: \
+  jakarta.activation, \
+  jakarta.mail, \
+  jakarta.mail.event, \
+  jakarta.mail.internet, \
+  jakarta.mail.search, \
+  jakarta.mail.util
+
+publish.wlp.jar.suffix: dev/api/third-party
+
+-buildpath: \
+	com.ibm.ws.com.sun.mail.jakarta.mail.2.0

@@ -1,0 +1,47 @@
+-include= ~../cnf/resources/bnd/rejar.props
+
+bVersion=1.0
+Bundle-Name: JakartaMail 2.0 Implementation
+Bundle-SymbolicName: com.ibm.ws.com.sun.mail.jakarta.mail.2.0
+Bundle-Description: Private JavaMail bundle
+  
+Include-Resource: \
+     @${repo;com.sun.mail.jakarta.mail;2.0.0}!/META-INF/mailcap, \
+     @${repo;com.sun.mail.jakarta.mail;2.0.0}!/META-INF/gfprobe-provider.xml, \
+     @${repo;com.sun.mail.jakarta.mail;2.0.0}!/META-INF/javamail.charset.map, \
+     @${repo;com.sun.mail.jakarta.mail;2.0.0}!/META-INF/javamail.default.address.map, \
+     @${repo;com.sun.mail.jakarta.mail;2.0.0}!/META-INF/javamail.default.providers
+
+Import-Package: jakarta.mail;version="[2.0,3.0)",  \
+jakarta.mail.event;version="[2.0,3.0)", \
+jakarta.mail.internet;version="[2.0,3.0)", \
+jakarta.mail.search;version="[2.0,3.0)", \
+jakarta.mail.util;version="[2.0,3.0)", \
+com.sun.mail;version="[2.0,3.0)", \
+com.sun.mail.auth;version="[2.0,3.0)", \
+com.sun.mail.imap;version="[2.0,3.0)", \
+com.sun.mail.imap.protocol;version="[2.0,3.0)", \
+com.sun.mail.iap;version="[2.0,3.0)", \
+com.sun.mail.pop3;version="[2.0,3.0)", \
+com.sun.mail.smtp;version="[2.0,3.0)", \
+com.sun.mail.util;version="[2.0,3.0)", \
+com.sun.mail.util.logging;version="[2.0,3.0)", \
+com.sun.mail.handlers;version="[2.0,3.0)"
+
+
+Export-Package: \
+jakarta.mail, \
+jakarta.mail.event, \
+jakarta.mail.internet, \
+jakarta.mail.search, \
+jakarta.mail.util, \
+com.sun.mail;version="2.0.0"; thread-context=true, \
+com.sun.mail.auth;version="2.0.0"; thread-context=true, \
+com.sun.mail.imap; thread-context=true, \
+com.sun.mail.imap.protocol; thread-context=true, \
+com.sun.mail.iap; thread-context=true, \
+com.sun.mail.pop3; thread-context=true, \
+com.sun.mail.smtp; thread-context=true, \
+com.sun.mail.util; thread-context=true, \
+com.sun.mail.util.logging; thread-context=true, \
+com.sun.mail.handlers; thread-context=true
