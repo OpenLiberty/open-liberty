@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package com.ibm.ws.microprofile.metrics;
 
 import java.lang.management.ManagementFactory;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.management.MBeanServer;
@@ -25,31 +26,40 @@ import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.MetricType;
 import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.Tag;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.ws.microprofile.metrics.impl.CounterImpl;
 import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
 
+@Component(service = { BaseMetrics.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
 public class BaseMetrics {
 
-    protected static BaseMetrics baseMetrics = null;
     protected static String BASE = MetricRegistry.Type.BASE.getName();
     public MBeanServer mbs;
     protected static Set<String> gcObjectNames = new HashSet<String>();
 
-    protected static SharedMetricRegistries SHARED_METRIC_REGISTRY;
+    private static SharedMetricRegistries SHARED_METRIC_REGISTRY;
 
-    public static synchronized BaseMetrics getInstance(SharedMetricRegistries sharedMetricRegistry) {
-        SHARED_METRIC_REGISTRY = sharedMetricRegistry;
-        if (baseMetrics == null)
-            baseMetrics = new BaseMetrics();
-        return baseMetrics;
+    @Reference
+    public void setSharedMetricRegistries(SharedMetricRegistries sharedMetricRegistry) {
+        BaseMetrics.SHARED_METRIC_REGISTRY = sharedMetricRegistry;
     }
 
-    protected BaseMetrics() {
+    @Activate
+    protected void activate(ComponentContext context, Map<String, Object> properties) {
         mbs = ManagementFactory.getPlatformMBeanServer();
         Set<ObjectInstance> mBeanObjectInstanceSet = mbs.queryMBeans(null, null);
         populateGcNames(mBeanObjectInstanceSet);
         createBaseMetrics();
+    }
+
+    @Deactivate
+    protected void deactivate(ComponentContext context, int reason) {
     }
 
     private void populateGcNames(Set<ObjectInstance> mBeanObjectInstanceSet) {
