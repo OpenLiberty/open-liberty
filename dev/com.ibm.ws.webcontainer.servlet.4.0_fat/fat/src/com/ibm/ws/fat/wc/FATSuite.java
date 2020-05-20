@@ -81,8 +81,7 @@ import componenttest.rules.repeater.RepeatTests;
 public class FATSuite {
 
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.withoutModification()//
-                    .andWith(new JakartaEE9Action());
+    public static RepeatTests repeat = RepeatTests.withoutModification().andWith(new JakartaEE9Action());
 
     /**
      * @see {@link FatLogHandler#generateHelpFile()}
