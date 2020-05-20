@@ -41,9 +41,16 @@ public interface AuthenticationConstants {
     /**
      * This key maps to a boolean property in a Subject's private credentials
      * hashtable. When the property is true, the authentication service will
-     * not put a LTPA cookie in the response and will not use the SSO LTPA cache key to cache the subject.
+     * not put a LTPA cookie in the response.
      */
     String INTERNAL_DISABLE_SSO_LTPA_COOKIE = "com.ibm.ws.authentication.internal.sso.disable.ltpa.cookie";
+
+    /**
+     * This key maps to a boolean property in a Subject's private credentials
+     * hashtable. When the property is true, the authentication service will
+     * not use the SSO LTPA cache key to cache the subject.
+     */
+    String INTERNAL_DISABLE_SSO_LTPA_CACHE = "com.ibm.ws.authentication.internal.sso.disable.ltpa.cache";
 
     /**
      * This key maps to a JWT Web Token object in a Subject's private credentials
