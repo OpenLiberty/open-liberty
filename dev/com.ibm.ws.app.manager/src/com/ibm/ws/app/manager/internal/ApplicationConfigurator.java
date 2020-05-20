@@ -2030,7 +2030,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         }
     }
 
-    private void checkForCycles() {
+    private synchronized void checkForCycles() {
         for (Map.Entry<String, NamedApplication> entry : _appFromPid.entrySet()) {
             if (containsCycles(entry.getValue())) {
                 ApplicationStateCoordinator.updateStartingAppStatus(entry.getKey(), AppStatus.CYCLE);
