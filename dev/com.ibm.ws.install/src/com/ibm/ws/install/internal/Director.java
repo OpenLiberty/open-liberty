@@ -12,8 +12,11 @@ package com.ibm.ws.install.internal;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -469,8 +472,10 @@ public class Director extends AbstractDirector {
         Set<String> allServerNames = new HashSet<String>(servers.size());
 
         for (ServerAsset sa : servers) {
-            Collection<String> requiredFeatures = sa.getRequiredFeatures();
+            Path serverXmlFile = sa.getServerXmlFile().toPath();
 
+
+            Collection<String> requiredFeatures = InstallUtils.getFeatures(serverXmlFile, serverXmlFile.getFileName().toString(), new ArrayList<String>());
             if (!requiredFeatures.isEmpty()) {
                 logger.log(Level.FINEST, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("LOG_DEPLOY_SERVER_FEATURES",
                                                                                         sa.getServerName(),
