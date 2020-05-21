@@ -12,10 +12,6 @@
 bVersion=1.0
 
 Bundle-SymbolicName: com.ibm.ws.org.jboss.resteasy.resteasy.servlet.initializer
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
-
-javac.source: 1.8
-javac.target: 1.8
 
 Service-Component: \
   com.ibm.ws.org.jboss.resteasy.servlet.initializer; \

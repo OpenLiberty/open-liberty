@@ -12,10 +12,6 @@
 bVersion=1.0
 
 Bundle-SymbolicName: com.ibm.ws.org.jboss.resteasy.resteasy.core
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
-
-javac.source: 1.8
-javac.target: 1.8
 
 Export-Package: \
   org.jboss.resteasy.core;version=4.5.2.Final, \

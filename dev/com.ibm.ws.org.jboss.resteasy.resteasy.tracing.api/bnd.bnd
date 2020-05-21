@@ -12,10 +12,6 @@
 bVersion=1.0
 
 Bundle-SymbolicName: com.ibm.ws.org.jboss.resteasy.resteasy.tracing.api
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
-
-javac.source: 1.8
-javac.target: 1.8
 
 Export-Package: \
   org.jboss.resteasy.tracing.api;version=1.0.0, \
