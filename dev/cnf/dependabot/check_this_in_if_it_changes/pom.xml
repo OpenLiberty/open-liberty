@@ -1762,6 +1762,11 @@
       <version>10.0.0-M7</version>
     </dependency>
     <dependency>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>tomcat-jasper-el</artifactId>
+      <version>10.0.0-M7</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.tomcat.embed</groupId>
       <artifactId>tomcat-embed-websocket</artifactId>
       <version>8.5.23</version>
