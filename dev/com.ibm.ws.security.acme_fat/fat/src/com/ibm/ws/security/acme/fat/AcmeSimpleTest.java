@@ -477,7 +477,7 @@ public class AcmeSimpleTest {
 	@CheckForLeakedPasswords(AcmeFatUtils.CACERTS_TRUSTSTORE_PASSWORD)
 	@AllowedFFDC(value = { "java.io.IOException", "java.security.KeyStoreException",
 			"com.ibm.websphere.ssl.SSLException", "org.shredzone.acme4j.exception.AcmeNetworkException",
-			"java.io.FileNotFoundException" })
+			"java.io.FileNotFoundException", "sun.security.validator.ValidatorException" })
 	public void updateconfig_bad_to_good() throws Exception {
 
 		/*
@@ -689,7 +689,12 @@ public class AcmeSimpleTest {
 
 		} finally {
 			server.stopServer("CWWKG0095E", "CWWKE0701E", "CWPKI2016E", "CWPKI2020E", "CWPKI2021E", "CWPKI2022E",
-					"CWPKI2023E", "CWPKI2008E", "CWPKI2037E", "CWPKI2039E", "CWPKI2040E", "CWPKI2041E", "CWPKI2042E");
+					"CWPKI2023E", "CWPKI2008E", "CWPKI2037E", "CWPKI2039E", "CWPKI2040E", "CWPKI2041E", "CWPKI2042E",
+					"CWPKI0823E", "CWPKI0828E");
+			/*
+			 * Running on Sun produces some additional errors on the invalid directory URI,
+			 * added them to the stop list
+			 */
 		}
 	}
 
