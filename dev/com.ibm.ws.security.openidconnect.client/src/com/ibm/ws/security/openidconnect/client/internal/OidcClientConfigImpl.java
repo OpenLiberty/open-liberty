@@ -1463,15 +1463,12 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     /** {@inheritDoc} */
     @Override
     public boolean isIncludeCustomCacheKeyInSubject() {
-        return includeCustomCacheKeyInSubject;
+        if(!includeCustomCacheKeyInSubject || !allowCustomCacheKey) {
+            return false;
+        }
+        return true;
     }
     
-    /** {@inheritDoc} */
-    @Override
-    public boolean allowCustomCacheKey() {
-        return allowCustomCacheKey;
-    }
-
     /** {@inheritDoc} */
     @Override
     public String getAuthContextClassReference() {

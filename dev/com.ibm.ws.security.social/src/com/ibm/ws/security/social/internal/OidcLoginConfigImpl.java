@@ -722,15 +722,12 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
     /** {@inheritDoc} */
     @Override
     public boolean isIncludeCustomCacheKeyInSubject() {
-        return false;
+        if(!includeCustomCacheKeyInSubject || !allowCustomCacheKey) {
+            return false;
+        }
+        return true;
     }
     
-    /** {@inheritDoc} */
-    @Override
-    public boolean allowCustomCacheKey() {
-        return allowCustomCacheKey;
-    }
-
     /** {@inheritDoc} */
     @Override
     public boolean isIncludeIdTokenInSubject() {

@@ -78,7 +78,6 @@
         <AD id="nonceEnabled" name="internal" description="internal use only" required="false" type="Boolean" default="true" />
         <AD id="realmName" name="internal" description="internal use only" required="false" type="String" ibm:type="token" />
         <AD id="includeCustomCacheKeyInSubject" name="internal" description="internal use only" required="false" type="Boolean" default="true" />
-        <AD id="allowCustomCacheKey" name="%allowCustomCacheKey" description="%allowCustomCacheKey.desc" required="false" type="Boolean" default="true"/>
         <AD id="resource" name="internal" description="internal use only" required="false" type="String" cardinality="2147483647" />
         <AD id="useSystemPropertiesForHttpClientConnections" name="%useSystemPropertiesForHttpClientConnections" description="%useSystemPropertiesForHttpClientConnections.desc" required="false" type="Boolean" default="false"/>
         <AD id="forwardLoginParameter" name="internal" description="internal use only" required="false" type="String" cardinality="2147483647" />
@@ -445,6 +444,7 @@
         <AD id="userinfoParameter" name="internal" description="internal use only" required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.security.social.client.param" cardinality="20" />
         <AD id="jwkParameter" name="internal" description="internal use only" required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.security.social.client.param" cardinality="20" />
         <AD id="forwardLoginParameter" name="internal" description="internal use only" required="false" type="String" cardinality="2147483647" />
+        <AD id="allowCustomCacheKey" name="%allowCustomCacheKey" description="%allowCustomCacheKey.desc" required="false" type="Boolean" default="true"/>
 
     </OCD>
     

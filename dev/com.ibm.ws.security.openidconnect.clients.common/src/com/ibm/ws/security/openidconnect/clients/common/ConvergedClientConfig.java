@@ -97,8 +97,6 @@ public interface ConvergedClientConfig {
     public boolean isMapIdentityToRegistryUser();
 
     public boolean isIncludeCustomCacheKeyInSubject();
-
-    public boolean allowCustomCacheKey();
     
     public boolean isIncludeIdTokenInSubject();
 
