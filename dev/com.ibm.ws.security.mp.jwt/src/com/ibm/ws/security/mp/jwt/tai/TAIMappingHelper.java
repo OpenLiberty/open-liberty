@@ -223,8 +223,6 @@ public class TAIMappingHelper {
 
         }
 
-        customProperties.put(INTERNAL_DISABLE_SSO_LTPA_CACHE, true);
-
         if (!addJwtPrincipal) {
             // add this only in the mpjwt tai flow
             addCustomCacheKey(customProperties);
@@ -241,6 +239,10 @@ public class TAIMappingHelper {
         }
 
         return customProperties;
+    }
+
+    public void addDisableSsoLtpaCacheProp() {
+        customProperties.put(INTERNAL_DISABLE_SSO_LTPA_CACHE, true);
     }
 
     /**
@@ -380,5 +382,4 @@ public class TAIMappingHelper {
         }
         return groupsWithRealm;
     }
-
 }
