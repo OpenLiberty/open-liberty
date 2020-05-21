@@ -69,6 +69,6 @@ Subsystem-Category: JakartaEE9Application
  bin/pluginUtility.bat, \
  dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.servlet_1.1-javadoc.zip
 Subsystem-Name: Jakarta Servlets 5.0
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel

@@ -4,6 +4,6 @@ visibility=private
 singleton=true
 Subsystem-Version: 9.0.0
 -bundles=com.ibm.ws.javaee.version
-kind=noship
+kind=beta
 edition=full
 WLP-Activation-Type: parallel
