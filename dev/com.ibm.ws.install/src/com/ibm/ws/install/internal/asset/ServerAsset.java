@@ -63,10 +63,6 @@ public class ServerAsset implements Comparable<ServerAsset> {
         return serverInfo.getParentFile();
     }
 
-    public File getServerXmlFile(){
-        return serverInfo;
-    }
-
     private static String determineServerName(File serverXMLFile) throws InstallException, IOException {
         if (isExistingServer(serverXMLFile)) {
             return serverXMLFile.getParentFile().getCanonicalFile().getName();
