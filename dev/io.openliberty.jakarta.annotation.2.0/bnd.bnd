@@ -11,7 +11,7 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-Bundle-SymbolicName: com.ibm.websphere.jakarta.annotation.2.0; singleton:=true
+Bundle-SymbolicName: io.openliberty.jakarta.annotation.2.0; singleton:=true
 
 Export-Package: \
   jakarta.annotation;version="2.0.0",\
