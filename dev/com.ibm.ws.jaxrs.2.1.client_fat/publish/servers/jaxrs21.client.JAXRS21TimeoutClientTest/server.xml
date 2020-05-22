@@ -1,0 +1,10 @@
+<server>
+    <featureManager>
+        <feature>jaxrs-2.1</feature>
+    </featureManager>
+   
+    <include location="../fatTestPorts.xml"/>
+
+    <webContainer deferServletLoad="false"/>
+
+</server>
