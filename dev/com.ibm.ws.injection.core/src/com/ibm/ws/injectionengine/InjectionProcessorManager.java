@@ -312,6 +312,17 @@ public class InjectionProcessorManager
         return sb.append(')').toString();
     }
 
+    private static <A extends Annotation> A getAnnotation(Class<?> klass, Class<A> annClass) {
+        try {
+            return klass.getAnnotation(annClass);
+        } catch (Error error) {
+            // Attempt to workaround JDK bug that results in GenericSignatureFormatError or AnnotationFormatError
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Retry after error obtaining " + annClass + " annotation from " + klass + " class : " + error);
+            return klass.getAnnotation(annClass);
+        }
+    }
+    
     /**
      * Process class annotations with the specified processor.
      *
@@ -330,7 +341,7 @@ public class InjectionProcessorManager
             Tr.debug(tc, "looking for annotation : " + annClass);
         if (annClass != null)
         {
-            A ann = klass.getAnnotation(annClass);
+            A ann = getAnnotation(klass, annClass);
             if (ann != null)
             {
                 if (isTraceOn && tc.isDebugEnabled())
