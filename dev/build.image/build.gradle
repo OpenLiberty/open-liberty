@@ -16,6 +16,20 @@ import org.gradle.internal.os.OperatingSystem
 apply plugin: 'maven'
 
 def releaseVersion = "${bnd.libertyRelease}-" + rootProject.userProps.getProperty("version.qualifier")
+def betaVersion = releaseVersion;
+
+task setBetaVersion() {
+    def (year, major, minor, month) = "${bnd.libertyRelease}".tokenize('.')
+    int new_month=month.toInteger()+1
+    if (new_month>12) {
+        new_month=1;
+        int new_year = year.toInteger()+1
+        betaVersion = "" + new_year + "." + major + "." + minor + "." + new_month + "-beta-" + rootProject.userProps.getProperty("version.qualifier")
+    } else {
+        betaVersion = year + "." + major + "." + minor + "." + new_month + "-beta-" + rootProject.userProps.getProperty("version.qualifier")
+    }
+    betaVersion
+ }
 
 task copyPropertiesToBuildImage (type:Copy) {
     dependsOn jar
@@ -196,6 +210,17 @@ def gaPublicFeatures() {
     features
 }
 
+def gaAndBetaPublicFeatures() {
+    String features = ""
+    gaFeatures(true).each {
+        features += '<feature>' + it + '</feature>\n'
+    }
+    betaFeatures().each {
+        features += '<feature>' + it + '</feature>\n'
+    }
+    features
+}
+
 def webProfile8Features() {
     String features = project.file('profiles/webProfile8/features.xml').readLines()
     features
@@ -267,6 +292,14 @@ if (isAutomatedBuild) {
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&gaPublicFeatures
+        outputTo packageDir
+    }
+
+    task packageOpenLibertyBeta(type: PackageLibertyWithFeatures) {
+        enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
+        dependsOn parent.subprojects.assemble
+        dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
+        withFeatures this.&gaAndBetaPublicFeatures
         outputTo packageDir
     }
 
@@ -409,6 +442,22 @@ if (isAutomatedBuild) {
         }
     }
     publish.dependsOn zipOpenLiberty
+
+    // Includes both kind=ga and kind=beta features.
+    task zipOpenLibertyBeta(type: Zip) {
+        dependsOn packageOpenLibertyBeta
+        dependsOn genChecksums
+        dependsOn setBetaVersion
+        baseName 'openliberty'
+        from packageDir
+        destinationDir distsDir
+        version betaVersion
+        doLast {
+            rootProject.userProps.setProperty('zipopenliberty.beta.archivename', archivePath.toString())
+            rootProject.storeProps()
+        }
+    }
+    publish.dependsOn zipOpenLibertyBeta
 
     // Includes only kind=ga features.
     task zipOpenLibertyKernel(type: Zip) {
