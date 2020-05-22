@@ -6,5 +6,5 @@ IBM-Process-Types: client, \
  com.ibm.websphere.appserver.anno-2.0
 -bundles=com.ibm.ws.injection.jakarta
 kind=beta
-edition=full
+edition=core
 WLP-Activation-Type: parallel

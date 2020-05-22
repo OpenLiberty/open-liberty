@@ -45,5 +45,5 @@ Subsystem-Name: Jakarta Server Pages 3.0
  com.ibm.websphere.javaee.jsp.tld.2.2.jakarta; location:=dev/api/spec/
 -files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.jsp_1.0-javadoc.zip
 kind=beta
-edition=full
+edition=core
 WLP-Activation-Type: parallel

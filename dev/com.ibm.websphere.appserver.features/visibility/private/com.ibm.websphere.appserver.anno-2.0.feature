@@ -18,5 +18,5 @@ IBM-Process-Types: server, \
 -jars=com.ibm.websphere.appserver.spi.anno; location:=dev/spi/ibm/
 -files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.anno_1.1-javadoc.zip
 kind=beta
-edition=full
+edition=core
 WLP-Activation-Type: parallel

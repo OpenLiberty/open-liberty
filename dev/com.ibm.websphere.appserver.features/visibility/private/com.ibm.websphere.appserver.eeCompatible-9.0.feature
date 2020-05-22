@@ -5,5 +5,5 @@ singleton=true
 Subsystem-Version: 9.0.0
 -bundles=com.ibm.ws.javaee.version
 kind=beta
-edition=full
+edition=core
 WLP-Activation-Type: parallel
