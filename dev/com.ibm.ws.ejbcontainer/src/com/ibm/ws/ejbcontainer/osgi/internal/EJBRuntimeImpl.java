@@ -452,11 +452,13 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
             // If they pass in * we will have an empty initialized list and then disable for all apps
 
             // If JVM prop has something set, merge them
-            if (ContainerProperties.DisableShortDefaultBindings != null) {
-                ContainerProperties.DisableShortDefaultBindings.addAll(DisableShortDefaultBindings);
-            } else {
-                ContainerProperties.DisableShortDefaultBindings = DisableShortDefaultBindings;
+            ContainerProperties.DisableShortDefaultBindings = DisableShortDefaultBindings;
+
+            if (ContainerProperties.DisableShortDefaultBindingsFromJVM != null) {
+                ContainerProperties.DisableShortDefaultBindings.addAll(ContainerProperties.DisableShortDefaultBindingsFromJVM);
             }
+        } else if (ContainerProperties.DisableShortDefaultBindingsFromJVM != null) {
+            ContainerProperties.DisableShortDefaultBindings = ContainerProperties.DisableShortDefaultBindingsFromJVM;
         }
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -540,8 +542,7 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
         this.j2eeNameFactory = ref;
     }
 
-    protected void unsetJ2EENameFactory(J2EENameFactory ref) {
-    }
+    protected void unsetJ2EENameFactory(J2EENameFactory ref) {}
 
     @Reference
     protected void setMetaDataService(MetaDataService ref) {
@@ -1384,11 +1385,9 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
                         "(containerToType=com.ibm.ws.javaee.dd.ejbbnd.EJBJarBnd)" +
                         "(containerToType=com.ibm.ws.javaee.dd.managedbean.ManagedBeanBnd)" +
                         ")")
-    protected void setAdapterFactoryDependency(AdapterFactoryService afs) {
-    }
+    protected void setAdapterFactoryDependency(AdapterFactoryService afs) {}
 
-    protected void unsetAdapterFactoryDependency(AdapterFactoryService afs) {
-    }
+    protected void unsetAdapterFactoryDependency(AdapterFactoryService afs) {}
 
     @Override
     public boolean isRemoteUsingPortableServer() {
