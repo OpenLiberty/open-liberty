@@ -287,7 +287,7 @@
              <Option label="usersTokenManagement" value="usersTokenManagement" />
              <Option label="clientMetatype" value="clientMetatype" />
          </AD>
-         <AD id="supportedHttpMethods" name="internal" description="internal use only" required="false" type="String" default="all" cardinality="5" >
+         <AD id="supportedHttpMethods" name="internal" description="internal use only" required="false" type="String" default="all" cardinality="6" >
              <Option label="all" value="all" />
              <Option label="none" value="none" />
              <Option label="get" value="GET" />
@@ -295,6 +295,7 @@
              <Option label="post" value="POST" />
              <Option label="delete" value="DELETE" />
              <Option label="put" value="PUT" />
+             <Option label="trace" value="TRACE" />
          </AD>
     </OCD>
 

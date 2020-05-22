@@ -21,21 +21,28 @@ import com.ibm.oauth.core.internal.oauth20.OAuth20Constants;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.oauth20.ProvidersService;
+import com.ibm.ws.security.oauth20.api.OAuth20Provider;
 import com.ibm.ws.security.oauth20.web.EndpointUtils;
 import com.ibm.ws.security.oauth20.web.OAuth20Request;
 import com.ibm.ws.security.oauth20.web.OAuth20Request.EndpointType;
 
 import io.openliberty.security.common.http.SupportedHttpMethodHandler;
+import io.openliberty.security.oauth20.internal.config.OAuthEndpointSettings;
+import io.openliberty.security.oauth20.internal.config.SpecificOAuthEndpointSettings;
 
 @SuppressWarnings("restriction")
 public class OAuthSupportedHttpMethodHandler extends SupportedHttpMethodHandler {
 
     private static TraceComponent tc = Tr.register(OAuthSupportedHttpMethodHandler.class);
 
+    private OAuth20Request oauth20Request = null;
+
     EndpointUtils endpointUtils = new EndpointUtils();
 
     public OAuthSupportedHttpMethodHandler(HttpServletRequest request, HttpServletResponse response) {
         super(request, response);
+        oauth20Request = getOAuth20RequestAttribute();
     }
 
     @Override
@@ -74,14 +81,24 @@ public class OAuthSupportedHttpMethodHandler extends SupportedHttpMethodHandler 
     }
 
     EndpointType getEndpointType() throws IOException {
-        OAuth20Request oauth20Request = getOAuth20RequestAttribute();
         if (oauth20Request == null) {
             return null;
         }
         return oauth20Request.getType();
     }
 
-    Set<HttpMethod> getSupportedMethodsForEndpoint(EndpointType endpointType) throws IOException {
+    Set<HttpMethod> getSupportedMethodsForEndpoint(EndpointType endpointType) {
+        Set<HttpMethod> supportedMethods = getDefaultSupportedMethodsForEndpoint(endpointType);
+        if (supportedMethods == null || supportedMethods.isEmpty()) {
+            // If there are no HTTP methods supported by default, and configuring supported HTTP methods only further limits that set,
+            // there's no point in doing any further work here.
+            return supportedMethods;
+        }
+        Set<HttpMethod> configuredSupportedMethods = getConfiguredSupportedMethodsForEndpoint(endpointType);
+        return getAdjustedSupportedMethodsForEndpoint(supportedMethods, configuredSupportedMethods);
+    }
+
+    Set<HttpMethod> getDefaultSupportedMethodsForEndpoint(EndpointType endpointType) {
         Set<HttpMethod> supportedMethods = new HashSet<HttpMethod>();
         supportedMethods.add(HttpMethod.OPTIONS);
 
@@ -138,8 +155,60 @@ public class OAuthSupportedHttpMethodHandler extends SupportedHttpMethodHandler 
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Received a request for an unknown OAuth endpoint: [" + endpointType + "]");
             }
+            return null;
         }
         return supportedMethods;
+    }
+
+    Set<HttpMethod> getConfiguredSupportedMethodsForEndpoint(EndpointType endpoint) {
+        OAuthEndpointSettings endpointConfigSettings = getConfiguredOAuthEndpointSettings();
+        if (endpointConfigSettings == null) {
+            return null;
+        }
+        SpecificOAuthEndpointSettings specificEndpointSettings = endpointConfigSettings.getSpecificOAuthEndpointSettings(endpoint);
+        if (specificEndpointSettings == null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Did not find any specific OAuth endpoint settings for endpoint [" + endpoint + "]");
+            }
+            return null;
+        }
+        return specificEndpointSettings.getSupportedHttpMethods();
+    }
+
+    OAuthEndpointSettings getConfiguredOAuthEndpointSettings() {
+        if (oauth20Request == null) {
+            return null;
+        }
+        final String providerName = oauth20Request.getProviderName();
+        OAuth20Provider provider = getOAuth20ProviderByName(providerName);
+        if (provider == null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Did not find an OAuth provider matching the name [{0}]", providerName);
+            }
+            return null;
+        }
+        return provider.getOAuthEndpointSettings();
+    }
+
+    OAuth20Provider getOAuth20ProviderByName(String providerName) {
+        return ProvidersService.getOAuth20Provider(providerName);
+    }
+
+    Set<HttpMethod> getAdjustedSupportedMethodsForEndpoint(Set<HttpMethod> defaultSupportedMethods, Set<HttpMethod> configuredSupportedMethods) {
+        if (defaultSupportedMethods == null || defaultSupportedMethods.isEmpty()) {
+            // If there are no HTTP methods supported by default, and configuring supported HTTP methods only further limits that set,
+            // there's no point in doing any further work here.
+            return defaultSupportedMethods;
+        }
+        Set<HttpMethod> adjustedSupportedMethods = new HashSet<HttpMethod>(defaultSupportedMethods);
+        if (configuredSupportedMethods != null) {
+            adjustedSupportedMethods.retainAll(configuredSupportedMethods);
+        }
+        if (!adjustedSupportedMethods.contains(HttpMethod.OPTIONS)) {
+            // The HTTP OPTIONS method is always supported
+            adjustedSupportedMethods.add(HttpMethod.OPTIONS);
+        }
+        return adjustedSupportedMethods;
     }
 
     OAuth20Request getOAuth20RequestAttribute() {
