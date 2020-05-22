@@ -629,12 +629,12 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
         if (traceOn && tc.isEventEnabled())
             Tr.event(tc, "(SPI) Transaction TIMEOUT occurred for TX: " + getLocalTID());
 
+        _rollbackOnly = true;
         _timedOut = true; // mark
 
         abortTransactionParticipants();
 
         if (initial) { // initial timeout
-            _rollbackOnly = true;
 
             // inactivity timeout may have happened ... check status
             if (_status.getState() == TransactionState.STATE_ACTIVE) {
