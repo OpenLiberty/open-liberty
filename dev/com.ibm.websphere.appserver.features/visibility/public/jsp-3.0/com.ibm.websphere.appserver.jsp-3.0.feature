@@ -31,7 +31,7 @@ IBM-API-Package: jakarta.servlet.jsp;  type="spec", \
  org.apache.jasper.el;  type="internal"
 IBM-ShortName: jsp-3.0
 IBM-SPI-Package: com.ibm.wsspi.jsp.taglib.config
-Subsystem-Name: JavaServer Pages 3.0
+Subsystem-Name: Jakarta Server Pages 3.0
 -features=com.ibm.websphere.appserver.jakarta.jsp-3.0, \
  com.ibm.websphere.appserver.jakarta.el-4.0, \
  com.ibm.websphere.appserver.servlet-5.0; \
