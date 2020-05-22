@@ -85,9 +85,6 @@ public class SolicitedHandler {
             Cache cache = ssoService.getAcsCookieCache(samlRequest.getProviderName());
             // Cache won't be null, since getAcsCookieCache does not return null
             HttpRequestInfo requestInfo = msgCtx.getCachedRequestInfo();
-            if (requestInfo == null) {
-                requestInfo = irUtil.recreateHttpRequestInfo(relayState, request, response, ssoService);
-            }
             DateTime authnRequestExpiredTime = requestInfo.getBirthTime().plus(ssoService.getConfig().getAuthnRequestTime());
             if (authnRequestExpiredTime.isBeforeNow()) {
                 // authnRequest expires

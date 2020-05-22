@@ -105,8 +105,7 @@ public class Constants {
     public static final String DEFAULT_IDP_NAME_ID_FORMAT = "email";
 
     public static final String COOKIE_WAS_REQUEST = "SAML20UnsolicitedState";
-    public static final String COOKIE_INITIAL = "SAML20WebSSO"; //@AV999
-    public static final String WAS_IR_COOKIE = "WASInitialRequest"; //@AV999
+    public static final String WAS_IR_COOKIE = "WASInitialRequest_";
 
     public static final String NAME_ID_FORMAT_UNSPECIFIED = NameIDType.UNSPECIFIED; // "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified";
     public static final String NAME_ID_FORMAT_EMAIL = NameIDType.EMAIL; // "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress";

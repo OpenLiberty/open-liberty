@@ -19,9 +19,11 @@ import javax.servlet.http.HttpServletRequest;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.common.TraceConstants;
+import com.ibm.ws.webcontainer.security.PostParameterHelper;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
 import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
+import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 
 /**
  *
@@ -92,5 +94,13 @@ public class WebSSOUtils {
     WebAppSecurityConfig getWebAppSecurityConfig() {
         return WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
     }
+    
+//    public void savePostParameters(HttpServletRequest request) {
+//        PostParameterHelper.savePostParams((SRTServletRequest) request);
+//    }
+//
+//    public void restorePostParameters(HttpServletRequest request) {
+//        PostParameterHelper.restorePostParams((SRTServletRequest) request);
+//    }
 
 }

@@ -19,18 +19,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-
-
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.security.common.web.WebSSOUtils;
 import com.ibm.ws.security.saml.error.SamlException;
-
-
-import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 
 
@@ -62,29 +56,24 @@ public class InitialRequest implements Serializable {
     public static final String METHOD_GET = "GET";
     public static final int LENGTH_INT = 4;
     
-    private static final int OFFSET_REQURL = 0;
     private static final int OFFSET_DATA = 1;
     private static final String CHARSET_NAME = "UTF-8";
     private static final int postParamSaveSize = 16000;
 
     
-    /**
-     * @param request
-     * @throws SamlException
-     */
-    public InitialRequest(HttpServletRequest request) throws SamlException {
+ public InitialRequest(HttpServletRequest request, String reqUrl, String requestURL, String method, String inResponseTo, String formlogout, HashMap savedPostParams) throws SamlException {
         
-        this.reqUrl = request.getRequestURL().toString(); // keep this for restore the saved parameters (on SAMLReqponseTai)
-        WebSSOUtils webssoutils = new WebSSOUtils();
-        this.requestURL = webssoutils.getRequestUrlWithEncodedQueryString(request);
-        this.method = request.getMethod();
-        this.strInResponseToId = SamlUtil.generateRandomID();
-        this.formLogoutExitPage = (String) request.getAttribute("FormLogoutExitPage");
+        this.reqUrl = reqUrl; 
+        this.requestURL = requestURL; 
+        this.method = method; 
+        this.strInResponseToId = inResponseTo;
+        this.formLogoutExitPage = formlogout; 
         if (this.formLogoutExitPage != null) {
             isFormLogoutExitPage = true;
         }
         if (METHOD_POST.equalsIgnoreCase(this.method) && this.formLogoutExitPage == null) {
             try {
+                this.savedPostParams = savedPostParams;
                 postParams = serializePostParams((IExtendedRequest)request);
             } catch (IllegalStateException | IOException e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -97,7 +86,7 @@ public class InitialRequest implements Serializable {
             Tr.debug(tc, "Request: method (" + this.method + ") savedParams:" + this.savedPostParams);
         }
     }
-    
+
     public String getFormLogoutExitPage() {
         return this.formLogoutExitPage;
     }
@@ -131,11 +120,8 @@ public class InitialRequest implements Serializable {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "An exception getting InputStreamData : ", new Object[] { e });
                 }
-                //throw new SamlException(e);
             } 
-        }
-            
-       
+        }      
     }
  
     
@@ -152,9 +138,6 @@ public class InitialRequest implements Serializable {
             formLogoutExitPage = null;
             postParams = aInputStream.readUTF();
         }
-        //formLogoutExitPage = aInputStream.readUTF();
-        //postParams = aInputStream.readUTF();
-        
     }
  
     private void writeObject(ObjectOutputStream aOutputStream) throws IOException 
@@ -169,9 +152,6 @@ public class InitialRequest implements Serializable {
         } else if(METHOD_POST.equalsIgnoreCase(this.method)) {
             aOutputStream.writeUTF(postParams);
         }
-        
-        
-        //aOutputStream.writeObject(savedPostParams);
     }
     
     /**
@@ -182,7 +162,7 @@ public class InitialRequest implements Serializable {
      */
     public String serializePostParams(IExtendedRequest req) throws IOException, UnsupportedEncodingException, IllegalStateException {
             String output = null;
-            this.savedPostParams = req.getInputStreamData();
+            
             if (this.savedPostParams != null) {
                     long size = req.sizeInputStreamData(this.savedPostParams);                 
                     long total = size + LENGTH_INT;
@@ -207,15 +187,10 @@ public class InitialRequest implements Serializable {
                                     Tr.debug(tc, "encoded length:" + output.length());
                             }
 
-                    } else {
-                            Tr.warning(tc, "POST_PARAMS_NULL_OR_TOO_LARGE");
                     }
                     if (tc.isDebugEnabled()) {
                             Tr.debug(tc, "encoded POST parameters: " + output);
                     }
-  
-            } else {
-                    Tr.warning(tc, "POST_PARAMS_NULL_OR_TOO_LARGE");
             }
             return output;
     }
@@ -225,22 +200,19 @@ public class InitialRequest implements Serializable {
      * The code doesn't expect that the req, cookieValueBytes, or reqURL is null.
      */
     private HashMap deserializePostParams(byte[] paramsbytes, IExtendedRequest req) throws IOException, UnsupportedEncodingException, IllegalStateException {
-            HashMap output = null;
-            List<byte[]> data = splitBytes(paramsbytes, (byte) '.');
-            int total = data.size();
-
-            if (total > OFFSET_DATA) {
-                 
-                            byte[][] bytes = new byte[total - OFFSET_DATA][];
-                            for (int i = 0; i < (total - OFFSET_DATA); i++) {
-                                    bytes[i] = Base64Coder.base64Decode(data.get(OFFSET_DATA + i));
-                            }
-                            output = req.deserializeInputStreamData(bytes);
-                    
-            } else {
-                    throw new IllegalStateException("The data of the post param cookie is too short. The data might be truncated.");
+        HashMap output = null;
+        List<byte[]> data = splitBytes(paramsbytes, (byte) '.');
+        int total = data.size();
+        if (total >= OFFSET_DATA) {
+            byte[][] bytes = new byte[total][];
+            for (int i = 0; i < total; i++) {
+                bytes[i] = Base64Coder.base64Decode(data.get(i));
             }
-            return output;
+            output = req.deserializeInputStreamData(bytes);
+        } else {
+            throw new IllegalStateException("The data of the post param cookie is too short. The data might be truncated.");
+        }
+        return output;
     }
 
     /**
@@ -248,20 +220,20 @@ public class InitialRequest implements Serializable {
      * of cookie value which was base64 encoded data.
      */
     private List<byte[]> splitBytes(byte[] array, byte delimiter) {
-            List<byte[]> byteArrays = new ArrayList<byte[]>();
-            int begin = 0;
+        List<byte[]> byteArrays = new ArrayList<byte[]>();
+        int begin = 0;
 
-            for (int i = 0; i < array.length; i++) {
-                    // first find delimiter.
-                    while (i < array.length && array[i] != delimiter) {
-                            i++;
-                    }
-                    byteArrays.add(Arrays.copyOfRange(array, begin, i));
-                    begin = i + 1;
+        for (int i = 0; i < array.length; i++) {
+            // first find delimiter.
+            while (i < array.length && array[i] != delimiter) {
+                i++;
             }
-            return byteArrays;
+            byteArrays.add(Arrays.copyOfRange(array, begin, i));
+            begin = i + 1;
+        }
+        return byteArrays;
     }
-    
+
     public static String toStringFromByteArray(byte[] b) {
         StringBuffer sb = new StringBuffer();
         for (int i = 0, len = b.length; i < len; i++) {

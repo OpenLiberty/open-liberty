@@ -70,9 +70,7 @@ public class Unsolicited {
         String targetId = SamlUtil.generateRandom(); // no need to Base64 encode
         HttpRequestInfo cachingRequestInfo = new HttpRequestInfo(req);
         RequestUtil.cacheRequestInfo(targetId, ssoService, cachingRequestInfo);
-        irUtil.handleSerializingInitialRequest(req, resp, Constants.IDP_INITAL + targetId, ssoService);
-        //WebSSOUtils webssoutils = new WebSSOUtils();
-        //webssoutils.saveTargetAndRequestUrlAndParameters(req, resp, Constants.COOKIE_INITIAL, Constants.IDP_INITAL + targetId);
+        irUtil.handleSerializingInitialRequest(req, resp, Constants.IDP_INITAL, targetId, cachingRequestInfo, ssoService);
         TAIResult result = redirectToUserDefinedLoginPageURL(req, resp, targetId, decodedLoginPageUrl, cachingRequestInfo);
         return result;
     }

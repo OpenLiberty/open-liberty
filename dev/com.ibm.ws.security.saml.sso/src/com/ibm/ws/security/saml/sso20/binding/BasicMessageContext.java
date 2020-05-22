@@ -18,6 +18,7 @@
 package com.ibm.ws.security.saml.sso20.binding;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 
 import org.opensaml.common.SAMLObject;
@@ -55,6 +56,7 @@ import com.ibm.ws.security.saml.SsoSamlService;
 import com.ibm.ws.security.saml.TraceConstants;
 import com.ibm.ws.security.saml.error.SamlException;
 import com.ibm.ws.security.saml.sso20.internal.utils.HttpRequestInfo;
+import com.ibm.ws.security.saml.sso20.internal.utils.InitialRequestUtil;
 import com.ibm.ws.security.saml.sso20.internal.utils.RequestUtil;
 import com.ibm.ws.security.saml.sso20.internal.utils.UserData;
 
@@ -93,6 +95,11 @@ public class BasicMessageContext<InboundMessageType extends SAMLObject, Outbound
 
     Status logoutResponseStatus;
     String inResponseTo;
+    
+    HttpServletRequest request;
+    HttpServletResponse response;
+    
+    InitialRequestUtil irUtil= new InitialRequestUtil();
 
     static ChainingEncryptedKeyResolver encryptedKeyResolver = new ChainingEncryptedKeyResolver();
     static {
@@ -107,6 +114,13 @@ public class BasicMessageContext<InboundMessageType extends SAMLObject, Outbound
     public BasicMessageContext(SsoSamlService ssoService) {
         this.ssoService = ssoService;
         this.ssoConfig = ssoService.getConfig();
+    }
+    
+    public BasicMessageContext(SsoSamlService ssoService, HttpServletRequest request, HttpServletResponse response) {
+        this.ssoService = ssoService;
+        this.ssoConfig = ssoService.getConfig();
+        this.request = request;
+        this.response = response;
     }
 
     /**
@@ -306,12 +320,19 @@ public class BasicMessageContext<InboundMessageType extends SAMLObject, Outbound
                 // CWWKS5029W: Cannot find the cache data for the SAML request with the relay state [0].
                 //             The same request may have been sent more than once. It is a potential hack attack.
                 //Tr.error(tc, "SAML20_POTENTIAL_REPLAY_ATTACK", new Object[] { externalRelayState });
-                throw new SamlException("SAML20_POTENTIAL_REPLAY_ATTACK",
-                                //"CWWKS5030E: Cannot handle the SAML request. Make sure the communication is working properly and try the requesting procedure again.",
-                                null, // cause
-                                new Object[] { externalRelayState });
+                try {
+                    cachedRequestInfo = irUtil.recreateHttpRequestInfo(externalRelayState, this.request, this.response, this.ssoService);
+                } catch(SamlException e) {
+                    Tr.debug(tc,  "cannot recreate HttpRequestInfo using InitialRequest cookie", e.getMessage());
+                    throw e;
+                }    
+//                throw new SamlException("SAML20_POTENTIAL_REPLAY_ATTACK",
+//                                //"CWWKS5030E: Cannot handle the SAML request. Make sure the communication is working properly and try the requesting procedure again.",
+//                                null, // cause
+//                                new Object[] { externalRelayState });
             } else {
                 cache.remove(cacheKey); // the cache can only be used once
+                irUtil.removeCookie(externalRelayState, request, response);
             }
         }
     }

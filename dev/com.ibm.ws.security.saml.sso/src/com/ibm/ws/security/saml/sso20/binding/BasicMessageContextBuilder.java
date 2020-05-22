@@ -71,20 +71,19 @@ public class BasicMessageContextBuilder<InboundMessageType extends SAMLObject, O
     BasicMessageContext<InboundMessageType, OutboundMessageType, NameIdentifierType> getBasicMessageContext(SsoSamlService ssoService) {
         return new BasicMessageContext<InboundMessageType, OutboundMessageType, NameIdentifierType>(ssoService);
     }
+    
+    BasicMessageContext<InboundMessageType, OutboundMessageType, NameIdentifierType> getBasicMessageContext(SsoSamlService ssoService, HttpServletRequest request, HttpServletResponse response) {
+        return new BasicMessageContext<InboundMessageType, OutboundMessageType, NameIdentifierType>(ssoService, request, response);
+    }
 
-    @FFDCIgnore({ SamlException.class })
     public BasicMessageContext<InboundMessageType, OutboundMessageType, NameIdentifierType> buildAcs(HttpServletRequest req,
                                                                                                      HttpServletResponse res,
                                                                                                      SsoSamlService ssoService,
                                                                                                      String externalRelayState,
                                                                                                      SsoRequest samlRequest) throws SamlException {
-        BasicMessageContext<InboundMessageType, OutboundMessageType, NameIdentifierType> basicMessageContext = getBasicMessageContext(ssoService);
-        try {
-            basicMessageContext.setAndRemoveCachedRequestInfo(externalRelayState, samlRequest);
-        } catch(SamlException e) {
-            Tr.debug(tc,  "Cannot retrieve HttpRequestInfo from cache : ", e.getMessage());
-        }
-        
+        BasicMessageContext<InboundMessageType, OutboundMessageType, NameIdentifierType> basicMessageContext = getBasicMessageContext(ssoService, req, res);
+            
+        basicMessageContext.setAndRemoveCachedRequestInfo(externalRelayState, samlRequest); 
         basicMessageContext.setInboundMessageTransport(new HttpServletRequestAdapter(req));
         setIdpMetadaProvider(basicMessageContext);
         //setSecurityPolicyResolver(basicMessageContext);

@@ -81,7 +81,7 @@ public class HttpRequestInfo implements Serializable {
      */
     public HttpRequestInfo(HttpServletRequest request) throws SamlException {
         this.reqUrl = request.getRequestURL().toString(); // keep this for restore the saved parameters (on SAMLReqponseTai)
-        this.requestURL = getReqURL(request); // save the requestURL and queries if any
+        this.requestURL = getRequestURL(request); // save the requestURL and queries if any
         // bFromRequest = true;
         this.method = request.getMethod();
         this.strInResponseToId = SamlUtil.generateRandomID();
@@ -157,8 +157,16 @@ public class HttpRequestInfo implements Serializable {
     }
 
     // for FAT
-    public String getRequestUrl() {
+    public String getReqUrl() {
         return this.reqUrl;
+    }
+    
+    public String getRequestUrl() {
+        return this.requestURL;
+    }
+    
+    public Map getSavedPostParams() {
+        return this.savedPostParams;
     }
 
     public String getFragmentCookieId() {
@@ -266,7 +274,7 @@ public class HttpRequestInfo implements Serializable {
         return birthTime;
     }
 
-    static public String getReqURL(HttpServletRequest req) {
+    static public String getRequestURL(HttpServletRequest req) {
         StringBuffer reqURL = req.getRequestURL();
         String queryString = req.getQueryString();
         if (queryString != null) {

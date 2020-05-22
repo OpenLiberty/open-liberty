@@ -130,7 +130,7 @@ public class Solicited {
         }
         String relayState = Constants.SP_INITAL + shortRelayState;
         RequestUtil.cacheRequestInfo(shortRelayState, ssoService, cachingRequestInfo); // cache with shorRelayState
-        irUtil.handleSerializingInitialRequest(req, resp, relayState, ssoService);
+        irUtil.handleSerializingInitialRequest(req, resp, Constants.SP_INITAL, shortRelayState, cachingRequestInfo, ssoService);
         TAIResult result = postIdp(req, resp, strAuthnRequest, relayState, idpUrl, cachingRequestInfo); // send out with the long relayState
         return result;
     }

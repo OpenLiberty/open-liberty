@@ -205,6 +205,7 @@ public class UnsolicitedHandler {
             requestInfo = (HttpRequestInfo) cache.get(cacheKey);
             if (requestInfo != null) {
                 cache.remove(cacheKey); // the cache can only be used once
+                irUtil.removeCookie(relayState, request, response);
             } else { // since there is a cookie value with idp_initial exists, it does mean that the request was originated at our saml sp side
                 try {
                     requestInfo = irUtil.recreateHttpRequestInfo(relayState, this.request, this.response, this.ssoService);
