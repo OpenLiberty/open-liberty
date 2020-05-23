@@ -318,6 +318,8 @@ public class SolicitedTest {
                 will(returnValue(metadataProvider));
                 one(ssoConfig).isAuthnRequestsSigned();
                 will(returnValue(false));
+                one(ssoService).getPrivateKey();
+                will(returnValue(null));
             }
         });
 
@@ -576,7 +578,7 @@ public class SolicitedTest {
     }
 
     @Test
-    public void testGetAuthnRequestString_BadDocument() throws XMLParserException {
+    public void testGetAuthnRequestString_BadDocument() throws XMLParserException, KeyStoreException, CertificateException {
         final XMLParserException e = new XMLParserException();
         final ParserPool badParserPool = mockery.mock(ParserPool.class, "badParserPool");
         Configuration.setParserPool(badParserPool);
@@ -587,6 +589,12 @@ public class SolicitedTest {
                 will(throwException(e));
                 allowing(request).getAttribute("FormLogoutExitPage");
                 will(returnValue(null));
+                allowing(ssoService).getPrivateKey();
+                //will(returnValue(null));
+                //one(ssoService).getConfig();
+                //will(returnValue(ssoConfig));
+                allowing(ssoConfig).getKeyStoreRef();
+                will(returnValue("unitTestKeyStoreRef"));
             }
         });
 

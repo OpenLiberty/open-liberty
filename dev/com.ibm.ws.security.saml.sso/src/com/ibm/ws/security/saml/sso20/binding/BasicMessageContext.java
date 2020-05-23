@@ -325,11 +325,14 @@ public class BasicMessageContext<InboundMessageType extends SAMLObject, Outbound
                 } catch(SamlException e) {
                     Tr.debug(tc,  "cannot recreate HttpRequestInfo using InitialRequest cookie", e.getMessage());
                     throw e;
-                }    
-//                throw new SamlException("SAML20_POTENTIAL_REPLAY_ATTACK",
-//                                //"CWWKS5030E: Cannot handle the SAML request. Make sure the communication is working properly and try the requesting procedure again.",
-//                                null, // cause
-//                                new Object[] { externalRelayState });
+                } 
+                if (cachedRequestInfo == null) {
+                  throw new SamlException("SAML20_POTENTIAL_REPLAY_ATTACK",
+                  //"CWWKS5030E: Cannot handle the SAML request. Make sure the communication is working properly and try the requesting procedure again.",
+                  null, // cause
+                  new Object[] { externalRelayState });
+                }
+
             } else {
                 cache.remove(cacheKey); // the cache can only be used once
                 irUtil.removeCookie(externalRelayState, request, response);

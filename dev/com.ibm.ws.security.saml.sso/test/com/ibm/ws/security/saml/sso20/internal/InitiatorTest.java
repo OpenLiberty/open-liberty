@@ -169,6 +169,8 @@ public class InitiatorTest {
                 will(returnValue(true));
                 allowing(ssoService).getProviderId();
                 will(returnValue(PROVIDER_ID));
+                allowing(ssoService).getPrivateKey();
+                will(returnValue(null));
                 allowing(ssoService).getDefaultKeyStorePassword();
                 will(returnValue(DEFAULT_KS_PASS));
                 allowing(ssoService).getConfig();

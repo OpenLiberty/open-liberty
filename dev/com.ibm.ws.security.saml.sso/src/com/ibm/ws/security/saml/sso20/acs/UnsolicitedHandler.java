@@ -196,7 +196,7 @@ public class UnsolicitedHandler {
      * @return
      * @throws SamlException
      */
-    protected HttpRequestInfo getCachedRequestInfo(String relayState, Cache cache) {
+    protected HttpRequestInfo getCachedRequestInfo(String relayState, Cache cache) throws SamlException {
         if (relayState == null)
             return null;
         HttpRequestInfo requestInfo = null;
@@ -207,11 +207,7 @@ public class UnsolicitedHandler {
                 cache.remove(cacheKey); // the cache can only be used once
                 irUtil.removeCookie(relayState, request, response);
             } else { // since there is a cookie value with idp_initial exists, it does mean that the request was originated at our saml sp side
-                try {
-                    requestInfo = irUtil.recreateHttpRequestInfo(relayState, this.request, this.response, this.ssoService);
-                } catch(SamlException e) {
-                    Tr.debug(tc,  "cannot recreate HttpRequestInfo using InitialRequest cookie", e.getMessage());
-                }    
+                requestInfo = irUtil.recreateHttpRequestInfo(relayState, this.request, this.response, this.ssoService);
             }
         }
         return requestInfo;

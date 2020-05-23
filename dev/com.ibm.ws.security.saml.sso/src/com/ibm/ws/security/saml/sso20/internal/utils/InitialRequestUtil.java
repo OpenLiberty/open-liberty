@@ -16,6 +16,9 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.security.KeyStoreException;
+import java.security.PrivateKey;
+import java.security.cert.CertificateException;
 import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,13 +56,29 @@ public class InitialRequestUtil {
      * @param ssoService
      * @return
      */
+    @FFDCIgnore({ KeyStoreException.class, CertificateException.class })
     public String digestInitialRequestCookieValue(String irBytes, SsoSamlService ssoService) {
 
         String retVal = new String(irBytes);
         String key_alias_pass = "samlsp";
-        String default_ks_pass = ssoService.getDefaultKeyStorePassword();
-        if (default_ks_pass != null) {
-            key_alias_pass.concat(default_ks_pass);
+        PrivateKey key = null;
+        try {
+            key = ssoService.getPrivateKey();
+        } catch (KeyStoreException e) {
+           
+        } catch (CertificateException e) {
+         
+        }
+        if (key != null) {
+            byte[] encodedKey = key.getEncoded();
+            if (encodedKey != null) {
+                key_alias_pass.concat(JsonUtils.convertToBase64(encodedKey));
+            }
+        } else {
+            String default_ks_pass = ssoService.getDefaultKeyStorePassword();
+            if (default_ks_pass != null) {
+                key_alias_pass.concat(default_ks_pass);
+            }
         }
 
         String tmpStr = new String(irBytes);

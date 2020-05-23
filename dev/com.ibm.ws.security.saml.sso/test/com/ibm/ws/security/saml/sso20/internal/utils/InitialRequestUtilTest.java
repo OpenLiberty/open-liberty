@@ -15,6 +15,8 @@ import static org.junit.Assert.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.security.KeyStoreException;
+import java.security.cert.CertificateException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -108,12 +110,20 @@ public class InitialRequestUtilTest {
     @Test
     public void testDigestInitialRequestCookieValue() {
         String irBytesStr = getInitialRequestString();
-        mockery.checking(new Expectations() {
-            {
-                allowing(ssoService).getDefaultKeyStorePassword();
-                will(returnValue(null));      
-            }
-        });
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    allowing(ssoService).getPrivateKey();
+                    will(returnValue(null));
+                    allowing(ssoService).getDefaultKeyStorePassword();
+                    will(returnValue(null));      
+                }
+            });
+        } catch (KeyStoreException e) {
+
+        } catch (CertificateException e) {
+
+        }
         String cookiedigest = irUtil.digestInitialRequestCookieValue(irBytesStr, ssoService);
         String expect = "rO0ABXNyADxjb20uaWJtLndzLnNlY3VyaXR5LnNhbWwuc3NvMjAuaW50ZXJuYWwudXRpbHMuSW5pdGlhbFJlcXVlc3QAAAAAAAAAAQMACFoAFGlzRm9ybUxvZ291dEV4aXRQYWdlTAASZm9ybUxvZ291dEV4aXRQYWdldAASTGphdmEvbGFuZy9TdHJpbmc7TAAGbWV0aG9kcQB-AAFMAApwb3N0UGFyYW1zcQB-AAFMAAZyZXFVcmxxAH4AAUwACnJlcXVlc3RVUkxxAH4AAUwAD3NhdmVkUG9zdFBhcmFtc3QAE0xqYXZhL3V0aWwvSGFzaE1hcDtMABFzdHJJblJlc3BvbnNlVG9JZHEAfgABeHB3gwAraHR0cHM6Ly9sb2NhbGhvc3Q6ODAyMC9zYW1sY2xpZW50L3NwMS9zbm9vcAAraHR0cHM6Ly9sb2NhbGhvc3Q6ODAyMC9zYW1sY2xpZW50L3NwMS9zbm9vcAADR0VUACFfMG5EU2czOVc5TU1NUkpNMGc1MUM1b3RHbFdLOVV4V3oAeA_YQEzoMCRqkVb4orBZ8pgJT5EomZsyeOgFjnTHChNNCE=";
         assertEquals("Did not find expected cookie digest.", expect, cookiedigest);
@@ -127,40 +137,13 @@ public class InitialRequestUtilTest {
         String method = "GET";
         String inResp = "_0nDSg39W9MMMRJM0g51C5otGlWK9UxWz";
         String logoutPage = null;
-        InitialRequest ir = null;
-        String irBytesStr = null;  
+        InitialRequest ir = null;  
         try {
             ir = new InitialRequest(HTTP_SERVLET_REQUEST_MCK, requestUrl, requestUrl,method,inResp, logoutPage, null);
         } catch (SamlException e) {
 
         }
         return ir;
-//        if (ir != null) {
-//            byte[] irBytes = null;       
-//            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-//            ObjectOutputStream out = null;
-//            try {
-//              try {
-//                out = new ObjectOutputStream(bos);
-//                out.writeObject(ir);
-//                out.flush();
-//                irBytes = bos.toByteArray();
-//                if (irBytes != null) {
-//                    irBytesStr = JsonUtils.convertToBase64(irBytes);
-//                }
-//            } catch (IOException e) {
-//               
-//            }     
-//             
-//            } finally {
-//              try {
-//                bos.close();
-//              } catch (IOException ex) {
-//                
-//              }
-//            }
-//        }
-//        return irBytesStr;
     }
     
     /**
@@ -203,12 +186,20 @@ public class InitialRequestUtilTest {
      */
     @Test
     public void testGetInitialRequestCookie() {
-        mockery.checking(new Expectations() {
-            {
-                allowing(ssoService).getDefaultKeyStorePassword();
-                will(returnValue(null));      
-            }
-        });
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    allowing(ssoService).getPrivateKey();
+                    will(returnValue(null));
+                    allowing(ssoService).getDefaultKeyStorePassword();
+                    will(returnValue(null));      
+                }
+            });
+        } catch (KeyStoreException e) {
+
+        } catch (CertificateException e) {
+
+        }
         String ircookie = "rO0ABXNyADxjb20uaWJtLndzLnNlY3VyaXR5LnNhbWwuc3NvMjAuaW50ZXJuYWwudXRpbHMuSW5pdGlhbFJlcXVlc3QAAAAAAAAAAQMACFoAFGlzRm9ybUxvZ291dEV4aXRQYWdlTAASZm9ybUxvZ291dEV4aXRQYWdldAASTGphdmEvbGFuZy9TdHJpbmc7TAAGbWV0aG9kcQB-AAFMAApwb3N0UGFyYW1zcQB-AAFMAAZyZXFVcmxxAH4AAUwACnJlcXVlc3RVUkxxAH4AAUwAD3NhdmVkUG9zdFBhcmFtc3QAE0xqYXZhL3V0aWwvSGFzaE1hcDtMABFzdHJJblJlc3BvbnNlVG9JZHEAfgABeHB3gwAraHR0cHM6Ly9sb2NhbGhvc3Q6ODAyMC9zYW1sY2xpZW50L3NwMS9zbm9vcAAraHR0cHM6Ly9sb2NhbGhvc3Q6ODAyMC9zYW1sY2xpZW50L3NwMS9zbm9vcAADR0VUACFfMG5EU2czOVc5TU1NUkpNMGc1MUM1b3RHbFdLOVV4V3oAeA_YQEzoMCRqkVb4orBZ8pgJT5EomZsyeOgFjnTHChNNCE=";
         String initial = irUtil.getInitialRequestCookie(ircookie, ssoService);
         String expect = "rO0ABXNyADxjb20uaWJtLndzLnNlY3VyaXR5LnNhbWwuc3NvMjAuaW50ZXJuYWwudXRpbHMuSW5pdGlhbFJlcXVlc3QAAAAAAAAAAQMACFoAFGlzRm9ybUxvZ291dEV4aXRQYWdlTAASZm9ybUxvZ291dEV4aXRQYWdldAASTGphdmEvbGFuZy9TdHJpbmc7TAAGbWV0aG9kcQB-AAFMAApwb3N0UGFyYW1zcQB-AAFMAAZyZXFVcmxxAH4AAUwACnJlcXVlc3RVUkxxAH4AAUwAD3NhdmVkUG9zdFBhcmFtc3QAE0xqYXZhL3V0aWwvSGFzaE1hcDtMABFzdHJJblJlc3BvbnNlVG9JZHEAfgABeHB3gwAraHR0cHM6Ly9sb2NhbGhvc3Q6ODAyMC9zYW1sY2xpZW50L3NwMS9zbm9vcAAraHR0cHM6Ly9sb2NhbGhvc3Q6ODAyMC9zYW1sY2xpZW50L3NwMS9zbm9vcAADR0VUACFfMG5EU2czOVc5TU1NUkpNMGc1MUM1b3RHbFdLOVV4V3oAeA";
