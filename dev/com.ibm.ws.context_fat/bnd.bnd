@@ -21,8 +21,8 @@ fat.project: true
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)
 -buildpath: \
 	io.openliberty.jakarta.annotation.2.0;version=latest,\
-	com.ibm.websphere.jakartaee.servlet.5.0;version=latest,\
 	io.openliberty.jakarta.transaction.2.0;version=latest,\
+	io.openliberty.jakarta.servlet.5.0;version=latest,\
 	com.ibm.websphere.jakarta.concurrency.2.0;version=latest,\
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.ws.context

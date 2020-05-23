@@ -12,7 +12,7 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-Bundle-SymbolicName: com.ibm.websphere.jakartaee.servlet.5.0; singleton:=true
+Bundle-SymbolicName: io.openliberty.jakarta.servlet.5.0; singleton:=true
 
 Export-Package: \
    	jakarta.servlet;uses:="jakarta.servlet.annotation,jakarta.servlet.descriptor";version="5.0.0",\
