@@ -348,13 +348,13 @@ public class JSONFieldsTest {
         getHttpServlet("/extFields/removeExtFields", server_xml);
         getHttpServlet("/extFields/CreateLogs", server_xml);
         nextMessage = server_xml.waitForStringInLogUsingMark("liberty_message");
-        assertFalse("The extension field name was not omitted", nextMessage.contains("ext_testExtension"));
+        assertFalse("The extension field name was not unregistered", nextMessage.contains("ext_testExtension"));
 
         server_xml.setMarkToEndOfLog();
 
         getHttpServlet("/extFields/CreateLogs", server_xml); //just to make sure last rename field is not present
         nextMessage = server_xml.waitForStringInLogUsingMark("liberty_message");
-        assertFalse("The extension field name was not omitted", nextMessage.contains("MY_EXTENSION"));
+        assertFalse("The extension field name was not unregistered", nextMessage.contains("MY_EXTENSION"));
     }
 
     private static void setServerConfiguration(boolean isjsonFields, String newFieldName, LibertyServer server) throws Exception {
