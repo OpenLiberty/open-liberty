@@ -11,24 +11,24 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+Bundle-SymbolicName: io.openliberty.jakarta.jsonp.2.0
 
-Bundle-SymbolicName: com.ibm.websphere.jakarta.jsonb.2.0
-
+# Optionally import glassfish RI because spec jar does Class.forName() of it as a fallback option
+Import-Package: \
+   org.glassfish.json;resolution:=optional, \
+   *
 
 Export-Package: \
-   jakarta.json.bind;version="2.0", \
-   jakarta.json.bind.adapter;version="2.0", \
-   jakarta.json.bind.annotation;version="2.0", \
-   jakarta.json.bind.config;version="2.0", \
-   jakarta.json.bind.serializer;version="2.0", \
-   jakarta.json.bind.spi;version="2.0"
-
+   jakarta.json;thread-context=true;version=2.0, \
+   jakarta.json.spi;version=2.0, \
+   jakarta.json.stream;version=2.0
+ 
 Include-Resource: \
-  @${repo; jakarta.json.bind:jakarta.json.bind-api;2.0.0}!/META-INF/NOTICE
+  @${repo;jakarta.json:jakarta.json-api;2.0.0.RC2}!/!module-info.class
 
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-	 jakarta.json.bind:jakarta.json.bind-api;version=2.0.0
+	 jakarta.json:jakarta.json-api;version=2.0.0
