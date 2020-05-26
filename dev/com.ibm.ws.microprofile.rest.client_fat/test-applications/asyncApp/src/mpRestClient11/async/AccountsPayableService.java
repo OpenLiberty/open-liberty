@@ -10,6 +10,9 @@
  *******************************************************************************/
 package mpRestClient11.async;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadInfo;
+import java.lang.management.ThreadMXBean;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
@@ -127,18 +130,41 @@ public class AccountsPayableService {
             Double remainingBalanceInAccount = bankAccountClient.withdraw(paymentAmt)
                                                                 .toCompletableFuture()
                                                                 .get(myTimeout, TimeUnit.SECONDS);
-            _log.info("balance remaining in bank after withdrawal: " + remainingBalanceInAccount);
+            _log.info("balance remaining in bank after withdrawal: " + remainingBalanceInAccount);            
         } catch (ExecutionException | InterruptedException | TimeoutException ex) {
             Throwable t = ex.getCause();
             if (t != null && t instanceof InsufficientFundsException) {
                 throw (InsufficientFundsException) t;
             }
             _log.log(Level.WARNING, "Caught unexpected exception: " + ex + " with cause " + t);
+            
+            _log.info(crunchifyGenerateThreadDump());
         }
 
         Double remainingBalance = balance - paymentAmt;
         accountBalances.put(acctNumber, remainingBalance);
         _log.info("pay " + acctNumber + " " + remainingBalance);
         return remainingBalance;
+    }
+    
+    public static String crunchifyGenerateThreadDump() {
+        final StringBuilder dump = new StringBuilder();
+        final ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
+        final ThreadInfo[] threadInfos = threadMXBean.getThreadInfo(threadMXBean.getAllThreadIds(), 100);
+        for (ThreadInfo threadInfo : threadInfos) {
+            dump.append('"');
+            dump.append(threadInfo.getThreadName());
+            dump.append("\" ");
+            final Thread.State state = threadInfo.getThreadState();
+            dump.append("\n   java.lang.Thread.State: ");
+            dump.append(state);
+            final StackTraceElement[] stackTraceElements = threadInfo.getStackTrace();
+            for (final StackTraceElement stackTraceElement : stackTraceElements) {
+                dump.append("\n        at ");
+                dump.append(stackTraceElement);
+            }
+            dump.append("\n\n");
+        }
+        return dump.toString();
     }
 }
