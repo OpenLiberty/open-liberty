@@ -180,7 +180,7 @@ public class InitialRequestUtil {
         HttpRequestInfo requestInfo = null;
         String initialrequest_cookie_name = updateInitialRequestCookieNameWithRelayState(relayState);
         String initialrequest_cookie_value_digest = null;
-        if (initialrequest_cookie_name != null) {
+        if (initialrequest_cookie_name != null && request != null && response != null) {
             initialrequest_cookie_value_digest = RequestUtil.getCookieId((IExtendedRequest) request, response, initialrequest_cookie_name);
             RequestUtil.removeCookie(request, response, initialrequest_cookie_name); // removing initial request cookie
         }        
@@ -212,7 +212,7 @@ public class InitialRequestUtil {
      */
     public void removeCookie(String relayState, HttpServletRequest request, HttpServletResponse response) {
         String initialCookieName = updateInitialRequestCookieNameWithRelayState(relayState);
-        if (initialCookieName != null) {
+        if (initialCookieName != null && request != null && response != null) {
             RequestUtil.removeCookie(request, response, initialCookieName);
         }            
     }
