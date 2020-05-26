@@ -24,8 +24,8 @@ Web-ContextPath: @privateMetricsURL
 OL-VirtualHost: ${admin.virtual.host}
 
 Import-Package: \
-	org.eclipse.microprofile.metrics;version="[1.0,3)",\
-	org.eclipse.microprofile.metrics.*;version="[1.0,3)",\
+	org.eclipse.microprofile.metrics;version="[1.0,4)",\
+	org.eclipse.microprofile.metrics.*;version="[1.0,4)",\
 	*
 
 Private-Package: \
