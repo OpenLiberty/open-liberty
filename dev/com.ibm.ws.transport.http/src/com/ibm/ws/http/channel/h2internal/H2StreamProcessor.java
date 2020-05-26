@@ -833,39 +833,41 @@ public class H2StreamProcessor {
 
         if (currentFrame instanceof FrameData) {
             long frameSize = currentFrame.getPayloadLength();
+            if (frameSize > 0) {
+                synchronized (muxLink.getReadWindowSync()) {
+                    // given the current data frame size, update the read windows
+                    streamReadWindowSize -= frameSize; // decrement stream read window
+                    muxLink.connectionReadWindowSize -= frameSize; // decrement connection read window
 
-            // given the current data frame size, update the read windows
-            streamReadWindowSize -= frameSize; // decrement stream read window
-            muxLink.connectionReadWindowSize -= frameSize; // decrement connection read window
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "updateStreamReadWindow: stream read limit: " + streamReadWindowSize + " connection limit:"
+                                     + muxLink.connectionReadWindowSize);
+                    }
+                    if (streamReadWindowSize < 0 || muxLink.connectionReadWindowSize < 0) {
+                        throw new FlowControlException("Too much data received from the remote client");
+                    }
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "updateStreamReadWindow: stream read limit: " + streamReadWindowSize + " connection limit:"
-                             + muxLink.connectionReadWindowSize);
+                    // update the connection read limit to its max
+                    int windowChange = (int) (muxLink.maxReadWindowSize - muxLink.connectionReadWindowSize);
+                    FrameWindowUpdate wuf = new FrameWindowUpdate(0, windowChange, false);
+                    muxLink.getStream(0).processNextFrame(wuf, Direction.WRITING_OUT);
+                    muxLink.connectionReadWindowSize += windowChange;
+
+                    // update the stream read limit to its max
+                    windowChange = (int) (muxLink.maxReadWindowSize - this.streamReadWindowSize);
+                    Frame savedFrame = currentFrame; // save off the current frame
+                    if (!currentFrame.flagEndStreamSet()) {
+                        currentFrame = new FrameWindowUpdate(myID, windowChange, false);
+                        writeFrameSync();
+                        streamReadWindowSize += windowChange;
+                        currentFrame = savedFrame;
+                    }
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "updateStreamReadWindow: window updates sent; new stream read limit: " + streamReadWindowSize
+                                     + " connection limit:" + muxLink.connectionReadWindowSize);
+                    }
+                }
             }
-            if (streamReadWindowSize < 0 || muxLink.connectionReadWindowSize < 0) {
-                throw new FlowControlException("Too much data received from the remote client");
-            }
-
-            // update the connection read limit to its max
-            int windowChange = (int) (muxLink.maxReadWindowSize - muxLink.connectionReadWindowSize);
-            FrameWindowUpdate wuf = new FrameWindowUpdate(0, windowChange, false);
-            muxLink.getStream(0).processNextFrame(wuf, Direction.WRITING_OUT);
-            muxLink.connectionReadWindowSize += windowChange;
-
-            // update the stream read limit to its max
-            windowChange = (int) (muxLink.maxReadWindowSize - this.streamReadWindowSize);
-            Frame savedFrame = currentFrame; // save off the current frame
-            if (!currentFrame.flagEndStreamSet()) {
-                currentFrame = new FrameWindowUpdate(myID, windowChange, false);
-                writeFrameSync();
-                streamReadWindowSize += windowChange;
-                currentFrame = savedFrame;
-            }
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "updateStreamReadWindow: window updates sent; new stream read limit: " + streamReadWindowSize 
-                         + " connection limit:" + muxLink.connectionReadWindowSize);
-            }
-
         }
     }
 

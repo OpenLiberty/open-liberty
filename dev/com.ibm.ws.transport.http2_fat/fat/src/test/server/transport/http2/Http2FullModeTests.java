@@ -1758,6 +1758,17 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
+     * Test Coverage: Send multiple DATA frames
+     * Test Outcome: Expect WINDOW_UPDATE frames matching the DATA payloads sent
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testMultiStreamWindowUpdatesReceived() throws Exception {
+        runTest(dataServletPath, testName.getMethodName());
+    }
+
+    /**
      * Test Coverage: Send an excessive number of PING frames to the server
      * Test Outcome: GOAWAY received from server
      *
