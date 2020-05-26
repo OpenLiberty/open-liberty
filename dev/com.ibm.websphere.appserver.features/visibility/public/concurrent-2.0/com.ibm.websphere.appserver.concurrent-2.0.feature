@@ -23,5 +23,5 @@ Subsystem-Name: Jakarta EE Concurrency 2.0
  com.ibm.ws.javaee.platform.defaultresource, \
  com.ibm.ws.resource
 kind=noship
-edition=core
+edition=full
 WLP-Activation-Type: parallel

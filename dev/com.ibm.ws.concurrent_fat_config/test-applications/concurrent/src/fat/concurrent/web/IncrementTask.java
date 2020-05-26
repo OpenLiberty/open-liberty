@@ -16,8 +16,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import jakarta.enterprise.concurrent.ManagedTask;
-import jakarta.enterprise.concurrent.ManagedTaskListener;
+import javax.enterprise.concurrent.ManagedTask;
+import javax.enterprise.concurrent.ManagedTaskListener;
 
 /**
  * Task that adds 1 to a counter when it runs and returns the current count.
