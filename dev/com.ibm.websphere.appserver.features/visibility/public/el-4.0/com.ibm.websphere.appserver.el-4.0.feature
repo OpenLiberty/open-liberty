@@ -14,6 +14,6 @@ Subsystem-Version: 4.0.0
 Subsystem-Name: Jakarta Expression Language 4.0
 -features=com.ibm.websphere.appserver.jakarta.el-4.0
 -bundles=com.ibm.ws.org.apache.jasper.el.3.0.jakarta
-kind=noship
+kind=beta
 edition=core
 WLP-Activation-Type: parallel
