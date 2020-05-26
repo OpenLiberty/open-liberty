@@ -25,19 +25,21 @@ import java.sql.Statement;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
+import javax.annotation.Resource;
+import javax.annotation.Resource.AuthenticationType;
 import javax.inject.Inject;
 import javax.naming.InitialContext;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
-import javax.transaction.NotSupportedException;
 import javax.transaction.RollbackException;
-import javax.transaction.Status;
-import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 import javax.transaction.TransactionSynchronizationRegistry;
 import javax.transaction.UserTransaction;
+import javax.transaction.NotSupportedException;
+import javax.transaction.Transaction;
+import javax.transaction.Status;
 
 import org.junit.Test;
 
@@ -57,9 +59,8 @@ import componenttest.app.FATServlet;
 @WebServlet("/SimpleServlet")
 public class SimpleServlet extends FATServlet {
 
-// TODO: Reinstate When jdbc-4.x feature supports jakartaee9 and resource injection
-//    @Resource(name = "jdbc/derby", shareable = true, authenticationType = AuthenticationType.APPLICATION)
-//    DataSource ds;
+    @Resource(name = "jdbc/derby", shareable = true, authenticationType = AuthenticationType.APPLICATION)
+    DataSource ds;
 
     @Inject
     AsyncBean bean;
@@ -168,8 +169,6 @@ public class SimpleServlet extends FATServlet {
      * Test of basic database connectivity
      */
     @Test
-    // TODO: Remove skip when jdbc feature supports jakartaee9
-    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
     public void testBasicConnection(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         String statusString = "";
@@ -180,7 +179,6 @@ public class SimpleServlet extends FATServlet {
             UserTransaction tran = (UserTransaction) context.lookup("java:comp/UserTransaction");
 
             statusString = statusString + "UserTransaction=" + tran + "<br>";
-            DataSource ds = (DataSource) context.lookup("java:comp/env/jdbc/derby");
             statusString = statusString + "DataSource=" + ds + "<br>";
             Connection con = ds.getConnection();
 
@@ -272,11 +270,8 @@ public class SimpleServlet extends FATServlet {
      * @throws Exception if an error occurs.
      */
     @Test
-    // TODO: Remove skip when jdbc feature supports jakartaee9
-    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
     public void testTransactionEnlistment(HttpServletRequest request, HttpServletResponse response) throws Exception {
         InitialContext context = new InitialContext();
-        DataSource ds = (DataSource) context.lookup("java:comp/env/jdbc/derby");
         PrintWriter out = response.getWriter();
         Connection con = ds.getConnection();
         try {
@@ -376,11 +371,8 @@ public class SimpleServlet extends FATServlet {
      * LTC transaction.
      */
     @Test
-    // TODO: Remove skip when jdbc feature supports jakartaee9
-    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
     public void testImplicitLTCCommit(HttpServletRequest request, HttpServletResponse response) throws Exception {
         InitialContext context = new InitialContext();
-        DataSource ds = (DataSource) context.lookup("java:comp/env/jdbc/derby");
         Connection con = ds.getConnection();
         try {
             // Set up table
@@ -422,12 +414,9 @@ public class SimpleServlet extends FATServlet {
     }
 
     @Test
-    // TODO: Remove skip when jdbc feature supports jakartaee9
-    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
     @ExpectedFFDC(value = { "javax.transaction.NotSupportedException" })
     public void testNEW(HttpServletRequest request, HttpServletResponse response) throws Exception {
         InitialContext context = new InitialContext();
-        DataSource ds = (DataSource) context.lookup("java:comp/env/jdbc/derby");
         Connection con = ds.getConnection();
         try {
             // Set up table
@@ -480,12 +469,9 @@ public class SimpleServlet extends FATServlet {
     }
 
     @Test
-    // TODO: Remove skip when jdbc feature supports jakartaee9
-    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
     @ExpectedFFDC(value = { "javax.transaction.NotSupportedException" })
     public void testNEW2(HttpServletRequest request, HttpServletResponse response) throws Exception {
         InitialContext context = new InitialContext();
-        DataSource ds = (DataSource) context.lookup("java:comp/env/jdbc/derby");
         Connection con = ds.getConnection();
         try {
             // Set up table
@@ -541,11 +527,8 @@ public class SimpleServlet extends FATServlet {
      * LTC transaction.
      */
     @Test
-    // TODO: Remove skip when jdbc feature supports jakartaee9
-    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
     public void testExplicitLTCCommit(HttpServletRequest request, HttpServletResponse response) throws Exception {
         InitialContext context = new InitialContext();
-        DataSource ds = (DataSource) context.lookup("java:comp/env/jdbc/derby");
         Connection con = ds.getConnection();
         try {
             // Set up table
@@ -589,11 +572,8 @@ public class SimpleServlet extends FATServlet {
     }
 
     @Test
-    // TODO: Remove skip when jdbc feature supports jakartaee9
-    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
     public void testLTCAfterGlobalTran(HttpServletRequest request, HttpServletResponse response) throws Exception {
         InitialContext context = new InitialContext();
-        DataSource ds = (DataSource) context.lookup("java:comp/env/jdbc/derby");
         UserTransaction tran = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
         Statement stmt;
         Connection con;

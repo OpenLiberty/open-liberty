@@ -61,10 +61,10 @@ public class SimpleTest extends FATServletClient {
 
         // TODO: Revisit this after all features required by this FAT suite are available.
         // The test-specific public features, txtest-x.y, are not in the repeatable EE feature
-        // set. And, the ejb-4.0 feature is not yet available to enable transactions-2.0 and
-        // jdbc-4.3.  The following sets the appropriate features for the EE9 repeatable tests.
+        // set. And, the ejb-4.0 feature is not yet available. Enable jdbc-4.3 to enable transactions-2.0
+        // The following sets the appropriate features for the EE9 repeatable tests.
         if (JakartaEE9Action.isActive()) {
-            server.changeFeatures(Arrays.asList("jca-2.0", "txtest-2.0", "servlet-5.0", "componenttest-2.0", "osgiconsole-1.0", "jndi-1.0"));
+            server.changeFeatures(Arrays.asList("jdbc-4.3", "txtest-2.0", "servlet-5.0", "componenttest-2.0", "osgiconsole-1.0", "jndi-1.0"));
         }
 
         server.startServer();
