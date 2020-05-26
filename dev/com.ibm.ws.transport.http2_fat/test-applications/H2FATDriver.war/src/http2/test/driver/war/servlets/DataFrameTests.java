@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.ibm.ws.http.channel.h2internal.frames.FrameData;
 import com.ibm.ws.http.channel.h2internal.frames.FrameGoAway;
 import com.ibm.ws.http.channel.h2internal.frames.FrameHeaders;
+import com.ibm.ws.http.channel.h2internal.frames.FrameWindowUpdate;
 import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderField;
 import com.ibm.ws.http.channel.h2internal.hpack.HpackConstants;
 import com.ibm.ws.http2.test.Http2Client;
@@ -197,6 +198,52 @@ public class DataFrameTests extends H2FATDriverServlet {
         blockUntilConnectionIsDone.await();
         this.handleErrors(h2Client, testName);
 
+    }
+
+    /**
+     * Send a DATA frame with no EOS flag, and expect WINDOW_UPDATE frames from the server which restore its read window
+     */
+    public void testSimpleWindowUpdatesReceived(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
+
+        CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
+        String testName = "testSimpleWindowUpdatesReceived";
+        Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
+
+        // expect window updates on streams 0 (connection) and 3
+        FrameWindowUpdate streamUpdateFrame = new FrameWindowUpdate(3, 1000, false);
+        FrameWindowUpdate connectionUpdateFrame = new FrameWindowUpdate(0, 1000, false);
+        h2Client.addExpectedFrame(streamUpdateFrame);
+        h2Client.addExpectedFrame(connectionUpdateFrame);
+
+        FrameHeaders headers = setupDefaultPreface(h2Client);
+        h2Client.addExpectedFrame(headers);
+
+        List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_AND_BODY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField("harold", "padilla"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+
+        FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(3, null, 0, 0, 0, false, true, false, false, false, false);
+        frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
+
+        // generate 1000 bytes for data frame
+        byte[] data = new byte[999];
+        for (int i = 0; i < data.length; i++) {
+            data[i] = 0x01;
+        }
+        FrameData dataFrame = new FrameData(3, data, 0, false, true, false);
+
+        h2Client.waitFor(headers);
+        h2Client.sendFrame(frameHeadersToSend);
+        h2Client.sendFrame(dataFrame);
+
+        // now send EOS
+        dataFrame = new FrameData(3, "".getBytes(), 0, true, true, false);
+        h2Client.sendFrame(dataFrame);
+
+        blockUntilConnectionIsDone.await();
+        this.handleErrors(h2Client, testName);
     }
 
     public static byte[] hexStringToByteArray(String s) {
