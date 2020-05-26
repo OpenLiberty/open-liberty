@@ -130,7 +130,7 @@ public class AccountsPayableService {
             Double remainingBalanceInAccount = bankAccountClient.withdraw(paymentAmt)
                                                                 .toCompletableFuture()
                                                                 .get(myTimeout, TimeUnit.SECONDS);
-            _log.info("balance remaining in bank after withdrawal: " + remainingBalanceInAccount);            
+            _log.info("balance remaining in bank after withdrawal: " + remainingBalanceInAccount);
         } catch (ExecutionException | InterruptedException | TimeoutException ex) {
             Throwable t = ex.getCause();
             if (t != null && t instanceof InsufficientFundsException) {
