@@ -11,7 +11,7 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-Bundle-SymbolicName: com.ibm.websphere.jakartaee.jsp.3.0; singleton:=true
+Bundle-SymbolicName: io.openliberty.jakarta.jsp.3.0; singleton:=true
 
 Export-Package: \
 	jakarta.servlet.jsp; version="3.0.0",\
