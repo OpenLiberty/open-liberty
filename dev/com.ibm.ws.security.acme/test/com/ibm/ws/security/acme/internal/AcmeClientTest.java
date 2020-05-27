@@ -117,7 +117,7 @@ public class AcmeClientTest {
 		 */
 		Calendar cal = Calendar.getInstance();
 		Date notBefore = cal.getTime();
-		cal.add(Calendar.DAY_OF_MONTH, AcmeConstants.RENEW_DEFAULT_DAYS *2);
+		cal.setTimeInMillis(notBefore.getTime() + AcmeConstants.RENEW_DEFAULT_MS * 2);
 		Date notAfter = cal.getTime();
 		
 		AcmeClient acmeClient = new AcmeClient(acmeConfig);

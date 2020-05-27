@@ -45,7 +45,14 @@
 
    <!-- Revocation checker configuration. -->
    <AD id="acmeRevocationChecker" name="%acmeRevocationChecker" description="%acmeRevocationChecker.desc" type="String"  required="false" ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.security.acme.revocation" />
-  
+
+   <!-- Automatic renew or revoke checking configuration -->
+   <AD id="certCheckerSchedule"       name="internal" description="internal use only" type="String"  required="false" ibm:type="duration" default="1d" />
+   <AD id="certCheckerErrorSchedule"  name="internal" description="internal use only" type="String"  required="false" ibm:type="duration" default="1h" />
+   
+   <!--  Allow immediate REST renew requests -->
+   <AD id="disableMinRenewWindow"     name="internal" description="internal use only" type="Boolean"  required="false" default="false" />
+
  </OCD>
   
  <Designate factoryPid="com.ibm.ws.security.acme.transport">
