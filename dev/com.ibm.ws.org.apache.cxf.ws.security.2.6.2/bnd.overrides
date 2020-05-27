@@ -1,0 +1,58 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+WS-TraceGroup: WSSECURITY
+
+cxfVersion=2.6.2
+
+Bundle-Name: com.ibm.ws.org.apache.cxf.ws.security.2.6.2
+Bundle-Description: cxf ws security, version 2.6.2
+Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.ws.security.2.6.2
+Bundle-ActivationPolicy: lazy
+
+
+Export-Package: \
+  org.apache.cxf.ws.security.*
+
+Import-Package:  \
+  org.apache.cxf.*;version="[2.6.2,2.6.3)", \
+  javax.xml.*, \
+  org.apache.ws.*;version="[1.6.7,1.6.19)", \
+  com.ibm.websphere.ras, \
+  com.ibm.websphere.ras.annotation, \
+  com.ibm.ws.ffdc, \
+  net.sf.ehcache.*, \
+  org.apache.neethi.*, \
+  org.w3c.*, \
+  javax.security.*, \
+  javax.net.*, \
+  org.opensaml.common, \
+  org.opensaml.saml2.core.*, \
+  org.eclipse.jetty.*, \
+  org.glassfish.grizzly.*
+  
+DynamicImport-Package: \
+  org.bouncycastle.jce.provider
+
+Archiver-Version:
+Build-Jdk:
+Built-By:
+Bundle-DocURL:
+Bundle-License:
+Implementation-Title:
+Implementation-Vendor:
+Implementation-Vendor-Id:
+Implementation-Version:
+Specification-Title:
+Specification-Vendor:
+Specification-Version:

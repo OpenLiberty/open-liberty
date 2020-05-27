@@ -1,0 +1,53 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-ws-security;2.6.2;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
+
+cxfVersion=2.6.2
+    
+-includeresource: \
+    @${repo;org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/!META-INF/maven/*, \
+    @${repo;org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/META-INF/DEPENDENCIES, \
+    @${repo;org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/META-INF/LICENSE, \
+    @${repo;org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/META-INF/NOTICE, \
+    @${repo;org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/META-INF/cxf/*, \
+    META-INF/cxf/bus-extensions.txt=override/META-INF/cxf/bus-extensions.txt, \
+    cxf-ehcache.xml=resources/cxf-ehcache.xml, \
+    org/apache/cxf/ws/security/policy/interceptors/Messages.properties=resources/org/apache/cxf/ws/security/policy/interceptors/Messages.nlsprops, \
+    org/apache/cxf/ws/security/policy/model/Messages.properties=resources/org/apache/cxf/ws/security/policy/model/Messages.nlsprops, \
+    org/apache/cxf/ws/security/trust/Messages.properties=resources/org/apache/cxf/ws/security/trust/Messages.nlsprops, \
+    org/apache/cxf/ws/security/wss4j/Messages.properties=resources/org/apache/cxf/ws/security/wss4j/Messages.nlsprops, \
+    org/apache/cxf=${bin}/org/apache/cxf
+
+globalize: false
+
+instrument.ffdc: true
+
+instrument.classesIncludes: \
+    org/apache/cxf/binding/xml/interceptor/XMLFaultInInterceptor.class, \
+    org/apache/cxf/ws/security/wss4j/AbstractUsernameTokenAuthenticatingInterceptor.class, \
+    org/apache/cxf/ws/security/wss4j/AbstractWSS4JInterceptor.class, \
+    org/apache/cxf/ws/security/wss4j/PolicyBasedWSS4JInInterceptor.class, \
+    org/apache/cxf/ws/security/wss4j/PolicyBasedWSS4JOutInterceptor.class, \
+    org/apache/cxf/ws/security/wss4j/WSS4JInInterceptor.class, \
+    org/apache/cxf/ws/security/wss4j/WSS4JOutInterceptor.class
+
+-buildpath: \
+    org.apache.cxf:cxf-rt-ws-security;strategy=exact;version=${cxfVersion}, \
+    com.ibm.ws.org.apache.cxf.cxf.api.2.6.2;version=latest, \
+    com.ibm.ws.org.apache.cxf.cxf.rt.core.2.6.2;version=latest, \
+    com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.2.6.2;version=latest, \
+    com.ibm.ws.org.opensaml.opensaml.2.6.1;version=latest, \
+    com.ibm.ws.org.apache.ws.security.wss4j.1.6.7;version=latest, \
+    com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.2.6.2;version=latest, \
+    com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.2.6.2;version=latest, \
+    com.ibm.ws.org.apache.neethi.3.0.2;version=latest, \
+    com.ibm.ws.net.sf.ehcache.core.2.5.2;version=latest
+
