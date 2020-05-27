@@ -11,20 +11,35 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-Bundle-SymbolicName: io.openliberty.jakarta.activation.2.0; singleton:=true
+Bundle-SymbolicName: io.openliberty.jakarta.jaxb.3.0; singleton:=true
 
-Export-Package: \
-	jakarta.activation;version="2.0"
+Export-Package: jakarta.xml.bind.*;version="3.0"
 
-Private-Package: \
-    com.sun.activation.registries
+#Private-Package: org.apache.geronimo.osgi.locator
+
+Import-Package: \
+  jakarta.activation, \
+  javax.xml.namespace, \
+  javax.xml.stream, \
+  org.apache.geronimo.osgi.registry.api;resolution:=optional,\
+  !org.glassfish.hk2.osgiresourcelocator,\
+  *
+
+DynamicImport-Package: \
+  com.sun.xml.*
+
+#Bundle-Activator: org.apache.geronimo.osgi.locator.Activator
+
+#Include-Resource:\
+# @${repo;jakarta.xml.bind:jakarta.xml.bind-api;3.0.0-RC3;EXACT}!/!META-INF/maven/*
+# @${repo;org.apache.geronimo.specs:geronimo-jaxb_2.2_spec;1.0.1}!/org/apache/geronimo/osgi/locator/*, \
+# @${repo;org.apache.geronimo.specs:geronimo-jaxb_2.2_spec;1.0.1}!/javax/xml/bind/ContextFinder.class, \
+# @${repo;org.apache.geronimo.specs:geronimo-jaxb_2.2_spec;1.0.1}!/javax/xml/bind/JAXBContext.class, \
+# @${repo;org.apache.geronimo.specs:geronimo-jaxb_2.2_spec;1.0.1}!/javax/xml/bind/JAXBContext$1.class
 
 instrument.disabled: true
-
 
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-    com.sun.activation:jakarta.activation;version=2.0.0 
-    
-    
+	jakarta.xml.bind:jakarta.xml.bind-api;version=3.0.0
