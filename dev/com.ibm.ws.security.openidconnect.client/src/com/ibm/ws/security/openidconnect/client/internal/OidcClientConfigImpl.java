@@ -1468,7 +1468,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         }
         return true;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getAuthContextClassReference() {
