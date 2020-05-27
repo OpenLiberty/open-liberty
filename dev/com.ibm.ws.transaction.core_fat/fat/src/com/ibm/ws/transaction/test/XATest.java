@@ -12,6 +12,8 @@ package com.ibm.ws.transaction.test;
 
 import static org.junit.Assert.fail;
 
+import java.util.Arrays;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -26,6 +28,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -43,7 +46,6 @@ import componenttest.topology.utils.FATServletClient;
  * servlet referenced by the annotation, and will be run whenever this test class runs.
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat({ SkipForRepeat.EE8_FEATURES, SkipForRepeat.EE9_FEATURES })
 public class XATest extends FATServletClient {
 
     public static final String APP_NAME = "transaction";
@@ -61,6 +63,14 @@ public class XATest extends FATServletClient {
         // Exports the resulting application to the ${server.config.dir}/apps/ directory
         ShrinkHelper.defaultApp(server, APP_NAME, "com.ibm.ws.transaction.*");
 
+        // TODO: Revisit this after all features required by this FAT suite are available.
+        // The test-specific public features, txtest-x.y, are not in the repeatable EE feature
+        // set. And, the ejb-4.0 feature is not yet available. Enable jdbc-4.3 to enable transactions-2.0.
+        // The following sets the appropriate features for the EE9 repeatable tests.
+        if (JakartaEE9Action.isActive()) {
+            server.changeFeatures(Arrays.asList("jdbc-4.3", "txtest-2.0", "servlet-5.0", "componenttest-2.0", "osgiconsole-1.0", "jndi-1.0"));
+        }
+
         server.startServer();
     }
 
@@ -70,6 +80,7 @@ public class XATest extends FATServletClient {
     }
 
     @Test
+    @SkipForRepeat({ SkipForRepeat.EE8_FEATURES, SkipForRepeat.EE9_FEATURES })
     public void testSetTransactionTimeoutReturnsTrue() throws Exception {
         server.setMarkToEndOfLog();
         runTest(server, SERVLET_NAME, testName.getMethodName());
@@ -79,6 +90,7 @@ public class XATest extends FATServletClient {
     }
 
     @Test
+    @SkipForRepeat({ SkipForRepeat.EE8_FEATURES, SkipForRepeat.EE9_FEATURES })
     public void testSetTransactionTimeoutReturnsFalse() throws Exception {
         server.setMarkToEndOfLog();
         runTest(server, SERVLET_NAME, testName.getMethodName());
@@ -88,6 +100,7 @@ public class XATest extends FATServletClient {
     }
 
     @Test
+    @SkipForRepeat({ SkipForRepeat.EE8_FEATURES, SkipForRepeat.EE9_FEATURES })
     @ExpectedFFDC(value = { "javax.transaction.xa.XAException" })
     public void testSetTransactionTimeoutThrowsException() throws Exception {
         server.setMarkToEndOfLog();
