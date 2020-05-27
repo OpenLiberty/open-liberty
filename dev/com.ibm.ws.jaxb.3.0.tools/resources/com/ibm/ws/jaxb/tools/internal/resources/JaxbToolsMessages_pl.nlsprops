@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -22,4 +22,4 @@
 
 error.parameter.target.missed=CWWKW0700E: Wymagany element docelowy parametru nie zosta\u0142 okre\u015blony.
 error.parameter.target.missed.explanation=Je\u015bli parametr docelowy zostanie okre\u015blony, to po zaktualizowaniu poziomu specyfikacji JAXB obs\u0142ugiwanego przez profil Liberty istniej\u0105ce aplikacje b\u0119d\u0105 mog\u0142y zosta\u0107 ponownie wygenerowane bez konieczno\u015bci zmiany ich zachowania.
-error.parameter.target.missed.useraction=Podaj poziom specyfikacji JAXB, kt\u00f3rego dotyczy wygwnwrowany kod. Poprawne warto\u015bci to 2.0, 2.1 i 2.2.
+error.parameter.target.missed.useraction=Podaj poziom specyfikacji JAXB, kt\u00f3rego dotyczy wygwnwrowany kod. Poprawne warto\u015bci to 3.0
