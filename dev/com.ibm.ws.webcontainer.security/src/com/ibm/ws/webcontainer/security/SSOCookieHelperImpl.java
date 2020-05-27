@@ -83,6 +83,9 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
     @Override
     public boolean addJwtSsoCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp) {
         boolean result = false;
+        if (JwtSSOTokenHelper.isDisableJwtCookie()) {
+            return result;
+        }
         String cookieByteString = JwtSSOTokenHelper.getJwtSSOToken(subject);
         if (cookieByteString != null) {
             String testString = getJwtSsoTokenFromCookies(req, getJwtCookieName());
@@ -542,9 +545,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
     public void addSSOCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp) {
         if (!allowToAddCookieToResponse(req))
             return;
-        if (!JwtSSOTokenHelper.isDisableJwtCookie()) {
-            addJwtSsoCookiesToResponse(subject, req, resp);
-        }
+        addJwtSsoCookiesToResponse(subject, req, resp);
 
         if (!JwtSSOTokenHelper.shouldAlsoIncludeLtpaCookie()) {
             return;
