@@ -12,7 +12,7 @@
 bVersion=1.0
 
 Bundle-Name: gRPC Client
-Bundle-SymbolicName: com.ibm.ws.grpc.client
+Bundle-SymbolicName: io.openliberty.grpc.1.0.internal.client
 Bundle-Description: Liberty gRPC Client, version ${bVersion}
 
 # Using version=! in order to not have a version attached to the import for packages that were removed
@@ -71,11 +71,11 @@ instrument.disabled: true
 -buildpath: \
   com.ibm.websphere.javaee.servlet.4.0;version=latest,\
   com.ibm.websphere.security;version=latest,\
-  com.ibm.ws.grpc.common;version=latest,\
   com.ibm.ws.webcontainer;version=latest,\
   com.ibm.ws.logging.core;version=latest,\
   org.osgi.service.component.annotations;version=latest,\
-  io.grpc:grpc-netty-shaded;version=1.27.0
+  io.grpc:grpc-netty-shaded;version=1.27.0,\
+  io.openliberty.grpc.1.0.internal.common;version=latest
 
 -fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
 

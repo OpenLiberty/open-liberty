@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>com.ibm.ws.grpc</name>
+	<name>io.openliberty.grpc.1.0.internal.client</name>
 	<comment></comment>
 	<projects>
 	</projects>

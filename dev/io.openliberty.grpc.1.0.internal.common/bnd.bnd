@@ -12,7 +12,7 @@
 bVersion=1.0
 
 Bundle-Name: gRPC Common Components
-Bundle-SymbolicName: com.ibm.ws.grpc.common
+Bundle-SymbolicName: io.openliberty.grpc.1.0.internal.common
 Bundle-Description: gRPC Common Components, version ${bVersion}
 
 # Using version=! in order to not have a version attached to the import for packages that were removed

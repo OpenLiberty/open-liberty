@@ -13,7 +13,7 @@
 bVersion=1.0
 
 Bundle-Name: Liberty gRPC
-Bundle-SymbolicName: com.ibm.ws.grpc
+Bundle-SymbolicName: io.openliberty.grpc.1.0.internal
 Bundle-Description: Libery gRPC, version ${bVersion}
 
 -dsannotations: \
@@ -56,12 +56,12 @@ Include-Resource: \
   com.ibm.ws.resource;version=latest,\
   com.ibm.ws.anno;version=latest,\
   com.ibm.ws.logging.core,\
-  com.ibm.ws.grpc.common;version=latest,\
   com.ibm.ws.transport.http;version=latest,\
   com.ibm.ws.webcontainer,\
   com.google.code.findbugs:jsr305;version=3.0.2,\
   com.google.guava:guava;version=27.0.1,\
   com.ibm.ws.security.authorization.util,\
+  io.openliberty.grpc.1.0.internal.common;version=latest,\
   org.osgi.service.component.annotations;version=latest
 
 -testpath: \
