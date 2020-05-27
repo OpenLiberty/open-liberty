@@ -594,7 +594,7 @@ public class AsymmetricBindingHandler extends AbstractBindingBuilder {
                 }
             }
 
-            sig.prependBSTElementToHeader(secHeader); //~Failure here 
+            sig.prependBSTElementToHeader(secHeader); //~Failure here
             List<Reference> referenceList = sig.addReferencesToSign(sigParts, secHeader);
             //Do signature
             if (bottomUpElement == null) {

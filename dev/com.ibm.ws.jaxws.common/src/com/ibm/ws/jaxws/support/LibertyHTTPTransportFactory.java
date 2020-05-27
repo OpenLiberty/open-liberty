@@ -13,6 +13,7 @@ package com.ibm.ws.jaxws.support;
 import java.io.IOException;
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
+import java.security.PrivilegedActionException;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.xml.namespace.QName;
