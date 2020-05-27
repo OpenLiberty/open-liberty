@@ -42,6 +42,9 @@ public class CollectorJsonHelpers {
     private static String startGCJson = null;
     private static String startAuditJson = null;
     private static String startAuditJsonFields = null;
+    public static String hostName = null;
+    public static String wlpUserDir = null;
+    public static String serverName = null;
     private static final String TYPE_FIELD_KEY = "\"type";
     private static final String TYPE_FIELD_PREPPEND = "\":\"";
     private static final String TYPE_FIELD_APPEND = "\"";
@@ -195,11 +198,57 @@ public class CollectorJsonHelpers {
     }
 
     public static void updateFieldMappings() {
-        startMessageJsonFields = null;
-        startTraceJsonFields = null;
-        startAccessLogJsonFields = null;
-        startAuditJsonFields = null;
-        startFFDCJsonFields = null;
+        JSONObjectBuilder jsonBuilder = new JSONObjectBuilder();
+        //@formatter:off
+        jsonBuilder.addField(LogTraceData.getTypeKeyJSON(true), CollectorConstants.MESSAGES_LOG_EVENT_TYPE, false, false)
+        .addField(LogTraceData.getHostKeyJSON(true), hostName, false, false)
+        .addField(LogTraceData.getUserDirKeyJSON(true), wlpUserDir, false, true)
+        .addField(LogTraceData.getServerNameKeyJSON(true), serverName, false, false);
+        //@formatter:on
+        startMessageJsonFields = jsonBuilder.toString();
+
+        jsonBuilder = new JSONObjectBuilder();
+        //@formatter:off
+        jsonBuilder.addField(AuditData.getTypeKeyJSON(), CollectorConstants.AUDIT_LOG_EVENT_TYPE, false, false)
+        .addField(AuditData.getHostKeyJSON(), hostName, false, false)
+        .addField(AuditData.getUserDirKeyJSON(), wlpUserDir, false, true)
+        .addField(AuditData.getServerNameKeyJSON(), serverName, false, false);
+
+        //@formatter:on
+        startAuditJsonFields = jsonBuilder.toString();
+
+        jsonBuilder = new JSONObjectBuilder();
+        //@formatter:off
+        jsonBuilder.addField(LogTraceData.getTypeKeyJSON(false), CollectorConstants.TRACE_LOG_EVENT_TYPE, false, false)
+        .addField(LogTraceData.getHostKeyJSON(false), hostName, false, false)
+        .addField(LogTraceData.getUserDirKeyJSON(false), wlpUserDir, false, true)
+        .addField(LogTraceData.getServerNameKeyJSON(false), serverName, false, false);
+        //@formatter:on
+        startTraceJsonFields = jsonBuilder.toString();
+
+        // We should initialize both the regular JSON logging and LogstashCollector variants
+        for (int i = 0; i < 2; i++) {
+            jsonBuilder = new JSONObjectBuilder();
+            //@formatter:off
+            jsonBuilder.addField(AccessLogData.getTypeKey(i), CollectorConstants.ACCESS_LOG_EVENT_TYPE, false, false)
+            .addField(AccessLogData.getHostKey(i), hostName, false, false)
+            .addField(AccessLogData.getUserDirKey(i), wlpUserDir, false, true)
+            .addField(AccessLogData.getServerNameKey(i), serverName, false, false);
+            //@formatter:on
+            if (i == AccessLogData.KEYS_JSON)
+                startAccessLogJsonFields = jsonBuilder.toString();
+            else if (i == AccessLogData.KEYS_LOGSTASH)
+                startAccessLogLogstashCollector = jsonBuilder.toString();
+        }
+
+        jsonBuilder = new JSONObjectBuilder();
+        //@formatter:off
+        jsonBuilder.addField(FFDCData.getTypeKeyJSON(), CollectorConstants.FFDC_EVENT_TYPE, false, false)
+        .addField(FFDCData.getHostKeyJSON(), hostName, false, false)
+        .addField(FFDCData.getUserDirKeyJSON(), wlpUserDir, false, true)
+        .addField(FFDCData.getServerNameKeyJSON(), serverName, false, false);
+        //@formatter:on
+        startFFDCJsonFields = jsonBuilder.toString();
     }
 
     private static void addUnchangingFields(StringBuilder sb, String hostName, String wlpUserDir, String serverName) {
@@ -321,13 +370,8 @@ public class CollectorJsonHelpers {
         if (tempStartFields != null) {
             jsonBuilder.addPreformatted(tempStartFields);
         } else {
-            //@formatter:off
-            jsonBuilder.addField(AuditData.getTypeKeyJSON(), CollectorConstants.AUDIT_LOG_EVENT_TYPE, false, false)
-            .addField(AuditData.getHostKeyJSON(), hostName, false, false)
-            .addField(AuditData.getUserDirKeyJSON(), wlpUserDir, false, true)
-            .addField(AuditData.getServerNameKeyJSON(), serverName, false, false);
-            //@formatter:on
-            startAuditJsonFields = jsonBuilder.toString();
+            // This case should never happen because we initialize the field at the beginning of server startup, but what if something goes wrong?
+            // Should something be returned or have an exception thrown here?
         }
         return jsonBuilder;
     }
@@ -339,13 +383,8 @@ public class CollectorJsonHelpers {
         if (tempStartFields != null)
             jsonBuilder.addPreformatted(tempStartFields);
         else {
-            //@formatter:off
-            jsonBuilder.addField(LogTraceData.getTypeKeyJSON(true), CollectorConstants.MESSAGES_LOG_EVENT_TYPE, false, false)
-            .addField(LogTraceData.getHostKeyJSON(true), hostName, false, false)
-            .addField(LogTraceData.getUserDirKeyJSON(true), wlpUserDir, false, true)
-            .addField(LogTraceData.getServerNameKeyJSON(true), serverName, false, false);
-            //@formatter:on
-            startMessageJsonFields = jsonBuilder.toString();
+            // This case should never happen because we initialize the field at the beginning of server startup, but what if something goes wrong?
+            // Should something be returned or have an exception thrown here?
         }
         return jsonBuilder;
     }
@@ -357,13 +396,8 @@ public class CollectorJsonHelpers {
         if (tempStartFields != null)
             jsonBuilder.addPreformatted(tempStartFields);
         else {
-            //@formatter:off
-            jsonBuilder.addField(LogTraceData.getTypeKeyJSON(false), CollectorConstants.TRACE_LOG_EVENT_TYPE, false, false)
-            .addField(LogTraceData.getHostKeyJSON(false), hostName, false, false)
-            .addField(LogTraceData.getUserDirKeyJSON(false), wlpUserDir, false, true)
-            .addField(LogTraceData.getServerNameKeyJSON(false), serverName, false, false);
-            //@formatter:on
-            startTraceJsonFields = jsonBuilder.toString();
+            // This case should never happen because we initialize the field at the beginning of server startup, but what if something goes wrong?
+            // Should something be returned or have an exception thrown here?
         }
         return jsonBuilder;
     }
@@ -375,13 +409,8 @@ public class CollectorJsonHelpers {
         if (tempStartFields != null)
             jsonBuilder.addPreformatted(tempStartFields);
         else {
-            //@formatter:off
-            jsonBuilder.addField(FFDCData.getTypeKeyJSON(), CollectorConstants.FFDC_EVENT_TYPE, false, false)
-            .addField(FFDCData.getHostKeyJSON(), hostName, false, false)
-            .addField(FFDCData.getUserDirKeyJSON(), wlpUserDir, false, true)
-            .addField(FFDCData.getServerNameKeyJSON(), serverName, false, false);
-            //@formatter:on
-            startFFDCJsonFields = jsonBuilder.toString();
+            // This case should never happen because we initialize the field at the beginning of server startup, but what if something goes wrong?
+            // Should something be returned or have an exception thrown here?
         }
         return jsonBuilder;
     }
@@ -397,16 +426,8 @@ public class CollectorJsonHelpers {
         if (tempStartFields != null) {
             jsonBuilder.addPreformatted(tempStartFields);
         } else {
-            //@formatter:off
-            jsonBuilder.addField(AccessLogData.getTypeKey(format), CollectorConstants.ACCESS_LOG_EVENT_TYPE, false, false)
-            .addField(AccessLogData.getHostKey(format), hostName, false, false)
-            .addField(AccessLogData.getUserDirKey(format), wlpUserDir, false, true)
-            .addField(AccessLogData.getServerNameKey(format), serverName, false, false);
-            //@formatter:on
-            if (format == AccessLogData.KEYS_JSON)
-                startAccessLogJsonFields = jsonBuilder.toString();
-            else if (format == AccessLogData.KEYS_LOGSTASH)
-                startAccessLogLogstashCollector = jsonBuilder.toString();
+            // This case should never happen because we initialize the field at the beginning of server startup, but what if something goes wrong?
+            // Should something be returned or have an exception thrown here?
         }
         return jsonBuilder;
     }

@@ -492,6 +492,8 @@ public class BaseTraceService implements TrService {
             LogTraceData.resetJsonLoggingNameAliasesTrace();
             AuditData.resetJsonLoggingNameAliases();
 
+            // Re-initialize the field mappings
+            CollectorJsonHelpers.updateFieldMappings();
             //if no property is set, return
             return;
         }
