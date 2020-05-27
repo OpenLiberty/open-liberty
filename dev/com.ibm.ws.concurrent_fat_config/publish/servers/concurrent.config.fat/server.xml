@@ -1,10 +1,10 @@
 <server>
     <featureManager>
-        <feature>concurrent-2.0</feature>
-        <feature>ejbLite-3.2</feature> <!-- TODO update to Jakarta once available -->
-        <feature>servlet-3.1</feature> <!-- TODO update to Jakarta once available -->
+        <feature>concurrent-1.0</feature> <!-- TODO update to Jakarta once ejbLite-4.0 works properly -->
+        <feature>ejbLite-3.2</feature> <!-- TODO update to Jakarta once ejbLite-4.0 works properly -->
+        <feature>servlet-3.1</feature> <!-- TODO update to Jakarta once ejbLite-4.0 works properly -->
         <feature>usr:concurrentInternals-1.0</feature>
-        <feature>componenttest-1.0</feature>
+        <feature>componenttest-1.0</feature> <!-- TODO update to Jakarta once ejbLite-4.0 works properly -->
     </featureManager>
 
     <include location="../fatTestPorts.xml"/>
