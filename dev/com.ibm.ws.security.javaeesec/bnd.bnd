@@ -68,7 +68,9 @@ Include-Resource: \
     com.ibm.ws.webcontainer.security;version=latest,\
     com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
     com.ibm.ws.app.manager.lifecycle;version=latest,\
-    com.ibm.ws.kernel.service;version=latest
+    com.ibm.ws.kernel.service;version=latest,\
+    com.ibm.ws.security.wim.adapter.ldap;version=latest,\
+    com.ibm.websphere.security.wim.base;version=latest
 
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file,\

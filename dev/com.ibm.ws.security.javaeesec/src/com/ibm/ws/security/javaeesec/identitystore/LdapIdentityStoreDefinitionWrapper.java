@@ -10,9 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.identitystore;
 
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -731,20 +728,6 @@ class LdapIdentityStoreDefinitionWrapper {
      */
     Set<ValidationType> getUseFor() {
         return (this.useFor != null) ? this.useFor : evaluateUseFor(false);
-    }
-
-    private boolean isCTS() {
-        try {
-            return AccessController.doPrivileged(new PrivilegedExceptionAction<Boolean>() {
-                @Override
-                public Boolean run() throws SecurityException, NullPointerException, IllegalArgumentException {
-                    String result = System.getProperty("cts");
-                    return result != null && result.equalsIgnoreCase("true");
-                }
-            });
-        } catch (PrivilegedActionException e) {
-            return false;
-        }
     }
 
 }

@@ -401,7 +401,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
      * @throws Exception If the test failed for some unforeseen reason.
      */
     @Test
-    @ExpectedFFDC("java.lang.IllegalArgumentException")
+    @ExpectedFFDC("com.ibm.ws.security.javaeesec.identitystore.IdentityStoreRuntimeException")
     public void bindDnPassword_NULL() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
@@ -1196,8 +1196,8 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
      *
      * @throws Exception If the test failed for some unforeseen reason.
      */
-    //@Test - Temporary disabled
-    @ExpectedFFDC("java.lang.IllegalArgumentException")
+    @Test
+    @ExpectedFFDC("com.ibm.ws.security.javaeesec.identitystore.IdentityStoreRuntimeException")
     public void url_NULL() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 

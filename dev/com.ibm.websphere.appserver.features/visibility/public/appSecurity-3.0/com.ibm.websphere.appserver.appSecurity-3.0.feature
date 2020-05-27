@@ -15,13 +15,16 @@ Subsystem-Name: Application Security 3.0
 -features=com.ibm.websphere.appserver.cdi-2.0, \
  com.ibm.websphere.appserver.el-3.0, \
  com.ibm.websphere.appserver.security-1.0, \
- com.ibm.websphere.appserver.servlet-4.0
+ com.ibm.websphere.appserver.servlet-4.0, \
+ com.ibm.websphere.appserver.wimcore-1.0
 -bundles=com.ibm.websphere.javaee.security.1.0; location:=dev/api/spec/; mavenCoordinates="javax.security.enterprise:javax.security.enterprise-api:1.0", \
  com.ibm.ws.security.javaeesec.1.0, \
  com.ibm.ws.security.javaeesec.cdi, \
  com.ibm.ws.security.authentication.tai, \
  com.ibm.websphere.javaee.jaspic.1.1; location:=dev/api/spec/; mavenCoordinates="javax.security.auth.message:javax.security.auth.message-api:1.1", \
- com.ibm.ws.security.jaspic.1.1
+ com.ibm.ws.security.jaspic.1.1, \
+ com.ibm.ws.security.wim.adapter.ldap, \
+ com.ibm.websphere.security.wim.base
 kind=ga
 edition=core
 -jars=com.ibm.websphere.appserver.spi.jaspic; location:=dev/spi/ibm/
