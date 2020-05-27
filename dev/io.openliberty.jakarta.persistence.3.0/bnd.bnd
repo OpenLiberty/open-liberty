@@ -12,7 +12,7 @@
 bVersion=1.0
 
 
-Bundle-SymbolicName: com.ibm.websphere.jakartaee.persistence.3.0; singleton:=true
+Bundle-SymbolicName: io.openliberty.jakarta.persistence.3.0; singleton:=true
 #Bundle-Activator: com.ibm.ws.jakartaee.persistence.internal.HybridPersistenceActivator
 
 
