@@ -306,6 +306,12 @@ if (isAutomatedBuild) {
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&gaAndBetaPublicFeatures
         outputTo packageDir
+        doLast {
+            copy {
+                from project.file('publish/beta/NOTICES')
+                into "$packageDir/wlp"
+            }
+        }
     }
 
     task packageOpenLibertyKernel(type: PackageLibertyWithFeatures) {
@@ -369,13 +375,8 @@ if (isAutomatedBuild) {
         }
     }
 
-    /*task packageOpenLibertyJakartaee9(type: PackageLibertyWithFeatures) {
-        //doFirst {
-        //    excludedEE7Features.each {
-        //        this.&removeFeature("${it}")
-        //    }
-        //}
-
+    task packageOpenLibertyJakartaee9(type: PackageLibertyWithFeatures) {
+        
         enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
@@ -386,27 +387,12 @@ if (isAutomatedBuild) {
                 from "$packageDir/wlp/templates/servers/jakartaee9/server.xml"
                 into "$packageDir/wlp/templates/servers/defaultServer"
             }
-           // copy {
-           //     from "$packageDir/wlp/templates/clients/jakartaeeClient9/client.xml"
-           //     into "$packageDir/wlp/templates/clients/defaultClient"
-           // }
-           // excludedEE7Features.each {
-            //    this.&restoreFeature("${it}")
-            //}
+            copy {
+                from project.file('publish/beta/NOTICES')
+                into "$packageDir/wlp"
+            }
         }
-    }*/
-
-    task copyBetaNoticesToBuildImage (type:Copy) {
-        dependsOn jar
-        from project.file('publish/beta')
-        into project.file("$packageDir/wlp")
-        include 'NOTICES'
-        filter(ReplaceTokens,
-             tokens: [BUILD_ID: bnd.buildID, LIBERTY_VERSION: bnd.libertyRelease])
     }
-
-    copyBetaNoticesToBuildImage.mustRunAfter packageOpenLibertyBeta
-
 
     task packageOpenLibertyMicroProfile3(type: PackageLibertyWithFeatures) {
         doFirst {
@@ -487,23 +473,6 @@ if (isAutomatedBuild) {
     }
     publish.dependsOn zipOpenLiberty
 
-    // Includes both kind=ga and kind=beta features.
-    task zipOpenLibertyBeta(type: Zip) {
-        dependsOn packageOpenLibertyBeta
-        dependsOn copyBetaNoticesToBuildImage
-        dependsOn genChecksums
-        dependsOn setBetaVersion
-        baseName 'openliberty'
-        from packageDir
-        destinationDir distsDir
-        version betaVersion
-        doLast {
-            rootProject.userProps.setProperty('zipopenliberty.beta.archivename', archivePath.toString())
-            rootProject.storeProps()
-        }
-    }
-    publish.dependsOn zipOpenLibertyBeta
-
     // Includes only kind=ga features.
     task zipOpenLibertyKernel(type: Zip) {
         dependsOn packageOpenLibertyKernel
@@ -563,9 +532,24 @@ if (isAutomatedBuild) {
     }
     publish.dependsOn zipOpenLibertyMicroProfile3
 
-    /*task zipOpenLibertyJakartaee9(type: Zip) {
+    // Includes both kind=ga and kind=beta features.
+    task zipOpenLibertyBeta(type: Zip) {
+        dependsOn packageOpenLibertyBeta
+        dependsOn genChecksums
+        dependsOn setBetaVersion
+        baseName 'openliberty'
+        from packageDir
+        destinationDir distsDir
+        version betaVersion
+        doLast {
+            rootProject.userProps.setProperty('zipopenliberty.beta.archivename', archivePath.toString())
+            rootProject.storeProps()
+        }
+    }
+    publish.dependsOn zipOpenLibertyBeta
+
+    task zipOpenLibertyJakartaee9Beta(type: Zip) {
         dependsOn packageOpenLibertyJakartaee9
-        dependsOn copyBetaNoticesToBuildImage
         dependsOn genChecksums
         dependsOn setBetaVersion
         baseName 'openliberty-jakartaee9'
@@ -577,9 +561,8 @@ if (isAutomatedBuild) {
             rootProject.storeProps()
         }
     }
-    publish.dependsOn zipOpenLibertyJakartaee9*/
+    publish.dependsOn zipOpenLibertyJakartaee9Beta
 
-zipOpenLibertyBeta.shouldRunAfter zipOpenLibertyMicroProfile3, zipOpenLibertyJavaee8, zipOpenLibertyWebProfile8, zipOpenLibertyKernel, zipOpenLiberty, zipOpenLibertyDev
 }
 
 clean.doLast {
