@@ -38,7 +38,7 @@ public class FATSuite {
     @ClassRule
     public static RepeatTests r = RepeatTests
                     .withoutModification()
-                    ;// TODO .andWith(new JakartaEE9Action());
+                    .andWith(new JakartaEE9Action());
 
     @BeforeClass
     public static void setup() throws Exception {
