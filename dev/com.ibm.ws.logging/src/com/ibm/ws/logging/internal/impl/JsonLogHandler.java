@@ -20,6 +20,7 @@ import java.util.List;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.logging.collector.CollectorConstants;
+import com.ibm.ws.logging.collector.CollectorJsonHelpers;
 import com.ibm.ws.logging.collector.CollectorJsonUtils;
 import com.ibm.ws.logging.collector.Formatter;
 import com.ibm.ws.logging.data.GenericData;
@@ -102,6 +103,10 @@ public abstract class JsonLogHandler implements SynchronousHandler, Formatter {
         } else {
             serverHostName = containerHost;
         }
+
+        CollectorJsonHelpers.hostName = serverHostName;
+        CollectorJsonHelpers.serverName = wlpServerName;
+        CollectorJsonHelpers.wlpUserDir = wlpUserDir;
 
     }
 

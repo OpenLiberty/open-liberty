@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -245,6 +244,29 @@ public class AccessLogSource implements Source {
         }
     }
 
+    private static void initializeFieldMap(Map<String, HashSet<Object>> map, FormatSegment[] parsedFormat, String format) {
+        if (format.equals("default")) {
+            addDefaultFields(map);
+        }
+        if (format.equals("logFormat")) {
+            for (FormatSegment s : parsedFormat) {
+                if (s.log != null) {
+                    // cookies and headers will require data
+                    if (s.data != null) {
+                        HashSet<Object> data = new HashSet<Object>();
+                        if (map.containsKey(s.log.getName())) {
+                            data = map.get(s.log.getName());
+                        }
+                        data.add(s.data);
+                        map.put(s.log.getName(), data);
+                    } else {
+                        map.put(s.log.getName(), null);
+                    }
+                }
+            }
+        }
+    }
+
     private static ArrayList<AccessLogDataFieldSetter> populateSetters(Map<String, HashSet<Object>> fields) {
 
         ArrayList<AccessLogDataFieldSetter> fieldSetters = new ArrayList<AccessLogDataFieldSetter>();
@@ -300,58 +322,49 @@ public class AccessLogSource implements Source {
         return fieldSetters;
     }
 
-    private static AccessLogDataFormatter populateCustomFormatters(FormatSegment[] parsedFormat, int format) {
+    private static AccessLogDataFormatter populateCustomFormatters(Map<String, HashSet<Object>> fields, int format) {
         AccessLogDataFormatterBuilder builder = new AccessLogDataFormatterBuilder();
-        boolean isFirstCookie = true;
-        boolean isFirstRequestHeader = true;
-        boolean isFirstResponseHeader = true;
-        for (FormatSegment s : parsedFormat) {
-            if (s.log != null) {
-                switch (s.log.getName()) {
-                    // Original - default fields
-                    //@formatter:off
-                    case "%h": builder.add(addRemoteHostField     (format)); break;
-                    case "%H": builder.add(addRequestProtocolField(format)); break;
-                    case "%A": builder.add(addRequestHostField    (format)); break;
-                    case "%B": builder.add(addBytesReceivedField  (format)); break;
-                    case "%m": builder.add(addRequestMethodField  (format)); break;
-                    case "%p": builder.add(addRequestPortField    (format)); break;
-                    case "%q": builder.add(addQueryStringField    (format)); break;
-                    case "%{R}W": builder.add(addElapsedTimeField (format)); break;
-                    case "%s": builder.add(addResponseCodeField   (format)); break;
-                    case "%U": builder.add(addUriPathField        (format)); break;
+        for (String s : fields.keySet()) {
+            switch (s) {
+                // Original - default fields
+                //@formatter:off
+                    case "%h": builder.add(addRemoteHostField        (format)); break;
+                    case "%H": builder.add(addRequestProtocolField   (format)); break;
+                    case "%A": builder.add(addRequestHostField       (format)); break;
+                    case "%B": builder.add(addBytesReceivedField     (format)); break;
+                    case "%m": builder.add(addRequestMethodField     (format)); break;
+                    case "%p": builder.add(addRequestPortField       (format)); break;
+                    case "%q": builder.add(addQueryStringField       (format)); break;
+                    case "%{R}W": builder.add(addElapsedTimeField    (format)); break;
+                    case "%s": builder.add(addResponseCodeField      (format)); break;
+                    case "%U": builder.add(addUriPathField           (format)); break;
                     // New - access log only fields
-                    case "%a": builder.add(addRemoteIPField       (format)); break;
-                    case "%b": builder.add(addBytesSentField      (format)); break;
-                    case "%C":
-                        if (isFirstCookie) {
-                            builder.add(addCookiesField(format));
-                            isFirstCookie = false;
-                        } break;
+                    case "%a": builder.add(addRemoteIPField          (format)); break;
+                    case "%b": builder.add(addBytesSentField         (format)); break;
+                    case "%C": builder.add(addCookiesField           (format)); break;
                     case "%D": builder.add(addRequestElapsedTimeField(format)); break;
                     case "%i":
-                        if (s.data.equals(USER_AGENT_HEADER)) {
+                        if (fields.get("%i").contains("User-Agent")) {
                             builder.add(addUserAgentField(format));
-                        } else if (isFirstRequestHeader) {
-                            builder.add(addRequestHeaderField(format));
-                            isFirstRequestHeader = false;
-                        } break;
-                    case "%o":
-                        if (isFirstResponseHeader) {
-                            builder.add(addResponseHeaderField(format));
-                            isFirstResponseHeader = false;
-                        } break;
+                            // Set size of 1 means the only "%i" field is the ibm_userAgent field
+                            // We don't want to add the ibm_requestHeader field too, so we break out
+                            if (fields.get("%i").size() == 1) {
+                                break;
+                            }
+                        }
+                        builder.add(addRequestHeaderField(format));
+                        break;
+                    case "%o": builder.add(addResponseHeaderField      (format)); break;
                     case "%r": builder.add(addRequestFirstLineField    (format)); break;
                     case "%t": builder.add(addRequestStartTimeField    (format)); break;
                     case "%{t}W": builder.add(addAccessLogDatetimeField(format)); break;
                     case "%u": builder.add(addRemoteUserField          (format)); break;
                     //@formatter:on
-                }
             }
         }
         //@formatter:off
-        builder.add(addDatetimeField(format))  // Sequence, present in all access logs
-               .add(addSequenceField(format)); // Datetime, present in all access logs
+        builder.add(addDatetimeField(format))  // Datetime, present in all access logs
+               .add(addSequenceField(format)); // Sequence, present in all access logs
         //@formatter:on
 
         return builder.build();
@@ -385,10 +398,14 @@ public class AccessLogSource implements Source {
         List<AccessLogDataFieldSetter> fieldSetters = new ArrayList<AccessLogDataFieldSetter>();
         AccessLogDataFormatter[] formatters = { null, null, null, null };
         Map<String, HashSet<Object>> fieldsToAdd = new HashMap<String, HashSet<Object>>();
+        Map<String, HashSet<Object>> fieldsToAddJson = new HashMap<String, HashSet<Object>>();
+        Map<String, HashSet<Object>> fieldsToAddLogstash = new HashMap<String, HashSet<Object>>();
 
         // Create the mapping of fields to add:{<format key> : <data value/null>}
         // Prevents duplicates
         initializeFieldMap(fieldsToAdd, parsedFormat);
+        initializeFieldMap(fieldsToAddJson, parsedFormat, jsonAccessLogFieldsConfig);
+        initializeFieldMap(fieldsToAddLogstash, parsedFormat, jsonAccessLogFieldsLogstashConfig);
 
         // Create setter list
         fieldSetters = populateSetters(fieldsToAdd);
@@ -399,31 +416,17 @@ public class AccessLogSource implements Source {
         if (jsonAccessLogFieldsConfig.equals("default")) {
             formatters[0] = populateDefaultFormatters(AccessLogData.KEYS_JSON);
         } else if (jsonAccessLogFieldsConfig.equals("logFormat")) {
-            formatters[1] = populateCustomFormatters(parsedFormat, AccessLogData.KEYS_JSON);
+            formatters[1] = populateCustomFormatters(fieldsToAddJson, AccessLogData.KEYS_JSON);
         }
 
         if (jsonAccessLogFieldsLogstashConfig.equals("default")) {
             formatters[2] = populateDefaultFormatters(AccessLogData.KEYS_LOGSTASH);
         } else if (jsonAccessLogFieldsLogstashConfig.equals("logFormat")) {
-            formatters[3] = populateCustomFormatters(parsedFormat, AccessLogData.KEYS_LOGSTASH);
+            formatters[3] = populateCustomFormatters(fieldsToAddLogstash, AccessLogData.KEYS_LOGSTASH);
         }
         newSF.setSettersAndFormatters(fieldSetters, formatters);
 
         return newSF;
-    }
-
-    private void removeDuplicates(FormatSegment[] parsedFormat) {
-        Set<String> fieldName = new HashSet<String>();
-        for (FormatSegment fs : parsedFormat) {
-            if (fs.log != null) {
-                String format = fs.log.getName(); // e.g. will look like "%i", "%a"
-                if (format.equals("%i") || format.equals("%o") || format.equals("%C"))
-                    break;
-                if (!fieldName.add(format))
-                    // Making it null will remove the duplicate print without messing around with the array dimensions
-                    fs.log = null;
-            }
-        }
     }
 
     private class AccessLogHandler implements AccessLogForwarder {
@@ -444,7 +447,6 @@ public class AccessLogSource implements Source {
 
             SetterFormatter currentSF = setterFormatterMap.get(config);
             if (currentSF == null) {
-                removeDuplicates(parsedFormat);
                 currentSF = createSetterFormatter(config, parsedFormat, seq);
                 setterFormatterMap.put(config, currentSF);
             }
