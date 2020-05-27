@@ -23,9 +23,13 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.RandomAccessFile;
 import java.io.Writer;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.FileChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
@@ -663,11 +667,41 @@ public class InstallUtils {
         return null;
     }
 
-    public static Collection<String> getFeatures(InputStream serverXMLInputStream, String xml) throws InstallException {
-        Collection<String> features = new ArrayList<String>();
+    public static Set<String> getFeatures(String serverXml, String xml, Set<String> visitedServerXmls) throws IOException {
+        Set<String> features = new HashSet<String>();
+        List<String> newLocations = new ArrayList<>();
+        boolean isUrl = false;
+        HttpURLConnection conn = null;
+        Path realServerXml = null;
         try {
-            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(serverXMLInputStream);
+            // todo more networking support? proxy, port etc
+            URL url = new URL(serverXml);
+            conn = (HttpURLConnection) url.openConnection();
+            isUrl = true;
+
+        } catch(MalformedURLException malf){
+            realServerXml = Paths.get(serverXml).normalize();
+            if(visitedServerXmls.contains(realServerXml.toString())) {
+                return features;
+            }
+        }
+
+        try (InputStream is =  isUrl ? conn.getInputStream() : Files.newInputStream(realServerXml)){
+            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(is);
             Element element = doc.getDocumentElement();
+            NodeList childs = doc.getChildNodes();
+            for(int i =0; i < childs.getLength(); i++){
+                if (childs.item(i).getNodeType() == Node.ELEMENT_NODE) {
+                    Element el = (Element) childs.item(i);
+                    if(el.getNodeName().equals("include")){
+                        String location = el.getAttribute("location");
+                        if(!newLocations.contains(location) && !visitedServerXmls.contains(location)){
+                            newLocations.add(location);
+                        }
+                    }
+                }
+
+            }
             NodeList fmList = element.getElementsByTagName("featureManager");
             for (int i = 0; i < fmList.getLength(); i++) {
                 Node fm = fmList.item(i);
@@ -679,8 +713,14 @@ public class InstallUtils {
                 }
             }
         } catch (Exception e) {
-            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_INVALID_SERVER_XML", xml, e.getMessage()), e, InstallException.IO_FAILURE);
+            logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_INVALID_SERVER_XML", xml, e.getMessage()));
         }
+        visitedServerXmls.add(isUrl ? serverXml : realServerXml.toString());
+        for(String filepath : newLocations){
+            Path path = Paths.get(filepath);
+            features.addAll(getFeatures(path.toString(), path.getFileName().toString(), visitedServerXmls));
+        }
+
         return features;
     }
 
