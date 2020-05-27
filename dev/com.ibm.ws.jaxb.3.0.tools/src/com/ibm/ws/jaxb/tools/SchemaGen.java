@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,22 +8,15 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.ws.jaxb.tools;
 
-configurations {
-  appLibs
-}
+/**
+ * IBM Wrapper for SchemaGen tool.
+ */
+public class SchemaGen {
 
-dependencies {
-  appLibs 'javax.xml.bind:jaxb-api:2.2.+'
-  appLibs 'jakarta.xml.bind:jakarta.xml.bind-api:3.0.+'
-}
+    public static void main(String args[]) throws java.lang.Throwable {
+        com.sun.tools.jxc.SchemaGenerator.main(args);
+    }
 
-task addAppLibs(type: Copy) {
-  from configurations.appLibs
-  into "${buildDir}/autoFVT/test-applications/thirdPartyJaxbApp/resources/WEB-INF/lib"
-}
-
-addRequiredLibraries {
-  dependsOn addAppLibs 
-  dependsOn addJakartaTransformer
 }

@@ -1,0 +1,23 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/cmdline-subdir.props
+bVersion=1.0
+
+
+Bundle-Name: IBM JAXB SchemaGen Tool
+
+Require-Compiler: true
+
+Require-Bundle: com.ibm.ws.jaxb.tools.3.0; version="[1,1.0.100)", \
+ com.ibm.websphere.jakarta.jaxb.3.0; version="[1,1.0.100)"; location="dev/api/spec/", \
+ com.ibm.ws.logging; version="[1,1.0.100)"
+ 
+Command-Class: com.ibm.ws.jaxb.tools.SchemaGen
