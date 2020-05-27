@@ -33,13 +33,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+import javax.transaction.NotSupportedException;
 import javax.transaction.RollbackException;
+import javax.transaction.Status;
+import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 import javax.transaction.TransactionSynchronizationRegistry;
 import javax.transaction.UserTransaction;
-import javax.transaction.NotSupportedException;
-import javax.transaction.Transaction;
-import javax.transaction.Status;
 
 import org.junit.Test;
 
@@ -179,6 +179,7 @@ public class SimpleServlet extends FATServlet {
             UserTransaction tran = (UserTransaction) context.lookup("java:comp/UserTransaction");
 
             statusString = statusString + "UserTransaction=" + tran + "<br>";
+            //DataSource ds = (DataSource) context.lookup("java:comp/env/jdbc/derby");
             statusString = statusString + "DataSource=" + ds + "<br>";
             Connection con = ds.getConnection();
 
@@ -272,6 +273,7 @@ public class SimpleServlet extends FATServlet {
     @Test
     public void testTransactionEnlistment(HttpServletRequest request, HttpServletResponse response) throws Exception {
         InitialContext context = new InitialContext();
+        //DataSource ds = (DataSource) context.lookup("java:comp/env/jdbc/derby");
         PrintWriter out = response.getWriter();
         Connection con = ds.getConnection();
         try {
@@ -373,6 +375,7 @@ public class SimpleServlet extends FATServlet {
     @Test
     public void testImplicitLTCCommit(HttpServletRequest request, HttpServletResponse response) throws Exception {
         InitialContext context = new InitialContext();
+        //DataSource ds = (DataSource) context.lookup("java:comp/env/jdbc/derby");
         Connection con = ds.getConnection();
         try {
             // Set up table
@@ -417,6 +420,7 @@ public class SimpleServlet extends FATServlet {
     @ExpectedFFDC(value = { "javax.transaction.NotSupportedException" })
     public void testNEW(HttpServletRequest request, HttpServletResponse response) throws Exception {
         InitialContext context = new InitialContext();
+        //DataSource ds = (DataSource) context.lookup("java:comp/env/jdbc/derby");
         Connection con = ds.getConnection();
         try {
             // Set up table
@@ -472,6 +476,7 @@ public class SimpleServlet extends FATServlet {
     @ExpectedFFDC(value = { "javax.transaction.NotSupportedException" })
     public void testNEW2(HttpServletRequest request, HttpServletResponse response) throws Exception {
         InitialContext context = new InitialContext();
+        //DataSource ds = (DataSource) context.lookup("java:comp/env/jdbc/derby");
         Connection con = ds.getConnection();
         try {
             // Set up table
@@ -529,6 +534,7 @@ public class SimpleServlet extends FATServlet {
     @Test
     public void testExplicitLTCCommit(HttpServletRequest request, HttpServletResponse response) throws Exception {
         InitialContext context = new InitialContext();
+        //DataSource ds = (DataSource) context.lookup("java:comp/env/jdbc/derby");
         Connection con = ds.getConnection();
         try {
             // Set up table
@@ -574,6 +580,7 @@ public class SimpleServlet extends FATServlet {
     @Test
     public void testLTCAfterGlobalTran(HttpServletRequest request, HttpServletResponse response) throws Exception {
         InitialContext context = new InitialContext();
+        //DataSource ds = (DataSource) context.lookup("java:comp/env/jdbc/derby");
         UserTransaction tran = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
         Statement stmt;
         Connection con;
