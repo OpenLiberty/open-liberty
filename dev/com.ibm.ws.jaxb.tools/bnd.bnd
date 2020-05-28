@@ -15,8 +15,6 @@ bSymbolicName=com.ibm.ws.jaxb.tools.2.2.10
 
 Bundle-Name: com.ibm.ws.jaxb.tools.2.2.10
 Bundle-SymbolicName: com.ibm.ws.jaxb.tools.2.2.10; singleton:=true
-
-jakartaeeMe: true
     
 # The SPI definition under META-INF/services
 # Do not publish RI javax.xml.bind.JAXBContext

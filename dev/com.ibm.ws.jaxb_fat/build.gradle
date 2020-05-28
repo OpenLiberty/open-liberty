@@ -15,7 +15,6 @@ configurations {
 
 dependencies {
   appLibs 'javax.xml.bind:jaxb-api:2.2.+'
-  appLibs 'jakarta.xml.bind:jakarta.xml.bind-api:3.0.+'
 }
 
 task addAppLibs(type: Copy) {
@@ -24,6 +23,5 @@ task addAppLibs(type: Copy) {
 }
 
 addRequiredLibraries {
-  dependsOn addAppLibs 
-  dependsOn addJakartaTransformer
+  dependsOn addAppLibs
 }
