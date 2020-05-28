@@ -346,7 +346,6 @@
             required="false" type="Boolean" default="false" />
         <AD id="accessTokenHeaderName" name="%accessTokenHeaderName" description="%accessTokenHeaderName.desc"
             required="false" type="String" />
-        <AD id="allowCustomCacheKey" name="%allowCustomCacheKey" description="%allowCustomCacheKey.desc" required="false" type="Boolean" default="true"/>
     </OCD>
 
     <Designate factoryPid="com.ibm.ws.security.social.oauth2login">
@@ -444,8 +443,6 @@
         <AD id="userinfoParameter" name="internal" description="internal use only" required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.security.social.client.param" cardinality="20" />
         <AD id="jwkParameter" name="internal" description="internal use only" required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.security.social.client.param" cardinality="20" />
         <AD id="forwardLoginParameter" name="internal" description="internal use only" required="false" type="String" cardinality="2147483647" />
-        <AD id="allowCustomCacheKey" name="%allowCustomCacheKey" description="%allowCustomCacheKey.desc" required="false" type="Boolean" default="true"/>
-
     </OCD>
     
      <OCD id="com.ibm.ws.security.social.client.param.metatype" name="%oidcClientCustomRequestParam" description="%oidcClientCustomRequestParam.desc" 
