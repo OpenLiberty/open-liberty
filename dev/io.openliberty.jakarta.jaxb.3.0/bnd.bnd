@@ -1,0 +1,45 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-SymbolicName: io.openliberty.jakarta.jaxb.3.0; singleton:=true
+
+Export-Package: jakarta.xml.bind.*;version="3.0"
+
+#Private-Package: org.apache.geronimo.osgi.locator
+
+Import-Package: \
+  jakarta.activation, \
+  javax.xml.namespace, \
+  javax.xml.stream, \
+  org.apache.geronimo.osgi.registry.api;resolution:=optional,\
+  !org.glassfish.hk2.osgiresourcelocator,\
+  *
+
+DynamicImport-Package: \
+  com.sun.xml.*
+
+#Bundle-Activator: org.apache.geronimo.osgi.locator.Activator
+
+#Include-Resource:\
+# @${repo;jakarta.xml.bind:jakarta.xml.bind-api;3.0.0-RC3;EXACT}!/!META-INF/maven/*
+# @${repo;org.apache.geronimo.specs:geronimo-jaxb_2.2_spec;1.0.1}!/org/apache/geronimo/osgi/locator/*, \
+# @${repo;org.apache.geronimo.specs:geronimo-jaxb_2.2_spec;1.0.1}!/javax/xml/bind/ContextFinder.class, \
+# @${repo;org.apache.geronimo.specs:geronimo-jaxb_2.2_spec;1.0.1}!/javax/xml/bind/JAXBContext.class, \
+# @${repo;org.apache.geronimo.specs:geronimo-jaxb_2.2_spec;1.0.1}!/javax/xml/bind/JAXBContext$1.class
+
+instrument.disabled: true
+
+publish.wlp.jar.suffix: dev/api/spec
+
+-buildpath: \
+	jakarta.xml.bind:jakarta.xml.bind-api;version=3.0.0

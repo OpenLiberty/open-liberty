@@ -1,0 +1,25 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxws.ejb/resources/com/ibm/ws/jaxb/tools/internal/resources/JaxbToolsMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXB Tools Code
+#RANGE 0700 - 0799
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+error.parameter.target.missed=CWWKW0700E: No se ha especificado el par\u00e1metro de destino obligatorio.
+error.parameter.target.missed.explanation=Si se especifica el par\u00e1metro de destino, las aplicaciones existentes pueden volver a generarse sin cambiar su comportamiento cuando el nivel de especificaci\u00f3n JAXB que soporta Liberty Profile se actualiza.
+error.parameter.target.missed.useraction=Especifique el nivel de especificaci\u00f3n JAXB al que se ajusta el c\u00f3digo generado. El valor v\u00e1lido es 3.0

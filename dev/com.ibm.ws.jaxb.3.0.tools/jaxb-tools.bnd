@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+-include= ~../cnf/resources/bnd/bundle.props, \
+          ~../cnf/resources/bnd/app-resources.bnd
+          
+bVersion=${bundle.version}
+
+Bundle-Name: ${symbolic.name}
+Bundle-SymbolicName: ${symbolic.name}; singleton:=true
+    
+# The SPI definition under META-INF/services
+# Do not publish RI javax.xml.bind.JAXBContext
+app-resources= \
+  META-INF/services/com.sun.tools.xjc.Plugin |\
+  META-INF/services/org.relaxng.datatype.DatatypeLibraryFactory | \
+  META-INF/services/org.iso_relax.verifier.VerifierFactoryLoader
+
+Import-Package: \
+  jakarta.xml.bind.*; version="[2.2,2.2]", \
+  com.ibm.wsspi.classloading, \
+  org.apache.xml.*; resolution:=optional, \
+  !org.apache.tools*, \
+  !org.apache.xerces*, \
+  !org.jvnet*, \
+  !com.sun.mirror.*, \
+  !com.sun.xml.bind.*, \
+  !com.sun.source.tree.*, \
+  !com.sun.source.util.*, \
+  !com.sun.xml.fastinfoset.sax.*, \
+  !com.sun.xml.fastinfoset.stax.*, \
+  !sun.nio.cs*, \
+  !com.sun.org.apache.xml.internal.resolver, \
+  !com.sun.org.apache.xml.internal.resolver.tools, \
+  *
+
+Export-Package: \
+  com.sun.xml.bind*;version="3.0";thread-context=true
+
+Include-Resource: \
+  @lib/jaxb-core.jar!/!META-INF/maven/*, \
+  @lib/jaxb-impl.jar!/!META-INF/maven/*, \
+  @lib/jaxb-xjc.jar!/!META-INF/maven/*, \
+  @lib/jaxb-jxc.jar!/!META-INF/maven/*
+
+Private-Package:\
+  com.ibm.ws.jaxb.tools.*
+ 

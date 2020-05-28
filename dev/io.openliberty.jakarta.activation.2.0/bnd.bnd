@@ -11,7 +11,7 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-Bundle-SymbolicName: com.ibm.websphere.jakarta.activation.2.0; singleton:=true
+Bundle-SymbolicName: io.openliberty.jakarta.activation.2.0; singleton:=true
 
 Export-Package: \
 	jakarta.activation;version="2.0"
