@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.org.hibernate.validator;
+package io.openliberty.org.hibernate.validator;
 
 import test.common.OSSMessageTest;
 
@@ -23,7 +23,7 @@ import test.common.OSSMessageTest;
 public class HibernateValidatorMessageTest extends OSSMessageTest {
 
     public HibernateValidatorMessageTest() {
-        super("hibernate-validator-7", "com.ibm.ws.org.hibernate.validator.3.0", "org/hibernate/validator/ValidationMessages.properties");
+        super("hibernate-validator-7", "io.openliberty.org.hibernate.validator.3.0", "org/hibernate/validator/ValidationMessages.properties");
     }
 
 }

@@ -1,7 +1,7 @@
 -include= ~../cnf/resources/bnd/rejar.props
 
 bVersion=1.0
-Bundle-SymbolicName: com.ibm.ws.org.hibernate.validator.cdi.7.0
+Bundle-SymbolicName: io.openliberty.org.hibernate.validator.cdi.7.0
 
 # Something that wildfly/thorntail apparently uses but blows up on Liberty
 Fragment-Host:

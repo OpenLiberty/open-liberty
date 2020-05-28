@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.beanValidationCore-2.0
+symbolicName=io.openliberty.beanValidationCore-2.0
 IBM-App-ForceRestart: install, \
  uninstall
 -features=com.ibm.websphere.appserver.injection-2.0, \

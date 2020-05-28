@@ -1,10 +1,10 @@
 -include= ~../cnf/resources/bnd/rejar.props, \
           ~../cnf/resources/bnd/app-resources.bnd
 bVersion=1.0
-bSymbolicName=com.ibm.ws.org.hibernate.validator.7.0
+bSymbolicName=io.openliberty.org.hibernate.validator.7.0
 
 Bundle-Name: Hibernate Validator Engine
-Bundle-SymbolicName: com.ibm.ws.org.hibernate.validator.7.0
+Bundle-SymbolicName: io.openliberty.org.hibernate.validator.7.0
 Bundle-Description: Hibernate's Bean Validation (JSR-380) reference implementation; version=7.0.0.Alpha2
 
 # Provide these as resources to applications
@@ -80,7 +80,7 @@ Service-Component:\
     provide:=jakarta.validation.spi.ValidationProvider;\
     configuration-policy:=ignore;\
     properties:='implementation.class=org.hibernate.validator.HibernateValidator',\
-  com.ibm.ws.org.hibernate.validator.ResourceProvider; \
+  io.openliberty.org.hibernate.validator.ResourceProvider; \
     implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
     provide:=com.ibm.wsspi.classloading.ResourceProvider; \
     configuration-policy:=ignore; \
