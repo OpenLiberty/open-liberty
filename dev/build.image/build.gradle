@@ -231,6 +231,11 @@ def javaee8Features() {
     features
 }
 
+def jakartaee9Features() {
+    String features = project.file('profiles/jakartaee9/features.xml').readLines()
+    features
+}
+
 def microProfile3Features() {
     String features = project.file('profiles/microProfile3/features.xml').readLines()
     features
@@ -301,6 +306,12 @@ if (isAutomatedBuild) {
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&gaAndBetaPublicFeatures
         outputTo packageDir
+        doLast {
+            copy {
+                from project.file('publish/beta/NOTICES')
+                into "$packageDir/wlp"
+            }
+        }
     }
 
     task packageOpenLibertyKernel(type: PackageLibertyWithFeatures) {
@@ -360,6 +371,25 @@ if (isAutomatedBuild) {
             }
             excludedEE7Features.each {
                 this.&restoreFeature("${it}")
+            }
+        }
+    }
+
+    task packageOpenLibertyJakartaee9(type: PackageLibertyWithFeatures) {
+        
+        enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
+        dependsOn parent.subprojects.assemble
+        dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
+        withFeatures this.&jakartaee9Features
+        outputTo packageDir
+        doLast {
+            copy {
+                from "$packageDir/wlp/templates/servers/jakartaee9/server.xml"
+                into "$packageDir/wlp/templates/servers/defaultServer"
+            }
+            copy {
+                from project.file('publish/beta/NOTICES')
+                into "$packageDir/wlp"
             }
         }
     }
@@ -443,22 +473,6 @@ if (isAutomatedBuild) {
     }
     publish.dependsOn zipOpenLiberty
 
-    // Includes both kind=ga and kind=beta features.
-    task zipOpenLibertyBeta(type: Zip) {
-        dependsOn packageOpenLibertyBeta
-        dependsOn genChecksums
-        dependsOn setBetaVersion
-        baseName 'openliberty'
-        from packageDir
-        destinationDir distsDir
-        version betaVersion
-        doLast {
-            rootProject.userProps.setProperty('zipopenliberty.beta.archivename', archivePath.toString())
-            rootProject.storeProps()
-        }
-    }
-    publish.dependsOn zipOpenLibertyBeta
-
     // Includes only kind=ga features.
     task zipOpenLibertyKernel(type: Zip) {
         dependsOn packageOpenLibertyKernel
@@ -517,6 +531,38 @@ if (isAutomatedBuild) {
         }
     }
     publish.dependsOn zipOpenLibertyMicroProfile3
+
+    // Includes both kind=ga and kind=beta features.
+    task zipOpenLibertyBeta(type: Zip) {
+        dependsOn packageOpenLibertyBeta
+        dependsOn genChecksums
+        dependsOn setBetaVersion
+        baseName 'openliberty'
+        from packageDir
+        destinationDir distsDir
+        version betaVersion
+        doLast {
+            rootProject.userProps.setProperty('zipopenliberty.beta.archivename', archivePath.toString())
+            rootProject.storeProps()
+        }
+    }
+    publish.dependsOn zipOpenLibertyBeta
+
+    task zipOpenLibertyJakartaee9Beta(type: Zip) {
+        dependsOn packageOpenLibertyJakartaee9
+        dependsOn genChecksums
+        dependsOn setBetaVersion
+        baseName 'openliberty-jakartaee9'
+        from packageDir
+        destinationDir distsDir
+        version betaVersion
+        doLast {
+            rootProject.userProps.setProperty('zipopenliberty.jakartaee9.archivename', archivePath.toString())
+            rootProject.storeProps()
+        }
+    }
+    publish.dependsOn zipOpenLibertyJakartaee9Beta
+
 }
 
 clean.doLast {
