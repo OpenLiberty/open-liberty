@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.internal.grpc-1.0
+symbolicName=io.openliberty.internal.grpc-1.0
 singleton=true
 IBM-API-Package: \
   com.google.protobuf;  type="stable",\
@@ -10,7 +10,7 @@ IBM-API-Package: \
   io.grpc.internal; type="internal",\
 Subsystem-Name: gRPC internal 1.0
 -bundles=\
-  com.ibm.ws.grpc.common
+  io.openliberty.grpc.1.0.internal.common
 -features=\
   com.ibm.websphere.appserver.artifact-1.0, \
   com.ibm.websphere.appserver.classloading-1.0, \
