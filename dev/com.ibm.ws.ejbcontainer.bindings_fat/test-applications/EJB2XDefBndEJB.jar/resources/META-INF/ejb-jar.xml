@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ejb-jar PUBLIC "-//Sun Microsystems, Inc.//DTD Enterprise JavaBeans 2.0//EN" "http://java.sun.com/dtd/ejb-jar_2_0.dtd">
+
+   <ejb-jar id="ejb-jar_ID">
+      <display-name>EJB2X-DefBnd</display-name>
+      <enterprise-beans>
+         <session id="Session_8">
+            <ejb-name>Test2XDefBndBean</ejb-name>
+            <home>com.ibm.ejb2x.defbnd.ejb.EJB2XDefBndRemoteHome</home>
+            <remote>com.ibm.ejb2x.defbnd.ejb.EJB2XDefBndRemote</remote>
+            <local-home>com.ibm.ejb2x.defbnd.ejb.EJB2XDefBndHome</local-home>
+            <local>com.ibm.ejb2x.defbnd.ejb.EJB2XDefBnd</local>
+            <ejb-class>com.ibm.ejb2x.defbnd.ejb.EJB2XDefBndBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+      </enterprise-beans>
+   </ejb-jar>
