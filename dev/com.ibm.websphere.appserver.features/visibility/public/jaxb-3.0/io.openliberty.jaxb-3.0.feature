@@ -18,7 +18,7 @@ IBM-Process-Types: client, \
 Subsystem-Name: Jakarta XML Bindings 3.0
 -features=\
   com.ibm.websphere.appserver.classloading-1.0, \
-  com.ibm.websphere.appserver.jakarta.jaxb-3.0
+  io.openliberty.jakarta.jaxb-3.0
 -files=\
   bin/jaxb/xjc.bat, \
   bin/jaxb/tools/ws-schemagen.jakarta.jar, \
