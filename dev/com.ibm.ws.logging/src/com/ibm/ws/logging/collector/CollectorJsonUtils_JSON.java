@@ -78,7 +78,7 @@ public class CollectorJsonUtils_JSON {
                                       String serverName, String hostName, Object event, String[] tags) {
 
         FFDCData ffdcData = (FFDCData) event;
-        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startFFDCJsonFields(hostName, wlpUserDir, serverName);
+        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startFFDCJsonFields();
 
         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(ffdcData.getDatetime());
         String formattedValue = CollectorJsonHelpers.formatMessage(ffdcData.getStacktrace(), maxFieldLength);
@@ -105,7 +105,7 @@ public class CollectorJsonUtils_JSON {
     public static String jsonifyAccess(String wlpUserDir, String serverName, String hostName, Object event, String[] tags) {
 
         AccessLogData accessLogData = (AccessLogData) event;
-        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startAccessLogJsonFields(hostName, wlpUserDir, serverName, AccessLogData.KEYS_JSON);
+        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startAccessLogJsonFields(AccessLogData.KEYS_JSON);
 
         AccessLogDataFormatter[] formatters = accessLogData.getFormatters();
 
@@ -134,10 +134,10 @@ public class CollectorJsonUtils_JSON {
         KeyValuePairList kvpl = null;
 
         if (isMessageEvent) {
-            jsonBuilder = CollectorJsonHelpers.startMessageJsonFields(hostName, wlpUserDir, serverName);
+            jsonBuilder = CollectorJsonHelpers.startMessageJsonFields();
         }
         if (!isMessageEvent) {
-            jsonBuilder = CollectorJsonHelpers.startTraceJsonFields(hostName, wlpUserDir, serverName);
+            jsonBuilder = CollectorJsonHelpers.startTraceJsonFields();
         }
 
         String message = logData.getMessage();
@@ -202,7 +202,7 @@ public class CollectorJsonUtils_JSON {
         GenericData genData = (GenericData) event;
         KeyValuePair[] pairs = genData.getPairs();
         String key = null;
-        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startAuditJsonFields(hostName, wlpUserDir, serverName);
+        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startAuditJsonFields();
 
         for (KeyValuePair kvp : pairs) {
 

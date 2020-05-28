@@ -44,7 +44,7 @@ Export-Package: \
 	com.ibm.ws.logging.collector,\
 	com.ibm.ws.logging.data,\
 	com.ibm.wsspi.logging;provide:=true
-	
+
 Import-Package: !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
 
 -includeresource: \
@@ -61,6 +61,5 @@ instrument.disabled: true
 	com.ibm.ws.org.objectweb.asm;version=latest,\
 	com.ibm.websphere.org.osgi.service.cm;version=latest,\
 	com.ibm.wsspi.org.osgi.service.event;version=latest,\
-	com.ibm.wsspi.org.osgi.service.log;version=latest,\
+	com.ibm.wsspi.org.osgi.service.log;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
-	
