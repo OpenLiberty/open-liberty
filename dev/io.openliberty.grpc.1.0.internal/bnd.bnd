@@ -17,8 +17,8 @@ Bundle-SymbolicName: io.openliberty.grpc.1.0.internal
 Bundle-Description: Libery gRPC, version ${bVersion}
 
 -dsannotations: \
-  com.ibm.ws.grpc.servlet.GrpcServerComponent,\
-  com.ibm.ws.grpc.config.GrpcServiceConfigImpl
+  io.openliberty.grpc.internal.servlet.GrpcServerComponent,\
+  io.openliberty.grpc.internal.config.GrpcServiceConfigImpl
 
 # Using version=! in order to not have a version attached to the import for packages that were removed
 # from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
@@ -29,9 +29,10 @@ Import-Package: !sun.*,\
   javax.annotation;version=!,\
   *
 
-Export-Package: io.grpc.servlet,\
-  com.ibm.ws.grpc.config,\
-  com.ibm.ws.grpc.servlet
+Export-Package: \
+	io.grpc.servlet,\
+	io.openliberty.grpc.internal.config,\
+	io.openliberty.grpc.internal.servlet
 
 javac.args.release: current
 

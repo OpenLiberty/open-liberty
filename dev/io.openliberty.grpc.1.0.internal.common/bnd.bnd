@@ -25,15 +25,16 @@ Import-Package: !sun.*,\
   javax.annotation;version=!,\
   *
 	
-Export-Package: com.ibm.ws.grpc,\
-  io.grpc.*,\
-  google.*,\
-  com.google.*,\
-  io.perfmark,\
-  io.opencensus.*,\
-  org.checkerframework.framework.qual,\
-  org.checkerframework.checker.nullness.qual,\
-  org.checkerframework.checker.nullness.compatqual
+Export-Package: \
+	io.openliberty.grpc.internal,\
+	io.grpc.*,\
+	google.*,\
+	com.google.*,\
+	io.perfmark,\
+	io.opencensus.*,\
+	org.checkerframework.framework.qual,\
+	org.checkerframework.checker.nullness.qual,\
+	org.checkerframework.checker.nullness.compatqual
 	
 javac.args.release: current
 

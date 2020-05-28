@@ -15,7 +15,7 @@
                    localization="OSGI-INF/l10n/metatype">
 
     <!-- id gets mapped to configuration class impl in Designate element below --> 
-    <OCD id="com.ibm.ws.grpc.clientConfig.metatype" name="%clientConfig" description="%clientConfig.desc"
+    <OCD id="io.openliberty.grpc.clientConfig.metatype" name="%clientConfig" description="%clientConfig.desc"
          ibm:alias="grpcTarget" >
          
          <!-- the following lines will define defaults and variable types for these parameters.
@@ -37,8 +37,8 @@
     </OCD>
 
     <!-- factoryPid allows multiple instances in server.xml, activate will be called multiple times --> 
-    <Designate factoryPid="com.ibm.ws.grpc.clientConfig">       <!-- matches pid in java file -->                        
-        <Object ocdref="com.ibm.ws.grpc.clientConfig.metatype" /> <!-- matches id of ocd above --> 
+    <Designate factoryPid="io.openliberty.grpc.clientConfig">       <!-- matches pid in java file -->                        
+        <Object ocdref="io.openliberty.grpc.clientConfig.metatype" /> <!-- matches id of ocd above --> 
     </Designate>
 
 

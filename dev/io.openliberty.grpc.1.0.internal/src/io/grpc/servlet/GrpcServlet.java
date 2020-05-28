@@ -18,10 +18,10 @@ package io.grpc.servlet;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.grpc.servlet.GrpcServletUtils;
 
 import io.grpc.BindableService;
 import io.grpc.ExperimentalApi;
+import io.openliberty.grpc.internal.servlet.GrpcServletUtils;
 
 import java.io.IOException;
 import java.util.List;

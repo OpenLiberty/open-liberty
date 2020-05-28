@@ -24,8 +24,6 @@ import static java.util.logging.Level.FINEST;
 
 import com.google.common.io.BaseEncoding;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.grpc.servlet.GrpcServerComponent;
-import com.ibm.ws.grpc.servlet.GrpcServletUtils;
 
 import io.grpc.Attributes;
 import io.grpc.ExperimentalApi;
@@ -39,6 +37,8 @@ import io.grpc.internal.GrpcUtil;
 import io.grpc.internal.ReadableBuffers;
 import io.grpc.internal.ServerTransportListener;
 import io.grpc.internal.StatsTraceContext;
+import io.openliberty.grpc.internal.servlet.GrpcServerComponent;
+import io.openliberty.grpc.internal.servlet.GrpcServletUtils;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

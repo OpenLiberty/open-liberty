@@ -37,14 +37,14 @@ Import-Package: !sun.*,\
   *
 
 Export-Package: \
-  com.ibm.ws.grpc.client.* ,\
+  io.openliberty.grpc.internal.client.* ,\
   io.grpc.netty.shaded.io.*
 
 javac.args.release: current
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=11))"
 
--dsannotations: com.ibm.ws.grpc.client.config.GrpcClientConfigImpl
+-dsannotations: io.openliberty.grpc.internal.client.config.GrpcClientConfigImpl
 
 # include the service providers and metatype
 Include-Resource: \
@@ -55,7 +55,7 @@ Include-Resource: \
 
 # expose the service providers to be consumed by grpc-common bundle
 Service-Component: \
-  com.ibm.ws.grpc.client.ResourceProvider; \
+  io.openliberty.grpc.internal.client.ResourceProvider; \
     implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
     provide:=com.ibm.wsspi.classloading.ResourceProvider; \
     configuration-policy:=optional; \

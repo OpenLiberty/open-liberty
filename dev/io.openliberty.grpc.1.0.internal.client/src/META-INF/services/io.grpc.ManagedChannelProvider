@@ -1,1 +1,1 @@
-com.ibm.ws.grpc.client.LibertyManagedChannelProvider
+io.openliberty.grpc.internal.client.LibertyManagedChannelProvider
