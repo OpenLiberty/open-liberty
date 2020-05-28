@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.jaxb.fat;
 
-import java.util.Arrays;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -21,7 +19,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import jaxb.web.JAXBTestServlet;
@@ -38,10 +35,6 @@ public class LibertyJAXBTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "jaxb.web");
-        if (JakartaEE9Action.isActive()) {
-            server.changeFeatures(Arrays.asList("jaxb-3.0", "servlet-5.0", "componenttest-2.0"));
-        }
-
         server.startServer();
     }
 

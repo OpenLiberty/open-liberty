@@ -30,7 +30,7 @@ import componenttest.topology.utils.FATServletClient;
 import jaxb.thirdparty.web.ThirdPartyJAXBTestServlet;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat({ "JAXB-2.3", SkipForRepeat.EE9_FEATURES })
+@SkipForRepeat("JAXB-2.3")
 @MaximumJavaLevel(javaLevel = 8) // Do not run these tests on JDK 9+ where there is no JAX-B api/impl in the JDK
 public class ThirdPartyJAXBTest extends FATServletClient {
 

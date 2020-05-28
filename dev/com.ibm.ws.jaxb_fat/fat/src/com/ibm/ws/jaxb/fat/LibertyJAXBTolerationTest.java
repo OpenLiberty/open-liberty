@@ -26,7 +26,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat({ "JAXRS", SkipForRepeat.EE9_FEATURES })
+@SkipForRepeat("JAXRS")
 public class LibertyJAXBTolerationTest extends FATServletClient {
 
     @Server("jaxb_optional_feature_toleration_fat")
@@ -42,6 +42,7 @@ public class LibertyJAXBTolerationTest extends FATServletClient {
      */
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     public void testJaxbOptionalFeatureToleration() throws Exception {
 
         optionalServer.startServer();
@@ -63,6 +64,7 @@ public class LibertyJAXBTolerationTest extends FATServletClient {
      */
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     public void testJaxbInternalOptionalFeatureToleration() throws Exception {
 
         internalOptionalServer.startServer();
