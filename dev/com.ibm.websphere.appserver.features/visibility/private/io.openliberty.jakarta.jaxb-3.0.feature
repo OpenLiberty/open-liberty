@@ -8,11 +8,11 @@ IBM-Process-Types: client, \
  server
 Subsystem-Name: Jakarta XML Bindings 3.0
 -features=\
-  com.ibm.websphere.appserver.classloading-1.0
+  com.ibm.websphere.appserver.classloading-1.0, \
+  io.openliberty.jakarta.activation-2.0
 -bundles=\
-  io.openliberty.jakarta.activation.2.0;  location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.activation:jakarta.activation-api:2.0.0-RC3", \
   io.openliberty.jakarta.jaxb.3.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.xml.bind:jakarta.xml.bind-api:3.0.0-RC3", \
-  com.ibm.ws.jaxb.3.0.tools
+  io.open.jaxb.3.0.internal.tools
 kind=noship
 edition=core
 WLP-Activation-Type: parallel

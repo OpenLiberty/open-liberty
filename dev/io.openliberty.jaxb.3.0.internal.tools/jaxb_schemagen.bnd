@@ -8,23 +8,16 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../cnf/resources/bnd/bundle.props
+-include= ~../cnf/resources/bnd/cmdline-subdir.props
 bVersion=1.0
 
-Bundle-SymbolicName: com.ibm.websphere.jakarta.activation.2.0; singleton:=true
 
-Export-Package: \
-	jakarta.activation;version="2.0"
+Bundle-Name: IBM JAXB SchemaGen Tool
 
-Private-Package: \
-    com.sun.activation.registries
+Require-Compiler: true
 
-instrument.disabled: true
-
-
-publish.wlp.jar.suffix: dev/api/spec
-
--buildpath: \
-    com.sun.activation:jakarta.activation;version=2.0.0 
-    
-    
+Require-Bundle: io.openliberty.jaxb.3.0.internal.tools; version="[1,1.0.100)", \
+ io.openliberty.jakarta.jaxb.3.0; version="[1,1.0.100)"; location="dev/api/spec/", \
+ com.ibm.ws.logging; version="[1,1.0.100)"
+ 
+Command-Class: com.ibm.ws.jaxb.tools.SchemaGen

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>com.ibm.ws.jaxb.3.0.tools</name>
+	<name>io.openliberty.jaxb.3.0.internal.tools</name>
 	<comment></comment>
 	<projects>
 	</projects>

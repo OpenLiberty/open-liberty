@@ -13,8 +13,8 @@
 bVersion=1.0.${libertyBundleMicroVersion}
 bSymbolicName=com.ibm.ws.jaxb.3.0.tools
 
-Bundle-Name: com.ibm.ws.jaxb.3.0.tools
-Bundle-SymbolicName: com.ibm.ws.jaxb.3.0.tools; singleton:=true
+Bundle-Name: io.openliberty.jaxb.3.0.internal.tools
+Bundle-SymbolicName: io.openliberty.jaxb.3.0.internal.tools; singleton:=true
     
 # The SPI definition under META-INF/services
 # Do not publish RI javax.xml.bind.JAXBContext
@@ -65,6 +65,7 @@ Private-Package:\
 instrument.disabled: true
 
 -buildpath: \
+	jakarta.xml.bind:jakarta.xml.bind-api;version=3.0.0, \
 	org.glassfish.jaxb:jaxb-core;version=3.0.0, \
 	org.glassfish.jaxb:jaxb-jxc;version=3.0.0, \
 	org.glassfish.jaxb:jaxb-runtime;version=3.0.0, \
