@@ -14,18 +14,22 @@ bVersion=1.0
 
 -include= jar:${fileuri;${repo;com.ibm.ws:jakartaee-transformer;0.1.1}}!/META-INF/MANIFEST.MF
 
--includeresource: \
-    @${repo;com.ibm.ws:jakartaee-transformer;0.1.1}!/!META-INF/maven/*
+-includeresource: @${repo;com.ibm.ws:jakartaee-transformer;0.1.1}!/!META-INF/maven/*
 
-Main-Class: com.ibm.ws.jakarta.transformer.JakartaTransformer
+Main-Class: org.eclipse.transformer.jakarta.JakartaTransformer
 
 Bundle-Name: Liberty Jakartaee Transformer
 Bundle-SymbolicName: wlp-jakartaeeTransformer
 Bundle-Description: Unshipped bundle that houses jakartaaee transformer for use during build
 
-Export-Package: com.ibm.ws.jakarta.transformer.*;version="1.0"
+Export-Package: \
+  org.eclipse.transformer;version="1.0", \
+  org.eclipse.transformer.jakarta;version="1.0"
+
 Private-Package: \
-    com.ibm.ws.jakarta.transformer.*
+  org.eclipse.transformer.action, \
+  org.eclipse.transformer.action.impl, \
+  org.eclipse.transformer.util
 
 -plugin.build.bnd.plugins:
 -pluginpath:

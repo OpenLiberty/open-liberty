@@ -164,7 +164,7 @@ task jakartaeeTransform {
             bundles.each { bundleJar ->
                 javaexec {
                     classpath configurations.jakartaeeTransformJars
-                    main = "com.ibm.ws.jakarta.transformer.JakartaTransformer"
+                    main = "org.eclipse.transformer.jakarta.JakartaTransformer"
                     args = [ project.buildDir.path + '/' + bundleJar.name, 
                           (project.buildDir.path + '/' + bundleJar.name).replaceAll('.jar',".jakarta.jar"),
                           "-tr",

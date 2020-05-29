@@ -25,7 +25,7 @@ import java.util.Set;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.fat.util.SharedServer;
-import com.ibm.ws.jakarta.transformer.JakartaTransformer;
+import org.eclipse.transformer.jakarta.JakartaTransformer;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.topology.impl.LibertyServer;
@@ -191,9 +191,9 @@ public class JakartaEE9Action extends FeatureReplacementAction {
         System.setErr(ps);
 
         try {
-            Class.forName("com.ibm.ws.jakarta.transformer.JakartaTransformer");
+            Class.forName("org.eclipse.transformer.jakarta.JakartaTransformer");
         } catch (Throwable e) {
-            String mesg = "Unable to load the com.ibm.ws.jakarta.transformer.JakartaTransformer class. " +
+            String mesg = "Unable to load the org.eclipse.transformer.jakarta.JakartaTransformer class. " +
                           "Did you remember to include 'addRequiredLibraries.dependsOn addJakartaTransformer' in the FATs build.gradle file?";
             Log.error(c, m, e, mesg);
             throw new RuntimeException(mesg, e);
