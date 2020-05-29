@@ -11,9 +11,8 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-Bundle-Name: WS_J2EE_el
 Bundle-SymbolicName: io.openliberty.jakarta.el.4.0; singleton:=true
-Bundle-Description: WS_J2EE_el, version 4.0
+Bundle-Description: Jakarta Expression Language EE9, version 4.0
 
 Export-Package: \
  jakarta.el;thread-context=true; version="4.0.0", \

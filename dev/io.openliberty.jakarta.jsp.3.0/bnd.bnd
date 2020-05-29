@@ -12,6 +12,7 @@
 bVersion=1.0
 
 Bundle-SymbolicName: io.openliberty.jakarta.jsp.3.0; singleton:=true
+Bundle-Description: Jakarta Server Pages EE9, version 3.0
 
 Export-Package: \
 	jakarta.servlet.jsp; version="3.0.0",\
