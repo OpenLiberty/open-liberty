@@ -12,7 +12,7 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-Bundle-Name: jstl facode
+Bundle-Name: jstl facade
 Bundle-SymbolicName: com.ibm.ws.jsp.jstl.facade
 Bundle-Description: facade to provide a classloader for our internal jstl classes for osgi application jsp backwards compatibility; version=${bVersion}
 
