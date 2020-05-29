@@ -304,6 +304,19 @@ public class NioSocketIOChannel extends SocketIOChannel {
               } catch (Throwable t) {
                   if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                       Tr.debug(this, tc, "(" + retry_count + ") Error closing channel: " + t);
+
+                      // try write as single byte to the channel to see if it results in wakeup on the other end
+                      try
+                      {
+                        ByteBuffer b = ByteBuffer.allocate(2);
+                        b.put((byte)0);
+                        b.flip();
+                        channel.write(b);
+                      }
+                      catch (Exception e)
+                      {
+                        Tr.debug(this, tc, "(" + retry_count + ") Failed to write wake-up attempt byte:" + e);
+                      }
                   }
                   // if we get repeated exceptions try waiting a second
                   if (1==retry_count) try { Thread.sleep(1000); } catch (InterruptedException ie) {}
