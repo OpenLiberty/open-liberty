@@ -19,8 +19,9 @@ Subsystem-Name: Jakarta XML Bindings 3.0
 -features=\
   com.ibm.websphere.appserver.classloading-1.0, \
   com.ibm.websphere.appserver.eeCompatible-9.0, \
-  io.openliberty.jakarta.jaxb-3.0, \
-  com.ibm.ws.jaxb.tools.2.3
+  io.openliberty.jakarta.jaxb-3.0
+-bundles=\
+  io.openliberty.jaxb.3.0.internal.tools
 -files=\
   bin/jaxb/xjc.bat, \
   bin/jaxb/tools/ws-schemagen.jakarta.jar, \

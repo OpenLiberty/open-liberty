@@ -62,7 +62,7 @@ public class JAXBTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
+    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES, "JAXB-2.3" })
     public void testJaxbImplLoadedFromLiberty() throws Exception {
         JAXBContext ctx = JAXBContext.newInstance("jaxb.web", ObjectFactory.class.getClassLoader());
         ClassLoader implLoader = ctx.getClass().getClassLoader();
