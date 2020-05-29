@@ -847,7 +847,6 @@ public class H2StreamProcessor {
                     writeFrameSync();
                     currentFrame = savedFrame;
                 }
-                // always "top off" the read window to maintain the ability to keep reading.
                 long windowSizeIncrement = muxLink.getRemoteConnectionSettings().getMaxFrameSize();
                 FrameWindowUpdate wuf = new FrameWindowUpdate(0, (int) windowSizeIncrement, false);
                 this.muxLink.getStream(0).processNextFrame(wuf, Direction.WRITING_OUT);
