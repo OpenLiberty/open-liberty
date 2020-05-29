@@ -35,7 +35,7 @@ Import-Package: \
   jakarta.xml.bind.*; version="[3.0,4.0]", \
   com.sun.xml.tools.*, \
   com.ibm.wsspi.classloading, \
-  org.apache.xml.*; resolution:=optional, \ 
+  org.apache.xml.*; resolution:=optional, \
   !org.apache.tools*, \
   !org.apache.xerces*, \
   !org.jvnet*, \

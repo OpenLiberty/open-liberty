@@ -11,7 +11,7 @@
 
 # NLS_MESSAGEFORMAT_ALL
 #
-#CMVCPATHNAME com.ibm.ws.jaxws.ejb/resources/com/ibm/ws/jaxb/tools/internal/resources/JaxbToolsMessages.nlsprops
+#CMVCPATHNAME io.openliberty.jaxb.3.0.internal.tools/resources/io/openliberty/jaxb/tools/internal/resources/JaxbToolsMessages.nlsprops
 #ISMESSAGEFILE TRUE
 #COMPONENTPREFIX CWWKW
 #COMPONENTNAMEFOR CWWKW WebSphere JAXB Tools Code
@@ -20,6 +20,6 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 
-error.parameter.target.missed=CWWKW0700E: O par\u00e2metro de destino necess\u00e1rio n\u00e3o foi especificado.
-error.parameter.target.missed.explanation=Se o par\u00e2metro de destino for especificado, aplicativos existentes poder\u00e3o ser gerados novamente, sem que seus comportamentos sejam alterados quando o n\u00edvel de especifica\u00e7\u00e3o JAXB suportado pelo Perfil Liberty for atualizado.
-error.parameter.target.missed.useraction=Insira o n\u00edvel de especifica\u00e7\u00e3o JAXB com qual o c\u00f3digo gerado est\u00e1 em conformidade. Valores v\u00e1lidos s\u00e3o 3.0
+error.parameter.target.missed=CWWKW0700E: Wymagany element docelowy parametru nie zosta\u0142 okre\u015blony.
+error.parameter.target.missed.explanation=Je\u015bli parametr docelowy zostanie okre\u015blony, to po zaktualizowaniu poziomu specyfikacji JAXB obs\u0142ugiwanego przez profil Liberty istniej\u0105ce aplikacje b\u0119d\u0105 mog\u0142y zosta\u0107 ponownie wygenerowane bez konieczno\u015bci zmiany ich zachowania.
+error.parameter.target.missed.useraction=Podaj poziom specyfikacji JAXB, kt\u00f3rego dotyczy wygwnwrowany kod. Poprawne warto\u015bci to 3.0

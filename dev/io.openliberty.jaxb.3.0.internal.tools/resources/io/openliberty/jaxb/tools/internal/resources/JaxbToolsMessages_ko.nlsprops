@@ -11,7 +11,7 @@
 
 # NLS_MESSAGEFORMAT_ALL
 #
-#CMVCPATHNAME com.ibm.ws.jaxws.ejb/resources/com/ibm/ws/jaxb/tools/internal/resources/JaxbToolsMessages.nlsprops
+#CMVCPATHNAME io.openliberty.jaxb.3.0.internal.tools/resources/io/openliberty/jaxb/tools/internal/resources/JaxbToolsMessages.nlsprops
 #ISMESSAGEFILE TRUE
 #COMPONENTPREFIX CWWKW
 #COMPONENTNAMEFOR CWWKW WebSphere JAXB Tools Code
