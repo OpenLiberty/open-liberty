@@ -5671,6 +5671,10 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
     // differentiate if grpc has been pass through the normal request path already or is streaming
     private boolean firstGrpcReadComplete = false;
 
+    // return:
+    // 0 - GRPC not being used,
+    // 1 - GRPC using request path first time through,
+    // 2 - GRPC has finished first path and is now in streaming mode for this H2 stream
     public int getGRPCEndStream() {
         int ret = 0;
         H2HttpInboundLinkWrap link = null;

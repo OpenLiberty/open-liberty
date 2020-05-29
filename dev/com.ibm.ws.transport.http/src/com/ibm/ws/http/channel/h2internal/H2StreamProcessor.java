@@ -119,7 +119,7 @@ public class H2StreamProcessor {
     private volatile Queue<WsByteBuffer> streamReadReady = new ConcurrentLinkedQueue<WsByteBuffer>();
     private int streamReadSize = 0;
     private long actualReadCount = 0;
-    // TODO: we can probable get rid of this
+    // TODO: investigate if GRPC changes means we can remove this readLatch logic.
     private final CountDownLatch readLatch = new CountDownLatch(1);
 
     // latch used to block processing new data until the "first" data buffers from this stream are read by the application
@@ -847,9 +847,7 @@ public class H2StreamProcessor {
                     writeFrameSync();
                     currentFrame = savedFrame;
                 }
-                // WTL: I think we have a bug here: our read window can drop too low if the remote
-                // is sending very large frames.  It makes sense to always "top off" the read window
-                // like this does now.
+                // always "top off" the read window to maintain the ability to keep reading.
                 long windowSizeIncrement = muxLink.getRemoteConnectionSettings().getMaxFrameSize();
                 FrameWindowUpdate wuf = new FrameWindowUpdate(0, (int) windowSizeIncrement, false);
                 this.muxLink.getStream(0).processNextFrame(wuf, Direction.WRITING_OUT);
