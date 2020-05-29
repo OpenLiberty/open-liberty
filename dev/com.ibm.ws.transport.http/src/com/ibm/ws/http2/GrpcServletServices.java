@@ -20,7 +20,6 @@ public class GrpcServletServices {
 
     private static final Map<String, ServiceInformation> servletGrpcServices = new HashMap<String, ServiceInformation>();
 
-    //WDW-ClientStreaming
     public static boolean grpcInUse = false;
 
     /**
@@ -31,7 +30,6 @@ public class GrpcServletServices {
      */
     public static synchronized void addServletGrpcService(String service, String contextRoot, Class<?> clazz) {
 
-        //WDW-ClientStreaming
         grpcInUse = true;
 
         if (servletGrpcServices.containsKey(service)) {

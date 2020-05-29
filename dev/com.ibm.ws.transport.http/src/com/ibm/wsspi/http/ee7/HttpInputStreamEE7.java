@@ -117,7 +117,6 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
                     Tr.debug(tc, "There is no data currently available in the buffer");
                 }
 
-                //WDW-ClientStreaming
                 if ((GrpcServletServices.grpcInUse) && (isc != null) && (isc instanceof HttpInboundServiceContextImpl)) {
                     int eos = ((HttpInboundServiceContextImpl) isc).getGRPCEndStream();
                     if (eos == 1) {
@@ -129,7 +128,22 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "isFinished(): GRPC detected, stream ended, return true");
                         }
-                        return true;
+                        // check that all the buffers have been drained
+                        if (isc != null && isc.isIncomingMessageFullyRead()) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "HTTP Channel believes it has read all the data, checking to ensure it has given us all the data");
+                            }
+                            //If checkBuffer returns false, we want to return true since it means all the data has been read
+                            isFinished = !checkBuffer();
+                        } else {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "HTTP Channel does not believe it has read all the data");
+                            }
+                        }
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "isFinished returning : " + isFinished);
+                        }
+                        return isFinished;
                     }
                 }
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

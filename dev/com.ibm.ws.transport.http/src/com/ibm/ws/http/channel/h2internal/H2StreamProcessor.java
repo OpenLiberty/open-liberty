@@ -13,6 +13,8 @@ package com.ibm.ws.http.channel.h2internal;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 
@@ -114,10 +116,14 @@ public class H2StreamProcessor {
     private long streamReadWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE;
 
     // a list of buffers to be read in by the WebContainer
-    private final ArrayList<WsByteBuffer> streamReadReady = new ArrayList<WsByteBuffer>();
+    private volatile Queue<WsByteBuffer> streamReadReady = new ConcurrentLinkedQueue<WsByteBuffer>();
     private int streamReadSize = 0;
     private long actualReadCount = 0;
-    private CountDownLatch readLatch = new CountDownLatch(1);
+    // TODO: we can probable get rid of this
+    private final CountDownLatch readLatch = new CountDownLatch(1);
+
+    // latch used to block processing new data until the "first" data buffers from this stream are read by the application
+    private CountDownLatch firstReadLatch;
 
     // handle various stream close conditions
     private boolean rstStreamSent = false;
@@ -841,6 +847,9 @@ public class H2StreamProcessor {
                     writeFrameSync();
                     currentFrame = savedFrame;
                 }
+                // WTL: I think we have a bug here: our read window can drop too low if the remote
+                // is sending very large frames.  It makes sense to always "top off" the read window
+                // like this does now.
                 long windowSizeIncrement = muxLink.getRemoteConnectionSettings().getMaxFrameSize();
                 FrameWindowUpdate wuf = new FrameWindowUpdate(0, (int) windowSizeIncrement, false);
                 this.muxLink.getStream(0).processNextFrame(wuf, Direction.WRITING_OUT);
@@ -1043,8 +1052,7 @@ public class H2StreamProcessor {
         }
     }
 
-    //WDW-ClientStreaming
-    private int tempDataCount = 0;
+    private int passCount = 0;
 
     private void processOpen(Constants.Direction direction) throws ProtocolException, FlowControlException, CompressionException, Http2Exception {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -1057,36 +1065,54 @@ public class H2StreamProcessor {
                 updateStreamState(StreamState.HALF_CLOSED_REMOTE);
             }
             if (frameType == FrameTypes.DATA) {
-                //WDW-ClientStreaming
                 if (GrpcServletServices.grpcInUse == false) {
                     getBodyFromFrame();
                     if (currentFrame.flagEndStreamSet()) {
-                        processCompleteData();
+                        processCompleteData(true);
                         setReadyForRead();
                     }
                 } else {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "processOpen: calling processCompleteData() getEndStream returns: " + this.getEndStream());
-                    }
-                    if (tempDataCount == 0) {
-                        tempDataCount++;
+                    if (passCount == 0) {
+                        // latch so we don't overwrite the first data frame that comes in
+                        firstReadLatch = new CountDownLatch(1);
+                        passCount++;
                         getBodyFromFrame();
-                        processCompleteData();
+                        processCompleteData(true);
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "processOpen: first time in. calling setReadyForRead() getEndStream returns: " + this.getEndStream());
                         }
                         setReadyForRead();
                     } else {
                         dataPayload = null;
-                        streamReadReady.clear();
+                        // wait until ALL of the data buffered on this stream is read, only one time, after that
+                        // we should be streaming up to the callback in the Webcontainer
+                        if (passCount == 1) {
+                            passCount++;
+                            try {
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "processOpen: new data frame received, wait for the first data frame to get processed completely");
+                                }
+
+                                firstReadLatch.await();
+
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "processOpen: finished waiting for first data read");
+                                }
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
                         getBodyFromFrame();
-                        WsByteBuffer buf = processCompleteData();
-                        // need to integrate this better
+                        WsByteBuffer buf = processCompleteData(false);
+
                         if (buf != null) {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                 Tr.debug(tc, "calling setNewBodyBuffer with: " + buf);
                             }
+                            // store the buffer and call async complete()
                             h2HttpInboundLinkWrap.setAndStoreNewBodyBuffer(buf);
+                            h2HttpInboundLinkWrap.invokeAppComplete();
                         } else {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                 Tr.debug(tc, "did not call setNewBodyBuffer. buf was null");
@@ -1096,7 +1122,6 @@ public class H2StreamProcessor {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "processOpen: calling setReadyForRead() getEndStream returns: " + this.getEndStream());
                         }
-                        setReadyForRead();
                     }
                 }
 
@@ -1657,18 +1682,18 @@ public class H2StreamProcessor {
      * Put the data payload for this stream into the read buffer that will be passed to the webcontainer.
      * This should only be called when this stream has received an end of stream flag.
      *
+     * @param boolean store controls if buffer contents are to be saved on this stream
+     * @return WsByteBuffer buffer taht was created and holds the payload
      * @throws ProtocolException
      */
-    //WDW-ClientStreaming
-    // private void processCompleteData() throws ProtocolException {
-    private WsByteBuffer processCompleteData() throws ProtocolException {
+    private WsByteBuffer processCompleteData(boolean store) throws ProtocolException {
         WsByteBufferPoolManager bufManager = HttpDispatcher.getBufferManager();
         WsByteBuffer buf = bufManager.allocate(getByteCount(dataPayload));
         for (byte[] bytes : dataPayload) {
             buf.put(bytes);
         }
         buf.flip();
-        int actualContentLength = buf.limit();
+        int actualContentLength = buf.remaining();
         if (expectedContentLength != -1 && actualContentLength != expectedContentLength) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "processCompleteData release buffer and throw ProtocolException");
@@ -1684,9 +1709,12 @@ public class H2StreamProcessor {
             }
         }
         this.h2HttpInboundLinkWrap.setH2ContentLength(actualContentLength);
-        moveDataIntoReadBufferArray(buf);
 
-        //WDW-ClientStreaming
+        // overwrite the local read buffer (if this is the first data frame on this stream)
+        if (store) {
+            moveDataIntoReadBufferArray(buf);
+        }
+
         return buf;
     }
 
@@ -1733,12 +1761,9 @@ public class H2StreamProcessor {
                     h2HttpInboundLinkWrap.ready(this.h2HttpInboundLinkWrap.vc);
                 }
             } finally {
-                //WDW-ClientStreaming
-                //headersCompleted = false;
                 if (getEndStream()) {
                     headersCompleted = false;
                 }
-
                 waitingForWebContainer = false;
             }
         }
@@ -1810,21 +1835,25 @@ public class H2StreamProcessor {
             }
 
             // find the next stream buffer that has data
-            while (!streamReadReady.isEmpty() && !streamReadReady.get(0).hasRemaining()) {
-                streamReadReady.get(0).release();
-                streamReadReady.remove(0);
+            while (!streamReadReady.isEmpty() && !streamReadReady.peek().hasRemaining()) {
+                streamReadReady.poll().release();
             }
-            requestBuffers[reqArrayIndex].put(streamReadReady.get(0).get());
+            requestBuffers[reqArrayIndex].put(streamReadReady.peek().get());
         }
+        streamReadSize -= actualReadCount;
 
+        // WTL: commenting this out because it doesn't make sense!?
         // put stream array back in shape
-        streamReadSize = 0;
-        readLatch = new CountDownLatch(1);
-        for (WsByteBuffer buffer : ((ArrayList<WsByteBuffer>) streamReadReady.clone())) {
-            streamReadReady.clear();
-            if (buffer.hasRemaining()) {
-                moveDataIntoReadBufferArray(buffer.slice());
-            }
+//            streamReadSize = 0;
+//            readLatch = new CountDownLatch(1);
+//            for (WsByteBuffer buffer : ((ArrayList<WsByteBuffer>) streamReadReady.clone())) {
+//                streamReadReady.clear();
+//                if (buffer.hasRemaining()) {
+//                    moveDataIntoReadBufferArray(buffer.slice());
+//                }
+//            }
+        if (this.streamReadSize == 0) {
+            firstReadLatch.countDown();
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -2115,7 +2144,6 @@ public class H2StreamProcessor {
         }
     }
 
-    //WDW-ClientStreaming
     public boolean getEndStream() {
         return this.endStream;
     }

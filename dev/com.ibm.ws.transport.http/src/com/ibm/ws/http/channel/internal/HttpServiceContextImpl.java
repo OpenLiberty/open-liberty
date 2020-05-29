@@ -2,7 +2,7 @@
  * Copyright (c) 2004, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * which accompanies this distribution,  and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
@@ -5052,8 +5052,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      *
      * @param buffer
      */
-    //WDW-ClientStreaming
-    // private void storeBuffer(WsByteBuffer buffer) {
     public void storeBuffer(WsByteBuffer buffer) {
         this.storage.add(buffer);
     }
@@ -5670,7 +5668,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
     }
 
-    //WDW-ClientStreaming
+    // differentiate if grpc has been pass through the normal request path already or is streaming
+    private boolean firstGrpcReadComplete = false;
+
     public int getGRPCEndStream() {
         int ret = 0;
         H2HttpInboundLinkWrap link = null;
@@ -5693,11 +5693,15 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         }
 
         if (link instanceof H2HttpInboundLinkWrap) {
-            //for now we know it is stream 3
             int streamId = link.getStreamId();
             H2StreamProcessor hsp = link.muxLink.getStreamProcessor(streamId);
             if (hsp.getEndStream()) {
-                ret = 2;
+                if (!firstGrpcReadComplete) {
+                    firstGrpcReadComplete = true;
+                    ret = 1;
+                } else {
+                    ret = 2;
+                }
             } else {
                 ret = 1;
             }
