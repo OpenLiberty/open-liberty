@@ -22,8 +22,9 @@ import java.util.concurrent.ConcurrentMap;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.microprofile.config.common.ConfigException;
+import com.ibm.ws.microprofile.config.common.InternalConfigSource;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
-import com.ibm.ws.microprofile.config.interfaces.ConfigException;
 
 public class PropertiesConfigSource extends InternalConfigSource implements StaticConfigSource {
 
@@ -48,7 +49,7 @@ public class PropertiesConfigSource extends InternalConfigSource implements Stat
 
     @Override
     public ConcurrentMap<String, String> getProperties() {
-        return properties;
+        return this.properties;
     }
 
     @Trivial

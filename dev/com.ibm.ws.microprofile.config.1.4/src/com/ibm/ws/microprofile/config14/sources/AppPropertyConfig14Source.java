@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import com.ibm.ws.microprofile.config13.sources.AppPropertyConfigSource;
+import com.ibm.ws.microprofile.config.serverxml.AppPropertyConfigSource;
 import com.ibm.ws.microprofile.config14.impl.TimedCache;
 
 /**

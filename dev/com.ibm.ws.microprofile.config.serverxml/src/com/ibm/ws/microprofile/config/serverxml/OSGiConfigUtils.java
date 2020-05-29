@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config13.sources;
+package com.ibm.ws.microprofile.config.serverxml;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -31,7 +31,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.config.xml.ConfigVariables;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.microprofile.config.interfaces.ConfigException;
+import com.ibm.ws.microprofile.config.common.ConfigException;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.application.Application;

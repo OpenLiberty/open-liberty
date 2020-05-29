@@ -28,10 +28,10 @@ import org.apache.commons.lang3.ClassUtils;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.microprofile.config.common.ConfigException;
 import com.ibm.ws.microprofile.config.converters.ExtendedGenericConverter;
 import com.ibm.ws.microprofile.config.converters.PriorityConverter;
 import com.ibm.ws.microprofile.config.converters.PriorityConverterMap;
-import com.ibm.ws.microprofile.config.interfaces.ConfigException;
 
 public class ConversionManager {
 
@@ -47,14 +47,14 @@ public class ConversionManager {
     public ConversionManager(PriorityConverterMap converters, ClassLoader classLoader) {
         this.converters = converters;
         this.converters.setUnmodifiable(); //probably already done but make sure
-        this.classLoader = new WeakReference<ClassLoader>(classLoader);
+        this.classLoader = new WeakReference<>(classLoader);
     }
 
     protected ConversionStatus simpleConversion(String rawString, Type type, Class<?> genericSubType) {
         ConversionStatus status = new ConversionStatus();
 
-        if (converters.hasType(type)) {
-            PriorityConverter converter = converters.getConverter(type);
+        if (this.converters.hasType(type)) {
+            PriorityConverter converter = this.converters.getConverter(type);
             if (converter != null) {
                 Object converted = null;
                 try {
@@ -78,7 +78,7 @@ public class ConversionManager {
                     throw new ConfigException(Tr.formatMessage(tc, "conversion.exception.CWMCG0007E", type, rawString, t.getMessage()), t);
                 }
 
-                if (status.isConverterFound() && status.getConverted() == null) {
+                if (status.isConverterFound() && (status.getConverted() == null)) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "simpleConversion: The converted value is null. The rawString is {0}", rawString);
                     }
@@ -93,7 +93,7 @@ public class ConversionManager {
     /**
      * Convert a String to a Type using registered converters for the Type
      *
-     * @param           <T>
+     * @param <T>
      *
      * @param rawString
      * @param type
@@ -107,7 +107,7 @@ public class ConversionManager {
     /**
      * Convert a String to a Type using registered converters for the Type
      *
-     * @param           <T>
+     * @param <T>
      *
      * @param rawString
      * @param type
@@ -117,7 +117,7 @@ public class ConversionManager {
 
         Object converted = null;
 
-        if (genericSubType == null && type instanceof ParameterizedType) {
+        if ((genericSubType == null) && (type instanceof ParameterizedType)) {
             ParameterizedType pType = (ParameterizedType) type;
             Type[] aTypes = pType.getActualTypeArguments();
             Type genericTypeArg = aTypes.length == 1 ? aTypes[0] : null; //initially only support one type arg
@@ -139,7 +139,7 @@ public class ConversionManager {
             //do a simple lookup in the map of converters
             ConversionStatus status = simpleConversion(rawString, type, genericSubType);
 
-            if (!status.isConverterFound() && type instanceof Class) {
+            if (!status.isConverterFound() && (type instanceof Class)) {
                 Class<?> requestedClazz = (Class<?>) type;
 
                 //try array conversion
@@ -193,7 +193,7 @@ public class ConversionManager {
     }
 
     /**
-     * @param                <T>
+     * @param <T>
      * @param rawString
      * @param requestedClazz
      * @return
@@ -212,7 +212,7 @@ public class ConversionManager {
      */
     protected ConversionStatus convertCompatible(String rawString, Class<?> type) {
         ConversionStatus status = new ConversionStatus();
-        for (PriorityConverter con : converters.getAll()) {
+        for (PriorityConverter con : this.converters.getAll()) {
             Type key = con.getType();
             if (key instanceof Class) {
                 Class<?> clazz = (Class<?>) key;

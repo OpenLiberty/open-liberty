@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config13.sources;
+package com.ibm.ws.microprofile.config.serverxml;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedSet;
 
+import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
@@ -25,9 +26,7 @@ import org.osgi.service.cm.ConfigurationAdmin;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.microprofile.config.sources.DynamicConfigSource;
-import com.ibm.ws.microprofile.config.sources.InternalConfigSource;
-import com.ibm.ws.microprofile.config13.interfaces.Config13Constants;
+import com.ibm.ws.microprofile.config.common.InternalConfigSource;
 
 /**
  * A ConfigSource which returns values from appProperties elements in the server.xml file e.g.
@@ -53,7 +52,7 @@ import com.ibm.ws.microprofile.config13.interfaces.Config13Constants;
  * Note that serverXMLKey1 was listed three times and the last entry "won"
  *
  */
-public class AppPropertyConfigSource extends InternalConfigSource implements DynamicConfigSource {
+public class AppPropertyConfigSource extends InternalConfigSource implements ConfigSource { //extends InternalConfigSource implements DynamicConfigSource {
 
     private static final TraceComponent tc = Tr.register(AppPropertyConfigSource.class);
     private BundleContext bundleContext;
@@ -179,4 +178,5 @@ public class AppPropertyConfigSource extends InternalConfigSource implements Dyn
         }
         return osgiConfigs;
     }
+
 }

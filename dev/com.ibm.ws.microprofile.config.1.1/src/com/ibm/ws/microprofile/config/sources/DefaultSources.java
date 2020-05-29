@@ -23,8 +23,8 @@ import org.eclipse.microprofile.config.spi.ConfigSourceProvider;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.microprofile.config.common.ConfigException;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
-import com.ibm.ws.microprofile.config.interfaces.ConfigException;
 
 public class DefaultSources {
 

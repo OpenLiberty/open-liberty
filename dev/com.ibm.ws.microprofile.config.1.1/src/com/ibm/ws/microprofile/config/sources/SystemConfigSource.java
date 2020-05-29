@@ -20,6 +20,7 @@ import java.util.Set;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.microprofile.config.common.InternalConfigSource;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
 
 /**

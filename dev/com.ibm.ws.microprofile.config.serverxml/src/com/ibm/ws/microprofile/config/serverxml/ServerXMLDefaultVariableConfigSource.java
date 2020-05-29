@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config13.sources;
+package com.ibm.ws.microprofile.config.serverxml;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +16,6 @@ import java.util.Map;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.config.xml.ConfigVariables;
-import com.ibm.ws.microprofile.config13.interfaces.Config13Constants;
 
 /**
  * A ConfigSource which returns default values from variable elements in the server.xml file e.g.

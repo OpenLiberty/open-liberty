@@ -19,7 +19,7 @@
  * @author <a href="mailto:emijiang@uk.ibm.com">Emily Jiang</a>
  */
 
-package com.ibm.ws.microprofile.config.interfaces;
+package com.ibm.ws.microprofile.config.common;
 
 /**
  * A very generic RuntimeException for errors in the Config runtime

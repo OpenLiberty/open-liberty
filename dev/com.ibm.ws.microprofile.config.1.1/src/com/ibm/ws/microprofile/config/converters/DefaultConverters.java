@@ -36,7 +36,7 @@ import org.eclipse.microprofile.config.spi.Converter;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.microprofile.config.interfaces.ConfigException;
+import com.ibm.ws.microprofile.config.common.ConfigException;
 
 /**
  * The helper class returns all the built-in converters.

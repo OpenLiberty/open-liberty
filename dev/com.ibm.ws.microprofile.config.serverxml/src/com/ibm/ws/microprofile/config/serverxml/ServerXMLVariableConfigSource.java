@@ -8,22 +8,21 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config13.sources;
+package com.ibm.ws.microprofile.config.serverxml;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.osgi.framework.BundleContext;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.config.xml.ConfigVariables;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.microprofile.config.sources.DynamicConfigSource;
-import com.ibm.ws.microprofile.config.sources.InternalConfigSource;
-import com.ibm.ws.microprofile.config13.interfaces.Config13Constants;
+import com.ibm.ws.microprofile.config.common.InternalConfigSource;
 
 /**
  * A ConfigSource which returns values from variable elements in the server.xml file e.g.
@@ -31,7 +30,7 @@ import com.ibm.ws.microprofile.config13.interfaces.Config13Constants;
  * <variable name="my_variable" value="my_value" />
  *
  */
-public class ServerXMLVariableConfigSource extends InternalConfigSource implements DynamicConfigSource {
+public class ServerXMLVariableConfigSource extends InternalConfigSource implements ConfigSource {
 
     private static final TraceComponent tc = Tr.register(ServerXMLVariableConfigSource.class);
     private final ConfigAction configAction = new ConfigAction();
@@ -53,6 +52,7 @@ public class ServerXMLVariableConfigSource extends InternalConfigSource implemen
         Map<String, String> props = new HashMap<>();
 
         Map<String, String> serverXMLVariables = null;
+
         if (System.getSecurityManager() == null) {
             serverXMLVariables = getServerXMLVariables();
         } else {

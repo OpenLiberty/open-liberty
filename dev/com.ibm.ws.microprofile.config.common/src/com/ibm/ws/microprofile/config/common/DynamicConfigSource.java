@@ -8,15 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config13.interfaces;
+package com.ibm.ws.microprofile.config.common;
+
+import org.eclipse.microprofile.config.spi.ConfigSource;
 
 /**
- * Constants for Config 1.3
+ * Marker interface to denote a dynamic ConfigSource
  */
-public class Config13Constants {
-
-    public static final int APP_PROPERTY_ORDINAL = 600;
-    public static final int SERVER_XML_VARIABLE_ORDINAL = 500;
-    public static final int SERVER_XML_DEFAULT_VARIABLE_ORDINAL = 1;
+public interface DynamicConfigSource extends ConfigSource {
 
 }

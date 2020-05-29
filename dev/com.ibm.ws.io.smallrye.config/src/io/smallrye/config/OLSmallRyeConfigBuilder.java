@@ -14,9 +14,9 @@ import java.util.List;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
-import com.ibm.ws.microprofile.config.common.AppPropertyConfigSource;
-import com.ibm.ws.microprofile.config.common.ServerXMLDefaultVariableConfigSource;
-import com.ibm.ws.microprofile.config.common.ServerXMLVariableConfigSource;
+import com.ibm.ws.microprofile.config.serverxml.AppPropertyConfigSource;
+import com.ibm.ws.microprofile.config.serverxml.ServerXMLDefaultVariableConfigSource;
+import com.ibm.ws.microprofile.config.serverxml.ServerXMLVariableConfigSource;
 
 /**
  *

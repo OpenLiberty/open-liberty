@@ -8,18 +8,21 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config13.sources;
+package com.ibm.ws.microprofile.config.serverxml;
+
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.microprofile.config.common.ConfigException;
 
 /**
  *
  */
-public class InvalidFrameworkStateException extends Exception {
+public class ServiceNotFoundException extends ConfigException {
 
-    /**
-     * @param message
-     */
-    public InvalidFrameworkStateException() {
-        super("Invalid OSGi Framework State");
+    private static final TraceComponent tc = Tr.register(ServiceNotFoundException.class);
+
+    public ServiceNotFoundException(Class<?> serviceClass) {
+        super(Tr.formatMessage(tc, "service.not.found.CWMCG0204E", serviceClass.getName()));
     }
 
     /**  */

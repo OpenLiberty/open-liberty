@@ -8,13 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config.sources;
+package com.ibm.ws.microprofile.config.common;
+
+import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.microprofile.config.interfaces.ConfigStartException;
 
 /**
  *
@@ -39,17 +40,10 @@ public abstract class InternalConfigSource implements ConfigSource {
 
     /** {@inheritDoc} */
     @Override
-    @FFDCIgnore({ ConfigStartException.class })
     public String getValue(String propertyName) {
         String theValue = null;
-        try {
-            theValue = getProperties().get(propertyName);
-        } catch (ConfigStartException cse) {
-            //Swallow the exception, don't FFDC
-            //At the moment this exception means that we could not properly query the config source
-            //It was introduced as a quick fix for issue #3997 but we might reconsider the design at some point
-        }
-
+        Map<String, String> theValueMap = getProperties();
+        theValue = theValueMap.get(propertyName);
         return theValue;
     }
 
@@ -63,5 +57,11 @@ public abstract class InternalConfigSource implements ConfigSource {
     @Override
     public String toString() {
         return getName() + "(" + getOrdinal() + ")";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Set<String> getPropertyNames() {
+        return getProperties().keySet();
     }
 }

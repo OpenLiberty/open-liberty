@@ -17,6 +17,8 @@ Subsystem-Name: MicroProfile Config 2.0
  com.ibm.websphere.appserver.appmanager-1.0
 -bundles=com.ibm.ws.require.java8, \
  com.ibm.ws.io.smallrye.config, \
+ com.ibm.ws.microprofile.config.common, \
+ com.ibm.ws.microprofile.config.serverxml, \
  com.ibm.ws.org.apache.commons.lang3, \
  com.ibm.ws.cdi.interfaces
 kind=noship

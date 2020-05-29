@@ -20,8 +20,8 @@ import org.eclipse.microprofile.config.spi.Converter;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.microprofile.config.common.ConfigException;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
-import com.ibm.ws.microprofile.config.interfaces.ConfigException;
 
 /**
  * A triple of a MP Converter, with an explicit Type and priority
@@ -54,7 +54,7 @@ public class UserConverter<T> extends PriorityConverter {
 
     @Trivial
     public static <K> UserConverter<K> newInstance(Type type, int priority, Converter<K> converter) {
-        return new UserConverter<K>(type, priority, converter);
+        return new UserConverter<>(type, priority, converter);
     }
 
     /**
@@ -87,7 +87,7 @@ public class UserConverter<T> extends PriorityConverter {
         int value = ConfigConstants.DEFAULT_CONVERTER_PRIORITY;
         //get Priority annotations from class only, not from the super-class
         Priority[] priorities = converter.getClass().getDeclaredAnnotationsByType(Priority.class);
-        if (priorities != null && priorities.length > 0) {
+        if ((priorities != null) && (priorities.length > 0)) {
             Priority priority = priorities[0];
             value = priority.value();
         }

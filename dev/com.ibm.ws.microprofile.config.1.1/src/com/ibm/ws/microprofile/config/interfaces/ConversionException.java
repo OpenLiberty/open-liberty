@@ -11,6 +11,8 @@
 
 package com.ibm.ws.microprofile.config.interfaces;
 
+import com.ibm.ws.microprofile.config.common.ConfigException;
+
 /**
  * Thrown if errors occur during value conversion that are unrelated to the input value.
  * If there is a problem with the input value then an IllegalArgumentException should be thrown.
