@@ -33,7 +33,6 @@ Import-Package: \
   jakarta.validation.spi;version="[3.0.0,4.0.0)", \
   jakarta.validation.valueextraction;version="[3.0.0,4.0.0)", \
   javax.script;version=0, \
-  !javax.xml.bind.*, \
   javax.xml.namespace;version=0, \
   javax.xml.stream;version=0, \
   javax.xml.stream.events;version=0, \
@@ -55,19 +54,11 @@ Import-Package: \
   com.ibm.wsspi.classloading,\
   org.apache.el
 
-# Use dynamicImport-Package for JAXB APIs, with this, Equonix will have a chance to wire
-# those packages to the JAXB-2.2 API if the target bundle is started, or the one from system
-# bundle will be always used due to JAXB 2.2 API is not resolved. Similarly, do the same
-# with persistence because the open source optionally uses jpa if it is there for a customized
+# Use dynamicImport-Package for persistence because the open source 
+# optionally uses JPA if it is there for a customized
 # TraversableRevolver implementation.
 DynamicImport-Package: \
- jakarta.persistence, \
- javax.xml.bind, \
- javax.xml.bind.annotation, \
- javax.xml.bind.annotation.adapters, \
- javax.xml.bind.attachment, \
- javax.xml.bind.helpers, \
- javax.xml.bind.util
+ jakarta.persistence
  
 Include-Resource: \
   @${repo;org.hibernate.validator:hibernate-validator;7.0.0.Alpha2}!/META-INF/*.xsd, \

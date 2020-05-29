@@ -17,11 +17,11 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
 import java.util.List;
-import java.util.Set;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -40,8 +40,7 @@ public abstract class BasicValidation_Common extends FATServletClient {
         WebArchive beanvalidation_10War = buildDefaultApp("beanvalidation_10.war", "beanvalidation10.*");
         WebArchive beanvalidation_11War = buildDefaultApp("beanvalidation_11.war", "beanvalidation11.*");
 
-        Set<String> features = server.getServerConfiguration().getFeatureManager().getFeatures();
-        if (!(features.contains("beanValidation-1.0") || features.contains("beanValidation-1.1") || features.contains("beanValidation-2.0"))) {
+        if (JakartaEE9Action.isActive()) {
             beanvalidation_10War.move("/WEB-INF/constraints-house_EE9.xml", "/WEB-INF/constraints-house.xml");
             beanvalidation_11War.move("/WEB-INF/constraints-house_EE9.xml", "/WEB-INF/constraints-house.xml");
         }

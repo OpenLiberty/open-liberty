@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.beanvalidation.fat.ejb;
 
-import java.util.Set;
-
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -21,6 +19,7 @@ import org.junit.Test;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -38,8 +37,7 @@ public abstract class EJBModule_Common extends FATServletClient {
         JavaArchive jar = ShrinkHelper.buildJavaArchive("EJBModule1EJB.jar", "beanvalidation.ejbmodule.*");
         JavaArchive jar2 = ShrinkHelper.buildJavaArchive("EJBModule2EJB.jar", "beanvalidation.ejbmodule2.ejb");
 
-        Set<String> features = server.getServerConfiguration().getFeatureManager().getFeatures();
-        if (!(features.contains("beanValidation-1.0") || features.contains("beanValidation-1.1") || features.contains("beanValidation-2.0"))) {
+        if (JakartaEE9Action.isActive()) {
             jar.move("/META-INF/constraints-house_EE9.xml", "/META-INF/constraints-house.xml");
             jar2.move("/META-INF/constraints-house_EE9.xml", "/META-INF/constraints-house.xml");
         }

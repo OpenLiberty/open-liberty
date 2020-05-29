@@ -9,5 +9,5 @@ IBM-Install-Policy: when-satisfied
 -bundles=\
   com.ibm.ws.beanvalidation.v20.cdi.jakarta,\
   io.openliberty.org.hibernate.validator.cdi.7.0
-kind=ga
-edition=core
+kind=noship
+edition=full

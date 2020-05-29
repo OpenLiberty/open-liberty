@@ -34,7 +34,7 @@ import componenttest.topology.utils.PrivHelper;
  */
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 8)
-// TODO: Remove skip when injection is enabled for jakartaee9
+// TODO: Remove skip when injection is enabled for jakartaee9; issue #12435
 @SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
 public class BeanValidation20CDITest extends BeanValidationCDI_Common {
 

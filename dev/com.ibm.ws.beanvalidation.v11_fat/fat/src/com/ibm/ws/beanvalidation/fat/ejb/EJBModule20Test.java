@@ -31,7 +31,7 @@ import componenttest.topology.utils.PrivHelper;
  */
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 8)
-// TODO: Remove skip when ejbLite is enabled for jakartaee9
+// TODO: Remove skip when ejbLite is enabled for jakartaee9; issue #12434
 @SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
 public class EJBModule20Test extends EJBModule_Common {
 

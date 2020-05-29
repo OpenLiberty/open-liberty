@@ -38,7 +38,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
-//TODO: Delete this class and re-enable these tests in BeanVal20Test once CDI 3.0 and EJBLite 4.0 are ready.
+//TODO: Delete this class and re-enable these tests in BeanVal20Test once CDI 3.0 and EJBLite 4.0 are ready. issues: #12434, #12435
 @SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
 @RunWith(FATRunner.class)
 public class BeanVal20_CDI_EJB_Test extends FATServletClient {
