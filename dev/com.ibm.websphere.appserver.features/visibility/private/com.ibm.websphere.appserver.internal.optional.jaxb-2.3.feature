@@ -12,7 +12,6 @@ Subsystem-Name: Java XML Bindings 2.3 for all Java versions
 -bundles=\
   com.ibm.websphere.javaee.activation.1.1; location:="dev/api/spec/,lib/"; apiJar=false, \
   com.ibm.websphere.javaee.jaxb.2.3; location:="dev/api/spec/,lib/"; apiJar=false, \
-  com.ibm.ws.org.apache.geronimo.osgi.registry.1.1, \
-  com.ibm.ws.jaxb.tools.2.3
+  com.ibm.ws.org.apache.geronimo.osgi.registry.1.1
 kind=noship
 edition=full

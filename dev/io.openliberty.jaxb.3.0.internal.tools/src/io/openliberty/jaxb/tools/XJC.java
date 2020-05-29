@@ -8,12 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jaxb.tools;
+package io.openliberty.jaxb.tools;
 
 import java.io.PrintStream;
 
-import com.ibm.ws.jaxb.tools.internal.JaxbToolsConstants;
-import com.ibm.ws.jaxb.tools.internal.JaxbToolsUtil;
+import io.openliberty.jaxb.tools.internal.JaxbToolsConstants;
+import io.openliberty.jaxb.tools.internal.JaxbToolsUtil;
 
 /**
  * IBM Wrapper for XJC tool.

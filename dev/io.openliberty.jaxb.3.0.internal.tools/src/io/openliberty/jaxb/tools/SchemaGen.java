@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jaxb.tools;
+package io.openliberty.jaxb.tools;
 
 /**
  * IBM Wrapper for SchemaGen tool.

@@ -11,7 +11,7 @@
 -include= ~../cnf/resources/bnd/bundle.props
 
 bVersion=1.0.${libertyBundleMicroVersion}
-bSymbolicName=com.ibm.ws.jaxb.3.0.tools
+bSymbolicName=io.openliberty.jaxb.3.0.internal.tools
 
 Bundle-Name: io.openliberty.jaxb.3.0.internal.tools
 Bundle-SymbolicName: io.openliberty.jaxb.3.0.internal.tools; singleton:=true
@@ -24,7 +24,7 @@ app-resources= \
   META-INF/services/org.iso_relax.verifier.VerifierFactoryLoader
 
 Service-Component: \
-  com.ibm.ws.jaxb.tools_3_0_${replace;${bVersion};\\.;_}.ResourceProvider; \
+  io.openliberty.jaxb.tools_3_0_${replace;${bVersion};\\.;_}.ResourceProvider; \
     implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
     provide:=com.ibm.wsspi.classloading.ResourceProvider; \
     configuration-policy:=ignore; \
@@ -60,7 +60,7 @@ Include-Resource: \
   @${repo;org.glassfish.jaxb:jaxb-xjc;3.0.0}!/!META-INF/maven/*
 
 Private-Package:\
-  com.ibm.ws.jaxb.tools.*
+  io.openliberty.jaxb.tools.*
 
 instrument.disabled: true
 

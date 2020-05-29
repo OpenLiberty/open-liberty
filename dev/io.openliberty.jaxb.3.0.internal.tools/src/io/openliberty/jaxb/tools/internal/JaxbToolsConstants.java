@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jaxb.tools.internal;
+package io.openliberty.jaxb.tools.internal;
 
 import java.util.ResourceBundle;
 
@@ -21,7 +21,7 @@ public class JaxbToolsConstants {
 
     public static final String TR_GROUP = "JaxbTools";
 
-    public static final String TR_RESOURCE_BUNDLE = "com.ibm.ws.jaxb.tools.internal.resources.JaxbToolsMessages";
+    public static final String TR_RESOURCE_BUNDLE = "io.openliberty.jaxb.tools.internal.resources.JaxbToolsMessages";
 
     public static final String ERROR_PARAMETER_TARGET_MISSED_KEY = "error.parameter.target.missed";
 

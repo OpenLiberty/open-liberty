@@ -20,4 +20,4 @@ Require-Bundle: io.openliberty.jaxb.3.0.internal.tools; version="[1,1.0.100)", \
  io.openliberty.jakarta.jaxb.3.0; version="[1,1.0.100)"; location="dev/api/spec/", \ \
  com.ibm.ws.logging; version="[1,1.0.100)"
  
-Command-Class: com.ibm.ws.jaxb.tools.XJC
+Command-Class: io.openliberty.jaxb.tools.XJC

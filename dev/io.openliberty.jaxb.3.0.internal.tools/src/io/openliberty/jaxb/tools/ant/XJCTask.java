@@ -8,15 +8,16 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jaxb.tools.ant;
+package io.openliberty.jaxb.tools.ant;
 
 import java.io.PrintStream;
 
 import org.apache.tools.ant.BuildException;
 
-import com.ibm.ws.jaxb.tools.internal.JaxbToolsConstants;
-import com.ibm.ws.jaxb.tools.internal.JaxbToolsUtil;
 import com.sun.tools.xjc.XJC2Task;
+
+import io.openliberty.jaxb.tools.internal.JaxbToolsConstants;
+import io.openliberty.jaxb.tools.internal.JaxbToolsUtil;
 
 /**
  *

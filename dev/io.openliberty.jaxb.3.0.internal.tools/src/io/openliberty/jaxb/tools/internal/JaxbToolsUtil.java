@@ -8,14 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jaxb.tools.internal;
+package io.openliberty.jaxb.tools.internal;
 
 /**
- * The general utility for com.ibm.ws.jaxb.tools projects.
+ * The general utility for io.openliberty.jaxb.tools projects.
  */
 public class JaxbToolsUtil {
     /**
-     * get the localized message provided in the message files in the com.ibm.ws.jaxb.tools.
+     * get the localized message provided in the message files in the io.openliberty.jaxb.tools.
      *
      * @param msgKey
      * @return
