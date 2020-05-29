@@ -1840,8 +1840,6 @@ public class H2StreamProcessor {
         }
         streamReadSize -= actualReadCount;
 
-        // WTL: commenting this out because it doesn't make sense!?
-        // put stream array back in shape
 //            streamReadSize = 0;
 //            readLatch = new CountDownLatch(1);
 //            for (WsByteBuffer buffer : ((ArrayList<WsByteBuffer>) streamReadReady.clone())) {
@@ -1850,6 +1848,7 @@ public class H2StreamProcessor {
 //                    moveDataIntoReadBufferArray(buffer.slice());
 //                }
 //            }
+
         if (this.streamReadSize == 0) {
             firstReadLatch.countDown();
         }
