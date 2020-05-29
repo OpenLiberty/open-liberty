@@ -70,7 +70,7 @@ public class XAFlowTest extends FATServletClient {
         // set. And, the ejb-4.0 feature is not yet available.
         // The following sets the appropriate features for the EE9 repeatable tests.
         if (JakartaEE9Action.isActive()) {
-            server.changeFeatures(Arrays.asList("jdbc-4.3", "txtest-2.0", "servlet-5.0", "componenttest-2.0", "osgiconsole-1.0", "jndi-1.0", "xaflow-1.0"));
+            server.changeFeatures(Arrays.asList("jdbc-4.2", "txtest-2.0", "servlet-5.0", "componenttest-2.0", "osgiconsole-1.0", "jndi-1.0", "xaflow-1.0"));
         }
 
         server.copyFileToLibertyInstallRoot("lib/features/", "features/xaflow-1.0.mf");
