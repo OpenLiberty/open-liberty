@@ -236,6 +236,10 @@ public class WSKeyStore extends Properties {
             throw new IllegalArgumentException("Required keystore information is missing, must provide a location and type.");
         }
 
+        if ((type.equals(Constants.KEYSTORE_TYPE_JCERACFKS) || type.equals(Constants.KEYSTORE_TYPE_JCECCARACFKS)
+             || type.equals(Constants.KEYSTORE_TYPE_JCEHYBRIDRACFKS) || type.equals(Constants.KEYSTORE_TYPE_JAVACRYPTO)))
+            setFileBased(false);
+
         this.isDefault = LibertyConstants.DEFAULT_KEYSTORE_REF_ID.equals(name);
 
         if (this.fileBased) {
@@ -525,11 +529,6 @@ public class WSKeyStore extends Properties {
             String keyStoreType = getType();
             if (keyStoreType != null) {
                 setProperty(Constants.SSLPROP_KEY_STORE_TYPE, keyStoreType);
-
-                if (!keyStoreType.equalsIgnoreCase(Constants.KEYSTORE_TYPE_JKS) && !keyStoreType.equalsIgnoreCase(Constants.KEYSTORE_TYPE_JCEKS)
-                    && !keyStoreType.equalsIgnoreCase(Constants.KEYSTORE_TYPE_PKCS12)) {
-                    setProperty(Constants.SSLPROP_KEY_STORE_FILE_BASED, Constants.FALSE);
-                }
 
                 if (keyStoreType.equalsIgnoreCase(Constants.KEYSTORE_TYPE_JAVACRYPTO)) {
                     setProperty(Constants.SSLPROP_TOKEN_ENABLED, Constants.TRUE);
