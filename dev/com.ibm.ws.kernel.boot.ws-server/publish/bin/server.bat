@@ -568,7 +568,7 @@ goto:eof
   @REM the script will try to read etc
 
   set RC=0
-  call:mergeJVMOptions "%WLP_INSTALL_DIR%\usr\shared\jvm.options"
+  call:mergeJVMOptions "%WLP_USER_DIR%\shared\jvm.options"
   if not %RC% == 0 goto:eof
   
   call:mergeJVMOptions "%SERVER_CONFIG_DIR%\configDropins\defaults\jvm.options"
