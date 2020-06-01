@@ -123,7 +123,7 @@ public class H2StreamProcessor {
     private final CountDownLatch readLatch = new CountDownLatch(1);
 
     // latch used to block processing new data until the "first" data buffers from this stream are read by the application
-    private CountDownLatch firstReadLatch;
+    private CountDownLatch firstReadLatch = null;
 
     // handle various stream close conditions
     private boolean rstStreamSent = false;
@@ -1849,7 +1849,9 @@ public class H2StreamProcessor {
 //            }
 
         if (this.streamReadSize == 0) {
-            firstReadLatch.countDown();
+            if (firstReadLatch != null) {
+                firstReadLatch.countDown();
+            }
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
