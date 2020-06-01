@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.ssl.config;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -38,12 +40,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.ibm.websphere.crypto.InvalidPasswordDecodingException;
 import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.JSSEProvider;
 import com.ibm.websphere.ssl.SSLException;
@@ -117,6 +122,9 @@ public class WSKeyStore extends Properties {
     private static final String SUNPKCS11_PROVIDER_NAME = "SunPKCS11";
 
     private final Map<String, SerializableProtectedString> certAliasInfo = new HashMap<String, SerializableProtectedString>();
+
+    /** Read/Write lock to prevent multiple processes writing the keystore file at the same time, or reading while we are writing. Added for acmeCA feature. **/
+    private final ReadWriteLock rwKeyStoreLock = new ReentrantReadWriteLock();
 
     /**
      * Default constructor, will initialize default values.
@@ -744,7 +752,7 @@ public class WSKeyStore extends Properties {
      * @return KeyStore
      * @throws Exception
      */
-    public synchronized KeyStore do_getKeyStore(boolean reinitialize, boolean createIfNotPresent) throws Exception {
+    private synchronized KeyStore do_getKeyStore(boolean reinitialize, boolean createIfNotPresent) throws Exception {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "do_getKeyStore", new Object[] { Boolean.valueOf(reinitialize), Boolean.valueOf(createIfNotPresent) });
 
@@ -1001,11 +1009,16 @@ public class WSKeyStore extends Properties {
      * @throws Exception
      */
     public KeyStore getKeyStore(boolean reinitialize, boolean createIfNotPresent) throws Exception {
-        if (myKeyStore == null || reinitialize) {
-            myKeyStore = do_getKeyStore(reinitialize, createIfNotPresent);
-        }
+        acquireReadLock();
+        try {
+            if (myKeyStore == null || reinitialize) {
+                myKeyStore = do_getKeyStore(reinitialize, createIfNotPresent);
+            }
 
-        return myKeyStore;
+            return myKeyStore;
+        } finally {
+            releaseReadLock();
+        }
     }
 
     /**
@@ -1016,6 +1029,8 @@ public class WSKeyStore extends Properties {
     public void store() throws Exception {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "store");
+
+        acquireWriteLock();
 
         try {
             String name = getProperty(Constants.SSLPROP_KEY_STORE_NAME);
@@ -1066,6 +1081,8 @@ public class WSKeyStore extends Properties {
                 Tr.debug(tc, "Exception storing KeyStore; " + e);
             FFDCFilter.processException(e, getClass().getName(), "store", this);
             throw e;
+        } finally {
+            releaseWriteLock();
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
@@ -1275,9 +1292,9 @@ public class WSKeyStore extends Properties {
      * @param alias
      * @param cert
      * @throws KeyStoreException
-     *             - if the store is read only or not found
+     *                               - if the store is read only or not found
      * @throws KeyException
-     *             - if an error happens updating the store with the cert
+     *                               - if an error happens updating the store with the cert
      */
     public void setCertificateEntry(String alias, Certificate cert) throws KeyStoreException, KeyException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -1361,9 +1378,9 @@ public class WSKeyStore extends Properties {
      * @param password
      * @param chain
      * @throws KeyStoreException
-     *             - if the store is read only or not found
+     *                               - if the store is read only or not found
      * @throws KeyException
-     *             - if an error happens updating the store with the cert
+     *                               - if an error happens updating the store with the cert
      */
     @Sensitive
     public void setKeyEntry(String alias, Key key, Certificate[] chain) throws KeyStoreException, KeyException {
@@ -1545,15 +1562,15 @@ public class WSKeyStore extends Properties {
     }
 
     /**
-     * Set a new certificate into the keystore and save the updated store.
+     * Set a new certificate into the keystore
      *
      * @param alias
      *
      * @param cert
      * @throws KeyStoreException
-     *             - if the store is read only or not found
+     *                               - if the store is read only or not found
      * @throws KeyException
-     *             - if an error happens updating the store with the cert
+     *                               - if an error happens updating the store with the cert
      */
     private void setCertificateEntryNoStore(String alias, Certificate cert) throws KeyStoreException, KeyException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -1581,7 +1598,12 @@ public class WSKeyStore extends Properties {
     protected void clearJavaKeyStore() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "clearJavaKeyStore");
-        myKeyStore = null;
+        acquireWriteLock();
+        try {
+            myKeyStore = null;
+        } finally {
+            releaseWriteLock();
+        }
     }
 
     public static String getCannonicalPath(String location, Boolean fileBased) {
@@ -1627,4 +1649,62 @@ public class WSKeyStore extends Properties {
         return (ext);
     }
 
+    /**
+     * Acquire the writer lock. To be used to prevent concurrent keystore
+     * fetching and storing. Must be used with releaseWriteLock
+     */
+    @Trivial
+    void acquireWriteLock() {
+        rwKeyStoreLock.writeLock().lock();
+    }
+
+    /**
+     * Release the writer lock. To be used to prevent concurrent keystore
+     * fetching and storing. Must be used with acquireWriteLock
+     */
+    @Trivial
+    void releaseWriteLock() {
+        rwKeyStoreLock.writeLock().unlock();
+    }
+
+    /**
+     * Acquire the reader lock. To be used to prevent concurrent keystore
+     * fetching and storing. Must be used with releaseReadLock
+     */
+    @Trivial
+    void acquireReadLock() {
+        rwKeyStoreLock.readLock().lock();
+    }
+
+    /**
+     * Release the read lock. To be used to prevent concurrent keystore
+     * fetching and storing. Must be used with acquireReadLock
+     */
+    @Trivial
+    void releaseReadLock() {
+        rwKeyStoreLock.readLock().unlock();
+    }
+
+    /**
+     * Clone the keystore. If an exception occurs, return the original
+     * keystore as "best effort" instead of failing.
+     *
+     * @param original
+     * @return
+     */
+    @Trivial
+    private KeyStore cloneKeystore(KeyStore original) {
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            original.store(baos, password.getChars());
+            KeyStore clone = JSSEProviderFactory.getInstance().getKeyStoreInstance(type, provider);
+            clone.load(new ByteArrayInputStream(baos.toByteArray()), password.getChars());
+            return clone;
+        } catch (Throwable t) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "cloneKeystore hit an exception, will return original keystore.", t);
+            }
+        }
+        return original;
+    }
 }

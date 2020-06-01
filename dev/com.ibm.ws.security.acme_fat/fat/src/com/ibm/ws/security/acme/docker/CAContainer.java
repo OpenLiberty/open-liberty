@@ -52,6 +52,16 @@ public abstract class CAContainer extends GenericContainer<CAContainer> {
 	 * reachable.
 	 */
 	private final int dnsManagementPort;
+	
+	/**
+	 * Number of attemps to start containers again after catch an exception
+	 */
+	protected final static int NUM_RESTART_ATTEMPTS_ON_EXCEPTION = 3;
+	
+	/**
+	 * Value to put into withStartupAttempts on container config
+	 */
+	protected final static int WITH_STARTUP_ATTEMPTS = 20;
 
 	/**
 	 * Instantiate a new {@link CAContainer} instance.

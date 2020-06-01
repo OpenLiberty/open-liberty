@@ -311,6 +311,7 @@ public class AcmeValidityAndRenewTest {
 		 * TEST 2: Start with a very short renew period, causing a renewal on startup.
 		 * 
 		 **********************************************************************/
+		long justShyOfValidityPeriod =0;
 		try {
 			Log.info(this.getClass(), testName.getMethodName(),
 					"TEST 2: Restart with renew time close to validity period.");
@@ -330,7 +331,7 @@ public class AcmeValidityAndRenewTest {
 			 * Set a renew time just shy of default Pebble validity period) so we will
 			 * request a new certificate on restart)
 			 */
-			long justShyOfValidityPeriod = (notAfter - notBefore) - timeBufferToExpire;
+			 justShyOfValidityPeriod = (notAfter - notBefore) - timeBufferToExpire;
 			Log.info(this.getClass(), testName.getMethodName(), "Time configured: " + justShyOfValidityPeriod);
 
 			/*
@@ -381,6 +382,7 @@ public class AcmeValidityAndRenewTest {
 			Log.info(this.getClass(), testName.getMethodName(),
 					"TEST 3: Restart with renew time close to validity period and short cert checker.");
 
+			configuration.getAcmeCA().setRenewBeforeExpiration((justShyOfValidityPeriod +5000) + "ms");
 			configuration.getAcmeCA().setCertCheckerSchedule((timeBufferToExpire + 1000) + "ms");
 			configuration.getAcmeCA().setCertCheckerSchedule(AcmeConstants.RENEW_CERT_MIN + "ms");
 
@@ -405,10 +407,22 @@ public class AcmeValidityAndRenewTest {
 			/*
 			 * The certificate checker should automatically renew the certificate.
 			 */
-			AcmeFatUtils.waitForNewCert(server, caContainer, startingCertificateChain, timeBufferToExpire * 2);
+			AcmeFatUtils.waitForNewCert(server, caContainer, startingCertificateChain, timeBufferToExpire * 4);
 
 			assertNotNull("Should log message that the certificate was renewed",
 					server.waitForStringInLogUsingMark("CWPKI2052I"));
+			
+			/**
+			 * Run "load" while the certificate checkers runs in the background and renews the cert
+			 */
+			long now = System.currentTimeMillis();
+			Log.info(this.getClass(), testName.getMethodName(), "Run https load to make sure certificate renew happens cleanly.");
+			while (System.currentTimeMillis() - now < timeBufferToExpire * 2) {
+				AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
+			}
+			
+			assertTrue("Should not find CWPKI0033E", server.findStringsInLogs("CWPKI0033E").isEmpty());
+			assertTrue("Should not find CWPKI0809W", server.findStringsInLogs("CWPKI0809W").isEmpty());
 
 		} finally {
 			Log.info(this.getClass(), testName.getMethodName(), "TEST 3: Shutdown.");
@@ -626,8 +640,11 @@ public class AcmeValidityAndRenewTest {
 			 */
 			caContainer.stopDNSServer();
 
+			/*
+			 * DNS info can be cached, give more time for cache to expire
+			 */
 			assertNotNull("Should log message that the certificate renew failed",
-					server.waitForStringInLogUsingMark("CWPKI2065W", timeBufferToExpire * 2));
+					server.waitForStringInLogUsingMark("CWPKI2065W", timeBufferToExpire * 4));
 
 			/*
 			 * Start the Challenge server and the cert checker should recover and fetch a
@@ -647,7 +664,7 @@ public class AcmeValidityAndRenewTest {
 			}
 
 			assertNotNull("Should log message that the certificate was renewed after restarting the challenge server",
-					server.waitForStringInLogUsingMark("CWPKI2007I", (AcmeConstants.RENEW_CERT_MIN * 2)));
+					server.waitForStringInLogUsingMark("CWPKI2007I", (AcmeConstants.RENEW_CERT_MIN * 6)));
 			AcmeFatUtils.waitForNewCert(server, caContainer, startingCertificateChain, timeBufferToExpire);
 
 		} finally {

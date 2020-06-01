@@ -53,7 +53,6 @@ import org.shredzone.acme4j.util.KeyPairUtils;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.acme.docker.CAContainer;
-import com.ibm.ws.security.acme.docker.boulder.BoulderContainer;
 import com.ibm.ws.security.acme.docker.pebble.PebbleContainer;
 import com.ibm.ws.security.acme.internal.util.AcmeConstants;
 import com.ibm.ws.security.acme.internal.web.AcmeCaRestHandler;
@@ -89,7 +88,7 @@ public class AcmeCaRestHandlerTest {
 	private static final String UNAUTHORIZED_PASS = "unauthorizedpass";
 
 	@ClassRule
-	public static CAContainer boulder = new BoulderContainer();
+	public static CAContainer pebble = new PebbleContainer();
 
 	private static final String JSON_ACCOUNT_REGEN_KEYPAIR_VALID = "{\"" + AcmeCaRestHandler.OP_KEY + "\":\""
 			+ AcmeCaRestHandler.OP_RENEW_ACCT_KEY_PAIR + "\"}";
@@ -100,13 +99,6 @@ public class AcmeCaRestHandlerTest {
 	private static final String JSON_CERT_REGEN = "{\"" + AcmeCaRestHandler.OP_KEY + "\":\""
 			+ AcmeCaRestHandler.OP_RENEW_CERT + "\"}";
 	private static final String JSON_CERT_INVALID_OP = "{\"" + AcmeCaRestHandler.OP_KEY + "\":\"invalid\"}";
-
-	private static final String JSON_CERT_REVOKE_DEFAULT_REASON = "{\"" + AcmeCaRestHandler.OP_KEY + "\":\""
-			+ AcmeCaRestHandler.OP_REVOKE_CERT + "\"}";
-	private static final String JSON_CERT_REVOKE_VALID_REASON = "{\"" + AcmeCaRestHandler.OP_KEY + "\":\""
-			+ AcmeCaRestHandler.OP_REVOKE_CERT + "\",\"" + AcmeCaRestHandler.REASON_KEY + "\":\"superseded\"}";
-	private static final String JSON_CERT_REVOKE_INVALID_REASON = "{\"" + AcmeCaRestHandler.OP_KEY + "\":\""
-			+ AcmeCaRestHandler.OP_REVOKE_CERT + "\",\"" + AcmeCaRestHandler.REASON_KEY + "\":\"invalid\"}";
 
 	private static final String CONTENT_TYPE_HTML = "text/html";
 	private static final String CONTENT_TYPE_JSON = "application/json";
@@ -125,12 +117,12 @@ public class AcmeCaRestHandlerTest {
 		/*
 		 * Make sure the HTTP port is open.
 		 */
-		AcmeFatUtils.checkPortOpen(boulder.getHttpPort(), 60000);
+		AcmeFatUtils.checkPortOpen(pebble.getHttpPort(), 60000);
 
 		/*
 		 * Configure the acmeCA-2.0 feature.
 		 */
-		AcmeFatUtils.configureAcmeCA(server, boulder, ORIGINAL_CONFIG, false, true, DOMAINS);
+		AcmeFatUtils.configureAcmeCA(server, pebble, ORIGINAL_CONFIG, false, true, DOMAINS);
 
 		server.startServer();
 		AcmeFatUtils.waitForAcmeToCreateCertificate(server);
@@ -301,39 +293,6 @@ public class AcmeCaRestHandlerTest {
 		String serial1 = getLeafSerialFromHtml(html1);
 		String serial2 = getLeafSerialFromHtml(html2);
 		assertThat("Certificates should have been different.", serial2, not(equalTo(serial1)));
-	}
-
-	@Test
-	public void certificate_endpoint_post_revoke_certificate() throws Exception {
-		/*
-		 * Revoke with invalid reason.
-		 */
-		String jsonResponse = performPost(CERTIFICATE_ENDPOINT, 400, CONTENT_TYPE_JSON, ADMIN_USER, ADMIN_PASS,
-				CONTENT_TYPE_JSON, JSON_CERT_REVOKE_INVALID_REASON);
-		assertJsonResponse(jsonResponse, 400);
-
-		/*
-		 * Revoke with unspecified / default reason.
-		 */
-		jsonResponse = performPost(CERTIFICATE_ENDPOINT, 200, CONTENT_TYPE_JSON, ADMIN_USER, ADMIN_PASS,
-				CONTENT_TYPE_JSON, JSON_CERT_REVOKE_DEFAULT_REASON);
-		assertJsonResponse(jsonResponse, 200);
-
-		/*
-		 * Request a new certificate.
-		 */
-		jsonResponse = performPost(CERTIFICATE_ENDPOINT, 200, CONTENT_TYPE_JSON, ADMIN_USER, ADMIN_PASS,
-				CONTENT_TYPE_JSON, JSON_CERT_REGEN);
-		assertJsonResponse(jsonResponse, 200);
-		AcmeFatUtils.waitForAcmeToCreateCertificate(server);
-		AcmeFatUtils.waitForSslEndpoint(server);
-
-		/*
-		 * Revoke with a valid reason.
-		 */
-		jsonResponse = performPost(CERTIFICATE_ENDPOINT, 200, CONTENT_TYPE_JSON, ADMIN_USER, ADMIN_PASS,
-				CONTENT_TYPE_JSON, JSON_CERT_REVOKE_VALID_REASON);
-		assertJsonResponse(jsonResponse, 200);
 	}
 
 	@Test
@@ -848,12 +807,12 @@ public class AcmeCaRestHandlerTest {
 			/*
 			 * First renew request should update.
 			 */
-			startingCertificateChain = AcmeFatUtils.assertAndGetServerCertificate(server, boulder);
+			startingCertificateChain = AcmeFatUtils.assertAndGetServerCertificate(server, pebble);
 
 			String jsonResponse = performPost(AcmeCaRestHandlerTest.CERTIFICATE_ENDPOINT, 200, AcmeCaRestHandlerTest.CONTENT_TYPE_JSON, AcmeCaRestHandlerTest.ADMIN_USER, AcmeCaRestHandlerTest.ADMIN_PASS,
 					AcmeCaRestHandlerTest.CONTENT_TYPE_JSON, AcmeCaRestHandlerTest.JSON_CERT_REGEN);
 			assertJsonResponse(jsonResponse, 200);
-			AcmeFatUtils.waitForNewCert(server, boulder, startingCertificateChain);
+			AcmeFatUtils.waitForNewCert(server, pebble, startingCertificateChain);
 			
 			/*
 			 * Do back to back renew requests, we should be blocked from renewing
@@ -863,7 +822,7 @@ public class AcmeCaRestHandlerTest {
 				
 				Log.info(this.getClass(), testName.getMethodName(), "Renew round " + i);
 				
-				startingCertificateChain = AcmeFatUtils.assertAndGetServerCertificate(server, boulder);
+				startingCertificateChain = AcmeFatUtils.assertAndGetServerCertificate(server, pebble);
 
 				jsonResponse = performPost(AcmeCaRestHandlerTest.CERTIFICATE_ENDPOINT, 429, AcmeCaRestHandlerTest.CONTENT_TYPE_JSON, AcmeCaRestHandlerTest.ADMIN_USER, AcmeCaRestHandlerTest.ADMIN_PASS,
 						AcmeCaRestHandlerTest.CONTENT_TYPE_JSON, AcmeCaRestHandlerTest.JSON_CERT_REGEN);
@@ -873,7 +832,7 @@ public class AcmeCaRestHandlerTest {
 				
 				Log.info(this.getClass(), methodName, "Response received: " + jsonResponse);
 				
-				endingCertificateChain = AcmeFatUtils.assertAndGetServerCertificate(server, boulder);
+				endingCertificateChain = AcmeFatUtils.assertAndGetServerCertificate(server, pebble);
 
 				assertEquals("The certificate should not renew after REST request.",
 						((X509Certificate) startingCertificateChain[0]).getSerialNumber(),
@@ -885,13 +844,13 @@ public class AcmeCaRestHandlerTest {
 			 */
 			Thread.sleep(AcmeConstants.RENEW_CERT_MIN + 2000);
 			
-			startingCertificateChain = AcmeFatUtils.assertAndGetServerCertificate(server, boulder);
+			startingCertificateChain = AcmeFatUtils.assertAndGetServerCertificate(server, pebble);
 
 			jsonResponse = performPost(AcmeCaRestHandlerTest.CERTIFICATE_ENDPOINT, 200, AcmeCaRestHandlerTest.CONTENT_TYPE_JSON, AcmeCaRestHandlerTest.ADMIN_USER, AcmeCaRestHandlerTest.ADMIN_PASS,
 					AcmeCaRestHandlerTest.CONTENT_TYPE_JSON, AcmeCaRestHandlerTest.JSON_CERT_REGEN);
 			assertJsonResponse(jsonResponse, 200);
 			
-			AcmeFatUtils.waitForNewCert(server, boulder, startingCertificateChain);
+			AcmeFatUtils.waitForNewCert(server, pebble, startingCertificateChain);
 
 		} finally {
 			/*

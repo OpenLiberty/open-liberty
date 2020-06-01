@@ -20,11 +20,11 @@ import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 
+import com.github.dockerjava.api.exception.DockerException;
 import com.github.dockerjava.api.model.ContainerNetwork;
 import com.github.dockerjava.api.model.ContainerNetwork.Ipam;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.acme.docker.CAContainer;
-import com.ibm.ws.security.acme.docker.pebble.PebbleContainer;
 
 /**
  * Testcontainer implementation for the letsencrypt/boulder container.
@@ -76,7 +76,7 @@ public class BoulderContainer extends CAContainer {
 	/**
 	 * Container that runs MariaDB
 	 */
-	public final GenericContainer<?> bmysql = new GenericContainer<>("mariadb:10.3").withNetwork(bluenet)
+	public final GenericContainer<?> bmysql = new GenericContainer<>("mariadb:10.3").withNetwork(bluenet).withNetworkMode("host")
 			.withExposedPorts(3306).withNetworkAliases("boulder-mysql").withEnv("MYSQL_ALLOW_EMPTY_PASSWORD", "yes")
 			.withCommand(
 					"mysqld --bind-address=0.0.0.0 --slow-query-log --log-output=TABLE --log-queries-not-using-indexes=ON")
@@ -117,9 +117,9 @@ public class BoulderContainer extends CAContainer {
 			throw new IllegalStateException("Failed to set default mock DNS A and AAAA record IP addresses.", e);
 		}
 
-		Log.info(PebbleContainer.class, "BoulderContainer", "ContainerIpAddress: " + getContainerIpAddress());
-		Log.info(PebbleContainer.class, "BoulderContainer", "DockerImageName:    " + getDockerImageName());
-		Log.info(PebbleContainer.class, "BoulderContainer", "ContainerInfo:      " + getContainerInfo());
+		Log.info(BoulderContainer.class, "BoulderContainer", "ContainerIpAddress: " + getContainerIpAddress());
+		Log.info(BoulderContainer.class, "BoulderContainer", "DockerImageName:    " + getDockerImageName());
+		Log.info(BoulderContainer.class, "BoulderContainer", "ContainerInfo:      " + getContainerInfo());
 	}
 
 	@Override
@@ -162,9 +162,106 @@ public class BoulderContainer extends CAContainer {
 		 * We need to start up the containers in an orderly fashion so that we
 		 * can pass the IP address of the DNS server to the Boulder server.
 		 */
-		bmysql.start();
-		bhsm.start();
-		super.start();
+		bmysql.withStartupAttempts(WITH_STARTUP_ATTEMPTS);
+		
+		for (int i = 1; i < NUM_RESTART_ATTEMPTS_ON_EXCEPTION + 1; i ++) {
+			try {
+				bmysql.start();
+				break;
+			} catch (Throwable t) {
+				Log.info(BoulderContainer.class, "start", "Failed to start bmysql, try again. " + t);
+				bmysql.stop();
+				Throwable cause = t.getCause();
+				while (cause != null) {
+					if (t instanceof DockerException) {
+						Log.info(BoulderContainer.class, "start", "Hit a Docker exception, trying a long sleep and retry");
+						try {
+							Thread.sleep(120000);
+						} catch (InterruptedException e) {
+						}
+						break;
+					}
+					cause = cause.getCause();
+				}
+
+				if (cause == null) { // do a short sleep and retry
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+					}
+				}
+			}
+		}
+		if (!bmysql.isRunning()) {
+			bmysql.start();
+		}
+		
+		bhsm.withStartupAttempts(WITH_STARTUP_ATTEMPTS);
+		for (int i = 1; i < NUM_RESTART_ATTEMPTS_ON_EXCEPTION + 1; i ++) {
+			try {
+				bhsm.start();
+				break;
+			} catch (Throwable t) {
+				Log.info(BoulderContainer.class, "start", "Failed to start bhsm, try again. " + t);
+				bhsm.stop();
+				Throwable cause = t.getCause();
+				while (cause != null) {
+					if (t instanceof DockerException) {
+						Log.info(BoulderContainer.class, "start", "Hit a Docker exception, trying a long sleep and retry");
+						try {
+							Thread.sleep(120000);
+						} catch (InterruptedException e) {
+						}
+						break;
+					}
+					cause = cause.getCause();
+				}
+
+				if (cause == null) { // do a short sleep and retry
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+					}
+				}
+			}
+		}
+		if (!bhsm.isRunning()) {
+			bhsm.start();
+		}
+		
+		super.withStartupAttempts(WITH_STARTUP_ATTEMPTS);
+		for (int i = 1; i < NUM_RESTART_ATTEMPTS_ON_EXCEPTION + 1; i ++) {
+			try {
+				super.start();
+				break;
+			} catch (Throwable t) {
+				Log.info(BoulderContainer.class, "start", "Failed to start boulder, try again. " + t);
+				super.stop();
+				Throwable cause = t.getCause();
+				while (cause != null) {
+					if (t instanceof DockerException) {
+						Log.info(BoulderContainer.class, "start", "Hit a Docker exception, trying a long sleep and retry");
+						try {
+							Thread.sleep(120000);
+						} catch (InterruptedException e) {
+						}
+						break;
+					}
+					cause = cause.getCause();
+				}
+
+				if (cause == null) { // do a short sleep and retry
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+					}
+				}
+			}
+		}
+		if (!super.isRunning()) {
+			super.start();
+		}
+
 	}
 
 	@Override
