@@ -428,6 +428,6 @@ public class WasJmsOutBoundTest extends FATBase {
     s.join();
     c.join();
     Util.TRACE_EXIT();
-    assertNotNull("Forced failure",null);
+//    assertNotNull("Forced failure",null);
   }
 }
