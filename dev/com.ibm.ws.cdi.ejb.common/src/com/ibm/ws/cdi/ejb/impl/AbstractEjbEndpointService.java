@@ -163,7 +163,7 @@ public abstract class AbstractEjbEndpointService implements EjbEndpointService {
                 throw e;
             }
 
-            //TODO what happens if the endpoint is not found in any of the archives??
+            // Could not find the class. Give up looking but don't fail validation
         }
     }
 

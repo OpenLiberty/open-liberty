@@ -71,14 +71,18 @@ public class EEValidationUtils {
         return isProducer;
     }
 
-    private static void throwDefinitionException(Class<?> declaringClass, String memberName, Class<?> fieldType) throws DefinitionException {
+    private static void throwDefinitionException(Class<?> declaringClass, String memberName, Class<?> fieldType, String injectedObjectClass) throws DefinitionException {
         String producerFieldName = declaringClass.getName() + "." + memberName;
         String fieldTypeName = fieldType.getName();
-        throw new DefinitionException(Tr.formatMessage(tc, "resource.producer.validation.error.CWOWB1007E", producerFieldName, fieldTypeName));
+        throw new DefinitionException(Tr.formatMessage(tc, "resource.producer.validation.error.CWOWB1007E", producerFieldName, fieldTypeName, injectedObjectClass));
     }
 
-    private static void throwDefinitionException(Class<?> declaringClass, Annotated annotated) throws DefinitionException {
-        throwDefinitionException(declaringClass, getInjectedMemberName(annotated), getInjectedClass(annotated));
+    private static void throwDefinitionException(Class<?> declaringClass, Annotated annotated, String injectedObjectClass) throws DefinitionException {
+        throwDefinitionException(declaringClass, getInjectedMemberName(annotated), getInjectedClass(annotated), injectedObjectClass);
+    }
+
+    private static void throwDefinitionException(Class<?> declaringClass, Annotated annotated, Class injectedObjectClass) throws DefinitionException {
+        throwDefinitionException(declaringClass, annotated, injectedObjectClass.getCanonicalName());
     }
 
     private static Class<?> getInjectedClass(Annotated annotated) {
@@ -140,7 +144,23 @@ public class EEValidationUtils {
                 // We were unable to get the EJB endpoints, quietly skip validation
             } catch (ClassCastException e) {
                 // Validation failed, the EJB does not match the field type
-                EEValidationUtils.throwDefinitionException(declaringClass, annotated);
+                
+                /*
+                 * The className is not exposed via any interfaces but com.ibm.ws.ejbcontainer.osgi.internal.ModuleInitDataImpl
+                 * puts it in the error message: 
+
+                 * throw new ClassCastException("The " + beanNames[0] +
+                 *                       " EJB does not implement the " +
+                 *                       injectionType.getName() + " injection type.");
+                 */
+                String className = "UNKOWN";
+                try {
+                    e.getMessage().substring(4);
+                    className = className.substring(0, className.indexOf("EJB interface is not"));
+                } catch (IndexOutOfBoundsException ex) {
+                    //Do nothing
+                }
+                EEValidationUtils.throwDefinitionException(declaringClass, annotated, className);
             }
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -163,9 +183,9 @@ public class EEValidationUtils {
         CDIRuntime cdiRuntime = cdiArchive.getCDIRuntime();
         try {
             cdiRuntime.beginContext(cdiArchive);
-            InitialContext c = new InitialContext();
+            InitialContext initialContext = new InitialContext();
 
-            validateJndiLookup(c, lookupString, annotated, declaringClass, cdiArchive);
+            validateJndiLookup(initialContext, lookupString, annotated, declaringClass, cdiArchive);
 
         } catch (NamingException ex) {
             // Failed to look up the object, just return without failing validation
@@ -179,12 +199,12 @@ public class EEValidationUtils {
         }
     }
 
-    private static void validateJndiLookup(InitialContext c, String lookupString, Annotated annotated, Class<?> declaringClass,
+    private static void validateJndiLookup(InitialContext initialContext, String lookupString, Annotated annotated, Class<?> declaringClass,
                                            CDIArchive cdiArchive) throws NamingException, CDIException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "validateJndiLookup", new Object[] { c, lookupString, Util.identity(annotated), declaringClass });
+            Tr.entry(tc, "validateJndiLookup", new Object[] { initialContext, lookupString, Util.identity(annotated), declaringClass });
         }
-        Name lookupName = c.getNameParser("").parse(lookupString);
+        Name lookupName = initialContext.getNameParser("").parse(lookupString);
 
         // Split the name into the suffix and the parent context
         String name = lookupName.get(lookupName.size() - 1);
@@ -205,39 +225,35 @@ public class EEValidationUtils {
         // Loop through the contents of the parent context, looking for the suffix
         // so that we can validate the class type without actually getting the object back
         // since this sometimes causes problems.
-        NamingEnumeration<NameClassPair> contents = c.list(prefix);
+        NamingEnumeration<NameClassPair> contents = initialContext.list(prefix);
         while (contents.hasMore()) {
             NameClassPair pair = contents.next();
             if (name.equals(pair.getName())) {
-                try {
-                    String className = pair.getClassName();
-                    Class<?> jndiClass = cdiArchive.getClassLoader().loadClass(className);
-                    if ("javax.resource.cci.ConnectionFactory".equals(className)) {
-                        try {
-                            Object o = c.lookup(lookupName);
-                            if (o != null) {
-                                jndiClass = o.getClass();
-                            }
-                        } catch (RuntimeException e) {
-                            // An error occurred while getting the object from JNDI. This may happen
-                            // at this early point in the initialisation process, but if so we just
-                            // skip validation.
+                String className = pair.getClassName();
+                Class<?> jndiClass = null;
+                if ("javax.resource.cci.ConnectionFactory".equals(className)) {
+                    try {
+                        Object o = initialContext.lookup(lookupName);
+                        if (o != null) {
+                            jndiClass = o.getClass();
                         }
-                    } else {
-                        try {
-                            jndiClass = cdiArchive.getClassLoader().loadClass(className);
-                        } catch (ClassNotFoundException ex) {
-                            // Couldn't load the jndiClass name, can't validate
-                        }
+                    } catch (RuntimeException e) {
+                        // An error occurred while getting the object from JNDI. This may happen
+                        // at this early point in the initialisation process, but if so we just
+                        // skip validation.
                     }
-                    if (!injectedClass.isAssignableFrom(jndiClass)) {
-                        EEValidationUtils.throwDefinitionException(declaringClass, annotated);
-                    } else {
-                        // We found the class and it matched the type, all is well
-                        return;
+                } else {
+                    try {
+                        jndiClass = cdiArchive.getClassLoader().loadClass(className);
+                    } catch (ClassNotFoundException ex) {
+                        // Couldn't load the jndiClass name, can't validate
                     }
-                } catch (ClassNotFoundException ex) {
-                    // Couldn't load the jndiClass name, can't validate
+                }
+                if (jndiClass != null && !injectedClass.isAssignableFrom(jndiClass)) {
+                    EEValidationUtils.throwDefinitionException(declaringClass, annotated, jndiClass);
+                } else {
+                    // We found the class and it matched the type, all is well
+                    return;
                 }
             }
         }
@@ -295,14 +311,14 @@ public class EEValidationUtils {
         if (Service.class.isAssignableFrom(effectiveClass)) {
             if (effectiveClass.getName().equals(Service.class.getName())) {
                 if (!Service.class.isAssignableFrom(serviceClass) || serviceClass.getName().equals(Service.class.getName())) {
-                    throwDefinitionException(declaringClass, annotated);
+                    throwDefinitionException(declaringClass, annotated, serviceClass);
                 }
             } else {
                 if (!serviceClass.getName().equals(effectiveClass.getName()) && !serviceClass.getName().equals(Service.class.getName())) {
 
                     // We're injecting a service object, field should match service class
                     //if (!effectiveClass.isAssignableFrom(serviceClass)) {
-                    throwDefinitionException(declaringClass, annotated);
+                    throwDefinitionException(declaringClass, annotated, serviceClass);
                 }
             }
         } else {
@@ -324,7 +340,7 @@ public class EEValidationUtils {
                     }
                 }
                 // There were endpoint types but none of them matched the injection point type
-                throwDefinitionException(declaringClass, annotated);
+                throwDefinitionException(declaringClass, annotated, serviceClass);
             }
 
         }
@@ -358,7 +374,7 @@ public class EEValidationUtils {
             if (getInjectedClass(annotated) instanceof Class<?>) {
                 Class<?> ipClass = getInjectedClass(annotated);
                 if (!ipClass.isAssignableFrom(EntityManager.class)) {
-                    EEValidationUtils.throwDefinitionException(declaringClass, annotated);
+                    EEValidationUtils.throwDefinitionException(declaringClass, annotated, EntityManager.class);
                 }
             }
         }
@@ -375,7 +391,7 @@ public class EEValidationUtils {
             if (getInjectedClass(annotated) instanceof Class<?>) {
                 Class<?> ipClass = getInjectedClass(annotated);
                 if (!ipClass.isAssignableFrom(EntityManagerFactory.class)) {
-                    EEValidationUtils.throwDefinitionException(declaringClass, annotated);
+                    EEValidationUtils.throwDefinitionException(declaringClass, annotated, EntityManagerFactory.class);
                 }
             }
         }

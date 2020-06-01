@@ -57,7 +57,7 @@ no.injection.target.context.CWOWB1006E=CWOWB1006E: WebSphere Application Server 
 no.injection.target.context.CWOWB1006E.explanation=CMSG0001
 no.injection.target.context.CWOWB1006E.useraction=See the problem determination information on the WebSphere Application Server Support web page: http://www.ibm.com/software/webservers/appserv/was/support.
 
-resource.producer.validation.error.CWOWB1007E=CWOWB1007E: The producer field, {0}, has type {1}, which does not match the type of the injected object.
+resource.producer.validation.error.CWOWB1007E=CWOWB1007E: The producer field, {0}, has type {1}, which does not match the type of the injected object. The injected object has type {2}.
 resource.producer.validation.error.CWOWB1007E.explanation=CDI found a resource producer field where the type of the field did not match the type of the Java EE resource injected into it.
 resource.producer.validation.error.CWOWB1007E.useraction=Ensure that the correct Java EE resource is being injected into the resource producer field and that the type of the field matches the type of the resource injected into it.
 
