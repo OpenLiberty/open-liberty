@@ -58,7 +58,7 @@ public class CDI12ExtensionSPITest extends LoggingTest {
         WebBrowser browser = createWebBrowserForTestCase();
 
         verifyResponse(browser, "/SPIExtension/",
-                       new String[] { "Extension injection", "bean injection", "Intercepted bean injection", "Could not find unregistered bean" });
+                       new String[] { "Extension injection", "bean injection", "Intercepted bean injection", "Could not find unregistered bean", "Intercepted application bean" });
     }
 
     @AfterClass
