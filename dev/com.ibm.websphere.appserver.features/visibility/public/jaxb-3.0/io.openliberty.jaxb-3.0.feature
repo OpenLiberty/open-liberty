@@ -22,12 +22,5 @@ Subsystem-Name: Jakarta XML Bindings 3.0
   io.openliberty.jakarta.jaxb-3.0
 -bundles=\
   io.openliberty.jaxb.3.0.internal.tools
--files=\
-  bin/jaxb/xjc.bat, \
-  bin/jaxb/tools/ws-schemagen.jakarta.jar, \
-  bin/jaxb/schemagen; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
-  bin/jaxb/xjc; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
-  bin/jaxb/tools/ws-xjc.jakarta.jar, \
-  bin/jaxb/schemagen.bat
 kind=noship
 edition=full
