@@ -23,9 +23,8 @@ import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
 @Component(service = SharedMetricRegistries.class, immediate = true)
 public class SharedMetricRegistries30 extends SharedMetricRegistries {
 
-    @Override
-    protected MetricRegistry createNewMetricRegsitry(ConfigProviderResolver configResolver) {
-        return new MetricRegistry30Impl(configResolver);
+    protected MetricRegistry createNewMetricRegsitry(ConfigProviderResolver configResolver, String name) {
+        return new MetricRegistry30Impl(configResolver, name);
     }
 
     @Override
@@ -35,6 +34,20 @@ public class SharedMetricRegistries30 extends SharedMetricRegistries {
             metricRegistryImpl.addNameToApplicationMap(metricID, appName);
         }
 
+    }
+
+    @Override
+    public MetricRegistry getOrCreate(String name) {
+        final MetricRegistry existing = SharedMetricRegistries.REGISTRIES.get(name);
+        if (existing == null) {
+            final MetricRegistry created = createNewMetricRegsitry(configResolver, name);
+            final MetricRegistry raced = add(name, created);
+            if (raced == null) {
+                return created;
+            }
+            return raced;
+        }
+        return existing;
     }
 
 }

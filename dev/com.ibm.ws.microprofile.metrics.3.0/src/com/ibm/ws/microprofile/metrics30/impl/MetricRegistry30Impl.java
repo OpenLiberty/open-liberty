@@ -71,12 +71,15 @@ public class MetricRegistry30Impl implements MetricRegistry {
 
     private final static boolean usingJava2Security = System.getSecurityManager() != null;
 
+    private final Type registryType;
+
     /**
      * Creates a new {@link MetricRegistry}.
      *
      * @param configResolver
+     * @param name           Type of Registry
      */
-    public MetricRegistry30Impl(ConfigProviderResolver configResolver) {
+    public MetricRegistry30Impl(ConfigProviderResolver configResolver, String name) {
         this.metricsMID = new ConcurrentHashMap<MetricID, Metric>();
 
         this.metadataMID = new ConcurrentHashMap<String, Metadata>();
@@ -84,6 +87,8 @@ public class MetricRegistry30Impl implements MetricRegistry {
         this.applicationMap = new ConcurrentHashMap<String, ConcurrentLinkedQueue<MetricID>>();
 
         this.configResolver = configResolver;
+
+        this.registryType = typeOf(name);
     }
 
     /**
@@ -1045,11 +1050,12 @@ public class MetricRegistry30Impl implements MetricRegistry {
     /** {@inheritDoc} */
     @Override
     public Type getType() {
-        // Expecting PR for this from other developer
-        return null;
+        return registryType;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <T extends Metric> T getMetric(MetricID metricID, Class<T> asType) {
         try {
@@ -1099,6 +1105,19 @@ public class MetricRegistry30Impl implements MetricRegistry {
     @Override
     public SimpleTimer getSimpleTimer(MetricID metricID) {
         return getMetric(metricID, SimpleTimer.class);
+    }
+
+    protected Type typeOf(String name) {
+        if (name.equals("base")) {
+            return Type.BASE;
+        } else if (name.equals("vendor")) {
+            return Type.VENDOR;
+        } else if (name.equals("application")) {
+            return Type.APPLICATION;
+        } else {
+            throw new IllegalArgumentException("Name of registry must be base vendor or application");
+        }
+
     }
 
 }
