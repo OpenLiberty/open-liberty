@@ -10,47 +10,55 @@
  *******************************************************************************/
 syntax = "proto3";
 
+
 option java_multiple_files = true;
-option java_package = "io.grpc.examples.beer";
+option java_package = "com.ibm.ws.grpc.fat.beer.service";
 option java_outer_classname = "BeerProto";
 
 
-package serverBeer;
+package beer;
+import "google/protobuf/empty.proto";
 
 // The beer service definition.
 service BeerService {
 
 	// Add a beer to the collection - unary
-	rpc addBeer (Beer) returns (BeerResponse) {}
+	rpc AddBeer (Beer) returns (BeerResponse) {}
 	
 	// Delete a beer from the collection - unary
-	rpc deleteBeer (Beer) returns (BeerResponse) {}
+	rpc DeleteBeer (Beer) returns (BeerResponse) {}
 
 	// Get the best beer of this type
-	rpc getBestBeer (BeerType) returns (Beer) {}
+	rpc GetBestBeer (RequestedBeerType) returns (Beer) {}
 	
 	//Get a list of all the beers
-    rpc getBeers (BeerRequest) returns (stream Beer) {}
+    rpc GetBeers (google.protobuf.Empty) returns (stream Beer) {}
 }
 	
 
-// The request message containing the type of beer
+// The response to adding or deleting a beer
 message BeerResponse {
   	bool done = 1;
 }
 
-// The response message containing beer name
+// The Beer
 message Beer {
   	string beerName = 1;
-  	BeerType beerType = 2;
-  	float beerRating = 3;
+  	string beerMaker = 2;
+  	BeerType beerType = 3;
+  	float beerRating = 4;
 }
 
+// The type of beer
+message RequestedBeerType {
+	BeerType beerType = 1;
+}
+	
+// Allowed types of beer
 enum BeerType{
-    LAGER = 0; // default
-  	IPA = 1;
-  	ALE = 2;
-  	STOUT = 3;
+  	NEWENGLANDIPA = 0;
+  	AMERICANWILDALE = 1;
+  	AMERICANIMPERIALSTOUT = 2;
+  	RUSSIANIMPERIALSTOUT = 3;
   	PORTER = 4;
-  	WITBIER = 5;
 }

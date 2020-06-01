@@ -17,7 +17,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
                 HelloWorldTest.class,
-                BeerTest.class,
+                ServiceSupportTests.class,
 
 })
 
