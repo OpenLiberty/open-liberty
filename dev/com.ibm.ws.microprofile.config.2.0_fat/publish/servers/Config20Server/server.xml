@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<server description="Server for testing MP Config 2.0 (this is some random text to make the file size bigger) (this is some random text to make the file size bigger) (this is some random text to make the file size bigger)">
+    <featureManager>
+        <feature>componenttest-1.0</feature>
+        <feature>mpconfig-2.0</feature>
+        <feature>servlet-4.0</feature>
+        <feature>osgiconsole-1.0</feature>
+        <feature>cdi-2.0</feature>
+    </featureManager>
+    <include location="../fatTestPorts.xml"/>
+    <sslDefault/>
+    <SSLDefault/>
+</server>

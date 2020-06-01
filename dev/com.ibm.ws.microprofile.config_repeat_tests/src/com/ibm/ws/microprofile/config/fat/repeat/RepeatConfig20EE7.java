@@ -17,7 +17,7 @@ import componenttest.rules.repeater.EE7FeatureReplacementAction;
  */
 public class RepeatConfig20EE7 extends EE7FeatureReplacementAction {
 
-    public static final String ID = "CONFIG14_EE7";
+    public static final String ID = "CONFIG20_EE7";
 
     public RepeatConfig20EE7(String server) {
         super();

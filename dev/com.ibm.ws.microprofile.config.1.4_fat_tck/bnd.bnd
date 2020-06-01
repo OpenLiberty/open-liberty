@@ -18,7 +18,6 @@ src: \
 fat.project: true
 
 tested.features: mpConfig-1.4,\
-                 mpConfig-2.0,\
                  cdi-1.2,\
                  cdi-2.0,\
                  servlet-3.1,\
