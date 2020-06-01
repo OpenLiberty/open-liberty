@@ -23,6 +23,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import com.ibm.ejs.ras.Tr;
 import com.ibm.ejs.ras.TraceComponent;
@@ -155,6 +158,32 @@ public class BoundedBuffer<T> implements BlockingQueue<T>, AvailableProcessorsLi
     // D638088: Added two fields to the getQueueLock for book keeping
     // D371967: An easily-identified marker class used for locking
     private static class GetQueueLock extends Object {
+        //D638088.2 - Created an internal lock reference and associated
+        //lock operation helper methods
+        private final Lock lock = new ReentrantLock();
+        private final Condition lockCondition = lock.newCondition();
+
+        public void lock() {
+            lock.lock();
+        }
+
+        public void unlock() {
+            lock.unlock();
+        }
+
+        public void await() throws InterruptedException {
+            lockCondition.await();
+        }
+
+        public void await(long timeout) throws InterruptedException {
+            lockCondition.await(timeout, TimeUnit.MILLISECONDS);
+        }
+
+        public void signal() {
+            notified = true;
+            lockCondition.signal();
+        }
+
         private boolean notified;
 
         public boolean isNotified() {
@@ -173,22 +202,28 @@ public class BoundedBuffer<T> implements BlockingQueue<T>, AvailableProcessorsLi
         // the new work will be picked up when an active thread completes its task.
         GetQueueLock lock = waitingThreadLocks.poll();
         if (lock != null) {
-            synchronized (lock) {
-                lock.setNotified(true);
-                lock.notify();
+            lock.lock();
+            try {
+                lock.signal();
+            } finally {
+                lock.unlock();
             }
         }
     }
 
     private void waitGet_(long timeout) throws InterruptedException {
         GetQueueLock getQueueLock = threadLocalGetLock.get();
+        getQueueLock.lock();
         try {
-            synchronized (getQueueLock) {
-                getQueueLock.setNotified(false);
-                waitingThreadLocks.add(getQueueLock);
-                getQueueLock.wait(timeout == -1 ? 0 : timeout);
+            getQueueLock.setNotified(false);
+            waitingThreadLocks.add(getQueueLock);
+            if (timeout == -1L) {
+                getQueueLock.await();
+            } else {
+                getQueueLock.await(timeout);
             }
         } finally {
+            getQueueLock.unlock();
             if (!getQueueLock.isNotified()) {
                 // we either timed out or were interrupted, so remove ourselves from the queue...  it's okay if a producer already has the
                 // lock because we're going to exit and go try to get more work anyway, so it's okay if we don't get the signal
