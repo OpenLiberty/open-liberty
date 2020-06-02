@@ -157,6 +157,7 @@ if (addAll) {
 
 // Add our common build/tool projects
 projectNames.add('build.image')
+projectNames.add('com.ibm.websphere.appserver.features')
 projectNames.add('wlp-bndPlugins')
 projectNames.add('wlp-rasInstrumentation')
 projectNames.add('wlp-jakartaee-transform')
