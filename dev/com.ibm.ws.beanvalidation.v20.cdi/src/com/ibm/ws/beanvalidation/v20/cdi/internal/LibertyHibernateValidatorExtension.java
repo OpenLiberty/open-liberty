@@ -79,11 +79,12 @@ public class LibertyHibernateValidatorExtension implements Extension, WebSphereC
     private ValidationExtension delegate(String newClassloaderHint) {
         if (extDelegate == null || newClassloaderHint != null && !newClassloaderHint.equals(currentClassloaderHint)) {
 
-            ClassLoader tcclClassLoader = null;
             SetContextClassLoaderPrivileged setClassLoader = null;
             ClassLoader oldClassLoader = null;
+            ClassLoaderTuple tuple = null;
             try {
-                final ClassLoader tcclClassLoaderTmp = tcclClassLoader = configureBvalClassloader(null);
+                tuple = configureBvalClassloader(null);
+                final ClassLoader tcclClassLoaderTmp = tuple.classLoader;
 
                 ClassLoader bvalClassLoader;
                 if (newClassloaderHint != null) {
@@ -109,8 +110,8 @@ public class LibertyHibernateValidatorExtension implements Extension, WebSphereC
                         Tr.debug(tc, "Set Class loader back to " + oldClassLoader);
                     }
                 }
-                if (setClassLoader != null && setClassLoader.wasChanged) {
-                    releaseLoader(tcclClassLoader);
+                if (tuple != null && tuple.wasCreatedViaClassLoadingService) {
+                    releaseLoader(tuple.classLoader);
                 }
             }
         }
@@ -215,21 +216,33 @@ public class LibertyHibernateValidatorExtension implements Extension, WebSphereC
         });
     }
 
-    private ClassLoader configureBvalClassloader(ClassLoader cl) {
+    private ClassLoaderTuple configureBvalClassloader(ClassLoader cl) {
         if (cl == null) {
             cl = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> Thread.currentThread().getContextClassLoader());
         }
         if (cl != null) {
             if (getClassLoadingService().isThreadContextClassLoader(cl)) {
-                return cl;
+                return ClassLoaderTuple.of(cl, false);
             } else if (getClassLoadingService().isAppClassLoader(cl)) {
-                return createTCCL(cl);
+                return ClassLoaderTuple.of(createTCCL(cl), true);
             }
         }
-        return createTCCL(LibertyHibernateValidatorExtension.class.getClassLoader());
+        return ClassLoaderTuple.of(createTCCL(LibertyHibernateValidatorExtension.class.getClassLoader()), true);
     }
 
     private ClassLoader createTCCL(ClassLoader parentCL) {
         return AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> getClassLoadingService().createThreadContextClassLoader(parentCL));
+    }
+
+    private static class ClassLoaderTuple {
+        ClassLoader classLoader;
+        boolean wasCreatedViaClassLoadingService;
+
+        static ClassLoaderTuple of(ClassLoader classLoader, boolean wasCreatedViaClassLoadingService) {
+            ClassLoaderTuple tuple = new ClassLoaderTuple();
+            tuple.classLoader = classLoader;
+            tuple.wasCreatedViaClassLoadingService = wasCreatedViaClassLoadingService;
+            return tuple;
+        }
     }
 }

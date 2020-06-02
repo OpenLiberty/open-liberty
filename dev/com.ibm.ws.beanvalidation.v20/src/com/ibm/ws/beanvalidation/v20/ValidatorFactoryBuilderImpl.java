@@ -59,11 +59,12 @@ public class ValidatorFactoryBuilderImpl implements ValidatorFactoryBuilder {
 
     @Override
     public ValidatorFactory buildValidatorFactory(final ClassLoader appClassLoader, final String containerPath) {
-        ClassLoader tcclClassLoader = null;
         SetContextClassLoaderPrivileged setClassLoader = null;
         ClassLoader oldClassLoader = null;
+        ClassLoaderTuple tuple = null;
         try {
-            ClassLoader tcclClassLoaderTmp = tcclClassLoader = configureBvalClassloader(appClassLoader);
+            tuple = configureBvalClassloader(appClassLoader);
+            ClassLoader tcclClassLoaderTmp = tuple.classLoader;
 
             ClassLoader bvalClassLoader = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> new Validation20ClassLoader(tcclClassLoaderTmp, containerPath));
 
@@ -96,24 +97,24 @@ public class ValidatorFactoryBuilderImpl implements ValidatorFactoryBuilder {
                     Tr.debug(tc, "Set Class loader back to " + oldClassLoader);
                 }
             }
-            if (setClassLoader != null && setClassLoader.wasChanged) {
-                releaseLoader(tcclClassLoader);
+            if (tuple != null && tuple.wasCreatedViaClassLoadingService) {
+                releaseLoader(tuple.classLoader);
             }
         }
     }
 
-    private ClassLoader configureBvalClassloader(ClassLoader cl) {
+    private ClassLoaderTuple configureBvalClassloader(ClassLoader cl) {
         if (cl == null) {
             cl = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> Thread.currentThread().getContextClassLoader());
         }
         if (cl != null) {
             if (classLoadingService.isThreadContextClassLoader(cl)) {
-                return cl;
+                return ClassLoaderTuple.of(cl, false);
             } else if (classLoadingService.isAppClassLoader(cl)) {
-                return createTCCL(cl);
+                return ClassLoaderTuple.of(createTCCL(cl), true);
             }
         }
-        return createTCCL(ValidatorFactoryBuilderImpl.class.getClassLoader());
+        return ClassLoaderTuple.of(createTCCL(ValidatorFactoryBuilderImpl.class.getClassLoader()), true);
     }
 
     private ClassLoader createTCCL(ClassLoader parentCL) {
@@ -148,5 +149,17 @@ public class ValidatorFactoryBuilderImpl implements ValidatorFactoryBuilder {
 
     protected void unsetBvalManagedObjectBuilder(ServiceReference<BvalManagedObjectBuilder> builderRef) {
         bvalManagedObjectBuilderSR.unsetReference(builderRef);
+    }
+
+    private static class ClassLoaderTuple {
+        ClassLoader classLoader;
+        boolean wasCreatedViaClassLoadingService;
+
+        static ClassLoaderTuple of(ClassLoader classLoader, boolean wasCreatedViaClassLoadingService) {
+            ClassLoaderTuple tuple = new ClassLoaderTuple();
+            tuple.classLoader = classLoader;
+            tuple.wasCreatedViaClassLoadingService = wasCreatedViaClassLoadingService;
+            return tuple;
+        }
     }
 }
