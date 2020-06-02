@@ -37,5 +37,6 @@ public class FATSuite {
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
                     .andWith(FeatureReplacementAction.EE7_FEATURES())
-                    .andWith(new RepeatWithJPA20());
+                    .andWith(new RepeatWithJPA20())
+                    .andWith(FeatureReplacementAction.EE9_FEATURES());
 }

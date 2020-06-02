@@ -1,0 +1,49 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/ConcurrencyExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+2001=Wait was interrupted. {0}Message: [{1}]
+
+2002=Wait failure on ServerSession.
+
+2003=Wait failure on ClientSession.
+
+2004=A signal was attempted before wait() on ConcurrencyManager. This normally means that an attempt was made to {0}commit or rollback a transaction before it was started, or to rollback a transaction twice.
+
+2005=Wait failure on Sequencing Connection Handler for DatabaseSession.
+
+2006=Attempt to acquire sequencing values through a single Connection({0}) simultaneously in multiple threads
+
+2007=Max number of attempts to lock object: {0} exceeded.  Failed to clone the object.
+
+2008=Max number of attempts to lock object: {0} exceeded.  Failed to merge the transaction.
+
+2009=Max number of attempts to lock object exceeded.  Failed to build the object. Thread: {0} has a lock on the object but thread: {1} is building the object
+
+2010=Lock has already been transitioned to a Deferred Lock.  A second attempt to transition the lock has been requested by thread: {0} during merge.
+

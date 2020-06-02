@@ -98,6 +98,11 @@ org.eclipse.persistence:org.eclipse.persistence.core:2.7.7-69f2c2b
 org.eclipse.persistence:org.eclipse.persistence.jpa.jpql:2.7.7-69f2c2b
 org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen:2.7.7-69f2c2b
 org.eclipse.persistence:org.eclipse.persistence.jpa:2.7.7-69f2c2b
+org.eclipse.persistence:org.eclipse.persistence.asm:3.0.0-M1
+org.eclipse.persistence:org.eclipse.persistence.corba:3.0.0-M1
+org.eclipse.persistence:org.eclipse.persistence.core:3.0.0-M1
+org.eclipse.persistence:org.eclipse.persistence.jpa:3.0.0-M1
+org.eclipse.persistence:org.eclipse.persistence.jpa.jpql:3.0.0-M1
 org.openid4java:openid4java:0.9.7-ibm-s20130624-1827
 org.opensaml:opensaml:2.6.6
 org.opensaml:openws:1.5.6
