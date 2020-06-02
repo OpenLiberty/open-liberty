@@ -41,7 +41,6 @@ public class BeerServlet extends HttpServlet {
             numBeers = 0;
         }
 
-        //@Override
         @Override
         public void addBeer(Beer newBeer, StreamObserver<BeerResponse> responseObserver) {
             boolean notFound = true;
@@ -66,7 +65,6 @@ public class BeerServlet extends HttpServlet {
 
         }
 
-        //@Override
         @Override
         public void deleteBeer(Beer deleteBeer, StreamObserver<BeerResponse> responseObserver) {
             boolean notFound = true;
@@ -91,7 +89,6 @@ public class BeerServlet extends HttpServlet {
 
         }
 
-        //@Override
         @Override
         public void getBestBeer(RequestedBeerType type, StreamObserver<Beer> responseObserver) {
             int i = 0;
@@ -113,6 +110,7 @@ public class BeerServlet extends HttpServlet {
 
         //Get a list of all the beers
         //@Override
+        @Override
         public void getBeers(com.google.protobuf.Empty na, StreamObserver<Beer> responseObserver) {
             int i = 0;
             while (i < numBeers) {

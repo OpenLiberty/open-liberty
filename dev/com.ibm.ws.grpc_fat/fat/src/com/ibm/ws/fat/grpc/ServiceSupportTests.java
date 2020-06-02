@@ -151,14 +151,14 @@ public class ServiceSupportTests extends FATServletClient {
      * @throws Exception
      *
      **/
-    @Test
-    public void testSingleWarUninstall() throws Exception {
+    // @Test
+    // public void testSingleWarUninstall() throws Exception {
 
-        startBeerService(beerServer.getHostname(), beerServer.getHttpSecondaryPort());
+    //     startBeerService(beerServer.getHostname(), beerServer.getHttpSecondaryPort());
 
-        stopBeerService();
+    //     stopBeerService();
 
-    }
+    //}
 
     /**
      * Tests multiple war uninstall
@@ -166,16 +166,16 @@ public class ServiceSupportTests extends FATServletClient {
      * @throws Exception
      *
      **/
-    @Test
-    public void testMultipleWarUninstall() throws Exception {
+    //@Test
+    //public void testMultipleWarUninstall() throws Exception {
 
-        startBeerService(beerServer.getHostname(), beerServer.getHttpSecondaryPort());
-        startHelloWorldService(beerServer.getHostname(), beerServer.getHttpSecondaryPort());
+    //    startBeerService(beerServer.getHostname(), beerServer.getHttpSecondaryPort());
+    //    startHelloWorldService(beerServer.getHostname(), beerServer.getHttpSecondaryPort());
 
-        stopBeerService();
-        stopHelloworldService();
+    //    stopBeerService();
+    //    stopHelloworldService();
 
-    }
+    //}
 
     /**
      * Tests single war update
@@ -183,14 +183,14 @@ public class ServiceSupportTests extends FATServletClient {
      * @throws Exception
      *
      **/
-    @Test
-    public void testSingleWarUpdate() throws Exception {
+    //@Test
+    //public void testSingleWarUpdate() throws Exception {
 
-        startBeerService(beerServer.getHostname(), beerServer.getHttpSecondaryPort());
+    //    startBeerService(beerServer.getHostname(), beerServer.getHttpSecondaryPort());
 
-        stopBeerService();
+    //    stopBeerService();
 
-    }
+    //}
 
     /**
      * Tests invalid grpc service
@@ -215,13 +215,13 @@ public class ServiceSupportTests extends FATServletClient {
      * @throws Exception
      *
      **/
-    @Test
-    public void testDuplicateService() throws Exception {
+    //@Test
+    //public void testDuplicateService() throws Exception {
 
-        startBeerService(beerServer.getHostname(), beerServer.getHttpSecondaryPort());
-        startBeerService(beerServer.getHostname(), beerServer.getHttpSecondaryPort());
+    //    startBeerService(beerServer.getHostname(), beerServer.getHttpSecondaryPort());
+    //    startBeerService(beerServer.getHostname(), beerServer.getHttpSecondaryPort());
 
-        stopBeerService();
+    //    stopBeerService();
 
-    }
+    //}
 }

@@ -3,9 +3,50 @@
 	<classpathentry kind="src" path="fat/src"/>
 	<classpathentry kind="src" path="test-applications/HelloWorldClient.war/src"/>
 	<classpathentry kind="src" path="test-applications/HelloWorldService.war/src"/>
-        <classpathentry kind="src" path="test-applications/FavoriteBeerService.war/src"/>
+	<classpathentry kind="src" path="test-applications/FavoriteBeerService.war/src"/>
 	<classpathentry kind="src" path="generated-src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="lib" path="C:/Users/LoriAdington/.m2/repository/com/google/protobuf/protobuf-java/3.11.1/protobuf-java-3.11.1.jar">
+		<attributes>
+			<attribute name="bsn" value="com.google.protobuf:protobuf-java"/>
+			<attribute name="type" value="REPO"/>
+			<attribute name="project" value="com.ibm.ws.grpc.common"/>
+			<attribute name="version" value="3.11.1"/>
+		</attributes>
+		<accessrules>
+			<accessrule kind="accessible" pattern="com/google/protobuf/*"/>
+			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
+		</accessrules>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/LoriAdington/.m2/repository/org/apache/directory/server/apacheds-service/2.0.0-M15/apacheds-service-2.0.0-M15.jar">
+		<attributes>
+			<attribute name="bsn" value="org.apache.directory.server:apacheds-service"/>
+			<attribute name="type" value="REPO"/>
+			<attribute name="project" value="com.ibm.ws.org.apache.directory.server"/>
+			<attribute name="version" value="latest"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/LoriAdington/.m2/repository/javax/javaee-api/7.0/javaee-api-7.0.jar">
+		<attributes>
+			<attribute name="bsn" value="javax:javaee-api"/>
+			<attribute name="type" value="REPO"/>
+			<attribute name="project" value="com.ibm.ws.ejbcontainer_test"/>
+			<attribute name="version" value="7.0"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/LoriAdington/.m2/repository/biz/aQute/bnd/biz.aQute.bnd/4.3.0/biz.aQute.bnd-4.3.0.jar" sourcepath="C:/Users/LoriAdington/.m2/repository/biz/aQute/bnd/biz.aQute.bnd/4.3.0/biz.aQute.bnd-4.3.0.jar">
+		<attributes>
+			<attribute name="bsn" value="biz.aQute.bnd:biz.aQute.bnd"/>
+			<attribute name="type" value="REPO"/>
+			<attribute name="project" value="com.ibm.websphere.appserver.features"/>
+			<attribute name="version" value="4.3.0"/>
+			<attribute name="packages" value="**"/>
+		</attributes>
+		<accessrules>
+			<accessrule kind="accessible" pattern="**/*"/>
+			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
+		</accessrules>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
