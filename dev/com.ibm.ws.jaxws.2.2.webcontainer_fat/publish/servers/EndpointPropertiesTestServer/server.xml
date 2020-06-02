@@ -4,6 +4,8 @@
         <feature>jaxws-2.2</feature>
     </featureManager>
 
+<logging traceSpecification="org.apache.cxf.*=all:com.ibm.ws.jaxws.*=all" />
+    
     <include location="../fatTestPorts.xml"/>
   	<javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
   	<javaPermission className="java.lang.RuntimePermission" name="setFactory"/>
