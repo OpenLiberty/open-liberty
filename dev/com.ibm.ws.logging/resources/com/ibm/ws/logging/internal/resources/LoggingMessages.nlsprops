@@ -156,6 +156,10 @@ JSON_FIELDS_INVALID_CHARACHTER=TRAS3011W: An invalid character was provided in t
 JSON_FIELDS_INVALID_CHARACHTER.explanation= Only letters, numbers, and : are accepted in the JSON logging field name mapping property
 JSON_FIELDS_INVALID_CHARACHTER.useraction= Change your JSON logging field name mapping property value to remove invalid characters
 
+JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED=TRAS3012W: A header name is required to be specified for the logFormat field(s): {0}.
+JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.explanation=There is no header name specified for the field.
+JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.useraction=Provide a header name for the field.
+
 # Note: no 9999 message kept here because saving footprint space is more important
 
 # End of file

@@ -57,12 +57,13 @@ public class AccessLogSource implements Source {
 
     private final String sourceName = "com.ibm.ws.http.logging.source.accesslog";
     private final String location = "memory";
-    private static String USER_AGENT_HEADER = "User-Agent";
+    private static String USER_AGENT_HEADER = "user-agent";
     public static final int MAX_USER_AGENT_LENGTH = 2048;
     Map<Configuration, SetterFormatter> setterFormatterMap = new ConcurrentHashMap<Configuration, SetterFormatter>();
     public static String jsonAccessLogFieldsConfig = "";
     public static String jsonAccessLogFieldsLogstashConfig = "";
     public Map<String, Object> configuration;
+    private static boolean isFirstWarning = true; // We only want to print warnings once - without this, the same warning could print up to 4 times
 
     // A representation of the current configuration; to be used in the setterFormatterMap
     private class Configuration {
@@ -217,34 +218,20 @@ public class AccessLogSource implements Source {
         }
         // User-Agent is a default field that is a specific request header
         HashSet<Object> data = new HashSet<Object>();
-        data.add("User-Agent");
+        data.add(USER_AGENT_HEADER);
         map.put("%i", data);
     }
 
     private static void initializeFieldMap(Map<String, HashSet<Object>> map, FormatSegment[] parsedFormat) {
-        if (jsonAccessLogFieldsConfig.equals("default") || jsonAccessLogFieldsLogstashConfig.equals("default")) {
-            addDefaultFields(map);
-        }
-        if (jsonAccessLogFieldsConfig.equals("logFormat") || jsonAccessLogFieldsLogstashConfig.equals("logFormat")) {
-            for (FormatSegment s : parsedFormat) {
-                if (s.log != null) {
-                    // cookies and headers will require data
-                    if (s.data != null) {
-                        HashSet<Object> data = new HashSet<Object>();
-                        if (map.containsKey(s.log.getName())) {
-                            data = map.get(s.log.getName());
-                        }
-                        data.add(s.data);
-                        map.put(s.log.getName(), data);
-                    } else {
-                        map.put(s.log.getName(), null);
-                    }
-                }
-            }
-        }
+        // Create one map that covers all the possible setters we'd need to create, irrespective of whether it's for json logs or logstash
+        // Prevents duplicate setters from needing to be created
+        initializeFieldMap(map, parsedFormat, jsonAccessLogFieldsConfig);
+        initializeFieldMap(map, parsedFormat, jsonAccessLogFieldsLogstashConfig);
     }
 
     private static void initializeFieldMap(Map<String, HashSet<Object>> map, FormatSegment[] parsedFormat, String format) {
+        boolean nullHeaderValue = false;
+        StringBuilder sb = new StringBuilder();
         if (format.equals("default")) {
             addDefaultFields(map);
         }
@@ -257,13 +244,31 @@ public class AccessLogSource implements Source {
                         if (map.containsKey(s.log.getName())) {
                             data = map.get(s.log.getName());
                         }
-                        data.add(s.data);
+                        if (s.log.getName().equals("%i") || s.log.getName().equals("%o"))
+                            // HTTP headers are case insensitive, so we lowercase them all
+                            data.add(((String) s.data).toLowerCase());
+                        else
+                            // Other data may be case sensitive, e.g. cookies, so leave them as-is
+                            data.add(s.data);
                         map.put(s.log.getName(), data);
+                    } else if (s.log.getName().equals("%i") || s.log.getName().equals("%o")) {
+                        // This case is when the token is %i or %o (request/response header) but the data value is null
+                        // We print the error after going through all tokens to create a singular, concise message instead of multiple messages
+                        nullHeaderValue = true;
+                        if (sb.length() == 0)
+                            sb.append(s.log.getName());
+                        else
+                            sb.append(", ").append(s.log.getName());
+                        // If previous tokens did have data values, we don't want to overwrite the map, so do nothing after printing warning
                     } else {
                         map.put(s.log.getName(), null);
                     }
                 }
             }
+        }
+        if (isFirstWarning && nullHeaderValue) {
+            Tr.warning(tc, "JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED", sb.toString());
+            isFirstWarning = false;
         }
     }
 
@@ -302,7 +307,7 @@ public class AccessLogSource implements Source {
                 case "%D": fieldSetters.add((ald, alrd) -> ald.setRequestElapsedTime(AccessLogElapsedTime.getElapsedTimeForJSON(alrd.getResponse(), alrd.getRequest(), null))); break;
                 case "%i":
                     for (Object data : fields.get("%i")) {
-                        if (data.equals(USER_AGENT_HEADER))
+                        if (((String) data).equalsIgnoreCase(USER_AGENT_HEADER))
                             fieldSetters.add((ald, alrd) -> ald.setUserAgent(alrd.getRequest().getHeader(USER_AGENT_HEADER).asString()));
                         else if (data != null)
                             fieldSetters.add((ald, alrd) -> ald.setRequestHeader((String) data, AccessLogRequestHeaderValue.getHeaderValue(alrd.getResponse(), alrd.getRequest(), data)));
@@ -344,13 +349,16 @@ public class AccessLogSource implements Source {
                     case "%C": builder.add(addCookiesField           (format)); break;
                     case "%D": builder.add(addRequestElapsedTimeField(format)); break;
                     case "%i":
-                        if (fields.get("%i").contains("User-Agent")) {
+                        // Error message was printed earlier in populateSetters(), so we just break in this case
+                        if (fields.get("%i") == null) {
+                            break;
+                        }
+                        if (fields.get("%i").contains(USER_AGENT_HEADER)) {
                             builder.add(addUserAgentField(format));
-                            // Set size of 1 means the only "%i" field is the ibm_userAgent field
-                            // We don't want to add the ibm_requestHeader field too, so we break out
-                            if (fields.get("%i").size() == 1) {
+                            // If "User-Agent" is the only header, we can break out to prevent adding the request header field
+                            if (fields.get("%i").size() == 1)
                                 break;
-                            }
+
                         }
                         builder.add(addRequestHeaderField(format));
                         break;
@@ -447,6 +455,7 @@ public class AccessLogSource implements Source {
 
             SetterFormatter currentSF = setterFormatterMap.get(config);
             if (currentSF == null) {
+                isFirstWarning = true; // Reset the status of first warning for each new SF created
                 currentSF = createSetterFormatter(config, parsedFormat, seq);
                 setterFormatterMap.put(config, currentSF);
             }

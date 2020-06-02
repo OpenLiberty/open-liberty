@@ -560,10 +560,11 @@ public class BaseTraceService implements TrService {
                     accessLogCookiesMap.put(entry[0].substring(11), entry[1]);
                     valueFound = true;
                 } else if (entry[0].contains("ibm_requestHeader_")) {
-                    accessLogRequestHeaderMap.put(entry[0].substring(18), entry[1]);
+                    // headers are NOT case sensitive, so lowercase them all
+                    accessLogRequestHeaderMap.put(entry[0].substring(18).toLowerCase(), entry[1]);
                     valueFound = true;
                 } else if (entry[0].contains("ibm_responseHeader_")) {
-                    accessLogResponseHeaderMap.put(entry[0].substring(19), entry[1]);
+                    accessLogResponseHeaderMap.put(entry[0].substring(19).toLowerCase(), entry[1]);
                     valueFound = true;
                 }
 
@@ -602,10 +603,10 @@ public class BaseTraceService implements TrService {
                         accessLogCookiesMap.put(entry[1].substring(11), entry[2]);
                         valueFound = true;
                     } else if (entry[1].contains("ibm_requestHeader_")) {
-                        accessLogRequestHeaderMap.put(entry[1].substring(18), entry[2]);
+                        accessLogRequestHeaderMap.put(entry[1].substring(18).toLowerCase(), entry[2]);
                         valueFound = true;
                     } else if (entry[1].contains("ibm_responseHeader_")) {
-                        accessLogResponseHeaderMap.put(entry[1].substring(19), entry[2]);
+                        accessLogResponseHeaderMap.put(entry[1].substring(19).toLowerCase(), entry[2]);
                         valueFound = true;
                     }
                 } else if (CollectorConstants.AUDIT_CONFIG_VAL.equals(entry[0])) {
