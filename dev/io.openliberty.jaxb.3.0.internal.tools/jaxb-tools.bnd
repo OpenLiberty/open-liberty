@@ -31,7 +31,6 @@ Import-Package: \
   !org.apache.xerces*, \
   !org.jvnet*, \
   !com.sun.mirror.*, \
-  !com.sun.xml.bind.*, \
   !com.sun.source.tree.*, \
   !com.sun.source.util.*, \
   !com.sun.xml.fastinfoset.sax.*, \

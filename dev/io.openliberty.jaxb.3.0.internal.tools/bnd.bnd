@@ -41,6 +41,10 @@ Import-Package: \
   !org.jvnet*, \
   !com.sun.mirror.*, \
   !com.sun.xml.bind.*, \
+  !com.sun.istack.*, \
+  !com.sun.codemodel.*, \
+  !com.sun.tools.rngom.*, \
+  !com.sun.xml.*, \
   !com.sun.source.tree.*, \
   !com.sun.source.util.*, \
   !com.sun.xml.fastinfoset.sax.*, \
