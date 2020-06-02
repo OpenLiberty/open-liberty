@@ -169,6 +169,7 @@ public class WCCustomProperties {
 
     public static String X_POWERED_BY;
     public static boolean DISABLE_X_POWERED_BY;
+    private static String DISABLE_X_POWERED_BY_STRING;
 
     public static boolean DISABLE_SCI_FOR_PRE_V8_APPS;
 
@@ -639,7 +640,10 @@ public class WCCustomProperties {
         TOLERATE_SYMBOLIC_LINKS = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.toleratesymboliclinks")).booleanValue();
 
         X_POWERED_BY = WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.xpoweredby");
-        DISABLE_X_POWERED_BY = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.disablexpoweredby")).booleanValue();
+
+        // Store the 
+        DISABLE_X_POWERED_BY_STRING = WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.disablexpoweredby");
+        DISABLE_X_POWERED_BY = Boolean.valueOf(DISABLE_X_POWERED_BY_STRING).booleanValue();
 
         DISABLE_SCI_FOR_PRE_V8_APPS = Boolean.valueOf(
                                                       WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.disableservletcontainerinitializersonprev8apps")).booleanValue();
@@ -803,7 +807,18 @@ public class WCCustomProperties {
 
             Tr.debug(tc, "servletpathfordefaultmapping = " + SERVLET_PATH_FOR_DEFAULT_MAPPING);
         }
+        
+        // If the property had been set then the String value would not be null or empty. If it is null or empty then we need to 
+        // determine the Servlet version we're using and set the value of DISABLED_X_POWERED_BY to the correct value for that Servlet version.
+        if(DISABLE_X_POWERED_BY_STRING == null || DISABLE_X_POWERED_BY_STRING.isEmpty()) {
+            // Set DISABLE_X_POWERED_BY to true by default for Servlet 5.0 +
+            if(com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_50) {
+                DISABLE_X_POWERED_BY = true;
+            } else {
+                DISABLE_X_POWERED_BY = false;
+            }
+        }
 
-}
+    }
 
 }
