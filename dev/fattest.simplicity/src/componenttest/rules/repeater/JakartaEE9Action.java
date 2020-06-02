@@ -60,6 +60,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
       "concurrent-2.0",
       "el-4.0",
       "javaMail-2.0",
+      "jaxb-3.0",
       "jaxrs-3.0",
       "jaxrsClient-3.0",
       "jpa-3.0",
