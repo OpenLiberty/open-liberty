@@ -92,7 +92,13 @@ Service-Component: \
     	provide:=com.ibm.wsspi.channelfw.ChannelConfiguration;\
     	modified:='modified';\
     	immediate:=true;\
-    	properties:="service.vendor=IBM,service.ranking:Integer=0,type:String=samesite"
+    	properties:="service.vendor=IBM,service.ranking:Integer=0,type:String=samesite", \
+    com.ibm.ws.http.headers; \
+    	implementation:=com.ibm.wsspi.channelfw.ChannelConfiguration; \
+    	provide:=com.ibm.wsspi.channelfw.ChannelConfiguration;\
+    	modified:='modified';\
+    	immediate:=true;\
+    	properties:="service.vendor=IBM,service.ranking:Integer=0,type:String=headers"
 
 Provide-Capability: \
     welcome.translation.provider; \
