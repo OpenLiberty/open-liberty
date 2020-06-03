@@ -22,6 +22,7 @@ import java.util.Properties;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -79,6 +80,15 @@ public class JsonConfigTest {
         Assert.assertNotNull("Test app LogstashApp does not appear to have started.", server.waitForStringInLog("CWWKT0016I:.*LogstashApp"));
         // Preserve the original server configuration
         server.saveServerConfiguration();
+    }
+
+    @Before
+    public void setUp() throws Exception {
+        if (server != null && !server.isStarted()) {
+            // Restore the original server configuration, before starting the server for each test case.
+            server.restoreServerConfiguration();
+            server.startServer();
+        }
     }
 
     //<logging consoleLogLevel="ERROR" />
@@ -297,6 +307,9 @@ public class JsonConfigTest {
             // Restore the initial contents of bootstrap.properties
             FileOutputStream out = getFileOutputStreamForRemoteFile(bootstrapFile, false);
             writeProperties(initialBootstrapProps, out);
+            if (server != null && server.isStarted()) {
+                server.stopServer(EXPECTED_FAILURES);
+            }
         }
     }
 
@@ -341,6 +354,9 @@ public class JsonConfigTest {
             // Restore the initial contents of bootstrap.properties
             FileOutputStream out = getFileOutputStreamForRemoteFile(bootstrapFile, false);
             writeProperties(initialBootstrapProps, out);
+            if (server != null && server.isStarted()) {
+                server.stopServer(EXPECTED_FAILURES);
+            }
         }
     }
 
@@ -384,6 +400,9 @@ public class JsonConfigTest {
             // Restore the initial contents of bootstrap.properties
             FileOutputStream out = getFileOutputStreamForRemoteFile(bootstrapFile, false);
             writeProperties(initialBootstrapProps, out);
+            if (server != null && server.isStarted()) {
+                server.stopServer(EXPECTED_FAILURES);
+            }
         }
     }
 
@@ -424,6 +443,9 @@ public class JsonConfigTest {
             // Restore the initial contents of bootstrap.properties
             FileOutputStream out = getFileOutputStreamForRemoteFile(bootstrapFile, false);
             writeProperties(initialBootstrapProps, out);
+            if (server != null && server.isStarted()) {
+                server.stopServer(EXPECTED_FAILURES);
+            }
         }
     }
 
@@ -458,6 +480,9 @@ public class JsonConfigTest {
             // Restore the initial contents of bootstrap.properties
             FileOutputStream out = getFileOutputStreamForRemoteFile(bootstrapFile, false);
             writeProperties(initialBootstrapProps, out);
+            if (server != null && server.isStarted()) {
+                server.stopServer(EXPECTED_FAILURES);
+            }
         }
     }
 
