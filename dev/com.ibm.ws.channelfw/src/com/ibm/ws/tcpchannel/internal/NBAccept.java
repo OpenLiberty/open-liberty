@@ -178,7 +178,7 @@ public class NBAccept {
                             // if this is during shutdown, only wait briefly, since the selector that needs
                             // to de-queue the work may have been nuked asynchronously also during shutdown
                             if (com.ibm.wsspi.kernel.service.utils.FrameworkState.isStopping()) {
-                                workSync.wait(250);
+                                workSync.wait(2000);
                             } else {
                                 workSync.wait();
                             }
