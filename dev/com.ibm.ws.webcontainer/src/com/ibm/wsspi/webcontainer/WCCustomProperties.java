@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2019 IBM Corporation and others.
+ * Copyright (c) 1997, 20120 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -641,7 +641,8 @@ public class WCCustomProperties {
 
         X_POWERED_BY = WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.xpoweredby");
 
-        // Store the 
+        // Store the value of the com.ibm.ws.webcontainer.disablexpoweredby property as a String. We can use this later
+        // to determine if the property was set by a user in the server.xml.
         DISABLE_X_POWERED_BY_STRING = WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.disablexpoweredby");
         DISABLE_X_POWERED_BY = Boolean.valueOf(DISABLE_X_POWERED_BY_STRING).booleanValue();
 
@@ -809,7 +810,7 @@ public class WCCustomProperties {
         }
         
         // If the property had been set then the String value would not be null or empty. If it is null or empty then we need to 
-        // determine the Servlet version we're using and set the value of DISABLED_X_POWERED_BY to the correct value for that Servlet version.
+        // determine the Servlet version we're using and set the value of DISABLED_X_POWERED_BY to the correct default value for that Servlet version.
         if(DISABLE_X_POWERED_BY_STRING == null || DISABLE_X_POWERED_BY_STRING.isEmpty()) {
             // Set DISABLE_X_POWERED_BY to true by default for Servlet 5.0 +
             if(com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_50) {
