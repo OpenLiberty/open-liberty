@@ -437,12 +437,38 @@ public class HttpConfigConstants {
 
     public static final String WILDCARD_CHAR = "*";
 
+    public static final String PROPNAME_HEADERS_FEATURE = "headersInternal";
+
+    public static final String PROPNAME_HEADERS_FEATURE_ADD = "headersAddInternal";
+
+    public static final String PROPNAME_HEADERS_FEATURE_SET = "headersSetInternal";
+
+    public static final String PROPNAME_HEADERS_FEATURE_REMOVE = "headersRemoveInternal";
+
+    public static final String PROPNAME_HEADERS_FEATURE_SET_IF_MISSING = "headersSetIfMissingInternal";
+
     public static enum SameSite {
         LAX("Lax"),
         NONE("None"),
         STRICT("Strict");
 
         SameSite(String name) {
+            this.name = name;
+        }
+
+        private String name;
+
+        public String getName() {
+            return this.name;
+        }
+    }
+
+    public static enum Headers {
+        ADD("add"),
+        SET("set"),
+        SET_IF_MISSING("setIfMissing");
+
+        Headers(String name) {
             this.name = name;
         }
 
