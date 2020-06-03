@@ -7,5 +7,5 @@ IBM-Install-Policy: when-satisfied
 -bundles=\
  com.ibm.ws.jdbc.jakarta,\
  com.ibm.ws.jdbc.4.1.jakarta
-kind=noship
-edition=full
+kind=beta
+edition=core

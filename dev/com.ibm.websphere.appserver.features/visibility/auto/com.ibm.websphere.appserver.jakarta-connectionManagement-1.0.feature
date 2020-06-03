@@ -6,5 +6,5 @@ IBM-Provision-Capability:\
 IBM-Install-Policy: when-satisfied
 -features=com.ibm.websphere.appserver.jakarta.connector-2.0
 -bundles=com.ibm.ws.jca.cm.jakarta
-kind=noship
-edition=full
+kind=beta
+edition=core
