@@ -11,6 +11,7 @@
 
 package com.ibm.ws.fat.grpc;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
@@ -23,6 +24,8 @@ import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.grpc.fat.beer.service.Beer;
+import com.ibm.ws.grpc.fat.beer.service.BeerResponse;
 import com.ibm.ws.grpc.fat.beer.service.BeerServiceGrpc;
 import com.ibm.ws.grpc.fat.beer.service.BeerServiceGrpc.BeerServiceBlockingStub;
 
@@ -77,7 +80,7 @@ public class ServiceSupportTests extends FATServletClient {
     }
 
     private void startBeerService(String address, int port) {
-        System.out.println("connecting to beerService gRPC service at " + address + ":" + port);
+        System.out.println("Connecting to beerService gRPC service at " + address + ":" + port);
         beerChannel = ManagedChannelBuilder.forAddress(address, port).usePlaintext().build();
         beerServiceBlockingStub = BeerServiceGrpc.newBlockingStub(beerChannel);
     }
@@ -87,7 +90,7 @@ public class ServiceSupportTests extends FATServletClient {
     }
 
     private void startHelloWorldService(String address, int port) {
-        System.out.println("connecting to helloWorld gRPC service at " + address + ":" + port);
+        System.out.println("Connecting to helloWorld gRPC service at " + address + ":" + port);
         worldChannel = ManagedChannelBuilder.forAddress(address, port).usePlaintext().build();
         worldServiceBlockingStub = GreeterGrpc.newBlockingStub(worldChannel);
     }
@@ -106,11 +109,12 @@ public class ServiceSupportTests extends FATServletClient {
     public void featuresEnabled() throws Exception {
         Set<String> features = beerServer.getServerConfiguration().getFeatureManager().getFeatures();
 
+        assertTrue("Expected the grpc feature 'grpc-1.0' to be enabled but was not: " + features,
+                   features.contains("grpc-1.0"));
+
         assertTrue("Expected the grpc feature 'grpcClient-1.0' to be enabled but was not: " + features,
                    features.contains("grpcClient-1.0"));
 
-        assertTrue("Expected the grpc feature 'grpc-1.0' to be enabled but was not: " + features,
-                   features.contains("grpc-1.0"));
     }
 
     /**
@@ -122,8 +126,19 @@ public class ServiceSupportTests extends FATServletClient {
     @Test
     public void testSingleWarWithGrpcService() throws Exception {
 
-        startBeerService(beerServer.getHostname(), beerServer.getHttpSecondaryPort());
+        // TODO Change this to check for the actual grpc service started message, once it's implemented
+        // Check to make sure the service has started
+        // CWWKZ0001I: Application FavoriteBeerService started in 0.802 seconds.
+        assertNotNull(beerServer.waitForStringInLog("CWWKZ0001I"));
 
+        // Start up the client connection and send a request
+        startBeerService(beerServer.getHostname(), beerServer.getHttpDefaultPort());
+
+        // Send a request
+        // //"Citraquenchl", "Heist", NEWENGLANDIPA, 4.3);
+        Beer newBeer1 = Beer.newBuilder().setBeerName("Citraquenchl").setBeerMaker("Heist").setBeerTypeValue(0).setBeerRating((float) 4.3).build();
+        BeerResponse rsp = beerServiceBlockingStub.addBeer(newBeer1);
+        assertTrue(rsp.getDone());
         stopBeerService();
 
     }
@@ -134,16 +149,27 @@ public class ServiceSupportTests extends FATServletClient {
      * @throws Exception
      *
      **/
-    @Test
-    public void testMultipleGrpcServiceWars() throws Exception {
+    //@Test
+    //public void testMultipleGrpcServiceWars() throws Exception {
+    //    // Start two services
+    //    startBeerService(beerServer.getHostname(), beerServer.getHttpDefaultPort());
+    //    startHelloWorldService(beerServer.getHostname(), beerServer.getHttpDefaultPort());
 
-        startBeerService(beerServer.getHostname(), beerServer.getHttpSecondaryPort());
-        startHelloWorldService(beerServer.getHostname(), beerServer.getHttpSecondaryPort());
+    // Send a request to the Beer service
+    //    Beer newBeer1 = Beer.newBuilder().setBeerName("Citraquenchl").setBeerMaker("Heist").setBeerTypeValue(0).setBeerRating((float) 4.3).build();
+    //    BeerResponse rsp = beerServiceBlockingStub.addBeer(newBeer1);
+    //    assertTrue(rsp.getDone());
 
-        stopBeerService();
-        stopHelloworldService();
+    // Send a request to the HelloWorld service
+    //    HelloRequest person = HelloRequest.newBuilder().setName("Scarlett").build();
+    //    HelloReply greeting = worldServiceBlockingStub.sayHello(person);
 
-    }
+    //Make sure the reply has Scarlett in it
+
+    //   stopBeerService();
+    //  stopHelloworldService();
+
+    //}
 
     /**
      * Tests single war uninstall
@@ -154,7 +180,7 @@ public class ServiceSupportTests extends FATServletClient {
     // @Test
     // public void testSingleWarUninstall() throws Exception {
 
-    //     startBeerService(beerServer.getHostname(), beerServer.getHttpSecondaryPort());
+    //     startBeerService(beerServer.getHostname(), beerServer.getHttpDefaultPort());
 
     //     stopBeerService();
 
@@ -169,8 +195,8 @@ public class ServiceSupportTests extends FATServletClient {
     //@Test
     //public void testMultipleWarUninstall() throws Exception {
 
-    //    startBeerService(beerServer.getHostname(), beerServer.getHttpSecondaryPort());
-    //    startHelloWorldService(beerServer.getHostname(), beerServer.getHttpSecondaryPort());
+    //    startBeerService(beerServer.getHostname(), beerServer.getHttpDefaultPort());
+    //    startHelloWorldService(beerServer.getHostname(), beerServer.getHttpDefaultPort());
 
     //    stopBeerService();
     //    stopHelloworldService();
@@ -186,7 +212,7 @@ public class ServiceSupportTests extends FATServletClient {
     //@Test
     //public void testSingleWarUpdate() throws Exception {
 
-    //    startBeerService(beerServer.getHostname(), beerServer.getHttpSecondaryPort());
+    //    startBeerService(beerServer.getHostname(), beerServer.getHttpDefaultPort());
 
     //    stopBeerService();
 
@@ -201,8 +227,8 @@ public class ServiceSupportTests extends FATServletClient {
 //    @Test
 //    public void testInvalidService() throws Exception {
 
-//        startBeerService(beerServer.getHostname(), beerServer.getHttpSecondaryPort());
-//        startHelloWorldService(beerServer.getHostname(), beerServer.getHttpSecondaryPort());
+//        startBeerService(beerServer.getHostname(), beerServer.getHttpDefaultPort());
+//        startHelloWorldService(beerServer.getHostname(), beerServer.getHttpDefaultPort());
 
 //        stopBeerService();
 //        stopHelloworldService();
@@ -218,8 +244,8 @@ public class ServiceSupportTests extends FATServletClient {
     //@Test
     //public void testDuplicateService() throws Exception {
 
-    //    startBeerService(beerServer.getHostname(), beerServer.getHttpSecondaryPort());
-    //    startBeerService(beerServer.getHostname(), beerServer.getHttpSecondaryPort());
+    //    startBeerService(beerServer.getHostname(), beerServer.getHttpDefaultPort());
+    //    startBeerService(beerServer.getHostname(), beerServer.getHttpDefaultPort());
 
     //    stopBeerService();
 

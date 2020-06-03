@@ -81,8 +81,10 @@ dependencies {
       'xml-apis:xml-apis:1.4.01',
       'io.grpc:grpc-core:1.28.0',
       'io.grpc:grpc-stub:1.28.1',
+      'io.grpc:grpc-protobuf:1.28.1',
       'io.grpc:grpc-netty-shaded:1.28.1',
-      'com.google.protobuf:protobuf-java:3.11.4'     
+      'com.google.protobuf:protobuf-java:3.11.4',
+      'com.google.protobuf:protobuf-java-util:3.11.4'     
 }
 
 protobuf {
