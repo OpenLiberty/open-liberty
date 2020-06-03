@@ -11,8 +11,5 @@
 /**
  * @version 1.0.16
  */
-@TraceOptions(traceGroup = "logging", messageBundle = "com.ibm.ws.logging.internal.resources.LoggingMessages")
 @org.osgi.annotation.versioning.Version("1.0.16")
 package com.ibm.ws.http.logging.source;
-
-import com.ibm.websphere.ras.annotation.TraceOptions;

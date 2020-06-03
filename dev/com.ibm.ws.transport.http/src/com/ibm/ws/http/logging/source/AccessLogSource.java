@@ -53,7 +53,7 @@ import com.ibm.wsspi.http.logging.LogForwarderManager;
  */
 public class AccessLogSource implements Source {
 
-    private static final TraceComponent tc = Tr.register(AccessLogSource.class);
+    private static final TraceComponent tc = Tr.register(AccessLogSource.class, "logging", "com.ibm.ws.logging.internal.resources.LoggingMessages");
 
     private final String sourceName = "com.ibm.ws.http.logging.source.accesslog";
     private final String location = "memory";
@@ -290,7 +290,7 @@ public class AccessLogSource implements Source {
                 case "%U": fieldSetters.add((ald, alrd) -> ald.setUriPath(alrd.getRequest().getRequestURI())); break;
                 // New - access log only fields
                 case "%a": fieldSetters.add((ald, alrd) -> ald.setRemoteIP(AccessLogRemoteIP.getRemoteIP(alrd.getResponse(), alrd.getRequest(), null))); break;
-                case "%b": fieldSetters.add((ald, alrd) -> ald.setBytesSent(AccessLogResponseSize.getResponseSizeAsString(alrd.getResponse(), alrd.getRequest(), null))); break;
+                case "%b": fieldSetters.add((ald, alrd) -> ald.setBytesSent(AccessLogResponseSize.getResponseSize(alrd.getResponse(), alrd.getRequest(), null))); break;
                 case "%C":
                     if (fields.get("%C") == null) {
                         fieldSetters.add((ald, alrd) -> AccessLogRequestCookie.getAllCookies(alrd.getResponse(), alrd.getRequest(), null)
@@ -556,7 +556,7 @@ public class AccessLogSource implements Source {
 
     private static JsonFieldAdder addBytesSentField(int format) {
         return ((jsonBuilder, ald) -> {
-            return jsonBuilder.addField(AccessLogData.getBytesSentKey(format), ald.getBytesSent(), false, true);
+            return jsonBuilder.addField(AccessLogData.getBytesSentKey(format), ald.getBytesSent(), false);
         });
     }
 

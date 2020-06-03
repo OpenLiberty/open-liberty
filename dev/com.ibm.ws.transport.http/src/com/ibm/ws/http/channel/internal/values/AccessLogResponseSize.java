@@ -52,13 +52,4 @@ public class AccessLogResponseSize extends AccessLogData {
         }
         return responseSize;
     }
-
-    public static String getResponseSizeAsString(HttpResponseMessage response, HttpRequestMessage request, Object data) {
-        long responseSize = getResponseSize(response, request, data);
-        if (responseSize > 0) {
-            return Long.toString(responseSize);
-        }
-        // Return null instead of 0, since %B already returns 0 (%b will return it formatted as string)
-        return null;
-    }
 }
