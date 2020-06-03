@@ -34,12 +34,13 @@ import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.kernel.service.util.SecureAction;
-import com.ibm.ws.microprofile.config.common.ConfigException;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
 import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
+
+import io.openliberty.microprofile.config.internal.common.ConfigException;
 
 public abstract class AbstractProviderResolver extends ConfigProviderResolver implements ApplicationStateListener {
 

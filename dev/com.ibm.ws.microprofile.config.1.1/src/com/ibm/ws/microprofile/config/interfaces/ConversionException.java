@@ -11,7 +11,7 @@
 
 package com.ibm.ws.microprofile.config.interfaces;
 
-import com.ibm.ws.microprofile.config.common.ConfigException;
+import io.openliberty.microprofile.config.internal.common.ConfigException;
 
 /**
  * Thrown if errors occur during value conversion that are unrelated to the input value.

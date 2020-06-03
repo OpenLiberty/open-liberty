@@ -37,8 +37,9 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.microprofile.config.common.ConfigException;
 import com.ibm.ws.microprofile.config.interfaces.ConfigStartException;
+
+import io.openliberty.microprofile.config.internal.common.ConfigException;
 
 public class PollingDynamicConfig implements Closeable {
 

@@ -15,9 +15,10 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
-import com.ibm.ws.microprofile.config.serverxml.ServerXMLDefaultVariableConfigSource;
-import com.ibm.ws.microprofile.config.serverxml.ServerXMLVariableConfigSource;
 import com.ibm.ws.microprofile.config.sources.DefaultSources;
+
+import io.openliberty.microprofile.config.internal.serverxml.ServerXMLDefaultVariableConfigSource;
+import io.openliberty.microprofile.config.internal.serverxml.ServerXMLVariableConfigSource;
 
 /**
  *

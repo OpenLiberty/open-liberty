@@ -14,11 +14,12 @@ package com.ibm.ws.microprofile.config14.impl;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.microprofile.config.common.ConfigException;
 import com.ibm.ws.microprofile.config.converters.BuiltInConverter;
 import com.ibm.ws.microprofile.config.converters.PriorityConverterMap;
 import com.ibm.ws.microprofile.config13.impl.Config13ConversionManager;
 import com.ibm.ws.microprofile.config14.converters.Config14ImplicitConverter;
+
+import io.openliberty.microprofile.config.internal.common.ConfigException;
 
 public class Config14ConversionManager extends Config13ConversionManager {
 

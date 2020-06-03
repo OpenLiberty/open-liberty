@@ -28,10 +28,11 @@ import org.apache.commons.lang3.ClassUtils;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.microprofile.config.common.ConfigException;
 import com.ibm.ws.microprofile.config.converters.ExtendedGenericConverter;
 import com.ibm.ws.microprofile.config.converters.PriorityConverter;
 import com.ibm.ws.microprofile.config.converters.PriorityConverterMap;
+
+import io.openliberty.microprofile.config.internal.common.ConfigException;
 
 public class ConversionManager {
 

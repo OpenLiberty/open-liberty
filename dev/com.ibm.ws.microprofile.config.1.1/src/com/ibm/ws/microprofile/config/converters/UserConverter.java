@@ -20,8 +20,9 @@ import org.eclipse.microprofile.config.spi.Converter;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.microprofile.config.common.ConfigException;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
+
+import io.openliberty.microprofile.config.internal.common.ConfigException;
 
 /**
  * A triple of a MP Converter, with an explicit Type and priority

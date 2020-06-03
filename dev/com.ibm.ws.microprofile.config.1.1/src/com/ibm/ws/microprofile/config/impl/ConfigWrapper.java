@@ -18,8 +18,9 @@ import org.eclipse.microprofile.config.Config;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.microprofile.config.common.ConfigException;
 import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
+
+import io.openliberty.microprofile.config.internal.common.ConfigException;
 
 /**
  * Wrapper to record which applications are using a Config.

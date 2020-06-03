@@ -22,9 +22,10 @@ import java.util.concurrent.ConcurrentMap;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.microprofile.config.common.ConfigException;
-import com.ibm.ws.microprofile.config.common.InternalConfigSource;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
+
+import io.openliberty.microprofile.config.internal.common.ConfigException;
+import io.openliberty.microprofile.config.internal.common.InternalConfigSource;
 
 public class PropertiesConfigSource extends InternalConfigSource implements StaticConfigSource {
 
