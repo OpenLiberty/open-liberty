@@ -635,33 +635,23 @@ public class AcmeValidityAndRenewTest {
 			startingCertificateChain = AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 
 			/*
-			 * Stop the Challenge server so we should hit an error on the cert checker.
+			 * Add a bad DNS record we should hit an error on the cert checker.
 			 *
 			 */
-			caContainer.stopDNSServer();
+			caContainer.addDnsARecord("domain1.com", "127.0.0.1");
 
 			/*
 			 * DNS info can be cached, give more time for cache to expire
 			 */
 			assertNotNull("Should log message that the certificate renew failed",
-					server.waitForStringInLogUsingMark("CWPKI2065W", timeBufferToExpire * 4));
+					server.waitForStringInLogUsingMark("CWPKI2065W", timeBufferToExpire * 8));
 
 			/*
-			 * Start the Challenge server and the cert checker should recover and fetch a
-			 * new cert
+			 * Clear the bad DNS record and the cert checker should recover and fetch a new
+			 * cert
 			 *
 			 */
-			try {
-				caContainer.startDNSServer();
-			} catch (Throwable t) {
-
-				/*
-				 * Running locally on windows, the start fails intermittently
-				 */
-				Log.info(this.getClass(), testName.getMethodName(),
-						"First try to restart DNS server failed, try again");
-				caContainer.startDNSServer();
-			}
+			caContainer.clearDnsARecord(DOMAINS1[0]);
 
 			assertNotNull("Should log message that the certificate was renewed after restarting the challenge server",
 					server.waitForStringInLogUsingMark("CWPKI2007I", (AcmeConstants.RENEW_CERT_MIN * 6)));

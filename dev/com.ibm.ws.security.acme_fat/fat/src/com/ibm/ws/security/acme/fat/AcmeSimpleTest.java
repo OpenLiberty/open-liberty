@@ -173,7 +173,7 @@ public class AcmeSimpleTest {
 			/*
 			 * Stop the server.
 			 */
-			server.stopServer();
+			stopServer();
 		}
 
 		/***********************************************************************
@@ -214,7 +214,7 @@ public class AcmeSimpleTest {
 			/*
 			 * Stop the server.
 			 */
-			server.stopServer("CWPKI2058W");
+			stopServer("CWPKI2058W");
 		}
 
 		/***********************************************************************
@@ -256,7 +256,7 @@ public class AcmeSimpleTest {
 			/*
 			 * Stop the server.
 			 */
-			server.stopServer();
+			stopServer();
 		}
 	}
 
@@ -352,7 +352,7 @@ public class AcmeSimpleTest {
 			/*
 			 * Stop the server.
 			 */
-			server.stopServer("CWPKI2058W");
+			stopServer();
 		}
 	}
 
@@ -479,7 +479,7 @@ public class AcmeSimpleTest {
 			/*
 			 * Stop the server.
 			 */
-			server.stopServer("CWPKI2058W");
+			stopServer("CWPKI2058W");
 		}
 	}
 
@@ -718,7 +718,7 @@ public class AcmeSimpleTest {
 			assertNotNull("Should have found warning that the certCheckerErrorScheduler time was reset", server.findStringsInLogs("CWPKI2071W"));
 
 		} finally {
-			server.stopServer("CWWKG0095E", "CWWKE0701E", "CWPKI2016E", "CWPKI2020E", "CWPKI2021E", "CWPKI2022E",
+			stopServer("CWWKG0095E", "CWWKE0701E", "CWPKI2016E", "CWPKI2020E", "CWPKI2021E", "CWPKI2022E",
 					"CWPKI2023E", "CWPKI2008E", "CWPKI2037E", "CWPKI2039E", "CWPKI2040E", "CWPKI2041E", "CWPKI2042E",
 					"CWPKI0823E", "CWPKI0828E", "CWPKI2070W", "CWPKI2071W");
 			/*
@@ -833,7 +833,7 @@ public class AcmeSimpleTest {
 			assertThat("Certificates should have not changed.", serial1, equalTo(serial2));
 
 		} finally {
-			server.stopServer("CWPKI2058W");
+			stopServer("CWPKI2058W");
 		}
 	}
 
@@ -912,7 +912,7 @@ public class AcmeSimpleTest {
 			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
 			AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 		} finally {
-			server.stopServer("CWPKI2001E", "CWPKI0804E", "CWWKO0801E");
+			stopServer("CWPKI2001E", "CWPKI0804E", "CWWKO0801E");
 		}
 	}
 
@@ -961,7 +961,7 @@ public class AcmeSimpleTest {
 			AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 
 		} finally {
-			server.stopServer();
+			stopServer();
 		}
 	}
 
@@ -1000,7 +1000,7 @@ public class AcmeSimpleTest {
 			AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 
 		} finally {
-			server.stopServer();
+			stopServer();
 
 			/*
 			 * Delete the file.
@@ -1047,7 +1047,7 @@ public class AcmeSimpleTest {
 			AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 
 		} finally {
-			server.stopServer();
+			stopServer();
 
 			/*
 			 * Delete the file.
@@ -1057,5 +1057,9 @@ public class AcmeSimpleTest {
 				f.delete();
 			}
 		}
+	}
+	
+	protected void stopServer(String ...msgs) throws Exception {
+		server.stopServer(msgs);
 	}
 }
