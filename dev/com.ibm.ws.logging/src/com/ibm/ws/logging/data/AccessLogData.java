@@ -162,7 +162,7 @@ public class AccessLogData extends GenericData {
     public void setSequence(String s)          { setPair(13, s); }
     // New optional access log fields
     public void setRemoteIP(String s)          { setPair(14, s); }
-    public void setBytesSent(String s)         { setPair(15, s); }
+    public void setBytesSent(long l)           { setPair(15, l); }
     public void setRequestElapsedTime(long l)  { setPair(17, l); }
     public void setRequestFirstLine(String s)  { setPair(20, s); }
     public void setAccessLogDatetime(String s) { setPair(21, s); }
@@ -195,7 +195,7 @@ public class AccessLogData extends GenericData {
     public long getDatetime()                    { return getLongValue(12); }
     public String getSequence()                  { return getStringValue(13); }
     public String getRemoteIP()                  { return getStringValue(14); }
-    public String getBytesSent()                 { return getStringValue(15); }
+    public long getBytesSent()                   { return getLongValue(15); }
     public KeyValuePairList getCookies()         { return getValues(16); }
     public long getRequestElapsedTime()          { return getLongValue(17); }
     public KeyValuePairList getRequestHeaders()  { return getValues(18); }
