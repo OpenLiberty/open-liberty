@@ -1,6 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 
-symbolicName = com.ibm.wsspi.appserver.app.manager.wab.jakarta-1.0
+symbolicName = io.openliberty.app.manager.wab.jakarta-1.0
 visibility = private
 
 -bundles= com.ibm.ws.app.manager.wab.jakarta; start-phase:=APPLICATION_EARLY

@@ -1,6 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 
-symbolicName = com.ibm.wsspi.appserver.app.manager.wab-1.0
+symbolicName = io.openliberty.app.manager.wab-1.0
 visibility = private
 
 -bundles= com.ibm.ws.app.manager.wab; start-phase:=APPLICATION_EARLY
@@ -10,6 +10,6 @@ IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature
 
 IBM-Install-Policy: when-satisfied
 
-edition=full
+edition=core
 kind=ga
 WLP-Activation-Type: parallel
