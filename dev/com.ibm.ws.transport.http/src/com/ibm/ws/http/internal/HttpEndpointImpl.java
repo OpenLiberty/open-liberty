@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -123,6 +123,9 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
 
     /** Current samesite configuration */
     private volatile ChannelConfiguration samesiteConfig = null;
+
+    /** Current headers configuration */
+    private volatile ChannelConfiguration headersConfig = null;
 
     private volatile boolean endpointStarted = false;
     private volatile String resolvedHostName = null;
@@ -740,6 +743,46 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
 
     public Map<String, Object> getSamesiteConfig() {
         ChannelConfiguration c = samesiteConfig;
+        return c == null ? null : c.getConfiguration();
+    }
+
+    /**
+     * The specific header configuration is selected by a filter through metatype that matches a specific user-configured
+     * option set or falls back to a default.
+     *
+     * @param service
+     */
+    @Trivial
+    @Reference(name = "headers",
+               service = ChannelConfiguration.class,
+               policy = ReferencePolicy.DYNAMIC,
+               policyOption = ReferencePolicyOption.GREEDY,
+               cardinality = ReferenceCardinality.MANDATORY)
+    protected void setHeaders(ChannelConfiguration config) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(this, tc, "set <headers> " + config.getProperty("id"), this);
+        }
+        this.headersConfig = config;
+        if (headersConfig != null) {
+            performAction(updateAction);
+        }
+    }
+
+    @Trivial
+    protected void updatedHeaders(ChannelConfiguration config) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(this, tc, "update <headers> configuration " + config.getProperty("id"), this);
+        }
+
+        if (headersConfig != null) {
+            performAction(updateAction);
+        }
+    }
+
+    protected void unsetHeaders(ChannelConfiguration config) {}
+
+    public Map<String, Object> getHeadersConfig() {
+        ChannelConfiguration c = headersConfig;
         return c == null ? null : c.getConfiguration();
     }
 
