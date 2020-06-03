@@ -55,7 +55,7 @@ public class CDI12ExtensionSPIConstructorExceptionTest extends LoggingTest {
     }
 
     @Test
-    public void testExtensionSPI() throws Exception {
+    public void testConstructorExceptionViaExtensionSPI() throws Exception {
         WebBrowser browser = createWebBrowserForTestCase();
 
         verifyResponse(browser, "/ExtensionConstructorExceptionApp/",
