@@ -383,8 +383,8 @@ public class JerseyRxInvokerTestServlet extends HttpServlet {
         });
 
         try {
-            if (!(countDownLatch.await(basicTimeout, TimeUnit.SECONDS))) {
-                throw new RuntimeException("testRxObservableInvoker_get3WithGenericType: Response took too long. Waited " + basicTimeout);
+            if (!(countDownLatch.await(complexTimeout, TimeUnit.SECONDS))) {
+                throw new RuntimeException("testRxObservableInvoker_get3WithGenericType: Response took too long. Waited " + complexTimeout);
             }
         } catch (InterruptedException ex) {
             ex.printStackTrace();
@@ -433,8 +433,8 @@ public class JerseyRxInvokerTestServlet extends HttpServlet {
         });
 
         try {
-            if (!(countDownLatch.await(basicTimeout, TimeUnit.SECONDS))) {
-                throw new RuntimeException("testRxFlowable_get3WithGenericType: Response took too long. Waited " + basicTimeout);
+            if (!(countDownLatch.await(complexTimeout, TimeUnit.SECONDS))) {
+                throw new RuntimeException("testRxFlowable_get3WithGenericType: Response took too long. Waited " + complexTimeout);
             }
         } catch (InterruptedException ex) {
             ex.printStackTrace();

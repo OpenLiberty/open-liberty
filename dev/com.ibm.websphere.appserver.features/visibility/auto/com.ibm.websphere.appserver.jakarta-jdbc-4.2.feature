@@ -8,5 +8,5 @@ IBM-Install-Policy: when-satisfied
  com.ibm.ws.jdbc.jakarta,\
  com.ibm.ws.jdbc.4.1.jakarta,\
  com.ibm.ws.jdbc.4.2.jakarta
-kind=noship
-edition=full
+kind=beta
+edition=core

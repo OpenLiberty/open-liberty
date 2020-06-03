@@ -148,6 +148,7 @@ jakarta.servlet:jakarta.servlet-api:5.0.0-M1
 jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.0.0-M1
 jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:2.0.0-RC1
 jakarta.transaction:jakarta.transaction-api:2.0.0-RC1
+jakarta.xml.bind:jakarta.xml.bind-api:3.0.0-RC3
 javax.activation:activation:1.1
 javax.annotation:javax.annotation-api:1.2
 javax.annotation:javax.annotation-api:1.3.1
@@ -320,6 +321,8 @@ org.apache.myfaces.core:myfaces-impl:2.3.6
 org.apache.neethi:neethi:3.0.2
 org.apache.servicemix.bundles:org.apache.servicemix.bundles.bcel:5.2_3
 org.apache.thrift:libthrift:0.11.0
+org.apache.tomcat:tomcat-el-api:10.0.0-M5
+org.apache.tomcat:tomcat-jasper-el:10.0.0-M5
 org.apache.tomcat.embed:tomcat-embed-websocket:8.5.23
 org.apache.wink:wink-client:1.4
 org.apache.wink:wink-common:1.4
@@ -410,6 +413,10 @@ org.glassfish:javax.faces:2.3.3
 org.glassfish:javax.json:1.0.4
 org.glassfish:javax.json:1.1.3
 org.glassfish:jakarta.json:2.0.0-RC2
+org.glassfish.jaxb:jaxb-core:3.0.0-M3
+org.glassfish.jaxb:jaxb-jxc:3.0.0-M3
+org.glassfish.jaxb:jaxb-runtime:3.0.0-M3
+org.glassfish.jaxb:jaxb-xjc:3.0.0-M3
 org.hamcrest:hamcrest-all:1.3
 org.hibernate.common:hibernate-commons-annotations:5.1.0.Final
 org.hibernate.validator:hibernate-validator-cdi:6.1.1.Final

@@ -14,7 +14,6 @@ package com.ibm.ws.fat.grpc;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
-import java.util.Set;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -67,17 +66,6 @@ public class HelloWorldTest extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         helloWorldServer.stopServer();
-    }
-
-    @Test
-    public void featuresEnabled() throws Exception {
-        Set<String> features = helloWorldServer.getServerConfiguration().getFeatureManager().getFeatures();
-
-        assertTrue("Expected the grpc feature 'grpcClient-1.0' to be enabled but was not: " + features,
-                   features.contains("grpcClient-1.0"));
-
-        assertTrue("Expected the grpc feature 'grpc-1.0' to be enabled but was not: " + features,
-                   features.contains("grpc-1.0"));
     }
 
     /**

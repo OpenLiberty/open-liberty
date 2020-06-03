@@ -64,8 +64,6 @@ public class JCAClassLoadingTest extends FATServletClient {
         ShrinkHelper.exportAppToServer(server, ear);
 
         ShrinkHelper.defaultRar(server, RAR_NAME, "ra");
-
-        server.startServer();
     }
 
     @After
@@ -82,6 +80,10 @@ public class JCAClassLoadingTest extends FATServletClient {
 
     @Test
     public void testLoadResourceAdapterClassFromSingleApp() throws Exception {
+        if (server.isStarted()) {
+            server.stopServer();
+        }
+        server.startServer(testName.getMethodName() + ".log");
         runTest();
     }
 

@@ -19,15 +19,9 @@ public class MyBeanInjectionString {
 
     String s = "bean injection";
 
-    static String interceptorString = "";
-
-    public static void setInterceptorString(String s) {
-        interceptorString = s;
-    }
-
     @Override
     @Intercept
     public String toString() {
-        return interceptorString + s;
+        return s;
     }
 }

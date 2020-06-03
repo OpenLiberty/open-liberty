@@ -5,5 +5,5 @@ IBM-Provision-Capability:\
  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.jcaSecurity-1.0))"
 IBM-Install-Policy: when-satisfied
 -bundles=com.ibm.ws.security.jca.jakarta
-kind=noship
-edition=full
+kind=beta
+edition=core

@@ -70,5 +70,5 @@ implicit.bean.scanning.disabled.CWOWB1009W.explanation=Archives are not scanned 
 implicit.bean.scanning.disabled.CWOWB1009W.useraction=Ensure that every archive that uses CDI has a beans.xml file or re-enable implicit beans scanning in your server.xml file.
 
 spi.extension.failed.to.construct.CWOWB10010E=CWOWB10010E: Failed to create CDI Extension via SPI.
-spi.extension.failed.to.construct.CWOWB10010E.explanation=CDI failed to invoke the constructor of the extension class {0} registered via the getExtensions() method of a WebSphereCDIExtensionMetaData implementation because of the exception {1}.
+spi.extension.failed.to.construct.CWOWB10010E.explanation=CDI failed to invoke the constructor of the extension class {0} registered via the getExtensions() method of a CDIExtensionMetaData implementation because of the exception {1}.
 spi.extension.failed.to.construct.CWOWB10010E.useraction=Fix the error preventing your extension from instantiating.

@@ -1,0 +1,25 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME io.openliberty.jaxb.3.0.internal.tools/resources/io/openliberty/jaxb/tools/internal/resources/JaxbToolsMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXB Tools Code
+#RANGE 0700 - 0799
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+error.parameter.target.missed=CWWKW0700E: \u672a\u6307\u5b9a\u5fc5\u8981\u7684\u53c3\u6578\u76ee\u6a19\u3002
+error.parameter.target.missed.explanation=\u5982\u679c\u5df2\u6307\u5b9a\u76ee\u6a19\u53c3\u6578\uff0c\u7576 Liberty \u8a2d\u5b9a\u6a94\u652f\u63f4\u7684 JAXB \u898f\u683c\u5c64\u6b21\u5df2\u66f4\u65b0\uff0c\u73fe\u6709\u7684\u61c9\u7528\u7a0b\u5f0f\u53ef\u4ee5\u5728\u672a\u8b8a\u66f4\u884c\u70ba\u4e0b\u91cd\u65b0\u7522\u751f\u3002.
+error.parameter.target.missed.useraction=\u6307\u5b9a\u7b26\u5408\u7522\u751f\u7684\u7a0b\u5f0f\u78bc\u4e4b JAXB \u898f\u683c\u5c64\u6b21\u3002\u6709\u6548\u503c\u70ba 3.0\u3001
