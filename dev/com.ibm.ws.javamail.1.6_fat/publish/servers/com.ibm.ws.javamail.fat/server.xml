@@ -1,21 +1,22 @@
 <server>
-  <featureManager>
-    <feature>componentTest-1.0</feature>
-    <feature>servlet-4.0</feature>
-    <feature>localConnector-1.0</feature>
-    <feature>javaMail-1.6</feature>
-    <feature>jndi-1.0</feature>
-    <feature>ejbLite-3.2</feature>
-  </featureManager>
+    <featureManager>
+      <feature>componentTest-1.0</feature>
+      <feature>servlet-4.0</feature>
+      <feature>localConnector-1.0</feature>
+      <feature>javaMail-1.6</feature>
+      <feature>jndi-1.0</feature>
+      <!--  Disable EJB testing until EJB 4.0 fully functional -->
+      <!-- feature>ejbLite-3.2</feature -->
+    </featureManager>
 
   <include optional="true" location="../fatTestPorts.xml"/>
 
   <variable name="onError" value="FAIL"/>
 
-  <application type="ear" id="fvtapp" name="fvtapp" location="fvtapp.ear"/>
-
-  <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
-  <!-- Needed due to missing doPriv in javax.mail.Session.loadFile(), and we have no idea of the actual base paths -->
-  <javaPermission className="java.io.FilePermission" name="/-" actions="read"/>
+    <application type="ear" id="fvtapp" name="fvtapp" location="fvtapp.ear"/>
+    
+    <javaPermission className="java.io.FilePermission"  name="/Library/Java/JavaVirtualMachines/adoptopenjdk-11-openj9.jdk/Contents/Home/conf/javamail.address.map" actions="read" />
+    
+    <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
 
 </server>

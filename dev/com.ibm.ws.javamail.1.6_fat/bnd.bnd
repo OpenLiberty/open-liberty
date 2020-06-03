@@ -19,7 +19,12 @@ src: \
 
 fat.project: true
 
+tested.features: javaMail-2.0, \
+     transaction-2.0, \
+     servlet-5.0
+     
 -buildpath: \
+  org.hamcrest:hamcrest-all;version=1.3, \
   com.ibm.websphere.javaee.annotation.1.2;version=latest,\
   com.ibm.websphere.javaee.servlet.4.0;version=latest,\
   com.ibm.websphere.javaee.mail.1.6;version=latest, \

@@ -1,10 +1,10 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.jakartaMail-2.0
+symbolicName=com.ibm.websphere.appserver.javaMail-2.0
 visibility=public
 singleton=true
-IBM-ShortName: jakartaMail-2.0
+IBM-ShortName: javaMail-2.0
 Subsystem-Version: 2.0
-Subsystem-Name: JakartaMail 2.0
+Subsystem-Name: javaMail 2.0
 
 IBM-API-Package: \
  jakarta.mail; type="spec", \

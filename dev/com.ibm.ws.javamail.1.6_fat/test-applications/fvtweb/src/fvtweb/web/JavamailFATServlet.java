@@ -13,7 +13,6 @@ package fvtweb.web;
 import java.util.Properties;
 
 import javax.annotation.Resource;
-import javax.ejb.EJB;
 import javax.mail.MailSessionDefinition;
 import javax.mail.Session;
 import javax.naming.InitialContext;
@@ -22,7 +21,7 @@ import javax.servlet.annotation.WebServlet;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
-import fvtweb.ejb.JavamailTestLocal;
+//import fvtweb.ejb.JavamailTestLocal;
 
 @MailSessionDefinition(name = "javamail/jm2Def",
                        from = "jm2From",
@@ -46,8 +45,9 @@ public class JavamailFATServlet extends FATServlet {
     @Resource(name = "javamail/mergeMS", lookup = "java:comp/env/javamail/mergeDef")
     private Session mergeMS;
 
-    @EJB
-    JavamailTestLocal jtBean;
+    //TODO Disabled until EJB 4.0 can function with Jakarta features
+    //@EJB
+    //JavamailTestLocal jtBean;
 
     private static final long serialVersionUID = 7709282314904580334L;
 
@@ -186,8 +186,9 @@ public class JavamailFATServlet extends FATServlet {
     /**
      * Verify a mail session is created for an EJB from an annotation.
      */
-    @Test
-    public void testEjbJavamailSessionCreated() throws Throwable {
-        jtBean.testLookupJavamailAnnotation();
-    }
+    //TODO enable when ejbLite-4.0 can run with Jakarta features.
+    // @Test
+    // public void testEjbJavamailSessionCreated() throws Throwable {
+    //     jtBean.testLookupJavamailAnnotation();
+    // }
 }
