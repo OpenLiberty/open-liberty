@@ -16,26 +16,25 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-//                WebServiceInWebXMLTest.class,
-//                WebServiceContextTest.class,
-//                HandlerChainTest.class,
-//                WebServiceRefTest.class,
-//                CatalogFacilityTest.class,
-//                WebServiceRefFeaturesTest.class,
-//                ServerSideStubClientTest.class,
-//                PureCXFTest.class,
-//                WsBndServiceRefOverrideTest.class,
-//                WsBndEndpointOverrideTest.class,
-//                CXFJMXSupportTest.class,
-//                WebServiceMonitorTest.class,
-//                HttpConduitPropertiesTest.class,
-//                EJBServiceRefBndTest.class,
-//                PortComponentRefTest.class,
+                WebServiceInWebXMLTest.class,
+                WebServiceContextTest.class,
+                HandlerChainTest.class,
+                WebServiceRefTest.class,
+                CatalogFacilityTest.class,
+                WebServiceRefFeaturesTest.class,
+                ServerSideStubClientTest.class,
+                PureCXFTest.class,
+                WsBndServiceRefOverrideTest.class,
+                WsBndEndpointOverrideTest.class,
+                CXFJMXSupportTest.class,
+                WebServiceMonitorTest.class,
+                HttpConduitPropertiesTest.class,
+                EJBServiceRefBndTest.class,
+                PortComponentRefTest.class,
                 EndpointPropertiesTest.class,
-//                BindingTypeWsdlMismatchTest.class,
-//                MTOMTest.class,
-//                HandlerChainWithWebServiceClientTest.class,
-//                VirtualHostTest.class
+                BindingTypeWsdlMismatchTest.class,
+                MTOMTest.class,
+                HandlerChainWithWebServiceClientTest.class,
+                VirtualHostTest.class
 })
-public class FATSuite {
-}
+public class FATSuite {}
