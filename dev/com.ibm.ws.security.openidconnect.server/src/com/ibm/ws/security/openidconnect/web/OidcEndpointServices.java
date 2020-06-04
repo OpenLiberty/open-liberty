@@ -309,12 +309,12 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
     }
 
     private OidcRequest getOidcRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        OidcRequest oidcRequest = (OidcRequest) request.getAttribute("OidcRequest");
+        OidcRequest oidcRequest = (OidcRequest) request.getAttribute(OAuth20Constants.OIDC_REQUEST_OBJECT_ATTR_NAME);
         if (oidcRequest == null) {
             String errorMsg = TraceNLS.getFormattedMessage(this.getClass(),
                                                            TraceConstants.MESSAGE_BUNDLE,
                                                            "OIDC_REQUEST_ATTRIBUTE_MISSING",
-                                                           new Object[] { request.getRequestURI(), "OidcRequest" },
+                                                           new Object[] { request.getRequestURI(), OAuth20Constants.OIDC_REQUEST_OBJECT_ATTR_NAME },
                                                            "CWWKS1634E: The request endpoint {0} does not have attribute {1}.");
             Tr.error(tc, errorMsg);
             response.sendError(HttpServletResponse.SC_NOT_FOUND, errorMsg);

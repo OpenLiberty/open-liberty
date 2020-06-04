@@ -264,7 +264,7 @@ public class ClientAuthorization {
      * @throws OAuth20Exception
      */
     private void validateScopes(HttpServletRequest request, AttributeList attrList, OidcBaseClient client, String clientId) throws OAuth20Exception {
-        if (request.getAttribute("OidcRequest") != null) {
+        if (request.getAttribute(OAuth20Constants.OIDC_REQUEST_OBJECT_ATTR_NAME) != null) {
             checkForMissingScopeInTheRequest(request);
             checkForEmptyRegisteredScopeSet(client, clientId);
         }
@@ -372,7 +372,7 @@ public class ClientAuthorization {
                 return retVal;
             }
 
-            if (request.getAttribute("OidcRequest") == null) {
+            if (request.getAttribute(OAuth20Constants.OIDC_REQUEST_OBJECT_ATTR_NAME) == null) {
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "This is an OAuth20 request");
                 }
