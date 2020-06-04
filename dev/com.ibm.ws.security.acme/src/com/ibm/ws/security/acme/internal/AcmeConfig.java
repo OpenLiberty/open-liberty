@@ -669,9 +669,9 @@ public class AcmeConfig {
 		if (certCheckerScheduler != null) {
 			if (certCheckerScheduler <= 0) {
 				/*
-				 * Cert Checker is disabled
+				 * Cert Checker is disabled. Message is logged in 
+				 * AcmeCertCheckerTask.startCertificateChecker
 				 */
-				Tr.info(tc, "CWPKI2069I");
 				this.certCheckerScheduler = 0L;
 			} else if (certCheckerScheduler < AcmeConstants.RENEW_CERT_MIN) {
 				/*
