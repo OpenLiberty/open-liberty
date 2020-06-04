@@ -129,15 +129,16 @@ public class CollectorJsonUtils_JSON {
         LogTraceData logData = (LogTraceData) event;
         JSONObjectBuilder jsonBuilder = null;
         boolean isMessageEvent = eventType.equals(CollectorConstants.MESSAGES_LOG_EVENT_TYPE);
+        int jsonKey = LogTraceData.KEYS_JSON;
 
         ArrayList<KeyValuePair> extensions = null;
         KeyValuePairList kvpl = null;
 
         if (isMessageEvent) {
-            jsonBuilder = CollectorJsonHelpers.startMessageJsonFields();
+            jsonBuilder = CollectorJsonHelpers.startMessageJsonFields(jsonKey);
         }
         if (!isMessageEvent) {
-            jsonBuilder = CollectorJsonHelpers.startTraceJsonFields();
+            jsonBuilder = CollectorJsonHelpers.startTraceJsonFields(jsonKey);
         }
 
         String message = logData.getMessage();
@@ -157,15 +158,15 @@ public class CollectorJsonUtils_JSON {
         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(logData.getDatetime());
 
         //@formatter:off
-        jsonBuilder.addField(LogTraceData.getMessageKeyJSON(isMessageEvent), formattedValue.toString(), false, true)
-        .addField(LogTraceData.getThreadIdKeyJSON(isMessageEvent), DataFormatHelper.padHexString(logData.getThreadId(), 8), false, true)
-        .addField(LogTraceData.getDatetimeKeyJSON(isMessageEvent), datetime, false, true)
-        .addField(LogTraceData.getMessageIdKeyJSON(isMessageEvent), logData.getMessageId(), false, true)
-        .addField(LogTraceData.getModuleKeyJSON(isMessageEvent), logData.getModule(), false, true)
-        .addField(LogTraceData.getLoglevelKeyJSON(isMessageEvent), logData.getLoglevel(), false, true)
-        .addField(LogTraceData.getMethodNameKeyJSON(isMessageEvent), logData.getMethodName(), false, true)
-        .addField(LogTraceData.getClassNameKeyJSON(isMessageEvent), logData.getClassName(), false, true)
-        .addField(LogTraceData.getSequenceKeyJSON(isMessageEvent), logData.getSequence(), false, true);
+        jsonBuilder.addField(LogTraceData.getMessageKey(jsonKey, isMessageEvent), formattedValue.toString(), false, true)
+        .addField(LogTraceData.getThreadIdKey(jsonKey, isMessageEvent), DataFormatHelper.padHexString(logData.getThreadId(), 8), false, true)
+        .addField(LogTraceData.getDatetimeKey(jsonKey, isMessageEvent), datetime, false, true)
+        .addField(LogTraceData.getMessageIdKey(jsonKey, isMessageEvent), logData.getMessageId(), false, true)
+        .addField(LogTraceData.getModuleKey(jsonKey, isMessageEvent), logData.getModule(), false, true)
+        .addField(LogTraceData.getLoglevelKey(jsonKey, isMessageEvent), logData.getLoglevel(), false, true)
+        .addField(LogTraceData.getMethodNameKey(jsonKey, isMessageEvent), logData.getMethodName(), false, true)
+        .addField(LogTraceData.getClassNameKey(jsonKey, isMessageEvent), logData.getClassName(), false, true)
+        .addField(LogTraceData.getSequenceKey(jsonKey, isMessageEvent), logData.getSequence(), false, true);
         //@formatter:on
 
         kvpl = logData.getExtensions();

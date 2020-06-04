@@ -121,12 +121,19 @@ public class CollectorJsonUtils {
                                                  String serverName, String hostName, String eventType, Object event, String[] tags) {
 
         LogTraceData logData = (LogTraceData) event;
-        StringBuilder sb = null;
+        JSONObjectBuilder jsonBuilder = null;
+        boolean isMessageEvent = eventType.equals(CollectorConstants.MESSAGES_LOG_EVENT_TYPE);
+        int logstashCollectorKey = LogTraceData.KEYS_LOGSTASH;
 
-        if (eventType.equals(CollectorConstants.MESSAGES_LOG_EVENT_TYPE))
-            sb = CollectorJsonHelpers.startMessageJson(hostName, wlpUserDir, serverName);
-        if (eventType.equals(CollectorConstants.TRACE_LOG_EVENT_TYPE))
-            sb = CollectorJsonHelpers.startTraceJson(hostName, wlpUserDir, serverName);
+        ArrayList<KeyValuePair> extensions = null;
+        KeyValuePairList kvpl = null;
+
+        if (isMessageEvent) {
+            jsonBuilder = CollectorJsonHelpers.startMessageJsonFields(logstashCollectorKey);
+        }
+        if (!isMessageEvent) {
+            jsonBuilder = CollectorJsonHelpers.startTraceJsonFields(logstashCollectorKey);
+        }
 
         String message = logData.getMessage();
         String loglevel = logData.getLoglevel();
@@ -142,44 +149,48 @@ public class CollectorJsonUtils {
             formattedValue.append(CollectorJsonHelpers.LINE_SEPARATOR).append(throwable);
         }
 
-        CollectorJsonHelpers.addToJSON(sb, logData.getMessageKey(), formattedValue.toString(), false, true, false, false);
-        CollectorJsonHelpers.addToJSON(sb, logData.getThreadIdKey(), DataFormatHelper.padHexString(logData.getThreadId(), 8), false, true, false, false);
         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(logData.getDatetime());
-        CollectorJsonHelpers.addToJSON(sb, logData.getDatetimeKey(), datetime, false, true, false, false);
-        CollectorJsonHelpers.addToJSON(sb, logData.getModuleKey(), logData.getModule(), false, true, false, false);
-        CollectorJsonHelpers.addToJSON(sb, logData.getMessageIdKey(), logData.getMessageId(), false, true, false, false);
-        CollectorJsonHelpers.addToJSON(sb, logData.getSeverityKey(), logData.getSeverity(), false, true, false, false);
-        CollectorJsonHelpers.addToJSON(sb, logData.getMethodNameKey(), logData.getMethodName(), false, true, false, false);
-        CollectorJsonHelpers.addToJSON(sb, logData.getClassNameKey(), logData.getClassName(), false, true, false, false);
-        CollectorJsonHelpers.addToJSON(sb, logData.getSequenceKey(), logData.getSequence(), false, true, false, false);
-        KeyValuePairList kvpl = logData.getExtensions();
+
+        //@formatter:off
+        jsonBuilder.addField(LogTraceData.getMessageKey(logstashCollectorKey, isMessageEvent), formattedValue.toString(), false, true)
+        .addField(LogTraceData.getThreadIdKey(logstashCollectorKey, isMessageEvent), DataFormatHelper.padHexString(logData.getThreadId(), 8), false, true)
+        .addField(LogTraceData.getDatetimeKey(logstashCollectorKey, isMessageEvent), datetime, false, true)
+        .addField(LogTraceData.getMessageIdKey(logstashCollectorKey, isMessageEvent), logData.getMessageId(), false, true)
+        .addField(LogTraceData.getModuleKey(logstashCollectorKey, isMessageEvent), logData.getModule(), false, true)
+        .addField(LogTraceData.getLoglevelKey(logstashCollectorKey, isMessageEvent), logData.getLoglevel(), false, true)
+        .addField(LogTraceData.getMethodNameKey(logstashCollectorKey, isMessageEvent), logData.getMethodName(), false, true)
+        .addField(LogTraceData.getClassNameKey(logstashCollectorKey, isMessageEvent), logData.getClassName(), false, true)
+        .addField(LogTraceData.getSequenceKey(logstashCollectorKey, isMessageEvent), logData.getSequence(), false, true);
+        //@formatter:on
+
+        kvpl = logData.getExtensions();
         if (kvpl != null) {
             if (kvpl.getKey().equals(LogFieldConstants.EXTENSIONS_KVPL)) {
-                ArrayList<KeyValuePair> extensions = kvpl.getList();
+                extensions = kvpl.getList();
                 for (KeyValuePair k : extensions) {
                     String extKey = k.getKey();
                     if (extKey.endsWith(CollectorJsonHelpers.INT_SUFFIX)) {
-                        CollectorJsonHelpers.addToJSON(sb, extKey, Integer.toString(k.getIntValue()), false, true, false, false, true);
+                        jsonBuilder.addField(extKey, k.getIntValue(), false);
                     } else if (extKey.endsWith(CollectorJsonHelpers.FLOAT_SUFFIX)) {
-                        CollectorJsonHelpers.addToJSON(sb, extKey, Float.toString(k.getFloatValue()), false, true, false, false, true);
+                        jsonBuilder.addField(extKey, k.getFloatValue(), false);
                     } else if (extKey.endsWith(CollectorJsonHelpers.LONG_SUFFIX)) {
-                        CollectorJsonHelpers.addToJSON(sb, extKey, Long.toString(k.getLongValue()), false, true, false, false, true);
+                        jsonBuilder.addField(extKey, k.getLongValue(), false);
                     } else if (extKey.endsWith(CollectorJsonHelpers.BOOL_SUFFIX)) {
-                        CollectorJsonHelpers.addToJSON(sb, extKey, Boolean.toString(k.getBooleanValue()), false, true, false, false, true);
+                        jsonBuilder.addField(extKey, k.getBooleanValue(), false);
                     } else {
-                        CollectorJsonHelpers.addToJSON(sb, extKey, k.getStringValue(), false, true, false, false, false);
+                        jsonBuilder.addField(extKey, k.getStringValue(), false, true);
                     }
                 }
             }
         }
 
+        //append tags with preformatted string field value
         if (tags != null) {
-            addTagNameForVersion(sb).append(CollectorJsonHelpers.jsonifyTags(tags));
+            jsonBuilder.addPreformattedField("tags", CollectorJsonHelpers.jsonifyTags(tags));
         }
 
-        sb.append("}");
+        return jsonBuilder.build().toString();
 
-        return sb.toString();
     }
 
     private static String jsonifyFFDC(int maxFieldLength, String wlpUserDir,

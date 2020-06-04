@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.logging.data;
 
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -80,7 +79,11 @@ public class LogTraceData extends GenericData {
                                             LogFieldConstants.MESSAGE,
                                             LogFieldConstants.FORMATTEDMSG,
                                             LogFieldConstants.EXTENSIONS_KVPL,
-                                            LogFieldConstants.OBJECT_ID
+                                            LogFieldConstants.OBJECT_ID,
+                                            LogFieldConstants.HOST,
+                                            LogFieldConstants.WLPUSERDIR,
+                                            LogFieldConstants.SERVERNAME,
+                                            LogFieldConstants.TYPE
     };
 
     public static String[] MESSAGE_NAMES1_1 = {
@@ -139,8 +142,19 @@ public class LogTraceData extends GenericData {
                                               LogFieldConstants.TYPE
     };
 
+    public static final short KEYS_JSON = 0;
+    public static final short KEYS_LOGSTASH = 1;
+
     private static NameAliases jsonLoggingNameAliasesMessages = new NameAliases(MESSAGE_NAMES1_1);
     private static NameAliases jsonLoggingNameAliasesTrace = new NameAliases(TRACE_NAMES1_1);
+
+    // Although we could use one var for this since renaming fields isn't possible yet for LogstashCollector, it makes more sense to do it this way for now
+    private static NameAliases jsonLoggingNameAliasesMessagesLogstash = new NameAliases(NAMES);
+    private static NameAliases jsonLoggingNameAliasesTraceLogstash = new NameAliases(NAMES);
+
+    // Both regular JSON logging fields and LogstashCollector field names
+    private static NameAliases[] nameAliasesMessages = { jsonLoggingNameAliasesMessages, jsonLoggingNameAliasesMessagesLogstash };
+    private static NameAliases[] nameAliasesTrace = { jsonLoggingNameAliasesTrace, jsonLoggingNameAliasesTraceLogstash };
 
     public static void newJsonLoggingNameAliasesMessage(Map<String, String> newAliases) {
         jsonLoggingNameAliasesMessages.newAliases(newAliases);
@@ -178,257 +192,141 @@ public class LogTraceData extends GenericData {
         return (KeyValuePairList) getPairs()[index];
     }
 
-    public void setDatetime(long l) {
-        setPair(0, l);
+    //@formatter:off
+    public void setDatetime(long l)                  { setPair(0, l);     }
+    public void setMessageId(String s)               { setPair(1, s);     }
+    public void setThreadId(int i)                   { setPair(2, i);     }
+    public void setModule(String s)                  { setPair(3, s);     }
+    public void setSeverity(String s)                { setPair(4, s);     }
+    public void setLoglevel(String s)                { setPair(5, s);     }
+    public void setMethodName(String s)              { setPair(6, s);     }
+    public void setClassName(String s)               { setPair(7, s);     }
+    public void setLevelValue(int i)                 { setPair(8, i);     }
+    public void setThreadName(String s)              { setPair(9, s);     }
+    public void setCorrelationId(String s)           { setPair(10, s);    }
+    public void setOrg(String s)                     { setPair(11, s);    }
+    public void setProduct(String s)                 { setPair(12, s);    }
+    public void setComponent(String s)               { setPair(13, s);    }
+    public void setSequence(String s)                { setPair(14, s);    }
+    public void setThrowable(String s)               { setPair(15, s);    }
+    public void setThrowableLocalized(String s)      { setPair(16, s);    }
+    public void setMessage(String s)                 { setPair(17, s);    }
+    public void setFormattedMsg(String s)            { setPair(18, s);    }
+    public void setExtensions(KeyValuePairList kvps) { setPair(19, kvps); }
+    public void setObjectId(int i)                   { setPair(20, i);    }
+    //@formatter:on
+
+    public static String getDatetimeKey(int format, boolean isMessageEvent) {
+        return isMessageEvent ? nameAliasesMessages[format].aliases[0] : nameAliasesTrace[format].aliases[0];
     }
 
-    public void setMessageId(String s) {
-        setPair(1, s);
+    public static String getMessageIdKey(int format, boolean isMessageEvent) {
+        return isMessageEvent ? nameAliasesMessages[format].aliases[1] : nameAliasesTrace[format].aliases[1];
     }
 
-    public void setThreadId(int i) {
-        setPair(2, i);
+    public static String getThreadIdKey(int format, boolean isMessageEvent) {
+        return isMessageEvent ? nameAliasesMessages[format].aliases[2] : nameAliasesTrace[format].aliases[2];
     }
 
-    public void setModule(String s) {
-        setPair(3, s);
+    public static String getModuleKey(int format, boolean isMessageEvent) {
+        return isMessageEvent ? nameAliasesMessages[format].aliases[3] : nameAliasesTrace[format].aliases[3];
     }
 
-    public void setSeverity(String s) {
-        setPair(4, s);
+    public String getSeverityKey(int format, boolean isMessageEvent) {
+        return isMessageEvent ? nameAliasesMessages[format].aliases[4] : nameAliasesTrace[format].aliases[4];
     }
 
-    public void setLoglevel(String s) {
-        setPair(5, s);
+    public static String getLoglevelKey(int format, boolean isMessageEvent) {
+        return isMessageEvent ? nameAliasesMessages[format].aliases[5] : nameAliasesTrace[format].aliases[5];
     }
 
-    public void setMethodName(String s) {
-        setPair(6, s);
+    public static String getMethodNameKey(int format, boolean isMessageEvent) {
+        return isMessageEvent ? nameAliasesMessages[format].aliases[6] : nameAliasesTrace[format].aliases[6];
     }
 
-    public void setClassName(String s) {
-        setPair(7, s);
+    public static String getClassNameKey(int format, boolean isMessageEvent) {
+        return isMessageEvent ? nameAliasesMessages[format].aliases[7] : nameAliasesTrace[format].aliases[7];
     }
 
-    public void setLevelValue(int i) {
-        setPair(8, i);
+    public static String getLevelValueKey(int format, boolean isMessageEvent) {
+        return isMessageEvent ? nameAliasesMessages[format].aliases[8] : nameAliasesTrace[format].aliases[8];
     }
 
-    public void setThreadName(String s) {
-        setPair(9, s);
+    public static String getThreadNameKey(int format, boolean isMessageEvent) {
+        return isMessageEvent ? nameAliasesMessages[format].aliases[9] : nameAliasesTrace[format].aliases[9];
     }
 
-    public void setCorrelationId(String s) {
-        setPair(10, s);
+    public static String getCorrelationIdKey(int format, boolean isMessageEvent) {
+        return isMessageEvent ? nameAliasesMessages[format].aliases[10] : nameAliasesTrace[format].aliases[10];
     }
 
-    public void setOrg(String s) {
-        setPair(11, s);
+    public static String getOrgKey(int format, boolean isMessageEvent) {
+        return isMessageEvent ? nameAliasesMessages[format].aliases[11] : nameAliasesTrace[format].aliases[11];
     }
 
-    public void setProduct(String s) {
-        setPair(12, s);
+    public static String getProductKey(int format, boolean isMessageEvent) {
+        return isMessageEvent ? nameAliasesMessages[format].aliases[12] : nameAliasesTrace[format].aliases[12];
     }
 
-    public void setComponent(String s) {
-        setPair(13, s);
+    public static String getComponentKey(int format, boolean isMessageEvent) {
+        return isMessageEvent ? nameAliasesMessages[format].aliases[13] : nameAliasesTrace[format].aliases[13];
     }
 
-    public void setSequence(String s) {
-        setPair(14, s);
+    public static String getSequenceKey(int format, boolean isMessageEvent) {
+        return isMessageEvent ? nameAliasesMessages[format].aliases[14] : nameAliasesTrace[format].aliases[14];
     }
 
-    public void setThrowable(String s) {
-        setPair(15, s);
+    public static String getThrowableKey(int format, boolean isMessageEvent) {
+        return isMessageEvent ? nameAliasesMessages[format].aliases[15] : nameAliasesTrace[format].aliases[15];
     }
 
-    public void setThrowableLocalized(String s) {
-        setPair(16, s);
+    public static String getThrowableLocalizedKey(int format, boolean isMessageEvent) {
+        return isMessageEvent ? nameAliasesMessages[format].aliases[16] : nameAliasesTrace[format].aliases[16];
     }
 
-    public void setMessage(String s) {
-        setPair(17, s);
+    public static String getMessageKey(int format, boolean isMessageEvent) {
+        return isMessageEvent ? nameAliasesMessages[format].aliases[17] : nameAliasesTrace[format].aliases[17];
     }
 
-    public void setFormattedMsg(String s) {
-        setPair(18, s);
+    public static String getFormattedMsgKey(int format, boolean isMessageEvent) {
+        return isMessageEvent ? nameAliasesMessages[format].aliases[18] : nameAliasesTrace[format].aliases[18];
     }
 
-    public void setExtensions(KeyValuePairList kvps) {
-        setPair(19, kvps);
+    public static String getExtensionsKey(int format, boolean isMessageEvent) {
+        return isMessageEvent ? nameAliasesMessages[format].aliases[19] : nameAliasesTrace[format].aliases[19];
     }
 
-    public void setObjectId(int i) {
-        setPair(20, i);
+    public static String getObjectIdKey(int format, boolean isMessageEvent) {
+        return isMessageEvent ? nameAliasesMessages[format].aliases[20] : nameAliasesTrace[format].aliases[20];
     }
 
-    public String getDatetimeKey() {
-        return NAMES[0];
+    public static String getHostKey(int format, boolean isMessageEvent) {
+        return isMessageEvent ? nameAliasesMessages[format].aliases[21] : nameAliasesTrace[format].aliases[21];
     }
 
-    public String getMessageIdKey() {
-        return NAMES[1];
+    public static String getUserDirKey(int format, boolean isMessageEvent) {
+        return isMessageEvent ? nameAliasesMessages[format].aliases[22] : nameAliasesTrace[format].aliases[22];
     }
 
-    public String getThreadIdKey() {
-        return NAMES[2];
+    public static String getServerNameKey(int format, boolean isMessageEvent) {
+        return isMessageEvent ? nameAliasesMessages[format].aliases[23] : nameAliasesTrace[format].aliases[23];
     }
 
-    public String getModuleKey() {
-        return NAMES[3];
+    public static String getTypeKey(int format, boolean isMessageEvent) {
+        return isMessageEvent ? nameAliasesMessages[format].aliases[24] : nameAliasesTrace[format].aliases[24];
     }
 
-    public String getSeverityKey() {
-        return NAMES[4];
-    }
+    public static String getExtensionNameKey(int format, boolean isMessageEvent, String extKey) {
+        ExtensionAliases tempExt = null;
+        if (isMessageEvent) {
+            tempExt = jsonLoggingNameAliasesMessages.extensionAliases;
+        } else {
+            tempExt = jsonLoggingNameAliasesTrace.extensionAliases;
+        }
+        return tempExt.getAlias(extKey);
 
-    public String getLoglevelKey() {
-        return NAMES[5];
     }
-
-    public String getMethodNameKey() {
-        return NAMES[6];
-    }
-
-    public String getClassNameKey() {
-        return NAMES[7];
-    }
-
-    public String getLevelValueKey() {
-        return NAMES[8];
-    }
-
-    public String getThreadNameKey() {
-        return NAMES[9];
-    }
-
-    public String getCorrelationIdKey() {
-        return NAMES[10];
-    }
-
-    public String getOrgKey() {
-        return NAMES[11];
-    }
-
-    public String getProductKey() {
-        return NAMES[12];
-    }
-
-    public String getComponentKey() {
-        return NAMES[13];
-    }
-
-    public String getSequenceKey() {
-        return NAMES[14];
-    }
-
-    public String getThrowableKey() {
-        return NAMES[15];
-    }
-
-    public String getThrowableLocalizedKey() {
-        return NAMES[16];
-    }
-
-    public String getMessageKey() {
-        return NAMES[17];
-    }
-
-    public String getFormattedMsgKey() {
-        return NAMES[18];
-    }
-
-    public String getExtensionsKey() {
-        return NAMES[19];
-    }
-
-    public String getObjectIdKey() {
-        return NAMES[20];
-    }
-
-    public String getDatetimeKey1_1() {
-        return NAMES1_1[0];
-    }
-
-    public String getMessageIdKey1_1() {
-        return NAMES1_1[1];
-    }
-
-    public String getThreadIdKey1_1() {
-        return NAMES1_1[2];
-    }
-
-    public String getModuleKey1_1() {
-        return NAMES1_1[3];
-    }
-
-    public String getSeverityKey1_1() {
-        return NAMES1_1[4];
-    }
-
-    public String getLoglevelKey1_1() {
-        return NAMES1_1[5];
-    }
-
-    public String getMethodNameKey1_1() {
-        return NAMES1_1[6];
-    }
-
-    public String getClassNameKey1_1() {
-        return NAMES1_1[7];
-    }
-
-    public String getLevelValueKey1_1() {
-        return NAMES1_1[8];
-    }
-
-    public String getThreadNameKey1_1() {
-        return NAMES1_1[9];
-    }
-
-    public String getCorrelationIdKey1_1() {
-        return NAMES1_1[10];
-    }
-
-    public String getOrgKey1_1() {
-        return NAMES1_1[11];
-    }
-
-    public String getProductKey1_1() {
-        return NAMES1_1[12];
-    }
-
-    public String getComponentKey1_1() {
-        return NAMES1_1[13];
-    }
-
-    public String getSequenceKey1_1() {
-        return NAMES1_1[14];
-    }
-
-    public String getThrowableKey1_1() {
-        return NAMES1_1[15];
-    }
-
-    public String getThrowableLocalizedKey1_1() {
-        return NAMES1_1[16];
-    }
-
-    public String getMessageKey1_1() {
-        return NAMES1_1[17];
-    }
-
-    public String getFormattedMsgKey1_1() {
-        return NAMES1_1[18];
-    }
-
-    public String getExtensionsKey1_1() {
-        return NAMES1_1[19];
-    }
-
-    public String getObjectIdKey1_1() {
-        return NAMES1_1[20];
-    }
+    // removed all the getXXXKey + getXXXKey1_1 methods.. i think they're not being used anymore?
 
     //name aliases
     public static String getDatetimeKeyJSON(boolean isMessageEvent) {
@@ -542,10 +440,8 @@ public class LogTraceData extends GenericData {
 
     }
 
-    public long getDatetime() {
-        return getLongValue(0);
-    }
-
+    //@formatter:off
+    public long getDatetime() { return getLongValue(0); }
     public String getMessageId() {
         String messageId = getStringValue(1);
         if (messageId == null || messageId.isEmpty()) {
@@ -558,53 +454,18 @@ public class LogTraceData extends GenericData {
         return messageId;
     }
 
-    public int getThreadId() {
-        return getIntValue(2);
-    }
-
-    public String getModule() {
-        return getStringValue(3);
-    }
-
-    public String getSeverity() {
-        return getStringValue(4);
-    }
-
-    public String getLoglevel() {
-        return getStringValue(5);
-    }
-
-    public String getMethodName() {
-        return getStringValue(6);
-    }
-
-    public String getClassName() {
-        return getStringValue(7);
-    }
-
-    public int getLevelValue() {
-        return getIntValue(8);
-    }
-
-    public String getThreadName() {
-        return getStringValue(9);
-    }
-
-    public String getCorrelationId() {
-        return getStringValue(10);
-    }
-
-    public String getOrg() {
-        return getStringValue(11);
-    }
-
-    public String getProduct() {
-        return getStringValue(12);
-    }
-
-    public String getComponent() {
-        return getStringValue(13);
-    }
+    public int getThreadId()         { return getIntValue(2);     }
+    public String getModule()        { return getStringValue(3);  }
+    public String getSeverity()      { return getStringValue(4);  }
+    public String getLoglevel()      { return getStringValue(5);  }
+    public String getMethodName()    { return getStringValue(6);  }
+    public String getClassName()     { return getStringValue(7);  }
+    public int getLevelValue()       { return getIntValue(8);     }
+    public String getThreadName()    { return getStringValue(9);  }
+    public String getCorrelationId() { return getStringValue(10); }
+    public String getOrg()           { return getStringValue(11); }
+    public String getProduct()       { return getStringValue(12); }
+    public String getComponent()     { return getStringValue(13); }
 
     public String getSequence() {
         String sequenceId = getStringValue(14);
@@ -615,29 +476,13 @@ public class LogTraceData extends GenericData {
         return sequenceId;
     }
 
-    public String getThrowable() {
-        return getStringValue(15);
-    }
-
-    public String getThrowableLocalized() {
-        return getStringValue(16);
-    }
-
-    public String getMessage() {
-        return getStringValue(17);
-    }
-
-    public String getFormattedMsg() {
-        return getStringValue(18);
-    }
-
-    public KeyValuePairList getExtensions() {
-        return getValues(19);
-    }
-
-    public int getObjectId() {
-        return getIntValue(20);
-    }
+    public String getThrowable()            { return getStringValue(15); }
+    public String getThrowableLocalized()   { return getStringValue(16); }
+    public String getMessage()              { return getStringValue(17); }
+    public String getFormattedMsg()         { return getStringValue(18); }
+    public KeyValuePairList getExtensions() { return getValues(19);      }
+    public int getObjectId()                { return getIntValue(20);    }
+    //@formatter:on
 
     public void setRawSequenceNumber(long l) {
         rawSequenceNumber = l;
