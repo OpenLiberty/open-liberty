@@ -14,13 +14,14 @@ javac.target: 1.8
 
 #Private-Package: com.ibm.ws.example.internal
 
-Service-Component: \
-  com.ibm.ws.lra;\
-    implementation:=com.ibm.ws.lra.SampleComponent;\
-    configuration-policy:=ignore;\
-    properties:="service.vendor=IBM"
+# This is how a component is declared in bnd (i.e. not through annotations)
+#Service-Component: \
+#  com.ibm.ws.lra;\
+#    implementation:=com.ibm.ws.lra.SampleComponent;\
+#    configuration-policy:=ignore;\
+#    properties:="service.vendor=IBM"
     
--dsannotations: com.ibm.ws.lra.SampleComponent2
+-dsannotations: com.ibm.ws.lra.LraFilterComponent
     
 -buildpath: \
 	com.ibm.ws.org.jboss.narayana.rts;version=latest,\
