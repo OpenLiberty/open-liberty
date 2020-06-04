@@ -33,9 +33,10 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ImportHandler {
 
-    private static final boolean IS_SECURITY_ENABLED = (System.getSecurityManager() != null);
-
     private static final Map<String,Set<String>> standardPackages = new HashMap<>();
+
+    private static final boolean IS_SECURITY_ENABLED =
+    (System.getSecurityManager() != null);
 
     static {
         // Servlet 5.0
@@ -456,18 +457,22 @@ public class ImportHandler {
              * for the case where the class does exist is a lot less than the
              * overhead we save by not calling loadClass().
              */
+            Boolean isResourceNull;
             if (IS_SECURITY_ENABLED) {
-                // Webapps don't have read permission for JAVA_HOME (and
-                // possibly other sources of classes). Only need to know if the
-                // class exists at this point. Class loading occurs with
-                // standard SecurityManager policy next.
-                if (!AccessController.doPrivileged(new PrivilegedResourceExists(cl, path)).booleanValue()) {
-                    return null;
-                }
+                isResourceNull = AccessController.doPrivileged(
+                    new PrivilegedAction<Boolean>() {
+
+                    @Override
+                    public Boolean run() {
+                        return cl.getResource(path) == null;
+                    }
+                    
+                });
             } else {
-                if (cl.getResource(path) == null) {
-                    return null;
-                }
+                isResourceNull =  cl.getResource(path) == null;
+            }
+            if (isResourceNull) {
+                return null;
             }
         } catch (ClassCircularityError cce) {
             // May happen under a security manager. Ignore it and try loading
@@ -503,26 +508,4 @@ public class ImportHandler {
      */
     private static class NotFound {
     }
-
-
-    private static class PrivilegedResourceExists implements PrivilegedAction<Boolean> {
-
-        private final ClassLoader cl;
-        private final String name;
-
-        public PrivilegedResourceExists(ClassLoader cl, String name) {
-            this.cl = cl;
-            this.name = name;
-        }
-
-        @Override
-        public Boolean run() {
-            if (cl.getResource(name) == null) {
-                return Boolean.FALSE;
-            } else {
-                return Boolean.TRUE;
-            }
-        }
-    }
 }
-
