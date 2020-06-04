@@ -143,9 +143,9 @@ public class MetricRecorder30Impl implements MetricRecorder {
 
             if (fallbackPolicy != null) {
                 // If there's a fallback policy we need four metrics to cover the combinations of
-                // fallbackUsed = [true|false] and result = [valueReturned|exceptionThrown]
-                Tag withFallbackTag = new Tag("fallbackUsed", "true");
-                Tag withoutFallbackTag = new Tag("fallbackUsed", "false");
+                // fallback = [applied|notApplied] and result = [valueReturned|exceptionThrown]
+                Tag withFallbackTag = new Tag("fallback", "applied");
+                Tag withoutFallbackTag = new Tag("fallback", "notApplied");
 
                 invocationSuccessCounter.put(NO_FALLBACK, registry.counter(invocationsMetadata, methodTag, valueReturnedTag, withoutFallbackTag));
                 invocationSuccessCounter.put(WITH_FALLBACK, registry.counter(invocationsMetadata, methodTag, valueReturnedTag, withFallbackTag));
@@ -154,8 +154,8 @@ public class MetricRecorder30Impl implements MetricRecorder {
                 invocationFailedCounter.put(WITH_FALLBACK, registry.counter(invocationsMetadata, methodTag, exceptionThrownTag, withFallbackTag));
             } else {
                 // If there's no fallback, then we only need two metrics to cover the combinations of
-                // fallbackUsed = [none] and result = [valueReturned|exceptionThrown]
-                Tag noFallbackTag = new Tag("fallbackUsed", "none");
+                // fallback = [notDefined] and result = [valueReturned|exceptionThrown]
+                Tag noFallbackTag = new Tag("fallback", "notDefined");
 
                 Counter invocationSuccess = registry.counter(invocationsMetadata, methodTag, valueReturnedTag, noFallbackTag);
                 invocationSuccessCounter.put(NO_FALLBACK, invocationSuccess);
