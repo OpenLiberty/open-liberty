@@ -636,8 +636,7 @@ public final class JAXRSUtils {
         if (addAllow) {
             String messagePath = HttpUtils.getPathToMatch(msg, true); //Liberty change            
             Map<ClassResourceInfo, MultivaluedMap<String, String>> matchedResources = JAXRSUtils.selectResourceClass(cris, messagePath, msg); //Liberty change
-            Set<String> allowedMethods = new HashSet<String>();
-            
+            Set<String> allowedMethods = new HashSet<String>();            
             for (ClassResourceInfo cri : cris) {
                 //Liberty Change start 
                 MultivaluedMap<String, String> values =  matchedResources.get(cri);

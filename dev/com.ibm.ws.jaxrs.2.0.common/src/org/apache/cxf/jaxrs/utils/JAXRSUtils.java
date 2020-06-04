@@ -545,7 +545,7 @@ public final class JAXRSUtils {
             createResponse(getRootResources(message), message, errorMsg.toString(), status, methodMatched == 0);
         throw ExceptionUtils.toHttpException(null, response);
 
-    }    
+    }
 
     public static Level getExceptionLogLevel(Message message, Class<? extends WebApplicationException> exClass) {
         Level logLevel = null;
@@ -631,14 +631,12 @@ public final class JAXRSUtils {
     }
 
     public static Response createResponse(List<ClassResourceInfo> cris, Message msg,
-                                          String responseMessage, int status, boolean addAllow) {
-        
+                                          String responseMessage, int status, boolean addAllow) {        
         ResponseBuilder rb = toResponseBuilder(status);
         if (addAllow) {
             String messagePath = HttpUtils.getPathToMatch(msg, true); //Liberty change            
             Map<ClassResourceInfo, MultivaluedMap<String, String>> matchedResources = JAXRSUtils.selectResourceClass(cris, messagePath, msg); //Liberty change
-            Set<String> allowedMethods = new HashSet<String>();
-            
+            Set<String> allowedMethods = new HashSet<String>();            
             for (ClassResourceInfo cri : cris) {
                 //Liberty Change start 
                 MultivaluedMap<String, String> values =  matchedResources.get(cri);
@@ -1984,30 +1982,6 @@ public final class JAXRSUtils {
         final byte[] copiedBytes = baos.toByteArray();
         m.setContent(InputStream.class, new ByteArrayInputStream(copiedBytes));
         return new ByteArrayInputStream(copiedBytes);
-    }
-    
-    private static boolean isEmpty(String s) {
-        return s == null || s.length() == 0;
-    }
-
-
-    private static int countMatches(String text, String str) {
-        if (isEmpty(text) || isEmpty(str)) {
-                return 0;
-        }
-
-        int index = 0, count = 0;
-        while (true) {
-                index = text.indexOf(str, index);
-                if (index != -1) {
-                        count ++;
-                        index += str.length();
-                } else {
-                        break;
-                }
-        }
-
-        return count;
     }
     // Liberty change end
 }
