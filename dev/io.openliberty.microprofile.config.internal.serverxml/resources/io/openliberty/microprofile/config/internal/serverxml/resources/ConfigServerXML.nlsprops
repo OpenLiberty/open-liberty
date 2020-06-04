@@ -33,15 +33,15 @@ no.such.element.CWMCG0300E=CWMCG0300E: The {0} property was not found in the con
 no.such.element.CWMCG0300E.explanation=The requested property did not exist in any of the configured Config Sources.
 no.such.element.CWMCG0300E.useraction=Add the property to one of the existing Config Sources, or add a Config Source that contains the property.
 
-failed.to.schedule.cache.invalidation.CWMCG0301E=CWMCG0301E: The MicroProfile Config cache invalidation cannot be scheduled. The exception is {0}
-failed.to.schedule.cache.invalidation.CWMCG0301E.explanation=Changes in MicroProfile Config may not be reflected in the application.
+failed.to.schedule.cache.invalidation.CWMCG0301E=CWMCG0301E: The MicroProfile Config cache invalidation cannot be scheduled. The exception is {0}.
+failed.to.schedule.cache.invalidation.CWMCG0301E.explanation=Changes in MicroProfile Config might not be reflected in the application
 failed.to.schedule.cache.invalidation.CWMCG0301E.useraction=Review the server message.log and FFDC logs to identify the problem.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config 2.0 error message
 #-----------------------------------------------------------------------------------------------------------------------------
 
-# The following Config API error has occurred: {0}.
+# The following Config API error occurred: {0}.
 temporary.CWMCG9996E=CWMCG9996E: The following Config API error has occurred: {0}.
-temporary.CWMCG9996E.explanation=A Config API error has occurred that prevents normal operation.
+temporary.CWMCG9996E.explanation=A Config API error occurred that prevents normal operation.
 temporary.CWMCG9996E.useraction=Review the server message.log file and FFDC logs to identify the problem.

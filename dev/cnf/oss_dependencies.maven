@@ -130,8 +130,8 @@ io.smallrye:smallrye-graphql-client-api:1.0.2
 io.smallrye:smallrye-graphql-schema-builder:1.0.2
 io.smallrye:smallrye-graphql-schema-model:1.0.2
 io.smallrye:smallrye-graphql-servlet:1.0.2
-io.smallrye.config:smallrye-config:1.8.1-SNAPSHOT
-io.smallrye.config:smallrye-config-common:1.8.1-SNAPSHOT
+io.smallrye.config:smallrye-config:1.8.0
+io.smallrye.config:smallrye-config-common:1.8.0
 io.smallrye.common:smallrye-common-annotation:1.0.2
 io.smallrye.common:smallrye-common-expression:1.0.2
 io.smallrye.common:smallrye-common-constraint:1.0.2
@@ -364,7 +364,6 @@ org.eclipse.microprofile.config:microprofile-config-api:1.1
 org.eclipse.microprofile.config:microprofile-config-api:1.2.1
 org.eclipse.microprofile.config:microprofile-config-api:1.3
 org.eclipse.microprofile.config:microprofile-config-api:1.4
-org.eclipse.microprofile.config:microprofile-config-api:2.0-SNAPSHOT
 org.eclipse.microprofile.context-propagation:microprofile-context-propagation-api:1.0
 org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-api:1.0
 org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-api:1.1

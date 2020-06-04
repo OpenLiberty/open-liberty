@@ -28,7 +28,7 @@ public class ServerXMLDefaultVariableConfigSource extends ServerXMLVariableConfi
     private static final TraceComponent tc = Tr.register(ServerXMLDefaultVariableConfigSource.class);
 
     public ServerXMLDefaultVariableConfigSource() {
-        super(Config13Constants.SERVER_XML_DEFAULT_VARIABLE_ORDINAL, Tr.formatMessage(tc, "server.xml.default.variables.config.source"));
+        super(ServerXMLConstants.SERVER_XML_DEFAULT_VARIABLE_ORDINAL, Tr.formatMessage(tc, "server.xml.default.variables.config.source"));
     }
 
     @Override

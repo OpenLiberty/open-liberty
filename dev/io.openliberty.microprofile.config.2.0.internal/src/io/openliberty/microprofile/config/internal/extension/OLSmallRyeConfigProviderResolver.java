@@ -19,12 +19,11 @@ import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
-import io.smallrye.config.OLSmallRyeConfigBuilder;
 import io.smallrye.config.SmallRyeConfigBuilder;
 import io.smallrye.config.SmallRyeConfigProviderResolver;
 
 @Component(service = ConfigProviderResolver.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" }, immediate = true)
-public class OLSmallRyeConfigProviderResolver extends SmallRyeConfigProviderResolver { // implements ApplicationStateListener {
+public class OLSmallRyeConfigProviderResolver extends SmallRyeConfigProviderResolver {
     /**
      * Activate a context and set the instance
      *
@@ -43,6 +42,11 @@ public class OLSmallRyeConfigProviderResolver extends SmallRyeConfigProviderReso
         ConfigProviderResolver.setInstance(null);
     }
 
+    /**
+     * The following method is a temporary solution to a Security manager issue with the SmallRye Config code.
+     *
+     * When the new version of SmallRye Config is uploaded to Maven Central, resolving the issue, this method will be removed.
+     */
     @Override
     public SmallRyeConfigBuilder getBuilder() {
         SmallRyeConfigBuilder builder = null;

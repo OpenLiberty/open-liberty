@@ -11,9 +11,9 @@
 package io.openliberty.microprofile.config.internal.serverxml;
 
 /**
- * Constants for Config 1.3
+ * Constants for ServerXML Config sources
  */
-public class Config13Constants {
+public class ServerXMLConstants {
 
     public static final int APP_PROPERTY_ORDINAL = 600;
     public static final int SERVER_XML_VARIABLE_ORDINAL = 500;

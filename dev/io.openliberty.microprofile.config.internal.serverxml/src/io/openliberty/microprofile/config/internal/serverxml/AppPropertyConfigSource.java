@@ -63,7 +63,7 @@ public class AppPropertyConfigSource extends InternalConfigSource implements Con
     private String applicationPID;
 
     public AppPropertyConfigSource() {
-        super(Config13Constants.APP_PROPERTY_ORDINAL, Tr.formatMessage(tc, "server.xml.appproperties.config.source"));
+        super(ServerXMLConstants.APP_PROPERTY_ORDINAL, Tr.formatMessage(tc, "server.xml.appproperties.config.source"));
         this.configAction = new ConfigAction();
     }
 

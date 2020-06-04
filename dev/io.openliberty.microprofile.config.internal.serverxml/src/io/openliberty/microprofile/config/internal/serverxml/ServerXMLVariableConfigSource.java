@@ -39,7 +39,7 @@ public class ServerXMLVariableConfigSource extends InternalConfigSource implemen
     private ConfigVariables configVariables;
 
     public ServerXMLVariableConfigSource() {
-        this(Config13Constants.SERVER_XML_VARIABLE_ORDINAL, Tr.formatMessage(tc, "server.xml.variables.config.source"));
+        this(ServerXMLConstants.SERVER_XML_VARIABLE_ORDINAL, Tr.formatMessage(tc, "server.xml.variables.config.source"));
     }
 
     protected ServerXMLVariableConfigSource(int ordinal, String id) {
