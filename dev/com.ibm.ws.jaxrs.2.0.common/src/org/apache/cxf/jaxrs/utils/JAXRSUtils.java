@@ -631,7 +631,7 @@ public final class JAXRSUtils {
     }
 
     public static Response createResponse(List<ClassResourceInfo> cris, Message msg,
-                                          String responseMessage, int status, boolean addAllow) {        
+                                          String responseMessage, int status, boolean addAllow) {
         ResponseBuilder rb = toResponseBuilder(status);
         if (addAllow) {
             String messagePath = HttpUtils.getPathToMatch(msg, true); //Liberty change            

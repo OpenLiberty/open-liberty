@@ -669,7 +669,7 @@ public final class JAXRSUtils {
                 rb.header("Allow", "HEAD");
             }
         }
-        if (msg != null && MessageUtils.isTrue(msg.getContextualProperty(REPORT_FAULT_MESSAGE_PROPERTY))) {
+        if (msg != null && MessageUtils.getContextualBoolean(msg, REPORT_FAULT_MESSAGE_PROPERTY)) {
             rb.type(MediaType.TEXT_PLAIN_TYPE).entity(responseMessage);
         }
         return rb.build();
