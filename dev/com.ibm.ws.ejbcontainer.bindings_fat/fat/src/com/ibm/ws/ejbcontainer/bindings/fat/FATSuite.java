@@ -19,6 +19,7 @@ import com.ibm.ws.ejbcontainer.bindings.fat.tests.BndErrorTest;
 import com.ibm.ws.ejbcontainer.bindings.fat.tests.ComponentIDTest;
 import com.ibm.ws.ejbcontainer.bindings.fat.tests.CustomBindingsTest;
 import com.ibm.ws.ejbcontainer.bindings.fat.tests.DefaultBindingsTest;
+import com.ibm.ws.ejbcontainer.bindings.fat.tests.DisableShortBndTest;
 import com.ibm.ws.ejbcontainer.bindings.fat.tests.EJBinWARBindingsTest;
 import com.ibm.ws.ejbcontainer.bindings.fat.tests.HomeBindingNameTest;
 import com.ibm.ws.ejbcontainer.bindings.fat.tests.JNDINameTest;
@@ -32,6 +33,7 @@ import com.ibm.ws.ejbcontainer.bindings.fat.tests.SimpleBindingNameTest;
                 ComponentIDTest.class,
                 CustomBindingsTest.class,
                 DefaultBindingsTest.class,
+                DisableShortBndTest.class,
                 EJBinWARBindingsTest.class,
                 HomeBindingNameTest.class,
                 JNDINameTest.class,
