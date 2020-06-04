@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,6 +40,7 @@ import org.osgi.service.component.annotations.Reference;
 import com.ibm.ejs.util.dopriv.SetContextClassLoaderPrivileged;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.beanvalidation.AbstractBeanValidation.ClassLoaderTuple;
 import com.ibm.ws.beanvalidation.service.Validation20ClassLoader;
 import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
@@ -232,17 +233,5 @@ public class LibertyHibernateValidatorExtension implements Extension, WebSphereC
 
     private ClassLoader createTCCL(ClassLoader parentCL) {
         return AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> getClassLoadingService().createThreadContextClassLoader(parentCL));
-    }
-
-    private static class ClassLoaderTuple {
-        ClassLoader classLoader;
-        boolean wasCreatedViaClassLoadingService;
-
-        static ClassLoaderTuple of(ClassLoader classLoader, boolean wasCreatedViaClassLoadingService) {
-            ClassLoaderTuple tuple = new ClassLoaderTuple();
-            tuple.classLoader = classLoader;
-            tuple.wasCreatedViaClassLoadingService = wasCreatedViaClassLoadingService;
-            return tuple;
-        }
     }
 }

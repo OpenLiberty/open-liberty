@@ -19,6 +19,7 @@ Bundle-Description: Bean Validation Container; version=${bVersion}
 WS-TraceGroup: BeanValidation
 
 Export-Package: \
+  com.ibm.ws.beanvalidation,\
   com.ibm.ws.beanvalidation.service;provide:=true, \
   com.ibm.ws.beanvalidation.config,\
   com.ibm.ws.beanvalidation.accessor
