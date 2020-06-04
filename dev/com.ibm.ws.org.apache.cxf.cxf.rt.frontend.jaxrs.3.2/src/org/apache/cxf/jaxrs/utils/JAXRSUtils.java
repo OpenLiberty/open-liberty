@@ -2046,28 +2046,5 @@ public final class JAXRSUtils {
         m.setContent(InputStream.class, new ByteArrayInputStream(copiedBytes));
         return new ByteArrayInputStream(copiedBytes);
     }
-    
-    private static boolean isEmpty(String s) {
-        return s == null || s.length() == 0;
-    }
-
-    private static int countMatches(String text, String str) {
-        if (isEmpty(text) || isEmpty(str)) {
-                return 0;
-        }
-
-        int index = 0, count = 0;
-        while (true) {
-                index = text.indexOf(str, index);
-                if (index != -1) {
-                        count ++;
-                        index += str.length();
-                } else {
-                        break;
-                }
-        }
-
-        return count;
-    }
     // Liberty change end
 }
