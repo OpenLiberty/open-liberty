@@ -447,42 +447,37 @@ public final class JAXRSUtils {
 
             for (OperationResourceInfo ori : resource.getMethodDispatcher().getOperationResourceInfos()) {
                 boolean added = false;
-
-                URITemplate uriTemplate = ori.getURITemplate();
-                MultivaluedMap<String, String> map = new MetadataMap<>(values);
-                if (uriTemplate != null && uriTemplate.match(path, map)) {
-                    String finalGroup = map.getFirst(URITemplate.FINAL_MATCH_GROUP);
-                    boolean finalPath = StringUtils.isEmpty(finalGroup) || PATH_SEGMENT_SEP.equals(finalGroup);
-
-                    if (ori.isSubResourceLocator()) {
-                        candidateList.put(ori, map);
-                        if (finalPath) {
-                            if (finalPathSubresources == null) {
-                                finalPathSubresources = new LinkedList<>();
-                            }
-                            finalPathSubresources.add(ori);
+                MultivaluedMap<String, String> map = new MetadataMap<String, String>(values);
+                boolean finalPath = isFinalPath(ori,values);  // Liberty change
+                if (ori.isSubResourceLocator()) {
+                    candidateList.put(ori, map);
+                    if (finalPath) {
+                        if (finalPathSubresources == null) {
+                            finalPathSubresources = new LinkedList<>();
                         }
-                        added = true;
-                    } else if (finalPath) {
-                        pathMatched++;
-                        if (matchHttpMethod(ori.getHttpMethod(), httpMethod)) {
-                            methodMatched++;
-                            //CHECKSTYLE:OFF
-                            if (getMethod || matchConsumeTypes(requestType, ori)) {
-                                consumeMatched++;
-                                for (MediaType acceptType : acceptContentTypes) {
-                                    if (matchProduceTypes(acceptType, ori)) {
-                                        candidateList.put(ori, map);
-                                        added = true;
-                                        resourceMethodsAdded = true;
-                                        break;
-                                    }
+                        finalPathSubresources.add(ori);
+                    }
+                    added = true;
+                } else if (finalPath) {
+                    pathMatched++;
+                    if (matchHttpMethod(ori.getHttpMethod(), httpMethod)) {
+                        methodMatched++;
+                        //CHECKSTYLE:OFF
+                        if (getMethod || matchConsumeTypes(requestType, ori)) {
+                            consumeMatched++;
+                            for (MediaType acceptType : acceptContentTypes) {
+                                if (matchProduceTypes(acceptType, ori)) {
+                                    candidateList.put(ori, map);
+                                    added = true;
+                                    resourceMethodsAdded = true;
+                                    break;
                                 }
                             }
-                            //CHECKSTYLE:ON
                         }
+                        //CHECKSTYLE:ON
                     }
                 }
+
                 if (isFineLevelLoggable) {
                     if (added) {
                         Tr.debug(tc, new org.apache.cxf.common.i18n.Message("OPER_SELECTED_POSSIBLY", BUNDLE, ori.getMethodToInvoke().getName()).toString());
@@ -636,37 +631,32 @@ public final class JAXRSUtils {
 
     public static Response createResponse(List<ClassResourceInfo> cris, Message msg,
                                           String responseMessage, int status, boolean addAllow) {
-        String messagePath = HttpUtils.getPathToMatch(msg, true);     // Liberty Change
+        
         ResponseBuilder rb = toResponseBuilder(status);
         if (addAllow) {
-            Set<String> allowedMethods = new HashSet<>();
+            String messagePath = HttpUtils.getPathToMatch(msg, true); //Liberty change            
+            Map<ClassResourceInfo, MultivaluedMap<String, String>> matchedResources = JAXRSUtils.selectResourceClass(cris, messagePath, msg); //Liberty change
+            Set<String> allowedMethods = new HashSet<String>();
+            
             for (ClassResourceInfo cri : cris) {
-                //Liberty Change start
-                String criPath = cri.getPath().value();
+                //Liberty Change start 
+                MultivaluedMap<String, String> values =  matchedResources.get(cri);
+                if (values == null) {
+                    break;
+                }
                 
                 for (OperationResourceInfo ori : cri.getMethodDispatcher().getOperationResourceInfos()) {                    
-                    String oriPath = ori.getURITemplate().getValue();
-                    String fullPath = criPath + oriPath;                    
-                    String messagePathMatch = HttpUtils.getPathToMatch(messagePath,fullPath,true);
-                    String fullPathMatch = HttpUtils.getPathToMatch(fullPath,messagePath,true);
-                    String httpMethod = ori.getHttpMethod(); 
-
-                    if ("/".equalsIgnoreCase(messagePathMatch)) {                       
-                        allowedMethods.add(httpMethod);
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Adding Allow Header with equal paths " + httpMethod);
-                        }
-                    } else if (countMatches(messagePathMatch,"/") == countMatches(fullPathMatch,"/") 
-                                    && messagePathMatch.startsWith(criPath)
-                                    && fullPathMatch.startsWith(criPath)  ) {                       
-                        allowedMethods.add(httpMethod);
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Adding Allow Header with equal path param " + httpMethod);
+                    String httpMethod = ori.getHttpMethod();                        
+                    if (isFinalPath(ori,values)) {                        
+                        if (matchHttpMethod(httpMethod, "*")) {                                
+                            allowedMethods.add(httpMethod);
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "Adding Allow Header " + httpMethod);
+                            }                                
                         }
                     }
                 }
-                //Liberty Change start
-
+                //Liberty Change end
             }
 
             for (String m : allowedMethods) {
@@ -680,17 +670,36 @@ public final class JAXRSUtils {
                 rb.header("Allow", "HEAD");
             }
         }
-        if (msg != null && MessageUtils.getContextualBoolean(msg, REPORT_FAULT_MESSAGE_PROPERTY)) {
+        if (msg != null && MessageUtils.isTrue(msg.getContextualProperty(REPORT_FAULT_MESSAGE_PROPERTY))) {
             rb.type(MediaType.TEXT_PLAIN_TYPE).entity(responseMessage);
         }
         return rb.build();
     }
 
     private static boolean matchHttpMethod(String expectedMethod, String httpMethod) {
-        return expectedMethod.equalsIgnoreCase(httpMethod)
-               || headMethodPossible(expectedMethod, httpMethod)
-               || expectedMethod.equals(DefaultMethod.class.getSimpleName());
-    }
+        //Liberty Change start 
+          if ("*".equals(httpMethod)) {
+              return true;
+          }
+        //Liberty Change end 
+          return expectedMethod.equalsIgnoreCase(httpMethod)
+                 || headMethodPossible(expectedMethod, httpMethod)
+                 || expectedMethod.equals(DefaultMethod.class.getSimpleName());
+      }
+
+    //Liberty Change start 
+      private static boolean isFinalPath(OperationResourceInfo ori, MultivaluedMap<String, String> values) {
+          boolean finalPath = false;
+          String path = getCurrentPath(values);
+          URITemplate uriTemplate = ori.getURITemplate();
+          MultivaluedMap<String, String> map = new MetadataMap<String, String>(values);
+          if (uriTemplate != null && uriTemplate.match(path, map)) {
+              String finalGroup = map.getFirst(URITemplate.FINAL_MATCH_GROUP);
+              finalPath = StringUtils.isEmpty(finalGroup) || PATH_SEGMENT_SEP.equals(finalGroup);
+          }
+          return finalPath;
+      }
+    //Liberty Change end 
 
     public static boolean headMethodPossible(String expectedMethod, String httpMethod) {
         return HttpMethod.HEAD.equalsIgnoreCase(httpMethod) && HttpMethod.GET.equals(expectedMethod);

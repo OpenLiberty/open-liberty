@@ -80,7 +80,7 @@ public class OptionsTestServlet extends FATServlet {
 
         Response response = target(req, "/options/options/test/1").request().options();
         assertEquals(200, response.getStatus());
-        System.out.println("testOptions Allowed headers are : " + response.getHeaderString("Allow"));
+        System.out.println("testOptions3 Allowed headers are : " + response.getHeaderString("Allow"));
         assertTrue(response.getHeaderString("Allow").contains("GET"));
         assertTrue(response.getHeaderString("Allow").contains("PUT"));
         assertFalse(response.getHeaderString("Allow").contains("POST"));
@@ -96,7 +96,7 @@ public class OptionsTestServlet extends FATServlet {
 
         Response response = target(req, "/options/options/test/three/1/2/3").request().options();
         assertEquals(200, response.getStatus());
-        System.out.println("testOptions Allowed headers are : " + response.getHeaderString("Allow"));
+        System.out.println("testOptions4 Allowed headers are : " + response.getHeaderString("Allow"));
         assertTrue(response.getHeaderString("Allow").contains("GET"));
         assertFalse(response.getHeaderString("Allow").contains("PUT"));
         assertFalse(response.getHeaderString("Allow").contains("POST"));
@@ -112,7 +112,7 @@ public class OptionsTestServlet extends FATServlet {
 
         Response response = target(req, "/options/options/test3/all/1").request().options();
         assertEquals(200, response.getStatus());
-        System.out.println("testOptions Allowed headers are : " + response.getHeaderString("Allow"));
+        System.out.println("testOptions5 Allowed headers are : " + response.getHeaderString("Allow"));
         assertTrue(response.getHeaderString("Allow").contains("GET"));
         assertTrue(response.getHeaderString("Allow").contains("PUT"));
         assertTrue(response.getHeaderString("Allow").contains("POST"));
