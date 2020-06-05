@@ -447,34 +447,40 @@ public final class JAXRSUtils {
 
             for (OperationResourceInfo ori : resource.getMethodDispatcher().getOperationResourceInfos()) {
                 boolean added = false;
+                
+                URITemplate uriTemplate = ori.getURITemplate();
                 MultivaluedMap<String, String> map = new MetadataMap<String, String>(values);
-                boolean finalPath = isFinalPath(ori,values);  // Liberty change
-                if (ori.isSubResourceLocator()) {
-                    candidateList.put(ori, map);
-                    if (finalPath) {
-                        if (finalPathSubresources == null) {
-                            finalPathSubresources = new LinkedList<>();
+                if (uriTemplate != null && uriTemplate.match(path, map)) { 
+                    String finalGroup = map.getFirst(URITemplate.FINAL_MATCH_GROUP);
+                    boolean finalPath = StringUtils.isEmpty(finalGroup) || PATH_SEGMENT_SEP.equals(finalGroup);
+                    
+                    if (ori.isSubResourceLocator()) {
+                        candidateList.put(ori, map);
+                        if (finalPath) {
+                            if (finalPathSubresources == null) {
+                                finalPathSubresources = new LinkedList<>();
+                            }
+                            finalPathSubresources.add(ori);
                         }
-                        finalPathSubresources.add(ori);
-                    }
-                    added = true;
-                } else if (finalPath) {
-                    pathMatched++;
-                    if (matchHttpMethod(ori.getHttpMethod(), httpMethod)) {
-                        methodMatched++;
-                        //CHECKSTYLE:OFF
-                        if (getMethod || matchConsumeTypes(requestType, ori)) {
-                            consumeMatched++;
-                            for (MediaType acceptType : acceptContentTypes) {
-                                if (matchProduceTypes(acceptType, ori)) {
-                                    candidateList.put(ori, map);
-                                    added = true;
-                                    resourceMethodsAdded = true;
-                                    break;
+                        added = true;
+                    } else if (finalPath) {
+                        pathMatched++;
+                        if (matchHttpMethod(ori.getHttpMethod(), httpMethod)) {
+                            methodMatched++;
+                            //CHECKSTYLE:OFF
+                            if (getMethod || matchConsumeTypes(requestType, ori)) {
+                                consumeMatched++;
+                                for (MediaType acceptType : acceptContentTypes) {
+                                    if (matchProduceTypes(acceptType, ori)) {
+                                        candidateList.put(ori, map);
+                                        added = true;
+                                        resourceMethodsAdded = true;
+                                        break;
+                                    }
                                 }
                             }
+                            //CHECKSTYLE:ON
                         }
-                        //CHECKSTYLE:ON
                     }
                 }
 
