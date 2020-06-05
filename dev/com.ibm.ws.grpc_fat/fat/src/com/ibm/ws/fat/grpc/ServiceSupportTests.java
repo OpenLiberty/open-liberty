@@ -11,12 +11,13 @@
 
 package com.ibm.ws.fat.grpc;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -29,6 +30,7 @@ import com.ibm.ws.grpc.fat.beer.service.BeerResponse;
 import com.ibm.ws.grpc.fat.beer.service.BeerServiceGrpc;
 import com.ibm.ws.grpc.fat.beer.service.BeerServiceGrpc.BeerServiceBlockingStub;
 
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -37,6 +39,8 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.examples.helloworld.GreeterGrpc;
 import io.grpc.examples.helloworld.GreeterGrpc.GreeterBlockingStub;
+import io.grpc.examples.helloworld.HelloReply;
+import io.grpc.examples.helloworld.HelloRequest;
 
 //Beer newBeer1 = new Beer("Citraquenchl","Heist",NEWENGLANDIPA, 4.3);
 //Beer newBeer2 = new Beer("Snozzberry","Green Man Brewery",AMERICANWILDALE, 4.2);
@@ -51,32 +55,28 @@ public class ServiceSupportTests extends FATServletClient {
     protected static final Class<?> c = ServiceSupportTests.class;
     private static final long serialVersionUID = 1L;
 
-    ManagedChannel beerChannel;
+    private static final Logger LOG = Logger.getLogger(c.getName());
+
+    public static final int APP_STARTUP_TIMEOUT = 120 * 1000; // 120 seconds
+
+    ManagedChannel beerChannel, worldChannel;
     private BeerServiceBlockingStub beerServiceBlockingStub;
-    //private final BeerServiceStub asyncStub;
-    ManagedChannel worldChannel;
     private GreeterBlockingStub worldServiceBlockingStub;
 
     @Rule
     public TestName name = new TestName();
 
-    @Server("BeerServer")
-    public static LibertyServer beerServer;
+    @Server("GrpcServer")
+    public static LibertyServer grpcServer;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        // add all classes from com.ibm.ws.grpc.fat.beer.service and com.ibm.ws.grpc.fat.beer
-        // to a new app FavoriteBeerService.war
-        ShrinkHelper.defaultDropinApp(beerServer, "FavoriteBeerService.war",
-                                      "com.ibm.ws.grpc.fat.beer.service",
-                                      "com.ibm.ws.grpc.fat.beer");
-
-        beerServer.startServer(ServiceSupportTests.class.getSimpleName() + ".log");
+        grpcServer.startServer(ServiceSupportTests.class.getSimpleName() + ".log");
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        beerServer.stopServer();
+        grpcServer.stopServer();
     }
 
     private void startBeerService(String address, int port) {
@@ -85,18 +85,14 @@ public class ServiceSupportTests extends FATServletClient {
         beerServiceBlockingStub = BeerServiceGrpc.newBlockingStub(beerChannel);
     }
 
-    private void stopBeerService() {
-        beerChannel.shutdownNow();
+    private void stopGrpcService(ManagedChannel channel) {
+        channel.shutdownNow();
     }
 
     private void startHelloWorldService(String address, int port) {
         System.out.println("Connecting to helloWorld gRPC service at " + address + ":" + port);
         worldChannel = ManagedChannelBuilder.forAddress(address, port).usePlaintext().build();
         worldServiceBlockingStub = GreeterGrpc.newBlockingStub(worldChannel);
-    }
-
-    private void stopHelloworldService() {
-        worldChannel.shutdownNow();
     }
 
     /**
@@ -107,7 +103,7 @@ public class ServiceSupportTests extends FATServletClient {
      **/
     @Test
     public void featuresEnabled() throws Exception {
-        Set<String> features = beerServer.getServerConfiguration().getFeatureManager().getFeatures();
+        Set<String> features = grpcServer.getServerConfiguration().getFeatureManager().getFeatures();
 
         assertTrue("Expected the grpc feature 'grpc-1.0' to be enabled but was not: " + features,
                    features.contains("grpc-1.0"));
@@ -118,105 +114,187 @@ public class ServiceSupportTests extends FATServletClient {
     }
 
     /**
-     * Tests a single grpc service
+     * Tests a single grpc service by
+     * - installing the grpc servlet app
+     * - starting the grpc service
+     * - making sure we can reach the servlet
+     * - stopping the grpc service
+     * - uninstalling the app
      *
      * @throws Exception
      *
      **/
     @Test
     public void testSingleWarWithGrpcService() throws Exception {
+        LOG.info("testSingleWarWithGrpcService() : add FavoriteBeerService to the server if not already present.");
+        // add all classes from com.ibm.ws.grpc.fat.beer.service and com.ibm.ws.grpc.fat.beer
+        // to a new app FavoriteBeerService.war
+        ShrinkHelper.defaultDropinApp(grpcServer, "FavoriteBeerService.war",
+                                      "com.ibm.ws.grpc.fat.beer.service",
+                                      "com.ibm.ws.grpc.fat.beer");
 
-        // TODO Change this to check for the actual grpc service started message, once it's implemented
-        // Check to make sure the service has started
-        // CWWKZ0001I: Application FavoriteBeerService started in 0.802 seconds.
-        assertNotNull(beerServer.waitForStringInLog("CWWKZ0001I"));
+        // Make sure the beer service has started
+        String appStarted = grpcServer.waitForStringInLog("Registered gRPC service at URL: /beer", APP_STARTUP_TIMEOUT);
+        if (appStarted == null) {
+            Assert.fail(c + ": application " + "FavoriteBeerService" + " failed to start within " + APP_STARTUP_TIMEOUT + "ms");
+        }
+
+        LOG.info("testSingleWarWithGrpcService() : FavoriteBeerService grpc application has started.");
 
         // Start up the client connection and send a request
-        startBeerService(beerServer.getHostname(), beerServer.getHttpDefaultPort());
+        startBeerService(grpcServer.getHostname(), grpcServer.getHttpDefaultPort());
 
-        // Send a request
-        // //"Citraquenchl", "Heist", NEWENGLANDIPA, 4.3);
+        // Send a request to add a new beer
+        // "Citraquenchl", "Heist", NEWENGLANDIPA, 4.3);
+        LOG.info("testSingleWarWithGrpcService() : Add a new beer.");
         Beer newBeer1 = Beer.newBuilder().setBeerName("Citraquenchl").setBeerMaker("Heist").setBeerTypeValue(0).setBeerRating((float) 4.3).build();
         BeerResponse rsp = beerServiceBlockingStub.addBeer(newBeer1);
         assertTrue(rsp.getDone());
-        stopBeerService();
+
+        // Stop the grpc service
+        stopGrpcService(beerChannel);
+
+        // Stop the grpc application
+        LOG.info("testSingleWarWithGrpcService() : Stop the FavoriteBeerService application by removing it from dropins.");
+        grpcServer.removeDropinsApplications("FavoriteBeerService");
+
+        //TODO check to make sure it has stopped
 
     }
 
     /**
-     * Tests starting and stopping multiple grpc services
+     * /**
+     * Tests a multiple grpc services by
+     * - installing two grpc servlet apps
+     * - starting two grpc services
+     * - making sure we can reach both
+     * - stopping the grpc services
+     * - uninstalling the apps
      *
      * @throws Exception
      *
      **/
-    //@Test
-    //public void testMultipleGrpcServiceWars() throws Exception {
-    //    // Start two services
-    //    startBeerService(beerServer.getHostname(), beerServer.getHttpDefaultPort());
-    //    startHelloWorldService(beerServer.getHostname(), beerServer.getHttpDefaultPort());
+    @Test
+    public void testMultipleGrpcServiceWars() throws Exception {
+        LOG.info("testMultipleWarWithGrpcService() : add FavoriteBeerService to the server if not already present.");
+        // add all classes from com.ibm.ws.grpc.fat.beer.service and com.ibm.ws.grpc.fat.beer
+        // to a new app FavoriteBeerService.war
+        ShrinkHelper.defaultDropinApp(grpcServer, "FavoriteBeerService.war",
+                                      "com.ibm.ws.grpc.fat.beer.service",
+                                      "com.ibm.ws.grpc.fat.beer");
 
-    // Send a request to the Beer service
-    //    Beer newBeer1 = Beer.newBuilder().setBeerName("Citraquenchl").setBeerMaker("Heist").setBeerTypeValue(0).setBeerRating((float) 4.3).build();
-    //    BeerResponse rsp = beerServiceBlockingStub.addBeer(newBeer1);
-    //    assertTrue(rsp.getDone());
+        // Make sure the beer service has started
+        String appStarted = grpcServer.waitForStringInLog("Registered gRPC service at URL: /beer", APP_STARTUP_TIMEOUT);
+        if (appStarted == null) {
+            Assert.fail(c + ": application " + "FavoriteBeerService" + " failed to start within " + APP_STARTUP_TIMEOUT + "ms");
+        }
+        LOG.info("testMultipleWarWithGrpcService() : FavoriteBeerService grpc application has started.");
 
-    // Send a request to the HelloWorld service
-    //    HelloRequest person = HelloRequest.newBuilder().setName("Scarlett").build();
-    //    HelloReply greeting = worldServiceBlockingStub.sayHello(person);
+        // add all classes from com.ibm.ws.grpc.fat.helloworld.service and io.grpc.examples.helloworld
+        // to a new app HelloWorldService.war
+        ShrinkHelper.defaultDropinApp(grpcServer, "HelloWorldService.war",
+                                      "com.ibm.ws.grpc.fat.helloworld.service",
+                                      "io.grpc.examples.helloworld");
 
-    //Make sure the reply has Scarlett in it
+        // Make sure the helloworld service has started
+        appStarted = grpcServer.waitForStringInLog("Registered gRPC service at URL: /hello", APP_STARTUP_TIMEOUT);
+        if (appStarted == null) {
+            Assert.fail(c + ": application " + "HelloWorldService" + " failed to start within " + APP_STARTUP_TIMEOUT + "ms");
+        }
+        LOG.info("testMultipleWarWithGrpcService() : HelloWorldService grpc application has started.");
 
-    //   stopBeerService();
-    //  stopHelloworldService();
+        // Start two grpc services
+        startBeerService(grpcServer.getHostname(), grpcServer.getHttpDefaultPort());
+        startHelloWorldService(grpcServer.getHostname(), grpcServer.getHttpDefaultPort());
 
-    //}
+        // Send a request to the Beer service and check to see if it was added
+        Beer newBeer1 = Beer.newBuilder().setBeerName("Citraquenchl").setBeerMaker("Heist").setBeerTypeValue(0).setBeerRating((float) 4.3).build();
+        BeerResponse rsp = beerServiceBlockingStub.addBeer(newBeer1);
+        assertTrue(rsp.getDone());
 
-    /**
-     * Tests single war uninstall
-     *
-     * @throws Exception
-     *
-     **/
-    // @Test
-    // public void testSingleWarUninstall() throws Exception {
+        // Send a request to the HelloWorld service and check for a response
+        HelloRequest person = HelloRequest.newBuilder().setName("Scarlett").build();
+        HelloReply greeting = worldServiceBlockingStub.sayHello(person);
+        //Make sure the reply has Scarlett in it
+        assertTrue(greeting.getMessage().contains("Scarlett"));
 
-    //     startBeerService(beerServer.getHostname(), beerServer.getHttpDefaultPort());
+        // Stop the grpc services
+        stopGrpcService(beerChannel);
+        stopGrpcService(worldChannel);
 
-    //     stopBeerService();
+        // Stop the grpc applications
+        LOG.info("testMultipleWarWithGrpcService() : Stop the FavoriteBeerService and HelloworldService applications by removing them from dropins.");
+        grpcServer.removeDropinsApplications("FavoriteBeerService.war");
+        grpcServer.removeDropinsApplications("HelloWorldService.war");
 
-    //}
+        //TODO check to make sure it has stopped
 
-    /**
-     * Tests multiple war uninstall
-     *
-     * @throws Exception
-     *
-     **/
-    //@Test
-    //public void testMultipleWarUninstall() throws Exception {
-
-    //    startBeerService(beerServer.getHostname(), beerServer.getHttpDefaultPort());
-    //    startHelloWorldService(beerServer.getHostname(), beerServer.getHttpDefaultPort());
-
-    //    stopBeerService();
-    //    stopHelloworldService();
-
-    //}
+    }
 
     /**
      * Tests single war update
+     * Install the same app twice, which should cause an update to the app
      *
      * @throws Exception
      *
      **/
-    //@Test
-    //public void testSingleWarUpdate() throws Exception {
+    @Test
+    public void testSingleWarUpdate() throws Exception {
 
-    //    startBeerService(beerServer.getHostname(), beerServer.getHttpDefaultPort());
+        LOG.info("testSingleWarUpdate() : add FavoriteBeerService to the server if not already present.");
+        // add all classes from com.ibm.ws.grpc.fat.beer.service and com.ibm.ws.grpc.fat.beer
+        // to a new app FavoriteBeerService.war
+        ShrinkHelper.defaultDropinApp(grpcServer, "FavoriteBeerService.war",
+                                      "com.ibm.ws.grpc.fat.beer.service",
+                                      "com.ibm.ws.grpc.fat.beer");
 
-    //    stopBeerService();
+        // Make sure the beer service has started
+        String appStarted = grpcServer.waitForStringInLog("Registered gRPC service at URL: /beer", APP_STARTUP_TIMEOUT);
+        if (appStarted == null) {
+            Assert.fail(c + ": application " + "FavoriteBeerService" + " failed to start within " + APP_STARTUP_TIMEOUT + "ms");
+        }
+        LOG.info("testSingleWarUpdate() : FavoriteBeerService grpc application has started.");
 
-    //}
+        startBeerService(grpcServer.getHostname(), grpcServer.getHttpDefaultPort());
+
+        // Send a request to add a new beer and make sure it was added
+        // "Citraquenchl", "Heist", NEWENGLANDIPA, 4.3);
+        LOG.info("testSingleWarUpdate() : Add a new beer.");
+        Beer newBeer1 = Beer.newBuilder().setBeerName("Citraquenchl").setBeerMaker("Heist").setBeerTypeValue(0).setBeerRating((float) 4.3).build();
+        BeerResponse rsp = beerServiceBlockingStub.addBeer(newBeer1);
+        assertTrue(rsp.getDone());
+
+        // Add the same application to the dropins folder again so that it is updated
+        ShrinkHelper.defaultDropinApp(grpcServer, "FavoriteBeerService.war",
+                                      "com.ibm.ws.grpc.fat.beer.service",
+                                      "com.ibm.ws.grpc.fat.beer");
+
+        // Make sure the beer service has started
+        String appStarted2 = grpcServer.waitForStringInLog("Registered gRPC service at URL: /beer", APP_STARTUP_TIMEOUT);
+        if (appStarted == null) {
+            Assert.fail(c + ": application " + "FavoriteBeerService" + " failed to start within " + APP_STARTUP_TIMEOUT + "ms");
+        }
+        LOG.info("testSingleWarUpdate() : FavoriteBeerService grpc application has started for the second time.");
+
+        startBeerService(grpcServer.getHostname(), grpcServer.getHttpDefaultPort());
+
+        // Send a request to add a new beer
+        // "Snozzberry","Green Man Brewery",AMERICANWILDALE, 4.2);
+        LOG.info("testSingleWarUpdate() : Add a second new beer.");
+        Beer newBeer2 = Beer.newBuilder().setBeerName("Snozzberry").setBeerMaker("Green Man Brewery").setBeerTypeValue(1).setBeerRating((float) 4.2).build();
+        BeerResponse rsp2 = beerServiceBlockingStub.addBeer(newBeer2);
+
+        assertTrue(rsp2.getDone());
+
+        stopGrpcService(beerChannel);
+
+        // Stop the grpc application
+        LOG.info("testMultipleWarWithGrpcService() : Stop the FavoriteBeerService and HelloworldService applications by removing them from dropins.");
+        grpcServer.removeDropinsApplications("FavoriteBeerService.war");
+
+        //TODO check to make sure it has stopped
+
+    }
 
     /**
      * Tests invalid grpc service
@@ -225,15 +303,15 @@ public class ServiceSupportTests extends FATServletClient {
      *
      **/
 //    @Test
-//    public void testInvalidService() throws Exception {
+    public void testInvalidService() throws Exception {
 
-//        startBeerService(beerServer.getHostname(), beerServer.getHttpDefaultPort());
-//        startHelloWorldService(beerServer.getHostname(), beerServer.getHttpDefaultPort());
+        startBeerService(grpcServer.getHostname(), grpcServer.getHttpDefaultPort());
+        startHelloWorldService(grpcServer.getHostname(), grpcServer.getHttpDefaultPort());
 
-//        stopBeerService();
-//        stopHelloworldService();
+        stopGrpcService(beerChannel);
+        stopGrpcService(worldChannel);
 
-//    }
+    }
 
     /**
      * Tests duplicate grpc service
@@ -241,13 +319,44 @@ public class ServiceSupportTests extends FATServletClient {
      * @throws Exception
      *
      **/
-    //@Test
-    //public void testDuplicateService() throws Exception {
+    @Test
+    @ExpectedFFDC({ "java.lang.RuntimeException", "java.lang.Exception" })
+    public void testDuplicateService() throws Exception {
+        LOG.info("testSingleWarUpdate() : add FavoriteBeerService to the server if not already present.");
+        // add all classes from com.ibm.ws.grpc.fat.beer.service and com.ibm.ws.grpc.fat.beer
+        // to a new app FavoriteBeerService.war
+        ShrinkHelper.defaultDropinApp(grpcServer, "FavoriteBeerService.war",
+                                      "com.ibm.ws.grpc.fat.beer.service",
+                                      "com.ibm.ws.grpc.fat.beer");
 
-    //    startBeerService(beerServer.getHostname(), beerServer.getHttpDefaultPort());
-    //    startBeerService(beerServer.getHostname(), beerServer.getHttpDefaultPort());
+        // Make sure the beer service has started
+        String appStarted = grpcServer.waitForStringInLog("Registered gRPC service at URL: /beer", APP_STARTUP_TIMEOUT);
+        if (appStarted == null) {
+            Assert.fail(c + ": application " + "FavoriteBeerService" + " failed to start within " + APP_STARTUP_TIMEOUT + "ms");
+        }
+        LOG.info("testSingleWarUpdate() : FavoriteBeerService grpc application has started.");
 
-    //    stopBeerService();
+        LOG.info("testSingleWarUpdate() : add FavoriteBeerService to the server if not already present.");
+        // add all classes from com.ibm.ws.grpc.fat.beer.service and com.ibm.ws.grpc.fat.beer
+        // to a new app FavoriteBeerService.war
+        ShrinkHelper.defaultDropinApp(grpcServer, "FavoriteBeerService2.war",
+                                      "com.ibm.ws.grpc.fat.beer.service",
+                                      "com.ibm.ws.grpc.fat.beer");
 
-    //}
+        // It's invalid to have the same grpc services served by two different apps, this should generate an error
+        //CWWKZ0012I: The application FavoriteBeerService2 was not started.
+        String app2NotStarted = grpcServer.waitForStringInLog("CWWKZ0012I: The application FavoriteBeerService2 was not started.", APP_STARTUP_TIMEOUT);
+        if (app2NotStarted == null) {
+            Assert.fail(c + ": application " + "FavoriteBeerService2" + " started in error within  " + APP_STARTUP_TIMEOUT + "ms");
+        }
+        LOG.info("testSingleWarUpdate() : FavoriteBeerService2 grpc application has started.");
+
+        // This generates an NPE on line 88
+        //stopBeerService();
+
+        // Stop the grpc application
+        LOG.info("testMultipleWarWithGrpcService() : Stop the FavoriteBeerService application by removing it from dropins.");
+        grpcServer.removeDropinsApplications("FavoriteBeerService.war");
+
+    }
 }
