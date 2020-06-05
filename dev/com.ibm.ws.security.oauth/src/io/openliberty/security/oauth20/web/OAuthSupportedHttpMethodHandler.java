@@ -76,9 +76,6 @@ public class OAuthSupportedHttpMethodHandler extends SupportedHttpMethodHandler 
     EndpointType getEndpointType() throws IOException {
         OAuth20Request oauth20Request = getOAuth20RequestAttribute();
         if (oauth20Request == null) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Failed to find OAuth20Request information from the inbound request (constructor)");
-            }
             return null;
         }
         return oauth20Request.getType();
@@ -93,6 +90,8 @@ public class OAuthSupportedHttpMethodHandler extends SupportedHttpMethodHandler 
             supportedMethods.add(HttpMethod.HEAD);
             supportedMethods.add(HttpMethod.POST);
         } else if (endpointType == EndpointType.introspect) {
+            supportedMethods.add(HttpMethod.GET);
+            supportedMethods.add(HttpMethod.HEAD);
             supportedMethods.add(HttpMethod.POST);
         } else if (endpointType == EndpointType.revoke) {
             supportedMethods.add(HttpMethod.POST);

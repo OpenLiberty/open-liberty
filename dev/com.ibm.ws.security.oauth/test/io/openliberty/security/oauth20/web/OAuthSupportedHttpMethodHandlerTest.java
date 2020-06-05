@@ -104,7 +104,7 @@ public class OAuthSupportedHttpMethodHandlerTest extends CommonTestClass {
 
     @Test
     public void test_isValidHttpMethodForRequest_knownEndpoint_unsupportedHttpMethod() throws IOException {
-        final EndpointType endpoint = EndpointType.introspect;
+        final EndpointType endpoint = EndpointType.token;
         final HttpMethod requestMethod = HttpMethod.GET;
         mockery.checking(new Expectations() {
             {
