@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.kafka;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -39,7 +38,6 @@ import org.osgi.framework.ServiceReference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaAdapterException;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaAdapterFactory;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaConsumer;
 
@@ -98,7 +96,6 @@ public class KafkaIncomingConnector implements IncomingConnectorFactory {
             String topic = config.getOptionalValue(KafkaConnectorConstants.TOPIC, String.class).orElse(channelName);
             int maxPollRecords = config.getOptionalValue(KafkaConnectorConstants.MAX_POLL_RECORDS, Integer.class).orElse(500);
             int unackedLimit = config.getOptionalValue(KafkaConnectorConstants.UNACKED_LIMIT, Integer.class).orElse(maxPollRecords);
-            int retrySeconds = config.getOptionalValue(KafkaConnectorConstants.CREATION_RETRY_SECONDS, Integer.class).orElse(0);
 
             // Configure our defaults
             Map<String, Object> consumerConfig = new HashMap<>();
@@ -116,7 +113,7 @@ public class KafkaIncomingConnector implements IncomingConnectorFactory {
             boolean enableAutoCommit = "true".equalsIgnoreCase((String) consumerConfig.get(KafkaConnectorConstants.ENABLE_AUTO_COMMIT));
 
             // Create the kafkaConsumer
-            KafkaConsumer<String, Object> kafkaConsumer = getKafkaConsumerWithRetry(consumerConfig, retrySeconds, channelName);
+            KafkaConsumer<String, Object> kafkaConsumer = this.kafkaAdapterFactory.newKafkaConsumer(consumerConfig);
 
             PartitionTrackerFactory partitionTrackerFactory = new PartitionTrackerFactory();
             partitionTrackerFactory.setExecutor(executor);
@@ -135,27 +132,6 @@ public class KafkaIncomingConnector implements IncomingConnectorFactory {
             return kafkaInput.getPublisher();
         } catch (Exception e) {
             throw new KafkaConnectorException(Tr.formatMessage(tc, "kafka.create.incoming.error.CWMRX1007E", channelName, e.getMessage()), e);
-        }
-    }
-
-    private <K, V> KafkaConsumer<K, V> getKafkaConsumerWithRetry(Map<String, Object> consumerConfig, int retrySeconds, String channelName) throws InterruptedException {
-        if (retrySeconds == 0) {
-            return this.kafkaAdapterFactory.newKafkaConsumer(consumerConfig);
-        }
-
-        long retryNs = Duration.ofSeconds(retrySeconds).toNanos();
-        long startTime = System.nanoTime();
-
-        while (true) {
-            try {
-                return this.kafkaAdapterFactory.newKafkaConsumer(consumerConfig);
-            } catch (KafkaAdapterException e) {
-                if ((System.nanoTime() - startTime) > retryNs) {
-                    throw e;
-                }
-                Tr.warning(tc, "kafka.create.incoming.retry.CWMRX1009W", channelName, e.getMessage());
-            }
-            Thread.sleep(1000);
         }
     }
 

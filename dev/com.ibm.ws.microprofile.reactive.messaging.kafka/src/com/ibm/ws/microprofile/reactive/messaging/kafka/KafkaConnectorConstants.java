@@ -22,27 +22,19 @@ import org.eclipse.microprofile.reactive.messaging.spi.ConnectorFactory;
  */
 public class KafkaConnectorConstants {
 
-    //The unique name of this MicroProfile Reactive Messaging Connector for Kafka
-    public static final String CONNECTOR_NAME = "liberty-kafka";
-
     //Our own custom properties that we extract from config for the connector
-
     //The producer or consumer topic
     public static final String TOPIC = "topic";
 
     //The limit on on the number of un-acknowledged messages
     public static final String UNACKED_LIMIT = "unacked.limit";
 
-    //The length of time to retry creation of the KafkaConsumer
-    public static final String CREATION_RETRY_SECONDS = "creation.retry.seconds";
+    //The unique name of this MicroProfile Reactive Messaging Connector for Kafka
+    public static final String CONNECTOR_NAME = "liberty-kafka";
 
     //The set of properties which should NOT be passed through to the Kafka client
-    public static final Set<String> NON_KAFKA_PROPS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(new String[] { TOPIC,
-                                                                                                                             ConnectorFactory.CONNECTOR_ATTRIBUTE,
-                                                                                                                             ConnectorFactory.CHANNEL_NAME_ATTRIBUTE,
-                                                                                                                             UNACKED_LIMIT,
-                                                                                                                             CREATION_RETRY_SECONDS
-    })));
+    public static final Set<String> NON_KAFKA_PROPS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(new String[] { TOPIC, ConnectorFactory.CONNECTOR_ATTRIBUTE,
+                                                                                                                             ConnectorFactory.CHANNEL_NAME_ATTRIBUTE })));
 
 //=======================Kafka Properties===============================//
     //Kafka property - org.apache.kafka.clients.consumer.ConsumerConfig.GROUP_ID_CONFIG
