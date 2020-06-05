@@ -145,6 +145,8 @@ public class TestActions {
             String cookieString = "";
             boolean loopStart = true;
             for(Cookie c : cookies){
+                if(c == null)
+                    continue;
                 if(loopStart){
                     loopStart = false;
                 }else{
@@ -153,6 +155,11 @@ public class TestActions {
                     cookieString += c.getName() + "=" + c.getValue();
 
             }
+            
+            if(loopStart){ 
+                throw new Exception("Cannot invoke the URL because null cookies were provided.");
+            }
+            
             request.setAdditionalHeader("Cookie", cookieString);
             return submitRequest(currentTest, request);
         } catch (Exception e) {
