@@ -248,26 +248,35 @@ def microProfile3Features() {
     features
 }
 
-def removeFeature(feature) {
+def getFeaturePath(feature) {
+    def file = getFeaturePath(feature, "")
+    file
+}
+
+def getFeaturePath(feature, suffix) {
     def file
     if (feature.endsWith(".mf")) {
-        file = new File("$projectDir/wlp/lib/features/" + feature)
-        file.renameTo(new File("$projectDir/wlp/lib/features/" + feature + ".bak"))
+        file = new File("$projectDir/wlp/lib/features/" + feature + suffix)
     } else {
-        file = new File("$projectDir/wlp/lib/features/com.ibm.websphere.appserver." + feature + ".mf")
-        file.renameTo(new File("$projectDir/wlp/lib/features/com.ibm.websphere.appserver." + feature + ".mf.bak"))
+        file = new File("$projectDir/wlp/lib/features/com.ibm.websphere.appserver." + feature + ".mf" + suffix)
+        if(!file.exists()){
+            file = new File("$projectDir/wlp/lib/features/io.openliberty." + feature + ".mf" + suffix)
+        }
     }
+    file
+}
+def removeFeature(feature) {
+    def file = getFeaturePath(feature)
+    def bakfile = new File(file.getPath()+".bak")
+    file.renameTo(bakfile)
 }
 
 def restoreFeature(feature) {
-    def file
-    if (feature.endsWith(".mf")) {
-        file = new File("$projectDir/wlp/lib/features/" + feature + ".bak")
-        file.renameTo(new File("$projectDir/wlp/lib/features/" + feature))
-    } else {
-        file = new File("$projectDir/wlp/lib/features/com.ibm.websphere.appserver." + feature + ".mf.bak")
-        file.renameTo(new File("$projectDir/wlp/lib/features/com.ibm.websphere.appserver." + feature + ".mf"))
-    }
+    def bakfile = getFeaturePath(feature, ".bak")
+    String path = bakfile.getPath()
+    int idx = path.indexOf(".bak")
+    def file = new File(path.substring(0,idx))
+    bakfile.renameTo(file)
 }
 
 def excludedEE7Features = ['cdi-1.2',
@@ -396,7 +405,7 @@ if (isAutomatedBuild) {
     }
 
     task packageOpenLibertyJakartaee9(type: PackageLibertyWithFeatures) {
-        
+
         enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
