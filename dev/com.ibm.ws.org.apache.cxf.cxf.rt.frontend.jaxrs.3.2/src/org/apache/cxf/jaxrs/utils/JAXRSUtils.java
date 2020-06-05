@@ -447,13 +447,13 @@ public final class JAXRSUtils {
 
             for (OperationResourceInfo ori : resource.getMethodDispatcher().getOperationResourceInfos()) {
                 boolean added = false;
-                
+
                 URITemplate uriTemplate = ori.getURITemplate();
-                MultivaluedMap<String, String> map = new MetadataMap<String, String>(values);
+                MultivaluedMap<String, String> map = new MetadataMap<>(values);
                 if (uriTemplate != null && uriTemplate.match(path, map)) { 
                     String finalGroup = map.getFirst(URITemplate.FINAL_MATCH_GROUP);
                     boolean finalPath = StringUtils.isEmpty(finalGroup) || PATH_SEGMENT_SEP.equals(finalGroup);
-                    
+
                     if (ori.isSubResourceLocator()) {
                         candidateList.put(ori, map);
                         if (finalPath) {
@@ -483,7 +483,6 @@ public final class JAXRSUtils {
                         }
                     }
                 }
-
                 if (isFineLevelLoggable) {
                     if (added) {
                         Tr.debug(tc, new org.apache.cxf.common.i18n.Message("OPER_SELECTED_POSSIBLY", BUNDLE, ori.getMethodToInvoke().getName()).toString());
@@ -697,7 +696,7 @@ public final class JAXRSUtils {
           boolean finalPath = false;
           String path = getCurrentPath(values);
           URITemplate uriTemplate = ori.getURITemplate();
-          MultivaluedMap<String, String> map = new MetadataMap<String, String>(values);
+          MultivaluedMap<String, String> map = new MetadataMap<>(values);
           if (uriTemplate != null && uriTemplate.match(path, map)) {
               String finalGroup = map.getFirst(URITemplate.FINAL_MATCH_GROUP);
               finalPath = StringUtils.isEmpty(finalGroup) || PATH_SEGMENT_SEP.equals(finalGroup);
