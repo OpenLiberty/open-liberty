@@ -59,6 +59,9 @@ public class AcmeConstants {
 	// Allow immediate requests for certificate renewal
 	public static final String DISABLE_MIN_RENEW_WINDOW = "disableMinRenewWindow";
 
+	// Disable certificate renewal when the acmeca-history file does not yet exist
+	public static final String DISABLE_RENEW_ON_NEW_HISTORY = "disableRenewOnNewHistory";
+
 	/*
 	 * End constants that match the metatype fields
 	 */
@@ -67,6 +70,8 @@ public class AcmeConstants {
 	 * Key size for generated domain and account key pairs.
 	 */
 	public static final int KEY_SIZE = 2048;
+
+	public static final int ACME_HISTORICAL_FILE_MAX_SIZE = 10;
 
 	public static final String DEFAULT_KEY_STORE = "defaultKeyStore";
 	public static final String DEFAULT_ALIAS = "default";

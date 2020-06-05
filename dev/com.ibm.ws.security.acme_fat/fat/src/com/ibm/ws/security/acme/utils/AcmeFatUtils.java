@@ -276,6 +276,30 @@ public class AcmeFatUtils {
 	 */
 	public static void configureAcmeCA(LibertyServer server, CAContainer caContainer,
 			ServerConfiguration originalConfig, boolean useAcmeURIs, boolean disableRenewWindow, String... domains) throws Exception {
+		configureAcmeCA(server, caContainer, originalConfig, useAcmeURIs, disableRenewWindow, true, domains);
+	}
+	
+	/**
+	 * Convenience method for dynamically configuring the acmeCA-2.0
+	 * configuration.
+	 * 
+	 * @param server
+	 *            Liberty server to update.
+	 * @param originalConfig
+	 *            The original configuration to update from.
+	 * @param useAcmeURIs
+	 *            Use "acme://" style URIs for ACME providers.
+	 * @param disableRenewWindow
+	 *            Set the disableMinRenewWindow in the server config.
+	 * @param disableRenewOnNewHistory
+	 *            Set the disableRenewOnNewHistory in the server config.
+	 * @param domains
+	 *            Domains to request the certificate for.
+	 * @throws Exception
+	 *             IF there was an error updating the configuration.
+	 */
+	public static void configureAcmeCA(LibertyServer server, CAContainer caContainer,
+			ServerConfiguration originalConfig, boolean useAcmeURIs, boolean disableRenewWindow, boolean disableRenewOnNewHistory, String... domains) throws Exception {
 		/*
 		 * Choose which configuration to update.
 		 */
@@ -293,6 +317,13 @@ public class AcmeFatUtils {
 			 * Allow back to back renew requests for test efficiency
 			 */
 			acmeCA.setDisableMinRenewWindow(true);
+		}
+		
+		if (disableRenewOnNewHistory) {
+			/*
+			 * Allow back to back renew requests for test efficiency
+			 */
+			acmeCA.setDisableRenewOnNewHistory(true);
 		}
 
 		/*
@@ -776,4 +807,20 @@ public class AcmeFatUtils {
 
 		assertThat("Expected a new certificate.", serial1, not(equalTo(serial2)));	
 	}
+	
+	/**
+ 	 * Check if the test is running on Windows OS.
+ 	 * @param methodName the name of the method being run.
+ 	 * @return True if the test is running on Windows.
+ 	 */
+ 	public static boolean isWindows(String methodName) {
+ 		if (System.getProperty("os.name").toLowerCase().startsWith("win")) {
+ 			// windows not enforcing the setReadable/setWriteable
+ 			Log.info(AcmeFatUtils.class, methodName,
+ 					"Skipping unreadable/unwriteable file tests on Windows: "
+ 							+ System.getProperty("os.name", "unknown"));
+ 			return true;
+ 		}
+ 		return false;
+ 	}
 }

@@ -52,6 +52,9 @@
    
    <!--  Allow immediate REST renew requests -->
    <AD id="disableMinRenewWindow"     name="internal" description="internal use only" type="Boolean"  required="false" default="false" />
+   
+   <!--  Disable certificate renewal when the acmeca-history file does not yet exist -->
+   <AD id="disableRenewOnNewHistory"     name="internal" description="internal use only" type="Boolean"  required="false" default="false" />
 
  </OCD>
   

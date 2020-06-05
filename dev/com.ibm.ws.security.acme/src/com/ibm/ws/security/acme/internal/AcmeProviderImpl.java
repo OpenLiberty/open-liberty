@@ -66,6 +66,7 @@ import com.ibm.ws.security.acme.internal.util.AcmeConstants;
 import com.ibm.ws.ssl.JSSEProviderFactory;
 import com.ibm.ws.ssl.KeyStoreService;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
+import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 
 /**
  * ACME 2.0 support component service.
@@ -105,11 +106,16 @@ public class AcmeProviderImpl implements AcmeProvider {
 	/** The last time the certificate was renewed **/
 	private long lastCertificateRenewalTimestamp = -1;
 	
+	private AcmeHistory acmeHistory = new AcmeHistory();
+	
 	/** Activate for the scheduler ref **/
 	public void activate(ComponentContext cc) {
 		scheduledExecutorServiceRef.activate(cc);
 	}
 
+	@Reference
+	private WsLocationAdmin wslocation;
+	
 	@Override
 	public void renewAccountKeyPair() throws AcmeCaException {
 		acmeClient.renewAccountKeyPair();
@@ -777,6 +783,13 @@ public class AcmeProviderImpl implements AcmeProvider {
 			if (!acmeConfig.isDisableMinRenewWindow()) {
 				lastCertificateRenewalTimestamp = System.currentTimeMillis();
 			}
+			
+			/*
+			 * Create the acme file which holds certificate information and a record
+			 * of directoryURIs. We use this to determine if the directoryURI has
+			 * been updated. If so, we need to refresh the certificate.
+			 */
+			acmeHistory.updateAcmeFile(acmeCertificate, null, acmeConfig.getDirectoryURI(), acmeClient.getAccount().getLocation().toString(), wslocation);
 
 			/*
 			 * Finally, log a message indicate the new certificate has been
@@ -864,7 +877,16 @@ public class AcmeProviderImpl implements AcmeProvider {
 	public void updateDefaultSSLCertificate(KeyStore keyStore, File keyStoreFile, @Sensitive String password)
 			throws CertificateException {
 		try {
-			checkAndInstallCertificate(false, keyStore, keyStoreFile, password);
+			boolean dirURIChanged = acmeHistory.directoryURIChanged(acmeConfig.getDirectoryURI(), wslocation, acmeConfig.isDisableRenewOnNewHistory());
+			checkAndInstallCertificate(dirURIChanged, keyStore, keyStoreFile, password);
+			
+			/*
+			 * Update the acme file with the new directoryURI and certificate information.
+			 * This only needs to be done if the URI has changed.
+			 */
+			if (dirURIChanged) {
+				acmeHistory.updateAcmeFile(getLeafCertificate(getConfiguredDefaultCertificateChain()), acmeConfig.getDirectoryURI(), acmeClient.getAccount().getLocation().toString(), wslocation);
+			}
 		} catch (AcmeCaException e) {
 			throw new CertificateException(e.getMessage(), e);
 		}
@@ -945,7 +967,16 @@ public class AcmeProviderImpl implements AcmeProvider {
 			acmeConfig = new AcmeConfig(properties);
 			acmeClient = new AcmeClient(acmeConfig);
 
-			checkAndInstallCertificate(false, null, null, null);
+			boolean dirURIChanged = acmeHistory.directoryURIChanged(acmeConfig.getDirectoryURI(), wslocation, acmeConfig.isDisableRenewOnNewHistory());
+			checkAndInstallCertificate(dirURIChanged, null, null, null);
+			
+			/*
+			 * Update the acme file with the new directoryURI and certificate information.
+			 * This only needs to be done if the URI has changed.
+			 */
+			if (dirURIChanged) {
+				acmeHistory.updateAcmeFile(getLeafCertificate(getConfiguredDefaultCertificateChain()), acmeConfig.getDirectoryURI(), acmeClient.getAccount().getLocation().toString(), wslocation);
+			}
 
 			/*
 			 * Update the account.
