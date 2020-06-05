@@ -46,12 +46,8 @@ public class LraFilterComponent implements JaxRsProviderRegister {
     @Activate
     protected void activate(Map<String, Object> properties) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "SampleComponent activated with a service", properties);
+            Tr.event(tc, "LraFilterComponent activated with a service", properties);
         }
-
-        Tr.warning(tc, "Alert, Another activation!. Has the world not ended yet? with a service");
-        String name = ServerLRAFilter.class.getName();
-        Tr.warning(tc, "The name is " + name);
     }
 
     /**
@@ -64,27 +60,35 @@ public class LraFilterComponent implements JaxRsProviderRegister {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "SampleComponent deactivated, reason=" + reason);
         }
-
-        Tr.warning(tc, "Phew, we are secondly being deactivated");
     }
 
     /** {@inheritDoc} */
     @Override
     public void installProvider(boolean clientSide, List<Object> providers, Set<String> features) {
-        Tr.warning(tc, "Trying to register something");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(tc, "Attempting to register LRA filters");
+        }
 
         if (clientSide) {
-            Tr.warning(tc, "Adding client filters");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.event(tc, "Registering client side filters");
+            }
             ClientLRARequestFilter requestFilter = new ClientLRARequestFilter();
             providers.add(requestFilter);
             ClientLRAResponseFilter responseFilter = new ClientLRAResponseFilter();
             providers.add(responseFilter);
         } else {
-            Tr.warning(tc, "Adding server filters");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.event(tc, "Registering serverside side filters");
+            }
+
             ServerLRAFilter filter = null;
             try {
                 filter = new ServerLRAFilter();
             } catch (Exception e) {
+
+                // TODO Do something meaningful
+
                 // TODO Auto-generated catch block
                 // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
                 // https://websphere.pok.ibm.com/~alpine/secure/docs/dev/API/com.ibm.ws.ras/com/ibm/ws/ffdc/annotation/FFDCIgnore.html
