@@ -432,7 +432,7 @@ public final class JAXRSUtils {
 
                 URITemplate uriTemplate = ori.getURITemplate();
                 MultivaluedMap<String, String> map = new MetadataMap<String, String>(values);
-                if (uriTemplate != null && uriTemplate.match(path, map)) { 
+                if (uriTemplate != null && uriTemplate.match(path, map)) {
                     String finalGroup = map.getFirst(URITemplate.FINAL_MATCH_GROUP);
                     boolean finalPath = StringUtils.isEmpty(finalGroup) || PATH_SEGMENT_SEP.equals(finalGroup);
 
