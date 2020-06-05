@@ -28,10 +28,6 @@ cxfVersion=2.6.2
 
 globalize: false
 
-instrument.ffdc: true
-
-instrument.classesExcludes: **/*.class
-
 instrument.classesIncludes: \
     org/apache/cxf/binding/xml/interceptor/XMLFaultInInterceptor.class, \
     org/apache/cxf/ws/security/wss4j/AbstractUsernameTokenAuthenticatingInterceptor.class, \
