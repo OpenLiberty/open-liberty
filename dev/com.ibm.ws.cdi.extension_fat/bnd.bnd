@@ -27,18 +27,19 @@ src: \
 	test-applications/multipleWarNoBeans.war/src,\
 	test-bundles/cdi.helloworld.extension/src, \
 	test-bundles/cdi.spi.extension/src, \
+	test-bundles/cdi.spi.constructor.fail.extension/src, \
 	test-applications/observeProcessProducerMethod.war/src, \
-	test-applications/SPIExtension.war/src
+	test-applications/SPIExtension.war/src, \
+	test-applications/SPIConstructorException.war/src
 	
 tested.features:\
 	cdi-2.0,\
-        servlet-4.0,\
-        jdbc-4.2,\
-        jpa-2.2,\
-        beanValidation-2.0,\
-        jaxrs-2.1,\
-        jsf-2.3
-	
+	servlet-4.0,\
+	jdbc-4.2,\
+	jpa-2.2,\
+	beanValidation-2.0,\
+	jaxrs-2.1,\
+	jsf-2.3
 	
 test.project: true
 

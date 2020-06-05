@@ -16,6 +16,7 @@ import static org.junit.Assert.fail;
 
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
+import java.util.Arrays;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -28,9 +29,9 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.web.XAFlowServlet;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -47,7 +48,6 @@ import componenttest.topology.utils.FATServletClient;
  * servlet referenced by the annotation, and will be run whenever this test class runs.
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
 public class XAFlowTest extends FATServletClient {
 
     public static final String APP_NAME = "transaction";
@@ -64,6 +64,14 @@ public class XAFlowTest extends FATServletClient {
         // Automatically includes resources under 'test-applications/APP_NAME/resources/' folder
         // Exports the resulting application to the ${server.config.dir}/apps/ directory
         ShrinkHelper.defaultApp(server, APP_NAME, "com.ibm.ws.transaction.*");
+
+        // TODO: Revisit this after all features required by this FAT suite are available.
+        // The test-specific public features, txtest-x.y, are not in the repeatable EE feature
+        // set. And, the ejb-4.0 feature is not yet available.
+        // The following sets the appropriate features for the EE9 repeatable tests.
+        if (JakartaEE9Action.isActive()) {
+            server.changeFeatures(Arrays.asList("jdbc-4.2", "txtest-2.0", "servlet-5.0", "componenttest-2.0", "osgiconsole-1.0", "jndi-1.0", "xaflow-1.0"));
+        }
 
         server.copyFileToLibertyInstallRoot("lib/features/", "features/xaflow-1.0.mf");
         assertTrue("Failed to install xaflow-1.0 manifest",

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.saml.sso20.binding;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +36,7 @@ import org.opensaml.xml.signature.impl.ExplicitKeySignatureTrustEngine;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.saml.Constants;
 import com.ibm.ws.security.saml.SsoConfig;
 import com.ibm.ws.security.saml.SsoRequest;
@@ -69,14 +71,19 @@ public class BasicMessageContextBuilder<InboundMessageType extends SAMLObject, O
     BasicMessageContext<InboundMessageType, OutboundMessageType, NameIdentifierType> getBasicMessageContext(SsoSamlService ssoService) {
         return new BasicMessageContext<InboundMessageType, OutboundMessageType, NameIdentifierType>(ssoService);
     }
+    
+    BasicMessageContext<InboundMessageType, OutboundMessageType, NameIdentifierType> getBasicMessageContext(SsoSamlService ssoService, HttpServletRequest request, HttpServletResponse response) {
+        return new BasicMessageContext<InboundMessageType, OutboundMessageType, NameIdentifierType>(ssoService, request, response);
+    }
 
     public BasicMessageContext<InboundMessageType, OutboundMessageType, NameIdentifierType> buildAcs(HttpServletRequest req,
                                                                                                      HttpServletResponse res,
                                                                                                      SsoSamlService ssoService,
                                                                                                      String externalRelayState,
                                                                                                      SsoRequest samlRequest) throws SamlException {
-        BasicMessageContext<InboundMessageType, OutboundMessageType, NameIdentifierType> basicMessageContext = getBasicMessageContext(ssoService);
-        basicMessageContext.setAndRemoveCachedRequestInfo(externalRelayState, samlRequest);
+        BasicMessageContext<InboundMessageType, OutboundMessageType, NameIdentifierType> basicMessageContext = getBasicMessageContext(ssoService, req, res);
+            
+        basicMessageContext.setAndRemoveCachedRequestInfo(externalRelayState, samlRequest); 
         basicMessageContext.setInboundMessageTransport(new HttpServletRequestAdapter(req));
         setIdpMetadaProvider(basicMessageContext);
         //setSecurityPolicyResolver(basicMessageContext);

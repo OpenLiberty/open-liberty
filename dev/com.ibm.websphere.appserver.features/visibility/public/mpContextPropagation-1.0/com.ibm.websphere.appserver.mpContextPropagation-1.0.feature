@@ -10,7 +10,7 @@ IBM-API-Package: \
   org.eclipse.microprofile.context.spi; type="stable"
 -features=\
   com.ibm.websphere.appserver.concurrent-1.0, \
-  com.ibm.websphere.appserver.javaeeCompatible-8.0
+  com.ibm.websphere.appserver.eeCompatible-8.0
 -bundles=\
   com.ibm.ws.require.java8, \
   com.ibm.ws.microprofile.contextpropagation.1.0

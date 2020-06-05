@@ -34,6 +34,8 @@ public interface JwtSsoBuilderConfig extends JwtConfig {
 
 	boolean isCookieSecured();
 
+	boolean isDisableJwtCookie();
+
 	String getJwtBuilderRef();
 
 	// String getJwtConsumerRef();

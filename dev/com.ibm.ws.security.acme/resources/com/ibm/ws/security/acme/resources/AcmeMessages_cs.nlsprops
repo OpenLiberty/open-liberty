@@ -23,7 +23,22 @@
 # The term "certificate authority" is in reference to SSL/TLS certificate providers.
 # The URI parameter in these messages is for the ACME certificate authority, such as https://sampleCAProvider.org/directory
 
-CWPKI2001E=CWPKI2001E: Certifika\u010dn\u00ed autorita ACME v identifik\u00e1toru URI {0} odpov\u011bd\u011bla, \u017ee autoriza\u010dn\u00ed v\u00fdzva pro dom\u00e9nu {1} se nezda\u0159ila. Stav v\u00fdzvy je {2}. Chyba je {3}.
+###############################################################################
+# REST response messages
+###############################################################################
+REST_METHOD_NOT_SUPPORTED=Metoda HTTP ''{0}'' nen\u00ed podporov\u00e1na.
+REST_OPERATION_NOT_SUPPORTED=Operace ''{0}'' nen\u00ed podporov\u00e1na.
+REST_FORBIDDEN=Zak\u00e1z\u00e1no
+REST_INVALID_CONTENT_TYPE=Z\u00e1hlav\u00ed typu obsahu po\u017eadavku nebylo 'application/json'.
+REST_MISSING_OPERATION=Operace nebyla pro po\u017eadavek zad\u00e1na.
+REST_NO_ACME_SERVICE=Slu\u017eba AcmeProvider nebyla registrov\u00e1na.
+###############################################################################
+
+FILE_NOT_READABLE=soubor nelze \u010d\u00edst
+FILE_NOT_WRITABLE=do souboru nebo do jeho nad\u0159\u00edzen\u00e9ho adres\u00e1\u0159e nelze zapisovat
+
+
+CWPKI2001E=CWPKI2001E: Certifika\u010dn\u00ed autorita ACME v identifik\u00e1toru URI {0} odpov\u011bd\u011bla, \u017ee autoriza\u010dn\u00ed v\u00fdzva pro dom\u00e9nu {1} se nezda\u0159ila. Stav v\u00fdzvy je {2}. Chyba: ''{3}''.
 CWPKI2001E.explanation=Stav v\u00fdzvy ozna\u010dil, \u017ee \u017e\u00e1dost o autoriza\u010dn\u00ed v\u00fdzvu se nezda\u0159ila a certifik\u00e1t nelze vytvo\u0159it.
 CWPKI2001E.useraction=P\u0159e\u010dt\u011bte si stavovou zpr\u00e1vu a chybu t\u00fdkaj\u00edc\u00ed se podrobnost\u00ed o selh\u00e1n\u00ed.
 
@@ -31,7 +46,7 @@ CWPKI2002E=CWPKI2002E: Vypr\u0161el \u010dasov\u00fd limit pro syst\u00e9m v\u00
 CWPKI2002E.explanation=\u017d\u00e1dost o v\u00fdzvu certifika\u010dn\u00ed autority nebyla v nakonfigurovan\u00e9m \u010dase ov\u011b\u0159ena, a certifik\u00e1t nelze vytvo\u0159it.
 CWPKI2002E.useraction=Zkontrolujte nakonfigurovan\u00fd identifik\u00e1tor URI certifika\u010dn\u00ed autority. Ov\u011b\u0159te, \u017ee k identifik\u00e1toru URI lze \u00fasp\u011b\u0161n\u011b p\u0159istupovat volaj\u00edc\u00edm serverem. Ov\u011b\u0159te, \u017ee volaj\u00edc\u00ed server m\u016f\u017ee obdr\u017eet odezvu od certifika\u010dn\u00ed autority. Zkontrolujte stavov\u00fd k\u00f3d. N\u011bkter\u00e9 certifika\u010dn\u00ed autority mohou vy\u017eadovat del\u0161\u00ed \u010dasov\u00fd limit.
 
-CWPKI2003E=CWPKI2003E: Certifika\u010dn\u00ed autorita ACME v identifik\u00e1toru URI {0} odpov\u011bd\u011bla, \u017ee po\u0159ad\u00ed certifik\u00e1tu se nezda\u0159ilo pro dom\u00e9ny {1}. Stav objedn\u00e1vky je {2}. Chyba je {3}.
+CWPKI2003E=CWPKI2003E: Certifika\u010dn\u00ed autorita ACME v identifik\u00e1toru URI {0} odpov\u011bd\u011bla, \u017ee objedn\u00e1vka certifik\u00e1tu se nezda\u0159ila pro dom\u00e9ny {1}. Stav objedn\u00e1vky je {2}. Chyba: ''{3}''.
 CWPKI2003E.explanation=Stav objedn\u00e1vky ozna\u010dil, \u017ee \u017e\u00e1dost o autoriza\u010dn\u00ed objedn\u00e1vku se nezda\u0159ila a certifik\u00e1t nelze vytvo\u0159it.
 CWPKI2003E.useraction=P\u0159e\u010dt\u011bte si stavovou zpr\u00e1vu a chybu t\u00fdkaj\u00edc\u00ed se podrobnost\u00ed o selh\u00e1n\u00ed.
 
@@ -43,55 +58,55 @@ CWPKI2005E=CWPKI2005E: Autorizace vr\u00e1cen\u00e1 z certifika\u010dn\u00ed aut
 CWPKI2005E.explanation=Certifika\u010dn\u00ed autorita vr\u00e1tila typ v\u00fdzvy, kter\u00fd nen\u00ed moment\u00e1ln\u011b podporov\u00e1n. Ov\u011b\u0159te, \u017ee certifika\u010dn\u00ed autorita pou\u017e\u00edv\u00e1 typ v podporovan\u00e9m seznamu.
 CWPKI2005E.useraction=Vyberte certifika\u010dn\u00ed autoritu, kter\u00e1 poskytuje podporovan\u00fd typ v\u00fdzvy.
 
-CWPKI2006I=CWPKI2006I: Certifika\u010dn\u00ed autorita ACME v identifik\u00e1toru URI {0} poskytla n\u00e1sleduj\u00edc\u00ed podn\u00ednky slu\u017eby: {1}
+CWPKI2006I=CWPKI2006I: Certifika\u010dn\u00ed autorita ACME v identifik\u00e1toru URI {0} poskytla n\u00e1sleduj\u00edc\u00ed podm\u00ednky slu\u017eby: {1}
 CWPKI2006I.explanation=Certifika\u010dn\u00ed autorita poskytuje podm\u00ednky slu\u017eby.
-CWPKI2006I.useraction= Zkontrolujte poskytnut\u00e9 podm\u00ednky slu\u017eby.
+CWPKI2006I.useraction=Zkontrolujte poskytnut\u00e9 podm\u00ednky slu\u017eby.
 
-CWPKI2007I=CWPKI2007I: Slu\u017eba ACME nainstalovala certifik\u00e1t, kter\u00fd je podeps\u00e1n certifika\u010dn\u00ed autoritou ACME v identifik\u00e1toru URI {0}. Datum vypr\u0161en\u00ed platnosti je {1}.
+CWPKI2007I=CWPKI2007I: Slu\u017eba ACME nainstalovala certifik\u00e1t se s\u00e9riov\u00fdm \u010d\u00edslem {0}, kter\u00fd je podeps\u00e1n certifika\u010dn\u00ed autoritou ACME v identifik\u00e1toru URI {1}. Datum vypr\u0161en\u00ed platnosti je {2}.
 CWPKI2007I.explanation=Slu\u017eba ACME \u00fasp\u011b\u0161n\u011b na\u010detla a nainstalovala certifik\u00e1t z nakonfigurovan\u00e9 certifika\u010dn\u00ed autority.
 CWPKI2007I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
-CWPKI2008E=CWPKI2008E: Identifik\u00e1tor URI adres\u00e1\u0159e certifika\u010dn\u00ed autority ACME mus\u00ed b\u00fdt platn\u00fdm identifik\u00e1tor URI. P\u0159ijat\u00fd identifik\u00e1tor URI byl null nebo pr\u00e1zdn\u00fd. P\u0159ijat\u00fd identifik\u00e1tor URI byl '{0}'.
+CWPKI2008E=CWPKI2008E: Identifik\u00e1tor URI adres\u00e1\u0159e certifika\u010dn\u00ed autority ACME mus\u00ed b\u00fdt platn\u00fdm identifik\u00e1tor URI. P\u0159ijat\u00fd identifik\u00e1tor URI byl null nebo pr\u00e1zdn\u00fd. P\u0159ijat\u00fd identifik\u00e1tor URI byl ''{0}''.
 CWPKI2008E.explanation=Identifik\u00e1tor URI adres\u00e1\u0159e certifika\u010dn\u00ed autority URI nebyl spr\u00e1vn\u011b nakonfigurov\u00e1n.
 CWPKI2008E.useraction=Zadejte platn\u00fd identifik\u00e1tor URI adres\u00e1\u0159e certifika\u010dn\u00ed autority ACME v konfiguraci.
 
-CWPKI2009E=CWPKI2009E: \u017d\u00e1dost o v\u00fdzvu k certifika\u010dn\u00ed autorit\u011b ACME v identifik\u00e1toru URI {0} se nezda\u0159ila. Chyba: {1}
+CWPKI2009E=CWPKI2009E: \u017d\u00e1dost o v\u00fdzvu k certifika\u010dn\u00ed autorit\u011b ACME v identifik\u00e1toru URI {0} se nezda\u0159ila. Chyba: ''{1}''.
 CWPKI2009E.explanation=\u017d\u00e1dost o v\u00fdzvu se nezda\u0159ila a certifik\u00e1t nelze vytvo\u0159it.
 CWPKI2009E.useraction=Podrobnosti o selh\u00e1n\u00ed najdete v chybov\u00e9 zpr\u00e1v\u011b.
 
-CWPKI2010E=CWPKI2010E: Aktualizace v\u00fdzvy na certifika\u010dn\u00ed autoritu ACME v identifik\u00e1toru URI {0} se nezda\u0159ila. Chyba je {1}.
+CWPKI2010E=CWPKI2010E: \u017d\u00e1dost o v\u00fdzvu k certifika\u010dn\u00ed autorit\u011b ACME v identifik\u00e1toru URI {0} se nezda\u0159ila. Chyba: ''{1}''.
 CWPKI2010E.explanation=Aktualizace v\u00fdzvy se nezda\u0159ila a certifik\u00e1t nelze aktualizovat.
 CWPKI2010E.useraction=Podrobnosti o selh\u00e1n\u00ed najdete v chybov\u00e9 zpr\u00e1v\u011b.
 
-CWPKI2011E=CWPKI2011E: Slu\u017eb\u011b ACME se nezda\u0159ilo vytvo\u0159it objedn\u00e1vku certifik\u00e1tu pro certifika\u010dn\u00ed autoritu ACME v identifik\u00e1toru URI {0}. Chyba: {1}
+CWPKI2011E=CWPKI2011E: Slu\u017eb\u011b ACME se nezda\u0159ilo vytvo\u0159it objedn\u00e1vku certifik\u00e1tu pro certifika\u010dn\u00ed autoritu ACME v identifik\u00e1toru URI {0}. Chyba: ''{1}''.
 CWPKI2011E.explanation=Vytvo\u0159en\u00ed objedn\u00e1vky certifik\u00e1tu se nezda\u0159ilo a podepsan\u00fd certifik\u00e1t nelze po\u017eadovat.
 CWPKI2011E.useraction=Podrobnosti o selh\u00e1n\u00ed najdete v chybov\u00e9 zpr\u00e1v\u011b.
 
-CWPKI2012E=CWPKI2012E: Slu\u017eb\u011b ACME se nezda\u0159ilo podepsat \u017e\u00e1dost o podeps\u00e1n\u00ed certifik\u00e1tu pro certifika\u010dn\u00ed autoritu ACME v identifik\u00e1toru URI {0}. Chyba: {1}
+CWPKI2012E=CWPKI2012E: Slu\u017eb\u011b ACME se nezda\u0159ilo podepsat \u017e\u00e1dost o podeps\u00e1n\u00ed certifik\u00e1tu pro certifika\u010dn\u00ed autoritu ACME v identifik\u00e1toru URI {0}. Chyba: ''{1}''.
 CWPKI2012E.explanation=Objedn\u00e1vka certifik\u00e1tu byla vytvo\u0159ena, ale po\u017eadavek se nezda\u0159il a podepsan\u00fd certifik\u00e1t nelze po\u017eadovat.
 CWPKI2012E.useraction=Podrobnosti o selh\u00e1n\u00ed najdete v chybov\u00e9 zpr\u00e1v\u011b.
 
-CWPKI2013E=CWPKI2013E: \u017d\u00e1dost o podeps\u00e1n\u00ed certifik\u00e1tu byla vytvo\u0159ena a podeps\u00e1na, ale \u017e\u00e1dost o objedn\u00e1vku k certifika\u010dn\u00ed autorit\u011b ACME v identifik\u00e1toru URI {0} se nezda\u0159ila. Chyba: {1}
+CWPKI2013E=CWPKI2013E: \u017d\u00e1dost o podeps\u00e1n\u00ed certifik\u00e1tu byla vytvo\u0159ena a podeps\u00e1na, ale \u017e\u00e1dost o objedn\u00e1vku k certifika\u010dn\u00ed autorit\u011b ACME v identifik\u00e1toru URI {0} se nezda\u0159ila. Chyba: ''{1}''.
 CWPKI2013E.explanation=Objedn\u00e1vka certifik\u00e1tu byla vytvo\u0159ena a podeps\u00e1na, ale objedn\u00e1n\u00ed certifik\u00e1tu od certifika\u010dn\u00ed autority se nezda\u0159ilo.
 CWPKI2013E.useraction=Podrobnosti o selh\u00e1n\u00ed najdete v chybov\u00e9 zpr\u00e1v\u011b.
 
-CWPKI2014E=CWPKI2014E: \u017d\u00e1dost o podeps\u00e1n\u00ed certifik\u00e1tu pro certifika\u010dn\u00ed autoritu ACME v identifik\u00e1toru URI {0} byla vytvo\u0159ena a podeps\u00e1na, ale k\u00f3dov\u00e1n\u00ed \u017e\u00e1dosti se nezda\u0159ilo. Chyba: {1}
+CWPKI2014E=CWPKI2014E: \u017d\u00e1dost o podeps\u00e1n\u00ed certifik\u00e1tu pro certifika\u010dn\u00ed autoritu ACME v identifik\u00e1toru URI {0} byla vytvo\u0159ena a podeps\u00e1na, ale k\u00f3dov\u00e1n\u00ed \u017e\u00e1dosti se nezda\u0159ilo. Chyba: ''{1}''.
 CWPKI2014E.explanation=K\u00f3dov\u00e1n\u00ed \u017e\u00e1dosti o podeps\u00e1n\u00ed certifik\u00e1tu se nezda\u0159ilo a podepsan\u00fd certifik\u00e1t nelze vytvo\u0159it.
 CWPKI2014E.useraction=Podrobnosti o selh\u00e1n\u00ed najdete v chybov\u00e9 zpr\u00e1v\u011b.
 
-CWPKI2015E=CWPKI2015E: \u017d\u00e1dost o stav objedn\u00e1vky certifik\u00e1tu slu\u017eby ACME od certifika\u010dn\u00ed autority ACME v identifik\u00e1toru URI {0} se nezda\u0159ila. Chyba: {1}
+CWPKI2015E=CWPKI2015E: \u017d\u00e1dost o stav objedn\u00e1vky certifik\u00e1tu slu\u017eby ACME od certifika\u010dn\u00ed autority ACME v identifik\u00e1toru URI {0} se nezda\u0159ila. Chyba: ''{1}''.
 CWPKI2015E.explanation=Objedn\u00e1vka je dokon\u010dena asynchronn\u011b certifika\u010dn\u00ed autoritou. Slu\u017eba ACME p\u0159ijala chybu p\u0159i kontrole stavu objedn\u00e1vky. Podepsan\u00fd certifik\u00e1t nelze po\u017eadovat.
 CWPKI2015E.useraction=Podrobnosti o selh\u00e1n\u00ed najdete v chybov\u00e9 zpr\u00e1v\u011b.
 
-CWPKI2016E=CWPKI2016E: \u017d\u00e1dost o slu\u017ebu ACME pro existuj\u00edc\u00ed \u00fa\u010det od certifika\u010dn\u00ed autority ACME v identifik\u00e1toru URI {0} se nezda\u0159ila. Chyba: {1}
+CWPKI2016E=CWPKI2016E: \u017d\u00e1dost o slu\u017ebu ACME pro existuj\u00edc\u00ed \u00fa\u010det od certifika\u010dn\u00ed autority ACME v identifik\u00e1toru URI {0} se nezda\u0159ila. Chyba: ''{1}''.
 CWPKI2016E.explanation=Existuj\u00edc\u00ed \u00fa\u010det nebyl nalezen nebo do\u0161lo k jin\u00e9 chyb\u011b. Zm\u011bny v \u00fa\u010dtu nebo certifik\u00e1tu nelze prov\u00e9st.
 CWPKI2016E.useraction=Podrobnosti o selh\u00e1n\u00ed najdete v chybov\u00e9 zpr\u00e1v\u011b. Ov\u011b\u0159te, \u017ee k identifik\u00e1toru URI lze \u00fasp\u011b\u0161n\u011b p\u0159istupovat volaj\u00edc\u00edm serverem. Ov\u011b\u0159te, \u017ee volaj\u00edc\u00ed server m\u016f\u017ee obdr\u017eet odezvu od certifika\u010dn\u00ed autority.
 
-CWPKI2017E=CWPKI2017E: \u017d\u00e1dost ACME pro podm\u00ednky slu\u017eby od certifika\u010dn\u00ed autority ACME v identifik\u00e1toru URI {0} se nezda\u0159ila. Chyba: {1}
+CWPKI2017E=CWPKI2017E: \u017d\u00e1dost ACME pro podm\u00ednky slu\u017eby od certifika\u010dn\u00ed autority ACME v identifik\u00e1toru URI {0} se nezda\u0159ila. Chyba: ''{1}''.
 CWPKI2017E.explanation=Podm\u00ednky slu\u017eby pro certifika\u010dn\u00ed autoritu ACME nelze zaprotokolovat. 
 CWPKI2017E.useraction=Podrobnosti o selh\u00e1n\u00ed najdete v chybov\u00e9 zpr\u00e1v\u011b. Nav\u0161tivte web certifika\u010dn\u00ed autority ACME pro zobrazen\u00ed podm\u00ednek slu\u017eby.
 
-CWPKI2018E=CWPKI2018E: U\u017eivatelsk\u00fd \u00fa\u010det nelze vytvo\u0159it v certifika\u010dn\u00ed autorit\u011b ACME v identifik\u00e1toru URI {0}. Chyba: {1}
+CWPKI2018E=CWPKI2018E: U\u017eivatelsk\u00fd \u00fa\u010det nelze vytvo\u0159it v certifika\u010dn\u00ed autorit\u011b ACME v identifik\u00e1toru URI {0}. Chyba: ''{1}''.
 CWPKI2018E.explanation=\u017d\u00e1dost o vytvo\u0159en\u00ed u\u017eivatelsk\u00e9ho \u00fa\u010dtu se nezda\u0159ila.
 CWPKI2018E.useraction=Podrobnosti o selh\u00e1n\u00ed najdete v chybov\u00e9 zpr\u00e1v\u011b.
 
@@ -99,34 +114,174 @@ CWPKI2019I=CWPKI2019I: Adresa URL \u00fa\u010dtu poskytnut\u00e1 certifika\u010d
 CWPKI2019I.explanation=\u00da\u010det byl \u00fasp\u011b\u0161n\u011b vytvo\u0159en.
 CWPKI2019I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
-CWPKI2020E=CWPKI2020E: Slu\u017eba ACME nem\u016f\u017ee \u010d\u00edst soubor s kl\u00ed\u010di dom\u00e9ny pro \u00fa\u010det certifika\u010dn\u00ed autority ACME v identifik\u00e1toru URI {0}. Um\u00edst\u011bn\u00ed souboru: {1}. Chyba: {2}
+CWPKI2020E=CWPKI2020E: Slu\u017eba ACME nem\u016f\u017ee \u010d\u00edst soubor s kl\u00ed\u010di dom\u00e9ny pro dom\u00e9nu certifika\u010dn\u00ed autority ACME. Um\u00edst\u011bn\u00ed souboru: {0}. Chyba: ''{1}''.
 CWPKI2020E.explanation=Soubor s kl\u00ed\u010di dom\u00e9ny pro \u00fa\u010det certifika\u010dn\u00ed autority nelze otev\u0159\u00edt. K tomu m\u016f\u017ee doj\u00edt, jsou-li opr\u00e1vn\u011bn\u00ed k souboru chybn\u00e1 nebo pokud soubor neexistuje.
-CWPKI2020E.useraction=Podrobnosti o selh\u00e1n\u00ed najdete v chybov\u00e9 zpr\u00e1v\u011b. Ov\u011b\u0159te, \u017ee um\u00edst\u011bn\u00ed souboru je spr\u00e1vn\u00e9 a \u017ee serverl p\u0159e\u010detl opr\u00e1vn\u011bn\u00ed k souboru.
+CWPKI2020E.useraction=Podrobnosti o selh\u00e1n\u00ed najdete v chybov\u00e9 zpr\u00e1v\u011b. Ov\u011b\u0159te, \u017ee um\u00edst\u011bn\u00ed souboru je spr\u00e1vn\u00e9 a \u017ee server p\u0159e\u010detl opr\u00e1vn\u011bn\u00ed k souboru.
 
-CWPKI2021E=CWPKI2021E: Slu\u017eba ACME nem\u016f\u017ee \u010d\u00edst soubor s kl\u00ed\u010di \u00fa\u010dtu pro \u00fa\u010det certifika\u010dn\u00ed autority ACME v identifik\u00e1toru URI {0}. Um\u00edst\u011bn\u00ed souboru: {1}. Chyba: {2}
+CWPKI2021E=CWPKI2021E: Slu\u017eba ACME nem\u016f\u017ee \u010d\u00edst soubor s kl\u00ed\u010di \u00fa\u010dtu pro \u00fa\u010det certifika\u010dn\u00ed autority ACME. Um\u00edst\u011bn\u00ed souboru: {0}. Chyba: ''{1}''.
 CWPKI2021E.explanation=Soubor s kl\u00ed\u010di \u00fa\u010dtu pro \u00fa\u010det certifika\u010dn\u00ed autority nelze otev\u0159\u00edt. K tomu m\u016f\u017ee doj\u00edt, jsou-li opr\u00e1vn\u011bn\u00ed k souboru chybn\u00e1 nebo pokud soubor neexistuje.
 CWPKI2021E.useraction=Podrobnosti o selh\u00e1n\u00ed najdete v chybov\u00e9 zpr\u00e1v\u011b. Ov\u011b\u0159te, \u017ee um\u00edst\u011bn\u00ed souboru je spr\u00e1vn\u00e9 a server m\u00e1 opr\u00e1vn\u011bn\u00ed ke \u010dten\u00ed souboru.
 
-CWPKI2022E=CWPKI2022E: Slu\u017eba ACME nem\u016f\u017ee ps\u00e1t soubor s kl\u00ed\u010di dom\u00e9ny pro \u00fa\u010det certifika\u010dn\u00ed autority ACME v identifik\u00e1toru URI {0}. Um\u00edst\u011bn\u00ed souboru: {1}. Chyba: {2}
+CWPKI2022E=CWPKI2022E: Slu\u017eba ACME nem\u016f\u017ee ps\u00e1t soubor s kl\u00ed\u010di dom\u00e9ny pro dom\u00e9nu certifika\u010dn\u00ed autority ACME. Um\u00edst\u011bn\u00ed souboru: {0}. Chyba: ''{1}''.
 CWPKI2022E.explanation=Kl\u00ed\u010de dom\u00e9ny nelze ulo\u017eit do souboru s kl\u00ed\u010di dom\u00e9ny. K tomu m\u016f\u017ee doj\u00edt, jsou-li opr\u00e1vn\u011bn\u00ed k souboru chybn\u00e1 nebo soubor neexistuje.
 CWPKI2022E.useraction=Podrobnosti o selh\u00e1n\u00ed najdete v chybov\u00e9 zpr\u00e1v\u011b. Ov\u011b\u0159te, \u017ee um\u00edst\u011bn\u00ed souboru je spr\u00e1vn\u00e9 a server m\u00e1 opr\u00e1vn\u011bn\u00ed k z\u00e1pisu souboru.
 
-CWPKI2023E=CWPKI2023E: Nezda\u0159ilo se zapsat soubor s kl\u00ed\u010di \u00fa\u010dtu pro \u00fa\u010det certifika\u010dn\u00ed autority ACME v identifik\u00e1toru URI {0}. Um\u00edst\u011bn\u00ed souboru: {1}. Chyba: {2}
+CWPKI2023E=CWPKI2023E: Slu\u017eba ACME nem\u016f\u017ee ps\u00e1t soubor s kl\u00ed\u010di \u00fa\u010dtu pro \u00fa\u010det certifika\u010dn\u00ed autority ACME. Um\u00edst\u011bn\u00ed souboru: {0}. Chyba: ''{1}''.
 CWPKI2023E.explanation=Kl\u00ed\u010de \u00fa\u010dtu nelze ulo\u017eit do souboru s kl\u00ed\u010di \u00fa\u010dtu. K tomu m\u016f\u017ee doj\u00edt, jsou-li opr\u00e1vn\u011bn\u00ed k souboru chybn\u00e1 nebo soubor neexistuje.
 CWPKI2023E.useraction=Podrobnosti o selh\u00e1n\u00ed najdete v chybov\u00e9 zpr\u00e1v\u011b. Ov\u011b\u0159te, \u017ee um\u00edst\u011bn\u00ed souboru je spr\u00e1vn\u00e9 a server m\u00e1 opr\u00e1vn\u011bn\u00ed k z\u00e1pisu souboru.
 
-CWPKI2024E=CWPKI2024E: Slu\u017eb\u011b ACME se nezda\u0159ilo zru\u0161it p\u0159\u00edstup k po\u017eadovan\u00e9mu certifik\u00e1tu pro certifika\u010dn\u00ed autoritu ACME v identifik\u00e1toru URI {0}. Certifik\u00e1t m\u00e1 s\u00e9riov\u00e9 \u010d\u00edslo {1}. Chyba: {2}
-CWPKI2024E.explanation=\u017d\u00e1dost o zru\u0161en\u00ed p\u0159\u00edstupu k certifik\u00e1tu se nezda\u0159il. Certifik\u00e1tu nemus\u00ed b\u00fdt zru\u0161en p\u0159\u00edstup, a m\u016f\u017ee b\u00fdt st\u00e1le pou\u017e\u00edv\u00e1n.
+CWPKI2024E=CWPKI2024E: Slu\u017eb\u011b ACME se nezda\u0159ilo zru\u0161it p\u0159\u00edstup k po\u017eadovan\u00e9mu certifik\u00e1tu pro certifika\u010dn\u00ed autoritu ACME v identifik\u00e1toru URI {0}. Certifik\u00e1t m\u00e1 s\u00e9riov\u00e9 \u010d\u00edslo {1}. Chyba: ''{2}''.
+CWPKI2024E.explanation=\u017d\u00e1dost o zru\u0161en\u00ed certifik\u00e1tu se nezda\u0159ila. Certifik\u00e1tu nemus\u00ed b\u00fdt zru\u0161en p\u0159\u00edstup, a m\u016f\u017ee b\u00fdt st\u00e1le pou\u017e\u00edv\u00e1n.
 CWPKI2024E.useraction=Podrobnosti o selh\u00e1n\u00ed najdete v chybov\u00e9 zpr\u00e1v\u011b.
 
-CWPKI2025W=CWPKI2025W: Slu\u017eba ACME p\u0159ijala \u017e\u00e1dost o zru\u0161en\u00ed p\u0159\u00edstupu k certifik\u00e1tu, ale dvojici kl\u00ed\u010d\u016f \u00fa\u010dtu pro certifika\u010dn\u00ed autoritu ACME v identifik\u00e1toru URI {0} URI nelze na\u010d\u00edst.
-CWPKI2025W.explanation=\u017d\u00e1dost o zru\u0161en\u00ed p\u0159\u00edstupu k certifik\u00e1tu se nezda\u0159ila, proto\u017ee dvojici kl\u00ed\u010d\u016f \u00fa\u010dtu nelze na\u010d\u00edst.
-CWPKI2025W.useraction=Zkontrolujte, zda nejsou v protokolu n\u011bjak\u00e9 d\u0159\u00edv\u011bj\u0161\u00ed chyby, abyste se dozv\u011bd\u011bli podrobnosti o selh\u00e1n\u00ed. Kontrolou souboru \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f ov\u011b\u0159\u00edte, zda certifik\u00e1t existuje.
+CWPKI2025W=CWPKI2025W: Slu\u017eba ACME nem\u016f\u017ee na\u010d\u00edst dvojici kl\u00ed\u010d\u016f \u00fa\u010dtu pro certifika\u010dn\u00ed autoritu ACME v identifik\u00e1toru URI {0}.
+CWPKI2025W.explanation=\u017d\u00e1dost se nezda\u0159ila, proto\u017ee dvojici kl\u00ed\u010d\u016f \u00fa\u010dtu nelze na\u010d\u00edst.
+CWPKI2025W.useraction=Zkontrolujte, zda nejsou v protokolu n\u011bjak\u00e9 d\u0159\u00edv\u011bj\u0161\u00ed chyby, abyste se dozv\u011bd\u011bli podrobnosti o selh\u00e1n\u00ed.
 
-CWPKI2026W=CWPKI2026W: Slu\u017eba ACME p\u0159ijala \u017e\u00e1dost o zru\u0161en\u00ed p\u0159\u00edstupu k certifik\u00e1tu, ale \u00fa\u010det nebyl nalezen v certifika\u010dn\u00ed autorit\u011b ACME v identifik\u00e1toru URI {0}.
-CWPKI2026W.explanation=\u017d\u00e1dost o zru\u0161en\u00ed p\u0159\u00edstupu k certifik\u00e1tu se nezda\u0159ila, proto\u017ee \u00fa\u010det nebyl nalezen.
-CWPKI2026W.useraction=Zkontrolujte identifik\u00e1tor URI certifika\u010dn\u00ed autority. Kontrolou souboru \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f ov\u011b\u0159\u00edte, zda certifik\u00e1t existuje.
+CWPKI2026W=CWPKI2026W: Slu\u017eba ACME nem\u016f\u017ee naj\u00edt \u00fa\u010det na certifika\u010dn\u00ed autorit\u011b ACME v identifik\u00e1toru URI {0}.
+CWPKI2026W.explanation=\u017d\u00e1dost se nezda\u0159ila, proto\u017ee \u00fa\u010det nebyl nalezen.
+CWPKI2026W.useraction=Zkontrolujte identifik\u00e1tor URI certifika\u010dn\u00ed autority.
 
-CWPKI2027E=CWPKI2027E: Cesta k souboru {0} pro slu\u017ebu ACME je null nebo pr\u00e1zdn\u00e1. Poskytnut\u00e1 cesta je '{1}'.
+CWPKI2027E=CWPKI2027E: Cesta k souboru {0} pro slu\u017ebu ACME je null nebo pr\u00e1zdn\u00e1. Zadan\u00e1 cesta je ''{1}''.
 CWPKI2027E.explanation=Cesta k souboru m\u00e1 hodnotu null nebo je pr\u00e1zdn\u00e1 a nelze ji pou\u017e\u00edt pro kl\u00ed\u010de dom\u00e9ny a \u00fa\u010dtu.
 CWPKI2027E.useraction=Zadejte platnou cestu k souboru v konfiguraci.
+
+CWPKI2028E=CWPKI2028E: Slu\u017eba ACME nemohla vytvo\u0159it novou relaci pro p\u0159ipojen\u00ed k certifika\u010dn\u00ed autorit\u011b ACME v identifik\u00e1toru URI {0}. Chyba: ''{1}''.
+CWPKI2028E.explanation=Nebylo mo\u017en\u00e9 kontaktovat certifika\u010dn\u00ed autoritu a nelze po\u017eadovat podepsan\u00fd certifik\u00e1t.
+CWPKI2028E.useraction=Podrobnosti o selh\u00e1n\u00ed najdete v chybov\u00e9 zpr\u00e1v\u011b. Zkontrolujte nakonfigurovan\u00fd identifik\u00e1tor URI certifika\u010dn\u00ed autority. Ov\u011b\u0159te, \u017ee k identifik\u00e1toru URI lze \u00fasp\u011b\u0161n\u011b p\u0159istupovat volaj\u00edc\u00edm serverem. Ov\u011b\u0159te, \u017ee volaj\u00edc\u00ed server m\u016f\u017ee obdr\u017eet odezvu od certifika\u010dn\u00ed autority.
+
+CWPKI2029E=CWPKI2029E: Slu\u017eba ACME nemohla p\u0159istupovat k \u00falo\u017ei\u0161ti kl\u00ed\u010d\u016f v cest\u011b k souboru {0} s c\u00edlem nal\u00e9zt alias certifik\u00e1tu {1}. Chyba: ''{2}''.
+CWPKI2029E.explanation=K \u00falo\u017ei\u0161ti kl\u00ed\u010d\u016f nelze p\u0159istupovat p\u0159i kontrole existuj\u00edc\u00edho certifik\u00e1tu. Po\u017eadavek na na\u010dten\u00ed nov\u00e9ho certifik\u00e1tu nebude dokon\u010den, proto\u017ee k \u00falo\u017ei\u0161ti kl\u00ed\u010d\u016f nelze p\u0159istoupit.
+CWPKI2029E.useraction=Podrobnosti o selh\u00e1n\u00ed najdete v chybov\u00e9 zpr\u00e1v\u011b. Ov\u011b\u0159te, \u017ee um\u00edst\u011bn\u00ed souboru je spr\u00e1vn\u00e9 a server m\u00e1 opr\u00e1vn\u011bn\u00ed k z\u00e1pisu souboru.
+
+CWPKI2030E=CWPKI2030E: Slu\u017eba ACME nenainstalovala certifik\u00e1t pod alias {0} do \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f {1}. Chyba: ''{2}''.
+CWPKI2030E.explanation=Slu\u017eba ACME p\u0159ijala nov\u00fd certifik\u00e1t od certifika\u010dn\u00ed autority, ale certifik\u00e1t nem\u016f\u017ee b\u00fdt nainstalov\u00e1n lok\u00e1ln\u011b.
+CWPKI2030E.useraction=Podrobnosti o selh\u00e1n\u00ed najdete v chybov\u00e9 zpr\u00e1v\u011b.
+
+CWPKI2031E=CWPKI2031E: N\u00e1zev subjektu certifik\u00e1tu {0} ve v\u00fdchoz\u00edm certifik\u00e1tu se s\u00e9riov\u00fdm \u010d\u00edslem {1} je neplatn\u00fd rozli\u0161uj\u00edc\u00ed n\u00e1zev. Chyba: ''{2}''.
+CWPKI2031E.explanation=N\u00e1zev subjektu certifik\u00e1tu mus\u00ed b\u00fdt form\u00e1tov\u00e1n jako rozli\u0161uj\u00edc\u00ed n\u00e1zev definovan\u00fd RFC 2253, podobn\u011b jako rozli\u0161uj\u00edc\u00ed n\u00e1zev, kter\u00fd se pou\u017e\u00edv\u00e1 na serveru LDAP.
+CWPKI2031E.useraction=Podrobnosti o selh\u00e1n\u00ed najdete v chybov\u00e9 zpr\u00e1v\u011b. Zru\u0161te p\u0159\u00edstup nebo odeberte neplatn\u00fd certifik\u00e1t.
+
+CWPKI2032E=CWPKI2032E: Alternativn\u00ed n\u00e1zvy subjektu certifik\u00e1tu ve v\u00fdchoz\u00edm certifik\u00e1tu se s\u00e9riov\u00fdm \u010d\u00edslem {0} nelze analyzovat. Chyba: ''{1}''.
+CWPKI2032E.explanation=Certifik\u00e1t je neplatn\u00fd certifik\u00e1t k\u00f3dovan\u00fd pomoc\u00ed DER nebo obsahuje nepodporovan\u00e9 funkce DER.
+CWPKI2032E.useraction=Podrobnosti o selh\u00e1n\u00ed najdete v chybov\u00e9 zpr\u00e1v\u011b. Zru\u0161te p\u0159\u00edstup nebo odeberte neplatn\u00fd certifik\u00e1t.
+
+CWPKI2033E=CWPKI2033E: Slu\u017eba ACME nem\u016f\u017ee aktualizovat \u00fa\u010det {0} pro certifika\u010dn\u00ed autoritu ACME v identifik\u00e1toru URI {1}. Chyba: ''{2}''.
+CWPKI2033E.explanation=\u017d\u00e1dost na aktualizaci \u00fa\u010dtu se nezda\u0159ila kv\u016fli uveden\u00e9 chyb\u011b.
+CWPKI2033E.useraction=Podrobnosti o selh\u00e1n\u00ed najdete v chybov\u00e9 zpr\u00e1v\u011b. Ov\u011b\u0159te, \u017ee soubor s kl\u00ed\u010di \u00fa\u010dtu je pro platn\u00fd \u00fa\u010det.
+
+CWPKI2034E=CWPKI2034E: Slu\u017eba ACME nemohla vytvo\u0159it instanci \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f. Chyba: ''{0}''.
+CWPKI2034E.explanation=Slu\u017eba ACME na\u010detla nov\u00fd certifik\u00e1t, ale vytvo\u0159en\u00ed nebo inicializace \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f pro ukl\u00e1d\u00e1n\u00ed certifik\u00e1tu se nezda\u0159ilo.
+CWPKI2034E.useraction=Podrobnosti o selh\u00e1n\u00ed najdete v chybov\u00e9 zpr\u00e1v\u011b.
+
+CWPKI2035E=CWPKI2035E: Slu\u017eba ACME nemohla ulo\u017eit podepsan\u00fd certifik\u00e1t do \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f {0}. Chyba: ''{1}''.
+CWPKI2035E.explanation=Certifik\u00e1t byl \u00fasp\u011b\u0161n\u011b na\u010dten z certifika\u010dn\u00ed autority, ale nelze jej ulo\u017eit lok\u00e1ln\u011b.
+CWPKI2035E.useraction=Podrobnosti o selh\u00e1n\u00ed najdete v chybov\u00e9 zpr\u00e1v\u011b. Ov\u011b\u0159te, \u017ee um\u00edst\u011bn\u00ed souboru \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f je spr\u00e1vn\u00e9 a server m\u00e1 opr\u00e1vn\u011bn\u00ed k z\u00e1pisu souboru.
+
+CWPKI2036E=CWPKI2036E: Vypr\u0161el \u010dasov\u00fd limit slu\u017eby ACME p\u0159i \u010dek\u00e1n\u00ed na spu\u0161t\u011bn\u00ed aplikace webov\u00e9 autorizace. Aplikace je vy\u017eadov\u00e1na k dokon\u010den\u00ed \u017e\u00e1dosti o certifik\u00e1t pomoc\u00ed certifika\u010dn\u00ed autority ACME. Slu\u017eba \u010dekala {0} min.
+CWPKI2036E.explanation=Aplikace pou\u017eit\u00e1 k dokon\u010den\u00ed \u017e\u00e1dosti o certifik\u00e1t se nespustila v o\u010dek\u00e1van\u00e9m \u010dasov\u00e9m r\u00e1mci. Podepsan\u00fd certifik\u00e1t nelze po\u017eadovat.
+CWPKI2036E.useraction=Vyhledejte v protokolu p\u0159edchoz\u00ed zpr\u00e1vy nebo chyby.
+
+CWPKI2037E=CWPKI2037E: Dom\u00e9ny pro slu\u017ebu ACME m\u011bly hodnotu Null nebo byly pr\u00e1zdn\u00e9.
+CWPKI2037E.explanation=Dom\u00e9ny byly bu\u010f Null, nebo pr\u00e1zdn\u00e9, a nelze je pou\u017e\u00edt.
+CWPKI2037E.useraction=Zadejte v konfiguraci nejm\u00e9n\u011b jednu nenulovou nepr\u00e1zdnou dom\u00e9nu.
+
+CWPKI2038I=CWPKI2038I: Slu\u017eba ACME zru\u0161ila p\u0159\u00edstup k certifik\u00e1tu se s\u00e9riov\u00fdm \u010d\u00edslem {0}. Certifik\u00e1t u\u017e nen\u00ed platn\u00fd.
+CWPKI2038I.explanation=Slu\u017eba ACME zru\u0161ila p\u0159\u00edstup k certifik\u00e1tu a certifik\u00e1t ji\u017e nen\u00ed platn\u00fd.
+CWPKI2038I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+CWPKI2039E=CWPKI2039E: Rozli\u0161uj\u00edc\u00ed n\u00e1zev (DN) ''{0}'' definovan\u00fd atributem subjectDN obsahuje hodnotu ''{1}'' cn RDN (Relative Distinguished Name), kter\u00e1 neodpov\u00edd\u00e1 \u017e\u00e1dn\u00e9 z definovan\u00fdch dom\u00e9n.
+CWPKI2039E.explanation=Je-li hodnota cn RDN uvedena v rozli\u0161uj\u00edc\u00edm n\u00e1zvu, mus\u00ed odpov\u00eddat jedn\u00e9 z definovan\u00fdch dom\u00e9n.
+CWPKI2039E.useraction=Zadejte bu\u010f hodnotu atributu subjectDN s hodnotou cn RDN, kter\u00e1 odpov\u00edd\u00e1 jedn\u00e9 z definovan\u00fdch dom\u00e9n, nebo zadejte hodnotu atributu subjectDN bez hodnoty cn RDN.
+
+CWPKI2040E=CWPKI2040E: Hodnota cn RDN (Relative Distinguished Name) nebyla prvn\u00ed hodnotou RDN v atributu konfigurace subjectDN.
+CWPKI2040E.explanation=Je-li definov\u00e1na hodnota RDN, mus\u00ed se jednat o prvn\u00ed hodnotu RDN v atributu konfigurace subjectDN.
+CWPKI2040E.useraction=Poskytn\u011bte hodnotu atributu subjectDN, kter\u00e1 bu\u010f definuje atribut cn jako prvn\u00ed hodnotu RDN, nebo atribut cn neobsahuje. Nen\u00ed-li atribut cn definov\u00e1n, pou\u017eije se jako hodnota cn RDN prvn\u00ed definovan\u00e1 dom\u00e9na.
+
+CWPKI2041E=CWPKI2041E: Typ relativn\u00edho rozli\u0161uj\u00edc\u00edho n\u00e1zvu (RDN) ''{0}'' v atributu konfigurace subjectDN nen\u00ed podporov\u00e1n. Jsou podporov\u00e1ny tyto typy RDN: cn, o, ou, c, st, l.
+CWPKI2041E.explanation=Hodnota atributu subjectDN obsahuje hodnotu RDN, kter\u00e1 nen\u00ed podporov\u00e1na.
+CWPKI2041E.useraction=Zadejte hodnotu atributu subjectDN, kter\u00e1 neobsahuje nepodporovan\u00e9 typy RDN. Jsou podporov\u00e1ny tyto typy RDN: cn, o, ou, c, st, l.
+
+CWPKI2042E=CWPKI2042E: Hodnota atributu ''{0}'' subjectDN nen\u00ed platn\u00fd rozli\u0161uj\u00edc\u00ed n\u00e1zev. Chyba: ''{1}''.
+CWPKI2042E.explanation=Atribut subjectDN mus\u00ed b\u00fdt platn\u00fd rozli\u0161uj\u00edc\u00ed n\u00e1zev.
+CWPKI2042E.useraction=Zadejte jako hodnotu atributu subjectDN platn\u00fd rozli\u0161uj\u00edc\u00ed n\u00e1zev.
+
+CWPKI2043E=CWPKI2043E: Hodnota ''{0}'' nen\u00ed platn\u00fdm relativn\u00edm rozli\u0161uj\u00edc\u00edm n\u00e1zvem (RDN). Chyba: ''{1}''.
+CWPKI2043E.explanation=Slu\u017eba ACME nebyla schopna vytvo\u0159it RDN z uveden\u00e9 hodnoty.
+CWPKI2043E.useraction=Ujist\u011bte se, \u017ee dom\u00e9na zahrnut\u00e1 v t\u00e9to hodnot\u011b, je platn\u00e1 hodnota RDN.
+
+CWPKI2044E=CWPKI2044E: Certifik\u00e1t nen\u00ed certifik\u00e1tem X.509. Typ certifik\u00e1tu je {0}.
+CWPKI2044E.explanation=Slu\u017eba ACME o\u010dek\u00e1v\u00e1, \u017ee v\u0161echny certifik\u00e1ty v \u0159et\u011bzu certifik\u00e1t\u016f budou certifik\u00e1ty X.509.
+CWPKI2044E.useraction=Ujist\u011bte se, \u017ee v\u0161echny certifik\u00e1ty v \u0159et\u011bzu certifik\u00e1t\u016f jsou certifik\u00e1ty X.509, a operaci opakujte.
+
+CWPKI2045W=CWPKI2045W: Certifik\u00e1t se s\u00e9riov\u00fdm \u010d\u00edslem {0}, kter\u00fd je podeps\u00e1n certifika\u010dn\u00ed autoritou ACME v identifik\u00e1toru URI {1}, je neplatn\u00fd do {2}.
+CWPKI2045W.explanation=TX_ACF20AAD007P01Platn\u00e9 obdob\u00ed na certifik\u00e1tu je v budoucnosti. Po\u017eadavky SSL/TLS se nezda\u0159\u00ed, dokud nejsou aktu\u00e1ln\u00ed datum a \u010das v rozsahu ur\u010den\u00e9m platn\u00fdm obdob\u00edm na certifik\u00e1tu.
+CWPKI2045W.useraction=Pokud je \u010das nespr\u00e1vn\u00fd, aktualizujte m\u00edstn\u00ed \u010das na serveru.
+
+CWPKI2046E=CWPKI2046E: D\u016fvod odvol\u00e1n\u00ed certifik\u00e1tu {0} je neplatn\u00fd. Podporovan\u00e9 p\u0159\u00ed\u010diny odvol\u00e1n\u00ed jsou: unspecified, key_compromise, ca_compromise, affiliation_changed, superseded, cessation_of_operations, certificate_hold, remove_from_crl, privilege_withdrawn a aa_compromise.
+CWPKI2046E.explanation=Ur\u010den\u00e1 p\u0159\u00ed\u010dina odvol\u00e1n\u00ed nen\u00ed podporov\u00e1na.
+CWPKI2046E.useraction=Zopakujte po\u017eadavek s platnou p\u0159\u00ed\u010dinou odvol\u00e1n\u00ed.
+
+CWPKI2047E=CWPKI2047E: Nezda\u0159ilo se zaregistrovat novou dvojici kl\u00ed\u010d\u016f \u00fa\u010dtu s certifika\u010dn\u00ed autoritou ACME. Chyba: ''{0}''.
+CWPKI2047E.explanation=Certifika\u010dn\u00ed autorita ACME vr\u00e1tila chybu b\u011bhem obnoven\u00ed dvojice kl\u00ed\u010d\u016f \u00fa\u010dtu.
+CWPKI2047E.useraction=Ujist\u011bte se, \u017ee existuj\u00edc\u00ed dvojice kl\u00ed\u010d\u016f \u00fa\u010dtu je platn\u00e1. Podrobnosti o selh\u00e1n\u00ed najdete v chybov\u00e9 zpr\u00e1v\u011b. 
+
+CWPKI2048I=CWPKI2048I: Obnoven\u00ed dvojice kl\u00ed\u010d\u016f \u00fa\u010dtu bylo \u00fasp\u011b\u0161n\u00e9. P\u016fvodn\u00ed dvojice kl\u00ed\u010d\u016f \u00fa\u010dtu byla z\u00e1lohov\u00e1na do souboru {0}.
+CWPKI2048I.explanation=P\u0159edchoz\u00ed dvojice kl\u00ed\u010d\u016f \u00fa\u010dtu ji\u017e nen\u00ed p\u0159idru\u017eena k \u00fa\u010dtu a je z\u00e1lohov\u00e1na do souboru. Nov\u00e1 dvojice kl\u00ed\u010d\u016f \u00fa\u010dtu nahradila star\u00fd soubor dvojice kl\u00ed\u010d\u016f \u00fa\u010dtu.
+CWPKI2048I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+CWPKI2049E=CWPKI2049E: Dvojice kl\u00ed\u010d\u016f \u00fa\u010dtu nebyla obnovena do existuj\u00edc\u00edho souboru dvojice kl\u00ed\u010d\u016f. Ru\u010dn\u011b nahra\u010fte soubor dvojice kl\u00ed\u010d\u016f \u00fa\u010dtu {0} dvojic\u00ed souboru kl\u00ed\u010d\u016f \u00fa\u010dtu {1}.
+CWPKI2049E.explanation=Dvojice kl\u00ed\u010d\u016f nebyla obnovena do star\u00e9ho souboru dvojice kl\u00ed\u010d\u016f.
+CWPKI2049E.useraction=Ru\u010dn\u011b nahra\u010fte soubory dvojic kl\u00ed\u010d\u016f \u00fa\u010dtu podle pokyn\u016f ve zpr\u00e1v\u011b.
+
+CWPKI2050E=CWPKI2050E: Existuj\u00edc\u00ed soubor dvojice kl\u00ed\u010d\u016f \u00fa\u010dtu se nezaz\u00e1lohoval b\u011bhem obnovov\u00e1n\u00ed dvojice kl\u00ed\u010d\u016f \u00fa\u010dtu. Chyba: ''{0}''.
+CWPKI2050E.explanation=Existuj\u00edc\u00ed soubor dvojice kl\u00ed\u010d\u016f \u00fa\u010dtu nelze zaz\u00e1lohovat. 
+CWPKI2050E.useraction=Ujist\u011bte se, \u017ee do adres\u00e1\u0159e, kter\u00fd obsahuje existuj\u00edc\u00ed soubor dvojice kl\u00ed\u010d\u016f \u00fa\u010dtu, lze zapisovat. Podrobnosti o selh\u00e1n\u00ed najdete v chybov\u00e9 zpr\u00e1v\u011b.
+
+CWPKI2051W=CWPKI2051W: Vlastnost renewBeforeExpiration byla nastavena na hodnotu {0}, kter\u00e1 je krat\u0161\u00ed ne\u017e minim\u00e1ln\u00ed doba obnoven\u00ed. Vlastnost renewBeforeExpiration je resetov\u00e1na na hodnotu {1}.
+CWPKI2051W.explanation=Hodnota pro vlastnost renewBeforeExpiration byla pod minim\u00e1ln\u00ed dobou platnosti pro \u017e\u00e1dost o nov\u00fd certifik\u00e1t. Je resetov\u00e1na na minim\u00e1ln\u00ed dobu obnoven\u00ed. To by mohlo m\u00edt negativn\u00ed vliv na v\u00fdkon serveru.
+CWPKI2051W.useraction=Chcete-li se t\u00e9to varovn\u00e9 zpr\u00e1v\u011b vyhnout, nastavte vlastnost restoreBeforeExpiration v konfiguraci serveru na dobu del\u0161\u00ed, ne\u017e je minim\u00e1ln\u00ed doba obnoven\u00ed. Chcete-li pou\u017e\u00edt v\u00fdchoz\u00ed nastaven\u00ed, odeberte vlastnost renewBeforeExpiration z konfigurace serveru.
+
+CWPKI2052I=CWPKI2052I: Platnost certifik\u00e1tu se s\u00e9riov\u00fdm \u010d\u00edslem {0} vypr\u0161\u00ed dne {1}. Slu\u017eba ACME po\u017e\u00e1d\u00e1 o nov\u00fd certifik\u00e1t od certifika\u010dn\u00ed autority ACME v identifik\u00e1toru URI {2}.
+CWPKI2052I.explanation=Slu\u017eba ACME po\u017eaduje nov\u00fd certifik\u00e1t zalo\u017een\u00fd na vlastnosti renewBeforeExpiration v konfiguraci serveru a datu vypr\u0161en\u00ed platnosti certifik\u00e1tu. Nen\u00ed-li vlastnost renewBeforeExpiration nakonfigurov\u00e1na, bude pou\u017eita v\u00fdchoz\u00ed hodnota.
+CWPKI2052I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+CWPKI2053W=CWPKI2053W: Platnost certifik\u00e1tu se s\u00e9riov\u00fdm \u010d\u00edslem {0} vypr\u0161ela dne {1}. Slu\u017eba ACME nen\u00ed nakonfigurov\u00e1na pro automatick\u00e9 vy\u017e\u00e1d\u00e1n\u00ed nov\u00e9ho certifik\u00e1tu.
+CWPKI2053W.explanation=Po\u017eadavky TLS/SSL nelze dokon\u010dit, proto\u017ee certifik\u00e1tu vypr\u0161ela platnost.
+CWPKI2053W.useraction=Aktualizujte vlastnost renewBeforeExpiration v konfiguraci serveru na hodnotu vy\u0161\u0161\u00ed ne\u017e 0, aby bylo mo\u017en\u00e9 automaticky po\u017e\u00e1dat o nov\u00fd certifik\u00e1t nebo pou\u017e\u00edt rozhran\u00ed ACME REST k vy\u017e\u00e1d\u00e1n\u00ed nov\u00e9ho certifik\u00e1tu.
+
+CWPKI2054W=CWPKI2054W: Vlastnost renewBeforeExpiration byla nastavena na hodnotu {0}, kter\u00e1 je rovna nebo del\u0161\u00ed ne\u017e obdob\u00ed platnosti certifik\u00e1tu se s\u00e9riov\u00fdm \u010d\u00edslem {1}. Obdob\u00ed platnosti certifik\u00e1tu je {2}. Vlastnost renewBeforeExpiration je resetov\u00e1na na hodnotu {3}.
+CWPKI2054W.explanation=Hodnota vlastnosti renewBeforeExpiration byla del\u0161\u00ed ne\u017e obdob\u00ed platnosti certifik\u00e1tu. Vlastnost renewBeforeExpiration je resetov\u00e1na na v\u00fdchoz\u00ed hodnotu.
+CWPKI2054W.useraction=Chcete-li se t\u00e9to varovn\u00e9 zpr\u00e1v\u011b vyhnout, nastavte vlastnost renewBeforeExpiration v konfiguraci serveru na hodnotu men\u0161\u00ed, ne\u017e je d\u00e9lka obdob\u00ed platnosti certifik\u00e1tu. Chcete-li pou\u017e\u00edt v\u00fdchoz\u00ed nastaven\u00ed, odeberte vlastnost renewBeforeExpiration.
+
+CWPKI2055W=CWPKI2055W: Vlastnost renewBeforeExpiration je nastavena na kr\u00e1tkou dobu. Slu\u017eba ACME vytv\u00e1\u0159\u00ed \u010dast\u00e9 po\u017eadavky na nov\u00fd certifik\u00e1t. Vlastnost renewBeforeExpiration je {0}.
+CWPKI2055W.explanation=\u010cast\u00e9 \u017e\u00e1dosti na certifik\u00e1ty mohou m\u00edt negativn\u00ed vliv na v\u00fdkon serveru. Po\u010det \u017e\u00e1dost\u00ed m\u016f\u017ee tak\u00e9 p\u0159ekro\u010dit po\u010det povolen\u00fd certifika\u010dn\u00ed autoritou.
+CWPKI2055W.useraction=Chcete-li se t\u00e9to varovn\u00e9 zpr\u00e1v\u011b vyhnout, nastavte vlastnost restoreBeforeExpiration v konfiguraci serveru na del\u0161\u00ed dobu. Chcete-li pou\u017e\u00edt v\u00fdchoz\u00ed nastaven\u00ed, odeberte vlastnost renewBeforeExpiration z konfigurace serveru.
+
+CWPKI2056W=CWPKI2056W: Obdob\u00ed platnosti certifik\u00e1tu se s\u00e9riov\u00fdm \u010d\u00edslem {0} je krat\u0161\u00ed ne\u017e minim\u00e1ln\u00ed doba obnoven\u00ed {1}. Doba platnosti certifikace je {2}. Vlastnost renewBeforeExpiration je resetov\u00e1na na hodnotu {3}.
+CWPKI2056W.explanation=Obdob\u00ed platnosti je krat\u0161\u00ed ne\u017e minim\u00e1ln\u00ed doba obnoven\u00ed. Platnost certifik\u00e1tu vypr\u0161\u00ed p\u0159ed po\u017eadavkem na nov\u00fd certifik\u00e1t.
+CWPKI2056W.useraction=Chcete-li se vypr\u0161en\u00ed platnosti certifik\u00e1tu vyhnout, vy\u017e\u00e1dejte si certifik\u00e1t s del\u0161\u00edm obdob\u00edm platnosti. Podporuje-li certifika\u010dn\u00ed autorita vlastn\u00ed obdob\u00ed platnosti, nastavte vlastnost validFor v konfiguraci serveru.
+
+CWPKI2057E=CWPKI2057E: Kontrola stavu odvol\u00e1n\u00ed certifik\u00e1tu nevytvo\u0159ila CertPathValidator pro ov\u011b\u0159en\u00ed platnosti certifik\u00e1tu. Chyba je ''{0}}''.
+CWPKI2057E.explanation=Kontrolor odvol\u00e1n\u00ed certifik\u00e1t\u016f mus\u00ed sestavit CertPathValidator pro kontrolu stavu odvol\u00e1n\u00ed OCSP a CRL.
+CWPKI2057E.useraction=P\u0159e\u010dt\u011bte si stavovou zpr\u00e1vu a chybu.
+
+CWPKI2058W=CWPKI2058W: Kontrola stavu odvol\u00e1n\u00ed certifik\u00e1t\u016f ignorovala ob\u010dasn\u00e9 poruchy. Kontrola odvol\u00e1n\u00ed m\u016f\u017ee b\u00fdt ne\u00fapln\u00e1. Selh\u00e1n\u00ed jsou: ''{0}''.
+CWPKI2058W.explanation=Ob\u010dasn\u00e9 poruchy zahrnuj\u00ed chyby s\u00edt\u011b. Slu\u017eba ACME ignoruje ob\u010dasn\u00e9 poruchy, proto\u017ee mohou b\u00fdt do\u010dasn\u00fdmi z\u00e1vadami. 
+CWPKI2058W.useraction=Jestli\u017ee se tato zpr\u00e1va objevuje pravideln\u011b, je t\u0159eba vy\u0159e\u0161it p\u0159\u00ed\u010dinu selh\u00e1n\u00ed, proto\u017ee by to mohlo br\u00e1nit \u0159\u00e1dn\u00e9 kontrole stavu odvol\u00e1n\u00ed. Jinak m\u016f\u017ee b\u00fdt toto varov\u00e1n\u00ed bezpe\u010dn\u011b ignorov\u00e1no. 
+
+CWPKI2059I=CWPKI2059I: Kontrola stavu odvol\u00e1n\u00ed certifik\u00e1t\u016f zjistila, \u017ee je certifik\u00e1t se s\u00e9riov\u00fdm \u010d\u00edslem {0} zru\u0161en\u00fd.
+CWPKI2059I.explanation=Slu\u017eba ACME zjistila, \u017ee certifik\u00e1t byl ozna\u010den jako zru\u0161en\u00fd bu\u010f odpov\u00eddac\u00edm modulem CRL, nebo OSCP. 
+CWPKI2059I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+CWPKI2060E=CWPKI2060E: Adresa URL OCSP z certifik\u00e1tu se s\u00e9riov\u00fdm \u010d\u00edslem {0} nebyla na\u010dtena. Chyba: {1}.
+CWPKI2060E.explanation=Adresa URL OCSP nebyla na\u010dtena.
+CWPKI2060E.useraction=Ujist\u011bte se, \u017ee certifik\u00e1t je platn\u00fdm certifik\u00e1tem X.509. Pokud nen\u00ed platn\u00fd, vy\u017e\u00e1dejte si nov\u00fd certifik\u00e1t.
+
+CWPKI2061E=CWPKI2061E: Distribu\u010dn\u00ed body CRL z certifik\u00e1tu se s\u00e9riov\u00fdm \u010d\u00edslem {0} nebyly na\u010dteny. Chyba: ''{1}''.
+CWPKI2061E.explanation=Distribu\u010dn\u00ed body CRL nebyly na\u010dteny.
+CWPKI2061E.useraction=Ujist\u011bte se, \u017ee certifik\u00e1t je platn\u00fdm certifik\u00e1tem X.509. Pokud nen\u00ed platn\u00fd, vy\u017e\u00e1dejte si nov\u00fd certifik\u00e1t.
+
+CWPKI2062E=CWPKI2062E: Adresa URL odpov\u00eddac\u00edho modulu OCSP {0} definovan\u00e1 v konfiguraci serveru nen\u00ed platn\u00fdm identifik\u00e1torem URI. Je-li definov\u00e1n, mus\u00ed se jednat o platn\u00fd identifik\u00e1tor URI pro potla\u010den\u00ed adresy URL odpov\u00eddac\u00edho modulu OSCRP obsa\u017een\u00e9 v certifik\u00e1tu.
+CWPKI2062E.explanation=Kontrola odvol\u00e1n\u00ed certifik\u00e1t\u016f vy\u017eaduje platnou adresu URL odpov\u00eddac\u00edho modulu OCSP.
+CWPKI2062E.useraction=Zadejte platnou adresu URL odpov\u00eddac\u00edho modulu OCSP v konfiguraci serveru.

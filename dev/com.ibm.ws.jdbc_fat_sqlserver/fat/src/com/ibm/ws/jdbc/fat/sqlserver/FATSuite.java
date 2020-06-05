@@ -23,9 +23,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 
 @RunWith(Suite.class)
-@SuiteClasses({
-                SQLServerTest.class
-})
+@SuiteClasses(SQLServerTest.class)
 public class FATSuite {
 
     static MSSQLServerContainer<?> sqlserver = new MSSQLServerContainer<>("mcr.microsoft.com/mssql/server:2019-CU2-ubuntu-16.04")//

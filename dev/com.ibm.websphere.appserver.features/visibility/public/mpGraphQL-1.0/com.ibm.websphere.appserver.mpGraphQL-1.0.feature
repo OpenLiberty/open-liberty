@@ -19,6 +19,6 @@ Subsystem-Name: MicroProfile GraphQL 1.0
  com.ibm.ws.org.reactivestreams.reactive-streams.1.0
 #already provided by kernel...
 #com.ibm.ws.org.jboss.jandex, \
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

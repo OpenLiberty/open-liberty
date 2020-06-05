@@ -44,7 +44,6 @@ import javax.naming.ldap.Rdn;
 import org.shredzone.acme4j.Account;
 import org.shredzone.acme4j.Account.EditableAccount;
 import org.shredzone.acme4j.AccountBuilder;
-import org.shredzone.acme4j.AcmeResource;
 import org.shredzone.acme4j.Authorization;
 import org.shredzone.acme4j.Certificate;
 import org.shredzone.acme4j.Login;
@@ -691,8 +690,13 @@ public class AcmeClient {
 				/*
 				 * If there is a key file, read it
 				 */
-				try (FileReader fr = new FileReader(accountKeyFile)) {
-					return KeyPairUtils.readKeyPair(fr);
+				try {
+					FileReader fr = new FileReader(accountKeyFile);
+					try {
+						return KeyPairUtils.readKeyPair(fr);
+					} finally {
+						fr.close();
+					}
 				} catch (IOException e) {
 					throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2021E", accountKeyFile, e.getMessage()), e);
 				}
@@ -726,8 +730,13 @@ public class AcmeClient {
 			/*
 			 * If there is a key file, read it
 			 */
-			try (FileReader fr = new FileReader(domainKeyFile)) {
-				return KeyPairUtils.readKeyPair(fr);
+			try {
+				FileReader fr = new FileReader(domainKeyFile);
+				try {
+					return KeyPairUtils.readKeyPair(fr);
+				} finally {
+					fr.close();
+				}
 			} catch (IOException e) {
 				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2020E", domainKeyFile, e.getMessage()), e);
 			}
@@ -792,8 +801,13 @@ public class AcmeClient {
 					}
 				}
 				if (accountKeyFile != null) {
-					try (FileWriter fw = new FileWriter(accountKeyFile)) {
-						KeyPairUtils.writeKeyPair(accountKeyPair, fw);
+					try {
+						FileWriter fw = new FileWriter(accountKeyFile);
+						try {
+							KeyPairUtils.writeKeyPair(accountKeyPair, fw);
+						} finally {
+							fw.close();
+						}
 					} catch (IOException e) {
 						throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2023E", acmeConfig.getDirectoryURI(),
 								accountKeyFile, e.getMessage()), e);
@@ -853,8 +867,13 @@ public class AcmeClient {
 				}
 			}
 			if (domainKeyFile != null) {
-				try (FileWriter fw = new FileWriter(domainKeyFile)) {
-					KeyPairUtils.writeKeyPair(domainKeyPair, fw);
+				try {
+					FileWriter fw = new FileWriter(domainKeyFile);
+					try {
+						KeyPairUtils.writeKeyPair(domainKeyPair, fw);
+					} finally {
+						fw.close();
+					}
 				} catch (IOException e) {
 					throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2022E", acmeConfig.getDirectoryURI(),
 							domainKeyFile, e.getMessage()), e);

@@ -392,6 +392,8 @@ public class AcmeConfigTest {
 		 */
 		Map<String, Object> properties = getBasicConfig();
 		properties.put(AcmeConstants.RENEW_BEFORE_EXPIRATION, -1L);
+		properties.put(AcmeConstants.CERT_CHECKER_SCHEDULE, -1L);
+		properties.put(AcmeConstants.CERT_CHECKER_ERROR_SCHEDULE, -1L);
 
 		/*
 		 * Instantiate the ACME configuration.
@@ -404,6 +406,8 @@ public class AcmeConfigTest {
 
 		assertEquals(0L, acmeConfig.getRenewBeforeExpirationMs().longValue());
 		assertFalse("Auto-renewal should be disabled", acmeConfig.isAutoRenewOnExpiration());
+		assertEquals(0L, acmeConfig.getCertCheckerScheduler().longValue());
+		assertEquals(AcmeConstants.RENEW_CERT_MIN, acmeConfig.getCertCheckerErrorScheduler().longValue());
 	}
 
 	@Test
@@ -421,6 +425,8 @@ public class AcmeConfigTest {
 		properties.put(AcmeConstants.ORDER_POLL_TIMEOUT, -4L);
 		properties.put(AcmeConstants.VALID_FOR, -5L);
 		properties.put(AcmeConstants.RENEW_BEFORE_EXPIRATION, AcmeConstants.RENEW_CERT_MIN - 10);
+		properties.put(AcmeConstants.CERT_CHECKER_SCHEDULE, AcmeConstants.RENEW_CERT_MIN - 10);
+		properties.put(AcmeConstants.CERT_CHECKER_ERROR_SCHEDULE, AcmeConstants.RENEW_CERT_MIN - 10);
 
 		/*
 		 * Instantiate the ACME configuration.
@@ -435,6 +441,8 @@ public class AcmeConfigTest {
 		assertEquals(null, acmeConfig.getValidForMs());
 		assertEquals(AcmeConstants.RENEW_CERT_MIN, acmeConfig.getRenewBeforeExpirationMs().longValue());
 		assertTrue("Auto-renewal should be enabled", acmeConfig.isAutoRenewOnExpiration());
+		assertEquals(AcmeConstants.RENEW_CERT_MIN, acmeConfig.getCertCheckerScheduler().longValue());
+		assertEquals(AcmeConstants.RENEW_CERT_MIN, acmeConfig.getCertCheckerErrorScheduler().longValue());
 	}
 
 	private Map<String, Object> getBasicConfig() {

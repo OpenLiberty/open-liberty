@@ -51,6 +51,9 @@ fat.project: true
 tested.features:\
 	servlet-4.0,\
 	cdi-2.0,\
+	servlet-5.0,\
+	jsp-3.0,\
+	cdi-3.0,\
 
 -buildpath: \
     com.ibm.websphere.javaee.cdi.1.2;version=latest,\

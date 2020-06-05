@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -40,6 +41,7 @@ import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebBrowser;
 import com.ibm.ws.fat.util.browser.WebResponse;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -66,8 +68,10 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * <ul>
  * <li>Decorator (not implemented)
  * </ul>
+ * Temporarily skipped for EE9 jakarta until cdi-3.0 feature is developed
  */
 @RunWith(FATRunner.class)
+@SkipForRepeat(EE9_FEATURES)
 public class CDIUpgradeHandlerTest extends LoggingTest {
     
     // Server instance ...

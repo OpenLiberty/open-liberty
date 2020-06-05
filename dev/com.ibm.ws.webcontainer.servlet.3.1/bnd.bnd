@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -121,5 +121,6 @@ jakartaeeMe: true
     org.jmock:jmock-legacy;version=2.5.0, \
     com.ibm.ws.org.objenesis:objenesis;version=1.0, \
     cglib:cglib-nodep;version=3.3.0, \
+    com.ibm.ws.threading,\
     com.ibm.websphere.javaee.annotation.1.2;version=latest,\
     com.ibm.ws.javaee.dd.common;version=latest

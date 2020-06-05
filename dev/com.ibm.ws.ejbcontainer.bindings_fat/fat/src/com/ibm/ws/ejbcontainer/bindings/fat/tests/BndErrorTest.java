@@ -84,8 +84,14 @@ public class BndErrorTest extends FATServletClient {
             String message = "CWWKZ0106E:";
             assertNotNull("Application " + appName + " should have been stopped", server.waitForStringInLogUsingMark(message));
         } else {
+            String message = null;
             // check for us to switch back to default bindings
-            String message = "CNTR0167I:.*BndErrorEJB.jar/TargetBean#";
+            if (appNum == 26 || appNum == 27) {
+                // 2X default binding
+                message = "CNTR0167I:.*local:ejb/TargetBean";
+            } else {
+                message = "CNTR0167I:.*BndErrorEJB.jar/TargetBean#";
+            }
             assertNotNull("Application " + appName + " should have still bound default binding", server.waitForStringInLogUsingMark(message));
 
             message = "CWWKZ0001I:";

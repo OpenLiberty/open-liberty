@@ -28,6 +28,7 @@ import java.security.interfaces.RSAPrivateKey;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
@@ -134,6 +135,7 @@ public class SolicitedTest {
     private static final AuthnRequest authnRequest = mockery.mock(AuthnRequest.class, "authnRequest");
 
     private static final String PROVIDER_ID = "b07b804c";
+    private static final String DEFAULT_KS_PASS = "Liberty";
 
     private static List<SingleSignOnService> listSingleSignOnServices = new ArrayList<SingleSignOnService>();
     private static List<ContentReference> listContentReference = new ArrayList<ContentReference>();
@@ -206,12 +208,15 @@ public class SolicitedTest {
                 will(returnValue(null));
                 one(ssoService).getAcsCookieCache(PROVIDER_ID);
                 will(returnValue(cache));
+                allowing(ssoService).getDefaultKeyStorePassword();
+                will(returnValue(DEFAULT_KS_PASS));
 
                 one(response).setStatus(with(any(Integer.class)));
                 one(response).setHeader(with(any(String.class)), with(any(String.class)));
                 one(response).setHeader(with(any(String.class)), with(any(String.class)));
                 one(response).setDateHeader(with(any(String.class)), with(any(Integer.class)));
                 one(response).setContentType(with(any(String.class)));
+                allowing(response).addCookie(with(any(Cookie.class)));
                 one(response).getWriter();
                 will(returnValue(out));
 
@@ -281,6 +286,7 @@ public class SolicitedTest {
                 allowing(webAppSecConfig).getSSORequiresSSL();
                 will(returnValue(true));
                 allowing(webAppSecConfig).getSameSiteCookie();
+                allowing(webAppSecConfig).createReferrerURLCookieHandler();
             }
         });
 
@@ -312,6 +318,8 @@ public class SolicitedTest {
                 will(returnValue(metadataProvider));
                 one(ssoConfig).isAuthnRequestsSigned();
                 will(returnValue(false));
+                one(ssoService).getPrivateKey();
+                will(returnValue(null));
             }
         });
 
@@ -570,7 +578,7 @@ public class SolicitedTest {
     }
 
     @Test
-    public void testGetAuthnRequestString_BadDocument() throws XMLParserException {
+    public void testGetAuthnRequestString_BadDocument() throws XMLParserException, KeyStoreException, CertificateException {
         final XMLParserException e = new XMLParserException();
         final ParserPool badParserPool = mockery.mock(ParserPool.class, "badParserPool");
         Configuration.setParserPool(badParserPool);
@@ -581,6 +589,12 @@ public class SolicitedTest {
                 will(throwException(e));
                 allowing(request).getAttribute("FormLogoutExitPage");
                 will(returnValue(null));
+                allowing(ssoService).getPrivateKey();
+                //will(returnValue(null));
+                //one(ssoService).getConfig();
+                //will(returnValue(ssoConfig));
+                allowing(ssoConfig).getKeyStoreRef();
+                will(returnValue("unitTestKeyStoreRef"));
             }
         });
 

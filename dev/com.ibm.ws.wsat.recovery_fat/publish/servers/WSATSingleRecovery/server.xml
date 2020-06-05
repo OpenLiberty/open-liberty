@@ -26,4 +26,7 @@
     />
     
     <transaction totalTranLifetimeTimeout="30s"></transaction>
+
+    <javaPermission name="*" actions="*" className="java.security.AllPermission"/>
+
 </server>

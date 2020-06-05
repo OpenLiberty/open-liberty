@@ -65,4 +65,5 @@ Export-Package: \
   org.apache.http.params;version="4.4.9", \
   org.apache.http.pool;version="4.4.9", \
   org.apache.http.protocol;version="4.4.9", \
+  org.apache.http.ssl;version="4.4.9", \
   org.apache.http.util;version="4.4.9"

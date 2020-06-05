@@ -11,6 +11,7 @@
 package test.server.config;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -35,6 +36,7 @@ public class MergedConfigTests extends ServletRunner {
     private static final String IGNORE_REPLACE_SERVER = "merge/ignoreReplace.xml";
     private static final String FOUR_LEVEL_REPLACE_SERVER = "merge/fourLevelReplace.xml";
     private static final String FOUR_LEVEL_IGNORE_SERVER = "merge/fourLevelIgnore.xml";
+    private static final String IGNORE_ONCONFLICT_SERVER = "merge/parent.xml";
 
     @Override
     protected String getContextRoot() {
@@ -129,6 +131,15 @@ public class MergedConfigTests extends ServletRunner {
     public void testDefaultInstances3() throws Exception {
         // Verify onConflict="merge_when_does_not_exist". Works with any server.xml from these tests, so no need to update it.
         test(server);
+    }
+
+    @Test
+    public void testOnConflictIGNORE() throws Exception {
+        server.setMarkToEndOfLog();
+        server.setServerConfigurationFile(IGNORE_ONCONFLICT_SERVER);
+        server.waitForConfigUpdateInLogUsingMark(null);
+
+        assertNull(server.verifyStringNotInLogUsingMark("CWWKL0004E.*", 20));
     }
 
     @BeforeClass

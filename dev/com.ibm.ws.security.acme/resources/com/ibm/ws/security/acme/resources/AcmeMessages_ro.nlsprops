@@ -23,75 +23,90 @@
 # The term "certificate authority" is in reference to SSL/TLS certificate providers.
 # The URI parameter in these messages is for the ACME certificate authority, such as https://sampleCAProvider.org/directory
 
-CWPKI2001E=CWPKI2001E: Autoritatea de certificare ACME de la URI-ul {0} a r\u0103spuns c\u0103 provocarea de autorizare a e\u015fuat pentru domeniul {1}. Starea cererii de autorizare este {2}.  Eroarea este {3}.
-CWPKI2001E.explanation=Starea cererii de autorizare (provocare) a indicat c\u0103 cererea de identificare a autoriz\u0103rii a e\u015fuat \u015fi un certificat nu poate fi creat.
+###############################################################################
+# REST response messages
+###############################################################################
+REST_METHOD_NOT_SUPPORTED=Metoda HTTP ''{0}'' nu este suportat\u0103.
+REST_OPERATION_NOT_SUPPORTED=Opera\u0163ia ''{0}'' nu este suportat\u0103.
+REST_FORBIDDEN=Interzis
+REST_INVALID_CONTENT_TYPE=Antetul content-type al cererii nu a fost 'application/json'.
+REST_MISSING_OPERATION=Opera\u0163ia nu a fost specificat\u0103 pentru cerere.
+REST_NO_ACME_SERVICE=Nu a fost \u00eenregistrat un serviciu AcmeProvider.
+###############################################################################
+
+FILE_NOT_READABLE=fi\u015fierul nu poate fi citit
+FILE_NOT_WRITABLE=fi\u015fierul sau directorul s\u0103u p\u0103rinte nu poate fi scris
+
+
+CWPKI2001E=CWPKI2001E: Autoritatea de certificare ACME de la URI-ul {0} a r\u0103spuns c\u0103 cererea de identificare a e\u015fuat pentru domeniul {1}. Starea cererii de identificare este {2}.  Eroarea este ''{3}''.
+CWPKI2001E.explanation=Starea cererii de identificare (challenge) a indicat c\u0103 cererea de identificare pentru autorizare a e\u015fuat \u015fi nu poate fi creat un certificat.
 CWPKI2001E.useraction=Examina\u0163i mesajul de stare \u015fi eroarea pentru detalii despre e\u015fec.
 
-CWPKI2002E=CWPKI2002E: Sondarea serviciului ACME a generat timeout \u00een timp ce se verifica pentru o cerere de autorizare (provocare) de succes pentru domeniul {0} de la autoritatea de certificare ACME de la URI-ul {1}. Starea este {2}. Timeout-ul configurat este {3}.
-CWPKI2002E.explanation=Cererea de autorizare (provocare) a autorit\u0103\u0163ii de certificare nu a fost validat\u0103 \u00een timpul configurat \u015fi nu poate fi creat un certificat.
+CWPKI2002E=CWPKI2002E: Sondarea serviciului ACME a generat timeout \u00een timp ce se verifica o cerere de identificare (challenge) reu\u015fit\u0103 pentru domeniul {0} de la autoritatea de certificare ACME de la URI-ul {1}. Starea este {2}. Timeout-ul configurat este {3}.
+CWPKI2002E.explanation=Cererea de identificare a autorit\u0103\u0163ii de certificare nu a fost validat\u0103 \u00een timpul configurat \u015fi nu poate fi creat un certificat.
 CWPKI2002E.useraction=Examina\u0163i URI-ul autorit\u0103\u0163ii de certificare configurat. Verifica\u0163i c\u0103 URI-ul poate fi accesat cu succes de c\u0103tre serverul care apeleaz\u0103. Verifica\u0163i c\u0103 serverul care apeleaz\u0103 poate primi un r\u0103spuns de la autoritatea de certificare. Examina\u0163i codul de stare. Unele autorit\u0103\u0163i de certificare ar putea necesita un timeout mai lung.
 
-CWPKI2003E=CWPKI2003E: Autoritatea de certificare ACME de la URI-ul {0} a r\u0103spuns c\u0103 a e\u015fuat comanda de certificare pentru domeniile {1}. Starea comenzii este {2}. Eroarea este {3}.
+CWPKI2003E=CWPKI2003E: Autoritatea de certificare ACME de la URI-ul {0} a r\u0103spuns c\u0103 a e\u015fuat comanda de certificare pentru domeniile {1}. Starea comenzii este {2}. Eroarea este ''{3}''.
 CWPKI2003E.explanation=Starea comenzii a indicat faptul c\u0103 cererea de comand\u0103 de autorizare a e\u015fuat \u015fi un certificat nu poate fi creat.
 CWPKI2003E.useraction=Examina\u0163i mesajul de stare \u015fi eroarea pentru detalii despre e\u015fec.
 
-CWPKI2004E=CWPKI2004E: Sondarea serviciului ACME a generat timeout \u00een timp ce se verifica pentru o comand\u0103 de succes pentru domeniul {0} de la autoritatea de certificare ACME de la URI-ul {1}. Starea este {2}. Timeout-ul configurat este {3}.
+CWPKI2004E=CWPKI2004E: Sondarea serviciului ACME a generat timeout \u00een timp ce se verifica pentru o comand\u0103 de succes pentru domeniul {0} de la autoritatea de certificare ACME de la URI-ul {1}. Starea este {2}.  Timeout-ul configurat este {3}.
 CWPKI2004E.explanation=Cererea de comand\u0103 de certificat domeniul la autoritatea de certificare nu s-a finalizat \u00een timpul configurat \u015fi nu poate fi creat un certificat.
 CWPKI2004E.useraction=Examina\u0163i URI-ul autorit\u0103\u0163ii de certificare configurat. Verifica\u0163i c\u0103 URI-ul poate fi accesat cu succes de c\u0103tre serverul care apeleaz\u0103. Verifica\u0163i c\u0103 serverul care apeleaz\u0103 poate primi un r\u0103spuns de la autoritatea de certificare. Examina\u0163i codul de stare. Unele autorit\u0103\u0163i de certificare ar putea necesita un timeout mai lung.
 
-CWPKI2005E=CWPKI2005E: Autoriza\u0163ia returnat\u0103 de la autoritatea de certificare ACME de la URI-ul {0} nu a inclus un tip de provocare valid. Tipurile de provocare suportate includ {1}.
-CWPKI2005E.explanation=Autoritatea de certificare a returnat un tip de provocare care nu este suportat momentan. Verifica\u0163i dac\u0103 autoritatea de certificare folose\u015fte un tip \u00een lista suportat\u0103.
-CWPKI2005E.useraction=Selecta\u0163i o autoritate de certificare care furnizeaz\u0103 un tip de provocare suportat.
+CWPKI2005E=CWPKI2005E: Autoriza\u0163ia returnat\u0103 de la autoritatea de certificare ACME de la URI-ul {0} nu a inclus un tip de cerere de identificare valid. Tipurile de cerere de identificare suportate includ {1}.
+CWPKI2005E.explanation=Autoritatea de certificare a returnat un tip de cerere de identificare care nu este suportat momentan. Verifica\u0163i dac\u0103 autoritatea de certificare folose\u015fte un tip din lista suportat\u0103.
+CWPKI2005E.useraction=Selecta\u0163i o autoritate de certificare care furnizeaz\u0103 un tip de cerere de identificare suportat.
 
 CWPKI2006I=CWPKI2006I: Autoritatea de certificare ACME de la URI-ul {0} a furnizat urm\u0103torii termeni de serviciu: {1}.
 CWPKI2006I.explanation=Autoritatea de certificare a furnizat termenii de serviciu.
-CWPKI2006I.useraction= Examina\u0163i termenii de serviciu furniza\u0163i.
+CWPKI2006I.useraction=Examina\u0163i termenii de serviciu furniza\u0163i.
 
-CWPKI2007I=CWPKI2007I: Serviciul ACME a instalat un certificat care este semnat de autoritatea de certificare ACME de la URI-ul {0}. Data expir\u0103rii este {1}.
+CWPKI2007I=CWPKI2007I: Serviciul ACME a instalat un certificat cu num\u0103rul de serie {0} care este semnat de c\u0103tre autoritatea de certificare ACME la URI-ul {1}. Data expir\u0103rii este {2}.
 CWPKI2007I.explanation=Serviciul ACME a extras \u015fi a instalat cu succes un certificat de la autoritatea de certificare configurat\u0103.
 CWPKI2007I.useraction=Nicio ac\u0163iune nu este necesar\u0103.
 
-CWPKI2008E=CWPKI2008E: URI-ul directorului autorit\u0103\u0163ii de certificare ACME trebuie s\u0103 fie un URI valid. URI-ul primit a fost null sau gol. URI-ul primit a fost '{0}'.
+CWPKI2008E=CWPKI2008E: URI-ul directorului autorit\u0103\u0163ii de certificare ACME trebuie s\u0103 fie un URI valid. URI-ul primit a fost null sau gol. URI-ul primit a fost ''{0}''.
 CWPKI2008E.explanation=URI-ul directorului autorit\u0103\u0163ii de certificare nu a fost configurat corect.
 CWPKI2008E.useraction=Introduce\u0163i \u00een configura\u0163ie un URI de director de autoritate de certificare ACME valid.
 
-CWPKI2009E=CWPKI2009E: Cererea de autorizare (provocare) la autoritatea de certificare ACME de la URI-ul {0} a e\u015fuat. Eroare este {1}.
-CWPKI2009E.explanation=Cererea de autorizare (provocarea) a e\u015fuat \u015fi un certificat nu poate fi creat.
+CWPKI2009E=CWPKI2009E: Cererea de identificare la autoritatea de certificare ACME de la URI-ul {0} a e\u015fuat. Eroarea este ''{1}''.
+CWPKI2009E.explanation=Cererea de identificare (challenge) a e\u015fuat \u015fi nu poate fi creat un certificat.
 CWPKI2009E.useraction=Examina\u0163i mesajul de eroare pentru detalii despre e\u015fec.
 
-CWPKI2010E=CWPKI2010E: Actualizarea provoc\u0103rii la autoritatea de certificare ACME de la URI-ul {0} a e\u015fuat. Eroarea este {1}.
-CWPKI2010E.explanation=Actualizarea cererii de autorizare (provocarea) a e\u015fuat \u015fi un certificat nu poate fi actualizat.
+CWPKI2010E=CWPKI2010E: Actualizarea cererii de identificare pentru autoritatea de certificare ACME de la URI-ul {0} a e\u015fuat. Eroarea este ''{1}''.
+CWPKI2010E.explanation=Actualizarea cererii de identificare (challenge) a e\u015fuat \u015fi nu poate fi actualizat un certificat.
 CWPKI2010E.useraction=Examina\u0163i mesajul de eroare pentru detalii despre e\u015fec.
 
-CWPKI2011E=CWPKI2011E: Serviciul ACME a e\u015fuat s\u0103 creeze comanda de certificat pentru autoritatea de certificare ACME de la URI-ul {0}. Eroare este {1}.
+CWPKI2011E=CWPKI2011E: Serviciul ACME nu a reu\u015fit s\u0103 creeze comanda de certificat pentru autoritatea de certificare ACME de la URI-ul {0}. Eroarea este ''{1}''.
 CWPKI2011E.explanation=A e\u015fuat crearea comenzii de certificat \u015fi nu poate fi cerut un certificat semnat.
 CWPKI2011E.useraction=Examina\u0163i mesajul de eroare pentru detalii despre e\u015fec.
 
-CWPKI2012E=CWPKI2012E: Serviciul ACME a e\u015fuat s\u0103 semneze cererea de semnare certificat pentru autoritatea de certificare ACME la URI-ul {0}. Eroare este {1}.
+CWPKI2012E=CWPKI2012E: Serviciul ACME nu a reu\u015fit s\u0103 semneze cererea de semnare certificat pentru autoritatea de certificare ACME la URI-ul {0}. Eroarea este ''{1}''.
 CWPKI2012E.explanation=Comanda de certificat a fost creat\u0103, dar semnarea cererii a e\u015fuat \u015fi nu poate fi cerut un certificat semnat.
 CWPKI2012E.useraction=Examina\u0163i mesajul de eroare pentru detalii despre e\u015fec.
 
-CWPKI2013E=CWPKI2013E: Cererea de semnare a certificatului a fost creat\u0103 \u015fi semnat\u0103, dar cererea de comand\u0103 c\u0103tre autoritatea de certificare ACME de la URI-ul {0} a e\u015fuat. Eroare este {1}.
+CWPKI2013E=CWPKI2013E: Cererea de semnare a certificatului a fost creat\u0103 \u015fi semnat\u0103, dar cererea de comand\u0103 c\u0103tre autoritatea de certificare ACME de la URI-ul {0} a e\u015fuat. Eroarea este ''{1}''.
 CWPKI2013E.explanation=Comanda de certificat a fost creat\u0103 \u015fi semnat\u0103, dar comandarea certificatului de la autoritatea de certificare a e\u015fuat.
 CWPKI2013E.useraction=Examina\u0163i mesajul de eroare pentru detalii despre e\u015fec.
 
-CWPKI2014E=CWPKI2014E: Cererea de semnare certificat pentru autoritatea de certificare ACME de la URI-ul {0} a fost creat\u0103 \u015fi semnat\u0103, dar codarea cererii a e\u015fuat. Eroare este {1}.
+CWPKI2014E=CWPKI2014E: Cererea de semnare certificat pentru autoritatea de certificare ACME de la URI-ul {0} a fost creat\u0103 \u015fi semnat\u0103, dar codarea cererii a e\u015fuat. Eroarea este ''{1}''.
 CWPKI2014E.explanation=Codarea cererii de semnare certificat a e\u015fuat \u015fi nu poate fi creat un certificat semnat.
 CWPKI2014E.useraction=Examina\u0163i mesajul de eroare pentru detalii despre e\u015fec.
 
-CWPKI2015E=CWPKI2015E: Cererea de stare a comenzii de certificat ACME de la autoritatea de certificare ACME de la URI-ul {0} a e\u015fuat. Eroare este {1}.
+CWPKI2015E=CWPKI2015E: Cererea de stare a comenzii de certificat ACME de la autoritatea de certificare ACME de la URI-ul {0} a e\u015fuat. Eroarea este ''{1}''.
 CWPKI2015E.explanation=O comand\u0103 este finalizat\u0103 asincron de c\u0103tre autoritatea de certificare. Serviciul ACME a primit o eroare la verificarea st\u0103rii comenzii. Nu poate fi cerut un certificat semnat.
 CWPKI2015E.useraction=Examina\u0163i mesajul de eroare pentru detalii despre e\u015fec.
 
-CWPKI2016E=CWPKI2016E: Cererea de serviciu ACME pentru un cont existent de la autoritatea de certificare ACME de la URI-ul {0} a e\u015fuat. Eroare este {1}.
+CWPKI2016E=CWPKI2016E: Cererea de serviciu ACME pentru un cont existent de la autoritatea de certificare ACME de la URI-ul {0} a e\u015fuat. Eroarea este ''{1}''.
 CWPKI2016E.explanation=Nu a fost g\u0103sit un cont existent sau a ap\u0103rut o alt\u0103 eroare. Modific\u0103rile nu pot fi f\u0103cute la cont sau la certificat.
 CWPKI2016E.useraction=Examina\u0163i mesajul de eroare pentru detalii despre e\u015fec. Verifica\u0163i c\u0103 URI-ul poate fi accesat cu succes de c\u0103tre serverul care apeleaz\u0103. Verifica\u0163i c\u0103 serverul care apeleaz\u0103 poate primi un r\u0103spuns de la autoritatea de certificare.
 
-CWPKI2017E=CWPKI2017E: Cererea de serviciu ACME pentru termenii de serviciu de la autoritatea de certificare ACME de la URI-ul {0} a e\u015fuat. Eroare este {1}.
+CWPKI2017E=CWPKI2017E: Cererea de serviciu ACME pentru termenii de serviciu de la autoritatea de certificare ACME de la URI-ul {0} a e\u015fuat. Eroarea este ''{1}''.
 CWPKI2017E.explanation=Termenii de serviciu pentru autoritatea de certificare ACME nu pot fi jurnaliza\u0163i. 
 CWPKI2017E.useraction=Examina\u0163i mesajul de eroare pentru detalii despre e\u015fec. Vizita\u0163i site-ul web al autorit\u0103\u0163ii de certificare ACME pentru a examina termenii de serviciu.
 
-CWPKI2018E=CWPKI2018E: Contul de utilizator nu a putut fi creat pe autoritatea de certificare ACME de la URI-ul {0}. Eroare este {1}.
+CWPKI2018E=CWPKI2018E: Contul de utilizator nu a putut fi creat pe autoritatea de certificare ACME de la URI-ul {0}. Eroarea este ''{1}''.
 CWPKI2018E.explanation=Cererea de creare a contului de utilizator a e\u015fuat.
 CWPKI2018E.useraction=Examina\u0163i mesajul de eroare pentru detalii despre e\u015fec.
 
@@ -99,34 +114,174 @@ CWPKI2019I=CWPKI2019I: URL-ul de cont furnizat de c\u0103tre autoritatea de cert
 CWPKI2019I.explanation=Contul a fost creat cu succes.
 CWPKI2019I.useraction=Nicio ac\u0163iune nu este necesar\u0103.
 
-CWPKI2020E=CWPKI2020E: Serviciul ACME nu a putut citi fi\u015fierul de chei de domeniu pentru contul de autoritate de certificare ACME de la URI-ul {0}. Loca\u0163ia fi\u015fierului este {1}. Eroare este {2}.
+CWPKI2020E=CWPKI2020E: Serviciul ACME nu a putut citi fi\u015fierul de chei de domeniu pentru domeniul autorit\u0103\u0163ii de certificare ACME. Loca\u0163ia fi\u015fierului este {0}. Eroarea este ''{1}''.
 CWPKI2020E.explanation=Fi\u015fierul de chei de domeniu pentru contul de autoritate de certificare nu a putut fi deschis. Aceasta se poate \u00eent\u00e2mpla dac\u0103 permisiunile fi\u015fierului sunt incorecte sau dac\u0103 fi\u015fierul nu exist\u0103.
 CWPKI2020E.useraction=Examina\u0163i mesajul de eroare pentru detalii despre e\u015fec. Verifica\u0163i c\u0103 loca\u0163ia fi\u015fierului este corect\u0103 \u015fi c\u0103 serverul are permisiuni de citire la fi\u015fier.
 
-CWPKI2021E=CWPKI2021E: Serviciul ACME nu a putut citi fi\u015fierul de chei de cont pentru contul de autoritate de certificare ACME de la URI-ul {0}. Loca\u0163ia fi\u015fierului este {1}. Eroare este {2}.
+CWPKI2021E=CWPKI2021E: Serviciul ACME nu a putut citi fi\u015fierul de chei de cont pentru contul de autoritate de certificare ACME. Loca\u0163ia fi\u015fierului este {0}. Eroarea este ''{1}''.
 CWPKI2021E.explanation=Fi\u015fierul de chei de cont pentru contul de autoritate de certificare nu a putut fi deschis. Aceasta se poate \u00eent\u00e2mpla dac\u0103 permisiunile fi\u015fierului sunt incorecte sau dac\u0103 fi\u015fierul nu exist\u0103.
 CWPKI2021E.useraction=Examina\u0163i mesajul de eroare pentru detalii despre e\u015fec. Verifica\u0163i c\u0103 loca\u0163ia fi\u015fierului este corect\u0103 \u015fi c\u0103 serverul are permisiuni de citire la fi\u015fier.
 
-CWPKI2022E=CWPKI2022E: Serviciul ACME nu a putut scrie \u00een fi\u015fierul de chei de domeniu pentru contul de autoritate de certificare ACME la URI-ul {0}. Loca\u0163ia fi\u015fierului este {1}. Eroare este {2}.
+CWPKI2022E=CWPKI2022E: Serviciul ACME nu a putut scrie \u00een fi\u015fierul de chei de domeniu pentru domeniul autorit\u0103\u0163ii de certificare ACME. Loca\u0163ia fi\u015fierului este {0}. Eroarea este ''{1}''.
 CWPKI2022E.explanation=Cheile de domeniu nu au putut fi stocate \u00een fi\u015fierul de chei de domeniu. Aceasta se poate \u00eent\u00e2mpla dac\u0103 permisiunile la fi\u015fier sunt incorecte sau dac\u0103 fi\u015fierul nu exist\u0103.
 CWPKI2022E.useraction=Examina\u0163i mesajul de eroare pentru detalii despre e\u015fec. Verifica\u0163i c\u0103 loca\u0163ia fi\u015fierului este corect\u0103 \u015fi c\u0103 serverul are permisiuni de scriere la fi\u015fier.
 
-CWPKI2023E=CWPKI2023E: A e\u015fuat scrierea fi\u015fierului de chei de cont pentru contul de autoritate de certificare ACME la URI-ul {0}. Loca\u0163ia fi\u015fierului este {1}. Eroare este {2}.
+CWPKI2023E=CWPKI2023E: Serviciul ACME nu a putut scrie \u00een fi\u015fierul de chei de cont pentru contul de autoritate de certificare ACME. Loca\u0163ia fi\u015fierului este {0}. Eroarea este ''{1}''.
 CWPKI2023E.explanation=Cheile de cont nu au putut fi stocate \u00een fi\u015fierul de chei de cont. Aceasta se poate \u00eent\u00e2mpla dac\u0103 permisiunile la fi\u015fier sunt incorecte sau dac\u0103 fi\u015fierul nu exist\u0103.
 CWPKI2023E.useraction=Examina\u0163i mesajul de eroare pentru detalii despre e\u015fec. Verifica\u0163i c\u0103 loca\u0163ia fi\u015fierului este corect\u0103 \u015fi c\u0103 serverul are permisiuni de scriere la fi\u015fier.
 
-CWPKI2024E=CWPKI2024E: Serviciul ACME nu a putut revoca certificatul cerut pentru autoritatea de certificare ACME la URI-ul {0}. Certificatul este num\u0103rul de serie {1}. Eroare este {2}.
+CWPKI2024E=CWPKI2024E: Serviciul ACME nu a putut revoca certificatul cerut pentru autoritatea de certificare ACME la URI-ul {0}. Certificatul este num\u0103rul de serie {1}. Eroarea este ''{2}''.
 CWPKI2024E.explanation=O cerere de revocare a certificatului a e\u015fuat. Certificatul s-ar putea s\u0103 nu fie revocat \u015fi ar putea fi \u00een continuare \u00een uz.
 CWPKI2024E.useraction=Examina\u0163i mesajul de eroare pentru detalii despre e\u015fec.
 
-CWPKI2025W=CWPKI2025W: Serviciul ACME a primit o cerere de revocare certificat, dar perechea de chei de cont pentru autoritatea de certificare ACME de la URI-ul {0} nu a putut fi \u00eenc\u0103rcat\u0103.
-CWPKI2025W.explanation=Cererea de revocare certificat a e\u015fuat deoarece perechea de chei a contului nu a putut fi \u00eenc\u0103rcat\u0103.
-CWPKI2025W.useraction=Examina\u0163i istoricul pentru orice erori anterioare pentru detalii despre e\u015fec. Examina\u0163i fi\u015fierul depozit de chei pentru a verifica dac\u0103 certificatul exist\u0103.
+CWPKI2025W=CWPKI2025W: Serviciul ACME nu poate \u00eenc\u0103rca perechea de chei de cont pentru autoritatea de certificare ACME la URI-ul {0}.
+CWPKI2025W.explanation=Cererea a e\u015fuat deoarece perechea de chei de cont nu a putut fi \u00eenc\u0103rcat\u0103.
+CWPKI2025W.useraction=Examina\u0163i istoricul pentru orice erori anterioare pentru detalii despre e\u015fec.
 
-CWPKI2026W=CWPKI2026W: Serviciul ACME a primit o cerere de revocare a certificatului, dar contul nu a fost g\u0103sit la autoritatea de certificare ACME de la URI-ul {0}.
-CWPKI2026W.explanation=Cererea de revocare a certificatului a e\u015fuat deoarece contul nu a fost g\u0103sit.
-CWPKI2026W.useraction=Examina\u0163i URI-ul autorit\u0103\u0163ii de certificare. Examina\u0163i fi\u015fierul depozit de chei pentru a verifica dac\u0103 certificatul exist\u0103.
+CWPKI2026W=CWPKI2026W: Serviciul ACME nu poate g\u0103si contul la autoritatea de certificare ACME la URI-ul {0}.
+CWPKI2026W.explanation=Cererea a e\u015fuat deoarece contul nu a fost g\u0103sit.
+CWPKI2026W.useraction=Examina\u0163i URI-ul autorit\u0103\u0163ii de certificare.
 
-CWPKI2027E=CWPKI2027E: Calea de fi\u015fier {0} pentru serviciul ACME este null sau goal\u0103. Calea furnizat\u0103 este '{1}'.
+CWPKI2027E=CWPKI2027E: Calea de fi\u015fier {0} pentru serviciul ACME este null sau goal\u0103. Calea furnizat\u0103 este ''{1}''.
 CWPKI2027E.explanation=Calea fi\u015fierului a fost null sau goal\u0103 \u015fi nu poate fi folosit\u0103 pentru cheile de domeniu \u015fi de cont.
 CWPKI2027E.useraction=Furniza\u0163i o cale de fi\u015fier valid\u0103 \u00een configura\u0163ie.
+
+CWPKI2028E=CWPKI2028E: Serviciul ACME nu a putut crea o sesiune nou\u0103 pentru a se conecta la autoritatea de certificare ACME la URI-ul {0}. Eroarea este ''{1}''.
+CWPKI2028E.explanation=Autoritatea de certificare nu a putut fi contactat\u0103 \u015fi nu poate fi cerut un certificat semnat.
+CWPKI2028E.useraction=Examina\u0163i mesajul de eroare pentru detalii despre e\u015fec. Examina\u0163i URI-ul autorit\u0103\u0163ii de certificare configurat. Verifica\u0163i c\u0103 URI-ul poate fi accesat cu succes de c\u0103tre serverul care apeleaz\u0103. Verifica\u0163i c\u0103 serverul care apeleaz\u0103 poate primi un r\u0103spuns de la autoritatea de certificare.
+
+CWPKI2029E=CWPKI2029E: Serviciul ACME nu a putut accesa depozitul de chei din calea de fi\u015fier {0} pentru a g\u0103si certificatul de alias {1}. Eroarea este ''{2}''.
+CWPKI2029E.explanation=Nu a putut fi accesat depozitul de chei \u00een timpul verific\u0103rii pentru un certificat existent. Cererea de aducere a unui certificat nou nu va fi finalizat\u0103, deoarece nu poate fi accesat depozitul de chei.
+CWPKI2029E.useraction=Examina\u0163i mesajul de eroare pentru detalii despre e\u015fec. Verifica\u0163i dac\u0103 loca\u0163ia fi\u015fierului este corect\u0103 \u015fi dac\u0103 serverul are permisiuni de scriere pentru fi\u015fier.
+
+CWPKI2030E=CWPKI2030E: Serviciul ACME nu a putut instala un certificat sub aliasul {0} \u00een depozitul de chei {1}. Eroarea este ''{2}''.
+CWPKI2030E.explanation=Serviciul ACME a primit un certificat nou de la autoritatea de certificare, dar certificatul nu poate fi instalat local.
+CWPKI2030E.useraction=Examina\u0163i mesajul de eroare pentru detalii despre e\u015fec.
+
+CWPKI2031E=CWPKI2031E: Numele de subiect de certificat {0} din certificatul implicit cu num\u0103rul de serie {1} este un nume distinctiv invalid. Eroarea este ''{2}''.
+CWPKI2031E.explanation=Numele de subiect de certificat trebuie s\u0103 fie formatat ca nume distinctiv a\u015fa cum este definit de RFC 2253, la fel cu \u00een cazul unui nume distinctiv utilizat \u00eentr-un server LDAP.
+CWPKI2031E.useraction=Examina\u0163i mesajul de eroare pentru detalii despre e\u015fec. Revoca\u0163i sau \u00eenl\u0103tura\u0163i certificatul invalid.
+
+CWPKI2032E=CWPKI2032E: Numele alternative de subiect de certificat din certificatul implicit cu num\u0103rul de serie {0} nu au putut fi parsate. Eroarea este ''{1}''.
+CWPKI2032E.explanation=Certificatul este un certificat codat DER invalid sau con\u0163ine caracteristici DER nesuportate.
+CWPKI2032E.useraction=Examina\u0163i mesajul de eroare pentru detalii despre e\u015fec. Revoca\u0163i sau \u00eenl\u0103tura\u0163i certificatul invalid.
+
+CWPKI2033E=CWPKI2033E: Serviciul ACME nu poate actualiza contul {0} pentru autoritatea de certificare ACME la URI-ul {1}. Eroarea este ''{2}''.
+CWPKI2033E.explanation=Cererea de actualizare a contului a e\u015fuat din cauza erorii specificate.
+CWPKI2033E.useraction=Examina\u0163i mesajul de eroare pentru detalii despre e\u015fec. Verifica\u0163i c\u0103 fi\u015fierul de chei cont este pentru un cont valid.
+
+CWPKI2034E=CWPKI2034E: Serviciul ACME nu a putut crea o instan\u0163\u0103 de depozit de chei. Eroarea este ''{0}''.
+CWPKI2034E.explanation=Serviciul ACME a adus un certificat nou, dar a e\u015fuat crearea sau ini\u0163ializarea unui depozit de chei pentru stocarea certificatului.
+CWPKI2034E.useraction=Examina\u0163i mesajul de eroare pentru detalii despre e\u015fec.
+
+CWPKI2035E=CWPKI2035E: Serviciul ACME nu a putut stoca certificatul semnat \u00een depozitul de chei {0}. Eroarea este ''{1}''.
+CWPKI2035E.explanation=Certificatul a fost extras cu succes de la autoritatea de certificare, dar nu poate fi stocat local.
+CWPKI2035E.useraction=Examina\u0163i mesajul de eroare pentru detalii despre e\u015fec. Verifica\u0163i dac\u0103 loca\u0163ia fi\u015fierului depozit de chei este corect\u0103 \u015fi dac\u0103 serverul are permisiuni de scriere.
+
+CWPKI2036E=CWPKI2036E: Serviciul ACME a dep\u0103\u015fit pragul de timeout a\u015ftept\u00e2nd ca aplica\u0163ia de autorizare web s\u0103 porneasc\u0103. Aplica\u0163ia este necesar\u0103 pentru a finaliza o cerere de certificat cu o autoritate de certificare ACME. Serviciul a a\u015fteptat {0} minute.
+CWPKI2036E.explanation=Aplica\u0163ia utilizat\u0103 pentru a finaliza o cerere de certificat nu a pornit \u00een cadrul de timp a\u015fteptat. Nu poate fi cerut un certificat semnat.
+CWPKI2036E.useraction=Examina\u0163i istoricul pentru mesaje sau erori anterioare.
+
+CWPKI2037E=CWPKI2037E: Domeniile pentru serviciul ACME sunt fie nule, fie goale.
+CWPKI2037E.explanation=Domeniile sunt nule sau goale \u015fi nu pot fi utilizate.
+CWPKI2037E.useraction=Furniza\u0163i \u00een configura\u0163ie cel pu\u0163in un domeniu care s\u0103 nu fie nul sau gol.
+
+CWPKI2038I=CWPKI2038I: Serviciul ACME a revocat certificatul cu num\u0103rul de serie {0}. Certificatul nu mai este valid.
+CWPKI2038I.explanation=Serviciul ACME a revocat certificatul \u015fi certificatul nu mai este valid.
+CWPKI2038I.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+CWPKI2039E=CWPKI2039E: Numele distinctiv (DN) ''{0}'' definit de subjectDN con\u0163ine o valoare de nume distinctiv relativ (RDN) cn ''{1}'' care nu se potrive\u015fte cu niciunul dintre domeniile definite.
+CWPKI2039E.explanation=Dac\u0103 valoarea RDN cn este inclus\u0103 \u00een DN, aceasta trebuie s\u0103 se potriveasc\u0103 cu unul dintre domeniile definite.
+CWPKI2039E.useraction=Furniza\u0163i fie o valoare de atribut subjectDN cu o valoare RDN cn care se potrive\u015fte cu unul dintre domeniile definite, fie o valoare de atribut subjectDN care nu are inclus RDN-ul cn.
+
+CWPKI2040E=CWPKI2040E: Numele distinctiv relativ (RDN) nu a fost primul RDN din atributul de configurare subjectDN.
+CWPKI2040E.explanation=Dac\u0103 este definit RDN-ul cn, acesta trebuie s\u0103 fie primul RDN din atributul de configurare subjectDN.
+CWPKI2040E.useraction=Furniza\u0163i o valoare de atribut subjectDN care fie define\u015fte atributul cn ca primul RDN, fie nu con\u0163ine atributul cn. Dac\u0103 nu este definit atributul cn, primul domeniu definit este utilizat ca valoare RDN cn.
+
+CWPKI2041E=CWPKI2041E: Tipul de nume distinctiv relativ (RDN) ''{0}'' din atributul de configurare subjectDN nu este suportat. Sunt suportate urm\u0103toarele tipuri de RDN: cn, o, ou, c, st, l.
+CWPKI2041E.explanation=Valoarea atributului subjectDN con\u0163ine un RDN care nu este suportat.
+CWPKI2041E.useraction=Furniza\u0163i o valoare de atribut subjectDN care s\u0103 nu con\u0163in\u0103 tipuri RDN nesuportate. Sunt suportate urm\u0103toarele tipuri de RDN: cn, o, ou, c, st, l.
+
+CWPKI2042E=CWPKI2042E: Valoarea de atribut subjectDN ''{0}'' nu este un nume distinctiv valid. Eroarea este ''{1}''.
+CWPKI2042E.explanation=Atributul subjectDN trebuie s\u0103 fie un nume distinctiv valid.
+CWPKI2042E.useraction=Furniza\u0163i un nume distinctiv valid ca valoare de atribut subjectDN.
+
+CWPKI2043E=CWPKI2043E: Valoarea ''{0}'' nu este un nume distinctiv relativ (RDN) valid. Eroarea este ''{1}''.
+CWPKI2043E.explanation=Serviciul ACME nu a putut crea un RDN din valoarea specificat\u0103.
+CWPKI2043E.useraction=Asigura\u0163i-v\u0103 c\u0103 domeniul inclus \u00een valoare este o valoare de RDN valid\u0103.
+
+CWPKI2044E=CWPKI2044E: Certificatul nu este un certificat X.509. Tipul de certificat este {0}.
+CWPKI2044E.explanation=Serviciul ACME se a\u015fteapt\u0103 ca toate certificatele din lan\u0163ul de certificate s\u0103 fie certificate X.509.
+CWPKI2044E.useraction=Asigura\u0163i-v\u0103 c\u0103 toate certificatele din lan\u0163ul de certificate sunt certificate X.509 \u015fi \u00eencerca\u0163i din nou.
+
+CWPKI2045W=CWPKI2045W: Certificatul cu num\u0103rul de serie {0} care este semnat de c\u0103tre autoritatea de certificare ACME la URI-ul {1} nu este valid p\u00e2n\u0103 la {2}.
+CWPKI2045W.explanation=Perioada valid\u0103 pe certificat este \u00een viitor. Cererile SSL/TLS e\u015fueaz\u0103 p\u00e2n\u0103 c\u00e2nd data \u015fi ora curente sunt \u00een intervalul care este specificat de c\u0103tre perioada valid\u0103 de pe certificat.
+CWPKI2045W.useraction=Actualiza\u0163i data \u015fi ora local\u0103 de pe server dac\u0103 ele sunt incorecte.
+
+CWPKI2046E=CWPKI2046E: Motivul revoc\u0103rii certificatului {0} este invalid. Motivele de revocare suportate sunt: unspecified, key_compromise, ca_compromise, affiliation_changed, superseded, cessation_of_operations, certificate_hold, remove_from_crl, privilege_withdrawn and aa_compromise.
+CWPKI2046E.explanation=Motivul de revocare specificat nu este suportat.
+CWPKI2046E.useraction=Re\u00eencerca\u0163i cererea cu un motiv de revocare valid.
+
+CWPKI2047E=CWPKI2047E: A e\u015fuat \u00eenregistrarea noii perechi de chei cont cu autoritatea de certificare ACME. Eroarea este ''{0}''.
+CWPKI2047E.explanation=Autoritatea de certificare ACME a returnat o eroare \u00een timpul re\u00eennoirii perechii de chei cont.
+CWPKI2047E.useraction=Asigura\u0163i-v\u0103 c\u0103 perechea de chei cont existent\u0103 este valid\u0103. Examina\u0163i mesajul de eroare pentru detalii despre e\u015fec. 
+
+CWPKI2048I=CWPKI2048I: Re\u00eennoirea perechii de chei cont s-a f\u0103cut cu succes. Perechea de chei de cont veche a fost salvat\u0103 de rezerv\u0103 la fi\u015fierul {0}.
+CWPKI2048I.explanation=Perechea de chei cont anterioar\u0103 nu mai este asociat\u0103 cu contul \u015fi este salvat\u0103 de rezerv\u0103 la un fi\u015fier. Noua pereche de chei cont a \u00eenlocuit vechiul fi\u015fier pereche de chei cont.
+CWPKI2048I.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+CWPKI2049E=CWPKI2049E: Perechea de chei cont nu a fost re\u00eennoit\u0103 sau restaurat\u0103 la fi\u015fierul pereche de chei existent. \u00cenlocui\u0163i manual fi\u015fierul pereche de chei cont {0} cu fi\u015fierul pereche de chei de cont {1}.
+CWPKI2049E.explanation=Perechea de chei nu a fost re\u00eennoit\u0103 sau restaurat\u0103 \u00een vechiul fi\u015fier pereche de chei.
+CWPKI2049E.useraction=\u00cenlocui\u0163i manual fi\u015fierele pereche de chei cont a\u015fa cum sunte\u0163i instruit \u00een mesaj.
+
+CWPKI2050E=CWPKI2050E: Fi\u015fierul pereche de chei cont existent nu a fost salvat \u00een timpul re\u00eennoirii perechii de chei de cont. Eroarea este ''{0}''.
+CWPKI2050E.explanation=Fi\u015fierul pereche de chei cont existent nu a putut fi salvat de rezerv\u0103. 
+CWPKI2050E.useraction=Asigura\u0163i-v\u0103 c\u0103 \u00een directorul care con\u0163ine fi\u015fierul pereche de chei cont existent se poate scrie. Examina\u0163i mesajul de eroare pentru detalii despre e\u015fec.
+
+CWPKI2051W=CWPKI2051W: Proprietatea renewBeforeExpiration a fost setat\u0103 la {0} care este mai mic\u0103 dec\u00e2t timpul de re\u00eennoire minim. Proprietatea renewBeforeExpiration este resetat\u0103 la {1}.
+CWPKI2051W.explanation=Valoarea pentru proprietatea renewBeforeExpiration a fost sub durata minim\u0103 pentru a cere un certificat nou \u015fi este resetat\u0103 la timpul minim de re\u00eennoire. Aceasta ar putea avea un impact negativ asupra performan\u0163ei serverului.
+CWPKI2051W.useraction=Pentru a evita acest mesaj de eroare, seta\u0163i proprietatea renewBeforeExpiration din configura\u0163ia serverului la o durat\u0103 care este mai mare dec\u00e2t timpul de re\u00eennoire minim. Pentru a utiliza setarea implicit\u0103, \u00eenl\u0103tura\u0163i proprietatea renewBeforeExpiration din configura\u0163ia serverului.
+
+CWPKI2052I=CWPKI2052I: Certificatul cu num\u0103rul de serie {0} expir\u0103 pe {1}. Serviciul ACME va cere un certificat nou de la autoritatea de certificare ACME la URI-ul {2}.
+CWPKI2052I.explanation=Serviciul ACME cere un nou certificat bazat pe proprietatea renewBeforeExpiration din configura\u0163ia de server \u015fi data de expirare a certificatului. Dac\u0103 proprietatea renewBeforeExpiration nu este configurat\u0103, este utilizat\u0103 valoarea implicit\u0103.
+CWPKI2052I.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+CWPKI2053W=CWPKI2053W: Certificatul cu num\u0103rul de serie {0} a expirat pe {1}. Serviciul ACME nu este configurat s\u0103 cear\u0103 automat un certificat nou.
+CWPKI2053W.explanation=Cererile TLS/SSL nu se pot finaliza deoarece certificatul a expirat.
+CWPKI2053W.useraction=Actualiza\u0163i proprietatea renewBeforeExpiration din configura\u0163ia serverului la o valoare mai mare dec\u00e2t 0 pentru a cere automat un nou certificat sau folosi\u0163i interfa\u0163a ACME REST pentru a cere un certificat nou.
+
+CWPKI2054W=CWPKI2054W: Proprietatea renewBeforeExpiration a fost setat\u0103 la {0}, care este egal\u0103 sau mai mare dec\u00e2t perioada de validitate a certificatului cu num\u0103rul de serie {1}. Perioada de validitate a certificatului este {2}. Proprietatea renewBeforeExpiration este resetat\u0103 la {3}.
+CWPKI2054W.explanation=Valoarea propriet\u0103\u0163ii renewBeforeExpiration a fost mai mare dec\u00e2t perioada de validitate a certificatului. Proprietatea renewBeforeExpiration este resetat\u0103 la valoarea implicit\u0103.
+CWPKI2054W.useraction=Pentru a evita acest mesaj de avertisment, seta\u0163i proprietatea renewBeforeExpiration \u00een configura\u0163ia serverului la o valoare care este mai mic\u0103 dec\u00e2t lungimea perioadei de validitate a certificatului. Pentru a utiliza setarea implicit\u0103, \u00eenl\u0103tura\u0163i proprietatea renewBeforeExpiration.
+
+CWPKI2055W=CWPKI2055W: Proprietatea renewBeforeExpiration este setat\u0103 la o scurt\u0103 durat\u0103 de timp. Serviciul ACME face cereri frecvente pentru un certificat nou. Proprietatea renewBeforeExpiration este {0}.
+CWPKI2055W.explanation=Cererile de certificate frecvente pot avea un impact negativ asupra performan\u0163ei serverului. Num\u0103rul de cereri poate de asemenea dep\u0103\u015fi num\u0103rul permis de autoritatea de certificare.
+CWPKI2055W.useraction=Pentru a evita acest mesaj de avertisment, seta\u0163i proprietatea renewBeforeExpiration \u00een configura\u0163ia serverului la o durat\u0103 mai mare. Pentru a utiliza setarea implicit\u0103, \u00eenl\u0103tura\u0163i proprietatea renewBeforeExpiration din configura\u0163ia serverului.
+
+CWPKI2056W=CWPKI2056W: Perioada de validitate a certificatului cu num\u0103rul de serie {0} este mai scurt\u0103 dec\u00e2t timpul minim de re\u00eennoire {1}. Perioada de validitate a certific\u0103rii este {2}. Proprietatea renewBeforeExpiration este resetat\u0103 la {3}.
+CWPKI2056W.explanation=Perioada de validitate este mai scurt\u0103 dec\u00e2t timpul minim de re\u00eennoire. Certificatul expir\u0103 \u00eenainte ca un certificat nou s\u0103 fie cerut.
+CWPKI2056W.useraction=Pentru a evita expirarea certificatului, cere\u0163i un certificat cu o perioad\u0103 de validitate mai lung\u0103. Dac\u0103 autoritatea de certificare suport\u0103 o perioad\u0103 de validitate personalizat\u0103, seta\u0163i proprietatea validFor \u00een configura\u0163ia serverului.
+
+CWPKI2057E=CWPKI2057E: Verificarea st\u0103rii de revocare certificate nu a creat un CertPathValidator pentru a valida certificatul. Eroarea este ''{0}''.
+CWPKI2057E.explanation=Verificatorul de revocare certificate trebuie s\u0103 construiasc\u0103 un CertPathValidator pentru a verifica starea de revocare OCSP \u015fi CRL-uri.
+CWPKI2057E.useraction=Examina\u0163i mesajul de stare \u015fi eroarea pentru detalii.
+
+CWPKI2058W=CWPKI2058W: Verificarea st\u0103rii de revocare certificate a ignorat erorile soft. Verificarea de revocare ar putea fi incomplet\u0103. Erorile sunt: ''{0}''.
+CWPKI2058W.explanation=E\u015fu\u0103rile soft includ erori de re\u0163ea. Serviciul ACME ignor\u0103 erorile soft deoarece ar putea fi probleme temporare. 
+CWPKI2058W.useraction=Dac\u0103 acest mesaj este \u00eent\u00e2lnit \u00een mod consecvent problema trebuie rezolvat\u0103 pentru ar putea \u00eempiedica verificarea corect\u0103 a s\u0103rii de revocare. Altfel, acest mesaj poate fi ignorat \u00een deplin\u0103 siguran\u0163\u0103. 
+
+CWPKI2059I=CWPKI2059I: Verificarea st\u0103rii de revocare certificate a constatat c\u0103 certificatul cu num\u0103rul de serie {0} este revocat.
+CWPKI2059I.explanation=Serviciul ACME a g\u0103sit c\u0103 certificatul a fost marcat ca revocat fie de un CRL, fie de un responder OSCP. 
+CWPKI2059I.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+CWPKI2060E=CWPKI2060E: URL-ul OCSP de la certificatul cu num\u0103rul de serie {0} nu a fost extras. Eroarea este: ''{1}''.
+CWPKI2060E.explanation=URL-ul OCSP nu a fost extras.
+CWPKI2060E.useraction=Asigura\u0163i-v\u0103 c\u0103 certificatul este un certificat X.509 valid. Dac\u0103 nu este valid, cere\u0163i un certificat nou.
+
+CWPKI2061E=CWPKI2061E: Punctele de distribu\u0163ie CRL de la certificatul cu num\u0103rul de serie {0} nu au fost extrase. Eroarea este ''{1}''.
+CWPKI2061E.explanation=Punctele de distribu\u0163ie CRL nu au fost extrase.
+CWPKI2061E.useraction=Asigura\u0163i-v\u0103 c\u0103 certificatul este un certificat X.509 valid. Dac\u0103 nu este valid, cere\u0163i un certificat nou.
+
+CWPKI2062E=CWPKI2062E: URL-ul de responder OCSP {0} definit \u00een configura\u0163ia serverului nu este un URI valid. Dac\u0103 este definit, acesta trebuie s\u0103 fie un URI valid pentru a \u00eenlocui URL-ul de responder OSCP con\u0163inut \u00een certificat.
+CWPKI2062E.explanation=Verificarea revoc\u0103rii certificatelor necesit\u0103 un URL de responder OCSP valid.
+CWPKI2062E.useraction=Furniza\u0163i un URL de responder OCSP valid \u00een configura\u0163ia serverului.

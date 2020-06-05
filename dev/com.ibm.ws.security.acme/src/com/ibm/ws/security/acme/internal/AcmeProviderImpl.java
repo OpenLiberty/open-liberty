@@ -33,13 +33,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
 import org.bouncycastle.asn1.x509.GeneralName;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
@@ -56,8 +61,11 @@ import com.ibm.ws.security.acme.AcmeCaException;
 import com.ibm.ws.security.acme.AcmeCertificate;
 import com.ibm.ws.security.acme.AcmeProvider;
 import com.ibm.ws.security.acme.internal.AcmeClient.AcmeAccount;
+import com.ibm.ws.security.acme.internal.exceptions.CertificateRenewRequestBlockedException;
+import com.ibm.ws.security.acme.internal.util.AcmeConstants;
 import com.ibm.ws.ssl.JSSEProviderFactory;
 import com.ibm.ws.ssl.KeyStoreService;
+import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 /**
  * ACME 2.0 support component service.
@@ -76,11 +84,31 @@ public class AcmeProviderImpl implements AcmeProvider {
 	 */
 	private final static AtomicReference<AcmeApplicationStateListener> applicationStateListenerRef = new AtomicReference<AcmeApplicationStateListener>();
 
+	/**
+	 * A scheduler service used to scheduler the {@link AcmeCertCheckerTask} for checking
+	 * whether the certificate is expiring or revoked
+	 */
+	private final AtomicServiceReference<ScheduledExecutorService> scheduledExecutorServiceRef = new AtomicServiceReference<ScheduledExecutorService>("scheduledExecutorService");
+
 	/** Client used to communicate with the ACME CA server. */
 	private static AcmeClient acmeClient;
 
 	/** Configuration for the ACME client. */
 	private static AcmeConfig acmeConfig;
+
+	/** Scheduled thread to check if the certificate is reaching expiration or is revoked **/
+	private AcmeCertCheckerTask acmeCertChecker = null;
+	
+	/** Read/Write lock to prevent multiple processes from renewing the certificate at the same or similar time. **/
+	private final ReadWriteLock rwRenewCertLock = new ReentrantReadWriteLock();
+	
+	/** The last time the certificate was renewed **/
+	private long lastCertificateRenewalTimestamp = -1;
+	
+	/** Activate for the scheduler ref **/
+	public void activate(ComponentContext cc) {
+		scheduledExecutorServiceRef.activate(cc);
+	}
 
 	@Override
 	public void renewAccountKeyPair() throws AcmeCaException {
@@ -128,6 +156,9 @@ public class AcmeProviderImpl implements AcmeProvider {
 	@FFDCIgnore({ AcmeCaException.class })
 	private void checkAndInstallCertificate(boolean forceRefresh, KeyStore keyStore, File keyStoreFile,
 			@Sensitive String password) throws AcmeCaException {
+		
+		acquireWriteLock();
+		try {
 		/*
 		 * Wait until the ACME authorization web application is available. At
 		 * this point, it always should be, but check just in case.
@@ -172,11 +203,23 @@ public class AcmeProviderImpl implements AcmeProvider {
 				} else {
 					keyStore.setKeyEntry(DEFAULT_ALIAS, acmeCertificate.getKeyPair().getPrivate(),
 							password.toCharArray(), chainArr);
-					keyStore.store(new FileOutputStream(keyStoreFile), password.toCharArray());
+					FileOutputStream fos = new FileOutputStream(keyStoreFile);
+					try {
+						keyStore.store(fos, password.toCharArray());
+					} finally {
+						fos.close();
+					}
 				}
 			} catch (CertificateException | KeyStoreException | NoSuchAlgorithmException | IOException ex) {
 				throw new AcmeCaException(
 						Tr.formatMessage(tc, "CWPKI2030E", DEFAULT_ALIAS, DEFAULT_KEY_STORE, ex.getMessage()), ex);
+			}
+			
+			/*
+			 * Mark the timestamp for this renew request
+			 */
+			if (!acmeConfig.isDisableMinRenewWindow()) {
+				lastCertificateRenewalTimestamp = System.currentTimeMillis();
 			}
 
 			/*
@@ -187,8 +230,8 @@ public class AcmeProviderImpl implements AcmeProvider {
 				try {
 					revoke(existingCertChain, "SUPERSEDED");
 				} catch (AcmeCaException e) {
-					if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-						Tr.debug(tc, "Failed to revoke the certificate.", existingCertChain);
+					if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+						Tr.debug(tc, "Failed to revoke the certificate.", existingCertChain, e);
 					}
 				}
 			}
@@ -204,6 +247,15 @@ public class AcmeProviderImpl implements AcmeProvider {
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 				Tr.debug(tc, "Previous certificate requested from ACME CA server is still valid.");
 			}
+		}
+
+		/*
+		 * Start the certificate checker task, will cancel any existing tasks and restart
+		 */
+		acmeCertChecker.startCertificateChecker(getScheduledExecutorService());
+
+		} finally {
+			releaseWriteLock();
 		}
 	}
 
@@ -229,8 +281,13 @@ public class AcmeProviderImpl implements AcmeProvider {
 	 *             If there was an error revoking the certificate.
 	 */
 	public void revoke(List<X509Certificate> certificateChain, String reason) throws AcmeCaException {
-		X509Certificate certificate = getLeafCertificate(certificateChain);
-		getAcmeClient().revoke(certificate, reason);
+		acquireWriteLock();
+		try {
+			X509Certificate certificate = getLeafCertificate(certificateChain);
+			getAcmeClient().revoke(certificate, reason);
+		} finally {
+			releaseWriteLock();
+		}
 	}
 
 	/**
@@ -247,6 +304,17 @@ public class AcmeProviderImpl implements AcmeProvider {
 			throw new AcmeCaException("Internal error. ACME client was not initialized.");
 		}
 		return acmeClient;
+	}
+	
+	/**
+	 * Convenience method that will retrieve the {@link AcmeConfig}
+	 * 
+	 * @return The {@link AcmeConfig} instance to use.
+	 * 
+	 */
+	@Trivial
+	protected AcmeConfig getAcmeConfig() {
+		return acmeConfig;
 	}
 
 	/**
@@ -327,8 +395,13 @@ public class AcmeProviderImpl implements AcmeProvider {
 		/*
 		 * Check if we need to get a new certificate.
 		 */
-		if (forceRefresh || isCertificateRequired(existingCertChain)) {
-			return fetchCertificate();
+		acquireWriteLock();
+		try {
+			if (forceRefresh || isCertificateRequired(existingCertChain)) {
+				return fetchCertificate();
+			}
+		} finally {
+			releaseWriteLock();
 		}
 
 		return null;
@@ -540,7 +613,7 @@ public class AcmeProviderImpl implements AcmeProvider {
 	 *            The certificate chain to check.
 	 * @return true if the leaf certificate is expired or nearly expiring.
 	 */
-	private boolean isExpired(List<X509Certificate> certificateChain) {
+	protected boolean isExpired(List<X509Certificate> certificateChain) {
 		X509Certificate certificate = getLeafCertificate(certificateChain);
 		if (certificate == null) {
 			return false;
@@ -584,8 +657,7 @@ public class AcmeProviderImpl implements AcmeProvider {
 	 * @return True if the certificate has been revoked, false otherwise.
 	 * @throws AcmeCaException
 	 */
-	private boolean isRevoked(List<X509Certificate> certificateChain) throws AcmeCaException {
-
+	protected boolean isRevoked(List<X509Certificate> certificateChain) throws AcmeCaException {
 		CertificateRevocationChecker checker = new CertificateRevocationChecker(acmeConfig);
 		return checker.isRevoked(certificateChain);
 	}
@@ -658,7 +730,7 @@ public class AcmeProviderImpl implements AcmeProvider {
 	 *             chain
 	 */
 	@FFDCIgnore({ CertificateException.class })
-	private List<X509Certificate> getConfiguredDefaultCertificateChain() throws AcmeCaException {
+	protected List<X509Certificate> getConfiguredDefaultCertificateChain() throws AcmeCaException {
 		/*
 		 * Get our existing certificate.
 		 */
@@ -700,12 +772,25 @@ public class AcmeProviderImpl implements AcmeProvider {
 			File file = createKeyStore(filePath, acmeCertificate, password, keyStoreType, keyStoreProvider);
 
 			/*
+			 * Mark the timestamp for this creation request
+			 */
+			if (!acmeConfig.isDisableMinRenewWindow()) {
+				lastCertificateRenewalTimestamp = System.currentTimeMillis();
+			}
+
+			/*
 			 * Finally, log a message indicate the new certificate has been
 			 * installed and return the file.
 			 */
 			Tr.audit(tc, "CWPKI2007I", acmeCertificate.getCertificate().getSerialNumber().toString(16),
 					acmeConfig.getDirectoryURI(),
 					acmeCertificate.getCertificate().getNotAfter().toInstant().toString());
+
+			/*
+			 * Start the certificate checker task, will cancel any existing tasks and restart
+			 */
+			acmeCertChecker.startCertificateChecker(getScheduledExecutorService());
+
 			return file;
 		} catch (AcmeCaException ace) {
 			createKeyStore(filePath, null, password, keyStoreType, keyStoreProvider);
@@ -759,7 +844,11 @@ public class AcmeProviderImpl implements AcmeProvider {
 				file.getParentFile().mkdirs();
 			}
 			FileOutputStream fos = new FileOutputStream(file);
-			keyStore.store(fos, password.toCharArray());
+			try {
+				keyStore.store(fos, password.toCharArray());
+			} finally {
+				fos.close();
+			}
 
 		} catch (KeyStoreException | NoSuchAlgorithmException | IOException e) {
 			throw new CertificateException(Tr.formatMessage(tc, "CWPKI2035E", file.getName(), e.getMessage()), e);
@@ -811,6 +900,12 @@ public class AcmeProviderImpl implements AcmeProvider {
 			 * Update the account.
 			 */
 			acmeClient.updateAccount();
+
+			/*
+			 * Create a new certificate checker
+			 */
+			acmeCertChecker = new AcmeCertCheckerTask(this);
+
 		} catch (AcmeCaException e) {
 			Tr.error(tc, e.getMessage()); // AcmeCaExceptions are localized.
 		}
@@ -823,6 +918,9 @@ public class AcmeProviderImpl implements AcmeProvider {
 	 *            the {@link AcmeConfigService} instance to unet.
 	 */
 	protected void unsetAcmeConfigService(AcmeConfigService acmeConfigService) {
+		if (acmeCertChecker != null) {
+			acmeCertChecker.stop();
+		}
 		acmeConfig = null;
 		acmeClient = null;
 	}
@@ -839,18 +937,14 @@ public class AcmeProviderImpl implements AcmeProvider {
 	 */
 	protected void updateAcmeConfigService(AcmeConfigService acmeConfigService, Map<String, Object> properties) {
 		try {
+
+			if (acmeCertChecker == null) {
+				acmeCertChecker = new AcmeCertCheckerTask(this);
+			}
+
 			acmeConfig = new AcmeConfig(properties);
 			acmeClient = new AcmeClient(acmeConfig);
 
-			/*
-			 * TODO We need to determine which configuration changes will result
-			 * in requiring a certificate to be refreshed. Some that might
-			 * trigger a refresh: validFor, directoryURI, country, locality,
-			 * state, organization, organizationUnit
-			 *
-			 * We can't necessarily just check the certificate, b/c they don't
-			 * always honor them.
-			 */
 			checkAndInstallCertificate(false, null, null, null);
 
 			/*
@@ -872,5 +966,72 @@ public class AcmeProviderImpl implements AcmeProvider {
 	public void setAcmeApplicationStateListener(AcmeApplicationStateListener acmeApplicationStateListener) {
 		applicationStateListenerRef.set(acmeApplicationStateListener);
 	}
+	
+	/**
+	 * Set the Scheduler service ref
+	 */
+	@Reference(name = "scheduledExecutorService", service = ScheduledExecutorService.class, target = "(deferrable=false)")
+	protected void setScheduledExecutorService(ServiceReference<ScheduledExecutorService> ref) {
+		scheduledExecutorServiceRef.setReference(ref);
+	}
 
+	/**
+	 * Unset the scheduler ref and stop the certificate checker
+	 */
+	protected void unsetScheduledExecutorService(ServiceReference<ScheduledExecutorService> ref) {
+		if (acmeCertChecker != null) {
+			acmeCertChecker.stop();
+		}
+		scheduledExecutorServiceRef.unsetReference(ref);
+	}
+
+	/**
+	 * Get the scheduler ref
+	 */
+	public ScheduledExecutorService getScheduledExecutorService() {
+		return scheduledExecutorServiceRef.getService();
+	}
+
+    /**
+     * Acquire the writer lock. To be used to prevent concurrent certificate
+     * renew or revoke requests. Must be used with releaseWriteLock
+     */
+    @Trivial
+    void acquireWriteLock() {
+		rwRenewCertLock.writeLock().lock();
+    }
+    
+    /**
+     * Release the writer lock. To be used to prevent concurrent certificate
+     * renew or revoke requests. Must be used with acquireWriteLock
+     */
+    @Trivial
+    void releaseWriteLock() {
+    	rwRenewCertLock.writeLock().unlock();
+    }
+    
+	/**
+	 * Checks whether certificate renewal is allowed. It is allowed if:
+	 * <li>Certificate renewal checking is disabled</li>
+	 * <li>This is the first certificate request</li>
+	 * <li>Enough time has passed since the last renewal</li>
+	 * 
+	 * If certificate renewal is not allowed, an exception is thrown.
+	 */
+	@Override
+	public void checkCertificateRenewAllowed() throws CertificateRenewRequestBlockedException {
+		long timeDiff = System.currentTimeMillis() - lastCertificateRenewalTimestamp;
+		if (acmeConfig.isDisableMinRenewWindow() || lastCertificateRenewalTimestamp == -1
+				|| (timeDiff >= AcmeConstants.RENEW_CERT_MIN)) {
+			return;
+		}
+
+		if (tc.isDebugEnabled()) {
+			Tr.debug(tc, "Too soon to renew, last certificate renewal was " + lastCertificateRenewalTimestamp);
+		}
+		CertificateRenewRequestBlockedException cr = new CertificateRenewRequestBlockedException(
+				"Too soon to renew, last certificate renewal was " + lastCertificateRenewalTimestamp,
+				AcmeConstants.RENEW_CERT_MIN - timeDiff);
+		throw cr;
+	}
 }

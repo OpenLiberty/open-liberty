@@ -556,9 +556,13 @@ ssl.create.certificate.end=CWPKI0803A: Certificato SSL creato in {0} secondi. Fi
 ssl.create.certificate.end.explanation=Il certificato SSL \u00e8 stato generato nell'intervallo di tempo specificato.
 ssl.create.certificate.end.useraction=Non \u00e8 richiesta alcuna azione.
 #--------------------------------------------------------------------------------------------------
-ssl.create.certificate.error=CWPKI0804E: Errore di creazione del certificato SSL. Impossibile creare il file della chiave SSL: {0}
+ssl.create.certificate.error=CWPKI0804E: Errore di creazione del certificato SSL. {0}
 ssl.create.certificate.error.explanation=Non \u00e8 stato possibile creare il certificato SSL nell'ubicazione specificata.
 ssl.create.certificate.error.useraction=Verificare che l'ubicazione sia accessibile da parte del processo del server. La presenza di FFDC pu\u00f2 indicare un errore irreversibile durante la creazione o il caricamento delle chiavi.
+
+# Messages for the CWPKI0804E message descriptor {0}.
+ssl.create.certificate.error.reason1=Impossibile creare il file della chiave SSL: {0}
+ssl.create.certificate.error.reason2=L''errore \u00e8: {0}
 #--------------------------------------------------------------------------------------------------
 ssl.default.keystore.config.error=CWPKI0805E: Manca una password richiesta per il keystore predefinito.
 ssl.default.keystore.config.error.explanation=La configurazione del keystore non specifica una password per il keystore predefinito.

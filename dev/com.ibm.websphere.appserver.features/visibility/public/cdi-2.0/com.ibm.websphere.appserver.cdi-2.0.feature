@@ -42,7 +42,7 @@ Subsystem-Name: Contexts and Dependency Injection 2.0
  com.ibm.websphere.appserver.javaeePlatform-7.0, \
  com.ibm.websphere.appserver.javax.ejb-3.2, \
  com.ibm.websphere.appserver.javax.annotation-1.3, \
- com.ibm.websphere.appserver.javaeeCompatible-8.0, \
+ com.ibm.websphere.appserver.eeCompatible-8.0, \
  com.ibm.websphere.appserver.javax.interceptor-1.2, \
  com.ibm.websphere.appserver.javax.cdi-2.0, \
  com.ibm.websphere.appserver.injection-1.0, \

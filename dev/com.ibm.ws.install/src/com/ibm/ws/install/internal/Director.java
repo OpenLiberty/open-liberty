@@ -469,7 +469,8 @@ public class Director extends AbstractDirector {
         Set<String> allServerNames = new HashSet<String>(servers.size());
 
         for (ServerAsset sa : servers) {
-            Collection<String> requiredFeatures = sa.getRequiredFeatures();
+            File serverXmlFile = sa.getServerXmlFile();
+            Collection<String> requiredFeatures = InstallUtils.getFeatures(serverXmlFile.getAbsolutePath(), serverXmlFile.getName(), new HashSet<String>());
 
             if (!requiredFeatures.isEmpty()) {
                 logger.log(Level.FINEST, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("LOG_DEPLOY_SERVER_FEATURES",

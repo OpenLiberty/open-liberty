@@ -18,6 +18,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.fat.util.FatLogHandler;
 import com.ibm.ws.fat.wc.tests.WCAddJspFileTest;
+import com.ibm.ws.fat.wc.tests.WCApplicationMBeanStatusTest;
 import com.ibm.ws.fat.wc.tests.WCContextRootPrecedence;
 import com.ibm.ws.fat.wc.tests.WCEncodingTest;
 import com.ibm.ws.fat.wc.tests.WCGetMappingSlashStarTest;
@@ -72,15 +73,15 @@ import componenttest.rules.repeater.RepeatTests;
                 WCServletPathForDefaultMappingFalse.class,
                 WCGetMappingSlashStarTest.class,
                 WCServletContainerInitializerFilterServletNameMappingTest.class,
-                // @Server Annotations 
+                WCApplicationMBeanStatusTest.class,
+                // @Server Annotations
                 WCServletContainerInitializerExceptionTest.class,
                 WCSameSiteCookieAttributeTests.class
 })
 public class FATSuite {
 
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.withoutModification()//
-                    .andWith(new JakartaEE9Action());
+    public static RepeatTests repeat = RepeatTests.withoutModification().andWith(new JakartaEE9Action());
 
     /**
      * @see {@link FatLogHandler#generateHelpFile()}

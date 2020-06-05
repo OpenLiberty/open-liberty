@@ -100,6 +100,8 @@ public class H2InboundLink extends HttpInboundLink {
 
     volatile long initialWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE;
     volatile long connectionReadWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE; // keep track of how much data the client is allowed to send to the us
+    private final Object readWindowSync = new Object() {
+    };
     volatile long maxReadWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE; // user-set max window size
 
     FrameReadProcessor frameReadProcessor = null;
@@ -1360,5 +1362,12 @@ public class H2InboundLink extends HttpInboundLink {
 
     protected int getconfiguredInactivityTimeout() {
         return configuredInactivityTimeout;
+    }
+
+    /**
+     * @return a sync object used for updating the connection read window
+     */
+    protected Object getReadWindowSync() {
+        return readWindowSync;
     }
 }

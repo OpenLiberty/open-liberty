@@ -1,0 +1,60 @@
+###############################################################################
+# Copyright (c) 2010, 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.featureUtility/resources/com/ibm/ws/install/featureUtility/internal/resources/FeatureUtilityMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+# Messages in the range CWWKF1400 to 1499 are reserved for the install utility.
+
+MSG_FEATUREUTILITY_SETTTINGS=featureUtility \uc124\uc815
+MSG_PROPERTIES_FILE_NOT_FOUND=\uc0ac\uc6a9\uc790 \uad6c\uc131\uc774 \ubc1c\uacac\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4. Maven Central Repository\ub294 \uae30\ubcf8 \uc790\uc0b0 \uc800\uc7a5\uc18c\uc785\ub2c8\ub2e4.
+MSG_PROPERTIES_FILE_NOT_FOUND_EXPLANATION=featureUtility \uc124\uc815\uc744 \uc0ac\uc6a9\uc790 \uc815\uc758\ud558\ub824\uba74 {0}\uc5d0\uc11c featureUtility.properties \ud30c\uc77c\uc744 \uc791\uc131\ud558\uc2ed\uc2dc\uc624.
+MSG_PROPERTIES_FILE_NOT_FOUND_ACTION=\ub2e4\uc74c \uc0d8\ud50c\uc744 \ud15c\ud50c\ub9ac\ud2b8\ub85c \uc0ac\uc6a9\ud558\uc5ec \uace0\uc720\ud55c featureUtility.properties \ud30c\uc77c\uc744 \uc791\uc131\ud558\uc2ed\uc2dc\uc624. \ub2e8\uc77c # \ubb38\uc790\ub85c \ud45c\uc2dc\ub41c \ud589\uc758 \uc8fc\uc11d\uc744 \ud574\uc81c\ud558\uace0 \uc790\uccb4 \uc0ac\uc6a9\uc790 \uc815\uc758\ub41c \uac12\uc73c\ub85c \uac12\uc744 \ub300\uccb4\ud558\uc2ed\uc2dc\uc624.
+MSG_PROPS_FILE_NOT_FOUND_EXPLANATION=installUtility \uc124\uc815\uc744 \uc0ac\uc6a9\uc790 \uc815\uc758\ud558\ub824\uba74 {0}\uc5d0\uc11c repositories.properties \ud30c\uc77c\uc744 \uc791\uc131\ud558\uc2ed\uc2dc\uc624.
+MSG_PROPS_FILE_NOT_FOUND_ACTION=\ub2e4\uc74c \uc0d8\ud50c\uc744 \ud15c\ud50c\ub9ac\ud2b8\ub85c \uc0ac\uc6a9\ud558\uc5ec \uace0\uc720\ud55c repositories.properties \ud30c\uc77c\uc744 \uc791\uc131\ud558\uc2ed\uc2dc\uc624. \ub2e8\uc77c # \ubb38\uc790\ub85c \ud45c\uc2dc\ub41c \ud589\uc758 \uc8fc\uc11d\uc744 \ud574\uc81c\ud558\uace0 \uc790\uccb4 \uc0ac\uc6a9\uc790 \uc815\uc758\ub41c \uac12\uc73c\ub85c \uac12\uc744 \ub300\uccb4\ud558\uc2ed\uc2dc\uc624.
+MSG_TRUE=True
+MSG_FALSE=False
+MSG_DEFAULT_REPO_USEAGE_LABEL=\uae30\ubcf8 \uc800\uc7a5\uc18c \uc0ac\uc6a9:
+MSG_DEFAULT_REPO_NAME_LABEL=\uae30\ubcf8 \uc790\uc0b0 \uc800\uc7a5\uc18c:
+MSG_DEFAULT_REPO_NAME=Maven Central Repository
+MSG_CONFIG_REPO_LABEL=\uad6c\uc131\ub41c \uc800\uc7a5\uc18c
+MSG_MAVEN_LOCAL_REPO=Maven Local Repository
+MSG_NO_CONFIG_REPO=\uc800\uc7a5\uc18c\uac00 \uad6c\uc131\ub418\uc9c0 \uc54a\uc74c
+MSG_UNSPECIFIED=<\uc9c0\uc815\ub418\uc9c0 \uc54a\uc74c>
+MSG_PASSWORD_NOT_ENCODED_PROXY=\uc774 \ud504\ub85d\uc2dc\uc5d0 \ub300\ud55c \ube44\ubc00\ubc88\ud638\uac00 \uc778\ucf54\ub529\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ube44\ubc00\ubc88\ud638\ub97c \uc778\ucf54\ub529\ud558\ub824\uba74 --encoding \uc635\uc158\uc744 \uc9c0\uc6d0\ub418\ub294 \uc778\ucf54\ub529 \uc720\ud615\uc73c\ub85c \uc124\uc815\ud558\uc5ec securityUtility encode \uc870\uce58\ub97c \uc2e4\ud589\ud558\uc2ed\uc2dc\uc624. \uc9c0\uc6d0\ub418\ub294 \uc720\ud615\uc740 xor(\uae30\ubcf8\uac12), aes, \ubc0f hash\uc785\ub2c8\ub2e4.
+MSG_PROXY_LABEL=\ud504\ub85d\uc2dc \uc124\uc815
+MSG_NO_CONFIG_PROXY=\ud504\ub85d\uc2dc\uac00 \uad6c\uc131\ub418\uc9c0 \uc54a\uc74c
+MSG_REPO_FILE_NOT_FOUND=\uc0ac\uc6a9\uc790 \uad6c\uc131\uc774 \ubc1c\uacac\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4. IBM WebSphere Liberty Repository\ub294 \uae30\ubcf8 \uc790\uc0b0 \uc800\uc7a5\uc18c\uc785\ub2c8\ub2e4.
+MSG_REPO_FILE_NOT_FOUND_EXPLANATION=installUtility \uc124\uc815\uc744 \uc0ac\uc6a9\uc790 \uc815\uc758\ud558\ub824\uba74 {0}\uc5d0\uc11c repositories.properties \ud30c\uc77c\uc744 \uc791\uc131\ud558\uc2ed\uc2dc\uc624.
+MSG_REPO_FILE_NOT_FOUND_ACTION=\ub2e4\uc74c \uc0d8\ud50c\uc744 \ud15c\ud50c\ub9ac\ud2b8\ub85c \uc0ac\uc6a9\ud558\uc5ec \uace0\uc720\ud55c repositories.properties \ud30c\uc77c\uc744 \uc791\uc131\ud558\uc2ed\uc2dc\uc624. \ub2e8\uc77c # \ubb38\uc790\ub85c \ud45c\uc2dc\ub41c \ud589\uc758 \uc8fc\uc11d\uc744 \ud574\uc81c\ud558\uace0 \uc790\uccb4 \uc0ac\uc6a9\uc790 \uc815\uc758\ub41c \uac12\uc73c\ub85c \uac12\uc744 \ub300\uccb4\ud558\uc2ed\uc2dc\uc624.
+MSG_VALIDATION_SUCCESSFUL=\ud2b9\uc131 \ud30c\uc77c\uc774 \uc720\ud6a8\uc131 \uac80\uc99d\uc5d0 \ud328\uc2a4\ud588\uc2b5\ub2c8\ub2e4.
+MSG_VALIDATION_FAILED_NO_MESSAGES=\ud2b9\uc131 \ud30c\uc77c\uc774 \uc720\ud6a8\uc131 \uac80\uc99d\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. --viewValidationMessages \uc635\uc158\uc744 \uc0ac\uc6a9\ud558\uc5ec \uc790\uc138\ud55c \uc720\ud6a8\uc131 \uac80\uc99d \uba54\uc2dc\uc9c0\ub97c \ubcf4\uc2ed\uc2dc\uc624.
+MSG_VALIDATION_NUM_OF_ERRORS=\uc624\ub958 \uc218: {0}
+MSG_VALIDATION_MESSAGES=\ud2b9\uc131 \ud30c\uc77c \uc720\ud6a8\uc131 \uac80\uc99d
+MSG_VALIDATION_MESSAGE_FORMAT={0}. {1}
+
+FIELD_REPO_NAME=\uc774\ub984: {0}
+FIELD_REPO_LOCATION=\uc704\uce58: {0}
+FIELD_REPO_STATUS=\uc0c1\ud0dc: {0}
+FIELD_REPO_REASON=\uc774\uc720:  {0}
+FIELD_REPO_WARNING=\uacbd\uace0: {0}
+FIELD_NAME=\uc774\ub984:
+FIELD_PORT=\ud3ec\ud2b8:
+FIELD_LOCATION=\uc704\uce58:
+FIELD_PROXY_SERVER=\ud504\ub85d\uc2dc \uc11c\ubc84:
+FIELD_USER=\uc0ac\uc6a9\uc790 \uc774\ub984:
+FIELD_PASS=\ube44\ubc00\ubc88\ud638:
+FIELD_PROPS_FILE=\ud2b9\uc131 \ud30c\uc77c: {0}
+FIELD_REPO=\uc800\uc7a5\uc18c \uc11c\ubc84: {0}({1})
+FIELD_PROXY=\ud504\ub85d\uc2dc \uc11c\ubc84: {0}
+FIELD_VALIDATION_RESULTS=\uc720\ud6a8\uc131 \uac80\uc99d \uacb0\uacfc: {0}
+FIELD_VALIDATION_LINE=\ud589: {0}

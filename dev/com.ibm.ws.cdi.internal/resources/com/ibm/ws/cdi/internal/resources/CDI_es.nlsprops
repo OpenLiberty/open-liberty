@@ -68,3 +68,7 @@ no.injection.target.CWOWB1008E.useraction=Aseg\u00farese de que el archivador al
 implicit.bean.scanning.disabled.CWOWB1009W=CWOWB1009W: Los archivadores de beans impl\u00edcitos est\u00e1n inhabilitados.
 implicit.bean.scanning.disabled.CWOWB1009W.explanation=Los archivadores no se exploran en busca de beans CDI a menos que tengan un archivo beans.xml.
 implicit.bean.scanning.disabled.CWOWB1009W.useraction=Aseg\u00farese de que cada uno de los archivadores que utilice CDI tenga un archivo beans.xml o vuelva a habilitar la exploraci\u00f3n de beans impl\u00edcitos en el archivo server.xml.
+
+spi.extension.failed.to.construct.CWOWB10010E=CWOWB10010E: No se ha podido crear la extensi\u00f3n CDI a trav\u00e9s de SPI.
+spi.extension.failed.to.construct.CWOWB10010E.explanation=CDI no ha podido invocar el constructor de la clase de extensi\u00f3n {0} registrada a trav\u00e9s del m\u00e9todo getExtensions() de la implementaci\u00f3n WebSphereCDIExtensionMetaData debido a la excepci\u00f3n {1}.
+spi.extension.failed.to.construct.CWOWB10010E.useraction=Arregle el error que impide que se cree una instancia de la extensi\u00f3n.

@@ -18,6 +18,12 @@ src: \
 	test-applications/BndErrorEJB.jar/src, \
 	test-applications/ComponentIDBndEJB.jar/src, \
 	test-applications/ComponentIDBndWeb.war/src, \
+	test-applications/EJB2XDefBndEJB.jar/src, \
+	test-applications/EJB2XDefBndWeb.war/src, \
+	test-applications/DisableShrtBndEJB.jar/src, \
+	test-applications/DisableShrtBndOtherEJB.jar/src, \
+	test-applications/DisableShrtBndWeb.war/src, \
+	test-applications/DisableShrtBndOtherWeb.war/src, \
 	test-applications/EJB3BndBean.jar/src, \
 	test-applications/EJB3BndWeb.war/src, \
 	test-applications/EJB3DefBndBean.jar/src, \

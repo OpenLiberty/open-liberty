@@ -18,7 +18,6 @@ src: \
 fat.project: true
 
 -buildpath: \
-  com.ibm.websphere.jakarta.concurrency.2.0;version=latest,\
   com.ibm.websphere.javaee.annotation.1.1;version=latest,\
   com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
   com.ibm.websphere.javaee.ejb.3.2;version=latest,\
@@ -29,4 +28,5 @@ fat.project: true
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
   com.ibm.ws.logging.core;version=latest,\
   com.ibm.ws.resource;version=latest,\
-  com.ibm.ws.tx.embeddable;version=latest
+  com.ibm.ws.tx.embeddable;version=latest,\
+  io.openliberty.jakarta.concurrency.2.0;version=latest

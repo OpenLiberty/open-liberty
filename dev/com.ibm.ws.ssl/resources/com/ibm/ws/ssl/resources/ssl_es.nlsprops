@@ -557,9 +557,13 @@ ssl.create.certificate.end=CWPKI0803A: El certificado SSL se ha creado en {0} se
 ssl.create.certificate.end.explanation=El certificado SSL se ha generado en el tiempo especificado.
 ssl.create.certificate.end.useraction=No se requiere ninguna acci\u00f3n.
 #--------------------------------------------------------------------------------------------------
-ssl.create.certificate.error=CWPKI0804E: Error de creaci\u00f3n de certificado SSL. No se puede crear el archivo de claves SSL: {0}
+ssl.create.certificate.error=CWPKI0804E: Error de creaci\u00f3n de certificado SSL. {0}
 ssl.create.certificate.error.explanation=El certificado SSL no se ha podido crear en la ubicaci\u00f3n especificada.
 ssl.create.certificate.error.useraction=Compruebe que el proceso de servidor puede acceder a la ubicaci\u00f3n. Los FFDC podr\u00edan indicar un error muy grave al generar o cargar las claves.
+
+# Messages for the CWPKI0804E message descriptor {0}.
+ssl.create.certificate.error.reason1=No se puede crear el archivo de claves SSL: {0}
+ssl.create.certificate.error.reason2=El error es: {0}
 #--------------------------------------------------------------------------------------------------
 ssl.default.keystore.config.error=CWPKI0805E: Es necesario especificar una contrase\u00f1a para el almac\u00e9n de claves predeterminado.
 ssl.default.keystore.config.error.explanation=La configuraci\u00f3n del almac\u00e9n de claves no especifica una contrase\u00f1a para el almac\u00e9n de claves predeterminado.

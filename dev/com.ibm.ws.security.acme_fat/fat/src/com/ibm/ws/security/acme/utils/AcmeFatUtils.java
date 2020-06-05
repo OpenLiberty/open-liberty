@@ -14,6 +14,9 @@ package com.ibm.ws.security.acme.utils;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -21,12 +24,15 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
+import java.nio.file.Files;
 import java.security.KeyStore;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
@@ -69,6 +75,8 @@ public class AcmeFatUtils {
 	public static final String SELF_SIGNED_KEYSTORE_PASSWORD = "acmepassword";
 	public static final String CACERTS_TRUSTSTORE_PASSWORD = "acmepassword";
 	public static final String DEFAULT_KEYSTORE_PASSWORD = "acmepassword";
+	private static final long SCHEDULE_TIME = 30000;
+	public static final String ACME_CHECKER_TRACE = "ACME automatic certificate checker verified";
 
 	/**
 	 * Get an X.509 certificate from a PEM certificate.
@@ -245,6 +253,29 @@ public class AcmeFatUtils {
 	 */
 	public static void configureAcmeCA(LibertyServer server, CAContainer caContainer,
 			ServerConfiguration originalConfig, boolean useAcmeURIs, String... domains) throws Exception {
+		configureAcmeCA(server, caContainer, originalConfig, useAcmeURIs, false, domains);
+
+	}
+
+	/**
+	 * Convenience method for dynamically configuring the acmeCA-2.0
+	 * configuration.
+	 * 
+	 * @param server
+	 *            Liberty server to update.
+	 * @param originalConfig
+	 *            The original configuration to update from.
+	 * @param useAcmeURIs
+	 *            Use "acme://" style URIs for ACME providers.
+	 * @param disableRenewWindow
+	 *            Set the disableMinRenewWindow in the server config.
+	 * @param domains
+	 *            Domains to request the certificate for.
+	 * @throws Exception
+	 *             IF there was an error updating the configuration.
+	 */
+	public static void configureAcmeCA(LibertyServer server, CAContainer caContainer,
+			ServerConfiguration originalConfig, boolean useAcmeURIs, boolean disableRenewWindow, String... domains) throws Exception {
 		/*
 		 * Choose which configuration to update.
 		 */
@@ -257,6 +288,12 @@ public class AcmeFatUtils {
 		AcmeCA acmeCA = clone.getAcmeCA();
 		acmeCA.setDomain(Arrays.asList(domains));
 		configureAcmeCaConnection(caContainer.getAcmeDirectoryURI(useAcmeURIs), acmeCA);
+		if (disableRenewWindow) {
+			/*
+			 * Allow back to back renew requests for test efficiency
+			 */
+			acmeCA.setDisableMinRenewWindow(true);
+		}
 
 		/*
 		 * The defaultHttpEndpoint needs to point to the port the CA has been
@@ -365,7 +402,7 @@ public class AcmeFatUtils {
 	public static void clearDnsForDomains(CAContainer dnscontainer, String... domains) throws Exception {
 
 		Log.info(AcmeFatUtils.class, "clearDnsForDomains(String...)",
-				"Clearning the following domains from the DNS: " + domains);
+				"Clearing the following domains from the DNS: " + Arrays.toString(domains));
 
 		for (String domain : domains) {
 			/*
@@ -397,8 +434,11 @@ public class AcmeFatUtils {
 	 *            The server to check.
 	 */
 	public static final void waitForAcmeToCreateCertificate(LibertyServer server) {
-		assertNotNull("ACME did not fetch the certificate.", server.waitForStringInLog("CWPKI2064I"));
-		assertNotNull("ACME did not create the certificate.", server.waitForStringInLog("CWPKI2007I"));
+		assertNotNull("ACME did not fetch the certificate.", server.waitForStringInLog("CWPKI2064I", 120000));
+		/* 
+		 * Longer timeout for local runs, similar to timeout for builds
+		 */
+		assertNotNull("ACME did not create the certificate.", server.waitForStringInLogUsingMark("CWPKI2007I", 120000));
 	}
 
 	/**
@@ -558,6 +598,30 @@ public class AcmeFatUtils {
 	}
 
 	/**
+	 * Wait for assertAndGetServerCertificate to complete without errors. If it
+	 * fails until the timeout, run again to throw the exception back to the caller.
+	 * 
+	 * @param server
+	 * @param container
+	 * @param timeout
+	 * @return
+	 * @throws Exception
+	 */
+	public static final <assertAndGetServerCertificate> Certificate[] waitForAcmeCert(LibertyServer server,
+			CAContainer container, long timeout) throws Exception {
+		long startTime = System.currentTimeMillis();
+		while (System.currentTimeMillis() < startTime + timeout) {
+			Log.info(AcmeFatUtils.class, "waitForAcmeCert", "Cert checking to swap from self signed to acme ");
+			try {
+				return assertAndGetServerCertificate(server, container);
+			} catch (Exception e) {
+				Thread.sleep(1000);
+			}
+		}
+		return assertAndGetServerCertificate(server, container);
+	}
+
+	/**
 	 * Delete any files generated by the ACME feature. This method is currently
 	 * restricted to deleting from the default location.
 	 * 
@@ -570,20 +634,66 @@ public class AcmeFatUtils {
 	 */
 	public static void deleteAcmeFiles(LibertyServer server) {
 		Log.info(AcmeFatUtils.class, "deleteAcmeFiles(LibertyServer)", "Deleting files generated by ACME feature.");
-
 		File keystore = new File(server.getServerRoot() + "/resources/security/key.p12");
-		if (keystore.exists()) {
-			keystore.delete();
-		}
-
 		File accountKey = new File(server.getServerRoot() + "/resources/security/acmeAccountKey.pem");
-		if (accountKey.exists()) {
-			accountKey.delete();
-		}
-
 		File domainKey = new File(server.getServerRoot() + "/resources/security/acmeDomainKey.pem");
-		if (domainKey.exists()) {
-			domainKey.delete();
+		List<Object[]> failedFiles = new ArrayList<Object[]>();
+		int attempt = 0;
+		int retries = 3;
+		/*
+		 * Keep attempting to delete until we have either deleted all the files, or
+		 * exhausted all attempts.
+		 */
+		while (attempt <= retries) {
+			failedFiles.clear();
+			try {
+				Files.deleteIfExists(keystore.toPath());
+			} catch (IOException e1) {
+				Log.error(AcmeFatUtils.class, "Error deleting keystore: ", e1);
+				failedFiles.add(new Object[] { keystore, e1 });
+			}
+			try {
+				Files.deleteIfExists(accountKey.toPath());
+			} catch (IOException e1) {
+				Log.error(AcmeFatUtils.class, "Error deleting account key: ", e1);
+				failedFiles.add(new Object[] { accountKey, e1 });
+			}
+			try {
+				Files.deleteIfExists(domainKey.toPath());
+			} catch (IOException e1) {
+				Log.error(AcmeFatUtils.class, "Error deleting domain key: ", e1);
+				failedFiles.add(new Object[] { domainKey, e1 });
+			}
+			/*
+			 * If no failures, discontinue.
+			 */
+			if (failedFiles.isEmpty()) {
+				break;
+			}
+			attempt++;
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				Thread.interrupted();
+			}
+		}
+		if (!failedFiles.isEmpty()) {
+			StringBuffer sb = new StringBuffer();
+			sb.append("Failed to delete ACME files. Future tests may fail. The following files failed: ");
+			for (Object[] failure : failedFiles) {
+				File f = (File) failure[0];
+				IOException ioe = (IOException) failure[1];
+				sb.append("[");
+				sb.append(f.getAbsolutePath());
+				sb.append(", Is Readable? ");
+				sb.append(f.canRead());
+				sb.append(", Is Writable? ");
+				sb.append(f.canWrite());
+				sb.append(", Exception: ");
+				sb.append(ioe.getMessage());
+				sb.append("]");
+			}
+			fail(sb.toString());
 		}
 	}
 
@@ -623,5 +733,47 @@ public class AcmeFatUtils {
 		}
 
 		assertTrue("Expected port " + port + " to be open.", open);
+	}
+
+	/**
+	 * Wait for a new certificate compared to the provided certificate using the default timeout
+	 * @param server
+	 * @param acmeContainer
+	 * @param startingCertificateChain
+	 * @throws Exception
+	 */
+	public static final void waitForNewCert(LibertyServer server, CAContainer acmeContainer, Certificate[] startingCertificateChain) throws Exception {
+		waitForNewCert(server, acmeContainer, startingCertificateChain, SCHEDULE_TIME);
+	}
+
+	/**
+	 *  Wait for a new certificate compared to the provided certificate using a custom timeout
+	 * @param server
+	 * @param acmeContainer
+	 * @param startingCertificateChain
+	 * @param timeout
+	 * @throws Exception
+	 */
+	public static final void waitForNewCert(LibertyServer server, CAContainer acmeContainer, Certificate[] startingCertificateChain, long timeout) throws Exception {
+		Certificate[] endingCertificateChain;
+		long startTime = System.currentTimeMillis();
+		while (System.currentTimeMillis() < startTime + timeout) {
+			Log.info(AcmeFatUtils.class, "waitForNewCert", "Cert checking ");
+			endingCertificateChain = AcmeFatUtils.assertAndGetServerCertificate(server, acmeContainer);
+
+			if (((X509Certificate) startingCertificateChain[0]).getSerialNumber()
+					.equals(((X509Certificate) endingCertificateChain[0]).getSerialNumber())) {
+				Thread.sleep(1000);
+			} else {
+				break;
+			}
+		}
+
+		endingCertificateChain = AcmeFatUtils.assertAndGetServerCertificate(server, acmeContainer);
+
+		String serial1 = ((X509Certificate) startingCertificateChain[0]).getSerialNumber().toString(16);
+		String serial2 = ((X509Certificate) endingCertificateChain[0]).getSerialNumber().toString(16);
+
+		assertThat("Expected a new certificate.", serial1, not(equalTo(serial2)));	
 	}
 }

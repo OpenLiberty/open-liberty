@@ -26,6 +26,8 @@ dependencies {
       project(':com.ibm.ws.webcontainer.security_test.servlets')
     }
 
+addRequiredLibraries.dependsOn addJakartaTransformer
+
 sourceSets {
     main.resources {
         srcDir 'resources'

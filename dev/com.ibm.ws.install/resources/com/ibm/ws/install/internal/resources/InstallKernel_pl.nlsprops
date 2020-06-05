@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2018 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -601,6 +601,8 @@ MSG_VALIDATION_INVALID_URL=Nast\u0119puj\u0105cy adres URL jest niepoprawny: {0}
 MSG_VALIDATION_UNSUPPORT_PROTOCOL=Protok\u00f3\u0142 URL nie jest obs\u0142ugiwany w przypadku nast\u0119puj\u0105cego repozytorium: {0}. Obs\u0142ugiwane protoko\u0142y: HTTP, HTTPS i file (pliki). Upewnij si\u0119, \u017ce poprawnie podano adres URL.
 MSG_VALIDATION_INVALID_HOST=Nast\u0119puj\u0105cy host serwera proxy jest niepoprawny: {0}. Podaj poprawn\u0105 nazw\u0119 hosta serwera proxy HTTP. Przedrostek http:// nie jest wymagany.
 
+# Message for find action
+MSG_NO_FEATURES_FOUND=Nie znaleziono sk\u0142adnik\u00f3w.
 VALIDATION_INVALID_VALUE=Nieobs\u0142ugiwana warto\u015b\u0107
 VALIDATION_INVALID_KEY=Nieobs\u0142ugiwana nazwa w\u0142a\u015bciwo\u015bci
 VALIDATION_EMPTY_KEY=Pusta nazwa w\u0142a\u015bciwo\u015bci
@@ -842,9 +844,27 @@ MSG_USER_FEATURE_SERVER_XML=CWWKF1403I: Nast\u0119puj\u0105ce sk\u0142adniki u\u
 ERROR_INCOMPATIBLE_FEATURES=CWWKF1404E: Sk\u0142adniki {0} i {1} s\u0105 ze sob\u0105 niekompatybilne i nie mog\u0105 by\u0107 jednocze\u015bnie zainstalowane.
 ERROR_INCOMPATIBLE_FEATURES.explanation=Te sk\u0142adniki nie mog\u0105 by\u0107 jednocze\u015bnie zainstalowane.
 ERROR_INCOMPATIBLE_FEATURES.useraction=Usu\u0144 jeden ze sk\u0142adnik\u00f3w i spr\u00f3buj ponownie.
+
 ERROR_INCOMPATIBLE_FEATURES_SINGLETON=CWWKF1405E: Pojedyncze sk\u0142adniki {0} i {1} s\u0105 ze sob\u0105 niekompatybilne i nie mog\u0105 by\u0107 jednocze\u015bnie zainstalowane.
 ERROR_INCOMPATIBLE_FEATURES_SINGLETON.explanation=Te sk\u0142adniki nie mog\u0105 by\u0107 jednocze\u015bnie zainstalowane.
 ERROR_INCOMPATIBLE_FEATURES_SINGLETON.useraction=Usu\u0144 jeden ze sk\u0142adnik\u00f3w i spr\u00f3buj ponownie.
+
+ERROR_FAILED_TO_UNPACK_LICENSE=CWWKF1406E: Nie mo\u017cna rozpakowa\u0107 pakietu licencji na podstawie wsp\u00f3\u0142rz\u0119dnej Maven {0} z repozytorium w \u015bcie\u017cce {1}.
+ERROR_FAILED_TO_UNPACK_LICENSE.explanation=Nie mo\u017cna rozpakowa\u0107 pakietu licencji do instalacji wlp.
+ERROR_FAILED_TO_UNPACK_LICENSE.useraction=Upewnij si\u0119, \u017ce masz poprawne uprawnienia do odczytu z repozytorium.
+ERROR_FAILED_TO_READ_LICENSE=CWWKF1407E: Nie mo\u017cna przetworzy\u0107 pliku licencji w po\u0142o\u017ceniu pliku {0}.
+ERROR_FAILED_TO_READ_LICENSE.explanation=Nie mo\u017cna przetworzy\u0107 pliku licencji pod k\u0105tem informacji o akceptacji licencji.
+ERROR_FAILED_TO_READ_LICENSE.useraction=Upewnij si\u0119, \u017ce masz poprawne uprawnienia do odczytu z pliku licencji.
+ERROR_FAILED_TO_FIND_WEBSPHERE_JSON=CWWKF1408E: Nie mo\u017cna znale\u017a\u0107 pliku JSON produktu Websphere w po\u0142o\u017ceniu {0}.
+ERROR_FAILED_TO_FIND_WEBSPHERE_JSON.explanation=Nie mo\u017cna znale\u017a\u0107 pliku JSON produktu Websphere.
+ERROR_FAILED_TO_FIND_WEBSPHERE_JSON.useraction=Upewnij si\u0119, \u017ce masz po\u0142\u0105czenie sieciowe i uprawnienia do zapisu w skonfigurowanym lokalnym katalogu Maven.
+ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS=CWWKF1409E: Nie mo\u017cna znale\u017a\u0107 nast\u0119puj\u0105cych plik\u00f3w JSON sk\u0142adnika w systemie lokalnym ani na skonfigurowanym repozytorium Maven: {0}.
+ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS.explanation=Pliki JSON nie zosta\u0142y znalezione lokalnie ani w skonfigurowanym repozytorium Maven.
+ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS.useraction=Upewnij si\u0119, \u017ce masz po\u0142\u0105czenie sieciowe, a pliki JSON istniej\u0105 w skonfigurowanym repozytorium Maven.
+ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY=CWWKF1410E: Sk\u0142adnik {0} nie mo\u017ce zosta\u0107 zainstalowany w edycji {1} {2}, poniewa\u017c ma zastosowanie tylko do edycji {3}.
+ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.explanation=Sk\u0142adnik nie ma zastosowania do edycji zainstalowanego produktu.
+ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.useraction=Zainstaluj sk\u0142adniki, kt\u00f3re s\u0105 obs\u0142ugiwane przez edycj\u0119 produktu.
+
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: Sk\u0142adnik zosta\u0142 pomy\u015blnie pobrany.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=Sk\u0142adnik zosta\u0142 pobrany.
 TOOL_DOWNLOAD_FEATURE_OK.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.

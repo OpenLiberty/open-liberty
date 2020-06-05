@@ -33,7 +33,6 @@ import componenttest.app.FATServlet;
  * Tests a number of combinations of jndi lookups for beans that have a number of combinations of
  * custom bindings defined with the SimpleBindingName element in ibm-ejb-jar-bnd.xml.
  */
-//TODO: some tests disabled until remote binding support is added
 @SuppressWarnings("serial")
 @WebServlet("/SimpleBindingNameTestServlet")
 public class SimpleBindingNameTestServlet extends FATServlet {

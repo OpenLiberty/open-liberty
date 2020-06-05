@@ -183,7 +183,7 @@ public class VariableEvaluator {
                         context.addDefinedVariable(variable, realValue);
                 }
 
-                if (realValue == null) {
+                if (realValue == null && useEnvironment) {
                     // If the value is null, add it to the context so that we don't try to evaluate it again.
                     // If the value is not null here, it is either:
                     // 1) An environment variable or mangled variable, in which case we added it above, or

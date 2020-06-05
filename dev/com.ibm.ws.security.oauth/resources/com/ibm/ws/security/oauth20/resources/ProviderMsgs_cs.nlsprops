@@ -322,7 +322,7 @@ security.oauth20.front.end.error=CWOAU0073E: Vyskytla se chyba p\u0159i ov\u011b
 security.oauth20.front.end.error.explanation=V po\u017eadavku mohou chyb\u011bt informace, server mo\u017en\u00e1 rozpoznal intern\u00ed chybu nebo mohlo doj\u00edt k jin\u00e9 chyb\u011b, kter\u00e1 zabr\u00e1nila serveru v \u00fasp\u011b\u0161n\u00e9 autentizaci u\u017eivatele.
 security.oauth20.front.end.error.useraction=Kontaktujte administr\u00e1tora syst\u00e9mu, abyste probl\u00e9m vy\u0159e\u0161ili.
 
-security.oauth20.endpoint.resowner.apppassword.error=CWOAU0074E: \u017d\u00e1dost o v\u00fdm\u011bnu hesla aplikace pro u\u017eivatele [{0}] nelze dokon\u010dit, proto\u017ee nebylo mo\u017en\u00e9 ov\u011b\u0159it heslo aplikace. Heslo aplikace je bu\u010f nespr\u00e1vn\u00e9, vypr\u0161elo nebo bylo zru\u0161eno nebo zadan\u00e9 ID klienta nen\u00ed platn\u00e9.
+security.oauth20.endpoint.resowner.apppassword.error=CWOAU0074E: \u017d\u00e1dost o v\u00fdm\u011bnu hesla aplikace pro u\u017eivatele [{0}] nelze dokon\u010dit, proto\u017ee poskytovatel OAuth nemohl ov\u011b\u0159it heslo aplikace. Heslo aplikace je bu\u010f nespr\u00e1vn\u00e9, vypr\u0161elo nebo bylo zru\u0161eno nebo zadan\u00e9 ID klienta nebo ID u\u017eivatele nen\u00ed platn\u00e9.
 security.oauth20.endpoint.resowner.apppassword.error.explanation=Poskytovatel OAuth nemohl ov\u011b\u0159it heslo aplikace.
 security.oauth20.endpoint.resowner.apppassword.error.useraction=Potvr\u010fte, \u017ee heslo aplikace je platn\u00e9, nevypr\u0161ela platnost a nebylo zru\u0161eno. Tak\u00e9 potvr\u010fte, \u017ee ID klienta v p\u0159\u00edstupov\u00e9m tokenu je stejn\u00e9 jako ID klienta v z\u00e1hlav\u00ed autorizace.
 

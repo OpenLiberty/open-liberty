@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,10 +15,14 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.IOException;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivilegedActionException;
 import java.security.Provider;
 import java.security.Security;
+import java.security.cert.CertificateException;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -78,6 +82,34 @@ public class WSKeyStoreTest {
         @Override
         protected KeyStore obtainKeyStore(String storeFile, boolean create) throws PrivilegedActionException {
             throw new PrivilegedActionException(new java.io.IOException("Errors encountered loading keyring. Keyring could not be loaded as a JCECCARACFKS or JCERACFKS keystore."));
+        }
+    }
+
+    // Test double that always throws java.io.Exception to test error handling and messages.
+    @SuppressWarnings("serial")
+    class WSKeyStoreTestDoubleReturn extends WSKeyStore {
+
+        public WSKeyStoreTestDoubleReturn(String name, Dictionary<String, Object> properties, KeystoreConfig cfgSvc) throws Exception {
+            super(name, properties, cfgSvc);
+        }
+
+        @Override
+        protected KeyStore obtainKeyStore(String storeFile, boolean create) throws PrivilegedActionException {
+            KeyStore ks = null;
+            try {
+                ks = KeyStore.getInstance(KeyStore.getDefaultType());
+
+                ks.load(null, null);
+            } catch (NoSuchAlgorithmException | CertificateException | IOException e) {
+                // TODO Auto-generated catch block
+                // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
+                e.printStackTrace();
+            } catch (KeyStoreException e) {
+                // TODO Auto-generated catch block
+                // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
+                e.printStackTrace();
+            }
+            return ks;
         }
     }
 
@@ -367,6 +399,95 @@ public class WSKeyStoreTest {
                        outputMgr.checkForStandardErr("CWPKI0806E"));
             assertEquals(e.getMessage(), "Required keystore information is missing, must provide a location and type.");
         }
+    }
+
+    /**
+     * Test to make sure the file based defaults to true does not change
+     * when useing a type other then jks, jceks, or pkcs12
+     */
+    @Test
+    public void createWSKeyStoreFileBasedSpecialType() throws Exception {
+        Hashtable<String, Object> storeconfig = new Hashtable<String, Object>();
+        storeconfig.put("id", "diffTypeKeyStore");
+        storeconfig.put("password", "mytestpassword");
+        storeconfig.put("location", "testKeyStoreFile");
+        storeconfig.put("type", "different");
+
+        String providerName = getJCEKSProviderIfAvailable();
+        if (providerName != null) {
+            storeconfig.put("provider", providerName);
+        }
+
+        final File testKeyFile = new File("test/files/testKeyStoreFile");
+        final String defaultKeyStore = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
+        final File defaultKeyStoreJKS = new File(defaultKeyStore);
+        final String defaultKeyStoreName = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_KEY_STORE_FILE;
+        final File defaultKeyStorePKCS12 = new File(defaultKeyStoreName);
+
+        mock.checking(new Expectations() {
+            {
+                one(locMgr).resolveString(defaultKeyStore);
+                will(returnValue(defaultKeyStoreJKS.getAbsolutePath()));
+                one(locMgr).resolveString(defaultKeyStoreName);
+                will(returnValue(defaultKeyStorePKCS12.getAbsolutePath()));
+                one(locMgr).resolveString("testKeyStoreFile");
+                will(returnValue(testKeyFile.getAbsolutePath()));
+            }
+        });
+
+        WSKeyStore keystore = new WSKeyStoreTestDoubleReturn("diffTypeKeyStore", storeconfig, testConfigService);
+
+        assertEquals("diffTypeKeyStore", keystore.getProperty("com.ibm.ssl.keyStoreName"));
+        assertTrue(keystore.getProperty("com.ibm.ssl.keyStore").endsWith("testKeyStoreFile"));
+        assertEquals("different", keystore.getProperty("com.ibm.ssl.keyStoreType"));
+        assertEquals("true", keystore.getProperty("com.ibm.ssl.keyStoreFileBased"));
+        assertEquals("false", keystore.getProperty("com.ibm.ssl.keyStoreReadOnly"));
+        assertEquals("false", keystore.getProperty("com.ibm.ssl.keyStoreInitializeAtStartup"));
+        if (providerName != null) {
+            assertEquals(providerName, keystore.getProperty("com.ibm.ssl.keyStoreProvider"));
+        }
+    }
+
+    /**
+     * Test to make sure the a keyring's filebased attribute get set to
+     * false when not set in configuration.
+     */
+    @Test
+    public void createWSKeyStoreFileBasedFalseForKeyring() throws Exception {
+        Hashtable<String, Object> storeconfig = new Hashtable<String, Object>();
+        storeconfig.put("id", "keyring");
+        storeconfig.put("password", "mytestpassword");
+        storeconfig.put("location", "safkeyring:///doesNotExist");
+        storeconfig.put("type", "JCERACFKS");
+
+        String providerName = getJCEKSProviderIfAvailable();
+        if (providerName != null) {
+            storeconfig.put("provider", providerName);
+        }
+
+        final File testKeyFile = new File("safkeyring:///doesNotExist");
+        final String defaultKeyStore = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
+        final File defaultKeyStoreJKS = new File(defaultKeyStore);
+        final String defaultKeyStoreName = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_KEY_STORE_FILE;
+        final File defaultKeyStorePKCS12 = new File(defaultKeyStoreName);
+
+        mock.checking(new Expectations() {
+            {
+                one(locMgr).resolveString(defaultKeyStore);
+                will(returnValue(defaultKeyStoreJKS.getAbsolutePath()));
+                one(locMgr).resolveString(defaultKeyStoreName);
+                will(returnValue(defaultKeyStorePKCS12.getAbsolutePath()));
+                one(locMgr).resolveString("testKeyStoreFile");
+                will(returnValue(testKeyFile.getAbsolutePath()));
+            }
+        });
+
+        WSKeyStore keystore = new WSKeyStoreTestDoubleReturn("keyring", storeconfig, testConfigService);
+
+        assertEquals("keyring", keystore.getProperty("com.ibm.ssl.keyStoreName"));
+        assertTrue(keystore.getProperty("com.ibm.ssl.keyStore").endsWith("safkeyring:///doesNotExist"));
+        assertEquals("JCERACFKS", keystore.getProperty("com.ibm.ssl.keyStoreType"));
+        assertEquals("false", keystore.getProperty("com.ibm.ssl.keyStoreFileBased"));
     }
 
     /**

@@ -13,9 +13,30 @@ import org.apache.tools.ant.filters.ReplaceTokens
 import groovy.json.*
 import org.gradle.internal.os.OperatingSystem
 
+import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
+
 apply plugin: 'maven'
 
 def releaseVersion = "${bnd.libertyRelease}-" + rootProject.userProps.getProperty("version.qualifier")
+
+def getBetaVersion() {
+    def (year, major, minor, month) = "${bnd.libertyRelease}".tokenize('.')
+    int new_month = month.toInteger() + 1
+    if (new_month > 12) {
+        new_month = 1
+        int new_year = year.toInteger() + 1
+        return "" + new_year + "." + major + "." + minor + "." + new_month
+    }
+    return year + "." + major + "." + minor + "." + new_month
+}
+
+def libertyBeta = getBetaVersion()
+def betaVersion = libertyBeta + "-beta-" + rootProject.userProps.getProperty("version.qualifier")
+
 
 task copyPropertiesToBuildImage (type:Copy) {
     dependsOn jar
@@ -196,6 +217,17 @@ def gaPublicFeatures() {
     features
 }
 
+def gaAndBetaPublicFeatures() {
+    String features = ""
+    gaFeatures(true).each {
+        features += '<feature>' + it + '</feature>\n'
+    }
+    betaFeatures().each {
+        features += '<feature>' + it + '</feature>\n'
+    }
+    features
+}
+
 def webProfile8Features() {
     String features = project.file('profiles/webProfile8/features.xml').readLines()
     features
@@ -203,6 +235,11 @@ def webProfile8Features() {
 
 def javaee8Features() {
     String features = project.file('profiles/javaee8/features.xml').readLines()
+    features
+}
+
+def jakartaee9Features() {
+    String features = project.file('profiles/jakartaee9/features.xml').readLines()
     features
 }
 
@@ -241,6 +278,15 @@ def excludedEE7Features = ['cdi-1.2',
                            'jaxrsClient-2.0',
                            'servlet-3.1']
 
+def replaceBetaVersionAndEdition(String pathname, String release, String beta) {
+    Path path = Paths.get(pathname)
+    Charset charset = StandardCharsets.UTF_8
+    String content = new String(Files.readAllBytes(path), charset)
+    content = content.replaceAll(release, beta)
+    content = content.replaceAll("productEdition=Open", "productEdition=EARLY_ACCESS")
+    Files.write(path, content.getBytes(charset))
+}
+
 if (isAutomatedBuild) {
     task packageOpenLibertyAll(type: PackageLibertyWithFeatures) {
         def excludedFeatures = []
@@ -268,6 +314,24 @@ if (isAutomatedBuild) {
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&gaPublicFeatures
         outputTo packageDir
+    }
+
+    task packageOpenLibertyBeta(type: PackageLibertyWithFeatures) {
+        enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
+        dependsOn parent.subprojects.assemble
+        dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
+        withFeatures this.&gaAndBetaPublicFeatures
+        outputTo packageDir
+        doLast {
+            ["$packageDir/wlp/README.TXT", "$packageDir/wlp/lib/versions/openliberty.properties"].each { path ->
+                replaceBetaVersionAndEdition(path, bnd.libertyRelease, libertyBeta)
+            }
+
+            copy {
+                from project.file('publish/beta/NOTICES')
+                into "$packageDir/wlp"
+            }
+        }
     }
 
     task packageOpenLibertyKernel(type: PackageLibertyWithFeatures) {
@@ -331,6 +395,29 @@ if (isAutomatedBuild) {
         }
     }
 
+    task packageOpenLibertyJakartaee9(type: PackageLibertyWithFeatures) {
+        
+        enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
+        dependsOn parent.subprojects.assemble
+        dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
+        withFeatures this.&jakartaee9Features
+        outputTo packageDir
+        doLast {
+            ["$packageDir/wlp/README.TXT", "$packageDir/wlp/lib/versions/openliberty.properties"].each { path ->
+                replaceBetaVersionAndEdition(path, bnd.libertyRelease, libertyBeta)
+            }
+
+            copy {
+                from "$packageDir/wlp/templates/servers/jakartaee9/server.xml"
+                into "$packageDir/wlp/templates/servers/defaultServer"
+            }
+            copy {
+                from project.file('publish/beta/NOTICES')
+                into "$packageDir/wlp"
+            }
+        }
+    }
+
     task packageOpenLibertyMicroProfile3(type: PackageLibertyWithFeatures) {
         doFirst {
             excludedEE7Features.each {
@@ -357,12 +444,11 @@ if (isAutomatedBuild) {
 
 // Generate checksums
 task genChecksums() {
-  dependsOn parent.subprojects.assemble
-  doLast {
- 	generateChecksums(ant)
-  	ant.calcChecksums(installRoot:'wlp') {
-  	}
-  }
+    dependsOn parent.subprojects.assemble
+    doLast {
+        generateChecksums(ant)
+        ant.calcChecksums(installRoot:'wlp') {}
+    }
 }
 
 // Includes all features. For use in development.
@@ -468,6 +554,36 @@ if (isAutomatedBuild) {
         }
     }
     publish.dependsOn zipOpenLibertyMicroProfile3
+
+    // Includes both kind=ga and kind=beta features.
+    task zipOpenLibertyBeta(type: Zip) {
+        dependsOn packageOpenLibertyBeta
+        dependsOn genChecksums
+        baseName 'openliberty'
+        from packageDir
+        destinationDir distsDir
+        version betaVersion
+        doLast {
+            rootProject.userProps.setProperty('zipopenliberty.beta.archivename', archivePath.toString())
+            rootProject.storeProps()
+        }
+    }
+    publish.dependsOn zipOpenLibertyBeta
+
+    task zipOpenLibertyJakartaee9Beta(type: Zip) {
+        dependsOn packageOpenLibertyJakartaee9
+        dependsOn genChecksums
+        baseName 'openliberty-jakartaee9'
+        from packageDir
+        destinationDir distsDir
+        version betaVersion
+        doLast {
+            rootProject.userProps.setProperty('zipopenliberty.jakartaee9.archivename', archivePath.toString())
+            rootProject.storeProps()
+        }
+    }
+    publish.dependsOn zipOpenLibertyJakartaee9Beta
+
 }
 
 clean.doLast {

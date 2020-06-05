@@ -15,6 +15,8 @@ Bundle-Name: Transaction context service
 Bundle-SymbolicName: com.ibm.ws.transaction.context
 Bundle-Description: Transaction context service; version=${bVersion}
 
+jakartaeeMe: true
+
 WS-TraceGroup: Transaction
 
 DynamicImport-Package: javax.resource.spi.work
@@ -26,12 +28,8 @@ Service-Component: \
     implementation:=com.ibm.ws.transaction.context.internal.TransactionContextProviderImpl; \
     provide:='com.ibm.wsspi.threadcontext.ThreadContextProvider,com.ibm.wsspi.threadcontext.jca.JCAContextProvider'; \
     configuration-policy:=ignore;\
-    eEVersion='com.ibm.ws.javaee.version.JavaEEVersion?';\
     transactionInflowManager=com.ibm.tx.jta.TransactionInflowManager;\
     transactionManager=com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager; \
-    dynamic:='eEVersion';\
-    greedy:='eEVersion';\
-    optional:='eEVersion';\
     properties:='\
      alwaysCaptureThreadContext:Boolean=true,\
      type=javax.resource.spi.work.TransactionContext'
@@ -42,6 +40,7 @@ Service-Component: \
 	com.ibm.tx.jta;version=latest,\
 	com.ibm.tx.ltc;version=latest,\
 	com.ibm.ws.tx.embeddable;version=latest,\
+	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
 	com.ibm.websphere.javaee.connector.1.6;version=latest,\
 	com.ibm.ws.javaee.version;version=latest,\

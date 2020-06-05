@@ -24,7 +24,6 @@ public class ClassSPIInterceptor {
 
     @AroundInvoke
     public Object logMethodEntry(InvocationContext ctx) throws Exception {
-        MyBeanInjectionString.setInterceptorString("Intercepted ");
-        return ctx.proceed();
+        return "Intercepted " + ctx.proceed();
     }
 }

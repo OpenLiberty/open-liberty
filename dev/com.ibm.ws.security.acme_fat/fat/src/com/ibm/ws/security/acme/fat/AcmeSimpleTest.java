@@ -10,13 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.security.acme.fat;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.fail;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -48,11 +49,13 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.acme.docker.CAContainer;
 import com.ibm.ws.security.acme.docker.pebble.PebbleContainer;
+import com.ibm.ws.security.acme.internal.util.AcmeConstants;
 import com.ibm.ws.security.acme.utils.AcmeFatUtils;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.CheckForLeakedPasswords;
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -170,7 +173,7 @@ public class AcmeSimpleTest {
 			/*
 			 * Stop the server.
 			 */
-			server.stopServer();
+			stopServer();
 		}
 
 		/***********************************************************************
@@ -211,7 +214,7 @@ public class AcmeSimpleTest {
 			/*
 			 * Stop the server.
 			 */
-			server.stopServer("CWPKI2058W");
+			stopServer("CWPKI2058W");
 		}
 
 		/***********************************************************************
@@ -253,7 +256,7 @@ public class AcmeSimpleTest {
 			/*
 			 * Stop the server.
 			 */
-			server.stopServer();
+			stopServer();
 		}
 	}
 
@@ -349,7 +352,7 @@ public class AcmeSimpleTest {
 			/*
 			 * Stop the server.
 			 */
-			server.stopServer("CWPKI2058W");
+			stopServer();
 		}
 	}
 
@@ -366,6 +369,7 @@ public class AcmeSimpleTest {
 		configuration.getFeatureManager().getFeatures().remove("acmeCA-2.0");
 		configuration.getFeatureManager().getFeatures().add("transportSecurity-1.0");
 		configuration.getFeatureManager().getFeatures().add("servlet-4.0");
+		configuration.getAcmeCA().setCertCheckerSchedule(AcmeConstants.RENEW_CERT_MIN + "ms");
 		AcmeFatUtils.configureAcmeCA(server, caContainer, configuration, useAcmeURIs(), DOMAINS_1);
 
 		try {
@@ -402,10 +406,11 @@ public class AcmeSimpleTest {
 			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
 
 			/*
-			 * Verify that the server is now using a certificate signed by the
-			 * CA.
+			 * Verify that the server is now using a certificate signed by the CA. We may
+			 * need to a wait a short bit at the SSL config completes the update and clears
+			 * the cache.
 			 */
-			Certificate[] certificates1 = AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
+			Certificate[] certificates1 = AcmeFatUtils.waitForAcmeCert(server, caContainer, 10000);
 			Log.info(this.getClass(), testName.getMethodName(), "TEST 1: FINISH");
 
 			/***********************************************************************
@@ -420,6 +425,8 @@ public class AcmeSimpleTest {
 			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration, useAcmeURIs(), DOMAINS_1);
 			AcmeFatUtils.waitAcmeFeatureUninstall(server);
 
+			long timeElapsed = System.currentTimeMillis();
+
 			/*
 			 * Verify that the server is still using a certificate signed by the
 			 * CA. The default certificate generator doesn't update the
@@ -430,6 +437,13 @@ public class AcmeSimpleTest {
 			BigInteger serial1 = ((X509Certificate) certificates1[0]).getSerialNumber();
 			BigInteger serial2 = ((X509Certificate) certificates2[0]).getSerialNumber();
 			assertEquals("Expected same certificate after removing acmeCA-2.0 feature.", serial1, serial2);
+			
+			/*
+			 * Check log for the amount of time it would take to wake up/run the scheduler
+			 */
+			assertNull("Should not have found the cert checker waking up: " + AcmeFatUtils.ACME_CHECKER_TRACE,
+					server.waitForStringInTrace(AcmeFatUtils.ACME_CHECKER_TRACE, AcmeConstants.RENEW_CERT_MIN - timeElapsed + 1000));
+			
 			Log.info(this.getClass(), testName.getMethodName(), "TEST 2: FINISH");
 
 			/***********************************************************************
@@ -453,13 +467,20 @@ public class AcmeSimpleTest {
 			serial1 = ((X509Certificate) certificates2[0]).getSerialNumber();
 			serial2 = ((X509Certificate) certificates3[0]).getSerialNumber();
 			assertEquals("Expected same certificate after re-adding the acmeCA-2.0 feature.", serial1, serial2);
+
+			/**
+			 * Make sure the scheduler started again
+			 */
+			assertNotNull("Should have found the cert checker waking up: " + AcmeFatUtils.ACME_CHECKER_TRACE,
+					server.waitForStringInTrace(AcmeFatUtils.ACME_CHECKER_TRACE));
+
 			Log.info(this.getClass(), testName.getMethodName(), "TEST 3: FINISH");
 
 		} finally {
 			/*
 			 * Stop the server.
 			 */
-			server.stopServer("CWPKI2058W");
+			stopServer("CWPKI2058W");
 		}
 	}
 
@@ -476,7 +497,7 @@ public class AcmeSimpleTest {
 	@CheckForLeakedPasswords(AcmeFatUtils.CACERTS_TRUSTSTORE_PASSWORD)
 	@AllowedFFDC(value = { "java.io.IOException", "java.security.KeyStoreException",
 			"com.ibm.websphere.ssl.SSLException", "org.shredzone.acme4j.exception.AcmeNetworkException",
-			"java.io.FileNotFoundException" })
+			"java.io.FileNotFoundException", "sun.security.validator.ValidatorException" })
 	public void updateconfig_bad_to_good() throws Exception {
 
 		/*
@@ -506,6 +527,11 @@ public class AcmeSimpleTest {
 		acmeCA.setAcmeTransportConfig(acmeTransportConfig);
 		acmeCA.setDomainKeyFile(unreadableFile.getAbsolutePath());
 		acmeCA.setSubjectDN("cn=baddomain.com");
+		/*
+		 * Check that we reset the minimum levels
+		 */
+		acmeCA.setCertCheckerSchedule("2ms");
+		acmeCA.setCertCheckerErrorSchedule("2ms");
 		AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
 
 		try {
@@ -686,9 +712,20 @@ public class AcmeSimpleTest {
 			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
 			AcmeFatUtils.waitForSslToCreateKeystore(server);
 
+			assertNotNull("Should have found the cert checker waking up after updates: " + AcmeFatUtils.ACME_CHECKER_TRACE,
+					server.waitForStringInTrace(AcmeFatUtils.ACME_CHECKER_TRACE));
+			
+			assertNotNull("Should have found warning that the certCheckerScheduler time was reset", server.findStringsInLogs("CWPKI2070W"));
+			assertNotNull("Should have found warning that the certCheckerErrorScheduler time was reset", server.findStringsInLogs("CWPKI2071W"));
+
 		} finally {
-			server.stopServer("CWWKG0095E", "CWWKE0701E", "CWPKI2016E", "CWPKI2020E", "CWPKI2021E", "CWPKI2022E",
-					"CWPKI2023E", "CWPKI2008E", "CWPKI2037E", "CWPKI2039E", "CWPKI2040E", "CWPKI2041E", "CWPKI2042E");
+			stopServer("CWWKG0095E", "CWWKE0701E", "CWPKI2016E", "CWPKI2020E", "CWPKI2021E", "CWPKI2022E",
+					"CWPKI2023E", "CWPKI2008E", "CWPKI2037E", "CWPKI2039E", "CWPKI2040E", "CWPKI2041E", "CWPKI2042E",
+					"CWPKI0823E", "CWPKI0828E", "CWPKI2070W", "CWPKI2071W");
+			/*
+			 * Running on Sun produces some additional errors on the invalid directory URI,
+			 * added them to the stop list
+			 */
 		}
 	}
 
@@ -797,7 +834,7 @@ public class AcmeSimpleTest {
 			assertThat("Certificates should have not changed.", serial1, equalTo(serial2));
 
 		} finally {
-			server.stopServer("CWPKI2058W");
+			stopServer("CWPKI2058W");
 		}
 	}
 
@@ -818,6 +855,8 @@ public class AcmeSimpleTest {
 	@Test
 	@CheckForLeakedPasswords(AcmeFatUtils.CACERTS_TRUSTSTORE_PASSWORD)
 	@ExpectedFFDC({ "com.ibm.ws.security.acme.AcmeCaException" })
+	@MinimumJavaLevel(javaLevel = 9)
+	/* Minimum Java Level to avoid a known/fixed IBM Java 8 bug with an empty keystore, IJ19292. When the builds move to 8SR6, we can run this test again */
 	public void startup_failure_recover() throws Exception {
 
 		ServerConfiguration configuration = ORIGINAL_CONFIG.clone();
@@ -874,7 +913,7 @@ public class AcmeSimpleTest {
 			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
 			AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 		} finally {
-			server.stopServer("CWPKI2001E", "CWPKI0804E", "CWWKO0801E");
+			stopServer("CWPKI2001E", "CWPKI0804E", "CWWKO0801E");
 		}
 	}
 
@@ -894,6 +933,8 @@ public class AcmeSimpleTest {
 	 */
 	@Test
 	@CheckForLeakedPasswords(AcmeFatUtils.CACERTS_TRUSTSTORE_PASSWORD)
+	@MinimumJavaLevel(javaLevel = 9)
+	/* Minimum Java Level to avoid a known/fixed IBM Java 8 bug with an empty keystore, IJ19292. When the builds move to 8SR6, we can run this test again */
 	public void keystore_exists_without_default_alias() throws Exception {
 
 		ServerConfiguration configuration = ORIGINAL_CONFIG.clone();
@@ -921,7 +962,7 @@ public class AcmeSimpleTest {
 			AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 
 		} finally {
-			server.stopServer();
+			stopServer();
 		}
 	}
 
@@ -942,7 +983,8 @@ public class AcmeSimpleTest {
 		 * pair file.
 		 */
 		AcmeCA acmeCA = configuration.getAcmeCA();
-		acmeCA.setAccountKeyFile(server.getServerRoot() + "directory/does/not/exist/acmeAccountKey.p12");
+		String filePath = server.getServerRoot() + "/resources/directory/does/not/exist/acmeAccountKey.p12";
+		acmeCA.setAccountKeyFile(filePath);
 
 		AcmeFatUtils.configureAcmeCA(server, caContainer, configuration, useAcmeURIs(), DOMAINS_1);
 
@@ -959,7 +1001,15 @@ public class AcmeSimpleTest {
 			AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 
 		} finally {
-			server.stopServer();
+			stopServer();
+
+			/*
+			 * Delete the file.
+			 */
+			File f = new File(filePath);
+			if (f.exists()) {
+				f.delete();
+			}
 		}
 	}
 
@@ -980,7 +1030,8 @@ public class AcmeSimpleTest {
 		 * pair file.
 		 */
 		AcmeCA acmeCA = configuration.getAcmeCA();
-		acmeCA.setDomainKeyFile(server.getServerRoot() + "directory/does/not/exist/acmeDomainKey.p12");
+		String filePath = server.getServerRoot() + "/resources/directory/does/not/exist/acmeDomainKey.p12";
+		acmeCA.setDomainKeyFile(filePath);
 
 		AcmeFatUtils.configureAcmeCA(server, caContainer, configuration, useAcmeURIs(), DOMAINS_1);
 
@@ -997,7 +1048,19 @@ public class AcmeSimpleTest {
 			AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 
 		} finally {
-			server.stopServer();
+			stopServer();
+
+			/*
+			 * Delete the file.
+			 */
+			File f = new File(filePath);
+			if (f.exists()) {
+				f.delete();
+			}
 		}
+	}
+	
+	protected void stopServer(String ...msgs) throws Exception {
+		server.stopServer(msgs);
 	}
 }

@@ -10,7 +10,6 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-databinding-jaxb;3.3.3;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
-
 cxfVersion=3.3.3
 
 -includeresource: \

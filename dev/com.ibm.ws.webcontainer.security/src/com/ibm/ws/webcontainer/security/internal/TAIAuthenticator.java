@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012,2017 IBM Corporation and others.
+ * Copyright (c) 2012,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,33 +51,37 @@ import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 public class TAIAuthenticator implements WebAuthenticator {
     private static final TraceComponent tc = Tr.register(TAIAuthenticator.class);
+    private final AuthenticationResult AUTHN_CONTINUE_RESULT = new AuthenticationResult(AuthResult.CONTINUE, "Authentication continue");
 
     private TAIService taiService = null;
     private ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor> interceptorServiceRef = null;
     private SSOCookieHelper ssoCookieHelper = null;
     private AuthenticationService authenticationService = null;
-    private final AuthenticationResult AUTHN_CONTINUE_RESULT = new AuthenticationResult(AuthResult.CONTINUE, "Authentication continue");
-    private final static String DISABLE_LTPA_AND_SESSION_NOT_ON_OR_AFTER = "com.ibm.ws.saml.spcookie.session.not.on.or.after";
     private static final String APPLICATION_AUTH_TYPE = "com.ibm.ws.security.tai.appAuthType";
+
+    private final String[] hashtableLoginProperties = { AttributeNameConstants.WSCREDENTIAL_UNIQUEID,
+                                                        AttributeNameConstants.WSCREDENTIAL_SECURITYNAME };
+
+    //SAML SSO property for disable LTPA cookie.
+    private final static String DISABLE_LTPA_AND_SESSION_NOT_ON_OR_AFTER = "com.ibm.ws.saml.spcookie.session.not.on.or.after";
+    private static final String[] samlSsoDisableLtpaCookie = new String[] { DISABLE_LTPA_AND_SESSION_NOT_ON_OR_AFTER };
 
     //Map of TrustAssociationInterceptor - by TAI id
     //Order matters here: use a LinkedHashMap to preserve order across platforms
     Map<String, TrustAssociationInterceptor> invokeBeforeSSOTais = new LinkedHashMap<String, TrustAssociationInterceptor>();
     Map<String, TrustAssociationInterceptor> invokeAfterSSOTais = new LinkedHashMap<String, TrustAssociationInterceptor>();
-    Map<String, Boolean> addLtpaCookieToResponseTais = new HashMap<String, Boolean>();
-
-    private static final String[] disableLtpaCookieProps = new String[] { DISABLE_LTPA_AND_SESSION_NOT_ON_OR_AFTER };
+    Map<String, Boolean> disableLtpaCookieTais = new HashMap<String, Boolean>();
 
     /**
      * Given an HTTP request, get the appropriate Trust Association Interceptor.
      * If there is any. If there are more than one, then only the first hit
-     * gets called. If none, then this method returns AUTHN_CONTINUE_RESULT ...
+     * gets called. If none, then this method returns AUTHN_CONTINUE_RESULT.
      *
      * @param taiService
+     * @param interceptorServiceRef
      * @param authenticationService
      * @param ssoCookieHelper
-     * @param interceptorFeatureRe
-     **/
+     */
     public TAIAuthenticator(TAIService taiService, ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor> interceptorServiceRef,
                             AuthenticationService authenticationService,
                             SSOCookieHelper ssoCookieHelper) {
@@ -97,22 +101,25 @@ public class TAIAuthenticator implements WebAuthenticator {
         TAIResult taiResult = null;
         String taiType = null;
         boolean isTargetIntercept = false;
+
         Map<String, TrustAssociationInterceptor> tais = getInterceptorServices(invokeBeforeSSO);
         if (skipTai(webRequest, tais, invokeBeforeSSO)) {
             return AUTHN_CONTINUE_RESULT;
         }
+
         HttpServletRequest req = webRequest.getHttpServletRequest();
         HttpServletResponse res = webRequest.getHttpServletResponse();
         if (webRequest.getLoginConfig() != null) {
             req.setAttribute(APPLICATION_AUTH_TYPE, webRequest.getLoginConfig().getAuthenticationMethod());
         }
+
         String taiId = null;
         try {
             Iterator<Entry<String, TrustAssociationInterceptor>> i = tais.entrySet().iterator();
             while (i.hasNext()) {
-                Entry<String, TrustAssociationInterceptor> taientry = i.next();
-                taiId = taientry.getKey();
-                TrustAssociationInterceptor tai = taientry.getValue();
+                Entry<String, TrustAssociationInterceptor> taiEntry = i.next();
+                taiId = taiEntry.getKey();
+                TrustAssociationInterceptor tai = taiEntry.getValue();
                 if (tai.isTargetInterceptor(req)) {
                     isTargetIntercept = true;
                     taiType = tai.getType();
@@ -125,7 +132,7 @@ public class TAIAuthenticator implements WebAuthenticator {
             }
             if (!isTargetIntercept) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "TAI authenticator" + (invokeBeforeSSO == true ? " before SSO " : " after SSO ") + "does not intercept this request");
+                    Tr.debug(tc, "TAI authenticator" + (invokeBeforeSSO == true ? " before SSO " : " after SSO ") + "do not intercept this request");
                 }
                 return AUTHN_CONTINUE_RESULT;
             }
@@ -150,40 +157,44 @@ public class TAIAuthenticator implements WebAuthenticator {
         return handleTaiResult(taiResult, taiType, taiId, req, res);
     }
 
-    private void processInterceptorServices() {
-        TAIUtil taiUtil = new TAIUtil();
-        Set<String> interceptorIds = interceptorServiceRef.keySet();
-        for (String interceptorId : interceptorIds) {
-            TrustAssociationInterceptor tai = interceptorServiceRef.getService(interceptorId);
-
-            taiUtil.processTAIUserFeatureProps(interceptorServiceRef, interceptorId);
-            addLtpaCookieToResponseTais.put(interceptorId, taiUtil.addLtpaCookieToResponse());
-
-            if (taiUtil.isInvokeBeforeSSO()) {
-                invokeBeforeSSOTais.put(interceptorId, tai);
-            }
-
-            if (taiUtil.isInvokeAfterSSO()) {
-                invokeAfterSSOTais.put(interceptorId, tai);
-            }
+    private void getUserFeatureInterceptorWithNoTaiConfigured() {
+        Set<String> ids = interceptorServiceRef.keySet();
+        for (String id : ids) {
+            TrustAssociationInterceptor tai = interceptorServiceRef.getService(id);
+            getProperties(id, tai);
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "invokeBeforeSSOTais " + invokeBeforeSSOTais.toString());
-            Tr.debug(tc, "invokeAfterSSOTais " + invokeAfterSSOTais.toString());
+            Tr.debug(tc, "invokeAfterSSOTais  " + invokeAfterSSOTais.toString());
+            Tr.debug(tc, "disableLtpaCookieTais " + disableLtpaCookieTais.toString());
         }
     }
 
+    private void getProperties(String id, TrustAssociationInterceptor interceptor) {
+        TAIUtil taiUtil = new TAIUtil(interceptorServiceRef, id);
+        if (taiUtil.isInvokeBeforeSSO()) {
+            invokeBeforeSSOTais.put(id, interceptor);
+        }
+        if (taiUtil.isInvokeAfterSSO()) {
+            invokeAfterSSOTais.put(id, interceptor);
+        }
+        if (taiUtil.isDisableLtpaCookie() != null) {
+            disableLtpaCookieTais.put(id, ((Boolean) taiUtil.isDisableLtpaCookie()).booleanValue());
+        }
+
+    }
+
     /**
-     * @param invokeBeforeSSO
-     * @return
+     * TAIService can handle both shared liberty and user feature interceptors with TAI configured in server.xml
+     * If there is no TAI configured in server.xml, the taiService is not available.
      */
     private Map<String, TrustAssociationInterceptor> getInterceptorServices(boolean invokeBeforeSSO) {
-        //TAI service can handle the old and new interceptors
         if (taiService != null) {
             return taiService.getTais(invokeBeforeSSO);
         } else {
-            processInterceptorServices();
+            // We only have the user feature interceptors and no TAI configured in server.xml
+            getUserFeatureInterceptorWithNoTaiConfigured();
             if (invokeBeforeSSO)
                 return invokeBeforeSSOTais;
             else
@@ -239,7 +250,7 @@ public class TAIAuthenticator implements WebAuthenticator {
     }
 
     /**
-     * @param tai
+     * @param taiType
      * @param taiResult
      * @return
      * @throws AuthenticationException
@@ -276,15 +287,14 @@ public class TAIAuthenticator implements WebAuthenticator {
     private AuthenticationResult authenticateWithTAIResult(HttpServletRequest req, HttpServletResponse res, TAIResult taiResult, String taiId) throws AuthenticationException {
         AuthenticationResult authResult = null;
         String taiUserName = taiResult.getAuthenticatedPrincipal();
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "TAI user name: " + taiUserName);
-        }
         if (taiUserName != null) {
             Subject taiSubject = taiResult.getSubject();
             if (taiSubject != null) {
                 SubjectHelper subjectHelper = new SubjectHelper();
                 WSCredential wsCred = subjectHelper.getWSCredential(taiSubject);
-                if (wsCred != null && wsCred.isUnauthenticated()) {
+                if (wsCred == null && !isHashTableLogin(subjectHelper, taiSubject)) {
+                    new AuthenticationResult(AuthResult.FAILURE, "Subject from TAI has no WSCrendential and required hashtable login for user: " + taiUserName);
+                } else if (wsCred != null && wsCred.isUnauthenticated()) {
                     new AuthenticationResult(AuthResult.FAILURE, "Subject from TAI is invalid for user: " + taiUserName);
                 }
                 authResult = authenticateWithSubject(req, res, taiSubject, taiId);
@@ -300,6 +310,21 @@ public class TAIAuthenticator implements WebAuthenticator {
         }
 
         return authResult;
+    }
+
+    /**
+     * @param subjectHelper
+     * @param taiSubject
+     * @return
+     */
+    private boolean isHashTableLogin(SubjectHelper subjectHelper, Subject taiSubject) {
+        Hashtable<String, ?> customProperties = subjectHelper.getHashtableFromSubject(taiSubject, hashtableLoginProperties);
+        if (customProperties != null &&
+            customProperties.get(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME) != null &&
+            customProperties.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID) != null) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -331,16 +356,12 @@ public class TAIAuthenticator implements WebAuthenticator {
         SubjectHelper subjectHelper = new SubjectHelper();
         try {
             AuthenticationData authenticationData = createAuthenticationData(req, res, subject);
-            boolean addLtpaCookie = addLtpaCookieToResponse(subject, taiId);
-            if (!addLtpaCookie) {
-                addDisableLtpaSSOCacheProp(subject, subjectHelper);
-            }
+            boolean addLtpaCookieToResp = isAddLtpaCookieToResp(subject, subjectHelper, taiId);
             Subject new_subject = authenticationService.authenticate(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND, authenticationData, subject);
             authResult = new AuthenticationResult(AuthResult.SUCCESS, new_subject);
-            if (addLtpaCookie) {
+            if (addLtpaCookieToResp) {
                 ssoCookieHelper.addSSOCookiesToResponse(new_subject, req, res);
-            } else {
-//                removeInternalProps(new_subject, subjectHelper, AuthenticationConstants.INTERNAL_DISABLE_LTPA_SSO_CACHE);
+                removeInternalProps(new_subject, subjectHelper, AuthenticationConstants.INTERNAL_DISABLE_SSO_LTPA_COOKIE);
             }
         } catch (AuthenticationException e) {
             authResult = new AuthenticationResult(AuthResult.FAILURE, e.getMessage());
@@ -350,40 +371,56 @@ public class TAIAuthenticator implements WebAuthenticator {
 
     protected void removeInternalProps(Subject subject, SubjectHelper subjectHelper, String propName) {
         Hashtable<String, Object> hashtable = (Hashtable<String, Object>) subjectHelper.getSensitiveHashtableFromSubject(subject);
+        if (hashtable == null)
+            return;
+
         Set<Object> publicCredentials = subject.getPublicCredentials();
         publicCredentials.remove(hashtable);
         hashtable.remove(propName);
         if (!hashtable.isEmpty()) {
             publicCredentials.add(hashtable);
         }
+
         Set<Object> privateCredentials = subject.getPrivateCredentials();
         privateCredentials.remove(hashtable);
         hashtable.remove(propName);
         if (!hashtable.isEmpty()) {
             privateCredentials.add(hashtable);
         }
+    }
 
+    private boolean isAddLtpaCookieToResp(Subject subject, SubjectHelper subjectHelper, String taiId) {
+        //Check for SSO SAML disable LTPA property in the subject
+        Hashtable<String, Object> hashtable = (Hashtable<String, Object>) subjectHelper.getHashtableFromSubject(subject, samlSsoDisableLtpaCookie);
+        // found the SSO SAML disable LTPA property so do not add cookie to the response || Check for TAI disableLtpaCookie property
+        if (hashtable != null || isDisableLtpaCookie(taiId)) {
+            return addDisableLtpaCookiePropToSubject(subject, subjectHelper);
+        }
+        return true;
     }
 
     /**
      * @param subject
+     * @param subjectHelper
+     * @return
      */
-    private void addDisableLtpaSSOCacheProp(Subject subject, SubjectHelper subjectHelper) {
-        Hashtable<String, Object> hashtable = (Hashtable<String, Object>) subjectHelper.getSensitiveHashtableFromSubject(subject);
+    private boolean addDisableLtpaCookiePropToSubject(Subject subject, SubjectHelper subjectHelper) {
+        Hashtable<String, Object> hashtable = (Hashtable<String, Object>) subjectHelper.getHashtableFromSubject(subject, hashtableLoginProperties);
+        if (hashtable == null) {
+            hashtable = new Hashtable<String, Object>();
+        }
         hashtable.put(AuthenticationConstants.INTERNAL_DISABLE_SSO_LTPA_COOKIE, Boolean.TRUE);
+        return false;
     }
 
-    private boolean addLtpaCookieToResponse(Subject subject, String taiId) {
+    private boolean isDisableLtpaCookie(String taiId) {
+        if (taiService != null) {
+            return taiService.isDisableLtpaCookie(taiId);
+        } else if (taiId != null && disableLtpaCookieTais.get(taiId) != null) {
+            return disableLtpaCookieTais.get(taiId);
+        }
 
-        SubjectHelper subjectHelper = new SubjectHelper();
-        Hashtable<String, ?> hashtable = subjectHelper.getHashtableFromSubject(subject, disableLtpaCookieProps);
-        if (hashtable != null) {
-            return false;
-        }
-        if (taiId != null && !addLtpaCookieToResponseTais.isEmpty()) {
-            return addLtpaCookieToResponseTais.get(taiId);
-        }
-        return true;
+        return false;
     }
 
     /**

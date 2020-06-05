@@ -55,7 +55,7 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.security.tai.TAIResult;
 import com.ibm.wsspi.security.tai.TrustAssociationInterceptor;
 
-@Component(service = { TrustAssociationInterceptor.class }, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, name = "microProfileJwtTAI", property = { "service.vendor=IBM", "type=microProfileJwtTAI", "id=MPJwtTAI", "TAIName=MPJwtTAI", "invokeBeforeSSO:Boolean=true", "addLTPACookieToResponse:Boolean=false" })
+@Component(service = { TrustAssociationInterceptor.class }, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, name = "microProfileJwtTAI", property = { "service.vendor=IBM", "type=microProfileJwtTAI", "id=MPJwtTAI", "TAIName=MPJwtTAI", "invokeBeforeSSO:Boolean=true", "disableLtpaCookie:Boolean=true" })
 public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
 
     private static TraceComponent tc = Tr.register(MicroProfileJwtTAI.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
@@ -431,7 +431,7 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
         }
         TAIMappingHelper mappingHelper = new TAIMappingHelper(decodedPayload, clientConfig);
         mappingHelper.createJwtPrincipalAndPopulateCustomProperties(jwtToken, addJwtPrincipal);
-
+        mappingHelper.addDisableSsoLtpaCacheProp();
         Subject subject = mappingHelper.createSubjectFromCustomProperties(addJwtPrincipal);
         TAIResult result = TAIResult.create(HttpServletResponse.SC_OK, mappingHelper.getUsername(), subject);
         if (tc.isDebugEnabled()) {

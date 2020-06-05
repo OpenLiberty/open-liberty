@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,7 @@ import com.ibm.wsspi.security.token.AttributeNameConstants;
 public class TAIMappingHelper {
 
     private static TraceComponent tc = Tr.register(TAIMappingHelper.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
+    String INTERNAL_DISABLE_SSO_LTPA_CACHE = "com.ibm.ws.authentication.internal.sso.disable.ltpa.cache";
 
     @Sensitive
     String decodedTokenPayload = null;
@@ -221,6 +222,7 @@ public class TAIMappingHelper {
             customProperties.put(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME, username);
 
         }
+
         if (!addJwtPrincipal) {
             // add this only in the mpjwt tai flow
             addCustomCacheKey(customProperties);
@@ -237,6 +239,10 @@ public class TAIMappingHelper {
         }
 
         return customProperties;
+    }
+
+    public void addDisableSsoLtpaCacheProp() {
+        customProperties.put(INTERNAL_DISABLE_SSO_LTPA_CACHE, true);
     }
 
     /**
@@ -376,5 +382,4 @@ public class TAIMappingHelper {
         }
         return groupsWithRealm;
     }
-
 }

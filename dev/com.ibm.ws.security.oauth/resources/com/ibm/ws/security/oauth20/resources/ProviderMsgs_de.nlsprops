@@ -322,7 +322,7 @@ security.oauth20.front.end.error=CWOAU0073E: Es ist ein Authentifizierungsfehler
 security.oauth20.front.end.error.explanation=Es ist m\u00f6glich, dass in der Anforderung Informationen fehlen, dass ein interner Fehler im Server aufgetreten ist oder dass ein anderer Fehler die erfolgreiche Authentifizierung des Benutzers verhindert.
 security.oauth20.front.end.error.useraction=Bitten Sie Ihren Systemadministrator, das Problem zu beheben.
 
-security.oauth20.endpoint.resowner.apppassword.error=CWOAU0074E: Die Austauschanforderung f\u00fcr das Anwendungskennwort f\u00fcr den Benutzer {0} konnte nicht ausgef\u00fchrt werden, weil das Anwendungskennwort nicht best\u00e4tigt werden konnte. Das Anwendungskennwort ist entweder falsch, abgelaufen oder wurde widerrufen, oder die angegebene Client-ID ist nicht g\u00fcltig.
+security.oauth20.endpoint.resowner.apppassword.error=CWOAU0074E: Die Austauschanforderung f\u00fcr das Anwendungskennwort f\u00fcr den Benutzer {0} konnte nicht ausgef\u00fchrt werden, weil der OAuth-Provider das Anwendungskennwort nicht verifizieren konnte. Das Anwendungskennwort ist entweder falsch, abgelaufen oder wurde widerrufen, oder die angegebene Client-ID oder Benutzer-ID ist nicht g\u00fcltig.
 security.oauth20.endpoint.resowner.apppassword.error.explanation=Der OAuth-Provider konnte das Anwendungskennwort nicht best\u00e4tigen.
 security.oauth20.endpoint.resowner.apppassword.error.useraction=Vergewissern Sie sich, dass das Anwendungskennwort g\u00fcltig und nicht abgelaufen ist und nicht widerrufen wurde. \u00dcberpr\u00fcfen Sie au\u00dferdem, dass die Client-ID im Zugriffstoken mit der Client-ID im Berechtigungsheader \u00fcbereinstimmt.
 
