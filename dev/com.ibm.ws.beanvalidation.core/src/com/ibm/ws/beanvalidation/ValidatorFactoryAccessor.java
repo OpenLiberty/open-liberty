@@ -241,9 +241,7 @@ public class ValidatorFactoryAccessor {
                     Tr.debug(tc, "Set Class loader back to " + oldClassLoader);
                 }
             }
-            if (tuple != null && tuple.wasCreatedViaClassLoadingService) {
-                AbstractBeanValidation.instance().releaseLoader(tuple);
-            }
+            AbstractBeanValidation.instance().releaseLoader(tuple);
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "getValidatorFactory", factory);

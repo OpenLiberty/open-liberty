@@ -59,6 +59,7 @@ import org.osgi.service.component.annotations.Component;
 import com.ibm.ejs.util.dopriv.SetContextClassLoaderPrivileged;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.beanvalidation.AbstractBeanValidation.ClassLoaderTuple;
 import com.ibm.ws.beanvalidation.service.BeanValidationExtensionHelper;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
@@ -131,14 +132,14 @@ public class ValidationExtension extends ValidationExtensionService implements E
     public void initValidationExtension(ClassLoader appCl) {
         SetContextClassLoaderPrivileged setClassLoader = null;
         ClassLoader oldClassLoader = null;
-        ClassLoader classLoader = null;
+        ClassLoaderTuple tuple = null;
 
         try {
             ThreadContextAccessor tca = System.getSecurityManager() == null ? ThreadContextAccessor.getThreadContextAccessor() : AccessController.doPrivileged(getThreadContextAccessorAction);
-            classLoader = instance().configureBvalClassloader(appCl);
+            tuple = instance().configureBvalClassloader(appCl);
 
             //Use customer classloader to handle multiple validation.xml being in the same ear.
-            classLoader = BeanValidationExtensionHelper.newValidationClassLoader(classLoader);
+            ClassLoader classLoader = BeanValidationExtensionHelper.newValidationClassLoader(tuple.classLoader);
 
             // set the thread context class loader to be used, must be reset in finally block
             setClassLoader = new SetContextClassLoaderPrivileged(tca);
@@ -176,9 +177,7 @@ public class ValidationExtension extends ValidationExtensionService implements E
                     Tr.debug(tc, "Set Class loader back to " + oldClassLoader);
                 }
             }
-            if (setClassLoader != null && setClassLoader.wasChanged) {
-                ValidationExtensionService.instance().releaseLoader(classLoader);
-            }
+            ValidationExtensionService.instance().releaseLoader(tuple);
         }
     }
 
@@ -230,16 +229,16 @@ public class ValidationExtension extends ValidationExtensionService implements E
         if (cmd != null) {
             SetContextClassLoaderPrivileged setClassLoader = null;
             ClassLoader oldClassLoader = null;
-            ClassLoader classLoader = null;
+            ClassLoaderTuple tuple = null;
             try {
-                classLoader = instance().configureBvalClassloader(pat.getAnnotatedType().getJavaClass().getClassLoader());
+                tuple = instance().configureBvalClassloader(pat.getAnnotatedType().getJavaClass().getClassLoader());
                 ThreadContextAccessor tca = System.getSecurityManager() == null ? ThreadContextAccessor.getThreadContextAccessor() : AccessController.doPrivileged(getThreadContextAccessorAction);
 
                 // set the thread context class loader to be used, must be reset in finally block
                 setClassLoader = new SetContextClassLoaderPrivileged(tca);
-                oldClassLoader = setClassLoader.execute(classLoader);
+                oldClassLoader = setClassLoader.execute(tuple.classLoader);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Called setClassLoader with oldClassLoader of" + oldClassLoader + " and newClassLoader of " + classLoader);
+                    Tr.debug(tc, "Called setClassLoader with oldClassLoader of" + oldClassLoader + " and newClassLoader of " + tuple.classLoader);
                 }
 
                 internalProcessAnnotatedType(pat);
@@ -250,9 +249,7 @@ public class ValidationExtension extends ValidationExtensionService implements E
                         Tr.debug(tc, "Set Class loader back to " + oldClassLoader);
                     }
                 }
-                if (setClassLoader != null && setClassLoader.wasChanged) {
-                    instance().releaseLoader(classLoader);
-                }
+                instance().releaseLoader(tuple);
             }
         } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "No CMD on thread - ignoring call");
@@ -335,16 +332,16 @@ public class ValidationExtension extends ValidationExtensionService implements E
 
         SetContextClassLoaderPrivileged setClassLoader = null;
         ClassLoader oldClassLoader = null;
-        ClassLoader classLoader = null;
+        ClassLoaderTuple tuple = null;
         try {
-            classLoader = instance().configureBvalClassloader(null);
+            tuple = instance().configureBvalClassloader(null);
             ThreadContextAccessor tca = System.getSecurityManager() == null ? ThreadContextAccessor.getThreadContextAccessor() : AccessController.doPrivileged(getThreadContextAccessorAction);
 
             // set the thread context class loader to be used, must be reset in finally block
             setClassLoader = new SetContextClassLoaderPrivileged(tca);
-            oldClassLoader = setClassLoader.execute(classLoader);
+            oldClassLoader = setClassLoader.execute(tuple.classLoader);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Called setClassLoader with oldClassLoader of" + oldClassLoader + " and newClassLoader of " + classLoader);
+                Tr.debug(tc, "Called setClassLoader with oldClassLoader of" + oldClassLoader + " and newClassLoader of " + tuple.classLoader);
             }
 
             cdiIntegration(afterBeanDiscovery, beanManager);
@@ -355,9 +352,7 @@ public class ValidationExtension extends ValidationExtensionService implements E
                     Tr.debug(tc, "Set Class loader back to " + oldClassLoader);
                 }
             }
-            if (setClassLoader != null && setClassLoader.wasChanged) {
-                instance().releaseLoader(classLoader);
-            }
+            instance().releaseLoader(tuple);
         }
     }
 

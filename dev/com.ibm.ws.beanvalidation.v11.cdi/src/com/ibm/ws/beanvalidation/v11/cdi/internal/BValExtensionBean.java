@@ -112,9 +112,7 @@ public class BValExtensionBean implements Bean<BValExtension>, PassivationCapabl
                     Tr.debug(TC, "Set Class loader back to " + oldClassLoader);
                 }
             }
-            if (setClassLoader != null && setClassLoader.wasChanged) {
-                ValidationExtensionService.instance().releaseLoader(classLoader);
-            }
+
         }
         return bValExtension;
     }

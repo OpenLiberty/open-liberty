@@ -30,6 +30,7 @@ import com.ibm.ejs.util.Util;
 import com.ibm.ejs.util.dopriv.SetContextClassLoaderPrivileged;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.beanvalidation.AbstractBeanValidation.ClassLoaderTuple;
 import com.ibm.ws.beanvalidation.service.BeanValidation;
 import com.ibm.ws.beanvalidation.service.ValidationReleasable;
 import com.ibm.ws.javaee.dd.bval.ValidationConfig;
@@ -192,17 +193,17 @@ public abstract class ValidationExtensionService {
         }
         SetContextClassLoaderPrivileged setClassLoader = null;
         ClassLoader oldClassLoader = null;
-        ClassLoader classLoader = null;
+        ClassLoaderTuple tuple = null;
         BValExtension bValExtension;
         try {
-            classLoader = configureBvalClassloader(null);
+            tuple = configureBvalClassloader(null);
             ThreadContextAccessor tca = System.getSecurityManager() == null ? ThreadContextAccessor.getThreadContextAccessor() : AccessController.doPrivileged(getThreadContextAccessorAction);
 
             // set the thread context class loader to be used, must be reset in finally block
             setClassLoader = new SetContextClassLoaderPrivileged(tca);
-            oldClassLoader = setClassLoader.execute(classLoader);
+            oldClassLoader = setClassLoader.execute(tuple.classLoader);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Called setClassLoader with oldClassLoader of" + oldClassLoader + " and newClassLoader of " + classLoader);
+                Tr.debug(tc, "Called setClassLoader with oldClassLoader of" + oldClassLoader + " and newClassLoader of " + tuple.classLoader);
             }
 
             //create a BValExtension Bean since the BValInterceptor injects one.
@@ -219,9 +220,7 @@ public abstract class ValidationExtensionService {
                     Tr.debug(tc, "Set Class loader back to " + oldClassLoader);
                 }
             }
-            if (setClassLoader != null && setClassLoader.wasChanged) {
-                releaseLoader(classLoader);
-            }
+            releaseLoader(tuple);
         }
         return bValExtension;
     }
@@ -230,8 +229,10 @@ public abstract class ValidationExtensionService {
         return classLoadingServiceSR.getServiceWithException().createThreadContextClassLoader(parentCL);
     }
 
-    protected void releaseLoader(ClassLoader tccl) {
-        classLoadingServiceSR.getServiceWithException().destroyThreadContextClassLoader(tccl);
+    protected void releaseLoader(ClassLoaderTuple tuple) {
+        if (tuple != null && tuple.wasCreatedViaClassLoadingService) {
+            classLoadingServiceSR.getServiceWithException().destroyThreadContextClassLoader(tuple.classLoader);
+        }
     }
 
     private static PrivilegedAction<ClassLoader> getContextClassLoaderAction = new PrivilegedAction<ClassLoader>() {
@@ -248,19 +249,19 @@ public abstract class ValidationExtensionService {
             return AccessController.doPrivileged(getContextClassLoaderAction);
     }
 
-    protected ClassLoader configureBvalClassloader(ClassLoader cl) {
+    protected ClassLoaderTuple configureBvalClassloader(ClassLoader cl) {
         if (cl == null) {
             cl = getContextClassLoader();
         }
         if (cl != null) {
             ClassLoadingService classLoadingService = classLoadingServiceSR.getServiceWithException();
             if (classLoadingService.isThreadContextClassLoader(cl)) {
-                return cl;
+                return ClassLoaderTuple.of(cl, false);
             } else if (classLoadingService.isAppClassLoader(cl)) {
-                return createTCCL(cl);
+                return ClassLoaderTuple.of(createTCCL(cl), true);
             }
         }
-        return createTCCL(BeanValidation.class.getClassLoader());
+        return ClassLoaderTuple.of(createTCCL(BeanValidation.class.getClassLoader()), true);
     }
 
     private <T> ValidationReleasable<T> createValidationReleasable(BeanManager beanManager, Class<T> clazz) {
