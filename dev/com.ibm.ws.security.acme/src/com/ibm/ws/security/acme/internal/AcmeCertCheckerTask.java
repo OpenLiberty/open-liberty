@@ -80,6 +80,8 @@ public class AcmeCertCheckerTask implements Runnable {
 								+ ", isRevocationCheckerEnabled: "
 								+ acmeProviderImpl.getAcmeConfig().isRevocationCheckerEnabled());
 			}
+			Tr.info(tc, "CWPKI2069I");
+
 			return;
 		}
 

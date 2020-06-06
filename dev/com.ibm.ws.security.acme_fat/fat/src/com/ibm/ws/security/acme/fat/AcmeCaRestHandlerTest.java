@@ -80,8 +80,8 @@ public class AcmeCaRestHandlerTest {
 	private static final String ACCOUNT_ENDPOINT = "/ibm/api" + AcmeCaRestHandler.PATH_ACCOUNT;
 	private static final String CERTIFICATE_ENDPOINT = "/ibm/api" + AcmeCaRestHandler.PATH_CERTIFICATE;
 
-	private static final String ADMIN_USER = "administrator";
-	private static final String ADMIN_PASS = "adminpass";
+	private static final String ADMIN_USER = AcmeFatUtils.ADMIN_USER;
+	private static final String ADMIN_PASS = AcmeFatUtils.ADMIN_PASS;
 	private static final String READER_USER = "reader";
 	private static final String READER_PASS = "readerpass";
 	private static final String UNAUTHORIZED_USER = "unauthorized";

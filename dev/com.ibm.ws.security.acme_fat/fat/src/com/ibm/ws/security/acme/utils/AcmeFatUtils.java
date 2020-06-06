@@ -78,6 +78,9 @@ public class AcmeFatUtils {
 	private static final long SCHEDULE_TIME = 30000;
 	public static final String ACME_CHECKER_TRACE = "ACME automatic certificate checker verified";
 
+	public static final String ADMIN_USER = "administrator";
+	public static final String ADMIN_PASS = "adminpass";
+
 	/**
 	 * Get an X.509 certificate from a PEM certificate.
 	 * 

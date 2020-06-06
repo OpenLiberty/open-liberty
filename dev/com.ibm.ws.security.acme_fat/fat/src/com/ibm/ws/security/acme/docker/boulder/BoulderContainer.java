@@ -51,7 +51,11 @@ public class BoulderContainer extends CAContainer {
 
 	private static final String FILE_INTERMEDIATE_PEM = "lib/LibertyFATTestFiles/boulder.intermediate.pem";
 
-	public Network bluenet = null;
+	public final Network bluenet = Network.builder().createNetworkCmdModifier(cmd -> {
+		cmd.withDriver("bridge");
+		cmd.withIpam(new com.github.dockerjava.api.model.Network.Ipam().withDriver("default")
+				.withConfig(new com.github.dockerjava.api.model.Network.Ipam.Config().withSubnet("10.77.77.0/24")));
+	}).build();
 
 	public final Network rednet = Network.builder().createNetworkCmdModifier(cmd -> {
 		cmd.withDriver("bridge");
@@ -144,13 +148,12 @@ public class BoulderContainer extends CAContainer {
 	}
 
 	@Override
-	public void start() { 
+	public void start() {
 		/*
 		 * We need to start up the containers in an orderly fashion so that we
 		 * can pass the IP address of the DNS server to the Boulder server.
 		 */
 		initSQL();
-		
 		
 		for (int i = 1; i < NUM_RESTART_ATTEMPTS_ON_EXCEPTION + 1; i++) {
 			try {
@@ -159,8 +162,6 @@ public class BoulderContainer extends CAContainer {
 			} catch (Throwable t) {
 				Log.info(BoulderContainer.class, "start", "Failed to start bmysql, try again. " + t);
 				bmysql.stop();
-				bluenet.close();
-				bluenet = null;
 				initSQL();
 
 				Log.error(BoulderContainer.class, "start", t, "Hit an exception, trying a long sleep and retry");
@@ -175,7 +176,7 @@ public class BoulderContainer extends CAContainer {
 		}
 		
 		initSM();
-		
+
 		for (int i = 1; i < NUM_RESTART_ATTEMPTS_ON_EXCEPTION + 1; i ++) {
 			try {
 				bhsm.start();
@@ -257,9 +258,7 @@ public class BoulderContainer extends CAContainer {
 		}
 
 		super.stop();
-		if (bluenet != null) {
-			bluenet.close();
-		}
+		bluenet.close();
 		rednet.close();
 	}
 
@@ -307,11 +306,8 @@ public class BoulderContainer extends CAContainer {
 		throw new UnsupportedOperationException(
 				getClass().getSimpleName() + " does not provider support for stopping the DNS server.");
 	}
-	
+
 	private void initSQL() {
-		if (bluenet == null) {
-			initBlueNet();
-		}
 		bmysql = new GenericContainer<>("mariadb:10.3").withNetwork(bluenet).withNetworkMode("host")
 		.withExposedPorts(3306).withNetworkAliases("boulder-mysql").withEnv("MYSQL_ALLOW_EMPTY_PASSWORD", "yes")
 		.withCommand(
@@ -319,7 +315,7 @@ public class BoulderContainer extends CAContainer {
 		.withLogConsumer(o -> System.out.print("[SQL] " + o.getUtf8String()));
 		bmysql.withStartupAttempts(WITH_STARTUP_ATTEMPTS);
 	}
-	
+
 	private void initSM() {
 		bhsm = new GenericContainer<>(DOCKER_IMAGE)
 		.withEnv("PKCS11_DAEMON_SOCKET", "tcp://0.0.0.0:5657").withExposedPorts(5657).withNetwork(bluenet)
@@ -328,13 +324,5 @@ public class BoulderContainer extends CAContainer {
 		.withLogConsumer(o -> System.out.print("[HSM] " + o.getUtf8String()));
 		bhsm.withStartupAttempts(WITH_STARTUP_ATTEMPTS);
 		
-	}
-	
-	private void initBlueNet() {
-		bluenet = Network.builder().createNetworkCmdModifier(cmd -> {
-			cmd.withDriver("bridge");
-			cmd.withIpam(new com.github.dockerjava.api.model.Network.Ipam().withDriver("default")
-					.withConfig(new com.github.dockerjava.api.model.Network.Ipam.Config().withSubnet("10.77.77.0/24")));
-		}).build();
 	}
 }
