@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.sib.comms.server.clientsupport;
 
+import java.util.concurrent.locks.ReentrantLock;
+
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.sib.Reliability;
@@ -69,9 +71,51 @@ public abstract class CATConsumer
    {
       if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(tc, "Source info: @(#)SIB/ws/code/sib.comms.server.impl/src/com/ibm/ws/sib/comms/server/clientsupport/CATConsumer.java, SIB.comms, WASX.SIB, aa1225.01 1.67.1.1");
    }
+   // PH20984
+   // Could we tidy this code up by incorporating more of the state flags into this enum?
+   // The _stopped flag would be an obvious candidate to be incorporated here,
+   // but I'm just going to focus on fixing APAR PH20984 for the moment.
+   public enum State { STOPPED, STARTING, STARTED, STOPPING, CLOSED, UNDEFINED; // Put UNDEFINED in here for any class that doesn't implement getState() properly.
 
-   /** A flag to indicate whether this consumer is started or not */
-   protected boolean started = false;
+         // A couple of methods that should make the code using this enum a bit more readable.
+         public boolean isStarted() {
+                 return this.equals(STARTED);
+         }
+
+         public boolean isStopped() {
+                 return this.equals(STOPPED);
+         }
+
+   }
+
+   protected State state = State.STOPPED;
+   protected ReentrantLock stateLock = new ReentrantLock();
+
+   public State getState() {
+         try {
+                 stateLock.lock();
+                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                         SibTr.debug( tc , "State = " + state + ",this:"+this );
+                         return state;
+         }
+
+         finally {
+                 stateLock.unlock();
+         }
+   }
+
+   public void setState(State newState) {
+         try {
+                 stateLock.lock();
+                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                         SibTr.debug( tc , "Setting state. Old state =  " + state + ", new state = " + newState + ",this:"+this );
+                 state = newState;
+                 return;
+         }
+         finally {
+                 stateLock.unlock();
+         }
+   }
 
    /** Counter of the number of messages sent to the client */
    protected long messagesSent = 0;
@@ -324,7 +368,7 @@ public abstract class CATConsumer
          // may immediately deliver a message to the async consumer (consumeMessages) which will stop the session and set
          // started=false. We don't want this method setting started=true after consumeMessages has set it false hence the
          // need to set started=true before starting the session.
-         started = true;
+         setState(State.STARTED);
          getConsumerSession().start(deliverImmediately);
          requestsReceived++;
 
@@ -377,7 +421,7 @@ public abstract class CATConsumer
          //No FFDC code needed
 
          // Note that we failed to start the consumer
-         started = false;
+         setState(State.STOPPED);
 
          //Only FFDC if we haven't received a meTerminated event.
          if(!((ConversationState)getConversation().getAttachment()).hasMETerminated())
@@ -420,7 +464,7 @@ public abstract class CATConsumer
       try
       {
          getConsumerSession().stop();
-         started = false;
+         setState(State.STOPPED);
 
          // The send listener is passed into the send() call so that we can be notified
          // when the data leaves the box
@@ -738,7 +782,7 @@ public abstract class CATConsumer
    public String toString()
    {
       return getClass().getName() + "@" + Integer.toHexString(hashCode()) +
-             ": Started:" + started +
+             ": State:" + state +
              ", messagesSent: " + messagesSent +
              ", batchesSent: " + batchesSent +
              ", startRequestsReceived: " + requestsReceived;

@@ -25,6 +25,18 @@
   </resource-ref>
 
   <resource-ref>
+    <res-ref-name>java:comp/env/topic_nokia</res-ref-name>
+    <res-type>javax.jms.Topic</res-type>
+    <lookup-name>topic_nokia</lookup-name>
+  </resource-ref>
+
+  <resource-ref>
+    <res-ref-name>java:comp/env/tcf_nokia</res-ref-name>
+    <res-type>javax.jms.TopicConnectionFactory</res-type>
+    <lookup-name>tcf_nokia</lookup-name>
+  </resource-ref>
+
+  <resource-ref>
     <res-ref-name>java:comp/env/myCF</res-ref-name>
     <res-type>javax.jms.ConnectionFactory</res-type>
   </resource-ref>

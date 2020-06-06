@@ -62,7 +62,9 @@ public class JMS2AsyncSendTest extends FATBase {
       Util.TRACE_EXIT();
     }
   }
-
+  @Test
+  public void testNokia()throws Exception { runTest(); }
+/*
   @Test
   public void testJMS2NoAsync()throws Exception { runTest(); }
   @Test
@@ -101,4 +103,5 @@ public class JMS2AsyncSendTest extends FATBase {
   public void testJMS2DefaultConnectionFactory() throws Exception { runTest(); }
   @Test
   public void testJMS2DefaultConnectionFactoryVariation() throws Exception { runTest(); }
+*/
 }

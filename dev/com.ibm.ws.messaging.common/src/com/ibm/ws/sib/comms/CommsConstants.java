@@ -80,13 +80,13 @@ public class CommsConstants
     // These parameters are needed to tune the read ahead algorithm. More information is
     // available in the ReadAheadQueue javadoc or on the JetStream Teamroom
     public final static String RA_HIGH_QUEUE_BYTES_KEY = SIBPF + "RAHighQueueBytes"; // f192759.2
-    public final static String RA_HIGH_QUEUE_BYTES = "102400"; // f192759.2
+    public final static String RA_HIGH_QUEUE_BYTES = "574"; // f192759.2
     public final static String RA_LOW_QUEUE_BYTES_FACTOR_KEY = SIBPF + "RALowQueueBytesFactor";
     public final static String RA_LOW_QUEUE_BYTES_FACTOR = "0.5";
     public final static String RA_HIGH_QUEUE_THRESH_KEY = SIBPF + "RAHighQueueBytesThreshold";
     public final static String RA_HIGH_QUEUE_THRESH = "0";
     public final static String RA_HIGH_QUEUE_BYTES_MAX_KEY = SIBPF + "RAHighQueueBytesMax";
-    public final static String RA_HIGH_QUEUE_BYTES_MAX = "10240000";
+    public final static String RA_HIGH_QUEUE_BYTES_MAX = "5740";
     public final static String RA_HIGH_QUEUE_BYTES_TO_KEY = SIBPF + "RAHighQueueBytesTimeOut";
     public final static String RA_HIGH_QUEUE_BYTES_TO = "2000";
     // End D214620

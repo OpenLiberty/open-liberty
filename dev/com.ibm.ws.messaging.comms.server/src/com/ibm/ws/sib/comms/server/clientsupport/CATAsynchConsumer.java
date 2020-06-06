@@ -534,12 +534,13 @@ public class CATAsynchConsumer extends CATConsumer implements StoppableAsynchCon
             // this async consumer session are both started. During async operation the main consumer will remain started
             // even when this async consumer is restarted and stopped each time a new msg is requested by the remote
             // client via SEG_RESTART_SESSION (restart) and consumeMessages (stop).
-            final boolean wasStarted = started; // Remember whether this session was started or not
+            final boolean wasStarted = getState().isStarted(); // Remember whether this session was started or not
             if (mainConsumer.isStarted() && wasStarted) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     SibTr.debug(this, tc, "Stopping the consumer session");
+                setState(State.STOPPING);
                 getConsumerSession().stop();
-                started = false;
+                setState(State.STOPPED);
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     SibTr.debug(this, tc, "Consumer not fully started");
@@ -583,7 +584,7 @@ public class CATAsynchConsumer extends CATConsumer implements StoppableAsynchCon
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     SibTr.debug(this, tc, "Starting the consumer session");
                 getConsumerSession().start(false);
-                started = true;
+                setState(State.STARTED);
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     SibTr.debug(this, tc, "Consumer was not fully started");
@@ -1010,8 +1011,9 @@ public class CATAsynchConsumer extends CATConsumer implements StoppableAsynchCon
                 // Are we the last in batch?
                 if ((currMessCount + 1) == messageCount) {
                     // Stop the session
+                    setState(State.STOPPING);
                     getConsumerSession().stop();
-                    started = false;
+                    setState(State.STOPPED);
                     batchesSent++;
                     messagesSent++;
 
@@ -1051,7 +1053,7 @@ public class CATAsynchConsumer extends CATConsumer implements StoppableAsynchCon
                 // Attempt to stop the session before we break out
                 try {
                     getConsumerSession().stop();
-                    started = false;
+                    setState(State.STOPPED);
                 } catch (SIException e1) {
                     //No FFDC Code needed
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -1137,7 +1139,7 @@ public class CATAsynchConsumer extends CATConsumer implements StoppableAsynchCon
      * 
      * <p>This is acheived through the message batch number that is flown
      * with every async message. When the proxy queue issues an <code>unlockAll()</code>
-     * it increments it's message batch number. We also increment our server side
+     * it increments its message batch number. We also increment our server side
      * message batch number, but only after that <code>unlockAll()</code> has
      * completed. Therefore, any messages received by the client with an 'old'
      * message batch number can be safely discarded.
@@ -1155,12 +1157,13 @@ public class CATAsynchConsumer extends CATConsumer implements StoppableAsynchCon
             // this async consumer session are both started. During async operation the main consumer will remain started
             // even when this async consumer is restarted and stopped each time a new msg is requested by the remote
             // client via SEG_RESTART_SESSION (restart) and consumeMessages (stop).
-            final boolean wasStarted = started; // Remember whether this session was started or not
+            final boolean wasStarted = getState().isStarted(); // Remember whether this session was started or not
             if (mainConsumer.isStarted() && wasStarted) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     SibTr.debug(this, tc, "Stopping the consumer session");
+                setState(State.STOPPING);
                 getConsumerSession().stop();
-                started = false;
+                setState(State.STOPPED);
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     SibTr.debug(this, tc, "Consumer not fully started");
@@ -1204,7 +1207,7 @@ public class CATAsynchConsumer extends CATConsumer implements StoppableAsynchCon
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     SibTr.debug(this, tc, "Starting the consumer session");
                 getConsumerSession().start(false);
-                started = true;
+                setState(State.STARTED);
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     SibTr.debug(this, tc, "Consumer was not fully started");
