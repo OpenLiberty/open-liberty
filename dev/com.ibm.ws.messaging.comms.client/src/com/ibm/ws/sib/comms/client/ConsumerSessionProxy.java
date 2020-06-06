@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2011 IBM Corporation and others.
+ * Copyright (c) 2004, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.sib.comms.client;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +36,7 @@ import com.ibm.ws.sib.jfapchannel.Conversation.ThrottlingPolicy;
 import com.ibm.ws.sib.mfp.MessageDecodeFailedException;
 import com.ibm.ws.sib.mfp.impl.JsMessageFactory;
 import com.ibm.ws.sib.utils.DataSlice;
+import com.ibm.ws.sib.utils.ras.FormattedWriter;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.sib.core.AsynchConsumerCallback;
 import com.ibm.wsspi.sib.core.ConsumerSession;
@@ -2423,4 +2425,36 @@ public void unlockAll(boolean incrementUnlockCount)
     }
     if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "unlockAll");
  }
+
+   public void dump(FormattedWriter writer) {
+       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+           SibTr.entry(this, tc, "dump", new Object[] { writer });
+
+       try {
+           writer.newLine();
+           writer.startTag(this.getClass().getSimpleName());
+           writer.indent();
+
+           writer.newLine();
+           writer.taggedValue("toString", toString());
+           writer.newLine();
+           writer.taggedValue("DestinationAddress", getDestinationAddress());
+
+
+           writer.outdent();
+           writer.newLine();
+           writer.endTag(this.getClass().getSimpleName());
+
+        } catch (Throwable t) {
+            // No FFDC Code Needed
+            try {
+                if (writer != null) writer.write("\nUnable to dump " + this + " " + t);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+       }
+
+       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+           SibTr.exit(this, tc, "dump");
+   }
 }

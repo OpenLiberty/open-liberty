@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package com.ibm.wsspi.sib.core;
 
 import com.ibm.websphere.sib.exception.SIIncorrectCallException;
 import com.ibm.websphere.sib.exception.SIResourceException;
+import com.ibm.ws.sib.utils.ras.FormattedWriter;
 import com.ibm.wsspi.sib.core.exception.SIConnectionDroppedException;
 import com.ibm.wsspi.sib.core.exception.SIConnectionLostException;
 import com.ibm.wsspi.sib.core.exception.SIConnectionUnavailableException;
@@ -512,5 +513,13 @@ public interface ConsumerSession extends AbstractConsumerSession {
    throws SISessionUnavailableException, SISessionDroppedException,
           SIConnectionUnavailableException, SIConnectionDroppedException,
           SIIncorrectCallException;
+
+ /**
+  * Create a formatted dump of the current state.
+  * @param writer
+  */
+  public default void dump(FormattedWriter writer) {
+
+  };
 }
 

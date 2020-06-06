@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2012 IBM Corporation and others.
+ * Copyright (c) 2004, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sib.comms.server.clientsupport;
+
+import java.io.IOException;
 
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ejs.ras.TraceNLS;
@@ -24,6 +26,7 @@ import com.ibm.ws.sib.jfapchannel.Conversation;
 import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
 import com.ibm.ws.sib.jfapchannel.SendListener;
 import com.ibm.ws.sib.jfapchannel.Conversation.ThrottlingPolicy;
+import com.ibm.ws.sib.utils.ras.FormattedWriter;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.sib.core.ConsumerSession;
 import com.ibm.wsspi.sib.core.OrderingContext;
@@ -732,6 +735,17 @@ public abstract class CATConsumer
       throw e;
    }
 
+   protected String getDestinationName() {
+	   String destinationName = "Unknown";
+	   try {
+		   destinationName = getConsumerSession().getDestinationAddress().getDestinationName();
+	   }
+	   catch (Throwable t) {
+		   if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.debug(tc, "failed to read destination name for consumerSession", t);
+	   }
+	   return destinationName;
+   }
+
    /**
     * @return Returns the state of the consumer
     */
@@ -768,5 +782,40 @@ public abstract class CATConsumer
 
       // Re-throw this exception so that the client will informed if required
       throw e;
+   }
+
+   /**
+    * Create a formatted dump of the current state.
+    * @param writer
+    */
+   public void dump(FormattedWriter writer) {
+       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+           SibTr.entry(this, tc, "dump", new Object[] { writer });
+
+       try {
+           writer.newLine();
+           writer.startTag(this.getClass().getSimpleName());
+           writer.indent();
+
+           writer.newLine();
+           writer.taggedValue("toString", toString());
+           ConsumerSession consumerSession = getConsumerSession();
+           if (consumerSession != null)
+               consumerSession.dump(writer);
+           writer.outdent();
+           writer.newLine();
+           writer.endTag(this.getClass().getSimpleName());
+
+        } catch (Throwable t) {
+            // No FFDC Code Needed
+            try {
+                writer.write("\nUnable to dump " + this + " " + t);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+       }
+
+       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+           SibTr.exit(this, tc, "dump");
    }
 }
