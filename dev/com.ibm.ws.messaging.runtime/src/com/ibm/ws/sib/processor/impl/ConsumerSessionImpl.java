@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.sib.processor.impl;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -37,13 +38,16 @@ import com.ibm.ws.sib.processor.utils.SIMPUtils;
 import com.ibm.ws.sib.processor.utils.UserTrace;
 import com.ibm.ws.sib.transactions.TransactionCommon;
 import com.ibm.ws.sib.utils.SIBUuid12;
+import com.ibm.ws.sib.utils.ras.FormattedWriter;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.sib.core.AsynchConsumerCallback;
+import com.ibm.wsspi.sib.core.ConsumerSession;
 import com.ibm.wsspi.sib.core.OrderingContext;
 import com.ibm.wsspi.sib.core.SIBusMessage;
 import com.ibm.wsspi.sib.core.SICoreConnection;
 import com.ibm.wsspi.sib.core.SIMessageHandle;
 import com.ibm.wsspi.sib.core.SITransaction;
+import com.ibm.wsspi.sib.core.SelectionCriteria;
 import com.ibm.wsspi.sib.core.StoppableAsynchConsumerCallback;
 import com.ibm.wsspi.sib.core.exception.SIConnectionDroppedException;
 import com.ibm.wsspi.sib.core.exception.SIConnectionLostException;
@@ -1208,5 +1212,50 @@ public final class ConsumerSessionImpl implements MPConsumerSession, MPDestinati
         if (TraceComponent.isAnyTracingEnabled() && CoreSPIConsumerSession.tc.isEntryEnabled())
             SibTr.exit(CoreSPIConsumerSession.tc, "unlockAll", incrementUnlockCount);
 
+    }
+    
+    public void dump(FormattedWriter writer) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.entry(this, tc, "dump", new Object[] { writer });
+
+        try {
+            writer.newLine();
+            writer.startTag(this.getClass().getSimpleName());
+            writer.indent();
+        
+            writer.newLine();
+            writer.taggedValue("toString", toString());
+            writer.newLine();
+            writer.taggedValue("DestinationAddress", getDestinationAddress());
+            writer.newLine();
+            writer.taggedValue("LocalConsumerPoint", getLocalConsumerPoint());
+           
+            ConsumerDispatcher cd = (ConsumerDispatcher) getLocalConsumerPoint().getConsumerManager();
+            MPSubscription mpSubscription = cd.getMPSubscription();
+            if (mpSubscription != null ) {
+                writer.newLine();
+                writer.taggedValue("SubscriperId", mpSubscription.getSubscriberId());
+                writer.newLine();
+                writer.taggedValue("WPMTopicSpaceName", mpSubscription.getWPMTopicSpaceName());
+                for (SelectionCriteria selectionCriteria : mpSubscription.getSelectionCriteria()) {
+                  writer.newLine();
+                  writer.taggedValue("SelectionCriteria", selectionCriteria);
+                }
+            }
+            writer.outdent();
+            writer.newLine();
+            writer.endTag(this.getClass().getSimpleName());
+
+         } catch (Throwable t) {
+             // No FFDC Code Needed            
+             try {
+                 writer.write("\nUnable to dump " + this + " " + t);
+             } catch (IOException e) {
+                 e.printStackTrace();
+             }
+        }
+      
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.exit(this, tc, "dump");
     }
 }
