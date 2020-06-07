@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+ 
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"  
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+    <!-- id gets mapped to configuration class impl in Designate element below --> 
+    <OCD id="io.openliberty.grpc.serverConfig.metatype" name="%serverConfig" description="%serverConfig.desc"
+         ibm:alias="grpc" >
+         
+         <!-- the following lines will define defaults and variable types for these parameters.
+              Also drives the documentation for them based on metatype.properties 
+              and makes pretty panels in wdt. 
+         -->
+         
+        <AD id="target" name="%target" description="%target" required="true" type="String" />
+        <AD id="httpEndpoints" name="%httpEndpoints" description="%httpEndpoints.desc" required="false" type="String" />
+        <AD id="maxInboundMessageSize" name="%maxInboundMessageSize" description="%maxInboundMessageSize.desc" required="false" type="Integer" />
+        <AD id="serverInterceptors" name="%serverInterceptors" description="%serverInterceptors.desc" required="false" type="String" />
+        <AD id="other" name="%other" description="%other.desc" required="false" type="String" />
+
+    </OCD>
+
+    <!-- factoryPid allows multiple instances in server.xml, activate will be called multiple times --> 
+    <Designate factoryPid="io.openliberty.grpc.serverConfig">       <!-- matches pid in java file -->
+        <Object ocdref="io.openliberty.grpc.serverConfig.metatype" /> <!-- matches id of ocd above -->
+    </Designate>
+
+
+</metatype:MetaData>
