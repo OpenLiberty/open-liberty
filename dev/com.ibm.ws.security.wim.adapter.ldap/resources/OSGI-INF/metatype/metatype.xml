@@ -34,7 +34,7 @@
             <Option label="%ldapType.custom" value="Custom"/>
             <Option label="%ldapType.domino" value="IBM Lotus Domino"/>
             <Option label="%ldapType.edirectory" value="Novell eDirectory"/>
-            <Option label="%ldapType.ibm_dir_server" value="IBM Tivoli Directory Server"/>
+            <Option label="%ldapType.tivoli" value="IBM Tivoli Directory Server"/>
             <Option label="%ldapType.iplanet" value="Sun Java System Directory Server"/>
             <Option label="%ldapType.netscape" value="Netscape Directory Server"/>
             <Option label="%ldapType.secureway" value="IBM SecureWay Directory Server"/>
