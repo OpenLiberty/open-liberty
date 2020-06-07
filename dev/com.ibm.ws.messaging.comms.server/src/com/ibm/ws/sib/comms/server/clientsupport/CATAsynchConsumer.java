@@ -583,6 +583,7 @@ public class CATAsynchConsumer extends CATConsumer implements StoppableAsynchCon
             if (mainConsumer.isStarted() && wasStarted) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     SibTr.debug(this, tc, "Starting the consumer session");
+                setState(State.STARTING); // always transition state for easy tracking
                 getConsumerSession().start(false);
                 setState(State.STARTED);
             } else {
@@ -1052,6 +1053,7 @@ public class CATAsynchConsumer extends CATConsumer implements StoppableAsynchCon
 
                 // Attempt to stop the session before we break out
                 try {
+                    setState(State.STOPPING); // always transition state for easy tracking
                     getConsumerSession().stop();
                     setState(State.STOPPED);
                 } catch (SIException e1) {
@@ -1206,6 +1208,7 @@ public class CATAsynchConsumer extends CATConsumer implements StoppableAsynchCon
             if (mainConsumer.isStarted() && wasStarted) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     SibTr.debug(this, tc, "Starting the consumer session");
+                setState(State.STARTING); // always transition state for easy tracking
                 getConsumerSession().start(false);
                 setState(State.STARTED);
             } else {

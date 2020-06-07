@@ -100,13 +100,6 @@ public class CATProxyConsumer extends CATConsumer
    /** The amount of bytes that the client wants to 'read-ahead' */
    private int requestedBytes = 0;
    
-   private ReentrantLock bytesLock = new ReentrantLock(true); // PH20984
-   public void getBytesLock() {
-     bytesLock.lock();
-   }
-   public void returnBytesLock() {
-     bytesLock.unlock();
-   }
    /**
     * Constructor
     *
@@ -898,67 +891,113 @@ public class CATProxyConsumer extends CATConsumer
 
       try
       {
-        // Update the counters
-        // Make sure nobody else can update either the counters or the consumer state while we're doing this
-        // Once we've decided what to do, we can release the locks (which does mean the state might get updated elsewhere while we're still acting on our decision.
-        int sent = 0;
-        boolean startSession = false; boolean stopSession = false;
-        stateLock.lock();
-        bytesLock.lock();
-        try {
-          setSentBytes(getSentBytes() - receivedBytes);
-          setRequestedBytes(reqBytes);
+         // Update the counters
+         // Make sure nobody else can update either the counters or the consumer state while we're doing this
+         // Once we've decided what to do, we can release the locks (which does mean the state might get updated
+         // elsewhere while we're still acting on our decision).
+         int sent = 0;
+         boolean startSession = false;
+         boolean stopSession = false;
+         stateLock.lock();
+         try
+         {
+            while (state.isTransitioning()) stateTransition.await();
 
-          sent = getSentBytes();
+            setSentBytes(getSentBytes() - receivedBytes);
+            setRequestedBytes(reqBytes);
 
-          // Should we start or stop the consumerSession based on the new counter values?
-          if (sent < reqBytes) {
-            // We've not retrieved enough bytes, we might need to (re)start the session.
-            if (!( getState().equals(State.STARTED) || getState().equals(State.STARTING))) { // We'll allow for someone else already starting the session
-              if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                SibTr.debug(this, tc, "Starting the session (sentBytes < requestedBytes && !started)");
-              this.setState(State.STARTING);
-              startSession = true;
+            sent = getSentBytes();
+
+            // Should we start or stop the consumerSession based on the new counter values?
+            if (sent < reqBytes)
+            {
+               // We've not retrieved enough bytes, we might need to (re)start the session.
+               if (!state.isStarted())
+               {
+                  if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                  {
+                     SibTr.debug(this
+                                ,tc
+                                ,String.format("[@%x] Starting the session (sentBytes (%d) < requestedBytes (%d) && !started)"
+                                              ,this.hashCode()
+                                              ,sent
+                                              ,reqBytes
+                                              )
+                                );
+                  }
+                  this.setState(State.STARTING);
+                  startSession = true;
+               }
+               else
+               {
+                  if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                  {
+                     SibTr.debug(this, tc, String.format("[@%x] Already started", this.hashCode()));
+                  }
+               }
             }
-            else {
-              if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "Already started");
+            else // (sent >= reqBytes)
+            {
+               if (!state.isStopped())
+               {
+                  if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                  {
+                     SibTr.debug(this
+                                ,tc
+                                ,String.format("[@%x] Stopping the session (sentBytes (%d) >= requestedBytes (%d))"
+                                              ,this.hashCode()
+                                              ,sent
+                                              ,reqBytes
+                                              )
+                                );
+                  }
+                  this.setState(State.STOPPING);
+                  stopSession = true;
+               }
+               else
+               {
+                  if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                  {
+                     SibTr.debug(this, tc, String.format("[@%x] Already stopped", this.hashCode()));
+                  }
+               }
             }
-          }
-          else { // (sent >= reqBytes)
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-              SibTr.debug(this, tc, "Stopping the session (sentBytes >= requestedBytes)");
-            this.setState(State.STOPPING);
-            stopSession = true;
-          }
-        }
-        finally {
-          stateLock.unlock();
-          bytesLock.unlock(); // PH20984
-        }
+         }
+         finally
+         {
+            stateLock.unlock();
+         }
 
-        if (startSession) {
-          try {
-            getConsumerSession().start(false);
-            setState(State.STARTED);
-          }
-          catch(Exception e) {
-            // We failed to start the consumerSession. To be safe, we should reset the state variable so we can try again later
-            setState(State.STOPPED);
-            throw e;
-          }
-        }
-        if (stopSession) {
-          try {
-            getConsumerSession().stop();
-            setState(State.STOPPED);
-          }
-          catch(Exception e) {
-            // Well, this is interesting. We attempted to stop the consumerSession, but failed. So, what state should we assume it's now in?
-            // Let's, in absence of any further evidence, assume that it's effectively stopped, even if that di dn't happen cleanly
-            setState(State.STOPPED);
-            throw e;
-          }
-        }
+         if (startSession)
+         {
+            try
+            {
+               getConsumerSession().start(false);
+               setState(State.STARTED);
+            }
+            catch(Exception e)
+            {
+               // We failed to start the consumerSession. To be safe, we should reset the state variable so we can try again later
+               setState(State.STOPPED);
+               throw e;
+            }
+         }
+         if (stopSession)
+         {
+            try
+            {
+               setState(State.STOPPING); // try always transition states cleanly
+               getConsumerSession().stop();
+               setState(State.STOPPED);
+            }
+            catch(Exception e)
+            {
+               // Well, this is interesting. We attempted to stop the consumerSession, but failed. So, what state should we assume it's now in?
+               // Let's, in absence of any further evidence, assume that it's effectively stopped, even if that di dn't happen cleanly
+               setState(State.STOPPED);
+               throw e;
+            }
+         }
       }
       catch (Exception e) //(SIException e)
       {
@@ -989,13 +1028,16 @@ public class CATProxyConsumer extends CATConsumer
    public int getRequestedBytes()
    {
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "getRequestedBytes");
-      bytesLock.lock(); //PH20984
-      try {
-        return requestedBytes;
+      // state lock for byte count changes as state transitions are based on these values 
+      stateLock.lock(); //PH20984
+      try
+      {
+         return requestedBytes;
       }
-      finally {
-        bytesLock.unlock(); // PH20984
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "getRequestedBytes", requestedBytes);
+      finally
+      {
+         stateLock.unlock(); // PH20984
+         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "getRequestedBytes", requestedBytes);
       }
    }
 
@@ -1008,12 +1050,15 @@ public class CATProxyConsumer extends CATConsumer
    public void setRequestedBytes(int newRequestedBytes)
    {
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "setRequestedBytes", newRequestedBytes);
-      bytesLock.lock(); // PH20984
-      try {
-        requestedBytes = newRequestedBytes;
+      // state lock for byte count changes as state transitions are based on these values 
+      stateLock.lock(); // PH20984
+      try
+      {
+         requestedBytes = newRequestedBytes;
       }
-      finally {
-        bytesLock.unlock(); // PH20984
+      finally
+      {
+         stateLock.unlock(); // PH20984
       }
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "setRequestedBytes");
       return;
@@ -1025,13 +1070,16 @@ public class CATProxyConsumer extends CATConsumer
    public int getSentBytes()
    {
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "getSentBytes");
-      bytesLock.lock(); // PH20984
-      try {
-        return sentBytes;
+      // state lock for byte count changes as state transitions are based on these values 
+      stateLock.lock(); // PH20984
+      try
+      {
+         return sentBytes;
       }
-      finally {
-        bytesLock.unlock(); // PH20984
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "getSentBytes", sentBytes);
+      finally
+      {
+         stateLock.unlock(); // PH20984
+         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "getSentBytes", sentBytes);
       }
    }
 
@@ -1044,12 +1092,15 @@ public class CATProxyConsumer extends CATConsumer
    public void setSentBytes(int newSentBytes)
    {
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "setSentBytes", newSentBytes);
-      bytesLock.lock(); // PH20984
-      try {
-        sentBytes = newSentBytes;
+      // state lock for byte count changes as state transitions are based on these values 
+      stateLock.lock(); // PH20984
+      try
+      {
+         sentBytes = newSentBytes;
       }
-      finally {
-        bytesLock.unlock(); // PH20984
+      finally
+      {
+         stateLock.unlock(); // PH20984
       }
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "setSentBytes");
    }
@@ -1057,29 +1108,31 @@ public class CATProxyConsumer extends CATConsumer
    /**
     * PH20984
     * Performs the counter update required by CATAsynchReadAheadReader.consumeMessages()
-    * Once a message has been sent to the client, the sentBytes counter must be updated, and if this means that the requested number of bytes have been sent
-    * the CATAsynchReadAheadReader needs to stop the consumer.
-    * By performing the update and check in a single method here, we can more easily lock around the behaviour and make sure that 
-no other thread alters the
-    * counters while we're doing it.
+    * Once a message has been sent to the client, the sentBytes counter must be updated, and if this means that the requested
+    * number of bytes have been sent the CATAsynchReadAheadReader needs to stop the consumer.
+    * By performing the update and check in a single method here, we can more easily lock around the behaviour and make sure
+    * that no other thread alters the counters while we're doing it.
     *
     * @param msgLen the length of the last message sent
     * @return whether the total number of sent bytes is at least equal to the number of bytes currently requested
     */
    public boolean updateConsumedBytes(int msgLen)
    {
-     if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "updateConsumedBytes", msgLen);
-     bytesLock.lock();
-     boolean stopConsumer = false;
-     try {
-       sentBytes += msgLen;
-       stopConsumer = (sentBytes >= requestedBytes);
-       return stopConsumer;
-     }
-     finally {
-       bytesLock.unlock();
-       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "updateConsumedBytes", stopConsumer);
-     }
+      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "updateConsumedBytes", msgLen);
+      // state lock for byte count changes as state transitions are based on these values 
+      stateLock.lock();
+      boolean stopConsumer = false;
+      try
+      {
+         sentBytes += msgLen;
+         stopConsumer = (sentBytes >= requestedBytes);
+         return stopConsumer;
+      }
+      finally
+      {
+         stateLock.unlock();
+         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "updateConsumedBytes", stopConsumer);
+      }
    }
 
 
@@ -1125,6 +1178,7 @@ no other thread alters the
          // Stop the session to prevent any (more) messages going
          if (mainConsumer.isStarted())
          {
+            setState(State.STOPPING); // try always transition states cleanly
             getConsumerSession().stop();
             setState(State.STOPPED);
          }
@@ -1156,6 +1210,7 @@ no other thread alters the
             // Now restart the session
             if (mainConsumer.isStarted())
             {
+                setState(State.STARTING); // try always transition states cleanly
                 getConsumerSession().start(false);
                 setState(State.STARTED);
             }

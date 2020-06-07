@@ -11,6 +11,7 @@
 package com.ibm.ws.sib.comms.server.clientsupport;
 
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.Condition;
 
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ejs.ras.TraceNLS;
@@ -75,46 +76,75 @@ public abstract class CATConsumer
    // Could we tidy this code up by incorporating more of the state flags into this enum?
    // The _stopped flag would be an obvious candidate to be incorporated here,
    // but I'm just going to focus on fixing APAR PH20984 for the moment.
-   public enum State { STOPPED, STARTING, STARTED, STOPPING, CLOSED, UNDEFINED; // Put UNDEFINED in here for any class that doesn't implement getState() properly.
+   public enum State
+   {
+      // Put UNDEFINED in here for any class that doesn't implement getState() properly.
+      STOPPED, STARTING, STARTED, STOPPING, CLOSED, UNDEFINED;
 
-         // A couple of methods that should make the code using this enum a bit more readable.
-         public boolean isStarted() {
-                 return this.equals(STARTED);
-         }
+      // A couple of methods that should make the code using this enum a bit more readable.
+      public boolean isStarted()
+      {
+         return this.equals(STARTED);
+      }
 
-         public boolean isStopped() {
-                 return this.equals(STOPPED);
-         }
+      public boolean isStopped()
+      {
+         return this.equals(STOPPED);
+      }
 
+      public boolean isTransitioning()
+      {
+         return this.equals(STARTING) || this.equals(STOPPING);
+      }
    }
 
    protected State state = State.STOPPED;
    protected ReentrantLock stateLock = new ReentrantLock();
+   protected Condition stateTransition = stateLock.newCondition();
 
-   public State getState() {
-         try {
-                 stateLock.lock();
-                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                         SibTr.debug( tc , "State = " + state + ",this:"+this );
-                         return state;
+   public State getState()
+   {
+      try
+      {
+         stateLock.lock();
+         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+         {
+            SibTr.debug(tc, String.format("[@%x] State = " + state, this.hashCode()));
          }
-
-         finally {
-                 stateLock.unlock();
-         }
+         return state;
+      }
+      finally
+      {
+         stateLock.unlock();
+      }
    }
 
-   public void setState(State newState) {
-         try {
-                 stateLock.lock();
-                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                         SibTr.debug( tc , "Setting state. Old state =  " + state + ", new state = " + newState + ",this:"+this );
-                 state = newState;
-                 return;
+   public void setState(State newState)
+   {
+      try
+      {
+         stateLock.lock();
+         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+         {
+            SibTr.debug(tc, String.format("[@%x] Setting state from " + state + " to " + newState, this.hashCode()));
+            if ( (State.STOPPED==newState&&State.STARTING==state)
+               ||(State.STARTED==newState&&State.STOPPING==state)
+               )
+            {
+               SibTr.debug(tc
+                          ,String.format("[@%x] WARNING: possible error in state transition"
+                                        ,Thread.currentThread().getStackTrace()
+                                        )
+                          );
+            }
          }
-         finally {
-                 stateLock.unlock();
-         }
+         state = newState;
+         stateTransition.signal();
+      }
+      finally
+      {
+         stateLock.unlock();
+      }
    }
 
    /** Counter of the number of messages sent to the client */
@@ -368,6 +398,7 @@ public abstract class CATConsumer
          // may immediately deliver a message to the async consumer (consumeMessages) which will stop the session and set
          // started=false. We don't want this method setting started=true after consumeMessages has set it false hence the
          // need to set started=true before starting the session.
+         if (state.isStopped()) setState(State.STARTING); // try always transition states cleanly
          setState(State.STARTED);
          getConsumerSession().start(deliverImmediately);
          requestsReceived++;
@@ -463,6 +494,7 @@ public abstract class CATConsumer
 
       try
       {
+         if (state.isStarted()) setState(State.STOPPING); // try always transition states cleanly
          getConsumerSession().stop();
          setState(State.STOPPED);
 
