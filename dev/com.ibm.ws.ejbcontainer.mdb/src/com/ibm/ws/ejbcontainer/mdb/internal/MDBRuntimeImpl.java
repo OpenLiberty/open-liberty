@@ -400,7 +400,14 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
     }
 
     public MDBRuntimeImpl() {
+        final String methodName = "MDBRuntimeImpl";
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, methodName, new Object[] { this });
+
         setInstance(this);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, methodName);
     }
 
     /**
@@ -684,6 +691,9 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
      */
     @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL)
     protected synchronized void setServerStartedPhase2(ServerStartedPhase2 serverStartedPhase2) {
+        final String methodName = "setServerStartedPhase2";
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, methodName, new Object[] { this, serverStartedPhase2 });
 
         isServerStarted = true;
 
@@ -693,6 +703,9 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
         // endpoints not associated with a known activation specification will
         // remain pending until the activation specification becomes available.
         activateDeferredEndpoints(endpointFactories);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, methodName);
     }
 
     /**
@@ -706,10 +719,18 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
     }
 
     protected void activate(ComponentContext cc) {
+        final String methodName = "activate";
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, methodName, new Object[] { this, cc });
+
         context = cc;
         ejbContainerSR.activate(cc);
         rrsXAResFactorySvcRef.activate(cc);
         messageEndpointCollaboratorRef.activate(cc);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, methodName);
+
     }
 
     protected void deactivate(ComponentContext cc) {
@@ -795,10 +816,16 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
      * @throws ResourceException if a failure occurs activating the endpoint
      */
     synchronized void activateEndpoint(MessageEndpointFactoryImpl mef) throws ResourceException {
+        final String methodName = "activateEndpoint";
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, methodName, new Object[] { this, mef });
+
         mef.endpointActivationServiceInfo = createEndpointActivationServiceInfo(mef.getActivationSpecId());
         if (mef.endpointActivationServiceInfo.getAutoStart() == false && mef.shouldActivate == false) {
             Tr.info(tc, "MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I", mef.getJ2EEName().getComponent(), mef.getJ2EEName().getModule(), mef.getJ2EEName().getApplication(),
                     mef.endpointActivationServiceInfo.id);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                Tr.exit(tc, methodName);
             return;
         }
         mef.endpointActivationServiceInfo.addReferencingEndpoint(mef);
@@ -848,6 +875,9 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
         endpointFactories.add(mef);
 
         activateEndpointInternal(mef, true);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, methodName);
     }
 
     /**
