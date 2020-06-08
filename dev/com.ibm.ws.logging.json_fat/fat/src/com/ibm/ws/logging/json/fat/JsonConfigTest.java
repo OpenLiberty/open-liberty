@@ -57,7 +57,7 @@ public class JsonConfigTest {
     public static final String SERVER_XML_JSON_SOURCE_MESSAGETRACEACCESS = "jsonSourceMessageTraceAccess.xml";
     public static final String SERVER_XML_JSON_MESSAGE_ACCESS = "jsonMessageSourceAccessLog.xml";
     public static final String SERVER_XML_JSON_CONFIG_FIELD_EXT = "jsonConfigFieldExt.xml";
-    public static final String SERVER_XML_APPS_WRITE_JSON_ENABLED = "appsWriteJsonEnsabled.xml";
+    public static final String SERVER_XML_APPS_WRITE_JSON_ENABLED = "appsWriteJsonEnabled.xml";
     public static final String SERVER_XML_APPS_WRITE_JSON_DISABLED = "appsWriteJsonDisabled.xml";
 
     ArrayList<String> ALL_SOURCE_LIST = new ArrayList<String>(Arrays.asList("message", "trace", "accesslog", "ffdc"));
