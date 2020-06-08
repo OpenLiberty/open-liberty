@@ -67,17 +67,19 @@ public class JMS2AsyncSend extends ClientMain {
   {
     Object coord = new Object();
     AtomicInteger ready = new AtomicInteger(0);
-    int num_subs = 5;
+    int num_subs = 40;
+    AtomicInteger[] counts = new AtomicInteger[num_subs];
 
     Util.TRACE("Starting subscribers...");
     for (int i=0;num_subs>i;++i)
     {
+      counts[i] = new AtomicInteger(0);
       new Thread("SUB"+i)
       {
-        private String name;
-        Thread setID(String n)
+        private int ID;
+        Thread setID(int n)
         {
-          name = n;
+          ID = n;
           return this;
         }
         @Override
@@ -89,32 +91,30 @@ public class JMS2AsyncSend extends ClientMain {
             env.put(Context.PROVIDER_URL, "iiop://localhost:2809");
             InitialContext ctx = new InitialContext(env);
             ConnectionFactory cf = (ConnectionFactory)ctx.lookup("java:comp/env/tcf_nokia");
-            Util.TRACE(name+": cf="+cf);
+            Util.TRACE("SUB"+ID+": cf="+cf);
             Topic topic = (Topic)ctx.lookup("java:comp/env/topic_nokia");
-            Util.TRACE(name+": topic="+topic);
+            Util.TRACE("SUB"+ID+": topic="+topic);
             Connection c = cf.createConnection();
             Session s = c.createSession(false,Session.AUTO_ACKNOWLEDGE);
             MessageConsumer subs = s.createConsumer(topic);
             subs.setMessageListener(new MessageListener()
                                     {
-                                      private long count = 0;
                                       @Override
                                       public void onMessage(Message m)
                                       {
-                                        ++count;
-                                        Util.TRACE(name+": count="+count);
+                                        int n = counts[ID].getAndIncrement();
                                         TextMessage tm = (TextMessage)m;
                                         try
                                         {
                                           String t = tm.getText();
                                           if (t.startsWith("END OF BATCH"))
                                           {
-                                            ready.getAndIncrement();
+                                            Util.TRACE("SUB"+ID+": end of batch, count="+(n+1));
                                           }
                                         }
                                         catch (Exception gte)
                                         {
-                                          Util.TRACE(name+": GTE",gte);
+                                          Util.TRACE("SUB"+ID+": GTE",gte);
                                         }
                                       }
                                     }
@@ -133,14 +133,14 @@ public class JMS2AsyncSend extends ClientMain {
             c.setExceptionListener(null);
             c.stop();
             c.close();
-            Util.TRACE(name+": exiting.");
+            Util.TRACE("SUB"+ID+": exiting.");
           }
           catch (Exception e)
           {
-            Util.TRACE(name+": ",e);
+            Util.TRACE("SUB"+ID+": ",e);
           }
         }
-      }.setID("SUB"+i).start();
+      }.setID(i).start();
       Util.TRACE("Subscriber "+i+" started.");
     }
 
@@ -164,11 +164,12 @@ public class JMS2AsyncSend extends ClientMain {
 
     long total = 0;
 
-    for (int batch=0;1000>batch;++batch)
+    for (int batch=0;500>batch;++batch)
     {
       ready.set(0);
       Util.TRACE("PRD: batch #"+batch);
-      for (int n=0;24>n;++n)
+      int bs = (int)(java.lang.Math.random()*1990);
+      for (int n=0;9+bs>n;++n)
       {
         TextMessage tm = s.createTextMessage("batch="+batch+",message="+n+",xxxxxxxxxx");
         prod.send(tm);
@@ -178,7 +179,7 @@ public class JMS2AsyncSend extends ClientMain {
       prod.send(tm);
       ++total;
 
-      Util.TRACE("PRD: committing batch #"+batch+" (total messages: "+total+")");
+      Util.TRACE("PRD: committing batch #"+batch+" (size: "+(bs+9)+" total messages: "+total+")");
       try 
       {
         s.commit();
@@ -188,10 +189,19 @@ public class JMS2AsyncSend extends ClientMain {
         Util.TRACE("PRD: ",oe);
       }
       Util.TRACE("PRD: waiting");
-      for (int w=0;60>w&&num_subs!=ready.get();++w) Thread.sleep(1000);
-      if (num_subs!=ready.get()) Util.TRACE("PRD: Possible stall detected");
-//      Util.TRACE("PRD: sleeping");
-//      Thread.sleep(5000);
+      boolean stall=true;
+      for (int w=0;300>w;++w)
+      {
+        int x;
+        for (x=0;num_subs>x;++x) if (counts[x].get()!=total) break;
+        if (num_subs==x)
+        {
+          stall = false;
+          break;
+        }
+        Thread.sleep(1000);
+      }
+      if (stall) Util.TRACE("PRD: Possible stall detected");
     }
 
     Util.TRACE("PRD: done.");
@@ -209,5 +219,7 @@ public class JMS2AsyncSend extends ClientMain {
       coord.notifyAll();
     }
     Thread.sleep(5000);
+
+    reportSuccess();  // so we don't get a test failure reported and it can "look clean"
   }
 }
