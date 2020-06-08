@@ -96,6 +96,7 @@ public class CATAsynchReadAheadReader implements AsynchConsumerCallback {
         } else {
             String xctErrStr = null;
 
+            State fallback = State.UNDEFINED;
             try {
                 // Get the next message in the vEnum
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -127,7 +128,7 @@ public class CATAsynchReadAheadReader implements AsynchConsumerCallback {
                 try {
                     while (consumerSession.state.isTransitioning()) consumerSession.stateTransition.await();
                     stopConsumer = (msgLen == 0) || consumerSession.updateConsumedBytes(msgLen);
-                    if (stopConsumer) consumerSession.setState(State.STOPPING);
+                    if (stopConsumer) fallback = consumerSession.setState(State.STOPPING);
                 }
                 finally {
                     consumerSession.stateLock.unlock();
@@ -151,6 +152,7 @@ public class CATAsynchReadAheadReader implements AsynchConsumerCallback {
                                    );
                     }
                     stopConsumer();
+                    fallback = State.UNDEFINED;
                 }
             }
             // start d172528
@@ -174,7 +176,9 @@ public class CATAsynchReadAheadReader implements AsynchConsumerCallback {
                                                            consumerSession.getClientSessionId(),
                                                            consumerSession.getConversation(), 0);
             } // end d172528
-
+            finally {
+              if (State.UNDEFINED!=fallback) consumerSession.setState(fallback);
+            }
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())

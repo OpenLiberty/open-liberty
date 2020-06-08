@@ -497,13 +497,27 @@ public class CATProxyConsumer extends CATConsumer
    {
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "unlockAll", requestNumber);
 
+      State returnToState = State.UNDEFINED;
       try
       {
+         stateLock.lock();
+         try
+         {
+            while (state.isTransitioning()) stateTransition.await();
+            returnToState = setState(State.PAUSED);
+         }
+         finally
+         {
+            stateLock.unlock();
+         }
+
          // Stop the session to prevent any (more) messages going
+         boolean restartSession = false;
          if (mainConsumer.isStarted())
          {
             getConsumerSession().stop();
-            setState(State.STOPPED);
+            returnToState = State.STOPPED; // even if it wasn't, it is now so we would fall back to this
+            restartSession = true;
          }
 
          // Increment the message batch
@@ -531,10 +545,10 @@ public class CATProxyConsumer extends CATConsumer
                                    null);
 
             // Now restart the session
-            if (mainConsumer.isStarted())
+            if (restartSession)
             {
                 getConsumerSession().start(false);
-                setState(State.STARTED);
+                returnToState = State.STARTED;        // state will be set in finally block
             }
          }
          catch (SIException e)
@@ -566,6 +580,14 @@ public class CATProxyConsumer extends CATConsumer
          StaticCATHelper.sendExceptionToClient(e,
                                                CommsConstants.CATPROXYCONSUMER_UNLOCKALL_02,
                                                getConversation(), requestNumber);
+      }
+      catch (InterruptedException ie)
+      {
+         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, ie.getMessage(), ie);
+      }
+      finally
+      {
+         if (State.UNDEFINED!=returnToState) setState(returnToState);   // do not leave in PAUSED transitional state
       }
 
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "unlockAll");
@@ -925,6 +947,7 @@ public class CATProxyConsumer extends CATConsumer
                                               )
                                 );
                   }
+                  // no need for a fall back state as all paths after this force an end state
                   this.setState(State.STARTING);
                   startSession = true;
                }
@@ -951,6 +974,7 @@ public class CATProxyConsumer extends CATConsumer
                                               )
                                 );
                   }
+                  // no need for a fall back state as all paths after this force an end state
                   this.setState(State.STOPPING);
                   stopSession = true;
                }
@@ -962,6 +986,10 @@ public class CATProxyConsumer extends CATConsumer
                   }
                }
             }
+         }
+         catch (InterruptedException ie)
+         {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, ie.getMessage(), ie);
          }
          finally
          {
@@ -986,14 +1014,14 @@ public class CATProxyConsumer extends CATConsumer
          {
             try
             {
-               setState(State.STOPPING); // try always transition states cleanly
                getConsumerSession().stop();
                setState(State.STOPPED);
             }
             catch(Exception e)
             {
-               // Well, this is interesting. We attempted to stop the consumerSession, but failed. So, what state should we assume it's now in?
-               // Let's, in absence of any further evidence, assume that it's effectively stopped, even if that di dn't happen cleanly
+               // Well, this is interesting. We attempted to stop the consumerSession, but failed. So, what state should we assume 
+               // it's now in?  Let's, in absence of any further evidence, assume that it's effectively stopped, even if that 
+               // didn't happen cleanly
                setState(State.STOPPED);
                throw e;
             }
@@ -1173,14 +1201,27 @@ public class CATProxyConsumer extends CATConsumer
    {
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "unlockAll", new Object[] {requestNumber,incrementUnlockCount});
 
+      State returnToState = State.UNDEFINED;
       try
       {
+         stateLock.lock();
+         try
+         {
+            while (state.isTransitioning()) stateTransition.await();
+            returnToState = setState(State.PAUSED);
+         }
+         finally
+         {
+            stateLock.unlock();
+         }
+
          // Stop the session to prevent any (more) messages going
+         boolean restartSession = false;
          if (mainConsumer.isStarted())
          {
-            setState(State.STOPPING); // try always transition states cleanly
             getConsumerSession().stop();
-            setState(State.STOPPED);
+            returnToState = State.STOPPED; // even if it wasn't, it is now so we would fall back to this
+            restartSession = true;
          }
 
          // Increment the message batch
@@ -1208,11 +1249,10 @@ public class CATProxyConsumer extends CATConsumer
                                    null);
 
             // Now restart the session
-            if (mainConsumer.isStarted())
+            if (restartSession)
             {
-                setState(State.STARTING); // try always transition states cleanly
                 getConsumerSession().start(false);
-                setState(State.STARTED);
+                returnToState = State.STARTED;        // state will be set in finally block
             }
          }
          catch (SIException e)
@@ -1244,6 +1284,14 @@ public class CATProxyConsumer extends CATConsumer
          StaticCATHelper.sendExceptionToClient(e,
                                                CommsConstants.CATPROXYCONSUMER_UNLOCKALL_04,
                                                getConversation(), requestNumber);
+      }
+      catch (InterruptedException ie)
+      {
+         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, ie.getMessage(), ie);
+      }
+      finally
+      {
+         if (State.UNDEFINED!=returnToState) setState(returnToState);   // do not leave in PAUSED transitional state
       }
 
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "unlockAll");

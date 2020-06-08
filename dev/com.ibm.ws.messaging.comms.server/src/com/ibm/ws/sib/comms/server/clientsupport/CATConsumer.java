@@ -79,7 +79,7 @@ public abstract class CATConsumer
    public enum State
    {
       // Put UNDEFINED in here for any class that doesn't implement getState() properly.
-      STOPPED, STARTING, STARTED, STOPPING, CLOSED, UNDEFINED;
+      STOPPED, STARTING, STARTED, STOPPING, CLOSED, PAUSED, UNDEFINED;
 
       // A couple of methods that should make the code using this enum a bit more readable.
       public boolean isStarted()
@@ -94,7 +94,7 @@ public abstract class CATConsumer
 
       public boolean isTransitioning()
       {
-         return this.equals(STARTING) || this.equals(STOPPING);
+         return this.equals(STARTING) || this.equals(STOPPING) || this.equals(PAUSED);
       }
    }
 
@@ -119,17 +119,40 @@ public abstract class CATConsumer
       }
    }
 
-   public void setState(State newState)
+   public State setState(State newState)
    {
+      State origState = State.UNDEFINED;
       try
       {
          stateLock.lock();
          if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
          {
             SibTr.debug(tc, String.format("[@%x] Setting state from " + state + " to " + newState, this.hashCode()));
-            if ( (State.STOPPED==newState&&State.STARTING==state)
-               ||(State.STARTED==newState&&State.STOPPING==state)
-               )
+            boolean pps =false;
+            switch (state)
+            {
+              case  STOPPED:
+                    pps = (State.STARTED==newState||State.STOPPING==newState||State.STOPPED==newState);
+                    break;
+              case  STARTED:
+                    pps = (State.STOPPED==newState||State.STARTING==newState||State.STARTED==newState);
+                    break;
+              // NOTE: possibly we may find transition from transitional to end states and these will be false positives 
+              // (e.g. on error when state is set to STOPPED in exception code path) but log them anyway for follow-up... 
+              // this is debug code anyway so shouldn't be a problem to do so.
+              case  STOPPING:
+                    pps = (State.STARTED==newState||State.STARTING==newState||State.PAUSED==newState);
+                    break;
+              case  STARTING:
+                    pps = (State.STOPPED==newState||State.STOPPING==newState||State.PAUSED==newState);
+                    break;
+              case  PAUSED:
+                    pps = (State.STOPPING==newState||State.STARTING==newState||State.PAUSED==newState);
+                    break;
+              default:
+                    break;
+            }
+            if (pps)
             {
                SibTr.debug(tc
                           ,String.format("[@%x] WARNING: possible error in state transition"
@@ -138,13 +161,15 @@ public abstract class CATConsumer
                           );
             }
          }
+         origState = state;
          state = newState;
-         stateTransition.signal();
+         if (!state.isTransitioning()) stateTransition.signalAll();
       }
       finally
       {
          stateLock.unlock();
       }
+      return origState;
    }
 
    /** Counter of the number of messages sent to the client */
@@ -398,6 +423,8 @@ public abstract class CATConsumer
          // may immediately deliver a message to the async consumer (consumeMessages) which will stop the session and set
          // started=false. We don't want this method setting started=true after consumeMessages has set it false hence the
          // need to set started=true before starting the session.
+
+         // no need for fallback for transtional state here as it is an empty state change (changes immediately to end state)
          if (state.isStopped()) setState(State.STARTING); // try always transition states cleanly
          setState(State.STARTED);
          getConsumerSession().start(deliverImmediately);
@@ -494,9 +521,14 @@ public abstract class CATConsumer
 
       try
       {
-         if (state.isStarted()) setState(State.STOPPING); // try always transition states cleanly
-         getConsumerSession().stop();
-         setState(State.STOPPED);
+         State fallback = State.UNDEFINED;
+         try {
+           if (state.isStarted()) fallback = setState(State.STOPPING); // try always transition states cleanly
+           getConsumerSession().stop();
+           fallback = State.STOPPED;
+         } finally {
+           if (State.UNDEFINED!=fallback) setState(fallback);
+         }
 
          // The send listener is passed into the send() call so that we can be notified
          // when the data leaves the box
