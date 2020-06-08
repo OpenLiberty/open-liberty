@@ -32,7 +32,6 @@
         <AD id="maxInboundMessageSize" name="%maxInboundMessageSize" description="%maxInboundMessageSize.desc" required="false" type="Integer" />
         <AD id="clientInterceptors" name="%clientInterceptors" description="%clientInterceptors.desc" required="false" type="String" />
         <AD id="sslConfig" name="%sslConfig" description="%sslConfig.desc" required="false" type="String" />
-        <AD id="other" name="%other" description="%other.desc" required="false" type="String" />
 
     </OCD>
 
