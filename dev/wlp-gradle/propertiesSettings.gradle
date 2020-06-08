@@ -43,6 +43,7 @@ def setProperties = { props ->
 
     boolean isUsingArtifactory  = props.getProperty('is.using.artifactory') == null     ? false : 'true'.equalsIgnoreCase(props.getProperty('is.using.artifactory'))
     boolean isAutomatedBuild    = props.getProperty("buildResultUUID") != null && props.getProperty('buildLabel') != null
+    String  betaVersionOverride = props.getProperty('betaVersionOverride')
     boolean isPersonal          = props.getProperty('is.personal') == null              ? false : 'true'.equalsIgnoreCase(props.getProperty('is.personal'))
     boolean isContinuousBuild   = props.getProperty('is.continuous.build') == null      ? false : 'true'.equalsIgnoreCase(props.getProperty('is.continuous.build'))
     boolean isRelease           = props.getProperty('is.release') == null               ? false : 'true'.equalsIgnoreCase(props.getProperty('is.release'))
@@ -69,6 +70,7 @@ def setProperties = { props ->
         rootProject.ext.isPublicPublishing  = isPublicPublishing
         rootProject.ext.isUnittestsDisabled = isUnittestsDisabled
         rootProject.ext.isBuildOsNativePackages = isBuildOsNativePackages
+        rootProject.ext.betaVersionOverride = betaVersionOverride
 
         // Test results for this run
         rootProject.ext.testCountTotal           = 0
