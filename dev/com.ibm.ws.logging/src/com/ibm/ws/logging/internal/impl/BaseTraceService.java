@@ -333,9 +333,7 @@ public class BaseTraceService implements TrService {
             BaseTraceFormatter.useIsoDateFormat = isoDateFormat;
         }
 
-        applyJsonFields(trConfig.getjsonFields());
         jsonAccessLogFields = trConfig.getjsonAccessLogFields();
-
         if (jsonAccessLogFields != AccessLogConfig.jsonAccessLogFieldsConfig) {
             AccessLogConfig.jsonAccessLogFieldsConfig = jsonAccessLogFields;
         }
@@ -482,6 +480,8 @@ public class BaseTraceService implements TrService {
                 updateConduitSyncHandlerConnection(consoleSourceList, consoleLogHandler);
             }
         }
+
+        applyJsonFields(trConfig.getjsonFields());
     }
 
     public static void applyJsonFields(String value) {
