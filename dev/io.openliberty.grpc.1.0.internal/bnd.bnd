@@ -34,9 +34,7 @@ Export-Package: \
 	io.openliberty.grpc.internal.config,\
 	io.openliberty.grpc.internal.servlet
 
-javac.args.release: current
-
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=11))"
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 Include-Resource: \
   OSGI-INF=resources/OSGI-INF, \
