@@ -42,7 +42,7 @@ public class LibertyHTTPTransportFactory extends HTTPTransportFactory {
     @Override
     public Conduit getConduit(EndpointInfo endpointInfo, EndpointReferenceType target) throws IOException {
         //create our LibertyHTTPConduit so that we can set the TCCL when run the handleResponseInternal asynchronously
-        URLConnectionHTTPConduit conduit = new URLConnectionHTTPConduit(bus, endpointInfo, target);
+        LibertyHTTPConduit conduit = new LibertyHTTPConduit(bus, endpointInfo, target);
 
         //following are copied from the super class.
         //Spring configure the conduit.  
