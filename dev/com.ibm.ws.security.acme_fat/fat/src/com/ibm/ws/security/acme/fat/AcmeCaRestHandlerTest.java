@@ -135,7 +135,7 @@ public class AcmeCaRestHandlerTest {
 		/*
 		 * Stop the server.
 		 */
-		server.stopServer("CWPKI2058W");
+		AcmeFatUtils.stopServer(server, "CWPKI2058W");
 	}
 
 	@Test

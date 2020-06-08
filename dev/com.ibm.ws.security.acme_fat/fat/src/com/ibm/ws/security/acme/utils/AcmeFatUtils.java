@@ -826,4 +826,23 @@ public class AcmeFatUtils {
  		}
  		return false;
  	}
+ 	
+ 	/**
+ 	 * Handle adding CWPKI2045W as an allowed warning message to all stopServer requests.
+ 	 * 
+ 	 * @param server
+ 	 * @param msgs
+ 	 * @throws Exception
+ 	 */
+ 	public static void stopServer(LibertyServer server, String...msgs) throws Exception{
+ 		/*
+ 		 * If the test Pebble or Boulder container is slightly ahead of our test machine, we can
+ 		 * get a certificate that is in "the future" and that will produce a warning message.
+ 		 */
+ 		String alwaysAdd = "CWPKI2045W";
+ 		
+ 		List<String> tempList = new ArrayList<String>(Arrays.asList(msgs));
+		tempList.add(alwaysAdd);
+		server.stopServer(tempList.toArray(new String[tempList.size()]));
+ 	}
 }

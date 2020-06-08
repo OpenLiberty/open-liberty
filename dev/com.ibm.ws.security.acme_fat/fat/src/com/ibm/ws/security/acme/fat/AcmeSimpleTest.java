@@ -1058,6 +1058,6 @@ public class AcmeSimpleTest {
 	}
 	
 	protected void stopServer(String ...msgs) throws Exception {
-		server.stopServer(msgs);
+		AcmeFatUtils.stopServer(server, msgs);
 	}
 }

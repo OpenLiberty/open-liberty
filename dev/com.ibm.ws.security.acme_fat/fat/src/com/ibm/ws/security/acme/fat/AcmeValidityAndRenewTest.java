@@ -153,7 +153,7 @@ public class AcmeValidityAndRenewTest {
 			/*
 			 * Stop the server.
 			 */
-			server.stopServer("CWPKI2051W");
+			stopServer("CWPKI2051W");
 		}
 	}
 
@@ -205,7 +205,7 @@ public class AcmeValidityAndRenewTest {
 			/*
 			 * Stop the server.
 			 */
-			server.stopServer("CWPKI2055W");
+			stopServer("CWPKI2055W");
 		}
 
 	}
@@ -259,7 +259,7 @@ public class AcmeValidityAndRenewTest {
 			/*
 			 * Stop the server.
 			 */
-			server.stopServer("CWPKI2054W");
+			stopServer("CWPKI2054W");
 		}
 
 	}
@@ -314,7 +314,7 @@ public class AcmeValidityAndRenewTest {
 			/*
 			 * Stop the server.
 			 */
-			server.stopServer();
+			stopServer();
 		}
 
 		/***********************************************************************
@@ -380,7 +380,7 @@ public class AcmeValidityAndRenewTest {
 			/*
 			 * Stop the server.
 			 */
-			server.stopServer("CWPKI2055W"); // we are running with and intentionally short renewBeforeExpiration.
+			stopServer("CWPKI2055W"); // we are running with an intentionally short renewBeforeExpiration.
 		}
 
 		/***********************************************************************
@@ -460,7 +460,7 @@ public class AcmeValidityAndRenewTest {
 			/*
 			 * Stop the server.
 			 */
-			server.stopServer("CWPKI2049W");
+			stopServer("CWPKI2049W");
 		}
 	}
 
@@ -524,7 +524,7 @@ public class AcmeValidityAndRenewTest {
 			/*
 			 * Stop the server.
 			 */
-			server.stopServer();
+			stopServer();
 		}
 	}
 
@@ -801,7 +801,7 @@ public class AcmeValidityAndRenewTest {
 			/*
 			 * Stop the server.
 			 */
-			server.stopServer();
+			stopServer();
 		}
 	}
 
@@ -904,7 +904,7 @@ public class AcmeValidityAndRenewTest {
 			/*
 			 * Stop the server.
 			 */
-			server.stopServer("CWPKI2049W", "CWPKI2065W");
+			stopServer("CWPKI2049W", "CWPKI2065W");
 		}
 	}
 
@@ -953,6 +953,10 @@ public class AcmeValidityAndRenewTest {
 				return contentString;
 			}
 		}
+	}
+	
+	private void stopServer(String...msgs) throws Exception {
+		AcmeFatUtils.stopServer(server, msgs);
 	}
 
 }

@@ -201,7 +201,7 @@ public class AcmeDisableTriggerSimpleTest {
 			/*
 			 * Stop the server.
 			 */
-			server.stopServer();
+			stopServer();
 		}
 	}
 	
@@ -280,7 +280,7 @@ public class AcmeDisableTriggerSimpleTest {
 			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
 			AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 		} finally {
-			server.stopServer("CWPKI2001E", "CWPKI0804E", "CWWKO0801E");
+			stopServer("CWPKI2001E", "CWPKI0804E", "CWWKO0801E");
 		}
 	}
 	
@@ -408,8 +408,11 @@ public class AcmeDisableTriggerSimpleTest {
 			/*
 			 * Stop the server.
 			 */
-			server.stopServer("CWPKI2058W");
+			stopServer("CWPKI2058W");
 		}
 	}
 
+	private void stopServer(String...msgs) throws Exception {
+		AcmeFatUtils.stopServer(server, msgs);
+	}
 }

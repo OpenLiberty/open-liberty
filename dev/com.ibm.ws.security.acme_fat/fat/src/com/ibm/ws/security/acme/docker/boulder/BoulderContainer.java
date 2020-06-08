@@ -158,20 +158,27 @@ public class BoulderContainer extends CAContainer {
 		for (int i = 1; i < NUM_RESTART_ATTEMPTS_ON_EXCEPTION + 1; i++) {
 			try {
 				bmysql.start();
-				break;
+
+				if (bmysql.isRunning()) {
+					break;
+				}
+				Log.info(BoulderContainer.class, "start", "Failed to start bmysql, marked as not running.");
 			} catch (Throwable t) {
 				Log.info(BoulderContainer.class, "start", "Failed to start bmysql, try again. " + t);
-				bmysql.stop();
-				initSQL();
+			}
 
-				Log.error(BoulderContainer.class, "start", t, "Hit an exception, trying a long sleep and retry");
-				try {
-					Thread.sleep(30000);
-				} catch (InterruptedException e) {
-				}
+			bmysql.stop();
+			initSQL();
+
+			try {
+				Thread.sleep(30000);
+			} catch (InterruptedException e) {
 			}
 		}
 		if (!bmysql.isRunning()) {
+			/*
+			 * One more try
+			 */
 			bmysql.start();
 		}
 		

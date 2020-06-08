@@ -165,7 +165,7 @@ public class AcmeRevocationTest {
 			 * status as revoked. Cycle the server and we should now see that
 			 * the certificate is replaced since it was revoked.
 			 */
-			server.stopServer();
+			stopServer();
 			server.startServer();
 			server.waitForStringInLog("CWPKI2059I"); // Detected cert revoked!
 			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
@@ -180,7 +180,7 @@ public class AcmeRevocationTest {
 			assertThat("Expected new certificate.", serial1, not(equalTo(serial2)));
 
 		} finally {
-			server.stopServer();
+			stopServer();
 		}
 	}
 
@@ -225,7 +225,7 @@ public class AcmeRevocationTest {
 			 * status as revoked. Cycle the server. This time we will not
 			 * perform the revocation check since it is disabled.
 			 */
-			server.stopServer();
+			stopServer();
 			server.startServer();
 			AcmeFatUtils.waitForSslEndpoint(server);
 			Certificate[] certificates2 = AcmeFatUtils.assertAndGetServerCertificate(server, boulder);
@@ -238,7 +238,7 @@ public class AcmeRevocationTest {
 			assertThat("Expected same certificate.", serial1, equalTo(serial2));
 
 		} finally {
-			server.stopServer();
+			stopServer();
 		}
 	}
 
@@ -286,7 +286,7 @@ public class AcmeRevocationTest {
 			 * revoked. We treat this as a soft failure since it is possible it
 			 * may be a network glitch. A warning will be written to logs.
 			 */
-			server.stopServer();
+			stopServer();
 			server.startServer();
 			server.waitForStringInLog("CWPKI2058W"); // Soft failures...
 			AcmeFatUtils.waitForSslEndpoint(server);
@@ -300,7 +300,7 @@ public class AcmeRevocationTest {
 			assertThat("Expected same certificate.", serial1, equalTo(serial2));
 
 		} finally {
-			server.stopServer("CWPKI2058W");
+			stopServer("CWPKI2058W");
 		}
 	}
 
@@ -433,7 +433,7 @@ public class AcmeRevocationTest {
 			/*
 			 * Stop the server.
 			 */
-			server.stopServer();
+			stopServer();
 		}
 	}
 	
@@ -492,7 +492,7 @@ public class AcmeRevocationTest {
 			assertJsonResponse(jsonResponse, 200);
 
 		} finally {
-			server.stopServer();
+			stopServer();
 		}
 	}
 
@@ -587,4 +587,7 @@ public class AcmeRevocationTest {
 		}
 	}
 
+	private void stopServer(String...msgs) throws Exception {
+		AcmeFatUtils.stopServer(server, msgs);
+	}
 }

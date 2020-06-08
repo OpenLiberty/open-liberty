@@ -16,6 +16,8 @@ import java.util.List;
 
 import org.junit.runner.RunWith;
 
+import com.ibm.ws.security.acme.utils.AcmeFatUtils;
+
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -37,7 +39,7 @@ public class AcmeURISimpleTest extends AcmeSimpleTest {
 	@Override
 	protected void stopServer(String... msgs) throws Exception {
 		if (JavaInfo.JAVA_VERSION > 8) {
-			server.stopServer(msgs);
+			AcmeFatUtils.stopServer(server, msgs);
 		} else {
 			/*
 			 * HttpConnector.config runs oddly slow on Java 8 and can trigger the update
@@ -45,7 +47,7 @@ public class AcmeURISimpleTest extends AcmeSimpleTest {
 			 */
 			List<String> tempList = new ArrayList<String>(Arrays.asList(msgs));
 			tempList.add("CWWKG0027W");
-			server.stopServer(tempList.toArray(new String[tempList.size()]));
+			AcmeFatUtils.stopServer(server, tempList.toArray(new String[tempList.size()]));
 		}
 	}
 }
