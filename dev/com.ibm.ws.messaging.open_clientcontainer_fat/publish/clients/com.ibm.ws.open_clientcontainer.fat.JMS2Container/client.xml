@@ -18,4 +18,13 @@
   <jmsQueue jndiName="jndi_DEPTH_LIMITED_QUEUE">
     <properties.wasJms queueName="DEPTH_LIMITED_QUEUE"/>
   </jmsQueue>
+
+  <connectionManager id="ConMgrX" maxPoolSize="5"/>
+  <jmsTopicConnectionFactory jndiName="tcf_raissue" connectionManagerRef="ConMgrX">
+    <properties.wasJms remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging" readAhead="alwaysOn"/>
+  </jmsTopicConnectionFactory>
+
+  <jmsTopic jndiName="topic_raissue">
+    <properties.wasJms topicSpace="RAISSUE" readAhead="alwaysOn"/>
+  </jmsTopic>
 </client>

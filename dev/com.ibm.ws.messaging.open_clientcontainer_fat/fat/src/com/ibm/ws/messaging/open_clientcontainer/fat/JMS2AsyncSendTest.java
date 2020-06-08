@@ -62,7 +62,8 @@ public class JMS2AsyncSendTest extends FATBase {
       Util.TRACE_EXIT();
     }
   }
-
+  @Test
+  public void testRAIssue()throws Exception { runTest(); }
   @Test
   public void testJMS2NoAsync()throws Exception { runTest(); }
   @Test

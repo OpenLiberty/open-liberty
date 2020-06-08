@@ -12,6 +12,7 @@ package com.ibm.ws.sib.comms.server.clientsupport;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.sib.Reliability;
 import com.ibm.websphere.sib.exception.SIException;
@@ -99,6 +100,13 @@ public class CATProxyConsumer extends CATConsumer
    /** The amount of bytes that the client wants to 'read-ahead' */
    private int requestedBytes = 0;
    
+   private ReentrantLock bytesLock = new ReentrantLock(true); // PH20984
+   public void getBytesLock() {
+     bytesLock.lock();
+   }
+   public void returnBytesLock() {
+     bytesLock.unlock();
+   }
    /**
     * Constructor
     *
@@ -112,6 +120,7 @@ public class CATProxyConsumer extends CATConsumer
 
       this.mainConsumer = mainConsumer;
 
+      // We won't worry about the lock here as we're still constructing the consumer
       requestedBytes = mainConsumer.getRequestedBytes();
       callback = new CATAsynchReadAheadReader(this,mainConsumer);
 
@@ -501,7 +510,7 @@ public class CATProxyConsumer extends CATConsumer
          if (mainConsumer.isStarted())
          {
             getConsumerSession().stop();
-            started = false;
+            setState(State.STOPPED);
          }
 
          // Increment the message batch
@@ -512,10 +521,7 @@ public class CATProxyConsumer extends CATConsumer
 
          // Reset the sent bytes to zero. Do this inside a lock to prevent us updating the counter
          // at the same time as anyone else.
-         synchronized (this)
-         {
-            setSentBytes(0);
-         }
+         setSentBytes(0);
 
          short jfapPriority = JFapChannelConstants.getJFAPPriority(Integer.valueOf(mainConsumer.getLowestPriority()));
          if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "Sending with JFAP priority of " + jfapPriority);
@@ -535,7 +541,7 @@ public class CATProxyConsumer extends CATConsumer
             if (mainConsumer.isStarted())
             {
                 getConsumerSession().start(false);
-                started = true;     //578471 PK82240
+                setState(State.STARTED);
             }
          }
          catch (SIException e)
@@ -892,39 +898,69 @@ public class CATProxyConsumer extends CATConsumer
 
       try
       {
-         // We need to lock down the session to prevent the async consumer updating and corrupting
-         // the counters, and / or stopping the session
-         synchronized (this)
-         {
-            // Update the counters
-            setSentBytes(getSentBytes() - receivedBytes);
-            setRequestedBytes(reqBytes);
+        // Update the counters
+        // Make sure nobody else can update either the counters or the consumer state while we're doing this
+        // Once we've decided what to do, we can release the locks (which does mean the state might get updated elsewhere while we're still acting on our decision.
+        int sent = 0;
+        boolean startSession = false; boolean stopSession = false;
+        stateLock.lock();
+        bytesLock.lock();
+        try {
+          setSentBytes(getSentBytes() - receivedBytes);
+          setRequestedBytes(reqBytes);
 
-            int sent = getSentBytes();
-            if (sent < reqBytes)
-            {
-               if (!started)
-               {
-                  if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                     SibTr.debug(this, tc, "Starting the session (sentBytes < requestedBytes && !started)");
-                  getConsumerSession().start(false);
-                  started = true;
-               }
-               else
-               {
-                  if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "Already started");
-               }
+          sent = getSentBytes();
+
+          // Should we start or stop the consumerSession based on the new counter values?
+          if (sent < reqBytes) {
+            // We've not retrieved enough bytes, we might need to (re)start the session.
+            if (!( getState().equals(State.STARTED) || getState().equals(State.STARTING))) { // We'll allow for someone else already starting the session
+              if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                SibTr.debug(this, tc, "Starting the session (sentBytes < requestedBytes && !started)");
+              this.setState(State.STARTING);
+              startSession = true;
             }
-            if (sent >= reqBytes)
-            {
-               if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                  SibTr.debug(this, tc, "Stopping the session (sentBytes >= requestedBytes)");
-               getConsumerSession().stop();
-               started = false;
+            else {
+              if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "Already started");
             }
-         }
+          }
+          else { // (sent >= reqBytes)
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+              SibTr.debug(this, tc, "Stopping the session (sentBytes >= requestedBytes)");
+            this.setState(State.STOPPING);
+            stopSession = true;
+          }
+        }
+        finally {
+          stateLock.unlock();
+          bytesLock.unlock(); // PH20984
+        }
+
+        if (startSession) {
+          try {
+            getConsumerSession().start(false);
+            setState(State.STARTED);
+          }
+          catch(Exception e) {
+            // We failed to start the consumerSession. To be safe, we should reset the state variable so we can try again later
+            setState(State.STOPPED);
+            throw e;
+          }
+        }
+        if (stopSession) {
+          try {
+            getConsumerSession().stop();
+            setState(State.STOPPED);
+          }
+          catch(Exception e) {
+            // Well, this is interesting. We attempted to stop the consumerSession, but failed. So, what state should we assume it's now in?
+            // Let's, in absence of any further evidence, assume that it's effectively stopped, even if that di dn't happen cleanly
+            setState(State.STOPPED);
+            throw e;
+          }
+        }
       }
-      catch (SIException e)
+      catch (Exception e) //(SIException e)
       {
          //No FFDC code needed
          //Only FFDC if we haven't received a meTerminated event.
@@ -953,8 +989,14 @@ public class CATProxyConsumer extends CATConsumer
    public int getRequestedBytes()
    {
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "getRequestedBytes");
-      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "getRequestedBytes", requestedBytes);
-      return requestedBytes;
+      bytesLock.lock(); //PH20984
+      try {
+        return requestedBytes;
+      }
+      finally {
+        bytesLock.unlock(); // PH20984
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "getRequestedBytes", requestedBytes);
+      }
    }
 
    /**
@@ -966,8 +1008,15 @@ public class CATProxyConsumer extends CATConsumer
    public void setRequestedBytes(int newRequestedBytes)
    {
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "setRequestedBytes", newRequestedBytes);
-      requestedBytes = newRequestedBytes;
+      bytesLock.lock(); // PH20984
+      try {
+        requestedBytes = newRequestedBytes;
+      }
+      finally {
+        bytesLock.unlock(); // PH20984
+      }
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "setRequestedBytes");
+      return;
    }
 
    /**
@@ -976,8 +1025,14 @@ public class CATProxyConsumer extends CATConsumer
    public int getSentBytes()
    {
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "getSentBytes");
-      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "getSentBytes", sentBytes);
-      return sentBytes;
+      bytesLock.lock(); // PH20984
+      try {
+        return sentBytes;
+      }
+      finally {
+        bytesLock.unlock(); // PH20984
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "getSentBytes", sentBytes);
+      }
    }
 
    /**
@@ -989,9 +1044,44 @@ public class CATProxyConsumer extends CATConsumer
    public void setSentBytes(int newSentBytes)
    {
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "setSentBytes", newSentBytes);
-      sentBytes = newSentBytes;
+      bytesLock.lock(); // PH20984
+      try {
+        sentBytes = newSentBytes;
+      }
+      finally {
+        bytesLock.unlock(); // PH20984
+      }
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "setSentBytes");
    }
+
+   /**
+    * PH20984
+    * Performs the counter update required by CATAsynchReadAheadReader.consumeMessages()
+    * Once a message has been sent to the client, the sentBytes counter must be updated, and if this means that the requested number of bytes have been sent
+    * the CATAsynchReadAheadReader needs to stop the consumer.
+    * By performing the update and check in a single method here, we can more easily lock around the behaviour and make sure that 
+no other thread alters the
+    * counters while we're doing it.
+    *
+    * @param msgLen the length of the last message sent
+    * @return whether the total number of sent bytes is at least equal to the number of bytes currently requested
+    */
+   public boolean updateConsumedBytes(int msgLen)
+   {
+     if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "updateConsumedBytes", msgLen);
+     bytesLock.lock();
+     boolean stopConsumer = false;
+     try {
+       sentBytes += msgLen;
+       stopConsumer = (sentBytes >= requestedBytes);
+       return stopConsumer;
+     }
+     finally {
+       bytesLock.unlock();
+       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "updateConsumedBytes", stopConsumer);
+     }
+   }
+
 
    /**
     * This method will update the session lowest priority value.
@@ -1036,7 +1126,7 @@ public class CATProxyConsumer extends CATConsumer
          if (mainConsumer.isStarted())
          {
             getConsumerSession().stop();
-            started = false;
+            setState(State.STOPPED);
          }
 
          // Increment the message batch
@@ -1047,10 +1137,7 @@ public class CATProxyConsumer extends CATConsumer
 
          // Reset the sent bytes to zero. Do this inside a lock to prevent us updating the counter
          // at the same time as anyone else.
-         synchronized (this)
-         {
-            setSentBytes(0);
-         }
+         setSentBytes(0);
 
          short jfapPriority = JFapChannelConstants.getJFAPPriority(Integer.valueOf(mainConsumer.getLowestPriority()));
          if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "Sending with JFAP priority of " + jfapPriority);
@@ -1070,7 +1157,7 @@ public class CATProxyConsumer extends CATConsumer
             if (mainConsumer.isStarted())
             {
                 getConsumerSession().start(false);
-                started = true;     //578471 PK82240
+                setState(State.STARTED);
             }
          }
          catch (SIException e)

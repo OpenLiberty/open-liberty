@@ -16,6 +16,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.sib.comms.CommsConstants;
 import com.ibm.ws.sib.comms.common.CommsUtils;
 import com.ibm.ws.sib.comms.server.ConversationState;
+import com.ibm.ws.sib.comms.server.clientsupport.CATConsumer.State;
 import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.sib.core.AsynchConsumerCallback;
@@ -121,23 +122,27 @@ public class CATAsynchReadAheadReader implements AsynchConsumerCallback {
                 // Start D221806
                 // Ensure we take a lock on the consumer session so that the request for more messages
                 // doesn't corrupt the counters.
-                synchronized (consumerSession) {
-                    int oldSentBytes = consumerSession.getSentBytes();
-                    int newSentBytes = oldSentBytes + msgLen;
-                    consumerSession.setSentBytes(newSentBytes);
-
-                    if (msgLen == 0 || newSentBytes >= consumerSession.getRequestedBytes()) {
-                        // in addition to the pacing control, we must avoid an infinite loop
-                        // attempting to send messages that don't get through.  If msgLen
-                        // is 0 then no message was sent, and we must stop the consumer
-                        // and crucially, give up the asynchconsumerbusylock so the consumer
-                        // can be closed if need be.
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                            SibTr.debug(this, tc, "Stopping consumer session (sent bytes >= requested bytes || msgLen = 0)");
-                        stopConsumer();
-                    }
+                boolean stopConsumer = false;
+                consumerSession.stateLock.lock();
+                try {
+                    stopConsumer = (msgLen == 0) || consumerSession.updateConsumedBytes(msgLen);
+                    if (stopConsumer) consumerSession.setState(State.STOPPING);
                 }
-                // End D221806
+                finally {
+                    consumerSession.stateLock.unlock();
+                }
+
+                if (stopConsumer)
+                {
+                    // in addition to the pacing control, we must avoid an infinite loop
+                    // attempting to send messages that don't get through.  If msgLen
+                    // is 0 then no message was sent, and we must stop the consumer
+                    // and crucially, give up the asynchconsumerbusylock so the consumer
+                    // can be closed if need be.
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        SibTr.debug(this, tc, "Stopping consumer session (sent bytes >= requested bytes || msgLen = 0)");
+                    stopConsumer();
+                }
             }
             // start d172528
             catch (Throwable e) {
@@ -179,7 +184,7 @@ public class CATAsynchReadAheadReader implements AsynchConsumerCallback {
             // lock the consumerSession to ensure visibility of update to started.
             synchronized (consumerSession) {
                 consumerSession.getConsumerSession().stop();
-                consumerSession.started = false;
+                consumerSession.setState(State.STOPPED);
             }
         } catch (Throwable t) {
             FFDCFilter.processException(t,
