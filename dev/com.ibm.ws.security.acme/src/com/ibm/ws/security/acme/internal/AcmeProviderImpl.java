@@ -982,6 +982,7 @@ public class AcmeProviderImpl implements AcmeProvider {
 			 * Update the account.
 			 */
 			acmeClient.updateAccount();
+
 		} catch (AcmeCaException e) {
 			Tr.error(tc, e.getMessage()); // AcmeCaExceptions are localized.
 		}
@@ -1053,7 +1054,7 @@ public class AcmeProviderImpl implements AcmeProvider {
 	public void checkCertificateRenewAllowed() throws CertificateRenewRequestBlockedException {
 		long timeDiff = System.currentTimeMillis() - lastCertificateRenewalTimestamp;
 		if (acmeConfig.isDisableMinRenewWindow() || lastCertificateRenewalTimestamp == -1
-				|| (timeDiff >= AcmeConstants.RENEW_CERT_MIN)) {
+				|| (timeDiff >= acmeConfig.getRenewCertMin())) {
 			return;
 		}
 
@@ -1062,7 +1063,7 @@ public class AcmeProviderImpl implements AcmeProvider {
 		}
 		CertificateRenewRequestBlockedException cr = new CertificateRenewRequestBlockedException(
 				"Too soon to renew, last certificate renewal was " + lastCertificateRenewalTimestamp,
-				AcmeConstants.RENEW_CERT_MIN - timeDiff);
+				acmeConfig.getRenewCertMin() - timeDiff);
 		throw cr;
 	}
 }

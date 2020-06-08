@@ -119,7 +119,7 @@ public class AcmeValidityAndRenewTest {
 		 */
 
 		ServerConfiguration configuration = ORIGINAL_CONFIG.clone();
-		configuration.getAcmeCA().setRenewBeforeExpiration(AcmeConstants.RENEW_CERT_MIN - 1000 + "ms");
+		configuration.getAcmeCA().setRenewBeforeExpiration(configuration.getAcmeCA().getRenewCertMin() - 1000 + "ms");
 		AcmeFatUtils.configureAcmeCA(server, caContainer, configuration, DOMAINS1);
 
 		/***********************************************************************
@@ -396,7 +396,7 @@ public class AcmeValidityAndRenewTest {
 			configuration.getAcmeCA().setRenewBeforeExpiration((justShyOfValidityPeriod +5000) + "ms");
 			configuration.getAcmeCA().setCertCheckerSchedule((TIME_BUFFER_BEFORE_EXPIRE + 1000) + "ms");
 
-			configuration.getAcmeCA().setCertCheckerSchedule(AcmeConstants.RENEW_CERT_MIN + "ms");
+			configuration.getAcmeCA().setCertCheckerSchedule(configuration.getAcmeCA().getRenewCertMin() + "ms");
 			configuration.getAcmeCA().setDisableMinRenewWindow(true);
 			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration, DOMAINS1);
 
@@ -481,7 +481,7 @@ public class AcmeValidityAndRenewTest {
 		 */
 
 		ServerConfiguration configuration = ORIGINAL_CONFIG.clone();
-		configuration.getAcmeCA().setCertCheckerSchedule(AcmeConstants.RENEW_CERT_MIN + "ms");
+		configuration.getAcmeCA().setCertCheckerSchedule(configuration.getAcmeCA().getRenewCertMin() + "ms");
 		AcmeFatUtils.configureAcmeCA(server, caContainer, configuration, DOMAINS1);
 
 		/***********************************************************************
@@ -545,7 +545,7 @@ public class AcmeValidityAndRenewTest {
 		 */
 
 		ServerConfiguration configuration = ORIGINAL_CONFIG.clone();
-		configuration.getAcmeCA().setCertCheckerSchedule(AcmeConstants.RENEW_CERT_MIN + "ms");
+		configuration.getAcmeCA().setCertCheckerSchedule(configuration.getAcmeCA().getRenewCertMin() + "ms");
 		configuration.getAcmeCA().setRenewBeforeExpiration("0ms");
 		AcmeFatUtils.configureAcmeCA(server, caContainer, configuration, DOMAINS1);
 
@@ -575,7 +575,7 @@ public class AcmeValidityAndRenewTest {
 			 */
 			startingCertificateChain = AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 			assertNotNull("Should have found the cert checker waking up: " + AcmeFatUtils.ACME_CHECKER_TRACE,
-					server.waitForStringInTraceUsingMark(AcmeFatUtils.ACME_CHECKER_TRACE, AcmeConstants.RENEW_CERT_MIN + 5000));
+					server.waitForStringInTraceUsingMark(AcmeFatUtils.ACME_CHECKER_TRACE, configuration.getAcmeCA().getRenewCertMin() + 5000));
 
 			/*
 			 * Should have the same certificate
@@ -636,7 +636,7 @@ public class AcmeValidityAndRenewTest {
 			Log.info(this.getClass(), testName.getMethodName(), "TEST 3: Start");
 
 			configuration = ORIGINAL_CONFIG.clone();
-			configuration.getAcmeCA().setCertCheckerSchedule(AcmeConstants.RENEW_CERT_MIN + "ms");
+			configuration.getAcmeCA().setCertCheckerSchedule(configuration.getAcmeCA().getRenewCertMin() + "ms");
 			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration, DOMAINS1);
 			AcmeFatUtils.waitForAcmeToNoOp(server);
 			server.setMarkToEndOfLog(server.getDefaultTraceFile());
@@ -646,7 +646,7 @@ public class AcmeValidityAndRenewTest {
 			 */
 			startingCertificateChain = AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 			assertNotNull("Should have found the cert checker waking up: " + AcmeFatUtils.ACME_CHECKER_TRACE,
-					server.waitForStringInTraceUsingMark(AcmeFatUtils.ACME_CHECKER_TRACE, AcmeConstants.RENEW_CERT_MIN + 5000));
+					server.waitForStringInTraceUsingMark(AcmeFatUtils.ACME_CHECKER_TRACE, configuration.getAcmeCA().getRenewCertMin() + 5000));
 
 			/*
 			 * Should have the same certificate -- not expiring
@@ -678,7 +678,7 @@ public class AcmeValidityAndRenewTest {
 			 */
 			startingCertificateChain = AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 			assertNull("Should not have found the cert checker waking up: " + AcmeFatUtils.ACME_CHECKER_TRACE,
-					server.waitForStringInTraceUsingMark(AcmeFatUtils.ACME_CHECKER_TRACE, AcmeConstants.RENEW_CERT_MIN + 5000));
+					server.waitForStringInTraceUsingMark(AcmeFatUtils.ACME_CHECKER_TRACE, configuration.getAcmeCA().getRenewCertMin() + 5000));
 
 			/*
 			 * Should have the same certificate
@@ -701,7 +701,7 @@ public class AcmeValidityAndRenewTest {
 			Log.info(this.getClass(), testName.getMethodName(), "TEST 5: Start");
 
 			configuration = ORIGINAL_CONFIG.clone();
-			configuration.getAcmeCA().setCertCheckerSchedule(AcmeConstants.RENEW_CERT_MIN + "ms");
+			configuration.getAcmeCA().setCertCheckerSchedule(configuration.getAcmeCA().getRenewCertMin() + "ms");
 			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration, DOMAINS1);
 			AcmeFatUtils.waitForAcmeToNoOp(server);
 			server.setMarkToEndOfLog(server.getDefaultTraceFile());
@@ -711,7 +711,7 @@ public class AcmeValidityAndRenewTest {
 			 */
 			startingCertificateChain = AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 			assertNotNull("Should have found the cert checker waking up: " + AcmeFatUtils.ACME_CHECKER_TRACE,
-					server.waitForStringInTraceUsingMark(AcmeFatUtils.ACME_CHECKER_TRACE, AcmeConstants.RENEW_CERT_MIN + 5000));
+					server.waitForStringInTraceUsingMark(AcmeFatUtils.ACME_CHECKER_TRACE, configuration.getAcmeCA().getRenewCertMin() + 5000));
 
 			/*
 			 * Should have the same certificate -- not expiring
@@ -748,7 +748,7 @@ public class AcmeValidityAndRenewTest {
 			 */
 			startingCertificateChain = AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 			assertNull("Should not have found the cert checker waking up: " + AcmeFatUtils.ACME_CHECKER_TRACE,
-					server.waitForStringInTraceUsingMark(AcmeFatUtils.ACME_CHECKER_TRACE, AcmeConstants.RENEW_CERT_MIN + 5000));
+					server.waitForStringInTraceUsingMark(AcmeFatUtils.ACME_CHECKER_TRACE, configuration.getAcmeCA().getRenewCertMin() + 5000));
 
 			/*
 			 * Should have the same certificate
@@ -771,7 +771,7 @@ public class AcmeValidityAndRenewTest {
 			Log.info(this.getClass(), testName.getMethodName(), "TEST 7: Start");
 
 			configuration = ORIGINAL_CONFIG.clone();
-			configuration.getAcmeCA().setCertCheckerSchedule(AcmeConstants.RENEW_CERT_MIN + "ms");
+			configuration.getAcmeCA().setCertCheckerSchedule(configuration.getAcmeCA().getRenewCertMin() + "ms");
 			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration, DOMAINS1);
 			AcmeFatUtils.waitForAcmeToNoOp(server);
 			server.setMarkToEndOfLog(server.getDefaultTraceFile());
@@ -781,7 +781,7 @@ public class AcmeValidityAndRenewTest {
 			 */
 			startingCertificateChain = AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 			assertNotNull("Should have found the cert checker waking up: " + AcmeFatUtils.ACME_CHECKER_TRACE,
-					server.waitForStringInTraceUsingMark(AcmeFatUtils.ACME_CHECKER_TRACE, AcmeConstants.RENEW_CERT_MIN + 5000));
+					server.waitForStringInTraceUsingMark(AcmeFatUtils.ACME_CHECKER_TRACE, configuration.getAcmeCA().getRenewCertMin() + 5000));
 
 			/*
 			 * Should have the same certificate -- not expiring
@@ -857,7 +857,7 @@ public class AcmeValidityAndRenewTest {
 			configuration.getAcmeCA().setRenewBeforeExpiration(justShyOfValidityPeriod + "ms");
 			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration, DOMAINS1);
 			configuration.getAcmeCA().setCertCheckerSchedule((TIME_BUFFER_BEFORE_EXPIRE + 1000) + "ms");
-			configuration.getAcmeCA().setCertCheckerErrorSchedule(AcmeConstants.RENEW_CERT_MIN + "ms");
+			configuration.getAcmeCA().setCertCheckerErrorSchedule(configuration.getAcmeCA().getRenewCertMin() + "ms");
 
 			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration, DOMAINS1);
 
@@ -895,7 +895,7 @@ public class AcmeValidityAndRenewTest {
 			caContainer.clearDnsARecord(DOMAINS1[0]);
 
 			assertNotNull("Should log message that the certificate was renewed after restarting the challenge server",
-					server.waitForStringInLogUsingMark("CWPKI2007I", (AcmeConstants.RENEW_CERT_MIN * 6)));
+					server.waitForStringInLogUsingMark("CWPKI2007I", (configuration.getAcmeCA().getRenewCertMin() * 6)));
 			AcmeFatUtils.waitForNewCert(server, caContainer, startingCertificateChain, TIME_BUFFER_BEFORE_EXPIRE);
 
 		} finally {

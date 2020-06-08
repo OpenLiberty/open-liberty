@@ -27,6 +27,7 @@ import java.security.KeyStore;
 import java.security.SignatureException;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.net.ssl.SSLHandshakeException;
@@ -370,7 +371,7 @@ public class AcmeSimpleTest {
 		configuration.getFeatureManager().getFeatures().remove("acmeCA-2.0");
 		configuration.getFeatureManager().getFeatures().add("transportSecurity-1.0");
 		configuration.getFeatureManager().getFeatures().add("servlet-4.0");
-		configuration.getAcmeCA().setCertCheckerSchedule(AcmeConstants.RENEW_CERT_MIN + "ms");
+		configuration.getAcmeCA().setCertCheckerSchedule(configuration.getAcmeCA().getRenewCertMin() + "ms");
 		AcmeFatUtils.configureAcmeCA(server, caContainer, configuration, useAcmeURIs(), DOMAINS_1);
 
 		try {
@@ -443,7 +444,7 @@ public class AcmeSimpleTest {
 			 * Check log for the amount of time it would take to wake up/run the scheduler
 			 */
 			assertNull("Should not have found the cert checker waking up: " + AcmeFatUtils.ACME_CHECKER_TRACE,
-					server.waitForStringInTrace(AcmeFatUtils.ACME_CHECKER_TRACE, AcmeConstants.RENEW_CERT_MIN - timeElapsed + 1000));
+					server.waitForStringInTrace(AcmeFatUtils.ACME_CHECKER_TRACE, configuration.getAcmeCA().getRenewCertMin() - timeElapsed + 1000));
 			
 			Log.info(this.getClass(), testName.getMethodName(), "TEST 2: FINISH");
 
@@ -528,6 +529,10 @@ public class AcmeSimpleTest {
 		acmeCA.setAcmeTransportConfig(acmeTransportConfig);
 		acmeCA.setDomainKeyFile(unreadableFile.getAbsolutePath());
 		acmeCA.setSubjectDN("cn=baddomain.com");
+
+		ArrayList<String> accounts = new ArrayList<String>();
+		accounts.add("mailto:pacman@mail.com");
+		acmeCA.setAccountContact(accounts);
 		/*
 		 * Check that we reset the minimum levels
 		 */
@@ -743,6 +748,9 @@ public class AcmeSimpleTest {
 		acmeCA.setDomain(Arrays.asList(DOMAINS_2));
 		acmeCA.setDirectoryURI(caContainer.getAcmeDirectoryURI(false));
 		acmeCA.setSubjectDN("cn=domain2.com,ou=liberty,o=ibm.com");
+		ArrayList<String> accounts = new ArrayList<String>();
+		accounts.add("mailto:pacman@mail.com");
+		acmeCA.setAccountContact(accounts);
 		AcmeFatUtils.configureAcmeCaConnection(caContainer.getAcmeDirectoryURI(useAcmeURIs()), acmeCA);
 		AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
 

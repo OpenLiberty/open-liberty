@@ -1414,7 +1414,7 @@ public class AcmeClient {
 	protected void checkRenewTimeAgainstCertValidityPeriod(Date notBefore, Date notAfter, String serialNumber) {
 		long notBeforems = notBefore.getTime();
 		long notAfterms = notAfter.getTime();
-
+		long renewCertMin = acmeConfig.getRenewCertMin();
 		long validityPeriod = notAfterms - notBeforems;
 
 		long renewBeforeExpirationMs = acmeConfig.getRenewBeforeExpirationMs();
@@ -1429,13 +1429,13 @@ public class AcmeClient {
 		 * prior to expiration.
 		 */
 		if (validityPeriod <= renewBeforeExpirationMs) {
-			if (validityPeriod <= AcmeConstants.RENEW_CERT_MIN) {
+			if (validityPeriod <= renewCertMin) {
 				/*
 				 * less than the minimum renew, reset to min.
 				 */
-				Tr.warning(tc, "CWPKI2056W", serialNumber, AcmeConstants.RENEW_CERT_MIN + "ms", validityPeriod,
-						AcmeConstants.RENEW_CERT_MIN + "ms");
-				acmeConfig.setRenewBeforeExpirationMs(AcmeConstants.RENEW_CERT_MIN, false);
+				Tr.warning(tc, "CWPKI2056W", serialNumber, renewCertMin + "ms", validityPeriod,
+						renewCertMin + "ms");
+				acmeConfig.setRenewBeforeExpirationMs(renewCertMin, false);
 			} else if (validityPeriod <= AcmeConstants.RENEW_DEFAULT_MS) {
 				/*
 				 * less than the default period, reset to half the time.
@@ -1446,7 +1446,7 @@ public class AcmeClient {
 				 * floor is still the min renew
 				 */
 				acmeConfig.setRenewBeforeExpirationMs(
-						resetRenew <= AcmeConstants.RENEW_CERT_MIN ? AcmeConstants.RENEW_CERT_MIN : resetRenew, false);
+						resetRenew <= renewCertMin ? renewCertMin : resetRenew, false);
 				Tr.warning(tc, "CWPKI2054W", priorRenew + "ms", serialNumber, validityPeriod,
 						renewBeforeExpirationMs + "ms");
 			} else {
@@ -1472,6 +1472,9 @@ public class AcmeClient {
 	 */
 	@Trivial
 	private AcmeCaException handleAcmeException(AcmeException acmeException, String message) {
+		if (tc.isDebugEnabled()) {
+		    Tr.debug(tc, "Caught AcmeException", acmeException, message);
+		}
 		/*
 		 * Log an error if an AcmeUserActionRequiredException is thrown as it
 		 * will require the user to manually visit the URI and agree to the

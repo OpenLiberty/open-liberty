@@ -842,7 +842,7 @@ public class AcmeCaRestHandlerTest {
 			/*
 			 * Allow the minimum time to expire, next reqeust should be successful
 			 */
-			Thread.sleep(AcmeConstants.RENEW_CERT_MIN + 2000);
+			Thread.sleep(clone.getAcmeCA().getRenewCertMin() + 2000);
 			
 			startingCertificateChain = AcmeFatUtils.assertAndGetServerCertificate(server, pebble);
 

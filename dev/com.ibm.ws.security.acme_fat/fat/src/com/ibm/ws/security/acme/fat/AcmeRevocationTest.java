@@ -86,8 +86,6 @@ public class AcmeRevocationTest {
 	
 	private static final String DOMAIN = "domain1.com"; // Set to domain1.com as it has a high rate limit on certificate requests
 	
-	public static final long SCHEDULE_TIME = AcmeConstants.RENEW_CERT_MIN + 2000;
-	
 	private static final String CERTIFICATE_ENDPOINT = "/ibm/api" + AcmeCaRestHandler.PATH_CERTIFICATE;
 	
 	private static final String JSON_CERT_REGEN = "{\"" + AcmeCaRestHandler.OP_KEY + "\":\""
@@ -317,6 +315,7 @@ public class AcmeRevocationTest {
 		acmeRevocationChecker.setOcspResponderUrl(boulder.getOcspResponderUrl());
 		acmeRevocationChecker.setEnabled(enabled);
 		acmeCa.setAcmeRevocationChecker(acmeRevocationChecker);
+		acmeCa.setRenewCertMin(17000L);
 	}
 
 	/**
@@ -383,7 +382,7 @@ public class AcmeRevocationTest {
 
 		ServerConfiguration configuration = originalServerConfig.clone();
 		configureAcmeRevocation(configuration, true);
-		configuration.getAcmeCA().setCertCheckerSchedule(SCHEDULE_TIME + "ms");
+		configuration.getAcmeCA().setCertCheckerSchedule(configuration.getAcmeCA().getRenewCertMin() + "ms");
 		
 		AcmeFatUtils.configureAcmeCA(server, boulder, configuration, DOMAIN);
 
@@ -419,10 +418,10 @@ public class AcmeRevocationTest {
 			 * Wait for the cert checker to run and update
 			 */
 			assertNotNull("Should log message that the certificate was revoked",
-					server.waitForStringInLogUsingMark("CWPKI2067I", (SCHEDULE_TIME * 3)) );
+					server.waitForStringInLogUsingMark("CWPKI2067I", (configuration.getAcmeCA().getRenewCertMin() * 3)) );
 
 			assertNotNull("Should log message that the certificate was renewed",
-					server.waitForStringInLogUsingMark("CWPKI2007I", (SCHEDULE_TIME * 3)) );
+					server.waitForStringInLogUsingMark("CWPKI2007I", (configuration.getAcmeCA().getRenewCertMin() * 3)) );
 
 			AcmeFatUtils.waitForNewCert(server, boulder, startingCertificateChain);
 
