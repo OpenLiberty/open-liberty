@@ -10,7 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.beanvalidation;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -21,6 +23,7 @@ import javax.validation.ConstraintValidatorFactory;
 import javax.validation.ValidationException;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import javax.validation.metadata.BeanDescriptor;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
@@ -37,13 +40,13 @@ import com.ibm.ejs.util.dopriv.SetContextClassLoaderPrivileged;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.beanvalidation.AbstractBeanValidation.ClassLoaderTuple;
 import com.ibm.ws.beanvalidation.config.ValidationConfigurationFactory;
 import com.ibm.ws.beanvalidation.config.ValidationConfigurationInterface;
 import com.ibm.ws.beanvalidation.service.BeanValidation;
 import com.ibm.ws.beanvalidation.service.BeanValidationExtensionHelper;
 import com.ibm.ws.beanvalidation.service.BeanValidationRuntimeVersion;
 import com.ibm.ws.beanvalidation.service.BeanValidationUsingClassLoader;
+import com.ibm.ws.beanvalidation.service.ConstrainedHelper;
 import com.ibm.ws.beanvalidation.service.ValidatorFactoryBuilder;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedModuleInfo;
@@ -55,6 +58,7 @@ import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaDataSlot;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.util.ThreadContextAccessor;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.NonPersistentCache;
@@ -78,6 +82,7 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
     private static final String REFERENCE_VALIDATION_CONFIG_FACTORY = "validationConfigFactory";
     private static final String REFERENCE_CLASSLOADING_SERVICE = "classLoadingService";
     private static final String REFERENCE_VALIDATOR_FACTORY_BUILDER = "ValidatorFactoryBuilder";
+    private static final String REFERENCE_CONSTRAINED_HELPER = "ConstrainedHelper";
 
     private MetaDataSlot ivModuleMetaDataSlot;
 
@@ -86,6 +91,8 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
     private final AtomicServiceReference<ClassLoadingService> classLoadingServiceSR = new AtomicServiceReference<ClassLoadingService>(REFERENCE_CLASSLOADING_SERVICE);
 
     private final AtomicServiceReference<ValidatorFactoryBuilder> validatorFactoryBuilderSR = new AtomicServiceReference<ValidatorFactoryBuilder>(REFERENCE_VALIDATOR_FACTORY_BUILDER);
+
+    private final AtomicServiceReference<ConstrainedHelper> constrainedHelperSR = new AtomicServiceReference<ConstrainedHelper>(REFERENCE_CONSTRAINED_HELPER);
 
     private static final Version DEFAULT_VERSION = BeanValidationRuntimeVersion.VERSION_1_0;
     private Version runtimeVersion = DEFAULT_VERSION;
@@ -434,6 +441,7 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
         classLoadingServiceSR.activate(cc);
         validationConfigFactorySR.activate(cc);
         validatorFactoryBuilderSR.activate(cc);
+        constrainedHelperSR.activate(cc);
     }
 
     @Deactivate
@@ -442,6 +450,7 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
         classLoadingServiceSR.deactivate(cc);
         validationConfigFactorySR.deactivate(cc);
         validatorFactoryBuilderSR.deactivate(cc);
+        constrainedHelperSR.deactivate(cc);
     }
 
     @Reference
@@ -476,6 +485,19 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
 
     protected void unsetClassLoadingService(ServiceReference<ClassLoadingService> ref) {
         classLoadingServiceSR.unsetReference(ref);
+    }
+
+    @Reference(name = REFERENCE_CONSTRAINED_HELPER,
+               service = ConstrainedHelper.class,
+               cardinality = ReferenceCardinality.MULTIPLE,
+               policy = ReferencePolicy.STATIC,
+               policyOption = ReferencePolicyOption.GREEDY)
+    protected void setConstrainedHelper(ServiceReference<ConstrainedHelper> ref) {
+        constrainedHelperSR.setReference(ref);
+    }
+
+    protected void unsetConstrainedHelper(ServiceReference<ConstrainedHelper> ref) {
+        constrainedHelperSR.unsetReference(ref);
     }
 
     @Reference(name = REFERENCE_VALIDATOR_FACTORY_BUILDER,
@@ -601,5 +623,67 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
             throw new ValidationException(e);
         }
         return moduleInfo;
+    }
+
+    @Override
+    public boolean isMethodConstrained(Method method) throws ValidationException {
+        ComponentMetaData componentMetaData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        AbstractMetaData beanValMetaData = (AbstractMetaData) componentMetaData.getModuleMetaData().getMetaData(ivModuleMetaDataSlot);
+
+        if (beanValMetaData == null) {
+            throw new ValidationException("Validation not enabled for module " + componentMetaData.getModuleMetaData().getName());
+        }
+
+        // Check for cached results in the module metadata slot.
+        Boolean isMethodConstrained = beanValMetaData.isExecutableConstrained(method.toString());
+        if (isMethodConstrained != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "isExecutableConstrained cache hit on method " + method.toString() + " :  " + isMethodConstrained);
+            }
+            return isMethodConstrained;
+        }
+
+        Validator validator = getValidator(componentMetaData);
+        ConstrainedHelper constrainedHelper = constrainedHelperSR.getServiceWithException();
+        Class<?> declaringClass = method.getDeclaringClass();
+        BeanDescriptor beanDescriptor = validator.getConstraintsForClass(declaringClass);
+        isMethodConstrained = constrainedHelper.isMethodConstrained(method, beanDescriptor, declaringClass.getClassLoader(), beanValMetaData.getModuleUri());
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "isMethodConstrained calculated method " + method.toString() + " :  " + isMethodConstrained);
+        }
+        beanValMetaData.addExecutableToConstrainedCache(method.toString(), isMethodConstrained);
+        return isMethodConstrained;
+    }
+
+    @Override
+    public boolean isConstructorConstrained(Constructor<?> constructor) {
+        ComponentMetaData componentMetaData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        AbstractMetaData beanValMetaData = (AbstractMetaData) componentMetaData.getModuleMetaData().getMetaData(ivModuleMetaDataSlot);
+
+        if (beanValMetaData == null) {
+            throw new ValidationException("Validation not enabled for module " + componentMetaData.getModuleMetaData().getName());
+        }
+
+        // Check for cached results in the module metadata slot.
+        Boolean isConstructorConstrained = beanValMetaData.isExecutableConstrained(constructor.toString());
+        if (isConstructorConstrained != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "isExecutableConstrained cache hit on constructor " + constructor.toString() + " :  " + isConstructorConstrained);
+            }
+            return isConstructorConstrained;
+        }
+
+        Validator validator = getValidator(componentMetaData);
+        ConstrainedHelper constrainedHelper = constrainedHelperSR.getServiceWithException();
+        Class<?> declaringClass = constructor.getDeclaringClass();
+        BeanDescriptor beanDescriptor = validator.getConstraintsForClass(declaringClass);
+        isConstructorConstrained = constrainedHelper.isConstructorConstrained(constructor, beanDescriptor, declaringClass.getClassLoader(), beanValMetaData.getModuleUri());
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "isConstructorConstrained calculated method " + constructor.toString() + " :  " + isConstructorConstrained);
+        }
+        beanValMetaData.addExecutableToConstrainedCache(constructor.toString(), isConstructorConstrained);
+        return isConstructorConstrained;
     }
 }

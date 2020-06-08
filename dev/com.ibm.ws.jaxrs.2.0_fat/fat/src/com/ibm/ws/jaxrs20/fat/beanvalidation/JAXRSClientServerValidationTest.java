@@ -75,7 +75,7 @@ public class JAXRSClientServerValidationTest extends AbstractTest {
         this.runTestOnServer(target, "testThatNotNullValidationFails", null, "OK");
     }
 
-//    @Test
+    @Test
     public void testThatNotNullValidationSkipped() throws Exception {
         this.runTestOnServer(target, "testThatNotNullValidationSkipped", null, "OK");
     }
