@@ -18,12 +18,12 @@ import test.common.OSSMessageTest;
  * Currently OpenLiberty provides: cs, de, es, fr, hu, it, ja, ko, pl, pt_BR, ro, ru, zh_TW, zh
  * Currently Hibernate Validator provides: ar, cs, da, de, en, es, fa, fr, hu, it, ja, ko, mn_MN, nl, pl, pt_BR, ro, ru, sk, tr, uk, zh_CN, zh_TW, zh
  *
- * This means that OpenLiberty must provide the following languages: none for hibernate-validator 7
+ * This means that OpenLiberty must provide the following languages: none for Hibernate Validator 7
  */
 public class HibernateValidatorMessageTest extends OSSMessageTest {
 
     public HibernateValidatorMessageTest() {
-        super("hibernate-validator-7", "io.openliberty.org.hibernate.validator.3.0", "org/hibernate/validator/ValidationMessages.properties");
+        super("hibernate-validator-7", "io.openliberty.org.hibernate.validator.7.0", "org/hibernate/validator/ValidationMessages.properties");
     }
 
 }
