@@ -153,6 +153,7 @@ jakarta.enterprise:jakarta.enterprise.cdi-api:3.0.0-M4
 jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api:2.0.0-RC1
 jakarta.inject:jakarta.inject-api:2.0.0-RC4
 jakarta.interceptor:jakarta.interceptor-api:2.0.0-RC2
+jakarta.jms:jakarta.jms-api:3.0.0-RC1
 jakarta.json:jakarta.json-api:2.0.0-RC2
 jakarta.json.bind:jakarta.json.bind-api:2.0.0-RC1
 jakarta.jws:jakarta.jws-api:3.0.0-RC2
