@@ -20,7 +20,9 @@ Include-Resource: \
 
 instrument.disabled: true
 
-publish.wlp.jar.suffix: dev/api/spec
+# TODO: Temporarily publish to lib/ to prevent un-offiical copies of Concurrency 2.0 spec jars
+# ending up in wlp/dev/. When concurrent-2.0 is GA, we can put this back
+# publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
   jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api;version=2.0.0
