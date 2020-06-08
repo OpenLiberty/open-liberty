@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2019 IBM Corporation and others.
+    Copyright (c) 2020 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -24,16 +24,4 @@
    <!--Java2 security-->
    <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
    
-   <!-- Usually, we recommend customers not to change this, however our Async 
-        tests are quite sensitive to timing. We were filling up the threadpool, 
-        and then the test was complaining that the timeout didn't fire quickly enough.
-        
-        Liberty would notice that the pool was full and quickly add more threads, 
-        but we'd get test failures because the timeout fired a few seconds late. 
-        We could increase the size of the timing window instead, but that would make 
-        the test run take longer, so instead I'm setting a minimum number of threads. -->
-   <!-- this was necessary for fault tolerance, lra probably doesn't need it -->
-   <!-- <executor coreThreads="20"/> -->
-   
-
 </server>

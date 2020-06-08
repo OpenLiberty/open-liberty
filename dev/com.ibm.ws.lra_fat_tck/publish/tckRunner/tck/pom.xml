@@ -52,7 +52,8 @@
 			<artifactId>fattest.simplicity</artifactId>
 			<version>1</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/../../../lib/fattest.simplicity.jar</systemPath> <!-- This will point to build/libs/autoFVT/lib/fattest.simplicity.jar -->
+			<!-- This will point to build/libs/autoFVT/lib/fattest.simplicity.jar -->
+			<systemPath>${project.basedir}/../../../lib/fattest.simplicity.jar</systemPath> 
 			<!-- If running the maven pom file outside of a fat test build, then you need to run
 			mvn -Dwlp=<build-path>/build.image/wlp
 			And set the systemPath as below --> 
@@ -132,16 +133,13 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.17</version>
 				<configuration>
-					<!-- Needed for ZOS. sourceEncoding is needed becuase arquillian calls string.getBtytes(). 
-						Attach is needed becuase because arquillian uses com.sun.tools.attach to find VMs -->
+					<!-- Needed for ZOS. sourceEncoding is needed because arquillian calls String.getBtytes(). 
+						Attach is needed because because Arquillian uses com.sun.tools.attach to find VMs -->
 					<argLine>-Dfile.encoding=${project.build.sourceEncoding} -Dcom.ibm.tools.attach.enable=yes</argLine> 
 					<systemPropertyVariables>
 						<wlp>${wlp}</wlp>
 						<tck_server>${tck_server}</tck_server>
 						<tck_port>${tck_port}</tck_port>
-						<!-- I doubt lra needs either of these -->
-						<!-- <sun.rmi.transport.tcp.responseTimeout>${sun.rmi.transport.tcp.responseTimeout}</sun.rmi.transport.tcp.responseTimeout> 
-							<org.eclipse.microprofile.fault.tolerance.tck.timeout.multiplier>4.0</org.eclipse.microprofile.fault.tolerance.tck.timeout.multiplier> -->
 						<lra.tck.base.url>http://localhost:${tck_port}</lra.tck.base.url>
 					</systemPropertyVariables>
 					<dependenciesToScan>

@@ -14,14 +14,17 @@
 	</engine>
 	<container qualifier="websphere" default="true">
 		<configuration>
-			<!-- Each variable used is set in surefire config in running pom.xml -->
+			<!-- The variables below are set in surefire config in running pom.xml -->
 			<property name="wlpHome">${wlp}</property>
 			<property name="serverName">${tck_server}</property>
 			<property name="httpPort">${tck_port}</property>
-			<property name="allowConnectingToRunningServer">true</property>
+			
+			<!-- TODO Not sure these are needed for LRA -->
 			<property name="failSafeUndeployment">${tck_failSafeUndeployment}</property>
 			<property name="appDeployTimeout">${tck_appDeployTimeout}</property>
 			<property name="appUndeployTimeout">${tck_appUndeployTimeout}</property>
+			
+			<property name="allowConnectingToRunningServer">true</property>
 		</configuration>
 	</container>
 </arquillian> 

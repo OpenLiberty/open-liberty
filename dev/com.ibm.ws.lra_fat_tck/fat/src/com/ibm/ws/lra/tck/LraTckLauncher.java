@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -67,17 +67,9 @@ public class LraTckLauncher {
         server.startServer();
     }
 
-    /**
-     * Various TCK tests test for Deployment, Definition and other Exceptions and
-     * these will cause the test suite to be marked as FAILED if found in the logs
-     * when the server is shut down. So we tell Simplicity to allow for the message
-     * ID's below.
-     *
-     * @throws Exception
-     */
     @AfterClass
     public static void tearDown() throws Exception {
-        // server.stopServer("CWMFT5001E"); // CWMFT0001E: No free capacity is available in the bulkhead
+        // server.stopServer("CWMFT5001E"); // Any expected message IDs in the logs could be added here.
         server.stopServer();
     }
 
