@@ -29,7 +29,7 @@ public class LRARecoveryServiceImpl implements LRARecoveryService {
 
 
     public boolean waitForEndPhaseReplay(URI lraId) throws LRACallbackException {
-        return false;
+        return true;
     }
 
 }
