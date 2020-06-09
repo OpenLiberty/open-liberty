@@ -135,7 +135,9 @@ Import-Package:  \
   org.opensaml.common;resolution:=optional,org.opensaml.saml1.core;resolution:=optional, \
   org.opensaml.saml2.core;resolution:=optional, \
   org.opensaml.xml;resolution:=optional, \
-  org.w3c.dom
+  org.w3c.dom, \
+  com.ibm.websphere.ras, \
+  com.ibm.ws.ffdc
 
 DynamicImport-Package: \
   org.bouncycastle.jce.provider
