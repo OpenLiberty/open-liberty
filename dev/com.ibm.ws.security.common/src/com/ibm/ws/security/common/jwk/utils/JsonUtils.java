@@ -84,6 +84,21 @@ public class JsonUtils {
         }
         return Base64.encodeBase64URLSafeString(StringUtils.getBytesUtf8(source));
     }
+    
+    public static String convertToBase64(byte[] source) {
+        if (source == null) {
+            return null;
+        }
+        return Base64.encodeBase64URLSafeString(source);
+    }
+    
+    public static byte[] decodeFromBase64(String encoded) {
+        if (encoded == null) {
+            return null;
+        }
+        return Base64.decodeBase64(encoded);
+    }
+
 
     public static String decodeFromBase64String(String encoded) {
         if (encoded == null) {

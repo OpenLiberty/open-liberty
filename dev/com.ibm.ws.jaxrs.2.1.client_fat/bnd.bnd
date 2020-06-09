@@ -1,0 +1,73 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+  fat/src,\
+  test-applications/jaxrs21bookstore/src,\
+  test-applications/jaxrs21clientcallback/src,\
+  test-applications/jaxrs21clientltpa/src,\
+  test-applications/jaxrs21clientproxyAuth/src,\
+  test-applications/jaxrs21clientssl/src,\
+  test-applications/jaxrs21clienttimeout/src,\
+  test-applications/jaxrs21complexclient/src,\
+  test-applications/jaxrs21reactivesample/src
+
+
+fat.project: true
+
+# These features get added programatically
+tested.features: \
+  jaxrs-2.1,\
+  cdi-2.0,\
+  mpReactiveStreams-1.0,\
+  appsecurity-3.0
+
+-buildpath: \
+  com.ibm.websphere.javaee.annotation.1.2,\
+  com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
+  javax.activation:activation;version=1.1,\
+  javax.servlet:javax.servlet-api;version=3.1,\
+  javax.jws:jsr181-api;version=latest,\
+  com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
+  com.ibm.websphere.javaee.cdi.1.2,\
+  com.ibm.websphere.javaee.ejb.3.2,\
+  com.ibm.websphere.javaee.jaxrs.2.1,\
+  com.ibm.websphere.javaee.jsonb.1.0,\
+  com.ibm.websphere.javaee.servlet.3.1,\
+  com.ibm.websphere.javaee.validation.1.1,\
+  com.ibm.ws.jaxrs.2.0.common;version=latest,\
+  com.ibm.ws.jaxrs.2.x.monitor;version=latest,\
+  com.ibm.ws.monitor;version=latest,\
+  com.ibm.json4j;version=latest,\
+  io.reactivex.rxjava;version=1.3.8,\
+  io.reactivex.rxjava2.rxjava;version=2.2.19,\
+  commons-httpclient:commons-httpclient;version=3.1,\
+  org.apache.cxf:cxf-rt-rs-extension-reactivestreams;version=3.3.6,\
+  org.apache.cxf:cxf-rt-rs-extension-rx2;version=3.3.6,\
+  org.apache.httpcomponents:httpclient;version=4.3.1,\
+  org.apache.httpcomponents:httpcore;version=4.3.1,\
+  org.apache.wink:wink-client;version=1.4,\
+  org.apache.wink:wink-common;version=1.4,\
+  org.glassfish.jersey.ext.rx:jersey-rx-client-rxjava;version=2.30.1,\
+  org.glassfish.jersey.ext.rx:jersey-rx-client-rxjava2;version=2.30.1,\
+  org.json:json;version=20080701,\
+  org.mock-server:mockserver-client-java;version=3.10.7,\
+  org.mock-server:mockserver-core;version=3.10.7.IBM20191022,\
+  org.mock-server:mockserver-netty;version=3.10.7,\
+  org.reactivestreams:reactive-streams;version=1.0.2,\
+  com.fasterxml.jackson.core:jackson-annotations;version=2.4.1,\
+  com.fasterxml.jackson.core:jackson-core;version=2.4.1,\
+  com.fasterxml.jackson.core:jackson-databind;version=2.4.1,\
+  com.fasterxml.jackson.jaxrs:jackson-jaxrs-base;version=2.4.1,\
+  com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider;version=2.4.1
+	

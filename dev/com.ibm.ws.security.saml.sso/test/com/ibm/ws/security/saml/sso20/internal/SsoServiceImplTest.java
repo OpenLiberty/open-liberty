@@ -342,7 +342,7 @@ public class SsoServiceImplTest {
         service.activate(cc, SAML_CONFIG_PROPS);
         service.setSslSupport(sslSupportRef);
 
-        String result = service.getDefaultKeyStoreName("com.ibm.ssl.keyStoreName");
+        String result = service.getDefaultKeyStoreProperty("com.ibm.ssl.keyStoreName");
 
         assertEquals(keyStoreName, result);
     }

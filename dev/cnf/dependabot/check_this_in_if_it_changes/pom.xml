@@ -634,7 +634,12 @@
     <dependency>
       <groupId>io.reactivex.rxjava2</groupId>
       <artifactId>rxjava</artifactId>
-      <version>2.2.13</version>
+      <version>2.2.19</version>
+    </dependency>
+    <dependency>
+      <groupId>io.reactivex</groupId>
+      <artifactId>rxjava</artifactId>
+      <version>1.3.8</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye</groupId>
@@ -680,6 +685,11 @@
       <groupId>io.smallrye.reactive</groupId>
       <artifactId>smallrye-reactive-streams-operators</artifactId>
       <version>1.0.10</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.activation</groupId>
+      <artifactId>jakarta.activation</artifactId>
+      <version>2.0.0-RC3</version>
     </dependency>
     <dependency>
       <groupId>jakarta.annotation</groupId>
@@ -750,6 +760,11 @@
       <groupId>jakarta.transaction</groupId>
       <artifactId>jakarta.transaction-api</artifactId>
       <version>2.0.0-RC1</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.xml.bind</groupId>
+      <artifactId>jakarta.xml.bind-api</artifactId>
+      <version>3.0.0-RC3</version>
     </dependency>
     <dependency>
       <groupId>javax.activation</groupId>
@@ -1210,6 +1225,16 @@
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-rs-extension-providers</artifactId>
       <version>3.1.18</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-rs-extension-reactivestreams</artifactId>
+      <version>3.3.6</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-rs-extension-rx2</artifactId>
+      <version>3.3.6</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
@@ -2017,6 +2042,16 @@
       <version>2.12</version>
     </dependency>
     <dependency>
+      <groupId>org.glassfish.jersey.ext.rx</groupId>
+      <artifactId>jersey-rx-client-rxjava</artifactId>
+      <version>2.30.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jersey.ext.rx</groupId>
+      <artifactId>jersey-rx-client-rxjava2</artifactId>
+      <version>2.30.1</version>
+    </dependency>
+    <dependency>
       <groupId>org.glassfish.jersey.inject</groupId>
       <artifactId>jersey-hk2</artifactId>
       <version>2.26</version>
@@ -2040,6 +2075,26 @@
       <groupId>org.glassfish</groupId>
       <artifactId>jakarta.json</artifactId>
       <version>2.0.0-RC2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-core</artifactId>
+      <version>3.0.0-M3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-jxc</artifactId>
+      <version>3.0.0-M3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-runtime</artifactId>
+      <version>3.0.0-M3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-xjc</artifactId>
+      <version>3.0.0-M3</version>
     </dependency>
     <dependency>
       <groupId>org.hamcrest</groupId>
@@ -2140,6 +2195,36 @@
       <groupId>org.jboss.logging</groupId>
       <artifactId>jboss-logging</artifactId>
       <version>3.3.2.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-client</artifactId>
+      <version>4.5.2.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-client-api</artifactId>
+      <version>4.5.2.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-core</artifactId>
+      <version>4.5.2.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-core-spi</artifactId>
+      <version>4.5.2.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-servlet-initializer</artifactId>
+      <version>4.5.2.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-tracing-api</artifactId>
+      <version>1.0.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.shrinkwrap</groupId>
@@ -2440,6 +2525,11 @@
       <groupId>org.reactivestreams</groupId>
       <artifactId>reactive-streams</artifactId>
       <version>1.0.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.reactivestreams</groupId>
+      <artifactId>reactive-streams</artifactId>
+      <version>1.0.3</version>
     </dependency>
     <dependency>
       <groupId>org.rnorth.duct-tape</groupId>
@@ -2815,6 +2905,11 @@
       <groupId>org.yaml</groupId>
       <artifactId>snakeyaml</artifactId>
       <version>1.18</version>
+    </dependency>
+    <dependency>
+      <groupId>rx</groupId>
+      <artifactId>rx</artifactId>
+      <version>1.3.8</version>
     </dependency>
     <dependency>
       <groupId>wsdl4j</groupId>

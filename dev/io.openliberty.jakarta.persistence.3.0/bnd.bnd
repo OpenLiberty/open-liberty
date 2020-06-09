@@ -1,0 +1,44 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+
+Bundle-SymbolicName: io.openliberty.jakarta.persistence.3.0; singleton:=true
+#Bundle-Activator: com.ibm.ws.jakartaee.persistence.internal.HybridPersistenceActivator
+
+
+Import-Package: \
+  org.osgi.framework;version="[1.6,2)", \
+  org.osgi.util.tracker;version="[1.5,2)", \
+  javax.sql; resolution:=optional
+
+# the jaxb feature will bring geronimo.osgi.registry to liberty, and the jpa api bundle
+# tracks the ProviderRegistry service, so we need dynamicly import the package.
+#DynamicImport-Package: \
+#  org.apache.geronimo.osgi.registry.api
+
+Export-Package: jakarta.persistence.*; jpa=3.0; -split-package:=first
+
+#Private-Package: com.ibm.ws.jakartaee.persistence.internal
+#, \
+#   org.apache.geronimo.osgi.locator, \
+#   org.apache.geronimo.specs.jpa
+
+#Include-Resource: \
+#   @${repo;jakarta.persistence:jakarta.persistence-api;3.0.0-RC1}!/about.html
+
+instrument.disabled: true
+
+publish.wlp.jar.suffix: dev/api/spec
+
+-buildpath: \
+        jakarta.persistence:jakarta.persistence-api;version=3.0.0

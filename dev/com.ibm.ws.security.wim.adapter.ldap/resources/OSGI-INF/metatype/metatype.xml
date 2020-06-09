@@ -34,7 +34,7 @@
             <Option label="%ldapType.custom" value="Custom"/>
             <Option label="%ldapType.domino" value="IBM Lotus Domino"/>
             <Option label="%ldapType.edirectory" value="Novell eDirectory"/>
-            <Option label="%ldapType.ibm_dir_server" value="IBM Tivoli Directory Server"/>
+            <Option label="%ldapType.tivoli" value="IBM Tivoli Directory Server"/>
             <Option label="%ldapType.iplanet" value="Sun Java System Directory Server"/>
             <Option label="%ldapType.netscape" value="Netscape Directory Server"/>
             <Option label="%ldapType.secureway" value="IBM SecureWay Directory Server"/>
@@ -57,7 +57,8 @@
             type="String" default="${count(sslRef)}"/>
         <AD id="SSLSupport.target" name="internal" description="internal use only"
             type="String" default="(repertoirePIDs=${sslRef})"/>
-            
+        <AD id="jndiOutputEnabled" name="internal" description="internal use only"
+            required="false" type="Boolean" default="false"/>     
         <AD id="searchTimeout" name="%searchTimeout" description="%searchTimeout.desc"
             required="false" type="String" ibm:type="duration" default="1m"/>
         <AD id="searchCountLimit" name="internal" description="internal use only"

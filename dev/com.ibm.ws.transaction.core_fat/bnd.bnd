@@ -34,7 +34,7 @@ tested.features:\
   jpa-2.2,\
   txtest-2.0,\
   servlet-5.0,\
-  jca-2.0
+  jdbc-4.3
 
 # To define a global minimum java level for the FAT, use the following property.
 # If unspecified, the default value is ${javac.source}

@@ -24,9 +24,8 @@ src: \
 fat.project: true
 
 -buildpath: \
-	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
 	com.ibm.tx.core;version=latest,\
-	com.ibm.websphere.jakarta.concurrency.2.0;version=latest,\
+	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
 	com.ibm.websphere.javaee.jaxrs.2.1;version=latest,\
@@ -38,4 +37,8 @@ fat.project: true
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.concurrent;version=latest,\
-    com.ibm.ws.org.osgi.annotation.versioning;version=latest
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+    io.openliberty.jakarta.annotation.2.0;version=latest,\
+	io.openliberty.jakarta.concurrency.2.0;version=latest,\
+	io.openliberty.jakarta.servlet.5.0;version=latest,\
+	io.openliberty.jakarta.transaction.2.0;version=latest

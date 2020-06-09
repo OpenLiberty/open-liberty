@@ -12,8 +12,8 @@ package com.ibm.ws.channel.ssl.internal;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import com.ibm.websphere.channelfw.ChannelData;
 import com.ibm.websphere.channelfw.FlowType;
@@ -28,8 +28,7 @@ import com.ibm.wsspi.channelfw.exception.ChannelException;
 public class SSLChannelData {
 
     /** Trace component for WAS */
-    protected static final TraceComponent tc =
-                    Tr.register(SSLChannelData.class, SSLChannelConstants.SSL_TRACE_NAME, SSLChannelConstants.SSL_BUNDLE);
+    protected static final TraceComponent tc = Tr.register(SSLChannelData.class, SSLChannelConstants.SSL_TRACE_NAME, SSLChannelConstants.SSL_BUNDLE);
 
     /** Property names for memory allocation in SSL channel. */
     private static final String ENCRYPT_BUFFERS_DIRECT = "encryptBuffersDirect";
@@ -85,11 +84,11 @@ public class SSLChannelData {
 
     /**
      * Constructor.
-     * 
+     *
      * Note, the channel framework ensures that a non null data object
      * will be passed in and it will include a non null set of properties. Therefore,
      * extra checking and exception throwing is not necessary.
-     * 
+     *
      * @param inputData channel data with generic map of properties
      * @throws ChannelException
      */
@@ -140,7 +139,7 @@ public class SSLChannelData {
         for (Entry<Object, Object> entry : m.entrySet()) {
             key = (String) entry.getKey();
             value = entry.getValue();
-            // if key matches 
+            // if key matches
 
             if (key.equalsIgnoreCase(ENCRYPT_BUFFERS_DIRECT)) {
                 temp.put(ENCRYPT_BUFFERS_DIRECT, value);
@@ -175,7 +174,7 @@ public class SSLChannelData {
 
     /**
      * Query the name of this channel.
-     * 
+     *
      * @return String
      */
     public String getName() {
@@ -184,7 +183,7 @@ public class SSLChannelData {
 
     /**
      * Query whether the encrypted buffers should be direct or indirect.
-     * 
+     *
      * @return boolean
      */
     public boolean getEncryptBuffersDirect() {
@@ -193,7 +192,7 @@ public class SSLChannelData {
 
     /**
      * Query whether the decrypted buffers should be allocated direct or not.
-     * 
+     *
      * @return boolean
      */
     public boolean getDecryptBuffersDirect() {
@@ -202,7 +201,7 @@ public class SSLChannelData {
 
     /**
      * Query the weight of this channel.
-     * 
+     *
      * @return int
      */
     public int getWeight() {
@@ -211,7 +210,7 @@ public class SSLChannelData {
 
     /**
      * Query whether this channel is inbound or not.
-     * 
+     *
      * @return boolean
      */
     public boolean isInbound() {
@@ -220,7 +219,7 @@ public class SSLChannelData {
 
     /**
      * Query the configured value for the SSLSession cache size.
-     * 
+     *
      * @return int
      */
     public int getSSLSessionCacheSize() {
@@ -229,7 +228,7 @@ public class SSLChannelData {
 
     /**
      * Query the configured value for the SSLSession timeout value.
-     * 
+     *
      * @return int (seconds)
      */
     public int getSSLSessionTimeout() {
@@ -238,7 +237,7 @@ public class SSLChannelData {
 
     /**
      * Query the inbound vs outbound flow of this channel.
-     * 
+     *
      * @return boolean
      */
     public FlowType getFlowType() {
@@ -247,7 +246,7 @@ public class SSLChannelData {
 
     /**
      * Access the properties of this channel directly.
-     * 
+     *
      * @return Properties
      */
     public Properties getProperties() {
@@ -256,7 +255,7 @@ public class SSLChannelData {
 
     /**
      * Set the properties of the channel to the input map.
-     * 
+     *
      * @param newMap
      */
     public void setProperties(Properties newMap) {
@@ -265,7 +264,7 @@ public class SSLChannelData {
 
     /**
      * Query the boolean property value of the input name.
-     * 
+     *
      * @param propertyName
      * @return boolean
      */
@@ -287,22 +286,27 @@ public class SSLChannelData {
     /**
      * Query the properties for the input name, the value will be null if not
      * found or was not a String object.
-     * 
+     *
      * @param propertyName
      * @return String
      */
     public String getStringProperty(String propertyName) {
         Object value = this.properties.get(propertyName);
-        if (null != value && value instanceof String) {
-            return (String) value;
+        if (null != value) {
+            if (value instanceof String) {
+                return (String) value;
+            } else if (value instanceof Long) {
+                return ((Long) value).toString();
+            }
         }
+
         return null;
     }
 
     /**
      * Handle update to the running ssl channel data. Some data will be ignored
      * because it can't be updated without a restart.
-     * 
+     *
      * @param inputData
      */
     public void updateChannelData(ChannelData inputData) {
@@ -311,7 +315,7 @@ public class SSLChannelData {
 
     /**
      * Extract String value from property list and convert to boolean.
-     * 
+     *
      * @param key key to look up in the property map
      * @param defaultValue used if keynot found in map.
      * @param errors list of error string accumulating from reading invalid properties
@@ -378,7 +382,7 @@ public class SSLChannelData {
     /**
      * Extract an integer property from the stored values. This might use a
      * default value if provided and the property was not found.
-     * 
+     *
      * @param key
      * @param defaultProvided
      * @param defaultValue

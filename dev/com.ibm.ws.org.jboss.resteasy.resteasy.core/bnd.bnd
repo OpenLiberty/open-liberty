@@ -1,0 +1,68 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= jar:${fileuri;${repo;org.jboss.resteasy:resteasy-core;4.5.2.Final;EXACT}}!/META-INF/MANIFEST.MF,~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-SymbolicName: com.ibm.ws.org.jboss.resteasy.resteasy.core
+
+Export-Package: \
+  org.jboss.resteasy.core;version=4.5.2.Final, \
+  org.jboss.resteasy.core.interception.jaxrs;version=4.5.2.Final, \
+  org.jboss.resteasy.core.messagebody;version=4.5.2.Final, \
+  org.jboss.resteasy.core.providerfactory;version=4.5.2.Final, \
+  org.jboss.resteasy.core.registry;version=4.5.2.Final, \
+  org.jboss.resteasy.core.request;version=4.5.2.Final, \
+  org.jboss.resteasy.microprofile.config;version=4.5.2.Final, \
+  org.jboss.resteasy.mock;version=4.5.2.Final, \
+  org.jboss.resteasy.plugins.delegates;version=4.5.2.Final, \
+  org.jboss.resteasy.plugins.interceptors;version=4.5.2.Final, \
+  org.jboss.resteasy.plugins.providers;version=4.5.2.Final, \
+  org.jboss.resteasy.plugins.providers.sse;version=4.5.2.Final, \
+  org.jboss.resteasy.plugins.server;version=4.5.2.Final, \
+  org.jboss.resteasy.plugins.server.embedded;version=4.5.2.Final, \
+  org.jboss.resteasy.plugins.server.resourcefactory;version=4.5.2.Final, \
+  org.jboss.resteasy.plugins.server.servlet;version=4.5.2.Final, \
+  org.jboss.resteasy.plugins.touri;version=4.5.2.Final, \
+  org.jboss.resteasy.specimpl;version=4.5.2.Final, \
+  org.jboss.resteasy.statistics;version=4.5.2.Final, \
+  org.jboss.resteasy.tracing;version=4.5.2.Final, \
+  org.jboss.resteasy.util;version=4.5.2.Final, \
+  org.jboss.resteasy.util.snapshot;version=4.5.2.Final
+
+# Using version=! in order to not have a version attached to the import for packages that were removed
+# from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the
+# packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
+Import-Package: \
+  javax.activation;version=!, \
+  javax.annotation;version=!, \
+  javax.annotation.security;version=!, \
+  *
+
+Include-Resource:\
+  @${repo;org.jboss.resteasy:resteasy-core;4.5.2.Final;EXACT}
+#  org/jboss/resteasy=${bin}/org/jboss/resteasy
+
+-buildpath: \
+	org.jboss.resteasy:resteasy-core;version=4.5.2.Final, \
+	com.ibm.ws.org.jboss.resteasy.resteasy.core.spi,\
+	com.ibm.ws.org.jboss.resteasy.resteasy.tracing.api,\
+	com.ibm.websphere.org.eclipse.microprofile.config.1.4;version=latest,\
+	com.ibm.ws.microprofile.config.1.4;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.websphere.javaee.jaxrs.2.1,\
+	com.ibm.websphere.javaee.servlet.4.0,\
+	com.ibm.ws.org.reactivestreams.reactive-streams.1.0,\
+	com.ibm.websphere.javaee.annotation.1.3,\
+	com.ibm.ws.org.jboss.logging,\
+	com.ibm.ws.logging.core,\
+	com.ibm.websphere.javaee.activation.1.1

@@ -557,9 +557,13 @@ ssl.create.certificate.end=CWPKI0803A: Das SSL-Zertifikat wurde in {0} Sekunden 
 ssl.create.certificate.end.explanation=Das SSL-Zertifikat wurde in der angegebenen Zeit generiert.
 ssl.create.certificate.end.useraction=Es ist keine Aktion erforderlich.
 #--------------------------------------------------------------------------------------------------
-ssl.create.certificate.error=CWPKI0804E: Fehler beim Erstellen des SSL-Zertifikats. Die SSL-Schl\u00fcsseldatei {0} kann nicht erstellt werden.
+ssl.create.certificate.error=CWPKI0804E: Fehler beim Erstellen des SSL-Zertifikats. {0}
 ssl.create.certificate.error.explanation=Das SSL-Zertifikat konnte an der angegebenen Position nicht erstellt werden.
 ssl.create.certificate.error.useraction=Stellen Sie sicher, dass die Position f\u00fcr den Serverprozess zug\u00e4nglich ist. Alle FFDCs k\u00f6nnen auf einen schwerwiegenden Fehler bei der Generierung oder beim Laden der Schl\u00fcssel hinweisen.
+
+# Messages for the CWPKI0804E message descriptor {0}.
+ssl.create.certificate.error.reason1=Die SSL-Schl\u00fcsseldatei {0} kann nicht erstellt werden.
+ssl.create.certificate.error.reason2=Fehler: {0}
 #--------------------------------------------------------------------------------------------------
 ssl.default.keystore.config.error=CWPKI0805E: Ein f\u00fcr den Standardkeystorespeicher erforderliches Kennwort fehlt.
 ssl.default.keystore.config.error.explanation=Die Keystore-Konfiguration enth\u00e4lt kein Kennwort f\u00fcr den Standardkeystore.

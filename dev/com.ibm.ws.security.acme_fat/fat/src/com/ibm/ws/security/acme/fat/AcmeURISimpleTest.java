@@ -10,12 +10,16 @@
  *******************************************************************************/
 package com.ibm.ws.security.acme.fat;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.runner.RunWith;
-import org.testcontainers.shaded.org.bouncycastle.util.test.SimpleTest;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.JavaInfo;
 
 /**
  * Same as {@link SimpleTest}, but uses the acme://* URI instead of an HTTPS
@@ -28,5 +32,20 @@ public class AcmeURISimpleTest extends AcmeSimpleTest {
 	@Override
 	protected boolean useAcmeURIs() {
 		return true;
+	}
+
+	@Override
+	protected void stopServer(String... msgs) throws Exception {
+		if (JavaInfo.JAVA_VERSION > 8) {
+			server.stopServer(msgs);
+		} else {
+			/*
+			 * HttpConnector.config runs oddly slow on Java 8 and can trigger the update
+			 * timeout warning
+			 */
+			List<String> tempList = new ArrayList<String>(Arrays.asList(msgs));
+			tempList.add("CWWKG0027W");
+			server.stopServer(tempList.toArray(new String[tempList.size()]));
+		}
 	}
 }

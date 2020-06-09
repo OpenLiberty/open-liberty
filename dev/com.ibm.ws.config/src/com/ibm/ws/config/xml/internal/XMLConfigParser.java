@@ -669,7 +669,7 @@ public class XMLConfigParser {
             return locationService.resolveString(path);
         }
 
-        return path;
+        return PathUtils.normalize(path);
     }
 
     public void handleParseError(ConfigParserException e, Bundle bundle) {

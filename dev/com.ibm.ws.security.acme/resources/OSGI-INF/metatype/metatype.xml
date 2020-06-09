@@ -38,36 +38,46 @@
    <AD id="domainKeyFile"         name="%domainKeyFile" description="%domainKeyFile.desc" type="String"  required="false" default="${server.output.dir}/resources/security/acmeDomainKey.pem" />
 
    <!-- Transport configuration. -->
-   <AD id="acmeTransportConfig"   name="%acmeTransportConfig" description="%acmeTransportConfig.desc" type="String"  required="false" ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.security.acme.transport" />
+   <AD id="acmeTransportConfig"   name="%acmeTransport" description="%acmeTransport.desc" type="String"  required="false" ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.security.acme.transport" />
   
    <!-- Renewal configuration options -->
    <AD id="renewBeforeExpiration" name="%renewBeforeExpiration" description="%renewBeforeExpiration" type="String" required="false" ibm:type="duration" default="7d" />
 
    <!-- Revocation checker configuration. -->
    <AD id="acmeRevocationChecker" name="%acmeRevocationChecker" description="%acmeRevocationChecker.desc" type="String"  required="false" ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.security.acme.revocation" />
-  
+
+   <!-- Automatic renew or revoke checking configuration -->
+   <AD id="certCheckerSchedule"       name="internal" description="internal use only" type="String"  required="false" ibm:type="duration" default="1d" />
+   <AD id="certCheckerErrorSchedule"  name="internal" description="internal use only" type="String"  required="false" ibm:type="duration" default="1h" />
+   
+   <!--  Allow immediate REST renew requests -->
+   <AD id="disableMinRenewWindow"     name="internal" description="internal use only" type="Boolean"  required="false" default="false" />
+   
+   <!--  Disable certificate renewal when the acmeca-history file does not yet exist -->
+   <AD id="disableRenewOnNewHistory"     name="internal" description="internal use only" type="Boolean"  required="false" default="false" />
+
  </OCD>
   
  <Designate factoryPid="com.ibm.ws.security.acme.transport">
    <Object ocdref="com.ibm.ws.security.acme.transport.metatype" />
  </Designate>
 
- <OCD id="com.ibm.ws.security.acme.transport.metatype" name="internal" description="internal use only" ibm:alias="acmeTransportConfig">
-   <AD id="protocol"             name="internal" description="internal use only" required="false" type="String" />
-   <AD id="trustStore"           name="internal" description="internal use only" required="false" type="String" />
-   <AD id="trustStorePassword"   name="internal" description="internal use only" required="false" type="String" ibm:type="password" />
-   <AD id="trustStoreType"       name="internal" description="internal use only" required="false" type="String" />
+ <OCD id="com.ibm.ws.security.acme.transport.metatype" name="%acmeTransport" description="%acmeTransport.desc" ibm:alias="acmeTransportConfig">
+   <AD id="protocol"             name="%sslProtocol"        description="%sslProtocol.desc"        required="false" type="String" />
+   <AD id="trustStore"           name="%trustStore"         description="%trustStore.desc"         required="false" type="String" />
+   <AD id="trustStorePassword"   name="%trustStorePassword" description="%trustStorePassword.desc" required="false" type="String" ibm:type="password" />
+   <AD id="trustStoreType"       name="%trustStoreType"     description="%trustStoreType.desc"     required="false" type="String" />
  </OCD>
 
  <Designate factoryPid="com.ibm.ws.security.acme.revocation">
    <Object ocdref="com.ibm.ws.security.acme.revocation.metatype" />
  </Designate>
 
- <OCD id="com.ibm.ws.security.acme.revocation.metatype" name="internal" description="internal use only" ibm:alias="acmeRevocationChecker">
-   <AD id="enabled"              name="internal" description="internal use only" type="Boolean" required="false" default="true" />
-   <AD id="ocspResponderUrl"     name="internal" description="internal use only" type="String"  required="false" />
-   <AD id="preferCRLs"           name="internal" description="internal use only" type="Boolean" required="false" default="false" />
-   <AD id="disableFallback"      name="internal" description="internal use only" type="Boolean" required="false" default="false" />
+ <OCD id="com.ibm.ws.security.acme.revocation.metatype" name="%acmeRevocationChecker" description="%acmeRevocationChecker.desc" ibm:alias="acmeRevocationChecker">
+   <AD id="enabled"              name="%enabled"          description="%enabled.desc"          type="Boolean" required="false" default="true" />
+   <AD id="ocspResponderUrl"     name="%ocspResponderUrl" description="%ocspResponderUrl.desc" type="String"  required="false" />
+   <AD id="preferCRLs"           name="internal"          description="internal use only"      type="Boolean" required="false" default="false" />
+   <AD id="disableFallback"      name="internal"          description="internal use only"      type="Boolean" required="false" default="false" />
  </OCD>
 
 </metatype:MetaData>

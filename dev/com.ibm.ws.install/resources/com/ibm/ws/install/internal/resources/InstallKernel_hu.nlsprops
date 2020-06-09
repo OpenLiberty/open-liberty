@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2018 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -601,6 +601,9 @@ MSG_VALIDATION_INVALID_URL=A k\u00f6vetkez\u0151 URL c\u00edm \u00e9rv\u00e9nyte
 MSG_VALIDATION_UNSUPPORT_PROTOCOL=A k\u00f6vetkez\u0151 lerakat URL protokollja nem t\u00e1mogatott: {0}. A t\u00e1mogatott protokollok: HTTP, HTTPS \u00e9s file. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az URL c\u00edm megfelel\u0151en ker\u00fclt megad\u00e1sra.
 MSG_VALIDATION_INVALID_HOST=A k\u00f6vetkez\u0151 proxykiszolg\u00e1l\u00f3-hoszt \u00e9rv\u00e9nytelen: {0}. Hat\u00e1rozzon meg egy \u00e9rv\u00e9nyes HTTP proxykiszolg\u00e1l\u00f3-hosztnevet. A http:// el\u0151tag nem sz\u00fcks\u00e9ges.
 
+# Message for find action
+MSG_NO_FEATURES_FOUND=Nem tal\u00e1lhat\u00f3k \u00f6sszetev\u0151k.
+
 VALIDATION_INVALID_VALUE=Nem t\u00e1mogatott \u00e9rt\u00e9k
 VALIDATION_INVALID_KEY=Nem t\u00e1mogatott tulajdons\u00e1gn\u00e9v
 VALIDATION_EMPTY_KEY=\u00dcres tulajdons\u00e1gn\u00e9v
@@ -846,6 +849,26 @@ ERROR_INCOMPATIBLE_FEATURES.useraction=T\u00e1vol\u00edtsa el az egyik szolg\u00
 ERROR_INCOMPATIBLE_FEATURES_SINGLETON=CWWKF1405E: A(z) {0} \u00e9s {1} singleton szolg\u00e1ltat\u00e1sok nem kompatibilisek egym\u00e1ssal, \u00e9s nem telep\u00edthet\u0151k egyidej\u0171leg.
 ERROR_INCOMPATIBLE_FEATURES_SINGLETON.explanation=A szolg\u00e1ltat\u00e1sok nem telep\u00edthet\u0151k egyidej\u0171leg.
 ERROR_INCOMPATIBLE_FEATURES_SINGLETON.useraction=T\u00e1vol\u00edtsa el az egyik szolg\u00e1ltat\u00e1st, majd pr\u00f3b\u00e1lkozzon \u00fajra.
+
+ERROR_FAILED_TO_UNPACK_LICENSE=CWWKF1406E: A licenccsomagot nem lehet kibontani a lerakatb\u00f3l a(z) {1} f\u00e1jl\u00fatvonalon a(z) {0} Maven koordin\u00e1t\u00e1val.
+ERROR_FAILED_TO_UNPACK_LICENSE.explanation=Nem lehet kibontani a licenccsomagot a wlp telep\u00edt\u00e9shez.
+ERROR_FAILED_TO_UNPACK_LICENSE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy megfelel\u0151 jogosults\u00e1gokkal rendelkezik a lerakat olvas\u00e1s\u00e1hoz.
+
+ERROR_FAILED_TO_READ_LICENSE=CWWKF1407E: Nem lehet feldolgozni a(z) {0} f\u00e1jlhelyen tal\u00e1lhat\u00f3 licencf\u00e1jlt.
+ERROR_FAILED_TO_READ_LICENSE.explanation=A licencelfogad\u00e1si inform\u00e1ci\u00f3khoz nem lehet feldolgozni licencf\u00e1jlt.
+ERROR_FAILED_TO_READ_LICENSE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy megfelel\u0151 jogosults\u00e1gokkal rendelkezik a licencf\u00e1jl olvas\u00e1s\u00e1hoz.
+
+ERROR_FAILED_TO_FIND_WEBSPHERE_JSON=CWWKF1408E: A Websphere JSON f\u00e1jl nem tal\u00e1lhat\u00f3 a(z) {0} f\u00e1jlhelyen.
+ERROR_FAILED_TO_FIND_WEBSPHERE_JSON.explanation=Nem tal\u00e1lhat\u00f3 Websphere JSON f\u00e1jl.
+ERROR_FAILED_TO_FIND_WEBSPHERE_JSON.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy rendelkezik h\u00e1l\u00f3zati kapcsolattal \u00e9s \u00edr\u00e1si enged\u00e9lyekkel a be\u00e1ll\u00edtott helyi Maven k\u00f6nyvt\u00e1rhoz.
+
+ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS=CWWKF1409E: A k\u00f6vetkez\u0151 features JSON f\u00e1jlok nem tal\u00e1lhat\u00f3k meg helyben vagy a be\u00e1ll\u00edtott Maven lerakatban: {0}.
+ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS.explanation=A JSON f\u00e1jlok nem tal\u00e1lhat\u00f3k helyileg vagy a be\u00e1ll\u00edtott Maven lerakatban.
+ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy rendelkezik h\u00e1l\u00f3zati kapcsolattal, \u00e9s a JSON f\u00e1jlok l\u00e9teznek a be\u00e1ll\u00edtott Maven lerakatban.
+
+ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY=CWWKF1410E: A(z) {0} szolg\u00e1ltat\u00e1s nem telep\u00edthet\u0151 a(z) {1} {2} kiad\u00e1s\u00e1n, mert csak a k\u00f6vetkez\u0151 kiad\u00e1sokhoz alkalmazhat\u00f3: {3}.
+ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.explanation=A szolg\u00e1ltat\u00e1s nem alkalmazhat\u00f3 a telep\u00edtett term\u00e9k aktu\u00e1lis kiad\u00e1s\u00e1hoz.
+ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.useraction=Telep\u00edtsen olyan szolg\u00e1ltat\u00e1sokat, melyeket t\u00e1mogat a term\u00e9k aktu\u00e1lis kiad\u00e1sa.
 
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: A szolg\u00e1ltat\u00e1s let\u00f6lt\u00e9se siker\u00fclt.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=A szolg\u00e1ltat\u00e1s le lett t\u00f6ltve.

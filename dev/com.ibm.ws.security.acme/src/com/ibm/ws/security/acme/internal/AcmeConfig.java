@@ -69,6 +69,16 @@ public class AcmeConfig {
 	private Boolean preferCRLs = false;
 	private Boolean disableFallback = false;
 
+	// Certificate checker configuration options, currently intended to be internal only
+	private Long certCheckerScheduler = AcmeConstants.SCHEDULER_MS;
+	private Long certCheckerErrorScheduler = AcmeConstants.SCHEDULER_ERROR_MS;
+
+	// Allow back to back renew requests, currently intended to be internal use only
+	private boolean disableMinRenewWindow = false;
+
+	// Disable certificate renewal when the acmeca-history file does not yet exist
+	private boolean disableRenewOnNewHistory = false;
+	
 	/**
 	 * Create a new {@link AcmeConfig} instance.
 	 * 
@@ -110,6 +120,8 @@ public class AcmeConfig {
 		temp = getLongValue(properties, AcmeConstants.ORDER_POLL_TIMEOUT);
 		orderPollTimeoutMs = Math.max(0, (temp == null) ? AcmeConstants.ORDER_POLL_DEFAULT : temp);
 		accountContacts = getStringList(properties, AcmeConstants.ACCOUNT_CONTACT);
+		setCertCheckerScheduler(getLongValue(properties, AcmeConstants.CERT_CHECKER_SCHEDULE));
+		setCertCheckerErrorScheduler(getLongValue(properties, AcmeConstants.CERT_CHECKER_ERROR_SCHEDULE));
 
 		/*
 		 * Validate key file paths.
@@ -135,6 +147,8 @@ public class AcmeConfig {
 		}
 
 		setRenewBeforeExpirationMs(getLongValue(properties, AcmeConstants.RENEW_BEFORE_EXPIRATION), true);
+		disableMinRenewWindow = getBooleanValue(properties, AcmeConstants.DISABLE_MIN_RENEW_WINDOW, false);
+		disableRenewOnNewHistory = getBooleanValue(properties, AcmeConstants.DISABLE_RENEW_ON_NEW_HISTORY, false);
 
 		/*
 		 * Get revocation checker configuration.
@@ -161,6 +175,25 @@ public class AcmeConfig {
 		}
 	}
 
+	/**
+	 * Get a {@link Boolean} value from the config properties.
+	 * 
+	 * @param configProps
+	 *            The configuration properties passed in by declarative
+	 *            services.
+	 * @param property
+	 *            The property to lookup.
+	 * @return The {@link Boolean} value, or null if it doesn't exist.
+	 */
+	@Trivial
+	private static Boolean getBooleanValue(Map<String, Object> configProps, String property, boolean outcomeOnNull) {
+		Object value = configProps.get(property);
+		if (value == null) {
+			return outcomeOnNull;
+		}
+		return (Boolean) value;
+	}
+	
 	/**
 	 * Get a {@link Boolean} value from the config properties.
 	 * 
@@ -616,4 +649,88 @@ public class AcmeConfig {
 			}
 		}
 	}
+	
+	/**
+	 * 
+	 * @return the certCheckerScheduler
+	 */
+	@Trivial
+	public Long getCertCheckerScheduler() {
+		return certCheckerScheduler;
+	}
+
+	/**
+	 * Sets the certCheckerScheduler. If set to 0 or less, the certificate
+	 * checker is considered disabled. If set below the min renew time, reset to the
+	 * min renew time.
+	 * @param certCheckerScheduler
+	 */
+	public void setCertCheckerScheduler(Long certCheckerScheduler) {		
+		if (certCheckerScheduler != null) {
+			if (certCheckerScheduler <= 0) {
+				/*
+				 * Cert Checker is disabled. Message is logged in 
+				 * AcmeCertCheckerTask.startCertificateChecker
+				 */
+				this.certCheckerScheduler = 0L;
+			} else if (certCheckerScheduler < AcmeConstants.RENEW_CERT_MIN) {
+				/*
+				 * Too low of a timeout, reset to the min renew allowed
+				 */
+				this.certCheckerScheduler = AcmeConstants.RENEW_CERT_MIN;
+				Tr.warning(tc, "CWPKI2070W", certCheckerScheduler, this.certCheckerScheduler + "ms");
+			} else { 
+				this.certCheckerScheduler = certCheckerScheduler;
+			}
+		}
+	}
+
+	
+	/**
+	 * Get the certCheckerErrorScheduler
+	 * @return certCheckerErrorScheduler
+	 */
+	@Trivial
+	public Long getCertCheckerErrorScheduler() {
+		return certCheckerErrorScheduler;
+	}
+
+	/**
+	 * Set the certCheckerErrorScheduler
+	 * If it is set below the min renewal amount, reset to the min renewal amount
+	 *
+	 * @param certCheckerErrorScheduler
+	 */
+	public void setCertCheckerErrorScheduler(Long certCheckerErrorScheduler) {
+		if (certCheckerErrorScheduler != null) {
+			if (certCheckerErrorScheduler < AcmeConstants.RENEW_CERT_MIN) {
+				/*
+				 * Too low of a timeout, reset to the min renew allowed
+				 */
+				this.certCheckerErrorScheduler = AcmeConstants.RENEW_CERT_MIN;
+				Tr.warning(tc, "CWPKI2071W", certCheckerErrorScheduler, this.certCheckerErrorScheduler + "ms");
+			} else { 
+				this.certCheckerErrorScheduler = certCheckerErrorScheduler;
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * @return disableMinRenewWindow
+	 */
+	@Trivial
+	public boolean isDisableMinRenewWindow() {
+		return disableMinRenewWindow;
+	}
+	
+	/**
+	 * 
+	 * @return disableRenewOnNewHistory
+	 */
+	@Trivial
+	public boolean isDisableRenewOnNewHistory() {
+		return disableRenewOnNewHistory;
+	}
+
 }

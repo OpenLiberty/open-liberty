@@ -62,7 +62,7 @@ public interface CDIExtensionMetadata {
 
     /**
      * All classes returned by this method will be will be found by CDI during type discovery
-     * so that they can then be used as beans (or interceptors etc. if annotated as such) by the application.".
+     * so that they can then be used as beans (or interceptors etc. if annotated as such) by the application.
      * All classes must be in the same archive as your CDIExtensionMetadata.
      */
     default public Set<Class<?>> getBeanClasses() {
@@ -71,7 +71,7 @@ public interface CDIExtensionMetadata {
 
     /**
      * All classes returned by this method will be treated as CDI extensions. Override this method if you need to observe CDI container
-     * lifecycle events to do something more advanced that just providing additional bean classes
+     * lifecycle events to do something more advanced that just providing additional bean classes.
      */
     public default Set<Class<? extends Extension>> getExtensions() {
         return Collections.emptySet();

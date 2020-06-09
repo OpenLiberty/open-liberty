@@ -123,6 +123,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     public static final String CFG_KEY_HOST_NAME_VERIFICATION_ENABLED = "hostNameVerificationEnabled";
     public static final String CFG_KEY_INCLUDE_ID_TOKEN_IN_SUBJECT = "includeIdTokenInSubject";
     public static final String CFG_KEY_INCLUDE_CUSTOM_CACHE_KEY_IN_SUBJECT = "includeCustomCacheKeyInSubject";
+    public static final String CFG_KEY_ALLOW_CUSTOM_CACHE_KEY = "allowCustomCacheKey";
     public static final String CFG_KEY_AUTH_CONTEXT_CLASS_REFERENCE = "authContextClassReference";
     public static final String CFG_KEY_AUTH_FILTER_REF = "authFilterRef";
     public static final String CFG_KEY_JSON_WEB_KEY = "jsonWebKey";
@@ -220,6 +221,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     private boolean hostNameVerificationEnabled;
     private boolean includeIdTokenInSubject;
     private boolean includeCustomCacheKeyInSubject;
+    private boolean allowCustomCacheKey;
     private String authenticationContextClassReferenceValue; // acr_values separated by space
     private String authFilterRef;
     private String authFilterId;
@@ -446,6 +448,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         hostNameVerificationEnabled = (Boolean) props.get(CFG_KEY_HOST_NAME_VERIFICATION_ENABLED);
         includeIdTokenInSubject = (Boolean) props.get(CFG_KEY_INCLUDE_ID_TOKEN_IN_SUBJECT);
         includeCustomCacheKeyInSubject = (Boolean) props.get(CFG_KEY_INCLUDE_CUSTOM_CACHE_KEY_IN_SUBJECT);
+        allowCustomCacheKey = (Boolean) props.get(CFG_KEY_ALLOW_CUSTOM_CACHE_KEY);
         authenticationContextClassReferenceValue = trimIt((String) props.get(CFG_KEY_AUTH_CONTEXT_CLASS_REFERENCE));
         if (authenticationContextClassReferenceValue == null)
             authenticationContextClassReferenceValue = "";
@@ -1460,7 +1463,10 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     /** {@inheritDoc} */
     @Override
     public boolean isIncludeCustomCacheKeyInSubject() {
-        return includeCustomCacheKeyInSubject;
+        if(!includeCustomCacheKeyInSubject || !allowCustomCacheKey) {
+            return false;
+        }
+        return true;
     }
 
     /** {@inheritDoc} */

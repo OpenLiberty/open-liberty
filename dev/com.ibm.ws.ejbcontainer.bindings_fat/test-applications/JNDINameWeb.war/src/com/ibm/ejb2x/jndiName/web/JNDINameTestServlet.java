@@ -37,7 +37,6 @@ import componenttest.app.FATServlet;
  * custom bindings defined with the jndiName element in ibm-ejb-jar-bnd.xmi.
  *
  */
-// TODO: some tests disabled until remote binding support is added
 @SuppressWarnings("serial")
 @WebServlet("/JNDINameTestServlet")
 public class JNDINameTestServlet extends FATServlet {
@@ -157,13 +156,29 @@ public class JNDINameTestServlet extends FATServlet {
     }
 
     /*
+     * Tests that the local: default binding should not have been bound because we
+     * have custom bindings.
+     */
+    @Test
+    public void testLocalColonDefaultDisabledJNDIName() {
+        try {
+            Object bean = new InitialContext().lookup("local:ejb/JNDIName1");
+            if (bean != null) {
+                fail("Local default bindings lookup should not have worked because we have custom bindings");
+            }
+        } catch (NamingException e) {
+            // expected to not work
+        }
+    }
+
+    /*
      * Tests that the ejblocal: default binding should not have been bound because we
      * have custom bindings.
      */
     @Test
     public void testEJBLocalDefaultDisabledJNDIName() {
         try {
-            Object bean = new InitialContext().lookup("ejblocal:JNDINameTestApp/JNDINameEJB.jar/JNDIName1#com.ibm.ejb2x.jndiName.ejb.JNDINameHome");
+            Object bean = new InitialContext().lookup("ejblocal:ejb/JNDIName1");
             if (bean != null) {
                 fail("EJBLocal default bindings lookup should not have worked because we have custom bindings");
             }
@@ -179,7 +194,7 @@ public class JNDINameTestServlet extends FATServlet {
     @Test
     public void testRemoteDefaultDisabledJNDIName() {
         try {
-            Object bean = new InitialContext().lookup("ejb/JNDINameTestApp/JNDINameEJB.jar/JNDIName4#com.ibm.ejb2x.jndiName.ejb.JNDINameRemoteHome");
+            Object bean = new InitialContext().lookup("ejb/JNDIName1");
             if (bean != null) {
                 fail("remote default bindings lookup should not have worked because we have custom bindings");
             }

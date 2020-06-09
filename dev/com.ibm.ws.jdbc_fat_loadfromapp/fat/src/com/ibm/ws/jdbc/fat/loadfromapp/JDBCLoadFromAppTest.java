@@ -18,6 +18,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -26,6 +27,8 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import web.derby.DerbyLoadFromAppServlet;
@@ -37,6 +40,10 @@ import web.other.LoadFromAppServlet;
  */
 @RunWith(FATRunner.class)
 public class JDBCLoadFromAppTest extends FATServletClient {
+    @ClassRule
+    public static RepeatTests r = RepeatTests
+                    .withoutModification()
+                    ;//.andWith(new JakartaEE9Action()); TODO uncomment once JCA (and possibly other) features are ready for Jakarta
 
     @Server("com.ibm.ws.jdbc.fat.loadfromapp")
     @TestServlets(value = {

@@ -403,6 +403,11 @@ public interface ConfigConstants {
     String CONFIG_PROP_READ_TIMEOUT = "readTimeout";
 
     /**
+     * Define whether JNDI BER packets will be written to the System.out
+     */
+    String CONFIG_PROP_JNDI_OUTPUT_ENABLED = "jndiOutputEnabled";
+
+    /**
      * Define whether or not write operations are allowed on secondary servers.
      * default value is false.
      */

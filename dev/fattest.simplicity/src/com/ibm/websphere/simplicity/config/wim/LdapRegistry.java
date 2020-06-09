@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,6 +45,7 @@ public class LdapRegistry extends ConfigElement {
     private LdapFilters idsFilters;
     private Boolean ignoreCase;
     private LdapFilters iplanetFilters;
+    private Boolean jndiOutputEnabled;
     private LdapCache ldapCache;
     private ConfigElementList<LdapEntityType> ldapEntityTypes;
     private String ldapType;
@@ -205,6 +206,13 @@ public class LdapRegistry extends ConfigElement {
      */
     public LdapFilters getIplanetFilters() {
         return iplanetFilters;
+    }
+
+    /**
+     * @return the jndiOutputEnabled
+     */
+    public Boolean getJndiOutputEnabled() {
+        return jndiOutputEnabled;
     }
 
     /**
@@ -518,6 +526,14 @@ public class LdapRegistry extends ConfigElement {
     }
 
     /**
+     * @param jndiOutputEnabled the jndiOutputEnabled to set
+     */
+    @XmlAttribute(name = "jndiOutputEnabled")
+    public void setJndiOutputEnabled(Boolean jndiOutputEnabled) {
+        this.jndiOutputEnabled = jndiOutputEnabled;
+    }
+
+    /**
      * @param ldapCache the ldapCache to set
      */
     @XmlElement(name = "ldapCache")
@@ -742,6 +758,9 @@ public class LdapRegistry extends ConfigElement {
         }
         if (iplanetFilters != null) {
             sb.append("iplanetFilters=\"").append(iplanetFilters).append("\" ");;
+        }
+        if (jndiOutputEnabled != null) {
+            sb.append("jndiOutputEnabled=\"").append(jndiOutputEnabled).append("\" ");;
         }
         if (ldapCache != null) {
             sb.append("ldapCache=\"").append(ldapCache).append("\" ");;

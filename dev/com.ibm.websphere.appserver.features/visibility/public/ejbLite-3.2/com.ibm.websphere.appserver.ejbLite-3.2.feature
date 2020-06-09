@@ -12,7 +12,7 @@ Subsystem-Category: JavaEE7Application
  com.ibm.websphere.appserver.ejbLiteCore-1.0, \
  com.ibm.websphere.appserver.contextService-1.0, \
  com.ibm.websphere.appserver.transaction-1.2, \
- com.ibm.websphere.appserver.javaeeCompatible-7.0; ibm.tolerates:=8.0, \
+ com.ibm.websphere.appserver.eeCompatible-7.0; ibm.tolerates:=8.0, \
  com.ibm.websphere.appserver.javax.interceptor-1.2
 -bundles=com.ibm.ws.ejbcontainer.v32, \
  com.ibm.ws.ejbcontainer.timer, \

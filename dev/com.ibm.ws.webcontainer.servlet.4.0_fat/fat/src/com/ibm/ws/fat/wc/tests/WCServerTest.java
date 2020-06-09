@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.fat.wc.tests;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import org.junit.AfterClass;
@@ -36,8 +34,6 @@ import componenttest.rules.repeater.JakartaEE9Action;
 public class WCServerTest extends LoggingTest {
 
     private static final Logger LOG = Logger.getLogger(WCServerTest.class.getName());
-
-    protected static final Map<String, String> testUrlMap = new HashMap<String, String>();
 
     @ClassRule
     public static SharedServer SHARED_SERVER = new SharedServer("servlet40_wcServer");
@@ -70,19 +66,6 @@ public class WCServerTest extends LoggingTest {
         LOG.info("testCleanUp : stop server");
 
         SHARED_SERVER.getLibertyServer().stopServer();
-    }
-
-    protected String parseResponse(WebResponse wr, String beginText, String endText) {
-        String s;
-        String body = wr.getResponseBody();
-        int beginTextIndex = body.indexOf(beginText);
-        if (beginTextIndex < 0)
-            return "begin text, " + beginText + ", not found";
-        int endTextIndex = body.indexOf(endText, beginTextIndex);
-        if (endTextIndex < 0)
-            return "end text, " + endText + ", not found";
-        s = body.substring(beginTextIndex + beginText.length(), endTextIndex);
-        return s;
     }
 
     /**

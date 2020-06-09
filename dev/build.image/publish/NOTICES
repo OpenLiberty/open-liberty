@@ -1,12 +1,14 @@
-﻿++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Begin NOTICES AND INFORMATION FOR Open Liberty 20.0.0.5
+Begin NOTICES AND INFORMATION FOR Open Liberty 20.0.0.6
 Copyright 1999-2020 IBM Corporation and others
 
 This product includes software developed at
 The Open Liberty Project (https://openliberty.io/).
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 TABLE OF CONTENTS
+
+THE REMAINDER OF THIS IBM NOTICES FILE CONSISTS OF THE FOLLOWING 
+SECTIONS:
 
 APACHE V1.1
 APACHE V2
@@ -21,7 +23,7 @@ EPL V2
 ISC  
 JDOM
 JTidy
-LGPL V2.1   
+LGPL V2.1  
 MIT  
 MPL V1.1  
 MPL V2.0  
@@ -99,123 +101,123 @@ APACHE LICENSE 2.0
 The Program includes some or all of the following that IBM obtained
 under the Apache License Version 2.0:
 
-ACME4J	
-ANSI-HTML	
-ANT	
-APACHE ARIES	
-APACHE BVAL	
-APACHE MYFACES	
-APACHE XML INTERNAL	
-ARIES JPA	
-ARIES-JMX	
-ARIES-JNDI	
-ASCII DOCTORJ	
-ASCIIDOC	
-BCEL	
-BENCHMARK	
-BOOTSTRAP [msf4j]	
-BTOA	
-CACHE-API	
-CDI-API	
-CDI11 [weld]	
-COMMONS-CODEC	
-COMMONS-DAEMON	
-COMMONS-DIGESTER	
-COMMONS-DISCOVERY	
-COMMONS-FILEUPLOAD	
-COMMONS-HTTPCLIENT	
-COMMONS-LANG	
-COMMONS-WEAVER	
-DATERANGEPICKER [msf4j]	
-DETECT-LIBC	
-DOMPURIFY	
-ECLIPSE MICROPROFILE [microprofile-graphql]	
-ECLIPSE OSGI	
-EHCACHE-CORE	
-ENVOY [grpc-java]	
-FACELETS [Apache MyFaces]	
-FAILSAFE	
-FAST INFOSET	
-FAYE-WEBSOCKET	
-FELIX	
-FELIX GOGO RUNTIME	
-FELIX GOGO SHELL	
-FELIX SCR	
-FILTER.JAVA [javax.servlet-api]	
-GEANTYREF	
-GOOGLE-DIFF-MATCH-PATCH [jQuery]	
-GRADLE STARTUP	
-GRAPHQL-SPQR	
-GSON	
-GUAVA	
-GUICE	
-HMTLCOMPONENTS HTTPCORE	
-J4FRY [Apache MyFaces]	
-JACKSON	
-JAKARTA COMMONS CLI 1.0 [javax.xml]	
-JANDEX	
-JAVA-CLASSMATE	
-JAVAX.EL [jasper.glassfish]	
-JAVAX.INJECT	
-JAXRPC	
-JBATCH	
-JBOSS-LOGGING	
-JODA-TIME	
-JOSE4J	
-JQUERY.D.TS	
-JSONSTREAM	
-JSONTOKEN	
-LIBERTY-ARQUILLIAN	
-LOG4J [SLF4J]	
-METRICS-CDI	
-MICROPROFILE CONTEXT PROP	
-MICROPROFILE METRICS	
-MICROPROFILE-CONFIG-API	
-MICROPROFILE-GRAPHQL	
-MICROPROFILEREACTIVEMESSAGING	
-MOX.PY [Protobuf]	
-NAMESPACECONTEXTIMPL.JAVA	
-NEETHI	
-NEKOHTML	
-NETTY [grpc-java]	
-OKHTTP [grpc-java]	
-OPENID4JAVA	
-OPENSAML	
-OPENWS	
-OSGI [Felix Gogo Runtime]	
-OSGI CORE	
-POM.XML	
-PROTO-GOOGLE-COMMONS-PROTOS	
-PROTOC-GEN-VALIDATE	
-QUNIT.JS	
-RXJAVA	
-SIZEOF-AGENT	
-SMALLRYE-REACTIVE-MESSAGING	
-SMALLRYE-REACTIVE-STREAMS-OPERATORS	
-SPDX-CORRECT	
-SWAGGER-CLIENT	
-SWAGGER-UI [OpenLiberty]	
-TAGLIBS	
-URLPATTERN.JAVA 	
-VALIDATE-NPM-PACKAGE-LICENSE	
-VALIDATION-API	
-WEBSOCKET-DRIVER	
-WELD	
-WELD-API	
-WELD-PROBE [weld]	
-WSS4J	
-XML-RESOLVER	
-XMLSCHEMA-CORE	
-XMLTOOLING	
-YOKO	
-APACHE CXF [grpc-java]
+ ACME4J	
+ ANSI-HTML	
+ ANT	
+ APACHE ARIES	
+ APACHE BVAL	
+ APACHE MYFACES	
+ APACHE XML INTERNAL	
+ ARIES JPA	
+ ARIES-JMX	
+ ARIES-JNDI	
+ ASCII DOCTORJ	
+ ASCIIDOC	
+ BCEL	
+ BENCHMARK	
+ BOOTSTRAP [msf4j]	
+ BTOA	
+ CACHE-API	
+ CDI-API	
+ CDI11 [weld]	
+ COMMONS-CODEC	
+ COMMONS-DAEMON	
+ COMMONS-DIGESTER	
+ COMMONS-DISCOVERY	
+ COMMONS-FILEUPLOAD	
+ COMMONS-HTTPCLIENT	
+ COMMONS-LANG	
+ COMMONS-WEAVER	
+ DATERANGEPICKER [msf4j]	
+ DETECT-LIBC	
+ DOMPURIFY	
+ ECLIPSE MICROPROFILE [microprofile-graphql]	
+ ECLIPSE OSGI	
+ EHCACHE-CORE	
+ ENVOY [grpc-java]	
+ FACELETS [Apache MyFaces]	
+ FAILSAFE	
+ FAST INFOSET	
+ FAYE-WEBSOCKET	
+ FELIX	
+ FELIX GOGO RUNTIME	
+ FELIX GOGO SHELL	
+ FELIX SCR	
+ FILTER.JAVA [javax.servlet-api]	
+ GEANTYREF	
+ GOOGLE-DIFF-MATCH-PATCH [jQuery]	
+ GRADLE STARTUP	
+ GRAPHQL-SPQR	
+ GSON	
+ GUAVA	
+ GUICE	
+ HMTLCOMPONENTS HTTPCORE	
+ J4FRY [Apache MyFaces]	
+ JACKSON	
+ JAKARTA COMMONS CLI 1.0 [javax.xml]	
+ JANDEX	
+ JAVA-CLASSMATE	
+ JAVAX.EL [jasper.glassfish]	
+ JAVAX.INJECT	
+ JAXRPC	
+ JBATCH	
+ JBOSS-LOGGING	
+ JODA-TIME	
+ JOSE4J	
+ JQUERY.D.TS	
+ JSONSTREAM	
+ JSONTOKEN	
+ LIBERTY-ARQUILLIAN	
+ LOG4J [SLF4J]	
+ METRICS-CDI	
+ MICROPROFILE CONTEXT PROP	
+ MICROPROFILE METRICS	
+ MICROPROFILE-CONFIG-API	
+ MICROPROFILE-GRAPHQL	
+ MICROPROFILEREACTIVEMESSAGING	
+ MOX.PY [Protobuf]	
+ NAMESPACECONTEXTIMPL.JAVA	
+ NEETHI	
+ NEKOHTML	
+ NETTY [grpc-java]	
+ OKHTTP [grpc-java]	
+ OPENID4JAVA	
+ OPENSAML	
+ OPENWS	
+ OSGI [Felix Gogo Runtime]	
+ OSGI CORE	
+ POM.XML	
+ PROTO-GOOGLE-COMMONS-PROTOS	
+ PROTOC-GEN-VALIDATE	
+ QUNIT.JS	
+ RXJAVA	
+ SIZEOF-AGENT	
+ SMALLRYE-REACTIVE-MESSAGING	
+ SMALLRYE-REACTIVE-STREAMS-OPERATORS	
+ SPDX-CORRECT	
+ SWAGGER-CLIENT	
+ SWAGGER-UI [OpenLiberty]	
+ TAGLIBS	
+ URLPATTERN.JAVA 	
+ VALIDATE-NPM-PACKAGE-LICENSE	
+ VALIDATION-API	
+ WEBSOCKET-DRIVER	
+ WELD	
+ WELD-API	
+ WELD-PROBE [weld]	
+ WSS4J	
+ XML-RESOLVER	
+ XMLSCHEMA-CORE	
+ XMLTOOLING	
+ YOKO	
+APACHE CXF	[grpc-java]
 ARIES JNDI URL	[javax.servlet-api]
 ARRAYELRESOLVER.JAVA [javax.el]	[jaxws-tools]
 BOOTSTRAP.MIN.CSS [Spring-boot]	[jQuery]
 COMMON-LOGGING [SLF4J]	[microprofile.faulttolerance]
-COMMONS-BEANUTILS  [microprofilereactivemessaging]
-COMMONS-COLLECTIONS [msf4j]
-COMMONS-IO [OpenLiberty]
+COMMONS-BEANUTILS	[microprofilereactivemessaging]
+COMMONS-COLLECTIONS	[msf4j]
+COMMONS-IO	[OpenLiberty]
 COMMONS-LOGGING	[SLF4J]
 FELIX GOGO COMMAND	
 GERONIMO-OSGI-REGISTRY	
@@ -983,6 +985,7 @@ under the Eclipse Public License (source code available via the
 indicated URL):
 
 ECLIPSE EQUINOX OSGI (https://www.eclipse.org/equinox/)
+JSONP (https://github.com/eclipse-ee4j/jsonp/tree/2.0.0-RC2-RELEASE)
 
 END OF ECLIPSE PUBLIC LICENSE, VERSION 2 NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -2391,102 +2394,18 @@ signed by an authorized representative of each party.
 END OF UNIQUE LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+END OF Open Liberty  NOTICES AND INFORMATION 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Open Liberty 20.0.0.6 DOCKER NOTICES AND INFORMATION 
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 TABLE OF CONTENTS
 
-THE REMAINDER OF THIS Open Liberty NOTICES FILE CONSISTS OF THE FOLLOWING 
+THE REMAINDER OF THIS IBM NOTICES FILE CONSISTS OF THE FOLLOWING 
 SECTIONS:
-
-CC-BY-3.0  
-CC-BY-4.0  
-CC-BY-SA-4.0  
-SIL OPEN FONT LICENSE 1.1  
-
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-CREATIVE COMMONS ATTRIBUTION 3.0 GENERIC
-
-The Program includes some or all of the following works licensed under
-the Creative Commons.
-The url to the license is https://creativecommons.org/licenses/by/3.0/legalcode
-
-SPDX-EXCEPTIONS
-(https://registry.npmjs.org/spdx-exceptions/-/spdx-exceptions-2.2.0.tgz)
-GODOCS [btoa] (https://github.com/node-browser-compat/btoa/tree/v1.1.2),
-SPDX STANDARD [spdx-expression-parse] (http://registry.npmjs.org/spdx-expression-parse/-/spdx-expression-parse-1.0.4.tgz)
-
-END OF CREATIVE COMMONS ATTRIBUTION 3.0 GENERIC NOTICES AND INFORMATION
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-CREATIVE COMMONS ATTRIBUTION 4.0 GENERIC
-
-The Program includes some or all of the following works licensed under
-the Creative Commons.
-The url to the license is https://creativecommons.org/licenses/by/4.0/legalcode
-
-INLINE-STYLE-PREFIXER DOCUMENTATION [inline-style-prefixer] 
-(http://registry.npmjs.org/inline-style-prefixer/-/inline-style-prefixer-3.0.8.tgz)
-
-END OF CREATIVE COMMONS ATTRIBUTION 4.0 GENERIC NOTICES AND INFORMATION
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-CREATIVE COMMONS ATTRIBUTION SHARE ALIKE 4.0 GENERIC
-
-The Program includes some or all of the following works licensed under
-the Creative Commons.
-The url to the license is https://creativecommons.org/licenses/by-sa/4.0/legalcode
-
-GLOB'S LOGO [Glob] (http://registry.npmjs.org/glob/-/glob-7.1.4.tgz)
-
-END OF CREATIVE COMMONS ATTRIBUTION SHARE ALIKE 4.0 GENERIC NOTICES AND INFORMATION
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-SIL OPEN FONT LICENSE 1.1
-
-The Program includes some or all of the following works licensed under
-the SIL OPEN FONT LICENSE 1.1
-
-FONT-AWESOME [weld]
-IBM PLEX
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of the font software, to use, study, copy, merge, embed, 
-modify, redistribute, and sell modified and unmodified copies of the font software, subject to the following conditions:
-
-1) Neither the font software nor any of its individual components, in original or modified versions, may be sold by itself.
-
-2) Original or modified versions of the font software may be bundled, redistributed and/or sold with any software, provided that each 
-copy contains the above copyright notice and this license. These can be included either as stand-alone text files, human-readable headers 
-or in the appropriate machine-readable metadata fields within text or binary files as long as those fields can be easily viewed by the user.
-
-3) No modified version of the font software may use the Reserved Name(s) or combinations of Reserved Names with other words unless explicit 
-written permission is granted by the ParaType. This restriction only applies to the primary font name as presented to the users.
-
-4) The name of ParaType or the author(s) of the font software shall not be used to promote, endorse or advertise any modified version, except 
-to acknowledge the contribution(s) of ParaType and the author(s) or with explicit written permission of ParaType.
-
-5) The font software, modified or unmodified, in part or in whole, must be distributed entirely under this license, and must not be distributed 
-under any other license. The requirement for fonts to remain under this license does not apply to any document created using the Font Software.
-
-TERMINATION & TERRITORY
-This license has no limits on time and territory, but it becomes null and void if any of the above conditions are not met.
-
-DISCLAIMER
-THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF 
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL 
-PARATYPE BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, 
-WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM OTHER DEALINGS 
-IN THE FONT SOFTWARE.
-
-END OF SIL OPEN FONT LICENSE 1.1 LICENSE NOTICES AND INFORMATION
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-End of Open Liberty NOTICES AND INFORMATION 
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Begin Open Liberty 20.0.0.5 DOCKER NOTICES AND INFORMATION FOR EXCLUDED COMPONENT 
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-TABLE OF CONTENTS
 
 APACHE V2
 BSD  
@@ -2499,7 +2418,7 @@ EPL
 EPL V2  
 ISC  
 JDOM
-LGPL V2.1     
+LGPL V2.1  
 MIT  
 MPL V1.1  
 MPL V2.0  
@@ -3306,6 +3225,8 @@ under the Eclipse Public License (source code available via the
 indicated URL):
 
 ECLIPSE EQUINOX OSGI (https://www.eclipse.org/equinox/)
+JSONP (https://github.com/eclipse-ee4j/jsonp/tree/2.0.0-RC2-RELEASE)
+
 
 END OF ECLIPSE PUBLIC LICENSE, VERSION 2 NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -4525,20 +4446,116 @@ holders.
 END OF W3C SOFTWARE LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Additional Open Liberty DOCKER NOTICES AND INFORMATION FOR EXCLUDED COMPONENT 
-
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+END OF Open Liberty DOCKER NOTICES AND INFORMATION 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Open Liberty 20.0.0.6 NOTICES AND INFORMATION FOR EXCLUDED COMPONENTS 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 TABLE OF CONTENTS
 
-THE REMAINDER OF Open Liberty NOTICES FILE CONSISTS OF THE FOLLOWING 
+THE REMAINDER OF THIS IBM NOTICES FILE CONSISTS OF THE FOLLOWING 
 SECTIONS:
 
 CC-BY-3.0  
 CC-BY-4.0  
 CC-BY-SA-4.0  
-GPL V3  
+SIL OPEN FONT LICENSE 1.1  
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+CREATIVE COMMONS ATTRIBUTION 3.0 GENERIC
+
+The Program includes some or all of the following works licensed under
+the Creative Commons.
+The url to the license is https://creativecommons.org/licenses/by/3.0/legalcode
+
+SPDX-EXCEPTIONS
+(https://registry.npmjs.org/spdx-exceptions/-/spdx-exceptions-2.2.0.tgz)
+GODOCS [btoa] (https://github.com/node-browser-compat/btoa/tree/v1.1.2),
+SPDX STANDARD [spdx-expression-parse] (http://registry.npmjs.org/spdx-expression-parse/-/spdx-expression-parse-1.0.4.tgz)
+
+END OF CREATIVE COMMONS ATTRIBUTION 3.0 GENERIC NOTICES AND INFORMATION
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+CREATIVE COMMONS ATTRIBUTION 4.0 GENERIC
+
+The Program includes some or all of the following works licensed under
+the Creative Commons.
+The url to the license is https://creativecommons.org/licenses/by/4.0/legalcode
+
+INLINE-STYLE-PREFIXER DOCUMENTATION [inline-style-prefixer] 
+(http://registry.npmjs.org/inline-style-prefixer/-/inline-style-prefixer-3.0.8.tgz)
+
+END OF CREATIVE COMMONS ATTRIBUTION 4.0 GENERIC NOTICES AND INFORMATION
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+CREATIVE COMMONS ATTRIBUTION SHARE ALIKE 4.0 GENERIC
+
+The Program includes some or all of the following works licensed under
+the Creative Commons.
+The url to the license is https://creativecommons.org/licenses/by-sa/4.0/legalcode
+
+GLOB'S LOGO [Glob] (http://registry.npmjs.org/glob/-/glob-7.1.4.tgz)
+
+END OF CREATIVE COMMONS ATTRIBUTION SHARE ALIKE 4.0 GENERIC NOTICES AND INFORMATION
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+SIL OPEN FONT LICENSE 1.1
+
+The Program includes some or all of the following works licensed under
+the SIL OPEN FONT LICENSE 1.1
+
+FONT-AWESOME [weld]
+IBM PLEX
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of the font software, to use, study, copy, merge, embed, 
+modify, redistribute, and sell modified and unmodified copies of the font software, subject to the following conditions:
+
+1) Neither the font software nor any of its individual components, in original or modified versions, may be sold by itself.
+
+2) Original or modified versions of the font software may be bundled, redistributed and/or sold with any software, provided that each 
+copy contains the above copyright notice and this license. These can be included either as stand-alone text files, human-readable headers 
+or in the appropriate machine-readable metadata fields within text or binary files as long as those fields can be easily viewed by the user.
+
+3) No modified version of the font software may use the Reserved Name(s) or combinations of Reserved Names with other words unless explicit 
+written permission is granted by the ParaType. This restriction only applies to the primary font name as presented to the users.
+
+4) The name of ParaType or the author(s) of the font software shall not be used to promote, endorse or advertise any modified version, except 
+to acknowledge the contribution(s) of ParaType and the author(s) or with explicit written permission of ParaType.
+
+5) The font software, modified or unmodified, in part or in whole, must be distributed entirely under this license, and must not be distributed 
+under any other license. The requirement for fonts to remain under this license does not apply to any document created using the Font Software.
+
+TERMINATION & TERRITORY
+This license has no limits on time and territory, but it becomes null and void if any of the above conditions are not met.
+
+DISCLAIMER
+THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF 
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL 
+PARATYPE BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, 
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM OTHER DEALINGS 
+IN THE FONT SOFTWARE.
+
+
+END OF SIL OPEN FONT LICENSE 1.1 LICENSE NOTICES AND INFORMATION
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+END OF Open Liberty NOTICES AND INFORMATION FOR EXCLUDED COMPONENTS
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Open Liberty 20.0.0.6 DOCKER NOTICES AND INFORMATION FOR EXCLUDED COMPONENTS 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+TABLE OF CONTENTS
+
+THE REMAINDER OF THIS IBM NOTICES FILE CONSISTS OF THE FOLLOWING 
+SECTIONS:
+
+CC-BY-3.0  
+CC-BY-4.0  
+CC-BY-SA-4.0  
+GPL V3   
 REDHAT UNIVERSAL BASE IMAGE v 7.6 (Maipo)
 SIL OPEN FONT LICENSE 1.1  
 
@@ -4645,8 +4662,8 @@ IN THE FONT SOFTWARE.
 END OF SIL OPEN FONT LICENSE 1.1 LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-End of Open Liberty DOCKER NOTICES AND INFORMATION FOR EXCLUDED COMPONENTS
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+END OF Open Liberty DOCKER NOTICES AND INFORMATION FOR EXCLUDED COMPONENTS
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 END OF NOTICE FILE
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

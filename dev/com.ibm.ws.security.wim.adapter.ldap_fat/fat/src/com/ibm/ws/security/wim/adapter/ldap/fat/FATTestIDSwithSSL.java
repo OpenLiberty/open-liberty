@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,7 +26,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.websphere.simplicity.config.wim.LdapRegistry;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.com.unboundid.InMemoryTDSLDAPServer;
 import com.ibm.ws.security.registry.EntryNotFoundException;
 import com.ibm.ws.security.registry.SearchResult;
 import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
@@ -45,16 +48,45 @@ public class FATTestIDSwithSSL {
     private static final Class<?> c = FATTestIDSwithSSL.class;
     private static UserRegistryServletConnection servlet;
 
+    private static InMemoryTDSLDAPServer ldapServer;
+
     /**
-     * Updates the sample, which is expected to be at the hard-coded path.
-     * If this test is failing, check this path is correct.
+     * Setup the test case.
+     *
+     * @throws Exception If the setup failed for some reason.
      */
     @BeforeClass
-    public static void setUp() throws Exception {
+    public static void setupClass() throws Exception {
+        setupLdapServer();
+        setUpLibertyServer();
+    }
+
+    /**
+     * Setup the Liberty server. This server will start with very basic configuration. The tests
+     * will configure the server dynamically.
+     *
+     * @throws Exception If there was an issue setting up the Liberty server.
+     */
+    public static void setUpLibertyServer() throws Exception {
         // Add LDAP variables to bootstrap properties file
         LDAPUtils.addLDAPVariables(server);
         Log.info(c, "setUp", "Starting the server... (will wait for userRegistry servlet to start)");
         server.copyFileToLibertyInstallRoot("lib/features", "internalfeatures/securitylibertyinternals-1.0.mf");
+
+        /*
+         * Update LDAP configuration with In-Memory Server
+         */
+        ServerConfiguration serverConfig = server.getServerConfiguration();
+        LdapRegistry ldap = serverConfig.getLdapRegistries().get(0);
+        ldap.setHost("localhost");
+        ldap.setPort(String.valueOf(ldapServer.getLdapsPort()));
+        ldap.setBindDN(InMemoryTDSLDAPServer.getBindDN());
+        ldap.setBindPassword(InMemoryTDSLDAPServer.getBindPassword());
+        server.updateServerConfiguration(serverConfig);
+
+        /*
+         * Make sure the application has come up before proceeding
+         */
         server.startServer(c.getName() + ".log");
 
         //Make sure the application has come up before proceeding
@@ -71,6 +103,15 @@ public class FATTestIDSwithSSL {
             Thread.sleep(5000);
             servlet.getRealm();
         }
+    }
+
+    /**
+     * Configure the embedded LDAP server.
+     *
+     * @throws Exception If the server failed to start for some reason.
+     */
+    private static void setupLdapServer() throws Exception {
+        ldapServer = new InMemoryTDSLDAPServer();
     }
 
     @AfterClass

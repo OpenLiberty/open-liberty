@@ -68,3 +68,7 @@ no.injection.target.CWOWB1008E.useraction=Verificare che l'archivio a cui appart
 implicit.bean.scanning.disabled.CWOWB1009W=CWOWB1009W: Gli archivi bean impliciti sono disabilitati.
 implicit.bean.scanning.disabled.CWOWB1009W.explanation=Gli archivi non vengono sottoposti a scansione per i bean CDI a meno che non dispongano di un file beans.xml.
 implicit.bean.scanning.disabled.CWOWB1009W.useraction=Accertarsi che ogni archivio che utilizza CDI disponga di un file beans.xml oppure abilitare nuovamente la scansione dei bean impliciti nel file server.xml.
+
+spi.extension.failed.to.construct.CWOWB10010E=CWOWB10010E: Impossibile creare l'estensione CDI tramite SPI.
+spi.extension.failed.to.construct.CWOWB10010E.explanation=CDI non \u00e8 riuscito a richiamare il costruttore della classe di estensione {0} registrata tramite il metodo getExtensions() di un'implementazione WebSphereCDIExtensionMetaData a causa dell'eccezione {1}.
+spi.extension.failed.to.construct.CWOWB10010E.useraction=Correggere l'errore che impedisce l'istanziazione dell'estensione.

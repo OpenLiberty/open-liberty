@@ -18,6 +18,7 @@ import java.util.List;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.crypto.certificateutil.DefaultSSLCertificateCreator;
 import com.ibm.ws.security.acme.internal.AcmeClient.AcmeAccount;
+import com.ibm.ws.security.acme.internal.exceptions.CertificateRenewRequestBlockedException;
 
 /**
  * An interface to define the methods that an ACME 2.0 OSGi service will
@@ -124,5 +125,14 @@ public interface AcmeProvider {
 	 */
 	public void updateDefaultSSLCertificate(KeyStore keyStore, File keyStoreFile, @Sensitive String password)
 			throws CertificateException;
+	
+	/**
+	 * Checks whether a certificate renew is allowed. If a renew just happened, the
+	 * request is blocked.
+	 * 
+	 * @throws AcmeCaException
+	 * 			If a certificate renew just happened
+	 */
+	public void checkCertificateRenewAllowed() throws AcmeCaException;
 
 }

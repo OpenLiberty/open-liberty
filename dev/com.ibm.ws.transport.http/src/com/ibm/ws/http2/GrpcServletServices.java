@@ -20,6 +20,8 @@ public class GrpcServletServices {
 
     private static final Map<String, ServiceInformation> servletGrpcServices = new HashMap<String, ServiceInformation>();
 
+    public static boolean grpcInUse = false;
+
     /**
      * Register an a gRPC service with its application
      *
@@ -27,6 +29,9 @@ public class GrpcServletServices {
      * @param String contextRoot for the app
      */
     public static synchronized void addServletGrpcService(String service, String contextRoot, Class<?> clazz) {
+
+        grpcInUse = true;
+
         if (servletGrpcServices.containsKey(service)) {
             throw new RuntimeException("duplicate gRPC service added: " + service);
         } else {

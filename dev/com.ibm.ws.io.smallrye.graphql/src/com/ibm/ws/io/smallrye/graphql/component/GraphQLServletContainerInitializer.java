@@ -161,6 +161,14 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
             IndexInitializer indexInitializer = new IndexInitializer();
             IndexView index = indexInitializer.createIndex(Collections.singleton(webinfClassesUrl));
             Schema schema = SchemaBuilder.build(index);
+            if (schema == null || (!schema.hasQueries() && !schema.hasMutations())) {
+                // not a GraphQL app as far as we can tell - trace and exit:
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "No GraphQL components found in app: " + ctx.getServletContextName());
+                }
+                diagnostics.remove(ctx.getClassLoader());
+                return;
+            }
             diagBag.modelSchema = schema;
             graphQLSchema = Bootstrap.bootstrap(schema, config);
         } catch (Throwable t) {

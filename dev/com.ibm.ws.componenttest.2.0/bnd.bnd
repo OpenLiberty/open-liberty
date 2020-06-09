@@ -65,7 +65,7 @@ test.project: true
     org.jboss.shrinkwrap:shrinkwrap-spi;version=1.2.3,\
     com.ibm.ws.componenttest:fat.util;version=1.0.0,\
     org.jmock:jmock;strategy=exact;version=2.5.1,\
-    com.ibm.websphere.jakartaee.servlet.5.0;version=latest,\
+    io.openliberty.jakarta.servlet.5.0;version=latest,\
     com.ibm.websphere.org.osgi.core;version=latest,\
     com.ibm.websphere.org.osgi.service.component;version=latest,\
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\

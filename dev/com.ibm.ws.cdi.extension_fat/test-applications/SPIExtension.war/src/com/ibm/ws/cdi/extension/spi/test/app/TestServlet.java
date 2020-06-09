@@ -39,14 +39,12 @@ public class TestServlet extends HttpServlet {
     MyBeanInjectionString beanInjectedString;
 
     @Inject
-    DummyBean db;
+    AppBean appBean;
 
     private static final long serialVersionUID = 1L;
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-
-        db.iExist();
 
         String unregString = "";
 
@@ -63,6 +61,7 @@ public class TestServlet extends HttpServlet {
         pw.println(beanInjectedString.toString());
         pw.println(classString.toString());
         pw.println(unregString);
+        pw.println(appBean.toString());
 
     }
 }

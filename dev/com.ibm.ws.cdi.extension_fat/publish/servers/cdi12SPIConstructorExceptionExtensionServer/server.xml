@@ -1,0 +1,16 @@
+<server description="Server for testing CDI">
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>osgiconsole-1.0</feature>
+        <feature>cdi-1.2</feature>
+        <feature>servlet-3.1</feature>
+        <feature>componentTest-1.0</feature>
+        <feature>jndi-1.0</feature> 
+        <feature>localConnector-1.0</feature>
+        <feature>ejbLite-3.2</feature>
+        <feature>usr:cdi.spi.constructor.fail.extension</feature>
+    </featureManager>
+
+</server>

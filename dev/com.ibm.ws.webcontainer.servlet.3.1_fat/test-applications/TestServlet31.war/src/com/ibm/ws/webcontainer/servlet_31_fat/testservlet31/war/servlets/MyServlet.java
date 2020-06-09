@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,8 +32,9 @@ public class MyServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ServletOutputStream sos = response.getOutputStream();
 
-        if (request.getParameter("TestMinorVersion") != null) {
+        if (request.getParameter("TestMajorMinorVersion") != null) {
             ServletContext context = request.getServletContext();
+            sos.println("majorVersion: " + context.getMajorVersion());
             sos.println("minorVersion: " + context.getMinorVersion());
         } else {
             sos.println("Hello World");
