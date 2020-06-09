@@ -189,7 +189,7 @@ public class AcmeSwapDirectoriesTest {
 			 * 
 			 **********************************************************************/			
 			Log.info(this.getClass(), testName.getMethodName(), "TEST 3: START");
-			server.stopServer();
+			stopServer();
 			AcmeFatUtils.configureAcmeCA(server, caContainer, ORIGINAL_CONFIG, false, false, false, DOMAINS_1);
 			server.startServer();
 			AcmeFatUtils.waitForAcmeAppToStart(server);
@@ -218,7 +218,7 @@ public class AcmeSwapDirectoriesTest {
 			/*
 			 * Stop the server.
 			 */
-			server.stopServer("CWPKI2038W");
+			stopServer("CWPKI2038W");
 		}
 	}
 	/**
@@ -318,7 +318,7 @@ public class AcmeSwapDirectoriesTest {
 			/*
 			 * Stop the server.
 			 */
-			server.stopServer("CWPKI2038W", "CWPKI2072W");
+			stopServer("CWPKI2038W", "CWPKI2072W");
 		}
 	}
 	/**
@@ -393,7 +393,11 @@ public class AcmeSwapDirectoriesTest {
 			/*
 			 * Stop the server.
 			 */
-			server.stopServer("CWPKI2038W");
+			stopServer("CWPKI2038W");
 		}
+	}
+	
+	private void stopServer(String...msgs) throws Exception {
+		AcmeFatUtils.stopServer(server, msgs);
 	}
 }
