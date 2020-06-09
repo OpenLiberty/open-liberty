@@ -155,9 +155,8 @@ public abstract class CATConsumer
             if (pps)
             {
                SibTr.debug(tc
-                          ,String.format("[@%x] WARNING: possible error in state transition"
-                                        ,Thread.currentThread().getStackTrace()
-                                        )
+                          ,String.format("[@%x] WARNING: possible error in state transition", this.hashCode())
+                          ,Thread.currentThread().getStackTrace()
                           );
             }
          }
