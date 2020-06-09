@@ -13,7 +13,7 @@
 bVersion=1.0
 
 Bundle-SymbolicName: io.openliberty.jakarta.servlet.5.0; singleton:=true
-Bundle-Description: Jakarta Servlet EE9, version 5.0
+Bundle-Description: Jakarta Servlet, version 5.0
 
 Export-Package: \
    	jakarta.servlet;uses:="jakarta.servlet.annotation,jakarta.servlet.descriptor";version="5.0.0",\
