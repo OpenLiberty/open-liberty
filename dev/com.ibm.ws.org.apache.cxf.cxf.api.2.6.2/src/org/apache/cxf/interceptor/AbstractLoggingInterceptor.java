@@ -75,7 +75,7 @@ public abstract class AbstractLoggingInterceptor extends AbstractPhaseIntercepto
     
     protected abstract Logger getLogger();
     
-    Logger getMessageLogger(Message message) {
+    protected Logger getMessageLogger(Message message) {
         EndpointInfo endpoint = message.getExchange().getEndpoint().getEndpointInfo();
         if (endpoint.getService() == null) {
             return getLogger();
