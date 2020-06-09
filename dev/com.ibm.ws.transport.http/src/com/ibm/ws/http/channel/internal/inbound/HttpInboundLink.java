@@ -11,11 +11,11 @@
 package com.ibm.ws.http.channel.internal.inbound;
 
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
 
 import com.ibm.websphere.event.Event;
 import com.ibm.websphere.event.EventEngine;
@@ -924,11 +924,11 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
     /**
      * Determine if a request contains http2 upgrade headers
      *
-     * @param headers a String map of http header key and value pairs
+     * @param hsrt HttpServletRequest
      * @return true if the request contains an http2 upgrade header
      */
-    public boolean isHTTP2UpgradeRequest(Map<String, String> headers) {
-        return checkIfUpgradeHeaders(headers);
+    public boolean isHTTP2UpgradeRequest(HttpServletRequest hsrt) {
+        return checkIfUpgradeHeaders(hsrt);
     };
 
     final static String CONSTANT_upgrade = new String("upgrade");
@@ -942,20 +942,19 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
      * @param headers a String map of http header key and value pairs
      * @return true if an http2 upgrade header is found
      */
-    private boolean checkIfUpgradeHeaders(Map<String, String> headers) {
+    private boolean checkIfUpgradeHeaders(HttpServletRequest hsrt) {
         // looking for two headers.
         // connection header with a value of "upgrade"
         // upgrade header with a value of "h2c"
         boolean connection_upgrade = false;
         boolean upgrade_h2c = false;
         String headerValue = null;
-        Set<Entry<String, String>> headerEntrys = headers.entrySet();
-
-        for (Entry<String, String> header : headerEntrys) {
-            String name = header.getKey();
+        Enumeration<String> names = hsrt.getHeaderNames();
+        while (names.hasMoreElements()) {
+            String name = names.nextElement();
             //check if it's an HTTP2 non-secure upgrade connection.
             if (name.equalsIgnoreCase(CONSTANT_connection)) {
-                headerValue = header.getValue();
+                headerValue = hsrt.getHeader(name);
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "connection header found with value: " + headerValue);
                 }
@@ -970,9 +969,8 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
                     }
                     connection_upgrade = true;
                 }
-            }
-            if (name.equalsIgnoreCase(CONSTANT_upgrade)) {
-                headerValue = header.getValue();
+            } else if (name.equalsIgnoreCase(CONSTANT_upgrade)) {
+                headerValue = hsrt.getHeader(name);
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "upgrade header found with value: " + headerValue);
                 }

@@ -16,9 +16,10 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
+
+import javax.servlet.http.HttpServletRequest;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -1183,18 +1184,17 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      * Determine if a request is an http2 upgrade request
      */
     @Override
-    public boolean isHTTP2UpgradeRequest(Map<String, String> headers, boolean checkEnabledOnly) {
+    public boolean isHTTP2UpgradeRequest(HttpServletRequest hsrt, boolean checkEnabledOnly) {
         if (isc != null) {
             //Returns whether HTTP/2 is enabled for this channel/port
-            if (checkEnabledOnly) {
-                return isc.isHttp2Enabled();
+            if (checkEnabledOnly && !isc.isHttp2Enabled()) {
+                return false;
             }
             //Check headers for HTTP/2 upgrade header
             else {
                 HttpInboundLink link = isc.getLink();
                 if (link != null) {
-
-                    return link.isHTTP2UpgradeRequest(headers);
+                    return link.isHTTP2UpgradeRequest(hsrt);
                 }
             }
         }
@@ -1208,13 +1208,13 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      * @return false if some error occurred while servicing the upgrade request
      */
     @Override
-    public boolean handleHTTP2UpgradeRequest(Map<String, String> headers) {
+    public boolean handleHTTP2UpgradeRequest(String http2Settings) {
         HttpInboundLink link = isc.getLink();
         HttpInboundChannel channel = link.getChannel();
         VirtualConnection vc = link.getVirtualConnection();
         H2InboundLink h2Link = new H2InboundLink(channel, vc, getTCPConnectionContext());
 
-        boolean upgraded = h2Link.handleHTTP2UpgradeRequest(headers, link);
+        boolean upgraded = h2Link.handleHTTP2UpgradeRequest(http2Settings, link);
         if (upgraded) {
             h2Link.startAsyncRead(true);
         } else {

@@ -11,7 +11,6 @@
 package com.ibm.ws.http.channel.h2internal;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
@@ -337,8 +336,7 @@ public class H2InboundLink extends HttpInboundLink {
      * @param link    the initial inbound link
      * @return true if the http2 upgrade was successful
      */
-    public boolean handleHTTP2UpgradeRequest(Map<String, String> headers, HttpInboundLink link) {
-
+    public boolean handleHTTP2UpgradeRequest(String http2Settings, HttpInboundLink link) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "handleHTTP2UpgradeRequest entry");
         }
@@ -385,14 +383,11 @@ public class H2InboundLink extends HttpInboundLink {
         streamProcessor = new H2StreamProcessor(streamID, wrap, this, StreamState.OPEN);
         streamTable.put(streamID, streamProcessor);
 
-        // pull the settings header out of the request;
-        // process it and apply it to the stream
-        String settings = headers.get("HTTP2-Settings");
         try {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "handleHTTP2UpgradeRequest, processing upgrade header settings : " + settings);
+                Tr.debug(tc, "handleHTTP2UpgradeRequest, processing upgrade header settings : " + http2Settings);
             }
-            getRemoteConnectionSettings().processUpgradeHeaderSettings(settings);
+            getRemoteConnectionSettings().processUpgradeHeaderSettings(http2Settings);
         } catch (Http2Exception e1) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "handleHTTP2UpgradeRequest an error occurred processing the settings during connection initialization");
