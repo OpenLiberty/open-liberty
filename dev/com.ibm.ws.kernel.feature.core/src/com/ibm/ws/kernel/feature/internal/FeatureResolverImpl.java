@@ -235,8 +235,8 @@ public class FeatureResolverImpl implements FeatureResolver {
      */
     private Set<String> doResolveFeatures(Collection<String> rootFeatures, Set<String> preResolved, SelectionContext selectionContext) {
         // first pass; process the roots until we have selected all the candidates for multiple versions;
-        // need to reset the initial black list count so we can recalculate it during the first pass
-        selectionContext.resetInitialBlackListCount();
+        // need to reset the initial blocked count so we can recalculate it during the first pass
+        selectionContext.resetInitialBlockedCount();
         Set<String> result = processCurrentPermutation(rootFeatures, preResolved, selectionContext);
 
         // if the first pass resulted in no conflicts return the results (optimistic)
@@ -246,12 +246,12 @@ public class FeatureResolverImpl implements FeatureResolver {
         }
 
         // oh oh, we have conflicts;
-        // NOTE, if the current solution has more conflicts than the initial count (black list)
+        // NOTE, if the current solution has more conflicts than the initial count (blocked)
         // then that means one of the toleration (postponed) choices we made introduced an
         // addition conflict.  That implies that a better solution may be available.
         // As long as there are more conflicts than the number of initial root conflicts
         // and there is a different permutation to try do another pass
-        while (selectionContext.currentHasMoreThanInitialBlackListCount() && selectionContext.popPermutation()) {
+        while (selectionContext.currentHasMoreThanInitialBlockedCount() && selectionContext.popPermutation()) {
             result = processCurrentPermutation(rootFeatures, preResolved, selectionContext);
         }
 
@@ -262,17 +262,17 @@ public class FeatureResolverImpl implements FeatureResolver {
 
     Set<String> processCurrentPermutation(Collection<String> rootFeatures, Set<String> preResolved, SelectionContext selectionContext) {
         Set<String> result;
-        // The number of black listed is checked each time we process a postponed decision.
+        // The number of blocked is checked each time we process a postponed decision.
         // A check is done each time we process the roots after doing a postponed decision
-        // to see if more features got black listed.  If more got black listed then we
+        // to see if more features got blocked.  If more got blocked then we
         // re-process the roots again.
-        // This is necessary to ensure the final result does not include one of the black list features
-        int numBlacklisted;
+        // This is necessary to ensure the final result does not include one of the blocked features
+        int numBlocked;
         do {
             selectionContext.processPostponed();
-            numBlacklisted = selectionContext.getBlackListCount();
+            numBlocked = selectionContext.getBlockedCount();
             result = processRoots(rootFeatures, preResolved, selectionContext);
-        } while (selectionContext.hasPostponed() || numBlacklisted != selectionContext.getBlackListCount());
+        } while (selectionContext.hasPostponed() || numBlocked != selectionContext.getBlockedCount());
         // Save the result in the current permutation
         selectionContext._current._result.setResolvedFeatures(result);
         selectionContext.checkForBestSolution();
@@ -300,10 +300,10 @@ public class FeatureResolverImpl implements FeatureResolver {
                 processSelected(rootFeatureDef, null, chain, result, selectionContext);
             }
         }
-        // Note that this only saves the black list count on the first call during doResolveFeatures;
+        // Note that this only saves the blocked count on the first call during doResolveFeatures;
         // Any conflicts here will be due to hard failures with no alternative toleration choices.
         // In other words, it is the best conflict count we will ever achieve.
-        selectionContext.setInitialRootBlackListCount();
+        selectionContext.setInitialRootBlockedCount();
         return result;
     }
 
@@ -334,10 +334,10 @@ public class FeatureResolverImpl implements FeatureResolver {
             return;
         }
 
-        // first check if the feature is blacklisted as already in conflict
+        // first check if the feature is blocked as already in conflict
         String featureName = selectedFeature.getSymbolicName();
         String baseFeatureName = parseNameAndVersion(featureName)[0];
-        if (selectionContext.isBlackListed(baseFeatureName)) {
+        if (selectionContext.isBlocked(baseFeatureName)) {
             return;
         }
         // sanity check to make sure this feature is selected; this is really just to check bugs in the resolver
@@ -413,8 +413,8 @@ public class FeatureResolverImpl implements FeatureResolver {
         String preferredVersion = nameAndVersion[1];
         boolean isSingleton = false;
 
-        // if the base name is blacklisted then we do not continue with this included
-        if (selectionContext.isBlackListed(baseSymbolicName)) {
+        // if the base name is blocked then we do not continue with this include
+        if (selectionContext.isBlocked(baseSymbolicName)) {
             return;
         }
 
@@ -567,14 +567,14 @@ public class FeatureResolverImpl implements FeatureResolver {
     /*
      * The selection context maintains the state of the resolve operation.
      * It records the selected candidates, the postponed decisions and
-     * any blacklisted features. It also keeps a stack of permutations
+     * any blocked features. It also keeps a stack of permutations
      * that can be used to backtrack earlier decisions.
      */
     static class SelectionContext {
         static class Permutation {
             final Map<String, Chain> _selected = new HashMap<String, Chain>();
             final Map<String, Chains> _postponed = new LinkedHashMap<String, Chains>();
-            final Set<String> _blacklistFeatures = new HashSet<String>();
+            final Set<String> _blockedFeatures = new HashSet<String>();
             final ResultImpl _result = new ResultImpl();
 
             Permutation copy(Map<String, Collection<Chain>> preResolveConflicts) throws DeadEndChain {
@@ -596,7 +596,7 @@ public class FeatureResolverImpl implements FeatureResolver {
                     copy._postponed.put(chainsEntry.getKey(), chainsEntry.getValue().copy());
                 }
 
-                // NOTE the black list features are NOT copied; they get recalculated
+                // NOTE the blocked features are NOT copied; they get recalculated
                 return copy;
             }
         }
@@ -605,7 +605,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         private final Deque<Permutation> _permutations = new ArrayDeque<Permutation>(Arrays.asList(new Permutation()));
         private final boolean _allowMultipleVersions;
         private final EnumSet<ProcessType> _supportedProcessTypes;
-        private final AtomicInteger _initialBlackListCount = new AtomicInteger(-1);
+        private final AtomicInteger _initialBlockedCount = new AtomicInteger(-1);
         private final Map<String, Collection<Chain>> _preResolveConflicts = new HashMap<String, Collection<Chain>>();
         private Permutation _current = _permutations.getFirst();
 
@@ -620,17 +620,17 @@ public class FeatureResolverImpl implements FeatureResolver {
             _preResolveConflicts.putAll(_current._result.getConflicts());
         }
 
-        void resetInitialBlackListCount() {
-            _initialBlackListCount.set(-1);
+        void resetInitialBlockedCount() {
+            _initialBlockedCount.set(-1);
         }
 
-        boolean currentHasMoreThanInitialBlackListCount() {
-            return getBlackListCount() > _initialBlackListCount.get();
+        boolean currentHasMoreThanInitialBlockedCount() {
+            return getBlockedCount() > _initialBlockedCount.get();
         }
 
-        void setInitialRootBlackListCount() {
+        void setInitialRootBlockedCount() {
             // only set this once
-            _initialBlackListCount.compareAndSet(-1, getBlackListCount());
+            _initialBlockedCount.compareAndSet(-1, getBlockedCount());
         }
 
         void restoreBestSolution() {
@@ -667,8 +667,8 @@ public class FeatureResolverImpl implements FeatureResolver {
         @FFDCIgnore(DeadEndChain.class)
         void pushPermutation() {
             // We only want to backtrack this decision if the current
-            // permutation does not add more black list conflicts to the initial root conflicts
-            if (_initialBlackListCount.get() == getBlackListCount()) {
+            // permutation does not add more blocked conflicts to the initial root conflicts
+            if (_initialBlockedCount.get() == getBlockedCount()) {
                 try {
                     _permutations.addFirst(_current.copy(_preResolveConflicts));
                 } catch (DeadEndChain e) {
@@ -681,12 +681,12 @@ public class FeatureResolverImpl implements FeatureResolver {
             return _repository;
         }
 
-        boolean isBlackListed(String baseSymbolicName) {
-            return _current._blacklistFeatures.contains(baseSymbolicName);
+        boolean isBlocked(String baseSymbolicName) {
+            return _current._blockedFeatures.contains(baseSymbolicName);
         }
 
-        int getBlackListCount() {
-            return _current._blacklistFeatures.size();
+        int getBlockedCount() {
+            return _current._blockedFeatures.size();
         }
 
         ResultImpl getResult() {
@@ -793,7 +793,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             // there are not any current conflicts in the collection.
             // Note that the features may include two versions of the same feature (e.g. servlet-3.0 and servlet-3.1)
             // this case needs to be handled by removing both versions from the features collection
-            // and black listing the base feature name (e.g. servlet)
+            // and blocking the base feature name (e.g. servlet)
             Map<String, String> conflicts = new HashMap<String, String>();
             for (Iterator<String> iFeatures = features.iterator(); iFeatures.hasNext();) {
                 String featureName = iFeatures.next();
@@ -812,7 +812,7 @@ public class FeatureResolverImpl implements FeatureResolver {
                         // We only keep the first selected one
                         iFeatures.remove();
                         // check if the selected feature is contained in the features collection;
-                        // if so then it is a conflict also and we need to clean it up and blacklist it
+                        // if so then it is a conflict also and we need to clean it up and block it
                         String selectedFeature = selectedChain.getCandidates().get(0);
                         if (features.contains(selectedFeature)) {
                             Chain conflictedFeatureChain = new Chain(Collections.<String> emptyList(), Collections.singletonList(featureSymbolicName), preferredVersion,
@@ -848,7 +848,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         }
 
         void addConflict(String baseFeatureName, List<Chain> conflicts) {
-            _current._blacklistFeatures.add(baseFeatureName);
+            _current._blockedFeatures.add(baseFeatureName);
             _current._result.addConflict0(baseFeatureName, conflicts);
         }
     }
