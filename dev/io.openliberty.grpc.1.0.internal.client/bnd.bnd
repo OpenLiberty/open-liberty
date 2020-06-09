@@ -40,9 +40,7 @@ Export-Package: \
   io.openliberty.grpc.internal.client.* ,\
   io.grpc.netty.shaded.io.*
 
-javac.args.release: current
-
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=11))"
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 -dsannotations: io.openliberty.grpc.internal.client.config.GrpcClientConfigImpl
 

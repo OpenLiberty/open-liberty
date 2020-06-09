@@ -35,10 +35,8 @@ Export-Package: \
 	org.checkerframework.framework.qual,\
 	org.checkerframework.checker.nullness.qual,\
 	org.checkerframework.checker.nullness.compatqual
-	
-javac.args.release: current
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=11))"
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
   
 Include-Resource: \
   @${repo;io.grpc:grpc-core;1.27.0;EXACT}!/META-INF/**, \
