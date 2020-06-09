@@ -283,7 +283,6 @@ public class AcmeCaRestHandlerTest {
 				CONTENT_TYPE_JSON, JSON_CERT_REGEN);
 		assertJsonResponse(jsonResponse, 200);
 		AcmeFatUtils.waitForAcmeToCreateCertificate(server);
-		AcmeFatUtils.waitForSslEndpoint(server);
 
 		/*
 		 * Compare the new certificate to the old certificate.
