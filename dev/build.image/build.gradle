@@ -34,8 +34,8 @@ def getBetaVersion() {
     return year + "." + major + "." + minor + "." + new_month
 }
 
-def libertyBeta = rootProject.userProps.getProperty("betaVersionOverride") == null ? getBetaVersion() : rootProject.userProps.getProperty("betaVersionOverride")
-def betaVersion = libertyBeta + "-beta-" + rootProject.userProps.getProperty("version.qualifier")
+def libertyBeta = rootProject.userProps.getProperty("betaVersionOverride") == null ? (getBetaVersion() + "-beta") : (rootProject.userProps.getProperty("betaVersionOverride") + "-beta")
+def betaVersion = libertyBeta + "-" + rootProject.userProps.getProperty("version.qualifier")
 
 task copyPropertiesToBuildImage (type:Copy) {
     dependsOn jar
