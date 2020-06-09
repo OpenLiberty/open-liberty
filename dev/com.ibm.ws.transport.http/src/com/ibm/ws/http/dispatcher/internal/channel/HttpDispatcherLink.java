@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -1197,6 +1199,16 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                     return link.isHTTP2UpgradeRequest(headers);
                 }
             }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isHTTP2UpgradeRequest(HttpServletRequest hsrt) {
+        HttpInboundLink link = isc.getLink();
+        if (link != null) {
+
+            return link.isHTTP2UpgradeRequest(hsrt);
         }
         return false;
     }

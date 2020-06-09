@@ -44,19 +44,7 @@ public class H2HandlerImpl implements H2Handler {
         if (!((Http2InboundConnection)hic).isHTTP2UpgradeRequest(null, true) ){
             return false;
         }
-        
-        Map<String, String> headers = new HashMap<String, String>();
-        HttpServletRequest hsrt = (HttpServletRequest) request;
-        Enumeration<String> headerNames = hsrt.getHeaderNames();
-        
-        // create a map of the headers to pass to the transport code
-        while (headerNames.hasMoreElements()) {
-            String key = (String) headerNames.nextElement();
-            String value = hsrt.getHeader(key);
-            headers.put(key, value);
-        }
-        //check if this request is asking to do H2
-        return ((Http2InboundConnection)hic).isHTTP2UpgradeRequest(headers, false);
+        return ((Http2InboundConnection)hic).isHTTP2UpgradeRequest((HttpServletRequest) request);
     }
 
     /**
