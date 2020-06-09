@@ -40,6 +40,7 @@ public class HttpResponseImpl implements HttpResponse {
     private HttpResponseMessage message = null;
     private HttpOutputStreamImpl body = null;
     private HttpDispatcherLink connlink = null;
+    private boolean isContentLanguageSet = false;
 
     /**
      * Constructor.
@@ -59,6 +60,7 @@ public class HttpResponseImpl implements HttpResponse {
         this.isc = context;
         this.message = context.getResponse();
         this.body = null;
+        this.isContentLanguageSet = false;
     }
 
     /*
@@ -141,6 +143,9 @@ public class HttpResponseImpl implements HttpResponse {
      */
     @Override
     public void setHeader(String name, String value) {
+        if ("Content-Language".equals(name)) {
+            isContentLanguageSet = true;
+        }
         this.message.setHeader(name, value);
     }
 
@@ -326,4 +331,8 @@ public class HttpResponseImpl implements HttpResponse {
 
     }
 
+    @Override
+    public boolean isContentLanguageSet() {
+        return isContentLanguageSet;
+    }
 }
