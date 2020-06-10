@@ -35,8 +35,8 @@ public class ServerLock {
 
     /**
      * @param bootProps
-     *            {@link BootstrapConfig} containing all established/calculated
-     *            values for server name and directories.
+     *                      {@link BootstrapConfig} containing all established/calculated
+     *                      values for server name and directories.
      * @return constructed ServerLock
      */
     public static ServerLock createTestLock(BootstrapConfig bootProps) {
@@ -71,12 +71,12 @@ public class ServerLock {
      * and are writiable.
      *
      * @param bootProps
-     *            {@link BootstrapConfig} containing all established/calculated
-     *            values for server name and directories.
+     *                      {@link BootstrapConfig} containing all established/calculated
+     *                      values for server name and directories.
      * @return constructed ServerLock
      *
      * @throws LaunchException
-     *             exception thrown if server directories/files are not writable.
+     *                             exception thrown if server directories/files are not writable.
      */
     public static ServerLock createServerLock(BootstrapConfig bootProps) {
         String serverName = bootProps.getProcessName();
@@ -221,8 +221,8 @@ public class ServerLock {
      * or multiple instances of a same server within same JVM is not supported.
      *
      * @throws LaunchException
-     *             exception thrown if there's a problem getting the lock or
-     *             another instance of this server is running
+     *                             exception thrown if there's a problem getting the lock or
+     *                             another instance of this server is running
      */
     public synchronized void obtainServerLock() {
 
@@ -265,7 +265,6 @@ public class ServerLock {
         try {
             fos = new FileOutputStream(lockFile);
             fc = fos.getChannel();
-            lockFileChannel = fc;
 
             // Try for a short period of time to obtain the lock
             // (if status mechanisms temporarily grab the file, we want to wait
@@ -444,9 +443,16 @@ public class ServerLock {
                 // checking this condition, we can poll for longer without
                 // worrying about "hanging" when the server process fails to
                 // launch altogether (invalid JAVA_HOME, JVM options, etc.).
-                if (fileObtained && (ps.isPossiblyRunning() == State.NO)) {
+                State possiblyRunning = ps.isPossiblyRunning();
+                if (fileObtained && (possiblyRunning == State.NO)) {
                     Debug.println("Server start error: file lock obtained, and server process is not running.");
                     return ReturnCode.ERROR_SERVER_START;
+                }
+
+                // WSL does not gaurantee exclusive file access on file channels,
+                // so just assume the server may have started if we get here
+                if (fileObtained && possiblyRunning == State.YES && attempts > 2 && FileUtils.isWSL()) {
+                    return ReturnCode.OK;
                 }
             }
 
@@ -507,7 +513,7 @@ public class ServerLock {
             fc = fos.getChannel();
             lockFileChannel = fc;
 
-            if (tryServerLock()) {
+            if (tryServerLock() && !FileUtils.isWSL()) {
                 // we could obtain the server lock, server is not running
                 return false;
             }
