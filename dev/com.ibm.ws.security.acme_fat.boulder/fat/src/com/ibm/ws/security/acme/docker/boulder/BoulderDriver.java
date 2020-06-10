@@ -30,6 +30,10 @@ public class BoulderDriver extends AbstractCADriver {
 		driver.initialize();
 
 		/*
+		 * Sometimes the trace flushes late from the BoulderContainer
+		 */
+		Thread.sleep(500);
+		/*
 		 * Wait until the process has been cancelled via ctrl-c.
 		 */
 		driver.printBanner(true);

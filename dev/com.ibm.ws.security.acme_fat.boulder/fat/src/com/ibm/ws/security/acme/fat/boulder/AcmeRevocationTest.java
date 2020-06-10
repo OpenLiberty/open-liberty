@@ -9,14 +9,13 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.security.acme.fat;
+package com.ibm.ws.security.acme.fat.boulder;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertThat;
 
 import java.io.File;
@@ -30,7 +29,6 @@ import javax.xml.bind.DatatypeConverter;
 import org.apache.http.Header;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -51,7 +49,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.acme.docker.CAContainer;
 import com.ibm.ws.security.acme.docker.boulder.BoulderContainer;
 import com.ibm.ws.security.acme.docker.pebble.PebbleContainer;
-import com.ibm.ws.security.acme.internal.util.AcmeConstants;
+import com.ibm.ws.security.acme.fat.AcmeSimpleTest;
 import com.ibm.ws.security.acme.internal.web.AcmeCaRestHandler;
 import com.ibm.ws.security.acme.utils.AcmeFatUtils;
 
@@ -418,10 +416,12 @@ public class AcmeRevocationTest {
 			 * Wait for the cert checker to run and update
 			 */
 			assertNotNull("Should log message that the certificate was revoked",
-					server.waitForStringInLogUsingMark("CWPKI2067I", (configuration.getAcmeCA().getRenewCertMin() * 3)) );
+					server.waitForStringInLogUsingMark("CWPKI2067I",
+							(configuration.getAcmeCA().getRenewCertMin() * 3)));
 
 			assertNotNull("Should log message that the certificate was renewed",
-					server.waitForStringInLogUsingMark("CWPKI2007I", (configuration.getAcmeCA().getRenewCertMin() * 3)) );
+					server.waitForStringInLogUsingMark("CWPKI2007I",
+							(configuration.getAcmeCA().getRenewCertMin() * 3)));
 
 			AcmeFatUtils.waitForNewCert(server, boulder, startingCertificateChain);
 
@@ -589,13 +589,13 @@ public class AcmeRevocationTest {
 	private void stopServer(String...msgs) throws Exception {
 		AcmeFatUtils.stopServer(server, msgs);
 	}
-	
+
 	/**
-	 * Start a pebble server and swap between pebble and boulder and make sure
-	 * we still get a certificate when switching.
+	 * Start a pebble server and swap between pebble and boulder and make sure we
+	 * still get a certificate when switching.
 	 * 
 	 * @throws Exception
-	 *             if the test failed for some unforeseen reason.
+	 *                       if the test failed for some unforeseen reason.
 	 */
 	@Test
 	public void swapBetweenCAProviders() throws Exception {

@@ -11,6 +11,7 @@
 
 package com.ibm.ws.security.acme.utils;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
@@ -36,16 +37,20 @@ import java.util.List;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
+import javax.xml.bind.DatatypeConverter;
 
+import org.apache.http.Header;
 import org.apache.http.HttpResponseInterceptor;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.conn.ManagedHttpClientConnection;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustAllStrategy;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.ConnectionShutdownException;
@@ -53,6 +58,7 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.HttpCoreContext;
 import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.http.util.EntityUtils;
 
 import com.ibm.websphere.simplicity.config.AcmeCA;
 import com.ibm.websphere.simplicity.config.AcmeCA.AcmeTransportConfig;
@@ -63,6 +69,7 @@ import com.ibm.ws.crypto.certificateutil.DefaultSSLCertificateCreator;
 import com.ibm.ws.crypto.certificateutil.keytool.KeytoolSSLCertificateCreator;
 import com.ibm.ws.security.acme.docker.CAContainer;
 import com.ibm.ws.security.acme.docker.pebble.PebbleContainer;
+import com.ibm.ws.security.acme.internal.web.AcmeCaRestHandler;
 
 import componenttest.topology.impl.LibertyServer;
 
@@ -850,4 +857,51 @@ public class AcmeFatUtils {
 		tempList.add(alwaysAdd);
 		server.stopServer(tempList.toArray(new String[tempList.size()]));
  	}
+
+	/**
+	 * Issue a POST request to the ACME REST API to renew the certificate
+	 * 
+	 * @return The JSON response.
+	 * @throws Exception
+	 *                       if the request failed.
+	 */
+	public static String renewCertificate(LibertyServer server) throws Exception {
+		final String methodName = "renewCertificate()";
+
+		try (CloseableHttpClient httpclient = AcmeFatUtils.getInsecureHttpsClient()) {
+
+			/*
+			 * Create a POST request to the Liberty server.
+			 */
+			HttpPost httpPost = new HttpPost("https://localhost:" + server.getHttpDefaultSecurePort() + "/ibm/api"
+					+ AcmeCaRestHandler.PATH_CERTIFICATE);
+			httpPost.setHeader("Authorization", "Basic " + DatatypeConverter
+					.printBase64Binary((ADMIN_USER + ":" + ADMIN_PASS).getBytes()));
+			httpPost.setHeader("Content-Type", "application/json");
+			httpPost.setEntity(new StringEntity("{\"operation\":\"renewCertificate\"}"));
+
+			/*
+			 * Send the POST request and process the response.
+			 */
+			try (final CloseableHttpResponse response = httpclient.execute(httpPost)) {
+				AcmeFatUtils.logHttpResponse(AcmeFatUtils.class, methodName, httpPost, response);
+
+				StatusLine statusLine = response.getStatusLine();
+				assertEquals("Unexpected status code response.", 200, statusLine.getStatusCode());
+
+				/*
+				 * Check content type header.
+				 */
+				Header[] headers = response.getHeaders("content-type");
+				assertNotNull("Expected content type header.", headers);
+				assertEquals("Expected 1 content type header.", 1, headers.length);
+				assertEquals("Unexpected content type.", "application/json", headers[0].getValue());
+
+				String contentString = EntityUtils.toString(response.getEntity());
+				Log.info(AcmeFatUtils.class, methodName, "HTTP post contents: \n" + contentString);
+
+				return contentString;
+			}
+		}
+	}
 }

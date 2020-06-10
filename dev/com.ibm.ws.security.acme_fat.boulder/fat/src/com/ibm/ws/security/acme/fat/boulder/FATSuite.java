@@ -8,22 +8,19 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.acme.fat;
+package com.ibm.ws.security.acme.fat.boulder;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 
 @RunWith(Suite.class)
-@SuiteClasses({ AcmeClientTest.class, 
-	AcmeSimpleTest.class,
-	AcmeURISimpleTest.class,
-	AcmeCaRestHandlerTest.class,
-	AcmeSwapDirectoriesTest.class,
-	AcmeValidityAndRenewTest.class,
-	AcmeDisableTriggerSimpleTest.class
+@SuiteClasses({ AlwaysPassesTest.class,
+	AcmeRevocationTest.class,
+
 	 })
 public class FATSuite {
 
