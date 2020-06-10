@@ -23,6 +23,8 @@ import org.junit.runner.RunWith;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.MvnUtils;
 
@@ -32,6 +34,9 @@ import componenttest.topology.utils.MvnUtils;
  * generates the html report - so there is detailed information on individual
  * tests as if they were running as simplicity junit FAT tests in the standard
  * location.
+ * In normal (lite) mode, just one test from the TCK is run
+ * To run the full TCK, the suite must be run in FULL mode
+ * gradlew -Dfat.test.mode=FULL com.ibm.ws.lra_fat_tck:buildandrun
  */
 @RunWith(FATRunner.class)
 public class LraTckLauncher {
@@ -40,16 +45,6 @@ public class LraTckLauncher {
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
-
-    // TODO not sure what the repeats are for in fault tolerance of if we need them in LRA
-    /*
-     * @ClassRule
-     * public static RepeatTests repeat = RepeatTests.with(RepeatFaultTolerance.ft20metrics11Features(SERVER_NAME).fullFATOnly())
-     * .andWith(RepeatFaultTolerance.mp30Features(SERVER_NAME).fullFATOnly())
-     * .andWith(RepeatFaultTolerance.mp20Features(SERVER_NAME).fullFATOnly())
-     * .andWith(RepeatFaultTolerance.mp13Features(SERVER_NAME).fullFATOnly())
-     * .andWith(RepeatFaultTolerance.mp32Features(SERVER_NAME));
-     */
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -74,7 +69,7 @@ public class LraTckLauncher {
     }
 
     /**
-     * Run the TCK (controlled by autoFVT/publish/tckRunner/tcl/tck-suite.html)
+     * Run one test from the TCK
      *
      * @throws Exception
      */
@@ -89,10 +84,32 @@ public class LraTckLauncher {
         String port = Integer.toString(server.getHttpDefaultPort());
         Map<String, String> additionalProps = new HashMap<>();
         additionalProps.put("lra.tck.base.url", protocol + "://" + host + ":" + port);
+        additionalProps.put("lraTestsToRun", "**/TckTests.java");
 
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.lra_fat_tck", this.getClass() + ":launchLRATCK", additionalProps);
-        //MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.faulttolerance.2.0_fat_tck", this.getClass() + ":launchFaultToleranceTCK", suiteFileName,
-        //                      Collections.emptyMap(), Collections.emptySet());
+
+    }
+
+    /**
+     * Run the whole TCK
+     *
+     * @throws Exception
+     */
+    @Test
+    @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
+    @Mode(TestMode.FULL)
+    public void launchLRATCKFull() throws Exception {
+
+        // This makes the property lra.tck.base.url available to maven, so that it can pass it on to the
+        // arquillian launcher. Not entirely sure if it is needed or not.
+        String protocol = "http";
+        String host = server.getHostname();
+        String port = Integer.toString(server.getHttpDefaultPort());
+        Map<String, String> additionalProps = new HashMap<>();
+        additionalProps.put("lra.tck.base.url", protocol + "://" + host + ":" + port);
+        additionalProps.put("lraTestsToRun", "**/*Test*.java");
+
+        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.lra_fat_tck", this.getClass() + ":launchLRATCK", additionalProps);
 
     }
 }

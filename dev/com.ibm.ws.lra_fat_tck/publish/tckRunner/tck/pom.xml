@@ -31,6 +31,9 @@
 		<defaultSuiteFiles>tck-suite.xml</defaultSuiteFiles>
 		<suiteXmlFile>${defaultSuiteFiles}</suiteXmlFile>
 		<targetDirectory>${project.basedir}/target</targetDirectory>
+		
+		<!-- This is usually overridden in the TCK launcher test which kicks off this maven build-->
+		<lraTestsToRun>**/*Test*.java</lraTestsToRun>
 	</properties>
 
 	<dependencyManagement>
@@ -146,7 +149,7 @@
 						<dependency>org.eclipse.microprofile.lra:microprofile-lra-tck</dependency>
 					</dependenciesToScan>
 					<includes>
-						<include>**/*Test*.java</include>
+						<include>${lraTestsToRun}</include>
 					</includes>
 				</configuration>
 			</plugin>
