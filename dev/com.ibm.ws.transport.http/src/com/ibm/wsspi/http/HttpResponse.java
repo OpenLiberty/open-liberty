@@ -226,11 +226,4 @@ public interface HttpResponse {
      * @param value
      */
     void writeTrailers();
-
-    /**
-     * Checks if "Content-Language" header has already been set on the response
-     *
-     * @return boolean
-     */
-    boolean isContentLanguageSet();
 }

@@ -143,9 +143,6 @@ public class HttpResponseImpl implements HttpResponse {
      */
     @Override
     public void setHeader(String name, String value) {
-        if ("Content-Language".equals(name)) {
-            isContentLanguageSet = true;
-        }
         this.message.setHeader(name, value);
     }
 
@@ -329,10 +326,5 @@ public class HttpResponseImpl implements HttpResponse {
         HttpTrailers trailers = message.createTrailers();
         trailers.computeRemainingTrailers();
 
-    }
-
-    @Override
-    public boolean isContentLanguageSet() {
-        return isContentLanguageSet;
     }
 }

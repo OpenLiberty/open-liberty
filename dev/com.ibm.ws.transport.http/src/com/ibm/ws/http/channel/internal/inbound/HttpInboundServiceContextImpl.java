@@ -85,7 +85,6 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     private String forwardedRemoteAddress = null;
     private String forwardedProto = null;
     private String forwardedHost = null;
-    private final int h2ContentLength = -1;
 
     /**
      * Constructor for an HTTP inbound service context object.

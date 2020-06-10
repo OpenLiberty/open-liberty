@@ -195,9 +195,7 @@ public class IResponseImpl implements IResponse
   public void setContentLanguage(String value)
   {
       //PM25421
-      
-      if (response.isContentLanguageSet()) {
-      //if (response.getHeader("Content-Language") != null){
+      if (response.getHeader("Content-Language") != null){
           if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())  {
               Tr.debug(tc, "setContentLanguage(String)", "Ignored as the Content-Language already set");
           }

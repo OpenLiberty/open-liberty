@@ -1037,6 +1037,7 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
                 }
             }
         }
+
         if (connection_upgrade && upgrade_h2c) {
             return true;
         }
