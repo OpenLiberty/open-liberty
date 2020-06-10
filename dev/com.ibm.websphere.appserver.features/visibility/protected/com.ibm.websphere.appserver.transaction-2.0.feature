@@ -14,15 +14,15 @@ IBM-SPI-Package: com.ibm.wsspi.tx
 IBM-API-Service: com.ibm.wsspi.uow.UOWManager, \
  jakarta.transaction.TransactionSynchronizationRegistry, \
  jakarta.transaction.UserTransaction
--features=com.ibm.websphere.appserver.jakarta.connector.internal-2.0, \
+-features=io.openliberty.jakarta.connector-2.0, \
  io.openliberty.jakarta.cdi-3.0; apiJar=false, \
  com.ibm.websphere.appserver.jta-2.0, \
  com.ibm.websphere.appserver.injection-2.0, \
- com.ibm.websphere.appserver.jakarta.servlet-5.0; apiJar=false, \
+ io.openliberty.jakarta.servlet-5.0; apiJar=false, \
  com.ibm.websphere.appserver.artifact-1.0, \
  com.ibm.websphere.appserver.javaeedd-1.0, \
  com.ibm.websphere.appserver.containerServices-1.0, \
- com.ibm.websphere.appserver.jakarta.annotation-2.0; apiJar=false, \
+ io.openliberty.jakarta.annotation-2.0; apiJar=false, \
  com.ibm.websphere.appserver.anno-2.0, \
  com.ibm.websphere.appserver.eeCompatible-9.0
 -bundles=com.ibm.ws.tx.jta.extensions.jakarta, \

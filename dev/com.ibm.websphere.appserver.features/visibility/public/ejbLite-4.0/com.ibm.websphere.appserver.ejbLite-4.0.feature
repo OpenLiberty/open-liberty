@@ -7,11 +7,11 @@ IBM-App-ForceRestart: install, \
 IBM-ShortName: ejbLite-4.0
 IBM-API-Package: com.ibm.websphere.ejbcontainer.mbean; type="ibm-api"
 Subsystem-Category: JakartaEE9Application
--features=com.ibm.websphere.appserver.jakarta.ejb-4.0, \
+-features=io.openliberty.jakarta.ejb-4.0, \
  com.ibm.websphere.appserver.contextService-1.0, \
  com.ibm.websphere.appserver.transaction-2.0, \
  com.ibm.websphere.appserver.eeCompatible-9.0, \
- com.ibm.websphere.appserver.jakarta.interceptor-2.0
+ io.openliberty.jakarta.interceptor-2.0
 Subsystem-Name: Jakarta Enterprise Beans Lite 4.0
 kind=noship
 edition=full

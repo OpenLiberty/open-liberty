@@ -41,9 +41,9 @@ Subsystem-Category: JakartaEE9Application
  com.ibm.websphere.appserver.appmanager-1.0, \
  com.ibm.websphere.appserver.javaeePlatform-8.0, \
  com.ibm.websphere.appserver.anno-2.0, \
- com.ibm.websphere.appserver.jakarta.annotation-2.0, \
+ io.openliberty.jakarta.annotation-2.0, \
  com.ibm.websphere.appserver.httptransport-1.0, \
- com.ibm.websphere.appserver.jakarta.servlet-5.0, \
+ io.openliberty.jakarta.servlet-5.0, \
  com.ibm.websphere.appserver.requestProbes-1.0, \
  com.ibm.websphere.appserver.eeCompatible-9.0, \
  com.ibm.websphere.appserver.servlet-servletSpi1.0, \
