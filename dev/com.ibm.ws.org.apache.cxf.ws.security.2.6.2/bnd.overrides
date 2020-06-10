@@ -66,7 +66,8 @@ Import-Package:  \
   javax.xml.ws;version="[2.2,3)", \
   javax.xml.ws.handler;version="[2.2,3)", \
   javax.xml.ws.soap;version="[2.2,3)", \
-  javax.xml.xpath,net.sf.ehcache;resolution:=optional;version="[2.5,3.0.0)", \
+  javax.xml.xpath, \
+  net.sf.ehcache;resolution:=optional;version="[2.5,3.0.0)", \
   net.sf.ehcache.config;resolution:=optional;version="[2.5,3.0.0)", \
   org.apache.cxf;version="[2.6,3)", \
   org.apache.cxf.binding;version="[2.6,3)", \
@@ -132,7 +133,8 @@ Import-Package:  \
   org.apache.ws.security.validate;version="[1.6,2)", \
   org.apache.xml.security.keys.content;version="[1.5,2)", \
   org.apache.xml.security.keys.content.keyvalues;version="[1.5,2)", \
-  org.opensaml.common;resolution:=optional,org.opensaml.saml1.core;resolution:=optional, \
+  org.opensaml.common;resolution:=optional, \
+  org.opensaml.saml1.core;resolution:=optional, \
   org.opensaml.saml2.core;resolution:=optional, \
   org.opensaml.xml;resolution:=optional, \
   org.w3c.dom, \
