@@ -12,8 +12,6 @@ package com.ibm.ws.webcontainer31.upgrade;
 
 import java.io.IOException;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -41,10 +39,7 @@ public class H2HandlerImpl implements H2Handler {
     public boolean isH2Request(HttpInboundConnection hic, ServletRequest request) throws ServletException {
         
         //first check if H2 is enabled for this channel/port
-        if (!((Http2InboundConnection)hic).isHTTP2UpgradeRequest(null, true) ){
-            return false;
-        }
-        return ((Http2InboundConnection)hic).isHTTP2UpgradeRequest((HttpServletRequest) request);
+        return ((Http2InboundConnection)hic).isHTTP2UpgradeRequest((HttpServletRequest) request, true);
     }
 
     /**
@@ -74,17 +69,18 @@ public class H2HandlerImpl implements H2Handler {
             h2uh.init(new H2UpgradeHandler());
         }
         
-        // create a map of the headers to pass to the transport code
-        Map<String, String> headers = new HashMap<String, String>();
         HttpServletRequest hsrt = (HttpServletRequest) request;
         Enumeration<String> headerNames = hsrt.getHeaderNames();
-        
+
+        String http2Settings = null;
         while (headerNames.hasMoreElements()) {
-            String key = (String) headerNames.nextElement();
-            String value = hsrt.getHeader(key);
-            headers.put(key, value);
+            String key = headerNames.nextElement();
+            if ("HTTP2-Settings".equals(key)) {
+                http2Settings = hsrt.getHeader(key);
+                break;
+            }
         }
-        boolean upgraded = h2ic.handleHTTP2UpgradeRequest(headers);
+        boolean upgraded = h2ic.handleHTTP2UpgradeRequest(http2Settings);
         if (!upgraded) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "returning: http2 connection initialization failed");
