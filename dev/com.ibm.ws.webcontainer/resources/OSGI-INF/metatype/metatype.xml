@@ -320,6 +320,12 @@
             description="%stopAppStartUponListenerException.desc"
             required="false" type="Boolean" />
             
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="redirectToRelativeUrl"
+            name="%redirectToRelativeUrl.name"
+            description="%redirectToRelativeUrl.desc"
+            required="false" type="Boolean" default="false" />
+            
         <AD name="internal" description="internal use only"
             id="extensionFactory" required="true" type="String" cardinality="100"
             ibm:type="pid" ibm:reference="com.ibm.wsspi.webcontainer.extension.ExtensionFactory" default="*" ibm:final="true"/> 
