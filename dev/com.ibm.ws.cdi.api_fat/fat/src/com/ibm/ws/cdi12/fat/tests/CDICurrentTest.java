@@ -14,18 +14,13 @@ import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 
 import java.io.File;
 
-import org.junit.ClassRule;
-import org.junit.Test;
-
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.importer.ZipImporter;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.ClassRule;
+import org.junit.Test;
 
 import com.ibm.ws.fat.util.BuildShrinkWrap;
 import com.ibm.ws.fat.util.LoggingTest;
@@ -42,18 +37,15 @@ public class CDICurrentTest extends LoggingTest {
 
     @BuildShrinkWrap
     public static Archive buildShrinkWrap() {
-         
-         JavaArchive cdiCurrentTest = ShrinkWrap.create(JavaArchive.class,"cdiCurrentTest.jar")
-                        .addClass("com.ibm.ws.cdi12.test.current.extension.CDICurrentTestBean")
-                        .addClass("com.ibm.ws.cdi12.test.current.extension.MyDeploymentVerifier")
-                        .addClass("com.ibm.ws.cdi12.test.current.extension.DefaultLiteral")
-                        .addClass("com.ibm.ws.cdi12.test.current.extension.CDICurrent")
-                        .add(new FileAsset(new File("test-applications/cdiCurrentTest.jar/resources/META-INF/services/javax.enterprise.inject.spi.Extension")), "/META-INF/services/javax.enterprise.inject.spi.Extension");
 
-         return ShrinkWrap.create(WebArchive.class, "cdiCurrentTest.war")
-                        .addClass("com.ibm.ws.cdi12.test.common.web.TestServlet")
-                        .addClass("com.ibm.ws.cdi12.test.common.web.SimpleBean")
-                        .addAsLibrary(cdiCurrentTest);
+        JavaArchive cdiCurrentTest = ShrinkWrap.create(JavaArchive.class,
+                                                       "cdiCurrentTest.jar").addClass("com.ibm.ws.cdi12.test.current.extension.CDICurrentTestBean").addClass("com.ibm.ws.cdi12.test.current.extension.MyDeploymentVerifier").addClass("com.ibm.ws.cdi12.test.current.extension.DefaultLiteral").addClass("com.ibm.ws.cdi12.test.current.extension.CDICurrent").add(new FileAsset(new File("test-applications/cdiCurrentTest.jar/resources/META-INF/services/javax.enterprise.inject.spi.Extension")),
+                                                                                                                                                                                                                                                                                                                                                                   "/META-INF/services/javax.enterprise.inject.spi.Extension");
+
+        WebArchive archive = ShrinkWrap.create(WebArchive.class,
+                                               "cdiCurrentTest.war").addClass("com.ibm.ws.cdi12.test.common.web.TestServlet").addClass("com.ibm.ws.cdi12.test.common.web.SimpleBean").addAsLibrary(cdiCurrentTest);
+
+        return archive;
     }
 
     @Override

@@ -28,7 +28,7 @@ Private-Package: \
 
 WS-TraceGroup: JCDI
 
-
+jakartaeeMe: true
 
 -buildpath: \
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
