@@ -30,6 +30,6 @@ Export-Package: \
 instrument.disabled: true
 
 -buildpath: \
-  org.eclipse.microprofile.lra:microprofile-lra-api;version=1.0.0.RC1
+  org.eclipse.microprofile.lra:microprofile-lra-api;version=1.0.0.M1
 
 publish.wlp.jar.suffix: dev/api/stable
