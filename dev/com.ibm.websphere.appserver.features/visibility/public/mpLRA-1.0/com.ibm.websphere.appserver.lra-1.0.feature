@@ -1,11 +1,11 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.lra-1.0
+symbolicName=com.ibm.websphere.appserver.mpLRA-1.0
 visibility=public
 singleton=true
 IBM-App-ForceRestart: install, \
  uninstall
-IBM-ShortName: lra-1.0
-Subsystem-Name: Long Running Actions 1.0
+IBM-ShortName: mpLRA-1.0
+Subsystem-Name: MicroProfile Long Running Actions 1.0
 IBM-API-Package: \
   org.eclipse.microprofile.lra.annotation; type="stable", \
   org.eclipse.microprofile.lra.annotation.ws.rs; type="stable";
