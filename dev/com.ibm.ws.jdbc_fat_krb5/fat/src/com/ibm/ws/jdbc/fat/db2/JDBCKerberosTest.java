@@ -58,7 +58,7 @@ public class JDBCKerberosTest extends FATServletClient {
         // Kerberos is only supported on certain operating systems
         // Skip the tests if we are not on one of the supported OSes
         String os = System.getProperty("os.name", "UNKNOWN").toUpperCase();
-        if (!os.contains("LINUX")) {
+        if (!os.contains("LINUX") && !os.contains("MAC OS")) {
             if (FATRunner.FAT_TEST_LOCALRUN) {
                 throw new RuntimeException("Running on an unsupported os: " + os);
             } else {
