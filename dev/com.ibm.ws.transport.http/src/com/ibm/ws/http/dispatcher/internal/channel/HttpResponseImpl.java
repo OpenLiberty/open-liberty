@@ -327,5 +327,4 @@ public class HttpResponseImpl implements HttpResponse {
         trailers.computeRemainingTrailers();
 
     }
-
 }
