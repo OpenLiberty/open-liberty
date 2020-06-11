@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2018 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,7 @@ import com.ibm.ejs.util.dopriv.SetContextClassLoaderPrivileged;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.beanvalidation.AbstractBeanValidation.ClassLoaderTuple;
 import com.ibm.ws.beanvalidation.config.ValidationConfigurationFactory;
 import com.ibm.ws.beanvalidation.config.ValidationConfigurationInterface;
 import com.ibm.ws.beanvalidation.service.BeanValidation;
@@ -186,8 +187,10 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
                                                       "already been destroyed or it was never created");
                     }
 
+                    ClassLoaderTuple tuple = null;
                     if (loader != null && !classLoadingServiceSR.getServiceWithException().isThreadContextClassLoader(loader)) {
-                        loader = createTCCL(loader);
+                        tuple = ClassLoaderTuple.of(createTCCL(loader), true);
+                        loader = tuple.classLoader;
                     }
                     ClassLoader origLoader = scopeData.setClassLoader(loader);
 
@@ -243,9 +246,7 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
                         createSuccessful = true;
 
                     } finally {
-                        if (loader != null) {
-                            releaseLoader(loader);
-                        }
+                        releaseLoader(tuple);
                         scopeData.setClassLoader(origLoader);
 
                         // It's possible that the VF creation failed but we were able to initialize
@@ -280,8 +281,10 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
     }
 
     @Override
-    public void releaseLoader(ClassLoader tccl) {
-        classLoadingServiceSR.getServiceWithException().destroyThreadContextClassLoader(tccl);
+    public void releaseLoader(ClassLoaderTuple tuple) {
+        if (tuple != null && tuple.wasCreatedViaClassLoadingService) {
+            classLoadingServiceSR.getServiceWithException().destroyThreadContextClassLoader(tuple.classLoader);
+        }
     }
 
     @Override
@@ -513,19 +516,19 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
     }
 
     @Override
-    public ClassLoader configureBvalClassloader(ClassLoader cl) {
+    public ClassLoaderTuple configureBvalClassloader(ClassLoader cl) {
         if (cl == null) {
             cl = priv.getContextClassLoader();
         }
         if (cl != null) {
             ClassLoadingService classLoadingService = classLoadingServiceSR.getServiceWithException();
             if (classLoadingService.isThreadContextClassLoader(cl)) {
-                return cl;
+                return ClassLoaderTuple.of(cl, false);
             } else if (classLoadingService.isAppClassLoader(cl)) {
-                return createTCCL(cl);
+                return ClassLoaderTuple.of(createTCCL(cl), true);
             }
         }
-        return createTCCL(AbstractBeanValidation.class.getClassLoader());
+        return ClassLoaderTuple.of(createTCCL(AbstractBeanValidation.class.getClassLoader()), true);
     }
 
     /**
@@ -538,12 +541,14 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
             SetContextClassLoaderPrivileged setClassLoader = null;
             ClassLoader oldClassLoader = null;
             boolean wasTcclCreated = false;
+            ClassLoaderTuple tuple = null;
             try {
                 // Get a classloader that has the bean validation 1.1 API.
                 classLoader = validationConfigFactorySR.getServiceWithException().getClass().getClassLoader();
 
                 if (classLoader != null && !classLoadingServiceSR.getServiceWithException().isThreadContextClassLoader(classLoader)) {
-                    classLoader = createTCCL(classLoader);
+                    tuple = ClassLoaderTuple.of(createTCCL(classLoader), true);
+                    classLoader = tuple.classLoader;
                     wasTcclCreated = true;
                 }
 
@@ -581,9 +586,7 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
                         Tr.debug(tc, "Set Class loader back to " + oldClassLoader);
                     }
                 }
-                if (classLoader != null && wasTcclCreated) {
-                    releaseLoader(classLoader);
-                }
+                releaseLoader(tuple);
             }
         }
     }

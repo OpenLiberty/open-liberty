@@ -12,11 +12,11 @@ package com.ibm.ws.security.acme.fat;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -37,6 +37,7 @@ import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -173,7 +174,7 @@ public class AcmeSimpleTest {
 			/*
 			 * Stop the server.
 			 */
-			server.stopServer();
+			stopServer();
 		}
 
 		/***********************************************************************
@@ -214,7 +215,7 @@ public class AcmeSimpleTest {
 			/*
 			 * Stop the server.
 			 */
-			server.stopServer("CWPKI2058W");
+			stopServer("CWPKI2058W");
 		}
 
 		/***********************************************************************
@@ -256,7 +257,7 @@ public class AcmeSimpleTest {
 			/*
 			 * Stop the server.
 			 */
-			server.stopServer();
+			stopServer();
 		}
 	}
 
@@ -352,7 +353,7 @@ public class AcmeSimpleTest {
 			/*
 			 * Stop the server.
 			 */
-			server.stopServer("CWPKI2058W");
+			stopServer();
 		}
 	}
 
@@ -406,10 +407,11 @@ public class AcmeSimpleTest {
 			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
 
 			/*
-			 * Verify that the server is now using a certificate signed by the
-			 * CA.
+			 * Verify that the server is now using a certificate signed by the CA. We may
+			 * need to a wait a short bit at the SSL config completes the update and clears
+			 * the cache.
 			 */
-			Certificate[] certificates1 = AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
+			Certificate[] certificates1 = AcmeFatUtils.waitForAcmeCert(server, caContainer, 10000);
 			Log.info(this.getClass(), testName.getMethodName(), "TEST 1: FINISH");
 
 			/***********************************************************************
@@ -479,7 +481,7 @@ public class AcmeSimpleTest {
 			/*
 			 * Stop the server.
 			 */
-			server.stopServer("CWPKI2058W");
+			stopServer("CWPKI2058W");
 		}
 	}
 
@@ -601,11 +603,7 @@ public class AcmeSimpleTest {
 			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
 			assertNotNull("Expected CWPKI2042E in logs.", server.waitForStringInLog("CWPKI2042E"));
 
-			if (System.getProperty("os.name").toLowerCase().startsWith("win")) {
-				// windows not enforcing the setReadable/setWriteable
-				Log.info(AcmeSimpleTest.class, testName.getMethodName(),
-						"Skipping unreadable/unwriteable file tests on Windows: "
-								+ System.getProperty("os.name", "unknown"));
+			if (AcmeFatUtils.isWindows(testName.getMethodName())) {
 				acmeCA.setSubjectDN("cn=domain1.com");
 				acmeCA.setAccountKeyFile(null);
 			} else {
@@ -718,7 +716,7 @@ public class AcmeSimpleTest {
 			assertNotNull("Should have found warning that the certCheckerErrorScheduler time was reset", server.findStringsInLogs("CWPKI2071W"));
 
 		} finally {
-			server.stopServer("CWWKG0095E", "CWWKE0701E", "CWPKI2016E", "CWPKI2020E", "CWPKI2021E", "CWPKI2022E",
+			stopServer("CWWKG0095E", "CWWKE0701E", "CWPKI2016E", "CWPKI2020E", "CWPKI2021E", "CWPKI2022E",
 					"CWPKI2023E", "CWPKI2008E", "CWPKI2037E", "CWPKI2039E", "CWPKI2040E", "CWPKI2041E", "CWPKI2042E",
 					"CWPKI0823E", "CWPKI0828E", "CWPKI2070W", "CWPKI2071W");
 			/*
@@ -833,7 +831,7 @@ public class AcmeSimpleTest {
 			assertThat("Certificates should have not changed.", serial1, equalTo(serial2));
 
 		} finally {
-			server.stopServer("CWPKI2058W");
+			stopServer("CWPKI2058W");
 		}
 	}
 
@@ -912,7 +910,7 @@ public class AcmeSimpleTest {
 			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
 			AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 		} finally {
-			server.stopServer("CWPKI2001E", "CWPKI0804E", "CWWKO0801E");
+			stopServer("CWPKI2001E", "CWPKI0804E", "CWWKO0801E");
 		}
 	}
 
@@ -961,7 +959,7 @@ public class AcmeSimpleTest {
 			AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 
 		} finally {
-			server.stopServer();
+			stopServer();
 		}
 	}
 
@@ -1000,7 +998,7 @@ public class AcmeSimpleTest {
 			AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 
 		} finally {
-			server.stopServer();
+			stopServer();
 
 			/*
 			 * Delete the file.
@@ -1047,7 +1045,7 @@ public class AcmeSimpleTest {
 			AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 
 		} finally {
-			server.stopServer();
+			stopServer();
 
 			/*
 			 * Delete the file.
@@ -1057,5 +1055,9 @@ public class AcmeSimpleTest {
 				f.delete();
 			}
 		}
+	}
+	
+	protected void stopServer(String ...msgs) throws Exception {
+		AcmeFatUtils.stopServer(server, msgs);
 	}
 }

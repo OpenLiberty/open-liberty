@@ -193,9 +193,11 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
                 sendBindingMessage(bindingObject.interfaceName, "ejblocal:" + bindingName, bmd);
 
                 // Default Short
-                ejbLocalNamingHelper.bind(bindingObject, bindingObject.interfaceName);
-                bh.ivEJBLocalBindings.add(bindingObject.interfaceName);
-                sendBindingMessage(bindingObject.interfaceName, "ejblocal:" + bindingObject.interfaceName, bmd);
+                if (BindingsHelper.shortDefaultBindingsEnabled(hrImpl.getAppName())) {
+                    ejbLocalNamingHelper.bind(bindingObject, bindingObject.interfaceName);
+                    bh.ivEJBLocalBindings.add(bindingObject.interfaceName);
+                    sendBindingMessage(bindingObject.interfaceName, "ejblocal:" + bindingObject.interfaceName, bmd);
+                }
             }
         }
 
@@ -239,8 +241,10 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
                 bindLegacyRemoteBinding(bindingObject, hr, bindingName);
 
                 // Default Short
-                bindingName = bindingObject.interfaceName;
-                bindLegacyRemoteBinding(bindingObject, hr, bindingName);
+                if (BindingsHelper.shortDefaultBindingsEnabled(hrImpl.getAppName())) {
+                    bindingName = bindingObject.interfaceName;
+                    bindLegacyRemoteBinding(bindingObject, hr, bindingName);
+                }
             }
         }
     }

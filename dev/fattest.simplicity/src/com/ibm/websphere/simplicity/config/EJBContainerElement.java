@@ -25,6 +25,7 @@ public class EJBContainerElement extends ConfigElement {
     private EJBAsynchronousElement asynchronous;
     private EJBTimerServiceElement timerService;
     private String customBindingsOnError;
+    private String disableShortDefaultBindings;
 
     public Integer getCacheSize() {
         return cacheSize;
@@ -87,6 +88,15 @@ public class EJBContainerElement extends ConfigElement {
     @XmlElement(name = "customBindingsOnError")
     public void setCustomBindingsOnError(String customBindingsOnError) {
         this.customBindingsOnError = customBindingsOnError;
+    }
+
+    public String getDisableShortDefaultBindings() {
+        return disableShortDefaultBindings;
+    }
+
+    @XmlElement(name = "disableShortDefaultBindings")
+    public void setDisableShortDefaultBindings(String disableShortDefaultBindings) {
+        this.disableShortDefaultBindings = disableShortDefaultBindings;
     }
 
     @Override

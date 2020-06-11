@@ -5,5 +5,5 @@ IBM-Process-Types: server, \
  client
 -bundles=com.ibm.ws.jakartaee.persistence.3.0; location:=lib/
 kind=noship
-edition=core
+edition=full
 WLP-Activation-Type: parallel

@@ -142,7 +142,8 @@ public class PrometheusBuilder {
         buildMetered(builder, name, description, currentMetricMap);
     }
 
-    private static void buildSampling(StringBuilder builder, String name, String description, Map<MetricID, Metric> currentMetricMap, Double conversionFactor, String appendUnit) {
+    protected static void buildSampling(StringBuilder builder, String name, String description, Map<MetricID, Metric> currentMetricMap, Double conversionFactor,
+                                        String appendUnit) {
 
         String lineName = name + "_mean";
         getPromTypeLine(builder, lineName, "gauge", appendUnit);

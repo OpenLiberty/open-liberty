@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import java.util.List;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.logging.collector.CollectorConstants;
+import com.ibm.ws.logging.collector.CollectorJsonHelpers;
 import com.ibm.ws.logging.collector.CollectorJsonUtils;
 import com.ibm.ws.logging.collector.Formatter;
 import com.ibm.ws.logging.data.GenericData;
@@ -102,6 +103,10 @@ public abstract class JsonLogHandler implements SynchronousHandler, Formatter {
         } else {
             serverHostName = containerHost;
         }
+
+        CollectorJsonHelpers.setHostName(serverHostName);
+        CollectorJsonHelpers.setServerName(wlpServerName);
+        CollectorJsonHelpers.setWlpUserDir(wlpUserDir);
 
     }
 

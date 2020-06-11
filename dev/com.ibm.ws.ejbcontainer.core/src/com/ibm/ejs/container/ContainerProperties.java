@@ -240,6 +240,7 @@ public final class ContainerProperties {
      * simple interface bindings disabled
      **/
     public static ArrayList<String> DisableShortDefaultBindings; // d444470
+    public static ArrayList<String> DisableShortDefaultBindingsFromJVM;
 
     /**
      * Property that allows the user to indicate whether or not EJB timers
@@ -670,15 +671,15 @@ public final class ContainerProperties {
 
         String simpleIntBindingsProperty = System.getProperty(disableShortDefaultBindings);
         if (simpleIntBindingsProperty != null) {
-            DisableShortDefaultBindings = new ArrayList<String>();
+            DisableShortDefaultBindingsFromJVM = new ArrayList<String>();
             if (!simpleIntBindingsProperty.equalsIgnoreCase("*")) {
                 String[] apps = simpleIntBindingsProperty.split(":");
                 for (int i = 0; i < apps.length; i++) {
-                    DisableShortDefaultBindings.add(apps[i]);
+                    DisableShortDefaultBindingsFromJVM.add(apps[i]);
                 }
             }
         } else {
-            DisableShortDefaultBindings = null;
+            DisableShortDefaultBindingsFromJVM = null;
         }
 
         String extendSetRollbackOnlyProperty = System.getProperty(extendSetRollbackOnlyBehaviorBeyondInstanceFor); //d461917.1

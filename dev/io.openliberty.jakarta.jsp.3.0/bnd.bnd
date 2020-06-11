@@ -12,6 +12,7 @@
 bVersion=1.0
 
 Bundle-SymbolicName: io.openliberty.jakarta.jsp.3.0; singleton:=true
+Bundle-Description: Jakarta Server Pages, version 3.0
 
 Export-Package: \
 	jakarta.servlet.jsp; version="3.0.0",\
@@ -33,4 +34,4 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-  jakarta.servlet.jsp-api;version=3.0.0
+  jakarta.servlet.jsp:jakarta.servlet.jsp-api;version=3.0.0

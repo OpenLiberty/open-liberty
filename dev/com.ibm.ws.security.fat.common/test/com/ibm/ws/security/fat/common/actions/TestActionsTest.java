@@ -262,7 +262,7 @@ public class TestActionsTest extends CommonTestClass {
                 Page result = actions.invokeUrlWithCookie(testName.getMethodName(), url, null);
                 fail("Should have thrown an exception but got a page result: " + WebResponseUtils.getResponseText(result));
             } catch (Exception e) {
-                verifyException(e, "error occurred invoking the URL.*null cookie");
+                verifyException(e, "error occurred invoking the URL.*null cookies");
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);

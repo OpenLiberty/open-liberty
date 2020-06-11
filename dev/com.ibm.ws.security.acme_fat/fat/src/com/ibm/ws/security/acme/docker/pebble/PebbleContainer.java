@@ -13,6 +13,7 @@ package com.ibm.ws.security.acme.docker.pebble;
 
 import static junit.framework.Assert.fail;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +26,7 @@ import org.testcontainers.containers.Network;
 import org.testcontainers.containers.output.OutputFrame;
 import org.testcontainers.images.builder.ImageFromDockerfile;
 
+import com.github.dockerjava.api.exception.DockerException;
 import com.github.dockerjava.api.model.ContainerNetwork;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.acme.docker.CAContainer;
@@ -80,8 +82,49 @@ public class PebbleContainer extends CAContainer {
 						.copy("pebble-config.json", "/test/config/pebble-config.json").build())
 				.withFileFromFile("pebble-config.json", new File("lib/LibertyFATTestFiles/pebble-config.json")), 5002,
 				14000, 15000);
+		challtestsrv.withStartupAttempts(20);
+		challtestsrv.withStartupTimeout(Duration.ofSeconds(60));
 
-		challtestsrv.start();
+		for (int i = 1; i < NUM_RESTART_ATTEMPTS_ON_EXCEPTION + 1; i ++) {
+			try {
+				challtestsrv.start();
+				Log.info(PebbleContainer.class, "PebbleContainer", "challtestsrv started");
+				break;
+			} catch (Throwable t) {
+				Log.info(PebbleContainer.class, "PebbleContainer", "Failed to start challtestsrv, try again. " + t);
+				challtestsrv.stop();
+				Throwable cause = t.getCause();
+				while (cause != null) {
+					if (t instanceof DockerException) {
+						Log.info(PebbleContainer.class, "PebbleContainer", "Hit a Docker exception, trying a long sleep and retry");
+						try {
+							Thread.sleep(120000);
+						} catch (InterruptedException e) {
+						}
+						break;
+					}
+					cause = cause.getCause();
+				}
+
+				if (cause == null) { // do a short sleep and retry
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+					}
+				}
+			}
+		}
+		if (!challtestsrv.isRunning()) {
+			challtestsrv.start();
+			Log.info(PebbleContainer.class, "PebbleContainer", "challtestsrv started");
+			
+			/**
+			 * Intermittently getting a null calling getIntraContainerIP, determine what is null
+			 */
+			assertNotNull("challtestsrv.getContainerInfo()", challtestsrv.getContainerInfo());
+			assertNotNull("challtestsrv.getContainerInfo().getNetworkSettings()", challtestsrv.getContainerInfo().getNetworkSettings());
+			assertNotNull("challtestsrv.getContainerInfo().getNetworkSettings().getNetworks().entrySet()", challtestsrv.getContainerInfo().getNetworkSettings().getNetworks().entrySet());
+		}
 
 		String dnsServer = getIntraContainerIP() + ":" + DNS_PORT;
 
@@ -90,12 +133,43 @@ public class PebbleContainer extends CAContainer {
 		this.withExposedPorts(getDnsManagementPort(), getAcmeListenPort());
 		this.withNetwork(network);
 		this.withLogConsumer(PebbleContainer::log);
-		this.withStartupAttempts(3);
+		this.withStartupAttempts(20);
 		this.withStartupTimeout(Duration.ofSeconds(60));
 
 		Testcontainers.exposeHostPorts(5002);
 
-		start();
+		for (int i = 1; i < NUM_RESTART_ATTEMPTS_ON_EXCEPTION + 1; i ++) {
+			try {
+				start();
+				break;
+			} catch (Throwable t) {
+				Log.info(PebbleContainer.class, "PebbleContainer", "Failed to start pebble, try again. " + t);
+				super.stop();
+				Throwable cause = t.getCause();
+				while (cause != null) {
+					if (t instanceof DockerException) {
+						Log.info(PebbleContainer.class, "PebbleContainer", "Hit a Docker exception, trying a long sleep and retry");
+						try {
+							Thread.sleep(120000);
+						} catch (InterruptedException e) {
+						}
+						break;
+					}
+					cause = cause.getCause();
+				}
+
+				if (cause == null) { // do a short sleep and retry
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+					}
+				}
+			}
+		}
+		
+		if (!isRunning()) {
+			start();
+		}
 
 		try {
 			/*
@@ -115,6 +189,7 @@ public class PebbleContainer extends CAContainer {
 
 		Log.info(PebbleContainer.class, "PebbleContainer", "ContainerIpAddress: " + getContainerIpAddress());
 		Log.info(PebbleContainer.class, "PebbleContainer", "DockerImageName:    " + getDockerImageName());
+		assertNotNull("getContainerInfo()", getContainerInfo());
 		Log.info(PebbleContainer.class, "PebbleContainer", "ContainerInfo:      " + getContainerInfo());
 	}
 

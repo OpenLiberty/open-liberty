@@ -1,0 +1,27 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+
+Bundle-SymbolicName: io.openliberty.jakarta.jaxws.3.0; singleton:=true
+
+Export-Package: jakarta.xml.ws.*; version="3.0"
+
+Import-Package: jakarta.xml.bind.*; version="[3.0,4)", \
+  *
+
+instrument.disabled: true
+
+publish.wlp.jar.suffix: dev/api/spec
+
+-buildpath: \
+	jakarta.xml.ws:jakarta.xml.ws-api;version=3.0.0

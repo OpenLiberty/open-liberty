@@ -72,9 +72,12 @@ public class AcmeConfig {
 	// Certificate checker configuration options, currently intended to be internal only
 	private Long certCheckerScheduler = AcmeConstants.SCHEDULER_MS;
 	private Long certCheckerErrorScheduler = AcmeConstants.SCHEDULER_ERROR_MS;
-	
+
 	// Allow back to back renew requests, currently intended to be internal use only
 	private boolean disableMinRenewWindow = false;
+
+	// Disable certificate renewal when the acmeca-history file does not yet exist
+	private boolean disableRenewOnNewHistory = false;
 	
 	/**
 	 * Create a new {@link AcmeConfig} instance.
@@ -145,6 +148,7 @@ public class AcmeConfig {
 
 		setRenewBeforeExpirationMs(getLongValue(properties, AcmeConstants.RENEW_BEFORE_EXPIRATION), true);
 		disableMinRenewWindow = getBooleanValue(properties, AcmeConstants.DISABLE_MIN_RENEW_WINDOW, false);
+		disableRenewOnNewHistory = getBooleanValue(properties, AcmeConstants.DISABLE_RENEW_ON_NEW_HISTORY, false);
 
 		/*
 		 * Get revocation checker configuration.
@@ -665,9 +669,9 @@ public class AcmeConfig {
 		if (certCheckerScheduler != null) {
 			if (certCheckerScheduler <= 0) {
 				/*
-				 * Cert Checker is disabled
+				 * Cert Checker is disabled. Message is logged in 
+				 * AcmeCertCheckerTask.startCertificateChecker
 				 */
-				Tr.info(tc, "CWPKI2069I");
 				this.certCheckerScheduler = 0L;
 			} else if (certCheckerScheduler < AcmeConstants.RENEW_CERT_MIN) {
 				/*
@@ -718,6 +722,15 @@ public class AcmeConfig {
 	@Trivial
 	public boolean isDisableMinRenewWindow() {
 		return disableMinRenewWindow;
+	}
+	
+	/**
+	 * 
+	 * @return disableRenewOnNewHistory
+	 */
+	@Trivial
+	public boolean isDisableRenewOnNewHistory() {
+		return disableRenewOnNewHistory;
 	}
 
 }
