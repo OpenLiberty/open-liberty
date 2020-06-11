@@ -951,11 +951,11 @@ public class Provisioner {
 
             RegionFilterBuilder toSystemFromKernelBuilder = digraph.createRegionFilterBuilder();
 
-            if (featureManager.packageInspector.listKernelBlackListApiPackages().hasNext()) {
-                // Allow everything except the blacklist packages
+            if (featureManager.packageInspector.listKernelBlockedApiPackages().hasNext()) {
+                // Allow everything except the blocked packages
                 StringBuffer buf = new StringBuffer();
-                for (Iterator<String> kernelBlackListExport = featureManager.packageInspector.listKernelBlackListApiPackages(); kernelBlackListExport.hasNext();) {
-                    String pack = kernelBlackListExport.next();
+                for (Iterator<String> kernelBlockedExport = featureManager.packageInspector.listKernelBlockedApiPackages(); kernelBlockedExport.hasNext();) {
+                    String pack = kernelBlockedExport.next();
                     buf.append("(" + PackageNamespace.PACKAGE_NAMESPACE + "=" + pack + ")");
                 }
                 String apiPackagesToFilterOut = "(!(|" + buf.toString() + "))";
@@ -1159,9 +1159,9 @@ public class Provisioner {
 
     public void refreshFeatureBundles(PackageInspectorImpl packageInspector, BundleContext bundleContext, ShutdownHookManager shutdownHook) {
 
-        Set<String> blackList = returnSet(packageInspector.listKernelBlackListApiPackages());
-        if (blackList.isEmpty()) {
-            return; // return if the blacklist is empty
+        Set<String> blocked = returnSet(packageInspector.listKernelBlockedApiPackages());
+        if (blocked.isEmpty()) {
+            return; // return if the blocked is empty
         }
 
         List<Bundle> needsRefresh = new ArrayList<Bundle>();
@@ -1169,14 +1169,14 @@ public class Provisioner {
         BundleWiring systemBundleWiring = bundleContext.getBundle(Constants.SYSTEM_BUNDLE_LOCATION).adapt(BundleWiring.class);
         List<BundleWire> systemPackages = systemBundleWiring.getProvidedWires(PackageNamespace.PACKAGE_NAMESPACE);
 
-        // Find the package wires for package exports that are also currently on the blacklist
+        // Find the package wires for package exports that are also currently on the blocked
         // This means an API package was being provided by the system bundle (which includes all Java provided packages) but
         // now a feature enabled is providing the API package
         for (BundleWire bw : systemPackages) {
             Capability cap = bw.getCapability();
             String pkg = (String) cap.getAttributes().get(PackageNamespace.PACKAGE_NAMESPACE);
 
-            if (blackList.contains(pkg)) {
+            if (blocked.contains(pkg)) {
                 needsRefresh.add(bw.getRequirerWiring().getBundle());
             }
         }
