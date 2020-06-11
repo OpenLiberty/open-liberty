@@ -1187,8 +1187,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     public boolean isHTTP2UpgradeRequest(HttpServletRequest hsrt, boolean checkEnabledOnly) {
         if (isc != null) {
             //Returns whether HTTP/2 is enabled for this channel/port
-            if (checkEnabledOnly) {
-                return isc.isHttp2Enabled();
+            if (checkEnabledOnly && !isc.isHttp2Enabled()) {
+                return false;
             }
             //Check headers for HTTP/2 upgrade header
             else {
