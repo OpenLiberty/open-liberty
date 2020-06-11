@@ -11,8 +11,11 @@
 package componenttest.topology.utils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Properties;
 
 import javax.net.SocketFactory;
 
@@ -53,9 +56,16 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
      */
     public static void clearTestcontainersConfig() {
         File testcontainersConfigFile = new File(System.getProperty("user.home"), ".testcontainers.properties");
-        Log.info(c, "clearTestcontainersConfig", "Removing testcontainers property file at: " + testcontainersConfigFile.getAbsolutePath());
+        if (!testcontainersConfigFile.exists())
+            return;
+
+        Log.info(c, "clearTestcontainersConfig", "Resetting testcontainers property file at: " + testcontainersConfigFile.getAbsolutePath());
         try {
+            Properties tcProps = new Properties();
+            tcProps.load(new FileInputStream(testcontainersConfigFile));
+            tcProps.remove("docker.client.strategy");
             Files.deleteIfExists(testcontainersConfigFile.toPath());
+            tcProps.store(new FileOutputStream(testcontainersConfigFile), "Modified by FAT framework");
         } catch (IOException e) {
             Log.error(c, "clearTestcontainersConfig", e);
         }

@@ -11,6 +11,7 @@
 package db2.web;
 
 import java.sql.Connection;
+import java.sql.SQLInvalidAuthorizationSpecException;
 
 import javax.annotation.Resource;
 import javax.servlet.annotation.HttpConstraint;
@@ -44,14 +45,19 @@ public class JDBCKerberosTestServlet extends FATServlet {
 
         System.out.println("Attempting non-kerberos connection...");
         try (Connection con = noKrb5.getConnection()) {
-            con.createStatement().execute("SELECT 1 FROM SYSIBM.SYSDUMMY");
+            con.createStatement().execute("SELECT 1 FROM SYSIBM.SYSDUMMY1");
             System.out.println("Used non-kerberos connection OK");
         }
 
         System.out.println("Attempting kerberos connection...");
-        try (Connection con = ds.getConnection()) {
-            con.createStatement().execute("SELECT 1 FROM SYSIBM.SYSDUMMY");
-            System.out.println("Used kerberos connection OK");
+        try {
+            try (Connection con = ds.getConnection()) {
+                con.createStatement().execute("SELECT 1 FROM SYSIBM.SYSDUMMY1");
+                System.out.println("Used kerberos connection OK");
+            }
+        } catch (SQLInvalidAuthorizationSpecException expected) {
+            System.out.println("Got expected invalid auth exception");
+            expected.printStackTrace();
         }
     }
 

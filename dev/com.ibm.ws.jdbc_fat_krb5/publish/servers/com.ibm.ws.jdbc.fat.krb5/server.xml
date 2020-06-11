@@ -1,0 +1,65 @@
+<server>
+  <featureManager>
+    <feature>componenttest-1.0</feature>
+    <feature>servlet-4.0</feature>
+    <feature>jdbc-4.2</feature>
+    <feature>appSecurity-2.0</feature>
+    <feature>jca-1.7</feature>
+    <feature>cdi-2.0</feature>
+  </featureManager>
+    
+  <include location="../fatTestPorts.xml"/>
+
+  <webApplication location="db2fat.war">
+    <application-bnd>
+      <security-role name="Manager" id="Manager">
+        <user name="user1"/>
+      </security-role>
+      <security-role name="Employee" id="Employee">
+        <user name="user2"/>
+      </security-role>
+    </application-bnd>
+  </webApplication>
+    
+  <library id="DB2JCCLib">
+    <fileset dir="${server.config.dir}/db2"/>
+  </library>
+  
+  <!-- Dummy lib to satisfy login module config. This will be removed eventually -->
+  <library id="loginLib">
+  </library>
+  
+  <basicRegistry realm="defaultRealm">
+    <user password="password" name="user1"/>
+    <user password="password" name="user2" />
+  </basicRegistry>
+  
+  <!-- Must be named JaasClient for the JCC driver -->
+  <jaasLoginContextEntry id="JaasClient" name="JaasClient" loginModuleRef="krb5LoginModule" />
+    <!-- OpenJ9/Hotspot loginModule config -->
+	<jaasLoginModule id="krb5LoginModule" className="com.sun.security.auth.module.Krb5LoginModule" controlFlag="REQUIRED" libraryRef="loginLib">
+    <options credsType="both" useKeyTab="true" keyTab="${server.config.dir}/security/krb5.keytab" principal="${KRB5_USER}" doNotPrompt="true"/>
+  </jaasLoginModule>
+  
+  <!-- IBM Java loginModule config -->
+  <!-- 
+  <jaasLoginModule id="krb5LoginModule" className="com.ibm.security.auth.module.Krb5LoginModule" controlFlag="REQUIRED" libraryRef="loginLib">
+    <options credsType="both" useKeytab="/etc/krb5.keytab" principal="db2user/websphere@EXAMPLE.COM"/>
+  </jaasLoginModule>
+  -->
+  
+  <dataSource jndiName="jdbc/db2ds" jaasLoginContextEntry="JaasClient">
+    <jdbcDriver libraryRef="DB2JCCLib"/>
+    <properties.db2.jcc databaseName="${DB2_DBNAME}" serverName="${DB2_HOSTNAME}" driverType="4" portNumber="${DB2_PORT}" 
+                        securityMechanism="11" KerberosServerPrincipal="${KRB5_USER}" user="${KRB5_USER}"/>
+  </dataSource>
+
+  <dataSource jndiName="jdbc/nokrb5">
+    <jdbcDriver libraryRef="DB2JCCLib"/>
+    <properties.db2.jcc databaseName="${DB2_DBNAME}" serverName="${DB2_HOSTNAME}" portNumber="${DB2_PORT}"/>
+    <containerAuthData user="${DB2_USER}"  password="${DB2_PASS}"/>
+  </dataSource>
+    
+  <javaPermission codebase="${server.config.dir}db2/*" className="java.security.AllPermission"/>
+  <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+</server>

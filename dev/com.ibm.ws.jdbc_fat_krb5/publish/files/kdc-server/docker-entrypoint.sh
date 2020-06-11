@@ -107,6 +107,8 @@ EOT
 
     echo "Creating MSSQLSvc/sqlserver Account"
     kadmin.local -q "addprinc -pw ${KRB5_PASS} MSSQLSvc/sqlserver:1433@${KRB5_REALM}"
+    
+    echo "KERB SETUP COMPLETE"
 
 fi
 

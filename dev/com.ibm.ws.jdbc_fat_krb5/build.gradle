@@ -31,7 +31,7 @@ dependencies {
 task copyDB2(type: Copy) {
   shouldRunAfter jar
   from configurations.db2
-  into new File(autoFvtDir, 'publish/shared/resources/db2')
+  into new File(autoFvtDir, 'publish/servers/com.ibm.ws.jdbc.fat.krb5/db2')
 }
 
 addRequiredLibraries.dependsOn copyDB2
