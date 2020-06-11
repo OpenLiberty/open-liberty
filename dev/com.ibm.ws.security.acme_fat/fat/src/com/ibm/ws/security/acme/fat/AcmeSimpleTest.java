@@ -162,7 +162,7 @@ public class AcmeSimpleTest {
 			 */
 			endingCertificateChain = AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 			
-			File file = new File(server.getServerRoot() + "/workarea/acme/" + AcmeConstants.ACME_HISTORY_FILE);
+			File file = new File(server.getServerRoot() + "/workarea/acmeca/" + AcmeConstants.ACME_HISTORY_FILE);
 			if (!file.exists()) {
 				fail("The ACME file should exist at: " + file.getAbsolutePath());
 			}
