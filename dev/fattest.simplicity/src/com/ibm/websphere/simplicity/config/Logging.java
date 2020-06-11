@@ -32,6 +32,7 @@ public class Logging extends ConfigElement {
     private boolean isoDateFormat;
     private String jsonFields;
     private String consoleFormat;
+    private String jsonAccessLogFields;
 
     /**
      * @return the configured log directory
@@ -214,6 +215,23 @@ public class Logging extends ConfigElement {
      */
     public String getConsoleFormat() {
         return this.consoleFormat;
+    }
+
+    /**
+     * default="default"; options="logFormat"
+     *
+     * @param jsonAccessLogFields the value of jsonAccessLogFields configuration to set
+     */
+    @XmlAttribute(name = "jsonAccessLogFields")
+    public void setJsonAccessLogFields(String jsonAccessLogFields) {
+        this.jsonAccessLogFields = ConfigElement.getValue(jsonAccessLogFields);
+    }
+
+    /**
+     * @return the value of the jsonAccessLogFields configuration attribute
+     */
+    public String getJsonAccessLogFields() {
+        return this.jsonAccessLogFields;
     }
 
     @Override
