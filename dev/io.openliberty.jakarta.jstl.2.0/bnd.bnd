@@ -12,7 +12,7 @@
 bVersion=1.0
 
 Bundle-SymbolicName: io.openliberty.jakarta.jstl.2.0; singleton:=true
-Bundle-Description: Jakarta Standard Tag Library EE9, version 2.0
+Bundle-Description: Jakarta Standard Tag Library, version 2.0
 
 Export-Package: \
 	jakarta.servlet.jsp.jstl.core,\
