@@ -314,6 +314,9 @@ public class AcmeFatUtils {
 		 */
 		AcmeCA acmeCA = clone.getAcmeCA();
 		acmeCA.setDomain(Arrays.asList(domains));
+		ArrayList<String> accounts = new ArrayList<String>();
+		accounts.add("mailto:pacman@mail.com");
+		acmeCA.setAccountContact(accounts);
 		configureAcmeCaConnection(caContainer.getAcmeDirectoryURI(useAcmeURIs), acmeCA);
 		if (disableRenewWindow) {
 			/*

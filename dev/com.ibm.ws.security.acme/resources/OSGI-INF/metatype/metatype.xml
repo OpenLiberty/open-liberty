@@ -55,6 +55,9 @@
    
    <!--  Disable certificate renewal when the acmeca-history file does not yet exist -->
    <AD id="disableRenewOnNewHistory"     name="internal" description="internal use only" type="Boolean"  required="false" default="false" />
+   
+   <!--  Minimum allowed time to check for expiration -->
+   <AD id="renewCertMin"     name="internal" description="internal use only" type="Long"  required="false" default="15000" />
 
  </OCD>
   

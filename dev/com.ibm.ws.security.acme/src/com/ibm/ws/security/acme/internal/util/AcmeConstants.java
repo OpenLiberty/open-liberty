@@ -62,6 +62,9 @@ public class AcmeConstants {
 	// Disable certificate renewal when the acmeca-history file does not yet exist
 	public static final String DISABLE_RENEW_ON_NEW_HISTORY = "disableRenewOnNewHistory";
 
+	// Minimum allowed time to check for expiration
+	public static final String RENEW_CERT_MIN = "renewCertMin";
+
 	/*
 	 * End constants that match the metatype fields
 	 */
@@ -80,12 +83,12 @@ public class AcmeConstants {
 	public static final String ACCOUNT_TYPE = "account";
 	public static final String DOMAIN_TYPE = "domain";
 	
-	public static final long RENEW_CERT_MIN = 15000L; // Minimum allowed time to check for expiration
 	public static final Long RENEW_CERT_MIN_WARN_LEVEL = 60000L; // The renew time that we'll put out a warning that you've picked a very low renew time
 	public static final Long RENEW_DEFAULT_MS = TimeUnit.DAYS.toMillis(7L);  // 604800000L; 
 	public static final double RENEW_DIVISOR = .5;
 	public static final long CHALLENGE_POLL_DEFAULT = 120000l;
 	public static final long ORDER_POLL_DEFAULT = 120000l;
+	public static final long RENEW_CERT_MIN_DEFAULT = 15000L; 
 
 
 	public static final Long SCHEDULER_MS = TimeUnit.HOURS.toMillis(24L);

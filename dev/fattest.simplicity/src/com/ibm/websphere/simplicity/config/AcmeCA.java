@@ -57,6 +57,8 @@ public class AcmeCA extends ConfigElement {
 
     private boolean disableRenewOnNewHistory;
 
+    private Long renewCertMin;
+
     /**
      * @return the accountContact
      */
@@ -303,6 +305,15 @@ public class AcmeCA extends ConfigElement {
         return disableRenewOnNewHistory;
     }
 
+    @XmlAttribute(name = "renewCertMin")
+    public void setRenewCertMin(long renewCertMin) {
+        this.renewCertMin = renewCertMin;
+    }
+
+    public long getRenewCertMin() {
+        return renewCertMin == null ? 15000L : renewCertMin;
+    }
+
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
@@ -341,6 +352,9 @@ public class AcmeCA extends ConfigElement {
         }
         if (disableRenewOnNewHistory) {
             sb.append("disableRenewOnNewHistory=\"").append(disableRenewOnNewHistory).append("\" ");;
+        }
+        if (renewCertMin != null) {
+            sb.append("renewCertMin=\"").append(renewCertMin).append("\" ");;
         }
         if (domainKeyFile != null) {
             sb.append("domainKeyFile=\"").append(domainKeyFile).append("\" ");;

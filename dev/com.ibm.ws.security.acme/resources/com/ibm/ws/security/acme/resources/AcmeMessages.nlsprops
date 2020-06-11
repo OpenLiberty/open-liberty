@@ -326,3 +326,7 @@ CWPKI2071W.useraction=To avoid this warning message, set the certCheckerErrorSch
 CWPKI2072W=CWPKI2072W: The ACME service could not read or write the historical ACME file at {0}. The error is ''{1}''.
 CWPKI2072W.explanation=The ACME service was unable to access the historical ACME file.
 CWPKI2072W.useraction=Ensure that the historical ACME directory has read and write permissions.
+
+CWPKI2073W=CWPKI2073W: No account contact was specified. It is recommended to set this property in server configuration. If a key is lost or the account is compromised, access to the account is lost.
+CWPKI2073W.explanation=The value for the accountContact property was not specified in the server configuration.
+CWPKI2073W.useraction=Set the accountContact property in server configuration.
