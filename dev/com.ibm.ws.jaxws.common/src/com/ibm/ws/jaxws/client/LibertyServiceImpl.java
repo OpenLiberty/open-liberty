@@ -29,6 +29,7 @@ import javax.xml.ws.WebServiceFeature;
 import org.apache.cxf.Bus;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
+import org.apache.cxf.interceptor.AbstractBasicInterceptorProvider;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.interceptor.Interceptor;
 import org.apache.cxf.interceptor.LoggingInInterceptor;
@@ -46,6 +47,8 @@ import com.ibm.ws.jaxws.metadata.PortComponentRefInfo;
 import com.ibm.ws.jaxws.metadata.WebServiceFeatureInfo;
 import com.ibm.ws.jaxws.metadata.WebServiceRefInfo;
 import com.ibm.ws.jaxws.security.JaxWsSecurityConfigurationService;
+import com.ibm.ws.jaxws.support.LibertyLoggingInInterceptor;
+import com.ibm.ws.jaxws.support.LibertyLoggingOutInterceptor;
 
 /**
  * All the Web Service ports and dispatches are created via the class
@@ -127,12 +130,13 @@ public class LibertyServiceImpl extends ServiceImpl {
 
     /**
      * Add the LibertyCustomizeBindingOutInterceptor in the out interceptor chain.
-     * 
+     *
      * @param client
      * @param portName
      */
     protected void configureCustomizeBinding(Client client, QName portName) {
         //put all properties defined in ibm-ws-bnd.xml into the client request context
+        //}
         Map<String, Object> requestContext = client.getRequestContext();
         if (null != requestContext && null != wsrInfo) {
             PortComponentRefInfo portRefInfo = wsrInfo.getPortComponentRefInfo(portName);
@@ -149,10 +153,24 @@ public class LibertyServiceImpl extends ServiceImpl {
             }
 
             if (null != wsrProps && Boolean.valueOf(wsrProps.get(JaxWsConstants.ENABLE_lOGGINGINOUTINTERCEPTOR))) {
+
+                // If we're here we know this property is set in the config and is true. We enable pretty logging of the SOAP Message
+                // by LibertyLoggingIn(Out)Interceptors
+                // TODO Create a way of enabling and disabling logging for individual endpoints. 
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, JaxWsConstants.ENABLE_lOGGINGINOUTINTERCEPTOR
+                                 + " has been enabled, enabling SOAP Message Logging with the LibertyLoggingInInterceptor and LibertyLoggingOutInterceptor");
+                }
                 List<Interceptor<? extends Message>> inInterceptors = client.getInInterceptors();
-                inInterceptors.add(new LoggingInInterceptor());
+                // Remove LoggingInInterceptor if one already exists
+                inInterceptors.remove(LibertyLoggingInInterceptor.INSTANCE);
+                inInterceptors.add(new LibertyLoggingInInterceptor(true));
+
                 List<Interceptor<? extends Message>> outInterceptors = client.getOutInterceptors();
-                outInterceptors.add(new LoggingOutInterceptor());
+                // Remove LoggingOutInterceptor if one already exists
+                outInterceptors.remove(LibertyLoggingOutInterceptor.INSTANCE);
+                outInterceptors.add(new LibertyLoggingOutInterceptor(true));
+
             }
         }
 
@@ -223,7 +241,7 @@ public class LibertyServiceImpl extends ServiceImpl {
 
     /**
      * merge the serviceRef properties and port properties, and update the merged properties in the configAdmin service.
-     * 
+     *
      * @param configAdmin
      * @param serviceRefProps
      * @param portProps
@@ -270,10 +288,10 @@ public class LibertyServiceImpl extends ServiceImpl {
 
     /**
      * Extract the properties according to the property prefix.
-     * 
+     *
      * @param propertyPrefix
      * @param properties
-     * @param removeProps if is true, will remove the properties that have be extracted.
+     * @param removeProps    if is true, will remove the properties that have be extracted.
      * @return
      */
     protected Map<String, String> extract(String propertyPrefix, Map<String, String> properties, boolean removeProps) {
@@ -300,7 +318,7 @@ public class LibertyServiceImpl extends ServiceImpl {
 
     /**
      * Extract the properties according to the property prefix, will remove the extracted properties from original properties.
-     * 
+     *
      * @param propertyPrefix
      * @param properties
      * @return

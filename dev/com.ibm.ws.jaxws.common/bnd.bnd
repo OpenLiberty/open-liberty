@@ -215,7 +215,8 @@ instrument.classesExcludes: com/ibm/ws/jaxws/internal/resources/*.class
 	com.ibm.ws.org.apache.neethi.3.0.2;version=latest,\
 	com.ibm.websphere.appserver.spi.threading;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	javax.activation:activation;version=1.1
+	javax.activation:activation;version=1.1, \
+	com.ibm.ws.logging
 
 -testpath: \
 	org.hamcrest:hamcrest-all;version=1.3, \

@@ -15,8 +15,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.cxf.Bus;
-import org.apache.cxf.interceptor.LoggingInInterceptor;
-import org.apache.cxf.interceptor.LoggingOutInterceptor;
+
 import org.apache.cxf.phase.Phase;
 import org.apache.cxf.ws.policy.AssertionBuilderRegistry;
 import org.apache.cxf.ws.policy.PolicyInterceptorProviderRegistry;
@@ -25,6 +24,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxws.bus.LibertyApplicationBus;
 import com.ibm.ws.jaxws.bus.LibertyApplicationBusListener;
+import com.ibm.ws.jaxws.support.LibertyLoggingInInterceptor;
+import com.ibm.ws.jaxws.support.LibertyLoggingOutInterceptor;
 import com.ibm.ws.wsat.policy.WSATAssertionBuilder;
 import com.ibm.ws.wsat.policy.WSATAssertionPolicyProvider;
 import com.ibm.ws.wsat.policy.WSATPolicyAwareInterceptor;
@@ -101,11 +102,11 @@ public class WSATFeatureBusListener implements LibertyApplicationBusListener {
             Tr.debug(tc, "initComplete",
                      "If we've got here, then the interceptors should be inserted");
             // Prettyprint the SOAP if we're debugging
-            final LoggingInInterceptor in = new LoggingInInterceptor();
+            final LibertyLoggingInInterceptor in = new LibertyLoggingInInterceptor();
             in.setPrettyLogging(true);
             bus.getInInterceptors().add(in);
 
-            final LoggingOutInterceptor out = new LoggingOutInterceptor();
+            final LibertyLoggingOutInterceptor out = new LibertyLoggingOutInterceptor();
             out.setPrettyLogging(true);
             bus.getOutInterceptors().add(out);
         }
