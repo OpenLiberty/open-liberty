@@ -92,6 +92,14 @@ public class ServiceSupportTests extends FATServletClient {
         channel.shutdownNow();
     }
 
+    private void startStreamingService(String address, int port) {
+        System.out.println("Connecting to StreamingService gRPC service at " + address + ":" + port);
+    }
+
+    private void stopStreamingService() {
+        streamingChannel.shutdownNow();
+    }
+
     private void startHelloWorldService(String address, int port) {
         System.out.println("Connecting to helloWorld gRPC service at " + address + ":" + port);
         worldChannel = ManagedChannelBuilder.forAddress(address, port).usePlaintext().build();
