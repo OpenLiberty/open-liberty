@@ -1,0 +1,15 @@
+<server description="wab configuration server">
+
+    <include location="../fatTestPorts.xml"/>
+    
+    <featureManager>
+		<feature>product1:product1</feature>
+		<feature>product2:product2</feature>
+		<feature>osgiConsole-1.0</feature>
+    </featureManager>
+
+	<product1 contextPath="/product1/wab1" contextName="WAB1" id="predefined-product1" />
+	<product1 contextPath="/product1/wab2" contextName="WAB2" />
+	<product2 contextPath="/product2/wab1" contextName="WAB1" id="predefined-product2" />
+	<product2 contextPath="/product2/wab2" contextName="WAB2" />
+</server>
