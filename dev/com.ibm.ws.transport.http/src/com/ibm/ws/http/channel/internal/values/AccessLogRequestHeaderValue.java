@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2020 IBM Corporation and others.
+ * Copyright (c) 2004, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,7 +37,7 @@ public class AccessLogRequestHeaderValue extends AccessLogData {
         String headerValue = null;
 
         if (headerName != null) {
-            headerValue = getHeaderValue(response, request, data);
+            headerValue = request.getHeader(headerName).asString();
         }
 
         if (headerValue != null) {
@@ -47,16 +47,6 @@ public class AccessLogRequestHeaderValue extends AccessLogData {
         }
 
         return true;
-    }
-
-    public static String getHeaderValue(HttpResponseMessage response, HttpRequestMessage request, Object data) {
-        String headerName = (String) data;
-        String headerValue = null;
-        if (headerName != null) {
-            headerValue = request.getHeader(headerName).asString();
-        }
-        // A null header value will not show up in JSON log
-        return headerValue;
     }
 
 }

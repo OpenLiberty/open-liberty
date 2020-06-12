@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2020 IBM Corporation and others.
+ * Copyright (c) 2004, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,7 +24,12 @@ public class AccessLogRemoteUser extends AccessLogData {
     public boolean set(StringBuilder accessLogEntry,
                        HttpResponseMessage response, HttpRequestMessage request, Object data) {
 
-        String remoteUser = getRemoteUser(response, request, data);
+        String remoteUser = null;
+        if (request != null) {
+            HttpRequestMessageImpl requestMessageImpl = null;
+            requestMessageImpl = (HttpRequestMessageImpl) request;
+            remoteUser = requestMessageImpl.getRemoteUser();
+        }
 
         if (remoteUser != null && !remoteUser.equals("")) {
             accessLogEntry.append(remoteUser);
@@ -33,15 +38,5 @@ public class AccessLogRemoteUser extends AccessLogData {
         }
 
         return true;
-    }
-
-    public static String getRemoteUser(HttpResponseMessage response, HttpRequestMessage request, Object data) {
-        HttpRequestMessageImpl requestMessageImpl = null;
-        String remoteUser = null;
-        if (request != null) {
-            requestMessageImpl = (HttpRequestMessageImpl) request;
-            remoteUser = requestMessageImpl.getRemoteUser();
-        }
-        return remoteUser;
     }
 }

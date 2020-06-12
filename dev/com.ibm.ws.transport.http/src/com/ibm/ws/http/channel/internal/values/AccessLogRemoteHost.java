@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2020 IBM Corporation and others.
+ * Copyright (c) 2004, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,30 +26,6 @@ public class AccessLogRemoteHost extends AccessLogData {
     @Override
     public boolean set(StringBuilder accessLogEntry,
                        HttpResponseMessage response, HttpRequestMessage request, Object data) {
-        String hostAddress = getRemoteHostAddress(response, request, data);
-
-        if (hostAddress != null) {
-            accessLogEntry.append(hostAddress);
-        } else {
-            accessLogEntry.append("-");
-        }
-        return true;
-
-//		String requestHost = null;
-//		if(request != null){
-//			requestHost = request.getURLHost();
-//		}
-//
-//		if(requestHost != null){
-//			accessLogEntry.append(requestHost);
-//		} else {
-//			accessLogEntry.append("-");
-//		}
-//
-//		return true;
-    }
-
-    public static String getRemoteHostAddress(HttpResponseMessage response, HttpRequestMessage request, Object data) {
         HttpRequestMessageImpl requestMessageImpl = null;
         String hostAddress = null;
         if (request != null) {
@@ -73,6 +49,24 @@ public class AccessLogRemoteHost extends AccessLogData {
 
         }
 
-        return hostAddress;
+        if (hostAddress != null) {
+            accessLogEntry.append(hostAddress);
+        } else {
+            accessLogEntry.append("-");
+        }
+        return true;
+
+//		String requestHost = null;
+//		if(request != null){
+//			requestHost = request.getURLHost();
+//		}
+//
+//		if(requestHost != null){
+//			accessLogEntry.append(requestHost);
+//		} else {
+//			accessLogEntry.append("-");
+//		}
+//
+//		return true;
     }
 }

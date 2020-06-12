@@ -108,13 +108,6 @@
             ibm:variable="com.ibm.ws.logging.json.field.mappings"
             id="jsonFieldMappings" required="false" type="String" default="">
         </AD>
-        
-        <AD name="%json.access.log.fields" description="%json.access.log.fields.desc"
-        	ibm:variable="com.ibm.ws.logging.json.access.log.fields"
-        	id="jsonAccessLogFields" required="false" type="String" default="default" ibm:beta="true">
-        	<Option label="%json.access.log.fields.default" value="default"/>
-        	<Option label="%json.access.log.fields.logFormat" value="logFormat"/>
-        </AD>
     </OCD>
   
     <Designate pid="com.ibm.ws.logging">
