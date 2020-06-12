@@ -2094,15 +2094,13 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         boolean isHTTP2Enabled = false;
 
         //If servlet-3.1 is enabled, HTTP/2 is optional and by default off.
-        if (CHFWBundle.OPTIONAL_DEFAULT_OFF_20.equalsIgnoreCase(CHFWBundle.getServletConfiguredHttpVersionSetting())) {
-            //if (CHFWBundle.isDefaultOff20()) {
+        if (CHFWBundle.isDefaultOff20()) {
             //If so, check if the httpEndpoint was configured for HTTP/2
             isHTTP2Enabled = (getHttpConfig().getUseH2ProtocolAttribute() != null && getHttpConfig().getUseH2ProtocolAttribute());
         }
 
         //If servlet-4.0 is enabled, HTTP/2 is optional and by default on.
-        else if (CHFWBundle.OPTIONAL_DEFAULT_ON_20.equalsIgnoreCase(CHFWBundle.getServletConfiguredHttpVersionSetting())) {
-            //else if (CHFWBundle.isDefaultOn20()) {
+        else if (CHFWBundle.isDefaultOn20()) {
             //If not configured as an attribute, getUseH2ProtocolAttribute will be null, which returns true
             //to use HTTP/2.
             isHTTP2Enabled = (getHttpConfig().getUseH2ProtocolAttribute() == null || getHttpConfig().getUseH2ProtocolAttribute());
