@@ -31,7 +31,7 @@ Export-Package: \
 instrument.disabled: true
 
 -buildpath: \
-  org.jboss.narayana.rts:lra-client;version=5.10.1.Final, \
-  org.jboss.narayana.rts:narayana-lra;version=5.10.1.Final, \
-  org.jboss.narayana.rts:lra-proxy-api;version=5.10.1.Final, \
-  org.jboss.narayana.rts:lra-service-base;version=5.10.1.Final
+  org.jboss.narayana.rts:lra-client;version=5.10.5.Final, \
+  org.jboss.narayana.rts:narayana-lra;version=5.10.5.Final, \
+  org.jboss.narayana.rts:lra-proxy-api;version=5.10.5.Final, \
+  org.jboss.narayana.rts:lra-service-base;version=5.10.5.Final
