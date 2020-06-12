@@ -128,6 +128,11 @@ public class ShrinkHelper {
      */
     public static void exportAppToServer(LibertyServer server, Archive<?> a, DeployOptions... options) throws Exception {
         exportToServer(server, "apps", a, options);
+
+        String appName = a.getName();
+        String installedAppName = (appName.endsWith(".war") || appName.endsWith(".ear"))//
+                        ? appName.substring(0, appName.length() - 4) : appName;
+        server.addInstalledAppForValidation(installedAppName);
     }
 
     /**
