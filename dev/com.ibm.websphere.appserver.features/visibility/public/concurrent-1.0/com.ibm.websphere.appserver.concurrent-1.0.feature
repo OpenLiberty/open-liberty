@@ -11,7 +11,7 @@ Subsystem-Name: Concurrency Utilities for Java EE 1.0
  com.ibm.websphere.appserver.appLifecycle-1.0, \
  com.ibm.websphere.appserver.concurrencyPolicy-1.0, \
  com.ibm.websphere.appserver.contextService-1.0, \
- io.openliberty.jakarta.concurrency-2.0,\
+ io.openliberty.jakarta.concurrency-2.0; apiJar=false,\
  com.ibm.websphere.appserver.org.eclipse.microprofile.contextpropagation-1.0; ibm.tolerates:="1.1"
 -bundles=com.ibm.ws.javaee.platform.defaultresource, \
  com.ibm.websphere.javaee.concurrent.1.0; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.enterprise.concurrent:javax.enterprise.concurrent-api:1.0", \
