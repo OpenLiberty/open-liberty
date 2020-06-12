@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,13 +20,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
-import com.ibm.ws.security.oauth20.web.OAuth20EndpointServlet;
-
 import com.ibm.ejs.ras.TraceNLS;
+import com.ibm.ws.security.oauth20.web.OAuth20EndpointServlet;
 import com.ibm.ws.security.openidconnect.server.TraceConstants;
 
-public class OidcEndpointServlet extends OAuth20EndpointServlet
-{
+public class OidcEndpointServlet extends OAuth20EndpointServlet {
     private transient OidcEndpointServices oidcEndpointServices = null;
     private transient ServletContext servletContext = null;
     private transient BundleContext bundleContext = null;
@@ -38,19 +36,25 @@ public class OidcEndpointServlet extends OAuth20EndpointServlet
         super();
     }
 
+    @Override
     public void init() {
         servletContext = getServletContext();
         bundleContext = (BundleContext) servletContext.getAttribute("osgi-bundlecontext");
         oidcEndPointServicesRef = bundleContext.getServiceReference(OidcEndpointServices.class);
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-                    throws ServletException, IOException {
-        this.doPost(request, response);
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        handleRequest(request, response);
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-                    throws ServletException, IOException {
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        handleRequest(request, response);
+    }
+
+    @Override
+    protected void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         getOidcEndpointServices();
         oidcEndpointServices.handleOidcRequest(request, response, servletContext);
     }

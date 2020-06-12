@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -87,6 +87,10 @@ public interface OAuth20Constants extends OAuthConstants {
     public static final String ISSUER_IDENTIFIER = "issuerIdentifier";
     public static final String REFRESH_TOKEN_KEY = "refresh_key";
     public static final String OLD_REFRESH_TOKEN_KEY = "old_refresh_key";
+
+    public static final String OAUTH_REQUEST_OBJECT_ATTR_NAME = "OAuth20Request";
+    public static final String OIDC_REQUEST_OBJECT_ATTR_NAME = "OidcRequest";
+
     /*
      * Token types, subtypes, and token map data
      */

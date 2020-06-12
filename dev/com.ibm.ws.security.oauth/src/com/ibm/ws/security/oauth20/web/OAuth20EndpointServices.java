@@ -213,9 +213,9 @@ public class OAuth20EndpointServices {
         }
         if (tc.isDebugEnabled()) {
             if (oauth20Provider != null) {
-              Tr.debug(tc, "OAUTH20 _SSO OP PROCESS HAS ENDED.");
+                Tr.debug(tc, "OAUTH20 _SSO OP PROCESS HAS ENDED.");
             } else {
-              Tr.debug(tc, "OAUTH20 _SSO OP WILL NOT PROCESS THE REQUEST");
+                Tr.debug(tc, "OAUTH20 _SSO OP WILL NOT PROCESS THE REQUEST");
             }
         }
     }
@@ -743,7 +743,7 @@ public class OAuth20EndpointServices {
             return createTokenLimitResult(attrs, request, clientId);
         }
 
-        if (request.getAttribute("OidcRequest") != null) {
+        if (request.getAttribute(OAuth20Constants.OIDC_REQUEST_OBJECT_ATTR_NAME) != null) {
             // Ensure that the reduced scopes list is not empty
             oauthResult = clientAuthorization.checkForEmptyScopeSetAfterConsent(reducedScopes, oauthResult, request, provider, clientId);
             if (oauthResult != null && oauthResult.getStatus() != OAuthResult.STATUS_OK) {
@@ -1047,12 +1047,12 @@ public class OAuth20EndpointServices {
     }
 
     private OAuth20Request getAuth20Request(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        OAuth20Request oauth20Request = (OAuth20Request) request.getAttribute("OAuth20Request");
+        OAuth20Request oauth20Request = (OAuth20Request) request.getAttribute(OAuth20Constants.OAUTH_REQUEST_OBJECT_ATTR_NAME);
         if (oauth20Request == null) {
             String errorMsg = TraceNLS.getFormattedMessage(this.getClass(),
                     MESSAGE_BUNDLE,
                     "OAUTH_REQUEST_ATTRIBUTE_MISSING",
-                    new Object[] { request.getRequestURI(), "OAuth20Request" },
+                    new Object[] { request.getRequestURI(), OAuth20Constants.OAUTH_REQUEST_OBJECT_ATTR_NAME },
                     "CWWKS1412E: The request endpoint {0} does not have attribute {1}.");
             Tr.error(tc, errorMsg);
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -1066,7 +1066,7 @@ public class OAuth20EndpointServices {
             String errorMsg = TraceNLS.getFormattedMessage(this.getClass(),
                     MESSAGE_BUNDLE,
                     "OAUTH_PROVIDER_OBJECT_NULL",
-                    new Object[] { oauth20Request.getProviderName(), "OAuth20Request" },
+                    new Object[] { oauth20Request.getProviderName(), OAuth20Constants.OAUTH_REQUEST_OBJECT_ATTR_NAME },
                     "CWWKS1413E: The OAuth20Provider object is null for OAuth provider {0}.");
             Tr.error(tc, errorMsg);
             response.sendError(HttpServletResponse.SC_NOT_FOUND);

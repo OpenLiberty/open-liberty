@@ -11,6 +11,7 @@
 package com.ibm.ws.security.oauth20.web;
 
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -108,7 +109,7 @@ public class OAuth20RequestFilter implements Filter {
      */
     public void setEndpointRequest(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Matcher matcher) throws IOException, ServletException {
         OAuth20Request oauth20Request = new OAuth20Request(getProviderNameFromUrl(matcher), getEndpointTypeFromUrl(matcher), request);
-        request.setAttribute("OAuth20Request", oauth20Request);
+        request.setAttribute(OAuth20Constants.OAUTH_REQUEST_OBJECT_ATTR_NAME, oauth20Request);
         chain.doFilter(request, response);
     }
 

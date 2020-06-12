@@ -723,7 +723,7 @@ public class OAuth20EndpointServicesTest {
         final OAuth20Request oauth20Request = new OAuth20Request("providerThatDoesNotExist", EndpointType.authorize, req);
         mock.checking(new Expectations() {
             {
-                one(req).getAttribute("OAuth20Request");
+                one(req).getAttribute(OAuth20Constants.OAUTH_REQUEST_OBJECT_ATTR_NAME);
                 will(returnValue(oauth20Request));
             }
         });
