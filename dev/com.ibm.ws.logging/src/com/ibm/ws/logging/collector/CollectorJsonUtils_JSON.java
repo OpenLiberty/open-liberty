@@ -10,11 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.logging.collector;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 
 import com.ibm.websphere.ras.DataFormatHelper;
 import com.ibm.ws.logging.data.AccessLogData;
-import com.ibm.ws.logging.data.AccessLogDataFormatter;
 import com.ibm.ws.logging.data.AuditData;
 import com.ibm.ws.logging.data.FFDCData;
 import com.ibm.ws.logging.data.GenericData;
@@ -37,14 +38,14 @@ public class CollectorJsonUtils_JSON {
     /**
      * Method to return log event data in json format. This method is for collector version greater than 1.0
      *
-     * @param event            The object originating from logging source which contains necessary fields
-     * @param eventType        The type of event
-     * @param servername       The name of the server
-     * @param wlpUserDir       The name of wlp user directory
-     * @param serverHostName   The name of server host
+     * @param event The object originating from logging source which contains necessary fields
+     * @param eventType The type of event
+     * @param servername The name of the server
+     * @param wlpUserDir The name of wlp user directory
+     * @param serverHostName The name of server host
      * @param collectorVersion The version number
-     * @param tags             An array of tags
-     * @param maxFieldLength   The max character length of strings
+     * @param tags An array of tags
+     * @param maxFieldLength The max character length of strings
      */
     public static String jsonifyEvent(Object event, String eventType, String serverName, String wlpUserDir, String serverHostName, String[] tags,
                                       int maxFieldLength) {
@@ -78,7 +79,7 @@ public class CollectorJsonUtils_JSON {
                                       String serverName, String hostName, Object event, String[] tags) {
 
         FFDCData ffdcData = (FFDCData) event;
-        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startFFDCJsonFields();
+        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startFFDCJsonFields(hostName, wlpUserDir, serverName);
 
         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(ffdcData.getDatetime());
         String formattedValue = CollectorJsonHelpers.formatMessage(ffdcData.getStacktrace(), maxFieldLength);
@@ -105,21 +106,43 @@ public class CollectorJsonUtils_JSON {
     public static String jsonifyAccess(String wlpUserDir, String serverName, String hostName, Object event, String[] tags) {
 
         AccessLogData accessLogData = (AccessLogData) event;
-        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startAccessLogJsonFields(AccessLogData.KEYS_JSON);
+        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startAccessLogJsonFields(hostName, wlpUserDir, serverName);
 
-        AccessLogDataFormatter[] formatters = accessLogData.getFormatters();
+        String jsonQueryString = accessLogData.getQueryString();
+        if (jsonQueryString != null) {
+            try {
+                jsonQueryString = URLDecoder.decode(jsonQueryString, LogFieldConstants.UTF_8);
+            } catch (UnsupportedEncodingException e) {
+                // ignore, use the original value;
+            }
+        }
 
-        // Only one of these will not be null - there is only one formatter per event. If both are not null, we made a mistake earlier in AccessLogSource
-        if (formatters[1] != null)
-            formatters[1].populate(jsonBuilder, accessLogData);
-        else if (formatters[0] != null)
-            formatters[0].populate(jsonBuilder, accessLogData);
-        else
-            throw new RuntimeException("There is no formatter available for this event.");
+        String userAgent = accessLogData.getUserAgent();
+        if (userAgent != null && userAgent.length() > MAX_USER_AGENT_LENGTH)
+            userAgent = userAgent.substring(0, MAX_USER_AGENT_LENGTH);
+
+        String datetime = CollectorJsonHelpers.dateFormatTL.get().format(accessLogData.getDatetime());
+
+        //@formatter:off
+        jsonBuilder.addField(AccessLogData.getUriPathKeyJSON(), accessLogData.getUriPath(), false, true)
+        .addField(AccessLogData.getRequestMethodKeyJSON(), accessLogData.getRequestMethod(), false, true)
+        .addField(AccessLogData.getQueryStringKeyJSON(), jsonQueryString, false, true)
+        .addField(AccessLogData.getRequestHostKeyJSON(), accessLogData.getRequestHost(), false, true)
+        .addField(AccessLogData.getRequestPortKeyJSON(), accessLogData.getRequestPort(), false, true)
+        .addField(AccessLogData.getRemoteHostKeyJSON(), accessLogData.getRemoteHost(), false, true)
+        .addField(AccessLogData.getUserAgentKeyJSON(), userAgent, false, false)
+        .addField(AccessLogData.getRequestProtocolKeyJSON(), accessLogData.getRequestProtocol(), false, true)
+        .addField(AccessLogData.getBytesReceivedKeyJSON(), accessLogData.getBytesReceived(), false)
+        .addField(AccessLogData.getResponseCodeKeyJSON(), accessLogData.getResponseCode(), false)
+        .addField(AccessLogData.getElapsedTimeKeyJSON(), accessLogData.getElapsedTime(), false)
+        .addField(AccessLogData.getDatetimeKeyJSON(), datetime, false, true)
+        .addField(AccessLogData.getSequenceKeyJSON(), accessLogData.getSequence(), false, true);
+        //@formatter:on
 
         if (tags != null) {
             jsonBuilder.addPreformattedField("ibm_tags", CollectorJsonHelpers.jsonifyTags(tags));
         }
+
         return jsonBuilder.build().toString();
     }
 
@@ -134,10 +157,10 @@ public class CollectorJsonUtils_JSON {
         KeyValuePairList kvpl = null;
 
         if (isMessageEvent) {
-            jsonBuilder = CollectorJsonHelpers.startMessageJsonFields();
+            jsonBuilder = CollectorJsonHelpers.startMessageJsonFields(hostName, wlpUserDir, serverName);
         }
         if (!isMessageEvent) {
-            jsonBuilder = CollectorJsonHelpers.startTraceJsonFields();
+            jsonBuilder = CollectorJsonHelpers.startTraceJsonFields(hostName, wlpUserDir, serverName);
         }
 
         String message = logData.getMessage();
@@ -202,7 +225,7 @@ public class CollectorJsonUtils_JSON {
         GenericData genData = (GenericData) event;
         KeyValuePair[] pairs = genData.getPairs();
         String key = null;
-        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startAuditJsonFields();
+        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startAuditJsonFields(hostName, wlpUserDir, serverName);
 
         for (KeyValuePair kvp : pairs) {
 
@@ -244,4 +267,5 @@ public class CollectorJsonUtils_JSON {
 
         return jsonBuilder.build().toString();
     }
+
 }

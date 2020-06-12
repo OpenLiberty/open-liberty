@@ -65,7 +65,6 @@ public class JSONObject {
             if (s.isEmpty()) {
                 return this;
             }
-
             prepForNewField();
 
             jsonBuilder.append(s);
@@ -144,15 +143,15 @@ public class JSONObject {
          * Appends name value pairs based on whether the fields are to be omitted, JSON escaped, and surrounded by quotes
          *
          * @param name
-         *                            field name
+         *            field name
          * @param value
-         *                            field value
+         *            field value
          * @param jsonEscapeName
-         *                            if name needs to be JSON escaped
+         *            if name needs to be JSON escaped
          * @param jsonEscapevalue
-         *                            if value needs to be JSON escaped
+         *            if value needs to be JSON escaped
          * @param isQuoteless
-         *                            if value needs to be surrounded by quotes
+         *            if value needs to be surrounded by quotes
          */
         private void appendNameValue(String name, String value, boolean jsonEscapeName, boolean jsonEscapeValue, boolean isQuoteless) {
 
@@ -193,7 +192,7 @@ public class JSONObject {
          * Escape \b, \f, \n, \r, \t, ", \, / characters, appends to JSONObjectBuilder StringBuilder jsonBuilder
          *
          * @param s
-         *              String to escape
+         *            String to escape
          */
         private void jsonEscape3(String s) {
             for (int i = 0; i < s.length(); i++) {
