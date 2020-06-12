@@ -589,4 +589,60 @@ public class AcmeRevocationTest {
 	private void stopServer(String...msgs) throws Exception {
 		AcmeFatUtils.stopServer(server, msgs);
 	}
+	
+	/**
+	 * Start a pebble server and swap between pebble and boulder and make sure
+	 * we still get a certificate when switching.
+	 * 
+	 * @throws Exception
+	 *             if the test failed for some unforeseen reason.
+	 */
+	@Test
+	public void swapBetweenCAProviders() throws Exception {
+		final String methodName = testName.getMethodName();
+
+		CAContainer pebble = new PebbleContainer();
+		try {
+
+			/*
+			 * Configure and start with Pebble
+			 */
+			ServerConfiguration configuration = originalServerConfig.clone();
+			configureAcmeRevocation(configuration, true);
+			AcmeFatUtils.configureAcmeCA(server, pebble, configuration, false, DOMAIN);
+
+			Log.info(AcmeSimpleTest.class, methodName, "Starting server with Pebble");
+			server.startServer();
+			AcmeFatUtils.waitForSslToCreateKeystore(server);
+			AcmeFatUtils.waitForSslEndpoint(server);
+			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
+			server.setMarkToEndOfLog(server.getDefaultLogFile());
+
+			Certificate[] certificates1 = AcmeFatUtils.assertAndGetServerCertificate(server, pebble);
+
+			Log.info(AcmeSimpleTest.class, methodName, "Swap to Boulder");
+			AcmeFatUtils.configureAcmeCA(server, boulder, configuration, false, DOMAIN);
+			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
+			certificates1 = AcmeFatUtils.waitForNewCert(server, boulder, certificates1);
+			server.setMarkToEndOfLog(server.getDefaultLogFile());
+
+			Log.info(AcmeSimpleTest.class, methodName, "Swap back to Pebble");
+			AcmeFatUtils.configureAcmeCA(server, pebble, configuration, false, DOMAIN);
+			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
+			certificates1 = AcmeFatUtils.waitForNewCert(server, pebble, certificates1);
+
+			Log.info(AcmeSimpleTest.class, methodName, "Swap back to Boulder");
+			AcmeFatUtils.configureAcmeCA(server, boulder, configuration, false, DOMAIN);
+			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
+			certificates1 = AcmeFatUtils.waitForNewCert(server, boulder, certificates1);
+			server.setMarkToEndOfLog(server.getDefaultLogFile());
+
+		} finally {
+			stopServer();
+
+			if (pebble != null) {
+				pebble.stop();
+			}
+		}
+	}
 }

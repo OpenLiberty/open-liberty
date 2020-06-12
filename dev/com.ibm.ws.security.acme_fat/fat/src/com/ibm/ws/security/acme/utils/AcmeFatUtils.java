@@ -779,8 +779,8 @@ public class AcmeFatUtils {
 	 * @param startingCertificateChain
 	 * @throws Exception
 	 */
-	public static final void waitForNewCert(LibertyServer server, CAContainer acmeContainer, Certificate[] startingCertificateChain) throws Exception {
-		waitForNewCert(server, acmeContainer, startingCertificateChain, SCHEDULE_TIME);
+	public static final Certificate[]  waitForNewCert(LibertyServer server, CAContainer acmeContainer, Certificate[] startingCertificateChain) throws Exception {
+		return waitForNewCert(server, acmeContainer, startingCertificateChain, SCHEDULE_TIME);
 	}
 
 	/**
@@ -791,7 +791,7 @@ public class AcmeFatUtils {
 	 * @param timeout
 	 * @throws Exception
 	 */
-	public static final void waitForNewCert(LibertyServer server, CAContainer acmeContainer, Certificate[] startingCertificateChain, long timeout) throws Exception {
+	public static final Certificate[]  waitForNewCert(LibertyServer server, CAContainer acmeContainer, Certificate[] startingCertificateChain, long timeout) throws Exception {
 		Certificate[] endingCertificateChain;
 		long startTime = System.currentTimeMillis();
 		while (System.currentTimeMillis() < startTime + timeout) {
@@ -812,6 +812,8 @@ public class AcmeFatUtils {
 		String serial2 = ((X509Certificate) endingCertificateChain[0]).getSerialNumber().toString(16);
 
 		assertThat("Expected a new certificate.", serial1, not(equalTo(serial2)));	
+		
+		return endingCertificateChain;
 	}
 	
 	/**
