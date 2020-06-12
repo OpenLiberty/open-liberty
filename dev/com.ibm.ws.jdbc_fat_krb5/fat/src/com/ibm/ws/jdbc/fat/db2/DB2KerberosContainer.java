@@ -44,6 +44,7 @@ public class DB2KerberosContainer extends Db2Container {
         withExposedPorts(50000);
         withEnv("KRB5_REALM", KRB5_REALM);
         withEnv("KRB5_KDC", KRB5_KDC);
+        withEnv("DB2_KRB5_PRINCIPAL", "db2srvc@EXAMPLE.COM");
         waitingFor(new LogMessageWaitStrategy()
                         .withRegEx("^.*SETUP SCRIPT COMPLETE.*$")
                         .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 3 : 25)));

@@ -51,7 +51,7 @@
   <dataSource jndiName="jdbc/db2ds" jaasLoginContextEntry="JaasClient">
     <jdbcDriver libraryRef="DB2JCCLib"/>
     <properties.db2.jcc databaseName="${DB2_DBNAME}" serverName="${DB2_HOSTNAME}" driverType="4" portNumber="${DB2_PORT}" 
-                        securityMechanism="11" KerberosServerPrincipal="${KRB5_USER}" user="${KRB5_USER}"/>
+                        securityMechanism="11" user="${KRB5_USER}"/> 
   </dataSource>
 
   <dataSource jndiName="jdbc/nokrb5">

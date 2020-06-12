@@ -26,7 +26,7 @@ cat <<EOT > /etc/krb5.conf
  rdns = false
  default_realm = ${KRB5_REALM}
  
- [realms]
+[realms]
  ${KRB5_REALM} = {
     kdc = ${KRB5_KDC}:99
     admin_server = ${KRB5_ADMINSERVER}

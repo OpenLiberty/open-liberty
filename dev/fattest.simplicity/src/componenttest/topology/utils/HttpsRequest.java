@@ -67,6 +67,41 @@ public class HttpsRequest extends HttpRequest {
     }
 
     @Override
+    public HttpsRequest method(String method) {
+        return (HttpsRequest) super.method(method);
+    }
+
+    @Override
+    public HttpsRequest basicAuth(String user, String pass) {
+        return (HttpsRequest) super.basicAuth(user, pass);
+    }
+
+    @Override
+    public HttpsRequest expectCode(int expectedResponse) {
+        return (HttpsRequest) super.expectCode(expectedResponse);
+    }
+
+    @Override
+    public HttpsRequest jsonBody(String json) {
+        return (HttpsRequest) super.jsonBody(json);
+    }
+
+    @Override
+    public HttpsRequest requestProp(String key, String value) {
+        return (HttpsRequest) super.requestProp(key, value);
+    }
+
+    @Override
+    public HttpsRequest silent() {
+        return (HttpsRequest) super.silent();
+    }
+
+    @Override
+    public HttpsRequest timeout(int timeout) {
+        return (HttpsRequest) super.timeout(timeout);
+    }
+
+    @Override
     void configureConnection(HttpURLConnection con) {
         if (allowInsecure && sf != null)
             throw new IllegalStateException("Cannot set allowInsecure=true and sslSocketFactory because " +

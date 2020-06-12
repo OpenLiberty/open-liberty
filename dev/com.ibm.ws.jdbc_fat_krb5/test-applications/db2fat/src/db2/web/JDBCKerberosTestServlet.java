@@ -18,11 +18,7 @@ import javax.servlet.annotation.HttpConstraint;
 import javax.servlet.annotation.ServletSecurity;
 import javax.servlet.annotation.ServletSecurity.TransportGuarantee;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
-
-import org.junit.Test;
 
 import componenttest.app.FATServlet;
 
@@ -37,27 +33,18 @@ public class JDBCKerberosTestServlet extends FATServlet {
     @Resource(lookup = "jdbc/nokrb5")
     DataSource noKrb5;
 
-    @Test
-    public void exampleTest(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        System.out.println("@AGG auth type: " + req.getAuthType());
-        System.out.println("@AGG remote usr: " + req.getRemoteUser());
-        System.out.println("@AGG principal: " + req.getUserPrincipal());
-
-        System.out.println("Attempting non-kerberos connection...");
+    public void testNonKerberosConnectionRejected() throws Exception {
         try (Connection con = noKrb5.getConnection()) {
-            con.createStatement().execute("SELECT 1 FROM SYSIBM.SYSDUMMY1");
-            System.out.println("Used non-kerberos connection OK");
+            throw new Exception("Should not be able to obtain a non-kerberos connection from a kerberos-only database");
+        } catch (SQLInvalidAuthorizationSpecException e) {
+            System.out.println("Got expected error getting non-kerberos connection");
         }
+    }
 
-        System.out.println("Attempting kerberos connection...");
-        try {
-            try (Connection con = ds.getConnection()) {
-                con.createStatement().execute("SELECT 1 FROM SYSIBM.SYSDUMMY1");
-                System.out.println("Used kerberos connection OK");
-            }
-        } catch (SQLInvalidAuthorizationSpecException expected) {
-            System.out.println("Got expected invalid auth exception");
-            expected.printStackTrace();
+    public void testKerberosConnection() throws Exception {
+        try (Connection con = ds.getConnection()) {
+            con.createStatement().execute("SELECT 1 FROM SYSIBM.SYSDUMMY1");
+            System.out.println("Used kerberos connection OK");
         }
     }
 

@@ -126,11 +126,19 @@ public class JDBCKerberosTest extends FATServletClient {
 
     @Test
     @AllowedFFDC // allow FFDCs for now since we expect the auth to fail
-    public void exampleTest() throws Exception {
+    public void testNonKerberosConnectionRejected() throws Exception {
+        runInServlet();
+    }
+
+    @Test
+    public void testKerberosConnection() throws Exception {
+        runInServlet();
+    }
+
+    private void runInServlet() throws Exception {
         String result = new HttpRequest(server, getPathAndQuery(APP_NAME + "/JDBCKerberosTestServlet", testName.getMethodName()))
                         .basicAuth("user1", "password")
                         .run(String.class);
-
         // Look for success message, otherwise fail test
         if (result.indexOf(FATServletClient.SUCCESS) < 0) {
             Log.info(getClass(), testName.getMethodName(), "failed to find completed successfully message");
