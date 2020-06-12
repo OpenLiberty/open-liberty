@@ -24,6 +24,10 @@ import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.ws.security.oauth20.web.OAuth20EndpointServlet;
 import com.ibm.ws.security.openidconnect.server.TraceConstants;
 
+import io.openliberty.security.common.http.SupportedHttpMethodHandler.HttpMethod;
+import io.openliberty.security.openidconnect.web.OidcSupportedHttpMethodHandler;
+
+@SuppressWarnings("restriction")
 public class OidcEndpointServlet extends OAuth20EndpointServlet {
     private transient OidcEndpointServices oidcEndpointServices = null;
     private transient ServletContext servletContext = null;
@@ -45,18 +49,64 @@ public class OidcEndpointServlet extends OAuth20EndpointServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (!isValidHttpMethodForRequest(request, response, HttpMethod.GET)) {
+            return;
+        }
         handleRequest(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (!isValidHttpMethodForRequest(request, response, HttpMethod.POST)) {
+            return;
+        }
         handleRequest(request, response);
+    }
+
+    @Override
+    protected void doHead(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (!isValidHttpMethodForRequest(request, response, HttpMethod.HEAD)) {
+            return;
+        }
+        handleRequest(request, response);
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (!isValidHttpMethodForRequest(request, response, HttpMethod.DELETE)) {
+            return;
+        }
+        handleRequest(request, response);
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (!isValidHttpMethodForRequest(request, response, HttpMethod.PUT)) {
+            return;
+        }
+        handleRequest(request, response);
+    }
+
+    @Override
+    protected void doTrace(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        OidcSupportedHttpMethodHandler optionsRequestHandler = getOidcSupportedHttpMethodHandler(request, response);
+        optionsRequestHandler.sendUnsupportedMethodResponse();
+    }
+
+    @Override
+    protected void doOptions(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        OidcSupportedHttpMethodHandler optionsRequestHandler = getOidcSupportedHttpMethodHandler(request, response);
+        optionsRequestHandler.sendHttpOptionsResponse();
     }
 
     @Override
     protected void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         getOidcEndpointServices();
         oidcEndpointServices.handleOidcRequest(request, response, servletContext);
+    }
+
+    OidcSupportedHttpMethodHandler getOidcSupportedHttpMethodHandler(HttpServletRequest request, HttpServletResponse response) {
+        return new OidcSupportedHttpMethodHandler(request, response);
     }
 
     private OidcEndpointServices getOidcEndpointServices() throws ServletException {
@@ -71,4 +121,14 @@ public class OidcEndpointServlet extends OAuth20EndpointServlet {
         }
         return oidcEndpointServices;
     }
+
+    private boolean isValidHttpMethodForRequest(HttpServletRequest request, HttpServletResponse response, HttpMethod requestMethod) throws IOException {
+        OidcSupportedHttpMethodHandler optionsRequestHandler = getOidcSupportedHttpMethodHandler(request, response);
+        if (!optionsRequestHandler.isValidHttpMethodForRequest(requestMethod)) {
+            optionsRequestHandler.sendUnsupportedMethodResponse();
+            return false;
+        }
+        return true;
+    }
+
 }

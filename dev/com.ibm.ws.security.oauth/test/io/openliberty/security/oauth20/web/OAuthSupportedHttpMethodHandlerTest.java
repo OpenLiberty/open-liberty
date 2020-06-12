@@ -32,7 +32,6 @@ import org.junit.Test;
 
 import com.ibm.oauth.core.internal.oauth20.OAuth20Constants;
 import com.ibm.ws.security.oauth20.api.OAuth20Provider;
-import com.ibm.ws.security.oauth20.web.EndpointUtils;
 import com.ibm.ws.security.oauth20.web.OAuth20Request;
 import com.ibm.ws.security.oauth20.web.OAuth20Request.EndpointType;
 import com.ibm.ws.security.test.common.CommonTestClass;
@@ -49,7 +48,6 @@ public class OAuthSupportedHttpMethodHandlerTest extends CommonTestClass {
 
     private final HttpServletRequest request = mockery.mock(HttpServletRequest.class);
     private final HttpServletResponse response = mockery.mock(HttpServletResponse.class);
-    private final EndpointUtils endpointUtils = mockery.mock(EndpointUtils.class);
     private final OAuth20Request oauth20Request = mockery.mock(OAuth20Request.class);
     private final OAuth20Provider oauth20Provider = mockery.mock(OAuth20Provider.class);
     private final OAuthEndpointSettings oauthEndpointSettings = mockery.mock(OAuthEndpointSettings.class);
@@ -85,7 +83,6 @@ public class OAuthSupportedHttpMethodHandlerTest extends CommonTestClass {
             }
         });
         handler = new TestOAuthSupportedHttpMethodHandler(request, response);
-        handler.endpointUtils = endpointUtils;
     }
 
     @After
