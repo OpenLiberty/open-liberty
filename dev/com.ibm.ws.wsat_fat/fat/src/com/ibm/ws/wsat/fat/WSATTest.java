@@ -49,6 +49,18 @@ public abstract class WSATTest {
         return HttpUtils.getHttpConnection(uri.toURL(), expectedResponseCode, connectionTimeout, HTTPRequestMethod.GET);
     }
 
+    protected HttpURLConnection getHttpConnection(URL url, int expectedResponseCode, int connectionTimeout, String testName) throws IOException, ProtocolException, URISyntaxException {
+    	
+    	// Add testName parameter to query string so it appears in trace
+    	final URI uri = appendUri(url.toURI(), testNameParameter + "=" + testName);
+    	
+    	System.out.println("xxxxxx: " + uri.toString());
+    	
+    	
+    	
+        return HttpUtils.getHttpConnection(uri.toURL(), expectedResponseCode, connectionTimeout, HTTPRequestMethod.GET);
+    }
+
     private static URI appendUri(URI oldUri, String appendQuery) throws URISyntaxException {
 
         String newQuery = oldUri.getQuery();
