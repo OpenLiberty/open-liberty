@@ -50,6 +50,7 @@ public class SpnegoConfigImpl implements SpnegoConfig {
 
     public static final String KEY_SPNEGO_NOT_SUPPORTED_ERROR_PAGE_URL = "spnegoNotSupportedErrorPageURL";
     public static final String KEY_NTLM_TOKEN_RECEIVED_ERROR_PAGE_URL = "ntlmTokenReceivedErrorPageURL";
+    public static final String KEY_SPNEGO_AUTHENTICATION_ERROR_PAGE_URL = "spnegoAuthenticationErrorPageURL";
 
     public static final String KEY_TRIM_KERBEROS_REALM_NAME_FROM_PRINCIPAL = "trimKerberosRealmNameFromPrincipal";
 
@@ -79,6 +80,7 @@ public class SpnegoConfigImpl implements SpnegoConfig {
     private boolean invokeAfterSSO;
     private String spnegoNotSupportedErrorPageURL;
     private String ntlmTokenReceivedErrorPageURL;
+    private String spnegoAuthenticationErrorPageURL;
     private boolean includeCustomCacheKeyInSubject;
 
     private boolean trimKerberosRealmNameFromPrincipal;
@@ -97,7 +99,7 @@ public class SpnegoConfigImpl implements SpnegoConfig {
 
     protected boolean initSpnGssCrendential() {
         boolean result = true;
-        errorPageConfig = new ErrorPageConfig(spnegoNotSupportedErrorPageURL, ntlmTokenReceivedErrorPageURL);
+        errorPageConfig = new ErrorPageConfig(spnegoNotSupportedErrorPageURL, ntlmTokenReceivedErrorPageURL, spnegoAuthenticationErrorPageURL);
 
         if (krb5Keytab == null || krb5Keytab.length() == 0) {
             result = false;
@@ -130,6 +132,7 @@ public class SpnegoConfigImpl implements SpnegoConfig {
         invokeAfterSSO = (Boolean) props.get(KEY_INVOKE_AFTER_SSO);
         spnegoNotSupportedErrorPageURL = (String) props.get(KEY_SPNEGO_NOT_SUPPORTED_ERROR_PAGE_URL);
         ntlmTokenReceivedErrorPageURL = (String) props.get(KEY_NTLM_TOKEN_RECEIVED_ERROR_PAGE_URL);
+        spnegoAuthenticationErrorPageURL = (String) props.get(KEY_SPNEGO_AUTHENTICATION_ERROR_PAGE_URL);
         trimKerberosRealmNameFromPrincipal = (Boolean) props.get(KEY_TRIM_KERBEROS_REALM_NAME_FROM_PRINCIPAL);
         includeClientGSSCredentialInSubject = (Boolean) props.get(KEY_INCLUDE_CLIENT_GSS_CREDENTIAL_IN_SUBJECT);
         servicePrincipalNames = resolveServicePrincipalNames((String) props.get(KEY_SERVICE_PRINCIPAL_NAMES));
@@ -150,6 +153,7 @@ public class SpnegoConfigImpl implements SpnegoConfig {
             Tr.debug(tc, "invokeAfterSSO: " + invokeAfterSSO);
             Tr.debug(tc, "spnegoNotSupportedErrorPageURL: " + spnegoNotSupportedErrorPageURL);
             Tr.debug(tc, "ntlmTokenReceivedErrorPageURL: " + ntlmTokenReceivedErrorPageURL);
+            Tr.debug(tc, "spnegoAuthenticationErrorPageURL: " + spnegoAuthenticationErrorPageURL);
             Tr.debug(tc, "trimKerberosRealmNameFromPrincipal: " + trimKerberosRealmNameFromPrincipal);
             Tr.debug(tc, "includeClientGSSCredentialInSubject: " + includeClientGSSCredentialInSubject);
             Tr.debug(tc, "includeCustomCacheKeyInSubject: " + includeCustomCacheKeyInSubject);
@@ -271,6 +275,14 @@ public class SpnegoConfigImpl implements SpnegoConfig {
     @Override
     public String getNtlmTokenReceivedErrorPageURL() {
         return ntlmTokenReceivedErrorPageURL;
+    }
+
+    /**
+     * @return the spnegoAuthenticationErrorPageURL
+     */
+    @Override
+    public String getSpnegoAuthenticationErrorPageURL() {
+        return spnegoAuthenticationErrorPageURL;
     }
 
     /**

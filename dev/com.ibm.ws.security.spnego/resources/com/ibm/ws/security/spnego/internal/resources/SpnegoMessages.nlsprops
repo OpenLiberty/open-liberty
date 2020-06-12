@@ -49,7 +49,7 @@ SPNEGO_NOT_SUPPORTED_ERROR_PAGE.useraction=Configure the client browser to perfo
 
 SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE=CWWKS4307E: <html><head><title>An NTLM Token was received.</title></head> \
 <body>Your client browser configuration is correct, but you have not logged into a supported Windows Domain.<p> \
-Please login to the supported Windows Domain.</html>.
+Please login to the supported Windows Domain.</body></html>.
 SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE.explanation=The client browser configuration is correct, but you have not logged into a supported Windows domain. \
 Or the SPNEGO configuration is not correct so the client browser does not send the SPNEGO or Kerberos token.
 SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE.useraction=Verify that you login to the supported Windows domain and also verify the SPNEGO configuration on the server and Windows domain.
@@ -113,3 +113,8 @@ SPNEGO_CAN_NOT_GET_DELEGATE_SERVICE_SPN.useraction=Verify the service principal 
 SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE=CWWKS4322E: Delegate SPN {0} can not authenticate to the Key Distribution Center (KDC) using the Kerberos configuration file {1} and keytab file {2}. Login exception was received: {3}
 SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE.explanation=Can not authenticate to the Key Distribution Center (KDC).
 SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE.useraction=Verify the service principal name format, and make sure it exists on the Windows domain and that the Kerberos keytab file contains the service principal name.
+
+SPNEGO_AUTHENTICATION_ERROR_PAGE=CWWKS4324E: <html><head><title>SPNEGO authentication failed. Contact your system administrator to resolve the problem.</title></head> \
+<body>The client sent the SPNEGO token. The server cannot validate the client's SPNEGO token. Contact your system administrator to resolve the problem.</body></html>.
+SPNEGO_AUTHENTICATION_ERROR_PAGE.explanation=SPNEGO authentication failed. For more information, check the server log messages.
+SPNEGO_AUTHENTICATION_ERROR_PAGE.useraction=Verify the server configuration and the Kerberos configuration and make sure that the server clock is in sync with the Key Distribution Center (KDC).

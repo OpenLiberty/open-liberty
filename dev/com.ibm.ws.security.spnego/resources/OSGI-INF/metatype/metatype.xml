@@ -39,6 +39,9 @@
             required="false" type="String" /> 
        
         <AD id="ntlmTokenReceivedErrorPageURL" name="%ntlmTokenReceivedErrorPageURL" description="%ntlmTokenReceivedErrorPageURL.desc"
+            required="false" type="String" />
+        
+        <AD id="spnegoAuthenticationErrorPageURL" name="%spnegoAuthenticationErrorPageURL" description="%spnegoAuthenticationErrorPageURL.desc"
             required="false" type="String" /> 
         
         <AD id="trimKerberosRealmNameFromPrincipal" name="%trimKerberosRealmNameFromPrincipal" description="%trimKerberosRealmNameFromPrincipal.desc"
