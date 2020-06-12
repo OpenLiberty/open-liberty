@@ -86,6 +86,9 @@ public class CustomAccessLogFieldsTest {
     @Server("CustomAccessLogFieldsBadConfigXml")
     public static LibertyServer badConfigServerXml;
 
+    @Server("CustomAccessLogFieldsChangeConfig")
+    public static LibertyServer changeConfigServer;
+
     @Server("CustomAccessLogFieldsTwoHttpEndpoints")
     public static LibertyServer multipleHttpEndpointServer;
 
@@ -110,6 +113,7 @@ public class CustomAccessLogFieldsTest {
         badConfigServerEnv.saveServerConfiguration();
         badConfigServerBootstrap.saveServerConfiguration();
         badConfigServerXml.saveServerConfiguration();
+        changeConfigServer.saveServerConfiguration();
         multipleHttpEndpointServer.saveServerConfiguration();
     }
 
@@ -167,6 +171,7 @@ public class CustomAccessLogFieldsTest {
         waitForSecurityPrerequisites(envServer, WAIT_TIMEOUT);
         hitHttpsEndpointSecure("/metrics", envServer);
         String line = envServer.waitForStringInLog("liberty_accesslog");
+        assertNotNull("No liberty_accesslog found in the output JSON log.", line);
 
         assertTrue("There are fields missing in the output JSON log.", areFieldsPresent(line, newFields));
         assertTrue("There are unexpected fields in the output JSON log.", areFieldsNotPresent(line, defaultFields));
@@ -181,6 +186,7 @@ public class CustomAccessLogFieldsTest {
         waitForSecurityPrerequisites(bootstrapServer, WAIT_TIMEOUT);
         hitHttpsEndpointSecure("/metrics", bootstrapServer);
         String line = bootstrapServer.waitForStringInLog("liberty_accesslog");
+        assertNotNull("No liberty_accesslog found in the output JSON log.", line);
 
         assertTrue("There are fields missing in the output JSON log.", areFieldsPresent(line, newFields));
         assertTrue("There are unexpected fields in the output JSON log.", areFieldsNotPresent(line, defaultFields));
@@ -194,10 +200,14 @@ public class CustomAccessLogFieldsTest {
         setUp(xmlServer);
         if (isFirstTimeUsingXmlServer) {
             waitForSecurityPrerequisites(xmlServer, WAIT_TIMEOUT);
+        } else {
+            assertNotNull("TCP Channel defaultHttpEndpoint-ssl has not started (CWWKO0219I not found)",
+                          xmlServer.waitForStringInLog("CWWKO0219I.*defaultHttpEndpoint-ssl", 60000));
         }
         isFirstTimeUsingXmlServer = false;
         hitHttpsEndpointSecure("/metrics", xmlServer);
         String line = xmlServer.waitForStringInLog("liberty_accesslog");
+        assertNotNull("No liberty_accesslog found in the output JSON log.", line);
 
         assertTrue("There are fields missing in the output JSON log.", areFieldsPresent(line, newFields));
         assertTrue("There are unexpected fields in the output JSON log.", areFieldsNotPresent(line, defaultFields));
@@ -234,6 +244,8 @@ public class CustomAccessLogFieldsTest {
                                         xmlServer);
         hitHttpEndpoint(xmlServer);
         String line = xmlServer.waitForStringInLog("liberty_accesslog");
+        assertNotNull("No liberty_accesslog found in the output JSON log.", line);
+
         String[] renamedNames = { "rename_cookie", "rename_requestHeader", "rename_responseHeader" };
         assertTrue("Access log fields were not renamed properly.", areFieldsPresent(line, renamedNames));
 
@@ -246,6 +258,8 @@ public class CustomAccessLogFieldsTest {
                                         xmlServer);
         hitHttpEndpoint(xmlServer);
         String line = xmlServer.waitForStringInLog("liberty_accesslog");
+        assertNotNull("No liberty_accesslog found in the output JSON log.", line);
+
         String[] omittedFields = { "ibm_cookie_cookie", "ibm_requestHeader_header", "ibm_responseHeader_Content-Type" };
         assertTrue("Access log fields were not omitted properly.", areFieldsNotPresent(line, omittedFields));
     }
@@ -260,11 +274,16 @@ public class CustomAccessLogFieldsTest {
         waitForConfigUpdate(xmlServer);
         if (isFirstTimeUsingXmlServer) {
             waitForSecurityPrerequisites(xmlServer, WAIT_TIMEOUT);
+        } else {
+            assertNotNull("TCP Channel defaultHttpEndpoint-ssl has not started (CWWKO0219I not found)",
+                          xmlServer.waitForStringInLog("CWWKO0219I.*defaultHttpEndpoint-ssl", 60000));
         }
         isFirstTimeUsingXmlServer = false;
 
         hitHttpsEndpointSecure("/metrics", xmlServer);
         String line = xmlServer.waitForStringInLog("liberty_accesslog");
+        assertNotNull("No liberty_accesslog found in the output JSON log.", line);
+
         // Easier to just use two asserts instead of trying to join those two arrays together
         assertTrue("There are fields missing in the output JSON log.", areFieldsPresent(line, newFields));
         assertTrue("There are fields missing in the output JSON log.", areFieldsPresent(line, defaultFields));
@@ -281,6 +300,8 @@ public class CustomAccessLogFieldsTest {
         xmlServer.setServerConfigurationFile("accessLogging/server-null-values-dont-print.xml");
         waitForConfigUpdate(xmlServer);
         String line = xmlServer.waitForStringInLog("liberty_accesslog");
+        assertNotNull("No liberty_accesslog found in the output JSON log.", line);
+
         // Since we hit the httpEndpoint and *not* the /metrics endpoint, the value for "remoteUserID" should be null, since we did not login.
         String[] nullFields = { "ibm_cookie_invalidcookie", "ibm_requestHeader_invalidheader", "ibm_responseHeader_invalidheader", "ibm_remoteUserID" };
         assertTrue("Null access log fields should not be printed, but null field was found.", areFieldsNotPresent(line, nullFields));
@@ -295,6 +316,8 @@ public class CustomAccessLogFieldsTest {
         setServerConfiguration("default", xmlServer);
         hitHttpEndpoint(xmlServer);
         String line = xmlServer.waitForStringInLog("liberty_accesslog");
+        assertNotNull("No liberty_accesslog found in the output JSON log.", line);
+
         assertTrue("There are unexpected fields in the output JSON log.", areFieldsNotPresent(line, newFields));
         assertTrue("There are fields missing when logFormat = default.", areFieldsPresent(line, defaultFields));
     }
@@ -305,13 +328,17 @@ public class CustomAccessLogFieldsTest {
     @Test
     public void testFieldsInAccessLogAreSameInJSON() throws Exception {
         setUp(xmlServer);
-        xmlServer.setMarkToEndOfLog();
         if (isFirstTimeUsingXmlServer) {
             waitForSecurityPrerequisites(xmlServer, WAIT_TIMEOUT);
+        } else {
+            assertNotNull("TCP Channel defaultHttpEndpoint-ssl has not started (CWWKO0219I not found)",
+                          xmlServer.waitForStringInLog("CWWKO0219I.*defaultHttpEndpoint-ssl", 60000));
         }
         isFirstTimeUsingXmlServer = false;
+
         hitHttpsEndpointSecure("/metrics", xmlServer);
         String line = xmlServer.waitForStringInLog("liberty_accesslog");
+        assertNotNull("No liberty_accesslog found in the output JSON log.", line);
 
         // create a map of the strings
         Map<String, String> parsedLine = parseIntoKvp(line);
@@ -347,29 +374,34 @@ public class CustomAccessLogFieldsTest {
      */
     @Test
     public void testChangeJsonAccessLogFieldsConfigValue() throws Exception {
-        setUp(xmlServer);
-        hitHttpsEndpointSecure("/metrics", xmlServer);
-        String line = xmlServer.waitForStringInLogUsingMark("liberty_accesslog");
-        xmlServer.setMarkToEndOfLog();
+        setUp(changeConfigServer);
+        waitForSecurityPrerequisites(changeConfigServer, WAIT_TIMEOUT);
+
+        hitHttpsEndpointSecure("/metrics", changeConfigServer);
+        String line = changeConfigServer.waitForStringInLogUsingMark("liberty_accesslog");
+        assertNotNull("No liberty_accesslog found in the output JSON log.", line);
+        changeConfigServer.setMarkToEndOfLog();
 
         assertTrue("There are fields missing in the output JSON log.", areFieldsPresent(line, newFields));
         assertTrue("There are unexpected fields in the output JSON log.", areFieldsNotPresent(line, defaultFields));
 
         // change to default
-        setServerConfiguration("default", xmlServer);
-        hitHttpsEndpointSecure("/metrics", xmlServer);
-        line = xmlServer.waitForStringInLogUsingMark("liberty_accesslog");
-        xmlServer.setMarkToEndOfLog();
+        setServerConfiguration("default", changeConfigServer);
+        hitHttpsEndpointSecure("/metrics", changeConfigServer);
+        line = changeConfigServer.waitForStringInLogUsingMark("liberty_accesslog");
+        assertNotNull("No liberty_accesslog found in the output JSON log.", line);
+        changeConfigServer.setMarkToEndOfLog();
 
         // this time, make sure that the default fields show up but NOT the new fields
         assertTrue("There are unexpected fields in the output JSON log.", areFieldsNotPresent(line, newFields));
         assertTrue("There are fields missing in the output JSON log.", areFieldsPresent(line, defaultFields));
 
         // change back again to logFormat
-        setServerConfiguration("logFormat", xmlServer);
-        hitHttpsEndpointSecure("/metrics", xmlServer);
-        line = xmlServer.waitForStringInLogUsingMark("liberty_accesslog");
-        xmlServer.setMarkToEndOfLog();
+        setServerConfiguration("logFormat", changeConfigServer);
+        hitHttpsEndpointSecure("/metrics", changeConfigServer);
+        line = changeConfigServer.waitForStringInLogUsingMark("liberty_accesslog");
+        assertNotNull("No liberty_accesslog found in the output JSON log.", line);
+        changeConfigServer.setMarkToEndOfLog();
 
         assertTrue("There are fields missing in the output JSON log.", areFieldsPresent(line, newFields));
         assertTrue("There are unexpected fields in the output JSON log.", areFieldsNotPresent(line, defaultFields));
@@ -427,6 +459,8 @@ public class CustomAccessLogFieldsTest {
         // An FFDC should be created for the bad token, but we should still have logs printing for the valid ones
         // In this case, our logFormat="%a %b %J" and only %J is invalid, so we're expecting the other tokens to be printed
         String line = xmlServer.waitForStringInLogUsingMark("liberty_accesslog");
+        assertNotNull("No liberty_accesslog found in the output JSON log.", line);
+
         String[] expectedFields = { "ibm_remoteIP", "ibm_bytesSent" };
         assertTrue("The JSON access log was not printed properly and is missing fields.", areFieldsPresent(line, expectedFields));
     }
@@ -441,6 +475,8 @@ public class CustomAccessLogFieldsTest {
         waitForConfigUpdate(xmlServer);
         hitHttpEndpoint(xmlServer);
         String line = xmlServer.waitForStringInLogUsingMark("liberty_accesslog");
+        assertNotNull("No liberty_accesslog found in the output JSON log.", line);
+
         String[] expectedFields = { "ibm_remoteIP", "ibm_cookie_cookie" };
         // First, make sure they're even printed at all
         assertTrue("There are fields missing in the output JSON log.", areFieldsPresent(line, expectedFields));
@@ -459,6 +495,8 @@ public class CustomAccessLogFieldsTest {
         waitForConfigUpdate(xmlServer);
         hitHttpEndpoint(xmlServer);
         String lineManual = xmlServer.waitForStringInLogUsingMark("liberty_accesslog");
+        assertNotNull("No liberty_accesslog found in the output JSON log.", lineManual);
+
         assertTrue("The JSON access log was not printed properly and is missing fields.", areFieldsPresent(lineManual, defaultFields));
 
         // Now, switch to jsonAccessLogFields = default and do the same check
@@ -466,6 +504,8 @@ public class CustomAccessLogFieldsTest {
         waitForConfigUpdate(xmlServer);
         hitHttpEndpoint(xmlServer);
         String lineDefault = xmlServer.waitForStringInLogUsingMark("liberty_accesslog");
+        assertNotNull("No liberty_accesslog found in the output JSON log.", lineDefault);
+
         assertTrue("The JSON access log was not printed properly and is missing fields.", areFieldsPresent(lineDefault, defaultFields));
 
         // Finally, check that they both have the same fields
