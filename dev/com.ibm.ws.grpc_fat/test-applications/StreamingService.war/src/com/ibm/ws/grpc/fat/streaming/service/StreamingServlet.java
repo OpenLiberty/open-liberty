@@ -59,6 +59,8 @@ public class StreamingServlet extends HttpServlet {
             responseObserver.onCompleted();
         }
 
+        String lastClientMessage = "Nothing yet";
+
         @Override
         public StreamObserver<StreamRequest> clientStream(final StreamObserver<StreamReply> responseObserver) {
 
@@ -69,12 +71,14 @@ public class StreamingServlet extends HttpServlet {
                 @Override
                 public void onNext(StreamRequest request) {
                     String s = request.toString();
+                    lastClientMessage = s;
+
                     s = "<br>...(( " + s + " onNext at server called at: " + System.currentTimeMillis() + " ))";
                     // limit string to first 200 characters
                     if (s.length() > 200) {
                         s = s.substring(0, 200);
                     }
-                    System.out.println(s);
+                    // System.out.println(s);
                     responseString = responseString + s;
                 }
 
@@ -86,6 +90,12 @@ public class StreamingServlet extends HttpServlet {
                 public void onCompleted() {
                     String s = responseString + "...[[time response sent back to Client: " + System.currentTimeMillis() + "]]";
 
+                    int maxStringLength = 32768 - lastClientMessage.length() - 1;
+                    // limit response string to 32K, make sure the last message concatentated at the end
+                    if (s.length() > maxStringLength) {
+                        s = s.substring(0, maxStringLength);
+                        s = s + lastClientMessage;
+                    }
                     System.out.println(s);
 
                     StreamReply reply = StreamReply.newBuilder().setMessage(s).build();
