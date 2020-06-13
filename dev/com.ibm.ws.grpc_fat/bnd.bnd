@@ -15,7 +15,8 @@ src: \
     fat/src,\
     test-applications/HelloWorldClient.war/src,\
     test-applications/HelloWorldService.war/src, \
-    test-applications/FavoriteBeerService.war/src
+    test-applications/FavoriteBeerService.war/src, \
+    test-applications/InvalidService.war/src
 
 fat.project: true
 fat.minimum.java.level: 1.8
