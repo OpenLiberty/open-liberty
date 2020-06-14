@@ -1072,7 +1072,7 @@ public class AcmeClient {
 				cause = e;
 			}
 
-			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2028E", acmeConfig.getDirectoryURI()), cause);
+			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2028E", acmeConfig.getDirectoryURI(), cause), cause);
 		}
 	}
 
@@ -1088,16 +1088,31 @@ public class AcmeClient {
 	@Trivial
 	private static String getRootCauseMessage(Throwable t) {
 		Throwable cause;
-		String rootMessage = t.getMessage();
+		String rootMessage = addExceptionClass(t);
 
 		for (cause = t; cause != null; cause = cause.getCause()) {
 			String msg = cause.getMessage();
 			if (msg != null && !msg.trim().isEmpty()) {
-				rootMessage = msg;
+				rootMessage = addExceptionClass(cause);
 			}
 		}
 
 		return rootMessage;
+	}
+
+	/**
+	 * Add on the Exception class name as sometimes the message does not make sense
+	 * without the name of the Exception included. For example,
+	 * java.net.UnknownHostException: <exampleUnknownHost . net>
+	 * 
+	 * @param t
+	 * @return
+	 */
+	private static String addExceptionClass(Throwable t) {
+		if (t != null) {
+			return t.getClass().getName() + ": " + t.getMessage();
+		}
+		return "";
 	}
 
 	/**
