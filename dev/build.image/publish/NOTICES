@@ -1,8 +1,7 @@
-Begin NOTICES AND INFORMATION FOR Open Liberty 20.0.0.6
+Begin NOTICES AND INFORMATION FOR Open Liberty @LIBERTY_VERSION@
 Copyright 1999-2020 IBM Corporation and others
-
 This product includes software developed at
-The Open Liberty Project (https://openliberty.io/).
+The Open Liberty @LIBERTY_VERSION@ Project (https://openliberty.io/).
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 TABLE OF CONTENTS
@@ -2398,7 +2397,7 @@ END OF Open Liberty  NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Open Liberty 20.0.0.6 DOCKER NOTICES AND INFORMATION 
+Open Liberty @LIBERTY_VERSION@ DOCKER NOTICES AND INFORMATION 
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -4449,7 +4448,7 @@ END OF W3C SOFTWARE LICENSE NOTICES AND INFORMATION
 END OF Open Liberty DOCKER NOTICES AND INFORMATION 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Open Liberty 20.0.0.6 NOTICES AND INFORMATION FOR EXCLUDED COMPONENTS 
+Open Liberty @LIBERTY_VERSION@ NOTICES AND INFORMATION FOR EXCLUDED COMPONENTS 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 TABLE OF CONTENTS
@@ -4544,7 +4543,7 @@ END OF SIL OPEN FONT LICENSE 1.1 LICENSE NOTICES AND INFORMATION
 END OF Open Liberty NOTICES AND INFORMATION FOR EXCLUDED COMPONENTS
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Open Liberty 20.0.0.6 DOCKER NOTICES AND INFORMATION FOR EXCLUDED COMPONENTS 
+Open Liberty @LIBERTY_VERSION@ DOCKER NOTICES AND INFORMATION FOR EXCLUDED COMPONENTS 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 TABLE OF CONTENTS

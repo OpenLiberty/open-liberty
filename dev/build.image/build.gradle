@@ -150,9 +150,9 @@ class PackageLibertyWithFeatures extends DefaultTask {
                 into outputTo
             }
 
-            //Now add the NOTICES and LICENSE files
+            //Now add the LICENSE files
             project.copy {
-                from project.file('publish')
+                from project.file('wlp')
                 include 'LICENSE'
                 include 'NOTICES'
                 into "$outputTo/wlp"
@@ -331,13 +331,8 @@ if (isAutomatedBuild) {
         withFeatures this.&gaAndBetaPublicFeatures
         outputTo packageDir
         doLast {
-            ["$packageDir/wlp/README.TXT", "$packageDir/wlp/lib/versions/openliberty.properties"].each { path ->
+            ["$packageDir/wlp/NOTICES", "$packageDir/wlp/README.TXT", "$packageDir/wlp/lib/versions/openliberty.properties"].each { path ->
                 replaceBetaVersionAndEdition(path, bnd.libertyRelease, libertyBeta)
-            }
-
-            copy {
-                from project.file('publish/beta/NOTICES')
-                into "$packageDir/wlp"
             }
         }
     }
@@ -411,17 +406,13 @@ if (isAutomatedBuild) {
         withFeatures this.&jakartaee9Features
         outputTo packageDir
         doLast {
-            ["$packageDir/wlp/README.TXT", "$packageDir/wlp/lib/versions/openliberty.properties"].each { path ->
+            ["$packageDir/wlp/NOTICES", "$packageDir/wlp/README.TXT", "$packageDir/wlp/lib/versions/openliberty.properties"].each { path ->
                 replaceBetaVersionAndEdition(path, bnd.libertyRelease, libertyBeta)
             }
 
             copy {
                 from "$packageDir/wlp/templates/servers/jakartaee9/server.xml"
                 into "$packageDir/wlp/templates/servers/defaultServer"
-            }
-            copy {
-                from project.file('publish/beta/NOTICES')
-                into "$packageDir/wlp"
             }
         }
     }
