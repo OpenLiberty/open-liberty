@@ -445,11 +445,13 @@ public class ServerLock {
                 // worrying about "hanging" when the server process fails to
                 // launch altogether (invalid JAVA_HOME, JVM options, etc.).
                 if (fileObtained && (ps.isPossiblyRunning() == State.NO)) {
+                    Debug.println("Server start error: file lock obtained, and server process is not running.");
                     return ReturnCode.ERROR_SERVER_START;
                 }
             }
 
             if (fileObtained) {
+                Debug.println("Server start error: file lock obtained, and server process is running.");
                 // Server did not start
                 return ReturnCode.ERROR_SERVER_START;
             }
