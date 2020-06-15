@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2019 IBM Corporation and others.
+    Copyright (c) 2019, 2020 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -75,10 +75,35 @@
          <AD id="discovery" ibm:type="pid" ibm:reference="com.ibm.ws.security.oidcs.discovery" required="false" type="String" />
          <AD id="protectedEndpoints" name="internal" description="internal use only" required="false" type="String" default="authorize registration app-passwords app-tokens personalTokenManagement usersTokenManagement clientManagement" /> <!-- separated by space -->
          <AD id="requireOpenidScopeForUserInfo" name="internal" description="internal use only" required="false" type="Boolean" default="true" />
+         <AD id="oidcEndpoint" name="internal" description="internal use only" required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.security.oidc.endpoint" cardinality="20" />
      </OCD>
 
     <Designate factoryPid="com.ibm.ws.security.openidconnect.server.oidcServerConfig">
         <Object ocdref="com.ibm.ws.security.openidconnect.server.oidcServerConfig.metatype" />
+    </Designate>
+
+    <OCD id="com.ibm.ws.security.oidc.endpoint.metatype" name="internal" description="internal use only" >
+        <AD id="name" name="internal" description="internal use only" required="true" type="String" ibm:unique="name" >
+            <Option label="discovery" value="discovery" />
+            <Option label="userinfo" value="userinfo" />
+            <Option label="endSession" value="endSession" />
+            <Option label="checkSessionIframe" value="checkSessionIframe" />
+            <Option label="jwk" value="jwk" />
+        </AD>
+        <AD id="supportedHttpMethods" name="internal" description="internal use only" required="false" type="String" default="all" cardinality="6" >
+            <Option label="all" value="all" />
+            <Option label="none" value="none" />
+            <Option label="get" value="GET" />
+            <Option label="head" value="HEAD" />
+            <Option label="post" value="POST" />
+            <Option label="delete" value="DELETE" />
+            <Option label="put" value="PUT" />
+            <Option label="trace" value="TRACE" />
+        </AD>
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.oidc.endpoint">
+        <Object ocdref="com.ibm.ws.security.oidc.endpoint.metatype" />
     </Designate>
 
     <OCD id="com.ibm.ws.security.oidcs.scopeToClaimMap.metatype" name="%scopeToClaimMap" description="%scopeToClaimMap.desc" 
