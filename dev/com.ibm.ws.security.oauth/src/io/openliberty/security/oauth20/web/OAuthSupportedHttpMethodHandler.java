@@ -157,7 +157,7 @@ public class OAuthSupportedHttpMethodHandler extends SupportedHttpMethodHandler 
         return supportedMethods;
     }
 
-    Set<HttpMethod> getConfiguredSupportedMethodsForEndpoint(EndpointType endpoint) {
+    protected Set<HttpMethod> getConfiguredSupportedMethodsForEndpoint(EndpointType endpoint) {
         OAuthEndpointSettings endpointConfigSettings = getConfiguredOAuthEndpointSettings();
         if (endpointConfigSettings == null) {
             return null;

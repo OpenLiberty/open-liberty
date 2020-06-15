@@ -354,7 +354,7 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
      * @param oidcProviderName
      * @return
      */
-    private OidcServerConfig getOidcServerConfig(HttpServletResponse response, String oidcProviderName) throws IOException {
+    public OidcServerConfig getOidcServerConfig(HttpServletResponse response, String oidcProviderName) throws IOException {
         synchronized (oidcServerConfigRef) {
             if (bOidcUpdated) {
                 oidcMap = configUtils.checkDuplicateOAuthProvider(oidcServerConfigRef);

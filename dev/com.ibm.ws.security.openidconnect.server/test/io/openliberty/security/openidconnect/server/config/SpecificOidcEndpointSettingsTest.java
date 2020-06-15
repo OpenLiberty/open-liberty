@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.security.oauth20.internal.config;
+package io.openliberty.security.openidconnect.server.config;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -29,9 +29,9 @@ import io.openliberty.security.common.http.SupportedHttpMethodHandler.HttpMethod
 import test.common.SharedOutputManager;
 
 @SuppressWarnings("restriction")
-public class SpecificOAuthEndpointSettingsTest extends CommonTestClass {
+public class SpecificOidcEndpointSettingsTest extends CommonTestClass {
 
-    private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("io.openliberty.security.oauth.*=all:com.ibm.ws.security.oauth.*=all");
+    private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("io.openliberty.security.openidconnect.*=all:com.ibm.ws.security.openidconnect.*=all");
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -57,10 +57,10 @@ public class SpecificOAuthEndpointSettingsTest extends CommonTestClass {
 
     @Test
     public void test_constructorAndGetters() {
-        EndpointType endpointType = EndpointType.authorize;
-        SpecificOAuthEndpointSettings settings = new SpecificOAuthEndpointSettings(endpointType);
+        EndpointType endpointType = EndpointType.userinfo;
+        SpecificOidcEndpointSettings settings = new SpecificOidcEndpointSettings(endpointType);
         assertEquals("Endpoint type did not match expected value.", endpointType, settings.getEndpointType());
-        assertEquals("Endpoint name did not match expected value.", "authorize", settings.getEndpointName());
+        assertEquals("Endpoint name did not match expected value.", "userinfo", settings.getEndpointName());
         // By default, there should be no supported HTTP methods
         Set<HttpMethod> supportedMethods = settings.getSupportedHttpMethods();
         assertNotNull("Set of supported methods should not have been null.", supportedMethods);

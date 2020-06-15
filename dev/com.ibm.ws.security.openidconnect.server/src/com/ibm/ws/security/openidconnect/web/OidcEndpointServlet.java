@@ -21,6 +21,9 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
 import com.ibm.ejs.ras.TraceNLS;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.oauth20.web.OAuth20EndpointServlet;
 import com.ibm.ws.security.openidconnect.server.TraceConstants;
 
@@ -29,6 +32,8 @@ import io.openliberty.security.openidconnect.web.OidcSupportedHttpMethodHandler;
 
 @SuppressWarnings("restriction")
 public class OidcEndpointServlet extends OAuth20EndpointServlet {
+    private static TraceComponent tc = Tr.register(OidcEndpointServlet.class);
+
     private transient OidcEndpointServices oidcEndpointServices = null;
     private transient ServletContext servletContext = null;
     private transient BundleContext bundleContext = null;
@@ -105,8 +110,17 @@ public class OidcEndpointServlet extends OAuth20EndpointServlet {
         oidcEndpointServices.handleOidcRequest(request, response, servletContext);
     }
 
+    @FFDCIgnore(ServletException.class)
     OidcSupportedHttpMethodHandler getOidcSupportedHttpMethodHandler(HttpServletRequest request, HttpServletResponse response) {
-        return new OidcSupportedHttpMethodHandler(request, response);
+        OidcSupportedHttpMethodHandler handler = new OidcSupportedHttpMethodHandler(request, response);
+        try {
+            handler.setOidcEndpointServices(getOidcEndpointServices());
+        } catch (ServletException e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Caught exception setting OidcEndpointServices for supported HTTP method handler: " + e);
+            }
+        }
+        return handler;
     }
 
     private OidcEndpointServices getOidcEndpointServices() throws ServletException {
