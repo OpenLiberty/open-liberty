@@ -47,6 +47,8 @@ public abstract class JsonLogHandler implements SynchronousHandler, Formatter {
     protected static final String ENV_VAR_CONTAINERHOST = "CONTAINER_HOST";
     protected static final String ENV_VAR_CONTAINERNAME = "CONTAINER_NAME";
 
+    protected static volatile boolean appsWriteJson = false;
+
     List<String> sourcesList = new ArrayList<String>();
 
     protected CollectorManager collectorMgr = null;
@@ -235,9 +237,18 @@ public abstract class JsonLogHandler implements SynchronousHandler, Formatter {
         }
     }
 
-    protected boolean isJSON(String message) {
+    protected static boolean isJSON(String message) {
         return message != null && message.startsWith("{") && message.endsWith("}");
 
+    }
+
+    /**
+     * Set apps that write json to true or false
+     *
+     * @param appsWriteJson Allow apps to write JSON to System.out/System.err
+     */
+    public void setAppsWriteJson(boolean appsWriteJson) {
+        this.appsWriteJson = appsWriteJson;
     }
 
 }

@@ -39,8 +39,6 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
 
     private BaseTraceService baseTraceService = null;
 
-    private boolean appsWriteJson = false;
-
     public ConsoleLogHandler(String serverName, String wlpUserDir, List<String> sourcesList) {
         super(serverName, wlpUserDir, sourcesList);
     }
@@ -244,15 +242,6 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
      */
     public void setFormat(String format) {
         this.format = format;
-    }
-
-    /**
-     * Set apps that write json to wrap or unwrap
-     *
-     * @param format the format to set (i.e. wrap, unwrap)
-     */
-    public void setAppsWriteJson(boolean appsWriteJson) {
-        this.appsWriteJson = appsWriteJson;
     }
 
     /**

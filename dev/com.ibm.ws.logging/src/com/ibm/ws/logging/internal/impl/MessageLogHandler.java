@@ -28,8 +28,6 @@ public class MessageLogHandler extends JsonLogHandler implements SynchronousHand
     private String format = LoggingConstants.DEFAULT_MESSAGE_FORMAT;
     private BaseTraceFormatter basicFormatter = null;
 
-    private boolean appsWriteJson = false;
-
     public MessageLogHandler(String serverName, String wlpUserDir, List<String> sourcesList) {
         super(serverName, wlpUserDir, sourcesList);
     }
@@ -105,15 +103,6 @@ public class MessageLogHandler extends JsonLogHandler implements SynchronousHand
      */
     public void setFormat(String format) {
         this.format = format;
-    }
-
-    /**
-     * Set apps that write json to wrap or unwrap
-     *
-     * @param format the format to set (i.e. wrap, unwrap)
-     */
-    public void setAppsWriteJson(boolean appsWriteJson) {
-        this.appsWriteJson = appsWriteJson;
     }
 
 }
