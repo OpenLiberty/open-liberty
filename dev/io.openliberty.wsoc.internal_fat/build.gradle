@@ -1,0 +1,39 @@
+/*******************************************************************************
+ * NOTICES AND INFORMATION FOR Open Liberty
+ * Copyright 2020 IBM Corporation and others
+ * This product includes software developed at
+ * The Open Liberty Project (https://openliberty.io/).
+ *******************************************************************************/
+
+dependencies {
+  requiredLibs 'net.sf.jtidy:jtidy:9.3.8',
+    'org.eclipse.jetty.websocket:websocket-client:9.2.2.v20140723',
+    'org.eclipse.jetty.websocket:websocket-api:9.2.2.v20140723',
+    'org.eclipse.jetty.websocket:websocket-common:9.2.2.v20140723',
+    'javax.websocket:javax.websocket-api:1.0',
+    'commons-codec:commons-codec:1.11',
+    'org.eclipse.jetty.websocket:javax-websocket-client-impl:9.2.2.v20140723',
+    'org.eclipse.jetty:jetty-io:9.2.2.v20140723',
+    'org.eclipse.jetty:jetty-util:9.2.2.v20140723',
+    'org.apache.httpcomponents:httpclient:4.5.4',
+    'commons-logging:commons-logging:1.1.3'
+}
+
+addRequiredLibraries {
+  doLast {
+    // Define dependency groups
+    configurations {
+      junit
+    }
+    // Define G:A:V coordinates of each dependency
+    dependencies {
+      junit 'junit:junit:4.12'
+    }
+    // Copy the dependencies wherever they may be needed
+    copy {
+      // Copy junit jars into a specific folder so they can be referenced
+      from configurations.junit
+      into "${buildDir}/autoFVT/test-applications/basic.war/resources/WEB-INF/lib"
+    }
+  }
+}

@@ -1,0 +1,22 @@
+<!--
+    NOTICES AND INFORMATION FOR Open Liberty
+    Copyright 2015 IBM Corporation and others
+    This product includes software developed at
+    The Open Liberty Project (https://openliberty.io/).
+ -->
+<server>
+    <featureManager>
+        <feature>websocket-1.1</feature>
+        <feature>localConnector-1.0</feature>
+    </featureManager>
+   
+
+    <include location="../fatTestPorts.xml"/>
+
+    <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+    <javaPermission className="java.lang.RuntimePermission" name="modifyThread"/>  
+    <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/> 
+    <javaPermission className="java.lang.RuntimePermission" name="setContextClassLoader"/>
+    <javaPermission className="java.net.SocketPermission" name="*" actions="resolve,accept,listen"/>
+    <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+</server>

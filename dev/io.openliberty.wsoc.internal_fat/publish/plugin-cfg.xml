@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    NOTICES AND INFORMATION FOR Open Liberty
+    Copyright 2014 IBM Corporation and others
+    This product includes software developed at
+    The Open Liberty Project (https://openliberty.io/).
+ -->
+<Config ASDisableNagle="false" AcceptAllContent="false" AppServerPortPreference="HostHeader" ChunkedResponse="false" FIPSEnable="false" IISDisableNagle="false" IISPluginPriority="High" IgnoreDNSFailures="false" RefreshInterval="60" ResponseChunkSize="64" SSLConsolidate="false" TrustedProxyEnable="false" VHostMatchingCompat="false">
+   <Log LogLevel="Trace" Name="${ihs.install.dir}"/>
+   <Property Name="ESIEnable" Value="true"/>
+   <Property Name="ESIMaxCacheSize" Value="1024"/>
+   <Property Name="ESIInvalidationMonitor" Value="false"/>
+   <Property Name="ESIEnableToPassCookies" Value="false"/>
+   <Property Name="PluginInstallRoot" Value="${ihs.websphere.plugins.dir}"/>
+<!-- Configuration generated using httpEndpointRef=defaultHttpEndpoint-->
+<!-- The default_host contained only aliases for endpoint defaultHttpEndpoint.
+	 The generated VirtualHostGroup will contain only configured web server ports:
+		webserverPort=80
+		webserverSecurePort=443 -->
+   <VirtualHostGroup Name="default_host">
+      <VirtualHost Name="*:80"/>
+      <VirtualHost Name="*:443"/>
+   </VirtualHostGroup>
+   <ServerCluster CloneSeparatorChange="false" GetDWLMTable="false" IgnoreAffinityRequests="true" LoadBalance="Round Robin" Name="serverName_default_node_Cluster" PostBufferSize="0" PostSizeLimit="-1" RemoveSpecialHeaders="true" RetryInterval="60">
+      <Server CloneID="61e5e880-f8db-4bf0-ae71-4d7692d78b97" ConnectTimeout="5" ExtendedHandshake="false" MaxConnections="-1" Name="default_node_serverName" ServerIOTimeout="900" WaitForContinue="false">
+         <Transport Hostname="${rtc.host}" Port="8010" Protocol="http"/>
+         <Transport Hostname="${rtc.host}" Port="8020" Protocol="https">
+            <Property Name="keyring" Value="keyring.kdb"/>
+            <Property Name="stashfile" Value="keyring.sth"/>
+            <Property Name="certLabel" Value="LibertyCert"/>
+         </Transport>
+      </Server>
+      <PrimaryServers>
+         <Server Name="default_node_serverName"/>
+      </PrimaryServers>
+   </ServerCluster>
+   <UriGroup Name="default_host_serverName_default_node_Cluster_URIs">
+      <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/basic/*"/>
+	  <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/context/*"/>
+	  <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/basicdeploy5/*"/>
+      <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/basicdeploy4/*"/>
+      <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/basicdeploy7/*"/>
+      <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/multistringdeploy/*"/>
+      <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/basicdeploy2/*"/>
+      <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/basicdeploy6/*"/>
+      <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/basicdeploy9/*"/>
+      <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/basicdeploy8/*"/>
+      <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/basicdeploy3/*"/>
+      <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/basicdeploy1/*"/>
+	  <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/cdi/*"/>
+	  <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/websocket11/*" />
+	  <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/trace/*" />
+	  <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/miscellaneous/*" />
+	  <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/frwdslashuri/*"/>
+	  <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/WebsocketApp/*"/>
+   </UriGroup>
+   <Route ServerCluster="serverName_default_node_Cluster" UriGroup="default_host_serverName_default_node_Cluster_URIs" VirtualHostGroup="default_host"/>
+</Config>

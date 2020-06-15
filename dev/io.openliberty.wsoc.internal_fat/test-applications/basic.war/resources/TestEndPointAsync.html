@@ -1,0 +1,46 @@
+<html>
+    <!--
+    NOTICES AND INFORMATION FOR Open Liberty
+    Copyright 2013 IBM Corporation and others
+    This product includes software developed at
+    The Open Liberty Project (https://openliberty.io/).
+ 	-->
+ <head>
+ <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Test Program></title>
+
+    <script language="javascript" type="text/javascript">
+        var websocket = new WebSocket("ws://localhost:9080/basic/testEndpointAsync");
+        websocket.onopen = function(evt) { onOpen(evt) };
+        websocket.onmessage = function(evt) { onMessage(evt) };
+        websocket.onerror = function(evt) { onError(evt) };
+   
+        function onOpen(msg) {
+        }
+
+        function onMessage(msg) {
+            alert("GOT DATA" + msg.data);
+        }
+
+        function onError(msg) {
+            alert("ERROR" + msg.data);
+        } 
+        
+        function publish(msg) {
+            websocket.send("abcd123");
+            alert("SENT");
+        }
+
+    </script> 
+ </head>
+ 
+    <body>
+        <h1>Sample</h1>
+
+         Look for alerts!
+        <form>
+            <P><INPUT TYPE="BUTTON" NAME="Send It" VALUE="SendIt" ONCLICK=publish();></P>
+        </form>
+    </body>
+
+</html>
