@@ -1,0 +1,86 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.ibm.test.g3store.grpc";
+option java_outer_classname = "AppProducerProto";
+
+import "Store.proto";
+import "google/protobuf/empty.proto";
+
+
+package test.g3store.grpc;
+
+
+// The service definition.
+service AppProducerService {
+  /*
+    This will be unary
+    This will not use security
+    This will add the db or dynacache with one entry
+    */
+  rpc createApp(AppRequest) returns (AppResponse) {}
+  /*
+    This will be unary
+    This will use Baic Auth
+    This will delete the db or dynacache with one entry
+    */
+  rpc deleteApp(DeleteRequest) returns (DeleteResponse) {}
+  
+  /*
+    This will be server streaming
+    Basic auth
+    This will delete the apps , the server will respond each success or failure of each delete with the app name.
+    */
+  rpc deleteAllApps(google.protobuf.Empty) returns (stream DeleteResponse){}
+  
+  /*
+    This will be client streaming
+    This will be run from the client to test and populate multiple entries, no REST
+    No security
+    This will be update the db or dynacache with multiple entry
+    */
+  rpc createApps(stream AppRequest) returns (MultiCreateResponse){}
+  
+}
+
+message AppResponse{
+   string id = 1;
+}
+
+
+message AppRequest{ 
+   RetailApp retailApp = 1;
+}
+
+message DeleteRequest{
+	string appName = 1;
+}
+
+message DeleteResponse{
+	string result = 1;
+}
+
+message MultiCreateResponse{
+	string result = 1;
+}
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+ 
+
+    
+
+   

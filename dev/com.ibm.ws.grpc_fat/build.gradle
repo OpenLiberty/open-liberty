@@ -56,14 +56,19 @@ dependencies {
     testImplementation 'commons-httpclient:commons-httpclient:3.1'
     testImplementation 'junit:junit:4.12'
 	
-	// provided
-    providedCompile 'com.google.protobuf:protobuf-java:3.11.4'
-    providedCompile 'com.google.protobuf:protobuf-java-util:3.11.4'
-    providedCompile 'io.grpc:grpc-protobuf:1.28.1'
-    providedCompile 'io.grpc:grpc-stub:1.28.1'
-    providedCompile 'io.grpc:grpc-services:1.28.1'
+    //
+    implementation 'com.google.protobuf:protobuf-java-util:3.11.4'
+        
+    providedCompile 'io.grpc:grpc-protobuf:1.28.1@jar'
+    compileOnly 'io.grpc:grpc-stub:1.28.1'   
+    providedCompile 'io.grpc:grpc-services:1.28.1@jar'
+    providedCompile 'io.grpc:grpc-netty-shaded:1.28.1@jar'
+    
+    implementation 'com.ibm.websphere.appserver.api:com.ibm.websphere.appserver.api.distributedMap:2.0.37'
+	
+    // provided
+    providedCompile 'com.google.protobuf:protobuf-java:3.11.4'  
     providedCompile 'javax.annotation:javax.annotation-api:1.2'
-    providedCompile 'io.grpc:grpc-netty-shaded:1.28.1'
     providedCompile 'jakarta.platform:jakarta.jakartaee-api:8.0.0'
     providedCompile 'org.eclipse.microprofile:microprofile:3.2'
     
@@ -119,6 +124,22 @@ sourceSets {
             srcDirs 'test-applications/FavoriteBeerService.war/src/java'
         }
     }
+    // StoreProducerApp
+    // StoreConsumerApp
+    // StoreApp
+    main {
+        proto {
+            srcDirs 'test-applications/StoreProducerApp.war/resources/proto'
+            srcDirs 'test-applications/StoreConsumerApp.war/resources/proto'
+            srcDirs 'test-applications/StoreApp.war/resources/proto'
+        }
+        java {
+            srcDirs 'test-applications/StoreProducerApp.war/src/java'
+            srcDirs 'test-applications/StoreConsumerApp.war/src/java'
+            srcDirs 'test-applications/StoreApp.war/src/java'
+        }
+    }
+
 }
 
 assemble.doLast {

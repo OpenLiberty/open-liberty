@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.ibm.test.g3store.grpc";
+option java_outer_classname = "StoreProto";
+
+/*
+
+The retail application the required variable is name , this should be unique.
+The description can contain any text information. No image support.
+The id will be generated upon submission.
+The free variable is boolean will specify if this application is free to purchase
+The GenreType will specify which kind of application it is. The accepted options are GAME, NEWS, SOCIAL, TECH
+The SecurityType will specify what kind of auth is required for the application access 
+The Price of the application can be varied based of PurchaseType, all the values will be in Dollar.
+The Creator specify the application owner details.
+
+*/
+
+message RetailApp {
+
+   string name = 1;
+   string desc = 2;
+   string id = 3;
+   bool free = 4;
+   GenreType genreType = 5;
+   SecurityType securityType = 6;
+   repeated Price prices = 7;
+   Creator creator = 8;
+}
+
+message Price {
+	PurchaseType purchaseType = 1;
+	double sellingPrice = 2;
+}
+
+message Creator{
+   string companyName = 1;
+   string email = 2;
+   
+}
+
+enum SecurityType{
+    NO_SECURITY = 0; // default
+  	BASIC = 1;
+  	TOKEN_JWT = 2;
+  	TOKEN_OAUTH2 = 3;
+  	CUSTOM_AUTH = 4;
+}
+   
+enum GenreType{
+     GAME = 0; // default
+  	 NEWS = 1;
+  	 SOCIAL = 2; 
+  	 TECH = 3;	
+}
+
+enum PurchaseType{
+	 BLUEPOINTS = 0;// default
+     CREDITCARD = 1;
+  	 PAYAPL = 2;	 
+}
+
+message PurchaseRequest{
+	string name = 1;
+	PurchaseType purchaseType = 2;
+}
+
+
+
+
