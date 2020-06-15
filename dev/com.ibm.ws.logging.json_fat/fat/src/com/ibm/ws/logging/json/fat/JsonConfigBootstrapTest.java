@@ -298,10 +298,9 @@ public class JsonConfigBootstrapTest {
         Properties initialBootstrapProps = loadProperties(in);
 
         try {
-            // Set maxFileSize to 100 in bootstrap.properties
+            // Set appsWriteJson to true in bootstrap.properties
             setInBootstrapPropertiesFile(bootstrapFile, "com.ibm.ws.logging.apps.write.json", "true");
             server.startServer();
-            // Set maxFileSize to 1 in server.xml
 
             RemoteFile consoleLogFile = server.getConsoleLogFile();
             RemoteFile messageLogFile = server.getDefaultLogFile();

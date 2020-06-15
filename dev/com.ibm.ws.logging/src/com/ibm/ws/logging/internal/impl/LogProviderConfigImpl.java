@@ -132,6 +132,7 @@ public class LogProviderConfigImpl implements LogProviderConfig {
     /** The wlp user dir name. */
     private final String wlpUsrDir;
 
+    /** Allow JSON from applications write directly to System.out/System.err */
     protected volatile boolean appsWriteJson = false;
 
     /**
@@ -173,6 +174,7 @@ public class LogProviderConfigImpl implements LogProviderConfig {
 
         consoleLogLevel = LoggingConfigUtils.getLogLevel(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_CONSOLE_LOGLEVEL),
                                                          consoleLogLevel);
+
         appsWriteJson = LoggingConfigUtils.getBooleanValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_APPS_WRITE_JSON),
                                                            appsWriteJson);
         doCommonInit(config, true);
@@ -430,9 +432,6 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         return newLogsOnStart;
     }
 
-    /**
-     * @return
-     */
     public boolean getAppsWriteJson() {
         return appsWriteJson;
     }
