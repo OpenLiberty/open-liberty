@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 IBM Corporation and others.
+ * Copyright (c) 2009, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@
  *******************************************************************************/
 package com.ibm.wsspi.http.ee8;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
 
 import com.ibm.wsspi.http.HttpInboundConnection;
 
@@ -23,7 +23,7 @@ public interface Http2InboundConnection extends HttpInboundConnection {
     /**
      * Determine if a request is an http2 upgrade request
      */
-    boolean isHTTP2UpgradeRequest(HttpServletRequest hsrt, boolean checkEnabledOnly);
+    boolean isHTTP2UpgradeRequest(Enumeration<String> connection, Enumeration<String> upgrade, boolean checkEnabledOnly);
 
     /**
      * Determine if a map of headers contains an http2 upgrade header

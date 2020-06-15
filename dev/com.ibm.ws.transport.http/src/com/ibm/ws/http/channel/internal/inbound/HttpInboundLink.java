@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2019 IBM Corporation and others.
+ * Copyright (c) 2004, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,8 +14,6 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
 
 import com.ibm.websphere.event.Event;
 import com.ibm.websphere.event.EventEngine;
@@ -927,12 +925,10 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
      * @param hsrt HttpServletRequest
      * @return true if the request contains an http2 upgrade header
      */
-    public boolean isHTTP2UpgradeRequest(HttpServletRequest hsrt) {
-        return checkIfUpgradeHeaders(hsrt);
+    public boolean isHTTP2UpgradeRequest(Enumeration<String> connection, Enumeration<String> upgrade) {
+        return checkIfUpgradeHeaders(connection, upgrade);
     };
 
-    final static String CONSTANT_upgrade = new String("upgrade");
-    final static String CONSTANT_connection = new String("connection");
     final static String CONSTANT_connection_value = new String("Upgrade, HTTP2-Settings");
     final static String CONSTANT_h2c = new String("h2c");
 
@@ -942,49 +938,45 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
      * @param headers a String map of http header key and value pairs
      * @return true if an http2 upgrade header is found
      */
-    private boolean checkIfUpgradeHeaders(HttpServletRequest hsrt) {
+    private boolean checkIfUpgradeHeaders(Enumeration<String> connection, Enumeration<String> upgrade) {
         // looking for two headers.
         // connection header with a value of "upgrade"
         // upgrade header with a value of "h2c"
         boolean connection_upgrade = false;
         boolean upgrade_h2c = false;
-        String headerValue = null;
-        Enumeration<String> names = hsrt.getHeaderNames();
-        while (names.hasMoreElements()) {
-            String name = names.nextElement();
+        while (connection.hasMoreElements()) {
+            String headerValue = connection.nextElement();
             //check if it's an HTTP2 non-secure upgrade connection.
-            if (name.equalsIgnoreCase(CONSTANT_connection)) {
-                headerValue = hsrt.getHeader(name);
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "connection header found with value: " + headerValue);
-                }
-                if (headerValue != null && headerValue.equalsIgnoreCase(CONSTANT_connection_value)) {
-                    if (connection_upgrade == true) {
-                        // should not have two of these, log debug and return false
-                        // TODO: determine if we should throw an exception here, or if this error will be dealt with in subsequent processing
-                        if (tc.isDebugEnabled()) {
-                            Tr.debug(tc, "malformed: second connection header found");
-                        }
-                        return false;
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "connection header found with value: " + headerValue);
+            }
+            if (headerValue != null && headerValue.equalsIgnoreCase(CONSTANT_connection_value)) {
+                if (connection_upgrade == true) {
+                    // should not have two of these, log debug and return false
+                    // TODO: determine if we should throw an exception here, or if this error will be dealt with in subsequent processing
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "malformed: second connection header found");
                     }
-                    connection_upgrade = true;
+                    return false;
                 }
-            } else if (name.equalsIgnoreCase(CONSTANT_upgrade)) {
-                headerValue = hsrt.getHeader(name);
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "upgrade header found with value: " + headerValue);
-                }
-                if (headerValue != null && headerValue.equalsIgnoreCase(CONSTANT_h2c)) {
-                    if (upgrade_h2c == true) {
-                        // should not have two of these, log debug and return false
-                        // TODO: determine if we should throw an exception here, or if this error will be dealt with in subsequent processing
-                        if (tc.isDebugEnabled()) {
-                            Tr.debug(tc, "malformed: second upgrade header found");
-                        }
-                        return false;
+                connection_upgrade = true;
+            }
+        }
+        while (upgrade.hasMoreElements()) {
+            String headerValue = upgrade.nextElement();
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "upgrade header found with value: " + headerValue);
+            }
+            if (headerValue != null && headerValue.equalsIgnoreCase(CONSTANT_h2c)) {
+                if (upgrade_h2c == true) {
+                    // should not have two of these, log debug and return false
+                    // TODO: determine if we should throw an exception here, or if this error will be dealt with in subsequent processing
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "malformed: second upgrade header found");
                     }
-                    upgrade_h2c = true;
+                    return false;
                 }
+                upgrade_h2c = true;
             }
         }
 

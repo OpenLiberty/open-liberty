@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2019 IBM Corporation and others.
+ * Copyright (c) 2009, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,10 +16,9 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Enumeration;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
-
-import javax.servlet.http.HttpServletRequest;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -1184,7 +1183,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      * Determine if a request is an http2 upgrade request
      */
     @Override
-    public boolean isHTTP2UpgradeRequest(HttpServletRequest hsrt, boolean checkEnabledOnly) {
+    public boolean isHTTP2UpgradeRequest(Enumeration<String> connection, Enumeration<String> upgrade, boolean checkEnabledOnly) {
         if (isc != null) {
             //Returns whether HTTP/2 is enabled for this channel/port
             if (checkEnabledOnly && !isc.isHttp2Enabled()) {
@@ -1194,7 +1193,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             else {
                 HttpInboundLink link = isc.getLink();
                 if (link != null) {
-                    return link.isHTTP2UpgradeRequest(hsrt);
+                    return link.isHTTP2UpgradeRequest(connection, upgrade);
                 }
             }
         }

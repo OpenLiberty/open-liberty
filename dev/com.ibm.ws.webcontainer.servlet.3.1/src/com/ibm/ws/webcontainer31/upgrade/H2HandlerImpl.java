@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2017 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,8 @@ import com.ibm.wsspi.http.ee8.Http2InboundConnection;
 public class H2HandlerImpl implements H2Handler {
 
     private static final TraceComponent tc = Tr.register(H2HandlerImpl.class,null);
+    final static String CONSTANT_upgrade = new String("upgrade");
+    final static String CONSTANT_connection = new String("connection");
 
     /**
      * Determines if a given request is an http2 upgrade request
@@ -39,7 +41,11 @@ public class H2HandlerImpl implements H2Handler {
     public boolean isH2Request(HttpInboundConnection hic, ServletRequest request) throws ServletException {
         
         //first check if H2 is enabled for this channel/port
-        return ((Http2InboundConnection)hic).isHTTP2UpgradeRequest((HttpServletRequest) request, true);
+        // Retrieve the needed header values for this request
+
+        Enumeration<String> connection = ((HttpServletRequest) request).getHeaders(CONSTANT_connection);
+        Enumeration<String> upgrade = ((HttpServletRequest) request).getHeaders(CONSTANT_upgrade);
+        return ((Http2InboundConnection)hic).isHTTP2UpgradeRequest(connection, upgrade, true);
     }
 
     /**
