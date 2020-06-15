@@ -39,19 +39,4 @@ public class Utils {
 	protected final static String PATH = ":path";
 	protected final static String SCHEME = ":scheme";
 	protected final static String STATUS = ":status";
-
-	public static void traceMessage(Logger logger, String className, Level level, String method, String message) {
-		traceMessage(logger, className, level, method, message, null);
-	}
-
-	public static void traceMessage(Logger logger, String className, Level level, String method, String message,
-			Throwable exception) {
-		if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(level)) {
-			if (exception != null) {
-				logger.logp(level, className, method, message, exception);
-			} else {
-				logger.logp(level, className, method, message);
-			}
-		}
-	}	
 }

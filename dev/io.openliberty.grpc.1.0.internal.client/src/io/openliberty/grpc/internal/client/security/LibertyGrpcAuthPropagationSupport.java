@@ -91,7 +91,7 @@ public class LibertyGrpcAuthPropagationSupport {
 		try {
 			if (accessToken != null && !accessToken.isEmpty()) {
 				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-					Tr.debug(tc, "Retrieved an OAuth access/jwt token. About to set a request cookie: " + accessToken);
+					Tr.debug(tc, "Retrieved an OAuth access/jwt token. About to set a request cookie: {0}", accessToken);
 				}
 				// Authorization=[Bearer="<accessToken>"]
 				addAuthnHeader(accessToken, headers);

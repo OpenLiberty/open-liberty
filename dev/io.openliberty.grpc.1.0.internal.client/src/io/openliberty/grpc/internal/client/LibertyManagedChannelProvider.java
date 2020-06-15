@@ -128,7 +128,7 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 							| IllegalArgumentException | InvocationTargetException | NoSuchMethodException
 							| SecurityException e) {
 						// TODO: proper warning message
-						Tr.warning(tc, "Could not load user-defined Interceptor", e);
+						Tr.warning(tc, "Could not load user-defined Interceptor: {0}", e.getMessage());
 					}
 				}
 			}

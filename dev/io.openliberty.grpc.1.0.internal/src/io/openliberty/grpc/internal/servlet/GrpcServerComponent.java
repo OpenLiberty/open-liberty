@@ -17,9 +17,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletContext;
@@ -35,12 +32,14 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 import com.ibm.ws.container.service.annotations.WebAnnotations;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
-import io.openliberty.grpc.internal.Utils;
+
 import com.ibm.ws.kernel.feature.FeatureProvisioner;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
@@ -51,13 +50,13 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 import io.grpc.BindableService;
 import io.grpc.servlet.GrpcServlet;
+import io.openliberty.grpc.internal.GrpcMessages;
 
 @Component(service = { ApplicationStateListener.class,
 		ServletContainerInitializer.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
 public class GrpcServerComponent implements ServletContainerInitializer, ApplicationStateListener {
 
-	private static final String CLASS_NAME = GrpcServerComponent.class.getName();
-	private static final Logger logger = Logger.getLogger(GrpcServerComponent.class.getName());
+	private static final TraceComponent tc = Tr.register(GrpcServerComponent.class, GrpcMessages.GRPC_TRACE_NAME, GrpcMessages.GRPC_BUNDLE);
 
 	private static HashMap<String, GrpcServletApplication> grpcApplications = new HashMap<String, GrpcServletApplication>();
 	private static Object grpcApplicationLock = new Object() {
@@ -96,8 +95,10 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
 	public void onStartup(Set<Class<?>> ctx, ServletContext sc) throws ServletException {
 		synchronized (grpcApplicationLock) {
 			if (!grpcApplications.isEmpty()) {
-				Utils.traceMessage(logger, CLASS_NAME, Level.FINE, "onStartup",
-						"Attempting to load gRPC services for app " + sc.getServletContextName());
+
+				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+					Tr.debug(tc, "Attempting to load gRPC services for app {0}", sc.getServletContextName());
+				}
 
 				// TODO: optionally load classes with CDI to allow injection in service classes
 				// init all other BindableService classes via reflection
@@ -134,16 +135,17 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
 								servletRegistration.addMapping(urlPattern);
 								// keep track of this service name -> application path mapping
 								currentApp.addServiceName(serviceName, sc.getContextPath(), service.getClass());
-								Utils.traceMessage(logger, CLASS_NAME, Level.INFO, "onStartup",
-										"Registered gRPC service at URL: " + urlPattern);
+								
+								Tr.info(tc, "service.available", currentApp.getAppName(), urlPattern);
 							}
 							return;
 						}
 					}
 				}
 			}
-			Utils.traceMessage(logger, CLASS_NAME, Level.FINE, "onStartup",
-					"No gRPC services have been registered for app " + sc.getServletContextName());
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+				Tr.debug(tc, "No gRPC services have been registered for app {0}", sc.getServletContextName());
+			}
 		}
 	}
 
@@ -169,9 +171,9 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
 		} catch (InvocationTargetException | ClassNotFoundException | NoSuchMethodException | SecurityException
 				| InstantiationException | IllegalAccessException | IllegalArgumentException e) {
 			// FFDC
-			Utils.traceMessage(logger, CLASS_NAME, Level.FINE, "onStartup",
-					"The following class extended io.grpc.BindableService but could not be loaded: " + serviceClassName
-							+ " due to " + e);
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+				Tr.debug(tc, "The following class extended io.grpc.BindableService but could not be loaded: {0} due to {1}", serviceClassName, e);
+			}
 		}
 		return null;
 	}
@@ -243,7 +245,6 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
 			return;
 		}
 		useSecurity = false;
-
 	}
 
 	public static boolean isSecurityEnabled() {

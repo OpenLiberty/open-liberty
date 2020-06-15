@@ -31,6 +31,8 @@ import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleContext;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator;
 
+import io.openliberty.grpc.internal.GrpcMessages;
+
 /**
  * Adapted from com.ibm.ws.jaxrs20.clientconfig.JAXRSClientConfig
  */
@@ -38,7 +40,7 @@ import com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator;
 		ApplicationRecycleComponent.class }, configurationPid = "io.openliberty.grpc.serverConfig", configurationPolicy = ConfigurationPolicy.REQUIRE, property = {
 				"service.vendor=IBM" })
 public class GrpcServiceConfigImpl implements GrpcServiceConfig, ApplicationRecycleComponent {
-	private static final TraceComponent tc = Tr.register(GrpcServiceConfigImpl.class);
+	private static final TraceComponent tc = Tr.register(GrpcServiceConfigImpl.class, GrpcMessages.GRPC_TRACE_NAME, GrpcMessages.GRPC_BUNDLE);
 
 	/**
 	 * Reference to the ApplicationRecycleCoordinator which will be used to restart

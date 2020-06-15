@@ -38,11 +38,12 @@ import io.grpc.Metadata;
 import io.grpc.ServerInterceptor;
 import io.grpc.ServerInterceptors;
 import io.grpc.servlet.ServletServerBuilder;
+import io.openliberty.grpc.internal.GrpcMessages;
 import io.openliberty.grpc.internal.config.GrpcServiceConfigHolder;
 
 public class GrpcServletUtils {
 
-	private static final TraceComponent tc = Tr.register(GrpcServletUtils.class);
+	private static final TraceComponent tc = Tr.register(GrpcServletUtils.class, GrpcMessages.GRPC_TRACE_NAME, GrpcMessages.GRPC_BUNDLE);
 
 	public final static String LIBERTY_AUTH_KEY_STRING = "libertyAuthCheck";
 	private final static Map<String, Boolean> authMap = new ConcurrentHashMap<String, Boolean>();
@@ -64,7 +65,7 @@ public class GrpcServletUtils {
 		byteArrays.add((String.valueOf(req.hashCode())).getBytes(StandardCharsets.US_ASCII));
 		authMap.put(String.valueOf(req.hashCode()), authorized);
 		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-			Tr.debug(tc, "adding " + req.hashCode() + "to authMap with value " + authorized);
+			Tr.debug(tc, "adding {0} to authMap with value {1}", req.hashCode(), authorized);
 		}
 	}
 
@@ -215,8 +216,7 @@ public class GrpcServletUtils {
 					} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
 							| IllegalArgumentException | InvocationTargetException | NoSuchMethodException
 							| SecurityException e) {
-						// TODO: proper warning message
-						Tr.warning(tc, "Could not load user-defined Interceptor", e);
+						Tr.warning(tc, "invalid.serverinterceptor", e.getMessage());
 					}
 				}
 			}
@@ -248,7 +248,7 @@ public class GrpcServletUtils {
 				serverBuilder.maxInboundMessageSize(maxInboundMsgSize);
 			}
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-				Tr.debug(tc, "gRPC service " + name + " has been registered");
+				Tr.debug(tc, "gRPC service {0} has been registered", name);
 			}
 		}
 	}
