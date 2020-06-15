@@ -63,6 +63,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
       "jaxb-3.0",
       "jaxrs-3.0",
       "jaxrsClient-3.0",
+      "jca-2.0",
       "jpa-3.0",
       "jsonp-2.0",
       "jsonb-2.0",
