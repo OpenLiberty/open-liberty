@@ -182,6 +182,12 @@ public class LibertyFeaturesToMavenRepo extends Task {
 
 			}
 
+			// generate pom.xml for license packages (wlp-base-license and wlp-nd-license)
+			if(websphereLibertyJson != null){
+				generateLicensePom(outputDir, Constants.BASE_LICENSE_ARTIFACT_ID, Constants.BASE_LICENSE_NAME, version, true);
+				generateLicensePom(outputDir, Constants.ND_LICENSE_ARTIFACT_ID, Constants.ND_LICENSE_NAME, version, true);
+			}
+
 
 			System.out.println("Successfully generated Maven artifacts from Liberty features.");
 		} catch (MavenRepoGeneratorException e) {
@@ -386,6 +392,43 @@ public class LibertyFeaturesToMavenRepo extends Task {
 		}
 
 	}
+
+	/**
+	 * Generates the pom.xml files for the wlp-base-license and wlp-nd-license artifacts
+	 * @param outputDir
+	 * @param version
+	 * @param isWebsphereLiberty
+	 * @throws MavenRepoGeneratorException
+	 */
+	private void generateLicensePom(File outputDir, String artifactId, String version, String name, boolean isWebsphereLiberty) throws MavenRepoGeneratorException {
+		String groupId = Constants.WEBSPHERE_LIBERTY_FEATURES_GROUP_ID;
+		MavenCoordinates coordinates = new MavenCoordinates(groupId, artifactId, version);
+		Model model = new Model();
+		model.setModelVersion(Constants.MAVEN_MODEL_VERSION);
+		model.setGroupId(coordinates.getGroupId());
+		model.setArtifactId(coordinates.getArtifactId());
+		model.setVersion(coordinates.getVersion());
+		model.setPackaging(Constants.ArtifactType.ZIP.getType());
+		setLicense(model, version, false, false, isWebsphereLiberty);
+
+		model.setName(name);
+		model.setDescription(name);
+
+
+		File artifactDir = new File(outputDir, Utils.getRepositorySubpath(coordinates));
+		File targetFile = new File(artifactDir, Utils.getFileName(coordinates, Constants.ArtifactType.POM));
+
+		try {
+			Writer writer = new FileWriter(targetFile);
+			new MavenXpp3Writer().write( writer, model );
+			writer.close();
+		} catch (IOException e) {
+			throw new MavenRepoGeneratorException("Could not write POM file " + targetFile, e);
+		}
+
+	}
+
+
 
 	private static void setLicense(Model model, String version, boolean feature, boolean restrictedLicense, boolean isWebsphereLiberty) {
 		License license = new License();
