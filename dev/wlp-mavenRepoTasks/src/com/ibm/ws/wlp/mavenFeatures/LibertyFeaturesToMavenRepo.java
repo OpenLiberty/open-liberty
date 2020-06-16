@@ -419,6 +419,9 @@ public class LibertyFeaturesToMavenRepo extends Task {
 		File targetFile = new File(artifactDir, Utils.getFileName(coordinates, Constants.ArtifactType.POM));
 
 		try {
+			if(!targetFile.getParentFile().exists()){
+				targetFile.getParentFile().mkdirs();
+			}
 			Writer writer = new FileWriter(targetFile);
 			new MavenXpp3Writer().write( writer, model );
 			writer.close();
