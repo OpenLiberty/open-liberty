@@ -23,7 +23,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.oauth20.ProvidersService;
 import com.ibm.ws.security.oauth20.api.OAuth20Provider;
-import com.ibm.ws.security.oauth20.web.EndpointUtils;
 import com.ibm.ws.security.oauth20.web.OAuth20Request;
 import com.ibm.ws.security.oauth20.web.OAuth20Request.EndpointType;
 
@@ -36,9 +35,7 @@ public class OAuthSupportedHttpMethodHandler extends SupportedHttpMethodHandler 
 
     private static TraceComponent tc = Tr.register(OAuthSupportedHttpMethodHandler.class);
 
-    private OAuth20Request oauth20Request = null;
-
-    EndpointUtils endpointUtils = new EndpointUtils();
+    protected OAuth20Request oauth20Request = null;
 
     public OAuthSupportedHttpMethodHandler(HttpServletRequest request, HttpServletResponse response) {
         super(request, response);
@@ -98,7 +95,7 @@ public class OAuthSupportedHttpMethodHandler extends SupportedHttpMethodHandler 
         return getAdjustedSupportedMethodsForEndpoint(supportedMethods, configuredSupportedMethods);
     }
 
-    Set<HttpMethod> getDefaultSupportedMethodsForEndpoint(EndpointType endpointType) {
+    protected Set<HttpMethod> getDefaultSupportedMethodsForEndpoint(EndpointType endpointType) {
         Set<HttpMethod> supportedMethods = new HashSet<HttpMethod>();
         supportedMethods.add(HttpMethod.OPTIONS);
 
