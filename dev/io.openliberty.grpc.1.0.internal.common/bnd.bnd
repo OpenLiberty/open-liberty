@@ -45,6 +45,10 @@ instrument.disabled: true
 
 -buildpath: \
   com.ibm.ws.logging.core,\
+  com.ibm.websphere.org.osgi.core;version=latest,\
+  com.ibm.websphere.org.osgi.service.component;version=latest,\
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
   com.google.api.grpc:proto-google-common-protos;version=1.17.0, \
   com.google.code.findbugs:jsr305;version=3.0.2,\
   com.google.guava:failureaccess;version=1.0.1,\
@@ -61,6 +65,7 @@ instrument.disabled: true
   io.opencensus:opencensus-api;version=0.21.0, \
   io.opencensus:opencensus-contrib-grpc-metrics;version=0.21.0, \
   io.perfmark:perfmark-api;version=0.20.1, \
-  org.checkerframework:checker-compat-qual;version=2.5.2
+  org.checkerframework:checker-compat-qual;version=2.5.2,\
+  org.osgi.service.component.annotations;version=latest
   
 -fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
