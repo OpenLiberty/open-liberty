@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.jakarta.annotation-2.0
+symbolicName=io.openliberty.jakarta.annotation-2.0
 singleton=true
 IBM-Process-Types: server, \
  client
