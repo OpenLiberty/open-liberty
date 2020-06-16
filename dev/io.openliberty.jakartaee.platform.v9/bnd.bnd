@@ -12,13 +12,13 @@
 bVersion=1.0
 
 Bundle-Name: Jakarta EE API service for Runtime version
-Bundle-SymbolicName: com.ibm.ws.jakartaee.platform.v9
+Bundle-SymbolicName: io.openliberty.jakartaee.platform.v9
 Bundle-Description: Jakarta EE 9.0 API service for runtime, version ${bVersion}
 
 
 # Register a marker service to enable 9.0 Jakarta EE.
 Service-Component: \
-  com.ibm.ws.jakartaee.platform.v9; \
+  io.openliberty.jakartaee.platform.v9; \
     implementation:=com.ibm.ws.javaee.version.JavaEEVersion; \
     provide:=com.ibm.ws.javaee.version.JavaEEVersion; \
     properties:="version=9.0,service.ranking:Integer=9"
