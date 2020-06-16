@@ -11,7 +11,10 @@
 package com.ibm.ws.webcontainer31.upgrade;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -31,9 +34,10 @@ import com.ibm.wsspi.http.ee8.Http2InboundConnection;
 public class H2HandlerImpl implements H2Handler {
 
     private static final TraceComponent tc = Tr.register(H2HandlerImpl.class,null);
-    final static String CONSTANT_upgrade = new String("upgrade");
-    final static String CONSTANT_connection = new String("connection");
-
+    private static final String CONSTANT_upgrade = "upgrade";
+    private static final String CONSTANT_connection = "connection";
+    private static final String HTTP2_SETTINGS = "HTTP2-Settings";
+    
     /**
      * Determines if a given request is an http2 upgrade request
      */
@@ -41,11 +45,22 @@ public class H2HandlerImpl implements H2Handler {
     public boolean isH2Request(HttpInboundConnection hic, ServletRequest request) throws ServletException {
         
         //first check if H2 is enabled for this channel/port
+        if (!((Http2InboundConnection) hic).isHTTP2UpgradeRequest(null, true)) {
+            return false;
+        }
         // Retrieve the needed header values for this request
-
-        Enumeration<String> connection = ((HttpServletRequest) request).getHeaders(CONSTANT_connection);
-        Enumeration<String> upgrade = ((HttpServletRequest) request).getHeaders(CONSTANT_upgrade);
-        return ((Http2InboundConnection)hic).isHTTP2UpgradeRequest(connection, upgrade, true);
+        Map<String, String> h2Headers = null; 
+        Enumeration<String> headerNames = ((HttpServletRequest) request).getHeaderNames();
+        while (headerNames.hasMoreElements()) {
+            String headerName = headerNames.nextElement();
+            if (CONSTANT_connection.equalsIgnoreCase(headerName) || CONSTANT_upgrade.equalsIgnoreCase(headerName)) {
+                if (h2Headers == null) {
+                    h2Headers = new HashMap<String, String>();
+                }
+                h2Headers.put(headerName, ((HttpServletRequest) request).getHeader(headerName));
+            }
+        }
+        return ((Http2InboundConnection)hic).isHTTP2UpgradeRequest(h2Headers == null ? Collections.emptyMap() : h2Headers, true);
     }
 
     /**
@@ -75,18 +90,10 @@ public class H2HandlerImpl implements H2Handler {
             h2uh.init(new H2UpgradeHandler());
         }
         
-        HttpServletRequest hsrt = (HttpServletRequest) request;
-        Enumeration<String> headerNames = hsrt.getHeaderNames();
-
-        String http2Settings = null;
-        while (headerNames.hasMoreElements()) {
-            String key = headerNames.nextElement();
-            if ("HTTP2-Settings".equals(key)) {
-                http2Settings = hsrt.getHeader(key);
-                break;
-            }
-        }
-        boolean upgraded = h2ic.handleHTTP2UpgradeRequest(http2Settings);
+        String http2Settings = ((HttpServletRequest) request).getHeader(HTTP2_SETTINGS);
+        
+        Map<String, String> http2Headers = (http2Settings == null ? Collections.emptyMap() : Collections.singletonMap(HTTP2_SETTINGS, http2Settings));
+        boolean upgraded = h2ic.handleHTTP2UpgradeRequest(http2Headers);
         if (!upgraded) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "returning: http2 connection initialization failed");

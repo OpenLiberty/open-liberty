@@ -16,7 +16,7 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.Enumeration;
+import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 
@@ -1183,17 +1183,17 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      * Determine if a request is an http2 upgrade request
      */
     @Override
-    public boolean isHTTP2UpgradeRequest(Enumeration<String> connection, Enumeration<String> upgrade, boolean checkEnabledOnly) {
+    public boolean isHTTP2UpgradeRequest(Map<String, String> headers, boolean checkEnabledOnly) {
         if (isc != null) {
             //Returns whether HTTP/2 is enabled for this channel/port
-            if (checkEnabledOnly && !isc.isHttp2Enabled()) {
-                return false;
+            if (checkEnabledOnly) {
+                return isc.isHttp2Enabled();
             }
             //Check headers for HTTP/2 upgrade header
             else {
                 HttpInboundLink link = isc.getLink();
                 if (link != null) {
-                    return link.isHTTP2UpgradeRequest(connection, upgrade);
+                    return link.isHTTP2UpgradeRequest(headers);
                 }
             }
         }
@@ -1207,7 +1207,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      * @return false if some error occurred while servicing the upgrade request
      */
     @Override
-    public boolean handleHTTP2UpgradeRequest(String http2Settings) {
+    public boolean handleHTTP2UpgradeRequest(Map<String, String> http2Settings) {
         HttpInboundLink link = isc.getLink();
         HttpInboundChannel channel = link.getChannel();
         VirtualConnection vc = link.getVirtualConnection();
