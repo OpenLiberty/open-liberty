@@ -57,7 +57,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
       "jakartaeeClient-9.0",
       "componenttest-2.0", // replaces "componenttest-1.0"
       "beanValidation-3.0",
-      //"cdi-3.0",  // cdi-3.0 doesn't exist yet.
+      "cdi-3.0",
       "concurrent-2.0",
       "el-4.0",
       "javaMail-2.0",

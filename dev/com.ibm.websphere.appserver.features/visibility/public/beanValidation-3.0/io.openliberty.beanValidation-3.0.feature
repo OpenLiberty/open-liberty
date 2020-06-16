@@ -19,10 +19,10 @@ IBM-API-Package: \
 -features=\
   com.ibm.websphere.appserver.eeCompatible-9.0, \
   com.ibm.websphere.appserver.el-4.0, \
-  com.ibm.websphere.appserver.jakarta.cdi-3.0, \
   com.ibm.websphere.appserver.jakarta.interceptor-2.0, \
   com.ibm.websphere.appserver.transaction-2.0, \
   io.openliberty.beanValidationCore-2.0, \
+  io.openliberty.cdi-3.0, \
   io.openliberty.jakarta.validation-3.0
 -bundles=\
   com.ibm.ws.beanvalidation.v20.jakarta, \
