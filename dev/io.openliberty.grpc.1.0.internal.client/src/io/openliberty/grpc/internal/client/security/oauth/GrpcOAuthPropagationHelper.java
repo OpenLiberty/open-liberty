@@ -24,11 +24,13 @@ import com.ibm.websphere.security.WSSecurityException;
 import com.ibm.websphere.security.auth.WSSubject;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import io.openliberty.grpc.internal.client.GrpcClientMessages;
+
 /**
  * Adapted from com.ibm.ws.jaxrs20.client.security.oauth.OAuthPropagationHelper
  */
 public class GrpcOAuthPropagationHelper {
-	private static final TraceComponent tc = Tr.register(GrpcOAuthPropagationHelper.class);
+	private static final TraceComponent tc = Tr.register(GrpcOAuthPropagationHelper.class, GrpcClientMessages.GRPC_TRACE_NAME, GrpcClientMessages.GRPC_BUNDLE);
 	public static final String ISSUED_JWT_TOKEN = "issuedJwt"; // new jwt token
 
 	/**

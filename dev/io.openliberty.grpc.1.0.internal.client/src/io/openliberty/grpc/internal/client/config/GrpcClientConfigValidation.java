@@ -14,10 +14,11 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.grpc.internal.client.GrpcClientConstants;
+import io.openliberty.grpc.internal.client.GrpcClientMessages;
 
 public class GrpcClientConfigValidation {
 
-	private static final TraceComponent tc = Tr.register(GrpcClientConfigValidation.class);
+	private static final TraceComponent tc = Tr.register(GrpcClientConfigValidation.class, GrpcClientMessages.GRPC_TRACE_NAME, GrpcClientMessages.GRPC_BUNDLE);
 
 	/**
 	 * @param value - key name
@@ -26,7 +27,7 @@ public class GrpcClientConfigValidation {
 	static boolean validateKeepAliveTime(String value) {
 		int time = Integer.parseInt(value);
 		if (time < 1) {
-			Tr.warning(tc, "grpcTarget keepAliveTime is invalid", time);
+			Tr.error(tc, "invalid.keepalive.time", time);
 			return false;
 		}
 		return true;
@@ -39,7 +40,7 @@ public class GrpcClientConfigValidation {
 	static boolean validateKeepAliveTimeout(String value) {
 		int time = Integer.parseInt(value);
 		if (time < 1) {
-			Tr.warning(tc, "grpcTarget keepAliveTimeout is invalid", time);
+			Tr.error(tc, "invalid.keepalive.timeout", time);
 			return false;
 		}
 		return true;
@@ -52,7 +53,7 @@ public class GrpcClientConfigValidation {
 	static boolean validateMaxInboundMessageSize(String value) {
 		int size = Integer.parseInt(value);
 		if (size < 1) {
-			Tr.warning(tc, "grpcTarget maxInboundMessageSize is invalid", size);
+			Tr.error(tc, "invalid.client.inbound.msg.size", size);
 			return false;
 		}
 		return true;
@@ -79,7 +80,7 @@ public class GrpcClientConfigValidation {
 		String valueLower = value.toLowerCase();
 		boolean valid = valueLower.equals(GrpcClientConstants.JWT) || valueLower.equals(GrpcClientConstants.OAUTH);
 		if (!valid) {
-			Tr.warning(tc, "grpcTarget authnToken is invalid", valueLower);
+			Tr.error(tc, "invalid.authn.token", valueLower);
 		}
 		return valid;
 	}

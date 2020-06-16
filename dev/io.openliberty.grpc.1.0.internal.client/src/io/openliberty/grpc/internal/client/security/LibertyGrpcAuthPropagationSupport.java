@@ -16,6 +16,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
 import io.openliberty.grpc.internal.client.GrpcClientConstants;
+import io.openliberty.grpc.internal.client.GrpcClientMessages;
 import io.openliberty.grpc.internal.client.config.GrpcClientConfigHolder;
 import io.openliberty.grpc.internal.client.security.oauth.GrpcOAuthPropagationHelper;
 
@@ -24,7 +25,7 @@ import io.openliberty.grpc.internal.client.security.oauth.GrpcOAuthPropagationHe
  */
 public class LibertyGrpcAuthPropagationSupport {
 
-	private static final TraceComponent tc = Tr.register(LibertyGrpcAuthPropagationSupport.class);
+	private static final TraceComponent tc = Tr.register(LibertyGrpcAuthPropagationSupport.class, GrpcClientMessages.GRPC_TRACE_NAME, GrpcClientMessages.GRPC_BUNDLE);
 
 	public LibertyGrpcAuthPropagationSupport() {
 	}

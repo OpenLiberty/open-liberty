@@ -25,6 +25,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.grpc.internal.client.GrpcClientConstants;
+import io.openliberty.grpc.internal.client.GrpcClientMessages;
 
 /**
  * Adapted from com.ibm.ws.jaxrs20.clientconfig.JAXRSClientConfig
@@ -33,7 +34,7 @@ import io.openliberty.grpc.internal.client.GrpcClientConstants;
 		GrpcClientConfig.class }, configurationPid = "io.openliberty.grpc.clientConfig", configurationPolicy = ConfigurationPolicy.REQUIRE, property = {
 				"service.vendor=IBM" })
 public class GrpcClientConfigImpl implements GrpcClientConfig {
-	private static final TraceComponent tc = Tr.register(GrpcClientConfigImpl.class);
+	private static final TraceComponent tc = Tr.register(GrpcClientConfigImpl.class, GrpcClientMessages.GRPC_TRACE_NAME, GrpcClientMessages.GRPC_BUNDLE);
 
 	private static final HashSet<String> propertiesToRemove = new HashSet<>();
 

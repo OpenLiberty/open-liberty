@@ -17,7 +17,7 @@ import io.openliberty.grpc.internal.client.config.GrpcClientConfigHolder;
  */
 public class LibertyHeaderPropagationSupport {
 
-	private static final TraceComponent tc = Tr.register(LibertyHeaderPropagationSupport.class);
+	private static final TraceComponent tc = Tr.register(LibertyHeaderPropagationSupport.class, GrpcClientMessages.GRPC_TRACE_NAME, GrpcClientMessages.GRPC_BUNDLE);
 
 	/**
 	 * Attempt to retrieve the headers configured via headersToPropagate and add
