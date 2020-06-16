@@ -42,7 +42,7 @@ public class AcmeHistory {
 	private static final TraceComponent tc = Tr.register(AcmeHistory.class);
 	private String spaceDelim = "                  ";
 	private String smallSpaceDelim = "         ";
-	private final String acmeFile = "acmeca-history.txt";
+	private final String acmeFile = AcmeConstants.ACME_HISTORY_FILE;
 	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 	
 	/**

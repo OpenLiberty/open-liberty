@@ -638,10 +638,12 @@ public class AcmeRevocationTest {
 			server.setMarkToEndOfLog(server.getDefaultLogFile());
 
 		} finally {
-			stopServer();
-
-			if (pebble != null) {
-				pebble.stop();
+			try {
+				stopServer();
+			} finally {
+				if (pebble != null) {
+					pebble.stop();
+				}
 			}
 		}
 	}

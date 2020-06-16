@@ -20,7 +20,6 @@ import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 
-import com.github.dockerjava.api.exception.DockerException;
 import com.github.dockerjava.api.model.ContainerNetwork;
 import com.github.dockerjava.api.model.ContainerNetwork.Ipam;
 import com.ibm.websphere.simplicity.log.Log;
@@ -51,7 +50,7 @@ public class BoulderContainer extends CAContainer {
 
 	private static final String FILE_INTERMEDIATE_PEM = "lib/LibertyFATTestFiles/boulder.intermediate.pem";
 
-	public final Network bluenet = Network.builder().createNetworkCmdModifier(cmd -> {
+	public Network bluenet = Network.builder().createNetworkCmdModifier(cmd -> {
 		cmd.withDriver("bridge");
 		cmd.withIpam(new com.github.dockerjava.api.model.Network.Ipam().withDriver("default")
 				.withConfig(new com.github.dockerjava.api.model.Network.Ipam.Config().withSubnet("10.77.77.0/24")));
@@ -153,27 +152,44 @@ public class BoulderContainer extends CAContainer {
 		 * We need to start up the containers in an orderly fashion so that we
 		 * can pass the IP address of the DNS server to the Boulder server.
 		 */
+
+
+		/*
+		 * The excessive restarts and sleeps on bmysql are to avoid hitting
+		 * com.github.dockerjava.api.exception.DockerException:
+		 * {"message":"Pool overlaps with other one on this address space"} when the
+		 * build system is running fat tests in parallel. Usually, once we get the
+		 * database container running, we don't need restarts on the rest of the
+		 * containers.
+		 */
 		initSQL();
-		
-		for (int i = 1; i < NUM_RESTART_ATTEMPTS_ON_EXCEPTION + 1; i++) {
+		for (int i = 0; i < (NUM_RESTART_ATTEMPTS_ON_EXCEPTION * 2); i++) {
 			try {
 				bmysql.start();
 
 				if (bmysql.isRunning()) {
 					break;
 				}
-				Log.info(BoulderContainer.class, "start", "Failed to start bmysql, marked as not running.");
+				Log.info(BoulderContainer.class, "start",
+						"Failed to start bmysql, marked as not running, sleep and try again");
 			} catch (Throwable t) {
-				Log.info(BoulderContainer.class, "start", "Failed to start bmysql, try again. " + t);
+				Log.error(BoulderContainer.class, "start", t, "Failed to start bmysql, sleep and try again.");
 			}
 
+			// clean up and reinitialize
 			bmysql.stop();
-			initSQL();
+			try {
+				bluenet.close();
+			} catch (Throwable bn) {
+				// may throw an NPE, but we don't care
+			}
+			bluenet = null;
 
 			try {
-				Thread.sleep(30000);
+				Thread.sleep(180000);
 			} catch (InterruptedException e) {
 			}
+			initSQL();
 		}
 		if (!bmysql.isRunning()) {
 			/*
@@ -181,68 +197,45 @@ public class BoulderContainer extends CAContainer {
 			 */
 			bmysql.start();
 		}
-		
-		initSM();
 
-		for (int i = 1; i < NUM_RESTART_ATTEMPTS_ON_EXCEPTION + 1; i ++) {
+		initSM();
+		for (int i = 1; i < NUM_RESTART_ATTEMPTS_ON_EXCEPTION + 1; i++) {
 			try {
 				bhsm.start();
 				break;
 			} catch (Throwable t) {
-				Log.info(BoulderContainer.class, "start", "Failed to start bhsm, try again. " + t);
-				bhsm.stop();
-				initSM();
-				Throwable cause = t.getCause();
-				while (cause != null) {
-					if (t instanceof DockerException) {
-						Log.info(BoulderContainer.class, "start", "Hit a Docker exception, trying a long sleep and retry");
-						try {
-							Thread.sleep(120000);
-						} catch (InterruptedException e) {
-						}
-						break;
-					}
-					cause = cause.getCause();
-				}
-
-				if (cause == null) { // do a short sleep and retry
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-					}
-				}
+				Log.error(BoulderContainer.class, "start", t, "Failed to start bhsm, try again.");
+			}
+			bhsm.stop();
+			initSM();
+			try {
+				Thread.sleep(120000 * i);
+			} catch (InterruptedException e) {
 			}
 		}
 		if (!bhsm.isRunning()) {
+			/*
+			 * One more try
+			 */
 			bhsm.start();
 		}
-		
+
 		super.withStartupAttempts(WITH_STARTUP_ATTEMPTS);
-		for (int i = 1; i < NUM_RESTART_ATTEMPTS_ON_EXCEPTION + 1; i ++) {
+		for (int i = 1; i < NUM_RESTART_ATTEMPTS_ON_EXCEPTION + 1; i++) {
 			try {
 				super.start();
 				break;
 			} catch (Throwable t) {
-				Log.info(BoulderContainer.class, "start", "Failed to start boulder, try again. " + t);
+				Log.error(BoulderContainer.class, "start", t, "Failed to start boulder, try again.");
 				super.stop();
-				Throwable cause = t.getCause();
-				while (cause != null) {
-					if (t instanceof DockerException) {
-						Log.info(BoulderContainer.class, "start", "Hit a Docker exception, trying a long sleep and retry");
-						try {
-							Thread.sleep(120000);
-						} catch (InterruptedException e) {
-						}
-						break;
-					}
-					cause = cause.getCause();
-				}
-
-				if (cause == null) { // do a short sleep and retry
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-					}
+				try {
+					/*
+					 * On Windows, sometimes we get a java.lang.NoClassDefFoundError:
+					 * com/sun/jna/platform/win32/Kernel32 and a shorter sleep before a retry
+					 * normally works around it
+					 */
+					Thread.sleep(t instanceof NoClassDefFoundError ? 10000 : (120000 * i));
+				} catch (InterruptedException e) {
 				}
 			}
 		}
@@ -254,6 +247,7 @@ public class BoulderContainer extends CAContainer {
 
 	@Override
 	public void stop() {
+		Log.info(BoulderContainer.class, "stop", "Stopping Boulder services");
 		/*
 		 * Stop all the containers, the challenge server, and the networks.
 		 */
@@ -267,6 +261,7 @@ public class BoulderContainer extends CAContainer {
 		super.stop();
 		bluenet.close();
 		rednet.close();
+		Log.info(BoulderContainer.class, "stop", "Stopped Boulder services");
 	}
 
 	@Override
@@ -315,12 +310,24 @@ public class BoulderContainer extends CAContainer {
 	}
 
 	private void initSQL() {
+		if (bluenet == null) {
+			bluenet = Network.builder().createNetworkCmdModifier(cmd -> {
+				cmd.withDriver("bridge");
+				cmd.withIpam(new com.github.dockerjava.api.model.Network.Ipam().withDriver("default").withConfig(
+						new com.github.dockerjava.api.model.Network.Ipam.Config().withSubnet("10.77.77.0/24")));
+			}).build();
+		}
 		bmysql = new GenericContainer<>("mariadb:10.3").withNetwork(bluenet).withNetworkMode("host")
-		.withExposedPorts(3306).withNetworkAliases("boulder-mysql").withEnv("MYSQL_ALLOW_EMPTY_PASSWORD", "yes")
-		.withCommand(
-				"mysqld --bind-address=0.0.0.0 --slow-query-log --log-output=TABLE --log-queries-not-using-indexes=ON")
-		.withLogConsumer(o -> System.out.print("[SQL] " + o.getUtf8String()));
-		bmysql.withStartupAttempts(WITH_STARTUP_ATTEMPTS);
+				.withExposedPorts(3306).withNetworkAliases("boulder-mysql").withEnv("MYSQL_ALLOW_EMPTY_PASSWORD", "yes")
+				.withCommand(
+						"mysqld --bind-address=0.0.0.0 --slow-query-log --log-output=TABLE --log-queries-not-using-indexes=ON")
+				.withLogConsumer(o -> System.out.print("[SQL] " + o.getUtf8String()));
+		/*
+		 * If we get the "Pool overlaps with other one on this address space" then
+		 * retrying without rebuilding the supplied network results in no NetworkMode
+		 * exception
+		 */
+		bmysql.withStartupAttempts(1);
 	}
 
 	private void initSM() {
