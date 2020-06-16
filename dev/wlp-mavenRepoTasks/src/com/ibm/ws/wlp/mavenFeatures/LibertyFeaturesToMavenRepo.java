@@ -184,8 +184,8 @@ public class LibertyFeaturesToMavenRepo extends Task {
 
 			// generate pom.xml for license packages (wlp-base-license and wlp-nd-license)
 			if(websphereLibertyJson != null){
-				generateLicensePom(outputDir, Constants.BASE_LICENSE_ARTIFACT_ID, Constants.BASE_LICENSE_NAME, version, true);
-				generateLicensePom(outputDir, Constants.ND_LICENSE_ARTIFACT_ID, Constants.ND_LICENSE_NAME, version, true);
+				generateLicensePom(outputDir, Constants.BASE_LICENSE_ARTIFACT_ID, version, Constants.BASE_LICENSE_NAME,true);
+				generateLicensePom(outputDir, Constants.ND_LICENSE_ARTIFACT_ID, version, Constants.ND_LICENSE_NAME,true);
 			}
 
 
