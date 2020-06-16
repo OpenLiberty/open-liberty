@@ -639,18 +639,32 @@ public final class JAXRSUtils {
                                           String responseMessage, int status, boolean addAllow) {
         ResponseBuilder rb = toResponseBuilder(status);
         if (addAllow) {
-            String messagePath = HttpUtils.getPathToMatch(msg, true); //Liberty change            
-            Map<ClassResourceInfo, MultivaluedMap<String, String>> matchedResources = JAXRSUtils.selectResourceClass(cris, messagePath, msg); //Liberty change
-            Set<String> allowedMethods = new HashSet<String>();            
+            Map<ClassResourceInfo, MultivaluedMap<String, String>> matchedResources = null; //Liberty change
+            Set<String> allowedMethods = new HashSet<String>();
             for (ClassResourceInfo cri : cris) {
-                //Liberty Change start 
-                MultivaluedMap<String, String> values =  matchedResources.get(cri);
-                if (values == null) {
+                //Liberty Change start
+                if (cri.getParent() != null) {
+                   // Sub-resource
+                    allowedMethods.addAll(cri.getAllowedMethods());
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Adding All Allowed Headers " + cri.getAllowedMethods());                        
+                    }
                     break;
                 }
                 
-                for (OperationResourceInfo ori : cri.getMethodDispatcher().getOperationResourceInfos()) {                    
-                    String httpMethod = ori.getHttpMethod();                        
+                for (OperationResourceInfo ori : cri.getMethodDispatcher().getOperationResourceInfos()) {
+                    if(ori.isSubResourceLocator()) {
+                        break;
+                    }
+                    if (matchedResources == null) {
+                        String messagePath = HttpUtils.getPathToMatch(msg, true);
+                        matchedResources = JAXRSUtils.selectResourceClass(cris, messagePath, msg);
+                    }
+                    MultivaluedMap<String, String> values =  matchedResources.get(cri);
+                    if (values == null) {
+                        break;
+                    }
+                    String httpMethod = ori.getHttpMethod();
                     if (isFinalPath(ori,values)) {                        
                         if (matchHttpMethod(httpMethod, "*")) {                                
                             allowedMethods.add(httpMethod);

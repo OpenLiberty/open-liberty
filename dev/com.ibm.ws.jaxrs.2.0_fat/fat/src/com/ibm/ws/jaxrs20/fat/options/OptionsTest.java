@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.fat.options;
 
+import java.io.File;
+
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -25,15 +28,20 @@ import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
 public class OptionsTest {
-    private static final String app = "options";
+    private static final String CONTEXT_ROOT = "options";
+    private static final String HTTPCLIENT = "publish/shared/resources/httpclient/";
 
     @Server("com.ibm.ws.jaxrs.fat.options")
-    @TestServlet(servlet = OptionsTestServlet.class, contextRoot = app)
+    @TestServlet(servlet = OptionsTestServlet.class, contextRoot = CONTEXT_ROOT)
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultDropinApp(server, app, "com.ibm.ws.jaxrs.fat.options");
+        WebArchive app = ShrinkHelper.buildDefaultApp(CONTEXT_ROOT, "com.ibm.ws.jaxrs.fat.options");
+        app.addAsLibraries(new File(HTTPCLIENT).listFiles());
+        ShrinkHelper.exportDropinAppToServer(server, app);
+        server.addInstalledAppForValidation(CONTEXT_ROOT);
+
 
         // Make sure we don't fail because we try to start an
         // already started server
