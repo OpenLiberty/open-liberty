@@ -35,14 +35,22 @@ import io.grpc.stub.StreamObserver;
 @WebServlet(urlPatterns = { "/invalid" }, asyncSupported = true)
 public class InvalidServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> cf6c2762e2... 12609: Add grpc server config tests
     // implementation of the InvalidService service
     private static final class InvalidGrpcServiceImpl extends BeerServiceGrpc.BeerServiceImplBase {
 
         // a no-arg constructor is required for Liberty to start this grpc service automatically
         // Make this gprc service invalid by having a constructor that takes an arg
         InvalidGrpcServiceImpl(int i) {
+<<<<<<< HEAD
            
+=======
+
+>>>>>>> cf6c2762e2... 12609: Add grpc server config tests
         }
 
         @Override
@@ -64,7 +72,11 @@ public class InvalidServlet extends HttpServlet {
         //Get a list of all the beers
         @Override
         public void getBeers(com.google.protobuf.Empty na, StreamObserver<Beer> responseObserver) {
+<<<<<<< HEAD
  
+=======
+
+>>>>>>> cf6c2762e2... 12609: Add grpc server config tests
         }
     }
 
@@ -85,4 +97,8 @@ public class InvalidServlet extends HttpServlet {
         super.destroy();
     }
 
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> cf6c2762e2... 12609: Add grpc server config tests

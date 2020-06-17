@@ -428,12 +428,14 @@ public class ServiceSupportTests extends FATServletClient {
 
         stopGrpcService(beerChannel);
 
-        // Stop the grpc application
+        // Stop the grpc applications
         LOG.info("testDuplicateService() : Stop the FavoriteBeerService application and remove it from dropins.");
         assertTrue(grpcServer.removeAndStopDropinsApplications(fbs));
+        grpcServer.removeAndStopDropinsApplications("FavoriteBeerService2.war");
 
         // removeAndStop above actually just renames the file, so really delete so the next tests have a clean slate
         grpcServer.deleteFileFromLibertyServerRoot("/" + fbs);
+        grpcServer.deleteFileFromLibertyServerRoot("/" + "FavoriteBeerService2.war");
 
     }
 }
