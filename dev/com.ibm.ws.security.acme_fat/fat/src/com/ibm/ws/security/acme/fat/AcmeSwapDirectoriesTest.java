@@ -37,18 +37,22 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.acme.docker.CAContainer;
 import com.ibm.ws.security.acme.docker.pebble.PebbleContainer;
 import com.ibm.ws.security.acme.internal.AcmeHistory;
+import com.ibm.ws.security.acme.internal.util.AcmeConstants;
 import com.ibm.ws.security.acme.utils.AcmeFatUtils;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.CheckForLeakedPasswords;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 /**
  * Test for AcmeHistoricalFile. Ensure the file is created, updated, and
  * causes refreshing of certificates.
  */
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class AcmeSwapDirectoriesTest {
 
 	@Server("com.ibm.ws.security.acme.fat.simple")
@@ -56,7 +60,7 @@ public class AcmeSwapDirectoriesTest {
 
 	protected static ServerConfiguration ORIGINAL_CONFIG;
 	
-	private final String acmeFile = "acmeca-history.txt";
+	private final String acmeFile = AcmeConstants.ACME_HISTORY_FILE;
 
 	/*
 	 * Domains that are configured and cleared before and after the class.

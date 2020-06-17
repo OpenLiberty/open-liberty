@@ -23,8 +23,14 @@ import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 	AcmeCaRestHandlerTest.class,
 	AcmeSwapDirectoriesTest.class,
 	AcmeValidityAndRenewTest.class,
-	AcmeRevocationTest.class,
-	AcmeDisableTriggerSimpleTest.class
+	AcmeDisableTriggerSimpleTest.class,
+	AcmeConfigVariationsTest.class,
+	AcmeURIConfigVariationsTest.class,
+	AcmeRevocationTest.class
+	/*
+	 * Until we resolve Boulder issues, keep the AcmeRevocationTest last, otherwise when it fails, the
+	 * whole suite stops running.
+	 */
 	 })
 public class FATSuite {
 
