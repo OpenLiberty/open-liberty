@@ -34,7 +34,7 @@ import componenttest.topology.utils.HttpUtils;
 @RunWith(FATRunner.class)
 public class CommonWebServerTests23 extends CommonWebServerTests {
     @Test
-    public void testBasicSpringBootApplication20() throws Exception {
+    public void testBasicSpringBootApplication23() throws Exception {
         testBasicSpringBootApplication();
     }
 
