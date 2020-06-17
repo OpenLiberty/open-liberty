@@ -19,6 +19,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 HelloWorldTest.class,
                 ServiceSupportTests.class,
                 StoreServicesTests.class
+                // temp for now StreamingTests.class,
 
 })
 
