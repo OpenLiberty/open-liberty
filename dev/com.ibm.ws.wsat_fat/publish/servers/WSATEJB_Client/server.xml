@@ -25,4 +25,6 @@
     	<properties.derby.embedded createDatabase="create" databaseName="memory:WsatDatabase0"></properties.derby.embedded>
     </dataSource>
     <logging traceSpecification="*=info: wsat=all: Transaction=all"></logging>
+    <javaPermission codebase="${server.config.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${server.config.dir}/dropins/wsatEJBCDIApp.war" className="java.security.AllPermission"/>
 </server>
