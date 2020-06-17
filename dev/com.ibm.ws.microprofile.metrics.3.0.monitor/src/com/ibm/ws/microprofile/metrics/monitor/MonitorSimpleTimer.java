@@ -20,9 +20,9 @@ import javax.management.openmbean.CompositeData;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
-import com.ibm.ws.microprofile.metrics23.impl.SimpleTimerImpl;
+import com.ibm.ws.microprofile.metrics30.impl.SimpleTimer30Impl;
 
-public class MonitorSimpleTimer extends SimpleTimerImpl {
+public class MonitorSimpleTimer extends SimpleTimer30Impl {
 	
 	private static final TraceComponent tc = Tr.register(MonitorSimpleTimer.class);
 	
@@ -33,30 +33,29 @@ public class MonitorSimpleTimer extends SimpleTimerImpl {
     
     HashSet<Long> usedTimes = new HashSet<Long>();
 
-    private long cachedMaxOldMinute = 0L;
-    private long cachedMinOldMinute = 0L;
-    private long cachedMaxCurrentMinute = 0L;
-    private long cachedMinCurrentMinute = 0L;
+    private long cachedMBPreviousMinute_max = 0L;
+    private long cachedMBPreviousMinute_min = 0L;
+    private long cachedMBLatestMinute_max = 0L;
+    private long cachedMBLatestMinute_min = 0L;
     
-    private long displayMaxCurrent_thisMinute = 0L;
-    private long displayMinCurrent_thisMinute = 0L;
-    private long displayMaxCurrent_thisMinute_val = 0L;
-    private long displayMinCurrent_thisMinute_val = 0L;
+    private long displayMaxLatest_forThisMinute = 0L;
+    private long displayMinLatest_forThisMinute = 0L;
+    private long displayMaxLatest_forThisMinute_val = 0L;
+    private long displayMinLatest_forThisMinute_val = 0L;
     
     
-    private long displayMaxOld_thisMinute = 0L;
-    private long displayMinOld_thisMinute = 0L;
+    private long displayMaxPrev_forThisMinute = 0L;
+    private long displayMinPrev_forThisMinute = 0L;
     
-    private long minCurrent;
-    private long maxCurrent;
+    private long mbean_latest_min;
+    private long mbean_latest_max;
+    private long mbean_latestMinute;
     
-    private long minuteCurrent;
-
+    private long mbean_previous_min;
+    private long mbean_previous_max;
+    private long mbean_prevMinute;
+    
     private long rollingBaseMinute = 0L;
-    
-    private long minOld;
-    private long maxOld;
-    private long minuteOld;
     
     public MonitorSimpleTimer(MBeanServer mbs, String objectName, String counterAttribute,
     		String counterSubAttribute, String gaugeAttribute, String gaugeSubAttribute) {
@@ -112,105 +111,226 @@ public class MonitorSimpleTimer extends SimpleTimerImpl {
     
 
     @Override
-    public synchronized Duration getMaxTimeDuration() {
-    	
-    	//Below logic to be introduced in separate PR
-    	
-//    	getMinMaxValues();
-//    	long currentMinute = getCurrentMinuteFromSystem();
-//    	
-//    	//If there exists no 'Previous' data AND the current minute DOES NOT match the latest minute AND if haven't already used this value
-//    	if ((cachedMaxOldMinute != minuteOld || displayMaxOld_thisMinute == currentMinute) //NOT stale unless still displaying
-//    			&& currentMinute != minuteOld
-//    			&& minuteOld != 0
-//    			&& (minuteOld > rollingBaseMinute || (currentMinute == displayMaxCurrent_thisMinute && maxOld == displayMaxCurrent_thisMinute_val))) //Because we may have used a "current" value before... and that value may now be an "old" value.
-//    	{
-//    		cachedMaxOldMinute = minuteOld;
-//    		displayMaxOld_thisMinute = currentMinute;
-//    		return Duration.ofNanos(maxOld);
-//    	}
-//    	
-//    	   	    	
-//    	if ((cachedMaxCurrentMinute != minuteCurrent || displayMaxCurrent_thisMinute == currentMinute) //NOT stale unless still displaying
-//    			&& currentMinute != minuteCurrent)
-//    	{
-//    		cachedMaxCurrentMinute = minuteCurrent;
-//    		displayMaxCurrent_thisMinute = currentMinute;
-//    		displayMaxCurrent_thisMinute_val = maxCurrent;
-//    		rollingBaseMinute = currentMinute;
-//    		return Duration.ofNanos(maxCurrent);
-//    	}
-    	
+	public synchronized Duration getMaxTimeDuration() {
+
+		getMinMaxValues();
+		long currentMinute = getCurrentMinuteFromSystem();
+
+		/*
+		 * 
+		 * First check to ensure we're not displaying the mbean's previous values again
+		 * UNLESS of course we're still within the current/on-going complete minute (i.e
+		 * The value will be displayed for a full minute 12:00:00 to 12:00:59).
+		 * 
+		 * Second check just to ensure the mbean's previous minute is this ongoing
+		 * minute. If it is the same, then that means the mbean has been created/updated
+		 * this same minute. Does not make sense to display the mbean's previous value
+		 * then. (i.e mbean was created this minute and we're querying this minute)
+		 * 
+		 * Third check to ensure mbean actually has a value (mbean's values are
+		 * initialized to 0)
+		 * 
+		 * Fourth check is to ensure mbean's previous value is above the rolling window
+		 * (this is to ensure we are not re-displaying a value .. see below for more
+		 * details). And also check to see if the mbean's latest values were bumped to
+		 * the mbean's previous values while we're still expected to display it. This an
+		 * happen if we were displaying a latest value due to lack of querying and then
+		 * the mbean was updated)
+		 * 
+		 */
+		if ((cachedMBPreviousMinute_max != mbean_prevMinute || displayMaxPrev_forThisMinute == currentMinute) // first
+																												// check
+				&& currentMinute != mbean_prevMinute // second check
+				&& mbean_prevMinute != 0 // third check
+				&& (mbean_prevMinute > rollingBaseMinute // fourth check
+						|| (currentMinute == displayMaxLatest_forThisMinute
+								&& mbean_previous_max == displayMaxLatest_forThisMinute_val))) {
+			// Used for the first check
+			cachedMBPreviousMinute_max = mbean_prevMinute;
+			displayMaxPrev_forThisMinute = currentMinute;
+			return Duration.ofNanos(mbean_previous_max);
+		}
+
+		/*
+		 * This logic is to display the latest mbean value only under a special
+		 * circumstance. That is if the mbean has not been updated in awhile (i.e
+		 * current minute does not match with latest minute). Due to the nature of
+		 * interaction with the Mbean (in which the Mbean is only updated if a REST
+		 * request occurs) we do not know if the Mbean will ever be updated again. Since
+		 * we want to have as up to date information as possible, we will pro-actively
+		 * retrieve the latest value and interpret it as the "previous" value and
+		 * display it. Note that at this point in time the mbean's ACTUAL previous value
+		 * would have already been displayed/retrieved before by the monitoring tool
+		 * which would run at constant intervals.
+		 * 
+		 * First check to ensure we're not displaying the mbean's latest max value again
+		 * UNLESS of course we're still within the current/on-going complete minute (i.e
+		 * The value will be displayed for a full minute 12:00:00 to 12:00:59)
+		 * 
+		 * Second check to ensure that the actual current minute is not a match with the
+		 * mbean's latest minute. We are suppose to display the mbean's latest value
+		 * ONLY if the value is stale (i.e the mbean's latest minute is x-minutes ago)
+		 * 
+		 */
+		if ((cachedMBLatestMinute_max != mbean_latestMinute || displayMaxLatest_forThisMinute == currentMinute) // first
+																												// check
+				&& currentMinute != mbean_latestMinute) // second check
+		{
+			// This value is used for FIRST check in the IF statement - to determine if
+			// we're redisplaying latest values
+			cachedMBLatestMinute_max = mbean_latestMinute;
+
+			/*
+			 * This value is for FIRST check in the IF statement - to determine if we're
+			 * still ongoingly displaying current value
+			 * 
+			 * This value is also used to see if we want to display a mbean's previous
+			 * value.
+			 * 
+			 * It could be the case that after displaying the stale latest minute, the MBean
+			 * is updated again. We do not want to display this value again.
+			 */
+			displayMaxLatest_forThisMinute = currentMinute;
+
+			/*
+			 * This value is used in a check to see if we want to display a mbean's previous
+			 * value.
+			 * 
+			 * It could be the case that after displaying the stale latest minute, the MBean
+			 * is updated again. We do not want to display this value again.
+			 */
+			displayMaxLatest_forThisMinute_val = mbean_latest_max;
+
+			/*
+			 * Need to update a rolling window
+			 * 
+			 * Otherwise, depending on the scenario can erroneously display an mbeans
+			 * "PREVIOUS" value again after displaying a stale mbean's "LATEST" value
+			 */
+			rollingBaseMinute = currentMinute;
+			return Duration.ofNanos(mbean_latest_max);
+		}
+
 		return null;
-    }
+	}
 
     /** {@inheritDoc} */
     @Override
     public synchronized Duration getMinTimeDuration() {
+
+		getMinMaxValues();
+		long currentMinute = getCurrentMinuteFromSystem();
+
+		/*
+		 * 
+		 * First check to ensure we're not displaying the mbean's previous values again
+		 * UNLESS of course we're still within the current/on-going complete minute (i.e
+		 * The value will be displayed for a full minute 12:00:00 to 12:00:59).
+		 * 
+		 * Second check just to ensure the mbean's previous minute is this ongoing
+		 * minute. If it is the same, then that means the mbean has been created/updated
+		 * this same minute. Does not make sense to display the mbean's previous value
+		 * then. (i.e mbean was created this minute and we're querying this minute)
+		 * 
+		 * Third check to ensure mbean actually has a value (mbean's values are
+		 * initialized to 0)
+		 * 
+		 * Fourth check is to ensure mbean's previous value is above the rolling window
+		 * (this is to ensure we are not re-displaying a value .. see below for more
+		 * details). And also check to see if the mbean's latest values were bumped to
+		 * the mbean's previous values while we're still expected to display it. This an
+		 * happen if we were displaying a latest value due to lack of querying and then
+		 * the mbean was updated)
+		 * 
+		 */
+		if ((cachedMBPreviousMinute_min != mbean_prevMinute || displayMinPrev_forThisMinute == currentMinute) // first
+																												// check
+				&& currentMinute != mbean_prevMinute // second check
+				&& mbean_prevMinute != 0 // third check
+				&& (mbean_prevMinute > rollingBaseMinute || (currentMinute == displayMinLatest_forThisMinute //fourth check
+						&& displayMinLatest_forThisMinute_val == mbean_previous_min))) {
+			cachedMBPreviousMinute_min = mbean_prevMinute;
+			displayMinPrev_forThisMinute = currentMinute;
+			return Duration.ofNanos(mbean_previous_min);
+		}
     	
-    	//Below logic to be introduced in separate PR
-    	
-    	
-//    	getMinMaxValues();
-//    	long currentMinute = getCurrentMinuteFromSystem();
-//    	
-//    	
-//    	/*
-//    	 * For every invocation of this block:
-//    	 * cachedMinuteOld is set to the current minute
-//    	 * displayMinOld_thisMinute is set to the current minute - indicates that for this current minute, the OLD value from the mbean is too be displayed
-//    	 * 
-//    	 * If cahed value and old minute value is not the same (i.e stale) AND we're not still displaying
-//    	 * AND currentMinute doesn't equal the recorded OLD minute
-//    	 * AND there is a vlue (minuteOld != 0)
-//    	 * AND the previous minute is greater than our rolling window UNLESS we were displaying a CURRENT/NEW value when it was bumped into the PREVIOUS mbean value) 
-//    	 */
-//    	
-//    	if ((cachedMinOldMinute != minuteOld || displayMinOld_thisMinute == currentMinute) //NOT stale unless still displaying
-//    			&& currentMinute != minuteOld
-//    			&& minuteOld != 0
-//    			&& ( minuteOld > rollingBaseMinute || (currentMinute == displayMinCurrent_thisMinute && displayMinCurrent_thisMinute_val == minOld))) //Because we may have used a "current" value before... and that value may now be an "old" value.
-//    	{
-//    		cachedMinOldMinute = minuteOld;
-//    		displayMinOld_thisMinute = currentMinute;
-//    		return Duration.ofNanos(minOld);
-//    	}
-//    	
-//    	   	    	
-//    	if ((cachedMinCurrentMinute != minuteCurrent || displayMinCurrent_thisMinute == currentMinute) //NOT stale unless still displaying
-//    			&& currentMinute != minuteCurrent)
-//    	{
-//    		cachedMinCurrentMinute = minuteCurrent;
-//    		displayMinCurrent_thisMinute = currentMinute;
-//    		displayMinCurrent_thisMinute_val = minCurrent;
-//    		rollingBaseMinute = currentMinute;
-//    		return Duration.ofNanos(minCurrent);
-//    	}
+		/*
+		 * This logic is to display the latest mbean value only under a special
+		 * circumstance. That is if the mbean has not been updated in awhile (i.e
+		 * current minutes doesn't match with latest). Due to the nature of interaction
+		 * with the Mbean (in which the Mbean is only updated if a REST request occurs)
+		 * we do not know if the Mbean will ever be updated again. Since we want to have
+		 * as up to date information as possible, we will pro-actively retrieve the
+		 * latest value and interpret it as the "previous" value and display it. Note
+		 * that at this point in time the mbean's ACTUAL previous value would have
+		 * already been displayed/retrieved before by the monitoring tool which would
+		 * run at constant intervals.
+		 * 
+		 * First check to ensure we're not displaying the mbean's latest min value again
+		 * UNLESS of course we're still within the current/on-going complete minute (i.e
+		 * The value will be displayed for a full minute 12:00:00 to 12:00:59)
+		 * 
+		 * Second check to ensure that the actual current minute is not a match with the
+		 * mbean's latest minute. We are suppose to display the mbean's current value
+		 * ONLY if the value is stale (i.e the mbean's latest minute is x-minutes ago)
+		 * 
+		 */
+		if ((cachedMBLatestMinute_min != mbean_latestMinute || displayMinLatest_forThisMinute == currentMinute) // first
+																												// check
+				&& currentMinute != mbean_latestMinute) // second check
+		{
+			// This value is used for FIRST check in the IF statement - to determine if
+			// we're redisplaying current values
+			cachedMBLatestMinute_min = mbean_latestMinute;
+
+			/*
+			 * This value is for FIRST check in the IF statement - to determine if we're
+			 * still ongoingly displaying current value
+			 * 
+			 * This value is also used to see if we want to display a mbean's previous
+			 * value.
+			 * 
+			 * It could be the case that after displaying the stale latest minute, the MBean
+			 * is updated again. We do not want to display this value again.
+			 */
+			displayMinLatest_forThisMinute = currentMinute;
+
+			/*
+			 * This value is used in a check to see if we want to display a mbean's previous
+			 * value.
+			 * 
+			 * It could be the case that after displaying the stale latest minute, the MBean
+			 * is updated again. We do not want to display this value again.
+			 */
+			displayMinLatest_forThisMinute_val = mbean_latest_min;
+
+			/*
+			 * Need to update a rolling window
+			 * 
+			 * Otherwise, depending on the scenario can erroneously display an mbeans
+			 * "PREVIOUS" value again after displaying a stale mbean's "LATEST" value
+			 */
+			rollingBaseMinute = currentMinute;
+			return Duration.ofNanos(mbean_latest_min);
+		}
     	
 		return null;
     }
 
 	private void getMinMaxValues() {
 		try {
-			synchronized(this) {
+			synchronized (this) {
+				mbean_latest_min = ((Number) mbs.getAttribute(new ObjectName(objectName), "MinuteLatestMinimumDuration")).longValue();
+
+				mbean_latest_max = ((Number) mbs.getAttribute(new ObjectName(objectName), "MinuteLatestMaximumDuration")).longValue();
+
+				mbean_latestMinute = ((Number) mbs.getAttribute(new ObjectName(objectName), "MinuteLatest")).longValue();
+
+				mbean_previous_min = ((Number) mbs.getAttribute(new ObjectName(objectName), "MinutePreviousMinimumDuration")).longValue();
 				
+				mbean_previous_max = ((Number) mbs.getAttribute(new ObjectName(objectName), "MinutePreviousMaximumDuration")).longValue();
 				
-				CompositeData value= (CompositeData) mbs.getAttribute(new ObjectName(objectName),"MinuteLatestMinimumDuration");
-				minCurrent = ((Number) value.get("currentValue")).longValue();
-				 
-				value = (CompositeData) mbs.getAttribute(new ObjectName(objectName), "MinuteLatestMaximumDuration");
-				 maxCurrent = ((Number) value.get("currentValue")).longValue();
-				 
-				 value = (CompositeData) mbs.getAttribute(new ObjectName(objectName),"MinuteLatest");
-				 minuteCurrent = ((Number) value.get("currentValue")).longValue();
-				 
-				 value = (CompositeData) mbs.getAttribute(new ObjectName(objectName),"MinutePreviousMinimumDuration");
-				 minOld = ((Number) value.get("currentValue")).longValue();
-				 value = (CompositeData) mbs.getAttribute(new ObjectName(objectName),"MinutePreviousMaximumDuration");
-				 maxOld = ((Number) value.get("currentValue")).longValue();
-				 
-				 value = (CompositeData) mbs.getAttribute(new ObjectName(objectName),"MinutePrevious");
-				 minuteOld  = ((Number) value.get("currentValue")).longValue();
+				mbean_previous_max = ((Number) mbs.getAttribute(new ObjectName(objectName), "MinutePrevious")).longValue();
 			}
 
 		} catch (Exception e) {
@@ -221,8 +341,9 @@ public class MonitorSimpleTimer extends SimpleTimerImpl {
 		}
 	}
     
-    // Get the current system time in minutes, truncating. This number will increase by 1 every complete minute.
-    private long getCurrentMinuteFromSystem() {
-        return System.currentTimeMillis() / 60000;
-    }
+	// Get the current system time in minutes, truncating. This number will increase
+	// by 1 every complete minute.
+	private long getCurrentMinuteFromSystem() {
+		return System.currentTimeMillis() / 60000;
+	}
 }
