@@ -9,20 +9,26 @@
         IBM Corporation - initial API and implementation
  -->
 <server>
-    <featureManager>
-        <feature>grpc-1.0</feature>
-        <feature>grpcClient-1.0</feature>
-        <feature>microProfile-3.2</feature>
-    	<feature>distributedMap-1.0</feature>
-        <feature>localConnector-1.0</feature>
-    </featureManager>
+	<featureManager>
+		<feature>grpc-1.0</feature>
+		<feature>grpcClient-1.0</feature>
+		<feature>microProfile-3.2</feature>
+		<feature>distributedMap-1.0</feature>
+	</featureManager>
 
-    <include location="../fatTestPorts.xml"/>
+	<include location="../fatTestPorts.xml" />
 
-    <distributedMap id="gRPCDistMap"/>
+	<distributedMap id="gRPCDistMap" />
 
-    <!-- Default SSL configuration enables trust for default certificates from the Java runtime --> 
-    <ssl id="defaultSSLConfig" trustDefaultCerts="true"/>
-    <logging traceSpecification="*=info=enabled:com.ibm.ws.grpc*=all:com.ibm.testapp.g3store*=all" maxFileSize="40" maxFiles="20" traceFormat="BASIC"/>
+	<javaPermission className="java.security.AllPermission"
+		name="*" actions="*" />
+
+	<!-- Default SSL configuration enables trust for default certificates from 
+		the Java runtime -->
+	<ssl id="defaultSSLConfig" trustDefaultCerts="true" />
+	
+	<logging
+		traceSpecification="*=info=enabled:io.openliberty.grpc*=all:com.ibm.testapp.g3store*=all"
+		maxFileSize="40" maxFiles="20" traceFormat="BASIC" />
 
 </server>
