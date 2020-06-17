@@ -34,8 +34,6 @@ Export-Package: \
 	io.openliberty.grpc.internal.config,\
 	io.openliberty.grpc.internal.servlet
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
-
 Include-Resource: \
   OSGI-INF=resources/OSGI-INF, \
   OSGI-INF/metatype/metatype.xml=resources/OSGI-INF/metatype/metatype.xml
