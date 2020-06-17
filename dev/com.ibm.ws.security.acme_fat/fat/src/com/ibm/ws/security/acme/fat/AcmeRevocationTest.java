@@ -118,7 +118,7 @@ public class AcmeRevocationTest {
 	}
 
 	@After
-	public void after() {
+	public void after() throws Exception {
 		AcmeFatUtils.deleteAcmeFiles(server);
 	}
 
