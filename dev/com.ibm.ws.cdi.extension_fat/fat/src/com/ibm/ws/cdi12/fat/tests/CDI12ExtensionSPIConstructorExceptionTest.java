@@ -67,7 +67,7 @@ public class CDI12ExtensionSPIConstructorExceptionTest extends LoggingTest {
         final String METHOD_NAME = "cleanup";
         Log.info(CDI12ExtensionTest.class, METHOD_NAME, "Stopping the server.");
         if (server.isStarted()) {
-            server.stopServer("CWOWB1010E");//The error thrown when a SPI extension constructor fails. 
+            server.stopServer("CWOWB10010E");//The error thrown when a SPI extension constructor fails. 
         }
         Log.info(CDI12ExtensionTest.class, METHOD_NAME, "Removing cdi extension test user feature files.");
         server.uninstallUserBundle(INSTALL_USERBUNDLE);
