@@ -1,3 +1,4 @@
+###############################################################################
 # Copyright (c) 2014 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -6,7 +7,7 @@
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
-# -------------------------------------------------------------------------------------------------
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -44,17 +45,17 @@
 
 50008=Nieobs\u0142ugiwana klasa Node {0}.  Metoda createBinder(klasa) obs\u0142uguje tylko klas\u0119 org.w3c.dom.Node.
 
-50009=W\u0142a\u015bciwo\u015b\u0107 lub pole {0} ma adnotacj\u0119, \u017ce jest przej\u015bciowe, wi\u0119c nie mo\u017cna go uwzgl\u0119dni\u0107 w adnotacji propOrder.
+50009=W\u0142a\u015bciwo\u015b\u0107 lub pole {0} w klasie {1} ma adnotacj\u0119 m\u00f3wi\u0105c\u0105 o przej\u015bciowo\u015bci, dlatego nie mo\u017ce zosta\u0107 uwzgl\u0119dniona/uwzgl\u0119dnione w adnotacji propOrder.
 
-50010=W\u0142a\u015bciwo\u015b\u0107 lub pole {0} musi by\u0107 atrybutem, poniewa\u017c inne pole lub w\u0142a\u015bciwo\u015b\u0107 ma adnotacj\u0119 XmlValue.
+50010=W\u0142a\u015bciwo\u015b\u0107 lub pole {0} w klasie {1} musi by\u0107 atrybutem, poniewa\u017c inne pole lub w\u0142a\u015bciwo\u015b\u0107 ma adnotacj\u0119 XmlValue.
 
-50011=W\u0142a\u015bciwo\u015b\u0107 lub pole {0} nie mo\u017ce mie\u0107 adnotacji XmlValue, poniewa\u017c jest podklas\u0105 innej klasy zwi\u0105zanej ze standardem XML.
+50011=W\u0142a\u015bciwo\u015b\u0107 lub pole {0} w klasie {1} nie mo\u017ce mie\u0107 adnotacji XmlValue z adnotacj\u0105, poniewa\u017c jest podklas\u0105 innej klasy powi\u0105zanej z kodem XML.
 
-50012=W\u0142a\u015bciwo\u015b\u0107 lub pole {0} zosta\u0142o okre\u015blone w elemencie propOrder, ale nie jest to poprawna w\u0142a\u015bciwo\u015b\u0107.
+50012=W\u0142a\u015bciwo\u015b\u0107 lub pole {0} w klasie {1} jest okre\u015blona/okre\u015blone w klasie propOrder, ale nie jest poprawn\u0105 w\u0142a\u015bciwo\u015bci\u0105.
 
 50013=W\u0142a\u015bciwo\u015b\u0107 lub pole {0} w klasie {1} musi by\u0107 uwzgl\u0119dnione w elemencie propOrder adnotacji XmlType.
 
-50014=W\u0142a\u015bciwo\u015b\u0107 lub pole {0} z adnotacj\u0105 XmlValue musi mie\u0107 typ, kt\u00f3ry jest odwzorowany w typ prostego schematu.
+50014=W\u0142a\u015bciwo\u015b\u0107 lub pole {0} w klasie {1} z adnotacj\u0105 XmlValue musi mie\u0107 typ, kt\u00f3ry jest odwzorowany na prosty typ schematu.
 
 50015=Element XmlElementWrapper jest dozwolony tylko w przypadku w\u0142a\u015bciwo\u015bci kolekcji lub tablicy, ale w\u0142a\u015bciwo\u015b\u0107 [{0}] nie jest w\u0142a\u015bciwo\u015bci\u0105 kolekcji ani tablicy.
 

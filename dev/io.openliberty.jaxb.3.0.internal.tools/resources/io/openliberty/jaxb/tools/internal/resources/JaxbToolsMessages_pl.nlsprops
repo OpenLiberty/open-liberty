@@ -22,4 +22,4 @@
 
 error.parameter.target.missed=CWWKW0700E: Wymagany element docelowy parametru nie zosta\u0142 okre\u015blony.
 error.parameter.target.missed.explanation=Je\u015bli parametr docelowy zostanie okre\u015blony, to po zaktualizowaniu poziomu specyfikacji JAXB obs\u0142ugiwanego przez profil Liberty istniej\u0105ce aplikacje b\u0119d\u0105 mog\u0142y zosta\u0107 ponownie wygenerowane bez konieczno\u015bci zmiany ich zachowania.
-error.parameter.target.missed.useraction=Podaj poziom specyfikacji JAXB, kt\u00f3rego dotyczy wygwnwrowany kod. Poprawne warto\u015bci to 3.0
+error.parameter.target.missed.useraction=Podaj poziom specyfikacji JAXB, kt\u00f3rego dotyczy wygenerowany kod. Poprawna warto\u015b\u0107 to 3.0

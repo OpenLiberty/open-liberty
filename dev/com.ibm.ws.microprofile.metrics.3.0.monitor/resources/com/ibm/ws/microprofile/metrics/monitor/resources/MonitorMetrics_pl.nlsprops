@@ -19,7 +19,7 @@
 # Messages used by MonitorMetrics Impl -  range is 2000-2199
 #-----------------------------------------------------------------------------------------------------------------------------
 FEATURE_REGISTERED=CWPMI2003I: Pomiary monitorowania mo\u017cna pobiera\u0107 za pomoc\u0105 sk\u0142adnika mpMetrics.
-FEATURE_REGISTERED.explanation=Sk\u0142adniki monitor-1.0 i mpMetrics-3.0 s\u0105 w\u0142\u0105czone, a metryki monitorowania mo\u017cna pobiera\u0107 za pomoc\u0105 sk\u0142adnika mpMetrics.
+FEATURE_REGISTERED.explanation=Sk\u0142adniki monitor-1.0 i mpMetrics-3.0 s\u0105 w\u0142\u0105czone, a metryki monitorowania mo\u017cna pobiera\u0107 za po\u015brednictwem sk\u0142adnika mpMetrics.
 FEATURE_REGISTERED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107 u\u017cytkownika.
 
 FEATURE_UNREGISTERED=CWPMI2004I: Wszystkie pomiary monitorowania zosta\u0142y wyrejestrowane ze sk\u0142adnika mpMetrics.

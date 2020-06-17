@@ -62,12 +62,20 @@ kafka.library.not.present.CWMRX1006E.useraction=Umie\u015b\u0107 w pakiecie plik
 
 # A Kafka incoming connector for the {0} channel cannot be created. The error is {1}
 kafka.create.incoming.error.CWMRX1007E=CWMRX1007E: Nie mo\u017cna utworzy\u0107 konektora przychodz\u0105cego Kafka dla kana\u0142u {0}. B\u0142\u0105d: {1}
-kafka.create.incoming.error.CWMRX1007E.explanation=B\u0142\u0105d, kt\u00f3ry wyst\u0105pi\u0142, gdy konektor Kafka by\u0142 konfigurowany dla przychodz\u0105cego kana\u0142u Reactive Messaging, uniemo\u017cliwia normalne dzia\u0142anie funkcji MicroProfile Reactive Messaging.
-kafka.create.incoming.error.CWMRX1007E.useraction=Odczytaj komunikat o b\u0142\u0119dzie, plik message.log serwera i dzienniki FFDC, aby zidentyfikowa\u0107 problem.
+kafka.create.incoming.error.CWMRX1007E.explanation=B\u0142\u0105d, kt\u00f3ry wyst\u0105pi\u0142, gdy konektor Kafka by\u0142 konfigurowany dla przychodz\u0105cego kana\u0142u Reactive Messaging, uniemo\u017cliwia normalne dzia\u0142anie funkcji MicroProfile Reactive Messaging. Przyczyn\u0105 mo\u017ce by\u0107 problem z konfiguracj\u0105 konektora lub problem z t\u0142umaczeniem nazwy hosta brokera Kafka.
+kafka.create.incoming.error.CWMRX1007E.useraction=Przejrzyj komunikat o b\u0142\u0119dzie, plik messages.log na serwerze oraz dzienniki FFDC, aby okre\u015bli\u0107 problem.
+
 # A Kafka outgoing connector for the {0} channel cannot be created. The error is {1}
 kafka.create.outgoing.error.CWMRX1008E=CWMRX1008E: Nie mo\u017cna utworzy\u0107 konektora wychodz\u0105cego Kafka dla kana\u0142u {0}. B\u0142\u0105d: {1}
-kafka.create.outgoing.error.CWMRX1008E.explanation=B\u0142\u0105d, kt\u00f3ry wyst\u0105pi\u0142, gdy konektor Kafka by\u0142 konfigurowany dla wychodz\u0105cego kana\u0142u Reactive Messaging, uniemo\u017cliwia normalne dzia\u0142anie funkcji MicroProfile Reactive Messaging.
-kafka.create.outgoing.error.CWMRX1008E.useraction=Odczytaj komunikat o b\u0142\u0119dzie, plik message.log serwera i dzienniki FFDC, aby zidentyfikowa\u0107 problem.
+kafka.create.outgoing.error.CWMRX1008E.explanation=B\u0142\u0105d, kt\u00f3ry wyst\u0105pi\u0142, gdy konektor Kafka by\u0142 konfigurowany dla wychodz\u0105cego kana\u0142u Reactive Messaging, uniemo\u017cliwia normalne dzia\u0142anie funkcji MicroProfile Reactive Messaging. Przyczyn\u0105 mo\u017ce by\u0107 problem z konfiguracj\u0105 konektora lub problem z t\u0142umaczeniem nazwy hosta brokera Kafka.
+kafka.create.outgoing.error.CWMRX1008E.useraction=Przejrzyj komunikat o b\u0142\u0119dzie, plik messages.log na serwerze oraz dzienniki FFDC, aby okre\u015bli\u0107 problem.
+
+# {0} = channel name, {1} = error message
+kafka.create.incoming.retry.CWMRX1009W=CWMRX1009W: Nie mo\u017cna utworzy\u0107 konektora przychodz\u0105cego Kafka dla kana\u0142u {0}, ale ta operacja jest ponawiana. B\u0142\u0105d: {1}
+kafka.create.incoming.retry.CWMRX1009W.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d, gdy konektor Kafka by\u0142 konfigurowany dla przychodz\u0105cego reaktywnego kana\u0142u przesy\u0142ania komunikat\u00f3w. Przyczyn\u0105 mo\u017ce by\u0107 problem z konfiguracj\u0105 konektora lub problem z t\u0142umaczeniem nazwy hosta brokera Kafka.
+kafka.create.incoming.retry.CWMRX1009W.useraction=Przejrzyj komunikat o b\u0142\u0119dzie, plik messages.log na serwerze oraz dzienniki FFDC, aby okre\u015bli\u0107, czy problem by\u0142 przej\u015bciowy, i zosta\u0142 rozwi\u0105zany w wyniku ponowienia pr\u00f3by skonfigurowania konektora.
+
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message
 #-----------------------------------------------------------------------------------------------------------------------------

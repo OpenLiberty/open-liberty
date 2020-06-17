@@ -665,6 +665,8 @@ retreived_unknown_message_type=Type de message inconnu extrait : {0} de la rubri
 
 sdo_classgenerator_exception={2}Une exception [{0}] s''est produite - message : [{1}]
 
+sdo_error_deserialization=Tentative de d\u00e9s\u00e9rialisation non autoris\u00e9e avec la classe {0}.
+
 sdo_error_processing_referenced_schema=Une erreur {0} s''est produite lors du traitement du sch\u00e9ma r\u00e9f\u00e9renc\u00e9 avec l''URI {1} et l''attribut schemaLocation {2}.
 
 sdo_invalid_schemaLocation=Impossible de cr\u00e9er l''attribut schemaLocation [{0}] pour l''importation avec l''URI [{1}].

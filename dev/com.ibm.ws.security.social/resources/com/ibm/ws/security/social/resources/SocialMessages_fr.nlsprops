@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2018 IBM Corporation and others.
+# Copyright (c) 2016, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -128,6 +128,10 @@ INTROSPECT_ERROR_GETTING_USER_INFO.useraction=Si le message contient un autre me
 INTROSPECT_USER_API_INACTIVE=CWWKS5388E: La demande d''introspection de jeton a \u00e9chou\u00e9 car le jeton qui est inclus dans la demande n''est pas valide. La r\u00e9ponse compl\u00e8te est la suivante : {0}.
 INTROSPECT_USER_API_INACTIVE.explanation=Le serveur d'autorisation n'a pas \u00e9mis le jeton, le propri\u00e9taire de la ressource a r\u00e9voqu\u00e9 le jeton, le jeton est arriv\u00e9 \u00e0 expiration ou une autre erreur est survenue.
 INTROSPECT_USER_API_INACTIVE.useraction=Consultez la r\u00e9ponse incluse dans le message. V\u00e9rifiez que le noeud final d'introspection de jeton correct est utilis\u00e9. Assurez-vous que le jeton est valide et qu'il peut faire l'objet d'une introspection.
+
+USER_API_RESPONSE_NOT_AUTHENTICATED=CWWKS5389E: La r\u00e9ponse d'API utilisateur indique que la demande d'API utilisateur n'est pas authentifi\u00e9e. V\u00e9rifiez que le jeton d'acc\u00e8s qui est inclus dans la demande d'API utilisateur est valide et qu'il est associ\u00e9 \u00e0 un utilisateur connu.
+USER_API_RESPONSE_NOT_AUTHENTICATED.explanation=Il se peut que le jeton d'acc\u00e8s qui figure dans la demande d'API utilisateur manque, soit arriv\u00e9 \u00e0 expiration, soit incorrectement form\u00e9 ou ne soit pas valide pour une autre raison. Il se peut que le jeton ne soit pas associ\u00e9 \u00e0 un utilisateur connu de l'API utilisateur.
+USER_API_RESPONSE_NOT_AUTHENTICATED.useraction=V\u00e9rifiez qu'un jeton d'acc\u00e8s est inclus dans la demande d'API utilisateur. Assurez-vous qu'il n'est pas arriv\u00e9 \u00e0 expiration ou qu'il n'est pas incorrectement form\u00e9. V\u00e9rifiez que l'utilisateur qui est associ\u00e9 au jeton d'acc\u00e8s est connu de l'API utilisateur.
 
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: La configuration de login social [{0}] a \u00e9t\u00e9 trait\u00e9e correctement.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=La configuration de login social indiqu\u00e9e a \u00e9t\u00e9 trait\u00e9e correctement.
