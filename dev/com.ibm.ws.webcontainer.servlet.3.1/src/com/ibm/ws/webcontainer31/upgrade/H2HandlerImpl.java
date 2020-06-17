@@ -60,7 +60,7 @@ public class H2HandlerImpl implements H2Handler {
                 h2Headers.put(headerName, ((HttpServletRequest) request).getHeader(headerName));
             }
         }
-        return ((Http2InboundConnection)hic).isHTTP2UpgradeRequest(h2Headers == null ? Collections.emptyMap() : h2Headers, true);
+        return ((Http2InboundConnection)hic).isHTTP2UpgradeRequest(h2Headers == null ? Collections.emptyMap() : h2Headers, false);
     }
 
     /**
