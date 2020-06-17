@@ -26,23 +26,17 @@ public class XAFlowCallbackImpl implements XAFlowCallback {
     private static final int COMMIT = 2;
     private static final int ROLLBACK = 3;
 
-    private static boolean _activated;
-
-    public static final boolean isActivated() {
-        return _activated;
-    }
-
     @Override
     public boolean beforeXAFlow(int flowType, int flag) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "beforeXAFlow", new Object[] { getFlowType(flowType), getBeforeFlag(flag), _activated });
-        if (_activated) {
-            if (flowType == COMMIT) {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Bringing server down");
-                Runtime.getRuntime().halt(1);
-            }
+            Tr.entry(tc, "beforeXAFlow", new Object[] { getFlowType(flowType), getBeforeFlag(flag) });
+
+        if (flowType == COMMIT) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Bringing server down");
+            Runtime.getRuntime().halt(1);
         }
+
         if (tc.isEntryEnabled())
             Tr.exit(tc, "beforeXAFlow", true);
         return true;
@@ -137,23 +131,5 @@ public class XAFlowCallbackImpl implements XAFlowCallback {
         }
 
         return strFlag;
-    }
-
-    /**
-     *
-     */
-    public static void activateXAFlowCallback() {
-        _activated = true;
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "activateXAFlowCallback");
-    }
-
-    /**
-     *
-     */
-    public static void deactivateXAFlowCallback() {
-        _activated = false;
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "deactivateXAFlowCallback");
     }
 }

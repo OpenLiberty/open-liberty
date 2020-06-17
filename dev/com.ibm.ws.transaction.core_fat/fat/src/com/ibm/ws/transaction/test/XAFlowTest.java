@@ -18,7 +18,9 @@ import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
 import java.util.Arrays;
 
+import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +33,8 @@ import com.ibm.ws.transaction.web.XAFlowServlet;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -79,7 +83,6 @@ public class XAFlowTest extends FATServletClient {
         server.copyFileToLibertyInstallRoot("lib/", "bundles/com.ibm.ws.tx.test.impl.jar");
         assertTrue("Failed to install xaflow-1.0 bundle",
                    server.fileExistsInLibertyInstallRoot("lib/com.ibm.ws.tx.test.impl.jar"));
-        server.startServer();
     }
 
     @AfterClass
@@ -100,12 +103,25 @@ public class XAFlowTest extends FATServletClient {
         });
     }
 
+    @After
+    public void stopServer() throws Exception {
+        server.stopServer();
+    }
+
+    @Before
+    public void startServer() throws Exception {
+        // Activate XAFlowCallback
+        server.copyFileToLibertyServerRoot("jvm.options");
+        server.startServer();
+    }
+
     @Test
     public void testXAFlow001() throws Exception {
         xaflowTest("001");
     }
 
     @Test
+    @Mode(TestMode.FULL)
     public void testXAFlow002() throws Exception {
         xaflowTest("002");
     }
@@ -113,6 +129,7 @@ public class XAFlowTest extends FATServletClient {
     protected void xaflowTest(String id) throws Exception {
         final String method = "xaflowTest";
         StringBuilder sb = null;
+
         try {
             // We expect this to fail since it is gonna crash the server
             sb = runTestWithResponse(server, SERVLET_NAME, "setupXAFlow" + id);
@@ -120,6 +137,9 @@ public class XAFlowTest extends FATServletClient {
             fail();
         } catch (Throwable e) {
             Log.info(getClass(), method, "setupXAFlow" + id + " crashed the server as expected: " + e.getLocalizedMessage());
+        } finally {
+            // Deactivate XAFlowCallback
+            server.deleteFileFromLibertyServerRoot("jvm.options");
         }
 
         server.setServerStartTimeout(300000); // 5 mins
