@@ -11,6 +11,7 @@
 package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
 import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 
 import java.io.File;
@@ -225,7 +226,7 @@ public class WCServerTest extends LoggingTest {
      *                       if something goes horribly wrong
      */
     @Test
-    @SkipForRepeat({"SERVLET-4.0", EE9_FEATURES})
+    @SkipForRepeat({EE8_FEATURES, EE9_FEATURES})
     public void testServlet31() throws Exception {
         WebResponse response = this.verifyResponse("/TestServlet31/MyServlet", "Hello World");
 
@@ -383,7 +384,7 @@ public class WCServerTest extends LoggingTest {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat({"SERVLET-4.0", EE9_FEATURES})
+    @SkipForRepeat({EE8_FEATURES, EE9_FEATURES})
     public void testServletContextMinorMajorVersion() throws Exception {
         this.verifyResponse("/TestServlet31/MyServlet?TestMajorMinorVersion=true", 
                             "majorVersion: 3");

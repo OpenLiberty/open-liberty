@@ -39,9 +39,12 @@ import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import junit.framework.Assert;
 
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class AsyncReadListenerHttpUnit extends LoggingTest {
     private static final Logger LOG = Logger.getLogger(AsyncReadListenerHttpUnit.class.getName());
 
