@@ -34,11 +34,18 @@ public class AuditData extends GenericData {
                                             LogFieldConstants.THREADID,
                                             LogFieldConstants.HOSTNAME,
                                             LogFieldConstants.WLPUSERDIR,
-                                            LogFieldConstants.SERVERNAME
+                                            LogFieldConstants.SERVERNAME,
+                                            LogFieldConstants.TYPE
     };
+    public static final short KEYS_JSON = 0;
+    public static final short KEYS_LOGSTASH = 1;
 
     private static NameAliases jsonLoggingNameAliases = new NameAliases(NAMES1_1);
+    private static NameAliases logstashNameAliases = new NameAliases(NAMES);
 
+    private static NameAliases[] nameAliases = { jsonLoggingNameAliases, logstashNameAliases };
+
+    // For renaming fields - only applicable to regular JSON logging and not logstash collector
     public static void newJsonLoggingNameAliases(Map<String, String> newAliases) {
         jsonLoggingNameAliases.newAliases(newAliases);
     }
@@ -51,53 +58,15 @@ public class AuditData extends GenericData {
         super(14);
     }
 
-    public String getDatetimeKey() {
-        return NAMES[0];
-    }
-
-    public String getSequenceKey() {
-        return NAMES[1];
-    }
-
-    public String getThreadIDKey() {
-        return NAMES[2];
-    }
-
-    public String getHostKey() {
-        return NAMES[3];
-    }
-
-    public String getUserDirKey() {
-        return NAMES[4];
-    }
-
-    public String getServerNameKey() {
-        return NAMES[5];
-    }
-
-    public String getDatetimeKey1_1() {
-        return NAMES1_1[0];
-    }
-
-    public String getSequenceKey1_1() {
-        return NAMES1_1[1];
-    }
-
-    public String getThreadIDKey1_1() {
-        return NAMES1_1[2];
-    }
-
-    public String getHostKey1_1() {
-        return NAMES1_1[3];
-    }
-
-    public String getUserDirKey1_1() {
-        return NAMES1_1[4];
-    }
-
-    public String getServerNameKey1_1() {
-        return NAMES1_1[5];
-    }
+    //@formatter:off
+    public static String getDatetimeKey(int format)   { return nameAliases[format].aliases[0]; }
+    public static String getSequenceKey(int format)   { return nameAliases[format].aliases[1]; }
+    public static String getThreadIDKey(int format)   { return nameAliases[format].aliases[2]; }
+    public static String getHostKey(int format)       { return nameAliases[format].aliases[3]; }
+    public static String getUserDirKey(int format)    { return nameAliases[format].aliases[4]; }
+    public static String getServerNameKey(int format) { return nameAliases[format].aliases[5]; }
+    public static String getTypeKey(int format)       { return nameAliases[format].aliases[6]; }
+    //@formatter:on
 
     //name aliases
     public static String getDatetimeKeyJSON() {

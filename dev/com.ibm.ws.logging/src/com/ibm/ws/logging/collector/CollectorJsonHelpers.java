@@ -44,6 +44,7 @@ public class CollectorJsonHelpers {
     private static String startGCJson = null;
     private static String startAuditJson = null;
     private static String startAuditJsonFields = null;
+    private static String startAuditLogstashCollector = null;
     public static String hostName = null;
     public static String wlpUserDir = null;
     public static String serverName = null;
@@ -214,14 +215,18 @@ public class CollectorJsonHelpers {
     public static void updateFieldMappings() {
         //@formatter:off
         JSONObjectBuilder jsonBuilder = new JSONObjectBuilder();
-        jsonBuilder.addField(AuditData.getTypeKeyJSON(), CollectorConstants.AUDIT_LOG_EVENT_TYPE, false, false)
-                   .addField(AuditData.getHostKeyJSON(), hostName, false, false)
-                   .addField(AuditData.getUserDirKeyJSON(), wlpUserDir, false, true)
-                   .addField(AuditData.getServerNameKeyJSON(), serverName, false, false);
-        startAuditJsonFields = jsonBuilder.toString();
-
         // We should initialize both the regular JSON logging and LogstashCollector variants
         for (int i = 0; i < 2; i++) {
+            jsonBuilder = new JSONObjectBuilder();
+            jsonBuilder.addField(AuditData.getTypeKey(i), CollectorConstants.AUDIT_LOG_EVENT_TYPE, false, false)
+                       .addField(AuditData.getHostKey(i), hostName, false, false)
+                       .addField(AuditData.getUserDirKey(i), wlpUserDir, false, true)
+                       .addField(AuditData.getServerNameKey(i), serverName, false, false);
+            if (i == AuditData.KEYS_JSON)
+                startAuditJsonFields = jsonBuilder.toString();
+            else if (i == AuditData.KEYS_LOGSTASH)
+                startAuditLogstashCollector = jsonBuilder.toString();
+
             jsonBuilder = new JSONObjectBuilder();
             jsonBuilder.addField(LogTraceData.getTypeKey(i, true), CollectorConstants.MESSAGES_LOG_EVENT_TYPE, false, false)
                        .addField(LogTraceData.getHostKey(i, true), hostName, false, false)
@@ -374,10 +379,13 @@ public class CollectorJsonHelpers {
         return sb;
     }
 
-    protected static JSONObjectBuilder startAuditJsonFields() {
+    protected static JSONObjectBuilder startAuditJsonFields(int format) {
         JSONObjectBuilder jsonBuilder = new JSONObject.JSONObjectBuilder();
         // We're assuming startAuditJsonFields will never be null - i.e. updateFieldMappings is always called before this method is called
-        jsonBuilder.addPreformatted(startAuditJsonFields);
+        if (format == AuditData.KEYS_JSON)
+            jsonBuilder.addPreformatted(startAuditJsonFields);
+        else if (format == AuditData.KEYS_LOGSTASH)
+            jsonBuilder.addPreformatted(startAuditLogstashCollector);
         return jsonBuilder;
     }
 

@@ -203,7 +203,9 @@ public class CollectorJsonUtils_JSON {
         GenericData genData = (GenericData) event;
         KeyValuePair[] pairs = genData.getPairs();
         String key = null;
-        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startAuditJsonFields();
+        int jsonKey = AuditData.KEYS_JSON;
+
+        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startAuditJsonFields(jsonKey);
 
         for (KeyValuePair kvp : pairs) {
 
@@ -227,11 +229,11 @@ public class CollectorJsonUtils_JSON {
                      */
                     if (key.equals(LogFieldConstants.IBM_DATETIME) || key.equals("loggingEventTime") || AuditData.getDatetimeKeyJSON().equals(key)) {
                         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(kvp.getLongValue());
-                        jsonBuilder.addField(AuditData.getDatetimeKeyJSON(), datetime, false, true);
+                        jsonBuilder.addField(AuditData.getDatetimeKey(jsonKey), datetime, false, true);
                     } else if (key.equals(LogFieldConstants.IBM_SEQUENCE) || key.equals("loggingSequenceNumber") || AuditData.getSequenceKeyJSON().equals(key)) {
-                        jsonBuilder.addField(AuditData.getSequenceKeyJSON(), kvp.getStringValue(), false, false);
+                        jsonBuilder.addField(AuditData.getSequenceKey(jsonKey), kvp.getStringValue(), false, false);
                     } else if (key.equals(LogFieldConstants.IBM_THREADID) || AuditData.getThreadIDKeyJSON().equals(key)) {
-                        jsonBuilder.addField(AuditData.getThreadIDKeyJSON(), DataFormatHelper.padHexString(kvp.getIntValue(), 8), false, true);
+                        jsonBuilder.addField(AuditData.getThreadIDKey(jsonKey), DataFormatHelper.padHexString(kvp.getIntValue(), 8), false, true);
                     } else {
                         //check this before leaving
                         jsonBuilder.addField("ibm_audit_" + key, kvp.getStringValue(), false, false);

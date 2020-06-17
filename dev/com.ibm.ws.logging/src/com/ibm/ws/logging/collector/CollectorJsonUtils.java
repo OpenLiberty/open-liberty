@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import com.ibm.websphere.ras.DataFormatHelper;
 import com.ibm.ws.logging.data.AccessLogData;
 import com.ibm.ws.logging.data.AccessLogDataFormatter;
+import com.ibm.ws.logging.data.AuditData;
 import com.ibm.ws.logging.data.FFDCData;
 import com.ibm.ws.logging.data.GCData;
 import com.ibm.ws.logging.data.GenericData;
@@ -251,7 +252,9 @@ public class CollectorJsonUtils {
         GenericData genData = (GenericData) event;
         KeyValuePair[] pairs = genData.getPairs();
         String key = null;
-        StringBuilder sb = CollectorJsonHelpers.startAuditJson(hostName, wlpUserDir, serverName);
+        int logstashKey = AuditData.KEYS_LOGSTASH;
+
+        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startAuditJsonFields(logstashKey);
 
         for (KeyValuePair kvp : pairs) {
 
@@ -278,21 +281,20 @@ public class CollectorJsonUtils {
                      */
                     if (key.equals(LogFieldConstants.IBM_DATETIME) || key.equals("loggingEventTime")) {
                         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(kvp.getLongValue());
-                        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.DATETIME, datetime, false, true, false, false, false);
+                        jsonBuilder.addField(AuditData.getDatetimeKey(logstashKey), datetime, false, true);
                     } else if (key.equals(LogFieldConstants.IBM_SEQUENCE) || key.equals("loggingSequenceNumber")) {
-                        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.SEQUENCE, kvp.getStringValue(), false, false, false, false, !kvp.isString());
+                        jsonBuilder.addField(AuditData.getSequenceKey(logstashKey), kvp.getStringValue(), false, false);
                     } else if (key.equals(LogFieldConstants.IBM_THREADID)) {
-                        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.THREADID, DataFormatHelper.padHexString(kvp.getIntValue(), 8), false, true, false, false, false);
+                        jsonBuilder.addField(AuditData.getThreadIDKey(logstashKey), DataFormatHelper.padHexString(kvp.getIntValue(), 8), false, true);
                     } else {
-                        CollectorJsonHelpers.addToJSON(sb, "ibm_audit_" + key, kvp.getStringValue(), false, false, false, false, !kvp.isString());
+                        jsonBuilder.addField("ibm_audit_" + key, kvp.getStringValue(), false, false);
                     }
 
                 } //There shouldn't be any list items from Audit's Generic Data object
             }
 
         }
-        sb.append("}");
-        return sb.toString();
+        return jsonBuilder.build().toString();
     }
 
     private static StringBuilder addTagNameForVersion(StringBuilder sb) {
