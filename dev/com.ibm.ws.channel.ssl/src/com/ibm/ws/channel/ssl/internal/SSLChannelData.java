@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import com.ibm.websphere.channelfw.ChannelData;
 import com.ibm.websphere.channelfw.FlowType;
@@ -116,7 +117,13 @@ public class SSLChannelData {
         this.decryptBuffersDirect = getBooleanProperty(DECRYPT_BUFFERS_DIRECT, DEFAULT_DECRYPT_BUFFERS_DIRECT, errors);
 
         this.sslSessionCacheSize = getIntProperty(SSLSESSION_CACHE_SIZE, true, DEFAULT_SSLSESSION_CACHE_SIZE, errors);
-        this.sslSessionTimeout = getIntProperty(SSLSESSION_TIMEOUT, true, DEFAULT_SSLSESSION_TIMEOUT, errors);
+        this.sslSessionTimeout = getIntProperty(SSLSESSION_TIMEOUT, true, DEFAULT_SSLSESSION_TIMEOUT * 1000, errors);
+        // The duration tag on the sslSession Metatype will change the value to milliseconds. As such, the value
+        // obtained from this will millis, convert to seconds.
+        this.sslSessionTimeout = (int) (TimeUnit.MILLISECONDS.toSeconds(sslSessionTimeout));
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Property sslSessionTimout converted to seconds: " + sslSessionTimeout);
+        }
 
         // Throw an exception if errors were found in reading data.
         if (errors.length() != 0) {
