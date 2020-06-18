@@ -95,7 +95,7 @@ public class AcmeValidityAndRenewTest {
 	}
 
 	@After
-	public void afterTest() {
+	public void afterTest() throws Exception {
 		/*
 		 * Cleanup any generated ACME files.
 		 */
