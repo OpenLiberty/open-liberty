@@ -78,21 +78,23 @@ public class CollectorJsonUtils_JSON {
                                       String serverName, String hostName, Object event, String[] tags) {
 
         FFDCData ffdcData = (FFDCData) event;
-        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startFFDCJsonFields();
+        int jsonKey = FFDCData.KEYS_JSON;
+
+        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startFFDCJsonFields(jsonKey);
 
         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(ffdcData.getDatetime());
         String formattedValue = CollectorJsonHelpers.formatMessage(ffdcData.getStacktrace(), maxFieldLength);
 
         //@formatter:off
-        jsonBuilder.addField(FFDCData.getDatetimeKeyJSON(), datetime, false, true)
-        .addField(FFDCData.getMessageKeyJSON(), ffdcData.getMessage(), false, true)
-        .addField(FFDCData.getClassNameKeyJSON(), ffdcData.getClassName(), false, true)
-        .addField(FFDCData.getExceptionNameKeyJSON(), ffdcData.getExceptionName(), false, true)
-        .addField(FFDCData.getProbeIdKeyJSON(), ffdcData.getProbeId(), false, true)
-        .addField(FFDCData.getThreadIdKeyJSON(), DataFormatHelper.padHexString((int) ffdcData.getThreadId(), 8), false, true)
-        .addField(FFDCData.getStacktraceKeyJSON(), formattedValue, false, true)
-        .addField(FFDCData.getObjectDetailsKeyJSON(), ffdcData.getObjectDetails(), false, true)
-        .addField(FFDCData.getSequenceKeyJSON(), ffdcData.getSequence(), false, true);
+        jsonBuilder.addField(FFDCData.getDatetimeKey(jsonKey), datetime, false, true)
+                   .addField(FFDCData.getMessageKey(jsonKey), ffdcData.getMessage(), false, true)
+                   .addField(FFDCData.getClassNameKey(jsonKey), ffdcData.getClassName(), false, true)
+                   .addField(FFDCData.getExceptionNameKey(jsonKey), ffdcData.getExceptionName(), false, true)
+                   .addField(FFDCData.getProbeIdKey(jsonKey), ffdcData.getProbeId(), false, true)
+                   .addField(FFDCData.getThreadIdKey(jsonKey), DataFormatHelper.padHexString((int) ffdcData.getThreadId(), 8), false, true)
+                   .addField(FFDCData.getStacktraceKey(jsonKey), formattedValue, false, true)
+                   .addField(FFDCData.getObjectDetailsKey(jsonKey), ffdcData.getObjectDetails(), false, true)
+                   .addField(FFDCData.getSequenceKey(jsonKey), ffdcData.getSequence(), false, true);
         //@formatter:on
 
         if (tags != null) {

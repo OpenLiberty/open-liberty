@@ -198,31 +198,29 @@ public class CollectorJsonUtils {
                                       String serverName, String hostName, Object event, String[] tags) {
 
         FFDCData ffdcData = (FFDCData) event;
+        int logstashKey = FFDCData.KEYS_LOGSTASH;
 
-        StringBuilder sb = CollectorJsonHelpers.startFFDCJson(hostName, wlpUserDir, serverName);
+        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startFFDCJsonFields(logstashKey);
 
         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(ffdcData.getDatetime());
-        CollectorJsonHelpers.addToJSON(sb, ffdcData.getDatetimeKey(), datetime, false, true, false, false, false);
-
-        CollectorJsonHelpers.addToJSON(sb, ffdcData.getMessageKey(), ffdcData.getMessage(), false, true, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, ffdcData.getClassNameKey(), ffdcData.getClassName(), false, true, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, ffdcData.getExceptionNameKey(), ffdcData.getExceptionName(), false, true, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, ffdcData.getProbeIdKey(), ffdcData.getProbeId(), false, true, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, ffdcData.getThreadIdKey(), DataFormatHelper.padHexString((int) ffdcData.getThreadId(), 8), false, true, false, false, false);
-
         String formattedValue = CollectorJsonHelpers.formatMessage(ffdcData.getStacktrace(), maxFieldLength);
-        CollectorJsonHelpers.addToJSON(sb, ffdcData.getStacktraceKey(), formattedValue, false, true, false, false, false);
-
-        CollectorJsonHelpers.addToJSON(sb, ffdcData.getObjectDetailsKey(), ffdcData.getObjectDetails(), false, true, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, ffdcData.getSequenceKey(), ffdcData.getSequence(), false, true, false, false, false);
+        //@formatter:off
+        jsonBuilder.addField(FFDCData.getDatetimeKey(logstashKey), datetime, false, true)
+                   .addField(FFDCData.getMessageKey(logstashKey), ffdcData.getMessage(), false, true)
+                   .addField(FFDCData.getClassNameKey(logstashKey), ffdcData.getClassName(), false, true)
+                   .addField(FFDCData.getExceptionNameKey(logstashKey), ffdcData.getExceptionName(), false, true)
+                   .addField(FFDCData.getProbeIdKey(logstashKey), ffdcData.getProbeId(), false, true)
+                   .addField(FFDCData.getThreadIdKey(logstashKey), DataFormatHelper.padHexString((int) ffdcData.getThreadId(), 8), false, true)
+                   .addField(FFDCData.getStacktraceKey(logstashKey), formattedValue, false, true)
+                   .addField(FFDCData.getObjectDetailsKey(logstashKey), ffdcData.getObjectDetails(), false, true)
+                   .addField(FFDCData.getSequenceKey(logstashKey), ffdcData.getSequence(), false, true);
+        //@formatter:on
 
         if (tags != null) {
-            addTagNameForVersion(sb).append(CollectorJsonHelpers.jsonifyTags(tags));
+            jsonBuilder.addPreformattedField("tags", CollectorJsonHelpers.jsonifyTags(tags));
         }
 
-        sb.append("}");
-
-        return sb.toString();
+        return jsonBuilder.build().toString();
     }
 
     private static String jsonifyAccess(String wlpUserDir,

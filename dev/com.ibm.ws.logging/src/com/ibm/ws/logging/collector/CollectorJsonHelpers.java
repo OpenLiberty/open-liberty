@@ -39,6 +39,7 @@ public class CollectorJsonHelpers {
     private static String startTraceLogstashCollector = null;
     private static String startFFDCJson = null;
     private static String startFFDCJsonFields = null;
+    private static String startFFDCLogstashCollector = null;
     private static String startAccessLogJson = null;
     private static String startAccessLogJsonFields = null;
     private static String startGCJson = null;
@@ -256,14 +257,17 @@ public class CollectorJsonHelpers {
                 startAccessLogJsonFields = jsonBuilder.toString();
             else if (i == AccessLogData.KEYS_LOGSTASH)
                 startAccessLogLogstashCollector = jsonBuilder.toString();
-        }
 
-        jsonBuilder = new JSONObjectBuilder();
-        jsonBuilder.addField(FFDCData.getTypeKeyJSON(), CollectorConstants.FFDC_EVENT_TYPE, false, false)
-                   .addField(FFDCData.getHostKeyJSON(), hostName, false, false)
-                   .addField(FFDCData.getUserDirKeyJSON(), wlpUserDir, false, true)
-                   .addField(FFDCData.getServerNameKeyJSON(), serverName, false, false);
-        startFFDCJsonFields = jsonBuilder.toString();
+            jsonBuilder = new JSONObjectBuilder();
+            jsonBuilder.addField(FFDCData.getTypeKey(i), CollectorConstants.FFDC_EVENT_TYPE, false, false)
+                       .addField(FFDCData.getHostKey(i), hostName, false, false)
+                       .addField(FFDCData.getUserDirKey(i), wlpUserDir, false, true)
+                       .addField(FFDCData.getServerNameKey(i), serverName, false, false);
+            if (i == FFDCData.KEYS_JSON)
+                startFFDCJsonFields = jsonBuilder.toString();
+            else if (i == FFDCData.KEYS_LOGSTASH)
+                startFFDCLogstashCollector = jsonBuilder.toString();
+        }
         //@formatter:on
     }
 
@@ -409,10 +413,13 @@ public class CollectorJsonHelpers {
         return jsonBuilder;
     }
 
-    protected static JSONObjectBuilder startFFDCJsonFields() {
+    protected static JSONObjectBuilder startFFDCJsonFields(int format) {
         JSONObjectBuilder jsonBuilder = new JSONObject.JSONObjectBuilder();
         // We're assuming startFFDCJsonFields will never be null - i.e. updateFieldMappings is always called before this method is called
-        jsonBuilder.addPreformatted(startFFDCJsonFields);
+        if (format == FFDCData.KEYS_JSON)
+            jsonBuilder.addPreformatted(startFFDCJsonFields);
+        else if (format == FFDCData.KEYS_LOGSTASH)
+            jsonBuilder.addPreformatted(startFFDCLogstashCollector);
         return jsonBuilder;
     }
 
