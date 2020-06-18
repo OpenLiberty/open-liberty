@@ -23,10 +23,10 @@ import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                SimpleTest.class,
-                OnePCDisabledTest.class,
-                XATest.class,
-                TransactionScopedObserversTest.class
+                XAFlowTest.class,
+                RecoveryTest.class,
+                RecoveryDBTranlogTest.class,
+                WaitForRecoveryTest.class,
 })
 public class FATSuite {
 
