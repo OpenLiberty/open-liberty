@@ -13,6 +13,7 @@ package com.ibm.ws.logging.data;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.ws.logging.collector.LogFieldConstants;
 
 /**
@@ -80,8 +81,7 @@ public class AccessLogData extends GenericData {
                                             LogFieldConstants.REMOTEUSERID
     };
 
-    public static final short KEYS_JSON = 0;
-    public static final short KEYS_LOGSTASH = 1;
+    private static final short jsonKey = CollectorConstants.KEYS_JSON;
 
     // For renaming/omitting fields
     private static Map<String, String> cookieMap = new HashMap<>();
@@ -232,7 +232,7 @@ public class AccessLogData extends GenericData {
     public static String getCookieKey(int format, KeyValuePair kvp) {
         String cookieName = kvp.getKey();
          // We only support renaming JSON fields, not logstashCollector fields - so check that it's JSON before renaming field
-        if (cookieMap.containsKey(cookieName) && (format == KEYS_JSON)) {
+        if (cookieMap.containsKey(cookieName) && (format == jsonKey)) {
             return cookieMap.get(cookieName);
         }
         return nameAliases[format].aliases[20] + "_" + cookieName;
@@ -240,7 +240,7 @@ public class AccessLogData extends GenericData {
 
     public static String getRequestHeaderKey(int format, KeyValuePair kvp) {
         String requestHeader = kvp.getKey();
-        if (requestHeaderMap.containsKey(requestHeader) && (format == KEYS_JSON)) {
+        if (requestHeaderMap.containsKey(requestHeader) && (format == jsonKey)) {
             return requestHeaderMap.get(requestHeader);
         }
         return nameAliases[format].aliases[22] + "_" + requestHeader;
@@ -248,7 +248,7 @@ public class AccessLogData extends GenericData {
 
     public static String getResponseHeaderKey(int format, KeyValuePair kvp) {
         String responseHeader = kvp.getKey();
-        if (responseHeaderMap.containsKey(responseHeader) && (format == KEYS_JSON)) {
+        if (responseHeaderMap.containsKey(responseHeader) && (format == jsonKey)) {
             return responseHeaderMap.get(responseHeader);
         }
         return nameAliases[format].aliases[23] + "_" + responseHeader;

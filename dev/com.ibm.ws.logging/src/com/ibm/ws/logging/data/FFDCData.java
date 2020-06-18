@@ -63,9 +63,6 @@ public class FFDCData extends GenericData {
                                               LogFieldConstants.TYPE
     };
 
-    public static final short KEYS_JSON = 0;
-    public static final short KEYS_LOGSTASH = 1;
-
     private static NameAliases jsonLoggingNameAliases = new NameAliases(NAMES1_1);
     private static NameAliases logstashNameAliases = new NameAliases(NAMES);
 

@@ -1245,17 +1245,19 @@ public class BaseTraceService implements TrService {
         String serverName = getServerName(config);
         String datetime = getDatetime();
         String sequenceNumber = getSequenceNumber();
+        //indicate that we're using json fields
+        int jsonKey = CollectorConstants.KEYS_JSON;
         //construct json header
         JSONObjectBuilder jsonBuilder = new JSONObject.JSONObjectBuilder();
 
         //@formatter:off
-        jsonBuilder.addField(LogTraceData.getTypeKeyJSON(true), "liberty_message", false, false)
-        .addField(LogTraceData.getHostKeyJSON(true), serverHostName, false, true)
-        .addField(LogTraceData.getUserDirKeyJSON(true), wlpUserDir, false, true)
-        .addField(LogTraceData.getServerNameKeyJSON(true), serverName, false, true)
-        .addField(LogTraceData.getMessageKeyJSON(true), logHeader, false, true)
-        .addField(LogTraceData.getDatetimeKeyJSON(true), datetime, false, true)
-        .addField(LogTraceData.getSequenceKeyJSON(true), sequenceNumber, false, true);
+        jsonBuilder.addField(LogTraceData.getTypeKey(jsonKey, true), "liberty_message", false, false)
+                   .addField(LogTraceData.getHostKey(jsonKey, true), serverHostName, false, true)
+                   .addField(LogTraceData.getUserDirKey(jsonKey, true), wlpUserDir, false, true)
+                   .addField(LogTraceData.getServerNameKey(jsonKey, true), serverName, false, true)
+                   .addField(LogTraceData.getMessageKey(jsonKey, true), logHeader, false, true)
+                   .addField(LogTraceData.getDatetimeKey(jsonKey, true), datetime, false, true)
+                   .addField(LogTraceData.getSequenceKey(jsonKey, true), sequenceNumber, false, true);
         //@formatter:on
 
         return jsonBuilder.build().toString().concat("\n");

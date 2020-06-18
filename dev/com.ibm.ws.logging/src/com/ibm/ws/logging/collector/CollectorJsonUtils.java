@@ -32,6 +32,7 @@ import com.ibm.ws.logging.data.LogTraceData;
 public class CollectorJsonUtils {
 
     public static final int MAX_USER_AGENT_LENGTH = 2048;
+    private static final int logstashKey = CollectorConstants.KEYS_LOGSTASH;
 
     public static String getEventType(String source, String location) {
         return CollectorJsonHelpers.getEventType(source, location);
@@ -124,16 +125,15 @@ public class CollectorJsonUtils {
         LogTraceData logData = (LogTraceData) event;
         JSONObjectBuilder jsonBuilder = null;
         boolean isMessageEvent = eventType.equals(CollectorConstants.MESSAGES_LOG_EVENT_TYPE);
-        int logstashCollectorKey = LogTraceData.KEYS_LOGSTASH;
 
         ArrayList<KeyValuePair> extensions = null;
         KeyValuePairList kvpl = null;
 
         if (isMessageEvent) {
-            jsonBuilder = CollectorJsonHelpers.startMessageJsonFields(logstashCollectorKey);
+            jsonBuilder = CollectorJsonHelpers.startMessageJsonFields(logstashKey);
         }
         if (!isMessageEvent) {
-            jsonBuilder = CollectorJsonHelpers.startTraceJsonFields(logstashCollectorKey);
+            jsonBuilder = CollectorJsonHelpers.startTraceJsonFields(logstashKey);
         }
 
         String message = logData.getMessage();
@@ -153,15 +153,15 @@ public class CollectorJsonUtils {
         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(logData.getDatetime());
 
         //@formatter:off
-        jsonBuilder.addField(LogTraceData.getMessageKey(logstashCollectorKey, isMessageEvent), formattedValue.toString(), false, true)
-        .addField(LogTraceData.getThreadIdKey(logstashCollectorKey, isMessageEvent), DataFormatHelper.padHexString(logData.getThreadId(), 8), false, true)
-        .addField(LogTraceData.getDatetimeKey(logstashCollectorKey, isMessageEvent), datetime, false, true)
-        .addField(LogTraceData.getMessageIdKey(logstashCollectorKey, isMessageEvent), logData.getMessageId(), false, true)
-        .addField(LogTraceData.getModuleKey(logstashCollectorKey, isMessageEvent), logData.getModule(), false, true)
-        .addField(LogTraceData.getLoglevelKey(logstashCollectorKey, isMessageEvent), logData.getLoglevel(), false, true)
-        .addField(LogTraceData.getMethodNameKey(logstashCollectorKey, isMessageEvent), logData.getMethodName(), false, true)
-        .addField(LogTraceData.getClassNameKey(logstashCollectorKey, isMessageEvent), logData.getClassName(), false, true)
-        .addField(LogTraceData.getSequenceKey(logstashCollectorKey, isMessageEvent), logData.getSequence(), false, true);
+        jsonBuilder.addField(LogTraceData.getMessageKey(logstashKey, isMessageEvent), formattedValue.toString(), false, true)
+                   .addField(LogTraceData.getThreadIdKey(logstashKey, isMessageEvent), DataFormatHelper.padHexString(logData.getThreadId(), 8), false, true)
+                   .addField(LogTraceData.getDatetimeKey(logstashKey, isMessageEvent), datetime, false, true)
+                   .addField(LogTraceData.getMessageIdKey(logstashKey, isMessageEvent), logData.getMessageId(), false, true)
+                   .addField(LogTraceData.getModuleKey(logstashKey, isMessageEvent), logData.getModule(), false, true)
+                   .addField(LogTraceData.getLoglevelKey(logstashKey, isMessageEvent), logData.getLoglevel(), false, true)
+                   .addField(LogTraceData.getMethodNameKey(logstashKey, isMessageEvent), logData.getMethodName(), false, true)
+                   .addField(LogTraceData.getClassNameKey(logstashKey, isMessageEvent), logData.getClassName(), false, true)
+                   .addField(LogTraceData.getSequenceKey(logstashKey, isMessageEvent), logData.getSequence(), false, true);
         //@formatter:on
 
         kvpl = logData.getExtensions();
@@ -198,7 +198,6 @@ public class CollectorJsonUtils {
                                       String serverName, String hostName, Object event, String[] tags) {
 
         FFDCData ffdcData = (FFDCData) event;
-        int logstashKey = FFDCData.KEYS_LOGSTASH;
 
         JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startFFDCJsonFields(logstashKey);
 
@@ -227,7 +226,8 @@ public class CollectorJsonUtils {
                                         String serverName, String hostName, Object event, String[] tags) {
 
         AccessLogData accessLogData = (AccessLogData) event;
-        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startAccessLogJsonFields(AccessLogData.KEYS_LOGSTASH);
+
+        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startAccessLogJsonFields(logstashKey);
 
         AccessLogDataFormatter[] formatters = accessLogData.getFormatters();
 
@@ -250,7 +250,6 @@ public class CollectorJsonUtils {
         GenericData genData = (GenericData) event;
         KeyValuePair[] pairs = genData.getPairs();
         String key = null;
-        int logstashKey = AuditData.KEYS_LOGSTASH;
 
         JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startAuditJsonFields(logstashKey);
 

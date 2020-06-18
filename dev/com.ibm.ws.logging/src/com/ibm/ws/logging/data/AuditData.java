@@ -37,8 +37,6 @@ public class AuditData extends GenericData {
                                             LogFieldConstants.SERVERNAME,
                                             LogFieldConstants.TYPE
     };
-    public static final short KEYS_JSON = 0;
-    public static final short KEYS_LOGSTASH = 1;
 
     private static NameAliases jsonLoggingNameAliases = new NameAliases(NAMES1_1);
     private static NameAliases logstashNameAliases = new NameAliases(NAMES);
@@ -67,34 +65,5 @@ public class AuditData extends GenericData {
     public static String getServerNameKey(int format) { return nameAliases[format].aliases[5]; }
     public static String getTypeKey(int format)       { return nameAliases[format].aliases[6]; }
     //@formatter:on
-
-    //name aliases
-    public static String getDatetimeKeyJSON() {
-        return jsonLoggingNameAliases.aliases[0];
-    }
-
-    public static String getSequenceKeyJSON() {
-        return jsonLoggingNameAliases.aliases[1];
-    }
-
-    public static String getThreadIDKeyJSON() {
-        return jsonLoggingNameAliases.aliases[2];
-    }
-
-    public static String getHostKeyJSON() {
-        return jsonLoggingNameAliases.aliases[3];
-    }
-
-    public static String getUserDirKeyJSON() {
-        return jsonLoggingNameAliases.aliases[4];
-    }
-
-    public static String getServerNameKeyJSON() {
-        return jsonLoggingNameAliases.aliases[5];
-    }
-
-    public static String getTypeKeyJSON() {
-        return jsonLoggingNameAliases.aliases[6];
-    }
 
 }

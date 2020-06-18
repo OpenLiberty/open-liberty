@@ -80,7 +80,7 @@ public class LogTraceData extends GenericData {
                                             LogFieldConstants.FORMATTEDMSG,
                                             LogFieldConstants.EXTENSIONS_KVPL,
                                             LogFieldConstants.OBJECT_ID,
-                                            LogFieldConstants.HOST,
+                                            LogFieldConstants.HOSTNAME,
                                             LogFieldConstants.WLPUSERDIR,
                                             LogFieldConstants.SERVERNAME,
                                             LogFieldConstants.TYPE
@@ -142,19 +142,16 @@ public class LogTraceData extends GenericData {
                                               LogFieldConstants.TYPE
     };
 
-    public static final short KEYS_JSON = 0;
-    public static final short KEYS_LOGSTASH = 1;
-
     private static NameAliases jsonLoggingNameAliasesMessages = new NameAliases(MESSAGE_NAMES1_1);
     private static NameAliases jsonLoggingNameAliasesTrace = new NameAliases(TRACE_NAMES1_1);
 
-    // Although we could use one var for this since renaming fields isn't possible yet for LogstashCollector, it makes more sense to do it this way for now
-    private static NameAliases jsonLoggingNameAliasesMessagesLogstash = new NameAliases(NAMES);
-    private static NameAliases jsonLoggingNameAliasesTraceLogstash = new NameAliases(NAMES);
+    // Although we could use one var for this since renaming fields isn't possible for LogstashCollector, it makes more sense to do it this way
+    private static NameAliases logstashNameAliasesMessages = new NameAliases(NAMES);
+    private static NameAliases logstashNameAliasesTrace = new NameAliases(NAMES);
 
     // Both regular JSON logging fields and LogstashCollector field names
-    private static NameAliases[] nameAliasesMessages = { jsonLoggingNameAliasesMessages, jsonLoggingNameAliasesMessagesLogstash };
-    private static NameAliases[] nameAliasesTrace = { jsonLoggingNameAliasesTrace, jsonLoggingNameAliasesTraceLogstash };
+    private static NameAliases[] nameAliasesMessages = { jsonLoggingNameAliasesMessages, logstashNameAliasesMessages };
+    private static NameAliases[] nameAliasesTrace = { jsonLoggingNameAliasesTrace, logstashNameAliasesTrace };
 
     public static void newJsonLoggingNameAliasesMessage(Map<String, String> newAliases) {
         jsonLoggingNameAliasesMessages.newAliases(newAliases);
@@ -316,119 +313,7 @@ public class LogTraceData extends GenericData {
         return isMessageEvent ? nameAliasesMessages[format].aliases[24] : nameAliasesTrace[format].aliases[24];
     }
 
-    public static String getExtensionNameKey(int format, boolean isMessageEvent, String extKey) {
-        ExtensionAliases tempExt = null;
-        if (isMessageEvent) {
-            tempExt = jsonLoggingNameAliasesMessages.extensionAliases;
-        } else {
-            tempExt = jsonLoggingNameAliasesTrace.extensionAliases;
-        }
-        return tempExt.getAlias(extKey);
-
-    }
-    // removed all the getXXXKey + getXXXKey1_1 methods.. i think they're not being used anymore?
-
-    //name aliases
-    public static String getDatetimeKeyJSON(boolean isMessageEvent) {
-        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[0] : jsonLoggingNameAliasesTrace.aliases[0];
-    }
-
-    public static String getMessageIdKeyJSON(boolean isMessageEvent) {
-        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[1] : jsonLoggingNameAliasesTrace.aliases[1];
-    }
-
-    public static String getThreadIdKeyJSON(boolean isMessageEvent) {
-        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[2] : jsonLoggingNameAliasesTrace.aliases[2];
-    }
-
-    public static String getModuleKeyJSON(boolean isMessageEvent) {
-        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[3] : jsonLoggingNameAliasesTrace.aliases[3];
-    }
-
-    public static String getSeverityKeyJSON(boolean isMessageEvent) {
-        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[4] : jsonLoggingNameAliasesTrace.aliases[4];
-    }
-
-    public static String getLoglevelKeyJSON(boolean isMessageEvent) {
-        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[5] : jsonLoggingNameAliasesTrace.aliases[5];
-    }
-
-    public static String getMethodNameKeyJSON(boolean isMessageEvent) {
-        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[6] : jsonLoggingNameAliasesTrace.aliases[6];
-    }
-
-    public static String getClassNameKeyJSON(boolean isMessageEvent) {
-        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[7] : jsonLoggingNameAliasesTrace.aliases[7];
-    }
-
-    public static String getLevelValueKeyJSON(boolean isMessageEvent) {
-        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[8] : jsonLoggingNameAliasesTrace.aliases[8];
-    }
-
-    public static String getThreadNameKeyJSON(boolean isMessageEvent) {
-        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[9] : jsonLoggingNameAliasesTrace.aliases[9];
-    }
-
-    public static String getCorrelationIdKeyJSON(boolean isMessageEvent) {
-        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[10] : jsonLoggingNameAliasesTrace.aliases[10];
-    }
-
-    public static String getOrgKeyJSON(boolean isMessageEvent) {
-        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[11] : jsonLoggingNameAliasesTrace.aliases[11];
-    }
-
-    public static String getProductKeyJSON(boolean isMessageEvent) {
-        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[12] : jsonLoggingNameAliasesTrace.aliases[12];
-    }
-
-    public static String getComponentKeyJSON(boolean isMessageEvent) {
-        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[13] : jsonLoggingNameAliasesTrace.aliases[13];
-    }
-
-    public static String getSequenceKeyJSON(boolean isMessageEvent) {
-        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[14] : jsonLoggingNameAliasesTrace.aliases[14];
-    }
-
-    public static String getThrowableKeyJSON(boolean isMessageEvent) {
-        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[15] : jsonLoggingNameAliasesTrace.aliases[15];
-    }
-
-    public static String getThrowableLocalizedKeyJSON(boolean isMessageEvent) {
-        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[16] : jsonLoggingNameAliasesTrace.aliases[16];
-    }
-
-    public static String getMessageKeyJSON(boolean isMessageEvent) {
-        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[17] : jsonLoggingNameAliasesTrace.aliases[17];
-    }
-
-    public static String getFormattedMsgKeyJSON(boolean isMessageEvent) {
-        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[18] : jsonLoggingNameAliasesTrace.aliases[18];
-    }
-
-    public static String getExtensionsKeyJSON(boolean isMessageEvent) {
-        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[19] : jsonLoggingNameAliasesTrace.aliases[19];
-    }
-
-    public static String getObjectIdKeyJSON(boolean isMessageEvent) {
-        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[20] : jsonLoggingNameAliasesTrace.aliases[20];
-    }
-
-    public static String getHostKeyJSON(boolean isMessageEvent) {
-        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[21] : jsonLoggingNameAliasesTrace.aliases[21];
-    }
-
-    public static String getUserDirKeyJSON(boolean isMessageEvent) {
-        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[22] : jsonLoggingNameAliasesTrace.aliases[22];
-    }
-
-    public static String getServerNameKeyJSON(boolean isMessageEvent) {
-        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[23] : jsonLoggingNameAliasesTrace.aliases[23];
-    }
-
-    public static String getTypeKeyJSON(boolean isMessageEvent) {
-        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[24] : jsonLoggingNameAliasesTrace.aliases[24];
-    }
-
+    // Only JSON logging uses this method, so we don't need to check for the Logstash Collector case
     public static String getExtensionNameKeyJSON(boolean isMessageEvent, String extKey) {
         ExtensionAliases tempExt = null;
         if (isMessageEvent) {
