@@ -18,5 +18,5 @@
     
     <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
     
-    <logging maxFileSize="200" maxFiles="3" traceFileName="grpcTrace.log" traceSpecification="*=info:com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:HTTPChannel=all:TCPChannel=all:com.ibm.ws.http*=all"/> 
+    <!--  logging maxFileSize="200" maxFiles="3" traceFileName="grpcTrace.log" traceSpecification="*=info:com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:HTTPChannel=all:TCPChannel=all:com.ibm.ws.http*=all"/ --> 
 </server>

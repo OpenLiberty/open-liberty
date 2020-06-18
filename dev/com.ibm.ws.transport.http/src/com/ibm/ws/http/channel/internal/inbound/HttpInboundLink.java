@@ -253,7 +253,6 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
      * @return boolean (true means still parsing the request)
      */
     protected boolean isPartiallyParsed() {
-        Tr.debug(tc, "isPartiallyParsed() returning: " + this.bPartialParsedRequest);
         return this.bPartialParsedRequest;
     }
 
@@ -326,7 +325,6 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
      * and handled by channels above.
      */
     protected void processRequest() {
-        boolean grpc = false;
         final int timeout = getHTTPContext().getReadTimeout();
         final TCPReadCompletedCallback callback = HttpICLReadCallback.getRef();
 
@@ -340,7 +338,6 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
             }
             // Note: handleNewInformation will allocate the read buffers
             if (!isPartiallyParsed()) {
-                //    if ((!isPartiallyParsed()) || grpc) {
                 // we're done parsing at this point. Note: cannot take any action
                 // with information after this call because it may go all the way
                 // from the channel above us back to the persist read, must exit
@@ -356,8 +353,10 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
                 }
 
                 if (this.myInterface.getLink() instanceof H2HttpInboundLinkWrap) {
+                    // H2 session
                     H2HttpInboundLinkWrap linkWrap = (H2HttpInboundLinkWrap) (this.myInterface.getLink());
                     if (linkWrap.isGrpcInUse()) {
+                        // and GRPC session also.
                         linkWrap.countDownFirstReadLatch();
                     }
                 }

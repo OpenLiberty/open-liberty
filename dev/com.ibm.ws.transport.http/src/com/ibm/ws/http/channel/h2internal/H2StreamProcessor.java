@@ -1089,6 +1089,9 @@ public class H2StreamProcessor {
                     if (passCount == 0) {
                         // latch so we don't overwrite the first data frame that comes in
                         firstReadLatch = new CountDownLatch(2);
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "processOpen: first DATA frame read. using firstReadLatch of: " + firstReadLatch.hashCode());
+                        }
                         passCount++;
                         getBodyFromFrame();
                         processCompleteData(true);

@@ -29,7 +29,6 @@ import com.ibm.ws.grpc.fat.beer.service.Beer;
 import com.ibm.ws.grpc.fat.beer.service.BeerResponse;
 import com.ibm.ws.grpc.fat.beer.service.BeerServiceGrpc;
 import com.ibm.ws.grpc.fat.beer.service.BeerServiceGrpc.BeerServiceBlockingStub;
-import com.ibm.ws.grpc.fat.streaming.service.StreamingServiceGrpc;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
@@ -91,16 +90,6 @@ public class ServiceSupportTests extends FATServletClient {
 
     private void stopGrpcService(ManagedChannel channel) {
         channel.shutdownNow();
-    }
-
-    private void startStreamingService(String address, int port) {
-        System.out.println("Connecting to StreamingService gRPC service at " + address + ":" + port);
-        streamingChannel = ManagedChannelBuilder.forAddress(address, port).usePlaintext().build();
-        streamingServiceStub = StreamingServiceGrpc.newStub(streamingChannel);
-    }
-
-    private void stopStreamingService() {
-        streamingChannel.shutdownNow();
     }
 
     private void startHelloWorldService(String address, int port) {
