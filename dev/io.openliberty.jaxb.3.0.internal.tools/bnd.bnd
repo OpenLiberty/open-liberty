@@ -36,15 +36,20 @@ Import-Package: \
   com.sun.xml.tools.*, \
   com.ibm.wsspi.classloading, \
   org.apache.xml.*; resolution:=optional, \
+  org.w3c.dom.*, \
+  javax.xml.stream.*, \
+  javax.xml.transform.*, \
+  javax.xml.parsers.*, \
+  javax.xml.namespace.*, \
+  javax.xml.datatype.*, \
+  org.xml.sax.*, \
+  !com.sun.xml.internal.bind.v2, \
+  !com.sun.xml.bind.v2, \
   !org.apache.tools*, \
   !org.apache.xerces*, \
   !org.jvnet*, \
   !com.sun.mirror.*, \
-  !com.sun.xml.bind.*, \
-  !com.sun.istack.*, \
-  !com.sun.codemodel.*, \
-  !com.sun.tools.rngom.*, \
-  !com.sun.xml.*, \
+  !com.sun.codemodel.*,\ 
   !com.sun.source.tree.*, \
   !com.sun.source.util.*, \
   !com.sun.xml.fastinfoset.sax.*, \
@@ -61,10 +66,17 @@ Include-Resource: \
   @${repo;org.glassfish.jaxb:jaxb-core;3.0.0}!/!META-INF/maven/*, \
   @${repo;org.glassfish.jaxb:jaxb-jxc;3.0.0}!/!META-INF/maven/*, \
   @${repo;org.glassfish.jaxb:jaxb-runtime;3.0.0}!/!META-INF/maven/*, \
+  @${repo;com.sun.xml.bind.external:relaxng-datatype;3.0.0}!/!META-INF/maven/*, \
+  @${repo;com.sun.xml.bind.external:rngom;3.0.0}!/!META-INF/maven/*, \
+  @${repo;com.sun.istack:istack-commons-runtime;4.0.0}!/!META-INF/maven/*, \
+  @${repo;com.sun.istack:istack-commons-tools;4.0.0}!/!META-INF/maven/*, \
   @${repo;org.glassfish.jaxb:jaxb-xjc;3.0.0}!/!META-INF/maven/*
 
 Private-Package:\
-  io.openliberty.jaxb.tools.*
+  io.openliberty.jaxb.tools.*, \
+  com.sun.istack.*, \
+  com.sun.tools.rngdatatype.*, \
+  com.sun.tools.rngom.*
 
 instrument.disabled: true
 
@@ -74,4 +86,8 @@ instrument.disabled: true
 	org.glassfish.jaxb:jaxb-jxc;version=3.0.0, \
 	org.glassfish.jaxb:jaxb-runtime;version=3.0.0, \
 	org.glassfish.jaxb:jaxb-xjc;version=3.0.0, \
+	com.sun.xml.bind.external:relaxng-datatype;version=3.0.0, \
+    com.sun.xml.bind.external:rngom;version=3.0.0, \
+    com.sun.istack:istack-commons-runtime;version=4.0.0, \
+    com.sun.istack:istack-commons-tools;version=4.0.0, \
     com.ibm.ws.org.apache.ant;strategy=exact;version=latest
