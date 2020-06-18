@@ -643,7 +643,7 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
                 }
                 extensions.add(clazz.getDeclaredConstructor().newInstance());
             } catch (Exception e) {
-                Tr.error(tc, "spi.extension.failed.to.construct.CWOWB10010E", clazz.getCanonicalName(), e.toString());
+                Tr.error(tc, "spi.extension.failed.to.construct.CWOWB1010E", clazz.getCanonicalName(), e.toString());
             }
         }
 
