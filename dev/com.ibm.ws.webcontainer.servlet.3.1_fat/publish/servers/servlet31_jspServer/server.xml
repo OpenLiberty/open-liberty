@@ -14,7 +14,7 @@
 
     <featureManager>
         <feature>servlet-3.1</feature>
-        <feature>jsp-2.2</feature>
+        <feature>jsp-2.3</feature>
     </featureManager>
     
     <logging traceSpecification="*=info=enabled:com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:HTTPChannel=all:TCPChannel=all:GenericBNF=all:com.ibm.ws.jsp*=all" maxFileSize="20" maxFiles="10" traceFormat="BASIC"/> 
