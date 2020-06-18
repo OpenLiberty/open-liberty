@@ -30,7 +30,6 @@ import com.ibm.tx.jta.TransactionManagerFactory;
 import com.ibm.tx.jta.ut.util.XAResourceFactoryImpl;
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.tx.jta.ut.util.XAResourceInfoFactory;
-import com.ibm.ws.tx.test.impl.XAFlowCallbackImpl;
 
 import componenttest.app.FATServlet;
 
@@ -72,9 +71,6 @@ public class XAFlowServlet extends FATServlet {
             tm.enlist(xaRes2, recoveryId2);
 
             XAResourceImpl.dumpState();
-
-            // Activate the server killer
-            XAFlowCallbackImpl.activateXAFlowCallback();
 
             tm.commit();
         } catch (Exception e) {
@@ -240,9 +236,6 @@ public class XAFlowServlet extends FATServlet {
             throw e;
         } finally {
             try {
-                // Activate the server killer
-                XAFlowCallbackImpl.activateXAFlowCallback();
-
                 ut.commit();
             } catch (Exception e) {
                 throw e;
