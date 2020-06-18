@@ -30,9 +30,11 @@ Import-Package: !sun.*,\
   *
 
 Export-Package: \
-	io.grpc.servlet,\
-	io.openliberty.grpc.internal.config,\
-	io.openliberty.grpc.internal.servlet
+  io.grpc.servlet,\
+  io.openliberty.grpc.internal,\
+  io.openliberty.grpc.internal.config,\
+  io.openliberty.grpc.internal.resources,\
+  io.openliberty.grpc.internal.servlet
 
 Include-Resource: \
   OSGI-INF=resources/OSGI-INF, \

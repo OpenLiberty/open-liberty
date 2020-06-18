@@ -31,7 +31,7 @@ import io.openliberty.grpc.internal.client.security.LibertyGrpcClientOutSSLSuppo
  */
 public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 
-	private static final TraceComponent tc = Tr.register(LibertyManagedChannelProvider.class);
+	private static final TraceComponent tc = Tr.register(LibertyManagedChannelProvider.class, GrpcClientMessages.GRPC_TRACE_NAME, GrpcClientMessages.GRPC_BUNDLE);
 
 	@Override
 	public boolean isAvailable() {
@@ -127,8 +127,7 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 					} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
 							| IllegalArgumentException | InvocationTargetException | NoSuchMethodException
 							| SecurityException e) {
-						// TODO: proper warning message
-						Tr.warning(tc, "Could not load user-defined Interceptor", e);
+						Tr.warning(tc, "invalid.clientinterceptor", e.getMessage());
 					}
 				}
 			}

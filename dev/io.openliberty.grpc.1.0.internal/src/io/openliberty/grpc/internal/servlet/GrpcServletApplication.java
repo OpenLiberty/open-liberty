@@ -56,6 +56,13 @@ class GrpcServletApplication {
 		j2eeAppName = name;
 		GrpcServiceConfigImpl.addApplication(j2eeAppName);
 	}
+	
+	/**
+	 * @return the J2EE application name for this GrpcServletApplication
+	 */
+	String getAppName() {
+		return j2eeAppName;
+	}
 
 	/**
 	 * Unregister and clean up any associated services and mappings

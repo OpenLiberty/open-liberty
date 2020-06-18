@@ -19,6 +19,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.grpc.internal.client.GrpcClientConstants;
+import io.openliberty.grpc.internal.client.GrpcClientMessages;
 
 /**
  * A class to collect the properties that the Client config services have read
@@ -29,7 +30,7 @@ import io.openliberty.grpc.internal.client.GrpcClientConstants;
  *
  */
 public class GrpcClientConfigHolder {
-	private static final TraceComponent tc = Tr.register(GrpcClientConfigHolder.class);
+	private static final TraceComponent tc = Tr.register(GrpcClientConfigHolder.class, GrpcClientMessages.GRPC_TRACE_NAME, GrpcClientMessages.GRPC_BUNDLE);
 
 	// a map of configuration properties keyed on uri.
 	// note that treemap sorts by key order, which we need to properly deal with the
