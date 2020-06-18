@@ -442,4 +442,17 @@ public class AnnotationScanTest {
         assertEquals("Did not find expected warning indicating servlet contains invalid Application class", 1,
                      server.findStringsInLogs("CWWKW0102W.*annotationscan.*NotAnAppIBMRestServlet.*com.ibm.ws.jaxrs.fat.annotation.multipleapp.MyResource3").size());
     }
+
+    /**
+     * Tests that a an Application property set will be retrieved via @Context injection on both
+     * a field and a parameter in a resource method.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testApplicationPropertyInjection() throws Exception {
+        String helloWorld = client.target(getBaseTestUri(annwar, "/app8/resource4")).request().get(String.class);
+        assertEquals("Success!", helloWorld);
+    }
+
 }
