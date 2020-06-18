@@ -618,7 +618,8 @@ public class SpringBootThinUtil implements Closeable {
             return starterArtifactIds;
         }
 
-        // For now mvn dependencies for embedded container starters are provided here.
+        // For now mvn dependencies for embedded container starters are provided here. We are only concerned with the Artifact Id of the dependencies listed below.
+        // However, the format of the dependencies (groupId:artifactId:version:configuration) listed is due to the output provided by the command "mvn dependency:resolve -f pom.xml"
         private final static List<String> mvnSpringBoot15TomcatStarterDeps = Arrays.asList(
                                                                                            "org.springframework.boot:spring-boot-starter-tomcat:jar:1.5.10.RELEASE:compile",
                                                                                            "org.apache.tomcat.embed:tomcat-embed-websocket:jar:8.5.27:compile",
