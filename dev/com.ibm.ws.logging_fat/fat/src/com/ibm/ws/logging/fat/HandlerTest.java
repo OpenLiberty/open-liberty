@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -661,11 +661,11 @@ public class HandlerTest {
      */
     private void assertAccessLogDataIsValid(String line, Map<String, String> expectedFieldsAndValues) {
         // Received AccessLog event: AccessLogData [uriPath=/ibm/api/test/tracelogger, requestMethod=GET, remoteHost=127.0.0.1, userAgent=Java/1.7.0, requestProtocol=HTTP/1.1, responseSize=27, responseCode=200, elapsedTime=148067, queryString=messageKey=testAccessLogSource_1453114767723, requestStartTime=33636731463302, sequence=33636731463302_0000000000002]
+        // 2020-05-11 - ibm_requestStartTime was never printed to JSON logs but would be seen in trace. It has been moved around to require the option jsonAccessLogFields=logFormat to print to JSON logs. Tests are in CustomAccessLogFieldsTest.java
         String[] expectedFieldsWithNonNullValue = new String[] { "ibm_uriPath", "ibm_requestMethod", "ibm_responseCode",
                                                                  "ibm_queryString", "ibm_requestHost", "ibm_requestPort",
                                                                  "ibm_remoteHost", "ibm_userAgent", "ibm_requestProtocol",
-                                                                 "ibm_bytesReceived", "ibm_responseCode", "ibm_elapsedTime",
-                                                                 "ibm_requestStartTime" };
+                                                                 "ibm_bytesReceived", "ibm_responseCode", "ibm_elapsedTime" };
         String startTag = "GenericData [";
         int start = line.indexOf(startTag);
         assertTrue("AccessLogData not found", start != -1);
@@ -718,12 +718,6 @@ public class HandlerTest {
                    + "( timestamp=" + timestamp
                    + ", expectedStartTimeRange=" + expectedStartTimeRange
                    + ", expectedEndTimeRange=" + expectedEndTimeRange + " ) ", (timestamp > expectedStartTimeRange && timestamp < expectedEndTimeRange));
-
-        long requestStartTime = Long.parseLong(data.get("ibm_requestStartTime"));
-        assertTrue("StartTime is not in vaild time range."
-                   + "( requestStartTime=" + requestStartTime
-                   + ", expectedStartTimeRange=" + expectedStartTimeRange
-                   + ", expectedEndTimeRange=" + expectedEndTimeRange + " ) ", (requestStartTime > expectedStartTimeRange && requestStartTime < expectedEndTimeRange));
     }
 
     /**

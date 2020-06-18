@@ -23,6 +23,11 @@
 	
 	<AD name="%sslRef" description="%sslRef.desc" id="sslRef" required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />
 	
+	<AD name="%jsonAccessLogFields" description="%jsonAccessLogFields.desc" id="jsonAccessLogFields" required="false" type="String" default="default" ibm:beta="true">
+			<Option label="%jsonAccessLogFields.default" value="default"/>
+            <Option label="%jsonAccessLogFields.logformat" value="logFormat"/>
+	</AD>
+	
 	<AD name="%tag" description="%tag.desc" id="tag" required="false" type="String" cardinality="1024"/>
 	
 	<AD name="internal" description="internal use only" id="sourceHostName" required="false" type="String" default=""/>
