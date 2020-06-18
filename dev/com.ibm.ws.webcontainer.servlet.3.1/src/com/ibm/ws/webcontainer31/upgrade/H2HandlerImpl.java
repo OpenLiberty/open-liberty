@@ -90,7 +90,7 @@ public class H2HandlerImpl implements H2Handler {
             h2uh.init(new H2UpgradeHandler());
         }
         
-        String http2Settings = ((HttpServletRequest) request).getHeader(HTTP2_SETTINGS);
+        String http2Settings = request.getHeader(HTTP2_SETTINGS);
         
         Map<String, String> http2Headers = (http2Settings == null ? Collections.emptyMap() : Collections.singletonMap(HTTP2_SETTINGS, http2Settings));
         boolean upgraded = h2ic.handleHTTP2UpgradeRequest(http2Headers);
