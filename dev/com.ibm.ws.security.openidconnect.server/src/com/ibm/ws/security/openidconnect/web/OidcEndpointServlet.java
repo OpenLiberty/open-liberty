@@ -112,9 +112,9 @@ public class OidcEndpointServlet extends OAuth20EndpointServlet {
 
     @FFDCIgnore(ServletException.class)
     OidcSupportedHttpMethodHandler getOidcSupportedHttpMethodHandler(HttpServletRequest request, HttpServletResponse response) {
-        OidcSupportedHttpMethodHandler handler = new OidcSupportedHttpMethodHandler(request, response);
+        OidcSupportedHttpMethodHandler handler = null;
         try {
-            handler.setOidcEndpointServices(getOidcEndpointServices());
+            handler = new OidcSupportedHttpMethodHandler(request, response, getOidcEndpointServices());
         } catch (ServletException e) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Caught exception setting OidcEndpointServices for supported HTTP method handler: " + e);

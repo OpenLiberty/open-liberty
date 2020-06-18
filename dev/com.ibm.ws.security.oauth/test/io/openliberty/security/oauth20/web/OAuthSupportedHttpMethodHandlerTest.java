@@ -63,7 +63,7 @@ public class OAuthSupportedHttpMethodHandlerTest extends CommonTestClass {
         }
 
         @Override
-        OAuth20Provider getOAuth20ProviderByName(String providerName) {
+        protected OAuth20Provider getOAuth20Provider() {
             return oauth20Provider;
         }
     }
@@ -80,6 +80,8 @@ public class OAuthSupportedHttpMethodHandlerTest extends CommonTestClass {
             {
                 one(request).getAttribute(OAuth20Constants.OAUTH_REQUEST_OBJECT_ATTR_NAME);
                 will(returnValue(oauth20Request));
+                one(oauth20Request).getProviderName();
+                will(returnValue(providerName));
             }
         });
         handler = new TestOAuthSupportedHttpMethodHandler(request, response);
@@ -102,8 +104,6 @@ public class OAuthSupportedHttpMethodHandlerTest extends CommonTestClass {
         mockery.checking(new Expectations() {
             {
                 one(request).getAttribute(OAuth20Constants.OAUTH_REQUEST_OBJECT_ATTR_NAME);
-                will(returnValue(null));
-                one(request).getAttribute(OAuth20Constants.OIDC_REQUEST_OBJECT_ATTR_NAME);
                 will(returnValue(null));
             }
         });
@@ -162,8 +162,6 @@ public class OAuthSupportedHttpMethodHandlerTest extends CommonTestClass {
             {
                 one(request).getAttribute(OAuth20Constants.OAUTH_REQUEST_OBJECT_ATTR_NAME);
                 will(returnValue(null));
-                one(request).getAttribute(OAuth20Constants.OIDC_REQUEST_OBJECT_ATTR_NAME);
-                will(returnValue(null));
             }
         });
         handler = new TestOAuthSupportedHttpMethodHandler(request, response);
@@ -208,8 +206,6 @@ public class OAuthSupportedHttpMethodHandlerTest extends CommonTestClass {
         mockery.checking(new Expectations() {
             {
                 one(request).getAttribute(OAuth20Constants.OAUTH_REQUEST_OBJECT_ATTR_NAME);
-                will(returnValue(null));
-                one(request).getAttribute(OAuth20Constants.OIDC_REQUEST_OBJECT_ATTR_NAME);
                 will(returnValue(null));
             }
         });
@@ -519,8 +515,6 @@ public class OAuthSupportedHttpMethodHandlerTest extends CommonTestClass {
             {
                 one(request).getAttribute(OAuth20Constants.OAUTH_REQUEST_OBJECT_ATTR_NAME);
                 will(returnValue(null));
-                one(request).getAttribute(OAuth20Constants.OIDC_REQUEST_OBJECT_ATTR_NAME);
-                will(returnValue(null));
             }
         });
         handler = new TestOAuthSupportedHttpMethodHandler(request, response);
@@ -532,8 +526,6 @@ public class OAuthSupportedHttpMethodHandlerTest extends CommonTestClass {
     public void test_getConfiguredOAuthEndpointSettings() {
         mockery.checking(new Expectations() {
             {
-                one(oauth20Request).getProviderName();
-                will(returnValue(providerName));
                 one(oauth20Provider).getOAuthEndpointSettings();
             }
         });
@@ -544,8 +536,6 @@ public class OAuthSupportedHttpMethodHandlerTest extends CommonTestClass {
     private void setOAuthProviderExpectations(final OAuthEndpointSettings endpointSettings) {
         mockery.checking(new Expectations() {
             {
-                one(oauth20Request).getProviderName();
-                will(returnValue(providerName));
                 one(oauth20Provider).getOAuthEndpointSettings();
                 will(returnValue(endpointSettings));
             }

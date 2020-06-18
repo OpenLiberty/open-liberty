@@ -66,15 +66,8 @@ public class OidcSupportedHttpMethodHandlerTest extends CommonTestClass {
     @Before
     public void setUp() throws Exception {
         System.out.println("Entering test: " + testName.getMethodName());
-        mockery.checking(new Expectations() {
-            {
-                allowing(request).getAttribute(OAuth20Constants.OAUTH_REQUEST_OBJECT_ATTR_NAME);
-                will(returnValue(null));
-                allowing(request).getAttribute(OAuth20Constants.OIDC_REQUEST_OBJECT_ATTR_NAME);
-                will(returnValue(oidcRequest));
-            }
-        });
-        handler = new OidcSupportedHttpMethodHandler(request, response);
+        setDefaultConstructorExpectations();
+        handler = new OidcSupportedHttpMethodHandler(request, response, oidcEndpointServices);
     }
 
     @After
@@ -114,8 +107,9 @@ public class OidcSupportedHttpMethodHandlerTest extends CommonTestClass {
     }
 
     @Test
-    public void test_getConfiguredSupportedMethodsForEndpoint_noConfiguredSettings() {
-        handler = new OidcSupportedHttpMethodHandler(request, response) {
+    public void test_getConfiguredSupportedMethodsForEndpoint_noConfiguredSettings() throws IOException {
+        setDefaultConstructorExpectations();
+        handler = new OidcSupportedHttpMethodHandler(request, response, oidcEndpointServices) {
             @Override
             OidcEndpointSettings getConfiguredOidcEndpointSettings() {
                 return null;
@@ -126,9 +120,10 @@ public class OidcSupportedHttpMethodHandlerTest extends CommonTestClass {
     }
 
     @Test
-    public void test_getConfiguredSupportedMethodsForEndpoint_noSpecificEndpointSettings() {
+    public void test_getConfiguredSupportedMethodsForEndpoint_noSpecificEndpointSettings() throws IOException {
         EndpointType endpoint = EndpointType.end_session;
-        handler = new OidcSupportedHttpMethodHandler(request, response) {
+        setDefaultConstructorExpectations();
+        handler = new OidcSupportedHttpMethodHandler(request, response, oidcEndpointServices) {
             @Override
             OidcEndpointSettings getConfiguredOidcEndpointSettings() {
                 return oidcEndpointSettings;
@@ -145,9 +140,10 @@ public class OidcSupportedHttpMethodHandlerTest extends CommonTestClass {
     }
 
     @Test
-    public void test_getConfiguredSupportedMethodsForEndpoint_nullEndpointType() {
+    public void test_getConfiguredSupportedMethodsForEndpoint_nullEndpointType() throws IOException {
         EndpointType endpoint = null;
-        handler = new OidcSupportedHttpMethodHandler(request, response) {
+        setDefaultConstructorExpectations();
+        handler = new OidcSupportedHttpMethodHandler(request, response, oidcEndpointServices) {
             @Override
             OidcEndpointSettings getConfiguredOidcEndpointSettings() {
                 return oidcEndpointSettings;
@@ -164,12 +160,13 @@ public class OidcSupportedHttpMethodHandlerTest extends CommonTestClass {
     }
 
     @Test
-    public void test_getConfiguredSupportedMethodsForEndpoint() {
+    public void test_getConfiguredSupportedMethodsForEndpoint() throws IOException {
         EndpointType endpoint = EndpointType.jwk;
         Set<HttpMethod> expectedMethods = new HashSet<HttpMethod>();
         expectedMethods.add(HttpMethod.GET);
         expectedMethods.add(HttpMethod.HEAD);
-        handler = new OidcSupportedHttpMethodHandler(request, response) {
+        setDefaultConstructorExpectations();
+        handler = new OidcSupportedHttpMethodHandler(request, response, oidcEndpointServices) {
             @Override
             OidcEndpointSettings getConfiguredOidcEndpointSettings() {
                 return oidcEndpointSettings;
@@ -191,13 +188,13 @@ public class OidcSupportedHttpMethodHandlerTest extends CommonTestClass {
     public void test_getConfiguredOidcEndpointSettings_missingOidcRequestInfo() {
         mockery.checking(new Expectations() {
             {
-                allowing(request).getAttribute(OAuth20Constants.OAUTH_REQUEST_OBJECT_ATTR_NAME);
+                one(request).getAttribute(OAuth20Constants.OAUTH_REQUEST_OBJECT_ATTR_NAME);
                 will(returnValue(null));
-                allowing(request).getAttribute(OAuth20Constants.OIDC_REQUEST_OBJECT_ATTR_NAME);
+                one(request).getAttribute(OAuth20Constants.OIDC_REQUEST_OBJECT_ATTR_NAME);
                 will(returnValue(null));
             }
         });
-        handler = new OidcSupportedHttpMethodHandler(request, response);
+        handler = new OidcSupportedHttpMethodHandler(request, response, oidcEndpointServices);
 
         OidcEndpointSettings settings = handler.getConfiguredOidcEndpointSettings();
         assertNull("Should not have found any settings but did.", settings);
@@ -205,38 +202,57 @@ public class OidcSupportedHttpMethodHandlerTest extends CommonTestClass {
 
     @Test
     public void test_getConfiguredOidcEndpointSettings_missingOidcEndpointServices() {
+        mockery.checking(new Expectations() {
+            {
+                one(request).getAttribute(OAuth20Constants.OAUTH_REQUEST_OBJECT_ATTR_NAME);
+                will(returnValue(null));
+                one(request).getAttribute(OAuth20Constants.OIDC_REQUEST_OBJECT_ATTR_NAME);
+                will(returnValue(null));
+            }
+        });
+        handler = new OidcSupportedHttpMethodHandler(request, response, null);
+
         OidcEndpointSettings settings = handler.getConfiguredOidcEndpointSettings();
         assertNull("Should not have found any settings but did.", settings);
     }
 
     @Test
     public void test_getConfiguredOidcEndpointSettings_unknownProvider() throws IOException {
-        handler.setOidcEndpointServices(oidcEndpointServices);
         mockery.checking(new Expectations() {
             {
+                one(request).getAttribute(OAuth20Constants.OAUTH_REQUEST_OBJECT_ATTR_NAME);
+                will(returnValue(null));
+                one(request).getAttribute(OAuth20Constants.OIDC_REQUEST_OBJECT_ATTR_NAME);
+                will(returnValue(oidcRequest));
                 one(oidcRequest).getProviderName();
-                will(returnValue(providerName));
-                one(oidcEndpointServices).getOidcServerConfig(response, providerName);
                 will(returnValue(null));
             }
         });
+        handler = new OidcSupportedHttpMethodHandler(request, response, oidcEndpointServices);
+
         OidcEndpointSettings settings = handler.getConfiguredOidcEndpointSettings();
         assertNull("Should not have found any settings but did.", settings);
     }
 
     @Test
     public void test_getConfiguredOidcEndpointSettings_noConfiguredSettings() throws IOException {
-        handler.setOidcEndpointServices(oidcEndpointServices);
+        OidcEndpointSettings settings = handler.getConfiguredOidcEndpointSettings();
+        assertNull("Should not have found any settings but did.", settings);
+    }
+
+    private void setDefaultConstructorExpectations() throws IOException {
         mockery.checking(new Expectations() {
             {
+                one(request).getAttribute(OAuth20Constants.OAUTH_REQUEST_OBJECT_ATTR_NAME);
+                will(returnValue(null));
+                one(request).getAttribute(OAuth20Constants.OIDC_REQUEST_OBJECT_ATTR_NAME);
+                will(returnValue(oidcRequest));
                 one(oidcRequest).getProviderName();
                 will(returnValue(providerName));
                 one(oidcEndpointServices).getOidcServerConfig(response, providerName);
                 will(returnValue(oidcServerConfig));
             }
         });
-        OidcEndpointSettings settings = handler.getConfiguredOidcEndpointSettings();
-        assertNull("Should not have found any settings but did.", settings);
     }
 
 }

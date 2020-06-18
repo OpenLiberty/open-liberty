@@ -83,7 +83,7 @@
     </Designate>
 
     <OCD id="com.ibm.ws.security.oidc.endpoint.metatype" name="internal" description="internal use only" >
-        <AD id="name" name="internal" description="internal use only" required="true" type="String" ibm:unique="name" >
+        <AD id="name" name="internal" description="internal use only" required="true" type="String" >
             <Option label="discovery" value="discovery" />
             <Option label="userinfo" value="userinfo" />
             <Option label="endSession" value="endSession" />

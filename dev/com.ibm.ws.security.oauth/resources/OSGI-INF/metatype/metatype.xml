@@ -272,7 +272,7 @@
     </Designate>
 
      <OCD id="com.ibm.ws.security.oauth.endpoint.metatype" name="internal" description="internal use only" >
-         <AD id="name" name="internal" description="internal use only" required="true" type="String" ibm:unique="name" >
+         <AD id="name" name="internal" description="internal use only" required="true" type="String" >
              <Option label="authorize" value="authorize" />
              <Option label="introspect" value="introspect" />
              <Option label="revoke" value="revoke" />
