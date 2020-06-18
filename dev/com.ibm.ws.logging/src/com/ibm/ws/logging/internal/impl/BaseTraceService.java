@@ -364,6 +364,8 @@ public class BaseTraceService implements TrService {
         logConduit = collectorMgrPipelineUtils.getLogConduit();
         traceConduit = collectorMgrPipelineUtils.getTraceConduit();
 
+        Boolean appsWriteJson = trConfig.getAppsWriteJson();
+
         /*
          * Retrieve the format setting for message.log and console
          */
@@ -458,6 +460,7 @@ public class BaseTraceService implements TrService {
         if (messageFormat.toLowerCase().equals(LoggingConstants.JSON_FORMAT)) {
             if (messageLogHandler != null) {
                 messageLogHandler.setFormat(LoggingConstants.JSON_FORMAT);
+                messageLogHandler.setAppsWriteJson(appsWriteJson);
                 //Connect the conduits to the handler as necessary
                 messageLogHandler.modified(filterdMessageSourceList);
                 updateConduitSyncHandlerConnection(messageSourceList, messageLogHandler);
@@ -474,6 +477,7 @@ public class BaseTraceService implements TrService {
         if (consoleFormat.toLowerCase().equals(LoggingConstants.JSON_FORMAT)) {
             if (consoleLogHandler != null) {
                 consoleLogHandler.setFormat(LoggingConstants.JSON_FORMAT);
+                consoleLogHandler.setAppsWriteJson(appsWriteJson);
                 //Connect the conduits to the handler as necessary
                 //if json && messages, trace sourcelist
                 consoleLogHandler.modified(filterdConsoleSourceList);

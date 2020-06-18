@@ -57,6 +57,8 @@ public class JsonConfigTest {
     public static final String SERVER_XML_JSON_SOURCE_MESSAGETRACEACCESS = "jsonSourceMessageTraceAccess.xml";
     public static final String SERVER_XML_JSON_MESSAGE_ACCESS = "jsonMessageSourceAccessLog.xml";
     public static final String SERVER_XML_JSON_CONFIG_FIELD_EXT = "jsonConfigFieldExt.xml";
+    public static final String SERVER_XML_APPS_WRITE_JSON_ENABLED = "appsWriteJsonEnsabled.xml";
+    public static final String SERVER_XML_APPS_WRITE_JSON_DISABLED = "appsWriteJsonDisabled.xml";
 
     ArrayList<String> ALL_SOURCE_LIST = new ArrayList<String>(Arrays.asList("message", "trace", "accesslog", "ffdc"));
 
@@ -246,6 +248,29 @@ public class JsonConfigTest {
         TestUtils.runApp(server, "extension");
         checkLine("\\{.*\"Correct_bool123\".*\\}");
         checkLine("\\{.*\"Correct_string123\".*\\}");
+
+    }
+
+    @Test
+    public void testAppsWriteJson() throws Exception {
+        //update file
+        setServerConfig(SERVER_XML_APPS_WRITE_JSON_ENABLED);
+        //run LogServlet
+        RemoteFile consoleLogFile = server.getConsoleLogFile();
+        runApplication(consoleLogFile);
+        //check output are in application's JSON format
+        checkLine("\\{\"key\":\"value\"\\}");
+        checkLine("\\{\"key\":\"value\",\"loglevel\":\"System.err\"\\}");
+        checkLine("\\{\"key\":\"value\"\\}", consoleLogFile);
+        checkLine("\\{\"key\":\"value\",\"loglevel\":\"System.err\"\\}", consoleLogFile);
+        //update file
+        setServerConfig(SERVER_XML_APPS_WRITE_JSON_DISABLED);
+        //check output are in liberty JSON format
+        runApplication(consoleLogFile);
+        checkLine("\\{.*\"message\":\".*key.*value.*\".*\\}");
+        checkLine("\\{.*\"message\":\".*key.*value.*,.*loglevel.*System.err.*\".*\\}");
+        checkLine("\\{.*\"message\":\".*key.*value.*\".*\\}", consoleLogFile);
+        checkLine("\\{.*\"message\":\".*key.*value.*,.*loglevel.*System.err.*\".*\\}", consoleLogFile);
 
     }
 

@@ -235,4 +235,9 @@ public abstract class JsonLogHandler implements SynchronousHandler, Formatter {
         }
     }
 
+    protected boolean isJSON(String message) {
+        return message != null && message.startsWith("{") && message.endsWith("}");
+
+    }
+
 }

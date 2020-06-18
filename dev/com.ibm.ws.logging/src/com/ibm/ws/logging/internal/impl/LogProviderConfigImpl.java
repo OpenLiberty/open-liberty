@@ -132,6 +132,8 @@ public class LogProviderConfigImpl implements LogProviderConfig {
     /** The wlp user dir name. */
     private final String wlpUsrDir;
 
+    protected volatile boolean appsWriteJson = false;
+
     /**
      * Initial configuration of BaseTraceService from TrServiceConfig.
      *
@@ -171,6 +173,8 @@ public class LogProviderConfigImpl implements LogProviderConfig {
 
         consoleLogLevel = LoggingConfigUtils.getLogLevel(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_CONSOLE_LOGLEVEL),
                                                          consoleLogLevel);
+        appsWriteJson = LoggingConfigUtils.getBooleanValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_APPS_WRITE_JSON),
+                                                           appsWriteJson);
         doCommonInit(config, true);
 
         // If the trace file name is 'java.util.logging', then Logger won't write output via Tr,
@@ -246,6 +250,7 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         jsonAccessLogFields = InitConfgAttribute.JSON_ENABLE_CUSTOM_ACCESS_LOG_FIELDS.getStringValueAndSaveInit(c, jsonAccessLogFields, isInit);
 
         newLogsOnStart = InitConfgAttribute.NEW_LOGS_ON_START.getBooleanValue(c, newLogsOnStart, isInit);
+        appsWriteJson = InitConfgAttribute.APPS_WRITE_JSON.getBooleanValueAndSaveInit(c, appsWriteJson, isInit);
     }
 
     /**
@@ -426,6 +431,13 @@ public class LogProviderConfigImpl implements LogProviderConfig {
     }
 
     /**
+     * @return
+     */
+    public boolean getAppsWriteJson() {
+        return appsWriteJson;
+    }
+
+    /**
      * @return true if we should use the logger -> tr handler
      */
     public boolean loggerUsesTr() {
@@ -473,6 +485,7 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         JSON_FIELD_MAPPINGS("jsonFieldMappings", "com.ibm.ws.logging.json.field.mappings"),
 
         JSON_ENABLE_CUSTOM_ACCESS_LOG_FIELDS("jsonAccessLogFields", "com.ibm.ws.logging.json.access.log.fields"),
+        APPS_WRITE_JSON("appsWriteJson", "com.ibm.ws.logging.apps.write.json"),
         NEW_LOGS_ON_START("newLogsOnStart", FileLogHolder.NEW_LOGS_ON_START_PROPERTY);
 
         final String configKey;
@@ -486,6 +499,15 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         boolean getBooleanValue(Map<String, Object> config, boolean defaultValue, boolean isInit) {
             Object value = config.get(isInit ? propertyKey : configKey);
             return LoggingConfigUtils.getBooleanValue(value, defaultValue);
+        }
+
+        boolean getBooleanValueAndSaveInit(Map<String, Object> config, boolean defaultValue, boolean isInit) {
+            Object value = config.get(isInit ? propertyKey : configKey);
+            Boolean newValue = LoggingConfigUtils.getBooleanValue(value, defaultValue);
+            if (isInit && newValue != value) {
+                config.put(propertyKey, newValue.toString());
+            }
+            return newValue;
         }
 
         int getIntValue(Map<String, Object> config, int defaultValue, boolean isInit) {

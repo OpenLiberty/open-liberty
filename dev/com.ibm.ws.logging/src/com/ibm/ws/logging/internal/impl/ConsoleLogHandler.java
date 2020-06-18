@@ -39,6 +39,8 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
 
     private BaseTraceService baseTraceService = null;
 
+    private boolean appsWriteJson = false;
+
     public ConsoleLogHandler(String serverName, String wlpUserDir, List<String> sourcesList) {
         super(serverName, wlpUserDir, sourcesList);
     }
@@ -70,6 +72,7 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
         if (event instanceof LogTraceData) {
             genData = (LogTraceData) event;
             levelVal = ((LogTraceData) event).getLevelValue();
+
         } else if (event instanceof GenericData) {
             genData = (GenericData) event;
         } else {
@@ -105,7 +108,16 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
 
             //First retrieve a cached JSON  message if possible, if not, format it and store it.
             if (genData.getJsonMessage() == null) {
-                genData.setJsonMessage((String) formatEvent(eventSourceName, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH));
+                //check if it's in JSON format
+
+                String jsonMessage = null;
+                if (appsWriteJson && event instanceof LogTraceData)
+                    jsonMessage = ((LogTraceData) event).getMessage();
+
+                if (!isJSON(jsonMessage))
+                    jsonMessage = (String) formatEvent(eventSourceName, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH);
+
+                genData.setJsonMessage(jsonMessage);
             }
             messageOutput = genData.getJsonMessage();
 
@@ -232,6 +244,15 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
      */
     public void setFormat(String format) {
         this.format = format;
+    }
+
+    /**
+     * Set apps that write json to wrap or unwrap
+     *
+     * @param format the format to set (i.e. wrap, unwrap)
+     */
+    public void setAppsWriteJson(boolean appsWriteJson) {
+        this.appsWriteJson = appsWriteJson;
     }
 
     /**
