@@ -114,6 +114,11 @@
         	id="jsonAccessLogFields" required="false" type="String" default="default" ibm:beta="true">
         	<Option label="%json.access.log.fields.default" value="default"/>
         	<Option label="%json.access.log.fields.logFormat" value="logFormat"/>
+         </AD>
+         
+        <AD name="%apps.write.json" description="%apps.write.json.desc" 
+            ibm:variable="com.ibm.ws.logging.apps.write.json"
+            id="appsWriteJson" required="false" type="Boolean" default="false" ibm:beta="true">
         </AD>
     </OCD>
   

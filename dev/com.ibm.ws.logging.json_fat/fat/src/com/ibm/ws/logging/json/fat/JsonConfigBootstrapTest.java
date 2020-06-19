@@ -44,6 +44,9 @@ public class JsonConfigBootstrapTest {
     @Server("com.ibm.ws.logging.json.JsonConfigServer")
     public static LibertyServer server;
 
+    @Server("com.ibm.ws.logging.json.JsonConfigServer2")
+    public static LibertyServer appsWriteJsonServer;
+
     public static final String APP_NAME = "LogstashApp";
     public static final String SERVER_XML_CLLERROR = "consoleLogLevelError.xml";
     public static final String SERVER_XML_CLLWARNING = "consoleLogLevelWarning.xml";
@@ -72,10 +75,12 @@ public class JsonConfigBootstrapTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        ShrinkHelper.defaultApp(appsWriteJsonServer, APP_NAME, "com.ibm.logs");
         ShrinkHelper.defaultApp(server, APP_NAME, "com.ibm.logs");
 
         // Preserve the original server configuration
         server.saveServerConfiguration();
+        appsWriteJsonServer.saveServerConfiguration();
     }
 
     /*
@@ -281,6 +286,59 @@ public class JsonConfigBootstrapTest {
         }
     }
 
+    /*
+     * Test enabling com.ibm.ws.logging.apps.write.json in bootstrap.properties
+     */
+    @Test
+    public void testEnableAppsWriteJsonInProperties() throws Exception {
+
+        // Get the bootstrap.properties file and store the original content
+        RemoteFile bootstrapFile = server.getServerBootstrapPropertiesFile();
+        FileInputStream in = getFileInputStreamForRemoteFile(bootstrapFile);
+        Properties initialBootstrapProps = loadProperties(in);
+
+        try {
+            // Set appsWriteJson to true in bootstrap.properties
+            setInBootstrapPropertiesFile(bootstrapFile, "com.ibm.ws.logging.apps.write.json", "true");
+            server.startServer();
+
+            RemoteFile consoleLogFile = server.getConsoleLogFile();
+            RemoteFile messageLogFile = server.getDefaultLogFile();
+            runApplication(consoleLogFile);
+
+            //check output are in application's JSON format
+            checkLine("\\{\"key\":\"value\"\\}", messageLogFile);
+            checkLine("\\{\"key\":\"value\",\"loglevel\":\"System.err\"\\}", messageLogFile);
+            checkLine("\\{\"key\":\"value\"\\}", consoleLogFile);
+            checkLine("\\{\"key\":\"value\",\"loglevel\":\"System.err\"\\}", consoleLogFile);
+        } finally {
+            // Restore the initial contents of bootstrap.properties
+            FileOutputStream out = getFileOutputStreamForRemoteFile(bootstrapFile, false);
+            writeProperties(initialBootstrapProps, out);
+        }
+    }
+
+    /*
+     * Test enabling WLP_LOGGING_APPS_WRITE_JSON in environment
+     */
+    @Test
+    public void testEnableAppsWriteJsonEnv() throws Exception {
+
+        appsWriteJsonServer.startServer();
+
+        RemoteFile consoleLogFile = appsWriteJsonServer.getConsoleLogFile();
+        RemoteFile messageLogFile = appsWriteJsonServer.getDefaultLogFile();
+        appsWriteJsonServer.setMarkToEndOfLog(consoleLogFile);
+        TestUtils.runApp(appsWriteJsonServer, "logServlet");
+        //check output are in application's JSON format
+        checkLine(appsWriteJsonServer, "\\{\"key\":\"value\"\\}", messageLogFile);
+        checkLine(appsWriteJsonServer, "\\{\"key\":\"value\",\"loglevel\":\"System.err\"\\}", messageLogFile);
+        checkLine(appsWriteJsonServer, "\\{\"key\":\"value\"\\}", consoleLogFile);
+        checkLine(appsWriteJsonServer, "\\{\"key\":\"value\",\"loglevel\":\"System.err\"\\}", consoleLogFile);
+        appsWriteJsonServer.stopServer();
+
+    }
+
     private void checkMessageLogUpdate(boolean isJson, ArrayList<String> sourceList, String traceSpec) throws Exception {
         if (isJson) {
             if (sourceList.contains("trace") && traceSpec.equals("finest")) {
@@ -419,6 +477,16 @@ public class JsonConfigBootstrapTest {
     }
 
     private void checkLine(String message) throws Exception {
+        String line = server.waitForStringInLog(message, server.getDefaultLogFile());
+        assertNotNull("Cannot find" + message + "from JsonConfigTest.log", line);
+    }
+
+    private void checkLine(LibertyServer server, String message, RemoteFile remoteFile) throws Exception {
+        String line = server.waitForStringInLog(message, remoteFile);
+        assertNotNull("Cannot find" + message + "from messages.log", line);
+    }
+
+    private void checkLine(LibertyServer server, String message) throws Exception {
         String line = server.waitForStringInLog(message, server.getDefaultLogFile());
         assertNotNull("Cannot find" + message + "from JsonConfigTest.log", line);
     }

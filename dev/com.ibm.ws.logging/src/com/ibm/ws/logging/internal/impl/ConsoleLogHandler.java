@@ -70,6 +70,7 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
         if (event instanceof LogTraceData) {
             genData = (LogTraceData) event;
             levelVal = ((LogTraceData) event).getLevelValue();
+
         } else if (event instanceof GenericData) {
             genData = (GenericData) event;
         } else {
@@ -105,7 +106,16 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
 
             //First retrieve a cached JSON  message if possible, if not, format it and store it.
             if (genData.getJsonMessage() == null) {
-                genData.setJsonMessage((String) formatEvent(eventSourceName, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH));
+                //check if it's in JSON format
+
+                String jsonMessage = null;
+                if (appsWriteJson && event instanceof LogTraceData)
+                    jsonMessage = ((LogTraceData) event).getMessage();
+
+                if (!isJSON(jsonMessage))
+                    jsonMessage = (String) formatEvent(eventSourceName, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH);
+
+                genData.setJsonMessage(jsonMessage);
             }
             messageOutput = genData.getJsonMessage();
 
