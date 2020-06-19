@@ -62,13 +62,19 @@ kafka.library.not.present.CWMRX1006E.useraction=Zabalte soubor JAR klient\u016f 
 
 # A Kafka incoming connector for the {0} channel cannot be created. The error is {1}
 kafka.create.incoming.error.CWMRX1007E=CWMRX1007E: P\u0159\u00edchoz\u00ed konektor Kafka pro kan\u00e1l {0} nelze vytvo\u0159it. Chyba je {1}
-kafka.create.incoming.error.CWMRX1007E.explanation=Do\u0161lo k chyb\u011b, kter\u00e1 se vyskytla, kdy\u017e byl konektor Kafka nastaven pro p\u0159\u00edchoz\u00ed reaktivn\u00ed kan\u00e1l syst\u00e9mu zpr\u00e1v, kter\u00fd br\u00e1n\u00ed norm\u00e1ln\u00ed operaci syst\u00e9mu MicroProfile Reactive Messaging.
-kafka.create.incoming.error.CWMRX1007E.useraction=Prozkoumejte chybovou zpr\u00e1vu, protokol serveru zpr\u00e1v serveru a protokoly FFDC a identifikujte p\u0159\u00ed\u010dinu probl\u00e9mu.
+kafka.create.incoming.error.CWMRX1007E.explanation=Do\u0161lo k chyb\u011b, kter\u00e1 se vyskytla, kdy\u017e byl konektor Kafka nastaven pro p\u0159\u00edchoz\u00ed reaktivn\u00ed kan\u00e1l syst\u00e9mu zpr\u00e1v, kter\u00fd br\u00e1n\u00ed norm\u00e1ln\u00ed operaci syst\u00e9mu MicroProfile Reactive Messaging. M\u016f\u017ee to b\u00fdt zp\u016fsobeno probl\u00e9mem s konfigurac\u00ed konektoru nebo probl\u00e9mem s \u0159e\u0161en\u00edm n\u00e1zvu hostitele zprost\u0159edkovatele Kafka.
+kafka.create.incoming.error.CWMRX1007E.useraction=Prozkoumejte chybovou zpr\u00e1vu, soubor messages.log na serveru a protokoly FFDC a identifikujte probl\u00e9m.
 
 # A Kafka outgoing connector for the {0} channel cannot be created. The error is {1}
 kafka.create.outgoing.error.CWMRX1008E=CWMRX1008E: Odchoz\u00ed konektor Kafka pro kan\u00e1l {0} nelze vytvo\u0159it. Chyba je {1}
-kafka.create.outgoing.error.CWMRX1008E.explanation=Do\u0161lo k chyb\u011b, kter\u00e1 se vyskytla, kdy\u017e byl konektor Kafka nastaven pro odchoz\u00ed reaktivn\u00ed kan\u00e1l syst\u00e9mu zpr\u00e1v, kter\u00fd br\u00e1n\u00ed norm\u00e1ln\u00ed operaci syst\u00e9mu MicroProfile Reactive Messaging.
-kafka.create.outgoing.error.CWMRX1008E.useraction=Prozkoumejte chybovou zpr\u00e1vu, protokol serveru zpr\u00e1v serveru a protokoly FFDC a identifikujte p\u0159\u00ed\u010dinu probl\u00e9mu.
+kafka.create.outgoing.error.CWMRX1008E.explanation=Do\u0161lo k chyb\u011b, kter\u00e1 se vyskytla, kdy\u017e byl konektor Kafka nastaven pro odchoz\u00ed reaktivn\u00ed kan\u00e1l syst\u00e9mu zpr\u00e1v, kter\u00fd br\u00e1n\u00ed norm\u00e1ln\u00ed operaci syst\u00e9mu MicroProfile Reactive Messaging. M\u016f\u017ee to b\u00fdt zp\u016fsobeno probl\u00e9mem s konfigurac\u00ed konektoru nebo probl\u00e9mem s \u0159e\u0161en\u00edm n\u00e1zvu hostitele zprost\u0159edkovatele Kafka.
+kafka.create.outgoing.error.CWMRX1008E.useraction=Prozkoumejte chybovou zpr\u00e1vu, soubor messages.log na serveru a protokoly FFDC a identifikujte probl\u00e9m.
+
+# {0} = channel name, {1} = error message
+kafka.create.incoming.retry.CWMRX1009W=CWMRX1009W: P\u0159\u00edchoz\u00ed konektor Kafka pro kan\u00e1l {0} nelze vytvo\u0159it, tato operace se opakuje. Chyba je {1}
+kafka.create.incoming.retry.CWMRX1009W.explanation=Do\u0161lo k chyb\u011b, kter\u00e1 se vyskytla, kdy\u017e byl konektor Kafka nastaven pro p\u0159\u00edchoz\u00ed reaktivn\u00ed kan\u00e1l syst\u00e9mu zpr\u00e1v. M\u016f\u017ee to b\u00fdt zp\u016fsobeno probl\u00e9mem s konfigurac\u00ed konektoru nebo probl\u00e9mem s \u0159e\u0161en\u00edm n\u00e1zvu hostitele zprost\u0159edkovatele Kafka.
+kafka.create.incoming.retry.CWMRX1009W.useraction=Prozkoumejte chybovou zpr\u00e1vu, soubor messages.log na serveru a protokoly FFDC a zjist\u011bte, zda byl probl\u00e9m p\u0159echodn\u00fd a byl vy\u0159e\u0161en opakov\u00e1n\u00edm nastaven\u00ed konektoru.
+
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message

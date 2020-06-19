@@ -29,9 +29,11 @@ OIDC_CLIENT_AUTHORIZE_ERR.useraction=Re\u00eencerca\u0163i cererea cu atribute d
 #do not translate enforceHTTPS
 
 # used_by_client_project and clients project IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN THE OTHER BUNDLE!
-OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: Clientul OpenID Connect necesit\u0103 SSL (HTTPS) dar URL-ul furnizorului OpenID Connect este HTTP: [{0}].  Actualiza\u0163i configura\u0163ia astfel \u00eenc\u00e2t atributul [enforceHTTPS] s\u0103 se potriveasc\u0103 cu schema URL \u0163int\u0103. 
+# social also uses this and it does not have the enforceHTTPS attribute.
+#do not translate enforceHTTPS
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: Clientul OpenID Connect necesit\u0103 SSL (HTTPS) dar URL-ul furnizorului OpenID Connect este HTTP: [{0}]. Actualiza\u0163i configura\u0163ia pentru a utiliza un URL HTTPS sau utiliza\u0163i caracteristica OpenID Connect Client \u015fi seta\u0163i enforceHTTPS la false. 
 OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.explanation=Clientul OpenID Connect (partea intermediar\u0103 de \u00eencredere sau serverul de resurse) necesit\u0103 SSL (HTTPS) dar protocolul de URL furnizor de conectare OpenID (OP) specificat \u00een configura\u0163ia OpenID nu este HTTPS.
-OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Face\u0163i una dintre urm\u0103toarele: 1) Asigura\u0163i-v\u0103 c\u0103 furnizorul de conectare OpenID suport\u0103 SSL. 2) Dac\u0103 furnizorul OpenID Connector nu suport\u0103 SSL, seta\u0163i enforceHTTPS din configura\u0163ia clientului OpenID Connect la false.
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Face\u0163i una dintre urm\u0103toarele: Mai \u00eent\u00e2i, asigura\u0163i-v\u0103 c\u0103 furnizorul OpenID Connect suport\u0103 SSL. Dac\u0103 furnizorul OpenID Connector nu suport\u0103 SSL, utiliza\u0163i caracteristica OpenID Connect Client \u015fi seta\u0163i enforceHTTPS la false \u00een configura\u0163ia caracteristicii OpenID Connect Client.
 
 # unused, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: Starea curent\u0103 [{0}] pentru clientul OpenID Connect [{2}] \u015fi parametrul de stare [{1}] din r\u0103spunsul de la furnizorul OpenID Connect nu se potrivesc.  Aceast\u0103 condi\u0163ie nu este permis\u0103.

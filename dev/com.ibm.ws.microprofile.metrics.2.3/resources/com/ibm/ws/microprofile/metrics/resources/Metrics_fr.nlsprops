@@ -137,4 +137,4 @@ REST.request.description=Nombre d'appels et temps de r\u00e9ponse total de cette
 # A Metrics API error has occurred: {0}
 temporary.CWMMC9999E=CWMMC9999E: Une erreur de l'API M\u00e9triques s'est produite : {0}
 temporary.CWMMC9999E.explanation=Une erreur au niveau de l'API M\u00e9triques emp\u00eache le fonctionnement normal.
-temporary.CWMMC9999E.useraction=Consultez les journaux FFDC et le texte de l'exception pour identifier le probl\u00e8me.
+temporary.CWMMC9999E.useraction=Consultez les journaux de l'outil de diagnostic de premier niveau (FFDC) et le texte de l'exception pour identifier le probl\u00e8me.

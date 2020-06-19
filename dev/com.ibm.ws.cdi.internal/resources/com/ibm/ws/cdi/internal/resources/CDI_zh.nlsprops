@@ -70,5 +70,5 @@ implicit.bean.scanning.disabled.CWOWB1009W.explanation=\u672a\u9488\u5bf9 CDI \u
 implicit.bean.scanning.disabled.CWOWB1009W.useraction=\u786e\u4fdd\u4f7f\u7528 CDI \u7684\u6bcf\u4e2a\u5f52\u6863\u5177\u6709 beans.xml \u6587\u4ef6\uff0c\u6216\u5728 server.xml \u6587\u4ef6\u4e2d\u91cd\u65b0\u542f\u7528\u9690\u5f0f bean\u3002
 
 spi.extension.failed.to.construct.CWOWB10010E=CWOWB10010E: \u65e0\u6cd5\u901a\u8fc7 SPI \u521b\u5efa CDI \u6269\u5c55\u3002
-spi.extension.failed.to.construct.CWOWB10010E.explanation=CDI \u65e0\u6cd5\u8c03\u7528\u901a\u8fc7 WebSphereCDIExtensionMetaData \u5b9e\u73b0\u7684 getExtensions() \u65b9\u6cd5\u6ce8\u518c\u7684\u6269\u5c55\u7c7b {0} \u7684\u6784\u9020\u51fd\u6570\uff0c\u56e0\u4e3a\u53d1\u751f\u4e86\u5f02\u5e38 {1}\u3002
+spi.extension.failed.to.construct.CWOWB10010E.explanation=CDI \u65e0\u6cd5\u8c03\u7528\u901a\u8fc7 CDIExtensionMetaData \u5b9e\u73b0\u7684 getExtensions() \u65b9\u6cd5\u6ce8\u518c\u7684\u6269\u5c55\u7c7b {0} \u7684\u6784\u9020\u51fd\u6570\uff0c\u56e0\u4e3a\u53d1\u751f\u4e86\u5f02\u5e38 {1}\u3002
 spi.extension.failed.to.construct.CWOWB10010E.useraction=\u8bf7\u4fee\u6b63\u963b\u6b62\u6269\u5c55\u5b9e\u4f8b\u5316\u7684\u9519\u8bef\u3002

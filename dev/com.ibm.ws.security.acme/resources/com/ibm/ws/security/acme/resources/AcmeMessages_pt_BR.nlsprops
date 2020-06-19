@@ -20,7 +20,7 @@
 #-----  ACME messages
 
 # The ACME referred to in these messages stands for Automatic Certificate Management Environment.
-# The term "certificate authority" is in reference to SSL/TLS certificate providers.
+# The term "certificate authority" is in reference to SSL and TLS requests certificate providers.
 # The URI parameter in these messages is for the ACME certificate authority, such as https://sampleCAProvider.org/directory
 
 ###############################################################################
@@ -32,6 +32,7 @@ REST_FORBIDDEN=Proibido
 REST_INVALID_CONTENT_TYPE=O cabe\u00e7alho do tipo de conte\u00fado da solicita\u00e7\u00e3o n\u00e3o era 'application/json'.
 REST_MISSING_OPERATION=A opera\u00e7\u00e3o n\u00e3o foi especificada para a solicita\u00e7\u00e3o.
 REST_NO_ACME_SERVICE=Um servi\u00e7o AcmeProvider n\u00e3o foi registrado.
+REST_TOO_MANY_REQUESTS=O usu\u00e1rio enviou muitas solicita\u00e7\u00f5es em um determinado per\u00edodo de tempo. O tempo restante at\u00e9 a pr\u00f3xima solicita\u00e7\u00e3o ser permitida \u00e9 de {0}.
 ###############################################################################
 
 FILE_NOT_READABLE=o arquivo n\u00e3o \u00e9 leg\u00edvel
@@ -64,7 +65,7 @@ CWPKI2006I.useraction=Revise os termos de servi\u00e7o fornecidos .
 
 CWPKI2007I=CWPKI2007I: O servi\u00e7o ACME instalou um certificado com o n\u00famero de s\u00e9rie {0} que \u00e9 assinado pela autoridade de certifica\u00e7\u00e3o ACME no URI {1}. A data de expira\u00e7\u00e3o \u00e9 {2}.
 CWPKI2007I.explanation=O servi\u00e7o ACME recuperou e instalou com sucesso um certificado da autoridade de certifica\u00e7\u00e3o configurada.
-CWPKI2007I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+CWPKI2007I.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
 
 CWPKI2008E=CWPKI2008E: O URI do diret\u00f3rio da autoridade de certifica\u00e7\u00e3o ACME deve ser um URI v\u00e1lido. O URI recebido estava nulo ou vazio. O URI recebido foi ''{0}''.
 CWPKI2008E.explanation=O URI do diret\u00f3rio da autoridade de certifica\u00e7\u00e3o n\u00e3o foi configurado corretamente.
@@ -112,7 +113,7 @@ CWPKI2018E.useraction=Revise a mensagem de erro para obter detalhes sobre a falh
 
 CWPKI2019I=CWPKI2019I: A URL da conta fornecida pela autoridade de certifica\u00e7\u00e3o ACME no URI {0} \u00e9 {1}.
 CWPKI2019I.explanation=A conta foi criada com \u00eaxito.
-CWPKI2019I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+CWPKI2019I.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
 
 CWPKI2020E=CWPKI2020E: O servi\u00e7o ACME n\u00e3o p\u00f4de ler o arquivo de chave de dom\u00ednio do dom\u00ednio de autoridade de certifica\u00e7\u00e3o ACME. O local do arquivo \u00e9 {0}. O erro \u00e9 ''{1}''.
 CWPKI2020E.explanation=O arquivo de chaves de dom\u00ednio para a conta de autoridade de certifica\u00e7\u00e3o n\u00e3o p\u00f4de ser aberto. Isso pode ocorrer se as permiss\u00f5es de arquivo estiverem incorretas ou se o arquivo n\u00e3o existir.
@@ -130,7 +131,7 @@ CWPKI2023E=CWPKI2023E: O servi\u00e7o ACME n\u00e3o p\u00f4de gravar no arquivo 
 CWPKI2023E.explanation=As chaves de conta n\u00e3o puderam ser armazenadas no arquivo de chaves de conta. Isso pode ocorrer se as permiss\u00f5es de arquivo estiverem incorretas ou se o arquivo n\u00e3o existir.
 CWPKI2023E.useraction=Revise a mensagem de erro para obter detalhes sobre a falha. Verifique se o local do arquivo est\u00e1 correto e se o servidor tem permiss\u00f5es de grava\u00e7\u00e3o de arquivo.
 
-CWPKI2024E=CWPKI2024E: O servi\u00e7o ACME falhou ao revogar o certificado solicitado para a autoridade de certifica\u00e7\u00e3o ACME no URI {0}. O certificado \u00e9 o n\u00famero de s\u00e9rie {1}. O erro \u00e9 ''{2}''.
+CWPKI2024E=CWPKI2024E: O servi\u00e7o ACME falhou ao revogar o certificado solicitado para a autoridade de certifica\u00e7\u00e3o ACME no URI {0}. O certificado \u00e9 o n\u00famero de s\u00e9rie {1}. O erro \u00e9 ''{2}''. Isso pode ocorrer se o URI do diret\u00f3rio tiver sido mudado e, se for caso, poder\u00e1 ser ignorado.
 CWPKI2024E.explanation=Uma solicita\u00e7\u00e3o de revoga\u00e7\u00e3o de certificado falhou. O certificado n\u00e3o pode ser revogado e ainda pode estar em uso.
 CWPKI2024E.useraction=Revise a mensagem de erro para obter detalhes sobre a falha.
 
@@ -188,7 +189,7 @@ CWPKI2037E.useraction=Forne\u00e7a pelo menos um dom\u00ednio n\u00e3o nulo e n\
 
 CWPKI2038I=CWPKI2038I: O servi\u00e7o ACME revogou o certificado com o n\u00famero de s\u00e9rie {0}. O certificado n\u00e3o \u00e9 mais v\u00e1lido.
 CWPKI2038I.explanation=O servi\u00e7o ACME revogou o certificado e o certificado n\u00e3o \u00e9 mais v\u00e1lido.
-CWPKI2038I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+CWPKI2038I.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
 
 CWPKI2039E=CWPKI2039E: O nome distinto (DN) ''{0}'' definido por subjectDN cont\u00e9m um valor de nome distinto relativo (RDN) cn ''{1}'' que n\u00e3o corresponde a nenhum dos dom\u00ednios definidos.
 CWPKI2039E.explanation=Caso seja inclu\u00eddo no DN, o RDN de valor cn deve corresponder a um dos dom\u00ednios definidos.
@@ -215,7 +216,7 @@ CWPKI2044E.explanation=O servi\u00e7o ACME espera que todos os certificados da c
 CWPKI2044E.useraction=Assegure-se de que todos os certificados na cadeia de certificados sejam certificados X.509 e tente novamente.
 
 CWPKI2045W=CWPKI2045W: O certificado com n\u00famero de s\u00e9rie {0} que \u00e9 assinado pela autoridade de certifica\u00e7\u00e3o ACME no URI {1} n\u00e3o \u00e9 v\u00e1lido at\u00e9 {2}.
-CWPKI2045W.explanation=O per\u00edodo v\u00e1lido no certificado est\u00e1 no futuro. As solicita\u00e7\u00f5es SSL/LS falham at\u00e9 que a data e hora atuais estejam dentro do intervalo especificado pelo per\u00edodo v\u00e1lido no certificado.
+CWPKI2045W.explanation=O per\u00edodo v\u00e1lido no certificado est\u00e1 no futuro. As solicita\u00e7\u00f5es SSL e TLS falham at\u00e9 que a data e hora atuais estejam dentro do intervalo que \u00e9 especificado pelo per\u00edodo v\u00e1lido no certificado.
 CWPKI2045W.useraction=Atualize o hor\u00e1rio local no servidor se a hor\u00e1rio estiver incorreto.
 
 CWPKI2046E=CWPKI2046E: O motivo da revoga\u00e7\u00e3o {0} do cerificado \u00e9 inv\u00e1lido. Os motivos de revoga\u00e7\u00e3o suportados s\u00e3o: n\u00e3o especificado, key_compromise, ca_compromise, afiliation_changed, suplantado, cessa\u00e7\u00e3o_de_opera\u00e7\u00f5es, certificate_hold, remove_from_crl, privilege_withdrawn e aa_compromise.
@@ -228,13 +229,13 @@ CWPKI2047E.useraction=Assegure-se de que o par de chaves da conta existente \u00
 
 CWPKI2048I=CWPKI2048I: A renova\u00e7\u00e3o do par de chaves da conta foi bem-sucedida. O antigo par de chaves da conta foi copiado para o arquivo {0}.
 CWPKI2048I.explanation=O par de chaves da conta anterior n\u00e3o est\u00e1 mais associado \u00e0 conta e foi copiado em um arquivo. O novo par de chaves da conta substituiu o arquivo antigo do par de chaves da conta.
-CWPKI2048I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+CWPKI2048I.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
 
 CWPKI2049E=CWPKI2049E: O par de chaves da conta n\u00e3o foi renovado ou restaurado no arquivo do par de chaves existente. Substitua manualmente o arquivo do par de chaves da conta {0}  pelo arquivo de par de chaves da {1}.
 CWPKI2049E.explanation=O par de chaves n\u00e3o foi renovado ou restaurado no arquivo antigo do par de chaves.
 CWPKI2049E.useraction=Substitua manualmente os arquivos do par de chaves da conta, conforme indicado na mensagem.
 
-CWPKI2050E=CWPKI2050E: O arquivo do par de chaves da conta existente n\u00e3o foi copiado durante a renova\u00e7\u00e3o do par de chaves da conta. O erro \u00e9 ''{0}''.
+CWPKI2050E=CWPKI2050E: N\u00e3o foi feito backup do arquivo do par de chaves da conta existente durante a renova\u00e7\u00e3o do par de chaves da conta. O erro \u00e9 ''{0}''.
 CWPKI2050E.explanation=N\u00e3o foi poss\u00edvel fazer backup do arquivo do par de chaves da conta existente. 
 CWPKI2050E.useraction=Verifique se o diret\u00f3rio que cont\u00e9m o arquivo de par de chaves da conta existente \u00e9 grav\u00e1vel. Revise a mensagem de erro para obter detalhes sobre a falha.
 
@@ -244,10 +245,10 @@ CWPKI2051W.useraction=Para evitar essa mensagem de aviso, configure a propriedad
 
 CWPKI2052I=CWPKI2052I: O certificado com n\u00famero de s\u00e9rie {0} expira em {1}. O servi\u00e7o ACME solicitar\u00e1 um novo certificado da autoridade de certifica\u00e7\u00e3o ACME no URI {2}.
 CWPKI2052I.explanation=O servi\u00e7o ACME solicita um novo certificado com base na propriedade renewBeforeExpiration na configura\u00e7\u00e3o do servidor e na data de expira\u00e7\u00e3o do certificado. Se a propriedade renewBeforeExpiration n\u00e3o estiver configurada, o valor padr\u00e3o ser\u00e1 usado.
-CWPKI2052I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+CWPKI2052I.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
 
 CWPKI2053W=CWPKI2053W: O certificado com n\u00famero de s\u00e9rie {0} expirou em {1}. O servi\u00e7o ACME n\u00e3o est\u00e1 configurado para solicitar automaticamente um novo certificado.
-CWPKI2053W.explanation=As solicita\u00e7\u00f5es de TLS/SSL n\u00e3o podem ser conclu\u00eddas porque o certificado expirou.
+CWPKI2053W.explanation=As solicita\u00e7\u00f5es SSL e TLS n\u00e3o podem ser conclu\u00eddas porque o certificado expirou.
 CWPKI2053W.useraction=Atualize a propriedade renewBeforeExpiration na configura\u00e7\u00e3o do servidor para um valor maior que 0 para solicitar automaticamente um novo certificado ou use a interface REST do ACME para solicitar um novo certificado.
 
 CWPKI2054W=CWPKI2054W: A propriedade renewBeforeExpiration foi configurada como {0}, que \u00e9 igual ou maior que o per\u00edodo de validade do certificado com o n\u00famero de s\u00e9rie {1}. O per\u00edodo de validade do certificado \u00e9 {2}. A propriedade renewBeforeExpiration foi reconfigurada para {3}.
@@ -262,8 +263,8 @@ CWPKI2056W=CWPKI2056W: O per\u00edodo de validade do certificado com o n\u00fame
 CWPKI2056W.explanation=O per\u00edodo de validade \u00e9 menor que o tempo m\u00ednimo de renova\u00e7\u00e3o. O certificado expira antes que um novo certificado seja solicitado.
 CWPKI2056W.useraction=Para evitar a expira\u00e7\u00e3o do certificado, solicite um certificado com um per\u00edodo de validade mais longo. Se a autoridade de certifica\u00e7\u00e3o suportar um per\u00edodo de validade customizado, configure a propriedade validFor na configura\u00e7\u00e3o do servidor.
 
-CWPKI2057E=CWPKI2057E: A verifica\u00e7\u00e3o do status de revoga\u00e7\u00e3o de certificado n\u00e3o criou um CertPathValidator para validar o certificado.. O erro \u00e9 ''{0}}''.
-CWPKI2057E.explanation=O verificador de revoga\u00e7\u00e3o de certificado precisa construir um CertPathValidator para verificar o status de revoga\u00e7\u00e3o de OCSP e CRLs.
+CWPKI2057E=CWPKI2057E: A verifica\u00e7\u00e3o do status de revoga\u00e7\u00e3o de certificado n\u00e3o criou uma ferramenta de valida\u00e7\u00e3o de caminho do certificado Java para validar o certificado. O erro \u00e9 ''{0}''.
+CWPKI2057E.explanation=O verificador de revoga\u00e7\u00e3o de certificado precisa criar uma ferramenta de valida\u00e7\u00e3o de caminho de certificado Java para verificar o status de revoga\u00e7\u00e3o de OCSP e CRLs.
 CWPKI2057E.useraction=Revise a mensagem e o erro de status para obter detalhes.
 
 CWPKI2058W=CWPKI2058W: A verifica\u00e7\u00e3o do status de revoga\u00e7\u00e3o de certificado ignorou falhas soft. A verifica\u00e7\u00e3o de revoga\u00e7\u00e3o pode estar incompleta. As falhas s\u00e3o: ''{0}''.
@@ -272,7 +273,7 @@ CWPKI2058W.useraction=Se esta mensagem for encontrada de forma consistente, a ca
 
 CWPKI2059I=CWPKI2059I: A verifica\u00e7\u00e3o do status de revoga\u00e7\u00e3o de certificado constatou que o certificado com o n\u00famero de s\u00e9rie {0} foi revogado.
 CWPKI2059I.explanation=O servi\u00e7o ACME concluiu que o certificado foi marcado como revogado por um respondente CRL ou OSCP. 
-CWPKI2059I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+CWPKI2059I.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
 
 CWPKI2060E=CWPKI2060E: A URL do OCSP do certificado com o n\u00famero de s\u00e9rie {0} n\u00e3o foi recuperada. O erro \u00e9: ''{1}''.
 CWPKI2060E.explanation=A URL do OCSP n\u00e3o foi recuperada.
@@ -285,3 +286,43 @@ CWPKI2061E.useraction=Assegure-se de que o certificado seja um certificado X.509
 CWPKI2062E=CWPKI2062E: A URL do respondente OCSP {0} definida na configura\u00e7\u00e3o do servidor n\u00e3o \u00e9 um URI v\u00e1lido. . Se definido, deve ser um URI v\u00e1lido para substituir a URL do respondente OSCP contida no certificado.
 CWPKI2062E.explanation=A verifica\u00e7\u00e3o de revoga\u00e7\u00e3o de certificado requer uma URL do respondente OCSP v\u00e1lida.
 CWPKI2062E.useraction=Forne\u00e7a uma URL do respondente OCSP v\u00e1lida na configura\u00e7\u00e3o do servidor.
+
+CWPKI2063E=CWPKI2063E: A autoridade de certifica\u00e7\u00e3o do ACME no URI {0} URI atualizou seus termos de servi\u00e7o e agora exige que o usu\u00e1rio concorde com os novos termos de servi\u00e7o no URI a seguir antes de processar outras solicita\u00e7\u00f5es: {1}
+CWPKI2063E.explanation=A autoridade de certifica\u00e7\u00e3o atualizou seus termos de servi\u00e7o e requer intera\u00e7\u00e3o com o usu\u00e1rio.
+CWPKI2063E.useraction=Revise os termos de servi\u00e7o fornecidos .
+
+CWPKI2064I=CWPKI2064I: O servi\u00e7o do ACME recuperou o certificado com o n\u00famero de s\u00e9rie {0} do URI {1} em {2} segundos.
+CWPKI2064I.explanation=O servi\u00e7o do ACME solicitou com \u00eaxito um certificado.
+CWPKI2064I.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+CWPKI2065W=CWPKI2065W: O servi\u00e7o do ACME falhou ao renovar automaticamente o certificado com o n\u00famero de s\u00e9rie {0}. A solicita\u00e7\u00e3o est\u00e1 planejada para tentar novamente em {1}. O certificado expira em {2}. O erro de solicita\u00e7\u00e3o de renova\u00e7\u00e3o \u00e9 ''{3}''.
+CWPKI2065W.explanation=O servi\u00e7o do ACME tentou renovar um certificado, mas encontrou um erro. O servi\u00e7o do ACME continua a solicitar um novo certificado at\u00e9 que um novo certificado seja emitido.
+CWPKI2065W.useraction=Revise a mensagem de erro para obter detalhes sobre a falha.
+
+CWPKI2066E=CWPKI2066E: O servi\u00e7o do ACME falhou ao renovar automaticamente o certificado com o n\u00famero de s\u00e9rie {0}. O certificado \u00e9 revogado. A solicita\u00e7\u00e3o est\u00e1 planejada para tentar novamente em {1}. O erro de solicita\u00e7\u00e3o de renova\u00e7\u00e3o \u00e9 ''{2}''.
+CWPKI2066E.explanation=O servi\u00e7o do ACME tentou renovar um certificado, mas encontrou um erro. O servi\u00e7o do ACME continua a solicitar um novo certificado at\u00e9 que um novo certificado seja emitido. As solicita\u00e7\u00f5es SSL e TLS falham at\u00e9 que uma nova solicita\u00e7\u00e3o de certificado seja bem-sucedida.
+CWPKI2066E.useraction=Revise a mensagem de erro para obter detalhes sobre a falha. 
+
+CWPKI2067I=CWPKI2067I: O certificado com o n\u00famero de s\u00e9rie {0} foi revogado. O servi\u00e7o do ACME solicita um novo certificado da autoridade de certifica\u00e7\u00e3o do ACME no URI {1}.
+CWPKI2067I.explanation=Quando o servi\u00e7o do ACME detecta que o certificado foi revogado, ele solicita automaticamente um novo certificado.
+CWPKI2067I.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+CWPKI2068W=CWPKI2068W: A verifica\u00e7\u00e3o autom\u00e1tica de certificado do servi\u00e7o do ACME falhou ao verificar se o certificado com o n\u00famero de s\u00e9rie {0} est\u00e1 expirando ou foi revogado. A verifica\u00e7\u00e3o est\u00e1 planejada para tentar novamente em {1}. O erro \u00e9 ''{2}''.
+CWPKI2068W.explanation=O servi\u00e7o do ACME come\u00e7ou a verificar se o certificado est\u00e1 expirando ou se foi revogado, mas falhou.
+CWPKI2068W.useraction=Revise a mensagem de erro para obter detalhes sobre a falha. Revise o status do certificado usando a interface REST do ACME. Se for necess\u00e1rio renovar o certificado, use a interface REST do ACME para solicitar um novo certificado.
+
+CWPKI2069I=CWPKI2069I: A verifica\u00e7\u00e3o autom\u00e1tica de certificado do servi\u00e7o do ACME est\u00e1 desativada. Os certificados expirados ou revogados n\u00e3o s\u00e3o renovados automaticamente.
+CWPKI2069I.explanation=O servi\u00e7o do ACME n\u00e3o verifica certificados expirados ou revogados em um planejamento automatizado. Se o certificado expirar ou for revogado, as solicita\u00e7\u00f5es SSL e TLS n\u00e3o poder\u00e3o ser conclu\u00eddas, a menos que o servidor seja reiniciado ou a interface REST seja usada para renovar o certificado.
+CWPKI2069I.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria. Para ativar a verifica\u00e7\u00e3o autom\u00e1tica de certificado, atualize a propriedade certCheckerSchedule na configura\u00e7\u00e3o do servidor para um valor maior que 0.
+
+CWPKI2070W=CWPKI2070W: A propriedade certCheckerSchedule foi configurada para {0}, que \u00e9 menor que o tempo de planejamento m\u00ednimo. A propriedade certCheckerSchedule foi reconfigurada para {1}.
+CWPKI2070W.explanation=O valor da propriedade certCheckerSchedule estava abaixo da dura\u00e7\u00e3o m\u00ednima para fazer a verifica\u00e7\u00e3o de certificados expirados ou revogados e foi reconfigurado para o tempo m\u00ednimo de planejamento.
+CWPKI2070W.useraction=Para evitar essa mensagem de aviso, configure a propriedade certCheckerSchedule na configura\u00e7\u00e3o do servidor para uma dura\u00e7\u00e3o maior que o tempo de planejamento m\u00ednimo. Para usar a configura\u00e7\u00e3o padr\u00e3o, remova a propriedade certCheckerSchedule da configura\u00e7\u00e3o do servidor.
+
+CWPKI2071W=CWPKI2071W: A propriedade certCheckerErrorSchedule foi configurada para {0}, que \u00e9 menor que o tempo de planejamento m\u00ednimo. A propriedade certCheckerErrorSchedule foi reconfigurada para {1}.
+CWPKI2071W.explanation=O valor da propriedade certCheckerErrorSchedule estava abaixo da dura\u00e7\u00e3o m\u00ednima para fazer a verifica\u00e7\u00e3o de certificados expirados ou revogados e foi reconfigurado para o tempo de planejamento m\u00ednimo.
+CWPKI2071W.useraction=Para evitar essa mensagem de aviso, configure a propriedade certCheckerErrorSchedule na configura\u00e7\u00e3o do servidor para uma dura\u00e7\u00e3o maior que o tempo m\u00ednimo de planejamento. Para usar a configura\u00e7\u00e3o padr\u00e3o, remova a propriedade certCheckerErrorSchedule da configura\u00e7\u00e3o do servidor.
+
+CWPKI2072W=CWPKI2072W: O servi\u00e7o do ACME n\u00e3o p\u00f4de ler ou gravar o arquivo do ACME hist\u00f3rico em {0}. O erro \u00e9 ''{1}''.
+CWPKI2072W.explanation=O servi\u00e7o do ACME n\u00e3o p\u00f4de acessar o arquivo do ACME hist\u00f3rico.
+CWPKI2072W.useraction=Verifique se o diret\u00f3rio do ACME hist\u00f3rico possui as permiss\u00f5es de leitura e grava\u00e7\u00e3o.

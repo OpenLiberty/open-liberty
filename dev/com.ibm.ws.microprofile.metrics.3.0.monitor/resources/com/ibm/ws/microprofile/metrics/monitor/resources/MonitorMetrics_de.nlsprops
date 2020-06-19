@@ -18,10 +18,10 @@
 #-----------------------------------------------------------------------------------------------------------------------------
 # Messages used by MonitorMetrics Impl -  range is 2000-2199
 #-----------------------------------------------------------------------------------------------------------------------------
-FEATURE_REGISTERED=CWPMI2003I: Die \u00dcberwachungsmetriken k\u00f6nnen \u00fcber das Feature mpMetrics abgerufen werden.
-FEATURE_REGISTERED.explanation=Die Features monitor-1.0 und mpMetrics-3.0 sind aktiviert und \u00dcberwachungsmetriken k\u00f6nnen \u00fcber das Feature mpMetrics abgerufen werden.
-FEATURE_REGISTERED.useraction=Es ist keine Benutzeraktion erforderlich.
+FEATURE_REGISTERED=CWPMI2003I: Monitoring metrics can be retrieved through mpMetrics.
+FEATURE_REGISTERED.explanation=The monitor-1.0 and mpMetrics-3.0 features are enabled and monitoring metrics can be retrieved through mpMetrics.
+FEATURE_REGISTERED.useraction=No user action is required.
 
-FEATURE_UNREGISTERED=CWPMI2004I: Die Registrierung aller \u00dcberwachungsmetriken wurde in mpMetrics aufgehoben.
-FEATURE_UNREGISTERED.explanation=Das Feature monitor-1.0, das Feature mpMetrics-3.0 oder beide Features wurden aus dem Server entfernt und die Registrierung aller \u00dcberwachungsmetriken wurde in mpMetrics aufgehoben.
-FEATURE_UNREGISTERED.useraction=Es ist keine Benutzeraktion erforderlich.
+FEATURE_UNREGISTERED=CWPMI2004I: All monitoring metrics were unregistered from mpMetrics.
+FEATURE_UNREGISTERED.explanation=The monitor-1.0 feature, the mpMetrics-3.0 feature, or both features were removed from the server and all monitoring metrics were unregistered from mpMetrics.
+FEATURE_UNREGISTERED.useraction=No user action is required.

@@ -62,13 +62,19 @@ kafka.library.not.present.CWMRX1006E.useraction=\u00cempacheta\u0163i fi\u015fie
 
 # A Kafka incoming connector for the {0} channel cannot be created. The error is {1}
 kafka.create.incoming.error.CWMRX1007E=CWMRX1007E: Nu poate fi creat un conector de intrare Kafka pentru canalul {0}. Eroarea este {1}
-kafka.create.incoming.error.CWMRX1007E.explanation=O eroare care a survenit atunci c\u00e2nd conectorul Kafka a fost setat pentru un canal de mesagerie reactiv\u0103 de intrare \u00eempiedic\u0103 func\u0163ionarea normal\u0103 a MicroProfile Reactive Messaging.
-kafka.create.incoming.error.CWMRX1007E.useraction=Examina\u0163i mesajul de eroare, fi\u015fierul message.log al serverului \u015fi istoricele FFDC pentru a identifica problema.
+kafka.create.incoming.error.CWMRX1007E.explanation=O eroare care a survenit atunci c\u00e2nd conectorul Kafka a fost setat pentru un canal de mesagerie reactiv\u0103 de intrare \u00eempiedic\u0103 func\u0163ionarea normal\u0103 a MicroProfile Reactive Messaging. Aceasta poate fi cauzat\u0103 de o problem\u0103 cu configura\u0163ia de conector sau de o problem\u0103 la rezolvarea numelui de gazd\u0103 al brokerului Kafka.
+kafka.create.incoming.error.CWMRX1007E.useraction=Examina\u0163i mesajul de eroare, fi\u015fierul message.log de pe server \u015fi istoricele FFDC pentru a identifica problema.
 
 # A Kafka outgoing connector for the {0} channel cannot be created. The error is {1}
-kafka.create.outgoing.error.CWMRX1008E=CWMRX1008E: Nu poate fi creat un conector de ie\u0163ire Kafka pentru canalul {0}. Eroarea este {1}
-kafka.create.outgoing.error.CWMRX1008E.explanation=O eroare care a survenit atunci c\u00e2nd conectorul Kafka a fost setat pentru un canal de mesagerie reactiv\u0103 de ie\u015fire \u00eempiedic\u0103 func\u0163ionarea normal\u0103 a MicroProfile Reactive Messaging.
-kafka.create.outgoing.error.CWMRX1008E.useraction=Examina\u0163i mesajul de eroare, fi\u015fierul message.log al serverului \u015fi istoricele FFDC pentru a identifica problema.
+kafka.create.outgoing.error.CWMRX1008E=CWMRX1008E: Nu poate fi creat un conector de ie\u015fire Kafka pentru canalul {0}. Eroarea este {1}
+kafka.create.outgoing.error.CWMRX1008E.explanation=O eroare care a survenit atunci c\u00e2nd conectorul Kafka a fost setat pentru un canal de mesagerie reactiv\u0103 de ie\u015fire \u00eempiedic\u0103 func\u0163ionarea normal\u0103 a MicroProfile Reactive Messaging. Aceasta poate fi cauzat\u0103 de o problem\u0103 cu configura\u0163ia de conector sau de o problem\u0103 la rezolvarea numelui de gazd\u0103 al brokerului Kafka.
+kafka.create.outgoing.error.CWMRX1008E.useraction=Examina\u0163i mesajul de eroare, fi\u015fierul message.log de pe server \u015fi istoricele FFDC pentru a identifica problema.
+
+# {0} = channel name, {1} = error message
+kafka.create.incoming.retry.CWMRX1009W=CWMRX1009W: Nu poate fi creat un conector de intrare Kafka pentru canalul {0}, dar aceast\u0103 opera\u0163ie este re\u00eencercat\u0103. Eroarea este {1}
+kafka.create.incoming.retry.CWMRX1009W.explanation=A survenit o eroare atunci c\u00e2nd conectorul Kafka a fost setat pentru un canal de mesagerie reactiv\u0103 de intrare. Aceasta poate fi cauzat\u0103 de o problem\u0103 cu configura\u0163ia de conector sau de o problem\u0103 la rezolvarea numelui de gazd\u0103 al brokerului Kafka.
+kafka.create.incoming.retry.CWMRX1009W.useraction=Examina\u0163i mesajul de eroare, fi\u015fierul message.log de pe server \u015fi istoricele FFDC pentru a verifica dac\u0103 problema a fost tranzitorie sau a fost rezolvat\u0103 prin re\u00eencercarea set\u0103rii conectorului.
+
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message
