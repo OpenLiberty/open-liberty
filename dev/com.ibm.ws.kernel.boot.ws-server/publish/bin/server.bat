@@ -654,8 +654,12 @@ goto:eof
 @REM Set the current working directory for an existing server.
 @REM
 :serverWorkingDirectory
-  if not exist "%SERVER_OUTPUT_DIR%" mkdir "%SERVER_OUTPUT_DIR%"
-  cd /d "%SERVER_OUTPUT_DIR%"
+  if not defined SERVER_WORKING_DIR (
+     set SERVER_WORKING_DIR=!SERVER_OUTPUT_DIR!
+  )
+
+  if not exist "%SERVER_WORKING_DIR%" mkdir "%SERVER_WORKING_DIR%"
+  cd /d "%SERVER_WORKING_DIR%"
 goto:eof
 
 @REM

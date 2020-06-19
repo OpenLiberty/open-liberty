@@ -770,9 +770,12 @@ readNativeFile() {
 ## serverWorkingDirectory: Change the working directory to ${SERVER_OUTPUT_DIR}
 serverWorkingDirectory()
 {
+  if [ -z "${SERVER_WORKING_DIR}" ]; then
+    SERVER_WORKING_DIR=$SERVER_OUTPUT_DIR
+  fi
   # Change the working directory to ${SERVER_OUTPUT_DIR}.
-  mkdirs "${SERVER_OUTPUT_DIR}"
-  cd "${SERVER_OUTPUT_DIR}"
+  mkdirs "${SERVER_WORKING_DIR}"
+  cd "${SERVER_WORKING_DIR}"
 }
 
 ## set the umask value to remove all permissions for the Other category
