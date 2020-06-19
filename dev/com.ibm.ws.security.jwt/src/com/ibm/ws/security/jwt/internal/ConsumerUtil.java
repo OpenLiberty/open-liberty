@@ -53,6 +53,7 @@ import com.ibm.ws.ssl.KeyStoreService;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 public class ConsumerUtil {
+
     private static final TraceComponent tc = Tr.register(ConsumerUtil.class);
 
     private AtomicServiceReference<KeyStoreService> keyStoreService = null;
@@ -119,9 +120,9 @@ public class ConsumerUtil {
     }
 
     /**
-     * Throws an exception if JWTs are not allowed to be reused (as configured by
-     * the provided config option) AND a token with a matching "jti" and "issuer"
-     * claim already exists in the cache.
+     * Throws an exception if JWTs are not allowed to be reused (as configured
+     * by the provided config option) AND a token with a matching "jti" and
+     * "issuer" claim already exists in the cache.
      */
     void checkForReusedJwt(JwtTokenConsumerImpl jwt, JwtConsumerConfig config) throws InvalidTokenException {
         // Only throw an error if tokens are not allowed to be reused
@@ -143,8 +144,8 @@ public class ConsumerUtil {
     }
 
     /**
-     * Get the appropriate signing key based on the signature algorithm specified in
-     * the config.
+     * Get the appropriate signing key based on the signature algorithm
+     * specified in the config.
      */
     Key getSigningKey(JwtConsumerConfig config, JwtContext jwtContext) throws KeyException {
         Key signingKey = null;
@@ -292,7 +293,8 @@ public class ConsumerUtil {
         try {
             signingKey = getJwksKey(config, jwtContext);
         } catch (Exception e) {
-            String msg = Tr.formatMessage(tc, "JWT_ERROR_GETTING_JWK_KEY", new Object[] { config.getJwkEndpointUrl(), e.getLocalizedMessage() });
+            String msg = Tr.formatMessage(tc, "JWT_ERROR_GETTING_JWK_KEY",
+                    new Object[] { config.getJwkEndpointUrl(), e.getLocalizedMessage() });
             throw new KeyException(msg, e);
         }
         return signingKey;
@@ -317,7 +319,15 @@ public class ConsumerUtil {
                     null, getConfiguredSignatureAlgorithm(config));
         }
         Key signingKey = jwkRetriever.getPublicKeyFromJwk(kid, null,
-                config.getUseSystemPropertiesForHttpClientConnections()); // only kid or x5t will work but not both
+                config.getUseSystemPropertiesForHttpClientConnections()); // only
+                                                                          // kid
+                                                                          // or
+                                                                          // x5t
+                                                                          // will
+                                                                          // work
+                                                                          // but
+                                                                          // not
+                                                                          // both
         return signingKey;
     }
 
@@ -350,17 +360,19 @@ public class ConsumerUtil {
         try {
             signingKey = getPublicKey(trustedAlias, trustStoreRef, getConfiguredSignatureAlgorithm(config));
         } catch (Exception e) {
-            String msg = Tr.formatMessage(tc, "JWT_ERROR_GETTING_PUBLIC_KEY", new Object[] { trustedAlias, trustStoreRef, e.getLocalizedMessage() });
+            String msg = Tr.formatMessage(tc, "JWT_ERROR_GETTING_PUBLIC_KEY",
+                    new Object[] { trustedAlias, trustStoreRef, e.getLocalizedMessage() });
             throw new KeyException(msg, e);
         }
         return signingKey;
     }
 
     /**
-     * Creates a Key object from the certificate stored in the trust store and alias
-     * provided.
+     * Creates a Key object from the certificate stored in the trust store and
+     * alias provided.
      */
-    Key getPublicKey(String trustedAlias, String trustStoreRef, String signatureAlgorithm) throws KeyStoreServiceException, KeyException {
+    Key getPublicKey(String trustedAlias, String trustStoreRef, String signatureAlgorithm)
+            throws KeyStoreServiceException, KeyException {
         Key signingKey = getPublicKeyFromKeystore(trustedAlias, trustStoreRef, signatureAlgorithm);
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "Trusted alias: " + trustedAlias + ", Truststore: " + trustStoreRef);
@@ -372,7 +384,8 @@ public class ConsumerUtil {
         return signingKey;
     }
 
-    Key getPublicKeyFromKeystore(String trustedAlias, String trustStoreRef, String signatureAlgorithm) throws KeyException {
+    Key getPublicKeyFromKeystore(String trustedAlias, String trustStoreRef, String signatureAlgorithm)
+            throws KeyException {
         try {
             if (keyStoreService == null) {
                 String msg = Tr.formatMessage(tc, "JWT_TRUSTSTORE_SERVICE_NOT_AVAILABLE");
@@ -380,7 +393,8 @@ public class ConsumerUtil {
             }
             return JwtUtils.getPublicKey(trustedAlias, trustStoreRef, keyStoreService.getService());
         } catch (Exception e) {
-            String msg = Tr.formatMessage(tc, "JWT_NULL_SIGNING_KEY_WITH_ERROR", new Object[] { signatureAlgorithm, Constants.SIGNING_KEY_X509, e.getLocalizedMessage() });
+            String msg = Tr.formatMessage(tc, "JWT_NULL_SIGNING_KEY_WITH_ERROR",
+                    new Object[] { signatureAlgorithm, Constants.SIGNING_KEY_X509, e.getLocalizedMessage() });
             throw new KeyException(msg, e);
         }
     }
@@ -462,8 +476,8 @@ public class ConsumerUtil {
     }
 
     /**
-     * Throws an exception if the provided key is null but the config specifies a
-     * signature algorithm other than "none".
+     * Throws an exception if the provided key is null but the config specifies
+     * a signature algorithm other than "none".
      */
     void validateSignatureAlgorithmWithKey(JwtConsumerConfig config, Key key) throws InvalidClaimException {
         String signatureAlgorithm = getConfiguredSignatureAlgorithm(config);
@@ -506,8 +520,8 @@ public class ConsumerUtil {
     }
 
     /**
-     * Verifies that at least one of the values specified in audiences is contained
-     * in the allowedAudiences list.
+     * Verifies that at least one of the values specified in audiences is
+     * contained in the allowedAudiences list.
      */
     boolean validateAudience(List<String> allowedAudiences, List<String> audiences) {
         boolean valid = false;
@@ -532,9 +546,10 @@ public class ConsumerUtil {
     }
 
     /**
-     * Validates the the {@value Claims#ISSUED_AT} and {@value Claims#EXPIRATION}
-     * claims are present and properly formed. Also verifies that the
-     * {@value Claims#ISSUED_AT} time is after the {@value Claims#EXPIRATION} time.
+     * Validates the the {@value Claims#ISSUED_AT} and
+     * {@value Claims#EXPIRATION} claims are present and properly formed. Also
+     * verifies that the {@value Claims#ISSUED_AT} time is after the
+     * {@value Claims#EXPIRATION} time.
      */
     void validateIatAndExp(JwtClaims jwtClaims, long clockSkewInMilliseconds) throws InvalidClaimException {
         if (jwtClaims == null) {
@@ -606,8 +621,8 @@ public class ConsumerUtil {
     }
 
     /**
-     * Validates the the {@value Claims#NOT_BEFORE} claim is present and properly
-     * formed. Also
+     * Validates the the {@value Claims#NOT_BEFORE} claim is present and
+     * properly formed. Also
      */
     void validateNbf(JwtClaims jwtClaims, long clockSkewInMilliseconds) throws InvalidClaimException {
         if (jwtClaims == null) {

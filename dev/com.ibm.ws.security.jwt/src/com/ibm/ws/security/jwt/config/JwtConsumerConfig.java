@@ -17,38 +17,40 @@ import com.ibm.ws.security.common.jwk.impl.JWKSet;
 
 public interface JwtConsumerConfig {
 
-    String getId();
+	String getId();
 
-    String getIssuer();
+	String getIssuer();
 
-    @Sensitive
-    String getSharedKey();
+	@Sensitive
+	String getSharedKey();
 
-    List<String> getAudiences();
+	List<String> getAudiences();
 
-    String getSignatureAlgorithm();
+	String getSignatureAlgorithm();
 
-    String getTrustStoreRef();
+	String getTrustStoreRef();
 
-    String getTrustedAlias();
+	String getTrustedAlias();
 
-    long getClockSkew();
+	long getClockSkew();
 
-    boolean getJwkEnabled();
+	boolean getJwkEnabled();
 
-    String getJwkEndpointUrl();
+	String getJwkEndpointUrl();
 
-    ConsumerUtils getConsumerUtils();
+	ConsumerUtils getConsumerUtils();
 
-    boolean isValidationRequired();
+	boolean isValidationRequired();
 
-    boolean isHostNameVerificationEnabled();
+	boolean isHostNameVerificationEnabled();
 
-    String getSslRef();
+	String getSslRef();
 
-    JWKSet getJwkSet(); // one JWKSet per one config
+	JWKSet getJwkSet(); // one JWKSet per one config
 
-    boolean getTokenReuse();
+	boolean getTokenReuse();
 
-    boolean getUseSystemPropertiesForHttpClientConnections();
+	boolean getUseSystemPropertiesForHttpClientConnections();
+
+	List<String> getAMRClaim();
 }
