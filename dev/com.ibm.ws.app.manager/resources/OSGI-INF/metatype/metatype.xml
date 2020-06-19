@@ -13,6 +13,20 @@
                    xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0" 
                    localization="OSGI-INF/l10n/metatype">
 
+    <OCD id="com.ibm.ws.app.manager.internal.lifecycle.ApplicationStartBarrierImpl" description="internal use only" name="internal">
+        <AD name="internal" description="internal use only"
+            id="applicationPrereqConfig" required="true" type="String" cardinality="1000000"
+            ibm:type="pid" ibm:service="com.ibm.wsspi.application.lifecycle.ApplicationPrereq" default="*" ibm:final="true"/>
+        <AD id="ApplicationPrereq.cardinality.minimum" 
+            name="internal" 
+            description="internal use only" 
+            required="true" 
+            type="String"  
+            default="${count(applicationPrereqConfig)}"/>
+    </OCD>   
+    <Designate pid="com.ibm.ws.app.manager.internal.lifecycle.ApplicationStartBarrierImpl">
+        <Object ocdref="com.ibm.ws.app.manager.internal.lifecycle.ApplicationStartBarrierImpl"/>
+    </Designate>
 
 	<OCD description="%appmgmt.desc" name="%appmgmt.name" id="com.ibm.ws.app.management" ibm:alias="applicationManager">
 		<AD id="autoExpand" name="%appmgmt.autoExpand" description="%appmgmt.autoExpand.desc" required="false" type="Boolean" default="false"/>
