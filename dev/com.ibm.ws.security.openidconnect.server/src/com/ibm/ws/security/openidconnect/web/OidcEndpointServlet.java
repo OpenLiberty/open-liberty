@@ -23,7 +23,6 @@ import org.osgi.framework.ServiceReference;
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.oauth20.web.OAuth20EndpointServlet;
 import com.ibm.ws.security.openidconnect.server.TraceConstants;
 
@@ -110,17 +109,8 @@ public class OidcEndpointServlet extends OAuth20EndpointServlet {
         oidcEndpointServices.handleOidcRequest(request, response, servletContext);
     }
 
-    @FFDCIgnore(ServletException.class)
-    OidcSupportedHttpMethodHandler getOidcSupportedHttpMethodHandler(HttpServletRequest request, HttpServletResponse response) {
-        OidcSupportedHttpMethodHandler handler = null;
-        try {
-            handler = new OidcSupportedHttpMethodHandler(request, response, getOidcEndpointServices());
-        } catch (ServletException e) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Caught exception setting OidcEndpointServices for supported HTTP method handler: " + e);
-            }
-        }
-        return handler;
+    OidcSupportedHttpMethodHandler getOidcSupportedHttpMethodHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+        return new OidcSupportedHttpMethodHandler(request, response, getOidcEndpointServices());
     }
 
     private OidcEndpointServices getOidcEndpointServices() throws ServletException {
@@ -136,7 +126,7 @@ public class OidcEndpointServlet extends OAuth20EndpointServlet {
         return oidcEndpointServices;
     }
 
-    private boolean isValidHttpMethodForRequest(HttpServletRequest request, HttpServletResponse response, HttpMethod requestMethod) throws IOException {
+    private boolean isValidHttpMethodForRequest(HttpServletRequest request, HttpServletResponse response, HttpMethod requestMethod) throws IOException, ServletException {
         OidcSupportedHttpMethodHandler optionsRequestHandler = getOidcSupportedHttpMethodHandler(request, response);
         if (!optionsRequestHandler.isValidHttpMethodForRequest(requestMethod)) {
             optionsRequestHandler.sendUnsupportedMethodResponse();

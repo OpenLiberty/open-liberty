@@ -183,7 +183,7 @@ public class OAuthSupportedHttpMethodHandler extends SupportedHttpMethodHandler 
         OAuth20Provider provider = ProvidersService.getOAuth20Provider(oauth20ProviderName);
         if (provider == null) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Failed to find a OAuth provider with the ID [{0}]", oauth20ProviderName);
+                Tr.debug(tc, "Did not find an OAuth provider matching the name [{0}]", oauth20ProviderName);
             }
         }
         return provider;
@@ -212,7 +212,6 @@ public class OAuthSupportedHttpMethodHandler extends SupportedHttpMethodHandler 
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Failed to find OAuth20Request information from the inbound request");
             }
-            return null;
         }
         return oauth20Request;
     }

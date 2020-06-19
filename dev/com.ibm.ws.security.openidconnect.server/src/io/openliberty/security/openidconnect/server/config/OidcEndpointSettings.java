@@ -21,6 +21,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.oauth20.web.OAuth20Request.EndpointType;
 
+@SuppressWarnings("restriction")
 public class OidcEndpointSettings {
 
     private static final TraceComponent tc = Tr.register(OidcEndpointSettings.class);

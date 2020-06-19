@@ -128,7 +128,8 @@ public class OidcSupportedHttpMethodHandler extends OAuthSupportedHttpMethodHand
             return null;
         }
         try {
-            return (OidcServerConfigImpl) endpointServices.getOidcServerConfig(response, oidcProviderName);
+            boolean sendErrorIfProviderNotFound = false;
+            return (OidcServerConfigImpl) endpointServices.getOidcServerConfig(response, oidcProviderName, sendErrorIfProviderNotFound);
         } catch (Exception e) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Caught an exception attempting to get OIDC server configuration for provider [" + oidcProviderName + "]: " + e);

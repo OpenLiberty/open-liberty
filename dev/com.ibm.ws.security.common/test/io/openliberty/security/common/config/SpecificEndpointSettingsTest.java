@@ -113,11 +113,13 @@ public class SpecificEndpointSettingsTest extends CommonTestClass {
         supportedMethods = settings.getSupportedHttpMethods();
         assertTrue("Should not have recorded any supported HTTP methods, but did. Supported methods were: " + supportedMethods, supportedMethods.isEmpty());
 
-        String[] inputSupportedMethods = new String[] { "one", "two", "three" };
+        String[] inputSupportedMethods = new String[] { "one", "get", "two", "post", "three" };
         settings.setSupportedHttpMethods(inputSupportedMethods);
 
         supportedMethods = settings.getSupportedHttpMethods();
-        assertTrue("Should not have recorded any supported HTTP methods, but did. Supported methods were: " + supportedMethods, supportedMethods.isEmpty());
+        assertEquals("Set of supported HTTP methods did not expected number of inputs. Supported methods were: " + supportedMethods, 2, supportedMethods.size());
+        assertTrue("Supported HTTP methods for endpoint [" + endpointName + "] is missing expected value [" + HttpMethod.GET + "]. Recorded methods were: " + supportedMethods, supportedMethods.contains(HttpMethod.GET));
+        assertTrue("Supported HTTP methods for endpoint [" + endpointName + "] is missing expected value [" + HttpMethod.POST + "]. Recorded methods were: " + supportedMethods, supportedMethods.contains(HttpMethod.POST));
     }
 
 }

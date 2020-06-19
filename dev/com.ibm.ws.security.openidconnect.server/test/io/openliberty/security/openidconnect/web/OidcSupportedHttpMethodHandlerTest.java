@@ -197,7 +197,7 @@ public class OidcSupportedHttpMethodHandlerTest extends CommonTestClass {
         handler = new OidcSupportedHttpMethodHandler(request, response, oidcEndpointServices);
 
         OidcEndpointSettings settings = handler.getConfiguredOidcEndpointSettings();
-        assertNull("Should not have found any settings but did.", settings);
+        assertNull("Should not have found any settings, but did.", settings);
     }
 
     @Test
@@ -207,13 +207,15 @@ public class OidcSupportedHttpMethodHandlerTest extends CommonTestClass {
                 one(request).getAttribute(OAuth20Constants.OAUTH_REQUEST_OBJECT_ATTR_NAME);
                 will(returnValue(null));
                 one(request).getAttribute(OAuth20Constants.OIDC_REQUEST_OBJECT_ATTR_NAME);
-                will(returnValue(null));
+                will(returnValue(oidcRequest));
+                one(oidcRequest).getProviderName();
+                will(returnValue(providerName));
             }
         });
         handler = new OidcSupportedHttpMethodHandler(request, response, null);
 
         OidcEndpointSettings settings = handler.getConfiguredOidcEndpointSettings();
-        assertNull("Should not have found any settings but did.", settings);
+        assertNull("Should not have found any settings, but did.", settings);
     }
 
     @Test
@@ -231,13 +233,13 @@ public class OidcSupportedHttpMethodHandlerTest extends CommonTestClass {
         handler = new OidcSupportedHttpMethodHandler(request, response, oidcEndpointServices);
 
         OidcEndpointSettings settings = handler.getConfiguredOidcEndpointSettings();
-        assertNull("Should not have found any settings but did.", settings);
+        assertNull("Should not have found any settings, but did.", settings);
     }
 
     @Test
     public void test_getConfiguredOidcEndpointSettings_noConfiguredSettings() throws IOException {
         OidcEndpointSettings settings = handler.getConfiguredOidcEndpointSettings();
-        assertNull("Should not have found any settings but did.", settings);
+        assertNull("Should not have found any settings, but did.", settings);
     }
 
     private void setDefaultConstructorExpectations() throws IOException {
@@ -249,7 +251,7 @@ public class OidcSupportedHttpMethodHandlerTest extends CommonTestClass {
                 will(returnValue(oidcRequest));
                 one(oidcRequest).getProviderName();
                 will(returnValue(providerName));
-                one(oidcEndpointServices).getOidcServerConfig(response, providerName);
+                one(oidcEndpointServices).getOidcServerConfig(response, providerName, false);
                 will(returnValue(oidcServerConfig));
             }
         });
