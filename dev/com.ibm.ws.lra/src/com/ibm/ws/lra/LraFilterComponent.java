@@ -16,6 +16,7 @@ import java.util.Set;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -36,6 +37,9 @@ public class LraFilterComponent implements JaxRsProviderRegister {
 
     private static final TraceComponent tc = Tr.register(LraFilterComponent.class);
 
+    @Reference
+    private LraConfig config;
+
     /**
      * DS method to activate this component.
      * Best practice: this should be a protected method, not public or private
@@ -48,6 +52,19 @@ public class LraFilterComponent implements JaxRsProviderRegister {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "LraFilterComponent activated with a service", properties);
         }
+        /*
+         *
+         * try {
+         * URI coord = new URI("http://localhost:8081/lra-coordinator");
+         * NarayanaLRAClient.setDefaultCoordinatorEndpoint(coord);
+         * } catch (URISyntaxException e) {
+         * throw new RuntimeException("oops", e);
+         * }
+         * Tr.error(tc, "We have set a default");
+         */
+        Tr.error(tc, "Host from config is " + config.getHost());
+        Tr.error(tc, "Port from config is " + config.getPort());
+
     }
 
     /**

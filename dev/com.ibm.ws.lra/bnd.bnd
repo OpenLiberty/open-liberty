@@ -21,7 +21,10 @@ javac.target: 1.8
 #    configuration-policy:=ignore;\
 #    properties:="service.vendor=IBM"
     
--dsannotations: com.ibm.ws.lra.LraFilterComponent
+-dsannotations: com.ibm.ws.lra.LraFilterComponent, com.ibm.ws.lra.LraConfig
+
+Include-Resource: \
+  OSGI-INF=resources/OSGI-INF
     
 -buildpath: \
 	com.ibm.ws.org.jboss.narayana.rts;version=latest,\
@@ -33,7 +36,5 @@ javac.target: 1.8
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
 	com.ibm.websphere.javaee.jaxrs.2.0;version=latest, \
 	com.ibm.ws.jaxrs.2.0.common;version=latest
-	
-	
 	
 	
