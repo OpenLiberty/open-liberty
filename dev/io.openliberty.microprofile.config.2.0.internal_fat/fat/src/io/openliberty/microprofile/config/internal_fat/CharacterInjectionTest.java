@@ -21,6 +21,7 @@ import com.ibm.websphere.simplicity.PropertiesAsset;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions.Version;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -40,7 +41,7 @@ public class CharacterInjectionTest extends FATServletClient {
     public static final String SERVER_NAME = "Config20Server";
 
     @ClassRule
-    public static RepeatTests r = RepeatConfigActions.repeatConfig20(SERVER_NAME);
+    public static RepeatTests r = RepeatConfigActions.repeat(SERVER_NAME, Version.CONFIG20_EE8);
 
     @Server(SERVER_NAME)
     @TestServlet(servlet = CharacterInjectionServlet.class, contextRoot = APP_NAME)

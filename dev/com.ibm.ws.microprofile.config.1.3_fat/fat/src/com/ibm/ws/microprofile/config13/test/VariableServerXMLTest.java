@@ -30,6 +30,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions.Version;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
 import com.ibm.ws.microprofile.config13.variableServerXML.web.VariableServerXMLServlet;
 
@@ -63,7 +64,7 @@ public class VariableServerXMLTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatConfigActions.repeatConfig13("ServerXMLVariableServer");
+    public static RepeatTests r = RepeatConfigActions.repeat("ServerXMLVariableServer", Version.LATEST, Version.CONFIG13_EE8);
 
     @BeforeClass
     public static void setUp() throws Exception {
