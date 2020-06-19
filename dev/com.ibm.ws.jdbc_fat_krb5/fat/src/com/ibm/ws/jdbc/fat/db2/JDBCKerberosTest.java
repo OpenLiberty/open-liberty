@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.Network;
@@ -53,19 +54,11 @@ public class JDBCKerberosTest extends FATServletClient {
     @Server("com.ibm.ws.jdbc.fat.krb5")
     public static LibertyServer server;
 
+    @ClassRule
+    public static KerberosPlatformRule skipRule = new KerberosPlatformRule();
+
     @BeforeClass
     public static void setUp() throws Exception {
-        // Kerberos is only supported on certain operating systems
-        // Skip the tests if we are not on one of the supported OSes
-        String os = System.getProperty("os.name", "UNKNOWN").toUpperCase();
-        if (!os.contains("LINUX") && !os.contains("MAC OS")) {
-            if (FATRunner.FAT_TEST_LOCALRUN) {
-                throw new RuntimeException("Running on an unsupported os: " + os);
-            } else {
-                Log.info(c, "setUp", "Skipping test because of unsupported os: " + os);
-            }
-        }
-
         // Allows local tests to switch between using a local docker client, to using a remote docker client.
         ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
 
