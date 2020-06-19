@@ -8,22 +8,11 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.fat.grpc;
+package com.ibm.testapp.g3store.restConsumer.api;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
-@RunWith(Suite.class)
-@SuiteClasses({
-                HelloWorldTest.class,
-                ServiceSupportTests.class,
-                StoreServicesTests.class
-
-})
-
-public class FATSuite {
-
-    private static final Class<?> c = FATSuite.class;
+/**
+ *
+ */
+public class ConsumerMPRestClient {
 
 }

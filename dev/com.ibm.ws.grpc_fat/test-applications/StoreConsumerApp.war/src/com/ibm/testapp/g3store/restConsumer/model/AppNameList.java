@@ -8,22 +8,28 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.fat.grpc;
+package com.ibm.testapp.g3store.restConsumer.model;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import java.util.List;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                HelloWorldTest.class,
-                ServiceSupportTests.class,
-                StoreServicesTests.class
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-})
+/**
+ * @author anupag
+ *
+ */
+@Schema(name = "AppNameList", description = "POJO that represents the app names.")
+public class AppNameList {
 
-public class FATSuite {
+    @Schema(required = true)
+    private List<String> appNames;
 
-    private static final Class<?> c = FATSuite.class;
+    public List<String> getAppNames() {
+        return appNames;
+    }
+
+    public void setAppNames(List<String> appNames) {
+        this.appNames = appNames;
+    }
 
 }

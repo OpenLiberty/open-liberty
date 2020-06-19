@@ -8,22 +8,34 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.fat.grpc;
+package com.ibm.testapp.g3store.exception;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+/**
+ * @author anupag
+ *
+ */
+public class AlreadyExistException extends Exception {
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                HelloWorldTest.class,
-                ServiceSupportTests.class,
-                StoreServicesTests.class
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
 
-})
+    /**
+     * Constructor for this exception
+     * 
+     * @param msg
+     */
+    public AlreadyExistException(String msg) {
+        super(msg);
+    }
 
-public class FATSuite {
+    public AlreadyExistException(String msg, Throwable t) {
+        super(msg, t);
+    }
 
-    private static final Class<?> c = FATSuite.class;
+    public AlreadyExistException() {
+        super();
+    }
 
 }

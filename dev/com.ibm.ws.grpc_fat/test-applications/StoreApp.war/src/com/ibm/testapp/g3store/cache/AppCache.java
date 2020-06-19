@@ -8,22 +8,24 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.fat.grpc;
+package com.ibm.testapp.g3store.cache;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import java.util.Set;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                HelloWorldTest.class,
-                ServiceSupportTests.class,
-                StoreServicesTests.class
+import com.ibm.test.g3store.grpc.RetailApp;
 
-})
+/**
+ * @author anupag
+ *
+ */
+public interface AppCache {
 
-public class FATSuite {
+    public RetailApp getEntryValue(String key);
 
-    private static final Class<?> c = FATSuite.class;
+    public boolean setEntryValue(String key, RetailApp value, int expiry); // -1 for not expire
+
+    public Object removeEntryValue(String key);
+
+    public Set<String> getAllKeys();
 
 }

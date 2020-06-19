@@ -1,0 +1,58 @@
+<!-- Copyright (c) 2020 IBM Corporation and others. All rights reserved. 
+	This program and the accompanying materials are made available under the 
+	terms of the Eclipse Public License v1.0 which accompanies this distribution, 
+	and is available at http://www.eclipse.org/legal/epl-v10.html Contributors: 
+	IBM Corporation - initial API and implementation -->
+<server>
+	<featureManager>
+		<feature>grpc-1.0</feature>
+		<feature>grpcClient-1.0</feature>
+		<feature>componenttest-1.0</feature>
+		<feature>microProfile-3.2</feature>
+	</featureManager>
+
+	<include location="../fatTestPorts.xml" />
+
+	 <httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="${bvt.prop.member_1.http}"
+                  httpsPort="${bvt.prop.member_1.https}"/>
+
+	<javaPermission className="java.security.AllPermission"
+		name="*" actions="*" />
+
+
+	<!-- Default SSL configuration enables trust for default certificates from 
+		the Java runtime -->
+	<ssl id="defaultSSLConfig" trustDefaultCerts="true" />
+
+	<basicRegistry id="basic" realm="consumerRealmBasicReg">
+		<user name="mlee" password="hello" /> <!--user name="${env.BASIC_REGISTRY_USERNAME}" -->
+		<user name="rkumar" password="bug" />
+		<group name="students"> <!-- group name="${env.ROLE_NAME_ADMINISTRATOR}" -->
+			<member name="mlee" />
+			<member name="rkumar" />
+		</group>
+	</basicRegistry>
+
+	<application id="StoreConsumerApp"
+		location="StoreConsumerApp.war" name="StoreConsumerApp" type="war">
+		<application-bnd>
+			<security-role name="Administrator">
+				<!--group name="${env.ROLE_NAME_ADMINISTRATOR}" access-id="group:${env.OIDC_REALM}/${env.ROLE_NAME_ADMINISTRATOR}"/ -->
+				<group name="Administrator"
+					access-id="group:consumerRealmBasicReg/Administrator" />
+			</security-role>
+			<security-role name="students">
+				<!--group name="${env.ROLE_NAME_EDITOR}" access-id="group:${env.OIDC_REALM}/${env.ROLE_NAME_EDITOR}"/ -->
+				<group name="students"
+					access-id="group:consumerRealmBasicReg/students" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<logging
+		traceSpecification="*=info=enabled:io.openliberty.grpc*=all:com.ibm.testapp.g3store*=all"
+		maxFileSize="40" maxFiles="20" traceFormat="BASIC" />
+
+</server>

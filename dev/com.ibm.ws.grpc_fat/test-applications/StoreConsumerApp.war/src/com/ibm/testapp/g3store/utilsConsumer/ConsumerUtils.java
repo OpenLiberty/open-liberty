@@ -8,22 +8,21 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.fat.grpc;
+package com.ibm.testapp.g3store.utilsConsumer;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+/**
+ * @author anupag
+ *
+ */
+public class ConsumerUtils {
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                HelloWorldTest.class,
-                ServiceSupportTests.class,
-                StoreServicesTests.class
+    public static boolean isBlank(String str) {
+        boolean isBlank = false;
 
-})
-
-public class FATSuite {
-
-    private static final Class<?> c = FATSuite.class;
+        if (str == null || str.trim().length() == 0) {
+            isBlank = true;
+        }
+        return isBlank;
+    }
 
 }
