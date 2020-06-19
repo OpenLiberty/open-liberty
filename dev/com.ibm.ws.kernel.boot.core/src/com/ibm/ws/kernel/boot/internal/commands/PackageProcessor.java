@@ -10,10 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.boot.internal.commands;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
@@ -169,6 +171,13 @@ public class PackageProcessor implements ArchiveProcessor {
         mf.getMainAttributes().remove(new Attributes.Name("License-Information"));
         mf.getMainAttributes().putValue("Main-Class", "wlp.lib.extract.SelfExtractRun");
         mf.getMainAttributes().putValue("Server-Name", processName);
+
+        // For Java 9, we need to apply the /wlp/lib/platform/java/java9.options to the manifest.
+        if (System.getProperty("java.specification.version") != null && !System.getProperty("java.specification.version").startsWith("1.")) {
+            HashMap<String, String> map = readJava9Options();
+            mf.getMainAttributes().putValue("Add-Exports", map.get("exports"));
+            mf.getMainAttributes().putValue("Add-Opens", map.get("opens"));
+        }
 
         File newMani = new File(workAreaTmpDir, "MANIFEST.usrinclude.tmp");
         mf.write(new FileOutputStream(newMani));
@@ -787,5 +796,40 @@ public class PackageProcessor implements ArchiveProcessor {
 
     private boolean isArchiveJar() {
         return packageFile.getName().endsWith(".jar");
+    }
+
+    // Reads the java9.options file
+    private HashMap<String, String> readJava9Options() throws IOException {
+        HashMap<String, String> hm = new HashMap<String, String>();
+        StringBuffer exports = new StringBuffer();
+        StringBuffer opens = new StringBuffer();
+        BufferedReader r = new BufferedReader(new FileReader(installRoot.getAbsolutePath() + File.separator + "lib" + File.separator + "platform" + File.separator + "java"
+                                                             + File.separator
+                                                             + "java9.options"));
+        String line = r.readLine();
+        while (line != null) {
+            if (!line.startsWith("#")) {
+                if (line.contains("--add-export")) {
+                    line = r.readLine();
+                    exports.append(getValue(line) + " ");
+                } else if (line.contains("--add-open")) {
+                    line = r.readLine();
+                    opens.append(getValue(line) + " ");
+                }
+            }
+            line = r.readLine();
+        }
+
+        hm.put("exports", exports.toString().trim());
+        hm.put("opens", opens.toString().trim());
+
+        r.close();
+
+        return hm;
+    }
+
+    private String getValue(String line) {
+        int loc = line.indexOf("=");
+        return line.substring(0, loc);
     }
 }
