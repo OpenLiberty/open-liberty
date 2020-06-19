@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Duration;
 import java.util.Map.Entry;
+import java.util.Random;
 
 import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.GenericContainer;
@@ -50,17 +51,21 @@ public class BoulderContainer extends CAContainer {
 
 	private static final String FILE_INTERMEDIATE_PEM = "lib/LibertyFATTestFiles/boulder.intermediate.pem";
 
-	public Network bluenet = Network.builder().createNetworkCmdModifier(cmd -> {
-		cmd.withDriver("bridge");
-		cmd.withIpam(new com.github.dockerjava.api.model.Network.Ipam().withDriver("default")
-				.withConfig(new com.github.dockerjava.api.model.Network.Ipam.Config().withSubnet("10.77.77.0/24")));
-	}).build();
+	private int blueNetBaseNumber = -1;
 
-	public final Network rednet = Network.builder().createNetworkCmdModifier(cmd -> {
-		cmd.withDriver("bridge");
-		cmd.withIpam(new com.github.dockerjava.api.model.Network.Ipam().withDriver("default")
-				.withConfig(new com.github.dockerjava.api.model.Network.Ipam.Config().withSubnet("10.88.88.0/24")));
-	}).build();
+	private String blueNetSubNet = null;
+
+	private String blueNetIP = null;
+
+	public Network bluenet = null;
+
+	private int redNetBaseNumber = -1;
+
+	private String redNetSubNet = null;
+
+	private String redNetIP = null;
+
+	public Network rednet = null;
 
 	/**
 	 * Container that runs the hardware security module. Use the same Docker
@@ -118,7 +123,7 @@ public class BoulderContainer extends CAContainer {
 				.withEnv("BOULDER_CONFIG_DIR", "test/config").withEnv("GO111MODULE", "on")
 				.withEnv("GOFLAGS", "-mod=vendor").withEnv("PYTHONIOENCODING", "utf-8")
 				.withCreateContainerCmdModifier(cmd -> {
-					cmd.withDns("10.77.77.77");
+					cmd.withDns();
 				})
 
 				.withWorkingDirectory("/go/src/github.com/letsencrypt/boulder")
@@ -132,15 +137,15 @@ public class BoulderContainer extends CAContainer {
 	@Override
 	protected void containerIsCreated(String containerId) {
 		getDockerClient().connectToNetworkCmd().withNetworkId(bluenet.getId()).withContainerId(containerId)
-				.withContainerNetwork(new ContainerNetwork().withIpv4Address("10.77.77.77")
-						.withNetworkID(bluenet.getId()).withIpamConfig(new Ipam().withIpv4Address("10.77.77.77"))
+				.withContainerNetwork(new ContainerNetwork().withIpv4Address(blueNetIP).withNetworkID(bluenet.getId())
+						.withIpamConfig(new Ipam().withIpv4Address(blueNetIP))
 						.withAliases("sa1.boulder", "ca1.boulder", "ra1.boulder", "va1.boulder", "publisher1.boulder",
 								"ocsp-updater.boulder", "admin-revoker.boulder", "nonce1.boulder"))
 				.exec();
 
 		getDockerClient().connectToNetworkCmd().withNetworkId(rednet.getId()).withContainerId(containerId)
-				.withContainerNetwork(new ContainerNetwork().withIpv4Address("10.88.88.88")
-						.withNetworkID(rednet.getId()).withIpamConfig(new Ipam().withIpv4Address("10.88.88.88"))
+				.withContainerNetwork(new ContainerNetwork().withIpv4Address(redNetIP).withNetworkID(rednet.getId())
+						.withIpamConfig(new Ipam().withIpv4Address(redNetIP))
 						.withAliases("sa2.boulder", "ca2.boulder", "ra2.boulder", "va2.boulder", "publisher2.boulder",
 								"nonce2.boulder"))
 				.exec();
@@ -152,7 +157,6 @@ public class BoulderContainer extends CAContainer {
 		 * We need to start up the containers in an orderly fashion so that we
 		 * can pass the IP address of the DNS server to the Boulder server.
 		 */
-
 
 		/*
 		 * The excessive restarts and sleeps on bmysql are to avoid hitting
@@ -170,25 +174,31 @@ public class BoulderContainer extends CAContainer {
 				if (bmysql.isRunning()) {
 					break;
 				}
-				Log.info(BoulderContainer.class, "start",
-						"Failed to start bmysql, marked as not running, sleep and try again");
 			} catch (Throwable t) {
 				Log.error(BoulderContainer.class, "start", t, "Failed to start bmysql, sleep and try again.");
+
+				// clean up and reinitialize
+				bmysql.stop();
+				try {
+					bluenet.close();
+				} catch (Throwable bn) {
+					// may throw an NPE, but we don't care
+				}
+				bluenet = null;
+				blueNetBaseNumber = -1;
+
+				try {
+					/*
+					 * On Windows, sometimes we get a java.lang.NoClassDefFoundError:
+					 * com/sun/jna/platform/win32/Kernel32 and a shorter sleep before a retry
+					 * normally works around it
+					 */
+					Thread.sleep(t instanceof NoClassDefFoundError ? 10000 : (120000 * i));
+				} catch (InterruptedException e) {
+				}
 			}
 
-			// clean up and reinitialize
-			bmysql.stop();
-			try {
-				bluenet.close();
-			} catch (Throwable bn) {
-				// may throw an NPE, but we don't care
-			}
-			bluenet = null;
 
-			try {
-				Thread.sleep(180000);
-			} catch (InterruptedException e) {
-			}
 			initSQL();
 		}
 		if (!bmysql.isRunning()) {
@@ -205,13 +215,25 @@ public class BoulderContainer extends CAContainer {
 				break;
 			} catch (Throwable t) {
 				Log.error(BoulderContainer.class, "start", t, "Failed to start bhsm, try again.");
+				bhsm.stop();
+				try {
+					rednet.close();
+				} catch (Throwable bn) {
+					// may throw an NPE, but we don't care
+				}
+				rednet = null;
+				redNetBaseNumber = -1;
+				try {
+					/*
+					 * On Windows, sometimes we get a java.lang.NoClassDefFoundError:
+					 * com/sun/jna/platform/win32/Kernel32 and a shorter sleep before a retry
+					 * normally works around it
+					 */
+					Thread.sleep(t instanceof NoClassDefFoundError ? 10000 : (120000 * i));
+				} catch (InterruptedException e) {
+				}
 			}
-			bhsm.stop();
 			initSM();
-			try {
-				Thread.sleep(120000 * i);
-			} catch (InterruptedException e) {
-			}
 		}
 		if (!bhsm.isRunning()) {
 			/*
@@ -259,8 +281,20 @@ public class BoulderContainer extends CAContainer {
 		}
 
 		super.stop();
-		bluenet.close();
-		rednet.close();
+		try {
+			if (bluenet != null) {
+				bluenet.close();
+			}
+		} catch (Throwable bn) {
+			// may throw an NPE, but we don't care
+		}
+		try {
+			if (rednet != null) {
+				rednet.close();
+			}
+		} catch (Throwable bn) {
+			// may throw an NPE, but we don't care
+		}
 		Log.info(BoulderContainer.class, "stop", "Stopped Boulder services");
 	}
 
@@ -309,15 +343,66 @@ public class BoulderContainer extends CAContainer {
 				getClass().getSimpleName() + " does not provider support for stopping the DNS server.");
 	}
 
-	private void initSQL() {
+	private void initBlueAddresses() {
+		if (blueNetBaseNumber == -1) {
+
+			blueNetBaseNumber = getRandomNumberInRange();
+
+			blueNetSubNet = "10." + blueNetBaseNumber + "." + blueNetBaseNumber + ".0/24";
+
+			blueNetIP = "10." + blueNetBaseNumber + "." + blueNetBaseNumber + "." + blueNetBaseNumber;
+
+			Log.info(BoulderContainer.class, "initBlueAddresses",
+					"Created IP for blueNet " + blueNetSubNet + " " + blueNetIP);
+		}
+	}
+
+	private void initRedAddresses() {
+		if (redNetBaseNumber == -1) {
+
+			redNetBaseNumber = getRandomNumberInRange();
+			if (redNetBaseNumber == blueNetBaseNumber) {
+				redNetBaseNumber = getRandomNumberInRange();
+			}
+
+			redNetSubNet = "10." + redNetBaseNumber + "." + redNetBaseNumber + ".0/24";
+
+			redNetIP = "10." + redNetBaseNumber + "." + redNetBaseNumber + "." + redNetBaseNumber;
+
+			Log.info(BoulderContainer.class, "initRedAddresses",
+					"Created IP for redNet " + redNetBaseNumber + " " + redNetBaseNumber);
+		}
+	}
+
+	private void initBlueNet() {
+		initBlueAddresses();
 		if (bluenet == null) {
 			bluenet = Network.builder().createNetworkCmdModifier(cmd -> {
+			cmd.withDriver("bridge");
+			cmd.withIpam(new com.github.dockerjava.api.model.Network.Ipam().withDriver("default")
+					.withConfig(new com.github.dockerjava.api.model.Network.Ipam.Config().withSubnet(blueNetSubNet)));
+		}).build();
+
+			Log.info(BoulderContainer.class, "initBlueNet", "Built bluenet");
+		}
+	}
+
+	private void initRedNet() {
+		initRedAddresses();
+		if (rednet == null) {
+			rednet = Network.builder().createNetworkCmdModifier(cmd -> {
 				cmd.withDriver("bridge");
 				cmd.withIpam(new com.github.dockerjava.api.model.Network.Ipam().withDriver("default").withConfig(
-						new com.github.dockerjava.api.model.Network.Ipam.Config().withSubnet("10.77.77.0/24")));
+						new com.github.dockerjava.api.model.Network.Ipam.Config().withSubnet(redNetSubNet)));
 			}).build();
 		}
-		bmysql = new GenericContainer<>("mariadb:10.3").withNetwork(bluenet).withNetworkMode("host")
+	}
+
+	private void initSQL() {
+
+		initBlueNet();
+
+		bmysql = new GenericContainer<>("mariadb:10.3").withNetwork(bluenet)
 				.withExposedPorts(3306).withNetworkAliases("boulder-mysql").withEnv("MYSQL_ALLOW_EMPTY_PASSWORD", "yes")
 				.withCommand(
 						"mysqld --bind-address=0.0.0.0 --slow-query-log --log-output=TABLE --log-queries-not-using-indexes=ON")
@@ -331,12 +416,24 @@ public class BoulderContainer extends CAContainer {
 	}
 
 	private void initSM() {
+		initRedNet();
+
 		bhsm = new GenericContainer<>(DOCKER_IMAGE)
 		.withEnv("PKCS11_DAEMON_SOCKET", "tcp://0.0.0.0:5657").withExposedPorts(5657).withNetwork(bluenet)
 		.withNetworkAliases("boulder-hsm")
 		.withCommand("/usr/local/bin/pkcs11-daemon /usr/lib/softhsm/libsofthsm2.so")
 		.withLogConsumer(o -> System.out.print("[HSM] " + o.getUtf8String()));
-		bhsm.withStartupAttempts(WITH_STARTUP_ATTEMPTS);
+		/*
+		 * If we get the "Pool overlaps with other one on this address space" then
+		 * retrying without rebuilding the supplied network results in no NetworkMode
+		 * exception
+		 */
+		bhsm.withStartupAttempts(1);
 		
+	}
+
+	private int getRandomNumberInRange() {
+		Random r = new Random();
+		return r.nextInt((99 - 22) + 1) + 22;
 	}
 }
