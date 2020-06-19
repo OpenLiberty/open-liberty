@@ -57,7 +57,7 @@ public class CacheControlHeaderProvider implements HeaderDelegate<CacheControl> 
     private static final String PROXY_REVALIDATE = "proxy-revalidate";
     private static final String MAX_AGE = "max-age";
     private static final String SMAX_AGE = "s-maxage";
-    private static final Message message = PhaseInterceptorChain.getCurrentMessage();
+    private static final Message message = PhaseInterceptorChain.getCurrentMessage();  // Liberty change
 
     public CacheControl fromString(String c) {
         boolean isPrivate = false;
@@ -224,6 +224,9 @@ public class CacheControlHeaderProvider implements HeaderDelegate<CacheControl> 
 
         String separator = DEFAULT_SEPARATOR;
 
+     // Liberty change
+        //Message message = getCurrentMessage();
+        
         if (message != null) {
             Object sepProperty = message.getContextualProperty(CACHE_CONTROL_SEPARATOR_PROPERTY);
             if (sepProperty != null) {
