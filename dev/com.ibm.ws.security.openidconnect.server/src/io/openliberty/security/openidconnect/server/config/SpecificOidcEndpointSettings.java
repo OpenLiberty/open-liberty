@@ -8,18 +8,18 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.security.oauth20.internal.config;
+package io.openliberty.security.openidconnect.server.config;
 
 import com.ibm.ws.security.oauth20.web.OAuth20Request.EndpointType;
 
 import io.openliberty.security.common.config.SpecificEndpointSettings;
 
 @SuppressWarnings("restriction")
-public class SpecificOAuthEndpointSettings extends SpecificEndpointSettings {
+public class SpecificOidcEndpointSettings extends SpecificEndpointSettings {
 
     protected EndpointType endpoint = null;
 
-    public SpecificOAuthEndpointSettings(EndpointType endpointType) {
+    public SpecificOidcEndpointSettings(EndpointType endpointType) {
         super(String.valueOf(endpointType));
         this.endpoint = endpointType;
     }
@@ -30,7 +30,7 @@ public class SpecificOAuthEndpointSettings extends SpecificEndpointSettings {
 
     @Override
     public String toString() {
-        return "[SpecificOAuthEndpointSettings: " + endpoint + ", Supported HTTP methods: " + supportedHttpMethods + "]";
+        return "[SpecificOidcEndpointSettings: " + endpoint + ", Supported HTTP methods: " + supportedHttpMethods + "]";
     }
 
 }

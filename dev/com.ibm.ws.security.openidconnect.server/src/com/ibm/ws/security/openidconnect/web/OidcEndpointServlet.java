@@ -21,6 +21,8 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
 import com.ibm.ejs.ras.TraceNLS;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.oauth20.web.OAuth20EndpointServlet;
 import com.ibm.ws.security.openidconnect.server.TraceConstants;
 
@@ -29,6 +31,8 @@ import io.openliberty.security.openidconnect.web.OidcSupportedHttpMethodHandler;
 
 @SuppressWarnings("restriction")
 public class OidcEndpointServlet extends OAuth20EndpointServlet {
+    private static TraceComponent tc = Tr.register(OidcEndpointServlet.class);
+
     private transient OidcEndpointServices oidcEndpointServices = null;
     private transient ServletContext servletContext = null;
     private transient BundleContext bundleContext = null;
@@ -105,8 +109,8 @@ public class OidcEndpointServlet extends OAuth20EndpointServlet {
         oidcEndpointServices.handleOidcRequest(request, response, servletContext);
     }
 
-    OidcSupportedHttpMethodHandler getOidcSupportedHttpMethodHandler(HttpServletRequest request, HttpServletResponse response) {
-        return new OidcSupportedHttpMethodHandler(request, response);
+    OidcSupportedHttpMethodHandler getOidcSupportedHttpMethodHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+        return new OidcSupportedHttpMethodHandler(request, response, getOidcEndpointServices());
     }
 
     private OidcEndpointServices getOidcEndpointServices() throws ServletException {
@@ -122,7 +126,7 @@ public class OidcEndpointServlet extends OAuth20EndpointServlet {
         return oidcEndpointServices;
     }
 
-    private boolean isValidHttpMethodForRequest(HttpServletRequest request, HttpServletResponse response, HttpMethod requestMethod) throws IOException {
+    private boolean isValidHttpMethodForRequest(HttpServletRequest request, HttpServletResponse response, HttpMethod requestMethod) throws IOException, ServletException {
         OidcSupportedHttpMethodHandler optionsRequestHandler = getOidcSupportedHttpMethodHandler(request, response);
         if (!optionsRequestHandler.isValidHttpMethodForRequest(requestMethod)) {
             optionsRequestHandler.sendUnsupportedMethodResponse();
