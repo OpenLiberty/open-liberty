@@ -16,6 +16,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -60,7 +62,6 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
     @AfterClass
     public static void cleanUp() throws Exception {
-        // TODO
         resetOriginalWlpProps();
         cleanUpTempFiles();
     }
@@ -149,7 +150,10 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/wlp-nd-license/20.0.0.4",
                 "../../publish/repo/com/ibm/websphere/appserver/features/wlp-nd-license/20.0.0.4/wlp-nd-license-20.0.0.4.zip");
 
-        writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
+        Map<String, String> propsMap = new HashMap<String, String>();
+        propsMap.put("featureLocalRepo", minifiedRoot + "/repo/");
+        propsMap.put("wlptestjson.JSON.coordinate", "com.ibm.websphere.appserver.features");
+        writeToProps(minifiedRoot+ "/etc/featureUtility.properties", propsMap);
         String[] param1s = { "installFeature", "adminCenter-1.0", "--acceptLicense" };
 
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
@@ -195,8 +199,11 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/wlp-nd-license/20.0.0.4",
                 "../../publish/repo/com/ibm/websphere/appserver/features/wlp-nd-license/20.0.0.4/wlp-nd-license-20.0.0.4.zip");
 
-        writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
-        String[] param1s = { "installFeature", "adminCenter-1.0", "deploy-1.0", "--acceptLicense" };
+        Map<String, String> propsMap = new HashMap<String, String>();
+        propsMap.put("featureLocalRepo", minifiedRoot + "/repo/");
+        propsMap.put("wlptestjson.JSON.coordinate", "com.ibm.websphere.appserver.features");
+        writeToProps(minifiedRoot+ "/etc/featureUtility.properties", propsMap);
+        String[] param1s = { "installFeature", "adminCenter-1.0", "deploy-1.0", "--acceptLicense", "--verbose" };
 
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         String edition = getClosedLibertyWlpEdition();
