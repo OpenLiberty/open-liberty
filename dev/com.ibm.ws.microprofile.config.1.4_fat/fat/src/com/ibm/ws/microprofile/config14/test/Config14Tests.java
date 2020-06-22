@@ -59,25 +59,23 @@ public class Config14Tests extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        WebArchive war1 = ShrinkWrap.create(WebArchive.class, BAD_OBSERVER_APP_NAME + ".war")
+        WebArchive badObserverWar = ShrinkWrap.create(WebArchive.class, BAD_OBSERVER_APP_NAME + ".war")
                         .addPackages(true, BadObserverServlet.class.getPackage());
-
-        ShrinkHelper.exportDropinAppToServer(server, war1, DeployOptions.SERVER_ONLY);
 
         PropertiesAsset config = new PropertiesAsset().addProperty("char1", "a");
 
-        WebArchive war2 = ShrinkWrap.create(WebArchive.class, CHAR_INJECTION_APP_NAME + ".war")
+        WebArchive charInjectionWar = ShrinkWrap.create(WebArchive.class, CHAR_INJECTION_APP_NAME + ".war")
                         .addPackages(true, CharacterInjectionServlet.class.getPackage())
                         .addAsResource(config, "META-INF/microprofile-config.properties");
 
-        ShrinkHelper.exportDropinAppToServer(server, war2, DeployOptions.SERVER_ONLY);
-
-        WebArchive war3 = ShrinkWrap.create(WebArchive.class, OPTIONAL_OBSERVER_APP_NAME + ".war")
+        WebArchive optionalObserverWar = ShrinkWrap.create(WebArchive.class, OPTIONAL_OBSERVER_APP_NAME + ".war")
                         .addPackages(true, OptionalObserverServlet.class.getPackage());
 
-        ShrinkHelper.exportDropinAppToServer(server, war3, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportDropinAppToServer(server, badObserverWar, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportDropinAppToServer(server, charInjectionWar, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportDropinAppToServer(server, optionalObserverWar, DeployOptions.SERVER_ONLY);
 
-        server.startServer(true, false);//Don't validate, the app is going to throw a DeploymentException
+        server.startServer(true, false); //Don't validate, badObserverWar is going to throw a DeploymentException
     }
 
     @Test

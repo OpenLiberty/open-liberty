@@ -32,9 +32,9 @@ import com.ibm.ws.microprofile.config.fat.tests.StressTest;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-                BasicConfigTests.class, //LITE
-                CDIBrokenInjectionTest.class, //FULL
-                ClassLoaderCacheTest.class, //FULL
+                BasicConfigTests.class, //LITE - repeats across all MP Config versions (EE8)
+                CDIBrokenInjectionTest.class, //FULL - the rest repeat against the lastest version of MP Config and then one other combination of MP Config and EE version
+                ClassLoaderCacheTest.class, //FULL - the aim is that each combination is used to test at least once, across all of the MP Config FAT buckets
                 ClassLoadersTest.class, //FULL
                 DefaultSourcesTest.class, //FULL
                 DynamicSourcesTest.class, //FULL

@@ -39,17 +39,18 @@ public class RepeatConfigActions {
             case CONFIG14_EE7:
                 return new RepeatConfig14EE7(server);
             case CONFIG14_EE8:
-            case LATEST:
                 return new RepeatConfig14EE8(server);
             case CONFIG20_EE8:
                 return new RepeatConfig20EE8(server);
+            case LATEST:
+                return new RepeatConfig14EE8(server); //currently the latest version is 1.4 (EE8). Will update to 2.0 when that reaches a beta standard.
             default:
                 throw new RuntimeException("Unknown version: " + version);
         }
     }
 
     public static RepeatTests repeatAllConfigVersionsEE8(String server) {
-        return repeat(server, Version.CONFIG11_EE8, Version.CONFIG12_EE8, Version.CONFIG13_EE8, Version.CONFIG14_EE8);
+        return repeat(server, Version.CONFIG11_EE8, Version.CONFIG12_EE8, Version.CONFIG13_EE8, Version.CONFIG14_EE8); //2.0 will be added shortly
     }
 
     public static RepeatTests repeat(String server, Version firstVersion, Version... otherVersions) {

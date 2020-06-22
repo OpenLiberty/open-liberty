@@ -16,7 +16,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                Config14Tests.class//FULL
+                Config14Tests.class // LITE
 })
 public class FATSuite {
 
