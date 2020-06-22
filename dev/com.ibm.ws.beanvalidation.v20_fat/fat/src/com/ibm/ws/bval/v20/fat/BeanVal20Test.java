@@ -37,7 +37,7 @@ public class BeanVal20Test extends FATServletClient {
 
     private static final String CUSTOM_PROVIDER_CDI_WARNING = "CWNBV0200W.*" + CUSTOM_PROVIDER_APP;
 
-    @Server("beanval.v20_fat")
+    @Server("beanval.v20.noEJBLite_fat")
     @TestServlets({
                     @TestServlet(servlet = BeanVal20TestServlet.class, contextRoot = REG_APP),
                     //TODO: Once CDI 3.0 and EJBLite 4.0 are ready, enable these four applications for Jakarta EE 9.

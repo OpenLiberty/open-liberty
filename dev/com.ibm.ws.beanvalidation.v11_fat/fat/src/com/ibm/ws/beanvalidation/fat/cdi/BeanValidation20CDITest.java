@@ -34,8 +34,6 @@ import componenttest.topology.utils.PrivHelper;
  */
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 8)
-// TODO: Remove skip when injection is enabled for jakartaee9; issue #12435
-@SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
 public class BeanValidation20CDITest extends BeanValidationCDI_Common {
 
     @Server("com.ibm.ws.beanvalidation.cdi_2.0.fat")
@@ -85,6 +83,7 @@ public class BeanValidation20CDITest extends BeanValidationCDI_Common {
      * to implement the interface.
      */
     @Test
+    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
     public void testDynamicStartStopOfCDI() throws Exception {
         ServerConfiguration config = getServer().getServerConfiguration();
 
