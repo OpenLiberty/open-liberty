@@ -156,6 +156,8 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     public static final String CFG_KEY_DISCOVERY_POLLING_RATE = "discoveryPollingRate";
     public static final String CFG_KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS = "useSystemPropertiesForHttpClientConnections";
     public static final String CFG_KEY_FORWARD_LOGIN_PARAMETER = "forwardLoginParameter";
+    public static final String CFG_KEY_REQUIRE_EXP_CLAIM = "requireExpClaimForIntrospection";
+    public static final String CFG_KEY_REQUIRE_IAT_CLAIM = "requireIatClaimForIntrospection";
 
     public static final String OPDISCOVERY_AUTHZ_EP_URL = "authorization_endpoint";
     public static final String OPDISCOVERY_TOKEN_EP_URL = "token_endpoint";
@@ -243,6 +245,8 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     private String[] resources;
     private boolean useAccessTokenAsIdToken;
     private List<String> forwardLoginParameter;
+    private boolean requireExpClaimForIntrospection = true;
+    private boolean requireIatClaimForIntrospection = true;
 
     private String oidcClientCookieName;
     private boolean authnSessionDisabled;
@@ -507,6 +511,8 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         useAccessTokenAsIdToken = configUtils.getBooleanConfigAttribute(props, CFG_KEY_USE_ACCESS_TOKEN_AS_ID_TOKEN, useAccessTokenAsIdToken);
         tokenReuse = configUtils.getBooleanConfigAttribute(props, CFG_KEY_TOKEN_REUSE, tokenReuse);
         forwardLoginParameter = oidcConfigUtils.readAndSanitizeForwardLoginParameter(props, id, CFG_KEY_FORWARD_LOGIN_PARAMETER);
+        requireExpClaimForIntrospection = configUtils.getBooleanConfigAttribute(props, CFG_KEY_REQUIRE_EXP_CLAIM, requireExpClaimForIntrospection);
+        requireIatClaimForIntrospection = configUtils.getBooleanConfigAttribute(props, CFG_KEY_REQUIRE_IAT_CLAIM, requireIatClaimForIntrospection);
         // TODO - 3Q16: Check the validationEndpointUrl to make sure it is valid
         // before continuing to process this config
         // checkValidationEndpointUrl();
@@ -1841,6 +1847,16 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     @Override
     public HashMap<String, String> getJwkRequestParams() {
         return jwkRequestParamMap;
+    }
+
+    @Override
+    public boolean requireExpClaimForIntrospection() {
+        return requireExpClaimForIntrospection;
+    }
+
+    @Override
+    public boolean requireIatClaimForIntrospection() {
+        return requireIatClaimForIntrospection;
     }
 
 }
