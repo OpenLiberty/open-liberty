@@ -107,9 +107,9 @@ public class CHFWBundle implements ServerQuiesceListener {
     private static volatile boolean default20On = false;
 
     /** The channel will disable HTTP/2.0 by default. */
-    public static final String OPTIONAL_DEFAULT_OFF_20 = "2.0_Optional_Off";
+    private static final String OPTIONAL_DEFAULT_OFF_20 = "2.0_Optional_Off";
     /** The channel will be enabled for HTTP/2.0 by default". */
-    public static final String OPTIONAL_DEFAULT_ON_20 = "2.0_Optional_On";
+    private static final String OPTIONAL_DEFAULT_ON_20 = "2.0_Optional_On";
 
     /**
      * Constructor.
