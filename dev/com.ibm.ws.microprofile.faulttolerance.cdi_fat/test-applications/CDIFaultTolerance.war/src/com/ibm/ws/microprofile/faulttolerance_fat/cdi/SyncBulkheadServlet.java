@@ -22,6 +22,7 @@ import org.eclipse.microprofile.faulttolerance.exceptions.BulkheadException;
 import org.eclipse.microprofile.faulttolerance.exceptions.CircuitBreakerOpenException;
 import org.junit.Test;
 
+import com.ibm.websphere.microprofile.faulttolerance_fat.suite.BasicTest;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.AsyncRunnerBean;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.BulkheadBean;
 
@@ -40,6 +41,7 @@ public class SyncBulkheadServlet extends FATServlet {
     @Inject
     AsyncRunnerBean runner;
 
+    @BasicTest
     @Test
     public void testSyncBulkheadSmall() throws Exception {
         CountDownLatch notify = new CountDownLatch(2); //the tasks notify that they are running
