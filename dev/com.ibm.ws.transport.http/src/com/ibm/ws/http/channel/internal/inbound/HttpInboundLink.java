@@ -352,12 +352,14 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
                     Tr.debug(tc, "processRequest return from handleNewRequest()");
                 }
 
-                if (this.myInterface.getLink() instanceof H2HttpInboundLinkWrap) {
-                    // H2 session
-                    H2HttpInboundLinkWrap linkWrap = (H2HttpInboundLinkWrap) (this.myInterface.getLink());
-                    if (linkWrap.isGrpcInUse()) {
-                        // and GRPC session also.
-                        linkWrap.countDownFirstReadLatch();
+                if ((this.myInterface != null) && (this.myInterface.getLink() != null)) {
+                    if (this.myInterface.getLink() instanceof H2HttpInboundLinkWrap) {
+                        // H2 session
+                        H2HttpInboundLinkWrap linkWrap = (H2HttpInboundLinkWrap) (this.myInterface.getLink());
+                        if (linkWrap.isGrpcInUse()) {
+                            // and GRPC session also.
+                            linkWrap.countDownFirstReadLatch();
+                        }
                     }
                 }
                 return;
