@@ -134,12 +134,12 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
 
         // Check to see if http/2 is enabled for this connection and save the result
         if (CHFWBundle.getServletConfiguredHttpVersionSetting() != null) {
-            if (CHFWBundle.isDefaultOff20()) {
+            if (CHFWBundle.isHttp2DisabledByDefault()) {
                 if (getChannel().getUseH2ProtocolAttribute() != null && getChannel().getUseH2ProtocolAttribute()) {
                     http2Enabled = true;
                     this.sslChannel.checkandInitALPN();
                 }
-            } else if (CHFWBundle.isDefaultOn20()) {
+            } else if (CHFWBundle.isHttp2EnabledByDefault()) {
                 if (getChannel().getUseH2ProtocolAttribute() == null || getChannel().getUseH2ProtocolAttribute()) {
                     http2Enabled = true;
                     this.sslChannel.checkandInitALPN();

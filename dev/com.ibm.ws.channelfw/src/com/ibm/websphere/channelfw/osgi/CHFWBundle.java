@@ -551,11 +551,11 @@ public class CHFWBundle implements ServerQuiesceListener {
         return httpVersionSetting;
     }
 
-    public static boolean isDefaultOff20() {
+    public static boolean isHttp2DisabledByDefault() {
         return versionSet && default20Off;
     }
 
-    public static boolean isDefaultOn20() {
+    public static boolean isHttp2EnabledByDefault() {
         return versionSet && default20On;
     }
 
