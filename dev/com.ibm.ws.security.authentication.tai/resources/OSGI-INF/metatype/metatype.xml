@@ -26,7 +26,7 @@
             required="false" type="String" cardinality="2147483647" />
         <AD id="continueAfterUnprotectedURI" name="%continueAfterUnprotectedURI" description="%continueAfterUnprotectedURI.desc"
             required="true" type="Boolean" default="false" />  
-        <AD id="disableLtpaCookie" ibm:beta="true" name ="%disableLtpaCookie" description="%disableLtpaCookie.desc"
+        <AD id="disableLtpaCookie" name="%disableLtpaCookie" description="%disableLtpaCookie.desc"
             required="false" type="Boolean" default="false"/>          
     </OCD>
 

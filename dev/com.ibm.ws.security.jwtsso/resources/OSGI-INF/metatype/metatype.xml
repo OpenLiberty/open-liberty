@@ -44,7 +44,7 @@
          <AD id="useLtpaIfJwtAbsent"  name="%fallbackToLtpa" description="%fallbackToLtpa.desc"
              required="false"  type="Boolean" default="false" />
            
-         <AD id="disableJwtCookie" ibm:beta="true" name ="%disableJwtCookie" description="%disableJwtCookie.desc"
+         <AD id="disableJwtCookie"  name="%disableJwtCookie" description="%disableJwtCookie.desc"
             required="false" type="Boolean" default="false"/>    
          <!-- 
              <AD id="groupBaseDnOmitted" name="%groupBaseDnOmitted" description="%groupBaseDnOmitted"
