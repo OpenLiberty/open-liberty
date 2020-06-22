@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.suite;
 
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -23,7 +22,6 @@ import com.ibm.ws.cdi12.fat.tests.InjectInjectionPointAsParamTest;
 import com.ibm.ws.cdi12.fat.tests.InjectInjectionPointBeansXMLTest;
 import com.ibm.ws.cdi12.fat.tests.InjectInjectionPointTest;
 import com.ibm.ws.cdi12.fat.tests.InjectInjectionPointXMLTest;
-import com.ibm.ws.fat.util.FatLogHandler;
 
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
@@ -44,16 +42,6 @@ import componenttest.rules.repeater.RepeatTests;
 public class FATSuite {
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES());
-//    @ClassRule
-//    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE9_FEATURES());
-
-    /**
-     * @see {@link FatLogHandler#generateHelpFile()}
-     */
-    @BeforeClass
-    public static void generateHelpFile() {
-        FatLogHandler.generateHelpFile();
-    }
+    public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES()).andWith(FeatureReplacementAction.EE9_FEATURES());
 
 }
