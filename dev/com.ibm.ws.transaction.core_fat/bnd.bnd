@@ -14,8 +14,7 @@ bVersion=1.0
 src: \
 	fat/src,\
 	test-applications/transaction/src,\
-	test-applications/transactionscoped/src,\
-	test-bundles/xaflowcallback/src
+	test-applications/transactionscoped/src
 
 -sub: *.bnd
 
