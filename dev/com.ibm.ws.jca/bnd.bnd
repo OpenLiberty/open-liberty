@@ -35,7 +35,7 @@ Import-Package: \
     com.ibm.wsspi.application.*, \
     com.ibm.wsspi.kernel.service.utils.*, \
     !com.ibm.websphere.ssl.*, \
-    !com.ibm.wsspi.ssl.*, \ 
+    !com.ibm.wsspi.ssl.*, \
     !javax.validation.*, \
     !com.ibm.ws.beanvalidation.service, \
     !com.ibm.ws.security.jaas.common, \
