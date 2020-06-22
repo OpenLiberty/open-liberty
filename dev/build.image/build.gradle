@@ -295,7 +295,7 @@ def replaceBetaVersionAndEdition(String pathname, String release, String beta) {
     Files.write(path, content.getBytes(charset))
 }
 
-if (isAutomatedBuild) {
+if (isAutomatedBuild && !isIFIXBuild) {
     task packageOpenLibertyAll(type: PackageLibertyWithFeatures) {
         def excludedFeatures = []
         doFirst {
@@ -304,7 +304,6 @@ if (isAutomatedBuild) {
                 this.&removeFeature("${it}")
             }
         }
-        enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&allFeatures
@@ -317,7 +316,6 @@ if (isAutomatedBuild) {
     }
 
     task packageOpenLiberty(type: PackageLibertyWithFeatures) {
-        enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&gaPublicFeatures
@@ -338,7 +336,6 @@ if (isAutomatedBuild) {
     }
 
     task packageOpenLibertyKernel(type: PackageLibertyWithFeatures) {
-        enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures { '' }
@@ -351,7 +348,6 @@ if (isAutomatedBuild) {
                 this.&removeFeature("${it}")
             }
         }
-        enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&webProfile8Features
@@ -378,7 +374,6 @@ if (isAutomatedBuild) {
             }
         }
 
-        enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&javaee8Features
@@ -424,7 +419,6 @@ if (isAutomatedBuild) {
             }
         }
 
-        enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&microProfile3Features
@@ -443,6 +437,7 @@ if (isAutomatedBuild) {
 
 // Generate checksums
 task genChecksums() {
+    enabled !isIFIXBuild
     dependsOn parent.subprojects.assemble
     doLast {
         generateChecksums(ant)
@@ -464,7 +459,7 @@ task zipOpenLibertyDev(type: Zip) {
 }
 publish.dependsOn zipOpenLibertyDev
 
-if (isAutomatedBuild) {
+if (isAutomatedBuild && !isIFIXBuild) {
     // Includes all features except excluded features.
     task zipOpenLibertyAll(type: Zip) {
         dependsOn packageOpenLibertyAll
@@ -597,7 +592,7 @@ publishing {
             version project.version
             artifact zipOpenLibertyDev
         }
-        if (isAutomatedBuild) {
+        if (isAutomatedBuild && !isIFIXBuild) {
             openLibertyAll(MavenPublication) {
                 artifactId 'openliberty-all'
                 version project.version
