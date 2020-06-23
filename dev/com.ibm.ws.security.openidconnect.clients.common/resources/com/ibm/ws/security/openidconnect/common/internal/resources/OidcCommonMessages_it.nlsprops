@@ -184,6 +184,6 @@ PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.explanation=Il token non pu\u00f2 c
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=Ottenere un nuovo token che non contienga l'asserzione specificata o modificare il valore attributo di configurazione specificato per consentire l'inclusione dell'asserzione nel token.
 
 # 0=Client ID, 1=List of invalid parameter names, 2=forwardLoginParameter
-BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED=CWWKS1783W: Il client OpenID Connect  [{0}] include {1} nei valori specificati dall''attributo di configurazione [{2}]. I valori specificati verranno ignorati.
-BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED.explanation=La specifica OAuth 2.0 definisce una serie di parametri di richiesta riservati che devono essere forniti dal client per le richieste di autorizzazione. I valori per tali parametri riservati non possono essere forniti dall'utente.
-BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=Rimuovere i valori specificati dall'elenco di valori definiti nella configurazione client OpenID Connect.
+DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED=CWWKS1783W: Il client OpenID Connect  [{0}] include {1} nei valori specificati dall''attributo di configurazione [{2}]. I valori specificati verranno ignorati.
+DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.explanation=La specifica OAuth 2.0 definisce una serie di parametri di richiesta riservati che devono essere forniti dal client per le richieste di autorizzazione. I valori per tali parametri riservati non possono essere forniti dall'utente.
+DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=Rimuovere i valori specificati dall'elenco di valori definiti nella configurazione client OpenID Connect.

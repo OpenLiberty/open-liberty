@@ -3293,7 +3293,7 @@ public class ClientAuthorizationTest {
      * Expected result: false
      */
     @Test
-    public void isClientAutoAuthorized_ClientNotWhitelisted() {
+    public void isClientAutoAuthorized_ClientNotAllowed() {
         mock.checking(new Expectations() {
             {
                 one(request).getParameter(OAuth20Constants.CLIENT_ID);
