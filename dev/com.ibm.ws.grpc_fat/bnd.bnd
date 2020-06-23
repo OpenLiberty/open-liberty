@@ -16,6 +16,7 @@ src: \
     test-applications/HelloWorldClient.war/src,\
     test-applications/HelloWorldService.war/src, \
     test-applications/FavoriteBeerService.war/src, \
+	test-applications/StreamingService.war/src, \
     test-applications/InvalidService.war/src
     test-applications/StoreProducerApp.war/src, \
     test-applications/StoreConsumerApp.war/src, \
