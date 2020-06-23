@@ -21,10 +21,7 @@ Subsystem-Name: Internal Java RESTful Services 3.0
  com.ibm.websphere.appserver.mpConfig-1.4, \
  com.ibm.websphere.appserver.jndi-1.0
 -bundles=\
- com.ibm.ws.org.jboss.resteasy.resteasy.core, \
- com.ibm.ws.org.jboss.resteasy.resteasy.core.spi, \
- com.ibm.ws.org.jboss.resteasy.resteasy.tracing.api,\
- com.ibm.ws.org.jboss.resteasy.resteasy.servlet.initializer, \
+ io.openliberty.org.jboss.resteasy.common, \
  com.ibm.ws.org.jboss.logging
 kind=noship
 edition=full

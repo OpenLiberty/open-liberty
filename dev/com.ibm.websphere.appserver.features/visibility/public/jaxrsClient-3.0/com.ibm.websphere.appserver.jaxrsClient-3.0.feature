@@ -18,8 +18,7 @@ Subsystem-Name: Java RESTful Services Client 3.0
 -features=\
  com.ibm.websphere.appserver.javax.jaxrs-2.1
 -bundles=\
-  com.ibm.ws.org.jboss.resteasy.resteasy.client, \
-  com.ibm.ws.org.jboss.resteasy.resteasy.client.api, \
+  io.openliberty.org.jboss.resteasy.common, \
   com.ibm.ws.org.apache.httpcomponents, \
   com.ibm.ws.org.apache.commons.codec.1.3, \
   com.ibm.ws.org.apache.commons.logging.1.0.3
