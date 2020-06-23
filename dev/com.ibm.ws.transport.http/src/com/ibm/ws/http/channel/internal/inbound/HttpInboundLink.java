@@ -80,6 +80,8 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
     protected List<ConnectionReadyCallback> appSides = null;
     /** Flag on whether this link has been marked for HTTP/2 */
     private boolean alreadyH2Upgraded = false;
+    /** Flag on whether grpc is being used for this link */
+    private boolean isGrpc = false;
 
     /**
      * Constructor for an HTTP inbound link object.
@@ -112,6 +114,8 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
 
         getVirtualConnection().getStateMap().put(CallbackIDs.CALLBACK_HTTPICL, this);
         this.bIsActive = true;
+        this.isGrpc = false;
+
     }
 
     VirtualConnection switchedVC = null;
@@ -287,6 +291,13 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
         return false;
     }
 
+    public final void setIsGrpcInParentLink(boolean x) {
+        isGrpc = x;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "set isGprc: " + isGrpc);
+        }
+    }
+
     /**
      * @return true if SSL is in use and "h2" was chosen via ALPN
      */
@@ -352,13 +363,14 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
                     Tr.debug(tc, "processRequest return from handleNewRequest()");
                 }
 
-                if ((this.myInterface != null) && (this.myInterface.getLink() != null)) {
-                    if (this.myInterface.getLink() instanceof H2HttpInboundLinkWrap) {
-                        // H2 session
-                        H2HttpInboundLinkWrap linkWrap = (H2HttpInboundLinkWrap) (this.myInterface.getLink());
-                        if (linkWrap.isGrpcInUse()) {
-                            // and GRPC session also.
-                            linkWrap.countDownFirstReadLatch();
+                if (isGrpc) {
+                    // null checks should not be needed, but one intermittent build break suggested otherwise.
+                    HttpInboundServiceContextImpl contextImpl = this.myInterface;
+                    if (contextImpl != null) {
+                        HttpInboundLink link = this.myInterface.getLink();
+                        if (link != null) {
+                            // if the grpc flag is set, then link is really a LinkWrap
+                            ((H2HttpInboundLinkWrap) link).countDownFirstReadLatch();
                         }
                     }
                 }
