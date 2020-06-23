@@ -140,14 +140,6 @@ sourceSets {
         }
     }
 
-    main {
-        proto {
-            srcDirs 'test-applications/StreamingService.war/resources/proto'
-        }
-        java {
-            srcDirs 'test-applications/StreamingService.war/src/java'
-        }
-    }
 }
 
 assemble.doLast {

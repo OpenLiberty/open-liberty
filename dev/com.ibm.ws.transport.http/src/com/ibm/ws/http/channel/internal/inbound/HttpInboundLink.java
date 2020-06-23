@@ -342,26 +342,7 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
                 // with information after this call because it may go all the way
                 // from the channel above us back to the persist read, must exit
                 // this callstack immediately
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "processRequest calling handleNewRequest()");
-                }
-
                 handleNewRequest();
-
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "processRequest return from handleNewRequest()");
-                }
-
-                if ((this.myInterface != null) && (this.myInterface.getLink() != null)) {
-                    if (this.myInterface.getLink() instanceof H2HttpInboundLinkWrap) {
-                        // H2 session
-                        H2HttpInboundLinkWrap linkWrap = (H2HttpInboundLinkWrap) (this.myInterface.getLink());
-                        if (linkWrap.isGrpcInUse()) {
-                            // and GRPC session also.
-                            linkWrap.countDownFirstReadLatch();
-                        }
-                    }
-                }
                 return;
             }
             rc = this.myTSC.getReadInterface().read(1, callback, false, timeout);

@@ -63,8 +63,6 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
 
     private HttpInboundServiceContextImpl httpInboundServiceContextImpl = null;
 
-    public boolean grpcInUse = false;
-
     /** RAS tracing variable */
     private static final TraceComponent tc = Tr.register(H2HttpInboundLinkWrap.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
@@ -92,16 +90,11 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
 
                 Map<String, GrpcServletServices.ServiceInformation> servicePaths = GrpcServletServices.getServletGrpcServices();
                 if (servicePaths != null && !servicePaths.isEmpty()) {
-                    grpcInUse = true;
                     routeGrpcServletRequest(servicePaths);
                 }
             }
         }
         super.ready(inVC);
-    }
-
-    public boolean isGrpcInUse() {
-        return this.grpcInUse;
     }
 
     /**
@@ -185,7 +178,7 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
     /**
      * Create Header frames corresponding to a byte array of http headers
      *
-     * @param byte[]  marshalledHeaders
+     * @param byte[] marshalledHeaders
      * @param boolean complete
      * @return ArrayList<Frame> of FrameHeader objects containing the headers
      */
@@ -263,8 +256,8 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
      * The buffers passed in must not exceed the http2 max frame size
      *
      * @param WsByteBuffer[]
-     * @param int            length
-     * @param boolean        isFinalWrite
+     * @param int length
+     * @param boolean isFinalWrite
      * @return ArrayList<Frame> of FrameData objects containing the buffered payload data
      */
     public ArrayList<Frame> prepareBody(WsByteBuffer[] wsbb, int length, boolean isFinalWrite) {
@@ -558,15 +551,4 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
             this.httpInboundServiceContextImpl.getAppReadCallback().complete(vc);
         }
     }
-
-    public void countDownFirstReadLatch() {
-        H2StreamProcessor h2sp = muxLink.getStreamProcessor(streamID);
-        if (h2sp != null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "calling h2sp to count down firstReadLatch: ");
-            }
-            h2sp.countDownFirstReadLatch();
-        }
-    }
-
 }
