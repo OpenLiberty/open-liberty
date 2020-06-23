@@ -12,6 +12,7 @@ package com.ibm.websphere.microprofile.faulttolerance_fat.tests;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 import java.util.Optional;
@@ -178,6 +179,6 @@ public class FaultToleranceMainTest extends FATServletClient {
         // This should cause executors to get cleaned up
         runTest(server, "CDIFaultTolerance/retry", "testRetryAbortOn");
 
-        server.waitForStringInLog("Cleaning up executors", traceLog);
+        assertNotNull("Did not find executor cleanup message in trace file", server.waitForStringInLog("Cleaning up executors", traceLog));
     }
 }
