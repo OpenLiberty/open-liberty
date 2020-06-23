@@ -27,6 +27,8 @@ import com.ibm.ws.fat.util.jmx.mbeans.ApplicationMBean;
 import com.ibm.ws.fat.util.jmx.mbeans.ApplicationMBean.ApplicationState;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -81,6 +83,7 @@ public class AppOrderTests extends AbstractAppManagerTest {
     }
 
     @Test
+    @Mode(TestMode.FULL)
     public void testAppOrderCycle() throws Exception {
         final String method = testName.getMethodName();
 
@@ -166,6 +169,7 @@ public class AppOrderTests extends AbstractAppManagerTest {
     }
 
     @Test
+    @Mode(TestMode.FULL)
     public void testComplexAppOrder() throws Exception {
         final String method = testName.getMethodName();
 
@@ -192,6 +196,7 @@ public class AppOrderTests extends AbstractAppManagerTest {
     }
 
     @Test
+    @Mode(TestMode.FULL)
     public void testIndividualAppUpdate() throws Exception {
         final String method = testName.getMethodName();
 
