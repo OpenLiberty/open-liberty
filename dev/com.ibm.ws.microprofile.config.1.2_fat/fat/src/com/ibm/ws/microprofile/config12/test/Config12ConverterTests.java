@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config13.test;
+package com.ibm.ws.microprofile.config12.test;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -17,10 +17,14 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
-import com.ibm.ws.microprofile.config13.mapEnvVar.web.MapEnvVarServlet;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions.Version;
+import com.ibm.ws.microprofile.config12.converter.implicit.web.ImplicitConverterServlet;
+import com.ibm.ws.microprofile.config12.converter.priority.web.ConverterPriorityServlet;
+import com.ibm.ws.microprofile.config12.converter.type.web.TypeConverterServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
+import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -40,24 +44,23 @@ import componenttest.topology.utils.FATServletClient;
  * servlet referenced by the annotation, and will be run whenever this test class runs.
  */
 @RunWith(FATRunner.class)
-public class MapEnvVarTest extends FATServletClient {
+public class Config12ConverterTests extends FATServletClient {
 
-    public static final String APP_NAME = "mapEnvVarApp";
-
-    @Server("MapEnvVarServer")
-    @TestServlet(servlet = MapEnvVarServlet.class, contextRoot = APP_NAME)
-    public static LibertyServer server;
+    public static final String APP_NAME = "converterApp";
 
     @ClassRule
-    public static RepeatTests r = RepeatConfigActions.repeatConfig13("MapEnvVarServer");
+    public static RepeatTests r = RepeatConfigActions.repeat("ConverterServer", Version.LATEST, Version.CONFIG12_EE8);
+
+    @Server("ConverterServer")
+    @TestServlets({
+                    @TestServlet(servlet = ConverterPriorityServlet.class, contextRoot = APP_NAME),
+                    @TestServlet(servlet = ImplicitConverterServlet.class, contextRoot = APP_NAME),
+                    @TestServlet(servlet = TypeConverterServlet.class, contextRoot = APP_NAME) })
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        // Create a WebArchive that will have the file name 'app1.war' once it's written to a file
-        // Include the 'app1.web' package and all of it's java classes and sub-packages
-        // Automatically includes resources under 'test-applications/APP_NAME/resources/' folder
-        // Exports the resulting application to the ${server.config.dir}/apps/ directory
-        ShrinkHelper.defaultApp(server, APP_NAME, "com.ibm.ws.microprofile.config13.mapEnvVar.*");
+        ShrinkHelper.defaultDropinApp(server, APP_NAME, "com.ibm.ws.microprofile.config12.converter.*");
 
         server.startServer();
     }

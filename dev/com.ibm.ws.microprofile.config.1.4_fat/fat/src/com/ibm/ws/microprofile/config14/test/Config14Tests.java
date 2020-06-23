@@ -22,42 +22,60 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.PropertiesAsset;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions.Version;
 import com.ibm.ws.microprofile.config14.test.apps.badobserver.BadObserverServlet;
+import com.ibm.ws.microprofile.config14.test.apps.characterInjection.CharacterInjectionServlet;
+import com.ibm.ws.microprofile.config14.test.apps.optional_observer.OptionalObserverServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
+import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-@Mode(TestMode.FULL)
-public class BadObserverTest extends FATServletClient {
+public class Config14Tests extends FATServletClient {
 
-    public static final String APP_NAME = "badObserverApp";
+    public static final String BAD_OBSERVER_APP_NAME = "badObserverApp";
+    public static final String CHAR_INJECTION_APP_NAME = "characterInjectionApp";
+    public static final String OPTIONAL_OBSERVER_APP_NAME = "optionalObserverApp";
     public static final String SERVER_NAME = "Config14Server";
 
     @ClassRule
-    public static RepeatTests r = RepeatConfigActions.repeatConfig14(SERVER_NAME);
+    public static RepeatTests r = RepeatConfigActions.repeat(SERVER_NAME, Version.LATEST);
 
     @Server(SERVER_NAME)
-    @TestServlet(servlet = BadObserverServlet.class, contextRoot = APP_NAME)
+    @TestServlets({
+                    @TestServlet(servlet = BadObserverServlet.class, contextRoot = BAD_OBSERVER_APP_NAME),
+                    @TestServlet(servlet = CharacterInjectionServlet.class, contextRoot = CHAR_INJECTION_APP_NAME),
+                    @TestServlet(servlet = OptionalObserverServlet.class, contextRoot = OPTIONAL_OBSERVER_APP_NAME) })
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
+        WebArchive badObserverWar = ShrinkWrap.create(WebArchive.class, BAD_OBSERVER_APP_NAME + ".war")
                         .addPackages(true, BadObserverServlet.class.getPackage());
 
-        ShrinkHelper.exportDropinAppToServer(server, war, DeployOptions.SERVER_ONLY);
+        PropertiesAsset config = new PropertiesAsset().addProperty("char1", "a");
 
-        server.startServer(true, false);//Don't validate, the app is going to throw a DeploymentException
+        WebArchive charInjectionWar = ShrinkWrap.create(WebArchive.class, CHAR_INJECTION_APP_NAME + ".war")
+                        .addPackages(true, CharacterInjectionServlet.class.getPackage())
+                        .addAsResource(config, "META-INF/microprofile-config.properties");
+
+        WebArchive optionalObserverWar = ShrinkWrap.create(WebArchive.class, OPTIONAL_OBSERVER_APP_NAME + ".war")
+                        .addPackages(true, OptionalObserverServlet.class.getPackage());
+
+        ShrinkHelper.exportDropinAppToServer(server, badObserverWar, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportDropinAppToServer(server, charInjectionWar, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportDropinAppToServer(server, optionalObserverWar, DeployOptions.SERVER_ONLY);
+
+        server.startServer(true, false); //Don't validate, badObserverWar is going to throw a DeploymentException
     }
 
     @Test
