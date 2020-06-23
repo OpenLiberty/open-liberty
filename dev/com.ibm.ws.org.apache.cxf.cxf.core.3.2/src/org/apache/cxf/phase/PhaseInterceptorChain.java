@@ -50,6 +50,7 @@ import org.apache.cxf.service.model.BindingOperationInfo;
 import org.apache.cxf.service.model.OperationInfo;
 import org.apache.cxf.transport.MessageObserver;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
@@ -159,6 +160,7 @@ public class PhaseInterceptorChain implements InterceptorChain {
         }
     }
 
+    @Trivial
     public static Message getCurrentMessage() {
         return CURRENT_MESSAGE.get();
     }
