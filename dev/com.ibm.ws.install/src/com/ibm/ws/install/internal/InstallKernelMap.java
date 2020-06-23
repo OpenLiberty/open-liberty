@@ -144,6 +144,8 @@ public class InstallKernelMap implements Map {
     private static final String OVERRIDE_ENVIRONMENT_VARIABLES = "override.environment.variables";
     private static final String CAUSED_UPGRADE = "caused.upgrade";
     private static final String REQ_OL_JSON_COORD = "req.ol.json.coord";
+    private static final String JSON_PROVIDED = "json.provided";
+    private static final String IS_OPEN_LIBERTY = "is.open.liberty";
 
     //Headers in Manifest File
     private static final String SHORTNAME_HEADER_NAME = "IBM-ShortName";
@@ -321,6 +323,8 @@ public class InstallKernelMap implements Map {
             }
             envMap = getEnvMap();
             return envMap;
+        } else if (IS_OPEN_LIBERTY.equals(key)) {
+            return isOpenLiberty();
         } else if (CLEANUP_UPGRADE.equals(key)) {
             return cleanupUpgrade();
         }
@@ -655,6 +659,12 @@ public class InstallKernelMap implements Map {
             } else {
                 throw new IllegalArgumentException();
             }
+        } else if (JSON_PROVIDED.equals(key)) {
+            if (value instanceof Boolean) {
+                data.put(JSON_PROVIDED, value);
+            } else {
+                throw new IllegalArgumentException();
+            }
         } else if (key.equals("debug")) {
             if (value instanceof Level) {
                 data.put("debug", value);
@@ -762,6 +772,30 @@ public class InstallKernelMap implements Map {
         }
         return false;
     }
+    
+    private boolean isOpenLiberty() {
+        try {
+            for (ProductInfo productInfo : ProductInfo.getAllProductInfo().values()) {
+                if (productInfo.getReplacedBy() == null && productInfo.getId().equals("io.openliberty")) {
+                    return true;
+                }
+
+            }
+        } catch (ProductInfoParseException e) {
+            data.put(ACTION_RESULT, ERROR);
+            data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+        } catch (DuplicateProductInfoException e) {
+            data.put(ACTION_RESULT, ERROR);
+            data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+        } catch (ProductInfoReplaceException e) {
+            data.put(ACTION_RESULT, ERROR);
+            data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+        }
+        return false;
+    }
 
     @SuppressWarnings("unchecked")
     public Collection<String> singleFileResolve() {
@@ -846,8 +880,9 @@ public class InstallKernelMap implements Map {
                 throw ExceptionUtils.createByKey(InstallException.ALREADY_EXISTS, "ASSETS_ALREADY_INSTALLED", featuresAlreadyPresent);
             }
             boolean isFeatureUtility = (Boolean) this.get(IS_FEATURE_UTILITY);
+            boolean isJsonProvided = (Boolean) this.get(JSON_PROVIDED);
             data.put(UPGRADE_COMPLETE, false);
-            if (isOpenLiberty && isFeatureUtility) {
+            if (isOpenLiberty && isFeatureUtility && isJsonProvided) {
                 if (upgradeRequired()) {
                     upgradeOL();
                     for (ProductInfo productInfo : ProductInfo.getAllProductInfo().values()) {
@@ -859,7 +894,6 @@ public class InstallKernelMap implements Map {
             resolver = new RepositoryResolver(productDefinitions, installedFeatures, Collections.<IFixInfo> emptySet(), repoList);
             resolveResult = resolver.resolveAsSet((Collection<String>) data.get(FEATURES_TO_RESOLVE));
             ResolveDirector.resolveAutoFeatures(resolveResult, new RepositoryResolver(productDefinitions, installedFeatures, Collections.<IFixInfo> emptySet(), repoList));
-
             if (!resolveResult.isEmpty()) {
                 for (List<RepositoryResource> item : resolveResult) {
                     for (RepositoryResource repoResrc : item) {
@@ -927,6 +961,7 @@ public class InstallKernelMap implements Map {
             data.put(ACTION_ERROR_MESSAGE, e.getMessage());
             data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
         } catch (Exception e) {
+            e.printStackTrace();
             data.put(ACTION_RESULT, ERROR);
             data.put(ACTION_ERROR_MESSAGE, e.getMessage());
             data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
@@ -1799,7 +1834,7 @@ public class InstallKernelMap implements Map {
             }
             scanner.close();
         } catch (FileNotFoundException e) {
-            fine("featureUtility.env not found");
+            //fine("featureUtility.env not found");
         }
 
         return propEnvMap;

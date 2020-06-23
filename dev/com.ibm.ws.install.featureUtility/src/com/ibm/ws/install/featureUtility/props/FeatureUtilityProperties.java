@@ -37,6 +37,8 @@ public class FeatureUtilityProperties {
     private final static Set<String> DEFINED_OPTIONS= new HashSet<>(Arrays.asList("proxyHost", "proxyPort", "proxyUser", "proxyPassword", "featureLocalRepo"));
     private static Map<String, String> definedVariables = new HashMap<>();
     private static List<MavenRepository> repositoryList = new ArrayList<>();
+    private static List<String> additionalJsonsList = new ArrayList<>();
+    private final static String jsonCoordQualifier = ".json.coordinate";
     private static boolean didFileParse;
 
     static {
@@ -53,7 +55,15 @@ public class FeatureUtilityProperties {
     public static List<MavenRepository> getMirrorRepositories(){
         return repositoryList;
     }
+    
+    public static List<String> getAdditionalJsons(){
+        return additionalJsonsList;
+    }
 
+    public static boolean additionalJsonsRequired() {
+    	return !getAdditionalJsons().isEmpty();
+    }
+    
     public static boolean canConstructHttpProxy(){
         return getProxyHost() != null && getProxyPort() != null;
     }
@@ -114,7 +124,6 @@ public class FeatureUtilityProperties {
         };
         try(FileInputStream fileIn = new FileInputStream(getRepoPropertiesFileLocation())) {
             properties.load(fileIn);
-
             return properties;
         } catch (IOException e) {
             throw new InstallException(InstallLogUtils.Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_REPOSITORY_PROPS_NOT_LOADED",
@@ -134,19 +143,23 @@ public class FeatureUtilityProperties {
             if(DEFINED_OPTIONS.contains(key.toString())){
                 definedVariables.putIfAbsent(key.toString(), value.toString()); // only write the first proxy variables we see
             } else {
-                String [] split = key.toString().split("\\.");
-                if(split.length < 2){ // invalid key
-                    continue;
-                }
-                String repoName = split[0];
-                String option = split[split.length - 1]; // incase there are periods in the key, cant use [1]
-                if(repoMap.containsKey(repoName)){
-                    repoMap.get(repoName).put(option, value.toString());
-                } else {
-                    HashMap<String, String> individualMap = new HashMap<>();
-                    individualMap.put(option, value.toString());
-                    repoMap.put(repoName, individualMap);
-                }
+            	if (key.toLowerCase().contains(jsonCoordQualifier)) {
+            		additionalJsonsList.add(value);
+            	} else {
+            		String [] split = key.toString().split("\\.");
+                    if(split.length < 2){ // invalid key
+                        continue;
+                    }
+                    String repoName = split[0];
+                    String option = split[split.length - 1]; // incase there are periods in the key, cant use [1]
+                    if(repoMap.containsKey(repoName)){
+                        repoMap.get(repoName).put(option, value.toString());
+                    } else {
+                        HashMap<String, String> individualMap = new HashMap<>();
+                        individualMap.put(option, value.toString());
+                        repoMap.put(repoName, individualMap);
+                    }
+            	}
             }
         }
         // create the list of maven repositories

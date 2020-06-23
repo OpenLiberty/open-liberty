@@ -16,7 +16,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.zip.ZipFile;
 
@@ -165,6 +167,29 @@ public abstract class FeatureUtilityToolTest {
             os = rf.openForWriting(false);
             featureUtilityProps.setProperty(property, value);
             Log.info(c, "writeToProps", "Set the " + property + " to : " + value);
+            featureUtilityProps.store(os, null);
+            os.close();
+        } finally {
+            try {
+                os.close();
+            } catch (IOException e) {
+                // ignore we are trying to close.
+            }
+        }
+		
+	}
+    
+    public static void writeToProps(String remoteFileName, Map<String, String> map) throws Exception {
+        OutputStream os = null;
+        featureUtilityProps = new Properties();
+        try {
+            RemoteFile rf = new RemoteFile(server.getMachine(), remoteFileName);
+            os = rf.openForWriting(false);
+            Set<String> keyset = map.keySet();
+            for (String key: keyset) {
+            	featureUtilityProps.setProperty(key, map.get(key));
+            	Log.info(c, "writeToProps", "Set the " + key + " to : " + map.get(key));
+            }
             featureUtilityProps.store(os, null);
             os.close();
         } finally {
