@@ -22,11 +22,6 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.Response;
 
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpOptions;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
@@ -35,18 +30,15 @@ import componenttest.app.FATServlet;
 public class OptionsTestServlet extends FATServlet {
 
     private Client client;
-    private static HttpClient httpClient;
 
     @Override
     public void init() throws ServletException {
         client = ClientBuilder.newBuilder().build();
-        httpClient = new DefaultHttpClient();
     }
 
     @Override
     public void destroy() {
         client.close();
-        httpClient.getConnectionManager().shutdown();
     }
 
 
@@ -167,51 +159,16 @@ public class OptionsTestServlet extends FATServlet {
     @Test
     public void testOptions10(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
-        HttpResponse response = httpReq(req, "/options/options/test4/4");
-        assertEquals(200, response.getStatusLine().getStatusCode());
-        Header[] allowHeaders = response.getHeaders("Allow");
-        boolean foundGET = false;
-        boolean foundPUT = false;
-        boolean foundDELETE = false;
-        boolean foundPOST = false;
-        boolean foundOPTIONS = false;
-        boolean foundHEAD = false;
-        boolean foundPATCH = false;
-        String headerValues = "";
-        for (Header h : allowHeaders) {
-            String headerVal = h.getValue();
-            if (headerVal.contains("GET")) {
-                foundGET = true;
-            }
-            if (headerVal.contains("PUT")) {
-                foundPUT = true;
-            }
-            if (headerVal.contains("POST")) {
-                foundPOST = true;
-            }
-            if (headerVal.contains("OPTIONS")) {
-                foundOPTIONS = true;
-            }
-            if (headerVal.contains("HEAD")) {
-                foundHEAD = true;
-            }
-            if (headerVal.contains("DELETE")) {
-                foundDELETE = true;
-            }
-            if (headerVal.contains("PATCH")) {
-                foundPATCH = true;
-            }
-            headerValues = headerValues.concat(h + " " );
-        }
-        System.out.println("testOption10 Allowed headers are : " + headerValues);
-
-        assertTrue(foundGET);
-        assertTrue(foundPUT);
-        assertFalse(foundPOST);
-        assertTrue(foundOPTIONS);
-        assertTrue(foundHEAD);
-        assertTrue(foundDELETE);
-        assertFalse(foundPATCH);
+        Response response = req(req, "/options/options/test4/4");
+        assertEquals(200, response.getStatus());
+        System.out.println("testOptions10 Allowed headers are : " + response.getHeaderString("Allow"));
+        assertTrue(response.getHeaderString("Allow").contains("GET"));
+        assertTrue(response.getHeaderString("Allow").contains("PUT"));
+        assertFalse(response.getHeaderString("Allow").contains("POST"));
+        assertTrue(response.getHeaderString("Allow").contains("OPTIONS"));
+        assertTrue(response.getHeaderString("Allow").contains("HEAD"));
+        assertTrue(response.getHeaderString("Allow").contains("DELETE"));
+        assertFalse(response.getHeaderString("Allow").contains("PATCH"));
 
     }
 
@@ -220,12 +177,4 @@ public class OptionsTestServlet extends FATServlet {
         System.out.println("target : " + base + path);
         return client.target(base + path).request().options();
     }
-
-    private HttpResponse httpReq(HttpServletRequest request, String path) throws Exception {
-        String base = "http://" + request.getServerName() + ':' + request.getServerPort();
-        HttpOptions optionsMethod = new HttpOptions(base + path);
-        System.out.println("httpTarget : " + base + path);
-        return httpClient.execute(optionsMethod);
-    }
-
 }

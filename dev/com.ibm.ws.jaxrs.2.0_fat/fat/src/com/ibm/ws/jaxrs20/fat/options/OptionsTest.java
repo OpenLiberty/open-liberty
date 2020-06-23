@@ -42,13 +42,12 @@ public class OptionsTest {
         ShrinkHelper.exportDropinAppToServer(server, app);
         server.addInstalledAppForValidation(CONTEXT_ROOT);
 
-
         // Make sure we don't fail because we try to start an
         // already started server
         try {
             server.startServer(true);
         } catch (Exception e) {
-            System.out.println(e.toString());
+            e.printStackTrace();
         }
     }
 

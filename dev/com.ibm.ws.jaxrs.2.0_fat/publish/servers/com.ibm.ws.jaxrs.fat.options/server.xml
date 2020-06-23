@@ -5,9 +5,5 @@
     </featureManager>
 
   	<include location="../fatTestPorts.xml"/>
-  	
-	<javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
-    <javaPermission className="java.util.PropertyPermission" name="org.apache.commons.logging.*" actions="read"/>
-    <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/> 
 
 </server>
