@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jakarta.mail;
+package com.ibm.ws.jakartaee.mail;
 
 import org.osgi.framework.ServiceRegistration;
 

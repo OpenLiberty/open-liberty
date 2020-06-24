@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,4 +9,4 @@
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
 @org.osgi.annotation.versioning.Version("2.0.0")
-package com.ibm.ws.jakarta.mail;
+package com.ibm.ws.jakartaee.mail;

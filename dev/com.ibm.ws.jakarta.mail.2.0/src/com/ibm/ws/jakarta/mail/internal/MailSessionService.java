@@ -39,7 +39,7 @@ import com.ibm.websphere.crypto.UnsupportedCryptoAlgorithmException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.config.xml.internal.nester.Nester;
-import com.ibm.ws.jakarta.mail.MailSessionRegistrar;
+import com.ibm.ws.jakartaee.mail.MailSessionRegistrar;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 import com.ibm.wsspi.resource.ResourceFactory;

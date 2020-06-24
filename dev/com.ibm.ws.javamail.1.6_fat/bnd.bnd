@@ -30,7 +30,6 @@ tested.features: javaMail-2.0, \
   com.ibm.websphere.javaee.mail.1.6;version=latest, \
   com.ibm.websphere.appserver.thirdparty.mail-1.6;version=latest, \
   com.ibm.ws.org.apache.commons.logging.1.0.3;version=latest, \
-  com.ibm.websphere.appserver.thirdparty.mail-2.0;version=latest, \
   com.ibm.websphere.javaee.ejb.3.2;version=latest, \
   com.icegreen:greenmail;version=1.5.10, \
   org.slf4j:slf4j-api;version=1.7.7, \

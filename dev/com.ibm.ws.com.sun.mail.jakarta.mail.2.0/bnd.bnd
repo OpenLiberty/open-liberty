@@ -11,3 +11,4 @@
 -include= jar:${fileuri;${repo;com.sun.mail.jakarta.mail;2.0.0}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -buildpath: com.sun.mail:jakarta.mail;version=2.0.0
+

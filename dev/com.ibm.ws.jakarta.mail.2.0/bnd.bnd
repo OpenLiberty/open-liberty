@@ -34,15 +34,15 @@ Include-Resource: \
   @${repo;com.ibm.ws.com.sun.mail.jakarta.mail.2.0}!/META-INF/javamail.default.providers  
 
 Service-Component: \
-  com.ibm.ws.javamail_1_6_${replace;${bVersion};\\.;_}.ResourceProvider; \
+  com.ibm.ws.jakarta.mail_2_0_${replace;${bVersion};\\.;_}.ResourceProvider; \
     implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
     provide:=com.ibm.wsspi.classloading.ResourceProvider; \
     configuration-policy:=ignore; \
     properties:= "resources=${app-resources}"
 
--dsannotations=com.ibm.ws.javamail.internal.MailSessionService, \
-  com.ibm.ws.javamail.internal.injection.MailSessionDefinitionInjectionProcessorProvider, \
-  com.ibm.ws.javamail.internal.injection.MailSessionResourceFactoryBuilder
+-dsannotations=com.ibm.ws.jakarta.mail.internal.MailSessionService, \
+  com.ibm.ws.jakarta.mail.internal.injection.MailSessionDefinitionInjectionProcessorProvider, \
+  com.ibm.ws.jakarta.mail.internal.injection.MailSessionResourceFactoryBuilder
 
 ## The only file that is used by the app-resources is the
 ## mailcap file, this is because it is used by JAF to assess
@@ -53,17 +53,16 @@ app-resources= \
   META-INF/mailcap 
 
 Private-Package: \
-  com.ibm.ws.javamail.internal.injection, \
-  com.ibm.ws.javamail.internal, \
-  com.ibm.ws.javamail.resources, \
+  com.ibm.ws.jakarta.mail.internal.injection, \
+  com.ibm.ws.jakarta.mail.internal, \
+  com.ibm.ws.jakarta.mail.resources, \
   com.ibm.ws.config.xml.internal.nester
 
 Import-Package: \
   !*.internal.*, \
   *
 
-Export-Package: \
-  com.ibm.ws.jakarta.mail
+Export-Package: com.ibm.ws.jakartaee.mail
 
 instrument.classesExcludes: com/ibm/ws/jakarta/mail/resources/*.class
 

@@ -28,4 +28,6 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-     jakarta.mail:jakarta.mail-api;version=2.0.0
+     jakarta.mail:jakarta.mail-api;version=2.0.0, \
+     jakarta.activation:jakarta.activation-api;version=2.0.0
+     
