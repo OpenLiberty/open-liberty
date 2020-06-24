@@ -690,12 +690,14 @@ public class AccessTokenAuthenticatorTest {
     }
 
     @Test
-    public void testValidateJsonResponse_NotExpirationTime() throws IOException {
+    public void testValidateJsonResponse_noExpirationTime() throws IOException {
         final String JSONSTRING = "{\"user\":\"user1\" , \"active\":true}";
         JSONObject jobj = JSONObject.parse(JSONSTRING);
 
         mockery.checking(new Expectations() {
             {
+                one(clientConfig).requireExpClaimForIntrospection();
+                will(returnValue(true));
                 allowing(clientConfig).getInboundPropagation();
                 will(returnValue(REQUIRED));
             }
@@ -703,6 +705,30 @@ public class AccessTokenAuthenticatorTest {
 
         Boolean isValid = tokenAuth.validateJsonResponse(jobj, clientConfig);
         assertFalse("Expected to receive a false value but was received: " + isValid, isValid);
+    }
+
+    @Test
+    public void testValidateJsonResponse_noExpirationTime_doNotRequireExpClaim() throws IOException {
+        final String JSONSTRING = "{\"user\":\"user1\" , \"active\":true}";
+        JSONObject jobj = JSONObject.parse(JSONSTRING);
+        Calendar cal = Calendar.getInstance();
+        Long currentDate = cal.getTimeInMillis() / 1000;
+        jobj.put("iat", currentDate);
+        jobj.put("iss", GOOD_ISSUER);
+
+        mockery.checking(new Expectations() {
+            {
+                one(clientConfig).requireExpClaimForIntrospection();
+                will(returnValue(false));
+                one(clientConfig).disableIssChecking();
+                will(returnValue(false));
+                one(clientConfig).getIssuerIdentifier();
+                will(returnValue(GOOD_ISSUER));
+            }
+        });
+
+        Boolean isValid = tokenAuth.validateJsonResponse(jobj, clientConfig);
+        assertTrue("Response should have been considered valid, but was not.", isValid);
     }
 
     @Test
@@ -728,7 +754,7 @@ public class AccessTokenAuthenticatorTest {
     }
 
     @Test
-    public void testValidateJsonResponse_NotIssueAtTime() throws IOException {
+    public void testValidateJsonResponse_noIssueAtTime() throws IOException {
         Calendar cal = Calendar.getInstance();
         Long expTime = cal.getTimeInMillis() / 1000;
 
@@ -737,6 +763,8 @@ public class AccessTokenAuthenticatorTest {
 
         mockery.checking(new Expectations() {
             {
+                one(clientConfig).requireIatClaimForIntrospection();
+                will(returnValue(true));
                 allowing(clientConfig).getInboundPropagation();
                 will(returnValue(REQUIRED));
             }
@@ -744,6 +772,30 @@ public class AccessTokenAuthenticatorTest {
 
         Boolean isValid = tokenAuth.validateJsonResponse(jobj, clientConfig);
         assertFalse("Expected to receive a false value but was received: " + isValid, isValid);
+    }
+
+    @Test
+    public void testValidateJsonResponse_noIssueAtTime_doNotRequireIatClaim() throws IOException {
+        Calendar cal = Calendar.getInstance();
+        Long expTime = cal.getTimeInMillis() / 1000;
+
+        final String JSONSTRING = getJSONObjectString(true, expTime);
+        JSONObject jobj = JSONObject.parse(JSONSTRING);
+        jobj.put("iss", GOOD_ISSUER);
+
+        mockery.checking(new Expectations() {
+            {
+                one(clientConfig).requireIatClaimForIntrospection();
+                will(returnValue(false));
+                one(clientConfig).disableIssChecking();
+                will(returnValue(false));
+                one(clientConfig).getIssuerIdentifier();
+                will(returnValue(GOOD_ISSUER));
+            }
+        });
+
+        Boolean isValid = tokenAuth.validateJsonResponse(jobj, clientConfig);
+        assertTrue("Response should have been considered valid, but was not.", isValid);
     }
 
     @Test
