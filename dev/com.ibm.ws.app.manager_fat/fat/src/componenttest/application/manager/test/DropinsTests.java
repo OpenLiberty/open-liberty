@@ -254,65 +254,6 @@ public class DropinsTests extends AbstractAppManagerTest {
         }
     }
 
-    /**
-     * Using dropins we install a loose config application. We then test that it is installed,
-     * add an excluded file to make sure that it doesn't update and then add a non-exluded file
-     * to make sure that the loose application does update when it is added. As we already test
-     * the updating of applications we don't update the application and only need to look for
-     * the updated message.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testLooseConfigAppUpdating() throws Exception {
-        final String method = testName.getMethodName();
-        try {
-
-            server.setServerConfigurationFile("/looseApplication/server.xml");
-            server.startServer(method + ".log");
-
-            // Pause to make sure the server is ready to install apps
-            assertNotNull("The server never reported that it was ready to install web apps.",
-                          server.waitForStringInLog("CWWKZ0058I:"));
-
-            //copy extracted application to server, then add the server xml that defines it to dropins
-
-            TestUtils.unzip(new File(PUBLISH_UPDATED + "/testWarApplication.war"),
-                            new File(server.getServerRoot() + "/testWarApplication"));
-            server.copyFileToLibertyServerRoot(DROPINS_FISH_DIR, "looseApplication/testWarApplication.war.xml");
-
-            // Pause for application to start properly and server to say it's listening on ports
-            final int httpDefaultPort = server.getHttpDefaultPort();
-            assertNotNull("The server never reported that it was listening on port " + httpDefaultPort,
-                          server.waitForStringInLog("CWWKO0219I.*" + httpDefaultPort));
-            assertNotNull("The application testWarApplication did not appear to have started.",
-                          server.waitForStringInLog("CWWKZ0001I.* testWarApplication"));
-            assertNotNull("The server did not report that the loose app was being used",
-                          server.waitForStringInLog("CWWKZ0134I.* testWarApplication"));
-
-            URL url = new URL("http://" + server.getHostname() + ":" + httpDefaultPort + "/testWarApplication/TestServlet");
-            Log.info(c, method, "Calling test Application with URL=" + url.toString());
-            //check application is installed
-            HttpURLConnection con = HttpUtils.getHttpConnection(url, HttpURLConnection.HTTP_OK, CONN_TIMEOUT);
-            BufferedReader br = HttpUtils.getConnectionStream(con);
-            String line = br.readLine();
-            assertTrue("The response did not contain the \'Test servlet\'",
-                       line.contains(UPDATED_MESSAGE));
-            con.disconnect();
-
-            //now we have confirmed it is excluding .txt file updates, add a non txt file and make sure it updates
-            server.copyFileToLibertyServerRoot("/testWarApplication/WEB-INF", "updatedApplications/blankFile.blk");
-
-            //make sure the application is claiming to have been updated (we only expect 1 updated message to appear, so no need to check for multiple).
-            assertNotNull("The application testWarApplication did not appear to have been updated when we added a valid file type.",
-                          server.waitForStringInLog("CWWKZ0003I.* testWarApplication"));
-        } finally {
-            pathsToCleanup.add(server.getServerRoot() + "/" + DROPINS_FISH_DIR);
-            pathsToCleanup.add(server.getServerRoot() + "/testWarApplication");
-            pathsToCleanup.add(server.getServerRoot() + "/testWarApplication.war");
-        }
-    }
-
     @Test
     @Mode(TestMode.FULL)
     public void testLooseConfigAppUpdatingFull() throws Exception {
@@ -376,6 +317,7 @@ public class DropinsTests extends AbstractAppManagerTest {
      * directory in the server xml, that the old dropins directory is removed.
      */
     @Test
+    @Mode(TestMode.FULL)
     @FFDCIgnore(value = { IOException.class })
     public void testDropinsDeletedWhenEmptyMonitoredDirChanges() throws Exception {
         final String method = testName.getMethodName();
