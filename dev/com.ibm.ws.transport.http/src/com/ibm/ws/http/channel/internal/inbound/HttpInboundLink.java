@@ -366,7 +366,7 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
                     // null checks should not be needed, but one intermittent build break suggested otherwise.
                     HttpInboundServiceContextImpl contextImpl = this.myInterface;
                     if (contextImpl != null) {
-                        HttpInboundLink link = this.myInterface.getLink();
+                        HttpInboundLink link = contextImpl.getLink();
                         if (link != null) {
                             // if the grpc flag is set, then link is really a LinkWrap
                             ((H2HttpInboundLinkWrap) link).countDownFirstReadLatch();
