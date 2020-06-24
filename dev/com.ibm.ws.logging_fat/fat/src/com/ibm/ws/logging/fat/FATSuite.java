@@ -36,7 +36,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 RealFlushTest.class,
                 JSONFieldsTest.class,
                 ConsoleFormatTest.class,
-                CustomAccessLogFieldsTest.class
+                CustomAccessLogFieldsTest.class,
+                TraceInjectionTest.class
 })
 
 public class FATSuite {
