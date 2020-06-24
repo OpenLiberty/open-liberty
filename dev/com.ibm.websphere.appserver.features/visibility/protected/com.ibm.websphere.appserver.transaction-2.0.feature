@@ -37,6 +37,6 @@ IBM-API-Service: com.ibm.wsspi.uow.UOWManager, \
  com.ibm.ws.cdi.interfaces.jakarta
 -jars=com.ibm.websphere.appserver.spi.transaction; location:=dev/spi/ibm/
 -files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.transaction_1.1-javadoc.zip
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel

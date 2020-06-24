@@ -8,6 +8,6 @@ IBM-API-Package: jakarta.json; type="spec", \
 IBM-ShortName: jsonp-2.0
 Subsystem-Name: JavaScript Object Notation Processing 2.0
 -features=com.ibm.websphere.appserver.jsonpInternal-2.0
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel
