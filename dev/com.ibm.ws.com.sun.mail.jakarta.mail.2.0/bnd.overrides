@@ -35,8 +35,8 @@ jakarta.mail.event, \
 jakarta.mail.internet, \
 jakarta.mail.search, \
 jakarta.mail.util, \
-com.sun.mail;version="1.6.2"; thread-context=true, \
-com.sun.mail.auth;version="1.6.2"; thread-context=true, \
+com.sun.mail;version="2.0.0"; thread-context=true, \
+com.sun.mail.auth;version="2.0.0"; thread-context=true, \
 com.sun.mail.imap; thread-context=true, \
 com.sun.mail.imap.protocol; thread-context=true, \
 com.sun.mail.iap; thread-context=true, \
