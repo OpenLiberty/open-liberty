@@ -464,7 +464,7 @@ public class UsernameTokenValidator implements Validator {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Caught exception while parse a timestamp as '" + strTimeStamp + "' : " + pe);
             }
-            throw new WSSecurityException("Can not parse TimeStamp :  " + strTimeStamp, pe);
+            throw new WSSecurityException("Can not parse TimeStamp :" + strTimeStamp, pe);
         }
         return date;
     }
