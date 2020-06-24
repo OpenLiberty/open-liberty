@@ -63,8 +63,6 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
 
     private HttpInboundServiceContextImpl httpInboundServiceContextImpl = null;
 
-    public boolean grpcInUse = false;
-
     /** RAS tracing variable */
     private static final TraceComponent tc = Tr.register(H2HttpInboundLinkWrap.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
@@ -92,16 +90,12 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
 
                 Map<String, GrpcServletServices.ServiceInformation> servicePaths = GrpcServletServices.getServletGrpcServices();
                 if (servicePaths != null && !servicePaths.isEmpty()) {
-                    grpcInUse = true;
+                    setIsGrpcInParentLink(true);
                     routeGrpcServletRequest(servicePaths);
                 }
             }
         }
         super.ready(inVC);
-    }
-
-    public boolean isGrpcInUse() {
-        return this.grpcInUse;
     }
 
     /**
