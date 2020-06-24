@@ -21,6 +21,8 @@ Bundle-SymbolicName: io.openliberty.jaxb.3.0.internal.tools; singleton:=true
 app-resources= \
   META-INF/services/com.sun.tools.xjc.Plugin |\
   META-INF/services/org.relaxng.datatype.DatatypeLibraryFactory | \
+  META-INF/services/jakarata.xml.bind.JAXBContext | \
+  META-INF/services/jakarta.xml.bind.JAXBContextFactory | \
   META-INF/services/org.iso_relax.verifier.VerifierFactoryLoader
 
 Service-Component: \
@@ -70,7 +72,9 @@ Include-Resource: \
   @${repo;com.sun.xml.bind.external:rngom;3.0.0}!/!META-INF/maven/*, \
   @${repo;com.sun.istack:istack-commons-runtime;4.0.0}!/!META-INF/maven/*, \
   @${repo;com.sun.istack:istack-commons-tools;4.0.0}!/!META-INF/maven/*, \
-  @${repo;org.glassfish.jaxb:jaxb-xjc;3.0.0}!/!META-INF/maven/*
+  @${repo;org.glassfish.jaxb:jaxb-xjc;3.0.0}!/!META-INF/maven/*, \
+  META-INF/services/jakarta.xml.bind.JAXBContext=resources/META-INF/services/jakarta.xml.bind.JAXBContext, \
+  META-INF/services/jakarta.xml.bind.JAXBContextFactory=resources/META-INF/services/jakarta.xml.bind.JAXBContextFactory
 
 Private-Package:\
   io.openliberty.jaxb.tools.*, \
