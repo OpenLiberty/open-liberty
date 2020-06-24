@@ -19,7 +19,6 @@ import org.apache.cxf.service.model.EndpointInfo;
 import org.apache.cxf.transport.Conduit;
 import org.apache.cxf.transport.http.HTTPConduitConfigurer;
 import org.apache.cxf.transport.http.HTTPTransportFactory;
-import org.apache.cxf.transport.http.URLConnectionHTTPConduit;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 
@@ -42,7 +41,7 @@ public class LibertyHTTPTransportFactory extends HTTPTransportFactory {
     @Override
     public Conduit getConduit(EndpointInfo endpointInfo, EndpointReferenceType target) throws IOException {
         //create our LibertyHTTPConduit so that we can set the TCCL when run the handleResponseInternal asynchronously
-        URLConnectionHTTPConduit conduit = new URLConnectionHTTPConduit(bus, endpointInfo, target);
+        LibertyHTTPConduit conduit = new LibertyHTTPConduit(bus, endpointInfo, target);
 
         //following are copied from the super class.
         //Spring configure the conduit.  
