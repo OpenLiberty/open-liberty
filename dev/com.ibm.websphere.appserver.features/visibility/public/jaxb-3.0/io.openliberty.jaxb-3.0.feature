@@ -11,20 +11,7 @@ IBM-API-Package: \
   jakarta.xml.bind.annotation.adapters;  type="spec", \
   jakarta.xml.bind.attachment;  type="spec", \
   jakarta.xml.bind.helpers;  type="spec", \
-  jakarta.xml.bind.util;  type="spec", \
-  org.glassfish.jaxb.core; type="internal", \
-  org.glassfish.jaxb.core.annotation; type="internal", \
-  org.glassfish.jaxb.core.api; type="internal", \
-  org.glassfish.jaxb.core.marshaller; type="internal", \
-  org.glassfish.jaxb.core.unmarshaller; type="internal", \
-  org.glassfish.jaxb.core.util; type="internal", \
-  org.glassfish.jaxb.core.v2; type="internal", \
-  org.glassfish.jaxb.runtime; type="internal", \
-  org.glassfish.jaxb.runtime.api; type="internal", \
-  org.glassfish.jaxb.runtime.marshaller; type="internal", \
-  org.glassfish.jaxb.runtime.unmarshaller; type="internal", \
-  org.glassfish.jaxb.runtime.util; type="internal", \
-  org.glassfish.jaxb.runtime.v2; type="internal"
+  jakarta.xml.bind.util;  type="spec"
 IBM-ShortName: jaxb-3.0
 IBM-Process-Types: client, \
  server
