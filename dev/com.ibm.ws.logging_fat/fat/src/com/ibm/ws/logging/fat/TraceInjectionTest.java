@@ -23,7 +23,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
@@ -31,6 +33,7 @@ import componenttest.topology.utils.HttpUtils;
 /**
  *
  */
+@RunWith(FATRunner.class)
 public class TraceInjectionTest {
     protected static LibertyServer server;
     private static final int CONN_TIMEOUT = 10;
