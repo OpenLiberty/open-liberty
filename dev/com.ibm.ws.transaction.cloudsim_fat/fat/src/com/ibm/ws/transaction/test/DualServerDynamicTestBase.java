@@ -14,10 +14,10 @@ import static org.junit.Assert.fail;
 
 import java.io.FileNotFoundException;
 
+import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.cloudtx.ut.util.LastingXAResourceImpl;
 
 import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.impl.LibertyServer;

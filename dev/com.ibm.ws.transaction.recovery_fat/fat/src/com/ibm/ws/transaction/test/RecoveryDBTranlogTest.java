@@ -88,6 +88,13 @@ public class RecoveryDBTranlogTest extends FATServletClient {
     }
 
     @Test
+    @AllowedFFDC(value = { "javax.transaction.xa.XAException" })
+    public void testRec000DBLog() throws Exception {
+        recoveryTest("007");
+        recoveryTest("090");
+    }
+
+    @Test
     public void testRec001DBLog() throws Exception {
         recoveryTest("001");
     }
@@ -124,8 +131,8 @@ public class RecoveryDBTranlogTest extends FATServletClient {
     }
 
     @Test
-    @AllowedFFDC(value = { "javax.transaction.xa.XAException" })
     @Mode(TestMode.LITE)
+    @AllowedFFDC(value = { "javax.transaction.xa.XAException" })
     public void testRec007DBLog() throws Exception {
         recoveryTest("007");
     }
