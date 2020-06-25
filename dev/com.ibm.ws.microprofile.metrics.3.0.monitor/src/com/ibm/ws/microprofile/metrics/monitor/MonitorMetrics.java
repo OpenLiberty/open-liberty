@@ -42,6 +42,7 @@ public class MonitorMetrics {
 		this.vendorMetricIDs = new HashSet<MetricID>();
 		this.baseMetricIDs = new HashSet<MetricID>();
 	}
+	
 
 	public void createMetrics(SharedMetricRegistries sharedMetricRegistry, String[][] data) {
 
@@ -122,6 +123,10 @@ public class MonitorMetrics {
 				metricID = new MetricID(metricName, classTag, methodTag);
 				metricIDSet.add(metricID);
 				sharedMetricRegistry.associateMetricIDToApplication(metricID, appName, metricRegistry);
+				
+				
+				//Make sure we register the UnmappedException counter.
+				MetricsJaxRsEMCallbackImpl.registerOrRetrieveRESTUnmappedExceptionMetric(objName_rest[1], objName_rest[2]);
 				
 				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
 					Tr.debug(tc, "Registered " + metricID.toString());
