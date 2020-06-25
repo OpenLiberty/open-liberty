@@ -39,7 +39,6 @@ import java.util.Properties;
 import java.util.Set;
 
 import javax.security.auth.Subject;
-import javax.security.auth.kerberos.KerberosTicket;
 import javax.sql.CommonDataSource; 
 import javax.sql.DataSource; 
 import javax.sql.PooledConnection;
@@ -79,7 +78,6 @@ import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.DSConfig; 
 import com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcTracer;
-import com.ibm.ws.security.authentication.utility.SubjectHelper;
 
 /**
  * This class implements the javax.resource.spi.ManagedConnectionFactory interface. The instance
@@ -652,13 +650,6 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
                         //This is option B
                         if (isAnyTraceOn && tc.isEventEnabled()) 
                             Tr.event(this, tc, "Using GSSCredential for authentication");
-                        break;
-                    } else if (credential instanceof KerberosTicket) {
-                        useKerb = true;
-                        credential = SubjectHelper.getGSSCredentialFromSubject(subject);
-                        if (isAnyTraceOn && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Obtained credential from KerberosTicket of type: " + credential.getClass().getCanonicalName());
-                        }
                         break;
                     }
                 }

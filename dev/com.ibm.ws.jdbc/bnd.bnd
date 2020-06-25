@@ -100,7 +100,6 @@ DynamicImport-Package: \
     com.ibm.ws.timedoperations.bci, \
     com.ibm.wsspi.request.probe.bci, \
     com.ibm.wsspi.probeExtension, \
-    com.ibm.ws.security.authentication.utility, \
     com.ibm.ws.security.jaas.common
 
 instrument.disabled: true
@@ -109,7 +108,6 @@ instrument.disabled: true
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.websphere.javaee.connector.1.6;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
-	com.ibm.websphere.security;version=latest,\
 	com.ibm.ws.tx.embeddable;version=latest,\
 	com.ibm.tx.jta;version=latest,\
 	com.ibm.ws.jca.cm;version=latest,\

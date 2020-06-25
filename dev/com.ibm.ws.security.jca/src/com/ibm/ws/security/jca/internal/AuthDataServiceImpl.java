@@ -23,7 +23,9 @@ import javax.security.auth.Subject;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
+import javax.security.auth.spi.LoginModule;
 
+import org.ietf.jgss.GSSCredential;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Reference;
@@ -37,8 +39,8 @@ import com.ibm.websphere.security.auth.data.AuthData;
 import com.ibm.websphere.security.auth.data.AuthDataProvider;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.SecurityService;
-import com.ibm.ws.security.authentication.jaas.modules.Krb5LoginModuleWrapper;
 import com.ibm.ws.security.authentication.principals.WSPrincipal;
+import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.security.intfc.SubjectManagerService;
 import com.ibm.ws.security.jca.AuthDataService;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -164,9 +166,23 @@ public class AuthDataServiceImpl implements AuthDataService {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private Subject doKerberosLogin(String principal, Path keytab) throws LoginException {
+        Class<LoginModule> Krb5LoginModule = null;
+        try {
+            Krb5LoginModule = (Class<LoginModule>) Class.forName("com.ibm.ws.security.authentication.jaas.modules.Krb5LoginModuleWrapper");
+        } catch (ClassNotFoundException e) {
+            // TODO: Raise exception for needing to enable one of the security features?
+            throw new LoginException("Need to enable a security feature");
+        }
         Subject subject = new Subject();
-        Krb5LoginModuleWrapper krb5 = new Krb5LoginModuleWrapper();
+        LoginModule krb5;
+        try {
+            krb5 = Krb5LoginModule.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+            throw new LoginException(e.getMessage()); // TODO
+        }
         Map<String, String> options = new HashMap<String, String>();
         Map<String, Object> sharedState = new HashMap<String, Object>();
 
@@ -190,6 +206,14 @@ public class AuthDataServiceImpl implements AuthDataService {
         krb5.initialize(subject, null, sharedState, options);
         krb5.login();
         krb5.commit();
+
+        // If the created Subject does not have a GSSCredential, then create one and
+        // associate it with the Subject
+        Set<GSSCredential> gssCreds = subject.getPrivateCredentials(GSSCredential.class);
+        if (gssCreds == null || gssCreds.size() == 0) {
+            GSSCredential gssCred = SubjectHelper.getGSSCredentialFromSubject(subject);
+            subject.getPrivateCredentials().add(gssCred); // TODO: doPriv
+        }
 
         return subject;
     }

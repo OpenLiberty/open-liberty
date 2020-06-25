@@ -58,6 +58,6 @@
     <containerAuthData user="${DB2_USER}"  password="${DB2_PASS}"/>
   </dataSource>
     
-  <javaPermission codebase="${server.config.dir}db2/*" className="java.security.AllPermission"/>
+  <javaPermission codebase="${server.config.dir}db2/jcc.jar" className="java.security.AllPermission"/>
   <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
 </server>
