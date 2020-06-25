@@ -99,4 +99,9 @@ public class LraConfig {
         String host = (String) this.properties.get("host");
         return host;
     }
+
+    public String getPath() {
+        String path = (String) this.properties.get("path");
+        return path;
+    }
 }

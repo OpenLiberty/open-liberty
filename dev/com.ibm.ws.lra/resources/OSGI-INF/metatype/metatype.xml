@@ -29,7 +29,12 @@
             name="%lra.coordinator.host.name"
             description="%lra.coordinator.host.desc"
             required="false" type="String" default="localhost" />
-
+            
+        <AD id="path"
+            name="%lra.coordinator.path.name"
+            description="%lra.coordinator.path.desc"
+            required="false" type="String" default="lra-coordinator" />
+            
     </OCD>
 
     <Designate pid="com.ibm.ws.lra.config">

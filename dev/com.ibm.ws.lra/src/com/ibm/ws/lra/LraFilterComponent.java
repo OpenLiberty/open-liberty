@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.lra;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -22,6 +24,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxrs20.providers.api.JaxRsProviderRegister;
 
+import io.narayana.lra.client.NarayanaLRAClient;
 import io.narayana.lra.filter.ClientLRARequestFilter;
 import io.narayana.lra.filter.ClientLRAResponseFilter;
 import io.narayana.lra.filter.ServerLRAFilter;
@@ -52,18 +55,18 @@ public class LraFilterComponent implements JaxRsProviderRegister {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "LraFilterComponent activated with a service", properties);
         }
-        /*
-         *
-         * try {
-         * URI coord = new URI("http://localhost:8081/lra-coordinator");
-         * NarayanaLRAClient.setDefaultCoordinatorEndpoint(coord);
-         * } catch (URISyntaxException e) {
-         * throw new RuntimeException("oops", e);
-         * }
-         * Tr.error(tc, "We have set a default");
-         */
-        Tr.error(tc, "Host from config is " + config.getHost());
-        Tr.error(tc, "Port from config is " + config.getPort());
+        String coordString = "http://" + config.getHost() + ":" + config.getPort() + "/" + config.getPath();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isInfoEnabled()) {
+            Tr.info(tc, "Attempting to contact coordinator at " + coordString);
+        }
+        try {
+            URI coord = new URI(coordString);
+            NarayanaLRAClient.setDefaultCoordinatorEndpoint(coord);
+        } catch (URISyntaxException e) {
+            // TODO Not sure how to handle config problems yet
+            Tr.error(tc, "Things went wrong");
+            throw new RuntimeException("Failed to set coordinator path to " + coordString, e);
+        }
 
     }
 
