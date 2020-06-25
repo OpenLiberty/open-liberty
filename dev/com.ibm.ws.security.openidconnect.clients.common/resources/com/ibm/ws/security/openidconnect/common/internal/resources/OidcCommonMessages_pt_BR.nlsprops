@@ -184,6 +184,6 @@ PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.explanation=O token n\u00e3o pode c
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=Obtenha um novo token que n\u00e3o cont\u00e9m a solicita\u00e7\u00e3o especificada ou mude o valor de atributo de configura\u00e7\u00e3o especificado para permitir que a solicita\u00e7\u00e3o seja inclu\u00edda no token.
 
 # 0=Client ID, 1=List of invalid parameter names, 2=forwardLoginParameter
-BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED=CWWKS1783W: O cliente do OpenID Connect [{0}] inclui {1} nos valores especificados pelo atributo de configura\u00e7\u00e3o [{2}]. Os valores especificados ser\u00e3o ignorados.
-BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED.explanation=A especifica\u00e7\u00e3o do OAuth 2.0 define um conjunto de par\u00e2metros de solicita\u00e7\u00e3o reservados que devem ser fornecidos pelo cliente para solicita\u00e7\u00f5es de autoriza\u00e7\u00e3o. Os valores para esses par\u00e2metros reservados n\u00e3o podem ser fornecidos pelo usu\u00e1rio.
-BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=Remova os valores especificados da lista de valores definidos na configura\u00e7\u00e3o do cliente do OpenID Connect.
+DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED=CWWKS1783W: O cliente do OpenID Connect [{0}] inclui {1} nos valores especificados pelo atributo de configura\u00e7\u00e3o [{2}]. Os valores especificados ser\u00e3o ignorados.
+DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.explanation=A especifica\u00e7\u00e3o do OAuth 2.0 define um conjunto de par\u00e2metros de solicita\u00e7\u00e3o reservados que devem ser fornecidos pelo cliente para solicita\u00e7\u00f5es de autoriza\u00e7\u00e3o. Os valores para esses par\u00e2metros reservados n\u00e3o podem ser fornecidos pelo usu\u00e1rio.
+DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=Remova os valores especificados da lista de valores definidos na configura\u00e7\u00e3o do cliente do OpenID Connect.
