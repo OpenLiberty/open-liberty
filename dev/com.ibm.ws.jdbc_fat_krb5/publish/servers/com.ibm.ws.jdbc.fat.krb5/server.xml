@@ -31,16 +31,14 @@
   
   <dataSource jndiName="jdbc/krb/basic">
     <jdbcDriver libraryRef="DB2JCCLib"/>
-    <properties.db2.jcc databaseName="${DB2_DBNAME}" serverName="${DB2_HOSTNAME}" portNumber="${DB2_PORT}" 
-                         driverType="4" securityMechanism="11"/>
+    <properties.db2.jcc databaseName="${DB2_DBNAME}" serverName="${DB2_HOSTNAME}" portNumber="${DB2_PORT}"/>
     <containerAuthData krb5Principal="${KRB5_USER}" 
                        krb5Keytab="${server.config.dir}security/krb5.keytab"/>
   </dataSource>
   
   <dataSource jndiName="jdbc/krb/xa" type="javax.sql.XADataSource">
     <jdbcDriver libraryRef="DB2JCCLib" />
-    <properties.db2.jcc databaseName="${DB2_DBNAME}" serverName="${DB2_HOSTNAME}" portNumber="${DB2_PORT}" 
-                         driverType="4" securityMechanism="11"/>
+    <properties.db2.jcc databaseName="${DB2_DBNAME}" serverName="${DB2_HOSTNAME}" portNumber="${DB2_PORT}"/>
     <containerAuthData krb5Principal="${KRB5_USER}" 
                        krb5Keytab="${server.config.dir}security/krb5.keytab"/>
   </dataSource>
@@ -48,8 +46,7 @@
   <!-- Mis-configured datasource: bogus name for krb5Principal -->
   <dataSource jndiName="jdbc/krb/invalidPrincipal">
     <jdbcDriver libraryRef="DB2JCCLib"/>
-    <properties.db2.jcc databaseName="${DB2_DBNAME}" serverName="${DB2_HOSTNAME}" portNumber="${DB2_PORT}" 
-                         driverType="4" securityMechanism="11"/>
+    <properties.db2.jcc databaseName="${DB2_DBNAME}" serverName="${DB2_HOSTNAME}" portNumber="${DB2_PORT}"/>
     <containerAuthData krb5Principal="bogus" 
                        krb5Keytab="${server.config.dir}security/krb5.keytab"/>
   </dataSource>

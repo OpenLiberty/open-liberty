@@ -66,8 +66,6 @@ public class DB2JCCHelper extends DB2Helper {
      */
     private final AtomicReference<Method>
                     getDB2Correlator = new AtomicReference<Method>(),
-                    getDB2PooledConnection = new AtomicReference<Method>(),
-                    getDB2XAConnection = new AtomicReference<Method>(),
                     isInDB2UnitOfWork = new AtomicReference<Method>(),
                     reuseDB2Connection = new AtomicReference<Method>(),
                     setDB2ClientUser = new AtomicReference<Method>(),
@@ -76,6 +74,9 @@ public class DB2JCCHelper extends DB2Helper {
                     setDB2ClientAccountingInformation = new AtomicReference<Method>(),
                     setJCCLogWriter = new AtomicReference<Method>(),
                     setJCCLogWriter2 = new AtomicReference<Method>();
+    private Method getDB2PooledConnection;
+    private Method getDB2XAConnection;
+    private Method getSecurityMechanism;
 
     /**
      * DB2 JCC method signatures
@@ -623,21 +624,25 @@ public class DB2JCCHelper extends DB2Helper {
                                                               Object gssCredential,
                                                               boolean is2Phase) throws ResourceException {
         try {
+            // Before getting the connection, ensure securityMechanism is set to 11 (kerberos)
+            if (getSecurityMechanism == null)
+                getSecurityMechanism = ds.getClass().getMethod("getSecurityMechanism");
+            short secMec = (short) getSecurityMechanism.invoke(ds);
+            if (secMec == 0) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "Overriding existing securityMechanism of " + secMec + " to 11 (kerberos)");
+                ds.getClass().getMethod("setSecurityMechanism", short.class).invoke(ds, (short) 11);
+            }
+            
             if (is2Phase) {
                 // Method returns DB2XAConnection which also extends PooledConnection
-                Method getXAConnection = getDB2XAConnection.get();
-                if (getXAConnection == null) {
-                    getXAConnection = ds.getClass().getMethod("getDB2XAConnection", GSSCredential.class, Properties.class);
-                    getDB2XAConnection.set(getXAConnection);
-                }
-                return (PooledConnection) getXAConnection.invoke(ds, gssCredential, null);
+                if (getDB2XAConnection == null)
+                    getDB2XAConnection = ds.getClass().getMethod("getDB2XAConnection", GSSCredential.class, Properties.class);
+                return (PooledConnection) getDB2XAConnection.invoke(ds, gssCredential, null);
             } else {
-                Method getPooledConnection = getDB2PooledConnection.get();
-                if (getPooledConnection == null) {
-                    getPooledConnection = ds.getClass().getMethod("getDB2PooledConnection", GSSCredential.class, Properties.class);
-                    getDB2PooledConnection.set(getPooledConnection);
-                }
-                return (PooledConnection) getPooledConnection.invoke(ds, gssCredential, null);
+                if (getDB2PooledConnection == null)
+                    getDB2PooledConnection = ds.getClass().getMethod("getDB2PooledConnection", GSSCredential.class, Properties.class);
+                return (PooledConnection) getDB2PooledConnection.invoke(ds, gssCredential, null);
             }
         } catch (Exception e) {
             throw new ResourceException(e);
