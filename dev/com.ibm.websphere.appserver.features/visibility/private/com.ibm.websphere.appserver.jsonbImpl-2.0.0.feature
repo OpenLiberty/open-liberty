@@ -9,6 +9,6 @@ visibility=private
   com.ibm.websphere.appserver.eeCompatible-9.0
 -bundles=com.ibm.ws.org.eclipse.yasson.2.0.jakarta, \
   io.openliberty.jakarta.jsonb.2.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.json.bind:jakarta.json.bind-api:2.0.0"
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel
