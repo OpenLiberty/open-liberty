@@ -32,6 +32,7 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -117,12 +118,20 @@ public class HelloWorldTest extends FATServletClient {
     }
 
     /**
-     * testHelloWorld() with TLS enabled
+     * testHelloWorld() with TLS enabled.
+     * This test will only be performed if the native JDK 9+ ALPN provider is available.
      *
      * @throws Exception
      */
     @Test
     public void testHelloWorldWithTls() throws Exception {
+
+        if (JavaInfo.forServer(helloWorldServer).majorVersion() < 9) {
+            Log.info(c, name.getMethodName(), "IBM JDK8 ALPN is not yet supported by the netty grpc client;"
+                                              + " this test will be skipped until that support is added");
+            return;
+        }
+
         String contextRoot = "HelloWorldClient";
         try (WebClient webClient = new WebClient()) {
 
