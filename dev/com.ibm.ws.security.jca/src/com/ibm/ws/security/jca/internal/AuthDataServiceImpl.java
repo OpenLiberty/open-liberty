@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2016 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.security.jca.internal;
 
+import java.nio.file.Path;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,11 +30,14 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.auth.data.AuthData;
 import com.ibm.websphere.security.auth.data.AuthDataProvider;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.SecurityService;
+import com.ibm.ws.security.authentication.jaas.modules.Krb5LoginModuleWrapper;
 import com.ibm.ws.security.authentication.principals.WSPrincipal;
 import com.ibm.ws.security.intfc.SubjectManagerService;
 import com.ibm.ws.security.jca.AuthDataService;
@@ -43,7 +48,7 @@ import com.ibm.wsspi.security.auth.callback.WSMappingCallbackHandler;
  * The AuthDataService is the interface to obtain the subject for an auth data alias.
  * The subject is optimized.
  * The concurrent access to the auth data config objects is protected by read and write locks for efficiency.
- * 
+ *
  * NOTE: Caching of subjects was removed under defect 63520, due to the following two reasons
  * which we could not address in the GA timeframe:
  * 1) ManagedConnectionFactory on the PasswordCredential is used to compare which PasswordCredentials are relevant to
@@ -55,6 +60,8 @@ import com.ibm.wsspi.security.auth.callback.WSMappingCallbackHandler;
  * since the subject cache keeps a reference to the old ManagedConnectionFactory, it causes a classloader leak.
  */
 public class AuthDataServiceImpl implements AuthDataService {
+
+    private static final TraceComponent tc = Tr.register(AuthDataServiceImpl.class);
 
     protected static final String CFG_KEY_ID = "id";
     protected static final String CFG_KEY_DISPLAY_ID = "config.displayId";
@@ -117,7 +124,7 @@ public class AuthDataServiceImpl implements AuthDataService {
 
     private Subject createSubjectUsingJAAS(String jaasEntryName, ManagedConnectionFactory managedConnectionFactory, Map<String, Object> loginData) throws LoginException {
         CallbackHandler callbackHandler = new WSMappingCallbackHandler(loginData, managedConnectionFactory);
-	// NOTE: Do NOT add a doPriv here -- users must explicitly grant authority to user-defined login modules
+        // NOTE: Do NOT add a doPriv here -- users must explicitly grant authority to user-defined login modules
         LoginContext loginContext = new LoginContext(jaasEntryName, callbackHandler);
         loginContext.login();
         Subject subject = loginContext.getSubject();
@@ -137,7 +144,7 @@ public class AuthDataServiceImpl implements AuthDataService {
 
     /**
      * Gets the auth data for the specified auth data alias.
-     * 
+     *
      * @param authDataAlias the auth data alias representing the auth data entry in the configuration.
      * @return the auth data.
      */
@@ -146,10 +153,44 @@ public class AuthDataServiceImpl implements AuthDataService {
         return authDataProviderRef.getService().getAuthData(authDataAlias);
     }
 
-    private Subject obtainSubject(ManagedConnectionFactory managedConnectionFactory, AuthData authData) {
-        Subject subject = createSubject(managedConnectionFactory, authData);
-        addInvocationSubjectPrincipal(subject);
-        optimize(subject);
+    private Subject obtainSubject(ManagedConnectionFactory managedConnectionFactory, AuthData authData) throws LoginException {
+        if (authData.getKrb5Principal() != null) {
+            return doKerberosLogin(authData.getKrb5Principal(), authData.getKrb5Keytab());
+        } else {
+            Subject subject = createSubject(managedConnectionFactory, authData);
+            addInvocationSubjectPrincipal(subject);
+            optimize(subject);
+            return subject;
+        }
+    }
+
+    private Subject doKerberosLogin(String principal, Path keytab) throws LoginException {
+        Subject subject = new Subject();
+        Krb5LoginModuleWrapper krb5 = new Krb5LoginModuleWrapper();
+        Map<String, String> options = new HashMap<String, String>();
+        Map<String, Object> sharedState = new HashMap<String, Object>();
+
+        options.put("isInitiator", "true");
+        options.put("refreshKrb5Config", "true");
+        options.put("doNotPrompt", "true");
+        // TODO: Do we want to store the key?
+        //options.put("storeKey", "true");
+        options.put("useKeyTab", "true");
+        // If no keytab path specified, still set useKeyTab=true because then the
+        // default JDK or default OS locations will be checked
+        if (keytab != null) {
+            options.put("keyTab", keytab.toAbsolutePath().toString());
+        }
+        options.put("principal", principal);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            options.put("debug", "true");
+            Tr.debug(tc, "All kerberos config properties are: " + options);
+        }
+
+        krb5.initialize(subject, null, sharedState, options);
+        krb5.login();
+        krb5.commit();
+
         return subject;
     }
 

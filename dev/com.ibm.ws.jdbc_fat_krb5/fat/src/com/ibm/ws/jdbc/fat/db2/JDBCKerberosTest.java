@@ -27,7 +27,7 @@ import org.testcontainers.containers.Network;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -83,6 +83,7 @@ public class JDBCKerberosTest extends FATServletClient {
         server.setJvmOptions(jvmOpts);
 
         server.startServer();
+        server.waitForStringInLogUsingMark("CWWKS0008I"); // security service ready
     }
 
     @AfterClass
@@ -118,13 +119,27 @@ public class JDBCKerberosTest extends FATServletClient {
     }
 
     @Test
-    @AllowedFFDC // allow FFDCs for now since we expect the auth to fail
+    @ExpectedFFDC({ "javax.resource.spi.SecurityException",
+                    "javax.resource.spi.ResourceAllocationException",
+                    "com.ibm.db2.jcc.am.SqlInvalidAuthorizationSpecException" })
     public void testNonKerberosConnectionRejected() throws Exception {
         runInServlet();
     }
 
     @Test
-    public void testKerberosConnection() throws Exception {
+    public void testKerberosBaiscConnection() throws Exception {
+        runInServlet();
+    }
+
+    @Test
+    public void testKerberosXAConnection() throws Exception {
+        runInServlet();
+    }
+
+    @Test
+    @ExpectedFFDC({ "javax.resource.ResourceException",
+                    "com.ibm.ws.security.authentication.AuthenticationException" })
+    public void testInvalidPrincipal() throws Exception {
         runInServlet();
     }
 

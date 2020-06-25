@@ -30,14 +30,17 @@ Export-Package: \
 Private-Package: \
   com.ibm.ws.security.jca.internal*
 
-Import-Package: com.ibm.ejs.ras,com.ibm.websphere.crypto, \
+Import-Package: \
+  com.ibm.ejs.ras,com.ibm.websphere.crypto, \
   com.ibm.websphere.ras, \
   com.ibm.websphere.ras.annotation, \
   com.ibm.websphere.security.auth.data, \
   com.ibm.ws.ras.instrument.annotation, \
+  com.ibm.ws.security.authentication.jaas.modules, \
   com.ibm.ws.security.authentication.principals, \
   com.ibm.ws.security.intfc, \
   com.ibm.ws.security.jca;version="[1.0,1.1)", \
+  com.ibm.ws.security.krb5, \
   com.ibm.wsspi.kernel.service.utils, \
   javax.security.auth, \
   javax.security.auth.callback, \
@@ -83,6 +86,7 @@ Service-Component: \
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
 	com.ibm.ws.security.auth.data.common;version=latest,\
+	com.ibm.ws.security.authentication.builtin;version=latest,\
 	com.ibm.ws.security.credentials;version=latest,\
 	com.ibm.websphere.security;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

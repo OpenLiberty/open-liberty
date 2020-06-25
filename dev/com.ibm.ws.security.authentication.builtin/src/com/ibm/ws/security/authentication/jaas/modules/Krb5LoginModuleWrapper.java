@@ -80,7 +80,7 @@ public class Krb5LoginModuleWrapper implements LoginModule {
         if (Krb5Common.isOtherSupportJDKs)
             useKeytabValue = options.get("useKeyTab");
 
-        if (useKeytabValue != null && useKeytabValue.equals("true")) {
+        if (useKeytabValue != null && useKeytabValue.equals("true") && options.get("keyTab") == null) {
             this.options.put("keyTab", getSystemProperty("KRB5_KTNAME"));
         }
 //        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

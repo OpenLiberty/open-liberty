@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2018 IBM Corporation and others.
+ * Copyright (c) 2003, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,23 +20,21 @@ import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData; 
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
 import java.util.Collections;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
 
+import javax.resource.ResourceException;
 import javax.sql.CommonDataSource;
+import javax.sql.PooledConnection;
 
 import org.ietf.jgss.GSSCredential;
 
 import com.ibm.ejs.cm.logger.TraceWriter;
-
-import javax.resource.ResourceException;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
@@ -46,7 +44,6 @@ import com.ibm.ws.jdbc.internal.PropertyService;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.DSConfig;
-import com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcUtil;
 
 /**
@@ -69,6 +66,8 @@ public class DB2JCCHelper extends DB2Helper {
      */
     private final AtomicReference<Method>
                     getDB2Correlator = new AtomicReference<Method>(),
+                    getDB2PooledConnection = new AtomicReference<Method>(),
+                    getDB2XAConnection = new AtomicReference<Method>(),
                     isInDB2UnitOfWork = new AtomicReference<Method>(),
                     reuseDB2Connection = new AtomicReference<Method>(),
                     setDB2ClientUser = new AtomicReference<Method>(),
@@ -321,7 +320,7 @@ public class DB2JCCHelper extends DB2Helper {
         }
 
     }
-
+    
     /**
      * Utility method that returns the result of
      * ((DB2Connection) con).methName(params)
@@ -619,6 +618,31 @@ public class DB2JCCHelper extends DB2Helper {
 
         return flag;
     }
+    
+    private PooledConnection getPooledConnectionUsingKerberos(CommonDataSource ds, 
+                                                              Object gssCredential,
+                                                              boolean is2Phase) throws ResourceException {
+        try {
+            if (is2Phase) {
+                // Method returns DB2XAConnection which also extends PooledConnection
+                Method getXAConnection = getDB2XAConnection.get();
+                if (getXAConnection == null) {
+                    getXAConnection = ds.getClass().getMethod("getDB2XAConnection", GSSCredential.class, Properties.class);
+                    getDB2XAConnection.set(getXAConnection);
+                }
+                return (PooledConnection) getXAConnection.invoke(ds, gssCredential, null);
+            } else {
+                Method getPooledConnection = getDB2PooledConnection.get();
+                if (getPooledConnection == null) {
+                    getPooledConnection = ds.getClass().getMethod("getDB2PooledConnection", GSSCredential.class, Properties.class);
+                    getDB2PooledConnection.set(getPooledConnection);
+                }
+                return (PooledConnection) getPooledConnection.invoke(ds, gssCredential, null);
+            }
+        } catch (Exception e) {
+            throw new ResourceException(e);
+        }
+    }
 
     @Override
     public ConnectionResults getPooledConnection(final CommonDataSource ds, String userName, String password, final boolean is2Phase, 
@@ -631,7 +655,9 @@ public class DB2JCCHelper extends DB2Helper {
 
         ConnectionResults results;
         if (useKerberos) {
-            throw new DataStoreAdapterException("JAVAX_CONN_ERR", new SQLFeatureNotSupportedException(), DB2JCCHelper.class, "PooledConnection");
+            return new ConnectionResults(
+                                         getPooledConnectionUsingKerberos(ds, gssCredential, is2Phase),
+                                         null);
         }
         else
             results = super.getPooledConnection(ds, userName, password, is2Phase, cri, useKerberos, gssCredential);

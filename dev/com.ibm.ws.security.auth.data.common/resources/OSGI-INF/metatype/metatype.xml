@@ -16,9 +16,15 @@
     <OCD id="com.ibm.ws.security.jca.internal.authdata.config" name="%authdata.config" description="%authdata.config.desc"
          ibm:alias="authData">
         <AD id="user" name="%userName" description="%userName.desc"
-            required="true" type="String" />
+            required="false" type="String" />
         <AD id="password" name="%userPassword" description="%userPassword.desc"
-            required="true" type="String" ibm:type="password" />	 	    	
+            required="false" type="String" ibm:type="password" />
+            
+        <!-- Kerberos settings -->
+        <AD id="krb5Principal" name="krb5Principal" description="%krb5Principal.desc"
+            required="false" type="String" ibm:beta="true"/>
+        <AD id="krb5Keytab" name="krb5Keytab" description="%krb5Keytab.desc"
+            required="false" type="String" ibm:type="location(file)" ibm:beta="true"/>
     </OCD>
 
     <Designate factoryPid="com.ibm.ws.security.jca.internal.authdata.config">
