@@ -26,7 +26,7 @@ Import-Package: \
   *
 
 DynamicImport-Package: \
-  com.sun.xml.*
+  org.glassfish.jaxb.*
 
 #Bundle-Activator: org.apache.geronimo.osgi.locator.Activator
 

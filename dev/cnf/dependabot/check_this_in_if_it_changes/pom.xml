@@ -337,6 +337,16 @@
       <version>2.2.14</version>
     </dependency>
     <dependency>
+      <groupId>com.sun.istack</groupId>
+      <artifactId>istack-commons-runtime</artifactId>
+      <version>4.0.0-M3</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.istack</groupId>
+      <artifactId>istack-commons-tools</artifactId>
+      <version>4.0.0-M3</version>
+    </dependency>
+    <dependency>
       <groupId>com.sun.mail</groupId>
       <artifactId>javax.mail</artifactId>
       <version>1.5.6</version>
@@ -350,6 +360,16 @@
       <groupId>com.sun.org.apache.xml.internal</groupId>
       <artifactId>resolver</artifactId>
       <version>20050927</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind.external</groupId>
+      <artifactId>relaxng-datatype</artifactId>
+      <version>3.0.0-M4</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind.external</groupId>
+      <artifactId>rngom</artifactId>
+      <version>3.0.0-M3</version>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.bind</groupId>

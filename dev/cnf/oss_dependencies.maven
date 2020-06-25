@@ -63,9 +63,13 @@ com.openpojo:openpojo:0.8.4
 com.sebastian-daschner:jaxrs-analyzer:0.9
 com.sun.faces:jsf-api:2.2.14
 com.sun.faces:jsf-impl:2.2.14
+com.sun.istack:istack-commons-runtime:4.0.0-M3
+com.sun.istack:istack-commons-tools:4.0.0-M3
 com.sun.mail:javax.mail:1.5.6
 com.sun.mail:javax.mail:1.6.2
 com.sun.org.apache.xml.internal:resolver:20050927
+com.sun.xml.bind.external:relaxng-datatype:3.0.0-M4
+com.sun.xml.bind.external:rngom:3.0.0-M3
 com.sun.xml.bind:jaxb-core:2.2.10
 com.sun.xml.bind:jaxb-core:2.3.0.1
 com.sun.xml.bind:jaxb-impl:2.2.10
