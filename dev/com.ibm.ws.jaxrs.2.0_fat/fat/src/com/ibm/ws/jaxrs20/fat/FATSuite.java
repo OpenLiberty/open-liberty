@@ -60,6 +60,7 @@ import com.ibm.ws.jaxrs20.fat.thirdpartyjerseywithinjection.JerseyInjectionTest;
 import com.ibm.ws.jaxrs20.fat.uriInfo.UriInfoTest;
 import com.ibm.ws.jaxrs20.fat.wadl.WADLTest;
 import com.ibm.ws.jaxrs20.fat.webcontainer.JAXRSWebContainerTest;
+import com.ibm.ws.jaxrs20.fat.options.OptionsTest;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -96,6 +97,7 @@ import componenttest.rules.repeater.RepeatTests;
                 JerseyInjectionTest.class,
                 LinkHeaderTest.class,
                 ManagedBeansTest.class,
+                OptionsTest.class,
                 ParamConverterTest.class,
                 ParamsTest.class,
                 ProviderCacheTest.class,
