@@ -9,6 +9,6 @@
         IBM Corporation - initial API and implementation
  -->
 <server>
-		<com.ibm.ws.ejbcontainer.mdb.internal.MDBRuntimeImpl />
-	
+	<com.ibm.ws.ejbcontainer.mdb.internal.MDBRuntimeImpl />
+	<com.ibm.wsspi.application.lifecycle.ApplicationPrereq className="com.ibm.ws.ejbcontainer.mdb.internal.MDBRuntimeImpl"/>
 </server>
