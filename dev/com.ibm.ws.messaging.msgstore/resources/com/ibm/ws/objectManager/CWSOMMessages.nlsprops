@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013 IBM Corporation and others.
+# Copyright (c) 2013,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -79,6 +79,13 @@ InternalTransaction_BackoutOrphan.useraction=Your application lost its reference
 abnormally there us nothing further to do. If however, the application lost its reference without terminating abnormally this \
 could be considered to be a logic error in the application.
               
+# {0} the orphan transaction
+# {1} tick count when this was reported
+# {2} unknown or free
+InternalTransaction_OrphanDiagnostics=CWSOM0101W: Diagnostics: {0} {1} {2}.
+InternalTransaction_OrphanDiagnostics.explanation=Internal diagnostic message.
+InternalTransaction_OrphanDiagnostics.useraction=n/a.
+
 # ----------------------------------------------------------------------------------------------------
 
 # {0} ObjectStore which could not safely be closed.

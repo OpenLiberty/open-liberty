@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013 IBM Corporation and others.
+# Copyright (c) 2013,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -74,6 +74,13 @@ InternalTransaction_BackoutOrphan.useraction=Az alkalmaz\u00e1sa elvesztette hiv
 Ha az alkalmaz\u00e1s rendellenesen fejez\u0151d\u00f6tt be, akkor nincs tov\u00e1bbi teend\u0151. \
 Ha az alkalmaz\u00e1s an\u00e9lk\u00fcl veszti el hivatkoz\u00e1s\u00e1t, hogy rendellenesen fejez\u0151dne be, akkor ez az alkalmaz\u00e1sbeli hib\u00e1nak tekinthet\u0151.
               
+# {0} the orphan transaction
+# {1} tick count when this was reported
+# {2} unknown or free
+InternalTransaction_OrphanDiagnostics=CWSOM0101W: Diagnostics: {0} {1} {2}.
+InternalTransaction_OrphanDiagnostics.explanation=Bels\u0151 diagnosztikai \u00fczenet.
+InternalTransaction_OrphanDiagnostics.useraction=n/a.
+
 # ----------------------------------------------------------------------------------------------------
 
 # {0} ObjectStore which could not safely be closed.

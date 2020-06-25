@@ -1,7 +1,7 @@
 package com.ibm.ws.objectManager;
 
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -2083,6 +2083,9 @@ public class ObjectManagerState
             trace.entry(this, cclass, methodName, internalTransaction);
 
         LogicalUnitOfWork logicalUnitOfWork = internalTransaction.getLogicalUnitOfWork();
+        internalTransaction.registeredTick = System.currentTimeMillis();  // for orphan diagnostics
+        internalTransaction.registeredTid = Thread.currentThread().getId();  // for orphan diagnostics
+        internalTransaction.registeredName = Thread.currentThread().getName();  // for orphan diagnostics
         InternalTransaction registeredTransaction = (InternalTransaction) registeredInternalTransactions.put(new Long(logicalUnitOfWork.identifier),
                                                                                                              internalTransaction);
         if (registeredTransaction != null) {
@@ -2130,6 +2133,9 @@ public class ObjectManagerState
         } // if(registeredTransaction == null).
 
         // Make the InternalTransaction available for reuse.
+        internalTransaction.freeTick = System.currentTimeMillis();  // for orphan diagnostics
+        internalTransaction.freeTid = Thread.currentThread().getId();  // for orphan diagnostics
+        internalTransaction.freeName = Thread.currentThread().getName();  // for orphan diagnostics
         InternalTransaction freeTransaction = (InternalTransaction) freeTransactions.put(new Long(logicalUnitOfWork.identifier),
                                                                                          internalTransaction);
         if (freeTransaction != null) {
@@ -2409,9 +2415,37 @@ public class ObjectManagerState
 
         // Find a reference that has become unreachable,
         // because the external Transaction that owns it is itself unreachable.
-        InternalTransaction.TransactionReference transactionReference = (InternalTransaction.TransactionReference) orphanTransactionsQueue.poll();
-        while (transactionReference != null) {
-            transactionReference.complete();
+        InternalTransaction.TransactionReference transactionReference =
+                                                      (InternalTransaction.TransactionReference) orphanTransactionsQueue.poll();
+        while (transactionReference != null)
+        {
+            // Try determine if this is still a registered transaction so we can dump diagnostics if not
+            boolean skipComplete = false;
+            Long ID = new Long(transactionReference.getLogicalUnitOfWork().identifier);
+            if (!registeredInternalTransactions.containsKey(ID))
+            {
+                // If it is not registered, dump some diagnostics in the form of a warning message (so that it is always produced,
+                // even on customer systems where tracing is unlikely to be enabled).  The transaction string contains the primary
+                // diagnostics of relative timestamps (tick counts) for when the transaction was last completed, registered, moved
+                // to the free list and (roughly) enqueued, along with "now" (for ready reference).  Also a warning and not just
+                // something in the FFDC so that we can know about problem orphans that we don't complete too.
+                trace.warning(this
+                             ,cclass
+                             ,"completeOrphanTransactions"
+                             ,"InternalTransaction_OrphanDiagnostics"
+                             ,new Object[]{transactionReference.getTransactionString()
+                                           ,""+System.currentTimeMillis()
+                                           ,(freeTransactions.containsKey(ID)?"free":"unknown")
+                                          }
+                             );
+                // skip attempting to complete if it holds no resources, otherwise complete to clean-up and produce
+                // an exception / FFDC
+                skipComplete = transactionReference.isUnused();
+            }
+            if (!skipComplete)
+            {
+                transactionReference.complete();
+            }
             transactionReference = (InternalTransaction.TransactionReference) orphanTransactionsQueue.poll();
         } // while( transactionReference != null).
 

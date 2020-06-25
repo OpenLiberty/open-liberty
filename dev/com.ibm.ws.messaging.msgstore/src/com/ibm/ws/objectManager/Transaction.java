@@ -1,7 +1,7 @@
 package com.ibm.ws.objectManager;
 
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -87,7 +87,7 @@ public class Transaction
     private int terminationReason = terminatedByUser;
 
     // The underlying InternalTransaction.
-    protected InternalTransaction internalTransaction;
+    protected volatile InternalTransaction internalTransaction;
 
     /**
      * Constructor.
@@ -614,4 +614,10 @@ public class Transaction
                               + "(" + internalTransaction.toString() + ")"
                               + "/" + Integer.toHexString(hashCode()));
     } // toString().
+
+    // for diagnostics only
+    public void finalize()
+    {
+      if (null!=internalTransaction) internalTransaction.finaliseTick = System.currentTimeMillis();
+    }
 } // class Transaction.

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013 IBM Corporation and others.
+# Copyright (c) 2013,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -110,6 +110,13 @@ Je\u015bli jednak w aplikacji zosta\u0142o utracone odwo\u0142anie, ale sama apl
 zosta\u0142a zako\u0144czona nieprawid\u0142owo, mo\u017ce to oznacza\u0107, \u017ce wyst\u0105pi\u0142 b\u0142\u0105d logiczny w \
 aplikacji.               
               
+# {0} the orphan transaction
+# {1} tick count when this was reported
+# {2} unknown or free
+InternalTransaction_OrphanDiagnostics=CWSOM0101W: Diagnostyka: {0} {1} {2}.
+InternalTransaction_OrphanDiagnostics.explanation=Wewn\u0119trzny komunikat diagnostyczny.
+InternalTransaction_OrphanDiagnostics.useraction=n/a.
+
 # ----------------------------------------------------------------------------------------------------
 
 # {0} ObjectStore which could not safely be closed.
