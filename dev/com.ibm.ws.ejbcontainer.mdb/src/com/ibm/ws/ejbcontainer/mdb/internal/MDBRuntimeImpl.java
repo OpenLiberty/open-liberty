@@ -59,6 +59,7 @@ import com.ibm.ws.runtime.metadata.MetaDataSlot;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.tx.rrs.RRSXAResourceFactory;
+import com.ibm.wsspi.application.lifecycle.ApplicationPrereq;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
 
@@ -66,7 +67,7 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
            configurationPolicy = ConfigurationPolicy.REQUIRE,
            immediate = true,
            property = { "service.vendor=IBM" })
-public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
+public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener, ApplicationPrereq {
     private static final TraceComponent tc = Tr.register(MDBRuntimeImpl.class);
 
     static final String REFERENCE_ENDPOINT_ACTIVATION_SERVICES = "endpointActivationServices";
