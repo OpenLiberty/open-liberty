@@ -49,11 +49,6 @@ public interface AsyncBulkheadState {
     public ExecutionReference submit(AsyncBulkheadTask task, ExceptionHandler exceptionHandler);
 
     /**
-     * Shutdown the bulkhead. Any new tasks will be rejected.
-     */
-    public void shutdown();
-
-    /**
      * A task that can be run by an async bulkhead
      * <p>
      * This is basically a Runnable except the run method takes a {@link BulkheadReservation} parameter

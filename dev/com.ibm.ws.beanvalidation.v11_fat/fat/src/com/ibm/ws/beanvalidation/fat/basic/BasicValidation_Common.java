@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,14 +10,18 @@
  *******************************************************************************/
 package com.ibm.ws.beanvalidation.fat.basic;
 
+import static com.ibm.websphere.simplicity.ShrinkHelper.buildDefaultApp;
 import static com.ibm.websphere.simplicity.ShrinkHelper.defaultDropinApp;
+import static com.ibm.websphere.simplicity.ShrinkHelper.exportToServer;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
 import java.util.List;
 
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -31,10 +35,18 @@ public abstract class BasicValidation_Common extends FATServletClient {
     protected static int bvalVersion;
 
     public static void createAndExportCommonWARs(LibertyServer server) throws Exception {
-        defaultDropinApp(server, "beanvalidation_10.war", "beanvalidation10.*");
-        defaultDropinApp(server, "beanvalidation_11.war", "beanvalidation11.*");
         defaultDropinApp(server, "defaultbeanvalidation_10.war", "defaultbeanvalidation10.web.*");
         defaultDropinApp(server, "defaultbeanvalidation_11.war", "defaultbeanvalidation11.web.*");
+        WebArchive beanvalidation_10War = buildDefaultApp("beanvalidation_10.war", "beanvalidation10.*");
+        WebArchive beanvalidation_11War = buildDefaultApp("beanvalidation_11.war", "beanvalidation11.*");
+
+        if (JakartaEE9Action.isActive()) {
+            beanvalidation_10War.move("/WEB-INF/constraints-house_EE9.xml", "/WEB-INF/constraints-house.xml");
+            beanvalidation_11War.move("/WEB-INF/constraints-house_EE9.xml", "/WEB-INF/constraints-house.xml");
+        }
+
+        exportToServer(server, "dropins", beanvalidation_10War);
+        exportToServer(server, "dropins", beanvalidation_11War);
     }
 
     public static void createAndExportApacheWARs(LibertyServer server) throws Exception {
@@ -51,6 +63,7 @@ public abstract class BasicValidation_Common extends FATServletClient {
 
     protected void run(String war, String servlet) throws Exception {
         String originalTestName = testName.getMethodName();
+        originalTestName = originalTestName.replace("_EE9_FEATURES", "");
         String servletTest = originalTestName.substring(0, originalTestName.length() - 2);
         run(war, servlet, servletTest);
     }
@@ -439,9 +452,6 @@ public abstract class BasicValidation_Common extends FATServletClient {
      */
     @Test
     public void testCustomParameterNameProvider11() throws Exception {
-        //TODO: Remove this assumption when the ValidationConfigurationV20FactoryImpl can be
-        // enabled without the CDI bundle
-        assumeTrue(bvalVersion < 20);
         run("beanvalidation_11", "BeanValidationInjection");
     }
 

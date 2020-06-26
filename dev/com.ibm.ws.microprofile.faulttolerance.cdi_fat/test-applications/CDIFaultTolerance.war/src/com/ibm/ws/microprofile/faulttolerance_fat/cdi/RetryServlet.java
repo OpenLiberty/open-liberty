@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.junit.Test;
 
+import com.ibm.websphere.microprofile.faulttolerance_fat.suite.BasicTest;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.RetryBeanB;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.RetryBeanC;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.RetryBeanD;
@@ -54,6 +55,7 @@ public class RetryServlet extends FATServlet {
     @Inject
     RetryBeanE beanE;
 
+    @BasicTest
     @Test
     public void testRetry(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //should be retried 3 times as per default

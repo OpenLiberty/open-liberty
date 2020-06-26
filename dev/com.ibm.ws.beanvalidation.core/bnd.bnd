@@ -11,6 +11,8 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+jakartaeeMe: true
+
 instrument.disabled: true
 
 publish.wlp.jar.disabled: true
