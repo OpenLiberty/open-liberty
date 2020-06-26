@@ -50,6 +50,8 @@ import com.ibm.wsspi.classloading.ClassLoadingService;
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
            immediate = true,
            property = { "api.classes=" +
+                        "jakarta.validation.Validator;" +
+                        "jakarta.validation.ValidatorFactory;" +
                         "javax.validation.Validator;" +
                         "javax.validation.ValidatorFactory;" +
                         "org.hibernate.validator.HibernateValidatorFactory;" +

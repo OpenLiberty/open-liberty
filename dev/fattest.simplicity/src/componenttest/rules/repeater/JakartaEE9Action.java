@@ -26,6 +26,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.jakarta.transformer.JakartaTransformer;
+
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.topology.impl.LibertyServer;
@@ -74,8 +75,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
       "servlet-5.0"
     };
 
-    public static final Set<String> EE9_FEATURE_SET =
-        Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE9_FEATURES_ARRAY)));
+    public static final Set<String> EE9_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE9_FEATURES_ARRAY)));
 
     private static Set<String> removeFeatures() {
         Set<String> removeFeatures = new HashSet<>(EE7FeatureReplacementAction.EE7_FEATURE_SET);
@@ -86,7 +86,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
 
     public JakartaEE9Action() {
         // Remove the EE7 and EE8 features; replace them with the EE9 features
-        super( JakartaEE9Action.removeFeatures(), EE9_FEATURE_SET );
+        super(JakartaEE9Action.removeFeatures(), EE9_FEATURE_SET);
         withMinJavaLevel(8);
         forceAddFeatures(false);
         withID(ID);
@@ -174,7 +174,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
      * Invoke the Jakarta transformer on an application (ear or war).
      *
      * A backup of the original application is placed under "&lt;server&gt;/backup".
-     * ".jakarta" is appended to name the initially transformed application.  However,
+     * ".jakarta" is appended to name the initially transformed application. However,
      * that application is renamed to the initial application name.
      *
      * @param appPath The application path to be transformed to Jakarta
