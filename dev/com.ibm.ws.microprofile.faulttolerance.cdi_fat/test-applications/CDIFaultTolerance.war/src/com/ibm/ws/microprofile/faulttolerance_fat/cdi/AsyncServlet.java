@@ -33,6 +33,7 @@ import javax.servlet.annotation.WebServlet;
 import org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException;
 import org.junit.Test;
 
+import com.ibm.websphere.microprofile.faulttolerance_fat.suite.BasicTest;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.AsyncBean;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.AsyncBean2;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.AsyncCallableBean;
@@ -74,6 +75,7 @@ public class AsyncServlet extends FATServlet {
         assertFalse("Thread left with interrupted flag set", Thread.interrupted());
     }
 
+    @BasicTest
     @Test
     public void testAsync() throws Exception {
         syntheticTaskManager.runTest(() -> {

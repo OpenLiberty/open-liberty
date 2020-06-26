@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,22 +12,36 @@ package com.ibm.websphere.microprofile.faulttolerance_fat.tests;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.microprofile.faulttolerance_fat.suite.AnnotationFilter;
+import com.ibm.websphere.microprofile.faulttolerance_fat.suite.BasicTest;
+import com.ibm.websphere.microprofile.faulttolerance_fat.tests.enablement.DisableEnableServlet;
+import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.ws.microprofile.faulttolerance.fat.repeat.RepeatFaultTolerance;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.AsyncBulkheadServlet;
+import com.ibm.ws.microprofile.faulttolerance_fat.cdi.AsyncServlet;
+import com.ibm.ws.microprofile.faulttolerance_fat.cdi.CircuitBreakerServlet;
+import com.ibm.ws.microprofile.faulttolerance_fat.cdi.FallbackServlet;
+import com.ibm.ws.microprofile.faulttolerance_fat.cdi.RetryServlet;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.SyncBulkheadServlet;
+import com.ibm.ws.microprofile.faulttolerance_fat.cdi.TimeoutServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -41,33 +55,74 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
 
+/**
+ *
+ */
 @RunWith(FATRunner.class)
-public class CDIBulkheadTest extends FATServletClient {
+public class FaultToleranceMainTest extends FATServletClient {
+
+    private static final Logger LOGGER = Logger.getLogger(FaultToleranceMainTest.class.getName());
 
     private static final String SERVER_NAME = "CDIFaultTolerance";
 
     @Server(SERVER_NAME)
-    @TestServlets({
+    @TestServlets({ @TestServlet(contextRoot = "CDIFaultTolerance", servlet = AsyncServlet.class),
                     @TestServlet(contextRoot = "CDIFaultTolerance", servlet = AsyncBulkheadServlet.class),
                     @TestServlet(contextRoot = "CDIFaultTolerance", servlet = SyncBulkheadServlet.class),
+                    @TestServlet(contextRoot = "CDIFaultTolerance", servlet = CircuitBreakerServlet.class),
+                    @TestServlet(contextRoot = "CDIFaultTolerance", servlet = FallbackServlet.class),
+                    @TestServlet(contextRoot = "CDIFaultTolerance", servlet = RetryServlet.class),
+                    @TestServlet(contextRoot = "CDIFaultTolerance", servlet = TimeoutServlet.class),
+                    @TestServlet(contextRoot = "DisableEnable", servlet = DisableEnableServlet.class)
     })
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatFaultTolerance.repeatDefault(SERVER_NAME);
+    public static RepeatTests r = RepeatFaultTolerance.repeatAll(SERVER_NAME);
 
-    public static final long TEST_TWEAK_TIME_UNIT = 100;
-    public static final long TIMEOUT = 5000;
-    public static final long FUTURE_THRESHOLD = 6000;
+    @Rule
+    public AnnotationFilter filter = AnnotationFilter
+                    .requireAnnotations(BasicTest.class)
+                    .forAllRepeatsExcept(RepeatFaultTolerance.MP33_FEATURES_ID)
+                    .inModes(TestMode.LITE);
 
     @BeforeClass
-    public static void setup() throws Exception {
+    public static void setUp() throws Exception {
+        server.addEnvVar("FAULT_TOLERANCE_VERSION", getFaultToleranceVersion());
         server.startServer();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        /*
+         * Ignore following exception as those are expected:
+         * CWWKC1101E: The task com.ibm.ws.microprofile.faulttolerance.cdi.FutureTimeoutMonitor@3f76c259, which was submitted to executor service
+         * managedScheduledExecutorService[DefaultManagedScheduledExecutorService], failed with the following error:
+         * org.eclipse.microprofile.faulttolerance.exceptions.FTTimeoutException: java.util.concurrent.TimeoutException
+         */
+        server.stopServer("CWWKC1101E");
+    }
+
+    /**
+     * Get the fault tolerance feature version from the server.xml
+     *
+     * @return
+     * @throws Exception
+     */
+    private static String getFaultToleranceVersion() throws Exception {
+        Set<String> feature = server.getServerConfiguration().getFeatureManager().getFeatures();
+
+        LOGGER.info("Features: " + String.join(", ", feature));
+
+        Optional<String> ftFeature = feature.stream().filter((s) -> s.toLowerCase().startsWith("mpfaulttolerance")).findFirst();
+        if (!ftFeature.isPresent()) {
+            throw new Exception("No mpFaultTolerance feature in server config");
+        }
+
+        String featureName = ftFeature.get();
+        String featureVersion = featureName.substring(featureName.indexOf("-") + 1);
+        LOGGER.info("Feature version: " + featureVersion);
+        return featureVersion;
     }
 
     /**
@@ -76,6 +131,10 @@ public class CDIBulkheadTest extends FATServletClient {
     @Test
     @Mode(TestMode.FULL)
     public void testMultiRequestBulkhead() throws Exception {
+
+        final long TEST_TWEAK_TIME_UNIT = 100;
+        final long TIMEOUT = 5000;
+        final long FUTURE_THRESHOLD = 6000;
 
         // Make an initial request so that everything is initialized
         HttpUtils.findStringInReadyUrl(server, "/CDIFaultTolerance/multi-request-bulkhead", "Success");
@@ -110,4 +169,16 @@ public class CDIBulkheadTest extends FATServletClient {
         }
     }
 
+    @Test
+    public void testExecutorsClose() throws Exception {
+
+        RemoteFile traceLog = server.getMostRecentTraceFile();
+        server.setMarkToEndOfLog(traceLog);
+
+        // This calls a RequestScoped bean which only has fault tolerance annotations on the method
+        // This should cause executors to get cleaned up
+        runTest(server, "CDIFaultTolerance/retry", "testRetryAbortOn");
+
+        assertNotNull("Did not find executor cleanup message in trace file", server.waitForStringInLog("Cleaning up executors", traceLog));
+    }
 }

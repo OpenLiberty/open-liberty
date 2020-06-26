@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.junit.Test;
 
+import com.ibm.websphere.microprofile.faulttolerance_fat.suite.BasicTest;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.FallbackBean;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.FallbackBeanWithoutRetry;
 import com.ibm.ws.microprofile.faulttolerance_fat.util.ConnectException;
@@ -56,6 +57,7 @@ public class FallbackServlet extends FATServlet {
         assertThat("Call count", bean.getConnectCountA(), is(3));
     }
 
+    @BasicTest
     @Test
     public void testFallbackWithoutRetry(HttpServletRequest request,
                                          HttpServletResponse response) throws ServletException, IOException, ConnectException, NoSuchMethodException, SecurityException {
