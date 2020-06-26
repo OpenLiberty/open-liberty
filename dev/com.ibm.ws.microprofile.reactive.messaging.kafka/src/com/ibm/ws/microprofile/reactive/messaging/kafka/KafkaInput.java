@@ -113,11 +113,19 @@ public class KafkaInput<K, V> implements ConsumerRebalanceListener {
         return kafkaStream;
     }
 
-    public CompletionStage<Void> commitOffsets(TopicPartition partition, OffsetAndMetadata offset) {
+    public CompletionStage<Void> commitOffsets(PartitionTracker partitionTracker, OffsetAndMetadata offset) {
         CompletableFuture<Void> result = new CompletableFuture<>();
         try {
-            Map<TopicPartition, OffsetAndMetadata> offsets = Collections.singletonMap(partition, offset);
+            Map<TopicPartition, OffsetAndMetadata> offsets = Collections.singletonMap(partitionTracker.getTopicPartition(), offset);
             runAction((c) -> {
+                if (partitionTracker.isClosed()) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "Rejecting commit attempt because partition is closed", this);
+                    }
+                    result.completeExceptionally(new Exception("Partition is closed"));
+                    return;
+                }
+
                 c.commitAsync(offsets, (o, e) -> {
                     if (e != null) {
                         Tr.warning(tc, "kafka.read.offsets.commit.warning.CWMRX1001W", e);
@@ -299,8 +307,11 @@ public class KafkaInput<K, V> implements ConsumerRebalanceListener {
     /**
      * Run pending actions if no other threads are running actions or polling the
      * broker
+     * <p>
+     * This may also be called by external classes to flush any pending actions during
+     * a callback.
      */
-    private void runPendingActions() {
+    public void runPendingActions() {
         while (!this.tasks.isEmpty() && this.lock.tryLock()) {
             try {
                 if (!this.running) {

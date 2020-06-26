@@ -227,22 +227,12 @@ public class CommittingPartitionTracker extends PartitionTracker {
      * @return completion stage which completes with the result of the commit, or completes exceptionally if the commit failed
      */
     private CompletionStage<Void> commitUpTo(CompletedWork work) {
-        if (isClosed()) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "Rejecting commit attempt because partition is closed", this);
-            }
-
-            CompletableFuture<Void> result = new CompletableFuture<>();
-            result.completeExceptionally(new Exception("Partition is closed"));
-            return result;
-        }
-
         // Note work.offset + 1
         // In general the committed offset for a partition is the first message which should be received by a new consumer
         // which starts consuming from that partition.
         // Therefore, the offset which we are about to commit must be the offset _after_ the last message we have processed.
         OffsetAndMetadata offsetAndMetadata = factory.newOffsetAndMetadata(work.offset + 1, work.leaderEpoch, null);
-        return kafkaInput.commitOffsets(topicPartition, offsetAndMetadata);
+        return kafkaInput.commitOffsets(this, offsetAndMetadata);
     }
 
     /**
@@ -296,6 +286,10 @@ public class CommittingPartitionTracker extends PartitionTracker {
     public void close() {
         synchronized (completedWork) {
             try {
+                // A request to commit may have been queued but not run yet.
+                // Allow queued tasks to run while we hold the completedWork lock
+                kafkaInput.runPendingActions();
+
                 if (!completedWork.isEmpty()) {
                     // Attempt a final commit before we relinquish the partition
                     commitCompletedWork();
