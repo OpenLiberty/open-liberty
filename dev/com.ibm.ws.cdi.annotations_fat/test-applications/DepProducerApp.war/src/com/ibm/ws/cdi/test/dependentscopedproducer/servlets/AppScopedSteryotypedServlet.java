@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,41 +9,37 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.cdi.test.dependentscopedproducer.servlets;
+
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+import org.junit.Test;
 
 import com.ibm.ws.cdi.test.dependentscopedproducer.NonNullBeanThree;
 
-//This servlet should return a resource injection exception when accessed. 
+import componenttest.app.FATServlet;
+
+//This servlet should return a resource injection exception when accessed.
 @WebServlet("/failAppSteryotypedMethod")
-public class AppScopedSteryotypedServlet extends HttpServlet {
-    
-    @Inject NonNullBeanThree nullBean;
+public class AppScopedSteryotypedServlet extends FATServlet {
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        PrintWriter pw = response.getWriter();
+    @Inject
+    NonNullBeanThree nullBean;
 
+    @Test
+    public void testAppScopedSteryotyped() throws IOException {
         try {
             nullBean.toString(); //calling a method as a proxy gets injected.
-            pw.write("A nullBean was injected. Test Failed");
-        }
-        catch (Exception e) { //I'm doing it this way to avoid adding a dependency on weld. 
-            if (e.getMessage().contains("WELD-000052")) {
-                pw.write("Test Passed");
-            } else {
-                 pw.write("The wrong exception was thrown: " + e.getMessage());
+            fail("A nullBean was injected. Test Failed");
+        } catch (Exception e) { //I'm doing it this way to avoid adding a dependency on weld.
+            if (!e.getMessage().contains("WELD-000052")) {
+                fail("The wrong exception was thrown: " + e.getMessage());
             }
         }
-        
-        pw.flush();
-        pw.close();
     }
 
 }
