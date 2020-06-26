@@ -19,7 +19,6 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -42,33 +41,40 @@ public class TraceInjectionTest {
     public static void setUp() throws Exception {
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.logging.traceinject");
         server.startServer();
-
+        server.setServerConfigurationFile("server-enableTraceSpec.xml");
+        server.waitForStringInLog("CWWKT0016I.*metrics.*");
     }
 
     @Test
-    public void testTraceInjection() throws Exception {
-        server.setServerConfigurationFile("enableTrMetrics.xml");
-        server.waitForStringInLogUsingMark("CWWKG0017I|CWWKG0018I");
-        server.waitForStringInLogUsingMark("CWWKT0016I.*metrics.*");
+    public void testTraceInjectionMetrics() throws Exception {
         hitWebPage("metrics", false);
         String line = server.waitForStringInTrace(".*com.ibm.ws.microprofile.metrics.BaseMetricsHandler.*> handleRequest Entry.*");
         assertNotNull("Entry log not found", line);
         line = server.waitForStringInTrace(".*com.ibm.ws.microprofile.metrics.BaseMetricsHandler.*< handleRequest Exit.*");
         assertNotNull("Exit log not found", line);
+    }
 
+    @Test
+    public void testTraceInjectionKernel() throws Exception {
+        String line = server.waitForStringInTrace(".*com.ibm.ws.kernel.filemonitor.internal.MonitorHolder.*> scanForUpdates Entry.*");
+        assertNotNull("Entry log not found", line);
+        line = server.waitForStringInTrace(".*com.ibm.ws.kernel.filemonitor.internal.MonitorHolder.*< scanForUpdates Exit.*");
+        assertNotNull("Exit log not found", line);
+    }
+
+    @Test
+    public void testTraceInjectionWebcontainer() throws Exception {
+        hitWebPage("metrics", false);
+        String line = server.waitForStringInTrace(".*com.ibm.ws.webcontainer.cors.CorsRequestInterceptor.*> handleRequest Entry.*");
+        assertNotNull("Entry log not found", line);
+        line = server.waitForStringInTrace(".*com.ibm.ws.webcontainer.cors.CorsRequestInterceptor.*< handleRequest Exit.*");
+        assertNotNull("Exit log not found", line);
     }
 
     @Before
     public void setup() throws Exception {
         if (server != null && !server.isStarted()) {
             server.startServer();
-        }
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        if (server != null && server.isStarted()) {
-            server.stopServer();
         }
     }
 
