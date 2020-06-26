@@ -19,6 +19,8 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -31,6 +33,7 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.sse.InboundSseEvent;
 import javax.ws.rs.sse.SseEventSource;
 
@@ -309,8 +312,24 @@ public class BasicSseTestServlet extends FATServlet {
 
         WebTarget nameTarget = client.target("http://localhost:" + port + "/BasicSseApp/basic/postName");
         for (int i = 0; i < nameData.length; i++) {
-            nameTarget.request().rx().post(Entity.xml(nameData[i]));
-        }
+            CompletionStage<Response> completionStage = nameTarget.request().rx().post(Entity.xml(nameData[i]));
+            CompletableFuture<Response> completableFuture = completionStage.toCompletableFuture();
+
+            if (!(completableFuture.isDone())) {
+                if (completableFuture.isCompletedExceptionally() || completableFuture.isCancelled()) {
+                    System.out.print("testSseWithRX: completableFuture failed with an exception");
+                } else {
+                    System.out.print("testSseWithRX: sleeping....waiting for completableFuture to complete");
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                    }
+                    if (!(completableFuture.isDone())) {
+                        System.out.print("testSseWithRX: completableFuture failed because it took to long");
+                    }
+                }
+            }
+        } 
 
         WebTarget target = client.target("http://localhost:" + port + "/BasicSseApp/basic/rx");
         SseEventSource.Builder sseBuilder = SseEventSource.target(target);
