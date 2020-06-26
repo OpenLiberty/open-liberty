@@ -41,11 +41,13 @@ import io.grpc.stub.StreamObserver;
  * @version 1.0
  *
  *          This class is implementation of consumer APIs.
- * 
+ *          The implementation will be called from REST APIs and Servlets.
+ *          Each API will get the Grpc connection and call the Grpc service implementation.
+ *
  */
-public class ConsumergRPCServiceClientImpl extends ConsumergRPCServiceClient {
+public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
 
-    private static Logger log = Logger.getLogger(ConsumergRPCServiceClientImpl.class.getName());
+    private static Logger log = Logger.getLogger(ConsumerGrpcServiceClientImpl.class.getName());
 
     // gRPC client implementation(s)
 
@@ -53,7 +55,7 @@ public class ConsumergRPCServiceClientImpl extends ConsumergRPCServiceClient {
      * @return
      * @throws NotFoundException
      */
-    public List<String> getAllAppNames() throws NotFoundException {
+    public List<String> getAllAppNameList() throws NotFoundException {
 
         List<String> nameList = null;
         try {
@@ -122,6 +124,7 @@ public class ConsumergRPCServiceClientImpl extends ConsumergRPCServiceClient {
         }
 
         try {
+            // need protobuf-java-util.jar for this
             appStruct_JSONString = JsonFormat.printer()
                             .includingDefaultValueFields()
                             .preservingProtoFieldNames()

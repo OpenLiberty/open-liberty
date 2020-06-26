@@ -24,6 +24,8 @@ import com.ibm.websphere.cache.EntryInfo;
 /**
  * @author anupag
  *
+ *         This class creates a Map object in cache to store data created by ProducerService.
+ *
  */
 public class DistributedMapAppCacheImpl implements AppCache {
 

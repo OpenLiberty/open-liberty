@@ -1,0 +1,371 @@
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package com.ibm.testapp.g3store.restProducer.client;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.Arrays;
+import java.util.List;
+import java.util.logging.Logger;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.Response;
+
+import org.eclipse.microprofile.rest.client.RestClientBuilder;
+import org.junit.Test;
+
+import com.ibm.testapp.g3store.restProducer.model.AppStructure;
+import com.ibm.testapp.g3store.restProducer.model.AppStructure.GenreType;
+import com.ibm.testapp.g3store.restProducer.model.AppStructure.SecurityType;
+import com.ibm.testapp.g3store.restProducer.model.Creator;
+import com.ibm.testapp.g3store.restProducer.model.MultiAppStructues;
+import com.ibm.testapp.g3store.restProducer.model.Price;
+import com.ibm.testapp.g3store.restProducer.model.Price.PurchaseType;
+
+import componenttest.app.FATServlet;
+
+/**
+ * @author anupag
+ *
+ *         This class is JAX-RS Resource as proxy to the Remote Endpoint:
+ *         ProducerServiceEndpoint
+ *
+ */
+@WebServlet(urlPatterns = "/ProducerEndpointFATServlet")
+public class ProducerEndpointFATServlet extends FATServlet {
+
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+
+    // ProducerRESTEndpoint has 4 APIs
+//    "create";
+//    "delete";
+//    "createMulti";
+//    "deleteAll";
+
+    Logger LOG = Logger.getLogger(ProducerEndpointFATServlet.class.getName());
+
+    private static String getSysProp(String key) {
+        return AccessController.doPrivileged((PrivilegedAction<String>) () -> System.getProperty(key));
+    }
+
+    private RestClientBuilder builder;
+
+    @Override
+    public void init() throws ServletException {
+
+        // The baseURL URL of the remote endpoint
+        String baseUrlStr = "http://" + "localhost:" + getSysProp("bvt.prop.HTTP_secondary") + "/StoreProducerApp/v1P/";
+
+        LOG.info("baseUrl = " + baseUrlStr);
+
+        URL baseUrl;
+        try {
+            baseUrl = new URL(baseUrlStr);
+        } catch (MalformedURLException ex) {
+            throw new ServletException(ex);
+        }
+        builder = RestClientBuilder.newBuilder()
+                        .property("com.ibm.ws.jaxrs.client.receive.timeout", "120000")
+                        .property("com.ibm.ws.jaxrs.client.connection.timeout", "120000")
+                        .baseUrl(baseUrl);
+
+        LOG.info("builder = " + builder.toString());
+    }
+
+    @Test
+    public void testCreateDeleteMyApp(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+
+        String m = "testCreateDeleteMyApp";
+
+        ProducerServiceRestClient service = builder.build(ProducerServiceRestClient.class);
+        String appName = "myApp";
+        try {
+            // create input data
+            AppStructure reqPOJO = createAppData("myApp", "Famous myApp", true,
+                                                 AppStructure.SecurityType.NO_SECURITY, AppStructure.GenreType.GAME,
+                                                 createPriceList(Price.PurchaseType.BLUEPOINTS, 200, null, 100), "ABC", "abc@comp");
+
+            LOG.info("testCreateDeleteMyApp: service = " + service.toString());
+
+            // call Remote REST service
+            LOG.info(m + " ------------------------------------------------------------");
+            LOG.info(m + " ----- invoking producer rest client to create app: " + appName);
+            Response r = service.createApp(reqPOJO);
+
+            // check response
+            int status = r.getStatus();
+            LOG.info(m + ": create status: " + status);
+
+            assertEquals(200, status);
+
+            String entity = r.readEntity(String.class);
+            LOG.info(m + ": create entity: " + entity);
+
+            // testCreate: entity: {"createResult":"18bd8277-efa5-4444-ba78-bf4aa5d3ad50"}
+
+            boolean isValidResponse = entity.contains("createResult");
+
+            assertTrue(isValidResponse);
+
+        } catch (Exception e) {
+            e.getMessage();
+            e.printStackTrace();
+        } finally {
+            // call Remote REST service
+            Response r = service.deleteApp("myApp");
+
+            // check response
+            int status = r.getStatus();
+            LOG.info(m + ": delete status: " + status);
+
+            assertEquals(200, status);
+
+            String entity = r.readEntity(String.class);
+            LOG.info(m + ": delete entity: " + entity);
+
+            boolean isValidResponse = entity.contains("The app [myApp] has been removed from the server");
+
+            assertTrue(isValidResponse);
+
+            LOG.info(m + " ------------------------------------------------------------");
+            LOG.info(m + " ------------------------------------------------------------");
+
+        }
+    }
+
+    @Test
+    public void testCreateMulitDeleteAllApp(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+
+        String m = "testCreateMulitDeleteAllApp";
+        ProducerServiceRestClient service = builder.build(ProducerServiceRestClient.class);
+
+        try {
+            // create input data
+            AppStructure reqPOJO1 = createAppData("myApp1", "Famous myApp1", true,
+                                                  AppStructure.SecurityType.NO_SECURITY, AppStructure.GenreType.GAME,
+                                                  createPriceList(Price.PurchaseType.BLUEPOINTS, 200, null, 100), "ABC", "abc@comp");
+
+            AppStructure reqPOJO2 = createAppData("myApp2", "Famous myApp2", true, AppStructure.SecurityType.BASIC,
+                                                  AppStructure.GenreType.NEWS, createPriceList(Price.PurchaseType.CREDITCARD, 400, null, 100),
+                                                  "ABC", "abc@comp");
+
+            AppStructure reqPOJO3 = createAppData("myApp3", "Famous myApp3", true,
+                                                  AppStructure.SecurityType.TOKEN_JWT, AppStructure.GenreType.SOCIAL,
+                                                  createPriceList(Price.PurchaseType.PAYAPL, 2000, null, 100), "ABC", "abc@comp");
+
+            AppStructure reqPOJO4 = createAppData("myApp4", "Famous myApp4", true,
+                                                  AppStructure.SecurityType.TOKEN_OAUTH2, AppStructure.GenreType.GAME,
+                                                  createPriceList(Price.PurchaseType.PAYAPL, 20000, Price.PurchaseType.CREDITCARD, 3000), "ABC",
+                                                  "abc@comp");
+
+            MultiAppStructues multiApp = new MultiAppStructues();
+
+            multiApp.setStructureList(Arrays.asList(reqPOJO1, reqPOJO2, reqPOJO3, reqPOJO4));
+
+            LOG.info(m + ": create service = " + service.toString());
+
+            // call Remote REST service
+            Response r = service.createMultiApps(multiApp);
+
+            // check response
+            int status = r.getStatus();
+            LOG.info(m + ": create status: " + status);
+
+            String entity = r.readEntity(String.class);
+            LOG.info(m + ": create entity: " + entity);
+
+            boolean isValidResponse = entity.contains("Store has successfully added the app [myApp1]");
+            assertTrue(isValidResponse);
+
+            isValidResponse = entity.contains("Store has successfully added the app [myApp2]");
+            assertTrue(isValidResponse);
+
+            isValidResponse = entity.contains("Store has successfully added the app [myApp3]");
+            assertTrue(isValidResponse);
+
+            isValidResponse = entity.contains("Store has successfully added the app [myApp4]");
+            assertTrue(isValidResponse);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+        } finally {
+            LOG.info(m + " ------------------------------------------------------------");
+            LOG.info(m + " ----- invoking Producer Rest client to delete apps to test grpc server streaming ----- ");
+
+            // call Remote REST service
+            Response r = service.deleteAllApps();
+
+            // check response
+            int status = r.getStatus();
+            LOG.info(m + ": delete status: " + status);
+
+            assertEquals(200, status);
+
+            String entity = r.readEntity(String.class);
+            LOG.info(m + ": delete entity: " + entity);
+
+            boolean isValidResponse = entity.contains("The app [myApp1] has been removed from the Store. "
+                                                      + "The app [myApp2] has been removed from the Store. "
+                                                      + "The app [myApp3] has been removed from the Store. "
+                                                      + "The app [myApp4] has been removed from the Store.");
+
+            assertTrue(isValidResponse);
+            LOG.info(m + " ------------------------------------------------------------");
+            LOG.info(m + " ------------------------------------------------------------");
+
+        }
+    }
+
+    @Test
+    public void testDuplicateCreateDeleteMyApp(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+
+        String m = "testDuplicateCreateDeleteMyApp";
+        ProducerServiceRestClient service = builder.build(ProducerServiceRestClient.class);
+
+        try {
+            // create input data
+            AppStructure reqPOJO = createAppData("myApp", "Famous myApp", true,
+                                                 AppStructure.SecurityType.NO_SECURITY, AppStructure.GenreType.GAME,
+                                                 createPriceList(Price.PurchaseType.BLUEPOINTS, 200, null, 100), "ABC", "abc@comp");
+
+            LOG.info(m + ": service = " + service.toString());
+
+            // call Remote REST service
+            Response r = service.createApp(reqPOJO);
+
+            // check response
+            int status = r.getStatus();
+            LOG.info(m + ": create status: " + status);
+
+            assertEquals(200, status);
+
+            // call again to create same entry
+            r = service.createApp(reqPOJO);
+
+            // check response status if exception is not thrown
+            status = r.getStatus();
+            LOG.info(m + ": create duplicate status: " + status);
+
+        } catch (javax.ws.rs.WebApplicationException excep) {
+
+            LOG.info(m + ": WAexception message: " + excep.getMessage());
+
+            String excepEntity = excep.getResponse().readEntity(String.class);
+
+            LOG.info(m + ": excepEntity: " + excepEntity);
+
+            boolean isValidResponse = excepEntity.contains("The app already exist in the Store.\n" +
+                                                           "First run the ProducerService to delete the app. AppName = myApp");
+
+            assertTrue(isValidResponse);
+
+        } catch (Exception e) {
+            LOG.info(m + ": exception message: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            // call Remote REST service
+            Response r = service.deleteApp("myApp");
+
+            // check response
+            int status = r.getStatus();
+            LOG.info(m + ": delete status: " + status);
+
+            assertEquals(200, status);
+
+            String entity = r.readEntity(String.class);
+            LOG.info(m + ": delete entity: " + entity);
+
+            boolean isValidResponse = entity.contains("The app [myApp] has been removed from the server");
+
+            assertTrue(isValidResponse);
+            LOG.info(m + " ------------------------------------------------------------");
+            LOG.info(m + " ------------------------------------------------------------");
+
+        }
+    }
+
+    /**
+     * @param name
+     * @param desc
+     * @param isfree
+     * @param securityType
+     * @param genreType
+     * @param purchaseType
+     * @param sellingPrice
+     * @param companyName
+     * @param email
+     * @return
+     */
+    private AppStructure createAppData(String name, String desc, Boolean isfree, SecurityType securityType,
+                                       GenreType genreType, List<Price> priceList, String companyName, String email) {
+
+        AppStructure appStruct = new AppStructure();
+
+        appStruct.setName(name);
+        appStruct.setDesc(desc);
+        appStruct.setFree(isfree);
+        appStruct.setSecurityType(securityType);
+        appStruct.setGenreType(genreType);
+        appStruct.setPriceList(priceList);
+
+        Creator cr = new Creator();
+        cr.setCompanyName(companyName);
+        cr.setEmail(email);
+
+        appStruct.setCreator(cr);
+
+        return appStruct;
+
+    }
+
+    /**
+     * @param purchaseType1
+     * @param sellingPrice1
+     * @param purchaseType2
+     * @param sellingPrice2
+     * @return
+     */
+    private List<Price> createPriceList(PurchaseType purchaseType1, double sellingPrice1, PurchaseType purchaseType2,
+                                        double sellingPrice2) {
+
+        List<Price> priceList = null;
+
+        Price price1 = new Price();
+        price1.setPurchaseType(purchaseType1);
+        price1.setSellingPrice(sellingPrice1);
+
+        if (purchaseType2 != null) {
+            Price price2 = new Price();
+            price2.setPurchaseType(purchaseType2);
+            price2.setSellingPrice(sellingPrice2);
+
+            priceList = Arrays.asList(price1, price2);
+        } else {
+            priceList = Arrays.asList(price1);
+        }
+
+        return priceList;
+    }
+
+}

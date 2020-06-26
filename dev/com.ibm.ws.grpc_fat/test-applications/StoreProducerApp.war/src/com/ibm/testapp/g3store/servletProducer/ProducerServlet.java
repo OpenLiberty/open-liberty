@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.testapp.g3store.servletConsumer;
+package com.ibm.testapp.g3store.servletProducer;
 
 import java.io.IOException;
 
@@ -18,8 +18,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns = "/servlet")
-public class HelloServlet extends HttpServlet {
+/**
+ * TODO
+ */
+@WebServlet(urlPatterns = "/ProducerServlet")
+public class ProducerServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     /**

@@ -18,9 +18,9 @@ import com.ibm.test.g3store.grpc.AppProducerServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
-public class ProducergRPCServiceClient {
+public class ProducerGrpcServiceClient {
 
-    private static Logger log = Logger.getLogger(ProducergRPCServiceClient.class.getName());
+    private static Logger log = Logger.getLogger(ProducerGrpcServiceClient.class.getName());
 
     private ManagedChannel _channel;
     protected AppProducerServiceGrpc.AppProducerServiceBlockingStub _producerBlockingStub;

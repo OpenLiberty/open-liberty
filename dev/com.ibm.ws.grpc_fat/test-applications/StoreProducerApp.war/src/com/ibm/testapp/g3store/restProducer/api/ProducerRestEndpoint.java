@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.testapp.g3store.restProducer.api;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
@@ -34,10 +36,11 @@ import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 
+import com.ibm.testapp.g3store.exception.AlreadyExistException;
 import com.ibm.testapp.g3store.exception.HandleExceptionsAsyncgRPCService;
 import com.ibm.testapp.g3store.exception.InvalidArgException;
 import com.ibm.testapp.g3store.exception.NotFoundException;
-import com.ibm.testapp.g3store.grpcProducer.api.ProducergRPCServiceClientImpl;
+import com.ibm.testapp.g3store.grpcProducer.api.ProducerGrpcServiceClientImpl;
 import com.ibm.testapp.g3store.restProducer.model.AppStructure;
 import com.ibm.testapp.g3store.restProducer.model.DeleteAllRestResponse;
 import com.ibm.testapp.g3store.restProducer.model.MultiAppStructues;
@@ -51,14 +54,25 @@ import com.ibm.testapp.g3store.restProducer.model.ProducerRestResponse;
  *         gRPC requests.
  *
  */
-@SuppressWarnings("restriction")
 @RequestScoped
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @Path("/producer")
-public class ProducerRestEndpoint extends ProducergRPCServiceClientImpl {
+public class ProducerRestEndpoint extends ProducerGrpcServiceClientImpl {
 
     private static Logger log = Logger.getLogger(ProducerRestEndpoint.class.getName());
+
+    private static String getSysProp(String key) {
+        return AccessController.doPrivileged((PrivilegedAction<String>) () -> System.getProperty(key));
+    }
+
+    private int getPort() {
+        String port = getSysProp("bvt.prop.HTTP_default"); // Store server is running on default
+        return Integer.valueOf(port);
+    }
+
+    @Context
+    HttpHeaders httpHeaders;
 
     /**
      * @param reqPOJO
@@ -67,7 +81,7 @@ public class ProducerRestEndpoint extends ProducergRPCServiceClientImpl {
      * @throws Exception
      */
     @PUT
-    @Path("create")
+    @Path("/create")
     @APIResponses(value = {
                             @APIResponse(responseCode = "400", description = "Check app response", content = @Content(mediaType = "text/plain")),
 
@@ -77,14 +91,20 @@ public class ProducerRestEndpoint extends ProducergRPCServiceClientImpl {
     @RequestBody(name = "appStruct", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppStructure.class)), required = true,
                  description = "new app to add")
     @Operation(summary = "Create the app", description = "It returns the application id created by the Store Service.")
-    public Response createApp(AppStructure reqPOJO, @Context HttpHeaders headers) throws Exception {
+    public Response createApp(AppStructure reqPOJO) throws Exception {
 
         // Get the input parameters from the REST request
         // Each parameter value will have to be transferred to the grpc request object
         log.info("createApp: request to create app has been received by ProducerRestEndpoint " + reqPOJO);
 
-        // create grpc client
-        startService_BlockingStub("localhost", 9080);
+        String authHeader = httpHeaders.getHeaderString("Authorization");
+
+        if (authHeader == null) {
+            // create grpc client
+            startService_BlockingStub("localhost", getPort());
+        } else {
+            // secure
+        }
 
         try {
             String id = createSingleAppinStore(reqPOJO);
@@ -94,7 +114,11 @@ public class ProducerRestEndpoint extends ProducergRPCServiceClientImpl {
 
         } catch (InvalidArgException e) {
             return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
-        } finally {
+        } catch (AlreadyExistException e1) {
+            return Response.status(Status.BAD_REQUEST).entity(e1.getMessage()).build();
+        }
+
+        finally {
             // stop the grpc service
             stopService();
         }
@@ -107,7 +131,7 @@ public class ProducerRestEndpoint extends ProducergRPCServiceClientImpl {
      * @throws Exception
      */
     @PUT
-    @Path("createAll")
+    @Path("/create/multi")
     @APIResponses(value = {
                             @APIResponse(responseCode = "400", description = "Check app response", content = @Content(mediaType = "text/plain")),
 
@@ -119,11 +143,11 @@ public class ProducerRestEndpoint extends ProducergRPCServiceClientImpl {
                                                          schema = @Schema(implementation = MultiAppStructues.class)),
                  required = true, description = "new apps to add")
     @Operation(summary = "Create the multiple apps", description = "It returns the result from the Store Service.")
-    public Response createMultiApps(MultiAppStructues reqPOJO, @Context HttpHeaders headers) throws Exception {
+    public Response createMultiApps(MultiAppStructues reqPOJO) throws Exception {
 
         log.info("createMultiApps: request to create apps has been received by ProducerRestEndpoint " + reqPOJO);
         // create grpc client
-        startService_AsyncStub("localhost", 9080);
+        startService_AsyncStub("localhost", getPort());
         HandleExceptionsAsyncgRPCService handleException = new HandleExceptionsAsyncgRPCService();
         try {
             ProducerRestResponse response = createMultiAppsinStore(reqPOJO, handleException);
@@ -163,9 +187,8 @@ public class ProducerRestEndpoint extends ProducergRPCServiceClientImpl {
     @APIResponses(value = {
                             @APIResponse(responseCode = "400", description = "Incorrect input", content = @Content(mediaType = MediaType.APPLICATION_JSON)),
                             @APIResponse(responseCode = "200", description = "App is deleted.", content = @Content(mediaType = MediaType.APPLICATION_JSON)) })
-    public Response deleteApp(
-                              @Parameter(name = "name", description = "name of the app", required = true, in = ParameterIn.PATH) @PathParam("name") String name,
-                              @Context HttpHeaders httpHeaders) throws Exception {
+    public Response deleteApp(@Parameter(name = "name", description = "name of the app",
+                                         required = true, in = ParameterIn.PATH) @PathParam("name") String name) throws Exception {
 
         if (name == null) {
             log.severe("An invalid argument is reported on deleteApp request, name =" + name);
@@ -174,7 +197,7 @@ public class ProducerRestEndpoint extends ProducergRPCServiceClientImpl {
             log.info("deleteApp: request to delete app has been received by ProducerRestEndpoint " + name);
         }
         // create grpc client and send the request
-        if (startService_BlockingStub("localhost", 9080)) {
+        if (startService_BlockingStub("localhost", getPort())) {
             try {
                 String appStruct = deleteSingleAppinStore(name);
                 log.info("deleteApp, request to delete app has been completed by ProducerRestEndpoint, result =  "
@@ -202,12 +225,12 @@ public class ProducerRestEndpoint extends ProducergRPCServiceClientImpl {
     @APIResponses(value = {
                             @APIResponse(responseCode = "400", description = "Incorrect input", content = @Content(mediaType = MediaType.APPLICATION_JSON)),
                             @APIResponse(responseCode = "200", description = "Apps are deleted.", content = @Content(mediaType = MediaType.APPLICATION_JSON)) })
-    public Response deleteAllApps(@Context HttpHeaders httpHeaders) throws Exception {
+    public Response deleteAllApps() throws Exception {
 
         log.info("deleteAllApps, prodcuer ,request received to remove all apps");
 
         // create grpc client and send the request
-        if (startService_BlockingStub("localhost", 9080)) {
+        if (startService_BlockingStub("localhost", getPort())) {
 
             DeleteAllRestResponse response = deleteMultiAppsinStore();
             stopService();
