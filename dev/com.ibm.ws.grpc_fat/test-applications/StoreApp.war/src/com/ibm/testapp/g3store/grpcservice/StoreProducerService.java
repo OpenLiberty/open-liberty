@@ -62,7 +62,8 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
                           io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.AppResponse> responseObserver) {
 
         final String m = "createApp";
-
+        log.info(m + " ------------------------------------------------------------");
+        log.info(m + " -----------------------createApp----------------------------");
         log.info(m + " ----- request received by StoreProducer grpcService to create the app. ");
 
         boolean useServerInterceptor = false;
@@ -163,6 +164,9 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
                             .asRuntimeException());
         }
 
+        log.info(m + " -----------------------createApp----------------------------");
+        log.info(m + " ------------------------------------------------------------");
+
     }
 
     /**
@@ -177,7 +181,9 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
 
         final String m = "deleteApp";
 
-        log.info(m + " ----- request received by StoreConsumer grpcService to return the app names. ");
+        log.info(m + " ------------------------------------------------------------");
+        log.info(m + " -----------------------deleteApp----------------------------");
+        log.info(m + " ----- request received by StoreProducer grpcService to delete the app names. ");
 
         // db or cahce
         AppCache cacheInstance = AppCacheFactory.getInstance();
@@ -224,10 +230,13 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
 
         // send the response
         responseObserver.onNext(response);
-        log.info(m + " ----- request to remove app has been completed ");
+        log.info(m + " ----- request to remove app has been completed by StoreProducer");
 
         // complete it
         responseObserver.onCompleted();
+
+        log.info(m + " -----------------------deleteApp----------------------------");
+        log.info(m + " ------------------------------------------------------------");
 
     }
 
@@ -243,7 +252,9 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
 
         final String m = "deleteAllApps";
 
-        log.info(m + " ----- request received by StoreConsumer grpcService to delete the app names. ");
+        log.info(m + " ------------------------------------------------------------");
+        log.info(m + " -----------------------deleteAllApps------------------------");
+        log.info(m + " ----- request received by StoreProducer grpcService to delete all the app names. ");
 
         // db or cahce
         AppCache cacheInstance = AppCacheFactory.getInstance();
@@ -276,6 +287,9 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
         // now we are done , complete so , client can finish
         responseObserver.onCompleted();
 
+        log.info(m + " -----------------------deleteAllApps------------------------");
+        log.info(m + " ------------------------------------------------------------");
+
     }
 
     /**
@@ -289,8 +303,9 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
                                                                                         final io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.MultiCreateResponse> responseObserver) {
 
         final String m = "createApps";
-
-        log.info(m + " ----- request received by StoreConsumer grpcService to create the app names  ----- ");
+        log.info(m + " ------------------------------------------------------------");
+        log.info(m + " -----------------------createApps---------------------------");
+        log.info(m + " ----- request received by StoreProducer grpcService to create the app names  ----- ");
 
         StreamObserver<AppRequest> requestObserver = new StreamObserver<AppRequest>() {
 
@@ -378,6 +393,9 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
                 log.info(m + " -----  complete, result [" + result + "]");
 
                 responseObserver.onCompleted();
+
+                log.info(m + " -----------------------createApps---------------------------");
+                log.info(m + " ------------------------------------------------------------");
             }
 
         };

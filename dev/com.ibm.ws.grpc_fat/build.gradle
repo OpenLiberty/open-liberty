@@ -50,7 +50,23 @@ repositories {
     }
 }
 
+configurations {
+  storeAppWarLibs
+}
+
 dependencies {
+ 
+ 	// Adding libraries the application to run in FAT
+	storeAppWarLibs 'com.google.protobuf:protobuf-java-util:3.11.4',
+	'com.google.code.gson:gson:2.8.6',
+	'com.google.guava:guava:28.1-android', // following are dependencies of this 28.1-android
+	'com.google.errorprone:error_prone_annotations:2.3.4',
+	'com.google.guava:failureaccess:1.0.1',
+	'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava',
+	'org.codehaus.mojo:animal-sniffer-annotations:1.18',
+	'org.checkerframework:checker-compat-qual:2.5.5',
+	'com.google.j2objc:j2objc-annotations:1.3',
+	'com.google.code.findbugs:jsr305:3.0.2'
  
     // test
     testImplementation 'commons-httpclient:commons-httpclient:3.1'
@@ -58,12 +74,12 @@ dependencies {
 	
     //
     implementation 'com.google.protobuf:protobuf-java-util:3.11.4'
-        
+    // @jar is needed since some of the dependencies of java-util were overwritten
     providedCompile 'io.grpc:grpc-protobuf:1.28.1@jar'
     compileOnly 'io.grpc:grpc-stub:1.28.1'   
     providedCompile 'io.grpc:grpc-services:1.28.1@jar'
     providedCompile 'io.grpc:grpc-netty-shaded:1.28.1@jar'
-    
+    //dynamic caching map
     implementation 'com.ibm.websphere.appserver.api:com.ibm.websphere.appserver.api.distributedMap:2.0.37'
 	
     // provided
@@ -103,6 +119,24 @@ protobuf {
         			grpc {} 
         		}
     }
+}
+
+// copy into application lib at build time
+task copyToConsumerAppWarLibs(type: Copy) {
+  from configurations.storeAppWarLibs
+  	into new File(autoFvtDir, 'test-applications/StoreConsumerApp.war/resources/WEB-INF/lib')
+}
+
+// copy into application lib at build time
+task copyToStoreAppWarLibs(type: Copy) {
+  from configurations.storeAppWarLibs
+  	into new File(autoFvtDir, 'test-applications/StoreApp.war/resources/WEB-INF/lib')
+}
+
+//runs task at FAT build time
+addRequiredLibraries {
+  dependsOn copyToStoreAppWarLibs
+  dependsOn copyToConsumerAppWarLibs
 }
 
 // Inform IDE Eclipse about the generated code.

@@ -51,7 +51,8 @@ public class StoreConsumerService extends AppConsumerServiceGrpc.AppConsumerServ
                                io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.NameResponse> responseObserver) {
 
         final String m = "getAllAppNames";
-
+        log.info(m + " ------------------------------------------------------------");
+        log.info(m + " -----------------------getAllAppNames-----------------------");
         log.info(m + " ----- request received by StoreConsumer grpcService to return the app names ");
 
         AppCache cacheInstance = AppCacheFactory.getInstance();
@@ -75,6 +76,8 @@ public class StoreConsumerService extends AppConsumerServiceGrpc.AppConsumerServ
                                                      .asRuntimeException());
         }
 
+        log.info(m + " -----------------------getAllAppNames-----------------------");
+        log.info(m + " ------------------------------------------------------------");
     }
 
     /**
@@ -87,7 +90,8 @@ public class StoreConsumerService extends AppConsumerServiceGrpc.AppConsumerServ
 
         final String m = "getAppInfo";
         String name = request.getName();
-
+        log.info(m + " ------------------------------------------------------------");
+        log.info(m + " -----------------------getAppInfo---------------------------");
         log.info(m + " ----- request received by StoreConsumer grpcService to return the app info =" + name);
 
         AppCache cacheInstance = AppCacheFactory.getInstance();
@@ -110,6 +114,9 @@ public class StoreConsumerService extends AppConsumerServiceGrpc.AppConsumerServ
                             .asRuntimeException());
         }
 
+        log.info(m + " -----------------------getAppInfo---------------------------");
+        log.info(m + " ------------------------------------------------------------");
+
     }
 
     /**
@@ -121,7 +128,8 @@ public class StoreConsumerService extends AppConsumerServiceGrpc.AppConsumerServ
                                                                                            io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.PriceResponse> responseObserver) {
 
         final String m = "getPrices";
-
+        log.info(m + " ------------------------------------------------------------");
+        log.info(m + " -----------------------getPrices----------------------------");
         log.info(m + " ----- request received by StoreConsumer grpcService to return the app price list using bidi streaming ");
 
         StreamObserver<AppNameRequest> requestObserver = new StreamObserver<AppNameRequest>() {
@@ -171,6 +179,8 @@ public class StoreConsumerService extends AppConsumerServiceGrpc.AppConsumerServ
             public void onCompleted() {
                 responseObserver.onCompleted();
                 log.info(m + " -----  StoreConsumer grpcService get Prices completed on server. ");
+                log.info(m + " -----------------------getPrices----------------------------");
+                log.info(m + " ------------------------------------------------------------");
 
             }
         };
