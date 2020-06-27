@@ -57,7 +57,7 @@
   		<classloader apiTypeVisibility="+third-party"/>
     </application>
     
-    <javaPermission className="java.io.FilePermission" name="/Library/Java/JavaVirtualMachines/adoptopenjdk-11-openj9.jdk/Contents/Home/conf/javamail.address.map" actions="read" />
+    <javaPermission className="java.io.FilePermission" name="/Library/Java/JavaVirtualMachines/jdk1.8.0_151.jdk/Contents/Home/jre/lib/javamail.address.map" actions="read" />
     <!-- Needed due to missing doPriv in javax.mail.Session.getService() -->
     <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
     <!-- Needed due to missing doPriv in javax.mail.Service.connect() -->

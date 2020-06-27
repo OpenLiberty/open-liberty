@@ -16,11 +16,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
 
-import jakarta.mail.Authenticator;
-import jakarta.mail.PasswordAuthentication;
-import jakarta.mail.Session;
-
-
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
@@ -45,13 +40,18 @@ import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 import com.ibm.wsspi.resource.ResourceFactory;
 import com.ibm.wsspi.resource.ResourceInfo;
 
+import jakarta.mail.Authenticator;
+import jakarta.mail.PasswordAuthentication;
+import jakarta.mail.Session;
+
 /**
  * MailSessionService serves as both the component for the jakartaMail-2.0 feature
  * and is an implementation of a ResourceFactory that will create a Session object
  * that has been defined in the server.xml file with the <mailSession> element.
  *
  */
-@Component(immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE, configurationPid = "com.ibm.ws.jakarta.mail.mailSession", property = "creates.objectClass=jakarta.mail.Session")
+@Component(immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE, configurationPid = "com.ibm.ws.javamail.mailSession", property = "creates.objectClass=jakarta.mail.Session")
+
 public class MailSessionService implements ResourceFactory {
     private static final TraceComponent tc = Tr.register(MailSessionService.class);
     /**

@@ -95,7 +95,7 @@ public class POP3Test {
 
     /**
      * TestDescription:
-     * This test is test the ability for the javaMail-1.5 feature to have a javax.mail.Session
+     * This test is test the ability for the javaMail-1.6 feature to have a javax.mail.Session
      * object defined on the POP3MailSessionServlet. This Tests the features ability to define a mailSession
      * object in the server.xml. The mailSession object is created by the MailSessionService class
      * and injected into a Session object on the POP3MailSessionServlet using a JNDI lookup. Using the
