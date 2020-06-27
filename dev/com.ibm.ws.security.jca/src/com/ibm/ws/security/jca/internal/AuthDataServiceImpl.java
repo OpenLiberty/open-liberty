@@ -23,7 +23,6 @@ import javax.security.auth.Subject;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
-import javax.security.auth.spi.LoginModule;
 
 import org.ietf.jgss.GSSCredential;
 import org.osgi.framework.ServiceReference;
@@ -43,6 +42,7 @@ import com.ibm.ws.security.authentication.principals.WSPrincipal;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.security.intfc.SubjectManagerService;
 import com.ibm.ws.security.jca.AuthDataService;
+import com.ibm.ws.security.kerberos.auth.Krb5LoginModuleWrapper;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.security.auth.callback.WSMappingCallbackHandler;
 
@@ -166,31 +166,15 @@ public class AuthDataServiceImpl implements AuthDataService {
         }
     }
 
-    @SuppressWarnings("unchecked")
     private Subject doKerberosLogin(String principal, Path keytab) throws LoginException {
-        Class<LoginModule> Krb5LoginModule = null;
-        try {
-            Krb5LoginModule = (Class<LoginModule>) Class.forName("com.ibm.ws.security.authentication.jaas.modules.Krb5LoginModuleWrapper");
-        } catch (ClassNotFoundException e) {
-            // TODO: Raise exception for needing to enable one of the security features?
-            throw new LoginException("Need to enable a security feature");
-        }
         Subject subject = new Subject();
-        LoginModule krb5;
-        try {
-            krb5 = Krb5LoginModule.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
-            throw new LoginException(e.getMessage()); // TODO
-        }
+        Krb5LoginModuleWrapper krb5 = new Krb5LoginModuleWrapper();
         Map<String, String> options = new HashMap<String, String>();
         Map<String, Object> sharedState = new HashMap<String, Object>();
 
         options.put("isInitiator", "true");
         options.put("refreshKrb5Config", "true");
         options.put("doNotPrompt", "true");
-        // TODO: Do we want to store the key?
-        //options.put("storeKey", "true");
         options.put("useKeyTab", "true");
         // If no keytab path specified, still set useKeyTab=true because then the
         // default JDK or default OS locations will be checked
@@ -211,8 +195,18 @@ public class AuthDataServiceImpl implements AuthDataService {
         // associate it with the Subject
         Set<GSSCredential> gssCreds = subject.getPrivateCredentials(GSSCredential.class);
         if (gssCreds == null || gssCreds.size() == 0) {
-            GSSCredential gssCred = SubjectHelper.getGSSCredentialFromSubject(subject);
-            subject.getPrivateCredentials().add(gssCred); // TODO: doPriv
+            GSSCredential gssCred = SubjectHelper.createGSSCredential(subject);
+            if (System.getSecurityManager() == null) {
+                subject.getPrivateCredentials().add(gssCred);
+            } else {
+                AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                    @Override
+                    public Void run() {
+                        subject.getPrivateCredentials().add(gssCred);
+                        return null;
+                    }
+                });
+            }
         }
 
         return subject;

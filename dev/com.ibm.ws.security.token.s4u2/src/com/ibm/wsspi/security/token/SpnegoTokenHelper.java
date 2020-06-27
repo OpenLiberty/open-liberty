@@ -29,8 +29,8 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.security.WSSecurityException;
 import com.ibm.websphere.security.auth.WSSubject;
 import com.ibm.websphere.security.auth.callback.WSCallbackHandlerImpl;
-import com.ibm.ws.security.authentication.jaas.modules.Krb5LoginModuleWrapper;
 import com.ibm.ws.security.authentication.utility.JaasLoginConfigConstants;
+import com.ibm.ws.security.kerberos.auth.Krb5LoginModuleWrapper;
 import com.ibm.ws.security.krb5.Krb5Common;
 import com.ibm.ws.security.token.internal.TraceConstants;
 import com.ibm.ws.security.token.krb5.Krb5Helper;
@@ -52,13 +52,13 @@ public class SpnegoTokenHelper {
      * Build a SPNEGO Authorization string using a Kerberos credential within the current caller Java Subject.
      * The method will use that credential to request a SPNEGO token for a ServicePrincipalName (SPN) for the target service system.
      *
-     * @param spn - ServicePrincipalName of system for which SPNEGO token will be targeted.
+     * @param spn      - ServicePrincipalName of system for which SPNEGO token will be targeted.
      * @param lifetime - Lifetime for the context, for example GSSCredential.INDEFINITE_LIFETIME
      * @param delegate - Whether the token includes delegatable GSSCredentials.
      * @return - String "Negotiate " + Base64 encoded version of SPNEGO Token
-     * @throws WSSecurityException - thrown when no caller Subject exists.
-     * @throws GSSException - thrown when SPNEGO token generation fails, when Subject is null, when the Subject
-     *             does not contain Kerberos credentials, or when SPN is invalid.
+     * @throws WSSecurityException       - thrown when no caller Subject exists.
+     * @throws GSSException              - thrown when SPNEGO token generation fails, when Subject is null, when the Subject
+     *                                       does not contain Kerberos credentials, or when SPN is invalid.
      * @throws PrivilegedActionException - unexpected - thrown when Java 2 security is misconfigured.
      */
     public static String buildSpnegoAuthorizationFromCallerSubject(final String spn, final int lifetime,
@@ -76,15 +76,15 @@ public class SpnegoTokenHelper {
      * Build a SPNEGO Authorization string using a Kerberos credential within the supplied Java Subject.
      * The method will use that credential to request a SPNEGO token for a ServicePrincipalName (SPN) for the target service system.
      *
-     * @param spn - ServicePrincipalName of system for which SPNEGO token will be targeted.
-     * @param subject - Subject containing Kerberos credentials
+     * @param spn      - ServicePrincipalName of system for which SPNEGO token will be targeted.
+     * @param subject  - Subject containing Kerberos credentials
      * @param lifetime - Lifetime for the context, for example GSSCredential.INDEFINITE_LIFETIME
      * @param delegate - whether the token includes delegatable GSSCredentials.
      * @return - String "Negotiate " + Base64 encoded version of SPNEGO Token
-     * @throws GSSException - thrown when SPNEGO token generation fails, when Subject is null, when the Subject
-     *             does not contain Kerberos credentials, or when SPN is invalid.
+     * @throws GSSException              - thrown when SPNEGO token generation fails, when Subject is null, when the Subject
+     *                                       does not contain Kerberos credentials, or when SPN is invalid.
      * @throws PrivilegedActionException - unexpected - thrown when Java 2 security is misconfigured.
-     * @throws LoginException - thrown when the Login fails with the supplied SPN.
+     * @throws LoginException            - thrown when the Login fails with the supplied SPN.
      */
     public static String buildSpnegoAuthorizationFromSubject(final String spn, final Subject subject, final int lifetime,
                                                              final boolean delegate) throws GSSException, PrivilegedActionException {
@@ -99,11 +99,11 @@ public class SpnegoTokenHelper {
      * the Windows OS maintains a Kerberos Ticket Granting Ticket (TGT) for that user and
      * will use that TGT to request a SPNEGO token can be requested for a ServicePrincipalName (SPN) for the target service system.
      *
-     * @param spn - ServicePrincipalName of system for which SPNEGO token will be targeted.
+     * @param spn      - ServicePrincipalName of system for which SPNEGO token will be targeted.
      * @param lifetime - Lifetime for the context, for example GSSCredential.INDEFINITE_LIFETIME
      * @param delegate - Whether the token includes delegatable GSSCredential credentials.
      * @return - String "Negotiate " + Base64 encoded version of SPNEGO Token
-     * @throws GSSException - thrown when SPNEGO token generation fails, or when SPN is invalid.
+     * @throws GSSException              - thrown when SPNEGO token generation fails, or when SPN is invalid.
      * @throws PrivilegedActionException - unexpected - thrown when Java 2 security is misconfigured.
      */
     public static String buildSpnegoAuthorizationFromNativeCreds(final String spn, final int lifetime,
@@ -149,14 +149,14 @@ public class SpnegoTokenHelper {
      * Kerberos key which can be used to get a Ticket Granting Ticket (TGT) for that userid.
      * The method will use that TGT to request a SPNEGO token can be requested for a ServicePrincipalName (SPN) for the target service system.
      *
-     * @param spn - ServicePrincipalName of system for which SPNEGO token will be targeted.
-     * @param upn - UserPrincipalName of the user for which the SPNEGO token will be generated.
+     * @param spn                   - ServicePrincipalName of system for which SPNEGO token will be targeted.
+     * @param upn                   - UserPrincipalName of the user for which the SPNEGO token will be generated.
      * @param jaasLoginContextEntry - JAAS login context entry to use.
-     * @param lifetime - Lifetime for the context, for example GSSCredential.INDEFINITE_LIFETIME
-     * @param delegate - whether the token includes delegatable GSSCredential credentials.
+     * @param lifetime              - Lifetime for the context, for example GSSCredential.INDEFINITE_LIFETIME
+     * @param delegate              - whether the token includes delegatable GSSCredential credentials.
      * @return - String "Negotiate " + Base64 encoded version of SPNEGO Token
-     * @throws GSSException - thrown when SPNEGO token generation fails, when UPN is invalid, or when SPN is invalid.
-     * @throws LoginException - thrown when the Login fails with the supplied UPN.
+     * @throws GSSException              - thrown when SPNEGO token generation fails, when UPN is invalid, or when SPN is invalid.
+     * @throws LoginException            - thrown when the Login fails with the supplied UPN.
      * @throws PrivilegedActionException - unexpected - thrown when Java 2 security is misconfigured.
      */
     public static String buildSpnegoAuthorizationFromUpn(final String spn, final String upn, final String jaasLoginContextEntry,
@@ -211,13 +211,13 @@ public class SpnegoTokenHelper {
      * to get a Ticket Granting Ticket (TGT) then will request the SPNEGO token with that TGT for the specified
      * ServicePrincipalName.
      *
-     * @param spn - ServicePrincipalName of system for which SPNEGO token will be targeted.
-     * @param userid - Userid for the Login
+     * @param spn      - ServicePrincipalName of system for which SPNEGO token will be targeted.
+     * @param userid   - Userid for the Login
      * @param password - Password for the Login
      * @param lifetime - Lifetime for the context, for example GSSCredential.INDEFINITE_LIFETIME
      * @param delegate - whether the token includes delegatable GSScredentials.
      * @return - String "Negotiate " + Base64 encoded version of SPNEGO Token
-     * @throws GSSException - thrown when SPNEGO token generation fails, when userid or password is null, or when SPN is invalid.
+     * @throws GSSException   - thrown when SPNEGO token generation fails, when userid or password is null, or when SPN is invalid.
      * @throws LoginException - thrown when the Login fails with the supplied userid and password.
      */
     public static String buildSpnegoAuthorizationFromUseridPassword(final String spn,
@@ -234,15 +234,15 @@ public class SpnegoTokenHelper {
      * to get a Ticket Granting Ticket (TGT) then will request the SPNEGO token with that TGT for the specified
      * ServicePrincipalName.
      *
-     * @param spn - ServicePrincipalName of system for which SPNEGO token will be targeted.
-     * @param userid - Userid for the Login
-     * @param password - Password for the Login
+     * @param spn                   - ServicePrincipalName of system for which SPNEGO token will be targeted.
+     * @param userid                - Userid for the Login
+     * @param password              - Password for the Login
      * @param jaasLoginContextEntry - JAAS login context entry to use.
-     * @param lifetime - Lifetime for the context, for example GSSCredential.INDEFINITE_LIFETIME
-     * @param delegate - whether the token includes delegatable GSSCredentials.
+     * @param lifetime              - Lifetime for the context, for example GSSCredential.INDEFINITE_LIFETIME
+     * @param delegate              - whether the token includes delegatable GSSCredentials.
      * @return - String "Negotiate " + Base64 encoded version of SPNEGO Token
-     * @throws GSSException - thrown when SPNEGO token generation fails, when userid or password is null, or when SPN is invalid.
-     * @throws LoginException - thrown when the Login fails with the supplied userid and password.
+     * @throws GSSException              - thrown when SPNEGO token generation fails, when userid or password is null, or when SPN is invalid.
+     * @throws LoginException            - thrown when the Login fails with the supplied userid and password.
      * @throws PrivilegedActionException - unexpected - thrown when Java 2 security is misconfigured.
      */
     public static String buildSpnegoAuthorizationFromUseridPassword(final String spn, final String userid, @Sensitive final String password,

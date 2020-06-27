@@ -40,6 +40,7 @@ Import-Package: \
   com.ibm.ws.security.authentication.utility, \
   com.ibm.ws.security.intfc, \
   com.ibm.ws.security.jca;version="[1.0,1.1)", \
+  com.ibm.ws.security.kerberos.auth,\
   com.ibm.wsspi.kernel.service.utils, \
   javax.security.auth, \
   javax.security.auth.callback, \
@@ -53,7 +54,6 @@ DynamicImport-Package: \
   javax.resource.spi, \
   javax.resource.spi.security, \
   com.ibm.ws.security, \
-  com.ibm.ws.security.authentication.jaas.modules, \
   com.ibm.wsspi.security.auth.callback;version="[1.1,2)"
 
 # Update the metatype.xml for your component in the resources/OSGI-INF/metatype folder
@@ -88,8 +88,8 @@ Service-Component: \
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
 	com.ibm.ws.security.auth.data.common;version=latest,\
-	com.ibm.ws.security.authentication.builtin;version=latest,\
 	com.ibm.ws.security.credentials;version=latest,\
+	com.ibm.ws.security.kerberos.auth;version=latest,\
 	com.ibm.websphere.security;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 

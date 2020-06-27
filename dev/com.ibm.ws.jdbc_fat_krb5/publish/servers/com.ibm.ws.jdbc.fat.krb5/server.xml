@@ -3,31 +3,16 @@
     <feature>componenttest-1.0</feature>
     <feature>servlet-4.0</feature>
     <feature>jdbc-4.2</feature>
-    <feature>appSecurity-2.0</feature>
     <feature>jca-1.7</feature>
   </featureManager>
     
   <include location="../fatTestPorts.xml"/>
 
-  <webApplication location="db2fat.war">
-    <application-bnd>
-      <security-role name="Manager" id="Manager">
-        <user name="user1"/>
-      </security-role>
-      <security-role name="Employee" id="Employee">
-        <user name="user2"/>
-      </security-role>
-    </application-bnd>
-  </webApplication>
+  <webApplication location="db2fat.war"/>
     
   <library id="DB2JCCLib">
     <fileset dir="${server.config.dir}/db2"/>
   </library>
-  
-  <basicRegistry realm="defaultRealm">
-    <user password="password" name="user1"/>
-    <user password="password" name="user2" />
-  </basicRegistry>
   
   <dataSource jndiName="jdbc/krb/basic">
     <jdbcDriver libraryRef="DB2JCCLib"/>
@@ -59,5 +44,7 @@
   </dataSource>
     
   <javaPermission codebase="${server.config.dir}db2/jcc.jar" className="java.security.AllPermission"/>
+  <javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
+  <javaPermission className="javax.security.auth.kerberos.ServicePermission" name="*" actions="initiate"/>
   <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
 </server>

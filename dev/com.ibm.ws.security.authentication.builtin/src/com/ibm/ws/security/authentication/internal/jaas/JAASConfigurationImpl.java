@@ -32,6 +32,7 @@ import com.ibm.ws.security.authentication.utility.JaasLoginConfigConstants;
 import com.ibm.ws.security.jaas.common.JAASConfiguration;
 import com.ibm.ws.security.jaas.common.JAASLoginContextEntry;
 import com.ibm.ws.security.jaas.common.JAASLoginModuleConfig;
+import com.ibm.ws.security.kerberos.auth.Krb5LoginModuleWrapper;
 import com.ibm.ws.security.krb5.Krb5Common;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 
@@ -159,22 +160,22 @@ public class JAASConfigurationImpl implements JAASConfiguration {
         if (Krb5Common.isIBMJdk18OrLower) {
             loginModuleEntries = createIBMJdk8Krb5loginModuleAppConfigurationEntry();
             jaasConfigurationEntries.put(JaasLoginConfigConstants.JAASClient, loginModuleEntries);
-            jaasConfigurationEntries.put(JaasLoginConfigConstants.COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE, loginModuleEntries);
+            jaasConfigurationEntries.put(Krb5LoginModuleWrapper.COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE, loginModuleEntries);
         } else if (Krb5Common.isOtherSupportJDKs) {
             loginModuleEntries = createJdk11Krb5loginModuleAppConfigurationEntry(false, "true");
             jaasConfigurationEntries.put(JaasLoginConfigConstants.JAASClient, loginModuleEntries);
-            jaasConfigurationEntries.put(JaasLoginConfigConstants.COM_SUN_SECURITY_AUTH_MODULE_KRB5LOGINMODULE, loginModuleEntries);
-            jaasConfigurationEntries.put(JaasLoginConfigConstants.COM_SUN_SECURITY_JGSS_KRB5_INITIATE, loginModuleEntries);
+            jaasConfigurationEntries.put(Krb5LoginModuleWrapper.COM_SUN_SECURITY_AUTH_MODULE_KRB5LOGINMODULE, loginModuleEntries);
+            jaasConfigurationEntries.put(Krb5LoginModuleWrapper.COM_SUN_SECURITY_JGSS_KRB5_INITIATE, loginModuleEntries);
 
             //TODO:
             loginModuleEntries = createJdk11Krb5loginModuleAppConfigurationEntry(true, "true");
-            jaasConfigurationEntries.put(JaasLoginConfigConstants.COM_SUN_SECURITY_JGSS_KRB5_ACCEPT, loginModuleEntries);
+            jaasConfigurationEntries.put(Krb5LoginModuleWrapper.COM_SUN_SECURITY_JGSS_KRB5_ACCEPT, loginModuleEntries);
         }
     }
 
     private List<AppConfigurationEntry> createIBMJdk8Krb5loginModuleAppConfigurationEntry() {
         List<AppConfigurationEntry> loginModuleEntries = new ArrayList<AppConfigurationEntry>();
-        String loginModuleClassName = JaasLoginConfigConstants.COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE;
+        String loginModuleClassName = Krb5LoginModuleWrapper.COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE;
         LoginModuleControlFlag controlFlag = LoginModuleControlFlag.REQUIRED;
         Map<String, Object> options = new HashMap<String, Object>();
         options.put("credsType", "both");
@@ -193,10 +194,10 @@ public class JAASConfigurationImpl implements JAASConfiguration {
     private List<AppConfigurationEntry> createJdk11Krb5loginModuleAppConfigurationEntry(boolean proxy, String initiatorValue) {
         List<AppConfigurationEntry> loginModuleEntries = new ArrayList<AppConfigurationEntry>();
         Map<String, Object> options = new HashMap<String, Object>();
-        String loginModuleClassName = JaasLoginConfigConstants.COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE_WRAPPER;
+        String loginModuleClassName = Krb5LoginModuleWrapper.class.getCanonicalName();
         if (proxy) {
             loginModuleClassName = JAASLoginModuleConfig.LOGIN_MODULE_PROXY;
-            options.put(LoginModuleProxy.KERNEL_DELEGATE, getClassForName(JaasLoginConfigConstants.COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE_WRAPPER));
+            options.put(LoginModuleProxy.KERNEL_DELEGATE, Krb5LoginModuleWrapper.class);
         }
 
         LoginModuleControlFlag controlFlag = LoginModuleControlFlag.REQUIRED;
@@ -216,17 +217,5 @@ public class JAASConfigurationImpl implements JAASConfiguration {
         if (loginModuleEntry != null)
             loginModuleEntries.add(loginModuleEntry);
         return loginModuleEntries;
-    }
-
-    private Class<?> getClassForName(String tg) {
-        Class<?> cl = null;
-        try {
-            cl = Class.forName(tg);
-        } catch (ClassNotFoundException e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Exception performing class for name.", e);
-            }
-        }
-        return cl;
     }
 }

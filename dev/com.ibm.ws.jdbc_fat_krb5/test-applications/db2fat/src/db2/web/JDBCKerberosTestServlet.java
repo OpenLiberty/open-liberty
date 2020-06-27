@@ -21,17 +21,16 @@ import java.sql.SQLInvalidAuthorizationSpecException;
 
 import javax.annotation.Resource;
 import javax.security.auth.login.LoginException;
-import javax.servlet.annotation.HttpConstraint;
-import javax.servlet.annotation.ServletSecurity;
-import javax.servlet.annotation.ServletSecurity.TransportGuarantee;
 import javax.servlet.annotation.WebServlet;
 import javax.sql.DataSource;
 
+import org.junit.Test;
+
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/JDBCKerberosTestServlet")
-@ServletSecurity(@HttpConstraint(rolesAllowed = "Manager", transportGuarantee = TransportGuarantee.NONE))
 public class JDBCKerberosTestServlet extends FATServlet {
 
     @Resource(lookup = "jdbc/nokrb5")
@@ -46,6 +45,10 @@ public class JDBCKerberosTestServlet extends FATServlet {
     @Resource(lookup = "jdbc/krb/invalidPrincipal")
     DataSource invalidPrincipalDs;
 
+    @Test
+    @ExpectedFFDC({ "javax.resource.spi.SecurityException",
+                    "javax.resource.spi.ResourceAllocationException",
+                    "com.ibm.db2.jcc.am.SqlInvalidAuthorizationSpecException" })
     public void testNonKerberosConnectionRejected() throws Exception {
         try (Connection con = noKrb5.getConnection()) {
             throw new Exception("Should not be able to obtain a non-kerberos connection from a kerberos-only database");
@@ -54,18 +57,23 @@ public class JDBCKerberosTestServlet extends FATServlet {
         }
     }
 
-    public void testKerberosBaiscConnection() throws Exception {
+    @Test
+    public void testKerberosBasicConnection() throws Exception {
         try (Connection con = krb5DataSource.getConnection()) {
             con.createStatement().execute("SELECT 1 FROM SYSIBM.SYSDUMMY1");
         }
     }
 
+    @Test
     public void testKerberosXAConnection() throws Exception {
         try (Connection con = krb5XADataSource.getConnection()) {
             con.createStatement().execute("SELECT 1 FROM SYSIBM.SYSDUMMY1");
         }
     }
 
+    @Test
+    @ExpectedFFDC({ "javax.resource.ResourceException",
+                    "com.ibm.ws.security.authentication.AuthenticationException" })
     public void testInvalidPrincipal() throws Exception {
         try (Connection con = invalidPrincipalDs.getConnection()) {
             con.createStatement().execute("SELECT 1 FROM SYSIBM.SYSDUMMY1");
