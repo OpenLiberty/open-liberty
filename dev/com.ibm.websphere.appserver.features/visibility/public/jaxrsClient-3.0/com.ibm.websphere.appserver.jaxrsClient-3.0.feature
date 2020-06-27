@@ -8,6 +8,12 @@ IBM-API-Package: javax.ws.rs; type="spec", \
  javax.ws.rs.client; type="spec", \
  javax.ws.rs.ext; type="spec", \
  javax.ws.rs.sse; type="spec", \
+ jakarta.ws.rs; type="spec", \
+ jakarta.ws.rs.container; type="spec", \
+ jakarta.ws.rs.core; type="spec", \
+ jakarta.ws.rs.client; type="spec", \
+ jakarta.ws.rs.ext; type="spec", \
+ jakarta.ws.rs.sse; type="spec", \
  com.ibm.websphere.jaxrs20.multipart; type="ibm-api", \
  com.ibm.websphere.jaxrs.providers.json4j; type="ibm-api"
 IBM-SPI-Package: com.ibm.wsspi.webservices.handler
@@ -16,7 +22,8 @@ IBM-App-ForceRestart: uninstall, \
 IBM-ShortName: jaxrsClient-3.0
 Subsystem-Name: Java RESTful Services Client 3.0
 -features=\
- com.ibm.websphere.appserver.javax.jaxrs-2.1
+ com.ibm.websphere.appserver.javax.jaxrs-2.1, \
+ io.openliberty.jakarta.jaxrs-3.0
 -bundles=\
   io.openliberty.org.jboss.resteasy.common, \
   com.ibm.ws.org.apache.httpcomponents, \
