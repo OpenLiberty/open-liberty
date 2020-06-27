@@ -3,11 +3,7 @@
 
     <!-- Enable features -->
     <featureManager>
-        <feature>el-4.0</feature>
-        <feature>jsp-3.0</feature>
-        <feature>servlet-5.0</feature>
-        <feature>jsonp-2.0</feature>
-        <feature>jsonb-2.0</feature>
+        <feature>jakartaee-9.0</feature>
     </featureManager>
 
     <!-- This template enables security. To get the full use of all the capabilities, a keystore and user registry are required. -->
