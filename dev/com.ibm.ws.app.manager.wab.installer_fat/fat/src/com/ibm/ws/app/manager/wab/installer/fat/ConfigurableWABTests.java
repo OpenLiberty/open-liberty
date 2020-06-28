@@ -10,10 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.app.manager.wab.installer.fat;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.Collections;
 
 import org.junit.After;
@@ -79,17 +77,15 @@ public class ConfigurableWABTests {
 
     @BeforeClass
     public static void setUp() throws Exception {
-
         if (JakartaEE9Action.isActive()) {
             /* transform any wab bundles with javax.servlet classes to jakartaee-9 equivalents */
             Log.info(c, "setUp", "Transforming product bundles to Jakarta-EE-9: ");
             for (String bundle : PRODUCT_BUNDLES) {
 
-                Path bundleFile = Paths.get("build", "lib", bundle + ".jar");
-                JakartaEE9Action.transformApp(bundleFile);
-                Log.info(c, "setUp", "Transformed bundle " + bundle);
-                Files.copy(bundleFile, Paths.get("publish", "productbundles", bundleFile.getFileName().toString()),
-                           StandardCopyOption.REPLACE_EXISTING);
+                Path bundleFile = Paths.get("publish", "productbundles", bundle + ".jar");
+                Path newBundleFile = Paths.get("publish", "productbundles", bundle + ".jakarta.jar");
+                JakartaEE9Action.transformApp(bundleFile, newBundleFile);
+                Log.info(c, "setUp", "Transformed bundle " + bundleFile + " to " + newBundleFile);
             }
             isJakarta9 = true;
         } else {
@@ -109,10 +105,11 @@ public class ConfigurableWABTests {
 
             Log.info(c, "setUp", "Installing product bundles: " + product);
 
+            String extensionIfJakarta = (isJakarta9 ? ".jakarta" : "");
             server.installProductBundle(product, product);
-            server.installProductBundle(product, BUNDLE_TEST_WAB1);
-            server.installProductBundle(product, BUNDLE_TEST_WAB2);
-            server.installProductBundle(product, BUNDLE_TEST_WAB3);
+            server.installProductBundle(product, BUNDLE_TEST_WAB1 + extensionIfJakarta);
+            server.installProductBundle(product, BUNDLE_TEST_WAB2 + extensionIfJakarta);
+            server.installProductBundle(product, BUNDLE_TEST_WAB3 + extensionIfJakarta);
         }
         server.startServer();
     }
