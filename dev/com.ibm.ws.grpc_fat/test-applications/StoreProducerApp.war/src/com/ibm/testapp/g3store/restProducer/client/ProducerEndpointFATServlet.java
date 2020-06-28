@@ -91,10 +91,17 @@ public class ProducerEndpointFATServlet extends FATServlet {
         LOG.info("builder = " + builder.toString());
     }
 
+    /**
+     * @param req
+     * @param resp
+     * @throws Exception
+     */
     @Test
     public void testCreateDeleteMyApp(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
         String m = "testCreateDeleteMyApp";
+        LOG.info(m + " ----------------------------------------------------------------");
+        LOG.info(m + " ------------testCreateDeleteMyApp--START-----------------------");
 
         ProducerServiceRestClient service = builder.build(ProducerServiceRestClient.class);
         String appName = "myApp";
@@ -130,8 +137,10 @@ public class ProducerEndpointFATServlet extends FATServlet {
             e.getMessage();
             e.printStackTrace();
         } finally {
+            LOG.info(m + " ------------------------------------------------------------");
+            LOG.info(m + " ----- invoking producer rest client to delete app: " + appName);
             // call Remote REST service
-            Response r = service.deleteApp("myApp");
+            Response r = service.deleteApp(appName);
 
             // check response
             int status = r.getStatus();
@@ -146,33 +155,51 @@ public class ProducerEndpointFATServlet extends FATServlet {
 
             assertTrue(isValidResponse);
 
-            LOG.info(m + " ------------------------------------------------------------");
-            LOG.info(m + " ------------------------------------------------------------");
+            LOG.info(m + " ------------testCreateDeleteMyApp--FINISH-----------------------");
+            LOG.info(m + " ----------------------------------------------------------------");
 
         }
     }
 
+    /**
+     * @param req
+     * @param resp
+     * @throws Exception
+     */
     @Test
-    public void testCreateMulitDeleteAllApp(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    public void testCreateDeleteMultiApp(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
         String m = "testCreateMulitDeleteAllApp";
+
+        LOG.info(m + " -----------------------------------------------------------------");
+        LOG.info(m + " ---------------testCreateDeleteMultiApp---START---------------");
+
+        String app1 = "myApp1";
+        String app2 = "myApp2";
+        String app3 = "myApp3";
+        String app4 = "myApp4";
+
         ProducerServiceRestClient service = builder.build(ProducerServiceRestClient.class);
 
         try {
+
+            LOG.info(m + " ------------------------------------------------------------");
+            LOG.info(m + " ----- invoking Producer rest client to create apps to test client streaming  ----- ");
+
             // create input data
-            AppStructure reqPOJO1 = createAppData("myApp1", "Famous myApp1", true,
+            AppStructure reqPOJO1 = createAppData(app1, "Famous myApp1", true,
                                                   AppStructure.SecurityType.NO_SECURITY, AppStructure.GenreType.GAME,
                                                   createPriceList(Price.PurchaseType.BLUEPOINTS, 200, null, 100), "ABC", "abc@comp");
 
-            AppStructure reqPOJO2 = createAppData("myApp2", "Famous myApp2", true, AppStructure.SecurityType.BASIC,
+            AppStructure reqPOJO2 = createAppData(app2, "Famous myApp2", true, AppStructure.SecurityType.BASIC,
                                                   AppStructure.GenreType.NEWS, createPriceList(Price.PurchaseType.CREDITCARD, 400, null, 100),
                                                   "ABC", "abc@comp");
 
-            AppStructure reqPOJO3 = createAppData("myApp3", "Famous myApp3", true,
+            AppStructure reqPOJO3 = createAppData(app3, "Famous myApp3", true,
                                                   AppStructure.SecurityType.TOKEN_JWT, AppStructure.GenreType.SOCIAL,
                                                   createPriceList(Price.PurchaseType.PAYAPL, 2000, null, 100), "ABC", "abc@comp");
 
-            AppStructure reqPOJO4 = createAppData("myApp4", "Famous myApp4", true,
+            AppStructure reqPOJO4 = createAppData(app4, "Famous myApp4", true,
                                                   AppStructure.SecurityType.TOKEN_OAUTH2, AppStructure.GenreType.GAME,
                                                   createPriceList(Price.PurchaseType.PAYAPL, 20000, Price.PurchaseType.CREDITCARD, 3000), "ABC",
                                                   "abc@comp");
@@ -193,17 +220,12 @@ public class ProducerEndpointFATServlet extends FATServlet {
             String entity = r.readEntity(String.class);
             LOG.info(m + ": create entity: " + entity);
 
-            boolean isValidResponse = entity.contains("Store has successfully added the app [myApp1]");
-            assertTrue(isValidResponse);
+            // but there is no order since it is server streaming, assert them individually
 
-            isValidResponse = entity.contains("Store has successfully added the app [myApp2]");
-            assertTrue(isValidResponse);
-
-            isValidResponse = entity.contains("Store has successfully added the app [myApp3]");
-            assertTrue(isValidResponse);
-
-            isValidResponse = entity.contains("Store has successfully added the app [myApp4]");
-            assertTrue(isValidResponse);
+            assertTrue(entity.contains("Store has successfully added the app [myApp1]"));
+            assertTrue(entity.contains("Store has successfully added the app [myApp2]"));
+            assertTrue(entity.contains("Store has successfully added the app [myApp3]"));
+            assertTrue(entity.contains("Store has successfully added the app [myApp4]"));
 
         } catch (Exception e) {
 
@@ -211,7 +233,7 @@ public class ProducerEndpointFATServlet extends FATServlet {
 
         } finally {
             LOG.info(m + " ------------------------------------------------------------");
-            LOG.info(m + " ----- invoking Producer Rest client to delete apps to test grpc server streaming ----- ");
+            LOG.info(m + " ----- invoking Producer rest client to delete all apps to test grpc server streaming ----- ");
 
             // call Remote REST service
             Response r = service.deleteAllApps();
@@ -225,22 +247,37 @@ public class ProducerEndpointFATServlet extends FATServlet {
             String entity = r.readEntity(String.class);
             LOG.info(m + ": delete entity: " + entity);
 
-            boolean isValidResponse = entity.contains("The app [myApp1] has been removed from the Store. "
-                                                      + "The app [myApp2] has been removed from the Store. "
-                                                      + "The app [myApp3] has been removed from the Store. "
-                                                      + "The app [myApp4] has been removed from the Store.");
+            // Expected output
+            // delete entity: The app [myApp1] has been removed from the Store. The app [myApp2] has been removed from the Store.
+            //The app [myApp3] has been removed from the Store. The app [myApp4] has been removed from the Store.
+            // but there is no order since it is server streaming, assert them individually
 
-            assertTrue(isValidResponse);
-            LOG.info(m + " ------------------------------------------------------------");
+            String helpFindFailureMessage = "Check the previous log message for the response and compare with expected : The app [" + app1 + "] has been removed from the Store";
+
+            assertTrue(helpFindFailureMessage, entity.contains("The app [" + app1 + "] has been removed from the Store"));
+            assertTrue(entity.contains("The app [" + app2 + "] has been removed from the Store"));
+            assertTrue(entity.contains("The app [" + app3 + "] has been removed from the Store"));
+            assertTrue(entity.contains("The app [" + app4 + "] has been removed from the Store"));
+
+            LOG.info(m + " ---------------testCreateDeleteMultiApp---FINISH---------");
             LOG.info(m + " ------------------------------------------------------------");
 
         }
     }
 
+    /**
+     * @param req
+     * @param resp
+     * @throws Exception
+     */
     @Test
-    public void testDuplicateCreateDeleteMyApp(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    public void testDuplicate_CreateDeleteMyApp(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
         String m = "testDuplicateCreateDeleteMyApp";
+
+        LOG.info(m + " ------------------------------------------------------------");
+        LOG.info(m + " ----- invoking Producer rest client to create app to test client streaming  ----- ");
+
         ProducerServiceRestClient service = builder.build(ProducerServiceRestClient.class);
 
         try {
@@ -260,6 +297,9 @@ public class ProducerEndpointFATServlet extends FATServlet {
 
             assertEquals(200, status);
 
+            LOG.info(m + " ------------------------------------------------------------");
+            LOG.info(m + " ----- invoking Producer rest client to create duplicate app to test ALREADY EXIST exception.");
+
             // call again to create same entry
             r = service.createApp(reqPOJO);
 
@@ -269,11 +309,11 @@ public class ProducerEndpointFATServlet extends FATServlet {
 
         } catch (javax.ws.rs.WebApplicationException excep) {
 
-            LOG.info(m + ": WAexception message: " + excep.getMessage());
+            LOG.info(m + ": Expected WAexception message: " + excep.getMessage());
 
             String excepEntity = excep.getResponse().readEntity(String.class);
 
-            LOG.info(m + ": excepEntity: " + excepEntity);
+            LOG.info(m + ": Expected excepEntity: " + excepEntity);
 
             boolean isValidResponse = excepEntity.contains("The app already exist in the Store.\n" +
                                                            "First run the ProducerService to delete the app. AppName = myApp");
@@ -284,21 +324,17 @@ public class ProducerEndpointFATServlet extends FATServlet {
             LOG.info(m + ": exception message: " + e.getMessage());
             e.printStackTrace();
         } finally {
-            // call Remote REST service
+            // call Remote REST service to delete the app created
             Response r = service.deleteApp("myApp");
 
             // check response
-            int status = r.getStatus();
-            LOG.info(m + ": delete status: " + status);
-
-            assertEquals(200, status);
+            assertEquals(200, r.getStatus());
 
             String entity = r.readEntity(String.class);
             LOG.info(m + ": delete entity: " + entity);
 
-            boolean isValidResponse = entity.contains("The app [myApp] has been removed from the server");
+            assertTrue(entity.contains("The app [myApp] has been removed from the server"));
 
-            assertTrue(isValidResponse);
             LOG.info(m + " ------------------------------------------------------------");
             LOG.info(m + " ------------------------------------------------------------");
 

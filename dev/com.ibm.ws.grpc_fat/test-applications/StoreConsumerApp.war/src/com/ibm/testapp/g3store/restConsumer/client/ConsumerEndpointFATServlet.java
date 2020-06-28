@@ -42,6 +42,10 @@ import com.ibm.testapp.g3store.restProducer.model.Price.PurchaseType;
 import componenttest.app.FATServlet;
 
 /**
+ * @author anupag
+ *
+ *         This class is JAX-RS Resource as proxy to the Remote Endpoint:
+ *         ConsumerRestEndpoint
  *
  */
 @WebServlet(urlPatterns = "/ConsumerEndpointFATServlet")
