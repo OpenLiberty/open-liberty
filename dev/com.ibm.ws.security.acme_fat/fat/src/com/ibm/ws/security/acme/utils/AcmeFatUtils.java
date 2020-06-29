@@ -479,6 +479,16 @@ public class AcmeFatUtils {
 		 */
 		assertNotNull("ACME did not create the certificate.", server.waitForStringInLogUsingMark("CWPKI2007I", 120000));
 	}
+	
+	/**
+	 * Wait for the ACME service to report that a certificate has been revoked
+	 * 
+	 * @param server
+	 *            The server to check.
+	 */
+	public static final void waitForAcmeToRevokeCertificate(LibertyServer server) {
+		assertNotNull("ACME did not revoke the certificate.", server.waitForStringInLog("CWPKI2038I", 120000));
+	}
 
 	/**
 	 * Wait for the ACME service's to NOT update a keystore since it is still
