@@ -290,6 +290,8 @@ public class AcmeConfigVariationsTest {
 		acmeTransportConfig.setTrustStore("INVALID_TRUSTSTORE");
 		acmeTransportConfig.setTrustStorePassword("INVALID_PASSWORD");
 		acmeTransportConfig.setTrustStoreType("INVALID_TYPE");
+		acmeTransportConfig.setHttpConnectTimeout("1ms");
+		acmeTransportConfig.setHttpReadTimeout("1ms");
 
 		AcmeCA acmeCA = configuration.getAcmeCA();
 		acmeCA.setAccountKeyFile(unreadableFile.getAbsolutePath());
@@ -471,12 +473,35 @@ public class AcmeConfigVariationsTest {
 
 			/***********************************************************************
 			 * 
-			 * Set the domain key file to default. The certificate should now be
+			 * Set the domain key file to default. The request will now timeout on http connect.
+			 * 
+			 **********************************************************************/
+			Log.info(AcmeConfigVariationsTest.class, testName.getMethodName(), "Test 14 - http connect timeout");
+			acmeCA.setDirectoryURI(caContainer.getAcmeDirectoryURI(false));
+			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
+			assertNotNull("Expected CWPKI2016E in logs.",
+					server.waitForStringInLog("CWPKI2016E.*SocketTimeoutException"));
+			
+			/***********************************************************************
+			 * 
+			 * Set the http connect time to better length. The request will now timeout on http read.
+			 * 
+			 **********************************************************************/
+			Log.info(AcmeConfigVariationsTest.class, testName.getMethodName(), "Test 15 - http read timeout");
+			server.setMarkToEndOfLog(server.getDefaultLogFile());
+			acmeTransportConfig.setHttpConnectTimeout("45s");
+			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
+			assertNotNull("Expected CWPKI2016E in logs.",
+					server.waitForStringInLog("CWPKI2016E.*SocketTimeoutException"));
+			
+			/***********************************************************************
+			 * 
+			 * Set the http read time to better length. The certificate should now be
 			 * configured.
 			 * 
 			 **********************************************************************/
-			Log.info(AcmeConfigVariationsTest.class, testName.getMethodName(), "Test 14 - successful certificate generation");
-			acmeCA.setDirectoryURI(caContainer.getAcmeDirectoryURI(false));
+			Log.info(AcmeConfigVariationsTest.class, testName.getMethodName(), "Test 16 - successful certificate generation");
+			acmeTransportConfig.setHttpReadTimeout("45s");
 			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
 			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
 			AcmeFatUtils.waitForSslToCreateKeystore(server);

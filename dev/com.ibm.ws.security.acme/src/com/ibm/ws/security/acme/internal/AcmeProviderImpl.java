@@ -331,7 +331,7 @@ public class AcmeProviderImpl implements AcmeProvider {
 	 * 
 	 */
 	@Trivial
-	protected AcmeConfig getAcmeConfig() {
+	public static AcmeConfig getAcmeConfig() {
 		return acmeConfig;
 	}
 

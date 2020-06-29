@@ -569,6 +569,12 @@ public class AcmeClient {
 			 * We want FFDC here as this will usually be the first communication
 			 * we try with the ACME server. We want to capture why we failed.
 			 */
+			if (tc.isDebugEnabled()) {
+				/*
+				 * Since we're abbreviating the exception in the log, list entire stack in trace.
+				 */
+				Tr.debug(tc, "Unexpected", e);
+			}
 			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2016E",
 					new Object[] { acmeConfig.getDirectoryURI(), getRootCauseMessage(e) }), e);
 		}
@@ -1125,12 +1131,20 @@ public class AcmeClient {
 	@Trivial
 	private static String getRootCauseMessage(Throwable t) {
 		Throwable cause;
-		String rootMessage = addExceptionClass(t);
+		String origMessage = addExceptionClass(t);
+		String rootMessage = origMessage;
 
 		for (cause = t; cause != null; cause = cause.getCause()) {
 			String msg = cause.getMessage();
 			if (msg != null && !msg.trim().isEmpty()) {
 				rootMessage = addExceptionClass(cause);
+			} else if (cause instanceof java.io.IOException) {
+				/*
+				 * Sometimes the IOException doesn't have a message, but the class
+				 * name is informative and should be included
+				 * For example, Caused by: java.net.SocketTimeoutException
+				 */
+				rootMessage = origMessage +"  Caused by:  " + addExceptionClass(cause);
 			}
 		}
 
@@ -1145,9 +1159,10 @@ public class AcmeClient {
 	 * @param t
 	 * @return
 	 */
+	@Trivial
 	private static String addExceptionClass(Throwable t) {
 		if (t != null) {
-			return t.getClass().getName() + ": " + t.getMessage();
+			return t.getClass().getName() + (t.getMessage() == null ? "" : ": " + t.getMessage());
 		}
 		return "";
 	}

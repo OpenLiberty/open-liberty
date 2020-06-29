@@ -458,7 +458,7 @@ public class AcmeSimpleTest {
 			 **********************************************************************/
 			serial1 = serial2;
 			acmeCA.setSubjectDN("cn=domain1.com");
-			acmeCA.setChallengeRetries(5); // Force config update.
+			acmeCA.setChallengePoll("1m"); // Force config update.
 			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
 			AcmeFatUtils.waitForAcmeToNoOp(server);
 
