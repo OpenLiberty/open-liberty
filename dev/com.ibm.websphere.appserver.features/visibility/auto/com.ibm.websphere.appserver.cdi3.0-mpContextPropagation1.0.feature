@@ -8,4 +8,4 @@ IBM-Provision-Capability: \
   com.ibm.ws.cdi.mp.context.jakarta
 IBM-Install-Policy: when-satisfied
 kind=noship
-edition=core
+edition=full
