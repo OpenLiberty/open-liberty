@@ -26,12 +26,10 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.EJBContainerElement;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.ejbcontainer.bindings.configtests.otherweb.DisableShortBndOtherServlet;
-import com.ibm.ws.ejbcontainer.bindings.configtests.web.DisableShortBndServlet;
+import com.ibm.ws.ejbcontainer.bindings.configtests.web.BindToJavaGlobalServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
-import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
@@ -42,15 +40,13 @@ import componenttest.topology.utils.FATServletClient;
  *
  */
 @RunWith(FATRunner.class)
-public class DisableShortBndTest extends FATServletClient {
-    private static final Class<?> c = DisableShortBndTest.class;
+public class BindToJavaGlobalTest extends FATServletClient {
+    private static final Class<?> c = BindToJavaGlobalTest.class;
     private static HashSet<String> apps = new HashSet<String>();
-    private static String servlet = "ConfigTestsWeb/DisableShortBndServlet";
-    private static String servletOther = "ConfigTestsOtherWeb/DisableShortBndOtherServlet";
+    private static String servlet = "ConfigTestsWeb/BindToJavaGlobalServlet";
 
     @Server("com.ibm.ws.ejbcontainer.bindings.fat.server")
-    @TestServlets({ @TestServlet(servlet = DisableShortBndServlet.class, contextRoot = "ConfigTestsWeb"),
-                    @TestServlet(servlet = DisableShortBndOtherServlet.class, contextRoot = "ConfigTestsOtherWeb") })
+    @TestServlet(servlet = BindToJavaGlobalServlet.class, contextRoot = "ConfigTestsWeb")
     public static LibertyServer server;
 
     @ClassRule
@@ -59,7 +55,6 @@ public class DisableShortBndTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         apps.add("ConfigTestsTestApp");
-        apps.add("ConfigTestsOtherTestApp");
 
         // Use ShrinkHelper to build the ears
 
@@ -74,17 +69,6 @@ public class DisableShortBndTest extends FATServletClient {
 
         ShrinkHelper.exportDropinAppToServer(server, ConfigTestsTestApp);
 
-        // -------------- ConfigTestsOtherTestApp ------------
-        JavaArchive ConfigTestsOtherEJB = ShrinkHelper.buildJavaArchive("ConfigTestsOtherEJB.jar", "com.ibm.ws.ejbcontainer.bindings.configtests.otherejb.");
-
-        WebArchive ConfigTestsOtherWeb = ShrinkHelper.buildDefaultApp("ConfigTestsOtherWeb.war", "com.ibm.ws.ejbcontainer.bindings.configtests.otherweb.");
-
-        EnterpriseArchive ConfigTestsOtherTestApp = ShrinkWrap.create(EnterpriseArchive.class, "ConfigTestsOtherTestApp.ear");
-        ConfigTestsOtherTestApp.addAsModules(ConfigTestsOtherEJB, ConfigTestsOtherWeb);
-        ShrinkHelper.addDirectory(ConfigTestsOtherTestApp, "test-applications/ConfigTestsOtherTestApp.ear/resources");
-
-        ShrinkHelper.exportDropinAppToServer(server, ConfigTestsOtherTestApp);
-
         server.startServer();
     }
 
@@ -95,15 +79,15 @@ public class DisableShortBndTest extends FATServletClient {
         }
     }
 
-    private void updateConfigElement(String disableShortDefaultBindings) throws Exception {
+    private void updateConfigElement(Boolean bindToJavaGlobal) throws Exception {
         String m = "updateConfigElement";
 
         ServerConfiguration config = server.getServerConfiguration();
         EJBContainerElement ejbElement = config.getEJBContainer();
-        if (ejbElement.getDisableShortDefaultBindings() != disableShortDefaultBindings) {
-            Log.info(c, m, "adding disableShortDefaultBindings =" + disableShortDefaultBindings + "to server config");
+        if (ejbElement.getBindToJavaGlobal() != bindToJavaGlobal) {
+            Log.info(c, m, "adding bindToJavaGlobal =" + bindToJavaGlobal + " to server config");
 
-            ejbElement.setDisableShortDefaultBindings(disableShortDefaultBindings);
+            ejbElement.setBindToJavaGlobal(bindToJavaGlobal);
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
             server.waitForConfigUpdateInLogUsingMark(apps);
@@ -113,46 +97,27 @@ public class DisableShortBndTest extends FATServletClient {
         } else {
             Log.info(c, m, "config element already set to desired value");
         }
-
     }
 
     @Test
-    public void testNoShortBindingsDisabled() throws Exception {
+    public void testNoBindToJavaGlobalElement() throws Exception {
         updateConfigElement(null);
 
-        FATServletClient.runTest(server, servletOther, "testNoShortBindingsDisabled");
-        FATServletClient.runTest(server, servlet, "testNoShortBindingsDisabled");
+        FATServletClient.runTest(server, servlet, "testNoBindToJavaGlobalElement");
     }
 
     @Test
-    public void testAllShortBindingsDisabled() throws Exception {
-        updateConfigElement("*");
+    public void testFalseBindToJavaGlobalElement() throws Exception {
+        updateConfigElement(false);
 
-        FATServletClient.runTest(server, servletOther, "testAllShortBindingsDisabled");
-        FATServletClient.runTest(server, servlet, "testAllShortBindingsDisabled");
+        FATServletClient.runTest(server, servlet, "testFalseBindToJavaGlobalElement");
     }
 
     @Test
-    public void testOtherAppShortBindingsDisabled() throws Exception {
-        updateConfigElement("ConfigTestsOtherTestApp");
+    public void testTrueBindToJavaGlobalElement() throws Exception {
+        updateConfigElement(true);
 
-        FATServletClient.runTest(server, servletOther, "testOtherAppShortBindingsDisabled");
-        FATServletClient.runTest(server, servlet, "testOtherAppShortBindingsDisabled");
+        FATServletClient.runTest(server, servlet, "testTrueBindToJavaGlobalElement");
     }
 
-    @Test
-    public void testAppShortBindingsDisabled() throws Exception {
-        updateConfigElement("ConfigTestsTestApp");
-
-        FATServletClient.runTest(server, servletOther, "testAppShortBindingsDisabled");
-        FATServletClient.runTest(server, servlet, "testAppShortBindingsDisabled");
-    }
-
-    @Test
-    public void testBothAppShortBindingsDisabled() throws Exception {
-        updateConfigElement("ConfigTestsTestApp:ConfigTestsOtherTestApp");
-
-        FATServletClient.runTest(server, servletOther, "testBothAppShortBindingsDisabled");
-        FATServletClient.runTest(server, servlet, "testBothAppShortBindingsDisabled");
-    }
 }
