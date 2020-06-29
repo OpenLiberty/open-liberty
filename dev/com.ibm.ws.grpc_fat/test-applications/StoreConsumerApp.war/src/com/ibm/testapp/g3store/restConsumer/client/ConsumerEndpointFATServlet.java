@@ -248,7 +248,7 @@ public class ConsumerEndpointFATServlet extends FATServlet {
      * @param resp
      * @throws Exception
      */
-    @Test
+//    @Test
     public void testGetMultiAppsInfo(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
         final String m = "getMultiAppsInfo";

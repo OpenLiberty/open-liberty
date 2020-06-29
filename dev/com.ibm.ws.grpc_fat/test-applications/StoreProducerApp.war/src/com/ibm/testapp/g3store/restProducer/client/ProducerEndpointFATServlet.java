@@ -166,7 +166,7 @@ public class ProducerEndpointFATServlet extends FATServlet {
      * @param resp
      * @throws Exception
      */
-    @Test
+//    @Test
     public void testCreateDeleteMultiApp(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
         String m = "testCreateMulitDeleteAllApp";
