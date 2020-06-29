@@ -325,7 +325,7 @@ public class BasicSseTestServlet extends FATServlet {
                     } catch (InterruptedException e) {
                     }
                     if (!(completableFuture.isDone())) {
-                        System.out.print("testSseWithRX: completableFuture failed because it took to long");
+                        System.out.print("testSseWithRX: completableFuture failed because it took too long");
                     }
                 }
             }
