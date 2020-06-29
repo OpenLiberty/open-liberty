@@ -3,15 +3,17 @@
 	terms of the Eclipse Public License v1.0 which accompanies this distribution, 
 	and is available at http://www.eclipse.org/legal/epl-v10.html Contributors: 
 	IBM Corporation - initial API and implementation -->
-<server>
+<server description="Server for ConsumerService REST endpoint and Grpc client">
 	<featureManager>
 		<feature>grpc-1.0</feature>
 		<feature>grpcClient-1.0</feature>
 		<feature>componenttest-1.0</feature>
-		<feature>microProfile-3.2</feature>
+		<feature>mpRestClient-1.3</feature>
+		<feature>mpConfig-1.3</feature>
+		<feature>mpOpenAPI-1.1</feature>
 	</featureManager>
 
-	<include location="../fatTestPorts.xml" />
+	<include location="../fatTestCommon.xml"/>
 
 	 <httpEndpoint id="defaultHttpEndpoint"
                   host="*"
@@ -27,11 +29,11 @@
 	<ssl id="defaultSSLConfig" trustDefaultCerts="true" />
 
 	<basicRegistry id="basic" realm="consumerRealmBasicReg">
-		<user name="mlee" password="hello" /> <!--user name="${env.BASIC_REGISTRY_USERNAME}" -->
-		<user name="rkumar" password="bug" />
+		<user name="dev" password="hello" /> <!--user name="${env.BASIC_REGISTRY_USERNAME}" -->
+		<user name="test" password="bug" />
 		<group name="students"> <!-- group name="${env.ROLE_NAME_ADMINISTRATOR}" -->
-			<member name="mlee" />
-			<member name="rkumar" />
+			<member name="dev" />
+			<member name="test" />
 		</group>
 	</basicRegistry>
 

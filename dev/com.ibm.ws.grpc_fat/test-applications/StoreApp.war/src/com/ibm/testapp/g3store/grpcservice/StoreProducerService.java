@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.testapp.g3store.serviceImpl;
+package com.ibm.testapp.g3store.grpcservice;
 
 import java.util.Date;
 import java.util.Iterator;
@@ -40,7 +40,7 @@ import io.grpc.stub.StreamObserver;
  * @author anupag
  * @version 1.0
  *
- *          This Store service will provide the implementations of AppProdcuer APIs.
+ *          This Store service will provide the implementations of AppProdcuer gRPC APIs.
  *
  */
 public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServiceImplBase {
@@ -48,25 +48,30 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
     private static String CLASSNAME = StoreProducerService.class.getName();
     private static Logger log = Logger.getLogger(CLASSNAME);
 
-    // needed for Liberty
     public StoreProducerService() {
+        // this constructor is required to run the gRPC on Liberty server.
     }
 
     /**
      * Implementation of the createApp rpc
-     * 
+     *
      * It is a unary call from the client to create one application entry in the db
      */
     @Override
     public void createApp(com.ibm.test.g3store.grpc.AppRequest request,
                           io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.AppResponse> responseObserver) {
 
+        final String m = "createApp";
+        log.info(m + " ------------------------------------------------------------");
+        log.info(m + " -----------------------createApp----------------------------");
+        log.info(m + " ----- request received by StoreProducer grpcService to create the app. ");
+
         boolean useServerInterceptor = false;
 
         try {
             if (log.isLoggable(Level.FINE)) {
                 try {
-                    log.info("Store: createApp: JSON structure sent = "
+                    log.info(m + ": JSON structure sent = "
                              + JsonFormat.printer()
                                              .includingDefaultValueFields()
                                              .preservingProtoFieldNames()
@@ -85,7 +90,7 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
                             .build();
 
             // set this timestamp when app is created.
-            log.info("Here is the time = " + time);
+            log.info(m + ": Here is the timestamp = " + time);
 
             String appName = request.getRetailApp().getName();
 
@@ -94,7 +99,8 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
                 if (useServerInterceptor) {
                     throw new InvalidArgException("The name sent is empty. Name sent = [" + appName + "]");
                 } else {
-                    log.severe("Store: createApp: appName sent is null or empty, appName=[" + appName + "]");
+
+                    log.severe(m + "-----  appName sent is null or empty, appName=[" + appName + "]");
                     responseObserver.onError(Status.INVALID_ARGUMENT.withDescription("The name sent is empty.")
                                     .augmentDescription("Name sent = [" + appName + "]")
                                     .asRuntimeException());
@@ -106,7 +112,7 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
 
             if (cacheInstance.getEntryValue(appName) != null) {
 
-                log.warning("Store: createApp: appName sent already exists, appName=[" + appName + "]");
+                log.warning(m + "-----  appName sent already exists, appName=[" + appName + "]");
                 responseObserver.onError(Status.ALREADY_EXISTS.withDescription("The app already exist in the Store.")
                                 .augmentDescription("First run the ProducerService to delete the app. AppName = " + appName)
                                 .asRuntimeException());
@@ -118,7 +124,7 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
                 @Override
                 public void cancelled(Context context) {
                     if (log.isLoggable(Level.FINE)) {
-                        log.fine("createApp Store: Call was cancelled!");
+                        log.fine(m + "-----  Call was cancelled!");
                     }
                 }
             }, Executors.newCachedThreadPool());
@@ -138,13 +144,14 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
             RetailApp rApp = updatedApp.build();
 
             if (log.isLoggable(Level.FINE)) {
-                log.fine("createApp AppProducerService: id [" + value + "] created for app [" + rApp.getName() + "]");
+                log.fine(m + ": id [" + value + "] created for app [" + rApp.getName() + "]");
             }
             cacheInstance.setEntryValue(appName, rApp, -1);
 
             AppResponse response = AppResponse.newBuilder().setId(value).build();
             responseObserver.onNext(response);
-            log.info("Store:createApp: request to create app has been completed " + response.getId());
+
+            log.info(m + "-----  request to create app has been completed " + response.getId());
 
             responseObserver.onCompleted();
 
@@ -157,17 +164,26 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
                             .asRuntimeException());
         }
 
+        log.info(m + " -----------------------createApp----------------------------");
+        log.info(m + " ------------------------------------------------------------");
+
     }
 
     /**
      * Implementation of the deleteApp rpc
      * rpc deleteApp(DeleteRequest) returns (DeleteResponse)
-     * 
+     *
      * It is a unary call from the client to remove one application entry in the db
      */
     @Override
     public void deleteApp(com.ibm.test.g3store.grpc.DeleteRequest request,
                           io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.DeleteResponse> responseObserver) {
+
+        final String m = "deleteApp";
+
+        log.info(m + " ------------------------------------------------------------");
+        log.info(m + " -----------------------deleteApp----------------------------");
+        log.info(m + " ----- request received by StoreProducer grpcService to delete the app names. ");
 
         // db or cahce
         AppCache cacheInstance = AppCacheFactory.getInstance();
@@ -175,11 +191,9 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
         // get App to be removed
         String appName = request.getAppName();
 
-        // this should not happen as client should get NPE 
+        // this should not happen as client should get NPE
         if (StoreUtils.isBlank(appName)) {
-            if (log.isLoggable(Level.FINE)) {
-                log.fine("Store: deleteApp: appName sent is null or empty, appName=[" + appName + "]");
-            }
+            log.severe(m + " -----  appName sent is null or empty, appName=[" + appName + "]");
             responseObserver.onError(
                                      Status.INVALID_ARGUMENT
                                                      .withDescription("The name sent is empty.")
@@ -190,9 +204,8 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
         }
 
         if (cacheInstance.getEntryValue(appName) == null) {
-            if (log.isLoggable(Level.FINE)) {
-                log.fine("Store: deleteApp: appName sent does not exist, appName=[" + appName + "]");
-            }
+            log.severe(m + " -----  appName sent does not exist, appName=[" + appName + "]");
+
             responseObserver.onError(
                                      Status.NOT_FOUND
                                                      .withDescription("The app does not exist in the cache.")
@@ -212,27 +225,36 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
         cacheInstance.removeEntryValue(appName);
 
         DeleteResponse response = DeleteResponse.newBuilder()
-                        .setResult("The app [" + appName + "] has been removed fron the server")
+                        .setResult("The app [" + appName + "] has been removed from the server")
                         .build();
 
         // send the response
         responseObserver.onNext(response);
-        log.info("Store: deleteApp: request to remove app has been completed ");
+        log.info(m + " ----- request to remove app has been completed by StoreProducer");
 
         // complete it
         responseObserver.onCompleted();
+
+        log.info(m + " -----------------------deleteApp----------------------------");
+        log.info(m + " ------------------------------------------------------------");
 
     }
 
     /**
      * Implementation of the deleteAllApps rpc
      * rpc deleteAllApps(google.protobuf.Empty) returns (stream DeleteResponse)
-     * 
+     *
      * It is a server streaming call from the client to remove all application entries in the db
      */
     @Override
     public void deleteAllApps(com.google.protobuf.Empty request,
                               io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.DeleteResponse> responseObserver) {
+
+        final String m = "deleteAllApps";
+
+        log.info(m + " ------------------------------------------------------------");
+        log.info(m + " -----------------------deleteAllApps------------------------");
+        log.info(m + " ----- request received by StoreProducer grpcService to delete all the app names. ");
 
         // db or cahce
         AppCache cacheInstance = AppCacheFactory.getInstance();
@@ -247,7 +269,8 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
         Iterator<String> it = cacheInstance.getAllKeys().iterator();
         while (it.hasNext()) {
             String name = it.next();
-            log.info("Store:deleteAllApps: appName =" + name);
+
+            log.info(m + ": appName to be removed= " + name);
 
             cacheInstance.removeEntryValue(name);
 
@@ -255,7 +278,7 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
                             .setResult("The app [" + name + "] has been removed from the Store. ")
                             .build();
 
-            log.info("Store:deleteAllApps: request to remove app " + name + " has been completed ");
+            log.info(m + ": request to remove app " + name + " has been completed ");
 
             // everytime we have data send it
             responseObserver.onNext(response);
@@ -264,17 +287,25 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
         // now we are done , complete so , client can finish
         responseObserver.onCompleted();
 
+        log.info(m + " -----------------------deleteAllApps------------------------");
+        log.info(m + " ------------------------------------------------------------");
+
     }
 
     /**
      * Implementation of the createApps rpc
      * rpc createApps(stream AppRequest) returns (MultiCreateResponse)
-     * 
+     *
      * It is a client streaming call to create all application entries in the db
      */
     @Override
     public io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.AppRequest> createApps(
                                                                                         final io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.MultiCreateResponse> responseObserver) {
+
+        final String m = "createApps";
+        log.info(m + " ------------------------------------------------------------");
+        log.info(m + " -----------------------createApps---------------------------");
+        log.info(m + " ----- request received by StoreProducer grpcService to create the app names  ----- ");
 
         StreamObserver<AppRequest> requestObserver = new StreamObserver<AppRequest>() {
 
@@ -287,9 +318,8 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
                 String appName = request.getRetailApp().getName();
 
                 if (StoreUtils.isBlank(appName)) {
-                    if (log.isLoggable(Level.FINE)) {
-                        log.fine("Store: createApps: appName sent is null or empty, appName=[" + appName + "]");
-                    }
+                    log.severe(m + " -----appName sent is null or empty, appName=[" + appName + "]");
+
                     responseObserver.onError(Status.INVALID_ARGUMENT.withDescription("The name sent is empty.")
                                     .augmentDescription("Name sent = [" + appName + "]")
                                     .asRuntimeException());
@@ -298,7 +328,7 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
                 }
 
                 if (cacheInstance.getEntryValue(appName) != null) {
-
+                    log.warning(m + "-----  appName sent already exists, appName=[" + appName + "]");
                     responseObserver.onError(Status.ALREADY_EXISTS.withDescription("The app already exist in the cache.")
                                     .augmentDescription("First run the ProducerService to delete the app. AppName sent = " + appName)
                                     .asRuntimeException());
@@ -315,7 +345,7 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
 
                 if (log.isLoggable(Level.FINE)) {
                     try {
-                        log.fine("Store: createApps:  JSON structure sent = " + JsonFormat.printer()
+                        log.info(m + ": JSON structure sent = " + JsonFormat.printer()
                                         .includingDefaultValueFields()
                                         .preservingProtoFieldNames()
                                         .print(updatedApp));
@@ -329,7 +359,7 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
                 boolean success = cacheInstance.setEntryValue(appName, rApp, -1);
 
                 if (success && log.isLoggable(Level.INFO)) {
-                    log.info("Store: createApps:  id [" + value + "] created for app [" + appName
+                    log.info(m + ": id [" + value + "] created for app [" + appName
                              + "]");
                 }
 
@@ -351,7 +381,7 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
                     String name = it.next();
 
                     if (log.isLoggable(Level.FINE)) {
-                        log.fine("Store: createApps:, appName=[" + name + "]");
+                        log.fine(m + ":  appName=[" + name + "]");
                     }
 
                     String id = cacheInstance.getEntryValue(name).getId();
@@ -360,9 +390,12 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
                 }
                 responseObserver.onNext(MultiCreateResponse.newBuilder().setResult(result).build());
 
-                log.info("Store: createApps: complete, result [" + result + "]");
+                log.info(m + " -----  complete, result [" + result + "]");
 
                 responseObserver.onCompleted();
+
+                log.info(m + " -----------------------createApps---------------------------");
+                log.info(m + " ------------------------------------------------------------");
             }
 
         };

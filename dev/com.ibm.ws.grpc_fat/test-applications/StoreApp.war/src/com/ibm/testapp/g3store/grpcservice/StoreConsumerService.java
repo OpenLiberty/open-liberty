@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.testapp.g3store.serviceImpl;
+package com.ibm.testapp.g3store.grpcservice;
 
 import java.util.List;
 import java.util.logging.Level;
@@ -32,7 +32,7 @@ import io.grpc.stub.StreamObserver;
  * @author anupag
  * @version 1.0
  *
- *          This service will provide the implementations of AppConsumer APIs.
+ *          This service will provide the implementations of AppConsumer gRPC APIs.
  *
  */
 public class StoreConsumerService extends AppConsumerServiceGrpc.AppConsumerServiceImplBase {
@@ -40,6 +40,7 @@ public class StoreConsumerService extends AppConsumerServiceGrpc.AppConsumerServ
     private static Logger log = Logger.getLogger(StoreConsumerService.class.getName());
 
     public StoreConsumerService() {
+        // this constructor is required to run the gRPC on Liberty server.
     }
 
     /**
@@ -49,6 +50,11 @@ public class StoreConsumerService extends AppConsumerServiceGrpc.AppConsumerServ
     public void getAllAppNames(com.google.protobuf.Empty request,
                                io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.NameResponse> responseObserver) {
 
+        final String m = "getAllAppNames";
+        log.info(m + " ------------------------------------------------------------");
+        log.info(m + " -----------------------getAllAppNames-----------------------");
+        log.info(m + " ----- request received by StoreConsumer grpcService to return the app names ");
+
         AppCache cacheInstance = AppCacheFactory.getInstance();
 
         if (cacheInstance.getAllKeys().size() > 0) {
@@ -56,14 +62,13 @@ public class StoreConsumerService extends AppConsumerServiceGrpc.AppConsumerServ
                             .addAllNames(cacheInstance.getAllKeys())
                             .build();
 
-            if (log.isLoggable(Level.FINE)) {
-                log.fine("getAllAppNames AppConsumerService is returning the list of app names, count: "
-                         + response.getNamesCount() + "]");
-            }
+            log.info(m + " -----  StoreConsumer grpcService is returning the list of app names, count = ["
+                     + response.getNamesCount() + "]");
 
             responseObserver.onNext(response);
             responseObserver.onCompleted();
         } else {
+            log.severe(m + "-----  StoreConsumer grpcService is returning with NOTFOUND status ");
             responseObserver.onError(
                                      Status.NOT_FOUND
                                                      .withDescription("There are no apps in the cache.")
@@ -71,6 +76,8 @@ public class StoreConsumerService extends AppConsumerServiceGrpc.AppConsumerServ
                                                      .asRuntimeException());
         }
 
+        log.info(m + " -----------------------getAllAppNames-----------------------");
+        log.info(m + " ------------------------------------------------------------");
     }
 
     /**
@@ -81,7 +88,12 @@ public class StoreConsumerService extends AppConsumerServiceGrpc.AppConsumerServ
     public void getAppInfo(com.ibm.test.g3store.grpc.AppNameRequest request,
                            io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.RetailAppResponse> responseObserver) {
 
+        final String m = "getAppInfo";
         String name = request.getName();
+        log.info(m + " ------------------------------------------------------------");
+        log.info(m + " -----------------------getAppInfo---------------------------");
+        log.info(m + " ----- request received by StoreConsumer grpcService to return the app info =" + name);
+
         AppCache cacheInstance = AppCacheFactory.getInstance();
 
         RetailApp app = cacheInstance.getEntryValue(name);
@@ -89,14 +101,21 @@ public class StoreConsumerService extends AppConsumerServiceGrpc.AppConsumerServ
         if (!StoreUtils.isBlank(app)) {
             RetailAppResponse response = RetailAppResponse.newBuilder().setRetailApp(app).build();
 
+            log.info(m + " -----  StoreConsumer grpcService is returning the app info. ");
+
             responseObserver.onNext(response);
             responseObserver.onCompleted();
 
         } else {
+            log.severe(m + "-----  StoreConsumer grpcService is returning with INVALID_ARGUMENT status. ");
+
             responseObserver.onError(Status.INVALID_ARGUMENT.withDescription("The app name sent is not in the cache.")
                             .augmentDescription("Name sent = " + name)
                             .asRuntimeException());
         }
+
+        log.info(m + " -----------------------getAppInfo---------------------------");
+        log.info(m + " ------------------------------------------------------------");
 
     }
 
@@ -108,6 +127,11 @@ public class StoreConsumerService extends AppConsumerServiceGrpc.AppConsumerServ
     public io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.AppNameRequest> getPrices(
                                                                                            io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.PriceResponse> responseObserver) {
 
+        final String m = "getPrices";
+        log.info(m + " ------------------------------------------------------------");
+        log.info(m + " -----------------------getPrices----------------------------");
+        log.info(m + " ----- request received by StoreConsumer grpcService to return the app price list using bidi streaming ");
+
         StreamObserver<AppNameRequest> requestObserver = new StreamObserver<AppNameRequest>() {
 
             AppCache cacheInstance = AppCacheFactory.getInstance();
@@ -117,9 +141,7 @@ public class StoreConsumerService extends AppConsumerServiceGrpc.AppConsumerServ
 
                 String name = value.getName();
                 if (!StoreUtils.isBlank(name)) {
-                    if (log.isLoggable(Level.FINE)) {
-                        log.fine("getPrices: name of the app = " + name);
-                    }
+                    log.info(m + ": StoreConsumer grpcService get Prices of the app = " + name);
 
                     RetailApp app = cacheInstance.getEntryValue(name);
 
@@ -134,13 +156,14 @@ public class StoreConsumerService extends AppConsumerServiceGrpc.AppConsumerServ
                                         .addAllPrices(prices)
                                         .build());
                     } else {
-
+                        log.severe(m + "-----  StoreConsumer grpcService is returning with NOTFOUND status ");
                         responseObserver
                                         .onError(Status.NOT_FOUND.withDescription("The app name sent is not in the cache.")
                                                         .augmentDescription("Name sent = " + name)
                                                         .asRuntimeException());
                     }
                 } else {
+                    log.severe(m + "-----  StoreConsumer grpcService is returning with INVALID_ARGUMENT status ");
                     responseObserver.onError(Status.INVALID_ARGUMENT.withDescription("The name sent is empty.")
                                     .augmentDescription("Name sent = " + name)
                                     .asRuntimeException());
@@ -154,11 +177,11 @@ public class StoreConsumerService extends AppConsumerServiceGrpc.AppConsumerServ
 
             @Override
             public void onCompleted() {
-
                 responseObserver.onCompleted();
-                if (log.isLoggable(Level.FINE)) {
-                    log.fine("getPrices: completed on server");
-                }
+                log.info(m + " -----  StoreConsumer grpcService get Prices completed on server. ");
+                log.info(m + " -----------------------getPrices----------------------------");
+                log.info(m + " ------------------------------------------------------------");
+
             }
         };
         return requestObserver;

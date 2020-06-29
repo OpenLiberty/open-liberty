@@ -28,58 +28,75 @@ import io.grpc.ManagedChannelBuilder;
  *         This can be extended from any client i.e. REST or servlet client
  *
  */
-public class ConsumergRPCServiceClient {
+public class ConsumerGrpcServiceClient {
 
     private ManagedChannel _channel;
 
-    private static Logger log = Logger.getLogger(ConsumergRPCServiceClient.class.getName());
+    private static Logger log = Logger.getLogger(ConsumerGrpcServiceClient.class.getName());
 
     /**
-     * 
+     *
      */
     private AppConsumerServiceGrpc.AppConsumerServiceBlockingStub _consumerBlockingStub;
 
     /**
-     * 
+     *
      */
     private AppConsumerServiceGrpc.AppConsumerServiceStub _consumerAsyncStub;
 
     /**
-     * 
+     *
      */
     public void stopService() {
-        if (_channel != null)
+
+        if (log.isLoggable(Level.FINE)) {
+            log.finest("stopService: " + _channel);
+        }
+        if (_channel != null) {
             _channel.shutdownNow();
+        }
+
     }
 
     /**
      * @param address
      * @param port
+     * @return
      */
-    public void startService_BlockingStub(String address, int port) {
+    public boolean startService_BlockingStub(String address, int port) {
 
+        boolean isChannelStarted = this.startService(address, port);
         // create channel
-        this.startService(address, port);
-        // create service
-        this.createBlockingStub(_channel);
+        if (isChannelStarted) {
+            // create service
+            this.createBlockingStub(_channel);
+        }
+
+        return isChannelStarted;
     }
 
     /**
      * @param address
      * @param port
+     * @return
      */
-    public void startService_AsyncStub(String address, int port) {
+    public boolean startService_AsyncStub(String address, int port) {
+        boolean isChannelStarted = this.startService(address, port);
         // create channel
-        this.startService(address, port);
-        // create service
-        this.createAsyncStub(_channel);
+        if (isChannelStarted) {
+            // create service
+            this.createAsyncStub(_channel);
+        }
+
+        return isChannelStarted;
     }
 
     /**
      * @param address
      * @param port
+     * @return
      */
-    private void startService(String address, int port) {
+    private boolean startService(String address, int port) {
 
         // The client side gRPC code will use a gRPC ManagedChannel to connect to the
         // gRPC server side service.
@@ -89,6 +106,13 @@ public class ConsumergRPCServiceClient {
         if (log.isLoggable(Level.FINE)) {
             log.finest("startService: " + _channel);
         }
+
+        if (_channel == null) {
+            log.severe("startService: failed " + _channel);
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -149,17 +173,17 @@ public class ConsumergRPCServiceClient {
      */
     protected void startServiceSecure_BlockingStub(String address, int port, String authHeader) {
 
-//		channel = ManagedChannelBuilder.forAddress(address, port).useTransportSecurity().build();
-
         _channel = ManagedChannelBuilder.forAddress(address, port).usePlaintext().build();
 
-        TestAppCallCredentials secureCred = new TestAppCallCredentials(authHeader);
-        // build the stub for client to use to make gRPC calls to the server side
-        // service
-        set_consumerBlockingStub(AppConsumerServiceGrpc.newBlockingStub(_channel).withCallCredentials(secureCred));
+        if (_channel != null) {
 
+            TestAppCallCredentials secureCred = new TestAppCallCredentials(authHeader);
+            // build the stub for client to use to make gRPC calls to the server side
+            // service
+            set_consumerBlockingStub(AppConsumerServiceGrpc.newBlockingStub(_channel).withCallCredentials(secureCred));
+        }
         if (log.isLoggable(Level.FINE)) {
-            log.finest("startServiceSecure: ");
+            log.finest("startServiceSecure: " + _channel);
         }
 
     }

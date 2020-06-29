@@ -8,13 +8,17 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.testapp.g3store.serviceImpl;
+package com.ibm.testapp.g3store.grpcservice;
 
 import java.io.IOException;
 
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 
+/**
+ * This class if test with java instead of using Liberty server implementation
+ * TODO
+ */
 public class AppProducerJavaService {
 
     public static void main(String[] args) throws IOException, InterruptedException {

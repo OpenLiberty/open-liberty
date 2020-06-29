@@ -46,11 +46,11 @@ import io.grpc.stub.StreamObserver;
  * @version 1.0
  *
  *          This class is implementation of producer APIs.
- * 
+ *
  */
-public class ProducergRPCServiceClientImpl extends ProducergRPCServiceClient {
+public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
 
-    private static Logger log = Logger.getLogger(ProducergRPCServiceClientImpl.class.getName());
+    private static Logger log = Logger.getLogger(ProducerGrpcServiceClientImpl.class.getName());
 
     // gRPC client implementation(s)
     /**
@@ -139,6 +139,9 @@ public class ProducergRPCServiceClientImpl extends ProducergRPCServiceClient {
                                 response.addDeleteResults(DeleteResponse.getResult());
                             });
 
+            log.info("Producer: deleteMultiAppsinStore,response received "
+                     + "from grpc server ");
+
         } catch (StatusRuntimeException e) {
             handleStatusRunTimeException(e, "deleteMultiApps", null, null);
         }
@@ -162,7 +165,7 @@ public class ProducergRPCServiceClientImpl extends ProducergRPCServiceClient {
                 // response from server
                 // called only once
                 log.info("Producer: createMultiAppsinStore:: Recvd a response from server " + value.getResult());
-                // now send this response back to REST client				
+                // now send this response back to REST client
                 response.concatProducerResults(value.getResult());
             }
 
@@ -265,7 +268,7 @@ public class ProducergRPCServiceClientImpl extends ProducergRPCServiceClient {
             } else {
                 asyncServiceException.setAlExException(new AlreadyExistException(status.getDescription(), t));
             }
-            // handle cases 		
+            // handle cases
         } else if (code == Status.Code.DEADLINE_EXCEEDED) {
             throw e;
 
