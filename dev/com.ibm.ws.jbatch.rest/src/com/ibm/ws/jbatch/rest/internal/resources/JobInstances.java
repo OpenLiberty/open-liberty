@@ -395,90 +395,108 @@ public class JobInstances implements RESTHandler {
         		// Note: headers must be set *before* writing to the output stream
         		response.setContentType("application/zip");
         		response.setResponseHeader("Content-Disposition", "attachment; filename=" + StringUtils.enquote(getZipFileName(jobInstanceLog)));
-        		
+
+        		HashSet<String> partitionEndpointURLs = new HashSet<String>();
+
         		for (JobExecutionLog jobExecutionLog : jobInstanceLog.getJobExecutionLogs()) {
-            		// If there are remote partition logs, fetch them now.
-            		// The localOnly flag is used to prevent cascading requests
-            		if (jobExecutionLog.getRemotePartitionLogs() != null &&
-            				!("true".equals(request.getParameter("localOnly")))) {
+        			// If there are remote partition logs, fetch them now.
+        			// The localOnly flag is used to prevent cascading requests
+        			if (jobExecutionLog.getRemotePartitionLogs() != null &&
+        					!("true".equals(request.getParameter("localOnly")))) {
 
-            			HashSet<String> partitionEndpointURLs = jobExecutionLog.getRemotePartitionEndpointURLs();
+        				partitionEndpointURLs.addAll(jobExecutionLog.getRemotePartitionEndpointURLs());
 
-            			// Ignore local URL because the logs would have already been collected with the top-level execution logs
-            			partitionEndpointURLs.remove(BatchRequestUtil.getUrlRoot(request));
-            			
-            			for (String url : partitionEndpointURLs) {
-            				// Fetch the contents from the remote partition executor
-            				String joblogUrl = BatchRequestUtil.buildJoblogsUrlForJobInstance(jobInstanceLog.getJobInstance().getInstanceId(),
-            						url,
-            						"type=zip&localOnly=true");
-            				try {
-            					HttpsURLConnection conn = BatchRequestUtil.sendRESTRequest(joblogUrl, "GET", request, null);
-
-            					if (conn != null) {
-            						ZipInputStream zipInput = new ZipInputStream(conn.getInputStream());
-            						ZipHelper.copyZipEntries(zipInput, zipOutput);
-            					}
-            				} catch (Exception ex) {
-            					Tr.debug(tc, "Exception occurred fetching remote partition logs from " + joblogUrl +
-            							", exception details: " + ex.getClass().getName() + ": " + ex.getLocalizedMessage());
-            				}
-            			}
-            		}
+        			}
         		}
 
-                ZipHelper.zipFilesToStream(jobInstanceLog.getJobLogFiles(),
-                                           jobInstanceLog.getInstanceLogRootDirs(),
-                                           zipOutput);
+        		// Ignore local URL because the logs would have already been collected with the top-level execution logs
+        		partitionEndpointURLs.remove(BatchRequestUtil.getUrlRoot(request));
+        		
+        		System.out.println("CGCG endpoint URLs:");
+
+        		for (String url : partitionEndpointURLs) {
+            		System.out.println("CGCG " + url);
+        			
+        			// Fetch the contents from the remote partition executor
+        			String joblogUrl = BatchRequestUtil.buildJoblogsUrlForJobInstance(jobInstanceLog.getJobInstance().getInstanceId(),
+        					url,
+        					"type=zip&localOnly=true");
+        			try {
+        				HttpsURLConnection conn = BatchRequestUtil.sendRESTRequest(joblogUrl, "GET", request, null);
+
+        				if (conn != null) {
+        					ZipInputStream zipInput = new ZipInputStream(conn.getInputStream());
+        					ZipHelper.copyZipEntries(zipInput, zipOutput);
+        				}
+        			} catch (Exception ex) {
+        				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+        					Tr.debug(tc, "Exception occurred fetching remote partition logs from " + joblogUrl +
+        							", exception details: " + ex.getClass().getName() + ": " + ex.getLocalizedMessage());
+        				}
+        			}
+        		}
+
+
+        		ZipHelper.zipFilesToStream(jobInstanceLog.getJobLogFiles(),
+        				jobInstanceLog.getInstanceLogRootDirs(),
+        				zipOutput);
 
             } else if ("text".equals(request.getParameter("type"))) {
 
-                // Note: headers must be set *before* writing to the output stream
-                response.setContentType("text/plain; charset=UTF-8");
+            	// Note: headers must be set *before* writing to the output stream
+            	response.setContentType("text/plain; charset=UTF-8");
 
-                ZipHelper.aggregateFilesToStream(jobInstanceLog.getJobLogFiles(),
+            	ZipHelper.aggregateFilesToStream(jobInstanceLog.getJobLogFiles(),
                                                  jobInstanceLog.getInstanceLogRootDirs(),
                                                  response.getOutputStream());
+                
+        		HashSet<String> partitionEndpointURLs = new HashSet<String>();
 
-                for (JobExecutionLog jobExecutionLog : jobInstanceLog.getJobExecutionLogs()) {
-                	// If there are remote partition logs, fetch them now.
-                	// The localOnly flag is used to prevent cascading requests
-                	if (jobExecutionLog.getRemotePartitionLogs() != null &&
-                			!("true".equals(request.getParameter("localOnly")))) {
+        		for (JobExecutionLog jobExecutionLog : jobInstanceLog.getJobExecutionLogs()) {
+        			// If there are remote partition logs, fetch them now.
+        			// The localOnly flag is used to prevent cascading requests
+        			if (jobExecutionLog.getRemotePartitionLogs() != null &&
+        					!("true".equals(request.getParameter("localOnly")))) {
 
-                		HashSet<String> partitionEndpointURLs = jobExecutionLog.getRemotePartitionEndpointURLs();
+        				partitionEndpointURLs.addAll(jobExecutionLog.getRemotePartitionEndpointURLs());
+        			}
+        		}
 
-                		// Ignore local URL because the logs would have already been collected with the top-level execution logs
-                		partitionEndpointURLs.remove(BatchRequestUtil.getUrlRoot(request));
+        		// Ignore local URL because the logs would have already been collected with the top-level execution logs
+        		partitionEndpointURLs.remove(BatchRequestUtil.getUrlRoot(request));
 
-                		// Fetch the contents from the remote partition executors
-                		for (String url : partitionEndpointURLs) {
-                			String joblogUrl = BatchRequestUtil.buildJoblogsUrlForJobInstance(jobInstanceLog.getJobInstance().getInstanceId(),
-    								                                                          url,
-    								                                                          "type=text&localOnly=true");
-                			try {
-                				HttpsURLConnection conn = BatchRequestUtil.sendRESTRequest(joblogUrl, "GET", request, null);
-                    			
-                				// Copy job log text from the remote request
-                    			if (conn != null) {
-                    				byte[] buf = new byte[2048];
-                    				int len;
-                    				while ((len = conn.getInputStream().read(buf)) != -1) {
-                    					response.getOutputStream().write(buf, 0, len);
-                    				}
-                    			}
-                			} catch (Exception ex) {
-                				Tr.debug(tc, "Exception occurred fetching remote partition logs from " + joblogUrl +
-                						", exception details: " + ex.getClass().getName() + ": " + ex.getLocalizedMessage());
-                			}
+        		System.out.println("CGCG endpoint URLs:");
+        		
+        		// Fetch the contents from the remote partition executors
+        		for (String url : partitionEndpointURLs) {
+            		System.out.println("CGCG " + url);
+        			
+        			String joblogUrl = BatchRequestUtil.buildJoblogsUrlForJobInstance(jobInstanceLog.getJobInstance().getInstanceId(),
+        					url,
+        					"type=text&localOnly=true");
+        			try {
+        				HttpsURLConnection conn = BatchRequestUtil.sendRESTRequest(joblogUrl, "GET", request, null);
 
-                		}
-                	}
-                }
+        				// Copy job log text from the remote request
+        				if (conn != null) {
+        					byte[] buf = new byte[2048];
+        					int len;
+        					while ((len = conn.getInputStream().read(buf)) != -1) {
+        						response.getOutputStream().write(buf, 0, len);
+        					}
+        				}
+        			} catch (Exception ex) {
+        				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+        					Tr.debug(tc, "Exception occurred fetching remote partition logs from " + joblogUrl +
+        							", exception details: " + ex.getClass().getName() + ": " + ex.getLocalizedMessage());
+        				}
+        			}
+
+        		}
             } else {
 
-                // Note: headers must be set *before* writing to the output stream
-                response.setContentType(BatchJSONHelper.MEDIA_TYPE_APPLICATION_JSON);
+            	// Note: headers must be set *before* writing to the output stream
+            	response.setContentType(BatchJSONHelper.MEDIA_TYPE_APPLICATION_JSON);
 
                 BatchJSONHelper.writeJobInstanceLogLinks(jobInstanceLog,
                                                          BatchRequestUtil.getUrlRoot(request),
