@@ -169,12 +169,7 @@ public class CustomAccessLogFieldsTest {
     public void testAccessLogFieldNamesEnv() throws Exception {
         setUp(envServer);
         waitForSecurityPrerequisites(envServer, WAIT_TIMEOUT);
-        // Ensure defaultHttpEndpoint-ssl TCP Channel is started
-        assertNotNull("TCP Channel defaultHttpEndpoint-ssl has not started (CWWKO0219I not found)",
-                      envServer.waitForStringInLog("CWWKO0219I.*defaultHttpEndpoint-ssl", 60000));
-        // Wait for /metrics to be initialized
-        assertNotNull("/metrics was not initialized (SRVE0242I not found)",
-                      envServer.waitForStringInLog("SRVE0242I", WAIT_TIMEOUT));
+        waitForMetricsToStart(envServer, WAIT_TIMEOUT);
         hitHttpsEndpointSecure("/metrics", envServer);
         String line = envServer.waitForStringInLog("liberty_accesslog");
         assertNotNull("No liberty_accesslog found in the output JSON log.", line);
@@ -190,12 +185,7 @@ public class CustomAccessLogFieldsTest {
     public void testAccessLogFieldNamesBootstrap() throws Exception {
         setUp(bootstrapServer);
         waitForSecurityPrerequisites(bootstrapServer, WAIT_TIMEOUT);
-        // Ensure defaultHttpEndpoint-ssl TCP Channel is started
-        assertNotNull("TCP Channel defaultHttpEndpoint-ssl has not started (CWWKO0219I not found)",
-                      bootstrapServer.waitForStringInLog("CWWKO0219I.*defaultHttpEndpoint-ssl", 60000));
-        // Wait for /metrics to be initialized
-        assertNotNull("/metrics was not initialized (SRVE0242I not found)",
-                      bootstrapServer.waitForStringInLog("SRVE0242I", WAIT_TIMEOUT));
+        waitForMetricsToStart(bootstrapServer, WAIT_TIMEOUT);
         hitHttpsEndpointSecure("/metrics", bootstrapServer);
         String line = bootstrapServer.waitForStringInLog("liberty_accesslog");
         assertNotNull("No liberty_accesslog found in the output JSON log.", line);
@@ -213,12 +203,7 @@ public class CustomAccessLogFieldsTest {
         if (isFirstTimeUsingXmlServer) {
             waitForSecurityPrerequisites(xmlServer, WAIT_TIMEOUT);
         }
-        // Ensure defaultHttpEndpoint-ssl TCP Channel is started
-        assertNotNull("TCP Channel defaultHttpEndpoint-ssl has not started (CWWKO0219I not found)",
-                      xmlServer.waitForStringInLog("CWWKO0219I.*defaultHttpEndpoint-ssl", 60000));
-        // Wait for /metrics to be initialized
-        assertNotNull("/metrics was not initialized (SRVE0242I not found)",
-                      xmlServer.waitForStringInLog("SRVE0242I", WAIT_TIMEOUT));
+        waitForMetricsToStart(xmlServer, WAIT_TIMEOUT);
 
         isFirstTimeUsingXmlServer = false;
         hitHttpsEndpointSecure("/metrics", xmlServer);
@@ -291,12 +276,7 @@ public class CustomAccessLogFieldsTest {
         if (isFirstTimeUsingXmlServer) {
             waitForSecurityPrerequisites(xmlServer, WAIT_TIMEOUT);
         }
-        // Ensure defaultHttpEndpoint-ssl TCP Channel is started
-        assertNotNull("TCP Channel defaultHttpEndpoint-ssl has not started (CWWKO0219I not found)",
-                      xmlServer.waitForStringInLog("CWWKO0219I.*defaultHttpEndpoint-ssl", 60000));
-        // Wait for /metrics to be initialized
-        assertNotNull("/metrics was not initialized (SRVE0242I not found)",
-                      xmlServer.waitForStringInLog("SRVE0242I", WAIT_TIMEOUT));
+        waitForMetricsToStart(xmlServer, WAIT_TIMEOUT);
 
         isFirstTimeUsingXmlServer = false;
 
@@ -351,12 +331,7 @@ public class CustomAccessLogFieldsTest {
         if (isFirstTimeUsingXmlServer) {
             waitForSecurityPrerequisites(xmlServer, WAIT_TIMEOUT);
         }
-        // Ensure defaultHttpEndpoint-ssl TCP Channel is started
-        assertNotNull("TCP Channel defaultHttpEndpoint-ssl has not started (CWWKO0219I not found)",
-                      xmlServer.waitForStringInLog("CWWKO0219I.*defaultHttpEndpoint-ssl", 60000));
-        // Wait for /metrics to be initialized
-        assertNotNull("/metrics was not initialized (SRVE0242I not found)",
-                      xmlServer.waitForStringInLog("SRVE0242I", WAIT_TIMEOUT));
+        waitForMetricsToStart(xmlServer, WAIT_TIMEOUT);
 
         isFirstTimeUsingXmlServer = false;
 
@@ -400,12 +375,7 @@ public class CustomAccessLogFieldsTest {
     public void testChangeJsonAccessLogFieldsConfigValue() throws Exception {
         setUp(changeConfigServer);
         waitForSecurityPrerequisites(changeConfigServer, WAIT_TIMEOUT);
-        // Ensure defaultHttpEndpoint-ssl TCP Channel is started
-        assertNotNull("TCP Channel defaultHttpEndpoint-ssl has not started (CWWKO0219I not found)",
-                      changeConfigServer.waitForStringInLog("CWWKO0219I.*defaultHttpEndpoint-ssl", 60000));
-        // Wait for /metrics to be initialized
-        assertNotNull("/metrics was not initialized (SRVE0242I not found)",
-                      changeConfigServer.waitForStringInLog("SRVE0242I", WAIT_TIMEOUT));
+        waitForMetricsToStart(changeConfigServer, WAIT_TIMEOUT);
 
         hitHttpsEndpointSecure("/metrics", changeConfigServer);
         String line = changeConfigServer.waitForStringInLogUsingMark("liberty_accesslog");
@@ -613,6 +583,7 @@ public class CustomAccessLogFieldsTest {
             con.disconnect();
         } catch (IOException e) {
             e.printStackTrace();
+            fail("Exception caught. Please see System.err log to view stack trace.");
         } finally {
             if (con != null)
                 con.disconnect();
@@ -656,6 +627,7 @@ public class CustomAccessLogFieldsTest {
             con.disconnect();
         } catch (IOException e) {
             e.printStackTrace();
+            fail("Exception caught. Please see System.err log to view stack trace.");
         } finally {
             if (con != null)
                 con.disconnect();
@@ -756,5 +728,14 @@ public class CustomAccessLogFieldsTest {
         // Need to ensure LTPA keys and configuration are created before hitting a secure endpoint
         assertNotNull("LTPA keys are not created within timeout period of " + logTimeout + "ms.", server.waitForStringInLog("CWWKS4104A", logTimeout));
         assertNotNull("LTPA configuration is not ready within timeout period of " + logTimeout + "ms.", server.waitForStringInLog("CWWKS4105I", logTimeout));
+    }
+
+    private void waitForMetricsToStart(LibertyServer server, long logTimeout) {
+        // Wait for port 8020 to be ready
+        assertNotNull("TCP Channel defaultHttpEndpoint-ssl has not started (CWWKO0219I not found)",
+                      server.waitForStringInLog("CWWKO0219I.*defaultHttpEndpoint-ssl", logTimeout));
+        // Wait for /metrics to be initialized
+        assertNotNull("/metrics was not initialized (SRVE0242I not found)",
+                      server.waitForStringInLog("SRVE0242I.*/metrics", logTimeout));
     }
 }
