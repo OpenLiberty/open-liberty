@@ -15,70 +15,46 @@ import java.io.IOException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-
-import javax.batch.runtime.JobExecution;
 
 import com.ibm.jbatch.container.ws.WSRemotablePartitionExecution;
 
-public class JobExecutionLog {
+public class RemotePartitionLog {
 
     /**
-     * The execution id.
+     * The remote partition entity.
      */
-    private final JobExecution jobExecution;
+    private final WSRemotablePartitionExecution remotePartition;
 
     /**
-     * All job log file parts for this JobExecution.
+     * All job log file parts for this remote partition.
      */
-    private final List<File> jobLogFiles;
+    private List<File> jobLogFiles;
 
     /**
-     * A ref to "logs/joblogs/{jobname}/{date}/instance.{instanceId}/execution.{executionId}".
+     * A ref to "logs/joblogs/{jobname}/{date}/instance.{instanceId}/execution.{executionId}/{stepName}/{partitionNumber}".
      * This is used to help resolve relative names for the jobLogFiles.
      */
-    private final File execLogRootDir;
-
-    /**
-     * All remote partitions for this execution.
-     */
-    private final List<RemotePartitionLog> partitionLogs = new ArrayList<RemotePartitionLog>();
-
-    /**
-     * EXECUTION_LOCAL: The job execution ran on this server
-     * PARTITION_LOCAL: The job execution did not run on this server, but at least one remote partition did
-     * NOT_LOCAL: Neither the execution nor any remote partitions ran on this server
-     */
-    public enum LogLocalState {
-        NOT_LOCAL, EXECUTION_LOCAL, PARTITION_LOCAL
-    }
-
-    private final LogLocalState localState;
+    private final File partitionLogRootDir;
 
     /**
      * CTOR.
      */
-    public JobExecutionLog(JobExecution execution, List<File> jobLogFiles, File rootDir, LogLocalState localState, List<WSRemotablePartitionExecution> remotePartitions) {
-        this.jobExecution = execution;
-        this.jobLogFiles = new ArrayList<File>(jobLogFiles); // copy the list.
-        this.execLogRootDir = rootDir;
-        this.localState = localState;
-        if (remotePartitions != null && !remotePartitions.isEmpty()) {
-            for (WSRemotablePartitionExecution partition : remotePartitions) {
-                partitionLogs.add(new RemotePartitionLog(partition));
-            }
-        }
+    public RemotePartitionLog(WSRemotablePartitionExecution partition) {
+        this.remotePartition = partition;
+        this.partitionLogRootDir = new File(partition.getLogpath());
     }
 
-    public JobExecution getJobExecution() {
-        return jobExecution;
+    /**
+     * @return the underlying remotable partition execution
+     */
+    public WSRemotablePartitionExecution getRemotePartition() {
+        return remotePartition;
     }
 
-    public long getExecutionId() {
-        return jobExecution.getExecutionId();
-    }
-
+    /**
+     * @return the list of files associated with this remote partition
+     */
     public List<File> getJobLogFiles() {
         return jobLogFiles;
     }
@@ -87,22 +63,8 @@ public class JobExecutionLog {
      * @return the joblogs root dir, for resolving the relative names
      *         of job log files.
      */
-    public File getExecLogRootDir() {
-        return execLogRootDir;
-    }
-
-    /**
-     * @return the partitionLogs
-     */
-    public List<RemotePartitionLog> getRemotePartitionLogs() {
-        return partitionLogs;
-    }
-
-    /**
-     * @return the localState
-     */
-    public LogLocalState getLocalState() {
-        return localState;
+    public File getPartitionLogRootDir() {
+        return partitionLogRootDir;
     }
 
     /**
@@ -124,11 +86,11 @@ public class JobExecutionLog {
     }
 
     /**
-     * @return the relativePath of the given joblog part (relative to the jobexecution's root joblog dir)
+     * @return the relativePath of the given joblog part (relative to the partition's root joblog dir)
      */
     protected String getRelativePath(File jobLogFile) {
         try {
-            return stripPrefix(jobLogFile.getCanonicalPath(), getExecLogRootDir().getCanonicalPath() + File.separator);
+            return stripPrefix(jobLogFile.getCanonicalPath(), getPartitionLogRootDir().getCanonicalPath() + File.separator);
         } catch (IOException ioe) {
             throw new RuntimeException(ioe);
         }
@@ -168,7 +130,7 @@ public class JobExecutionLog {
      * @return true if all files were successfully deleted.
      */
     public boolean purge() {
-        return deleteFileRecursive(execLogRootDir);
+        return deleteFileRecursive(partitionLogRootDir);
     }
 
     private boolean deleteFileRecursive(final File file) {
@@ -181,8 +143,7 @@ public class JobExecutionLog {
                 return file.isDirectory();
             }
         });
-        //defect 191586 check if the file exists because file.isDirectory() will return false if it
-        //does not exist as well as not being a directory so need a second check.
+
         if (!isDir) {
             isThere = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
                 @Override
@@ -203,8 +164,7 @@ public class JobExecutionLog {
                 success = success && deleteFileRecursive(f);
             }
         }
-        //defect 191586: make sure the file exists if it is not a directory.  If it does not exist
-        //return true to continue with the purge process.
+
         if (success && isThere) {
             success = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
                 @Override
@@ -214,19 +174,5 @@ public class JobExecutionLog {
             });
         }
         return success;
-    }
-
-    /**
-     * @return a set of unique URLs, one for each endpoint that ran a remote partition
-     */
-    public HashSet<String> getRemotePartitionEndpointURLs() {
-        HashSet<String> retMe = new HashSet<String>();
-
-        // Copy to a HashSet to filter out duplicates
-        for (RemotePartitionLog partitionLog : getRemotePartitionLogs()) {
-            retMe.add(partitionLog.getRemotePartition().getRestUrl());
-        }
-
-        return retMe;
     }
 }
