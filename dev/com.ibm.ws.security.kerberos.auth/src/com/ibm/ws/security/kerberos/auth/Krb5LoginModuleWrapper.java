@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.authentication.jaas.modules;
+package com.ibm.ws.security.kerberos.auth;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -23,12 +23,21 @@ import javax.security.auth.spi.LoginModule;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.service.util.JavaInfo;
+import com.ibm.ws.kernel.service.util.JavaInfo.Vendor;
 import com.ibm.ws.security.authentication.AuthenticationException;
-import com.ibm.ws.security.authentication.utility.JaasLoginConfigConstants;
-import com.ibm.ws.security.krb5.Krb5Common;
 
 public class Krb5LoginModuleWrapper implements LoginModule {
     private static final TraceComponent tc = Tr.register(Krb5LoginModuleWrapper.class);
+
+    public static final String COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE = "com.ibm.security.auth.module.Krb5LoginModule";
+    public static final String COM_SUN_SECURITY_AUTH_MODULE_KRB5LOGINMODULE = "com.sun.security.auth.module.Krb5LoginModule";
+    public static final String COM_SUN_SECURITY_JGSS_KRB5_INITIATE = "com.sun.security.jgss.krb5.initiate";
+    public static final String COM_SUN_SECURITY_JGSS_KRB5_ACCEPT = "com.sun.security.jgss.krb5.accept";
+
+    private static final boolean isIBMJdk18OrLower = JavaInfo.vendor() == Vendor.IBM && JavaInfo.majorVersion() <= 8;
+    private static final boolean isOracleJdk18OrHigher = (JavaInfo.vendor() == Vendor.ORACLE && JavaInfo.majorVersion() >= 8);
+    private static final boolean isOtherSupportJDKs = isOracleJdk18OrHigher || JavaInfo.majorVersion() >= 11;
 
     public CallbackHandler callbackHandler;
     public Subject subject;
@@ -48,10 +57,10 @@ public class Krb5LoginModuleWrapper implements LoginModule {
      */
     public Krb5LoginModuleWrapper() {
         String targetClass = null;
-        if (Krb5Common.isIBMJdk18OrLower)
-            targetClass = JaasLoginConfigConstants.COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE;
-        else if (Krb5Common.isOtherSupportJDKs)
-            targetClass = JaasLoginConfigConstants.COM_SUN_SECURITY_AUTH_MODULE_KRB5LOGINMODULE;
+        if (isIBMJdk18OrLower)
+            targetClass = COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE;
+        else if (isOtherSupportJDKs)
+            targetClass = COM_SUN_SECURITY_AUTH_MODULE_KRB5LOGINMODULE;
         else {
             //TODO: NLS msg
             Tr.error(tc, "Not support JDK vendor and/or version");
@@ -77,10 +86,10 @@ public class Krb5LoginModuleWrapper implements LoginModule {
         this.options = new HashMap();
         this.options.putAll(options);
 
-        if (Krb5Common.isOtherSupportJDKs)
+        if (isOtherSupportJDKs)
             useKeytabValue = options.get("useKeyTab");
 
-        if (useKeytabValue != null && useKeytabValue.equals("true")) {
+        if (useKeytabValue != null && useKeytabValue.equals("true") && options.get("keyTab") == null) {
             this.options.put("keyTab", getSystemProperty("KRB5_KTNAME"));
         }
 //        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -107,9 +116,6 @@ public class Krb5LoginModuleWrapper implements LoginModule {
 
     @Override
     public boolean login() throws LoginException {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Krb5Common.debugKrb5LoginModule(subject, callbackHandler, sharedState, this.options);
-        }
         if (krb5LoginModuleClass != null) {
             inVokeMethod("login", noparams);
             login_called = true;

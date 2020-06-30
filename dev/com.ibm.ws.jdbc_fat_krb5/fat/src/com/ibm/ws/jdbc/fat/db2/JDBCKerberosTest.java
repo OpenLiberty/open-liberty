@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.db2;
 
-import static org.junit.Assert.fail;
-
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -20,20 +18,19 @@ import java.util.List;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.Network;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 import componenttest.topology.utils.FATServletClient;
-import componenttest.topology.utils.HttpRequest;
+import db2.web.JDBCKerberosTestServlet;
 
 @RunWith(FATRunner.class)
 public class JDBCKerberosTest extends FATServletClient {
@@ -52,6 +49,7 @@ public class JDBCKerberosTest extends FATServletClient {
     public static final DB2KerberosContainer db2 = new DB2KerberosContainer(network);
 
     @Server("com.ibm.ws.jdbc.fat.krb5")
+    @TestServlet(servlet = JDBCKerberosTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
     @ClassRule
@@ -115,28 +113,6 @@ public class JDBCKerberosTest extends FATServletClient {
 
         if (firstError != null)
             throw firstError;
-    }
-
-    @Test
-    @AllowedFFDC // allow FFDCs for now since we expect the auth to fail
-    public void testNonKerberosConnectionRejected() throws Exception {
-        runInServlet();
-    }
-
-    @Test
-    public void testKerberosConnection() throws Exception {
-        runInServlet();
-    }
-
-    private void runInServlet() throws Exception {
-        String result = new HttpRequest(server, getPathAndQuery(APP_NAME + "/JDBCKerberosTestServlet", testName.getMethodName()))
-                        .basicAuth("user1", "password")
-                        .run(String.class);
-        // Look for success message, otherwise fail test
-        if (result.indexOf(FATServletClient.SUCCESS) < 0) {
-            Log.info(getClass(), testName.getMethodName(), "failed to find completed successfully message");
-            fail("Missing success message in output. " + result);
-        }
     }
 
 }

@@ -95,7 +95,8 @@ Service-Component: \
     provide:=com.ibm.ws.serialization.DeserializationClassProvider; \
     properties:='classes=com.ibm.ws.rsadapter.jdbc.SerializedDataSourceWrapper'
 
-DynamicImport-Package: com.ibm.wsspi.timedoperations, \
+DynamicImport-Package: \
+    com.ibm.wsspi.timedoperations, \
     com.ibm.ws.timedoperations.bci, \
     com.ibm.wsspi.request.probe.bci, \
     com.ibm.wsspi.probeExtension, \

@@ -30,26 +30,31 @@ Export-Package: \
 Private-Package: \
   com.ibm.ws.security.jca.internal*
 
-Import-Package: com.ibm.ejs.ras,com.ibm.websphere.crypto, \
+Import-Package: \
+  com.ibm.ejs.ras,com.ibm.websphere.crypto, \
   com.ibm.websphere.ras, \
   com.ibm.websphere.ras.annotation, \
   com.ibm.websphere.security.auth.data, \
   com.ibm.ws.ras.instrument.annotation, \
   com.ibm.ws.security.authentication.principals, \
+  com.ibm.ws.security.authentication.utility, \
   com.ibm.ws.security.intfc, \
   com.ibm.ws.security.jca;version="[1.0,1.1)", \
+  com.ibm.ws.security.kerberos.auth,\
   com.ibm.wsspi.kernel.service.utils, \
   javax.security.auth, \
   javax.security.auth.callback, \
   javax.security.auth.login, \
+  javax.security.auth.spi, \
+  org.ietf.jgss, \
   org.osgi.framework;version="[1.7,2)", \
   org.osgi.service.component;version="[1.3,2)"
 
 DynamicImport-Package: \
- javax.resource.spi, \
- javax.resource.spi.security, \
- com.ibm.ws.security, \
- com.ibm.wsspi.security.auth.callback;version="[1.1,2)"
+  javax.resource.spi, \
+  javax.resource.spi.security, \
+  com.ibm.ws.security, \
+  com.ibm.wsspi.security.auth.callback;version="[1.1,2)"
 
 # Update the metatype.xml for your component in the resources/OSGI-INF/metatype folder
 Include-Resource: \
@@ -84,6 +89,7 @@ Service-Component: \
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
 	com.ibm.ws.security.auth.data.common;version=latest,\
 	com.ibm.ws.security.credentials;version=latest,\
+	com.ibm.ws.security.kerberos.auth;version=latest,\
 	com.ibm.websphere.security;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 

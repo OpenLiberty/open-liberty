@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2016 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,12 +8,11 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
 /**
  * @version 1.0
  */
 @org.osgi.annotation.versioning.Version("1.0")
-@TraceOptions(traceGroup = "AuthData")
-package com.ibm.ws.security.jca.internal;
+@TraceOptions(traceGroup = TraceConstants.TRACE_GROUP)
+package com.ibm.ws.security.kerberos.auth;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
