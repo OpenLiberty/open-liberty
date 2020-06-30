@@ -643,6 +643,9 @@ public final class JAXRSUtils {
             Set<String> allowedMethods = new HashSet<String>();
             for (ClassResourceInfo cri : cris) {
                 //Liberty Change start
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "createResponse ClassResourceInfo " + cri);
+                }                                
                 if (cri.getParent() != null) {
                    // Sub-resource
                     allowedMethods.addAll(cri.getAllowedMethods());
@@ -653,18 +656,33 @@ public final class JAXRSUtils {
                 }
                 
                 for (OperationResourceInfo ori : cri.getMethodDispatcher().getOperationResourceInfos()) {
-                    if(ori.isSubResourceLocator()) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "createResponse OperationResourceInfo " + ori);
+                    }
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "createResponse OperationResourceInfo.isSubResourceLocator() " + ori.isSubResourceLocator());
+                    }                                
+                    if(ori.isSubResourceLocator()) {                        
                         break;
                     }
-                    if (matchedResources == null) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "createResponse matchedResources " + matchedResources);
+                    }                                
+                    if (matchedResources == null) {                        
                         String messagePath = HttpUtils.getPathToMatch(msg, true);
                         matchedResources = JAXRSUtils.selectResourceClass(cris, messagePath, msg);
-                    }
+                    }                    
                     MultivaluedMap<String, String> values =  matchedResources.get(cri);
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "createResponse values " + values);
+                    }                                
                     if (values == null) {
                         break;
                     }
                     String httpMethod = ori.getHttpMethod();
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "createResponse httpMethod " + httpMethod);
+                    }                                
                     if (isFinalPath(ori,values)) {                        
                         if (matchHttpMethod(httpMethod, "*")) {                                
                             allowedMethods.add(httpMethod);
