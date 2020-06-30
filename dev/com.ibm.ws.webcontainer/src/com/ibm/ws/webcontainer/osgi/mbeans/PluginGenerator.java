@@ -165,7 +165,7 @@ public class PluginGenerator {
             CHANGE_TRANSFORMER = false;
         } else {
             int majorVersion = JavaInfo.majorVersion();
-            CHANGE_TRANSFORMER = majorVersion == 7 || majorVersion == 8;
+            CHANGE_TRANSFORMER = majorVersion == 8;
         }
     }
 

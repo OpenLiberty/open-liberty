@@ -35,7 +35,7 @@ public class Krb5LoginModuleWrapper implements LoginModule {
     public static final String COM_SUN_SECURITY_JGSS_KRB5_INITIATE = "com.sun.security.jgss.krb5.initiate";
     public static final String COM_SUN_SECURITY_JGSS_KRB5_ACCEPT = "com.sun.security.jgss.krb5.accept";
 
-    private static final boolean isIBMJdk18OrLower = JavaInfo.vendor() == Vendor.IBM && JavaInfo.majorVersion() <= 8;
+    private static final boolean isIBMJdk18 = JavaInfo.vendor() == Vendor.IBM && JavaInfo.majorVersion() == 8;
     private static final boolean isOracleJdk18OrHigher = (JavaInfo.vendor() == Vendor.ORACLE && JavaInfo.majorVersion() >= 8);
     private static final boolean isOtherSupportJDKs = isOracleJdk18OrHigher || JavaInfo.majorVersion() >= 11;
 
@@ -57,7 +57,7 @@ public class Krb5LoginModuleWrapper implements LoginModule {
      */
     public Krb5LoginModuleWrapper() {
         String targetClass = null;
-        if (isIBMJdk18OrLower)
+        if (isIBMJdk18)
             targetClass = COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE;
         else if (isOtherSupportJDKs)
             targetClass = COM_SUN_SECURITY_AUTH_MODULE_KRB5LOGINMODULE;

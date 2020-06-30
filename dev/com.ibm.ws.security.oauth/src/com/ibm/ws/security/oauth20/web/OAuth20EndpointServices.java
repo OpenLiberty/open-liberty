@@ -280,15 +280,9 @@ public class OAuth20EndpointServices {
                 logout(oauth20Provider, request, response);
                 break;
             case app_password:
-                if (isJava7(request.getRequestURI())) { // emit error message
-                    break;
-                }
                 tokenExchange.processAppPassword(oauth20Provider, request, response);
                 break;
             case app_token:
-                if (isJava7(request.getRequestURI())) { // emit error message
-                    break;
-                }
                 tokenExchange.processAppToken(oauth20Provider, request, response);
                 break;
 
@@ -357,23 +351,12 @@ public class OAuth20EndpointServices {
             ServletContext servletContext, OAuth20Provider provider, AttributeList options, String requiredRole)
             throws ServletException, IOException, OidcServerException {
 
-        if (isJava7(request.getRequestURI())) { // emit error message if < java8
-            return false;
-        }
         OAuthResult result = handleUIUserAuthentication(request, response, servletContext, provider, options);
         if (!isUIAuthenticationComplete(request, response, provider, result, requiredRole)) {
             return false;
         }
 
         return true;
-    }
-
-    private boolean isJava7(String uri) {
-        if (OAuth20Constants.JAVA_VERSION_7 || OAuth20Constants.JAVA_VERSION_6) {
-            Tr.warning(tc2, "JAVA8_REQUIRED", new Object[] { uri }); // CWWKS1495W
-            return true;
-        }
-        return false;
     }
 
     private boolean isUIAuthenticationComplete(HttpServletRequest request, HttpServletResponse response, OAuth20Provider provider, OAuthResult result, String requiredRole) throws OidcServerException {
