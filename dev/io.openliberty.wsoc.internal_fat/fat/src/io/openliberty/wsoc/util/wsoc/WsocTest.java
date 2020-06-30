@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,6 +41,25 @@ public class WsocTest {
         this.secure = secure;
     }
 
+    public WsocTest(SharedServer ss, boolean secure) {
+        if(ss == null)
+            throw new RuntimeException("Invalid Shared Server passed");
+        this.secure = secure;
+        LibertyServer server = ss.getLibertyServer();
+        Boolean webserverInFront = WebServerControl.isWebserverInFront();
+        if (webserverInFront) {
+            try {
+                host = WebServerControl.getHostname();
+                port = Integer.valueOf(WebServerControl.getPort()).intValue();
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to get host or port from webserver", e);
+            }
+        }
+        else {
+            host = server.getHostname();
+            port = server.getHttpDefaultPort();
+        }
+    }
 
     private static final Logger LOG = Logger.getLogger(WsocTest.class.getName());
 

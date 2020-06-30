@@ -1,8 +1,12 @@
 /*******************************************************************************
- * NOTICES AND INFORMATION FOR Open Liberty
- * Copyright 2013, 2020 IBM Corporation and others
- * This product includes software developed at
- * The Open Liberty Project (https://openliberty.io/).
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.wsoc.tests;
 
@@ -86,20 +90,67 @@ public class BasicTest extends LoggingTest {
 
     private static final Logger LOG = Logger.getLogger(BasicTest.class.getName());
 
+    private static final String BASIC_JAR_NAME = "basic";
+    private static final String BASIC_WAR_NAME = "basic";
+
     protected WebResponse runAsSSCAndVerifyResponse(String className, String testName) throws Exception {
+        int securePort = 0, port = 0;
+        String host="";
+        LibertyServer server = SS.getLibertyServer();
+        if (WebServerControl.isWebserverInFront()) {
+            try {
+                host = WebServerControl.getHostname();
+                securePort = WebServerControl.getSecurePort();
+                port = Integer.valueOf(WebServerControl.getPort()).intValue();
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to get ports or host from webserver", e);
+            }
+        } else {
+            securePort = server.getHttpDefaultSecurePort();
+            host = server.getHostname();
+            port = server.getHttpDefaultPort();
+        }
         return SS.verifyResponse(createWebBrowserForTestCase(),
-                                 "/basic/SingleRequest?classname=" + className + "&testname=" + testName + "&targethost=" + SS.getHost() + "&targetport=" + SS.getPort()
-                                                                + "&secureport=" + SS.getSecurePort(),
+                                 "/basic/SingleRequest?classname=" + className + "&testname=" + testName + "&targethost=" + host + "&targetport=" + port
+                                                                + "&secureport=" + securePort,
                                  "SuccessfulTest");
     }
 
     @BeforeClass
     public static void setUp() throws Exception {
+        // Build the basic jar to add to the war app as a lib
+        JavaArchive BasicJar = ShrinkHelper.buildJavaArchive(BASIC_JAR_NAME + ".jar",
+                                                                   "basic.jar");
+        // Build the war app and add the dependencies
+        WebArchive BasicApp = ShrinkHelper.buildDefaultApp(BASIC_WAR_NAME + ".war",
+                                                                         "basic.war",
+                                                                         "basic.war.coding",
+                                                                         "basic.war.configurator",
+                                                                         "basic.war.servlet",
+                                                                         "basic.war.utils",
+                                                                         "io.openliberty.wsoc.common",
+                                                                         "io.openliberty.wsoc.util.wsoc",
+                                                                         "io.openliberty.wsoc.tests.all",
+                                                                         "io.openliberty.wsoc.endpoints.client.basic");
+        BasicApp = (WebArchive) ShrinkHelper.addDirectory(BasicApp, "test-applications/"+BASIC_WAR_NAME+".war/resources");
+        BasicApp = BasicApp.addAsLibraries(BasicJar);
+        // Verify if the apps are in the server before trying to deploy them
+        if (SS.getLibertyServer().isStarted()) {
+            Set<String> appInstalled = SS.getLibertyServer().getInstalledAppNames(BASIC_WAR_NAME);
+            LOG.info("addAppToServer : " + BASIC_WAR_NAME + " already installed : " + !appInstalled.isEmpty());
+            if (appInstalled.isEmpty())
+            ShrinkHelper.exportDropinAppToServer(SS.getLibertyServer(), BasicApp);
+        }
+        SS.startIfNotStarted();
+        SS.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + BASIC_WAR_NAME);
         bwst.setUp();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
+        if (SS.getLibertyServer() != null && SS.getLibertyServer().isStarted()) {
+            SS.getLibertyServer().stopServer("CWWKH0023E", "CWWKH0020E", "CWWKH0039E", "CWWKH0040E");
+        }
         bwst.tearDown();
     }
 

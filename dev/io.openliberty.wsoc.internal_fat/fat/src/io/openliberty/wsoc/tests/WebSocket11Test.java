@@ -1,8 +1,12 @@
 /*******************************************************************************
- * NOTICES AND INFORMATION FOR Open Liberty
- * Copyright 2015, 2020 IBM Corporation and others
- * This product includes software developed at
- * The Open Liberty Project (https://openliberty.io/).
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.wsoc.tests;
 
@@ -53,15 +57,34 @@ public class WebSocket11Test extends LoggingTest {
 
     private final WebSocketVersion11Test pt = new WebSocketVersion11Test(wt);
 
+    private static final String WEBSOCKET_11_WAR_NAME = "websocket11";
+
     private static final Logger LOG = Logger.getLogger(WebSocket11Test.class.getName());
 
     @BeforeClass
     public static void setUp() throws Exception {
+        // Build the war app and add the dependencies
+        WebArchive Websocket11App = ShrinkHelper.buildDefaultApp(WEBSOCKET_11_WAR_NAME + ".war",
+                                                                         "websocket11.war",
+                                                                         "io.openliberty.wsoc.common");
+        Websocket11App = (WebArchive) ShrinkHelper.addDirectory(Websocket11App, "test-applications/"+WEBSOCKET_11_WAR_NAME+".war/resources");
+        // Verify if the apps are in the server before trying to deploy them
+        if (SS.getLibertyServer().isStarted()) {
+            Set<String> appInstalled = SS.getLibertyServer().getInstalledAppNames(WEBSOCKET_11_WAR_NAME);
+            LOG.info("addAppToServer : " + WEBSOCKET_11_WAR_NAME + " already installed : " + !appInstalled.isEmpty());
+            if (appInstalled.isEmpty())
+            ShrinkHelper.exportDropinAppToServer(SS.getLibertyServer(), Websocket11App);
+        }
+        SS.startIfNotStarted();
+        SS.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + WEBSOCKET_11_WAR_NAME);
         bwst.setUp();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
+        if (SS.getLibertyServer() != null && SS.getLibertyServer().isStarted()) {
+            SS.getLibertyServer().stopServer(null);
+        }
         bwst.tearDown();
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -56,9 +56,22 @@ public class WebServerSetup {
 
     public void setUp() throws Exception {
 
-        targetPort = ss.getTargetPort();
-        targetHost = ss.getHost();
-        targetSecurePort = ss.getTargetSecurePort();
+        LibertyServer server = ss.getLibertyServer();
+        targetPort = server.getHttpDefaultPort();
+        targetSecurePort = server.getHttpDefaultSecurePort();
+
+        webserverInFront = WebServerControl.isWebserverInFront();
+
+        if (webserverInFront) {
+            try {
+                targetHost = WebServerControl.getHostname();
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to get host from webserver", e);
+            }
+        }
+        else {
+            targetHost = server.getHostname();
+        }
         webserverHost = WebServerControl.getHostname();
 
         String port = WebServerControl.getPort();
@@ -67,7 +80,6 @@ public class WebServerSetup {
         }
         webserverSecurePort = Integer.valueOf(WebServerControl.getSecurePort());
 
-        webserverInFront = WebServerControl.isWebserverInFront();
         if (webserverInFront) {
             Log.info(c, "setUp", "NonSecure WebServer: " + webserverHost + ":" + webserverPort + " targetNonSecure: " + targetHost + ":" + targetPort);
             Log.info(c, "setUp", "Secure WebServer: " + webserverHost + ":" + webserverSecurePort + " targetSecure: " + targetHost + ":" + targetSecurePort);
