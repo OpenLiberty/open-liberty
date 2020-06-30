@@ -49,6 +49,8 @@ import javax.xml.stream.util.StreamReaderDelegate;
 
 import org.w3c.dom.Element;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import org.apache.cxf.common.classloader.ClassLoaderUtils;
 import org.apache.cxf.common.jaxb.JAXBContextCache;
 import org.apache.cxf.common.jaxb.JAXBContextCache.CachedContextAndSchemas;
@@ -74,17 +76,18 @@ public class JAXBExtensionHelper implements ExtensionSerializer, ExtensionDeseri
     private JAXBContext context;
     private Set<Class<?>> classes;
 
-      
+    @Trivial
     public JAXBExtensionHelper(Class<? extends ExtensibilityElement> cls,
                                String ns) {
         typeClass = cls;
         namespace = ns;
     }
-    
+    @Trivial
     void setJaxbNamespace(String ns) {
         jaxbNamespace = ns;
     }
     
+    @Trivial
     public static void addExtensions(ExtensionRegistry registry, String parentType, String elementType)
         throws JAXBException, ClassNotFoundException {
         Class<?> parentTypeClass = ClassLoaderUtils.loadClass(parentType, JAXBExtensionHelper.class);
@@ -94,6 +97,7 @@ public class JAXBExtensionHelper implements ExtensionSerializer, ExtensionDeseri
                 .asSubclass(ExtensibilityElement.class);
         addExtensions(registry, parentTypeClass, elementTypeClass, null);
     }
+    @Trivial
     public static void addExtensions(ExtensionRegistry registry,
                                      String parentType, 
                                      String elementType,
@@ -106,12 +110,14 @@ public class JAXBExtensionHelper implements ExtensionSerializer, ExtensionDeseri
                 .asSubclass(ExtensibilityElement.class);
         addExtensions(registry, parentTypeClass, elementTypeClass, namespace);
     }
+    @Trivial
     public static void addExtensions(ExtensionRegistry registry,
                                      Class<?> parentType,
                                      Class<? extends ExtensibilityElement> cls)
         throws JAXBException {
         addExtensions(registry, parentType, cls, null);
     }
+    
     public static void addExtensions(ExtensionRegistry registry,
                                      Class<?> parentType,
                                      Class<? extends ExtensibilityElement> cls,
@@ -183,6 +189,7 @@ public class JAXBExtensionHelper implements ExtensionSerializer, ExtensionDeseri
         }
     }
 
+    @Trivial
     private synchronized JAXBContext getContext() throws JAXBException {
         if (context == null || classes == null) {
             try {
@@ -274,6 +281,7 @@ public class JAXBExtensionHelper implements ExtensionSerializer, ExtensionDeseri
      *   javax.wsdl.Definition,
      *   javax.wsdl.extensions.ExtensionRegistry)
      */
+    @Trivial
     public ExtensibilityElement unmarshall(@SuppressWarnings("rawtypes") Class parent, 
                                            QName qname, Element element, Definition wsdl,
                                            ExtensionRegistry registry) throws WSDLException {
@@ -311,6 +319,7 @@ public class JAXBExtensionHelper implements ExtensionSerializer, ExtensionDeseri
     
 
 
+    @Trivial
     class MappingReaderDelegate extends StreamReaderDelegate {
         MappingReaderDelegate(XMLStreamReader reader) {
             super(reader);

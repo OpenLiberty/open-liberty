@@ -25,10 +25,13 @@ import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 /**
  * Utility for encoding and decoding values according to RFC 5987. Assumes the
  * caller already knows the encoding scheme for the value.
  */
+@Trivial1
 public final class Rfc5987Util {
 
     public static final Charset UTF_8 = Charset.forName("UTF-8");

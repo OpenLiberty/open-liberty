@@ -30,6 +30,7 @@ import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.phase.Phase;
 import org.apache.cxf.staxutils.StaxUtils;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 
 public class StaxInEndingInterceptor extends AbstractPhaseInterceptor<Message> {
@@ -42,12 +43,12 @@ public class StaxInEndingInterceptor extends AbstractPhaseInterceptor<Message> {
     
     public static final StaxInEndingInterceptor INSTANCE = new StaxInEndingInterceptor();
     
+    @Trivial
     public StaxInEndingInterceptor() {
         super(Phase.POST_INVOKE);
     }
 
-    @Trivial
-    public void handleMessage(Message message) throws Fault {
+    public void handleMessage(@Sensitive Message message) throws Fault {
         LOG.entering("StaxInEndingInterceptor", "handleMessage");
         XMLStreamReader xtr = message.getContent(XMLStreamReader.class);
         if (xtr != null && !MessageUtils.getContextualBoolean(message, STAX_IN_NOCLOSE, false)) {

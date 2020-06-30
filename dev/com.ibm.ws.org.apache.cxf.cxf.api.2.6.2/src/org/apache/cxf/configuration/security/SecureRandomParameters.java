@@ -14,6 +14,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 
 /**
  * 
@@ -40,6 +42,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SecureRandomParameters")
+@Trivial
 public class SecureRandomParameters {
 
     @XmlAttribute(name = "algorithm")

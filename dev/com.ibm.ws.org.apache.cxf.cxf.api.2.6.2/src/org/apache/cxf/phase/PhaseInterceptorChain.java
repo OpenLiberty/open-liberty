@@ -1,5 +1,5 @@
 /**
- * Licensed to the Apache Software Foundation (ASF) under one
+* * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
  * distributed with this work for additional information
  * regarding copyright ownership. The ASF licenses this file
@@ -44,6 +44,9 @@ import org.apache.cxf.message.Message;
 import org.apache.cxf.service.Service;
 import org.apache.cxf.service.model.OperationInfo;
 import org.apache.cxf.transport.MessageObserver;
+
+import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.websphere.ras.annotation.Trivial;
 
 /**
  * A PhaseInterceptorChain orders Interceptors according to the phase they
@@ -94,7 +97,7 @@ public class PhaseInterceptorChain implements InterceptorChain {
     private boolean faultOccurred;
     
     
-    
+    @Trivial4
     private PhaseInterceptorChain(PhaseInterceptorChain src) {
         isFineLogging = LOG.isLoggable(Level.FINE);
         
@@ -132,6 +135,7 @@ public class PhaseInterceptorChain implements InterceptorChain {
         }
     }
     
+    @Trivial
     public PhaseInterceptorChain(SortedSet<Phase> ps) {
         state = State.EXECUTING;
         isFineLogging = LOG.isLoggable(Level.FINE);
@@ -152,18 +156,22 @@ public class PhaseInterceptorChain implements InterceptorChain {
         }
     }
     
+    @Trivial
     public static Message getCurrentMessage() {
         return CURRENT_MESSAGE.get();
     }
     
+    @Trivial
     public synchronized State getState() {
         return state;
     }
     
+    @Trivial
     public PhaseInterceptorChain cloneChain() {
         return new PhaseInterceptorChain(this);
     }
     
+    @Trivial
     private void updateIterator() {
         if (iterator == null) {
             iterator = new PhaseInterceptorIterator(heads);
@@ -172,10 +180,12 @@ public class PhaseInterceptorChain implements InterceptorChain {
         }
     }
     
+    @Trivial
     public void add(Collection<Interceptor<? extends Message>> newhandlers) {
         add(newhandlers, false);
     }
 
+    @Trivial
     public void add(Collection<Interceptor<? extends Message>> newhandlers, boolean force) {
         if (newhandlers == null) {
             return;
@@ -186,6 +196,7 @@ public class PhaseInterceptorChain implements InterceptorChain {
         }
     }
 
+    @Trivial
     public void add(Interceptor<? extends Message> i) {
         add(i, false);
     }
@@ -239,7 +250,7 @@ public class PhaseInterceptorChain implements InterceptorChain {
      * @throws Exception
      */
     @SuppressWarnings("unchecked")
-    public synchronized boolean doIntercept(Message message) {
+    public synchronized boolean doIntercept(@Sensitive Message message) {
         updateIterator();
         pausedMessage = message;
 
@@ -335,7 +346,8 @@ public class PhaseInterceptorChain implements InterceptorChain {
         }
     }
 
-    private void doDefaultLogging(Message message, Exception ex, StringBuilder description) {
+    
+    private void doDefaultLogging(@Sensitive Message message, @Sensitive Exception ex, StringBuilder description) {
         FaultMode mode = message.get(FaultMode.class);
         if (mode == FaultMode.CHECKED_APPLICATION_FAULT) {
             if (isFineLogging) {
@@ -371,6 +383,7 @@ public class PhaseInterceptorChain implements InterceptorChain {
      * @param startingAfterInterceptorID the id of the interceptor 
      * @throws Exception
      */
+    @Trivial
     public synchronized boolean doInterceptStartingAfter(Message message,
                                                          String startingAfterInterceptorID) {
         updateIterator();
@@ -392,6 +405,7 @@ public class PhaseInterceptorChain implements InterceptorChain {
      * @param startingAtInterceptorID the id of the interceptor 
      * @throws Exception
      */
+    @Trivial
     public synchronized boolean doInterceptStartingAt(Message message,
                                                          String startingAtInterceptorID) {
         updateIterator();
@@ -406,6 +420,7 @@ public class PhaseInterceptorChain implements InterceptorChain {
         return doIntercept(message);
     }
 
+    @Trivial
     public synchronized void reset() {
         updateIterator();
         if (state == State.COMPLETE) {
@@ -417,7 +432,7 @@ public class PhaseInterceptorChain implements InterceptorChain {
     }
     
     @SuppressWarnings("unchecked")
-    public void unwind(Message message) {
+    public void unwind(@Sensitive Message message) {
         while (iterator.hasPrevious()) {
             Interceptor<Message> currentInterceptor = (Interceptor<Message>)iterator.previous();
             if (isFineLogging) {
@@ -435,6 +450,7 @@ public class PhaseInterceptorChain implements InterceptorChain {
         }
     }
 
+    @Trivial
     public void remove(Interceptor<? extends Message> i) {
         PhaseInterceptorIterator it = new PhaseInterceptorIterator(heads);
         while (it.hasNext()) {
@@ -446,17 +462,21 @@ public class PhaseInterceptorChain implements InterceptorChain {
         }
     }
 
+    @Trivial
     public synchronized void abort() {
         this.state = InterceptorChain.State.ABORTED;
     }
 
+    @Trivial
     public Iterator<Interceptor<? extends Message>> iterator() {
         return getIterator();
     }
+    @Trivial
     public ListIterator<Interceptor<? extends Message>> getIterator() {
         return new PhaseInterceptorIterator(heads);
     }
 
+    @Trivial
     private void remove(InterceptorHolder i) {
         if (i.prev != null) {
             i.prev.next = i.next;
@@ -485,6 +505,7 @@ public class PhaseInterceptorChain implements InterceptorChain {
         }
     }
     
+    @Trivial
     private void insertInterceptor(int phase, PhaseInterceptor<? extends Message> interc, boolean force) {
         InterceptorHolder ih = new InterceptorHolder(interc, phase);
         if (heads[phase] == null) {
@@ -620,9 +641,11 @@ public class PhaseInterceptorChain implements InterceptorChain {
         }
     }
 
+    @Trivial
     public String toString() {
         return toString(""); 
     }
+    @Trivial
     private String toString(String message) {
         StringBuilder chain = new StringBuilder();
         
@@ -639,6 +662,7 @@ public class PhaseInterceptorChain implements InterceptorChain {
         }
         return chain.toString();
     }
+    @Trivial
     private void printPhase(int ph, StringBuilder chain) {
         
         chain.append(phases[ph].getName())
@@ -671,14 +695,17 @@ public class PhaseInterceptorChain implements InterceptorChain {
         }
     }
     
+    @Trivial
     public MessageObserver getFaultObserver() {
         return faultObserver;
     }
     
+    @Trivial
     public void setFaultObserver(MessageObserver faultObserver) {
         this.faultObserver = faultObserver;
     }
     
+    @Trivial
     static final class PhaseInterceptorIterator implements ListIterator<Interceptor<? extends Message>> {
         InterceptorHolder heads[];
         InterceptorHolder prev;
@@ -769,7 +796,7 @@ public class PhaseInterceptorChain implements InterceptorChain {
         }
     }
 
-    
+    @Trivial
     static final class InterceptorHolder {
         PhaseInterceptor<? extends Message> interceptor;
         InterceptorHolder next;

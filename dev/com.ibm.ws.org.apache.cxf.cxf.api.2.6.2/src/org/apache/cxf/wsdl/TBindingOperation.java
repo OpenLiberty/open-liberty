@@ -18,6 +18,8 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 
 /**
  * <p>Java class for tBindingOperation complex type.
@@ -48,6 +50,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "output",
     "fault"
 })
+@Trivial
 public class TBindingOperation
     extends TExtensibleDocumented
 {
