@@ -38,8 +38,8 @@ public class MPConcurrentCDITest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = RepeatTests
-                    .withoutModification();
-    // TODO                .andWith(new JakartaEE9Action());
+                    .withoutModification()
+                    .andWith(new JakartaEE9Action());
 
     @Server("MPConcurrentCDITestServer")
     @TestServlet(servlet = MPConcurrentCDITestServlet.class, contextRoot = CDI_APP)
