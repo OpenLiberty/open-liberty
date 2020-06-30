@@ -31,6 +31,8 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import jsonb.cdi.web.JsonbCDITestServlet;
@@ -38,6 +40,7 @@ import web.jsonbtest.JSONBTestServlet;
 import web.jsonbtest.JohnzonTestServlet;
 
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 @SkipForRepeat(EE9_FEATURES) // TODO: Enable this once cdi-3.0 is available, https://github.com/OpenLiberty/open-liberty/issues/11633
 public class JSONBContainerTest extends FATServletClient {
 
