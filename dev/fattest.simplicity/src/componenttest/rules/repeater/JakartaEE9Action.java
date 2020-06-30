@@ -22,10 +22,12 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.transformer.jakarta.JakartaTransformer;
+
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.fat.util.SharedServer;
-import org.eclipse.transformer.jakarta.JakartaTransformer;
+
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.topology.impl.LibertyServer;
@@ -82,7 +84,6 @@ public class JakartaEE9Action extends FeatureReplacementAction {
         super(EE9_FEATURE_SET);
         removeFeatures(EE7FeatureReplacementAction.EE7_FEATURE_SET);
         removeFeatures(EE8FeatureReplacementAction.EE8_FEATURE_SET);
-        withMinJavaLevel(8);
         forceAddFeatures(false);
         withID(ID);
     }

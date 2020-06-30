@@ -18,7 +18,6 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jsf23.fat.CDITestBase;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -32,7 +31,6 @@ import componenttest.topology.impl.LibertyServer;
  * We're extending CDITestBase, which has common test code.
  */
 @Mode(TestMode.FULL)
-@MinimumJavaLevel(javaLevel = 8)
 @RunWith(FATRunner.class)
 public class CDIFacesInMetaInfTests extends CDITestBase {
 

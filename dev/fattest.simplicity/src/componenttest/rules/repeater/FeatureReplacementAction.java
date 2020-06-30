@@ -66,7 +66,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
     }
 
     private boolean forceAddFeatures = true;
-    private int minJavaLevel = 7;
+    private int minJavaLevel = 8;
     protected String currentID = null;
     private final Set<String> servers = new HashSet<>(Arrays.asList(ALL_SERVERS));
     private final Set<String> clients = new HashSet<>(Arrays.asList(ALL_CLIENTS));

@@ -29,7 +29,6 @@ import com.ibm.websphere.simplicity.config.EJBTimerServiceElement;
 import com.ibm.websphere.simplicity.config.PersistentExecutor;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -39,7 +38,6 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 8)
 public class PersistentTimerRestartTest extends FATServletClient {
 
     public static final String RESTART_MISSED_ACTION_WAR_NAME = "RestartMissedTimerActionWeb";

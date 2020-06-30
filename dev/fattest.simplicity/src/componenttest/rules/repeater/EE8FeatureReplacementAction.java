@@ -47,7 +47,6 @@ public class EE8FeatureReplacementAction extends FeatureReplacementAction {
 
     public EE8FeatureReplacementAction() {
         super(EE7FeatureReplacementAction.EE7_FEATURE_SET, EE8_FEATURE_SET);
-        withMinJavaLevel(8);
         forceAddFeatures(false);
         withID(ID);
     }

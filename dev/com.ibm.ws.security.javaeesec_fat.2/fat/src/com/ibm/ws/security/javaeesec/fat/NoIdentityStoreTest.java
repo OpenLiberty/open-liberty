@@ -23,20 +23,16 @@ import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.security.javaeesec.fat_helper.Constants;
 import com.ibm.ws.security.javaeesec.fat_helper.JavaEESecTestBase;
 import com.ibm.ws.security.javaeesec.fat_helper.LocalLdapServer;
 import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
 
-import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
-@MinimumJavaLevel(javaLevel = 8, runSyntheticTest = false)
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class NoIdentityStoreTest extends JavaEESecTestBase {
@@ -61,7 +57,8 @@ public class NoIdentityStoreTest extends JavaEESecTestBase {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        WCApplicationHelper.addWarToServerApps(myServer, WAR_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.noidstore", "web.war.identitystorehandler", "web.war.mechanisms.applbasic");
+        WCApplicationHelper.addWarToServerApps(myServer, WAR_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.noidstore", "web.war.identitystorehandler",
+                                               "web.war.mechanisms.applbasic");
         myServer.setServerConfigurationFile(XML_NAME);
         myServer.startServer(true);
         myServer.addInstalledAppForValidation(APP_NAME);
@@ -109,8 +106,8 @@ public class NoIdentityStoreTest extends JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
         myServer.setMarkToEndOfLog();
         String response = executeGetRequestBasicAuthCredsPreemptive(httpclient, urlBase + queryString, LocalLdapServer.USER1,
-                                                          LocalLdapServer.PASSWORD,
-                                                          HttpServletResponse.SC_OK);
+                                                                    LocalLdapServer.PASSWORD,
+                                                                    HttpServletResponse.SC_OK);
         verifyMessageReceivedInMessageLog("CustomIdentityStoreHandler is being used.");
         verifyMessageReceivedInMessageLog("Number of identityStore : 0");
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());

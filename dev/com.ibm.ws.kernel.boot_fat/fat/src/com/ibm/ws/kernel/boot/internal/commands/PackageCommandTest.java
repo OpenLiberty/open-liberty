@@ -34,7 +34,6 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -621,7 +620,6 @@ public class PackageCommandTest {
      * the feature cache of the packaged (target) server.
      */
     @Test
-    @MinimumJavaLevel(javaLevel = 8)
     public void testMinifyDoesNotCorruptServerFeatureCache() throws Exception {
 
         LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.kernel.bootstrap.fat");

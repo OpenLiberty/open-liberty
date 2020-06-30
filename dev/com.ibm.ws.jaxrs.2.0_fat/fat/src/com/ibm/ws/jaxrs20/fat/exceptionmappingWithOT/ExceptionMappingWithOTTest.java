@@ -27,7 +27,6 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -39,7 +38,6 @@ import componenttest.topology.impl.LibertyServer;
  * the MP OT mapper.
  */
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 8)
 public class ExceptionMappingWithOTTest {
 
     @Server("com.ibm.ws.jaxrs.fat.exceptionMappingWithOT")

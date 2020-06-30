@@ -44,7 +44,6 @@ import com.ibm.ws.security.javaeesec.fat_helper.JavaEESecTestBase;
 import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
 import com.ibm.ws.security.javaeesec.identitystore.DatabaseIdentityStore;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -56,7 +55,6 @@ import web.war.database.deferred.DatabaseSettingsBean;
 /**
  * Test for {@link DatabaseIdentityStore} configured with immediate EL expressions.
  */
-@MinimumJavaLevel(javaLevel = 7)
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class DatabaseIdentityStoreImmediateSettingsTest extends JavaEESecTestBase {

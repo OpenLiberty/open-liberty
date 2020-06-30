@@ -22,7 +22,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import app.timeout.TranTimeoutCleanupServlet;
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -47,7 +46,6 @@ import componenttest.topology.utils.FATServletClient;
  * servlet referenced by the annotation, and will be run whenever this test class runs.
  */
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 7)
 @Mode(TestMode.FULL)
 public class TranTimeoutCleanupTest extends FATServletClient {
 

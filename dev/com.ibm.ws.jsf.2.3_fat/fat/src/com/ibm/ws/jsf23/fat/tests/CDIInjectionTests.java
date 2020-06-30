@@ -28,7 +28,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jsf23.fat.CDITestBase;
 import com.ibm.ws.jsf23.fat.JSFUtils;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -40,7 +39,6 @@ import junit.framework.Assert;
  *
  * We're extending CDITestBase, which has common test code.
  */
-@MinimumJavaLevel(javaLevel = 8)
 @RunWith(FATRunner.class)
 public class CDIInjectionTests extends CDITestBase {
     private static final Logger LOG = Logger.getLogger(CDIInjectionTests.class.getName());

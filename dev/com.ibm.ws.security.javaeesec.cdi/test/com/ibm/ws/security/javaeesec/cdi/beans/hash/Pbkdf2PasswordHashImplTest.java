@@ -10,8 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.cdi.beans.hash;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.HashMap;
@@ -23,7 +23,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.ws.common.internal.encoder.Base64Coder;
-import com.ibm.ws.kernel.service.util.JavaInfo;
+
 import test.common.SharedOutputManager;
 
 /**
@@ -56,8 +56,6 @@ public class Pbkdf2PasswordHashImplTest {
     // end of values.
 //    private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.javaeesec.*=all");
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
-
-	static private boolean isJdk18Up = (JavaInfo.majorVersion() >= 8);
 
     /**
      * @throws java.lang.Exception
@@ -119,7 +117,8 @@ public class Pbkdf2PasswordHashImplTest {
             pphi.initialize(params);
             fail("A IllegalArgumentException should throw.");
         } catch (IllegalArgumentException re) {
-            assertTrue("CWWKS1933E: is not logged, or the error string is not included in the message.", outputMgr.checkForStandardErr("CWWKS1933E:.*" + PARAM_ALGORITHM + ".*" + INVALID_ALGORITHM + ".*"));
+            assertTrue("CWWKS1933E: is not logged, or the error string is not included in the message.",
+                       outputMgr.checkForStandardErr("CWWKS1933E:.*" + PARAM_ALGORITHM + ".*" + INVALID_ALGORITHM + ".*"));
             assertTrue("CWWKS1933E: message is not set in the IllegalArgumentException.", re.getMessage().contains("CWWKS1933E:"));
         }
     }
@@ -135,7 +134,8 @@ public class Pbkdf2PasswordHashImplTest {
             pphi.initialize(params);
             fail("A IllegalArgumentException should throw.");
         } catch (IllegalArgumentException re) {
-            assertTrue("CWWKS1933E: is not logged, or the error string is not included in the message.", outputMgr.checkForStandardErr("CWWKS1933E:.*" + PARAM_ITERATIONS + ".*" + INVALID_ITERATIONS + ".*"));
+            assertTrue("CWWKS1933E: is not logged, or the error string is not included in the message.",
+                       outputMgr.checkForStandardErr("CWWKS1933E:.*" + PARAM_ITERATIONS + ".*" + INVALID_ITERATIONS + ".*"));
             assertTrue("CWWKS1933E: message is not set in the IllegalArgumentException.", re.getMessage().contains("CWWKS1933E:"));
         }
     }
@@ -151,7 +151,8 @@ public class Pbkdf2PasswordHashImplTest {
             pphi.initialize(params);
             fail("A IllegalArgumentException should throw.");
         } catch (IllegalArgumentException re) {
-            assertTrue("CWWKS1933E: is not logged, or the error string is not included in the message.", outputMgr.checkForStandardErr("CWWKS1933E:.*" + PARAM_SALTSIZE + ".*" + INVALID_SALTSIZE + ".*"));
+            assertTrue("CWWKS1933E: is not logged, or the error string is not included in the message.",
+                       outputMgr.checkForStandardErr("CWWKS1933E:.*" + PARAM_SALTSIZE + ".*" + INVALID_SALTSIZE + ".*"));
             assertTrue("CWWKS1933E: message is not set in the IllegalArgumentException.", re.getMessage().contains("CWWKS1933E:"));
         }
     }
@@ -167,7 +168,8 @@ public class Pbkdf2PasswordHashImplTest {
             pphi.initialize(params);
             fail("A IllegalArgumentException should throw.");
         } catch (IllegalArgumentException re) {
-            assertTrue("CWWKS1933E: is not logged, or the error string is not included in the message.", outputMgr.checkForStandardErr("CWWKS1933E:.*" + PARAM_KEYSIZE + ".*" + INVALID_KEYSIZE + ".*"));
+            assertTrue("CWWKS1933E: is not logged, or the error string is not included in the message.",
+                       outputMgr.checkForStandardErr("CWWKS1933E:.*" + PARAM_KEYSIZE + ".*" + INVALID_KEYSIZE + ".*"));
             assertTrue("CWWKS1933E: message is not set in the IllegalArgumentException.", re.getMessage().contains("CWWKS1933E:"));
         }
     }
@@ -184,7 +186,8 @@ public class Pbkdf2PasswordHashImplTest {
             fail("A IllegalArgumentException should throw.");
         } catch (IllegalArgumentException re) {
             // no default number check since the the value is more than a thousand of which format might be different if the locale is other than English.
-            assertTrue("CWWKS1934E: is not logged, or the error string is not included in the message.", outputMgr.checkForStandardErr("CWWKS1934E:.*" + INVALID_ITERATIONS + ".*" + PARAM_ITERATIONS + ".*"));
+            assertTrue("CWWKS1934E: is not logged, or the error string is not included in the message.",
+                       outputMgr.checkForStandardErr("CWWKS1934E:.*" + INVALID_ITERATIONS + ".*" + PARAM_ITERATIONS + ".*"));
             assertTrue("CWWKS1934E: message is not set in the IllegalArgumentException.", re.getMessage().contains("CWWKS1934E:"));
         }
     }
@@ -200,7 +203,8 @@ public class Pbkdf2PasswordHashImplTest {
             pphi.initialize(params);
             fail("A IllegalArgumentException should throw.");
         } catch (IllegalArgumentException re) {
-            assertTrue("CWWKS1934E: is not logged, or the error string is not included in the message.", outputMgr.checkForStandardErr("CWWKS1934E:.*" + INVALID_SALTSIZE + ".*" + PARAM_SALTSIZE + ".*" + MINIMUM_SALTSIZE + ".*"));
+            assertTrue("CWWKS1934E: is not logged, or the error string is not included in the message.",
+                       outputMgr.checkForStandardErr("CWWKS1934E:.*" + INVALID_SALTSIZE + ".*" + PARAM_SALTSIZE + ".*" + MINIMUM_SALTSIZE + ".*"));
             assertTrue("CWWKS1934E: message is not set in the IllegalArgumentException.", re.getMessage().contains("CWWKS1934E:"));
         }
     }
@@ -216,52 +220,44 @@ public class Pbkdf2PasswordHashImplTest {
             pphi.initialize(params);
             fail("A IllegalArgumentException should throw.");
         } catch (IllegalArgumentException re) {
-            assertTrue("CWWKS1934E: is not logged, or the error string is not included in the message.", outputMgr.checkForStandardErr("CWWKS1934E:.*" + INVALID_KEYSIZE + ".*" + PARAM_KEYSIZE + ".*" + MINIMUM_KEYSIZE + ".*"));
+            assertTrue("CWWKS1934E: is not logged, or the error string is not included in the message.",
+                       outputMgr.checkForStandardErr("CWWKS1934E:.*" + INVALID_KEYSIZE + ".*" + PARAM_KEYSIZE + ".*" + MINIMUM_KEYSIZE + ".*"));
             assertTrue("CWWKS1934E: message is not set in the IllegalArgumentException.", re.getMessage().contains("CWWKS1934E:"));
         }
     }
 
-
     @Test
     public void testGenerateVerifyDefault() throws Exception {
-        if (isJdk18Up) {
-            final String PASSWORD = "testpassword";
-            final char[] password = PASSWORD.toCharArray();
-            Map<String, String> params = new HashMap<String, String>();
-            Pbkdf2PasswordHashImpl pphi = new Pbkdf2PasswordHashImpl();
-            pphi.initialize(params);
-            String output = pphi.generate(password);
-            System.out.println("hashed value : " + output);
-            assertTrue("The output should start with PBKDF2WithHmacSHA256:2048:", output.startsWith(SHA256 + ":" + DEFAULT_ITERATIONS + ":"));
-            assertTrue("The key length does not match.", checkKeySize(DEFAULT_KEYSIZE, output));
-            assertTrue("The salt length does not match.", checkSaltSize(DEFAULT_SALTSIZE, output));
-            assertTrue("Hashed value should match", pphi.verify(password, output));
-        } else {
-            System.out.println("Skip testing becuase of jdk version is not 1.8 or above.");
-        }
+        final String PASSWORD = "testpassword";
+        final char[] password = PASSWORD.toCharArray();
+        Map<String, String> params = new HashMap<String, String>();
+        Pbkdf2PasswordHashImpl pphi = new Pbkdf2PasswordHashImpl();
+        pphi.initialize(params);
+        String output = pphi.generate(password);
+        System.out.println("hashed value : " + output);
+        assertTrue("The output should start with PBKDF2WithHmacSHA256:2048:", output.startsWith(SHA256 + ":" + DEFAULT_ITERATIONS + ":"));
+        assertTrue("The key length does not match.", checkKeySize(DEFAULT_KEYSIZE, output));
+        assertTrue("The salt length does not match.", checkSaltSize(DEFAULT_SALTSIZE, output));
+        assertTrue("Hashed value should match", pphi.verify(password, output));
     }
 
     @Test
     public void testGenerateVerifySpecifiedMinimum() throws Exception {
-        if (isJdk18Up) {
-            final String PASSWORD = "testpassword";
-            final char[] password = PASSWORD.toCharArray();
-            Map<String, String> params = new HashMap<String, String>();
-            params.put(PARAM_ALGORITHM, SHA224);
-            params.put(PARAM_ITERATIONS, String.valueOf(MINIMUM_ITERATIONS));
-            params.put(PARAM_SALTSIZE, String.valueOf(MINIMUM_SALTSIZE));
-            params.put(PARAM_KEYSIZE, String.valueOf(MINIMUM_KEYSIZE));
-            Pbkdf2PasswordHashImpl pphi = new Pbkdf2PasswordHashImpl();
-            pphi.initialize(params);
-            String output = pphi.generate(password);
-            System.out.println("hashed value : " + output);
-            assertTrue("The output should start with PBKDF2WithHmacSHA224:1024:", output.startsWith(SHA224 + ":" + MINIMUM_ITERATIONS + ":"));
-            assertTrue("The key length does not match.", checkKeySize(MINIMUM_KEYSIZE, output));
-            assertTrue("The salt length does not match.", checkSaltSize(MINIMUM_SALTSIZE, output));
-            assertTrue("Hashed value should match", pphi.verify(password, output));
-        } else {
-            System.out.println("Skip testing becuase of jdk version is not 1.8 or above.");
-        }
+        final String PASSWORD = "testpassword";
+        final char[] password = PASSWORD.toCharArray();
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(PARAM_ALGORITHM, SHA224);
+        params.put(PARAM_ITERATIONS, String.valueOf(MINIMUM_ITERATIONS));
+        params.put(PARAM_SALTSIZE, String.valueOf(MINIMUM_SALTSIZE));
+        params.put(PARAM_KEYSIZE, String.valueOf(MINIMUM_KEYSIZE));
+        Pbkdf2PasswordHashImpl pphi = new Pbkdf2PasswordHashImpl();
+        pphi.initialize(params);
+        String output = pphi.generate(password);
+        System.out.println("hashed value : " + output);
+        assertTrue("The output should start with PBKDF2WithHmacSHA224:1024:", output.startsWith(SHA224 + ":" + MINIMUM_ITERATIONS + ":"));
+        assertTrue("The key length does not match.", checkKeySize(MINIMUM_KEYSIZE, output));
+        assertTrue("The salt length does not match.", checkSaltSize(MINIMUM_SALTSIZE, output));
+        assertTrue("Hashed value should match", pphi.verify(password, output));
     }
 
     @Test
@@ -290,6 +286,7 @@ public class Pbkdf2PasswordHashImplTest {
             assertTrue("CWWKS1935E message is not set in IllegalArgumentException.", re.getMessage().contains("CWWKS1935E"));
         }
     }
+
     @Test
     public void testVerifyInvalidAlgorithm() throws Exception {
         final String PASSWORD = "testpassword";
