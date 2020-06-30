@@ -28,6 +28,8 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -36,6 +38,7 @@ import componenttest.topology.utils.FATServletClient;
  * Consider if we should move to the JSON-P bucket once that is written.
  */
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 @SkipForRepeat(EE9_FEATURES)
 public class JsonUserFeatureTest extends FATServletClient {
 
