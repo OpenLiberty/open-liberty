@@ -22,6 +22,8 @@ import org.junit.Test;
 import com.ibm.ws.cdi.test.dependentscopedproducer.NonNullBeanThree;
 
 import componenttest.app.FATServlet;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 
 //This servlet should return a resource injection exception when accessed.
 @WebServlet("/failAppSteryotypedMethod")
@@ -31,6 +33,7 @@ public class AppScopedSteryotypedServlet extends FATServlet {
     NonNullBeanThree nullBean;
 
     @Test
+    @Mode(TestMode.LITE)
     public void testAppScopedSteryotyped() throws IOException {
         try {
             nullBean.toString(); //calling a method as a proxy gets injected.

@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi.test.dependentscopedproducer.servlets;
+package com.ibm.ws.fat.cdi.injectInjectionPointParam;
 
 import static org.junit.Assert.fail;
 
@@ -19,27 +19,23 @@ import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
-import com.ibm.ws.cdi.test.dependentscopedproducer.NonNullBeanTwo;
-
 import componenttest.app.FATServlet;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 
-//This servlet should return a resource injection exception when accessed.
-@WebServlet("/failAppScopedMethod")
+@WebServlet("/")
+public class InjectInjectionPointAsParamServlet extends FATServlet {
 
-public class AppScopedMethodServlet extends FATServlet {
+    private static final long serialVersionUID = 1L;
 
     @Inject
-    NonNullBeanTwo nullBean;
+    TestBean bean;
 
     @Test
-    public void testAppScopedMethod() throws IOException {
-        try {
-            nullBean.toString(); //calling a method as a proxy gets injected.
-            fail("A nullBean was injected. Test Failed");
-        } catch (Exception e) { //I'm doing it this way to avoid adding a dependency on weld.
-            if (!e.getMessage().contains("WELD-000052")) {
-                fail("The wrong exception was thrown: " + e.getMessage());
-            }
+    @Mode(TestMode.FULL)
+    public void testInjectInjectionPointAsParam() throws IOException {
+        if (!bean.test()) {
+            fail("Bean Manager and/or Injection Point not correctly injected into TestBean constructor");
         }
     }
 

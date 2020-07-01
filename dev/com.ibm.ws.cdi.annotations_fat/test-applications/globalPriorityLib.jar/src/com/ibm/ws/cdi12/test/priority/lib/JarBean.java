@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,21 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi12.suite;
+package com.ibm.ws.cdi12.test.priority.lib;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import static com.ibm.ws.cdi12.test.priority.lib.RelativePriority.HIGH_PRIORITY;
 
-import com.ibm.ws.cdi12.fat.tests.CDIAPITests;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
-/**
- * Tests specific to cdi-1.2
- */
-@RunWith(Suite.class)
-@SuiteClasses({
-                CDIAPITests.class,
-})
-public class FATSuite {
-
-}
+@Alternative
+@Priority(HIGH_PRIORITY)
+@FromJar
+public class JarBean extends AbstractBean {}

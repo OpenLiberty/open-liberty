@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,21 +8,22 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi12.suite;
+package com.ibm.ws.cdi12.test.priority.lib;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
-import com.ibm.ws.cdi12.fat.tests.CDIAPITests;
+import javax.decorator.Decorator;
+import javax.decorator.Delegate;
+import javax.enterprise.inject.Any;
+import javax.inject.Inject;
 
 /**
- * Tests specific to cdi-1.2
+ * Enabled for this bean archive in beans.xml.
  */
-@RunWith(Suite.class)
-@SuiteClasses({
-                CDIAPITests.class,
-})
-public class FATSuite {
+@Decorator
+public abstract class LocalJarDecorator extends AbstractDecorator {
+
+    @Inject
+    public LocalJarDecorator(@Delegate @Any Bean decoratedBean) {
+        super(decoratedBean, LocalJarDecorator.class);
+    }
 
 }

@@ -10,36 +10,19 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.suite;
 
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.cdi12.fat.tests.AnnotationsTests;
-import com.ibm.ws.fat.util.FatLogHandler;
-
-import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.RepeatTests;
 
 /**
  * Tests specific to cdi-1.2
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-                AnnotationsTests.class, //FULL
+                AnnotationsTests.class,
 })
 public class FATSuite {
-
-    @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES()).andWith(FeatureReplacementAction.EE9_FEATURES());
-
-    /**
-     * @see {@link FatLogHandler#generateHelpFile()}
-     */
-    @BeforeClass
-    public static void generateHelpFile() {
-        FatLogHandler.generateHelpFile();
-    }
 
 }
