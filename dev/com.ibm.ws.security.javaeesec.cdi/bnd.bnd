@@ -16,15 +16,6 @@ Bundle-Name: com.ibm.ws.security.javaeesec.cdi
 Bundle-Description: WAS Java EE Security 1.0 CDI, version=${bVersion}
 Bundle-SymbolicName: com.ibm.ws.security.javaeesec.cdi
 
-#
-# Produce a JakartaEE compliant JAR.
-#
-jakartaeeMe: true
-#jakartaee.transform.jar.name=io.openliberty.security.jakartasec.2.0.internal.cdi.jar
-#JakartaEE-Bundle-Name: Jakarta 
-#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.jakartasec.2.0.internal.cdi
-#JakartaEE-Bundle-Description: Jakarta 
-#JakartaEE-Bundle-Version: 2.0
 
 WS-TraceGroup: \
     JAVAEESEC

@@ -807,16 +807,6 @@
       <version>2.0.0-RC1</version>
     </dependency>
     <dependency>
-      <groupId>jakarta.security.auth.message</groupId>
-      <artifactId>jakarta.security.auth.message-api</artifactId>
-      <version>2.0.0-RC1</version>
-    </dependency>
-    <dependency>
-      <groupId>jakarta.security.enterprise</groupId>
-      <artifactId>jakarta.security.enterprise-api</artifactId>
-      <version>2.0.0-RC2</version>
-    </dependency>
-    <dependency>
       <groupId>jakarta.servlet</groupId>
       <artifactId>jakarta.servlet-api</artifactId>
       <version>5.0.0-M1</version>
