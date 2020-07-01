@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2019 IBM Corporation and others.
+ * Copyright (c) 2010, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1055,7 +1055,7 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
       int servletSpecLevel = com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel();
       //check if excluded because the subclasses includes this... and could be more than we want
       //might need to exclude something else like javax.* or java*
-      if(servletSpecLevel <= 40){
+      if(servletSpecLevel <=  com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_40){
           if ((targetClassName.startsWith("java.")) || (targetClassName.startsWith("javax."))) {
                   if ( enableTrace ) {
                         logger.logp(Level.FINE, CLASS_NAME, methodName,
