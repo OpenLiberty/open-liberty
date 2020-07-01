@@ -15,6 +15,16 @@ Bundle-Name: Security JAAS Implementation
 Bundle-SymbolicName: com.ibm.ws.security.jaas.common
 Bundle-Description: Security JAAS Implementation; version=${bVersion}
 
+#
+# Produce a JakartaEE compliant JAR.
+#
+jakartaeeMe: true
+#jakartaee.transform.jar.name=io.openliberty.security.jaas.internal.common.jar
+#JakartaEE-Bundle-Name: Security JAAS Implementation
+#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.jaas.internal.common
+#JakartaEE-Bundle-Description: Security JAAS Implementation, version 2.0
+#JakartaEE-Bundle-Version: 2.0
+
 WS-TraceGroup: \
   security
 
