@@ -12,16 +12,16 @@ package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.invalid.badconfig;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.eclipse.microprofile.reactive.messaging.Incoming;
+import org.eclipse.microprofile.reactive.messaging.Outgoing;
 
 @ApplicationScoped
-public class KafkaBadConfigBean {
+public class KafkaBadConfigOutgoingBean {
 
-    public static final String CHANNEL_NAME = "bad-config-input";
+    public static final String CHANNEL_NAME = "bad-config-output";
 
-    @Incoming(CHANNEL_NAME)
-    public void receive(String input) {
-        // Do nothing
+    @Outgoing(CHANNEL_NAME)
+    public String send() {
+        return "test";
     }
 
 }
