@@ -179,11 +179,11 @@ public class JwKRetriever {
         } else if (use != null) {
             key = jwkSet.getPublicKeyBySetIdAndUse(setId, use);
         }
+        if (key == null && keyText != null) {
+            key = jwkSet.getPublicKeyBySetIdAndKeyText(setId, keyText);
+        }
         if (key != null) {
             return key;
-        }
-        if (keyText != null) {
-            return jwkSet.getPublicKeyBySetIdAndKeyText(setId, keyText);
         }
         return jwkSet.getPublicKeyBySetId(setId);
     }
