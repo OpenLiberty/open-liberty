@@ -37,6 +37,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.KafkaConnectorConstants;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -48,6 +49,7 @@ import componenttest.topology.impl.LibertyServer;
  * hostname of the kafka broker does not resolve at startup.
  */
 @RunWith(FATRunner.class)
+@AllowedFFDC({ "org.jboss.weld.exceptions.DeploymentException", "com.ibm.ws.container.service.state.StateChangeException" }) // General exceptions when app deployment fails
 public class KafkaBadConfigTest {
 
     private static final String APP_NAME = "KafkaBadConfig";
@@ -72,7 +74,7 @@ public class KafkaBadConfigTest {
     }
 
     @Test
-    @AllowedFFDC
+    @ExpectedFFDC("com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaAdapterException")
     public void testBadConfig() throws Exception {
 
         // Invalid config because bootstrap.servers not set
@@ -108,7 +110,7 @@ public class KafkaBadConfigTest {
     }
 
     @Test
-    @AllowedFFDC
+    @ExpectedFFDC("com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaAdapterException")
     public void testBadConfigRetry() throws Exception {
         // Invalid config because bootstrap.servers not set, but creation retry enabled
         ConnectorProperties incomingProperties = simpleIncomingChannel("", KafkaBadConfigIncomingBean.CHANNEL_NAME, APP_GROUP_ID)
@@ -148,7 +150,7 @@ public class KafkaBadConfigTest {
     }
 
     @Test
-    @AllowedFFDC
+    @ExpectedFFDC("com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaAdapterException")
     public void testBadConfigOutgoing() throws Exception {
 
         // Invalid config because bootstrap.servers not set
@@ -184,7 +186,7 @@ public class KafkaBadConfigTest {
     }
 
     @Test
-    @AllowedFFDC
+    @ExpectedFFDC("com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaAdapterException")
     public void testBadConfigOutgoingRetry() throws Exception {
 
         // Invalid config because bootstrap.servers not set
