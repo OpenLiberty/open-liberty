@@ -49,7 +49,7 @@ public class EERepeatTests {
      *
      * Instead of
      * <code>public static RepeatTests r =
-     * RepeatTests.with(FeatureReplacementAction.EE7_FEATURES()).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("myServer")).andWith(FeatureReplacementAction.EE9_FEATURES().forServers("myServer"));</code>
+     * RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().forServers("myServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("myServer")).andWith(FeatureReplacementAction.EE9_FEATURES().forServers("myServer"));</code>
      *
      * Use
      * <code>public static RepeatTests r = EERepeatTests.with("myServer", EE7, EE8, EE9);</code>

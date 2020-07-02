@@ -65,7 +65,7 @@ public class AnnotationsTests extends FATServletClient {
     public static final String WITH_ANNOTATIONS_APP_NAME = "withAnnotationsApp";
 
     @ClassRule
-    public static RepeatTests r = EERepeatTests.with(SERVER_NAME, EE7, EE9); //not bothering to repeat with EE8 ... the EE9 version is mostly a transformed version of the EE8 code
+    public static RepeatTests r = EERepeatTests.with(SERVER_NAME, EE9, EE7); //not bothering to repeat with EE8 ... the EE9 version is mostly a transformed version of the EE8 code
 
     @Server(SERVER_NAME)
     @TestServlets({

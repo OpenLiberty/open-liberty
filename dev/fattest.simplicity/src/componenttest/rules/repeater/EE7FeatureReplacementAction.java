@@ -19,13 +19,33 @@ public class EE7FeatureReplacementAction extends FeatureReplacementAction {
 
     public static final String ID = "EE7_FEATURES";
 
-    static final String[] EE7_FEATURES_ARRAY = { "javaee-7.0", "webProfile-7.0", "javaeeClient-7.0", "servlet-3.1", "javaMail-1.5", "cdi-1.2", "jca-1.7", "jpa-2.1",
-                                                 "beanValidation-1.1", "jaxrs-2.0", "jaxrsClient-2.0", "jsf-2.2", "appSecurity-2.0", "jsonp-1.0",
-                                                 "jsp-2.3", "el-3.0", "concurrent-1.0", "jaxb-2.2", "managedBeans-1.0" };
+    static final String[] EE7_FEATURES_ARRAY = { "javaee-7.0",
+                                                 "webProfile-7.0",
+                                                 "javaeeClient-7.0",
+                                                 "servlet-3.1",
+                                                 "javaMail-1.5",
+                                                 "cdi-1.2",
+                                                 "jca-1.7",
+                                                 "jpa-2.1",
+                                                 "beanValidation-1.1",
+                                                 "jaxrs-2.0",
+                                                 "jaxrsClient-2.0",
+                                                 "jsf-2.2",
+                                                 "appSecurity-2.0",
+                                                 "jsonp-1.0",
+                                                 "jsp-2.3",
+                                                 "el-3.0",
+                                                 "concurrent-1.0",
+                                                 "jaxb-2.2",
+                                                 "managedBeans-1.0",
+                                                 "componenttest-1.0" };
+
     public static final Set<String> EE7_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE7_FEATURES_ARRAY)));
 
     public EE7FeatureReplacementAction() {
-        super(EE8FeatureReplacementAction.EE8_FEATURE_SET, EE7_FEATURE_SET);
+        super(EE7_FEATURE_SET);
+        removeFeatures(EE8FeatureReplacementAction.EE8_FEATURE_SET);
+        removeFeatures(JakartaEE9Action.EE9_FEATURE_SET);
         forceAddFeatures(false);
         withID(ID);
     }
