@@ -17,6 +17,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -360,8 +362,21 @@ public class CustomAccessLogFieldsTest {
 
         // unfortunately, our JSON log isn't ordered like the http access logs
         // easier to check that the value shows up in the http_access.log at some point; for duplicate values, let's just remove it with each pass-through.
-        String accessLogLine = readFile(xmlServerWithMetrics.getServerRoot() + "/logs/http_access.log");
+
+        String accessLog = xmlServerWithMetrics.getServerRoot() + "/logs/http_access.log";
+        String accessLogLine = readFile(accessLog);
+
+        // Try to read the file again once every second for 30 sec if the file is still empty
+        for (int i = 0; i < 30; i++) {
+            Thread.sleep(1000);
+            accessLogLine = readFile(accessLog);
+            if (accessLogLine != null && !accessLogLine.isEmpty()) {
+                break;
+            }
+        }
         assertNotNull("The http_access.log file is empty or could not be read.", accessLogLine);
+        assertFalse("The http_access.log file is empty.", accessLogLine.isEmpty());
+
         for (String s : parsedLine.values()) {
             if (accessLogLine.contains(s)) {
                 // let's remove it, in case there's a duplicate value for a different field
@@ -711,17 +726,21 @@ public class CustomAccessLogFieldsTest {
         return keyValuePairs;
     }
 
-    private String readFile(String file) {
+    private String readFile(String file) throws Exception {
+        File f = new File(file);
+        if (!f.exists() || f.isDirectory())
+            throw new FileNotFoundException(file);
+
+        StringBuilder sb = new StringBuilder();
+        BufferedReader br = new BufferedReader(new FileReader(f));
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(file));
             String line;
-            line = reader.readLine();
-            reader.close();
-            return line;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            while ((line = br.readLine()) != null)
+                sb.append(line).append('\n');
+        } finally {
+            br.close();
         }
+        return sb.toString();
     }
 
     private void waitForConfigUpdate(LibertyServer server) {
