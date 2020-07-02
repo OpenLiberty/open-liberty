@@ -1,0 +1,28 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-SymbolicName: io.openliberty.jakarta.jaspic.2.0; singleton:=true
+
+Export-Package: \
+	jakarta.security.auth.message;version="2.0.0",\
+	jakarta.security.auth.message.callback;version="2.0.0",\
+	jakarta.security.auth.message.config;version="2.0.0",\
+	jakarta.security.auth.message.module;version="2.0.0"
+
+instrument.disabled: true
+
+publish.wlp.jar.suffix: dev/api/spec
+
+-buildpath: \
+	jakarta.security.auth.message:jakarta.security.auth.message-api;version=2.0.0.RC1, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

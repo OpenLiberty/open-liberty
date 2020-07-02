@@ -15,6 +15,15 @@ Bundle-Name: Webcontainer Security Collaborator
 Bundle-Description: Webcontainer Security Collaborator Common Classes, version=${bVersion}
 Bundle-SymbolicName: com.ibm.ws.webcontainer.security
 
+#
+# Produce a JakartaEE compliant JAR.
+#
+jakartaeeMe: true
+#jakartaee.transform.jar.name=io.openliberty.webcontainer.security.internal.jar
+#JakartaEE-Bundle-Name: Jakarta Webcontainer Security Collaborator internal
+#JakartaEE-Bundle-Symbolic-Name: io.openliberty.webcontainer.security.internal
+#JakartaEE-Bundle-Description: Jakarta Webcontainer Security Collaborator internal
+#JakartaEE-Bundle-Version: 2.0
   
 Export-Package: \
   com.ibm.websphere.security.web, \
