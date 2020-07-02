@@ -37,6 +37,7 @@ import com.ibm.ws.sib.admin.internal.JsAdminConstants.ME_STATE;
 import com.ibm.ws.sib.common.service.CommonServiceFacade;
 import com.ibm.ws.sib.msgstore.MessageStore;
 import com.ibm.ws.sib.utils.ras.SibTr;
+import com.ibm.wsspi.application.lifecycle.ApplicationPrereq;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.sib.core.SelectionCriteriaFactory;
 
@@ -47,7 +48,7 @@ import com.ibm.wsspi.sib.core.SelectionCriteriaFactory;
            configurationPolicy = ConfigurationPolicy.REQUIRE,
            immediate = true,
            property = { "service.vendor=IBM" })
-public class JsMainAdminComponentImpl implements JsMainAdminComponent, ConfigurationListener {
+public class JsMainAdminComponentImpl implements JsMainAdminComponent, ConfigurationListener, ApplicationPrereq {
 
     /**  */
     private static final String KEY_JS_ADMIN_SERVICE = "jsAdminService";
