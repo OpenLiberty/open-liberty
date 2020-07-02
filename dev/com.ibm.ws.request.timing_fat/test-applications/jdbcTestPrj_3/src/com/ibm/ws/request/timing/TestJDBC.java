@@ -55,15 +55,37 @@ public class TestJDBC extends HttpServlet
 
 
       System.out.println((new StringBuilder(" Session value is ")).append(s.getValue()).toString());
-
-       
-      for(int i = 11; i <= 15; i++) {
-          stmt.executeUpdate((new StringBuilder("insert into "+tableName+" values ('myHomeCity_ ")).append(i).append("', ").append(i).append(", 'myHomeCounty_").append(i).append("')").toString());
-          try {
-              Thread.sleep(5000);
-          } catch (Exception e) {
-              e.printStackTrace();
+      
+      class executeUpdateThread extends Thread{
+          private int i;
+          private String tableName;
+          private Statement stmt;
+          
+          public executeUpdateThread(int i, String tableName, Statement stmt) {
+              this.i = i;
+              this.tableName = tableName;
+              this.stmt = stmt;
           }
+          
+          @Override
+          public void run() {
+              try {
+                  System.out.println("Starting thread action");
+                  stmt.executeUpdate((new StringBuilder("insert into "+tableName+" values ('myHomeCity_ ")).append(i).append("', ").append(i).append(", 'myHomeCounty_").append(i).append("')").toString());
+                  System.out.println("Ending thread action");
+              }catch (SQLException e){
+                  e.printStackTrace();
+              }
+          }  
+      }
+      
+      Thread th;
+      for(int i = 11; i <= 15; i++) {
+          th = new executeUpdateThread(i, tableName, stmt);
+          th.start();
+          System.out.println("Waiting for thread " + i);
+          th.join(5000);
+          System.out.println("Finished thread " + i);
       }
       
       System.out.println("doGet completed Successfully");
@@ -102,6 +124,7 @@ public class TestJDBC extends HttpServlet
             e.printStackTrace();
         }
         
+        /*
         try {
             System.out.println(" Some more delay... ");
             Thread.sleep(5000);
@@ -109,6 +132,7 @@ public class TestJDBC extends HttpServlet
         } catch (Exception e) {
             e.printStackTrace();
         }
+        */
         System.out.println("%%%%%%%%%%% Completed session set");
         return;
     }
