@@ -22,7 +22,6 @@ import javax.validation.Configuration;
 import javax.validation.ConstraintValidatorFactory;
 import javax.validation.Validation;
 import javax.validation.ValidationException;
-import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
 import com.ibm.ejs.ras.Tr;
@@ -157,8 +156,8 @@ public abstract class AbstractBeanValidation implements BeanValidation {
     }
 
     @Override
-    public abstract boolean isMethodConstrained(Method method, Validator validator);
+    public abstract boolean isMethodConstrained(Method method);
 
     @Override
-    public abstract boolean isConstructorConstrained(Constructor<?> constructor, Validator validator);
+    public abstract boolean isConstructorConstrained(Constructor<?> constructor);
 }
