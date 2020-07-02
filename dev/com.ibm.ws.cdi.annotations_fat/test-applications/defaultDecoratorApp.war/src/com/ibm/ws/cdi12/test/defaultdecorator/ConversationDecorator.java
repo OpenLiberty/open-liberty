@@ -27,7 +27,7 @@ public abstract class ConversationDecorator implements Conversation, Serializabl
 
     @Override
     public boolean isTransient() {
-        DefaultDecoratorServlet.addOutput("decorating");
+        DefaultDecoratorServlet.setOutput("decorating");
         return c.isTransient();
     }
 
