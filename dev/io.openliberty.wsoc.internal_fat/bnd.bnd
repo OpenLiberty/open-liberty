@@ -15,7 +15,7 @@ src:\
     fat/src,\
     test-applications/basic.jar/src,\
     test-applications/basic.war/src,\
-	test-applications/websocket11.war/src
+    test-applications/websocket11.war/src
 
 fat.project: true
 
@@ -24,22 +24,6 @@ fat.project: true
 
 
 -buildpath: \
-    com.ibm.ws.junit.extensions;version=latest,\
-    com.ibm.ws.common.encoder;version=latest,\
-    com.ibm.websphere.javaee.ejb.3.1;version=latest,\
-    com.ibm.websphere.javaee.cdi.1.0;version=latest,\
     com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-    com.ibm.websphere.javaee.el.3.0;version=latest,\
-    com.ibm.websphere.javaee.jsp.2.3;version=latest,\
-    com.ibm.ws.jsp.2.3;version=latest,\
-    com.ibm.ws.org.apache.jasper.el.3.0;version=latest,\
-    httpunit:httpunit;version=1.5.4,\
-    commons-httpclient:commons-httpclient;version=3.1,\
     com.ibm.websphere.javaee.websocket.1.1;version=latest,\
-    org.apache.httpcomponents:httpclient;strategy=exact;version=4.1.2,\
-    org.apache.httpcomponents:httpcore;strategy=exact;version=4.1.2,\
-    com.ibm.ws.webcontainer.security_test.servlets;version=latest,\
-    com.ibm.websphere.javaee.annotation.1.2;version=latest,\
-    com.ibm.websphere.javaee.interceptor.1.1;version=latest,\
-    com.ibm.websphere.javaee.jms.1.1;version=latest,\
     com.ibm.ws.wsoc;version=latest
