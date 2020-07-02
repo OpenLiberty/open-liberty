@@ -95,8 +95,8 @@ BVKEY_VALIDATE_ON_EXECUTION_NOT_ALLOWED_CWNBV0007E.explanation= @ValidateOnExecu
 BVKEY_VALIDATE_ON_EXECUTION_NOT_ALLOWED_CWNBV0007E.useraction= Remove the @ValidateOnExecution from the specified method.
 
 # -----------------------------------------------------------------------
-BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E=CWNBV0008E: Mixing IMPLICIT type with other executable types is not allowed.
-BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E.explanation= Mixing IMPLICIT type with other executable types is not allowed for the @ValidateOnExecution annotation.
-BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E.useraction= Update the method, class, or global XML settings for executable types to prevent mixing IMPLICIT type with other executable types.
+BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E=CWNBV0008E: Mixing IMPLICIT type with other executable types is not allowed. Check the executable types set for: \n {0}
+BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E.explanation=According to the Bean Validation Specification, mixing IMPLICIT type with other executable types is not allowed for the @ValidateOnExecution annotation.
+BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E.useraction=Update the method, class, or global XML settings for executable types to prevent mixing IMPLICIT type with other executable types.
 
 # -----------------------------------------------------------------------
