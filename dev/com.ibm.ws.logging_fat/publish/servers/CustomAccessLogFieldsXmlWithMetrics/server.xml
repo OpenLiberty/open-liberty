@@ -14,6 +14,7 @@
 
 	<featureManager>
 	   <feature>jsp-2.3</feature>
+	   <feature>mpMetrics-2.0</feature>
     </featureManager>
 
 	<httpEndpoint id="defaultHttpEndpoint"
@@ -23,6 +24,7 @@
 		<accessLogging logFormat='%a %b %C %D %{header}i %{Content-Type}o %r %t %{t}W %u'/>
     </httpEndpoint>
     
+    <quickStartSecurity userName="admin" userPassword="adminpwd"/>
     <keyStore id="defaultKeyStore" password="Liberty" />
     
     <logging jsonAccessLogFields="logFormat"/>

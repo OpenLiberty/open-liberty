@@ -77,6 +77,10 @@ public class CustomAccessLogFieldsTest {
     @Server("CustomAccessLogFieldsXml")
     public static LibertyServer xmlServer;
 
+    // We need a server that has mpMetrics enabled so we can hit the /metrics endpoint for the remoteUserID field
+    @Server("CustomAccessLogFieldsXmlWithMetrics")
+    public static LibertyServer xmlServerWithMetrics;
+
     @Server("CustomAccessLogFieldsBadConfigEnv")
     public static LibertyServer badConfigServerEnv;
 
@@ -99,8 +103,8 @@ public class CustomAccessLogFieldsTest {
                                              "ibm_queryString", "ibm_elapsedTime", "ibm_responseCode", "ibm_uriPath", "ibm_userAgent" };
 
     // We need to verify that the security prerequisites are fulfilled before hitting the /metrics secure endpoint
-    // xmlServer is the only server that is reused multiple times, but we only need to wait for the security pre-reqs once
-    private static boolean isFirstTimeUsingXmlServer = true;
+    // xmlServerWithMetrics is reused multiple times, but we only need to wait for the security pre-reqs once
+    private static boolean isFirstTimeUsingXmlServerWithMetrics = true;
 
     private static LibertyServer serverInUse; // hold on to the server currently used so cleanUp knows which server to stop
 
@@ -110,6 +114,7 @@ public class CustomAccessLogFieldsTest {
         envServer.saveServerConfiguration();
         bootstrapServer.saveServerConfiguration();
         xmlServer.saveServerConfiguration();
+        xmlServerWithMetrics.saveServerConfiguration();
         badConfigServerEnv.saveServerConfiguration();
         badConfigServerBootstrap.saveServerConfiguration();
         badConfigServerXml.saveServerConfiguration();
@@ -199,15 +204,15 @@ public class CustomAccessLogFieldsTest {
      */
     @Test
     public void testAccessLogFieldNamesXml() throws Exception {
-        setUp(xmlServer);
-        if (isFirstTimeUsingXmlServer) {
-            waitForSecurityPrerequisites(xmlServer, WAIT_TIMEOUT);
+        setUp(xmlServerWithMetrics);
+        if (isFirstTimeUsingXmlServerWithMetrics) {
+            waitForSecurityPrerequisites(xmlServerWithMetrics, WAIT_TIMEOUT);
         }
-        waitForMetricsToStart(xmlServer, WAIT_TIMEOUT);
+        waitForMetricsToStart(xmlServerWithMetrics, WAIT_TIMEOUT);
 
-        isFirstTimeUsingXmlServer = false;
+        isFirstTimeUsingXmlServerWithMetrics = false;
         hitHttpsEndpointSecure("/metrics", xmlServer);
-        String line = xmlServer.waitForStringInLog("liberty_accesslog");
+        String line = xmlServerWithMetrics.waitForStringInLog("liberty_accesslog");
         assertNotNull("No liberty_accesslog found in the output JSON log.", line);
 
         assertTrue("There are fields missing in the output JSON log.", areFieldsPresent(line, newFields));
@@ -270,18 +275,18 @@ public class CustomAccessLogFieldsTest {
      */
     @Test
     public void testAllFieldsArePrinted() throws Exception {
-        setUp(xmlServer);
-        xmlServer.setServerConfigurationFile("accessLogging/server-all-fields.xml");
-        waitForConfigUpdate(xmlServer);
-        if (isFirstTimeUsingXmlServer) {
-            waitForSecurityPrerequisites(xmlServer, WAIT_TIMEOUT);
+        setUp(xmlServerWithMetrics);
+        xmlServerWithMetrics.setServerConfigurationFile("accessLogging/server-all-fields.xml");
+        waitForConfigUpdate(xmlServerWithMetrics);
+        if (isFirstTimeUsingXmlServerWithMetrics) {
+            waitForSecurityPrerequisites(xmlServerWithMetrics, WAIT_TIMEOUT);
         }
-        waitForMetricsToStart(xmlServer, WAIT_TIMEOUT);
+        waitForMetricsToStart(xmlServerWithMetrics, WAIT_TIMEOUT);
 
-        isFirstTimeUsingXmlServer = false;
+        isFirstTimeUsingXmlServerWithMetrics = false;
 
-        hitHttpsEndpointSecure("/metrics", xmlServer);
-        String line = xmlServer.waitForStringInLog("liberty_accesslog");
+        hitHttpsEndpointSecure("/metrics", xmlServerWithMetrics);
+        String line = xmlServerWithMetrics.waitForStringInLog("liberty_accesslog");
         assertNotNull("No liberty_accesslog found in the output JSON log.", line);
 
         // Easier to just use two asserts instead of trying to join those two arrays together
@@ -327,16 +332,16 @@ public class CustomAccessLogFieldsTest {
      */
     @Test
     public void testFieldsInAccessLogAreSameInJSON() throws Exception {
-        setUp(xmlServer);
-        if (isFirstTimeUsingXmlServer) {
-            waitForSecurityPrerequisites(xmlServer, WAIT_TIMEOUT);
+        setUp(xmlServerWithMetrics);
+        if (isFirstTimeUsingXmlServerWithMetrics) {
+            waitForSecurityPrerequisites(xmlServerWithMetrics, WAIT_TIMEOUT);
         }
-        waitForMetricsToStart(xmlServer, WAIT_TIMEOUT);
+        waitForMetricsToStart(xmlServerWithMetrics, WAIT_TIMEOUT);
 
-        isFirstTimeUsingXmlServer = false;
+        isFirstTimeUsingXmlServerWithMetrics = false;
 
-        hitHttpsEndpointSecure("/metrics", xmlServer);
-        String line = xmlServer.waitForStringInLog("liberty_accesslog");
+        hitHttpsEndpointSecure("/metrics", xmlServerWithMetrics);
+        String line = xmlServerWithMetrics.waitForStringInLog("liberty_accesslog");
         assertNotNull("No liberty_accesslog found in the output JSON log.", line);
 
         // create a map of the strings
@@ -355,7 +360,7 @@ public class CustomAccessLogFieldsTest {
 
         // unfortunately, our JSON log isn't ordered like the http access logs
         // easier to check that the value shows up in the http_access.log at some point; for duplicate values, let's just remove it with each pass-through.
-        String accessLogLine = readFile(xmlServer.getServerRoot() + "/logs/http_access.log");
+        String accessLogLine = readFile(xmlServerWithMetrics.getServerRoot() + "/logs/http_access.log");
         assertNotNull("The http_access.log file is empty or could not be read.", accessLogLine);
         for (String s : parsedLine.values()) {
             if (accessLogLine.contains(s)) {
