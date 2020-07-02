@@ -21,6 +21,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
@@ -47,6 +48,10 @@ import componenttest.topology.utils.PrivHelper;
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class JPA10EntityManager_EJB extends JPAFATServletClient {
+
+    @Rule
+    public static SkipDatabaseRule skipDBRule = new SkipDatabaseRule();
+
     private final static String CONTEXT_ROOT = "entitymanagerEjb";
     private final static String RESOURCE_ROOT = "test-applications/entitymanager/";
     private final static String appFolder = "ejb";
@@ -124,6 +129,8 @@ public class JPA10EntityManager_EJB extends JPAFATServletClient {
         executeDDL(server, ddlSet, false);
 
         setupTestApplication();
+
+        skipDBRule.setDatabase(getDbVendor().name());
     }
 
     private static void setupTestApplication() throws Exception {
