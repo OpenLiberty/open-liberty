@@ -28,6 +28,11 @@
     </dependency>
     <dependency>
       <groupId>biz.aQute.bnd</groupId>
+      <artifactId>biz.aQute.bnd.transform</artifactId>
+      <version>5.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>biz.aQute.bnd</groupId>
       <artifactId>biz.aQute.bndlib</artifactId>
       <version>4.3.1</version>
     </dependency>
@@ -2035,6 +2040,16 @@
       <groupId>org.eclipse.microprofile.rest.client</groupId>
       <artifactId>microprofile-rest-client-api</artifactId>
       <version>1.4.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.transformer</groupId>
+      <artifactId>org.eclipse.transformer</artifactId>
+      <version>0.2.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.transformer</groupId>
+      <artifactId>org.eclipse.transformer.cli</artifactId>
+      <version>0.2.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse</groupId>

@@ -47,6 +47,7 @@ pluginManagement {
           ('aQute.bnd.repository.maven.provider.MavenBndRepository;'
                   +'name = RemotePublic;'
                   +'releaseUrl=https://repo.maven.apache.org/maven2/'
+                  +';snapshotUrl=https://oss.sonatype.org/content/repositories/snapshots/'
                   +';index=${build}/oss_dependencies.maven') :
 
           ('aQute.bnd.repository.maven.provider.MavenBndRepository'
