@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2019 IBM Corporation and others.
+ * Copyright (c) 2010, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1052,18 +1052,29 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
       
       boolean enableTrace = ( com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable (Level.FINE) );
 
+      int servletSpecLevel = com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel();
       //check if excluded because the subclasses includes this... and could be more than we want
       //might need to exclude something else like javax.* or java*
-      if (targetClassName.startsWith("java")) {
-          if ((targetClassName.charAt(4) == '.') || (targetClassName.startsWith("javax."))) {
-              if ( enableTrace ) { 
-                  logger.logp(Level.FINE, CLASS_NAME, methodName,
-                              "Internal class, {0}, is not added to the ServletContainerInitializers in the application: {1}",
-                              new Object[] { targetClassName, this.config.getDisplayName() });
-              }
-              return;
+      if(servletSpecLevel <=  com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_40){
+          if ((targetClassName.startsWith("java.")) || (targetClassName.startsWith("javax."))) {
+                  if ( enableTrace ) {
+                        logger.logp(Level.FINE, CLASS_NAME, methodName,
+                                    "Internal class, {0}, is not added to the ServletContainerInitializers [Servlet Spec Level: {2}] in the application: {1}.",
+                                    new Object[] { targetClassName, this.config.getDisplayName(), servletSpecLevel});
+                  }
+                      return;
           }
+      } else {
+              if ((targetClassName.startsWith("java.")) || (targetClassName.startsWith("jakarta."))) {
+                  if ( enableTrace ) {
+                        logger.logp(Level.FINE, CLASS_NAME, methodName,
+                                    "Internal class, {0}, is not added to the ServletContainerInitializers [Servlet Spec Level: {2}] in the application: {1}.",
+                                    new Object[] { targetClassName, this.config.getDisplayName(), servletSpecLevel });
+                  }
+                      return;
+              }
       }
+
       try {
           WebAnnotations webAppAnnotations = getWebAnnotations();
           AnnotationTargets_Targets table = webAppAnnotations.getAnnotationTargets();
