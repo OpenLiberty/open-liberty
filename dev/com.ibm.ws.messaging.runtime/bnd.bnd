@@ -78,6 +78,7 @@ instrument.disabled: true
 	com.ibm.websphere.org.osgi.service.cm;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.app.manager.lifecycle;version=latest,\
 	com.ibm.ws.messaging.utils;version=latest,\
 	com.ibm.ws.messaging.common;version=latest,\
 	com.ibm.ws.logging.core;version=latest,\
