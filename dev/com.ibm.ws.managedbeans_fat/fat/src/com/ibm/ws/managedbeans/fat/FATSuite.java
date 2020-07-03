@@ -15,6 +15,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.managedbeans.fat.tests.ManagedBeanBindingsEJBTest;
+import com.ibm.ws.managedbeans.fat.tests.ManagedBeansCdiTest;
 import com.ibm.ws.managedbeans.fat.tests.ManagedBeansEjbTest;
 import com.ibm.ws.managedbeans.fat.tests.ManagedBeansWebTest;
 
@@ -26,7 +27,8 @@ import com.ibm.ws.managedbeans.fat.tests.ManagedBeansWebTest;
 @SuiteClasses({
                 ManagedBeansWebTest.class,
                 ManagedBeansEjbTest.class,
-                ManagedBeanBindingsEJBTest.class
+                ManagedBeanBindingsEJBTest.class,
+                ManagedBeansCdiTest.class
 })
 public class FATSuite {
 
