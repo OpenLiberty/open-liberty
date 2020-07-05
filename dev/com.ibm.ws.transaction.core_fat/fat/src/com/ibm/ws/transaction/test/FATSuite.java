@@ -15,23 +15,27 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
-import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+                AlwaysPassesTest.class,
+                CommitPriorityTest.class,
+                HeuristicsTest.class,
+                HeuristicsDBTranlogTest.class,
+//                DupXidTest.class,
                 SimpleTest.class,
+                SimpleDBTranlogTest.class,
                 OnePCDisabledTest.class,
                 XATest.class,
-                TransactionScopedObserversTest.class
+                XADBTranlogTest.class,
+                TransactionalTest.class,
+                TransactionScopedTest.class,
 })
 public class FATSuite {
-
-    private static LibertyServer server1 = LibertyServerFactory.getLibertyServer("com.ibm.ws.transaction");
-    private static LibertyServer server2 = LibertyServerFactory.getLibertyServer("com.ibm.ws.transaction_waitForRecovery");
     // Using the RepeatTests @ClassRule will cause all tests to be run twice.
     // First without any modifications, then again with all features upgraded to their EE8 equivalents.
     @ClassRule

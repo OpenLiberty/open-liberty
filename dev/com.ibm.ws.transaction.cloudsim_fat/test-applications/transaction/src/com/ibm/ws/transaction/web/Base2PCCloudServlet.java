@@ -21,10 +21,10 @@ import javax.transaction.xa.XAResource;
 
 import com.ibm.tx.jta.ExtendedTransactionManager;
 import com.ibm.tx.jta.TransactionManagerFactory;
+import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
 import com.ibm.tx.jta.ut.util.XAResourceFactoryImpl;
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.tx.jta.ut.util.XAResourceInfoFactory;
-import com.ibm.ws.cloudtx.ut.util.LastingXAResourceImpl;
 
 import componenttest.app.FATServlet;
 

@@ -21,11 +21,13 @@ import java.net.URL;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
@@ -34,6 +36,7 @@ import componenttest.topology.utils.HttpUtils;
 
 @Mode(TestMode.FULL)
 @AllowedFFDC(value = { "javax.transaction.SystemException" })
+@RunWith(FATRunner.class)
 public class ComplexTest extends WSATTest {
 
 	private static LibertyServer server;

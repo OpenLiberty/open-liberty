@@ -15,14 +15,11 @@ bVersion=1.0
 Bundle-Name: Transactions Test Tools
 Bundle-SymbolicName: com.ibm.ws.transaction.test.util
 Bundle-Description: Transactions Test Tools; version=${bVersion}
-Bundle-ActivationPolicy: lazy
 Web-ContextPath: inflow
 
 test.project: true
-generate.replacement: true
 
-Export-Package:  com.ibm.tx.jta.ut.util,\
-				 com.ibm.ws.cloudtx.ut.util
+Export-Package:  com.ibm.tx.jta.ut.util;provide:=true
 
 -buildpath: \
   com.ibm.websphere.javaee.transaction.1.2;version=latest,\
