@@ -92,10 +92,10 @@ public class HungRequestTiming {
         assertNotNull("The server configuration was successfully updated message was not found!", srvConfigCompletedMsg);
 
         CommonTasks.writeLogMsg(Level.INFO, "************ Thread 1 - Runs 3s  ************");
-        CommonTasks.writeLogMsg(Level.INFO, "************ Thread 2 - Runs 4s ************");
+        CommonTasks.writeLogMsg(Level.INFO, "************ Thread 2 - Runs 5s ************");
 
         HungRequestThread request1 = new HungRequestThread(3000);
-        HungRequestThread request2 = new HungRequestThread(4000);
+        HungRequestThread request2 = new HungRequestThread(5000);
 
         request1.start();
         request2.start();
@@ -386,7 +386,7 @@ public class HungRequestTiming {
         server.waitForStringInLog("CWWKG0017I|CWWKG0018I", 90000);
 
         createRequest(3000);
-        
+
         // The next request will have 59secs to complete before the next Java core gets generated
         // The Java cores get generated 1min apart from each other
         long finishTimeOfFirstRequest = System.currentTimeMillis();
@@ -424,8 +424,8 @@ public class HungRequestTiming {
         CommonTasks.writeLogMsg(Level.INFO, "---> No. of java cores created : " + cores);
         if (System.currentTimeMillis() - finishTimeOfFirstRequest > 59000) {
             fail("Test case testSequentialHungMultipleRequests is inconclusive as the second request was not able to complete within"
-                            + "one minute, thus allowing the possibility of another Java core to be generated");
-        }else {
+                 + "one minute, thus allowing the possibility of another Java core to be generated");
+        } else {
             assertTrue("Expected 1 Java core.. But found : " + cores, (cores == 1));
         }
 

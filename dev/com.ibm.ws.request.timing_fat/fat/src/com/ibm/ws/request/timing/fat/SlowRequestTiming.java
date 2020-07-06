@@ -565,44 +565,44 @@ public class SlowRequestTiming {
 
     /*
      * This is already tested in testDynamicDisableWithNoContextInfo
-     * 
+     *
      * @Test
-     * 
+     *
      * @Mode(TestMode.FULL)
      * public void testSlowReqDynamicPatternRemove() throws Exception {
      * //Step 1 - Update server configuration - ContextInfo = false , Threshold = 2s
      * CommonTasks.writeLogMsg(Level.INFO, "--------> Starting Server with Pattern disabled..");
      * server.setServerConfigurationFile("server_NOContextInfo.xml");
      * waitForConfigurationUpdate();
-     * 
+     *
      * //Step 2 - create request for 3seconds and look for slow request warnings do not have contextInfo
      * createRequest("?sleepTime=3000");
-     * 
+     *
      * List<String> lines = server.findStringsInFileInLibertyServerRoot("ms", MESSAGE_LOG);
-     * 
+     *
      * for (String line : lines) {
      * assertFalse("contextInfo found when it is disabled..", (line.contains("|")));
      * }
      * CommonTasks.writeLogMsg(Level.INFO, "******** As Expected : Pattern disabled ******* ");
-     * 
+     *
      * //Step 3 - Update server configuration - default of request timing feature.
      * server.setMarkToEndOfLog();
      * server.setServerConfigurationFile("server_original.xml");
      * waitForConfigurationUpdate();
-     * 
+     *
      * //Step 3 - create request for 11 seconds and look for slow request warnings have contextInfo
      * createRequest("?sleepTime=11000");
      * server.waitForStringInLogUsingMark("TRAS0112W", 30000);
-     * 
+     *
      * lines = server.findStringsInLogsUsingMark("ms", MESSAGE_LOG);
      * server.setMarkToEndOfLog();
-     * 
+     *
      * for (String line : lines) {
      * if (!line.contains("TRAS0112W") && !line.contains("TRAS0113I") && !line.contains("CWWKG0028A")) {
      * assertTrue("contextInfo NOT found when it is enabled by default ..", (line.contains("|")));
      * }
      * }
-     * 
+     *
      * CommonTasks.writeLogMsg(Level.INFO, "*********** As Expected : Pattern enabled ********* ");
      * }
      */
@@ -615,14 +615,13 @@ public class SlowRequestTiming {
         server.setServerConfigurationFile("server_sampleRate3.xml");
         waitForConfigurationUpdate();
 
-        //Step 2 - create 7 requests of 4s each - Every 3rd sample should generate a slow request warning.
+        //Step 2 - create 3 requests of 4s each - Every 3rd sample should generate a slow request warning.
         for (int count = 1; count < 4; count++) {
             createRequest("?sleepTime=4000");
         }
 
         //slow request warning:   Fetch ID and check if it ends with AC which confirms its 3rd request
         //TRAS0112W: Request AADJi05x9AW_AAAAAAAAAAC has been running on thread 00000023 for at least 3001.386ms
-
         server.waitForStringInLogUsingMark("TRAS0112W", 30000);
         List<String> lines = server.findStringsInFileInLibertyServerRoot("TRAS0112W", MESSAGE_LOG);
         List<String> IDs = new ArrayList<String>();
@@ -646,10 +645,7 @@ public class SlowRequestTiming {
     @Test
     @Mode(TestMode.FULL)
     public void testSlowReqSampleRateEven() throws Exception {
-
         //Step 1 - Update server configuration - sampleRate=2, Threshold = "3s"
-        server.setMarkToEndOfLog();
-
         CommonTasks.writeLogMsg(Level.INFO, "**** >>>>> Updating server with configuration : sampleRate=2");
         server.setServerConfigurationFile("server_sampleRate2.xml");
         waitForConfigurationUpdate();
