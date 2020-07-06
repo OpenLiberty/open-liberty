@@ -1,0 +1,9 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0.0
+
+Bundle-SymbolicName: test.alias.public.user
+Bundle-Description: test user feature bundle for symbolic and short aliases
+
+Private-Package: test.alias
+
+Bundle-Activator: test.alias.Activator

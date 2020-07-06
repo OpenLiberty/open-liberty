@@ -366,7 +366,11 @@ public class FeatureResolverImpl implements FeatureResolver {
             for (FeatureResource included : includes) {
                 String symbolicName = included.getSymbolicName();
                 if (symbolicName != null) {
-                    String[] nameAndVersion = parseNameAndVersion(included.getSymbolicName());
+                    ProvisioningFeatureDefinition featureDef = selectionContext.getRepository().getFeature(symbolicName);
+                    if (featureDef != null && !!!symbolicName.equals(featureDef.getSymbolicName())) {
+                        symbolicName = featureDef.getSymbolicName(); // Use actual symbolic name, not alias
+                    }
+                    String[] nameAndVersion = parseNameAndVersion(symbolicName); //included.getSymbolicName());
                     String baseName = nameAndVersion[0];
                     includedBaseFeatureNames.add(baseName);
                 }
@@ -396,7 +400,8 @@ public class FeatureResolverImpl implements FeatureResolver {
         }
     }
 
-    private void processIncluded(ProvisioningFeatureDefinition includingFeature, FeatureResource included, Set<String> allowedTolerations, Deque<String> chain, Set<String> result,
+    private void processIncluded(ProvisioningFeatureDefinition includingFeature, FeatureResource included, Set<String> allowedTolerations,
+                                 Deque<String> chain, Set<String> result,
                                  SelectionContext selectionContext) {
         String symbolicName = included.getSymbolicName();
         if (symbolicName == null) {
@@ -408,6 +413,10 @@ public class FeatureResolverImpl implements FeatureResolver {
             return;
         }
 
+        ProvisioningFeatureDefinition featureDef = selectionContext.getRepository().getFeature(symbolicName);
+        if (featureDef != null && !!!symbolicName.equals(featureDef.getSymbolicName())) {
+            symbolicName = featureDef.getSymbolicName(); // Use actual symbolic name, not alias
+        }
         String[] nameAndVersion = parseNameAndVersion(symbolicName);
         String baseSymbolicName = nameAndVersion[0];
         String preferredVersion = nameAndVersion[1];
@@ -433,7 +442,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         if (preferredCandidateDef != null && isAccessible(includingFeature, preferredCandidateDef)) {
             checkForFullSymbolicName(preferredCandidateDef, symbolicName, chain.getLast());
             isSingleton = preferredCandidateDef.isSingleton();
-            candidateNames.add(symbolicName);
+            candidateNames.add(preferredCandidateDef.getSymbolicName()); // Use feature's symbolic name; "symbolicName" could be alias!
         }
 
         // Check for tolerated versions; but only if the preferred version is a singleton or we did not find the preferred version
@@ -520,7 +529,9 @@ public class FeatureResolverImpl implements FeatureResolver {
      * @param includingFeature
      */
     private void checkForFullSymbolicName(ProvisioningFeatureDefinition candidateDef, String symbolicName, String includingFeature) {
-        if (!!!symbolicName.equals(candidateDef.getSymbolicName())) {
+        if (!!!symbolicName.equals(candidateDef.getSymbolicName())
+            && candidateDef.getWlpSymbolicNameAliases() != null
+            && !!!candidateDef.getWlpSymbolicNameAliases().contains(symbolicName)) {
             throw new IllegalArgumentException("A feature is not allowed to use short feature names when including other features. "
                                                + "Detected short name \"" + symbolicName + "\" being used instead of \"" + candidateDef.getSymbolicName()
                                                + "\" by feature \"" + includingFeature + "\".");

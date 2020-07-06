@@ -339,4 +339,14 @@ public class KernelResolverEsa implements ProvisioningFeatureDefinition {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public List<String> getWlpSymbolicNameAliases() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public List<String> getWlpShortNameAliases() {
+        throw new UnsupportedOperationException();
+    }
+
 }

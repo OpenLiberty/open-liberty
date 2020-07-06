@@ -23,6 +23,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
@@ -77,7 +78,7 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
      * Create a new subsystem definition with the specified immutable attributes.
      * Called when rebuilding from a cache.
      *
-     * @param attr Immutable attributes
+     * @param attr    Immutable attributes
      * @param details Provisioning details (will be cleared when provisioning operation is complete)
      * @see #load(String, SubsystemFeatureDefinitionImpl)
      * @see FeatureDefinitionUtils#loadAttributes(String, ImmutableAttributes)
@@ -99,8 +100,8 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
      * <p>
      * Some operations, like finding resource bundles, may not work.
      *
-     * @param repoType emtpy/null for core, "usr" for user extension, or the product
-     *            extension name
+     * @param repoType    emtpy/null for core, "usr" for user extension, or the product
+     *                        extension name
      * @param inputStream The input stream to read from
      * @see ExtensionConstants#CORE_EXTENSION
      * @see ExtensionConstants#USER_EXTENSION
@@ -121,8 +122,8 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
      * specified input stream.
      *
      * @param repoType emtpy/null for core, "usr" for user extension, or the product
-     *            extension name
-     * @param file Subsystem feature definition manifest file
+     *                     extension name
+     * @param file     Subsystem feature definition manifest file
      *
      * @see ExtensionConstants#CORE_EXTENSION
      * @see ExtensionConstants#USER_EXTENSION
@@ -194,6 +195,16 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
     @Override
     public String getIbmShortName() {
         return iAttr.shortName;
+    }
+
+    @Override
+    public List<String> getWlpSymbolicNameAliases() {
+        return iAttr.symbolicNameAliases;
+    }
+
+    @Override
+    public List<String> getWlpShortNameAliases() {
+        return iAttr.shortNameAliases;
     }
 
     @Override
@@ -418,12 +429,11 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
                 // If we've already satisfied a capability with this FeatureDefinition, we don't need to use it again
                 if (!satisfiedFeatureDefs.contains(featureDef)) {
 
-                    // We have a mismatch between the key the filter is using to look up the feature name and the property containing the name in the
-                    // headers. So we need to add a new property for osgi.identity (filter key) that contains the value of the
-                    // Subsystem-SymbolicName (manifest header).
-                    // We also have to do this for the Subsystem-Type(manifest header) and the type (filter key).
+                    // We have a mismatch between the key the filter is using to look up the feature name and the property
+                    // containing the name in the headers. So we need to add a new property for osgi.identity (filter key)
+                    // that contains the value of the Subsystem-SymbolicName (manifest header).
+                    // We also must do this for the Subsystem-Type(manifest header) and the type (filter key).
                     Map<String, String> filterProps = new HashMap<String, String>();
-
                     filterProps.put(FeatureDefinitionUtils.FILTER_FEATURE_KEY, featureDef.getSymbolicName());
                     try {
                         filterProps.put(FeatureDefinitionUtils.FILTER_TYPE_KEY,
@@ -435,10 +445,21 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
                         }
                         continue;
                     }
-
                     if (checkFilter.matches(filterProps)) {
                         satisfiedFeatureDefs.add(featureDef);
                         featureMatch = true;
+                    }
+
+                    // Didn't match? Check whether the feature's symbolicName aliases match the capability
+                    if (!featureMatch && featureDef.getWlpSymbolicNameAliases() != null) {
+                        for (String symbolicName : featureDef.getWlpSymbolicNameAliases()) {
+                            filterProps.put(FeatureDefinitionUtils.FILTER_FEATURE_KEY, symbolicName); // Replace!
+                            if (checkFilter.matches(filterProps)) {
+                                satisfiedFeatureDefs.add(featureDef);
+                                featureMatch = true;
+                                break;
+                            }
+                        }
                     }
                 }
             }
