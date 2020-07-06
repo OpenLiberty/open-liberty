@@ -28,12 +28,15 @@ import com.ibm.ws.fat.wc.WCApplicationHelper;
 
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.JakartaEE9Action;
 
 /**
  * All Servlet 4.0 tests with all applicable server features enabled.
  */
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class WCServerTest extends LoggingTest {
 
     private static final Logger LOG = Logger.getLogger(WCServerTest.class.getName());
