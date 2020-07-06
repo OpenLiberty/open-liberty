@@ -37,6 +37,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.KafkaConnectorConstants;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -48,6 +49,7 @@ import componenttest.topology.impl.LibertyServer;
  * hostname of the kafka broker does not resolve at startup.
  */
 @RunWith(FATRunner.class)
+@AllowedFFDC({ "org.jboss.weld.exceptions.DeploymentException", "com.ibm.ws.container.service.state.StateChangeException" }) // General exceptions when app deployment fails
 public class KafkaBadConfigTest {
 
     private static final String APP_NAME = "KafkaBadConfig";
@@ -65,16 +67,18 @@ public class KafkaBadConfigTest {
     public static void teardownTest() throws Exception {
         server.stopServer("CWMRX1007E", // Expected error message
                           "CWWKZ000[1-4]", // Generic "Exception starting app" messages
-                          "CWMRX1009W" // Connector initialization failed but will be retried message
+                          "CWMRX1009W", // Connector initialization failed but will be retried message
+                          "CWMRX1008E", // Expected outgoing error message
+                          "CWMRX1010W" // Outgoing connector initialization failed by will be retried message
         );
     }
 
     @Test
-    @AllowedFFDC
+    @ExpectedFFDC("com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaAdapterException")
     public void testBadConfig() throws Exception {
 
         // Invalid config because bootstrap.servers not set
-        ConnectorProperties incomingProperties = simpleIncomingChannel("", KafkaBadConfigBean.CHANNEL_NAME, APP_GROUP_ID);
+        ConnectorProperties incomingProperties = simpleIncomingChannel("", KafkaBadConfigIncomingBean.CHANNEL_NAME, APP_GROUP_ID);
 
         PropertiesAsset appConfig = new PropertiesAsset()
                         .include(incomingProperties);
@@ -82,7 +86,7 @@ public class KafkaBadConfigTest {
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addAsLibraries(KafkaUtils.kafkaClientLibs())
                         .addAsManifestResource(kafkaPermissions(), "permissions.xml")
-                        .addClass(KafkaBadConfigBean.class)
+                        .addClass(KafkaBadConfigIncomingBean.class)
                         .addAsResource(appConfig, "META-INF/microprofile-config.properties");
 
         server.setMarkToEndOfLog();
@@ -98,7 +102,7 @@ public class KafkaBadConfigTest {
         assertThat(configErrorLines, hasSize(1));
         String configErrorLine = configErrorLines.get(0);
         // ...and that it contained the channel name
-        assertThat(configErrorLine, containsString(KafkaBadConfigBean.CHANNEL_NAME));
+        assertThat(configErrorLine, containsString(KafkaBadConfigIncomingBean.CHANNEL_NAME));
 
         // Check that the failure was not retried
         List<String> retryLines = server.findStringsInLogsUsingMark("CWMRX1009W", server.getDefaultLogFile());
@@ -106,10 +110,10 @@ public class KafkaBadConfigTest {
     }
 
     @Test
-    @AllowedFFDC
+    @ExpectedFFDC("com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaAdapterException")
     public void testBadConfigRetry() throws Exception {
         // Invalid config because bootstrap.servers not set, but creation retry enabled
-        ConnectorProperties incomingProperties = simpleIncomingChannel("", KafkaBadConfigBean.CHANNEL_NAME, APP_GROUP_ID)
+        ConnectorProperties incomingProperties = simpleIncomingChannel("", KafkaBadConfigIncomingBean.CHANNEL_NAME, APP_GROUP_ID)
                         .addProperty(KafkaConnectorConstants.CREATION_RETRY_SECONDS, "5");
 
         PropertiesAsset appConfig = new PropertiesAsset()
@@ -118,7 +122,7 @@ public class KafkaBadConfigTest {
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addAsLibraries(KafkaUtils.kafkaClientLibs())
                         .addAsManifestResource(kafkaPermissions(), "permissions.xml")
-                        .addClass(KafkaBadConfigBean.class)
+                        .addClass(KafkaBadConfigIncomingBean.class)
                         .addAsResource(appConfig, "META-INF/microprofile-config.properties");
 
         server.setMarkToEndOfLog();
@@ -134,16 +138,92 @@ public class KafkaBadConfigTest {
         assertThat(configErrorLines, hasSize(1));
         String configErrorLine = configErrorLines.get(0);
         // ...and that it contained the channel name
-        assertThat(configErrorLine, containsString(KafkaBadConfigBean.CHANNEL_NAME));
+        assertThat(configErrorLine, containsString(KafkaBadConfigIncomingBean.CHANNEL_NAME));
 
         // Check that the failure was retried
         List<String> retryLines = server.findStringsInLogsUsingMark("CWMRX1009W:", server.getDefaultLogFile());
         assertThat(retryLines, not(empty()));
         for (String retryLine : retryLines) {
             // placeholder in message should be replaced by channel name
-            assertThat(retryLine, containsString(KafkaBadConfigBean.CHANNEL_NAME));
+            assertThat(retryLine, containsString(KafkaBadConfigIncomingBean.CHANNEL_NAME));
         }
+    }
 
+    @Test
+    @ExpectedFFDC("com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaAdapterException")
+    public void testBadConfigOutgoing() throws Exception {
+
+        // Invalid config because bootstrap.servers not set
+        ConnectorProperties outgoingProperties = ConnectorProperties.simpleOutgoingChannel("", KafkaBadConfigOutgoingBean.CHANNEL_NAME);
+
+        PropertiesAsset appConfig = new PropertiesAsset()
+                        .include(outgoingProperties);
+
+        WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
+                        .addAsLibraries(KafkaUtils.kafkaClientLibs())
+                        .addAsManifestResource(kafkaPermissions(), "permissions.xml")
+                        .addClass(KafkaBadConfigOutgoingBean.class)
+                        .addAsResource(appConfig, "META-INF/microprofile-config.properties");
+
+        server.setMarkToEndOfLog();
+        // Deploy the application
+        ShrinkHelper.exportToServer(server, "dropins", war, SERVER_ONLY);
+
+        // Wait for the app either to start, or to fail to start
+        String logLine = server.waitForStringInLogUsingMark("CWWKZ000[1-4].*" + APP_NAME);
+        assertNotNull("Application startup didn't complete - app startup line not found", logLine);
+
+        // Check that the bad config error was emitted
+        List<String> configErrorLines = server.findStringsInLogsUsingMark("CWMRX1008E:", server.getDefaultLogFile());
+        assertThat(configErrorLines, hasSize(1));
+        String configErrorLine = configErrorLines.get(0);
+        // ...and that it contained the channel name
+        assertThat(configErrorLine, containsString(KafkaBadConfigOutgoingBean.CHANNEL_NAME));
+
+        // Check that the failure was not retried
+        List<String> retryLines = server.findStringsInLogsUsingMark("CWMRX1010W", server.getDefaultLogFile());
+        assertThat(retryLines, is(empty()));
+    }
+
+    @Test
+    @ExpectedFFDC("com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaAdapterException")
+    public void testBadConfigOutgoingRetry() throws Exception {
+
+        // Invalid config because bootstrap.servers not set
+        ConnectorProperties outgoingProperties = ConnectorProperties.simpleOutgoingChannel("", KafkaBadConfigOutgoingBean.CHANNEL_NAME)
+                        .addProperty(KafkaConnectorConstants.CREATION_RETRY_SECONDS, "5");
+
+        PropertiesAsset appConfig = new PropertiesAsset()
+                        .include(outgoingProperties);
+
+        WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
+                        .addAsLibraries(KafkaUtils.kafkaClientLibs())
+                        .addAsManifestResource(kafkaPermissions(), "permissions.xml")
+                        .addClass(KafkaBadConfigOutgoingBean.class)
+                        .addAsResource(appConfig, "META-INF/microprofile-config.properties");
+
+        server.setMarkToEndOfLog();
+        // Deploy the application
+        ShrinkHelper.exportToServer(server, "dropins", war, SERVER_ONLY);
+
+        // Wait for the app either to start, or to fail to start
+        String logLine = server.waitForStringInLogUsingMark("CWWKZ000[1-4].*" + APP_NAME);
+        assertNotNull("Application startup didn't complete - app startup line not found", logLine);
+
+        // Check that the bad config error was emitted
+        List<String> configErrorLines = server.findStringsInLogsUsingMark("CWMRX1008E:", server.getDefaultLogFile());
+        assertThat(configErrorLines, hasSize(1));
+        String configErrorLine = configErrorLines.get(0);
+        // ...and that it contained the channel name
+        assertThat(configErrorLine, containsString(KafkaBadConfigOutgoingBean.CHANNEL_NAME));
+
+        // Check that the failure was retried
+        List<String> retryLines = server.findStringsInLogsUsingMark("CWMRX1010W:", server.getDefaultLogFile());
+        assertThat(retryLines, not(empty()));
+        for (String retryLine : retryLines) {
+            // placeholder in message should be replaced by channel name
+            assertThat(retryLine, containsString(KafkaBadConfigOutgoingBean.CHANNEL_NAME));
+        }
     }
 
 }
