@@ -21,8 +21,8 @@ import javax.net.ssl.SSLSocketFactory;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
 import org.apache.http.NameValuePair;
+import org.apache.http.StatusLine;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
@@ -31,9 +31,9 @@ import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
+import org.apache.http.conn.ssl.DefaultHostnameVerifier;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.StrictHostnameVerifier;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
@@ -343,9 +343,9 @@ public class OidcClientHttpUtil {
         } else {
             SSLConnectionSocketFactory connectionFactory = null;
             if (!isHostnameVerification) {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new AllowAllHostnameVerifier());
+                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
             } else {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new StrictHostnameVerifier());
+                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
             }
             client = createBuilder(useSystemPropertiesForHttpClientConnections).setSSLSocketFactory(connectionFactory).build();
         }
@@ -361,9 +361,8 @@ public class OidcClientHttpUtil {
 
     private HttpClientBuilder createBuilder(boolean useSystemProperties) {
         return useSystemProperties ? HttpClientBuilder.create().disableCookieManagement().useSystemProperties() : HttpClientBuilder.create().disableCookieManagement();
-       // return useSystemProperties ? HttpClientBuilder.create().useSystemProperties() : HttpClientBuilder.create();
+        // return useSystemProperties ? HttpClientBuilder.create().useSystemProperties() : HttpClientBuilder.create();
     }
-    
 
     public HttpClient createHTTPClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification,
             String baUser, @Sensitive String baPassword, boolean useSystemPropertiesForHttpClientConnections) {
@@ -378,9 +377,9 @@ public class OidcClientHttpUtil {
         } else {
             SSLConnectionSocketFactory connectionFactory = null;
             if (!isHostnameVerification) {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new AllowAllHostnameVerifier());
+                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
             } else {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new StrictHostnameVerifier());
+                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
             }
             RequestConfig rcfg = RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build();
             client = createBuilder(useSystemPropertiesForHttpClientConnections)
