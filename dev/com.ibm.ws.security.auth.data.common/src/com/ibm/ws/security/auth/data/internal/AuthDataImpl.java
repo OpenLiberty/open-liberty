@@ -75,12 +75,6 @@ public class AuthDataImpl implements AuthData {
 
     /** {@inheritDoc} */
     @Override
-    public Path getKrb5Keytab() {
-        return keytab;
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public String getKrb5Principal() {
         return principal;
     }

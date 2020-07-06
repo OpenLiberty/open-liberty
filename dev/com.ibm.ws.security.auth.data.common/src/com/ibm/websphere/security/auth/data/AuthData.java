@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.websphere.security.auth.data;
 
-import java.nio.file.Path;
-
 /**
  * The AuthData interface is used to obtain the user and password from the configured auth data.
  */
@@ -32,7 +30,5 @@ public interface AuthData {
     public char[] getPassword();
 
     public String getKrb5Principal();
-
-    public Path getKrb5Keytab();
 
 }
