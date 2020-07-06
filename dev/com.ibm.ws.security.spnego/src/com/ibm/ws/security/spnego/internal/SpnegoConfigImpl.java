@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.spnego.internal;
 
+import java.nio.file.Path;
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import org.ietf.jgss.GSSCredential;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.security.kerberos.auth.KerberosService;
 import com.ibm.ws.security.spnego.ErrorPageConfig;
 import com.ibm.ws.security.spnego.SpnegoConfig;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
@@ -65,6 +67,7 @@ public class SpnegoConfigImpl implements SpnegoConfig {
 
     static final String KEY_CONFIGURATION_ADMIN = "configurationAdmin";
     private WsLocationAdmin locationAdmin = null;
+    private final KerberosService kerbSvc;
     private String id;
     private String authFilterRef;
     private boolean allowLocalHost;
@@ -88,8 +91,11 @@ public class SpnegoConfigImpl implements SpnegoConfig {
     private Krb5DefaultFile krb5DefaultFile = null;
     private boolean disableLtpaCookie;
 
-    public SpnegoConfigImpl(WsLocationAdmin locationAdmin, Map<String, Object> props) {
+    public SpnegoConfigImpl(WsLocationAdmin locationAdmin,
+                            KerberosService kerberosService,
+                            Map<String, Object> props) {
         this.locationAdmin = locationAdmin;
+        this.kerbSvc = kerberosService;
         krb5DefaultFile = new Krb5DefaultFile(locationAdmin);
         processConfig(props);
         initSpnGssCrendential();
@@ -162,6 +168,12 @@ public class SpnegoConfigImpl implements SpnegoConfig {
      */
     protected String processKrb5Keytab(Map<String, Object> props) {
         String keytab = (String) props.get(KEY_KRB5_KEYTAB);
+        Path kerbKeytab = kerbSvc.getKeytab(); // from the <kerberos> element
+
+        if (keytab == null && kerbKeytab != null) {
+            keytab = kerbKeytab.toAbsolutePath().toString();
+        }
+
         if (keytab != null) {
             WsResource kt = locationAdmin.resolveResource(keytab);
             if (kt == null || !kt.exists()) {
@@ -180,6 +192,20 @@ public class SpnegoConfigImpl implements SpnegoConfig {
      */
     protected String processKrb5Config(Map<String, Object> props) {
         String krbCf = (String) props.get(KEY_KRB5_CONFIG);
+        Path kerbConfigFile = kerbSvc.getConfigFile(); // from the <kerberos> element
+
+        if (kerbConfigFile != null) {
+            if (krbCf == null) {
+                krbCf = kerbConfigFile.toAbsolutePath().toString();
+            } else if (!kerbConfigFile.toAbsolutePath().toString().equals(krbCf)) {
+                // Error: Conflicting values specified on <spnego> and <kerberos> element
+                Tr.error(tc, "SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E", "configFile", "<kerberos>", KEY_KRB5_CONFIG, "<spnego>");
+                return null;
+            } else {
+                // both values are set but are equal, tolerate it
+            }
+        }
+
         if (krbCf != null) {
             WsResource kcf = locationAdmin.resolveResource(krbCf);
             if (kcf == null || !kcf.exists()) {

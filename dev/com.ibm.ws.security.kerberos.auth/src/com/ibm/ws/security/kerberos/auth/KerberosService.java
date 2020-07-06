@@ -37,6 +37,7 @@ public class KerberosService {
     static SecureAction priv = AccessController.doPrivileged(SecureAction.get());
 
     private Path keytab;
+    private Path configFile;
 
     @Activate
     protected void activate(ComponentContext ctx) {
@@ -54,7 +55,7 @@ public class KerberosService {
             }
         }
         if (rawConfigFile != null) {
-            Path configFile = Paths.get(rawConfigFile);
+            configFile = Paths.get(rawConfigFile);
             String originalConfigFile = priv.getProperty(KRB5_CONFIG_PROPERTY);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Setting system property " + KRB5_CONFIG_PROPERTY + "=" + configFile.toAbsolutePath().toString() +
@@ -62,6 +63,10 @@ public class KerberosService {
             }
             priv.setProperty(KRB5_CONFIG_PROPERTY, configFile.toAbsolutePath().toString());
         }
+    }
+
+    public Path getConfigFile() {
+        return configFile;
     }
 
     /**

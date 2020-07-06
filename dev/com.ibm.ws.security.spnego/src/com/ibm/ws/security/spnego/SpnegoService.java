@@ -32,6 +32,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.authentication.filter.internal.AuthFilterConfig;
+import com.ibm.ws.security.kerberos.auth.KerberosService;
 import com.ibm.ws.security.spnego.internal.SpnegoConfigImpl;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.AuthenticationResult;
@@ -53,6 +54,7 @@ public class SpnegoService implements WebAuthenticator {
 
     private final AtomicServiceReference<WsLocationAdmin> locationAdminRef = new AtomicServiceReference<WsLocationAdmin>(KEY_LOCATION_ADMIN);
     protected final AtomicServiceReference<AuthenticationFilter> authFilterServiceRef = new AtomicServiceReference<AuthenticationFilter>(KEY_FILTER);
+    protected final AtomicServiceReference<KerberosService> kerberosServiceRef = new AtomicServiceReference<>("kerberosService");
 
     private final AuthenticationResult CONTINUE = new AuthenticationResult(AuthResult.CONTINUE, "SPNEGO service said continue...");
     private SpnegoAuthenticator spnegoAuthenticator = null;
@@ -91,18 +93,28 @@ public class SpnegoService implements WebAuthenticator {
         locationAdminRef.unsetReference(ref);
     }
 
+    @Reference(service = KerberosService.class)
+    protected void setKerberosService(ServiceReference<KerberosService> ref) {
+        kerberosServiceRef.setReference(ref);
+    }
+
+    protected void unsetKerberosService(ServiceReference<KerberosService> ref) {
+        kerberosServiceRef.unsetReference(ref);
+    }
+
     @Activate
     protected synchronized void activate(ComponentContext cc, Map<String, Object> props) {
+        kerberosServiceRef.activate(cc);
         locationAdminRef.activate(cc);
         authFilterServiceRef.activate(cc);
-        spnegoConfig = new SpnegoConfigImpl(locationAdminRef.getServiceWithException(), props);
+        spnegoConfig = new SpnegoConfigImpl(locationAdminRef.getServiceWithException(), kerberosServiceRef.getServiceWithException(), props);
         spnegoAuthenticator = new SpnegoAuthenticator();
         Tr.info(tc, "SPNEGO_CONFIG_PROCESSED", spnegoConfig.getId());
     }
 
     @Modified
     protected synchronized void modified(Map<String, Object> props) {
-        spnegoConfig = new SpnegoConfigImpl(locationAdminRef.getServiceWithException(), props);
+        spnegoConfig = new SpnegoConfigImpl(locationAdminRef.getServiceWithException(), kerberosServiceRef.getServiceWithException(), props);
         Tr.info(tc, "SPNEGO_CONFIG_MODIFIED", spnegoConfig.getId());
     }
 
@@ -110,6 +122,7 @@ public class SpnegoService implements WebAuthenticator {
     protected synchronized void deactivate(ComponentContext cc) {
         locationAdminRef.deactivate(cc);
         authFilterServiceRef.deactivate(cc);
+        kerberosServiceRef.deactivate(cc);
         spnegoConfig = null;
         spnegoAuthenticator = null;
     }
