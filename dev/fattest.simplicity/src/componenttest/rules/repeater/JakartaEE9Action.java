@@ -77,16 +77,11 @@ public class JakartaEE9Action extends FeatureReplacementAction {
 
     public static final Set<String> EE9_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE9_FEATURES_ARRAY)));
 
-    private static Set<String> removeFeatures() {
-        Set<String> removeFeatures = new HashSet<>(EE7FeatureReplacementAction.EE7_FEATURE_SET);
-        removeFeatures.addAll(EE8FeatureReplacementAction.EE8_FEATURE_SET);
-        removeFeatures.add("componenttest-1.0"); // replaced by "componenttest-2.0"
-        return removeFeatures;
-    }
-
     public JakartaEE9Action() {
         // Remove the EE7 and EE8 features; replace them with the EE9 features
-        super(JakartaEE9Action.removeFeatures(), EE9_FEATURE_SET);
+        super(EE9_FEATURE_SET);
+        removeFeatures(EE7FeatureReplacementAction.EE7_FEATURE_SET);
+        removeFeatures(EE8FeatureReplacementAction.EE8_FEATURE_SET);
         withMinJavaLevel(8);
         forceAddFeatures(false);
         withID(ID);

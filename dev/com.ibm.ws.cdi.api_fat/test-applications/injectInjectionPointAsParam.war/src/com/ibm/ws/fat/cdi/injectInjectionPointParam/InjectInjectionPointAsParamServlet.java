@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.fat.cdi.injectInjectionPointParam;
 
-import static org.junit.Assert.fail;
-
 import java.io.IOException;
 
 import javax.inject.Inject;
@@ -34,9 +32,7 @@ public class InjectInjectionPointAsParamServlet extends FATServlet {
     @Test
     @Mode(TestMode.FULL)
     public void testInjectInjectionPointAsParam() throws IOException {
-        if (!bean.test()) {
-            fail("Bean Manager and/or Injection Point not correctly injected into TestBean constructor");
-        }
+        bean.assertBeanManagerAndInjectionPoint();
     }
 
 }

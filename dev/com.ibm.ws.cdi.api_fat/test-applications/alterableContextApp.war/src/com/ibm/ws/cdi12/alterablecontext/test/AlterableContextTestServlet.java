@@ -11,7 +11,9 @@
 
 package com.ibm.ws.cdi12.alterablecontext.test;
 
-import static org.junit.Assert.fail;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.hasItem;
+import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
@@ -36,23 +38,13 @@ public class AlterableContextTestServlet extends FATServlet {
     @Mode(TestMode.FULL)
     public void testBeanWasFound() throws Exception {
         List<String> strings = DirtySingleton.getStrings();
-        assertContains(strings, FIRST);
+        assertThat(strings, hasItem(containsString(FIRST)));
     }
 
     @Test
     @Mode(TestMode.FULL)
     public void testBeanWasDestroyed() throws Exception {
         List<String> strings = DirtySingleton.getStrings();
-        assertContains(strings, SECOND);
+        assertThat(strings, hasItem(containsString(SECOND)));
     }
-
-    private static void assertContains(List<String> actual, String expected) {
-        for (String s : actual) {
-            if (s.contains(expected)) {
-                return;
-            }
-        }
-        fail("String not found: " + expected);
-    }
-
 }

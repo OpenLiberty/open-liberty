@@ -148,6 +148,10 @@ public class ShrinkHelper {
      * with the file name returned by a.getName(), which should include the
      * file type extension (ear, war, jar, rar, etc)
      *
+     * The application is added to the list to be validated when the server starts. If the server is already started then this
+     * method will wait for the application to be started.
+     *
+     *
      * @param  server    The server to publish the application to
      * @param  a         The archive to export as a file
      * @param  options   The deployment options
