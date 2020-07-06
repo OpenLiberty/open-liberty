@@ -87,7 +87,7 @@ public class JAXBTestServlet extends FATServlet {
         System.out.println("Got javax.activation from loader=  " + apiLoader);
         System.out.println("Got javax.activation from location=" + apiLocation);
 
-        // On JDK 7/8 we will continue to load javax.activation from the JDK, but in JDK 9+ we will load it from a Liberty bundle
+        // On JDK 8 we will continue to load javax.activation from the JDK, but in JDK 9+ we will load it from a Liberty bundle
         if (System.getProperty("java.specification.version").startsWith("1.")) {
             assertNull("Expected javax.activation to come from JDK classloader, but it came from: " + apiLoader, apiLoader);
             assertNull("Expected javax.activation to come from JDK, but it came from: " + apiLocation, apiLocation);

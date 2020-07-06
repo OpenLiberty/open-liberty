@@ -288,7 +288,7 @@ public class SpnegoTokenHelper {
     }
 
     private static Subject doKerberosLogin(String jaasLoginContextEntry, final String upn, @Sensitive final String password) throws LoginException {
-        if (Krb5Common.isIBMJdk18OrLower)
+        if (Krb5Common.isIBMJdk18)
             return doKerberosLoginIBMJdk8(jaasLoginContextEntry, upn, password);
         else if (Krb5Common.isOtherSupportJDKs)
             return doKerberosLoginJdk11Up(jaasLoginContextEntry, upn, password);

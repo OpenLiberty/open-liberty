@@ -19,15 +19,13 @@ import java.security.interfaces.RSAPrivateKey;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.HashMap;
-import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.security.auth.Subject;
-
 
 import org.jose4j.keys.HmacKey;
 import org.osgi.service.component.ComponentContext;
@@ -44,30 +42,22 @@ import com.ibm.oauth.core.internal.oauth20.tokentype.OAuth20TokenTypeHandler;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.websphere.security.WSSecurityException;
-import com.ibm.websphere.security.auth.WSSubject;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
-import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.SecurityService;
-import com.ibm.ws.security.authentication.AuthenticationConstants;
-import com.ibm.ws.security.authentication.AuthenticationException;
-import com.ibm.ws.security.authentication.AuthenticationService;
-import com.ibm.ws.security.authentication.utility.JaasLoginConfigConstants;
 import com.ibm.ws.security.common.claims.UserClaims;
 import com.ibm.ws.security.common.claims.UserClaimsRetrieverService;
+import com.ibm.ws.security.common.jwk.interfaces.JWK;
 import com.ibm.ws.security.common.token.propagation.TokenPropagationHelper;
 import com.ibm.ws.security.oauth20.ProvidersService;
 import com.ibm.ws.security.oauth20.api.OAuth20Provider;
 import com.ibm.ws.security.oauth20.plugins.OAuth20TokenImpl;
-import com.ibm.ws.security.oauth20.plugins.jose4j.JwtCreator;
 import com.ibm.ws.security.oauth20.plugins.jose4j.JWTData;
+import com.ibm.ws.security.oauth20.plugins.jose4j.JwtCreator;
 import com.ibm.ws.security.oauth20.plugins.jose4j.OidcUserClaims;
 import com.ibm.ws.security.oauth20.util.ConfigUtils;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
 import com.ibm.ws.security.openidconnect.common.Constants;
-import com.ibm.ws.security.common.jwk.interfaces.JWK;
-import com.ibm.ws.security.openidconnect.server.ServerConstants;
 import com.ibm.ws.security.openidconnect.server.internal.HashUtils;
 import com.ibm.ws.security.openidconnect.token.IDToken;
 import com.ibm.ws.security.openidconnect.token.JWSHeader;
@@ -98,7 +88,8 @@ public class IDTokenHandler implements OAuth20TokenTypeHandler {
 
     /** {@inheritDoc} */
     @Override
-    public void init(OAuthComponentConfiguration config) {}
+    public void init(OAuthComponentConfiguration config) {
+    }
 
     protected void activate(ComponentContext cc, Map<String, Object> properties) {
         // do nothing for now
@@ -110,8 +101,7 @@ public class IDTokenHandler implements OAuth20TokenTypeHandler {
 
     protected void modified(ComponentContext cc, Map<String, Object> properties) {
         // do nothing for now
-    }   
-
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -139,7 +129,7 @@ public class IDTokenHandler implements OAuth20TokenTypeHandler {
         String idTokenString = null;
         String signatureAlgorithm = oidcServerConfig.getSignatureAlgorithm();
 
-        if (ServerConstants.JAVA_VERSION_6 || "none".equals(signatureAlgorithm)) {// jdk 1.6 or no need to sign
+        if ("none".equals(signatureAlgorithm)) {// no need to sign
             Payload payload = createPayload(tokenMap, oidcServerConfig);
             Object signingKey = getSigningKey(signatureAlgorithm, sharedKey, oidcServerConfig);
             idTokenString = createIdTokenAsString(payload, signatureAlgorithm, signingKey, accessToken);
@@ -153,30 +143,30 @@ public class IDTokenHandler implements OAuth20TokenTypeHandler {
             boolean idSpi = isIDTokenMediatorSpi(); //check if spi is loaded
             String jsonFromSpi = null;
             if (idSpi) {
-                synchronized(this){
-                    boolean subjectPushed = false; 
+                synchronized (this) {
+                    boolean subjectPushed = false;
                     Subject priorSubject = null;
-                    try{
-                        // 238871 - push authenticated subject onto thread for mediator to use in token creation.                        
-                        priorSubject  = TokenPropagationHelper.getRunAsSubject();
+                    try {
+                        // 238871 - push authenticated subject onto thread for mediator to use in token creation.
+                        priorSubject = TokenPropagationHelper.getRunAsSubject();
                         subjectPushed = TokenPropagationHelper.pushSubject(username);
-                        
+
                         //1. pass tokenMap to SPI as input parameter
                         //2. expect SPI to return the claims as Json String
                         jsonFromSpi = getIDTokenClaimsFromMediatorSpi(tokenMap);
                         // 238871 - now we're done, restore the thread.
-                    } finally{
-                        if(subjectPushed){
+                    } finally {
+                        if (subjectPushed) {
                             TokenPropagationHelper.setRunAsSubject(priorSubject);
                         }
-                    } 
+                    }
                 }
                 if (jsonFromSpi != null) {
                     //3. merge claims and create ID token
                     idTokenString = JwtCreator.createJwtAsStringForSpi(jsonFromSpi, oidcServerConfig, clientId, username, scopes, lifetime,
                                                                        tokenMap, grantType, accessTokenHash, jwtData);
-                }                  
-               
+                }
+
             }
 
             if (jsonFromSpi == null) {
@@ -185,7 +175,7 @@ public class IDTokenHandler implements OAuth20TokenTypeHandler {
                     userClaims.put(AT_HASH, accessTokenHash);
                 }
                 OAuth20Provider oauth20Provider = ProvidersService.getOAuth20Provider(componentId);
-                boolean useMicroProfileTokenFormat = false;//oauth20Provider == null? false: oauth20Provider.isMpJwt(); //Aruna TODO: 
+                boolean useMicroProfileTokenFormat = false;//oauth20Provider == null? false: oauth20Provider.isMpJwt(); //Aruna TODO:
                 // make the above false for now since it is not working with mpJwt feature
                 idTokenString = JwtCreator.createJwtAsString(oidcServerConfig,
                                                              clientId,
@@ -208,18 +198,12 @@ public class IDTokenHandler implements OAuth20TokenTypeHandler {
         return token;
 
     }
-    
- 
 
     /**
      * @return
      */
     private boolean isIDTokenMediatorSpi() {
         if (ConfigUtils.getIdTokenMediatorService().size() > 0) {
-            if (ServerConstants.JAVA_VERSION_6) {
-                Tr.warning(tc, "IDT_MEDIATOR_SPI_REQUIRES_JDK", ServerConstants.JAVA_VERSION);
-                return false;
-            }
             return true;
         }
         return false;
@@ -239,7 +223,7 @@ public class IDTokenHandler implements OAuth20TokenTypeHandler {
     private int getLifetime(OidcServerConfig oidcServerConfig) {
         int lifetime = IDTOKEN_LIFETIME_DEFAULT;
         if (oidcServerConfig != null) {
-            Long lifeValue = (Long) oidcServerConfig.getIdTokenLifetime();
+            Long lifeValue = oidcServerConfig.getIdTokenLifetime();
             if (lifeValue < Integer.MAX_VALUE && lifeValue > 0) {
                 lifetime = lifeValue.intValue();
             } else {
@@ -292,8 +276,7 @@ public class IDTokenHandler implements OAuth20TokenTypeHandler {
                 if (!list.isEmpty()) {
                     if (list.size() > 1) {
                         payload.put(shortKey, list);
-                    }
-                    else {
+                    } else {
                         payload.put(shortKey, OAuth20Util.getValueFromMap(key, tokenMap));
                     }
                 }
@@ -304,11 +287,10 @@ public class IDTokenHandler implements OAuth20TokenTypeHandler {
 
     List<String> getListFromMap(String key, Map<String, String[]> m) {
         List<String> list = new ArrayList<String>();
-        String values[] = (String[]) m.get(key);
+        String values[] = m.get(key);
         if (values != null && values.length > 0) {
             int max = values.length;
-            for (int i = 0; i < max; i++)
-            {
+            for (int i = 0; i < max; i++) {
                 list.add(values[i]);
             }
         }
@@ -347,7 +329,7 @@ public class IDTokenHandler implements OAuth20TokenTypeHandler {
      * explicitly sets the time values and they are guaranteed to exist.
      * If this exception is ever thrown it means that the code was broken
      * since the values for the required claims must always exist.
-     * 
+     *
      * @param payload
      */
     protected void validateRequiredClaims(Payload payload) {
@@ -407,8 +389,7 @@ public class IDTokenHandler implements OAuth20TokenTypeHandler {
         Object keyValue = null;
         if (oidcServerConfig.isJwkEnabled() && SIGNATURE_ALG_RS256.equals(signatureAlgorithm)) {
             keyValue = oidcServerConfig.getJSONWebKey();
-        }
-        else {
+        } else {
             if (SIGNATURE_ALG_HS256.equals(signatureAlgorithm)) {
                 keyValue = Base64Coder.getBytes(sharedKey);
             } else if (SIGNATURE_ALG_RS256.equals(signatureAlgorithm)) {
@@ -431,8 +412,7 @@ public class IDTokenHandler implements OAuth20TokenTypeHandler {
             JSONWebKey jwk = oidcServerConfig.getJSONWebKey();
             keyValue = jwk.getPrivateKey();
             keyId = jwk.getKeyID();
-        }
-        else {
+        } else {
             if (SIGNATURE_ALG_HS256.equals(signatureAlgorithm)) {
                 try {
                     keyValue = new HmacKey(sharedKey.getBytes("UTF-8"));;
@@ -478,7 +458,8 @@ public class IDTokenHandler implements OAuth20TokenTypeHandler {
         return SIGNATURE_ALG_NONE.equals(signatureAlgorithm) == false;
     }
 
-    private String createSignedIdToken(Payload payload, String signatureAlgorithm, @Sensitive Object signingKey, @Sensitive String accessToken) throws InvalidKeyException, SignatureException {
+    private String createSignedIdToken(Payload payload, String signatureAlgorithm, @Sensitive Object signingKey,
+                                       @Sensitive String accessToken) throws InvalidKeyException, SignatureException {
         JWSHeader jwsHeader = new JWSHeader();
         jwsHeader.setAlgorithm(signatureAlgorithm);
         if (signingKey instanceof JWK) {

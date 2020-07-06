@@ -157,7 +157,7 @@ public class JAASConfigurationImpl implements JAASConfiguration {
     private void createJAASClientLoginContextEntry(Map<String, List<AppConfigurationEntry>> jaasConfigurationEntries) throws IllegalArgumentException {
 
         List<AppConfigurationEntry> loginModuleEntries;
-        if (Krb5Common.isIBMJdk18OrLower) {
+        if (Krb5Common.isIBMJdk18) {
             loginModuleEntries = createIBMJdk8Krb5loginModuleAppConfigurationEntry();
             jaasConfigurationEntries.put(JaasLoginConfigConstants.JAASClient, loginModuleEntries);
             jaasConfigurationEntries.put(Krb5LoginModuleWrapper.COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE, loginModuleEntries);

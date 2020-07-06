@@ -20,7 +20,6 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.beanvalidation.fat.basic.BasicValidation_Common;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
@@ -33,7 +32,6 @@ import componenttest.topology.utils.PrivHelper;
  * that everything that worked without CDI works with it as well.
  */
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 8)
 public class BeanValidation20CDITest extends BeanValidationCDI_Common {
 
     @Server("com.ibm.ws.beanvalidation.cdi_2.0.fat")

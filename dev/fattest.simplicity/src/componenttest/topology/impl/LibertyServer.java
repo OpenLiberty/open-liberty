@@ -6118,9 +6118,6 @@ public class LibertyServer implements LogMonitorClient {
         fixedIgnoreErrorsList.add("CWWKF0017E.*cik.ext.product1.properties");
         // Added due to build break defect 221453.
         fixedIgnoreErrorsList.add("CWWKG0011W");
-        if (isJavaVersion6()) {
-            fixedIgnoreErrorsList.add("CWWKE0109W");
-        }
     }
 
     public boolean isJava2SecurityEnabled() {
@@ -6143,14 +6140,6 @@ public class LibertyServer implements LogMonitorClient {
         ServerConfiguration config = this.getServerConfiguration();
         config.updateDatabaseArtifacts();
         this.updateServerConfiguration(config);
-    }
-
-    public boolean isJavaVersion6() {
-        return javaInfo.majorVersion() == 6;
-    }
-
-    public boolean isJavaVersion8() {
-        return javaInfo.majorVersion() == 8;
     }
 
     public boolean isIBMJVM() {

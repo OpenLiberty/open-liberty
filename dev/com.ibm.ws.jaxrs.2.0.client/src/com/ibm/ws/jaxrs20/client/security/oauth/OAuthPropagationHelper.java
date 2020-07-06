@@ -39,7 +39,6 @@ import com.ibm.websphere.security.auth.WSSubject;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jaxrs20.client.JAXRSClientConstants;
 import com.ibm.ws.jaxrs20.client.MpJwtPropagation;
-import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 @Component(service = OAuthPropagationHelper.class, name = "OAuthPropagationHelper", immediate = true, property = "service.vendor=IBM")
@@ -50,29 +49,21 @@ public class OAuthPropagationHelper {
     public static final String MP_JSON_WEB_TOKEN_PROPAGATION = "MpJwtPropagation";
     protected final static AtomicServiceReference<MpJwtPropagation> MpJsonWebTokenUtilRef = new AtomicServiceReference<MpJwtPropagation>(MP_JSON_WEB_TOKEN_PROPAGATION);
 
-    static private boolean isJdk18Up = (JavaInfo.majorVersion() >= 8);
-
     @Reference(service = MpJwtPropagation.class, name = MP_JSON_WEB_TOKEN_PROPAGATION, cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC,
                policyOption = ReferencePolicyOption.GREEDY)
     protected void setMpJwtPropagation(ServiceReference<MpJwtPropagation> ref) {
-        if (isJavaVersionAtLeast18()) {
-            MpJsonWebTokenUtilRef.setReference(ref);
-        }
+        MpJsonWebTokenUtilRef.setReference(ref);
     }
 
     protected void unsetMpJwtPropagation(ServiceReference<MpJwtPropagation> ref) {
-        if (isJavaVersionAtLeast18()) {
-            MpJsonWebTokenUtilRef.unsetReference(ref);
-        }
+        MpJsonWebTokenUtilRef.unsetReference(ref);
     }
 
     @Activate
     protected void activate(ComponentContext cc) {
-        if (isJavaVersionAtLeast18()) {
-            MpJsonWebTokenUtilRef.activate(cc);
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "MpJwtPropagation service is activated");
-            }
+        MpJsonWebTokenUtilRef.activate(cc);
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "MpJwtPropagation service is activated");
         }
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "OAuthPropagationHelper service is activated");
@@ -84,19 +75,13 @@ public class OAuthPropagationHelper {
 
     @Deactivate
     protected void deactivate(ComponentContext cc) {
-        if (isJavaVersionAtLeast18()) {
-            MpJsonWebTokenUtilRef.deactivate(cc);
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "MpJwtPropagation service is deactivated");
-            }
+        MpJsonWebTokenUtilRef.deactivate(cc);
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "MpJwtPropagation service is deactivated");
         }
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "OAuthPropagationHelper service is activated");
         }
-    }
-
-    private static boolean isJavaVersionAtLeast18() {
-        return isJdk18Up;
     }
 
     public static String getMpJsonWebToken() {

@@ -40,7 +40,6 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import componenttest.annotation.ExpectedFFDC;
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -860,7 +859,6 @@ public class FATTest extends AbstractAppManagerTest {
      * @throws Exception
      */
     @Test
-    @MinimumJavaLevel(javaLevel = 7)
     public void testApplicationAutoStartProperty() throws Exception {
         final String method = testName.getMethodName();
         try {

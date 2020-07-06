@@ -27,7 +27,6 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
@@ -37,7 +36,6 @@ import componenttest.topology.impl.LibertyServer;
  * JSP 2.3 tests which use Java 1.8 specific features.
  *
  * Tests must only run when Java 1.8 is in use.
- * For this each test should be annotated @MinimumJavaLevel(javaLevel = 8)
  *
  * Tests that just need to drive a simple request using our WebBrowser object can be placed in this class.
  *
@@ -71,10 +69,9 @@ public class JSPJava8Test {
      * Simple test for Index.jsp
      *
      * @throws Exception
-     *                       if something goes horribly wrong
+     *             if something goes horribly wrong
      */
     @Test
-    @MinimumJavaLevel(javaLevel = 8)
     public void testJava8JSP() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
