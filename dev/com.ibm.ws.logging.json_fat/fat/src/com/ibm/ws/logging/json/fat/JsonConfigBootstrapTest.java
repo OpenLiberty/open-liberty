@@ -22,6 +22,7 @@ import java.util.Properties;
 
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -496,10 +497,11 @@ public class JsonConfigBootstrapTest {
         TestUtils.runApp(server, "logServlet");
     }
 
-    private static String setServerConfig(String fileName) throws Exception {
-        server.setMarkToEndOfLog();
+    private static void setServerConfig(String fileName) throws Exception {
+        RemoteFile log = server.getDefaultTraceFile();
+        server.setMarkToEndOfLog(log);
         server.setServerConfigurationFile(fileName);
-        return server.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*");
+        Assert.assertNotNull(server.waitForStringInLog("CWWKG0017I.*|CWWKG0018I.*", log));
     }
 
     @After
