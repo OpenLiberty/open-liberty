@@ -42,6 +42,7 @@ import com.ibm.ws.security.authentication.principals.WSPrincipal;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.security.intfc.SubjectManagerService;
 import com.ibm.ws.security.jca.AuthDataService;
+import com.ibm.ws.security.kerberos.auth.KerberosService;
 import com.ibm.ws.security.kerberos.auth.Krb5LoginModuleWrapper;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.security.auth.callback.WSMappingCallbackHandler;
@@ -74,6 +75,7 @@ public class AuthDataServiceImpl implements AuthDataService {
     private static final String KEY_AUTH_DATA_ALIAS = "com.ibm.mapping.authDataAlias";
 
     private final AtomicServiceReference<SecurityService> securityServiceRef = new AtomicServiceReference<SecurityService>(KEY_SECURITY_SERVICE);
+    private final AtomicServiceReference<KerberosService> krb5ServiceRef = new AtomicServiceReference<KerberosService>("krb5Service");
     private final AtomicServiceReference<AuthDataProvider> authDataProviderRef = new AtomicServiceReference<AuthDataProvider>("authDataProvider");
     private final AtomicServiceReference<SubjectManagerService> smServiceRef = new AtomicServiceReference<SubjectManagerService>(SubjectManagerService.KEY_SUBJECT_MANAGER_SERVICE);
 
@@ -84,6 +86,14 @@ public class AuthDataServiceImpl implements AuthDataService {
 
     protected void unsetSecurityService(ServiceReference<SecurityService> reference) {
         securityServiceRef.unsetReference(reference);
+    }
+
+    protected void setKrb5Service(ServiceReference<KerberosService> ref) {
+        krb5ServiceRef.setReference(ref);
+    }
+
+    protected void unsetKrb5Service(ServiceReference<KerberosService> ref) {
+        krb5ServiceRef.unsetReference(ref);
     }
 
     protected void setAuthDataProvider(ServiceReference<AuthDataProvider> reference) {
@@ -103,12 +113,14 @@ public class AuthDataServiceImpl implements AuthDataService {
     }
 
     protected void activate(ComponentContext cc, Map<String, Object> props) {
+        krb5ServiceRef.activate(cc);
         authDataProviderRef.activate(cc);
         securityServiceRef.activate(cc);
         smServiceRef.activate(cc);
     }
 
     protected void deactivate(ComponentContext cc) {
+        krb5ServiceRef.deactivate(cc);
         authDataProviderRef.deactivate(cc);
         securityServiceRef.deactivate(cc);
         smServiceRef.deactivate(cc);
@@ -157,7 +169,7 @@ public class AuthDataServiceImpl implements AuthDataService {
 
     private Subject obtainSubject(ManagedConnectionFactory managedConnectionFactory, AuthData authData) throws LoginException {
         if (authData.getKrb5Principal() != null) {
-            return doKerberosLogin(authData.getKrb5Principal(), authData.getKrb5Keytab());
+            return doKerberosLogin(authData.getKrb5Principal());
         } else {
             Subject subject = createSubject(managedConnectionFactory, authData);
             addInvocationSubjectPrincipal(subject);
@@ -166,11 +178,13 @@ public class AuthDataServiceImpl implements AuthDataService {
         }
     }
 
-    private Subject doKerberosLogin(String principal, Path keytab) throws LoginException {
+    private Subject doKerberosLogin(String principal) throws LoginException {
         Subject subject = new Subject();
         Krb5LoginModuleWrapper krb5 = new Krb5LoginModuleWrapper();
         Map<String, String> options = new HashMap<String, String>();
         Map<String, Object> sharedState = new HashMap<String, Object>();
+
+        Path keytab = krb5ServiceRef.getService().getKeytab();
 
         options.put("isInitiator", "true");
         options.put("refreshKrb5Config", "true");

@@ -76,8 +76,8 @@ public class JDBCKerberosTest extends FATServletClient {
         server.addEnvVar("DB2_USER", db2.getUsername());
         server.addEnvVar("DB2_PASS", db2.getPassword());
         server.addEnvVar("KRB5_USER", KRB5_USER);
+        server.addEnvVar("KRB5_CONF", krbConfPath.toAbsolutePath().toString());
         List<String> jvmOpts = new ArrayList<>();
-        jvmOpts.add("-Djava.security.krb5.conf=" + krbConfPath.toAbsolutePath());
         jvmOpts.add("-Dsun.security.krb5.debug=true");
         server.setJvmOptions(jvmOpts);
 
