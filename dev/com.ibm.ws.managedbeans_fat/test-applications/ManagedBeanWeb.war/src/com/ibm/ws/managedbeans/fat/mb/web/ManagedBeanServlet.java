@@ -668,7 +668,7 @@ public class ManagedBeanServlet extends FATServlet {
      * @throws Exception when an assertion failure occurs.
      */
     @Test
-    public void testNonCompManagedBean() {
+    public void testNonCompManagedBeanInWar() {
         for (String name : new String[] { "java:global/env/tsr", "java:app/env/tsr", "java:module/env/tsr" }) {
             try {
                 new InitialContext().lookup(name);

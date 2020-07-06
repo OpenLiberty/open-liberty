@@ -200,7 +200,7 @@ public class ManagedBeanEjbServlet extends FATServlet {
      * @throws Exception when an assertion failure occurs.
      */
     @Test
-    public void testNonCompManagedBean() throws Exception {
+    public void testNonCompManagedBeanInEJB() throws Exception {
         StatelessEJBforNonCompManagedBean ejb = (StatelessEJBforNonCompManagedBean) new InitialContext().lookup(JAVA_GLOBAL_EJB + "StatelessEJBforNonCompManagedBean");
         ejb.verifyNonCompLookup();
     }

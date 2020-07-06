@@ -5,6 +5,8 @@
 	<classpathentry kind="src" path="test-applications/ManagedBeanBindingsWeb.war/src"/>
 	<classpathentry kind="src" path="test-applications/ManagedBeanEJB.jar/src"/>
 	<classpathentry kind="src" path="test-applications/ManagedBeanEjbWeb.war/src"/>
+	<classpathentry kind="src" path="test-applications/ManagedBeanInjectionWeb.war/src"/>
+	<classpathentry kind="src" path="test-applications/ManagedBeanInterceptorWeb.war/src"/>
 	<classpathentry kind="src" path="test-applications/ManagedBeanWeb.war/src"/>
 	<classpathentry kind="src" path="test-applications/ManagedBeanXmlEJB.jar/src"/>
 	<classpathentry kind="src" path="test-applications/ManagedBeanXmlWeb.war/src"/>
