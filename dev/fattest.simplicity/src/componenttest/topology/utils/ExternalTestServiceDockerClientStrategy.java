@@ -123,7 +123,7 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
 
         public void test() throws InvalidConfigurationException {
             final String m = "test";
-            final int maxAttempts = FATRunner.FAT_TEST_LOCALRUN ? 1 : 7; // attempt up to 7 times for remote builds
+            final int maxAttempts = FATRunner.FAT_TEST_LOCALRUN ? 1 : 4; // attempt up to 4 times for remote builds
             config = DefaultDockerClientConfig.createDefaultConfigBuilder().build();
             client = getClientForConfig(config);
             Throwable firstIssue = null;
@@ -148,7 +148,7 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
                     if (firstIssue == null)
                         firstIssue = t;
                     if (attempt < maxAttempts) {
-                        int sleepForSec = Math.min(10 * attempt, 45); // increase wait by 10s each attempt up to 45s max
+                        int sleepForSec = 15;
                         Log.info(c, m, "Waiting " + sleepForSec + " seconds before attempting again");
                         try {
                             Thread.sleep(sleepForSec * 1000);
