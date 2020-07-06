@@ -55,12 +55,12 @@ public class AsyncWriteCallback implements InterChannelCallback {
      * @param hout
      * @param originalCL
      */
-    public AsyncWriteCallback(WriteListener wl, WCOutputStream31 out, HttpOutputStreamEE7 hout, ThreadContextManager tcm){
+    public AsyncWriteCallback(WriteListener wl, WCOutputStream31 out, HttpOutputStreamEE7 hout, ThreadContextManager tcm, SRTServletRequestThreadData threadData) {
         this._wl = wl;
         this._out = out;
         this._hout = hout;
         this.tcm = tcm;
-        _requestDataAsyncWriteCallbackThread = SRTServletRequestThreadData.getInstance();
+        _requestDataAsyncWriteCallbackThread = threadData;
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){  
             Tr.debug(tc, "AsyncWriteCallback created, " + this._wl +  ", hout --> "+this._hout +" ,current thread -->"+ Thread.currentThread().getName());  
         }  

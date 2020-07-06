@@ -19,11 +19,11 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.inputstream.HttpInputStreamConnectWeb;
 import com.ibm.ws.webcontainer.srt.SRTInputStream;
+import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.ws.webcontainer31.async.AsyncAlreadyReadCallback;
 import com.ibm.ws.webcontainer31.async.AsyncContext31Impl;
 import com.ibm.ws.webcontainer31.async.AsyncReadCallback;
 import com.ibm.ws.webcontainer31.async.ThreadContextManager;
-import com.ibm.ws.webcontainer31.async.listener.ReadListenerRunnable;
 import com.ibm.ws.webcontainer31.osgi.osgi.WebContainerConstants;
 import com.ibm.wsspi.channelfw.InterChannelCallback;
 import com.ibm.wsspi.http.channel.inbound.HttpInboundServiceContext;
@@ -491,5 +491,9 @@ public class SRTInputStream31 extends SRTInputStream
      */
     public InterChannelCallback getCallback() {
         return callback;
+    }
+    
+    public SRTServletRequest getRequest() {
+        return request;
     }
 }

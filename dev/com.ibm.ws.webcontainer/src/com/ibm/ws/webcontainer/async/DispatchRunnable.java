@@ -17,9 +17,9 @@ import javax.servlet.DispatcherType;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import com.ibm.ws.webcontainer.WebContainer;
 import com.ibm.ws.webcontainer.async.ListenerHelper.CheckDispatching;
 import com.ibm.ws.webcontainer.async.ListenerHelper.ExecuteNextRunnable;
+import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.ws.webcontainer.srt.SRTServletRequestThreadData;
 import com.ibm.ws.webcontainer.webapp.WebAppRequestDispatcher;
 import com.ibm.wsspi.webcontainer.WebContainerRequestState;
@@ -51,7 +51,8 @@ public class DispatchRunnable extends ServiceWrapper implements Runnable {
         }
         
         requestDataOnDispatchRequestThread = new SRTServletRequestThreadData();
-        requestDataOnDispatchRequestThread.init(SRTServletRequestThreadData.getInstance());
+        SRTServletRequestThreadData existing = extRequest != null && extRequest instanceof SRTServletRequest ? SRTServletRequestThreadData.getInstance(((SRTServletRequest) extRequest).getRequestData()) : SRTServletRequestThreadData.getInstance();
+        requestDataOnDispatchRequestThread.init(existing);
     }
 
 

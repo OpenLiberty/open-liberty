@@ -40,12 +40,12 @@ public class WriteListenerRunnable implements Runnable{
     private AsyncWriteCallback _cb = null;
     private SRTServletRequestThreadData _requestDataWriteListenerThread;
 
-    public WriteListenerRunnable(WriteListener listener, HttpOutputStreamEE7 hout, AsyncWriteCallback callback, ThreadContextManager tcm ) {
+    public WriteListenerRunnable(WriteListener listener, HttpOutputStreamEE7 hout, AsyncWriteCallback callback, ThreadContextManager tcm, SRTServletRequestThreadData threadData ) {
         this._listener = listener;
         this._tcm = tcm;
         this._hout = hout;
         this._cb = callback;
-        _requestDataWriteListenerThread = SRTServletRequestThreadData.getInstance();
+        _requestDataWriteListenerThread = threadData;
     }
 
     /**

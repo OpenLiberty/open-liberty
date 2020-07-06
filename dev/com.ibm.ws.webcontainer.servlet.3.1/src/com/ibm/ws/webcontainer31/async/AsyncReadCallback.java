@@ -54,7 +54,7 @@ public class AsyncReadCallback implements InterChannelCallback {
     public AsyncReadCallback(SRTInputStream31 in, ThreadContextManager tcm){
         this.in = in;
         this.threadContextManager = tcm;
-        _requestDataAsyncReadCallbackThread = SRTServletRequestThreadData.getInstance();
+        _requestDataAsyncReadCallbackThread = SRTServletRequestThreadData.getInstance(in.getRequest().getRequestData());
     }
 
     /* (non-Javadoc)
@@ -86,7 +86,11 @@ public class AsyncReadCallback implements InterChannelCallback {
                 Tr.debug(tc, "Calling user's ReadListener onDataAvailable : " + this.in.getReadListener());
             }       
             
-            SRTServletRequestThreadData.getInstance().init(_requestDataAsyncReadCallbackThread);
+            //if (srt != null) {
+            //    SRTServletRequestThreadData.getInstance(srt.getRequestData()).init(_requestDataAsyncReadCallbackThread);
+            //} else {
+                SRTServletRequestThreadData.getInstance().init(_requestDataAsyncReadCallbackThread);
+            //}
             
             //Push the original thread's context onto the current thread, also save off the current thread's context
             boolean localPushedThreadContext = false;
@@ -181,7 +185,11 @@ public class AsyncReadCallback implements InterChannelCallback {
         onErrorDriven = true;
         Exception e = null;
         
-        SRTServletRequestThreadData.getInstance().init(_requestDataAsyncReadCallbackThread);
+        //if (srt != null) {
+        //    SRTServletRequestThreadData.getInstance(srt.getRequestData()).init(_requestDataAsyncReadCallbackThread);
+        //} else {
+            SRTServletRequestThreadData.getInstance().init(_requestDataAsyncReadCallbackThread);
+        //}
 
         synchronized( this.in.getCompleteLockObj()){
 

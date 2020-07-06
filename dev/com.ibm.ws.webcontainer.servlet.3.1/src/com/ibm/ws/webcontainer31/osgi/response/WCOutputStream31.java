@@ -18,14 +18,18 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.servlet.request.IRequest;
 import com.ibm.ws.http.channel.outstream.HttpOutputStreamConnectWeb;
+import com.ibm.ws.webcontainer.async.AsyncContextImpl;
 import com.ibm.ws.webcontainer.osgi.request.IRequestImpl;
 import com.ibm.ws.webcontainer.osgi.response.WCOutputStream;
+import com.ibm.ws.webcontainer.srt.SRTServletRequest;
+import com.ibm.ws.webcontainer.srt.SRTServletRequestThreadData;
 import com.ibm.ws.webcontainer31.async.AsyncWriteCallback;
 import com.ibm.ws.webcontainer31.async.ThreadContextManager;
 import com.ibm.ws.webcontainer31.async.listener.WriteListenerRunnable;
 import com.ibm.ws.webcontainer31.osgi.osgi.WebContainerConstants;
 import com.ibm.wsspi.http.ee7.HttpOutputStreamEE7;
 import com.ibm.wsspi.webcontainer.WebContainerRequestState;
+import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 
 /**
  * Servlet stream wrapper around a regular IO output stream instance.
@@ -144,7 +148,10 @@ public class WCOutputStream31 extends WCOutputStream
         //Create a new thread manager to pass into the callback and into the runnable
         ThreadContextManager tcm = new ThreadContextManager();
         //Create a new Callback so we can use it for our async write callbacks
-        this._callback = new AsyncWriteCallback(this._listener, this, _httpOut, tcm);            
+        WebContainerRequestState reqState = WebContainerRequestState.getInstance(true);
+        IExtendedRequest req = ((AsyncContextImpl) reqState.getAsyncContext()).getIExtendedRequest();
+        SRTServletRequestThreadData threadData = req instanceof SRTServletRequest ? SRTServletRequestThreadData.getInstance(((SRTServletRequest) req).getRequestData()) : SRTServletRequestThreadData.getInstance();
+        this._callback = new AsyncWriteCallback(this._listener, this, _httpOut, tcm, threadData);            
 
         //tell the outputStream that WriteListener has been set by application
         this._httpOut.setAsyncServletWriteListenerCallBack(_callback);    
@@ -153,10 +160,9 @@ public class WCOutputStream31 extends WCOutputStream
             Tr.debug(tc, "stream has data before start write listener first time");
         }                                      
         //Creates the runnable to run the setWriteListener on a new thread
-        WriteListenerRunnable wlRunnable = new WriteListenerRunnable(this._listener, _httpOut, _callback, tcm);
+        WriteListenerRunnable wlRunnable = new WriteListenerRunnable(this._listener, _httpOut, _callback, tcm, threadData);
         
         // make sure no more write allowed on this Thread as this set WL.
-        WebContainerRequestState reqState = WebContainerRequestState.getInstance(true);  
 //        reqState.setAttribute("com.ibm.ws.webcontainer.ThisThreadSetWL", true);
         if (reqState.getAttribute("com.ibm.ws.webcontainer.WriteAllowedonThisThread")!=null){
             reqState.removeAttribute("com.ibm.ws.webcontainer.WriteAllowedonThisThread");               

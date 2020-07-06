@@ -121,7 +121,7 @@ public class SRTServletRequest31 extends SRTServletRequest implements HttpServle
 
             this._request = req;
             _srtRequestHelper = getRequestHelper();
-            SRTServletRequestThreadData.getInstance().init(null);
+            getRequestData().init(null);
             _in.init(_request.getInputStream());
             // begin 280584.1    SVT: StackOverflowError when installing app larger than 2GB    WAS.webcontainer    
             if( this.getContentLengthLong() > 0 ){            

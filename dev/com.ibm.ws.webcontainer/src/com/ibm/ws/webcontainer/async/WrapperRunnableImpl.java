@@ -16,12 +16,12 @@ import java.util.logging.Logger;
 
 import com.ibm.ws.webcontainer.async.ListenerHelper.CheckDispatching;
 import com.ibm.ws.webcontainer.async.ListenerHelper.ExecuteNextRunnable;
+import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.ws.webcontainer.srt.SRTServletRequestThreadData;
 import com.ibm.wsspi.webcontainer.WebContainerRequestState;
 import com.ibm.wsspi.webcontainer.async.WrapperRunnable;
 import com.ibm.wsspi.webcontainer.logging.LoggerFactory;
-import com.ibm.ws.webcontainer.WebContainer;
-import com.ibm.ws.webcontainer.async.AsyncContextImpl;
+import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 
 public class WrapperRunnableImpl extends ServiceWrapper implements WrapperRunnable {
     protected static Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.wsspi.webcontainer.async");
@@ -32,7 +32,7 @@ public class WrapperRunnableImpl extends ServiceWrapper implements WrapperRunnab
     private SRTServletRequestThreadData requestDataOnStartRequestThread;
 
     
-    public WrapperRunnableImpl(Runnable run, AsyncContextImpl asyncContext) {
+    public WrapperRunnableImpl(Runnable run, AsyncContextImpl asyncContext, IExtendedRequest extendedRequest) {
             super(asyncContext);
             this.runnable = run;
             this.asyncContext = asyncContext;
@@ -42,7 +42,8 @@ public class WrapperRunnableImpl extends ServiceWrapper implements WrapperRunnab
             }
             
             requestDataOnStartRequestThread = new  SRTServletRequestThreadData();
-            requestDataOnStartRequestThread.init(SRTServletRequestThreadData.getInstance());
+            SRTServletRequestThreadData existing = extendedRequest != null && extendedRequest instanceof SRTServletRequest ? SRTServletRequestThreadData.getInstance(((SRTServletRequest) extendedRequest).getRequestData()) : SRTServletRequestThreadData.getInstance();
+            requestDataOnStartRequestThread.init(existing);
     }
 
 

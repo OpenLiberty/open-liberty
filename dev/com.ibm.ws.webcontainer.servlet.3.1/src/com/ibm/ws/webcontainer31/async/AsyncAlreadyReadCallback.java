@@ -45,7 +45,7 @@ public class AsyncAlreadyReadCallback implements InterChannelCallback {
     public AsyncAlreadyReadCallback(SRTInputStream31 in, ThreadContextManager tcm){
         this.in = in;
         this.threadContextManager = tcm;
-        _requestDataAsyncReadCallbackThread = SRTServletRequestThreadData.getInstance();
+        _requestDataAsyncReadCallbackThread = SRTServletRequestThreadData.getInstance(in.getRequest().getRequestData());
     }
 
     /* (non-Javadoc)

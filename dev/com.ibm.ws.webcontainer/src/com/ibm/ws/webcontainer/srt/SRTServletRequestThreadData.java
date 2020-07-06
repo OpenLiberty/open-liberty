@@ -45,19 +45,33 @@ public class SRTServletRequestThreadData {
 
     private static WSThreadLocal<SRTServletRequestThreadData> instance = new WSThreadLocal<SRTServletRequestThreadData>();
 
+    public static SRTServletRequestThreadData getInstance (SRTServletRequestThreadData previousState) {
+        //System.out.println("***JTD: SRTData getInstance2 " + previousState);
+        if (previousState == null) {
+            return getInstance();
+        }
+        SRTServletRequestThreadData tempState = (SRTServletRequestThreadData) instance.get();
+         
+        if (tempState == null) {
+            instance.set(previousState);
+            return previousState;
+        }
+         
+        return tempState;
+    }
+
     public static SRTServletRequestThreadData getInstance () {
-
-        SRTServletRequestThreadData tempState = null;
-        tempState=(SRTServletRequestThreadData) instance.get();
+        //System.out.println("***JTD: SRTData getInstance1");
+        //Thread.dumpStack();
+        SRTServletRequestThreadData tempState = (SRTServletRequestThreadData) instance.get();
          
-         if (tempState == null) {
-                tempState = new SRTServletRequestThreadData();
-                instance.set(tempState);
-         }
+        if (tempState == null) {
+            tempState = new SRTServletRequestThreadData();
+            instance.set(tempState);
+        }
          
-         return tempState;
-   }
-
+        return tempState;
+    }
 
     public SRTServletRequestThreadData() {
         if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))

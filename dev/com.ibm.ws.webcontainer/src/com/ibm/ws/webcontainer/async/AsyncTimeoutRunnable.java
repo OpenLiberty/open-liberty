@@ -13,11 +13,12 @@ package com.ibm.ws.webcontainer.async;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.ibm.ws.webcontainer.WebContainer;
 import com.ibm.ws.webcontainer.async.ListenerHelper.CheckDispatching;
 import com.ibm.ws.webcontainer.async.ListenerHelper.ExecuteNextRunnable;
+import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.ws.webcontainer.srt.SRTServletRequestThreadData;
 import com.ibm.wsspi.webcontainer.servlet.AsyncContext;
+import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 
 public class AsyncTimeoutRunnable implements Runnable {
 	private static Logger logger= Logger.getLogger("com.ibm.ws.webcontainer.async");
@@ -26,15 +27,15 @@ public class AsyncTimeoutRunnable implements Runnable {
 	private AsyncServletReentrantLock asyncServletReentrantLock;
         private SRTServletRequestThreadData requestDataOnTimedOutThread;
 	
-	public AsyncTimeoutRunnable	(AsyncContext asyncContext){
+	public AsyncTimeoutRunnable(AsyncContext asyncContext, IExtendedRequest req) {
 		if (logger.isLoggable(Level.FINEST)) {
-                    logger.logp(Level.FINEST,CLASS_NAME, "<init>","this->"+this+", asyncContext->"+asyncContext)    ;   
+                    logger.logp(Level.FINEST,CLASS_NAME, "<init>","this->"+this+", asyncContext->"+asyncContext);   
                 }
 		this.asyncContext = asyncContext;
                 this.asyncServletReentrantLock = asyncContext.getErrorHandlingLock();
-                
+                SRTServletRequestThreadData existing = req instanceof SRTServletRequest ? SRTServletRequestThreadData.getInstance(((SRTServletRequest) req).getRequestData()) : SRTServletRequestThreadData.getInstance();
                 requestDataOnTimedOutThread = new SRTServletRequestThreadData();
-                requestDataOnTimedOutThread.init(SRTServletRequestThreadData.getInstance());
+                requestDataOnTimedOutThread.init(existing);
 	}
 		
 	@Override

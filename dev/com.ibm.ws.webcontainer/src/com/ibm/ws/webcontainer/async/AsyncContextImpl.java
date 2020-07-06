@@ -329,7 +329,7 @@ public class AsyncContextImpl implements AsyncContext {
         }
         if (timeoutScheduledFuture!=null)
             throw new AsyncIllegalStateException(nls.getString("trying.to.schedule.timeout.without.cancelling.previous.timeout"));
-        AsyncTimeoutRunnable asyncTimeoutRunnable = new AsyncTimeoutRunnable (this);
+        AsyncTimeoutRunnable asyncTimeoutRunnable = new AsyncTimeoutRunnable(this, iExtendedRequest);
         timeoutScheduledFuture = ExecutorFieldHolder.field.schedule(asyncTimeoutRunnable, getTimeout(),TimeUnit.MILLISECONDS);
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINEST)) {
             logger.exiting(CLASS_NAME, "scheduleTimeout", this);
@@ -515,7 +515,7 @@ public class AsyncContextImpl implements AsyncContext {
 
             if (startWrappedRunnable){
 
-                WrapperRunnableImpl wrapperRunnable = new WrapperRunnableImpl(run,this);
+                WrapperRunnableImpl wrapperRunnable = new WrapperRunnableImpl(run, this, iExtendedRequest);
 
 
                 // Start:PM90834
