@@ -14,7 +14,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
-import java.util.logging.Logger;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -33,9 +32,6 @@ import com.ibm.wsspi.webcontainer.annotation.AnnotationHelper;
 import com.ibm.wsspi.webcontainer.annotation.AnnotationHelperManager;
 
 public class WebSphereAnnotationLifecycleProvider implements DiscoverableLifecycleProvider, LifecycleProvider2 {
-    private static final String CLASS_NAME = WebSphereAnnotationLifecycleProvider.class.getName();
-    private static final Logger logger = Logger.getLogger(CLASS_NAME);
-
     private final AnnotationHelper runtimeAnnotationHelper;
     private final AnnotationHelperManager annotationHelperManager;
 
