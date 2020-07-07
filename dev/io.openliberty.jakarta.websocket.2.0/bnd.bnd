@@ -1,5 +1,6 @@
+
 #*******************************************************************************
-# Copyright (c) 2017, 2020 IBM Corporation and others.
+# Copyright (c) 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -9,21 +10,21 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
-bVersion: 1.0
+bVersion=1.0
 
-Bundle-Name: WebSphere Websocket API
-Bundle-Description: WebSphere Websocket API, version ${bVersion}
-Bundle-SymbolicName: com.ibm.websphere.appserver.api.wsoc
+Bundle-SymbolicName: io.openliberty.jakarta.websocket.2.0; singleton:=true
 
-jakartaeeMe:true
+Export-Package: \
+	jakarta.websocket; version="2.0.0",\
+	jakarta.websocket.server; version="2.0.0"
 
-Import-Package: com.ibm.websphere.wsoc
+Include-Resource: \
+  @${repo;jakarta.websocket:jakarta.websocket-api;2.0.0}!/META-INF/LICENSE, \
+  @${repo;jakarta.websocket:jakarta.websocket-api;2.0.0}!/META-INF/NOTICE
 
-Export-Package: com.ibm.websphere.wsoc
+instrument.disabled: true
 
--includeresource: {META-INF/maven/com.ibm.websphere.appserver.api/com.ibm.websphere.appserver.api.wsoc/pom.xml=com.ibm.websphere.appserver.api.wsoc.pom}
-
-publish.wlp.jar.suffix: dev/api/ibm
+publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-	com.ibm.ws.wsoc
+	jakarta.websocket:jakarta.websocket-api;version=2.0.0
