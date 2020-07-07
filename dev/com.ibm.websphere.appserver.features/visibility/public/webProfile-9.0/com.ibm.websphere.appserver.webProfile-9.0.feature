@@ -19,4 +19,4 @@ Subsystem-Name: Jakarta EE Web Profile 9.0
   io.openliberty.ejbLite-4.0,\
   io.openliberty.managedBeans-2.0
 kind=beta
-edition=full
+edition=core

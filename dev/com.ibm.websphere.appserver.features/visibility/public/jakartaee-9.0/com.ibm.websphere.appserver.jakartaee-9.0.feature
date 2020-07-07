@@ -14,4 +14,4 @@ Subsystem-Name: Jakarta EE Platform 9.0
   io.openliberty.jakarta.cdi-3.0, \
   io.openliberty.jakarta.interceptor-2.0
 kind=beta
-edition=full
+edition=base
