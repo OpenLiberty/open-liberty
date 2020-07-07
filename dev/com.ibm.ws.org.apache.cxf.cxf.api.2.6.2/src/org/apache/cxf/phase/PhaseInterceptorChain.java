@@ -97,7 +97,7 @@ public class PhaseInterceptorChain implements InterceptorChain {
     private boolean faultOccurred;
     
     
-    @Trivial4
+    @Trivial
     private PhaseInterceptorChain(PhaseInterceptorChain src) {
         isFineLogging = LOG.isLoggable(Level.FINE);
         

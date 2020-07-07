@@ -11,7 +11,7 @@
 
 # NLS_MESSAGEFORMAT_ALL
 #
-#CMVCPATHNAME io.openliberty.jaxb.3.0.internal.tools/resources/io/openliberty/jaxb/tools/internal/resources/JaxbToolsMessages.nlsprops
+#CMVCPATHNAME io.openliberty.jaxb.internal.tools.3.0/resources/io/openliberty/jaxb/tools/internal/resources/JaxbToolsMessages.nlsprops
 #ISMESSAGEFILE TRUE
 #COMPONENTPREFIX CWWKW
 #COMPONENTNAMEFOR CWWKW WebSphere JAXB Tools Code
@@ -20,6 +20,6 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 
-error.parameter.target.missed=CWWKW0700E: The required parameter target was not specified.
-error.parameter.target.missed.explanation=If the target parameter is specified, existing applications can be re-generated without changing their behavior when the JAXB specification level supported by the Liberty Profile is updated.
-error.parameter.target.missed.useraction=Specify the JAXB specification level to which the generated code conforms. The valid value is 3.0
+error.parameter.target.missed=CWWKW0700E: Non \u00e8 stata specificato il parametro di destinazione.
+error.parameter.target.missed.explanation=Se viene specificato il parametro di destinazione, le applicazioni esistenti possono essere rigenerate senza modificare il loro comportamento quando si aggiorna il livello di specifica JAXB supportato da Liberty Profile.
+error.parameter.target.missed.useraction=Specificare il livello di specifica JAXB a cui il codice generato deve essere conforme. Il valore valido \u00e8 3.0

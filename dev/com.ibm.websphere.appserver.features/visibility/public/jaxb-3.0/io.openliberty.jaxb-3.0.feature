@@ -21,6 +21,6 @@ Subsystem-Name: Jakarta XML Bindings 3.0
   com.ibm.websphere.appserver.eeCompatible-9.0, \
   io.openliberty.jakarta.jaxb-3.0
 -bundles=\
-  io.openliberty.jaxb.3.0.internal.tools
+  io.openliberty.jaxb.internal.tools.3.0
 kind=noship
 edition=full
