@@ -31,7 +31,6 @@ import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
@@ -39,7 +38,6 @@ import componenttest.topology.impl.LibertyServer;
  * Tests to execute on the jspCdiServer that use HttpUnit.
  */
 
-@SkipForRepeat("EE9_FEATURES")
 @RunWith(FATRunner.class)
 public class JSPCdiTest {
     private static final Logger LOG = Logger.getLogger(JSPCdiTest.class.getName());

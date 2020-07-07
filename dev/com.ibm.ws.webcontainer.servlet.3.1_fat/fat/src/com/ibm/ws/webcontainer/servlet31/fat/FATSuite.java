@@ -42,8 +42,8 @@ import com.ibm.ws.webcontainer.servlet31.fat.tests.VHServerHttpUnit;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.WCServerHttpUnit;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.WCServerTest;
 
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 
 /**
@@ -84,8 +84,7 @@ public class FATSuite {
 
     @ClassRule
     public static RepeatTests r = RepeatTests
-                    .with(FeatureReplacementAction.EE7_FEATURES()
-                                    .fullFATOnly())
+                    .with(new EmptyAction().fullFATOnly())
                     .andWith(FeatureReplacementAction.EE8_FEATURES()
                                     .fullFATOnly())
                     .andWith(FeatureReplacementAction.EE9_FEATURES()); 
