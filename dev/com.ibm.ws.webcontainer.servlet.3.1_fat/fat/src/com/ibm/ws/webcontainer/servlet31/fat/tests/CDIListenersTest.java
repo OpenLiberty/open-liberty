@@ -10,12 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.logging.Logger;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -30,7 +28,6 @@ import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebBrowser;
 
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -39,12 +36,10 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * CDI Test
  *
  * Verify that injection is performed into several listener types.
- * Temporarily skipped for EE9 jakarta until cdi-3.0 feature is developed
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat(EE9_FEATURES)
 public class CDIListenersTest extends LoggingTest {
-    
+
     private static final Logger LOG = Logger.getLogger(CDIListenersTest.class.getName());
 
     // Server instance ...
@@ -94,12 +89,12 @@ public class CDIListenersTest extends LoggingTest {
             Set<String> appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(CDI12_TEST_V2_LISTENERS_APP_NAME);
             LOG.info("addAppToServer : " + CDI12_TEST_V2_LISTENERS_APP_NAME + " already installed : " + !appInstalled.isEmpty());
             if (appInstalled.isEmpty())
-            ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), CDI12TestV2ListenersApp);
+                ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), CDI12TestV2ListenersApp);
         }
         SHARED_SERVER.startIfNotStarted();
         SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + CDI12_TEST_V2_LISTENERS_APP_NAME);
     }
-    
+
     @AfterClass
     public static void testCleanup() throws Exception {
         // test cleanup
