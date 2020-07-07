@@ -206,6 +206,9 @@ public class JsonConfigBootstrapTest {
             consolesourceList = new ArrayList<String>(Arrays.asList("trace"));
             checkConsoleLogUpdate(true, consoleLogFile, "INFO", consolesourceList, "");
 
+            //set server.xml to a basic config so that when server stops, it can successfully check for CWWKE0036I in console log
+            setServerConfig(SERVER_XML_BASIC);
+
         } finally {
             // Restore the initial contents of bootstrap.properties
             FileOutputStream out = getFileOutputStreamForRemoteFile(bootstrapFile, false);
@@ -245,6 +248,9 @@ public class JsonConfigBootstrapTest {
 
             // Check in console.log file to see consoleLogLevel is set to WARNING
             checkConsoleLogUpdate(true, consoleLogFile, "ERROR", ALL_SOURCE_LIST, "");
+
+            //set server.xml to a basic config so that when server stops, it can successfully check for CWWKE0036I in console log
+            setServerConfig(SERVER_XML_BASIC);
 
         } finally {
             // Restore the initial contents of bootstrap.properties
