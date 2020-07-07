@@ -74,7 +74,8 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                                                  "jsf-3.0",
                                                  "jsp-3.0",
                                                  "managedBeans-2.0",
-                                                 "servlet-5.0"
+                                                 "servlet-5.0",
+                                                 "websocket-2.0"
     };
 
     public static final Set<String> EE9_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE9_FEATURES_ARRAY)));
