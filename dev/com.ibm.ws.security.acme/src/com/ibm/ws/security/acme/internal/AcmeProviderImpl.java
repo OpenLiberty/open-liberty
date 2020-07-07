@@ -821,6 +821,11 @@ public class AcmeProviderImpl implements AcmeProvider {
 			createKeyStore(filePath, null, password, keyStoreType, keyStoreProvider);
 
 			throw new CertificateException(ace.getMessage(), ace);
+		} catch (Exception e) {
+			/*
+			 * Process an FFDC before we flow back to WSKeystore
+			 */
+			throw e;
 		}
 	}
 
@@ -912,6 +917,11 @@ public class AcmeProviderImpl implements AcmeProvider {
 
 		} catch (AcmeCaException e) {
 			throw new CertificateException(e.getMessage(), e);
+		} catch (Exception e) {
+			/*
+			 * Process an FFDC before we flow back to WSKeystore
+			 */
+			throw e;
 		}
 	}
 
