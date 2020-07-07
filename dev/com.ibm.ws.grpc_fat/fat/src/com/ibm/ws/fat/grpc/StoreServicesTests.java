@@ -12,6 +12,9 @@ package com.ibm.ws.fat.grpc;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -52,6 +55,10 @@ public class StoreServicesTests extends FATServletClient {
     @Server("ConsumerServer")
     @TestServlet(servlet = ConsumerEndpointFATServlet.class, contextRoot = "StoreConsumerApp")
     public static LibertyServer consumerServer;
+
+    private static String getSysProp(String key) {
+        return AccessController.doPrivileged((PrivilegedAction<String>) () -> System.getProperty(key));
+    }
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -100,8 +107,8 @@ public class StoreServicesTests extends FATServletClient {
         producerServer.startServer(StoreServicesTests.class.getSimpleName() + ".log");
 
         // set bvt.prop.member_1.http=8080 and bvt.prop.member_1.https=8081
-        consumerServer.setHttpDefaultPort(8080);
-        consumerServer.setHttpDefaultSecurePort(8081);
+        consumerServer.setHttpDefaultPort(Integer.parseInt(getSysProp("member_1.http")));
+        consumerServer.setHttpDefaultSecurePort(Integer.parseInt(getSysProp("member_1.https")));
         consumerServer.startServer(StoreServicesTests.class.getSimpleName() + ".log");
 
     }
