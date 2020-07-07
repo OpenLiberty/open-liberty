@@ -7,8 +7,3 @@ cd rpmbuild
 rpmbuild -ba SPECS/openliberty.spec 2>&1
 echo "rpmbuild RC:$RC"
 cd $WD1
-#sign rpm
-
-timeout --preserve-status 3m cat $HOME/.gnupg/pp.txt | setsid rpmsign --addsign $RPMFILE -D "%_gpg_name admin@openliberty.io"
-echo "rpmsign RC:$?"
-
