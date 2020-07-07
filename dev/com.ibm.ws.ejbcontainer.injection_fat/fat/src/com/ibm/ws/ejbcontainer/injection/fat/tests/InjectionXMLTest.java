@@ -44,7 +44,7 @@ import componenttest.topology.impl.LibertyServer;
 @RunWith(FATRunner.class)
 public class InjectionXMLTest {
 
-    @Server("com.ibm.ws.ejbcontainer.injection.fat.server")
+    @Server("com.ibm.ws.ejbcontainer.injection.fat.mdbserver")
     @TestServlets({ @TestServlet(servlet = AdvSLEJBInjectionServlet.class, contextRoot = "EJB3INJSXWeb"),
                     @TestServlet(servlet = BasicSFEnvInjectionServlet.class, contextRoot = "EJB3INJSXWeb"),
                     @TestServlet(servlet = BasicSFRemoteEnvInjectionServlet.class, contextRoot = "EJB3INJSXWeb"),
@@ -57,7 +57,7 @@ public class InjectionXMLTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.injection.fat.server")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.injection.fat.server"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.injection.fat.mdbserver")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.injection.fat.mdbserver"));
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -85,6 +85,6 @@ public class InjectionXMLTest {
 
     @AfterClass
     public static void afterClass() throws Exception {
-        server.stopServer();
+        server.stopServer("CNTR0168W", "CNTR0020E", "CWNEN0061E", "CWNEN0009E", "CNTR4006E");
     }
 }

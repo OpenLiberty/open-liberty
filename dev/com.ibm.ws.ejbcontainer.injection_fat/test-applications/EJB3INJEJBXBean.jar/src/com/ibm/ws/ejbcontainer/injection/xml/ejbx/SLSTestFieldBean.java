@@ -80,7 +80,7 @@ public class SLSTestFieldBean {
         ++testpoint;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "SLFieldLocal1 is SLBean1", SLFieldLocal1.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SLBean1");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean1");
         ++testpoint;
 
         currBean = "SLFieldRemote1";
@@ -92,7 +92,7 @@ public class SLSTestFieldBean {
         ++testpoint;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "SLFieldRemote1 is SLBean1", SLFieldRemote1.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SLBean1");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean1");
         ++testpoint;
 
         currBean = "SFFieldLocal1";
@@ -104,7 +104,7 @@ public class SLSTestFieldBean {
         ++testpoint;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "SFFieldLocal1 is SFBean1", SFFieldLocal1.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SFBean1");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean1");
         ++testpoint;
 
         currBean = "SFFieldRemote1";
@@ -116,7 +116,7 @@ public class SLSTestFieldBean {
         ++testpoint;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "SFFieldRemote1 is SFBean1", SFFieldRemote1.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SFBean1");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean1");
         ++testpoint;
 
         currBean = "SLFieldLocal2";
@@ -128,7 +128,7 @@ public class SLSTestFieldBean {
         ++testpoint;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "SLFieldLocal2 is SLBean2", SLFieldLocal2.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SLBean2");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean2");
         ++testpoint;
 
         currBean = "SLFieldRemote2";
@@ -140,7 +140,7 @@ public class SLSTestFieldBean {
         ++testpoint;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "SLFieldRemote2 is SLBean2", SLFieldRemote2.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SLBean2");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean2");
         ++testpoint;
 
         currBean = "SFFieldLocal2";
@@ -152,7 +152,7 @@ public class SLSTestFieldBean {
         ++testpoint;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "SFFieldLocal2 is SFBean2", SFFieldLocal2.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SFBean2");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean2");
         ++testpoint;
 
         currBean = "SFFieldRemote2";
@@ -164,7 +164,7 @@ public class SLSTestFieldBean {
         ++testpoint;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "SFFieldRemote2 is SFBean2", SFFieldRemote2.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SFBean2");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean2");
         ++testpoint;
 
         currBean = "SLFieldLocal3";
@@ -176,7 +176,7 @@ public class SLSTestFieldBean {
         ++testpoint;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "SLFieldLocal3 is SLBean3", SLFieldLocal3.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SLBean3");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean3");
         ++testpoint;
 
         currBean = "SLFieldRemote3";
@@ -198,7 +198,7 @@ public class SLSTestFieldBean {
         ++testpoint;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "SFFieldRemote3 is SFBean3", SFFieldRemote3.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SFBean3");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean3");
         ++testpoint;
 
         currBean = "SLFieldLocal4";
@@ -246,7 +246,7 @@ public class SLSTestFieldBean {
             bean = null;
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "jndiSLFL1 is SLBean1", jndiSLFL1.getBeanName(),
-                         "suite.r70.base.injection.xml.ejbx.SLBean1");
+                         "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean1");
             ++testpoint;
 
             envName = "ejb/SLF1";
@@ -259,7 +259,7 @@ public class SLSTestFieldBean {
             bean = null;
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "jndiSLFR1 is SLBean1", jndiSLFR1.getBeanName(),
-                         "suite.r70.base.injection.xml.ejbx.SLBean1");
+                         "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean1");
             ++testpoint;
 
             envName = "ejb/SFFLocal1";
@@ -272,7 +272,7 @@ public class SLSTestFieldBean {
             bean = null;
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "jndiSFFL1 is SFBean1", jndiSFFL1.getBeanName(),
-                         "suite.r70.base.injection.xml.ejbx.SFBean1");
+                         "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean1");
             ++testpoint;
 
             envName = "ejb/SFF1";
@@ -285,7 +285,7 @@ public class SLSTestFieldBean {
             bean = null;
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "jndiSFFR1 is SFBean1", jndiSFFR1.getBeanName(),
-                         "suite.r70.base.injection.xml.ejbx.SFBean1");
+                         "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean1");
             ++testpoint;
 
             envName = "ejb/SLFLocal2";
@@ -298,7 +298,7 @@ public class SLSTestFieldBean {
             bean = null;
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "jndiSLFL2 is SLBean2", jndiSLFL2.getBeanName(),
-                         "suite.r70.base.injection.xml.ejbx.SLBean2");
+                         "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean2");
             ++testpoint;
 
             envName = "ejb/SLF2";
@@ -311,7 +311,7 @@ public class SLSTestFieldBean {
             bean = null;
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "jndiSLFR2 is SLBean2", jndiSLFR2.getBeanName(),
-                         "suite.r70.base.injection.xml.ejbx.SLBean2");
+                         "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean2");
             ++testpoint;
 
             envName = "ejb/SFFLocal2";
@@ -324,7 +324,7 @@ public class SLSTestFieldBean {
             bean = null;
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "jndiSFFL2 is SFBean2", jndiSFFL2.getBeanName(),
-                         "suite.r70.base.injection.xml.ejbx.SFBean2");
+                         "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean2");
             ++testpoint;
 
             envName = "ejb/SFF2";
@@ -337,7 +337,7 @@ public class SLSTestFieldBean {
             bean = null;
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "jndiSFFR2 is SFBean2", jndiSFFR2.getBeanName(),
-                         "suite.r70.base.injection.xml.ejbx.SFBean2");
+                         "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean2");
             ++testpoint;
 
             envName = "ejb/SLFLocal3";
@@ -350,7 +350,7 @@ public class SLSTestFieldBean {
             bean = null;
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "jndiSLFL3 is SLBean3", jndiSLFL3.getBeanName(),
-                         "suite.r70.base.injection.xml.ejbx.SLBean3");
+                         "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean3");
             ++testpoint;
 
             envName = "ejb/SLF3";
@@ -363,7 +363,7 @@ public class SLSTestFieldBean {
             bean = null;
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "jndiSLFR3 is SLBean3", jndiSLFR3.getBeanName(),
-                         "suite.r70.base.injection.xml.ejbx.SLBean3");
+                         "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean3");
             ++testpoint;
 
             envName = "ejb/SFFLocal3";
@@ -376,7 +376,7 @@ public class SLSTestFieldBean {
             bean = null;
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "jndiSFFL3 is SFBean3", jndiSFFL3.getBeanName(),
-                         "suite.r70.base.injection.xml.ejbx.SFBean3");
+                         "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean3");
             ++testpoint;
 
             envName = "ejb/SFF3";
@@ -389,7 +389,7 @@ public class SLSTestFieldBean {
             bean = null;
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "jndiSFFR3 is SFBean3", jndiSFFR3.getBeanName(),
-                         "suite.r70.base.injection.xml.ejbx.SFBean3");
+                         "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean3");
             ++testpoint;
 
             envName = "ejb/SLFLocal4";
@@ -402,10 +402,10 @@ public class SLSTestFieldBean {
             bean = null;
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "jndiSLFL4 is SLBean4", jndiSLFL4.getBeanName(),
-                         "suite.r70.base.injection.xml.ejbx.SLBean4");
+                         "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean4");
             ++testpoint;
 
-            envName = "suite.r70.base.injection.xml.ejbx.SLSTestFieldBean/SLFieldRemote4";
+            envName = "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestFieldBean/SLFieldRemote4";
             bean = myEnv.lookup(envName);
             assertNotNull(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                           "lookup:" + envName, bean);
@@ -415,10 +415,10 @@ public class SLSTestFieldBean {
             bean = null;
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "jndiSLFR4 is SLBean4", jndiSLFR4.getBeanName(),
-                         "suite.r70.base.injection.xml.ejbx.SLBean4");
+                         "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean4");
             ++testpoint;
 
-            envName = "suite.r70.base.injection.xml.ejbx.SLSTestFieldBean/SFFieldLocal4";
+            envName = "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestFieldBean/SFFieldLocal4";
             bean = myEnv.lookup(envName);
             assertNotNull(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                           "lookup:" + envName, bean);
@@ -428,7 +428,7 @@ public class SLSTestFieldBean {
             bean = null;
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "jndiSFFL4 is SFBean4", jndiSFFL4.getBeanName(),
-                         "suite.r70.base.injection.xml.ejbx.SFBean4");
+                         "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean4");
             ++testpoint;
 
             envName = "ejb/SFF4";
@@ -441,7 +441,7 @@ public class SLSTestFieldBean {
             bean = null;
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "jndiSFFR4 is SFBean4", jndiSFFR4.getBeanName(),
-                         "suite.r70.base.injection.xml.ejbx.SFBean4");
+                         "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean4");
             ++testpoint;
 
             envName = "ejb/SLFAssign";
@@ -483,7 +483,7 @@ public class SLSTestFieldBean {
         bean = null;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "ctxSLFL1 is SLBean1", ctxSLFL1.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SLBean1");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean1");
         ++testpoint;
 
         envName = "ejb/SLF1";
@@ -496,7 +496,7 @@ public class SLSTestFieldBean {
         bean = null;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "ctxSLFR1 is SLBean1", ctxSLFR1.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SLBean1");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean1");
         ++testpoint;
 
         envName = "ejb/SFFLocal1";
@@ -509,7 +509,7 @@ public class SLSTestFieldBean {
         bean = null;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "ctxSFFL1 is SFBean1", ctxSFFL1.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SFBean1");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean1");
         ++testpoint;
 
         envName = "ejb/SFF1";
@@ -522,7 +522,7 @@ public class SLSTestFieldBean {
         bean = null;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "ctxSFFR1 is SFBean1", ctxSFFR1.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SFBean1");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean1");
         ++testpoint;
 
         envName = "ejb/SLFLocal2";
@@ -535,7 +535,7 @@ public class SLSTestFieldBean {
         bean = null;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "ctxSLFL2 is SLBean2", ctxSLFL2.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SLBean2");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean2");
         ++testpoint;
 
         envName = "ejb/SLF2";
@@ -548,7 +548,7 @@ public class SLSTestFieldBean {
         bean = null;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "ctxSLFR2 is SLBean2", ctxSLFR2.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SLBean2");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean2");
         ++testpoint;
 
         envName = "ejb/SFFLocal2";
@@ -561,7 +561,7 @@ public class SLSTestFieldBean {
         bean = null;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "ctxSFFL2 is SFBean2", ctxSFFL2.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SFBean2");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean2");
         ++testpoint;
 
         envName = "ejb/SFF2";
@@ -574,7 +574,7 @@ public class SLSTestFieldBean {
         bean = null;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "ctxSFFR2 is SFBean2", ctxSFFR2.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SFBean2");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean2");
         ++testpoint;
 
         envName = "ejb/SLFLocal3";
@@ -587,7 +587,7 @@ public class SLSTestFieldBean {
         bean = null;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "ctxSLFL3 is SLBean3", ctxSLFL3.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SLBean3");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean3");
         ++testpoint;
 
         envName = "ejb/SLF3";
@@ -600,7 +600,7 @@ public class SLSTestFieldBean {
         bean = null;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "ctxSLFR3 is SLBean3", ctxSLFR3.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SLBean3");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean3");
         ++testpoint;
 
         envName = "ejb/SFFLocal3";
@@ -613,7 +613,7 @@ public class SLSTestFieldBean {
         bean = null;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "ctxSFFL3 is SFBean3", ctxSFFL3.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SFBean3");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean3");
         ++testpoint;
 
         envName = "ejb/SFF3";
@@ -626,7 +626,7 @@ public class SLSTestFieldBean {
         bean = null;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "ctxSFFR3 is SFBean3", ctxSFFR3.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SFBean3");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean3");
         ++testpoint;
 
         envName = "ejb/SLFLocal4";
@@ -639,10 +639,10 @@ public class SLSTestFieldBean {
         bean = null;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "ctxSLFL4 is SLBean4", ctxSLFL4.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SLBean4");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean4");
         ++testpoint;
 
-        envName = "suite.r70.base.injection.xml.ejbx.SLSTestFieldBean/SLFieldRemote4";
+        envName = "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestFieldBean/SLFieldRemote4";
         bean = ivContext.lookup(envName);
         assertNotNull(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                       "lookup:" + envName, bean);
@@ -652,10 +652,10 @@ public class SLSTestFieldBean {
         bean = null;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "ctxSLFR4 is SLBean4", ctxSLFR4.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SLBean4");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean4");
         ++testpoint;
 
-        envName = "suite.r70.base.injection.xml.ejbx.SLSTestFieldBean/SFFieldLocal4";
+        envName = "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestFieldBean/SFFieldLocal4";
         bean = ivContext.lookup(envName);
         assertNotNull(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                       "lookup:" + envName, bean);
@@ -665,7 +665,7 @@ public class SLSTestFieldBean {
         bean = null;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "ctxSFFL4 is SFBean4", ctxSFFL4.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SFBean4");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean4");
         ++testpoint;
 
         envName = "ejb/SFF4";
@@ -678,7 +678,7 @@ public class SLSTestFieldBean {
         bean = null;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "ctxSFFR4 is SFBean4", ctxSFFR4.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SFBean4");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean4");
         ++testpoint;
 
         envName = "ejb/SLFAssign";
@@ -817,7 +817,7 @@ public class SLSTestFieldBean {
             bean = null;
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "jndiSLFL1 is SLBean1", jndiSLFL1.getBeanName(),
-                         "suite.r70.base.injection.xml.ejbx.SLBean1");
+                         "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean1");
             ++testpoint;
 
             envName = "ejb/SLF1";
@@ -830,7 +830,7 @@ public class SLSTestFieldBean {
             bean = null;
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "jndiSLFR1 is SLBean1", jndiSLFR1.getBeanName(),
-                         "suite.r70.base.injection.xml.ejbx.SLBean1");
+                         "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean1");
             ++testpoint;
 
             envName = "ejb/SFFLocal1";
@@ -843,7 +843,7 @@ public class SLSTestFieldBean {
             bean = null;
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "jndiSFFL1 is SFBean1", jndiSFFL1.getBeanName(),
-                         "suite.r70.base.injection.xml.ejbx.SFBean1");
+                         "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean1");
             ++testpoint;
 
             envName = "ejb/SFF1";
@@ -856,7 +856,7 @@ public class SLSTestFieldBean {
             bean = null;
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "jndiSFFR1 is SFBean1", jndiSFFR1.getBeanName(),
-                         "suite.r70.base.injection.xml.ejbx.SFBean1");
+                         "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean1");
             ++testpoint;
 
             envName = "ejb/SLFLocal2";
@@ -869,7 +869,7 @@ public class SLSTestFieldBean {
             bean = null;
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "jndiSLFL2 is SLBean2", jndiSLFL2.getBeanName(),
-                         "suite.r70.base.injection.xml.ejbx.SLBean2");
+                         "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean2");
             ++testpoint;
 
             envName = "ejb/SLF2";
@@ -882,7 +882,7 @@ public class SLSTestFieldBean {
             bean = null;
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "jndiSLFR2 is SLBean2", jndiSLFR2.getBeanName(),
-                         "suite.r70.base.injection.xml.ejbx.SLBean2");
+                         "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean2");
             ++testpoint;
 
             envName = "ejb/SFFLocal2";
@@ -895,7 +895,7 @@ public class SLSTestFieldBean {
             bean = null;
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "jndiSFFL2 is SFBean2", jndiSFFL2.getBeanName(),
-                         "suite.r70.base.injection.xml.ejbx.SFBean2");
+                         "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean2");
             ++testpoint;
 
             envName = "ejb/SFF2";
@@ -908,7 +908,7 @@ public class SLSTestFieldBean {
             bean = null;
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "jndiSFFR2 is SFBean2", jndiSFFR2.getBeanName(),
-                         "suite.r70.base.injection.xml.ejbx.SFBean2");
+                         "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean2");
             ++testpoint;
 
             envName = "ejb/SLFLocal3";
@@ -921,7 +921,7 @@ public class SLSTestFieldBean {
             bean = null;
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "jndiSLFL3 is SLBean3", jndiSLFL3.getBeanName(),
-                         "suite.r70.base.injection.xml.ejbx.SLBean3");
+                         "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean3");
             ++testpoint;
 
             envName = "ejb/SLF3";
@@ -934,7 +934,7 @@ public class SLSTestFieldBean {
             bean = null;
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "jndiSLFR3 is SLBean3", jndiSLFR3.getBeanName(),
-                         "suite.r70.base.injection.xml.ejbx.SLBean3");
+                         "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean3");
             ++testpoint;
 
             envName = "ejb/SFFLocal3";
@@ -947,7 +947,7 @@ public class SLSTestFieldBean {
             bean = null;
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "jndiSFFL3 is SFBean3", jndiSFFL3.getBeanName(),
-                         "suite.r70.base.injection.xml.ejbx.SFBean3");
+                         "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean3");
             ++testpoint;
 
             envName = "ejb/SFF3";
@@ -960,7 +960,7 @@ public class SLSTestFieldBean {
             bean = null;
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "jndiSFFR3 is SFBean3", jndiSFFR3.getBeanName(),
-                         "suite.r70.base.injection.xml.ejbx.SFBean3");
+                         "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean3");
             ++testpoint;
 
             envName = "ejb/SLFLocal4";
@@ -973,10 +973,10 @@ public class SLSTestFieldBean {
             bean = null;
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "jndiSLFL4 is SLBean4", jndiSLFL4.getBeanName(),
-                         "suite.r70.base.injection.xml.ejbx.SLBean4");
+                         "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean4");
             ++testpoint;
 
-            envName = "suite.r70.base.injection.xml.ejbx.SLSTestFieldBean/SLFieldRemote4";
+            envName = "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestFieldBean/SLFieldRemote4";
             bean = myEnv.lookup(envName);
             assertNotNull(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                           "lookup:" + envName, bean);
@@ -986,10 +986,10 @@ public class SLSTestFieldBean {
             bean = null;
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "jndiSLFR4 is SLBean4", jndiSLFR4.getBeanName(),
-                         "suite.r70.base.injection.xml.ejbx.SLBean4");
+                         "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean4");
             ++testpoint;
 
-            envName = "suite.r70.base.injection.xml.ejbx.SLSTestFieldBean/SFFieldLocal4";
+            envName = "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestFieldBean/SFFieldLocal4";
             bean = myEnv.lookup(envName);
             assertNotNull(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                           "lookup:" + envName, bean);
@@ -999,7 +999,7 @@ public class SLSTestFieldBean {
             bean = null;
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "jndiSFFL4 is SFBean4", jndiSFFL4.getBeanName(),
-                         "suite.r70.base.injection.xml.ejbx.SFBean4");
+                         "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean4");
             ++testpoint;
 
             envName = "ejb/SFF4";
@@ -1012,7 +1012,7 @@ public class SLSTestFieldBean {
             bean = null;
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "jndiSFFR4 is SFBean4", jndiSFFR4.getBeanName(),
-                         "suite.r70.base.injection.xml.ejbx.SFBean4");
+                         "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean4");
             ++testpoint;
 
             envName = "ejb/SLFAssign";
@@ -1056,7 +1056,7 @@ public class SLSTestFieldBean {
         bean = null;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "ctxSLFL1 is SLBean1", ctxSLFL1.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SLBean1");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean1");
         ++testpoint;
 
         envName = "ejb/SLF1";
@@ -1069,7 +1069,7 @@ public class SLSTestFieldBean {
         bean = null;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "ctxSLFR1 is SLBean1", ctxSLFR1.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SLBean1");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean1");
         ++testpoint;
 
         envName = "ejb/SFFLocal1";
@@ -1082,7 +1082,7 @@ public class SLSTestFieldBean {
         bean = null;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "ctxSFFL1 is SFBean1", ctxSFFL1.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SFBean1");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean1");
         ++testpoint;
 
         envName = "ejb/SFF1";
@@ -1095,7 +1095,7 @@ public class SLSTestFieldBean {
         bean = null;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "ctxSFFR1 is SFBean1", ctxSFFR1.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SFBean1");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean1");
         ++testpoint;
 
         envName = "ejb/SLFLocal2";
@@ -1108,7 +1108,7 @@ public class SLSTestFieldBean {
         bean = null;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "ctxSLFL2 is SLBean2", ctxSLFL2.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SLBean2");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean2");
         ++testpoint;
 
         envName = "ejb/SLF2";
@@ -1121,7 +1121,7 @@ public class SLSTestFieldBean {
         bean = null;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "ctxSLFR2 is SLBean2", ctxSLFR2.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SLBean2");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean2");
         ++testpoint;
 
         envName = "ejb/SFFLocal2";
@@ -1134,7 +1134,7 @@ public class SLSTestFieldBean {
         bean = null;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "ctxSFFL2 is SFBean2", ctxSFFL2.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SFBean2");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean2");
         ++testpoint;
 
         envName = "ejb/SFF2";
@@ -1147,7 +1147,7 @@ public class SLSTestFieldBean {
         bean = null;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "ctxSFFR2 is SFBean2", ctxSFFR2.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SFBean2");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean2");
         ++testpoint;
 
         envName = "ejb/SLFLocal3";
@@ -1160,7 +1160,7 @@ public class SLSTestFieldBean {
         bean = null;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "ctxSLFL3 is SLBean3", ctxSLFL3.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SLBean3");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean3");
         ++testpoint;
 
         envName = "ejb/SLF3";
@@ -1173,7 +1173,7 @@ public class SLSTestFieldBean {
         bean = null;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "ctxSLFR3 is SLBean3", ctxSLFR3.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SLBean3");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean3");
         ++testpoint;
 
         envName = "ejb/SFFLocal3";
@@ -1186,7 +1186,7 @@ public class SLSTestFieldBean {
         bean = null;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "ctxSFFL3 is SFBean3", ctxSFFL3.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SFBean3");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean3");
         ++testpoint;
 
         envName = "ejb/SFF3";
@@ -1199,7 +1199,7 @@ public class SLSTestFieldBean {
         bean = null;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "ctxSFFR3 is SFBean3", ctxSFFR3.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SFBean3");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean3");
         ++testpoint;
 
         envName = "ejb/SLFLocal4";
@@ -1212,10 +1212,10 @@ public class SLSTestFieldBean {
         bean = null;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "ctxSLFL4 is SLBean4", ctxSLFL4.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SLBean4");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean4");
         ++testpoint;
 
-        envName = "suite.r70.base.injection.xml.ejbx.SLSTestFieldBean/SLFieldRemote4";
+        envName = "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestFieldBean/SLFieldRemote4";
         bean = ivContext.lookup(envName);
         assertNotNull(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                       "lookup:" + envName, bean);
@@ -1225,10 +1225,10 @@ public class SLSTestFieldBean {
         bean = null;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "ctxSLFR4 is SLBean4", ctxSLFR4.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SLBean4");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLBean4");
         ++testpoint;
 
-        envName = "suite.r70.base.injection.xml.ejbx.SLSTestFieldBean/SFFieldLocal4";
+        envName = "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SLSTestFieldBean/SFFieldLocal4";
         bean = ivContext.lookup(envName);
         assertNotNull(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                       "lookup:" + envName, bean);
@@ -1238,7 +1238,7 @@ public class SLSTestFieldBean {
         bean = null;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "ctxSFFL4 is SFBean4", ctxSFFL4.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SFBean4");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean4");
         ++testpoint;
 
         envName = "ejb/SFF4";
@@ -1251,7 +1251,7 @@ public class SLSTestFieldBean {
         bean = null;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "ctxSFFR4 is SFBean4", ctxSFFR4.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SFBean4");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SFBean4");
         ++testpoint;
 
         envName = "ejb/SLFAssign";
@@ -1316,7 +1316,7 @@ public class SLSTestFieldBean {
         ++testpoint;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "SLFieldSame is SameBean7", SLFieldSame.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SameBean7");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SameBean7");
         ++testpoint;
 
         currBean = "SLFieldLocalOther";
@@ -1328,7 +1328,7 @@ public class SLSTestFieldBean {
         ++testpoint;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "SLFieldLocalOther is OtherBean", SLFieldLocalOther.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbo.OtherBean");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbo.OtherBean");
         ++testpoint;
 
         currBean = "SLFieldOther";
@@ -1340,7 +1340,7 @@ public class SLSTestFieldBean {
         ++testpoint;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "SLFieldOther is OtherBean", SLFieldOther.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbo.OtherBean");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbo.OtherBean");
         ++testpoint;
 
         currBean = "SLFieldAuto";
@@ -1354,7 +1354,7 @@ public class SLSTestFieldBean {
         ++testpoint;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "SLFieldOtherIdentical is OtherIdenticalBean", SLFieldOtherIdentical.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbo.OtherIdenticalBean");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbo.OtherIdenticalBean");
         ++testpoint;
 
         currBean = "SLFieldIdentical";
@@ -1363,7 +1363,7 @@ public class SLSTestFieldBean {
         ++testpoint;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "SLFieldIdentical is IdenticalBean", SLFieldIdentical.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.IdenticalBean");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.IdenticalBean");
         ++testpoint;
 
         currBean = "SLFieldNested";
@@ -1398,7 +1398,7 @@ public class SLSTestFieldBean {
             bean = null;
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "jndiSame is SameBean7", jndiSame.getBeanName(),
-                         "suite.r70.base.injection.xml.ejbx.SameBean7");
+                         "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SameBean7");
             ++testpoint;
 
             envName = "ejb/SLFOtherLocal";
@@ -1411,7 +1411,7 @@ public class SLSTestFieldBean {
             bean = null;
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "jndiSLFOtherL is OtherBean", jndiSLFOtherL.getBeanName(),
-                         "suite.r70.base.injection.xml.ejbo.OtherBean");
+                         "com.ibm.ws.ejbcontainer.injection.xml.ejbo.OtherBean");
             ++testpoint;
 
             envName = "ejb/SLFOther";
@@ -1424,7 +1424,7 @@ public class SLSTestFieldBean {
             bean = null;
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "jndiSLFOther is OtherBean", jndiSLFOther.getBeanName(),
-                         "suite.r70.base.injection.xml.ejbo.OtherBean");
+                         "com.ibm.ws.ejbcontainer.injection.xml.ejbo.OtherBean");
             ++testpoint;
 
             envName = "ejb/SLFAuto";
@@ -1449,7 +1449,7 @@ public class SLSTestFieldBean {
             bean = null;
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "jndiSLFIdentical1 is OtherIdenticalBean", jndiSLFIdentical1.getBeanName(),
-                         "suite.r70.base.injection.xml.ejbo.OtherIdenticalBean");
+                         "com.ibm.ws.ejbcontainer.injection.xml.ejbo.OtherIdenticalBean");
             ++testpoint;
 
             envName = "ejb/SLFIdentical2";
@@ -1462,7 +1462,7 @@ public class SLSTestFieldBean {
             bean = null;
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "jndiSLFIdentical2 is IdenticalBean", jndiSLFIdentical2.getBeanName(),
-                         "suite.r70.base.injection.xml.ejbx.IdenticalBean");
+                         "com.ibm.ws.ejbcontainer.injection.xml.ejbx.IdenticalBean");
             ++testpoint;
         } catch (NamingException ex) {
             ex.printStackTrace(System.out);
@@ -1492,7 +1492,7 @@ public class SLSTestFieldBean {
         bean = null;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "ctxSame is SameBean7", ctxSame.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.SameBean7");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.SameBean7");
         ++testpoint;
 
         envName = "ejb/SLFOtherLocal";
@@ -1505,7 +1505,7 @@ public class SLSTestFieldBean {
         bean = null;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "ctxSLFOtherL is OtherBean", ctxSLFOtherL.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbo.OtherBean");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbo.OtherBean");
         ++testpoint;
 
         envName = "ejb/SLFOther";
@@ -1518,7 +1518,7 @@ public class SLSTestFieldBean {
         bean = null;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "ctxSLFOther is OtherBean", ctxSLFOther.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbo.OtherBean");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbo.OtherBean");
         ++testpoint;
 
         envName = "ejb/SLFAuto";
@@ -1543,7 +1543,7 @@ public class SLSTestFieldBean {
         bean = null;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "ctxSLFIdentical1 is OtherIdenticalBean", ctxSLFIdentical1.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbo.OtherIdenticalBean");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbo.OtherIdenticalBean");
         ++testpoint;
 
         envName = "ejb/SLFIdentical2";
@@ -1556,7 +1556,7 @@ public class SLSTestFieldBean {
         bean = null;
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "ctxSLFIdentical2 is IdenticalBean", ctxSLFIdentical2.getBeanName(),
-                     "suite.r70.base.injection.xml.ejbx.IdenticalBean");
+                     "com.ibm.ws.ejbcontainer.injection.xml.ejbx.IdenticalBean");
         ++testpoint;
 
         return PASSED;
