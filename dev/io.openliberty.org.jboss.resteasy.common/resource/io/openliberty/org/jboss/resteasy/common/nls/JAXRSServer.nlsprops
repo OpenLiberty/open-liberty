@@ -53,11 +53,11 @@
 #-------------------------------------------------------------------------------
 
 MULTIPLE_REST_SERVLETS_CWWKW1300W=CWWKW1300W: Multiple REST servlets are defined for the web module, {0}. Only zero or one REST servlet is allowed per web module.
-MULTIPLE_REST_SERVLETS_CWWKW1300W.explanation=Only one REST servlet is allowed to be defined per web module. A REST servlet is any servlet that uses one of the following class names: com.ibm.websphere.jaxrs.server.IBMRestServlet, org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher, or org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher. This message indicates that more than one is specified either in the web.xml or configured dynamically. 
+MULTIPLE_REST_SERVLETS_CWWKW1300W.explanation=Only one REST servlet is allowed to be defined per web module. A REST servlet is any servlet that uses one of the following class names: com.ibm.websphere.jaxrs.server.IBMRestServlet, org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher, or org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher. This message indicates that more than one servlet is specified either in the web.xml or configured dynamically. 
 MULTIPLE_REST_SERVLETS_CWWKW1300W.useraction=Review the web.xml for these servlets and remove all or all but one.
 
-MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W=CWWKW1301W: Multiple REST servlet mappings are defined for the web module, {0}. A REST servlet may only be associated with a single path mapping.
-MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.explanation=A REST servlet is only allowed to be configure with zero or one path mapping. A REST servlet is any servlet that uses one of the following class names: com.ibm.websphere.jaxrs.server.IBMRestServlet, org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher, or org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher. This message indicates that more than one mapping is associated with a REST servlet in the web.xml. 
-MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.useraction=Review the web.xml for the servlet-mappings associated with the REST servlet and remove all or all but one.
+MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W=CWWKW1301W: Multiple REST servlet mappings are defined for the web module, {0}. A REST servlet can be associated only with a single path mapping.
+MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.explanation=A REST servlet is only allowed to be configured with zero or one path mapping. A REST servlet is any servlet that uses one of the following class names: com.ibm.websphere.jaxrs.server.IBMRestServlet, org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher, or org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher. This message indicates that more than one mapping is associated with a REST servlet in the web.xml. 
+MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.useraction=Review the web.xml for the servlet-mappings that are associated with the REST servlet and remove all or all but one.
 
 
