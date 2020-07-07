@@ -114,6 +114,6 @@ SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE=CWWKS4322E: Delegate SPN {0} can not au
 SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE.explanation=Can not authenticate to the Key Distribution Center (KDC).
 SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE.useraction=Verify the service principal name format, and make sure it exists on the Windows domain and that the Kerberos keytab file contains the service principal name.
 
-SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E=CWWKS4323E: The attribute {0} from the {1} element conflicts with the attribute {2} from the {3} element. Only specify a value on either the {1} or the {3} element. It is suggested to only specify the value on the {1} element.
-SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E.explanation=In order to honor each attribute, a system property needs to be set, which is a system-wide setting. Different values for a system-wide setting cannot be honored.
-SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E.useraction=Specify the attribute in only one of the config elements.
+SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E=The [{0}] attribute from the {1} element conflicts with the [{2}] attribute from the {3} element. Specify a value only on either the {1} or the {3} element, not on both elements. It is suggested to specify the value only on the {1} element.
+SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E.explanation=To recognize each attribute, a system property needs to be set, which is a system-wide setting. Different values for a system-wide setting cannot be recognized.
+SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E.useraction=Specify the attribute in only one of the configuration elements.

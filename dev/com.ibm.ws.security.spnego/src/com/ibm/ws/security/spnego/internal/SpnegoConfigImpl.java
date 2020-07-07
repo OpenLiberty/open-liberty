@@ -167,20 +167,28 @@ public class SpnegoConfigImpl implements SpnegoConfig {
      * @param props
      */
     protected String processKrb5Keytab(Map<String, Object> props) {
-        String keytab = (String) props.get(KEY_KRB5_KEYTAB);
-        Path kerbKeytab = kerbSvc.getKeytab(); // from the <kerberos> element
+        String spnegoKeytab = (String) props.get(KEY_KRB5_KEYTAB);
+        Path kerberosKeytab = kerbSvc.getKeytab(); // from the <kerberos> element
 
-        if (keytab == null && kerbKeytab != null) {
-            keytab = kerbKeytab.toAbsolutePath().toString();
-        }
-
-        if (keytab != null) {
-            WsResource kt = locationAdmin.resolveResource(keytab);
-            if (kt == null || !kt.exists()) {
-                Tr.error(tc, "SPNEGO_KRB5_KEYTAB_FILE_NOT_FOUND", keytab);
+        if (kerberosKeytab != null) {
+            if (spnegoKeytab == null) {
+                spnegoKeytab = kerberosKeytab.toAbsolutePath().toString();
+            } else if (!kerberosKeytab.toAbsolutePath().toString().equals(spnegoKeytab)) {
+                // Error: Conflicting values specified on <spnego> and <kerberos> element
+                Tr.error(tc, "SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E", "keytab", "<kerberos>", KEY_KRB5_KEYTAB, "<spnego>");
                 return null;
             } else {
-                return keytab;
+                // both values are set but are equal, tolerate it
+            }
+        }
+
+        if (spnegoKeytab != null) {
+            WsResource kt = locationAdmin.resolveResource(spnegoKeytab);
+            if (kt == null || !kt.exists()) {
+                Tr.error(tc, "SPNEGO_KRB5_KEYTAB_FILE_NOT_FOUND", spnegoKeytab);
+                return null;
+            } else {
+                return spnegoKeytab;
             }
         } else {
             return krb5DefaultFile.getDefaultKrb5KeytabFile();
@@ -191,13 +199,13 @@ public class SpnegoConfigImpl implements SpnegoConfig {
      * @param props
      */
     protected String processKrb5Config(Map<String, Object> props) {
-        String krbCf = (String) props.get(KEY_KRB5_CONFIG);
-        Path kerbConfigFile = kerbSvc.getConfigFile(); // from the <kerberos> element
+        String spnegoConfigFile = (String) props.get(KEY_KRB5_CONFIG);
+        Path kerberosConfigFile = kerbSvc.getConfigFile(); // from the <kerberos> element
 
-        if (kerbConfigFile != null) {
-            if (krbCf == null) {
-                krbCf = kerbConfigFile.toAbsolutePath().toString();
-            } else if (!kerbConfigFile.toAbsolutePath().toString().equals(krbCf)) {
+        if (kerberosConfigFile != null) {
+            if (spnegoConfigFile == null) {
+                spnegoConfigFile = kerberosConfigFile.toAbsolutePath().toString();
+            } else if (!kerberosConfigFile.toAbsolutePath().toString().equals(spnegoConfigFile)) {
                 // Error: Conflicting values specified on <spnego> and <kerberos> element
                 Tr.error(tc, "SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E", "configFile", "<kerberos>", KEY_KRB5_CONFIG, "<spnego>");
                 return null;
@@ -206,13 +214,13 @@ public class SpnegoConfigImpl implements SpnegoConfig {
             }
         }
 
-        if (krbCf != null) {
-            WsResource kcf = locationAdmin.resolveResource(krbCf);
+        if (spnegoConfigFile != null) {
+            WsResource kcf = locationAdmin.resolveResource(spnegoConfigFile);
             if (kcf == null || !kcf.exists()) {
-                Tr.error(tc, "SPNEGO_KRB5_CONFIG_FILE_NOT_FOUND", krbCf);
+                Tr.error(tc, "SPNEGO_KRB5_CONFIG_FILE_NOT_FOUND", spnegoConfigFile);
                 return null;
             } else {
-                return krbCf;
+                return spnegoConfigFile;
             }
         } else {
             return krb5DefaultFile.getDefaultKrb5ConfigFile();

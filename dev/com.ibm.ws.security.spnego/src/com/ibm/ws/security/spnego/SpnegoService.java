@@ -48,13 +48,15 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
                         "com.ibm.ws.security.webAuthenticator.type=SPNEGO" })
 public class SpnegoService implements WebAuthenticator {
     public static final TraceComponent tc = Tr.register(SpnegoService.class);
-    static final String CONFIGURATION_ADMIN = "configurationAdmin";
-    public final static String KEY_FILTER = "authenticationFilter";
-    private final String KEY_LOCATION_ADMIN = "locationAdmin";
 
-    private final AtomicServiceReference<WsLocationAdmin> locationAdminRef = new AtomicServiceReference<WsLocationAdmin>(KEY_LOCATION_ADMIN);
-    protected final AtomicServiceReference<AuthenticationFilter> authFilterServiceRef = new AtomicServiceReference<AuthenticationFilter>(KEY_FILTER);
-    protected final AtomicServiceReference<KerberosService> kerberosServiceRef = new AtomicServiceReference<>("kerberosService");
+    static final String CONFIGURATION_ADMIN = "configurationAdmin";
+    public static final String KEY_FILTER = "authenticationFilter";
+    private static final String KEY_LOCATION_ADMIN = "locationAdmin";
+    private static final String KERB_SERVICE = "kerberosService";
+
+    private final AtomicServiceReference<WsLocationAdmin> locationAdminRef = new AtomicServiceReference<>(KEY_LOCATION_ADMIN);
+    protected final AtomicServiceReference<AuthenticationFilter> authFilterServiceRef = new AtomicServiceReference<>(KEY_FILTER);
+    protected final AtomicServiceReference<KerberosService> kerberosServiceRef = new AtomicServiceReference<>(KERB_SERVICE);
 
     private final AuthenticationResult CONTINUE = new AuthenticationResult(AuthResult.CONTINUE, "SPNEGO service said continue...");
     private SpnegoAuthenticator spnegoAuthenticator = null;
@@ -93,7 +95,7 @@ public class SpnegoService implements WebAuthenticator {
         locationAdminRef.unsetReference(ref);
     }
 
-    @Reference(service = KerberosService.class)
+    @Reference(name = KERB_SERVICE, service = KerberosService.class)
     protected void setKerberosService(ServiceReference<KerberosService> ref) {
         kerberosServiceRef.setReference(ref);
     }

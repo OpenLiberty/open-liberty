@@ -23,6 +23,9 @@ WS-TraceGroup: \
 Export-Package: \
   com.ibm.ws.security.kerberos.auth;provide:=true
   
+Private-Package: \
+  com.ibm.ws.security.kerberos.auth.internal.*
+  
 Import-Package: \
   com.sun.security.auth.module;resolution:=optional, \
   com.sun.security.auth.callback;resolution:=optional , \
@@ -34,6 +37,8 @@ Import-Package: \
   
 Include-Resource: \
   OSGI-INF=resources/OSGI-INF
+  
+instrument.classesExcludes: com/ibm/ws/security/kerberos/auth/internal/resources/KerberosMessages*.class
 
 -buildpath: \
 	com.ibm.ws.internal.prereq.java:java.rtSunKrb5;version=1.8.0,\

@@ -50,8 +50,12 @@ public class KerberosService {
 
         if (rawKeytab != null) {
             keytab = Paths.get(rawKeytab);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Keytab was configured to: " + keytab);
+            if (keytab.toFile().exists()) {
+                if (tc.isInfoEnabled()) {
+                    Tr.info(tc, "KRB5_FILE_FOUND_CWWKS4346I", "keytab", keytab.toAbsolutePath());
+                }
+            } else {
+                Tr.error(tc, "KRB5_FILE_NOT_FOUND_CWWKS4345E", "keytab", "<kerberos>", keytab.toAbsolutePath());
             }
         }
         if (rawConfigFile != null) {
@@ -62,6 +66,14 @@ public class KerberosService {
                              "  Previous value was: " + originalConfigFile);
             }
             priv.setProperty(KRB5_CONFIG_PROPERTY, configFile.toAbsolutePath().toString());
+
+            if (configFile.toFile().exists()) {
+                if (tc.isInfoEnabled()) {
+                    Tr.info(tc, "KRB5_FILE_FOUND_CWWKS4346I", "configFile", configFile.toAbsolutePath());
+                }
+            } else {
+                Tr.error(tc, "KRB5_FILE_NOT_FOUND_CWWKS4345E", "configFile", "<kerberos>", configFile.toAbsolutePath());
+            }
         }
     }
 
