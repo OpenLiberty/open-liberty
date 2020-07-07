@@ -49,7 +49,7 @@ task dependabotGenerate() {
     // Generate pom.xml
     File pom = rootProject.file('cnf/dependabot/check_this_in_if_it_changes/pom.xml')
     pom.delete()
-      
+
     // First generate header content
     pom << "<?xml version='1.0' encoding='utf-8'?>\n"
     pom << "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n\n"
@@ -60,17 +60,19 @@ task dependabotGenerate() {
     pom << "  <!-- GENERATED FILE, DO NOT HAND EDIT! -->\n\n"
     pom << "  <!-- If changes are generated from the build, check in the changes -->\n\n"
     pom << "  <dependencies>\n"
-      
-    file('oss_dependencies.maven').eachLine { line ->
-      line = line.trim()
-      if (line.startsWith('#') || line.isEmpty())
-        return;
-      def (g,a,v) = line.split(':').collect { it.trim() }
-      pom << "    <dependency>\n"
-      pom << "      <groupId>"    + g + "</groupId>\n"
-      pom << "      <artifactId>" + a + "</artifactId>\n"
-      pom << "      <version>"    + v + "</version>\n"
-      pom << "    </dependency>\n"
+
+    ['oss_dependencies.maven', 'oss_source_dependencies.maven'].each { indexFile ->
+        file(indexFile).eachLine { line ->
+            line = line.trim()
+            if (line.startsWith('#') || line.isEmpty())
+                return;
+            def (g, a, v) = line.split(':').collect { it.trim() }
+            pom << "    <dependency>\n"
+            pom << "      <groupId>" + g + "</groupId>\n"
+            pom << "      <artifactId>" + a + "</artifactId>\n"
+            pom << "      <version>" + v + "</version>\n"
+            pom << "    </dependency>\n"
+        }
     }
     pom << "  </dependencies>\n"
     pom << "</project>\n"
