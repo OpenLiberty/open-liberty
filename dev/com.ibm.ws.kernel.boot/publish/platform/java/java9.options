@@ -1,3 +1,5 @@
+### for testing
+--illegal-access=deny
 ### Exports
 # for com.ibm.crypto.ibmkeycert.jar
 --add-exports
