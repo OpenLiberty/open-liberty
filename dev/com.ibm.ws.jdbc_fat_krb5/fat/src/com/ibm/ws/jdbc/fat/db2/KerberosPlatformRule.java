@@ -17,7 +17,6 @@ import org.junit.runners.model.Statement;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.JavaInfo;
 
 /**
  * Rule that automatically skips tests if we are running on a platform that does NOT
@@ -46,16 +45,6 @@ public class KerberosPlatformRule implements TestRule {
                 throw new RuntimeException("Running on an unsupported os: " + os);
             } else {
                 Log.info(desc.getTestClass(), desc.getMethodName(), "Skipping test because of unsupported os: " + os);
-                return false;
-            }
-        }
-
-        // Currently we only have Kerberos setup for Hotspot/OpenJ9. Need to skip on IBM JDK
-        if (System.getProperty("java.vm.name").toUpperCase().contains("IBM J9")) {
-            if (FATRunner.FAT_TEST_LOCALRUN) {
-                throw new RuntimeException("Running on an unsupported JVM: " + JavaInfo.forCurrentVM().vendor());
-            } else {
-                Log.info(desc.getTestClass(), desc.getMethodName(), "Skipping test because of unsupported JVM: " + JavaInfo.forCurrentVM().vendor());
                 return false;
             }
         }
