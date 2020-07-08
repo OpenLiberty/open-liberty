@@ -249,7 +249,9 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
         }
 
         try {
-            latch.await(3, TimeUnit.SECONDS);
+            // Wait for the response to complete.  If we return the response too quickly (ie. this timeout is too small)
+            // then the test will not get the correct response data and IOExceptions might be thrown.
+            latch.await(30, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
 
             e.printStackTrace();
