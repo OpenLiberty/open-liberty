@@ -559,7 +559,6 @@ public class WCSameSiteCookieAttributeTests {
         configuration.getLogging().setTraceSpecification("HttpChannel=all");
 
         sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.setTraceMarkToEndOfDefaultTrace();
         sameSiteServer.updateServerConfiguration(configuration);
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
@@ -1954,7 +1953,6 @@ public class WCSameSiteCookieAttributeTests {
         configuration.getLogging().setTraceSpecification("HttpChannel=all");
 
         sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.setTraceMarkToEndOfDefaultTrace();
         sameSiteServer.updateServerConfiguration(configuration);
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
