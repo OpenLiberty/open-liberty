@@ -20,7 +20,7 @@ import com.ibm.wsspi.webcontainer.WCCustomProperties;
 public class WCCustomProperties31 extends WCCustomProperties {
     
     static {
-        setCustomPropertyVariables(); //initilizes all the variables
+        setCustomPropertyVariables(); //initializes all the variables
     }
     
     public static int UPGRADE_READ_TIMEOUT; //The timeout to use when the request has been upgraded and a read is happening
