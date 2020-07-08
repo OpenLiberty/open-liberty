@@ -11,6 +11,7 @@
 
 package com.ibm.ws.fat.grpc;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
@@ -63,6 +64,7 @@ public class HelloWorldTest extends FATServletClient {
                                       "com.ibm.ws.fat.grpc.tls");
 
         helloWorldServer.startServer(HelloWorldTest.class.getSimpleName() + ".log");
+        assertNotNull("CWWKO0219I.*ssl not recieved", helloWorldServer.waitForStringInLog("CWWKO0219I.*ssl"));
     }
 
     @AfterClass
