@@ -841,7 +841,34 @@ public class AcmeFatUtils {
  		}
  		return false;
  	}
- 	
+
+	/**
+	 * Check if the test is running on Windows OS and a specific java
+	 * 
+	 * @param methodName
+	 * @return True if the test is running on the specific OS/JDK combo
+	 */
+	public static boolean isWindowsWithOpenJDK1105(String methodName) {
+		if (System.getProperty("os.name").toLowerCase().startsWith("win")
+				&& System.getProperty("java.vendor").toLowerCase().contains("openjdk")
+				&& System.getProperty("java.version").equals("11.0.5")) {
+			/*
+			 * On Windows with OpenJDK 11.0.5, we sometimes get an exception deleting the
+			 * Acme related files.
+			 * 
+			 * "The process cannot access the file because it is being used by another
+			 * process"
+			 * 
+			 * The exception is not seen on later OpenJDK versions.
+			 */
+			Log.info(AcmeFatUtils.class, methodName,
+					"Skipping this test due to a bug with the specific OS/JDK combo: " + System.getProperty("os.name")
+							+ " " + System.getProperty("java.vendor") + " " + System.getProperty("java.version"));
+			return true;
+		}
+		return false;
+	}
+
  	/**
  	 * Handle adding CWPKI2045W as an allowed warning message to all stopServer requests.
  	 * 
