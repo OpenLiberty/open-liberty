@@ -3125,7 +3125,8 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                 final String causeMsg = cause.getMessage();
                 final String causeClassName = cause.getClass().getCanonicalName();
                 logger.fine("Next chained RemotablePartition persistence exception: exc class = " + causeClassName + "; causeMsg = " + causeMsg);
-                if ((cause instanceof SQLSyntaxErrorException || causeClassName.contains("SqlSyntaxErrorException")) &&
+                if ((cause instanceof SQLSyntaxErrorException || causeClassName.contains("SqlSyntaxErrorException")
+			|| causeClassName.contains("SQLServerException")) &&
                     causeMsg != null &&
                     (causeMsg.contains("REMOTABLEPARTITION") || causeMsg.contains("ORA-00942"))) {
                     // The table isn't there.
