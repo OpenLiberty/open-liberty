@@ -654,7 +654,7 @@ public final class JAXRSUtils {
                 
                 for (OperationResourceInfo ori : cri.getMethodDispatcher().getOperationResourceInfos()) {
                     if(ori.isSubResourceLocator()) {
-                        break;
+                        continue;
                     }
                     if (matchedResources == null) {
                         String messagePath = HttpUtils.getPathToMatch(msg, true);
@@ -662,7 +662,7 @@ public final class JAXRSUtils {
                     }
                     MultivaluedMap<String, String> values =  matchedResources.get(cri);
                     if (values == null) {
-                        break;
+                        continue;
                     }
                     String httpMethod = ori.getHttpMethod();
                     if (isFinalPath(ori,values)) {                        

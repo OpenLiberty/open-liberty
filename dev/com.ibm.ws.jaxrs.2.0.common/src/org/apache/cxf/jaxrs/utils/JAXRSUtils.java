@@ -651,10 +651,9 @@ public final class JAXRSUtils {
                     }
                     break;
                 }
-                
                 for (OperationResourceInfo ori : cri.getMethodDispatcher().getOperationResourceInfos()) {
                     if(ori.isSubResourceLocator()) {
-                        break;
+                        continue;
                     }
                     if (matchedResources == null) {
                         String messagePath = HttpUtils.getPathToMatch(msg, true);
@@ -662,11 +661,11 @@ public final class JAXRSUtils {
                     }
                     MultivaluedMap<String, String> values =  matchedResources.get(cri);
                     if (values == null) {
-                        break;
+                        continue;
                     }
                     String httpMethod = ori.getHttpMethod();
-                    if (isFinalPath(ori,values)) {                        
-                        if (matchHttpMethod(httpMethod, "*")) {                                
+                    if (isFinalPath(ori,values)) {
+                        if (matchHttpMethod(httpMethod, "*")) {
                             allowedMethods.add(httpMethod);
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                 Tr.debug(tc, "Adding Allow Header " + httpMethod);
