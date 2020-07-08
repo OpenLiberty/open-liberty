@@ -89,7 +89,7 @@ public class TimingRequestTiming {
 
         server.setMarkToEndOfLog();
 
-        createRequests(8000, 1);
+        createRequests(9000, 1);
 
         server.waitForStringInLog("TRAS0112W", 10000); // adding timeout for wait as 10s
         server.waitForStringInLog("TRAS0114W", 10000);
@@ -120,7 +120,7 @@ public class TimingRequestTiming {
 
         server.setMarkToEndOfLog();
 
-        createRequests(5000, 1);
+        createRequests(6000, 1);
 
         server.waitForStringInLog("TRAS0112W", 10000);
         server.waitForStringInLog("TRAS0114W", 10000);
@@ -150,7 +150,7 @@ public class TimingRequestTiming {
         server.setServerConfigurationFile("server_original.xml");
         server.waitForStringInLogUsingMark("CWWKG0017I", 30000);
         CommonTasks.writeLogMsg(Level.INFO, "****  Started server without <timing> : default configurations for Request timing");
-        createRequests(11000, 1);
+        createRequests(12000, 1);
 
         server.waitForStringInLogUsingMark("TRAS0112W", 10000);
         int p_slow = fetchSlowRequestWarningsCount();
@@ -180,7 +180,7 @@ public class TimingRequestTiming {
         server.setServerConfigurationFile("server_original.xml");
         server.waitForStringInLogUsingMark("CWWKG0017I", 30000);
 
-        createRequests(11000, 1);
+        createRequests(12000, 1);
 
         int n_slow = fetchSlowRequestWarningsCount();
         int n_hung = fetchHungRequestWarningsCount();
@@ -295,7 +295,7 @@ public class TimingRequestTiming {
         server.setServerConfigurationFile("server_timing_global.xml");
         waitForConfigurationUpdate();
 
-        createRequests(13000, 1);
+        createRequests(20000, 1);
 
         server.waitForStringInLogUsingMark("TRAS0112W", 10000);
         server.waitForStringInLogUsingMark("TRAS0114W", 10000);
@@ -328,7 +328,7 @@ public class TimingRequestTiming {
 
         server.setMarkToEndOfLog();
 
-        createRequests(6000, 1);
+        createRequests(7000, 1);
 
         server.waitForStringInLogUsingMark("TRAS0112W", 10000);
         server.waitForStringInLogUsingMark("TRAS0114W", 10000);
@@ -394,7 +394,7 @@ public class TimingRequestTiming {
 
         server.setMarkToEndOfLog();
 
-        createRequests(4000, 1);
+        createRequests(5000, 1);
 
         server.waitForStringInLogUsingMark("TRAS0114W", 10000);
 
@@ -423,7 +423,7 @@ public class TimingRequestTiming {
 
         server.setMarkToEndOfLog();
 
-        createRequests(5000, 1);
+        createRequests(6000, 1);
 
         server.waitForStringInLogUsingMark("TRAS0112W", 10000);
         server.waitForStringInLogUsingMark("TRAS0114W", 10000);
@@ -536,7 +536,7 @@ public class TimingRequestTiming {
         server.setServerConfigurationFile("server_timing_local.xml");
         waitForConfigurationUpdate();
 
-        createRequests(8000, 1);
+        createRequests(9000, 1);
 
         server.waitForStringInLogUsingMark("TRAS0112W", 10000);
         server.waitForStringInLogUsingMark("TRAS0114W", 10000);
@@ -552,7 +552,7 @@ public class TimingRequestTiming {
         server.setServerConfigurationFile("server_timing_localOnly.xml");
         waitForConfigurationUpdate();
 
-        createRequests(6000, 1);
+        createRequests(7000, 1);
 
         server.waitForStringInLogUsingMark("TRAS0112W", 10000);
         server.waitForStringInLogUsingMark("TRAS0114W", 10000);
