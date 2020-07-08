@@ -50,7 +50,6 @@ public class AcmeHistory {
 	private File acmeFile;
 	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 	private static final DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
-	private ArrayList<AcmeHistoryEntry> acmeHistoryEntries;
 	private ArrayList<String> headers;
 	
 	/**
@@ -98,9 +97,9 @@ public class AcmeHistory {
 	 * This method will create the initial acme file in the servers/workarea
 	 * directory. It holds certificate and directoryURI information, eg.
 	 * # Version 1.0
-	 * # Date                Serial                   DirectoryURI                    Account URI
-     * # --------------------------------------------------------------------------------------------
-     *  20200509231118      6542743894787011570      https://localhost:33827/dir     https://localhost:33827/my-account/1
+	 * # Date                Serial                   DirectoryURI                    Account URI                     Expiration
+     * # -----------------------------------------------------------------------------------------------------------
+     *  20200509231118      6542743894787011570      https://localhost:33827/dir     https://localhost:33827/my-account/1   20200509231118
      *  
      *  @return 0 if the file already exists
      *          1 if the file was successfully created
@@ -108,8 +107,9 @@ public class AcmeHistory {
 	 */
 	private int createAcmeFile(WsLocationAdmin wslocation) {
 		acmeFile = wslocation.getServerWorkareaResource("acmeca/" + acmeFileName).asFile();
-		if (acmeFile.exists()) return FILE_EXISTS;
-		acmeHistoryEntries = new ArrayList<AcmeHistoryEntry>();
+		if (acmeFile.exists()) {
+			return FILE_EXISTS;
+		}
 		headers = new ArrayList<String>();
 		acmeFile.getParentFile().mkdirs();
 		LocalDateTime now = LocalDateTime.now();  
@@ -168,6 +168,11 @@ public class AcmeHistory {
 		}
 		serial = cert.getSerialNumber().toString(16);
 		expirationDate = df.format(cert.getNotAfter());
+
+		ArrayList<AcmeHistoryEntry> acmeHistoryEntries = getAcmeHistoryEntries(acmeFile);
+		if (acmeHistoryEntries == null) {
+			acmeHistoryEntries = new ArrayList<AcmeHistoryEntry>();
+		}
 		AcmeHistoryEntry newEntry = new AcmeHistoryEntry(date, serial, directoryURI, accountURI, expirationDate);
 		acmeHistoryEntries.add(newEntry);
 		boolean rewriteFile = false;
@@ -203,14 +208,27 @@ public class AcmeHistory {
 	
 	/**
 	 * Convenience method to get a list of directoryURIs
-	 * in the ACME historical file. This is used by tests
-	 * so we can't update this to use acmeHistoricalEntries
-	 * ArrayList.
+	 * in the ACME historical file.
 	 * @param file The ACME file to pull directoryURIs from.
 	 * @return A list of directoryURIs from the ACME file.
 	 */
 	public ArrayList<String> getDirectoryURIHistory(File file) {
 		ArrayList<String> entries = new ArrayList<String>();
+		ArrayList<AcmeHistoryEntry> acmeentries = getAcmeHistoryEntries(file);
+		for (AcmeHistoryEntry e: acmeentries) {
+			entries.add(e.getDirectoryURI());
+		}
+		return entries;
+	}
+	
+	/**
+	 * Read the ACME history file and return all
+	 * AcmeHistoryEntries.
+	 * @param file The ACME file to pull directoryURIs from.
+	 * @return A list of AcmeHistoryEntries from the ACME file.
+	 */
+	public ArrayList<AcmeHistoryEntry> getAcmeHistoryEntries(File file) {
+		ArrayList<AcmeHistoryEntry> entries = new ArrayList<AcmeHistoryEntry>();
 		if (!file.exists()) {
 			return entries;
 		}
@@ -219,11 +237,30 @@ public class AcmeHistory {
 		    //Read the commented lines
 		    String line;
 			while ((line = br.readLine()) != null && !line.isEmpty() && line.startsWith("#")) {}
+			//If acme file exists but has no entries, return.
+			if (line == null) {
+				br.close();
+				return entries;
+			}
 			do {
+				String date = null, serial = null, directoryURI = null, accountURI = null, expiration = null;
 				StringTokenizer tok = new StringTokenizer(line);
-				if (tok.hasMoreTokens()) tok.nextToken();
-				if (tok.hasMoreTokens()) tok.nextToken();
-				if (tok.hasMoreTokens()) entries.add(tok.nextToken());	
+				if (tok.hasMoreTokens())  { 
+					date = tok.nextToken();
+				}
+				if (tok.hasMoreTokens()) {
+					serial = tok.nextToken();
+				}
+				if (tok.hasMoreTokens()) {
+					directoryURI = tok.nextToken();	
+				}
+				if (tok.hasMoreTokens()) {
+					accountURI = tok.nextToken();	
+				}
+				if (tok.hasMoreTokens()) {
+					expiration = tok.nextToken();	
+				}
+				entries.add(new AcmeHistoryEntry(date, serial, directoryURI, accountURI, expiration));
 			} while ((line = br.readLine()) != null && !line.isEmpty());
 			br.close();
 
@@ -243,7 +280,9 @@ public class AcmeHistory {
 	 * @return The directory URI corresponding to the certificate serial number.
 	 */
 	public String getDirectoryURI(String serial) {
-		for(AcmeHistoryEntry entry: acmeHistoryEntries) {
+		ArrayList<AcmeHistoryEntry> entries = getAcmeHistoryEntries(acmeFile);
+		if (entries == null) return null;
+		for(AcmeHistoryEntry entry: entries) {
 			if (serial.equals(entry.getSerial())) {
 				return entry.getDirectoryURI();
 			}
