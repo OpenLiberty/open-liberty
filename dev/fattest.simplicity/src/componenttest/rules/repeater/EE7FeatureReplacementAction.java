@@ -38,7 +38,8 @@ public class EE7FeatureReplacementAction extends FeatureReplacementAction {
                                                  "concurrent-1.0",
                                                  "jaxb-2.2",
                                                  "managedBeans-1.0",
-                                                 "componenttest-1.0" };
+                                                 "componenttest-1.0",
+                                                 "websocket-1.1"  };
 
     public static final Set<String> EE7_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE7_FEATURES_ARRAY)));
 

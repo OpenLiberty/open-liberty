@@ -11,6 +11,7 @@
 package io.openliberty.wsoc;
 
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -20,6 +21,9 @@ import com.ibm.ws.fat.util.FatLogHandler;
 import io.openliberty.wsoc.tests.WebSocket11Test;
 import io.openliberty.wsoc.tests.BasicTest;
 
+import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
 /**
  * Collection of all example tests
  */
@@ -28,11 +32,18 @@ import io.openliberty.wsoc.tests.BasicTest;
  * The classes specified in the @SuiteClasses annotation
  * below should represent all of the test cases for this FAT.
  */
-@SuiteClasses({ BasicTest.class, 
+@SuiteClasses({ BasicTest.class,
                 WebSocket11Test.class
 })
 public class FATSuite {
     private static final Class<?> c = FATSuite.class;
+
+    //websocket-1.0 is not part of EE6/7/8, so we are doing a manual replacement
+    @ClassRule
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+                                                  .andWith(new JakartaEE9Action()
+                                                  .removeFeature("websocket-1.0")
+                                                  .addFeature("websocket-2.0"));
 
     /**
      * @see {@link FatLogHandler#generateHelpFile()}

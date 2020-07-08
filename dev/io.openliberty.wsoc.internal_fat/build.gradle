@@ -41,3 +41,5 @@ addRequiredLibraries {
     }
   }
 }
+
+addRequiredLibraries.dependsOn addJakartaTransformer
