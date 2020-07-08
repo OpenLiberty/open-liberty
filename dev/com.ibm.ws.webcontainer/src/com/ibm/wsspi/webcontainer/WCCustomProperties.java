@@ -314,7 +314,7 @@ public class WCCustomProperties {
     public static boolean GET_REAL_PATH_RETURNS_QUALIFIED_PATH;
 
     static {
-        setCustomPropertyVariables(); //initilizes all the variables
+        setCustomPropertyVariables(); //initializes all the variables
     }
     
     private final static HashMap<String, String> FullyQualifiedPropertiesMap = new HashMap<String, String>();
