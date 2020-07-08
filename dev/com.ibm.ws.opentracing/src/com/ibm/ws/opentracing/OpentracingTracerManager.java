@@ -18,8 +18,11 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
+import io.opentracing.ActiveSpan;
 import io.opentracing.Span;
+import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
+import io.opentracing.propagation.Format;
 
 /**
  * <p>Open tracing context management.</p>
@@ -46,16 +49,26 @@ public class OpentracingTracerManager {
             Tr.entry(tc, methodName, appName);
         }
 
-        Tracer tracer = applicationTracers.get(appName);
+        Tracer tracer = null;
         boolean found = true;
-
-        if (tracer == null) {
-            found = false;
-            tracer = applicationTracers.computeIfAbsent(appName, TracerCreator.INSTANCE);
+        if (appName != null) {
+            tracer = applicationTracers.get(appName);
+            if (tracer == null) {
+                found = false;
+                tracer = applicationTracers.computeIfAbsent(appName, TracerCreator.INSTANCE);
+            }
+            if (tracer == TRACER_NOT_FOUND) {
+                tracer = null;
+            }
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            String tracerCase = found ? "previously created" : "newly created or previously created if lost race condition";
+            String tracerCase;
+            if (appName == null) {
+                tracerCase = "appName is null";
+            } else {
+                tracerCase = found ? "previously created" : "newly created or previously created if lost race condition";
+            }
             Tr.exit(tc, methodName + " (" + tracerCase + ")", OpentracingUtils.getTracerText(tracer));
         }
         return tracer;
@@ -68,9 +81,40 @@ public class OpentracingTracerManager {
         @Override
         public Tracer apply(String appName) {
             Tracer tracer = createTracer(appName);
+            if (tracer == null) {
+                tracer = TRACER_NOT_FOUND;
+            }
             return tracer;
         }
     }
+
+    private static final Tracer TRACER_NOT_FOUND = new Tracer() {
+
+        @Override
+        public ActiveSpan activeSpan() {
+            return null;
+        }
+
+        @Override
+        public ActiveSpan makeActive(Span arg0) {
+            return null;
+        }
+
+        @Override
+        public SpanBuilder buildSpan(String arg0) {
+            return null;
+        }
+
+        @Override
+        public <C> SpanContext extract(Format<C> arg0, C arg1) {
+            return null;
+        }
+
+        @Override
+        public <C> void inject(SpanContext arg0, Format<C> arg1, C arg2) {
+        }
+
+    };
 
     /**
      * <p>Have the open tracer factory service create the tracer. That
@@ -100,103 +144,29 @@ public class OpentracingTracerManager {
             Tr.entry(tc, methodName);
         }
 
-        OpentracingContext tracerContext = getOpentracingContext();
-        // Should never be null.  The thread local variable provides
-        // a non-null initial value.
-
-        String appName = tracerContext.getAppName();
-        Tracer tracer = tracerContext.getTracer();
-        String tracerCase;
-
-        // The app name and tracer should always be null when requesting
-        // the tracer from a container filter, and should never be null
-        // when requesting the tracer from a client filter.
-
-        if (tracer != null) {
-            tracerCase = "previously stored for " + appName;
-
-        } else {
-            appName = OpentracingUtils.lookupAppName();
-            tracer = ensureTracer(appName);
-            tracerContext.setTracer(appName, tracer);
-
-            tracerCase = "newly stored for " + appName;
-        }
+        String appName = null;
+        Tracer tracer = null;
+        appName = OpentracingUtils.lookupAppName();
+        tracer = ensureTracer(appName);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Thread currentThread = Thread.currentThread();
             String threadName = currentThread.getName();
             long threadId = currentThread.getId();
             Tr.exit(tc,
-                    methodName + " (" + tracerCase + ") in (" + threadName + ":" + Long.toString(threadId) + ")",
+                    methodName + " (" + threadName + ":" + Long.toString(threadId) + ")",
                     OpentracingUtils.getTracerText(tracer));
         }
         return tracer;
     }
 
-    /**
-     * <p>Answer the active open tracing context.</p>
-     *
-     * <p>This is currently stored as a thread local value, with the association
-     * to the thread which received an incoming service request. Placement in
-     * a thread local variable makes the value available to outgoing requests
-     * which are made in the same thread.</p>
-     *
-     * <p>An inheritable thread local variable (see {@link InheritableThreadLocal}) is
-     * used for the storage, which means that new threads will be given a reference
-     * to the context, which in turn means that asynchronous outgoing requests are
-     * handled.</p>
-     *
-     * <p>Implementations other than a thread local variable are being considered.
-     * The problem which must be solved is the association of outgoing requests
-     * to incoming requests. That association is needed to associate the open
-     * tracing span which was created for the incoming request with the open tracing
-     * span which is created for an outgoing request. Service APIs do not provide
-     * a mechanism to convey this association.</p>
-     *
-     * @return The active open tracing context. This should never be null.
-     */
-    @Trivial
-    private static OpentracingContext getOpentracingContext() {
-        return OPEN_TRACING_CONTEXT_VAR.get();
-        // Rely on 'initialValue' to supply a non-null open tracing context.
-        // There is currently no code which clears the context.
+    public static void removeTracer(String appName) {
+        if (appName != null) {
+            applicationTracers.remove(appName);
+        }
     }
 
-    // Raw open tracing context storage ...
-
-    /** <p>Storage for the open tracing context variable.</p> */
-    private static final ThreadLocal<OpentracingContext> OPEN_TRACING_CONTEXT_VAR = new OpentracingThreadLocal();
-
-    /**
-     * <p>Class for the open tracing context thread local variable.</p>
-     *
-     * <p>Note the use of type {@link InheritableThreadLocal}. Use of this type
-     * means that threads which are spawned from the thread which initially handles
-     * a request are be given a reference to the thread local value. That provides
-     * the capability of handling outgoing requests in spawned threads.</p>
-     *
-     * <p>As a consequence, which must be handled then within the {@link Span}
-     * implementation, is that the relationship of parent incoming requests to
-     * child outgoing requests is not one to zero-or-one. The relationship is
-     * one to zero-or-more.</p>
-     */
-    private static final class OpentracingThreadLocal extends InheritableThreadLocal<OpentracingContext> {
-        /**
-         * <p>Provide value obtained by the first call to {@link ThreadLocal#get()} for
-         * the open tracing context variable. The value which is returned is used unless
-         * a prior call is made to {@link ThreadLocal#set(Object)}.</p>
-         *
-         * TODO: The open tracing context is never cleared. This needs to be reviewed against
-         * the probably reuse of threads for handling requests, both from the perspective
-         * of a new request seeing a previously set tracing context, and from the
-         * perspective of open tracing objects lasting longer than is necessary.
-         *
-         * @return The initial open tracing context value.
-         */
-        @Override
-        protected OpentracingContext initialValue() {
-            return new OpentracingContext();
-        }
+    public static void clearTracers() {
+        applicationTracers.clear();
     }
 }
