@@ -365,14 +365,11 @@ public class CustomAccessLogFieldsTest {
 
         String accessLog = xmlServerWithMetrics.getServerRoot() + "/logs/http_access.log";
         String accessLogLine = readFile(accessLog);
-
-        // Try to read the file again once every second for 30 sec if the file is still empty
-        for (int i = 0; i < 30; i++) {
+        // Try to read the file again once every second for WAIT_TIMEOUT if the file is still empty
+        long startTime = System.currentTimeMillis();
+        while ((accessLogLine == null || accessLogLine.isEmpty()) && ((System.currentTimeMillis() - startTime) < WAIT_TIMEOUT)) {
             Thread.sleep(1000);
             accessLogLine = readFile(accessLog);
-            if (accessLogLine != null && !accessLogLine.isEmpty()) {
-                break;
-            }
         }
         assertNotNull("The http_access.log file is empty or could not be read.", accessLogLine);
         assertFalse("The http_access.log file is empty.", accessLogLine.isEmpty());
