@@ -10,12 +10,10 @@
         IBM Corporation - initial API and implementation
  -->
 <metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" localization="OSGI-INF/l10n/classloader" xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0">
-<!-- both alias and childAlias seem to be needed.  Why? -->
+
   <OCD name="%classloader.service.name" description="%classloader.service.desc"
        id="com.ibm.ws.classloading.classloader"
-       ibm:alias="classloader"
-       ibm:childAlias="classloader"
-       ibm:parentPid="com.ibm.ws.app.manager">
+       ibm:alias="classloader">
     
     <AD name="%classloader.delegation" description="%classloader.delegation.desc"  
         id="delegation" 
