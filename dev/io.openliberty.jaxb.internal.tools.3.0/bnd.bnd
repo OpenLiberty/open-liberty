@@ -13,8 +13,8 @@
 bVersion=1.0.${libertyBundleMicroVersion}
 bSymbolicName=io.openliberty.jaxb.internal.tools.3.0
 
-Bundle-Name: io.openliberty.jaxb.internal.tools.3.0
-Bundle-SymbolicName: io.openliberty.jaxb.internal.tools.3.0; singleton:=true
+Bundle-Name: io.openliberty.jaxb.3.0.internal.tools
+Bundle-SymbolicName: io.openliberty.jaxb.3.0.internal.tools; singleton:=true
     
 # The SPI definition under META-INF/services
 # Do not publish RI javax.xml.bind.JAXBContext
