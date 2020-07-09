@@ -27,7 +27,16 @@ Import-Package: !sun.*,\
   !com.google.code.gson,\
   !org.checkerframework,\
   javax.annotation;version=!,\
+  !com.ibm.websphere.monitor.jmx,\
   *
+  
+# Use dynamic import of monitor packages to support indepndent/dynamic enablement of monitor feature
+# Will be removed if gRPC monitoring can be moved to an auto feature
+DynamicImport-Package: com.ibm.websphere.monitor.meters;version="1.0.0", \
+ com.ibm.websphere.monitor.jmx;version="1.0.0", \
+ com.ibm.wsspi.request.probe.bci, \
+ com.ibm.wsspi.probeExtension, \
+ io.openliberty.grpc.internal.monitor
 
 Export-Package: \
   io.grpc.servlet,\
@@ -45,6 +54,7 @@ Include-Resource: \
   com.ibm.websphere.javaee.servlet.4.0;version=latest,\
   com.ibm.websphere.org.osgi.core;version=latest,\
   com.ibm.websphere.org.osgi.service.component;version=latest,\
+  com.ibm.ws.monitor;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
   com.ibm.ws.kernel.boot;version=latest,\
@@ -61,6 +71,7 @@ Include-Resource: \
   com.google.guava:guava;version=27.0.1,\
   com.ibm.ws.security.authorization.util,\
   io.openliberty.grpc.1.0.internal.common;version=latest,\
+  io.openliberty.grpc.1.0.internal.monitor;version=latest,\
   org.osgi.service.component.annotations;version=latest
 
 -testpath: \
