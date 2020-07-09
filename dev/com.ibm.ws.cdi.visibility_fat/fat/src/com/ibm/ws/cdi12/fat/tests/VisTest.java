@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.fat.tests;
 
+import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE7;
+import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE8;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -22,31 +24,34 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ProgramOutput;
-import com.ibm.ws.fat.util.LoggingTest;
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.TestServlet;
+import componenttest.annotation.TestServlets;
+import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EERepeatTests;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyClient;
 import componenttest.topology.impl.LibertyClientFactory;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
+import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
+import vistest.war.servlet.VisibilityTestServlet;
 
 /**
  * Tests the visibility of beans between different BDAs
@@ -80,154 +85,168 @@ import componenttest.topology.utils.HttpUtils;
  * <p>
  * Each row of the visibility report has a bean location and the number of beans in that location that are visible, separated by a tab character.
  */
+@Mode(TestMode.FULL)
+@RunWith(FATRunner.class)
+public class VisTest extends FATServletClient {
 
-public class VisTest {
+    public static final String SERVER_NAME = "visTestServer";
+    public static final String CLIENT_NAME = "visTestClient";
 
-    public static LibertyServer server = LibertyServerFactory.getLibertyServer("visTestServer");
+    @ClassRule
+    public static RepeatTests r = EERepeatTests.with(SERVER_NAME, CLIENT_NAME, EE8, EE7);
 
-    //This is driven by getAppClientResults
-    public static void buildShrinkWrap(LibertyClient client) throws Exception {
+    public static final String VIS_TEST_APP_NAME = "visTestWar";
 
-        JavaArchive visTestWarWebinfLib1 = ShrinkWrap.create(JavaArchive.class,"visTestWarWebinfLib.jar")
-                        .addClass("vistest.warWebinfLib.WarWebinfLibTargetBean")
-                        .addClass("vistest.warWebinfLib.WarWebinfLibTestingBean");
+    @Server(SERVER_NAME)
+    @TestServlets({
+                    @TestServlet(servlet = VisibilityTestServlet.class, contextRoot = VIS_TEST_APP_NAME) }) //FULL
+    public static LibertyServer server;
+    public static LibertyClient client = LibertyClientFactory.getLibertyClient(CLIENT_NAME);
+
+    @BeforeClass
+    public static void setUp() throws Exception {
+
+        JavaArchive visTestWarWebinfLib1 = ShrinkWrap.create(JavaArchive.class, "visTestWarWebinfLib.jar")
+                                                     .addClass(vistest.warWebinfLib.WarWebinfLibTargetBean.class)
+                                                     .addClass(vistest.warWebinfLib.WarWebinfLibTestingBean.class);
 
         WebArchive visTestWar2 = ShrinkWrap.create(WebArchive.class, "visTestWar.war")
-                        .addClass("vistest.war.WarTargetBean")
-                        .addClass("vistest.war.servlet.VisibilityTestServlet")
-                        .addClass("vistest.war.WarTestingBean")
-                        .addAsManifestResource(new File("test-applications/visTestWar.war/resources/META-INF/MANIFEST.MF"))
-                        .addAsLibrary(visTestWarWebinfLib1);
+                                           .addClass(vistest.war.WarTargetBean.class)
+                                           .addClass(vistest.war.servlet.VisibilityTestServlet.class)
+                                           .addClass(vistest.war.WarTestingBean.class)
+                                           .addAsManifestResource(new File("test-applications/visTestWar.war/resources/META-INF/MANIFEST.MF"))
+                                           .addAsLibrary(visTestWarWebinfLib1);
 
-        JavaArchive visTestEjb3 = ShrinkWrap.create(JavaArchive.class,"visTestEjb.jar")
-                        .addClass("vistest.ejb.dummy.DummySessionBean")
-                        .addClass("vistest.ejb.EjbTargetBean")
-                        .addClass("vistest.ejb.EjbTestingBean")
-                        .addAsManifestResource(new File("test-applications/visTestEjb.jar/resources/META-INF/MANIFEST.MF"));
+        JavaArchive visTestEjb3 = ShrinkWrap.create(JavaArchive.class, "visTestEjb.jar")
+                                            .addClass(vistest.ejb.dummy.DummySessionBean.class)
+                                            .addClass(vistest.ejb.EjbTargetBean.class)
+                                            .addClass(vistest.ejb.EjbTestingBean.class)
+                                            .addAsManifestResource(new File("test-applications/visTestEjb.jar/resources/META-INF/MANIFEST.MF"));
 
-        JavaArchive visTestAppClient4 = ShrinkWrap.create(JavaArchive.class,"visTestAppClient.jar")
-                        .addAsManifestResource(new File("test-applications/visTestAppClient.jar/resources/META-INF/MANIFEST.MF"))
-                        .addClass("vistest.appClient.main.Main")
-                        .addClass("vistest.appClient.AppClientTargetBean")
-                        .addClass("vistest.appClient.AppClientTestingBean");
+        JavaArchive visTestAppClient4 = ShrinkWrap.create(JavaArchive.class, "visTestAppClient.jar")
+                                                  .addAsManifestResource(new File("test-applications/visTestAppClient.jar/resources/META-INF/MANIFEST.MF"))
+                                                  .addClass(vistest.appClient.main.Main.class)
+                                                  .addClass(vistest.appClient.AppClientTargetBean.class)
+                                                  .addClass(vistest.appClient.AppClientTestingBean.class);
 
-        JavaArchive visTestEjbAsEjbLib5 = ShrinkWrap.create(JavaArchive.class,"visTestEjbAsEjbLib.jar")
-                        .addClass("vistest.ejbAsEjbLib.dummy.DummySessionBean")
-                        .addClass("vistest.ejbAsEjbLib.EjbAsEjbLibTestingBean")
-                        .addClass("vistest.ejbAsEjbLib.EjbAsEjbLibTargetBean");
+        JavaArchive visTestEjbAsEjbLib5 = ShrinkWrap.create(JavaArchive.class, "visTestEjbAsEjbLib.jar")
+                                                    .addClass(vistest.ejbAsEjbLib.dummy.DummySessionBean.class)
+                                                    .addClass(vistest.ejbAsEjbLib.EjbAsEjbLibTestingBean.class)
+                                                    .addClass(vistest.ejbAsEjbLib.EjbAsEjbLibTargetBean.class);
 
-        JavaArchive visTestEjbAsWarLib6 = ShrinkWrap.create(JavaArchive.class,"visTestEjbAsWarLib.jar")
-                        .addClass("vistest.ejbAsWarLib.dummy.DummySessionBean")
-                        .addClass("vistest.ejbAsWarLib.EjbAsWarLibTestingBean")
-                        .addClass("vistest.ejbAsWarLib.EjbAsWarLibTargetBean");
+        JavaArchive visTestEjbAsWarLib6 = ShrinkWrap.create(JavaArchive.class, "visTestEjbAsWarLib.jar")
+                                                    .addClass(vistest.ejbAsWarLib.dummy.DummySessionBean.class)
+                                                    .addClass(vistest.ejbAsWarLib.EjbAsWarLibTestingBean.class)
+                                                    .addClass(vistest.ejbAsWarLib.EjbAsWarLibTargetBean.class);
 
-        JavaArchive visTestEjbAsAppClientLib7 = ShrinkWrap.create(JavaArchive.class,"visTestEjbAsAppClientLib.jar")
-                        .addClass("vistest.ejbAsAppClientLib.dummy.DummySessionBean")
-                        .addClass("vistest.ejbAsAppClientLib.EjbAsAppClientLibTestingBean")
-                        .addClass("vistest.ejbAsAppClientLib.EjbAsAppClientLibTargetBean");
+        JavaArchive visTestEjbAsAppClientLib7 = ShrinkWrap.create(JavaArchive.class, "visTestEjbAsAppClientLib.jar")
+                                                          .addClass(vistest.ejbAsAppClientLib.dummy.DummySessionBean.class)
+                                                          .addClass(vistest.ejbAsAppClientLib.EjbAsAppClientLibTestingBean.class)
+                                                          .addClass(vistest.ejbAsAppClientLib.EjbAsAppClientLibTargetBean.class);
 
-        JavaArchive visTestAppClientAsEjbLib8 = ShrinkWrap.create(JavaArchive.class,"visTestAppClientAsEjbLib.jar")
-                        .addClass("vistest.appClientAsEjbLib.dummy.DummyMain")
-                        .addClass("vistest.appClientAsEjbLib.AppClientAsEjbLibTestingBean")
-                        .addClass("vistest.appClientAsEjbLib.AppClientAsEjbLibTargetBean");
+        JavaArchive visTestAppClientAsEjbLib8 = ShrinkWrap.create(JavaArchive.class, "visTestAppClientAsEjbLib.jar")
+                                                          .addClass(vistest.appClientAsEjbLib.dummy.DummyMain.class)
+                                                          .addClass(vistest.appClientAsEjbLib.AppClientAsEjbLibTestingBean.class)
+                                                          .addClass(vistest.appClientAsEjbLib.AppClientAsEjbLibTargetBean.class);
 
-        JavaArchive visTestAppClientAsWarLib9 = ShrinkWrap.create(JavaArchive.class,"visTestAppClientAsWarLib.jar")
-                        .addClass("vistest.appClientAsWarLib.dummy.DummyMain")
-                        .addClass("vistest.appClientAsWarLib.AppClientAsWarLibTargetBean")
-                        .addClass("vistest.appClientAsWarLib.AppClientAsWarLibTestingBean");
+        JavaArchive visTestAppClientAsWarLib9 = ShrinkWrap.create(JavaArchive.class, "visTestAppClientAsWarLib.jar")
+                                                          .addClass(vistest.appClientAsWarLib.dummy.DummyMain.class)
+                                                          .addClass(vistest.appClientAsWarLib.AppClientAsWarLibTargetBean.class)
+                                                          .addClass(vistest.appClientAsWarLib.AppClientAsWarLibTestingBean.class);
 
-        JavaArchive visTestAppClientAsAppClientLib10 = ShrinkWrap.create(JavaArchive.class,"visTestAppClientAsAppClientLib.jar")
-                        .addClass("vistest.appClientAsAppClientLib.dummy.DummyMain")
-                        .addClass("vistest.appClientAsAppClientLib.AppClientAsAppClientLibTargetBean")
-                        .addClass("vistest.appClientAsAppClientLib.AppClientAsAppClientLibTestingBean");
+        JavaArchive visTestAppClientAsAppClientLib10 = ShrinkWrap.create(JavaArchive.class, "visTestAppClientAsAppClientLib.jar")
+                                                                 .addClass(vistest.appClientAsAppClientLib.dummy.DummyMain.class)
+                                                                 .addClass(vistest.appClientAsAppClientLib.AppClientAsAppClientLibTargetBean.class)
+                                                                 .addClass(vistest.appClientAsAppClientLib.AppClientAsAppClientLibTestingBean.class);
 
         WebArchive visTestWar11 = ShrinkWrap.create(WebArchive.class, "visTestWar2.war")
-                        .addClass("vistest.war2.War2TargetBean")
-                        .addClass("vistest.war2.War2TestingBean")
-                        .addClass("vistest.war2.servlet.VisibilityTestServlet");
+                                            .addClass(vistest.war2.War2TargetBean.class)
+                                            .addClass(vistest.war2.War2TestingBean.class)
+                                            .addClass(vistest.war2.servlet.VisibilityTestServlet.class);
 
-        JavaArchive visTestWarLib12 = ShrinkWrap.create(JavaArchive.class,"visTestWarLib.jar")
-                        .addClass("vistest.warLib.WarLibTestingBean")
-                        .addClass("vistest.warLib.WarLibTargetBean");
+        JavaArchive visTestWarLib12 = ShrinkWrap.create(JavaArchive.class, "visTestWarLib.jar")
+                                                .addClass(vistest.warLib.WarLibTestingBean.class)
+                                                .addClass(vistest.warLib.WarLibTargetBean.class);
 
-        JavaArchive visTestEjbLib13 = ShrinkWrap.create(JavaArchive.class,"visTestEjbLib.jar")
-                        .addClass("vistest.ejbLib.EjbLibTargetBean")
-                        .addClass("vistest.ejbLib.EjbLibTestingBean");
+        JavaArchive visTestEjbLib13 = ShrinkWrap.create(JavaArchive.class, "visTestEjbLib.jar")
+                                                .addClass(vistest.ejbLib.EjbLibTargetBean.class)
+                                                .addClass(vistest.ejbLib.EjbLibTestingBean.class);
 
-        JavaArchive visTestAppClientLib14 = ShrinkWrap.create(JavaArchive.class,"visTestAppClientLib.jar")
-                        .addClass("vistest.appClientLib.AppClientLibTargetBean")
-                        .addClass("vistest.appClientLib.AppClientLibTestingBean");
+        JavaArchive visTestAppClientLib14 = ShrinkWrap.create(JavaArchive.class, "visTestAppClientLib.jar")
+                                                      .addClass(vistest.appClientLib.AppClientLibTargetBean.class)
+                                                      .addClass(vistest.appClientLib.AppClientLibTestingBean.class);
 
-        JavaArchive visTestEjbWarLib15 = ShrinkWrap.create(JavaArchive.class,"visTestEjbWarLib.jar")
-                        .addClass("vistest.ejbWarLib.EjbWarLibTestingBean")
-                        .addClass("vistest.ejbWarLib.EjbWarLibTargetBean");
+        JavaArchive visTestEjbWarLib15 = ShrinkWrap.create(JavaArchive.class, "visTestEjbWarLib.jar")
+                                                   .addClass(vistest.ejbWarLib.EjbWarLibTestingBean.class)
+                                                   .addClass(vistest.ejbWarLib.EjbWarLibTargetBean.class);
 
-        JavaArchive visTestEjbAppClientLib16 = ShrinkWrap.create(JavaArchive.class,"visTestEjbAppClientLib.jar")
-                        .addClass("vistest.ejbAppClientLib.EjbAppClientLibTestingBean")
-                        .addClass("vistest.ejbAppClientLib.EjbAppClientLibTargetBean");
+        JavaArchive visTestEjbAppClientLib16 = ShrinkWrap.create(JavaArchive.class, "visTestEjbAppClientLib.jar")
+                                                         .addClass(vistest.ejbAppClientLib.EjbAppClientLibTestingBean.class)
+                                                         .addClass(vistest.ejbAppClientLib.EjbAppClientLibTargetBean.class);
 
-        JavaArchive visTestWarAppClientLib17 = ShrinkWrap.create(JavaArchive.class,"visTestWarAppClientLib.jar")
-                        .addClass("vistest.warAppClientLib.WarAppClientLibTestingBean")
-                        .addClass("vistest.warAppClientLib.WarAppClientLibTargetBean");
+        JavaArchive visTestWarAppClientLib17 = ShrinkWrap.create(JavaArchive.class, "visTestWarAppClientLib.jar")
+                                                         .addClass(vistest.warAppClientLib.WarAppClientLibTestingBean.class)
+                                                         .addClass(vistest.warAppClientLib.WarAppClientLibTargetBean.class);
 
-        JavaArchive visTestNonLib18 = ShrinkWrap.create(JavaArchive.class,"visTestNonLib.jar")
-                        .addClass("vistest.nonLib.NonLibTestingBean")
-                        .addClass("vistest.nonLib.NonLibTargetBean");
+        JavaArchive visTestNonLib18 = ShrinkWrap.create(JavaArchive.class, "visTestNonLib.jar")
+                                                .addClass(vistest.nonLib.NonLibTestingBean.class)
+                                                .addClass(vistest.nonLib.NonLibTargetBean.class);
 
-        JavaArchive visTestFramework19 = ShrinkWrap.create(JavaArchive.class,"visTestFramework.jar")
-                        .addClass("vistest.qualifiers.InWarWebinfLib")
-                        .addClass("vistest.qualifiers.InEjb")
-                        .addClass("vistest.qualifiers.InEarLib")
-                        .addClass("vistest.qualifiers.InEjbAsEjbLib")
-                        .addClass("vistest.qualifiers.InWarAppClientLib")
-                        .addClass("vistest.qualifiers.InAppClient")
-                        .addClass("vistest.qualifiers.InAppClientLib")
-                        .addClass("vistest.qualifiers.InNonLib")
-                        .addClass("vistest.qualifiers.InAppClientAsAppClientLib")
-                        .addClass("vistest.qualifiers.InEjbAppClientLib")
-                        .addClass("vistest.qualifiers.InEjbAsAppClientLib")
-                        .addClass("vistest.qualifiers.InAppClientAsWarLib")
-                        .addClass("vistest.qualifiers.InEjbAsWarLib")
-                        .addClass("vistest.qualifiers.InEjbLib")
-                        .addClass("vistest.qualifiers.InWar")
-                        .addClass("vistest.qualifiers.InWar2")
-                        .addClass("vistest.qualifiers.InAppClientAsEjbLib")
-                        .addClass("vistest.qualifiers.InWarLib")
-                        .addClass("vistest.qualifiers.InEjbWarLib")
-                        .addClass("vistest.framework.TargetBean")
-                        .addClass("vistest.framework.VisTester")
-                        .addClass("vistest.framework.TestingBean");
+        JavaArchive visTestFramework19 = ShrinkWrap.create(JavaArchive.class, "visTestFramework.jar")
+                                                   .addClass(vistest.qualifiers.InWarWebinfLib.class)
+                                                   .addClass(vistest.qualifiers.InEjb.class)
+                                                   .addClass(vistest.qualifiers.InEarLib.class)
+                                                   .addClass(vistest.qualifiers.InEjbAsEjbLib.class)
+                                                   .addClass(vistest.qualifiers.InWarAppClientLib.class)
+                                                   .addClass(vistest.qualifiers.InAppClient.class)
+                                                   .addClass(vistest.qualifiers.InAppClientLib.class)
+                                                   .addClass(vistest.qualifiers.InNonLib.class)
+                                                   .addClass(vistest.qualifiers.InAppClientAsAppClientLib.class)
+                                                   .addClass(vistest.qualifiers.InEjbAppClientLib.class)
+                                                   .addClass(vistest.qualifiers.InEjbAsAppClientLib.class)
+                                                   .addClass(vistest.qualifiers.InAppClientAsWarLib.class)
+                                                   .addClass(vistest.qualifiers.InEjbAsWarLib.class)
+                                                   .addClass(vistest.qualifiers.InEjbLib.class)
+                                                   .addClass(vistest.qualifiers.InWar.class)
+                                                   .addClass(vistest.qualifiers.InWar2.class)
+                                                   .addClass(vistest.qualifiers.InAppClientAsEjbLib.class)
+                                                   .addClass(vistest.qualifiers.InWarLib.class)
+                                                   .addClass(vistest.qualifiers.InEjbWarLib.class)
+                                                   .addClass(vistest.framework.TargetBean.class)
+                                                   .addClass(vistest.framework.VisTester.class)
+                                                   .addClass(vistest.framework.TestingBean.class);
 
-        JavaArchive visTestEarLib20 = ShrinkWrap.create(JavaArchive.class,"visTestEarLib.jar")
-                        .addClass("vistest.earLib.EarLibTargetBean")
-                        .addClass("vistest.earLib.EarLibTestingBean");
+        JavaArchive visTestEarLib20 = ShrinkWrap.create(JavaArchive.class, "visTestEarLib.jar")
+                                                .addClass(vistest.earLib.EarLibTargetBean.class)
+                                                .addClass(vistest.earLib.EarLibTestingBean.class);
 
-        EnterpriseArchive visTest = ShrinkWrap.create(EnterpriseArchive.class,"visTest.ear")
-                        .addAsModule(visTestWar2)
-                        .addAsModule(visTestEjb3)
-                        .addAsModule(visTestAppClient4)
-                        .addAsModule(visTestEjbAsEjbLib5)
-                        .addAsModule(visTestEjbAsWarLib6)
-                        .addAsModule(visTestEjbAsAppClientLib7)
-                        .addAsModule(visTestAppClientAsEjbLib8)
-                        .addAsModule(visTestAppClientAsWarLib9)
-                        .addAsModule(visTestAppClientAsAppClientLib10)
-                        .addAsModule(visTestWar11)
-                        .addAsModule(visTestWarLib12)
-                        .addAsModule(visTestEjbLib13)
-                        .addAsModule(visTestAppClientLib14)
-                        .addAsModule(visTestEjbWarLib15)
-                        .addAsModule(visTestEjbAppClientLib16)
-                        .addAsModule(visTestWarAppClientLib17)
-                        .addAsModule(visTestNonLib18)
-                        .addAsLibrary(visTestFramework19)
-                        .addAsLibrary(visTestEarLib20)
-                        .addAsResource("com/ibm/ws/cdi12/fat/tests/permissions.xml", "permissions.xml");
+        EnterpriseArchive visTest = ShrinkWrap.create(EnterpriseArchive.class, "visTest.ear")
+                                              .addAsModule(visTestWar2)
+                                              .addAsModule(visTestEjb3)
+                                              .addAsModule(visTestAppClient4)
+                                              .addAsModule(visTestEjbAsEjbLib5)
+                                              .addAsModule(visTestEjbAsWarLib6)
+                                              .addAsModule(visTestEjbAsAppClientLib7)
+                                              .addAsModule(visTestAppClientAsEjbLib8)
+                                              .addAsModule(visTestAppClientAsWarLib9)
+                                              .addAsModule(visTestAppClientAsAppClientLib10)
+                                              .addAsModule(visTestWar11)
+                                              .addAsModule(visTestWarLib12)
+                                              .addAsModule(visTestEjbLib13)
+                                              .addAsModule(visTestAppClientLib14)
+                                              .addAsModule(visTestEjbWarLib15)
+                                              .addAsModule(visTestEjbAppClientLib16)
+                                              .addAsModule(visTestWarAppClientLib17)
+                                              .addAsModule(visTestNonLib18)
+                                              .addAsLibrary(visTestFramework19)
+                                              .addAsLibrary(visTestEarLib20)
+                                              .addAsResource("com/ibm/ws/cdi12/fat/tests/permissions.xml", "permissions.xml");
 
-       ShrinkHelper.exportAppToServer(server, visTest);
-       ShrinkHelper.exportAppToClient(client, visTest);
+        ShrinkHelper.exportAppToServer(server, visTest, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportAppToClient(client, visTest, DeployOptions.SERVER_ONLY);
 
-       server.startServer();
+        server.startServer();
+        getAppClientResults();
     }
 
     public static Logger LOG = Logger.getLogger(VisTest.class.getName());
@@ -312,13 +331,10 @@ public class VisTest {
      *
      * @throws Exception
      */
-    @BeforeClass
     public static void getAppClientResults() throws Exception {
 
         appClientResults = new HashMap<Location, String>();
 
-        LibertyClient client = LibertyClientFactory.getLibertyClient("visTestClient");
-        buildShrinkWrap(client);
         ProgramOutput output = client.startClient();
 
         LOG.info("GOT THE CLIENT OUTPUT");
