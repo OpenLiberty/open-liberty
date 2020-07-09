@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2019 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -33,72 +33,18 @@ Export-Package: \
 	com.ibm.wsspi.annocache.util;provide:=true, \
 	com.ibm.ws.annocache.classsource.specification;provide:=true
 
-Service-Component:\
-  com.ibm.wsspi.anno.service; \
-    provide:=com.ibm.wsspi.anno.service.AnnotationService_Service; \
-    implementation:=com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Service; \
-    configuration-policy:=ignore; \
-    properties:="service.vendor=IBM", \
-  com.ibm.wsspi.anno.info; \
-    provide:=com.ibm.wsspi.anno.info.InfoStoreFactory; \
-    implementation:=com.ibm.ws.anno.info.internal.InfoStoreFactoryImpl; \
-    configuration-policy:=ignore; \
-    properties:="service.vendor=IBM", \
-  com.ibm.wsspi.anno.targets; \
-    provide:=com.ibm.wsspi.anno.targets.AnnotationTargets_Factory; \
-    implementation:=com.ibm.ws.anno.targets.internal.AnnotationTargetsImpl_Factory; \
-    configuration-policy:=ignore; \
-    properties:="service.vendor=IBM", \
-  com.ibm.wsspi.anno.classsource; \
-    provide:=com.ibm.wsspi.anno.classsource.ClassSource_Factory; \
-    implementation:=com.ibm.ws.anno.classsource.internal.ClassSourceImpl_Factory; \
-    configuration-policy:=ignore; \
-    properties:="service.vendor=IBM", \
-  com.ibm.wsspi.anno.classsource.specification; \
-    provide:=com.ibm.wsspi.anno.classsource.ClassSource_Specification; \
-    implementation:=com.ibm.ws.anno.classsource.internal.ClassSourceImpl_Specification; \
-    configuration-policy:=ignore; \
-    properties:="service.vendor=IBM", \
-  com.ibm.wsspi.anno.util; \
-    provide:=com.ibm.wsspi.anno.util.Util_Factory; \
-    implementation:=com.ibm.ws.anno.util.internal.UtilImpl_Factory; \
-    configuration-policy:=ignore; \
-    properties:="service.vendor=IBM", \
-  com.ibm.wsspi.annocache.service; \
-    provide:=com.ibm.wsspi.annocache.service.AnnotationCacheService_Service; \
-    implementation:=com.ibm.ws.annocache.service.internal.AnnotationCacheServiceImpl_Service; \
-    configuration-policy:=ignore; \
-    properties:="service.vendor=IBM", \
-  com.ibm.wsspi.annocache.info; \
-    provide:=com.ibm.wsspi.annocache.info.InfoStoreFactory; \
-    implementation:=com.ibm.ws.annocache.info.internal.InfoStoreFactoryImpl; \
-    configuration-policy:=ignore; \
-    properties:="service.vendor=IBM", \
-  com.ibm.wsspi.annocache.targets; \
-    provide:=com.ibm.wsspi.annocache.targets.AnnotationTargets_Factory; \
-    implementation:=com.ibm.ws.annocache.targets.internal.AnnotationTargetsImpl_Factory; \
-    configuration-policy:=ignore; \
-    properties:="service.vendor=IBM", \
-  com.ibm.wsspi.annocache.targets.cache; \
-    provide:=com.ibm.wsspi.annocache.targets.cache.TargetCache_Factory; \
-    implementation:=com.ibm.ws.annocache.targets.cache.internal.TargetCacheImpl_Factory; \
-    configuration-policy:=ignore; \
-    properties:="service.vendor=IBM", \
-  com.ibm.wsspi.annocache.classsource; \
-    provide:=com.ibm.wsspi.annocache.classsource.ClassSource_Factory; \
-    implementation:=com.ibm.ws.annocache.classsource.internal.ClassSourceImpl_Factory; \
-    configuration-policy:=ignore; \
-    properties:="service.vendor=IBM", \
-  com.ibm.wsspi.annocache.classsource.specification; \
-    provide:=com.ibm.wsspi.annocache.classsource.ClassSource_Specification; \
-    implementation:=com.ibm.ws.annocache.classsource.internal.ClassSourceImpl_Specification; \
-    configuration-policy:=ignore; \
-    properties:="service.vendor=IBM", \
-  com.ibm.wsspi.annocache.util; \
-    provide:=com.ibm.wsspi.annocache.util.Util_Factory; \
-    implementation:=com.ibm.ws.annocache.util.internal.UtilImpl_Factory; \
-    configuration-policy:=ignore; \
-    properties:="service.vendor=IBM"
+-dsannotations: \
+ com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Service, \
+ com.ibm.ws.anno.info.internal.InfoStoreFactoryImpl, \
+ com.ibm.ws.anno.targets.internal.AnnotationTargetsImpl_Factory, \
+ com.ibm.ws.anno.classsource.internal.ClassSourceImpl_Factory, \
+ com.ibm.ws.anno.util.internal.UtilImpl_Factory, \
+ com.ibm.ws.annocache.service.internal.AnnotationCacheServiceImpl_Service, \
+ com.ibm.ws.annocache.info.internal.InfoStoreFactoryImpl, \
+ com.ibm.ws.annocache.targets.internal.AnnotationTargetsImpl_Factory, \
+ com.ibm.ws.annocache.targets.cache.internal.TargetCacheImpl_Factory, \
+ com.ibm.ws.annocache.classsource.internal.ClassSourceImpl_Factory, \
+ com.ibm.ws.annocache.util.internal.UtilImpl_Factory
 
 WS-TraceGroup: com.ibm.ws.anno
 
@@ -114,6 +60,7 @@ instrument.classesExcludes: \
 	com.ibm.ws.org.objectweb.asm;version=latest,\
 	com.ibm.ws.org.jboss.jandex;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
 	com.ibm.websphere.org.osgi.core;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
 	com.ibm.ws.kernel.security.thread;version=latest
