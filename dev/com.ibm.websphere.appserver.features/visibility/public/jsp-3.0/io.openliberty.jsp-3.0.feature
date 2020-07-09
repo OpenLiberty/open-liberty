@@ -40,7 +40,7 @@ Subsystem-Name: Jakarta Server Pages 3.0
  io.openliberty.jakarta.jstl.2.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.servlet:jstl:2.0", \
  com.ibm.ws.jsp.2.3.jakarta, \
  com.ibm.ws.jsp.jakarta, \
- com.ibm.ws.jsp.jstl.facade.jakarta
+ com.ibm.ws.jsp.jstl.facade.jakarta; start-phase:=CONTAINER_EARLY
 -jars=com.ibm.websphere.appserver.spi.jsp; location:=dev/spi/ibm/, \
  com.ibm.websphere.javaee.jsp.tld.2.2.jakarta; location:=dev/api/spec/
 -files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.jsp_1.0-javadoc.zip

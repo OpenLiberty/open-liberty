@@ -40,7 +40,7 @@ Subsystem-Name: JavaServer Pages 2.3
  com.ibm.websphere.javaee.jstl.1.2; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.servlet:jstl:1.2", \
  com.ibm.ws.jsp.2.3, \
  com.ibm.ws.jsp, \
- com.ibm.ws.jsp.jstl.facade
+ com.ibm.ws.jsp.jstl.facade; start-phase:=CONTAINER_EARLY
 -jars=com.ibm.websphere.appserver.spi.jsp; location:=dev/spi/ibm/, \
  com.ibm.websphere.javaee.jsp.tld.2.2; location:=dev/api/spec/
 -files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.jsp_1.0-javadoc.zip
