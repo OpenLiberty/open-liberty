@@ -382,6 +382,26 @@ public class AcmeConfigTest {
 		assertEquals(Boolean.FALSE, acmeConfig.isRevocationCheckerEnabled());
 		assertEquals(URI.create("http://localhost:4001"), acmeConfig.getOcspResponderUrl());
 		assertTrue(acmeConfig.isPreferCrls());
+		assertEquals(acmeConfig.getHTTPConnectTimeout(), AcmeConstants.HTTP_CONNECT_TIMEOUT_DEFAULT);
+		assertEquals(acmeConfig.getHTTPReadTimeout(), AcmeConstants.HTTP_READ_TIMEOUT_DEFAULT);
+
+		/*
+		 * Check custom config on httpConnect/httpRead
+		 */
+		properties.put(AcmeConstants.TRANSPORT_CONFIG + ".0." + AcmeConstants.HTTP_CONNECT_TIMEOUT, 17000L);
+		properties.put(AcmeConstants.TRANSPORT_CONFIG + ".0." + AcmeConstants.HTTP_READ_TIMEOUT, 60L);
+		acmeConfig = new AcmeConfig(properties);
+		assertEquals(17000, acmeConfig.getHTTPConnectTimeout().intValue());
+		assertEquals(60, acmeConfig.getHTTPReadTimeout().intValue());
+
+		/*
+		 * Check zero on httpConnect/httpRead
+		 */
+		properties.put(AcmeConstants.TRANSPORT_CONFIG + ".0." + AcmeConstants.HTTP_CONNECT_TIMEOUT, 0L);
+		properties.put(AcmeConstants.TRANSPORT_CONFIG + ".0." + AcmeConstants.HTTP_READ_TIMEOUT, 0L);
+		acmeConfig = new AcmeConfig(properties);
+		assertEquals(0, acmeConfig.getHTTPConnectTimeout().intValue());
+		assertEquals(0, acmeConfig.getHTTPReadTimeout().intValue());
 	}
 
 	@Test
@@ -427,6 +447,8 @@ public class AcmeConfigTest {
 		properties.put(AcmeConstants.RENEW_BEFORE_EXPIRATION, AcmeConstants.RENEW_CERT_MIN_DEFAULT - 10);
 		properties.put(AcmeConstants.CERT_CHECKER_SCHEDULE, AcmeConstants.RENEW_CERT_MIN_DEFAULT - 10);
 		properties.put(AcmeConstants.CERT_CHECKER_ERROR_SCHEDULE, AcmeConstants.RENEW_CERT_MIN_DEFAULT - 10);
+		properties.put(AcmeConstants.TRANSPORT_CONFIG + ".0." + AcmeConstants.HTTP_CONNECT_TIMEOUT, -2L);
+		properties.put(AcmeConstants.TRANSPORT_CONFIG + ".0." + AcmeConstants.HTTP_READ_TIMEOUT, -4L);
 
 		/*
 		 * Instantiate the ACME configuration.
@@ -443,6 +465,17 @@ public class AcmeConfigTest {
 		assertTrue("Auto-renewal should be enabled", acmeConfig.isAutoRenewOnExpiration());
 		assertEquals(acmeConfig.getRenewCertMin(), acmeConfig.getCertCheckerScheduler().longValue());
 		assertEquals(acmeConfig.getRenewCertMin(), acmeConfig.getCertCheckerErrorScheduler().longValue());
+		assertEquals(0, acmeConfig.getHTTPConnectTimeout().intValue());
+		assertEquals(0, acmeConfig.getHTTPReadTimeout().intValue());
+
+		/*
+		 * Check max values on httpConnect/httpRead
+		 */
+		properties.put(AcmeConstants.TRANSPORT_CONFIG + ".0." + AcmeConstants.HTTP_CONNECT_TIMEOUT, 2147483649L);
+		properties.put(AcmeConstants.TRANSPORT_CONFIG + ".0." + AcmeConstants.HTTP_READ_TIMEOUT, 2147483649L);
+		acmeConfig = new AcmeConfig(properties);
+		assertEquals(Integer.MAX_VALUE, acmeConfig.getHTTPConnectTimeout().intValue());
+		assertEquals(Integer.MAX_VALUE, acmeConfig.getHTTPReadTimeout().intValue());
 	}
 
 	private Map<String, Object> getBasicConfig() {

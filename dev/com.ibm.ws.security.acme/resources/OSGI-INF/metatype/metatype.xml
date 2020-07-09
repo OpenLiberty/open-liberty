@@ -70,6 +70,8 @@
    <AD id="trustStore"           name="%trustStore"         description="%trustStore.desc"         required="false" type="String" />
    <AD id="trustStorePassword"   name="%trustStorePassword" description="%trustStorePassword.desc" required="false" type="String" ibm:type="password" />
    <AD id="trustStoreType"       name="%trustStoreType"     description="%trustStoreType.desc"     required="false" type="String" />
+   <AD id="httpConnectTimeout"   name="internal" description="internal use only" type="String"  required="false" ibm:type="duration" default="30s" />
+   <AD id="httpReadTimeout"      name="internal" description="internal use only" type="String"  required="false" ibm:type="duration" default="30s" />
  </OCD>
 
  <Designate factoryPid="com.ibm.ws.security.acme.revocation">
