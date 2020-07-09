@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,15 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.ejbcontainer.osgi;
+package io.openliberty.ejbcontainer.v40.internal;
 
-import org.osgi.framework.Version;
+import org.osgi.service.component.annotations.Component;
 
-public class EJBRuntimeVersion {
-    public static final String VERSION = "version";
+import com.ibm.ws.ejbcontainer.osgi.EJBRuntimeVersion;
 
-    public static final Version VERSION_3_1 = new Version(3, 1, 0);
-    public static final Version VERSION_3_2 = new Version(3, 2, 0);
-    public static final Version VERSION_4_0 = new Version(4, 0, 0);
-
+@Component(service = EJBRuntimeVersion.class, property = { "version=4.0", "service.ranking:Integer=40" })
+public class EJBRuntimeVersionV40 extends EJBRuntimeVersion {
 }

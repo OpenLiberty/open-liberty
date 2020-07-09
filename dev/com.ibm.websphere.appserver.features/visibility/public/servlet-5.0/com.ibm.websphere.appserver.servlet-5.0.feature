@@ -48,7 +48,7 @@ Subsystem-Category: JakartaEE9Application
  com.ibm.websphere.appserver.eeCompatible-9.0, \
  com.ibm.websphere.appserver.servlet-servletSpi1.0, \
  com.ibm.websphere.appserver.javaeeddSchema-1.0
--bundles=com.ibm.ws.app.manager.war, \
+-bundles=com.ibm.ws.app.manager.war.jakarta, \
  com.ibm.ws.managedobject, \
  com.ibm.ws.org.apache.commons.io, \
  com.ibm.websphere.security, \
