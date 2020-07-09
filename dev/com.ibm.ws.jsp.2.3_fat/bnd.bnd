@@ -27,6 +27,7 @@ tested.features:\
     el-4.0,\
     servlet-5.0,\
     jsp-3.0,\
+    cdi-3.0,\
 
 
 -buildpath: \

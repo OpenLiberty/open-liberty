@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 
