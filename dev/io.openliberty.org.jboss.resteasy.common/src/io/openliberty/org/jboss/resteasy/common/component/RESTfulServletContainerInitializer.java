@@ -18,6 +18,10 @@ import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
+import javax.servlet.annotation.HandlesTypes;
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Application;
+import javax.ws.rs.ext.Provider;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -26,6 +30,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import org.jboss.resteasy.plugins.servlet.ResteasyServletInitializer;
 
 @Trivial
+@HandlesTypes({Application.class, Path.class, Provider.class})
 public class RESTfulServletContainerInitializer extends ResteasyServletInitializer implements ServletContainerInitializer {
     private final static TraceComponent tc = Tr.register(RESTfulServletContainerInitializer.class, "JAXRS");
 
