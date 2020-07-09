@@ -8,12 +8,12 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<server description="FAT configuration for gRPC Server with grpc element and max message size">
+<server description="FAT configuration for gRPC Server with grpc element, wildcard target and small max message size">
     <featureManager>
         <feature>grpc-1.0</feature>
      </featureManager>
      
-     <grpc target="*" maxInboundMessageSize="6"/>
+     <grpc target="*" maxInboundMessageSize="1"/>
 
      <include location="../fatTestPorts.xml"/>
     

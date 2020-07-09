@@ -8,7 +8,7 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<server description="FAT configuration for gRPC Server">
+<server description="FAT configuration for gRPC Server with single target">
     <featureManager>
         <feature>grpc-1.0</feature>
      </featureManager>

@@ -9,10 +9,15 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+// io.grpc.StatusRuntimeException: RESOURCE_EXHAUSTED: gRPC message exceeds maximum size 1: 7
 package com.ibm.ws.fat.grpc;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.junit.AfterClass;
@@ -24,7 +29,10 @@ import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.grpc.fat.beer.service.Beer;
+import com.ibm.ws.grpc.fat.beer.service.BeerResponse;
+import com.ibm.ws.grpc.fat.beer.service.BeerServiceGrpc;
+import com.ibm.ws.grpc.fat.beer.service.BeerServiceGrpc.BeerServiceBlockingStub;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -50,10 +58,10 @@ public class ServiceConfigTests extends FATServletClient {
 
     private static final String GRPC_BAD_TARGET = "grpc.server.bad.target.xml";
     private static final String GRPC_ELEMENT = "grpc.server.grpc.element.xml";
+    private static final String GRPC_INTERCEPTOR = "grpc.server.grpc.interceptor.xml";
     private static final String GRPC_INVALID_MAX_MSG_SIZE = "grpc.server.invalid.max.msg.size.xml";
-    private static final String GRPC_MAX_MESSAGE = "grpc.server.max.msg.size.xml";
+    private static final String GRPC_MAX_MESSAGE_SPECIFIC_TARGET = "grpc.server.small.max.msg.size.and.specific.target.xml";
     private static final String GRPC_SMALL_MAX_MESSAGE = "grpc.server.small.max.msg.size.xml";
-    private static final String GRPC_WILDCARD_TARGET = "grpc.server.wildcard.target.xml";
 
     private static String serverConfigurationFile = DEFAULT_CONFIG_FILE;
 
@@ -61,6 +69,9 @@ public class ServiceConfigTests extends FATServletClient {
     private static GreeterBlockingStub worldServiceBlockingStub;
 
     private static String hws = new String("HelloWorldService.war");
+
+    private static final Set<String> appName = Collections.singleton("HelloWorldService");
+    private static final Set<String> appNames = new HashSet<>(Arrays.asList("HelloWorldService", "FavoriteBeerService"));
 
     @Rule
     public TestName name = new TestName();
@@ -72,7 +83,7 @@ public class ServiceConfigTests extends FATServletClient {
     public static void setUp() throws Exception {
         grpcServer.startServer(ServiceSupportTests.class.getSimpleName() + ".log");
 
-        LOG.info("testAddGrpcElement() : add HelloWorldService to the server if not already present.");
+        LOG.info("ServiceConfigTests : setUp() : add helloWorldService  app");
         // add all classes from com.ibm.ws.grpc.fat.helloworld.service and io.grpc.examples.helloworld
         // to a new app HelloWorldService.war
         ShrinkHelper.defaultDropinApp(grpcServer, hws,
@@ -96,7 +107,7 @@ public class ServiceConfigTests extends FATServletClient {
                                                String serverXML) throws Exception {
         if (!serverConfigurationFile.equals(serverXML)) {
             // Update server.xml
-            Log.info(c, "setServerConfiguration", "setServerConfigurationFile to : " + serverXML);
+            LOG.info("ServiceConfigTests : setServerConfiguration setServerConfigurationFile to : " + serverXML);
             server.setMarkToEndOfLog();
             server.setServerConfigurationFile(serverXML);
             server.waitForStringInLog("CWWKG0017I");
@@ -106,6 +117,10 @@ public class ServiceConfigTests extends FATServletClient {
 
     /**
      * Add a new <grpc/> element and make sure it's applied
+     * The original server.xml enables the grpc feature, but has no grpc element.
+     * Update the server with a server.xml that has a grpc element, make sure no errors, send a request.
+     *
+     * <grpc target="helloworld.Greeter" />
      *
      * @throws Exception
      *
@@ -113,20 +128,29 @@ public class ServiceConfigTests extends FATServletClient {
     @Test
     public void testAddGrpcElement() throws Exception {
 
-        LOG.info("testAddGrpcElement() : update the server.xml file to one with a </grpc> element.");
+        LOG.info("ServiceConfigTests : testAddGrpcElement() : update the server.xml file to one with a <grpc> element.");
 
         // Update to a config file with a <grpc> element
         setServerConfiguration(grpcServer, GRPC_ELEMENT);
+        grpcServer.waitForConfigUpdateInLogUsingMark(appName);
 
-        String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKG0017I: The server configuration was successfully updated", STARTUP_TIMEOUT);
-        if (appStarted == null) {
-            Assert.fail(c + ": server.xml with <grpc> element failed to update within " + STARTUP_TIMEOUT + "ms");
-        }
+        // Send a request to the HelloWorld service and check for a response
+        HelloRequest person = HelloRequest.newBuilder().setName("Holly").build();
+        HelloReply greeting = worldServiceBlockingStub.sayHello(person);
+        //Make sure the reply has Holly in it
+        assertTrue(greeting.getMessage().contains("Holly"));
 
     }
 
     /**
-     * Update an existing <grpc> element, eg. add a new param like maxInboundMessageSize
+     * Update an existing <grpc> element, eg. add a new param to <gprc>.
+     *
+     * This test adds a grpc element with a grpc interceptor. Make sure the interceptor does not run
+     * when not configured, and make sure it runs when configured.
+     *
+     * <grpc target="helloworld.Greeter" serverInterceptors="com.ibm.ws.grpc.fat.helloworld.service.HelloWorldServerInterceptor"/>
+     *
+     * The simple interceptor prints a message to the log.
      *
      * @throws Exception
      *
@@ -134,14 +158,40 @@ public class ServiceConfigTests extends FATServletClient {
     @Test
     public void testUpdateGrpcParam() throws Exception {
 
-        LOG.info("testUpdateGrpcParam() : update the server.xml file to one with a </grpc> element with maxMessageSize.");
+        LOG.info("ServiceConfigTests : testUpdateGrpcParam() : update the server.xml file to one with a </grpc> element with no interceptor");
 
-        // Update to a config file with a <grpc> element with maxMessageSize included
-        setServerConfiguration(grpcServer, GRPC_MAX_MESSAGE);
+        // Update to a config file with a <grpc> element with no interceptor
+        setServerConfiguration(grpcServer, GRPC_ELEMENT);
+        grpcServer.waitForConfigUpdateInLogUsingMark(appName);
 
-        String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKG0017I: The server configuration was successfully updated", STARTUP_TIMEOUT);
-        if (appStarted == null) {
-            Assert.fail(c + ": server.xml with <grpc> element plus maxMessageSize failed to update within " + STARTUP_TIMEOUT + "ms");
+        // Send a request to the HelloWorld service and check for a response
+        HelloRequest person = HelloRequest.newBuilder().setName("Kevin").build();
+        HelloReply greeting = worldServiceBlockingStub.sayHello(person);
+        //Make sure the reply has Kevin in it
+        assertTrue(greeting.getMessage().contains("Kevin"));
+        //Make sure the Interceptor was not called and did not logged a message
+        String interceptorHasRun = grpcServer.verifyStringNotInLogUsingMark("com.ibm.ws.grpc.fat.helloworld.service.HelloWorldServerInterceptor has been invoked!",
+                                                                            STARTUP_TIMEOUT);
+
+        if (interceptorHasRun != null) {
+            Assert.fail(c + ": server.xml with <grpc> element plus interceptor ran when it should not have in " + STARTUP_TIMEOUT + "ms");
+        }
+
+        // Update to a config file with a <grpc> element with Interceptor included
+        LOG.info("ServiceConfigTests : testUpdateGrpcParam() : update the server.xml file to one with a </grpc> element with an interceptor");
+        setServerConfiguration(grpcServer, GRPC_INTERCEPTOR);
+        grpcServer.waitForConfigUpdateInLogUsingMark(appName);
+
+        // Send a request to the HelloWorld service and check for a response
+        // The request should work, but there should be no message from the interceptor
+        person = HelloRequest.newBuilder().setName("Millie").build();
+        greeting = worldServiceBlockingStub.sayHello(person);
+        //Make sure the reply has Millie in it
+        assertTrue(greeting.getMessage().contains("Millie"));
+        //Make sure the Interceptor was called and logged a message
+        interceptorHasRun = grpcServer.waitForStringInLogUsingMark("com.ibm.ws.grpc.fat.helloworld.service.HelloWorldServerInterceptor has been invoked!", STARTUP_TIMEOUT);
+        if (interceptorHasRun == null) {
+            Assert.fail(c + ": server.xml with <grpc> element plus interceptor failed to update within " + STARTUP_TIMEOUT + "ms");
         }
 
     }
@@ -149,6 +199,11 @@ public class ServiceConfigTests extends FATServletClient {
     /**
      *
      * Remove an existing <grpc/> element
+     * Start with a config file with a too small msg size, look for failure.
+     * <grpc target="*" maxInboundMessageSize="1"/>
+     *
+     * Then update to a config file with no <grpc> element, so msg size should revert to default, look for success.
+     * no grpc element in server.xml
      *
      * @throws Exception
      *
@@ -156,77 +211,145 @@ public class ServiceConfigTests extends FATServletClient {
     @Test
     public void testRemoveGrpcElement() throws Exception {
 
-        LOG.info("testRemoveGrpcElement() : update the server.xml file to one with no </grpc> element.");
+        LOG.info("ServiceConfigTests : testRemoveGrpcElement() : update the server.xml file to one with a small grpc message size of 1");
 
-        // Update to a config file with a <grpc> element
-        setServerConfiguration(grpcServer, DEFAULT_CONFIG_FILE);
+        // Update to a config file with a <grpc> element with a small message size, send msg, look for failure
+        setServerConfiguration(grpcServer, GRPC_SMALL_MAX_MESSAGE);
+        grpcServer.waitForConfigUpdateInLogUsingMark(appName);
 
-        String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKG0017I: The server configuration was successfully updated", STARTUP_TIMEOUT);
-        if (appStarted == null) {
-            Assert.fail(c + ": server.xml with no <grpc> element failed to update within " + STARTUP_TIMEOUT + "ms");
+        boolean testPassed = false;
+        try {
+            // Send a request to the HelloWorld service and check for a response
+            // This should fail because the message is larger than 1
+            HelloRequest person = HelloRequest.newBuilder().setName("Kevin").build();
+            @SuppressWarnings("unused")
+            HelloReply greeting = worldServiceBlockingStub.sayHello(person);
+        } catch (io.grpc.StatusRuntimeException e) {
+            testPassed = true;
+            LOG.info("ServiceConfigTests : testRemoveGrpcElement(): Max message size set to 1 and message is > 1 byte");
         }
+
+        // Update to a config file with no <grpc> element, do same test, it should work
+        LOG.info("ServiceConfigTests : testRemoveGrpcElement() : update the server.xml file to one with no grpc message size.");
+        setServerConfiguration(grpcServer, DEFAULT_CONFIG_FILE);
+        grpcServer.waitForConfigUpdateInLogUsingMark(appName);
+
+        // Send a request to the HelloWorld service, this should work
+        HelloRequest person = HelloRequest.newBuilder().setName("Holly").build();
+        HelloReply greeting = worldServiceBlockingStub.sayHello(person);
+        LOG.info("ServiceConfigTests : testRemoveGrpcElement() : greeting:" + greeting);
+        assertTrue(greeting.getMessage().contains("Holly") && testPassed);
 
     }
 
     /**
      * Validate that * matches all services and apps on the server
      *
+     * Start two different services. Load a server.xml with a wildcard target and a small max message size.
+     * Verify that both services give errors when a message is sent to them.
+     *
+     * <grpc target="*" maxInboundMessageSize="1"/>
+     *
      * @throws Exception
      *
      **/
-    @Test
+
+    //@Test
     public void testServiceTargetWildcard() throws Exception {
-        LOG.info("testServiceTargetWildcard() : update the server.xml file to one with </grpc> wildard target.");
 
-        // Update to a config file with a <grpc> element
-        setServerConfiguration(grpcServer, GRPC_WILDCARD_TARGET);
+        ManagedChannel beerChannel;
+        BeerServiceBlockingStub beerServiceBlockingStub;
 
-        String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKG0017I: The server configuration was successfully updated", STARTUP_TIMEOUT);
+        LOG.info("ServiceConfigTests : testServiceTargetWildcard() : update the server.xml file to one with </grpc> wildard target.");
+
+        grpcServer.setMarkToEndOfLog();
+
+        // The helloworld service is already in dropins, add the beer service app and fire it up
+        ShrinkHelper.defaultDropinApp(grpcServer, "FavoriteBeerService",
+                                      "com.ibm.ws.grpc.fat.beer.service",
+                                      "com.ibm.ws.grpc.fat.beer");
+        LOG.info("ServiceConfigTests : testServiceTargetWildcard() : dropped the beer app into dropins.");
+        // Make sure the beer service has started
+        String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0001I: Application FavoriteBeerService started", STARTUP_TIMEOUT);
         if (appStarted == null) {
-            Assert.fail(c + ": server.xml with <grpc> wildcard target failed to update within " + STARTUP_TIMEOUT + "ms");
+            Assert.fail(c + ": application " + "FavoriteBeerService" + " failed to start within " + STARTUP_TIMEOUT + "ms");
+        }
+        beerChannel = ManagedChannelBuilder.forAddress(grpcServer.getHostname(), grpcServer.getHttpDefaultPort()).usePlaintext().build();
+        beerServiceBlockingStub = BeerServiceGrpc.newBlockingStub(beerChannel);
+
+        // Update to a config file with a <grpc target="*" maxInboundMessageSize="1"/>
+        // This should apply max msg size of 1 to both services
+        setServerConfiguration(grpcServer, GRPC_SMALL_MAX_MESSAGE);
+        grpcServer.waitForConfigUpdateInLogUsingMark(appNames);
+
+        boolean test1Passed = false;
+        try {
+            // Send a request to the HelloWorld service and check for a response
+            // This should fail because the message is larger than 1
+            HelloRequest person = HelloRequest.newBuilder().setName("Kevin").build();
+            HelloReply greeting = worldServiceBlockingStub.sayHello(person);
+            LOG.info("ServiceConfigTests : testServiceTargetWildcard(): greeter returned " + greeting.getMessage());
+        } catch (io.grpc.StatusRuntimeException e) {
+            test1Passed = true;
+            LOG.info("ServiceConfigTests : testServiceTargetWildcard(): first service test passed");
         }
 
-        // Send a request to the HelloWorld service and check for a response
-        HelloRequest person = HelloRequest.newBuilder().setName("Kevin").build();
-        HelloReply greeting = worldServiceBlockingStub.sayHello(person);
-        //Make sure the reply has Kevin in it
-        assertTrue(greeting.getMessage().contains("Kevin"));
+        // Send a message to the second service, expect error
+        boolean test2Passed = false;
+        // Send a request to the beer service and check for a response
+        // This should fail because the message is larger than 1
+        try {
+            Beer newBeer1 = Beer.newBuilder().setBeerName("Citraquenchl").setBeerMaker("Heist").setBeerTypeValue(0).setBeerRating((float) 4.3).build();
+            BeerResponse rsp = beerServiceBlockingStub.addBeer(newBeer1);
+            LOG.info("ServiceConfigTests : testServiceTargetWildcard(): beer rsp returned " + rsp.getDone());
+        } catch (Exception e) {
+            test2Passed = true;
+            LOG.info("ServiceConfigTests : testServiceTargetWildcard(): second service test passed");
+        }
+
+        // Stop only the FavoriteBeerService grpc application
+        beerChannel.shutdownNow();
+        LOG.info("ServiceConfigTests : testSingleWarWithGrpcService() : Stop the FavoriteBeerService application and remove it from dropins.");
+        grpcServer.removeAndStopDropinsApplications("FavoriteBeerService.war");
+
+        // removeAndStop above actually just renames the file, so really delete so the next tests have a clean slate
+        grpcServer.deleteFileFromLibertyServerRoot("/FavoriteBeerService");
+
+        assertTrue(test1Passed & test2Passed);
 
     }
 
     /**
      * Set a target that matches no existing service paths
      *
+     * <grpc target="foo.Fighter" maxInboundMessageSize="-1"/>
+     *
      * @throws Exception
      *
      **/
     @Test
     public void testServiceTargetNoMatch() throws Exception {
-        LOG.info("testServiceTargetNoMatch() : update the server.xml file to one with a </grpc> target that matches nothing.");
+        LOG.info("ServiceConfigTests : testServiceTargetNoMatch() : update the server.xml file to one with a </grpc> target that matches nothing.");
 
-        // Update to a config file with a <grpc> element
+        // Update to a config file with a <grpc> element with Foo.fighter target and an invalid msg size
         setServerConfiguration(grpcServer, GRPC_BAD_TARGET);
+        grpcServer.waitForConfigUpdateInLogUsingMark(appName);
 
-        String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKG0017I: The server configuration was successfully updated", STARTUP_TIMEOUT);
-        if (appStarted == null) {
-            Assert.fail(c + ": server.xml with a <grpc> that matches nothing failed to update within " + STARTUP_TIMEOUT + "ms");
-        }
-
-        try {
-            // Send a request to the HelloWorld service and check for a response
-            // This should fail
-            HelloRequest person = HelloRequest.newBuilder().setName("Kevin").build();
-            HelloReply greeting = worldServiceBlockingStub.sayHello(person);
-            //Make sure the reply has Kevin in it
-            assertTrue(greeting.getMessage().contains("Kevin"));
-        } catch (Exception e) {
-            LOG.info(e.getStackTrace().toString());
-        }
+        // Send a request to a different service, the HelloWorld service, and check for a response
+        // This should work, since the invalid msg size is set on the invalid target
+        HelloRequest person = HelloRequest.newBuilder().setName("Kevin").build();
+        HelloReply greeting = worldServiceBlockingStub.sayHello(person);
+        assertTrue(greeting.getMessage().contains("Kevin"));
 
     }
 
     /**
      * Test a specific match, eg. that helloworld.Greeter matches the helloworld app
+     *
+     * Start two different services. Load a server.xml with a helloWorld target and a small max message size.
+     * Verify that the specific service target gives an error while the other service works with no errors.
+     *
+     * <grpc "helloworld.Greeter" maxInboundMessageSize="1"/>
      *
      * @throws Exception
      *
@@ -234,15 +357,58 @@ public class ServiceConfigTests extends FATServletClient {
     @Test
     public void testServiceTargetSpecificMatch() throws Exception {
 
-        LOG.info("testServiceTargetSpecificMatch() : update the server.xml file to one with a </grpc> specific target.");
+        LOG.info("ServiceConfigTests : testServiceTargetSpecificMatch() : update the server.xml file to one with a </grpc> specific target.");
 
-        // Update to a config file with a <grpc> element
-        setServerConfiguration(grpcServer, GRPC_ELEMENT);
+        grpcServer.setMarkToEndOfLog();
 
-        String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKG0017I: The server configuration was successfully updated", STARTUP_TIMEOUT);
+        ManagedChannel beerChannel;
+        BeerServiceBlockingStub beerServiceBlockingStub;
+
+        // The helloworld app is already in dropins, add the beer service app and fire it up
+        ShrinkHelper.defaultDropinApp(grpcServer, "FavoriteBeerService",
+                                      "com.ibm.ws.grpc.fat.beer.service",
+                                      "com.ibm.ws.grpc.fat.beer");
+        LOG.info("ServiceConfigTests : testServiceTargetSpecificMatch() : dropped the beer app into dropins.");
+        // Make sure the beer service has started
+        String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0001I: Application FavoriteBeerService started", STARTUP_TIMEOUT);
         if (appStarted == null) {
-            Assert.fail(c + ": server.xml with <grpc> specific target failed to update within " + STARTUP_TIMEOUT + "ms");
+            Assert.fail(c + ": application " + "FavoriteBeerService" + " failed to start within " + STARTUP_TIMEOUT + "ms");
         }
+        beerChannel = ManagedChannelBuilder.forAddress(grpcServer.getHostname(), grpcServer.getHttpDefaultPort()).usePlaintext().build();
+        beerServiceBlockingStub = BeerServiceGrpc.newBlockingStub(beerChannel);
+
+        // Update to a config file with a <grpc> element that has a specific target
+        setServerConfiguration(grpcServer, GRPC_MAX_MESSAGE_SPECIFIC_TARGET);
+        grpcServer.waitForConfigUpdateInLogUsingMark(appNames);
+
+        // Send a message to the first service, expect error
+        boolean test1Passed = false;
+        try {
+            // Send a request to the HelloWorld service and check for a response
+            // This should fail because the message is larger than 1
+            HelloRequest person = HelloRequest.newBuilder().setName("Kevin").build();
+            @SuppressWarnings("unused")
+            HelloReply greeting = worldServiceBlockingStub.sayHello(person);
+        } catch (io.grpc.StatusRuntimeException e) {
+            test1Passed = true;
+            LOG.info("ServiceConfigTests : testServiceTargetSpecificMatch(): first test failed as expected");
+        }
+
+        // Send a message to the second service, expect pass
+        // Send a request to the beer service and check for a response
+        // work because this target has no restrictions
+        Beer newBeer1 = Beer.newBuilder().setBeerName("Citraquenchl").setBeerMaker("Heist").setBeerTypeValue(0).setBeerRating((float) 4.3).build();
+        BeerResponse rsp = beerServiceBlockingStub.addBeer(newBeer1);
+
+        assertTrue(test1Passed && rsp.getDone());
+
+        // Stop only the FavoriteBeerService grpc application and remove the app from dropins
+        beerChannel.shutdownNow();
+        grpcServer.removeAndStopDropinsApplications("FavoriteBeerService.war");
+        // removeAndStop above actually just renames the file, so really delete so the next tests have a clean slate
+        grpcServer.deleteFileFromLibertyServerRoot("/FavoriteBeerService");
+
+        assertTrue(test1Passed & rsp.getDone());
 
     }
 
@@ -255,20 +421,17 @@ public class ServiceConfigTests extends FATServletClient {
     @Test
     public void testInvalidMaxInboundMessageSize() throws Exception {
 
-        LOG.info("testInvalidMaxInboundMessageSize() : update the server.xml file to one with an </grpc> with an invalid maxInboundMessageSize.");
+        LOG.info("ServiceConfigTests : testInvalidMaxInboundMessageSize() : update the server.xml file to one with an </grpc> with an invalid maxInboundMessageSize.");
 
-        // Update to a config file with a <grpc> element
+        // Update to a config file with a <grpc> element with a max msg size of -1
         setServerConfiguration(grpcServer, GRPC_INVALID_MAX_MSG_SIZE);
-
-        String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKG0017I: The server configuration was successfully updated", STARTUP_TIMEOUT);
-        if (appStarted == null) {
-            Assert.fail(c + ": server.xml with <grpc> invalid maxInboundMessageSize failed to update within " + STARTUP_TIMEOUT + "ms");
-        }
+        grpcServer.waitForConfigUpdateInLogUsingMark(appName);
 
         String warningMsg = grpcServer.waitForStringInLogUsingMark("grpcTarget maxInboundMessageSize is invalid", STARTUP_TIMEOUT);
         if (warningMsg == null) {
             Assert.fail(c + ": Invalid maxInboundMessageSize failed to report a warning in " + STARTUP_TIMEOUT + "ms");
         }
+
     }
 
     /**
@@ -280,26 +443,27 @@ public class ServiceConfigTests extends FATServletClient {
     @Test
     public void testSmallMaxInboundMessageSize() throws Exception {
 
-        LOG.info("testSmallMaxInboundMessageSize() : update the server.xml file to one with an </grpc> with an very small maxInboundMessageSize.");
+        LOG.info("ServiceConfigTests : testSmallMaxInboundMessageSize() : update the server.xml file to one with an </grpc> with an very small maxInboundMessageSize.");
 
         // Update to a config file with a <grpc> element
         setServerConfiguration(grpcServer, GRPC_SMALL_MAX_MESSAGE);
+        grpcServer.waitForConfigUpdateInLogUsingMark(appName);
 
-        String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKG0017I: The server configuration was successfully updated", STARTUP_TIMEOUT);
-        if (appStarted == null) {
-            Assert.fail(c + ": server.xml with <grpc> very small maxInboundMessageSize failed to update within " + STARTUP_TIMEOUT + "ms");
-        }
-
+        boolean testPassed = false;
         try {
             // Send a request to the HelloWorld service and check for a response
-            // This should fail because the message is larger than 6
+            // This should fail because the message is larger than 1
             HelloRequest person = HelloRequest.newBuilder().setName("Kevin").build();
             HelloReply greeting = worldServiceBlockingStub.sayHello(person);
+            LOG.info("ServiceConfigTests : testSmallMaxInboundMessageSize(): greeting returned " + greeting.getMessage());
             //Make sure the reply has Kevin in it
-            assertTrue(greeting.getMessage().contains("Kevin"));
-        } catch (Exception e) {
-            LOG.info(e.getStackTrace().toString());
+            //assertTrue(greeting.getMessage().contains("Kevin"));
+        } catch (io.grpc.StatusRuntimeException e) {
+            testPassed = true;
+            LOG.info("ServiceConfigTests : testSmallMaxInboundMessageSize(): Max message size set to 1 and message is > 1 byte");
         }
+
+        assertTrue(testPassed);
 
     }
 }
