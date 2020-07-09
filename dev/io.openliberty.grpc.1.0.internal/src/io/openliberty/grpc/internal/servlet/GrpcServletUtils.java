@@ -40,6 +40,7 @@ import io.grpc.ServerInterceptors;
 import io.grpc.servlet.ServletServerBuilder;
 import io.openliberty.grpc.internal.GrpcMessages;
 import io.openliberty.grpc.internal.config.GrpcServiceConfigHolder;
+import io.openliberty.grpc.internal.monitor.GrpcMonitoringServerInterceptor;
 
 public class GrpcServletUtils {
 
@@ -232,23 +233,25 @@ public class GrpcServletUtils {
 	 * @param serverBuilder
 	 */
 	public static void addServices(List<? extends BindableService> bindableServices,
-			ServletServerBuilder serverBuilder) {
+			ServletServerBuilder serverBuilder, String appName) {
 		for (BindableService service : bindableServices) {
-			String name = service.bindService().getServiceDescriptor().getName();
+			String serviceName = service.bindService().getServiceDescriptor().getName();
 
 			// set any user-defined server interceptors and add the service
-			List<ServerInterceptor> interceptors = GrpcServletUtils.getUserInterceptors(name);
+			List<ServerInterceptor> interceptors = GrpcServletUtils.getUserInterceptors(serviceName);
 			// add Liberty auth interceptor to every service
 			interceptors.add(authInterceptor);
+			// add monitoring interceptor to every service
+			interceptors.add(new GrpcMonitoringServerInterceptor(serviceName, appName));
 			serverBuilder.addService(ServerInterceptors.intercept(service, interceptors));
 
 			// set the max inbound msg size, if it's configured
-			int maxInboundMsgSize = GrpcServiceConfigHolder.getMaxInboundMessageSize(name);
+			int maxInboundMsgSize = GrpcServiceConfigHolder.getMaxInboundMessageSize(serviceName);
 			if (maxInboundMsgSize != -1) {
 				serverBuilder.maxInboundMessageSize(maxInboundMsgSize);
 			}
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-				Tr.debug(tc, "gRPC service {0} has been registered", name);
+				Tr.debug(tc, "gRPC service {0} has been registered", serviceName);
 			}
 		}
 	}

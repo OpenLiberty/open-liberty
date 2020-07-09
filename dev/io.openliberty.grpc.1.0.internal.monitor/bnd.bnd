@@ -1,0 +1,64 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: gRPC Monitor
+Bundle-SymbolicName: io.openliberty.grpc.1.0.internal.monitor
+Bundle-Description: gRPC Monitor, version ${bVersion}
+
+# Using version=! in order to not have a version attached to the import for packages that were removed
+# from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
+# packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
+Import-Package: !sun.*,\
+  !com.google.code.gson,\
+  !org.checkerframework,\
+  !com.google.*,\
+  javax.annotation;version=!,\
+  *
+	
+Export-Package: \
+    io.openliberty.grpc.internal.monitor.* ,\
+	io.openliberty.grpc.internal,\
+	io.grpc.*,\
+	google.*,\
+	com.google.*,\
+	io.perfmark,\
+	io.opencensus.*,\
+	org.checkerframework.framework.qual,\
+	org.checkerframework.checker.nullness.qual,\
+	org.checkerframework.checker.nullness.compatqual
+
+Include-Resource: \
+  @${repo;io.grpc:grpc-core;1.27.0;EXACT}!/META-INF/**, \
+
+Liberty-Monitoring-Components: io.openliberty.grpc.1.0.internal.monitor.GrpcMonitor
+
+instrument.disabled: true
+
+-buildpath: \
+	com.ibm.ws.logging.core,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.ws.monitor;version=latest,\
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+    com.google.api.grpc:proto-google-common-protos;version=1.17.0, \
+    com.google.code.findbugs:jsr305;version=3.0.2,\
+    com.google.guava:failureaccess;version=1.0.1,\
+    com.google.guava:guava;version=27.0.1, \
+    com.google.j2objc:j2objc-annotations;version=1.1, \
+    com.google.protobuf:protobuf-java;version=3.11.1, \
+    org.checkerframework:checker-compat-qual;version=2.5.2,\
+    io.openliberty.grpc.1.0.internal.common;version=latest,\
+    org.osgi.service.component.annotations;version=latest
+  
+-fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
