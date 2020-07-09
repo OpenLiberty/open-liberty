@@ -39,7 +39,6 @@ import com.ibm.ws.container.service.annotations.WebAnnotations;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
-
 import com.ibm.ws.kernel.feature.FeatureProvisioner;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
@@ -123,7 +122,7 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
 								// pass all of our grpc service implementors into a new GrpcServlet
 								// and register that new Servlet on this context
 								GrpcServlet grpcServlet = new GrpcServlet(
-										new ArrayList<BindableService>(grpcServiceClasses.values()));
+										new ArrayList<BindableService>(grpcServiceClasses.values()), ((WebApp) sc).getApplicationName());
 								ServletRegistration.Dynamic servletRegistration = sc.addServlet("grpcServlet" + ":" + serviceName, grpcServlet);
 								servletRegistration.setAsyncSupported(true);
 
