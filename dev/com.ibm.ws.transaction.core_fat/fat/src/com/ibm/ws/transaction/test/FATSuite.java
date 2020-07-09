@@ -26,7 +26,6 @@ import componenttest.rules.repeater.RepeatTests;
                 CommitPriorityTest.class,
                 HeuristicsTest.class,
                 HeuristicsDBTranlogTest.class,
-//                DupXidTest.class,
                 SimpleTest.class,
                 SimpleDBTranlogTest.class,
                 OnePCDisabledTest.class,

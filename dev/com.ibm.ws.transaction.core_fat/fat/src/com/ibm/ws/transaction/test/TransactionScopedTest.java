@@ -34,12 +34,15 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
 import transactionscopedtest.TransactionScopedTestServlet;
 
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 @SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
 public class TransactionScopedTest extends FATServletClient {
     final int instances = 100;
@@ -122,6 +125,7 @@ public class TransactionScopedTest extends FATServletClient {
     }
 
     @Test
+    @Mode(TestMode.LITE)
     public void testTS005() throws Exception {
         HttpUtils.findStringInReadyUrl(server, FATServletClient.getPathAndQuery(SERVLET_NAME, "testTS005"), FATServletClient.SUCCESS);
     }
