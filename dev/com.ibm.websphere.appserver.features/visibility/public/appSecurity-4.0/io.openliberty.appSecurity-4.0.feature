@@ -14,7 +14,7 @@ IBM-ShortName: appSecurity-4.0
 Subsystem-Name: Application Security 4.0
 -features=io.openliberty.cdi-3.0, \
  com.ibm.websphere.appserver.el-4.0, \
- io.openliberty.security-2.0, \
+ com.ibm.websphere.appserver.security-1.0, \
  com.ibm.websphere.appserver.servlet-5.0, \
  com.ibm.websphere.appserver.eeCompatible-9.0
 -bundles=io.openliberty.jakarta.security.2.0; location:=dev/api/spec/; mavenCoordinates="jakarta.security.enterprise:jakarta.security.enterprise-api:2.0.0-RC2", \

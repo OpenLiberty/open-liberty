@@ -4,6 +4,7 @@ visibility=protected
 -features=com.ibm.websphere.appserver.security-1.0, \
  com.ibm.websphere.appserver.containerServices-1.0, \
  com.ibm.websphere.appserver.distributedMap-1.0, \
+ io.openliberty.distributedMapInternal-1.0, \
  com.ibm.websphere.appserver.servlet-3.0; ibm.tolerates:="3.1,4.0", \
  com.ibm.wsspi.appserver.webBundle-1.0
 -bundles=com.ibm.websphere.security, \

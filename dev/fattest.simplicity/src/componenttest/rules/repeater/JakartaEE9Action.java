@@ -57,6 +57,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                                                  "webProfile-9.0",
                                                  "jakartaeeClient-9.0",
                                                  "componenttest-2.0", // replaces "componenttest-1.0"
+                                                 "appSecurity-4.0",
                                                  "beanValidation-3.0",
                                                  "cdi-3.0",
                                                  "concurrent-2.0",
@@ -66,6 +67,8 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                                                  "ejbPersistentTimer-4.0",
                                                  "ejbRemote-4.0",
                                                  "el-4.0",
+                                                 "jacc-2.0",
+                                                 "jaspic-2.0",
                                                  "javaMail-2.0",
                                                  "jaxb-3.0",
                                                  "jaxrs-3.0",
