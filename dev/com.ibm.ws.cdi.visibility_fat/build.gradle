@@ -25,5 +25,6 @@ task addjaxrsValidator(type: Copy) {
 
 addRequiredLibraries {
   dependsOn addjaxrsValidator
+  dependsOn addJakartaTransformer
 }
 

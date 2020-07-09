@@ -8,21 +8,15 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test;
-
-import javax.enterprise.context.ApplicationScoped;
-
-import test.TestBean;
+package com.ibm.ws.cdi.vistest.masked.appclient;
 
 /**
- * An implementation of the TestBean within the app client jar
+ * A dummy main class to make this a valid app client jar.
  */
-@ApplicationScoped
-public class TestBeanAppClientImpl implements TestBean {
+public class Main {
 
-    @Override
-    public String getMessage() {
-        return "This is TestBean from the app client jar";
+    public static void main(String[] args) {
+        System.out.println("Main class");
     }
 
 }

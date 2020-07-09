@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test;
+package com.ibm.ws.cdi.vistest.masked.test;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.io.File;

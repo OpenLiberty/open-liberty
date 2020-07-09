@@ -8,15 +8,18 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package appclient;
+package com.ibm.ws.cdi.vistest.masked.beans;
+
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
 
 /**
- * A dummy main class to make this a valid app client jar.
+ * This bean is here to ensure that the maskedClassEjb.jar contains at least one EJB
+ * <p>
+ * It is not part of the test.
  */
-public class Main {
-
-    public static void main(String[] args) {
-        System.out.println("Main class");
-    }
+@Stateless
+@LocalBean
+public class SessionBean1 {
 
 }

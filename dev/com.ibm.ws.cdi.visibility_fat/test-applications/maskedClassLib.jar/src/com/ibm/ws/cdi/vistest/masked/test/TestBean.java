@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test;
+package com.ibm.ws.cdi.vistest.masked.test;
 
 /**
  * A test bean interface.

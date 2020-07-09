@@ -10,7 +10,7 @@
 <body>
 	
 	<!-- Create an instance of the of the bean to be tested -->
-	<jsp:useBean id="test" class="beans.EL30CoercionRulesTestBean" scope="request">
+	<jsp:useBean id="test" class="com.ibm.ws.cdi.vistest.masked.beans.EL30CoercionRulesTestBean" scope="request">
 	</jsp:useBean>
 
 	<!-- Call the custom tag which expect a Double as attribute -->

@@ -64,7 +64,7 @@
 	</p>
 	<p>	
 		<%System.out.println("Test13_PassedAsArgumentToMethod");%>	
-		<jsp:useBean id="employee" class="beans.Employee" scope="request">
+		<jsp:useBean id="employee" class="com.ibm.ws.cdi.vistest.masked.beans.Employee" scope="request">
 			<jsp:setProperty  name="employee" property="firstname" value="Charlie" />
 			<jsp:setProperty  name="employee" property="lastname" value="Brown" />
 		</jsp:useBean>	

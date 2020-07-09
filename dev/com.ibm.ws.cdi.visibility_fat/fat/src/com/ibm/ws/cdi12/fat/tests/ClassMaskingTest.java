@@ -12,28 +12,38 @@ package com.ibm.ws.cdi12.fat.tests;
 
 import java.io.File;
 
-import org.junit.ClassRule;
-import org.junit.Test;
-
-import com.ibm.ws.fat.util.BuildShrinkWrap;
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
-
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
+import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.ws.cdi.vistest.masked.appclient.Main;
+import com.ibm.ws.cdi.vistest.masked.beans.SessionBean1;
+import com.ibm.ws.cdi.vistest.masked.test.TestBean;
+import com.ibm.ws.cdi.vistest.masked.test.TestBeanAppClientImpl;
+import com.ibm.ws.cdi.vistest.masked.test.TestBeanWarImpl;
+import com.ibm.ws.cdi.vistest.masked.test.Type1;
+import com.ibm.ws.cdi.vistest.masked.test.Type3;
+import com.ibm.ws.cdi.vistest.masked.zservlet.MaskedClassTestServlet;
 
-import componenttest.custom.junit.runner.Mode;
+import componenttest.annotation.Server;
+import componenttest.annotation.TestServlet;
+import componenttest.annotation.TestServlets;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.TestModeFilter;
+import componenttest.rules.repeater.EERepeatTests;
+import componenttest.rules.repeater.EERepeatTests.EEVersion;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.HttpUtils;
+import componenttest.topology.utils.FATServletClient;
 
 /**
  * This test ensures that if a class in one module is masked by a class in another module, CDI doesn't break.
@@ -43,56 +53,59 @@ import componenttest.topology.utils.HttpUtils;
  * <p>
  * We also test that beans in an App Client jar are not visible to other modules.
  */
+@RunWith(FATRunner.class)
+public class ClassMaskingTest extends FATServletClient {
 
-public class ClassMaskingTest extends LoggingTest {
+    public static final String SERVER_NAME = "cdi12ClassMasking";
+
+    public static final String MASKED_CLASS_APP_NAME = "maskedClassWeb";
 
     @ClassRule
-    public static ShrinkWrapSharedServer server = new ShrinkWrapSharedServer("cdi12ClassMasking");
+    public static RepeatTests r = EERepeatTests.with(SERVER_NAME, EEVersion.EE8); //TODO: we need to run EE9 here... EJB is in but test still fails
 
-    @BuildShrinkWrap
-    public static Archive buildShrinkWrap() {
-       
-        JavaArchive maskedClassEjb = ShrinkWrap.create(JavaArchive.class,"maskedClassEjb.jar")
-                        .addClass("test.Type1")
-                        .addClass("beans.SessionBean1")
-                        .add(new FileAsset(new File("test-applications/maskedClassEjb.jar/file.txt")), "/file.txt");
+    @Server(SERVER_NAME)
+    @TestServlets({
+                    @TestServlet(servlet = MaskedClassTestServlet.class, contextRoot = MASKED_CLASS_APP_NAME) }) //FULL
+    public static LibertyServer server;
 
-        WebArchive maskedClassWeb = ShrinkWrap.create(WebArchive.class, "maskedClassWeb.war")
-                        .addClass("test.TestBeanWarImpl")
-                        .addClass("test.Type3")
-                        .addClass("test.Type1")
-                        .addClass("zservlet.TestServlet")
-                        .add(new FileAsset(new File("test-applications/maskedClassWeb.war/file.txt")), "/file.txt");
+    @BeforeClass
+    public static void setUp() throws Exception {
+        if (TestModeFilter.shouldRun(TestMode.FULL)) {
+            JavaArchive maskedClassEjb = ShrinkWrap.create(JavaArchive.class, "maskedClassEjb.jar")
+                                                   .addClass(Type1.class)
+                                                   .addClass(SessionBean1.class)
+                                                   .add(new FileAsset(new File("test-applications/maskedClassEjb.jar/file.txt")), "/file.txt");
 
-        JavaArchive maskedClassLib = ShrinkWrap.create(JavaArchive.class,"maskedClassLib.jar")
-                        .addClass("test.TestBean");
+            WebArchive maskedClassWeb = ShrinkWrap.create(WebArchive.class, "maskedClassWeb.war")
+                                                  .addClass(TestBeanWarImpl.class)
+                                                  .addClass(Type3.class)
+                                                  .addClass(Type1.class)
+                                                  .addClass(MaskedClassTestServlet.class)
+                                                  .add(new FileAsset(new File("test-applications/maskedClassWeb.war/file.txt")), "/file.txt");
 
-        JavaArchive maskedClassZAppClient = ShrinkWrap.create(JavaArchive.class,"maskedClassZAppClient.jar")
-                        .addClass("test.TestBeanAppClientImpl")
-                        .addClass("appclient.Main");
+            JavaArchive maskedClassLib = ShrinkWrap.create(JavaArchive.class, "maskedClassLib.jar")
+                                                   .addClass(TestBean.class);
 
-        return ShrinkWrap.create(EnterpriseArchive.class,"maskedClass.ear")
-                        .add(new FileAsset(new File("test-applications/maskedClass.ear/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml")
-                        .addAsModule(maskedClassEjb)
-                        .addAsModule(maskedClassWeb)
-                        .addAsModule(maskedClassZAppClient)
-                        .addAsLibrary(maskedClassLib);
+            JavaArchive maskedClassZAppClient = ShrinkWrap.create(JavaArchive.class, "maskedClassZAppClient.jar")
+                                                          .addClass(TestBeanAppClientImpl.class)
+                                                          .addClass(Main.class);
+
+            EnterpriseArchive maskedClassEAR = ShrinkWrap.create(EnterpriseArchive.class, "maskedClass.ear")
+                                                         .add(new FileAsset(new File("test-applications/maskedClass.ear/resources/META-INF/permissions.xml")),
+                                                              "/META-INF/permissions.xml")
+                                                         .addAsModule(maskedClassEjb)
+                                                         .addAsModule(maskedClassWeb)
+                                                         .addAsModule(maskedClassZAppClient)
+                                                         .addAsLibrary(maskedClassLib);
+
+            ShrinkHelper.exportDropinAppToServer(server, maskedClassEAR, DeployOptions.SERVER_ONLY);
+        }
+
+        server.startServer();
     }
 
-
-    @Override
-    protected ShrinkWrapSharedServer getSharedServer() {
-        return server;
-    }
-
-    @Mode(TestMode.FULL)
-    @Test
-    public void testClassMasking() throws Exception {
-        LibertyServer lServer = server.getLibertyServer();
-
-        HttpUtils.findStringInUrl(lServer, "/maskedClassWeb/TestServlet",
-                                  "Type1: from ejb",
-                                  "Type3: This is Type3, a managed bean in the war",
-                                  "TestBean: This is TestBean in the war");
+    @AfterClass
+    public static void tearDown() throws Exception {
+        server.stopServer();
     }
 }

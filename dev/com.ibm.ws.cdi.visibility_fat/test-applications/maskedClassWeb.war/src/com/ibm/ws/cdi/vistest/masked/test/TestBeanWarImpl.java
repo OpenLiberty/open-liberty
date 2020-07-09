@@ -8,9 +8,11 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test;
+package com.ibm.ws.cdi.vistest.masked.test;
 
 import javax.enterprise.context.ApplicationScoped;
+
+import com.ibm.ws.cdi.vistest.masked.test.TestBean;
 
 /**
  * A test bean implementation in the war.

@@ -8,24 +8,25 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package zservlet;
+package com.ibm.ws.cdi.vistest.masked.zservlet;
 
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
 
 import javax.inject.Inject;
-import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import test.TestBean;
-import test.Type1;
-import test.Type3;
+import org.junit.Test;
 
-@WebServlet("/TestServlet")
-public class TestServlet extends HttpServlet {
+import com.ibm.ws.cdi.vistest.masked.test.TestBean;
+import com.ibm.ws.cdi.vistest.masked.test.Type1;
+import com.ibm.ws.cdi.vistest.masked.test.Type3;
+
+import componenttest.app.FATServlet;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
+
+@WebServlet("/")
+public class MaskedClassTestServlet extends FATServlet {
     private static final long serialVersionUID = 1L;
 
     @Inject
@@ -39,23 +40,13 @@ public class TestServlet extends HttpServlet {
     @Inject
     private TestBean testBeanInjected;
 
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public TestServlet() {
-        super();
-    }
-
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        ServletOutputStream os = response.getOutputStream();
+    @Test
+    @Mode(TestMode.FULL)
+    public void testMaskedClass() {
         Type1 type1 = new Type1();
-        os.println("Type1: " + type1.getMessage());
-        os.println("Type3: " + type3Injected.getMessage());
-        os.println("TestBean: " + testBeanInjected.getMessage());
+        assertEquals("from ejb", type1.getMessage());
+        assertEquals("This is Type3, a managed bean in the war", type3Injected.getMessage());
+        assertEquals("This is TestBean in the war", testBeanInjected.getMessage());
     }
 
 }

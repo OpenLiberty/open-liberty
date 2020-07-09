@@ -8,14 +8,21 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test;
+package com.ibm.ws.cdi.vistest.masked.test;
 
 import javax.enterprise.context.ApplicationScoped;
 
-@ApplicationScoped
-public class Type3 {
+import com.ibm.ws.cdi.vistest.masked.test.TestBean;
 
+/**
+ * An implementation of the TestBean within the app client jar
+ */
+@ApplicationScoped
+public class TestBeanAppClientImpl implements TestBean {
+
+    @Override
     public String getMessage() {
-        return "This is Type3, a managed bean in the war";
+        return "This is TestBean from the app client jar";
     }
+
 }

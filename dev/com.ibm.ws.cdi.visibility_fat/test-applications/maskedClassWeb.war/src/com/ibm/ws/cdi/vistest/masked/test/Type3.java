@@ -8,18 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package beans;
+package com.ibm.ws.cdi.vistest.masked.test;
 
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
+import javax.enterprise.context.ApplicationScoped;
 
-/**
- * This bean is here to ensure that the maskedClassEjb.jar contains at least one EJB
- * <p>
- * It is not part of the test.
- */
-@Stateless
-@LocalBean
-public class SessionBean1 {
+@ApplicationScoped
+public class Type3 {
 
+    public String getMessage() {
+        return "This is Type3, a managed bean in the war";
+    }
 }

@@ -1,5 +1,5 @@
 <%@ page import="java.util.Collection"%>
-<%@ page import="beans.EL30MapCollectionObjectBean"%>
+<%@ page import="com.ibm.ws.cdi.vistest.masked.beans.EL30MapCollectionObjectBean"%>
 <%@ page import="java.util.List"%>
 <%@ page import="java.util.ArrayList"%>
 <%@ page import="java.util.Set"%>
