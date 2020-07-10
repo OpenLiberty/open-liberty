@@ -11,6 +11,7 @@
 package io.openliberty.org.jboss.resteasy.common.component;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,6 +20,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 import javax.servlet.annotation.HandlesTypes;
+import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.ext.Provider;
@@ -27,6 +29,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
+import org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher;
+import org.jboss.resteasy.plugins.server.servlet.ResteasyContextParameters;
 import org.jboss.resteasy.plugins.servlet.ResteasyServletInitializer;
 
 @Trivial
@@ -38,16 +42,126 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
     private final static String IBM_REST_SERVLET_NAME = "com.ibm.websphere.jaxrs.server.IBMRestServlet";
     private final static String RESTEASY_DISPATCHER_NAME = "org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher";
     private final static String RESTEASY_DISPATCHER_30_NAME = "org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher";
-    
 
-    public void onStartup(Set<Class<?>> classes, ServletContext ctx) throws ServletException {
+
+    public void onStartup(Set<Class<?>> classes, ServletContext servletContext) throws ServletException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "onStartup ", new Object[] {classes, ctx});
+            Tr.debug(tc, "onStartup ", new Object[] {classes, servletContext});
         }
-        addMappingParam(ctx);
-        super.onStartup(classes, ctx);
+        addMappingParam(servletContext);
+        if (classes == null) {
+            return;
+        }
+        //super.onStartup(classes, ctx);
+        Set<Class<?>> appClasses = new HashSet<Class<?>>();
+        Set<Class<?>> providers = new HashSet<Class<?>>();
+        Set<Class<?>> resources = new HashSet<Class<?>>();
+
+        for (Class<?> clazz : classes) {
+            if (clazz.isInterface()) {
+                continue;
+            }
+            if (clazz.isAnnotationPresent(Path.class)) {
+                resources.add(clazz);
+            } else if (clazz.isAnnotationPresent(Provider.class)) {
+                providers.add(clazz);
+            } else {
+                appClasses.add(clazz);
+            }
+        }
+        if (appClasses.size() == 0 && resources.size() == 0) {
+            return;
+        }
+
+        if (appClasses.size() == 0) {
+            return;
+        }
+
+        for (Class<?> app : appClasses) {
+            register(app, providers, resources, servletContext);
+        }
     }
 
+
+    @Override
+    protected void register(Class<?> applicationClass, Set<Class<?>> providers, Set<Class<?>> resources, ServletContext servletContext) {
+        ApplicationPath path = applicationClass.getAnnotation(ApplicationPath.class);
+        ServletRegistration.Dynamic reg;
+        String mapping;
+        String prefix;
+        if (path == null) {
+            if (servletContext.getServletRegistration(applicationClass.getName()) == null) {
+                // Application subclass has no @ApplicationPath and no declared mappings to use
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "register - no @ApplicationPath and no servlet mapping for "+ applicationClass.getName());
+                }
+                return;
+            }
+            reg = servletContext.addServlet(applicationClass.getName(), HttpServlet30Dispatcher.class);
+            Collection<String> mappings = reg.getMappings();
+            if (mappings == null || mappings.isEmpty()) {
+                // no declared mappings
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "register - no @ApplicationPath; servlet declared, but no mappings for "+ applicationClass.getName());
+                }
+                return;
+            }
+            mapping = mappings.iterator().next();
+            prefix = mapping;
+            while (!prefix.equals("/") && (prefix.endsWith("/") || prefix.endsWith("*"))) {
+                prefix = prefix.substring(0, prefix.length() - 1);
+            }
+        } else {
+            mapping = path.value();
+            if (!mapping.startsWith("/")) mapping = "/" + mapping;
+            prefix = mapping;
+            if (!prefix.equals("/") && prefix.endsWith("/")) prefix = prefix.substring(0, prefix.length() - 1);
+            if (!mapping.endsWith("/*")) {
+                if (mapping.endsWith("/")) mapping += "*";
+                else mapping += "/*";
+            }
+            reg = servletContext.addServlet(applicationClass.getName(), HttpServlet30Dispatcher.class);
+            reg.setLoadOnStartup(1);
+            reg.setAsyncSupported(true);
+            reg.addMapping(mapping);
+        }
+
+        reg.setInitParameter("javax.ws.rs.Application", applicationClass.getName());
+        // resteasy.servlet.mapping.prefix
+        reg.setInitParameter("resteasy.servlet.mapping.prefix", prefix);
+        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "register - mapping app " + applicationClass.getName() + " to " + mapping);
+        }
+
+        if (resources.size() > 0) {
+            StringBuilder builder = new StringBuilder();
+            boolean first = true;
+            for (Class<?> resource : resources) {
+                if (first) {
+                    first = false;
+                } else {
+                    builder.append(",");
+                }
+
+                builder.append(resource.getName());
+            }
+            reg.setInitParameter(ResteasyContextParameters.RESTEASY_SCANNED_RESOURCES, builder.toString());
+        }
+        if (providers.size() > 0) {
+            StringBuilder builder = new StringBuilder();
+            boolean first = true;
+            for (Class<?> provider : providers) {
+                if (first) {
+                    first = false;
+                } else {
+                    builder.append(",");
+                }
+                builder.append(provider.getName());
+            }
+            reg.setInitParameter(ResteasyContextParameters.RESTEASY_SCANNED_PROVIDERS, builder.toString());
+        }
+    }
 
     /**
      * RESTEasy requires a resteasy.servlet.mapping.prefix parameter to be set if the 
@@ -65,7 +179,7 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
      */
     private void addMappingParam(ServletContext ctx) {
         if (ctx.getInitParameter(RESTEASY_MAPPING_PREFIX) != null) {
-            // user has already set this?  use their settings - we're done!
+            // user has already set this for the entire web app - use their settings - we're done!
             return;
         }
 
@@ -75,7 +189,7 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "addMappingParam servletRegistrations " + entry.getKey() + " = " + entry.getValue());
             }
-            
+
             ServletRegistration reg = entry.getValue();
             String servletClassName = reg.getClassName();
             if (IBM_REST_SERVLET_NAME.equals(servletClassName) ||
@@ -100,7 +214,7 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "addMappingParam using mapping: " + mapping);
                     }
-                    ctx.setInitParameter(RESTEASY_MAPPING_PREFIX, mapping);
+                    reg.setInitParameter(RESTEASY_MAPPING_PREFIX, mapping);
                     mapped = true;
                 }
             }
