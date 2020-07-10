@@ -10,21 +10,99 @@
  *******************************************************************************/
 package io.openliberty.grpc.internal.monitor;
 
+import com.ibm.websphere.monitor.meters.Counter;
 import com.ibm.websphere.monitor.meters.Meter;
 
-import io.openliberty.grpc.GrpcClientStatsMXBean;
+import io.openliberty.grpc.monitor.GrpcClientStatsMXBean;
 
 /**
- * This is used to report gRPC Client related statistics. 
- * </br>Statistic reported: 
+ * Holds metrics used for client-side monitoring of gRPC services. </br>
+ * Statistic reported:
  * <ul>
  * <li>Total number of RPCs started on the client.
- * <li>Total number of RPCs completed on the client, regardless of success or failure. 
- * <li>Histogram of RPC response latency for completed RPCs, in seconds.
- * <li>Total number of stream messages received from the server. 
+ * <li>Total number of RPCs completed on the client, regardless of success or
+ * failure.
+ * <li>TODO Histogram of RPC response latency for completed RPCs, in seconds.
+ * <li>Total number of stream messages received from the server.
  * <li>Total number of stream messages sent by the client.
  * </ul>
  */
 public class GrpcClientStats extends Meter implements GrpcClientStatsMXBean {
+	private final Counter rpcStarted;
+	private final Counter rpcCompleted;
+	private final Counter streamMessagesReceived;
+	private final Counter streamMessagesSent;
 
+	private final GrpcMethod method;
+
+	public GrpcClientStats(GrpcMethod method) {
+		this.method = method;
+
+		rpcStarted = new Counter();
+		rpcStarted.setDescription("This shows total number of RPCs started on the client");
+		rpcStarted.setUnit("ns");
+
+		rpcCompleted = new Counter();
+		rpcCompleted.setDescription("This shows total number of RPCs completed on the client");
+		rpcCompleted.setUnit("ns");
+
+		streamMessagesReceived = new Counter();
+		streamMessagesReceived.setDescription("This shows total number of stream messages received from the server");
+		streamMessagesReceived.setUnit("ns");
+
+		streamMessagesSent = new Counter();
+		streamMessagesSent.setDescription("This shows total number of stream messages sent by the client");
+		streamMessagesSent.setUnit("ns");
+	}
+
+	@Override
+	public long getRpcStartedCount() {
+		return rpcStarted.getCurrentValue();
+	}
+
+	@Override
+	public long getRpcCompletedCount() {
+		return rpcCompleted.getCurrentValue();
+	}
+
+	@Override
+	public long getReceivedMessagesCount() {
+		return streamMessagesReceived.getCurrentValue();
+	}
+
+	@Override
+	public long getSentMessagesCount() {
+		return streamMessagesSent.getCurrentValue();
+	}
+
+	public void recordCallStarted() {
+		rpcStarted.incrementBy(1);
+	}
+
+	public void recordClientHandled() {
+		rpcCompleted.incrementBy(1);
+	}
+
+	/**
+	 * This will increment received messages count by the specified number.
+	 * 
+	 * @param i
+	 */
+	public void incrementReceivedMsgCountBy(int i) {
+		this.streamMessagesReceived.incrementBy(i);
+	}
+
+	/**
+	 * This will increment sent messages count by the specified number.
+	 * 
+	 * @param i
+	 */
+	public void incrementSentMsgCountBy(int i) {
+		this.streamMessagesSent.incrementBy(i);
+	}
+
+	public void recordLatency(double latencySec) {
+		// TODO Auto-generated method stub
+
+	}
 }

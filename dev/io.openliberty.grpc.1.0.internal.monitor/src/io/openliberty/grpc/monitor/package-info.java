@@ -8,14 +8,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.grpc.internal.monitor;
-
-import com.ibm.websphere.monitor.annotation.Monitor;
-
 /**
- * Monitor Class for gRPC.
+ * @version 1.1
  */
-@Monitor(group = "gRPC")
-public class GrpcMonitor {
-
-}
+@org.osgi.annotation.versioning.Version("1.1")
+package io.openliberty.grpc.monitor;

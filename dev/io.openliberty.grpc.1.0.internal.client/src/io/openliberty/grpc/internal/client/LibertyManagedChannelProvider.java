@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.grpc.ClientInterceptor;
 import io.grpc.ManagedChannelProvider;
@@ -69,6 +70,10 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 
 	private void addLibertyInterceptors(NettyChannelBuilder builder) {
 		builder.intercept(new LibertyClientInterceptor());
+		ClientInterceptor monitoringInterceptor = createMonitoringClientInterceptor();
+		if (monitoringInterceptor != null) {
+			builder.intercept(monitoringInterceptor);
+		}
 	}
 
 	private void addLibertySSLConfig(NettyChannelBuilder builder, String target) {
@@ -133,4 +138,24 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 			}
 		}
 	}
+	
+	private ClientInterceptor createMonitoringClientInterceptor() {
+		// create the interceptor only if the monitor feature is enabled
+		if (!GrpcClientComponent.isMonitoringEnabled()) {
+			return null;
+		}
+		ClientInterceptor interceptor = null;
+		// monitoring interceptor 
+		final String className = "io.openliberty.grpc.internal.monitor.GrpcMonitoringClientInterceptor";
+		try {
+			Class<?> clazz = Class.forName(className);
+			interceptor = (ClientInterceptor) clazz.getDeclaredConstructor()
+					.newInstance();
+		} catch (Exception e) {
+			// an exception can happen if the monitoring package is not loaded 
+        }
+
+		return interceptor;
+	}
+
 }

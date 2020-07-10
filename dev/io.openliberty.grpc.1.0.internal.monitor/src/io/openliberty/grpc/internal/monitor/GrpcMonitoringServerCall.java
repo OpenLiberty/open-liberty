@@ -28,10 +28,10 @@ public class GrpcMonitoringServerCall<R, S> extends ForwardingServerCall.SimpleF
 
 	private final Clock clock;
 	private final GrpcMethod grpcMethod;
-	private final GrpcServerStats serverMetrics;
+	private final GrpcServerStatsMonitor serverMetrics;
 	private final Instant startInstant;
 
-	GrpcMonitoringServerCall(ServerCall<R, S> delegate, Clock clock, GrpcMethod grpcMethod, GrpcServerStats serverMetrics) {
+	GrpcMonitoringServerCall(ServerCall<R, S> delegate, Clock clock, GrpcMethod grpcMethod, GrpcServerStatsMonitor serverMetrics) {
 		super(delegate);
 		this.clock = clock;
 		this.grpcMethod = grpcMethod;
@@ -49,8 +49,8 @@ public class GrpcMonitoringServerCall<R, S> extends ForwardingServerCall.SimpleF
 
 	@Override
 	public void sendMessage(S message) {
-		if (grpcMethod.streamsResponses()) {
-			serverMetrics.incrementSentMsgCountBy(1);
+		if (grpcMethod.clientSendsOneMessage()) {
+			serverMetrics.recordMsgSent();
 		}
 		super.sendMessage(message);
 	}

@@ -46,11 +46,11 @@ class GrpcMethod {
 		return type.toString();
 	}
 
-	boolean streamsRequests() {
-		return type == MethodType.CLIENT_STREAMING || type == MethodType.BIDI_STREAMING;
+	boolean serverSendsOneMessage() {
+		return type.serverSendsOneMessage();
 	}
 
-	boolean streamsResponses() {
-		return type == MethodType.SERVER_STREAMING || type == MethodType.BIDI_STREAMING;
+	boolean clientSendsOneMessage() {
+		return type.clientSendsOneMessage();
 	}
 }

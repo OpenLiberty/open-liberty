@@ -40,7 +40,6 @@ import io.grpc.ServerInterceptors;
 import io.grpc.servlet.ServletServerBuilder;
 import io.openliberty.grpc.internal.GrpcMessages;
 import io.openliberty.grpc.internal.config.GrpcServiceConfigHolder;
-import io.openliberty.grpc.internal.monitor.GrpcMonitoringServerInterceptor;
 
 public class GrpcServletUtils {
 
@@ -242,7 +241,10 @@ public class GrpcServletUtils {
 			// add Liberty auth interceptor to every service
 			interceptors.add(authInterceptor);
 			// add monitoring interceptor to every service
-			interceptors.add(new GrpcMonitoringServerInterceptor(serviceName, appName));
+			ServerInterceptor monitoringInterceptor = createMonitoringServerInterceptor(serviceName, appName);
+			if (monitoringInterceptor != null) {
+				interceptors.add(monitoringInterceptor);
+			}
 			serverBuilder.addService(ServerInterceptors.intercept(service, interceptors));
 
 			// set the max inbound msg size, if it's configured
@@ -254,5 +256,28 @@ public class GrpcServletUtils {
 				Tr.debug(tc, "gRPC service {0} has been registered", serviceName);
 			}
 		}
+	}
+	
+	
+	private static ServerInterceptor createMonitoringServerInterceptor(String serviceName, String appName) {
+		// create the monitoring interceptor only if the monitor feature is enabled 
+		if (!GrpcServerComponent.isMonitoringEnabled()) {
+			return null;
+		}
+		ServerInterceptor interceptor = null;
+		// monitoring interceptor 
+		final String className = "io.openliberty.grpc.internal.monitor.GrpcMonitoringServerInterceptor";
+		try {
+			Class<?> clazz = Class.forName(className);
+			interceptor = (ServerInterceptor) clazz.getDeclaredConstructor(String.class, String.class)
+					.newInstance(serviceName, appName);
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+				Tr.debug(tc, "monitoring interceptor has been added to service {0}", serviceName);
+			}
+		} catch (Exception e) {
+			// an exception can happen if the monitoring package is not loaded 
+        }
+
+		return interceptor;
 	}
 }

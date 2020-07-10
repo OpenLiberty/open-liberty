@@ -13,7 +13,7 @@ package io.openliberty.grpc.internal.monitor;
 import com.ibm.websphere.monitor.meters.Counter;
 import com.ibm.websphere.monitor.meters.Meter;
 
-import io.openliberty.grpc.GrpcServerStatsMXBean;
+import io.openliberty.grpc.monitor.GrpcServerStatsMXBean;
 
 /**
  * This is used to report gRPC Server related statistics. </br>
@@ -41,15 +41,19 @@ public class GrpcServerStats extends Meter implements GrpcServerStatsMXBean {
 	public GrpcServerStats(String aName, String sName) {
 		setAppName(aName);
 		setServiceName(sName);
+
 		serverStarted = new Counter();
 		serverStarted.setDescription("This shows total number of RPCs started on the server");
 		serverStarted.setUnit("ns");
+
 		serverHandled = new Counter();
 		serverHandled.setDescription("This shows total number of RPCs completed on the server");
 		serverHandled.setUnit("ns");
+
 		receivedMsgCount = new Counter();
 		receivedMsgCount.setDescription("This shows number of received stream messages");
 		receivedMsgCount.setUnit("ns");
+
 		sentMsgCount = new Counter();
 		sentMsgCount.setDescription("This shows number of stream messages sent by the service");
 		sentMsgCount.setUnit("ns");
@@ -88,13 +92,6 @@ public class GrpcServerStats extends Meter implements GrpcServerStatsMXBean {
 	}
 
 	/**
-	 * @param requestCount the requestCount to set
-	 */
-	public void setRequestCount(Counter requestCount) {
-		this.receivedMsgCount = requestCount;
-	}
-
-	/**
 	 * This will increment received messages count by the specified number.
 	 * 
 	 * @param i
@@ -113,7 +110,7 @@ public class GrpcServerStats extends Meter implements GrpcServerStatsMXBean {
 	}
 
 	public void recordLatency(double latencySec) {
-		// TODO implement 
+		// TODO implement
 	}
 
 	@Override
@@ -132,12 +129,12 @@ public class GrpcServerStats extends Meter implements GrpcServerStatsMXBean {
 	}
 
 	@Override
-	public long getCallStartedCount() {
+	public long getRpcStartedCount() {
 		return serverStarted.getCurrentValue();
 	}
 
 	@Override
-	public long getServiceHandledCount() {
+	public long getRpcCompletedCount() {
 		return serverHandled.getCurrentValue();
 	}
 }

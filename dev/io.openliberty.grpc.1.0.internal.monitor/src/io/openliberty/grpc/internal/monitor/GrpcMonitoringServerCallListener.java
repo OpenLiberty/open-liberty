@@ -15,14 +15,14 @@ import io.grpc.ServerCall;
 
 /**
  * A {@link ForwardingServerCallListener} which updates gRPC metrics for a
- * single gRPC service based on updates received from GRPC.
+ * single gRPC service based on updates received from gRPC.
  */
 class GrpcMonitoringServerCallListener<R> extends ForwardingServerCallListener<R> {
 	private final ServerCall.Listener<R> delegate;
 	private final GrpcMethod grpcMethod;
-	private final GrpcServerStats serverMetrics;
+	private final GrpcServerStatsMonitor serverMetrics;
 
-	GrpcMonitoringServerCallListener(ServerCall.Listener<R> delegate, GrpcServerStats serverMetrics,
+	GrpcMonitoringServerCallListener(ServerCall.Listener<R> delegate, GrpcServerStatsMonitor serverMetrics,
 			GrpcMethod grpcMethod) {
 		this.delegate = delegate;
 		this.serverMetrics = serverMetrics;
@@ -36,8 +36,8 @@ class GrpcMonitoringServerCallListener<R> extends ForwardingServerCallListener<R
 
 	@Override
 	public void onMessage(R request) {
-		if (grpcMethod.streamsRequests()) {
-			serverMetrics.incrementReceivedMsgCountBy(1);
+		if (grpcMethod.serverSendsOneMessage()) {
+			serverMetrics.recordMsgReceived();
 		}
 		super.onMessage(request);
 	}

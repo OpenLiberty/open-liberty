@@ -31,7 +31,6 @@ Import-Package: !sun.*,\
   *
   
 # Use dynamic import of monitor packages to support indepndent/dynamic enablement of monitor feature
-# Will be removed if gRPC monitoring can be moved to an auto feature
 DynamicImport-Package: com.ibm.websphere.monitor.meters;version="1.0.0", \
  com.ibm.websphere.monitor.jmx;version="1.0.0", \
  com.ibm.wsspi.request.probe.bci, \
@@ -71,7 +70,6 @@ Include-Resource: \
   com.google.guava:guava;version=27.0.1,\
   com.ibm.ws.security.authorization.util,\
   io.openliberty.grpc.1.0.internal.common;version=latest,\
-  io.openliberty.grpc.1.0.internal.monitor;version=latest,\
   org.osgi.service.component.annotations;version=latest
 
 -testpath: \
