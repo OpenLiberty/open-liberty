@@ -28,7 +28,7 @@ import io.openliberty.grpc.GrpcServerStatsMXBean;
  * <li>Total number of stream messages sent by the server.
  * </ul>
  */
-public class GrpcServerStats extends Meter implements GrpcServerStatsMXBean {
+public class GrpcServerMetrics extends Meter implements GrpcServerStatsMXBean {
 
 	private String appName;
 	private String serviceName;
@@ -38,18 +38,22 @@ public class GrpcServerStats extends Meter implements GrpcServerStatsMXBean {
 	private Counter serverStarted;
 	private Counter serverHandled;
 
-	public GrpcServerStats(String aName, String sName) {
+	public GrpcServerMetrics(String aName, String sName) {
 		setAppName(aName);
 		setServiceName(sName);
+		
 		serverStarted = new Counter();
 		serverStarted.setDescription("This shows total number of RPCs started on the server");
 		serverStarted.setUnit("ns");
+		
 		serverHandled = new Counter();
 		serverHandled.setDescription("This shows total number of RPCs completed on the server");
 		serverHandled.setUnit("ns");
+		
 		receivedMsgCount = new Counter();
 		receivedMsgCount.setDescription("This shows number of received stream messages");
 		receivedMsgCount.setUnit("ns");
+		
 		sentMsgCount = new Counter();
 		sentMsgCount.setDescription("This shows number of stream messages sent by the service");
 		sentMsgCount.setUnit("ns");

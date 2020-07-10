@@ -20,9 +20,9 @@ import io.grpc.ServerCall;
 class GrpcMonitoringServerCallListener<R> extends ForwardingServerCallListener<R> {
 	private final ServerCall.Listener<R> delegate;
 	private final GrpcMethod grpcMethod;
-	private final GrpcServerStats serverMetrics;
+	private final GrpcServerMetrics serverMetrics;
 
-	GrpcMonitoringServerCallListener(ServerCall.Listener<R> delegate, GrpcServerStats serverMetrics,
+	GrpcMonitoringServerCallListener(ServerCall.Listener<R> delegate, GrpcServerMetrics serverMetrics,
 			GrpcMethod grpcMethod) {
 		this.delegate = delegate;
 		this.serverMetrics = serverMetrics;

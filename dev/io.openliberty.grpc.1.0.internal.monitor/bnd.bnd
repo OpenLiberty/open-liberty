@@ -26,8 +26,7 @@ Import-Package: !sun.*,\
   *
 	
 Export-Package: \
-    io.openliberty.grpc.internal.monitor.* ,\
-	io.openliberty.grpc.internal,\
+  io.openliberty.grpc.internal.* ,\
 	io.grpc.*,\
 	google.*,\
 	com.google.*,\

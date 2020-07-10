@@ -28,10 +28,10 @@ public class GrpcMonitoringServerCall<R, S> extends ForwardingServerCall.SimpleF
 
 	private final Clock clock;
 	private final GrpcMethod grpcMethod;
-	private final GrpcServerStats serverMetrics;
+	private final GrpcServerMetrics serverMetrics;
 	private final Instant startInstant;
 
-	GrpcMonitoringServerCall(ServerCall<R, S> delegate, Clock clock, GrpcMethod grpcMethod, GrpcServerStats serverMetrics) {
+	GrpcMonitoringServerCall(ServerCall<R, S> delegate, Clock clock, GrpcMethod grpcMethod, GrpcServerMetrics serverMetrics) {
 		super(delegate);
 		this.clock = clock;
 		this.grpcMethod = grpcMethod;

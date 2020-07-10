@@ -10,6 +10,8 @@
  *******************************************************************************/
 package io.openliberty.grpc.internal.monitor;
 
+import java.time.Clock;
+
 import io.grpc.CallOptions;
 import io.grpc.Channel;
 import io.grpc.ClientCall;
@@ -20,13 +22,20 @@ import io.grpc.MethodDescriptor;
  * A {@link ClientInterceptor} which gathers statistics about incoming GRPC
  * calls.
  */
-public class MonitoringClientInterceptor implements ClientInterceptor {
+public class GrpcMonitoringClientInterceptor implements ClientInterceptor {
+	private final Clock clock;
 
+	public GrpcMonitoringClientInterceptor() {
+		this.clock = Clock.systemDefaultZone();
+	}
+	
 	@Override
 	public <ReqT, RespT> ClientCall<ReqT, RespT> interceptCall(MethodDescriptor<ReqT, RespT> methodDescriptor,
 			CallOptions callOptions, Channel channel) {
-		// TODO Auto-generated method stub
-		return null;
+		GrpcMethod grpcMethod = GrpcMethod.of(methodDescriptor);
+		GrpcClientMetrics metrics = new GrpcClientMetrics(grpcMethod);
+		return new GrpcMonitoringClientCall<>(channel.newCall(methodDescriptor, callOptions), metrics, grpcMethod,
+				clock);
 	}
 
 }
