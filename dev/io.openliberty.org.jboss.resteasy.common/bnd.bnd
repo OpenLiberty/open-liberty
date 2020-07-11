@@ -65,6 +65,7 @@ Export-Package: \
   org.jboss.resteasy.mock;version=4.5.2.Final, \
   org.jboss.resteasy.plugins.delegates;version=4.5.2.Final, \
   org.jboss.resteasy.plugins.interceptors;version=4.5.2.Final;thread-context=true, \
+  org.jboss.resteasy.plugins.providers.jaxb;version=4.5.2.Final;thread-context=true, \
   org.jboss.resteasy.plugins.providers.sse.client;version=4.5.2.Final;thread-context=true, \
   org.jboss.resteasy.plugins.providers.sse;version=4.5.2.Final;thread-context=true, \
   org.jboss.resteasy.plugins.providers;version=4.5.2.Final;thread-context=true, \
@@ -110,6 +111,7 @@ Include-Resource:\
   @${repo;org.jboss.resteasy:resteasy-client-api;4.5.2.Final;EXACT}, \
   @${repo;org.jboss.resteasy:resteasy-core;4.5.2.Final;EXACT}, \
   @${repo;org.jboss.resteasy:resteasy-core-spi;4.5.2.Final;EXACT}, \
+  @${repo;org.jboss.resteasy:resteasy-jaxb-provider;4.5.2.Final;EXACT}, \
   @${repo;org.jboss.resteasy:resteasy-servlet-initializer;4.5.2.Final;EXACT}, \
   @${repo;org.jboss.resteasy:resteasy-tracing-api;1.0.0.Final;EXACT}, \
   com/ibm/websphere=${bin}/com/ibm/websphere, \

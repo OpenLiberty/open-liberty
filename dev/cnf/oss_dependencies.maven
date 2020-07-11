@@ -473,6 +473,7 @@ org.jboss.resteasy:resteasy-client:4.5.2.Final
 org.jboss.resteasy:resteasy-client-api:4.5.2.Final
 org.jboss.resteasy:resteasy-core:4.5.2.Final
 org.jboss.resteasy:resteasy-core-spi:4.5.2.Final
+org.jboss.resteasy:resteasy-jaxb-provider:4.5.2.Final
 org.jboss.resteasy:resteasy-servlet-initializer:4.5.2.Final
 org.jboss.resteasy:resteasy-tracing-api:1.0.0.Final
 org.jboss.shrinkwrap:shrinkwrap-api:1.2.3
