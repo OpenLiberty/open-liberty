@@ -27,6 +27,8 @@ import com.ibm.tx.jta.ut.util.XAResourceImpl;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.app.FATServlet;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 
 @SuppressWarnings("serial")
 @WebServlet("/heuristics")
@@ -892,6 +894,7 @@ public class HeuristicsServlet extends FATServlet {
     }
 
     @Test
+    @Mode(TestMode.LITE)
     @ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
     public void testHE043() {
 

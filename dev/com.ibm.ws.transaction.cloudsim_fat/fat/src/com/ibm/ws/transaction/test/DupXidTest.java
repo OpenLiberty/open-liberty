@@ -11,6 +11,7 @@
 package com.ibm.ws.transaction.test;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
@@ -66,6 +67,14 @@ public class DupXidTest extends FATServletClient {
 
         server1.setServerStartTimeout(300000);
         server2.setServerStartTimeout(300000);
+
+        server1.copyFileToLibertyInstallRoot("lib/features", "features/cloudtxfat-1.0.mf");
+        assertTrue("Failed to install cloudtxfat-1.0 manifest",
+                   server1.fileExistsInLibertyInstallRoot("lib/features/cloudtxfat-1.0.mf"));
+        server1.copyFileToLibertyInstallRoot("lib/", "bundles/com.ibm.ws.cloudtx.fat.utils.jar");
+        assertTrue("Failed to install cloudtxfat-1.0 bundle",
+                   server1.fileExistsInLibertyInstallRoot("lib/com.ibm.ws.cloudtx.fat.utils.jar"));
+
         server1.startServer();
     }
 
@@ -159,4 +168,5 @@ public class DupXidTest extends FATServletClient {
         //Check for key string to see whether recovery has been attempted
         assertNotNull(server1.waitForStringInTrace("Performed recovery for com.ibm.ws.transaction_DUPXID001"));
     }
+
 }

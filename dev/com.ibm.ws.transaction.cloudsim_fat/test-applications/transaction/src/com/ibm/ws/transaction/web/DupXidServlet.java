@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.annotation.Resource;
+import javax.annotation.Resource.AuthenticationType;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,8 +24,8 @@ import javax.transaction.Transaction;
 
 import com.ibm.tx.jta.ExtendedTransactionManager;
 import com.ibm.tx.jta.TransactionManagerFactory;
-import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
+import com.ibm.ws.cloudtx.ut.util.LastingXAResourceImpl;
 
 import componenttest.app.FATServlet;
 
@@ -32,7 +33,7 @@ import componenttest.app.FATServlet;
 @WebServlet("/DupXidServlet")
 public class DupXidServlet extends FATServlet {
 
-    @Resource(name = "jdbc/tranlogDataSource")
+    @Resource(name = "jdbc/tranlogDataSource", shareable = true, authenticationType = AuthenticationType.APPLICATION)
     DataSource ds;
 
     public void cleanDatabase(HttpServletRequest request, HttpServletResponse response) throws Exception {

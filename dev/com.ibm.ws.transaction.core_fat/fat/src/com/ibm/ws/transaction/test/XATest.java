@@ -22,6 +22,8 @@ import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -39,6 +41,7 @@ import componenttest.topology.utils.FATServletClient;
  * servlet referenced by the annotation, and will be run whenever this test class runs.
  */
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class XATest extends FATServletClient {
 
     public static final String APP_NAME = "transaction";
@@ -67,6 +70,7 @@ public class XATest extends FATServletClient {
     }
 
     @Test
+    @Mode(TestMode.LITE)
     @SkipForRepeat({ SkipForRepeat.EE8_FEATURES, SkipForRepeat.EE9_FEATURES })
     public void testSetTransactionTimeoutReturnsFalse() throws Exception {
         xa.testSetTransactionTimeoutReturnsFalse(testName);
