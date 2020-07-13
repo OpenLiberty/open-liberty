@@ -34,3 +34,5 @@ Private-Package: \
 	com.ibm.ws.org.apache.aries.util;version=latest,\
 	com.ibm.ws.org.apache.ant;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest
+
+jakartaeeMe: true

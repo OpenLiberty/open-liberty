@@ -95,3 +95,5 @@ instrument.classesExcludes: com/ibm/ws/classloading/internal/resources/*.class
 	com.ibm.wsspi.org.osgi.service.component.annotations, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.classloading.configuration
+
+jakartaeeMe: true

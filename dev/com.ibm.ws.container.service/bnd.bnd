@@ -192,3 +192,5 @@ instrument.classesExcludes: com/ibm/ws/container/service/resources/*.class
 	org.jmock:jmock-legacy;version=2.5.0, \
 	com.ibm.ws.org.objenesis:objenesis;version=1.0, \
 	cglib:cglib-nodep;version=3.3.0
+
+jakartaeeMe: true

@@ -78,3 +78,5 @@ Include-Resource: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
 	com.ibm.ws.junit.extensions;version=latest, \
 	com.ibm.ws.kernel.boot;version=latest
+
+jakartaeeMe: true

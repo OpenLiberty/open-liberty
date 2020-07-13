@@ -56,3 +56,5 @@ instrument.classesExcludes: com/ibm/ws/runtime/update/internal/resources/*.class
 	com.ibm.ws.threading;version=latest, \
 	com.ibm.ws.logging.core;version=latest, \
 	com.ibm.ws.logging;version=latest
+
+jakartaeeMe: true

@@ -84,3 +84,5 @@ instrument.disabled: true
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.channelfw;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+
+jakartaeeMe: true

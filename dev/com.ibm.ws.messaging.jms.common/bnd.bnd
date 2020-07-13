@@ -60,3 +60,5 @@ instrument.disabled: true
 	com.ibm.ws.jca;version=latest,\
 	com.ibm.websphere.javaee.connector.1.6;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+
+jakartaeeMe: true

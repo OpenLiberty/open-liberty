@@ -61,3 +61,5 @@ instrument.classesExcludes: com/ibm/ws/app/manager/internal/resources/*.class
 	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
 	com.ibm.ws.junit.extensions;version=latest, \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file
+
+jakartaeeMe: true

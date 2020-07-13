@@ -68,3 +68,5 @@ instrument.classesExcludes: com/ibm/ws/jca/utils/internal/resources/*.class
 	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
 	org.jmock:jmock;strategy=exact;version=2.5.1, \
 	com.ibm.ws.kernel.boot;version=latest
+
+jakartaeeMe: true

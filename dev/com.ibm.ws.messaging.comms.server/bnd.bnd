@@ -66,3 +66,5 @@ instrument.disabled: true
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
 	com.ibm.websphere.security;version=latest 
 	
+
+jakartaeeMe: true

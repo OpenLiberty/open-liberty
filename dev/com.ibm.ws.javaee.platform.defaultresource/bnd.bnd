@@ -32,3 +32,5 @@ Private-Package:\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.resource;version=latest,\
 	com.ibm.ws.kernel.service;version=latest
+
+jakartaeeMe: true

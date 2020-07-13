@@ -49,3 +49,5 @@ instrument.disabled: true
 	com.ibm.ws.logging;version=latest, \
 	com.ibm.ws.logging.core;version=latest,\
     javax.activation:activation;version=1.1
+
+jakartaeeMe: true

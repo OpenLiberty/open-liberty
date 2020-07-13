@@ -40,3 +40,5 @@ Import-Package: \
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.security.authentication;version=latest
+
+jakartaeeMe: true

@@ -72,3 +72,5 @@ instrument.disabled: true
     wlp.lib.extract;version=latest,\
     com.ibm.websphere.org.osgi.service.component;version=latest,\
     com.ibm.wsspi.org.osgi.service.component.annotations
+
+jakartaeeMe: true

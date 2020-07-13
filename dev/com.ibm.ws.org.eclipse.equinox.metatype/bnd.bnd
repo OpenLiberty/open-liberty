@@ -17,3 +17,5 @@
 -buildpath: \
 	com.ibm.ws.org.eclipse.platform:org.eclipse.equinox.metatype;version=1.5.200.v20191008-0645,\
 	com.ibm.wsspi.org.osgi.service.metatype;version=latest
+
+jakartaeeMe: true

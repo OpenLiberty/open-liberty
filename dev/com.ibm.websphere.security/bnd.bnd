@@ -97,3 +97,5 @@ Service-Component: \
     commons-codec:commons-codec;version=1.4, \
 	org.jmock:jmock-legacy;version=2.5.0, \
 	cglib:cglib-nodep;version=3.3.0
+
+jakartaeeMe: true

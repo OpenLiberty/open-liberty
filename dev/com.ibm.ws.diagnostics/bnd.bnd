@@ -90,3 +90,5 @@ Service-Component: \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.org.eclipse.equinox.region;version=latest,\
 	com.ibm.ws.config;version=latest
+
+jakartaeeMe: true

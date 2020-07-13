@@ -40,3 +40,5 @@ Private-Package: com.ibm.ws.config.schemagen.internal
 	com.ibm.ws.logging;version=latest, \
 	com.ibm.ws.org.apache.aries.util;version=latest, \
 	com.ibm.ws.kernel.service;version=latest
+
+jakartaeeMe: true

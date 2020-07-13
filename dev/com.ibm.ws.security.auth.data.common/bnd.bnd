@@ -54,3 +54,5 @@ instrument.classesExcludes: com/ibm/ws/security/auth/data/common/internal/resour
 	com.ibm.ws.kernel.boot;version=latest, \
 	com.ibm.ws.kernel.service;version=latest, \
 	com.ibm.ws.crypto.passwordutil;version=latest
+
+jakartaeeMe: true
