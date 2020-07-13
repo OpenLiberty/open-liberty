@@ -45,6 +45,7 @@ public class FATSuite {
 
     @BeforeClass
     public static void setupApp() throws Exception {
+
         ShrinkHelper.defaultApp(mailSesionServer, "TestingApp", "TestingApp.*");
         if (JakartaEE9Action.isActive()) {
             Log.info(c, "setUpApp", "Transforming greenmail jar to Jakarta-EE-9: ");
@@ -53,6 +54,6 @@ public class FATSuite {
             Log.info(c, "setupApp", "Greenmail path =" + greenmailJar);
             JakartaEE9Action.transformApp(greenmailJar);
         }
-
     }
+
 }
