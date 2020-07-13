@@ -43,6 +43,7 @@ public class LogServlet extends HttpServlet {
         logger.exiting("LogServlet", "doGet");
         System.out.println("{\"key\":\"value\"}");
         System.err.println("{\"key\":\"value\",\"loglevel\":\"System.err\"}");
+        System.out.println("{}");
         res.getWriter().print(new Date());
     }
 }
