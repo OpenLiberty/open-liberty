@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,29 +10,40 @@
  *******************************************************************************/
 package io.openliberty.wsoc.tests;
 
+import java.util.Set;
+import java.util.logging.Logger;
+
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
+import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebResponse;
 
-import io.openliberty.wsoc.util.OnlyRunNotOnZRule;
-import io.openliberty.wsoc.util.WebServerSetup;
-import io.openliberty.wsoc.util.wsoc.WsocTest;
-import io.openliberty.wsoc.tests.all.CdiTest;
-
-import componenttest.annotation.MinimumJavaLevel;
+import componenttest.annotation.SkipForRepeat;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.LibertyServer;
+import io.openliberty.wsoc.tests.all.CdiTest;
+import io.openliberty.wsoc.util.OnlyRunNotOnZRule;
+import io.openliberty.wsoc.util.WebServerControl;
+import io.openliberty.wsoc.util.WebServerSetup;
+import io.openliberty.wsoc.util.wsoc.WsocTest;
 
 /**
- *
+ * Skipped for EE9 until the jmsServer and jmsClient for JakartaEE9 are developed and delivered
+ * to test CDI and Websocket integration
  */
+@RunWith(FATRunner.class)
+@SkipForRepeat(SkipForRepeat.EE9_FEATURES)
 public class Cdi20Test extends LoggingTest {
 
     // private static final Logger LOG = Logger.getLogger(ContextTest.class.getName());
@@ -49,22 +60,77 @@ public class Cdi20Test extends LoggingTest {
 
     private final CdiTest ct = new CdiTest(wt);
 
+    private static final Logger LOG = Logger.getLogger(Cdi20Test.class.getName());
+
+    private static final String CDI_WAR_NAME = "cdi";
+    private static final String CONTEXT_WAR_NAME = "context";
+
     protected WebResponse runAsSSCAndVerifyResponse(String className, String testName) throws Exception {
+        int securePort = 0, port = 0;
+        String host="";
+        LibertyServer server = SS.getLibertyServer();
+        if (WebServerControl.isWebserverInFront()) {
+            try {
+                host = WebServerControl.getHostname();
+                securePort = WebServerControl.getSecurePort();
+                port = Integer.valueOf(WebServerControl.getPort()).intValue();
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to get ports or host from webserver", e);
+            }
+        } else {
+            securePort = server.getHttpDefaultSecurePort();
+            host = server.getHostname();
+            port = server.getHttpDefaultPort();
+        }
         // seem odd, but "context" is the root here because the client side app lives in the context war file
         return SS.verifyResponse(createWebBrowserForTestCase(),
-                                 "/context/SingleRequest?classname=" + className + "&testname=" + testName + "&targethost=" + SS.getHost() + "&targetport=" + SS.getPort()
-                                                                + "&secureport=" + SS.getSecurePort(),
+                                 "/context/SingleRequest?classname=" + className + "&testname=" + testName + "&targethost=" + host + "&targetport=" + port
+                                                 + "&secureport=" + securePort,
                                  "SuccessfulTest");
     }
 
     @BeforeClass
     public static void setUp() throws Exception {
-        bwst.setUp();
+        // Build the war app and add the dependencies
+        WebArchive CdiApp = ShrinkHelper.buildDefaultApp(CDI_WAR_NAME + ".war",
+                                                                         "cdi.war",
+                                                                         "io.openliberty.wsoc.common",
+                                                                         "io.openliberty.wsoc.util.wsoc",
+                                                                         "io.openliberty.wsoc.tests.all",
+                                                                         "io.openliberty.wsoc.endpoints.client.basic",
+                                                                         "io.openliberty.wsoc.endpoints.client.context");
+        CdiApp = (WebArchive) ShrinkHelper.addDirectory(CdiApp, "test-applications/"+CDI_WAR_NAME+".war/resources");
+        WebArchive ContextApp = ShrinkHelper.buildDefaultApp(CONTEXT_WAR_NAME + ".war",
+                                                                         "context.war",
+                                                                         "io.openliberty.wsoc.common",
+                                                                         "io.openliberty.wsoc.util.wsoc",
+                                                                         "io.openliberty.wsoc.tests.all",
+                                                                         "io.openliberty.wsoc.endpoints.client.basic",
+                                                                         "io.openliberty.wsoc.endpoints.client.context");
+        ContextApp = (WebArchive) ShrinkHelper.addDirectory(ContextApp, "test-applications/"+CONTEXT_WAR_NAME+".war/resources");
+        // Verify if the apps are in the server before trying to deploy them
+        if (SS.getLibertyServer().isStarted()) {
+            Set<String> appInstalled = SS.getLibertyServer().getInstalledAppNames(CDI_WAR_NAME);
+            LOG.info("addAppToServer : " + CDI_WAR_NAME + " already installed : " + !appInstalled.isEmpty());
+            if (appInstalled.isEmpty())
+            ShrinkHelper.exportDropinAppToServer(SS.getLibertyServer(), CdiApp);
 
+            appInstalled = SS.getLibertyServer().getInstalledAppNames(CONTEXT_WAR_NAME);
+            LOG.info("addAppToServer : " + CONTEXT_WAR_NAME + " already installed : " + !appInstalled.isEmpty());
+            if (appInstalled.isEmpty())
+            ShrinkHelper.exportDropinAppToServer(SS.getLibertyServer(), ContextApp);
+        }
+        SS.startIfNotStarted();
+        SS.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + CDI_WAR_NAME);
+        SS.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + CONTEXT_WAR_NAME);
+        bwst.setUp();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
+        if (SS.getLibertyServer() != null && SS.getLibertyServer().isStarted()) {
+            SS.getLibertyServer().stopServer(null);
+        }
         bwst.tearDown();
     }
 
@@ -73,7 +139,6 @@ public class Cdi20Test extends LoggingTest {
 
     @Mode(TestMode.LITE)
     @Test
-    @MinimumJavaLevel(javaLevel = 8)
     public void testCdiInterceptor() throws Exception {
         ct.testCdiInterceptor();
     }
@@ -81,14 +146,12 @@ public class Cdi20Test extends LoggingTest {
     // this test seem to require the jms stuff to accessible for teardown, not sure why
     @Mode(TestMode.FULL)
     @Test
-    @MinimumJavaLevel(javaLevel = 8)
     public void testSSCCdiInterceptor() throws Exception {
         this.runAsSSCAndVerifyResponse("CdiTest", "testCdiInterceptor");
     }
 
     @Mode(TestMode.FULL)
     @Test
-    @MinimumJavaLevel(javaLevel = 8)
     public void testCdiInjectCDI20() throws Exception {
         ct.testCdiInjectCDI12();
     }
@@ -96,28 +159,24 @@ public class Cdi20Test extends LoggingTest {
     // this test seem to require the jms stuff to accessible for teardown, not sure why
     @Mode(TestMode.LITE)
     @Test
-    @MinimumJavaLevel(javaLevel = 8)
     public void testSSCCdiInjectCDI20() throws Exception {
         this.runAsSSCAndVerifyResponse("CdiTest", "testCdiInjectCDI12");
     }
 
     @Mode(TestMode.FULL)
     @Test
-    @MinimumJavaLevel(javaLevel = 8)
     public void testCdiProgrammaticEndpointCDI20() throws Exception {
         ct.testCdiProgrammaticEndpointCDI20();
     }
 
     @Mode(TestMode.LITE)
     @Test
-    @MinimumJavaLevel(javaLevel = 8)
     public void testCdiProgrammaticEndpointMultipleOnMessageCDI20() throws Exception {
         ct.testCdiProgrammaticEndpointMultipleOnMessageCDI20();
     }
 
     @Mode(TestMode.FULL)
     @Test
-    @MinimumJavaLevel(javaLevel = 8)
     public void testClientCDIOneCDI20() throws Exception {
         // Client CDI side did not use Session Scope, so no need to change anything here
         this.verifyResponse("testClientCDIOne");
@@ -125,7 +184,6 @@ public class Cdi20Test extends LoggingTest {
 
     @Mode(TestMode.LITE)
     @Test
-    @MinimumJavaLevel(javaLevel = 8)
     public void testClientCDITwoCDI20() throws Exception {
         // Client CDI side did not use Session Scope, so no need to change anything here
         this.verifyResponse("testClientCDITwo");
@@ -133,7 +191,6 @@ public class Cdi20Test extends LoggingTest {
 
     @Mode(TestMode.LITE)
     @Test
-    @MinimumJavaLevel(javaLevel = 8)
     public void testCdiInjectWithIdleTimeout() throws Exception {
         ct.testCdiInjectWithIdleTimeout();
     }

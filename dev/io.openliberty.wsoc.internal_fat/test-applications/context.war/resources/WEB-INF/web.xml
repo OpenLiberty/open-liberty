@@ -48,7 +48,7 @@
 	 
 	   <servlet>
         <servlet-name>SingleRequestTestRunner</servlet-name>
- 	    <servlet-class>com.ibm.ws.fat.wsoc.common.SingleRequestClientTestRunner</servlet-class>
+ 	    <servlet-class>io.openliberty.wsoc.common.SingleRequestClientTestRunner</servlet-class>
        </servlet>
       
        <servlet-mapping>
