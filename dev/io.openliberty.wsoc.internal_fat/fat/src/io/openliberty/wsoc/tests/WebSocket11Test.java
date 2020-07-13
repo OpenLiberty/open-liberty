@@ -10,8 +10,8 @@
  *******************************************************************************/
 package io.openliberty.wsoc.tests;
 
-import java.util.logging.Logger;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -19,30 +19,27 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.junit.rules.TestRule;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 
-import io.openliberty.wsoc.util.OnlyRunNotOnZRule;
-import io.openliberty.wsoc.util.WebServerSetup;
-import io.openliberty.wsoc.util.wsoc.WsocTest;
-import io.openliberty.wsoc.tests.all.WebSocketVersion11Test;
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.topology.impl.LibertyServer;
+import io.openliberty.wsoc.tests.all.WebSocketVersion11Test;
+import io.openliberty.wsoc.util.OnlyRunNotOnZRule;
+import io.openliberty.wsoc.util.WebServerSetup;
+import io.openliberty.wsoc.util.wsoc.WsocTest;
 
 /**
  * Tests WebSocket Stuff
- * 
+ *
  * @author unknown
  */
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 7)
 public class WebSocket11Test extends LoggingTest {
 
     @ClassRule
@@ -65,15 +62,15 @@ public class WebSocket11Test extends LoggingTest {
     public static void setUp() throws Exception {
         // Build the war app and add the dependencies
         WebArchive Websocket11App = ShrinkHelper.buildDefaultApp(WEBSOCKET_11_WAR_NAME + ".war",
-                                                                         "websocket11.war",
-                                                                         "io.openliberty.wsoc.common");
-        Websocket11App = (WebArchive) ShrinkHelper.addDirectory(Websocket11App, "test-applications/"+WEBSOCKET_11_WAR_NAME+".war/resources");
+                                                                 "websocket11.war",
+                                                                 "io.openliberty.wsoc.common");
+        Websocket11App = (WebArchive) ShrinkHelper.addDirectory(Websocket11App, "test-applications/" + WEBSOCKET_11_WAR_NAME + ".war/resources");
         // Verify if the apps are in the server before trying to deploy them
         if (SS.getLibertyServer().isStarted()) {
             Set<String> appInstalled = SS.getLibertyServer().getInstalledAppNames(WEBSOCKET_11_WAR_NAME);
             LOG.info("addAppToServer : " + WEBSOCKET_11_WAR_NAME + " already installed : " + !appInstalled.isEmpty());
             if (appInstalled.isEmpty())
-            ShrinkHelper.exportDropinAppToServer(SS.getLibertyServer(), Websocket11App);
+                ShrinkHelper.exportDropinAppToServer(SS.getLibertyServer(), Websocket11App);
         }
         SS.startIfNotStarted();
         SS.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + WEBSOCKET_11_WAR_NAME);
