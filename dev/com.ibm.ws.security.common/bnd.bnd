@@ -61,8 +61,8 @@ instrument.classesExcludes: com/ibm/ws/security/common/internal/resources/*.clas
     com.ibm.ws.security.authentication;version=latest, \
     com.ibm.json4j;version=latest, \
     com.ibm.ws.webcontainer.security;version=latest, \
-    org.apache.httpcomponents:httpclient;version=4.3.1, \
-    org.apache.httpcomponents:httpcore;version=4.3
+    org.apache.httpcomponents:httpclient;version=latest, \
+    org.apache.httpcomponents:httpcore;version=latest
 
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
