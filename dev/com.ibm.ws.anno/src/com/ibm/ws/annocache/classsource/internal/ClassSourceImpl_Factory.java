@@ -14,6 +14,7 @@ package com.ibm.ws.annocache.classsource.internal;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.eclipse.osgi.service.urlconversion.URLConverter;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -57,6 +58,7 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
     //
 
     protected final String hashText;
+    private final URLConverter bundleEntryUrlConverter;
 
     @Override
     @Trivial
@@ -64,9 +66,15 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
         return hashText;
     }
 
+    // only for unit testing with no URLConverter required
+    public ClassSourceImpl_Factory(Util_Factory utilFactory) {
+        this(utilFactory, null);
+    }
+
     @Activate
     public ClassSourceImpl_Factory(
-        @Reference Util_Factory utilFactory) {
+        @Reference Util_Factory utilFactory,
+        @Reference(target = "(protocol=bundleentry)") URLConverter bundleEntryUrlConverter) {
         
         super();
 
@@ -75,6 +83,7 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
         this.hashText = getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
 
         this.utilFactory = utilFactory;
+        this.bundleEntryUrlConverter = bundleEntryUrlConverter;
 
         if ( logger.isLoggable(Level.FINER) ) {
             logger.logp(Level.FINER, CLASS_NAME, methodName,
@@ -295,7 +304,7 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
         Container container)
         throws ClassSource_Exception {
 
-        return new ClassSourceImpl_MappedContainer(this, internMap, name, container);
+        return new ClassSourceImpl_MappedContainer(this, internMap, name, container, bundleEntryUrlConverter);
         // throws ClassSource_Exception
     }
 
@@ -305,7 +314,7 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
         String name,
         Container container, String entryPrefix) throws ClassSource_Exception {
 
-        return new ClassSourceImpl_MappedContainer(this, internMap, name, container, entryPrefix);
+        return new ClassSourceImpl_MappedContainer(this, internMap, name, container, entryPrefix, bundleEntryUrlConverter);
         // throws ClassSource_Exception
     }
 
