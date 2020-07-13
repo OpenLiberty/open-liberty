@@ -2661,12 +2661,12 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
 
-        // create headers to send over to the server; note that the end headers flag IS NOT set
+        // create headers to send over to the server; note that the end headers flag is set
         List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_AND_BODY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(3, null, 0, 0, 0, false, false, false, false, false, false);
+        FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(3, null, 0, 0, 0, false, true, false, false, false, false);
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
 
         // create the first continuation frame to send over; note that end_headers IS set
@@ -2676,10 +2676,10 @@ public class H2FATDriverServlet extends FATServlet {
         firstContinuationHeaders.setHeaderFields(firstContinuationHeadersToSend);
 
         // create the second continuation frame to send over; note that end_headers IS set
-        List<H2HeaderField> secondContinuationHeadersToSend = new ArrayList<H2HeaderField>();
-        secondContinuationHeadersToSend.add(new H2HeaderField("liberty", "http2"));
-        FrameContinuationClient secondContinuationHeaders = new FrameContinuationClient(3, null, true, true, false);
-        secondContinuationHeaders.setHeaderFields(secondContinuationHeadersToSend);
+        //List<H2HeaderField> secondContinuationHeadersToSend = new ArrayList<H2HeaderField>();
+        //secondContinuationHeadersToSend.add(new H2HeaderField("liberty", "http2"));
+        //FrameContinuationClient secondContinuationHeaders = new FrameContinuationClient(3, null, true, true, false);
+        //secondContinuationHeaders.setHeaderFields(secondContinuationHeadersToSend);
 
         // send over the header frames followed by the continuation frames
         h2Client.sendFrame(frameHeadersToSend);
@@ -2688,7 +2688,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendFrame(dataFrame);
 
         h2Client.sendFrame(firstContinuationHeaders);
-        h2Client.sendFrame(secondContinuationHeaders);
+        //h2Client.sendFrame(secondContinuationHeaders);
 
         blockUntilConnectionIsDone.await();
         this.handleErrors(h2Client, testName);
