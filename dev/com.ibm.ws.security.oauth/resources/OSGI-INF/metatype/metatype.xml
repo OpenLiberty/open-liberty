@@ -142,6 +142,7 @@
             required="false" type="Boolean" default="true" />
         <AD id="refreshTokenLength" name="%refreshTokenLength" description="%refreshTokenLength.desc"
             required="false" type="Long" default="50" />
+        <AD id="refreshedAccessTokenLimit" name="%refreshedAccessTokenLimit" description="%refreshedAccessTokenLimit.desc" required="false" type="Long" default="100" />
         <AD id="revokeAccessTokensWithRefreshTokens" name="%revokeAccessTokensWithRefreshTokens"
               description="%revokeAccessTokensWithRefreshTokens.desc" required="false" type="Boolean" default="true" />
 <!--         <AD id="accessTokenHandlerClassname" name="%oauth.token.handler.class" description="%oauth.token.handler.class.desc"
