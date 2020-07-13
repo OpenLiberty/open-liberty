@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 IBM Corporation and others.
+ * Copyright (c) 2012, 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -238,7 +238,7 @@ public class JmsSessionImpl implements JmsSession, ApiJmsConstants, JmsInternalC
      * Each session would have a single thread named asyncRunThread .. which would take care of executing
      * AsyncSend operations.
      */
-    private Thread _asyncSendRunThread;
+    private Thread _asyncSendRunThread = null;
 
     /**
      * A dummy AysncSendDetails is added when session is closed.. this dummy AsyncSendDetails is used
@@ -710,19 +710,16 @@ public class JmsSessionImpl implements JmsSession, ApiJmsConstants, JmsInternalC
         if (getState() != CLOSED) {
 
             //if it is non-managed environment.. we have to check that this call should not have made from owning context
-            // and has to wait till all Async sends are resolved.
-            if (!isManaged) {
-
-                //send kill command to asyncsendrun thread... by seeing this asyncsendrun thread would exit.
+            // and has to wait till all Async sends are resolved
+            // (don't bother if the async send thread isn't running)
+            if (!isManaged && null!=_asyncSendRunThread && _asyncSendRunThread.isAlive()) {
                 addtoAsysncSendQueue(null,
                                      null,
                                      null,
                                      AsyncSendKillCommand, // kill command code for Async send thread.
                                      null);
-
-                //wait till all Async sends are resolved on this Session. 
+                //wait until all the async sends have completed
                 waitForAsyncSendCompletion();
-
             }
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -867,6 +864,8 @@ public class JmsSessionImpl implements JmsSession, ApiJmsConstants, JmsInternalC
                     break;
                 case (Session.SESSION_TRANSACTED):
                     // cannot invoke recover() on a transacted session.
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                        SibTr.exit(this, tc, "recover");
                     throw (javax.jms.IllegalStateException) JmsErrorUtils.newThrowable(
                                                                                        javax.jms.IllegalStateException.class,
                                                                                        "INVALID_OP_FOR_TRANS_SESSION_CWSIA0050",
@@ -883,6 +882,8 @@ public class JmsSessionImpl implements JmsSession, ApiJmsConstants, JmsInternalC
                     break;
             }
         }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.exit(this, tc, "recover");
     }
 
     /**
@@ -919,6 +920,8 @@ public class JmsSessionImpl implements JmsSession, ApiJmsConstants, JmsInternalC
 
         checkNotClosed();
         if (isManaged) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                SibTr.exit(this, tc, "setMessageListener", listener);
             throw (javax.jms.IllegalStateException) JmsErrorUtils.newThrowable(javax.jms.IllegalStateException.class,
                                                                                "MGD_ENV_CWSIA0052",
                                                                                new Object[] { "Session.setMessageListener" },
@@ -927,6 +930,8 @@ public class JmsSessionImpl implements JmsSession, ApiJmsConstants, JmsInternalC
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             SibTr.debug(this, tc, "setMessageListener(MessageListener) optional, not implemented");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.exit(this, tc, "setMessageListener", listener);
         throw (javax.jms.IllegalStateException) JmsErrorUtils.newThrowable(javax.jms.IllegalStateException.class,
                                                                            "UNSUPPORTED_OPERATION_CWSIA0045",
                                                                            new Object[] { "Session.setMessageListener" },
@@ -1401,6 +1406,8 @@ public class JmsSessionImpl implements JmsSession, ApiJmsConstants, JmsInternalC
 
         // check for null and empty subscription names.
         if ((subName == null) || ("".equals(subName))) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                SibTr.exit(this, tc, "unsubscribe", subName);
             throw (InvalidDestinationException) JmsErrorUtils.newThrowable(InvalidDestinationException.class,
                                                                            "INVALID_VALUE_CWSIA0048",
                                                                            new Object[] { "name", subName },
@@ -1426,6 +1433,8 @@ public class JmsSessionImpl implements JmsSession, ApiJmsConstants, JmsInternalC
         if ((durableSubHome == null) || ("".equals(durableSubHome))) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 SibTr.debug(this, tc, "User Error - No durableSubscriptionHome was specified.");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                SibTr.exit(this, tc, "unsubscribe", subName);
             throw (javax.jms.IllegalStateException) JmsErrorUtils.newThrowable(javax.jms.IllegalStateException.class,
                                                                                "DURABLE_SUB_HOME_NOT_SPECIFIED_CWSIA0056",
                                                                                null,
@@ -1507,6 +1516,10 @@ public class JmsSessionImpl implements JmsSession, ApiJmsConstants, JmsInternalC
                                                             this,
                                                             tc
                             );
+        }
+        finally {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                SibTr.exit(this, tc, "unsubscribe", subName);
         }
     }
 
@@ -2839,7 +2852,7 @@ public class JmsSessionImpl implements JmsSession, ApiJmsConstants, JmsInternalC
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(this, tc, "validateStopForMessageListener");
+            SibTr.exit(this, tc, "validateStopForMessageListener");
 
     }
 
@@ -2864,10 +2877,19 @@ public class JmsSessionImpl implements JmsSession, ApiJmsConstants, JmsInternalC
      * This function blocks till all Async sends are resolved.
      */
     private void waitForAsyncSendCompletion() {
+        boolean success = true;
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "waitForAsyncSendCompletion");
 
-        while (!(_asyncSendQueue.isEmpty() && (currentAsyncSendObject == null))) {
+        while (!_asyncSendQueue.isEmpty() || currentAsyncSendObject != null) {
+            // if the async thread isn't running, no point in waiting...
+            if (null==_asyncSendRunThread || !_asyncSendRunThread.isAlive()) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    SibTr.debug(tc, "waitForAsyncSendCompletion: async thread not running, aborting wait");
+                }
+                success = false;
+                break;
+            }
             try {
                 synchronized (_asyncSendQueue) {
                     // after twenty second.. again check is made if the async send queue is empty.
@@ -2877,11 +2899,12 @@ public class JmsSessionImpl implements JmsSession, ApiJmsConstants, JmsInternalC
             } catch (InterruptedException e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     SibTr.debug(tc, "waitForAsyncSendCompletion got interrupted", e);
+                success = false;
             }
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(this, tc, "waitForAsyncSendCompletion");
+            SibTr.exit(this, tc, "waitForAsyncSendCompletion",new Boolean(success));
     }
 
     /**
@@ -2892,12 +2915,15 @@ public class JmsSessionImpl implements JmsSession, ApiJmsConstants, JmsInternalC
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "validateCloseCommitRollback", functionCall);
 
-        //Before triggering onCompletion/OnException .. SIB pushes "owning session object" to Thread Local, 
+        //Before triggering onCompletion/onException .. SIB pushes "owning session object" to Thread Local, 
         //Now obtain the Session object from Thread Local and validate with 'this'. 
         if ((JmsSessionImpl.asyncThreadLocal.get() != null) && (JmsSessionImpl.asyncThreadLocal.get() == this)) {
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 SibTr.debug(tc, "OnComplete/onException called roolback/commit/close on its own Context/Session.");
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                SibTr.exit(this, tc, "validateCloseCommitRollback");
 
             //the call is driven from this JmsSessionImpl object only.. throw JMSException
             throw (IllegalStateException) JmsErrorUtils.newThrowable(IllegalStateException.class,
@@ -2910,7 +2936,7 @@ public class JmsSessionImpl implements JmsSession, ApiJmsConstants, JmsInternalC
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(this, tc, "validateCloseCommitRollback");
+            SibTr.exit(this, tc, "validateCloseCommitRollback");
 
     }
 
@@ -2923,21 +2949,15 @@ public class JmsSessionImpl implements JmsSession, ApiJmsConstants, JmsInternalC
      * @param msg
      */
     void addtoAsysncSendQueue(JmsMsgProducerImpl msgProducer, CompletionListener cListner, Message msg, int sendMethodType, Object[] params) {
+        boolean startThread = false;
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "addtoAsysncSendQueue", new Object[] { msgProducer, cListner, cListner, sendMethodType, params });
 
-        _asyncSendQueue.offer(new AysncSendDetails(msgProducer, cListner, msg, sendMethodType, params));
-
-        if (null == _asyncSendRunThread) {
-            //initialize asyncSendRunThread
+        if (null==_asyncSendRunThread||!_asyncSendRunThread.isAlive()) {
+            // initialize asyncSendRunThread
             _asyncSendRunThread = new Thread(new AsyncSendTask());
-            /**
-             * setting _asyncSendRunThread as daemon thread. So when all non-daemon threads are complete, this thread would get terminated.
-             * So in case if thin client main (alonw with non-daemon threads)are exited, the prgoramm will be exited even though this thread
-             * is doing any back ground work. The application has to esnure to wait till all async send work is done before exiting the main.
-             */
             _asyncSendRunThread.setDaemon(true);
-
+            startThread = true;
         }
 
         //when AsyncSend is in progess, the message object should not get accessed by anyone other than SIB
@@ -2946,8 +2966,12 @@ public class JmsSessionImpl implements JmsSession, ApiJmsConstants, JmsInternalC
             ((JmsMessageImpl) msg).setAsyncSendInProgress(true);
         }
 
-        if (!_asyncSendRunThread.isAlive()) {
-            //The asyncRunThread is not running... then kick off 
+        // queue the async command only after possibly marking the message - so that the setting async-in-progress to false can't
+        // happen out of order with the setting to true
+        _asyncSendQueue.offer(new AysncSendDetails(msgProducer, cListner, msg, sendMethodType, params));
+
+        if (startThread) {
+            // new async thread, start it...
             try {
                 _asyncSendRunThread.start();
             } catch (Exception e) {
@@ -2959,7 +2983,6 @@ public class JmsSessionImpl implements JmsSession, ApiJmsConstants, JmsInternalC
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "addtoAsysncSendQueue");
-
     }
 
     /**
@@ -3008,7 +3031,7 @@ public class JmsSessionImpl implements JmsSession, ApiJmsConstants, JmsInternalC
                         }
 
                         //store the owner JMSSession object in thread local for each and every Async Send operation.
-                        //in case if subsequent onComplete/OnException calls commit/rollback/clsoe on its own Seesion/connection/context
+                        //in case if subsequent onComplete/onException calls commit/rollback/clsoe on its own Seesion/connection/context
                         //then IllegalStateException has to be thrown. 
                         JmsSessionImpl.asyncThreadLocal.set(JmsSessionImpl.this);
 
@@ -3017,7 +3040,7 @@ public class JmsSessionImpl implements JmsSession, ApiJmsConstants, JmsInternalC
                                                                                                  currentAsyncSendObject.getParams(),
                                                                                                  currentAsyncSendObject.getCListner());
 
-                        //deleting the owning JMSSession object as asysn send operation (with the return of onCompletion/OnException)
+                        //deleting the owning JMSSession object as async send operation (with the return of onCompletion/onException)
                         //has been completed.
                         JmsSessionImpl.asyncThreadLocal.remove();
 
@@ -3036,7 +3059,7 @@ public class JmsSessionImpl implements JmsSession, ApiJmsConstants, JmsInternalC
                             }
                         }
 
-                        //deleting the owning JMSSession object as asysn send operation (with the return of onCompletion/OnException)
+                        //deleting the owning JMSSession object as async send operation (with the return of onCompletion/onException)
                         //has been completed.
                         JmsSessionImpl.asyncThreadLocal.remove();
                     }
