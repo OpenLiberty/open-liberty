@@ -9,7 +9,6 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-// io.grpc.StatusRuntimeException: RESOURCE_EXHAUSTED: gRPC message exceeds maximum size 1: 7
 package com.ibm.ws.fat.grpc;
 
 import static org.junit.Assert.assertTrue;
@@ -36,6 +35,8 @@ import com.ibm.ws.grpc.fat.beer.service.BeerServiceGrpc.BeerServiceBlockingStub;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.grpc.ManagedChannel;
@@ -46,6 +47,7 @@ import io.grpc.examples.helloworld.HelloReply;
 import io.grpc.examples.helloworld.HelloRequest;
 
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class ServiceConfigTests extends FATServletClient {
 
     protected static final Class<?> c = ServiceConfigTests.class;
@@ -255,6 +257,7 @@ public class ServiceConfigTests extends FATServletClient {
      **/
 
     //@Test
+    //@Mode(FULL)
     public void testServiceTargetWildcard() throws Exception {
 
         ManagedChannel beerChannel;
