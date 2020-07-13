@@ -9,6 +9,6 @@ IBM-API-Package: jakarta.ejb; type="spec", \
  com.ibm.websphere.appserver.javaeeddSchema-1.0
 -bundles=com.ibm.ws.app.manager.war.jakarta, \
  com.ibm.ws.app.manager.ejb
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel
