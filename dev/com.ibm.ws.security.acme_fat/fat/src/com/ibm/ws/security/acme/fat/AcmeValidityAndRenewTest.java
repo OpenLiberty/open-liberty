@@ -22,6 +22,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -285,7 +287,6 @@ public class AcmeValidityAndRenewTest {
 		ServerConfiguration configuration = ORIGINAL_CONFIG.clone();
 		AcmeFatUtils.configureAcmeCA(server, caContainer, configuration, DOMAINS1);
 
-		long serverTime = System.currentTimeMillis();
 		/***********************************************************************
 		 * TEST 1: The server generate a certificate normally.
 		 * 
@@ -300,8 +301,6 @@ public class AcmeValidityAndRenewTest {
 			server.startServer();
 			AcmeFatUtils.waitForAcmeAppToStart(server);
 			AcmeFatUtils.waitForSslEndpoint(server);
-
-			serverTime = System.currentTimeMillis();
 
 			/*
 			 * Verify that the server is using a certificate signed by the CA.
@@ -330,14 +329,6 @@ public class AcmeValidityAndRenewTest {
 			long notAfter = ((X509Certificate) startingCertificateChain[0]).getNotAfter().getTime();
 			long notBefore = ((X509Certificate) startingCertificateChain[0]).getNotBefore().getTime();
 
-			long extraBuffer = serverTime - notBefore;
-			// check if the certificate is slightly in the future to make sure we wait long
-			// enough.
-			long totalBuffer = (extraBuffer > 0 ? extraBuffer : 0) + TIME_BUFFER_BEFORE_EXPIRE;
-
-			Log.info(this.getClass(), testName.getMethodName(),
-					"Not before: " + notBefore + ", extra buffer " + extraBuffer);
-
 			/*
 			 * Set a renew time just shy of default Pebble validity period) so we will
 			 * request a new certificate on restart)
@@ -346,13 +337,17 @@ public class AcmeValidityAndRenewTest {
 			Log.info(this.getClass(), testName.getMethodName(), "Time configured: " + justShyOfValidityPeriod);
 
 			/*
-			 * Wait a bit before we start the server to make sure we'll be in the renew
-			 * period.
+			 * Calculate the actual refresh date so we sleep long enough to be in the renew
+			 * period before restarting the server.
 			 */
-			while ((System.currentTimeMillis() - serverTime) < totalBuffer) {
+			Calendar cal = Calendar.getInstance();
+			long refreshTime = notAfter - justShyOfValidityPeriod;
+			cal.setTimeInMillis(refreshTime);
+			Date refreshDate = cal.getTime();
+			while (System.currentTimeMillis() < refreshDate.getTime()) {
 				Log.info(this.getClass(), testName.getMethodName(),
-						"Waiting for " + totalBuffer + "ms to pass before restarting the server.");
-				Thread.sleep(2000);
+						"Waiting for " + refreshDate + " to pass before restarting the server.");
+				Thread.sleep(5000);
 			}
 
 			configuration = ORIGINAL_CONFIG.clone();

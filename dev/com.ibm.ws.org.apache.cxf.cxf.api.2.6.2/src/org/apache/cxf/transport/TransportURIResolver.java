@@ -35,6 +35,8 @@ import javax.xml.namespace.QName;
 
 import org.xml.sax.InputSource;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import org.apache.cxf.Bus;
 import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.helpers.LoadingByteArrayOutputStream;
@@ -66,6 +68,7 @@ public class TransportURIResolver extends ExtendedURIResolver {
     }
     protected Bus bus;
     
+    @Trivial
     public TransportURIResolver(Bus b) {
         super();
         bus = b;

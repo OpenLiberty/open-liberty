@@ -13,11 +13,18 @@ bVersion=1.0
 
 Bundle-SymbolicName: com.ibm.ws.security.kerberos.auth; singleton:=true
 
+-dsannotations=com.ibm.ws.security.kerberos.auth.KerberosService
+
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+
 WS-TraceGroup: \
   Kerberos
 
 Export-Package: \
-  com.ibm.ws.security.kerberos.auth
+  com.ibm.ws.security.kerberos.auth;provide:=true
+  
+Private-Package: \
+  com.ibm.ws.security.kerberos.auth.internal.*
   
 Import-Package: \
   com.sun.security.auth.module;resolution:=optional, \
@@ -27,6 +34,11 @@ Import-Package: \
   com.ibm.security.auth.callback;resolution:=optional , \
   com.ibm.security.jgss;resolution:=optional, \
   *
+  
+Include-Resource: \
+  OSGI-INF=resources/OSGI-INF
+  
+instrument.classesExcludes: com/ibm/ws/security/kerberos/auth/internal/resources/KerberosMessages*.class
 
 -buildpath: \
 	com.ibm.ws.internal.prereq.java:java.rtSunKrb5;version=1.8.0,\

@@ -44,9 +44,12 @@ import org.apache.cxf.common.util.CacheMap;
 import org.apache.cxf.common.util.CachedClass;
 import org.apache.cxf.common.util.StringUtils;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 /**
  * 
  */
+@Trivial
 public final class JAXBContextCache {  
     
     /**

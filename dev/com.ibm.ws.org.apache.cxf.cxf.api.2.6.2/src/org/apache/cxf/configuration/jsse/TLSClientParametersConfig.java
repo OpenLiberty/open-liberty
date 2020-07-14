@@ -39,6 +39,8 @@ import org.apache.cxf.common.util.PackageUtils;
 import org.apache.cxf.configuration.security.TLSClientParametersType;
 import org.apache.cxf.staxutils.StaxUtils;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 /**
  * This class provides the TLSClientParameters that programmatically
  * configure a HTTPConduit. It is initialized with the JAXB
@@ -46,6 +48,7 @@ import org.apache.cxf.staxutils.StaxUtils;
  * of the http-conduit bean.
  */
 @NoJSR250Annotations
+@Trivial
 public final class TLSClientParametersConfig {
     private static Set<Class<?>> classes;
     private static JAXBContext context;

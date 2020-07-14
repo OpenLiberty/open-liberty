@@ -20,6 +20,6 @@ Subsystem-Category: JakartaEE9Application
 -jars=com.ibm.websphere.appserver.api.ejbcontainer; location:=dev/api/ibm/
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.ejbcontainer_1.0-javadoc.zip
 Subsystem-Name: Jakarta Enterprise Beans Lite 4.0
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel
