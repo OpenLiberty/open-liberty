@@ -370,9 +370,10 @@ public class JsonConfigBootstrapTest {
             checkLine("\\{.*\"message\":\".*\".*\\}", consoleLogFile);
 
             //set appsWriteJson=true in server.xml
-            setServerConfig(SERVER_XML_APPS_WRITE_JSON_ENABLED);
+            setServerConfig(appsWriteJsonServer, SERVER_XML_APPS_WRITE_JSON_ENABLED);
 
             runApplication(consoleLogFile);
+
             checkLine("\\{\"key\":\"value\"\\}", messageLogFile);
             checkLine("\\{\"key\":\"value\",\"loglevel\":\"System.err\"\\}", messageLogFile);
             checkLine("\\{\\}", messageLogFile);
