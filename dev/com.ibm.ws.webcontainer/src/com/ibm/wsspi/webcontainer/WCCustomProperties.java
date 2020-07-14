@@ -643,13 +643,6 @@ public class WCCustomProperties {
 
         X_POWERED_BY = WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.xpoweredby");
 
-        // Set DISABLE_X_POWERED_BY to true by default for Servlet 5.0 +
-        if(com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_50) {
-            DISABLE_X_POWERED_BY = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.disablexpoweredby","true")).booleanValue();
-        } else {
-            DISABLE_X_POWERED_BY = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.disablexpoweredby","false")).booleanValue();
-        }
-
         DISABLE_SCI_FOR_PRE_V8_APPS = Boolean.valueOf(
                                                       WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.disableservletcontainerinitializersonprev8apps")).booleanValue();
 
@@ -772,7 +765,6 @@ public class WCCustomProperties {
         ENABLE_POST_ONLY_J_SECURITY_CHECK = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.enablepostonlyjsecuritycheck")).booleanValue();      //PI60797
         
         // Start 8.5.5.11
-        STOP_APP_STARTUP_ON_LISTENER_EXCEPTION = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.stopappstartuponlistenerexception" , "false")).booleanValue(); //PI58875
         INVOKE_FLUSH_AFTER_SERVICE_FOR_STATIC_FILE_RESPONSE_WRAPPER = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.invokeflushafterserviceforstaticfileresponsewrapper" , "true")).booleanValue(); //PI63193
         ENCODE_DISPATCHED_REQUEST_URI = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.encodedispatchedrequesturi", "false")).booleanValue(); //PI67942
         
@@ -801,6 +793,15 @@ public class WCCustomProperties {
         
         // 20.0.0.8
         DECODE_URL_PLUS_SIGN = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.decodeurlplussign", "true")).booleanValue();
+
+        //Default for Servlet 5.0 +
+        if(com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_50) {
+            DISABLE_X_POWERED_BY = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.disablexpoweredby","true")).booleanValue();
+            STOP_APP_STARTUP_ON_LISTENER_EXCEPTION = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.stopappstartuponlistenerexception" , "true")).booleanValue();
+        } else {
+            DISABLE_X_POWERED_BY = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.disablexpoweredby","false")).booleanValue();
+            STOP_APP_STARTUP_ON_LISTENER_EXCEPTION = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.stopappstartuponlistenerexception" , "false")).booleanValue();
+        }
     }
 
     private static void setCustomizedDefaultValues(){
