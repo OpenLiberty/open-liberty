@@ -848,13 +848,13 @@ public class AcmeFatUtils {
 	 * @param methodName
 	 * @return True if the test is running on the specific OS/JDK combo
 	 */
-	public static boolean isWindowsWithOpenJDK1105(String methodName) {
+	public static boolean isWindowsWithOpenJDK(String methodName) {
 		if (System.getProperty("os.name").toLowerCase().startsWith("win")
 				&& System.getProperty("java.vendor").toLowerCase().contains("openjdk")
 				&& (System.getProperty("java.version").equals("11.0.5")
 						|| System.getProperty("java.version").equals("14.0.1"))) {
 			/*
-			 * On Windows with OpenJDK 11.0.5, we sometimes get an exception deleting the
+			 * On Windows with OpenJDK 11.0.5 (and others), we sometimes get an exception deleting the
 			 * Acme related files.
 			 * 
 			 * "The process cannot access the file because it is being used by another
