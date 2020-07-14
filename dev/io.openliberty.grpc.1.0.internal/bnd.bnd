@@ -36,7 +36,7 @@ DynamicImport-Package: com.ibm.websphere.monitor.meters;version="1.0.0", \
  com.ibm.websphere.monitor.jmx;version="1.0.0", \
  com.ibm.wsspi.request.probe.bci, \
  com.ibm.wsspi.probeExtension, \
- io.openliberty.grpc.internal.monitor
+ io.openliberty.grpc.1.0.internal.monitor
 
 Export-Package: \
   io.grpc.servlet,\
