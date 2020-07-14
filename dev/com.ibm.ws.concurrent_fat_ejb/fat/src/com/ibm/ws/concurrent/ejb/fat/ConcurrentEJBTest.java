@@ -20,7 +20,6 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -53,12 +52,6 @@ public class ConcurrentEJBTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ServerConfiguration config = server.getServerConfiguration();
-        if (config.getFeatureManager().getFeatures().contains("servlet-5.0") && config.getFeatureManager().getFeatures().remove("ejblite-3.2")) {
-            config.getFeatureManager().getFeatures().add("ejbLite-4.0");
-            config.getFeatureManager().getFeatures().add("jndi-1.0");
-        }
-        server.updateServerConfiguration(config);
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addPackage("web")
                         .addPackage("ejb")
