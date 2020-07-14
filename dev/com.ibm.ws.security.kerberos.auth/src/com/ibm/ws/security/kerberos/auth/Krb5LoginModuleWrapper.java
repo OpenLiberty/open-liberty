@@ -35,9 +35,20 @@ public class Krb5LoginModuleWrapper implements LoginModule {
     public static final String COM_SUN_SECURITY_JGSS_KRB5_INITIATE = "com.sun.security.jgss.krb5.initiate";
     public static final String COM_SUN_SECURITY_JGSS_KRB5_ACCEPT = "com.sun.security.jgss.krb5.accept";
 
-    private static final boolean isIBMJdk18 = JavaInfo.vendor() == Vendor.IBM && JavaInfo.majorVersion() == 8;
-    private static final boolean isOracleJdk18OrHigher = (JavaInfo.vendor() == Vendor.ORACLE && JavaInfo.majorVersion() >= 8);
-    private static final boolean isOtherSupportJDKs = isOracleJdk18OrHigher || JavaInfo.majorVersion() >= 11;
+    @FFDCIgnore(Throwable.class)
+    private static boolean isIBMLoginModuleAvailable() {
+        try {
+            Class.forName(COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE);
+            return true;
+        } catch (Throwable t) {
+            return false;
+        }
+    }
+
+    // Cannot rely purely on JavaInfo.vendor() because IBM JDK 8 for Mac OS reports vendor = Oracle and only has some IBM API available
+    private static final boolean isIBMJdk8 = (JavaInfo.vendor() == Vendor.IBM || isIBMLoginModuleAvailable())
+                                             && JavaInfo.majorVersion() <= 8;
+    private static final Class<?>[] noparams = {};
 
     public CallbackHandler callbackHandler;
     public Subject subject;
@@ -45,72 +56,82 @@ public class Krb5LoginModuleWrapper implements LoginModule {
     public Map<String, Object> options;
     public Subject temporarySubject;
 
-    Class<?> krb5LoginModuleClass = null;
-    Class noparams[] = {};
-    Method method;
-
-    Object krb5loginModule = null;
-    boolean login_called = false;
+    private final Class<?> krb5LoginModuleClass;
+    private final Object krb5loginModule;
+    private boolean login_called = false;
 
     /**
      * <p>Construct an uninitialized Krb5LoginModuleWrapper object.</p>
      */
     public Krb5LoginModuleWrapper() {
-        String targetClass = null;
-        if (isIBMJdk18)
-            targetClass = COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE;
-        else if (isOtherSupportJDKs)
-            targetClass = COM_SUN_SECURITY_AUTH_MODULE_KRB5LOGINMODULE;
-        else {
-            //TODO: NLS msg
-            Tr.error(tc, "Not support JDK vendor and/or version");
+        String targetClass = isIBMJdk8 //
+                        ? COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE //
+                        : COM_SUN_SECURITY_AUTH_MODULE_KRB5LOGINMODULE;
+        if (TraceComponent.isAnyTracingEnabled()) {
+            Tr.debug(tc, "Using target class: " + targetClass);
         }
 
-        if (targetClass != null) {
-            krb5LoginModuleClass = getClassForName(targetClass);
-            try {
-                krb5loginModule = krb5LoginModuleClass.newInstance();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        krb5LoginModuleClass = getClassForName(targetClass);
+        try {
+            krb5loginModule = krb5LoginModuleClass.newInstance();
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
         }
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public void initialize(Subject subject, CallbackHandler callbackHandler, Map<String, ?> sharedState, Map<String, ?> options) {
+    public void initialize(Subject subject, CallbackHandler callbackHandler, Map<String, ?> sharedState, Map<String, ?> opts) {
         Object useKeytabValue = null;
         this.callbackHandler = callbackHandler;
         this.subject = subject;
         this.sharedState = (Map<String, Object>) sharedState;
-        this.options = new HashMap();
-        this.options.putAll(options);
+        options = new HashMap<>();
+        options.putAll(opts);
 
-        if (isOtherSupportJDKs)
+        if (!isIBMJdk8)
             useKeytabValue = options.get("useKeyTab");
 
+        if (isIBMJdk8) {
+            // Sanitize any OpenJDK-only config options
+            if (options.containsKey("isInitiator")) {
+                String isInitiator = (String) options.remove("isInitiator");
+                if ("true".equalsIgnoreCase(isInitiator)) {
+                    options.put("credsType", "both");
+                }
+            }
+            if (options.containsKey("doNotPrompt")) {
+                options.remove("doNotPrompt");
+            }
+            if (options.containsKey("refreshKrb5Config")) {
+                options.remove("refreshKrb5Config");
+            }
+            if (options.containsKey("keyTab")) {
+                String keytab = (String) options.remove("keyTab");
+                options.remove("useKeyTab");
+                options.put("useKeytab", keytab);
+            }
+        }
+
         if (useKeytabValue != null && useKeytabValue.equals("true") && options.get("keyTab") == null) {
-            this.options.put("keyTab", getSystemProperty("KRB5_KTNAME"));
+            options.put("keyTab", getSystemProperty("KRB5_KTNAME"));
         }
-//        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//            this.options.put("debug", "true");
-//            Krb5Common.debugKrb5LoginModule(subject, callbackHandler, sharedState, this.options);
-//        }
-
-        Class[] params = new Class[4];
-        params[0] = Subject.class;
-        params[1] = CallbackHandler.class;
-        params[2] = Map.class;
-        params[3] = Map.class;
-
-        if (krb5LoginModuleClass == null) {
-            Tr.error(tc, "Not a supported JDK vendor and/or version in Krb5LoginModuleWrapper");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            options.put("debug", "true");
         }
+
         try {
-            method = krb5LoginModuleClass.getDeclaredMethod("initialize", params);
-            method.invoke(krb5loginModule, subject, null, sharedState, this.options);
-        } catch (Exception e) {
-            e.printStackTrace();
+            Method initializeMethod = krb5LoginModuleClass.getDeclaredMethod("initialize",
+                                                                             new Class<?>[] { Subject.class, CallbackHandler.class, Map.class, Map.class });
+            initializeMethod.invoke(krb5loginModule, subject, null, sharedState, this.options);
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException e) {
+            throw new IllegalStateException(e);
+        } catch (InvocationTargetException e) {
+            Throwable cause = e.getCause();
+            if (cause instanceof RuntimeException)
+                throw (RuntimeException) cause;
+            else
+                throw new RuntimeException(cause);
         }
     }
 
@@ -148,22 +169,16 @@ public class Krb5LoginModuleWrapper implements LoginModule {
         return true;
     }
 
-    @FFDCIgnore({ java.lang.reflect.InvocationTargetException.class })
-    private void inVokeMethod(String methodName, Class[] params) throws LoginException {
+    private void inVokeMethod(String methodName, Class<?>[] params) throws LoginException {
         if (krb5LoginModuleClass != null) {
             try {
-                method = krb5LoginModuleClass.getDeclaredMethod(methodName, params);
+                Method method = krb5LoginModuleClass.getDeclaredMethod(methodName, params);
                 method.invoke(krb5loginModule);
-            } catch (NoSuchMethodException e) {
-                throw new AuthenticationException(e.getLocalizedMessage(), e);
-            } catch (SecurityException e) {
-                throw new AuthenticationException(e.getLocalizedMessage(), e);
-            } catch (IllegalAccessException e) {
-                throw new AuthenticationException(e.getLocalizedMessage(), e);
-            } catch (IllegalArgumentException e) {
-                throw new AuthenticationException(e.getLocalizedMessage(), e);
             } catch (InvocationTargetException e) {
-                throw new AuthenticationException(e.getLocalizedMessage(), e);
+                Exception cause = e;
+                if (e.getCause() instanceof Exception)
+                    cause = (Exception) e.getCause();
+                throw new AuthenticationException(e.getCause().getLocalizedMessage(), cause);
             } catch (Exception e) {
                 throw new AuthenticationException(e.getLocalizedMessage(), e);
             }
@@ -182,13 +197,12 @@ public class Krb5LoginModuleWrapper implements LoginModule {
         return value;
     }
 
-    private Class<?> getClassForName(String tg) {
-        Class<?> cl = null;
+    private static Class<?> getClassForName(String tg) {
         try {
-            cl = Class.forName(tg);
+            return Class.forName(tg);
         } catch (ClassNotFoundException e) {
             Tr.error(tc, "Exception performing class for name.", e.getLocalizedMessage());
+            throw new IllegalStateException(e);
         }
-        return cl;
     }
 }

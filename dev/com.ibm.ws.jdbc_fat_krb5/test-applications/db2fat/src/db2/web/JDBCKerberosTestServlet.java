@@ -26,7 +26,7 @@ import javax.sql.DataSource;
 
 import org.junit.Test;
 
-import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.AllowedFFDC;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
@@ -46,9 +46,7 @@ public class JDBCKerberosTestServlet extends FATServlet {
     DataSource invalidPrincipalDs;
 
     @Test
-    @ExpectedFFDC({ "javax.resource.spi.SecurityException",
-                    "javax.resource.spi.ResourceAllocationException",
-                    "com.ibm.db2.jcc.am.SqlInvalidAuthorizationSpecException" })
+    @AllowedFFDC
     public void testNonKerberosConnectionRejected() throws Exception {
         try (Connection con = noKrb5.getConnection()) {
             throw new Exception("Should not be able to obtain a non-kerberos connection from a kerberos-only database");
@@ -72,8 +70,7 @@ public class JDBCKerberosTestServlet extends FATServlet {
     }
 
     @Test
-    @ExpectedFFDC({ "javax.resource.ResourceException",
-                    "com.ibm.ws.security.authentication.AuthenticationException" })
+    @AllowedFFDC
     public void testInvalidPrincipal() throws Exception {
         try (Connection con = invalidPrincipalDs.getConnection()) {
             con.createStatement().execute("SELECT 1 FROM SYSIBM.SYSDUMMY1");
