@@ -16,13 +16,17 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import web.ConcurrentFATServlet;
@@ -38,12 +42,23 @@ public class ConcurrentEJBTest extends FATServletClient {
 
     public static final String APP_NAME = "concurrent";
 
+    @ClassRule
+    public static RepeatTests r = RepeatTests
+                    .withoutModification()
+                    .andWith(new JakartaEE9Action());
+
     @Server("com.ibm.ws.concurrent.fat.ejb")
     @TestServlet(servlet = ConcurrentFATServlet.class, path = APP_NAME)
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
+        ServerConfiguration config = server.getServerConfiguration();
+        if (config.getFeatureManager().getFeatures().contains("servlet-5.0") && config.getFeatureManager().getFeatures().remove("ejblite-3.2")) {
+            config.getFeatureManager().getFeatures().add("ejbLite-4.0");
+            config.getFeatureManager().getFeatures().add("jndi-1.0");
+        }
+        server.updateServerConfiguration(config);
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addPackage("web")
                         .addPackage("ejb")
