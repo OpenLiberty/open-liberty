@@ -21,8 +21,8 @@ import javax.net.ssl.SSLSocketFactory;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
 import org.apache.http.NameValuePair;
+import org.apache.http.StatusLine;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
@@ -65,7 +65,7 @@ public class OidcClientHttpUtil {
         try {
             sslSocketFactory = sslSupport.getSSLSocketFactory(config.getSSLConfigurationName());
         } catch (javax.net.ssl.SSLException e) {
-            throw new com.ibm.websphere.ssl.SSLException(e.getMessage());
+            throw new com.ibm.websphere.ssl.SSLException(e);
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "sslSocketFactory (" + ") get: " + sslSocketFactory);
@@ -361,9 +361,8 @@ public class OidcClientHttpUtil {
 
     private HttpClientBuilder createBuilder(boolean useSystemProperties) {
         return useSystemProperties ? HttpClientBuilder.create().disableCookieManagement().useSystemProperties() : HttpClientBuilder.create().disableCookieManagement();
-       // return useSystemProperties ? HttpClientBuilder.create().useSystemProperties() : HttpClientBuilder.create();
+        // return useSystemProperties ? HttpClientBuilder.create().useSystemProperties() : HttpClientBuilder.create();
     }
-    
 
     public HttpClient createHTTPClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification,
             String baUser, @Sensitive String baPassword, boolean useSystemPropertiesForHttpClientConnections) {

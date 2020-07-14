@@ -275,7 +275,7 @@ public class TokenPropagationHelper {
             FFDCFilter.processException(e,
                     TokenPropagationHelper.class.getName(), "pushSubject",
                     new Object[] { username });
-            Tr.error(tc, "ERROR_AUTHENTICATE", new Object[] { e.getMessage() }); // CWWKS6103E
+            Tr.error(tc, "ERROR_AUTHENTICATE", new Object[] { e }); // CWWKS6103E
             return false;
         } catch (Exception e) {
             FFDCFilter.processException(e,

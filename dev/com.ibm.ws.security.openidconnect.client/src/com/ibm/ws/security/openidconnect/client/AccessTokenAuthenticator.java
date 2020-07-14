@@ -128,7 +128,7 @@ public class AccessTokenAuthenticator {
             String validationUrl = getPropagationValidationURL(clientConfig, validationMethod);
             sslSocketFactory = getSSLSocketFactory(validationUrl, clientConfig.getSSLConfigurationName(), clientConfig.getClientId());
         } catch (SSLException e) {
-            logError(clientConfig, oidcClientRequest, "OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL", new Object[] { e.getMessage() != null ? e.getMessage() : "invalid ssl context", clientConfig.getClientId() });
+            logError(clientConfig, oidcClientRequest, "OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL", new Object[] { e, clientConfig.getClientId() });
             return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
         }
 
@@ -254,7 +254,7 @@ public class AccessTokenAuthenticator {
             try {
                 sslSocketFactory = sslSupport.getSSLSocketFactory(sslConfigurationName);
             } catch (javax.net.ssl.SSLException e) {
-                throw new SSLException(e.getMessage());
+                throw new SSLException(e);
             }
 
             if (sslSocketFactory != null)

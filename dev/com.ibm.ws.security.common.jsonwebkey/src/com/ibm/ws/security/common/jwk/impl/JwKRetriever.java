@@ -594,7 +594,7 @@ public class JwKRetriever {
         try {
             sslSocketFactory = sslSupport.getSSLSocketFactory(sslConfigurationName);
         } catch (javax.net.ssl.SSLException e) {
-            throw new SSLException(e.getMessage());
+            throw new SSLException(e);
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "sslSocketFactory (" + ") get: " + sslSocketFactory);
