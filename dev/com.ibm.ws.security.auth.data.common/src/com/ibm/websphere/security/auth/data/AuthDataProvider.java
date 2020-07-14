@@ -45,7 +45,6 @@ public class AuthDataProvider {
     protected static final String CFG_KEY_USER = "user";
     protected static final String CFG_KEY_PASSWORD = "password";
     protected static final String CFG_KEY_KRB5_PRINCIPAL = "krb5Principal";
-    protected static final String CFG_KEY_KRB5_KEYTAB = "krb5Keytab";
 
     private static final TraceComponent tc = Tr.register(AuthDataProvider.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
