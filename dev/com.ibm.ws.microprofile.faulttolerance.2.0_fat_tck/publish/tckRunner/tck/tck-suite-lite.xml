@@ -11,47 +11,214 @@
     configfailurepolicy="continue">
 
     <test name="microprofile-faulttolerance 2.0 TCK">
-        <method-selectors>
-            <method-selector>
-                <script language="beanshell">
-                     <!-- Some tests are sensitive to timing and can spuriously fail on slow build machines. -->
-                     <!-- We exclude all of these tests when running in lite mode -->
-                     <![CDATA[
-                     // All of these bulkhead tests are susceptable to timing issues or "not being parallel enough"
-                     // BulkheadAsynchTest
-                     !method.getName().startsWith("testBulkheadClassAsynchronous10") &&
-                     !method.getName().startsWith("testBulkheadMethodAsynchronous10") &&
-                     !method.getName().startsWith("testBulkheadClassAsynchronous3") &&
-                     !method.getName().startsWith("testBulkheadMethodAsynchronous3") &&
-                     !method.getName().startsWith("testBulkheadClassAsynchronousDefault") &&
-                     !method.getName().startsWith("testBulkheadMethodAsynchronousDefault") &&
-                     !method.getName().startsWith("testBulkheadClassAsynchronousQueueing10") &&
-                     !method.getName().startsWith("testBulkheadMethodAsynchronousQueueing10") &&
-                     
-                     // BulkheadAsynchRetryTest
-                     !method.getName().startsWith("testBulkheadClassAsynchronousPassiveRetry55") &&
-                     !method.getName().startsWith("testBulkheadMethodAsynchronousRetry55") &&
-                     !method.getName().startsWith("testBulkheadMethodAsynchronousRetry55Trip") &&
-                     !method.getName().startsWith("testBulkheadMethodAsynchronous55RetryOverload") &&
-                     !method.getName().startsWith("testBulkheadClassAsynchronous55RetryOverload") &&
-                     !method.getName().startsWith("testBulkheadPassiveRetryMethodAsynchronous55") &&
-                     !method.getName().startsWith("testBulkheadRetryClassAsynchronous55") &&
-                     !method.getName().startsWith("testBulkheadQueReplacesDueToClassRetryFailures") &&
-                     !method.getName().startsWith("testNoRetriesWithoutRetryOn") &&
-                     !method.getName().startsWith("testNoRetriesWithAbortOn") &&
-                     
-                     // BulkheadFutureTest
-                     !method.getDeclaringClass().getSimpleName().equals("BulkheadFutureTest")
-                     
-                     // Note: BulkheadSynchRetryTest and BulkheadSynchTest look vulnerable to the same issues but we haven't seen them fail
-                ]]>
-                </script>
-            </method-selector>
-        </method-selectors>
+        <classes>
+            <!-- Reduced test list for lite mode, retains coverage of core functionality -->
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.AsyncCancellationTest">
+            </class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.AsyncFallbackTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.AsynchronousCSTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.AsynchronousTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.AsyncTimeoutTest">
+                <methods>
+                    <include name="testAsyncTimeout"/>
+                </methods>
+            </class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.CircuitBreakerBulkheadTest">
+                <methods>
+                    <include name="testCircuitBreakerAroundBulkheadSync"/>
+                </methods>
+            </class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.CircuitBreakerRetryTest">
+                <methods>
+                    <exclude name="testRetriesSucceedWhenCircuitCloses"/>
+                    <exclude name="testRetriesSucceedWhenCircuitClosesAsync"/>
+                    <exclude name="testCircuitOpenWithMultiTimeouts"/>
+                    <exclude name="testCircuitOpenWithMultiTimeoutsAsync"/>
+                </methods>
+            </class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.CircuitBreakerTest">
+                <methods>
+                    <exclude name="testCircuitDefaultSuccessThreshold"/>
+                    <exclude name="testClassLevelCircuitOverrideNoDelay"/>
+                </methods>
+            </class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.CircuitBreakerTimeoutTest">
+                <methods>
+                    <include name="testTimeout"/>
+                </methods>
+            </class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.ConfigTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.FallbackTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.RetryConditionTest">
+                <methods>
+                    <exclude name="testRetryParallelExceptionally"/>
+                    <exclude name="testRetryChainExceptionally"/>
+                    <exclude name="testRetryChainSuccess"/>
+                </methods>
+            </class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.RetryTest">
+                <methods>
+                    <include name="testRetryMaxRetries"/>
+                    <include name="testRetryMaxDuration"/>
+                </methods>
+            </class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.RetryTimeoutTest">
+                <methods>
+                    <include name="testRetryTimeout"/>
+                </methods>
+            </class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.TimeoutGlobalConfigTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.TimeoutTest">
+                <methods>
+                    <include name="testTimeout"/>
+                    <include name="testTimeoutClassLevel"/>
+                </methods>
+            </class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.TimeoutUninterruptableTest">
+                <methods>
+                    <include name="testTimeout"/>
+                </methods>
+            </class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.ZeroRetryJitterTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.bulkhead.BulkheadAsynchRetryTest">
+                <methods>
+                    <include name="testBulkheadRetryClassAsynchronous55"/>
+                    <include name="testBulkheadQueReplacesDueToClassRetryFailures"/>
+                    <include name="testRetriesReenterBulkhead"/>
+                </methods>
+            </class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.bulkhead.BulkheadAsynchTest">
+                <methods>
+                    <include name="testBulkheadExceptionThrownWhenQueueFullAsync"/>
+                </methods>
+            </class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.bulkhead.BulkheadFutureTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.bulkhead.BulkheadSynchConfigTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.bulkhead.BulkheadSynchRetryTest">
+                <methods>
+                    <include name="testBulkheadRetryClassSynchronous55"></include>
+                </methods>
+            </class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.bulkhead.BulkheadSynchTest">
+                <methods>
+                    <include name="testBulkheadMethodSemaphore10"/>
+                </methods>
+            </class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.interceptor.ftPriorityChange.FaultToleranceInterceptorPriorityChangeAnnotationConfTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.AllMetricsTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.BulkheadMetricTest">
+                <methods>
+                    <include name="bulkheadMetricTest"/>
+                    <include name="bulkheadMetricRejectionTest"/>
+                </methods>
+            </class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.CircuitBreakerMetricTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.ClashingNameTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.ClassLevelMetricTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.FallbackMetricTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.MetricsDisabledTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.RetryMetricTest"></class>
+        </classes>
         
-        <packages>
-            <package name="org.eclipse.microprofile.fault.tolerance.tck.*">
-            </package>
-        </packages>
+        <!-- Full class list for 2.0 TCK:
+        <classes>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.AsyncCancellationTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.AsyncFallbackTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.AsyncTimeoutTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.AsynchronousCSTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.AsynchronousTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.CircuitBreakerBulkheadTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.CircuitBreakerInitialSuccessTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.CircuitBreakerLateSuccessTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.CircuitBreakerRetryTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.CircuitBreakerTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.CircuitBreakerTimeoutTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.ConfigTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.FallbackTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.RetryConditionTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.RetryTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.RetryTimeoutTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.TimeoutGlobalConfigTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.TimeoutMethodConfigTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.TimeoutTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.TimeoutUninterruptableTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.ZeroRetryJitterTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.bulkhead.BulkheadAsynchRetryTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.bulkhead.BulkheadAsynchTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.bulkhead.BulkheadFutureTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.bulkhead.BulkheadSynchConfigTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.bulkhead.BulkheadSynchRetryTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.bulkhead.BulkheadSynchTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.circuitbreaker.CircuitBreakerConfigGlobalTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.circuitbreaker.CircuitBreakerConfigOnMethodTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.config.ConfigPropertyGlobalVsClassTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.config.ConfigPropertyGlobalVsClassVsMethodTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.config.ConfigPropertyOnClassAndMethodTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.disableEnv.DisableAnnotationGloballyEnableOnClassDisableOnMethod"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.disableEnv.DisableAnnotationGloballyEnableOnClassTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.disableEnv.DisableAnnotationGloballyEnableOnMethodTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.disableEnv.DisableAnnotationGloballyTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.disableEnv.DisableAnnotationOnClassEnableOnMethodTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.disableEnv.DisableAnnotationOnClassTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.disableEnv.DisableAnnotationOnMethodsTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.disableEnv.DisableFTEnableGloballyTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.disableEnv.DisableFTEnableOnClassTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.disableEnv.DisableFTEnableOnMethodTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.disableEnv.DisableTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.fallbackmethod.FallbackMethodAbstractTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.fallbackmethod.FallbackMethodBasicTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.fallbackmethod.FallbackMethodDefaultMethodTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.fallbackmethod.FallbackMethodGenericAbstractTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.fallbackmethod.FallbackMethodGenericArrayTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.fallbackmethod.FallbackMethodGenericComplexTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.fallbackmethod.FallbackMethodGenericDeepTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.fallbackmethod.FallbackMethodGenericTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.fallbackmethod.FallbackMethodGenericWildcardTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.fallbackmethod.FallbackMethodInPackageTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.fallbackmethod.FallbackMethodInterfaceTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.fallbackmethod.FallbackMethodOutOfPackageTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.fallbackmethod.FallbackMethodPrivateTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.fallbackmethod.FallbackMethodSubclassOverrideTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.fallbackmethod.FallbackMethodSubclassTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.fallbackmethod.FallbackMethodSuperclassPrivateTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.fallbackmethod.FallbackMethodSuperclassTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.fallbackmethod.FallbackMethodVarargsTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.fallbackmethod.FallbackMethodWildcardNegativeTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.fallbackmethod.FallbackMethodWildcardTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.illegalConfig.IncompatibleFallbackMethodTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.illegalConfig.IncompatibleFallbackMethodWithArgsTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.illegalConfig.IncompatibleFallbackPolicies"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.illegalConfig.IncompatibleFallbackTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.interceptor.FaultToleranceInterceptorTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.interceptor.ftPriorityChange.FaultToleranceInterceptorPriorityChangeAnnotationConfTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.interceptor.xmlInterceptorEnabling.FaultToleranceInterceptorEnableByXmlTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.invalidParameters.InvalidAsynchronousClassTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.invalidParameters.InvalidAsynchronousMethodTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.invalidParameters.InvalidBulkheadAsynchQueueTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.invalidParameters.InvalidBulkheadValueTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.invalidParameters.InvalidCircuitBreakerDelayTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.invalidParameters.InvalidCircuitBreakerFailureRatioNegTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.invalidParameters.InvalidCircuitBreakerFailureRatioPosTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.invalidParameters.InvalidCircuitBreakerFailureReqVol0Test"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.invalidParameters.InvalidCircuitBreakerFailureReqVolNegTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.invalidParameters.InvalidCircuitBreakerFailureSuccess0Test"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.invalidParameters.InvalidCircuitBreakerFailureSuccessNegTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.invalidParameters.InvalidRetryDelayDurationTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.invalidParameters.InvalidRetryDelayTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.invalidParameters.InvalidRetryJitterTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.invalidParameters.InvalidRetryMaxRetriesTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.invalidParameters.InvalidTimeoutValueTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.AllMetricsTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.BulkheadMetricTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.CircuitBreakerMetricTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.ClashingNameTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.ClassLevelMetricTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.FallbackMetricTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.MetricsDisabledTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.RetryMetricTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.TimeoutMetricTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.visibility.retry.RetryVisibilityTest"></class>
+        </classes>
+        -->
     </test>
 </suite>

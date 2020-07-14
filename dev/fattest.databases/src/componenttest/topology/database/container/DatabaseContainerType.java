@@ -28,7 +28,7 @@ public enum DatabaseContainerType {
     DB2("jcc.jar", "org.testcontainers.containers.", "Db2Container", "Properties_db2_jcc"),
     Derby("derby.jar", "componenttest.topology.database.container.", "DerbyNoopContainer", "Properties_derby_embedded"),
     DerbyClient("derbyclient.jar", "componenttest.topology.database.container.", "DerbyClientNoopContainer", "Properties_derby_client"),
-    Oracle("ojdbc8_g.jar", "org.testcontainers.containers.", "OracleContainer", "Properties_oracle"),
+    Oracle("ojdbc8_g.jar", "componenttest.topology.database.container.", "OracleContainer", "Properties_oracle"),
     Postgres("postgresql.jar", "org.testcontainers.containers.", "PostgreSQLContainer", "Properties_postgresql"),
     SQLServer("mssql-jdbc.jar", "componenttest.topology.database.container.", "SQLServerContainer", "Properties_microsoft_sqlserver");
 

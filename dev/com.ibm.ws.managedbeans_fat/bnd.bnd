@@ -1,0 +1,54 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+	fat/src,\
+	test-applications/ManagedBeanBindingsEJB.jar/src,\
+	test-applications/ManagedBeanBindingsWeb.war/src,\
+	test-applications/ManagedBeanEJB.jar/src,\
+	test-applications/ManagedBeanEjbWeb.war/src,\
+	test-applications/ManagedBeanInjectionWeb.war/src,\
+	test-applications/ManagedBeanInterceptorWeb.war/src,\
+	test-applications/ManagedBeanWeb.war/src,\
+	test-applications/ManagedBeanXmlEJB.jar/src,\
+	test-applications/ManagedBeanXmlWeb.war/src
+
+fat.project: true
+
+# Define additional tested features that are NOT present in any XML files in this bucket.
+# In this case, the following are added programmatically at runtime by the RepeatTests rule.
+tested.features:\
+	cdi-2.0,\
+	jdbc-4.2,\
+	jpa-2.2,\
+	jpaContainer-2.2,\
+	managedbeans-2.0,\
+	servlet-4.0,\
+	servlet-5.0
+
+# To define a global minimum java level for the FAT, use the following property.
+# If unspecified, the default value is ${javac.source}
+# fat.minimum.java.level: 1.8
+
+# Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
+#      or binaries from Artifactory (e.g. commons-logging:commons-logging)
+# For all project names that match the pattern "*_fat*", dependencies for junit,
+# fattest.simplicity, and componenttest-1.0 will be automatically added to the buildpath
+-buildpath: \
+	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
+	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
+	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
+	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
+	com.ibm.websphere.javaee.jms.1.1;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+	com.ibm.websphere.javaee.transaction.1.1;version=latest

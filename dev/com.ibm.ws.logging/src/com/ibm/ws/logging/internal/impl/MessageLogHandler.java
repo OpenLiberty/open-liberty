@@ -15,6 +15,7 @@ import java.util.List;
 import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.ws.logging.collector.Formatter;
 import com.ibm.ws.logging.data.GenericData;
+import com.ibm.ws.logging.data.LogTraceData;
 import com.ibm.ws.logging.internal.impl.BaseTraceService.TraceWriter;
 import com.ibm.wsspi.collector.manager.SynchronousHandler;
 
@@ -63,7 +64,14 @@ public class MessageLogHandler extends JsonLogHandler implements SynchronousHand
         String messageOutput = null;
         if (currFormat.equals(LoggingConstants.JSON_FORMAT) || !eventSourceName.equals(CollectorConstants.MESSAGES_SOURCE)) {
             if (genData.getJsonMessage() == null) {
-                genData.setJsonMessage((String) formatEvent(eventSourceName, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH));
+                String jsonMessage = null;
+                if (appsWriteJson && event instanceof LogTraceData)
+                    jsonMessage = ((LogTraceData) event).getMessage();
+
+                if (!isJSON(jsonMessage))
+                    jsonMessage = (String) formatEvent(eventSourceName, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH);
+
+                genData.setJsonMessage(jsonMessage);
             }
             messageOutput = genData.getJsonMessage();
 

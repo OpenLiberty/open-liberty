@@ -34,6 +34,7 @@ src: \
   test-applications/linkheader/src,\
   test-applications/testManagedBeans/src,\
   test-applications/paramconverter/src,\
+  test-applications/options/src,\
   test-applications/params/src,\
   test-applications/providerAndResource/src,\
   test-applications/providerCache/src,\

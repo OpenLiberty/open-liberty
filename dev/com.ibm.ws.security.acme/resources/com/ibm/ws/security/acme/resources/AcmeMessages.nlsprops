@@ -131,7 +131,7 @@ CWPKI2023E=CWPKI2023E: The ACME service could not write to the account key file 
 CWPKI2023E.explanation=The account keys could not be stored in the account key file. This can occur if the file permissions are incorrect or the file does not exist.
 CWPKI2023E.useraction=Review the error message for details on the failure. Verify the file location is correct and the server has write file permissions.
 
-CWPKI2024E=CWPKI2024E: The ACME service failed to revoke the requested certificate for the ACME certificate authority at the {0} URI. The certificate is serial number {1}. The error is ''{2}''.
+CWPKI2024E=CWPKI2024E: The ACME service failed to revoke the requested certificate for the ACME certificate authority at the {0} URI. The certificate is serial number {1}. The error is ''{2}''. This can occur if the directory URI has changed, and if so, it can be ignored.
 CWPKI2024E.explanation=A certificate revoke request failed. The certificate might not be revoked and could still be in use.
 CWPKI2024E.useraction=Review the error message for details on the failure.
 
@@ -322,3 +322,11 @@ CWPKI2070W.useraction=To avoid this warning message, set the certCheckerSchedule
 CWPKI2071W=CWPKI2071W: The certCheckerErrorSchedule property was set to {0}, which is shorter than the minimum schedule time. The certCheckerErrorSchedule property is reset to {1}.
 CWPKI2071W.explanation=The value for the certCheckerErrorSchedule property was below the minimum duration to check for expiring or revoked certificates and is reset to the minimum schedule time.
 CWPKI2071W.useraction=To avoid this warning message, set the certCheckerErrorSchedule property in the server configuration to a duration that is longer than the minimum schedule time. To use the default setting, remove the certCheckerErrorSchedule property from the server configuration.
+
+CWPKI2072W=CWPKI2072W: The ACME service could not read or write the historical ACME file at {0}. The error is ''{1}''.
+CWPKI2072W.explanation=The ACME service was unable to access the historical ACME file.
+CWPKI2072W.useraction=Ensure that the historical ACME directory has read and write permissions.
+
+CWPKI2073W=CWPKI2073W: No account contact was specified. It is recommended to set this property in server configuration. If a key is lost or the account is compromised, access to the account is lost.
+CWPKI2073W.explanation=The value for the accountContact property was not specified in the server configuration.
+CWPKI2073W.useraction=Set the accountContact property in server configuration.

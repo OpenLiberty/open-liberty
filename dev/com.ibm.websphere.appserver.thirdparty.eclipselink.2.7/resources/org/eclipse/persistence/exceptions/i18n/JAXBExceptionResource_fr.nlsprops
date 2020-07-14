@@ -1,3 +1,4 @@
+###############################################################################
 # Copyright (c) 2014 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -6,7 +7,7 @@
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
-# -------------------------------------------------------------------------------------------------
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -44,17 +45,17 @@
 
 50008=Classe de noeud non prise en charge {0}.  La m\u00e9thode createBinder(Class) prend uniquement en charge la classe org.w3c.dom.Node.
 
-50009=La propri\u00e9t\u00e9 ou la zone {0} est annot\u00e9e comme \u00e9tant transitoire, elle ne peut donc pas \u00eatre incluse dans l''annotation propOrder.
+50009=La propri\u00e9t\u00e9 ou la zone {0} dans la classe {1} est annot\u00e9e comme \u00e9tant transitoire ; par cons\u00e9quent, elle ne peut pas \u00eatre incluse dans l''annotation propOrder.
 
-50010=La propri\u00e9t\u00e9 ou la zone {0} doit \u00eatre un attribut car une autre zone ou propri\u00e9t\u00e9 est annot\u00e9e avec la valeur XmlValue.
+50010=La propri\u00e9t\u00e9 ou la zone {0} dans la classe {1} doit \u00eatre un attribut car une autre zone ou propri\u00e9t\u00e9 est annot\u00e9e avec la valeur XmlValue.
 
-50011=La propri\u00e9t\u00e9 ou la zone {0} ne peut pas \u00eatre annot\u00e9e avec XmlValue car il s''agit d''une sous-classe d''une autre classe li\u00e9e \u00e0 XML.
+50011=La propri\u00e9t\u00e9 ou la zone {0} dans la classe {1} ne peut pas \u00eatre annot\u00e9e avec XmlValue car il s''agit d''une sous-classe d''une autre classe li\u00e9e \u00e0 XML.
 
-50012=La propri\u00e9t\u00e9 ou la zone {0} a \u00e9t\u00e9 sp\u00e9cifi\u00e9e dans propOrder mais il ne s''agit pas d''une propri\u00e9t\u00e9 valide.
+50012=La propri\u00e9t\u00e9 ou la zone {0} dans la classe {1} a \u00e9t\u00e9 sp\u00e9cifi\u00e9e dans propOrder mais il ne s''agit pas d''une propri\u00e9t\u00e9 valide.
 
 50013=La propri\u00e9t\u00e9 ou la zone {0} sur la classe {1} doit obligatoirement \u00eatre incluse dans l''\u00e9l\u00e9ment propOrder de l''annotation XmlType.
 
-50014=La propri\u00e9t\u00e9 ou la zone {0} avec l''annotation XmlValue doit \u00eatre d''un type qui mappe \u00e0 un type de sch\u00e9ma simple.
+50014=La propri\u00e9t\u00e9 ou la zone {0} dans la classe {1} avec l''annotation XmlValue doit \u00eatre d''un type pouvant \u00eatre mapp\u00e9 \u00e0 un type de sch\u00e9ma simple.
 
 50015=XmlElementWrapper est uniquement autoris\u00e9 sur une propri\u00e9t\u00e9 de collection ou de tableau mais {0}] n''est pas une propri\u00e9t\u00e9 de collection ou de tableau.
 

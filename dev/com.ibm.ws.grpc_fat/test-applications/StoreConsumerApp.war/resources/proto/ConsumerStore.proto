@@ -1,0 +1,82 @@
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+ syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.ibm.test.g3store.grpc";
+option java_outer_classname = "AppConsumerProto";
+
+import "google/protobuf/empty.proto";
+
+import "Store.proto";
+
+package test.g3store.grpc;
+
+
+// The service definition.
+service AppConsumerService {
+
+    // List of all App names available on server 
+  	rpc getAllAppNames(google.protobuf.Empty) returns (NameResponse) {};
+  
+    // Get App Structure for each app
+  	rpc getAppInfo(AppNameRequest) returns (RetailAppResponse) {};
+  
+  
+    // send one Gnere at a time , server will keep count, and when client is done , server will send Total count 
+    rpc getCount( stream GenreRequest) returns ( GenreCountResponse ){};
+
+	// send one App name at a time, server will send the prices of each app in the response until client is done  
+    rpc getPrices(stream AppNameRequest) returns (stream PriceResponse) {};
+    
+    
+    // TODO
+    rpc purchaseRetailApp(PurchaseRequest) returns (RetailAppResponse) {};
+
+  
+}
+
+// Send the App id 
+message AppNameRequest{ 
+	string name = 1;
+}
+
+message NameResponse{
+   repeated string names = 1;
+}
+
+message RetailAppResponse{
+   RetailApp retailApp = 1;
+}
+
+message GenreRequest{
+	GenreType genreType = 1;
+}
+
+// List of totalCount of apps based of Genre
+message GenreCountResponse{
+	repeated GenreCounts totalGenreCounts = 1;
+}
+
+message GenreCounts{
+	GenreType genreType = 1;
+	int32 totalCount = 2;
+}
+
+// List of price for an app for each PurchaseType
+message PriceResponse{
+	string name = 1;
+	repeated Price prices = 2; 
+}
+
+
+
+

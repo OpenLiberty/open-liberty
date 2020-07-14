@@ -458,10 +458,14 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
         validate();
 
         this.ignoreFlush = false;
-        if (!this.isc.getResponse().isCommitted()) {
+        if ((null != this.isc.getResponse()) && !this.isc.getResponse().isCommitted()) {
             this.isc.getResponse().setCommitted();
         } else {
             // response headers already committed (written)
+            // or response has been freed on previous error
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.debug(tc, "Response headers already committed or response cleared; " + this.isc);
+            }
             return;
         }
         try {

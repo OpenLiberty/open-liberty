@@ -350,13 +350,6 @@ public class FrameworkManager {
         }
     }
 
-    /**
-     * @return
-     */
-    private boolean isJava6() {
-        return "1.6".equals(System.getProperty("java.specification.version"));
-    }
-
     private void launchClient() {
         ServiceReference<ClientRunner> reference = systemBundleCtx.getServiceReference(ClientRunner.class);
         clientRunner = reference == null ? null : systemBundleCtx.getService(reference);

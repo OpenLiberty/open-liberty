@@ -1040,7 +1040,7 @@ public class UserAuthenticationTest {
                     will(returnValue(new SSOCookieHelperImpl(config)));
                     allowing(config).createReferrerURLCookieHandler();
                     will(returnValue(new ReferrerURLCookieHandler(config)));
-                    one(request).getAttribute("OidcRequest");
+                    one(request).getAttribute(OAuth20Constants.OIDC_REQUEST_OBJECT_ATTR_NAME);
                     will(returnValue(null));
                     one(response).sendError(HttpServletResponse.SC_UNAUTHORIZED);
                 }

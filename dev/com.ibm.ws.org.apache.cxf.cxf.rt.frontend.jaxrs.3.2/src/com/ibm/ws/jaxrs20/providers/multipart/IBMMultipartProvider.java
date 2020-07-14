@@ -119,6 +119,7 @@ public class IBMMultipartProvider extends AbstractConfigurableProvider implement
     @Override
     public void writeTo(Object obj, Class<?> type, Type genericType, Annotation[] anns, MediaType mt,
                         MultivaluedMap<String, Object> headers, OutputStream os) throws IOException, WebApplicationException { // TODO Auto-generated method stub
+        multipartProvider.setMessageContext(mc);
         //Convert object if contains AttachmentImpl/MultiBodyImpl.
         if (Map.class.isAssignableFrom(obj.getClass())) {
             Map<Object, Object> objects = CastUtils.cast((Map<?, ?>) obj);

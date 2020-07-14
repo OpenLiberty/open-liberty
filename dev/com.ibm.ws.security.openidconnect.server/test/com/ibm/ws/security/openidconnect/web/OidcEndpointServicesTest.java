@@ -1350,7 +1350,7 @@ public class OidcEndpointServicesTest {
                 //screw up if we hardcode the parameter map
                 allowing(request).getQueryString(); //for trace
                 will(returnValue(TEST_QUERY));
-                allowing(request).getAttribute("OidcRequest");
+                allowing(request).getAttribute(OAuth20Constants.OIDC_REQUEST_OBJECT_ATTR_NAME);
                 will(returnValue(oidcRequest));
             }
         });

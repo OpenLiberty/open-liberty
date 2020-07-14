@@ -168,7 +168,7 @@ public class UserAuthentication {
                 return processPostAuthentication(request, response, requiredRole, al, authResult);
             } else if (authResult.getStatus() == AuthResult.FAILURE || authResult.getStatus() == AuthResult.SEND_401) {
                 setAuthTypeAndPrintError(provider, al, authResult, authnType);
-                boolean bOAuth = request.getAttribute("OidcRequest") == null;
+                boolean bOAuth = request.getAttribute(OAuth20Constants.OIDC_REQUEST_OBJECT_ATTR_NAME) == null;
                 if (bOAuth || !prompt.hasNone()) {
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
                     return new OAuthResultImpl(OAuthResult.STATUS_FAILED, al,

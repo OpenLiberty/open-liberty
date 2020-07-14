@@ -32,6 +32,8 @@ Private-Package: com.ibm.ws.cdi.jndi.liberty
 
 WS-TraceGroup: JCDI
 
+jakartaeeMe: true
+
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
 	com.ibm.ws.container.service;version=latest,\

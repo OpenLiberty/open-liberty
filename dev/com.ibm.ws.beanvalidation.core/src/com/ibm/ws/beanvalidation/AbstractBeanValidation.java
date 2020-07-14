@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2016 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -145,12 +145,24 @@ public abstract class AbstractBeanValidation implements BeanValidation
         return moduleValidationXMLs.get(mmd);
     }
 
-    public abstract ClassLoader configureBvalClassloader(ClassLoader cl);
+    public abstract ClassLoaderTuple configureBvalClassloader(ClassLoader cl);
 
-    public abstract void releaseLoader(ClassLoader cl);
+    public abstract void releaseLoader(ClassLoaderTuple tuple);
 
     @Override
     public abstract void registerValidatorFactory(ModuleMetaData mmd, ClassLoader cl, ValidatorFactory validatorFactory);
 
     public abstract ConstraintValidatorFactory getConstraintValidatorFactory(Configuration<?> config);
+
+    public static class ClassLoaderTuple {
+        public ClassLoader classLoader;
+        public boolean wasCreatedViaClassLoadingService;
+
+        public static ClassLoaderTuple of(ClassLoader classLoader, boolean wasCreatedViaClassLoadingService) {
+            ClassLoaderTuple tuple = new ClassLoaderTuple();
+            tuple.classLoader = classLoader;
+            tuple.wasCreatedViaClassLoadingService = wasCreatedViaClassLoadingService;
+            return tuple;
+        }
+    }
 }

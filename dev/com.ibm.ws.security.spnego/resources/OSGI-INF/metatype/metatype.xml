@@ -62,7 +62,7 @@
         <AD id="invokeAfterSSO" name="internal"  description="internal use only" 
             required="false" type="Boolean" default="true" />
             
-        <AD id="disableLtpaCookie" ibm:beta="true" name ="%disableLtpaCookie" description="%disableLtpaCookie.desc"
+        <AD id="disableLtpaCookie" name="%disableLtpaCookie" description="%disableLtpaCookie.desc"
             required="false" type="Boolean" default="false"/>    
 
     </OCD>

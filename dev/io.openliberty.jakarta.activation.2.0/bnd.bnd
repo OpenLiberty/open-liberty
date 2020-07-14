@@ -25,6 +25,4 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-    com.sun.activation:jakarta.activation;version=2.0.0 
-    
-    
+    com.sun.activation:jakarta.activation;version=2.0.0

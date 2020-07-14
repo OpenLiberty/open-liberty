@@ -80,8 +80,8 @@ public class AcmeCaRestHandlerTest {
 	private static final String ACCOUNT_ENDPOINT = "/ibm/api" + AcmeCaRestHandler.PATH_ACCOUNT;
 	private static final String CERTIFICATE_ENDPOINT = "/ibm/api" + AcmeCaRestHandler.PATH_CERTIFICATE;
 
-	private static final String ADMIN_USER = "administrator";
-	private static final String ADMIN_PASS = "adminpass";
+	private static final String ADMIN_USER = AcmeFatUtils.ADMIN_USER;
+	private static final String ADMIN_PASS = AcmeFatUtils.ADMIN_PASS;
 	private static final String READER_USER = "reader";
 	private static final String READER_PASS = "readerpass";
 	private static final String UNAUTHORIZED_USER = "unauthorized";
@@ -135,7 +135,7 @@ public class AcmeCaRestHandlerTest {
 		/*
 		 * Stop the server.
 		 */
-		server.stopServer("CWPKI2058W");
+		AcmeFatUtils.stopServer(server, "CWPKI2058W");
 	}
 
 	@Test
@@ -283,7 +283,6 @@ public class AcmeCaRestHandlerTest {
 				CONTENT_TYPE_JSON, JSON_CERT_REGEN);
 		assertJsonResponse(jsonResponse, 200);
 		AcmeFatUtils.waitForAcmeToCreateCertificate(server);
-		AcmeFatUtils.waitForSslEndpoint(server);
 
 		/*
 		 * Compare the new certificate to the old certificate.
@@ -816,9 +815,12 @@ public class AcmeCaRestHandlerTest {
 			
 			/*
 			 * Do back to back renew requests, we should be blocked from renewing
+			 * 
+			 * Only do 2 repeats, if we do too many repeats, we can get successful requests again as we'll exceed the min
+			 * renew time.
 			 */
 			
-			for (int i=1; i< 4; i++) {
+			for (int i=1; i< 2; i++) {
 				
 				Log.info(this.getClass(), testName.getMethodName(), "Renew round " + i);
 				
@@ -840,9 +842,9 @@ public class AcmeCaRestHandlerTest {
 			}
 			
 			/*
-			 * Allow the minimum time to expire, next reqeust should be successful
+			 * Allow the minimum time to expire, next request should be successful
 			 */
-			Thread.sleep(AcmeConstants.RENEW_CERT_MIN + 2000);
+			Thread.sleep(clone.getAcmeCA().getRenewCertMin() + 2000);
 			
 			startingCertificateChain = AcmeFatUtils.assertAndGetServerCertificate(server, pebble);
 

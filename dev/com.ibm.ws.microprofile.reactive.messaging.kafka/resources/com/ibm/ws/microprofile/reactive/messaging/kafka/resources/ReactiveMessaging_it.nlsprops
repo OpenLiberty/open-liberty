@@ -62,13 +62,19 @@ kafka.library.not.present.CWMRX1006E.useraction=Impacchettare il file JAR kafka-
 
 # A Kafka incoming connector for the {0} channel cannot be created. The error is {1}
 kafka.create.incoming.error.CWMRX1007E=CWMRX1007E: Impossibile creare un connettore in entrata Kafka per il canale {0}. L'errore \u00e8 {1}
-kafka.create.incoming.error.CWMRX1007E.explanation=Un errore che si \u00e8 verificato quando il connettore Kafka \u00e8 stato impostato per un canale di messaggistica reattivo in entrata impedisce il normale funzionamento di MicroProfile Reactive Messaging.
-kafka.create.incoming.error.CWMRX1007E.useraction=Esaminare il messaggio di errore, il server message.log e i log FFDC per identificare il problema.
+kafka.create.incoming.error.CWMRX1007E.explanation=Un errore che si \u00e8 verificato quando il connettore Kafka \u00e8 stato impostato per un canale di messaggistica reattivo in entrata impedisce il normale funzionamento di MicroProfile Reactive Messaging. Questo potrebbe essere causato da un problema con la configurazione del connettore o da un problema nel risolvere il nome host del broker Kafka.
+kafka.create.incoming.error.CWMRX1007E.useraction=Esaminare il messaggio di errore, il file messages.log sul server e i log FFDC per identificare il problema.
 
 # A Kafka outgoing connector for the {0} channel cannot be created. The error is {1}
 kafka.create.outgoing.error.CWMRX1008E=CWMRX1008E: Impossibile creare un connettore in uscita Kafka per il canale {0}. L'errore \u00e8 {1}
-kafka.create.outgoing.error.CWMRX1008E.explanation=Un errore che si \u00e8 verificato quando il connettore Kafka \u00e8 stato impostato per un canale di messaggistica reattivo in uscita impedisce il normale funzionamento di MicroProfile Reactive Messaging.
-kafka.create.outgoing.error.CWMRX1008E.useraction=Esaminare il messaggio di errore, il server message.log e i log FFDC per identificare il problema.
+kafka.create.outgoing.error.CWMRX1008E.explanation=Un errore che si \u00e8 verificato quando il connettore Kafka \u00e8 stato impostato per un canale di messaggistica reattivo in uscita impedisce il normale funzionamento di MicroProfile Reactive Messaging. Questo potrebbe essere causato da un problema con la configurazione del connettore o da un problema nel risolvere il nome host del broker Kafka.
+kafka.create.outgoing.error.CWMRX1008E.useraction=Esaminare il messaggio di errore, il file messages.log sul server e i log FFDC per identificare il problema.
+
+# {0} = channel name, {1} = error message
+kafka.create.incoming.retry.CWMRX1009W=CWMRX1009W: Impossibile creare un connettore in entrata Kafka per il canale {0} ma questa operazione viene ritentata. L'errore \u00e8 {1}
+kafka.create.incoming.retry.CWMRX1009W.explanation=Si \u00e8 verificato un errore quando il connettore Kafka \u00e8 stato configurato per un canale di messaggistica reattivo in entrata. Questo potrebbe essere causato da un problema con la configurazione del connettore o da un problema nel risolvere il nome host del broker Kafka.
+kafka.create.incoming.retry.CWMRX1009W.useraction=Esaminare il messaggio di errore, il file messages.log sul server e i log FFDC per identificare se il problema era transitorio ed \u00e8 stato risolto riprovando la configurazione del connettore.
+
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message

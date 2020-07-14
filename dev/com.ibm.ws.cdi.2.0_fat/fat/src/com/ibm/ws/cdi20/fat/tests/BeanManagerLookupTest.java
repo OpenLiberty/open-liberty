@@ -34,6 +34,7 @@ import helloworldApp.web.HelloServlet;
  */
 @RunWith(FATRunner.class)
 public class BeanManagerLookupTest extends FATServletClient {
+
     public static final String APP_NAME = "beanManagerLookupApp";
 
     // We'll create an app with 2 Servlets.
@@ -47,9 +48,9 @@ public class BeanManagerLookupTest extends FATServletClient {
         // Create a WebArchive that will have the file name 'beanManagerLookupApp.war' once it's written to a file
         // Include the 'beanManagerLookupApp.web' package and all of it's java classes and sub-packages
         // Include a simple index.jsp static file in the root of the WebArchive
-        WebArchive app1 = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                        .addPackages(true, "beanManagerLookupApp.web", "helloworldApp.web")
-                        .addAsWebInfResource(new File("test-applications/" + APP_NAME + "/resources/index.jsp"));
+        WebArchive app1 = ShrinkWrap.create(WebArchive.class,
+                                            APP_NAME + ".war").addPackages(true, "beanManagerLookupApp.web",
+                                                                           "helloworldApp.web").addAsWebInfResource(new File("test-applications/" + APP_NAME + "/resources/index.jsp"));
         // Write the WebArchive to 'publish/servers/cdi20BasicServer/apps/beanManagerLookupApp.war' and print the contents
         ShrinkHelper.exportDropinAppToServer(server1, app1);
         server1.addInstalledAppForValidation(APP_NAME);

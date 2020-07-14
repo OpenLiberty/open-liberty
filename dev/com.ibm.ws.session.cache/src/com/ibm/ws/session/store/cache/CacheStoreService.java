@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2019 IBM Corporation and others.
+ * Copyright (c) 2018,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -209,19 +209,39 @@ public class CacheStoreService implements Introspector, SessionStoreService {
                     CacheHashMap.tcInvoke("Caching", "getCachingProvider", loader);
 
                 cachingProvider = Caching.getCachingProvider(loader);
+                String cachingProviderClassName = cachingProvider.getClass().getName();
 
                 tcCachingProvider = "CachingProvider" + Integer.toHexString(System.identityHashCode(cachingProvider));
 
-                // For Infinispan, augment existing config file to recognize cache names used by HTTP Session Persistence,
+                // For embedded Infinispan, augment existing config file to recognize cache names used by HTTP Session Persistence,
                 // or create a new config file if absent altogether.
-                URI uri = "org.infinispan.jcache.embedded.JCachingProvider".equals(cachingProvider.getClass().getName())
+                URI uri = "org.infinispan.jcache.embedded.JCachingProvider".equals(cachingProviderClassName)
                                 && Boolean.TRUE.equals(configurationProperties.get("enableBetaSupportForInfinispan")) // TODO remove temporary gating code once ready
                                 ? generateOrUpdateInfinispanConfig(configuredURI)
                                                 : configuredURI;
+                                
+                // For remote Infinispan, augment existing vendorProperties to configure HTTP Session Persistence caches to be replicated:
+                // infinispan.client.hotrod.cache.[com.ibm.ws.session.*].template_name=org.infinispan.REPL_SYNC
+                if ("org.infinispan.jcache.remote.JCachingProvider".equals(cachingProviderClassName)) {
+                    boolean isRemoteCachingConfigured = false;
+                    for (String key : vendorProperties.stringPropertyNames()) {
+                        // Check if cache configuration was set by the user already for the HTTP Session Persistence caches.
+                        if (key != null && 
+                            key.contains("com.ibm.ws.session.") && 
+                           (key.endsWith(".template_name") || key.endsWith(".configuration_uri"))) {
+                            isRemoteCachingConfigured = true;
+                            break;
+                        }
+                    }
+                    if(!isRemoteCachingConfigured) {
+                        vendorProperties.put("infinispan.client.hotrod.cache.[com.ibm.ws.session.*].template_name", "org.infinispan.REPL_SYNC");
+                    }
+                }
 
+                                
                 if (trace && tc.isDebugEnabled()) {
                     CacheHashMap.tcReturn("Caching", "getCachingProvider", tcCachingProvider, cachingProvider);
-                    Tr.debug(this, tc, "caching provider class is " + cachingProvider.getClass().getName());
+                    Tr.debug(this, tc, "caching provider class is " + cachingProviderClassName);
                     CacheHashMap.tcInvoke(tcCachingProvider, "getCacheManager", uri, null, vendorProperties);
                 }
 

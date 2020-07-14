@@ -42,8 +42,8 @@ import com.ibm.ws.webcontainer.servlet31.fat.tests.VHServerHttpUnit;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.WCServerHttpUnit;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.WCServerTest;
 
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 
 /**
@@ -74,9 +74,6 @@ import componenttest.rules.repeater.RepeatTests;
 })
 public class FATSuite {
     
-    static Set<String> removeFeatures = new HashSet<>(Arrays.asList("servlet-3.1", "cdi-1.2", "jsp-2.2", "javaee-7.0"));
-    static Set<String> addFeatures = new HashSet<>(Arrays.asList("servlet-4.0", "jsp-2.3", "cdi-2.0", "javaee-8.0"));
-
     /**
      * @see {@link FatLogHandler#generateHelpFile()}
      */
@@ -87,11 +84,9 @@ public class FATSuite {
 
     @ClassRule
     public static RepeatTests r = RepeatTests
-                    .withoutModification()
-                    .andWith(new FeatureReplacementAction(removeFeatures, addFeatures)
-                                    .withID("SERVLET-4.0")
-                                    .forceAddFeatures(false)
-                                    .withMinJavaLevel(8))
-                    .andWith(new JakartaEE9Action());
-
+                    .with(new EmptyAction().fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE8_FEATURES()
+                                    .fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE9_FEATURES()); 
+                    
 }

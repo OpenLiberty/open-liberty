@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.jbatch.rest.internal;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -18,6 +19,7 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import com.ibm.ws.jbatch.rest.utils.StringUtils;
@@ -32,11 +34,16 @@ public class ZipHelper {
     public static void zipFileToStream(File file, File zipRootDir, OutputStream outputStream) throws IOException {
         zipFilesToStream(Arrays.asList(file), Arrays.asList(zipRootDir), outputStream);
     }
+    
+    public static void zipFilesToStream(List<File> files, File zipRootDir, OutputStream outputStream) throws IOException {
+        zipFilesToStream(files, Arrays.asList(zipRootDir), outputStream);
+    }
 
     /**
      * Zip up the files and write the zipped data to the given output stream.
      * 
      * @param files The files to zip up
+     * @param remoteZipFiles 
      * @param zipRootDirs The root dirs for the zip file.  The root dir's parent dir  
      *                    is stripped away from canonical file name when making the zip entries.
      * @param outputStream the zipped data is written here
@@ -45,22 +52,19 @@ public class ZipHelper {
     public static void zipFilesToStream(List<File> files, 
                                         List<File> zipRootDirs,
                                         OutputStream outputStream) throws IOException {
-        
-        ZipOutputStream zipStream = new ZipOutputStream(outputStream);
+    	  	        
+    	// We may have already wrapped this as a zip stream
+    	ZipOutputStream zipStream = (outputStream instanceof ZipOutputStream) ? (ZipOutputStream) outputStream
+    			                                                              : new ZipOutputStream(outputStream);
+
  
         for (File file : files) {
             zipStream.putNextEntry(new ZipEntry( getNormalizedRelativePath(file, zipRootDirs) ) );
             copyStream(new FileInputStream(file), zipStream);
             zipStream.closeEntry();
         }
-        
+                
         zipStream.close();
-    }
-    
-    public static void zipFilesToStream(List<File> files, 
-                                        File zipRootDir,
-                                        OutputStream outputStream) throws IOException {
-    	zipFilesToStream(files, Arrays.asList(zipRootDir), outputStream);
     }
     
     /**
@@ -68,7 +72,7 @@ public class ZipHelper {
      * @return the path-normalized result of getRelativePath
      */
     protected static String getNormalizedRelativePath(File file, List<File> rootDirs) throws IOException {
-    	for (File rootDir : rootDirs) {
+    	for (File rootDir : rootDirs) {   		
     		if (file.getCanonicalPath().contains(rootDir.getCanonicalPath())) {
     			return StringUtils.normalizePath( getRelativePath(file, rootDir) );
     		}
@@ -141,6 +145,18 @@ public class ZipHelper {
         return "\nxxxxx End file: " + getNormalizedRelativePath(file, rootDirs)  + " xxxxxxxxxxxxxxxxxx\n";
     }
     
-
+    // Copy the ZipEntries of the input stream to entries in the output stream.
+    public static void copyZipEntries(ZipInputStream zipInput, ZipOutputStream zipOutput) throws IOException {
+    	byte[] buf = new byte[2048];
+    	ZipEntry entry;
+    	while ((entry = zipInput.getNextEntry()) != null) {
+    		zipOutput.putNextEntry(entry);
+    		int len = 0;
+    		while ((len = zipInput.read(buf)) > 0) {
+    			zipOutput.write(buf, 0, len);
+    		}
+    		zipOutput.closeEntry();
+    	}
+    }
     
 }

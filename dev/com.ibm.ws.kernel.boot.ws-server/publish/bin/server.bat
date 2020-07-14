@@ -341,14 +341,16 @@ goto:eof
 goto:eof
 
 :package
-  call:serverEnv
+  call:serverEnvAndJVMOptions
+  if not %RC% == 0 goto:eof
   call:serverExists true
   if %RC% == 2 goto:eof
 
-  !JAVA_CMD_QUOTED! !JAVA_PARAMS_QUOTED! --batch-file=--package !PARAMS_QUOTED!
+  !JAVA_CMD_QUOTED! !JVM_OPTIONS! !JAVA_PARAMS_QUOTED! --batch-file=--package !PARAMS_QUOTED!
   set RC=%errorlevel%
   call:javaCmdResult
 goto:eof
+
 
 :dump
   call:serverEnv

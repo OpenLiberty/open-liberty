@@ -26,8 +26,8 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.EJBContainerElement;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.ejbcontainer.bindings.disableshrt.otherweb.DisableShortBndOtherServlet;
-import com.ibm.ws.ejbcontainer.bindings.disableshrt.web.DisableShortBndServlet;
+import com.ibm.ws.ejbcontainer.bindings.configtests.otherweb.DisableShortBndOtherServlet;
+import com.ibm.ws.ejbcontainer.bindings.configtests.web.DisableShortBndServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -45,12 +45,12 @@ import componenttest.topology.utils.FATServletClient;
 public class DisableShortBndTest extends FATServletClient {
     private static final Class<?> c = DisableShortBndTest.class;
     private static HashSet<String> apps = new HashSet<String>();
-    private static String servlet = "DisableShrtBndWeb/DisableShortBndServlet";
-    private static String servletOther = "DisableShrtBndOtherWeb/DisableShortBndOtherServlet";
+    private static String servlet = "ConfigTestsWeb/DisableShortBndServlet";
+    private static String servletOther = "ConfigTestsOtherWeb/DisableShortBndOtherServlet";
 
     @Server("com.ibm.ws.ejbcontainer.bindings.fat.server")
-    @TestServlets({ @TestServlet(servlet = DisableShortBndServlet.class, contextRoot = "DisableShrtBndWeb"),
-                    @TestServlet(servlet = DisableShortBndOtherServlet.class, contextRoot = "DisableShrtBndOtherWeb") })
+    @TestServlets({ @TestServlet(servlet = DisableShortBndServlet.class, contextRoot = "ConfigTestsWeb"),
+                    @TestServlet(servlet = DisableShortBndOtherServlet.class, contextRoot = "ConfigTestsOtherWeb") })
     public static LibertyServer server;
 
     @ClassRule
@@ -58,32 +58,32 @@ public class DisableShortBndTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        apps.add("DisableShrtBndTestApp");
-        apps.add("DisableShrtBndOtherTestApp");
+        apps.add("ConfigTestsTestApp");
+        apps.add("ConfigTestsOtherTestApp");
 
         // Use ShrinkHelper to build the ears
 
-        // -------------- DisableShrtBndTestApp ------------
-        JavaArchive DisableShrtBndEJB = ShrinkHelper.buildJavaArchive("DisableShrtBndEJB.jar", "com.ibm.ws.ejbcontainer.bindings.disableshrt.ejb.");
+        // -------------- ConfigTestsTestApp ------------
+        JavaArchive ConfigTestsEJB = ShrinkHelper.buildJavaArchive("ConfigTestsEJB.jar", "com.ibm.ws.ejbcontainer.bindings.configtests.ejb.");
 
-        WebArchive DisableShrtBndWeb = ShrinkHelper.buildDefaultApp("DisableShrtBndWeb.war", "com.ibm.ws.ejbcontainer.bindings.disableshrt.web.");
+        WebArchive ConfigTestsWeb = ShrinkHelper.buildDefaultApp("ConfigTestsWeb.war", "com.ibm.ws.ejbcontainer.bindings.configtests.web.");
 
-        EnterpriseArchive DisableShrtBndTestApp = ShrinkWrap.create(EnterpriseArchive.class, "DisableShrtBndTestApp.ear");
-        DisableShrtBndTestApp.addAsModules(DisableShrtBndEJB, DisableShrtBndWeb);
-        ShrinkHelper.addDirectory(DisableShrtBndTestApp, "test-applications/DisableShrtBndTestApp.ear/resources");
+        EnterpriseArchive ConfigTestsTestApp = ShrinkWrap.create(EnterpriseArchive.class, "ConfigTestsTestApp.ear");
+        ConfigTestsTestApp.addAsModules(ConfigTestsEJB, ConfigTestsWeb);
+        ShrinkHelper.addDirectory(ConfigTestsTestApp, "test-applications/ConfigTestsTestApp.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, DisableShrtBndTestApp);
+        ShrinkHelper.exportDropinAppToServer(server, ConfigTestsTestApp);
 
-        // -------------- DisableShrtBndOtherTestApp ------------
-        JavaArchive DisableShrtBndOtherEJB = ShrinkHelper.buildJavaArchive("DisableShrtBndOtherEJB.jar", "com.ibm.ws.ejbcontainer.bindings.disableshrt.otherejb.");
+        // -------------- ConfigTestsOtherTestApp ------------
+        JavaArchive ConfigTestsOtherEJB = ShrinkHelper.buildJavaArchive("ConfigTestsOtherEJB.jar", "com.ibm.ws.ejbcontainer.bindings.configtests.otherejb.");
 
-        WebArchive DisableShrtBndWeb2X = ShrinkHelper.buildDefaultApp("DisableShrtBndOtherWeb.war", "com.ibm.ws.ejbcontainer.bindings.disableshrt.otherweb.");
+        WebArchive ConfigTestsOtherWeb = ShrinkHelper.buildDefaultApp("ConfigTestsOtherWeb.war", "com.ibm.ws.ejbcontainer.bindings.configtests.otherweb.");
 
-        EnterpriseArchive DisableShrtBndOtherTestApp = ShrinkWrap.create(EnterpriseArchive.class, "DisableShrtBndOtherTestApp.ear");
-        DisableShrtBndOtherTestApp.addAsModules(DisableShrtBndOtherEJB, DisableShrtBndWeb2X);
-        ShrinkHelper.addDirectory(DisableShrtBndOtherTestApp, "test-applications/DisableShrtBndOtherTestApp.ear/resources");
+        EnterpriseArchive ConfigTestsOtherTestApp = ShrinkWrap.create(EnterpriseArchive.class, "ConfigTestsOtherTestApp.ear");
+        ConfigTestsOtherTestApp.addAsModules(ConfigTestsOtherEJB, ConfigTestsOtherWeb);
+        ShrinkHelper.addDirectory(ConfigTestsOtherTestApp, "test-applications/ConfigTestsOtherTestApp.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, DisableShrtBndOtherTestApp);
+        ShrinkHelper.exportDropinAppToServer(server, ConfigTestsOtherTestApp);
 
         server.startServer();
     }
@@ -134,7 +134,7 @@ public class DisableShortBndTest extends FATServletClient {
 
     @Test
     public void testOtherAppShortBindingsDisabled() throws Exception {
-        updateConfigElement("DisableShrtBndOtherTestApp");
+        updateConfigElement("ConfigTestsOtherTestApp");
 
         FATServletClient.runTest(server, servletOther, "testOtherAppShortBindingsDisabled");
         FATServletClient.runTest(server, servlet, "testOtherAppShortBindingsDisabled");
@@ -142,7 +142,7 @@ public class DisableShortBndTest extends FATServletClient {
 
     @Test
     public void testAppShortBindingsDisabled() throws Exception {
-        updateConfigElement("DisableShrtBndTestApp");
+        updateConfigElement("ConfigTestsTestApp");
 
         FATServletClient.runTest(server, servletOther, "testAppShortBindingsDisabled");
         FATServletClient.runTest(server, servlet, "testAppShortBindingsDisabled");
@@ -150,7 +150,7 @@ public class DisableShortBndTest extends FATServletClient {
 
     @Test
     public void testBothAppShortBindingsDisabled() throws Exception {
-        updateConfigElement("DisableShrtBndTestApp:DisableShrtBndOtherTestApp");
+        updateConfigElement("ConfigTestsTestApp:ConfigTestsOtherTestApp");
 
         FATServletClient.runTest(server, servletOther, "testBothAppShortBindingsDisabled");
         FATServletClient.runTest(server, servlet, "testBothAppShortBindingsDisabled");

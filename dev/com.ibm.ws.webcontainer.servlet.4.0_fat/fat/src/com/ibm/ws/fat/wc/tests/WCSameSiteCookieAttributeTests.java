@@ -15,32 +15,30 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.apache.hc.core5.http.ClassicHttpRequest;
 import org.apache.hc.core5.http.ClassicHttpResponse;
 import org.apache.hc.core5.http.Header;
 import org.apache.hc.core5.http.HttpHost;
+import org.apache.hc.core5.http.NameValuePair;
 import org.apache.hc.core5.http.impl.bootstrap.HttpRequester;
 import org.apache.hc.core5.http.impl.bootstrap.RequesterBootstrap;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.message.BasicClassicHttpRequest;
+import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.apache.hc.core5.http.protocol.BasicHttpContext;
 import org.apache.hc.core5.util.Timeout;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.HTTP;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -559,7 +557,6 @@ public class WCSameSiteCookieAttributeTests {
         configuration.getLogging().setTraceSpecification("HttpChannel=all");
 
         sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.setTraceMarkToEndOfDefaultTrace();
         sameSiteServer.updateServerConfiguration(configuration);
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
@@ -1954,7 +1951,6 @@ public class WCSameSiteCookieAttributeTests {
         configuration.getLogging().setTraceSpecification("HttpChannel=all");
 
         sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.setTraceMarkToEndOfDefaultTrace();
         sameSiteServer.updateServerConfiguration(configuration);
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
@@ -4353,7 +4349,6 @@ public class WCSameSiteCookieAttributeTests {
     public void testSameSiteConfig_Lax_WebAppSecurity_Strict() throws Exception {
         boolean headerFound = false;
         String expectedResponse = "Welcome to the SameSiteSecurityServlet!";
-        int status = 302;
 
         sameSiteServer.saveServerConfiguration();
 
@@ -4371,99 +4366,108 @@ public class WCSameSiteCookieAttributeTests {
         configuration = sameSiteServer.getServerConfiguration();
         LOG.info("Updated server configuration: " + configuration);
 
-        /*
-         * Much of this is based on com.ibm.ws.webcontainer.security.test.servlets.FormLoginClient.
-         *
-         * Just taking the basic pieces that we need here for this simple login test.
-         */
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE_SECURITY + "/SameSiteSecurityServlet";
         String userName = "user1";
         String password = "user1Login";
+        String location;
 
         HttpGet getMethod = new HttpGet(url);
 
-        LOG.info("accessFormLoginPage: url=" + getMethod.getURI().toString() + " request method=" + getMethod);
-        HttpResponse response = null;
-        DefaultHttpClient client = new DefaultHttpClient();
-        try {
-            response = client.execute(getMethod);
+        // Drive the initial request.
+        LOG.info("Initial Request: url = " + getMethod.getUri().toString() + " request method = " + getMethod);
+        try (final CloseableHttpClient client = HttpClientBuilder.create().disableRedirectHandling().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
 
-            LOG.info("Form login page result: " + response.getStatusLine());
-            assertEquals("Expected " + 200 + " status code for form login page was not returned",
-                         200, response.getStatusLine().getStatusCode());
+                LOG.info("Initial request result: " + response.getReasonPhrase());
+                LOG.info("Initial request page status code: " + response.getCode());
+                assertEquals("The expected status code for the initial request was not returned: ",
+                             302, response.getCode());
 
-            String content = org.apache.http.util.EntityUtils.toString(response.getEntity());
-            LOG.info("Form login page content: " + content);
-            org.apache.http.util.EntityUtils.consume(response.getEntity());
+                String content = EntityUtils.toString(response.getEntity());
+                LOG.info("Initial request content: " + content);
+                EntityUtils.consume(response.getEntity());
 
-            // Verify we get the form login JSP
-            assertTrue("Did not find expected form login page: " + "Form Login Page",
-                       content.contains("Form Login Page"));
+                // The initial request should result in a 302 status code so we need to
+                // find where we're being redirected to and drive a request to that location
+                // since we have disableRedirectHandling enabled. We should arrive at the login page.
+                location = response.getHeader("location").getValue();
+                LOG.info("Redirect to : " + location);
+                getMethod = new HttpGet(location);
+                try (final CloseableHttpResponse responseRedirect = client.execute(getMethod)) {
+                    LOG.info("Form login page result: " + responseRedirect.getReasonPhrase());
+                    LOG.info("Form login page status code: " + responseRedirect.getCode());
+                    String contentRedirect = EntityUtils.toString(responseRedirect.getEntity());
+                    LOG.info("Form login page content: " + contentRedirect);
+                    EntityUtils.consume(responseRedirect.getEntity());
 
-            // login
-            LOG.info("performFormLogin: url=" + url +
+                    // Verify we get the form login JSP
+                    assertEquals("The expected status code for the form login page was not returned: ",
+                                 200, responseRedirect.getCode());
+                    assertTrue("Did not find expected form login page: " + "Form Login Page",
+                               contentRedirect.contains("Form Login Page"));
+                }
+            }
+
+            // Perform the login now.
+            LOG.info("Perform FormLogin: url=" + url +
                      " user=" + userName + " password=" + password);
 
             // Post method to login
             HttpPost postMethod = new HttpPost(url + "/j_security_check");
-
             List<NameValuePair> nvps = new ArrayList<NameValuePair>();
             nvps.add(new BasicNameValuePair("j_username", userName));
             nvps.add(new BasicNameValuePair("j_password", password));
-            postMethod.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
+            postMethod.setEntity(new UrlEncodedFormEntity(nvps));
 
-            response = client.execute(postMethod);
+            try (final CloseableHttpResponse response = client.execute(postMethod)) {
+                LOG.info("Post Method response code: " + response.getCode());
+                assertEquals("The expected form login status code was not returned: ", 302,
+                             response.getCode());
 
-            assertEquals("Expecting form login getStatusCode " + status, status,
-                         response.getStatusLine().getStatusCode());
+                // Verify that the LtpaToken2 cookie has SameSite=Strict
+                for (Header cookieHeader : response.getHeaders("Set-Cookie")) {
+                    String cookieHeaderValue = cookieHeader.getValue();
+                    LOG.info("Header Name: " + cookieHeader.getName());
+                    LOG.info("Header Value: " + cookieHeaderValue);
 
-            // Verify that the LtpaToken2 cookie has SameSite=Strict
-            for (org.apache.http.Header cookieHeader : response.getHeaders("Set-Cookie")) {
-                String cookieHeaderValue = cookieHeader.getValue();
-                LOG.info("Header Name: " + cookieHeader.getName());
-                LOG.info("Header Value: " + cookieHeaderValue);
-
-                if (cookieHeaderValue.startsWith("LtpaToken2")) {
-                    if (cookieHeaderValue.contains("SameSite=Strict")) {
-                        headerFound = true;
+                    if (cookieHeaderValue.startsWith("LtpaToken2")) {
+                        if (cookieHeaderValue.contains("SameSite=Strict")) {
+                            headerFound = true;
+                        }
                     }
                 }
+
+                assertTrue("The LtpaToken2 Set-Cookie header did not contain SameSite=Strict.", headerFound);
+
+                // The Post request should result in a redirect to the servlet. Save the location Header
+                // so we can drive the final authenticated request to the servlet.
+                Header header = response.getFirstHeader("Location");
+                location = header.getValue();
+                LOG.info("Redirect location: " + location);
+
+                EntityUtils.consume(response.getEntity());
+
+                assertEquals("Redirect location was not the original URL: ",
+                             url, location);
             }
 
-            assertTrue("The LtpaToken2 Set-Cookie header did not contain SameSite=Strict.", headerFound);
-
-            // Verify redirect to the servlet
-            org.apache.http.Header header = response.getFirstHeader("Location");
-            String location = header.getValue();
-            LOG.info("Redirect location: " + location);
-
-            org.apache.http.util.EntityUtils.consume(response.getEntity());
-
-            assertEquals("Redirect location was not the original URL!",
-                         url, location);
-
-            // Access page no challenge
-
-            // Get method on form login page
+            // Drive the request to the Servlet.
             getMethod = new HttpGet(location);
 
-            response = client.execute(getMethod);
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
 
-            LOG.info("getMethod status: " + response.getStatusLine());
-            assertEquals("Expected 200 status code was not returned",
-                         200, response.getStatusLine().getStatusCode());
+                LOG.info("getMethod status: " + response.getReasonPhrase());
+                assertEquals("The expected status code was not returned: ",
+                             200, response.getCode());
 
-            content = org.apache.http.util.EntityUtils.toString(response.getEntity());
-            LOG.info("Servlet content: " + content);
+                String content = EntityUtils.toString(response.getEntity());
+                LOG.info("Servlet content: " + content);
 
-            org.apache.http.util.EntityUtils.consume(response.getEntity());
+                EntityUtils.consume(response.getEntity());
 
-            assertTrue("Response did not contain expected response: " + expectedResponse,
-                       content.equals(expectedResponse));
-
-        } catch (IOException e) {
-            LOG.severe("FAILURE: " + "Caught unexpected exception: " + e);
-            fail("Caught unexpected exception: " + e);
+                assertTrue("Response did not contain expected response: " + expectedResponse,
+                           content.equals(expectedResponse));
+            }
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();

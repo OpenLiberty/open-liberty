@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2018 IBM Corporation and others.
+# Copyright (c) 2016, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -128,6 +128,11 @@ INTROSPECT_ERROR_GETTING_USER_INFO.useraction=Si el mensaje contiene otro mensaj
 INTROSPECT_USER_API_INACTIVE=CWWKS5388E: La solicitud de introspecci\u00f3n de se\u00f1al ha fallado porque la se\u00f1al que se incluye en la solicitud no es v\u00e1lida. La respuesta completa es {0}.
 INTROSPECT_USER_API_INACTIVE.explanation=El servidor de autorizaciones no ha emitido la se\u00f1al, el propietario de recurso ha revocado la se\u00f1al, la se\u00f1al ha caducado o se ha producido otro error.
 INTROSPECT_USER_API_INACTIVE.useraction=Consulte la respuesta que se incluye en el mensaje. Verifique que se ha utilizado el punto final de introspecci\u00f3n de se\u00f1al correcto. Verifique que la se\u00f1al es v\u00e1lida y que se puede hacer introspecci\u00f3n de la se\u00f1al.
+
+USER_API_RESPONSE_NOT_AUTHENTICATED=CWWKS5389E: La respuesta de API de usuario indica que la solicitud de API de usuario no se ha autenticado. Verifique que la se\u00f1al de acceso que se ha incluido en la solicitud de API de usuario es v\u00e1lida y est\u00e1 asociada con un usuario conocido.
+USER_API_RESPONSE_NOT_AUTHENTICATED.explanation=Es posible que la se\u00f1al de acceso que hay en la solicitud de API de usuario est\u00e9 ausente, haya caducado, est\u00e9 mal formado o que no sea v\u00e1lida. Puede que la se\u00f1al no est\u00e9 asociada con un usuario conocido en la API de usuario.
+USER_API_RESPONSE_NOT_AUTHENTICATED.useraction=Verifique que se incluya una se\u00f1al de acceso en la solicitud de API. Aseg\u00farese de que la se\u00f1al no est\u00e9 caducada o mal formada. Verifique que el usuario que est\u00e1 asociado con la se\u00f1al de acceso sea conocido en la API de usuario.
+
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: La configuraci\u00f3n de Social Login de [{0}] se ha procesado correctamente.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=La configuraci\u00f3n de Social Login indicada se ha procesado correctamente.
 SOCIAL_LOGIN_CONFIG_PROCESSED.useraction=No se requiere ninguna acci\u00f3n.

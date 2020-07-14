@@ -44,6 +44,8 @@ Import-Package: \
 
 WS-TraceGroup: JCDI
 
+jakartaeeMe: true
+
 -buildpath: \
         com.ibm.websphere.javaee.el.3.0;version=latest,\
         com.ibm.websphere.javaee.servlet.3.1;version=latest,\

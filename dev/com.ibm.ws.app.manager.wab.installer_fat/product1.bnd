@@ -1,0 +1,12 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0.0
+allow.bundle-version.override=true
+Bundle-Name: product1
+Bundle-SymbolicName: product1
+Bundle-Version: ${bVersion}
+Bundle-Description: product1
+Private-Package: product1
+Include-Resource: OSGI-INF=test-bundles/product1/resources/OSGI-INF
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+
+-dsannotations: *

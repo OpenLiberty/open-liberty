@@ -551,7 +551,7 @@ ssl.create.certificate.end.useraction=No action is required.
 #--------------------------------------------------------------------------------------------------
 ssl.create.certificate.error=CWPKI0804E: SSL certificate creation error. {0}
 ssl.create.certificate.error.explanation=The SSL certificate could not be created at the specified location.
-ssl.create.certificate.error.useraction=Ensure the location is accessible by the server process. Any FFDCs may indicate a fatal error in generating or loading the keys.
+ssl.create.certificate.error.useraction=Ensure the location is accessible by the server process. Review the FFDC logs for additional errors that are associated with generating or loading the keys.
 
 # Messages for the CWPKI0804E message descriptor {0}.
 ssl.create.certificate.error.reason1=Unable to create SSL key file: {0}
@@ -652,4 +652,8 @@ ssl.using.cacerts.CWPKI0827I.useraction=No action is required.
 ssl.client.handshake.cacerts.error.CWPKI0828E=CWPKI0828E: The trustDefaultCerts attribute is enabled but trust was not established by using the default truststore. The extended error message from the SSL handshake exception is: {0}.
 ssl.client.handshake.cacerts.error.CWPKI0828E.explanation=The default truststore is not properly configured to establish trust.  
 ssl.client.handshake.cacerts.error.CWPKI0828E.useraction=Review the extended error message to determine what to change in the configuration.
+# -------------------------------------------------------------------------------------------------
+ssl.update.certificate.error=CWPKI0829E: SSL certificate update error. {0}
+ssl.update.certificate.error.explanation=The SSL certificate could not be updated at the specified location.
+ssl.update.certificate.error.useraction=Ensure the location is accessible by the server process.  Review the FFDC logs for additional errors that are associated with generating or loading the keys.
 # -------------------------------------------------------------------------------------------------

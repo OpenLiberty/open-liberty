@@ -13,6 +13,7 @@ package com.ibm.ws.ejbcontainer.osgi.internal;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.naming.NamingException;
@@ -56,7 +57,7 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
     private final AtomicServiceReference<EJBRemoteRuntime> ejbRemoteRuntimeServiceRef;
     private final EJBRemoteRuntime remoteRuntime;
 
-    private final List<ServiceRegistration<?>> registrations = new ArrayList<ServiceRegistration<?>>();
+    private static final List<ServiceRegistration<?>> registrations = new ArrayList<ServiceRegistration<?>>();
 
     NameSpaceBinderImpl(EJBModuleMetaDataImpl mmd,
                         EJBJavaColonNamingHelper jcnh,
@@ -650,10 +651,15 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
      */
     @Override
     public void unbindRemote(List<String> names) {
-        for (String name : names) {
-            for (ServiceRegistration<?> registration : registrations) {
-                if (name.equals(registration.getReference().getProperty(JNDI_SERVICENAME))) {
-                    registration.unregister();
+        synchronized (registrations) {
+            for (String name : names) {
+                for (Iterator<ServiceRegistration<?>> it = registrations.iterator(); it.hasNext();) {
+                    ServiceRegistration<?> registration = it.next();
+                    if (name.equals(registration.getReference().getProperty(JNDI_SERVICENAME))) {
+                        registration.unregister();
+                        registrations.remove(it);
+                        it.remove();
+                    }
                 }
             }
         }

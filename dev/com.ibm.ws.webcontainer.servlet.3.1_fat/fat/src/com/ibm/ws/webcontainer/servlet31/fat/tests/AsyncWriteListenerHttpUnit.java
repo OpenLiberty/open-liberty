@@ -20,8 +20,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.logging.Logger;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -36,12 +36,12 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class AsyncWriteListenerHttpUnit extends LoggingTest {
 
     @ClassRule
@@ -93,13 +93,13 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
             LOG.info("addAppToServer : " + LIBERTY_WRITE_LISTENER_FILTER_APP_NAME + " already installed : " + !appInstalled.isEmpty());
 
             if (appInstalled.isEmpty())
-            ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), LibertyWriteListenerFilterApp);
+                ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), LibertyWriteListenerFilterApp);
 
             appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(LIBERTY_READ_WRITE_LISTENER_APP_NAME);
             LOG.info("addAppToServer : " + LIBERTY_READ_WRITE_LISTENER_APP_NAME + " already installed : " + !appInstalled.isEmpty());
 
             if (appInstalled.isEmpty())
-            ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), LibertyReadWriteListenerApp);
+                ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), LibertyReadWriteListenerApp);
         }
         SHARED_SERVER.startIfNotStarted();
 
@@ -116,10 +116,9 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void TestWrite_DontCheckisReady_fromWL() throws Exception {
         // Make sure the test framework knows that SRVE0918E is expected
-        
+
         SHARED_SERVER.getLibertyServer().setMarkToEndOfLog(SHARED_SERVER.getLibertyServer().getMatchingLogFile("trace.log"));
         String testToCall = "TestWrite_DontCheckisReady_fromWL";
 
@@ -144,10 +143,9 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
 
     // TestWLWriteLessData is now already done in this
     @Test
-    @Mode(TestMode.LITE)
     public void TestWriteFromServlet_AftersetWL() throws Exception {
         // Make sure the test framework knows that SRVE0918E is expected
-        
+
         SHARED_SERVER.getLibertyServer().setMarkToEndOfLog(SHARED_SERVER.getLibertyServer().getMatchingLogFile("trace.log"));
         String testToCall = "TestWriteFromServlet_AftersetWL";
 
@@ -179,7 +177,6 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void TestWL_Write_Medium() throws Exception {
         String testToCall = "TestWL_Write_Medium";
         LOG.info("[WebContainer | AsyncWriteListenerHttpUnit]: *************" + testToCall + "*************");
@@ -196,7 +193,6 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void TestWL_Write_Large() throws Exception {
         String testToCall = "TestWL_Write_Large";
         LOG.info("\n [WebContainer | AsyncWriteListenerHttpUnit]: *************" + testToCall + "*************");
@@ -212,7 +208,6 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void TestWL_Println_Large() throws Exception {
         String testToCall = "TestWL_Println_Large";
         LOG.info("\n [WebContainer | AsyncWriteListenerHttpUnit]: *************" + testToCall + "************");
@@ -232,11 +227,10 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
      * Add a writeListener to a non-async servlet. This should result in an Illegal State Exception.
      */
     @Test
-    @Mode(TestMode.LITE)
     public void Test_ISE_SetWL_NonAsyncServlet() throws Exception {
         String testToCall = "Test_ISE_SetWL_NonAsyncServlet";
         // Make sure the test framework knows that SRVE9014E is expected
-        
+
         SHARED_SERVER.getLibertyServer().setMarkToEndOfLog(SHARED_SERVER.getLibertyServer().getMatchingLogFile("trace.log"));
         LOG.info("\n [WebContainer | AsyncWriteListenerHttpUnit]: *************" + testToCall + "*************");
         int responseCode = 0;
@@ -276,12 +270,11 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
      * test passes
      */
     @Test
-    @Mode(TestMode.LITE)
     public void Test_ISE_setSecondWriteListener() throws Exception {
 
         String testToCall = "Test_ISE_setSecondWriteListener";
         // Make sure the test framework knows that SRVE9009E is expected
-        
+
         SHARED_SERVER.getLibertyServer().setMarkToEndOfLog(SHARED_SERVER.getLibertyServer().getMatchingLogFile("trace.log"));
 
         LOG.info("\n [WebContainer | AsyncWriteListenerHttpUnit]: *************" + testToCall + "*************");
@@ -328,12 +321,11 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void Test_NPE_setNullWriteListener() throws Exception {
 
         String testToCall = "Test_NPE_setNullWriteListener";
         // Make sure the test framework knows that SRVE9014E is expected
-        
+
         LOG.info("\n [WebContainer | AsyncWriteListenerHttpUnit]: *************" + testToCall + "*************");
         try {
             HttpClient httpClient = new HttpClient();
@@ -596,10 +588,9 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void TestWriteFromFilter_AftersetWL() throws Exception {
         // Make sure the test framework knows that SRVE0918E is expected
-        
+
         SHARED_SERVER.getLibertyServer().setMarkToEndOfLog(SHARED_SERVER.getLibertyServer().getMatchingLogFile("trace.log"));
         String testToCall = "TestWriteFromFilter_AftersetWL";
 
@@ -635,7 +626,7 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
      * @return
      * @throws Exception
      *
-     *                       This method will not take care of println
+     *             This method will not take care of println
      */
     private int connectSendExpectDataSizeInResponse(int ExpectdResponseSize, String testtocall) throws Exception {
 

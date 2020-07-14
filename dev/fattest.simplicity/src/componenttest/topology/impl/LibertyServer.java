@@ -89,6 +89,9 @@ import com.ibm.websphere.simplicity.config.ServerConfigurationFactory;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.websphere.soe_reporting.SOEHttpPostUtil;
 import com.ibm.ws.fat.util.ACEScanner;
+import com.ibm.ws.fat.util.jmx.JmxException;
+import com.ibm.ws.fat.util.jmx.JmxServiceUrlFactory;
+import com.ibm.ws.fat.util.jmx.mbeans.ApplicationMBean;
 import com.ibm.ws.logging.utils.FileLogHolder;
 
 import componenttest.common.apiservices.Bootstrap;
@@ -1062,6 +1065,7 @@ public class LibertyServer implements LogMonitorClient {
 
     public enum IncludeArg {
         MINIFY, ALL, USR, RUNNABLE, MINIFYRUNNABLE;
+
         public String getIncludeString() {
             if (this.equals(MINIFYRUNNABLE)) {
                 return "--include=" + "minify,runnable";
@@ -5516,7 +5520,7 @@ public class LibertyServer implements LogMonitorClient {
     public void startServer(boolean cleanStart, boolean validateApps) throws Exception {
         startServerAndValidate(true, cleanStart, validateApps);
     }
-    
+
     public void deleteAllDropinApplications() throws Exception {
         LibertyFileManager.deleteLibertyDirectoryAndContents(machine, getServerRoot() + "/dropins");
         LibertyFileManager.createRemoteFile(machine, getServerRoot() + "/dropins");
@@ -5947,6 +5951,40 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     /**
+     * Retrieves an {@link ApplicationMBean} for a particular application on this server
+     *
+     * @param  applicationName the name of the application to operate on
+     * @return                 an {@link ApplicationMBean}
+     * @throws JmxException    if the object name for the input application cannot be constructed
+     */
+    public ApplicationMBean getApplicationMBean(String applicationName) throws JmxException {
+        return new ApplicationMBean(getJmxServiceUrl(), applicationName);
+    }
+
+    /**
+     * Get the JMX connection URL of this server
+     *
+     * @return              a {@link JMXServiceURL} that allows you to invoke MBeans on the server
+     * @throws JmxException
+     *                          if the server can't be found,
+     *                          the localConnector-1.0 feature is not enabled,
+     *                          or the address file is not valid
+     */
+    public JMXServiceURL getJmxServiceUrl() throws JmxException {
+        return JmxServiceUrlFactory.getInstance().getUrl(this);
+    }
+
+    /**
+     * Restarts an application via its MBean
+     *
+     * @param  applicationName the application to be restarted
+     * @throws JmxException
+     */
+    public void restartApplication(String applicationName) throws JmxException {
+        getApplicationMBean(applicationName).restart();
+    }
+
+    /**
      * Wait for the specified regex in the default logs from the last offset.
      * The offset is incremented every time this method is called.
      * <p>
@@ -6080,9 +6118,6 @@ public class LibertyServer implements LogMonitorClient {
         fixedIgnoreErrorsList.add("CWWKF0017E.*cik.ext.product1.properties");
         // Added due to build break defect 221453.
         fixedIgnoreErrorsList.add("CWWKG0011W");
-        if (isJavaVersion6()) {
-            fixedIgnoreErrorsList.add("CWWKE0109W");
-        }
     }
 
     public boolean isJava2SecurityEnabled() {
@@ -6105,14 +6140,6 @@ public class LibertyServer implements LogMonitorClient {
         ServerConfiguration config = this.getServerConfiguration();
         config.updateDatabaseArtifacts();
         this.updateServerConfiguration(config);
-    }
-
-    public boolean isJavaVersion6() {
-        return javaInfo.majorVersion() == 6;
-    }
-
-    public boolean isJavaVersion8() {
-        return javaInfo.majorVersion() == 8;
     }
 
     public boolean isIBMJVM() {

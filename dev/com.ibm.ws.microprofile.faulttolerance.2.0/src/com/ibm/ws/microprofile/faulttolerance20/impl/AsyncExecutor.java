@@ -480,7 +480,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
 
     @Override
     public void close() {
-        bulkhead.shutdown();
+        // Do nothing
     }
 
     /**

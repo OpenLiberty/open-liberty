@@ -37,6 +37,7 @@ import com.ibm.websphere.ssl.SSLConfig;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.security.acme.internal.AcmeConfigService;
 import com.ibm.ws.security.acme.internal.AcmeProviderImpl;
+import com.ibm.ws.security.acme.internal.util.AcmeConstants;
 import com.ibm.ws.ssl.provider.AbstractJSSEProvider;
 
 /**
@@ -55,7 +56,6 @@ public class HttpConnector {
 
 	private static final TraceComponent tc = Tr.register(HttpConnector.class);
 
-	private static final int TIMEOUT = 10000;
 	private static final String USER_AGENT;
 
 	static {
@@ -111,8 +111,17 @@ public class HttpConnector {
 	 *            {@link URL} to connect to
 	 */
 	protected void configure(HttpURLConnection conn, URL url) throws IOException {
-		conn.setConnectTimeout(TIMEOUT);
-		conn.setReadTimeout(TIMEOUT);
+		int connectTimeout;
+		int readTimeout;
+		if (AcmeConfigService.getThreadLocalAcmeConfig() != null) {
+			connectTimeout = AcmeConfigService.getThreadLocalAcmeConfig().getHTTPConnectTimeout().intValue();
+			readTimeout = AcmeConfigService.getThreadLocalAcmeConfig().getHTTPReadTimeout().intValue();
+		} else {
+			connectTimeout = AcmeProviderImpl.getAcmeConfig().getHTTPConnectTimeout();
+			readTimeout = AcmeProviderImpl.getAcmeConfig().getHTTPReadTimeout();
+		}
+		conn.setConnectTimeout(connectTimeout);
+		conn.setReadTimeout(readTimeout);
 		conn.setUseCaches(false);
 		conn.setRequestProperty("User-Agent", USER_AGENT);
 

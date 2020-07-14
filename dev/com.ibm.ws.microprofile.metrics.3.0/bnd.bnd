@@ -49,8 +49,6 @@ Export-Package: \
 	com.ibm.ws.microprofile.metrics30.impl.SharedMetricRegistries30,\
 	com.ibm.ws.microprofile.metrics30.ApplicationListener30
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
-
 WS-TraceGroup: METRICS
 
 -buildpath: \

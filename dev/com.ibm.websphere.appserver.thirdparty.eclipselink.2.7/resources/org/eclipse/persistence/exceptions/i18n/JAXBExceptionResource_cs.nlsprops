@@ -1,3 +1,4 @@
+###############################################################################
 # Copyright (c) 2014 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -6,7 +7,7 @@
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
-# -------------------------------------------------------------------------------------------------
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -44,17 +45,17 @@
 
 50008=Nepodporovan\u00e1 t\u0159\u00edda uzlu {0}. Metoda createBinder(Class) podporuje pouze t\u0159\u00eddu org.w3c.dom.Node.
 
-50009=Vlastnost nebo pole {0} je anotov\u00e1na jako do\u010dasn\u00e1, tak\u017ee nem\u016f\u017ee b\u00fdt obsa\u017eena v anotaci propOrder.
+50009=Vlastnost nebo pole {0} na t\u0159\u00edd\u011b {1} je anotov\u00e1na jako do\u010dasn\u00e1, tak\u017ee nem\u016f\u017ee b\u00fdt obsa\u017eena v anotaci propOrder.
 
-50010=Vlastnost nebo pole {0} mus\u00ed b\u00fdt atributem, proto\u017ee pomoc\u00ed XmlValue je anotov\u00e1no jin\u00e9 pole nebo jin\u00e1 vlastnost.
+50010=Vlastnost nebo pole {0} na t\u0159\u00edd\u011b {1} mus\u00ed b\u00fdt atributem, proto\u017ee pomoc\u00ed XmlValue je anotov\u00e1no jin\u00e9 pole nebo jin\u00e1 vlastnost.
 
-50011=Vlastnost nebo pole {0} nem\u016f\u017ee b\u00fdt anotov\u00e1na pomoc\u00ed XmlValue, proto\u017ee je podt\u0159\u00eddou jin\u00e9 t\u0159\u00eddy v\u00e1zan\u00e9 na XML.
+50011=Vlastnost nebo pole {0} na t\u0159\u00edd\u011b {1} nem\u016f\u017ee b\u00fdt anotov\u00e1na pomoc\u00ed XmlValue, proto\u017ee je podt\u0159\u00eddou jin\u00e9 t\u0159\u00eddy v\u00e1zan\u00e9 na XML.
 
-50012=Vlastnost nebo pole {0} byla ur\u010dena v anotaci propOrder, ale nejedn\u00e1 se o platnou vlastnost.
+50012=Vlastnost nebo pole {0} na t\u0159\u00edd\u011b {1} byla ur\u010dena v anotaci propOrder, ale nejedn\u00e1 se o platnou vlastnost.
 
 50013=Vlastnost nebo pole {0} na t\u0159\u00edd\u011b {1} mus\u00ed b\u00fdt obsa\u017eena v prvku propOrder anotace XmlType.
 
-50014=Vlastnost nebo pole {0} s anotac\u00ed XmlValue mus\u00ed m\u00edt typ, kter\u00fd je mapovan\u00fd na jednoduch\u00fd typ sch\u00e9matu.
+50014=Vlastnost nebo pole {0} na t\u0159\u00edd\u011b {1} s anotac\u00ed XmlValue mus\u00ed m\u00edt typ, kter\u00fd je mapovan\u00fd na jednoduch\u00fd typ sch\u00e9matu.
 
 50015=Anotace XmlElementWrapper je povolen\u00e1 na vlastnosti kolekce nebo pole, ale [{0}] nen\u00ed vlastnost kolekce nebo pole.
 

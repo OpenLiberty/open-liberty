@@ -309,12 +309,12 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
     }
 
     private OidcRequest getOidcRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        OidcRequest oidcRequest = (OidcRequest) request.getAttribute("OidcRequest");
+        OidcRequest oidcRequest = (OidcRequest) request.getAttribute(OAuth20Constants.OIDC_REQUEST_OBJECT_ATTR_NAME);
         if (oidcRequest == null) {
             String errorMsg = TraceNLS.getFormattedMessage(this.getClass(),
                                                            TraceConstants.MESSAGE_BUNDLE,
                                                            "OIDC_REQUEST_ATTRIBUTE_MISSING",
-                                                           new Object[] { request.getRequestURI(), "OidcRequest" },
+                                                           new Object[] { request.getRequestURI(), OAuth20Constants.OIDC_REQUEST_OBJECT_ATTR_NAME },
                                                            "CWWKS1634E: The request endpoint {0} does not have attribute {1}.");
             Tr.error(tc, errorMsg);
             response.sendError(HttpServletResponse.SC_NOT_FOUND, errorMsg);
@@ -354,7 +354,11 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
      * @param oidcProviderName
      * @return
      */
-    private OidcServerConfig getOidcServerConfig(HttpServletResponse response, String oidcProviderName) throws IOException {
+    public OidcServerConfig getOidcServerConfig(HttpServletResponse response, String oidcProviderName) throws IOException {
+        return getOidcServerConfig(response, oidcProviderName, true);
+    }
+
+    public OidcServerConfig getOidcServerConfig(HttpServletResponse response, String oidcProviderName, boolean sendErrorIfProviderNotFound) throws IOException {
         synchronized (oidcServerConfigRef) {
             if (bOidcUpdated) {
                 oidcMap = configUtils.checkDuplicateOAuthProvider(oidcServerConfigRef);
@@ -362,7 +366,7 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
             }
         }
         OidcServerConfig oidcServerConfig = oidcMap.get(oidcProviderName);
-        if (oidcServerConfig == null) {
+        if (oidcServerConfig == null && sendErrorIfProviderNotFound) {
             Tr.error(tc, "OIDC_SERVER_CONFIG_SERVICE_NOT_AVAILABLE", oidcProviderName);
             response.sendError(HttpServletResponse.SC_NOT_FOUND, "OpenID Connect configuration service is not avaliable for OpenID Connect provider name " + oidcProviderName);
         }

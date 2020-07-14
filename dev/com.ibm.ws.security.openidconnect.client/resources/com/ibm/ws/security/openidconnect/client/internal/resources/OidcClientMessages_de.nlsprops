@@ -34,10 +34,11 @@ OIDC_CLIENT_CONFIG_MODIFIED.useraction=Keine.
 #1702 is used by clients.common bundle, do not use.
 
 # used_by_client_project and clients project IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN THE OTHER BUNDLE!
+# social also uses this and it does not have the enforceHTTPS attribute.
 #do not translate enforceHTTPS
-OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: Der OpenID Connect-Client setzt SSL (HTTPS) voraus, aber die OpenID Connect-Provider-URL verwendet HTTP: [{0}]. Aktualisieren Sie die Konfiguration so, dass das Attribut [enforceHTTPS] dem Schema der Ziel-URL entspricht. 
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: The OpenID Connect client requires SSL (HTTPS) but the OpenID Connect provider URL is HTTP: [{0}]. Update the configuration to use an HTTPS URL, or use the OpenID Connect Client feature and set enforceHTTPS to false. 
 OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.explanation=Der OpenID Connect-Client (Relying Party oder Ressourcenserver) setzt SSL (HTTPS) voraus, aber das in der OpenID Connect-Clientkonfiguration angegebene URL-Protokoll des OpenID Connect-Providers (OP) ist nicht HTTPS.
-OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=F\u00fchren Sie eine der folgenden Aktionen aus: 1) Stellen Sie sicher, dass der OpenID Connect-Provider SSL unterst\u00fctzt. 2) Wenn der OpenID Connector-Provider SSL nicht unterst\u00fctzt, setzen Sie enforceHTTPS in der OpenID Connect-Clientkonfiguration auf false.
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Do one of the following: First, ensure that the OpenID Connect provider supports SSL. If the OpenID Connector provider does not support SSL, use the OpenID Connect Client feature and set enforceHTTPS to false in the OpenID Connect Client feature configuration.
 
 # unused, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: Der aktuelle Status [{0}] f\u00fcr den OpenID Connect-Client [{2}] und der Statusparameter [{1}] in der Antwort des OpenID Connect-Providers stimmen nicht \u00fcberein. Diese Bedingung ist nicht zul\u00e4ssig.
@@ -165,7 +166,6 @@ BAD_INBOUND_PRPAGATION_SUPPORTED=CWWKS1733W: Der validationEndpointUrl-Wert [{0}
 BAD_INBOUND_PRPAGATION_SUPPORTED.explanation=Der in der angegebenen OpenID Connect-Clientkonfiguration angegebene validationEndpointUrl-Wert ist nicht g\u00fcltig. F\u00fcr die Unterst\u00fctzung der eingehenden Weitergabe ist ein g\u00fcltiger validationEndpointUrl-Wert erforderlich. Der validationEndpointUrl-Wert muss ein nicht leerer Wert sein, der das URI-Schema http oder https verwendet. Der OpenID Connect-Client verh\u00e4lt sich wie bei Angabe des Werts "none" f\u00fcr inboundPropagation.
 BAD_INBOUND_PRPAGATION_SUPPORTED.useraction=Stellen Sie sicher, dass in der Konfiguration des OpenID Connect-Clients ein nicht leerer validationEndpointUrl-Wert angegeben wird, der das URI-Schema http oder https verwendet.
 
-
 #1734 used by clients.common bundle, don't use here. 
 
 #present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
@@ -275,12 +275,12 @@ CONFIG_REQUIRED_ATTRIBUTE_NULL.explanation=Das angegebene Konfigurationsattribut
 CONFIG_REQUIRED_ATTRIBUTE_NULL.useraction=Stellen Sie sicher, dass das angegebene Konfigurationsattribut konfiguriert ist, dass es nicht leer ist und dass es nicht ausschlie\u00dflich aus Leerzeichen besteht. Wenn der Erkennungsendpunkt zum Abrufen dieser Informationen konfiguriert ist, vergewissern Sie sich, dass bei der Erkennungsanforderung keine Fehler auftreten.
 
 # do not translate authFilterRef
-CONFIG_AUTHFILTER_NOTUNIQUE=CWWKS1530W: Mehr als eine OpenID Connect-Clientkonfiguration gibt denselben Authentifizierungfilter [{0}] an. Dies kann zu unbestimmten Verhalten f\u00fchren.
-CONFIG_AUTHFILTER_NOTUNIQUE.explanation=Mehr als eine OpenID Connect-Clientkonfiguration enth\u00e4lt ein authFilterRef-Attribut, das sich auf denselben Filter bezieht. Jeder dieser Clients k\u00f6nnte eine Anforderung verarbeiten, die mit dem Filter \u00fcbereinstimmt, was zu unbestimmtem Verhalten f\u00fchrt. 
-CONFIG_AUTHFILTER_NOTUNIQUE.useraction=Sehen Sie sich die Datei server.xml an und korrigieren Sie die Konfiguration.
+CONFIG_AUTHFILTER_NOTUNIQUE=CWWKS1530W: More than one OpenID Connect client configuration specifies the same authentication filter [{0}]. This can cause indeterminate behavior.
+CONFIG_AUTHFILTER_NOTUNIQUE.explanation=More than one OpenID Connect client configuration contains an authFilterRef attribute that refers to the same filter. Any of these clients might process a request that matches the filter, leading to indeterminate behavior.  
+CONFIG_AUTHFILTER_NOTUNIQUE.useraction=Review the server.xml file and correct the configuration.
 
-AUTHFILTER_MULTIPLE_MATCHED=CWWKS1531W: Mehr als ein OpenID Connect-Clientauthentifizierungsfilter stimmt mit einer Anforderung an die URL [{0}] \u00fcberein. Die \u00fcbereinstimmenden Filter sind [{1}]. Dies kann zu unbestimmten Verhalten f\u00fchren.
-AUTHFILTER_MULTIPLE_MATCHED.explanation=Mehr als ein Authentifizierungsfilter stimmt mit einer eingehenden Anforderung \u00fcberein. Jeder Client, der einen dieser Filter verwendet, k\u00f6nnte die Anforderung verarbeiten, was zu unbestimmten Verhalten f\u00fchren kann. 
-AUTHFILTER_MULTIPLE_MATCHED.useraction=Sehen Sie sich die Datei server.xml an und korrigieren Sie die Konfiguration.
+AUTHFILTER_MULTIPLE_MATCHED=CWWKS1531W: More than one OpenID Connect client authentication filter matches a request to [{0}] URL. The matching filters were [{1}]. This can cause indeterminate behavior.
+AUTHFILTER_MULTIPLE_MATCHED.explanation=More than one authentication filter matches an inbound request. Any client that uses one of these filters could process the request, leading to indeterminate behavior.  
+AUTHFILTER_MULTIPLE_MATCHED.useraction=Review the server.xml file and correct the configuration.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

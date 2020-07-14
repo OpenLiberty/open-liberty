@@ -62,13 +62,19 @@ kafka.library.not.present.CWMRX1006E.useraction=Csomagolja a kafka-clients JAR f
 
 # A Kafka incoming connector for the {0} channel cannot be created. The error is {1}
 kafka.create.incoming.error.CWMRX1007E=CWMRX1007E: A(z) {0} csatorna Kafka bej\u00f6v\u0151 csatol\u00f3ja nem hozhat\u00f3 l\u00e9tre. A hiba: {1}
-kafka.create.incoming.error.CWMRX1007E.explanation=A hiba olyankor t\u00f6rt\u00e9nik, amikor a Kafka csatol\u00f3, amely egy bej\u00f6v\u0151 reakt\u00edv \u00fczenetkezel\u00e9si csatorn\u00e1hoz lett be\u00e1ll\u00edtva, megakad\u00e1lyozza a MicroProfile reakt\u00edv \u00fczenetkezel\u00e9s norm\u00e1l m\u0171k\u00f6d\u00e9s\u00e9t.
-kafka.create.incoming.error.CWMRX1007E.useraction=A hiba\u00fczenetet, a kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s FFDC napl\u00f3it \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.
+kafka.create.incoming.error.CWMRX1007E.explanation=A hiba olyankor t\u00f6rt\u00e9nik, amikor a Kafka csatol\u00f3, amely egy bej\u00f6v\u0151 reakt\u00edv \u00fczenetkezel\u00e9si csatorn\u00e1hoz lett be\u00e1ll\u00edtva, megakad\u00e1lyozza a MicroProfile reakt\u00edv \u00fczenetkezel\u00e9s norm\u00e1l m\u0171k\u00f6d\u00e9s\u00e9t. Ezt okozhatja csatol\u00f3be\u00e1ll\u00edt\u00e1si gond vagy a Kafka k\u00f6zvet\u00edt\u0151 hosztnev\u00e9nek felold\u00e1si probl\u00e9m\u00e1ja.
+kafka.create.incoming.error.CWMRX1007E.useraction=A hiba\u00fczenetet, a kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s az FFDC napl\u00f3kat \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.
 
 # A Kafka outgoing connector for the {0} channel cannot be created. The error is {1}
 kafka.create.outgoing.error.CWMRX1008E=CWMRX1008E: A(z) {0} csatorna Kafka kimen\u0151 csatol\u00f3ja nem hozhat\u00f3 l\u00e9tre. A hiba: {1}
-kafka.create.outgoing.error.CWMRX1008E.explanation=A hiba olyankor t\u00f6rt\u00e9nik, amikor a Kafka csatol\u00f3, amely egy kimen\u0151 reakt\u00edv \u00fczenetkezel\u00e9si csatorn\u00e1hoz lett be\u00e1ll\u00edtva, megakad\u00e1lyozza a MicroProfile reakt\u00edv \u00fczenetkezel\u00e9s norm\u00e1l m\u0171k\u00f6d\u00e9s\u00e9t.
-kafka.create.outgoing.error.CWMRX1008E.useraction=A hiba\u00fczenetet, a kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s FFDC napl\u00f3it \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.
+kafka.create.outgoing.error.CWMRX1008E.explanation=A hiba olyankor t\u00f6rt\u00e9nik, amikor a Kafka csatol\u00f3, amely egy kimen\u0151 reakt\u00edv \u00fczenetkezel\u00e9si csatorn\u00e1hoz lett be\u00e1ll\u00edtva, megakad\u00e1lyozza a MicroProfile reakt\u00edv \u00fczenetkezel\u00e9s norm\u00e1l m\u0171k\u00f6d\u00e9s\u00e9t. Ezt okozhatja csatol\u00f3be\u00e1ll\u00edt\u00e1si gond vagy a Kafka k\u00f6zvet\u00edt\u0151 hosztnev\u00e9nek felold\u00e1si probl\u00e9m\u00e1ja.
+kafka.create.outgoing.error.CWMRX1008E.useraction=A hiba\u00fczenetet, a kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s az FFDC napl\u00f3kat \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.
+
+# {0} = channel name, {1} = error message
+kafka.create.incoming.retry.CWMRX1009W=CWMRX1009W: Nem hozhat\u00f3 l\u00e9tre Kafka bej\u00f6v\u0151 csatol\u00f3 a(z) {0} csatorn\u00e1hoz, de a rendszer \u00fajra megk\u00eds\u00e9rli a m\u0171veletet. A hiba: {1}
+kafka.create.incoming.retry.CWMRX1009W.explanation=Hiba t\u00f6rt\u00e9nt, amikor a Kafka csatol\u00f3 egy bej\u00f6v\u0151 reakt\u00edv \u00fczenetkezel\u00e9si csatorn\u00e1hoz ker\u00fclt be\u00e1ll\u00edt\u00e1sra. Ezt okozhatja csatol\u00f3be\u00e1ll\u00edt\u00e1si gond vagy a Kafka k\u00f6zvet\u00edt\u0151 hosztnev\u00e9nek felold\u00e1si probl\u00e9m\u00e1ja.
+kafka.create.incoming.retry.CWMRX1009W.useraction=A hiba\u00fczenetet, a kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s az FFDC napl\u00f3kat \u00e1ttekintve azonos\u00edtsa, hogy a probl\u00e9ma \u00e1tmeneti volt-e, \u00e9s megold\u00f3dott-e a csatol\u00f3 ism\u00e9telt be\u00e1ll\u00edt\u00e1s\u00e1val.
+
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message

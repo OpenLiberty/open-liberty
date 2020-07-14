@@ -33,7 +33,8 @@ import com.ibm.ws.fat.wc.tests.WCServletPathForDefaultMappingDefault;
 import com.ibm.ws.fat.wc.tests.WCServletPathForDefaultMappingFalse;
 import com.ibm.ws.fat.wc.tests.WCTrailersTest;
 
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
 /**
@@ -81,7 +82,9 @@ import componenttest.rules.repeater.RepeatTests;
 public class FATSuite {
 
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.withoutModification().andWith(new JakartaEE9Action());
+    public static RepeatTests repeat = RepeatTests
+                    .with(new EmptyAction().fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE9_FEATURES());
 
     /**
      * @see {@link FatLogHandler#generateHelpFile()}

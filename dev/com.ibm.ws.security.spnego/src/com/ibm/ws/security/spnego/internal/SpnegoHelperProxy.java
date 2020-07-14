@@ -129,14 +129,15 @@ public class SpnegoHelperProxy {
 
     @Activate
     protected void activate(ComponentContext cc) {
-        supportJDK = Krb5Common.isIBMJdk18OrLower || Krb5Common.isOtherSupportJDKs;
+        supportJDK = Krb5Common.isIBMJdk18 || Krb5Common.isOtherSupportJDKs;
         if (supportJDK) {
             kerberosExtServiceRef.activate(cc);
         }
     }
 
     @Modified
-    protected void modified(Map<String, Object> props) {}
+    protected void modified(Map<String, Object> props) {
+    }
 
     @Deactivate
     protected void deactivate(ComponentContext cc) {

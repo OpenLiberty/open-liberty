@@ -18,6 +18,8 @@ File serverDir1 = new File(autoFvtDir, 'publish/servers/com.ibm.ws.transaction_C
 File serverDir2 = new File(autoFvtDir, 'publish/servers/com.ibm.ws.transaction_CLOUD002')
 File serverDirPeerLock1 = new File(autoFvtDir, 'publish/servers/com.ibm.ws.transaction_LKCLOUD001')
 File serverDirPeerLock2 = new File(autoFvtDir, 'publish/servers/com.ibm.ws.transaction_LKCLOUD002')
+File serverDir5 = new File(autoFvtDir, 'publish/servers/com.ibm.ws.transaction_DUPXID001')
+File serverDir6 = new File(autoFvtDir, 'publish/servers/com.ibm.ws.transaction_DUPXID002')
 
 task addDerbyToServerDir1(type: Copy) {
   from configurations.derby
@@ -43,6 +45,18 @@ task addDerbyToServerDirPeerLock2(type: Copy) {
   rename 'derby-.*.jar', 'derby.jar'
 }
 
+task addDerbyToServerDir5(type: Copy) {
+  from configurations.derby
+  into new File(serverDir5, 'derby')
+  rename 'derby-.*.jar', 'derby.jar'
+}
+
+task addDerbyToServerDir6(type: Copy) {
+  from configurations.derby
+  into new File(serverDir6, 'derby')
+  rename 'derby-.*.jar', 'derby.jar'
+}
+
 addRequiredLibraries {
-  dependsOn addDerbyToServerDir1, addDerbyToServerDir2, addDerbyToServerDirPeerLock1, addDerbyToServerDirPeerLock2
+  dependsOn addDerbyToServerDir1, addDerbyToServerDir2, addDerbyToServerDir5, addDerbyToServerDir6, addDerbyToServerDirPeerLock1, addDerbyToServerDirPeerLock2
 }

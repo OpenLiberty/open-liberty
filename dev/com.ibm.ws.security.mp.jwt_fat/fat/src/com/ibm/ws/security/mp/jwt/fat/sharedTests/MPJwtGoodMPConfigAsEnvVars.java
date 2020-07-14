@@ -15,7 +15,6 @@ import org.junit.runner.RunWith;
 
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -29,7 +28,6 @@ import componenttest.topology.impl.LibertyServer;
  * valid ways.
  */
 
-@MinimumJavaLevel(javaLevel = 8)
 @RunWith(FATRunner.class)
 public class MPJwtGoodMPConfigAsEnvVars extends MPJwtMPConfigTests {
 

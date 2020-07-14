@@ -569,6 +569,12 @@ public class AcmeClient {
 			 * We want FFDC here as this will usually be the first communication
 			 * we try with the ACME server. We want to capture why we failed.
 			 */
+			if (tc.isDebugEnabled()) {
+				/*
+				 * Since we're abbreviating the exception in the log, list entire stack in trace.
+				 */
+				Tr.debug(tc, "Unexpected", e);
+			}
 			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2016E",
 					new Object[] { acmeConfig.getDirectoryURI(), getRootCauseMessage(e) }), e);
 		}
@@ -920,10 +926,11 @@ public class AcmeClient {
 				+ challenge.getAuthorization() + "'.");
 		return challenge;
 	}
-
+	
 	/**
 	 * Revoke a certificate using an existing account on the ACME server. If the
-	 * account key pair cannot be found, we will fail.
+	 * account key pair cannot be found, we will fail. This revoke uses the
+	 * configured directory URI.
 	 * 
 	 * @param certificate
 	 *            The certificate to revoke.
@@ -937,8 +944,30 @@ public class AcmeClient {
 	 * @throws AcmeCaException
 	 *             if there was an issue revoking the certificate.
 	 */
-	@FFDCIgnore({ AcmeException.class, IllegalArgumentException.class })
 	public void revoke(X509Certificate certificate, String reason) throws AcmeCaException {
+		revoke(certificate, reason, acmeConfig.getDirectoryURI());
+	}
+	
+	/**
+	 * Revoke a certificate using an existing account on the ACME server. If the
+	 * account key pair cannot be found, we will fail.
+	 * 
+	 * @param certificate
+	 *            The certificate to revoke.
+	 * @param reason
+	 *            The reason the certificate is being revoked. The following
+	 *            reason are supported: UNSPECIFIED, KEY_COMPROMISE,
+	 *            CA_COMPROMISE, AFFILIATION_CHANGED, SUPERSEDED,
+	 *            CESSATION_OF_OPERATIONS, CERTIFICATE_HOLD, REMOVE_FROM_CRL,
+	 *            PRIVILEGE_WITHDRAWN and AA_COMPROMISE. If null, the reason
+	 *            "UNSPECIFIED" will be used.
+	 * @param directoryURI
+	 *            The acme directory URI to issue the revoke request to.
+	 * @throws AcmeCaException
+	 *             if there was an issue revoking the certificate.
+	 */
+	@FFDCIgnore({ AcmeException.class, IllegalArgumentException.class })
+	public void revoke(X509Certificate certificate, String reason, String directoryURI) throws AcmeCaException {
 
 		if (certificate == null) {
 			return;
@@ -949,13 +978,13 @@ public class AcmeClient {
 		 */
 		KeyPair accountKeyPair = loadAccountKeyPair();
 		if (accountKeyPair == null) {
-			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2025W", acmeConfig.getDirectoryURI()));
+			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2025W", directoryURI));
 		}
 
 		/*
 		 * Create a session to the ACME CA directory service.
 		 */
-		Session session = getNewSession();
+		Session session = getNewSession(directoryURI);
 
 		/*
 		 * Get the Account.
@@ -980,11 +1009,11 @@ public class AcmeClient {
 				Certificate.revoke(login, certificate, revocationReason);
 				Tr.info(tc, Tr.formatMessage(tc, "CWPKI2038I", certificate.getSerialNumber().toString(16)));
 			} catch (AcmeException e) {
-				throw handleAcmeException(e, Tr.formatMessage(tc, "CWPKI2024E", acmeConfig.getDirectoryURI(),
+				throw handleAcmeException(e, Tr.formatMessage(tc, "CWPKI2024E", directoryURI,
 						certificate.getSerialNumber().toString(16), e.getMessage()));
 			}
 		} else {
-			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2026W", acmeConfig.getDirectoryURI()));
+			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2026W", directoryURI));
 		}
 	}
 
@@ -1020,16 +1049,30 @@ public class AcmeClient {
 			}
 		}
 	}
-
+	
 	/**
-	 * Create a new session with the ACME CA server.
+	 * Create a new session with the ACME CA server. This uses
+	 * the configured directory URI.
 	 * 
 	 * @return the session
 	 * @throws AcmeCaException
 	 *             If there was an error trying to create the new session.
 	 */
-	@FFDCIgnore({ Exception.class })
 	private Session getNewSession() throws AcmeCaException {
+		return getNewSession(AcmeClient.this.acmeConfig.getDirectoryURI());
+	}
+
+	/**
+	 * Create a new session with the ACME CA server.
+	 * 
+	 * @param directoryURI
+	 *            The acme directory URI used to create the session.
+	 * @return the session
+	 * @throws AcmeCaException
+	 *             If there was an error trying to create the new session.
+	 */
+	@FFDCIgnore({ Exception.class })
+	private Session getNewSession(String directoryURI) throws AcmeCaException {
 
 		try {
 			return AccessController.doPrivileged(new PrivilegedExceptionAction<Session>() {
@@ -1048,7 +1091,7 @@ public class AcmeClient {
 						origLoader = Thread.currentThread().getContextClassLoader();
 						Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
 
-						return new Session(AcmeClient.this.acmeConfig.getDirectoryURI());
+						return new Session(directoryURI);
 					} finally {
 						Thread.currentThread().setContextClassLoader(origLoader);
 					}
@@ -1057,7 +1100,7 @@ public class AcmeClient {
 		} catch (Exception e) {
 			if (tc.isDebugEnabled()) {
 				Tr.debug(tc,
-						"Getting a new session failed for " + acmeConfig.getDirectoryURI() + ", full stack trace is",
+						"Getting a new session failed for " + directoryURI + ", full stack trace is",
 						e);
 			}
 
@@ -1088,16 +1131,40 @@ public class AcmeClient {
 	@Trivial
 	private static String getRootCauseMessage(Throwable t) {
 		Throwable cause;
-		String rootMessage = t.getMessage();
+		String origMessage = addExceptionClass(t);
+		String rootMessage = origMessage;
 
 		for (cause = t; cause != null; cause = cause.getCause()) {
 			String msg = cause.getMessage();
 			if (msg != null && !msg.trim().isEmpty()) {
-				rootMessage = msg;
+				rootMessage = addExceptionClass(cause);
+			} else if (cause instanceof java.io.IOException) {
+				/*
+				 * Sometimes the IOException doesn't have a message, but the class
+				 * name is informative and should be included
+				 * For example, Caused by: java.net.SocketTimeoutException
+				 */
+				rootMessage = origMessage +"  Caused by:  " + addExceptionClass(cause);
 			}
 		}
 
 		return rootMessage;
+	}
+
+	/**
+	 * Add on the Exception class name as sometimes the message does not make sense
+	 * without the name of the Exception included. For example,
+	 * java.net.UnknownHostException: <exampleUnknownHost . net>
+	 * 
+	 * @param t
+	 * @return
+	 */
+	@Trivial
+	private static String addExceptionClass(Throwable t) {
+		if (t != null) {
+			return t.getClass().getName() + (t.getMessage() == null ? "" : ": " + t.getMessage());
+		}
+		return "";
 	}
 
 	/**
@@ -1414,7 +1481,7 @@ public class AcmeClient {
 	protected void checkRenewTimeAgainstCertValidityPeriod(Date notBefore, Date notAfter, String serialNumber) {
 		long notBeforems = notBefore.getTime();
 		long notAfterms = notAfter.getTime();
-
+		long renewCertMin = acmeConfig.getRenewCertMin();
 		long validityPeriod = notAfterms - notBeforems;
 
 		long renewBeforeExpirationMs = acmeConfig.getRenewBeforeExpirationMs();
@@ -1429,13 +1496,13 @@ public class AcmeClient {
 		 * prior to expiration.
 		 */
 		if (validityPeriod <= renewBeforeExpirationMs) {
-			if (validityPeriod <= AcmeConstants.RENEW_CERT_MIN) {
+			if (validityPeriod <= renewCertMin) {
 				/*
 				 * less than the minimum renew, reset to min.
 				 */
-				Tr.warning(tc, "CWPKI2056W", serialNumber, AcmeConstants.RENEW_CERT_MIN + "ms", validityPeriod,
-						AcmeConstants.RENEW_CERT_MIN + "ms");
-				acmeConfig.setRenewBeforeExpirationMs(AcmeConstants.RENEW_CERT_MIN, false);
+				Tr.warning(tc, "CWPKI2056W", serialNumber, renewCertMin + "ms", validityPeriod,
+						renewCertMin + "ms");
+				acmeConfig.setRenewBeforeExpirationMs(renewCertMin, false);
 			} else if (validityPeriod <= AcmeConstants.RENEW_DEFAULT_MS) {
 				/*
 				 * less than the default period, reset to half the time.
@@ -1446,7 +1513,7 @@ public class AcmeClient {
 				 * floor is still the min renew
 				 */
 				acmeConfig.setRenewBeforeExpirationMs(
-						resetRenew <= AcmeConstants.RENEW_CERT_MIN ? AcmeConstants.RENEW_CERT_MIN : resetRenew, false);
+						resetRenew <= renewCertMin ? renewCertMin : resetRenew, false);
 				Tr.warning(tc, "CWPKI2054W", priorRenew + "ms", serialNumber, validityPeriod,
 						renewBeforeExpirationMs + "ms");
 			} else {
@@ -1472,6 +1539,9 @@ public class AcmeClient {
 	 */
 	@Trivial
 	private AcmeCaException handleAcmeException(AcmeException acmeException, String message) {
+		if (tc.isDebugEnabled()) {
+		    Tr.debug(tc, "Caught AcmeException", acmeException, message);
+		}
 		/*
 		 * Log an error if an AcmeUserActionRequiredException is thrown as it
 		 * will require the user to manually visit the URI and agree to the

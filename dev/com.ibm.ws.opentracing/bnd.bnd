@@ -21,7 +21,8 @@ WS-TraceGroup: OPENTRACING
 -dsannotations: com.ibm.ws.opentracing.OpentracingUserFeatureAccessService, \
                 com.ibm.ws.opentracing.OpentracingJaxRsProviderRegister, \
                 com.ibm.ws.opentracing.OpentracingJaxRsEMCallbackImpl, \
-                com.ibm.ws.opentracing.OpentracingService
+                com.ibm.ws.opentracing.OpentracingService, \
+                com.ibm.ws.opentracing.AppStateListener
                 
 Import-Package: \
     !com.ibm.ws.opentracing, \
@@ -49,4 +50,6 @@ Private-Package: com.ibm.ws.opentracing.resources
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
     com.ibm.websphere.org.osgi.service.cm;version=latest,\
     com.ibm.ws.io.opentracing.opentracing-api;version=latest,\
-    com.ibm.ws.container.service;version=latest
+    com.ibm.ws.container.service;version=latest, \
+    com.ibm.ws.classloading;version=latest, \
+    com.ibm.websphere.appserver.spi.kernel.service;version=latest

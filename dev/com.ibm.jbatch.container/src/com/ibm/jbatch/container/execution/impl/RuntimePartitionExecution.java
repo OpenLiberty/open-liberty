@@ -167,8 +167,10 @@ public class RuntimePartitionExecution extends RuntimeWorkUnitExecution {
 
     @Override
     public void updateExecutionJobLogDir(String logDirPath) {
-        RemotablePartitionKey key = new RemotablePartitionKey(getTopLevelExecutionId(), getStepName(), getPartitionNumber());
-        getPersistenceManagerService().updatePartitionExecutionLogDir(key, logDirPath);
+        if (isRemoteDispatch) {
+            RemotablePartitionKey key = new RemotablePartitionKey(getTopLevelExecutionId(), getStepName(), getPartitionNumber());
+            getPersistenceManagerService().updateRemotablePartitionLogDir(key, logDirPath);
+        }
     }
 
     /**

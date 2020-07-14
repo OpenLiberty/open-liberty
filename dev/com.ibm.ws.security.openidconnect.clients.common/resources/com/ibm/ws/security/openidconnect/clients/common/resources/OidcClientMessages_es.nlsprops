@@ -29,9 +29,11 @@ OIDC_CLIENT_AUTHORIZE_ERR.useraction=Repita la solicitud utilizando atributos de
 #do not translate enforceHTTPS
 
 # used_by_client_project and clients project IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN THE OTHER BUNDLE!
-OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: El cliente de OpenID Connect requiere SSL (HTTPS), pero el URL del proveedor de OpenID Connect es HTTP: [{0}].  Actualice la configuraci\u00f3n para que el atributo [enforceHTTPS] coincida con el esquema del URL de destino. 
+# social also uses this and it does not have the enforceHTTPS attribute.
+#do not translate enforceHTTPS
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: El cliente de OpenID Connect requiere SSL (HTTPS), pero el URL del proveedor de OpenID Connect es HTTP: [{0}]. Actualice la configuraci\u00f3n para utilizar un URL HTTPS o utilice la caracter\u00edstica de cliente de OpenID Connect y establezca enforceHTTPS en false (falso). 
 OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.explanation=El cliente de OpenID Connect (parte dependiente o servidor de recursos) necesita SSL (HTTPS), pero el protocolo del URL del proveedor de OpenID Connect especificado en la configuraci\u00f3n del cliente de OpenID Connect no es HTTPS.
-OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Realice una de las acciones siguientes: 1) Aseg\u00farese de que el proveedor de OpenID Connect da soporte a SSL. 2) Si el proveedor de OpenID Connect no permite utilizar SSL, establezca enforceHTTPS en false en la configuraci\u00f3n del cliente de OpenID Connect.
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Realice una de las acciones siguientes: en primer lugar, aseg\u00farese de que el proveedor de OpenID Connect soporta SSL. Si el proveedor de OpenID Connector no soporta SSL, utilice la caracter\u00edstica de cliente de OpenID Connect y establezca enforceHTTPS en false en la configuraci\u00f3n de caracter\u00edstica de cliente de OpenID Connect.
 
 # unused, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: El estado actual [{0}] del cliente OpenID Connect [{2}] y el par\u00e1metro de estado [{1}] de la respuesta del proveedor de OpenID Connect no coinciden.  Esta condici\u00f3n no est\u00e1 permitida.

@@ -69,6 +69,6 @@ implicit.bean.scanning.disabled.CWOWB1009W=CWOWB1009W: Implizite Bean-Archive si
 implicit.bean.scanning.disabled.CWOWB1009W.explanation=Archive werden erst nach CDI-Beans durchsucht, wenn eine Datei beans.xml vorhanden ist.
 implicit.bean.scanning.disabled.CWOWB1009W.useraction=Stellen Sie sicher, dass jedes Archiv, das CDI-Beans verwendet, eine Datei beans.xml enth\u00e4lt, oder aktivieren Sie die implizite Beansuche wieder in Ihrer Datei server.xml.
 
-spi.extension.failed.to.construct.CWOWB10010E=CWOWB10010E: CDI-Erweiterung \u00fcber SPI fehlgeschlagen.
-spi.extension.failed.to.construct.CWOWB10010E.explanation=CDI konnte den Konstruktor der Erweiterungsklasse {0}, die \u00fcber die Methode getExtensions() einer WebSphereCDIExtensionMetaData-Implementierung registriert ist, aufgrund der folgenden Ausnahme nicht aufrufen: {1}.
-spi.extension.failed.to.construct.CWOWB10010E.useraction=Beheben Sie den Fehler und verhindern Sie so, dass Ihre Erweiterung eine Instanz erstellt.
+spi.extension.failed.to.construct.CWOWB10010E=CWOWB10010E: Failed to create CDI Extension via SPI.
+spi.extension.failed.to.construct.CWOWB10010E.explanation=CDI failed to invoke the constructor of the extension class {0} registered via the getExtensions() method of a CDIExtensionMetaData implementation because of the exception {1}.
+spi.extension.failed.to.construct.CWOWB10010E.useraction=Fix the error preventing your extension from instantiating.

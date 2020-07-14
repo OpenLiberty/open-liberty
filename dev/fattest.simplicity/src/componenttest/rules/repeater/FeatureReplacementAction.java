@@ -58,8 +58,15 @@ public class FeatureReplacementAction implements RepeatTestAction {
         return new EE8FeatureReplacementAction();
     }
 
+    /**
+     * Remove the EE7 and EE8 features; replace them with the EE9 features
+     */
+    public static FeatureReplacementAction EE9_FEATURES() {
+        return new JakartaEE9Action();
+    }
+
     private boolean forceAddFeatures = true;
-    private int minJavaLevel = 7;
+    private int minJavaLevel = 8;
     protected String currentID = null;
     private final Set<String> servers = new HashSet<>(Arrays.asList(ALL_SERVERS));
     private final Set<String> clients = new HashSet<>(Arrays.asList(ALL_CLIENTS));

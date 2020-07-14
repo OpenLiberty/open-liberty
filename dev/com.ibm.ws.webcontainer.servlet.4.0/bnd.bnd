@@ -91,5 +91,6 @@ Import-Package: \
     com.ibm.ws.org.apache.commons.fileupload;version=latest,\
     com.ibm.ws.org.apache.commons.io;version=latest,\
     com.ibm.ws.channelfw;version=latest,\
-    com.ibm.ws.anno;version=latest
+    com.ibm.ws.anno;version=latest,\
+    com.ibm.ws.threading;version=latest
 

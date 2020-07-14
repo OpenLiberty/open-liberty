@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,8 +18,19 @@ import javax.security.jacc.PolicyContextHandler;
 public class PolicyContextHandlerImpl implements PolicyContextHandler {
 
     private static boolean initialized = false;
-    private static final String[] keysArray = new String[] { "javax.security.auth.Subject.container", "javax.xml.soap.SOAPMessage", "javax.servlet.http.HttpServletRequest",
-                                                            "javax.ejb.EnterpriseBean", "javax.ejb.arguments" };
+
+    private static final String[] keysArray = new String[] {
+                                                             // Maintain order from EE8-. Probably doesn't matter.
+                                                             "javax.security.auth.Subject.container",
+                                                             "javax.xml.soap.SOAPMessage",
+                                                             "javax.servlet.http.HttpServletRequest",
+                                                             "javax.ejb.EnterpriseBean",
+                                                             "javax.ejb.arguments",
+
+                                                             // EE9+ unique keys below here.
+                                                             "jakarta.ejb.arguments"
+    };
+
     private static PolicyContextHandlerImpl pchi;
 
     private PolicyContextHandlerImpl() {}
@@ -49,9 +60,7 @@ public class PolicyContextHandlerImpl implements PolicyContextHandler {
 
     @SuppressWarnings("unchecked")
     @Override
-    public Object getContext(String key, Object object)
-                    throws PolicyContextException
-    {
+    public Object getContext(String key, Object object) throws PolicyContextException {
         if (object == null) {
             return null;
         }

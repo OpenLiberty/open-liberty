@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,15 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.logging.collector;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 
 import com.ibm.websphere.ras.DataFormatHelper;
 import com.ibm.ws.logging.data.AccessLogData;
+import com.ibm.ws.logging.data.AccessLogDataFormatter;
 import com.ibm.ws.logging.data.FFDCData;
 import com.ibm.ws.logging.data.GCData;
 import com.ibm.ws.logging.data.GenericData;
+import com.ibm.ws.logging.data.JSONObject.JSONObjectBuilder;
 import com.ibm.ws.logging.data.KeyValuePair;
 import com.ibm.ws.logging.data.KeyValuePairList;
 import com.ibm.ws.logging.data.LogTraceData;
@@ -40,14 +40,14 @@ public class CollectorJsonUtils {
      * Method to return log event data in json format. If the collector version passed is greater than 1.0
      * then the jsonifyEvent call is passed to another version of CollectorJsonUtils.
      *
-     * @param event The object originating from logging source which contains necessary fields
-     * @param eventType The type of event
-     * @param servername The name of the server
-     * @param wlpUserDir The name of wlp user directory
-     * @param serverHostName The name of server host
+     * @param event            The object originating from logging source which contains necessary fields
+     * @param eventType        The type of event
+     * @param servername       The name of the server
+     * @param wlpUserDir       The name of wlp user directory
+     * @param serverHostName   The name of server host
      * @param collectorVersion The version number
-     * @param tags An array of tags
-     * @param maxFieldLength The max character length of strings
+     * @param tags             An array of tags
+     * @param maxFieldLength   The max character length of strings
      */
     public static String jsonifyEvent(Object event, String eventType, String serverName, String wlpUserDir, String serverHostName, String collectorVersion, String[] tags,
                                       int maxFieldLength) {
@@ -217,52 +217,23 @@ public class CollectorJsonUtils {
                                         String serverName, String hostName, Object event, String[] tags) {
 
         AccessLogData accessLogData = (AccessLogData) event;
+        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startAccessLogJsonFields(AccessLogData.KEYS_LOGSTASH);
 
-        StringBuilder sb = CollectorJsonHelpers.startAccessLogJson(hostName, wlpUserDir, serverName);
+        AccessLogDataFormatter[] formatters = accessLogData.getFormatters();
 
-        CollectorJsonHelpers.addToJSON(sb, accessLogData.getUriPathKey(), accessLogData.getUriPath(), false, true, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, accessLogData.getRequestMethodKey(), accessLogData.getRequestMethod(), false, true, false, false, false);
-
-        String jsonQueryString = accessLogData.getQueryString();
-        if (jsonQueryString != null) {
-            try {
-                jsonQueryString = URLDecoder.decode(jsonQueryString, LogFieldConstants.UTF_8);
-            } catch (UnsupportedEncodingException e) {
-                // ignore, use the original value;
-            }
-
-        }
-        CollectorJsonHelpers.addToJSON(sb, accessLogData.getQueryStringKey(), jsonQueryString, false, true, false, false, false);
-
-        CollectorJsonHelpers.addToJSON(sb, accessLogData.getRequestHostKey(), accessLogData.getRequestHost(), false, true, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, accessLogData.getRequestPortKey(), accessLogData.getRequestPort(), false, true, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, accessLogData.getRemoteHostKey(), accessLogData.getRemoteHost(), false, true, false, false, false);
-
-        String userAgent = accessLogData.getUserAgent();
-
-        if (userAgent != null && userAgent.length() > MAX_USER_AGENT_LENGTH) {
-            userAgent = userAgent.substring(0, MAX_USER_AGENT_LENGTH);
-        }
-
-        CollectorJsonHelpers.addToJSON(sb, accessLogData.getUserAgentKey(), userAgent, false, false, false, false, false);
-
-        CollectorJsonHelpers.addToJSON(sb, accessLogData.getRequestProtocolKey(), accessLogData.getRequestProtocol(), false, true, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, accessLogData.getBytesReceivedKey(), Long.toString(accessLogData.getBytesReceived()), false, true, false, false, true);
-        CollectorJsonHelpers.addToJSON(sb, accessLogData.getResponseCodeKey(), Integer.toString(accessLogData.getResponseCode()), false, true, false, false, true);
-        CollectorJsonHelpers.addToJSON(sb, accessLogData.getElapsedTimeKey(), Long.toString(accessLogData.getElapsedTime()), false, true, false, false, true);
-
-        String datetime = CollectorJsonHelpers.dateFormatTL.get().format(accessLogData.getDatetime());
-        CollectorJsonHelpers.addToJSON(sb, accessLogData.getDatetimeKey(), datetime, false, true, false, false, false);
-
-        CollectorJsonHelpers.addToJSON(sb, accessLogData.getSequenceKey(), accessLogData.getSequence(), false, true, false, false, false);
+        // Only one of these will not be null - there is only one formatter per event. If both are not null, we made a mistake earlier in AccessLogSource
+        if (formatters[3] != null)
+            formatters[3].populate(jsonBuilder, accessLogData);
+        else if (formatters[2] != null)
+            formatters[2].populate(jsonBuilder, accessLogData);
+        else
+            throw new RuntimeException("There is no formatter available for this event.");
 
         if (tags != null) {
-            addTagNameForVersion(sb).append(CollectorJsonHelpers.jsonifyTags(tags));
+            jsonBuilder.addPreformattedField("tags", CollectorJsonHelpers.jsonifyTags(tags));
         }
 
-        sb.append("}");
-
-        return sb.toString();
+        return jsonBuilder.build().toString();
     }
 
     public static String jsonifyAudit(String wlpUserDir, String serverName, String hostName, Object event, String[] tags) {

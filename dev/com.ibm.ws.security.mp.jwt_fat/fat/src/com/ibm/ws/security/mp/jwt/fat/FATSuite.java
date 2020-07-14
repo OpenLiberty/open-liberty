@@ -29,7 +29,6 @@ import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
                 // More targeted tests
                 MPJwtConfigUsingBuilderTests.class,
                 MPJwtApplicationAndSessionScopedClaimInjectionTests.class,
-                MPJwtJDKTests.class,
                 MPJwtLoginConfig_ignoreApplicationAuthMethodTrueTests.class,
                 MPJwtLoginConfig_ignoreApplicationAuthMethodFalseTests.class,
                 MPJwtNoMpJwtConfig.class,

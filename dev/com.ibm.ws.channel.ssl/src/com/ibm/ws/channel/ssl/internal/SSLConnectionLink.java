@@ -134,12 +134,12 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
 
         // Check to see if http/2 is enabled for this connection and save the result
         if (CHFWBundle.getServletConfiguredHttpVersionSetting() != null) {
-            if (SSLChannelConstants.OPTIONAL_DEFAULT_OFF_20.equalsIgnoreCase(CHFWBundle.getServletConfiguredHttpVersionSetting())) {
+            if (CHFWBundle.isHttp2DisabledByDefault()) {
                 if (getChannel().getUseH2ProtocolAttribute() != null && getChannel().getUseH2ProtocolAttribute()) {
                     http2Enabled = true;
                     this.sslChannel.checkandInitALPN();
                 }
-            } else if (SSLChannelConstants.OPTIONAL_DEFAULT_ON_20.equalsIgnoreCase(CHFWBundle.getServletConfiguredHttpVersionSetting())) {
+            } else if (CHFWBundle.isHttp2EnabledByDefault()) {
                 if (getChannel().getUseH2ProtocolAttribute() == null || getChannel().getUseH2ProtocolAttribute()) {
                     http2Enabled = true;
                     this.sslChannel.checkandInitALPN();
@@ -383,11 +383,11 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
         /**
          * Constructor.
          *
-         * @param _connLink SSLConnectionLink associated with this callback.
-         * @param _netBuffer Buffer from the network / device side.
+         * @param _connLink           SSLConnectionLink associated with this callback.
+         * @param _netBuffer          Buffer from the network / device side.
          * @param _decryptedNetBuffer Buffer containing results of decrypting netbuffer
          * @param _encryptedAppBuffer Encrypted buffer to be sent out through network / device side.
-         * @param _flowType inbound or outbound
+         * @param _flowType           inbound or outbound
          */
         public MyHandshakeCompletedCallback(
                                             SSLConnectionLink _connLink,
@@ -784,7 +784,7 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
      * outbound socket has been established. Establish the SSL connection before reporting
      * to the next channel. Note, this method is called in both sync and async flows.
      *
-     * @param inVC virtual connection associated with this request
+     * @param inVC  virtual connection associated with this request
      * @param async flag for asynchronous (true) or synchronous (false)
      * @throws IOException
      */
@@ -870,11 +870,11 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
      * This method is called to handle the results of an SSL handshake. This may be called
      * by a callback or in the same thread as the connect request.
      *
-     * @param netBuffer buffer for data flowing in fron the net
+     * @param netBuffer          buffer for data flowing in fron the net
      * @param decryptedNetBuffer buffer for decrypted data from the net
      * @param encryptedAppBuffer buffer for encrypted data flowing from the app
-     * @param hsStatus output from the last call to the SSL engine
-     * @param async whether this is for an async (true) or sync (false) request
+     * @param hsStatus           output from the last call to the SSL engine
+     * @param async              whether this is for an async (true) or sync (false) request
      * @throws IOException
      */
     protected void readyOutboundPostHandshake(

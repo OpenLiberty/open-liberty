@@ -34,9 +34,8 @@ def getBetaVersion() {
     return year + "." + major + "." + minor + "." + new_month
 }
 
-def libertyBeta = getBetaVersion()
-def betaVersion = libertyBeta + "-beta-" + rootProject.userProps.getProperty("version.qualifier")
-
+def libertyBeta = rootProject.userProps.getProperty("betaVersionOverride") == null ? (getBetaVersion() + "-beta") : (rootProject.userProps.getProperty("betaVersionOverride") + "-beta")
+def betaVersion = libertyBeta + "-" + rootProject.userProps.getProperty("version.qualifier")
 
 task copyPropertiesToBuildImage (type:Copy) {
     dependsOn jar
@@ -151,9 +150,9 @@ class PackageLibertyWithFeatures extends DefaultTask {
                 into outputTo
             }
 
-            //Now add the NOTICES and LICENSE files
+            //Now add the LICENSE files
             project.copy {
-                from project.file('publish')
+                from project.file('wlp')
                 include 'LICENSE'
                 include 'NOTICES'
                 into "$outputTo/wlp"
@@ -248,26 +247,35 @@ def microProfile3Features() {
     features
 }
 
-def removeFeature(feature) {
+def getFeaturePath(feature) {
+    def file = getFeaturePath(feature, "")
+    file
+}
+
+def getFeaturePath(feature, suffix) {
     def file
     if (feature.endsWith(".mf")) {
-        file = new File("$projectDir/wlp/lib/features/" + feature)
-        file.renameTo(new File("$projectDir/wlp/lib/features/" + feature + ".bak"))
+        file = new File("$projectDir/wlp/lib/features/" + feature + suffix)
     } else {
-        file = new File("$projectDir/wlp/lib/features/com.ibm.websphere.appserver." + feature + ".mf")
-        file.renameTo(new File("$projectDir/wlp/lib/features/com.ibm.websphere.appserver." + feature + ".mf.bak"))
+        file = new File("$projectDir/wlp/lib/features/com.ibm.websphere.appserver." + feature + ".mf" + suffix)
+        if(!file.exists()){
+            file = new File("$projectDir/wlp/lib/features/io.openliberty." + feature + ".mf" + suffix)
+        }
     }
+    file
+}
+def removeFeature(feature) {
+    def file = getFeaturePath(feature)
+    def bakfile = new File(file.getPath()+".bak")
+    file.renameTo(bakfile)
 }
 
 def restoreFeature(feature) {
-    def file
-    if (feature.endsWith(".mf")) {
-        file = new File("$projectDir/wlp/lib/features/" + feature + ".bak")
-        file.renameTo(new File("$projectDir/wlp/lib/features/" + feature))
-    } else {
-        file = new File("$projectDir/wlp/lib/features/com.ibm.websphere.appserver." + feature + ".mf.bak")
-        file.renameTo(new File("$projectDir/wlp/lib/features/com.ibm.websphere.appserver." + feature + ".mf"))
-    }
+    def bakfile = getFeaturePath(feature, ".bak")
+    String path = bakfile.getPath()
+    int idx = path.indexOf(".bak")
+    def file = new File(path.substring(0,idx))
+    bakfile.renameTo(file)
 }
 
 def excludedEE7Features = ['cdi-1.2',
@@ -287,7 +295,7 @@ def replaceBetaVersionAndEdition(String pathname, String release, String beta) {
     Files.write(path, content.getBytes(charset))
 }
 
-if (isAutomatedBuild) {
+if (isAutomatedBuild && !isIFIXBuild) {
     task packageOpenLibertyAll(type: PackageLibertyWithFeatures) {
         def excludedFeatures = []
         doFirst {
@@ -296,7 +304,6 @@ if (isAutomatedBuild) {
                 this.&removeFeature("${it}")
             }
         }
-        enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&allFeatures
@@ -309,7 +316,6 @@ if (isAutomatedBuild) {
     }
 
     task packageOpenLiberty(type: PackageLibertyWithFeatures) {
-        enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&gaPublicFeatures
@@ -323,19 +329,13 @@ if (isAutomatedBuild) {
         withFeatures this.&gaAndBetaPublicFeatures
         outputTo packageDir
         doLast {
-            ["$packageDir/wlp/README.TXT", "$packageDir/wlp/lib/versions/openliberty.properties"].each { path ->
+            ["$packageDir/wlp/NOTICES", "$packageDir/wlp/README.TXT", "$packageDir/wlp/lib/versions/openliberty.properties"].each { path ->
                 replaceBetaVersionAndEdition(path, bnd.libertyRelease, libertyBeta)
-            }
-
-            copy {
-                from project.file('publish/beta/NOTICES')
-                into "$packageDir/wlp"
             }
         }
     }
 
     task packageOpenLibertyKernel(type: PackageLibertyWithFeatures) {
-        enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures { '' }
@@ -348,7 +348,6 @@ if (isAutomatedBuild) {
                 this.&removeFeature("${it}")
             }
         }
-        enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&webProfile8Features
@@ -375,7 +374,6 @@ if (isAutomatedBuild) {
             }
         }
 
-        enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&javaee8Features
@@ -396,24 +394,20 @@ if (isAutomatedBuild) {
     }
 
     task packageOpenLibertyJakartaee9(type: PackageLibertyWithFeatures) {
-        
+
         enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&jakartaee9Features
         outputTo packageDir
         doLast {
-            ["$packageDir/wlp/README.TXT", "$packageDir/wlp/lib/versions/openliberty.properties"].each { path ->
+            ["$packageDir/wlp/NOTICES", "$packageDir/wlp/README.TXT", "$packageDir/wlp/lib/versions/openliberty.properties"].each { path ->
                 replaceBetaVersionAndEdition(path, bnd.libertyRelease, libertyBeta)
             }
 
             copy {
                 from "$packageDir/wlp/templates/servers/jakartaee9/server.xml"
                 into "$packageDir/wlp/templates/servers/defaultServer"
-            }
-            copy {
-                from project.file('publish/beta/NOTICES')
-                into "$packageDir/wlp"
             }
         }
     }
@@ -425,7 +419,6 @@ if (isAutomatedBuild) {
             }
         }
 
-        enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&microProfile3Features
@@ -444,6 +437,7 @@ if (isAutomatedBuild) {
 
 // Generate checksums
 task genChecksums() {
+    enabled !isIFIXBuild
     dependsOn parent.subprojects.assemble
     doLast {
         generateChecksums(ant)
@@ -465,7 +459,7 @@ task zipOpenLibertyDev(type: Zip) {
 }
 publish.dependsOn zipOpenLibertyDev
 
-if (isAutomatedBuild) {
+if (isAutomatedBuild && !isIFIXBuild) {
     // Includes all features except excluded features.
     task zipOpenLibertyAll(type: Zip) {
         dependsOn packageOpenLibertyAll
@@ -598,7 +592,7 @@ publishing {
             version project.version
             artifact zipOpenLibertyDev
         }
-        if (isAutomatedBuild) {
+        if (isAutomatedBuild && !isIFIXBuild) {
             openLibertyAll(MavenPublication) {
                 artifactId 'openliberty-all'
                 version project.version
@@ -632,7 +626,7 @@ publishing {
     }
 }
 
-if (isAutomatedBuild) {
+if (isAutomatedBuild && !isIFIXBuild) {
     task createOLRuntimePoms {
         dependsOn packageOpenLiberty
         pom {

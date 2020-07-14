@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -22,6 +23,7 @@ import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.Provider;
 
 import com.ibm.websphere.csi.J2EEName;
@@ -53,7 +55,7 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
     ConcurrentHashMap<String,RestMetricInfo> appMetricInfos = new ConcurrentHashMap<String,RestMetricInfo>();
     
     private static final String START_TIME = "Start_Time";
-
+    
     /**
      * Method : filter(ContainerRequestContext)
      * 
@@ -85,58 +87,110 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
      *            method and store the result in the REST_Stats MXBean.
      * 
      */
+	@Override
+	public void filter(ContainerRequestContext reqCtx, ContainerResponseContext respCtx) throws IOException {
 
-    @Override
-    public void filter(ContainerRequestContext reqCtx, ContainerResponseContext respCtx) throws IOException {
-    	
-    	long elapsedTime = 0;
-        //Calculate the response time for the resource method.
-        Long startTime = (Long)reqCtx.getProperty(START_TIME);
-        if (startTime!=null) {
-            elapsedTime = System.nanoTime() - startTime.longValue();
+		long elapsedTime = 0;
+		// Calculate the response time for the resource method.
+		Long startTime = (Long) reqCtx.getProperty(START_TIME);
+		if (startTime != null) {
+			elapsedTime = System.nanoTime() - startTime.longValue();
+		}
+
+		Class<?> resourceClass = resourceInfo.getResourceClass();
+
+		if (resourceClass != null) {
+			Method resourceMethod = resourceInfo.getResourceMethod();
+
+			Class<?>[] parameterClasses = resourceMethod.getParameterTypes();
+			int i = 0;
+			String parameter;
+			String fullMethodName = resourceClass.getName() + "/" + resourceMethod.getName() + "(";
+			for (Class<?> p : parameterClasses) {
+				parameter = p.getCanonicalName();
+				if (i > 0) {
+					fullMethodName = fullMethodName + "_" + parameter;
+				} else {
+					fullMethodName = fullMethodName + parameter;
+				}
+				i++;
+			}
+			fullMethodName = fullMethodName + ")";
+
+			ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+			String appName = getAppName(cmd);
+			String modName = getModName(cmd);
+			String keyPrefix = createKeyPrefix(appName, modName);
+			String key = keyPrefix + "/" + fullMethodName;
+
+			REST_Stats stats = jaxRsCountByName.get(key);
+			if (stats == null) {
+				stats = initJaxRsStats(key, keyPrefix, fullMethodName);
+			}
+
+			/*
+			 * Explicitly checking for the Metrics Header via hard-coded header string.
+			 * Don't want to add runtime/build dependency to this bundle/project because
+			 * jaxrsMonitor-1.0.feature can run without metrics.
+			 * 
+			 */
+			String metricsHeader = respCtx
+			        .getHeaderString("com.ibm.ws.microprofile.metrics.monitor.MetricsJaxRsEMCallbackImpl.Exception");
+			if (metricsHeader == null) {
+				// Need to start new minute here.. we need to pass in the stat object so we can
+				// actually update Mbean
+				maybeStartNewMinute(stats);
+
+				// Save key in appMetricInfos for cleanup on application stop.
+				addKeyToMetricInfo(appName, key);
+
+				// Increment the request count for the resource method.
+				stats.incrementCountBy(1);
+
+				// Store the response time for the resource method.
+				stats.updateRT(elapsedTime < 0 ? 0 : elapsedTime);
+
+				// Figure out min/max
+				if (elapsedTime >= 0) {
+					synchronized (this) {
+						if (elapsedTime > stats.getMinuteLatestMaximumDuration()) {
+							stats.updateMinuteLatestMaximumDuration(elapsedTime);
+						}
+
+						if (elapsedTime < stats.getMinuteLatestMinimumDuration()
+						        || stats.getMinuteLatestMinimumDuration() == 0L) {
+							stats.updateMinuteLatestMinimumDuration(elapsedTime);
+						}
+					}
+				}
+			}
+		}
+	}
+    
+    private void maybeStartNewMinute(REST_Stats stats) {
+        long newMinute = getCurrentMinuteFromSystem();
+
+        if (newMinute > stats.getMinuteLatest()) {
+            synchronized (this) {
+                if (newMinute > stats.getMinuteLatest()) {
+
+                    // Move Latest values to Previous
+                    stats.updateMinutePreviousMaximumDuration(stats.getMinuteLatestMaximumDuration());
+                    stats.updateMinutePreviousMinimumDuration(stats.getMinuteLatestMinimumDuration());
+                    stats.updateMinutePrevious(stats.getMinuteLatest());
+
+                    // Rest latest minute values to 0 and update minute
+                    stats.updateMinuteLatestMaximumDuration(0L);
+                    stats.updateMinuteLatestMinimumDuration(0L);
+                    stats.updateMinuteLatest(newMinute);
+                }
+            } // synch
         }
+    }
 
-    	Class<?> resourceClass = resourceInfo.getResourceClass();
-        
-        if (resourceClass != null) {
-            Method resourceMethod = resourceInfo.getResourceMethod();
-            
-            Class<?>[] parameterClasses = resourceMethod.getParameterTypes();
-            int i = 0;
-            String parameter;
-            String fullMethodName = resourceClass.getName() + "/" + resourceMethod.getName() + "(";
-            for (Class<?> p : parameterClasses) {
-             	parameter = p.getCanonicalName();
-            	if (i > 0) {
-            		fullMethodName = fullMethodName + "_" + parameter;
-            	} else {
-            		fullMethodName = fullMethodName + parameter;
-            	}
-            	i++;
-            }
-            fullMethodName = fullMethodName + ")";
-                                    
-            ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-            String appName = getAppName(cmd);
-            String modName = getModName(cmd);
-            String keyPrefix = createKeyPrefix(appName,modName);
-            String key = keyPrefix + "/" + fullMethodName; 
-            
-            REST_Stats stats = jaxRsCountByName.get(key);
-            if (stats == null) {
-                 stats =initJaxRsStats(key, keyPrefix, fullMethodName);
-            }
-            // Save key in appMetricInfos for cleanup on application stop.
-            addKeyToMetricInfo(appName,key);
-            
-            //Increment the request count for the resource method.
-            stats.incrementCountBy(1);
-            
-            //Store the response time for the resource method.
-            stats.updateRT(elapsedTime < 0 ? 0 : elapsedTime);
-        	
-        }
-
+    // Get the current system time in minutes, truncating. This number will increase by 1 every complete minute.
+    private long getCurrentMinuteFromSystem() {
+        return System.currentTimeMillis() / 60000;
     }
     
     /**
@@ -201,7 +255,7 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
     		rMetricInfo = new RestMetricInfo();
     		appMetricInfos.put(appName, rMetricInfo);
     	}
-    		return rMetricInfo;
+    	return rMetricInfo;
     }
     
     // At application stop time we will need to clean up the jaxRsCountByName 

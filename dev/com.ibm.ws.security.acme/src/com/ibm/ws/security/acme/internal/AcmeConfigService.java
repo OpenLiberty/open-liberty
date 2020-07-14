@@ -112,7 +112,7 @@ public class AcmeConfigService {
 		/*
 		 * Construct a new ACME client.
 		 */
-		AcmeConfig acmeConfig = new AcmeConfig(properties);
+		AcmeConfig acmeConfig = new AcmeConfig(properties, true);
 		AcmeClient acmeClient = new AcmeClient(acmeConfig);
 
 		/*

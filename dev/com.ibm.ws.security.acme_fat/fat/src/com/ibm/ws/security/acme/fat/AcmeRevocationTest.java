@@ -75,8 +75,7 @@ public class AcmeRevocationTest {
 	@Server("com.ibm.ws.security.acme.fat.revocation")
 	public static LibertyServer server;
 
-	@ClassRule
-	public static CAContainer boulder = new BoulderContainer();
+	public static CAContainer boulder = null;
 
 	private static ServerConfiguration originalServerConfig;
 
@@ -85,8 +84,6 @@ public class AcmeRevocationTest {
 	private static final String ADMIN_PASS = "adminpass";
 	
 	private static final String DOMAIN = "domain1.com"; // Set to domain1.com as it has a high rate limit on certificate requests
-	
-	public static final long SCHEDULE_TIME = AcmeConstants.RENEW_CERT_MIN + 2000;
 	
 	private static final String CERTIFICATE_ENDPOINT = "/ibm/api" + AcmeCaRestHandler.PATH_CERTIFICATE;
 	
@@ -108,6 +105,7 @@ public class AcmeRevocationTest {
 
 	@BeforeClass
 	public static void beforeClass() throws Exception {
+		boulder = new BoulderContainer();
 		originalServerConfig = server.getServerConfiguration();
 		AcmeFatUtils.checkPortOpen(boulder.getHttpPort(), 60000);
 	}
@@ -120,7 +118,7 @@ public class AcmeRevocationTest {
 	}
 
 	@After
-	public void after() {
+	public void after() throws Exception {
 		AcmeFatUtils.deleteAcmeFiles(server);
 	}
 
@@ -165,7 +163,7 @@ public class AcmeRevocationTest {
 			 * status as revoked. Cycle the server and we should now see that
 			 * the certificate is replaced since it was revoked.
 			 */
-			server.stopServer();
+			stopServer();
 			server.startServer();
 			server.waitForStringInLog("CWPKI2059I"); // Detected cert revoked!
 			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
@@ -180,7 +178,7 @@ public class AcmeRevocationTest {
 			assertThat("Expected new certificate.", serial1, not(equalTo(serial2)));
 
 		} finally {
-			server.stopServer();
+			stopServer();
 		}
 	}
 
@@ -225,7 +223,7 @@ public class AcmeRevocationTest {
 			 * status as revoked. Cycle the server. This time we will not
 			 * perform the revocation check since it is disabled.
 			 */
-			server.stopServer();
+			stopServer();
 			server.startServer();
 			AcmeFatUtils.waitForSslEndpoint(server);
 			Certificate[] certificates2 = AcmeFatUtils.assertAndGetServerCertificate(server, boulder);
@@ -238,7 +236,7 @@ public class AcmeRevocationTest {
 			assertThat("Expected same certificate.", serial1, equalTo(serial2));
 
 		} finally {
-			server.stopServer();
+			stopServer();
 		}
 	}
 
@@ -286,7 +284,7 @@ public class AcmeRevocationTest {
 			 * revoked. We treat this as a soft failure since it is possible it
 			 * may be a network glitch. A warning will be written to logs.
 			 */
-			server.stopServer();
+			stopServer();
 			server.startServer();
 			server.waitForStringInLog("CWPKI2058W"); // Soft failures...
 			AcmeFatUtils.waitForSslEndpoint(server);
@@ -300,7 +298,7 @@ public class AcmeRevocationTest {
 			assertThat("Expected same certificate.", serial1, equalTo(serial2));
 
 		} finally {
-			server.stopServer("CWPKI2058W");
+			stopServer("CWPKI2058W");
 		}
 	}
 
@@ -317,6 +315,7 @@ public class AcmeRevocationTest {
 		acmeRevocationChecker.setOcspResponderUrl(boulder.getOcspResponderUrl());
 		acmeRevocationChecker.setEnabled(enabled);
 		acmeCa.setAcmeRevocationChecker(acmeRevocationChecker);
+		acmeCa.setRenewCertMin(17000L);
 	}
 
 	/**
@@ -383,7 +382,7 @@ public class AcmeRevocationTest {
 
 		ServerConfiguration configuration = originalServerConfig.clone();
 		configureAcmeRevocation(configuration, true);
-		configuration.getAcmeCA().setCertCheckerSchedule(SCHEDULE_TIME + "ms");
+		configuration.getAcmeCA().setCertCheckerSchedule(configuration.getAcmeCA().getRenewCertMin() + "ms");
 		
 		AcmeFatUtils.configureAcmeCA(server, boulder, configuration, DOMAIN);
 
@@ -419,10 +418,10 @@ public class AcmeRevocationTest {
 			 * Wait for the cert checker to run and update
 			 */
 			assertNotNull("Should log message that the certificate was revoked",
-					server.waitForStringInLogUsingMark("CWPKI2067I", (SCHEDULE_TIME * 3)) );
+					server.waitForStringInLogUsingMark("CWPKI2067I", (configuration.getAcmeCA().getRenewCertMin() * 3)) );
 
 			assertNotNull("Should log message that the certificate was renewed",
-					server.waitForStringInLogUsingMark("CWPKI2007I", (SCHEDULE_TIME * 3)) );
+					server.waitForStringInLogUsingMark("CWPKI2007I", (configuration.getAcmeCA().getRenewCertMin() * 3)) );
 
 			AcmeFatUtils.waitForNewCert(server, boulder, startingCertificateChain);
 
@@ -433,7 +432,7 @@ public class AcmeRevocationTest {
 			/*
 			 * Stop the server.
 			 */
-			server.stopServer();
+			stopServer();
 		}
 	}
 	
@@ -492,7 +491,7 @@ public class AcmeRevocationTest {
 			assertJsonResponse(jsonResponse, 200);
 
 		} finally {
-			server.stopServer();
+			stopServer();
 		}
 	}
 
@@ -587,4 +586,65 @@ public class AcmeRevocationTest {
 		}
 	}
 
+	private void stopServer(String...msgs) throws Exception {
+		AcmeFatUtils.stopServer(server, msgs);
+	}
+	
+	/**
+	 * Start a pebble server and swap between pebble and boulder and make sure
+	 * we still get a certificate when switching.
+	 * 
+	 * @throws Exception
+	 *             if the test failed for some unforeseen reason.
+	 */
+	@Test
+	public void swapBetweenCAProviders() throws Exception {
+		final String methodName = testName.getMethodName();
+
+		CAContainer pebble = new PebbleContainer();
+		try {
+
+			/*
+			 * Configure and start with Pebble
+			 */
+			ServerConfiguration configuration = originalServerConfig.clone();
+			configureAcmeRevocation(configuration, true);
+			AcmeFatUtils.configureAcmeCA(server, pebble, configuration, false, DOMAIN);
+
+			Log.info(AcmeSimpleTest.class, methodName, "Starting server with Pebble");
+			server.startServer();
+			AcmeFatUtils.waitForSslToCreateKeystore(server);
+			AcmeFatUtils.waitForSslEndpoint(server);
+			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
+			server.setMarkToEndOfLog(server.getDefaultLogFile());
+
+			Certificate[] certificates1 = AcmeFatUtils.assertAndGetServerCertificate(server, pebble);
+
+			Log.info(AcmeSimpleTest.class, methodName, "Swap to Boulder");
+			AcmeFatUtils.configureAcmeCA(server, boulder, configuration, false, DOMAIN);
+			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
+			certificates1 = AcmeFatUtils.waitForNewCert(server, boulder, certificates1);
+			server.setMarkToEndOfLog(server.getDefaultLogFile());
+
+			Log.info(AcmeSimpleTest.class, methodName, "Swap back to Pebble");
+			AcmeFatUtils.configureAcmeCA(server, pebble, configuration, false, DOMAIN);
+			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
+			certificates1 = AcmeFatUtils.waitForNewCert(server, pebble, certificates1);
+
+			Log.info(AcmeSimpleTest.class, methodName, "Swap back to Boulder");
+			AcmeFatUtils.configureAcmeCA(server, boulder, configuration, false, DOMAIN);
+			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
+			certificates1 = AcmeFatUtils.waitForNewCert(server, boulder, certificates1);
+			server.setMarkToEndOfLog(server.getDefaultLogFile());
+
+		} finally {
+			try {
+				stopServer();
+			} finally {
+				if (pebble != null) {
+					pebble.stop();
+				}
+			}
+		}
+	}
 }

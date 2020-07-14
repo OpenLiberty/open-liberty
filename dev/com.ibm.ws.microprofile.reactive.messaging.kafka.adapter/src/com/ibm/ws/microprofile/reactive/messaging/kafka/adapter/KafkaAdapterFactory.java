@@ -21,6 +21,7 @@ import org.eclipse.microprofile.reactive.messaging.Message;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
  *
@@ -157,13 +158,16 @@ public abstract class KafkaAdapterFactory {
         return instance;
     }
 
+    @FFDCIgnore(InvocationTargetException.class)
     protected static final <T> T getInstance(Class<T> implClass, Class<?>[] parameterTypes, Object[] parameters) {
         Constructor<T> xtor = getConstructor(implClass, parameterTypes);
 
         T instance = null;
         try {
             instance = xtor.newInstance(parameters);
-        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException e) {
+            throw new KafkaAdapterException(e);
+        } catch (InvocationTargetException e) { // Separate catch block to ignore FFDCs
             throw new KafkaAdapterException(e);
         }
         return instance;

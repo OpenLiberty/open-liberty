@@ -44,16 +44,18 @@ public class BeerServlet extends HttpServlet {
         @Override
         public void addBeer(Beer newBeer, StreamObserver<BeerResponse> responseObserver) {
             boolean notFound = true;
+            System.out.println("Entered addBeer, current number of beers is " + numBeers);
             // Lame test, only 20 beers allowed
             if (numBeers < 20) {
                 int i = 0;
-                while (i < numBeers) {
+                while (i < numBeers && notFound) {
+                    System.out.println("In while, beer is " + beerList[i].getBeerName());
                     if (beerList[i].getBeerName().equals(newBeer.getBeerName())) {
                         notFound = false;
-                        break;
                     }
                     i++;
                 }
+                System.out.println("Out of while, beer not found is " + notFound);
                 if (notFound) {
                     beerList[i] = newBeer;
                     numBeers++;

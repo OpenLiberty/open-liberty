@@ -40,8 +40,6 @@ tested.features: servlet-5.0,\
     io.openliberty.jakarta.servlet.5.0;version=latest,\
     io.openliberty.jakarta.jsp.3.0;version=latest,\
     commons-httpclient:commons-httpclient;version=3.1,\
-    org.apache.httpcomponents:httpclient;version=4.1.2, \
-    org.apache.httpcomponents:httpcore;version=4.1.2, \
     httpunit:httpunit;version=1.5.4,\
     net.sf.jtidy:jtidy;version=9.3.8,\
     org.apache.httpcomponents.client5:httpclient5;version=5.0,\

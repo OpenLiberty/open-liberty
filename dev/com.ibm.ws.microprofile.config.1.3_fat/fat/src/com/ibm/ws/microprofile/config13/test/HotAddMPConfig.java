@@ -20,6 +20,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions.Version;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
 
 import componenttest.annotation.Server;
@@ -40,7 +41,7 @@ public class HotAddMPConfig extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatConfigActions.repeatConfig13("HotAddMPConfig");
+    public static RepeatTests r = RepeatConfigActions.repeat("HotAddMPConfig", Version.LATEST, Version.CONFIG13_EE8);
 
     @BeforeClass
     public static void setUp() throws Exception {

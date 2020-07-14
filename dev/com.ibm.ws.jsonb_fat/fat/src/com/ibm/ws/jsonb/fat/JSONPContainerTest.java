@@ -23,6 +23,8 @@ import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import web.jsonptest.JSONPTestServlet;
@@ -32,6 +34,7 @@ import web.jsonptest.JSONPTestServlet;
  * Consider if we should move to the JSON-P bucket once that is written.
  */
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class JSONPContainerTest extends FATServletClient {
 
     private static final String appName = "jsonpapp";

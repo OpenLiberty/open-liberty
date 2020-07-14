@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,12 +10,23 @@
  *******************************************************************************/
 package com.ibm.ws.bval.v20.fat;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
+
 @RunWith(Suite.class)
 @SuiteClasses({
-                BeanVal20Test.class,
+                BeanVal20_CDI_EJB_Test.class,
+                BeanVal20Test.class
 })
-public class FATSuite {}
+public class FATSuite {
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification() // run all tests as-is
+                    .andWith(new JakartaEE9Action()); // run all tests again with EE9 features+packages
+
+}

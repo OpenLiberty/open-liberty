@@ -58,6 +58,8 @@ public class AcmeConfig {
 	private String trustStore = null;
 	private SerializableProtectedString trustStorePassword = null;
 	private String trustStoreType = null;
+	private int httpConnectTimeout = AcmeConstants.HTTP_CONNECT_TIMEOUT_DEFAULT;
+	private int httpReadTimeout = AcmeConstants.HTTP_READ_TIMEOUT_DEFAULT;
 
 	// Renew configuration options
 	private Long renewBeforeExpirationMs = AcmeConstants.RENEW_DEFAULT_MS;
@@ -72,9 +74,15 @@ public class AcmeConfig {
 	// Certificate checker configuration options, currently intended to be internal only
 	private Long certCheckerScheduler = AcmeConstants.SCHEDULER_MS;
 	private Long certCheckerErrorScheduler = AcmeConstants.SCHEDULER_ERROR_MS;
-	
+
 	// Allow back to back renew requests, currently intended to be internal use only
 	private boolean disableMinRenewWindow = false;
+
+	// Disable certificate renewal when the acmeca-history file does not yet exist
+	private boolean disableRenewOnNewHistory = false;
+
+	// Minimum allowed time to check for expiration
+	private Long renewCertMin;
 	
 	/**
 	 * Create a new {@link AcmeConfig} instance.
@@ -86,6 +94,21 @@ public class AcmeConfig {
 	 *             if there is a configuration error
 	 */
 	public AcmeConfig(Map<String, Object> properties) throws AcmeCaException {
+		this(properties, false);
+	}
+	
+	/**
+	 * Create a new {@link AcmeConfig} instance.
+	 * 
+	 * @param properties
+	 *            The configuration properties passed in from declarative
+	 *            services.
+	 * @param throwWarnings
+	 *            Throw warnings if True.
+	 * @throws AcmeCaException
+	 *             if there is a configuration error
+	 */
+	public AcmeConfig(Map<String, Object> properties, boolean throwWarnings) throws AcmeCaException {
 		/*
 		 * Directory URI must be valid.
 		 */
@@ -110,6 +133,7 @@ public class AcmeConfig {
 			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2037E"));
 		}
 
+		renewCertMin = getLongValue(properties, AcmeConstants.RENEW_CERT_MIN, AcmeConstants.RENEW_CERT_MIN_DEFAULT);
 		setValidFor(getLongValue(properties, AcmeConstants.VALID_FOR));
 		processSubjectDN(getStringValue(properties, AcmeConstants.SUBJECT_DN));
 		Long temp = getLongValue(properties, AcmeConstants.CHALL_POLL_TIMEOUT);
@@ -117,6 +141,9 @@ public class AcmeConfig {
 		temp = getLongValue(properties, AcmeConstants.ORDER_POLL_TIMEOUT);
 		orderPollTimeoutMs = Math.max(0, (temp == null) ? AcmeConstants.ORDER_POLL_DEFAULT : temp);
 		accountContacts = getStringList(properties, AcmeConstants.ACCOUNT_CONTACT);
+		if (accountContacts == null && throwWarnings) {
+			Tr.warning(tc, "CWPKI2073W");
+		}
 		setCertCheckerScheduler(getLongValue(properties, AcmeConstants.CERT_CHECKER_SCHEDULE));
 		setCertCheckerErrorScheduler(getLongValue(properties, AcmeConstants.CERT_CHECKER_ERROR_SCHEDULE));
 
@@ -141,10 +168,25 @@ public class AcmeConfig {
 			trustStorePassword = getSerializableProtectedStringValue(transportProps,
 					AcmeConstants.TRANSPORT_TRUST_STORE_PASSWORD);
 			trustStoreType = getStringValue(transportProps, AcmeConstants.TRANSPORT_TRUST_STORE_TYPE);
+
+			/*
+			 * We're passing these in the URLConnection where 0 is infinite timeout and the connect/read timeouts
+			 * are int parameters. If someone puts in longer than max int, we'll set to max int.
+			 * 
+			 * If we make these properties public, we may want to add messages if we adjusted the times (min/max).
+			 */
+			Long raw = getLongValue(transportProps, AcmeConstants.HTTP_CONNECT_TIMEOUT);
+			Long modToInt = Math.max(0, (raw == null) ? AcmeConstants.HTTP_CONNECT_TIMEOUT_DEFAULT : raw);
+			httpConnectTimeout = (int) Math.min(modToInt, Integer.MAX_VALUE);
+
+			raw = getLongValue(transportProps, AcmeConstants.HTTP_READ_TIMEOUT);
+			modToInt = Math.max(0, (raw == null) ? AcmeConstants.HTTP_READ_TIMEOUT_DEFAULT : raw);
+			httpReadTimeout = (int) Math.min(modToInt, Integer.MAX_VALUE);
 		}
 
 		setRenewBeforeExpirationMs(getLongValue(properties, AcmeConstants.RENEW_BEFORE_EXPIRATION), true);
 		disableMinRenewWindow = getBooleanValue(properties, AcmeConstants.DISABLE_MIN_RENEW_WINDOW, false);
+		disableRenewOnNewHistory = getBooleanValue(properties, AcmeConstants.DISABLE_RENEW_ON_NEW_HISTORY, false);
 
 		/*
 		 * Get revocation checker configuration.
@@ -169,6 +211,7 @@ public class AcmeConfig {
 			preferCRLs = getBooleanValue(revocationProps, AcmeConstants.REVOCATION_PREFER_CRLS);
 			disableFallback = getBooleanValue(revocationProps, AcmeConstants.REVOCATION_DISABLE_FALLBACK);
 		}
+		
 	}
 
 	/**
@@ -243,6 +286,27 @@ public class AcmeConfig {
 		Object value = configProps.get(property);
 		if (value == null) {
 			return null;
+		}
+		return (Long) value;
+	}
+	
+	/**
+	 * Get a {@link Long} value from the config properties.
+	 * 
+	 * @param configProps
+	 *            The configuration properties passed in by declarative
+	 *            services.
+	 * @param property
+	 *            The property to lookup.
+	 * @param outcomeOnNull
+	 *            The value to assign if the lookup is null.
+	 * @return The {@link Long} value, or null if it doesn't exist.
+	 */
+	@Trivial
+	private static Long getLongValue(Map<String, Object> configProps, String property, Long outcomeOnNull) {
+		Object value = configProps.get(property);
+		if (value == null) {
+			return outcomeOnNull;
 		}
 		return (Long) value;
 	}
@@ -558,12 +622,12 @@ public class AcmeConfig {
 							"Auto renewal of the certificate is disabled, renewBeforeExpirationMs was configured to "
 									+ ms);
 				}
-			} else if (ms < AcmeConstants.RENEW_CERT_MIN) {
+			} else if (ms < renewCertMin) {
 				/*
 				 * too low of a timeout, reset to the min rewew allowed
 				 */
-				this.renewBeforeExpirationMs = AcmeConstants.RENEW_CERT_MIN;
-				Tr.warning(tc, "CWPKI2051W", ms + "ms", AcmeConstants.RENEW_CERT_MIN + "ms");
+				this.renewBeforeExpirationMs = renewCertMin;
+				Tr.warning(tc, "CWPKI2051W", ms + "ms", renewCertMin + "ms");
 			} else {
 				this.renewBeforeExpirationMs = ms;
 
@@ -665,15 +729,15 @@ public class AcmeConfig {
 		if (certCheckerScheduler != null) {
 			if (certCheckerScheduler <= 0) {
 				/*
-				 * Cert Checker is disabled
+				 * Cert Checker is disabled. Message is logged in 
+				 * AcmeCertCheckerTask.startCertificateChecker
 				 */
-				Tr.info(tc, "CWPKI2069I");
 				this.certCheckerScheduler = 0L;
-			} else if (certCheckerScheduler < AcmeConstants.RENEW_CERT_MIN) {
+			} else if (certCheckerScheduler < renewCertMin) {
 				/*
 				 * Too low of a timeout, reset to the min renew allowed
 				 */
-				this.certCheckerScheduler = AcmeConstants.RENEW_CERT_MIN;
+				this.certCheckerScheduler = renewCertMin;
 				Tr.warning(tc, "CWPKI2070W", certCheckerScheduler, this.certCheckerScheduler + "ms");
 			} else { 
 				this.certCheckerScheduler = certCheckerScheduler;
@@ -699,11 +763,11 @@ public class AcmeConfig {
 	 */
 	public void setCertCheckerErrorScheduler(Long certCheckerErrorScheduler) {
 		if (certCheckerErrorScheduler != null) {
-			if (certCheckerErrorScheduler < AcmeConstants.RENEW_CERT_MIN) {
+			if (certCheckerErrorScheduler < renewCertMin) {
 				/*
 				 * Too low of a timeout, reset to the min renew allowed
 				 */
-				this.certCheckerErrorScheduler = AcmeConstants.RENEW_CERT_MIN;
+				this.certCheckerErrorScheduler = renewCertMin;
 				Tr.warning(tc, "CWPKI2071W", certCheckerErrorScheduler, this.certCheckerErrorScheduler + "ms");
 			} else { 
 				this.certCheckerErrorScheduler = certCheckerErrorScheduler;
@@ -719,5 +783,82 @@ public class AcmeConfig {
 	public boolean isDisableMinRenewWindow() {
 		return disableMinRenewWindow;
 	}
+	
+	/**
+	 * 
+	 * @return disableRenewOnNewHistory
+	 */
+	@Trivial
+	public boolean isDisableRenewOnNewHistory() {
+		return disableRenewOnNewHistory;
+	}
+	
+	/**
+	 * 
+	 * @return renewCertMin
+	 */
+	@Trivial
+	public long getRenewCertMin() {
+		return renewCertMin;
+	}
+
+	/**
+	 * 
+	 * @return httpConnectTimeout
+	 */
+	@Trivial
+	public Integer getHTTPConnectTimeout() {
+		return httpConnectTimeout;
+	}
+
+	/**
+	 * 
+	 * @return httpReadTimeout
+	 */
+	@Trivial
+	public Integer getHTTPReadTimeout() {
+		return httpReadTimeout;
+	}
+	
+	@Override
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
+        sb.append(this.getClass().getName()).append(":{");
+        sb.append("directoryURI=").append(directoryURI).append("\n");
+        sb.append(", domains=").append(domains).append("\n");
+        sb.append(", validForMs=").append(validForMs).append("\n");
+        sb.append(", subjectDN=").append(subjectDN).append("\n");
+        sb.append(", challengePollTimeoutMs=").append(challengePollTimeoutMs).append("\n");
+        sb.append(", orderPollTimeoutMs=").append(orderPollTimeoutMs).append("\n");
+        sb.append(", accountKeyFile=").append(accountKeyFile).append("\n");
+        sb.append(", accountContacts=").append(accountContacts).append("\n");
+        sb.append(", domainKeyFile=").append(domainKeyFile).append("\n");
+        sb.append(", renewBeforeExpirationMs=").append(renewBeforeExpirationMs).append("\n");
+        sb.append(", autoRenewOnExpiration=").append(autoRenewOnExpiration).append("\n");
+        sb.append(", certCheckerScheduler=").append(certCheckerScheduler).append("\n");
+        sb.append(", certCheckerErrorScheduler=").append(certCheckerErrorScheduler).append("\n");
+        sb.append(", disableMinRenewWindow=").append(disableMinRenewWindow).append("\n");
+        sb.append(", disableRenewOnNewHistory=").append(disableRenewOnNewHistory).append("\n");
+        sb.append(", renewCertMin=").append(renewCertMin).append("\n");
+        sb.append(" }");
+
+        /* Transport configuration */
+        sb.append(", acmeTransportConfig{ protocol=").append(protocol).append("\n");
+        sb.append(", trustStore=").append(trustStore).append("\n");
+        sb.append(", trustStoreType=").append(trustStoreType).append("\n");
+        sb.append(", httpConnectTimeout=").append(httpConnectTimeout).append("\n");
+        sb.append(", httpReadTimeout=").append(httpReadTimeout).append("\n");
+        sb.append(" }");
+
+        /* Revocation configuration */
+        sb.append(", acmeRevocationChecker{ ocspResponderUrl=").append(ocspResponderUrl).append("\n");
+        sb.append(", revocationCheckerEnabled=").append(revocationCheckerEnabled).append("\n");
+        sb.append(", preferCRLs=").append(preferCRLs).append("\n");
+        sb.append(", disableFallback=").append(disableFallback).append("\n");
+        sb.append(" }");
+
+        sb.append("}");
+        return sb.toString();
+    }
 
 }

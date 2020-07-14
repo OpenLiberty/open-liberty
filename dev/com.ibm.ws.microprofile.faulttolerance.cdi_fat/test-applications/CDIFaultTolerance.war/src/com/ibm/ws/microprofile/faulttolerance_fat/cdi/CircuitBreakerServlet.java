@@ -35,6 +35,7 @@ import org.eclipse.microprofile.faulttolerance.exceptions.CircuitBreakerOpenExce
 import org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException;
 import org.junit.Test;
 
+import com.ibm.websphere.microprofile.faulttolerance_fat.suite.BasicTest;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.AsyncRunnerBean;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.CircuitBreakerBean;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.CircuitBreakerBean2;
@@ -349,6 +350,7 @@ public class CircuitBreakerServlet extends FATServlet {
      * @throws InterruptedException
      * @throws ConnectException
      */
+    @BasicTest
     @Test
     public void testCBFailureThresholdWithRoll() throws InterruptedException, ConnectException {
 

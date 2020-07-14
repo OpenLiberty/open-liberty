@@ -18,8 +18,9 @@ import com.ibm.ws.microprofile.config.converters.BuiltInConverter;
 import com.ibm.ws.microprofile.config.converters.PriorityConverterMap;
 import com.ibm.ws.microprofile.config.impl.ConversionManager;
 import com.ibm.ws.microprofile.config.impl.ConversionStatus;
-import com.ibm.ws.microprofile.config.interfaces.ConfigException;
 import com.ibm.ws.microprofile.config12.converters.ImplicitConverter;
+
+import io.openliberty.microprofile.config.internal.common.ConfigException;
 
 public class Config12ConversionManager extends ConversionManager {
 

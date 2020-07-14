@@ -8,4 +8,4 @@ IBM-Provision-Capability: \
 -bundles=com.ibm.ws.microprofile.metrics.3.0.monitor
 IBM-Install-Policy: when-satisfied
 kind=noship
-edition=core
+edition=full

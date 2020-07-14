@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2018 IBM Corporation and others.
+# Copyright (c) 2016, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -128,6 +128,10 @@ INTROSPECT_ERROR_GETTING_USER_INFO.useraction=Dac\u0103 mesajul con\u0163ine alt
 INTROSPECT_USER_API_INACTIVE=CWWKS5388E: Cererea de introspec\u0163ie jeton a e\u015fuat deoarece jetonul care este inclus \u00een cerere nu este valid. R\u0103spunsul \u00eentreg este {0}.
 INTROSPECT_USER_API_INACTIVE.explanation=Serverul de autorizare nu a emis jetonul, proprietarul resursei a revocat jetonul, jetonul este expirat sau a ap\u0103rut o alt\u0103 eroare.
 INTROSPECT_USER_API_INACTIVE.useraction=Verifica\u0163i r\u0103spunsul care este inclus \u00een mesaj. Verifica\u0163i c\u0103 este utilizat punctul final de introspec\u0163ie jeton corect. Verifica\u0163i c\u0103 jetonul este valid \u015fi c\u0103 jetonul poate fi introspectat.
+
+USER_API_RESPONSE_NOT_AUTHENTICATED=CWWKS5389E: R\u0103spunsul API-ului de utilizator indic\u0103 faptul c\u0103 cererea de API de utilizator nu este autentificat\u0103. Verifica\u0163i dac\u0103 jetonul de acces care este inclus \u00een cererea de API de utilizator este valid \u015fi dac\u0103 este asociat cu un utilizator cunoscut.
+USER_API_RESPONSE_NOT_AUTHENTICATED.explanation=Jetonul de acces din cererea de API de utilizator ar putea s\u0103 lipseasc\u0103, s\u0103 fie expirat, s\u0103 fie format gre\u015fit s\u0103 nu fie valid din alt\u0103 cauz\u0103. Este posibil ca jetonul s\u0103 nu fie asociat cu un utilizator cunoscut de c\u0103tre API-ul de utilizator.
+USER_API_RESPONSE_NOT_AUTHENTICATED.useraction=Verifica\u0163i dac\u0103 jetonul de acces este inclus \u00een cererea de API de utilizator. Asigura\u0163i-v\u0103 c\u0103 jetonul nu este expirat \u015fi c\u0103 nu este format gre\u015fit. Verifica\u0163i dac\u0103 utilizatorul care este asociat cu jetonul de acces este cunoscut de c\u0103tre API-ul de utilizator.
 
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: Configurarea de logare social\u0103 [{0}] a fost procesat\u0103 cu succes.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=Configurarea indicat\u0103 de logare social\u0103 a fost procesat\u0103 cu succes.

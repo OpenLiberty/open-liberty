@@ -17,6 +17,9 @@ dependencies {
 File serverDir1 = new File(autoFvtDir, 'publish/servers/com.ibm.ws.transaction')
 File serverDir2 = new File(autoFvtDir, 'publish/servers/com.ibm.ws.transaction_waitForRecovery')
 File serverDir3 = new File(autoFvtDir, 'publish/servers/com.ibm.ws.transaction_XAFlow')
+File serverDir4 = new File(autoFvtDir, 'publish/servers/com.ibm.ws.transaction.dblog')
+File serverDir7 = new File(autoFvtDir, 'publish/servers/com.ibm.ws.transaction_commitPriority')
+
 
 task addDerbyToServerDir1(type: Copy) {
   from configurations.derby
@@ -36,6 +39,18 @@ task addDerbyToServerDir3(type: Copy) {
   rename 'derby-.*.jar', 'derby.jar'
 }
 
+task addDerbyToServerDir4(type: Copy) {
+  from configurations.derby
+  into new File(serverDir4, 'derby')
+  rename 'derby-.*.jar', 'derby.jar'
+}
+
+task addDerbyToServerDir7(type: Copy) {
+  from configurations.derby
+  into new File(serverDir7, 'derby')
+  rename 'derby-.*.jar', 'derby.jar'
+}
+
 addRequiredLibraries {
-  dependsOn addDerbyToServerDir1,addDerbyToServerDir2,addDerbyToServerDir3, addJakartaTransformer
+  dependsOn addDerbyToServerDir1,addDerbyToServerDir2,addDerbyToServerDir3,addDerbyToServerDir4,addDerbyToServerDir7,addJakartaTransformer
 }

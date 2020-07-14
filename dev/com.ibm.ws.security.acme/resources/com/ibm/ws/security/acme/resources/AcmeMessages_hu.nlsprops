@@ -20,7 +20,7 @@
 #-----  ACME messages
 
 # The ACME referred to in these messages stands for Automatic Certificate Management Environment.
-# The term "certificate authority" is in reference to SSL/TLS certificate providers.
+# The term "certificate authority" is in reference to SSL and TLS requests certificate providers.
 # The URI parameter in these messages is for the ACME certificate authority, such as https://sampleCAProvider.org/directory
 
 ###############################################################################
@@ -32,6 +32,7 @@ REST_FORBIDDEN=Tiltott
 REST_INVALID_CONTENT_TYPE=A k\u00e9r\u00e9s tartalomt\u00edpus fejl\u00e9ce nem 'application/json'.
 REST_MISSING_OPERATION=Nem ker\u00fclt megad\u00e1sra m\u0171velet a k\u00e9r\u00e9shez.
 REST_NO_ACME_SERVICE=Nincs regisztr\u00e1lva AcmeProvider szolg\u00e1ltat\u00e1s.
+REST_TOO_MANY_REQUESTS=A felhaszn\u00e1l\u00f3 t\u00fal sok k\u00e9r\u00e9st k\u00fcld\u00f6tt adott id\u0151 alatt. A k\u00f6vetkez\u0151 k\u00e9r\u00e9sig h\u00e1tral\u00e9v\u0151 enged\u00e9lyezett id\u0151: {0}.
 ###############################################################################
 
 FILE_NOT_READABLE=A f\u00e1jl nem olvashat\u00f3
@@ -130,7 +131,7 @@ CWPKI2023E=CWPKI2023E: Az ACME szolg\u00e1ltat\u00e1s nem tudta \u00edrni az ACM
 CWPKI2023E.explanation=A fi\u00f3kkulcsok nem t\u00e1rolhat\u00f3k a fi\u00f3kkulcsf\u00e1jlban. Ez akkor fordulhat el\u0151, ha a f\u00e1jlenged\u00e9lyek nem megfelel\u0151ek, vagy a f\u00e1jl nem l\u00e9tezik.
 CWPKI2023E.useraction=Tekintse \u00e1t a hiba\u00fczenetet a sikertelens\u00e9gre vonatkoz\u00f3 r\u00e9szletek\u00e9rt. Ellen\u0151rizze, hogy a f\u00e1jl helye megfelel\u0151-e, \u00e9s a kiszolg\u00e1l\u00f3 rendelkezik f\u00e1jl\u00edr\u00e1si enged\u00e9llyel.
 
-CWPKI2024E=CWPKI2024E: Az ACME szolg\u00e1ltat\u00e1s nem tudta visszavonni az ACME tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1gt\u00f3l ig\u00e9nyelt tan\u00fas\u00edtv\u00e1nyt a(z) {0} URI c\u00edmen. A tan\u00fas\u00edtv\u00e1ny sorozatsz\u00e1ma: {1}. A hiba: ''{2}''.
+CWPKI2024E=CWPKI2024E: Az ACME szolg\u00e1ltat\u00e1s nem tudta visszavonni az ACME tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1gt\u00f3l ig\u00e9nyelt tan\u00fas\u00edtv\u00e1nyt a(z) {0} URI c\u00edmen. A tan\u00fas\u00edtv\u00e1ny sorozatsz\u00e1ma: {1}. A hiba: ''{2}''. Ez el\u0151fordulhat, ha a k\u00f6nyvt\u00e1r URI megv\u00e1ltozott, ha \u00edgy van, akkor figyelmen k\u00edv\u00fcl hagyhatja.
 CWPKI2024E.explanation=Egy tan\u00fas\u00edtv\u00e1nyvisszavon\u00e1si k\u00e9r\u00e9s meghi\u00fasult. Lehet, hogy a tan\u00fas\u00edtv\u00e1ny nem vonhat\u00f3 vissza, \u00e9s m\u00e9g haszn\u00e1latban lehet.
 CWPKI2024E.useraction=Tekintse \u00e1t a hiba\u00fczenetet a sikertelens\u00e9gre vonatkoz\u00f3 r\u00e9szletek\u00e9rt.
 
@@ -215,7 +216,7 @@ CWPKI2044E.explanation=Az ACME szolg\u00e1ltat\u00e1s a tan\u00fas\u00edtv\u00e1
 CWPKI2044E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a tan\u00fas\u00edtv\u00e1nyl\u00e1ncban szerepl\u0151 \u00f6sszes tan\u00fas\u00edtv\u00e1ny X.509 tan\u00fas\u00edtv\u00e1ny, majd pr\u00f3b\u00e1lkozzon \u00fajra.
 
 CWPKI2045W=CWPKI2045W: Az ACME tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1g \u00e1ltal a(z) {1} URI c\u00edmen al\u00e1\u00edrt {0} sorozatsz\u00e1mmal rendelkez\u0151 tan\u00fas\u00edtv\u00e1ny nem \u00e9rv\u00e9nyes a k\u00f6vetkez\u0151ig: {2}.
-CWPKI2045W.explanation=A tan\u00fas\u00edtv\u00e1ny \u00e9rv\u00e9nyess\u00e9gi id\u0151tartama a j\u00f6v\u0151ben van. Az SSL/TLS k\u00e9r\u00e9sek meghi\u00fasulnak, am\u00edg az aktu\u00e1lis d\u00e1tum \u00e9s id\u0151pont nincs a tan\u00fas\u00edtv\u00e1ny \u00e9rv\u00e9nyes id\u0151tartam\u00e1ban megadott tartom\u00e1nyon bel\u00fcl.
+CWPKI2045W.explanation=A tan\u00fas\u00edtv\u00e1ny \u00e9rv\u00e9nyess\u00e9gi id\u0151tartama a j\u00f6v\u0151ben van. Az SSL \u00e9s TLS k\u00e9r\u00e9sek meghi\u00fasulnak, am\u00edg az aktu\u00e1lis d\u00e1tum \u00e9s id\u0151pont nincs a tan\u00fas\u00edtv\u00e1ny \u00e9rv\u00e9nyes id\u0151tartam\u00e1ban megadott tartom\u00e1nyon bel\u00fcl.
 CWPKI2045W.useraction=Friss\u00edtse a helyi id\u0151t a kiszolg\u00e1l\u00f3n, ha az id\u0151 helytelen.
 
 CWPKI2046E=CWPKI2046E: A(z) {0} tan\u00fas\u00edtv\u00e1ny visszavon\u00e1s\u00e1nak oka \u00e9rv\u00e9nytelen. T\u00e1mogatott visszavon\u00e1si indokok: unspecified, key_compromise, ca_compromise, affiliation_changed, superseded, cessation_of_operations, certificate_hold, remove_from_crl, privilege_withdrawn \u00e9s aa_compromise.
@@ -241,31 +242,33 @@ CWPKI2050E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megl\u00e9v
 CWPKI2051W=CWPKI2051W: A renewBeforeExpiration tulajdons\u00e1g \u00e9rt\u00e9ke {0}, ami r\u00f6videbb, mint a minim\u00e1lis meg\u00faj\u00edt\u00e1si id\u0151. A renewBeforeExpiration tulajdons\u00e1g vissza\u00e1ll\u00edt\u00e1sra ker\u00fclt {1} \u00e9rt\u00e9kre.
 CWPKI2051W.explanation=A renewBeforeExpiration tulajdons\u00e1g \u00e9rt\u00e9ke az \u00faj tan\u00fas\u00edtv\u00e1ny k\u00e9r\u00e9s\u00e9re vonatkoz\u00f3 minim\u00e1lis id\u0151tartam alatt volt, \u00e9s vissza lett \u00e1ll\u00edtva a minim\u00e1lis meg\u00faj\u00edt\u00e1si id\u0151re. Ennek negat\u00edv hat\u00e1sa lehet a kiszolg\u00e1l\u00f3 teljes\u00edtm\u00e9ny\u00e9re.
 CWPKI2051W.useraction=A figyelmeztet\u0151 \u00fczenet elker\u00fcl\u00e9se \u00e9rdek\u00e9ben \u00e1ll\u00edtsa a renewBeforeExpiration tulajdons\u00e1g \u00e9rt\u00e9k\u00e9t a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban olyan id\u0151tartamra, amely hosszabb a minim\u00e1lis meg\u00faj\u00edt\u00e1si id\u0151n\u00e9l. Az alap\u00e9rtelmezett be\u00e1ll\u00edt\u00e1s haszn\u00e1lat\u00e1hoz t\u00e1vol\u00edtsa el a renewBeforeExpiration tulajdons\u00e1got a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3b\u00f3l.
+
 CWPKI2052I=CWPKI2052I: A(z) {0} sorozatsz\u00e1mmal rendelkez\u0151 tan\u00fas\u00edtv\u00e1ny lej\u00e1rata: {1}. Az ACME szolg\u00e1ltat\u00e1s \u00faj tan\u00fas\u00edtv\u00e1nyt k\u00e9r az ACME tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1gt\u00f3l a(z) {2} URI c\u00edmen.
 CWPKI2052I.explanation=Az ACME szolg\u00e1ltat\u00e1s a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban tal\u00e1lhat\u00f3 renewBeforeExpiration tulajdons\u00e1g \u00e9s a tan\u00fas\u00edtv\u00e1ny lej\u00e1rati d\u00e1tuma alapj\u00e1n \u00faj tan\u00fas\u00edtv\u00e1nyt k\u00e9r. Ha a renewBeforeExpiration tulajdons\u00e1g nincs be\u00e1ll\u00edtva, akkor az alap\u00e9rtelmezett \u00e9rt\u00e9k ker\u00fcl alkalmaz\u00e1sra.
 CWPKI2052I.useraction=Nincs teend\u0151.
 
 CWPKI2053W=CWPKI2053W: A(z) {0} sorozatsz\u00e1mmal rendelkez\u0151 tan\u00fas\u00edtv\u00e1ny ekkor lej\u00e1rt: {1}. Az ACME szolg\u00e1ltat\u00e1s nincs be\u00e1ll\u00edtva \u00faj tan\u00fas\u00edtv\u00e1ny automatikus k\u00e9r\u00e9s\u00e9re.
-CWPKI2053W.explanation=A TLS/SSL k\u00e9r\u00e9s nem hajthat\u00f3 v\u00e9gre, mert a tan\u00fas\u00edtv\u00e1ny lej\u00e1rt.
+CWPKI2053W.explanation=A SSL \u00e9s TLS k\u00e9r\u00e9s nem hajthat\u00f3 v\u00e9gre, mert a tan\u00fas\u00edtv\u00e1ny lej\u00e1rt.
 CWPKI2053W.useraction=Friss\u00edtse a renewBeforeExpiration tulajdons\u00e1got a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban 0-n\u00e1l nagyobb \u00e9rt\u00e9kre, hogy automatikusan k\u00e9rhet\u0151 legyen \u00faj tan\u00fas\u00edtv\u00e1ny, vagy haszn\u00e1lja az ACME REST fel\u00fcletet az \u00faj tan\u00fas\u00edtv\u00e1ny k\u00e9r\u00e9s\u00e9re.
 
 CWPKI2054W=CWPKI2054W: A renewBeforeExpiration tulajdons\u00e1g \u00e9rt\u00e9ke {0}, ami megegyezik a(z) {1} sorozatsz\u00e1mmal rendelkez\u0151 tan\u00fas\u00edtv\u00e1ny \u00e9rv\u00e9nyess\u00e9gi id\u0151tartam\u00e1val vagy hosszabb ann\u00e1l. A tan\u00fas\u00edtv\u00e1ny \u00e9rv\u00e9nyess\u00e9gi ideje: {2}. A renewBeforeExpiration tulajdons\u00e1g vissza\u00e1ll\u00edt\u00e1sra ker\u00fclt {3} \u00e9rt\u00e9kre.
 CWPKI2054W.explanation=A renewBeforeExpiration tulajdons\u00e1g \u00e9rt\u00e9ke hosszabb id\u0151tartam volt, mint a tan\u00fas\u00edtv\u00e1ny \u00e9rv\u00e9nyess\u00e9gi id\u0151tartama. A renewBeforeExpiration tulajdons\u00e1g vissza\u00e1ll az alap\u00e9rtelmezett \u00e9rt\u00e9kre.
-CWPKI2054W.useraction=A figyelmeztet\u0151 \u00fczenet elker\u00fcl\u00e9se \u00e9rdek\u00e9ben \u00e1ll\u00edtsa be a renewBeforeExpiration tulajdons\u00e1got a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban olyan id\u0151tartam \u00e9rt\u00e9kre, amely r\u00f6videbb, mint a tan\u00fas\u00edtv\u00e1ny \u00e9rv\u00e9nyess\u00e9gi id\u0151tartama. Az alap\u00e9rtelmezett be\u00e1ll\u00edt\u00e1s haszn\u00e1lat\u00e1hoz t\u00e1vol\u00edtsa el a renewBeforeExpiration tulajdons\u00e1got. 
+CWPKI2054W.useraction=A figyelmeztet\u0151 \u00fczenet elker\u00fcl\u00e9se \u00e9rdek\u00e9ben \u00e1ll\u00edtsa be a renewBeforeExpiration tulajdons\u00e1got a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban olyan id\u0151tartam \u00e9rt\u00e9kre, amely r\u00f6videbb, mint a tan\u00fas\u00edtv\u00e1ny \u00e9rv\u00e9nyess\u00e9gi id\u0151tartama. Az alap\u00e9rtelmezett be\u00e1ll\u00edt\u00e1s haszn\u00e1lat\u00e1hoz t\u00e1vol\u00edtsa el a renewBeforeExpiration tulajdons\u00e1got.
+
 CWPKI2055W=CWPKI2055W: A renewBeforeExpiration tulajdons\u00e1g r\u00f6vid id\u0151tartamra van be\u00e1ll\u00edtva. Az ACME szolg\u00e1ltat\u00e1s gyakran k\u00e9r \u00faj tan\u00fas\u00edtv\u00e1nyt. A renewBeforeExpiration tulajdons\u00e1g \u00e9rt\u00e9ke: {0}.
 CWPKI2055W.explanation=A gyakori tan\u00fas\u00edtv\u00e1nyk\u00e9r\u00e9s negat\u00edv hat\u00e1ssal lehet a kiszolg\u00e1l\u00f3 teljes\u00edtm\u00e9ny\u00e9re. A k\u00e9r\u00e9sek sz\u00e1ma meghaladhatja a tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1g \u00e1ltal megengedettet is.
 CWPKI2055W.useraction=A figyelmeztet\u0151 \u00fczenet elker\u00fcl\u00e9se \u00e9rdek\u00e9ben \u00e1ll\u00edtsa be a renewBeforeExpiration tulajdons\u00e1got a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban hosszabb id\u0151tartamra. Az alap\u00e9rtelmezett be\u00e1ll\u00edt\u00e1s haszn\u00e1lat\u00e1hoz t\u00e1vol\u00edtsa el a renewBeforeExpiration tulajdons\u00e1got a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3b\u00f3l.
+
 CWPKI2056W=CWPKI2056W: A(z) {0} sorozatsz\u00e1mmal rendelkez\u0151 tan\u00fas\u00edtv\u00e1ny \u00e9rv\u00e9nyess\u00e9gi ideje r\u00f6videbb, mint a minim\u00e1lis {1} meg\u00faj\u00edt\u00e1si id\u0151. A tan\u00fas\u00edtv\u00e1ny \u00e9rv\u00e9nyess\u00e9gi ideje: {2}. A renewBeforeExpiration tulajdons\u00e1g vissza\u00e1ll\u00edt\u00e1sra ker\u00fclt {3} \u00e9rt\u00e9kre.
 CWPKI2056W.explanation=Az \u00e9rv\u00e9nyess\u00e9gi id\u0151tartam r\u00f6videbb, mint a minim\u00e1lis meg\u00faj\u00edt\u00e1si id\u0151. A tan\u00fas\u00edtv\u00e1ny \u00faj tan\u00fas\u00edtv\u00e1ny k\u00e9r\u00e9se el\u0151tt lej\u00e1r.
 CWPKI2056W.useraction=A tan\u00fas\u00edtv\u00e1nylej\u00e1rat elker\u00fcl\u00e9se \u00e9rdek\u00e9ben k\u00e9rjen hosszabb \u00e9rv\u00e9nyess\u00e9gi id\u0151tartammal rendelkez\u0151 tan\u00fas\u00edtv\u00e1nyt. Ha a tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1g t\u00e1mogatja az egy\u00e9ni \u00e9rv\u00e9nyess\u00e9gi id\u0151tartamot, akkor \u00e1ll\u00edtsa be a validFor tulajdons\u00e1got a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban.
 
-CWPKI2057E=CWPKI2057E: A tan\u00fas\u00edtv\u00e1nyvisszavon\u00e1si-\u00e1llapot ellen\u0151rz\u00e9se nem hozott l\u00e9tre CertPathValidator objektumot a tan\u00fas\u00edtv\u00e1ny \u00e9rv\u00e9nyes\u00edt\u00e9s\u00e9re. A hiba: ''{0}''.
-CWPKI2057E.explanation=A tan\u00fas\u00edtv\u00e1nyvisszavon\u00e1s-ellen\u0151rz\u0151nek \u00f6ssze kell \u00e1ll\u00edtania egy CertPathValidator objektumot az OCSP \u00e9s CRL visszavon\u00e1si \u00e1llapot ellen\u0151rz\u00e9s\u00e9re.
+CWPKI2057E=CWPKI2057E: A tan\u00fas\u00edtv\u00e1nyvisszavon\u00e1si \u00e1llapotellen\u0151rz\u00e9s nem hozott l\u00e9tre Java tan\u00fas\u00edtv\u00e1ny \u00fatvonal \u00e9rv\u00e9nyes\u00edt\u00e9si eszk\u00f6zt a tan\u00fas\u00edtv\u00e1ny \u00e9rv\u00e9nyes\u00edt\u00e9s\u00e9re. A hiba: ''{0}''.
+CWPKI2057E.explanation=A tan\u00fas\u00edtv\u00e1nyvisszavon\u00e1s-ellen\u0151rz\u0151nek fel kell \u00e9p\u00edtenie egy Java tan\u00fas\u00edtv\u00e1ny \u00fatvonal \u00e9rv\u00e9nyes\u00edt\u00e9si eszk\u00f6zt az OCSP \u00e9s CRL visszavon\u00e1si \u00e1llapot ellen\u0151rz\u00e9s\u00e9re.
 CWPKI2057E.useraction=Tekintse \u00e1t az \u00e1llapot\u00fczenetet \u00e9s a hib\u00e1t a r\u00e9szletek\u00e9rt.
 
 CWPKI2058W=CWPKI2058W: A tan\u00fas\u00edtv\u00e1nyvisszavon\u00e1si \u00e1llapotellen\u0151rz\u00e9s figyelmen k\u00edv\u00fcl hagyta a helyrehozhat\u00f3 hib\u00e1kat. Lehet, hogy a visszavon\u00e1s ellen\u0151rz\u00e9s nem fejez\u0151d\u00f6tt be. A hib\u00e1k: ''{0}''.
-CWPKI2058W.explanation=A helyrehozhat\u00f3 hib\u00e1k k\u00f6z\u00e9 tartoznak a h\u00e1l\u00f3zati hib\u00e1k is. Az ACME szolg\u00e1ltat\u00e1s figyelmen k\u00edv\u00fcl hagyja a helyrehozhat\u00f3 hib\u00e1kat, mivel azok ideiglenes hib\u00e1k lehetnek.
-
+CWPKI2058W.explanation=A helyrehozhat\u00f3 hib\u00e1k k\u00f6z\u00e9 tartoznak a h\u00e1l\u00f3zati hib\u00e1k is. Az ACME szolg\u00e1ltat\u00e1s figyelmen k\u00edv\u00fcl hagyja a helyrehozhat\u00f3 hib\u00e1kat, mivel azok ideiglenes hib\u00e1k lehetnek. 
 CWPKI2058W.useraction=Ha ez az \u00fczenet k\u00f6vetkezetesen megjelenik, akkor meg kell oldani a hiba ok\u00e1t, mert az megakad\u00e1lyozhatja a megfelel\u0151 visszavon\u00e1si \u00e1llapotellen\u0151rz\u00e9st. Egy\u00e9bk\u00e9nt a figyelmeztet\u00e9s biztons\u00e1ggal figyelmen k\u00edv\u00fcl hagyhat\u00f3.  
 
 CWPKI2059I=CWPKI2059I: A tan\u00fas\u00edtv\u00e1nyvisszavon\u00e1si \u00e1llapotellen\u0151rz\u00e9s meg\u00e1llap\u00edtotta, hogy a(z) {0} sorozatsz\u00e1mmal rendelkez\u0151 tan\u00fas\u00edtv\u00e1ny visszavon\u00e1sra ker\u00fclt.
@@ -283,3 +286,40 @@ CWPKI2061E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a tan\u00fas\
 CWPKI2062E=CWPKI2062E: A kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban megadott {0} OCSP v\u00e1laszad\u00f3 URL nem \u00e9rv\u00e9nyes URI. Ha meg van adva, akkor \u00e9rv\u00e9nyes URI azonos\u00edt\u00f3nak kell lennie, hogy a tan\u00fas\u00edtv\u00e1nyban tal\u00e1lhat\u00f3 OSCP v\u00e1laszad\u00f3 URL c\u00edmet fel\u00fclb\u00edr\u00e1lja.
 CWPKI2062E.explanation=A tan\u00fas\u00edtv\u00e1nyvisszavon\u00e1s ellen\u0151rz\u00e9se \u00e9rv\u00e9nyes OCSP v\u00e1laszad\u00f3 URL c\u00edmet ig\u00e9nyel.
 CWPKI2062E.useraction=Adjon meg \u00e9rv\u00e9nyes OCSP v\u00e1laszad\u00f3 URL c\u00edmet a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban.
+
+CWPKI2063E=CWPKI2063E: A(z) {0} URI azonos\u00edt\u00f3n tal\u00e1lhat\u00f3 ACME tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1g friss\u00edtette az \u00e1ltal\u00e1nos szolg\u00e1ltat\u00e1si felt\u00e9teleit, \u00e9s a felhaszn\u00e1l\u00f3nak most el kell fogadnia az al\u00e1bbi URI alatt tal\u00e1lhat\u00f3 \u00faj szolg\u00e1ltat\u00e1si felt\u00e9teleket a tov\u00e1bbi k\u00e9r\u00e9sek feldolgoz\u00e1sa el\u0151tt: {1}
+CWPKI2063E.explanation=A tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1g friss\u00edtette a szolg\u00e1ltat\u00e1si felt\u00e9teleit, \u00e9s felhaszn\u00e1l\u00f3i beavatkoz\u00e1st ig\u00e9nyel.
+CWPKI2063E.useraction=Tekintse \u00e1t a szolg\u00e1ltat\u00e1si felt\u00e9teleket.
+
+CWPKI2064I=CWPKI2064I: Az ACME szolg\u00e1ltat\u00e1s {2} m\u00e1sodperc alatt k\u00e9rte le a(z) {0} sorozatsz\u00e1m\u00fa tan\u00fas\u00edtv\u00e1nyt a(z) {1} URI azonos\u00edt\u00f3r\u00f3l.
+CWPKI2064I.explanation=Az ACME szolg\u00e1ltat\u00e1s sikeresen ig\u00e9nyelt egy tan\u00fas\u00edtv\u00e1nyt.
+CWPKI2064I.useraction=Nincs teend\u0151.
+
+CWPKI2065W=CWPKI2065W: Az ACME szolg\u00e1ltat\u00e1s nem tudta automatikusan meg\u00faj\u00edtani a(z) {0} sorozatsz\u00e1m\u00fa tan\u00fas\u00edtv\u00e1nyt. A k\u00e9r\u00e9s ism\u00e9telt k\u00eds\u00e9rlet\u00e9nek \u00fctemez\u00e9se: {1} m\u00falva. A tan\u00fas\u00edtv\u00e1ny lej\u00e1rati d\u00e1tuma: {2}. A meg\u00faj\u00edt\u00e1si k\u00e9r\u00e9s hib\u00e1ja: ''{3}''.
+CWPKI2065W.explanation=Az ACME szolg\u00e1ltat\u00e1s megpr\u00f3b\u00e1lt meg\u00faj\u00edtani egy tan\u00fas\u00edtv\u00e1nyt, de hib\u00e1ba \u00fctk\u00f6z\u00f6tt. Az ACME szolg\u00e1ltat\u00e1s az \u00faj tan\u00fas\u00edtv\u00e1ny kiad\u00e1s\u00e1ig tov\u00e1bbra is k\u00e9ri az \u00faj tan\u00fas\u00edtv\u00e1nyt.
+CWPKI2065W.useraction=Tekintse \u00e1t a hiba\u00fczenetet a sikertelens\u00e9gre vonatkoz\u00f3 r\u00e9szletek\u00e9rt.
+
+CWPKI2066E=CWPKI2066E: Az ACME szolg\u00e1ltat\u00e1s nem tudta automatikusan meg\u00faj\u00edtani a(z) {0} sorozatsz\u00e1m\u00fa tan\u00fas\u00edtv\u00e1nyt. A tan\u00fas\u00edtv\u00e1ny vissza van vonva.A k\u00e9r\u00e9s ism\u00e9telt k\u00eds\u00e9rlet\u00e9nek \u00fctemez\u00e9se: {1} m\u00falva. A meg\u00faj\u00edt\u00e1si k\u00e9r\u00e9s hib\u00e1ja: ''{2}''.
+CWPKI2066E.explanation=Az ACME szolg\u00e1ltat\u00e1s megpr\u00f3b\u00e1lt meg\u00faj\u00edtani egy tan\u00fas\u00edtv\u00e1nyt, de hib\u00e1ba \u00fctk\u00f6z\u00f6tt. Az ACME szolg\u00e1ltat\u00e1s az \u00faj tan\u00fas\u00edtv\u00e1ny kiad\u00e1s\u00e1ig tov\u00e1bbra is k\u00e9ri az \u00faj tan\u00fas\u00edtv\u00e1nyt. Az SSL \u00e9s TLS k\u00e9r\u00e9sek mindaddig meghi\u00fasulnak, am\u00edg nincs az \u00faj tan\u00fas\u00edtv\u00e1nyk\u00e9r\u00e9s nem sikeres.
+CWPKI2066E.useraction=Tekintse \u00e1t a hiba\u00fczenetet a sikertelens\u00e9gre vonatkoz\u00f3 r\u00e9szletek\u00e9rt. 
+
+CWPKI2067I=CWPKI2067I: A(z) {0} sorozatsz\u00e1mmal rendelkez\u0151 tan\u00fas\u00edtv\u00e1ny visszavon\u00e1sra ker\u00fclt. Az ACME szolg\u00e1ltat\u00e1s \u00faj tan\u00fas\u00edtv\u00e1nyt k\u00e9r az ACME tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1gt\u00f3l a(z) {1} URI c\u00edmen.
+CWPKI2067I.explanation=Az ACME szolg\u00e1ltat\u00e1s amint \u00e9szleli, hogy a tan\u00fas\u00edtv\u00e1ny visszavon\u00e1sra ker\u00fclt, automatikusan \u00faj tan\u00fas\u00edtv\u00e1nyt k\u00e9r.
+CWPKI2067I.useraction=Nincs teend\u0151.
+
+CWPKI2068W=CWPKI2068W: Az ACME szolg\u00e1ltat\u00e1s automatikus tan\u00fas\u00edtv\u00e1nyellen\u0151rz\u00e9se nem tudta ellen\u0151rizni, hogy a(z) {0} sorozatsz\u00e1m\u00fa tan\u00fas\u00edtv\u00e1ny lej\u00e1rt-e vagy visszavont\u00e1k. Az ellen\u0151rz\u00e9s ism\u00e9telt k\u00eds\u00e9rlet\u00e9nek \u00fctemez\u00e9se: {1} m\u00falva. A hiba: ''{2}''.
+CWPKI2068W.explanation=Az ACME szolg\u00e1ltat\u00e1s megkezdte az ellen\u0151rz\u00e9st, hogy a tan\u00fas\u00edtv\u00e1ny lej\u00e1rt-e vagy visszavont\u00e1k, de meghi\u00fasult.
+CWPKI2068W.useraction=Tekintse \u00e1t a hiba\u00fczenetet a sikertelens\u00e9gre vonatkoz\u00f3 r\u00e9szletek\u00e9rt. Tekintse \u00e1t a tan\u00fas\u00edtv\u00e1ny \u00e1llapot\u00e1t az ACME REST fel\u00fclet haszn\u00e1lat\u00e1val. Ha a tan\u00fas\u00edtv\u00e1nyt meg kell \u00faj\u00edtani, akkor az ACME REST fel\u00fclet seg\u00edts\u00e9g\u00e9vel \u00faj tan\u00fas\u00edtv\u00e1nyt k\u00e9rhet.
+CWPKI2069I=CWPKI2069I: Az ACME szolg\u00e1ltat\u00e1s automatikus tan\u00fas\u00edtv\u00e1nyellen\u0151rz\u00e9se le van tiltva. A lej\u00e1rt vagy visszavont tan\u00fas\u00edtv\u00e1nyok meg\u00faj\u00edt\u00e1sa nem automatikus.
+CWPKI2069I.explanation=Az ACME szolg\u00e1ltat\u00e1s nem automatikus \u00fctemterv szerint ellen\u0151rzi a lej\u00e1r\u00f3 vagy visszavont tan\u00fas\u00edtv\u00e1nyokat. Ha a tan\u00fas\u00edtv\u00e1ny lej\u00e1r vagy visszavon\u00e1sra ker\u00fcl, akkor az SSL \u00e9s TLS k\u00e9r\u00e9sek nem hajthat\u00f3k v\u00e9gre, kiv\u00e9ve, ha a kiszolg\u00e1l\u00f3 \u00fajraindul, vagy ha a tan\u00fas\u00edtv\u00e1ny meg\u00faj\u00edt\u00e1s\u00e1ra a REST fel\u00fclet seg\u00edts\u00e9g\u00e9vel ker\u00fcl sor.
+CWPKI2069I.useraction=Nincs teend\u0151. Az automatikus tan\u00fas\u00edtv\u00e1nyellen\u0151rz\u00e9s enged\u00e9lyez\u00e9s\u00e9hez friss\u00edtse a certCheckerSchedule tulajdons\u00e1got a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban 0-n\u00e1l nagyobb \u00e9rt\u00e9kre.
+
+CWPKI2070W=CWPKI2070W: A certCheckerSchedule tulajdons\u00e1g {0} \u00e9rt\u00e9kre van \u00e1ll\u00edtva, ami r\u00f6videbb, mint a minim\u00e1lis \u00fctemez\u00e9si id\u0151. A certCheckerSchedule tulajdons\u00e1g vissza\u00e1ll a(z) {1} \u00e9rt\u00e9kre.
+CWPKI2070W.explanation=A certCheckerSchedule tulajdons\u00e1g \u00e9rt\u00e9ke a lej\u00e1r\u00f3 vagy visszavont tan\u00fas\u00edtv\u00e1nyok ellen\u0151rz\u00e9s\u00e9re megadott minim\u00e1lis id\u0151tartam alatt volt, \u00e9s vissza\u00e1ll\u00edt\u00e1sra ker\u00fclt a minim\u00e1lis \u00fctemez\u00e9si id\u0151re.
+CWPKI2070W.useraction=A figyelmeztet\u0151 \u00fczenet elker\u00fcl\u00e9se \u00e9rdek\u00e9ben \u00e1ll\u00edtsa a certCheckerSchedule tulajdons\u00e1g \u00e9rt\u00e9k\u00e9t a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban olyan id\u0151tartamra, amely hosszabb a minim\u00e1lis \u00fctemez\u00e9si id\u0151n\u00e9l. Az alap\u00e9rtelmezett be\u00e1ll\u00edt\u00e1s haszn\u00e1lat\u00e1hoz t\u00e1vol\u00edtsa el a certCheckerSchedule tulajdons\u00e1got a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3b\u00f3l.
+CWPKI2071W=CWPKI2071W: A certCheckerErrorSchedule tulajdons\u00e1g {0} \u00e9rt\u00e9kre van \u00e1ll\u00edtva, ami r\u00f6videbb, mint a minim\u00e1lis \u00fctemez\u00e9si id\u0151. A certCheckerErrorSchedule tulajdons\u00e1g vissza\u00e1ll a(z) {1} \u00e9rt\u00e9kre.
+CWPKI2071W.explanation=A certCheckerErrorSchedule tulajdons\u00e1g \u00e9rt\u00e9ke a lej\u00e1r\u00f3 vagy visszavont tan\u00fas\u00edtv\u00e1nyok ellen\u0151rz\u00e9s\u00e9re megadott minim\u00e1lis id\u0151tartam alatt volt, \u00e9s vissza\u00e1ll\u00edt\u00e1sra ker\u00fclt a minim\u00e1lis \u00fctemez\u00e9si id\u0151re.
+CWPKI2071W.useraction=A figyelmeztet\u0151 \u00fczenet elker\u00fcl\u00e9se \u00e9rdek\u00e9ben \u00e1ll\u00edtsa a certCheckerErrorSchedule tulajdons\u00e1g \u00e9rt\u00e9k\u00e9t a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban olyan id\u0151tartamra, amely hosszabb a minim\u00e1lis \u00fctemez\u00e9si id\u0151n\u00e9l. Az alap\u00e9rtelmezett be\u00e1ll\u00edt\u00e1s haszn\u00e1lat\u00e1hoz t\u00e1vol\u00edtsa el a certCheckerErrorSchedule tulajdons\u00e1got a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3b\u00f3l.
+CWPKI2072W=CWPKI2072W: Az ACME szolg\u00e1ltat\u00e1s nem tudta olvasni vagy \u00edrni az el\u0151zm\u00e9ny ACME f\u00e1jlt a(z) {0} helyen. A hiba: ''{1}''.
+CWPKI2072W.explanation=Az ACME szolg\u00e1ltat\u00e1s nem tudta el\u00e9rni az ACME el\u0151zm\u00e9nyf\u00e1jlt.
+CWPKI2072W.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az ACME el\u0151zm\u00e9nyk\u00f6nyvt\u00e1ra rendelkezik olvas\u00e1si \u00e9s \u00edr\u00e1si enged\u00e9lyekkel.

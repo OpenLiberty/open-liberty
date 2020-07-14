@@ -20,4 +20,4 @@ Subsystem-Name: MicroProfile Metrics 3.0
  com.ibm.ws.microprofile.metrics.private, \
  com.ibm.ws.microprofile.metrics.public
 kind=noship
-edition=core
+edition=full
