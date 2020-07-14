@@ -19,12 +19,10 @@ import java.security.PrivilegedExceptionAction;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Security;
-import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -39,10 +37,10 @@ import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.StringUtils;
 import org.jose4j.lang.JoseException;
 
-import org.apache.commons.codec.binary.Base64;
 import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
@@ -120,7 +118,8 @@ public class JwtUtils {
 
 	// private static AtomicServiceReference<VirtualHost> virtualHostRef;
 
-	// some selective message management for expired token flows where we don't want
+	// some selective message management for expired token flows where we don't
+	// want
 	// a lot of stuff in the log
 	private static ThreadLocal<Boolean> isJwtSsoValidationPath = new ThreadLocal<Boolean>();
 	private static ThreadLocal<Boolean> isJwtSsoValidationPathExpiredToken = new ThreadLocal<Boolean>();
@@ -294,7 +293,7 @@ public class JwtUtils {
 			JSONObject.parse(value.toString());
 		} catch (Exception e) {
 			if (tc.isDebugEnabled()) {
-				Tr.debug(tc, "Value [" + value + "] is not a valid JSON object: " + e.getMessage());
+				Tr.debug(tc, "Value [" + value + "] is not a valid JSON object: " + e);
 			}
 			return false;
 		}
@@ -310,7 +309,7 @@ public class JwtUtils {
 			JSONArray.parse(value.toString());
 		} catch (Exception e) {
 			if (tc.isDebugEnabled()) {
-				Tr.debug(tc, "Value [" + value + "] is not a valid JSON array: " + e.getMessage());
+				Tr.debug(tc, "Value [" + value + "] is not a valid JSON array: " + e);
 			}
 			return false;
 		}
@@ -318,10 +317,10 @@ public class JwtUtils {
 	}
 
 	/**
-	 * Trims each of the strings in the array provided and returns a new list with
-	 * each string added to it. If the trimmed string is empty, that string will not
-	 * be added to the final array. If no entries are present in the final array,
-	 * null is returned.
+	 * Trims each of the strings in the array provided and returns a new list
+	 * with each string added to it. If the trimmed string is empty, that string
+	 * will not be added to the final array. If no entries are present in the
+	 * final array, null is returned.
 	 *
 	 * @param strings
 	 * @return
@@ -580,7 +579,7 @@ public class JwtUtils {
 			// check for NO aliases in the trust store
 			if (aliases == null || aliases.size() == 0) {
 				X509Certificate cert = kss.getX509CertificateFromKeyStore(trustStoreRef);
-				
+
 				if (cert != null) {
 					return cert.getPublicKey();
 				}
@@ -589,14 +588,15 @@ public class JwtUtils {
 
 			}
 			// check for more than 1 alias in the trust store (with more than 1,
-			// we need to have one key/cert pair available or trustAlias specified (this is part of the no
+			// we need to have one key/cert pair available or trustAlias
+			// specified (this is part of the no
 			// trustAlais path))
 			if (aliases.size() > 1) {
-                X509Certificate cert = kss.getX509CertificateFromKeyStore(trustStoreRef);
-                
-                if (cert != null) {
-                    return cert.getPublicKey();
-                }
+				X509Certificate cert = kss.getX509CertificateFromKeyStore(trustStoreRef);
+
+				if (cert != null) {
+					return cert.getPublicKey();
+				}
 				String errorMsg = Tr.formatMessage(tc, "JWT_SIGNER_CERT_AMBIGUOUS");
 				throw new InvalidTokenException(errorMsg);
 

@@ -32,14 +32,14 @@ public class PermittedFlowsTest extends BaseTestCase {
     public void testGoodDefaultConfiguration() {
         BaseConfig config = new BaseConfig();
         String[] GRANT_TYPES_ALLOWED = {
-                                         OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_AUTH_CODE,
-                                         OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_IMPLICIT,
-                                         OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_CLIENT_CREDENTIALS,
-                                         OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_OWNER_PASSWORD,
-                                         OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_REFRESH_TOKEN };
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_AUTH_CODE,
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_IMPLICIT,
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_CLIENT_CREDENTIALS,
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_OWNER_PASSWORD,
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_REFRESH_TOKEN };
         config.putConfigPropertyValues(
-                                       OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPES_ALLOWED,
-                                       GRANT_TYPES_ALLOWED);
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPES_ALLOWED,
+                GRANT_TYPES_ALLOWED);
         initializeOAuthFramework(config);
 
         try {
@@ -47,7 +47,7 @@ public class PermittedFlowsTest extends BaseTestCase {
             assertNotNull(result);
             assertEquals(OAuthResult.STATUS_OK, result.getStatus());
         } catch (OAuthException e) {
-            fail("got an exception: " + e.getMessage());
+            fail("got an exception: " + e);
             e.printStackTrace();
         }
     }
@@ -56,8 +56,8 @@ public class PermittedFlowsTest extends BaseTestCase {
         BaseConfig config = new BaseConfig();
         String[] GRANT_TYPES_ALLOWED = {};
         config.putConfigPropertyValues(
-                                       OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPES_ALLOWED,
-                                       GRANT_TYPES_ALLOWED);
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPES_ALLOWED,
+                GRANT_TYPES_ALLOWED);
 
         try {
             OAuthComponentFactory.getOAuthComponentInstance(config);
@@ -73,8 +73,8 @@ public class PermittedFlowsTest extends BaseTestCase {
         BaseConfig config = new BaseConfig();
         String[] GRANT_TYPES_ALLOWED = { "just_an_invalid_grant_type" };
         config.putConfigPropertyValues(
-                                       OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPES_ALLOWED,
-                                       GRANT_TYPES_ALLOWED);
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPES_ALLOWED,
+                GRANT_TYPES_ALLOWED);
 
         try {
             OAuthComponentFactory.getOAuthComponentInstance(config);
@@ -89,13 +89,13 @@ public class PermittedFlowsTest extends BaseTestCase {
     public void testNoOAUTH20_GRANT_TYPE_AUTH_CODE() {
         BaseConfig config = new BaseConfig();
         String[] GRANT_TYPES_ALLOWED = {
-                                         OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_IMPLICIT,
-                                         OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_CLIENT_CREDENTIALS,
-                                         OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_OWNER_PASSWORD,
-                                         OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_REFRESH_TOKEN };
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_IMPLICIT,
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_CLIENT_CREDENTIALS,
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_OWNER_PASSWORD,
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_REFRESH_TOKEN };
         config.putConfigPropertyValues(
-                                       OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPES_ALLOWED,
-                                       GRANT_TYPES_ALLOWED);
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPES_ALLOWED,
+                GRANT_TYPES_ALLOWED);
 
         initializeOAuthFramework(config);
 
@@ -107,19 +107,19 @@ public class PermittedFlowsTest extends BaseTestCase {
         request.setParameter(OAuth20Constants.CLIENT_ID, "key");
         request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret");
         request.setParameter(OAuth20Constants.GRANT_TYPE,
-                             OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE);
+                OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE);
         request.setParameter(OAuth20Constants.RESPONSE_TYPE,
-                             OAuth20Constants.RESPONSE_TYPE_CODE);
+                OAuth20Constants.RESPONSE_TYPE_CODE);
         request.setParameter(OAuth20Constants.CODE, "bad_value");
         request.setParameter(OAuth20Constants.REDIRECT_URI, "bad_value");
         request.setHeader(OAuth20Constants.HTTP_HEADER_CONTENT_TYPE,
-                          OAuth20Constants.HTTP_CONTENT_TYPE_FORM);
+                OAuth20Constants.HTTP_CONTENT_TYPE_FORM);
 
         StringWriter responseBuffer = new StringWriter();
         response.setWriter(responseBuffer);
 
         OAuthResult result = oauth20.processTokenRequest(null, request,
-                                                         response);
+                response);
         assertTrue(result.getStatus() != OAuthResult.STATUS_OK);
         assertTrue(result.getCause() instanceof OAuthConfigurationException);
 
@@ -129,8 +129,8 @@ public class PermittedFlowsTest extends BaseTestCase {
         BaseConfig config = new BaseConfig();
         String[] GRANT_TYPES_ALLOWED = { OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_AUTH_CODE };
         config.putConfigPropertyValues(
-                                       OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPES_ALLOWED,
-                                       GRANT_TYPES_ALLOWED);
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPES_ALLOWED,
+                GRANT_TYPES_ALLOWED);
 
         initializeOAuthFramework(config);
 
@@ -146,7 +146,7 @@ public class PermittedFlowsTest extends BaseTestCase {
         responseauth.setWriter(responseBuffer);
 
         OAuthResult result = oauth20.processAuthorization(username, clientId,
-                                                          redirectUri, responseType, state, scope, responseauth);
+                redirectUri, responseType, state, scope, responseauth);
 
         assertNotNull(result);
         if (result.getStatus() != OAuthResult.STATUS_OK) {
@@ -156,7 +156,7 @@ public class PermittedFlowsTest extends BaseTestCase {
         assertNull(result.getCause());
 
         String code = result.getAttributeList().getAttributeValueByName(
-                                                                        "authorization_code_id");
+                "authorization_code_id");
         assertNotNull(code);
 
         MockServletRequest request = new MockServletRequest();
@@ -165,13 +165,13 @@ public class PermittedFlowsTest extends BaseTestCase {
         request.setParameter(OAuth20Constants.CLIENT_ID, "key");
         request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret");
         request.setParameter(OAuth20Constants.GRANT_TYPE,
-                             OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE);
+                OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE);
         request.setParameter(OAuth20Constants.RESPONSE_TYPE,
-                             OAuth20Constants.RESPONSE_TYPE_CODE);
+                OAuth20Constants.RESPONSE_TYPE_CODE);
         request.setParameter(OAuth20Constants.CODE, code);
         request.setParameter(OAuth20Constants.REDIRECT_URI, redirectUri);
         request.setHeader(OAuth20Constants.HTTP_HEADER_CONTENT_TYPE,
-                          OAuth20Constants.HTTP_CONTENT_TYPE_FORM);
+                OAuth20Constants.HTTP_CONTENT_TYPE_FORM);
 
         responseBuffer = new StringWriter();
         response.setWriter(responseBuffer);
@@ -191,13 +191,13 @@ public class PermittedFlowsTest extends BaseTestCase {
     public void testNoOAUTH20_GRANT_TYPE_IMPLICIT() {
         BaseConfig config = new BaseConfig();
         String[] GRANT_TYPES_ALLOWED = {
-                                         OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_AUTH_CODE,
-                                         OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_CLIENT_CREDENTIALS,
-                                         OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_OWNER_PASSWORD,
-                                         OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_REFRESH_TOKEN };
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_AUTH_CODE,
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_CLIENT_CREDENTIALS,
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_OWNER_PASSWORD,
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_REFRESH_TOKEN };
         config.putConfigPropertyValues(
-                                       OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPES_ALLOWED,
-                                       GRANT_TYPES_ALLOWED);
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPES_ALLOWED,
+                GRANT_TYPES_ALLOWED);
 
         initializeOAuthFramework(config);
 
@@ -212,7 +212,7 @@ public class PermittedFlowsTest extends BaseTestCase {
         OAuthResult result = null;
 
         result = oauth20.processAuthorization(username, clientId, redirectUri,
-                                              responseType, state, scope, response);
+                responseType, state, scope, response);
 
         assertTrue(result.getStatus() != OAuthResult.STATUS_OK);
         assertTrue(result.getCause() instanceof OAuthConfigurationException);
@@ -223,8 +223,8 @@ public class PermittedFlowsTest extends BaseTestCase {
         BaseConfig config = new BaseConfig();
         String[] GRANT_TYPES_ALLOWED = { OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_IMPLICIT };
         config.putConfigPropertyValues(
-                                       OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPES_ALLOWED,
-                                       GRANT_TYPES_ALLOWED);
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPES_ALLOWED,
+                GRANT_TYPES_ALLOWED);
 
         initializeOAuthFramework(config);
 
@@ -239,7 +239,7 @@ public class PermittedFlowsTest extends BaseTestCase {
         OAuthResult result = null;
 
         result = oauth20.processAuthorization(username, clientId, redirectUri,
-                                              responseType, state, scope, response);
+                responseType, state, scope, response);
 
         assertNotNull(result);
         if (result.getStatus() != OAuthResult.STATUS_OK) {
@@ -258,19 +258,19 @@ public class PermittedFlowsTest extends BaseTestCase {
         request.setParameter(OAuth20Constants.CLIENT_ID, "key");
         request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret");
         request.setParameter(OAuth20Constants.GRANT_TYPE,
-                             OAuth20Constants.GRANT_TYPE_IMPLICIT);
+                OAuth20Constants.GRANT_TYPE_IMPLICIT);
         request.setParameter(OAuth20Constants.RESPONSE_TYPE,
-                             OAuth20Constants.RESPONSE_TYPE_TOKEN);
+                OAuth20Constants.RESPONSE_TYPE_TOKEN);
         request.setParameter(OAuth20Constants.REDIRECT_URI,
-                             "http://localhost:9080/oauth/client.jsp");
+                "http://localhost:9080/oauth/client.jsp");
         request.setHeader(OAuth20Constants.HTTP_HEADER_CONTENT_TYPE,
-                          OAuth20Constants.HTTP_CONTENT_TYPE_FORM);
+                OAuth20Constants.HTTP_CONTENT_TYPE_FORM);
 
         StringWriter responseBuffer = new StringWriter();
         response.setWriter(responseBuffer);
 
         OAuthResult result = oauth20.processTokenRequest(null, request,
-                                                         response);
+                response);
 
         assertTrue(result.getStatus() != OAuthResult.STATUS_OK);
         assertTrue(result.getCause() instanceof OAuth20InvalidGrantTypeException);
@@ -279,13 +279,13 @@ public class PermittedFlowsTest extends BaseTestCase {
     public void testNoOAUTH20_GRANT_TYPE_CLIENT_CREDENTIALS() {
         BaseConfig config = new BaseConfig();
         String[] GRANT_TYPES_ALLOWED = {
-                                         OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_AUTH_CODE,
-                                         OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_IMPLICIT,
-                                         OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_OWNER_PASSWORD,
-                                         OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_REFRESH_TOKEN };
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_AUTH_CODE,
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_IMPLICIT,
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_OWNER_PASSWORD,
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_REFRESH_TOKEN };
         config.putConfigPropertyValues(
-                                       OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPES_ALLOWED,
-                                       GRANT_TYPES_ALLOWED);
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPES_ALLOWED,
+                GRANT_TYPES_ALLOWED);
 
         initializeOAuthFramework(config);
 
@@ -295,7 +295,7 @@ public class PermittedFlowsTest extends BaseTestCase {
         request.setParameter(OAuth20Constants.CLIENT_ID, "key");
         request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret");
         request.setParameter(OAuth20Constants.GRANT_TYPE,
-                             OAuth20Constants.GRANT_TYPE_CLIENT_CREDENTIALS);
+                OAuth20Constants.GRANT_TYPE_CLIENT_CREDENTIALS);
 
         StringWriter responseBuffer = new StringWriter();
         response.setWriter(responseBuffer);
@@ -313,8 +313,8 @@ public class PermittedFlowsTest extends BaseTestCase {
         BaseConfig config = new BaseConfig();
         String[] GRANT_TYPES_ALLOWED = { OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_CLIENT_CREDENTIALS };
         config.putConfigPropertyValues(
-                                       OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPES_ALLOWED,
-                                       GRANT_TYPES_ALLOWED);
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPES_ALLOWED,
+                GRANT_TYPES_ALLOWED);
 
         initializeOAuthFramework(config);
 
@@ -324,7 +324,7 @@ public class PermittedFlowsTest extends BaseTestCase {
         request.setParameter(OAuth20Constants.CLIENT_ID, "key");
         request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret");
         request.setParameter(OAuth20Constants.GRANT_TYPE,
-                             OAuth20Constants.GRANT_TYPE_CLIENT_CREDENTIALS);
+                OAuth20Constants.GRANT_TYPE_CLIENT_CREDENTIALS);
 
         StringWriter responseBuffer = new StringWriter();
         response.setWriter(responseBuffer);
@@ -344,13 +344,13 @@ public class PermittedFlowsTest extends BaseTestCase {
     public void testNoOAUTH20_GRANT_TYPE_OWNER_PASSWORD() {
         BaseConfig config = new BaseConfig();
         String[] GRANT_TYPES_ALLOWED = {
-                                         OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_AUTH_CODE,
-                                         OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_IMPLICIT,
-                                         OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_CLIENT_CREDENTIALS,
-                                         OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_REFRESH_TOKEN };
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_AUTH_CODE,
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_IMPLICIT,
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_CLIENT_CREDENTIALS,
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_REFRESH_TOKEN };
         config.putConfigPropertyValues(
-                                       OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPES_ALLOWED,
-                                       GRANT_TYPES_ALLOWED);
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPES_ALLOWED,
+                GRANT_TYPES_ALLOWED);
 
         initializeOAuthFramework(config);
 
@@ -362,9 +362,9 @@ public class PermittedFlowsTest extends BaseTestCase {
         request.setParameter(OAuth20Constants.CLIENT_ID, "key");
         request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret");
         request.setParameter(OAuth20Constants.GRANT_TYPE,
-                             OAuth20Constants.GRANT_TYPE_PASSWORD);
+                OAuth20Constants.GRANT_TYPE_PASSWORD);
         request.setHeader(OAuth20Constants.HTTP_HEADER_CONTENT_TYPE,
-                          OAuth20Constants.HTTP_CONTENT_TYPE_FORM);
+                OAuth20Constants.HTTP_CONTENT_TYPE_FORM);
 
         StringWriter responseBuffer = new StringWriter();
         response.setWriter(responseBuffer);
@@ -382,8 +382,8 @@ public class PermittedFlowsTest extends BaseTestCase {
         BaseConfig config = new BaseConfig();
         String[] GRANT_TYPES_ALLOWED = { OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_OWNER_PASSWORD };
         config.putConfigPropertyValues(
-                                       OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPES_ALLOWED,
-                                       GRANT_TYPES_ALLOWED);
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPES_ALLOWED,
+                GRANT_TYPES_ALLOWED);
 
         initializeOAuthFramework(config);
 
@@ -395,9 +395,9 @@ public class PermittedFlowsTest extends BaseTestCase {
         request.setParameter(OAuth20Constants.CLIENT_ID, "key");
         request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret");
         request.setParameter(OAuth20Constants.GRANT_TYPE,
-                             OAuth20Constants.GRANT_TYPE_PASSWORD);
+                OAuth20Constants.GRANT_TYPE_PASSWORD);
         request.setHeader(OAuth20Constants.HTTP_HEADER_CONTENT_TYPE,
-                          OAuth20Constants.HTTP_CONTENT_TYPE_FORM);
+                OAuth20Constants.HTTP_CONTENT_TYPE_FORM);
 
         StringWriter responseBuffer = new StringWriter();
         response.setWriter(responseBuffer);
@@ -420,13 +420,13 @@ public class PermittedFlowsTest extends BaseTestCase {
 
         BaseConfig config = new BaseConfig();
         String[] GRANT_TYPES_ALLOWED = {
-                                         OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_AUTH_CODE,
-                                         OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_IMPLICIT,
-                                         OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_CLIENT_CREDENTIALS,
-                                         OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_OWNER_PASSWORD };
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_AUTH_CODE,
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_IMPLICIT,
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_CLIENT_CREDENTIALS,
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_OWNER_PASSWORD };
         config.putConfigPropertyValues(
-                                       OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPES_ALLOWED,
-                                       GRANT_TYPES_ALLOWED);
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPES_ALLOWED,
+                GRANT_TYPES_ALLOWED);
 
         initializeOAuthFramework(config);
 
@@ -442,7 +442,7 @@ public class PermittedFlowsTest extends BaseTestCase {
         responseauth.setWriter(responseBuffer);
 
         OAuthResult result = oauth20.processAuthorization(username, clientId,
-                                                          redirectUri, responseType, state, scope, responseauth);
+                redirectUri, responseType, state, scope, responseauth);
 
         assertNotNull(result);
         if (result.getStatus() != OAuthResult.STATUS_OK) {
@@ -452,7 +452,7 @@ public class PermittedFlowsTest extends BaseTestCase {
         assertNull(result.getCause());
 
         String code = result.getAttributeList().getAttributeValueByName(
-                                                                        "authorization_code_id");
+                "authorization_code_id");
         assertNotNull(code);
 
         MockServletRequest request = new MockServletRequest();
@@ -461,13 +461,13 @@ public class PermittedFlowsTest extends BaseTestCase {
         request.setParameter(OAuth20Constants.CLIENT_ID, "key");
         request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret");
         request.setParameter(OAuth20Constants.GRANT_TYPE,
-                             OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE);
+                OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE);
         request.setParameter(OAuth20Constants.RESPONSE_TYPE,
-                             OAuth20Constants.RESPONSE_TYPE_CODE);
+                OAuth20Constants.RESPONSE_TYPE_CODE);
         request.setParameter(OAuth20Constants.CODE, code);
         request.setParameter(OAuth20Constants.REDIRECT_URI, redirectUri);
         request.setHeader(OAuth20Constants.HTTP_HEADER_CONTENT_TYPE,
-                          OAuth20Constants.HTTP_CONTENT_TYPE_FORM);
+                OAuth20Constants.HTTP_CONTENT_TYPE_FORM);
 
         responseBuffer = new StringWriter();
         response.setWriter(responseBuffer);
@@ -491,10 +491,10 @@ public class PermittedFlowsTest extends BaseTestCase {
         request.setParameter(OAuth20Constants.CLIENT_ID, "key");
         request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret");
         request.setParameter(OAuth20Constants.GRANT_TYPE,
-                             OAuth20Constants.GRANT_TYPE_REFRESH_TOKEN);
+                OAuth20Constants.GRANT_TYPE_REFRESH_TOKEN);
         request.setParameter(OAuth20Constants.REFRESH_TOKEN, refresh_token);
         request.setHeader(OAuth20Constants.HTTP_HEADER_CONTENT_TYPE,
-                          OAuth20Constants.HTTP_CONTENT_TYPE_FORM);
+                OAuth20Constants.HTTP_CONTENT_TYPE_FORM);
 
         responseBuffer = new StringWriter();
         response.setWriter(responseBuffer);
@@ -511,11 +511,11 @@ public class PermittedFlowsTest extends BaseTestCase {
 
         BaseConfig config = new BaseConfig();
         String[] GRANT_TYPES_ALLOWED = {
-                                         OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_AUTH_CODE,
-                                         OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_REFRESH_TOKEN };
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_AUTH_CODE,
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPE_REFRESH_TOKEN };
         config.putConfigPropertyValues(
-                                       OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPES_ALLOWED,
-                                       GRANT_TYPES_ALLOWED);
+                OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPES_ALLOWED,
+                GRANT_TYPES_ALLOWED);
 
         initializeOAuthFramework(config);
 
@@ -531,7 +531,7 @@ public class PermittedFlowsTest extends BaseTestCase {
         responseauth.setWriter(responseBuffer);
 
         OAuthResult result = oauth20.processAuthorization(username, clientId,
-                                                          redirectUri, responseType, state, scope, responseauth);
+                redirectUri, responseType, state, scope, responseauth);
 
         boolean refreshUsed = false;
 
@@ -549,7 +549,7 @@ public class PermittedFlowsTest extends BaseTestCase {
             assertNull(result.getCause());
 
             String code = result.getAttributeList().getAttributeValueByName(
-                                                                            "authorization_code_id");
+                    "authorization_code_id");
             assertNotNull(code);
 
             MockServletRequest request = new MockServletRequest();
@@ -558,13 +558,13 @@ public class PermittedFlowsTest extends BaseTestCase {
             request.setParameter(OAuth20Constants.CLIENT_ID, "key");
             request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret");
             request.setParameter(OAuth20Constants.GRANT_TYPE,
-                                 OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE);
+                    OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE);
             request.setParameter(OAuth20Constants.RESPONSE_TYPE,
-                                 OAuth20Constants.RESPONSE_TYPE_CODE);
+                    OAuth20Constants.RESPONSE_TYPE_CODE);
             request.setParameter(OAuth20Constants.CODE, code);
             request.setParameter(OAuth20Constants.REDIRECT_URI, redirectUri);
             request.setHeader(OAuth20Constants.HTTP_HEADER_CONTENT_TYPE,
-                              OAuth20Constants.HTTP_CONTENT_TYPE_FORM);
+                    OAuth20Constants.HTTP_CONTENT_TYPE_FORM);
 
             responseBuffer = new StringWriter();
             response.setWriter(responseBuffer);
@@ -588,10 +588,10 @@ public class PermittedFlowsTest extends BaseTestCase {
             request.setParameter(OAuth20Constants.CLIENT_ID, "key");
             request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret");
             request.setParameter(OAuth20Constants.GRANT_TYPE,
-                                 OAuth20Constants.GRANT_TYPE_REFRESH_TOKEN);
+                    OAuth20Constants.GRANT_TYPE_REFRESH_TOKEN);
             request.setParameter(OAuth20Constants.REFRESH_TOKEN, refresh_token);
             request.setHeader(OAuth20Constants.HTTP_HEADER_CONTENT_TYPE,
-                              OAuth20Constants.HTTP_CONTENT_TYPE_FORM);
+                    OAuth20Constants.HTTP_CONTENT_TYPE_FORM);
 
             responseBuffer = new StringWriter();
             response.setWriter(responseBuffer);

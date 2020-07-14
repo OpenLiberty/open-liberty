@@ -116,7 +116,7 @@ public class RequestFilterTest {
 
             requestFilter.doFilter(HTTPSERVLETREQUEST_MCK, HTTPSERVLETRESPONSE_MCK, FILTERCHAIN_MCK);
         } catch (Exception e) {
-            fail("Unexpected exception was thrown: " + e.getMessage());
+            fail("Unexpected exception was thrown: " + e);
         }
     }
 
@@ -136,7 +136,7 @@ public class RequestFilterTest {
 
             requestFilter.doFilter(HTTPSERVLETREQUEST_MCK, HTTPSERVLETRESPONSE_MCK, FILTERCHAIN_MCK);
         } catch (Exception e) {
-            fail("Unexpected exception was thrown: " + e.getMessage());
+            fail("Unexpected exception was thrown: " + e);
         }
         STATE.become("test-execution");
     }
@@ -159,7 +159,7 @@ public class RequestFilterTest {
 
             requestFilter.doFilter(HTTPSERVLETREQUEST_MCK, HTTPSERVLETRESPONSE_MCK, FILTERCHAIN_MCK);
         } catch (Exception e) {
-            fail("Unexpected exception was thrown: " + e.getMessage());
+            fail("Unexpected exception was thrown: " + e);
         }
     }
 

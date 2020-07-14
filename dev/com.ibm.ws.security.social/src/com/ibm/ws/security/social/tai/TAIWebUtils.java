@@ -62,7 +62,7 @@ public class TAIWebUtils {
                 isRedirectConfiguredAndValid = true;
             } catch (SocialLoginException e) {
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Failed to validate URL format of redirectToRPHostAndPort value [" + host + "] due to " + e.getMessage());
+                    Tr.debug(tc, "Failed to validate URL format of redirectToRPHostAndPort value [" + host + "] due to " + e);
                 }
             }
         }
@@ -189,7 +189,7 @@ public class TAIWebUtils {
         } catch (Exception e) {
             //can be ignored
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Fail to read Header Segments:", e.getMessage());
+                Tr.debug(tc, "Fail to read Header Segments:", e);
             }
         }
         return hdrValue;

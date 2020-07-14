@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client;
 
@@ -434,7 +434,7 @@ public class AccessTokenAuthenticator {
             }
         } catch (Exception e) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "exception during introspectToken =", e.getMessage());
+                Tr.debug(tc, "exception during introspectToken =", e);
                 // Tr.debug(tc, "debugging:" + OidcUtil.dumpStackTrace(new
                 // Exception(), -1));
             }
@@ -888,7 +888,7 @@ public class AccessTokenAuthenticator {
                     } catch (Exception e) {
                         //can be ignored
                         if (tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Fail to read Header Segments:", e.getMessage());
+                            Tr.debug(tc, "Fail to read Header Segments:", e);
                         }
                     }
                     return hdrValue;

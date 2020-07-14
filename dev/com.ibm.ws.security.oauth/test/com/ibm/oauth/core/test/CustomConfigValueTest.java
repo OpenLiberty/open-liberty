@@ -35,8 +35,8 @@ public class CustomConfigValueTest extends BaseTestCase {
         BaseConfig config = new BaseConfig();
         config.setUniqueId("testCustomOAUTH20_ACCESS_TOKEN_LENGTH");
         config.putConfigPropertyValues(
-                                       OAuthComponentConfigurationConstants.OAUTH20_ACCESS_TOKEN_LENGTH,
-                                       new String[] { CUSTOM_LENGTH + "" });
+                OAuthComponentConfigurationConstants.OAUTH20_ACCESS_TOKEN_LENGTH,
+                new String[] { CUSTOM_LENGTH + "" });
         initializeOAuthFramework(config);
 
         try {
@@ -44,7 +44,7 @@ public class CustomConfigValueTest extends BaseTestCase {
             assertNotNull(result);
             assertEquals(OAuthResult.STATUS_OK, result.getStatus());
         } catch (OAuthException e) {
-            fail("got an exception: " + e.getMessage());
+            fail("got an exception: " + e);
             e.printStackTrace();
         }
 
@@ -56,8 +56,8 @@ public class CustomConfigValueTest extends BaseTestCase {
     public void testCustomPublicClients() {
         BaseConfig config = new BaseConfig();
         config.putConfigPropertyValues(
-                                       OAuthComponentConfigurationConstants.OAUTH20_ALLOW_PUBLIC_CLIENTS,
-                                       new String[] { "true" });
+                OAuthComponentConfigurationConstants.OAUTH20_ALLOW_PUBLIC_CLIENTS,
+                new String[] { "true" });
         initializeOAuthFramework(config);
 
         String responseType = "code";
@@ -69,8 +69,8 @@ public class CustomConfigValueTest extends BaseTestCase {
         responseauth.setWriter(responseBuffer);
 
         OAuthResult result = oauth20.processAuthorization("testuser", "key",
-                                                          "http://localhost:9080/oauth/client.jsp", responseType, state,
-                                                          scope, responseauth);
+                "http://localhost:9080/oauth/client.jsp", responseType, state,
+                scope, responseauth);
 
         assertNotNull(result);
         if (result.getStatus() != OAuthResult.STATUS_OK) {
@@ -80,16 +80,16 @@ public class CustomConfigValueTest extends BaseTestCase {
         assertNull(result.getCause());
 
         String code = result.getAttributeList().getAttributeValueByName(
-                                                                        "authorization_code_id");
+                "authorization_code_id");
         assertNotNull(code);
 
         MockServletRequest req = new MockServletRequest();
         req.setHeader(OAuth20Constants.HTTP_HEADER_CONTENT_TYPE,
-                      "application/x-www-form-urlencoded");
+                "application/x-www-form-urlencoded");
         req.setParameter("client_id", "key");
         req.setParameter("grant_type", "authorization_code");
         req.setParameter("redirect_uri",
-                         "http://localhost:9080/oauth/client.jsp");
+                "http://localhost:9080/oauth/client.jsp");
         req.setParameter("code", code);
         req.setMethod("GET");
         req.setServletPath("/oauth2");
@@ -125,8 +125,8 @@ public class CustomConfigValueTest extends BaseTestCase {
         BaseConfig config = new BaseConfig();
         String[] CODE_LENGTH = { "200" };
         config.putConfigPropertyValues(
-                                       OAuthComponentConfigurationConstants.OAUTH20_CODE_LENGTH,
-                                       CODE_LENGTH);
+                OAuthComponentConfigurationConstants.OAUTH20_CODE_LENGTH,
+                CODE_LENGTH);
 
         initializeOAuthFramework(config);
 
@@ -142,7 +142,7 @@ public class CustomConfigValueTest extends BaseTestCase {
         responseauth.setWriter(responseBuffer);
 
         OAuthResult result = oauth20.processAuthorization(username, clientId,
-                                                          redirectUri, responseType, state, scope, responseauth);
+                redirectUri, responseType, state, scope, responseauth);
 
         assertNotNull(result);
         if (result.getStatus() != OAuthResult.STATUS_OK) {
@@ -152,7 +152,7 @@ public class CustomConfigValueTest extends BaseTestCase {
         assertNull(result.getCause());
 
         String code = result.getAttributeList().getAttributeValueByName(
-                                                                        "authorization_code_id");
+                "authorization_code_id");
         assertNotNull(code);
         assertEquals(code.length(), 200);
     }
@@ -161,8 +161,8 @@ public class CustomConfigValueTest extends BaseTestCase {
         BaseConfig config = new BaseConfig();
         String[] REFRESH_TOKEN_LENGTH = { "250" };
         config.putConfigPropertyValues(
-                                       OAuthComponentConfigurationConstants.OAUTH20_REFRESH_TOKEN_LENGTH,
-                                       REFRESH_TOKEN_LENGTH);
+                OAuthComponentConfigurationConstants.OAUTH20_REFRESH_TOKEN_LENGTH,
+                REFRESH_TOKEN_LENGTH);
 
         initializeOAuthFramework(config);
 
@@ -178,7 +178,7 @@ public class CustomConfigValueTest extends BaseTestCase {
         responseauth.setWriter(responseBuffer);
 
         OAuthResult result = oauth20.processAuthorization(username, clientId,
-                                                          redirectUri, responseType, state, scope, responseauth);
+                redirectUri, responseType, state, scope, responseauth);
 
         assertNotNull(result);
         if (result.getStatus() != OAuthResult.STATUS_OK) {
@@ -188,7 +188,7 @@ public class CustomConfigValueTest extends BaseTestCase {
         assertNull(result.getCause());
 
         String code = result.getAttributeList().getAttributeValueByName(
-                                                                        "authorization_code_id");
+                "authorization_code_id");
         assertNotNull(code);
 
         MockServletRequest request = new MockServletRequest();
@@ -197,13 +197,13 @@ public class CustomConfigValueTest extends BaseTestCase {
         request.setParameter(OAuth20Constants.CLIENT_ID, "key");
         request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret");
         request.setParameter(OAuth20Constants.GRANT_TYPE,
-                             OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE);
+                OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE);
         request.setParameter(OAuth20Constants.RESPONSE_TYPE,
-                             OAuth20Constants.RESPONSE_TYPE_CODE);
+                OAuth20Constants.RESPONSE_TYPE_CODE);
         request.setParameter(OAuth20Constants.CODE, code);
         request.setParameter(OAuth20Constants.REDIRECT_URI, redirectUri);
         request.setHeader(OAuth20Constants.HTTP_HEADER_CONTENT_TYPE,
-                          OAuth20Constants.HTTP_CONTENT_TYPE_FORM);
+                OAuth20Constants.HTTP_CONTENT_TYPE_FORM);
 
         responseBuffer = new StringWriter();
         response.setWriter(responseBuffer);
@@ -222,15 +222,15 @@ public class CustomConfigValueTest extends BaseTestCase {
         String refresh_token = extractRefreshToken(responseString);
         if (refresh_token != null)
             assertEquals(refresh_token.length(), 250);
-        //TODO: may be better to check if refresh_token is allowed rather than checking for null
+        // TODO: may be better to check if refresh_token is allowed rather than checking for null
     }
 
     public void testCustomNoRefreshToken() {
         BaseConfig config = new BaseConfig();
         String[] ISSUE_REFRESH_TOKEN = { "false" };
         config.putConfigPropertyValues(
-                                       OAuthComponentConfigurationConstants.OAUTH20_ISSUE_REFRESH_TOKEN,
-                                       ISSUE_REFRESH_TOKEN);
+                OAuthComponentConfigurationConstants.OAUTH20_ISSUE_REFRESH_TOKEN,
+                ISSUE_REFRESH_TOKEN);
 
         initializeOAuthFramework(config);
 
@@ -246,7 +246,7 @@ public class CustomConfigValueTest extends BaseTestCase {
         responseauth.setWriter(responseBuffer);
 
         OAuthResult result = oauth20.processAuthorization(username, clientId,
-                                                          redirectUri, responseType, state, scope, responseauth);
+                redirectUri, responseType, state, scope, responseauth);
 
         assertNotNull(result);
         if (result.getStatus() != OAuthResult.STATUS_OK) {
@@ -256,7 +256,7 @@ public class CustomConfigValueTest extends BaseTestCase {
         assertNull(result.getCause());
 
         String code = result.getAttributeList().getAttributeValueByName(
-                                                                        "authorization_code_id");
+                "authorization_code_id");
         assertNotNull(code);
 
         MockServletRequest request = new MockServletRequest();
@@ -265,13 +265,13 @@ public class CustomConfigValueTest extends BaseTestCase {
         request.setParameter(OAuth20Constants.CLIENT_ID, "key");
         request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret");
         request.setParameter(OAuth20Constants.GRANT_TYPE,
-                             OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE);
+                OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE);
         request.setParameter(OAuth20Constants.RESPONSE_TYPE,
-                             OAuth20Constants.RESPONSE_TYPE_CODE);
+                OAuth20Constants.RESPONSE_TYPE_CODE);
         request.setParameter(OAuth20Constants.CODE, code);
         request.setParameter(OAuth20Constants.REDIRECT_URI, redirectUri);
         request.setHeader(OAuth20Constants.HTTP_HEADER_CONTENT_TYPE,
-                          OAuth20Constants.HTTP_CONTENT_TYPE_FORM);
+                OAuth20Constants.HTTP_CONTENT_TYPE_FORM);
 
         responseBuffer = new StringWriter();
         response.setWriter(responseBuffer);
@@ -301,7 +301,7 @@ public class CustomConfigValueTest extends BaseTestCase {
             assertNotNull(result);
             assertEquals(OAuthResult.STATUS_OK, result.getStatus());
         } catch (OAuthException e) {
-            fail("got an exception: " + e.getMessage());
+            fail("got an exception: " + e);
             e.printStackTrace();
         }
     }

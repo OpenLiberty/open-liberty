@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.token;
 
@@ -645,7 +645,7 @@ public class JWT {
                     Tr.error(tc, "OIDC_IDTOKEN_VERIFY_STATE_ERR", objs);
                 throw new IDTokenValidationFailedException("IllegalStateException Message:" + e.getMessage(), e);
             } catch (Exception e) {
-                Tr.error(tc, "OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR", new Object[] { this.clientId, e.getMessage() == null ? e.getClass().getSimpleName() : e.getMessage(), this.signingAlgorithm });
+                Tr.error(tc, "OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR", new Object[] { this.clientId, e, this.signingAlgorithm });
                 throw new IDTokenValidationFailedException(e.getClass().getName() + " Message:" + e.getMessage() == null ? "" : e.getMessage(), e);
             }
             /*
