@@ -420,7 +420,7 @@ public class ServiceSupportTests extends FATServletClient {
 
         // Make sure we can still send a request to the original app
         // "Snozzberry","Green Man Brewery",AMERICANWILDALE, 4.2);
-        LOG.info("testSingleWarUpdate() : Add a second new beer.");
+        LOG.info("testDuplicateService() : Add a second new beer.");
         Beer newBeer = Beer.newBuilder().setBeerName("Snozzberry").setBeerMaker("Green Man Brewery").setBeerTypeValue(1).setBeerRating((float) 4.2).build();
         BeerResponse rsp = beerServiceBlockingStub.addBeer(newBeer);
 
