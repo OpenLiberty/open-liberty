@@ -27,12 +27,14 @@ import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebResponse;
 
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.wsoc.tests.all.CdiTest;
+import io.openliberty.wsoc.tests.all.SessionTest;
 import io.openliberty.wsoc.util.OnlyRunNotOnZRule;
 import io.openliberty.wsoc.util.WebServerControl;
 import io.openliberty.wsoc.util.WebServerSetup;
@@ -57,6 +59,8 @@ public class Cdi12Test extends LoggingTest {
     private final WsocTest wt = new WsocTest(SS, false);
 
     private final CdiTest ct = new CdiTest(wt);
+
+    private final SessionTest st = new SessionTest(wt);
 
     private static final Logger LOG = Logger.getLogger(Cdi12Test.class.getName());
 
@@ -196,6 +200,76 @@ public class Cdi12Test extends LoggingTest {
     protected WebResponse verifyResponse(String testName) throws Exception {
         return SS.verifyResponse(createWebBrowserForTestCase(), "/cdi/RequestCDI?testname=" + testName, "SuccessfulTest");
     }
+    
+
+    //
+    //  SESSION TESTS
+    //
+
+    @Mode(TestMode.LITE)
+    @Test
+    public void testSessionOne() throws Exception {
+        st.testSessionOne();
+    }
+
+    @Mode(TestMode.FULL)
+    @Test
+    public void testSSCSessionOne() throws Exception {
+        this.runAsSSCAndVerifyResponse("SessionTest", "testSessionOne");
+    }
+
+    @Mode(TestMode.LITE)
+    @Test
+    public void testMessageHandlerError() throws Exception {
+        st.testMessageHandlerError();
+    }
+
+    @Mode(TestMode.FULL)
+    @Test
+    public void testSSCMessageHandlerError() throws Exception {
+        this.runAsSSCAndVerifyResponse("SessionTest", "testMessageHandlerError");
+    }
+
+    @Mode(TestMode.LITE)
+    @Test
+    public void testSession5() throws Exception {
+        st.testSession5();
+    }
+
+    @Mode(TestMode.FULL)
+    // MSN TEST FAIL @Test
+    public void testSSCSession5() throws Exception {
+        this.runAsSSCAndVerifyResponse("SessionTest", "testSession5");
+    }
+
+    @Mode(TestMode.LITE)
+    //MSN NO FFDC @Test
+    @ExpectedFFDC({ "java.lang.reflect.InvocationTargetException" })
+    public void testSessionClose() throws Exception {
+        st.testSessionClose();
+    }
+
+    @Mode(TestMode.FULL)
+    //MSN TEST FAIL @Test
+    @ExpectedFFDC({ "java.lang.reflect.InvocationTargetException" })
+    public void testSSCSessionClose() throws Exception {
+        this.runAsSSCAndVerifyResponse("SessionTest", "testSessionClose");
+    }
+
+    @Mode(TestMode.LITE)
+    //MSN NO FFDC @Test
+    @ExpectedFFDC({ "java.lang.reflect.InvocationTargetException" })
+    public void testThreadContext() throws Exception {
+        st.testThreadContext();
+    }
+
+//    MSN TEST FAILURE
+//    @Mode(TestMode.FULL)
+//    @Test
+//    @ExpectedFFDC({ "java.lang.reflect.InvocationTargetException" })
+//    public void testSSCThreadContext() throws Exception {
+//        this.runAsSSCAndVerifyResponse("SessionTest", "testThreadContext");
+//    }
 
     /*
      * (non-Javadoc)
