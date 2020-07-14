@@ -515,10 +515,10 @@ public class BaseTraceService implements TrService {
         Map<String, String> accessLogRequestHeaderMap = new HashMap<>();
         Map<String, String> accessLogResponseHeaderMap = new HashMap<>();
 
-        List<String> LogTraceList = Arrays.asList(LogTraceData.NAMES1_1);
-        List<String> FFDCList = Arrays.asList(FFDCData.NAMES1_1);
-        List<String> AccessLogList = Arrays.asList(AccessLogData.NAMES1_1);
-        List<String> AuditList = Arrays.asList(AuditData.NAMES1_1);
+        List<String> LogTraceList = Arrays.asList(LogTraceData.NAMES_JSON);
+        List<String> FFDCList = Arrays.asList(FFDCData.NAMES_JSON);
+        List<String> AccessLogList = Arrays.asList(AccessLogData.NAMES_JSON);
+        List<String> AuditList = Arrays.asList(AuditData.NAMES_JSON);
 
         String[] keyValuePairs = value.split(","); //split the string to create key-value pairs
         for (String pair : keyValuePairs) //iterate over the pairs

@@ -23,48 +23,48 @@ public class FFDCData extends GenericData {
         super(13);
     }
 
-    public static final String[] NAMES = {
-                                           LogFieldConstants.DATETIME,
-                                           LogFieldConstants.DATEOFFIRSTOCCURENCE,
-                                           LogFieldConstants.COUNT,
-                                           LogFieldConstants.MESSAGE,
-                                           LogFieldConstants.CLASSNAME,
-                                           LogFieldConstants.LABEL,
-                                           LogFieldConstants.EXCEPTIONNAME,
-                                           LogFieldConstants.PROBEID,
-                                           LogFieldConstants.SOURCEID,
-                                           LogFieldConstants.THREADID,
-                                           LogFieldConstants.STACKTRACE,
-                                           LogFieldConstants.OBJECTDETAILS,
-                                           LogFieldConstants.SEQUENCE,
-                                           LogFieldConstants.HOSTNAME,
-                                           LogFieldConstants.WLPUSERDIR,
-                                           LogFieldConstants.SERVERNAME,
-                                           LogFieldConstants.TYPE
-    };
-
-    public static final String[] NAMES1_1 = {
-                                              LogFieldConstants.IBM_DATETIME,
+    public static final String[] NAMES_LC = {
+                                              LogFieldConstants.DATETIME,
                                               LogFieldConstants.DATEOFFIRSTOCCURENCE,
                                               LogFieldConstants.COUNT,
                                               LogFieldConstants.MESSAGE,
-                                              LogFieldConstants.IBM_CLASSNAME,
+                                              LogFieldConstants.CLASSNAME,
                                               LogFieldConstants.LABEL,
-                                              LogFieldConstants.IBM_EXCEPTIONNAME,
-                                              LogFieldConstants.IBM_PROBEID,
+                                              LogFieldConstants.EXCEPTIONNAME,
+                                              LogFieldConstants.PROBEID,
                                               LogFieldConstants.SOURCEID,
-                                              LogFieldConstants.IBM_THREADID, //long
-                                              LogFieldConstants.IBM_STACKTRACE,
-                                              LogFieldConstants.IBM_OBJECTDETAILS,
-                                              LogFieldConstants.IBM_SEQUENCE,
-                                              LogFieldConstants.HOST,
-                                              LogFieldConstants.IBM_USERDIR,
-                                              LogFieldConstants.IBM_SERVERNAME,
+                                              LogFieldConstants.THREADID,
+                                              LogFieldConstants.STACKTRACE,
+                                              LogFieldConstants.OBJECTDETAILS,
+                                              LogFieldConstants.SEQUENCE,
+                                              LogFieldConstants.HOSTNAME,
+                                              LogFieldConstants.WLPUSERDIR,
+                                              LogFieldConstants.SERVERNAME,
                                               LogFieldConstants.TYPE
     };
 
-    private static NameAliases jsonLoggingNameAliases = new NameAliases(NAMES1_1);
-    private static NameAliases logstashNameAliases = new NameAliases(NAMES);
+    public static final String[] NAMES_JSON = {
+                                                LogFieldConstants.IBM_DATETIME,
+                                                LogFieldConstants.DATEOFFIRSTOCCURENCE,
+                                                LogFieldConstants.COUNT,
+                                                LogFieldConstants.MESSAGE,
+                                                LogFieldConstants.IBM_CLASSNAME,
+                                                LogFieldConstants.LABEL,
+                                                LogFieldConstants.IBM_EXCEPTIONNAME,
+                                                LogFieldConstants.IBM_PROBEID,
+                                                LogFieldConstants.SOURCEID,
+                                                LogFieldConstants.IBM_THREADID, //long
+                                                LogFieldConstants.IBM_STACKTRACE,
+                                                LogFieldConstants.IBM_OBJECTDETAILS,
+                                                LogFieldConstants.IBM_SEQUENCE,
+                                                LogFieldConstants.HOST,
+                                                LogFieldConstants.IBM_USERDIR,
+                                                LogFieldConstants.IBM_SERVERNAME,
+                                                LogFieldConstants.TYPE
+    };
+
+    private static NameAliases jsonLoggingNameAliases = new NameAliases(NAMES_JSON);
+    private static NameAliases logstashNameAliases = new NameAliases(NAMES_LC);
 
     private static NameAliases[] nameAliases = { jsonLoggingNameAliases, logstashNameAliases };
 
@@ -77,15 +77,15 @@ public class FFDCData extends GenericData {
     }
 
     private void setPair(int index, String s) {
-        setPair(index, NAMES1_1[index], s);
+        setPair(index, NAMES_JSON[index], s);
     }
 
     private void setPair(int index, int i) {
-        setPair(index, NAMES1_1[index], i);
+        setPair(index, NAMES_JSON[index], i);
     }
 
     private void setPair(int index, long l) {
-        setPair(index, NAMES1_1[index], l);
+        setPair(index, NAMES_JSON[index], l);
     }
 
     //@formatter:off

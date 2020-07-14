@@ -32,7 +32,7 @@ import com.ibm.ws.logging.data.LogTraceData;
 public class CollectorJsonUtils {
 
     public static final int MAX_USER_AGENT_LENGTH = 2048;
-    private static final int logstashKey = CollectorConstants.KEYS_LOGSTASH;
+    private static final int LOGSTASH_KEY = CollectorConstants.KEYS_LOGSTASH;
 
     public static String getEventType(String source, String location) {
         return CollectorJsonHelpers.getEventType(source, location);
@@ -93,30 +93,28 @@ public class CollectorJsonUtils {
                                          String serverName, String hostName, Object event, String[] tags) {
         GCData gcData = (GCData) event;
 
-        StringBuilder sb = CollectorJsonHelpers.startGCJson(hostName, wlpUserDir, serverName);
+        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startGC();
 
-        CollectorJsonHelpers.addToJSON(sb, gcData.getHeapKey(), Long.toString(gcData.getHeap()), false, false, false, false, true);
-        CollectorJsonHelpers.addToJSON(sb, gcData.getUsedHeapKey(), Long.toString(gcData.getUsedHeap()), false, false, false, false, true);
-        CollectorJsonHelpers.addToJSON(sb, gcData.getMaxHeapKey(), Long.toString(gcData.getMaxHeap()), false, false, false, false, true);
+        jsonBuilder.addField(gcData.getHeapKey(), gcData.getHeap(), false);
+        jsonBuilder.addField(gcData.getUsedHeapKey(), gcData.getUsedHeap(), false);
+        jsonBuilder.addField(gcData.getMaxHeapKey(), gcData.getMaxHeap(), false);
 
         long duration = gcData.getDuration() * 1000;
-        CollectorJsonHelpers.addToJSON(sb, gcData.getDurationKey(), Long.toString(duration), false, false, false, false, true);
+        jsonBuilder.addField(gcData.getDurationKey(), duration, false);
 
-        CollectorJsonHelpers.addToJSON(sb, gcData.getGcTypeKey(), gcData.getGcType(), false, false, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, gcData.getReasonKey(), gcData.getReason(), false, false, false, false, false);
+        jsonBuilder.addField(gcData.getGcTypeKey(), gcData.getGcType(), false, true);
+        jsonBuilder.addField(gcData.getReasonKey(), gcData.getReason(), false, true);
 
         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(gcData.getDatetime());
-        CollectorJsonHelpers.addToJSON(sb, gcData.getDatetimeKey(), datetime, false, false, false, false, false);
+        jsonBuilder.addField(gcData.getDatetimeKey(), datetime, false, true);
 
-        CollectorJsonHelpers.addToJSON(sb, gcData.getSequenceKey(), gcData.getSequence(), false, false, false, false, false);
+        jsonBuilder.addField(gcData.getSequenceKey(), gcData.getSequence(), false, true);
 
         if (tags != null) {
-            addTagNameForVersion(sb).append(CollectorJsonHelpers.jsonifyTags(tags));
+            jsonBuilder.addPreformattedField("tags", CollectorJsonHelpers.jsonifyTags(tags));
         }
 
-        sb.append("}");
-
-        return sb.toString();
+        return jsonBuilder.build().toString();
     }
 
     private static String jsonifyTraceAndMessage(int maxFieldLength, String wlpUserDir,
@@ -126,14 +124,11 @@ public class CollectorJsonUtils {
         JSONObjectBuilder jsonBuilder = null;
         boolean isMessageEvent = eventType.equals(CollectorConstants.MESSAGES_LOG_EVENT_TYPE);
 
-        ArrayList<KeyValuePair> extensions = null;
-        KeyValuePairList kvpl = null;
-
         if (isMessageEvent) {
-            jsonBuilder = CollectorJsonHelpers.startMessageJsonFields(logstashKey);
+            jsonBuilder = CollectorJsonHelpers.startMessage(LOGSTASH_KEY);
         }
         if (!isMessageEvent) {
-            jsonBuilder = CollectorJsonHelpers.startTraceJsonFields(logstashKey);
+            jsonBuilder = CollectorJsonHelpers.startTrace(LOGSTASH_KEY);
         }
 
         String message = logData.getMessage();
@@ -153,17 +148,19 @@ public class CollectorJsonUtils {
         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(logData.getDatetime());
 
         //@formatter:off
-        jsonBuilder.addField(LogTraceData.getMessageKey(logstashKey, isMessageEvent), formattedValue.toString(), false, true)
-                   .addField(LogTraceData.getThreadIdKey(logstashKey, isMessageEvent), DataFormatHelper.padHexString(logData.getThreadId(), 8), false, true)
-                   .addField(LogTraceData.getDatetimeKey(logstashKey, isMessageEvent), datetime, false, true)
-                   .addField(LogTraceData.getMessageIdKey(logstashKey, isMessageEvent), logData.getMessageId(), false, true)
-                   .addField(LogTraceData.getModuleKey(logstashKey, isMessageEvent), logData.getModule(), false, true)
-                   .addField(LogTraceData.getLoglevelKey(logstashKey, isMessageEvent), logData.getLoglevel(), false, true)
-                   .addField(LogTraceData.getMethodNameKey(logstashKey, isMessageEvent), logData.getMethodName(), false, true)
-                   .addField(LogTraceData.getClassNameKey(logstashKey, isMessageEvent), logData.getClassName(), false, true)
-                   .addField(LogTraceData.getSequenceKey(logstashKey, isMessageEvent), logData.getSequence(), false, true);
+        jsonBuilder.addField(LogTraceData.getMessageKey(LOGSTASH_KEY, isMessageEvent), formattedValue.toString(), false, true)
+                   .addField(LogTraceData.getThreadIdKey(LOGSTASH_KEY, isMessageEvent), DataFormatHelper.padHexString(logData.getThreadId(), 8), false, true)
+                   .addField(LogTraceData.getDatetimeKey(LOGSTASH_KEY, isMessageEvent), datetime, false, true)
+                   .addField(LogTraceData.getMessageIdKey(LOGSTASH_KEY, isMessageEvent), logData.getMessageId(), false, true)
+                   .addField(LogTraceData.getModuleKey(LOGSTASH_KEY, isMessageEvent), logData.getModule(), false, true)
+                   .addField(LogTraceData.getLoglevelKey(LOGSTASH_KEY, isMessageEvent), logData.getLoglevel(), false, true)
+                   .addField(LogTraceData.getMethodNameKey(LOGSTASH_KEY, isMessageEvent), logData.getMethodName(), false, true)
+                   .addField(LogTraceData.getClassNameKey(LOGSTASH_KEY, isMessageEvent), logData.getClassName(), false, true)
+                   .addField(LogTraceData.getSequenceKey(LOGSTASH_KEY, isMessageEvent), logData.getSequence(), false, true);
         //@formatter:on
 
+        ArrayList<KeyValuePair> extensions = null;
+        KeyValuePairList kvpl = null;
         kvpl = logData.getExtensions();
         if (kvpl != null) {
             if (kvpl.getKey().equals(LogFieldConstants.EXTENSIONS_KVPL)) {
@@ -199,20 +196,20 @@ public class CollectorJsonUtils {
 
         FFDCData ffdcData = (FFDCData) event;
 
-        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startFFDCJsonFields(logstashKey);
+        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startFFDC(LOGSTASH_KEY);
 
         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(ffdcData.getDatetime());
         String formattedValue = CollectorJsonHelpers.formatMessage(ffdcData.getStacktrace(), maxFieldLength);
         //@formatter:off
-        jsonBuilder.addField(FFDCData.getDatetimeKey(logstashKey), datetime, false, true)
-                   .addField(FFDCData.getMessageKey(logstashKey), ffdcData.getMessage(), false, true)
-                   .addField(FFDCData.getClassNameKey(logstashKey), ffdcData.getClassName(), false, true)
-                   .addField(FFDCData.getExceptionNameKey(logstashKey), ffdcData.getExceptionName(), false, true)
-                   .addField(FFDCData.getProbeIdKey(logstashKey), ffdcData.getProbeId(), false, true)
-                   .addField(FFDCData.getThreadIdKey(logstashKey), DataFormatHelper.padHexString((int) ffdcData.getThreadId(), 8), false, true)
-                   .addField(FFDCData.getStacktraceKey(logstashKey), formattedValue, false, true)
-                   .addField(FFDCData.getObjectDetailsKey(logstashKey), ffdcData.getObjectDetails(), false, true)
-                   .addField(FFDCData.getSequenceKey(logstashKey), ffdcData.getSequence(), false, true);
+        jsonBuilder.addField(FFDCData.getDatetimeKey(LOGSTASH_KEY), datetime, false, true)
+                   .addField(FFDCData.getMessageKey(LOGSTASH_KEY), ffdcData.getMessage(), false, true)
+                   .addField(FFDCData.getClassNameKey(LOGSTASH_KEY), ffdcData.getClassName(), false, true)
+                   .addField(FFDCData.getExceptionNameKey(LOGSTASH_KEY), ffdcData.getExceptionName(), false, true)
+                   .addField(FFDCData.getProbeIdKey(LOGSTASH_KEY), ffdcData.getProbeId(), false, true)
+                   .addField(FFDCData.getThreadIdKey(LOGSTASH_KEY), DataFormatHelper.padHexString((int) ffdcData.getThreadId(), 8), false, true)
+                   .addField(FFDCData.getStacktraceKey(LOGSTASH_KEY), formattedValue, false, true)
+                   .addField(FFDCData.getObjectDetailsKey(LOGSTASH_KEY), ffdcData.getObjectDetails(), false, true)
+                   .addField(FFDCData.getSequenceKey(LOGSTASH_KEY), ffdcData.getSequence(), false, true);
         //@formatter:on
 
         if (tags != null) {
@@ -227,7 +224,7 @@ public class CollectorJsonUtils {
 
         AccessLogData accessLogData = (AccessLogData) event;
 
-        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startAccessLogJsonFields(logstashKey);
+        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startAccessLog(LOGSTASH_KEY);
 
         AccessLogDataFormatter[] formatters = accessLogData.getFormatters();
 
@@ -251,7 +248,7 @@ public class CollectorJsonUtils {
         KeyValuePair[] pairs = genData.getPairs();
         String key = null;
 
-        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startAuditJsonFields(logstashKey);
+        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startAudit(LOGSTASH_KEY);
 
         for (KeyValuePair kvp : pairs) {
 
@@ -278,11 +275,11 @@ public class CollectorJsonUtils {
                      */
                     if (key.equals(LogFieldConstants.IBM_DATETIME) || key.equals("loggingEventTime")) {
                         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(kvp.getLongValue());
-                        jsonBuilder.addField(AuditData.getDatetimeKey(logstashKey), datetime, false, true);
+                        jsonBuilder.addField(AuditData.getDatetimeKey(LOGSTASH_KEY), datetime, false, true);
                     } else if (key.equals(LogFieldConstants.IBM_SEQUENCE) || key.equals("loggingSequenceNumber")) {
-                        jsonBuilder.addField(AuditData.getSequenceKey(logstashKey), kvp.getStringValue(), false, false);
+                        jsonBuilder.addField(AuditData.getSequenceKey(LOGSTASH_KEY), kvp.getStringValue(), false, false);
                     } else if (key.equals(LogFieldConstants.IBM_THREADID)) {
-                        jsonBuilder.addField(AuditData.getThreadIDKey(logstashKey), DataFormatHelper.padHexString(kvp.getIntValue(), 8), false, true);
+                        jsonBuilder.addField(AuditData.getThreadIDKey(LOGSTASH_KEY), DataFormatHelper.padHexString(kvp.getIntValue(), 8), false, true);
                     } else {
                         jsonBuilder.addField("ibm_audit_" + key, kvp.getStringValue(), false, false);
                     }

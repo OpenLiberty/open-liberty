@@ -20,76 +20,76 @@ import com.ibm.ws.logging.collector.LogFieldConstants;
  *
  */
 public class AccessLogData extends GenericData {
-    public static final String[] NAMES1_1 = {
-                                              LogFieldConstants.IBM_REQUESTSTARTTIME,
-                                              LogFieldConstants.IBM_URIPATH,
-                                              LogFieldConstants.IBM_REQUESTMETHOD,
-                                              LogFieldConstants.IBM_QUERYSTRING,
-                                              LogFieldConstants.IBM_REQUESTHOST,
-                                              LogFieldConstants.IBM_REQUESTPORT,
-                                              LogFieldConstants.IBM_REMOTEHOST,
-                                              LogFieldConstants.IBM_USERAGENT,
-                                              LogFieldConstants.IBM_REQUESTPROTOCOL,
-                                              LogFieldConstants.IBM_BYTESRECEIVED,
-                                              LogFieldConstants.IBM_RESPONSECODE,
-                                              LogFieldConstants.IBM_ELAPSEDTIME,
-                                              LogFieldConstants.IBM_DATETIME,
-                                              LogFieldConstants.IBM_SEQUENCE,
-                                              LogFieldConstants.HOST,
-                                              LogFieldConstants.IBM_USERDIR,
-                                              LogFieldConstants.IBM_SERVERNAME,
-                                              LogFieldConstants.TYPE,
-                                              LogFieldConstants.IBM_REMOTEIP,
-                                              LogFieldConstants.IBM_BYTESSENT,
-                                              LogFieldConstants.IBM_COOKIE,
-                                              LogFieldConstants.IBM_REQUESTELAPSEDTIME,
-                                              LogFieldConstants.IBM_REQUESTHEADER,
-                                              LogFieldConstants.IBM_RESPONSEHEADER,
-                                              LogFieldConstants.IBM_REQUESTFIRSTLINE,
-                                              LogFieldConstants.IBM_ACCESSLOGDATETIME,
-                                              LogFieldConstants.IBM_REMOTEUSERID
+    public static final String[] NAMES_JSON = {
+                                                LogFieldConstants.IBM_REQUESTSTARTTIME,
+                                                LogFieldConstants.IBM_URIPATH,
+                                                LogFieldConstants.IBM_REQUESTMETHOD,
+                                                LogFieldConstants.IBM_QUERYSTRING,
+                                                LogFieldConstants.IBM_REQUESTHOST,
+                                                LogFieldConstants.IBM_REQUESTPORT,
+                                                LogFieldConstants.IBM_REMOTEHOST,
+                                                LogFieldConstants.IBM_USERAGENT,
+                                                LogFieldConstants.IBM_REQUESTPROTOCOL,
+                                                LogFieldConstants.IBM_BYTESRECEIVED,
+                                                LogFieldConstants.IBM_RESPONSECODE,
+                                                LogFieldConstants.IBM_ELAPSEDTIME,
+                                                LogFieldConstants.IBM_DATETIME,
+                                                LogFieldConstants.IBM_SEQUENCE,
+                                                LogFieldConstants.HOST,
+                                                LogFieldConstants.IBM_USERDIR,
+                                                LogFieldConstants.IBM_SERVERNAME,
+                                                LogFieldConstants.TYPE,
+                                                LogFieldConstants.IBM_REMOTEIP,
+                                                LogFieldConstants.IBM_BYTESSENT,
+                                                LogFieldConstants.IBM_COOKIE,
+                                                LogFieldConstants.IBM_REQUESTELAPSEDTIME,
+                                                LogFieldConstants.IBM_REQUESTHEADER,
+                                                LogFieldConstants.IBM_RESPONSEHEADER,
+                                                LogFieldConstants.IBM_REQUESTFIRSTLINE,
+                                                LogFieldConstants.IBM_ACCESSLOGDATETIME,
+                                                LogFieldConstants.IBM_REMOTEUSERID
 
     };
 
-    private final static String[] NAMES = {
-                                            LogFieldConstants.REQUESTSTARTTIME,
-                                            LogFieldConstants.URIPATH,
-                                            LogFieldConstants.REQUESTMETHOD,
-                                            LogFieldConstants.QUERYSTRING,
-                                            LogFieldConstants.REQUESTHOST,
-                                            LogFieldConstants.REQUESTPORT,
-                                            LogFieldConstants.REMOTEHOST,
-                                            LogFieldConstants.USERAGENT,
-                                            LogFieldConstants.REQUESTPROTOCOL,
-                                            LogFieldConstants.BYTESRECEIVED,
-                                            LogFieldConstants.RESPONSECODE,
-                                            LogFieldConstants.ELAPSEDTIME,
-                                            LogFieldConstants.DATETIME,
-                                            LogFieldConstants.SEQUENCE,
-                                            LogFieldConstants.HOSTNAME,
-                                            LogFieldConstants.WLPUSERDIR,
-                                            LogFieldConstants.SERVERNAME,
-                                            LogFieldConstants.TYPE,
-                                            LogFieldConstants.REMOTEIP,
-                                            LogFieldConstants.BYTESSENT,
-                                            LogFieldConstants.COOKIE,
-                                            LogFieldConstants.REQUESTELAPSEDTIME,
-                                            LogFieldConstants.REQUESTHEADER,
-                                            LogFieldConstants.RESPONSEHEADER,
-                                            LogFieldConstants.REQUESTFIRSTLINE,
-                                            LogFieldConstants.ACCESSLOGDATETIME,
-                                            LogFieldConstants.REMOTEUSERID
+    private final static String[] NAMES_LC = {
+                                               LogFieldConstants.REQUESTSTARTTIME,
+                                               LogFieldConstants.URIPATH,
+                                               LogFieldConstants.REQUESTMETHOD,
+                                               LogFieldConstants.QUERYSTRING,
+                                               LogFieldConstants.REQUESTHOST,
+                                               LogFieldConstants.REQUESTPORT,
+                                               LogFieldConstants.REMOTEHOST,
+                                               LogFieldConstants.USERAGENT,
+                                               LogFieldConstants.REQUESTPROTOCOL,
+                                               LogFieldConstants.BYTESRECEIVED,
+                                               LogFieldConstants.RESPONSECODE,
+                                               LogFieldConstants.ELAPSEDTIME,
+                                               LogFieldConstants.DATETIME,
+                                               LogFieldConstants.SEQUENCE,
+                                               LogFieldConstants.HOSTNAME,
+                                               LogFieldConstants.WLPUSERDIR,
+                                               LogFieldConstants.SERVERNAME,
+                                               LogFieldConstants.TYPE,
+                                               LogFieldConstants.REMOTEIP,
+                                               LogFieldConstants.BYTESSENT,
+                                               LogFieldConstants.COOKIE,
+                                               LogFieldConstants.REQUESTELAPSEDTIME,
+                                               LogFieldConstants.REQUESTHEADER,
+                                               LogFieldConstants.RESPONSEHEADER,
+                                               LogFieldConstants.REQUESTFIRSTLINE,
+                                               LogFieldConstants.ACCESSLOGDATETIME,
+                                               LogFieldConstants.REMOTEUSERID
     };
 
-    private static final short jsonKey = CollectorConstants.KEYS_JSON;
+    private static final short JSON_KEY = CollectorConstants.KEYS_JSON;
 
     // For renaming/omitting fields
     private static Map<String, String> cookieMap = new HashMap<>();
     private static Map<String, String> requestHeaderMap = new HashMap<>();
     private static Map<String, String> responseHeaderMap = new HashMap<>();
 
-    private static NameAliases jsonLoggingNameAliases = new NameAliases(NAMES1_1);
-    private static NameAliases jsonLoggingNameAliasesLogstash = new NameAliases(NAMES);
+    private static NameAliases jsonLoggingNameAliases = new NameAliases(NAMES_JSON);
+    private static NameAliases jsonLoggingNameAliasesLogstash = new NameAliases(NAMES_LC);
 
     private static NameAliases[] nameAliases = { jsonLoggingNameAliases, jsonLoggingNameAliasesLogstash };
 
@@ -130,15 +130,15 @@ public class AccessLogData extends GenericData {
     }
 
     private void setPair(int index, String s) {
-        setPair(index, NAMES1_1[index], s);
+        setPair(index, NAMES_JSON[index], s);
     }
 
     private void setPair(int index, int i) {
-        setPair(index, NAMES1_1[index], i);
+        setPair(index, NAMES_JSON[index], i);
     }
 
     private void setPair(int index, long l) {
-        setPair(index, NAMES1_1[index], l);
+        setPair(index, NAMES_JSON[index], l);
     }
 
     private KeyValuePairList getValues(int index) {
@@ -232,7 +232,7 @@ public class AccessLogData extends GenericData {
     public static String getCookieKey(int format, KeyValuePair kvp) {
         String cookieName = kvp.getKey();
          // We only support renaming JSON fields, not logstashCollector fields - so check that it's JSON before renaming field
-        if (cookieMap.containsKey(cookieName) && (format == jsonKey)) {
+        if (cookieMap.containsKey(cookieName) && (format == JSON_KEY)) {
             return cookieMap.get(cookieName);
         }
         return nameAliases[format].aliases[20] + "_" + cookieName;
@@ -240,7 +240,7 @@ public class AccessLogData extends GenericData {
 
     public static String getRequestHeaderKey(int format, KeyValuePair kvp) {
         String requestHeader = kvp.getKey();
-        if (requestHeaderMap.containsKey(requestHeader) && (format == jsonKey)) {
+        if (requestHeaderMap.containsKey(requestHeader) && (format == JSON_KEY)) {
             return requestHeaderMap.get(requestHeader);
         }
         return nameAliases[format].aliases[22] + "_" + requestHeader;
@@ -248,7 +248,7 @@ public class AccessLogData extends GenericData {
 
     public static String getResponseHeaderKey(int format, KeyValuePair kvp) {
         String responseHeader = kvp.getKey();
-        if (responseHeaderMap.containsKey(responseHeader) && (format == jsonKey)) {
+        if (responseHeaderMap.containsKey(responseHeader) && (format == JSON_KEY)) {
             return responseHeaderMap.get(responseHeader);
         }
         return nameAliases[format].aliases[23] + "_" + responseHeader;

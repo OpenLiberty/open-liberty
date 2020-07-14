@@ -30,63 +30,7 @@ public class LogTraceData extends GenericData {
         messagePattern = Pattern.compile("^([A-Z][\\dA-Z]{3,4})(\\d{4})([A-Z])(:)");
     }
 
-    public final static String[] NAMES1_1 = {
-                                              LogFieldConstants.IBM_DATETIME,
-                                              LogFieldConstants.IBM_MESSAGEID,
-                                              LogFieldConstants.IBM_THREADID,
-                                              LogFieldConstants.MODULE,
-                                              LogFieldConstants.SEVERITY,
-                                              LogFieldConstants.LOGLEVEL,
-                                              LogFieldConstants.IBM_METHODNAME,
-                                              LogFieldConstants.IBM_CLASSNAME,
-                                              LogFieldConstants.LEVELVALUE,
-                                              LogFieldConstants.THREADNAME,
-                                              LogFieldConstants.CORRELATION_ID,
-                                              LogFieldConstants.ORG,
-                                              LogFieldConstants.PRODUCT,
-                                              LogFieldConstants.COMPONENT,
-                                              LogFieldConstants.IBM_SEQUENCE,
-                                              LogFieldConstants.THROWABLE,
-                                              LogFieldConstants.THROWABLE_LOCALIZED,
-                                              LogFieldConstants.MESSAGE,
-                                              LogFieldConstants.FORMATTEDMSG,
-                                              LogFieldConstants.EXTENSIONS_KVPL,
-                                              LogFieldConstants.OBJECT_ID,
-                                              LogFieldConstants.HOST,
-                                              LogFieldConstants.IBM_USERDIR,
-                                              LogFieldConstants.IBM_SERVERNAME,
-                                              LogFieldConstants.TYPE
-    };
-
-    private final static String[] NAMES = {
-                                            LogFieldConstants.DATETIME,
-                                            LogFieldConstants.MESSAGEID,
-                                            LogFieldConstants.THREADID,
-                                            LogFieldConstants.LOGGERNAME,
-                                            LogFieldConstants.SEVERITY,
-                                            LogFieldConstants.LOGLEVEL,
-                                            LogFieldConstants.METHODNAME,
-                                            LogFieldConstants.CLASSNAME,
-                                            LogFieldConstants.LEVELVALUE,
-                                            LogFieldConstants.THREADNAME,
-                                            LogFieldConstants.CORRELATION_ID,
-                                            LogFieldConstants.ORG,
-                                            LogFieldConstants.PRODUCT,
-                                            LogFieldConstants.COMPONENT,
-                                            LogFieldConstants.SEQUENCE,
-                                            LogFieldConstants.THROWABLE,
-                                            LogFieldConstants.THROWABLE_LOCALIZED,
-                                            LogFieldConstants.MESSAGE,
-                                            LogFieldConstants.FORMATTEDMSG,
-                                            LogFieldConstants.EXTENSIONS_KVPL,
-                                            LogFieldConstants.OBJECT_ID,
-                                            LogFieldConstants.HOSTNAME,
-                                            LogFieldConstants.WLPUSERDIR,
-                                            LogFieldConstants.SERVERNAME,
-                                            LogFieldConstants.TYPE
-    };
-
-    public static String[] MESSAGE_NAMES1_1 = {
+    public final static String[] NAMES_JSON = {
                                                 LogFieldConstants.IBM_DATETIME,
                                                 LogFieldConstants.IBM_MESSAGEID,
                                                 LogFieldConstants.IBM_THREADID,
@@ -114,40 +58,96 @@ public class LogTraceData extends GenericData {
                                                 LogFieldConstants.TYPE
     };
 
-    public static String[] TRACE_NAMES1_1 = {
-                                              LogFieldConstants.IBM_DATETIME,
-                                              LogFieldConstants.IBM_MESSAGEID,
-                                              LogFieldConstants.IBM_THREADID,
-                                              LogFieldConstants.MODULE,
-                                              LogFieldConstants.SEVERITY,
-                                              LogFieldConstants.LOGLEVEL,
-                                              LogFieldConstants.IBM_METHODNAME,
-                                              LogFieldConstants.IBM_CLASSNAME,
-                                              LogFieldConstants.LEVELVALUE,
-                                              LogFieldConstants.THREADNAME,
-                                              LogFieldConstants.CORRELATION_ID,
-                                              LogFieldConstants.ORG,
-                                              LogFieldConstants.PRODUCT,
-                                              LogFieldConstants.COMPONENT,
-                                              LogFieldConstants.IBM_SEQUENCE,
-                                              LogFieldConstants.THROWABLE,
-                                              LogFieldConstants.THROWABLE_LOCALIZED,
-                                              LogFieldConstants.MESSAGE,
-                                              LogFieldConstants.FORMATTEDMSG,
-                                              LogFieldConstants.EXTENSIONS_KVPL,
-                                              LogFieldConstants.OBJECT_ID,
-                                              LogFieldConstants.HOST,
-                                              LogFieldConstants.IBM_USERDIR,
-                                              LogFieldConstants.IBM_SERVERNAME,
-                                              LogFieldConstants.TYPE
+    private final static String[] NAMES_LC = {
+                                               LogFieldConstants.DATETIME,
+                                               LogFieldConstants.MESSAGEID,
+                                               LogFieldConstants.THREADID,
+                                               LogFieldConstants.LOGGERNAME,
+                                               LogFieldConstants.SEVERITY,
+                                               LogFieldConstants.LOGLEVEL,
+                                               LogFieldConstants.METHODNAME,
+                                               LogFieldConstants.CLASSNAME,
+                                               LogFieldConstants.LEVELVALUE,
+                                               LogFieldConstants.THREADNAME,
+                                               LogFieldConstants.CORRELATION_ID,
+                                               LogFieldConstants.ORG,
+                                               LogFieldConstants.PRODUCT,
+                                               LogFieldConstants.COMPONENT,
+                                               LogFieldConstants.SEQUENCE,
+                                               LogFieldConstants.THROWABLE,
+                                               LogFieldConstants.THROWABLE_LOCALIZED,
+                                               LogFieldConstants.MESSAGE,
+                                               LogFieldConstants.FORMATTEDMSG,
+                                               LogFieldConstants.EXTENSIONS_KVPL,
+                                               LogFieldConstants.OBJECT_ID,
+                                               LogFieldConstants.HOSTNAME,
+                                               LogFieldConstants.WLPUSERDIR,
+                                               LogFieldConstants.SERVERNAME,
+                                               LogFieldConstants.TYPE
     };
 
-    private static NameAliases jsonLoggingNameAliasesMessages = new NameAliases(MESSAGE_NAMES1_1);
-    private static NameAliases jsonLoggingNameAliasesTrace = new NameAliases(TRACE_NAMES1_1);
+    public static String[] MESSAGE_NAMES_JSON = {
+                                                  LogFieldConstants.IBM_DATETIME,
+                                                  LogFieldConstants.IBM_MESSAGEID,
+                                                  LogFieldConstants.IBM_THREADID,
+                                                  LogFieldConstants.MODULE,
+                                                  LogFieldConstants.SEVERITY,
+                                                  LogFieldConstants.LOGLEVEL,
+                                                  LogFieldConstants.IBM_METHODNAME,
+                                                  LogFieldConstants.IBM_CLASSNAME,
+                                                  LogFieldConstants.LEVELVALUE,
+                                                  LogFieldConstants.THREADNAME,
+                                                  LogFieldConstants.CORRELATION_ID,
+                                                  LogFieldConstants.ORG,
+                                                  LogFieldConstants.PRODUCT,
+                                                  LogFieldConstants.COMPONENT,
+                                                  LogFieldConstants.IBM_SEQUENCE,
+                                                  LogFieldConstants.THROWABLE,
+                                                  LogFieldConstants.THROWABLE_LOCALIZED,
+                                                  LogFieldConstants.MESSAGE,
+                                                  LogFieldConstants.FORMATTEDMSG,
+                                                  LogFieldConstants.EXTENSIONS_KVPL,
+                                                  LogFieldConstants.OBJECT_ID,
+                                                  LogFieldConstants.HOST,
+                                                  LogFieldConstants.IBM_USERDIR,
+                                                  LogFieldConstants.IBM_SERVERNAME,
+                                                  LogFieldConstants.TYPE
+    };
+
+    public static String[] TRACE_NAMES_JSON = {
+                                                LogFieldConstants.IBM_DATETIME,
+                                                LogFieldConstants.IBM_MESSAGEID,
+                                                LogFieldConstants.IBM_THREADID,
+                                                LogFieldConstants.MODULE,
+                                                LogFieldConstants.SEVERITY,
+                                                LogFieldConstants.LOGLEVEL,
+                                                LogFieldConstants.IBM_METHODNAME,
+                                                LogFieldConstants.IBM_CLASSNAME,
+                                                LogFieldConstants.LEVELVALUE,
+                                                LogFieldConstants.THREADNAME,
+                                                LogFieldConstants.CORRELATION_ID,
+                                                LogFieldConstants.ORG,
+                                                LogFieldConstants.PRODUCT,
+                                                LogFieldConstants.COMPONENT,
+                                                LogFieldConstants.IBM_SEQUENCE,
+                                                LogFieldConstants.THROWABLE,
+                                                LogFieldConstants.THROWABLE_LOCALIZED,
+                                                LogFieldConstants.MESSAGE,
+                                                LogFieldConstants.FORMATTEDMSG,
+                                                LogFieldConstants.EXTENSIONS_KVPL,
+                                                LogFieldConstants.OBJECT_ID,
+                                                LogFieldConstants.HOST,
+                                                LogFieldConstants.IBM_USERDIR,
+                                                LogFieldConstants.IBM_SERVERNAME,
+                                                LogFieldConstants.TYPE
+    };
+
+    private static NameAliases jsonLoggingNameAliasesMessages = new NameAliases(MESSAGE_NAMES_JSON);
+    private static NameAliases jsonLoggingNameAliasesTrace = new NameAliases(TRACE_NAMES_JSON);
 
     // Although we could use one var for this since renaming fields isn't possible for LogstashCollector, it makes more sense to do it this way
-    private static NameAliases logstashNameAliasesMessages = new NameAliases(NAMES);
-    private static NameAliases logstashNameAliasesTrace = new NameAliases(NAMES);
+    private static NameAliases logstashNameAliasesMessages = new NameAliases(NAMES_LC);
+    private static NameAliases logstashNameAliasesTrace = new NameAliases(NAMES_LC);
 
     // Both regular JSON logging fields and LogstashCollector field names
     private static NameAliases[] nameAliasesMessages = { jsonLoggingNameAliasesMessages, logstashNameAliasesMessages };
@@ -174,15 +174,15 @@ public class LogTraceData extends GenericData {
     }
 
     private void setPair(int index, String s) {
-        setPair(index, NAMES1_1[index], s);
+        setPair(index, NAMES_JSON[index], s);
     }
 
     private void setPair(int index, int i) {
-        setPair(index, NAMES1_1[index], i);
+        setPair(index, NAMES_JSON[index], i);
     }
 
     private void setPair(int index, long l) {
-        setPair(index, NAMES1_1[index], l);
+        setPair(index, NAMES_JSON[index], l);
     }
 
     private KeyValuePairList getValues(int index) {
@@ -333,7 +333,7 @@ public class LogTraceData extends GenericData {
             String message = getMessage();
             if (message != null) {
                 messageId = parseMessageId(message);
-                this.setPair(1, NAMES1_1[1], messageId);
+                this.setPair(1, NAMES_JSON[1], messageId);
             }
         }
         return messageId;
@@ -356,7 +356,7 @@ public class LogTraceData extends GenericData {
         String sequenceId = getStringValue(14);
         if (sequenceId == null || sequenceId.isEmpty()) {
             sequenceId = SequenceNumber.formatSequenceNumber(getDatetime(), rawSequenceNumber);
-            this.setPair(14, NAMES1_1[14], sequenceId);
+            this.setPair(14, NAMES_JSON[14], sequenceId);
         }
         return sequenceId;
     }

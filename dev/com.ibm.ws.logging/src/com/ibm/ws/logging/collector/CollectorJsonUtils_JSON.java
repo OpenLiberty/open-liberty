@@ -29,7 +29,7 @@ import com.ibm.ws.logging.data.LogTraceData;
 public class CollectorJsonUtils_JSON {
 
     public static final int MAX_USER_AGENT_LENGTH = 2048;
-    private final static int jsonKey = CollectorConstants.KEYS_JSON;
+    private final static int JSON_KEY = CollectorConstants.KEYS_JSON;
 
     public static String getEventType(String source, String location) {
         return CollectorJsonHelpers.getEventType(source, location);
@@ -80,21 +80,21 @@ public class CollectorJsonUtils_JSON {
 
         FFDCData ffdcData = (FFDCData) event;
 
-        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startFFDCJsonFields(jsonKey);
+        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startFFDC(JSON_KEY);
 
         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(ffdcData.getDatetime());
         String formattedValue = CollectorJsonHelpers.formatMessage(ffdcData.getStacktrace(), maxFieldLength);
 
         //@formatter:off
-        jsonBuilder.addField(FFDCData.getDatetimeKey(jsonKey), datetime, false, true)
-                   .addField(FFDCData.getMessageKey(jsonKey), ffdcData.getMessage(), false, true)
-                   .addField(FFDCData.getClassNameKey(jsonKey), ffdcData.getClassName(), false, true)
-                   .addField(FFDCData.getExceptionNameKey(jsonKey), ffdcData.getExceptionName(), false, true)
-                   .addField(FFDCData.getProbeIdKey(jsonKey), ffdcData.getProbeId(), false, true)
-                   .addField(FFDCData.getThreadIdKey(jsonKey), DataFormatHelper.padHexString((int) ffdcData.getThreadId(), 8), false, true)
-                   .addField(FFDCData.getStacktraceKey(jsonKey), formattedValue, false, true)
-                   .addField(FFDCData.getObjectDetailsKey(jsonKey), ffdcData.getObjectDetails(), false, true)
-                   .addField(FFDCData.getSequenceKey(jsonKey), ffdcData.getSequence(), false, true);
+        jsonBuilder.addField(FFDCData.getDatetimeKey(JSON_KEY), datetime, false, true)
+                   .addField(FFDCData.getMessageKey(JSON_KEY), ffdcData.getMessage(), false, true)
+                   .addField(FFDCData.getClassNameKey(JSON_KEY), ffdcData.getClassName(), false, true)
+                   .addField(FFDCData.getExceptionNameKey(JSON_KEY), ffdcData.getExceptionName(), false, true)
+                   .addField(FFDCData.getProbeIdKey(JSON_KEY), ffdcData.getProbeId(), false, true)
+                   .addField(FFDCData.getThreadIdKey(JSON_KEY), DataFormatHelper.padHexString((int) ffdcData.getThreadId(), 8), false, true)
+                   .addField(FFDCData.getStacktraceKey(JSON_KEY), formattedValue, false, true)
+                   .addField(FFDCData.getObjectDetailsKey(JSON_KEY), ffdcData.getObjectDetails(), false, true)
+                   .addField(FFDCData.getSequenceKey(JSON_KEY), ffdcData.getSequence(), false, true);
         //@formatter:on
 
         if (tags != null) {
@@ -108,7 +108,7 @@ public class CollectorJsonUtils_JSON {
 
         AccessLogData accessLogData = (AccessLogData) event;
 
-        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startAccessLogJsonFields(jsonKey);
+        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startAccessLog(JSON_KEY);
 
         AccessLogDataFormatter[] formatters = accessLogData.getFormatters();
 
@@ -133,14 +133,11 @@ public class CollectorJsonUtils_JSON {
         JSONObjectBuilder jsonBuilder = null;
         boolean isMessageEvent = eventType.equals(CollectorConstants.MESSAGES_LOG_EVENT_TYPE);
 
-        ArrayList<KeyValuePair> extensions = null;
-        KeyValuePairList kvpl = null;
-
         if (isMessageEvent) {
-            jsonBuilder = CollectorJsonHelpers.startMessageJsonFields(jsonKey);
+            jsonBuilder = CollectorJsonHelpers.startMessage(JSON_KEY);
         }
         if (!isMessageEvent) {
-            jsonBuilder = CollectorJsonHelpers.startTraceJsonFields(jsonKey);
+            jsonBuilder = CollectorJsonHelpers.startTrace(JSON_KEY);
         }
 
         String message = logData.getMessage();
@@ -160,17 +157,19 @@ public class CollectorJsonUtils_JSON {
         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(logData.getDatetime());
 
         //@formatter:off
-        jsonBuilder.addField(LogTraceData.getMessageKey(jsonKey, isMessageEvent), formattedValue.toString(), false, true)
-                   .addField(LogTraceData.getThreadIdKey(jsonKey, isMessageEvent), DataFormatHelper.padHexString(logData.getThreadId(), 8), false, true)
-                   .addField(LogTraceData.getDatetimeKey(jsonKey, isMessageEvent), datetime, false, true)
-                   .addField(LogTraceData.getMessageIdKey(jsonKey, isMessageEvent), logData.getMessageId(), false, true)
-                   .addField(LogTraceData.getModuleKey(jsonKey, isMessageEvent), logData.getModule(), false, true)
-                   .addField(LogTraceData.getLoglevelKey(jsonKey, isMessageEvent), logData.getLoglevel(), false, true)
-                   .addField(LogTraceData.getMethodNameKey(jsonKey, isMessageEvent), logData.getMethodName(), false, true)
-                   .addField(LogTraceData.getClassNameKey(jsonKey, isMessageEvent), logData.getClassName(), false, true)
-                   .addField(LogTraceData.getSequenceKey(jsonKey, isMessageEvent), logData.getSequence(), false, true);
+        jsonBuilder.addField(LogTraceData.getMessageKey(JSON_KEY, isMessageEvent), formattedValue.toString(), false, true)
+                   .addField(LogTraceData.getThreadIdKey(JSON_KEY, isMessageEvent), DataFormatHelper.padHexString(logData.getThreadId(), 8), false, true)
+                   .addField(LogTraceData.getDatetimeKey(JSON_KEY, isMessageEvent), datetime, false, true)
+                   .addField(LogTraceData.getMessageIdKey(JSON_KEY, isMessageEvent), logData.getMessageId(), false, true)
+                   .addField(LogTraceData.getModuleKey(JSON_KEY, isMessageEvent), logData.getModule(), false, true)
+                   .addField(LogTraceData.getLoglevelKey(JSON_KEY, isMessageEvent), logData.getLoglevel(), false, true)
+                   .addField(LogTraceData.getMethodNameKey(JSON_KEY, isMessageEvent), logData.getMethodName(), false, true)
+                   .addField(LogTraceData.getClassNameKey(JSON_KEY, isMessageEvent), logData.getClassName(), false, true)
+                   .addField(LogTraceData.getSequenceKey(JSON_KEY, isMessageEvent), logData.getSequence(), false, true);
         //@formatter:on
 
+        ArrayList<KeyValuePair> extensions = null;
+        KeyValuePairList kvpl = null;
         kvpl = logData.getExtensions();
         if (kvpl != null) {
             if (kvpl.getKey().equals(LogFieldConstants.EXTENSIONS_KVPL)) {
@@ -206,7 +205,7 @@ public class CollectorJsonUtils_JSON {
         KeyValuePair[] pairs = genData.getPairs();
         String key = null;
 
-        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startAuditJsonFields(jsonKey);
+        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startAudit(JSON_KEY);
 
         for (KeyValuePair kvp : pairs) {
 
@@ -228,13 +227,13 @@ public class CollectorJsonUtils_JSON {
                      *
                      * Parse the rest of audit GDO KVP - They are strings.
                      */
-                    if (key.equals(LogFieldConstants.IBM_DATETIME) || key.equals("loggingEventTime") || AuditData.getDatetimeKey(jsonKey).equals(key)) {
+                    if (key.equals(LogFieldConstants.IBM_DATETIME) || key.equals("loggingEventTime") || AuditData.getDatetimeKey(JSON_KEY).equals(key)) {
                         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(kvp.getLongValue());
-                        jsonBuilder.addField(AuditData.getDatetimeKey(jsonKey), datetime, false, true);
-                    } else if (key.equals(LogFieldConstants.IBM_SEQUENCE) || key.equals("loggingSequenceNumber") || AuditData.getSequenceKey(jsonKey).equals(key)) {
-                        jsonBuilder.addField(AuditData.getSequenceKey(jsonKey), kvp.getStringValue(), false, false);
-                    } else if (key.equals(LogFieldConstants.IBM_THREADID) || AuditData.getThreadIDKey(jsonKey).equals(key)) {
-                        jsonBuilder.addField(AuditData.getThreadIDKey(jsonKey), DataFormatHelper.padHexString(kvp.getIntValue(), 8), false, true);
+                        jsonBuilder.addField(AuditData.getDatetimeKey(JSON_KEY), datetime, false, true);
+                    } else if (key.equals(LogFieldConstants.IBM_SEQUENCE) || key.equals("loggingSequenceNumber") || AuditData.getSequenceKey(JSON_KEY).equals(key)) {
+                        jsonBuilder.addField(AuditData.getSequenceKey(JSON_KEY), kvp.getStringValue(), false, false);
+                    } else if (key.equals(LogFieldConstants.IBM_THREADID) || AuditData.getThreadIDKey(JSON_KEY).equals(key)) {
+                        jsonBuilder.addField(AuditData.getThreadIDKey(JSON_KEY), DataFormatHelper.padHexString(kvp.getIntValue(), 8), false, true);
                     } else {
                         //check this before leaving
                         jsonBuilder.addField("ibm_audit_" + key, kvp.getStringValue(), false, false);

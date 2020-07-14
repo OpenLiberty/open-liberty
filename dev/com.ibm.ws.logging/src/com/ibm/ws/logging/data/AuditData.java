@@ -18,28 +18,28 @@ import com.ibm.ws.logging.collector.LogFieldConstants;
  *
  */
 public class AuditData extends GenericData {
-    public static final String[] NAMES1_1 = {
-                                              LogFieldConstants.IBM_DATETIME,
-                                              LogFieldConstants.IBM_SEQUENCE,
-                                              LogFieldConstants.IBM_THREADID,
-                                              LogFieldConstants.HOST,
-                                              LogFieldConstants.IBM_USERDIR,
-                                              LogFieldConstants.IBM_SERVERNAME,
-                                              LogFieldConstants.TYPE
+    public static final String[] NAMES_JSON = {
+                                                LogFieldConstants.IBM_DATETIME,
+                                                LogFieldConstants.IBM_SEQUENCE,
+                                                LogFieldConstants.IBM_THREADID,
+                                                LogFieldConstants.HOST,
+                                                LogFieldConstants.IBM_USERDIR,
+                                                LogFieldConstants.IBM_SERVERNAME,
+                                                LogFieldConstants.TYPE
     };
 
-    private final static String[] NAMES = {
-                                            LogFieldConstants.DATETIME,
-                                            LogFieldConstants.SEQUENCE,
-                                            LogFieldConstants.THREADID,
-                                            LogFieldConstants.HOSTNAME,
-                                            LogFieldConstants.WLPUSERDIR,
-                                            LogFieldConstants.SERVERNAME,
-                                            LogFieldConstants.TYPE
+    private final static String[] NAMES_LC = {
+                                               LogFieldConstants.DATETIME,
+                                               LogFieldConstants.SEQUENCE,
+                                               LogFieldConstants.THREADID,
+                                               LogFieldConstants.HOSTNAME,
+                                               LogFieldConstants.WLPUSERDIR,
+                                               LogFieldConstants.SERVERNAME,
+                                               LogFieldConstants.TYPE
     };
 
-    private static NameAliases jsonLoggingNameAliases = new NameAliases(NAMES1_1);
-    private static NameAliases logstashNameAliases = new NameAliases(NAMES);
+    private static NameAliases jsonLoggingNameAliases = new NameAliases(NAMES_JSON);
+    private static NameAliases logstashNameAliases = new NameAliases(NAMES_LC);
 
     private static NameAliases[] nameAliases = { jsonLoggingNameAliases, logstashNameAliases };
 
