@@ -121,7 +121,7 @@ public class RequestInfoTest {
             Assert.fail(e.getMessage());
         }
 
-        Assert.assertEquals(HTTP_SERVLET_REQUEST_REQUEST_URL_WITH_QUERY.toString(), requestInfo.getRequestUrl());
+        Assert.assertEquals(HTTP_SERVLET_REQUEST_REQUEST_URL_WITH_QUERY.toString(), requestInfo.getReqUrl());
         Assert.assertEquals(HTTP_SERVLET_REQUEST_UNKNOWN_METHOD, requestInfo.method); //No getter for method field
         Assert.assertEquals(33, requestInfo.getInResponseToId().length()); //Should be any string with 33 characters
     }
@@ -157,7 +157,7 @@ public class RequestInfoTest {
             Assert.fail(e.getMessage());
         }
 
-        Assert.assertEquals(HTTP_SERVLET_REQUEST_REQUEST_URL_WITH_QUERY.toString(), requestInfo.getRequestUrl());
+        Assert.assertEquals(HTTP_SERVLET_REQUEST_REQUEST_URL_WITH_QUERY.toString(), requestInfo.getReqUrl());
         Assert.assertEquals(ForwardRequestInfo.METHOD_GET, requestInfo.method); //No getter for method field
         Assert.assertEquals(33, requestInfo.getInResponseToId().length()); //Should be any string with 33 characters
     }

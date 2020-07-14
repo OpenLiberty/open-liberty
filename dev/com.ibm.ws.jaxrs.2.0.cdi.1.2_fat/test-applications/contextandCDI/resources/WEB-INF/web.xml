@@ -111,6 +111,24 @@
         <url-pattern>/contextandCDI6/*</url-pattern>
     </servlet-mapping>
 
+       <servlet>
+        <servlet-name>ApplicationServlet7</servlet-name>
+        <servlet-class>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet-class>
+        <init-param>
+            <param-name>javax.ws.rs.Application</param-name>
+            <param-value>com.ibm.ws.jaxrs20.cdi12.fat.contextandCDI.CDIApplication7</param-value>
+        </init-param>
+        <init-param>
+            <param-name>requestProcessorAttribute</param-name>
+            <param-value>application7</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ApplicationServlet7</servlet-name>
+        <url-pattern>/contextandCDI7/*</url-pattern>
+    </servlet-mapping>
+
     <servlet>
         <servlet-name>ApplicationServlet11</servlet-name>
         <servlet-class>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet-class>

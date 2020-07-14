@@ -14,11 +14,13 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.ejbcontainer.bindings.fat.tests.BindToJavaGlobalTest;
 import com.ibm.ws.ejbcontainer.bindings.fat.tests.BindingNameTest;
 import com.ibm.ws.ejbcontainer.bindings.fat.tests.BndErrorTest;
 import com.ibm.ws.ejbcontainer.bindings.fat.tests.ComponentIDTest;
 import com.ibm.ws.ejbcontainer.bindings.fat.tests.CustomBindingsTest;
 import com.ibm.ws.ejbcontainer.bindings.fat.tests.DefaultBindingsTest;
+import com.ibm.ws.ejbcontainer.bindings.fat.tests.DisableShortBndTest;
 import com.ibm.ws.ejbcontainer.bindings.fat.tests.EJBinWARBindingsTest;
 import com.ibm.ws.ejbcontainer.bindings.fat.tests.HomeBindingNameTest;
 import com.ibm.ws.ejbcontainer.bindings.fat.tests.JNDINameTest;
@@ -28,10 +30,12 @@ import com.ibm.ws.ejbcontainer.bindings.fat.tests.SimpleBindingNameTest;
 @RunWith(Suite.class)
 @SuiteClasses({
                 BindingNameTest.class,
+                BindToJavaGlobalTest.class,
                 BndErrorTest.class,
                 ComponentIDTest.class,
                 CustomBindingsTest.class,
                 DefaultBindingsTest.class,
+                DisableShortBndTest.class,
                 EJBinWARBindingsTest.class,
                 HomeBindingNameTest.class,
                 JNDINameTest.class,

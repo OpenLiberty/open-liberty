@@ -10,6 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.ejbcontainer.osgi.internal;
 
+import static com.ibm.ejs.container.ContainerConfigConstants.bindToJavaGlobal;
+import static com.ibm.ejs.container.ContainerConfigConstants.bindToServerRoot;
+import static com.ibm.ejs.container.ContainerConfigConstants.ignoreDuplicateEJBBindings;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -425,9 +429,11 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
         // End of beta block ------------------------------------------------------------------------
 
         // Overwrite the JVM properties if config is set, otherwise we will use the JVM props or the JVM property defaults
-        ContainerProperties.BindToServerRoot = properties.get(BIND_TO_SERVER_ROOT) != null ? (Boolean) properties.get(BIND_TO_SERVER_ROOT) : ContainerProperties.BindToServerRoot;
-        ContainerProperties.BindToJavaGlobal = properties.get(BIND_TO_JAVA_GLOBAL) != null ? (Boolean) properties.get(BIND_TO_JAVA_GLOBAL) : ContainerProperties.BindToJavaGlobal;
-        ContainerProperties.IgnoreDuplicateEJBBindings = properties.get(IGNORE_DUPLICATE_BINDINGS) != null ? (Boolean) properties.get(IGNORE_DUPLICATE_BINDINGS) : ContainerProperties.IgnoreDuplicateEJBBindings;
+        ContainerProperties.BindToServerRoot = properties.get(BIND_TO_SERVER_ROOT) != null ? (Boolean) properties.get(BIND_TO_SERVER_ROOT) : System.getProperty(bindToServerRoot,
+                                                                                                                                                                "true").equalsIgnoreCase("true");
+        ContainerProperties.BindToJavaGlobal = properties.get(BIND_TO_JAVA_GLOBAL) != null ? (Boolean) properties.get(BIND_TO_JAVA_GLOBAL) : System.getProperty(bindToJavaGlobal,
+                                                                                                                                                                "true").equalsIgnoreCase("true");
+        ContainerProperties.IgnoreDuplicateEJBBindings = properties.get(IGNORE_DUPLICATE_BINDINGS) != null ? (Boolean) properties.get(IGNORE_DUPLICATE_BINDINGS) : Boolean.getBoolean(ignoreDuplicateEJBBindings);
 
         OnError customBindingsOnError = OnError.WARN;
         try {
@@ -452,11 +458,13 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
             // If they pass in * we will have an empty initialized list and then disable for all apps
 
             // If JVM prop has something set, merge them
-            if (ContainerProperties.DisableShortDefaultBindings != null) {
-                ContainerProperties.DisableShortDefaultBindings.addAll(DisableShortDefaultBindings);
-            } else {
-                ContainerProperties.DisableShortDefaultBindings = DisableShortDefaultBindings;
+            ContainerProperties.DisableShortDefaultBindings = DisableShortDefaultBindings;
+
+            if (ContainerProperties.DisableShortDefaultBindingsFromJVM != null) {
+                ContainerProperties.DisableShortDefaultBindings.addAll(ContainerProperties.DisableShortDefaultBindingsFromJVM);
             }
+        } else if (ContainerProperties.DisableShortDefaultBindingsFromJVM != null) {
+            ContainerProperties.DisableShortDefaultBindings = ContainerProperties.DisableShortDefaultBindingsFromJVM;
         }
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -540,8 +548,7 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
         this.j2eeNameFactory = ref;
     }
 
-    protected void unsetJ2EENameFactory(J2EENameFactory ref) {
-    }
+    protected void unsetJ2EENameFactory(J2EENameFactory ref) {}
 
     @Reference
     protected void setMetaDataService(MetaDataService ref) {
@@ -1384,11 +1391,9 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
                         "(containerToType=com.ibm.ws.javaee.dd.ejbbnd.EJBJarBnd)" +
                         "(containerToType=com.ibm.ws.javaee.dd.managedbean.ManagedBeanBnd)" +
                         ")")
-    protected void setAdapterFactoryDependency(AdapterFactoryService afs) {
-    }
+    protected void setAdapterFactoryDependency(AdapterFactoryService afs) {}
 
-    protected void unsetAdapterFactoryDependency(AdapterFactoryService afs) {
-    }
+    protected void unsetAdapterFactoryDependency(AdapterFactoryService afs) {}
 
     @Override
     public boolean isRemoteUsingPortableServer() {

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2018 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -600,6 +600,9 @@ MSG_VALIDATION_INVALID_URL=Die folgende URL ist nicht g\u00fcltig: {0}. Es werde
 MSG_VALIDATION_UNSUPPORT_PROTOCOL=Das URL-Protokoll f\u00fcr das folgende Repository wird nicht unterst\u00fctzt: {0}. Die unterst\u00fctzten Protokolle sind HTTP, HTTPS und file. Stellen Sie sicher, dass die URL ordnungsgem\u00e4\u00df angegeben wurde.
 MSG_VALIDATION_INVALID_HOST=Der folgende Proxy-Server-Host ist nicht g\u00fcltig: {0}. Geben Sie einen g\u00fcltigen Hostnamen f\u00fcr den HTTP-Proxy-Server an. Das Pr\u00e4fix http:// ist nicht erforderlich.
 
+# Message for find action
+MSG_NO_FEATURES_FOUND=Es wurden keine Features gefunden.
+
 VALIDATION_INVALID_VALUE=Nicht unterst\u00fctzter Wert
 VALIDATION_INVALID_KEY=Nicht unterst\u00fctzter Eigenschaftsname
 VALIDATION_EMPTY_KEY=Leerer Eigenschaftsname
@@ -840,6 +843,26 @@ ERROR_INCOMPATIBLE_FEATURES.useraction=Entfernen Sie eines der Features und wied
 ERROR_INCOMPATIBLE_FEATURES_SINGLETON=CWWKF1405E: Die Singleton-Features {0} und {1} sind nicht miteinander kompatibel und k\u00f6nnen nicht gleichzeitig installiert werden.
 ERROR_INCOMPATIBLE_FEATURES_SINGLETON.explanation=Diese Features k\u00f6nnen nicht gleichzeitig installiert werden.
 ERROR_INCOMPATIBLE_FEATURES_SINGLETON.useraction=Entfernen Sie eines der Features und wiederholen Sie die Operation.
+
+ERROR_FAILED_TO_UNPACK_LICENSE=CWWKF1406E: Das Lizenzpaket mit der Maven-Koordinate {0} konnte nicht aus dem Repository mit dem Dateipfad {1} dekomprimiert werden.
+ERROR_FAILED_TO_UNPACK_LICENSE.explanation=Das Lizenzpaket kann nicht in der WLP-Installation dekomprimiert werden.
+ERROR_FAILED_TO_UNPACK_LICENSE.useraction=Stellen Sie sicher, dass Sie die richtigen Berechtigungen zum Lesen f\u00fcr das Repository haben.
+
+ERROR_FAILED_TO_READ_LICENSE=CWWKF1407E: Die Lizenzdatei kann an der Dateiposition {0} nicht verarbeitet werden.
+ERROR_FAILED_TO_READ_LICENSE.explanation=Die Verarbeitung der Lizenzdatei in Bezug auf die Lizenzannahmeinformationen ist nicht m\u00f6glich.
+ERROR_FAILED_TO_READ_LICENSE.useraction=Stellen Sie sicher, dass Sie die richtigen Berechtigungen zum Lesen f\u00fcr die Lizenzdatei haben.
+
+ERROR_FAILED_TO_FIND_WEBSPHERE_JSON=CWWKF1408E: Die Websphere-JSON-Datei wurde an der Dateiposition {0} nicht gefunden.
+ERROR_FAILED_TO_FIND_WEBSPHERE_JSON.explanation=Die Websphere-JSON-Datei wurde nicht gefunden.
+ERROR_FAILED_TO_FIND_WEBSPHERE_JSON.useraction=Stellen Sie sicher, dass Sie eine Netzverbindung und Schreibberechtigungen f\u00fcr das konfigurierte lokale Maven-Verzeichnis haben.
+
+ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS=CWWKF1409E: Die folgenden JSON-Feature-Dateien wurden nicht lokal und nicht im konfigurierten Maven-Repository gefunden: {0}.
+ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS.explanation=Die JSON-Dateien wurden nicht lokal und nicht im konfigurierten Maven-Repository gefunden.
+ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS.useraction=Stellen Sie sicher, dass Sie eine Netzverbindung haben und die JSON-Dateien im konfigurierten Maven-Repository vorhanden sind.
+
+ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY=CWWKF1410E: Das Feature {0} kann nicht in der Edition {1} {2} installiert werden, weil es nur f\u00fcr die Edition {3} gilt.
+ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.explanation=Das Feature ist f\u00fcr die Edition des installierten Produkts nicht g\u00fcltig.
+ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.useraction=Installieren Sie Features, die von der Produktedition unterst\u00fctzt werden.
 
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: Das Feature wurde erfolgreich heruntergeladen.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=Das Feature wurde heruntergeladen.

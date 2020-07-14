@@ -27,7 +27,9 @@ package com.ibm.ws.logging.hpel.fat;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.util.Properties;
 import java.util.Set;
@@ -379,7 +381,9 @@ public class CommonTasks {
             return false;
         }
         Properties bootstrapProps = new Properties();
-        bootstrapProps.load(bootstrapFile.openForReading());
+        InputStream is = bootstrapFile.openForReading();
+        bootstrapProps.load(is);
+        is.close();
         String logProvider = bootstrapProps.getProperty("websphere.log.provider");
         return logProvider != null && logProvider.startsWith("binaryLogging-");
 //        if (getUnifiedLoggingService(aServer) == null) {
@@ -477,7 +481,9 @@ public class CommonTasks {
         }
         Properties bootstrapProps = new Properties();
         bootstrapProps.setProperty("websphere.log.provider", "binaryLogging-1.0");
-        bootstrapProps.store(bootstrapFile.openForWriting(true), null);
+        OutputStream os = bootstrapFile.openForWriting(true);
+        bootstrapProps.store(os, null);
+        os.close();
         return true;
 //        Workspace tempWorkSpace = HpelSetup.getCellUnderTest().getWorkspace();
 //        getUnifiedLoggingService(aServer).getAttributeByName("enable").setValue(enable);
@@ -902,7 +908,9 @@ public class CommonTasks {
         RemoteFile bootstrapFile = server.getServerBootstrapPropertiesFile();
         Properties bootstrapProps = new Properties();
         bootstrapProps.setProperty(propertyName, propertyValue);
-        bootstrapProps.store(bootstrapFile.openForWriting(true), null);
+        OutputStream os = bootstrapFile.openForWriting(true);
+        bootstrapProps.store(os, null);
+        os.close();
 
     }
 
@@ -919,9 +927,13 @@ public class CommonTasks {
         LibertyServer server = appServer;
         RemoteFile bootstrapFile = server.getServerBootstrapPropertiesFile();
         Properties bootstrapProps = new Properties();
-        bootstrapProps.load(bootstrapFile.openForReading());
+        InputStream is = bootstrapFile.openForReading();
+        bootstrapProps.load(is);
         bootstrapProps.remove(propertyName);
-        bootstrapProps.store(bootstrapFile.openForWriting(false), null);
+        is.close();
+        OutputStream os = bootstrapFile.openForWriting(false);
+        bootstrapProps.store(os, null);
+        os.close();
 
     }
 

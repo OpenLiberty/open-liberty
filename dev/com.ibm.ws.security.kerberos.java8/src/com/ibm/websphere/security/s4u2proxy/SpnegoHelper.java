@@ -66,7 +66,6 @@ public class SpnegoHelper {
     static final String KEY_KERBEROS_EXT_SERVICE = "KerberosExtService";
     static final String KEY_KRB5_HELPER_JDK = "Krb5HelperJdk";
     private static Krb5HelperJdk krb5HelperJdk = null;
-    static boolean supportJDK = false;
     protected final static AtomicServiceReference<KerberosExtService> kerberosExtServiceRef = new AtomicServiceReference<KerberosExtService>(KEY_KERBEROS_EXT_SERVICE);
 
     /**
@@ -208,7 +207,6 @@ public class SpnegoHelper {
         if (kerberosExtService == null) {
             Krb5Helper.serviceNotAvailableException();
         }
-        Krb5Helper.unsuportJdkErrorMsg(supportJDK);
 
         return kerberosExtService;
     }
@@ -246,18 +244,15 @@ public class SpnegoHelper {
 
     @Activate
     protected void activate(ComponentContext cc) {
-        supportJDK = Krb5Common.isJdk18OrUp;
-        if (supportJDK) {
-            kerberosExtServiceRef.activate(cc);
-        }
+        kerberosExtServiceRef.activate(cc);
     }
 
     @Modified
-    protected void modified(Map<String, Object> props) {}
+    protected void modified(Map<String, Object> props) {
+    }
 
     @Deactivate
     protected void deactivate(ComponentContext cc) {
         kerberosExtServiceRef.deactivate(cc);
-        supportJDK = false;
     }
 }

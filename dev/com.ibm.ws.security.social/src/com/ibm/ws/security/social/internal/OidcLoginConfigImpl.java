@@ -107,7 +107,6 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
     public static final String KEY_NONCE_ENABLED = "nonceEnabled";
 
     public static final String KEY_INCLUDE_CUSTOM_CACHE_KEY_IN_SUBJECT = "includeCustomCacheKeyInSubject";
-
     private boolean includeCustomCacheKeyInSubject = true;
 
     public static final String KEY_AUTHZ_PARAM = "authzParameter";

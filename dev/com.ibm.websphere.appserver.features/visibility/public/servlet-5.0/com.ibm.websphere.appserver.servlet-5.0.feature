@@ -32,23 +32,23 @@ IBM-SPI-Package: com.ibm.wsspi.webcontainer, \
  com.ibm.websphere.servlet.request, \
  com.ibm.ws.webcontainer.spiadapter.collaborator, \
  com.ibm.websphere.webcontainer.async
-Subsystem-Category: JavaEE8Application
+Subsystem-Category: JakartaEE9Application
 -features=com.ibm.websphere.appserver.injection-2.0, \
  com.ibm.websphere.appserver.artifact-1.0, \
  com.ibm.websphere.appserver.containerServices-1.0, \
  com.ibm.websphere.appserver.javaeedd-1.0, \
  com.ibm.websphere.appserver.classloading-1.0, \
  com.ibm.websphere.appserver.appmanager-1.0, \
- com.ibm.websphere.appserver.javaeePlatform-8.0, \
+ io.openliberty.jakartaeePlatform-9.0, \
  com.ibm.websphere.appserver.anno-2.0, \
- com.ibm.websphere.appserver.jakarta.annotation-2.0, \
+ io.openliberty.jakarta.annotation-2.0, \
  com.ibm.websphere.appserver.httptransport-1.0, \
- com.ibm.websphere.appserver.jakarta.servlet-5.0, \
+ io.openliberty.jakarta.servlet-5.0, \
  com.ibm.websphere.appserver.requestProbes-1.0, \
  com.ibm.websphere.appserver.eeCompatible-9.0, \
  com.ibm.websphere.appserver.servlet-servletSpi1.0, \
  com.ibm.websphere.appserver.javaeeddSchema-1.0
--bundles=com.ibm.ws.app.manager.war, \
+-bundles=com.ibm.ws.app.manager.war.jakarta, \
  com.ibm.ws.managedobject, \
  com.ibm.ws.org.apache.commons.io, \
  com.ibm.websphere.security, \
@@ -68,7 +68,7 @@ Subsystem-Category: JavaEE8Application
  bin/pluginUtility; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
  bin/pluginUtility.bat, \
  dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.servlet_1.1-javadoc.zip
-Subsystem-Name: Java Servlets 5.0
-kind=noship
-edition=full
+Subsystem-Name: Jakarta Servlets 5.0
+kind=beta
+edition=core
 WLP-Activation-Type: parallel

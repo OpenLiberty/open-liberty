@@ -15,30 +15,32 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collections;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Resource;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.sql.DataSource;
-import javax.transaction.NotSupportedException;
-import javax.transaction.SystemException;
-import javax.transaction.UserTransaction;
-
-import org.junit.Test;
-
-import componenttest.app.FATDatabaseServlet;
-
+import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.concurrent.ManagedExecutors;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.concurrent.ManagedTask;
 import jakarta.enterprise.concurrent.ManagedTaskListener;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.transaction.NotSupportedException;
+import jakarta.transaction.SystemException;
+import jakarta.transaction.UserTransaction;
+
+import javax.sql.DataSource;
+
+import org.junit.Test;
+
+import componenttest.app.FATDatabaseServlet;
 
 @SuppressWarnings("serial")
 @WebServlet("/*")
@@ -352,6 +354,58 @@ public class ConcurrentDBTestServlet extends FATDatabaseServlet {
                 throw new Exception("Updates should have been rolled back");
         } finally {
             con.commit();
+            con.close();
+        }
+    }
+
+    /**
+     * If the user specifies the ManagedtTask.TRANSACTION constant from both specs with conflicting values,
+     * the one from Jakarta Concurrency must take precedence when Jakarta Concurrency is enabled.
+     */
+    @Test
+    public void testPrecedenceOfTransactionConstant() throws Exception {
+        Map<String, String> execProps = new TreeMap<String, String>();
+        execProps.put(ManagedTask.TRANSACTION.replace("jakarta", "javax"), ManagedTask.SUSPEND);
+        execProps.put(ManagedTask.TRANSACTION, ManagedTask.USE_TRANSACTION_OF_EXECUTION_THREAD); // enabled spec must take precedence
+
+        Connection con = dataSource.getConnection();
+        try {
+            con.setAutoCommit(false);
+            con.createStatement().executeUpdate("INSERT INTO MYTABLE VALUES ('testPrecedenceOfTransactionConstant', 27)");
+        } finally {
+            // don't commit or roll back yet
+            con.close();
+        }
+
+        // In order for the following update of the same entry to be permitted, the same transaction must be used,
+        // showing that USE_TRANSACTION_OF_EXECUTION_THREAD is honored rather than SUSPEND.
+        int count = (Integer) contextService.createContextualProxy(new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                Connection con = dataSource.getConnection();
+                try {
+                    return con.createStatement().executeUpdate("UPDATE MYTABLE SET MYVALUE = 28 where MYKEY = 'testPrecedenceOfTransactionConstant'");
+                } finally {
+                    // don't commit or roll back yet
+                    con.close();
+                }
+            }
+        }, execProps, Callable.class)
+                        .call();
+
+        if (count != 1)
+            throw new Exception("Update was not visible to contextual proxy. Count: " + count);
+
+        // roll back both updates
+        con = dataSource.getConnection();
+        con.rollback();
+        con.setAutoCommit(true);
+
+        try {
+            ResultSet result = con.createStatement().executeQuery("SELECT MYVALUE FROM MYTABLE WHERE MYKEY = 'testPrecedenceOfTransactionConstant'");
+            if (result.next())
+                throw new Exception("Should have been rolled back. " + result.getInt(1));
+        } finally {
             con.close();
         }
     }

@@ -17,6 +17,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
+import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.topology.database.DerbyNetworkUtilities;
 import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.database.container.DatabaseContainerType;
@@ -26,6 +27,7 @@ import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+                AlwaysPassesTest.class, //Needed because we skip when testing against oracle.
                 FailoverTimersTest.class
 })
 public class FATSuite {

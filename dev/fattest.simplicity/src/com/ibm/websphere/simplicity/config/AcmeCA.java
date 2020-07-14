@@ -29,9 +29,7 @@ public class AcmeCA extends ConfigElement {
 
     private AcmeTransportConfig acmeTransportConfig;
 
-    private Integer challengeRetries;
-
-    private String challengeRetryWait; // Duration
+    private String challengePollTimeout; // Duration
 
     private String subjectDN;
 
@@ -41,13 +39,21 @@ public class AcmeCA extends ConfigElement {
 
     private String domainKeyFile;
 
-    private Integer orderRetries;
-
-    private String orderRetryWait; // Duration
+    private String orderPollTimeout; // Duration
 
     private String validFor; // Duration
 
     private String renewBeforeExpiration;
+
+    private String certCheckerSchedule;
+
+    private String certCheckerErrorSchedule;
+
+    private boolean disableMinRenewWindow;
+
+    private boolean disableRenewOnNewHistory;
+
+    private Long renewCertMin;
 
     /**
      * @return the accountContact
@@ -78,17 +84,10 @@ public class AcmeCA extends ConfigElement {
     }
 
     /**
-     * @return the challengeRetries
+     * @return the challengePollTimeout
      */
-    public Integer getChallengeRetries() {
-        return challengeRetries;
-    }
-
-    /**
-     * @return the challengeRetryWait
-     */
-    public String getChallengeRetryWait() {
-        return challengeRetryWait;
+    public String getChallengePoll() {
+        return challengePollTimeout;
     }
 
     /**
@@ -113,17 +112,10 @@ public class AcmeCA extends ConfigElement {
     }
 
     /**
-     * @return the orderRetries
+     * @return the orderPollTimeout
      */
-    public Integer getOrderRetries() {
-        return orderRetries;
-    }
-
-    /**
-     * @return the orderRetryWait
-     */
-    public String getOrderRetryWait() {
-        return orderRetryWait;
+    public String getOrderPoll() {
+        return orderPollTimeout;
     }
 
     /**
@@ -173,19 +165,11 @@ public class AcmeCA extends ConfigElement {
     }
 
     /**
-     * @param challengeRetries the challengeRetries to set
-     */
-    @XmlAttribute(name = "challengeRetries")
-    public void setChallengeRetries(Integer challengeRetries) {
-        this.challengeRetries = challengeRetries;
-    }
-
-    /**
      * @param challengeRetryWait the challengeRetryWait to set
      */
-    @XmlAttribute(name = "challengeRetryWait")
-    public void setChallengeRetryWait(String challengeRetryWait) {
-        this.challengeRetryWait = challengeRetryWait;
+    @XmlAttribute(name = "challengePollTimeout")
+    public void setChallengePoll(String challengePollTimeout) {
+        this.challengePollTimeout = challengePollTimeout;
     }
 
     /**
@@ -213,19 +197,11 @@ public class AcmeCA extends ConfigElement {
     }
 
     /**
-     * @param orderRetries the orderRetries to set
+     * @param orderPollTimeout the orderPollTimeout to set
      */
-    @XmlAttribute(name = "orderRetries")
-    public void setOrderRetries(Integer orderRetries) {
-        this.orderRetries = orderRetries;
-    }
-
-    /**
-     * @param orderRetryWait the orderRetryWait to set
-     */
-    @XmlAttribute(name = "orderRetryWait")
-    public void setOrderRetryWait(String orderRetryWait) {
-        this.orderRetryWait = orderRetryWait;
+    @XmlAttribute(name = "orderPollTimeout")
+    public void setOrderPoll(String orderPollTimeout) {
+        this.orderPollTimeout = orderPollTimeout;
     }
 
     /**
@@ -259,6 +235,51 @@ public class AcmeCA extends ConfigElement {
         this.renewBeforeExpiration = renewBeforeExpiration;
     }
 
+    public String getCertCheckerSchedule() {
+        return certCheckerSchedule;
+    }
+
+    @XmlAttribute(name = "certCheckerSchedule")
+    public void setCertCheckerSchedule(String certCheckerSchedule) {
+        this.certCheckerSchedule = certCheckerSchedule;
+    }
+
+    public String getCertCheckerErrorSchedule() {
+        return certCheckerErrorSchedule;
+    }
+
+    @XmlAttribute(name = "certCheckerErrorSchedule")
+    public void setCertCheckerErrorSchedule(String certCheckerErrorSchedule) {
+        this.certCheckerErrorSchedule = certCheckerErrorSchedule;
+    }
+
+    @XmlAttribute(name = "disableMinRenewWindow")
+    public void setDisableMinRenewWindow(boolean disableMinRenewWindow) {
+        this.disableMinRenewWindow = disableMinRenewWindow;
+    }
+
+    public boolean isDisableMinRenewWindow() {
+        return disableMinRenewWindow;
+    }
+
+    @XmlAttribute(name = "disableRenewOnNewHistory")
+    public void setDisableRenewOnNewHistory(boolean disableRenewOnNewHistory) {
+        this.disableRenewOnNewHistory = disableRenewOnNewHistory;
+    }
+
+    public boolean isDisableRenewOnNewHistory() {
+        return disableRenewOnNewHistory;
+    }
+
+    @XmlAttribute(name = "renewCertMin")
+    public void setRenewCertMin(long renewCertMin) {
+        this.renewCertMin = renewCertMin;
+    }
+
+    public long getRenewCertMin() {
+        return renewCertMin == null ? 15000L : renewCertMin;
+    }
+
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
@@ -277,14 +298,26 @@ public class AcmeCA extends ConfigElement {
         if (acmeTransportConfig != null) {
             sb.append("acmeTransportConfig=\"").append(acmeTransportConfig).append("\" ");;
         }
-        if (challengeRetries != null) {
-            sb.append("challengeRetries=\"").append(challengeRetries).append("\" ");;
+        if (certCheckerSchedule != null) {
+            sb.append("certCheckerSchedule=\"").append(certCheckerSchedule).append("\" ");;
         }
-        if (challengeRetryWait != null) {
-            sb.append("challengeRetryWait=\"").append(challengeRetryWait).append("\" ");;
+        if (certCheckerErrorSchedule != null) {
+            sb.append("certCheckerErrorSchedule=\"").append(certCheckerErrorSchedule).append("\" ");;
+        }
+        if (challengePollTimeout != null) {
+            sb.append("challengePollTimeout=\"").append(challengePollTimeout).append("\" ");;
         }
         if (directoryURI != null) {
             sb.append("directoryURI=\"").append(directoryURI).append("\" ");;
+        }
+        if (disableMinRenewWindow) {
+            sb.append("disableMinRenewWindow=\"").append(disableMinRenewWindow).append("\" ");;
+        }
+        if (disableRenewOnNewHistory) {
+            sb.append("disableRenewOnNewHistory=\"").append(disableRenewOnNewHistory).append("\" ");;
+        }
+        if (renewCertMin != null) {
+            sb.append("renewCertMin=\"").append(renewCertMin).append("\" ");;
         }
         if (domainKeyFile != null) {
             sb.append("domainKeyFile=\"").append(domainKeyFile).append("\" ");;
@@ -292,20 +325,17 @@ public class AcmeCA extends ConfigElement {
         if (domain != null) {
             sb.append("domain=\"").append(domain).append("\" ");;
         }
-        if (orderRetries != null) {
-            sb.append("orderRetries=\"").append(orderRetries).append("\" ");;
+        if (orderPollTimeout != null) {
+            sb.append("orderPollTimeout=\"").append(orderPollTimeout).append("\" ");;
         }
-        if (orderRetryWait != null) {
-            sb.append("orderRetryWait=\"").append(orderRetryWait).append("\" ");;
+        if (renewBeforeExpiration != null) {
+            sb.append("renewBeforeExpiration=\"").append(renewBeforeExpiration).append("\" ");;
         }
         if (subjectDN != null) {
             sb.append("subjectDN=\"").append(subjectDN).append("\" ");;
         }
         if (validFor != null) {
             sb.append("validFor=\"").append(validFor).append("\" ");;
-        }
-        if (renewBeforeExpiration != null) {
-            sb.append("renewBeforeExpiration=\"").append(renewBeforeExpiration).append("\" ");;
         }
 
         sb.append("}");
@@ -325,6 +355,10 @@ public class AcmeCA extends ConfigElement {
         private String trustStorePassword;
 
         private String trustStoreType;
+
+        private String httpConnectTimeout; // duration
+
+        private String httpReadTimeout; // duration
 
         /**
          * @return the protocol
@@ -352,6 +386,20 @@ public class AcmeCA extends ConfigElement {
          */
         public String getTrustStoreType() {
             return trustStoreType;
+        }
+
+        /**
+         * @return the httpConnectTimeout
+         */
+        public String getHttpConnectTimeout() {
+            return httpConnectTimeout;
+        }
+
+        /**
+         * @return the httpReadTimeout
+         */
+        public String getHttpReadTimeout() {
+            return httpReadTimeout;
         }
 
         /**
@@ -386,6 +434,22 @@ public class AcmeCA extends ConfigElement {
             this.trustStoreType = trustStoreType;
         }
 
+        /**
+         * @param httpConnectTimeout the httpConnectTimeout to set
+         */
+        @XmlAttribute(name = "httpConnectTimeout")
+        public void setHttpConnectTimeout(String httpConnectTimeout) {
+            this.httpConnectTimeout = httpConnectTimeout;
+        }
+
+        /**
+         * @param httpReadTimeout the httpReadTimeout to set
+         */
+        @XmlAttribute(name = "httpReadTimeout")
+        public void setHttpReadTimeout(String httpReadTimeout) {
+            this.httpReadTimeout = httpReadTimeout;
+        }
+
         @Override
         public String toString() {
             StringBuffer sb = new StringBuffer();
@@ -403,6 +467,12 @@ public class AcmeCA extends ConfigElement {
             }
             if (trustStoreType != null) {
                 sb.append("trustStoreType=\"").append(trustStoreType).append("\" ");;
+            }
+            if (httpConnectTimeout != null) {
+                sb.append("httpConnectTimeout=\"").append(httpConnectTimeout).append("\" ");;
+            }
+            if (httpReadTimeout != null) {
+                sb.append("httpReadTimeout=\"").append(httpReadTimeout).append("\" ");;
             }
 
             sb.append("}");

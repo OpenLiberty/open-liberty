@@ -11,11 +11,9 @@
 package com.ibm.ws.testing.opentracing.test;
 
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
@@ -35,7 +33,6 @@ import componenttest.topology.impl.LibertyServerFactory;
  * </ul>
  */
 @Mode(TestMode.FULL)
-@MinimumJavaLevel(javaLevel = 8)
 public class MicroProfile14NoTracer extends FATTestBase {
     /**
      * Set to the generated server before any tests are run.

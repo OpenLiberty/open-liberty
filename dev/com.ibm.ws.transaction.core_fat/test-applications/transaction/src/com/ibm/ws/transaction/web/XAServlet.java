@@ -27,8 +27,11 @@ import com.ibm.tx.jta.ut.util.XAResourceImpl;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.app.FATServlet;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 
 @WebServlet("/XAServlet")
+@Mode(TestMode.FULL)
 public class XAServlet extends FATServlet {
 
     public void testSetTransactionTimeoutReturnsTrue(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -261,6 +264,7 @@ public class XAServlet extends FATServlet {
     }
 
     @Test
+    @Mode(TestMode.LITE)
     @ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
     public void testXA009(HttpServletRequest request, HttpServletResponse response) throws Exception {
         final TransactionManager tm = TransactionManagerFactory.getTransactionManager();

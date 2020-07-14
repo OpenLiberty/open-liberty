@@ -1235,7 +1235,7 @@ public abstract class WebContainer extends BaseContainer {
         String cacheKeyStr = cacheKey.toString();
         // Servlet 4.0 : Use CacheServletWrapperFactory
         CacheServletWrapper wrapper =  cacheServletWrapperFactory.createCacheServletWrapper((IServletWrapper) s, req, cacheKeyStr, app);
-        if (_cacheMap.putIfAbsent(cacheKeyStr, wrapper) != null) {
+        if (_cacheMap.containsKey(cacheKeyStr) || _cacheMap.putIfAbsent(cacheKeyStr, wrapper) != null) {
             if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) //306998.15
             {
                 logger.logp(Level.FINE, CLASS_NAME, "addToCache", "Already cached cacheKey --> " + cacheKey);

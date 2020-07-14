@@ -1,0 +1,24 @@
+
+task copyBundles {
+  enabled project.file('test-bundles').exists()
+  doLast {
+    new File(project.buildDir, 'buildfiles').eachLine { String line ->
+      if (!line.contains(project.name + '.jar')) {
+        copy {
+          from line
+          into new File(autoFvtDir, 'publish/bundles')
+        }
+      }
+    }
+  }
+}
+
+task addRestConnector(type: Copy) {
+  shouldRunAfter jar
+  from buildImage.file('wlp/clients/restConnector.jar')
+  into new File(autoFvtDir, 'lib')
+}
+
+addRequiredLibraries {
+	dependsOn copyBundles, addRestConnector
+}

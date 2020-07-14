@@ -10,11 +10,11 @@
  -->
 <server>
   <featureManager>
-    <feature>componentTest-1.0</feature>
+    <feature>componentTest-2.0</feature>
     <feature>concurrent-2.0</feature>
     <feature>jdbc-4.2</feature> <!-- for javax.transaction.UserTransaction API -->
     <feature>jndi-1.0</feature>
-    <feature>servlet-4.0</feature> <!-- TODO this will need to move to 5.0 to align with Jakarta 9 once enforced -->
+    <feature>servlet-5.0</feature>
   </featureManager>
 
   <include location="../fatTestPorts.xml"/>

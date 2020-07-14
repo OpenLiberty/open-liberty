@@ -10,8 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.fat.wc.tests;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collections;
 import java.util.logging.Logger;
 
 import org.junit.AfterClass;
@@ -20,23 +19,28 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebBrowser;
 import com.ibm.ws.fat.util.browser.WebResponse;
 import com.ibm.ws.fat.wc.WCApplicationHelper;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE9Action;
 
 /**
  * All Servlet 4.0 tests with all applicable server features enabled.
  */
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class WCServerTest extends LoggingTest {
 
     private static final Logger LOG = Logger.getLogger(WCServerTest.class.getName());
-
-    protected static final Map<String, String> testUrlMap = new HashMap<String, String>();
+    private static final String SERVLET_40_APP_NAME = "TestServlet40";
 
     @ClassRule
     public static SharedServer SHARED_SERVER = new SharedServer("servlet40_wcServer");
@@ -55,8 +59,8 @@ public class WCServerTest extends LoggingTest {
     public static void setUp() throws Exception {
         LOG.info("Setup : add TestServlet40 to the server if not already present.");
 
-        WCApplicationHelper.addEarToServerDropins(SHARED_SERVER.getLibertyServer(), "TestServlet40.ear", true,
-                                                  "TestServlet40.war", true, "TestServlet40.jar", true, "testservlet40.war.servlets",
+        WCApplicationHelper.addEarToServerDropins(SHARED_SERVER.getLibertyServer(), SERVLET_40_APP_NAME + ".ear", true,
+                                                  SERVLET_40_APP_NAME + ".war", true, SERVLET_40_APP_NAME + ".jar", true, "testservlet40.war.servlets",
                                                   "testservlet40.war.listeners", "testservlet40.jar.servlets");
 
         SHARED_SERVER.startIfNotStarted();
@@ -71,19 +75,6 @@ public class WCServerTest extends LoggingTest {
         SHARED_SERVER.getLibertyServer().stopServer();
     }
 
-    protected String parseResponse(WebResponse wr, String beginText, String endText) {
-        String s;
-        String body = wr.getResponseBody();
-        int beginTextIndex = body.indexOf(beginText);
-        if (beginTextIndex < 0)
-            return "begin text, " + beginText + ", not found";
-        int endTextIndex = body.indexOf(endText, beginTextIndex);
-        if (endTextIndex < 0)
-            return "end text, " + endText + ", not found";
-        s = body.substring(beginTextIndex + beginText.length(), endTextIndex);
-        return s;
-    }
-
     /**
      * Request a simple servlet.
      *
@@ -96,17 +87,77 @@ public class WCServerTest extends LoggingTest {
 
     /**
      * Simple test to a servlet then read the header to ensure we are using
-     * Servlet 4.0
+     * Servlet 4.0. This test looks for the X-Powered-By header specifically.
+     *
+     * This test is skipped for EE9_FEATURES repeat because for servlet-5.0 + the
+     * X-Powered-By header is going to be disabled by default.
      *
      * @throws Exception
      *                       if something goes horribly wrong
      */
     @Test
-    public void testServletHeader() throws Exception {
+    @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
+    public void testServletXPoweredByHeader() throws Exception {
         WebResponse response = this.verifyResponse("/TestServlet40/MyServlet", "Hello World");
 
-        // verify the X-Powered-By Response header
+        // verify the X-Powered-By Response header is present by default and equals Servlet/4.0
         response.verifyResponseHeaderEquals("X-Powered-By", false, "Servlet/4.0", true, false);
+    }
+
+    /**
+     * Simple test to a servlet then read the header to ensure the X-Powered-By
+     * header is disabled on Servlet-5.0
+     *
+     * This test is skipped for NO_MODIFICATION(servlet-4.0 feature).
+     *
+     * @throws Exception
+     *                       if something goes horribly wrong
+     */
+    @Test
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    public void testServletXPoweredByHeader_Servlet50_Default() throws Exception {
+        WebResponse response = this.verifyResponse("/TestServlet40/MyServlet", "Hello World");
+
+        // verify the X-Powered-By Response header is not present by default.
+        response.verifyResponseHeaderExists("X-Powered-By", false, false);
+    }
+
+    /**
+     * Simple test to a servlet then read the header to ensure that when the
+     * X-Powered-By header is enabled it contains Servlet/5.0.
+     *
+     * This test is skipped for NO_MODIFICATION(servlet-4.0 feature).
+     *
+     * @throws Exception
+     *                       if something goes horribly wrong
+     */
+    @Test
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    public void testServletXPoweredByHeader_Servlet50_Enabled() throws Exception {
+        // Save the current server configuration
+        SHARED_SERVER.getLibertyServer().saveServerConfiguration();
+
+        // Enable the X-PoweredByHeader
+        ServerConfiguration configuration = SHARED_SERVER.getLibertyServer().getServerConfiguration();
+        LOG.info("Server configuration that was saved: " + configuration);
+
+        configuration.getWebContainer().setDisablexpoweredby(false);
+
+        SHARED_SERVER.getLibertyServer().setMarkToEndOfLog();
+        SHARED_SERVER.getLibertyServer().updateServerConfiguration(configuration);
+
+        SHARED_SERVER.getLibertyServer().waitForConfigUpdateInLogUsingMark(Collections.singleton(SERVLET_40_APP_NAME));
+
+        // Execute the test
+        WebResponse response = this.verifyResponse("/TestServlet40/MyServlet", "Hello World");
+
+        // verify the X-Powered-By Response header is present and equals Servlet/5.0
+        response.verifyResponseHeaderEquals("X-Powered-By", false, "Servlet/5.0", true, false);
+
+        // Restore the original server configuration
+        SHARED_SERVER.getLibertyServer().setMarkToEndOfLog();
+        SHARED_SERVER.getLibertyServer().restoreServerConfiguration();
+        SHARED_SERVER.getLibertyServer().waitForConfigUpdateInLogUsingMark(Collections.singleton(SERVLET_40_APP_NAME));
     }
 
     /**
@@ -118,7 +169,11 @@ public class WCServerTest extends LoggingTest {
 
     @Test
     public void testServletContextMajorMinorVersion() throws Exception {
-        this.verifyResponse("/TestServlet40/MyServlet?TestMajorMinorVersion=true", "majorVersion: 4");
+        String majorVersionExpectedResult = "majorVersion: 4";
+        if (JakartaEE9Action.isActive()) {
+            majorVersionExpectedResult = "majorVersion: 5";
+        }
+        this.verifyResponse("/TestServlet40/MyServlet?TestMajorMinorVersion=true", majorVersionExpectedResult);
 
         this.verifyResponse("/TestServlet40/MyServlet?TestMajorMinorVersion=true", "minorVersion: 0");
     }

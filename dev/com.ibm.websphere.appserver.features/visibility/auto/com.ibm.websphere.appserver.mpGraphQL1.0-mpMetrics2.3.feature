@@ -7,5 +7,5 @@ IBM-Provision-Capability: \
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.mpMetrics-2.3))"
 -bundles=com.ibm.ws.microprofile.graphql.metrics.1.0
 IBM-Install-Policy: when-satisfied
-kind=beta
+kind=ga
 edition=core

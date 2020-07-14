@@ -10,8 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
-import java.util.logging.Logger;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -32,7 +32,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 
 @RunWith(FATRunner.class)
 public class CDITests extends LoggingTest {
-    
+
     private static final Logger LOG = Logger.getLogger(CDITests.class.getName());
 
     @ClassRule
@@ -61,8 +61,8 @@ public class CDITests extends LoggingTest {
             Set<String> appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(CDI12_TEST_APP_NAME);
             LOG.info("addAppToServer : " + CDI12_TEST_APP_NAME + " already installed : " + !appInstalled.isEmpty());
             if (appInstalled.isEmpty())
-              ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), CDI12TestApp);
-          }
+                ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), CDI12TestApp);
+        }
         SHARED_SERVER.startIfNotStarted();
         SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + CDI12_TEST_APP_NAME);
     }

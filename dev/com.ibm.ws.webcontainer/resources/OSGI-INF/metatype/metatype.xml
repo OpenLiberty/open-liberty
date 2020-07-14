@@ -224,7 +224,7 @@
         <AD id="disableXPoweredBy"
             name="%disableXPoweredBy.name" 
             description="%disableXPoweredBy.desc" 
-            required="false" type="Boolean" default="false" />
+            required="false" type="Boolean" />
             
         <AD id="deferServletLoad"
             name="%deferServletLoad.name" 

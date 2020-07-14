@@ -282,7 +282,7 @@ public class ClientAuthorizationTest {
     private void oidcRequestExpectation(final String oidcRequestAttr) {
         mock.checking(new Expectations() {
             {
-                one(request).getAttribute("OidcRequest");
+                one(request).getAttribute(OAuth20Constants.OIDC_REQUEST_OBJECT_ATTR_NAME);
                 will(returnValue(oidcRequestAttr));
             }
         });
@@ -3293,7 +3293,7 @@ public class ClientAuthorizationTest {
      * Expected result: false
      */
     @Test
-    public void isClientAutoAuthorized_ClientNotWhitelisted() {
+    public void isClientAutoAuthorized_ClientNotAllowed() {
         mock.checking(new Expectations() {
             {
                 one(request).getParameter(OAuth20Constants.CLIENT_ID);

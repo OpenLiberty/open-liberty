@@ -23,7 +23,9 @@ tested.features: \
   jaxrs-2.0,\
   jpa-2.1,\
   ldapregistry-3.0,\
-  jaxb-2.3
+  jaxb-2.3, \
+  jaxb-3.0, \
+  servlet-5.0
 
 -buildpath: \
 	javax.activation:activation;version=1.1,\

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.test.current.extension;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.event.Observes;
@@ -24,7 +22,9 @@ import javax.enterprise.inject.spi.Extension;
 
 public class MyDeploymentVerifier implements Extension {
 
-    private static List<String> messages = new ArrayList<String>();
+    public static final String FAIL = "FAIL";
+    public static final String SUCCESS = "SUCCESS";
+    private static String message = FAIL;
 
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery event) {
         event.addBean(new CDICurrentTestBean());
@@ -37,18 +37,16 @@ public class MyDeploymentVerifier implements Extension {
         if (beans != null && beans.size() == 1) {
             Bean<?> bean = beans.iterator().next();
             if (bean.getBeanClass() == CDICurrent.class) {
-                messages.add("SUCCESS");
+                message = SUCCESS;
+            } else {
+                message = FAIL + ": Bean Class = " + bean.getBeanClass();
             }
-            else {
-                messages.add("FAIL: Bean Class = " + bean.getBeanClass());
-            }
-        }
-        else {
-            messages.add("FAIL: number of beans = " + beans == null ? "NULL" : "" + beans.size());
+        } else {
+            message = FAIL + ": number of beans = " + beans == null ? "NULL" : "" + beans.size();
         }
     }
 
-    public static List<String> getMessages() {
-        return messages;
+    public static String getMessage() {
+        return message;
     }
 }

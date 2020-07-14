@@ -23,10 +23,13 @@
 	/>
 
 	<logging
-		traceSpecification="Transaction=all:wsat=all"
+		traceSpecification="Transaction=all:wsat=all:ClassLoadingService=all"
 		traceFileName="trace.log"
 		maxFileSize="2000"
 		maxFiles="20"
 		traceFormat="BASIC"
 	/>
+
+  <javaPermission name="*" actions="*" className="java.security.AllPermission"/>
+
 </server>

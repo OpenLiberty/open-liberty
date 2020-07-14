@@ -91,10 +91,12 @@ public class BeanValCDIServlet extends FATServlet {
         } catch (ConstraintViolationException e) {
             assertEquals("Did not fid expected number of constraints", 1, e.getConstraintViolations().size());
             assertTrue("Did not find expected constraint " + expectedViolation + " in " + e.getConstraintViolations(),
-                       e.getConstraintViolations().stream().anyMatch(v -> v.getConstraintDescriptor()
-                                       .getAnnotation()
-                                       .toString()
-                                       .contains(expectedViolation)));
+                       e.getConstraintViolations()
+                                       .stream()
+                                       .anyMatch(v -> v.getConstraintDescriptor()
+                                                       .getAnnotation()
+                                                       .toString()
+                                                       .contains(expectedViolation)));
             System.out.println("Found expected constraint violation " + expectedViolation);
         }
     }

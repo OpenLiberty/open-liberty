@@ -1,3 +1,4 @@
+###############################################################################
 # Copyright (c) 2014 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -6,7 +7,7 @@
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
-# -------------------------------------------------------------------------------------------------
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -44,18 +45,15 @@
 
 50008=Classe nodo non supportata {0}.  Il metodo createBinder(Class) supporta solo la classe org.w3c.dom.Node.
 
-50009=La propriet\u00e0 o campo {0} sono annotati come transitori quindi non possono essere inclusi nell''annotazione propOrder.
+50009=La propriet\u00e0 o il campo {0} sulla classe {1} \u00e8 annotato per essere transitorio, pertanto non pu\u00f2 essere incluso nell''annotazione propOrder.
 
-50010=La propriet\u00e0\u00a0o il campo {0} devono essere un attributo perch\u00e9 un altro campo o propriet\u00e0\u00a0 sia annotata con XmlValue.
+50010=La propriet\u00e0 o il campo {0} sulla classe {1} deve essere un attributo perch\u00e9 un altro campo o propriet\u00e0 sia annotato con XmlValue.
 
-50011=La propriet\u00e0 o campo {0} non possono essere annotati con XmlValue poich\u00e9 sono sottoclassi di un''altra classe collegata da XML.
-
-50012=La propriet\u00e0\u00a0o il campo {0} sono stati specificati in propOrder ma non sono una propriet\u00e0\u00a0valida.
-
+50011=La propriet\u00e0 o il campo {0} sulla classe {1} non pu\u00f2 essere annotato con XmlValue poich\u00e9 \u00e8 una sottoclasse di un''altra classe collegata a XML.
+50012=La propriet\u00e0 o il campo {0} sulla classe {1} \u00e8 stato specificato in propOrder ma non \u00e8 una propriet\u00e0 valida.
 50013=La propriet\u00e0 o campo {0} sulla classe {1} devono essere inclusi nell''elemento propOrder dell''annotazione XmlType.
 
-50014=La propriet\u00e0 o campo {0} con l''annotazione XmlValue devono essere di un tipo che si associa ad un tipo di schema semplice.
-
+50014=La propriet\u00e0 o il campo {0} sulla classe {1} con l''annotazione XmlValue deve essere di un tipo corrispondente a un tipo di schema semplice.
 50015=XmlElementWrapper \u00e8 consentito solo su una propriet\u00e0 raccolta o array, ma [{0}] non \u00e8 una propriet\u00e0 raccolta o array.
 
 50016=La propriet\u00e0 [{0}] ha un''annotazione XmlID ma il suo tipo non \u00e8 String.

@@ -8,7 +8,7 @@ Subsystem-Name: Java RESTful Services API 2.0
 -features=\
   com.ibm.websphere.appserver.javax.servlet-3.1, \
   com.ibm.websphere.appserver.javax.annotation-1.2; apiJar=false, \
-  com.ibm.websphere.appserver.javaeeCompatible-7.0
+  com.ibm.websphere.appserver.eeCompatible-7.0
 -bundles=\
   com.ibm.websphere.appserver.api.jaxrs20; location:="dev/api/ibm/,lib/", \
   com.ibm.websphere.javaee.activation.1.1; require-java:="9"; location:="dev/api/spec/,lib/"; apiJar=false,\

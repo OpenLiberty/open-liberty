@@ -34,7 +34,8 @@ instrument.classesExcludes: com/ibm/ws/security/openidconnect/server/internal/re
 
 Export-Package: \
         com.ibm.ws.security.openidconnect.server;provide:=true, \
-        com.ibm.ws.security.openidconnect.server.plugins;provide:=true
+        com.ibm.ws.security.openidconnect.server.plugins;provide:=true, \
+        io.openliberty.security.openidconnect.*
 
 Private-Package: \
         com.ibm.ws.security.openidconnect.server.internal.*, \

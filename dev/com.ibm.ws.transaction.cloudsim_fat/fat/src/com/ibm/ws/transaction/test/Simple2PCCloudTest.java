@@ -15,10 +15,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.cloudtx.ut.util.LastingXAResourceImpl;
 import com.ibm.ws.transaction.web.Simple2PCCloudServlet;
 
 import componenttest.annotation.AllowedFFDC;

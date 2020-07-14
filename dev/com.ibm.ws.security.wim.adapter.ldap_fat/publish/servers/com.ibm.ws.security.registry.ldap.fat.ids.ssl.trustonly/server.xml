@@ -43,7 +43,7 @@
 
 	<sslDefault sslRef="LDAPSSLSettings" />
 	<ssl id="LDAPSSLSettings" keyStoreRef="LDAPTrustStore" />
-	<keyStore id="LDAPTrustStore" location="${server.config.dir}/LdapSSLTrustStore.jks" type="JKS" password="{xor}CDo9Hgw=" />
+	<keyStore id="LDAPTrustStore" location="${server.config.dir}/truststore.p12" type="PKCS12" password="LDAPpassword" />
 
 	<include location="../fatTestPorts.xml"/>
 

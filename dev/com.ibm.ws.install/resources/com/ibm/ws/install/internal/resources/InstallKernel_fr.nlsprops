@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2018 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -601,6 +601,9 @@ MSG_VALIDATION_INVALID_URL=L''URL suivante n''est pas valide : {0}. Seules les U
 MSG_VALIDATION_UNSUPPORT_PROTOCOL=Le protocole d''URL pur le r\u00e9f\u00e9rentiel suivant n''est pas pris en charge : {0}. Les protocoles pris en charge sont : HTTP, HTTPS, et le protocole de fichier. V\u00e9rifiez que l''URL est correctement indiqu\u00e9e.
 MSG_VALIDATION_INVALID_HOST=Le serveur proxy suivant n''est pas valide : {0}. Indiquez un nom d''h\u00f4te de serveur proxy HTTP valide. Le pr\u00e9fixe http:// n''est pas obligatoire.
 
+# Message for find action
+MSG_NO_FEATURES_FOUND=Aucun fonction n'a \u00e9t\u00e9 trouv\u00e9e.
+
 VALIDATION_INVALID_VALUE=Valeur non prise en charge
 VALIDATION_INVALID_KEY=Nom de propri\u00e9t\u00e9 non pris en charge
 VALIDATION_EMPTY_KEY=Nom de propri\u00e9t\u00e9 vide
@@ -846,6 +849,26 @@ ERROR_INCOMPATIBLE_FEATURES.useraction=Retirez l'une des fonctions et r\u00e9ess
 ERROR_INCOMPATIBLE_FEATURES_SINGLETON=CWWKF1405E: Les fonctions de singleton {0} et {1} sont incompatibles et ne peuvent pas \u00eatre install\u00e9es simultan\u00e9ment.
 ERROR_INCOMPATIBLE_FEATURES_SINGLETON.explanation=Les fonctions ne peuvent pas \u00eatre install\u00e9es simultan\u00e9ment.
 ERROR_INCOMPATIBLE_FEATURES_SINGLETON.useraction=Retirez l'une des fonctions et r\u00e9essayez.
+
+ERROR_FAILED_TO_UNPACK_LICENSE=CWWKF1406E: Impossible de d\u00e9compresser le package de licences avec la coordonn\u00e9e Maven {0} depuis le r\u00e9f\u00e9rentiel dans le chemin d''acc\u00e8s au fichier {1}.
+ERROR_FAILED_TO_UNPACK_LICENSE.explanation=Impossible de d\u00e9compresser le package de licences dans l'installation wlp.
+ERROR_FAILED_TO_UNPACK_LICENSE.useraction=Assurez-vous de disposer des droits appropri\u00e9s permettant de lire les donn\u00e9es du r\u00e9f\u00e9rentiel.
+
+ERROR_FAILED_TO_READ_LICENSE=CWWKF1407E: Impossible de traiter le fichier de licence dans l''emplacement de fichier {0}.
+ERROR_FAILED_TO_READ_LICENSE.explanation=Impossible de traiter le fichier de licence pour obtenir les informations d'acceptation de licence.
+ERROR_FAILED_TO_READ_LICENSE.useraction=Assurez-vous de disposer des droits appropri\u00e9s permettant de lire les donn\u00e9es du fichier de licence.
+
+ERROR_FAILED_TO_FIND_WEBSPHERE_JSON=CWWKF1408E: Fichier JSON WebSphere introuvable \u00e0 l''emplacement de fichier {0}.
+ERROR_FAILED_TO_FIND_WEBSPHERE_JSON.explanation=Fichier JSON WebSphere introuvable.
+ERROR_FAILED_TO_FIND_WEBSPHERE_JSON.useraction=Assurez-vous de disposer d'une connexion r\u00e9seau et des droits d'acc\u00e8s en \u00e9criture au r\u00e9pertoire Maven local configur\u00e9.
+
+ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS=CWWKF1409E: Les fichiers JSON de fonction suivants sont introuvables localement ou dans le r\u00e9f\u00e9rentiel Maven configur\u00e9 : {0}.
+ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS.explanation=Les fichiers JSON sont introuvables localement ou dans le r\u00e9f\u00e9rentiel Maven configur\u00e9.
+ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS.useraction=Assurez-vous de disposer d'une connexion r\u00e9seau et v\u00e9rifiez que les fichiers JSON existent dans le r\u00e9f\u00e9rentiel Maven configur\u00e9.
+
+ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY=CWWKF1410E: La fonction {0} ne peut pas \u00eatre install\u00e9e dans l''\u00e9dition {1} {2} car elle ne s''applique qu''\u00e0 l''\u00e9dition {3}.
+ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.explanation=La fonction ne s'applique pas \u00e0 l'\u00e9dition du produit install\u00e9.
+ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.useraction=Installez des fonctions prises en charge par votre \u00e9dition du produit.
 
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: Le t\u00e9l\u00e9chargement de la fonction a abouti.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=La fonction a \u00e9t\u00e9 t\u00e9l\u00e9charg\u00e9e.

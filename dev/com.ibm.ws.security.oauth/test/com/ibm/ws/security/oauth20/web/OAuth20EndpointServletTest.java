@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,12 +29,15 @@ import org.junit.rules.TestRule;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
+import io.openliberty.security.common.http.SupportedHttpMethodHandler.HttpMethod;
+import io.openliberty.security.oauth20.web.OAuthSupportedHttpMethodHandler;
 import test.common.SharedOutputManager;
 
 /*
- * 
+ *
  */
 
+@SuppressWarnings("restriction")
 public class OAuth20EndpointServletTest {
     static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
     @Rule
@@ -53,9 +56,19 @@ public class OAuth20EndpointServletTest {
     @SuppressWarnings("unchecked")
     private final ServiceReference<OAuth20EndpointServices> sr = context.mock(ServiceReference.class);
     private final OAuth20EndpointServices oes = context.mock(OAuth20EndpointServices.class);
+    private final OAuthSupportedHttpMethodHandler supportedHttpMethodHandler = context.mock(OAuthSupportedHttpMethodHandler.class);
+
+    @SuppressWarnings("serial")
+    private class MockedOAuth20EndpointServlet extends OAuth20EndpointServlet {
+        @Override
+        OAuthSupportedHttpMethodHandler getOAuthSupportedHttpMethodHandler(HttpServletRequest request, HttpServletResponse response) {
+            return supportedHttpMethodHandler;
+        }
+    };
 
     @Before
-    public void setUp() {}
+    public void setUp() {
+    }
 
     private void setupNormalExpectations() throws Exception {
         context.checking(new Expectations() {
@@ -82,7 +95,13 @@ public class OAuth20EndpointServletTest {
 
         try {
             setupNormalExpectations();
-            OAuth20EndpointServlet oeservlet = new OAuth20EndpointServlet();
+            OAuth20EndpointServlet oeservlet = new MockedOAuth20EndpointServlet();
+            context.checking(new Expectations() {
+                {
+                    one(supportedHttpMethodHandler).isValidHttpMethodForRequest(HttpMethod.GET);
+                    will(returnValue(true));
+                }
+            });
             oeservlet.init(scfg);
             oeservlet.init();
             oeservlet.doGet(request, response);
@@ -101,7 +120,13 @@ public class OAuth20EndpointServletTest {
 
         try {
             setupNormalExpectations();
-            OAuth20EndpointServlet oeservlet = new OAuth20EndpointServlet();
+            OAuth20EndpointServlet oeservlet = new MockedOAuth20EndpointServlet();
+            context.checking(new Expectations() {
+                {
+                    one(supportedHttpMethodHandler).isValidHttpMethodForRequest(HttpMethod.HEAD);
+                    will(returnValue(true));
+                }
+            });
             oeservlet.init(scfg);
             oeservlet.init();
             oeservlet.doHead(request, response);
@@ -119,8 +144,14 @@ public class OAuth20EndpointServletTest {
     public void testDoDeleteValid() {
 
         try {
+            OAuth20EndpointServlet oeservlet = new MockedOAuth20EndpointServlet();
+            context.checking(new Expectations() {
+                {
+                    one(supportedHttpMethodHandler).isValidHttpMethodForRequest(HttpMethod.DELETE);
+                    will(returnValue(true));
+                }
+            });
             setupNormalExpectations();
-            OAuth20EndpointServlet oeservlet = new OAuth20EndpointServlet();
             oeservlet.init(scfg);
             oeservlet.init();
             oeservlet.doDelete(request, response);
@@ -139,7 +170,13 @@ public class OAuth20EndpointServletTest {
 
         try {
             setupNormalExpectations();
-            OAuth20EndpointServlet oeservlet = new OAuth20EndpointServlet();
+            OAuth20EndpointServlet oeservlet = new MockedOAuth20EndpointServlet();
+            context.checking(new Expectations() {
+                {
+                    one(supportedHttpMethodHandler).isValidHttpMethodForRequest(HttpMethod.PUT);
+                    will(returnValue(true));
+                }
+            });
             oeservlet.init(scfg);
             oeservlet.init();
             oeservlet.doPut(request, response);
@@ -171,7 +208,13 @@ public class OAuth20EndpointServletTest {
                 }
             });
 
-            OAuth20EndpointServlet oeservlet = new OAuth20EndpointServlet();
+            OAuth20EndpointServlet oeservlet = new MockedOAuth20EndpointServlet();
+            context.checking(new Expectations() {
+                {
+                    one(supportedHttpMethodHandler).isValidHttpMethodForRequest(HttpMethod.GET);
+                    will(returnValue(true));
+                }
+            });
             oeservlet.init(scfg);
             oeservlet.init();
             oeservlet.doGet(request, response);

@@ -14,6 +14,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -469,7 +471,23 @@ public class Director extends AbstractDirector {
         Set<String> allServerNames = new HashSet<String>(servers.size());
 
         for (ServerAsset sa : servers) {
-            Collection<String> requiredFeatures = sa.getRequiredFeatures();
+            File serverXmlFile = sa.getServerXmlFile();
+            Collection<String> requiredFeatures = InstallUtils.getFeatures(serverXmlFile.getAbsolutePath(), serverXmlFile.getName(), new HashSet<String>());
+
+            File serverDirectory = sa.getServerDirectory();
+            File overridesFolder = new File(serverDirectory, "/configDropins/overrides");
+            if(overridesFolder.exists() && overridesFolder.isDirectory()) {
+                logger.fine("Processing " + overridesFolder);
+                Files.newDirectoryStream(Paths.get(overridesFolder.toURI()),
+                        path -> path.toString().endsWith(".xml"))
+                        .forEach(path -> {
+                            try {
+                                requiredFeatures.addAll(InstallUtils.getFeatures(path.toString(), path.getFileName().toString(), new HashSet<String>()));
+                            } catch (IOException e) {
+                                logger.fine("Could not process " + path);
+                            }
+                        });
+            }
 
             if (!requiredFeatures.isEmpty()) {
                 logger.log(Level.FINEST, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("LOG_DEPLOY_SERVER_FEATURES",

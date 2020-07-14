@@ -21,17 +21,20 @@ import java.net.URL;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
 
+@RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class MultiServerTest extends WSATTest {
 
@@ -112,7 +115,7 @@ public class MultiServerTest extends WSATTest {
 					+ "?baseurl=" + BASE_URL;
 			System.out.println("testOneway URL: " + urlStr);
 			HttpURLConnection con = getHttpConnection(new URL(urlStr),
-							HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT);
+							HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testOneway");
 			BufferedReader br = HttpUtils.getConnectionStream(con);
 			String result = br.readLine();
 			assertNotNull(result);
@@ -137,7 +140,7 @@ public class MultiServerTest extends WSATTest {
 					+ "?baseurl=" + BASE_URL2;
 			System.out.println("testTwoServerCommit URL: " + urlStr);
             HttpURLConnection con = getHttpConnection(new URL(urlStr), 
-            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT);
+            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testTwoServerCommit");
             BufferedReader br = HttpUtils.getConnectionStream(con);
             String result = br.readLine();
             assertNotNull(result);
@@ -159,7 +162,7 @@ public class MultiServerTest extends WSATTest {
 					+ "?baseurl=" + BASE_URL2;
 			System.out.println("testTwoServerCommitClientVotingRollback URL: " + urlStr);
             HttpURLConnection con = getHttpConnection(new URL(urlStr), 
-            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT);
+            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testTwoServerCommitClientVotingRollback");
             BufferedReader br = HttpUtils.getConnectionStream(con);
             String result = br.readLine();
             assertNotNull(result);
@@ -180,7 +183,7 @@ public class MultiServerTest extends WSATTest {
 					+ "?baseurl=" + BASE_URL2;
 			System.out.println("testTwoServerCommitProviderVotingRollback URL: " + urlStr);
             HttpURLConnection con = getHttpConnection(new URL(urlStr), 
-            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT);
+            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testTwoServerCommitProviderVotingRollback");
             BufferedReader br = HttpUtils.getConnectionStream(con);
             String result = br.readLine();
             assertNotNull(result);
@@ -200,7 +203,7 @@ public class MultiServerTest extends WSATTest {
 					+ "?baseurl=" + BASE_URL2;
 			System.out.println("testTwoServerRollback URL: " + urlStr);
             HttpURLConnection con = getHttpConnection(new URL(urlStr), 
-            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT);
+            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testTwoServerRollback");
             BufferedReader br = HttpUtils.getConnectionStream(con);
             String result = br.readLine();
             assertNotNull(result);
@@ -221,7 +224,7 @@ public class MultiServerTest extends WSATTest {
 					+ "&baseurl2=" + BASE_URL;
 			System.out.println("testTwoServerTwoCallCommit URL: " + urlStr);
             HttpURLConnection con = getHttpConnection(new URL(urlStr), 
-            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT);
+            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testTwoServerTwoCallCommit");
             BufferedReader br = HttpUtils.getConnectionStream(con);
             String result = br.readLine();
             assertNotNull(result);
@@ -242,7 +245,7 @@ public class MultiServerTest extends WSATTest {
 					+ "&baseurl2=" + BASE_URL;
 			System.out.println("testTwoServerTwoCallRollback URL: " + urlStr);
             HttpURLConnection con = getHttpConnection(new URL(urlStr), 
-            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT);
+            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testTwoServerTwoCallRollback");
             BufferedReader br = HttpUtils.getConnectionStream(con);
             String result = br.readLine();
             assertNotNull(result);
@@ -263,7 +266,7 @@ public class MultiServerTest extends WSATTest {
 					+ "&baseurl2=" + BASE_URL3;
 			System.out.println("testThreeServerTwoCallCommit URL: " + urlStr);
             HttpURLConnection con = getHttpConnection(new URL(urlStr), 
-            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT);
+            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testThreeServerTwoCallCommit");
             BufferedReader br = HttpUtils.getConnectionStream(con);
             String result = br.readLine();
             assertNotNull(result);
@@ -284,7 +287,7 @@ public class MultiServerTest extends WSATTest {
 					+ "&baseurl2=" + BASE_URL3;
 			System.out.println("testThreeServerTwoCallCommit URL: " + urlStr);
             HttpURLConnection con = getHttpConnection(new URL(urlStr), 
-            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT);
+            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testThreeServerTwoCallRollback");
             BufferedReader br = HttpUtils.getConnectionStream(con);
             String result = br.readLine();
             assertNotNull(result);
@@ -306,7 +309,7 @@ public class MultiServerTest extends WSATTest {
 					+ "?baseurl=" + BASE_URL2 + "&baseurl2=" + BASE_URL;
 			System.out.println("testTwoServerTwoCallCoordinatorVotingRollback URL: " + urlStr);
             HttpURLConnection con = getHttpConnection(new URL(urlStr), 
-            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT);
+            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testTwoServerTwoCallCoordinatorVotingRollback");
             BufferedReader br = HttpUtils.getConnectionStream(con);
             String result = br.readLine();
             assertNotNull(result);
@@ -329,7 +332,7 @@ public class MultiServerTest extends WSATTest {
 					+ "?baseurl=" + BASE_URL2 + "&baseurl2=" + BASE_URL3;
 			System.out.println("threeServerTwoCallCoordinatorVotingRollback URL: " + urlStr);
             HttpURLConnection con = getHttpConnection(new URL(urlStr), 
-            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT);
+            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testThreeServerTwoCallCoordinatorVotingRollback");
             BufferedReader br = HttpUtils.getConnectionStream(con);
             String result = br.readLine();
             assertNotNull(result);
@@ -351,7 +354,7 @@ public class MultiServerTest extends WSATTest {
 					+ "?baseurl=" + BASE_URL2 + "&baseurl2=" + BASE_URL;
 			System.out.println("twoServerTwoCallParticipant1VotingRollback URL: " + urlStr);
             HttpURLConnection con = getHttpConnection(new URL(urlStr), 
-            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT);
+            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testTwoServerTwoCallParticipant1VotingRollback");
             BufferedReader br = HttpUtils.getConnectionStream(con);
             String result = br.readLine();
             assertNotNull(result);
@@ -373,7 +376,7 @@ public class MultiServerTest extends WSATTest {
 					+ "?baseurl=" + BASE_URL2 + "&baseurl2=" + BASE_URL3;
 			System.out.println("threeServerTwoCallParticipant1VotingRollback URL: " + urlStr);
             HttpURLConnection con = getHttpConnection(new URL(urlStr), 
-            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT);
+            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testThreeServerTwoCallParticipant1VotingRollback");
             BufferedReader br = HttpUtils.getConnectionStream(con);
             String result = br.readLine();
             assertNotNull(result);
@@ -396,7 +399,7 @@ public class MultiServerTest extends WSATTest {
 					+ "?baseurl=" + BASE_URL2 + "&baseurl2=" + BASE_URL;
 			System.out.println("twoServerTwoCallParticipant2VotingRollback URL: " + urlStr);
             HttpURLConnection con = getHttpConnection(new URL(urlStr), 
-            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT);
+            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testTwoServerTwoCallParticipant2VotingRollback");
             BufferedReader br = HttpUtils.getConnectionStream(con);
             String result = br.readLine();
             assertNotNull(result);
@@ -418,7 +421,7 @@ public class MultiServerTest extends WSATTest {
 					+ "?baseurl=" + BASE_URL2 + "&baseurl2=" + BASE_URL3;
 			System.out.println("threeServerTwoCallParticipant2VotingRollback URL: " + urlStr);
             HttpURLConnection con = getHttpConnection(new URL(urlStr), 
-            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT);
+            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testThreeServerTwoCallParticipant2VotingRollback");
             BufferedReader br = HttpUtils.getConnectionStream(con);
             String result = br.readLine();
             assertNotNull(result);

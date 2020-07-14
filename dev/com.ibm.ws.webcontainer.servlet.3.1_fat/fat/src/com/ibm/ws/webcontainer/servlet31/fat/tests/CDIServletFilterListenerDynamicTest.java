@@ -10,8 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
-import java.util.logging.Logger;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -37,7 +37,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  */
 @RunWith(FATRunner.class)
 public class CDIServletFilterListenerDynamicTest extends LoggingTest {
-    
+
     private static final Logger LOG = Logger.getLogger(CDIServletFilterListenerDynamicTest.class.getName());
 
     // Server instance ...
@@ -81,15 +81,15 @@ public class CDIServletFilterListenerDynamicTest extends LoggingTest {
         CDI12TestV2DynamicApp = CDI12TestV2DynamicApp.addAsLibrary(CDI12TestV2Jar);
         // Verify if the apps are in the server before trying to deploy them
         if (SHARED_SERVER.getLibertyServer().isStarted()) {
-          Set<String> appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(CDI12_TEST_V2_DYNAMIC_APP_NAME);
-          LOG.info("addAppToServer : " + CDI12_TEST_V2_DYNAMIC_APP_NAME + " already installed : " + !appInstalled.isEmpty());
-          if (appInstalled.isEmpty())
-          ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), CDI12TestV2DynamicApp);
+            Set<String> appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(CDI12_TEST_V2_DYNAMIC_APP_NAME);
+            LOG.info("addAppToServer : " + CDI12_TEST_V2_DYNAMIC_APP_NAME + " already installed : " + !appInstalled.isEmpty());
+            if (appInstalled.isEmpty())
+                ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), CDI12TestV2DynamicApp);
         }
         SHARED_SERVER.startIfNotStarted();
         SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + CDI12_TEST_V2_DYNAMIC_APP_NAME);
     }
-    
+
     @AfterClass
     public static void testCleanup() throws Exception {
         // test cleanup

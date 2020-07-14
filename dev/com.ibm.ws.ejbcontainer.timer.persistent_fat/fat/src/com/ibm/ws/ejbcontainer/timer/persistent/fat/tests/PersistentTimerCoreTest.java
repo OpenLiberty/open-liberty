@@ -35,7 +35,6 @@ import com.ibm.ws.ejbcontainer.timer.persistent.core.web.TimerAccessOperationsSe
 import com.ibm.ws.ejbcontainer.timer.persistent.core.web.TimerSFOperationsServlet;
 import com.ibm.ws.ejbcontainer.timer.persistent.core.web.TimerSLOperationsServlet;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
@@ -47,7 +46,6 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 8)
 public class PersistentTimerCoreTest extends FATServletClient {
 
     public static final String CORE_WAR_NAME = "PersistentTimerCoreWeb";

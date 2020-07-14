@@ -10,15 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.test;
 
-import static org.junit.Assert.fail;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.tx.jta.ut.util.XAResourceImpl;
-import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.transaction.web.XAServlet;
 
 import componenttest.annotation.ExpectedFFDC;
@@ -26,6 +22,8 @@ import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -43,58 +41,45 @@ import componenttest.topology.utils.FATServletClient;
  * servlet referenced by the annotation, and will be run whenever this test class runs.
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat({ SkipForRepeat.EE8_FEATURES, SkipForRepeat.EE9_FEATURES })
+@Mode(TestMode.FULL)
 public class XATest extends FATServletClient {
 
     public static final String APP_NAME = "transaction";
-    public static final String SERVLET_NAME = "transaction/XAServlet";
+    public static final String SERVLET_NAME = APP_NAME + "/XAServlet";
 
     @Server("com.ibm.ws.transaction")
     @TestServlet(servlet = XAServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
+    public static XATestBase xa = new XATestBase(APP_NAME, SERVLET_NAME);
+
     @BeforeClass
     public static void setUp() throws Exception {
-        // Create a WebArchive that will have the file name 'app1.war' once it's written to a file
-        // Include the 'app1.web' package and all of it's java classes and sub-packages
-        // Automatically includes resources under 'test-applications/APP_NAME/resources/' folder
-        // Exports the resulting application to the ${server.config.dir}/apps/ directory
-        ShrinkHelper.defaultApp(server, APP_NAME, "com.ibm.ws.transaction.*");
-
-        server.startServer();
+        xa.setup(server);
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("WTRN0075W", "WTRN0076W"); // Stop the server and indicate the '"WTRN0075W", "WTRN0076W" error messages were expected
+        xa.tearDown();
     }
 
     @Test
+    @SkipForRepeat({ SkipForRepeat.EE8_FEATURES, SkipForRepeat.EE9_FEATURES })
     public void testSetTransactionTimeoutReturnsTrue() throws Exception {
-        server.setMarkToEndOfLog();
-        runTest(server, SERVLET_NAME, testName.getMethodName());
-        if (null == server.waitForStringInLogUsingMark(XAResourceImpl.class.getCanonicalName() + ".setTransactionTimeout\\([0-9]*\\): TRUE")) {
-            fail("setTransactionTimeout() does not seem to have been called");
-        }
+        xa.testSetTransactionTimeoutReturnsTrue(testName);
     }
 
     @Test
+    @Mode(TestMode.LITE)
+    @SkipForRepeat({ SkipForRepeat.EE8_FEATURES, SkipForRepeat.EE9_FEATURES })
     public void testSetTransactionTimeoutReturnsFalse() throws Exception {
-        server.setMarkToEndOfLog();
-        runTest(server, SERVLET_NAME, testName.getMethodName());
-        if (null == server.waitForStringInLogUsingMark(XAResourceImpl.class.getCanonicalName() + ".setTransactionTimeout\\([0-9]*\\): FALSE")) {
-            fail("setTransactionTimeout() does not seem to have been called");
-        }
+        xa.testSetTransactionTimeoutReturnsFalse(testName);
     }
 
     @Test
+    @SkipForRepeat({ SkipForRepeat.EE8_FEATURES, SkipForRepeat.EE9_FEATURES })
     @ExpectedFFDC(value = { "javax.transaction.xa.XAException" })
     public void testSetTransactionTimeoutThrowsException() throws Exception {
-        server.setMarkToEndOfLog();
-        runTest(server, SERVLET_NAME, testName.getMethodName());
-        if (null == server.waitForStringInLogUsingMark(XAResourceImpl.class.getCanonicalName() + ".setTransactionTimeout\\([0-9]*\\): javax.transaction.xa.XAException")) {
-            fail("setTransactionTimeout() does not seem to have been called");
-        }
+        xa.testSetTransactionTimeoutThrowsException(testName);
     }
-
 }

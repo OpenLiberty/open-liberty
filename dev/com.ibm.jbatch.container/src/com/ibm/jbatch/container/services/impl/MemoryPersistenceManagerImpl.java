@@ -76,6 +76,7 @@ import com.ibm.jbatch.container.ws.BatchLocationService;
 import com.ibm.jbatch.container.ws.InstanceState;
 import com.ibm.jbatch.container.ws.WSPartitionStepAggregate;
 import com.ibm.jbatch.container.ws.WSPartitionStepThreadExecution;
+import com.ibm.jbatch.container.ws.WSRemotablePartitionExecution;
 import com.ibm.jbatch.container.ws.WSRemotablePartitionState;
 import com.ibm.jbatch.container.ws.WSStepThreadExecutionAggregate;
 import com.ibm.jbatch.container.ws.WSTopLevelStepExecution;
@@ -1262,17 +1263,17 @@ public class MemoryPersistenceManagerImpl extends AbstractPersistenceManager imp
 //		}
 //		return partitionEntity;
 //	}
-//
-//	@Override
-//	public RemotablePartitionEntity updatePartitionExecutionLogDir(
-//			RemotablePartitionKey key, String logDirPath) {
-//		RemotablePartitionEntity partitionEntity = data.partitionData.get(key);
-//		if (partitionEntity == null) {
-//			throw new IllegalArgumentException("No partition execution found for key = " + key);
-//		}
-//		partitionEntity.setLogpath(logDirPath);
-//		return partitionEntity;
-//	}
+
+    @Override
+    public RemotablePartitionEntity updateRemotablePartitionLogDir(
+                                                                   RemotablePartitionKey key, String logDirPath) {
+        RemotablePartitionEntity partitionEntity = data.partitionData.get(key);
+        if (partitionEntity == null) {
+            throw new IllegalArgumentException("No partition execution found for key = " + key);
+        }
+        partitionEntity.setLogpath(logDirPath);
+        return partitionEntity;
+    }
 
     /*
      * (non-Javadoc)
@@ -1415,6 +1416,17 @@ public class MemoryPersistenceManagerImpl extends AbstractPersistenceManager imp
             return rp.getInternalStatus();
         } else {
             throw new IllegalArgumentException("RemotablePartition not found for RemotablePartitionKey = " + remotablePartitionKey);
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public List<WSRemotablePartitionExecution> getRemotablePartitionsForJobExecution(long jobExecutionId) {
+        JobExecutionEntity exec = data.executionInstanceData.get(jobExecutionId);
+        if (exec != null) {
+            return new ArrayList<WSRemotablePartitionExecution>(exec.getRemotablePartitions());
+        } else {
+            throw new IllegalArgumentException("Job execution not found for execution id = " + jobExecutionId);
         }
     }
 

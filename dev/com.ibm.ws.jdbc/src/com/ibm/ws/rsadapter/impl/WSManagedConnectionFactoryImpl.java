@@ -605,8 +605,9 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
                 // This list of credentials may have
                 // [A] PasswordCredentials for this ManagedConnection instance, or
                 // [B] GenericCredentials for use with Kerberos support, or
+                // [C] KerberosTicket for use with Kerberos
                 // no credentials at all.
-
+                
                 final Iterator<Object> iter = subject.getPrivateCredentials().iterator();
 
                 PrivilegedAction<Object> iterationAction = new PrivilegedAction<Object>() {
@@ -628,7 +629,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
                     {
                         credential = iter.next(); 
                     } 
-
+                    
                     if (credential instanceof PasswordCredential) {
                         //This is possibly Option A - only possibly because the PasswordCredential
                         // may not match the MC.  Then we have to keep looping.
@@ -648,9 +649,8 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
                         useKerb = true;
                         //This is option B
                         if (isAnyTraceOn && tc.isEventEnabled()) 
-                            Tr.event(this, tc, "Using GenericCredentials for authentication");
+                            Tr.event(this, tc, "Using GSSCredential for authentication");
                         break;
-
                     }
                 }
             } //end else Check for PasswordCredential or Kerbros GenericCredential
@@ -759,7 +759,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         Connection conn;
 
         // Some JDBC drivers support propagation of GSS credential for kerberos via Subject.doAs
-        if (useKerb && helper.supportsSubjectDoAsForKerberos())
+        if (useKerb && helper.supportsSubjectDoAsForKerberos()) {
             try {
                 // Run this method as the subject.
 
@@ -805,7 +805,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
                     // shouldn't ever happen
                     throw new DataStoreAdapterException("GENERAL_EXCEPTION", null, getClass(), x.getMessage());
             }
-        else if (DataSource.class.equals(type))
+        } else if (DataSource.class.equals(type))
         {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "Getting a connection using Datasource. Is UCP? " + isUCP);

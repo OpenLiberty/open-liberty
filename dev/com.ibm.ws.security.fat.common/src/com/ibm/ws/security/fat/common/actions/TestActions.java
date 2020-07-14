@@ -126,14 +126,41 @@ public class TestActions {
      * response.
      */
     public Page invokeUrlWithCookie(String currentTest, String url, Cookie cookie) throws Exception {
-        String thisMethod = "invokeUrlWithCookie";
+        return invokeUrlWithCookies(currentTest, url,cookie);
+    }
+    
+    /**
+     * Invokes the specified URL, including the specified cookies in the request, and returns the Page object that represents the
+     * response.
+     */
+    public Page invokeUrlWithCookies(String currentTest, String url, Cookie... cookies) throws Exception {
+        String thisMethod = "invokeUrlWithCookies";
         loggingUtils.printMethodName(thisMethod);
         try {
-            if (cookie == null) {
-                throw new Exception("Cannot invoke the URL because a null cookie was provided.");
+            if (cookies == null || cookies.length == 0) {
+                throw new Exception("Cannot invoke the URL because no cookies were provided.");
             }
             WebRequest request = createGetRequest(url);
-            request.setAdditionalHeader("Cookie", cookie.getName() + "=" + cookie.getValue());
+            
+            String cookieString = "";
+            boolean loopStart = true;
+            for(Cookie c : cookies){
+                if(c == null)
+                    continue;
+                if(loopStart){
+                    loopStart = false;
+                }else{
+                    cookieString += "; ";
+                }
+                    cookieString += c.getName() + "=" + c.getValue();
+
+            }
+            
+            if(loopStart){ 
+                throw new Exception("Cannot invoke the URL because null cookies were provided.");
+            }
+            
+            request.setAdditionalHeader("Cookie", cookieString);
             return submitRequest(currentTest, request);
         } catch (Exception e) {
             throw new Exception("An error occurred invoking the URL [" + url + "]: " + e);

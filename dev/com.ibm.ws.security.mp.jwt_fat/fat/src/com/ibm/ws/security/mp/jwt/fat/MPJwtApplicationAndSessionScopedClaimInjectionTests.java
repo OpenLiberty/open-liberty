@@ -29,7 +29,6 @@ import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
 
 import componenttest.annotation.ExpectedFFDC;
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -70,7 +69,6 @@ import componenttest.topology.impl.LibertyServer;
  **/
 
 @Mode(TestMode.FULL)
-@MinimumJavaLevel(javaLevel = 8)
 @RunWith(FATRunner.class)
 public class MPJwtApplicationAndSessionScopedClaimInjectionTests extends CommonMpJwtFat {
 

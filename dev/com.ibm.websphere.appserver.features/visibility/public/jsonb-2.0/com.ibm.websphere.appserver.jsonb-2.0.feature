@@ -11,6 +11,6 @@ IBM-API-Package: jakarta.json.bind; type="spec", \
  jakarta.json.bind.spi; type="spec"
 -features=com.ibm.websphere.appserver.jsonbInternal-2.0
 -bundles=com.ibm.ws.jsonb.service
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel

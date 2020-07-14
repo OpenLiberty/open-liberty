@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,7 +51,7 @@ public class ConfigUtilsTest extends CommonTestClass {
     private final String uniqueId = "myConfig";
     private final String configAttributeName = "forwardLoginParameter";
 
-    private static final String CWWKS1783W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED = "CWWKS1783W";
+    private static final String CWWKS1783W_DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED = "CWWKS1783W";
 
     ConfigUtils utils = new ConfigUtils(null);
 
@@ -147,12 +147,12 @@ public class ConfigUtilsTest extends CommonTestClass {
     }
 
     @Test
-    public void test_readAndSanitizeForwardLoginParameter_configValueSingleValue_blacklistedValue() {
+    public void test_readAndSanitizeForwardLoginParameter_configValueSingleValue_disallowedValue() {
         try {
             final Map<String, Object> props = createSampleProps();
 
-            String blacklistedValue = "nonce";
-            String[] configValue = new String[] { blacklistedValue };
+            String disallowedValue = "nonce";
+            String[] configValue = new String[] { disallowedValue };
             props.put(configAttributeName, configValue);
 
             List<String> sanitizedValue = utils.readAndSanitizeForwardLoginParameter(props, uniqueId, configAttributeName);
@@ -160,7 +160,7 @@ public class ConfigUtilsTest extends CommonTestClass {
             assertNotNull("Value read should not have been null, but was. Parameter value was " + Arrays.toString(configValue) + ".", sanitizedValue);
             assertTrue("Value read should have been empty, but wasn't. Value read was " + sanitizedValue + ".", sanitizedValue.isEmpty());
 
-            verifyLogMessage(outputMgr, CWWKS1783W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + blacklistedValue);
+            verifyLogMessage(outputMgr, CWWKS1783W_DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + disallowedValue);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -191,7 +191,7 @@ public class ConfigUtilsTest extends CommonTestClass {
     }
 
     @Test
-    public void test_readAndSanitizeForwardLoginParameter_configValueMultipleValues_allBlacklisted() {
+    public void test_readAndSanitizeForwardLoginParameter_configValueMultipleValues_allDisallowed() {
         try {
             final Map<String, Object> props = createSampleProps();
 
@@ -205,15 +205,15 @@ public class ConfigUtilsTest extends CommonTestClass {
             assertNotNull("Value read should not have been null, but was. Parameter value was " + Arrays.toString(configValue) + ".", sanitizedValue);
             assertTrue("Value read should have been empty, but wasn't. Value read was " + sanitizedValue + ".", sanitizedValue.isEmpty());
 
-            verifyLogMessage(outputMgr, CWWKS1783W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + entry1);
-            verifyLogMessage(outputMgr, CWWKS1783W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + entry2);
+            verifyLogMessage(outputMgr, CWWKS1783W_DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + entry1);
+            verifyLogMessage(outputMgr, CWWKS1783W_DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + entry2);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     @Test
-    public void test_readAndSanitizeForwardLoginParameter_configValueMultipleValues_mixedValidAndBlacklisted() {
+    public void test_readAndSanitizeForwardLoginParameter_configValueMultipleValues_mixedValidAndDisallowed() {
         try {
             final Map<String, Object> props = createSampleProps();
 
@@ -233,21 +233,21 @@ public class ConfigUtilsTest extends CommonTestClass {
             assertFalse("Value read should not have contained [" + bad2 + "] entry. Value read was " + sanitizedValue + ".", sanitizedValue.contains(bad2));
             assertEquals("Value read did not have expected number of entries. Value read was " + sanitizedValue + ".", 2, sanitizedValue.size());
 
-            verifyLogMessage(outputMgr, CWWKS1783W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + bad1);
-            verifyLogMessage(outputMgr, CWWKS1783W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + bad2);
+            verifyLogMessage(outputMgr, CWWKS1783W_DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + bad1);
+            verifyLogMessage(outputMgr, CWWKS1783W_DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + bad2);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
-    /************************************** removeBlacklistedForwardAuthzParametersFromConfiguredList **************************************/
+    /************************************** removeDisallowedForwardAuthzParametersFromConfiguredList **************************************/
 
     @Test
-    public void test_removeBlacklistedForwardAuthzParametersFromConfiguredList_nullList() {
+    public void test_removeDisallowedForwardAuthzParametersFromConfiguredList_nullList() {
         try {
             List<String> configuredList = null;
 
-            List<String> updatedList = utils.removeBlacklistedForwardAuthzParametersFromConfiguredList(configuredList, uniqueId, configAttributeName);
+            List<String> updatedList = utils.removeDisallowedForwardAuthzParametersFromConfiguredList(configuredList, uniqueId, configAttributeName);
 
             assertNotNull("Updated parameter list should not have been null, but was. Method input was " + configuredList + ".", updatedList);
             assertTrue("Updated parameter list should have been empty, but wasn't. Updated list was " + updatedList, updatedList.isEmpty());
@@ -259,11 +259,11 @@ public class ConfigUtilsTest extends CommonTestClass {
     }
 
     @Test
-    public void test_removeBlacklistedForwardAuthzParametersFromConfiguredList_emptyList() {
+    public void test_removeDisallowedForwardAuthzParametersFromConfiguredList_emptyList() {
         try {
             List<String> configuredList = new ArrayList<String>();
 
-            List<String> updatedList = utils.removeBlacklistedForwardAuthzParametersFromConfiguredList(configuredList, uniqueId, configAttributeName);
+            List<String> updatedList = utils.removeDisallowedForwardAuthzParametersFromConfiguredList(configuredList, uniqueId, configAttributeName);
 
             assertNotNull("Updated parameter list should not have been null, but was. Method input was " + configuredList + ".", updatedList);
             assertTrue("Updated parameter list should have been empty, but wasn't. Updated list was " + updatedList, updatedList.isEmpty());
@@ -275,13 +275,13 @@ public class ConfigUtilsTest extends CommonTestClass {
     }
 
     @Test
-    public void test_removeBlacklistedForwardAuthzParametersFromConfiguredList_singleEntry_validEntry() {
+    public void test_removeDisallowedForwardAuthzParametersFromConfiguredList_singleEntry_validEntry() {
         try {
             String entry = "value";
             List<String> configuredList = new ArrayList<String>();
             configuredList.add(entry);
 
-            List<String> updatedList = utils.removeBlacklistedForwardAuthzParametersFromConfiguredList(configuredList, uniqueId, configAttributeName);
+            List<String> updatedList = utils.removeDisallowedForwardAuthzParametersFromConfiguredList(configuredList, uniqueId, configAttributeName);
 
             assertNotNull("Updated parameter list should not have been null, but was. Method input was " + configuredList + ".", updatedList);
             assertTrue("Updated parameter list did not contain original entry. Updated list was " + updatedList + ".", updatedList.contains(entry));
@@ -293,31 +293,31 @@ public class ConfigUtilsTest extends CommonTestClass {
     }
 
     @Test
-    public void test_removeBlacklistedForwardAuthzParametersFromConfiguredList_singleEntry_blacklistedEntry() {
+    public void test_removeDisallowedForwardAuthzParametersFromConfiguredList_singleEntry_disallowedEntry() {
         try {
             String entry = "scope";
             List<String> configuredList = new ArrayList<String>();
             configuredList.add(entry);
 
-            List<String> updatedList = utils.removeBlacklistedForwardAuthzParametersFromConfiguredList(configuredList, uniqueId, configAttributeName);
+            List<String> updatedList = utils.removeDisallowedForwardAuthzParametersFromConfiguredList(configuredList, uniqueId, configAttributeName);
 
             assertNotNull("Updated parameter list should not have been null, but was. Method input was " + configuredList + ".", updatedList);
-            assertTrue("Updated parameter list should have had original blacklisted entry removed. Updated list was " + updatedList, updatedList.isEmpty());
+            assertTrue("Updated parameter list should have had original disallowed entry removed. Updated list was " + updatedList, updatedList.isEmpty());
 
-            verifyLogMessage(outputMgr, CWWKS1783W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + entry);
+            verifyLogMessage(outputMgr, CWWKS1783W_DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + entry);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     @Test
-    public void test_removeBlacklistedForwardAuthzParametersFromConfiguredList_singleEntry_blacklistedEntry_trailingWhitespace() {
+    public void test_removeDisallowedForwardAuthzParametersFromConfiguredList_singleEntry_disallowedEntry_trailingWhitespace() {
         try {
             String entry = "response_type ";
             List<String> configuredList = new ArrayList<String>();
             configuredList.add(entry);
 
-            List<String> updatedList = utils.removeBlacklistedForwardAuthzParametersFromConfiguredList(configuredList, uniqueId, configAttributeName);
+            List<String> updatedList = utils.removeDisallowedForwardAuthzParametersFromConfiguredList(configuredList, uniqueId, configAttributeName);
 
             assertNotNull("Updated parameter list should not have been null, but was. Method input was " + configuredList + ".", updatedList);
             assertTrue("Updated parameter list did not contain original entry. Updated list was " + updatedList + ".", updatedList.contains(entry));
@@ -329,13 +329,13 @@ public class ConfigUtilsTest extends CommonTestClass {
     }
 
     @Test
-    public void test_removeBlacklistedForwardAuthzParametersFromConfiguredList_singleEntry_blacklistedEntry_superstring() {
+    public void test_removeDisallowedForwardAuthzParametersFromConfiguredList_singleEntry_disallowedEntry_superstring() {
         try {
             String entry = "stateandmore";
             List<String> configuredList = new ArrayList<String>();
             configuredList.add(entry);
 
-            List<String> updatedList = utils.removeBlacklistedForwardAuthzParametersFromConfiguredList(configuredList, uniqueId, configAttributeName);
+            List<String> updatedList = utils.removeDisallowedForwardAuthzParametersFromConfiguredList(configuredList, uniqueId, configAttributeName);
 
             assertNotNull("Updated parameter list should not have been null, but was. Method input was " + configuredList + ".", updatedList);
             assertTrue("Updated parameter list did not contain original entry. Updated list was " + updatedList + ".", updatedList.contains(entry));
@@ -347,7 +347,7 @@ public class ConfigUtilsTest extends CommonTestClass {
     }
 
     @Test
-    public void test_removeBlacklistedForwardAuthzParametersFromConfiguredList_multipleEntries_allValid() {
+    public void test_removeDisallowedForwardAuthzParametersFromConfiguredList_multipleEntries_allValid() {
         try {
             String entry1 = "1";
             String entry2 = "2";
@@ -357,7 +357,7 @@ public class ConfigUtilsTest extends CommonTestClass {
             configuredList.add(entry2);
             configuredList.add(entry3);
 
-            List<String> updatedList = utils.removeBlacklistedForwardAuthzParametersFromConfiguredList(configuredList, uniqueId, configAttributeName);
+            List<String> updatedList = utils.removeDisallowedForwardAuthzParametersFromConfiguredList(configuredList, uniqueId, configAttributeName);
 
             assertNotNull("Updated parameter list should not have been null, but was. Method input was " + configuredList + ".", updatedList);
             assertTrue("Updated parameter list did not contain original [" + entry1 + "] entry. Updated list was " + updatedList + ".", updatedList.contains(entry1));
@@ -371,7 +371,7 @@ public class ConfigUtilsTest extends CommonTestClass {
     }
 
     @Test
-    public void test_removeBlacklistedForwardAuthzParametersFromConfiguredList_multipleEntries_allBlacklisted() {
+    public void test_removeDisallowedForwardAuthzParametersFromConfiguredList_multipleEntries_allDisallowed() {
         try {
             String entry1 = "scope";
             String entry2 = "nonce";
@@ -381,22 +381,22 @@ public class ConfigUtilsTest extends CommonTestClass {
             configuredList.add(entry2);
             configuredList.add(entry3);
 
-            List<String> updatedList = utils.removeBlacklistedForwardAuthzParametersFromConfiguredList(configuredList, uniqueId, configAttributeName);
+            List<String> updatedList = utils.removeDisallowedForwardAuthzParametersFromConfiguredList(configuredList, uniqueId, configAttributeName);
 
             assertNotNull("Updated parameter list should not have been null, but was. Method input was " + configuredList + ".", updatedList);
-            assertTrue("Updated parameter list should have had original blacklisted entry removed. Updated list was " + updatedList, updatedList.isEmpty());
+            assertTrue("Updated parameter list should have had original disallowed entry removed. Updated list was " + updatedList, updatedList.isEmpty());
 
-            verifyLogMessage(outputMgr, CWWKS1783W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + entry1);
-            verifyLogMessage(outputMgr, CWWKS1783W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + entry2);
+            verifyLogMessage(outputMgr, CWWKS1783W_DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + entry1);
+            verifyLogMessage(outputMgr, CWWKS1783W_DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + entry2);
             // entry3 is a duplicate of entry1 and should only show up once
-            verifyNoLogMessage(outputMgr, CWWKS1783W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + entry1 + ".*" + entry3);
+            verifyNoLogMessage(outputMgr, CWWKS1783W_DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + entry1 + ".*" + entry3);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     @Test
-    public void test_removeBlacklistedForwardAuthzParametersFromConfiguredList_multipleEntries_mixOfValidAndBlacklist() {
+    public void test_removeDisallowedForwardAuthzParametersFromConfiguredList_multipleEntries_mixOfValidAndDisallowedList() {
         try {
             String bad1 = "scope";
             String bad2 = "redirect_uri";
@@ -410,7 +410,7 @@ public class ConfigUtilsTest extends CommonTestClass {
             configuredList.add(bad2);
             configuredList.add(good3);
 
-            List<String> updatedList = utils.removeBlacklistedForwardAuthzParametersFromConfiguredList(configuredList, uniqueId, configAttributeName);
+            List<String> updatedList = utils.removeDisallowedForwardAuthzParametersFromConfiguredList(configuredList, uniqueId, configAttributeName);
 
             assertNotNull("Updated parameter list should not have been null, but was. Method input was " + configuredList + ".", updatedList);
             assertTrue("Updated parameter list did not contain original [" + good1 + "] entry. Updated list was " + updatedList + ".", updatedList.contains(good1));
@@ -420,26 +420,26 @@ public class ConfigUtilsTest extends CommonTestClass {
             assertFalse("Updated parameter list should not have contained [" + bad2 + "] entry. Updated list was " + updatedList + ".", updatedList.contains(bad2));
             assertEquals("Updated parameter list did not have expected number of entries. Updated list was " + updatedList + ".", 3, updatedList.size());
 
-            verifyLogMessage(outputMgr, CWWKS1783W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + bad1);
-            verifyLogMessage(outputMgr, CWWKS1783W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + bad2);
+            verifyLogMessage(outputMgr, CWWKS1783W_DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + bad1);
+            verifyLogMessage(outputMgr, CWWKS1783W_DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + bad2);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
-    /************************************** getBlacklistedForwardAuthzParameterNames **************************************/
+    /************************************** getDisallowedForwardAuthzParameterNames **************************************/
 
     @Test
-    public void test_getBlacklistedForwardAuthzParameterNames() {
+    public void test_getDisallowedForwardAuthzParameterNames() {
         try {
-            Set<String> blacklist = utils.getBlacklistedForwardAuthzParameterNames();
-            List<String> expectedBlacklist = Arrays.asList("redirect_uri", "client_id", "response_type", "nonce", "state", "scope");
+            Set<String> disallowedList = utils.getDisallowedForwardAuthzParameterNames();
+            List<String> expectedDisallowedList = Arrays.asList("redirect_uri", "client_id", "response_type", "nonce", "state", "scope");
 
-            assertNotNull("Blacklist of forward authorization parameter names should not have been null, but was.", blacklist);
-            assertFalse("Blacklist of forward authorization parameter names should not have been empty, but was.", blacklist.isEmpty());
-            assertEquals("Blacklist of forward authorization parameter names did not have the expected number of entries.", expectedBlacklist.size(), blacklist.size());
-            for (String expectedBlacklistEntry : expectedBlacklist) {
-                assertTrue("Blacklist did not contain expected value [" + expectedBlacklistEntry + "]. Blacklist was: " + blacklist, blacklist.contains(expectedBlacklistEntry));
+            assertNotNull("Disallowed list of forward authorization parameter names should not have been null, but was.", disallowedList);
+            assertFalse("Disallowed list of forward authorization parameter names should not have been empty, but was.", disallowedList.isEmpty());
+            assertEquals("Disallowed list of forward authorization parameter names did not have the expected number of entries.", expectedDisallowedList.size(), disallowedList.size());
+            for (String expectedDisallowedEntry : expectedDisallowedList) {
+                assertTrue("Disallowed list did not contain expected value [" + expectedDisallowedEntry + "]. Disallowed list was: " + disallowedList, disallowedList.contains(expectedDisallowedEntry));
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);

@@ -17,6 +17,8 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.cdi12.fat.tests.AppExtensionTest;
+import com.ibm.ws.cdi12.fat.tests.CDI12ExtensionSPIConstructorExceptionTest;
+import com.ibm.ws.cdi12.fat.tests.CDI12ExtensionSPITest;
 import com.ibm.ws.cdi12.fat.tests.CDI12ExtensionTest;
 import com.ibm.ws.cdi12.fat.tests.DynamicBeanExtensionTest;
 import com.ibm.ws.cdi12.fat.tests.ObserverTest;
@@ -32,6 +34,8 @@ import componenttest.rules.repeater.RepeatTests;
 @SuiteClasses({
                 AppExtensionTest.class,
                 CDI12ExtensionTest.class,
+                CDI12ExtensionSPIConstructorExceptionTest.class,
+                CDI12ExtensionSPITest.class,
                 DynamicBeanExtensionTest.class,
                 ObserverTest.class
 })

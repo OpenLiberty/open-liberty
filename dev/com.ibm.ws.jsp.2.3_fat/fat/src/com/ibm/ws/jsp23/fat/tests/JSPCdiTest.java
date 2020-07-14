@@ -31,23 +31,17 @@ import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
 /**
- * Tests to execute on the jspServer that use HttpUnit.
+ * Tests to execute on the jspCdiServer that use HttpUnit.
  */
 
-@SkipForRepeat("EE9_FEATURES")
 @RunWith(FATRunner.class)
 public class JSPCdiTest {
     private static final Logger LOG = Logger.getLogger(JSPCdiTest.class.getName());
-    private static final String JSP23_APP_NAME = "TestInjection";
-    private static final String PI44611_APP_NAME = "PI44611";
-    private static final String PI59436_APP_NAME = "PI59436";
+    private static final String TESTINJECTION_APP_NAME = "TestInjection";
 
     @Server("jspCdiServer")
     public static LibertyServer server;
@@ -55,7 +49,7 @@ public class JSPCdiTest {
     @BeforeClass
     public static void setup() throws Exception {
         ShrinkHelper.defaultDropinApp(server,
-                                      JSP23_APP_NAME + ".war",
+                                      TESTINJECTION_APP_NAME + ".war",
                                       "com.ibm.ws.jsp23.fat.testinjection.beans",
                                       "com.ibm.ws.jsp23.fat.testinjection.interceptors",
                                       "com.ibm.ws.jsp23.fat.testinjection.listeners",
@@ -82,7 +76,7 @@ public class JSPCdiTest {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
 
-        String url = JSPUtils.createHttpUrlString(server, JSP23_APP_NAME, "SimpleTestServlet");
+        String url = JSPUtils.createHttpUrlString(server, TESTINJECTION_APP_NAME, "SimpleTestServlet");
         LOG.info("url: " + url);
 
         WebRequest request = new GetMethodWebRequest(url);
@@ -107,7 +101,7 @@ public class JSPCdiTest {
                                         "<b>Test 2:</b> Message: DependentBean Hit SessionBean Hit RequestBean Hit ...constructor injection OK ...interceptor OK",
         };
 
-        this.verifyStringsInResponse(JSP23_APP_NAME, "Tag1.jsp", expectedInResponse);
+        this.verifyStringsInResponse(TESTINJECTION_APP_NAME, "Tag1.jsp", expectedInResponse);
     }
 
     /**
@@ -123,7 +117,7 @@ public class JSPCdiTest {
                                         "<b>Test 2:</b> Message: BeanCounters are OK"
         };
 
-        this.verifyStringsInResponse(JSP23_APP_NAME, "Tag2.jsp", expectedInResponse);
+        this.verifyStringsInResponse(TESTINJECTION_APP_NAME, "Tag2.jsp", expectedInResponse);
     }
 
     /**
@@ -139,7 +133,7 @@ public class JSPCdiTest {
         DefaultHttpClient client = new DefaultHttpClient();
         DefaultHttpClient client2 = new DefaultHttpClient(); //Used to test @SessionScoped
 
-        String url = JSPUtils.createHttpUrlString(server, JSP23_APP_NAME, "TagLibraryEventListenerCI.jsp?increment=true");
+        String url = JSPUtils.createHttpUrlString(server, TESTINJECTION_APP_NAME, "TagLibraryEventListenerCI.jsp?increment=true");
         LOG.info("url: " + url);
 
         HttpGet getMethod = new HttpGet(url);
@@ -199,7 +193,7 @@ public class JSPCdiTest {
         DefaultHttpClient client = new DefaultHttpClient();
         DefaultHttpClient client2 = new DefaultHttpClient(); //Used to test @SessionScoped
 
-        String url = JSPUtils.createHttpUrlString(server, JSP23_APP_NAME, "TagLibraryEventListenerFI.jsp?increment=true");
+        String url = JSPUtils.createHttpUrlString(server, TESTINJECTION_APP_NAME, "TagLibraryEventListenerFI.jsp?increment=true");
         LOG.info("url: " + url);
 
         HttpGet getMethod = new HttpGet(url);
@@ -260,7 +254,7 @@ public class JSPCdiTest {
         DefaultHttpClient client = new DefaultHttpClient();
         DefaultHttpClient client2 = new DefaultHttpClient(); //Used to test @SessionScoped
 
-        String url = JSPUtils.createHttpUrlString(server, JSP23_APP_NAME, "TagLibraryEventListenerMI.jsp?increment=true");
+        String url = JSPUtils.createHttpUrlString(server, TESTINJECTION_APP_NAME, "TagLibraryEventListenerMI.jsp?increment=true");
         LOG.info("url: " + url);
 
         HttpGet getMethod = new HttpGet(url);
@@ -324,21 +318,5 @@ public class JSPCdiTest {
         for (String expectedResponse : expectedResponseStrings) {
             assertTrue("The response did not contain: " + expectedResponse, responseText.contains(expectedResponse));
         }
-    }
-
-    private void verifyStringInResponse(String contextRoot, String path, String expectedResponseString) throws Exception {
-        WebConversation wc = new WebConversation();
-        wc.setExceptionsThrownOnErrorStatus(false);
-
-        WebRequest request = new GetMethodWebRequest(JSPUtils.createHttpUrlString(server, contextRoot, path));
-        WebResponse response = wc.getResponse(request);
-        LOG.info("Response : " + response.getText());
-
-        assertEquals("Expected " + 200 + " status code was not returned!",
-                     200, response.getResponseCode());
-
-        String responseText = response.getText();
-
-        assertTrue("The response did not contain: " + expectedResponseString, responseText.contains(expectedResponseString));
     }
 }

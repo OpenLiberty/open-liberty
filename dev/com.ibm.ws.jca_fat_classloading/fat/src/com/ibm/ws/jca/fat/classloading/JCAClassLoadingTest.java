@@ -45,13 +45,16 @@ public class JCAClassLoadingTest extends FATServletClient {
         runTest(server, WAR_NAME, testName);
     }
 
-    private void restartWithNewConfig(boolean removeApp) throws Exception {
+    private void restartWithNewConfig(boolean validateAppStarted) throws Exception {
         if (server.isStarted())
             server.stopServer();
 
         server.setServerConfigurationFile(testName.getMethodName() + "_server.xml");
-        if (removeApp)
+        if (validateAppStarted) {
+            server.addInstalledAppForValidation(APP_NAME);
+        } else {
             server.removeInstalledAppForValidation(APP_NAME);
+        }
         server.startServer(testName.getMethodName() + ".log");
     }
 
@@ -64,8 +67,6 @@ public class JCAClassLoadingTest extends FATServletClient {
         ShrinkHelper.exportAppToServer(server, ear);
 
         ShrinkHelper.defaultRar(server, RAR_NAME, "ra");
-
-        server.startServer();
     }
 
     @After
@@ -82,20 +83,21 @@ public class JCAClassLoadingTest extends FATServletClient {
 
     @Test
     public void testLoadResourceAdapterClassFromSingleApp() throws Exception {
+        restartWithNewConfig(true);
         runTest();
     }
 
     @Test
     @Mode(FULL)
     public void testApiTypeVisibilityNone() throws Exception {
-        restartWithNewConfig(false);
+        restartWithNewConfig(true);
         runTest();
     }
 
     @Test
     @Mode(FULL)
     public void testApiTypeVisibilityAll() throws Exception {
-        restartWithNewConfig(false);
+        restartWithNewConfig(true);
         runTest();
     }
 
@@ -107,7 +109,7 @@ public class JCAClassLoadingTest extends FATServletClient {
     @Test
     @Mode(FULL)
     public void testApiTypeVisibilityInvalid() throws Exception {
-        restartWithNewConfig(true);
+        restartWithNewConfig(false);
 
         String msg = server
                         .waitForStringInLogUsingMark("J2CA7002E: An exception occurred while installing the resource adapter ATVInvalid_RA. The exception message is: java.lang.NoClassDefFoundError: javax.resource.spi.ResourceAdapter");
@@ -121,14 +123,14 @@ public class JCAClassLoadingTest extends FATServletClient {
     @Test
     @Mode(FULL)
     public void testApiTypeVisibilityMatch() throws Exception {
-        restartWithNewConfig(false);
+        restartWithNewConfig(true);
         runTest();
     }
 
     @Test
     @Mode(FULL)
     public void testInvalidClassProviderRef() throws Exception {
-        restartWithNewConfig(false);
+        restartWithNewConfig(true);
 
         String msg = server
                         .waitForStringInLogUsingMark("CWWKG0033W: The value \\[invalidRef\\] specified for the reference attribute \\[classProviderRef\\] was not found in the configuration");
@@ -141,7 +143,7 @@ public class JCAClassLoadingTest extends FATServletClient {
     @Test
     @Mode(FULL)
     public void testApiTypeVisibilityMismatch() throws Exception {
-        restartWithNewConfig(true);
+        restartWithNewConfig(false);
 
         String msg = server.waitForStringInLogUsingMark("CWWKL0033W");
         assertNotNull("Expected to see error message 'CWWKL0033W' when applicaiton and resource adapter apiTypeVisibility do not match.", msg);
@@ -154,7 +156,7 @@ public class JCAClassLoadingTest extends FATServletClient {
     @Test
     @Mode(FULL)
     public void testClassSpaceRestriction() throws Exception {
-        restartWithNewConfig(false);
+        restartWithNewConfig(true);
         runTest();
     }
 }

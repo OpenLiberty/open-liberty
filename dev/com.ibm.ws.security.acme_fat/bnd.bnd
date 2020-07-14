@@ -30,5 +30,8 @@ fat.project: true
     com.ibm.ws.logging;version=latest,\
     com.ibm.websphere.javaee.servlet.4.0;version=latest,\
     org.bitbucket.b_c:jose4j;version=0.6.5,\
+    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+    com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
     com.ibm.ws.crypto.certificateutil;version=latest
     

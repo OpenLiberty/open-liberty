@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,11 +19,12 @@ import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+                DupXidTest.class,
                 SimpleFS2PCCloudTest.class,
                 Simple2PCCloudTest.class,
                 DualServerDynamicFSTest.class,
                 DualServerDynamicDBTest.class,
-                DualServerPeerLockingTest.class
+                DualServerPeerLockingTest.class,
 })
 public class FATSuite {
 

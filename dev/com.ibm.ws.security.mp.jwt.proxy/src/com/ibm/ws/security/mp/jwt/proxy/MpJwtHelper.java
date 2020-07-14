@@ -29,7 +29,6 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 /*
@@ -37,114 +36,90 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
  */
 @Component(service = MpJwtHelper.class, name = "MpJwtHelper", immediate = true, property = "service.vendor=IBM")
 public class MpJwtHelper {
-	private static final TraceComponent tc = Tr.register(MpJwtHelper.class);
-	static final String JSON_WEB_TOKEN_UTIL_REF = "JsonWebTokenUtil";
-	protected final static AtomicServiceReference<JsonWebTokenUtil> JsonWebTokenUtilRef = new AtomicServiceReference<JsonWebTokenUtil>(
-			JSON_WEB_TOKEN_UTIL_REF);
+    private static final TraceComponent tc = Tr.register(MpJwtHelper.class);
+    static final String JSON_WEB_TOKEN_UTIL_REF = "JsonWebTokenUtil";
+    protected final static AtomicServiceReference<JsonWebTokenUtil> JsonWebTokenUtilRef = new AtomicServiceReference<JsonWebTokenUtil>(
+            JSON_WEB_TOKEN_UTIL_REF);
 
-	static private boolean isJdk18Up = (JavaInfo.majorVersion() >= 8);
+    public MpJwtHelper() {
+    }
 
-	public MpJwtHelper() {
-	}
+    public static Principal getJsonWebTokenPricipal(Subject subject) {
+        JsonWebTokenUtil jsonWebTokenUtil = getJsonWebTokenUtil();
+        if (subject != null && jsonWebTokenUtil != null) {
+            return jsonWebTokenUtil.getJsonWebTokenPrincipal(subject);
+        }
+        return null;
+    }
 
-	// ctor for the unit tests.
-	public MpJwtHelper(boolean isJdk18Up) {
-		this.isJdk18Up = isJdk18Up;
-	}
+    public static void addJsonWebToken(Subject subject, Hashtable<String, ?> customProperties, String key) {
+        JsonWebTokenUtil jsonWebTokenUtil = getJsonWebTokenUtil();
+        if (jsonWebTokenUtil != null && customProperties != null && subject != null) {
+            jsonWebTokenUtil.addJsonWebToken(subject, customProperties, key);
+        }
+    }
 
-	public static Principal getJsonWebTokenPricipal(Subject subject) {
-	    JsonWebTokenUtil jsonWebTokenUtil = getJsonWebTokenUtil();
-	    if (subject != null && jsonWebTokenUtil != null) {
-	        return jsonWebTokenUtil.getJsonWebTokenPrincipal(subject);
-	    }
-		return null;	
-	}
+    public static Principal cloneJsonWebToken(Subject subject) {
+        JsonWebTokenUtil jsonWebTokenUtil = getJsonWebTokenUtil();
+        if (subject != null && jsonWebTokenUtil != null) {
+            return jsonWebTokenUtil.cloneJsonWebToken(subject);
+        } else
+            return null;
+    }
 
-	public static void addJsonWebToken(Subject subject, Hashtable<String, ?> customProperties, String key) {
-		JsonWebTokenUtil jsonWebTokenUtil = getJsonWebTokenUtil();
-		if (jsonWebTokenUtil != null && customProperties != null && subject != null) {
-			jsonWebTokenUtil.addJsonWebToken(subject, customProperties, key);
-		}
-	}
+    public static Principal getJsonWebToken(String jwt, String type, String username) {
+        JsonWebTokenUtil jsonWebTokenUtil = getJsonWebTokenUtil();
+        if (jsonWebTokenUtil != null) {
+            return jsonWebTokenUtil.getJsonWebToken(jwt, type, username);
+        }
+        return null;
+    }
 
-	public static Principal cloneJsonWebToken(Subject subject) {
-		JsonWebTokenUtil jsonWebTokenUtil = getJsonWebTokenUtil();
-		if (subject != null && jsonWebTokenUtil != null) {
-			return jsonWebTokenUtil.cloneJsonWebToken(subject);
-		} else
-			return null;
-	}
+    public static void addLoggedOutJwtToList(Principal p) {
+        JsonWebTokenUtil jsonWebTokenUtil = getJsonWebTokenUtil();
+        if (jsonWebTokenUtil != null) {
+            jsonWebTokenUtil.addLoggedOutJwtToList(p);
+        }
+    }
 
-	public static Principal getJsonWebToken(String jwt, String type, String username) {
-		JsonWebTokenUtil jsonWebTokenUtil = getJsonWebTokenUtil();
-		if (jsonWebTokenUtil != null) {
-			return jsonWebTokenUtil.getJsonWebToken(jwt, type, username);
-		}
-		return null;
-	}
+    private static JsonWebTokenUtil getJsonWebTokenUtil() {
+        return JsonWebTokenUtilRef.getService();
+    }
 
-	public static void addLoggedOutJwtToList(Principal p) {
-		JsonWebTokenUtil jsonWebTokenUtil = getJsonWebTokenUtil();
-		if (jsonWebTokenUtil != null) {
-			jsonWebTokenUtil.addLoggedOutJwtToList(p);
-		}
-	}
+    /**
+     * answer if the mp-jwt feature behind this proxy is active or not. Since JsonWebTokens are part of that, if we can
+     * get it, feature is active.
+     */
+    public static boolean isMpJwtFeatureActive() {
+        return (JsonWebTokenUtilRef.getService() != null);
+    }
 
-	private static JsonWebTokenUtil getJsonWebTokenUtil() {
-		if (isJavaVersionAtLeast18()) {
-			return JsonWebTokenUtilRef.getService();
-		} else {
-			return null;
-		}
+    @Reference(service = JsonWebTokenUtil.class, name = JSON_WEB_TOKEN_UTIL_REF, cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
+    protected void setJsonWebTokenUtil(ServiceReference<JsonWebTokenUtil> ref) {
+        JsonWebTokenUtilRef.setReference(ref);
+    }
 
-	}
+    protected void unsetJsonWebTokenUtil(ServiceReference<JsonWebTokenUtil> ref) {
+        JsonWebTokenUtilRef.unsetReference(ref);
+    }
 
-	/**
-	 * answer if the mp-jwt feature behind this proxy is active or not. Since
-	 * JsonWebTokens are part of that, if we can get it, feature is active.
-	 */
-	public static boolean isMpJwtFeatureActive() {
-		return isJavaVersionAtLeast18() && (JsonWebTokenUtilRef.getService() != null);
-	}
+    @Activate
+    protected void activate(ComponentContext cc) {
+        JsonWebTokenUtilRef.activate(cc);
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "MpJwtHelper service is activated");
+        }
+    }
 
-	private static boolean isJavaVersionAtLeast18() {
-		return isJdk18Up;
-	}
+    @Modified
+    protected void modified(Map<String, Object> props) {
+    }
 
-	@Reference(service = JsonWebTokenUtil.class, name = JSON_WEB_TOKEN_UTIL_REF, cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
-	protected void setJsonWebTokenUtil(ServiceReference<JsonWebTokenUtil> ref) {
-		if (isJavaVersionAtLeast18()) {
-			JsonWebTokenUtilRef.setReference(ref);
-		}
-	}
-
-	protected void unsetJsonWebTokenUtil(ServiceReference<JsonWebTokenUtil> ref) {
-		if (isJavaVersionAtLeast18()) {
-			JsonWebTokenUtilRef.unsetReference(ref);
-		}
-	}
-
-	@Activate
-	protected void activate(ComponentContext cc) {
-		if (isJavaVersionAtLeast18()) {
-			JsonWebTokenUtilRef.activate(cc);
-		}
-		if (tc.isDebugEnabled()) {
-			Tr.debug(tc, "MpJwtHelper service is activated");
-		}
-	}
-
-	@Modified
-	protected void modified(Map<String, Object> props) {
-	}
-
-	@Deactivate
-	protected void deactivate(ComponentContext cc) {
-		if (isJavaVersionAtLeast18()) {
-			JsonWebTokenUtilRef.deactivate(cc);
-		}
-		if (tc.isDebugEnabled()) {
-			Tr.debug(tc, "MpJwtHelper service is activated");
-		}
-	}
+    @Deactivate
+    protected void deactivate(ComponentContext cc) {
+        JsonWebTokenUtilRef.deactivate(cc);
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "MpJwtHelper service is activated");
+        }
+    }
 }

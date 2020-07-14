@@ -58,6 +58,7 @@ import org.shredzone.acme4j.exception.AcmeException;
 import org.shredzone.acme4j.exception.AcmeProtocolException;
 import org.shredzone.acme4j.exception.AcmeRetryAfterException;
 import org.shredzone.acme4j.exception.AcmeServerException;
+import org.shredzone.acme4j.exception.AcmeUserActionRequiredException;
 import org.shredzone.acme4j.util.CSRBuilder;
 import org.shredzone.acme4j.util.KeyPairUtils;
 
@@ -101,6 +102,11 @@ public class AcmeClient {
 	 * to be regenerated.
 	 */
 	private final static ReadWriteLock accountKeyPairFileRWLock = new ReentrantReadWriteLock();
+
+	/**
+	 * The time to sleep between polls for the challenge and order status.
+	 */
+	private final long POLL_SLEEP = 500;
 
 	/**
 	 * Create a new {@link AcmeClient} instance.
@@ -153,51 +159,97 @@ public class AcmeClient {
 			try {
 				challenge.trigger();
 			} catch (AcmeException e) {
-				throw new AcmeCaException(
-						Tr.formatMessage(tc, "CWPKI2009E", acmeConfig.getDirectoryURI(), e.getMessage()), e);
+				throw handleAcmeException(e,
+						Tr.formatMessage(tc, "CWPKI2009E", acmeConfig.getDirectoryURI(), e.getMessage()));
 			}
 
 			/*
 			 * Poll for the challenge to complete.
+			 * 
+			 * Determine how long to poll. If the poll timeout is <= 0, then we
+			 * will pull indefinitely.
 			 */
-			int attempts = acmeConfig.getChallengeRetries() + 1;
-			while (challenge.getStatus() != Status.VALID && attempts-- > 0) {
-				// Did the authorization fail?
-				if (challenge.getStatus() == Status.INVALID) {
-					String msg = Tr.formatMessage(tc, "CWPKI2001E", acmeConfig.getDirectoryURI(),
-							authorization.getIdentifier().getDomain(), challenge.getStatus().toString(),
-							challenge.getError().toString());
-					throw new AcmeCaException(msg);
+			Long pollTimeoutMs = acmeConfig.getChallengePollTimeoutMs();
+			long pollUntil = (pollTimeoutMs <= 0) ? 0 : System.currentTimeMillis() + pollTimeoutMs;
+			boolean retryAfterRequested = false;
+			while (retryAfterRequested || pollUntil == 0 || pollUntil >= System.currentTimeMillis()) {
+				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+					Tr.debug(tc, "Challenge status poll loop: " + challenge.getStatus() + ", " + retryAfterRequested
+							+ ", " + pollUntil + ", " + System.currentTimeMillis());
+				}
+
+				/*
+				 * Do we have a concrete status - valid or invalid? If so, quit
+				 * polling.
+				 */
+				if (challenge.getStatus() == Status.INVALID || challenge.getStatus() == Status.VALID) {
+					break;
 				}
 
 				/*
 				 * Wait to update the status.
+				 * 
+				 * Don't sleep if we waited to retry at the ACME servers
+				 * request, as we already slept.
 				 */
-				sleep(acmeConfig.getChallengeRetryWaitMs());
+				if (!retryAfterRequested) {
+					sleep(POLL_SLEEP, pollUntil);
+				}
 
 				/*
-				 * Then update the status
+				 * Get updated status from the ACME server.
 				 */
 				try {
+					if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+						Tr.debug(tc, "Challenge status poll loop: updating challenge status.");
+					}
+					retryAfterRequested = false;
 					challenge.update();
 				} catch (AcmeRetryAfterException e) {
-					// TODO Wait until the moment defined in the returned
-					// Instant.
-					// Instant when = e.getRetryAfter();
+					if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+						Tr.debug(tc, "Challenge status poll loop: server requested us to retry again later at "
+								+ e.getRetryAfter());
+					}
+
+					/*
+					 * ACME server is asking us to wait until the specified time
+					 * to poll again.
+					 */
+					long current = System.currentTimeMillis();
+					if (pollUntil != 0 && current >= pollUntil) {
+						/*
+						 * We have run out of time.
+						 */
+						break;
+					}
+
+					/*
+					 * Wait until either when the server has 1) requested OR 2)
+					 * until our poll timeout would occur. In the case of 2), we
+					 * will poll one last time even if it is before the retry
+					 * after time just to do a best effort / optimistic check.
+					 */
+					retryAfterRequested = true;
+					sleep(e.getRetryAfter().toEpochMilli() - current, pollUntil);
 				} catch (AcmeException e) {
-					throw new AcmeCaException(
-							Tr.formatMessage(tc, "CWPKI2010E", acmeConfig.getDirectoryURI(), e.getMessage()), e);
+					throw handleAcmeException(e,
+							Tr.formatMessage(tc, "CWPKI2010E", acmeConfig.getDirectoryURI(), e.getMessage()));
 				}
 			}
 
 			/*
-			 * All re-attempts are used up and there is still no valid
-			 * authorization?
+			 * Check whether we failed the challenge (invalid) or whether we
+			 * timed out polling for the status of the challenge.
 			 */
-			if (challenge.getStatus() != Status.VALID) {
+			if (challenge.getStatus() == Status.INVALID) {
+				String msg = Tr.formatMessage(tc, "CWPKI2001E", acmeConfig.getDirectoryURI(),
+						authorization.getIdentifier().getDomain(), challenge.getStatus().toString(),
+						challenge.getError().toString());
+				throw new AcmeCaException(msg);
+			} else if (challenge.getStatus() != Status.VALID) {
 				String msg = Tr.formatMessage(tc, "CWPKI2002E", acmeConfig.getDirectoryURI(),
 						authorization.getIdentifier().getDomain(), challenge.getStatus().toString(),
-						(acmeConfig.getChallengeRetries() * acmeConfig.getChallengeRetryWaitMs()) + "ms");
+						pollTimeoutMs + "ms");
 				throw new AcmeCaException(msg);
 			}
 
@@ -226,6 +278,8 @@ public class AcmeClient {
 	 */
 	@FFDCIgnore({ IOException.class, AcmeException.class, AcmeRetryAfterException.class })
 	public AcmeCertificate fetchCertificate(boolean dryRun) throws AcmeCaException {
+
+		long beginTimeMs = System.currentTimeMillis();
 
 		/*
 		 * Load the account key file. If there is no key file, create a new one.
@@ -266,8 +320,8 @@ public class AcmeClient {
 		try {
 			order = orderBuilder.create();
 		} catch (AcmeException e) {
-			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2011E", acmeConfig.getDirectoryURI(), e.getMessage()),
-					e);
+			throw handleAcmeException(e,
+					Tr.formatMessage(tc, "CWPKI2011E", acmeConfig.getDirectoryURI(), e.getMessage()));
 		}
 
 		/*
@@ -324,53 +378,98 @@ public class AcmeClient {
 		try {
 			order.execute(csrb.getEncoded());
 		} catch (AcmeException e) {
-			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2013E", acmeConfig.getDirectoryURI(), e.getMessage()),
-					e);
+			throw handleAcmeException(e,
+					Tr.formatMessage(tc, "CWPKI2013E", acmeConfig.getDirectoryURI(), e.getMessage()));
 		} catch (IOException e) {
 			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2014E", acmeConfig.getDirectoryURI(), e.getMessage()),
 					e);
 		}
 
 		/*
-		 * Wait for the order to complete
+		 * Poll for the order to complete.
+		 * 
+		 * Determine how long to poll. If the poll timeout is <= 0, then we will
+		 * pull indefinitely.
 		 */
-		int attempts = acmeConfig.getOrderRetries() + 1;
-		while (order.getStatus() != Status.VALID && attempts-- > 0) {
+		Long pollTimeoutMs = acmeConfig.getOrderPollTimeoutMs();
+		long pollUntil = (pollTimeoutMs <= 0) ? 0 : System.currentTimeMillis() + pollTimeoutMs;
+		boolean retryAfterRequested = false;
+		while (retryAfterRequested || pollUntil == 0 || pollUntil >= System.currentTimeMillis()) {
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+				Tr.debug(tc, "Order status poll loop: " + order.getStatus() + ", " + retryAfterRequested + ", "
+						+ pollUntil + ", " + System.currentTimeMillis());
+			}
+
 			/*
-			 * Did the order fail?
+			 * Do we have a concrete status - valid or invalid? If so, quit
+			 * polling.
 			 */
-			if (order.getStatus() == Status.INVALID) {
-				String msg = Tr.formatMessage(tc, "CWPKI2001E", acmeConfig.getDirectoryURI(), acmeConfig.getDomains(),
-						order.getStatus().toString(), order.getError().toString());
-				throw new AcmeCaException(msg);
+			if (order.getStatus() == Status.INVALID || order.getStatus() == Status.VALID) {
+				break;
 			}
 
 			/*
 			 * Wait to update the status.
+			 * 
+			 * Don't sleep if we waited to retry at the ACME servers request, as
+			 * we already slept.
 			 */
-			sleep(acmeConfig.getOrderRetryWaitMs());
+			if (!retryAfterRequested) {
+				sleep(POLL_SLEEP, pollUntil);
+			}
 
 			/*
-			 * Then update the status
+			 * Update the status.
 			 */
 			try {
+				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+					Tr.debug(tc, "Order status poll loop: updating challenge status.");
+				}
+				retryAfterRequested = false;
 				order.update();
 			} catch (AcmeRetryAfterException e) {
-				// TODO Wait until the moment defined in the returned Instant.
-				// Instant when = e.getRetryAfter();
+				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+					Tr.debug(tc,
+							"Order status poll loop: server requested us to retry again later at " + e.getRetryAfter());
+				}
+
+				/*
+				 * ACME server is asking us to wait until the specified time to
+				 * poll again.
+				 */
+				long current = System.currentTimeMillis();
+				if (pollUntil != 0 && current >= pollUntil) {
+					/*
+					 * We have run out of time.
+					 */
+					break;
+				}
+
+				/*
+				 * Wait until either when the server has 1) requested OR 2)
+				 * until our poll timeout would occur. In the case of 2), we
+				 * will poll one last time even if it is before the retry after
+				 * time just to do a best effort / optimistic check.
+				 */
+				retryAfterRequested = true;
+				sleep(e.getRetryAfter().toEpochMilli() - current, pollUntil);
 			} catch (AcmeException e) {
-				throw new AcmeCaException(
-						Tr.formatMessage(tc, "CWPKI2015E", acmeConfig.getDirectoryURI(), e.getMessage()), e);
+				throw handleAcmeException(e,
+						Tr.formatMessage(tc, "CWPKI2015E", acmeConfig.getDirectoryURI(), e.getMessage()));
 			}
 		}
 
 		/*
-		 * All re-attempts are used up and there is still no valid order?
+		 * Check whether we failed the challenge (invalid) or whether we timed
+		 * out polling for the status of the challenge.
 		 */
-		if (order.getStatus() != Status.VALID) {
+		if (order.getStatus() == Status.INVALID) {
+			String msg = Tr.formatMessage(tc, "CWPKI2001E", acmeConfig.getDirectoryURI(), acmeConfig.getDomains(),
+					order.getStatus().toString(), order.getError().toString());
+			throw new AcmeCaException(msg);
+		} else if (order.getStatus() != Status.VALID) {
 			String msg = Tr.formatMessage(tc, "CWPKI2004E", acmeConfig.getDirectoryURI(), acmeConfig.getDomains(),
-					order.getStatus().toString(),
-					(acmeConfig.getOrderRetries() * acmeConfig.getOrderRetryWaitMs()) + "ms");
+					order.getStatus().toString(), pollTimeoutMs + "ms");
 			throw new AcmeCaException(msg);
 		}
 
@@ -393,6 +492,12 @@ public class AcmeClient {
 		checkRenewTimeAgainstCertValidityPeriod(certificate.getCertificate().getNotBefore(),
 				certificate.getCertificate().getNotAfter(),
 				certificate.getCertificate().getSerialNumber().toString(16));
+
+		if (TraceComponent.isAnyTracingEnabled() && tc.isAuditEnabled()) {
+			String msg = Tr.formatMessage(tc, "CWPKI2064I", x509Cert.getSerialNumber().toString(16),
+					acmeConfig.getDirectoryURI(), (System.currentTimeMillis() - beginTimeMs) / 1000.0);
+			Tr.audit(tc, msg);
+		}
 
 		return new AcmeCertificate(domainKeyPair, x509Cert, certificate.getCertificateChain());
 	}
@@ -464,6 +569,12 @@ public class AcmeClient {
 			 * We want FFDC here as this will usually be the first communication
 			 * we try with the ACME server. We want to capture why we failed.
 			 */
+			if (tc.isDebugEnabled()) {
+				/*
+				 * Since we're abbreviating the exception in the log, list entire stack in trace.
+				 */
+				Tr.debug(tc, "Unexpected", e);
+			}
 			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2016E",
 					new Object[] { acmeConfig.getDirectoryURI(), getRootCauseMessage(e) }), e);
 		}
@@ -502,8 +613,8 @@ public class AcmeClient {
 			try {
 				tosURI = session.getMetadata().getTermsOfService();
 			} catch (AcmeException e) {
-				throw new AcmeCaException(
-						Tr.formatMessage(tc, "CWPKI2017E", acmeConfig.getDirectoryURI(), e.getMessage()), e);
+				throw handleAcmeException(e,
+						Tr.formatMessage(tc, "CWPKI2017E", acmeConfig.getDirectoryURI(), e.getMessage()));
 			}
 
 			/*
@@ -538,8 +649,8 @@ public class AcmeClient {
 			try {
 				account = accountBuilder.create(session);
 			} catch (AcmeException e) {
-				throw new AcmeCaException(
-						Tr.formatMessage(tc, "CWPKI2018E", acmeConfig.getDirectoryURI(), e.getMessage()), e);
+				throw handleAcmeException(e,
+						Tr.formatMessage(tc, "CWPKI2018E", acmeConfig.getDirectoryURI(), e.getMessage()));
 			}
 		}
 
@@ -585,8 +696,13 @@ public class AcmeClient {
 				/*
 				 * If there is a key file, read it
 				 */
-				try (FileReader fr = new FileReader(accountKeyFile)) {
-					return KeyPairUtils.readKeyPair(fr);
+				try {
+					FileReader fr = new FileReader(accountKeyFile);
+					try {
+						return KeyPairUtils.readKeyPair(fr);
+					} finally {
+						fr.close();
+					}
 				} catch (IOException e) {
 					throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2021E", accountKeyFile, e.getMessage()), e);
 				}
@@ -620,8 +736,13 @@ public class AcmeClient {
 			/*
 			 * If there is a key file, read it
 			 */
-			try (FileReader fr = new FileReader(domainKeyFile)) {
-				return KeyPairUtils.readKeyPair(fr);
+			try {
+				FileReader fr = new FileReader(domainKeyFile);
+				try {
+					return KeyPairUtils.readKeyPair(fr);
+				} finally {
+					fr.close();
+				}
 			} catch (IOException e) {
 				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2020E", domainKeyFile, e.getMessage()), e);
 			}
@@ -686,8 +807,13 @@ public class AcmeClient {
 					}
 				}
 				if (accountKeyFile != null) {
-					try (FileWriter fw = new FileWriter(accountKeyFile)) {
-						KeyPairUtils.writeKeyPair(accountKeyPair, fw);
+					try {
+						FileWriter fw = new FileWriter(accountKeyFile);
+						try {
+							KeyPairUtils.writeKeyPair(accountKeyPair, fw);
+						} finally {
+							fw.close();
+						}
 					} catch (IOException e) {
 						throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2023E", acmeConfig.getDirectoryURI(),
 								accountKeyFile, e.getMessage()), e);
@@ -747,8 +873,13 @@ public class AcmeClient {
 				}
 			}
 			if (domainKeyFile != null) {
-				try (FileWriter fw = new FileWriter(domainKeyFile)) {
-					KeyPairUtils.writeKeyPair(domainKeyPair, fw);
+				try {
+					FileWriter fw = new FileWriter(domainKeyFile);
+					try {
+						KeyPairUtils.writeKeyPair(domainKeyPair, fw);
+					} finally {
+						fw.close();
+					}
 				} catch (IOException e) {
 					throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2022E", acmeConfig.getDirectoryURI(),
 							domainKeyFile, e.getMessage()), e);
@@ -795,10 +926,11 @@ public class AcmeClient {
 				+ challenge.getAuthorization() + "'.");
 		return challenge;
 	}
-
+	
 	/**
 	 * Revoke a certificate using an existing account on the ACME server. If the
-	 * account key pair cannot be found, we will fail.
+	 * account key pair cannot be found, we will fail. This revoke uses the
+	 * configured directory URI.
 	 * 
 	 * @param certificate
 	 *            The certificate to revoke.
@@ -812,8 +944,30 @@ public class AcmeClient {
 	 * @throws AcmeCaException
 	 *             if there was an issue revoking the certificate.
 	 */
-	@FFDCIgnore({ AcmeException.class, IllegalArgumentException.class })
 	public void revoke(X509Certificate certificate, String reason) throws AcmeCaException {
+		revoke(certificate, reason, acmeConfig.getDirectoryURI());
+	}
+	
+	/**
+	 * Revoke a certificate using an existing account on the ACME server. If the
+	 * account key pair cannot be found, we will fail.
+	 * 
+	 * @param certificate
+	 *            The certificate to revoke.
+	 * @param reason
+	 *            The reason the certificate is being revoked. The following
+	 *            reason are supported: UNSPECIFIED, KEY_COMPROMISE,
+	 *            CA_COMPROMISE, AFFILIATION_CHANGED, SUPERSEDED,
+	 *            CESSATION_OF_OPERATIONS, CERTIFICATE_HOLD, REMOVE_FROM_CRL,
+	 *            PRIVILEGE_WITHDRAWN and AA_COMPROMISE. If null, the reason
+	 *            "UNSPECIFIED" will be used.
+	 * @param directoryURI
+	 *            The acme directory URI to issue the revoke request to.
+	 * @throws AcmeCaException
+	 *             if there was an issue revoking the certificate.
+	 */
+	@FFDCIgnore({ AcmeException.class, IllegalArgumentException.class })
+	public void revoke(X509Certificate certificate, String reason, String directoryURI) throws AcmeCaException {
 
 		if (certificate == null) {
 			return;
@@ -824,13 +978,13 @@ public class AcmeClient {
 		 */
 		KeyPair accountKeyPair = loadAccountKeyPair();
 		if (accountKeyPair == null) {
-			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2025W", acmeConfig.getDirectoryURI()));
+			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2025W", directoryURI));
 		}
 
 		/*
 		 * Create a session to the ACME CA directory service.
 		 */
-		Session session = getNewSession();
+		Session session = getNewSession(directoryURI);
 
 		/*
 		 * Get the Account.
@@ -855,24 +1009,38 @@ public class AcmeClient {
 				Certificate.revoke(login, certificate, revocationReason);
 				Tr.info(tc, Tr.formatMessage(tc, "CWPKI2038I", certificate.getSerialNumber().toString(16)));
 			} catch (AcmeException e) {
-				throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2024E", acmeConfig.getDirectoryURI(),
-						certificate.getSerialNumber().toString(16), e.getMessage()), e);
+				throw handleAcmeException(e, Tr.formatMessage(tc, "CWPKI2024E", directoryURI,
+						certificate.getSerialNumber().toString(16), e.getMessage()));
 			}
 		} else {
-			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2026W", acmeConfig.getDirectoryURI()));
+			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2026W", directoryURI));
 		}
 	}
 
 	/**
-	 * Call {@link Thread#sleep(long)} while handling interrupts.
+	 * Call {@link Thread#sleep(long)} while handling interrupts. This will
+	 * sleep <code>sleepMs</code> ms or until <code>orUntil</code>, whichever
+	 * occurs first.
 	 * 
 	 * @param sleepMs
 	 *            The number of milliseconds to sleep.
+	 * @param orUntil
+	 *            The time in ms since the epoch to sleep until. If 0, the
+	 *            method will sleep until <code>sleepMs</code> from now.
 	 */
 	@FFDCIgnore(InterruptedException.class)
-	private static void sleep(long sleepMs) {
+	private static void sleep(long sleepMs, long orUntil) {
 
-		long current, terminate = System.currentTimeMillis() + sleepMs;
+		long current = System.currentTimeMillis();
+
+		long terminate;
+		if (orUntil != 0) {
+			terminate = Math.min(current + sleepMs, orUntil);
+		} else {
+			terminate = current + sleepMs;
+		}
+
+		Tr.debug(tc, "sleep: " + terminate);
 		while ((current = System.currentTimeMillis()) < terminate) {
 			try {
 				Thread.sleep(terminate - current);
@@ -881,16 +1049,30 @@ public class AcmeClient {
 			}
 		}
 	}
-
+	
 	/**
-	 * Create a new session with the ACME CA server.
+	 * Create a new session with the ACME CA server. This uses
+	 * the configured directory URI.
 	 * 
 	 * @return the session
 	 * @throws AcmeCaException
 	 *             If there was an error trying to create the new session.
 	 */
-	@FFDCIgnore({ Exception.class })
 	private Session getNewSession() throws AcmeCaException {
+		return getNewSession(AcmeClient.this.acmeConfig.getDirectoryURI());
+	}
+
+	/**
+	 * Create a new session with the ACME CA server.
+	 * 
+	 * @param directoryURI
+	 *            The acme directory URI used to create the session.
+	 * @return the session
+	 * @throws AcmeCaException
+	 *             If there was an error trying to create the new session.
+	 */
+	@FFDCIgnore({ Exception.class })
+	private Session getNewSession(String directoryURI) throws AcmeCaException {
 
 		try {
 			return AccessController.doPrivileged(new PrivilegedExceptionAction<Session>() {
@@ -909,7 +1091,7 @@ public class AcmeClient {
 						origLoader = Thread.currentThread().getContextClassLoader();
 						Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
 
-						return new Session(AcmeClient.this.acmeConfig.getDirectoryURI());
+						return new Session(directoryURI);
 					} finally {
 						Thread.currentThread().setContextClassLoader(origLoader);
 					}
@@ -918,7 +1100,7 @@ public class AcmeClient {
 		} catch (Exception e) {
 			if (tc.isDebugEnabled()) {
 				Tr.debug(tc,
-						"Getting a new session failed for " + acmeConfig.getDirectoryURI() + ", full stack trace is",
+						"Getting a new session failed for " + directoryURI + ", full stack trace is",
 						e);
 			}
 
@@ -949,16 +1131,40 @@ public class AcmeClient {
 	@Trivial
 	private static String getRootCauseMessage(Throwable t) {
 		Throwable cause;
-		String rootMessage = t.getMessage();
+		String origMessage = addExceptionClass(t);
+		String rootMessage = origMessage;
 
 		for (cause = t; cause != null; cause = cause.getCause()) {
 			String msg = cause.getMessage();
 			if (msg != null && !msg.trim().isEmpty()) {
-				rootMessage = msg;
+				rootMessage = addExceptionClass(cause);
+			} else if (cause instanceof java.io.IOException) {
+				/*
+				 * Sometimes the IOException doesn't have a message, but the class
+				 * name is informative and should be included
+				 * For example, Caused by: java.net.SocketTimeoutException
+				 */
+				rootMessage = origMessage +"  Caused by:  " + addExceptionClass(cause);
 			}
 		}
 
 		return rootMessage;
+	}
+
+	/**
+	 * Add on the Exception class name as sometimes the message does not make sense
+	 * without the name of the Exception included. For example,
+	 * java.net.UnknownHostException: <exampleUnknownHost . net>
+	 * 
+	 * @param t
+	 * @return
+	 */
+	@Trivial
+	private static String addExceptionClass(Throwable t) {
+		if (t != null) {
+			return t.getClass().getName() + (t.getMessage() == null ? "" : ": " + t.getMessage());
+		}
+		return "";
 	}
 
 	/**
@@ -1036,7 +1242,8 @@ public class AcmeClient {
 						 */
 						Tr.error(tc, "CWPKI2049E", acmeConfig.getAccountKeyFile(), backupFile.getAbsolutePath());
 					}
-					throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2047E", e.getMessage()), e);
+
+					throw handleAcmeException(e, Tr.formatMessage(tc, "CWPKI2047E", e.getMessage()));
 				}
 
 				Tr.info(tc, Tr.formatMessage(tc, "CWPKI2048I", backupFile.getAbsolutePath()));
@@ -1168,8 +1375,8 @@ public class AcmeClient {
 
 					editableAcct.commit();
 				} catch (AcmeException e) {
-					throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2033E", acct.getLocation(),
-							acmeConfig.getDirectoryURI(), e.getMessage()), e);
+					throw handleAcmeException(e, Tr.formatMessage(tc, "CWPKI2033E", acct.getLocation(),
+							acmeConfig.getDirectoryURI(), e.getMessage()));
 				}
 			}
 		} else {
@@ -1262,10 +1469,10 @@ public class AcmeClient {
 			return super.toString() + "{" + account.getLocation() + "}";
 		}
 	}
-	
+
 	/**
-	 * Check that the valid period of the certificate works with the configured renewBeforeExpiration. Adjust the
-	 * renew timing if necessary.
+	 * Check that the valid period of the certificate works with the configured
+	 * renewBeforeExpiration. Adjust the renew timing if necessary.
 	 * 
 	 * @param notBefore
 	 * @param notAfter
@@ -1274,31 +1481,77 @@ public class AcmeClient {
 	protected void checkRenewTimeAgainstCertValidityPeriod(Date notBefore, Date notAfter, String serialNumber) {
 		long notBeforems = notBefore.getTime();
 		long notAfterms = notAfter.getTime();
-
+		long renewCertMin = acmeConfig.getRenewCertMin();
 		long validityPeriod = notAfterms - notBeforems;
-		
+
 		long renewBeforeExpirationMs = acmeConfig.getRenewBeforeExpirationMs();
 		if (tc.isDebugEnabled()) {
-			Tr.debug(tc, "Validity versus renew check", notBeforems, notAfterms, validityPeriod, renewBeforeExpirationMs);
+			Tr.debug(tc, "Validity versus renew check", notBeforems, notAfterms, validityPeriod,
+					renewBeforeExpirationMs);
 		}
-		
+
 		/*
-		 * If the renewBeforeExpirationMs is longer than the validityPeriod, reset it so we can make a best effort at fetching a new
-		 * certificate prior to expiration.
+		 * If the renewBeforeExpirationMs is longer than the validityPeriod,
+		 * reset it so we can make a best effort at fetching a new certificate
+		 * prior to expiration.
 		 */
 		if (validityPeriod <= renewBeforeExpirationMs) {
-			if (validityPeriod <= AcmeConstants.RENEW_CERT_MIN) { // less than the minimum renew, reset to min.
-				Tr.warning(tc, "CWPKI2056W", serialNumber,  AcmeConstants.RENEW_CERT_MIN + "ms", validityPeriod, AcmeConstants.RENEW_CERT_MIN + "ms");
-				acmeConfig.setRenewBeforeExpirationMs(AcmeConstants.RENEW_CERT_MIN, false);
-			} else if (validityPeriod <= AcmeConstants.RENEW_DEFAULT_MS) { // less than the default period, reset to half the time.
+			if (validityPeriod <= renewCertMin) {
+				/*
+				 * less than the minimum renew, reset to min.
+				 */
+				Tr.warning(tc, "CWPKI2056W", serialNumber, renewCertMin + "ms", validityPeriod,
+						renewCertMin + "ms");
+				acmeConfig.setRenewBeforeExpirationMs(renewCertMin, false);
+			} else if (validityPeriod <= AcmeConstants.RENEW_DEFAULT_MS) {
+				/*
+				 * less than the default period, reset to half the time.
+				 */
 				long resetRenew = Math.round(validityPeriod * AcmeConstants.RENEW_DIVISOR);
 				long priorRenew = renewBeforeExpirationMs;
-				acmeConfig.setRenewBeforeExpirationMs(resetRenew <= AcmeConstants.RENEW_CERT_MIN ? AcmeConstants.RENEW_CERT_MIN : resetRenew, false); // floor is still the min renew
-				Tr.warning(tc, "CWPKI2054W", priorRenew  +"ms", serialNumber, validityPeriod, renewBeforeExpirationMs+ "ms");
-			} else { // reset to the default renew time.
-				Tr.warning(tc, "CWPKI2054W", renewBeforeExpirationMs +"ms", serialNumber, validityPeriod + "ms", AcmeConstants.RENEW_DEFAULT_MS + "ms");
+				/*
+				 * floor is still the min renew
+				 */
+				acmeConfig.setRenewBeforeExpirationMs(
+						resetRenew <= renewCertMin ? renewCertMin : resetRenew, false);
+				Tr.warning(tc, "CWPKI2054W", priorRenew + "ms", serialNumber, validityPeriod,
+						renewBeforeExpirationMs + "ms");
+			} else {
+				/*
+				 * reset to the default renew time.
+				 */
+				Tr.warning(tc, "CWPKI2054W", renewBeforeExpirationMs + "ms", serialNumber, validityPeriod + "ms",
+						AcmeConstants.RENEW_DEFAULT_MS + "ms");
 				acmeConfig.setRenewBeforeExpirationMs(AcmeConstants.RENEW_DEFAULT_MS, false);
 			}
 		}
+	}
+
+	/**
+	 * Wrap an {@link AcmeException} in a {@link AcmeCaException}. This should
+	 * be done for all {@link AcmeException} catch blocks.
+	 * 
+	 * @param acmeException
+	 *            The returned exception from acme4j.
+	 * @param message
+	 *            The message to put in the new {@link AcmeCaException}.
+	 * @return The new exception instance.
+	 */
+	@Trivial
+	private AcmeCaException handleAcmeException(AcmeException acmeException, String message) {
+		if (tc.isDebugEnabled()) {
+		    Tr.debug(tc, "Caught AcmeException", acmeException, message);
+		}
+		/*
+		 * Log an error if an AcmeUserActionRequiredException is thrown as it
+		 * will require the user to manually visit the URI and agree to the
+		 * terms of service.
+		 */
+		if (acmeException instanceof AcmeUserActionRequiredException) {
+			AcmeUserActionRequiredException uae = ((AcmeUserActionRequiredException) acmeException);
+			Tr.error(tc, "CWPKI2063E", acmeConfig.getDirectoryURI(), uae.getTermsOfServiceUri());
+		}
+
+		return new AcmeCaException(message, acmeException);
 	}
 }

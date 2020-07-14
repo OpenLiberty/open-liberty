@@ -1,0 +1,38 @@
+<!--Copyright (c) 2020 IBM Corporation and others. All rights reserved.
+    This program and the accompanying materials are made available under the 
+    terms of the Eclipse Public License v1.0 which accompanies this distribution, 
+    and is available at 
+        http://www.eclipse.org/legal/epl-v10.html 
+    Contributors: 
+        IBM Corporation - initial API and implementation
+-->
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="microprofile-config-2.0-tck" verbose="2"
+    configfailurepolicy="continue">
+    <test name="tck-package-org.eclipse.microprofile.config20.tck">
+        <method-selectors>
+            <method-selector>
+                <script language="beanshell">
+                     <![CDATA[
+                     // ConfigProviderTest
+                     !method.getName().startsWith("testInjectedConfigSerializable") &&
+                     
+                     // EmptyValuesTest
+                     !method.getName().startsWith("testEmptyStringValues") &&
+                     !method.getName().startsWith("testEmptyStringProgrammaticLookup") &&
+                     !method.getName().startsWith("testEmptyStringPropertyFromConfigFile") &&
+                     
+                     // ConfigProviderTest
+                     // Currently fails due to a bug: https://github.com/eclipse/microprofile-config/issues/563
+                     // This test should be added back to the test set when the TCK version is upated to incllude the fix
+                     !method.getName().startsWith("testEnvironmentConfigSource")
+                ]]>
+                </script>
+            </method-selector>
+        </method-selectors>
+        <packages>
+            <package name="org.eclipse.microprofile.config.tck.*"></package>
+        </packages>
+    </test>
+</suite>

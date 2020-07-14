@@ -20,10 +20,12 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jaxrs21.fat.security.servlet.SecurityContextTestServlet;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
+@SkipForRepeat("RESTEasy")
 @RunWith(FATRunner.class)
 public class JAXRS21SecurityContextTest {
 

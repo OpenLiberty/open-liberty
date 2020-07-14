@@ -146,11 +146,12 @@ configurations {
 }
 
 dependencies {
-  jakartaeeTransformJars 'biz.aQute.bnd:biz.aQute.bndlib:4.3.1',
+  jakartaeeTransformJars 'biz.aQute.bnd:biz.aQute.bnd.transform:5.1.1',
                           'commons-cli:commons-cli:1.4',
                           'org.slf4j:slf4j-simple:1.7.29',
                           'org.slf4j:slf4j-api:1.7.26',
-                          'com.ibm.ws:jakartaee-transformer:0.0.9'
+                          'org.eclipse.transformer:org.eclipse.transformer:0.2.0-SNAPSHOT',
+                          'org.eclipse.transformer:org.eclipse.transformer.cli:0.2.0-SNAPSHOT'
                         }
 
 
@@ -164,7 +165,7 @@ task jakartaeeTransform {
             bundles.each { bundleJar ->
                 javaexec {
                     classpath configurations.jakartaeeTransformJars
-                    main = "com.ibm.ws.jakarta.transformer.JakartaTransformer"
+                    main = "org.eclipse.transformer.jakarta.JakartaTransformer"
                     args = [ project.buildDir.path + '/' + bundleJar.name, 
                           (project.buildDir.path + '/' + bundleJar.name).replaceAll('.jar',".jakarta.jar"),
                           "-tr",

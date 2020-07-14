@@ -54,7 +54,7 @@ public class JsonbContextResolverTestServlet extends FATServlet {
     @Test
     public void testGETPerson(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         String pattern = "{\"name\":\"Bob Smith\",\"age\":34}";
-        Response response = target(req, "person").request().get();
+        Response response = target(req, "person").request().header("MyHeader", "CanReadHeaderFromContextInjection").get();
         assertEquals(200, response.getStatus());
         compareJSON(pattern, response.readEntity(String.class));
     }

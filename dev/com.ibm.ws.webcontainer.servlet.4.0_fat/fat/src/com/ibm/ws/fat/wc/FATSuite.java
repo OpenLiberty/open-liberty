@@ -18,6 +18,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.fat.util.FatLogHandler;
 import com.ibm.ws.fat.wc.tests.WCAddJspFileTest;
+import com.ibm.ws.fat.wc.tests.WCApplicationMBeanStatusTest;
 import com.ibm.ws.fat.wc.tests.WCContextRootPrecedence;
 import com.ibm.ws.fat.wc.tests.WCEncodingTest;
 import com.ibm.ws.fat.wc.tests.WCGetMappingSlashStarTest;
@@ -32,7 +33,8 @@ import com.ibm.ws.fat.wc.tests.WCServletPathForDefaultMappingDefault;
 import com.ibm.ws.fat.wc.tests.WCServletPathForDefaultMappingFalse;
 import com.ibm.ws.fat.wc.tests.WCTrailersTest;
 
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
 /**
@@ -72,15 +74,17 @@ import componenttest.rules.repeater.RepeatTests;
                 WCServletPathForDefaultMappingFalse.class,
                 WCGetMappingSlashStarTest.class,
                 WCServletContainerInitializerFilterServletNameMappingTest.class,
-                // @Server Annotations 
+                WCApplicationMBeanStatusTest.class,
+                // @Server Annotations
                 WCServletContainerInitializerExceptionTest.class,
                 WCSameSiteCookieAttributeTests.class
 })
 public class FATSuite {
 
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.withoutModification()//
-                    .andWith(new JakartaEE9Action());
+    public static RepeatTests repeat = RepeatTests
+                    .with(new EmptyAction().fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE9_FEATURES());
 
     /**
      * @see {@link FatLogHandler#generateHelpFile()}

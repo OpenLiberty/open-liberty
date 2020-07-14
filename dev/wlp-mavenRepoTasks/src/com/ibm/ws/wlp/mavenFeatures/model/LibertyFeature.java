@@ -26,6 +26,7 @@ public class LibertyFeature {
 	private final MavenCoordinates mavenCoordinates;
 	private final boolean isWebsphereLiberty;
 	private final boolean restrictedLicense;
+	private String minimumLicenseMavenCoordinate;
 
 	/**
 	 * Construct LibertyFeature
@@ -60,6 +61,32 @@ public class LibertyFeature {
 		}
 		this.isWebsphereLiberty = isWebsphereLiberty;
 		this.restrictedLicense = restrictedLicense;
+		this.minimumLicenseMavenCoordinate = null;
+	}
+
+	public LibertyFeature(String symbolicName, String shortName, String name, String description, Map<String, Collection<String>> requiredFeaturesWithTolerates, String productVersion, String mavenCoordinates, boolean isWebsphereLiberty, boolean restrictedLicense, String minimumLicenseMavenCoordinate) throws MavenRepoGeneratorException {
+		super();
+		this.symbolicName = symbolicName;
+		this.shortName = shortName;
+		this.name = name;
+		this.description = description;
+		this.requiredFeaturesWithTolerates = requiredFeaturesWithTolerates;
+		this.productVersion = productVersion;
+		if (mavenCoordinates != null) {
+			try {
+				this.mavenCoordinates = new MavenCoordinates(mavenCoordinates);
+			} catch (IllegalArgumentException e) {
+				throw new MavenRepoGeneratorException("Invalid Maven coordinates defined for feature " + symbolicName, e);
+			}
+		} else {
+			String artifactId = shortName != null ? shortName : symbolicName;
+			this.mavenCoordinates = new MavenCoordinates(
+					isWebsphereLiberty ? Constants.WEBSPHERE_LIBERTY_FEATURES_GROUP_ID : Constants.OPEN_LIBERTY_FEATURES_GROUP_ID,
+					artifactId, productVersion);
+		}
+		this.isWebsphereLiberty = isWebsphereLiberty;
+		this.restrictedLicense = restrictedLicense;
+		this.minimumLicenseMavenCoordinate = minimumLicenseMavenCoordinate;
 	}
 
 	public String getSymbolicName() {
@@ -88,6 +115,10 @@ public class LibertyFeature {
 	}
 	public Map<String, Collection<String>> getRequiredFeaturesWithTolerates() {
 		return requiredFeaturesWithTolerates;
+	}
+
+	public String getMinimumLicenseMavenCoordinate(){
+		return minimumLicenseMavenCoordinate;
 	}
 	
 }

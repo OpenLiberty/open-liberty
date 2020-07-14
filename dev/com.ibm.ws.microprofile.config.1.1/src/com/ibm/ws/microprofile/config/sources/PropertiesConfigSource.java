@@ -23,7 +23,9 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
-import com.ibm.ws.microprofile.config.interfaces.ConfigException;
+
+import io.openliberty.microprofile.config.internal.common.ConfigException;
+import io.openliberty.microprofile.config.internal.common.InternalConfigSource;
 
 public class PropertiesConfigSource extends InternalConfigSource implements StaticConfigSource {
 
@@ -48,7 +50,7 @@ public class PropertiesConfigSource extends InternalConfigSource implements Stat
 
     @Override
     public ConcurrentMap<String, String> getProperties() {
-        return properties;
+        return this.properties;
     }
 
     @Trivial

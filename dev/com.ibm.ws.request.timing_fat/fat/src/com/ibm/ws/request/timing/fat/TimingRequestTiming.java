@@ -89,7 +89,7 @@ public class TimingRequestTiming {
 
         server.setMarkToEndOfLog();
 
-        createRequests(8000, 1);
+        createRequests(9000, 1);
 
         server.waitForStringInLog("TRAS0112W", 10000); // adding timeout for wait as 10s
         server.waitForStringInLog("TRAS0114W", 10000);
@@ -120,7 +120,7 @@ public class TimingRequestTiming {
 
         server.setMarkToEndOfLog();
 
-        createRequests(5000, 1);
+        createRequests(6000, 1);
 
         server.waitForStringInLog("TRAS0112W", 10000);
         server.waitForStringInLog("TRAS0114W", 10000);
@@ -150,7 +150,7 @@ public class TimingRequestTiming {
         server.setServerConfigurationFile("server_original.xml");
         server.waitForStringInLogUsingMark("CWWKG0017I", 30000);
         CommonTasks.writeLogMsg(Level.INFO, "****  Started server without <timing> : default configurations for Request timing");
-        createRequests(11000, 1);
+        createRequests(12000, 1);
 
         server.waitForStringInLogUsingMark("TRAS0112W", 10000);
         int p_slow = fetchSlowRequestWarningsCount();
@@ -180,7 +180,7 @@ public class TimingRequestTiming {
         server.setServerConfigurationFile("server_original.xml");
         server.waitForStringInLogUsingMark("CWWKG0017I", 30000);
 
-        createRequests(11000, 1);
+        createRequests(12000, 1);
 
         int n_slow = fetchSlowRequestWarningsCount();
         int n_hung = fetchHungRequestWarningsCount();
@@ -205,9 +205,9 @@ public class TimingRequestTiming {
         // Should sleep and not hit hung request threshold since the context info specific settings
         // are longer than the global defaults.
         long startTime = System.nanoTime();
-        createRequests(1000, 1); /* Total sleep time: 25 sec + 1 sec + 5 sec = 31 sec */
+        createRequests(12000, 1);
         long elapsedSeconds = TimeUnit.SECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
-        assertTrue("Test did not run long enough (elapsedSeconds)", elapsedSeconds >= 30);
+        assertTrue("Test did not run long enough (elapsedSeconds)", elapsedSeconds >= 12);
 
         // Make sure we didn't get any hung request messages
         assertTrue("Test should not have found any slow request messages", fetchSlowRequestWarningsCount() == 0);
@@ -221,18 +221,18 @@ public class TimingRequestTiming {
 
         server.setMarkToEndOfLog();
 
-        // Should sleep and not hit hung request threshold since the context info specific settings
-        // are longer than the global defaults.
+        // Should sleep and hit hung request threshold since the context info specific settings
+        // are shorter than the global thresholds.
         startTime = System.nanoTime();
-        createRequests(1000, 1); /* Total sleep time: 25 sec + 1 sec + 5 sec = 31 sec */
+        createRequests(12000, 1);
         elapsedSeconds = TimeUnit.SECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
-        assertTrue("Test did not run long enough (elapsedSeconds)", elapsedSeconds >= 30);
+        assertTrue("Test did not run long enough (elapsedSeconds)", elapsedSeconds >= 12);
 
         // Make sure we had some hung request messages
         assertTrue("Test should have found slow request messages", fetchSlowRequestWarningsCount() > 0);
         assertTrue("Test should have found hung request messages", fetchHungRequestWarningsCount() > 0);
 
-        CommonTasks.writeLogMsg(Level.INFO, "***** Testcase pass *****");
+        CommonTasks.writeLogMsg(Level.INFO, "***** Testcase testContextInfoExactMatchOverrideDefault pass *****");
     }
 
     /**
@@ -247,11 +247,11 @@ public class TimingRequestTiming {
         server.setMarkToEndOfLog();
 
         // Should sleep and not hit hung request threshold since the context info specific settings
-        // are longer than the global defaults.
+        // are longer than the global thresholds.
         long startTime = System.nanoTime();
-        createRequests(1000, 1); /* Total sleep time: 25 sec + 1 sec + 5 sec = 31 sec */
+        createRequests(12000, 1);
         long elapsedSeconds = TimeUnit.SECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
-        assertTrue("Test did not run long enough (elapsedSeconds)", elapsedSeconds >= 30);
+        assertTrue("Test did not run long enough (elapsedSeconds)", elapsedSeconds >= 12);
 
         // Make sure we didn't get any hung request messages
         assertTrue("Test should not have found any slow request messages", fetchSlowRequestWarningsCount() == 0);
@@ -265,18 +265,18 @@ public class TimingRequestTiming {
 
         server.setMarkToEndOfLog();
 
-        // Should sleep and not hit hung request threshold since the context info specific settings
-        // are longer than the global defaults.
+        // Should sleep and hit hung request threshold since the context info specific settings
+        // are shorter than the global thresholds.
         startTime = System.nanoTime();
-        createRequests(1000, 1); /* Total sleep time: 25 sec + 1 sec + 5 sec = 31 sec */
+        createRequests(12000, 1);
         elapsedSeconds = TimeUnit.SECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
-        assertTrue("Test did not run long enough (elapsedSeconds)", elapsedSeconds >= 30);
+        assertTrue("Test did not run long enough (elapsedSeconds)", elapsedSeconds >= 12);
 
         // Make sure we had some hung request messages
         assertTrue("Test should have found slow request messages", fetchSlowRequestWarningsCount() > 0);
         assertTrue("Test should have found hung request messages", fetchHungRequestWarningsCount() > 0);
 
-        CommonTasks.writeLogMsg(Level.INFO, "***** Testcase pass *****");
+        CommonTasks.writeLogMsg(Level.INFO, "***** Testcase testContextInfoWildCardMatchOverrideDefault pass *****");
     }
 
     /*
@@ -291,12 +291,11 @@ public class TimingRequestTiming {
     @Test
     @Mode(TestMode.FULL)
     public void testTimingGlobalConfig() throws Exception {
-        server.setMarkToEndOfLog();
         CommonTasks.writeLogMsg(Level.INFO, "**** >>>>> server configuration thresholds for  <global : slow : 3s , hung : 6s><timing - Slow : 10s , hung : 12s>");
         server.setServerConfigurationFile("server_timing_global.xml");
         waitForConfigurationUpdate();
 
-        createRequests(13000, 1);
+        createRequests(20000, 1);
 
         server.waitForStringInLogUsingMark("TRAS0112W", 10000);
         server.waitForStringInLogUsingMark("TRAS0114W", 10000);
@@ -306,7 +305,7 @@ public class TimingRequestTiming {
 
         assertTrue("Expected > 1 slow request warnings but found : " + slow, (slow > 1));
 
-        assertTrue("Expected 2 hung request warning but found : " + hung, (hung > 1));
+        assertTrue("Expected > 1 hung request warning but found : " + hung, (hung > 1));
 
         CommonTasks.writeLogMsg(Level.INFO, "***** timing works - global settings applies for rest of the root event types. *****");
     }
@@ -323,14 +322,13 @@ public class TimingRequestTiming {
     @Test
     @Mode(TestMode.FULL)
     public void testTimingLocalConfigOnly() throws Exception {
-        server.setMarkToEndOfLog();
         CommonTasks.writeLogMsg(Level.INFO, "**** >>>>> server configuration thresholds for  <global : defaults ><timing - Slow : 3s , hung : 5s>");
         server.setServerConfigurationFile("server_timing_localOnly.xml");
         waitForConfigurationUpdate();
 
         server.setMarkToEndOfLog();
 
-        createRequests(6000, 1);
+        createRequests(7000, 1);
 
         server.waitForStringInLogUsingMark("TRAS0112W", 10000);
         server.waitForStringInLogUsingMark("TRAS0114W", 10000);
@@ -358,7 +356,6 @@ public class TimingRequestTiming {
     @Test
     @Mode(TestMode.FULL)
     public void testTimingGlobalConfigNotSpecified() throws Exception {
-        server.setMarkToEndOfLog();
         CommonTasks.writeLogMsg(Level.INFO, "**** >>>>> server configuration thresholds for  <global : defaults ><timing - Slow : 3s , hung : 5s>");
         server.setServerConfigurationFile("server_timing_NoGlobal.xml");
         waitForConfigurationUpdate();
@@ -391,14 +388,13 @@ public class TimingRequestTiming {
     @Test
     @Mode(TestMode.FULL)
     public void testTimingLocalNegativeSlowThreshold() throws Exception {
-        server.setMarkToEndOfLog();
         CommonTasks.writeLogMsg(Level.INFO, "**** >>>>> server configuration thresholds for  <global : slow : 9s , hung : 20s ><timing - Slow : -1 , hung : 3s>");
         server.setServerConfigurationFile("server_timing_local_NoSlowReq.xml");
         waitForConfigurationUpdate();
 
         server.setMarkToEndOfLog();
 
-        createRequests(4000, 1);
+        createRequests(5000, 1);
 
         server.waitForStringInLogUsingMark("TRAS0114W", 10000);
 
@@ -421,14 +417,13 @@ public class TimingRequestTiming {
     @Test
     @Mode(TestMode.FULL)
     public void testTimingLocalInheritsGlobalConfig() throws Exception {
-        server.setMarkToEndOfLog();
         CommonTasks.writeLogMsg(Level.INFO, "**** >>>>> server configuration thresholds for  <global : slow : 2s , hung : 4s ><timing>");
         server.setServerConfigurationFile("server_timing_local_inherits.xml");
         waitForConfigurationUpdate();
 
         server.setMarkToEndOfLog();
 
-        createRequests(5000, 1);
+        createRequests(6000, 1);
 
         server.waitForStringInLogUsingMark("TRAS0112W", 10000);
         server.waitForStringInLogUsingMark("TRAS0114W", 10000);
@@ -451,7 +446,6 @@ public class TimingRequestTiming {
     @Test
     @Mode(TestMode.FULL)
     public void testTimingLocalGlobalNoConfig() throws Exception {
-        server.setMarkToEndOfLog();
         CommonTasks.writeLogMsg(Level.INFO, "**** >>>>> server configuration thresholds for - <global -default> <timing - default>");
         server.setServerConfigurationFile("server_timing_local_global_noConfig.xml");
         waitForConfigurationUpdate();
@@ -481,7 +475,6 @@ public class TimingRequestTiming {
     @Test
     @Mode(TestMode.FULL)
     public void testTimingLocalDisableSlowHungRequest() throws Exception {
-        server.setMarkToEndOfLog();
         CommonTasks.writeLogMsg(Level.INFO, "**** >>>>> server configuration thresholds for - <global : slow : 1s , hung : 2s ><timing - slow : 0 , hung : 0>");
         server.setServerConfigurationFile("server_timing_NoSlowHungReqs.xml");
         waitForConfigurationUpdate();
@@ -510,7 +503,6 @@ public class TimingRequestTiming {
     @Test
     @Mode(TestMode.FULL)
     public void testTimingGlobalConfigFollowsLocal() throws Exception {
-        server.setMarkToEndOfLog();
         CommonTasks.writeLogMsg(Level.INFO, "**** >>>>> server configuration thresholds for - <global : slow : 3s , hung : 6s ><timing - slow : 2s , hung : 9m>");
         server.setServerConfigurationFile("server_timing_global_follows_local.xml");
         waitForConfigurationUpdate();
@@ -540,12 +532,11 @@ public class TimingRequestTiming {
     @Test
     @Mode(TestMode.FULL)
     public void testDynamicTimingUpdate() throws Exception {
-        server.setMarkToEndOfLog();
         CommonTasks.writeLogMsg(Level.INFO, "**** >>>>> server configuration thresholds for - <global - slow : 9s , hung : 20s> <timing - Slow : 5s , hung : 7s>");
         server.setServerConfigurationFile("server_timing_local.xml");
         waitForConfigurationUpdate();
 
-        createRequests(8000, 1);
+        createRequests(9000, 1);
 
         server.waitForStringInLogUsingMark("TRAS0112W", 10000);
         server.waitForStringInLogUsingMark("TRAS0114W", 10000);
@@ -557,12 +548,11 @@ public class TimingRequestTiming {
         assertTrue("Expected 1 hung request warning but found : " + hung, (hung > 0));
         server.setMarkToEndOfLog();
 
-        server.setMarkToEndOfLog();
         CommonTasks.writeLogMsg(Level.INFO, "**** >>>>> UPDATED server configuration thresholds for  <global : defaults ><timing - Slow : 3s , hung : 5s>");
         server.setServerConfigurationFile("server_timing_localOnly.xml");
         waitForConfigurationUpdate();
 
-        createRequests(6000, 1);
+        createRequests(7000, 1);
 
         server.waitForStringInLogUsingMark("TRAS0112W", 10000);
         server.waitForStringInLogUsingMark("TRAS0114W", 10000);
@@ -640,9 +630,9 @@ public class TimingRequestTiming {
         // Should sleep and not hit hung request threshold since the global defaults
         // are longer than all the context-info-specific settings.
         long startTime = System.nanoTime();
-        createRequests(1000, 1); /* Total sleep time: 25 sec + 1 sec + 5 sec = 31 sec */
+        createRequests(12000, 1);
         long elapsedSeconds = TimeUnit.SECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
-        assertTrue("Test did not run long enough (elapsedSeconds)", elapsedSeconds >= 30);
+        assertTrue("Test did not run long enough (elapsedSeconds)", elapsedSeconds >= 12);
 
         // Make sure we didn't get any hung request messages
         assertTrue("Test should not have found any slow request messages", fetchSlowRequestWarningsCount() == 0);
@@ -655,12 +645,12 @@ public class TimingRequestTiming {
 
         server.setMarkToEndOfLog();
 
-        // Should sleep and not hit hung request threshold since the context info specific settings
+        // Should sleep and hit the hung request threshold since the context info specific settings
         // are longer than the global defaults.
         startTime = System.nanoTime();
-        createRequests(1000, 1); /* Total sleep time: 25 sec + 1 sec + 5 sec = 31 sec */
+        createRequests(12000, 1);
         elapsedSeconds = TimeUnit.SECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
-        assertTrue("Test did not run long enough (elapsedSeconds)", elapsedSeconds >= 30);
+        assertTrue("Test did not run long enough (elapsedSeconds)", elapsedSeconds >= 12);
 
         // Make sure we had some hung request messages
         assertTrue("Test should have found slow request messages", fetchSlowRequestWarningsCount() > 0);
@@ -684,9 +674,9 @@ public class TimingRequestTiming {
         // Should sleep and not hit hung request threshold since the context info specific settings
         // are longer than the global defaults.
         long startTime = System.nanoTime();
-        createRequests(1000, 1); /* Total sleep time: 25 sec + 1 sec + 5 sec = 31 sec */
+        createRequests(12000, 1);
         long elapsedSeconds = TimeUnit.SECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
-        assertTrue("Test did not run long enough (elapsedSeconds)", elapsedSeconds >= 30);
+        assertTrue("Test did not run long enough (elapsedSeconds)", elapsedSeconds >= 12);
 
         // Make sure we didn't get any hung request messages
         assertTrue("Test should not have found any slow request messages", fetchSlowRequestWarningsCount() == 0);
@@ -703,15 +693,15 @@ public class TimingRequestTiming {
         // Should sleep and not hit hung request threshold since the context info specific settings
         // are longer than the global defaults.
         startTime = System.nanoTime();
-        createRequests(1000, 1); /* Total sleep time: 25 sec + 1 sec + 5 sec = 31 sec */
+        createRequests(12000, 1);
         elapsedSeconds = TimeUnit.SECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
-        assertTrue("Test did not run long enough (elapsedSeconds)", elapsedSeconds >= 30);
+        assertTrue("Test did not run long enough (elapsedSeconds)", elapsedSeconds >= 12);
 
         // Make sure we had some hung request messages
         assertTrue("Test should have found slow request messages", fetchSlowRequestWarningsCount() > 0);
         assertTrue("Test should have found hung request messages", fetchHungRequestWarningsCount() > 0);
 
-        CommonTasks.writeLogMsg(Level.INFO, "***** Testcase pass *****");
+        CommonTasks.writeLogMsg(Level.INFO, "***** Testcase testContextInfoExactMatchDisableDefault pass *****");
     }
 
     private void waitForConfigurationUpdate() throws Exception {

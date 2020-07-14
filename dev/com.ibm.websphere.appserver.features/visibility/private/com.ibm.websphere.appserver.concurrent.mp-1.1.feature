@@ -5,7 +5,7 @@ singleton=true
 -features=\
   com.ibm.websphere.appserver.contextService-1.0, \
   com.ibm.websphere.appserver.concurrencyPolicy-1.0, \
-  com.ibm.websphere.appserver.jakarta.concurrency-2.0, \
+  io.openliberty.jakarta.concurrency-2.0; apiJar=false, \
   com.ibm.websphere.appserver.org.eclipse.microprofile.contextpropagation-1.1 
 -bundles=\
   com.ibm.ws.javaee.platform.defaultresource, \

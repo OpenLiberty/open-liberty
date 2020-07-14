@@ -1,0 +1,10 @@
+bVersion=1.0
+
+Bundle-SymbolicName: io.openliberty.org.jboss.weld4.se; singleton:=true
+
+-include= -../generated.build.id, -liberty-release.props
+bFullVersion=${version;==;${bVersion}}.${libertyBundleMicroVersion}
+Build-Identifier: SNAPSHOT-${now}
+Bundle-Version: ${bFullVersion}.${if;${driver;gradle};${version.qualifier};eclipse}
+
+Import-Package:

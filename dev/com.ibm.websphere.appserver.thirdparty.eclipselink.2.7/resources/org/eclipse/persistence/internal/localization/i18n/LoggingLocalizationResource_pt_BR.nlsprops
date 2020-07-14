@@ -117,8 +117,6 @@ connected_user_database=Conectado: {3}{4}Usu\u00e1rio: {0}{3}{4}Banco de Dados: 
 
 connected_user_database_driver=Conectado: {0}{6}Usu\u00e1rio: {1}{6}Banco de Dados: {2} Vers\u00e3o: {3}{6}Driver: {4} Vers\u00e3o: {5}
 
-connecting=conectando({0})
-
 corrupted_session_announcement=SessionID: {0} O gerenciador de descoberta recebeu um an\u00fancio de sess\u00e3o corrompida - ignorando.
 
 create_default_dbms_tables_not_supported=A configura\u00e7\u00e3o do CMP \u201ccriar-tabelas-dbms-padr\u00e3o\u201d do WLS nativo n\u00e3o \u00e9 suportada diretamente no EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
@@ -158,8 +156,6 @@ deprecated_property=a propriedade {1} est\u00e1 descontinuada, a propriedade {0}
 descriptor_named_query_cannot_be_added=N\u00e3o \u00e9 poss\u00edvel incluir um descritor de consulta nomeada cujo conflito de nomes com uma consulta existente. Consulta a Ser Inclu\u00edda: [{0}] \u00e9 denominado: [{1}] com argumentos [{2}].
 
 dir_cleaned_for_mw_files=Os arquivos e subdiret\u00f3rios sob o diret\u00f3rio {0} foram exclu\u00eddos a fim de criar um diret\u00f3rio limpo para os novos arquivos de projeto do EclipseLink Mapping Workbench gerados
-
-disconnect=desconectado
 
 do_select_before_insert_not_supported=O recurso do CMP \u201cselecione-antes-de-inserir" do Oc4j nativo na entidade({0}) n\u00e3o \u00e9 diretamente suportado no EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
 
@@ -332,10 +328,6 @@ locking_mode_not_valid=Modo de Bloqueio ({1}) na entidade({0} no orion-ejb-jar.x
 locking_required_for_database_change_notification=A entidade {0} n\u00e3o est\u00e1 usando a vers\u00e3o de bloqueio, mas possui v\u00e1rias tabelas ou relacionamentos, e est\u00e1 usando a notifica\u00e7\u00e3o de altera\u00e7\u00e3o do banco de dados Oracle, as altera\u00e7\u00f5es nos relacionamentos ou tabelas secund\u00e1rias podem n\u00e3o invalidar o cache.
 
 log_file_under_output_dir=H\u00e1 um arquivo de log denominado ({0}) sob o diret\u00f3rio de sa\u00edda ({1}).
-
-login_successful={0} login bem-sucedido
-
-logout_successful={0} logout bem-sucedido
 
 mapping_not_supported_by_mw=O mapeamento do EclipseLink {0} n\u00e3o \u00e9 suportado pelo ambiente de trabalho de mapeamento
 
@@ -655,8 +647,6 @@ received_corrupt_announcement=Aviso: O gerenciador de descoberta n\u00e3o p\u00f
 
 received_unexpected_message_type=Tipo de mensagem inesperada recebida: {0} do t\u00f3pico: {1}; ignorando
 
-reconnecting=reconectando({0})
-
 register_new_for_persist=A opera\u00e7\u00e3o PERSIST chamou em: {0}.
 
 relational_descriptor_support_only=O gerador de tabela padr\u00e3o suporta atualmente apenas a gera\u00e7\u00e3o de esquema de tabela padr\u00e3o a partir de um projeto relacional.
@@ -674,6 +664,8 @@ retreived_null_message=Recuperada mensagem nula do t\u00f3pico: {0}; ignorando
 retreived_unknown_message_type=Tipo de mensagem desconhecida recuperado: {0} do t\u00f3pico: {1}; ignorando
 
 sdo_classgenerator_exception={2} Um [{0}] Exce\u00e7\u00e3o ocorreu \u2013 a mensagem \u00e9 [{1}]
+
+sdo_error_deserialization=Tentativa de desserializa\u00e7\u00e3o desautorizada com a classe {0}.
 
 sdo_error_processing_referenced_schema=Um {0} ocorreu ao processar o esquema referenciado com uri {1} com schemaLocation {2}.
 

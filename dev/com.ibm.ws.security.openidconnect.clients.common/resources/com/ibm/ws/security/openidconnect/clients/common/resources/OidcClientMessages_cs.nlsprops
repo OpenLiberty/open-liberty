@@ -29,9 +29,11 @@ OIDC_CLIENT_AUTHORIZE_ERR.useraction=Zopakujte po\u017eadavek s jin\u00fdmi atri
 #do not translate enforceHTTPS
 
 # used_by_client_project and clients project IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN THE OTHER BUNDLE!
-OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: Klient pro p\u0159ipojen\u00ed OpenID vy\u017eaduje protokol SSL (HTTPS), ale adresa URL poskytovatele p\u0159ipojen\u00ed OpenID uv\u00e1d\u00ed HTTP:  [{0}]. Aktualizujte konfiguraci, aby atribut [enforceHTTPS] odpov\u00eddal sch\u00e9matu c\u00edlov\u00e9 adresy URL. 
+# social also uses this and it does not have the enforceHTTPS attribute.
+#do not translate enforceHTTPS
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: Klient pro p\u0159ipojen\u00ed OpenID vy\u017eaduje protokol SSL (HTTPS), ale adresa URL poskytovatele p\u0159ipojen\u00ed OpenID uv\u00e1d\u00ed HTTP:  [{0}]. Aktualizujte konfiguraci tak, aby pou\u017e\u00edvala adresu HTTPS URL, nebo pou\u017eijte funkci klienta OpenID Connect a nastavte vlastnost enforceHTTPS na false. 
 OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.explanation=Klient pro p\u0159ipojen\u00ed OpenID (z\u00e1visl\u00e1 strana nebo server prost\u0159edk\u016f) vy\u017eaduje protokol SSL (HTTPS), ale protokol adresy URL poskytovatele p\u0159ipojen\u00ed OpenID uveden\u00fd v konfiguraci klienta pro p\u0159ipojen\u00ed OpenID nen\u00ed HTTPS.
-OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Prove\u010fte jednu z n\u00e1sleduj\u00edc\u00edch akc\u00ed: 1) Zkontrolujte, zda poskytovatel p\u0159ipojen\u00ed OpenID podporuje protokol SSL. 2) Pokud poskytovatel p\u0159ipojen\u00ed OpenID nepodporuje protokol SSL, nastavte atribut enforceHTTPS v konfiguraci klienta pro p\u0159ipojen\u00ed OpenID na hodnotu false.
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Prove\u010fte jednu z n\u00e1sleduj\u00edc\u00edch akc\u00ed: Nejd\u0159\u00edve se ujist\u011bte, \u017ee poskytovatel OpenID Connect podporuje zabezpe\u010den\u00ed SSL. Jestli\u017ee poskytovatel OpenID Connector nepodporuje zabezpe\u010den\u00ed SSL, pou\u017eijte funkci klienta OpenID Connect a nastavte enforceHTTPS na false v konfiguraci funkce klienta OpenID Connect.
 
 # unused, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: Aktu\u00e1ln\u00ed stav [{0}] klienta pro p\u0159ipojen\u00ed OpenID [{2}] a parametr stavu [{1}] v odezv\u011b z poskytovatele p\u0159ipojen\u00ed OpenID nejsou shodn\u00e9. Tato situace nen\u00ed povolena.

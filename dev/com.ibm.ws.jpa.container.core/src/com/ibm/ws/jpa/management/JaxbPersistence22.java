@@ -37,7 +37,7 @@ import com.ibm.ws.jpa.pxml22.Persistence.PersistenceUnit;
  * <p>
  **/
 public class JaxbPersistence22 extends JaxbPersistence {
-    private static final String SCHEMA_VERSION = "2.2";
+    protected static final String SCHEMA_VERSION = "2.2";
     private static final String XSD_NAME = "persistence_2_2.xsd";
 
     private static final TraceComponent tc = Tr.register(JaxbPersistence22.class, JPA_TRACE_GROUP, JPA_RESOURCE_BUNDLE_NAME);

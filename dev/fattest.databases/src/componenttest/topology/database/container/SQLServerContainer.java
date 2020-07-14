@@ -16,6 +16,9 @@ import java.util.stream.Stream;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.utility.LicenseAcceptance;
 
+
+//TODO This class can be removed once we have updated past org.testcontainers:mssqlserver:1.14.3
+// since this code went in: https://github.com/testcontainers/testcontainers-java/pull/2085
 public class SQLServerContainer<SELF extends SQLServerContainer<SELF>> extends JdbcDatabaseContainer<SELF> {
 
     public static final String NAME = "sqlserver";

@@ -64,7 +64,6 @@ instrument.classesExcludes: com/ibm/ws/concurrent/resources/*.class
 -buildpath: \
 	com.ibm.websphere.appserver.spi.kernel.service,\
 	com.ibm.websphere.appserver.spi.logging,\
-	com.ibm.websphere.jakarta.concurrency.2.0;version=latest,\
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
 	com.ibm.websphere.org.eclipse.microprofile.contextpropagation.1.0,\
 	com.ibm.websphere.org.osgi.core,\
@@ -80,4 +79,5 @@ instrument.classesExcludes: com/ibm/ws/concurrent/resources/*.class
 	com.ibm.ws.resource;version=latest,\
 	com.ibm.ws.threading;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
-	com.ibm.wsspi.org.osgi.service.metatype.annotations;version=latest
+	com.ibm.wsspi.org.osgi.service.metatype.annotations;version=latest,\
+	io.openliberty.jakarta.concurrency.2.0;version=latest

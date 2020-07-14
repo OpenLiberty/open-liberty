@@ -23,8 +23,8 @@ import java.net.Socket;
 import java.net.URL;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Logger;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -69,7 +69,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  */
 @RunWith(FATRunner.class)
 public class CDIUpgradeHandlerTest extends LoggingTest {
-    
+
     // Server instance ...
 
     /** A single shared server used by all of the tests. */
@@ -96,12 +96,12 @@ public class CDIUpgradeHandlerTest extends LoggingTest {
             Set<String> appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(CDI12_TEST_V2_UPGRADE_APP_NAME);
             LOG.info("addAppToServer : " + CDI12_TEST_V2_UPGRADE_APP_NAME + " already installed : " + !appInstalled.isEmpty());
             if (appInstalled.isEmpty())
-              ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), CDI12TestV2UpgradeApp);
-          }
+                ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), CDI12TestV2UpgradeApp);
+        }
         SHARED_SERVER.startIfNotStarted();
         SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + CDI12_TEST_V2_UPGRADE_APP_NAME);
     }
-    
+
     @AfterClass
     public static void testCleanup() throws Exception {
         // test cleanup
@@ -163,7 +163,6 @@ public class CDIUpgradeHandlerTest extends LoggingTest {
      * @throws Exception Thrown if the expected response text is not present or if the
      *                       unexpected response text is present.
      */
-    
 
     /** Standard failure text. Usually unexpected. */
     public static final String[] FAILED_RESPONSE = new String[] { "FAILED" };

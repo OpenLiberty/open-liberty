@@ -322,7 +322,7 @@ security.oauth20.front.end.error=CWOAU0073E: Si \u00e8 verificato un errore di a
 security.oauth20.front.end.error.explanation=Nella richiesta potrebbero mancare informazioni, il server potrebbe aver riscontrato un errore interno o qualche altro errore potrebbe aver impedito al server di autenticare correttamente l'utente.
 security.oauth20.front.end.error.useraction=Contattare l'amministratore di sistema per risolvere il problema.
 
-security.oauth20.endpoint.resowner.apppassword.error=CWOAU0074E: Non \u00e8 stata completata la richiesta di scambio password dell''applicazione per l''utente {0} perch\u00e9 non \u00e8 stato possibile verificare la password dell''applicazione. La password dell''applicazione \u00e8 errata, scaduta o revocata, oppure l''ID client fornito non \u00e8 valido.
+security.oauth20.endpoint.resowner.apppassword.error=CWOAU0074E: La richiesta di scambio password dell''applicazione per l''utente {0} non \u00e8 stata completata perch\u00e9 il provider OAuth non ha potuto verificare la password dell''applicazione. La password dell''applicazione \u00e8 errata, scaduta o revocata, oppure l''ID client o ID utente fornito non \u00e8 valido.
 security.oauth20.endpoint.resowner.apppassword.error.explanation=Il provider OAuth non \u00e8 stato in grado di verificare la password dell'applicazione.
 security.oauth20.endpoint.resowner.apppassword.error.useraction=Controllare che la password dell'applicazione sia valida, non sia scaduta e non sia stata revocata. Inoltre, verificare che l'ID client nel token di accesso sia uguale all'ID client nell'intestazione Autorizzazione.
 

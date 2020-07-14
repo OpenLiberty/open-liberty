@@ -1,0 +1,85 @@
+<!-- Licensed under the Apache License, Version 2.0 (the "License"); you 
+    may not use this file except in compliance with the License. You may obtain 
+    a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless 
+    required by applicable law or agreed to in writing, software distributed 
+    under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+    OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+    the specific language governing permissions and limitations under the License. -->
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="microprofile-faulttolerance-1.1-TCK" verbose="2"
+    configfailurepolicy="continue">
+
+    <test name="microprofile-faulttolerance 1.1 TCK">
+        <classes>
+        
+            <!-- Core functionality tests -->
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.AsynchronousTest" />
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.AsyncTimeoutTest">
+                <methods>
+                    <exclude name="testAsyncClassLevelTimeout"/>
+                </methods>
+            </class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.ConfigTest">
+                <methods>
+                    <exclude name="testConfigMaxDuration"/>
+                    <exclude name="testClassLevelConfigMaxDuration"/>
+                </methods>
+            </class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.CircuitBreakerTest">
+                <methods>
+                    <exclude name="testCircuitOpenWithMultiTimeouts"/>
+                    <exclude name="testCircuitOpenWithMultiTimeoutsAsync"/>
+                </methods>
+            </class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.CircuitBreakerRetryTest" />
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.FallbackTest">
+                <methods>
+                    <exclude name="testFallbackTimeout"/>
+                    <exclude name="testFallbacktNoTimeout"/>
+                </methods>
+            </class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.RetryConditionTest" />
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.RetryTest">
+                <methods>
+                    <exclude name="testRetryMaxDuration"/>
+                    <exclude name="testRetryMaxDurationSeconds"/>
+                    <exclude name="testRetryWithDelay"/>
+                    <exclude name="testRetryWithNoDelayAndJitter"/>
+                    <exclude name="testClassLevelRetryMaxDuration"/>
+                    <exclude name="testClassLevelRetryMaxDurationSeconds"/>
+                </methods>
+            </class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.RetryTimeoutTest" />
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.TimeoutTest">
+                <methods>
+                    <include name="testTimeout"></include>
+                    <include name="testNoTimeout"/>
+                    <include name="testSecondsTimeout"/>
+                    <include name="testSecondsNoTimeout"/>
+                    <include name="testTimeoutClassLevel"/>
+                    <include name="testNoTimeoutClassLevel"/>
+	            </methods>
+            </class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.TimeoutMethodConfigTest" />
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.bulkhead.BulkheadSynchTest">
+                <methods>
+                    <include name="testBulkheadClassSemaphore3"></include>
+                    <include name="testBulkheadMethodSemaphore10"></include>
+                </methods>
+            </class>
+            
+            <!-- New in 1.1: Disable annotations through config -->
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.disableEnv.DisableAnnotationOnMethodsTest"/>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.disableEnv.DisableAnnotationOnClassTest"/>
+            
+            <!-- New in 1.1: Metrics -->
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.AllMetricsTest"/>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.FallbackMetricTest"/>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.CircuitBreakerMetricTest"/>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.ClassLevelMetricTest"/>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.ClashingNameTest"/>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.MetricsDisabledTest"/>
+        </classes>
+    </test>
+</suite>

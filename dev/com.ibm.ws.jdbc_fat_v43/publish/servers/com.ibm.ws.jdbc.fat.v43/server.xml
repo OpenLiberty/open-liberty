@@ -81,7 +81,7 @@
   <javaPermission codebase="${server.config.dir}/drivers/d43driver.jar" className="java.security.AllPermission"/>
   <javaPermission codebase="${server.config.dir}/apps/app43.war" className="java.sql.SQLPermission" name="callAbort"/>
   <javaPermission codebase="${server.config.dir}/apps/app43.war" className="java.lang.RuntimePermission" name="modifyThread"/>
- 
+  <javaPermission codebase="${server.config.dir}/apps/app43.war" className="java.util.PropertyPermission" name="java.util.concurrent.ForkJoinPool.*" actions="read"/>
 
   <variable name="onError" value="FAIL"/>
 </server>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -146,7 +146,7 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 				}
 				updateSubject(subject, ssotoken);
 			} else {
-				String msg = Tr.formatMessage(tc, "JWTSSO_CONFIG_INVALID", new Object[] {});				
+				String msg = Tr.formatMessage(tc, "JWTSSO_CONFIG_INVALID", new Object[] {});
 				throw new WSLoginFailedException(msg);
 			}
 		}
@@ -356,8 +356,8 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 	@Override
 	// @FFDCIgnore(Exception.class)
 	public Subject handleJwtSSOTokenValidation(Subject subject, String encodedjwt) throws WSLoginFailedException {
-		// TODO Auto-generated method stub		
-        String msg = Tr.formatMessage(tc, "JWTSSO_CONFIG_INVALID_OR_TOKEN_INVALID", new Object[] {});		
+		// TODO Auto-generated method stub
+		String msg = Tr.formatMessage(tc, "JWTSSO_CONFIG_INVALID_OR_TOKEN_INVALID", new Object[] {});
 		Subject resultSub = null;
 
 		JwtSsoTokenUtils tokenUtil = getJwtSsoTokenConsumerUtils();
@@ -540,5 +540,19 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 		return true;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see com.ibm.ws.security.jwtsso.token.proxy.JwtSSOTokenProxy#
+	 * isDisableJwtCookie()
+	 */
+	@Override
+	public boolean isDisableJwtCookie() {
+		JwtSsoBuilderConfig jwtssobuilderConfig = getJwtSSOBuilderConfig();
+		if (jwtssobuilderConfig != null) {
+			return jwtssobuilderConfig.isDisableJwtCookie();
+		}
+		return false;
+	}
 
 }

@@ -13,6 +13,7 @@ package com.ibm.ws.ejbcontainer.osgi.internal;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.naming.NamingException;
@@ -56,7 +57,7 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
     private final AtomicServiceReference<EJBRemoteRuntime> ejbRemoteRuntimeServiceRef;
     private final EJBRemoteRuntime remoteRuntime;
 
-    private final List<ServiceRegistration<?>> registrations = new ArrayList<ServiceRegistration<?>>();
+    private static final List<ServiceRegistration<?>> registrations = new ArrayList<ServiceRegistration<?>>();
 
     NameSpaceBinderImpl(EJBModuleMetaDataImpl mmd,
                         EJBJavaColonNamingHelper jcnh,
@@ -142,7 +143,9 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
     }
 
     /**
-     * Adds the default ejblocal: bindings to the ejblocal: name space
+     * Adds the default local custom bindings if no other binding is specified
+     * <app>/<module.jar>/<bean>#<interface> for 3X
+     * ejb/<ejb-name> for 1X and 2X
      *
      * @param bindingObject the EJB Binding information
      * @param hr the HomeRecord of the EJB
@@ -150,35 +153,61 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
     @Override
     public void bindDefaultEJBLocal(EJBBinding bindingObject, HomeRecord hr) {
         HomeRecordImpl hrImpl = HomeRecordImpl.cast(hr);
+
         if (hrImpl.bindToContextRoot()) {
             BeanMetaData bmd = hr.getBeanMetaData();
-            J2EEName eeName = hrImpl.getJ2EEName();
+            boolean priorToVersion3 = bmd.ivModuleVersion < BeanMetaData.J2EE_EJB_VERSION_3_0;
 
-            // if component-id binding was specified use that, otherwise use default long form
-            String bindingName = null;
-            if (bmd.ivComponent_Id != null) {
-                bindingName = bmd.ivComponent_Id + "#" + bindingObject.interfaceName;
+            // EJB2X and 1X default
+            if (priorToVersion3) {
+                // Binding name is ejb/ + ejbName
+                String bindingName = "ejb/" + hrImpl.getEJBName();
+
+                // local:
+                localColonNamingHelper.bind(bindingObject, bindingName);
+                BindingsHelper bh = BindingsHelper.getLocalHelper(hr);
+                bh.ivLocalColonBindings.add(bindingName);
+                sendBindingMessage(bindingObject.interfaceName, "local:" + bindingName, bmd);
+
+                // ejblocal:
+                ejbLocalNamingHelper.bind(bindingObject, bindingName);
+                bh.ivEJBLocalBindings.add(bindingName);
+                sendBindingMessage(bindingObject.interfaceName, "ejblocal:" + bindingName, bmd);
+
             } else {
-                // <app>/<module.jar>/<bean>#<interface>
-                bindingName = eeName.getApplication() + "/" + eeName.getModule() + "/" + eeName.getComponent() + "#" + bindingObject.interfaceName;
+                //EJB3X default
+                J2EEName eeName = hrImpl.getJ2EEName();
+
+                // if component-id binding was specified use that, otherwise use default long form
+                String bindingName = null;
+                if (bmd.ivComponent_Id != null) {
+                    bindingName = bmd.ivComponent_Id + "#" + bindingObject.interfaceName;
+                } else {
+                    // <app>/<module.jar>/<bean>#<interface>
+                    bindingName = eeName.getApplication() + "/" + eeName.getModule() + "/" + eeName.getComponent() + "#" + bindingObject.interfaceName;
+                }
+                ejbLocalNamingHelper.bind(bindingObject, bindingName);
+
+                BindingsHelper bh = BindingsHelper.getLocalHelper(hr);
+                bh.ivEJBLocalBindings.add(bindingName);
+
+                sendBindingMessage(bindingObject.interfaceName, "ejblocal:" + bindingName, bmd);
+
+                // Default Short
+                if (BindingsHelper.shortDefaultBindingsEnabled(hrImpl.getAppName())) {
+                    ejbLocalNamingHelper.bind(bindingObject, bindingObject.interfaceName);
+                    bh.ivEJBLocalBindings.add(bindingObject.interfaceName);
+                    sendBindingMessage(bindingObject.interfaceName, "ejblocal:" + bindingObject.interfaceName, bmd);
+                }
             }
-            ejbLocalNamingHelper.bind(bindingObject, bindingName);
-
-            BindingsHelper bh = BindingsHelper.getLocalHelper(hr);
-            bh.ivEJBLocalBindings.add(bindingName);
-
-            sendBindingMessage(bindingObject.interfaceName, "ejblocal:" + bindingName, bmd);
-
-            // Default Short
-            ejbLocalNamingHelper.bind(bindingObject, bindingObject.interfaceName);
-            bh.ivEJBLocalBindings.add(bindingObject.interfaceName);
-            sendBindingMessage(bindingObject.interfaceName, "ejblocal:" + bindingObject.interfaceName, bmd);
         }
 
     }
 
     /**
      * Adds the default remote legacy bindings to root
+     * ejb/<app>/<module.jar>/<bean>#<interface> for 3X
+     * ejb/<ejb-name> for 2X
      *
      * @param bindingObject the EJB Binding information
      * @param hr the HomeRecord of the EJB
@@ -189,23 +218,35 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
 
         if (hrImpl.bindToContextRoot()) {
             BeanMetaData bmd = hr.getBeanMetaData();
-            String bindingName = null;
+            boolean priorToVersion3 = bmd.ivModuleVersion < BeanMetaData.J2EE_EJB_VERSION_3_0;
 
-            // if component-id binding was specified use that, otherwise use default long form
-            if (bmd.ivComponent_Id != null) {
-                bindingName = "ejb/" + bmd.ivComponent_Id + "#" + bindingObject.interfaceName;
+            // EJB2X and 1X default
+            if (priorToVersion3) {
+                // Binding name is ejb/ + ejbName
+                String bindingName = "ejb/" + hrImpl.getEJBName();
+                bindLegacyRemoteBinding(bindingObject, hr, bindingName);
+
             } else {
-                // Default Long
-                J2EEName eeName = hrImpl.getJ2EEName();
-                // ejb/<app>/<module.jar>/<bean>#<interface>
-                bindingName = "ejb/" + eeName.getApplication() + "/" + eeName.getModule() + "/" + eeName.getComponent() + "#" + bindingObject.interfaceName;
+                //EJB3X default
+                String bindingName = null;
+
+                // if component-id binding was specified use that, otherwise use default long form
+                if (bmd.ivComponent_Id != null) {
+                    bindingName = "ejb/" + bmd.ivComponent_Id + "#" + bindingObject.interfaceName;
+                } else {
+                    // Default Long
+                    J2EEName eeName = hrImpl.getJ2EEName();
+                    // ejb/<app>/<module.jar>/<bean>#<interface>
+                    bindingName = "ejb/" + eeName.getApplication() + "/" + eeName.getModule() + "/" + eeName.getComponent() + "#" + bindingObject.interfaceName;
+                }
+                bindLegacyRemoteBinding(bindingObject, hr, bindingName);
+
+                // Default Short
+                if (BindingsHelper.shortDefaultBindingsEnabled(hrImpl.getAppName())) {
+                    bindingName = bindingObject.interfaceName;
+                    bindLegacyRemoteBinding(bindingObject, hr, bindingName);
+                }
             }
-            bindLegacyRemoteBinding(bindingObject, hr, bindingName);
-
-            // Default Short
-            bindingName = bindingObject.interfaceName;
-            bindLegacyRemoteBinding(bindingObject, hr, bindingName);
-
         }
     }
 
@@ -610,10 +651,15 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
      */
     @Override
     public void unbindRemote(List<String> names) {
-        for (String name : names) {
-            for (ServiceRegistration<?> registration : registrations) {
-                if (name.equals(registration.getReference().getProperty(JNDI_SERVICENAME))) {
-                    registration.unregister();
+        synchronized (registrations) {
+            for (String name : names) {
+                for (Iterator<ServiceRegistration<?>> it = registrations.iterator(); it.hasNext();) {
+                    ServiceRegistration<?> registration = it.next();
+                    if (name.equals(registration.getReference().getProperty(JNDI_SERVICENAME))) {
+                        registration.unregister();
+                        registrations.remove(it);
+                        it.remove();
+                    }
                 }
             }
         }

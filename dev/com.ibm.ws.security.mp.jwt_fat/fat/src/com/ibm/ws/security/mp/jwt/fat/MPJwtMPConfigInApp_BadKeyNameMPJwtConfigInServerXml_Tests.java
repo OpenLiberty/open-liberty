@@ -17,7 +17,6 @@ import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
 import com.ibm.ws.security.mp.jwt.fat.sharedTests.MPJwtMPConfigTests;
 
 import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -34,7 +33,6 @@ import componenttest.topology.impl.LibertyServer;
  **/
 
 @Mode(TestMode.FULL)
-@MinimumJavaLevel(javaLevel = 8)
 @AllowedFFDC({ "com.ibm.websphere.security.jwt.KeyException", "java.security.cert.CertificateException" })
 public class MPJwtMPConfigInApp_BadKeyNameMPJwtConfigInServerXml_Tests extends MPJwtMPConfigTests {
 

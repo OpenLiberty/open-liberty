@@ -22,8 +22,6 @@ WS-TraceGroup: JAXRS
 
 -nouses: false
 
-#  META-INF.cxf,\
-
 Export-Package: \
   com.ibm.websphere.jaxrs.providers.json4j;version=1.1.0,\
   com.ibm.ws.jaxrs20.clientconfig,\
@@ -39,77 +37,6 @@ Import-Package: \
   javax.xml.bind;version=!, \
   javax.xml.bind.annotation;version=!, \
   *
-# !com.wordnik.swagger.jaxrs.config, \
-# !com.wordnik.swagger.jaxrs.listing, \
-# com.ibm.websphere.jaxrs20.multipart, \
-# !sun.reflect.generics.reflectiveObjects, \
-# !javax.cache.*, \
-# javax.ws.rs.*, \
-# junit.framework.*;resolution:=optional, \
-# org.apache.xml.resolver.*;resolution:=optional, \
-# !org.junit.*;resolution:=optional, \
-# !org.apache.velocity.*, \
-# org.objectweb.asm.*;resolution:=optional, \
-# org.slf4j.*;resolution:=optional;version="[1.5,2)", \
-# org.osgi.framework.*, \
-# org.apache.neethi;resolution:=optional, \
-# org.apache.commons.logging.*;resolution:=optional, \
-# javax.activation, \
-# javax.annotation;version="[1.2,2)", \
-# javax.xml.stream.*, \
-# !com.sun.xml.fastinfoset.stax.*, \
-# !javax.xml.ws, \
-# javax.xml.namespace;resolution:=optional, \
-# javax.servlet.*;resolution:=optional;version="[0.0,4)", \
-# javax.xml.ws.*;version="[2.2,3)", \
-# javax.servlet.*;resolution:=optional;version="[0.0,4)", \
-# com.ibm.wsspi.classloading, \
-# com.ibm.websphere.ras, \
-# com.ibm.websphere.ras.annotation, \
-# com.ibm.ws.ffdc, \
-# com.ibm.ws.webcontainer.extension, \
-# com.ibm.ws.webcontainer.osgi, \
-# com.ibm.websphere.security, \
-# !com.sun.xml.bind.marshaller, \
-# !com.ctc.wstx.*, \
-# !com.sun.msv.*, \
-# !com.sun.xml.fastinfoset.stax.*, \
-# !net.sf.cglib.proxy.*, \
-# !javax.validation.*, \
-# !org.codehaus.stax2.*, \
-# !org.apache.log4j.*, \
-# !org.apache.xerces.dom, \
-# !org.apache.xerces.*, \
-# !com.ibm.wsdl.util.xml, \
-# !org.springframework.*;resolution:=optional;version="[2.5,4)", \
-# !org.apache.aries.*;version="[0.3,2)", \
-# !org.osgi.service.blueprint.*, \
-# !org.apache.xerces.dom, \
-# !com.sun.tools.xjc.reader.internalizer, \
-# !org.springframework.*;resolution:=optional;version="[2.5,4)", \
-# !org.apache.aries.*;version="[0.3,2)", \
-# !org.osgi.service.blueprint.*, \
-# !org.apache.aries.*;version="[0.3,2)", \
-# !org.osgi.service.blueprint.*, \
-# !org.apache.xerces.dom, \
-# !org.apache.xerces.*, \
-# !org.apache.cxf.ws.policy.*, \
-# !javax.wsdl.*, \
-# !org.apache.cxf.wsdl.*, \
-# !org.joda.time.*, \
-# !javax.xml.bind.*, \
-# com.ibm.json.xml, \
-# com.ibm.json.java, \
-# !org.osgi.service.http.*, \
-# org.qi4j.*;resolution:=optional, \
-# javax.enterprise.context.*;resolution:=optional, \
-# javax.enterprise.event.*;resolution:=optional, \
-# javax.enterprise.inject.*;resolution:=optional, \
-# javax.enterprise.util.*;resolution:=optional, \
-# javax.inject.*;resolution:=optional, \
-# !org.atmosphere.*, \
-# !org.apache.cxf.cdi.*, \
-# *
 
 # Use dynamicImport-Package for JAXB APIs, with this, Equonix will have a chance to wire
 # those packages to the JAXB-2.2 API if the target bundle is started, or the one from system
@@ -123,8 +50,6 @@ DynamicImport-Package: \
  javax.xml.bind.attachment, \
  javax.xml.bind.helpers, \
  javax.xml.bind.util
-# javax.json, \
-# javax.json.*
 
 Private-Package:\
    com.ibm.ws.jaxrs20.component.*,\
@@ -133,6 +58,25 @@ Private-Package:\
    com.ibm.ws.jaxrs20.providers.security,\
    com.ibm.ws.jaxrs20.security
 
+
+ app-resources= \
+  META-INF/services/javax.ws.rs.client.ClientBuilder | \
+  META-INF/services/javax.ws.rs.sse.SseEventSource\$Builder | \
+  META-INF/services/javax.ws.rs.sse.SseEventSource.Builder | \
+  META-INF/services/javax.ws.rs.ext.RuntimeDelegate
+
+Service-Component: \
+  com.ibm.ws.jaxrs21.client.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=optional; \
+    properties:="resources=${app-resources}"
+
+Include-Resource:\
+ META-INF/services/javax.ws.rs.client.ClientBuilder=resources/META-INF/services/javax.ws.rs.client.ClientBuilder,\
+ META-INF/services/javax.ws.rs.ext.RuntimeDelegate=resources/META-INF/services/javax.ws.rs.ext.RuntimeDelegate,\
+ META-INF/services/javax.ws.rs.sse.SseEventSource$Builder=resources/META-INF/services/javax.ws.rs.sse.SseEventSource$Builder
+ 
 
 -dsannotations: com.ibm.ws.jaxrs20.component.*, \
   com.ibm.ws.jaxrs20.clientconfig.JAXRSClientConfigImpl, \

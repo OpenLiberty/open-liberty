@@ -86,8 +86,9 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         server.removeInstalledAppForValidation(APP_JCACHE); // This application is available for tests to add but not configured by default.
 
         String hazelcastConfigFile = "hazelcast-localhost-only.xml";
+        String osName = System.getProperty("os.name").toLowerCase();
 
-        if (FATSuite.isMulticastDisabled()) {
+        if (FATSuite.isMulticastDisabled() || osName.contains("mac os") || osName.contains("macos")) {
             Log.info(SessionCacheConfigUpdateTest.class, "setUp", "Disabling multicast in Hazelcast config.");
             hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
         }

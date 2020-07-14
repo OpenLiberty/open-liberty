@@ -38,15 +38,6 @@ public class SubjectHelper {
     private static final TraceComponent tc = Tr.register(SubjectHelper.class);
 
     /**
-     * This key maps to a boolean property in a Subject's private credentials
-     * hashtable. When the property is true, the authentication service will
-     * not put a LTPA cookie in the response and will not use the SSO LTPA cache key to cache the subject.
-     */
-    private static final String INTERNAL_DISABLE_SSO_LTPA_COOKIE = "com.ibm.ws.authentication.internal.sso.disable.ltpa.cookie";
-
-    private static final String[] disableSsoLtpaCookie = new String[] { INTERNAL_DISABLE_SSO_LTPA_COOKIE };
-
-    /**
      * Check whether the subject is un-authenticated or not.
      *
      * @param subject {@code null} is supported.
@@ -100,7 +91,7 @@ public class SubjectHelper {
     /**
      * Gets a Hashtable of values from the Subject.
      *
-     * @param subject {@code null} is not supported.
+     * @param subject    {@code null} is not supported.
      * @param properties The properties to get.
      * @return
      */
@@ -137,7 +128,7 @@ public class SubjectHelper {
      * Given a credential Set and an array of properties, find the Hashtable (if it exists) that has the
      * expected properties.
      *
-     * @param creds {@code null} is not supported.
+     * @param creds      {@code null} is not supported.
      * @param properties {@code null} is not supported.
      * @return The Hashtable with our properties, or null.
      */
@@ -160,7 +151,8 @@ public class SubjectHelper {
     }
 
     /**
-     * Gets a GSSCredential from a Subject
+     * Gets a GSSCredential from a Subject. If the subject does not already have a GSSCredential
+     * associated with it, a new GSSCredential is created using {@link #createGSSCredential(Subject)}
      */
     public static GSSCredential getGSSCredentialFromSubject(final Subject subject) {
         if (subject == null) {
@@ -182,13 +174,26 @@ public class SubjectHelper {
         });
 
         if (gssCredential == null) {
-            KerberosTicket tgt = getKerberosTicketFromSubject(subject, null);
-            if (tgt != null) {
-                gssCredential = createGSSCredential(subject, tgt);
-            }
+            return createGSSCredential(subject);
+        } else {
+            return gssCredential;
         }
+    }
 
-        return gssCredential;
+    /**
+     * Creates a GSSCredential from a given Subject. In order for a GSSCredential to be created,
+     * the subject must already have a KerberosTicket associated with it.
+     *
+     * @return The newly created GSSCredential, or null if no KerberosTicket was associated
+     *         with the provided ticket
+     */
+    public static GSSCredential createGSSCredential(final Subject subject) {
+        KerberosTicket tgt = getKerberosTicketFromSubject(subject, null);
+        if (tgt != null) {
+            return createGSSCredential(subject, tgt);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -354,7 +359,7 @@ public class SubjectHelper {
     /**
      * Gets a Hashtable of values from the Subject, but do not trace the hashtable
      *
-     * @param subject {@code null} is not supported.
+     * @param subject    {@code null} is not supported.
      * @param properties The properties to get.
      * @return the hashtable containing the properties.
      */
@@ -406,14 +411,4 @@ public class SubjectHelper {
         }
         return null;
     }
-
-    public boolean isDisableLtpaCookie(final Subject subject) {
-        SubjectHelper subjectHelper = new SubjectHelper();
-        Hashtable<String, ?> hashtable = subjectHelper.getHashtableFromSubject(subject, disableSsoLtpaCookie);
-        if (hashtable != null && (Boolean) hashtable.get(INTERNAL_DISABLE_SSO_LTPA_COOKIE))
-            return true;
-        else
-            return false;
-    }
-
 }

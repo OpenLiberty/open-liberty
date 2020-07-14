@@ -27,10 +27,8 @@ public class AcmeConstants {
 	public static final String SUBJECT_DN = "subjectDN";
 
 	// Challenge and order related fields.
-	public static final String CHALL_RETRIES = "challengeRetries";
-	public static final String CHALL_RETRY_WAIT = "challengeRetryWait";
-	public static final String ORDER_RETRIES = "orderRetries";
-	public static final String ORDER_RETRY_WAIT = "orderRetryWait";
+	public static final String CHALL_POLL_TIMEOUT = "challengePollTimeout";
+	public static final String ORDER_POLL_TIMEOUT = "orderPollTimeout";
 
 	// ACME account related fields.
 	public static final String ACCOUNT_KEY_FILE = "accountKeyFile";
@@ -54,6 +52,23 @@ public class AcmeConstants {
 	public static final String REVOCATION_PREFER_CRLS = "preferCRLs";
 	public static final String REVOCATION_DISABLE_FALLBACK = "disableFallback";
 	
+	// Certificate checker configuration options, currently intended to be internal only
+	public static final String CERT_CHECKER_SCHEDULE = "certCheckerSchedule";
+	public static final String CERT_CHECKER_ERROR_SCHEDULE = "certCheckerErrorSchedule";
+	
+	// Allow immediate requests for certificate renewal
+	public static final String DISABLE_MIN_RENEW_WINDOW = "disableMinRenewWindow";
+
+	// Disable certificate renewal when the acmeca-history file does not yet exist
+	public static final String DISABLE_RENEW_ON_NEW_HISTORY = "disableRenewOnNewHistory";
+
+	// Minimum allowed time to check for expiration
+	public static final String RENEW_CERT_MIN = "renewCertMin";
+
+	// HTTP timeouts connecting to the CA
+	public static final String HTTP_CONNECT_TIMEOUT = "httpConnectTimeout";
+	public static final String HTTP_READ_TIMEOUT = "httpReadTimeout";
+
 	/*
 	 * End constants that match the metatype fields
 	 */
@@ -63,6 +78,8 @@ public class AcmeConstants {
 	 */
 	public static final int KEY_SIZE = 2048;
 
+	public static final int ACME_HISTORICAL_FILE_MAX_SIZE = 10;
+
 	public static final String DEFAULT_KEY_STORE = "defaultKeyStore";
 	public static final String DEFAULT_ALIAS = "default";
 	public static final String KEY_KEYSTORE_SERVICE = "keyStoreService";
@@ -70,10 +87,19 @@ public class AcmeConstants {
 	public static final String ACCOUNT_TYPE = "account";
 	public static final String DOMAIN_TYPE = "domain";
 	
-	public static final long RENEW_CERT_MIN = 15000L; // Minimum allowed time to check for expiration
 	public static final Long RENEW_CERT_MIN_WARN_LEVEL = 60000L; // The renew time that we'll put out a warning that you've picked a very low renew time
-	public static final int RENEW_DEFAULT_DAYS = 7;
-	public static final Long RENEW_DEFAULT_MS = TimeUnit.DAYS.toMillis(RENEW_DEFAULT_DAYS);  // 604800000L; 
+	public static final Long RENEW_DEFAULT_MS = TimeUnit.DAYS.toMillis(7L);  // 604800000L; 
 	public static final double RENEW_DIVISOR = .5;
+	public static final long CHALLENGE_POLL_DEFAULT = 120000l;
+	public static final long ORDER_POLL_DEFAULT = 120000l;
+	public static final long RENEW_CERT_MIN_DEFAULT = 15000L; 
+
+	public static final Long SCHEDULER_MS = TimeUnit.HOURS.toMillis(24L);
+	public static final Long SCHEDULER_ERROR_MS = TimeUnit.HOURS.toMillis(1L);
+	
+	public static final String ACME_HISTORY_FILE = "acmeca-history.txt";
+
+	public static final Integer HTTP_CONNECT_TIMEOUT_DEFAULT = 30000;
+	public static final Integer HTTP_READ_TIMEOUT_DEFAULT = 30000;
 
 }

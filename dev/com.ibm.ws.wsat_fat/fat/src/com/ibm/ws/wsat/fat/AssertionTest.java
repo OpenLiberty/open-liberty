@@ -11,8 +11,8 @@
 package com.ibm.ws.wsat.fat;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.net.HttpURLConnection;
@@ -23,14 +23,17 @@ import java.util.List;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.ExpectedFFDC;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
-import componenttest.annotation.ExpectedFFDC;
 
+@RunWith(FATRunner.class)
 public class AssertionTest extends WSATTest {
 
 	private static LibertyServer server = LibertyServerFactory
@@ -66,7 +69,7 @@ public class AssertionTest extends WSATTest {
 					+ "?baseurl=" + BASE_URL;
 			System.out.println("testNoPolicyAssertion URL: " + urlStr);
 			HttpURLConnection con = getHttpConnection(new URL(urlStr),
-							HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT);
+							HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testNoPolicyAssertion");
 			BufferedReader br = HttpUtils.getConnectionStream(con);
 			String result = br.readLine();
 			assertNotNull(result);
@@ -87,7 +90,7 @@ public class AssertionTest extends WSATTest {
 			System.out.println("testNoPolicyAssertionNoTransaction URL: "
 					+ urlStr);
 			HttpURLConnection con = getHttpConnection(new URL(urlStr),
-							HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT);
+							HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testNoPolicyAssertionNoTransaction");
 			BufferedReader br = HttpUtils.getConnectionStream(con);
 			String result = br.readLine();
 			assertNotNull(result);
@@ -107,7 +110,7 @@ public class AssertionTest extends WSATTest {
 					+ "?baseurl=" + BASE_URL;
 			System.out.println("testAssertionOptional URL: " + urlStr);
 			HttpURLConnection con = getHttpConnection(new URL(urlStr),
-							HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT);
+							HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testAssertionOptional");
 			BufferedReader br = HttpUtils.getConnectionStream(con);
 			String result = br.readLine();
 			assertNotNull(result);
@@ -126,7 +129,7 @@ public class AssertionTest extends WSATTest {
 					+ "?baseurl=" + BASE_URL;
 			System.out.println("testAssertionOptional URL: " + urlStr);
 			HttpURLConnection con = getHttpConnection(new URL(urlStr),
-							HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT);
+							HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testAssertionOptionalNoTransaction");
 			BufferedReader br = HttpUtils.getConnectionStream(con);
 			String result = br.readLine();
 			assertNotNull(result);
@@ -149,7 +152,7 @@ public class AssertionTest extends WSATTest {
 					+ "?baseurl=" + BASE_URL;
 			System.out.println("testAssertionIgnorable URL: " + urlStr);
 			HttpURLConnection con = getHttpConnection(new URL(urlStr),
-							HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT);
+							HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testAssertionIgnorable");
 			BufferedReader br = HttpUtils.getConnectionStream(con);
 			String result = br.readLine();
 			assertNotNull(result);

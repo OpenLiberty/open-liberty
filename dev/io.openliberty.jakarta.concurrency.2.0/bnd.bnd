@@ -1,0 +1,29 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-SymbolicName: io.openliberty.jakarta.concurrency.2.0; singleton:=true
+
+Export-Package: jakarta.enterprise.concurrent;version="2.0.0"
+
+Include-Resource: \
+  @${repo;jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api;2.0.0}!/META-INF/NOTICE
+
+instrument.disabled: true
+
+#Because the implementation is shared between both 1.0 and 2.0, this API bundle is being shipped as GA already (with the 1.0 feature).
+#However, we don't want to expose it to users just yet because the 2.0 Jakarta API and our 2.0 implementation feature are not ready.
+#When the 2.0 feature moves to beta then this bundle should be moved from lib to dev/api/spec by uncommenting the line below.
+#publish.wlp.jar.suffix: dev/api/spec
+
+-buildpath: \
+  jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api;version=2.0.0

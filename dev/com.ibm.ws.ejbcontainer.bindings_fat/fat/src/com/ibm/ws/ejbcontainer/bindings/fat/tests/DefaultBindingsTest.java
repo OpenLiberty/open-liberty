@@ -19,6 +19,7 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
+import com.ibm.ejb2x.defbnd.web.EJB2XDefBndTestServlet;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.ejbcontainer.bindings.defbnd.web.DefaultBindingsServlet;
 import com.ibm.ws.ejbcontainer.bindings.defbnd.web.DefaultComponentBindingsServlet;
@@ -39,7 +40,8 @@ public class DefaultBindingsTest extends FATServletClient {
     @Server("com.ibm.ws.ejbcontainer.bindings.fat.server")
     @TestServlets({ @TestServlet(servlet = DefaultJavaColonBindingsServlet.class, contextRoot = "EJB3DefBndWeb"),
                     @TestServlet(servlet = DefaultBindingsServlet.class, contextRoot = "EJB3DefBndWeb"),
-                    @TestServlet(servlet = DefaultComponentBindingsServlet.class, contextRoot = "EJB3DefBndWeb") })
+                    @TestServlet(servlet = DefaultComponentBindingsServlet.class, contextRoot = "EJB3DefBndWeb"),
+                    @TestServlet(servlet = EJB2XDefBndTestServlet.class, contextRoot = "EJB2XDefBndWeb") })
     public static LibertyServer server;
 
     @ClassRule
@@ -56,6 +58,16 @@ public class DefaultBindingsTest extends FATServletClient {
         ShrinkHelper.addDirectory(EJB3DefBndTestApp, "test-applications/EJB3DefBndTestApp.ear/resources");
 
         ShrinkHelper.exportDropinAppToServer(server, EJB3DefBndTestApp);
+
+        //EJB2X
+        JavaArchive EJB2XDefBndEJB = ShrinkHelper.buildJavaArchive("EJB2XDefBndEJB.jar", "com.ibm.ejb2x.defbnd.ejb.");
+        ShrinkHelper.addDirectory(EJB2XDefBndEJB, "test-applications/EJB2XDefBndEJB.jar/resources");
+        WebArchive EJB2XDefBndWeb = ShrinkHelper.buildDefaultApp("EJB2XDefBndWeb.war", "com.ibm.ejb2x.defbnd.web.");
+        EnterpriseArchive EJB2XDefBndTestApp = ShrinkWrap.create(EnterpriseArchive.class, "EJB2XDefBndTestApp.ear");
+        EJB2XDefBndTestApp.addAsModules(EJB2XDefBndEJB, EJB2XDefBndWeb);
+        ShrinkHelper.addDirectory(EJB2XDefBndTestApp, "test-applications/EJB2XDefBndTestApp.ear/resources");
+
+        ShrinkHelper.exportDropinAppToServer(server, EJB2XDefBndTestApp);
 
         server.startServer();
     }

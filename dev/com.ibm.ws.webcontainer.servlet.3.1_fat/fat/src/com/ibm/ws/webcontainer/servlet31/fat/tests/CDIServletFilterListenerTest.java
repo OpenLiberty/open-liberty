@@ -10,8 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
-import java.util.logging.Logger;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -43,7 +43,7 @@ public class CDIServletFilterListenerTest extends LoggingTest {
     // Server instance ...
     @ClassRule
     public static SharedServer SHARED_SERVER = new SharedServer("servlet31_cdiServletFilterListenerServer");
-    
+
     private static final String CDI12_TEST_V2_JAR_NAME = "CDI12TestV2";
     private static final String CDI12_TEST_V2_INJECTION_APP_NAME = "CDI12TestV2Injection";
 
@@ -79,15 +79,15 @@ public class CDIServletFilterListenerTest extends LoggingTest {
         CDI12TestV2InjectionApp = CDI12TestV2InjectionApp.addAsLibrary(CDI12TestV2Jar);
         // Verify if the apps are in the server before trying to deploy them
         if (SHARED_SERVER.getLibertyServer().isStarted()) {
-          Set<String> appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(CDI12_TEST_V2_INJECTION_APP_NAME);
-          LOG.info("addAppToServer : " + CDI12_TEST_V2_INJECTION_APP_NAME + " already installed : " + !appInstalled.isEmpty());
-          if (appInstalled.isEmpty())
-            ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), CDI12TestV2InjectionApp);
+            Set<String> appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(CDI12_TEST_V2_INJECTION_APP_NAME);
+            LOG.info("addAppToServer : " + CDI12_TEST_V2_INJECTION_APP_NAME + " already installed : " + !appInstalled.isEmpty());
+            if (appInstalled.isEmpty())
+                ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), CDI12TestV2InjectionApp);
         }
         SHARED_SERVER.startIfNotStarted();
         SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + CDI12_TEST_V2_INJECTION_APP_NAME);
     }
-    
+
     @AfterClass
     public static void testCleanup() throws Exception {
         // test cleanup

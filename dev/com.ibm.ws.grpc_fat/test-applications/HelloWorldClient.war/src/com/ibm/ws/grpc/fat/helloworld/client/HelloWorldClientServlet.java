@@ -13,29 +13,48 @@ package com.ibm.ws.grpc.fat.helloworld.client;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import javax.net.ssl.SSLException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ibm.ws.fat.grpc.tls.GrpcTestTlsUtils;
+
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.examples.helloworld.GreeterGrpc;
 import io.grpc.examples.helloworld.HelloReply;
 import io.grpc.examples.helloworld.HelloRequest;
+import io.grpc.netty.shaded.io.grpc.netty.GrpcSslContexts;
+import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder;
+import io.grpc.netty.shaded.io.netty.handler.ssl.SslContext;
 
 @WebServlet(name = "grpcClient", urlPatterns = "/grpcClient")
 public class HelloWorldClientServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
-    ManagedChannel channel;
+    ManagedChannel channel = null;
     private GreeterGrpc.GreeterBlockingStub greetingService;
 
-    private void startService(String address, int port) {
+    private void startService(String address, int port, boolean useTls, String serverPath) throws SSLException {
         System.out.println("connecting to helloworld gRPC service at " + address + ":" + port);
-        channel = ManagedChannelBuilder.forAddress(address, port).usePlaintext().build();
+        System.out.println("TLS enabled: " + useTls);
+
+        if (!useTls) {
+            channel = ManagedChannelBuilder.forAddress(address, port).usePlaintext().build();
+        } else {
+            SslContext sslContext;
+            sslContext = GrpcSslContexts.forClient()
+                            .trustManager(GrpcTestTlsUtils.getLibertyTrustedManagerFactory(serverPath))
+                            .build();
+            channel = NettyChannelBuilder.forAddress(address, port)
+                            .sslContext(sslContext)
+                            .build();
+
+        }
         greetingService = GreeterGrpc.newBlockingStub(channel);
     }
 
@@ -68,6 +87,12 @@ public class HelloWorldClientServlet extends HttpServlet {
                         .append("                               Enter the port of the target service: \r\n")
                         .append("                               <input type=\"text\" value=\"9080\" name=\"port\" />\r\n\r\n")
                         .append("                               <br/>")
+                        .append("                               Use TLS: \r\n")
+                        .append("                               <input type=\"text\" value=\"false\" name=\"useTls\" />\r\n\r\n")
+                        .append("                               <br/>")
+                        .append("                               server path: \r\n")
+                        .append("                               <input type=\"text\" value=\"\" name=\"serverPath\" />\r\n\r\n")
+                        .append("                               <br/>")
                         .append("                               <br/>")
                         .append("                               <input type=\"submit\" value=\"Submit\" name=\"submit\" />\r\n")
                         .append("                       </form>\r\n")
@@ -80,8 +105,10 @@ public class HelloWorldClientServlet extends HttpServlet {
         String user = request.getParameter("user");
         String address = request.getParameter("address");
         int port = Integer.parseInt(request.getParameter("port"));
+        boolean useTls = Boolean.parseBoolean(request.getParameter("useTls"));
+        String serverPath = request.getParameter("serverPath");
 
-        startService(address, port);
+        startService(address, port, useTls, serverPath);
 
         // client side of the gRPC service is accessed via this servlet
         // create a gRPC User message to send to the server side service

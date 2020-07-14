@@ -266,7 +266,7 @@ public class UnsolicitedHandlerTest {
             HttpRequestInfo requestInfo = unsolicitedHandler.getUnsolicitedRequestInfo(basicMessageContext, relayState, cache);
             if (requestInfo != null) {
                 assertEquals("Expected to receive the message '" + relayState + "' but it was not received.",
-                             relayState, requestInfo.getRequestUrl());
+                             relayState, requestInfo.getReqUrl());
                 assertEquals("Expected to receive an empty String but it was not received.",
                              "", requestInfo.getQueryString());
             } else {

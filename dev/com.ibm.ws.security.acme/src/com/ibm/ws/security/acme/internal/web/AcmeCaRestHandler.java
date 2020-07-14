@@ -44,6 +44,7 @@ import com.ibm.ws.management.security.ManagementSecurityConstants;
 import com.ibm.ws.security.acme.AcmeCaException;
 import com.ibm.ws.security.acme.AcmeProvider;
 import com.ibm.ws.security.acme.internal.AcmeClient.AcmeAccount;
+import com.ibm.ws.security.acme.internal.exceptions.CertificateRenewRequestBlockedException;
 import com.ibm.ws.security.acme.internal.exceptions.IllegalRevocationReasonException;
 import com.ibm.ws.ssl.KeyStoreService;
 import com.ibm.wsspi.rest.handler.RESTHandler;
@@ -258,7 +259,7 @@ public class AcmeCaRestHandler implements RESTHandler {
 	 * @throws IOException
 	 *             If there was an issue processing the request.
 	 */
-	@FFDCIgnore({ AcmeCaException.class, IllegalRevocationReasonException.class })
+	@FFDCIgnore({ AcmeCaException.class, IllegalRevocationReasonException.class, CertificateRenewRequestBlockedException.class })
 	private void handleCertificate(RESTRequest request, RESTResponse response) throws IOException {
 		String method = request.getMethod();
 		if (HTTP_GET.equalsIgnoreCase(method)) {
@@ -327,9 +328,15 @@ public class AcmeCaRestHandler implements RESTHandler {
 				}
 
 				try {
+					acmeProvider.checkCertificateRenewAllowed();
 					acmeProvider.renewCertificate();
 					commitJsonResponse(response, 200, null);
 					return;
+				} catch (CertificateRenewRequestBlockedException cr) {
+					/*
+					 * Use 429: Too Many Requests
+					 */
+					commitJsonResponse(response, 429, Tr.formatMessage(tc, "REST_TOO_MANY_REQUESTS", cr.getTimeLeftForBlackout() + "ms"));
 				} catch (AcmeCaException e) {
 					commitJsonResponse(response, 500, e.getMessage());
 					return;
@@ -390,7 +397,6 @@ public class AcmeCaRestHandler implements RESTHandler {
 			sb.append("<pre>");
 			sb.append("Location:                  ").append(account.getLocation()).append("\n");
 			sb.append("Status:                    ").append(account.getStatus()).append("\n");
-			sb.append("Terms of Service Agreed:   ").append(account.getTermsOfServiceAgreed()).append("\n");
 			sb.append("Contacts:                  ").append("\n");
 			if (account.getContacts() != null && !account.getContacts().isEmpty()) {
 				for (URI contact : account.getContacts()) {

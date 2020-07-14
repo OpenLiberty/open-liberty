@@ -20,10 +20,13 @@
     />
 	
     <logging
-      traceSpecification="Transaction=all:wsat=all:org.apache.cxf.*=all:com.ibm.ws.jaxws.*=all"
+      traceSpecification="Transaction=all:wsat=all:org.apache.cxf.*=all:com.ibm.ws.jaxws.*=all:ClassLoadingService=all"
       traceFileName="trace.log"
       maxFileSize="2000"
       maxFiles="20"
       traceFormat="BASIC"
     />
+
+    <javaPermission name="*" actions="*" className="java.security.AllPermission"/>
+
 </server>

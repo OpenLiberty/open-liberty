@@ -12,8 +12,8 @@ package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.logging.Logger;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -39,7 +39,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  */
 @RunWith(FATRunner.class)
 public class CDIListenersTest extends LoggingTest {
-    
+
     private static final Logger LOG = Logger.getLogger(CDIListenersTest.class.getName());
 
     // Server instance ...
@@ -89,12 +89,12 @@ public class CDIListenersTest extends LoggingTest {
             Set<String> appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(CDI12_TEST_V2_LISTENERS_APP_NAME);
             LOG.info("addAppToServer : " + CDI12_TEST_V2_LISTENERS_APP_NAME + " already installed : " + !appInstalled.isEmpty());
             if (appInstalled.isEmpty())
-            ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), CDI12TestV2ListenersApp);
+                ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), CDI12TestV2ListenersApp);
         }
         SHARED_SERVER.startIfNotStarted();
         SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + CDI12_TEST_V2_LISTENERS_APP_NAME);
     }
-    
+
     @AfterClass
     public static void testCleanup() throws Exception {
         // test cleanup

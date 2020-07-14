@@ -1,0 +1,97 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+
+bVersion=1.0.${libertyBundleMicroVersion}
+bSymbolicName=io.openliberty.jaxb.3.0.internal.tools
+
+Bundle-Name: io.openliberty.jaxb.3.0.internal.tools
+Bundle-SymbolicName: io.openliberty.jaxb.3.0.internal.tools; singleton:=true
+    
+# The SPI definition under META-INF/services
+# Do not publish RI javax.xml.bind.JAXBContext
+app-resources= \
+  META-INF/services/com.sun.tools.xjc.Plugin |\
+  META-INF/services/org.relaxng.datatype.DatatypeLibraryFactory | \
+  META-INF/services/jakarata.xml.bind.JAXBContext | \
+  META-INF/services/jakarta.xml.bind.JAXBContextFactory | \
+  META-INF/services/org.iso_relax.verifier.VerifierFactoryLoader
+
+Service-Component: \
+  io.openliberty.jaxb.tools_3_0_${replace;${bVersion};\\.;_}.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=ignore; \
+    properties:= "resources=${app-resources}"
+
+Import-Package: \
+  jakarta.activation,\
+  jakarta.xml.bind.*; version="[3.0,4.0]", \
+  com.sun.xml.tools.*, \
+  com.ibm.wsspi.classloading, \
+  org.apache.xml.*; resolution:=optional, \
+  org.w3c.dom.*, \
+  javax.xml.stream.*, \
+  javax.xml.transform.*, \
+  javax.xml.parsers.*, \
+  javax.xml.namespace.*, \
+  javax.xml.datatype.*, \
+  org.xml.sax.*, \
+  !com.sun.xml.internal.bind.v2, \
+  !com.sun.xml.bind.v2, \
+  !org.apache.tools*, \
+  !org.apache.xerces*, \
+  !org.jvnet*, \
+  !com.sun.mirror.*, \
+  !com.sun.codemodel.*,\ 
+  !com.sun.source.tree.*, \
+  !com.sun.source.util.*, \
+  !com.sun.xml.fastinfoset.sax.*, \
+  !com.sun.xml.fastinfoset.stax.*, \
+  !sun.nio.cs*, \
+  !com.sun.org.apache.xml.internal.resolver, \
+  !com.sun.org.apache.xml.internal.resolver.tools, \
+  *
+    
+Export-Package: \
+  org.glassfish.jaxb.*;version="3.0";thread-context=true
+
+Include-Resource: \
+  @${repo;org.glassfish.jaxb:jaxb-core;3.0.0}!/!META-INF/maven/*, \
+  @${repo;org.glassfish.jaxb:jaxb-jxc;3.0.0}!/!META-INF/maven/*, \
+  @${repo;org.glassfish.jaxb:jaxb-runtime;3.0.0}!/!META-INF/maven/*, \
+  @${repo;com.sun.xml.bind.external:relaxng-datatype;3.0.0}!/!META-INF/maven/*, \
+  @${repo;com.sun.xml.bind.external:rngom;3.0.0}!/!META-INF/maven/*, \
+  @${repo;com.sun.istack:istack-commons-runtime;4.0.0}!/!META-INF/maven/*, \
+  @${repo;com.sun.istack:istack-commons-tools;4.0.0}!/!META-INF/maven/*, \
+  @${repo;org.glassfish.jaxb:jaxb-xjc;3.0.0}!/!META-INF/maven/*, \
+  META-INF/services/jakarta.xml.bind.JAXBContext=resources/META-INF/services/jakarta.xml.bind.JAXBContext, \
+  META-INF/services/jakarta.xml.bind.JAXBContextFactory=resources/META-INF/services/jakarta.xml.bind.JAXBContextFactory
+
+Private-Package:\
+  io.openliberty.jaxb.tools.*, \
+  com.sun.istack.*, \
+  com.sun.tools.rngdatatype.*, \
+  com.sun.tools.rngom.*
+
+instrument.disabled: true
+
+-buildpath: \
+	jakarta.xml.bind:jakarta.xml.bind-api;version=3.0.0, \
+	org.glassfish.jaxb:jaxb-core;version=3.0.0, \
+	org.glassfish.jaxb:jaxb-jxc;version=3.0.0, \
+	org.glassfish.jaxb:jaxb-runtime;version=3.0.0, \
+	org.glassfish.jaxb:jaxb-xjc;version=3.0.0, \
+	com.sun.xml.bind.external:relaxng-datatype;version=3.0.0, \
+    com.sun.xml.bind.external:rngom;version=3.0.0, \
+    com.sun.istack:istack-commons-runtime;version=4.0.0, \
+    com.sun.istack:istack-commons-tools;version=4.0.0, \
+    com.ibm.ws.org.apache.ant;strategy=exact;version=latest

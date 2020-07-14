@@ -38,7 +38,6 @@ import com.ibm.ws.jaxws.ejbwscontext.ObjectFactory;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
@@ -73,12 +72,6 @@ public class EJBWSContextTest {
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, ejbwscontextear + ".ear").addAsModule(jar).addAsModule(war);
 
         ShrinkHelper.exportAppToServer(server, ear);
-
-        // Java 7 throws "java.lang.ClassNotFoundException[java.net.URLPermission]" due to java.net.URLPermission defined in server.xml
-        // Using java7_server.xml in which java.net.URLPermission settings are removed solve this test run problem
-        if (7 == JavaInfo.forServer(server).majorVersion()) {
-            server.setServerConfigurationFile("EJBWSContext/java7_server.xml");
-        }
 
         try {
             server.startServer();

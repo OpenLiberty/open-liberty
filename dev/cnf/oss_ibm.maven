@@ -2,7 +2,6 @@ com.ibm.ws.commons-collections:commons-collections:3.2.1
 com.ibm.ws:geronimo-validation:1.1
 com.ibm.ws.internal.prereq.java:java.rtSunKrb5:1.8.0
 com.ibm.ws.internal.prereq.java:java.ibmjgssprovider:1.8.0
-com.ibm.ws:jakartaee-transformer:0.0.9
 com.ibm.ws.javax.j2ee:connector:1.6
 com.ibm.ws.javax.j2ee:el:2.2
 com.ibm.ws.javax.j2ee:jaxrpc:1.0
@@ -93,12 +92,12 @@ org.apache.santuario:xmlsec:1.5.2-ibm
 org.apache.ws.security:wss4j:1.6.7-ibm-s20130913-2015
 org.eclipse.microprofile.graphql:microprofile-graphql-api:1.0.0-20191203
 org.eclipse.microprofile.graphql:microprofile-graphql-tck:1.0.0-20191203
-org.eclipse.persistence:org.eclipse.persistence.antlr:2.7.6-b7c9978
-org.eclipse.persistence:org.eclipse.persistence.asm:2.7.6-b7c9978
-org.eclipse.persistence:org.eclipse.persistence.core:2.7.6-b7c9978
-org.eclipse.persistence:org.eclipse.persistence.jpa.jpql:2.7.6-b7c9978
-org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen:2.7.6-b7c9978
-org.eclipse.persistence:org.eclipse.persistence.jpa:2.7.6-b7c9978
+org.eclipse.persistence:org.eclipse.persistence.antlr:2.7.7-69f2c2b
+org.eclipse.persistence:org.eclipse.persistence.asm:2.7.7-69f2c2b
+org.eclipse.persistence:org.eclipse.persistence.core:2.7.7-69f2c2b
+org.eclipse.persistence:org.eclipse.persistence.jpa.jpql:2.7.7-69f2c2b
+org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen:2.7.7-69f2c2b
+org.eclipse.persistence:org.eclipse.persistence.jpa:2.7.7-69f2c2b
 org.openid4java:openid4java:0.9.7-ibm-s20130624-1827
 org.opensaml:opensaml:2.6.6
 org.opensaml:openws:1.5.6

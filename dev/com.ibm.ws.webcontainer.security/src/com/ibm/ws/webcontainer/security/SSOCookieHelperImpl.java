@@ -83,6 +83,9 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
     @Override
     public boolean addJwtSsoCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp) {
         boolean result = false;
+        if (JwtSSOTokenHelper.isDisableJwtCookie()) {
+            return result;
+        }
         String cookieByteString = JwtSSOTokenHelper.getJwtSSOToken(subject);
         if (cookieByteString != null) {
             String testString = getJwtSsoTokenFromCookies(req, getJwtCookieName());

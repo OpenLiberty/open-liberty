@@ -24,6 +24,7 @@ public class RepeatConfig11EE8 extends EE8FeatureReplacementAction {
         removeFeature("mpConfig-1.2");
         removeFeature("mpConfig-1.3");
         removeFeature("mpConfig-1.4");
+        removeFeature("mpConfig-2.0");
         addFeature("mpConfig-1.1");
         forServers(server);
         withID(ID);

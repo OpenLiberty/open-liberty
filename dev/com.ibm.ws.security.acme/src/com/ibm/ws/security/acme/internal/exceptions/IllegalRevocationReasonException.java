@@ -20,7 +20,7 @@ import com.ibm.ws.security.acme.AcmeCaException;
 @Trivial
 public class IllegalRevocationReasonException extends AcmeCaException {
 
-	private static final long serialVersionUID = -1L; // TODO
+	private static final long serialVersionUID = 1692383936175962063L;
 
 	/**
 	 * Constructs a new exception with the specified detail message. The cause

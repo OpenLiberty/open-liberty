@@ -34,6 +34,8 @@ import org.eclipse.microprofile.reactive.streams.operators.SubscriberBuilder;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaAdapterException;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaAdapterFactory;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaProducer;
 
@@ -54,6 +56,8 @@ public class KafkaOutgoingConnector implements OutgoingConnectorFactory {
         String channelName = config.getValue(ConnectorFactory.CHANNEL_NAME_ATTRIBUTE, String.class);
 
         try {
+            int retrySeconds = config.getOptionalValue(KafkaConnectorConstants.CREATION_RETRY_SECONDS, Integer.class).orElse(0);
+
             // Configure our defaults
             Map<String, Object> producerConfig = new HashMap<>();
 
@@ -66,7 +70,7 @@ public class KafkaOutgoingConnector implements OutgoingConnectorFactory {
                                                .filter(k -> !KafkaConnectorConstants.NON_KAFKA_PROPS.contains(k))
                                                .collect(Collectors.toMap(Function.identity(), (k) -> config.getValue(k, String.class))));
 
-            KafkaProducer<String, Object> kafkaProducer = this.kafkaAdapterFactory.newKafkaProducer(producerConfig);
+            KafkaProducer<String, Object> kafkaProducer = getKafkaProducerWithRetry(producerConfig, retrySeconds, channelName);
 
             String configuredTopic = config.getOptionalValue(KafkaConnectorConstants.TOPIC, String.class).orElse(null);
 
@@ -76,6 +80,28 @@ public class KafkaOutgoingConnector implements OutgoingConnectorFactory {
             return ReactiveStreams.<Message<Object>> builder().to(kafkaOutput.getSubscriber());
         } catch (Exception e) {
             throw new KafkaConnectorException(Tr.formatMessage(tc, "kafka.create.outgoing.error.CWMRX1008E", channelName, e.getMessage()), e);
+        }
+    }
+
+    @FFDCIgnore(KafkaAdapterException.class) // Here we're expecting and retrying a possible failure, so we don't want an FFDC
+    private <K, V> KafkaProducer<K, V> getKafkaProducerWithRetry(Map<String, Object> producerConfig, int retrySeconds, String channelName) throws InterruptedException {
+        if (retrySeconds == 0) {
+            return this.kafkaAdapterFactory.newKafkaProducer(producerConfig);
+        }
+
+        long retryNs = Duration.ofSeconds(retrySeconds).toNanos();
+        long startTime = System.nanoTime();
+
+        while (true) {
+            try {
+                return this.kafkaAdapterFactory.newKafkaProducer(producerConfig);
+            } catch (KafkaAdapterException e) {
+                if ((System.nanoTime() - startTime) > retryNs) {
+                    throw e;
+                }
+                Tr.warning(tc, "kafka.create.outgoing.retry.CWMRX1010W", channelName, e.getMessage());
+            }
+            Thread.sleep(1000);
         }
     }
 

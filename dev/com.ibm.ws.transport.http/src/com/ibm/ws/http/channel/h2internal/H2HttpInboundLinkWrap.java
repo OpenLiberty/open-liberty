@@ -2,7 +2,7 @@
  * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * which accompanies this distribution,  and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
@@ -90,6 +90,7 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
 
                 Map<String, GrpcServletServices.ServiceInformation> servicePaths = GrpcServletServices.getServletGrpcServices();
                 if (servicePaths != null && !servicePaths.isEmpty()) {
+                    setIsGrpcInParentLink(true);
                     routeGrpcServletRequest(servicePaths);
                 }
             }
@@ -105,7 +106,7 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
      */
     private void routeGrpcServletRequest(Map<String, GrpcServletServices.ServiceInformation> servicePaths) {
         String requestContentType = getContentType().toLowerCase();
-        if (requestContentType != null) {
+        if (requestContentType != null && servicePaths != null) {
             if ("application/grpc".equalsIgnoreCase(requestContentType)) {
 
                 String currentURL = this.pseudoHeaders.get(HpackConstants.PATH);
@@ -115,15 +116,17 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
                 int index = searchURL.lastIndexOf('/');
                 searchURL = searchURL.substring(0, index);
 
-                String contextRoot = servicePaths.get(searchURL).getContextRoot();
-
-                if (contextRoot != null && !!!"/".equals(contextRoot)) {
-                    String newPath = contextRoot + currentURL;
-                    this.pseudoHeaders.put(HpackConstants.PATH, newPath);
-                    Tr.debug(tc, "Inbound gRPC request translated from " + currentURL + " to " + newPath);
-                } else {
-                    Tr.debug(tc, "Inbound gRPC request URL did not match any registered services: " + currentURL);
+                GrpcServletServices.ServiceInformation info = servicePaths.get(searchURL);
+                if (info != null) {
+                    String contextRoot = info.getContextRoot();
+                    if (contextRoot != null && !!!"/".equals(contextRoot)) {
+                        String newPath = contextRoot + currentURL;
+                        this.pseudoHeaders.put(HpackConstants.PATH, newPath);
+                        Tr.debug(tc, "Inbound gRPC request translated from " + currentURL + " to " + newPath);
+                        return;
+                    }
                 }
+                Tr.debug(tc, "Inbound gRPC request URL did not match any registered services: " + currentURL);
             }
         }
     }
@@ -536,4 +539,28 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
         }
         return null;
     }
+
+    public void setAndStoreNewBodyBuffer(WsByteBuffer buffer) {
+        this.httpInboundServiceContextImpl.storeBuffer(buffer);
+    }
+
+    // attempt to invoke complete() on what is most likely the AsyncReadCallback.
+    // this will tell it that more data is available (via the previous call to storeBuffer),
+    // and the AsyncReadCallback will trigger onDataAvailable
+    public void invokeAppComplete() {
+        if (this.httpInboundServiceContextImpl != null && this.httpInboundServiceContextImpl.getAppReadCallback() != null) {
+            this.httpInboundServiceContextImpl.getAppReadCallback().complete(vc);
+        }
+    }
+
+    public void countDownFirstReadLatch() {
+        H2StreamProcessor h2sp = muxLink.getStreamProcessor(streamID);
+        if (h2sp != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "calling h2sp to count down firstReadLatch: ");
+            }
+            h2sp.countDownFirstReadLatch();
+        }
+    }
+
 }

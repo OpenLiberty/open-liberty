@@ -16,9 +16,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                CharacterInjectionTest.class, //LITE
-                BadObserverTest.class, //FULL
-                OptionalObserverTest.class //FULL
+                Config14Tests.class // LITE
 })
 public class FATSuite {
 

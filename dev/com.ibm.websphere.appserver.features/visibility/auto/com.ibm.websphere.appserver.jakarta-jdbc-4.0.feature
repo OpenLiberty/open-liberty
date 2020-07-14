@@ -5,5 +5,5 @@ IBM-Provision-Capability:\
  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.jdbc-4.0))"
 IBM-Install-Policy: when-satisfied
 -bundles=com.ibm.ws.jdbc.jakarta
-kind=noship
-edition=full
+kind=beta
+edition=core

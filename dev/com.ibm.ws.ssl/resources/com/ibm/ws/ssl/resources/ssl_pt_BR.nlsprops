@@ -656,9 +656,13 @@ ssl.create.certificate.end=CWPKI0803A: Certificado SSL criado em {0} segundos. A
 ssl.create.certificate.end.explanation=O certificado SSL foi gerado na quantidade de tempo especificada.
 ssl.create.certificate.end.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 #--------------------------------------------------------------------------------------------------
-ssl.create.certificate.error=CWPKI0804E: Erro de cria\u00e7\u00e3o do certificado SSL. Imposs\u00edvel criar arquivo-chave SSL: {0}
+ssl.create.certificate.error=CWPKI0804E: Erro de cria\u00e7\u00e3o do certificado SSL. {0}
 ssl.create.certificate.error.explanation=O certificado SSL n\u00e3o p\u00f4de ser criado no local especificado.
 ssl.create.certificate.error.useraction=Assegure que o local esteja acess\u00edvel pelo processo do servidor. Quaisquer FFDCs podem indicar um erro fatal na gera\u00e7\u00e3o ou no carregamento das chaves.
+
+# Messages for the CWPKI0804E message descriptor {0}.
+ssl.create.certificate.error.reason1=Imposs\u00edvel criar arquivo-chave SSL: {0}
+ssl.create.certificate.error.reason2=O erro \u00e9: {0}
 #--------------------------------------------------------------------------------------------------
 ssl.default.keystore.config.error=CWPKI0805E: Uma senha necess\u00e1ria para o keystore padr\u00e3o est\u00e1 ausente.
 ssl.default.keystore.config.error.explanation=A configura\u00e7\u00e3o do keystore n\u00e3o especifica uma senha para o keystore padr\u00e3o.

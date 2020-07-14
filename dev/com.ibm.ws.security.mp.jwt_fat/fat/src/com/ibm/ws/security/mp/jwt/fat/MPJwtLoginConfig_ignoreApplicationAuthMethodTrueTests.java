@@ -16,7 +16,6 @@ import org.junit.Test;
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
 import com.ibm.ws.security.mp.jwt.fat.sharedTests.MPJwtLoginConfig_VariationTests;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
@@ -30,7 +29,6 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  **/
 
 @Mode(TestMode.FULL)
-@MinimumJavaLevel(javaLevel = 8)
 public class MPJwtLoginConfig_ignoreApplicationAuthMethodTrueTests extends MPJwtLoginConfig_VariationTests {
 
     public static Class<?> thisClass = MPJwtLoginConfig_ignoreApplicationAuthMethodTrueTests.class;
