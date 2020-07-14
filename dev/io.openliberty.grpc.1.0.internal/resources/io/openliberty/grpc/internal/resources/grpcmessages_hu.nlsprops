@@ -1,0 +1,29 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKT
+#COMPONENTNAMEFOR CWWKT OpenLiberty gRPC
+#CMVCPATHNAME io.openliberty.grpc.1.0.internal/resources/io/openliberty/grpc/internal/resources/grpcmessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+service.available=CWWKT0201I: A(z) {0} \u00e1ltal biztos\u00edtott gRPC szolg\u00e1ltat\u00e1s el\u00e9rhet\u0151s\u00e9ge: {1}
+service.available.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+service.available.useraction=Nincs teend\u0151.
+
+invalid.serverinterceptor=CWWKT0202W: A(z) {0} serverInterceptors be\u00e1ll\u00edt\u00e1sban megadott gRPC elfog\u00f3 nem t\u00f6lthet\u0151 be
+invalid.serverinterceptor.explanation=A serverInterceptors be\u00e1ll\u00edt\u00e1sban megadott gRPC elfog\u00f3 nem t\u00f6lthet\u0151 be.
+invalid.serverinterceptor.useraction=Ellen\u0151rizze a be\u00e1ll\u00edtott elfog\u00f3 nev\u00e9t \u00e9s az alkalmaz\u00e1s oszt\u00e1ly\u00fatvonal\u00e1t.
+
+invalid.inbound.msg.size=CWWKT0203E: A(z) {0} maxInboundMessageSize nem \u00e9rv\u00e9nyes. A m\u00e9retek csak 0-n\u00e1l nagyobbak lehetnek.
+invalid.inbound.msg.size.explanation=A maxInboundMessageSize be\u00e1ll\u00edtott \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen.
+invalid.inbound.msg.size.useraction=Adjon meg \u00e9rv\u00e9nyes \u00e9rt\u00e9ket a maxInboundMessageSize \u00e9rt\u00e9kek\u00e9nt. 

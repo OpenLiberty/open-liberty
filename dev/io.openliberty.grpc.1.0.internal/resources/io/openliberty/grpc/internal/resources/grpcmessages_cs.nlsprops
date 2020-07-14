@@ -1,0 +1,29 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKT
+#COMPONENTNAMEFOR CWWKT OpenLiberty gRPC
+#CMVCPATHNAME io.openliberty.grpc.1.0.internal/resources/io/openliberty/grpc/internal/resources/grpcmessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+service.available=CWWKT0201I: Slu\u017eba gRPC dodan\u00e1 {0} je k dispozici na: {1}
+service.available.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+service.available.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+invalid.serverinterceptor=CWWKT0202W: Nelze na\u010d\u00edst zachyt\u00e1va\u010d gRPC definovan\u00fd v serverInterceptors {0}
+invalid.serverinterceptor.explanation=Zachyt\u00e1va\u010d gRPC definovan\u00fd v serverInterceptors nelze na\u010d\u00edst.
+invalid.serverinterceptor.useraction=Ov\u011b\u0159te nakonfigurovan\u00fd n\u00e1zev zachyt\u00e1va\u010de a cestu ke t\u0159\u00edd\u011b aplikace.
+
+invalid.inbound.msg.size=CWWKT0203E: Hodnota maxInboundMessageSize {0} nen\u00ed platn\u00e1. Velikosti mus\u00ed b\u00fdt v\u011bt\u0161\u00ed ne\u017e 0.
+invalid.inbound.msg.size.explanation=Nakonfigurovan\u00e1 hodnota pro maxInboundMessageSize nen\u00ed platn\u00e1.
+invalid.inbound.msg.size.useraction=Nakonfigurujte platnou hodnotu pro maxInboundMessageSize.

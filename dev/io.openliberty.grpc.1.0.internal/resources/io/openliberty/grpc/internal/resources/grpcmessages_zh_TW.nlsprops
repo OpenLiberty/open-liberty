@@ -1,0 +1,29 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKT
+#COMPONENTNAMEFOR CWWKT OpenLiberty gRPC
+#CMVCPATHNAME io.openliberty.grpc.1.0.internal/resources/io/openliberty/grpc/internal/resources/grpcmessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+service.available=CWWKT0201I: \u53ef\u5728\u4e0b\u5217\u4f4d\u7f6e\u4f7f\u7528 {0} \u6240\u63d0\u4f9b\u7684 gRPC \u670d\u52d9\uff1a{1}
+service.available.explanation=\u6b64\u8a0a\u606f\u50c5\u4f9b\u53c3\u8003\u3002
+service.available.useraction=\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+invalid.serverinterceptor=CWWKT0202W: \u7121\u6cd5\u8f09\u5165 serverInterceptors {0} \u4e2d\u5b9a\u7fa9\u7684 gRPC \u6514\u622a\u7a0b\u5f0f
+invalid.serverinterceptor.explanation=\u7121\u6cd5\u8f09\u5165 serverInterceptors \u4e2d\u5b9a\u7fa9\u7684 gRPC \u6514\u622a\u7a0b\u5f0f\u3002
+invalid.serverinterceptor.useraction=\u8acb\u9a57\u8b49\u5df2\u914d\u7f6e\u7684\u6514\u622a\u7a0b\u5f0f\u540d\u7a31\u548c\u61c9\u7528\u7a0b\u5f0f\u985e\u5225\u8def\u5f91\u3002
+
+invalid.inbound.msg.size=CWWKT0203E: maxInboundMessageSize {0} \u7121\u6548\u3002\u5927\u5c0f\u5fc5\u9808\u5927\u65bc 0\u3002
+invalid.inbound.msg.size.explanation=\u91dd\u5c0d maxInboundMessageSize \u914d\u7f6e\u7684\u503c\u7121\u6548\u3002
+invalid.inbound.msg.size.useraction=\u8acb\u914d\u7f6e\u6709\u6548\u7684 maxInboundMessageSize \u503c\u3002

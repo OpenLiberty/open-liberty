@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2019 IBM Corporation and others.
+# Copyright (c) 2011, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -155,6 +155,10 @@ JSON_FIELDS_INCORRECT_EVENT_TYPE.useraction=Les sources admises sont : message, 
 JSON_FIELDS_INVALID_CHARACHTER=TRAS3011W: Un caract\u00e8re non valide a \u00e9t\u00e9 fourni dans la propri\u00e9t\u00e9 de mappage du nom de zone de journalisation JSON
 JSON_FIELDS_INVALID_CHARACHTER.explanation= Seuls les lettres, les nombres et les caract\u00e8res : sont accept\u00e9s dans la propri\u00e9t\u00e9 de mappage du nom de zone de journalisation JSON
 JSON_FIELDS_INVALID_CHARACHTER.useraction= Changez la valeur de votre propri\u00e9t\u00e9 de mappage de nom de zone de journalisation JSON pour supprimer les caract\u00e8res non valides
+
+JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED=TRAS3012W: Le nom d''en-t\u00eate manque pour une ou plusieurs zones accessLogging logFormat : {0}.
+JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.explanation=La journalisation JSON utilise l'attribut logFormat provenant de accessLogging pour s\u00e9lectionner les zones de message http_access.log \u00e0 inclure. Un nom d'en-t\u00eate doit \u00eatre fourni en cas d'utilisation des zones %i ou %o dans l'attribut accessLogging logFormat.
+JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.useraction=Indiquez un nom d'en-t\u00eate pour la zone dans l'attribut accessLogging logFormat.
 
 # Note: no 9999 message kept here because saving footprint space is more important
 

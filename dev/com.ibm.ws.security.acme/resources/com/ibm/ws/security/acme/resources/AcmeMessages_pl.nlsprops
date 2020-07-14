@@ -326,3 +326,7 @@ CWPKI2071W.useraction=Aby unikn\u0105\u0107 tego komunikatu ostrzegawczego, usta
 CWPKI2072W=CWPKI2072W: Us\u0142uga ACME nie mog\u0142a odczyta\u0107 ani zapisa\u0107 historycznego pliku ACME w: {0}. B\u0142\u0105d to ''{1}''.
 CWPKI2072W.explanation=Us\u0142uga ACME nie mog\u0142a uzyska\u0107 dost\u0119pu do historycznego pliku ACME.
 CWPKI2072W.useraction=Upewnij si\u0119, \u017ce masz uprawnienia do odczytu i zapisu w historycznym katalogu ACME.
+
+CWPKI2073W=CWPKI2073W: Nie podano osoby kontaktowej w sprawie konta. Zaleca si\u0119 ustawienie tej w\u0142a\u015bciwo\u015bci w konfiguracji serwera. Je\u015bli dojdzie do utraty klucza lub naruszenia konta, dost\u0119p do niego zostanie utracony.
+CWPKI2073W.explanation=W konfiguracji serwera nie podano warto\u015bci w\u0142a\u015bciwo\u015bci accountContact.
+CWPKI2073W.useraction=Ustaw w\u0142a\u015bciwo\u015b\u0107 accountContact w konfiguracji serwera.
