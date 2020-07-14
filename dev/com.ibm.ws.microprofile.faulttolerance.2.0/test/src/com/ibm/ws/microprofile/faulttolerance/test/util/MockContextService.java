@@ -10,33 +10,40 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance.test.util;
 
-import static org.junit.Assert.fail;
+import java.util.concurrent.Callable;
 
-import com.ibm.ws.microprofile.faulttolerance.spi.AsyncRequestContextController;
+import com.ibm.ws.microprofile.faulttolerance.spi.context.ContextService;
+import com.ibm.ws.microprofile.faulttolerance.spi.context.ContextSnapshot;
 
-public class MockAsyncRequestContextController implements AsyncRequestContextController {
+public class MockContextService implements ContextService {
 
     public int activateContextCount = 0;
     public int deactivateContextCount = 0;
 
     @Override
-    public ActivatedContext activateContext() {
-        activateContextCount++;
-        return new MockActivatedContextImpl();
+    public ContextSnapshot capture() {
+        return new MockSnapshot();
     }
 
-    private class MockActivatedContextImpl implements ActivatedContext {
-
-        boolean isDeactivated = false;
+    public class MockSnapshot implements ContextSnapshot {
 
         @Override
-        public void deactivate() {
-            // ActivatedContext should only ever deactivated once per method attempt
-            if (!isDeactivated) {
-                isDeactivated = true;
+        public void runWithContext(Runnable runnable) {
+            try {
+                activateContextCount++;
+                runnable.run();
+            } finally {
                 deactivateContextCount++;
-            } else {
-                fail("Activated context deactivated twice");
+            }
+        }
+
+        @Override
+        public <V> V runWithContext(Callable<V> callable) throws Exception {
+            try {
+                activateContextCount++;
+                return callable.call();
+            } finally {
+                deactivateContextCount++;
             }
         }
 

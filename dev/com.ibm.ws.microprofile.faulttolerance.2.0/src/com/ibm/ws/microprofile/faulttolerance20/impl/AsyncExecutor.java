@@ -14,9 +14,6 @@ import static com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder.Fallback
 import static com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder.FallbackOccurred.WITH_FALLBACK;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletionStage;
@@ -33,8 +30,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.microprofile.faulttolerance.spi.AsyncRequestContextController;
-import com.ibm.ws.microprofile.faulttolerance.spi.AsyncRequestContextController.ActivatedContext;
 import com.ibm.ws.microprofile.faulttolerance.spi.BulkheadPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.CircuitBreakerPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.Executor;
@@ -44,6 +39,8 @@ import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder;
 import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder.FallbackOccurred;
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
+import com.ibm.ws.microprofile.faulttolerance.spi.context.ContextService;
+import com.ibm.ws.microprofile.faulttolerance.spi.context.ContextSnapshot;
 import com.ibm.ws.microprofile.faulttolerance.utils.FTDebug;
 import com.ibm.ws.microprofile.faulttolerance20.state.AsyncBulkheadState;
 import com.ibm.ws.microprofile.faulttolerance20.state.AsyncBulkheadState.BulkheadReservation;
@@ -55,9 +52,6 @@ import com.ibm.ws.microprofile.faulttolerance20.state.FaultToleranceStateFactory
 import com.ibm.ws.microprofile.faulttolerance20.state.RetryState;
 import com.ibm.ws.microprofile.faulttolerance20.state.RetryState.RetryResult;
 import com.ibm.ws.microprofile.faulttolerance20.state.TimeoutState;
-import com.ibm.wsspi.threadcontext.ThreadContext;
-import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
-import com.ibm.wsspi.threadcontext.WSContextService;
 
 /**
  * Abstract executor for asynchronous calls.
@@ -105,23 +99,8 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
 
     private static final TraceComponent tc = Tr.register(AsyncExecutor.class);
 
-    /**
-     * The collection of contexts to capture under createThreadContext.
-     * Classloader, JeeMetadata, and security.
-     */
-    @SuppressWarnings("unchecked")
-    private static final Map<String, ?>[] THREAD_CONTEXT_PROVIDERS = new Map[] {
-                                                                                 Collections.singletonMap(WSContextService.THREAD_CONTEXT_PROVIDER,
-                                                                                                          "com.ibm.ws.classloader.context.provider"),
-                                                                                 Collections.singletonMap(WSContextService.THREAD_CONTEXT_PROVIDER,
-                                                                                                          "com.ibm.ws.javaee.metadata.context.provider"),
-                                                                                 Collections.singletonMap(WSContextService.THREAD_CONTEXT_PROVIDER,
-                                                                                                          "com.ibm.ws.security.context.provider"),
-    };
-
     public AsyncExecutor(RetryPolicy retry, CircuitBreakerPolicy cbPolicy, TimeoutPolicy timeoutPolicy, FallbackPolicy fallbackPolicy, BulkheadPolicy bulkheadPolicy,
-                         ScheduledExecutorService executorService, WSContextService contextService, MetricRecorder metricRecorder,
-                         AsyncRequestContextController asyncRequestContext) {
+                         ScheduledExecutorService executorService, ContextService contextService, MetricRecorder metricRecorder) {
         retryPolicy = retry;
         circuitBreaker = FaultToleranceStateFactory.INSTANCE.createCircuitBreakerState(cbPolicy, metricRecorder);
         this.timeoutPolicy = timeoutPolicy;
@@ -130,7 +109,6 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
         bulkhead = FaultToleranceStateFactory.INSTANCE.createAsyncBulkheadState(executorService, bulkheadPolicy, metricRecorder);
         this.metricRecorder = metricRecorder;
         this.contextService = contextService;
-        this.asyncRequestContext = asyncRequestContext;
     }
 
     private final RetryPolicy retryPolicy;
@@ -139,9 +117,8 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
     private final TimeoutPolicy timeoutPolicy;
     private final FallbackState fallback;
     private final AsyncBulkheadState bulkhead;
-    private final WSContextService contextService;
+    private final ContextService contextService;
     private final MetricRecorder metricRecorder;
-    private final AsyncRequestContextController asyncRequestContext;
 
     @Override
     public W execute(Callable<W> callable, ExecutionContext context) {
@@ -157,7 +134,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
         W resultWrapper = createEmptyResultWrapper(executionContext);
         executionContext.setResultWrapper(resultWrapper);
 
-        executionContext.setThreadContextDescriptor(contextService.captureThreadContext(null, THREAD_CONTEXT_PROVIDERS));
+        executionContext.setContextSnapshot(contextService.capture());
 
         RetryState retryState = FaultToleranceStateFactory.INSTANCE.createRetryState(retryPolicy, metricRecorder);
         executionContext.setRetryState(retryState);
@@ -245,33 +222,18 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
                 Tr.event(tc, "Execution {0} running execution attempt", executionContext.getId());
             }
 
+            ContextSnapshot snapshot = executionContext.getContextSnapshot();
             MethodResult<W> methodResult = null;
-            ThreadContextDescriptor contextDescriptor = executionContext.getThreadContextDescriptor();
-            ArrayList<ThreadContext> context = null;
             try {
-                context = contextDescriptor.taskStarting();
-
-                if (methodResult == null) {
-                    ActivatedContext requestContext = null;
-                    if (asyncRequestContext != null) {
-                        // Activate the @RequestScoped context
-                        requestContext = asyncRequestContext.activateContext();
-                    }
-
+                methodResult = snapshot.runWithContext(() -> {
                     try {
                         // Execute the method, store the result, and catch/store any exceptions for fault tolerance
                         W result = executionContext.getCallable().call();
-                        methodResult = MethodResult.success(result);
+                        return MethodResult.success(result);
                     } catch (Throwable e) {
-                        methodResult = MethodResult.failure(e);
-                    } finally {
-                        contextDescriptor.taskStopping(context);
+                        return MethodResult.failure(e);
                     }
-
-                    if (asyncRequestContext != null) {
-                        requestContext.deactivate();
-                    }
-                }
+                });
             } catch (IllegalStateException e) {
                 // The application or module has gone away, we can no longer run things for this app
                 // Mark this as an internal failure as we don't want any retries or further processing to occur
@@ -445,20 +407,12 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
         try {
 
             MethodResult<W> fallbackResult = null;
-            ThreadContextDescriptor contextDescriptor = executionContext.getThreadContextDescriptor();
-            ArrayList<ThreadContext> context = null;
+            ContextSnapshot snapshot = executionContext.getContextSnapshot();
+
             try {
-                context = contextDescriptor.taskStarting();
+                fallbackResult = snapshot.runWithContext(() -> fallback.runFallback(failedResult, executionContext));
             } catch (IllegalStateException e) {
                 fallbackResult = MethodResult.internalFailure(createAppStoppedException(e, executionContext));
-            }
-
-            if (fallbackResult == null) {
-                try {
-                    fallbackResult = fallback.runFallback(failedResult, executionContext);
-                } finally {
-                    contextDescriptor.taskStopping(context);
-                }
             }
 
             processEndOfExecution(executionContext, fallbackResult, WITH_FALLBACK);

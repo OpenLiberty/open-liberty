@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,8 +15,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
+import com.ibm.ws.microprofile.faulttolerance.spi.context.ContextSnapshot;
 import com.ibm.ws.microprofile.faulttolerance20.state.RetryState;
-import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 
 /**
  * Stores context for one asynchronous method execution
@@ -31,7 +31,7 @@ public class AsyncExecutionContextImpl<W> extends SyncExecutionContextImpl {
     private final AtomicBoolean isCancelled = new AtomicBoolean(false);
     private boolean interruptOnCancellation;
     private Consumer<Boolean> cancelCallback;
-    private ThreadContextDescriptor threadContextDescriptor;
+    private ContextSnapshot contextSnapshot;
 
     /**
      * @param id         an id for the execution (used in trace messages)
@@ -66,12 +66,12 @@ public class AsyncExecutionContextImpl<W> extends SyncExecutionContextImpl {
         this.retryState = retryState;
     }
 
-    public ThreadContextDescriptor getThreadContextDescriptor() {
-        return threadContextDescriptor;
+    public ContextSnapshot getContextSnapshot() {
+        return contextSnapshot;
     }
 
-    public void setThreadContextDescriptor(ThreadContextDescriptor threadContextDescriptor) {
-        this.threadContextDescriptor = threadContextDescriptor;
+    public void setContextSnapshot(ContextSnapshot contextSnapshot) {
+        this.contextSnapshot = contextSnapshot;
     }
 
     public void setCancelCallback(Consumer<Boolean> cancelCallback) {

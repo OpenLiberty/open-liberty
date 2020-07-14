@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance.test;
 
+import static org.hamcrest.Matchers.either;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
@@ -30,16 +31,18 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.microprofile.faulttolerance.ExecutionContext;
 import org.junit.Test;
 
 import com.ibm.ws.microprofile.faulttolerance.spi.Executor;
 import com.ibm.ws.microprofile.faulttolerance.spi.ExecutorBuilder;
+import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.FaultToleranceProvider;
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.test.util.AsyncTestFunction;
-import com.ibm.ws.microprofile.faulttolerance.test.util.MockAsyncRequestContextController;
+import com.ibm.ws.microprofile.faulttolerance.test.util.MockContextService;
 import com.ibm.ws.microprofile.faulttolerance.test.util.TestException;
 import com.ibm.ws.microprofile.faulttolerance.test.util.TestFunction;
 
@@ -158,32 +161,29 @@ public class AsyncTest extends AbstractFTTest {
     public void testAsyncRequestContextCalls() throws InterruptedException, ExecutionException, TimeoutException {
         ExecutorBuilder<String> builder = FaultToleranceProvider.newExecutionBuilder();
 
-        MockAsyncRequestContextController asyncRequestContextController = new MockAsyncRequestContextController();
-        builder.setRequestContextController(asyncRequestContextController);
-
         Executor<CompletionStage<String>> executor = builder.buildAsync(CompletionStage.class);
         ExecutionContext context = executor.newExecutionContext("testAsyncCS", null);
 
-        assertEquals(0, asyncRequestContextController.getActivateContextCount());
-        assertEquals(0, asyncRequestContextController.getDeactivateContextCount());
+        assertEquals(0, getMockContextService().getActivateContextCount());
+        assertEquals(0, getMockContextService().getDeactivateContextCount());
 
         CompletionStage<String> result = executor.execute(() -> {
-            assertEquals("Activate request context should be called when request is started", 1, asyncRequestContextController.getActivateContextCount());
-            assertEquals("Deactivate request context should only be called when request is finished", 0, asyncRequestContextController.getDeactivateContextCount());
+            assertEquals("Activate request context should be called when request is started", 1, getMockContextService().getActivateContextCount());
+            assertEquals("Deactivate request context should only be called when request is finished", 0, getMockContextService().getDeactivateContextCount());
             return CompletableFuture.completedFuture("Test");
         }, context);
 
-        result.toCompletableFuture().get(2000, TimeUnit.MILLISECONDS);
+        result.toCompletableFuture().get(200000, TimeUnit.MILLISECONDS);
 
-        assertEquals("Deactivate request context should be called when request is finished", 1, asyncRequestContextController.getDeactivateContextCount());
+        // Context is activated around the execution and around the completion of the completion stage
+        assertEquals("Activate request context should be called when request is finished", 2, getMockContextService().getActivateContextCount());
+        // Deactivate should be called on another thread after the completion stage completes, so that may or may not have happened yet
+        assertThat("Deactivate request context should be called when request is finished", getMockContextService().getDeactivateContextCount(), either(is(1)).or(is(2)));
     }
 
     @Test
     public void testAsyncRequestContextDeactivatedOnException() throws InterruptedException, ExecutionException, TimeoutException, TestException {
         ExecutorBuilder<String> builder = FaultToleranceProvider.newExecutionBuilder();
-
-        MockAsyncRequestContextController asyncRequestContextController = new MockAsyncRequestContextController();
-        builder.setRequestContextController(asyncRequestContextController);
 
         Executor<Future<String>> executor = builder.buildAsync(Future.class);
         ExecutionContext context = executor.newExecutionContext("testAsyncCS", null);
@@ -199,17 +199,14 @@ public class AsyncTest extends AbstractFTTest {
             fail("ExecutionException should be thrown");
         } catch (ExecutionException e) {
             assertThat(e.getCause(), instanceOf(TestException.class));
-            assertEquals("Activate request context should have been called", 1, asyncRequestContextController.getActivateContextCount());
-            assertEquals("Deactivate request context should still be called if method throws an exeption", 1, asyncRequestContextController.getDeactivateContextCount());
+            assertEquals("Activate request context should have been called", 1, getMockContextService().getActivateContextCount());
+            assertEquals("Deactivate request context should still be called if method throws an exeption", 1, getMockContextService().getDeactivateContextCount());
         }
     }
 
     @Test
     public void testAsyncRequestContextDeactivatedOnInterruption() throws InterruptedException, ExecutionException, TimeoutException, TestException {
         ExecutorBuilder<String> builder = FaultToleranceProvider.newExecutionBuilder();
-
-        MockAsyncRequestContextController asyncRequestContextController = new MockAsyncRequestContextController();
-        builder.setRequestContextController(asyncRequestContextController);
 
         Executor<Future<String>> executor = builder.buildAsync(Future.class);
         ExecutionContext context = executor.newExecutionContext("testAsyncCS", null);
@@ -233,8 +230,8 @@ public class AsyncTest extends AbstractFTTest {
         boolean hasExecutionStarted = startSignal.await(10, TimeUnit.SECONDS);
 
         assertTrue("The method execution did not start within 10 seconds", hasExecutionStarted);
-        assertEquals("Activate request context should have been called", 1, asyncRequestContextController.getActivateContextCount());
-        assertEquals("Deactivate request context should not be called until the execution completes", 0, asyncRequestContextController.getDeactivateContextCount());
+        assertEquals("Activate request context should have been called", 1, getMockContextService().getActivateContextCount());
+        assertEquals("Deactivate request context should not be called until the execution completes", 0, getMockContextService().getDeactivateContextCount());
 
         // Interrupt
         result.cancel(true);
@@ -244,9 +241,9 @@ public class AsyncTest extends AbstractFTTest {
             result.get(5, TimeUnit.SECONDS);
             fail("CancellationException should be thrown");
         } catch (CancellationException e) {
-            waitForContext(asyncRequestContextController);
-            assertEquals("Activate request context should only be called once", 1, asyncRequestContextController.getActivateContextCount());
-            assertEquals("Deactivate request context should be called after the execution is interrupted", 1, asyncRequestContextController.getDeactivateContextCount());
+            waitForContext(getMockContextService());
+            assertEquals("Activate request context should only be called once", 1, getMockContextService().getActivateContextCount());
+            assertEquals("Deactivate request context should be called after the execution is interrupted", 1, getMockContextService().getDeactivateContextCount());
         }
     }
 
@@ -257,9 +254,6 @@ public class AsyncTest extends AbstractFTTest {
         RetryPolicy retry = FaultToleranceProvider.newRetryPolicy();
         retry.setMaxRetries(3);
         builder.setRetryPolicy(retry);
-
-        MockAsyncRequestContextController asyncRequestContextController = new MockAsyncRequestContextController();
-        builder.setRequestContextController(asyncRequestContextController);
 
         Executor<Future<String>> executor = builder.buildAsync(Future.class);
         ExecutionContext context = executor.newExecutionContext("testAsyncCS", null);
@@ -274,9 +268,40 @@ public class AsyncTest extends AbstractFTTest {
             fail("ExecutionException should be thrown");
         } catch (ExecutionException e) {
             assertThat(e.getCause(), instanceOf(TestException.class));
-            assertEquals("Activate request context should be called 4 times", 4, asyncRequestContextController.getActivateContextCount());
-            assertEquals("Deactivate request context should be called 4 times", 4, asyncRequestContextController.getDeactivateContextCount());
+            assertEquals("Activate request context should be called 4 times", 4, getMockContextService().getActivateContextCount());
+            assertEquals("Deactivate request context should be called 4 times", 4, getMockContextService().getDeactivateContextCount());
         }
+    }
+
+    @Test
+    public void testAsyncRequestContextWithFallback() throws InterruptedException, ExecutionException, TimeoutException {
+        ExecutorBuilder<String> builder = FaultToleranceProvider.newExecutionBuilder();
+        AtomicBoolean fallbackCalled = new AtomicBoolean();
+
+        FallbackPolicy fallback = FaultToleranceProvider.newFallbackPolicy();
+        fallback.setFallbackFunction((context) -> {
+            assertEquals("Activate request context should be called 2 times", 2, getMockContextService().getActivateContextCount());
+            assertEquals("Deactivate request context should be called 1 times", 1, getMockContextService().getDeactivateContextCount());
+            fallbackCalled.set(true);
+            return CompletableFuture.completedFuture(null);
+        });
+
+        Executor<CompletionStage<String>> executor = builder.setFallbackPolicy(fallback).buildAsync(CompletionStage.class);
+        ExecutionContext context = executor.newExecutionContext("testAsyncFallback", null);
+
+        CompletionStage<String> result = executor.execute(() -> {
+            throw new TestException();
+        }, context);
+
+        result.toCompletableFuture().get(5, TimeUnit.SECONDS);
+
+        assertEquals("Fallback should have been called", true, fallbackCalled.get());
+
+        // Context activation should occur around execution, fallback and completion stage completion
+        assertEquals("Activate request context should be called 3 times", 3, getMockContextService().getActivateContextCount());
+
+        // Deactivate count should also be 3, but as it's incremented after the completionstage completes, it may be either 2 or 3 here
+        assertThat("Deactivate request context should be called 2 or 3 times", getMockContextService().getDeactivateContextCount(), either(is(2)).or(is(3)));
     }
 
     @Test
@@ -287,9 +312,6 @@ public class AsyncTest extends AbstractFTTest {
         retry.setMaxRetries(3);
         builder.setRetryPolicy(retry);
 
-        MockAsyncRequestContextController asyncRequestContextController = new MockAsyncRequestContextController();
-        builder.setRequestContextController(asyncRequestContextController);
-
         Executor<String> executor = builder.build();
         ExecutionContext context = executor.newExecutionContext("testAsyncCS", null);
 
@@ -299,12 +321,11 @@ public class AsyncTest extends AbstractFTTest {
         executor.execute(callable, context);
 
         assertEquals("Retry should still be applied 3 times", 3, callable.getExecutions());
-        assertEquals("Activate request context should not have been called", 0, asyncRequestContextController.getActivateContextCount());
-        assertEquals("Deactivate request context should not have been called", 0, asyncRequestContextController.getDeactivateContextCount());
-
+        assertEquals("Activate request context should not have been called", 0, getMockContextService().getActivateContextCount());
+        assertEquals("Deactivate request context should not have been called", 0, getMockContextService().getDeactivateContextCount());
     }
 
-    private void waitForContext(MockAsyncRequestContextController asyncRequestContextController) throws InterruptedException {
+    private void waitForContext(MockContextService asyncRequestContextController) throws InterruptedException {
         long startTime = System.nanoTime();
         long timeout = TimeUnit.NANOSECONDS.convert(5, TimeUnit.SECONDS);
 

@@ -12,7 +12,6 @@ package com.ibm.ws.microprofile.faulttolerance.impl;
 
 import java.util.concurrent.ScheduledExecutorService;
 
-import com.ibm.ws.microprofile.faulttolerance.spi.AsyncRequestContextController;
 import com.ibm.ws.microprofile.faulttolerance.spi.BulkheadPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.CircuitBreakerPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.Executor;
@@ -23,7 +22,6 @@ import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
 import com.ibm.ws.microprofile.faulttolerance.utils.DummyMetricRecorder;
 import com.ibm.ws.threading.PolicyExecutorProvider;
-import com.ibm.wsspi.threadcontext.WSContextService;
 
 /**
  *
@@ -44,13 +42,10 @@ public abstract class AbstractExecutorBuilderImpl<R> implements ExecutorBuilder<
     protected FallbackPolicy fallbackPolicy = null;
     protected TimeoutPolicy timeoutPolicy = null;
     protected MetricRecorder metricRecorder = DummyMetricRecorder.get();
-    protected final WSContextService contextService;
     protected final PolicyExecutorProvider policyExecutorProvider;
     protected final ScheduledExecutorService scheduledExecutorService;
-    protected AsyncRequestContextController asyncRequestContext = null;
 
-    public AbstractExecutorBuilderImpl(WSContextService contextService, PolicyExecutorProvider policyExecutorProvider, ScheduledExecutorService scheduledExecutorService) {
-        this.contextService = contextService;
+    public AbstractExecutorBuilderImpl(PolicyExecutorProvider policyExecutorProvider, ScheduledExecutorService scheduledExecutorService) {
         this.policyExecutorProvider = policyExecutorProvider;
         this.scheduledExecutorService = scheduledExecutorService;
     }
@@ -95,11 +90,6 @@ public abstract class AbstractExecutorBuilderImpl<R> implements ExecutorBuilder<
     public ExecutorBuilder<R> setMetricRecorder(MetricRecorder metricRecorder) {
         this.metricRecorder = metricRecorder;
         return this;
-    }
-
-    @Override
-    public void setRequestContextController(AsyncRequestContextController asyncRequestContext) {
-        this.asyncRequestContext = asyncRequestContext;
     }
 
 }

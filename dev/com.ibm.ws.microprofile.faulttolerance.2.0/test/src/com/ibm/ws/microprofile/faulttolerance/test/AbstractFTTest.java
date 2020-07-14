@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,11 +14,11 @@ import java.lang.reflect.Field;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 
-import com.ibm.ws.microprofile.faulttolerance.impl.AbstractProviderResolverImpl;
 import com.ibm.ws.microprofile.faulttolerance.impl.FTConstants;
 import com.ibm.ws.microprofile.faulttolerance.spi.FaultToleranceProviderResolver;
-import com.ibm.ws.microprofile.faulttolerance.test.util.DummyContextService;
+import com.ibm.ws.microprofile.faulttolerance.test.util.MockContextService;
 import com.ibm.ws.microprofile.faulttolerance20.impl.ProviderResolverImpl20;
 
 /**
@@ -26,17 +26,27 @@ import com.ibm.ws.microprofile.faulttolerance20.impl.ProviderResolverImpl20;
  */
 public abstract class AbstractFTTest {
 
+    // This is a static because it can only be set once because FaultToleranceProvider will cache the first FaultToleranceProviderResolver that it uses.
+    private static ProviderResolverImpl20 providerResolver = new ProviderResolverImpl20();
+
+    private MockContextService contextService;
+
+    @BeforeClass
+    public static void initializeResolver() {
+        FaultToleranceProviderResolver.setInstance(providerResolver);
+    }
+
     @Before
     public void before() {
         System.setProperty(FTConstants.JSE_FLAG, "true");
-        ProviderResolverImpl20 providerResolver = new ProviderResolverImpl20();
-        setField(AbstractProviderResolverImpl.class, "contextService", providerResolver, new DummyContextService());
-        FaultToleranceProviderResolver.setInstance(providerResolver);
+        contextService = new MockContextService();
+        setField(ProviderResolverImpl20.class, "contextService", providerResolver, contextService);
     }
 
     @After
     public void after() {
-        FaultToleranceProviderResolver.setInstance(null);
+        contextService = null;
+        setField(ProviderResolverImpl20.class, "contextService", providerResolver, null);
         System.setProperty(FTConstants.JSE_FLAG, "false");
     }
 
@@ -49,6 +59,10 @@ public abstract class AbstractFTTest {
         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
             throw new RuntimeException("Unable to set field", e);
         }
+    }
+
+    protected MockContextService getMockContextService() {
+        return contextService;
     }
 
 }

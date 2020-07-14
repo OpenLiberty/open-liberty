@@ -1,0 +1,17 @@
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+/**
+ * The context service implementation which uses the liberty concurrency API.
+ */
+@TraceOptions(traceGroup = "FAULTTOLERANCE")
+package com.ibm.ws.microprofile.faulttolerance20.context.impl;
+
+import com.ibm.websphere.ras.annotation.TraceOptions;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,7 +32,6 @@ import com.ibm.ws.microprofile.faulttolerance.spi.FaultToleranceProviderResolver
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
 import com.ibm.ws.threading.PolicyExecutorProvider;
-import com.ibm.wsspi.threadcontext.WSContextService;
 
 /**
  *
@@ -40,11 +39,6 @@ import com.ibm.wsspi.threadcontext.WSContextService;
 public abstract class AbstractProviderResolverImpl extends FaultToleranceProviderResolver {
 
     private static final TraceComponent tc = Tr.register(AbstractProviderResolverImpl.class);
-    /**
-     * Reference to the context service for this managed executor service.
-     */
-    @Reference
-    protected WSContextService contextService;
     @Reference
     protected PolicyExecutorProvider policyExecutorProvider;
     @Reference(target = "(deferrable=false)")

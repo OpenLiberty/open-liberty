@@ -12,9 +12,6 @@ package com.ibm.ws.microprofile.faulttolerance.cdi;
 
 import java.lang.reflect.Method;
 
-import javax.enterprise.inject.Instance;
-
-import com.ibm.ws.microprofile.faulttolerance.spi.AsyncRequestContextController;
 import com.ibm.ws.microprofile.faulttolerance.spi.BulkheadPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.CircuitBreakerPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.Executor;
@@ -44,7 +41,6 @@ public class AggregatedFTPolicy {
     private TimeoutPolicy timeout;
     private FallbackPolicy fallbackPolicy;
     private Executor<?> executor;
-    private Instance<AsyncRequestContextController> rcInstance;
 
     /**
      * @return the method this policy will be applied to
@@ -114,10 +110,6 @@ public class AggregatedFTPolicy {
         return this.fallbackPolicy;
     }
 
-    public void setRequestContextInstance(Instance<AsyncRequestContextController> rcInstance) {
-        this.rcInstance = rcInstance;
-    }
-
     /**
      * Get an executor for this set of policies, creating one if needed.
      * <p>
@@ -131,10 +123,6 @@ public class AggregatedFTPolicy {
         synchronized (this) {
             if (this.executor == null) {
                 ExecutorBuilder<?> builder = newBuilder();
-
-                if (!rcInstance.isUnsatisfied() && !rcInstance.isAmbiguous()) {
-                    builder.setRequestContextController(rcInstance.get());
-                }
 
                 if (isAsynchronous()) {
                     this.executor = builder.buildAsync(asyncResultWrapper);

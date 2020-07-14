@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance20.impl;
 
-import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ForkJoinWorkerThread;
@@ -20,18 +19,15 @@ import org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceExceptio
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.microprofile.faulttolerance.spi.AsyncRequestContextController;
 import com.ibm.ws.microprofile.faulttolerance.spi.BulkheadPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.CircuitBreakerPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder;
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
+import com.ibm.ws.microprofile.faulttolerance.spi.context.ContextService;
+import com.ibm.ws.microprofile.faulttolerance.spi.context.ContextSnapshot;
 import com.ibm.ws.microprofile.faulttolerance20.state.AsyncBulkheadState.BulkheadReservation;
-import com.ibm.wsspi.threadcontext.ThreadContext;
-import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
-import com.ibm.wsspi.threadcontext.WSContextService;
 
 /**
  * Executor for asynchronous methods which return a {@link CompletionStage}{@code<R>}
@@ -45,9 +41,8 @@ public class AsyncCompletionStageExecutor<R> extends AsyncExecutor<CompletionSta
     private final ScheduledExecutorService executorService;
 
     public AsyncCompletionStageExecutor(RetryPolicy retry, CircuitBreakerPolicy cbPolicy, TimeoutPolicy timeoutPolicy, FallbackPolicy fallbackPolicy, BulkheadPolicy bulkheadPolicy,
-                                        ScheduledExecutorService executorService, WSContextService contextService, MetricRecorder metricRecorder,
-                                        AsyncRequestContextController asyncRequestContext) {
-        super(retry, cbPolicy, timeoutPolicy, fallbackPolicy, bulkheadPolicy, executorService, contextService, metricRecorder, asyncRequestContext);
+                                        ScheduledExecutorService executorService, ContextService contextService, MetricRecorder metricRecorder) {
+        super(retry, cbPolicy, timeoutPolicy, fallbackPolicy, bulkheadPolicy, executorService, contextService, metricRecorder);
         this.executorService = executorService;
     }
 
@@ -69,26 +64,18 @@ public class AsyncCompletionStageExecutor<R> extends AsyncExecutor<CompletionSta
         }
     }
 
-    @FFDCIgnore(IllegalStateException.class)
     private void doSetResult(AsyncExecutionContextImpl<CompletionStage<R>> executionContext, MethodResult<CompletionStage<R>> result) {
         CompletableFuture<R> resultWrapper = (CompletableFuture<R>) executionContext.getResultWrapper();
 
         // Completing the return wrapper may cause user code to run, so set the thread context first as we may be on an async thread
-        ThreadContextDescriptor threadContext = executionContext.getThreadContextDescriptor();
+        ContextSnapshot snapshot = executionContext.getContextSnapshot();
+
         try {
-            ArrayList<ThreadContext> contexts = null;
-            try {
-                contexts = threadContext.taskStarting();
-            } catch (IllegalStateException e) {
-                // Component for captured context is no longer running
-                result = MethodResult.internalFailure(createAppStoppedException(e, executionContext));
-            }
+            snapshot.runWithContext(() -> {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Execution {0} final fault tolerance result: {1}", executionContext.getId(), result);
+                }
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(tc, "Execution {0} final fault tolerance result: {1}", executionContext.getId(), result);
-            }
-
-            try {
                 if (result.isFailure()) {
                     resultWrapper.completeExceptionally(result.getFailure());
                 } else {
@@ -98,11 +85,7 @@ public class AsyncCompletionStageExecutor<R> extends AsyncExecutor<CompletionSta
                         return null;
                     });
                 }
-            } finally {
-                if (contexts != null) {
-                    threadContext.taskStopping(contexts);
-                }
-            }
+            });
         } catch (Throwable t) {
             Tr.error(tc, "internal.error.CWMFT4998E", t);
             resultWrapper.completeExceptionally(new FaultToleranceException(Tr.formatMessage(tc, "internal.error.CWMFT4998E", t), t));
