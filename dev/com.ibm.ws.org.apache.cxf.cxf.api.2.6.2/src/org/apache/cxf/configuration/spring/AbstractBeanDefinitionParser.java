@@ -39,6 +39,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import org.apache.cxf.common.jaxb.JAXBContextCache;
 import org.apache.cxf.common.jaxb.JAXBContextCache.CachedContextAndSchemas;
 import org.apache.cxf.common.logging.LogUtils;
@@ -53,6 +55,7 @@ import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.BeanDefinitionParserDelegate;
 import org.springframework.beans.factory.xml.ParserContext;
 
+@Trivial
 public abstract class AbstractBeanDefinitionParser 
     extends org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser {
     public static final String WIRE_BUS_ATTRIBUTE = AbstractBeanDefinitionParser.class.getName() + ".wireBus";

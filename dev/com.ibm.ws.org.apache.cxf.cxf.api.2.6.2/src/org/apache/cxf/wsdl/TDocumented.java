@@ -13,6 +13,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 
 /**
  * 
@@ -45,6 +47,7 @@ import javax.xml.bind.annotation.XmlType;
     TExtensibleAttributesDocumented.class,
     TExtensibleDocumented.class
 })
+@Trivial
 public class TDocumented {
 
     protected TDocumentation documentation;

@@ -43,6 +43,9 @@ import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.phase.Phase;
 import org.apache.cxf.staxutils.StaxUtils;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.websphere.ras.annotation.Trivial;
+
 /**
  * Creates an XMLStreamReader from the InputStream on the Message.
  */
@@ -52,14 +55,16 @@ public class StaxInInterceptor extends AbstractPhaseInterceptor<Message> {
 
     private static Map<Object, XMLInputFactory> factories = new HashMap<Object, XMLInputFactory>();        
 
+    @Trivial
     public StaxInInterceptor() {
         super(Phase.POST_STREAM);
     }
+    @Trivial
     public StaxInInterceptor(String phase) {
         super(phase);
     }
 
-    public void handleMessage(Message message) {
+    public void handleMessage(@Sensitive Message message) {
         if (isGET(message) || message.getContent(XMLStreamReader.class) != null) {
             LOG.fine("StaxInInterceptor skipped.");
             return;
@@ -141,6 +146,7 @@ public class StaxInInterceptor extends AbstractPhaseInterceptor<Message> {
         message.getInterceptorChain().add(StaxInEndingInterceptor.INSTANCE);
     }
 
+    @Trivial
     public static XMLInputFactory getXMLInputFactory(Message m) throws Fault {
         Object o = m.getContextualProperty(XMLInputFactory.class.getName());
         if (o instanceof XMLInputFactory) {

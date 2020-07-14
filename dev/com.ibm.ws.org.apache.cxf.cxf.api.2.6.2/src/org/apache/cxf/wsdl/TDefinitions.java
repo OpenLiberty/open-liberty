@@ -24,6 +24,8 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.w3c.dom.Element;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 
 /**
  * <p>Java class for tDefinitions complex type.
@@ -61,6 +63,7 @@ import org.w3c.dom.Element;
     "service",
     "importOrTypesOrMessage"
 })
+@Trivial
 public class TDefinitions
     extends TExtensibleDocumented
 {

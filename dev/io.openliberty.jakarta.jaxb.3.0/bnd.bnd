@@ -30,7 +30,8 @@ DynamicImport-Package: \
 
 #Bundle-Activator: org.apache.geronimo.osgi.locator.Activator
 
-#Include-Resource:\
+Include-Resource:\
+  jakarta/xml/bind=${bin}/jakarta/xml/bind
 # @${repo;jakarta.xml.bind:jakarta.xml.bind-api;3.0.0-RC3;EXACT}!/!META-INF/maven/*
 # @${repo;org.apache.geronimo.specs:geronimo-jaxb_2.2_spec;1.0.1}!/org/apache/geronimo/osgi/locator/*, \
 # @${repo;org.apache.geronimo.specs:geronimo-jaxb_2.2_spec;1.0.1}!/javax/xml/bind/ContextFinder.class, \
