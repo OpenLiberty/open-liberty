@@ -146,7 +146,7 @@ public class AccessLogData extends GenericData {
     }
 
     // @formatter:off
-    public void setRequestStartTime(String s)  { setPair(0, s); }
+    public void setRequestStartTime(long l)    { setPair(0, l); }
     public void setUriPath(String s)           { setPair(1, s); }
     public void setRequestMethod(String s)     { setPair(2, s); }
     public void setQueryString(String s)       { setPair(3, s); }
@@ -165,7 +165,7 @@ public class AccessLogData extends GenericData {
     public void setBytesSent(long l)           { setPair(15, l); }
     public void setRequestElapsedTime(long l)  { setPair(17, l); }
     public void setRequestFirstLine(String s)  { setPair(20, s); }
-    public void setAccessLogDatetime(String s) { setPair(21, s); }
+    public void setAccessLogDatetime(long l)   { setPair(21, l); }
     public void setRemoteUser(String s)        { setPair(22, s); }
     public void setCookies(String name, String value) {
         kvplCookies.addKeyValuePair(name, value);
@@ -180,7 +180,7 @@ public class AccessLogData extends GenericData {
         setPair(19, kvplResponseHeaders);
     }
 
-    public String getRequestStartTime()          { return getStringValue(0); }
+    public long getRequestStartTime()            { return getLongValue(0); }
     public String getUriPath()                   { return getStringValue(1); }
     public String getRequestMethod()             { return getStringValue(2); }
     public String getQueryString()               { return getStringValue(3); }
@@ -201,7 +201,7 @@ public class AccessLogData extends GenericData {
     public KeyValuePairList getRequestHeaders()  { return getValues(18); }
     public KeyValuePairList getResponseHeaders() { return getValues(19); }
     public String getRequestFirstLine()          { return getStringValue(20); }
-    public String getAccessLogDatetime()         { return getStringValue(21); }
+    public long getAccessLogDatetime()           { return getLongValue(21); }
     public String getRemoteUser()                { return getStringValue(22); }
 
     public static String getRequestStartTimeKey(int format)   { return nameAliases[format].aliases[0]; }
