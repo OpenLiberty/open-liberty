@@ -15,6 +15,7 @@ Subsystem-Name: Jakarta EE Web Profile 9.0
   com.ibm.websphere.appserver.transaction-2.0,\
   io.openliberty.beanValidation-3.0,\
   io.openliberty.ejbLite-4.0,\
+  io.openliberty.cdi-3.0,\
   io.openliberty.managedBeans-2.0
 kind=noship
 edition=full

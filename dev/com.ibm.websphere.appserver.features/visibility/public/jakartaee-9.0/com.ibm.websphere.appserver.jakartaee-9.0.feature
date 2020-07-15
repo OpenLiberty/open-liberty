@@ -14,8 +14,7 @@ Subsystem-Name: Jakarta EE Platform 9.0
  com.ibm.websphere.appserver.jsonb-2.0, \
  com.ibm.websphere.appserver.transaction-2.0, \
  com.ibm.websphere.appserver.jndi-1.0, \
- io.openliberty.jakarta.cdi-3.0, \
- io.openliberty.jakarta.interceptor-2.0, \
+ io.openliberty.cdi-3.0, \
  com.ibm.websphere.appserver.jdbc-4.2; ibm.tolerates:="4.3"
 kind=beta
 edition=core
