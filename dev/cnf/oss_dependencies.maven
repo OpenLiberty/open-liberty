@@ -90,6 +90,7 @@ commons-beanutils:commons-beanutils:1.9.4
 commons-cli:commons-cli:1.4
 commons-codec:commons-codec:1.10
 commons-codec:commons-codec:1.11
+commons-codec:commons-codec:1.14
 commons-codec:commons-codec:1.3
 commons-codec:commons-codec:1.4
 commons-codec:commons-codec:1.6
