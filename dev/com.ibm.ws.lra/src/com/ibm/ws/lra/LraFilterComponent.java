@@ -51,7 +51,7 @@ public class LraFilterComponent implements JaxRsProviderRegister {
      *            populated/provided by config admin
      */
     @Activate
-    protected void activate(Map<String, Object> properties) {
+    protected void activate(Map<String, Object> properties) throws LraException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "LraFilterComponent activated with a service", properties);
         }
@@ -65,7 +65,7 @@ public class LraFilterComponent implements JaxRsProviderRegister {
         } catch (URISyntaxException e) {
             // TODO Not sure how to handle config problems yet
             Tr.error(tc, "Things went wrong");
-            throw new RuntimeException("Failed to set coordinator path to " + coordString, e);
+            throw new LraException(Tr.formatMessage(tc, "LRA_INVALID_COORDINATOR_URI"), e);
         }
 
     }

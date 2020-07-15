@@ -1,0 +1,7 @@
+#ISMESSAGEFILE true
+#NLS_ENCODING=UNICODE
+#COMPONENTPREFIX CWMOT
+
+LRA_INVALID_COORDINATOR_URI=CWMOT0000E: The LRA coordinator URI is invalid
+LRA_INVALID_COORDINATOR_URI.explanation=LRA participants must be able to contact the coordinator
+LRA_INVALID_COORDINATOR_URI.useraction=Correct the LRA coordinator configuration in server.xml

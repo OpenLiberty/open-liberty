@@ -9,6 +9,8 @@ Bundle-Description: Long Running Actions Impl; version=${bVersion}
 
 Export-Package: com.ibm.ws.lra;provide:=true
 
+Private-Package: com.ibm.ws.lra.resources
+
 javac.source: 1.8
 javac.target: 1.8
 
