@@ -57,7 +57,8 @@ public class SecureAction {
     static final ClassLoader bootClassLoader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
         @Override
         public ClassLoader run() {
-            return new ClassLoader(Object.class.getClassLoader()) { /* boot class loader */};
+            return new ClassLoader(Object.class.getClassLoader()) {
+                /* boot class loader */};
         }
     });
 
@@ -85,6 +86,23 @@ public class SecureAction {
                 return new SecureAction();
             }
         };
+    }
+
+    /**
+     * See {@link System#setProperty(String, String)}
+     */
+    public void setProperty(String property, String value) {
+        if (System.getSecurityManager() == null) {
+            System.setProperty(property, value);
+        } else {
+            AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                @Override
+                public Void run() {
+                    System.setProperty(property, value);
+                    return null;
+                }
+            }, controlContext);
+        }
     }
 
     /**
@@ -163,7 +181,7 @@ public class SecureAction {
      * Creates a FileInputStream from a File. Same as calling
      * new FileOutputStream(File,boolean).
      *
-     * @param file the File to create a FileOutputStream from.
+     * @param file   the File to create a FileOutputStream from.
      * @param append indicates if the OutputStream should append content.
      * @return The FileOutputStream.
      * @throws FileNotFoundException if the File does not exist.
@@ -391,10 +409,10 @@ public class SecureAction {
      * {@link URL#URL(java.lang.String, java.lang.String, int, java.lang.String, java.net.URLStreamHandler)}
      *
      * @param protocol the protocol
-     * @param host the host
-     * @param port the port
-     * @param file the file
-     * @param handler the URLStreamHandler
+     * @param host     the host
+     * @param port     the port
+     * @param file     the file
+     * @param handler  the URLStreamHandler
      * @return a URL
      * @throws MalformedURLException
      */
@@ -419,8 +437,8 @@ public class SecureAction {
      * Creates a new Thread from a Runnable. Same as calling
      * new Thread(target,name).setContextClassLoader(contextLoader).
      *
-     * @param target the Runnable to create the Thread from.
-     * @param name The name of the Thread.
+     * @param target        the Runnable to create the Thread from.
+     * @param name          The name of the Thread.
      * @param contextLoader the context class loader for the thread
      * @return The new Thread
      */
@@ -447,7 +465,7 @@ public class SecureAction {
      * context.getService(reference)
      *
      * @param reference the ServiceReference
-     * @param context the BundleContext
+     * @param context   the BundleContext
      * @return a service object
      */
     public <S> S getService(final ServiceReference<S> reference, final BundleContext context) {

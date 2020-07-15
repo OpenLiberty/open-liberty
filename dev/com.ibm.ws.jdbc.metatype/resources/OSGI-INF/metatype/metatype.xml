@@ -1182,6 +1182,7 @@
   </AD>
   <AD id="applicationName"                    ibmui:group="Advanced" required="false" type="String"  name="%applicationName" description="%applicationName.desc"/>
   <AD id="authentication"                     ibmui:group="Advanced" required="false" type="String"  name="%authentication" description="%authentication.desc">
+   <Option value="ActiveDirectoryMSI"        label="ActiveDirectoryMSI"/>
    <Option value="ActiveDirectoryIntegrated" label="ActiveDirectoryIntegrated"/>
    <Option value="ActiveDirectoryPassword"   label="ActiveDirectoryPassword"/>
    <Option value="SqlPassword"               label="SqlPassword"/>

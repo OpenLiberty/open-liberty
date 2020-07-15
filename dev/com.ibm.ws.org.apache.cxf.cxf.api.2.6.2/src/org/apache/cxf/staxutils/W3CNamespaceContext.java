@@ -34,6 +34,7 @@ import org.w3c.dom.Node;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
+@Trivial
 public class W3CNamespaceContext implements NamespaceContext {
 
     private static final Logger LOG = LogUtils.getL7dLogger(W3CNamespaceContext.class);
@@ -132,7 +133,6 @@ public class W3CNamespaceContext implements NamespaceContext {
         return currentNode;
     }
 
-    @Trivial
     public void setElement(Element node) {
         LOG.entering("W3CNamespaceContext", "setElement");
         this.currentNode = node;

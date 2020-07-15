@@ -352,6 +352,7 @@ task libertyReleaseVersions {
     libertyVersionsProps.setProperty('libertyBetaVersion', bnd('libertyBetaVersion'))
     libertyVersionsProps.setProperty('libertyRelease', bnd('libertyRelease'))
     libertyVersionsProps.setProperty('libertyBundleMicroVersion', bnd('libertyBundleMicroVersion'))
+    libertyVersionsProps.setProperty('buildID', bnd('buildID'))
     File libertyVersionsPropsFile = file('build/liberty-versions.props')
     libertyVersionsProps.store(libertyVersionsPropsFile.newWriter(), null)
   }

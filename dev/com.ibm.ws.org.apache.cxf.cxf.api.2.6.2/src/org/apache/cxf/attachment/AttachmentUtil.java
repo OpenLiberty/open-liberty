@@ -64,6 +64,9 @@ import org.apache.cxf.message.Attachment;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageUtils;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
+@Trivial
 public final class AttachmentUtil {
     public static final String BODY_ATTACHMENT_ID = "root.message@cxf.apache.org";
     public static final Charset UTF_8 = Charset.forName("UTF-8");

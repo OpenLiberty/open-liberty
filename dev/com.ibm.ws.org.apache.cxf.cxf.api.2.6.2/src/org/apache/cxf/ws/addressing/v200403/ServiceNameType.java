@@ -21,6 +21,8 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 
 /**
  * <p>Java class for ServiceNameType complex type.
@@ -44,6 +46,7 @@ import javax.xml.namespace.QName;
 @XmlType(name = "ServiceNameType", propOrder = {
     "value"
 })
+@Trivial
 public class ServiceNameType {
 
     @XmlValue

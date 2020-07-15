@@ -261,16 +261,21 @@ public class JsonConfigTest {
         //check output are in application's JSON format
         checkLine("\\{\"key\":\"value\"\\}");
         checkLine("\\{\"key\":\"value\",\"loglevel\":\"System.err\"\\}");
+        checkLine("\\{\\}");
         checkLine("\\{\"key\":\"value\"\\}", consoleLogFile);
         checkLine("\\{\"key\":\"value\",\"loglevel\":\"System.err\"\\}", consoleLogFile);
+        checkLine("\\{\\}", consoleLogFile);
+
         //update file
         setServerConfig(SERVER_XML_APPS_WRITE_JSON_DISABLED);
         //check output are in liberty JSON format
         runApplication(consoleLogFile);
         checkLine("\\{.*\"message\":\".*key.*value.*\".*\\}");
         checkLine("\\{.*\"message\":\".*key.*value.*,.*loglevel.*System.err.*\".*\\}");
+        checkLine("\\{.*\"message\":\".*\".*\\}");
         checkLine("\\{.*\"message\":\".*key.*value.*\".*\\}", consoleLogFile);
         checkLine("\\{.*\"message\":\".*key.*value.*,.*loglevel.*System.err.*\".*\\}", consoleLogFile);
+        checkLine("\\{.*\"message\":\".*\".*\\}", consoleLogFile);
 
     }
 

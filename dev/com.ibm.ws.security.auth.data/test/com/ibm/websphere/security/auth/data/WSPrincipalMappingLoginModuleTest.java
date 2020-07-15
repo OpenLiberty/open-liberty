@@ -184,8 +184,6 @@ public class WSPrincipalMappingLoginModuleTest {
                 will(returnValue(user));
                 allowing(authData).getPassword();
                 will(returnValue(password));
-                allowing(authData).getKrb5Keytab();
-                will(returnValue(null));
                 allowing(authData).getKrb5Principal();
                 will(returnValue(null));
             }
