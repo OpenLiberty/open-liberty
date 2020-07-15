@@ -43,7 +43,7 @@ DynamicImport-Package: com.ibm.websphere.monitor.meters;version="1.0.0", \
  com.ibm.websphere.monitor.jmx;version="1.0.0", \
  com.ibm.wsspi.request.probe.bci, \
  com.ibm.wsspi.probeExtension, \
- io.openliberty.grpc.1.0.internal.monitor
+ io.openliberty.grpc.internal.monitor
  
 Export-Package: \
   io.openliberty.grpc.internal.client.* ,\
@@ -86,7 +86,6 @@ instrument.disabled: true
   org.osgi.service.component.annotations;version=latest,\
   io.grpc:grpc-netty-shaded;version=1.27.0,\
   io.openliberty.grpc.1.0.internal.common;version=latest,\
-  io.openliberty.grpc.1.0.internal.monitor;version=latest,\
   org.osgi.service.component.annotations;version=latest
 
 -testpath: \
