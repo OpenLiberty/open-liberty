@@ -414,21 +414,44 @@ public class FeatureReplacementAction implements RepeatTestAction {
         String methodName = "getReplacementFeature";
         // Example: servlet-3.1 --> servlet-4.0
         int dashOffset = originalFeature.indexOf('-');
-        if ( dashOffset == -1 ) {
-            Log.info(c, methodName, "Remove feature [ " + originalFeature +  " ]: No '-' was found.");
-            return null;
-        }
+        if ( dashOffset == -1 )
+            throw new IllegalArgumentException("Remove feature [ " + originalFeature +  " ]: No '-' was found.");
         // "servlet-3.1" ==> "servlet"
-        String baseFeature = originalFeature.substring(0, dashOffset);
-        if ( JakartaEE9Action.isActive() ) {
-            String ee9BaseFeature = featuresWithNameChangeOnEE9.get(baseFeature);
-            if ( ee9BaseFeature != null ) {
-                Log.info(c, methodName, "Replace base feature [ " + baseFeature +  " ] with EE9 feature [ " + ee9BaseFeature + " ]");
-                baseFeature = ee9BaseFeature;
+        String baseFeature = originalFeature.substring(0, dashOffset + 1);
+        // "servlet-4.0".contains("servlet-")
+        for ( String replacementFeature : replacementFeatures ) {
+            if ( replacementFeature.contains(baseFeature) )  {
+                Log.info(c, methodName, "Replace feature [ " + originalFeature +  " ] with [ " + replacementFeature + " ]");
+                return replacementFeature;
             }
         }
+        // We need to check that the feature passed is an EE7/EE8 feature which could have a name change on EE9 that doesnt match 
+        // the original feature name it replaces. We also check viceversa if the feature is an EE9 feature that involves a name change
+        // to update from EE9 to EE7/EE8
+        Log.info(c, methodName, "No feature replacement found for [ " + originalFeature +  " ]. Verifying if feature name was changed on EE9.");
+        // Reset base feature to not include the "-"
+        baseFeature = baseFeature.substring(0, dashOffset);
+        String featureReplacement = null;
+        for (Map.Entry<String, String> nameChangeEntry : featuresWithNameChangeOnEE9.entrySet()) {
+            if(nameChangeEntry.getValue().equals(baseFeature)){
+                featureReplacement = nameChangeEntry.getKey();
+                Log.info(c, methodName, "Replace EE9 feature [ " + baseFeature +  " ] with feature [ " + featureReplacement + " ]");
+                baseFeature = featureReplacement;
+                break;
+            }
+            if(nameChangeEntry.getKey().equals(baseFeature)){
+                featureReplacement = nameChangeEntry.getValue();
+                Log.info(c, methodName, "Replace base feature [ " + baseFeature +  " ] with EE9 feature [ " + featureReplacement + " ]");
+                baseFeature = featureReplacement;
+                break;
+            }
+        }
+        if ( featureReplacement == null ) {
+            Log.info(c, methodName, "Remove feature [ " + originalFeature +  " ]: No replacement is available");
+            return null;
+        }
         baseFeature += "-";
-        // "servlet-4.0".contains("servlet-")
+        // Re-check the features with the name changes
         for ( String replacementFeature : replacementFeatures ) {
             if ( replacementFeature.contains(baseFeature) )  {
                 Log.info(c, methodName, "Replace feature [ " + originalFeature +  " ] with [ " + replacementFeature + " ]");
