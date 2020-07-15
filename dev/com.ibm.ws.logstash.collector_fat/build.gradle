@@ -8,13 +8,27 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+configurations {
+     libs
+}
+dependencies {
+     libs 'com.ibm.ws.logstash:logstash:5.5.0'
+  
+}
+task copyJar {
+     copy {
+          from configurations.libs
+          into "$projectDir/lib/"
+     }
+}
 task unzip(type: Copy) {
-    from zipTree(file("$projectDir/lib/logstash-5.5.0.zip"))
-    into file("$projectDir/publish/files/")
+     dependsOn copyJar
+     from zipTree(file("$projectDir/lib/logstash-5.5.0.jar"))
+     into file("$projectDir/publish/files/")
 }
 
 build.dependsOn unzip
 
 dependencies {
-	requiredLibs 'org.json:json:20080701'
+     requiredLibs 'org.json:json:20080701'
 }

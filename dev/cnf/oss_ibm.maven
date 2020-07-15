@@ -77,6 +77,7 @@ com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.core:2.6.8.WAS-cf583f
 com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.jpql:2.6.8.WAS-cf583f2
 com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen:2.6.8.WAS-cf583f2
 com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa:2.6.8.WAS-cf583f2
+com.ibm.ws.logstash:logstash:5.5.0
 com.ibm.ws.org.objenesis:objenesis:1.0
 com.googlecode.jsontoken:jsontoken:1.1.0-ibm-s20140416-2113
 net.sf.jtidy:jtidy:9.3.8
