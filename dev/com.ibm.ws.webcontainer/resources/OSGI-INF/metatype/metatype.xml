@@ -270,7 +270,7 @@
         <AD id="deferServletRequestListenerDestroyOnError"
             name="%deferServletRequestListenerDestroyOnError.name" 
             description="%deferServletRequestListenerDestroyOnError.desc" 
-            required="false" type="Boolean" default="false" />
+            required="false" type="Boolean" default="true" />
 
 		<!--com.ibm.ws.jsp.-->
         <AD id="allowExpressionFactoryPerApp"
