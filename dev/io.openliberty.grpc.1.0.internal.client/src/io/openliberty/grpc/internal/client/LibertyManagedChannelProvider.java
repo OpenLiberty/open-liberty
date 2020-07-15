@@ -146,7 +146,6 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 			Class<?> clazz = Class.forName(className);
 			interceptor = (ClientInterceptor) clazz.getDeclaredConstructor()
 					.newInstance();
-			System.out.println("ANNA");
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
 				| IllegalArgumentException | InvocationTargetException | NoSuchMethodException
 				| SecurityException e) {

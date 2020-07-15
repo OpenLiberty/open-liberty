@@ -97,7 +97,6 @@ public final class ServletServerBuilder extends AbstractServerImplBuilder<Servle
     try {
       internalCaller = true;
       build().start();
-      // ANNA grpc_server_started_total
     } catch (IOException e) {
       // actually this should never happen
       throw new RuntimeException(e);
