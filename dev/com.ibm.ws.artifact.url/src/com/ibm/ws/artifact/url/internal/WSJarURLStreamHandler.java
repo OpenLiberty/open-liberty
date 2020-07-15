@@ -271,7 +271,52 @@ public class WSJarURLStreamHandler extends AbstractURLStreamHandlerService { // 
                 connected = true;
 
                 InputStream input = zipFileHandle.getInputStream(zipFile, zipEntry);
-                result = new ZipEntryInputStream(zipFileHandle, input); // PK72252
+
+                // Release bug 13032:
+                //
+                // NullPointerException when searching for faces configuration files ("faces-config.xml") when using JSF.
+                // When the target entry is a directory type entry, 'ZipFileHandle.getInputStream' will answer
+                // a null input stream.  Use of that stream to construct a ZipEntryInputStream is not meaningful,
+                // and will usually result in a null pointer exception when the ZipEntryInputStream is used.
+                // This occurs, in particular, during JSF resource searches, which attempt to open input streams
+                // on "META-INF/" entries.
+                //
+                // When an application uses JSF implementation jar  "javax.faces-2.2.9.jar", available, for example,
+                // from https://repo1.maven.org/maven2/org/glassfish/javax.faces/2.2.9/, a step of searching for faces
+                // configuration files ("faces-config.xml") will fail with a NullPointerException when the application
+                // contains a resource archive (RAR) file. The problem does not occur if a RAR file is not present in the
+                // application.
+                //
+                // The problem was first noted with IBM WebSphere Application Server Liberty Profile version v20.0.0.4.
+                //
+                // The symptom of the problem is a NullPointerException occuring with a call stack similar to the following:
+                //
+                // [6/9/20 15:16:30:173 EDT] 00000040 config E Critical error during deployment:
+                // com.sun.faces.config.ConfigurationException: java.util.concurrent.ExecutionException:
+                // java.lang.NullPointerException
+                //
+                // at com.sun.faces.config.ConfigManager.getConfigDocuments(Unknown Source)
+                // at com.sun.faces.config.ConfigManager.initialize(Unknown Source)
+                // at com.sun.faces.config.ConfigureListener.contextInitialized(Unknown Source)
+                // at com.ibm.ws.webcontainer.webapp.WebApp.notifyServletContextCreated(WebApp.java:2417)
+                // 
+                // Caused by: java.lang.NullPointerException
+                // at java.io.FilterInputStream.close(FilterInputStream.java:192)
+                // at com.ibm.ws.artifact.url.internal.WSJarURLStreamHandler$ZipEntryInputStream.close(WSJarURLStreamHandler.java:387)
+                // at java.io.PushbackInputStream.close(PushbackInputStream.java:390)
+                // at java.util.zip.InflaterInputStream.close(InflaterInputStream.java:238)
+                // at java.util.zip.ZipInputStream.close(ZipInputStream.java:277)
+                // at com.sun.faces.facelets.util.Classpath.searchFromURL(Unknown Source)
+                // at com.sun.faces.facelets.util.Classpath.search(Unknown Source)
+                // at com.sun.faces.facelets.util.Classpath.search(Unknown Source)
+                // at com.sun.faces.config.configprovider.MetaInfFacesConfigResourceProvider.loadURLs(Unknown Source)
+                // at com.sun.faces.config.configprovider.MetaInfFacesConfigResourceProvider.getResources(Unknown Source)
+                // at com.sun.faces.config.ConfigManager$URITask.call(Unknown Source)
+                // at com.sun.faces.config.ConfigManager$URITask.call(Unknown Source)
+                // at java.util.concurrent.FutureTask.run(FutureTask.java:277)
+                // ... 24 more
+
+                result = ( (input == null) ? null : new ZipEntryInputStream(zipFileHandle, input) ); // PK72252
 
                 zipFileHandle = null; // PK72252
             } finally {
