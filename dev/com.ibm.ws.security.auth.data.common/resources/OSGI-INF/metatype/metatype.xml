@@ -23,8 +23,6 @@
         <!-- Kerberos settings -->
         <AD id="krb5Principal" name="%krb5Principal" description="%krb5Principal.desc"
             required="false" type="String" ibm:beta="true"/>
-        <AD id="krb5Keytab" name="%krb5Keytab" description="%krb5Keytab.desc"
-            required="false" type="String" ibm:type="location(file)" ibm:beta="true"/>
     </OCD>
 
     <Designate factoryPid="com.ibm.ws.security.jca.internal.authdata.config">

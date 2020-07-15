@@ -71,6 +71,7 @@ Service-Component: \
     provide:='com.ibm.ws.security.jca.AuthDataService'; \
     configuration-policy:=ignore; \
     authDataProvider=com.ibm.websphere.security.auth.data.AuthDataProvider; \
+    krb5Service=com.ibm.ws.security.kerberos.auth.KerberosService; \
     securityService=com.ibm.ws.security.SecurityService; \
     subjectManagerService=com.ibm.ws.security.intfc.SubjectManagerService; \
     optional:='securityService,subjectManagerService'; \

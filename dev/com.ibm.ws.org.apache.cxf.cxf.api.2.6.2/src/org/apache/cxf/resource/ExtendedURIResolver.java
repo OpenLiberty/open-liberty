@@ -30,6 +30,8 @@ import org.apache.cxf.common.logging.LogUtils;
 
 import org.xml.sax.InputSource;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 
 public class ExtendedURIResolver {
 
@@ -38,6 +40,7 @@ public class ExtendedURIResolver {
     protected Stack<InputStream> resourceOpened = new Stack<InputStream>();
     private static final Logger LOG = LogUtils.getL7dLogger(ExtendedURIResolver.class);
 
+    @Trivial
     public ExtendedURIResolver() {
         currentResolver = new org.apache.cxf.resource.URIResolver();        
     }
@@ -79,6 +82,7 @@ public class ExtendedURIResolver {
         // return new InputSource(schemaLocation);
     }
     
+    @Trivial
     public void close() {
         while (!resourceOpened.isEmpty()) {
             try {
@@ -90,10 +94,12 @@ public class ExtendedURIResolver {
         }
     }
     
+    @Trivial
     public String getLatestImportURI() {
         return this.getURI();
     }
 
+    @Trivial
     public String getURI() {
         if (currentResolver.getURI() != null) {
             return currentResolver.getURI().toString();

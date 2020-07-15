@@ -28,6 +28,7 @@ import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -45,7 +46,8 @@ public class ManagedBeansEjbTest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().forServers("ManagedBeansEjbServer"))
-                    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().forServers("ManagedBeansEjbServer"));
+                    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().forServers("ManagedBeansEjbServer"))
+                    .andWith(new JakartaEE9Action().fullFATOnly().forServers("ManagedBeansEjbServer"));
 
     @BeforeClass
     public static void setUp() throws Exception {

@@ -35,6 +35,9 @@ import javax.activation.DataHandler;
 import org.apache.cxf.message.Attachment;
 import org.apache.cxf.message.Message;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
+@Trivial
 public class AttachmentSerializer {
     // http://tools.ietf.org/html/rfc2387
     private static final String DEFAULT_MULTIPART_TYPE = "multipart/related";

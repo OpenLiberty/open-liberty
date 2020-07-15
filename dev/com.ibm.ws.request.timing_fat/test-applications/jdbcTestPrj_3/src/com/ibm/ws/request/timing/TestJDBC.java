@@ -1,5 +1,6 @@
 package com.ibm.ws.request.timing;
 
+import static org.junit.Assert.assertEquals;
 
 import java.io.*;
 import java.sql.*;
@@ -55,16 +56,20 @@ public class TestJDBC extends HttpServlet
 
 
       System.out.println((new StringBuilder(" Session value is ")).append(s.getValue()).toString());
-
-       
+      
+      int returnValue = -1;
       for(int i = 11; i <= 15; i++) {
-          stmt.executeUpdate((new StringBuilder("insert into "+tableName+" values ('myHomeCity_ ")).append(i).append("', ").append(i).append(", 'myHomeCounty_").append(i).append("')").toString());
+          returnValue = stmt.executeUpdate((new StringBuilder("insert into "+tableName+" values ('myHomeCity_ ")).append(i).append("', ").append(i).append(", 'myHomeCounty_").append(i).append("')").toString());
           try {
-              Thread.sleep(5000);
+              Thread.sleep(1500);  // Sleep to give time for update to fully complete
+              if (returnValue != 1) {
+                  System.out.println("Warning: The expected return value of stmt.executeUpdate is 1, but got: " + returnValue + ". This is fine and the test can still pass.");
+              }
+              returnValue = -1;
           } catch (Exception e) {
               e.printStackTrace();
           }
-      }
+      }  
       
       System.out.println("doGet completed Successfully");
     } catch (Exception e) {
@@ -101,14 +106,7 @@ public class TestJDBC extends HttpServlet
         {
             e.printStackTrace();
         }
-        
-        try {
-            System.out.println(" Some more delay... ");
-            Thread.sleep(5000);
-            System.out.println(" completed..");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
         System.out.println("%%%%%%%%%%% Completed session set");
         return;
     }

@@ -10,8 +10,8 @@
  *******************************************************************************/
 package io.openliberty.wsoc.tests;
 
-import java.util.logging.Logger;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -28,10 +28,12 @@ import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebResponse;
 
-import io.openliberty.wsoc.util.OnlyRunNotOnZRule;
-import io.openliberty.wsoc.util.WebServerSetup;
-import io.openliberty.wsoc.util.WebServerControl;
-import io.openliberty.wsoc.util.wsoc.WsocTest;
+import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.ExpectedFFDC;
+import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.LibertyServer;
 import io.openliberty.wsoc.tests.all.AnnotatedTest;
 import io.openliberty.wsoc.tests.all.BinaryEncodeDecodeTest;
 import io.openliberty.wsoc.tests.all.ConfiguratorTest;
@@ -39,14 +41,10 @@ import io.openliberty.wsoc.tests.all.MultiClientTest;
 import io.openliberty.wsoc.tests.all.OnErrorTest;
 import io.openliberty.wsoc.tests.all.PathParamTest;
 import io.openliberty.wsoc.tests.all.ProgrammaticTest;
-
-import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.ExpectedFFDC;
-import componenttest.annotation.MinimumJavaLevel;
-import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.topology.impl.LibertyServer;
+import io.openliberty.wsoc.util.OnlyRunNotOnZRule;
+import io.openliberty.wsoc.util.WebServerControl;
+import io.openliberty.wsoc.util.WebServerSetup;
+import io.openliberty.wsoc.util.wsoc.WsocTest;
 
 // comment #1 (referenced below): Some tests use the AllowedFFDC annotation because these Jetty client test will not run on Z, as desired
 // due to the notOnZRule, but the test framework will still look for the "ExpectedFFDC" if that annotation is used, and not finding it, will
@@ -61,7 +59,6 @@ import componenttest.topology.impl.LibertyServer;
  * @author unknown
  */
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 7)
 public class BasicTest extends LoggingTest {
 
     @ClassRule
@@ -95,7 +92,7 @@ public class BasicTest extends LoggingTest {
 
     protected WebResponse runAsSSCAndVerifyResponse(String className, String testName) throws Exception {
         int securePort = 0, port = 0;
-        String host="";
+        String host = "";
         LibertyServer server = SS.getLibertyServer();
         if (WebServerControl.isWebserverInFront()) {
             try {
@@ -120,26 +117,26 @@ public class BasicTest extends LoggingTest {
     public static void setUp() throws Exception {
         // Build the basic jar to add to the war app as a lib
         JavaArchive BasicJar = ShrinkHelper.buildJavaArchive(BASIC_JAR_NAME + ".jar",
-                                                                   "basic.jar");
+                                                             "basic.jar");
         // Build the war app and add the dependencies
         WebArchive BasicApp = ShrinkHelper.buildDefaultApp(BASIC_WAR_NAME + ".war",
-                                                                         "basic.war",
-                                                                         "basic.war.coding",
-                                                                         "basic.war.configurator",
-                                                                         "basic.war.servlet",
-                                                                         "basic.war.utils",
-                                                                         "io.openliberty.wsoc.common",
-                                                                         "io.openliberty.wsoc.util.wsoc",
-                                                                         "io.openliberty.wsoc.tests.all",
-                                                                         "io.openliberty.wsoc.endpoints.client.basic");
-        BasicApp = (WebArchive) ShrinkHelper.addDirectory(BasicApp, "test-applications/"+BASIC_WAR_NAME+".war/resources");
+                                                           "basic.war",
+                                                           "basic.war.coding",
+                                                           "basic.war.configurator",
+                                                           "basic.war.servlet",
+                                                           "basic.war.utils",
+                                                           "io.openliberty.wsoc.common",
+                                                           "io.openliberty.wsoc.util.wsoc",
+                                                           "io.openliberty.wsoc.tests.all",
+                                                           "io.openliberty.wsoc.endpoints.client.basic");
+        BasicApp = (WebArchive) ShrinkHelper.addDirectory(BasicApp, "test-applications/" + BASIC_WAR_NAME + ".war/resources");
         BasicApp = BasicApp.addAsLibraries(BasicJar);
         // Verify if the apps are in the server before trying to deploy them
         if (SS.getLibertyServer().isStarted()) {
             Set<String> appInstalled = SS.getLibertyServer().getInstalledAppNames(BASIC_WAR_NAME);
             LOG.info("addAppToServer : " + BASIC_WAR_NAME + " already installed : " + !appInstalled.isEmpty());
             if (appInstalled.isEmpty())
-            ShrinkHelper.exportDropinAppToServer(SS.getLibertyServer(), BasicApp);
+                ShrinkHelper.exportDropinAppToServer(SS.getLibertyServer(), BasicApp);
         }
         SS.startIfNotStarted();
         SS.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + BASIC_WAR_NAME);
@@ -1205,7 +1202,6 @@ public class BasicTest extends LoggingTest {
 
         ppt.TestOnOpenThroughUpgrade("/basic/pathUpgradeFilter/testString/1");
     }
-
 
     /*
      * (non-Javadoc)

@@ -65,6 +65,7 @@ public class JsonConfigBootstrapTest {
     public static final String SERVER_XML_JSON_SOURCE_MESSAGETRACEACCESS = "jsonSourceMessageTraceAccess.xml";
     public static final String SERVER_XML_JSON_MESSAGE_ACCESS = "jsonMessageSourceAccessLog.xml";
     public static final String SERVER_XML_JSON_CONFIG_FIELD_EXT = "jsonConfigFieldExt.xml";
+    public static final String SERVER_XML_APPS_WRITE_JSON_ENABLED = "appsWriteJsonEnabled.xml";
 
     private static final String SIMPLE_FORMAT = "simple";
     private static final String JSON_FORMAT = "json";
@@ -311,6 +312,7 @@ public class JsonConfigBootstrapTest {
             checkLine("\\{\"key\":\"value\",\"loglevel\":\"System.err\"\\}", messageLogFile);
             checkLine("\\{\"key\":\"value\"\\}", consoleLogFile);
             checkLine("\\{\"key\":\"value\",\"loglevel\":\"System.err\"\\}", consoleLogFile);
+
         } finally {
             // Restore the initial contents of bootstrap.properties
             FileOutputStream out = getFileOutputStreamForRemoteFile(bootstrapFile, false);
@@ -335,6 +337,55 @@ public class JsonConfigBootstrapTest {
         checkLine(appsWriteJsonServer, "\\{\"key\":\"value\",\"loglevel\":\"System.err\"\\}", messageLogFile);
         checkLine(appsWriteJsonServer, "\\{\"key\":\"value\"\\}", consoleLogFile);
         checkLine(appsWriteJsonServer, "\\{\"key\":\"value\",\"loglevel\":\"System.err\"\\}", consoleLogFile);
+        appsWriteJsonServer.stopServer();
+
+    }
+
+    /*
+     * Check if precedence of appsWriteJson is honored
+     * WLP_LOGGING_APPS_WRITE_JSON=true in server.env
+     * com.ibm.ws.logging.apps.write.json=false in bootstrap.properties
+     * appsWriteJson=true in server.xml
+     */
+    @Test
+    public void testAppsWriteJsonPrecedence() throws Exception {
+        RemoteFile bootstrapFile = appsWriteJsonServer.getServerBootstrapPropertiesFile();
+        FileInputStream in = getFileInputStreamForRemoteFile(bootstrapFile);
+        Properties initialBootstrapProps = loadProperties(in);
+        try {
+            // Set appsWriteJson to false in bootstrap.properties
+            setInBootstrapPropertiesFile(bootstrapFile, "com.ibm.ws.logging.apps.write.json", "false");
+            appsWriteJsonServer.startServer();
+
+            RemoteFile consoleLogFile = appsWriteJsonServer.getConsoleLogFile();
+            RemoteFile messageLogFile = appsWriteJsonServer.getDefaultLogFile();
+            runApplication(consoleLogFile);
+
+            //check output are in Liberty JSON format
+            checkLine("\\{.*\"message\":\".*key.*value.*\".*\\}", messageLogFile);
+            checkLine("\\{.*\"message\":\".*key.*value.*,.*loglevel.*System.err.*\".*\\}", messageLogFile);
+            checkLine("\\{.*\"message\":\".*\".*\\}", messageLogFile);
+            checkLine("\\{.*\"message\":\".*key.*value.*\".*\\}", consoleLogFile);
+            checkLine("\\{.*\"message\":\".*key.*value.*,.*loglevel.*System.err.*\".*\\}", consoleLogFile);
+            checkLine("\\{.*\"message\":\".*\".*\\}", consoleLogFile);
+
+            //set appsWriteJson=true in server.xml
+            setServerConfig(appsWriteJsonServer, SERVER_XML_APPS_WRITE_JSON_ENABLED);
+
+            runApplication(consoleLogFile);
+
+            checkLine("\\{\"key\":\"value\"\\}", messageLogFile);
+            checkLine("\\{\"key\":\"value\",\"loglevel\":\"System.err\"\\}", messageLogFile);
+            checkLine("\\{\\}", messageLogFile);
+            checkLine("\\{\"key\":\"value\"\\}", consoleLogFile);
+            checkLine("\\{\"key\":\"value\",\"loglevel\":\"System.err\"\\}", consoleLogFile);
+            checkLine("\\{\\}", consoleLogFile);
+
+        } finally {
+            // Restore the initial contents of bootstrap.properties
+            FileOutputStream out = getFileOutputStreamForRemoteFile(bootstrapFile, false);
+            writeProperties(initialBootstrapProps, out);
+        }
         appsWriteJsonServer.stopServer();
 
     }
@@ -497,6 +548,12 @@ public class JsonConfigBootstrapTest {
     }
 
     private static String setServerConfig(String fileName) throws Exception {
+        server.setMarkToEndOfLog();
+        server.setServerConfigurationFile(fileName);
+        return server.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*");
+    }
+
+    private static String setServerConfig(LibertyServer server, String fileName) throws Exception {
         server.setMarkToEndOfLog();
         server.setServerConfigurationFile(fileName);
         return server.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*");

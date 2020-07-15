@@ -17,6 +17,8 @@ import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlType;
 import org.w3c.dom.Element;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 
 /**
  * <p>Java class for tDocumentation complex type.
@@ -41,6 +43,7 @@ import org.w3c.dom.Element;
 @XmlType(name = "tDocumentation", propOrder = {
     "content"
 })
+@Trivial
 public class TDocumentation {
 
     @XmlMixed

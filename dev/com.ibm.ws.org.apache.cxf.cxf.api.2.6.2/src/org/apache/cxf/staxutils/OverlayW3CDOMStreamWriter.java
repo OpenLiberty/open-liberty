@@ -30,6 +30,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import org.apache.cxf.common.util.StringUtils;
 
 
@@ -38,6 +40,7 @@ import org.apache.cxf.common.util.StringUtils;
  * If the startElement ends up writing an element that already exists at that
  * location, it will just walk into it instead of creating a new element
  */
+@Trivial
 public class OverlayW3CDOMStreamWriter extends W3CDOMStreamWriter {
     protected boolean isOverlaid = true;
 

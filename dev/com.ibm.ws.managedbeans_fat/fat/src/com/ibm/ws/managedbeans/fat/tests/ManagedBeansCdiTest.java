@@ -27,6 +27,7 @@ import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -44,7 +45,8 @@ public class ManagedBeansCdiTest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().forServers("ManagedBeansCdiServer"))
-                    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().forServers("ManagedBeansCdiServer"));
+                    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().forServers("ManagedBeansCdiServer"))
+                    .andWith(new JakartaEE9Action().fullFATOnly().forServers("ManagedBeansCdiServer"));
 
     @BeforeClass
     public static void setUp() throws Exception {
