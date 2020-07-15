@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.managedBeans-2.0
+symbolicName=io.openliberty.managedBeans-2.0
 visibility=public
 IBM-App-ForceRestart: install, \
  uninstall
