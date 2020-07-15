@@ -24,7 +24,6 @@ import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder;
 import io.grpc.netty.shaded.io.netty.handler.ssl.SslContext;
 import io.openliberty.grpc.internal.client.config.GrpcClientConfigHolder;
 import io.openliberty.grpc.internal.client.security.LibertyGrpcClientOutSSLSupport;
-import io.openliberty.grpc.internal.monitor.GrpcMonitoringClientInterceptor;
 
 /**
  * io.grpc.ManagedChannelProvider that takes care of any required Liberty
@@ -70,7 +69,10 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 
 	private void addLibertyInterceptors(NettyChannelBuilder builder) {
 		builder.intercept(new LibertyClientInterceptor());
-		builder.intercept(new GrpcMonitoringClientInterceptor());
+		ClientInterceptor monitoringInterceptor = createMonitoringClientInterceptor();
+		if (monitoringInterceptor != null) {
+			builder.intercept(monitoringInterceptor);
+		}
 	}
 
 	private void addLibertySSLConfig(NettyChannelBuilder builder, String target) {
@@ -135,4 +137,23 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 			}
 		}
 	}
+	
+	private ClientInterceptor createMonitoringClientInterceptor() {
+		ClientInterceptor interceptor = null;
+		// monitoring interceptor 
+		final String className = "io.openliberty.grpc.internal.monitor.GrpcMonitoringClientInterceptor";
+		try {
+			Class<?> clazz = Class.forName(className);
+			interceptor = (ClientInterceptor) clazz.getDeclaredConstructor()
+					.newInstance();
+			System.out.println("ANNA");
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+				| IllegalArgumentException | InvocationTargetException | NoSuchMethodException
+				| SecurityException e) {
+			e.printStackTrace();
+		}
+
+		return interceptor;
+	}
+
 }
