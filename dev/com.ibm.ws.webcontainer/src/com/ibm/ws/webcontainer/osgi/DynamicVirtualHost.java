@@ -456,6 +456,9 @@ public class DynamicVirtualHost extends com.ibm.ws.webcontainer.VirtualHost impl
         String ct = makeProperContextRoot(dm.getContextRoot()); // proper
         WebApp webApp = (WebApp) findContext(ct);
         if (webApp == null) {
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)){
+                logger.logp(Level.FINE, CLASS_NAME,"startWebApplication",  "No webapp mapping found for contextroot ->"+ ct);
+            }
             return false;
         }
 
@@ -479,6 +482,9 @@ public class DynamicVirtualHost extends com.ibm.ws.webcontainer.VirtualHost impl
     }
 
     public boolean stopWebApplication(DeployedModule dm) {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)){
+            logger.logp(Level.FINE, CLASS_NAME,"stopWebApplication",  "Enter ");
+        }
 
         String ct = makeProperContextRoot(dm.getContextRoot()); // proper
         WebApp webApp = (WebApp) findContext(ct);
