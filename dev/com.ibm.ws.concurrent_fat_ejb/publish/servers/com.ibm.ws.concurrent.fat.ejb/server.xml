@@ -10,9 +10,9 @@
  -->
 <server>
     <featureManager>
-        <feature>concurrent-1.0</feature> <!-- TODO use Jakarta -->
-        <feature>ejbLite-3.2</feature> <!-- TODO use Jakarta spec once available -->
-        <feature>servlet-3.1</feature> <!-- TODO use Jakarta -->
+        <feature>concurrent-1.0</feature>
+        <feature>ejbLite-3.2</feature>
+        <feature>servlet-3.1</feature>
         <feature>componentTest-1.0</feature>
     </featureManager>
 
