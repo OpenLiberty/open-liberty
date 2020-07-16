@@ -126,7 +126,8 @@ Include-Resource:\
   @${repo;org.jboss.resteasy:resteasy-tracing-api;1.0.0.Final;EXACT}, \
   com/ibm/websphere=${bin}/com/ibm/websphere, \
   io/openliberty=${bin}/io/openliberty, \
-  org/jboss/resteasy=${bin}/org/jboss/resteasy
+  org/jboss/resteasy=${bin}/org/jboss/resteasy, \
+  META-INF=resources/META-INF
 
 -buildpath: \
   org.jboss.resteasy:resteasy-cdi;strategy=exact;version=4.5.2.Final,\

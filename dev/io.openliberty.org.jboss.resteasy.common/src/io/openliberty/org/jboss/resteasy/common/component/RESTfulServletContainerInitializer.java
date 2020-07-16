@@ -63,9 +63,11 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
             }
             if (clazz.isAnnotationPresent(Path.class)) {
                 resources.add(clazz);
-            } else if (clazz.isAnnotationPresent(Provider.class)) {
+            }
+            if (clazz.isAnnotationPresent(Provider.class)) {
                 providers.add(clazz);
-            } else {
+            }
+            if (Application.class.isAssignableFrom(clazz)){
                 appClasses.add(clazz);
             }
         }
