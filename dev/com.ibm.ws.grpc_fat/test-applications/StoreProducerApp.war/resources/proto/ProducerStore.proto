@@ -51,6 +51,8 @@ service AppProducerService {
     */
   rpc createApps(stream AppRequest) returns (MultiCreateResponse){}
   
+  rpc clientStreamA(stream StreamRequestA) returns (StreamReplyA) {}
+  
 }
 
 message AppResponse{
@@ -72,6 +74,16 @@ message DeleteResponse{
 
 message MultiCreateResponse{
 	string result = 1;
+}
+
+// The streaming request message 
+message StreamRequestA {
+  string message = 1;
+}
+
+// The streaming response message 
+message StreamReplyA {
+  string message = 1;
 }
 
 

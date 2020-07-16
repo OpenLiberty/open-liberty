@@ -27,6 +27,8 @@ import com.ibm.test.g3store.grpc.DeleteResponse;
 import com.ibm.test.g3store.grpc.MultiCreateResponse;
 import com.ibm.test.g3store.grpc.RetailApp;
 import com.ibm.test.g3store.grpc.RetailApp.Builder;
+import com.ibm.test.g3store.grpc.StreamReplyA;
+import com.ibm.test.g3store.grpc.StreamRequestA;
 import com.ibm.testapp.g3store.cache.AppCache;
 import com.ibm.testapp.g3store.cache.AppCacheFactory;
 import com.ibm.testapp.g3store.exception.InvalidArgException;
@@ -400,6 +402,53 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
 
         };
         return requestObserver;
+    }
+
+    String lastClientMessage = "Nothing yet";
+    private static String responseString = "Response from Server: ";
+
+    @Override
+    public StreamObserver<StreamRequestA> clientStreamA(final StreamObserver<StreamReplyA> responseObserver) {
+
+        // two way streaming, maybe return new StreamObserver<StreamRequest> requestObserver =
+        //      new StreamObserver<StreamRequest>() {
+        return new StreamObserver<StreamRequestA>() {
+
+            @Override
+            public void onNext(StreamRequestA request) {
+                String s = request.toString();
+                lastClientMessage = s;
+
+                s = "<br>...(( " + s + " onNext at server called at: " + System.currentTimeMillis() + " ))";
+                // limit string to first 200 characters
+                if (s.length() > 200) {
+                    s = s.substring(0, 200);
+                }
+                // System.out.println(s);
+                responseString = responseString + s;
+            }
+
+            @Override
+            public void onError(Throwable t) {}
+
+            @Override
+            public void onCompleted() {
+                String s = responseString + "...[[time response sent back to Client: " + System.currentTimeMillis() + "]]";
+
+                int maxStringLength = 32768 - lastClientMessage.length() - 1;
+                // limit response string to 32K, make sure the last message concatentated at the end
+                if (s.length() > maxStringLength) {
+                    s = s.substring(0, maxStringLength);
+                    s = s + lastClientMessage;
+                }
+                System.out.println(s);
+
+                StreamReplyA reply = StreamReplyA.newBuilder().setMessage(s).build();
+                responseObserver.onNext(reply);
+                responseObserver.onCompleted();
+
+            }
+        };
     }
 
 }

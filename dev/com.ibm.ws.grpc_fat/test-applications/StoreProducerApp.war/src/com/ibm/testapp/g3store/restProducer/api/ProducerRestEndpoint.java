@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -243,6 +244,41 @@ public class ProducerRestEndpoint extends ProducerGrpcServiceClientImpl {
                             .build();
         }
 
+    }
+
+    @POST
+    @Path("/streamingA/client")
+    @APIResponses(value = {
+                            @APIResponse(responseCode = "200", description = "Client Stream test finished", content = @Content(mediaType = MediaType.APPLICATION_JSON)) })
+    public Response clientStreamApp() throws Exception {
+        // stuff to call code the will be the grpc client logic
+
+        // Get the input parameters from the REST request
+        // Each parameter value will have to be transferred to the grpc request object
+        log.info("clientStreamApp(): request to run clientStreamApp test received by ProducerRestEndpoint ");
+
+        String authHeader = httpHeaders.getHeaderString("Authorization");
+
+        if (authHeader == null) {
+            // create grpc client
+            startService_AsyncStub("localhost", getPort());
+        } else {
+            // secure
+        }
+
+        try {
+            String result = grpcClientStreamApp();
+            log.info("clientStreamApp(): request to grpcClientStreamApp() has been completed by ProducerRestEndpoint result: " + result);
+            return Response.ok().entity(result).build();
+
+        } catch (InvalidArgException e) {
+            return Response.ok().entity("failed with exception: " + e.getMessage()).build();
+        }
+
+        finally {
+            // stop this grpc service
+            stopService();
+        }
     }
 
 }

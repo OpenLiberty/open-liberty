@@ -12,6 +12,7 @@ package com.ibm.testapp.g3store.restProducer.client;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -49,5 +50,9 @@ public interface ProducerServiceRestClient {
     @Path("/remove/all")
     @DELETE
     public Response deleteAllApps() throws Exception;
+
+    @POST
+    @Path("/streamingA/client")
+    public Response clientStreamApp() throws Exception;
 
 }
