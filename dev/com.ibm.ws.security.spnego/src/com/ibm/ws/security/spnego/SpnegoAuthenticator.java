@@ -105,9 +105,10 @@ public class SpnegoAuthenticator {
             } catch (IOException ex) {
                 Tr.error(tc, "SPNEGO_FAIL_TO_GET_WRITER", "SpnegoAuthenticationErrorPage", ex.getMessage());
             }
-        }
-
-        return new AuthenticationResult(AuthResult.SEND_401, msg);
+            return new AuthenticationResult(AuthResult.SEND_401, msg);
+        } else
+            //Preserve the old behavior
+            return new AuthenticationResult(AuthResult.FAILURE, msg);
     }
 
     /**
