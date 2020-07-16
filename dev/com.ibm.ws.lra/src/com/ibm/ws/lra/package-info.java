@@ -13,7 +13,7 @@
  * @version 1.0
  */
 @org.osgi.annotation.versioning.Version("1.0")
-@TraceOptions(traceGroup = "LRA", messageBundle = "com.ibm.ws.lra.resources.lra")
+@TraceOptions(traceGroup = "LRA", messageBundle = "com.ibm.ws.lra.resources.Lra")
 package com.ibm.ws.lra;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
