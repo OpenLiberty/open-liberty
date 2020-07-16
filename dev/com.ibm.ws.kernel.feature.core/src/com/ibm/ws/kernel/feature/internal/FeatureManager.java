@@ -1200,7 +1200,6 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         if (rootFeatures.isEmpty() && featureRepository.emptyFeatures()) {
             Tr.warning(tc, "EMPTY_FEATURES_WARNING");
         }
-
         Repository restrictedRespository;
         Collection<String> restrictedRepoAccessAttempts = new ArrayList<String>();
         boolean allowMultipleVersions = false;
@@ -1337,32 +1336,36 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
 
             if (installStatus.canContinue(continueOnError)) {
                 Set<String> regionsToRemove = Collections.emptySet();
-                //populate the SPI resolver hooks with the new feature info
-                if (featuresHaveChanges) {
-                    // only need this if features have changed
-                    packageInspector.populateSPIInfo(bundleContext, this);
-                    regionsToRemove = provisioner.createAndUpdateProductRegions();
-                }
+                // do not install bundles for minify operation
+                if (featureChange.provisioningMode != ProvisioningMode.CONTENT_REQUEST) {
+                    //populate the SPI resolver hooks with the new feature info
+                    if (featuresHaveChanges) {
+                        // only need this if features have changed
+                        packageInspector.populateSPIInfo(bundleContext, this);
+                        regionsToRemove = provisioner.createAndUpdateProductRegions();
+                    }
 
-                // always do the install bundle operation because it associates bundles with refeature resources
-                // TODO would be good if we could avoid this when features have not changed.
-                provisioner.installBundles(bundleContext,
-                                           bundleCache,
-                                           installStatus,
-                                           ProvisionerConstants.LEVEL_FEATURE_SERVICES - ProvisionerConstants.PHASE_INCREMENT,
-                                           ProvisionerConstants.LEVEL_FEATURE_CONTAINERS,
-                                           fwStartLevel.getInitialBundleStartLevel(),
-                                           locService);
-                // add all installed bundles to list of bundlesToStart.
-                // TODO would be good if we could avoid this when features have not changed, but in
-                // some scenarios, the framework may reinstall a features bundle even on a warm restart,
-                // which would leave the bundle in INSTALLED state (see issue #2081).
-                if (installStatus.contextIsValid() && installStatus.bundlesToStart()) {
-                    installedBundles.addAll(installStatus.getBundlesToStart());
+                    // always do the install bundle operation because it associates bundles with refeature resources
+                    // TODO would be good if we could avoid this when features have not changed.
+                    provisioner.installBundles(bundleContext,
+                                               bundleCache,
+                                               installStatus,
+                                               ProvisionerConstants.LEVEL_FEATURE_SERVICES - ProvisionerConstants.PHASE_INCREMENT,
+                                               ProvisionerConstants.LEVEL_FEATURE_CONTAINERS,
+                                               fwStartLevel.getInitialBundleStartLevel(),
+                                               locService);
+                    // add all installed bundles to list of bundlesToStart.
+                    // TODO would be good if we could avoid this when features have not changed, but in
+                    // some scenarios, the framework may reinstall a features bundle even on a warm restart,
+                    // which would leave the bundle in INSTALLED state (see issue #2081).
+                    if (installStatus.contextIsValid() && installStatus.bundlesToStart()) {
+                        installedBundles.addAll(installStatus.getBundlesToStart());
+                    }
                 }
 
                 featureRepository.updateServices();
-                if (featuresHaveChanges) {
+
+                if (featuresHaveChanges && featureChange.provisioningMode != ProvisioningMode.CONTENT_REQUEST) {
                     // Uninstall extra bundles.
                     // Important to test for null here, and not "!isEmpty()":
                     // if all features were removed, the "newBundles" list would be empty, and all
