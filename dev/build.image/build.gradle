@@ -133,7 +133,7 @@ class PackageLibertyWithFeatures extends DefaultTask {
             project.delete archive
             project.exec {
                 workingDir project.file('wlp/bin')
-                def args = ["package", "packageOpenLiberty", "--archive=${archive}", "--include=minify"]
+                def args = ["package", "packageOpenLiberty", "--archive=${archive}", "--include=minify", "-Dinternal.minify.ignore.singleton=true"]
                 if (OperatingSystem.current().windows) {
                     commandLine = ["cmd", "/c", "server"] + args
                 } else {

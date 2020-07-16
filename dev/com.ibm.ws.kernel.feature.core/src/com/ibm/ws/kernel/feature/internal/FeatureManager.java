@@ -1206,7 +1206,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         if (ProvisioningMode.CONTENT_REQUEST == mode || ProvisioningMode.FEATURES_REQUEST == mode) {
             // allow multiple versions if in minify (TODO strange since we are minifying!)
             // For feature request using the minified approach but that could cause additional singletons to be provisioned.
-            allowMultipleVersions = true;
+            allowMultipleVersions = Boolean.getBoolean("internal.minify.ignore.singleton");
             // do not restrict any features
             restrictedRespository = featureRepository;
         } else {
@@ -1233,7 +1233,12 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         // resolve the features
         // TODO Note that we are just supporting all types at runtime right now.  In the future this may be restricted by the actual running process type
         Result result = featureResolver.resolveFeatures(restrictedRespository, kernelFeaturesHolder.getKernelFeatures(), rootFeatures, Collections.<String> emptySet(),
-                                                        allowMultipleVersions);
+                                                        false);
+        if (allowMultipleVersions) {
+            if (!result.getConflicts().isEmpty()) {
+                result = featureResolver.resolveFeatures(restrictedRespository, kernelFeaturesHolder.getKernelFeatures(), rootFeatures, Collections.<String> emptySet(), true);
+            }
+        }
         restrictedAccessAttempts.addAll(restrictedRepoAccessAttempts);
 
         return result;
