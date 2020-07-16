@@ -67,6 +67,7 @@ public class HeuristicsTest extends FATServletClient {
             @Override
             public Void run() throws Exception {
                 server.stopServer("WTRN0017W", "WTRN0075W", "WTRN0076W");
+                ShrinkHelper.cleanAllExportedArchives();
                 return null;
             }
         });

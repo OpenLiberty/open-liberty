@@ -13,13 +13,17 @@ bVersion=1.0
 
 src: \
 	fat/src,\
+	test-bundles/com.ibm.ws.transaction.fat.eventListener/src,\
+	test-bundles/com.ibm.ws.transaction.fat.remoteTester/src,\
+	test-bundles/utdecorator/src,\
 	test-applications/commitPriority/src,\
+	test-applications/eventlistener/src,\
 	test-applications/transaction/src,\
 	test-applications/transactional/src,\
+	test-applications/transactionalEJB/src,\
 	test-applications/transactionscoped/src
 
 -sub: *.bnd
-
 
 fat.project: true
 
@@ -52,6 +56,7 @@ tested.features:\
   com.ibm.tx.core;version=latest,\
   com.ibm.tx.jta;version=latest,\
   com.ibm.tx.util;version=latest,\
+  com.ibm.ws.kernel.service,\
   com.ibm.websphere.javaee.annotation.1.2;version=latest,\
   com.ibm.websphere.javaee.cdi.1.2;version=latest,\
   com.ibm.websphere.javaee.servlet.3.1;version=latest,\
@@ -60,5 +65,8 @@ tested.features:\
   com.ibm.ws.logging,\
   com.ibm.websphere.org.eclipse.microprofile.faulttolerance.1.0;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.websphere.org.osgi.core,\
+  com.ibm.websphere.org.osgi.service.component,\
+  com.ibm.wsspi.org.osgi.service.component.annotations,\
   com.ibm.ws.tx.embeddable;version=latest,\
   com.ibm.ws.transaction.test.util;version=latest
