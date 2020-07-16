@@ -86,7 +86,7 @@ public class TwitterTokenServices {
             try {
                 SocialUtil.validateEndpointWithQuery(authzEndpoint);
             } catch (SocialLoginException e) {
-                Tr.error(tc, "FAILED_TO_REDIRECT_TO_AUTHZ_ENDPOINT", new Object[] { config.getUniqueId(), e });
+                Tr.error(tc, "FAILED_TO_REDIRECT_TO_AUTHZ_ENDPOINT", new Object[] { config.getUniqueId(), e.getMessage() });
                 ErrorHandlerImpl.getInstance().handleErrorResponse(response);
                 return;
             }

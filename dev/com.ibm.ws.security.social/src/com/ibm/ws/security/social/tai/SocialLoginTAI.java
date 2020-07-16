@@ -333,7 +333,7 @@ public class SocialLoginTAI implements TrustAssociationInterceptor, UnprotectedR
         } catch (SocialLoginException e) {
             // Couldn't find a unique social login config to serve this request - redirect to sign in page for user to select
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "A unique social login config wasn't found for this request. Exception was " + e);
+                Tr.debug(tc, "A unique social login config wasn't found for this request. Exception was " + e.getMessage());
             }
             return displaySocialMediaSelectionPage(request, response, socialTaiRequest);
         }

@@ -106,7 +106,7 @@ public class EndpointServices {
                     doRedirect(request, response, config);
                 }
             } catch (Exception e) {
-                throw new SocialLoginException("ERROR_PROCESSING_REDIRECT", null, new Object[] { e });
+                throw new SocialLoginException("ERROR_PROCESSING_REDIRECT", null, new Object[] { e.getMessage() });
             }
 
         } else if (socialLoginRequest.isLogout()) {
@@ -176,7 +176,7 @@ public class EndpointServices {
         try {
             SocialUtil.validateEndpointWithQuery(requestUrl);
         } catch (SocialLoginException e) {
-            Tr.error(tc, "REQUEST_URL_NOT_VALID", new Object[] { requestUrl, e });
+            Tr.error(tc, "REQUEST_URL_NOT_VALID", new Object[] { requestUrl, e.getMessage() });
             ErrorHandlerImpl.getInstance().handleErrorResponse(response);
             return;
         }
@@ -298,7 +298,7 @@ public class EndpointServices {
         try {
             SocialUtil.validateEndpointWithQuery(requestUrl);
         } catch (SocialLoginException e) {
-            Tr.error(tc, "REQUEST_URL_NOT_VALID", new Object[] { requestUrl, e });
+            Tr.error(tc, "REQUEST_URL_NOT_VALID", new Object[] { requestUrl, e.getMessage() });
             ErrorHandlerImpl.getInstance().handleErrorResponse(response);
             return;
         }
