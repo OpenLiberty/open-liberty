@@ -13,12 +13,12 @@
 bVersion=1.0
 
 Bundle-Name: Long Running Actions
-Bundle-SymbolicName: com.ibm.ws.lra
+Bundle-SymbolicName: io.openliberty.mpLRA
 Bundle-Description: Long Running Actions Impl; version=${bVersion}
 
-Export-Package: com.ibm.ws.lra;provide:=true
+Export-Package: io.openliberty.mpLRA.internal;provide:=true
 
-Private-Package: com.ibm.ws.lra.resources
+Private-Package: io.openliberty.mpLRA.internal.resources
 
 javac.source: 1.8
 javac.target: 1.8
@@ -32,7 +32,7 @@ javac.target: 1.8
 #    configuration-policy:=ignore;\
 #    properties:="service.vendor=IBM"
     
--dsannotations: com.ibm.ws.lra.LraFilterComponent, com.ibm.ws.lra.LraConfig
+-dsannotations: io.openliberty.mpLRA.internal.LraFilterComponent, io.openliberty.mpLRA.internal.LraConfig
 
 Include-Resource: \
   OSGI-INF=resources/OSGI-INF

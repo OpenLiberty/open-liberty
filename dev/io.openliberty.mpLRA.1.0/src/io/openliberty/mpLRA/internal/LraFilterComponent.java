@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.lra;
+package io.openliberty.mpLRA.internal;
 
 import java.net.URI;
 import java.net.URISyntaxException;
