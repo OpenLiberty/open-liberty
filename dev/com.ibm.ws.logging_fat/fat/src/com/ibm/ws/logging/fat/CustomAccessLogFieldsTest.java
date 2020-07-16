@@ -358,6 +358,9 @@ public class CustomAccessLogFieldsTest {
         unwantedFields.add("ibm_userDir");
         unwantedFields.add("ibm_datetime");
         unwantedFields.add("ibm_sequence");
+        // The following two fields are formatted differently in JSON compared to the http_access.log
+        unwantedFields.add("ibm_accessLogDatetime");
+        unwantedFields.add("ibm_requestStartTime");
         parsedLine.keySet().removeAll(unwantedFields);
 
         // unfortunately, our JSON log isn't ordered like the http access logs
