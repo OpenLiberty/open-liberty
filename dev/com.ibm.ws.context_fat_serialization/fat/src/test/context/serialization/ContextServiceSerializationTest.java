@@ -28,6 +28,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -36,11 +37,18 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
 public class ContextServiceSerializationTest extends FATServletClient {
+    @ClassRule
+    public static RepeatTests r = RepeatTests
+                    .withoutModification()
+                    .andWith(new JakartaEE9Action());
+
     @Server("com.ibm.ws.context.fat.serialization")
     //@TestServlet(servlet = ContextServiceSerializationTestServlet.class, path = "contextserbvt/ContextServiceSerializationTestServlet")
     public static LibertyServer server;
