@@ -420,7 +420,7 @@ public class ServiceSupportTests extends FATServletClient {
 
         // Make sure we can still send a request to the original app
         // "Snozzberry","Green Man Brewery",AMERICANWILDALE, 4.2);
-        LOG.info("testSingleWarUpdate() : Add a second new beer.");
+        LOG.info("testDuplicateService() : Add a second new beer.");
         Beer newBeer = Beer.newBuilder().setBeerName("Snozzberry").setBeerMaker("Green Man Brewery").setBeerTypeValue(1).setBeerRating((float) 4.2).build();
         BeerResponse rsp = beerServiceBlockingStub.addBeer(newBeer);
 
@@ -428,12 +428,14 @@ public class ServiceSupportTests extends FATServletClient {
 
         stopGrpcService(beerChannel);
 
-        // Stop the grpc application
+        // Stop the grpc applications
         LOG.info("testDuplicateService() : Stop the FavoriteBeerService application and remove it from dropins.");
         assertTrue(grpcServer.removeAndStopDropinsApplications(fbs));
+        grpcServer.removeAndStopDropinsApplications("FavoriteBeerService2.war");
 
         // removeAndStop above actually just renames the file, so really delete so the next tests have a clean slate
         grpcServer.deleteFileFromLibertyServerRoot("/" + fbs);
+        grpcServer.deleteFileFromLibertyServerRoot("/" + "FavoriteBeerService2.war");
 
     }
 }

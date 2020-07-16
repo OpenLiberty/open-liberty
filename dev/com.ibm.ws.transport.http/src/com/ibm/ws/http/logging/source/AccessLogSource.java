@@ -318,8 +318,8 @@ public class AccessLogSource implements Source {
                             fieldSetters.add((ald, alrd) -> ald.setResponseHeader((String) data, AccessLogResponseHeaderValue.getHeaderValue(alrd.getResponse(), alrd.getRequest(), data)));
                     } break;
                 case "%r": fieldSetters.add((ald, alrd) -> ald.setRequestFirstLine(AccessLogFirstLine.getFirstLineAsString(alrd.getResponse(), alrd.getRequest(), null))); break;
-                case "%t": fieldSetters.add((ald, alrd) -> ald.setRequestStartTime(AccessLogStartTime.getStartTimeAsStringForJSON(alrd.getResponse(), alrd.getRequest(), null))); break;
-                case "%{t}W": fieldSetters.add((ald, alrd) -> ald.setAccessLogDatetime(AccessLogCurrentTime.getAccessLogCurrentTimeAsString(alrd.getResponse(), alrd.getRequest(), null))); break;
+                case "%t": fieldSetters.add((ald, alrd) -> ald.setRequestStartTime(AccessLogStartTime.getStartTimeAsLongForJSON(alrd.getResponse(), alrd.getRequest(), null))); break;
+                case "%{t}W": fieldSetters.add((ald, alrd) -> ald.setAccessLogDatetime(AccessLogCurrentTime.getAccessLogCurrentTimeAsLong(alrd.getResponse(), alrd.getRequest(), null))); break;
                 case "%u": fieldSetters.add((ald, alrd) -> ald.setRemoteUser(AccessLogRemoteUser.getRemoteUser(alrd.getResponse(), alrd.getRequest(), null))); break;
                 //@formatter:on
             }
@@ -607,13 +607,15 @@ public class AccessLogSource implements Source {
 
     private static JsonFieldAdder addRequestStartTimeField(int format) {
         return (jsonBuilder, ald) -> {
-            return jsonBuilder.addField(AccessLogData.getRequestStartTimeKey(format), ald.getRequestStartTime(), false, true);
+            String startTime = CollectorJsonHelpers.dateFormatTL.get().format(ald.getRequestStartTime());
+            return jsonBuilder.addField(AccessLogData.getRequestStartTimeKey(format), startTime, false, true);
         };
     }
 
     private static JsonFieldAdder addAccessLogDatetimeField(int format) {
         return (jsonBuilder, ald) -> {
-            return jsonBuilder.addField(AccessLogData.getAccessLogDatetimeKey(format), ald.getAccessLogDatetime(), false, true);
+            String accessLogDatetime = CollectorJsonHelpers.dateFormatTL.get().format(ald.getAccessLogDatetime());
+            return jsonBuilder.addField(AccessLogData.getAccessLogDatetimeKey(format), accessLogDatetime, false, true);
         };
     }
 

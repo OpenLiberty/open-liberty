@@ -16,11 +16,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.ibm.ws.grpc.fat.beer.service.BeerServiceGrpc;
+
 import com.ibm.ws.grpc.fat.beer.service.Beer;
 import com.ibm.ws.grpc.fat.beer.service.BeerResponse;
+import com.ibm.ws.grpc.fat.beer.service.BeerServiceGrpc;
 import com.ibm.ws.grpc.fat.beer.service.RequestedBeerType;
-
 
 import io.grpc.stub.StreamObserver;
 
@@ -35,14 +35,14 @@ import io.grpc.stub.StreamObserver;
 @WebServlet(urlPatterns = { "/invalid" }, asyncSupported = true)
 public class InvalidServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    
+
     // implementation of the InvalidService service
     private static final class InvalidGrpcServiceImpl extends BeerServiceGrpc.BeerServiceImplBase {
 
         // a no-arg constructor is required for Liberty to start this grpc service automatically
         // Make this gprc service invalid by having a constructor that takes an arg
         InvalidGrpcServiceImpl(int i) {
-           
+
         }
 
         @Override
@@ -58,13 +58,12 @@ public class InvalidServlet extends HttpServlet {
         @Override
         public void getBestBeer(RequestedBeerType type, StreamObserver<Beer> responseObserver) {
 
-
         }
 
         //Get a list of all the beers
         @Override
         public void getBeers(com.google.protobuf.Empty na, StreamObserver<Beer> responseObserver) {
- 
+
         }
     }
 
