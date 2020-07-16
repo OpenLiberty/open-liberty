@@ -361,10 +361,12 @@ public class JsonConfigTest {
         TestUtils.runApp(server, "logServlet");
     }
 
-    private static String setServerConfig(String fileName) throws Exception {
-        server.setMarkToEndOfLog();
+    //check message.log for CWWKG0017I.*|CWWKG0018I. message, messageSource must have "message"
+    private static void setServerConfig(String fileName) throws Exception {
+        RemoteFile log = server.getDefaultTraceFile();
+        server.setMarkToEndOfLog(log);
         server.setServerConfigurationFile(fileName);
-        return server.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*");
+        Assert.assertNotNull(server.waitForStringInLog("CWWKG0017I.*|CWWKG0018I.*", log));
     }
 
     @AfterClass

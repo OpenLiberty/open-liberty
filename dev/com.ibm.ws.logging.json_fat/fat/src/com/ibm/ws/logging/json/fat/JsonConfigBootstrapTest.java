@@ -22,6 +22,7 @@ import java.util.Properties;
 
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -206,6 +207,9 @@ public class JsonConfigBootstrapTest {
             consolesourceList = new ArrayList<String>(Arrays.asList("trace"));
             checkConsoleLogUpdate(true, consoleLogFile, "INFO", consolesourceList, "");
 
+            //set server.xml to a basic config so that when server stops, it can successfully check for CWWKE0036I in console log
+            setServerConfig(SERVER_XML_BASIC);
+
         } finally {
             // Restore the initial contents of bootstrap.properties
             FileOutputStream out = getFileOutputStreamForRemoteFile(bootstrapFile, false);
@@ -245,6 +249,9 @@ public class JsonConfigBootstrapTest {
 
             // Check in console.log file to see consoleLogLevel is set to WARNING
             checkConsoleLogUpdate(true, consoleLogFile, "ERROR", ALL_SOURCE_LIST, "");
+
+            //set server.xml to a basic config so that when server stops, it can successfully check for CWWKE0036I in console log
+            setServerConfig(SERVER_XML_BASIC);
 
         } finally {
             // Restore the initial contents of bootstrap.properties
@@ -547,10 +554,11 @@ public class JsonConfigBootstrapTest {
         TestUtils.runApp(server, "logServlet");
     }
 
-    private static String setServerConfig(String fileName) throws Exception {
-        server.setMarkToEndOfLog();
+    private static void setServerConfig(String fileName) throws Exception {
+        RemoteFile log = server.getDefaultTraceFile();
+        server.setMarkToEndOfLog(log);
         server.setServerConfigurationFile(fileName);
-        return server.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*");
+        Assert.assertNotNull(server.waitForStringInLog("CWWKG0017I.*|CWWKG0018I.*", log));
     }
 
     private static String setServerConfig(LibertyServer server, String fileName) throws Exception {
