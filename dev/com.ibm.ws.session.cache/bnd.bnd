@@ -41,6 +41,8 @@ Service-Component=com.ibm.ws.session.cache;\
   optional:="monitor,userTransaction";\
   properties:="library.target=(id=unbound),monitor.target=(id=unbound)"
 
+jakartaeeMe: true
+
 -buildpath: \
 	com.ibm.websphere.appserver.spi.kernel.service,\
 	com.ibm.websphere.appserver.spi.logging,\

@@ -37,6 +37,8 @@ Service-Component: \
     dynamic:="dataSourceFactory,embeddableWebSphereTransactionManager,localTransactionCurrent,resourceRefConfigFactory,uowCurrent,userTransaction"; \
     properties:='service.vendor=IBM,service.ranking:Integer=100,dataSourceFactory.target=(id=unbound)'
 
+jakartaeeMe: true
+
 instrument.disabled: true
 
 -buildpath: \
