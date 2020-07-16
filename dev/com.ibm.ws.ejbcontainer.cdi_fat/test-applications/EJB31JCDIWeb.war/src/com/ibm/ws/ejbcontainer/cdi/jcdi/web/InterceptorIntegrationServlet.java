@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2018 IBM Corporation and others.
+ * Copyright (c) 2010, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
 
 package com.ibm.ws.ejbcontainer.cdi.jcdi.web;
 
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+
 import java.util.ArrayList;
 
 import javax.servlet.annotation.WebServlet;
@@ -21,6 +23,7 @@ import com.ibm.websphere.ejbcontainer.test.tools.FATHelper;
 import com.ibm.ws.ejbcontainer.cdi.jcdi.ejb_int.InterceptorLocal;
 import com.ibm.ws.ejbcontainer.cdi.jcdi.ejb_int.InterceptorStatefulLocal;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 
 /**
@@ -143,6 +146,7 @@ public class InterceptorIntegrationServlet extends FATServlet {
      */
     @Test
     //@Ignore
+    @SkipForRepeat({ EE9_FEATURES })
     public void testStatefulEjbWithBothInterceptors() throws Exception {
         // Locate Stateful local bean
         InterceptorStatefulLocal bean = (InterceptorStatefulLocal) FATHelper.lookupDefaultBindingEJBJavaApp(InterceptorStatefulLocal.class.getName(),
