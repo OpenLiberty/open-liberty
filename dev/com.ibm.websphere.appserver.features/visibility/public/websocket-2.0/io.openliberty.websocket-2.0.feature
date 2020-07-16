@@ -16,6 +16,6 @@ Subsystem-Name: Jakarta WebSocket 2.0
  com.ibm.ws.wsoc.1.1.jakarta
 -jars=com.ibm.websphere.appserver.api.wsoc.jakarta; location:=dev/api/ibm/
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.wsoc_1.0-javadoc.zip
-kind=noship
+kind=beta
 edition=full
 WLP-Activation-Type: parallel

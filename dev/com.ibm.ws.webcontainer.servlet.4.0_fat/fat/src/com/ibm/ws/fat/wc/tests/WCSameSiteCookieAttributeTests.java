@@ -50,7 +50,6 @@ import com.ibm.websphere.simplicity.config.SameSite;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -4344,8 +4343,6 @@ public class WCSameSiteCookieAttributeTests {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat("EE9_FEATURES")
-    // Skip EE9 Run Until AppSecurity-2.0 is Updated
     public void testSameSiteConfig_Lax_WebAppSecurity_Strict() throws Exception {
         boolean headerFound = false;
         String expectedResponse = "Welcome to the SameSiteSecurityServlet!";

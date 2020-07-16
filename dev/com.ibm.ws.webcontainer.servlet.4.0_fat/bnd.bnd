@@ -12,25 +12,28 @@
 bVersion=1.0
 
 src: \
-	fat/src,\
-	test-applications/TestServlet40.war/src,\
-	test-applications/TestServlet40.jar/src,\
-	test-applications/TestGetMapping.war/src,\
-	test-applications/TestAddJspFile.war/src, \
-	test-applications/TestEncoding.war/src, \
-	test-applications/TestPushBuilderSecurity.war/src, \
-	test-applications/ServletPathDefaultMapping.war/src, \
-	test-applications/TestBadServletContextListener.war/src, \
-	test-applications/TestGetMappingSlashStar.war/src, \
-	test-applications/SCIExceptionTest.jar/src, \
-	test-applications/SCIFilterServletNameMapping.jar/src, \
-	test-applications/SameSiteTest.war/src, \
-	test-applications/SameSiteSecurityTest.war/src
-	
+    fat/src,\
+    test-applications/TestServlet40.war/src,\
+    test-applications/TestServlet40.jar/src,\
+    test-applications/TestGetMapping.war/src,\
+    test-applications/TestAddJspFile.war/src,\
+    test-applications/TestEncoding.war/src,\
+    test-applications/TestPushBuilderSecurity.war/src,\
+    test-applications/ServletPathDefaultMapping.war/src,\
+    test-applications/TestBadServletContextListener.war/src,\
+    test-applications/TestGetMappingSlashStar.war/src,\
+    test-applications/SCIExceptionTest.jar/src,\
+    test-applications/SCIFilterServletNameMapping.jar/src,\
+    test-applications/SameSiteTest.war/src,\
+    test-applications/SameSiteSecurityTest.war/src
+
 fat.project: true
 
-tested.features: servlet-5.0,\
-	jsp-3.0
+tested.features:\
+    servlet-5.0,\
+    jsp-3.0,\
+    appsecurity-4.0,\
+    cdi-3.0
 
 -buildpath:\
     com.ibm.ws.org.apache.commons.logging.1.0.3;version=latest,\
