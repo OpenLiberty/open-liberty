@@ -200,7 +200,7 @@ public class Cdi12Test extends LoggingTest {
     protected WebResponse verifyResponse(String testName) throws Exception {
         return SS.verifyResponse(createWebBrowserForTestCase(), "/cdi/RequestCDI?testname=" + testName, "SuccessfulTest");
     }
-    
+
 
     //
     //  SESSION TESTS

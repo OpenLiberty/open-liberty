@@ -46,8 +46,6 @@ import io.openliberty.wsoc.util.wsoc.WsocTest;
 @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
 public class Cdi20Test extends LoggingTest {
 
-    // private static final Logger LOG = Logger.getLogger(ContextTest.class.getName());
-
     @ClassRule
     public static SharedServer SS = new SharedServer("cdi20TestServer", false);
 

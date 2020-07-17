@@ -45,7 +45,7 @@ public class FATSuite {
 
     //websocket-1.0 is not part of EE6/7/8, so we are doing a manual replacement
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction())
                                                   .andWith(FeatureReplacementAction.EE9_FEATURES()
                                                   .removeFeature("websocket-1.0")
                                                   .addFeature("websocket-2.0"));
