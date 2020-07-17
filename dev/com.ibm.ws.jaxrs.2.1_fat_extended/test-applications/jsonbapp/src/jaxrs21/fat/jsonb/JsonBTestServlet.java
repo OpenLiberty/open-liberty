@@ -156,6 +156,7 @@ public class JsonBTestServlet extends FATServlet {
     }
 
     private void compareJSON(String expected, String actual) throws Exception {
+        System.out.println("compareJSON: \n expected: " + expected + "\n actual: " + actual);
         try {
             JsonReader jsonReader = Json.createReader(new StringReader(expected));
             JsonObject exp = jsonReader.readObject();

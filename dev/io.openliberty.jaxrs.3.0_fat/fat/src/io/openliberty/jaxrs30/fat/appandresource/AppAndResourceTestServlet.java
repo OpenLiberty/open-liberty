@@ -31,7 +31,7 @@ public class AppAndResourceTestServlet extends FATServlet {
     private final static ClassLoader THIS_CLASSLOADER = AppAndResourceTestServlet.class.getClassLoader();
 
     @Test
-    public void testCanLoadJavaxWsRsClasses() throws Exception {
+    public void testCanInvokeCombinedAppAndResourceClass() throws Exception {
         URI uri = URI.create("http://localhost:" + System.getProperty("bvt.prop.HTTP_default") + "/appandresource/app/path");
         HttpURLConnection conn = (HttpURLConnection) uri.toURL().openConnection();
         assertEquals(200, conn.getResponseCode());

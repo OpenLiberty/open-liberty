@@ -10,6 +10,7 @@
  *******************************************************************************/
 package jaxrs21.fat.jsonbcharset;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
@@ -21,6 +22,7 @@ import javax.ws.rs.core.HttpHeaders;
 @ApplicationPath("/rest")
 @Path("/person")
 @Produces("application/json")
+@ApplicationScoped
 public class Resource extends Application {
 
     @GET
