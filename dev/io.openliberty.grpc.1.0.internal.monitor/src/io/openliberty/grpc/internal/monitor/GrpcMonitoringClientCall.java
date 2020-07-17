@@ -22,11 +22,11 @@ import io.grpc.Metadata;
  */
 public class GrpcMonitoringClientCall<ReqT, RespT>
 		extends ForwardingClientCall.SimpleForwardingClientCall<ReqT, RespT> {
-	private final GrpcClientMetrics clientMetrics;
+	private final GrpcClientStatsMonitor clientMetrics;
 	private final GrpcMethod grpcMethod;
 	private final Clock clock;
 
-	protected GrpcMonitoringClientCall(ClientCall<ReqT, RespT> delegate, GrpcClientMetrics clientMetrics,
+	protected GrpcMonitoringClientCall(ClientCall<ReqT, RespT> delegate, GrpcClientStatsMonitor clientMetrics,
 			GrpcMethod grpcMethod, Clock clock) {
 		super(delegate);
 		this.clientMetrics = clientMetrics;
@@ -44,7 +44,7 @@ public class GrpcMonitoringClientCall<ReqT, RespT>
 	@Override
 	public void sendMessage(ReqT requestMessage) {
 		if (grpcMethod.streamsRequests()) {
-			clientMetrics.incrementSentMsgCountBy(1);
+			clientMetrics.recordMsgSent();;
 		}
 		super.sendMessage(requestMessage);
 	}

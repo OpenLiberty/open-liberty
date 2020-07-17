@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.FFDCFilter;
 
 import io.grpc.ClientInterceptor;
 import io.grpc.ManagedChannelProvider;
@@ -146,11 +147,10 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 			Class<?> clazz = Class.forName(className);
 			interceptor = (ClientInterceptor) clazz.getDeclaredConstructor()
 					.newInstance();
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException | NoSuchMethodException
-				| SecurityException e) {
-			e.printStackTrace();
-		}
+		} catch (Exception e) {
+			// an exception can happen if the monitoring package is not loaded 
+            FFDCFilter.processException(e, this.getClass().getName(), "LibertyManagedChannelProvider");
+        }
 
 		return interceptor;
 	}

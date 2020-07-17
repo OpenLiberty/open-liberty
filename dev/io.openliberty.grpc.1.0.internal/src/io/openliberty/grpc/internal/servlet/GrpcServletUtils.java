@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.http2.GrpcServletServices;
 import com.ibm.ws.http2.GrpcServletServices.ServiceInformation;
@@ -270,10 +271,10 @@ public class GrpcServletUtils {
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 				Tr.debug(tc, "monitoring interceptor has been added to service {0}", serviceName);
 			}
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException | NoSuchMethodException | SecurityException e) {
-			e.printStackTrace();
-		}
+		} catch (Exception e) {
+			// an exception can happen if the monitoring package is not loaded 
+			FFDCFilter.processException(e, GrpcServletUtils.class.getName(), "GrpcServletUtils");
+        }
 
 		return interceptor;
 	}
