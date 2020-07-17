@@ -30,6 +30,6 @@ import componenttest.rules.repeater.RepeatTests;
 public class FATSuite {
     @ClassRule
     // run tests as-is and again with EE9 features+packages
-    public static RepeatTests r = RepeatTests.withoutModification().andWith(new JakartaEE9Action());
+    public static RepeatTests r = RepeatTests.withoutModification().andWith(new JakartaEE9Action().fullFATOnly());
 
 }
