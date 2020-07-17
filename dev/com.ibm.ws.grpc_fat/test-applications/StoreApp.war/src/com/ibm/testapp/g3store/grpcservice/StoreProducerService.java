@@ -424,7 +424,6 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
                 if (s.length() > 200) {
                     s = s.substring(0, 200);
                 }
-                // System.out.println(s);
                 responseString = responseString + s;
             }
 
@@ -441,7 +440,7 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
                     s = s.substring(0, maxStringLength);
                     s = s + lastClientMessage;
                 }
-                System.out.println(s);
+                log.info(s);
 
                 StreamReplyA reply = StreamReplyA.newBuilder().setMessage(s).build();
                 responseObserver.onNext(reply);

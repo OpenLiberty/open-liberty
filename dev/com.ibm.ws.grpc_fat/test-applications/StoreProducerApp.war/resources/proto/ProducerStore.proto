@@ -51,6 +51,12 @@ service AppProducerService {
     */
   rpc createApps(stream AppRequest) returns (MultiCreateResponse){}
   
+  /*
+  Client will stream a changing message over and over to the server.  Size and number of messages streamed
+    can be change in the client code.
+  At the end the server responses with a message containing some of what was streamed for verification
+  No security
+  */
   rpc clientStreamA(stream StreamRequestA) returns (StreamReplyA) {}
   
 }

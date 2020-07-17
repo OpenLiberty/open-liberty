@@ -487,7 +487,6 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
             }
 
             nextRequest = StreamRequestA.newBuilder().setMessage(nextMessage).build();
-            // System.out.println("Client sending/onNext: " + nextMessage);
             clientStreamAX.onNext(nextRequest);
             try {
                 if (timeBetweenMessagesMsec > 0) {
@@ -504,7 +503,7 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         } catch (Exception x) {
             // do nothing
         }
-        System.out.println("Client calling onCompleted");
+        log.info("Client calling onCompleted");
         clientStreamAX.onCompleted();
 
         // wait for the response from server
@@ -515,10 +514,10 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         }
 
         // test that this is what was expected:
-        System.out.println("reply message was: " + replyAfterClientStream);
+        log.info("reply message was: " + replyAfterClientStream);
         int i1 = replyAfterClientStream.indexOf(firstMessage);
         int i2 = replyAfterClientStream.indexOf(lastMessage);
-        System.out.println("firstMessage index at: " + i1 + " lastMessage index at: " + i2);
+        log.info("firstMessage index at: " + i1 + " lastMessage index at: " + i2);
 
         if ((i1 >= 0) && (i2 >= 0)) {
             return ("success");
