@@ -41,19 +41,19 @@ public class GrpcServerMetrics extends Meter implements GrpcServerStatsMXBean {
 	public GrpcServerMetrics(String aName, String sName) {
 		setAppName(aName);
 		setServiceName(sName);
-		
+
 		serverStarted = new Counter();
 		serverStarted.setDescription("This shows total number of RPCs started on the server");
 		serverStarted.setUnit("ns");
-		
+
 		serverHandled = new Counter();
 		serverHandled.setDescription("This shows total number of RPCs completed on the server");
 		serverHandled.setUnit("ns");
-		
+
 		receivedMsgCount = new Counter();
 		receivedMsgCount.setDescription("This shows number of received stream messages");
 		receivedMsgCount.setUnit("ns");
-		
+
 		sentMsgCount = new Counter();
 		sentMsgCount.setDescription("This shows number of stream messages sent by the service");
 		sentMsgCount.setUnit("ns");
@@ -85,17 +85,14 @@ public class GrpcServerMetrics extends Meter implements GrpcServerStatsMXBean {
 
 	public void recordCallStarted() {
 		serverStarted.incrementBy(1);
+		System.out.println(String.format("ANNA started: service[%s] application[%s] - %s", getServiceName(),
+				getAppName(), getCallStartedCount()));
 	}
 
 	public void recordServerHandled() {
 		serverHandled.incrementBy(1);
-	}
-
-	/**
-	 * @param requestCount the requestCount to set
-	 */
-	public void setRequestCount(Counter requestCount) {
-		this.receivedMsgCount = requestCount;
+		System.out.println(String.format("ANNA handled: service[%s] application[%s] - %s", getServiceName(),
+				getAppName(), getServiceHandledCount()));
 	}
 
 	/**
@@ -105,6 +102,8 @@ public class GrpcServerMetrics extends Meter implements GrpcServerStatsMXBean {
 	 */
 	public void incrementReceivedMsgCountBy(int i) {
 		this.receivedMsgCount.incrementBy(i);
+		System.out.println(String.format("ANNA received msg: service[%s] application[%s] - %s", getServiceName(),
+				getAppName(), getReceivedMessagesCount()));
 	}
 
 	/**
@@ -114,10 +113,12 @@ public class GrpcServerMetrics extends Meter implements GrpcServerStatsMXBean {
 	 */
 	public void incrementSentMsgCountBy(int i) {
 		this.sentMsgCount.incrementBy(i);
+		System.out.println(String.format("ANNA sent msg: service[%s] application[%s] - %s", getServiceName(),
+				getAppName(), getSentMessagesCount()));
 	}
 
 	public void recordLatency(double latencySec) {
-		// TODO implement 
+		// TODO implement
 	}
 
 	@Override

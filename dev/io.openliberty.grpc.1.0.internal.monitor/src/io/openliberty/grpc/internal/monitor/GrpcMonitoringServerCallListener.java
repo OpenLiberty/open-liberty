@@ -20,9 +20,9 @@ import io.grpc.ServerCall;
 class GrpcMonitoringServerCallListener<R> extends ForwardingServerCallListener<R> {
 	private final ServerCall.Listener<R> delegate;
 	private final GrpcMethod grpcMethod;
-	private final GrpcServerMetrics serverMetrics;
+	private final GrpcServerStatsMonitor serverMetrics;
 
-	GrpcMonitoringServerCallListener(ServerCall.Listener<R> delegate, GrpcServerMetrics serverMetrics,
+	GrpcMonitoringServerCallListener(ServerCall.Listener<R> delegate, GrpcServerStatsMonitor serverMetrics,
 			GrpcMethod grpcMethod) {
 		this.delegate = delegate;
 		this.serverMetrics = serverMetrics;
@@ -37,7 +37,7 @@ class GrpcMonitoringServerCallListener<R> extends ForwardingServerCallListener<R
 	@Override
 	public void onMessage(R request) {
 		if (grpcMethod.streamsRequests()) {
-			serverMetrics.incrementReceivedMsgCountBy(1);
+			serverMetrics.recordMsgReceived();
 		}
 		super.onMessage(request);
 	}

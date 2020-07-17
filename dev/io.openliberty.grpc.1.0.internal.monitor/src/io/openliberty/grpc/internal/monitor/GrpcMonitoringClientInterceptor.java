@@ -33,7 +33,7 @@ public class GrpcMonitoringClientInterceptor implements ClientInterceptor {
 	public <ReqT, RespT> ClientCall<ReqT, RespT> interceptCall(MethodDescriptor<ReqT, RespT> methodDescriptor,
 			CallOptions callOptions, Channel channel) {
 		GrpcMethod grpcMethod = GrpcMethod.of(methodDescriptor);
-		GrpcClientMetrics metrics = new GrpcClientMetrics(grpcMethod);
+		GrpcClientStatsMonitor metrics = new GrpcClientStatsMonitor(grpcMethod);
 		return new GrpcMonitoringClientCall<>(channel.newCall(methodDescriptor, callOptions), metrics, grpcMethod,
 				clock);
 	}

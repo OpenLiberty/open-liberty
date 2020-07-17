@@ -77,10 +77,14 @@ public class GrpcClientMetrics extends Meter implements GrpcClientStatsMXBean {
 
 	public void recordCallStarted() {
 		rpcStarted.incrementBy(1);
+		System.out.println(String.format("ANNA client RPC started: service[%s] method[%s] - %s", method.serviceName(),
+				method.methodName(), getRpcStartedCount()));
 	}
 
 	public void recordClientHandled() {
 		rpcCompleted.incrementBy(1);
+		System.out.println(String.format("ANNA client RPC completed: service[%s] method[%s] - %s", method.serviceName(),
+				method.methodName(), getRpcCompletedCount()));
 	}
 
 	/**
@@ -90,6 +94,8 @@ public class GrpcClientMetrics extends Meter implements GrpcClientStatsMXBean {
 	 */
 	public void incrementReceivedMsgCountBy(int i) {
 		this.streamMessagesReceived.incrementBy(i);
+		System.out.println(String.format("ANNA client received msg: service[%s] method[%s] - %s", method.serviceName(),
+				method.methodName(), getReceivedMessagesCount()));
 	}
 
 	/**
@@ -99,10 +105,12 @@ public class GrpcClientMetrics extends Meter implements GrpcClientStatsMXBean {
 	 */
 	public void incrementSentMsgCountBy(int i) {
 		this.streamMessagesSent.incrementBy(i);
+		System.out.println(String.format("ANNA client sent msg: service[%s] method[%s] - %s", method.serviceName(),
+				method.methodName(), getSentMessagesCount()));
 	}
 
 	public void recordLatency(double latencySec) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

@@ -23,12 +23,12 @@ public class GrpcMonitoringClientCallListener<RespT> extends ForwardingClientCal
 	private static final long MILLIS_PER_SECOND = 1000L;
 	
 	private final ClientCall.Listener<RespT> delegate;
-	private final GrpcClientMetrics clientMetrics;
+	private final GrpcClientStatsMonitor clientMetrics;
 	private final GrpcMethod grpcMethod;
 	private final Clock clock;
 	private final Instant startInstant;
 
-	GrpcMonitoringClientCallListener(ClientCall.Listener<RespT> delegate, GrpcClientMetrics clientMetrics,
+	GrpcMonitoringClientCallListener(ClientCall.Listener<RespT> delegate, GrpcClientStatsMonitor clientMetrics,
 			GrpcMethod grpcMethod, Clock clock) {
 		this.delegate = delegate;
 		this.clientMetrics = clientMetrics;
@@ -53,7 +53,7 @@ public class GrpcMonitoringClientCallListener<RespT> extends ForwardingClientCal
 	@Override
 	public void onMessage(RespT responseMessage) {
 		if (grpcMethod.streamsResponses()) {
-			clientMetrics.incrementReceivedMsgCountBy(1);
+			clientMetrics.recordMsgReceived();
 		}
 		super.onMessage(responseMessage);
 	}
