@@ -7,6 +7,6 @@ IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature
  com.ibm.ws.cdi.web.jakarta
 -features=io.openliberty.jakarta.jsp-3.0; apiJar=false
 IBM-Install-Policy: when-satisfied
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel
