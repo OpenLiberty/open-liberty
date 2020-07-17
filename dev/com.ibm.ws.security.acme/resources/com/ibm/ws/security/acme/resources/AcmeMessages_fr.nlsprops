@@ -326,3 +326,7 @@ CWPKI2071W.useraction=Pour \u00e9viter que ce message d'avertissement ne s'affic
 CWPKI2072W=CWPKI2072W: Le service ACME n''a pas pu lire ou \u00e9crire le fichier historique ACME dans {0}. L''erreur est la suivante : {1}''.
 CWPKI2072W.explanation=Le service ACME n'est pas parvenu \u00e0 acc\u00e9der au fichier historique ACME.
 CWPKI2072W.useraction=Assurez-vous que le r\u00e9pertoire de l'historique ACME est associ\u00e9 aux droits en lecture et en \u00e9criture.
+
+CWPKI2073W=CWPKI2073W: Aucun contact de compte n'a \u00e9t\u00e9 sp\u00e9cifi\u00e9. Il est recommand\u00e9 de d\u00e9finir cette propri\u00e9t\u00e9 dans la configuration du serveur. Si une cl\u00e9 est perdue ou que le compte est compromis, l'acc\u00e8s au compte est perdu.
+CWPKI2073W.explanation=La valeur de la propri\u00e9t\u00e9 accountContact n'a pas \u00e9t\u00e9 sp\u00e9cifi\u00e9e dans la configuration du serveur.
+CWPKI2073W.useraction=D\u00e9finissez la propri\u00e9t\u00e9 accountContact dans la configuration du serveur.

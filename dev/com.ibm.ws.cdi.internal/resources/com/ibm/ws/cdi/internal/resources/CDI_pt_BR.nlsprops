@@ -69,6 +69,6 @@ implicit.bean.scanning.disabled.CWOWB1009W=CWOWB1009W: Archives bean impl\u00edc
 implicit.bean.scanning.disabled.CWOWB1009W.explanation=Os archives n\u00e3o s\u00e3o varridos para beans CDI, a menos que tenham um arquivo beans.xml.
 implicit.bean.scanning.disabled.CWOWB1009W.useraction=Assegure-se de que cada archive que usa CDI tenha um arquivo beans.xml ou reative a varredura de beans impl\u00edcitos em seu arquivo server.xml.
 
-spi.extension.failed.to.construct.CWOWB10010E=CWOWB10010E: Falha ao criar a extens\u00e3o CDI via SPI.
-spi.extension.failed.to.construct.CWOWB10010E.explanation=O CDI falhou ao chamar o construtor da classe de extens\u00e3o {0} registrada pelo m\u00e9todo getExtensions() de uma implementa\u00e7\u00e3o CDIExtensionMetaData devido \u00e0 exce\u00e7\u00e3o {1}.
-spi.extension.failed.to.construct.CWOWB10010E.useraction=Corrija o erro que impede sua extens\u00e3o de instanciar.
+spi.extension.failed.to.construct.CWOWB1010E=CWOWB1010E: Falha ao criar a extens\u00e3o CDI com SPI.
+spi.extension.failed.to.construct.CWOWB1010E.explanation=O CDI falhou ao chamar o construtor da classe de extens\u00e3o {0} que est\u00e1 registrada com o m\u00e9todo getExtensions() de uma implementa\u00e7\u00e3o CDIExtensionMetadata devido \u00e0 exce\u00e7\u00e3o {1}.
+spi.extension.failed.to.construct.CWOWB1010E.useraction=Corrija o erro que est\u00e1 impedindo que sua extens\u00e3o seja instanciada.

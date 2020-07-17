@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2019 IBM Corporation and others.
+# Copyright (c) 2011, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -153,6 +153,10 @@ JSON_FIELDS_INCORRECT_EVENT_TYPE.useraction=\u53ef\u63a5\u53d7\u7684\u4f86\u6e90
 JSON_FIELDS_INVALID_CHARACHTER=TRAS3011W: \u5728 JSON \u8a18\u8f09\u6b04\u4f4d\u540d\u7a31\u5c0d\u6620\u5167\u5bb9\u4e2d\u63d0\u4f9b\u4e86\u4e00\u500b\u7121\u6548\u7684\u5b57\u5143
 JSON_FIELDS_INVALID_CHARACHTER.explanation= \u5728 JSON \u8a18\u8f09\u6b04\u4f4d\u540d\u7a31\u5c0d\u6620\u5167\u5bb9\u4e2d\uff0c\u53ea\u63a5\u53d7\u5b57\u6bcd\u3001\u6578\u5b57\u548c :
 JSON_FIELDS_INVALID_CHARACHTER.useraction= \u8acb\u8b8a\u66f4\u60a8\u7684 JSON \u8a18\u8f09\u6b04\u4f4d\u540d\u7a31\u5c0d\u6620\u5167\u5bb9\u503c\uff0c\u4ee5\u79fb\u9664\u7121\u6548\u7684\u5b57\u5143
+
+JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED=TRAS3012W: \u907a\u6f0f\u4e86\u4e00\u500b\u4ee5\u4e0a accessLogging logFormat \u6b04\u4f4d\u7684\u6a19\u982d\u540d\u7a31\uff1a{0}\u3002
+JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.explanation=JSON \u8a18\u8f09\u4f7f\u7528 accessLogging \u4e2d\u7684 logFormat \u5c6c\u6027\uff0c\u4f86\u9078\u53d6\u8981\u5305\u62ec\u7684 http_access.log \u8a0a\u606f\u6b04\u4f4d\u3002\u7576\u4f7f\u7528 accessLogging logFormat \u5c6c\u6027\u4e2d\u7684 %i \u6216 %o \u6b04\u4f4d\u6642\uff0c\u5fc5\u9808\u63d0\u4f9b\u6a19\u982d\u540d\u7a31\u3002
+JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.useraction=\u8acb\u70ba accessLogging logFormat \u5c6c\u6027\u4e2d\u7684\u6b04\u4f4d\u63d0\u4f9b\u6a19\u982d\u540d\u7a31\u3002
 
 # Note: no 9999 message kept here because saving footprint space is more important
 

@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKT
+#COMPONENTNAMEFOR CWWKT OpenLiberty gRPC Client
+#CMVCPATHNAME io.openliberty.grpc.1.0.internal/resources/io/openliberty/grpc/internal/client/resources/grpcclientmessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+invalid.clientinterceptor=CWWKT0301W: Nu s-a putut \u00eenc\u0103rca interceptorul gRPC definit \u00een clientInterceptors {0}
+invalid.clientinterceptor.explanation=Nu s-a putut \u00eenc\u0103rca un interceptor gRPC definit \u00een clientInterceptors.
+invalid.clientinterceptor.useraction=Verifica\u0163i numele de interceptor configurat \u015fi classpath pentru aplica\u0163ie.
+
+invalid.keepalive.time=CWWKT0302E: keepAliveTime {0} al clientului qRPC nu este valid.  Valorile trebuie s\u0103 fie mai mari ca 0.
+invalid.keepalive.time.explanation=Valoarea configurat\u0103 pentru keepAliveTime nu este valid\u0103.
+invalid.keepalive.time.useraction=Configura\u0163i o valoare valid\u0103 pentru keepAliveTime.
+
+invalid.keepalive.timeout=CWWKT0303E: keepAliveTimeout {0} al clientului qRPC nu este valid.  Valorile trebuie s\u0103 fie mai mari ca 0.
+invalid.keepalive.timeout.explanation=Valoarea configurat\u0103 pentru keepAliveTimeout nu este valid\u0103.
+invalid.keepalive.timeout.useraction=Configura\u0163i o valoare valid\u0103 pentru keepAliveTimeout.
+
+invalid.client.inbound.msg.size=CWWKT0304E: maxInboundMessageSize {0} al clientului qRPC nu este valid.  Valorile trebuie s\u0103 fie mai mari ca 0.
+invalid.client.inbound.msg.size.explanation=Valoarea configurat\u0103 pentru maxInboundMessageSize nu este valid\u0103.
+invalid.client.inbound.msg.size.useraction=Configura\u0163i o valoare valid\u0103 pentru maxInboundMessageSize.
+
+invalid.authn.token=CWWKT0305E: Valoarea authnToken de {0} a clientului qRPC nu este valid\u0103.  Valoarea trebuie s\u0103 fie egal\u0103 cu "jwt" sau "oauth".
+invalid.authn.token.explanation=Valoarea configurat\u0103 pentru authnToken nu este valid\u0103.
+invalid.authn.token.useraction=Configura\u0163i o valoare valid\u0103 pentru authnToken.

@@ -326,3 +326,7 @@ CWPKI2071W.useraction=Chcete-li se t\u00e9to varovn\u00e9 zpr\u00e1v\u011b vyhno
 CWPKI2072W=CWPKI2072W: Slu\u017eba ACME nemohla p\u0159e\u010d\u00edst nebo zapsat soubor historie ACME v {0}. Chyba: ''{1}''.
 CWPKI2072W.explanation=Slu\u017eba ACME nem\u00e1 p\u0159\u00edstup k souboru historie ACME.
 CWPKI2072W.useraction=Ujist\u011bte se, \u017ee adres\u00e1\u0159 historie ACME m\u00e1 opr\u00e1vn\u011bn\u00ed ke \u010dten\u00ed a z\u00e1pisu.
+
+CWPKI2073W=CWPKI2073W: Byl ur\u010den kontakt na \u00fa\u010det. Doporu\u010duje se nastavit tuto vlastnost v konfiguraci serveru. Pokud dojde ke ztr\u00e1t\u011b kl\u00ed\u010de nebo k ohro\u017een\u00ed bezpe\u010dnosti \u00fa\u010dtu, dojde ke ztr\u00e1t\u011b p\u0159\u00edstupu k \u00fa\u010dtu.
+CWPKI2073W.explanation=Hodnota pro vlastnost accountContact nebyla ur\u010dena v konfiguraci serveru.
+CWPKI2073W.useraction=Nastavte vlastnost accountContact v konfiguraci serveru.

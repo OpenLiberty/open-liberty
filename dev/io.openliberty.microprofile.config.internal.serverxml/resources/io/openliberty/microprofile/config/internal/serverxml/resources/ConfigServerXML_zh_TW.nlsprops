@@ -1,0 +1,47 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMCG
+#COMPONENTNAMEFOR CWMCG MicroProfile Config API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Config 1.1 Impl -  range is 0000-0099, plus 9999 for the emergency message
+# Messages used by Config 1.2 Impl -  range is 0100-0199, plus 9998 for the emergency message
+# Messages used by Config 1.3 Impl -  range is 0200-0299, plus 9997 for the emergency message
+# Messages used by Config 1.4 Impl -  range is 0300-0399, plus 9996 for the emergency message
+# Messages used by Config 2.0 Impl -  range is 0400-0499, plus 9995 for the emergency message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# The {0} property was not found in the configuration.
+no.such.element.CWMCG0300E=CWMCG0300E: \u5728\u914d\u7f6e\u4e2d\u627e\u4e0d\u5230 {0} \u5167\u5bb9\u3002
+no.such.element.CWMCG0300E.explanation=\u6240\u8981\u6c42\u7684\u5167\u5bb9\u4e0d\u5b58\u5728\u4efb\u4f55\u7684\u300c\u914d\u7f6e\u4f86\u6e90\u300d\u4e2d\u3002
+no.such.element.CWMCG0300E.useraction=\u8acb\u5c07\u5167\u5bb9\u65b0\u589e\u81f3\u5176\u4e2d\u4e00\u500b\u73fe\u6709\u7684\u300c\u914d\u7f6e\u4f86\u6e90\u300d\uff0c\u6216\u65b0\u589e\u5305\u542b\u8a72\u5167\u5bb9\u7684\u300c\u914d\u7f6e\u4f86\u6e90\u300d\u3002
+
+failed.to.schedule.cache.invalidation.CWMCG0301E=CWMCG0301E: \u7121\u6cd5\u6392\u5b9a MicroProfile Config \u5feb\u53d6\u5931\u6548\u3002\u7570\u5e38\u72c0\u6cc1\u662f {0}\u3002
+failed.to.schedule.cache.invalidation.CWMCG0301E.explanation=MicroProfile Config \u4e2d\u7684\u8b8a\u66f4\u53ef\u80fd\u672a\u53cd\u6620\u5728\u61c9\u7528\u7a0b\u5f0f\u4e2d
+failed.to.schedule.cache.invalidation.CWMCG0301E.useraction=\u8acb\u6aa2\u95b1\u4f3a\u670d\u5668 message.log \u548c FFDC \u65e5\u8a8c\u4ee5\u8b58\u5225\u554f\u984c\u3002
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Config 2.0 error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# The following Config API error occurred: {0}.
+temporary.CWMCG9996E=CWMCG9996E: \u767c\u751f\u4e0b\u5217\u914d\u7f6e API \u932f\u8aa4\uff1a{0}\u3002
+temporary.CWMCG9996E.explanation=\u767c\u751f\u4e86\u963b\u6b62\u6b63\u5e38\u4f5c\u696d\u9032\u884c\u7684\u914d\u7f6e API \u932f\u8aa4\u3002
+temporary.CWMCG9996E.useraction=\u8acb\u6aa2\u95b1\u4f3a\u670d\u5668 message.log \u6a94\u548c FFDC \u65e5\u8a8c\uff0c\u4ee5\u8b58\u5225\u554f\u984c\u3002

@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKT
+#COMPONENTNAMEFOR CWWKT OpenLiberty gRPC Client
+#CMVCPATHNAME io.openliberty.grpc.1.0.internal/resources/io/openliberty/grpc/internal/client/resources/grpcclientmessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+invalid.clientinterceptor=CWWKT0301W: Impossible de charger l''intercepteur gRPC d\u00e9fini dans l''\u00e9l\u00e9ment clientInterceptors {0}
+invalid.clientinterceptor.explanation=Un intercepteur gRPC d\u00e9fini dans l'\u00e9l\u00e9ment clientInterceptors n'a pas pu \u00eatre charg\u00e9.
+invalid.clientinterceptor.useraction=V\u00e9rifiez le nom de l'intercepteur configur\u00e9 et le chemin d'acc\u00e8s aux classes de l'application.
+
+invalid.keepalive.time=CWWKT0302E: La valeur keepAliveTime {0} du client gRPC n''est pas valide. Les valeurs doivent \u00eatre sup\u00e9rieures \u00e0 0.
+invalid.keepalive.time.explanation=La valeur configur\u00e9e pour keepAliveTime n'est pas valide.
+invalid.keepalive.time.useraction=Configurez une valeur valide pour keepAliveTime.
+
+invalid.keepalive.timeout=CWWKT0303E: La valeur keepAliveTimeout {0} du client gRPC n''est pas valide. Les valeurs doivent \u00eatre sup\u00e9rieures \u00e0 0.
+invalid.keepalive.timeout.explanation=La valeur configur\u00e9e pour keepAliveTimeout n'est pas valide.
+invalid.keepalive.timeout.useraction=Configurez une valeur valide pour keepAliveTimeout.
+
+invalid.client.inbound.msg.size=CWWKT0304E: La valeur maxInboundMessageSize {0} du client gRPC n''est pas valide. Les valeurs doivent \u00eatre sup\u00e9rieures \u00e0 0.
+invalid.client.inbound.msg.size.explanation=La valeur configur\u00e9e pour maxInboundMessageSize n'est pas valide.
+invalid.client.inbound.msg.size.useraction=Configurez une valeur valide pour maxInboundMessageSize.
+
+invalid.authn.token=CWWKT0305E: La valeur authnToken "{0}" du client gRPC n''est pas valide. La valeur doit \u00eatre "jwt" ou "oauth".
+invalid.authn.token.explanation=La valeur configur\u00e9e pour authnToken n'est pas valide.
+invalid.authn.token.useraction=Configurez une valeur valide pour authnToken.
