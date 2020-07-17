@@ -33,3 +33,4 @@ org.jboss.resteasy.plugins.interceptors.MessageSanitizerContainerResponseFilter
 org.jboss.resteasy.plugins.providers.sse.SseEventProvider
 org.jboss.resteasy.plugins.providers.sse.SseEventOutputProvider
 org.jboss.resteasy.plugins.providers.sse.SseEventSinkInterceptor
+io.openliberty.org.jboss.resteasy.common.providers.JsonBProviderDelegator
