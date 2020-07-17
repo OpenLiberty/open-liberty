@@ -197,7 +197,7 @@ public class ShrinkWrapSharedServer extends SharedServer {
 
     //I'm putting this here because it keeps all the boilerplate needed for ShrinkWrap in a single class.
     @Override
-    protected void before() {
+    protected void before() throws Exception{
         for (Archive archive : archivesAndPaths.keySet()) {
             //This takes place before the servers are copied, so we do not need to worry about
             //moving archives ourselves beyond this.

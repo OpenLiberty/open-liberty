@@ -26,8 +26,11 @@ src: \
     test-applications/transientReferenceInSessionPersist.war/src,\
     test-applications/WebListener.war/src
 	
-	
-	
+tested.features:\
+	cdi-2.0,\
+	servlet-4.0,\
+	jsf-2.3
+
 test.project: true
 
 -buildpath: \
