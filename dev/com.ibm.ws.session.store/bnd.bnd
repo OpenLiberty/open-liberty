@@ -27,6 +27,8 @@ Service-Component: \
     provide:=com.ibm.ws.serialization.DeserializationClassProvider; \
     properties:='classes=com.ibm.ws.session.store.common.internal.J2EEObjectWrapper'
 
+jakartaeeMe: true
+
 instrument.disabled: true
 
 -buildpath: \
