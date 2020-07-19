@@ -10,6 +10,7 @@
  *******************************************************************************/
 package jaxrs21.fat.patch;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.GET;
 import javax.ws.rs.PATCH;
@@ -18,6 +19,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response;
 
+@ApplicationScoped
 @ApplicationPath("/rest")
 @Path("/test")
 public class PatchTestApp extends Application {

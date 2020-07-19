@@ -20,12 +20,14 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import jaxrs21.fat.jsonb.JsonBTestServlet;
 
+@SkipForRepeat("RESTEasy") // failures when comparing JSON
 @RunWith(FATRunner.class)
 public class PackageJsonBTestNoFeature extends FATServletClient {
 

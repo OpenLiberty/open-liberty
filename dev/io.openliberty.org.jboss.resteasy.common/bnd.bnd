@@ -47,6 +47,7 @@ Service-Component: \
 Export-Package: \
   com.ibm.websphere.jaxrs.server;version=3.0.0;thread-local=true, \
   com.ibm.ws.resteasy.cdi.component;version=4.5.2.Final;thread-context=true, \
+  io.openliberty.org.jboss.resteasy.common.providers;thread-context=true, \
   org.jboss.resteasy.annotations.cache;version=4.5.2.Final, \
   org.jboss.resteasy.annotations.jaxrs;version=4.5.2.Final, \
   org.jboss.resteasy.annotations.providers.img;version=4.5.2.Final, \
@@ -110,7 +111,14 @@ Import-Package: \
   javax.annotation;version=!, \
   javax.annotation.security;version=!, \
   javax.xml.bind.annotation;version=!, \
+  !javax.json.bind, \
+  !javax.json.bind.spi, \
   *
+
+DynamicImport-Package: \
+  javax.json.bind, \
+  javax.json.bind.spi
+
 
 Private-Package: \
   io.openliberty.org.jboss.resteasy.common.component
@@ -142,6 +150,7 @@ Include-Resource:\
   com.ibm.websphere.javaee.interceptor.1.2, \
   com.ibm.websphere.javaee.jaxb.2.2, \
   com.ibm.websphere.javaee.jaxrs.2.1, \
+  com.ibm.websphere.javaee.jsonb.1.0, \
   com.ibm.websphere.javaee.servlet.4.0, \
   com.ibm.websphere.javaee.validation.2.0;version=latest, \
   com.ibm.websphere.org.eclipse.microprofile.config.1.4;version=latest, \

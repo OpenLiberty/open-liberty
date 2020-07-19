@@ -13,7 +13,6 @@ package jaxrs21.fat.jsonb;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -30,7 +29,6 @@ import javax.ws.rs.Produces;
  * <p/>
  * Remember to add this resource class to the {@link JsonBPOJOApplication#getClasses()} method.
  */
-@ApplicationPath("/rest")
 @Path("/person")
 public class JsonBPOJOResource {
 
