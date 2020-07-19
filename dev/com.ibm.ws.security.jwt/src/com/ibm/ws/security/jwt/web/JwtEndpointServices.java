@@ -106,8 +106,8 @@ public class JwtEndpointServices {
 
 	/**
 	 * Extracts the {@value WebConstants#JWT_REQUEST_ATTR} attribute from the
-	 * provided request. That particular attribute is supposed to be created and
-	 * set by the filter directing the request.
+	 * provided request. That particular attribute is supposed to be created and set
+	 * by the filter directing the request.
 	 *
 	 * @param request
 	 * @param response
@@ -154,6 +154,12 @@ public class JwtEndpointServices {
 			}
 			return;
 		}
+		if (!jwtConfig.isTokenEndpointEnabled()) {
+			if (tc.isDebugEnabled()) {
+				Tr.debug(tc, "jwt token endpoint is not enabled, return");
+			}
+			return;
+		}
 		switch (endpointType) {
 		case jwk:
 			processJWKRequest(response, jwtConfig);
@@ -192,9 +198,8 @@ public class JwtEndpointServices {
 
 	/**
 	 * determine if transport is secure. Either the protocol must be https or we
-	 * must see a forwarding header that indicates it was https upstream of a
-	 * proxy. Use of a configuration property to allow plain http was rejected
-	 * in review.
+	 * must see a forwarding header that indicates it was https upstream of a proxy.
+	 * Use of a configuration property to allow plain http was rejected in review.
 	 *
 	 * @param req
 	 * @return
@@ -214,8 +219,8 @@ public class JwtEndpointServices {
 
 	/**
 	 * produces a JWT token based upon the jwt Configuration, and the security
-	 * credentials of the authenticated user that called this method. Returns
-	 * the token as JSON in the response.
+	 * credentials of the authenticated user that called this method. Returns the
+	 * token as JSON in the response.
 	 *
 	 * @param response
 	 * @param jwtConfig
@@ -244,9 +249,9 @@ public class JwtEndpointServices {
 	}
 
 	/**
-	 * Obtains the JWK string that is active in the specified config and prints
-	 * it in JSON format in the response. If a JWK is not found, the response
-	 * will be empty.
+	 * Obtains the JWK string that is active in the specified config and prints it
+	 * in JSON format in the response. If a JWK is not found, the response will be
+	 * empty.
 	 *
 	 * @param response
 	 * @param jwtConfig
@@ -255,11 +260,10 @@ public class JwtEndpointServices {
 	private void processJWKRequest(HttpServletResponse response, JwtConfig jwtConfig) throws IOException {
 
 		/*
-		 * if (!jwtConfig.isJwkEnabled()) { String errorMsg =
-		 * Tr.formatMessage(tc, "JWK_ENDPOINT_JWK_NOT_ENABLED", new Object[] {
-		 * jwtConfig.getId() }); Tr.error(tc, errorMsg);
-		 * response.sendError(HttpServletResponse.SC_BAD_REQUEST, errorMsg);
-		 * return; }
+		 * if (!jwtConfig.isJwkEnabled()) { String errorMsg = Tr.formatMessage(tc,
+		 * "JWK_ENDPOINT_JWK_NOT_ENABLED", new Object[] { jwtConfig.getId() });
+		 * Tr.error(tc, errorMsg);
+		 * response.sendError(HttpServletResponse.SC_BAD_REQUEST, errorMsg); return; }
 		 */
 
 		String signatureAlg = jwtConfig.getSignatureAlgorithm();

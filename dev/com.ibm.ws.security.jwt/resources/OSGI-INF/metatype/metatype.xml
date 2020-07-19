@@ -39,6 +39,7 @@
             <Option label="%jwkSigningKeySize.2048" value="2048"/>
             <Option label="%jwkSigningKeySize.4096" value="4096"/>
          </AD>
+         <AD id="tokenEndpointEnabled" name="%tokenEndpointEnabled" description="%tokenEndpointEnabled.desc" required="false" type="Boolean" default="false" />
     </OCD>
 
     <Designate factoryPid="com.ibm.ws.security.jwt.builder">

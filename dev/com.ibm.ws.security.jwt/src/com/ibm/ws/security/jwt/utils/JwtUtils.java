@@ -87,6 +87,7 @@ public class JwtUtils {
 	public static final String CFG_KEY_SSL_REF = "sslRef";
 	public static final String CFG_KEY_EXPIRES_IN_SECONDS = "expiresInSeconds";
 	public static final String CFG_KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS = "useSystemPropertiesForHttpClientConnections";
+	public static final String CFG_KEY_TOKEN_ENDPOINT_ENABLED = "tokenEndpointEnabled";
 
 	public static final String JCEPROVIDER_IBM = "IBMJCE";
 	public static final String SECRANDOM_SHA1PRNG = "SHA1PRNG";
