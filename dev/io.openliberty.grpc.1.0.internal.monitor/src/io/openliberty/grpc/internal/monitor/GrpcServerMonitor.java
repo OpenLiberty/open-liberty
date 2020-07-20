@@ -19,28 +19,25 @@ import com.ibm.websphere.monitor.annotation.This;
 import com.ibm.websphere.monitor.meters.MeterCollection;
 
 /**
- * Monitor class for gRPC. </br>
- * This class is responsible for managing the MXBean object, as well as the
- * actual updating of the values of the counters defined in the MXBean object.
+ * Monitor class for gRPC server. </br>
+ * This class is responsible for managing the gRPC server MXBean object, as well
+ * as the actual updating of the values of the counters defined in the MXBean
+ * object.
  */
 @Monitor(group = "GrpcServer")
-public class GrpcMonitor {
-	
-	@PublishedMetric
-	public MeterCollection<GrpcServerMetrics> grpcServerCountByName = new MeterCollection<GrpcServerMetrics>("GrpcServer",
-			this);
+public class GrpcServerMonitor {
 
+	@PublishedMetric
+	public MeterCollection<GrpcServerMetrics> grpcServerCountByName = new MeterCollection<GrpcServerMetrics>(
+			"GrpcServer", this);
 
 	@ProbeAtEntry
 	@ProbeSite(clazz = "io.openliberty.grpc.internal.monitor.GrpcServerStatsMonitor", method = "recordCallStarted")
+	// @ProbeSite(clazz = "com.ibm.ws.threading.internal.ExecutorServiceImpl",
+	// method = "execute")
 	public void atGrpcServerStart(@This GrpcServerStatsMonitor serverStats) {
 		System.out.println("atGrpcServerStart");
-		String serviceName = serverStats.getServiceName();
-		String appName = serverStats.getAppName();
-		GrpcServerMetrics stats = grpcServerCountByName.get(serviceName);
-		if (stats == null) {
-			stats = initGrpcServerStats(appName, serviceName);
-		}
+		GrpcServerMetrics stats = getGrpcServerStats(serverStats.getAppName(), serverStats.getServiceName());
 		stats.recordCallStarted();
 	}
 
@@ -48,12 +45,7 @@ public class GrpcMonitor {
 	@ProbeSite(clazz = "io.openliberty.grpc.internal.monitor.GrpcServerStatsMonitor", method = "recordServerHandled")
 	public void atGrpcServerHandled(@This GrpcServerStatsMonitor serverStats) {
 		System.out.println("atGrpcServerHandled");
-		String serviceName = serverStats.getServiceName();
-		String appName = serverStats.getAppName();
-		GrpcServerMetrics stats = grpcServerCountByName.get(serviceName);
-		if (stats == null) {
-			stats = initGrpcServerStats(appName, serviceName);
-		}
+		GrpcServerMetrics stats = getGrpcServerStats(serverStats.getAppName(), serverStats.getServiceName());
 		stats.recordServerHandled();
 	}
 
@@ -61,12 +53,7 @@ public class GrpcMonitor {
 	@ProbeSite(clazz = "io.openliberty.grpc.internal.monitor.GrpcServerStatsMonitor", method = "recordMsgReceived")
 	public void atGrpcServerMsgReceived(@This GrpcServerStatsMonitor serverStats) {
 		System.out.println("atGrpcServerMsgReceived");
-		String serviceName = serverStats.getServiceName();
-		String appName = serverStats.getAppName();
-		GrpcServerMetrics stats = grpcServerCountByName.get(serviceName);
-		if (stats == null) {
-			stats = initGrpcServerStats(appName, serviceName);
-		}
+		GrpcServerMetrics stats = getGrpcServerStats(serverStats.getAppName(), serverStats.getServiceName());
 		stats.incrementReceivedMsgCountBy(1);
 	}
 
@@ -74,16 +61,11 @@ public class GrpcMonitor {
 	@ProbeSite(clazz = "io.openliberty.grpc.internal.monitor.GrpcServerStatsMonitor", method = "recordMsgSent")
 	public void atGrpcServerMsgSent(@This GrpcServerStatsMonitor serverStats) {
 		System.out.println("atGrpcServerMsgSent");
-		String serviceName = serverStats.getServiceName();
-		String appName = serverStats.getAppName();
-		GrpcServerMetrics stats = grpcServerCountByName.get(serviceName);
-		if (stats == null) {
-			stats = initGrpcServerStats(appName, serviceName);
-		}
+		GrpcServerMetrics stats = getGrpcServerStats(serverStats.getAppName(), serverStats.getServiceName());
 		stats.incrementSentMsgCountBy(1);
 	}
 
-	private synchronized GrpcServerMetrics initGrpcServerStats(String appName, String serviceName) {
+	private synchronized GrpcServerMetrics getGrpcServerStats(String appName, String serviceName) {
 		GrpcServerMetrics stats = grpcServerCountByName.get(serviceName);
 		if (stats == null) {
 			stats = new GrpcServerMetrics(appName, serviceName);
