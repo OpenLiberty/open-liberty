@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>com.ibm.ws.lra</name>
+	<name>io.openliberty.microprofile.LRA.1.0.internal</name>
 	<comment></comment>
 	<projects>
 	</projects>
