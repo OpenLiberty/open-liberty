@@ -92,7 +92,7 @@
         <AD id="decodeUrlPlusSign"
             name="%decodeUrlPlusSign.name" 
             description="%decodeUrlPlusSign.desc" 
-            required="false" type="Boolean" default="false" />
+            required="false" type="Boolean" default="true" />
 
         <!--com.ibm.ws.webcontainer.-->
         <AD id="suppressHtmlRecursiveErrorOutput"

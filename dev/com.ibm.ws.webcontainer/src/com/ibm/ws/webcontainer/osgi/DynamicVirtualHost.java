@@ -225,7 +225,7 @@ public class DynamicVirtualHost extends com.ibm.ws.webcontainer.VirtualHost impl
             // for performance reasons this was not decoded before doing the first look up, since it is not
             // common to have double byte chars in the context.  
             try {
-                if (this.webContainerParent.getDecodePlusSign()) {
+                if (WCCustomProperties.DECODE_URL_PLUS_SIGN) {
                     requestUri = URLDecoder.decode(requestUri, this.webContainerParent.getURIEncoding());
                 } else {
                     requestUri = WSURLDecoder.decode(requestUri, this.webContainerParent.getURIEncoding());
