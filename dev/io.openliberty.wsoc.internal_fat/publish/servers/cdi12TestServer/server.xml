@@ -1,0 +1,119 @@
+<!--
+    Copyright (c) 2015 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+  <featureManager>
+    <feature>websocket-1.0</feature>
+    <feature>cdi-1.2</feature>
+    <feature>jndi-1.0</feature>
+    <feature>wasJmsClient-2.0</feature>
+    <feature>wasJmsServer-1.0</feature>
+    <feature>localConnector-1.0</feature>      
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+  
+  
+  	<!-- A messaging engine is a component, running inside a server, that manages 
+		messaging resources. Applications are connected to a messaging engine when 
+		they send and receive messages. When wasJmsServer-1.0 feature is added in 
+		server.xml by default a messaging engine runtime is initialized which contains 
+		a default queue(Default.Queue) and a default topic space(Default.Topic.Space). 
+		If the user wants to create a new queue or topic space then the messagingEngine 
+		element must be defined in server.xml -->
+	<messagingEngine>
+		<queue id="QUEUE1">
+		</queue>
+
+		<queue id="MDBREPLYQ">
+		</queue>
+
+		<queue id="MDBQ">
+		</queue>
+
+	</messagingEngine>
+
+	<!-- Liberty profile supports configuring and deploying MDB's for asynchronous 
+		consumption of messages from Liberty messaging. As per JCA specification, 
+		MDB's make use of Activation Specifications to interact with Liberty Messaging. 
+		Defines a JMS activation specification configuration, The ID value must be 
+		in the format of application name/module name/bean name where Application 
+		name is the name of the application that is deployed (for example, JMSSample) 
+		and the application name applies only if the bean is packaged within an EAR 
+		file . Bean name is the ejb-name of the enterprise bean. Module name is the 
+		name of the module in which the bean is packaged. Define the destinationRef 
+		pointing to a valid jmsQueue ID. -->
+	<jmsActivationSpec id="JMSApp/SampleMDB">
+		<properties.wasJms destinationRef="jndi/MDBQ" />
+	</jmsActivationSpec>
+
+
+	<!-- Defines a JMS topic connection factory configuration. JMS applications 
+		can lookup this topic connection factory to establishing connection to the 
+		messaging engine running within the same liberty profile as that of the application. 
+		Provide a clientID value, since the clientID uniquely identifies a subscriber. -->
+	<jmsTopicConnectionFactory jndiName="jmsTCF"
+		connectionManagerRef="ConMgr3" clientID="clientId1">
+		<properties.wasJms />
+	</jmsTopicConnectionFactory>
+
+	<!-- Each of the connection factory is associated with a connection pool. 
+		A connection pool holds similar connections created for a specific connection 
+		factory. connectionManager element enables users to define the pool size for 
+		each of the associated connection factory. Refer to the connectionManagerRef 
+		attribute in the connection factory configuration. -->
+	<connectionManager id="ConMgr3" maxPoolSize="5" />
+
+
+	<!-- Defines the JMS topic configuration. jmsTopic element defines properties 
+		that enables JMS application to publish or subscribe for messages to a particular 
+		topic under a topic space. -->
+	<jmsTopic jndiName="jmsTopic">
+		<properties.wasJms topicName="SPORTS"  />
+	</jmsTopic>
+
+	<!-- Defines a JMS Queue connection factory configuration. JMS applications 
+		can lookup this Queue connection factory to establishing connection to the 
+		messaging provider using the factory defined values. Define a queue connection 
+		factory that the sample application uses to connect to the liberty messaging 
+		running within the same Liberty profile as that of the application. -->
+	<jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF"
+		connectionManagerRef="ConMgr6">
+		<properties.wasJms/>
+	</jmsQueueConnectionFactory>
+	<connectionManager id="ConMgr6" maxPoolSize="5" />
+
+	<!-- Defines the JMS Queue configuration. jmsQueue element defines properties 
+		that enables JMS application to produce or consume messages from a particular 
+		queue, in this case the application connects to a queue "QUEUE1" defined 
+		in the messagingEngine element. -->
+	<jmsQueue jndiName="jndi_INPUT_Q">
+		<properties.wasJms queueName="QUEUE1" />
+	</jmsQueue>
+
+	<jmsQueue id="jndi/MDBREPLYQ" jndiName="jndi/MDBREPLYQ">
+		<properties.wasJms queueName="MDBREPLYQ" />
+	</jmsQueue>
+
+	<jmsQueue id="jndi/MDBQ" jndiName="jndi/MDBQ">
+		<properties.wasJms queueName="MDBQ" />
+	</jmsQueue>
+  
+    <!-- a low count to force the CDI tests to re-use threads, to test out thread context switching and doing right by CDI scopes -->  
+    <executor coreThreads="6"> </executor>
+ 
+    <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+    <javaPermission className="java.lang.RuntimePermission" name="modifyThread"/>  
+    <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/> 
+    <javaPermission className="java.lang.RuntimePermission" name="setContextClassLoader"/>
+    <javaPermission className="java.net.SocketPermission" name="*" actions="resolve,accept,listen"/>
+    <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+</server>
