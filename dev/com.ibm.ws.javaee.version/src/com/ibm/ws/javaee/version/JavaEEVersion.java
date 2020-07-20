@@ -19,4 +19,5 @@ public abstract class JavaEEVersion {
     public static final Version VERSION_6_0 = new Version(6, 0, 0);
     public static final Version VERSION_7_0 = new Version(7, 0, 0);
     public static final Version VERSION_8_0 = new Version(8, 0, 0);
+    public static final Version VERSION_9_0 = new Version(9, 0, 0);
 }
