@@ -13,7 +13,7 @@
  * @version 1.0
  */
 @org.osgi.annotation.versioning.Version("1.0")
-@TraceOptions(traceGroup = "LRA", messageBundle = "io.openliberty.microprofile.LRA.internal.resources.Lra")
-package io.openliberty.microprofile.LRA.internal;
+@TraceOptions(traceGroup = "LRA", messageBundle = "io.openliberty.microprofile.lra.internal.resources.Lra")
+package io.openliberty.microprofile.lra.internal;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
