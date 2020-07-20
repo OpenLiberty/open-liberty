@@ -289,7 +289,7 @@ public class OidcServerConfigImpl implements OidcServerConfig {
 
         } catch (IOException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Invalid oauthProviderRef configuration", e.getMessage());
+                Tr.debug(tc, "Invalid oauthProviderRef configuration", e);
             }
             return null;
         }
@@ -490,7 +490,7 @@ public class OidcServerConfigImpl implements OidcServerConfig {
             config = configAdmin.getConfiguration(oauthProviderRef, null);
         } catch (IOException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Invalid oauthProviderRef configuration", e.getMessage());
+                Tr.debug(tc, "Invalid oauthProviderRef configuration", e);
             }
             return null;
         }

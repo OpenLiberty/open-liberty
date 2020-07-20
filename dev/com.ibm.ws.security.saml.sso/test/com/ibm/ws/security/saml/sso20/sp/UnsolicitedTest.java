@@ -16,7 +16,6 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -33,7 +32,6 @@ import com.ibm.ws.security.common.structures.Cache;
 import com.ibm.ws.security.saml.SsoSamlService;
 import com.ibm.ws.security.saml.sso20.common.CommonMockObjects;
 import com.ibm.ws.security.saml.sso20.internal.utils.ForwardRequestInfo;
-import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
 import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.wsspi.security.tai.TAIResult;
@@ -142,7 +140,7 @@ public class UnsolicitedTest {
             assertTrue("The TAIResult must not be null.", result != null);
         } catch (Exception ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 

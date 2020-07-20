@@ -214,7 +214,7 @@ public class ResponseValidatorTest {
             assertTrue("Expected a 'true' value but it was not received.", valid);
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -521,7 +521,7 @@ public class ResponseValidatorTest {
             validator.validateResponseSignature();
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 

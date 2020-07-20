@@ -443,7 +443,7 @@ public class UserAuthentication {
                 authResult = authenticator.authenticate(request, response, null);
             } catch (Exception e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "The direct login of http request failed because of exception: " + e.getMessage());
+                    Tr.debug(tc, "The direct login of http request failed because of exception: " + e);
                 }
                 authResult = new AuthenticationResult(AuthResult.FAILURE, e.getMessage());
             }
