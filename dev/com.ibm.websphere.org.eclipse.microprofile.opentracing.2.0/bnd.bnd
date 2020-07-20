@@ -21,9 +21,8 @@ Import-Package: \
 Export-Package: \
   org.eclipse.microprofile.opentracing;version=2.0
 
-# Un-comment after mpOT 2.0 GA available at Maven Central
-#Include-Resource: \
-#  @${repo;org.eclipse.microprofile.opentracing:microprofile-opentracing-api;2.0;EXACT}
+Include-Resource: \
+  @${repo;org.eclipse.microprofile.opentracing:microprofile-opentracing-api;2.0.0.RC1;EXACT}
 
 
 WS-TraceGroup: OPENTRACING
@@ -31,8 +30,7 @@ WS-TraceGroup: OPENTRACING
 -buildpath: \
   com.ibm.websphere.javaee.cdi.2.0;version=latest, \
   com.ibm.websphere.javaee.interceptor.1.2;version=latest, \
-  com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-  microprofile-opentracing-api-2.0-SNAPSHOT.jar;version=file
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
 #instrument.disabled: true
 

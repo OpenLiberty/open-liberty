@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -130,7 +130,6 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
                 Tr.debug(tc, methodName + " span", span);
             }
 
-//            Scope scope = tracer.scopeManager().activate(span);
             Scope scope = null;
 
             tracer.inject(
@@ -177,18 +176,6 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
             return;
         }
 
-        Tracer tracer = OpentracingTracerManager.getTracer();
-        if (tracer == null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, methodName + " no tracer");
-            }
-            return;
-        } else {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, methodName, OpentracingUtils.getTracerText(tracer));
-            }
-        }
-
         ActiveSpan activeSpan = (ActiveSpan) clientRequestContext.getProperty(CLIENT_CONTINUATION_PROP_ID);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -220,7 +207,6 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
             }
         }
 
-//        activeSpan.getScope().close();
         if (activeSpan.getScope() != null) {
             activeSpan.getScope().close();
         }

@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 
-    Copyright (c) 2017, 2018 IBM Corporation and others. All rights reserved.
+<!-- Copyright (c) 2017, 2018 IBM Corporation and others. All rights reserved. 
     This program and the accompanying materials are made available under the 
     terms of the Eclipse Public License v1.0 which accompanies this distribution, 
-    and is available at 
-        http://www.eclipse.org/legal/epl-v10.html 
-    Contributors: 
-        IBM Corporation - initial API and implementation
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    and is available at http://www.eclipse.org/legal/epl-v10.html Contributors: 
+    IBM Corporation - initial API and implementation -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -18,8 +15,8 @@
     <name>MicroProfile Opentracing TCK Runner TCK Module</name>
 
     <properties>
-        <microprofile.opentracing.version>2.0-SNAPSHOT</microprofile.opentracing.version>
-        <arquillian.version>1.1.13.Final</arquillian.version>
+        <microprofile.opentracing.version>2.0-RC1</microprofile.opentracing.version>
+        <arquillian.version>1.1.14.Final</arquillian.version>
 
         <!-- the below is used in arquillian.xml -->
         <wlp>${wlp}</wlp>
@@ -52,32 +49,30 @@
             <version>${microprofile.opentracing.version}</version>
         </dependency>
 
-		<dependency>
-        	<groupId>org.eclipse.microprofile.opentracing</groupId>
+        <dependency>
+            <groupId>org.eclipse.microprofile.opentracing</groupId>
             <artifactId>microprofile-opentracing-tck-rest-client</artifactId>
             <version>${microprofile.opentracing.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.eclipse.microprofile.opentracing</groupId>
             <artifactId>microprofile-opentracing-api</artifactId>
             <version>${microprofile.opentracing.version}</version>
-            <scope>system</scope>
-            <systemPath>${com.ibm.websphere.org.eclipse.microprofile.opentracing.2.0_}</systemPath>
         </dependency>
+
 
         <dependency>
             <groupId>org.eclipse.microprofile.config</groupId>
             <artifactId>microprofile-config-api</artifactId>
             <version>1.4</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.eclipse.microprofile.rest.client</groupId>
             <artifactId>microprofile-rest-client-api</artifactId>
             <version>1.4.0</version>
-		</dependency>
-		
+        </dependency>
+
         <dependency>
             <groupId>javax.enterprise</groupId>
             <artifactId>cdi-api</artifactId>
@@ -121,13 +116,13 @@
             <artifactId>resteasy-json-binding-provider</artifactId>
             <version>4.5.3.Final</version>
         </dependency>
-         
-         <dependency>
-             <groupId>org.jboss.shrinkwrap.resolver</groupId>
-             <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
-             <version>2.2.4</version>
-         </dependency>
-         
+
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.resolver</groupId>
+            <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+            <version>2.2.4</version>
+        </dependency>
+
         <!-- Include JAX-B API+Impl for Java 9+ -->
         <dependency>
             <groupId>javax.xml.bind</groupId>
@@ -187,7 +182,10 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.17</version> <!-- Any changes to the surefire version must be tested against ZOS -->
                 <configuration>
-                    <argLine>-Dfile.encoding=${project.build.sourceEncoding} -Dcom.ibm.tools.attach.enable=yes</argLine> <!-- Needed for ZOS. sourceEncoding is needed becuase arquillian calls string.getBtytes(). Attach is needed becuase because arquillian uses com.sun.tools.attach to find VMs -->
+                    <argLine>-Dfile.encoding=${project.build.sourceEncoding}
+                        -Dcom.ibm.tools.attach.enable=yes</argLine> <!-- Needed for ZOS. sourceEncoding is needed becuase arquillian calls string.getBtytes(). 
+                        Attach is needed becuase because arquillian uses com.sun.tools.attach to 
+                        find VMs -->
                     <systemPropertyVariables>
                         <wlp>${wlp}</wlp>
                         <tck_server>${tck_server}</tck_server>

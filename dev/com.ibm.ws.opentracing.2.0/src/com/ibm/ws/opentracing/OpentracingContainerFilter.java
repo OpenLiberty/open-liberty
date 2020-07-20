@@ -202,8 +202,6 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
         span.finish();
     }
 
-    //
-
     private static class MultivaluedMapToTextMap implements TextMap {
         private final MultivaluedMap<String, String> mvMap;
 
