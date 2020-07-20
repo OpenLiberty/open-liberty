@@ -14,8 +14,6 @@ package io.openliberty.grpc;
  * Management interface for MBeans with names of the form "WebSphere:type=GrpcClientStats,name=*"
  * where * is the name of a gRPC service.
  * 
- * TODO how can we query gRPC client-side metrics?
- * 
  * @ibm-api
  */
 public interface GrpcClientStatsMXBean {

@@ -62,6 +62,8 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
 	};
 
 	private static boolean useSecurity = false;
+	/** Indicates whether the monitor feature is enabled */
+	private static boolean monitoringEnabled = false;
 
 	private final String FEATUREPROVISIONER_REFERENCE_NAME = "featureProvisioner";
 
@@ -208,6 +210,7 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
 	@Override
 	public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {
 		setSecurityEnabled();
+		setMonitoringEnabled();
 		initGrpcServices(appInfo);
 	}
 
@@ -247,5 +250,21 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
 
 	public static boolean isSecurityEnabled() {
 		return useSecurity;
+	}
+
+	/**
+	 * Set useSecurity to true if any of the appSecurity features are enabled
+	 */
+	private void setMonitoringEnabled() {
+		Set<String> currentFeatureSet = _featureProvisioner.getService().getInstalledFeatures();
+		monitoringEnabled = currentFeatureSet.contains("monitor-1.0");
+	}
+	
+	/**
+	 * @return <code>true</code> if the monitor feature is enabled,
+	 * 	<code>false</code> otherwise
+	 */
+	public static boolean isMonitoringEnabled() {
+		return monitoringEnabled;
 	}
 }

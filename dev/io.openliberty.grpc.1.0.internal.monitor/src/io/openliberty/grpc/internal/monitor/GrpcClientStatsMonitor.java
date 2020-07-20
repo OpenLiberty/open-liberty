@@ -57,4 +57,8 @@ public class GrpcClientStatsMonitor {
 	public String getServiceName() {
 		return method.serviceName();
 	}
+
+	public GrpcMethod getMethod() {
+		return method;
+	}
 }

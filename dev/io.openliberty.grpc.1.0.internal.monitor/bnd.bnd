@@ -40,7 +40,8 @@ DynamicImport-Package: com.ibm.websphere.monitor.meters;version="1.0.0", \
  com.ibm.wsspi.pmi.factory;version="[1.1,2)", \
  com.ibm.wsspi.pmi.stat;version="[1.1,2)"
 
-Liberty-Monitoring-Components: io.openliberty.grpc.internal.monitor.GrpcMonitor
+Liberty-Monitoring-Components: io.openliberty.grpc.internal.monitor.GrpcServerMonitor, \
+    io.openliberty.grpc.internal.monitor.GrpcClientMonitor
 
 instrument.disabled: true
 

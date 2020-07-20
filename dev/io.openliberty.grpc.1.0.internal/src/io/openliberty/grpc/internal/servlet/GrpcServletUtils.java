@@ -27,7 +27,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.http2.GrpcServletServices;
 import com.ibm.ws.http2.GrpcServletServices.ServiceInformation;
@@ -261,6 +260,10 @@ public class GrpcServletUtils {
 	
 	
 	private static ServerInterceptor createMonitoringServerInterceptor(String serviceName, String appName) {
+		// create the monitoring interceptor only if the monitor feature is enabled 
+		if (!GrpcServerComponent.isMonitoringEnabled()) {
+			return null;
+		}
 		ServerInterceptor interceptor = null;
 		// monitoring interceptor 
 		final String className = "io.openliberty.grpc.internal.monitor.GrpcMonitoringServerInterceptor";
@@ -273,7 +276,6 @@ public class GrpcServletUtils {
 			}
 		} catch (Exception e) {
 			// an exception can happen if the monitoring package is not loaded 
-			FFDCFilter.processException(e, GrpcServletUtils.class.getName(), "GrpcServletUtils");
         }
 
 		return interceptor;
