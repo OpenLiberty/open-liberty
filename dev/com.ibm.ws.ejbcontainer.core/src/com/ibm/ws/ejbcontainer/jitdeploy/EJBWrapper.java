@@ -103,32 +103,25 @@ import com.ibm.websphere.ras.TraceComponent;
  * </ul>
  */
 @SuppressWarnings("deprecation")
-public final class EJBWrapper
-{
-    private static final TraceComponent tc = Tr.register
-                    (EJBWrapper.class,
-                     JITUtils.JIT_TRACE_GROUP,
-                     JITUtils.JIT_RSRC_BUNDLE);
+public final class EJBWrapper {
+    private static final TraceComponent tc = Tr.register(EJBWrapper.class,
+                                                         JITUtils.JIT_TRACE_GROUP,
+                                                         JITUtils.JIT_RSRC_BUNDLE);
 
     // --------------------------------------------------------------------------
     // The following static finals are for commonly used ASM Type objects for
     // EJB Wrapper classes, and allow the JITDeploy code to avoid creating these
     // objects over and over again.
     // --------------------------------------------------------------------------
-    static final Type TYPE_EJSDeployedSupport =
-                    Type.getType("Lcom/ibm/ejs/container/EJSDeployedSupport;");
-    static final Type TYPE_RemoteException =
-                    Type.getType("Ljava/rmi/RemoteException;");
-    static final String EJS_CONTAINER_FIELD_TYPE =
-                    "Lcom/ibm/ejs/container/EJSContainer;";
+    static final Type TYPE_EJSDeployedSupport = Type.getType("Lcom/ibm/ejs/container/EJSDeployedSupport;");
+    static final Type TYPE_RemoteException = Type.getType("Ljava/rmi/RemoteException;");
+    static final String EJS_CONTAINER_FIELD_TYPE = "Lcom/ibm/ejs/container/EJSContainer;";
 
     // --------------------------------------------------------------------------
     // Constants for generating No-Interface View (LocalBean)
     // --------------------------------------------------------------------------
-    public static final String LOCAL_BEAN_WRAPPER_FIELD =
-                    "ivWrapperBase"; // F743-1756
-    static final String LOCAL_BEAN_WRAPPER_FIELD_TYPE =
-                    "Lcom/ibm/ejs/container/BusinessLocalWrapper;"; // F743-1756
+    public static final String LOCAL_BEAN_WRAPPER_FIELD = "ivWrapperBase"; // F743-1756
+    static final String LOCAL_BEAN_WRAPPER_FIELD_TYPE = "Lcom/ibm/ejs/container/BusinessLocalWrapper;"; // F743-1756
 
     // --------------------------------------------------------------------------
     // Constants for generating MDB proxies
@@ -140,26 +133,24 @@ public final class EJBWrapper
     // --------------------------------------------------------------------------
     // Constants for generating ManagedBean wrappers
     // --------------------------------------------------------------------------
-    public static final String MANAGED_BEAN_BEANO_FIELD =
-                    "ivBeanO"; // F743-34301.1
-    static final String MANAGED_BEAN_BEANO_FIELD_TYPE =
-                    "Lcom/ibm/ejs/container/BeanO;"; // F743-34301.1
+    public static final String MANAGED_BEAN_BEANO_FIELD = "ivBeanO"; // F743-34301.1
+    static final String MANAGED_BEAN_BEANO_FIELD_TYPE = "Lcom/ibm/ejs/container/BeanO;"; // F743-34301.1
 
     /**
      * Core method for generating the EJB Wrapper class bytes. Intended for
      * use by JITDeploy only (should not be called directly). <p>
      *
-     * @param wrapperClassName name of the wrapper class to be generated.
+     * @param wrapperClassName  name of the wrapper class to be generated.
      * @param wrapperInterfaces Interfaces implemented by the generated wrapper.
-     * @param wrapperType Type of wrapper to be generated (REMOTE, LOCAL, etc.)
-     * @param allMethods Set of all methods from all interfaces of the
-     *            type of wrapper being generated.
-     * @param methodInfos EJB method info objects for all of the methods
-     *            from all interfaces of the type of wrapper being
-     *            generated.
-     * @param ejbClassName Name of the EJB implementation class, that
-     *            the generated wrapper will route methods to.
-     * @param beanName Name of the EJB (for messages)
+     * @param wrapperType       Type of wrapper to be generated (REMOTE, LOCAL, etc.)
+     * @param allMethods        Set of all methods from all interfaces of the
+     *                              type of wrapper being generated.
+     * @param methodInfos       EJB method info objects for all of the methods
+     *                              from all interfaces of the type of wrapper being
+     *                              generated.
+     * @param ejbClassName      Name of the EJB implementation class, that
+     *                              the generated wrapper will route methods to.
+     * @param beanName          Name of the EJB (for messages)
      **/
     static byte[] generateClassBytes(String wrapperClassName,
                                      Class<?>[] wrapperInterfaces,
@@ -167,9 +158,7 @@ public final class EJBWrapper
                                      Method[] allMethods,
                                      EJBMethodInfoImpl[] methodInfos,
                                      String ejbClassName,
-                                     String beanName)
-                    throws EJBConfigurationException
-    {
+                                     String beanName) throws EJBConfigurationException {
         Method[] methods;
         Class<?> mdbEnterpriseClass = null;
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
@@ -189,8 +178,7 @@ public final class EJBWrapper
 
         // Home wrappers do have some slight differences in generated code
         boolean isHomeWrapper = (wrapperType == REMOTE_HOME ||
-                        wrapperType == LOCAL_HOME)
-                                        ? true : false;
+                                 wrapperType == LOCAL_HOME) ? true : false;
 
         // This is the only wrapper interface for non-aggregate, and is the bean
         // class for LocalBean (No-Interface view).                        d677413
@@ -201,8 +189,7 @@ public final class EJBWrapper
         String internalClassName = convertClassName(wrapperClassName);
         String internalEJBClassName = convertClassName(ejbClassName);
         String[] internalInterfaceNames = new String[wrapperInterfaces.length];
-        for (int i = 0; i < wrapperInterfaces.length; i++)
-        {
+        for (int i = 0; i < wrapperInterfaces.length; i++) {
             String wrapperInterfaceName = wrapperInterfaces[i].getName();
             internalInterfaceNames[i] = convertClassName(wrapperInterfaceName);
         }
@@ -226,21 +213,18 @@ public final class EJBWrapper
         // a marker interface so passivation knows it is a wrapper.      F743-1756
         // Same is required for ManagedBean wrappers.                 F743-34301.1
         boolean isLocalBean = (wrapperType == LOCAL_BEAN ||
-                        wrapperType == MANAGED_BEAN);
-        if (isLocalBean)
-        {
+                               wrapperType == MANAGED_BEAN);
+        if (isLocalBean) {
             // No-Interface is always first in the list                     d677413
             String tempName = internalInterfaceNames[0];
             internalInterfaceNames[0] = internalParentName;
             internalParentName = tempName;
         }
 
-        if (isTraceOn)
-        {
+        if (isTraceOn) {
             if (tc.isEntryEnabled())
                 Tr.entry(tc, "generateClassBytes");
-            if (tc.isDebugEnabled())
-            {
+            if (tc.isDebugEnabled()) {
                 Tr.debug(tc, INDENT + "className = " + internalClassName);
                 Tr.debug(tc, INDENT + "interface = " + Arrays.toString(internalInterfaceNames));
                 Tr.debug(tc, INDENT + "parent    = " + internalParentName);
@@ -287,8 +271,7 @@ public final class EJBWrapper
 
         // d583041 - No-Interface (LocalBean) needs to override Object.equals and
         // Object.hashCode.  Other local views get this from EJSWrapperBase.
-        if (wrapperType == LOCAL_BEAN)
-        {
+        if (wrapperType == LOCAL_BEAN) {
             addNoInterfaceEqualsMethod(cw, internalClassName);
             addNoInterfaceHashCodeMethod(cw, internalClassName);
         }
@@ -310,21 +293,16 @@ public final class EJBWrapper
         // as the list for this interface.
         if (isHomeWrapper ||
             wrapperType == MDB_PROXY ||
-            wrapperType == MDB_NO_METHOD_INTERFACE_PROXY)
-        {
+            wrapperType == MDB_NO_METHOD_INTERFACE_PROXY) {
             methods = allMethods;
-        }
-        else if (wrapperType == BUSINESS_LOCAL ||
-                 wrapperType == BUSINESS_REMOTE ||
-                 wrapperType == LOCAL_BEAN ||
-                 wrapperType == MANAGED_BEAN) // F743-34301.1
-        {
+        } else if (wrapperType == BUSINESS_LOCAL ||
+                   wrapperType == BUSINESS_REMOTE ||
+                   wrapperType == LOCAL_BEAN ||
+                   wrapperType == MANAGED_BEAN) {
             // For 3.0 and later business interfaces (including no-interface view),
             // DeploymentUtil is expecting them in the second parameter.  F743-1756
             methods = DeploymentUtil.getMethods(null, wrapperInterfaces);
-        }
-        else
-        {
+        } else {
             // Component interfaces are passed as the first parameter.
             methods = DeploymentUtil.getMethods(wrapperInterface, null);
         }
@@ -332,31 +310,31 @@ public final class EJBWrapper
         // Add all of the methods to the wrapper, based on the reflected
         // Method objects from the interface.
         int methodId = -1;
-        for (int i = 0; i < methods.length; ++i)
-        {
+        for (int i = 0; i < methods.length; ++i) {
             Method method = methods[i];
             String implMethodName = method.getName();
 
             // For aggregate wrappers, validation performed previously.     d677413
-            if (!isAggregateWrapper)
-            {
+            if (!isAggregateWrapper) {
                 // For Local Home wrappers, the create and find methods must have
                 // _Local appended, since there is only 1 home implementation.
-                if (isHomeWrapper && !isRmiRemote)
-                {
+                if (isHomeWrapper && !isRmiRemote) {
                     if (implMethodName.startsWith("create") ||
                         implMethodName.startsWith("find"))
                         implMethodName += "_Local";
                 }
 
                 // Business methods must not start with "ejb", per spec.     d457128
-                if (!isHomeWrapper && wrapperType != MANAGED_BEAN && implMethodName.startsWith("ejb"))
-                {
+                if (!isHomeWrapper &&
+                    wrapperType != MANAGED_BEAN &&
+                    wrapperType != MDB_PROXY &&
+                    wrapperType != MDB_NO_METHOD_INTERFACE_PROXY &&
+                    implMethodName.startsWith("ejb")) {
                     // Log the error and throw meaningful exception.        d457128.2
                     Tr.error(tc, "JIT_INVALID_MTHD_PREFIX_CNTR5010E",
                              new Object[] { beanName,
-                                           wrapperInterface.getName(),
-                                           implMethodName });
+                                            wrapperInterface.getName(),
+                                            implMethodName });
                     throw new EJBConfigurationException("EJB business method " + implMethodName +
                                                         " on interface " + wrapperInterface.getName() +
                                                         " must not start with 'ejb'.");
@@ -364,8 +342,7 @@ public final class EJBWrapper
 
                 // No-Interface View (LocalBean) methods must not be final
                 // or throw a RemoteException.                             F743-1756
-                if (isLocalBean)
-                {
+                if (isLocalBean) {
                     validateLocalBeanMethod(method, beanName);
                 }
             }
@@ -376,8 +353,7 @@ public final class EJBWrapper
 
             // Determine if interceptors are called from methodinfo.      d367572.4
             EJBMethodInfoImpl methodInfo = methodInfos[methodId];
-            boolean aroundInvoke =
-                            (methodInfo.getAroundInterceptorProxies() != null); // F743-17763.1
+            boolean aroundInvoke = (methodInfo.getAroundInterceptorProxies() != null); // F743-17763.1
 
             // Determine if this is a Stateless Home create, which will
             // optimize the wrapper to call a special preInvoke.
@@ -390,29 +366,21 @@ public final class EJBWrapper
             // warning, and use the method (and thus exceptions) from the
             // implementation. Only and all exceptions from the implementation are
             // possible.                                                    d677413
-            if (isAggregateWrapper)
-            {
+            if (isAggregateWrapper) {
                 Method previousMethod = null, currentMethod = null;
-                for (Class<?> curInterface : wrapperInterfaces)
-                {
-                    try
-                    {
+                for (Class<?> curInterface : wrapperInterfaces) {
+                    try {
                         currentMethod = curInterface.getMethod(implMethodName, method.getParameterTypes());
-                    } catch (NoSuchMethodException ex)
-                    {
+                    } catch (NoSuchMethodException ex) {
                         continue; // not all interfaces have all methods... normal
                     }
 
-                    if (previousMethod == null)
-                    {
+                    if (previousMethod == null) {
                         previousMethod = currentMethod;
-                    }
-                    else
-                    {
+                    } else {
                         Class<?>[] previousEx = previousMethod.getExceptionTypes();
                         Class<?>[] currentEx = currentMethod.getExceptionTypes();
-                        if (!Arrays.equals(previousEx, currentEx))
-                        {
+                        if (!Arrays.equals(previousEx, currentEx)) {
                             method = methodInfo.getMethod();
                             Tr.warning(tc, "JIT_THROWS_CLAUSE_MISMATCH_CNTR5035W",
                                        new Object[] { beanName, method }); // d677413
@@ -427,8 +395,7 @@ public final class EJBWrapper
             // 2 - Synchronous EJB method
             // 3 - Asynchronous EJB method
             // Each 'add' method accounts for interceptors (or lack of)
-            if (wrapperType == MANAGED_BEAN)
-            {
+            if (wrapperType == MANAGED_BEAN) {
                 addManagedBeanMethod(cw,
                                      internalClassName,
                                      internalEJBClassName,
@@ -436,9 +403,7 @@ public final class EJBWrapper
                                      implMethodName,
                                      methodId,
                                      aroundInvoke);
-            }
-            else if (!methodInfo.isAsynchMethod())
-            {
+            } else if (!methodInfo.isAsynchMethod()) {
                 addEJBMethod(cw,
                              internalClassName,
                              internalEJBClassName,
@@ -450,9 +415,7 @@ public final class EJBWrapper
                              aroundInvoke,
                              isStatelessCreate);
 
-            }
-            else
-            {
+            } else {
                 addEJBAsynchMethod(cw,
                                    internalClassName,
                                    method,
@@ -465,8 +428,7 @@ public final class EJBWrapper
         // For No-Interface View (LocalBean) or no-method interface MDB,
         // also add method overrides for all non-public methods, which
         // just throw EJBException.        F743-1756
-        if (isLocalBean || isNoMethodInterfaceMDB)
-        {
+        if (isLocalBean || isNoMethodInterfaceMDB) {
             Class<?> ejbClass;
             if (isNoMethodInterfaceMDB) {
                 // For no method interface MDBs we need to use the enterprise
@@ -475,15 +437,13 @@ public final class EJBWrapper
             } else {
                 ejbClass = wrapperInterface;
             }
-            ArrayList<Method> nonPublicMethods =
-                            DeploymentUtil.getNonPublicMethods(ejbClass,
-                                                               methods);
+            ArrayList<Method> nonPublicMethods = DeploymentUtil.getNonPublicMethods(ejbClass,
+                                                                                    methods);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, INDENT + "Non-public methods : " +
                              nonPublicMethods.size());
 
-            for (Method method : nonPublicMethods)
-            {
+            for (Method method : nonPublicMethods) {
                 if (!isAggregateWrapper) { // d677413
                     validateLocalBeanMethod(method, beanName); // must not be final
                 }
@@ -497,8 +457,7 @@ public final class EJBWrapper
         // Dump the class bytes out to a byte array.
         byte[] classBytes = cw.toByteArray();
 
-        if (isTraceOn)
-        {
+        if (isTraceOn) {
             if (tc.isDebugEnabled())
                 writeToClassFile(internalClassName, classBytes);
 
@@ -521,17 +480,15 @@ public final class EJBWrapper
      *
      * The fields are NOT initialized. <p>
      *
-     * @param cw ASM ClassWriter to add the fields to.
+     * @param cw          ASM ClassWriter to add the fields to.
      * @param wrapperType Type of wrapper to be generated (REMOTE, LOCAL, etc.)
      **/
-    private static void addFields(ClassWriter cw, EJBWrapperType wrapperType)
-    {
+    private static void addFields(ClassWriter cw, EJBWrapperType wrapperType) {
         FieldVisitor fv;
 
         // For No-Interface view (LocalBean) add an instance variables to the
         // EJSContainer and associated BusinessLocalWrapper instance.    F743-1756
-        if (wrapperType == LOCAL_BEAN || wrapperType == MANAGED_BEAN)
-        {
+        if (wrapperType == LOCAL_BEAN || wrapperType == MANAGED_BEAN) {
             final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
             // --------------------------------------------------------------------
@@ -547,8 +504,7 @@ public final class EJBWrapper
                                null, null);
             fv.visitEnd();
 
-            if (wrapperType == MANAGED_BEAN)
-            {
+            if (wrapperType == MANAGED_BEAN) {
                 // --------------------------------------------------------------------
                 // private BeanO ivBeanO;
                 // --------------------------------------------------------------------
@@ -564,8 +520,7 @@ public final class EJBWrapper
             }
         }
 
-        if (wrapperType == MDB_NO_METHOD_INTERFACE_PROXY)
-        {
+        if (wrapperType == MDB_NO_METHOD_INTERFACE_PROXY) {
             // --------------------------------------------------------------------
             // private MessageEndpointBase ivMessageEndpointBase;
             // --------------------------------------------------------------------
@@ -590,13 +545,12 @@ public final class EJBWrapper
      * Currently, the generated method body is intentionally empty;
      * EJB Wrappers require no initialization in the constructor. <p>
      *
-     * @param cw ASM ClassWriter to add the constructor to.
+     * @param cw     ASM ClassWriter to add the constructor to.
      * @param parent fully qualified name of the parent class
-     *            with '/' as the separator character
-     *            (i.e. internal name).
+     *                   with '/' as the separator character
+     *                   (i.e. internal name).
      **/
-    private static void addCtor(ClassWriter cw, String parent)
-    {
+    private static void addCtor(ClassWriter cw, String parent) {
         MethodVisitor mv;
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -627,11 +581,10 @@ public final class EJBWrapper
     /**
      * Adds the default definition for the Object.equals method.
      *
-     * @param cw ASM ClassWriter to add the method to.
+     * @param cw            ASM ClassWriter to add the method to.
      * @param implClassName name of the wrapper class being generated.
      */
-    private static void addDefaultEqualsMethod(ClassWriter cw, String implClassName)
-    {
+    private static void addDefaultEqualsMethod(ClassWriter cw, String implClassName) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, INDENT + "adding method : equals (Ljava/lang/Object;)Z");
 
@@ -668,11 +621,10 @@ public final class EJBWrapper
     /**
      * Adds the default definition for the Object.hashCode method.
      *
-     * @param cw ASM ClassWriter to add the method to.
+     * @param cw            ASM ClassWriter to add the method to.
      * @param implClassName name of the wrapper class being generated.
      */
-    private static void addDefaultHashCodeMethod(ClassWriter cw, String implClassName)
-    {
+    private static void addDefaultHashCodeMethod(ClassWriter cw, String implClassName) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, INDENT + "adding method : hashCode ()I");
 
@@ -703,13 +655,12 @@ public final class EJBWrapper
      * Adds a definition for Object.equals method for the No-Interface
      * (LocalBean).
      *
-     * @param cw ASM ClassWriter to add the method to.
+     * @param cw            ASM ClassWriter to add the method to.
      * @param implClassName name of the wrapper class being generated.
      */
     // d583041
     private static void addNoInterfaceEqualsMethod(ClassWriter cw,
-                                                   String implClassName)
-    {
+                                                   String implClassName) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, INDENT + "adding method : equals (Ljava/lang/Object;)Z");
 
@@ -766,13 +717,12 @@ public final class EJBWrapper
      * Adds a definition for Object.hashCode method for the No-Interface view
      * (LocalBean).
      *
-     * @param cw ASM ClassWriter to add the method to.
+     * @param cw            ASM ClassWriter to add the method to.
      * @param implClassName name of the wrapper class being generated.
      */
     // d583041
     private static void addNoInterfaceHashCodeMethod(ClassWriter cw,
-                                                     String implClassName)
-    {
+                                                     String implClassName) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, INDENT + "adding method : hashCode ()I");
 
@@ -807,12 +757,11 @@ public final class EJBWrapper
      * Interface MDB's. Otherwise, MessageEndpointBase.afterDelivery()
      * is inherited.
      *
-     * @param cw ASM ClassWriter to add the method to.
+     * @param cw            ASM ClassWriter to add the method to.
      * @param implClassName name of the wrapper class being generated.
      */
     private static void addAfterDeliveryMethod(ClassWriter cw,
-                                               String implClassName)
-    {
+                                               String implClassName) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, INDENT + "adding method : afterDelivery ()V");
 
@@ -849,12 +798,11 @@ public final class EJBWrapper
      * Interface MDB's. Otherwise, MessageEndpointBase.beforeDelivery()
      * is inherited.
      *
-     * @param cw ASM ClassWriter to add the method to.
+     * @param cw            ASM ClassWriter to add the method to.
      * @param implClassName name of the proxy class being generated.
      */
     private static void addBeforeDeliveryMethod(ClassWriter cw,
-                                                String implClassName)
-    {
+                                                String implClassName) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, INDENT + "adding method : beforeDelivery (Method)V");
 
@@ -892,12 +840,11 @@ public final class EJBWrapper
      * Interface MDB's. Otherwise, MessageEndpointBase.release()
      * is inherited.
      *
-     * @param cw ASM ClassWriter to add the method to.
+     * @param cw            ASM ClassWriter to add the method to.
      * @param implClassName name of the proxy class being generated.
      */
     private static void addReleaseMethod(ClassWriter cw,
-                                         String implClassName)
-    {
+                                         String implClassName) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, INDENT + "adding method : release ()V");
 
@@ -931,20 +878,20 @@ public final class EJBWrapper
     /**
      * Adds a standard (ie. synchronous) EJB Wrapper Method. <p>
      *
-     * @param cw ASM Class writer to add the method to.
-     * @param className name of the wrapper class being generated.
-     * @param implClassName name of the EJB implementation class.
-     * @param wrapperType Type of wrapper to be generated (REMOTE, LOCAL, etc.)
-     * @param method reflection method from the interface defining
-     *            method to be added to the wrapper.
-     * @param implMethodName name of the method on the EJB implementation
-     *            class (may be different for homes).
-     * @param methodId index into the list of all methods of this
-     *            wrapper type, for this specific method.
-     * @param isRmiRemote true if interface extends java.rmi.Remote.
-     * @param aroundInvoke true if interceptors are present.
+     * @param cw                ASM Class writer to add the method to.
+     * @param className         name of the wrapper class being generated.
+     * @param implClassName     name of the EJB implementation class.
+     * @param wrapperType       Type of wrapper to be generated (REMOTE, LOCAL, etc.)
+     * @param method            reflection method from the interface defining
+     *                              method to be added to the wrapper.
+     * @param implMethodName    name of the method on the EJB implementation
+     *                              class (may be different for homes).
+     * @param methodId          index into the list of all methods of this
+     *                              wrapper type, for this specific method.
+     * @param isRmiRemote       true if interface extends java.rmi.Remote.
+     * @param aroundInvoke      true if interceptors are present.
      * @param isStatelessCreate true if this is for the create method on
-     *            a Stateless Session bean Home.
+     *                              a Stateless Session bean Home.
      **/
     private static void addEJBMethod(ClassWriter cw,
                                      String className,
@@ -955,18 +902,13 @@ public final class EJBWrapper
                                      int methodId,
                                      boolean isRmiRemote,
                                      boolean aroundInvoke,
-                                     boolean isStatelessCreate)
-                    throws EJBConfigurationException
-    {
+                                     boolean isStatelessCreate) throws EJBConfigurationException {
         GeneratorAdapter mg;
         String methodName = method.getName();
         String methodSignature = MethodAttribUtils.jdiMethodSignature(method);
-        String EjbPreInvoke = isStatelessCreate ? "EjbPreInvokeForStatelessCreate"
-                        : "EjbPreInvoke";
-        String EjbPostInvoke = isStatelessCreate ? "EjbPostInvokeForStatelessCreate"
-                        : "postInvoke";
-        String setUncheckedException = isRmiRemote ? "setUncheckedException"
-                        : "setUncheckedLocalException";
+        String EjbPreInvoke = isStatelessCreate ? "EjbPreInvokeForStatelessCreate" : "EjbPreInvoke";
+        String EjbPostInvoke = isStatelessCreate ? "EjbPostInvokeForStatelessCreate" : "postInvoke";
+        String setUncheckedException = isRmiRemote ? "setUncheckedException" : "setUncheckedLocalException";
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, INDENT + "adding method : " +
@@ -991,10 +933,7 @@ public final class EJBWrapper
         Type[] argTypes = getTypes(method.getParameterTypes());
         Type[] exceptionTypes = getTypes(methodExceptions);
 
-        org.objectweb.asm.commons.Method m =
-                        new org.objectweb.asm.commons.Method(methodName,
-                                        returnType,
-                                        argTypes);
+        org.objectweb.asm.commons.Method m = new org.objectweb.asm.commons.Method(methodName, returnType, argTypes);
 
         // Create an ASM GeneratorAdapter object for the ASM Method, which
         // makes generating dynamic code much easier... as it keeps track
@@ -1010,11 +949,9 @@ public final class EJBWrapper
         // <return type> returnValue = false | 0 | null;
         // -----------------------------------------------------------------------
         int returnValue = -1;
-        if (returnType != Type.VOID_TYPE)
-        {
+        if (returnType != Type.VOID_TYPE) {
             returnValue = mg.newLocal(returnType);
-            switch (returnType.getSort())
-            {
+            switch (returnType.getSort()) {
                 case Type.BOOLEAN:
                     mg.push(false);
                     break;
@@ -1062,8 +999,7 @@ public final class EJBWrapper
         // This will verify we are in a valid state to process this invocation.
         // An IllegalStateException is thrown if we are not in a valid state or
         // if we detect the RA violated the JCA 1.5 specification.
-        else
-        {
+        else {
             // -----------------------------------------------------------------------
             // this.checkState(methodId, null, MDB_BUSINESS_METHOD);
             // -----------------------------------------------------------------------
@@ -1093,8 +1029,7 @@ public final class EJBWrapper
         // The parameters always need to be copied for AroundInvoke interceptors,
         // but otherwise only need to be copied for JACC... so only add the
         // JACC check when there are no interceptors for the method.     d367572.4
-        if (!aroundInvoke)
-        {
+        if (!aroundInvoke) {
             // --------------------------------------------------------------------
             // Object[] args = null;
             // --------------------------------------------------------------------
@@ -1122,14 +1057,12 @@ public final class EJBWrapper
         // -----------------------------------------------------------------------
         //     args[i] = "parameter";  ->  for each parameter
         // -----------------------------------------------------------------------
-        for (int i = 0; i < argTypes.length; i++)
-        {
+        for (int i = 0; i < argTypes.length; i++) {
             mg.loadLocal(args);
             mg.push(i);
 
             // Convert primitives to objects to put in 'args' array.
-            switch (argTypes[i].getSort())
-            {
+            switch (argTypes[i].getSort()) {
                 case Type.BOOLEAN:
                     mg.visitTypeInsn(NEW, "java/lang/Boolean");
                     mg.visitInsn(DUP);
@@ -1198,8 +1131,7 @@ public final class EJBWrapper
         // As above, the check around the copy of the parameters was only added
         // when no interceptors, so only need the closing label when the if
         // check was added.                                              d367572.4
-        if (!aroundInvoke)
-        {
+        if (!aroundInvoke) {
             // --------------------------------------------------------------------
             //   }                   // end of container.doesJaccNeedsEJBAruments()
             // --------------------------------------------------------------------
@@ -1244,8 +1176,7 @@ public final class EJBWrapper
         // 2 ) Directly, by calling the method on the bean instance.
         // -----------------------------------------------------------------------
 
-        if (aroundInvoke)
-        {
+        if (aroundInvoke) {
             // --------------------------------------------------------------------
             //   this.container.invoke(s,null);
             //      or
@@ -1260,21 +1191,16 @@ public final class EJBWrapper
                                "invoke",
                                "(Lcom/ibm/ejs/container/EJSDeployedSupport;Ljavax/ejb/Timer;)Ljava/lang/Object;"); // F743-17763.1
 
-            if (returnType == Type.VOID_TYPE)
-            {
+            if (returnType == Type.VOID_TYPE) {
                 // No return value, just pop the returned value (null) off the stack
                 mg.pop();
-            }
-            else
-            {
+            } else {
                 // Unbox any primitive values or add the appropriate cast
                 // for object/array values, and then store in local variable. d369262.7
                 unbox(mg, returnType);
                 mg.storeLocal(returnValue);
             }
-        }
-        else
-        {
+        } else {
             // --------------------------------------------------------------------
             //   bean.<method>(<args...>);
             //      or
@@ -1284,8 +1210,7 @@ public final class EJBWrapper
             mg.loadArgs(0, argTypes.length); // do not pass "this"
             mg.visitMethodInsn(INVOKEVIRTUAL, implClassName, implMethodName,
                                m.getDescriptor());
-            if (returnType != Type.VOID_TYPE)
-            {
+            if (returnType != Type.VOID_TYPE) {
                 mg.storeLocal(returnValue);
             }
         }
@@ -1306,17 +1231,14 @@ public final class EJBWrapper
         // special catch block for RuntimeException so that it is not treated as
         // an application exception.
         boolean hasThrowsException = false;
-        if (ContainerProperties.DeclaredUncheckedAreSystemExceptions)
-        {
-            for (Class<?> checkedException : checkedExceptions)
-            {
+        if (ContainerProperties.DeclaredUncheckedAreSystemExceptions) {
+            for (Class<?> checkedException : checkedExceptions) {
                 hasThrowsException |= checkedException == Exception.class;
             }
         }
 
         Label main_catch_runtime_exception = null;
-        if (hasThrowsException)
-        {
+        if (hasThrowsException) {
             // -----------------------------------------------------------------------
             // catch (RuntimeException th)
             // {
@@ -1410,8 +1332,7 @@ public final class EJBWrapper
         Label[] main_catch_label = new Label[checkedExceptions.length];
         int caught_ex = mg.newLocal(TYPE_Exception);
 
-        for (int i = 0; i < checkedExceptions.length; i++)
-        {
+        for (int i = 0; i < checkedExceptions.length; i++) {
             main_catch_label[i] = new Label();
             mg.visitLabel(main_catch_label[i]);
             mg.storeLocal(caught_ex);
@@ -1508,8 +1429,7 @@ public final class EJBWrapper
         // we don't need to catch a remoteException for MDBs.
         // -----------------------------------------------------------------------
         Label finally_catch_remote = new Label();
-        if (!isRmiRemote && wrapperType != MDB_PROXY && wrapperType != MDB_NO_METHOD_INTERFACE_PROXY)
-        {
+        if (!isRmiRemote && wrapperType != MDB_PROXY && wrapperType != MDB_NO_METHOD_INTERFACE_PROXY) {
             // -----------------------------------------------------------------------
             //   catch ( RemoteException rex )
             //   {
@@ -1542,8 +1462,7 @@ public final class EJBWrapper
         // -----------------------------------------------------------------------
         // return
         // -----------------------------------------------------------------------
-        if (returnType != Type.VOID_TYPE)
-        {
+        if (returnType != Type.VOID_TYPE) {
             mg.loadLocal(returnValue);
         }
         mg.returnValue();
@@ -1551,18 +1470,15 @@ public final class EJBWrapper
         // -----------------------------------------------------------------------
         // All Try-Catch-Finally definitions for above
         // -----------------------------------------------------------------------
-        if (main_catch_runtime_exception != null) // d660332
-        {
+        if (main_catch_runtime_exception != null) {
             mg.visitTryCatchBlock(main_try_begin, main_try_end,
                                   main_catch_runtime_exception, "java/lang/RuntimeException");
         }
-        if (main_catch_remote_exception != null)
-        {
+        if (main_catch_remote_exception != null) {
             mg.visitTryCatchBlock(main_try_begin, main_try_end,
                                   main_catch_remote_exception, "java/rmi/RemoteException");
         }
-        for (int i = 0; i < checkedExceptions.length; i++)
-        {
+        for (int i = 0; i < checkedExceptions.length; i++) {
             mg.visitTryCatchBlock(main_try_begin, main_try_end,
                                   main_catch_label[i],
                                   convertClassName(checkedExceptions[i].getName()));
@@ -1571,8 +1487,7 @@ public final class EJBWrapper
                               main_catch_throwable, "java/lang/Throwable");
         mg.visitTryCatchBlock(main_try_begin, main_finally_ex, main_finally_ex, null);
 
-        if (!isRmiRemote && wrapperType != MDB_PROXY && wrapperType != MDB_NO_METHOD_INTERFACE_PROXY)
-        {
+        if (!isRmiRemote && wrapperType != MDB_PROXY && wrapperType != MDB_NO_METHOD_INTERFACE_PROXY) {
             mg.visitTryCatchBlock(finally_try_begin, finally_try_end,
                                   finally_catch_remote, "java/rmi/RemoteException");
         }
@@ -1591,10 +1506,10 @@ public final class EJBWrapper
      * that forwards the asynch method call to the container so it can be scheduled
      * on a work manager for execution on a different thread. <p>
      *
-     * @param cw ASM Class writer to add the method to.
-     * @param className Name of the wrapper class being generated.
-     * @param method Reflection method from the interface defining method to be added to the wrapper.
-     * @param methodId Index into the list of all methods of this wrapper type, for this specific method.
+     * @param cw          ASM Class writer to add the method to.
+     * @param className   Name of the wrapper class being generated.
+     * @param method      Reflection method from the interface defining method to be added to the wrapper.
+     * @param methodId    Index into the list of all methods of this wrapper type, for this specific method.
      * @param isRmiRemote true if interface extends java.rmi.Remote.
      * @param wrapperType Type of wrapper to be generated (REMOTE, LOCAL, etc.)
      */
@@ -1603,8 +1518,7 @@ public final class EJBWrapper
                                            Method method,
                                            int methodId,
                                            boolean isRmiRemote,
-                                           EJBWrapperType wrapperType)
-    {
+                                           EJBWrapperType wrapperType) {
         GeneratorAdapter mg;
         String methodName = method.getName();
         String methodSignature = MethodAttribUtils.jdiMethodSignature(method);
@@ -1627,8 +1541,7 @@ public final class EJBWrapper
         Type[] argTypes = getTypes(method.getParameterTypes());
         Type[] exceptionTypes = getTypes(methodExceptions);
 
-        org.objectweb.asm.commons.Method m = new org.objectweb.asm.commons.Method(
-                        methodName, returnType, argTypes);
+        org.objectweb.asm.commons.Method m = new org.objectweb.asm.commons.Method(methodName, returnType, argTypes);
 
         // Create an ASM GeneratorAdapter object for the ASM Method, which
         // makes generating dynamic code much easier... as it keeps track
@@ -1653,9 +1566,8 @@ public final class EJBWrapper
         // returnValue = null
         // -----------------------------------------------------------------------
         int returnValue = -1;
-        if (returnType != Type.VOID_TYPE) // F743-609CodRev
-                                          // If method return type is not void, save room on stack for return value.
-        {
+        if (returnType != Type.VOID_TYPE) {
+            // If method return type is not void, save room on stack for return value.
             returnValue = mg.newLocal(returnType);
 
             // push a null on the stack
@@ -1801,16 +1713,16 @@ public final class EJBWrapper
     /**
      * Adds a ManagedBean Wrapper Method. <p>
      *
-     * @param cw ASM Class writer to add the method to.
-     * @param className name of the wrapper class being generated.
-     * @param implClassName name of the EJB implementation class.
-     * @param method reflection method from the interface defining
-     *            method to be added to the wrapper.
+     * @param cw             ASM Class writer to add the method to.
+     * @param className      name of the wrapper class being generated.
+     * @param implClassName  name of the EJB implementation class.
+     * @param method         reflection method from the interface defining
+     *                           method to be added to the wrapper.
      * @param implMethodName name of the method on the EJB implementation
-     *            class (may be different for homes).
-     * @param methodId index into the list of all methods of this
-     *            wrapper type, for this specific method.
-     * @param aroundInvoke true if interceptors are present.
+     *                           class (may be different for homes).
+     * @param methodId       index into the list of all methods of this
+     *                           wrapper type, for this specific method.
+     * @param aroundInvoke   true if interceptors are present.
      **/
     // F743-34301.1
     private static void addManagedBeanMethod(ClassWriter cw,
@@ -1819,8 +1731,7 @@ public final class EJBWrapper
                                              Method method,
                                              String implMethodName,
                                              int methodId,
-                                             boolean aroundInvoke)
-    {
+                                             boolean aroundInvoke) {
         GeneratorAdapter mg;
         String methodName = method.getName();
         String methodSignature = MethodAttribUtils.jdiMethodSignature(method);
@@ -1845,10 +1756,7 @@ public final class EJBWrapper
         Type[] argTypes = getTypes(method.getParameterTypes());
         Type[] exceptionTypes = getTypes(methodExceptions);
 
-        org.objectweb.asm.commons.Method m =
-                        new org.objectweb.asm.commons.Method(methodName,
-                                        returnType,
-                                        argTypes);
+        org.objectweb.asm.commons.Method m = new org.objectweb.asm.commons.Method(methodName, returnType, argTypes);
 
         // Create an ASM GeneratorAdapter object for the ASM Method, which
         // makes generating dynamic code much easier... as it keeps track
@@ -1865,8 +1773,7 @@ public final class EJBWrapper
         // method call is just passed through to the actual instance, which may
         // be found in the BeanO stored on the wrapper.
         // -----------------------------------------------------------------------
-        if (!aroundInvoke)
-        {
+        if (!aroundInvoke) {
             // --------------------------------------------------------------------
             //   <bean impl> bean = (<bean impl>)ivBeanO.getBeanInstance();
             // --------------------------------------------------------------------
@@ -1917,11 +1824,9 @@ public final class EJBWrapper
         // <return type> returnValue = false | 0 | null;
         // -----------------------------------------------------------------------
         int returnValue = -1;
-        if (returnType != Type.VOID_TYPE)
-        {
+        if (returnType != Type.VOID_TYPE) {
             returnValue = mg.newLocal(returnType);
-            switch (returnType.getSort())
-            {
+            switch (returnType.getSort()) {
                 case Type.BOOLEAN:
                     mg.push(false);
                     break;
@@ -1968,14 +1873,12 @@ public final class EJBWrapper
         // -----------------------------------------------------------------------
         // args[i] = "parameter";  ->  for each parameter
         // -----------------------------------------------------------------------
-        for (int i = 0; i < argTypes.length; i++)
-        {
+        for (int i = 0; i < argTypes.length; i++) {
             mg.loadLocal(args);
             mg.push(i);
 
             // Convert primitives to objects to put in 'args' array.
-            switch (argTypes[i].getSort())
-            {
+            switch (argTypes[i].getSort()) {
                 case Type.BOOLEAN:
                     mg.visitTypeInsn(NEW, "java/lang/Boolean");
                     mg.visitInsn(DUP);
@@ -2083,13 +1986,10 @@ public final class EJBWrapper
                            "invoke",
                            "(Lcom/ibm/ejs/container/EJSDeployedSupport;Ljavax/ejb/Timer;)Ljava/lang/Object;");
 
-        if (returnType == Type.VOID_TYPE)
-        {
+        if (returnType == Type.VOID_TYPE) {
             // No return value, just pop the returned value (null) off the stack
             mg.pop();
-        }
-        else
-        {
+        } else {
             // Unbox any primitive values or add the appropriate cast
             // for object/array values, and then store in local variable. d369262.7
             unbox(mg, returnType);
@@ -2099,8 +1999,7 @@ public final class EJBWrapper
         // -----------------------------------------------------------------------
         // return
         // -----------------------------------------------------------------------
-        if (returnType != Type.VOID_TYPE)
-        {
+        if (returnType != Type.VOID_TYPE) {
             mg.loadLocal(returnValue);
         }
         mg.returnValue();
@@ -2117,14 +2016,13 @@ public final class EJBWrapper
      *
      * The added method will just throw an EJBException. <p>
      *
-     * @param cw ASM Class writer to add the method to.
+     * @param cw     ASM Class writer to add the method to.
      * @param method reflection method from the interface defining
-     *            method to be added to the wrapper.
+     *                   method to be added to the wrapper.
      **/
     // F743-1756
     private static void addNonPublicMethod(ClassWriter cw,
-                                           Method method)
-    {
+                                           Method method) {
         GeneratorAdapter mg;
         String methodName = method.getName();
         String methodSignature = MethodAttribUtils.jdiMethodSignature(method);
@@ -2142,10 +2040,7 @@ public final class EJBWrapper
         Type[] argTypes = getTypes(method.getParameterTypes());
         Type[] exceptionTypes = getTypes(methodExceptions);
 
-        org.objectweb.asm.commons.Method m =
-                        new org.objectweb.asm.commons.Method(methodName,
-                                        returnType,
-                                        argTypes);
+        org.objectweb.asm.commons.Method m = new org.objectweb.asm.commons.Method(methodName, returnType, argTypes);
 
         // Create an ASM GeneratorAdapter object for the ASM Method, which
         // makes generating dynamic code much easier... as it keeps track
@@ -2184,8 +2079,7 @@ public final class EJBWrapper
      *
      * @param wrapperType the type of wrapper being generated.
      **/
-    private static String getParentClassName(EJBWrapperType wrapperType, String internalEJBClassName)
-    {
+    private static String getParentClassName(EJBWrapperType wrapperType, String internalEJBClassName) {
         // Basically, just map the wrapper type to the subclass of
         // EJSWrapperBase that corresponds.
 
@@ -2197,38 +2091,23 @@ public final class EJBWrapper
         String internalParentName = null;
 
         if (wrapperType == REMOTE ||
-            wrapperType == REMOTE_HOME)
-        {
+            wrapperType == REMOTE_HOME) {
             internalParentName = "com/ibm/ejs/container/EJSWrapper";
-        }
-        else if (wrapperType == LOCAL ||
-                 wrapperType == LOCAL_HOME)
-        {
+        } else if (wrapperType == LOCAL ||
+                   wrapperType == LOCAL_HOME) {
             internalParentName = "com/ibm/ejs/container/EJSLocalWrapper";
-        }
-        else if (wrapperType == BUSINESS_LOCAL)
-        {
+        } else if (wrapperType == BUSINESS_LOCAL) {
             internalParentName = "com/ibm/ejs/container/BusinessLocalWrapper";
-        }
-        else if (wrapperType == BUSINESS_REMOTE)
-        {
+        } else if (wrapperType == BUSINESS_REMOTE) {
             internalParentName = "com/ibm/ejs/container/BusinessRemoteWrapper";
-        }
-        else if (wrapperType == LOCAL_BEAN || // F743-1756
-                 wrapperType == MANAGED_BEAN) // F743-34301.1
-        {
+        } else if (wrapperType == LOCAL_BEAN || // F743-1756
+                   wrapperType == MANAGED_BEAN) {
             internalParentName = "com/ibm/ejs/container/LocalBeanWrapper";
-        }
-        else if (wrapperType == MDB_PROXY)
-        {
+        } else if (wrapperType == MDB_PROXY) {
             internalParentName = "com/ibm/ws/ejbcontainer/mdb/MessageEndpointBase";
-        }
-        else if (wrapperType == MDB_NO_METHOD_INTERFACE_PROXY)
-        {
+        } else if (wrapperType == MDB_NO_METHOD_INTERFACE_PROXY) {
             internalParentName = internalEJBClassName;
-        }
-        else
-        {
+        } else {
             // This is an APAR condition... but should never really happen.
             // Really, this is here to make it obvious that a change is
             // needed here when new wrapperTypes are added in the future,
@@ -2257,24 +2136,20 @@ public final class EJBWrapper
      * the calling code more readable, and to make it more obvious why
      * this change is required. <p>
      *
-     * @param mg ASM method generator for the current method.
-     * @param className Name of the wrapper class being generated.
+     * @param mg          ASM method generator for the current method.
+     * @param className   Name of the wrapper class being generated.
      * @param wrapperType used to check if this is for a No-Interface
-     *            view wrapper or no-method interface MDB proxy.
+     *                        view wrapper or no-method interface MDB proxy.
      **/
     // F743-1756
     private static void loadWrapperBase(GeneratorAdapter mg,
                                         String className,
-                                        EJBWrapperType wrapperType)
-    {
+                                        EJBWrapperType wrapperType) {
         mg.loadThis();
-        if (wrapperType == LOCAL_BEAN || wrapperType == MANAGED_BEAN)
-        {
+        if (wrapperType == LOCAL_BEAN || wrapperType == MANAGED_BEAN) {
             mg.visitFieldInsn(GETFIELD, className, LOCAL_BEAN_WRAPPER_FIELD,
                               LOCAL_BEAN_WRAPPER_FIELD_TYPE);
-        }
-        else if (wrapperType == MDB_NO_METHOD_INTERFACE_PROXY)
-        {
+        } else if (wrapperType == MDB_NO_METHOD_INTERFACE_PROXY) {
             mg.visitFieldInsn(GETFIELD, className, MESSAGE_ENDPOINT_BASE_FIELD,
                               MESSAGE_ENDPOINT_BASE_FIELD_TYPE);
         }
@@ -2291,16 +2166,15 @@ public final class EJBWrapper
      * the calling code more readable, and to make it more obvious why
      * this change is required. <p>
      *
-     * @param mg ASM method generator for the current method.
-     * @param className Name of the wrapper class being generated.
+     * @param mg          ASM method generator for the current method.
+     * @param className   Name of the wrapper class being generated.
      * @param wrapperType used to check if this is for a No-Interface
-     *            view wrapper or no-method interface MDB proxy.
+     *                        view wrapper or no-method interface MDB proxy.
      **/
     // F743-1756
     private static void loadContainer(GeneratorAdapter mg,
                                       String className,
-                                      EJBWrapperType wrapperType)
-    {
+                                      EJBWrapperType wrapperType) {
         loadWrapperBase(mg, className, wrapperType);
         mg.visitFieldInsn(GETFIELD, "com/ibm/ejs/container/EJSWrapperBase", "container", EJS_CONTAINER_FIELD_TYPE);
     }
@@ -2328,28 +2202,25 @@ public final class EJBWrapper
      * 'wrapper' is generated. <p>
      *
      * @param wrapperInterface business or component interface class to validate.
-     * @param wrapperType the type of wrapper being generated.
-     * @param beanName name used to identify the bean if an error is logged.
+     * @param wrapperType      the type of wrapper being generated.
+     * @param beanName         name used to identify the bean if an error is logged.
      *
      * @throws EJBConfigurationException whenever the specified interface does
-     *             not conform the the EJB Specification requirements.
+     *                                       not conform the the EJB Specification requirements.
      **/
     // d431543
     static void validateInterfaceBasics(Class<?> wrapperInterface,
                                         EJBWrapperType wrapperType,
-                                        String beanName)
-                    throws EJBConfigurationException
-    {
+                                        String beanName) throws EJBConfigurationException {
         // All business and component interfaces must be 'interfaces'!
         // Except the No-Interface View (LocalBean).                     F743-1756
         if (wrapperType != LOCAL_BEAN &&
             wrapperType != MANAGED_BEAN && // F743-34301.1
-            !Modifier.isInterface(wrapperInterface.getModifiers()))
-        {
+            !Modifier.isInterface(wrapperInterface.getModifiers())) {
             // Log the error and throw meaningful exception.              d457128.2
             Tr.error(tc, "JIT_INTERFACE_NOT_INTERFACE_CNTR5011E",
                      new Object[] { beanName,
-                                   wrapperInterface.getName() });
+                                    wrapperInterface.getName() });
             throw new EJBConfigurationException("Configured " + wrapperType + " interface is not an interface : " +
                                                 wrapperInterface.getName() + " of bean " + beanName);
         }
@@ -2359,54 +2230,45 @@ public final class EJBWrapper
         // classes, and repeated validation of the types.
 
         if (wrapperType == EJBWrapperType.BUSINESS_LOCAL ||
-            wrapperType == EJBWrapperType.BUSINESS_REMOTE)
-        {
+            wrapperType == EJBWrapperType.BUSINESS_REMOTE) {
             Class<?> invalidExtends = getInvalidBusinessExtends(wrapperInterface);
-            if (invalidExtends != null)
-            {
+            if (invalidExtends != null) {
                 // Log the error and throw meaningful exception.           d457128.2
                 Tr.error(tc, "JIT_INVALID_EXTENDS_JAVAX_EJB_CNTR5012E",
                          new Object[] { beanName,
-                                       wrapperInterface.getName(),
-                                       invalidExtends.getName() });
+                                        wrapperInterface.getName(),
+                                        invalidExtends.getName() });
                 throw new EJBConfigurationException("Configured " + wrapperType + " interface extends " +
                                                     invalidExtends.getName() + " : " +
                                                     wrapperInterface.getName() + " of bean " + beanName);
             }
 
             if (wrapperType == EJBWrapperType.BUSINESS_LOCAL &&
-                (Remote.class).isAssignableFrom(wrapperInterface))
-            {
+                (Remote.class).isAssignableFrom(wrapperInterface)) {
                 // Log the error and throw meaningful exception.           d457128.2
                 Tr.error(tc, "JIT_INVALID_EXTENDS_REMOTE_CNTR5013E",
                          new Object[] { beanName,
-                                       wrapperInterface.getName() });
+                                        wrapperInterface.getName() });
                 throw new EJBConfigurationException("Configured " + wrapperType + " interface extends " +
                                                     "javax.rmi.Remote : " +
                                                     wrapperInterface.getName() + " of bean " + beanName);
             }
-        }
-        else if (wrapperType == EJBWrapperType.LOCAL)
-        {
-            if (!(EJBLocalObject.class).isAssignableFrom(wrapperInterface))
-            {
+        } else if (wrapperType == EJBWrapperType.LOCAL) {
+            if (!(EJBLocalObject.class).isAssignableFrom(wrapperInterface)) {
                 // Log the error and throw meaningful exception.           d457128.2
                 Tr.error(tc, "JIT_MUST_EXTEND_EJBLOCAL_CNTR5014E",
                          new Object[] { beanName,
-                                       wrapperInterface.getName() });
+                                        wrapperInterface.getName() });
                 throw new EJBConfigurationException("Configured " + wrapperType + " interface does not extend " +
                                                     (EJBLocalObject.class).getName() + " : " +
                                                     wrapperInterface.getName() + " of bean " + beanName);
             }
-        }
-        else if (wrapperType == EJBWrapperType.REMOTE)
-        {
-            if (!(EJBObject.class).isAssignableFrom(wrapperInterface))
-            {
+        } else if (wrapperType == EJBWrapperType.REMOTE) {
+            if (!(EJBObject.class).isAssignableFrom(wrapperInterface)) {
                 // Log the error and throw meaningful exception.           d457128.2
                 Tr.error(tc, "JIT_MUST_EXTEND_EJBOBJECT_CNTR5015E",
                          new Object[] { beanName,
-                                       wrapperInterface.getName() });
+                                        wrapperInterface.getName() });
                 throw new EJBConfigurationException("Configured " + wrapperType + " interface does not extend " +
                                                     (EJBObject.class).getName() + " : " +
                                                     wrapperInterface.getName() + " of bean " + beanName);
@@ -2415,14 +2277,11 @@ public final class EJBWrapper
 
         // The optional WebService Endpoint interface must be Remote.
         // And must not contain any constant declarations.               LI3294-35
-        else if (wrapperType == EJBWrapperType.SERVICE_ENDPOINT)
-        {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            {
+        else if (wrapperType == EJBWrapperType.SERVICE_ENDPOINT) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 // JAX-RPC must implement Remote, but JAX-WS does not have that
                 // requirement... so just log this information to trace.     d545748
-                if (!(Remote.class).isAssignableFrom(wrapperInterface))
-                {
+                if (!(Remote.class).isAssignableFrom(wrapperInterface)) {
                     Tr.debug(tc, "Configured " + wrapperType +
                                  " interface does not         extend " +
                                  (Remote.class).getName() + " : " +
@@ -2434,12 +2293,10 @@ public final class EJBWrapper
                 // the problem, so JITDeploy will too... though the condition will
                 // be traced for now.                                        d493833
                 Field[] fields = wrapperInterface.getFields();
-                for (Field field : fields)
-                {
+                for (Field field : fields) {
                     int modifier = field.getModifiers();
                     if (Modifier.isStatic(modifier) &&
-                        Modifier.isFinal(modifier))
-                    {
+                        Modifier.isFinal(modifier)) {
                         Tr.debug(tc, "Configured " + wrapperType +
                                      " interface declares a constant : " + field.getName() +
                                      " on " + wrapperInterface.getName() +
@@ -2454,8 +2311,7 @@ public final class EJBWrapper
         // There are some additional requirments on the methods, but the
         // more advanced checking for that will be done when the methods
         // are generated.                                                F743-1756
-        else if (wrapperType == LOCAL_BEAN)
-        {
+        else if (wrapperType == LOCAL_BEAN) {
             // For performance, the EJB Class will not be validated here,
             // as it is assumed to be validated separately already.
         }
@@ -2474,8 +2330,7 @@ public final class EJBWrapper
      * @return the invalid class that is extended, or null if none.
      **/
     //  d457128.2
-    private static Class<?> getInvalidBusinessExtends(Class<?> wrapperInterface)
-    {
+    private static Class<?> getInvalidBusinessExtends(Class<?> wrapperInterface) {
         if ((EJBLocalObject.class).isAssignableFrom(wrapperInterface))
             return EJBLocalObject.class;
         if ((EJBLocalHome.class).isAssignableFrom(wrapperInterface))
@@ -2497,25 +2352,22 @@ public final class EJBWrapper
      * <li> Public methods do not throw RemoteException.
      * </ul>
      *
-     * @param method the method to be validated.
+     * @param method   the method to be validated.
      * @param beanName name of the bean for serviceability.
      *
      * @throws EJBConfigurationException is thrown if the method is determined
-     *             to not be a valid no-interface view (LocalBean) method.
+     *                                       to not be a valid no-interface view (LocalBean) method.
      **/
     // F743-1756
     private static void validateLocalBeanMethod(Method method,
-                                                String beanName)
-                    throws EJBConfigurationException
-    {
+                                                String beanName) throws EJBConfigurationException {
         int modifiers = method.getModifiers();
 
         // -----------------------------------------------------------------------
         // Methods on an EJB that exposes a No-Interface view (LocalBean),
         // must not be final (regardless whether public or not).
         // -----------------------------------------------------------------------
-        if (Modifier.isFinal(modifiers))
-        {
+        if (Modifier.isFinal(modifiers)) {
             // Log the error and throw meaningful exception.
             String className = method.getDeclaringClass().getName();
             Tr.error(tc, "JIT_INVALID_FINAL_METHOD_CNTR5106E",
@@ -2529,14 +2381,11 @@ public final class EJBWrapper
         // Public methods exposed through the No-Interface view (LocalBean)
         // must not have RemoteException (or subclass of) on the throws clause.
         // -----------------------------------------------------------------------
-        if (Modifier.isPublic(modifiers))
-        {
+        if (Modifier.isPublic(modifiers)) {
             Class<?>[] exceptions = method.getExceptionTypes();
 
-            for (Class<?> exception : exceptions)
-            {
-                if ((RemoteException.class).isAssignableFrom(exception))
-                {
+            for (Class<?> exception : exceptions) {
+                if ((RemoteException.class).isAssignableFrom(exception)) {
                     // Log the error and throw meaningful exception.
                     String className = method.getDeclaringClass().getName();
                     Tr.error(tc, "JIT_INVALID_THROW_REMOTE_CNTR5101W",
