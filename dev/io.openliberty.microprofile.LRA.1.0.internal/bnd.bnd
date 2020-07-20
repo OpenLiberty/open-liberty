@@ -13,12 +13,12 @@
 bVersion=1.0
 
 Bundle-Name: Long Running Actions
-Bundle-SymbolicName: io.openliberty.mpLRA.1.0.internal
+Bundle-SymbolicName: io.openliberty.microprofile.LRA.1.0.internal
 Bundle-Description: Long Running Actions Impl; version=${bVersion}
 
-Export-Package: io.openliberty.mpLRA.internal;provide:=true
+Export-Package: io.openliberty.microprofile.LRA.internal;provide:=true
 
-Private-Package: io.openliberty.mpLRA.internal.resources
+Private-Package: io.openliberty.microprofile.LRA.internal.resources
 
 javac.source: 1.8
 javac.target: 1.8
@@ -32,7 +32,9 @@ javac.target: 1.8
 #    configuration-policy:=ignore;\
 #    properties:="service.vendor=IBM"
     
--dsannotations: io.openliberty.mpLRA.internal.LraFilterComponent, io.openliberty.mpLRA.internal.LraConfig
+-dsannotations: \
+    io.openliberty.microprofile.LRA.internal.LraFilterComponent, \
+    io.openliberty.microprofile.LRA.internal.LraConfig
 
 Include-Resource: \
   OSGI-INF=resources/OSGI-INF

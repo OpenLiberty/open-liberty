@@ -8,12 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package io.openliberty.microprofile.LRA.internal;
 
-/**
- * @version 1.0
- */
-@org.osgi.annotation.versioning.Version("1.0")
-@TraceOptions(traceGroup = "LRA", messageBundle = "io.openliberty.mpLRA.internal.resources.Lra")
-package io.openliberty.mpLRA.internal;
+public class LraException extends Exception {
 
-import com.ibm.websphere.ras.annotation.TraceOptions;
+    private static final long serialVersionUID = 1L;
+
+    public LraException(String message, Exception cause) {
+        super(message, cause);
+    }
+
+}

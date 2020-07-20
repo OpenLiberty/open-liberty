@@ -16,7 +16,7 @@
 
     <OCD name="%lra" 
          description="%lra.desc" 
-         id="com.ibm.ws.lra.config" 
+         id="io.openliberty.microprofile.LRA.1.0.internal.config" 
          ibm:alias="lra"
          ibmui:localization="OSGI-INF/l10n/metatype">
 
@@ -37,8 +37,8 @@
             
     </OCD>
 
-    <Designate pid="com.ibm.ws.lra.config">
-        <Object ocdref="com.ibm.ws.lra.config"/>
+    <Designate pid="io.openliberty.microprofile.LRA.1.0.internal.config">
+        <Object ocdref="io.openliberty.microprofile.LRA.1.0.internal.config"/>
     </Designate>
 
 </metatype:MetaData>
