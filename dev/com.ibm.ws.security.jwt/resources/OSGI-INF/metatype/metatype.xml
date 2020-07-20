@@ -39,8 +39,7 @@
             <Option label="%jwkSigningKeySize.2048" value="2048"/>
             <Option label="%jwkSigningKeySize.4096" value="4096"/>
          </AD>
-         <AD id="elapsedNBF" name="%elapsedNBF" description="%elapsedNBF.desc" required="false" type="String"/>
-         
+         <AD id="elapsedNBF" name="%elapsedNBF" description="%elapsedNBF.desc" required="false" type="String" default="-1" ibm:type="duration(s)" />
     </OCD>
 
     <Designate factoryPid="com.ibm.ws.security.jwt.builder">
