@@ -15,6 +15,8 @@ import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -466,6 +468,12 @@ public class ConsumerUtil {
             throw new InvalidClaimException(msg);
         }
 
+        if (!validateAMRClaim(config.getAMRClaim(), getJwtAMRList(jwtClaims))) {
+            String msg = Tr.formatMessage(tc, "JWT_AMR_CLAIM_NOT_VALID",
+                    new Object[] { getJwtAMRList(jwtClaims), config.getId(), config.getAMRClaim() });
+            throw new InvalidClaimException(msg);
+        }
+
         // check azp
 
         validateIatAndExp(jwtClaims, config.getClockSkew());
@@ -774,6 +782,57 @@ public class ConsumerUtil {
         // NumericDate.getValue() returns a value in seconds, so convert to
         // milliseconds
         return timeUtils.createDateString(1000 * date.getValue());
+    }
+
+    /**
+     * Helper method to get the AMR Claim from the jwtClaims.This method checks
+     * if the value is a string and return singletonList or the ArrayList of
+     * amrClaims. This is called in validateCalims method
+     *
+     */
+    List<String> getJwtAMRList(JwtClaims jwtClaims) throws MalformedClaimException {
+        String claimName = "amr";
+        Object amrObject = jwtClaims.getClaimValue(claimName);
+        if (amrObject instanceof String) {
+            return Collections.singletonList(jwtClaims.getStringClaimValue(claimName));
+        } else if (!(amrObject instanceof List) && amrObject != null) {
+            throw new MalformedClaimException(
+                    "The value of the 'amr' claim is not an array of strings or a single string value.");
+        } else {
+            return jwtClaims.getStringListClaimValue(claimName);
+        }
+    }
+
+    /**
+     * Verifies that values specified in AMR claim is contained in the
+     * authenticationMethodsReferences list. If allowedAMRClaim is not an array
+     * then jwtClaims can contain more than required values. If not, then the
+     * jwtClaimvalues must be a exact match of an element in the array.
+     */
+    boolean validateAMRClaim(List<String> allowedAmrClaim, List<String> jwtAMRClaims) {
+        boolean valid = false;
+        if (allowedAmrClaim != null && jwtAMRClaims != null) {
+            // If it is not array just check if jwtClaim containsAll and not
+            // equals
+            if (allowedAmrClaim.size() == 1) {
+                List<String> allowedAMRSingle = Arrays.asList(allowedAmrClaim.get(0).split(" "));
+                if (jwtAMRClaims.containsAll(allowedAMRSingle)) {
+                    valid = true;
+                }
+            } else {
+                for (String allowedAMR : allowedAmrClaim) {
+                    List<String> allowedAMRSingle = Arrays.asList(allowedAMR.split(" "));
+                    if (jwtAMRClaims.equals(allowedAMRSingle)) {
+                        valid = true;
+                        break;
+                    }
+
+                }
+            }
+        } else if (allowedAmrClaim == null && (jwtAMRClaims == null || jwtAMRClaims.isEmpty())) {
+            valid = true;
+        }
+        return valid;
     }
 
 }
