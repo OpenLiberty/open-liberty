@@ -13,6 +13,6 @@ IBM-API-Package: \
           com.ibm.websphere.appserver.jaxrs-2.1
 -bundles=com.ibm.ws.require.java8, \
          io.openliberty.microprofile.lra.1.0.internal, \
-         com.ibm.ws.org.jboss.narayana.rts
+         io.openliberty.org.jboss.narayana.rts
 kind=noship
 edition=full
