@@ -107,16 +107,17 @@ instrument.classesExcludes: \
 	com/ibm/ws/annocache/resources/internal/*.class
 
 -buildpath: \
-        com.ibm.ws.kernel.service;version=latest,\
-	com.ibm.ws.logging;version=latest,\
-        com.ibm.ws.artifact;version=latest,\
-	com.ibm.ws.adaptable.module;version=latest,\
-	com.ibm.ws.org.objectweb.asm;version=latest,\
-	com.ibm.ws.org.jboss.jandex;version=latest,\
-	com.ibm.websphere.org.osgi.service.component;version=latest,\
+        com.ibm.ws.kernel.service;version=latest, \
+	com.ibm.ws.logging;version=latest, \
+        com.ibm.ws.artifact;version=latest, \
+	com.ibm.ws.adaptable.module;version=latest, \
+	com.ibm.ws.org.objectweb.asm;version=latest, \
+	com.ibm.ws.org.jboss.jandex;version=latest, \
+	com.ibm.websphere.org.osgi.service.component;version=latest, \
 	com.ibm.websphere.org.osgi.core;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-	com.ibm.ws.kernel.security.thread;version=latest
+	com.ibm.ws.kernel.security.thread;version=latest, \
+        org.eclipse.osgi;version=latest
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
@@ -125,9 +126,9 @@ instrument.classesExcludes: \
 	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
 	org.jmock:jmock;strategy=exact;version=2.5.1, \
 	com.ibm.ws.kernel.boot;version=latest, \
-	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
-	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
-	com.ibm.websphere.javaee.persistence.2.0;version=latest,\
-	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
-	com.sun.xml.bind:jaxb-core;version=2.2.10,\
+	com.ibm.websphere.javaee.annotation.1.1;version=latest, \
+	com.ibm.websphere.javaee.servlet.3.0;version=latest, \
+	com.ibm.websphere.javaee.persistence.2.0;version=latest, \
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest, \
+	com.sun.xml.bind:jaxb-core;version=2.2.10, \
 	com.sun.xml.bind:jaxb-impl;version=2.2.10

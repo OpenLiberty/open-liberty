@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,10 +12,14 @@
 package com.ibm.ws.annocache.util.internal;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collection;
+
+import org.eclipse.osgi.storage.url.BundleURLConnection;
 
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.kernel.service.utils.FileUtils;
@@ -48,7 +52,8 @@ public class UtilImpl_FileStamp {
 
                 long length = file.length();
                 long lastModified = file.lastModified();
-                return Long.toString(length) + "," + Long.toString(lastModified);
+
+                return computeStamp(length, lastModified);
             }
         } );
     }
@@ -108,6 +113,189 @@ public class UtilImpl_FileStamp {
      */
     public static String computeStamp(Container container) {
         String physicalPath = getPhysicalPath(container);
-        return ( (physicalPath == null) ? null : computeStamp( new File(physicalPath) ) );
+        if ( physicalPath != null ) {
+            return computeStamp( new File(physicalPath) );
+        } else {
+            System.out.println("computeStamp: No physical path for container [ " + container.getName() + " ] [ " + container.getPath() + " ] [ " + container.getClass().getName() + " ]");
+        }
+
+        Collection<URL> containerUrls = container.getURLs();
+
+        String lastStamp = null;
+        StringBuilder stampBuilder = null;
+
+        for ( URL containerUrl : containerUrls ) {
+            if ( lastStamp != null ) {
+                if ( stampBuilder == null ) {
+                    stampBuilder = new StringBuilder(lastStamp);
+                } else {
+                    stampBuilder.append(',');
+                    stampBuilder.append(lastStamp);
+                }
+            }
+
+            lastStamp = computeStamp(containerUrl);
+            System.out.println("computeStamp: URL [ " + containerUrl + " ]: Stamp [ " + lastStamp + " ]");
+        }
+
+        if ( stampBuilder != null ) {
+            stampBuilder.append(',');
+            stampBuilder.append(lastStamp);
+
+            String compositeStamp = stampBuilder.toString();
+            System.out.println("computeStamp: Composite stamp [ " + compositeStamp + " ]");
+            return compositeStamp;
+
+        } else if ( lastStamp == null ) {
+            System.out.println("computeStamp: No URLs: Answering null");
+            return null;
+
+        } else {
+            return lastStamp;
+        }
     }
+
+    public static String computeStamp(URL url) {
+        URLConnection urlConnection;
+        try {
+            urlConnection = url.openConnection(); // throws IOException
+        } catch ( IOException e ) {
+            // FFDC
+            System.out.println("computeStamp: URL [ " + url + " ] Connection failure [ " + e.getMessage() + " ]: Answering null");
+            return null;
+        }
+
+        // Rely on the bundle file, not the bundle connection parameters.
+        // The difference is that the bundle connection may obtain values from zip entries.
+        // Neither content length not last modified values are reliably obtained.
+        // (Typically, the return value for both is 0.)
+
+        File bundleFile = getBundleFile(urlConnection);
+        if ( bundleFile != null ) {
+            return computeStamp(bundleFile);
+
+        } else {
+            long length = urlConnection.getContentLengthLong();
+            long lastModified = urlConnection.getLastModified();
+
+            return computeStamp(length, lastModified);
+        }
+    }
+
+    /**
+     * Compute the text form of the time stamp for given length and last modified values.
+     *
+     * @param length The length value to place into the text time stamp.
+     * @param lastModified The last modified value to place into the text time stamp.
+     * 
+     * @return The text form of the time stampl.
+     */
+    public static String computeStamp(long length, long lastModified) {
+        return Long.toString(length) + "," + Long.toString(lastModified);
+    }
+
+    /**
+     * Obtain the JAR file which is reached by a bundle connection.
+     * 
+     * Answer null if the connection is not a bundle connection, or does not reach
+     * a bundle file.
+     *
+     * @param urlConnection The connection from which to retrieve the JAR file.
+     *
+     * @return The JAR file from the URL connection.
+     */
+    public static File getBundleFile(URLConnection urlConnection) {
+        if ( !(urlConnection instanceof BundleURLConnection) ) {
+            System.out.println("getBundleFile: Not a bundle URL connection [ " + urlConnection.getClass().getName() + " ]");
+            return null;
+        }
+
+        BundleURLConnection bundleConnection = (BundleURLConnection) urlConnection;
+        URL localURL = bundleConnection.getLocalURL();
+        if ( localURL == null ) {
+            System.out.println("getBundleFile: No local URL");
+            return null;
+        } else {
+            System.out.println("getBundleFile: Local URL [ " + localURL + " ]");
+        }
+        
+        // The expected form of the bundle URL:
+        //
+        // new URL( "jar:" + bundleFile.basefile.toURL() +
+        //          "!/" + zipEntry.getName());
+        //
+        // See: package org.eclipse.osgi.storage.bundlefile.ZipBundleEntry.toLocalURL.
+        //
+        // Additional cases may be needed for bundle connections which are not mapped to
+        // jar files.
+
+        String localPath = localURL.getPath();
+
+        if ( !localPath.startsWith("file:") ) {
+            System.out.println("getBundleFile: Not a file type path [ " + localPath + " ]");
+            return null;
+        }
+
+        int endPos = localPath.indexOf('!');
+        if ( endPos == -1 ) {
+            System.out.println("getBundleFile: No entry specified within the path [ " + localPath + " ]");
+            return null;
+        }
+        
+        String localFilePath = localPath.substring(5, endPos);
+
+        File localFile = new File(localFilePath);
+        if ( !localFile.exists() ) {
+            System.out.println("getBundleFile: Bundle file does not exist [ " + localPath + " ]");
+            return null;
+        }
+
+        System.out.println("getBundleFile: Bundle file [ " + localPath + " ]");
+        return localFile;
+    }
+
+//    @SuppressWarnings("deprecation") // 'File.toURL' is deprecated
+//    public static void main(String[] parms) {
+//        File testFile = new File("c:\\dev\\anno_patch_02-Jul-2020.jar");
+//        String testEntryName = "entry";
+//
+//        URL testURL;
+//        try {
+//            testURL = new URL("jar:" + testFile.toURL() + "!/" + testEntryName);
+//        } catch (MalformedURLException e) {
+//            e.printStackTrace();
+//            return;
+//        }
+//
+//        System.out.println("Test file [ " + testFile + " ]");
+//        System.out.println("Test entry [ " + testEntryName + " ]");
+//        System.out.println("Test URL [ " + testURL + " ]");
+//        System.out.println("Test URL protocol [ " + testURL.getProtocol() + " ]");
+//        
+//        String testPath = testURL.getPath();
+//        System.out.println("Test URL path [ " + testPath + " ]");
+//
+//        int startPos;
+//        if ( testPath.startsWith("file:") ) {
+//            startPos = 5;
+//        } else {
+//            startPos = 0;
+//        }
+//
+//        int endPos = testPath.indexOf('!');
+//        if ( endPos == -1 ) {
+//            endPos = testPath.length();
+//        }
+//
+//        String filePath = testPath.substring(startPos, endPos);
+//        System.out.println("Test file path [ " + filePath + " ]");
+//        
+//        File recoveredFile = new File(filePath);
+//        if ( !recoveredFile.exists() ) {
+//            System.out.println("Test file does not exist!");
+//        } else {
+//            System.out.println("Test file length [ " + recoveredFile.length() + " ]");
+//            System.out.println("Test file last modified [ " + recoveredFile.lastModified() + " ]");
+//        }
+//    }
 }
