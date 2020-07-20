@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.LRA.internal;
+package io.openliberty.microprofile.lra.internal;
 
 import java.net.URI;
 import java.net.URISyntaxException;
