@@ -57,7 +57,7 @@ public class Krb5LoginModuleWrapper implements LoginModule {
     public Subject temporarySubject;
 
     private final Class<?> krb5LoginModuleClass;
-    private final Object krb5loginModule;
+    private Object krb5loginModule = null;
     private boolean login_called = false;
 
     /**
@@ -72,10 +72,12 @@ public class Krb5LoginModuleWrapper implements LoginModule {
         }
 
         krb5LoginModuleClass = getClassForName(targetClass);
-        try {
-            krb5loginModule = krb5LoginModuleClass.newInstance();
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
+        if (krb5LoginModuleClass != null) {
+            try {
+                krb5loginModule = krb5LoginModuleClass.newInstance();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -198,11 +200,12 @@ public class Krb5LoginModuleWrapper implements LoginModule {
     }
 
     private static Class<?> getClassForName(String tg) {
+        Class<?> result = null;
         try {
-            return Class.forName(tg);
+            result = Class.forName(tg);
         } catch (ClassNotFoundException e) {
             Tr.error(tc, "Exception performing class for name.", e.getLocalizedMessage());
-            throw new IllegalStateException(e);
         }
+        return result;
     }
 }
