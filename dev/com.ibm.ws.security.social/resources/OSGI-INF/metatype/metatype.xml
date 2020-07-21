@@ -188,6 +188,9 @@
             required="true" type="String" ibm:type="password" />
         <AD id="authorizationEndpoint" name="%authorizationEndpoint" description="%authorizationEndpoint.desc"
             required="false" type="String" default="https://github.com/login/oauth/authorize"/>
+        <AD id="introspectionTokenTypeHint" name="internal" description="internal use only" type="String" required="false" default="access_token">
+    		<Option label="access_token" value="access_token" />
+		</AD>
         <AD id="tokenEndpoint" name="%tokenEndpoint" description="%tokenEndpoint.desc"
             required="false" type="String" default="https://github.com/login/oauth/access_token"/>  
         <AD id="userApi" name="%userApi" description="%userApi.desc"

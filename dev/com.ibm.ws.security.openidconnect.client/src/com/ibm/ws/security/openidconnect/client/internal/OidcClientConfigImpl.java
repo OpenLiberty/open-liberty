@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client.internal;
 
@@ -48,7 +48,6 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.ejs.ras.TraceNLS;
-import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.Tr;
@@ -91,6 +90,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     public static final String CFG_KEY_CLIENT_SECRET = "clientSecret";
     public static final String CFG_KEY_REDIRECT_TO_RP_HOST_AND_PORT = "redirectToRPHostAndPort";
     public static final String CFG_KEY_USER_IDENTIFIER = "userIdentifier";
+    public static final String CFG_KEY_INTROSPECTION_TOKEN_TYPE_HINT = "introspectionTokenTypeHint";
     public static final String CFG_KEY_GROUP_IDENTIFIER = "groupIdentifier";
     public static final String CFG_KEY_REALM_IDENTIFIER = "realmIdentifier";
     public static final String CFG_KEY_REALM_NAME = "realmName";
@@ -191,6 +191,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     private String clientSecret;
     private String redirectToRPHostAndPort;
     private String userIdentifier;
+    private String introspectionTokenTypeHint;
     private String groupIdentifier;
     private String realmIdentifier;
     private String realmName;
@@ -397,6 +398,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             }
         }
         userIdentifier = trimIt((String) props.get(CFG_KEY_USER_IDENTIFIER));
+        introspectionTokenTypeHint = trimIt((String) props.get(CFG_KEY_INTROSPECTION_TOKEN_TYPE_HINT));
         groupIdentifier = trimIt((String) props.get(CFG_KEY_GROUP_IDENTIFIER));
         realmIdentifier = trimIt((String) props.get(CFG_KEY_REALM_IDENTIFIER));
         realmName = trimIt((String) props.get(CFG_KEY_REALM_NAME));
@@ -531,6 +533,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             Tr.debug(tc, "clientId: " + clientId);
             Tr.debug(tc, "redirectToRPHostAndPort: " + redirectToRPHostAndPort);
             Tr.debug(tc, "userIdentifier: " + userIdentifier);
+            Tr.debug(tc, "introspectionTokenTypeHint: " + introspectionTokenTypeHint);
             Tr.debug(tc, "groupIdentifier: " + groupIdentifier);
             Tr.debug(tc, "realmIdentifier: " + realmIdentifier);
             Tr.debug(tc, "realmName: " + realmName);
@@ -1469,7 +1472,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     /** {@inheritDoc} */
     @Override
     public boolean isIncludeCustomCacheKeyInSubject() {
-        if(!includeCustomCacheKeyInSubject || !allowCustomCacheKey) {
+        if (!includeCustomCacheKeyInSubject || !allowCustomCacheKey) {
             return false;
         }
         return true;
@@ -1558,6 +1561,13 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     public String getUserIdentifier() {
         // TODO Auto-generated method stub
         return userIdentifier;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getIntrospectionTokenTypeHint() {
+        // TODO Auto-generated method stub
+        return introspectionTokenTypeHint;
     }
 
     /*

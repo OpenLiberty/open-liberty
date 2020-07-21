@@ -6,12 +6,19 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client.jose4j;
 
+import java.util.Map;
+import java.util.Set;
+
+import javax.security.auth.Subject;
+
 import org.jose4j.jwt.JwtClaims;
 
+import com.ibm.websphere.security.WSSecurityException;
+import com.ibm.websphere.security.auth.WSSubject;
 import com.ibm.websphere.security.openidconnect.token.IdToken;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.OidcTokenImplBase;
 
@@ -25,5 +32,20 @@ public class OidcTokenImpl extends OidcTokenImplBase implements IdToken {
 
     public OidcTokenImpl(OidcTokenImplBase token) {
         super(token.getJwtClaims(), token.getAccessToken(), token.getRefreshToken(), token.getClientId(), token.getTokenTypeNoSpace());
+    }
+
+    @Override
+    public String getRawIdToken() throws WSSecurityException {
+        Subject subj = WSSubject.getRunAsSubject();
+        Set<Object> privCredentials = subj.getPrivateCredentials();
+        for (Object credentialObj : privCredentials) {
+            if (credentialObj instanceof Map) {
+                Object value = ((Map<?, ?>) credentialObj).get("id_token");
+                if (value != null)
+                    return (String) value;
+            }
+        }
+
+        return null;
     }
 }
