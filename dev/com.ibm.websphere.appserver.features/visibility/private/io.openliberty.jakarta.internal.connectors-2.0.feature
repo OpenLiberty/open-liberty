@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=io.openliberty.jakarta.internal.jca-1.6
+symbolicName=io.openliberty.jakarta.internal.connectors-2.0
 IBM-API-Package: \
   com.ibm.ws.jca.service; type="internal", \
   jakarta.resource; type="spec", \
@@ -14,11 +14,11 @@ IBM-API-Package: \
   com.ibm.websphere.appserver.connectionManagement-1.0,\
   com.ibm.websphere.appserver.contextService-1.0, \
   com.ibm.websphere.appserver.dynamicBundle-1.0, \
-  com.ibm.websphere.appserver.internal.optional.jaxb-2.2; \
+  io.openliberty.jaxb-3.0, \
   com.ibm.websphere.appserver.transaction-2.0
 -bundles=\
   com.ibm.ws.jca.jakarta, \
   com.ibm.ws.jca.utils.jakarta, \
   com.ibm.ws.jca.feature.jakarta
 kind=noship
-edition=base
+edition=full

@@ -20,7 +20,6 @@ import com.ibm.ws.jca.fat.app.DependantApplicationTest;
 import com.ibm.ws.jca.fat.app.JCATest;
 
 import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)

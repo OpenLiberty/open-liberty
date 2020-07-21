@@ -11,7 +11,7 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-Bundle-SymbolicName: io.openliberty.jakarta.connector.2.0; singleton:=true
+Bundle-SymbolicName: io.openliberty.jakarta.connectors.2.0; singleton:=true
 
 Export-Package: \
 	jakarta.resource,\

@@ -10,7 +10,7 @@
  -->
 <server>
     <featureManager>
-      <feature>jca-2.0</feature>
+      <feature>jca-1.7</feature>
     </featureManager>
 
     <include optional="true" location="../fatTestPorts.xml"/>
