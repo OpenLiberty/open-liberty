@@ -130,7 +130,7 @@ Include-Resource: \
 	com.ibm.ws.crypto.passwordutil;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.logging;version=latest,\
-	com.ibm.ws.org.apache.commons.codec.1.4;version=latest,\
+	com.ibm.ws.org.apache.commons.codec;version=latest,\
 	com.ibm.ws.org.apache.httpcomponents;version=latest,\
 	com.ibm.ws.org.jose4j;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
