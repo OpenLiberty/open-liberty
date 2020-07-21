@@ -13,34 +13,44 @@ package com.ibm.websphere.security.openidconnect.token;
 import java.util.List;
 import java.util.Map;
 
+import com.ibm.websphere.security.WSSecurityException;
+
 public interface IdToken {
 
     /**
      * Returns the JWT ID of the IdToken
      * This is not required.
-     * Case sensitive 
+     * Case sensitive
      * (key-id jti)
-     * 
+     *
      * @return JWT ID
      */
     public String getJwtId();
+
+    /**
+     * Returns the raw Id of the IdToken
+     * This is not required.
+     *
+     * @return raw Id token
+     */
+    public String getRawIdToken() throws WSSecurityException;
 
     /**
      * returns the Type of IdToken, such as: Bearer
      * This is not required.
      * Case sensitive
      * (key-id typ)
-     * 
+     *
      * @return Token Type
      */
     public String getType();
 
     /**
      * returns Issuer Identifier for the Issuer of the Response
-     * This is required 
+     * This is required
      * Case sensitive
      * (claim iss)
-     * 
+     *
      * @return Issuer
      */
     public String getIssuer();
@@ -50,7 +60,7 @@ public interface IdToken {
      * This is required.
      * Case sensitive
      * (claim sub)
-     * 
+     *
      * @return subject Id
      */
     public String getSubject();
@@ -60,7 +70,7 @@ public interface IdToken {
      * This is required
      * Case sensitive
      * (claim aud)
-     * 
+     *
      * @return audience(s)
      */
     public List<String> getAudience();
@@ -69,7 +79,7 @@ public interface IdToken {
      * returns the client Id
      * This is not required
      * (key-id azp2)
-     * 
+     *
      * @return Client Id
      */
     public String getClientId();
@@ -79,7 +89,7 @@ public interface IdToken {
      * The time is represented as the number of seconds from 1970-01-01T0:0:0:0Z
      * This is required
      * (claim exp)
-     * 
+     *
      * @return Expiration time in seconds
      */
     public long getExpirationTimeSeconds();
@@ -89,7 +99,7 @@ public interface IdToken {
      * The time is represented as the number of seconds from 1970-01-01T0:0:0:0Z
      * This is not required
      * (key-id nbf)
-     *  
+     *
      * @return Not Before Time in seconds
      */
     public long getNotBeforeTimeSeconds();
@@ -98,7 +108,7 @@ public interface IdToken {
      * returns the issued time of Id Token
      * This is required
      * (claim iat)
-     * 
+     *
      * @return the issued time in seconds
      */
     public long getIssuedAtTimeSeconds();
@@ -107,7 +117,7 @@ public interface IdToken {
      * returns The authorization time of the Id Token
      * This is not required
      * (key-id auth_time)
-     * 
+     *
      * @return The authorization time in seconds
      */
     public long getAuthorizationTimeSeconds(); //
@@ -115,14 +125,14 @@ public interface IdToken {
     /**
      * returns the value of nonce
      * This value is optional usually.
-     *  
+     *
      * But it's required when the request of a RP Client provides a nonce.
      * In this case, the value of nonce must be the same as the one that
      * the RP Client provides.
-     * 
+     *
      * case sensitive
      * (claim nonce)
-     *  
+     *
      * @return the value of nonce
      */
     public String getNonce();
@@ -131,8 +141,8 @@ public interface IdToken {
      * returns the Hash code of access token
      * This is optional
      * (claim at_hash)
-     * 
-     *  @return the Hash code of the access token 
+     *
+     *  @return the Hash code of the access token
      */
     public String getAccessTokenHash(); //
 
@@ -140,7 +150,7 @@ public interface IdToken {
      * returns Authentication Context Class Reference
      * This is optional
      * (claim acr)
-     * 
+     *
      * @return Authentication Context Class Reference
      */
     public String getClassReference(); //
@@ -149,7 +159,7 @@ public interface IdToken {
      * returns Authentication Methods References
      * This is optional
      * (claim amr)
-     * 
+     *
      * @return Authentication Methods References
      */
     public List<String> getMethodsReferences(); //
@@ -159,36 +169,36 @@ public interface IdToken {
      * This is optional
      * Case sensitive
      * (claim azp)
-     * 
+     *
      * @return Authorized Party
      */
     public String getAuthorizedParty();
 
     /**
      * Using the key to get its value
-     * 
+     *
      * @param key - the claim or key-id
-     * @return The value 
+     * @return The value
      */
     public Object getClaim(String key);
 
     /**
      * get all the claims in the payload of Id Token
-     *  
+     *
      * @return all the claims in the payload of Id Token
      */
     public Map<String, Object> getAllClaims();
 
     /**
      * Get the access token
-     * 
+     *
      * @return the access token string
      */
     public String getAccessToken();
 
     /**
      * Get the refresh token
-     * 
+     *
      * @return the refresh token string if exists, otherwise return null
      */
     public String getRefreshToken();
