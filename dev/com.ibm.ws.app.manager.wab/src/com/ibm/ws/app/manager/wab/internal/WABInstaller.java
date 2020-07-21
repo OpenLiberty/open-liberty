@@ -580,10 +580,10 @@ public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpda
                             // system WABs get uninstalled here
                             deployedApp.uninstallApp(wab);
                         } else {
-                            final CountDownLatch latch = new CountDownLatch(1);
-                            if (ctx.getBundle(0).getState() == Bundle.STOPPING) {
-                                // if shutting down, launch uninstallModule asynchronously and wait up
+                            if (ctx.getBundle(org.osgi.framework.Constants.SYSTEM_BUNDLE_LOCATION).getState() == Bundle.STOPPING) {
+                                // if shutting down then launch uninstallModule asynchronously and wait up
                                 // to 30 secs. This avoids blocking server shutdown unduly.
+                                final CountDownLatch latch = new CountDownLatch(1);
                                 executorService.getService().submit(new Runnable() {
                                     @Override
                                     public void run() {
@@ -599,7 +599,8 @@ public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpda
                                         latch.await(30, TimeUnit.SECONDS);
                                     }
                                 } catch (InterruptedException e) {
-                                    // Continue with wab uninstall on this thread.
+                                    // continue with wab uninstall.
+                                    Thread.currentThread().interrupt();
                                 }
                             } else {
                                 deployedApp.uninstallModule(wab);
