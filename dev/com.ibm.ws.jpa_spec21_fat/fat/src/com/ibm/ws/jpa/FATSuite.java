@@ -40,7 +40,7 @@ public class FATSuite {
     @ClassRule
     public static RepeatTests r = RepeatTests
                     .withoutModification()
-                    .andWith(FeatureReplacementAction.EE7_FEATURES())
-                    .andWith(FeatureReplacementAction.EE9_FEATURES());
+                    .andWith(FeatureReplacementAction.EE7_FEATURES());
+//                    .andWith(FeatureReplacementAction.EE9_FEATURES());
     public static String repeatPhase = "";
 }

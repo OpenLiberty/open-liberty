@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.jpaContainer-3.0
+symbolicName=io.openliberty.jpaContainer-3.0
 visibility=public
 singleton=true
 kind=noship
