@@ -49,6 +49,8 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
 
     private static Logger log = Logger.getLogger(ConsumerGrpcServiceClientImpl.class.getName());
 
+    private final int deadlineMs = 30 * 1000;
+
     // gRPC client implementation(s)
 
     /**
@@ -61,6 +63,7 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
         try {
             // get the data back from grpc service
             NameResponse resp = get_consumerService()
+                            .withDeadlineAfter(deadlineMs, TimeUnit.SECONDS)
                             .getAllAppNames(Empty.getDefaultInstance());
 
             if (log.isLoggable(Level.FINE)) {
@@ -101,7 +104,10 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
         RetailApp appStruct_gRPCResponse = null;
 
         try {
-            appStruct_gRPCResponse = get_consumerService().getAppInfo(appReq).getRetailApp();
+            appStruct_gRPCResponse = get_consumerService()
+                            .withDeadlineAfter(deadlineMs, TimeUnit.SECONDS)
+                            .getAppInfo(appReq)
+                            .getRetailApp();
 
         } catch (StatusRuntimeException e) {
 
@@ -159,6 +165,7 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
         // This is BIDI streaming call
 
         StreamObserver<AppNameRequest> requestObserver = get_asyncConsumerStub()
+                        .withDeadlineAfter(deadlineMs, TimeUnit.SECONDS)
                         .getPrices(new StreamObserver<PriceResponse>() {
 
                             @Override
@@ -249,7 +256,9 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
         }
 
         try {
-            latch.await(3, TimeUnit.SECONDS);
+            // Wait for the grpc service response to complete. If we return the client response too quickly (ie. this timeout is too small)
+            // the connection will be closed  and the test will not get the correct response data and IOExceptions might be thrown.
+            latch.await(deadlineMs, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
 
             e.printStackTrace();

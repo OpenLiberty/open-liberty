@@ -54,6 +54,8 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
 
     private static Logger log = Logger.getLogger(ProducerGrpcServiceClientImpl.class.getName());
 
+    private final int deadlineMs = 30 * 1000;
+
     // gRPC client implementation(s)
     /**
      * @param reqPOJO
@@ -72,7 +74,6 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
                      + "send it to Store, name=[" + app.getName() + "]");
         }
         AppResponse response = null;
-        int deadlineMs = 20 * 1000;
 
         try {
             // and send the request
@@ -102,7 +103,6 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         // create the request
         DeleteRequest appReq = DeleteRequest.newBuilder().setAppName(name).build();
         DeleteResponse appResp = null;
-        int deadlineMs = 20 * 1000;
 
         if (log.isLoggable(Level.FINE)) {
             log.fine("Producer: deleteApp, prodcuer ,request sent  to grpc server to remove app " + name);
@@ -127,7 +127,6 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
     public DeleteAllRestResponse deleteMultiAppsinStore() throws Exception {
 
         DeleteAllRestResponse response = new DeleteAllRestResponse();
-        int deadlineMs = 20 * 1000;
 
         if (log.isLoggable(Level.FINE)) {
             log.fine(
@@ -160,38 +159,40 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         CountDownLatch latch = new CountDownLatch(1);
 
         ProducerRestResponse response = new ProducerRestResponse();
-        StreamObserver<AppRequest> requestObserver = _producerAsyncStub.createApps(new StreamObserver<MultiCreateResponse>() {
+        StreamObserver<AppRequest> requestObserver = _producerAsyncStub
+                        .withDeadlineAfter(deadlineMs, TimeUnit.SECONDS)
+                        .createApps(new StreamObserver<MultiCreateResponse>() {
 
-            @Override
-            public void onNext(MultiCreateResponse value) {
-                // response from server
-                // called only once
-                log.info("Producer: createMultiAppsinStore:: Recvd a response from server " + value.getResult());
-                // now send this response back to REST client
-                response.concatProducerResults(value.getResult());
-            }
+                            @Override
+                            public void onNext(MultiCreateResponse value) {
+                                // response from server
+                                // called only once
+                                log.info("Producer: createMultiAppsinStore:: Recvd a response from server " + value.getResult());
+                                // now send this response back to REST client
+                                response.concatProducerResults(value.getResult());
+                            }
 
-            @Override
-            public void onError(Throwable t) {
-                try {
-                    handleStatusRunTimeException(null, "createMultiApps", t, asyncServiceException);
-                } catch (Exception e) {
-                    // nothing to do, exception set in HandleExceptionsFromgRPCService
-                }
-                log.info("Producer: createMultiAppsinStore:: completed response from server due to error");
-                latch.countDown();
-            }
+                            @Override
+                            public void onError(Throwable t) {
+                                try {
+                                    handleStatusRunTimeException(null, "createMultiApps", t, asyncServiceException);
+                                } catch (Exception e) {
+                                    // nothing to do, exception set in HandleExceptionsFromgRPCService
+                                }
+                                log.info("Producer: createMultiAppsinStore:: completed response from server due to error");
+                                latch.countDown();
+                            }
 
-            @Override
-            public void onCompleted() {
-                // omComplete
-                // called after onNext
-                log.info("Producer: createMultiAppsinStore:: completed response from server ");
-                latch.countDown();
+                            @Override
+                            public void onCompleted() {
+                                // omComplete
+                                // called after onNext
+                                log.info("Producer: createMultiAppsinStore:: completed response from server ");
+                                latch.countDown();
 
-            }
+                            }
 
-        });
+                        });
 
         // now get the data from the input and send it to Store service
         reqPOJO.getStructureList().stream().forEach((appStructListItem) -> {
@@ -212,7 +213,9 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         log.info("Producer: createMultiAppsinStore:: done from client");
 
         try {
-            latch.await(3, TimeUnit.SECONDS);
+            // Wait for the grpc service response to complete. If we return the client response too quickly (ie. this timeout is too small)  
+            // the connection will be closed  and the test will not get the correct response data and IOExceptions might be thrown.
+            latch.await(deadlineMs, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
