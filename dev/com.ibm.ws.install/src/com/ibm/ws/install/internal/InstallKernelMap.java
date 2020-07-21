@@ -144,6 +144,8 @@ public class InstallKernelMap implements Map {
     private static final String OVERRIDE_ENVIRONMENT_VARIABLES = "override.environment.variables";
     private static final String CAUSED_UPGRADE = "caused.upgrade";
     private static final String REQ_OL_JSON_COORD = "req.ol.json.coord";
+    private static final String JSON_PROVIDED = "json.provided";
+    private static final String IS_OPEN_LIBERTY = "is.open.liberty";
 
     //Headers in Manifest File
     private static final String SHORTNAME_HEADER_NAME = "IBM-ShortName";
@@ -305,6 +307,12 @@ public class InstallKernelMap implements Map {
             } else {
                 return data.get(IS_FEATURE_UTILITY);
             }
+        } else if (JSON_PROVIDED.equals(key)) {
+            if (data.get(JSON_PROVIDED) == null) {
+                return false;
+            } else {
+                return data.get(JSON_PROVIDED);
+            }
         } else if (PROGRESS_MONITOR_SIZE.equals(key)) {
             return getMonitorSize();
         } else if (DOWNLOAD_RESULT.equals(key)) {
@@ -323,6 +331,8 @@ public class InstallKernelMap implements Map {
             return envMap;
         } else if (CLEANUP_UPGRADE.equals(key)) {
             return cleanupUpgrade();
+        } else if (IS_OPEN_LIBERTY.equals(key)) {
+            return isOpenLiberty();
         }
         return data.get(key);
     }
@@ -462,6 +472,12 @@ public class InstallKernelMap implements Map {
                 data.put(USER_AGENT, value);
                 if (installKernel != null)
                     installKernel.setUserAgent((String) value);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } else if (JSON_PROVIDED.equals(key)) {
+            if (value instanceof Boolean) {
+                data.put(JSON_PROVIDED, value);
             } else {
                 throw new IllegalArgumentException();
             }
@@ -762,6 +778,30 @@ public class InstallKernelMap implements Map {
         }
         return false;
     }
+    
+    private boolean isOpenLiberty() {
+        try {
+            for (ProductInfo productInfo : ProductInfo.getAllProductInfo().values()) {
+                if (productInfo.getReplacedBy() == null && productInfo.getId().equals("io.openliberty")) {
+                    return true;
+                }
+
+            }
+        } catch (ProductInfoParseException e) {
+            data.put(ACTION_RESULT, ERROR);
+            data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+        } catch (DuplicateProductInfoException e) {
+            data.put(ACTION_RESULT, ERROR);
+            data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+        } catch (ProductInfoReplaceException e) {
+            data.put(ACTION_RESULT, ERROR);
+            data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+        }
+        return false;
+    }
 
     @SuppressWarnings("unchecked")
     public Collection<String> singleFileResolve() {
@@ -846,8 +886,9 @@ public class InstallKernelMap implements Map {
                 throw ExceptionUtils.createByKey(InstallException.ALREADY_EXISTS, "ASSETS_ALREADY_INSTALLED", featuresAlreadyPresent);
             }
             boolean isFeatureUtility = (Boolean) this.get(IS_FEATURE_UTILITY);
+            boolean isJsonProvided = (Boolean) this.get(JSON_PROVIDED);
             data.put(UPGRADE_COMPLETE, false);
-            if (isOpenLiberty && isFeatureUtility) {
+            if (isOpenLiberty && isFeatureUtility && isJsonProvided) {
                 if (upgradeRequired()) {
                     upgradeOL();
                     for (ProductInfo productInfo : ProductInfo.getAllProductInfo().values()) {
@@ -1799,7 +1840,7 @@ public class InstallKernelMap implements Map {
             }
             scanner.close();
         } catch (FileNotFoundException e) {
-            fine("featureUtility.env not found");
+            //fine("featureUtility.env not found");
         }
 
         return propEnvMap;
