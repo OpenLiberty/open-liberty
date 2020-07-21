@@ -28,7 +28,7 @@ public interface IdToken {
     public String getJwtId();
 
     /**
-     * Returns the raw Id of the IdToken
+     * Returns the raw Id token
      * This is not required.
      *
      * @return raw Id token
