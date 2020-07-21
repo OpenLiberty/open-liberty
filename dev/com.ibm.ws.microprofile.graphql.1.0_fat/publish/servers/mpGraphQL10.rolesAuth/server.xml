@@ -24,7 +24,9 @@
      </group>
    </basicRegistry>
 
-    <!--  Required to read the server's port system property -->
+   <!--  Temporary change until https://github.com/smallrye/smallrye-graphql/issues/331 is resolved and pulled in -->
+   <javaPermission className="java.lang.reflect.ReflectPermission"  name="suppressAccessChecks" actions="*" />
+   <!--  Required to read the server's port system property -->
    <javaPermission className="java.util.PropertyPermission"  name="*" actions="read" />
 
   </server> 

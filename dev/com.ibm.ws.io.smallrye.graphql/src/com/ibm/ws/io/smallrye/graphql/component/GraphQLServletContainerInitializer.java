@@ -12,14 +12,10 @@ package com.ibm.ws.io.smallrye.graphql.component;
 
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +25,6 @@ import java.util.WeakHashMap;
 
 import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 
@@ -39,18 +34,17 @@ import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.ibm.wsspi.adaptable.module.NonPersistentCache;
-import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.logging.Introspector;
 
 import graphql.schema.GraphQLSchema;
 
 import io.smallrye.graphql.bootstrap.Bootstrap;
+import io.smallrye.graphql.cdi.config.GraphQLConfig;
 import io.smallrye.graphql.execution.ExecutionService;
 import io.smallrye.graphql.execution.SchemaPrinter;
 import io.smallrye.graphql.schema.SchemaBuilder;
 import io.smallrye.graphql.schema.model.Schema;
 import io.smallrye.graphql.servlet.ExecutionServlet;
-import io.smallrye.graphql.servlet.GraphQLConfig;
 import io.smallrye.graphql.servlet.IndexInitializer;
 import io.smallrye.graphql.servlet.SchemaServlet;
 
@@ -120,31 +114,37 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
         diagBag.webinfClassesUrl = webinfClassesUrl;
 
         GraphQLConfig config = new GraphQLConfig() {
+        	@Override
             public String getDefaultErrorMessage() {
                 return ConfigFacade.getOptionalValue(ConfigKey.DEFAULT_ERROR_MESSAGE, String.class)
                                    .orElse("Server Error");
             }
 
+        	@Override
             public boolean isPrintDataFetcherException() {
                 return ConfigFacade.getOptionalValue("mp.graphql.printDataFetcherException", boolean.class)
                                    .orElse(false);
             }
 
-            public Optional<List<String>> getBlackList() {
+        	@Override
+            public Optional<List<String>> getHideErrorMessageList() {
                 return Optional.ofNullable(ConfigFacade.getOptionalValue(ConfigKey.EXCEPTION_BLACK_LIST, List.class)
                                                        .orElse(null));
             }
 
-            public Optional<List<String>> getWhiteList() {
+        	@Override
+            public Optional<List<String>> getShowErrorMessageList() {
                 return Optional.ofNullable(ConfigFacade.getOptionalValue(ConfigKey.EXCEPTION_WHITE_LIST, List.class)
                                                        .orElse(null));
             }
 
+        	@Override
             public boolean isAllowGet() {
                 return ConfigFacade.getOptionalValue("mp.graphql.allowGet", boolean.class)
                                    .orElse(false);
             }
 
+        	@Override
             @FFDCIgnore({Throwable.class})
             public boolean isMetricsEnabled() {
                 try {
@@ -245,8 +245,8 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
             } else {
                 sb.append("  ").append("defaultErrorMessage: ").append(config.getDefaultErrorMessage()).append(LS);
                 sb.append("  ").append("printDataFetcherException: ").append(config.isPrintDataFetcherException()).append(LS);
-                sb.append("  ").append("blackList: ").append(config.getBlackList()).append(LS);
-                sb.append("  ").append("whiteList: ").append(config.getWhiteList()).append(LS);
+                sb.append("  ").append("hideErrorMessageList: ").append(config.getHideErrorMessageList()).append(LS);
+                sb.append("  ").append("showErrorMessageList: ").append(config.getShowErrorMessageList()).append(LS);
                 sb.append("  ").append("allowGet: ").append(config.isAllowGet()).append(LS);
                 sb.append("  ").append("metricsEnabled: ").append(config.isMetricsEnabled()).append(LS);
             }

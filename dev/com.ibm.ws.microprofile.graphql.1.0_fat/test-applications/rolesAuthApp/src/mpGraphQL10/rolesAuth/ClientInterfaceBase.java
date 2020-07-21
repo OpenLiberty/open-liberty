@@ -10,8 +10,20 @@
  *******************************************************************************/
 package mpGraphQL10.rolesAuth;
 
+import java.util.Base64;
 
-public interface ClientInterface {
+import io.smallrye.graphql.client.typesafe.api.GraphQlClientApi;
+import io.smallrye.graphql.client.typesafe.api.Header;
+
+@GraphQlClientApi
+@Header(name = "Authorization", method = "authHeaderValue")
+@Header(name = "ANDY", constant = "constant1")
+public interface ClientInterfaceBase {
+
+    static String authHeaderValue() {
+        System.out.println("ANDY Base.authHeaderValue()");
+        return "Basic " + Base64.getEncoder().encodeToString(("user2:user2pwd").getBytes());
+    }
 
     String permitAll_unannotated();
     String permitAll_permitAll();
