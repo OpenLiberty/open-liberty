@@ -1,0 +1,7 @@
+# each entry must end with '\n'
+com.ibm.ws.org.eclipse.equinox.region
+com.ibm.ws.org.apache.felix.webconsole.4.2.4
+com.ibm.ws.kernel.instrument.serialfilter.serverconfig
+com.ibm.ws.grpc
+com.ibm.ws.security.kerberos.auth
+io.openliberty.grpc.1.0.internal
