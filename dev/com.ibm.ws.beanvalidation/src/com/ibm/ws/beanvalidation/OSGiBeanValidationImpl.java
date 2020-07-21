@@ -529,6 +529,10 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
         return runtimeVersion.compareTo(BeanValidationRuntimeVersion.VERSION_1_1) >= 0;
     }
 
+    private boolean isBeanValidationVersion10() {
+        return runtimeVersion.compareTo(BeanValidationRuntimeVersion.VERSION_1_0) == 0;
+    }
+
     private boolean isBeanValidationVersion11() {
         return runtimeVersion.compareTo(BeanValidationRuntimeVersion.VERSION_1_1) == 0;
     }
@@ -627,6 +631,11 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
 
     @Override
     public boolean isMethodConstrained(Method method) throws ValidationException {
+        // Bean Validation 1.0 doesn't support method constraints.
+        if (isBeanValidationVersion10()) {
+            return false;
+        }
+
         ComponentMetaData componentMetaData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
         AbstractMetaData beanValMetaData = (AbstractMetaData) componentMetaData.getModuleMetaData().getMetaData(ivModuleMetaDataSlot);
 
@@ -658,6 +667,11 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
 
     @Override
     public boolean isConstructorConstrained(Constructor<?> constructor) {
+        // Bean Validation 1.0 doesn't support constructor constraints.
+        if (isBeanValidationVersion10()) {
+            return false;
+        }
+
         ComponentMetaData componentMetaData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
         AbstractMetaData beanValMetaData = (AbstractMetaData) componentMetaData.getModuleMetaData().getMetaData(ivModuleMetaDataSlot);
 
