@@ -110,14 +110,21 @@ Import-Package: \
   javax.activation;version=!, \
   javax.annotation;version=!, \
   javax.annotation.security;version=!, \
+  javax.xml.bind;version=!, \
   javax.xml.bind.annotation;version=!, \
+  javax.xml.bind.annotation.adapters;version=!, \
+  javax.xml.bind.attachment;version=!, \
+  javax.xml.bind.helpers;version=!, \
+  javax.xml.bind.util;version=!, \
   !javax.json.bind, \
   !javax.json.bind.spi, \
+  !com.sun.xml.bind.marshaller, \
   *
 
 DynamicImport-Package: \
   javax.json.bind, \
-  javax.json.bind.spi
+  javax.json.bind.spi, \
+  com.sun.xml.bind.marshaller
 
 
 Private-Package: \
