@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -577,12 +577,13 @@ public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpda
                             wabGroupsLock.unlock();
                         }
                         if (wab.getCreatedApplicationInfo()) {
+                            // system WABs get uninstalled here
                             deployedApp.uninstallApp(wab);
                         } else {
                             final CountDownLatch latch = new CountDownLatch(1);
                             if (ctx.getBundle(0).getState() == Bundle.STOPPING) {
-                                // if server shutting down launch the uninstall asynchronously
-                                // and wait up to 30 secs. This will keep stop from blocking unduely at server shutdown.
+                                // if shutting down, launch uninstallModule asynchronously and wait up
+                                // to 30 secs. This avoids blocking server shutdown unduly.
                                 executorService.getService().submit(new Runnable() {
                                     @Override
                                     public void run() {
@@ -591,15 +592,14 @@ public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpda
                                     }
                                 }, Boolean.TRUE);
                                 try {
-                                    // If a quiesce has been initiated then
-                                    // a force stop was called and we continue.
-                                    // otherwise give the uninstallModule time to unwind
+                                    // If a quiesce has not been initiated then a force stop was called so
+                                    // continue without waiting. Otherwise give the uninstallModule thread
+                                    // time to unwind before proceeding with WAB removal.
                                     if (quiesceStarted.get()) {
                                         latch.await(30, TimeUnit.SECONDS);
                                     }
                                 } catch (InterruptedException e) {
-                                    //if interrupted ignore, allowing shutdown to
-                                    // proceed on this thread.
+                                    // Continue with wab uninstall on this thread.
                                 }
                             } else {
                                 deployedApp.uninstallModule(wab);
