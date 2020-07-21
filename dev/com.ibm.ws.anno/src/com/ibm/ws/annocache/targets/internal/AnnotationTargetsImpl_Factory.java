@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,21 +14,28 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
+
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.annocache.classsource.internal.ClassSourceImpl_Factory;
 import com.ibm.ws.annocache.service.internal.AnnotationCacheServiceImpl_Logging;
-import com.ibm.ws.annocache.service.internal.AnnotationCacheServiceImpl_Service;
 import com.ibm.ws.annocache.targets.cache.internal.TargetCacheImpl_DataApps;
 import com.ibm.ws.annocache.targets.cache.internal.TargetCacheImpl_Factory;
 import com.ibm.ws.annocache.util.internal.UtilImpl_Factory;
 import com.ibm.ws.annocache.util.internal.UtilImpl_InternMap;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Aggregate;
+import com.ibm.wsspi.annocache.classsource.ClassSource_Factory;
 import com.ibm.wsspi.annocache.targets.AnnotationTargets_Exception;
 import com.ibm.wsspi.annocache.targets.AnnotationTargets_Factory;
 import com.ibm.wsspi.annocache.targets.AnnotationTargets_Fault;
+import com.ibm.wsspi.annocache.targets.cache.TargetCache_Factory;
+import com.ibm.wsspi.annocache.util.Util_Factory;
 import com.ibm.wsspi.annocache.util.Util_InternMap;
 
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM"})
 public class AnnotationTargetsImpl_Factory implements AnnotationTargets_Factory {
     protected static final Logger logger = AnnotationCacheServiceImpl_Logging.ANNO_LOGGER;
 
@@ -44,13 +51,11 @@ public class AnnotationTargetsImpl_Factory implements AnnotationTargets_Factory 
         return hashText;
     }
 
-    //
-
+    @Activate
     public AnnotationTargetsImpl_Factory(
-        AnnotationCacheServiceImpl_Service annoService,
-        UtilImpl_Factory utilFactory,
-        ClassSourceImpl_Factory classSourceFactory,
-        TargetCacheImpl_Factory annoCacheFactory) {
+        @Reference Util_Factory utilFactory,
+        @Reference ClassSource_Factory classSourceFactory,
+        @Reference TargetCache_Factory annoCacheFactory) {
 
         super();
 
@@ -58,24 +63,14 @@ public class AnnotationTargetsImpl_Factory implements AnnotationTargets_Factory 
 
         this.hashText = getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
 
-        this.annoService = annoService;
-        this.utilFactory = utilFactory;
-        this.cacheFactory = annoCacheFactory;
+        this.utilFactory = (UtilImpl_Factory) utilFactory;
+        this.cacheFactory = (TargetCacheImpl_Factory) annoCacheFactory;
 
         if (logger.isLoggable(Level.FINER)) {
             logger.logp(Level.FINER, CLASS_NAME, methodName,
                 "[ {0} ] using [ {1} ]",
                 new Object[] { this.hashText, this.utilFactory.getHashText() });
         }
-    }
-
-    //
-
-    protected final AnnotationCacheServiceImpl_Service annoService;
-
-    @Trivial
-    public AnnotationCacheServiceImpl_Service getAnnotationService() {
-        return annoService;
     }
 
     //

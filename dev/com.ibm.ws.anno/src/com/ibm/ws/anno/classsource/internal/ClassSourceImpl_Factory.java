@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,11 @@ package com.ibm.ws.anno.classsource.internal;
 
 import java.text.MessageFormat;
 
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -23,7 +28,6 @@ import com.ibm.ws.anno.classsource.specification.internal.ClassSourceImpl_Specif
 import com.ibm.ws.anno.classsource.specification.internal.ClassSourceImpl_Specification_Direct_EJB;
 import com.ibm.ws.anno.classsource.specification.internal.ClassSourceImpl_Specification_Direct_WAR;
 import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Logging;
-import com.ibm.ws.anno.util.internal.UtilImpl_Factory;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
@@ -31,8 +35,10 @@ import com.ibm.wsspi.anno.classsource.ClassSource_Exception;
 import com.ibm.wsspi.anno.classsource.ClassSource_Factory;
 import com.ibm.wsspi.anno.classsource.ClassSource_MappedSimple;
 import com.ibm.wsspi.anno.classsource.ClassSource_Options;
+import com.ibm.wsspi.anno.util.Util_Factory;
 import com.ibm.wsspi.anno.util.Util_InternMap;
 
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM"})
 public class ClassSourceImpl_Factory implements ClassSource_Factory {
     public static final String CLASS_NAME = ClassSourceImpl_Factory.class.getName();
     private static final TraceComponent tc = Tr.register(ClassSourceImpl_Factory.class);
@@ -49,8 +55,8 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
 
     //
 
-    @Trivial
-    public ClassSourceImpl_Factory(UtilImpl_Factory utilFactory) {
+    @Activate
+    public ClassSourceImpl_Factory(@Reference Util_Factory utilFactory) {
         super();
 
         String methodName = "init";
@@ -69,11 +75,11 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
 
     //
 
-    protected final UtilImpl_Factory utilFactory;
+    protected final Util_Factory utilFactory;
 
     @Override
     @Trivial
-    public UtilImpl_Factory getUtilFactory() {
+    public Util_Factory getUtilFactory() {
         return utilFactory;
     }
 

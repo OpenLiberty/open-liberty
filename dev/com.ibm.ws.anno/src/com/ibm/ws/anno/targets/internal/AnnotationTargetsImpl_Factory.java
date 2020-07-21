@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,16 +13,21 @@ package com.ibm.ws.anno.targets.internal;
 
 import java.text.MessageFormat;
 
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.anno.classsource.internal.ClassSourceImpl_Factory;
 import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Logging;
-import com.ibm.ws.anno.util.internal.UtilImpl_Factory;
-import com.ibm.ws.anno.util.internal.UtilImpl_InternMap;
+import com.ibm.wsspi.anno.classsource.ClassSource_Factory;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Exception;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Factory;
+import com.ibm.wsspi.anno.util.Util_Factory;
 import com.ibm.wsspi.anno.util.Util_InternMap;
 
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM"})
 public class AnnotationTargetsImpl_Factory implements AnnotationTargets_Factory {
     public static final TraceComponent tc = Tr.register(AnnotationTargetsImpl_Factory.class);
     public static final String CLASS_NAME = AnnotationTargetsImpl_Factory.class.getName();
@@ -36,10 +41,9 @@ public class AnnotationTargetsImpl_Factory implements AnnotationTargets_Factory 
         return hashText;
     }
 
-    //
-
-    public AnnotationTargetsImpl_Factory(UtilImpl_Factory utilFactory,
-                                         ClassSourceImpl_Factory classSourceFactory) {
+    @Activate
+    public AnnotationTargetsImpl_Factory(@Reference Util_Factory utilFactory,
+                                         @Reference ClassSource_Factory classSourceFactory) {
         super();
 
         this.hashText = AnnotationServiceImpl_Logging.getBaseHash(this);
@@ -56,10 +60,10 @@ public class AnnotationTargetsImpl_Factory implements AnnotationTargets_Factory 
 
     //
 
-    protected final UtilImpl_Factory utilFactory;
+    protected final Util_Factory utilFactory;
 
     @Override
-    public UtilImpl_Factory getUtilFactory() {
+    public Util_Factory getUtilFactory() {
         return utilFactory;
     }
 
@@ -107,7 +111,7 @@ public class AnnotationTargetsImpl_Factory implements AnnotationTargets_Factory 
     public AnnotationTargetsImpl_Targets createTargets(boolean isDetailEnabled)
                     throws AnnotationTargets_Exception {
 
-        UtilImpl_InternMap classInternMap = getUtilFactory().createInternMap(Util_InternMap.ValueType.VT_CLASS_NAME, "classes and package names");
+        Util_InternMap classInternMap = getUtilFactory().createInternMap(Util_InternMap.ValueType.VT_CLASS_NAME, "classes and package names");
 
         return new AnnotationTargetsImpl_Targets(this, classInternMap, isDetailEnabled);
     }
