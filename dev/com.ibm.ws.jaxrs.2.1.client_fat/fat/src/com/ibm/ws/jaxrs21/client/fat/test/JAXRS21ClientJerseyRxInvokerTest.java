@@ -37,9 +37,9 @@ public class JAXRS21ClientJerseyRxInvokerTest extends JAXRS21AbstractTest {
 
     private final static String jerseyRxInvokerTarget = "jaxrs21bookstore/JerseyRxInvokerTestServlet";
 
-    private static final String reactivex = "publish/shared/resources/reactivex/";
+    private static final String reactivex = "lib/";
 
-    private static final String jersey = "publish/shared/resources/jersey/";
+    private static final String jersey = "lib/";
 
     @BeforeClass
     public static void setup() throws Exception {

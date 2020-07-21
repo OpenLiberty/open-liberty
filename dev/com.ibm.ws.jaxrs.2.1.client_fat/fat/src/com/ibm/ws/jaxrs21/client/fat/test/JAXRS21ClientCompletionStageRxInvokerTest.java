@@ -37,7 +37,7 @@ public class JAXRS21ClientCompletionStageRxInvokerTest extends JAXRS21AbstractTe
 
     private final static String completionStageRxInvokerTarget = "jaxrs21bookstore/CompletionStageRxInvokerTestServlet";
 
-    private static final String reactivex = "publish/shared/resources/reactivex/";
+    private static final String reactivex = "lib/";
 
     @BeforeClass
     public static void setup() throws Exception {
