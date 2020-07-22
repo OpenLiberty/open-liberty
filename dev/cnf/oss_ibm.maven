@@ -21,6 +21,7 @@ com.ibm.ws.javax.j2ee:servlet.resources:3.1
 com.ibm.ws.javax.j2ee:servlet:3.1
 com.ibm.ws.javax.j2ee:standardtld:1.2
 com.ibm.ws.lars:larsServer-memoryBackend:war:1.0.1
+com.ibm.ws.logstash:logstash:5.5.0
 com.ibm.ws:nekohtml:1.9.18
 com.ibm.ws.org.eclipse.equinox:console:1.1.200.v20150929-1405
 com.ibm.ws.org.eclipse.jdt.core.compiler:ecj:4.4.2
