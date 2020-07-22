@@ -668,6 +668,7 @@ public class InstallUtils {
     }
 
     public static Set<String> getFeatures(String serverXml, String xml, Set<String> visitedServerXmls) throws IOException {
+        logger.fine("We processing " + serverXml);
         Set<String> features = new HashSet<String>();
         List<String> newLocations = new ArrayList<>();
         boolean isUrl = false;
@@ -685,23 +686,31 @@ public class InstallUtils {
                 return features;
             }
         }
+        logger.fine("We here");
 
         try (InputStream is =  isUrl ? conn.getInputStream() : Files.newInputStream(realServerXml)){
             Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(is);
             Element element = doc.getDocumentElement();
             NodeList childs = doc.getChildNodes();
-            for(int i =0; i < childs.getLength(); i++){
-                if (childs.item(i).getNodeType() == Node.ELEMENT_NODE) {
-                    Element el = (Element) childs.item(i);
-                    if(el.getNodeName().equals("include")){
-                        String location = el.getAttribute("location");
-                        if(!newLocations.contains(location) && !visitedServerXmls.contains(location)){
-                            newLocations.add(location);
-                        }
-                    }
-                }
 
+            // parse include tag
+            NodeList includeList = element.getElementsByTagName("include");
+            for (int i = 0; i < includeList.getLength(); i++) {
+                Node il = includeList.item(i);
+                Element ilElement = (Element) il;
+                String location = ilElement.getAttribute("location");
+
+                File f = new File(location);
+                if (!f.isAbsolute()){ // include location is relative
+                    // if not url then convert the relative path to an canonical path based off the current server.xml
+                    location = isUrl ? location : new File(realServerXml.getParent().toFile(), location).getCanonicalPath();
+                }
+                if(!newLocations.contains(location) && !visitedServerXmls.contains(location)){
+                    newLocations.add(location);
+                }
             }
+
+            // parse featureManager tag
             NodeList fmList = element.getElementsByTagName("featureManager");
             for (int i = 0; i < fmList.getLength(); i++) {
                 Node fm = fmList.item(i);
