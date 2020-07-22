@@ -37,9 +37,9 @@ public class JAXRS21ClientCXFRxInvokerTest extends JAXRS21AbstractTest {
 
     private final static String cxfRxInvokerTarget = "jaxrs21bookstore/CXFRxInvokerTestServlet";
 
-    private static final String reactivex = "publish/shared/resources/reactivex/";
+    private static final String reactivex = "lib/";
 
-    private static final String cxf = "publish/shared/resources/cxf/";
+    private static final String cxf = "lib/";
 
 
     @BeforeClass
