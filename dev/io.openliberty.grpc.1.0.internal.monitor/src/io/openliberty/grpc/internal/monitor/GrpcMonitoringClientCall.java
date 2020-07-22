@@ -43,7 +43,7 @@ public class GrpcMonitoringClientCall<ReqT, RespT>
 
 	@Override
 	public void sendMessage(ReqT requestMessage) {
-		if (grpcMethod.streamsRequests()) {
+		if (grpcMethod.serverSendsOneMessage()) {
 			clientMetrics.recordMsgSent();;
 		}
 		super.sendMessage(requestMessage);

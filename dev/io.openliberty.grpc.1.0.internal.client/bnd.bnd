@@ -38,7 +38,6 @@ Import-Package: !sun.*,\
   *
 
 # Use dynamic import of monitor packages to support indepndent/dynamic enablement of monitor feature
-# Will be removed if gRPC monitoring can be moved to an auto feature
 DynamicImport-Package: com.ibm.websphere.monitor.meters;version="1.0.0", \
  com.ibm.websphere.monitor.jmx;version="1.0.0", \
  com.ibm.wsspi.request.probe.bci, \

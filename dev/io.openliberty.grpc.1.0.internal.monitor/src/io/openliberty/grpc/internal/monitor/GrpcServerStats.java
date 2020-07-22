@@ -28,7 +28,7 @@ import io.openliberty.grpc.GrpcServerStatsMXBean;
  * <li>Total number of stream messages sent by the server.
  * </ul>
  */
-public class GrpcServerMetrics extends Meter implements GrpcServerStatsMXBean {
+public class GrpcServerStats extends Meter implements GrpcServerStatsMXBean {
 
 	private String appName;
 	private String serviceName;
@@ -38,7 +38,7 @@ public class GrpcServerMetrics extends Meter implements GrpcServerStatsMXBean {
 	private Counter serverStarted;
 	private Counter serverHandled;
 
-	public GrpcServerMetrics(String aName, String sName) {
+	public GrpcServerStats(String aName, String sName) {
 		setAppName(aName);
 		setServiceName(sName);
 
@@ -85,14 +85,10 @@ public class GrpcServerMetrics extends Meter implements GrpcServerStatsMXBean {
 
 	public void recordCallStarted() {
 		serverStarted.incrementBy(1);
-		System.out.println(String.format("ANNA started: service[%s] application[%s] - %s", getServiceName(),
-				getAppName(), getCallStartedCount()));
 	}
 
 	public void recordServerHandled() {
 		serverHandled.incrementBy(1);
-		System.out.println(String.format("ANNA handled: service[%s] application[%s] - %s", getServiceName(),
-				getAppName(), getServiceHandledCount()));
 	}
 
 	/**
@@ -102,8 +98,6 @@ public class GrpcServerMetrics extends Meter implements GrpcServerStatsMXBean {
 	 */
 	public void incrementReceivedMsgCountBy(int i) {
 		this.receivedMsgCount.incrementBy(i);
-		System.out.println(String.format("ANNA received msg: service[%s] application[%s] - %s", getServiceName(),
-				getAppName(), getReceivedMessagesCount()));
 	}
 
 	/**
@@ -113,8 +107,6 @@ public class GrpcServerMetrics extends Meter implements GrpcServerStatsMXBean {
 	 */
 	public void incrementSentMsgCountBy(int i) {
 		this.sentMsgCount.incrementBy(i);
-		System.out.println(String.format("ANNA sent msg: service[%s] application[%s] - %s", getServiceName(),
-				getAppName(), getSentMessagesCount()));
 	}
 
 	public void recordLatency(double latencySec) {

@@ -29,49 +29,54 @@ public class GrpcClientMonitor {
 	private final static String METRIC_KEY_DELIMETER = "/";
 
 	@PublishedMetric
-	public MeterCollection<GrpcClientMetrics> grpcClientCountByName = new MeterCollection<GrpcClientMetrics>(
+	public MeterCollection<GrpcClientStats> grpcClientCountByName = new MeterCollection<GrpcClientStats>(
 			"GrpcClient", this);
 
 	@ProbeAtEntry
-	// @ProbeSite(clazz =
-	// "io.openliberty.grpc.internal.monitor.GrpcClientStatsMonitor", method =
-	// "recordCallStarted")
-	@ProbeSite(clazz = "com.ibm.ws.threading.internal.ExecutorServiceImpl", method = "execute")
-	public void atRpcCallStart(@This GrpcClientStatsMonitor clientStats) {
-		System.out.println("atRpcCallStart");
-		GrpcClientMetrics stats = getGrpcClientStats(clientStats.getMethod());
-		stats.recordCallStarted();
+	@ProbeSite(clazz = "io.openliberty.grpc.internal.monitor.GrpcClientStatsMonitor", method = "recordCallStarted")
+	public void atRpcCallStart(@This Object clientStats) {
+		GrpcClientStatsMonitor stats = (GrpcClientStatsMonitor) clientStats;
+		getGrpcClientStats(stats.getMethod()).recordCallStarted();
+		
+		System.out.println(String.format("ANNA atRpcCallStart: service[%s] method[%s] - [%s]", stats.getServiceName(),
+				stats.getMethod().methodName(), getGrpcClientStats(stats.getMethod()).getRpcStartedCount()));
 	}
 
 	@ProbeAtEntry
 	@ProbeSite(clazz = "io.openliberty.grpc.internal.monitor.GrpcClientStatsMonitor", method = "recordClientHandled")
-	public void atGrpcClientHandled(@This GrpcClientStatsMonitor clientStats) {
-		System.out.println("atGrpcClientHandled");
-		GrpcClientMetrics stats = getGrpcClientStats(clientStats.getMethod());
-		stats.recordClientHandled();
+	public void atGrpcClientHandled(@This Object clientStats) {
+		GrpcClientStatsMonitor stats = (GrpcClientStatsMonitor) clientStats;
+		getGrpcClientStats(stats.getMethod()).recordClientHandled();
+		
+		System.out.println(String.format("ANNA atGrpcClientHandled: service[%s] method[%s] - [%s]", stats.getServiceName(),
+				stats.getMethod().methodName(), getGrpcClientStats(stats.getMethod()).getRpcCompletedCount()));
 	}
 
 	@ProbeAtReturn
 	@ProbeSite(clazz = "io.openliberty.grpc.internal.monitor.GrpcClientStatsMonitor", method = "recordMsgReceived")
-	public void atClientMsgReceived(@This GrpcClientStatsMonitor clientStats) {
-		System.out.println("atGrpcClientMsgReceived");
-		GrpcClientMetrics stats = getGrpcClientStats(clientStats.getMethod());
-		stats.incrementReceivedMsgCountBy(1);
+	public void atClientMsgReceived(@This Object clientStats) {
+		GrpcClientStatsMonitor stats = (GrpcClientStatsMonitor) clientStats;
+		getGrpcClientStats(stats.getMethod()).incrementReceivedMsgCountBy(1);
+		
+		System.out.println(String.format("ANNA atClientMsgReceived: service[%s] method[%s] - [%s]", stats.getServiceName(),
+				stats.getMethod().methodName(), getGrpcClientStats(stats.getMethod()).getReceivedMessagesCount()));
 	}
 
 	@ProbeAtReturn
 	@ProbeSite(clazz = "io.openliberty.grpc.internal.monitor.GrpcClientStatsMonitor", method = "recordMsgSent")
-	public void atGrpcClientMsgSent(@This GrpcClientStatsMonitor clientStats) {
-		System.out.println("atGrpcClientMsgSent");
-		GrpcClientMetrics stats = getGrpcClientStats(clientStats.getMethod());
-		stats.incrementSentMsgCountBy(1);
+	public void atGrpcClientMsgSent(@This Object clientStats) {
+		GrpcClientStatsMonitor stats = (GrpcClientStatsMonitor) clientStats;
+		getGrpcClientStats(stats.getMethod()).incrementSentMsgCountBy(1);
+		
+		System.out.println(String.format("ANNA atGrpcClientMsgSent: service[%s] method[%s] - [%s]", stats.getServiceName(),
+				stats.getMethod().methodName(), getGrpcClientStats(stats.getMethod()).getSentMessagesCount()));
 	}
 
-	private synchronized GrpcClientMetrics getGrpcClientStats(GrpcMethod method) {
+	private synchronized GrpcClientStats getGrpcClientStats(GrpcMethod method) {
 		String key = method.serviceName() + METRIC_KEY_DELIMETER + method.methodName();
-		GrpcClientMetrics stats = grpcClientCountByName.get(key);
+		GrpcClientStats stats = grpcClientCountByName.get(key);
 		if (stats == null) {
-			stats = new GrpcClientMetrics(method);
+			stats = new GrpcClientStats(method);
 			grpcClientCountByName.put(key, stats);
 		}
 		return stats;

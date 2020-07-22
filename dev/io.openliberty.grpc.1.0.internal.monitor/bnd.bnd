@@ -26,11 +26,6 @@ Export-Package: \
   io.openliberty.grpc.internal.monitor
   
 
-Include-Resource: \
-    io/openliberty/grpc/pmi/grpcServerStats.xml=resources/io/openliberty/grpc/pmi/grpcServerStats.xml,\
-    io/openliberty/grpc/pmi/grpcClientStats.xml=resources/io/openliberty/grpc/pmi/grpcClientStats.xml
-
-
 DynamicImport-Package: com.ibm.websphere.monitor.meters;version="1.0.0", \
  com.ibm.websphere.monitor.annotation;version="1.0.0", \
  com.ibm.websphere.monitor.jmx;version="1.0.0", \

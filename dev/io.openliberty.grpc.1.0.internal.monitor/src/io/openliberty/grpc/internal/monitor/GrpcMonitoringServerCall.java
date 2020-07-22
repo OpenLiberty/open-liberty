@@ -49,7 +49,7 @@ public class GrpcMonitoringServerCall<R, S> extends ForwardingServerCall.SimpleF
 
 	@Override
 	public void sendMessage(S message) {
-		if (grpcMethod.streamsResponses()) {
+		if (grpcMethod.clientSendsOneMessage()) {
 			serverMetrics.recordMsgSent();
 		}
 		super.sendMessage(message);

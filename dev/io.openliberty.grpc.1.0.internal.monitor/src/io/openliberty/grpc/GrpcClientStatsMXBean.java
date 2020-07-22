@@ -12,36 +12,36 @@ package io.openliberty.grpc;
 
 /**
  * Management interface for MBeans with names of the form "WebSphere:type=GrpcClientStats,name=*"
- * where * is the name of a gRPC service.
+ * where * is the name of a gRPC method of the form <serviceName>/<methodName>.
  * 
  * @ibm-api
  */
 public interface GrpcClientStatsMXBean {
     /**
-     * Retrieves the total number of RPCs started on the server.
+     * Retrieves the total number of RPCs started on the client.
      * 
-     * @return the total number of RPCs started on the server
+     * @return the total number of RPCs started on the client
      */
     public long getRpcStartedCount();
 
     /**
-     * Retrieves the total number of RPCs completed on the server,
+     * Retrieves the total number of RPCs completed on the client,
      * 
-     * @return the total number of RPCs completed on the server
+     * @return the total number of RPCs completed on the client
      */
     public long getRpcCompletedCount();
 
     /**
-     * Retrieves the total number of stream messages that the server has received for this gRPC service.
+     * Retrieves the total number of stream messages that the client has received from the gRPC server.
      * 
-     * @return the total number of stream messages received for this service
+     * @return the total number of stream messages received from the server
      */
     public long getReceivedMessagesCount();
 
     /**
-     * Retrieves the total number of stream messages sent by this gRPC service.
+     * Retrieves the total number of stream messages sent by the client.
      * 
-     * @return the total number of stream messages sent by this service
+     * @return the total number of stream messages sent by the client
      */
     public long getSentMessagesCount();
 }

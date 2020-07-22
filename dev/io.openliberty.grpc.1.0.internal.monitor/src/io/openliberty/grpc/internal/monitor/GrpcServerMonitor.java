@@ -28,47 +28,57 @@ import com.ibm.websphere.monitor.meters.MeterCollection;
 public class GrpcServerMonitor {
 
 	@PublishedMetric
-	public MeterCollection<GrpcServerMetrics> grpcServerCountByName = new MeterCollection<GrpcServerMetrics>(
+	public MeterCollection<GrpcServerStats> grpcServerCountByName = new MeterCollection<GrpcServerStats>(
 			"GrpcServer", this);
 
 	@ProbeAtEntry
 	@ProbeSite(clazz = "io.openliberty.grpc.internal.monitor.GrpcServerStatsMonitor", method = "recordCallStarted")
-	// @ProbeSite(clazz = "com.ibm.ws.threading.internal.ExecutorServiceImpl",
-	// method = "execute")
-	public void atGrpcServerStart(@This GrpcServerStatsMonitor serverStats) {
-		System.out.println("atGrpcServerStart");
-		GrpcServerMetrics stats = getGrpcServerStats(serverStats.getAppName(), serverStats.getServiceName());
-		stats.recordCallStarted();
+	public void atGrpcServerStart(@This Object serverStats) {
+		GrpcServerStatsMonitor stats = (GrpcServerStatsMonitor) serverStats;
+		getGrpcServerStats(stats.getAppName(), stats.getServiceName()).recordCallStarted();
+		
+		System.out.println(String.format("ANNA atGrpcServerStart: service[%s] application[%s] - [%s]",
+				stats.getServiceName(), stats.getAppName(),
+				getGrpcServerStats(stats.getAppName(), stats.getServiceName()).getCallStartedCount()));
 	}
 
 	@ProbeAtEntry
 	@ProbeSite(clazz = "io.openliberty.grpc.internal.monitor.GrpcServerStatsMonitor", method = "recordServerHandled")
-	public void atGrpcServerHandled(@This GrpcServerStatsMonitor serverStats) {
-		System.out.println("atGrpcServerHandled");
-		GrpcServerMetrics stats = getGrpcServerStats(serverStats.getAppName(), serverStats.getServiceName());
-		stats.recordServerHandled();
+	public void atGrpcServerHandled(@This Object serverStats) {
+		GrpcServerStatsMonitor stats = (GrpcServerStatsMonitor) serverStats;
+		getGrpcServerStats(stats.getAppName(), stats.getServiceName()).recordServerHandled();
+		
+		System.out.println(String.format("ANNA atGrpcServerHandled: service[%s] application[%s] - [%s]",
+				stats.getServiceName(), stats.getAppName(),
+				getGrpcServerStats(stats.getAppName(), stats.getServiceName()).getServiceHandledCount()));
 	}
 
 	@ProbeAtReturn
 	@ProbeSite(clazz = "io.openliberty.grpc.internal.monitor.GrpcServerStatsMonitor", method = "recordMsgReceived")
-	public void atGrpcServerMsgReceived(@This GrpcServerStatsMonitor serverStats) {
-		System.out.println("atGrpcServerMsgReceived");
-		GrpcServerMetrics stats = getGrpcServerStats(serverStats.getAppName(), serverStats.getServiceName());
-		stats.incrementReceivedMsgCountBy(1);
+	public void atGrpcServerMsgReceived(@This Object serverStats) {
+		GrpcServerStatsMonitor stats = (GrpcServerStatsMonitor) serverStats;
+		getGrpcServerStats(stats.getAppName(), stats.getServiceName()).incrementReceivedMsgCountBy(1);
+		
+		System.out.println(String.format("ANNA atGrpcServerMsgReceived: service[%s] application[%s] - [%s]",
+				stats.getServiceName(), stats.getAppName(),
+				getGrpcServerStats(stats.getAppName(), stats.getServiceName()).getReceivedMessagesCount()));
 	}
 
 	@ProbeAtReturn
 	@ProbeSite(clazz = "io.openliberty.grpc.internal.monitor.GrpcServerStatsMonitor", method = "recordMsgSent")
-	public void atGrpcServerMsgSent(@This GrpcServerStatsMonitor serverStats) {
-		System.out.println("atGrpcServerMsgSent");
-		GrpcServerMetrics stats = getGrpcServerStats(serverStats.getAppName(), serverStats.getServiceName());
-		stats.incrementSentMsgCountBy(1);
+	public void atGrpcServerMsgSent(@This Object serverStats) {
+		GrpcServerStatsMonitor stats = (GrpcServerStatsMonitor) serverStats;
+		getGrpcServerStats(stats.getAppName(), stats.getServiceName()).incrementSentMsgCountBy(1);
+		
+		System.out.println(String.format("ANNA atGrpcServerMsgSent: service[%s] application[%s] - [%s]",
+				stats.getServiceName(), stats.getAppName(),
+				getGrpcServerStats(stats.getAppName(), stats.getServiceName()).getSentMessagesCount()));
 	}
 
-	private synchronized GrpcServerMetrics getGrpcServerStats(String appName, String serviceName) {
-		GrpcServerMetrics stats = grpcServerCountByName.get(serviceName);
+	private synchronized GrpcServerStats getGrpcServerStats(String appName, String serviceName) {
+		GrpcServerStats stats = grpcServerCountByName.get(serviceName);
 		if (stats == null) {
-			stats = new GrpcServerMetrics(appName, serviceName);
+			stats = new GrpcServerStats(appName, serviceName);
 			grpcServerCountByName.put(serviceName, stats);
 		}
 		return stats;

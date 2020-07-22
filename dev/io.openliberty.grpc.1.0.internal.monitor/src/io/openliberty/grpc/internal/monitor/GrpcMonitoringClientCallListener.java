@@ -52,7 +52,7 @@ public class GrpcMonitoringClientCallListener<RespT> extends ForwardingClientCal
 
 	@Override
 	public void onMessage(RespT responseMessage) {
-		if (grpcMethod.streamsResponses()) {
+		if (grpcMethod.clientSendsOneMessage()) {
 			clientMetrics.recordMsgReceived();
 		}
 		super.onMessage(responseMessage);
