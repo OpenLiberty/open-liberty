@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,6 +42,7 @@ import com.ibm.ws.webserver.plugin.runtime.interfaces.PluginUtilityConfigGenerat
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
+import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
 import com.ibm.wsspi.webcontainer.osgi.mbeans.GeneratePluginConfig;
 
 /**
@@ -49,8 +50,9 @@ import com.ibm.wsspi.webcontainer.osgi.mbeans.GeneratePluginConfig;
  */
 @Component(service = { ApplicationStateListener.class,
                        RuntimeUpdateListener.class,
-                       ModuleStateListener.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM" })
-public class GeneratePluginConfigListener implements RuntimeUpdateListener, ApplicationStateListener, ModuleStateListener {
+                       ModuleStateListener.class,
+                       ServerQuiesceListener.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM" })
+public class GeneratePluginConfigListener implements RuntimeUpdateListener, ApplicationStateListener, ModuleStateListener, ServerQuiesceListener {
 
     private static final TraceComponent tc = Tr.register(GeneratePluginConfigListener.class);
 
@@ -64,6 +66,9 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
     private WsLocationAdmin locationService;
 
     private static GeneratePluginConfigListener theListener = null;
+
+    // keep track of the generatePluginConfig() task so that we can cancel it in the event of a server shutdown
+    private volatile Future<?> generatePluginXmlFuture = null;
 
     public static GeneratePluginConfigListener getGeneratePluginConfigListener() {
         return theListener;
@@ -119,14 +124,16 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
     }
 
     /** Required static reference: will be called after deactivate. Avoid NPE */
-    protected void unsetSessionManager(SessionManager ref) {}
+    protected void unsetSessionManager(SessionManager ref) {
+    }
 
     @Reference(service = WsLocationAdmin.class, cardinality = ReferenceCardinality.MANDATORY)
     protected void setLocationService(WsLocationAdmin ref) {
         locationService = ref;
     }
 
-    protected void unsetLocationService(WsLocationAdmin ref) {}
+    protected void unsetLocationService(WsLocationAdmin ref) {
+    }
 
     /*
      * (non-Javadoc
@@ -269,7 +276,7 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
             Tr.debug(this, tc, "submitGeneratePluginTask : FrameworkState.isStopping() = " + FrameworkState.isStopping());
 
         if (!FrameworkState.isStopping() && gpc != null && executorSrvc != null) {
-            executorSrvc.submit(new Runnable() {
+            generatePluginXmlFuture = executorSrvc.submit(new Runnable() {
                 @Override
                 public void run() {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -282,7 +289,6 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
                 }
             });
         }
-
     }
 
     public void applicationInitialized(WebApp webApp, SessionCookieConfig sccfg) {
@@ -345,6 +351,22 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
 
         runFutureGeneratePluginTask();
 
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void serverStopping() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "serverStopping");
+        }
+
+        // cancel the current future associated with this listener
+        if (generatePluginXmlFuture != null && !generatePluginXmlFuture.isDone()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "cancel outstanding future: " + generatePluginXmlFuture);
+            }
+            generatePluginXmlFuture.cancel(true);
+        }
     }
 
 }
