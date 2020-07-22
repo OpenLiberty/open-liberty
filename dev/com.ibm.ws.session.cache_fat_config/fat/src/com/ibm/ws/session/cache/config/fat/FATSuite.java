@@ -15,12 +15,15 @@ import java.util.List;
 import java.util.Locale;
 
 import org.junit.Assert;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
@@ -31,6 +34,10 @@ import componenttest.topology.utils.HttpUtils;
                 SessionCacheErrorPathsTest.class
 })
 public class FATSuite {
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification() // run all tests as-is (e.g. EE8 features)
+                    .andWith(new JakartaEE9Action().addFeature("jdbc-4.3").withMinJavaLevel(11));
 
     public static String run(LibertyServer server, String path, String testMethod, List<String> session) throws Exception {
         HttpURLConnection con = HttpUtils.getHttpConnection(server, path + '?' + FATServletClient.TEST_METHOD + '=' + testMethod);
