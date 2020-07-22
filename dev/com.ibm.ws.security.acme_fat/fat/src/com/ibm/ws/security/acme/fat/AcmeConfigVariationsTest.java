@@ -10,7 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.security.acme.fat;
 
+import static com.ibm.websphere.simplicity.ShrinkHelper.addDirectory;
+import static com.ibm.websphere.simplicity.ShrinkHelper.buildDefaultApp;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
@@ -30,6 +33,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -38,12 +42,15 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.AcmeCA;
 import com.ibm.websphere.simplicity.config.AcmeCA.AcmeTransportConfig;
+import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.acme.docker.CAContainer;
 import com.ibm.ws.security.acme.docker.pebble.PebbleContainer;
+import com.ibm.ws.security.acme.internal.util.AcmeConstants;
 import com.ibm.ws.security.acme.utils.AcmeFatUtils;
 
 import componenttest.annotation.AllowedFFDC;
@@ -78,6 +85,10 @@ public class AcmeConfigVariationsTest {
 	private static final String[] DOMAINS_2 = { "domain1.com", "domain2.com", "domain3.com" };
 	private static final String[] DOMAINS_3 = { "domain1.com", "domain2.com" };
 	private static final String[] DOMAINS_4 = { "domain2.com" };
+
+	protected static final String SLOW_APP = "slowapp.war";
+	protected final static String PUBLISH_FILES = "publish/files";
+	protected static final String APPS_DIR = "apps";
 
 	public static CAContainer caContainer;
 
@@ -604,5 +615,61 @@ public class AcmeConfigVariationsTest {
 	
 	protected void stopServer(String ...msgs) throws Exception {
 		AcmeFatUtils.stopServer(server, msgs);
+	}
+
+	@Test
+	@CheckForLeakedPasswords(AcmeFatUtils.CACERTS_TRUSTSTORE_PASSWORD)
+	public void slowAppStartup() throws Exception {
+
+		/*
+		 * Build our slow starting app
+		 */
+		WebArchive slow = buildDefaultApp("slowapp.war", "test.app.*");
+		addDirectory(slow, "test-applications/slowapp.war/resources");
+		ShrinkHelper.exportArtifact(slow, PUBLISH_FILES, true, true);
+
+		/*
+		 * Configure the acmeCA-2.0 feature and add intentionally "slow" app to make
+		 * sure acmeCA still starts and fetches a certificate. The server should stop
+		 * waiting after 30 seconds and open the HTTP port
+		 */
+		ServerConfiguration configuration = ORIGINAL_CONFIG.clone();
+		configuration.getFeatureManager().getFeatures().add("servlet-4.0");
+		Application slowApp = new Application();
+		slowApp.setId("slow");
+		slowApp.setLocation("slowapp.war");
+		configuration.getApplications().add(slowApp);
+		AcmeFatUtils.configureAcmeCA(server, caContainer, configuration, false, DOMAINS_1);
+
+		server.copyFileToLibertyServerRoot(PUBLISH_FILES, APPS_DIR, SLOW_APP);
+
+		try {
+			Log.info(this.getClass(), testName.getMethodName(), "TEST 1: Start");
+
+			/*
+			 * Start the server and wait for the certificate to be installed.
+			 */
+			server.startServer();
+			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
+			AcmeFatUtils.waitForSslToCreateKeystore(server);
+			AcmeFatUtils.waitForSslEndpoint(server);
+
+			/*
+			 * Verify that the server is now using a certificate signed by the CA.
+			 */
+			AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
+
+			File file = new File(server.getServerRoot() + "/workarea/acmeca/" + AcmeConstants.ACME_HISTORY_FILE);
+			if (!file.exists()) {
+				fail("The ACME file should exist at: " + file.getAbsolutePath());
+			}
+
+			/*
+			 * Double check that the slow app installed
+			 */
+			assertFalse("Slow app not installed", server.findStringsInLogs("SlowApp is sleeping").isEmpty());
+		} finally {
+			stopServer();
+		}
 	}
 }
