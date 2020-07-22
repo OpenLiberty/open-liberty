@@ -55,6 +55,7 @@ public class ServiceConfigTests extends FATServletClient {
     private static final Logger LOG = Logger.getLogger(c.getName());
 
     public static final int STARTUP_TIMEOUT = 120 * 1000; // 120 seconds
+    public static final int SHORT_TIMEOUT = 500; // .5 second
 
     private static final String DEFAULT_CONFIG_FILE = "grpc.server.xml";
 
@@ -175,7 +176,7 @@ public class ServiceConfigTests extends FATServletClient {
         assertTrue(greeting.getMessage().contains("Kevin"));
         //Make sure the Interceptor was not called and did not logged a message
         String interceptorHasRun = grpcServer.verifyStringNotInLogUsingMark("com.ibm.ws.grpc.fat.helloworld.service.HelloWorldServerInterceptor has been invoked!",
-                                                                            STARTUP_TIMEOUT);
+                                                                            SHORT_TIMEOUT);
         if (interceptorHasRun != null) {
             Assert.fail(c + ": server.xml with <grpc> element plus interceptor ran when it should not have in " + STARTUP_TIMEOUT + "ms");
         }
