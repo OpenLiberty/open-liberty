@@ -1074,14 +1074,12 @@ public class H2StreamProcessor {
         }
 
         if (direction == Constants.Direction.READ_IN) {
-            if (currentFrame.flagEndStreamSet()) {
-                endStream = true;
-                updateStreamState(StreamState.HALF_CLOSED_REMOTE);
-            }
             if (frameType == FrameTypes.DATA) {
                 if (GrpcServletServices.grpcInUse == false) {
                     getBodyFromFrame();
                     if (currentFrame.flagEndStreamSet()) {
+                        endStream = true;
+                        updateStreamState(StreamState.HALF_CLOSED_REMOTE);
                         processCompleteData(true);
                         setReadyForRead();
                     }
@@ -1094,6 +1092,10 @@ public class H2StreamProcessor {
                         }
                         passCount++;
                         getBodyFromFrame();
+                        if (currentFrame.flagEndStreamSet()) {
+                            endStream = true;
+                            updateStreamState(StreamState.HALF_CLOSED_REMOTE);
+                        }
                         processCompleteData(true);
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "processOpen: first DATA frame read. calling setReadyForRead() getEndStream returns: " + this.getEndStream());
@@ -1121,6 +1123,11 @@ public class H2StreamProcessor {
                         }
 
                         getBodyFromFrame();
+                        if (currentFrame.flagEndStreamSet()) {
+                            endStream = true;
+                            updateStreamState(StreamState.HALF_CLOSED_REMOTE);
+                        }
+
                         WsByteBuffer buf = processCompleteData(false);
 
                         if (buf != null) {
@@ -1151,6 +1158,8 @@ public class H2StreamProcessor {
                     processCompleteHeaders(false);
                     setHeadersComplete();
                     if (currentFrame.flagEndStreamSet()) {
+                        endStream = true;
+                        updateStreamState(StreamState.HALF_CLOSED_REMOTE);
                         setReadyForRead();
                     }
                 } else {
