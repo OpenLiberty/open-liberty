@@ -45,7 +45,12 @@ src: \
 fat.project: true
 
 tested.features: \
-	servlet-4.0, servlet-5.0, jpa-2.2, jdbc-4.2, ejbLite-3.2
+	ejbLite-3.2,\
+	ejbLite-4.0,\
+	jdbc-4.2,\
+	jpa-2.2,\
+	servlet-4.0,\
+	servlet-5.0
 	
 # Intentionally put javax.annotation (as opposed to websphere.javee.annotation) on the -buildpath
 # because otherwise bndtools will merge the artifacts together and it will only be on the classpath.
