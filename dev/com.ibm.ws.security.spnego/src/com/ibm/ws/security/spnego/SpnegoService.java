@@ -28,12 +28,14 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
+import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.authentication.filter.internal.AuthFilterConfig;
 import com.ibm.ws.security.kerberos.auth.KerberosService;
 import com.ibm.ws.security.spnego.internal.SpnegoConfigImpl;
+import com.ibm.ws.security.token.internal.TraceConstants;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.AuthenticationResult;
 import com.ibm.ws.webcontainer.security.WebAuthenticator;
@@ -61,6 +63,10 @@ public class SpnegoService implements WebAuthenticator {
     private final AuthenticationResult CONTINUE = new AuthenticationResult(AuthResult.CONTINUE, "SPNEGO service said continue...");
     private SpnegoAuthenticator spnegoAuthenticator = null;
     private SpnegoConfig spnegoConfig = null;
+    private final String noSpnGSSCredMsg = TraceNLS.getStringFromBundle(this.getClass(),
+                                                                        TraceConstants.MESSAGE_BUNDLE,
+                                                                        "SPNEGO_NO_SPN_GSS_CREDENTIAL",
+                                                                        "CWWKS4309E: Can not create a GSSCredential for any of the service principal names. All requests will not use SPNEGO authentication.");
 
     @Reference(name = KEY_FILTER,
                service = AuthenticationFilter.class,
@@ -167,7 +173,7 @@ public class SpnegoService implements WebAuthenticator {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "No GSSCredential for any of the service principal names.");
             }
-            result = new AuthenticationResult(AuthResult.FAILURE, "No GSSCredential for any of the service principal names.");
+            result = spnegoAuthenticator.spnegoAuthenticationErrorPage(resp, spnegoConfig, noSpnGSSCredMsg);
         }
 
         if (!spnegoConfig.getDisableFailOverToAppAuthType()) {

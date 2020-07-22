@@ -169,6 +169,7 @@ public class Krb5LoginModuleWrapper implements LoginModule {
         return true;
     }
 
+    @FFDCIgnore(java.lang.reflect.InvocationTargetException.class)
     private void inVokeMethod(String methodName, Class<?>[] params) throws LoginException {
         if (krb5LoginModuleClass != null) {
             try {
