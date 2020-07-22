@@ -128,6 +128,15 @@ session.activeSessions.description=The number of concurrently active sessions. (
 session.invalidated.total.description=The number of sessions that have logged out since this metric was enabled.
 session.invalidatedbyTimeout.total.description=The number of sessions that have logged out by timeout since this metric was enabled.
 
+grpc.server.started.total.description=The total number of RPCs started on the server.
+grpc.server.handled.total.description=The total number of RPCs completed on the server, regardless of success or failure.
+grpc.server.sentMessages.total.description=The total number of stream messages sent by the server.
+grpc.server.receivedMessages.total.description=The total number of stream messages received from the client.
+
+grpc.client.started.total.description=The total number of RPCs started on the client.
+grpc.client.handled.total.description=The total number of RPCs completed on the client, regardless of success or failure.
+grpc.client.sentMessages.total.description=The total number of stream messages sent by the client.
+grpc.client.receivedMessages.total.description=The total number of stream messages received from the server.
 
 REST.request.description=The number of invocations and total response time of this RESTful resource method since the start of the server.
 #-----------------------------------------------------------------------------------------------------------------------------
