@@ -515,7 +515,7 @@ public class AcmeConfigVariationsTest {
 		} finally {
 			stopServer("CWWKG0095E", "CWWKE0701E", "CWPKI2016E", "CWPKI2020E", "CWPKI2021E", "CWPKI2022E",
 					"CWPKI2023E", "CWPKI2008E", "CWPKI2037E", "CWPKI2039E", "CWPKI2040E", "CWPKI2041E", "CWPKI2042E",
-					"CWPKI0823E", "CWPKI0828E", "CWPKI2070W", "CWPKI2071W");
+					"CWPKI0823E", "CWPKI0828E", "CWPKI2070W", "CWPKI2071W", "CWPKI0804E");
 			/*
 			 * Running on Sun produces some additional errors on the invalid directory URI,
 			 * added them to the stop list

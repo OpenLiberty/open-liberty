@@ -852,7 +852,8 @@ public class AcmeFatUtils {
 		if (System.getProperty("os.name").toLowerCase().startsWith("win")
 				&& System.getProperty("java.vendor").toLowerCase().contains("openjdk")
 				&& (System.getProperty("java.version").equals("11.0.5")
-						|| System.getProperty("java.version").equals("14.0.1"))) {
+						|| System.getProperty("java.version").equals("14.0.1")
+						|| System.getProperty("java.version").equals("11"))) {
 			/*
 			 * On Windows with OpenJDK 11.0.5 (and others), we sometimes get an exception deleting the
 			 * Acme related files.
