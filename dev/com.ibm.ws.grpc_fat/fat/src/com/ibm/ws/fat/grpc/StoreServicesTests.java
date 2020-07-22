@@ -62,14 +62,14 @@ public class StoreServicesTests extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultDropinApp(storeServer, "StoreApp.war",
-                                      "com.ibm.testapp.g3store.cache",
-                                      "com.ibm.testapp.g3store.exception",
-                                      "com.ibm.testapp.g3store.interceptor",
-                                      "com.ibm.testapp.g3store.grpcservice",
-                                      "com.ibm.testapp.g3store.servletStore",
-                                      "com.ibm.testapp.g3store.utilsStore",
-                                      "com.ibm.test.g3store.grpc"); // add generated src
+        ShrinkHelper.defaultApp(storeServer, "StoreApp.war",
+                                "com.ibm.testapp.g3store.cache",
+                                "com.ibm.testapp.g3store.exception",
+                                "com.ibm.testapp.g3store.interceptor",
+                                "com.ibm.testapp.g3store.grpcservice",
+                                "com.ibm.testapp.g3store.servletStore",
+                                "com.ibm.testapp.g3store.utilsStore",
+                                "com.ibm.test.g3store.grpc"); // add generated src
 
         ShrinkHelper.defaultDropinApp(producerServer, "StoreProducerApp.war",
                                       "com.ibm.testapp.g3store.grpcProducer.api",
@@ -81,8 +81,8 @@ public class StoreServicesTests extends FATServletClient {
                                       "com.ibm.testapp.g3store.servletProducer",
                                       "com.ibm.test.g3store.grpc"); // add generated src
 
-        // since the <application> element is used in server.xml for security, cannot use dropin
-        // since consumer needs to create data also , we will need to add producer files also
+        // Use defaultApp the <application> element is used in server.xml for security, cannot use dropin
+        // The consumer tests needs to create data also , we will need to add producer files also
         ShrinkHelper.defaultApp(consumerServer, "StoreConsumerApp.war",
                                 "com.ibm.testapp.g3store.grpcConsumer.api",
                                 "com.ibm.testapp.g3store.grpcConsumer.security",

@@ -13,11 +13,14 @@ package com.ibm.testapp.g3store.restConsumer.client;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -60,6 +63,10 @@ public class ConsumerEndpointFATServlet extends FATServlet {
 
     private static String getSysProp(String key) {
         return AccessController.doPrivileged((PrivilegedAction<String>) () -> System.getProperty(key));
+    }
+
+    public String createBasicAuthHeaderValue(String username, String password) throws UnsupportedEncodingException {
+        return "Basic " + Base64.getEncoder().encodeToString((username + ":" + password).getBytes(StandardCharsets.UTF_8));
     }
 
     /**
