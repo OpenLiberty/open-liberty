@@ -668,7 +668,6 @@ public class InstallUtils {
     }
 
     public static Set<String> getFeatures(String serverXml, String xml, Set<String> visitedServerXmls) throws IOException {
-        logger.fine("We processing " + serverXml);
         Set<String> features = new HashSet<String>();
         List<String> newLocations = new ArrayList<>();
         boolean isUrl = false;
@@ -686,7 +685,6 @@ public class InstallUtils {
                 return features;
             }
         }
-        logger.fine("We here");
 
         try (InputStream is =  isUrl ? conn.getInputStream() : Files.newInputStream(realServerXml)){
             Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(is);
