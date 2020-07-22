@@ -12,7 +12,7 @@ package io.openliberty.grpc.internal.monitor;
 
 /**
  * Holds metrics used for client-side monitoring of gRPC services. </br>
- * Statistic reported:
+ * Statistic monitored:
  * <ul>
  * <li>Total number of RPCs started on the client.
  * <li>Total number of RPCs completed on the client, regardless of success or
@@ -31,23 +31,15 @@ public class GrpcClientStatsMonitor {
 	}
 
 	public void recordCallStarted() {
-		System.out.println(String.format("ANNA client RPC started: service[%s] method[%s]", method.serviceName(),
-				method.methodName()));
 	}
 
 	public void recordClientHandled() {
-		System.out.println(String.format("ANNA client RPC completed: service[%s] method[%s]", method.serviceName(),
-				method.methodName()));
 	}
 
 	public void recordMsgReceived() {
-		System.out.println(String.format("ANNA client message received: service[%s] method[%s]", method.serviceName(),
-				method.methodName()));
 	}
 
 	public void recordMsgSent() {
-		System.out.println(String.format("ANNA client message sent: service[%s] method[%s]", method.serviceName(),
-				method.methodName()));
 	}
 
 	public void recordLatency(double latencySec) {
