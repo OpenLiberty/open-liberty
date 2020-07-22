@@ -83,7 +83,7 @@ public class ServiceConfigTests extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        grpcServer.startServer(ServiceSupportTests.class.getSimpleName() + ".log");
+        grpcServer.startServer(ServiceConfigTests.class.getSimpleName() + ".log");
 
         LOG.info("ServiceConfigTests : setUp() : add helloWorldService  app");
         // add all classes from com.ibm.ws.grpc.fat.helloworld.service and io.grpc.examples.helloworld
@@ -176,7 +176,6 @@ public class ServiceConfigTests extends FATServletClient {
         //Make sure the Interceptor was not called and did not logged a message
         String interceptorHasRun = grpcServer.verifyStringNotInLogUsingMark("com.ibm.ws.grpc.fat.helloworld.service.HelloWorldServerInterceptor has been invoked!",
                                                                             STARTUP_TIMEOUT);
-
         if (interceptorHasRun != null) {
             Assert.fail(c + ": server.xml with <grpc> element plus interceptor ran when it should not have in " + STARTUP_TIMEOUT + "ms");
         }
@@ -187,7 +186,6 @@ public class ServiceConfigTests extends FATServletClient {
         grpcServer.waitForConfigUpdateInLogUsingMark(appName);
 
         // Send a request to the HelloWorld service and check for a response
-        // The request should work, but there should be no message from the interceptor
         person = HelloRequest.newBuilder().setName("Millie").build();
         greeting = worldServiceBlockingStub.sayHello(person);
         //Make sure the reply has Millie in it
@@ -195,7 +193,7 @@ public class ServiceConfigTests extends FATServletClient {
         //Make sure the Interceptor was called and logged a message
         interceptorHasRun = grpcServer.waitForStringInLogUsingMark("com.ibm.ws.grpc.fat.helloworld.service.HelloWorldServerInterceptor has been invoked!", STARTUP_TIMEOUT);
         if (interceptorHasRun == null) {
-            Assert.fail(c + ": server.xml with <grpc> element plus interceptor failed to update within " + STARTUP_TIMEOUT + "ms");
+            Assert.fail(c + ": interceptor did not print message to the server log as expected");
         }
 
     }
