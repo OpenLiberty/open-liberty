@@ -27,7 +27,7 @@
 #   (single quote must be coded as one single quote '). 
 #
 # -------------------------------------------------------------------------------------------------
-47000=Could not locate file [{0}]
+47000=Cannot locate the "[{0}]" file.
 
 47001=Could not locate descriptor [{0}] for operation [{1}] in the O-R project
 
