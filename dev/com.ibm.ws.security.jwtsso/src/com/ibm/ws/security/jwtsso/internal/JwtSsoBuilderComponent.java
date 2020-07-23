@@ -410,4 +410,10 @@ public class JwtSsoBuilderComponent implements JwtSsoBuilderConfig {
 		// TODO Auto-generated method stub
 		return disableJwtCookie;
 	}
+
+	@Override
+	public long getElapsedNbfTime() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
