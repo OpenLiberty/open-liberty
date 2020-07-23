@@ -142,7 +142,7 @@ public class ServiceInterceptorTests extends FATServletClient {
         String interceptorHasRun = grpcServer.verifyStringNotInLogUsingMark("com.ibm.ws.grpc.fat.helloworld.service.HelloWorldServerInterceptor has been invoked!",
                                                                             SHORT_TIMEOUT);
         if (interceptorHasRun != null) {
-            Assert.fail(c + ": server.xml with <grpc> element no interceptor ran when it should not have in " + STARTUP_TIMEOUT + "ms");
+            Assert.fail(c + ": server.xml with <grpc> element no interceptor ran when it should not have in " + SHORT_TIMEOUT + "ms");
         }
 
         // Update to a config file with a <grpc> element with Interceptor included
