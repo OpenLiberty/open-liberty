@@ -40,7 +40,7 @@ Include-Resource: \
   OSGI-INF=resources/OSGI-INF
     
 -buildpath: \
-	com.ibm.ws.org.jboss.narayana.rts;version=latest,\
+	io.openliberty.org.jboss.narayana.rts;version=latest,\
 	com.ibm.ws.logging.core;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.cm;version=latest,\
