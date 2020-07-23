@@ -233,7 +233,7 @@ public class AcmeClient {
 					sleep(e.getRetryAfter().toEpochMilli() - current, pollUntil);
 				} catch (AcmeException e) {
 					throw handleAcmeException(e,
-							Tr.formatMessage(tc, "CWPKI2010E", acmeConfig.getDirectoryURI(), e.getMessage()));
+							Tr.formatMessage(tc, "CWPKI2010E", acmeConfig.getDirectoryURI(), getRootCauseMessage(e)));
 				}
 			}
 
