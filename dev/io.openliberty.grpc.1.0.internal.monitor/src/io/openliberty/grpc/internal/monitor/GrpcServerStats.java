@@ -129,12 +129,12 @@ public class GrpcServerStats extends Meter implements GrpcServerStatsMXBean {
 	}
 
 	@Override
-	public long getCallStartedCount() {
+	public long getRpcStartedCount() {
 		return serverStarted.getCurrentValue();
 	}
 
 	@Override
-	public long getServiceHandledCount() {
+	public long getRpcCompletedCount() {
 		return serverHandled.getCurrentValue();
 	}
 }

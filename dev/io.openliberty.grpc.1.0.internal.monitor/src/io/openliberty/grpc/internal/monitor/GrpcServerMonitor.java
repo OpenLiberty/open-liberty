@@ -39,7 +39,7 @@ public class GrpcServerMonitor {
 		
 		System.out.println(String.format("ANNA atGrpcServerStart: service[%s] application[%s] - [%s]",
 				stats.getServiceName(), stats.getAppName(),
-				getGrpcServerStats(stats.getAppName(), stats.getServiceName()).getCallStartedCount()));
+				getGrpcServerStats(stats.getAppName(), stats.getServiceName()).getRpcStartedCount()));
 	}
 
 	@ProbeAtEntry
@@ -50,7 +50,7 @@ public class GrpcServerMonitor {
 		
 		System.out.println(String.format("ANNA atGrpcServerHandled: service[%s] application[%s] - [%s]",
 				stats.getServiceName(), stats.getAppName(),
-				getGrpcServerStats(stats.getAppName(), stats.getServiceName()).getServiceHandledCount()));
+				getGrpcServerStats(stats.getAppName(), stats.getServiceName()).getRpcCompletedCount()));
 	}
 
 	@ProbeAtReturn

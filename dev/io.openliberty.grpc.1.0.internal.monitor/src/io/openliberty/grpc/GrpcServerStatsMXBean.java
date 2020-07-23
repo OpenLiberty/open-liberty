@@ -30,14 +30,14 @@ public interface GrpcServerStatsMXBean {
      * 
      * @return the total number of RPCs started on the server
      */
-    public long getCallStartedCount();
+    public long getRpcStartedCount();
 
     /**
      * Retrieves the total number of RPCs completed on the server,
      * 
      * @return the total number of RPCs completed on the server
      */
-    public long getServiceHandledCount();
+    public long getRpcCompletedCount();
 
     /**
      * Retrieves the total number of stream messages that the server has received for this gRPC service.
