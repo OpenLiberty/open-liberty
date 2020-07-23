@@ -87,3 +87,16 @@ JNDI_NON_JEE_THREAD_CWNBV0006E.explanation=JNDI operations on a java:comp/env na
 JNDI_NON_JEE_THREAD_CWNBV0006E.useraction=Modify the application so that the JNDI operation occurs on a thread associated with a Java EE application component.
 
 # -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the method with the invalid ValidateOnExecution annotation
+# -----------------------------------------------------------------------
+BVKEY_VALIDATE_ON_EXECUTION_NOT_ALLOWED_CWNBV0007E=CWNBV0007E: @ValidateOnExecution is not allowed on methods that override a superclass method or implement an interface. Check configuration for {0}
+BVKEY_VALIDATE_ON_EXECUTION_NOT_ALLOWED_CWNBV0007E.explanation= @ValidateOnExecution is not allowed on methods that override a superclass method or implement an interface. A method that overrides a superclass method or implements an interface method inherits the behavior of the method that it overrides or implements.
+BVKEY_VALIDATE_ON_EXECUTION_NOT_ALLOWED_CWNBV0007E.useraction= Remove the @ValidateOnExecution from the specified method.
+
+# -----------------------------------------------------------------------
+BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E=CWNBV0008E: Mixing IMPLICIT type with other executable types is not allowed. Check the executable types set for: \n {0}
+BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E.explanation=According to the Bean Validation Specification, mixing IMPLICIT type with other executable types is not allowed for the @ValidateOnExecution annotation.
+BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E.useraction=Update the method, class, or global XML settings for executable types to prevent mixing IMPLICIT type with other executable types.
+
+# -----------------------------------------------------------------------

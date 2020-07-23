@@ -38,7 +38,8 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 -dsannotations-inherit: true
 -dsannotations: \
-  com.ibm.ws.beanvalidation.v20.ValidatorFactoryBuilderImpl
+  com.ibm.ws.beanvalidation.v20.ValidatorFactoryBuilderImpl, \
+  com.ibm.ws.beanvalidation.v20.ConstrainedHelperImpl
 
 Service-Component: \
   com.ibm.ws.beanvalidation.v20; \
@@ -57,5 +58,6 @@ Service-Component: \
     com.ibm.ws.container.service;version=latest,\
     com.ibm.ws.kernel.service;version=latest,\
     com.ibm.ws.logging;version=latest,\
+    com.ibm.ws.org.jboss.logging;version=latest,\
     com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
     com.ibm.ws.org.hibernate.validator;version=latest
