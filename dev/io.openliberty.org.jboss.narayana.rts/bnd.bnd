@@ -16,7 +16,7 @@ bVersion=1.0
 javac.source: 1.8
 javac.target: 1.8
 
-Bundle-SymbolicName: com.ibm.ws.org.jboss.narayana.rts; singleton:=true
+Bundle-SymbolicName: io.openliberty.org.jboss.narayana.rts; singleton:=true
                      
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
