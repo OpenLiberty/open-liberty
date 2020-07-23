@@ -9,6 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 apply from: '../wlp-gradle/subprojects/fat.gradle'
+
 configurations {
   jaxrsValidator
 }
@@ -25,5 +26,6 @@ task addjaxrsValidator(type: Copy) {
 
 addRequiredLibraries {
   dependsOn addjaxrsValidator
+  dependsOn addJakartaTransformer
 }
 

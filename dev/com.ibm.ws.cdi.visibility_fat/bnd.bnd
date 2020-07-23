@@ -69,16 +69,8 @@ test.project: true
 tested.features:\
 	cdi-2.0,\
         servlet-4.0,\
-        jdbc-4.2,\
-        jpa-2.2,\
-        beanValidation-2.0,\
-        jaxrs-2.1,\
-        jsf-2.3,\
-        jsonb-1.0,\
-        appsecurity-3.0,\
-        webprofile-8.0,\
-        javaee-8.0,\
-        javamail-1.6
+        servlet-5.0,\
+        cdi-3.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
