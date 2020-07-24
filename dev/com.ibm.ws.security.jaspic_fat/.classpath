@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="fat/src"/>
+	<classpathentry kind="src" path="test-applications/JASPIBasicAuthServlet.war/src"/>
+	<classpathentry kind="src" path="test-applications/JASPIFormLoginServlet.war/src"/>
+	<classpathentry kind="src" path="test-applications/JASPICallbackTestBasicAuthServlet.war/src"/>
+	<classpathentry kind="src" path="test-applications/JASPICallbackTestFormLoginServlet.war/src"/>
+	<classpathentry kind="src" path="test-applications/JASPIBase.jar/src"/>
+	<classpathentry kind="src" path="test-applications/JASPIRegistrationTestServlet.war/src"/>
+	<classpathentry kind="src" path="test-applications/JASPIWrappingServlet.war/src"/>
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

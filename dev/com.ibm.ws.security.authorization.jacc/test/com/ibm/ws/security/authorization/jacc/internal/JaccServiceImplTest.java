@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,8 +46,6 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.ws.security.authorization.jacc.MethodInfo;
 import com.ibm.ws.security.authorization.jacc.RoleInfo;
 import com.ibm.ws.security.authorization.jacc.ejb.EJBSecurityPropagator;
@@ -63,6 +61,8 @@ import com.ibm.wsspi.library.Library;
 import com.ibm.wsspi.security.authorization.jacc.ProviderService;
 import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
+
+import test.common.SharedOutputManager;
 
 public class JaccServiceImplTest {
     static final SharedOutputManager outputMgr = SharedOutputManager.getInstance();
@@ -106,13 +106,17 @@ public class JaccServiceImplTest {
     private final ClassLoader scl = ClassLoader.getSystemClassLoader();
 
     private static final String JACC_FACTORY = "javax.security.jacc.PolicyConfigurationFactory.provider";
+    private static final String JACC_FACTORY_EE9 = "jakarta.security.jacc.PolicyConfigurationFactory.provider";
     private static final String JACC_POLICY_PROVIDER = "javax.security.jacc.policy.provider";
+    private static final String JACC_POLICY_PROVIDER_EE9 = "jakarta.security.jacc.policy.provider";
     private static final String JACC_FACTORY_IMPL = "com.ibm.ws.security.authorization.jacc.internal.DummyPolicyConfigurationFactory";
     private static final String JACC_POLICY_PROVIDER_IMPL = "com.ibm.ws.security.authorization.jacc.internal.DummyPolicy";
     private static final String JACC_EJB_METHOD_ARGUMENT = "RequestMethodArgumentsRequired";
 
     private final String origPp = System.getProperty(JACC_POLICY_PROVIDER);
+    private final String origPpEe9 = System.getProperty(JACC_POLICY_PROVIDER_EE9);
     private final String origFn = System.getProperty(JACC_FACTORY);
+    private final String origFnEe9 = System.getProperty(JACC_FACTORY_EE9);
 
     @After
     public void tearDown() throws Exception {
@@ -122,10 +126,20 @@ public class JaccServiceImplTest {
         } else {
             System.clearProperty(JACC_POLICY_PROVIDER);
         }
+        if (origPpEe9 != null) {
+            System.setProperty(JACC_POLICY_PROVIDER_EE9, origPpEe9);
+        } else {
+            System.clearProperty(JACC_POLICY_PROVIDER_EE9);
+        }
         if (origFn != null) {
             System.getProperty(JACC_FACTORY, origFn);
         } else {
             System.clearProperty(JACC_FACTORY);
+        }
+        if (origFnEe9 != null) {
+            System.getProperty(JACC_FACTORY_EE9, origFnEe9);
+        } else {
+            System.clearProperty(JACC_FACTORY_EE9);
         }
         Policy.setPolicy(policy);
     }
@@ -143,16 +157,20 @@ public class JaccServiceImplTest {
                 allowing(jaccProviderServiceRef).getProperty(Constants.SERVICE_RANKING);
                 will(returnValue(0));
                 allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER);
+                allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER_EE9);
                 will(returnValue(JACC_POLICY_PROVIDER_IMPL));
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY);
+                allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY_EE9);
                 will(returnValue(JACC_FACTORY_IMPL));
                 allowing(wsLocationAdminRef).getProperty(Constants.SERVICE_ID);
                 will(returnValue(0L));
                 allowing(wsLocationAdminRef).getProperty(Constants.SERVICE_RANKING);
                 will(returnValue(0));
                 allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER);
+                allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER_EE9);
                 will(returnValue(null));
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY);
+                allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY_EE9);
                 will(returnValue(null));
                 allowing(cc).locateService("jaccProviderService", jaccProviderServiceRef);
                 will(returnValue(jaccProviderService));
@@ -171,7 +189,9 @@ public class JaccServiceImplTest {
         jaccService.setLocationAdmin(wsLocationAdminRef);
         jaccService.activate(cc);
         assertEquals(JACC_POLICY_PROVIDER_IMPL, System.getProperty(JACC_POLICY_PROVIDER));
+        assertEquals(JACC_POLICY_PROVIDER_IMPL, System.getProperty(JACC_POLICY_PROVIDER_EE9));
         assertEquals(JACC_FACTORY_IMPL, System.getProperty(JACC_FACTORY));
+        assertEquals(JACC_FACTORY_IMPL, System.getProperty(JACC_FACTORY_EE9));
         jaccService.deactivate(cc);
         jaccService.unsetJaccProviderService(jaccProviderServiceRef);
         jaccService.unsetLocationAdmin(wsLocationAdminRef);
@@ -190,16 +210,20 @@ public class JaccServiceImplTest {
                 allowing(jaccProviderServiceRef).getProperty(Constants.SERVICE_RANKING);
                 will(returnValue(0));
                 allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER);
+                allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER_EE9);
                 will(returnValue(JACC_POLICY_PROVIDER_IMPL));
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY);
+                allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY_EE9);
                 will(returnValue(JACC_FACTORY_IMPL));
                 allowing(wsLocationAdminRef).getProperty(Constants.SERVICE_ID);
                 will(returnValue(0L));
                 allowing(wsLocationAdminRef).getProperty(Constants.SERVICE_RANKING);
                 will(returnValue(0));
                 allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER);
+                allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER_EE9);
                 will(returnValue(null));
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY);
+                allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY_EE9);
                 will(returnValue(null));
                 allowing(cc).locateService("jaccProviderService", jaccProviderServiceRef);
                 will(returnValue(jaccProviderService));
@@ -216,20 +240,25 @@ public class JaccServiceImplTest {
         String tmpPp = "TempPolicyProvider";
         String tmpFn = "TempFactoryName";
         System.setProperty(JACC_POLICY_PROVIDER, tmpPp);
+        System.setProperty(JACC_POLICY_PROVIDER_EE9, tmpPp);
         System.setProperty(JACC_FACTORY, tmpFn);
+        System.setProperty(JACC_FACTORY_EE9, tmpFn);
 
         JaccServiceImpl jaccService = new JaccServiceImpl();
         jaccService.setJaccProviderService(jaccProviderServiceRef);
         jaccService.setLocationAdmin(wsLocationAdminRef);
         jaccService.activate(cc);
         assertEquals(JACC_POLICY_PROVIDER_IMPL, System.getProperty(JACC_POLICY_PROVIDER));
+        assertEquals(JACC_POLICY_PROVIDER_IMPL, System.getProperty(JACC_POLICY_PROVIDER_EE9));
         assertEquals(JACC_FACTORY_IMPL, System.getProperty(JACC_FACTORY));
+        assertEquals(JACC_FACTORY_IMPL, System.getProperty(JACC_FACTORY_EE9));
         jaccService.deactivate(cc);
         jaccService.unsetJaccProviderService(jaccProviderServiceRef);
         jaccService.unsetLocationAdmin(wsLocationAdminRef);
         assertEquals(tmpPp, System.getProperty(JACC_POLICY_PROVIDER));
+        assertEquals(tmpPp, System.getProperty(JACC_POLICY_PROVIDER_EE9));
         assertEquals(tmpFn, System.getProperty(JACC_FACTORY));
-
+        assertEquals(tmpFn, System.getProperty(JACC_FACTORY_EE9));
     }
 
     /**
@@ -241,8 +270,10 @@ public class JaccServiceImplTest {
         context.checking(new Expectations() {
             {
                 allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER);
+                allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER_EE9);
                 will(returnValue(null));
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY);
+                allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY_EE9);
                 will(returnValue(null));
             }
         });
@@ -250,14 +281,17 @@ public class JaccServiceImplTest {
         String tmpFn = "TempFactoryName";
 
         System.setProperty(JACC_POLICY_PROVIDER, tmpPp);
+        System.setProperty(JACC_POLICY_PROVIDER_EE9, tmpPp);
         System.setProperty(JACC_FACTORY, tmpFn);
+        System.setProperty(JACC_FACTORY_EE9, tmpFn);
 
         JaccServiceImpl jaccService = new JaccServiceImpl();
         jaccService.setJaccProviderService(jaccProviderServiceRef);
 
         assertEquals(tmpPp, System.getProperty(JACC_POLICY_PROVIDER));
+        assertEquals(tmpPp, System.getProperty(JACC_POLICY_PROVIDER_EE9));
         assertEquals(tmpFn, System.getProperty(JACC_FACTORY));
-
+        assertEquals(tmpFn, System.getProperty(JACC_FACTORY_EE9));
     }
 
     /**
@@ -269,19 +303,25 @@ public class JaccServiceImplTest {
         context.checking(new Expectations() {
             {
                 allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER);
+                allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER_EE9);
                 will(returnValue(null));
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY);
+                allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY_EE9);
                 will(returnValue(null));
             }
         });
         System.clearProperty(JACC_POLICY_PROVIDER);
+        System.clearProperty(JACC_POLICY_PROVIDER_EE9);
         System.clearProperty(JACC_FACTORY);
+        System.clearProperty(JACC_FACTORY_EE9);
 
         JaccServiceImpl jaccService = new JaccServiceImpl();
         jaccService.setJaccProviderService(jaccProviderServiceRef);
 
         assertNull(System.getProperty(JACC_POLICY_PROVIDER));
+        assertNull(System.getProperty(JACC_POLICY_PROVIDER_EE9));
         assertNull(System.getProperty(JACC_FACTORY));
+        assertNull(System.getProperty(JACC_FACTORY_EE9));
 
     }
 
@@ -298,16 +338,20 @@ public class JaccServiceImplTest {
 //                allowing(jaccProviderServiceRef).getProperty(Constants.SERVICE_RANKING);
 //                will(returnValue(0));
                 allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER);
+                allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER_EE9);
                 will(returnValue(JACC_POLICY_PROVIDER_IMPL));
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY);
+                allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY_EE9);
                 will(returnValue(JACC_FACTORY_IMPL));
 //                allowing(wsLocationAdminRef).getProperty(Constants.SERVICE_ID);
 //                will(returnValue(0L));
 //                allowing(wsLocationAdminRef).getProperty(Constants.SERVICE_RANKING);
 //                will(returnValue(0));
                 allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER);
+                allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER_EE9);
                 will(returnValue(null));
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY);
+                allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY_EE9);
                 will(returnValue(null));
                 allowing(cc).locateService("jaccProviderService", jaccProviderServiceRef);
                 will(returnValue(jaccProviderService));
@@ -342,16 +386,20 @@ public class JaccServiceImplTest {
                 allowing(jaccProviderServiceRef).getProperty(Constants.SERVICE_RANKING);
                 will(returnValue(0));
                 allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER);
+                allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER_EE9);
                 will(returnValue(JACC_POLICY_PROVIDER_IMPL));
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY);
+                allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY_EE9);
                 will(returnValue(JACC_FACTORY_IMPL));
                 allowing(wsLocationAdminRef).getProperty(Constants.SERVICE_ID);
                 will(returnValue(0L));
                 allowing(wsLocationAdminRef).getProperty(Constants.SERVICE_RANKING);
                 will(returnValue(0));
                 allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER);
+                allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER_EE9);
                 will(returnValue(null));
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY);
+                allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY_EE9);
                 will(returnValue(null));
                 allowing(cc).locateService("jaccProviderService", jaccProviderServiceRef);
                 will(returnValue(jaccProviderService));
@@ -412,8 +460,10 @@ public class JaccServiceImplTest {
         context.checking(new Expectations() {
             {
                 allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER);
+                allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER_EE9);
                 will(returnValue(JACC_POLICY_PROVIDER_IMPL));
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY);
+                allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY_EE9);
                 will(returnValue(JACC_FACTORY_IMPL));
                 allowing(cc).locateService("jaccProviderService", jaccProviderServiceRef);
                 will(returnValue(jaccProviderService));
@@ -496,8 +546,10 @@ public class JaccServiceImplTest {
         context.checking(new Expectations() {
             {
                 allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER);
+                allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER_EE9);
                 will(returnValue(JACC_POLICY_PROVIDER_IMPL));
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY);
+                allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY_EE9);
                 will(returnValue(JACC_FACTORY_IMPL));
                 allowing(cc).locateService("jaccProviderService", jaccProviderServiceRef);
                 will(returnValue(jaccProviderService));
@@ -542,8 +594,10 @@ public class JaccServiceImplTest {
         context.checking(new Expectations() {
             {
                 allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER);
+                allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER_EE9);
                 will(returnValue(JACC_POLICY_PROVIDER_IMPL));
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY);
+                allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY_EE9);
                 will(returnValue(JACC_FACTORY_IMPL));
                 allowing(cc).locateService("jaccProviderService", jaccProviderServiceRef);
                 will(returnValue(jaccProviderService));
@@ -609,8 +663,10 @@ public class JaccServiceImplTest {
         context.checking(new Expectations() {
             {
                 allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER);
+                allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER_EE9);
                 will(returnValue(JACC_POLICY_PROVIDER_IMPL));
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY);
+                allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY_EE9);
                 will(returnValue(JACC_FACTORY_IMPL));
                 allowing(cc).locateService("jaccProviderService", jaccProviderServiceRef);
                 will(returnValue(jaccProviderService));
@@ -675,8 +731,10 @@ public class JaccServiceImplTest {
         context.checking(new Expectations() {
             {
                 allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER);
+                allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER_EE9);
                 will(returnValue(JACC_POLICY_PROVIDER_IMPL));
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY);
+                allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY_EE9);
                 will(returnValue(JACC_FACTORY_IMPL));
                 allowing(cc).locateService("jaccProviderService", jaccProviderServiceRef);
                 will(returnValue(jaccProviderService));
@@ -743,8 +801,10 @@ public class JaccServiceImplTest {
         context.checking(new Expectations() {
             {
                 allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER);
+                allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER_EE9);
                 will(returnValue(JACC_POLICY_PROVIDER_IMPL));
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY);
+                allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY_EE9);
                 will(returnValue(JACC_FACTORY_IMPL));
                 allowing(cc).locateService("jaccProviderService", jaccProviderServiceRef);
                 will(returnValue(jaccProviderService));
@@ -820,8 +880,10 @@ public class JaccServiceImplTest {
         context.checking(new Expectations() {
             {
                 allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER);
+                allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER_EE9);
                 will(returnValue(JACC_POLICY_PROVIDER_IMPL));
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY);
+                allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY_EE9);
                 will(returnValue(JACC_FACTORY_IMPL));
                 allowing(cc).locateService("jaccProviderService", jaccProviderServiceRef);
                 will(returnValue(jaccProviderService));
@@ -900,8 +962,10 @@ public class JaccServiceImplTest {
         context.checking(new Expectations() {
             {
                 allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER);
+                allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER_EE9);
                 will(returnValue(JACC_POLICY_PROVIDER_IMPL));
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY);
+                allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY_EE9);
                 will(returnValue(JACC_FACTORY_IMPL));
                 allowing(cc).locateService("jaccProviderService", jaccProviderServiceRef);
                 will(returnValue(jaccProviderService));
@@ -943,8 +1007,10 @@ public class JaccServiceImplTest {
         context.checking(new Expectations() {
             {
                 allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER);
+                allowing(jaccProviderServiceRef).getProperty(JACC_POLICY_PROVIDER_EE9);
                 will(returnValue(JACC_POLICY_PROVIDER_IMPL));
                 allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY);
+                allowing(jaccProviderServiceRef).getProperty(JACC_FACTORY_EE9);
                 will(returnValue(JACC_FACTORY_IMPL));
                 allowing(cc).locateService("jaccProviderService", jaccProviderServiceRef);
                 will(returnValue(jaccProviderService));

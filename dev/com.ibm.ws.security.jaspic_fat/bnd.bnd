@@ -1,0 +1,48 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+	fat/src,\
+	test-applications/JASPIBase.jar/src,\
+	test-applications/JASPIBasicAuthServlet.war/src,\
+	test-applications/JASPICallbackTestBasicAuthServlet.war/src,\
+	test-applications/JASPICallbackTestFormLoginServlet.war/src,\
+	test-applications/JASPIFormLoginServlet.war/src,\
+	test-applications/JASPIRegistrationTestServlet.war/src,\
+	test-applications/JASPIWrappingServlet.war/src
+
+fat.project: true
+
+tested.features: el-4.0, appsecurity-4.0, servlet-5.0, cdi-3.0, jsp-3.0, jaxb-3.0, jaspic-2.0, jacc-2.0
+
+-buildpath: \
+    com.ibm.json4j;version=latest,\
+	com.ibm.websphere.javaee.jaspic.1.1;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.websphere.security;version=latest,\
+	com.ibm.ws.common.encoder;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.logging;version=latest,\
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.security.audit_fat.common.tooling;version=latest,\
+	com.ibm.ws.security.authorization.jacc.testprovider;version=latest,\
+	com.ibm.ws.security.jaspic.1.1;version=latest,\
+	com.ibm.ws.security.jaspic.test;version=latest,\
+	com.ibm.ws.security.token;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	fattest.simplicity;version=latest,\
+	org.apache.httpcomponents:httpclient;strategy=exact;version=4.1.2,\
+	org.apache.httpcomponents:httpcore;strategy=exact;version=4.1.2
