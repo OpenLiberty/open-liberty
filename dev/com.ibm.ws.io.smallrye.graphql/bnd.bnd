@@ -25,6 +25,8 @@ Import-Package: \
   !javax.validation,\
   !javax.validation.executable,\
   !javax.validation.metadata,\
+  !javax.ws.rs.client,\
+  !javax.ws.rs.core,\
   !org.eclipse.microprofile.metrics,\
   !org.eclipse.microprofile.metrics.annotation,\
   *
@@ -33,6 +35,8 @@ DynamicImport-Package: \
   javax.validation,\
   javax.validation.executable,\
   javax.validation.metadata,\
+  javax.ws.rs.client,\
+  javax.ws.rs.core,\
   org.eclipse.microprofile.metrics,\
   org.eclipse.microprofile.metrics.annotation
 
@@ -53,6 +57,8 @@ src: src/
   @${repo;io.smallrye:smallrye-graphql;${smallryeGraphQLVersion}}!/!META-INF/beans.xml,\
   @${repo;io.smallrye:smallrye-graphql-api;${smallryeGraphQLVersion}},\
   @${repo;io.smallrye:smallrye-graphql-cdi;${smallryeGraphQLVersion}}!/!META-INF/beans.xml,\
+  @${repo;io.smallrye:smallrye-graphql-client;${smallryeGraphQLVersion}},\
+  @${repo;io.smallrye:smallrye-graphql-client-api;${smallryeGraphQLVersion}},\
   @${repo;io.smallrye:smallrye-graphql-schema-builder;${smallryeGraphQLVersion}},\
   @${repo;io.smallrye:smallrye-graphql-schema-model;${smallryeGraphQLVersion}},\
   @${repo;io.smallrye:smallrye-graphql-servlet;${smallryeGraphQLVersion}},\
@@ -60,12 +66,17 @@ src: src/
   io/smallrye=${bin}/io/smallrye,\
   META-INF=resources/META-INF
 
+app-resources= \
+  META-INF/services/io.smallrye.graphql.spi.LookupService | \
+  META-INF/services/io.smallrye.graphql.client.typesafe.api.GraphQlClientBuilder | \
+  META-INF/services/javax.enterprise.inject.spi.Extension
+
 Service-Component: \
   com.ibm.ws.io.smallrye.graphql.ResourceProvider; \
     implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
     provide:=com.ibm.wsspi.classloading.ResourceProvider; \
     configuration-policy:=optional; \
-    properties:="resources=META-INF/services/io.smallrye.graphql.spi.LookupService"
+    properties:="resources=${app-resources}"
 
 -buildpath: \
   io.smallrye:smallrye-graphql;strategy=exact;version=${smallryeGraphQLVersion},\
