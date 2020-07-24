@@ -73,6 +73,7 @@ public class TransactionScopedTest extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer();
+        ShrinkHelper.cleanAllExportedArchives();
     }
 
     // Tests are up here so they don't run twice because we have the app installed twice

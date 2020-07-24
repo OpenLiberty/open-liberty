@@ -27,7 +27,6 @@ import componenttest.rules.repeater.RepeatTests;
 	SleepTest.class,
 	LPSTest.class,
 	LPSDisabledTest.class,
-	MultiThreadedTest.class
 })
 public class FATSuite {
 

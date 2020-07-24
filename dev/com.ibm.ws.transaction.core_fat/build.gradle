@@ -14,43 +14,14 @@ dependencies {
   requiredLibs project(":com.ibm.ws.tx.embeddable"), 'commons-logging:commons-logging:1.1.3'
 }
 
-File serverDir1 = new File(autoFvtDir, 'publish/servers/com.ibm.ws.transaction')
-File serverDir2 = new File(autoFvtDir, 'publish/servers/com.ibm.ws.transaction_waitForRecovery')
-File serverDir3 = new File(autoFvtDir, 'publish/servers/com.ibm.ws.transaction_XAFlow')
-File serverDir4 = new File(autoFvtDir, 'publish/servers/com.ibm.ws.transaction.dblog')
-File serverDir7 = new File(autoFvtDir, 'publish/servers/com.ibm.ws.transaction_commitPriority')
+File sharedDir = new File(autoFvtDir, 'publish/shared/resources')
 
-
-task addDerbyToServerDir1(type: Copy) {
+task addDerbyToSharedDir(type: Copy) {
   from configurations.derby
-  into new File(serverDir1, 'derby')
-  rename 'derby-.*.jar', 'derby.jar'
-}
-
-task addDerbyToServerDir2(type: Copy) {
-  from configurations.derby
-  into new File(serverDir2, 'derby')
-  rename 'derby-.*.jar', 'derby.jar'
-}
-
-task addDerbyToServerDir3(type: Copy) {
-  from configurations.derby
-  into new File(serverDir3, 'derby')
-  rename 'derby-.*.jar', 'derby.jar'
-}
-
-task addDerbyToServerDir4(type: Copy) {
-  from configurations.derby
-  into new File(serverDir4, 'derby')
-  rename 'derby-.*.jar', 'derby.jar'
-}
-
-task addDerbyToServerDir7(type: Copy) {
-  from configurations.derby
-  into new File(serverDir7, 'derby')
+  into new File(sharedDir, 'derby')
   rename 'derby-.*.jar', 'derby.jar'
 }
 
 addRequiredLibraries {
-  dependsOn addDerbyToServerDir1,addDerbyToServerDir2,addDerbyToServerDir3,addDerbyToServerDir4,addDerbyToServerDir7,addJakartaTransformer
+  dependsOn addDerbyToSharedDir,addJakartaTransformer
 }

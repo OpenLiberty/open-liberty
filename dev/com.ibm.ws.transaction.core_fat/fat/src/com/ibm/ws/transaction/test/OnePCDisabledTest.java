@@ -42,7 +42,7 @@ import componenttest.topology.utils.FATServletClient;
 public class OnePCDisabledTest extends FATServletClient {
 
     public static final String APP_NAME = "transaction";
-    public static final String SERVLET_NAME = "transaction/OnePCDisabledServlet";
+    public static final String SERVLET_NAME = APP_NAME + "/OnePCDisabledServlet";
 
     @Server("com.ibm.ws.1PCDisabled")
     @TestServlet(servlet = OnePCDisabledServlet.class, contextRoot = APP_NAME)
@@ -62,5 +62,6 @@ public class OnePCDisabledTest extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer("WTRN0075W", "WTRN0076W"); // Stop the server and indicate the '"WTRN0075W", "WTRN0076W" error messages were expected
+        ShrinkHelper.cleanAllExportedArchives();
     }
 }

@@ -44,7 +44,7 @@ public class TransactionalTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        ShrinkHelper.defaultDropinApp(server, APP_NAME, "com.ibm.ws.transactional.*");
+        ShrinkHelper.defaultDropinApp(server, APP_NAME, "com.ibm.ws.transactional.web.*");
 
         // TODO: Revisit this after all features required by this FAT suite are available.
         // The test-specific public features, txtest-x.y, are not in the repeatable EE feature
@@ -64,6 +64,7 @@ public class TransactionalTest extends FATServletClient {
             @Override
             public Void run() throws Exception {
                 server.stopServer("WTRN0017W");
+                ShrinkHelper.cleanAllExportedArchives();
                 return null;
             }
         });

@@ -27,63 +27,47 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
 public class MultiThreadedTest extends WSATTest {
 
-	private static LibertyServer server;
+	@Server("MigrationServer1")
+	public static LibertyServer server;
 	private static String BASE_URL;
-	private static LibertyServer server2;
+
+	@Server("MigrationServer2")
+	public static LibertyServer server2;
 	private static String BASE_URL2;
 
 	@BeforeClass
 	public static void beforeTests() throws Exception {
-		
-		server = LibertyServerFactory
-				.getLibertyServer("MigrationServer1");
+
 		BASE_URL = "http://" + server.getHostname() + ":"
 				+ server.getHttpDefaultPort();
-		server2 = LibertyServerFactory
-				.getLibertyServer("MigrationServer2");
+
 		server2.setHttpDefaultPort(9992);
 		BASE_URL2 = "http://" + server2.getHostname() + ":" + server2.getHttpDefaultPort();
 
-		if (server != null && server.isStarted()){
-			server.stopServer();
-		}
-		
-		if (server2 != null && server2.isStarted()){
-			server2.stopServer();
-		}
+		ShrinkHelper.defaultDropinApp(server, "threadedClient", "com.ibm.ws.wsat.threadedclient.*");
+		ShrinkHelper.defaultDropinApp(server2, "threadedServer", "com.ibm.ws.wsat.threadedserver.*");
 
- 		DBTestBase.initWSATTest(server);
+		server.setServerStartTimeout(600000);
+		server.startServer(true);
 
-    ShrinkHelper.defaultDropinApp(server, "threadedClient", "com.ibm.ws.wsat.threadedclient.*");
-    ShrinkHelper.defaultDropinApp(server2, "threadedServer", "com.ibm.ws.wsat.threadedserver.*");
-
-     if (server != null && !server.isStarted()){
-         server.setServerStartTimeout(600000);
-         server.startServer(true);
-		}
-		
-		if (server2 != null && !server2.isStarted()){
-			 server2.setServerStartTimeout(600000);
-		     server2.startServer(true);
-		}
+		server2.setServerStartTimeout(600000);
+		server2.startServer(true);
 	}
 
 	@AfterClass
-  public static void tearDown() throws Exception {
-		ServerUtils.stopServer(server);
-		ServerUtils.stopServer(server2);
-
-		DBTestBase.cleanupWSATTest(server);
+	public static void tearDown() throws Exception {
+		server.stopServer();
+		server2.stopServer();
+		
+		ShrinkHelper.cleanAllExportedArchives();
   }
 	
 	@Test

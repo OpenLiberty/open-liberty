@@ -32,7 +32,7 @@
     <jdbcDriver id="DerbyEmbedded" libraryRef="DerbyLib" />
     <library id="DerbyLib" filesetRef="DerbyFileset" />
     <fileset id="DerbyFileset"
-             dir="${server.config.dir}/derby"
+             dir="${shared.resource.dir}derby"
              includes="derby.jar" />
     
     <transaction
@@ -61,7 +61,7 @@
     
 	<application location="transaction.war"/>
 	
-    <javaPermission codebase="${server.config.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}derby/derby.jar" className="java.security.AllPermission"/>
     <javaPermission codebase="${server.config.dir}/apps/transaction.war" className="java.security.AllPermission"/>
     <!-- Needed for application to use a ForkJoinPool, access the thread context class loader, and shut down an unmanaged ExecutorService that the test application creates -->
     <javaPermission codebase="${server.config.dir}/apps/transaction.war" className="java.lang.RuntimePermission" name="getClassLoader"/>

@@ -47,6 +47,7 @@ public class EE8FeatureReplacementAction extends FeatureReplacementAction {
                                                  "jaxb-2.2",
                                                  "managedBeans-1.0",
                                                  "componenttest-1.0",
+                                                 "txtest-1.0",
                                                  "websocket-1.1" };
 
     public static final Set<String> EE8_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE8_FEATURES_ARRAY)));
