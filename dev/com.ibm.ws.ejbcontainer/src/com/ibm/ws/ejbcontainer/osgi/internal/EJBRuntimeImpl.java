@@ -12,7 +12,6 @@ package com.ibm.ws.ejbcontainer.osgi.internal;
 
 import static com.ibm.ejs.container.ContainerConfigConstants.bindToJavaGlobal;
 import static com.ibm.ejs.container.ContainerConfigConstants.bindToServerRoot;
-import static com.ibm.ejs.container.ContainerConfigConstants.ignoreDuplicateEJBBindings;
 
 import java.io.File;
 import java.io.IOException;
@@ -255,7 +254,6 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
     private static final String BIND_TO_SERVER_ROOT = "bindToServerRoot";
     private static final String BIND_TO_JAVA_GLOBAL = "bindToJavaGlobal";
     private static final String DISABLE_SHORT_DEFAULT_BINDINGS = "disableShortDefaultBindings";
-    private static final String IGNORE_DUPLICATE_BINDINGS = "ignoreDuplicateEJBBindings";
     private static final String CUSTOM_BINDINGS_ON_ERROR = "customBindingsOnError";
 
     @Override
@@ -433,7 +431,6 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
                                                                                                                                                                 "true").equalsIgnoreCase("true");
         ContainerProperties.BindToJavaGlobal = properties.get(BIND_TO_JAVA_GLOBAL) != null ? (Boolean) properties.get(BIND_TO_JAVA_GLOBAL) : System.getProperty(bindToJavaGlobal,
                                                                                                                                                                 "true").equalsIgnoreCase("true");
-        ContainerProperties.IgnoreDuplicateEJBBindings = properties.get(IGNORE_DUPLICATE_BINDINGS) != null ? (Boolean) properties.get(IGNORE_DUPLICATE_BINDINGS) : Boolean.getBoolean(ignoreDuplicateEJBBindings);
 
         OnError customBindingsOnError = OnError.WARN;
         try {
