@@ -444,7 +444,7 @@ public final class EJBWrapper {
                              nonPublicMethods.size());
 
             for (Method method : nonPublicMethods) {
-                if (!isAggregateWrapper) { // d677413
+                if (!isAggregateWrapper && isLocalBean) {
                     validateLocalBeanMethod(method, beanName); // must not be final
                 }
                 addNonPublicMethod(cw, method);
