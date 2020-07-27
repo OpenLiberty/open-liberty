@@ -116,10 +116,6 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
 						if (!grpcServiceClasses.isEmpty()) {
 							// keep track of the current application so that we can restart it if <grpcService/> is updated
 					        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-					        if (cmd != null) {
-				        		currentApp.setAppName(cmd.getJ2EEName().getApplication());
-					        }
-
 							// register URL mappings for each gRPC service we've registered
 							for (BindableService service : grpcServiceClasses.values()) {
 								String serviceName = service.bindService().getServiceDescriptor().getName();
@@ -136,8 +132,11 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
 								// keep track of this service name -> application path mapping
 								currentApp.addServiceName(serviceName, sc.getContextPath(), service.getClass());
 								
-								Tr.info(tc, "service.available", currentApp.getAppName(), urlPattern);
+								Tr.info(tc, "service.available", cmd.getJ2EEName().getApplication(), urlPattern);
 							}
+					        if (cmd != null) {
+					            currentApp.setAppName(cmd.getJ2EEName().getApplication());
+					        }
 							return;
 						}
 					}
