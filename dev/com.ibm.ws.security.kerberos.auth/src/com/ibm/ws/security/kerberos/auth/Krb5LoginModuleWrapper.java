@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.security.kerberos.auth;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +23,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.kernel.service.util.JavaInfo.Vendor;
-import com.ibm.ws.security.authentication.AuthenticationException;
 
 public class Krb5LoginModuleWrapper implements LoginModule {
     private static final TraceComponent tc = Tr.register(Krb5LoginModuleWrapper.class);
@@ -48,16 +45,14 @@ public class Krb5LoginModuleWrapper implements LoginModule {
     // Cannot rely purely on JavaInfo.vendor() because IBM JDK 8 for Mac OS reports vendor = Oracle and only has some IBM API available
     private static final boolean isIBMJdk8 = (JavaInfo.vendor() == Vendor.IBM || isIBMLoginModuleAvailable())
                                              && JavaInfo.majorVersion() <= 8;
-    private static final Class<?>[] noparams = {};
 
     public CallbackHandler callbackHandler;
     public Subject subject;
     public Map<String, Object> sharedState;
     public Map<String, Object> options;
-    public Subject temporarySubject;
 
-    private final Class<?> krb5LoginModuleClass;
-    private final Object krb5loginModule;
+    private final Class<? extends LoginModule> krb5LoginModuleClass;
+    private final LoginModule krb5loginModule;
     private boolean login_called = false;
 
     /**
@@ -120,28 +115,13 @@ public class Krb5LoginModuleWrapper implements LoginModule {
             options.put("debug", "true");
         }
 
-        try {
-            Method initializeMethod = krb5LoginModuleClass.getDeclaredMethod("initialize",
-                                                                             new Class<?>[] { Subject.class, CallbackHandler.class, Map.class, Map.class });
-            initializeMethod.invoke(krb5loginModule, subject, null, sharedState, this.options);
-        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException e) {
-            throw new IllegalStateException(e);
-        } catch (InvocationTargetException e) {
-            Throwable cause = e.getCause();
-            if (cause instanceof RuntimeException)
-                throw (RuntimeException) cause;
-            else
-                throw new RuntimeException(cause);
-        }
+        krb5loginModule.initialize(subject, null, sharedState, options);
     }
 
     @Override
     public boolean login() throws LoginException {
-        if (krb5LoginModuleClass != null) {
-            inVokeMethod("login", noparams);
-            login_called = true;
-        }
-
+        krb5loginModule.login();
+        login_called = true;
         return true;
     }
 
@@ -149,7 +129,7 @@ public class Krb5LoginModuleWrapper implements LoginModule {
     @Override
     public boolean commit() throws LoginException {
         if (login_called)
-            inVokeMethod("commit", noparams);
+            krb5loginModule.commit();
         return true;
     }
 
@@ -157,7 +137,7 @@ public class Krb5LoginModuleWrapper implements LoginModule {
     @Override
     public boolean abort() throws LoginException {
         if (login_called)
-            inVokeMethod("abort", noparams);
+            krb5loginModule.abort();
         return true;
     }
 
@@ -165,25 +145,8 @@ public class Krb5LoginModuleWrapper implements LoginModule {
     @Override
     public boolean logout() throws LoginException {
         if (login_called)
-            inVokeMethod("logout", noparams);
+            krb5loginModule.logout();
         return true;
-    }
-
-    @FFDCIgnore(java.lang.reflect.InvocationTargetException.class)
-    private void inVokeMethod(String methodName, Class<?>[] params) throws LoginException {
-        if (krb5LoginModuleClass != null) {
-            try {
-                Method method = krb5LoginModuleClass.getDeclaredMethod(methodName, params);
-                method.invoke(krb5loginModule);
-            } catch (InvocationTargetException e) {
-                Exception cause = e;
-                if (e.getCause() instanceof Exception)
-                    cause = (Exception) e.getCause();
-                throw new AuthenticationException(e.getCause().getLocalizedMessage(), cause);
-            } catch (Exception e) {
-                throw new AuthenticationException(e.getLocalizedMessage(), e);
-            }
-        }
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -198,12 +161,14 @@ public class Krb5LoginModuleWrapper implements LoginModule {
         return value;
     }
 
-    private static Class<?> getClassForName(String tg) {
+    @SuppressWarnings("unchecked")
+    private static Class<? extends LoginModule> getClassForName(String tg) {
         try {
-            return Class.forName(tg);
+            return (Class<? extends LoginModule>) Class.forName(tg);
         } catch (ClassNotFoundException e) {
             Tr.error(tc, "Exception performing class for name.", e.getLocalizedMessage());
             throw new IllegalStateException(e);
         }
     }
 }
+
