@@ -37,6 +37,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.io.smallrye.graphql.ui.GraphiQLUIServlet;
 import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.ibm.wsspi.adaptable.module.NonPersistentCache;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
@@ -65,6 +66,7 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
     private static Map<ClassLoader, DiagnosticsBag> diagnostics = new WeakHashMap<ClassLoader, DiagnosticsBag>();
     public static final String EXECUTION_SERVLET_NAME = "ExecutionServlet";
     public static final String SCHEMA_SERVLET_NAME = "SchemaServlet";
+    public static final String UI_SERVLET_NAME = "UIServlet";
 
     @FFDCIgnore({Throwable.class})
     public void onStartup(Set<Class<?>> classes, ServletContext ctx) throws ServletException {
@@ -195,6 +197,14 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
         diagBag.schemaPrinter = printer;
         ServletRegistration.Dynamic schemaServletReg = ctx.addServlet(SCHEMA_SERVLET_NAME, new SchemaServlet(printer));
         schemaServletReg.addMapping(path + "/schema.graphql");
+
+        boolean enableGraphQLUIServlet = ConfigFacade.getOptionalValue("io.openliberty.enableGraphQLUI", boolean.class)
+        		                                     .orElse(false);
+        if (enableGraphQLUIServlet) {
+        	GraphiQLUIServlet uiServlet = new GraphiQLUIServlet();
+        	ServletRegistration.Dynamic uiServletReg = ctx.addServlet(UI_SERVLET_NAME, uiServlet);
+            uiServletReg.addMapping("/graphql-ui");
+        }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.exit(tc, "onStartup");
