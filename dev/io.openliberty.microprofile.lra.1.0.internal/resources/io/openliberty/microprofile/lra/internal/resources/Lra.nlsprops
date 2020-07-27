@@ -20,3 +20,8 @@
 LRA_INVALID_COORDINATOR_URI=CWMRX5000E: The LRA coordinator URI is invalid
 LRA_INVALID_COORDINATOR_URI.explanation=LRA participants must be able to contact the coordinator
 LRA_INVALID_COORDINATOR_URI.useraction=Correct the LRA coordinator configuration in server.xml
+
+
+LRA_CANT_REGISTER_FILTERS=CWMRX5001E: An error occurred during initialization of the mpLRA-1.0 feature. The error is {0}
+LRA_CANT_REGISTER_FILTERS.explanation=An LRA error has occured that prevents normal operation.
+LRA_CANT_REGISTER_FILTERS.useraction=Review the error message, the messages.log file on the server, and FFDC logs to identify the problem.
