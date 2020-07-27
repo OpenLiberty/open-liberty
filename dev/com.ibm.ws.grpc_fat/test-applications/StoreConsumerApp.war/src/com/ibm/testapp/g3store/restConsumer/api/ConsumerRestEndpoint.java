@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -36,6 +37,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 
 import com.ibm.testapp.g3store.exception.HandleExceptionsFromgRPCService;
 import com.ibm.testapp.g3store.exception.InvalidArgException;
@@ -125,7 +127,8 @@ public class ConsumerRestEndpoint extends ConsumerGrpcServiceClientImpl {
      * @return
      */
     @Path("/appInfo/{appName}")
-//	@RolesAllowed({ "admin", "user" })
+    @RolesAllowed({ "students", "Administrator" })
+    @SecurityRequirement(name = "ConsumerBasicHttp")
     @GET
     @APIResponses(value = {
                             @APIResponse(responseCode = "400", description = "Incorrect input", content = @Content(mediaType = "text/plain")),
@@ -136,6 +139,11 @@ public class ConsumerRestEndpoint extends ConsumerGrpcServiceClientImpl {
                                @Parameter(name = "appName", description = "name of the app", required = true, in = ParameterIn.PATH) @PathParam("appName") String appName) {
 
         log.info("getAppInfo: request to get appInfo has been received by ConsumerRestEndpoint " + appName);
+
+        String authHeader = httpHeaders.getRequestHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+        if (log.isLoggable(Level.FINE)) {
+            log.finest("getAppInfo: authHeader " + authHeader);
+        }
 
         // connect to gRPC service
         startService_BlockingStub("localhost", getPort());
