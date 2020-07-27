@@ -16,6 +16,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+                ClientConfigTests.class,
                 HelloWorldCDITests.class,
                 HelloWorldTest.class,
                 GrpcMetricsTest.class,
