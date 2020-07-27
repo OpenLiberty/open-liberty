@@ -258,8 +258,6 @@ public class ServiceConfigTests extends FATServletClient {
      **/
 
     @Test
-    // This test is failing when I think it should be passing, commenting it out for now
-    //@Mode(FULL)
     public void testServiceTargetWildcard() throws Exception {
 
         ManagedChannel beerChannel;
