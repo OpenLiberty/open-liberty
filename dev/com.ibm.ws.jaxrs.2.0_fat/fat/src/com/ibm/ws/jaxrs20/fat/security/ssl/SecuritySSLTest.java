@@ -53,7 +53,10 @@ public class SecuritySSLTest {
         // already started server
         try {
             server.startServer(true);
+            assertNotNull("The server did not start", server.waitForStringInLog("CWWKF0011I"));
             assertNotNull("The Security Service should be ready", server.waitForStringInLog("CWWKS0008I"));
+            assertNotNull("FeatureManager did not report update was complete", server.waitForStringInLog("CWWKF0008I"));
+            assertNotNull("LTPA configuration should report it is ready", server.waitForStringInLog("CWWKS4105I"));
         } catch (Exception e) {
             System.out.println(e.toString());
         }
