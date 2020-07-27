@@ -17,6 +17,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.audit.AuditEvent;
@@ -28,6 +31,7 @@ import com.ibm.ws.security.authentication.WSAuthenticationData;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.authentication.utility.JaasLoginConfigConstants;
 import com.ibm.ws.security.jwtsso.token.proxy.JwtSSOTokenHelper;
+import com.ibm.ws.security.token.LtpaAuthFilterRef;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.AuthenticateApi;
 import com.ibm.ws.webcontainer.security.AuthenticationResult;
@@ -44,7 +48,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 /**
  * This class perform authentication for web request using single sign on cookie.
  */
-
+@Component(service = WebAuthenticator.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
 public class SSOAuthenticator implements WebAuthenticator {
     public static final String DEFAULT_SSO_COOKIE_NAME = "LtpaToken2";
     private static final String Authorization_Header = "Authorization";
@@ -105,7 +109,7 @@ public class SSOAuthenticator implements WebAuthenticator {
      * @param res
      * @return authResult
      */
-    @FFDCIgnore({ AuthenticationException.class })
+    //@FFDCIgnore({ AuthenticationException.class })
     public AuthenticationResult handleSSO(HttpServletRequest req, HttpServletResponse res) {
         AuthenticationResult authResult = null;
         Cookie[] cookies = req.getCookies();
@@ -147,6 +151,7 @@ public class SSOAuthenticator implements WebAuthenticator {
      * @param cookies
      * @return
      */
+    @FFDCIgnore({ AuthenticationException.class })
     private AuthenticationResult handleLtpaSSO(HttpServletRequest req, HttpServletResponse res, Cookie[] cookies) {
         AuthenticationResult authResult = null;
         String cookieName = ssoCookieHelper.getSSOCookiename();
@@ -328,7 +333,8 @@ public class SSOAuthenticator implements WebAuthenticator {
     /*
      */
     protected boolean isAuthFilterAccept(HttpServletRequest req) {
-        AuthenticationFilter authFilter = authFilterServiceRef.getService();
+        AuthenticationFilter authFilter = LtpaAuthFilterRef.getLtpaAuthFiler();
+//        AuthenticationFilter authFilter = authFilterServiceRef.
 //        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 //            Tr.debug(tc, "authFilter:" + authFilter);
 //        }
@@ -340,4 +346,52 @@ public class SSOAuthenticator implements WebAuthenticator {
 //        }
         return true;
     }
+
+//    @Reference(name = KEY_FILTER,
+//               service = AuthenticationFilter.class,
+//               cardinality = ReferenceCardinality.OPTIONAL,
+//               policy = ReferencePolicy.DYNAMIC,
+//               policyOption = ReferencePolicyOption.GREEDY)
+//    protected void setAuthenticationFilter(ServiceReference<AuthenticationFilter> ref) {
+//        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+//            Tr.debug(tc, "authFilter id: " + ref.getProperty(AuthFilterConfig.KEY_ID) + " authFilterRef: " + ref);
+//        }
+//        authFilterServiceRef.setReference(ref);
+//    }
+//
+//    protected void updatedAuthenticationFilter(ServiceReference<AuthenticationFilter> ref) {
+//        authFilterServiceRef.setReference(ref);
+//    }
+//
+//    protected void unsetAuthenticationFilter(ServiceReference<AuthenticationFilter> ref) {
+//        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+//            Tr.debug(tc, "authFilter id: " + ref.getProperty(AuthFilterConfig.KEY_ID) + " authFilterRef: " + ref);
+//        }
+//        authFilterServiceRef.unsetReference(ref);
+//    }
+
+//    @Activate
+//    protected synchronized void activate(ComponentContext cc, Map<String, Object> props) {
+//        authFilterServiceRef.activate(cc);
+//    }
+
+//    private volatile LTPAConfiguration ltpaConfig;
+//
+//    protected void setLtpaConfig(LTPAConfiguration ltpaConfig) {
+//        this.ltpaConfig = ltpaConfig;
+//    }
+//
+//    protected void unsetLtpaConfig(LTPAConfiguration ltpaConfig) {
+//        if (this.ltpaConfig == ltpaConfig) {
+//            ltpaConfig = null;
+//        }
+//    }
+
+//    @Modified
+//    protected synchronized void modified(Map<String, Object> props) {}
+//
+//    @Deactivate
+//    protected synchronized void deactivate(ComponentContext cc) {
+//        authFilterServiceRef.deactivate(cc);
+//    }
 }

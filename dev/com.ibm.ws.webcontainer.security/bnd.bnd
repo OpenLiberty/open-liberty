@@ -68,7 +68,8 @@ Service-Component: \
     tokenManager=com.ibm.ws.security.token.TokenManager;\
     properties:="service.vendor=IBM"
 
--dsannotations: com.ibm.ws.webcontainer.security.internal.WebAuthenticatorFactoryImpl
+-dsannotations: com.ibm.ws.webcontainer.security.internal.WebAuthenticatorFactoryImpl, \
+                com.ibm.ws.webcontainer.security.internal.SSOAuthenticator
 
 instrument.classesExcludes: com/ibm/ws/webcontainer/security/resources/*.class
 
@@ -81,6 +82,7 @@ instrument.classesExcludes: com/ibm/ws/webcontainer/security/resources/*.class
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
 	com.ibm.ws.security;version=latest,\
 	com.ibm.ws.security.authentication;version=latest,\
+	com.ibm.ws.security.authentication.filter;version=latest,\
 	com.ibm.ws.kernel.feature.core;version=latest,\
 	com.ibm.ws.kernel.security.thread,\
 	com.ibm.ws.security.authorization;version=latest,\

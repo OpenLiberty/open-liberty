@@ -24,7 +24,7 @@ Export-Package: \
   com.ibm.wsspi.security.ltpa, \
   com.ibm.wsspi.security.token
 
-Import-Package: com.ibm.ws.common.internal.encoder, !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
+Import-Package: com.ibm.ws.common.internal.encoder, !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, com.ibm.ws.security.authentication.filter, *
 
 Private-Package: \
   com.ibm.ws.security.token.internal.*
@@ -65,6 +65,7 @@ instrument.classesExcludes: com/ibm/ws/security/token/internal/resources/*.class
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.ws.common.encoder,\
 	com.ibm.ws.security.jaas.common;version=latest, \
+	com.ibm.ws.security.authentication.filter;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
 -testpath: \
