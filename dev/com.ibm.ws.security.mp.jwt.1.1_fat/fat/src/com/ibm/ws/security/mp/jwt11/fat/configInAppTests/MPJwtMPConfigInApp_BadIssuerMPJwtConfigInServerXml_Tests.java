@@ -17,7 +17,6 @@ import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
 import com.ibm.ws.security.mp.jwt11.fat.sharedTests.MPJwtMPConfigTests;
 import com.ibm.ws.security.mp.jwt11.fat.utils.MPConfigSettings;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -34,7 +33,6 @@ import componenttest.topology.impl.LibertyServer;
  **/
 
 @Mode(TestMode.FULL)
-@MinimumJavaLevel(javaLevel = 8)
 public class MPJwtMPConfigInApp_BadIssuerMPJwtConfigInServerXml_Tests extends MPJwtMPConfigTests {
 
     public static Class<?> thisClass = MPJwtMPConfigInApp_BadIssuerMPJwtConfigInServerXml_Tests.class;

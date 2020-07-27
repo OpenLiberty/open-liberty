@@ -10,14 +10,11 @@
  *******************************************************************************/
 package com.ibm.oauth.core.internal.oauth20;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 import com.ibm.oauth.core.internal.OAuthConstants;
-import com.ibm.ws.kernel.service.util.JavaInfo;
 
 public interface OAuth20Constants extends OAuthConstants {
 
@@ -166,14 +163,6 @@ public interface OAuth20Constants extends OAuthConstants {
 
     public static final String DEFAULT_AUTHZ_LOGIN_URL = "login.jsp";
 
-    public static final String JAVA_VERSION = AccessController.doPrivileged(new PrivilegedAction<String>() {
-        @Override
-        public String run() {
-            return System.getProperty("java.version");
-        }
-    });
-    public static final boolean JAVA_VERSION_6 = JavaInfo.majorVersion() == 6;
-    public static final boolean JAVA_VERSION_7 = JavaInfo.majorVersion() == 7;
     public static final String PROXY_HOST = "X-Forwarded-Host";
     public final static String ATTRTYPE_PARAM_HEADER = "urn:ibm:names:header:param";
 

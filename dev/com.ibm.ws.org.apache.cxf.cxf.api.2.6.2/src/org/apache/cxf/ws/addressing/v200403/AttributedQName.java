@@ -17,6 +17,8 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 import javax.xml.namespace.QName;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 
 /**
  * <p>Java class for AttributedQName complex type.
@@ -39,6 +41,7 @@ import javax.xml.namespace.QName;
 @XmlType(name = "AttributedQName", propOrder = {
     "value"
 })
+@Trivial
 public class AttributedQName {
 
     @XmlValue

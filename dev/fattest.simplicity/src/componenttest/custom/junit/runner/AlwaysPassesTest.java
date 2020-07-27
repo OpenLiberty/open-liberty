@@ -27,7 +27,7 @@ public class AlwaysPassesTest {
 
     @Test
     @Mode(TestMode.LITE)
-    @MinimumJavaLevel(javaLevel = 7)
+    @MinimumJavaLevel(javaLevel = 8)
     public void testThatWillAlwaysPass() throws Exception {}
 
 }

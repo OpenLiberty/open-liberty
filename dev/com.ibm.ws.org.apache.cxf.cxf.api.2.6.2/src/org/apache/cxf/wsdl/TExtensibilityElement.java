@@ -17,6 +17,8 @@ import org.apache.cxf.wsdl.http.AddressType;
 import org.apache.cxf.wsdl.http.BindingType;
 import org.apache.cxf.wsdl.http.OperationType;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 
 /**
  * <p>Java class for tExtensibilityElement complex type.
@@ -42,6 +44,7 @@ import org.apache.cxf.wsdl.http.OperationType;
     AddressType.class,
     BindingType.class
 })
+@Trivial
 public abstract class TExtensibilityElement {
 
     @XmlAttribute(name = "required", namespace = "http://schemas.xmlsoap.org/wsdl/")

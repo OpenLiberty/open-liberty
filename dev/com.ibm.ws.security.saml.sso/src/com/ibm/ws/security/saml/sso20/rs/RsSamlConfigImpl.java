@@ -397,7 +397,7 @@ public class RsSamlConfigImpl extends PkixTrustEngineConfig implements SsoConfig
                 config = configAdmin.getConfiguration(authFilterRef, null);
         } catch (IOException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Invalid authFilterRef configuration", e.getMessage());
+                Tr.debug(tc, "Invalid authFilterRef configuration", e);
             }
             return null;
         }

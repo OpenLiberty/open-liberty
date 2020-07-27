@@ -11,7 +11,8 @@ IBM-Install-Policy: when-satisfied
 -features=com.ibm.websphere.appserver.javax.servlet-3.0; ibm.tolerates:="3.1, 4.0", \
  com.ibm.websphere.appserver.appSecurity-2.0; ibm.tolerates:=3.0, \
  com.ibm.websphere.appserver.javaeedd-1.0, \
- com.ibm.websphere.appserver.containerServices-1.0
+ com.ibm.websphere.appserver.containerServices-1.0, \
+ com.ibm.websphere.appserver.eeCompatible-6.0; ibm.tolerates:="7.0,8.0"
 -bundles=com.ibm.websphere.javaee.jacc.1.5; location:=dev/api/spec/; mavenCoordinates="javax.security.jacc:javax.security.jacc-api:1.5", \
  com.ibm.ws.security.authorization.jacc, \
  com.ibm.ws.security.audit.utils

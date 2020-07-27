@@ -14,6 +14,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -471,6 +473,31 @@ public class Director extends AbstractDirector {
         for (ServerAsset sa : servers) {
             File serverXmlFile = sa.getServerXmlFile();
             Collection<String> requiredFeatures = InstallUtils.getFeatures(serverXmlFile.getAbsolutePath(), serverXmlFile.getName(), new HashSet<String>());
+
+            // process the configDropins folders (Defaults and overrides)
+            File serverDirectory = sa.getServerDirectory();
+            File overridesFolder = new File(serverDirectory, "/configDropins/overrides");
+            File defaultsFolder = new File(serverDirectory, "/configDropins/defaults");
+            List<File> folders = Arrays.asList(defaultsFolder, overridesFolder);
+            
+            folders.stream()
+                    .filter(folder -> folder.exists() && folder.isDirectory())
+                    .forEach(folder -> {
+                        try {
+                            logger.fine("Processing " + folder);
+                            Files.newDirectoryStream(Paths.get(folder.toURI()),
+                                    path -> path.toString().endsWith(".xml"))
+                                    .forEach(path -> {
+                                        try {
+                                            requiredFeatures.addAll(InstallUtils.getFeatures(path.toString(), path.getFileName().toString(), new HashSet<String>()));
+                                        } catch (IOException e) {
+                                            logger.fine("Could not process " + path);
+                                        }
+                                    });
+                        } catch (IOException e) {
+                            logger.fine("Could not process " + folder);
+                        }
+                    });
 
             if (!requiredFeatures.isEmpty()) {
                 logger.log(Level.FINEST, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("LOG_DEPLOY_SERVER_FEATURES",

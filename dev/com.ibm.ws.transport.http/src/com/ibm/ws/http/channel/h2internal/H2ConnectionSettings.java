@@ -10,11 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.http.channel.h2internal;
 
+import java.util.Base64;
+
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.http.channel.h2internal.exceptions.Http2Exception;
 import com.ibm.ws.http.channel.h2internal.frames.Frame.FrameDirection;
 import com.ibm.ws.http.channel.h2internal.frames.FrameSettings;
-import com.ibm.ws.kernel.service.util.JavaInfo;
 
 public class H2ConnectionSettings {
 
@@ -144,18 +145,7 @@ public class H2ConnectionSettings {
     @Trivial
     private static byte[] decode(String str) {
         try {
-            // Parse the base 64 string differently depending on JDK level because
-            // on JDK 7/8 we have JAX-B, and on JDK 8+ we have java.util.Base64
-            if (JavaInfo.majorVersion() < 8) {
-                // return DatatypeConverter.parseBase64Binary(str);
-                Class<?> DatatypeConverter = Class.forName("javax.xml.bind.DatatypeConverter");
-                return (byte[]) DatatypeConverter.getMethod("parseBase64Binary", String.class).invoke(null, str);
-            } else {
-                // return Base64.getDecoder().decode(settings);
-                Class<?> Base64 = Class.forName("java.util.Base64");
-                Object decodeObject = Base64.getMethod("getDecoder").invoke(null);
-                return (byte[]) decodeObject.getClass().getMethod("decode", String.class).invoke(decodeObject, str);
-            }
+            return Base64.getDecoder().decode(str);
         } catch (Exception e) {
             return null;
         }

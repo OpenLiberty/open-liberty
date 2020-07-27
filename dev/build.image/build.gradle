@@ -626,7 +626,7 @@ publishing {
     }
 }
 
-if (isAutomatedBuild) {
+if (isAutomatedBuild && !isIFIXBuild) {
     task createOLRuntimePoms {
         dependsOn packageOpenLiberty
         pom {

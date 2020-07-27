@@ -23,11 +23,11 @@
 
 
 
-warning.jaxrs.ejb.resource.mismatch=CWWKW1100W: La porte {1} de JAXRS-2.0 Resource {0} ne correspond pas \u00e0 la port\u00e9e EJB {2}. Liberty obtient l''instance de ressource de {3}.
-warning.jaxrs.ejb.resource.mismatch.explanation=Si la port\u00e9e JAXRS-2.0 Resource ne correspond pas \u00e0 la port\u00e9e EJB, et si l'instance de ressource existe dans EJB, Liberty obtient l'instance de ressource de EJB.
+warning.jaxrs.ejb.resource.mismatch=CWWKW1100W: La port\u00e9e {1} de la ressource JAXRS {0} ne correspond pas \u00e0 la port\u00e9e EJB {2}. Liberty obtient l''instance de ressource de {3}.
+warning.jaxrs.ejb.resource.mismatch.explanation=Si la port\u00e9e de la ressource JAXRS ne correspond pas \u00e0 la port\u00e9e EJB, et si l'instance de ressource existe dans EJB, Liberty obtient l'instance de ressource de EJB.
 warning.jaxrs.ejb.resource.mismatch.useraction=Aucune action n'est requise. 
 
-warning.jaxrs.ejb.provider.mismatch=CWWKW1102W: La port\u00e9e EJB de JAXRS-2.0 Provider {0} est {1}. Liberty obtient l''instance de fournisseur de {2}.
+warning.jaxrs.ejb.provider.mismatch=CWWKW1102W: La port\u00e9e EJB du fournisseur JAXRS {0} est {1}. Liberty obtient l''instance de fournisseur de {2}.
 warning.jaxrs.ejb.provider.mismatch.explanation=L'instance de fournisseur est Singleton uniquement. Liberty obtient les instances de fournisseur de EJB si la port\u00e9e EJB du fournisseur est de type Dependent ou ApplicationScoped.
 warning.jaxrs.ejb.provider.mismatch.useraction=Aucune action de l'utilisateur n'est requise.
 

@@ -25,7 +25,7 @@ dependencies {
 
 task addJohnzon(type: Copy) {
   from configurations.johnzon
-  into "${buildDir}/autoFVT/publish/shared/resources/johnzon/"
+  into "${buildDir}/autoFVT/publish/shared/resources/johnzon/1.1.5/"
 }
 
 task addRefImpls(type: Copy) {

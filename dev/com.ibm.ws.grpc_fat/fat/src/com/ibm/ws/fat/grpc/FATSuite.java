@@ -18,7 +18,10 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
                 HelloWorldTest.class,
                 ServiceSupportTests.class,
-                StoreServicesTests.class
+                ServiceConfigTests.class,
+                ServiceInterceptorTests.class,
+                StoreServicesTests.class,
+                // leave out for now, to avoid intermittent build breaks StreamingTests.class,
 
 })
 

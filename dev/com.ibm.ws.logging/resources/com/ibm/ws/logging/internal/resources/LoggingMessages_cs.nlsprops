@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2019 IBM Corporation and others.
+# Copyright (c) 2011, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -155,6 +155,10 @@ JSON_FIELDS_INCORRECT_EVENT_TYPE.useraction=P\u0159ijat\u00e9 zdroje: message, t
 JSON_FIELDS_INVALID_CHARACHTER=TRAS3011W: Ve vlastnosti mapov\u00e1n\u00ed n\u00e1zv\u016f pol\u00ed protokolov\u00e1n\u00ed JSON byl zad\u00e1n neplatn\u00fd znak.
 JSON_FIELDS_INVALID_CHARACHTER.explanation= Ve vlastnosti mapov\u00e1n\u00ed n\u00e1zv\u016f pol\u00ed protokolov\u00e1n\u00ed JSON lze pou\u017e\u00edvat pouze p\u00edsmena, \u010d\u00edslice a dvojte\u010dku.
 JSON_FIELDS_INVALID_CHARACHTER.useraction= Zm\u011b\u0148te hodnotu vlastnosti mapov\u00e1n\u00ed n\u00e1zv\u016f pol\u00ed protokolov\u00e1n\u00ed JSON, aby neobsahovala neplatn\u00fd znak.
+
+JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED=TRAS3012W: Chyb\u00ed n\u00e1zev z\u00e1hlav\u00ed pro jedno nebo v\u00edce pol\u00ed accessLogging logFormat: {0}.
+JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.explanation=Protokolov\u00e1n\u00ed JSON pou\u017e\u00edv\u00e1 atribut logFormat z accessLogging pro v\u00fdb\u011br toho, jak\u00e1 pole zpr\u00e1v http_access.log se maj\u00ed zahrnout. P\u0159i pou\u017eit\u00ed pol\u00ed %i nebo %o v atributu accessLogging logFormat mus\u00ed b\u00fdt zad\u00e1n n\u00e1zev z\u00e1hlav\u00ed.
+JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.useraction=Zadejte n\u00e1zev z\u00e1hlav\u00ed pro pole v atributu accessLogging logFormat.
 
 # Note: no 9999 message kept here because saving footprint space is more important
 

@@ -28,7 +28,7 @@ import com.ibm.testapp.g3store.restProducer.api.ProducerRestEndpoint;
  * @author anupag
  *
  */
-@ApplicationPath("/v1")
+@ApplicationPath("/v1P")
 @OpenAPIDefinition(
                    tags = {
                             @Tag(name = "Create Apps", description = " create apps ")

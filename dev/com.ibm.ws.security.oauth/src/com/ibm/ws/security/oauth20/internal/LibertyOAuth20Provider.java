@@ -497,26 +497,12 @@ public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationLis
         }
     }
 
-    // disallow hashing for < java8
     private String getAccessTokenEncodingFromConfig() {
-        String configValue = (String) properties.get(KEY_STORE_ACCESSTOKEN_ENCODING);
-        if (configValue != null && configValue.compareTo(OAuth20Constants.PLAIN_ENCODING) != 0 &&
-                (OAuth20Constants.JAVA_VERSION_7 || OAuth20Constants.JAVA_VERSION_6)) {
-            Tr.warning(tc, "JAVA8_REQUIRED_FOR_AT_HASHING", new Object[] { providerId, KEY_STORE_ACCESSTOKEN_ENCODING, configValue, KEY_STORE_ACCESSTOKEN_ENCODING });
-            configValue = OAuth20Constants.PLAIN_ENCODING;
-        }
-        return configValue;
+        return (String) properties.get(KEY_STORE_ACCESSTOKEN_ENCODING);
     }
 
-    // disallow hashing for < java8
     private String getClientSecretEncodingFromConfig() {
-        String configValue = (String) properties.get(KEY_CLIENT_SECRET_ENCODING);
-        if (configValue != null && configValue.compareTo(OAuth20Constants.XOR) != 0 &&
-                (OAuth20Constants.JAVA_VERSION_7 || OAuth20Constants.JAVA_VERSION_6)) {
-            Tr.warning(tc, "JAVA8_REQUIRED_FOR_AT_HASHING", new Object[] { providerId, KEY_CLIENT_SECRET_ENCODING, configValue, KEY_CLIENT_SECRET_ENCODING });
-            configValue = OAuth20Constants.XOR;
-        }
-        return configValue;
+        return (String) properties.get(KEY_CLIENT_SECRET_ENCODING);
     }
 
     private OAuthEndpointSettings populateOAuthEndpointSettings(Map<String, Object> configProps, String endpointSettingsElementName) {

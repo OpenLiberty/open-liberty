@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 
 import org.w3c.dom.Node;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 
 import org.apache.cxf.common.logging.LogUtils;
@@ -37,9 +38,11 @@ public final class MessageUtils {
     /**
      * Prevents instantiation.
      */
+    @Trivial
     private MessageUtils() {
     }
 
+    @Trivial
     public static int getContextualInteger(Message m, String key, int defaultValue) {
         if (m != null) {
             Object o = m.getContextualProperty(key);
@@ -62,8 +65,7 @@ public final class MessageUtils {
      * @param message the current Message
      * @return true if the message direction is outbound
      */
-    @Trivial
-    public static boolean isOutbound(Message message) {
+    public static boolean isOutbound(@Sensitive Message message) {
         LOG.entering("MessageUtils", "isOutbound");
         Exchange exchange = message.getExchange();
         LOG.exiting("MessageUtils", "isOutbound");
@@ -77,6 +79,7 @@ public final class MessageUtils {
      * @param message the current Message
      * @return true if the message is a fault
      */
+    @Trivial
     public static boolean isFault(Message message) {
         return message != null
                && message.getExchange() != null
@@ -91,6 +94,7 @@ public final class MessageUtils {
      * @param message the fault message
      * @return the FaultMode
      */
+    @Trivial
     public static FaultMode getFaultMode(Message message) {
         if (message != null
             && message.getExchange() != null
@@ -111,8 +115,7 @@ public final class MessageUtils {
      * @param message the current Message
      * @return true if the current messaging role is that of requestor
      */
-    @Trivial
-    public static boolean isRequestor(Message message) {
+    public static boolean isRequestor(@Sensitive Message message) {
         LOG.entering("MessageUtils", "isRequestor");
         Boolean requestor = (Boolean)message.get(Message.REQUESTOR_ROLE);
         LOG.exiting("MessageUtils", "isRequestor");
@@ -125,8 +128,7 @@ public final class MessageUtils {
      * @param message the current message
      * @return true if the current messags is a partial response
      */
-    @Trivial
-    public static boolean isPartialResponse(Message message) {
+    public static boolean isPartialResponse(@Sensitive Message message) {
         LOG.entering("MessageUtils", "isPartialResponse");
         LOG.exiting("MessageUtils", "isPartialResponse");
         return Boolean.TRUE.equals(message.get(Message.PARTIAL_RESPONSE_MESSAGE));
@@ -139,6 +141,7 @@ public final class MessageUtils {
      * @param message the current message
      * @return true if the current messags is a partial empty response
      */
+    @Trivial
     public static boolean isEmptyPartialResponse(Message message) {
         return Boolean.TRUE.equals(message.get(Message.EMPTY_PARTIAL_RESPONSE_MESSAGE));
     }
@@ -148,6 +151,7 @@ public final class MessageUtils {
      * @param value
      * @return true if value is either the String "true" or Boolean.TRUE
      */
+    @Trivial
     public static boolean isTrue(Object value) {
         if (value == null) {
             return false;
@@ -160,8 +164,8 @@ public final class MessageUtils {
         return false;
     }
     
-    @Trivial
-    public static boolean getContextualBoolean(Message m, String key, boolean defaultValue) {
+
+    public static boolean getContextualBoolean(@Sensitive Message m, String key, boolean defaultValue) {
         LOG.entering("MessageUtils", "getContextualBoolean");
         Object o = m.getContextualProperty(key);
         if (o != null) {
@@ -174,6 +178,7 @@ public final class MessageUtils {
     /**
      * Returns true if the underlying content format is a W3C DOM or a SAAJ message.
      */
+    @Trivial
     public static boolean isDOMPresent(Message m) {
         return m.getContent(Node.class) != null;
         /*

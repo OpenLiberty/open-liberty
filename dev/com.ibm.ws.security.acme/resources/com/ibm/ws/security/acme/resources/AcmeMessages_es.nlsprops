@@ -326,3 +326,7 @@ CWPKI2071W.useraction=Para evitar este mensaje de aviso, establezca la propiedad
 CWPKI2072W=CWPKI2072W: El servicio ACME no ha podido leer o escribir el archivo ACME hist\u00f3rico en {0}. El error es ''{1}''.
 CWPKI2072W.explanation=El servicio ACME no ha podido acceder al archivo ACME hist\u00f3rico.
 CWPKI2072W.useraction=Aseg\u00farese de que el directorio ACME hist\u00f3rico tiene permisos de lectura y escritura.
+
+CWPKI2073W=CWPKI2073W: No se ha especificado ning\u00fan contacto. Es recomendable establecer esta propiedad en la configuraci\u00f3n del servidor. Si falta una clave o la cuenta queda comprometida, se pierde el acceso a la cuenta.
+CWPKI2073W.explanation=El valor de la propiedad accountContact no est\u00e1 especificado en la configuraci\u00f3n del servidor.
+CWPKI2073W.useraction=Establezca la propiedad accountContact en la configuraci\u00f3n del servidor.

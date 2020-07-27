@@ -326,3 +326,7 @@ CWPKI2071W.useraction=Pentru a evita acest mesaj de eroare, seta\u0163i propriet
 CWPKI2072W=CWPKI2072W: Serviciul ACME nu a putut citi sau scrie la fi\u015fierul cu istoria ACME de la {0}. Eroarea este ''{1}''.
 CWPKI2072W.explanation=Serviciul ACME nu a putut accesa fi\u015fierul cu istoria ACME.
 CWPKI2072W.useraction=Asigura\u0163i-v\u0103 c\u0103 directorul ACME historical are permisiuni de citire \u015fi scriere.
+
+CWPKI2073W=CWPKI2073W: Niciun contact de cont nu a fost specificat. Este recomandat s\u0103 seta\u0163i aceast\u0103 proprietate \u00een configura\u0163ia serverului. Dac\u0103 se pierde o chei sau contul este compromis, accesul la cont se pierde.
+CWPKI2073W.explanation=Valoarea propriet\u0103\u0163ii accountContactnu a fost specificat\u0103 \u00een configura\u0163ia serverului.
+CWPKI2073W.useraction=Seta\u0163i proprietatea accountContact \u00een configura\u0163ia serverului.

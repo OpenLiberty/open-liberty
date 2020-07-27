@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2007 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -213,7 +213,9 @@ public abstract class BaseTagGenerator implements TagGenerator {
                 if (!(jspOptions.isAllowNullParentInTagFile())) {
                 	writer.print(tagHandlerVar);
                 	writer.print(".setParent(new javax.servlet.jsp.tagext.TagAdapter(");
-                	writer.print("(javax.servlet.jsp.tagext.SimpleTag) this ));");
+                	writer.print("(");
+                	writer.print("javax.servlet.jsp.tagext.SimpleTag");
+                	writer.print(") this ));");
                 } else {
                     writer.print(tagHandlerVar);
                     writer.print(".setParent(");
@@ -233,7 +235,9 @@ public abstract class BaseTagGenerator implements TagGenerator {
                     writer.print(tagHandlerVar);
                     writer.print(".setParent(");
                     writer.print("new javax.servlet.jsp.tagext.TagAdapter(");
-                    writer.print("(javax.servlet.jsp.tagext.SimpleTag) ");
+                    writer.print("(");
+                    writer.print("javax.servlet.jsp.tagext.SimpleTag");
+                    writer.print(") ");
                     writer.print(parentTagInstanceInfo.getTagHandlerVar());
                     writer.println("));");
                 }
@@ -253,7 +257,9 @@ public abstract class BaseTagGenerator implements TagGenerator {
             else if (isTagFile && !(jspOptions.isAllowNullParentInTagFile())) {
                 writer.print(tagHandlerVar);
                 writer.print(".setParent(new javax.servlet.jsp.tagext.TagAdapter(");
-                writer.print("(javax.servlet.jsp.tagext.SimpleTag) this ));");
+                writer.print("(");
+                writer.print("javax.servlet.jsp.tagext.SimpleTag");
+                writer.print(") this ));");
             }
             //PK62809 end
             else {

@@ -19,6 +19,9 @@
 
 package org.apache.cxf.attachment;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
+@Trivial
 public class HeaderSizeExceededException extends RuntimeException {
     private static final long serialVersionUID = -8976580055837650080L;
 

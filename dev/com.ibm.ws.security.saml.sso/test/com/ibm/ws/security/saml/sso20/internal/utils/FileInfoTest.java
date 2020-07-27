@@ -51,7 +51,7 @@ public class FileInfoTest {
             fileInfo = FileInfo.getFileInfo(file);
         } catch (Exception e) {
             e.printStackTrace();
-            fail("Unexpected exception was thrown: " + e.getMessage());
+            fail("Unexpected exception was thrown: " + e);
         }
     }
 
@@ -101,7 +101,7 @@ public class FileInfoTest {
             Assert.assertEquals(java.net.InetAddress.getLocalHost().getCanonicalHostName().toLowerCase(), FileInfo.getHostName());
         } catch (Exception e) {
             e.printStackTrace();
-            fail("Unexpected exception was thrown: " + e.getMessage());
+            fail("Unexpected exception was thrown: " + e);
         }
     }
 

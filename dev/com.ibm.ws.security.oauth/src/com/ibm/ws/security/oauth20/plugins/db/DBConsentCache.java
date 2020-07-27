@@ -219,11 +219,11 @@ public class DBConsentCache extends OAuthJDBCImpl implements OauthConsentStore {
             }
         } catch (SQLException e) {
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "Failed to create JDBC Cache table", e.getMessage());
+                Tr.debug(tc, "Failed to create JDBC Cache table", e);
             error = true;
         } catch (OAuthDataException e) {
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "Failed to create JDBC Cache table", e.getMessage());
+                Tr.debug(tc, "Failed to create JDBC Cache table", e);
             error = true;
 
         } finally {
@@ -232,7 +232,7 @@ public class DBConsentCache extends OAuthJDBCImpl implements OauthConsentStore {
                     statement.close();
                 } catch (SQLException e) {
                     if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Failed to close JDBC Statement", e.getMessage());
+                        Tr.debug(tc, "Failed to close JDBC Statement", e);
                 }
             }
             closeResultSet(resultSet);
@@ -611,7 +611,7 @@ public class DBConsentCache extends OAuthJDBCImpl implements OauthConsentStore {
         } catch (Exception e) {
             // log but don't fail
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Cannot get consent entry from DB , ", e.getMessage());
+                Tr.debug(tc, "Cannot get consent entry from DB , ", e);
             }
             error = true;
         } finally {

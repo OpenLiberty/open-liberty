@@ -59,11 +59,11 @@ public class FeatureUtilityProperties {
     public static List<String> getAdditionalJsons(){
         return additionalJsonsList;
     }
-
+    
     public static boolean additionalJsonsRequired() {
     	return !getAdditionalJsons().isEmpty();
     }
-    
+
     public static boolean canConstructHttpProxy(){
         return getProxyHost() != null && getProxyPort() != null;
     }
@@ -124,6 +124,7 @@ public class FeatureUtilityProperties {
         };
         try(FileInputStream fileIn = new FileInputStream(getRepoPropertiesFileLocation())) {
             properties.load(fileIn);
+
             return properties;
         } catch (IOException e) {
             throw new InstallException(InstallLogUtils.Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_REPOSITORY_PROPS_NOT_LOADED",

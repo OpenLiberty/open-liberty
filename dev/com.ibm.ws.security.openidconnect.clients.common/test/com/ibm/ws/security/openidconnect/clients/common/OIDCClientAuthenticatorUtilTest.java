@@ -588,7 +588,7 @@ public class OIDCClientAuthenticatorUtilTest {
                 createResultExpectations();
             } catch (Exception e) {
                 e.printStackTrace();
-                fail("Unexpected exception creating the result expectations: " + e.getMessage());
+                fail("Unexpected exception creating the result expectations: " + e);
             }
         }
         createPostParameterHelperExpectations();

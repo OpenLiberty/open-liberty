@@ -61,11 +61,14 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.common.util.StringUtils;
 /**
  * Few simple utils to read DOM. This is originally from the Jakarta Commons Modeler.
  */
+@Trivial
 public final class DOMUtils {
     private static boolean isJre9SAAJ;
     private static final Map<ClassLoader, DocumentBuilder> DOCUMENT_BUILDERS

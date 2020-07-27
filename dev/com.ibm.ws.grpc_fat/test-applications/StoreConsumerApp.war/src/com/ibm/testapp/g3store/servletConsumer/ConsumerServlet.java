@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.testapp.g3store.exception.InvalidArgException;
 import com.ibm.testapp.g3store.exception.NotFoundException;
-import com.ibm.testapp.g3store.grpcConsumer.api.ConsumergRPCServiceClientImpl;
+import com.ibm.testapp.g3store.grpcConsumer.api.ConsumerGrpcServiceClientImpl;
 
 /**
  * Servlet implementation class ConsumerServlet
@@ -89,7 +89,7 @@ public class ConsumerServlet extends HttpServlet {
             log.finest("ConsumerServlet: getAllAppNames: Received request to get AppNames");
         }
 
-        ConsumergRPCServiceClientImpl helper = new ConsumergRPCServiceClientImpl();
+        ConsumerGrpcServiceClientImpl helper = new ConsumerGrpcServiceClientImpl();
 
         // start service
         helper.startService_BlockingStub(address, port);
@@ -97,7 +97,7 @@ public class ConsumerServlet extends HttpServlet {
         // get the value from RPC
         List<String> nameList = null;
         try {
-            nameList = helper.getAllAppNames();
+            nameList = helper.getAllAppNameList();
         } catch (NotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -116,7 +116,7 @@ public class ConsumerServlet extends HttpServlet {
             log.finest("ConsumerServlet: getAppInfo: Received request to get app info");
         }
 
-        ConsumergRPCServiceClientImpl helper = new ConsumergRPCServiceClientImpl();
+        ConsumerGrpcServiceClientImpl helper = new ConsumerGrpcServiceClientImpl();
 
         // start service
         helper.startService_BlockingStub(address, port);

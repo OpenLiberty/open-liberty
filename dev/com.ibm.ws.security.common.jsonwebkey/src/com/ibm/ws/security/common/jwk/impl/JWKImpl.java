@@ -136,13 +136,13 @@ public class JWKImpl implements JWK {
             } catch (InvalidKeySpecException ikse) {
                 //do nothing
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Invalid Key=" + ikse.getMessage());
+                    Tr.debug(tc, "Invalid Key=" + ikse);
                 }
 
             } catch (NoSuchAlgorithmException nsae) {
                 //do nothing
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Invald Algorithm=" + nsae.getMessage());
+                    Tr.debug(tc, "Invald Algorithm=" + nsae);
                 }
             }
         }

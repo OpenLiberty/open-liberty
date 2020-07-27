@@ -33,7 +33,6 @@ import com.ibm.ws.security.javaeesec.fat_helper.JavaEESecTestBase;
 import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
 
 import componenttest.annotation.ExpectedFFDC;
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -43,7 +42,6 @@ import componenttest.topology.impl.LibertyServerFactory;
 /**
  * Test Description: Test that looking up a user fails because the custom hash class is not discovered
  */
-@MinimumJavaLevel(javaLevel = 7, runSyntheticTest = false)
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class HttpAuthenticationMechanismDBHashNoConfigTest extends JavaEESecTestBase {

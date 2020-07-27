@@ -19,6 +19,7 @@ import io.grpc.ServerCallHandler;
 import io.grpc.ServerInterceptor;
 import io.grpc.Status;
 
+// this is an example, will be deleted soon
 public class StoreExceptionHandler implements ServerInterceptor {
 
     @Override

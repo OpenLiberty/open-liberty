@@ -178,29 +178,6 @@ public abstract class FeatureUtilityToolTest {
         }
 		
 	}
-    
-    public static void writeToProps(String remoteFileName, Map<String, String> map) throws Exception {
-        OutputStream os = null;
-        featureUtilityProps = new Properties();
-        try {
-            RemoteFile rf = new RemoteFile(server.getMachine(), remoteFileName);
-            os = rf.openForWriting(false);
-            Set<String> keyset = map.keySet();
-            for (String key: keyset) {
-            	featureUtilityProps.setProperty(key, map.get(key));
-            	Log.info(c, "writeToProps", "Set the " + key + " to : " + map.get(key));
-            }
-            featureUtilityProps.store(os, null);
-            os.close();
-        } finally {
-            try {
-                os.close();
-            } catch (IOException e) {
-                // ignore we are trying to close.
-            }
-        }
-		
-	}
 
     private static boolean isClosedLibertyWlp(){
         return new File(installRoot + "/lib/versions/WebSphereApplicationServer.properties").exists();
@@ -308,6 +285,29 @@ public abstract class FeatureUtilityToolTest {
         }
         return wlpEdition;
     }
+    
+    public static void writeToProps(String remoteFileName, Map<String, String> map) throws Exception {
+        OutputStream os = null;
+        featureUtilityProps = new Properties();
+        try {
+            RemoteFile rf = new RemoteFile(server.getMachine(), remoteFileName);
+            os = rf.openForWriting(false);
+            Set<String> keyset = map.keySet();
+            for (String key: keyset) {
+            	featureUtilityProps.setProperty(key, map.get(key));
+            	Log.info(c, "writeToProps", "Set the " + key + " to : " + map.get(key));
+            }
+            featureUtilityProps.store(os, null);
+            os.close();
+        } finally {
+            try {
+                os.close();
+            } catch (IOException e) {
+                // ignore we are trying to close.
+            }
+        }
+
+	}
 
 
     protected static void replaceWlpProperties(String version) throws Exception {

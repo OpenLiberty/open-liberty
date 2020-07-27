@@ -170,6 +170,14 @@ public class ContextandCDI12Test extends AbstractTest {
   }
   
   @Test
+  public void testContextandCDIResource7() throws Exception {
+      
+      String testName = "testContextandCDIResource7";
+      
+      runGetMethod("/contextandCDI7/resource5/" + testName, 200, "ok", true);
+  }
+  
+  @Test
   public void testContextandCDIResource11() throws Exception {
       
       String testName = "testContextandCDIResource11";

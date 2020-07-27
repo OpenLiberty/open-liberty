@@ -6,9 +6,7 @@ src: \
   test-applications/LPSClient/src,\
   test-applications/LPSServer/src,\
   test-applications/simpleClient/src,\
-  test-applications/simpleServer/src,\
-  test-applications/threadedClient/src,\
-  test-applications/threadedServer/src
+  test-applications/simpleServer/src
 
 fat.project: true
 

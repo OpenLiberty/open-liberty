@@ -307,6 +307,12 @@ public class InstallKernelMap implements Map {
             } else {
                 return data.get(IS_FEATURE_UTILITY);
             }
+        } else if (JSON_PROVIDED.equals(key)) {
+            if (data.get(JSON_PROVIDED) == null) {
+                return false;
+            } else {
+                return data.get(JSON_PROVIDED);
+            }
         } else if (PROGRESS_MONITOR_SIZE.equals(key)) {
             return getMonitorSize();
         } else if (DOWNLOAD_RESULT.equals(key)) {
@@ -323,10 +329,10 @@ public class InstallKernelMap implements Map {
             }
             envMap = getEnvMap();
             return envMap;
-        } else if (IS_OPEN_LIBERTY.equals(key)) {
-            return isOpenLiberty();
         } else if (CLEANUP_UPGRADE.equals(key)) {
             return cleanupUpgrade();
+        } else if (IS_OPEN_LIBERTY.equals(key)) {
+            return isOpenLiberty();
         }
         return data.get(key);
     }
@@ -466,6 +472,12 @@ public class InstallKernelMap implements Map {
                 data.put(USER_AGENT, value);
                 if (installKernel != null)
                     installKernel.setUserAgent((String) value);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } else if (JSON_PROVIDED.equals(key)) {
+            if (value instanceof Boolean) {
+                data.put(JSON_PROVIDED, value);
             } else {
                 throw new IllegalArgumentException();
             }
@@ -656,12 +668,6 @@ public class InstallKernelMap implements Map {
         } else if (INSTALL_INDIVIDUAL_ESAS.equals(key)) {
             if (value instanceof Boolean) {
                 data.put(INSTALL_INDIVIDUAL_ESAS, value);
-            } else {
-                throw new IllegalArgumentException();
-            }
-        } else if (JSON_PROVIDED.equals(key)) {
-            if (value instanceof Boolean) {
-                data.put(JSON_PROVIDED, value);
             } else {
                 throw new IllegalArgumentException();
             }
@@ -894,6 +900,7 @@ public class InstallKernelMap implements Map {
             resolver = new RepositoryResolver(productDefinitions, installedFeatures, Collections.<IFixInfo> emptySet(), repoList);
             resolveResult = resolver.resolveAsSet((Collection<String>) data.get(FEATURES_TO_RESOLVE));
             ResolveDirector.resolveAutoFeatures(resolveResult, new RepositoryResolver(productDefinitions, installedFeatures, Collections.<IFixInfo> emptySet(), repoList));
+
             if (!resolveResult.isEmpty()) {
                 for (List<RepositoryResource> item : resolveResult) {
                     for (RepositoryResource repoResrc : item) {
@@ -961,7 +968,6 @@ public class InstallKernelMap implements Map {
             data.put(ACTION_ERROR_MESSAGE, e.getMessage());
             data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
         } catch (Exception e) {
-            e.printStackTrace();
             data.put(ACTION_RESULT, ERROR);
             data.put(ACTION_ERROR_MESSAGE, e.getMessage());
             data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));

@@ -10,20 +10,27 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.test.rootClassLoader.web;
 
-import java.io.IOException;
+import static org.junit.Assert.assertNotNull;
+
 import java.util.Random;
 import java.util.Timer;
 
 import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+import org.junit.Test;
 
 import com.ibm.ws.cdi12.test.rootClassLoader.extension.OSName;
 
+import componenttest.app.FATServlet;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
+
 @WebServlet("/")
-public class RootClassLoaderServlet extends HttpServlet {
+public class RootClassLoaderServlet extends FATServlet {
+
+    /**  */
+    private static final long serialVersionUID = 1L;
 
     @Inject
     Random random;
@@ -35,18 +42,12 @@ public class RootClassLoaderServlet extends HttpServlet {
     @OSName
     String osName;
 
-    @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.getWriter().write("random: " + random.nextInt());
-        response.getWriter().write("\n");
-        response.getWriter().write("Timer: " + timer);
-        response.getWriter().write("\n");
-        response.getWriter().write("OS Name: " + osName);
-        response.getWriter().write("\n");
-        if (random != null && timer != null && osName != null) {
-            response.getWriter().write("done");
-            response.getWriter().write("\n");
-        }
+    @Test
+    @Mode(TestMode.LITE)
+    public void testInjectionFromRootClassloader() {
+        assertNotNull("random was null", random);
+        assertNotNull("timer was null", timer);
+        assertNotNull("osName was null", osName);
     }
 
 }

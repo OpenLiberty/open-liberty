@@ -61,6 +61,7 @@ com.ibm.ws.security.spnego.internal.SpnegoHelperProxy
 	com.ibm.ws.security.authentication.builtin;version=latest,\
 	com.ibm.ws.security.credentials;version=latest,\
 	com.ibm.ws.security.jaas.common;version=latest,\
+	com.ibm.ws.security.kerberos.auth;version=latest,\
 	com.ibm.ws.security.token.s4u2;version=latest,\
 	com.ibm.ws.security.token;version=latest,\
 	com.ibm.ws.security;version=latest,\

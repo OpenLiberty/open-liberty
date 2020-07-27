@@ -17,7 +17,6 @@ import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
 import com.ibm.ws.security.mp.jwt11.fat.sharedTests.MPJwtLoginConfig_VariationTests;
 import com.ibm.ws.security.mp.jwt11.fat.utils.CommonMpJwtFat.ExpectedResult;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
@@ -28,7 +27,6 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  **/
 
 @Mode(TestMode.FULL)
-@MinimumJavaLevel(javaLevel = 8)
 public class MPJwtNoMpJwtConfig extends MPJwtLoginConfig_VariationTests {
 
     public static Class<?> thisClass = MPJwtNoMpJwtConfig.class;

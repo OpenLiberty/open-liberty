@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2017 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,6 +44,7 @@ public class AuthDataProvider {
     protected static final String CFG_KEY_DISPLAY_ID = "config.displayId";
     protected static final String CFG_KEY_USER = "user";
     protected static final String CFG_KEY_PASSWORD = "password";
+    protected static final String CFG_KEY_KRB5_PRINCIPAL = "krb5Principal";
 
     private static final TraceComponent tc = Tr.register(AuthDataProvider.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
@@ -131,8 +132,14 @@ public class AuthDataProvider {
 
     private static void validateAuthDataConfig(String authDataAlias, AuthData authDataConfig) throws LoginException {
         validateAuthDataExists(authDataAlias, authDataConfig);
-        validateAuthDataAttribute(CFG_KEY_USER, authDataConfig.getUserName());
-        validateAuthDataAttribute(CFG_KEY_PASSWORD, authDataConfig.getPassword());
+
+        String krb5Principal = authDataConfig.getKrb5Principal();
+        if (krb5Principal != null) {
+            validateAuthDataAttribute(CFG_KEY_KRB5_PRINCIPAL, krb5Principal);
+        } else {
+            validateAuthDataAttribute(CFG_KEY_USER, authDataConfig.getUserName());
+            validateAuthDataAttribute(CFG_KEY_PASSWORD, authDataConfig.getPassword());
+        }
     }
 
     private static void validateAuthDataExists(String authDataAlias, AuthData authDataConfig) throws LoginException {

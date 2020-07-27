@@ -30,5 +30,6 @@ public interface AppManagerConstants {
     public static final String AUTO_INSTALL_PROP = ".installedByDropins";
     public static final String USE_JANDEX = "useJandex";
     public static final String XML_SUFFIX = ".xml";
-    public static final Object START_AFTER = "startAfter";
+    public static final String START_AFTER = "startAfter";
+    public static final String START_AFTER_REF = "startAfterRef";
 }

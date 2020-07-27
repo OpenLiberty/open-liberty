@@ -10,11 +10,14 @@
  *******************************************************************************/
 package com.ibm.testapp.g3store.restConsumer.api;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.security.RolesAllowed;
+import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -39,7 +42,7 @@ import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement
 import com.ibm.testapp.g3store.exception.HandleExceptionsFromgRPCService;
 import com.ibm.testapp.g3store.exception.InvalidArgException;
 import com.ibm.testapp.g3store.exception.NotFoundException;
-import com.ibm.testapp.g3store.grpcConsumer.api.ConsumergRPCServiceClientImpl;
+import com.ibm.testapp.g3store.grpcConsumer.api.ConsumerGrpcServiceClientImpl;
 import com.ibm.testapp.g3store.restConsumer.model.AppListWithPricesPOJO;
 import com.ibm.testapp.g3store.restConsumer.model.AppNameList;
 import com.ibm.testapp.g3store.restConsumer.model.AppNamewPriceListPOJO;
@@ -53,12 +56,25 @@ import com.ibm.testapp.g3store.restConsumer.model.AppStructureConsumer;
  *         gRPC requests.
  *
  */
+@RequestScoped
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @Path("/consumer")
-public class ConsumerRestEndpoint extends ConsumergRPCServiceClientImpl {
+public class ConsumerRestEndpoint extends ConsumerGrpcServiceClientImpl {
 
     private static Logger log = Logger.getLogger(ConsumerRestEndpoint.class.getName());
+
+    @Context
+    HttpHeaders httpHeaders;
+
+    private static String getSysProp(String key) {
+        return AccessController.doPrivileged((PrivilegedAction<String>) () -> System.getProperty(key));
+    }
+
+    private int getPort() {
+        String port = getSysProp("bvt.prop.HTTP_default"); // Store server is running on default
+        return Integer.valueOf(port);
+    }
 
     /**
      * @param httpHeaders
@@ -67,29 +83,33 @@ public class ConsumerRestEndpoint extends ConsumergRPCServiceClientImpl {
      */
     @GET
     @Path("/appNames")
-    @RolesAllowed({ "Administrator", "students" })
-    @SecurityRequirement(name = "ConsumerBasicHttp")
+//    @RolesAllowed({ "Administrator", "students" })
+//    @SecurityRequirement(name = "ConsumerBasicHttp")
     @APIResponses(value = {
                             @APIResponse(responseCode = "400", description = "Bad Request — Client sent an invalid request", content = @Content(mediaType = "text/plain")),
                             @APIResponse(responseCode = "404", description = "Not Found — The requested resources does not exist.", content = @Content(mediaType = "text/plain")),
                             @APIResponse(responseCode = "200", description = "The list of app names are returned.",
                                          content = @Content(mediaType = "application/json", schema = @Schema(type = SchemaType.OBJECT, implementation = AppNameList.class))) })
-    public Response getAllAppNames(@Context HttpHeaders httpHeaders) {
+    public Response getAllAppNames() {
 
-        if (log.isLoggable(Level.FINE)) {
-            log.finest("getAllAppNames: Received request to get AppNames");
-        }
+        log.info("getAllAppNames: Received request to get all available AppNames");
+
         String authHeader = httpHeaders.getRequestHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-
-        // secure connect to gRPC service
-        startServiceSecure_BlockingStub("localhost", 9080, authHeader);
-
         if (log.isLoggable(Level.FINE)) {
             log.finest("getAllAppNames: authHeader " + authHeader);
         }
+
+        // secure connect to gRPC service
+//        startServiceSecure_BlockingStub("localhost", getPort(), authHeader);
+
+        // connect to gRPC service
+        startService_BlockingStub("localhost", getPort());
+
         try {
             // call the gRPC API and get Result
-            List<String> nameList = getAllAppNames();
+            List<String> nameList = getAllAppNameList();
+
+            log.info("getAllAppNames: request to get appName has been completed by ConsumerRestEndpoint ");
             // respond as JSON
             return Response.ok().entity(nameList).build();
 
@@ -107,7 +127,8 @@ public class ConsumerRestEndpoint extends ConsumergRPCServiceClientImpl {
      * @return
      */
     @Path("/appInfo/{appName}")
-//	@RolesAllowed({ "admin", "user" })
+    @RolesAllowed({ "students", "Administrator" })
+    @SecurityRequirement(name = "ConsumerBasicHttp")
     @GET
     @APIResponses(value = {
                             @APIResponse(responseCode = "400", description = "Incorrect input", content = @Content(mediaType = "text/plain")),
@@ -115,22 +136,24 @@ public class ConsumerRestEndpoint extends ConsumergRPCServiceClientImpl {
                                          content = @Content(mediaType = "application/json",
                                                             schema = @Schema(type = SchemaType.OBJECT, implementation = AppStructureConsumer.class))) })
     public Response getAppInfo(
-                               @Parameter(name = "appName", description = "name of the app", required = true, in = ParameterIn.PATH) @PathParam("appName") String appName,
-                               @Context HttpHeaders httpHeaders) {
+                               @Parameter(name = "appName", description = "name of the app", required = true, in = ParameterIn.PATH) @PathParam("appName") String appName) {
 
+        log.info("getAppInfo: request to get appInfo has been received by ConsumerRestEndpoint " + appName);
+
+        String authHeader = httpHeaders.getRequestHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         if (log.isLoggable(Level.FINE)) {
-            log.finest("getAppInfo: Received request to get AppInfo");
+            log.finest("getAppInfo: authHeader " + authHeader);
         }
 
-//		String authHeader = httpHeaders.getRequestHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-
         // connect to gRPC service
-        startService_BlockingStub("localhost", 9080);
+        startService_BlockingStub("localhost", getPort());
 
         // call the gRPC API
         String appInfo_JSONString = null;
         try {
             appInfo_JSONString = getAppJSONStructure(appName);
+
+            log.info("getAppInfo: request to get appInfo has been completed by ConsumerRestEndpoint " + appInfo_JSONString);
         } catch (InvalidArgException e) {
             return Response.status(Status.BAD_REQUEST).build();
         } finally {
@@ -165,12 +188,10 @@ public class ConsumerRestEndpoint extends ConsumergRPCServiceClientImpl {
                                                             schema = @Schema(type = SchemaType.OBJECT, implementation = AppListWithPricesPOJO.class))) })
     public Response getPrices(@QueryParam("appName") List<String> appNames) {
 
-        if (log.isLoggable(Level.FINE)) {
-            log.fine("getPrices: Received request to get Prices for the appNames " + appNames);
-        }
+        log.info("getPrices: Received request to get Prices for the appNames " + appNames);
 
         // connect to service using Async Stub
-        startService_AsyncStub("localhost", 9080);
+        startService_AsyncStub("localhost", getPort());
 
         HandleExceptionsFromgRPCService handleException = new HandleExceptionsFromgRPCService();
         //call the gRPC API and get response
@@ -190,6 +211,8 @@ public class ConsumerRestEndpoint extends ConsumergRPCServiceClientImpl {
         AppListWithPricesPOJO listResponse = new AppListWithPricesPOJO(); // bean for response
         // set in grpc response in POJO
         listResponse.setAppNameswPrice(listOfAppNames_w_PriceList);
+
+        log.info("getPrices: Completed request to get Prices for the appNames " + appNames);
 
         resp = Response.ok().entity(listResponse).build();
 

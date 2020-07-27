@@ -17,7 +17,6 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.MinimumJavaLevel;
 //import componenttest.custom.junit.runner.OnlyRunInJava7Rule;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -27,7 +26,6 @@ import componenttest.topology.utils.FATServletClient;
 import persistence_fat.consumer.web.ConsumerServlet;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 8)
 public class ConsumerTest_JPA22 extends FATServletClient {
     private static final String APP_NAME = "consumer";
 

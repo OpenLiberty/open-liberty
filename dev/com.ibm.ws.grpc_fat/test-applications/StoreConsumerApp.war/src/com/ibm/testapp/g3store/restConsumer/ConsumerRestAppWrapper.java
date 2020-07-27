@@ -31,8 +31,10 @@ import com.ibm.testapp.g3store.restConsumer.api.ConsumerRestEndpoint;
 /**
  * @author anupag
  *
+ *         The OpenAPI annotations are used and only required to generate documentation
+ *
  */
-@ApplicationPath("/")
+@ApplicationPath("/v1C")
 @OpenAPIDefinition(
                    info = @Info(
                                 title = "Consumer StoreClient App",
@@ -52,11 +54,11 @@ import com.ibm.testapp.g3store.restConsumer.api.ConsumerRestEndpoint;
                                            description = "authentication needed to delete a profile",
                                            flows = @OAuthFlows(
                                                                implicit = @OAuthFlow(
-                                                                                     authorizationUrl = "https://example.com/api/oauth/dialog",
+                                                                                     authorizationUrl = "https://../api/oauth/dialog",
                                                                                      scopes = @OAuthScope(name = "read:reviews")),
                                                                authorizationCode = @OAuthFlow(
-                                                                                              authorizationUrl = "https://example.com/api/oauth/dialog",
-                                                                                              tokenUrl = "https://example.com/api/oauth/token",
+                                                                                              authorizationUrl = "https://../api/oauth/dialog",
+                                                                                              tokenUrl = "https://../api/oauth/token",
                                                                                               scopes = @OAuthScope(name = "read:reviews")))),
                            @SecurityScheme(
                                            securitySchemeName = "JWTAuthorization",

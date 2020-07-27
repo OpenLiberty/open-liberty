@@ -28,6 +28,11 @@
     </dependency>
     <dependency>
       <groupId>biz.aQute.bnd</groupId>
+      <artifactId>biz.aQute.bnd.transform</artifactId>
+      <version>5.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>biz.aQute.bnd</groupId>
       <artifactId>biz.aQute.bndlib</artifactId>
       <version>4.3.1</version>
     </dependency>
@@ -337,6 +342,16 @@
       <version>2.2.14</version>
     </dependency>
     <dependency>
+      <groupId>com.sun.istack</groupId>
+      <artifactId>istack-commons-runtime</artifactId>
+      <version>4.0.0-M3</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.istack</groupId>
+      <artifactId>istack-commons-tools</artifactId>
+      <version>4.0.0-M3</version>
+    </dependency>
+    <dependency>
       <groupId>com.sun.mail</groupId>
       <artifactId>javax.mail</artifactId>
       <version>1.5.6</version>
@@ -350,6 +365,16 @@
       <groupId>com.sun.org.apache.xml.internal</groupId>
       <artifactId>resolver</artifactId>
       <version>20050927</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind.external</groupId>
+      <artifactId>relaxng-datatype</artifactId>
+      <version>3.0.0-M4</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind.external</groupId>
+      <artifactId>rngom</artifactId>
+      <version>3.0.0-M3</version>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
@@ -445,6 +470,11 @@
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
       <version>1.11</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.14</version>
     </dependency>
     <dependency>
       <groupId>commons-codec</groupId>
@@ -649,32 +679,42 @@
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-graphql</artifactId>
-      <version>1.0.2</version>
+      <version>1.0.5</version>
+    </dependency>
+    <dependency>
+      <groupId>io.smallrye</groupId>
+      <artifactId>smallrye-graphql-api</artifactId>
+      <version>1.0.5</version>
+    </dependency>
+    <dependency>
+      <groupId>io.smallrye</groupId>
+      <artifactId>smallrye-graphql-cdi</artifactId>
+      <version>1.0.5</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-graphql-client</artifactId>
-      <version>1.0.2</version>
+      <version>1.0.5</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-graphql-client-api</artifactId>
-      <version>1.0.2</version>
+      <version>1.0.5</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-graphql-schema-builder</artifactId>
-      <version>1.0.2</version>
+      <version>1.0.5</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-graphql-schema-model</artifactId>
-      <version>1.0.2</version>
+      <version>1.0.5</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-graphql-servlet</artifactId>
-      <version>1.0.2</version>
+      <version>1.0.5</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye.config</groupId>
@@ -737,6 +777,11 @@
       <version>2.0.0-RC1</version>
     </dependency>
     <dependency>
+      <groupId>jakarta.authorization</groupId>
+      <artifactId>jakarta.authorization-api</artifactId>
+      <version>2.0.0-RC1</version>
+    </dependency>
+    <dependency>
       <groupId>jakarta.ejb</groupId>
       <artifactId>jakarta.ejb-api</artifactId>
       <version>4.0.0-RC2</version>
@@ -749,7 +794,7 @@
     <dependency>
       <groupId>jakarta.enterprise.concurrent</groupId>
       <artifactId>jakarta.enterprise.concurrent-api</artifactId>
-      <version>2.0.0-RC1</version>
+      <version>2.0.0-RC2</version>
     </dependency>
     <dependency>
       <groupId>jakarta.inject</groupId>
@@ -760,6 +805,11 @@
       <groupId>jakarta.interceptor</groupId>
       <artifactId>jakarta.interceptor-api</artifactId>
       <version>2.0.0-RC2</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.jms</groupId>
+      <artifactId>jakarta.jms-api</artifactId>
+      <version>3.0.0-RC1</version>
     </dependency>
     <dependency>
       <groupId>jakarta.json</groupId>
@@ -787,6 +837,16 @@
       <version>2.0.0-RC1</version>
     </dependency>
     <dependency>
+      <groupId>jakarta.security.auth.message</groupId>
+      <artifactId>jakarta.security.auth.message-api</artifactId>
+      <version>2.0.0-RC1</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.security.enterprise</groupId>
+      <artifactId>jakarta.security.enterprise-api</artifactId>
+      <version>2.0.0-RC2</version>
+    </dependency>
+    <dependency>
       <groupId>jakarta.servlet</groupId>
       <artifactId>jakarta.servlet-api</artifactId>
       <version>5.0.0-M1</version>
@@ -805,6 +865,21 @@
       <groupId>jakarta.transaction</groupId>
       <artifactId>jakarta.transaction-api</artifactId>
       <version>2.0.0-RC1</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.validation</groupId>
+      <artifactId>jakarta.validation-api</artifactId>
+      <version>3.0.0-M1</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.websocket</groupId>
+      <artifactId>jakarta.websocket-api</artifactId>
+      <version>2.0.0-RC1</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.ws.rs</groupId>
+      <artifactId>jakarta.ws.rs-api</artifactId>
+      <version>3.0.0-M1</version>
     </dependency>
     <dependency>
       <groupId>jakarta.xml.bind</groupId>
@@ -1793,6 +1868,11 @@
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty.websocket</groupId>
+      <artifactId>javax-websocket-client-impl</artifactId>
+      <version>9.2.2.v20140723</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty.websocket</groupId>
       <artifactId>websocket-api</artifactId>
       <version>9.4.5.v20170502</version>
     </dependency>
@@ -1800,6 +1880,11 @@
       <groupId>org.eclipse.jetty.websocket</groupId>
       <artifactId>websocket-api</artifactId>
       <version>9.4.7.RC0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty.websocket</groupId>
+      <artifactId>websocket-api</artifactId>
+      <version>9.2.2.v20140723</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty.websocket</groupId>
@@ -1813,6 +1898,11 @@
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty.websocket</groupId>
+      <artifactId>websocket-client</artifactId>
+      <version>9.2.2.v20140723</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty.websocket</groupId>
       <artifactId>websocket-common</artifactId>
       <version>9.4.5.v20170502</version>
     </dependency>
@@ -1820,11 +1910,26 @@
       <groupId>org.eclipse.jetty.websocket</groupId>
       <artifactId>websocket-common</artifactId>
       <version>9.4.7.RC0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty.websocket</groupId>
+      <artifactId>websocket-common</artifactId>
+      <version>9.2.2.v20140723</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-io</artifactId>
+      <version>9.2.2.v20140723</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-util</artifactId>
       <version>9.4.7.RC0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-util</artifactId>
+      <version>9.2.2.v20140723</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
@@ -1900,6 +2005,11 @@
       <groupId>org.eclipse.microprofile.health</groupId>
       <artifactId>microprofile-health-api</artifactId>
       <version>2.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.microprofile.health</groupId>
+      <artifactId>microprofile-health-api</artifactId>
+      <version>3.0-RC1</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.jwt</groupId>
@@ -1995,6 +2105,16 @@
       <groupId>org.eclipse.microprofile.rest.client</groupId>
       <artifactId>microprofile-rest-client-api</artifactId>
       <version>1.4.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.transformer</groupId>
+      <artifactId>org.eclipse.transformer</artifactId>
+      <version>0.2.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.transformer</groupId>
+      <artifactId>org.eclipse.transformer.cli</artifactId>
+      <version>0.2.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse</groupId>
@@ -2173,8 +2293,18 @@
     </dependency>
     <dependency>
       <groupId>org.hibernate.validator</groupId>
+      <artifactId>hibernate-validator-cdi</artifactId>
+      <version>7.0.0.Alpha2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate.validator</groupId>
       <artifactId>hibernate-validator</artifactId>
       <version>6.1.1.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate.validator</groupId>
+      <artifactId>hibernate-validator</artifactId>
+      <version>7.0.0.Alpha2</version>
     </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
@@ -2258,6 +2388,11 @@
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-cdi</artifactId>
+      <version>4.5.2.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-client</artifactId>
       <version>4.5.2.Final</version>
     </dependency>
@@ -2274,6 +2409,11 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-core-spi</artifactId>
+      <version>4.5.2.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jaxb-provider</artifactId>
       <version>4.5.2.Final</version>
     </dependency>
     <dependency>

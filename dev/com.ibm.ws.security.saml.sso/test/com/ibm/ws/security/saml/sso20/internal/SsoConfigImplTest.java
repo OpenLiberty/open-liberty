@@ -110,7 +110,7 @@ public class SsoConfigImplTest {
                     allowing(parentSsoService).searchTrustAnchors(with(any(Collection.class)), with(any(String.class)));
                 } catch (Exception e) {
                     e.printStackTrace();
-                    fail("Unexpected exception was thrown: " + e.getMessage());
+                    fail("Unexpected exception was thrown: " + e);
                 }
             }
         });
@@ -270,7 +270,7 @@ public class SsoConfigImplTest {
             ssoConfig.setConfig(SAML_CONFIG_PROPS, confAdmin, filterIdMap);
         } catch (SamlException e) {
             e.printStackTrace();
-            fail("Unexpected exception was thrown: " + e.getMessage());
+            fail("Unexpected exception was thrown: " + e);
         }
 
         AuthenticationFilter authFilter = ssoConfig.getAuthFilter(authFilterServiceRef);
@@ -283,7 +283,7 @@ public class SsoConfigImplTest {
             ssoConfig.setConfig(SAML_CONFIG_PROPS, confAdmin, filterIdMap);
         } catch (SamlException e) {
             e.printStackTrace();
-            fail("Unexpected exception was thrown: " + e.getMessage());
+            fail("Unexpected exception was thrown: " + e);
         }
     }
 
@@ -308,7 +308,7 @@ public class SsoConfigImplTest {
             ssoConfig.setConfig(SAML_CONFIG_PROPS, confAdmin, FILTER_ID_MAP);
         } catch (SamlException e) {
             e.printStackTrace();
-            fail("Unexpected exception was thrown: " + e.getMessage());
+            fail("Unexpected exception was thrown: " + e);
         }
 
         String authFilterId = ssoConfig.getAuthFilterId();
@@ -350,7 +350,7 @@ public class SsoConfigImplTest {
             ssoConfig.setConfig(SAML_CONFIG_PROPS, confAdmin, filterIdMap);
         } catch (SamlException e) {
             e.printStackTrace();
-            fail("Unexpected exception was thrown: " + e.getMessage());
+            fail("Unexpected exception was thrown: " + e);
         }
     }
 
@@ -373,7 +373,7 @@ public class SsoConfigImplTest {
             });
         } catch (IOException e1) {
             e1.printStackTrace();
-            fail("Unexpected exception was thrown: " + e1.getMessage());
+            fail("Unexpected exception was thrown: " + e1);
         }
         String[] value = new String[] { "pkixTrustEngine" };
         SAML_CONFIG_PROPS.put(SsoConfigImpl.KEY_pkixTrustEngine, value);
@@ -382,7 +382,7 @@ public class SsoConfigImplTest {
             ssoConfig.setConfig(SAML_CONFIG_PROPS, confAdmin, filterIdMap);
         } catch (SamlException e) {
             e.printStackTrace();
-            fail("Unexpected exception was thrown: " + e.getMessage());
+            fail("Unexpected exception was thrown: " + e);
         }
     }
 
@@ -413,7 +413,7 @@ public class SsoConfigImplTest {
             });
         } catch (IOException e) {
             e.printStackTrace();
-            fail("Unexpected exception was thrown: " + e.getMessage());
+            fail("Unexpected exception was thrown: " + e);
         }
 
         String[] value = new String[] { "pkixTrustEngine" };
@@ -423,7 +423,7 @@ public class SsoConfigImplTest {
             ssoConfig.setConfig(SAML_CONFIG_PROPS, confAdmin, filterIdMap);
         } catch (SamlException e) {
             e.printStackTrace();
-            fail("Unexpected exception was thrown: " + e.getMessage());
+            fail("Unexpected exception was thrown: " + e);
         }
 
         assertTrue("The String " + path + " is not contained in the list x509List.",
@@ -457,7 +457,7 @@ public class SsoConfigImplTest {
             });
         } catch (IOException e) {
             e.printStackTrace();
-            fail("Unexpected exception was thrown: " + e.getMessage());
+            fail("Unexpected exception was thrown: " + e);
         }
         String[] type = new String[] { "pkixTrustEngine" };
         SAML_CONFIG_PROPS.put(SsoConfigImpl.KEY_pkixTrustEngine, type);
@@ -466,7 +466,7 @@ public class SsoConfigImplTest {
             ssoConfig.setConfig(SAML_CONFIG_PROPS, confAdmin, filterIdMap);
         } catch (SamlException e) {
             e.printStackTrace();
-            fail("Unexpected exception was thrown: " + e.getMessage());
+            fail("Unexpected exception was thrown: " + e);
         }
     }
 
@@ -480,7 +480,7 @@ public class SsoConfigImplTest {
                          authenticationFilter, result);
         } catch (SamlException e) {
             e.printStackTrace();
-            fail("Unexpected exception was thrown: " + e.getMessage());
+            fail("Unexpected exception was thrown: " + e);
         }
     }
 
@@ -539,7 +539,7 @@ public class SsoConfigImplTest {
             ssoConfig.setConfig(SAML_CONFIG_PROPS, confAdmin, SAML_FILTER_ID);
         } catch (SamlException e) {
             e.printStackTrace();
-            fail("Unexpected exception was thrown: " + e.getMessage());
+            fail("Unexpected exception was thrown: " + e);
         }
 
         String result = ssoConfig.getAuthFilterId(key);
@@ -553,7 +553,7 @@ public class SsoConfigImplTest {
             ssoConfig.setConfig(SAML_CONFIG_PROPS, null, SAML_FILTER_ID);
         } catch (SamlException e) {
             e.printStackTrace();
-            fail("Unexpected exception was thrown: " + e.getMessage());
+            fail("Unexpected exception was thrown: " + e);
         }
 
         String result = ssoConfig.getAuthFilterId("non-existent");
@@ -578,7 +578,7 @@ public class SsoConfigImplTest {
             ssoConfig.setConfig(SAML_CONFIG_PROPS, confAdmin, SAML_FILTER_ID);
         } catch (SamlException e) {
             e.printStackTrace();
-            fail("Unexpected exception was thrown: " + e.getMessage());
+            fail("Unexpected exception was thrown: " + e);
         }
 
         String result = ssoConfig.getAuthFilterId(NON_EXISTENT);
@@ -592,7 +592,7 @@ public class SsoConfigImplTest {
             ssoConfig.setConfig(SAML_CONFIG_PROPS, confAdmin, filterIdMap);
         } catch (SamlException e) {
             e.printStackTrace();
-            fail("Unexpected exception was thrown: " + e.getMessage());
+            fail("Unexpected exception was thrown: " + e);
         }
         SAML_CONFIG_PROPS.put(SsoConfigImpl.KEY_signatureMethodAlgorithm, "SHA1");
 
@@ -610,7 +610,7 @@ public class SsoConfigImplTest {
             ssoConfig.setConfig(SAML_CONFIG_PROPS, confAdmin, filterIdMap);
         } catch (SamlException e) {
             e.printStackTrace();
-            fail("Unexpected exception was thrown: " + e.getMessage());
+            fail("Unexpected exception was thrown: " + e);
         }
 
         String result = ssoConfig.getSignatureMethodAlgorithm();
@@ -628,7 +628,7 @@ public class SsoConfigImplTest {
             ssoConfig.setConfig(SAML_CONFIG_PROPS, confAdmin, filterIdMap);
         } catch (SamlException e) {
             e.printStackTrace();
-            fail("Unexpected exception was thrown: " + e.getMessage());
+            fail("Unexpected exception was thrown: " + e);
         }
 
         String result = ssoConfig.getSpCookieName(null);
@@ -653,7 +653,7 @@ public class SsoConfigImplTest {
             ssoConfig.setConfig(SAML_CONFIG_PROPS, confAdmin, filterIdMap);
         } catch (SamlException e) {
             e.printStackTrace();
-            fail("Unexpected exception was thrown: " + e.getMessage());
+            fail("Unexpected exception was thrown: " + e);
         }
 
         String result = ssoConfig.getSpCookieName(locationAdmin);

@@ -17,7 +17,6 @@ import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
 import com.ibm.ws.security.mp.jwt11.fat.sharedTests.MPJwtGoodMPConfigAsEnvVars;
 import com.ibm.ws.security.mp.jwt11.fat.utils.MPConfigSettings;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -34,7 +33,6 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  **/
 
 @Mode(TestMode.FULL)
-@MinimumJavaLevel(javaLevel = 8)
 @RunWith(FATRunner.class)
 public class MPJwtGoodMPConfigAsEnvVars_UsePublicKey_NoKeyLoc extends MPJwtGoodMPConfigAsEnvVars {
 

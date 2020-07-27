@@ -162,5 +162,8 @@ instrument.classesExcludes: com/ibm/ws/security/saml/sso20/internal/resources/Sa
     org.slf4j:slf4j-api;version=1.7.7, \
     org.slf4j:slf4j-jdk14;version=1.7.7, \
     com.ibm.ws.org.apache.commons.fileupload;version=latest, \
-    com.ibm.ws.org.apache.commons.codec.1.4;version=latest, \
-    com.ibm.ws.security.common;version=latest
+    com.ibm.ws.org.apache.commons.codec;version=latest, \
+    com.ibm.ws.security.common;version=latest, \
+    com.ibm.ws.container.service;version=latest, \
+    com.ibm.ws.threading;version=latest, \
+    com.ibm.ws.injection.core;version=latest

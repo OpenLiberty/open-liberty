@@ -33,6 +33,7 @@
         <AD id="autoStart" name="%appmgr.autoStart.name" description="%appmgr.autoStart.desc" type="Boolean" required="false" default="true"/>
         <AD id="useJandex" name="%appmgr.useJandex.name" description="%appmgr.useJandex.desc" type="Boolean" required="false"/>
         <AD id="startAfter" name="%appmgmt.startAfter" description="%appmgmt.startAfter.desc" required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.app.manager" cardinality="2147483647"/>
+		<AD id="classloader" name="%classloader.name" description="%classloader.desc" required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.classloading.classloader" cardinality="0"/>
    </OCD>
     <Designate factoryPid="com.ibm.ws.app.manager">
         <Object ocdref="com.ibm.ws.app.manager"/>

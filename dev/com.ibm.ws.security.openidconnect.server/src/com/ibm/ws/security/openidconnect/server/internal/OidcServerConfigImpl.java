@@ -48,7 +48,6 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.config.CommonConfigUtils;
 import com.ibm.ws.security.common.jwk.impl.JWKProvider;
 import com.ibm.ws.security.openidconnect.common.ConfigUtils;
-import com.ibm.ws.security.openidconnect.server.ServerConstants;
 import com.ibm.ws.security.openidconnect.server.plugins.OIDCProvidersConfig;
 import com.ibm.ws.ssl.KeyStoreService;
 import com.ibm.ws.webcontainer.security.jwk.JSONWebKey;
@@ -290,7 +289,7 @@ public class OidcServerConfigImpl implements OidcServerConfig {
 
         } catch (IOException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Invalid oauthProviderRef configuration", e.getMessage());
+                Tr.debug(tc, "Invalid oauthProviderRef configuration", e);
             }
             return null;
         }
@@ -491,7 +490,7 @@ public class OidcServerConfigImpl implements OidcServerConfig {
             config = configAdmin.getConfiguration(oauthProviderRef, null);
         } catch (IOException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Invalid oauthProviderRef configuration", e.getMessage());
+                Tr.debug(tc, "Invalid oauthProviderRef configuration", e);
             }
             return null;
         }
@@ -1214,7 +1213,7 @@ public class OidcServerConfigImpl implements OidcServerConfig {
     @FFDCIgnore({ KeyStoreException.class, CertificateException.class })
     private JWKProvider getJwkProviderWithX509() {
         JWKProvider jwkX509Provider = null;
-        if (signatureAlgorithm.equals("RS256") && !ServerConstants.JAVA_VERSION_6) {
+        if (signatureAlgorithm.equals("RS256")) {
             PublicKey publicKey = null;
             PrivateKey privateKey = null;
             try {

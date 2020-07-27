@@ -66,9 +66,7 @@ public class CpuInfo {
             int majorVersion = JavaInfo.majorVersion();
             int minorVersion = JavaInfo.minorVersion();
             int serviceRelease = JavaInfo.serviceRelease();
-            if (majorVersion <= 7) {
-                nsFactor = 100;
-            } else if (majorVersion == 8 && minorVersion == 0 && serviceRelease < 5) {
+            if (majorVersion == 8 && minorVersion == 0 && serviceRelease < 5) {
                 nsFactor = 100;
             }
 

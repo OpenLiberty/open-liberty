@@ -111,7 +111,7 @@ public class AcsHandlerTest {
             handler.handleRequest(request, response, ssoRequest, parameters, solicitedHandler, unsolicitedHandler);
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -129,7 +129,7 @@ public class AcsHandlerTest {
             handler.handleRequest(request, response, ssoRequest, parameters, solicitedHandler, unsolicitedHandler);
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 }

@@ -29,7 +29,6 @@ import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.security.SecureRandom;
-import java.security.Security;
 import java.security.cert.X509Certificate;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -46,7 +45,6 @@ import javax.net.ssl.X509TrustManager;
 
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -90,8 +88,8 @@ public class HttpUtils {
      * This method is used to get a connection stream from an HTTP connection. It
      * gives the output from the webpage that it gets from the connection
      *
-     * @param con The connection to the HTTP address
-     * @return The Output from the webpage
+     * @param  con The connection to the HTTP address
+     * @return     The Output from the webpage
      */
     public static BufferedReader getConnectionStream(HttpURLConnection con) throws IOException {
         InputStream is = con.getInputStream();
@@ -102,9 +100,9 @@ public class HttpUtils {
      * This method is used to get a connection stream from an HTTP connection. It
      * gives the output from the webpage that it gets from the connection
      *
-     * @param con The connection to the HTTP address
-     * @param charsetName The character set name
-     * @return The Output from the webpage
+     * @param  con         The connection to the HTTP address
+     * @param  charsetName The character set name
+     * @return             The Output from the webpage
      */
     public static BufferedReader getConnectionStream(HttpURLConnection con, String charsetName) throws IOException {
         InputStream is = con.getInputStream();
@@ -114,7 +112,7 @@ public class HttpUtils {
     /**
      * This method is used to get an error connection stream from a HTTP connection.
      *
-     * @param con
+     * @param  con
      * @return
      * @throws IOException
      */
@@ -126,8 +124,8 @@ public class HttpUtils {
     /**
      * This method is used to get an error connection stream from a HTTP connection.
      *
-     * @param con
-     * @param charsetName
+     * @param  con
+     * @param  charsetName
      * @return
      * @throws IOException
      */
@@ -149,9 +147,9 @@ public class HttpUtils {
     /**
      * This method creates a connection to a webpage and then returns the connection, it doesn't care what the response code is.
      *
-     * @param server The liberty server that is hosting the URL
-     * @param path The path to the URL with the output to test (excluding port and server information). For instance "/someContextRoot/servlet1"
-     * @return The connection to the http address
+     * @param  server The liberty server that is hosting the URL
+     * @param  path   The path to the URL with the output to test (excluding port and server information). For instance "/someContextRoot/servlet1"
+     * @return        The connection to the http address
      */
     public static HttpURLConnection getHttpConnectionWithAnyResponseCode(LibertyServer server, String path) throws IOException {
         int timeout = DEFAULT_TIMEOUT;
@@ -166,9 +164,9 @@ public class HttpUtils {
      * This method creates an UNOPENED HTTP connection. Note that the caller must call HttpUrlConnection.connect()
      * if they wish to use the connection. The unopened connection may be further customized before calling connect()
      *
-     * @param server The liberty server that is hosting the URL
-     * @param path The path to the URL with the output to test (excluding port and server information). For instance "/someContextRoot/servlet1"
-     * @return An unopened connection to the http address
+     * @param  server The liberty server that is hosting the URL
+     * @param  path   The path to the URL with the output to test (excluding port and server information). For instance "/someContextRoot/servlet1"
+     * @return        An unopened connection to the http address
      */
     public static HttpURLConnection getHttpConnection(LibertyServer server, String path) throws IOException {
         return getHttpConnection(createURL(server, path), DEFAULT_TIMEOUT, HTTPRequestMethod.GET);
@@ -177,10 +175,10 @@ public class HttpUtils {
     /**
      * This method creates a connection to a webpage and then returns the connection
      *
-     * @param url The Http Address to connect to
-     * @param expectedResponseCode The expected response code to wait for
-     * @param connectionTimeout The timeout in seconds
-     * @return The connection to the http address
+     * @param  url                  The Http Address to connect to
+     * @param  expectedResponseCode The expected response code to wait for
+     * @param  connectionTimeout    The timeout in seconds
+     * @return                      The connection to the http address
      */
     public static HttpURLConnection getHttpConnection(URL url, int expectedResponseCode, int connectionTimeout) throws IOException, ProtocolException {
         return getHttpConnection(url, expectedResponseCode, connectionTimeout, HTTPRequestMethod.GET);
@@ -189,11 +187,11 @@ public class HttpUtils {
     /**
      * This method creates a connection to a webpage and then returns the connection
      *
-     * @param url The Http Address to connect to
-     * @param expectedResponseCode The expected response code to wait for
-     * @param connectionTimeout The timeout in seconds
-     * @param requestMethod The HTTP request method (GET, POST, HEAD, OPTIONS, PUT, DELETE, TRACE)
-     * @return The connection to the http address
+     * @param  url                  The Http Address to connect to
+     * @param  expectedResponseCode The expected response code to wait for
+     * @param  connectionTimeout    The timeout in seconds
+     * @param  requestMethod        The HTTP request method (GET, POST, HEAD, OPTIONS, PUT, DELETE, TRACE)
+     * @return                      The connection to the http address
      */
     public static HttpURLConnection getHttpConnection(URL url, int expectedResponseCode, int connectionTimeout,
                                                       HTTPRequestMethod requestMethod) throws IOException, ProtocolException {
@@ -203,12 +201,12 @@ public class HttpUtils {
     /**
      * This method creates a connection to a webpage and then returns the connection
      *
-     * @param url The Http Address to connect to
-     * @param expectedResponseCode The expected response code to wait for
-     * @param allowedUnexpectedResponseCodes A list of unexpected response codes that should not cause a failure, or null to allow all unexpected response codes
-     * @param connectionTimeout The timeout in seconds
-     * @param requestMethod The HTTP request method (GET, POST, HEAD, OPTIONS, PUT, DELETE, TRACE)
-     * @return The connection to the http address
+     * @param  url                            The Http Address to connect to
+     * @param  expectedResponseCode           The expected response code to wait for
+     * @param  allowedUnexpectedResponseCodes A list of unexpected response codes that should not cause a failure, or null to allow all unexpected response codes
+     * @param  connectionTimeout              The timeout in seconds
+     * @param  requestMethod                  The HTTP request method (GET, POST, HEAD, OPTIONS, PUT, DELETE, TRACE)
+     * @return                                The connection to the http address
      */
     public static HttpURLConnection getHttpConnection(URL url, int expectedResponseCode, int[] allowedUnexpectedResponseCodes, int connectionTimeout,
                                                       HTTPRequestMethod requestMethod) throws IOException, ProtocolException {
@@ -245,13 +243,13 @@ public class HttpUtils {
     /**
      * This method creates a connection to a webpage and then returns the connection
      *
-     * @param url The Http Address to connect to
-     * @param expectedResponseCode The expected response code to wait for
-     * @param allowedUnexpectedResponseCodes A list of unexpected response codes that should not cause a failure, or null to allow all unexpected response codes
-     * @param connectionTimeout The timeout in seconds
-     * @param requestMethod The HTTP request method (GET, POST, HEAD, OPTIONS, PUT, DELETE, TRACE)
-     * @param headers A map of HTTP headers keys and values.
-     * @return The connection to the http address
+     * @param  url                            The Http Address to connect to
+     * @param  expectedResponseCode           The expected response code to wait for
+     * @param  allowedUnexpectedResponseCodes A list of unexpected response codes that should not cause a failure, or null to allow all unexpected response codes
+     * @param  connectionTimeout              The timeout in seconds
+     * @param  requestMethod                  The HTTP request method (GET, POST, HEAD, OPTIONS, PUT, DELETE, TRACE)
+     * @param  headers                        A map of HTTP headers keys and values.
+     * @return                                The connection to the http address
      */
     public static HttpURLConnection getHttpConnection(URL url, int expectedResponseCode, int[] allowedUnexpectedResponseCodes, int connectionTimeout,
                                                       HTTPRequestMethod requestMethod, Map<String, String> headers,
@@ -356,9 +354,9 @@ public class HttpUtils {
     /**
      * Return true if haystack contains needle.
      *
-     * @param haystack the array to search
-     * @param needle the value to find
-     * @return true if the value was found
+     * @param  haystack the array to search
+     * @param  needle   the value to find
+     * @return          true if the value was found
      */
     private static boolean contains(int[] haystack, int needle) {
         for (int value : haystack) {
@@ -372,11 +370,11 @@ public class HttpUtils {
     /**
      * Method to find some text from the output of a URL. If the text isn't found an assertion error is thrown.
      *
-     * @param server The liberty server for that is hosting the URL
-     * @param path The path to the URL with the output to test (excluding port and server information). For instance "/someContextRoot/servlet1"
-     * @param stringsToFind The strings to search for, there must be at least one string to find. Duplicates will only be searched for once
+     * @param  server                   The liberty server for that is hosting the URL
+     * @param  path                     The path to the URL with the output to test (excluding port and server information). For instance "/someContextRoot/servlet1"
+     * @param  stringsToFind            The strings to search for, there must be at least one string to find. Duplicates will only be searched for once
      * @throws IOException
-     * @throws {@link AssertionError} If the text isn't found
+     * @throws {@link                   AssertionError} If the text isn't found
      * @throws IllegalArgumentException If <code>stringsToFind</code> is <code>null</code> or empty
      */
     public static void findStringInUrl(LibertyServer server, String path, String... stringsToFind) throws IOException {
@@ -405,11 +403,11 @@ public class HttpUtils {
      * Method to find some text from the output of a URL. An assertion error is thrown if the connection returns an unexpected response code or if the text isn't found in the
      * response. This method should only be used if the caller knows URL is ready because the application is known to be started.
      *
-     * @param server The liberty server for that is hosting the URL
-     * @param path The path to the URL with the output to test (excluding port and server information). For instance "/someContextRoot/servlet1"
-     * @param stringsToFind The strings to search for, there must be at least one string to find. Duplicates will only be searched for once
+     * @param  server                   The liberty server for that is hosting the URL
+     * @param  path                     The path to the URL with the output to test (excluding port and server information). For instance "/someContextRoot/servlet1"
+     * @param  stringsToFind            The strings to search for, there must be at least one string to find. Duplicates will only be searched for once
      * @throws Exception
-     * @throws {@link AssertionError} If the text isn't found
+     * @throws {@link                   AssertionError} If the text isn't found
      * @throws IllegalArgumentException If <code>stringsToFind</code> is <code>null</code> or empty
      */
     public static void findStringInReadyUrl(LibertyServer server, String path, String... stringsToFind) throws Exception {
@@ -419,12 +417,12 @@ public class HttpUtils {
     /**
      * Method to find some text from the output of a URL. If the text isn't found an assertion error is thrown.
      *
-     * @param server The liberty server for that is hosting the URL
-     * @param path The path to the URL with the output to test (excluding port and server information). For instance "/someContextRoot/servlet1"
-     * @param requestMethod The HTTP request method (GET, POST, HEAD, OPTIONS, PUT, DELETE, TRACE)
-     * @param stringsToFind The strings to search for, there must be at least one string to find. Duplicates will only be searched for once
+     * @param  server                   The liberty server for that is hosting the URL
+     * @param  path                     The path to the URL with the output to test (excluding port and server information). For instance "/someContextRoot/servlet1"
+     * @param  requestMethod            The HTTP request method (GET, POST, HEAD, OPTIONS, PUT, DELETE, TRACE)
+     * @param  stringsToFind            The strings to search for, there must be at least one string to find. Duplicates will only be searched for once
      * @throws IOException
-     * @throws {@link AssertionError} If the text isn't found
+     * @throws {@link                   AssertionError} If the text isn't found
      * @throws IllegalArgumentException If <code>stringsToFind</code> is <code>null</code> or empty
      */
     public static void findStringInUrl(LibertyServer server, String path, HTTPRequestMethod requestMethod, String... stringsToFind) throws IOException {
@@ -435,11 +433,11 @@ public class HttpUtils {
      * Method to find some text from the output of a URL. An assertion error is thrown if the connection returns an unexpected response code or if the text isn't found in the
      * response. This method should only be used if the caller knows URL is ready because the application is known to be started.
      *
-     * @param server The liberty server for that is hosting the URL
-     * @param path The path to the URL with the output to test (excluding port and server information). For instance "/someContextRoot/servlet1"
-     * @param stringsToFind The strings to search for, there must be at least one string to find. Duplicates will only be searched for once
+     * @param  server                   The liberty server for that is hosting the URL
+     * @param  path                     The path to the URL with the output to test (excluding port and server information). For instance "/someContextRoot/servlet1"
+     * @param  stringsToFind            The strings to search for, there must be at least one string to find. Duplicates will only be searched for once
      * @throws Exception
-     * @throws {@link AssertionError} If the text isn't found
+     * @throws {@link                   AssertionError} If the text isn't found
      * @throws IllegalArgumentException If <code>stringsToFind</code> is <code>null</code> or empty
      */
     public static void findStringInReadyUrl(LibertyServer server, String path, HTTPRequestMethod requestMethod, String... stringsToFind) throws Exception {
@@ -450,13 +448,13 @@ public class HttpUtils {
      * Method to find some text from the output of a URL. An assertion error is thrown if the connection returns an unexpected response code or if the text isn't found in the
      * response.
      *
-     * @param server The liberty server for that is hosting the URL
-     * @param path The path to the URL with the output to test (excluding port and server information). For instance "/someContextRoot/servlet1"
-     * @param allowedUnexpectedResponseCodes A list of unexpected response codes that should not cause a failure, or null to allow all unexpected response codes
-     * @param stringsToFind The strings to search for, there must be at least one string to find. Duplicates will only be searched for once
+     * @param  server                         The liberty server for that is hosting the URL
+     * @param  path                           The path to the URL with the output to test (excluding port and server information). For instance "/someContextRoot/servlet1"
+     * @param  allowedUnexpectedResponseCodes A list of unexpected response codes that should not cause a failure, or null to allow all unexpected response codes
+     * @param  stringsToFind                  The strings to search for, there must be at least one string to find. Duplicates will only be searched for once
      * @throws IOException
-     * @throws {@link AssertionError} If the text isn't found
-     * @throws IllegalArgumentException If <code>stringsToFind</code> is <code>null</code> or empty
+     * @throws {@link                         AssertionError} If the text isn't found
+     * @throws IllegalArgumentException       If <code>stringsToFind</code> is <code>null</code> or empty
      */
     public static void findStringInUrl(LibertyServer server, String path, int[] allowedUnexpectedResponseCodes, HTTPRequestMethod requestMethod,
                                        String... stringsToFind) throws IOException {
@@ -478,7 +476,7 @@ public class HttpUtils {
         }
     }
 
-    private static URL createURL(LibertyServer server, String path) throws MalformedURLException {
+    public static URL createURL(LibertyServer server, String path) throws MalformedURLException {
         if (!path.startsWith("/"))
             path = "/" + path;
         return new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + path);
@@ -487,10 +485,10 @@ public class HttpUtils {
     /**
      * Method to find some text from the output of an HttpURLConnection. If the text isn't found an assertion error is thrown.
      *
-     * @param con The HttpURLconnection to retrieve the text from
-     * @param stringsToFind The strings to search for, there must be at least one string to find. Duplicates will only be searched for once
+     * @param  con                      The HttpURLconnection to retrieve the text from
+     * @param  stringsToFind            The strings to search for, there must be at least one string to find. Duplicates will only be searched for once
      * @throws IOException
-     * @throws {@link AssertionError} If the text isn't found
+     * @throws {@link                   AssertionError} If the text isn't found
      * @throws IllegalArgumentException If <code>stringsToFind</code> is <code>null</code> or empty
      */
     public static void findStringInHttpConnection(HttpURLConnection con, String... stringsToFind) throws IOException {
@@ -500,11 +498,11 @@ public class HttpUtils {
     /**
      * Method to find some text from the output of an HttpURLConnection. If the text isn't found an assertion error is thrown.
      *
-     * @param charsetName The character set name. If null, use the default character set.
-     * @param con The HttpURLconnection to retrieve the text from
-     * @param stringsToFind The strings to search for, there must be at least one string to find. Duplicates will only be searched for once
+     * @param  charsetName              The character set name. If null, use the default character set.
+     * @param  con                      The HttpURLconnection to retrieve the text from
+     * @param  stringsToFind            The strings to search for, there must be at least one string to find. Duplicates will only be searched for once
      * @throws IOException
-     * @throws {@link AssertionError} If the text isn't found
+     * @throws {@link                   AssertionError} If the text isn't found
      * @throws IllegalArgumentException If <code>stringsToFind</code> is <code>null</code> or empty
      */
     public static void findStringInHttpConnection(String charsetName, HttpURLConnection con, String... stringsToFind) throws IOException {
@@ -564,8 +562,8 @@ public class HttpUtils {
     /**
      * This gets an HttpURLConnection to the requested address
      *
-     * @param url The URL to get a connection to
-     * @param requestMethod The HTTP request method (GET, POST, HEAD, OPTIONS, PUT, DELETE, TRACE)
+     * @param  url               The URL to get a connection to
+     * @param  requestMethod     The HTTP request method (GET, POST, HEAD, OPTIONS, PUT, DELETE, TRACE)
      * @return
      * @throws IOException
      * @throws ProtocolException

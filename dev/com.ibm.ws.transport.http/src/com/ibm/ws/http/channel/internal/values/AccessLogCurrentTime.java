@@ -19,7 +19,7 @@ import com.ibm.wsspi.http.channel.HttpResponseMessage;
 public class AccessLogCurrentTime extends AccessLogData {
 
     // We're assuming that the methods below that use this datetime will be called on the same thread
-    private static ThreadLocal<String> accessLogDatetime = new ThreadLocal<>();
+    private static ThreadLocal<Long> accessLogDatetime = new ThreadLocal<>();
 
     public AccessLogCurrentTime() {
         super("%{t}W");
@@ -41,10 +41,10 @@ public class AccessLogCurrentTime extends AccessLogData {
     public boolean set(StringBuilder accessLogEntry,
                        HttpResponseMessage response, HttpRequestMessage request, Object data) {
         if (data == null) {
-            String currentTime = HttpDispatcher.getDateFormatter().getNCSATime(new Date(System.currentTimeMillis()));
-            String currentTimeFormatted = "[" + currentTime + "]";
+            long currentTime = System.currentTimeMillis();
+            String currentTimeFormatted = "[" + HttpDispatcher.getDateFormatter().getNCSATime(new Date(currentTime)) + "]";
             accessLogEntry.append(currentTimeFormatted);
-            accessLogDatetime.set(currentTimeFormatted);
+            accessLogDatetime.set(currentTime);
 
         } else {
             // just print out what was there
@@ -54,7 +54,7 @@ public class AccessLogCurrentTime extends AccessLogData {
         return true;
     }
 
-    public static String getAccessLogCurrentTimeAsString(HttpResponseMessage response, HttpRequestMessage request, Object data) {
+    public static long getAccessLogCurrentTimeAsLong(HttpResponseMessage response, HttpRequestMessage request, Object data) {
         return accessLogDatetime.get();
     }
 }

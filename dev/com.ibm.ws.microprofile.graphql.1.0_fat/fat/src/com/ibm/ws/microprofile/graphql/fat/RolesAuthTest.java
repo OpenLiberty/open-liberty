@@ -46,9 +46,7 @@ public class RolesAuthTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         WebArchive webArchive = ShrinkHelper.buildDefaultApp(APP_NAME, "mpGraphQL10.rolesAuth");
-        FATSuite.addSmallRyeGraphQLClientLibraries(webArchive);
-
-        ShrinkHelper.exportDropinAppToServer(server, webArchive);
+        ShrinkHelper.exportAppToServer(server, webArchive);
         server.startServer();
     }
 

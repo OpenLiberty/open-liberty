@@ -25,33 +25,14 @@ src: \
 tested.features:\
 	cdi-2.0,\
         servlet-4.0,\
-        jdbc-4.2,\
-        jpa-2.2,\
-        beanValidation-2.0,\
-        jaxrs-2.1,\
-        jsf-2.3
+        servlet-5.0,\
+        cdi-3.0
 	
 	
 test.project: true
 
 -buildpath: \
-	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
-	com.ibm.ws.security;version=latest,\
-	com.ibm.websphere.security;version=latest,\
-	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
 	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
-	com.ibm.ws.org.apache.commons.logging.1.0.3;version=latest,\
-	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
-	com.ibm.websphere.javaee.jsf.2.2;version=latest,\
-	com.ibm.websphere.org.osgi.core;version=latest,\
-	com.ibm.websphere.org.osgi.service.component;version=latest,\
-	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-	com.ibm.websphere.javaee.jms.2.0;version=latest,\
-	com.ibm.websphere.javaee.connector.1.7;version=latest,\
-	com.ibm.websphere.javaee.validation.1.1;version=latest,\
-	com.ibm.websphere.javaee.el.3.0;version=latest,\
-	com.ibm.websphere.javaee.jsp.2.3;version=latest,\
-	com.ibm.websphere.javaee.websocket.1.1;version=latest,\
-	com.ibm.ws.cdi.interfaces;version=latest
+	com.ibm.websphere.javaee.interceptor.1.2;version=latest

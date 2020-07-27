@@ -62,6 +62,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
     @AfterClass
     public static void cleanUp() throws Exception {
+        // TODO
         resetOriginalWlpProps();
         cleanUpTempFiles();
     }
@@ -203,7 +204,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         propsMap.put("featureLocalRepo", minifiedRoot + "/repo/");
         propsMap.put("wlptestjson.JSON.coordinate", "com.ibm.websphere.appserver.features");
         writeToProps(minifiedRoot+ "/etc/featureUtility.properties", propsMap);
-        String[] param1s = { "installFeature", "adminCenter-1.0", "deploy-1.0", "--acceptLicense", "--verbose" };
+        String[] param1s = { "installFeature", "adminCenter-1.0", "deploy-1.0", "--acceptLicense" };
 
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         String edition = getClosedLibertyWlpEdition();

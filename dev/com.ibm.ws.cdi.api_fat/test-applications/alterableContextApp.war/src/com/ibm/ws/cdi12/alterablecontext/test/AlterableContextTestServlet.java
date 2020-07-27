@@ -11,19 +11,21 @@
 
 package com.ibm.ws.cdi12.alterablecontext.test;
 
-import static org.junit.Assert.fail;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.hasItem;
+import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.junit.Test;
 
 import com.ibm.ws.cdi12.alterablecontext.test.extension.DirtySingleton;
 
 import componenttest.app.FATServlet;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 
 @WebServlet("/")
 public class AlterableContextTestServlet extends FATServlet {
@@ -33,24 +35,16 @@ public class AlterableContextTestServlet extends FATServlet {
     private static String SECOND = "Now the command returns: null";
 
     @Test
-    public void testBeanWasFound(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @Mode(TestMode.FULL)
+    public void testBeanWasFound() throws Exception {
         List<String> strings = DirtySingleton.getStrings();
-        assertContains(strings, FIRST);
+        assertThat(strings, hasItem(containsString(FIRST)));
     }
 
     @Test
+    @Mode(TestMode.FULL)
     public void testBeanWasDestroyed() throws Exception {
         List<String> strings = DirtySingleton.getStrings();
-        assertContains(strings, SECOND);
+        assertThat(strings, hasItem(containsString(SECOND)));
     }
-
-    private static void assertContains(List<String> actual, String expected) {
-        for (String s : actual) {
-            if (s.contains(expected)) {
-                return;
-            }
-        }
-        fail("String not found: " + expected);
-    }
-
 }

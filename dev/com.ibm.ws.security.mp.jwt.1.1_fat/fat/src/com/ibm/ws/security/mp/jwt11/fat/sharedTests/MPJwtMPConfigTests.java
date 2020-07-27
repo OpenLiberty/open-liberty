@@ -36,7 +36,6 @@ import com.ibm.ws.security.mp.jwt11.fat.utils.CommonMpJwtFat;
 import com.ibm.ws.security.mp.jwt11.fat.utils.MPConfigSettings;
 import com.ibm.ws.security.mp.jwt11.fat.utils.MpJwtMessageConstants;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
@@ -53,7 +52,6 @@ import componenttest.topology.impl.LibertyServer;
  *
  **/
 
-@MinimumJavaLevel(javaLevel = 8)
 @RunWith(FATRunner.class)
 public class MPJwtMPConfigTests extends CommonMpJwtFat {
 

@@ -14,8 +14,6 @@ import static com.ibm.ejs.container.ContainerConfigConstants.allowCachedTimerDat
 import static com.ibm.ejs.container.ContainerConfigConstants.allowCustomFinderSQLForUpdate;
 import static com.ibm.ejs.container.ContainerConfigConstants.allowEarlyInsert;
 import static com.ibm.ejs.container.ContainerConfigConstants.allowPrimaryKeyMutation;
-import static com.ibm.ejs.container.ContainerConfigConstants.bindToJavaGlobal;
-import static com.ibm.ejs.container.ContainerConfigConstants.bindToServerRoot;
 import static com.ibm.ejs.container.ContainerConfigConstants.blockWorkUntilAppStarted;
 import static com.ibm.ejs.container.ContainerConfigConstants.blockWorkUntilAppStartedWaitTime;
 import static com.ibm.ejs.container.ContainerConfigConstants.checkAppConfigProp;
@@ -36,7 +34,6 @@ import static com.ibm.ejs.container.ContainerConfigConstants.excludeNestedExcept
 import static com.ibm.ejs.container.ContainerConfigConstants.expandCMPCFJNDIName;
 import static com.ibm.ejs.container.ContainerConfigConstants.extendSetRollbackOnlyBehaviorBeyondInstanceFor;
 import static com.ibm.ejs.container.ContainerConfigConstants.fbpkReadOnlyProp;
-import static com.ibm.ejs.container.ContainerConfigConstants.ignoreDuplicateEJBBindings;
 import static com.ibm.ejs.container.ContainerConfigConstants.indirectLocalProxies;
 import static com.ibm.ejs.container.ContainerConfigConstants.initializeEJBsAtStartup;
 import static com.ibm.ejs.container.ContainerConfigConstants.limitSetRollbackOnlyBehaviorToInstanceFor;
@@ -522,10 +519,6 @@ public final class ContainerProperties {
 
         AllowPrimaryKeyMutation = System.getProperty(allowPrimaryKeyMutation, "false").equalsIgnoreCase("true");
 
-        BindToServerRoot = System.getProperty(bindToServerRoot, "true").equalsIgnoreCase("true");
-
-        BindToJavaGlobal = System.getProperty(bindToJavaGlobal, "true").equalsIgnoreCase("true");
-
         CheckAppConfig = System.getProperty(checkAppConfigProp, "false").equalsIgnoreCase("true"); //F743-13921
 
         CreateInstanceAtStart = System.getProperty(createInstanceAtStartup, "true").equalsIgnoreCase("true");
@@ -589,8 +582,6 @@ public final class ContainerProperties {
         ExpandCMPCFJNDIName = System.getProperty(expandCMPCFJNDIName, "true").equalsIgnoreCase("true"); //d425164
 
         FbpkAlwaysReadOnly = System.getProperty(fbpkReadOnlyProp, "false").equalsIgnoreCase("true");
-
-        IgnoreDuplicateEJBBindings = Boolean.getBoolean(ignoreDuplicateEJBBindings); // PM51230
 
         //PK87857 start
         String tmp = System.getProperty(ContainerConfigConstants.includeNestedExceptions);

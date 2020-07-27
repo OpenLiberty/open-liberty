@@ -23,11 +23,11 @@
 
 
 
-warning.jaxrs.ejb.resource.mismatch=CWWKW1100W: El \u00e1mbito {1} del recurso JAXRS-2.0 {0} no coincide con el \u00e1mbito de EJB {2}. Liberty obtiene la instancia de recursos de {3}.
-warning.jaxrs.ejb.resource.mismatch.explanation=Si el \u00e1mbito del recurso JAXRS-2.0 no coincide con el \u00e1mbito de EJB y la instancia de recursos existe en EJB, Liberty obtiene la instancia de recursos de EJB.
+warning.jaxrs.ejb.resource.mismatch=CWWKW1100W: El \u00e1mbito {0} del recurso JAXRS {1} no coincide con el \u00e1mbito de EJB {2}. Liberty obtiene la instancia de recursos de {3}.
+warning.jaxrs.ejb.resource.mismatch.explanation=Si el \u00e1mbito del recurso JAXRS no coincide con el \u00e1mbito de EJB y la instancia de recursos existe en EJB, Liberty obtiene la instancia de recursos de EJB.
 warning.jaxrs.ejb.resource.mismatch.useraction=No se requiere ninguna acci\u00f3n. 
 
-warning.jaxrs.ejb.provider.mismatch=CWWKW1102W: El \u00e1mbito de EJB del proveedor JAXRS-2.0 {0} es {1}. Liberty obtiene la instancia de proveedor de {2}.
+warning.jaxrs.ejb.provider.mismatch=CWWKW1102W: El \u00e1mbito EJB del Proveedor de JAXRS {0} es {1}. Liberty obtiene la instancia de proveedor de {2}.
 warning.jaxrs.ejb.provider.mismatch.explanation=La instancia de Proveedor es Singleton solamente. Liberty obtiene las instancias de proveedor de EJB si el \u00e1mbito de EJB del proveedor es Dependent o ApplicationScoped.
 warning.jaxrs.ejb.provider.mismatch.useraction=No es necesaria ninguna acci\u00f3n.
 

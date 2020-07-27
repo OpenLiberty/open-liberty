@@ -120,6 +120,5 @@ public class FATSuite {
     public static RepeatTests r = RepeatTests.withoutModification()
                     .andWith(new FeatureReplacementAction(removeFeatures, addFeatures)
                                     .withID("JSF-2.3")
-                                    .forceAddFeatures(false)
-                                    .withMinJavaLevel(8));
+                                    .forceAddFeatures(false));
 }

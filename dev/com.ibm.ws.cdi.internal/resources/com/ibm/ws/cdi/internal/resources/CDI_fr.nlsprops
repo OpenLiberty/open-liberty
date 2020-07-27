@@ -69,6 +69,6 @@ implicit.bean.scanning.disabled.CWOWB1009W=CWOWB1009W: Les archives de bean impl
 implicit.bean.scanning.disabled.CWOWB1009W.explanation=Les archives ne sont pas analys\u00e9es pour d\u00e9tecter des beans CDI \u00e0 moins qu'elles ne comportent un fichier beans.xml.
 implicit.bean.scanning.disabled.CWOWB1009W.useraction=Veillez \u00e0 ce que chaque archive utilisant CDI dispose d'un fichier beans.xml ou r\u00e9activez l'analyse de beans implicites dans votre fichier server.xml.
 
-spi.extension.failed.to.construct.CWOWB10010E=CWOWB10010E: Echec de la cr\u00e9ation de l'extension CDI via l'interface SPI.
-spi.extension.failed.to.construct.CWOWB10010E.explanation=CDI n'est pas parvenu \u00e0 appeler le constructeur de la classe d'extension {0} enregistr\u00e9e via la m\u00e9thode getExtensions() d'une impl\u00e9mentation CDIExtensionMetaData en raison de l'exception {1}.
-spi.extension.failed.to.construct.CWOWB10010E.useraction=Corrigez l'erreur qui emp\u00eache l'instanciation de votre extension.
+spi.extension.failed.to.construct.CWOWB1010E=CWOWB1010E: Echec de la cr\u00e9ation de l'extension CDI avec l'interface SPI.
+spi.extension.failed.to.construct.CWOWB1010E.explanation=CDI n'est pas parvenu \u00e0 appeler le constructeur de la classe d'extension {0} qui est enregistr\u00e9e avec la m\u00e9thode getExtensions() d'une impl\u00e9mentation CDIExtensionMetadata en raison de l'exception {1}.
+spi.extension.failed.to.construct.CWOWB1010E.useraction=Corrigez l'erreur qui emp\u00eache l'instanciation de votre extension.

@@ -42,4 +42,4 @@ NO_SAAJ_DOC: No se ha encontrado ning\u00fan DOM SOAPMessage. Habilite SAAJInInt
 NO_ACTION: No se ha definido ninguna acci\u00f3n de seguridad.
 BAD_ACTION: Se ha definido una configuraci\u00f3n de acci\u00f3n no v\u00e1lida.
 NO_USERNAME: Nombre de usuario vac\u00edo para la acci\u00f3n especificada.
-SECURITY_FAILED: El proceso de seguridad ha fallado. 
+SECURITY_FAILED: El proceso de seguridad ha fallado.

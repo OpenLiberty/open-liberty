@@ -14,10 +14,10 @@ package com.ibm.ws.security.oauth20.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.oauth.core.api.error.oauth20.OAuth20DuplicateParameterException;
 import com.ibm.oauth.core.internal.oauth20.OAuth20Constants;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.oauth20.util.Base64;
 
@@ -96,7 +96,7 @@ public class ClientAuthnData {
             } catch (Exception e) {
                 decoded = false;
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Decoding fails with encoding:" + encoding, e.getMessage());
+                    Tr.debug(tc, "Decoding fails with encoding:" + encoding, e);
                 }
             }
         }
@@ -105,7 +105,7 @@ public class ClientAuthnData {
                 hdrValue = new String(headerBytes, BasicAuthEncoding);
             } catch (Exception e) {
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Decoding fails with default encoding:" + BasicAuthEncoding, e.getMessage());
+                    Tr.debug(tc, "Decoding fails with default encoding:" + BasicAuthEncoding, e);
                 }
             }
         }
@@ -134,11 +134,11 @@ public class ClientAuthnData {
      * Throws an exception if multiple values exist for the given parameter name. Otherwise returns the value of the
      * parameter (null if the parameter doesn't exist or has an empty value). These cases are covered by sections 3.1
      * and 3.2 of the OAuth 2.0 spec (RFC6749).
-     * 
+     *
      * Sections 3.1 and 3.2 [RFC6749]:
      * "Parameters sent without a value MUST be treated as if they were omitted from the request... Request and response
      * parameters MUST NOT be included more than once."
-     * 
+     *
      * @param request
      * @param parameter
      * @return

@@ -15,49 +15,74 @@ import java.io.IOException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.batch.runtime.JobExecution;
 
+import com.ibm.jbatch.container.ws.WSRemotablePartitionExecution;
+
 public class JobExecutionLog {
-    
+
     /**
      * The execution id.
      */
-    private JobExecution jobExecution;
-    
+    private final JobExecution jobExecution;
+
     /**
      * All job log file parts for this JobExecution.
      */
-    private List<File> jobLogFiles;
-    
+    private final List<File> jobLogFiles;
+
     /**
-     * A ref to "logs/joblogs/{jobname}/{date}/instance.{instanceId}/execution.{executionId}".  
+     * A ref to "logs/joblogs/{jobname}/{date}/instance.{instanceId}/execution.{executionId}".
      * This is used to help resolve relative names for the jobLogFiles.
      */
-    private File execLogRootDir;
-    
+    private final File execLogRootDir;
+
+    /**
+     * All remote partitions for this execution.
+     */
+    private final List<RemotePartitionLog> partitionLogs = new ArrayList<RemotePartitionLog>();
+
+    /**
+     * EXECUTION_LOCAL: The job execution ran on this server
+     * PARTITION_LOCAL: The job execution did not run on this server, but at least one remote partition did
+     * NOT_LOCAL: Neither the execution nor any remote partitions ran on this server
+     */
+    public enum LogLocalState {
+        NOT_LOCAL, EXECUTION_LOCAL, PARTITION_LOCAL
+    }
+
+    private final LogLocalState localState;
+
     /**
      * CTOR.
      */
-    public JobExecutionLog(JobExecution execution, List<File> jobLogFiles, File rootDir) {
+    public JobExecutionLog(JobExecution execution, List<File> jobLogFiles, File rootDir, LogLocalState localState, List<WSRemotablePartitionExecution> remotePartitions) {
         this.jobExecution = execution;
         this.jobLogFiles = new ArrayList<File>(jobLogFiles); // copy the list.
         this.execLogRootDir = rootDir;
+        this.localState = localState;
+        if (remotePartitions != null && !remotePartitions.isEmpty()) {
+            for (WSRemotablePartitionExecution partition : remotePartitions) {
+                partitionLogs.add(new RemotePartitionLog(partition));
+            }
+        }
     }
-    
+
     public JobExecution getJobExecution() {
         return jobExecution;
     }
-    
+
     public long getExecutionId() {
         return jobExecution.getExecutionId();
     }
-    
+
     public List<File> getJobLogFiles() {
         return jobLogFiles;
     }
-    
+
     /**
      * @return the joblogs root dir, for resolving the relative names
      *         of job log files.
@@ -67,41 +92,55 @@ public class JobExecutionLog {
     }
 
     /**
+     * @return the partitionLogs
+     */
+    public List<RemotePartitionLog> getRemotePartitionLogs() {
+        return partitionLogs;
+    }
+
+    /**
+     * @return the localState
+     */
+    public LogLocalState getLocalState() {
+        return localState;
+    }
+
+    /**
      * @param relativePath path to joblog part, relative to the job execution's root joblog dir.
-     * 
-     * @return the joblog file with the given relativePath, or null if the part doesn't exist. 
+     *
+     * @return the joblog file with the given relativePath, or null if the part doesn't exist.
      */
     public File getPartByRelativePath(String relativePath) {
-        
+
         relativePath = normalizePath(relativePath);
-        
+
         for (File jobLogFile : jobLogFiles) {
             if (normalizePath(getRelativePath(jobLogFile)).equals(relativePath)) {
                 return jobLogFile;
             }
         }
-        
+
         return null;
     }
-    
+
     /**
      * @return the relativePath of the given joblog part (relative to the jobexecution's root joblog dir)
      */
     protected String getRelativePath(File jobLogFile) {
         try {
-            return stripPrefix( jobLogFile.getCanonicalPath(), getExecLogRootDir().getCanonicalPath() + File.separator);
+            return stripPrefix(jobLogFile.getCanonicalPath(), getExecLogRootDir().getCanonicalPath() + File.separator);
         } catch (IOException ioe) {
             throw new RuntimeException(ioe);
         }
     }
-    
+
     /**
      * @return str, with prefix stripped away from the beginning of it.
      */
     protected static String stripPrefix(String str, String prefix) {
         return (str.startsWith(prefix)) ? str.substring(prefix.length()) : str;
     }
-    
+
     /**
      * @return the path with all file separators normalized to "/".
      */
@@ -114,21 +153,22 @@ public class JobExecutionLog {
      *         Path separator normalized to "/".
      */
     public List<String> getRelativePaths() {
-        List<String> retMe  = new ArrayList<String>();
-        
+        List<String> retMe = new ArrayList<String>();
+
         for (File jobLogFile : getJobLogFiles()) {
-            retMe.add( getRelativePath( jobLogFile ) );
+            retMe.add(getRelativePath(jobLogFile));
         }
-        
+
         return retMe;
     }
-    
+
     /**
      * Delete all files associated with this execution from the filesystem.
+     *
      * @return true if all files were successfully deleted.
      */
     public boolean purge() {
-    	return deleteFileRecursive(execLogRootDir);
+        return deleteFileRecursive(execLogRootDir);
     }
 
     private boolean deleteFileRecursive(final File file) {
@@ -174,5 +214,19 @@ public class JobExecutionLog {
             });
         }
         return success;
+    }
+
+    /**
+     * @return a set of unique URLs, one for each endpoint that ran a remote partition
+     */
+    public HashSet<String> getRemotePartitionEndpointURLs() {
+        HashSet<String> retMe = new HashSet<String>();
+
+        // Copy to a HashSet to filter out duplicates
+        for (RemotePartitionLog partitionLog : getRemotePartitionLogs()) {
+            retMe.add(partitionLog.getRemotePartition().getRestUrl());
+        }
+
+        return retMe;
     }
 }

@@ -27,7 +27,8 @@ Export-Package: \
     com.ibm.ws.jdbc.timedoperations, \
     com.ibm.ws.rsadapter, \
     com.ibm.ws.rsadapter.jdbc, \
-    com.ibm.ws.rsadapter.impl
+    com.ibm.ws.rsadapter.impl, \
+    com.ibm.websphere.ce.cm
 
 Import-Package: \
     com.ibm.ws.jca.adapter, \
@@ -37,7 +38,6 @@ Import-Package: \
 
 Private-Package: \
     com.ibm.ejs.cm.logger, \
-    com.ibm.websphere.ce.cm, \
     com.ibm.ws.jdbc.internal, \
     com.ibm.ws.jdbc.*, \
     com.ibm.ws.rsadapter.exceptions, \
@@ -95,7 +95,8 @@ Service-Component: \
     provide:=com.ibm.ws.serialization.DeserializationClassProvider; \
     properties:='classes=com.ibm.ws.rsadapter.jdbc.SerializedDataSourceWrapper'
 
-DynamicImport-Package: com.ibm.wsspi.timedoperations, \
+DynamicImport-Package: \
+    com.ibm.wsspi.timedoperations, \
     com.ibm.ws.timedoperations.bci, \
     com.ibm.wsspi.request.probe.bci, \
     com.ibm.wsspi.probeExtension, \

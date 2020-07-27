@@ -33,7 +33,7 @@ public class InvalidConfigValueTest extends BaseTestCase {
             assertNotNull(result);
             assertEquals(OAuthResult.STATUS_OK, result.getStatus());
         } catch (OAuthException e) {
-            fail("got an exception: " + e.getMessage());
+            fail("got an exception: " + e);
             e.printStackTrace();
         }
     }
@@ -41,8 +41,8 @@ public class InvalidConfigValueTest extends BaseTestCase {
     public void testNullClientProvider() {
         BaseConfig config = new BaseConfig();
         config.putConfigPropertyValues(
-                                       OAuthComponentConfigurationConstants.OAUTH20_CLIENT_PROVIDER_CLASSNAME,
-                                       null);
+                OAuthComponentConfigurationConstants.OAUTH20_CLIENT_PROVIDER_CLASSNAME,
+                null);
         try {
             OAuthComponentInstance testcomp = OAuthComponentFactory.getOAuthComponentInstance(config);
             testcomp.getOAuth20Component();
@@ -55,8 +55,8 @@ public class InvalidConfigValueTest extends BaseTestCase {
     public void testBadClientProvider() {
         BaseConfig config = new BaseConfig();
         config.putConfigPropertyValues(
-                                       OAuthComponentConfigurationConstants.OAUTH20_CLIENT_PROVIDER_CLASSNAME,
-                                       new String[] { "com.ibm.just.a.bad.class.name" });
+                OAuthComponentConfigurationConstants.OAUTH20_CLIENT_PROVIDER_CLASSNAME,
+                new String[] { "com.ibm.just.a.bad.class.name" });
         try {
             OAuthComponentInstance testcomp = OAuthComponentFactory.getOAuthComponentInstance(config);
             testcomp.getOAuth20Component();
@@ -69,8 +69,8 @@ public class InvalidConfigValueTest extends BaseTestCase {
     public void testNullTokenCache() {
         BaseConfig config = new BaseConfig();
         config.putConfigPropertyValues(
-                                       OAuthComponentConfigurationConstants.OAUTH20_TOKEN_CACHE_CLASSNAME,
-                                       null);
+                OAuthComponentConfigurationConstants.OAUTH20_TOKEN_CACHE_CLASSNAME,
+                null);
         try {
             OAuthComponentInstance testcomp = OAuthComponentFactory.getOAuthComponentInstance(config);
             testcomp.getOAuth20Component();
@@ -83,8 +83,8 @@ public class InvalidConfigValueTest extends BaseTestCase {
     public void testBadTokenCache() {
         BaseConfig config = new BaseConfig();
         config.putConfigPropertyValues(
-                                       OAuthComponentConfigurationConstants.OAUTH20_TOKEN_CACHE_CLASSNAME,
-                                       new String[] { "com.ibm.just.a.bad.class.name" });
+                OAuthComponentConfigurationConstants.OAUTH20_TOKEN_CACHE_CLASSNAME,
+                new String[] { "com.ibm.just.a.bad.class.name" });
         try {
             OAuthComponentInstance testcomp = OAuthComponentFactory.getOAuthComponentInstance(config);
             testcomp.getOAuth20Component();
@@ -97,8 +97,8 @@ public class InvalidConfigValueTest extends BaseTestCase {
     public void testNullTokenTypeHandler() {
         BaseConfig config = new BaseConfig();
         config.putConfigPropertyValues(
-                                       OAuthComponentConfigurationConstants.OAUTH20_ACCESS_TOKENTYPEHANDLER_CLASSNAME,
-                                       null);
+                OAuthComponentConfigurationConstants.OAUTH20_ACCESS_TOKENTYPEHANDLER_CLASSNAME,
+                null);
         try {
             OAuthComponentInstance testcomp = OAuthComponentFactory.getOAuthComponentInstance(config);
             testcomp.getOAuth20Component();
@@ -111,8 +111,8 @@ public class InvalidConfigValueTest extends BaseTestCase {
     public void testBadTokenTypeHandler() {
         BaseConfig config = new BaseConfig();
         config.putConfigPropertyValues(
-                                       OAuthComponentConfigurationConstants.OAUTH20_ACCESS_TOKENTYPEHANDLER_CLASSNAME,
-                                       new String[] { "com.ibm.just.a.bad.class.name" });
+                OAuthComponentConfigurationConstants.OAUTH20_ACCESS_TOKENTYPEHANDLER_CLASSNAME,
+                new String[] { "com.ibm.just.a.bad.class.name" });
         try {
             OAuthComponentInstance testcomp = OAuthComponentFactory.getOAuthComponentInstance(config);
             testcomp.getOAuth20Component();
@@ -129,9 +129,9 @@ public class InvalidConfigValueTest extends BaseTestCase {
     public void testBadMediators() {
         BaseConfig config = new BaseConfig();
         config.putConfigPropertyValues(
-                                       OAuthComponentConfigurationConstants.OAUTH20_MEDIATOR_CLASSNAMES,
-                                       new String[] { "com.ibm.just.a.bad.class.name",
-                                                      "com.ibm.just.another.bad.class.name" });
+                OAuthComponentConfigurationConstants.OAUTH20_MEDIATOR_CLASSNAMES,
+                new String[] { "com.ibm.just.a.bad.class.name",
+                        "com.ibm.just.another.bad.class.name" });
         try {
             OAuthComponentInstance testcomp = OAuthComponentFactory.getOAuthComponentInstance(config);
             testcomp.getOAuth20Component();
@@ -144,8 +144,8 @@ public class InvalidConfigValueTest extends BaseTestCase {
     public void testBadAuthGrantLifetime() {
         BaseConfig config = new BaseConfig();
         config.putConfigPropertyValues(
-                                       OAuthComponentConfigurationConstants.OAUTH20_MAX_AUTHORIZATION_GRANT_LIFETIME_SECONDS,
-                                       new String[] { "-100" });
+                OAuthComponentConfigurationConstants.OAUTH20_MAX_AUTHORIZATION_GRANT_LIFETIME_SECONDS,
+                new String[] { "-100" });
         try {
             OAuthComponentInstance testcomp = OAuthComponentFactory.getOAuthComponentInstance(config);
             testcomp.getOAuth20Component();
@@ -158,8 +158,8 @@ public class InvalidConfigValueTest extends BaseTestCase {
     public void testBadCodeLifetime() {
         BaseConfig config = new BaseConfig();
         config.putConfigPropertyValues(
-                                       OAuthComponentConfigurationConstants.OAUTH20_CODE_LIFETIME_SECONDS,
-                                       new String[] { "-100" });
+                OAuthComponentConfigurationConstants.OAUTH20_CODE_LIFETIME_SECONDS,
+                new String[] { "-100" });
         try {
             OAuthComponentInstance testcomp = OAuthComponentFactory.getOAuthComponentInstance(config);
             testcomp.getOAuth20Component();
@@ -172,8 +172,8 @@ public class InvalidConfigValueTest extends BaseTestCase {
     public void testBadCodeLength() {
         BaseConfig config = new BaseConfig();
         config.putConfigPropertyValues(
-                                       OAuthComponentConfigurationConstants.OAUTH20_CODE_LENGTH,
-                                       new String[] { "-100" });
+                OAuthComponentConfigurationConstants.OAUTH20_CODE_LENGTH,
+                new String[] { "-100" });
         try {
             OAuthComponentInstance testcomp = OAuthComponentFactory.getOAuthComponentInstance(config);
             testcomp.getOAuth20Component();
@@ -186,8 +186,8 @@ public class InvalidConfigValueTest extends BaseTestCase {
     public void testBadTokenLifetime() {
         BaseConfig config = new BaseConfig();
         config.putConfigPropertyValues(
-                                       OAuthComponentConfigurationConstants.OAUTH20_TOKEN_LIFETIME_SECONDS,
-                                       new String[] { "-100" });
+                OAuthComponentConfigurationConstants.OAUTH20_TOKEN_LIFETIME_SECONDS,
+                new String[] { "-100" });
         try {
             OAuthComponentInstance testcomp = OAuthComponentFactory.getOAuthComponentInstance(config);
             testcomp.getOAuth20Component();
@@ -200,8 +200,8 @@ public class InvalidConfigValueTest extends BaseTestCase {
     public void testBadTokenLength() {
         BaseConfig config = new BaseConfig();
         config.putConfigPropertyValues(
-                                       OAuthComponentConfigurationConstants.OAUTH20_ACCESS_TOKEN_LENGTH,
-                                       new String[] { "-100" });
+                OAuthComponentConfigurationConstants.OAUTH20_ACCESS_TOKEN_LENGTH,
+                new String[] { "-100" });
         try {
             OAuthComponentInstance testcomp = OAuthComponentFactory.getOAuthComponentInstance(config);
             testcomp.getOAuth20Component();
@@ -214,8 +214,8 @@ public class InvalidConfigValueTest extends BaseTestCase {
     public void testBadRefreshTokenLength() {
         BaseConfig config = new BaseConfig();
         config.putConfigPropertyValues(
-                                       OAuthComponentConfigurationConstants.OAUTH20_REFRESH_TOKEN_LENGTH,
-                                       new String[] { "-100" });
+                OAuthComponentConfigurationConstants.OAUTH20_REFRESH_TOKEN_LENGTH,
+                new String[] { "-100" });
         try {
             OAuthComponentInstance testcomp = OAuthComponentFactory.getOAuthComponentInstance(config);
             testcomp.getOAuth20Component();

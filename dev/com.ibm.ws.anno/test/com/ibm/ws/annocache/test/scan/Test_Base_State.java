@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -360,17 +360,15 @@ public class Test_Base_State {
     //
 
     public void setUpFactories() throws Exception {
-        targetsService = new AnnotationCacheServiceImpl_Service();
-        targetsService.activate( createRawCacheOptions() );
+        utilFactory = new UtilImpl_Factory();
+        classSourceFactory = new ClassSourceImpl_Factory(utilFactory);
 
-        utilFactory = targetsService.getUtilFactory();
-        classSourceFactory = targetsService.getClassSourceFactory();
-
-        cacheFactory = targetsService.getTargetCacheFactory();
+        cacheFactory = new TargetCacheImpl_Factory(createRawCacheOptions());
       
-        targetsFactory = targetsService.getAnnotationTargetsFactory();
+        targetsFactory = new AnnotationTargetsImpl_Factory(utilFactory, classSourceFactory, cacheFactory);
 
-        infoStoreFactory = targetsService.getInfoStoreFactory();
+        infoStoreFactory = new InfoStoreFactoryImpl(utilFactory);
+        targetsService = new AnnotationCacheServiceImpl_Service(cacheFactory, utilFactory, infoStoreFactory, classSourceFactory, targetsFactory);
     }
 
     public void tearDownFactories() {

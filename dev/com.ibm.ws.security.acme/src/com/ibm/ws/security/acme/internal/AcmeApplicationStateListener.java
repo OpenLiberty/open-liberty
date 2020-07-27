@@ -18,12 +18,17 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
+import com.ibm.ws.kernel.feature.ServerStartedPhase2;
 import com.ibm.ws.security.acme.AcmeCaException;
 import com.ibm.ws.security.acme.internal.web.AcmeAuthorizationServlet;
 
@@ -41,13 +46,22 @@ public class AcmeApplicationStateListener implements ApplicationStateListener {
 	/** Has the ACME authorization web application started? */
 	private boolean isAppStarted = false;
 
+	/** Has the server started which means the HTTP port is available? */
+	private boolean isHttpStarted;
+
 	/** Lock used to signal when the application has started. */
-	private final Lock lock = new ReentrantLock();
+	private final Lock appLock = new ReentrantLock();
+
+	/** Lock used to signal when the application has started. */
+	private final Lock httpLock = new ReentrantLock();
 
 	/** Condition used to signal when the application has started. */
-	private final Condition appStartedCondition = lock.newCondition();
+	private final Condition appStartedCondition = appLock.newCondition();
+
+	private final Condition httpStartedCondition = httpLock.newCondition();
 
 	@Override
+	@Trivial
 	public void applicationStarting(ApplicationInfo appInfo) {
 		/*
 		 * Ignore. The service and web application cannot be up without one
@@ -56,6 +70,7 @@ public class AcmeApplicationStateListener implements ApplicationStateListener {
 	}
 
 	@Override
+	@Trivial
 	public void applicationStarted(ApplicationInfo appInfo) throws StateChangeException {
 		final String methodName = "applicationStarted(ApplicationInfo)";
 
@@ -65,17 +80,53 @@ public class AcmeApplicationStateListener implements ApplicationStateListener {
 						methodName + ": ACME authorization web application has started and is available for requests.");
 			}
 
-			lock.lock();
+			appLock.lock();
 			try {
 				isAppStarted = true;
 				appStartedCondition.signalAll();
 			} finally {
-				lock.unlock();
+				appLock.unlock();
 			}
 		}
 	}
 
+	/**
+	 * Declarative services method that is invoked once the ServerStarted service is
+	 * available. Only after this method is invoked are the activation
+	 * specifications activated thereby ensuring that endpoints are activated only
+	 * after server startup.
+	 *
+	 * @param serverStarted
+	 *                          The server started instance
+	 */
+	@Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL)
+	protected synchronized void setServerStartedPhase2(ServerStartedPhase2 serverStartedPhase2) {
+		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+			Tr.event(tc, ": HTTP is open.");
+		}
+		httpLock.lock();
+		try {
+			isHttpStarted = true;
+			httpStartedCondition.signalAll();
+		} finally {
+			httpLock.unlock();
+		}
+	}
+
+	/**
+	 * Declarative services method for unsetting the ServerStarted service instance.
+	 *
+	 * @param serverStarted
+	 *                          The Started service instance
+	 */
+	@Trivial
+	protected void unsetServerStartedPhase2(ServerStartedPhase2 serverStartedPhase2) {
+		// No cleanup is needed since the server has stopped.
+		isHttpStarted = false;
+	}
+
 	@Override
+	@Trivial
 	public void applicationStopping(ApplicationInfo appInfo) {
 		/*
 		 * Ignore. The service and web application cannot be up without one
@@ -84,6 +135,7 @@ public class AcmeApplicationStateListener implements ApplicationStateListener {
 	}
 
 	@Override
+	@Trivial
 	public void applicationStopped(ApplicationInfo appInfo) {
 		/*
 		 * Ignore. The service and servlet cannot be up without one another, so
@@ -92,60 +144,122 @@ public class AcmeApplicationStateListener implements ApplicationStateListener {
 	}
 
 	/**
-	 * Wait until the ACME authorization web application is available for
-	 * service at /.well-known/acme-authorization.
+	 * Wait until the ACME authorization web application is available for service at
+	 * /.well-known/acme-authorization.
+	 * 
+	 * Then wait until all applications are started as this signals the HTTP is
+	 * open. If we're not signaled that HTTP is open, optimistically log it and
+	 * continue.
+	 *
 	 * 
 	 * @throws AcmeCaException
 	 *             If the application is not available within the expected time.
 	 */
-	public void waitUntilWebAppAvailable() throws AcmeCaException {
+	public void waitUntilResourcesAvailable(AcmeConfig acmeConfig) throws AcmeCaException {
 		final String methodName = "waitUntilWebAppAvailable()";
 
+		Calendar cal = Calendar.getInstance();
+
 		try {
-			lock.lock();
+			appLock.lock();
+
+			/*
+			 * The startReadyTimeout is used both for waiting on the acme servlet and the
+			 * HTTP port to open as a single timeout (not waiting for startReadyTimeout
+			 * twice).
+			 */
+			cal.setTimeInMillis(System.currentTimeMillis() + acmeConfig.getStartReadyTimeout());
+
 			if (!isAppStarted) {
-				if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-					Tr.debug(tc, methodName + ": ACME authorization web application has not started - waiting.");
+				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+					if (!isAppStarted) {
+						Tr.debug(tc, methodName + ": ACME authorization web application has not started - waiting.");
+					}
 				}
 
-				boolean signalled = false, keepWaiting = true;
-				Calendar cal = Calendar.getInstance();
-				int timeToWait = 2;
-				cal.add(Calendar.MINUTE, timeToWait); // Wait 2 minutes, maximum
+				boolean signaled = false, keepWaiting = true;
+
+
 				while (keepWaiting) {
 					try {
 						keepWaiting = false;
-						signalled = appStartedCondition.awaitUntil(cal.getTime());
+						signaled = appStartedCondition.awaitUntil(cal.getTime());
+					} catch (InterruptedException e) {
+						keepWaiting = true;
+					}
+				}
+				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+					Tr.debug(tc, methodName + ": Finished waiting on ACME authorization web application.");
+				}
+
+				/*
+				 * If the wait above expired and we weren't signaled by the
+				 * applicationStarted(...) method, the ACME authorization web application did
+				 * not start, log it and attempt to proceed.
+				 */
+				if (!signaled || !isAppStarted) {
+					if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+						Tr.event(tc, methodName
+								+ ": Not signalled that acme application is ready, letting ACME flow happen anyway : signaled: "
+								+ signaled + " isHttpStarted: " + isAppStarted);
+					}
+					Tr.warning(tc, "CWPKI2036W", acmeConfig.getStartReadyTimeout() + "ms");
+				}
+
+			} else {
+				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+					Tr.debug(tc, methodName + ": ACME authorization web application already started - not waiting.");
+				}
+			}
+		} finally {
+			appLock.unlock();
+		}
+
+		try {
+			httpLock.lock();
+			if (!isHttpStarted) {
+				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+					Tr.debug(tc, methodName + ": HTTP has not started - waiting. Time left: "
+							+ (cal.getTimeInMillis() - System.currentTimeMillis()) + "ms");
+				}
+
+				boolean signaled = false, keepWaiting = true;
+				while (keepWaiting) {
+					try {
+						keepWaiting = false;
+						/*
+						 * Use any time left from waiting on the servlet to start
+						 */
+						signaled = httpStartedCondition.awaitUntil(cal.getTime());
 					} catch (InterruptedException e) {
 						keepWaiting = true;
 					}
 				}
 				if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-					Tr.debug(tc, methodName + ": Finished waiting.");
+					Tr.debug(tc, methodName + ": Finished waiting on HTTP.");
 				}
 
 				/*
-				 * If the wait above expired and we weren't signaled by the
-				 * applicationStarted(...) method, the ACME authorization web
-				 * application did not start, we can't proceed.
+				 * If the wait above expired and we weren't signaled by the startedPhase2
+				 * method, we will attempt to start ACME anyway. If the HTTP port is truly not
+				 * open, then the CA call back to the well-known URL will fail
+				 * ("Connection refused" or similar).
 				 */
-				if (!signalled) {
-					throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2036E", timeToWait));
-				} else if (!isAppStarted) {
-					/*
-					 * This should never happen, but throw an exception if it
-					 * does.
-					 */
-					throw new AcmeCaException("ACME authorization web application did not start.");
+				if (!signaled || !isHttpStarted) {
+					if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+						Tr.event(tc, methodName
+								+ ": Not signalled that HTTP is ready, letting ACME flow happen anyway : signaled: "
+								+ signaled + " isHttpStarted: " + isHttpStarted);
+					}
+					Tr.warning(tc, "CWPKI2074W", acmeConfig.getStartReadyTimeout() + "ms");
 				}
-
 			} else {
-				if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-					Tr.debug(tc, methodName + ": ACME authorization web application already started - not waiting.");
+				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+					Tr.debug(tc, methodName + ": HTTP is already opened - not waiting.");
 				}
 			}
 		} finally {
-			lock.unlock();
+			httpLock.unlock();
 		}
 	}
 }

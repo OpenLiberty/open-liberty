@@ -23,13 +23,24 @@ repositories {
     mavenCentral()
   }
 }
+ext {
+	set('springCloudVersion', "Hoxton.SR6")
+}
 
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
 	compile('org.springframework.boot:spring-boot-starter-security')
+	compile('org.springframework.cloud:spring-cloud-starter')
+	compile('org.springframework.cloud:spring-cloud-starter-config')
 	compile 'org.webjars:bootstrap:3.3.1'
 	compile 'org.webjars:webjars-locator:0.33'
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
 }
 
 bootJar {

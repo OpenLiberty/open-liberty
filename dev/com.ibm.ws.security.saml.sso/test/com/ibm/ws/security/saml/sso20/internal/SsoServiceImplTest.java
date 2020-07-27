@@ -538,7 +538,7 @@ public class SsoServiceImplTest {
             assertTrue("The Collection trustAnchors must contain the object x509Certificate.", trustAnchors.contains(x509Certificate));
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 

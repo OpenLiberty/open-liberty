@@ -17,6 +17,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -77,6 +79,10 @@ public class CustomAccessLogFieldsTest {
     @Server("CustomAccessLogFieldsXml")
     public static LibertyServer xmlServer;
 
+    // We need a server that has mpMetrics enabled so we can hit the /metrics endpoint for the remoteUserID field
+    @Server("CustomAccessLogFieldsXmlWithMetrics")
+    public static LibertyServer xmlServerWithMetrics;
+
     @Server("CustomAccessLogFieldsBadConfigEnv")
     public static LibertyServer badConfigServerEnv;
 
@@ -99,8 +105,8 @@ public class CustomAccessLogFieldsTest {
                                              "ibm_queryString", "ibm_elapsedTime", "ibm_responseCode", "ibm_uriPath", "ibm_userAgent" };
 
     // We need to verify that the security prerequisites are fulfilled before hitting the /metrics secure endpoint
-    // xmlServer is the only server that is reused multiple times, but we only need to wait for the security pre-reqs once
-    private static boolean isFirstTimeUsingXmlServer = true;
+    // xmlServerWithMetrics is reused multiple times, but we only need to wait for the security pre-reqs once
+    private static boolean isFirstTimeUsingXmlServerWithMetrics = true;
 
     private static LibertyServer serverInUse; // hold on to the server currently used so cleanUp knows which server to stop
 
@@ -110,6 +116,7 @@ public class CustomAccessLogFieldsTest {
         envServer.saveServerConfiguration();
         bootstrapServer.saveServerConfiguration();
         xmlServer.saveServerConfiguration();
+        xmlServerWithMetrics.saveServerConfiguration();
         badConfigServerEnv.saveServerConfiguration();
         badConfigServerBootstrap.saveServerConfiguration();
         badConfigServerXml.saveServerConfiguration();
@@ -169,6 +176,7 @@ public class CustomAccessLogFieldsTest {
     public void testAccessLogFieldNamesEnv() throws Exception {
         setUp(envServer);
         waitForSecurityPrerequisites(envServer, WAIT_TIMEOUT);
+        waitForMetricsToStart(envServer, WAIT_TIMEOUT);
         hitHttpsEndpointSecure("/metrics", envServer);
         String line = envServer.waitForStringInLog("liberty_accesslog");
         assertNotNull("No liberty_accesslog found in the output JSON log.", line);
@@ -184,6 +192,7 @@ public class CustomAccessLogFieldsTest {
     public void testAccessLogFieldNamesBootstrap() throws Exception {
         setUp(bootstrapServer);
         waitForSecurityPrerequisites(bootstrapServer, WAIT_TIMEOUT);
+        waitForMetricsToStart(bootstrapServer, WAIT_TIMEOUT);
         hitHttpsEndpointSecure("/metrics", bootstrapServer);
         String line = bootstrapServer.waitForStringInLog("liberty_accesslog");
         assertNotNull("No liberty_accesslog found in the output JSON log.", line);
@@ -197,16 +206,15 @@ public class CustomAccessLogFieldsTest {
      */
     @Test
     public void testAccessLogFieldNamesXml() throws Exception {
-        setUp(xmlServer);
-        if (isFirstTimeUsingXmlServer) {
-            waitForSecurityPrerequisites(xmlServer, WAIT_TIMEOUT);
-        } else {
-            assertNotNull("TCP Channel defaultHttpEndpoint-ssl has not started (CWWKO0219I not found)",
-                          xmlServer.waitForStringInLog("CWWKO0219I.*defaultHttpEndpoint-ssl", 60000));
+        setUp(xmlServerWithMetrics);
+        if (isFirstTimeUsingXmlServerWithMetrics) {
+            waitForSecurityPrerequisites(xmlServerWithMetrics, WAIT_TIMEOUT);
         }
-        isFirstTimeUsingXmlServer = false;
+        waitForMetricsToStart(xmlServerWithMetrics, WAIT_TIMEOUT);
+
+        isFirstTimeUsingXmlServerWithMetrics = false;
         hitHttpsEndpointSecure("/metrics", xmlServer);
-        String line = xmlServer.waitForStringInLog("liberty_accesslog");
+        String line = xmlServerWithMetrics.waitForStringInLog("liberty_accesslog");
         assertNotNull("No liberty_accesslog found in the output JSON log.", line);
 
         assertTrue("There are fields missing in the output JSON log.", areFieldsPresent(line, newFields));
@@ -269,19 +277,18 @@ public class CustomAccessLogFieldsTest {
      */
     @Test
     public void testAllFieldsArePrinted() throws Exception {
-        setUp(xmlServer);
-        xmlServer.setServerConfigurationFile("accessLogging/server-all-fields.xml");
-        waitForConfigUpdate(xmlServer);
-        if (isFirstTimeUsingXmlServer) {
-            waitForSecurityPrerequisites(xmlServer, WAIT_TIMEOUT);
-        } else {
-            assertNotNull("TCP Channel defaultHttpEndpoint-ssl has not started (CWWKO0219I not found)",
-                          xmlServer.waitForStringInLog("CWWKO0219I.*defaultHttpEndpoint-ssl", 60000));
+        setUp(xmlServerWithMetrics);
+        xmlServerWithMetrics.setServerConfigurationFile("accessLogging/server-all-fields.xml");
+        waitForConfigUpdate(xmlServerWithMetrics);
+        if (isFirstTimeUsingXmlServerWithMetrics) {
+            waitForSecurityPrerequisites(xmlServerWithMetrics, WAIT_TIMEOUT);
         }
-        isFirstTimeUsingXmlServer = false;
+        waitForMetricsToStart(xmlServerWithMetrics, WAIT_TIMEOUT);
 
-        hitHttpsEndpointSecure("/metrics", xmlServer);
-        String line = xmlServer.waitForStringInLog("liberty_accesslog");
+        isFirstTimeUsingXmlServerWithMetrics = false;
+
+        hitHttpsEndpointSecure("/metrics", xmlServerWithMetrics);
+        String line = xmlServerWithMetrics.waitForStringInLog("liberty_accesslog");
         assertNotNull("No liberty_accesslog found in the output JSON log.", line);
 
         // Easier to just use two asserts instead of trying to join those two arrays together
@@ -327,17 +334,16 @@ public class CustomAccessLogFieldsTest {
      */
     @Test
     public void testFieldsInAccessLogAreSameInJSON() throws Exception {
-        setUp(xmlServer);
-        if (isFirstTimeUsingXmlServer) {
-            waitForSecurityPrerequisites(xmlServer, WAIT_TIMEOUT);
-        } else {
-            assertNotNull("TCP Channel defaultHttpEndpoint-ssl has not started (CWWKO0219I not found)",
-                          xmlServer.waitForStringInLog("CWWKO0219I.*defaultHttpEndpoint-ssl", 60000));
+        setUp(xmlServerWithMetrics);
+        if (isFirstTimeUsingXmlServerWithMetrics) {
+            waitForSecurityPrerequisites(xmlServerWithMetrics, WAIT_TIMEOUT);
         }
-        isFirstTimeUsingXmlServer = false;
+        waitForMetricsToStart(xmlServerWithMetrics, WAIT_TIMEOUT);
 
-        hitHttpsEndpointSecure("/metrics", xmlServer);
-        String line = xmlServer.waitForStringInLog("liberty_accesslog");
+        isFirstTimeUsingXmlServerWithMetrics = false;
+
+        hitHttpsEndpointSecure("/metrics", xmlServerWithMetrics);
+        String line = xmlServerWithMetrics.waitForStringInLog("liberty_accesslog");
         assertNotNull("No liberty_accesslog found in the output JSON log.", line);
 
         // create a map of the strings
@@ -352,12 +358,25 @@ public class CustomAccessLogFieldsTest {
         unwantedFields.add("ibm_userDir");
         unwantedFields.add("ibm_datetime");
         unwantedFields.add("ibm_sequence");
+        // The following two fields are formatted differently in JSON compared to the http_access.log
+        unwantedFields.add("ibm_accessLogDatetime");
+        unwantedFields.add("ibm_requestStartTime");
         parsedLine.keySet().removeAll(unwantedFields);
 
         // unfortunately, our JSON log isn't ordered like the http access logs
         // easier to check that the value shows up in the http_access.log at some point; for duplicate values, let's just remove it with each pass-through.
-        String accessLogLine = readFile(xmlServer.getServerRoot() + "/logs/http_access.log");
+
+        String accessLog = xmlServerWithMetrics.getServerRoot() + "/logs/http_access.log";
+        String accessLogLine = readFile(accessLog);
+        // Try to read the file again once every second for WAIT_TIMEOUT if the file is still empty
+        long startTime = System.currentTimeMillis();
+        while ((accessLogLine == null || accessLogLine.isEmpty()) && ((System.currentTimeMillis() - startTime) < WAIT_TIMEOUT)) {
+            Thread.sleep(1000);
+            accessLogLine = readFile(accessLog);
+        }
         assertNotNull("The http_access.log file is empty or could not be read.", accessLogLine);
+        assertFalse("The http_access.log file is empty.", accessLogLine.isEmpty());
+
         for (String s : parsedLine.values()) {
             if (accessLogLine.contains(s)) {
                 // let's remove it, in case there's a duplicate value for a different field
@@ -376,6 +395,7 @@ public class CustomAccessLogFieldsTest {
     public void testChangeJsonAccessLogFieldsConfigValue() throws Exception {
         setUp(changeConfigServer);
         waitForSecurityPrerequisites(changeConfigServer, WAIT_TIMEOUT);
+        waitForMetricsToStart(changeConfigServer, WAIT_TIMEOUT);
 
         hitHttpsEndpointSecure("/metrics", changeConfigServer);
         String line = changeConfigServer.waitForStringInLogUsingMark("liberty_accesslog");
@@ -567,7 +587,6 @@ public class CustomAccessLogFieldsTest {
             con.setRequestProperty("cookie", "cookie=cookie");
             con.setRequestProperty("header", "headervalue");
             con.setConnectTimeout(60 * 1000); // Timeout is, by default, infinity - we don't want to waste time if the connection can't be established
-
             BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String line = null;
             StringBuilder lines = new StringBuilder();
@@ -583,7 +602,8 @@ public class CustomAccessLogFieldsTest {
             assertTrue("Nothing was returned from the servlet - there was a problem connecting.", lines.length() > 0);
             con.disconnect();
         } catch (IOException e) {
-
+            e.printStackTrace();
+            fail("Exception caught. Please see System.err log to view stack trace.");
         } finally {
             if (con != null)
                 con.disconnect();
@@ -612,7 +632,6 @@ public class CustomAccessLogFieldsTest {
             con.setRequestProperty("cookie", "cookie=cookie");
             con.setRequestProperty("header", "headervalue");
             con.setConnectTimeout(60 * 1000); // Timeout is, by default, infinity - we don't want to waste time if the connection can't be established
-
             BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String line = null;
             StringBuilder lines = new StringBuilder();
@@ -623,12 +642,12 @@ public class CustomAccessLogFieldsTest {
             } finally {
                 br.close();
             }
-
             Log.info(c, "hitHttpsEndpointSecure", url + " reached successfully.");
             assertTrue("Nothing was returned from the servlet - there was a problem connecting.", lines.length() > 0);
             con.disconnect();
         } catch (IOException e) {
-
+            e.printStackTrace();
+            fail("Exception caught. Please see System.err log to view stack trace.");
         } finally {
             if (con != null)
                 con.disconnect();
@@ -707,17 +726,21 @@ public class CustomAccessLogFieldsTest {
         return keyValuePairs;
     }
 
-    private String readFile(String file) {
+    private String readFile(String file) throws Exception {
+        File f = new File(file);
+        if (!f.exists() || f.isDirectory())
+            throw new FileNotFoundException(file);
+
+        StringBuilder sb = new StringBuilder();
+        BufferedReader br = new BufferedReader(new FileReader(f));
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(file));
             String line;
-            line = reader.readLine();
-            reader.close();
-            return line;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            while ((line = br.readLine()) != null)
+                sb.append(line).append('\n');
+        } finally {
+            br.close();
         }
+        return sb.toString();
     }
 
     private void waitForConfigUpdate(LibertyServer server) {
@@ -729,8 +752,14 @@ public class CustomAccessLogFieldsTest {
         // Need to ensure LTPA keys and configuration are created before hitting a secure endpoint
         assertNotNull("LTPA keys are not created within timeout period of " + logTimeout + "ms.", server.waitForStringInLog("CWWKS4104A", logTimeout));
         assertNotNull("LTPA configuration is not ready within timeout period of " + logTimeout + "ms.", server.waitForStringInLog("CWWKS4105I", logTimeout));
+    }
 
-        // Ensure defaultHttpEndpoint-ssl TCP Channel is started
-        assertNotNull("TCP Channel defaultHttpEndpoint-ssl has not started (CWWKO0219I not found)", server.waitForStringInLog("CWWKO0219I.*defaultHttpEndpoint-ssl", logTimeout));
+    private void waitForMetricsToStart(LibertyServer server, long logTimeout) {
+        // Wait for port 8020 to be ready
+        assertNotNull("TCP Channel defaultHttpEndpoint-ssl has not started (CWWKO0219I not found)",
+                      server.waitForStringInLog("CWWKO0219I.*defaultHttpEndpoint-ssl", logTimeout));
+        // Wait for /metrics to be initialized
+        assertNotNull("/metrics was not initialized (SRVE0242I not found)",
+                      server.waitForStringInLog("SRVE0242I.*/metrics", logTimeout));
     }
 }

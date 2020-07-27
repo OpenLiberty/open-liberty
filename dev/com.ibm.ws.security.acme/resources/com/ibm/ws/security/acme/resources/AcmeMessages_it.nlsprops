@@ -326,3 +326,7 @@ CWPKI2071W.useraction=Per evitare questo messaggio di avvertenza, impostare la p
 CWPKI2072W=CWPKI2072W: Il servizio ACME non ha potuto leggere o scrivere il file cronologico ACME in {0}. L''errore \u00e8 ''{1}''.
 CWPKI2072W.explanation=Il servizio ACME non \u00e8 stato in grado di accedere al file cronologico ACME.
 CWPKI2072W.useraction=Assicurarsi che la directory della cronologia ACME abbia le autorizzazioni di lettura e scrittura.
+
+CWPKI2073W=CWPKI2073W: Non \u00e8 stato specificato alcun contatto account. Si consiglia di impostare questa propriet\u00e0\u00a0nella configurazione del server. Se si perde una chiave o l'account \u00e8 compromesso, si perde l'accesso all'account.
+CWPKI2073W.explanation=Il valore per la propriet\u00e0 accountContact non \u00e8 stato specificato nella configurazione del server.
+CWPKI2073W.useraction=Ilmpostare la propriet\u00e0\u00a0accountContact nella configurazione del server.

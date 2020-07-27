@@ -18,6 +18,8 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 import javax.xml.namespace.QName;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 
 /**
  * <p>Java class for AttributedURIType complex type.
@@ -40,6 +42,7 @@ import javax.xml.namespace.QName;
 @XmlType(name = "AttributedURIType", propOrder = {
     "value"
 })
+@Trivial
 public class AttributedURIType {
 
     @XmlValue

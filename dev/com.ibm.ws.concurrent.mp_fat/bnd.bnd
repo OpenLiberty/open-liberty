@@ -23,6 +23,8 @@ src: \
 
 fat.project: true
 
+tested.features:cdi-3.0
+
 -buildpath: \
 	com.ibm.tx.core;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\

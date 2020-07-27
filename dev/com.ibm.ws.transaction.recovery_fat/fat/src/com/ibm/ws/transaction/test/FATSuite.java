@@ -18,8 +18,6 @@ import org.junit.runners.Suite.SuiteClasses;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
-import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -29,9 +27,6 @@ import componenttest.topology.impl.LibertyServerFactory;
                 WaitForRecoveryTest.class,
 })
 public class FATSuite {
-
-    private static LibertyServer server1 = LibertyServerFactory.getLibertyServer("com.ibm.ws.transaction");
-    private static LibertyServer server2 = LibertyServerFactory.getLibertyServer("com.ibm.ws.transaction_waitForRecovery");
     // Using the RepeatTests @ClassRule will cause all tests to be run twice.
     // First without any modifications, then again with all features upgraded to their EE8 equivalents.
     @ClassRule

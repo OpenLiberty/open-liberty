@@ -196,10 +196,18 @@ public abstract class VirtualHost extends BaseContainer {
      */
     public ServletContext findContext(String path) {
         WebGroup g = (WebGroup) requestMapper.map(path);
-        if (g != null)
+        if (g != null) {
+            if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+                logger.logp(Level.FINE, CLASS_NAME, "findContext", "WebGroup ->" + g.getName());
+            }
             return g.getContext();
-        else
+        }
+        else {
+            if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+                logger.logp(Level.FINE, CLASS_NAME, "findContext", "WebGroup mapping not found ");
+            }
             return null;
+        }
     }
 
     //PK37449 synchronizing method

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2016 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.security.auth.data.internal;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Activate;
@@ -34,6 +36,8 @@ public class AuthDataImpl implements AuthData {
 
     private String username;
     private String password;
+    private String principal;
+    private Path keytab;
 
     @Activate
     protected void activate(@Sensitive Map<String, Object> props) {
@@ -41,6 +45,11 @@ public class AuthDataImpl implements AuthData {
         SerializableProtectedString sps = (SerializableProtectedString) props.get(CFG_KEY_PASSWORD);
         String configuredPassword = sps == null ? "" : new String(sps.getChars());
         password = PasswordUtil.passwordDecode(configuredPassword);
+
+        principal = (String) props.get("krb5Principal");
+        String sKeytab = (String) props.get("krb5Keytab");
+        if (sKeytab != null)
+            keytab = Paths.get(sKeytab);
     }
 
     /**
@@ -62,6 +71,12 @@ public class AuthDataImpl implements AuthData {
     @Sensitive
     public char[] getPassword() {
         return password.toCharArray();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getKrb5Principal() {
+        return principal;
     }
 
 }
