@@ -169,11 +169,8 @@ Include-Resource:\
   com.ibm.ws.classloading;version=latest,\
   com.ibm.ws.container.service;version=latest,\
   com.ibm.ws.logging.core, \
-  com.ibm.ws.microprofile.config.1.4;version=latest, \
   com.ibm.ws.org.jboss.logging, \
-  com.ibm.ws.org.jboss.weld3;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-  com.ibm.ws.org.reactivestreams.reactive-streams.1.0, \
   com.ibm.ws.webcontainer;version=latest, \
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
   javax.activation:activation;version=1.1
