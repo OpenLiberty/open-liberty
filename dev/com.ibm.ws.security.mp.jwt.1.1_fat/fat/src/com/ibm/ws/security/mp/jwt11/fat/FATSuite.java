@@ -47,7 +47,6 @@ import com.ibm.ws.security.mp.jwt11.fat.systemPropertiesTests.MPJwtGoodMPConfigA
                 // More targeted tests
                 MPJwtConfigUsingBuilderTests.class,
                 MPJwtApplicationAndSessionScopedClaimInjectionTests.class,
-                MPJwtJDKTests.class,
                 MPJwtLoginConfig_ignoreApplicationAuthMethodTrueTests.class,
                 MPJwtLoginConfig_ignoreApplicationAuthMethodFalseTests.class,
                 MPJwtNoMpJwtConfig.class,
