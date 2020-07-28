@@ -58,7 +58,6 @@ public class HelloWorldClientServlet extends HttpServlet {
         greetingService = GreeterGrpc.newBlockingStub(channel);
     }
 
-
     private void stopService() {
         channel.shutdownNow();
     }
