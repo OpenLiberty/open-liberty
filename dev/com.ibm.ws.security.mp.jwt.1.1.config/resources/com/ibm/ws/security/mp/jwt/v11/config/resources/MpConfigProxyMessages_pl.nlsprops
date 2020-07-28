@@ -15,7 +15,7 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS5775 - CWWKS5799
+# Message prefix block: CWWKS5775 - CWWKS5779
 
 MPJWT_11_CONFIG_PROXY_PROCESSED=CWWKS5775I: Pomy\u015blnie przetworzono element mpConfigProxy znacznika MicroProfile JWT w wersji 1.1.
 MPJWT_11_CONFIG_PROXY_PROCESSED.explanation=Wskazana konfiguracja zosta\u0142a przetworzona pomy\u015blnie.
