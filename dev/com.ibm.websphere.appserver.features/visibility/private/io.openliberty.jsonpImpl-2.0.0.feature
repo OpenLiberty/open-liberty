@@ -1,6 +1,6 @@
 # This private impl feature corresponds to JSON-P 2.0 with the Glassfish implementation
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.jsonpImpl-2.0.0
+symbolicName=io.openliberty.jsonpImpl-2.0.0
 singleton=true
 visibility=private
 -features=com.ibm.websphere.appserver.eeCompatible-9.0
