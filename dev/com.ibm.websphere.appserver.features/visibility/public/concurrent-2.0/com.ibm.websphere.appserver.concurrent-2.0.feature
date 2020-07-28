@@ -18,8 +18,7 @@ Subsystem-Name: Jakarta EE Concurrency 2.0
   io.openliberty.jakarta.concurrency-2.0, \
   com.ibm.websphere.appserver.org.eclipse.microprofile.contextpropagation-1.0; ibm.tolerates:="1.1"
 -bundles=\
-  com.ibm.websphere.javaee.concurrent.1.0; location:="dev/api/spec/,lib/"; apiJar=false, \
-  com.ibm.ws.concurrent, \
+  com.ibm.ws.concurrent.jakarta, \
   com.ibm.ws.javaee.platform.defaultresource, \
   com.ibm.ws.resource
 kind=beta

@@ -37,6 +37,9 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
+import javax.enterprise.concurrent.ManagedExecutorService;
+import javax.enterprise.concurrent.ManagedTask;
+
 import org.eclipse.microprofile.context.ManagedExecutor;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
@@ -72,18 +75,14 @@ import com.ibm.wsspi.threadcontext.ThreadContextProvider;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
 @Component(configurationPid = "com.ibm.ws.concurrent.managedExecutorService", configurationPolicy = ConfigurationPolicy.REQUIRE,
-           service = { ExecutorService.class, ManagedExecutor.class, //
-                       jakarta.enterprise.concurrent.ManagedExecutorService.class, //
-                       javax.enterprise.concurrent.ManagedExecutorService.class, //
+           service = { ExecutorService.class, ManagedExecutor.class, ManagedExecutorService.class, //
                        ResourceFactory.class, ApplicationRecycleComponent.class },
            reference = @Reference(name = "ApplicationRecycleCoordinator", service = ApplicationRecycleCoordinator.class),
            property = { "creates.objectClass=java.util.concurrent.ExecutorService",
-                        "creates.objectClass=jakarta.enterprise.concurrent.ManagedExecutorService",
                         "creates.objectClass=javax.enterprise.concurrent.ManagedExecutorService",
                         "creates.objectClass=org.eclipse.microprofile.context.ManagedExecutor" })
-public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecutor, //
-                jakarta.enterprise.concurrent.ManagedExecutorService, //
-                javax.enterprise.concurrent.ManagedExecutorService, //
+public class ManagedExecutorServiceImpl implements ExecutorService, 
+                ManagedExecutor, ManagedExecutorService, //
                 ResourceFactory, ApplicationRecycleComponent, WSManagedExecutorService {
     private static final TraceComponent tc = Tr.register(ManagedExecutorServiceImpl.class);
 
@@ -417,14 +416,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
         if (task == null) // NullPointerException is required per the JavaDoc API
             throw new NullPointerException(Tr.formatMessage(tc, "CWWKC1111.task.invalid", (Object) null));
 
-        Map<String, String> execProps;
-        if (task instanceof jakarta.enterprise.concurrent.ManagedTask)
-            execProps = ((jakarta.enterprise.concurrent.ManagedTask) task).getExecutionProperties();
-        else if (task instanceof javax.enterprise.concurrent.ManagedTask)
-            execProps = ((javax.enterprise.concurrent.ManagedTask) task).getExecutionProperties();
-        else
-            execProps = null;
-
+        Map<String, String> execProps = task instanceof ManagedTask ? ((ManagedTask) task).getExecutionProperties() : null;
         if (execProps == null)
             execProps = defaultExecutionProperties.get();
         else {
