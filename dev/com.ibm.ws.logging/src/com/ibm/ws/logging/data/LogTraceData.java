@@ -229,7 +229,7 @@ public class LogTraceData extends GenericData {
         return isMessageEvent ? nameAliasesMessages[format].aliases[3] : nameAliasesTrace[format].aliases[3];
     }
 
-    public String getSeverityKey(int format, boolean isMessageEvent) {
+    public static String getSeverityKey(int format, boolean isMessageEvent) {
         return isMessageEvent ? nameAliasesMessages[format].aliases[4] : nameAliasesTrace[format].aliases[4];
     }
 

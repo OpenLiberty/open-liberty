@@ -151,9 +151,9 @@ public class CollectorJsonUtils {
         jsonBuilder.addField(LogTraceData.getMessageKey(LOGSTASH_KEY, isMessageEvent), formattedValue.toString(), false, true)
                    .addField(LogTraceData.getThreadIdKey(LOGSTASH_KEY, isMessageEvent), DataFormatHelper.padHexString(logData.getThreadId(), 8), false, true)
                    .addField(LogTraceData.getDatetimeKey(LOGSTASH_KEY, isMessageEvent), datetime, false, true)
-                   .addField(LogTraceData.getMessageIdKey(LOGSTASH_KEY, isMessageEvent), logData.getMessageId(), false, true)
                    .addField(LogTraceData.getModuleKey(LOGSTASH_KEY, isMessageEvent), logData.getModule(), false, true)
-                   .addField(LogTraceData.getLoglevelKey(LOGSTASH_KEY, isMessageEvent), logData.getLoglevel(), false, true)
+                   .addField(LogTraceData.getMessageIdKey(LOGSTASH_KEY, isMessageEvent), logData.getMessageId(), false, true)
+                   .addField(LogTraceData.getSeverityKey(LOGSTASH_KEY, isMessageEvent), logData.getSeverity(), false, true)
                    .addField(LogTraceData.getMethodNameKey(LOGSTASH_KEY, isMessageEvent), logData.getMethodName(), false, true)
                    .addField(LogTraceData.getClassNameKey(LOGSTASH_KEY, isMessageEvent), logData.getClassName(), false, true)
                    .addField(LogTraceData.getSequenceKey(LOGSTASH_KEY, isMessageEvent), logData.getSequence(), false, true);
