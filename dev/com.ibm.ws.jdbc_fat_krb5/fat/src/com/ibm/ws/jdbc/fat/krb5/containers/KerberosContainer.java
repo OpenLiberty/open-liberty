@@ -1,11 +1,14 @@
-/**
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- */
-package com.ibm.ws.jdbc.fat.db2;
-
-import static com.ibm.ws.jdbc.fat.db2.JDBCKerberosTest.KRB5_KDC;
-import static com.ibm.ws.jdbc.fat.db2.JDBCKerberosTest.KRB5_PASS;
-import static com.ibm.ws.jdbc.fat.db2.JDBCKerberosTest.KRB5_REALM;
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package com.ibm.ws.jdbc.fat.krb5.containers;
 
 import java.io.FileInputStream;
 import java.io.FileWriter;
@@ -28,12 +31,12 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.output.OutputFrame;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
-import org.testcontainers.utility.MountableFile;
 
 import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.InternetProtocol;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.jdbc.fat.krb5.FATSuite;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.FileUtils;
@@ -42,9 +45,11 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
 
     private static final Class<?> c = KerberosContainer.class;
 
-    private static final String IMAGE = "gcavalcante8808/krb5-server";
-    // Use direct hash instead of label since labels can be updated
-    private static final String DIGEST = "2adbcde9ba41227a4b10c01b0f0b97e6d972099dd26b4cd1541acf642242ecf5";
+    public static final String KRB5_REALM = "EXAMPLE.COM";
+    public static final String KRB5_KDC = "kerberos";
+    public static final String KRB5_PASS = "password";
+
+    private static final String IMAGE = "aguibert/krb5-server:1.1";
     private static final Path reuseCache = Paths.get("..", "..", "cache", "krb5.properties");
 
     private boolean reused;
@@ -53,16 +58,17 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
     private int udp_99;
 
     public KerberosContainer(Network network) {
-        super(IMAGE + "@sha256:" + DIGEST);
+        super(IMAGE);
         withNetwork(network);
     }
 
     @Override
     protected void configure() {
-        withCopyFileToContainer(MountableFile.forHostPath(Paths.get("lib", "LibertyFATTestFiles", "kdc-server", "docker-entrypoint.sh"), 777),
-                                "/docker-entrypoint.sh");
         withExposedPorts(99, 464, 749);
         withNetworkAliases(KRB5_KDC);
+        withCreateContainerCmdModifier(cmd -> {
+            cmd.withHostName(KRB5_KDC);
+        });
         withEnv("KRB5_REALM", KRB5_REALM);
         withEnv("KRB5_KDC", "localhost");
         withEnv("KRB5_PASS", KRB5_PASS);
@@ -74,7 +80,6 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
         withCreateContainerCmdModifier(cmd -> {
             List<ExposedPort> ports = new ArrayList<>();
             for (ExposedPort p : cmd.getExposedPorts()) {
-                Log.info(c, "@AGG", "Got port: " + p.getPort() + " proto=" + p.getProtocol());
                 ports.add(p);
             }
             ports.add(new ExposedPort(99, InternetProtocol.UDP));
@@ -85,7 +90,6 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
     @Override
     protected void containerIsStarted(InspectContainerResponse containerInfo) {
         String udp99 = containerInfo.getNetworkSettings().getPorts().getBindings().get(new ExposedPort(99, InternetProtocol.UDP))[0].getHostPortSpec();
-        Log.info(c, "@AGG", "Got UDP port: " + udp99);
         udp_99 = Integer.valueOf(udp99);
     }
 
@@ -107,7 +111,7 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
             Log.info(c, "start", "Found existing container at host = " + reused_hostname);
         } else {
             super.start();
-            if (FATRunner.FAT_TEST_LOCALRUN) {
+            if (FATSuite.REUSE_CONTAINERS) {
                 Log.info(c, "start", "Saving KRB5 properties for future runs at: " + reuseCache.toAbsolutePath());
                 try {
                     Files.createDirectories(reuseCache.getParent());
@@ -129,7 +133,7 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
 
     @Override
     public void stop() {
-        if (FATRunner.FAT_TEST_LOCALRUN) {
+        if (FATSuite.REUSE_CONTAINERS) {
             Log.info(c, "stop", "Leaving container running so it can be used in later runs");
             return;
         } else {
@@ -232,11 +236,12 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
      * This doesn't seem to be necessary because we can simply check in the keytab file
      */
     @Deprecated
-    public void generateKeytab() throws Exception {
-        Files.deleteIfExists(Paths.get("./krb5.keytab"));
+    public void generateKeytab(String username, Path output) throws Exception {
+        Files.deleteIfExists(output);
         Process proc = Runtime.getRuntime().exec("ktutil");
         OutputStream ktInput = proc.getOutputStream();
-        ktInput.write(("add_entry -password -p dbuser@" + KRB5_REALM + " -k 1 -e aes256-cts\n" + KRB5_PASS + "\nwkt ./krb5.keytab").getBytes());
+        ktInput.write(("add_entry -password -p " + username + "@" + KRB5_REALM +
+                       " -k 1 -e aes256-cts\n" + KRB5_PASS + "\nwkt " + output.toAbsolutePath().toString()).getBytes());
         ktInput.flush();
         ktInput.close();
         if (!proc.waitFor(15, TimeUnit.SECONDS)) {
@@ -250,12 +255,6 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
         if (proc.exitValue() != 0) {
             throw new RuntimeException("Process failed with output: " + procOut);
         }
-
-        // We need to manually transfer contents from a temp file into the /etc/ folder due to fs perms
-        byte[] keytab = Files.readAllBytes(Paths.get("./krb5.keytab"));
-        Log.info(c, "generateKeytab", "Generated keytab contents:\n" + new String(keytab));
-        Files.write(Paths.get("/etc/krb5.keytab"), keytab,
-                    StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
     }
 
     private static String readInputStream(InputStream is) {
@@ -272,7 +271,7 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
     }
 
     private static boolean hasCachedContainers() {
-        if (!FATRunner.FAT_TEST_LOCALRUN)
+        if (!FATSuite.REUSE_CONTAINERS)
             return false;
         if (!reuseCache.toFile().exists())
             return false;

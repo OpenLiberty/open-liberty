@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jdbc.fat.db2;
+package com.ibm.ws.jdbc.fat.krb5;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,37 +19,33 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
-import org.testcontainers.containers.Network;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.jdbc.fat.krb5.containers.KerberosPlatformRule;
+import com.ibm.ws.jdbc.fat.krb5.containers.OracleKerberosContainer;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 import componenttest.topology.utils.FATServletClient;
-import db2.web.JDBCKerberosTestServlet;
+import jdbc.krb5.oracle.web.OracleKerberosTestServlet;
 
 @RunWith(FATRunner.class)
-public class JDBCKerberosTest extends FATServletClient {
+@Mode(TestMode.FULL)
+public class OracleKerberosTest extends FATServletClient {
 
-    private static final Class<?> c = JDBCKerberosTest.class;
+    private static final Class<?> c = OracleKerberosTest.class;
 
-    public static final String KRB5_REALM = "EXAMPLE.COM";
-    public static final String KRB5_KDC = "kerberos";
-    public static final String KRB5_USER = "dbuser";
-    public static final String KRB5_PASS = "password";
+    public static final String APP_NAME = "krb5-oracle-app";
 
-    public static final String APP_NAME = "db2fat";
+    public static final OracleKerberosContainer oracle = new OracleKerberosContainer(FATSuite.network);
 
-    public static final Network network = Network.newNetwork();
-    public static final KerberosContainer krb5 = new KerberosContainer(network);
-    public static final DB2KerberosContainer db2 = new DB2KerberosContainer(network);
-
-    @Server("com.ibm.ws.jdbc.fat.krb5")
-    @TestServlet(servlet = JDBCKerberosTestServlet.class, contextRoot = APP_NAME)
+    @Server("com.ibm.ws.jdbc.fat.krb5.oracle")
+    @TestServlet(servlet = OracleKerberosTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
     @ClassRule
@@ -57,28 +53,23 @@ public class JDBCKerberosTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        // Allows local tests to switch between using a local docker client, to using a remote docker client.
-        ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
-
-        krb5.start();
         Path krbConfPath = Paths.get(server.getServerRoot(), "security", "krb5.conf");
-        krb5.generateConf(krbConfPath);
-        //krb5.configureKerberos();
-        //krb5.generateKeytab();
+        FATSuite.krb5.generateConf(krbConfPath);
 
-        db2.start();
+        oracle.start();
 
-        ShrinkHelper.defaultApp(server, APP_NAME, "db2.web");
+        ShrinkHelper.defaultDropinApp(server, APP_NAME, "jdbc.krb5.oracle.web");
 
-        server.addEnvVar("DB2_DBNAME", db2.getDatabaseName());
-        server.addEnvVar("DB2_HOSTNAME", db2.getContainerIpAddress());
-        server.addEnvVar("DB2_PORT", "" + db2.getMappedPort(50000));
-        server.addEnvVar("DB2_USER", db2.getUsername());
-        server.addEnvVar("DB2_PASS", db2.getPassword());
-        server.addEnvVar("KRB5_USER", KRB5_USER);
+        server.addEnvVar("ORACLE_DBNAME", oracle.getDatabaseName());
+        server.addEnvVar("ORACLE_HOSTNAME", oracle.getContainerIpAddress());
+        server.addEnvVar("ORACLE_PORT", "" + oracle.getMappedPort(1521));
+        server.addEnvVar("ORACLE_USER", oracle.getUsername());
+        server.addEnvVar("ORACLE_PASS", oracle.getPassword());
+        server.addEnvVar("KRB5_USER", oracle.getKerberosUsername());
         server.addEnvVar("KRB5_CONF", krbConfPath.toAbsolutePath().toString());
         List<String> jvmOpts = new ArrayList<>();
         jvmOpts.add("-Dsun.security.krb5.debug=true"); // Hotspot/OpenJ9
+        jvmOpts.add("-Dsun.security.jgss.debug=true");
         jvmOpts.add("-Dcom.ibm.security.krb5.krb5Debug=true"); // IBM JDK
         server.setJvmOptions(jvmOpts);
 
@@ -96,21 +87,11 @@ public class JDBCKerberosTest extends FATServletClient {
             Log.error(c, "tearDown", e);
         }
         try {
-            db2.stop();
+            oracle.stop();
         } catch (Exception e) {
             if (firstError == null)
                 firstError = e;
             Log.error(c, "tearDown", e);
-        }
-        try {
-            krb5.stop();
-        } catch (Exception e) {
-            if (firstError == null)
-                firstError = e;
-            Log.error(c, "tearDown", e);
-        }
-        if (!FATRunner.FAT_TEST_LOCALRUN) {
-            network.close();
         }
 
         if (firstError != null)

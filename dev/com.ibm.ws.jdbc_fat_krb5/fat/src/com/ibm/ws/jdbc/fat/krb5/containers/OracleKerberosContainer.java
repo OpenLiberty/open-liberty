@@ -8,10 +8,10 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jdbc.fat.db2;
+package com.ibm.ws.jdbc.fat.krb5.containers;
 
-import static com.ibm.ws.jdbc.fat.db2.JDBCKerberosTest.KRB5_KDC;
-import static com.ibm.ws.jdbc.fat.db2.JDBCKerberosTest.KRB5_REALM;
+import static com.ibm.ws.jdbc.fat.krb5.containers.KerberosContainer.KRB5_KDC;
+import static com.ibm.ws.jdbc.fat.krb5.containers.KerberosContainer.KRB5_REALM;
 
 import java.io.FileInputStream;
 import java.io.FileWriter;
@@ -22,40 +22,43 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Properties;
 
-import org.testcontainers.containers.Db2Container;
 import org.testcontainers.containers.Network;
+import org.testcontainers.containers.OracleContainer;
 import org.testcontainers.containers.output.OutputFrame;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.jdbc.fat.krb5.FATSuite;
 
 import componenttest.custom.junit.runner.FATRunner;
 
-public class DB2KerberosContainer extends Db2Container {
+public class OracleKerberosContainer extends OracleContainer {
 
-    private static final Class<?> c = DB2KerberosContainer.class;
-    private static final Path reuseCache = Paths.get("..", "..", "cache", "db2.properties");
+    private static final Class<?> c = OracleKerberosContainer.class;
+    private static final Path reuseCache = Paths.get("..", "..", "cache", "oracle.properties");
 
     private boolean reused = false;
     private String reused_hostname;
     private int reused_port;
 
-    public DB2KerberosContainer(Network network) {
-        super("aguibert/db2-kerberos");
+    public OracleKerberosContainer(Network network) {
+        super("aguibert/krb5-oracle:1.0");
         withNetwork(network);
     }
 
     @Override
     protected void configure() {
-        acceptLicense();
-        withExposedPorts(50000);
+        withNetworkAliases("oracle");
+        withCreateContainerCmdModifier(cmd -> {
+            cmd.withHostName("oracle");
+        });
         withEnv("KRB5_REALM", KRB5_REALM);
         withEnv("KRB5_KDC", KRB5_KDC);
-        withEnv("DB2_KRB5_PRINCIPAL", "db2srvc@EXAMPLE.COM");
+        withExposedPorts(1521, 5500, 8080); // need to manually expose ports due to regression in 1.14.0
         waitingFor(new LogMessageWaitStrategy()
-                        .withRegEx("^.*SETUP SCRIPT COMPLETE.*$")
+                        .withRegEx("^.*DONE: Executing user defined scripts.*$")
                         .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 3 : 25)));
-        withLogConsumer(DB2KerberosContainer::log);
+        withLogConsumer(OracleKerberosContainer::log);
         withReuse(true);
     }
 
@@ -63,7 +66,7 @@ public class DB2KerberosContainer extends Db2Container {
         String msg = frame.getUtf8String();
         if (msg.endsWith("\n"))
             msg = msg.substring(0, msg.length() - 1);
-        Log.info(DB2KerberosContainer.class, "[DB2]", msg);
+        Log.info(OracleKerberosContainer.class, "[Oracle]", msg);
     }
 
     @Override
@@ -79,8 +82,8 @@ public class DB2KerberosContainer extends Db2Container {
                 throw new RuntimeException(e);
             }
             reused = true;
-            reused_hostname = props.getProperty("db2.hostname");
-            reused_port = Integer.valueOf(props.getProperty("db2.port"));
+            reused_hostname = props.getProperty("oracle.hostname");
+            reused_port = Integer.valueOf(props.getProperty("oracle.port"));
             Log.info(c, "start", "Found existing container at host = " + reused_hostname);
             Log.info(c, "start", "Found existing container on port = " + reused_port);
             return;
@@ -88,8 +91,8 @@ public class DB2KerberosContainer extends Db2Container {
 
         super.start();
 
-        if (FATRunner.FAT_TEST_LOCALRUN) {
-            Log.info(c, "start", "Saving DB2 properties for future runs at: " + reuseCache.toAbsolutePath());
+        if (FATSuite.REUSE_CONTAINERS) {
+            Log.info(c, "start", "Saving Oracle properties for future runs at: " + reuseCache.toAbsolutePath());
             try {
                 Files.createDirectories(reuseCache.getParent());
                 Properties props = new Properties();
@@ -98,8 +101,8 @@ public class DB2KerberosContainer extends Db2Container {
                         props.load(fis);
                     }
                 }
-                props.setProperty("db2.hostname", getContainerIpAddress());
-                props.setProperty("db2.port", "" + getMappedPort(50000));
+                props.setProperty("oracle.hostname", getContainerIpAddress());
+                props.setProperty("oracle.port", "" + getMappedPort(1521));
                 props.store(new FileWriter(reuseCache.toFile()), "Generated by FAT run");
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -109,7 +112,7 @@ public class DB2KerberosContainer extends Db2Container {
 
     @Override
     public void stop() {
-        if (FATRunner.FAT_TEST_LOCALRUN) {
+        if (FATSuite.REUSE_CONTAINERS) {
             Log.info(c, "stop", "Leaving container running so it can be used in later runs");
             return;
         } else {
@@ -120,7 +123,7 @@ public class DB2KerberosContainer extends Db2Container {
 
     @Override
     public Integer getMappedPort(int originalPort) {
-        return (reused && originalPort == 50000) ? reused_port : super.getMappedPort(originalPort);
+        return (reused && originalPort == 1521) ? reused_port : super.getMappedPort(originalPort);
     }
 
     @Override
@@ -130,36 +133,45 @@ public class DB2KerberosContainer extends Db2Container {
 
     @Override
     public String getUsername() {
-        return "db2inst1";
+        return "system";
+    }
+
+    public String getKerberosUsername() {
+        return "ORACLEUSR@" + KerberosContainer.KRB5_REALM;
+    }
+
+    @Override
+    public OracleContainer withUsername(String username) {
+        throw new UnsupportedOperationException("hardcoded setting, cannot change");
     }
 
     @Override
     public String getPassword() {
-        return "password";
+        return "oracle";
+    }
+
+    @Override
+    public OracleContainer withPassword(String password) {
+        throw new UnsupportedOperationException("hardcoded setting, cannot change");
     }
 
     @Override
     public String getDatabaseName() {
-        return "testdb";
+        return "XE";
     }
 
     @Override
-    public Db2Container withUsername(String username) {
-        throw new UnsupportedOperationException("Username is hardcoded in container");
+    public OracleContainer withDatabaseName(String dbName) {
+        throw new UnsupportedOperationException("hardcoded setting, cannot change");
     }
 
     @Override
-    public Db2Container withPassword(String password) {
-        throw new UnsupportedOperationException("Password is hardcoded in container");
-    }
-
-    @Override
-    public Db2Container withDatabaseName(String dbName) {
-        throw new UnsupportedOperationException("DB name is hardcoded in container");
+    protected void waitUntilContainerStarted() {
+        getWaitStrategy().waitUntilReady(this);
     }
 
     private static boolean hasCachedContainers() {
-        if (!FATRunner.FAT_TEST_LOCALRUN)
+        if (!FATSuite.REUSE_CONTAINERS)
             return false;
         if (!reuseCache.toFile().exists())
             return false;
@@ -169,8 +181,8 @@ public class DB2KerberosContainer extends Db2Container {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return props.containsKey("db2.hostname") &&
-               props.containsKey("db2.port");
+        return props.containsKey("oracle.hostname") &&
+               props.containsKey("oracle.port");
     }
 
 }

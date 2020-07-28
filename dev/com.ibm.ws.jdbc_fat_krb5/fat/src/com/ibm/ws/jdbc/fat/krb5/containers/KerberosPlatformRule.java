@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jdbc.fat.db2;
+package com.ibm.ws.jdbc.fat.krb5.containers;
 
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -36,7 +36,7 @@ public class KerberosPlatformRule implements TestRule {
         };
     }
 
-    private static boolean shouldRun(Description desc) {
+    public static boolean shouldRun(Description desc) {
         // Kerberos is only supported on certain operating systems
         // Skip the tests if we are not on one of the supported OSes
         String os = System.getProperty("os.name", "UNKNOWN").toUpperCase();
@@ -44,7 +44,8 @@ public class KerberosPlatformRule implements TestRule {
             if (FATRunner.FAT_TEST_LOCALRUN) {
                 throw new RuntimeException("Running on an unsupported os: " + os);
             } else {
-                Log.info(desc.getTestClass(), desc.getMethodName(), "Skipping test because of unsupported os: " + os);
+                if (desc != null)
+                    Log.info(desc.getTestClass(), desc.getMethodName(), "Skipping test because of unsupported os: " + os);
                 return false;
             }
         }
