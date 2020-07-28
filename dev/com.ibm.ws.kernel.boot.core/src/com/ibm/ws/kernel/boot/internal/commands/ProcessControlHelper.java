@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,7 @@ import com.ibm.ws.kernel.boot.internal.PSProcessStatusImpl;
 import com.ibm.ws.kernel.boot.internal.ProcessStatus;
 import com.ibm.ws.kernel.boot.internal.ProcessStatus.State;
 import com.ibm.ws.kernel.boot.internal.ServerLock;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 /**
  * The ProcessControlHelper is the central location for implementing commands
@@ -249,6 +250,8 @@ public class ProcessControlHelper {
             rc = ReturnCode.ERROR_SERVER_START;
         }
 
+        displayWarningIfBeta();
+
         if (rc == ReturnCode.OK) {
             if (pid == null) {
                 System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverStarted"), serverName));
@@ -268,6 +271,18 @@ public class ProcessControlHelper {
         }
 
         return rc;
+    }
+
+    /**
+     * If this is an early access release of Liberty ( determined by openLiberty.properties,
+     * property com.ibm.websphere.productEdition=EARLY_ACCESS ) display a warning.
+     */
+    private void displayWarningIfBeta() {
+        ProductInfo.setBetaEditionJVMProperty();
+
+        if (ProductInfo.getBetaEditionDuringBootstrap()) {
+            System.out.println(BootstrapConstants.messages.getString("warning.earlyRelease"));
+        }
     }
 
     private void parseJavaDumpInclude(Set<JavaDumpAction> javaDumpActions) {

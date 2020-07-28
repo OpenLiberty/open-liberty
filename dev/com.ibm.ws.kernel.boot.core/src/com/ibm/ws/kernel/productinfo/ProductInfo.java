@@ -17,7 +17,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.MessageFormat;
@@ -287,6 +286,24 @@ public class ProductInfo {
         } finally {
             ThreadIdentityManager.reset(token);
         }
+    }
+
+    /**
+     * Returns value of Beta Edition JVM Property. Callers early in the boostrap process
+     * should use this method. Otherwise, use the getBetaEdition() method.
+     * Calling getBetaEdition during bootstrap results in a NoClassDefFoundError exception
+     * because the logging code isn't loaded yet.
+     *
+     * @return true if edition is EARLY_ACCESS, otherwise false.
+     */
+    public static boolean getBetaEditionDuringBootstrap() {
+
+        return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+            @Override
+            public Boolean run() {
+                return Boolean.getBoolean(BETA_EDITION_JVM_PROPERTY);
+            }
+        });
     }
 
     /**

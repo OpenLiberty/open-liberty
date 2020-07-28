@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2019 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -516,9 +516,34 @@ public class KernelBootstrap {
                 System.out.println(consoleLogHeader);
             }
         }
+
+        displayWarningIfBeta(bootProps, consoleFormat);
+
         // Store the product version in the map for use by log providers
         bootProps.put(BootstrapConstants.BOOTPROP_PRODUCT_INFO, versionString);
 
+    }
+
+    /**
+     * If this is an early access release of Liberty ( determined by openLiberty.properties,
+     * property com.ibm.websphere.productEdition=EARLY_ACCESS ) display a warning in
+     * the console.log.
+     *
+     * @param bootProps
+     * @param consoleFormat
+     */
+    private static void displayWarningIfBeta(BootstrapConfig bootProps, String consoleFormat) {
+
+        ProductInfo.setBetaEditionJVMProperty();
+
+        if (ProductInfo.getBetaEditionDuringBootstrap()) {
+            if ("json".equals(consoleFormat)) {
+                String jsonMessage = constructJSONHeader(BootstrapConstants.messages.getString("warning.earlyRelease"), bootProps);
+                System.out.println(jsonMessage);
+            } else {
+                System.out.println(BootstrapConstants.messages.getString("warning.earlyRelease"));
+            }
+        }
     }
 
     private static String constructJSONHeader(String consoleLogHeader, BootstrapConfig bootProps) {
