@@ -53,7 +53,7 @@ public class LraFilterComponent implements JaxRsProviderRegister {
     @Activate
     protected void activate(Map<String, Object> properties) throws LraException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "LraFilterComponent activated with a service", properties);
+            Tr.event(tc, "LraFilterComponent activated", properties);
         }
         String coordString = "http://" + config.getHost() + ":" + config.getPort() + "/" + config.getPath();
         if (TraceComponent.isAnyTracingEnabled() && tc.isInfoEnabled()) {
@@ -63,9 +63,8 @@ public class LraFilterComponent implements JaxRsProviderRegister {
             URI coord = new URI(coordString);
             NarayanaLRAClient.setDefaultCoordinatorEndpoint(coord);
         } catch (URISyntaxException e) {
-            // TODO Not sure how to handle config problems yet
-            Tr.error(tc, "Things went wrong");
-            throw new LraException(Tr.formatMessage(tc, "LRA_INVALID_COORDINATOR_URI"), e);
+            Tr.error(tc, "Invalid LRA coordinator URI: '" + coordString + "'");
+            throw new LraException(Tr.formatMessage(tc, "LRA_INVALID_COORDINATOR_URI.CWMRX5000E"), e);
         }
 
     }
@@ -86,11 +85,11 @@ public class LraFilterComponent implements JaxRsProviderRegister {
     @Override
     public void installProvider(boolean clientSide, List<Object> providers, Set<String> features) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Attempting to register LRA filters");
+            Tr.event(tc, "Registering LRA filters");
         }
 
         if (clientSide) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, "Registering client side filters");
             }
             ClientLRARequestFilter requestFilter = new ClientLRARequestFilter();
@@ -98,26 +97,19 @@ public class LraFilterComponent implements JaxRsProviderRegister {
             ClientLRAResponseFilter responseFilter = new ClientLRAResponseFilter();
             providers.add(responseFilter);
         } else {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, "Registering serverside side filters");
             }
-
-            ServerLRAFilter filter = null;
             try {
-                filter = new ServerLRAFilter();
+                // Rather unhelpfully, the ServerLRAFilter constructor throws 'Exception'. There isn't much we can do with
+                // that. Re-throwing should prevent the servlet being initialized, which is probably better than swallowing
+                // the exception
+                providers.add(new ServerLRAFilter());
             } catch (Exception e) {
-
-                // TODO Do something meaningful
-
-                // TODO Auto-generated catch block
-                // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-                // https://websphere.pok.ibm.com/~alpine/secure/docs/dev/API/com.ibm.ws.ras/com/ibm/ws/ffdc/annotation/FFDCIgnore.html
-                Tr.error(tc, "Couldn't register the Server filter", e);
-                return;
+                Tr.error(tc, "Exception during registration of LRA filters", e);
+                throw new LraRuntimeException(Tr.formatMessage(tc, "LRA_CANT_REGISTER_FILTERS.CWMRX5001E", e), e);
             }
-            providers.add(filter);
         }
-
     }
 
 }
