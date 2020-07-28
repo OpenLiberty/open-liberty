@@ -12,11 +12,12 @@ package io.openliberty.jakarta.jaxrs30api.fat.app.canload;
 
 import static org.junit.Assert.assertTrue;
 
-import javax.servlet.annotation.WebServlet;
+import jakarta.servlet.annotation.WebServlet;
+
+import componenttest.app.FATServlet;
 
 import org.junit.Test;
 
-import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
 @WebServlet("/ApiTestServlet")
@@ -24,7 +25,7 @@ public class ApiTestServlet extends FATServlet {
     private final static ClassLoader THIS_CLASSLOADER = ApiTestServlet.class.getClassLoader();
 
     @Test
-    public void testCanLoadJavaxWsRsClasses() throws Exception {
+    public void testCanLoadJakartaWsRsClasses() throws Exception {
         // classes
         assertTrue(canLoad("jakarta.ws.rs.Priorities"));
         // enums
@@ -71,7 +72,7 @@ public class ApiTestServlet extends FATServlet {
     }
 
     @Test
-    public void testCanLoadJavaxWsRsClientClasses() throws Exception {
+    public void testCanLoadJakartaWsRsClientClasses() throws Exception {
         // interfaces
         assertTrue(canLoad("jakarta.ws.rs.client.AsyncInvoker"));
         assertTrue(canLoad("jakarta.ws.rs.client.Client"));
@@ -95,7 +96,7 @@ public class ApiTestServlet extends FATServlet {
     }
 
     @Test
-    public void testCanLoadJavaxWsRsContainerClasses() throws Exception {
+    public void testCanLoadJakartaWsRsContainerClasses() throws Exception {
         // interfaces
         assertTrue(canLoad("jakarta.ws.rs.container.AsyncResponse"));
         assertTrue(canLoad("jakarta.ws.rs.container.CompletionCallback"));
@@ -114,7 +115,7 @@ public class ApiTestServlet extends FATServlet {
     }
 
     @Test
-    public void testCanLoadJavaxWsRsCoreClasses() throws Exception {
+    public void testCanLoadJakartaWsRsCoreClasses() throws Exception {
         // interfaces
         assertTrue(canLoad("jakarta.ws.rs.core.Configurable"));
         assertTrue(canLoad("jakarta.ws.rs.core.Configuration"));
@@ -159,7 +160,7 @@ public class ApiTestServlet extends FATServlet {
         assertTrue(canLoad("jakarta.ws.rs.core.Context"));
     }
 
-    public void testCanLoadJavaxWsRsExtClasses() throws Exception {
+    public void testCanLoadJakartaWsRsExtClasses() throws Exception {
         // interfaces
         assertTrue(canLoad("jakarta.ws.rs.ext.ContextResolver"));
         assertTrue(canLoad("jakarta.ws.rs.ext.ExceptionMapper"));
@@ -181,7 +182,7 @@ public class ApiTestServlet extends FATServlet {
         assertTrue(canLoad("jakarta.ws.rs.ext.Provider"));
     }
 
-    public void testCanLoadJavaxWsRsSseClasses() throws Exception {
+    public void testCanLoadJakartaWsRsSseClasses() throws Exception {
         // interfaces
         assertTrue(canLoad("jakarta.ws.rs.sse.InboundSseEvent"));
         assertTrue(canLoad("jakarta.ws.rs.sse.OutboundSseEvent"));
