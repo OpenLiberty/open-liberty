@@ -1,6 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 
-symbolicName = io.openliberty.webBundleSecurity.jakarta-1.0
+symbolicName = io.openliberty.webBundleSecurity1.0.jakarta
 visibility = private
 
 -bundles= io.openliberty.webcontainer.security.internal; start-phase:=SERVICE_EARLY, \

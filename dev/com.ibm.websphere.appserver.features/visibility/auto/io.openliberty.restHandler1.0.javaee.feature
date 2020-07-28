@@ -1,6 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 
-symbolicName = io.openliberty.restHandler.javaee-1.0
+symbolicName = io.openliberty.restHandler1.0.javaee
 visibility = private
 
 -bundles= com.ibm.ws.rest.handler
