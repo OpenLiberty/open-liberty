@@ -12,9 +12,14 @@
     <featureManager>
         <feature>grpc-1.0</feature>
         <feature>grpcClient-1.0</feature>
+         <feature>monitor-1.0</feature>
+        <feature>localConnector-1.0</feature>
     </featureManager>
 
     <include location="../fatTestPorts.xml"/>
     
     <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
+	<logging
+		traceSpecification="*=info=enabled:io.openliberty.grpc*=all:com.ibm.testapp.g3store*=all:com.ibm.ws.grpc.fat*=all:com.ibm.ws.fat.grpc*=all"
+		maxFileSize="40" maxFiles="20" traceFormat="BASIC" />
 </server>
