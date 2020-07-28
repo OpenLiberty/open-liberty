@@ -43,11 +43,6 @@ public class GraphQLConfig implements Config {
 
     private String fieldVisibility = Config.FIELD_VISIBILITY_DEFAULT;
 
-    public GraphQLConfig() {
-        //hideList = mergeList(hideList, blackList);
-        //showList = mergeList(showList, whiteList);
-    }
-
     @Override
     public String getDefaultErrorMessage() {
         return defaultErrorMessage;
