@@ -162,9 +162,9 @@ public class TestEnableDisableFeaturesTest {
     	waitForSecurityPrerequisites(serverEDF2, 60000);
     	serverEDF2.setServerConfigurationFile("server_monitor30.xml");
     	// CWMPI2009I is SPECIFICALLY for mpMetrics-3.0 and monitor-1.0
-        String logMsg = serverEDF2.waitForStringInLogUsingMark("CWPMI2009I");
+        String logMsg = serverEDF2.waitForStringInLogUsingMark("CWPMI2003I");
         Log.info(c, testName, logMsg);
-    	Assert.assertNotNull("No CWPMI2009I was found.", logMsg);
+        Assert.assertNotNull("No CWPMI2003I was found.", logMsg);
     	serverEDF2.setMarkToEndOfLog(serverEDF2.getMostRecentTraceFile());
        	Log.info(c, testName, "------- threadpool metrics should be available ------");
     	getHttpsServlet("/metrics/vendor", serverEDF2);
