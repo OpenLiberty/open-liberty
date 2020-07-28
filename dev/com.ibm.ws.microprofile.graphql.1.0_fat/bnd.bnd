@@ -25,6 +25,7 @@ src: \
   test-applications/outputFieldsApp/src,\
   test-applications/rolesAuthApp/src,\
   test-applications/typesApp/src,\
+  test-applications/uiApp/src,\
   test-applications/voidQueryApp/src
 
 fat.project: true
