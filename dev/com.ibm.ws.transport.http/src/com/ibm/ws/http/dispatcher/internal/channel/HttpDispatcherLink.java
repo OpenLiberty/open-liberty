@@ -1239,6 +1239,12 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         return null;
     }
 
+    public void setSuppressZeroByteChunk(boolean suppress0ByteChunk) {
+        if (this.isc != null) {
+            this.isc.setSuppress0ByteChunk(suppress0ByteChunk);
+        }
+    }
+
     /**
      * @return
      */
