@@ -176,7 +176,7 @@ public class GrpcServiceConfigImpl implements GrpcServiceConfig, ApplicationRecy
 	 */
 	private void recycleDependentApps() {
 		Set<String> members = getDependentApplications();
-		if (members != null && !FrameworkState.isStopping()) {
+		if (!members.isEmpty() && !FrameworkState.isStopping()) {
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 				Tr.debug(this, tc, "recycling applications: " + members);
 			}
@@ -194,14 +194,12 @@ public class GrpcServiceConfigImpl implements GrpcServiceConfig, ApplicationRecy
 	 */
 	@Override
 	public Set<String> getDependentApplications() {
-		if (!applications.isEmpty()) {
-			Set<String> members = new HashSet<String>(applications);
-			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-				Tr.debug(this, tc, "getDependentApplications: " + members);
-			}
-			return members;
+		Set<String> members = new HashSet<String>();
+		members.addAll(applications);
+		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+			Tr.debug(this, tc, "getDependentApplications: " + members);
 		}
-		return null;
+		return members;
 	}
 
 	public static void addApplication(String name) {
