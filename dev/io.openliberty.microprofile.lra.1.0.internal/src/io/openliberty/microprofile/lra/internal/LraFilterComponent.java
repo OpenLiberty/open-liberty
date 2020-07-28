@@ -63,10 +63,8 @@ public class LraFilterComponent implements JaxRsProviderRegister {
             URI coord = new URI(coordString);
             NarayanaLRAClient.setDefaultCoordinatorEndpoint(coord);
         } catch (URISyntaxException e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isErrorEnabled()) {
-                Tr.error(tc, "Invalid LRA coordinator URI: '" + coordString + "'");
-            }
-            throw new LraException(Tr.formatMessage(tc, "LRA_INVALID_COORDINATOR_URI"), e);
+            Tr.error(tc, "Invalid LRA coordinator URI: '" + coordString + "'");
+            throw new LraException(Tr.formatMessage(tc, "LRA_INVALID_COORDINATOR_URI.CWMRX5000E"), e);
         }
 
     }
@@ -108,10 +106,8 @@ public class LraFilterComponent implements JaxRsProviderRegister {
                 // the exception
                 providers.add(new ServerLRAFilter());
             } catch (Exception e) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isErrorEnabled()) {
-                    Tr.error(tc, "Exception during registration of LRA filters", e);
-                    throw new LraRuntimeException(Tr.formatMessage(tc, "LRA_CANT_REGISTER_FILTERS", e), e);
-                }
+                Tr.error(tc, "Exception during registration of LRA filters", e);
+                throw new LraRuntimeException(Tr.formatMessage(tc, "LRA_CANT_REGISTER_FILTERS.CWMRX5001E", e), e);
             }
         }
     }
