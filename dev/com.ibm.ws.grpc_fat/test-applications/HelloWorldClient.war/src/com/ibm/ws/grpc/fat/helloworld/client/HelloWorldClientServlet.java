@@ -10,12 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.grpc.fat.helloworld.client;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.URL;
-import java.net.URLConnection;
 
 import javax.net.ssl.SSLException;
 import javax.servlet.ServletException;
@@ -62,21 +58,6 @@ public class HelloWorldClientServlet extends HttpServlet {
         greetingService = GreeterGrpc.newBlockingStub(channel);
     }
 
-    public static String getText(String url) throws Exception {
-        URL website = new URL(url);
-        URLConnection connection = website.openConnection();
-        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-
-        StringBuilder response = new StringBuilder();
-        String inputLine;
-
-        while ((inputLine = in.readLine()) != null)
-            response.append(inputLine);
-
-        in.close();
-
-        return response.toString();
-    }
 
     private void stopService() {
         channel.shutdownNow();
@@ -164,13 +145,6 @@ public class HelloWorldClientServlet extends HttpServlet {
                         .append("               </body>\r\n")
                         .append("</html>\r\n");
 
-        try {
-            System.out.println("ANNA: " + getText("http://" + address + ":" +
-                                                  port + "/metrics"));
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
         stopService();
     }
 }

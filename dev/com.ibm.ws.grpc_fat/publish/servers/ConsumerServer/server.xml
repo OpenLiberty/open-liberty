@@ -70,6 +70,9 @@
 	<grpcTarget target="test.g3store.grpc.AppConsumerService/getAppInfo" headersToPropagate="authorization"/>
 	<grpcTarget target="test.g3store.grpc.AppConsumerService/getAllAppNames" authnToken="jwt"/>
 
+<<<<<<< HEAD
 		
 
+=======
+>>>>>>> b5c3775378... undo commit
 </server>

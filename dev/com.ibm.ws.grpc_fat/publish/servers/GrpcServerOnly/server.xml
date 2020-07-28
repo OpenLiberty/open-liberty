@@ -11,8 +11,6 @@
 <server>
     <featureManager>
         <feature>grpc-1.0</feature>
-         <feature>monitor-1.0</feature>
-        <feature>localConnector-1.0</feature>
     </featureManager>
 
     <include location="../fatTestPorts.xml"/>
