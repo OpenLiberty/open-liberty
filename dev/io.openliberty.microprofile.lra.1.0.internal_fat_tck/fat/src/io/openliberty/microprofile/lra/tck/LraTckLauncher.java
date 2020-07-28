@@ -75,6 +75,7 @@ public class LraTckLauncher {
      */
     @Test
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
+    @Mode(TestMode.EXPERIMENTAL)
     public void launchLRATCK() throws Exception {
 
         // This makes the property lra.tck.base.url available to maven, so that it can pass it on to the
@@ -97,7 +98,7 @@ public class LraTckLauncher {
      */
     @Test
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
-    @Mode(TestMode.FULL)
+    @Mode(TestMode.EXPERIMENTAL)
     public void launchLRATCKFull() throws Exception {
 
         // This makes the property lra.tck.base.url available to maven, so that it can pass it on to the
