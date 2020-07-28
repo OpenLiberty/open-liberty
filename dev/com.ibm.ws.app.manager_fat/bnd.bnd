@@ -18,7 +18,8 @@ src: \
 	test-applications/app-j2ee.ear/src, \
 	test-applications/snoop.war/src, \
 	test-applications/DataSourceApp.ear/DataSourceEJB.jar/src, \
-	test-bundles/test.app.notifications/src
+	test-bundles/test.app.notifications/src, \
+	test-bundles/test.app.prereq/src
 
 -sub: *.bnd
 
