@@ -45,7 +45,7 @@ public class MpConfigUtil {
             return getMpConfigMap(service, getApplicationClassloader(req), map);
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "mpJwt-1.1 feature is not enabled.");
+                Tr.debug(tc, "MP JWT feature is not enabled.");
             }
         }
         return map;
@@ -73,14 +73,17 @@ public class MpConfigUtil {
 
     // no null check other than cl. make sure that the caller sets non null objects.
     @FFDCIgnore({ NoSuchElementException.class })
-    protected Map<String, String> getMpConfig(MpConfigProxyService service, ClassLoader cl, String propertyName,  Map<String, String> map) {
+    protected Map<String, String> getMpConfig(MpConfigProxyService service, ClassLoader cl, String propertyName, Map<String, String> map) {
         try {
-            String value = service.getConfigValue(cl, propertyName, String.class).trim();
-            if (!value.isEmpty()) {
+            String value = service.getConfigValue(cl, propertyName, String.class);
+            if (value != null) {
+                value = value.trim();
+            }
+            if (value != null && !value.isEmpty()) {
                 map.put(propertyName, value);
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, propertyName + " is empty. Ignore it.");
+                    Tr.debug(tc, propertyName + " is empty or null. Ignore it.");
                 }
             }
         } catch (NoSuchElementException e) {
