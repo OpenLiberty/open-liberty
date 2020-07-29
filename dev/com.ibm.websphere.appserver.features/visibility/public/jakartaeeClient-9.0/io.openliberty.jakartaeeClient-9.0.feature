@@ -6,12 +6,12 @@ IBM-ShortName: jakartaeeClient-9.0
 Subsystem-Name: Jakarta EE Application Client
 -features=\
   com.ibm.websphere.appclient.appClient-2.0, \
-  com.ibm.websphere.appserver.jsonp-2.0, \
-  com.ibm.websphere.appserver.jsonb-2.0, \
   com.ibm.websphere.appserver.jakartaMail-1.6, \
   com.ibm.websphere.appserver.jdbc-4.2; ibm.tolerates:="4.3",\
   com.ibm.websphere.appserver.transaction-2.0, \
   io.openliberty.beanValidation-3.0, \
+  io.openliberty.jsonb-2.0, \
+  io.openliberty.jsonp-2.0, \
   io.openliberty.cdi-3.0, \
   io.openliberty.jakarta.ejb-4.0, \
   io.openliberty.jakarta.jndiClient-2.0, \
