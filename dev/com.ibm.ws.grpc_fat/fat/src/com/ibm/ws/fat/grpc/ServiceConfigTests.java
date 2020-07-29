@@ -257,9 +257,7 @@ public class ServiceConfigTests extends FATServletClient {
      *
      **/
 
-    //@Test
-    // This test is failing when I think it should be passing, commenting it out for now
-    //@Mode(FULL)
+    @Test
     public void testServiceTargetWildcard() throws Exception {
 
         ManagedChannel beerChannel;
@@ -275,7 +273,7 @@ public class ServiceConfigTests extends FATServletClient {
                                       "com.ibm.ws.grpc.fat.beer");
         LOG.info("ServiceConfigTests : testServiceTargetWildcard() : dropped the beer app into dropins.");
         // Make sure the beer service has started
-        String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0001I: Application FavoriteBeerService started", STARTUP_TIMEOUT);
+        String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKT0201I.*FavoriteBeerService", STARTUP_TIMEOUT);
         if (appStarted == null) {
             Assert.fail(c + ": application " + "FavoriteBeerService" + " failed to start within " + STARTUP_TIMEOUT + "ms");
         }
@@ -375,7 +373,7 @@ public class ServiceConfigTests extends FATServletClient {
                                       "com.ibm.ws.grpc.fat.beer");
         LOG.info("ServiceConfigTests : testServiceTargetSpecificMatch() : dropped the beer app into dropins.");
         // Make sure the beer service has started
-        String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0001I: Application FavoriteBeerService started", STARTUP_TIMEOUT);
+        String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKT0201I.*FavoriteBeerService", STARTUP_TIMEOUT);
         if (appStarted == null) {
             Assert.fail(c + ": application " + "FavoriteBeerService" + " failed to start within " + STARTUP_TIMEOUT + "ms");
         }
