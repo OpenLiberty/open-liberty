@@ -11,7 +11,6 @@ Subsystem-Name: Internal Java RESTful Services 3.0
  com.ibm.websphere.appserver.containerServices-1.0, \
  com.ibm.websphere.appserver.servlet-5.0, \
  com.ibm.websphere.appserver.classloading-1.0, \
-
  com.ibm.websphere.appserver.eeCompatible-9.0, \
  com.ibm.websphere.appserver.org.eclipse.microprofile.config-1.4, \
  io.openliberty.jakarta.validation-3.0, \
@@ -22,8 +21,8 @@ Subsystem-Name: Internal Java RESTful Services 3.0
 # com.ibm.websphere.appserver.internal.optional.jaxb-2.2; ibm.tolerates:=2.3, \ # not sure about these...
 # com.ibm.websphere.appserver.internal.optional.jaxws-2.2; ibm.tolerates:=2.3, \
 -bundles=\
+ io.openliberty.org.jboss.resteasy.common.jakarta, \ 
  com.ibm.ws.org.jboss.logging
-# io.openliberty.org.jboss.resteasy.common, \ # need to transform
 kind=noship
 edition=full
 WLP-Activation-Type: parallel
