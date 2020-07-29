@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -99,6 +100,46 @@ public class OracleKerberosTestServlet extends FATServlet {
             assertTrue("Expected cause to be instanceof LoginException but was: " + cause.getClass().getCanonicalName(),
                        cause instanceof LoginException);
         }
+    }
+
+    @Test
+    public void testConnectionReuse() throws Exception {
+        String managedConn1 = null;
+        String managedConn2 = null;
+
+        try (Connection conn = krb5DataSource.getConnection()) {
+            managedConn1 = getManagedConnectionID(conn);
+            System.out.println("Managed connection 1 is: " + managedConn1);
+        }
+
+        try (Connection conn = krb5DataSource.getConnection()) {
+            managedConn2 = getManagedConnectionID(conn);
+            System.out.println("Managed connection 2 is: " + managedConn2);
+        }
+
+        assertEquals("Expected two connections from the same datasource to share the same underlying managed connection",
+                     managedConn1, managedConn2);
+
+    }
+
+    /**
+     * Get the managed connection ID of a given Connection
+     * The managed connection ID is an implementation detail of Liberty that a real app would never care
+     * about, but it's a simple way for us to verify that the underlying managed connections are being
+     * reused.
+     */
+    private String getManagedConnectionID(Connection conn1) {
+        for (Class<?> clazz = conn1.getClass(); clazz != Object.class; clazz = clazz.getSuperclass()) {
+            try {
+                Field f1 = clazz.getDeclaredField("managedConn");
+                f1.setAccessible(true);
+                String mc1 = String.valueOf(f1.get(conn1));
+                f1.setAccessible(false);
+                return mc1;
+            } catch (Exception ignore) {
+            }
+        }
+        throw new RuntimeException("Did not find field 'managedConn' on " + conn1.getClass());
     }
 
 }
