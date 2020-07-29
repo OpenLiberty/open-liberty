@@ -19,6 +19,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -30,6 +31,7 @@ import io.openliberty.jaxrs30.fat.appandresource.AppAndResourceTestServlet;
  * Tests whether a class can be both an <code>Application</code> subclass
  * <em>and<em> a resource class.
  */
+@AllowedFFDC
 @RunWith(FATRunner.class)
 public class AppAndResourceTest extends FATServletClient {
 
