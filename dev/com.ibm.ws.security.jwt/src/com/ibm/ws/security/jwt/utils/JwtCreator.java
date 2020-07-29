@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -122,7 +122,12 @@ public class JwtCreator {
                 if (notBeforeInSeconds > 0) { // TODO maybe we need to do some extra checking for nbf
                     claims.setNotBefore(NumericDate.fromSeconds(notBeforeInSeconds));
                 }
-
+                
+                // Sets nbf claim to elapsedNbf since token issued
+                long elapsedNbfInSeconds = jwtData.getConfig().getElapsedNbfTime();
+                if (elapsedNbfInSeconds >= 0) {
+                    claims.setNotBefore(NumericDate.fromSeconds(claims.getIssuedAt().getValue() + elapsedNbfInSeconds));
+                }
             }
 
             // A JWT is a JWS and/or a JWE with JSON claims as the payload.
