@@ -521,6 +521,7 @@ public class WCServerTest extends LoggingTest {
      */
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat({ EE9_FEATURES })   
     public void testDecodeUrlPlusSign() throws Exception {
         LibertyServer wlp = SHARED_SERVER.getLibertyServer();
         wlp.setMarkToEndOfLog();
