@@ -274,14 +274,21 @@ public class ProcessControlHelper {
     }
 
     /**
-     * If this is an early access release of Liberty ( determined by openLiberty.properties,
-     * property com.ibm.websphere.productEdition=EARLY_ACCESS ) display a warning.
+     * Display a warning for each product that is early access ( determined by properties files
+     * in the lib/versions directory, with property com.ibm.websphere.productEdition=EARLY_ACCESS ).
      */
     private void displayWarningIfBeta() {
-        ProductInfo.setBetaEditionJVMProperty();
 
-        if (ProductInfo.getBetaEditionDuringBootstrap()) {
-            System.out.println(BootstrapConstants.messages.getString("warning.earlyRelease"));
+        try {
+            final Map<String, ProductInfo> productInfos = ProductInfo.getAllProductInfo();
+            for (ProductInfo info : productInfos.values()) {
+                if (info.isBeta()) {
+                    System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("warning.earlyRelease"),
+                                                            info.getName()));
+                }
+            }
+        } catch (Exception e) {
+            //FFDC and move on ... assume not early access
         }
     }
 

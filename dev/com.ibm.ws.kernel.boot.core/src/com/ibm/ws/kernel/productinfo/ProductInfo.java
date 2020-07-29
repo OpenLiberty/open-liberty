@@ -217,7 +217,7 @@ public class ProductInfo {
     }
 
     public boolean isReplacedProductLogged() {
-        return "true".equalsIgnoreCase(properties.getProperty("com.ibm.websphere.logReplacedProduct"));
+        return "true".equalsIgnoreCase(properties.getProperty(COM_IBM_WEBSPHERE_LOG_REPLACED_PRODUCT));
     }
 
     public String getProperty(String key) {

@@ -469,15 +469,15 @@ public class KernelBootstrap {
         try {
             bootManifest = BootstrapManifest.readBootstrapManifest(Boolean.parseBoolean(bootProps.get(BootstrapConstants.LIBERTY_BOOT_PROPERTY)));
             String kernelVersion = bootManifest.getBundleVersion();
-            String productInfo = getProductInfoDisplayName();
+            String productDisplayName = getProductInfoDisplayName();
 
-            processVersion(bootProps, "info.serverVersion", kernelVersion, productInfo, true);
+            processVersion(bootProps, "info.serverVersion", kernelVersion, productDisplayName, true);
         } catch (IOException e) {
             throw new LaunchException("Could not read the jar manifest", BootstrapConstants.messages.getString("error.unknown.kernel.version"), e);
         }
     }
 
-    private static void processVersion(BootstrapConfig bootProps, String msgKey, String kernelVersion, String productInfo, boolean printVersion) {
+    private static void processVersion(BootstrapConfig bootProps, String msgKey, String kernelVersion, String productDisplayName, boolean printVersion) {
         // Two keys, mostly the same parameters (3rd is ignored in one case):
         // info.serverLaunch=Launching {3} ({0}) on {1}, version {2}
         // info.serverVersion={0} on {1}, version {2}
@@ -495,13 +495,13 @@ public class KernelBootstrap {
         //boostrap format should take precedence
         String consoleFormat = bsConsoleFormat != null ? bsConsoleFormat : envConsoleFormat;
 
-        if (productInfo == null) {
+        if (productDisplayName == null) {
             // RARE/CORNER-CASE: All bets are off, we don't have product info anyway... :(
             launchString = "WebSphere Application Server/" + kernelVersion;
             versionString = "WebSphere Application Server (" + kernelVersion + ")";
         } else {
-            launchString = productInfo + "/" + kernelVersion;
-            versionString = productInfo + " (" + kernelVersion + ")";
+            launchString = productDisplayName + "/" + kernelVersion;
+            versionString = productDisplayName + " (" + kernelVersion + ")";
         }
         String consoleLogHeader = MessageFormat.format(BootstrapConstants.messages.getString(msgKey),
                                                        "info.serverLaunch".equals(msgKey) ? launchString : versionString,
@@ -525,24 +525,30 @@ public class KernelBootstrap {
     }
 
     /**
-     * If this is an early access release of Liberty ( determined by openLiberty.properties,
-     * property com.ibm.websphere.productEdition=EARLY_ACCESS ) display a warning in
-     * the console.log.
+     * Display a warning in the console.log for each product that is early access ( determined by properties files
+     * in the lib/versions directory, with property com.ibm.websphere.productEdition=EARLY_ACCESS ).
+     *
      *
      * @param bootProps
      * @param consoleFormat
      */
     private static void displayWarningIfBeta(BootstrapConfig bootProps, String consoleFormat) {
-
-        ProductInfo.setBetaEditionJVMProperty();
-
-        if (ProductInfo.getBetaEditionDuringBootstrap()) {
-            if ("json".equals(consoleFormat)) {
-                String jsonMessage = constructJSONHeader(BootstrapConstants.messages.getString("warning.earlyRelease"), bootProps);
-                System.out.println(jsonMessage);
-            } else {
-                System.out.println(BootstrapConstants.messages.getString("warning.earlyRelease"));
+        try {
+            final Map<String, ProductInfo> productInfos = ProductInfo.getAllProductInfo();
+            for (ProductInfo info : productInfos.values()) {
+                if (info.isBeta()) {
+                    String message = MessageFormat.format(BootstrapConstants.messages.getString("warning.earlyRelease"),
+                                                          info.getName());
+                    if ("json".equals(consoleFormat)) {
+                        String jsonMessage = constructJSONHeader(message, bootProps);
+                        System.out.println(jsonMessage);
+                    } else {
+                        System.out.println(message);
+                    }
+                }
             }
+        } catch (Exception e) {
+            //FFDC and move on ... assume not early access
         }
     }
 
