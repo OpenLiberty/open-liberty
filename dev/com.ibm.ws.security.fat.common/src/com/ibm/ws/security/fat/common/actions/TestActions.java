@@ -126,9 +126,15 @@ public class TestActions {
      * response.
      */
     public Page invokeUrlWithCookie(String currentTest, String url, Cookie cookie) throws Exception {
-        return invokeUrlWithCookies(currentTest, url,cookie);
+        return invokeUrlWithCookies(currentTest, url, cookie);
     }
-    
+
+    public Page invokeUrlWithCookie(String currentTest, String url, String name, String value) throws Exception {
+
+        Cookie cookie = new Cookie("*", name, value);
+        return invokeUrlWithCookies(currentTest, url, cookie);
+    }
+
     /**
      * Invokes the specified URL, including the specified cookies in the request, and returns the Page object that represents the
      * response.
@@ -141,25 +147,26 @@ public class TestActions {
                 throw new Exception("Cannot invoke the URL because no cookies were provided.");
             }
             WebRequest request = createGetRequest(url);
-            
+
             String cookieString = "";
             boolean loopStart = true;
-            for(Cookie c : cookies){
-                if(c == null)
+            for (Cookie c : cookies) {
+                if (c == null) {
                     continue;
-                if(loopStart){
+                }
+                if (loopStart) {
                     loopStart = false;
-                }else{
+                } else {
                     cookieString += "; ";
                 }
-                    cookieString += c.getName() + "=" + c.getValue();
+                cookieString += c.getName() + "=" + c.getValue();
 
             }
-            
-            if(loopStart){ 
+
+            if (loopStart) {
                 throw new Exception("Cannot invoke the URL because null cookies were provided.");
             }
-            
+
             request.setAdditionalHeader("Cookie", cookieString);
             return submitRequest(currentTest, request);
         } catch (Exception e) {
