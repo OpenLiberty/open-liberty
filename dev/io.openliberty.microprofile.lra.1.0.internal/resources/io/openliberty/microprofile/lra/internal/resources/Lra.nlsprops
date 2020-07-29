@@ -17,11 +17,11 @@
 # LRA is currently using the message prefix CWMRX in the range 5000-5999
 # This is temporary and should be fixed with a proper prefix before GA.
 
-LRA_INVALID_COORDINATOR_URI.CWMRX5000E=CWMRX5000E: The LRA coordinator URI is invalid
-LRA_INVALID_COORDINATOR_URI.CWMRX5000E.explanation=LRA participants must be able to contact the coordinator
-LRA_INVALID_COORDINATOR_URI.CWMRX5000E.useraction=Correct the LRA coordinator configuration in server.xml
+LRA_INVALID_COORDINATOR_URI.CWMRX5000E=CWMRX5000E: The LRA coordinator URI is not valid
+LRA_INVALID_COORDINATOR_URI.CWMRX5000E.explanation=LRA participants must be able to contact the coordinator.
+LRA_INVALID_COORDINATOR_URI.CWMRX5000E.useraction=Correct the LRA coordinator configuration in the server.xml
 
 
-LRA_CANT_REGISTER_FILTERS.CWMRX5001E=CWMRX5001E: An error occurred during initialization of the mpLRA-1.0 feature. The error is {0}
-LRA_CANT_REGISTER_FILTERS.CWMRX5001E.explanation=An LRA error has occured that prevents normal operation.
+LRA_CANT_REGISTER_FILTERS.CWMRX5001E=CWMRX5001E: An error occurred during initialization of the mpLRA-1.0 feature. The error is {0}.
+LRA_CANT_REGISTER_FILTERS.CWMRX5001E.explanation=An LRA error occurred, which prevents normal operation.
 LRA_CANT_REGISTER_FILTERS.CWMRX5001E.useraction=Review the error message, the messages.log file on the server, and FFDC logs to identify the problem.
