@@ -158,32 +158,141 @@ dependencies {
 
 task jakartaeeTransform {
   mustRunAfter project.tasks.jar
+
   if (parseBoolean(bnd('jakartaeeMe', 'true'))) {
     doLast {
+      // local additions to jakarta property files;
+      // all are read from the project 'bnd' file;
+ 
+      jakarta.local.selections = bnd('jakartaLocalSelections')
+      if ( jakarta.local.selections != null ) {
+        print "BND jakartaLocalSelections: "
+        println jakarta.local.selections
+      }
+
+      jakarta.local.renames = bnd('jakartaLocalRenames')
+      if ( jakarta.local.renames != null ) {
+        print "BND jakartaLocalRenames: "
+        println jakarta.local.renames
+      }
+
+      jakarta.local.versions = bnd('jakartaLocalVersions')
+      if ( jakarta.local.versions != null ) {
+        print "BND jakartaLocalVersions: "
+        println jakarta.local.versions
+      }
+
+      jakarta.local.bundles = bnd('jakartaLocalBundles')
+      if ( jakarta.local.bundles != null ) {
+        print "BND jakartaLocalBundles: "
+        println jakarta.local.bundles
+      }
+
+      jakarta.initial.bundle.id = bnd('jakartaInitialBundleId')
+      if ( jakarta.initial.bundle.id != null ) {
+        print "BND jakartaInitialBundleId: "
+        println jakarta.initial.bundle.id
+      }
+
+      jakarta.final.bundle.id = bnd('jakartaFinalBundleId')
+      if ( jakarta.final.bundle.id != null ) {
+        print "BND jakartaFinalBundleId: "
+        println jakarta.final.bundle.id
+      }
+
+      jakarta.final.bundle.version = bnd('jakartaFinalBundleVersion')
+      if ( jakarta.final.bundle.version != null ) {
+        print "BND jakartaFinalBundleVersion: "
+        println jakarta.final.bundle.version
+      }
+
+      jakarta.final.bundle.name = bnd('jakartaFinalBundleName')
+      if ( jakarta.final.bundle.name != null ) {
+        print "BND jakartaFinalBundleName: "
+        println jakarta.final.bundle.name
+      }
+
+      jakarta.final.bundle.description = bnd('jakartaFinalBundleDescription')
+      if ( jakarta.final.bundle.description != null ) {
+        print "BND jakartaFinalBundleDescription: "
+        println jakarta.final.bundle.description
+      }
+
+      jakarta.local.directStrings = bnd('jakartaLocalDirectStrings')
+      if ( jakarta.local.directStrings != null ) {
+        print "BND jakartaLocalDirectStrings: "
+        println jakarta.local.directStrings
+      }
+
+      jakarta.local.textMaster = bnd('jakartaLocalTextMaster')
+      if ( jakarta.local.textMaster != null ) {
+        print "BND jakartaLocalTextMaster: "
+        println jakarta.local.textMaster
+      }
+
+      transformer.args = [
+        project.buildDir.path + '/' + bundleJar.name, 
+        (project.buildDir.path + '/' + bundleJar.name).replaceAll('.jar',".jakarta.jar"),
+        "-tr",
+        bndWorkspace.getProject('wlp-jakartaee-transform').getFile('rules/jakarta-renames.properties').path,
+        "-ts",
+        bndWorkspace.getProject('wlp-jakartaee-transform').getFile('rules/jakarta-selections.properties').path,
+        "-tv",
+        bndWorkspace.getProject('wlp-jakartaee-transform').getFile('rules/jakarta-versions.properties').path,
+        "-tb",
+        bndWorkspace.getProject('wlp-jakartaee-transform').getFile('rules/jakarta-bundles.properties').path,
+        "-td",
+        bndWorkspace.getProject('wlp-jakartaee-transform').getFile('rules/jakarta-direct.properties').path,
+        "-tf",
+        bndWorkspace.getProject('wlp-jakartaee-transform').getFile('rules/jakarta-xml-master.properties').path ]
+
+      if ( jakarta.local.selections != null ) {
+          transformer.args += [ "-ts", project.file('rules/' + jakarta.local.selections) ]
+      }
+      if ( jakarta.local.renames != null ) {
+          transformer.args += [ "-tr", project.file('rules/' + jakarta.local.renames) ]
+      }
+      if ( jakarta.local.versions != null ) {
+          transformer.args += [ "-tv", project.file('rules/' + jakarta.local.versions) ]
+      }
+      if ( jakarta.local.bundles != null ) {
+          transformer.args += [ "-tv", project.file('rules/' + jakarta.local.bundles) ]
+      }
+      if ( jakarta.local.directStrings != null ) {
+          transformer.args += [ "-td", project.file('rules/' + jakarta.local.directStrings) ]
+      }
+      if ( jakarta.local.textMaster != null ) {
+          transformer.args += [ "-tf", project.file('rules/' + jakarta.local.textMaster) ]
+      }
+
+      if ( jakarta.initial.bundle.id != null ) {
+        jakarta.direct.bundle.data.key = jakarta.initial.bundle.id
+        jakarta.direct.bundle.data.value =
+          jakarta.final.bundle.id + ',' +
+          jakarta.final.bundle.version + ',' + 
+          jakarta.final.bundle.name + ',' +
+          jakarta.final.bundle.description
+
+        print "BND jakarta direct data:"
+        println jakarta.direct.bundle.data.value
+
+        transformer.args +=
+          [ "-ti", "tb", jakarta.direct.bundle.data.key, jakarta.direct.bundle.data.value ]
+      }
+
       fileTree(project.buildDir).matching { include '*jakarta.jar' }.each { delete it }
-      FileTree bundles = fileTree(project.buildDir).matching {include '*.jar' }        
-            bundles.each { bundleJar ->
-                javaexec {
-                    classpath configurations.jakartaeeTransformJars
-                    main = "org.eclipse.transformer.jakarta.JakartaTransformer"
-                    args = [ project.buildDir.path + '/' + bundleJar.name, 
-                          (project.buildDir.path + '/' + bundleJar.name).replaceAll('.jar',".jakarta.jar"),
-                          "-tr",
-                          bndWorkspace.getProject('wlp-jakartaee-transform').getFile('rules/jakarta-renames.properties').path,
-                          "-ts",
-                          bndWorkspace.getProject('wlp-jakartaee-transform').getFile('rules/jakarta-selections.properties').path,
-                          "-tv",
-                          bndWorkspace.getProject('wlp-jakartaee-transform').getFile('rules/jakarta-versions.properties').path,
-                           "-tb",
-                          bndWorkspace.getProject('wlp-jakartaee-transform').getFile('rules/jakarta-bundles.properties').path,
-                           "-td",
-                          bndWorkspace.getProject('wlp-jakartaee-transform').getFile('rules/jakarta-direct.properties').path,
-                           "-tf",
-                          bndWorkspace.getProject('wlp-jakartaee-transform').getFile('rules/jakarta-xml-master.properties').path]
-                }
-          }
+
+      FileTree bundles = fileTree(project.buildDir).matching {include '*.jar' }
+
+      bundles.each { bundleJar ->
+        javaexec {
+          classpath configurations.jakartaeeTransformJars
+          main = "org.eclipse.transformer.jakarta.JakartaTransformer"
+          args = transformer.args
+        }
       }
     }
+  }
 }
 
 assemble.dependsOn(jakartaeeTransform)
