@@ -706,7 +706,7 @@ error.missing.version.files.useraction=Ensure that the directory exists and can 
 
 warning.earlyRelease=CWWKE0953W: This is an unsupported early release version of {0}.
 warning.earlyRelease.explanation=New features that are not fully tested are made available in early releases to elicit feedback before they are included in a supported release.
-warning.earlyRelease.useraction=Do not use an early release version on production systems, since it is not supported.
+warning.earlyRelease.useraction=Do not use an early release version on production systems, since early release versions are not supported.
 
 info.serverStarting=Starting server {0}.
 info.serverStarted=Server {0} started.

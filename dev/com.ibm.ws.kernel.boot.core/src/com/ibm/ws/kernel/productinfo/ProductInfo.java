@@ -289,24 +289,6 @@ public class ProductInfo {
     }
 
     /**
-     * Returns value of Beta Edition JVM Property. Callers early in the boostrap process
-     * should use this method. Otherwise, use the getBetaEdition() method.
-     * Calling getBetaEdition during bootstrap results in a NoClassDefFoundError exception
-     * because the logging code isn't loaded yet.
-     *
-     * @return true if edition is EARLY_ACCESS, otherwise false.
-     */
-    public static boolean getBetaEditionDuringBootstrap() {
-
-        return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
-            @Override
-            public Boolean run() {
-                return Boolean.getBoolean(BETA_EDITION_JVM_PROPERTY);
-            }
-        });
-    }
-
-    /**
      * Retrieves the product extension jar bundles located in the installation's usr directory.
      *
      * @return The array of product extension jar bundles in the default (usr) location.
