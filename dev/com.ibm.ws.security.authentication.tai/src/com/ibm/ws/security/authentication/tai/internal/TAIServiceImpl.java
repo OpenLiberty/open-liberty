@@ -49,6 +49,7 @@ public class TAIServiceImpl implements TAIService {
     private final Map<String, Boolean> disableLtpaCookieTais = new HashMap<String, Boolean>();
 
     private final Set<String> orderOfInterceptorIds = new TreeSet<String>();
+    private boolean startInitializeTais = false;
 
     protected synchronized void setInterceptorService(ServiceReference<TrustAssociationInterceptor> ref) {
         String id = getComponentId(ref);
@@ -81,6 +82,8 @@ public class TAIServiceImpl implements TAIService {
     }
 
     void initAllTAIs(String newTaiId) {
+        if (!startInitializeTais)
+            return;
         if (newTaiId != null) {
             orderOfInterceptorIds.add(newTaiId);
         }
@@ -94,6 +97,8 @@ public class TAIServiceImpl implements TAIService {
      * @param id
      */
     void initTAI(String id) {
+        if (!startInitializeTais)
+            return;
         Object interceptor = interceptorServiceRef.getService(id);
         if (interceptor != null) {
             if (interceptor instanceof InterceptorConfigImpl) {
@@ -216,5 +221,11 @@ public class TAIServiceImpl implements TAIService {
             }
         }
         return id;
+    }
+
+    @Override
+    public void initializeTais() {
+        startInitializeTais = true;
+        initAllTAIs(null);
     }
 }
