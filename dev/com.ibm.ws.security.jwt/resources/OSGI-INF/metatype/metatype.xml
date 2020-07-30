@@ -19,16 +19,17 @@
          <AD id="id" name="%jwtBuilderId" description="%jwtBuilderId.desc" required="false" type="String" default="defaultJWT"/>
          <AD id="issuer" name="%issuerIdentifier" description="%issuerIdentifier.desc" required="false" type="String" />
          <AD id="jwkEnabled" name="%jwkEnabled" description="%jwkEnabled.desc" required="false" type="Boolean" default="false"/> 
-  		 <!-- deprecated --><AD id="expiry" name="%valid" description="%valid.desc" required="false" type="String" default="2h" ibm:type="duration(h)"/>
-  		 <AD id="expiresInSeconds" name="%expiresInSeconds" description= "%expiresInSeconds.desc" required="false" type="String" default="-1" ibm:type="duration(s)" />
-  		 <AD id="audiences" name="%audiences" description="%audiences.desc" required="false" type="String" cardinality="400" />
-  		 <AD id="claims" name="%claims" description="%claims.desc" required="false" type="String" cardinality="400" />
-  		 <AD id="scope" name="%scope" description="%scope.desc" required="false" type="String" />
-		 <AD id="signatureAlgorithm" required="false" type="String" name="%signatureAlgorithm" description="%signatureAlgorithm.desc" default="RS256">
-            	<Option label="%tokenSignAlgorithm.RS256" value="RS256" />
-            	<Option label="%tokenSignAlgorithm.HS256" value="HS256" />
+         <!-- deprecated --><AD id="expiry" name="%valid" description="%valid.desc" required="false" type="String" default="2h" ibm:type="duration(h)"/>
+         <AD id="expiresInSeconds" name="%expiresInSeconds" description= "%expiresInSeconds.desc" required="false" type="String" default="-1" ibm:type="duration(s)" />
+         <AD id="audiences" name="%audiences" description="%audiences.desc" required="false" type="String" cardinality="400" />
+         <AD id="claims" name="%claims" description="%claims.desc" required="false" type="String" cardinality="400" />
+         <AD id="scope" name="%scope" description="%scope.desc" required="false" type="String" />
+         <AD id="signatureAlgorithm" required="false" type="String" name="%signatureAlgorithm" description="%signatureAlgorithm.desc" default="RS256">
+             <Option label="%tokenSignAlgorithm.RS256" value="RS256" />
+             <Option label="%tokenSignAlgorithm.HS256" value="HS256" />
+             <Option label="internal" value="ES256" />
          </AD>
-        
+
          <AD id="sharedKey" name="%sharedKey" description="%sharedKey.desc" required="false" type="String" ibm:type="password" />
 		 <AD id="jti" name="%jti" description="%jti.desc" required="false" type="Boolean" default="false"/>
          <AD id="keyStoreRef" name="%keyStoreRef" description="%keyStoreRef.desc" required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.keystore" />
@@ -54,6 +55,7 @@
         <AD id="signatureAlgorithm" required="false" type="String" name="%signatureAlgorithm" description="%signatureAlgorithm.desc" default="RS256">
             <Option label="%tokenSignAlgorithm.RS256" value="RS256" />
             <Option label="%tokenSignAlgorithm.HS256" value="HS256" />
+            <Option label="internal" value="ES256" />
         </AD>
         <AD id="trustStoreRef" name="%trustStoreRef" description="%trustStoreRef.desc" required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.keystore" />
         <AD id="trustedAlias" name="%trustedAliasName" description="%trustedAliasName.desc" required="false" type="String" />

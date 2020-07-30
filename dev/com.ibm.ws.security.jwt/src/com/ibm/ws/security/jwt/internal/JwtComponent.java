@@ -160,7 +160,7 @@ public class JwtComponent implements JwtConfig {
         jwkRotationTime = jwkRotationTime * 60 * 1000;
         jwkSigningKeySize = ((Long) props.get(JwtUtils.CFG_KEY_JWK_SIGNING_KEY_SIZE)).intValue();
 
-        if ("RS256".equals(sigAlg)) {
+        if (isJwkCapableSigAlgorithm()) {
             initializeJwkProvider(this);
         }
 
@@ -170,6 +170,13 @@ public class JwtComponent implements JwtConfig {
         } else {
             valid = valid * 3600;
         }
+    }
+
+    private boolean isJwkCapableSigAlgorithm() {
+        if (sigAlg == null) {
+            return false;
+        }
+        return sigAlg.matches("[RE]S[0-9]{3,}");
     }
 
     private void initializeJwkProvider(JwtConfig jwtConfig) {
