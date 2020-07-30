@@ -33,10 +33,10 @@ public class HelloWorldServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     // implementation of the "GreeterGrpc" service
-    private static final class GreeterImpl extends GreeterGrpc.GreeterImplBase {
+    public static final class GreeterImpl extends GreeterGrpc.GreeterImplBase {
 
-        // a no-arg constructor is requird for Liberty to start this service automatically
-        GreeterImpl() {
+        // a public no-arg constructor is requird for Liberty to start this service automatically
+        public GreeterImpl() {
         }
 
         @Override
