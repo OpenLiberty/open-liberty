@@ -212,26 +212,22 @@ public class EEValidationUtils {
                 try {
                     String className = pair.getClassName();
                     Class<?> jndiClass = cdiArchive.getClassLoader().loadClass(className);
-                    if ("javax.resource.cci.ConnectionFactory".equals(className)) {
-                        try {
-                            Object o = c.lookup(lookupName);
-                            if (o != null) {
-                                jndiClass = o.getClass();
-                            }
-                        } catch (RuntimeException e) {
-                            // An error occurred while getting the object from JNDI. This may happen
-                            // at this early point in the initialisation process, but if so we just
-                            // skip validation.
-                        }
-                    } else {
-                        try {
-                            jndiClass = cdiArchive.getClassLoader().loadClass(className);
-                        } catch (ClassNotFoundException ex) {
-                            // Couldn't load the jndiClass name, can't validate
-                        }
-                    }
                     if (!injectedClass.isAssignableFrom(jndiClass)) {
-                        EEValidationUtils.throwDefinitionException(declaringClass, annotated);
+                        // If the class registered in JNDI does not match the injected class,
+                        // fallback to actually performing a JNDI lookup to check if its assignable
+                        // this can occur if an object is registered in JNDI under multiple interfaces
+                        Class<?> lookupClass = getLookupClass(c, lookupName);
+                        if (lookupClass == null || !injectedClass.isAssignableFrom(lookupClass)) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "Injected class not assignable to jndiClass. injectedClass=" + injectedClass +
+                                             " jndiClass=" + jndiClass +
+                                             " lookupClass=" + lookupClass);
+                            }
+                            EEValidationUtils.throwDefinitionException(declaringClass, annotated);
+                        } else {
+                            // We found the class and it matched the type, all is well
+                            return;
+                        }
                     } else {
                         // We found the class and it matched the type, all is well
                         return;
@@ -247,6 +243,21 @@ public class EEValidationUtils {
         }
     }
 
+    @FFDCIgnore(RuntimeException.class)
+    private static Class<?> getLookupClass(InitialContext c, Name lookupName) throws NamingException, CDIException {
+        try {
+            Object o = c.lookup(lookupName);
+            if (o != null) {
+                return o.getClass();
+            }
+        } catch (RuntimeException e) {
+            // An error occurred while getting the object from JNDI. This may happen
+            // at this early point in the initialisation process, but if so we just
+            // skip validation.
+        }
+        return null;
+    }
+
     /**
      * Does additional validation on the WebServiceRef annotation. Note that some validation has already been done at this point by WebServiceRefProcessor.
      * <p>
@@ -254,10 +265,10 @@ public class EEValidationUtils {
      * <p>
      * If we are injecting into a non-service type, we find the port types of the service type specified by the value() attribute and check that one of them is compatible.
      *
-     * @param wsRef the WebServiceRef annotation
+     * @param wsRef          the WebServiceRef annotation
      * @param declaringClass class containing this WebServiceRef
-     * @param Annotated the member annotated with this WebServiceRef
-     * @param the injection point
+     * @param Annotated      the member annotated with this WebServiceRef
+     * @param the            injection point
      */
     public static void validateWebServiceRef(WebServiceRef wsRef, Class<?> declaringClass, Annotated annotated) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
