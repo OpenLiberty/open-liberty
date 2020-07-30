@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.ibm.ws.http2.GrpcServletServices;
+import com.ibm.ws.managedobject.ManagedObjectContext;
 
 import io.openliberty.grpc.internal.config.GrpcServiceConfigImpl;
 
@@ -14,6 +15,7 @@ class GrpcServletApplication {
 
 	private Set<String> serviceNames = new HashSet<String>();
 	private Set<String> serviceClassNames = new HashSet<String>();
+	private Set<ManagedObjectContext> managedObectContexts = new HashSet<ManagedObjectContext>();
 	private String j2eeAppName;
 
 	/**
@@ -65,6 +67,17 @@ class GrpcServletApplication {
 	}
 
 	/**
+	 * Keep track of the ManagedObject that was used to create a service instance
+	 *
+	 * @param ManagedObject
+	 */
+	void addManagedObjectContext(ManagedObjectContext mo) {
+		if (mo != null) {
+			managedObectContexts.add(mo);
+		}
+	}
+
+	/**
 	 * Unregister and clean up any associated services and mappings
 	 */
 	void destroy() {
@@ -74,6 +87,10 @@ class GrpcServletApplication {
 		if (j2eeAppName != null) {
 			GrpcServiceConfigImpl.removeApplication(j2eeAppName);
 		}
+		for (ManagedObjectContext mo : managedObectContexts) {
+			mo.release();
+		}
+		managedObectContexts = null;
 		serviceNames = null;
 		serviceClassNames = null;
 	}

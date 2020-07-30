@@ -67,6 +67,8 @@ instrument.disabled: true
 -buildpath: \
   com.ibm.websphere.javaee.servlet.4.0;version=latest,\
   com.ibm.websphere.security;version=latest,\
+  com.ibm.ws.container.service;version=latest,\
+  com.ibm.ws.managedobject;version=latest,\
   com.ibm.ws.webcontainer;version=latest,\
   com.ibm.ws.logging.core;version=latest,\
   com.ibm.websphere.org.osgi.core;version=latest,\
