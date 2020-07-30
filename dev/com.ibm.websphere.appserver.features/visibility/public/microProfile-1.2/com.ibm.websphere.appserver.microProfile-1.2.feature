@@ -17,6 +17,5 @@ Subsystem-Name: MicroProfile 1.2
  com.ibm.websphere.appserver.mpHealth-1.0, \
  com.ibm.websphere.appserver.mpJwt-1.0, \
  com.ibm.websphere.appserver.mpMetrics-1.0
--bundles=com.ibm.ws.require.java8
 kind=ga
 edition=core
