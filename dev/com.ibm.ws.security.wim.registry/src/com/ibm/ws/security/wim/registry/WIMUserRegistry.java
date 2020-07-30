@@ -59,7 +59,7 @@ interface WIMUserRegistryConfig {}
  * I'd think the registry adapter should go in core and be one component.
  */
 //TODO policy REQUIRE when we count this....
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM", "com.ibm.ws.security.registry.type=WIM" })
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM", "com.ibm.ws.security.registry.type=WIM" })
 public class WIMUserRegistry implements FederationRegistry, UserRegistry {
 
     private static final TraceComponent tc = Tr.register(WIMUserRegistry.class);
