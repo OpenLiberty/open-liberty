@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.jta-2.0
+symbolicName=io.openliberty.jta-2.0
 visibility=protected
 singleton=true
 IBM-API-Package: jakarta.transaction;  type="spec", \
