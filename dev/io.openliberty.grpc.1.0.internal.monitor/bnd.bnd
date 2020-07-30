@@ -22,7 +22,7 @@ Import-Package: \
   !*.internal.*,*
 	
 Export-Package: \
-	io.openliberty.grpc.monitor;type=ibm-api,\
+	io.openliberty.grpc.monitor,\
 	io.openliberty.grpc.internal.monitor
   
 
