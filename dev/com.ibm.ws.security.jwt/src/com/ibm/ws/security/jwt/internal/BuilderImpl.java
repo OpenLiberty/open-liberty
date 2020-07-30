@@ -12,7 +12,7 @@
 package com.ibm.ws.security.jwt.internal;
 
 import java.security.Key;
-import java.security.interfaces.RSAPrivateKey;
+import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -421,18 +421,36 @@ public class BuilderImpl implements Builder {
      */
     @Override
     public Builder signWith(String algorithm, Key key) throws KeyException {
-
-        if (algorithm == null || algorithm.isEmpty() || !algorithm.equals(Constants.SIGNATURE_ALG_RS256)) {
-            String err = Tr.formatMessage(tc, "JWT_INVALID_ALGORITHM_ERR", new Object[] { algorithm, Constants.SIGNATURE_ALG_RS256 });
+        if (!isValidAlgorithmForJavaSecurityKey(algorithm)) {
+            String err = Tr.formatMessage(tc, "JWT_INVALID_ALGORITHM_ERR", new Object[] { algorithm, getValidAlgorithmListForJavaSecurityKey() });
             throw new KeyException(err);
         }
-        if (key == null || !(key instanceof RSAPrivateKey)) {
+        if (!isValidKeyType(key)) {
             String err = Tr.formatMessage(tc, "JWT_INVALID_KEY_ERR", new Object[] { algorithm, key });
             throw new KeyException(err);
         }
         alg = algorithm;
         privateKey = key;
         return this;
+    }
+
+    boolean isValidAlgorithmForJavaSecurityKey(String algorithm) {
+        if (algorithm == null || algorithm.isEmpty()) {
+            return false;
+        }
+        return algorithm.matches("[RE]S[0-9]{3,}");
+    }
+
+    String getValidAlgorithmListForJavaSecurityKey() {
+        return Constants.SIGNATURE_ALG_RS256 + ", " +
+                Constants.SIGNATURE_ALG_ES256;
+    }
+
+    boolean isValidKeyType(Key key) {
+        if (key == null || !(key instanceof PrivateKey)) {
+            return false;
+        }
+        return true;
     }
 
     // shared key for signing
@@ -443,9 +461,8 @@ public class BuilderImpl implements Builder {
      */
     @Override
     public Builder signWith(String algorithm, String key) throws KeyException {
-
-        if (algorithm == null || algorithm.isEmpty() || !algorithm.equals(Constants.SIGNATURE_ALG_HS256)) {
-            String err = Tr.formatMessage(tc, "JWT_INVALID_ALGORITHM_ERR", new Object[] { algorithm, Constants.SIGNATURE_ALG_HS256 });
+        if (!isValidAlgorithmForStringKey(algorithm)) {
+            String err = Tr.formatMessage(tc, "JWT_INVALID_ALGORITHM_ERR", new Object[] { algorithm, getValidAlgorithmListForStringKey() });
             throw new KeyException(err);
         }
         if (key == null || key.isEmpty()) {
@@ -455,6 +472,18 @@ public class BuilderImpl implements Builder {
         alg = algorithm;
         sharedKey = key;
         return this;
+    }
+
+    boolean isValidAlgorithmForStringKey(String algorithm) {
+        if (algorithm == null || algorithm.isEmpty()) {
+            return false;
+        }
+        return algorithm.matches("HS[0-9]{3,}");
+    }
+
+    String getValidAlgorithmListForStringKey() {
+        // More algorithms will be added
+        return Constants.SIGNATURE_ALG_HS256;
     }
 
     // add claims with the given name and value
