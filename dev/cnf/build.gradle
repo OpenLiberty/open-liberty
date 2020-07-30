@@ -38,12 +38,35 @@ dependencies {
 }
 
 //TODO: move this function somewhere common
+void sortAlphabetical(String filename){
+  def list = []
+  def orig = file(filename)
+  orig.eachLine { line ->
+      line = line.trim()
+      list << line
+  }
+  orig.delete()
+  
+  println("Sorting "+filename)
+  def newfile = file(filename)
+  list.sort()
+  for(String line:list){
+    newfile << line
+    newfile << "\n"
+  }
+  
+}
+
+//TODO: move this function somewhere common
 void assertAlphabetical(String filename) {
   def prev = ""
-  file(filename).eachLine { line ->
+  def lines = file(filename).readLines()
+  for(String line:lines){
       line = line.trim()
       if(line.compareTo(prev) < 0){
-          throw new GradleException(filename+' is not alphabetical. \"' + prev + '\" should be after \"' +line+ '\"')
+          println(filename+' is not alphabetical. \"' + prev + '\" should be after \"' +line+ '\"')
+          sortAlphabetical(filename)
+          break;
       }
       prev = line
   }
@@ -52,6 +75,7 @@ void assertAlphabetical(String filename) {
 task checkAlphabetical() {
   assertAlphabetical('oss_dependencies.maven')
   assertAlphabetical('oss_ibm.maven')
+  assertAlphabetical('ibm_java.maven')
 }
 
 task copyMavenLibs(type: Copy) {
