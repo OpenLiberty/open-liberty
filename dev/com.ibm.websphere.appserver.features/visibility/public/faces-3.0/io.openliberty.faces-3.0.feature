@@ -35,7 +35,7 @@ IBM-API-Package: jakarta.faces; type="spec", \
 IBM-ShortName: faces-3.0
 Subsystem-Name: Jakarta Server Faces 3.0
 -features=io.openliberty.jakarta.cdi-3.0, \
- io.openliberty.jakarta.servlet-5.0, \
+ io.openliberty.servlet.api-5.0, \
  io.openliberty.jakarta.validation-3.0, \
  io.openliberty.jakarta.faces-3.0, \
  io.openliberty.jsp-3.0, \
