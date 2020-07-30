@@ -14,6 +14,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.interfaces.RSAPublicKey;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +26,6 @@ import org.jose4j.jwt.MalformedClaimException;
 import org.jose4j.jwt.NumericDate;
 import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.InvalidJwtSignatureException;
-import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.jwt.consumer.JwtContext;
 import org.jose4j.jwx.JsonWebStructure;
@@ -36,11 +36,11 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.jwt.Claims;
 import com.ibm.websphere.security.jwt.InvalidClaimException;
 import com.ibm.websphere.security.jwt.InvalidTokenException;
+import com.ibm.websphere.security.jwt.JwtConsumer;
 // import com.ibm.websphere.security.jwt.JwtConsumer;
 import com.ibm.websphere.security.jwt.JwtToken;
 import com.ibm.websphere.security.jwt.KeyException;
 import com.ibm.websphere.security.jwt.KeyStoreServiceException;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.jwk.impl.JwKRetriever;
 import com.ibm.ws.security.common.time.TimeUtils;
 import com.ibm.ws.security.jwt.config.JwtConsumerConfig;
@@ -59,6 +59,7 @@ public class ConsumerUtil {
 	private static TimeUtils timeUtils = new TimeUtils(TimeUtils.YearMonthDateHourMinSecZone);
 	private final JtiNonceCache jtiCache = new JtiNonceCache();
 	public final static String ISSUER = "mp.jwt.verify.issuer";
+	public final static String AUDIENCES = "mp.jwt.verify.audiences";
 	public final static String PUBLIC_KEY = "mp.jwt.verify.publickey";
 	public final static String KEY_LOCATION = "mp.jwt.verify.publickey.location";
 
@@ -251,7 +252,7 @@ public class ConsumerUtil {
 		List<JsonWebStructure> jsonStructures = jwtContext.getJoseObjects();
 		if (jsonStructures == null || jsonStructures.isEmpty()) {
 			// TODO - NLS message
-		    throw new Exception("Invalid JsonWebStructure");
+			throw new Exception("Invalid JsonWebStructure");
 		}
 		JsonWebStructure jwtHeader = jsonStructures.get(0);
 		debugJwtHeader(jwtHeader);
@@ -372,7 +373,7 @@ public class ConsumerUtil {
 
 		validateIssuer(config.getId(), issuer, jwtClaims.getIssuer());
 
-		if (!validateAudience(config.getAudiences(), jwtClaims.getAudience())) {
+		if (!validateAudience(config.getAudiences(), jwtClaims.getAudience(), (String) properties.get(AUDIENCES))) {
 			String msg = Tr.formatMessage(tc, "JWT_AUDIENCE_NOT_TRUSTED",
 					new Object[] { jwtClaims.getAudience(), config.getId(), config.getAudiences() });
 			throw new InvalidClaimException(msg);
@@ -431,16 +432,34 @@ public class ConsumerUtil {
 		return isIssuer;
 	}
 
+	// TODO: is the precedence of config vs server.xml right?
+	// TODO: this message needs to include audiences pulled in from config:
+	// CWWKS6023E: The audience [[]] of the provided JSON web token (JWT) is not
+	// listed as a trusted audience in the [defaultMpJwt] JWT configuration. The
+	// trusted audiences are [null]
 	/**
 	 * Verifies that at least one of the values specified in audiences is contained
 	 * in the allowedAudiences list.
+	 * 
+	 * @param allowedAudiences
+	 *            - audiences from server.xml
+	 * @param audiences
+	 *            - audiences in the token
+	 * @param audiencesConfigPropertyValue
+	 *            - value of mp.jwt.verify.audiences mp-config property
 	 */
-	boolean validateAudience(List<String> allowedAudiences, List<String> audiences) {
+	boolean validateAudience(List<String> allowedAudiences, List<String> audiences,
+			String audiencesConfigPropertyValue) {
 		boolean valid = false;
 
 		if (allowedAudiences != null && allowedAudiences.contains(Constants.ALL_AUDIENCES)) {
 			return true;
 		}
+		if (allowedAudiences == null && audiencesConfigPropertyValue != null) {
+			String[] auds = audiencesConfigPropertyValue.split(",");
+			allowedAudiences = Arrays.asList(auds);
+		}
+
 		if (allowedAudiences != null && audiences != null) {
 			for (String audience : audiences) {
 				for (String allowedAud : allowedAudiences) {
@@ -516,7 +535,6 @@ public class ConsumerUtil {
 		}
 	}
 
-	
 	void validateExpirationClaim(NumericDate expirationClaim, long clockSkewInMilliseconds)
 			throws InvalidClaimException {
 		long now = (new Date()).getTime();

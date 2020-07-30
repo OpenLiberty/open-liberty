@@ -1072,45 +1072,45 @@ public class ConsumerUtilTest {
             allAudiencesList.add(Constants.ALL_AUDIENCES);
 
             // Null/empty token and allowed audiences
-            assertTrue("Validation should have succeeded.", consumerUtil.validateAudience(null, null));
-            assertTrue("Validation should have succeeded.", consumerUtil.validateAudience(null, emptyList));
-            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience(emptyList, null));
-            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience(emptyList, emptyList));
+            assertTrue("Validation should have succeeded.", consumerUtil.validateAudience(null, null,null));
+            assertTrue("Validation should have succeeded.", consumerUtil.validateAudience(null, emptyList,null));
+            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience(emptyList, null, null));
+            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience(emptyList, emptyList, null));
 
             // ALL_AUDIENCES
-            assertTrue("Validation should have succeeded.", consumerUtil.validateAudience(allAudiencesList, null));
-            assertTrue("Validation should NOT have succeeded.", consumerUtil.validateAudience(allAudiencesList, emptyList));
+            assertTrue("Validation should have succeeded.", consumerUtil.validateAudience(allAudiencesList, null, null));
+            assertTrue("Validation should NOT have succeeded.", consumerUtil.validateAudience(allAudiencesList, emptyList, null));
             List<String> tokenAud = new ArrayList<String>();
             tokenAud.add(ENTRY1);
             tokenAud.add(ENTRY2);
-            assertTrue("Validation should NOT have succeeded.", consumerUtil.validateAudience(allAudiencesList, tokenAud));
+            assertTrue("Validation should NOT have succeeded.", consumerUtil.validateAudience(allAudiencesList, tokenAud, null));
 
             // ALL_AUDIENCES substring
             List<String> allAudSubList = new ArrayList<String>();
             allAudSubList.add(Constants.ALL_AUDIENCES.substring(0, Constants.ALL_AUDIENCES.length() - 1));
-            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience(allAudSubList, tokenAud));
+            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience(allAudSubList, tokenAud, null));
 
             // Null/empty allowed audiences, single aud in the token
             tokenAud = new ArrayList<String>();
             tokenAud.add(ENTRY1);
-            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience(null, tokenAud));
-            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience(emptyList, tokenAud));
+            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience(null, tokenAud, null));
+            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience(emptyList, tokenAud, null));
 
             // Null/empty audiences in token, single aud in allowed audiences
             List<String> allowedAud = new ArrayList<String>();
             allowedAud.add(ENTRY1);
-            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience(allowedAud, null));
-            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience(allowedAud, emptyList));
+            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience(allowedAud, null, null));
+            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience(allowedAud, emptyList, null));
 
             // Single entries in both - match and mismatch
             allowedAud = new ArrayList<String>();
             allowedAud.add(ENTRY1);
             tokenAud = new ArrayList<String>();
             tokenAud.add(ENTRY1);
-            assertTrue("Validation should have succeeded.", consumerUtil.validateAudience(allowedAud, tokenAud));
+            assertTrue("Validation should have succeeded.", consumerUtil.validateAudience(allowedAud, tokenAud, null));
             tokenAud = new ArrayList<String>();
             tokenAud.add(ENTRY2);
-            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience(allowedAud, tokenAud));
+            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience(allowedAud, tokenAud, null));
 
             // Multiple entries in allowed audiences
             allowedAud = new ArrayList<String>();
@@ -1119,18 +1119,18 @@ public class ConsumerUtilTest {
             allowedAud.add(ENTRY3);
             tokenAud = new ArrayList<String>();
             tokenAud.add(ENTRY4);
-            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience(allowedAud, tokenAud));
+            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience(allowedAud, tokenAud, null));
             // Make sure we're not matching against substrings
             tokenAud.add(ENTRY1.substring(0, ENTRY1.length() - 1));
-            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience(allowedAud, tokenAud));
+            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience(allowedAud, tokenAud, null));
             tokenAud.add(ENTRY2);
-            assertTrue("Validation should have succeeded.", consumerUtil.validateAudience(allowedAud, tokenAud));
+            assertTrue("Validation should have succeeded.", consumerUtil.validateAudience(allowedAud, tokenAud, null));
 
             // Multiple entries in allowed audiences with ALL_AUDIENCES
             tokenAud.remove(ENTRY2);
-            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience(allowedAud, tokenAud));
+            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience(allowedAud, tokenAud, null));
             allowedAud.add(Constants.ALL_AUDIENCES);
-            assertTrue("Validation should have succeeded.", consumerUtil.validateAudience(allowedAud, tokenAud));
+            assertTrue("Validation should have succeeded.", consumerUtil.validateAudience(allowedAud, tokenAud, null));
 
             // Multiple entries in token
             tokenAud = new ArrayList<String>();
@@ -1139,18 +1139,18 @@ public class ConsumerUtilTest {
             tokenAud.add(ENTRY3);
             allowedAud = new ArrayList<String>();
             allowedAud.add(ENTRY4);
-            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience(allowedAud, tokenAud));
+            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience(allowedAud, tokenAud, null));
             // Make sure we're not matching against substrings
             allowedAud.add(ENTRY1.substring(0, ENTRY1.length() - 1));
-            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience(allowedAud, tokenAud));
+            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience(allowedAud, tokenAud, null));
             allowedAud.add(ENTRY2);
-            assertTrue("Validation should have succeeded.", consumerUtil.validateAudience(allowedAud, tokenAud));
+            assertTrue("Validation should have succeeded.", consumerUtil.validateAudience(allowedAud, tokenAud, null));
 
             // Multiple entries in token audiences with ALL_AUDIENCES
             allowedAud.remove(ENTRY2);
-            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience(allowedAud, tokenAud));
+            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience(allowedAud, tokenAud, null));
             allowedAud.add(Constants.ALL_AUDIENCES);
-            assertTrue("Validation should have succeeded.", consumerUtil.validateAudience(allowedAud, tokenAud));
+            assertTrue("Validation should have succeeded.", consumerUtil.validateAudience(allowedAud, tokenAud, null));
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);

@@ -32,14 +32,22 @@
              -->
              
              <!--  these 3 require no audience  -->
-             <class name="org.eclipse.microprofile.jwt.tck.util.TokenUtilsTest" />
+            
+             <class name="org.eclipse.microprofile.jwt.tck.util.TokenUtilsTest" />            
              <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.UnsecuredPingTest" />             
-             <class name="org.eclipse.microprofile.jwt.tck.config.IssValidationTest" /> 
-                       
+             
+             <!--  for the audience tests, the mp.jwt.verify.audiences mp-config property is set as a property in the test app, it is not passed in via server.env -->
+             <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.AudValidationTest" /> 
+              <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.AudArrayValidationTest" /> 
+              <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.AudValidationBadAudTest" /> 
+              <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.AudValidationMissingAudTest" /> 
+              <class name="org.eclipse.microprofile.jwt.tck.config.IssValidationTest" />   
+              
              <!--  this needs key and issuer overridden in server.env, and needs null audiences.  
               This one initially had two failing tests due to returning empty set instead of null: verifyAudience, veryifyOptionalAudience
-              -->             
+              --> 
              <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.RequiredClaimsTest" /> 
+            
         </classes>
     </test>
 

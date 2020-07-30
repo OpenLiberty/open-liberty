@@ -67,7 +67,8 @@ public class MpConfigUtil {
 
     // no null check. make sure that the caller sets non null objects.
     protected Map<String, String> getMpConfigMap(MpConfigProxyService service, ClassLoader cl, Map<String, String> map) {
-        Arrays.asList(MpConstants.ISSUER, MpConstants.PUBLIC_KEY, MpConstants.KEY_LOCATION).forEach(s -> getMpConfig(service, cl, s, map));
+        Arrays.asList(MpConstants.ISSUER, MpConstants.PUBLIC_KEY, 
+                MpConstants.AUDIENCES, MpConstants.KEY_LOCATION).forEach(s -> getMpConfig(service, cl, s, map));
         return map;
     }
 
