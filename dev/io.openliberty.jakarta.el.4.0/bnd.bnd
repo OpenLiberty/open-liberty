@@ -18,18 +18,9 @@ Export-Package: \
  jakarta.el;thread-context=true; version="4.0.0", \
  com.ibm.wsspi.el;thread-context=true; version="4.0.0"
 
- Provide-Capability: \
-   osgi.contract;\
-       osgi.contract=JavaEL;\
-       version:Version=4.0.0;\
-       uses:="jakarta.el"
-
 Include-Resource: \
     jakarta=resources/jakarta
 
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/spec
-
--buildpath: \
-  org.apache.tomcat:tomcat-el-api;version=10.0.0
