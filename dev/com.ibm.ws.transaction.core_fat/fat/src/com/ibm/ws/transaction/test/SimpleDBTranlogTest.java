@@ -48,7 +48,7 @@ import componenttest.topology.utils.FATServletClient;
 public class SimpleDBTranlogTest extends FATServletClient {
 
     public static final String APP_NAME = "transaction";
-    public static final String SERVLET_NAME = "transaction/SimpleServlet";
+    public static final String SERVLET_NAME = APP_NAME + "/SimpleServlet";
 
     @Server("com.ibm.ws.transaction.dblog")
     @TestServlet(servlet = SimpleServlet.class, contextRoot = APP_NAME)
@@ -80,6 +80,7 @@ public class SimpleDBTranlogTest extends FATServletClient {
             @Override
             public Void run() throws Exception {
                 server.stopServer("WTRN0017W");
+                ShrinkHelper.cleanAllExportedArchives();
                 return null;
             }
         });

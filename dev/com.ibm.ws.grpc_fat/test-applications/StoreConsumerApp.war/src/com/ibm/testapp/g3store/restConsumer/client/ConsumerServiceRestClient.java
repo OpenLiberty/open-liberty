@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.testapp.g3store.restConsumer.client;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -20,6 +23,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import org.eclipse.microprofile.rest.client.annotation.ClientHeaderParam;
 
 /**
  * @author anupag
@@ -35,6 +40,7 @@ public interface ConsumerServiceRestClient {
 
     @GET
     @Path("/appInfo/{appName}")
+    @ClientHeaderParam(name = "Authorization", value = "{getAuthValue}")
     public Response getAppInfo(@PathParam("appName") String appName) throws Exception;
 
     @GET
@@ -48,5 +54,13 @@ public interface ConsumerServiceRestClient {
     @GET
     @Path("/appNames")
     public Response getAllAppNames() throws Exception;
+
+    default String getAuthValue() throws UnsupportedEncodingException {
+        return createBasicAuthHeaderValue("dev", "hello");
+    }
+
+    default String createBasicAuthHeaderValue(String username, String password) throws UnsupportedEncodingException {
+        return "Basic " + Base64.getEncoder().encodeToString((username + ":" + password).getBytes(StandardCharsets.UTF_8));
+    }
 
 }

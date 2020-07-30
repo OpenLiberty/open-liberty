@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
-	<classpathentry kind="src" path="test-applications/threadedClient/src"/>
-	<classpathentry kind="src" path="test-applications/threadedServer/src"/>
 	<classpathentry kind="src" path="test-applications/LPSClient/src"/>
 	<classpathentry kind="src" path="test-applications/LPSServer/src"/>
 	<classpathentry kind="src" path="test-applications/simpleServer/src"/>

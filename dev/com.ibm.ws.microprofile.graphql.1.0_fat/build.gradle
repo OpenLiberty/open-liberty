@@ -31,8 +31,8 @@ configurations.smallryeGraphQLClient {
 }
 
 dependencies {
-  smallryeGraphQLClient 'io.smallrye:smallrye-graphql-client:1.0.2',
-    'io.smallrye:smallrye-graphql-client-api:1.0.2',
+  smallryeGraphQLClient 'io.smallrye:smallrye-graphql-client:1.0.5',
+    'io.smallrye:smallrye-graphql-client-api:1.0.5',
     'org.slf4j:slf4j-api:1.7.7',
 	'org.slf4j:slf4j-jdk14:1.7.7'
 }

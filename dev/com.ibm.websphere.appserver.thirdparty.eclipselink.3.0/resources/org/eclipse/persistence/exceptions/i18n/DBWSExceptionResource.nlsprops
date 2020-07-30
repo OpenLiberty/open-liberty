@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DBWSExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+47000=Cannot locate the "[{0}]" file.
+
+47001=Could not locate descriptor [{0}] for operation [{1}] in the O-R project
+
+47002=Could not locate query [{0}] for descriptor [{1}]
+
+47003=Could not locate query [{0}] for session [{1}]
+
+47004=Parameter type [{0}] for operation [{1}] does not exist in the schema
+
+47005=Parameter type [{0}] for operation [{1}] has no O-X mapping
+
+47006=Result type [{0}] for operation [{1}] does not exist in the schema
+
+47007=Result type [{0}] for operation [{1}] has no O-X mapping
+
+47008=Only Simple XML Format queries support multiple output arguments
+
+47009=INOUT cursor parameters are not supported
+
+47010=Could not locate O-R session for service [{0}]
+
+47011=Could not locate O-X session for service [{0}]
+
+47012=Could not parse DBWS file
+

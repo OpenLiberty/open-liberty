@@ -44,4 +44,5 @@ task addhibernateJPA22(type: Copy) {
 addRequiredLibraries {
   dependsOn addDerby
   dependsOn addhibernateJPA22
+  dependsOn addJakartaTransformer
 }

@@ -14,7 +14,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
-import java.util.Arrays;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -28,7 +27,6 @@ import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
@@ -49,14 +47,18 @@ public class CommitPriorityTest extends FATServletClient {
 
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "com.ibm.ws.commitPriority.*");
 
-        // TODO: Revisit this after all features required by this FAT suite are available.
-        // The test-specific public features, txtest-x.y, are not in the repeatable EE feature
-        // set. And, the ejb-4.0 feature is not yet available. Enable jdbc-4.2 to enable transactions-2.0
-        // The following sets the appropriate features for the EE9 repeatable tests.
-        if (JakartaEE9Action.isActive()) {
-            server.changeFeatures(Arrays.asList("jdbc-4.2", "cdi-3.0", "ejbLite-4.0", "txtest-2.0", "servlet-5.0", "componenttest-2.0", "osgiconsole-1.0", "jndi-1.0"));
+        final int appStartTimeout = server.getAppStartTimeout();
+        if (appStartTimeout < 120000) {
+            server.setAppStartTimeout(120000);
         }
 
+        final int configUpdateTimeout = server.getConfigUpdateTimeout();
+        if (configUpdateTimeout < 120000) {
+            server.setConfigUpdateTimeout(120000);
+        }
+
+        server.setServerStartTimeout(300000);
+        LibertyServer.setValidateApps(true);
         server.startServer();
     }
 
@@ -67,6 +69,7 @@ public class CommitPriorityTest extends FATServletClient {
             @Override
             public Void run() throws Exception {
                 server.stopServer("WTRN0017W");
+                ShrinkHelper.cleanAllExportedArchives();
                 return null;
             }
         });

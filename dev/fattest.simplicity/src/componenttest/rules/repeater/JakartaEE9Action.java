@@ -57,6 +57,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                                                  "webProfile-9.0",
                                                  "jakartaeeClient-9.0",
                                                  "componenttest-2.0", // replaces "componenttest-1.0"
+                                                 "txtest-2.0",
                                                  "appSecurity-4.0",
                                                  "beanValidation-3.0",
                                                  "cdi-3.0",
@@ -91,6 +92,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
     public JakartaEE9Action() {
         // Remove the EE7 and EE8 features; replace them with the EE9 features
         super(EE9_FEATURE_SET);
+        removeFeatures(EE6FeatureReplacementAction.EE6_FEATURE_SET);
         removeFeatures(EE7FeatureReplacementAction.EE7_FEATURE_SET);
         removeFeatures(EE8FeatureReplacementAction.EE8_FEATURE_SET);
         forceAddFeatures(false);

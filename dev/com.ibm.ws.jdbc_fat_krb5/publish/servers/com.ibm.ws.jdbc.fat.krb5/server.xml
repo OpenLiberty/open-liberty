@@ -8,8 +8,6 @@
     
   <include location="../fatTestPorts.xml"/>
 
-  <webApplication location="db2fat.war"/>
-    
   <library id="DB2JCCLib">
     <fileset dir="${server.config.dir}/db2"/>
   </library>

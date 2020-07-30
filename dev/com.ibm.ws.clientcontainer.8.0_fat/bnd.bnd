@@ -23,5 +23,8 @@ src: \
 
 fat.project: true
 
+tested.features: \
+  jakartaeeClient-9.0
+
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.1;version=latest

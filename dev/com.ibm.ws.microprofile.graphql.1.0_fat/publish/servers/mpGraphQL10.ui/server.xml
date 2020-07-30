@@ -1,0 +1,15 @@
+<server>
+  <featureManager>
+    <feature>componenttest-1.0</feature>
+    <feature>mpRestClient-1.4</feature>
+    <feature>mpGraphQL-1.0</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+
+  <variable name="io.openliberty.enableGraphQLUI" value="true" />
+
+  <!--  Required to read the server's port system property -->
+  <javaPermission className="java.util.PropertyPermission"  name="*" actions="read" />
+
+</server>

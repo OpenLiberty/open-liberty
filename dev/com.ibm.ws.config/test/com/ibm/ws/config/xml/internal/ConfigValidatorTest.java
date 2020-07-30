@@ -42,6 +42,7 @@ public class ConfigValidatorTest {
     static SharedOutputManager outputMgr;
 
     private final MetaTypeRegistry metatypeRegistry = new MetaTypeRegistry();
+    private ConfigVariableRegistry variableRegistry;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -75,7 +76,7 @@ public class ConfigValidatorTest {
     private void changeLocationSettings(String profileName) {
         SharedLocationManager.createDefaultLocations(SharedConstants.SERVER_XML_INSTALL_ROOT, profileName);
         libertyLocation = (WsLocationAdmin) SharedLocationManager.getLocationInstance();
-        ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null);
+        this.variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null);
 
         configParser = new XMLConfigParser(libertyLocation, variableRegistry);
     }
@@ -92,7 +93,7 @@ public class ConfigValidatorTest {
         ConfigElement config2 = parseConfiguration("<httpConnector clientAuth=\"false\" logFile=\"a\" mutualAuth=\"false\"/>");
         ConfigElement config3 = parseConfiguration("<httpConnector clientAuth=\"false\" logFile=\"a\"/>");
 
-        ConfigValidator validator = new ConfigValidator(metatypeRegistry);
+        ConfigValidator validator = new ConfigValidator(metatypeRegistry, variableRegistry);
         Map<String, ConfigElementList> conflictMap = validator.generateConflictMap(Arrays.asList(config1, config2, config3));
 
         assertEquals("conflicts", 0, conflictMap.size());
@@ -106,7 +107,7 @@ public class ConfigValidatorTest {
         ConfigElement config2 = parseConfiguration("<httpConnector clientAuth=\"false\" logFile=\"b\" mutualAuth=\"false\"/>");
         ConfigElement config3 = parseConfiguration("<httpConnector clientAuth=\"false\" logFile=\"a\"/>");
 
-        ConfigValidator validator = new ConfigValidator(metatypeRegistry);
+        ConfigValidator validator = new ConfigValidator(metatypeRegistry, variableRegistry);
         Map<String, ConfigElementList> conflictMap = validator.generateConflictMap(Arrays.asList(config1, config2, config3));
 
         assertTrue("conflicts", conflictMap.size() > 0);
@@ -128,7 +129,7 @@ public class ConfigValidatorTest {
         ConfigElement config3 = parseConfiguration("<httpConnector id=\"1\" clientAuth=\"false\" logFile=\"a\"/>");
         config3.setDocumentLocation("doc3");
 
-        ConfigValidator validator = new ConfigValidator(metatypeRegistry);
+        ConfigValidator validator = new ConfigValidator(metatypeRegistry, variableRegistry);
         Map<String, ConfigElementList> conflictMap = validator.generateConflictMap(Arrays.asList(config1, config2, config3));
 
         assertTrue("conflicts", conflictMap.size() > 0);
@@ -158,7 +159,7 @@ public class ConfigValidatorTest {
         config2.setMergeBehavior(MergeBehavior.MERGE);
         config3.setMergeBehavior(MergeBehavior.IGNORE);
 
-        ConfigValidator validator = new ConfigValidator(metatypeRegistry);
+        ConfigValidator validator = new ConfigValidator(metatypeRegistry, variableRegistry);
 
         Map<String, ConfigElementList> conflictMap = validator.generateConflictMap(Arrays.asList(config1, config2, config3));
 

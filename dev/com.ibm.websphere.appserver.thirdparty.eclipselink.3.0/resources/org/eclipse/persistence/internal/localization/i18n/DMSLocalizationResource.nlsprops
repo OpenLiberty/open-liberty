@@ -1,0 +1,111 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/DMSLocalizationResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+assigning_sequence_numbers=Includes time spent maintaining the sequence number mechanism and actually setting the sequence number on objects
+
+cache_hits=The number of times that the object was found in the cache
+
+cache_misses=The number of times that the object was not found in the cache
+
+caching=Includes time spent adding, looking up, and removing objects in the cache
+
+change_set_not_processed=The number of ObjectChangeSets thrown away because the object was NOT found in the cache
+
+change_set_processed=The number of ObjectChangeSets was found in the cache
+
+client_session_count=The number of ClientSession was logged in
+
+connect_call=Total number of connect calls made
+
+connection=Time spent managing connections including connecting, reconnecting, and disconnecting from a datasource
+
+connection_in_used=Number of connections in use per pool for any exclusive ConnectionPool(Write, ExclusiveRead)
+
+connection_ping=Time spent testing database connection to determine if it can be used.
+
+database_execute=Time spent in calls to the JDBC Statement, includes time spent in calls to: close, executeUpdate, and executeQuery
+
+deleted_object=Object need to be  removed from identityMap from ObjectChangeSet
+
+descriptor_event=Time spent on execute DescriptorEvent
+
+disconnect_call=Total number of disconnect calls made
+
+distributed_merge=Time spent merging remote transaction changes into local shared cache. Appears when cache sync is used
+
+jts_aftercompletion=Time spent on JTS afterCompletion(Object status) method
+
+jts_beforecompletion=Time spent on JTS beforeCompletion() method
+
+logging=Time spent logging TopLink activities
+
+merge_time=Time spent merging changes into the shared cache.
+
+object_building=Time spent build persistent objects from database rows
+
+optimistic_lock=Number of optimistic lock exceptions which were thrown
+
+query=Total time spent on operation: {0}
+
+query_misc=Total time spent on operation: {0}.  This is for special operations not included in any query nouns, such as batch writing.
+
+query_prepareation=Time to prepare the query
+
+rcm_message_received=Number of messages that been received through the RCM
+
+rcm_message_sent=Number of messages that been sent through the RCM
+
+rcm_status=One of [not configured, started, stopped]
+
+remote_change_set=Number of change sets received from remote machines and processed
+
+row_fetch=Time taken to build Record objects from the jdbc ResultSet. Includes regular SQL calls and stored procedure calls
+
+session_event=Time spent on execute SessionEvent
+
+session_login_time=Time the session was logged in
+
+session_name=The name of the session
+
+sql_generation=Time spent generating SQL. In the case of TopLink expressions, time spent converting Expression to SQL
+
+sql_prepare=Time spent in JDBC preparing the Statement.Also includes the time spent in EIS creating an Interaction associated with a connection, and creating input and output Record objects
+
+unitofwork_commit=Measures the commit process of the UnitOfWork
+
+unitofwork_commits=Number of UnitOfWork commits
+
+unitofwork_count=Count of total number of UnitOfWork objects created
+
+unitofwork_register=Includes time spent in registerExistingObject, registerNewContainerBean, registerNewContainerBeanForCMP, registerNewObject, registerObject, readIntoWorkingCopy)
+
+unitofwork_rollback=Number of UnitOfWork commits that were rollback
+
+wrapping=Time spent wrapping both CMP and BMP beans
+
