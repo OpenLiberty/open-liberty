@@ -116,7 +116,7 @@ threadpool.size.description=The size of the thread pool.
 servlet.request.total.description=The number of visits to this servlet since the start of the server.
 servlet.responseTime.total.description=The total response time of this servlet since the start of the server.
 
-connectionpool.create.total.description=The total number of managed 	connections that have been created since the pool creation.
+connectionpool.create.total.description=The total number of managed connections that have been created since the pool creation.
 connectionpool.destroy.total.description=The total number of managed connections that have been destroyed since the pool creation.
 connectionpool.managedConnections.description=The number of managed connections in the free, shared, and unshared pools.
 connectionpool.connectionHandles.description=The number of connections that are in use. This number might include multiple connections that are shared from a single managed connection.

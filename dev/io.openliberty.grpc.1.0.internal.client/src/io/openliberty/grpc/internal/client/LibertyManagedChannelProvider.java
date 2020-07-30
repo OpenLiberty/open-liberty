@@ -139,8 +139,11 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 		}
 	}
 	
-	@FFDCIgnore({ ClassNotFoundException.class })
 	private ClientInterceptor createMonitoringClientInterceptor() {
+		// create the interceptor only if the monitor feature is enabled
+		if (!GrpcClientComponent.isMonitoringEnabled()) {
+			return null;
+		}
 		ClientInterceptor interceptor = null;
 		// monitoring interceptor 
 		final String className = "io.openliberty.grpc.internal.monitor.GrpcMonitoringClientInterceptor";

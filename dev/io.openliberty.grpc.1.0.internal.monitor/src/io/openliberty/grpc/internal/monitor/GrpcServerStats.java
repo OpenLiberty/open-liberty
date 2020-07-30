@@ -13,7 +13,7 @@ package io.openliberty.grpc.internal.monitor;
 import com.ibm.websphere.monitor.meters.Counter;
 import com.ibm.websphere.monitor.meters.Meter;
 
-import io.openliberty.grpc.GrpcServerStatsMXBean;
+import io.openliberty.grpc.monitor.GrpcServerStatsMXBean;
 
 /**
  * This is used to report gRPC Server related statistics. </br>

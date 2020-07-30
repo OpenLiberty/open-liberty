@@ -48,7 +48,9 @@ Export-Package: \
   io.openliberty.grpc.internal.client.* ,\
   io.grpc.netty.shaded.io.*
 
--dsannotations: io.openliberty.grpc.internal.client.config.GrpcClientConfigImpl
+-dsannotations: \
+  io.openliberty.grpc.internal.client.config.GrpcClientConfigImpl,\
+  io.openliberty.grpc.internal.client.GrpcClientComponent
 
 # include the service providers and metatype
 Include-Resource: \
@@ -73,6 +75,7 @@ Provide-Capability: osgi.serviceloader;osgi.serviceloader=io.grpc.ManagedChannel
 instrument.disabled: true
 
 -buildpath: \
+  com.ibm.ws.container.service;version=latest,\
   com.ibm.websphere.javaee.servlet.4.0;version=latest,\
   com.ibm.websphere.security;version=latest,\
   com.ibm.ws.webcontainer;version=latest,\
@@ -82,6 +85,9 @@ instrument.disabled: true
   com.ibm.websphere.org.osgi.service.component;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+  com.ibm.ws.kernel.boot;version=latest,\
+  com.ibm.ws.kernel.service;version=latest,\
+  com.ibm.ws.kernel.feature;version=latest,\
   org.osgi.service.component.annotations;version=latest,\
   io.grpc:grpc-netty-shaded;version=1.27.0,\
   io.openliberty.grpc.1.0.internal.common;version=latest,\
