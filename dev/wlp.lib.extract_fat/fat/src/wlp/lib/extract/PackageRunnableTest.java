@@ -36,10 +36,13 @@ import java.util.jar.JarFile;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
+@RunWith(FATRunner.class)
 public class PackageRunnableTest {
     private static String serverName = "runnableTestServer";
     private static LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
@@ -80,7 +83,8 @@ public class PackageRunnableTest {
     }
 
     @BeforeClass
-    public static void setupClass() throws Exception {}
+    public static void setupClass() throws Exception {
+    }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
@@ -283,6 +287,7 @@ public class PackageRunnableTest {
 
         String extractLoc = null;
         boolean found = outputReader.foundWatchFor();
+        extractLoc = outputReader.extractLoc();
         while (!found && count <= 90) {
 
             synchronized (proc) {
