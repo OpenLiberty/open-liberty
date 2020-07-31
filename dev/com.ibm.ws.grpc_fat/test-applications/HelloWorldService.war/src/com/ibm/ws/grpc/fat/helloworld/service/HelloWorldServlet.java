@@ -12,6 +12,7 @@ package com.ibm.ws.grpc.fat.helloworld.service;
 
 import java.io.IOException;
 
+import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -35,13 +36,31 @@ public class HelloWorldServlet extends HttpServlet {
     // implementation of the "GreeterGrpc" service
     public static final class GreeterImpl extends GreeterGrpc.GreeterImplBase {
 
+        @Inject
+        GreetingCDIBean greetingBean;
+
         // a public no-arg constructor is requird for Liberty to start this service automatically
         public GreeterImpl() {
+
         }
 
         @Override
         public void sayHello(HelloRequest req, StreamObserver<HelloReply> responseObserver) {
-            HelloReply reply = HelloReply.newBuilder().setMessage("Hello " + req.getName()).build();
+
+            String greetingMessage = "Hello";
+
+            // GreetingCDIBean will only be available if CDI is enabled
+            if (greetingBean != null) {
+                greetingMessage = greetingBean.getGreeting();
+            }
+
+            // this context will only be available if CDI is available and HelloWorldServerCDIInterceptor is active
+            Object exampleContextObject = HelloWorldServerCDIInterceptor.EXAMPLE_CONTEXT_KEY.get();
+            if (exampleContextObject != null) {
+                greetingMessage = (String) exampleContextObject + "; " + greetingMessage;
+            }
+
+            HelloReply reply = HelloReply.newBuilder().setMessage(greetingMessage + " " + req.getName()).build();
             responseObserver.onNext(reply);
             responseObserver.onCompleted();
         }
