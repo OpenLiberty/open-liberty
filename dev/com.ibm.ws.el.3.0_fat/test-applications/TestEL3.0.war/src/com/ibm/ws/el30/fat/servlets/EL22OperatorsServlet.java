@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2018 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -304,7 +304,7 @@ public class EL22OperatorsServlet extends FATServlet {
          * to true. The property has not been defined so it makes sense for a PropertyNotFoundExcepion.
          */
         boolean exceptionThrown = false;
-        String exceptionMessage = "ELResolver cannot handle a null base Object with identifier 'z'";
+        String exceptionMessage = "ELResolver cannot handle a null base Object with identifier";
         test = "EL 2.2 Empty Operator (empty) (Expected: PropertyNotFoundException): ";
         expression = "empty z";
         expected = "PropertyNotFoundException";
@@ -313,7 +313,8 @@ public class EL22OperatorsServlet extends FATServlet {
             elp.eval(expression).toString();
         } catch (javax.el.PropertyNotFoundException pnfe) {
             exceptionThrown = true;
-            assertTrue("The exception did not contain the following message: " + exceptionMessage, pnfe.getMessage().contains(exceptionMessage));
+            String message = pnfe.getMessage();
+            assertTrue("The exception did not contain the following message: " + exceptionMessage, message.contains(exceptionMessage) && message.contains("z"));
         }
         assertTrue("A PropertyNotFoundException was expected but was not thrown.", exceptionThrown);
     }
@@ -344,3 +345,4 @@ public class EL22OperatorsServlet extends FATServlet {
         assertEquals(test + " but was: " + result, expected, result);
     }
 }
+
