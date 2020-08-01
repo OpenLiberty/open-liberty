@@ -28,7 +28,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response;
 
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
-import org.junit.Test;
 
 import com.ibm.testapp.g3store.restProducer.model.AppStructure;
 import com.ibm.testapp.g3store.restProducer.model.AppStructure.GenreType;
@@ -96,7 +95,7 @@ public class ProducerEndpointFATServlet extends FATServlet {
      * @param resp
      * @throws Exception
      */
-    @Test
+//    @Test
     public void testCreateDeleteMyApp(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
         String m = "testCreateDeleteMyApp";
@@ -166,7 +165,7 @@ public class ProducerEndpointFATServlet extends FATServlet {
      * @param resp
      * @throws Exception
      */
-    @Test
+//    @Test
     public void testCreateDeleteMultiApp(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
         String m = "testCreateMulitDeleteAllApp";
@@ -270,7 +269,7 @@ public class ProducerEndpointFATServlet extends FATServlet {
      * @param resp
      * @throws Exception
      */
-    @Test
+//    @Test
     public void testDuplicate_CreateDeleteMyApp(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
         String m = "testDuplicateCreateDeleteMyApp";
@@ -409,7 +408,7 @@ public class ProducerEndpointFATServlet extends FATServlet {
      * @param resp
      * @throws Exception
      */
-    @Test
+//    @Test
     public void testClientStreaming(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
         String m = "testClientStreaming";
