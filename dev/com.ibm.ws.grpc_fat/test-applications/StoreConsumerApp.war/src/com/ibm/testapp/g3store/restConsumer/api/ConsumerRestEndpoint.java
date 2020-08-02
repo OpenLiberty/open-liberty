@@ -84,7 +84,7 @@ public class ConsumerRestEndpoint extends ConsumerGrpcServiceClientImpl {
     @GET
     @Path("/appNames")
 //    @RolesAllowed({ "Administrator", "students" })
-//    @SecurityRequirement(name = "ConsumerBasicHttp")
+//    @SecurityRequirement(name = "JWTAuthorization")
     @APIResponses(value = {
                             @APIResponse(responseCode = "400", description = "Bad Request — Client sent an invalid request", content = @Content(mediaType = "text/plain")),
                             @APIResponse(responseCode = "404", description = "Not Found — The requested resources does not exist.", content = @Content(mediaType = "text/plain")),
