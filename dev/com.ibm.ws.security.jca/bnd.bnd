@@ -44,6 +44,7 @@ Import-Package: \
   com.ibm.wsspi.kernel.service.utils, \
   javax.security.auth, \
   javax.security.auth.callback, \
+  javax.security.auth.kerberos, \
   javax.security.auth.login, \
   javax.security.auth.spi, \
   org.ietf.jgss, \
@@ -60,23 +61,7 @@ DynamicImport-Package: \
 Include-Resource: \
   OSGI-INF/permissions.perm=resources/permissions.perm
 
-
-# At least one service component should be defined to allow configuration
-# to be injected via config admin. Use configuration-policy:=ignore 
-# if the component does not expect injected config
-
-Service-Component: \
-  com.ibm.ws.security.jca.authdata.service; \
-    implementation:=com.ibm.ws.security.jca.internal.AuthDataServiceImpl; \
-    provide:='com.ibm.ws.security.jca.AuthDataService'; \
-    configuration-policy:=ignore; \
-    authDataProvider=com.ibm.websphere.security.auth.data.AuthDataProvider; \
-    krb5Service=com.ibm.ws.security.kerberos.auth.KerberosService; \
-    securityService=com.ibm.ws.security.SecurityService; \
-    subjectManagerService=com.ibm.ws.security.intfc.SubjectManagerService; \
-    optional:='securityService,subjectManagerService'; \
-    dynamic:='securityService,subjectManagerService'; \
-    properties:="service.vendor=IBM"
+-dsannotations=com.ibm.ws.security.jca.internal.AuthDataServiceImpl
 
 -buildpath: \
 	com.ibm.websphere.javaee.connector.1.6;version=latest,\
