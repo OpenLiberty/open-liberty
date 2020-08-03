@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>     
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<ejb-jar id="ejb-jar_ID" 
+	xmlns="http://java.sun.com/xml/ns/javaee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd" 
+	metadata-complete="false" version="3.0">
+
+  <display-name>SecurityEJBM02</display-name>
+  
+  <enterprise-beans>
+     <session id="SecurityEJBM02">
+        <ejb-name>SecurityEJBM02Bean</ejb-name>
+        <ejb-class>com.ibm.ws.ejbcontainer.security.test.SecurityEJBM02Bean</ejb-class>
+          <security-identity>
+			<use-caller-identity />
+		  </security-identity>
+     </session>
+  </enterprise-beans>
+  
+  <assembly-descriptor id="AssemblyDescriptor_1">
+    <security-role id="SecurityRole_1">
+      <description>Manager in an enterprise</description>
+      <role-name>Manager</role-name>
+    </security-role>
+    <security-role id="SecurityRole_2">
+      <description>Employee in an enterprise</description>
+      <role-name>Employee</role-name>
+    </security-role>
+    
+    <method-permission id="MethodPermission_1">
+    <description>These methods are unchecked</description>
+    <unchecked></unchecked>
+    <method id="MethodElement_3">
+       <ejb-name>SecurityEJBM02Bean</ejb-name>
+       <method-name>employeeAndManager</method-name>
+       <method-params>
+       </method-params>
+    </method>
+    <method id="MethodElement_4">
+       <ejb-name>SecurityEJBM02Bean</ejb-name>
+       <method-name>manager</method-name>
+       <method-params>
+      <method-param>java.lang.String</method-param>
+       </method-params>
+    </method>
+    <method id="MethodElement_5">
+       <ejb-name>SecurityEJBM02Bean</ejb-name>
+       <method-name>runAsClient</method-name>
+    </method>
+    </method-permission>
+     
+     <method-permission id="MethodPermission_2">
+     <description>These methods are protected by Employee role.</description>
+     <role-name>Employee</role-name>
+     <method id="MethodElement_6">
+     <ejb-name>SecurityEJBM02Bean</ejb-name>
+     <method-name>employeeAndManager</method-name>
+       <method-params>
+          <method-param>int</method-param>
+       </method-params>
+     </method>
+     </method-permission>
+     
+    <method-permission id="MethodPermission_3">
+    <description>These methods are protected by Manager role. 
+    The runAsSpecified method requires Manager role to call it, but runs injected EJB as Employee role.
+    </description>
+    <role-name>Manager</role-name>
+    <method id="MethodElement_7">
+       <ejb-name>SecurityEJBM02Bean</ejb-name>
+       <method-name>manager</method-name>
+       <method-params>
+       </method-params>
+    </method>
+    <method id="MethodElement_8">
+       <ejb-name>SecurityEJBM02Bean</ejb-name>
+       <method-name>denyAll</method-name>
+       <method-params>
+      <method-param>java.lang.String</method-param>
+       </method-params>
+    </method>
+    <method id="MethodElement_9">
+       <ejb-name>SecurityEJBM02Bean</ejb-name>
+         <method-name>runAsSpecified</method-name>
+           <method-params>
+           </method-params>
+     </method>
+     <method id="MethodElement_10">
+       <ejb-name>SecurityEJBM02Bean</ejb-name>
+       <method-name>employee</method-name>
+       <method-params>
+          <method-param>java.lang.String</method-param>
+       </method-params>
+     </method>
+     </method-permission>
+     
+   
+     <exclude-list>
+       <description>These methods are uncallable</description>
+      <method id="MethodElement_11">
+       <ejb-name>SecurityEJBM02Bean</ejb-name>
+       <method-name>employeeAndManager</method-name>
+       <method-params>
+          <method-param>java.lang.String</method-param>
+       </method-params>
+       </method>
+       <method id="MethodElement_12">
+       <ejb-name>SecurityEJBM02Bean</ejb-name>
+       <method-name>permitAll</method-name>
+       <method-params>
+          <method-param>java.lang.String</method-param>
+       </method-params>
+    </method>
+     </exclude-list>
+  </assembly-descriptor>
+  
+</ejb-jar>

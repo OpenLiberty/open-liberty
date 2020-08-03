@@ -96,7 +96,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * By default features are added even if there was not another version already there
      *
      * @param removeFeature the feature to be removed
-     * @param addFeature    the feature to add
+     * @param addFeature the feature to add
      */
     public FeatureReplacementAction(String removeFeature, String addFeature) {
         this(addFeature);
@@ -109,7 +109,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * By default features are added even if there was not another version already there
      *
      * @param removeFeatures the features to remove
-     * @param addFeatures    the features to add
+     * @param addFeatures the features to add
      */
     public FeatureReplacementAction(Set<String> removeFeatures, Set<String> addFeatures) {
         this(addFeatures);
@@ -289,8 +289,9 @@ public class FeatureReplacementAction implements RepeatTestAction {
                     if (f.isDirectory())
                         servers.add(f.getName());
         }
-        for (String serverName : servers)
-            serverConfigs.add(new File(pathToAutoFVTTestServers + serverName + "/server.xml"));
+        for (String serverName : servers) {
+            serverConfigs.addAll(findFile(new File(pathToAutoFVTTestServers + serverName), ".xml"));
+        }
 
         // Find all of the client configurations to replace features in
         Set<File> clientConfigs = new HashSet<>();
@@ -304,8 +305,9 @@ public class FeatureReplacementAction implements RepeatTestAction {
                     if (f.isDirectory())
                         clients.add(f.getName());
         }
-        for (String clientName : clients)
-            clientConfigs.add(new File(pathToAutoFVTTestClients + clientName + "/client.xml"));
+        for (String clientName : clients) {
+            clientConfigs.addAll(findFile(new File(pathToAutoFVTTestServers + clientName), ".xml"));
+        }
 
         // Make sure that XML file we find is a server config file, by checking if it contains the <server> tag
         Log.info(c, m, "Replacing features in files: " + serverConfigs.toString() + "  and  " + clientConfigs.toString());
