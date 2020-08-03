@@ -14,7 +14,8 @@ configurations {
 }
 
 dependencies {
-  requiredLibs 'org.glassfish:javax.json:1.0.4'
+  requiredLibs 'org.glassfish:javax.json:1.0.4',
+               project(':com.ibm.ws.jca.cm')
   derby40 'org.apache.derby:derby:10.7.1.1'
 }
 
