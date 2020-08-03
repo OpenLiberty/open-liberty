@@ -34,6 +34,15 @@ public class AppAndResourceTestServlet extends FATServlet {
         assertEquals("foo", readEntity(conn.getInputStream()));
     }
 
+    @Test
+    public void testCanInvokeQueryParametersWithArrayType() throws Exception {
+        URI uri = URI.create("http://localhost:" + System.getProperty("bvt.prop.HTTP_default")
+            + "/appandresource/app/path/queryArrays?stringArray=ab&stringArray=cd&stringArray=ef&stringArray=gh");
+        HttpURLConnection conn = (HttpURLConnection) uri.toURL().openConnection();
+        assertEquals(200, conn.getResponseCode());
+        assertEquals("2", readEntity(conn.getInputStream()));
+    }
+
     private String readEntity(InputStream is) throws Exception {
         StringBuilder sb = new StringBuilder();
         byte[] b = new byte[256];
@@ -42,6 +51,6 @@ public class AppAndResourceTestServlet extends FATServlet {
             sb.append(new String(b, 0, i));
             i = is.read(b);
         }
-        return sb.toString();
+        return sb.toString().trim();
     }
 }
