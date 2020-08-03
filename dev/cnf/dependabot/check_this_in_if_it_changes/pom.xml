@@ -1982,6 +1982,11 @@
       <version>2.1</version>
     </dependency>
     <dependency>
+      <groupId>org.eclipse.microprofile.fault-tolerance</groupId>
+      <artifactId>microprofile-fault-tolerance-api</artifactId>
+      <version>3.0-RC1</version>
+    </dependency>
+    <dependency>
       <groupId>org.eclipse.microprofile.graphql</groupId>
       <artifactId>microprofile-graphql-api</artifactId>
       <version>1.0.2</version>
