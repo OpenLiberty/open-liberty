@@ -49,7 +49,7 @@ public class KerberosService {
 
     private Path keytab;
     private Path configFile;
-    private final LRUCache subjectCache = new LRUCache(100);
+    private final LRUCache subjectCache = new LRUCache(2500);
 
     @Activate
     protected void activate(ComponentContext ctx) {
