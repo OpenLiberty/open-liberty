@@ -12,13 +12,15 @@ package com.ibm.ws.concurrent.internal;
 
 import java.util.Date;
 
+import javax.enterprise.concurrent.LastExecution;
+
 import com.ibm.websphere.ras.annotation.Trivial;
 
 /**
  * Information about a single execution of a task.
  */
 @Trivial
-public class LastExecutionImpl implements jakarta.enterprise.concurrent.LastExecution, javax.enterprise.concurrent.LastExecution {
+public class LastExecutionImpl implements LastExecution {
     private final long endTime;
     private final String identityName;
     private final Object result;
