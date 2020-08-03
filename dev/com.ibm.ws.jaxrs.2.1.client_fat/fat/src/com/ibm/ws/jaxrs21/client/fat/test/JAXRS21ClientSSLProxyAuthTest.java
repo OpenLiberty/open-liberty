@@ -11,6 +11,7 @@
 package com.ibm.ws.jaxrs21.client.fat.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockserver.integration.ClientAndProxy.startClientAndProxy;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
@@ -86,6 +87,9 @@ public class JAXRS21ClientSSLProxyAuthTest extends JAXRS21AbstractTest {
             System.out.println(e.toString());
         }
 
+        // Pause for the smarter planet message
+        assertNotNull("The smarter planet message did not get printed on server",
+                      server.waitForStringInLog("CWWKF0011I"));
     }
 
     @AfterClass
