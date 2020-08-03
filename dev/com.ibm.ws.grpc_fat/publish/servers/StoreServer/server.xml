@@ -17,11 +17,15 @@
 		<feature>mpConfig-1.3</feature>
 		<feature>distributedMap-1.0</feature>
 		<feature>appSecurity-2.0</feature>
+		<feature>ssl-1.0</feature>
+		<feature>jwt-1.0</feature>
 	</featureManager>
 
 	<include location="../fatTestPorts.xml" />
 
 	<distributedMap id="gRPCDistMap" />
+	
+	<keyStore id="defaultKeyStore" password="passw0rd" />
 
 	<javaPermission className="java.security.AllPermission"
 		name="*" actions="*" />

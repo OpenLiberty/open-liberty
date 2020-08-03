@@ -47,10 +47,6 @@ public interface ConsumerServiceRestClient {
     @Path("/priceQuery")
     public Response getPrices(@QueryParam("appName") List<String> appNames) throws Exception;
 
-    /**
-     * @param httpHeaders
-     * @return
-     */
     @GET
     @Path("/appNames")
     public Response getAllAppNames() throws Exception;

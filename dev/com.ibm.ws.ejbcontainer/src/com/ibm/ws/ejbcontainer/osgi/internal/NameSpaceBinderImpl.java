@@ -11,6 +11,7 @@
 package com.ibm.ws.ejbcontainer.osgi.internal;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -55,9 +56,8 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
     private final EJBLocalNamingHelper<EJBBinding> ejbLocalNamingHelper;
     private final LocalColonEJBNamingHelper<EJBBinding> localColonNamingHelper;
     private final AtomicServiceReference<EJBRemoteRuntime> ejbRemoteRuntimeServiceRef;
-    private final EJBRemoteRuntime remoteRuntime;
 
-    private static final List<ServiceRegistration<?>> registrations = new ArrayList<ServiceRegistration<?>>();
+    private static final List<ServiceRegistration<?>> registrations = Collections.synchronizedList(new ArrayList<ServiceRegistration<?>>());
 
     NameSpaceBinderImpl(EJBModuleMetaDataImpl mmd,
                         EJBJavaColonNamingHelper jcnh,
@@ -69,7 +69,6 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
         ejbLocalNamingHelper = ejblocal;
         localColonNamingHelper = localColon;
         this.ejbRemoteRuntimeServiceRef = remoteRuntimeRef;
-        this.remoteRuntime = remoteRuntimeRef.getService();
     }
 
     @Override
@@ -259,6 +258,7 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
      * @param bindingName the JNDI binding name
      */
     private void bindLegacyRemoteBinding(EJBBinding bindingObject, HomeRecord hr, String bindingName) {
+        EJBRemoteRuntime remoteRuntime = ejbRemoteRuntimeServiceRef.getService();
         if (remoteRuntime != null) {
 
             // TODO: If BindingsHelper.ivRemoteBindings.contains(bindingName); we have duplicate bindings
@@ -267,7 +267,7 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
             BindingsHelper bh = BindingsHelper.getRemoteHelper(hr);
             bh.ivRemoteBindings.add(bindingName);
 
-            BundleContext bc = this.ejbRemoteRuntimeServiceRef.getReference().getBundle().getBundleContext();
+            BundleContext bc = ejbRemoteRuntimeServiceRef.getReference().getBundle().getBundleContext();
             BeanMetaData bmd = hr.getBeanMetaData();
 
             // Our Service registration object needs some properties saying its a JNDI naming service
@@ -284,6 +284,10 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
             registrations.add(registration);
 
             sendBindingMessage(bindingObject.interfaceName, bindingName, bmd);
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Remote Runtime Service isn't enabled, not adding remote binding.");
+            }
         }
     }
 
@@ -468,6 +472,7 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
                              String interfaceName,
                              boolean local,
                              boolean deferred) {
+        EJBRemoteRuntime remoteRuntime = ejbRemoteRuntimeServiceRef.getService();
         if (!local && remoteRuntime != null) {
             HomeRecordImpl hrImpl = HomeRecordImpl.cast(hr);
             if (hrImpl.remoteBindingData == null) {
@@ -564,6 +569,7 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
 
     @Override
     public void unbindBindings(HomeRecord hr) throws NamingException {
+        EJBRemoteRuntime remoteRuntime = ejbRemoteRuntimeServiceRef.getService();
         if (remoteRuntime != null) {
             HomeRecordImpl hrImpl = HomeRecordImpl.cast(hr);
             if (hrImpl.remoteBindingData != null) {
