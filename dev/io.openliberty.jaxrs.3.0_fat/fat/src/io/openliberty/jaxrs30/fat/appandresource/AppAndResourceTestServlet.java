@@ -16,10 +16,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 
-import javax.servlet.annotation.WebServlet;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import jakarta.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
@@ -28,7 +25,6 @@ import componenttest.app.FATServlet;
 @SuppressWarnings("serial")
 @WebServlet("/AppAndResourceTestServlet")
 public class AppAndResourceTestServlet extends FATServlet {
-    private final static ClassLoader THIS_CLASSLOADER = AppAndResourceTestServlet.class.getClassLoader();
 
     @Test
     public void testCanInvokeCombinedAppAndResourceClass() throws Exception {

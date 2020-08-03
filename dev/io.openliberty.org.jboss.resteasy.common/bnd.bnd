@@ -174,3 +174,5 @@ Include-Resource:\
   com.ibm.ws.webcontainer;version=latest, \
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
   javax.activation:activation;version=1.1
+
+jakartaeeMe: true
