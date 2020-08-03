@@ -11,7 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-
 Bundle-SymbolicName: io.openliberty.org.eclipse.microprofile.config.2.0; singleton:=true
 
 Import-Package: \
@@ -26,13 +25,4 @@ Export-Package: \
 Include-Resource: \
   @${repo;org.eclipse.microprofile.config:microprofile-config-api;1.4;EXACT}
 
-
 WS-TraceGroup: APPCONFIG
-
--buildpath: \
-	com.ibm.websphere.javaee.cdi.1.2;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
-
-instrument.disabled: true
-
-publish.wlp.jar.suffix: dev/api/stable

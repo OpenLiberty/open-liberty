@@ -33,17 +33,4 @@ Import-Package: \
 	*
 
 Include-Resource: \
-  @${repo;org.eclipse.microprofile.rest.client:microprofile-rest-client-api;2.0}
-# TODO: when replacing 2.0-RC2 with 2.0, make sure to add EXACT:
-#   @${repo;org.eclipse.microprofile.rest.client:microprofile-rest-client-api;2.0;EXACT}
-
-
--buildpath: \
-  com.ibm.websphere.javaee.annotation.1.3;version=latest, \
-  com.ibm.websphere.javaee.cdi.2.0;version=latest, \
-  com.ibm.websphere.javaee.jaxrs.2.1;version=latest, \
-  com.ibm.ws.org.osgi.annotation.versioning;version=latest
-
-instrument.disabled: true
-
-publish.wlp.jar.suffix: dev/api/stable
+  @${repo;org.eclipse.microprofile.rest.client:microprofile-rest-client-api;2.0.0.RC2;EXACT}

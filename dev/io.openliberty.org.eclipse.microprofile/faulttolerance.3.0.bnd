@@ -11,7 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-
 Bundle-SymbolicName: io.openliberty.org.eclipse.microprofile.faulttolerance.3.0; singleton:=true
 
 Export-Package: \
@@ -21,15 +20,4 @@ Export-Package: \
 Include-Resource: \
   @${repo;org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-api;3.0.0.RC1;EXACT}
 
-
 WS-TraceGroup: FAULTTOLERANCE
-
--buildpath: \
-	com.ibm.websphere.javaee.cdi.2.0;version=latest, \
-	com.ibm.websphere.javaee.interceptor.1.2;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
-
-instrument.disabled: true
-
-publish.wlp.jar.suffix: dev/api/stable
-
