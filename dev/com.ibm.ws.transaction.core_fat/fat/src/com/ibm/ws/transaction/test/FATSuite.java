@@ -30,9 +30,12 @@ import componenttest.rules.repeater.RepeatTests;
                 SimpleDBTranlogTest.class,
                 OnePCDisabledTest.class,
                 XATest.class,
+                TimeoutTest.class,
                 XADBTranlogTest.class,
                 TransactionalTest.class,
+                TransactionalEJBTest.class,
                 TransactionScopedTest.class,
+                UOWEventListenerTest.class,
 })
 public class FATSuite {
     // Using the RepeatTests @ClassRule will cause all tests to be run twice.

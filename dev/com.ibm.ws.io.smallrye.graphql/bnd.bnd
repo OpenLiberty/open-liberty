@@ -11,6 +11,7 @@
 
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
+smallryeGraphQLVersion=1.0.5
 
 Bundle-Name: SmallRye GraphQL and GraphQL Servlet Implementation
 Bundle-SymbolicName: com.ibm.ws.io.smallrye.graphql
@@ -18,9 +19,26 @@ Bundle-Description: SmallRye implementation of MicroProfile GraphQL
 
 Import-Package: \
   graphql.util,\
-  org.eclipse.microprofile.metrics;resolution:=optional,\
   !io.smallrye.metrics,\
+  !io.opentracing,\
+  !io.smallrye.common.annotation,\
+  !javax.validation,\
+  !javax.validation.executable,\
+  !javax.validation.metadata,\
+  !javax.ws.rs.client,\
+  !javax.ws.rs.core,\
+  !org.eclipse.microprofile.metrics,\
+  !org.eclipse.microprofile.metrics.annotation,\
   *
+
+DynamicImport-Package: \
+  javax.validation,\
+  javax.validation.executable,\
+  javax.validation.metadata,\
+  javax.ws.rs.client,\
+  javax.ws.rs.core,\
+  org.eclipse.microprofile.metrics,\
+  org.eclipse.microprofile.metrics.annotation
 
 Export-Package: \
   com.ibm.ws.io.smallrye.graphql.component;thread-context=true,\
@@ -36,25 +54,37 @@ src: src/
 -dsannotations: com.ibm.ws.io.smallrye.graphql.component.*
 
 -includeresource: \
-  @${repo;io.smallrye:smallrye-graphql;1.0.2}!/!META-INF/beans.xml,\
-  @${repo;io.smallrye:smallrye-graphql-schema-builder;1.0.2},\
-  @${repo;io.smallrye:smallrye-graphql-schema-model;1.0.2},\
-  @${repo;io.smallrye:smallrye-graphql-servlet;1.0.2},\
+  @${repo;io.smallrye:smallrye-graphql;${smallryeGraphQLVersion}}!/!META-INF/beans.xml,\
+  @${repo;io.smallrye:smallrye-graphql-api;${smallryeGraphQLVersion}},\
+  @${repo;io.smallrye:smallrye-graphql-cdi;${smallryeGraphQLVersion}}!/!META-INF/beans.xml,\
+  @${repo;io.smallrye:smallrye-graphql-client;${smallryeGraphQLVersion}},\
+  @${repo;io.smallrye:smallrye-graphql-client-api;${smallryeGraphQLVersion}},\
+  @${repo;io.smallrye:smallrye-graphql-schema-builder;${smallryeGraphQLVersion}},\
+  @${repo;io.smallrye:smallrye-graphql-schema-model;${smallryeGraphQLVersion}},\
+  @${repo;io.smallrye:smallrye-graphql-servlet;${smallryeGraphQLVersion}},\
   com/ibm/ws=${bin}/com/ibm/ws,\
+  io/smallrye=${bin}/io/smallrye,\
   META-INF=resources/META-INF
+
+app-resources= \
+  META-INF/services/io.smallrye.graphql.spi.LookupService | \
+  META-INF/services/io.smallrye.graphql.client.typesafe.api.GraphQlClientBuilder | \
+  META-INF/services/javax.enterprise.inject.spi.Extension
 
 Service-Component: \
   com.ibm.ws.io.smallrye.graphql.ResourceProvider; \
     implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
     provide:=com.ibm.wsspi.classloading.ResourceProvider; \
     configuration-policy:=optional; \
-    properties:="resources=META-INF/services/io.smallrye.graphql.spi.LookupService"
+    properties:="resources=${app-resources}"
 
 -buildpath: \
-  io.smallrye:smallrye-graphql;strategy=exact;version=1.0.2,\
-  io.smallrye:smallrye-graphql-schema-builder;strategy=exact;version=1.0.2,\
-  io.smallrye:smallrye-graphql-schema-model;strategy=exact;version=1.0.2,\
-  io.smallrye:smallrye-graphql-servlet;strategy=exact;version=1.0.2,\
+  io.smallrye:smallrye-graphql;strategy=exact;version=${smallryeGraphQLVersion},\
+  io.smallrye:smallrye-graphql-api;strategy=exact;version=${smallryeGraphQLVersion},\
+  io.smallrye:smallrye-graphql-cdi;strategy=exact;version=${smallryeGraphQLVersion},\
+  io.smallrye:smallrye-graphql-schema-builder;strategy=exact;version=${smallryeGraphQLVersion},\
+  io.smallrye:smallrye-graphql-schema-model;strategy=exact;version=${smallryeGraphQLVersion},\
+  io.smallrye:smallrye-graphql-servlet;strategy=exact;version=${smallryeGraphQLVersion},\
   com.ibm.websphere.javaee.annotation.1.3;version=latest, \
   com.ibm.websphere.javaee.cdi.2.0;version=latest,\
   com.ibm.websphere.javaee.interceptor.1.2;version=latest,\

@@ -422,7 +422,7 @@ public class SAMLRequestTAITest {
                        (taiResult != null) && (taiResult.getStatus() == HttpServletResponse.SC_FORBIDDEN));
         } catch (WebTrustAssociationFailedException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 

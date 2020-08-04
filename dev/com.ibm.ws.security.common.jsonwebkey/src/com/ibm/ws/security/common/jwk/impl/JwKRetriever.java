@@ -239,7 +239,7 @@ public class JwKRetriever {
 
         } catch (Exception e2) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Caught exception opening file from location [" + location + "]: " + e2.getMessage());
+                Tr.debug(tc, "Caught exception opening file from location [" + location + "]: " + e2);
             }
         }
         return publicKey;
@@ -519,7 +519,7 @@ public class JwKRetriever {
             jsonObject = JSONObject.parse(jsonString);
         } catch (Exception e) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Caught exception parsing JSON string [" + jsonString + "]: " + e.getMessage());
+                Tr.debug(tc, "Caught exception parsing JSON string [" + jsonString + "]: " + e);
             }
         }
         return jsonObject;
@@ -532,7 +532,7 @@ public class JwKRetriever {
             jsonObject = JSONObject.parse(is);
         } catch (Exception e) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Caught exception parsing input stream [" + is.toString() + "]: " + e.getMessage());
+                Tr.debug(tc, "Caught exception parsing input stream [" + is.toString() + "]: " + e);
             }
         }
         return jsonObject;
@@ -545,7 +545,7 @@ public class JwKRetriever {
             jsonArray = JSONArray.parse(jsonString);
         } catch (Exception e) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Caught exception parsing JSON string [" + jsonString + "]: " + e.getMessage());
+                Tr.debug(tc, "Caught exception parsing JSON string [" + jsonString + "]: " + e);
             }
         }
         return jsonArray;
@@ -594,7 +594,7 @@ public class JwKRetriever {
         try {
             sslSocketFactory = sslSupport.getSSLSocketFactory(sslConfigurationName);
         } catch (javax.net.ssl.SSLException e) {
-            throw new SSLException(e.getMessage());
+            throw new SSLException(e);
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "sslSocketFactory (" + ") get: " + sslSocketFactory);

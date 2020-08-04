@@ -127,7 +127,7 @@ public class SessionNotOnOrAfterTest extends AssertionValidator {
             validator.verifyAuthnStatement();
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -164,7 +164,7 @@ public class SessionNotOnOrAfterTest extends AssertionValidator {
             validator.verifyAuthnStatement();
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -201,7 +201,7 @@ public class SessionNotOnOrAfterTest extends AssertionValidator {
             validator.verifyAuthnStatement();
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -274,7 +274,7 @@ public class SessionNotOnOrAfterTest extends AssertionValidator {
             validator.verifyAuthnStatement();
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -311,7 +311,7 @@ public class SessionNotOnOrAfterTest extends AssertionValidator {
             validator.verifyAuthnStatement();
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -348,7 +348,7 @@ public class SessionNotOnOrAfterTest extends AssertionValidator {
             validator.verifyAuthnStatement();
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -385,7 +385,7 @@ public class SessionNotOnOrAfterTest extends AssertionValidator {
             validator.verifyAuthnStatement();
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -458,7 +458,7 @@ public class SessionNotOnOrAfterTest extends AssertionValidator {
             validator.verifyAuthnStatement();
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -495,7 +495,7 @@ public class SessionNotOnOrAfterTest extends AssertionValidator {
             validator.verifyAuthnStatement();
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 

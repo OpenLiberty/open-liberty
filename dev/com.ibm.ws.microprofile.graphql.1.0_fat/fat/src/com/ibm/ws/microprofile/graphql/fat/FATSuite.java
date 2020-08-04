@@ -33,6 +33,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 OutputFieldsTest.class,
                 RolesAuthTest.class,
                 TypesTest.class,
+                UITest.class,
                 VoidQueryTest.class
 })
 public class FATSuite {

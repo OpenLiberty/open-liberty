@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.impl;
 
@@ -33,6 +33,8 @@ import com.ibm.ws.ssl.KeyStoreService;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.ssl.SSLSupport;
 
+import io.openliberty.security.mp.jwt.osgi.MpJwtRuntimeVersion;
+
 @Component(service = MicroProfileJwtService.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = "service.vendor=IBM", name = "microProfileJwtService")
 public class MicroProfileJwtServiceImpl implements MicroProfileJwtService {
 
@@ -48,6 +50,8 @@ public class MicroProfileJwtServiceImpl implements MicroProfileJwtService {
     protected AtomicServiceReference<SSLSupport> sslSupportRef = new AtomicServiceReference<SSLSupport>(KEY_SSL_SUPPORT);
     public static final String KEY_KEYSTORE_SERVICE = "keyStoreService";
     private final AtomicServiceReference<KeyStoreService> keyStoreServiceRef = new AtomicServiceReference<KeyStoreService>(KEY_KEYSTORE_SERVICE);
+    public static final String KEY_MP_JWT_RUNTIME_VERSION_SERVICE = "mpJwtRuntimeVersionService";
+    private final AtomicServiceReference<MpJwtRuntimeVersion> mpJwtRuntimeVersionServiceRef = new AtomicServiceReference<MpJwtRuntimeVersion>(KEY_MP_JWT_RUNTIME_VERSION_SERVICE);
 
     SSLSupport sslSupport = null;
 
@@ -94,11 +98,21 @@ public class MicroProfileJwtServiceImpl implements MicroProfileJwtService {
         keyStoreServiceRef.unsetReference(ref);
     }
 
+    @Reference(service = MpJwtRuntimeVersion.class, name = KEY_MP_JWT_RUNTIME_VERSION_SERVICE, cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
+    protected void setMpJwtRuntimeVersion(ServiceReference<MpJwtRuntimeVersion> reference) {
+        mpJwtRuntimeVersionServiceRef.setReference(reference);
+    }
+
+    protected void unsetMpJwtRuntimeVersion(ServiceReference<MpJwtRuntimeVersion> reference) {
+        mpJwtRuntimeVersionServiceRef.unsetReference(reference);
+    }
+
     @Activate
     protected void activate(ComponentContext cc, Map<String, Object> props) throws MpJwtProcessingException {
         sslSupportRef.activate(cc);
         keyStoreServiceRef.activate(cc);
         this.sslSupport = sslSupportRef.getService();
+        mpJwtRuntimeVersionServiceRef.activate(cc);
         Tr.info(tc, "MPJWT_CONFIG_PROCESSED", uniqueId);
     }
 
@@ -112,6 +126,7 @@ public class MicroProfileJwtServiceImpl implements MicroProfileJwtService {
     protected void deactivate(ComponentContext cc) {
         sslSupportRef.deactivate(cc);
         keyStoreServiceRef.deactivate(cc);
+        mpJwtRuntimeVersionServiceRef.deactivate(cc);
         Tr.info(tc, "MPJWT_CONFIG_DEACTIVATED", uniqueId);
     }
 
@@ -150,6 +165,11 @@ public class MicroProfileJwtServiceImpl implements MicroProfileJwtService {
     @Override
     public AtomicServiceReference<KeyStoreService> getKeyStoreServiceRef() {
         return keyStoreServiceRef;
+    }
+
+    @Override
+    public MpJwtRuntimeVersion getMpJwtRuntimeVersion() {
+        return mpJwtRuntimeVersionServiceRef.getService();
     }
 
 }

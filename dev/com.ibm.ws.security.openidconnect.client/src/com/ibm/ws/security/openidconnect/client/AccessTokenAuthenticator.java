@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client;
 
@@ -128,7 +128,7 @@ public class AccessTokenAuthenticator {
             String validationUrl = getPropagationValidationURL(clientConfig, validationMethod);
             sslSocketFactory = getSSLSocketFactory(validationUrl, clientConfig.getSSLConfigurationName(), clientConfig.getClientId());
         } catch (SSLException e) {
-            logError(clientConfig, oidcClientRequest, "OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL", new Object[] { e.getMessage() != null ? e.getMessage() : "invalid ssl context", clientConfig.getClientId() });
+            logError(clientConfig, oidcClientRequest, "OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL", new Object[] { e, clientConfig.getClientId() });
             return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
         }
 
@@ -254,7 +254,7 @@ public class AccessTokenAuthenticator {
             try {
                 sslSocketFactory = sslSupport.getSSLSocketFactory(sslConfigurationName);
             } catch (javax.net.ssl.SSLException e) {
-                throw new SSLException(e.getMessage());
+                throw new SSLException(e);
             }
 
             if (sslSocketFactory != null)
@@ -403,7 +403,6 @@ public class AccessTokenAuthenticator {
 
     protected ProviderAuthenticationResult introspectToken(OidcClientConfig clientConfig, String accessToken, SSLSocketFactory sslSocketFactory, OidcClientRequest oidcClientRequest) {
         ProviderAuthenticationResult oidcResult = new ProviderAuthenticationResult(AuthResult.FAILURE, HttpServletResponse.SC_UNAUTHORIZED);
-
         try {
 
             Map<String, Object> responseMap = oidcClientUtil.checkToken(clientConfig.getValidationEndpointUrl(),
@@ -434,7 +433,7 @@ public class AccessTokenAuthenticator {
             }
         } catch (Exception e) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "exception during introspectToken =", e.getMessage());
+                Tr.debug(tc, "exception during introspectToken =", e);
                 // Tr.debug(tc, "debugging:" + OidcUtil.dumpStackTrace(new
                 // Exception(), -1));
             }
@@ -888,7 +887,7 @@ public class AccessTokenAuthenticator {
                     } catch (Exception e) {
                         //can be ignored
                         if (tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Fail to read Header Segments:", e.getMessage());
+                            Tr.debug(tc, "Fail to read Header Segments:", e);
                         }
                     }
                     return hdrValue;

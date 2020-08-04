@@ -32,7 +32,9 @@
 
     <jdbcDriver id="DerbyEmbedded" libraryRef="DerbyLib"/>
     <library id="DerbyLib" filesetRef="DerbyFileset"/>
-    <fileset id="DerbyFileset" dir="${server.config.dir}/derby" includes="derby.jar"/>
+    <fileset id="DerbyFileset"
+             dir="${shared.resource.dir}derby"
+             includes="derby.jar" />
 
     <!-- TODO: switch to correct configuration for dataSource.
          1) "id" should be removed because "jndiName" will be used to generate an instanceId

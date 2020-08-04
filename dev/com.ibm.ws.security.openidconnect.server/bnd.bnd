@@ -182,7 +182,7 @@ Include-Resource: \
  	com.ibm.ws.crypto.passwordutil;version=latest,\
 	joda-time;version=latest,\
 	com.ibm.ws.org.slf4j.api.1.7.7;version=latest,\
-	com.ibm.ws.org.apache.commons.codec.1.4;version=latest,\
+	com.ibm.ws.org.apache.commons.codec;version=latest,\
 	com.ibm.ws.security.token;version=latest,\
 	com.ibm.ws.security.jwt;version=latest
 

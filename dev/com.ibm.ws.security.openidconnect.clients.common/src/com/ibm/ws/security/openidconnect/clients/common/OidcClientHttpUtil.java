@@ -65,7 +65,7 @@ public class OidcClientHttpUtil {
         try {
             sslSocketFactory = sslSupport.getSSLSocketFactory(config.getSSLConfigurationName());
         } catch (javax.net.ssl.SSLException e) {
-            throw new com.ibm.websphere.ssl.SSLException(e.getMessage());
+            throw new com.ibm.websphere.ssl.SSLException(e);
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "sslSocketFactory (" + ") get: " + sslSocketFactory);

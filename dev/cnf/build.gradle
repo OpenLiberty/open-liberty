@@ -37,12 +37,54 @@ dependencies {
     binaries "org.apache.ant:ant:1.9.6"
 }
 
+//TODO: move this function somewhere common
+void sortAlphabetical(String filename){
+  def list = []
+  def orig = file(filename)
+  orig.eachLine { line ->
+      line = line.trim()
+      list << line
+  }
+  orig.delete()
+  
+  println("Sorting "+filename)
+  def newfile = file(filename)
+  list.sort()
+  for(String line:list){
+    newfile << line
+    newfile << "\n"
+  }
+  
+}
+
+//TODO: move this function somewhere common
+void assertAlphabetical(String filename) {
+  def prev = ""
+  def lines = file(filename).readLines()
+  for(String line:lines){
+      line = line.trim()
+      if(line.compareTo(prev) < 0){
+          println(filename+' is not alphabetical. \"' + prev + '\" should be after \"' +line+ '\"')
+          sortAlphabetical(filename)
+          break;
+      }
+      prev = line
+  }
+}
+
+task checkAlphabetical() {
+  assertAlphabetical('oss_dependencies.maven')
+  assertAlphabetical('oss_ibm.maven')
+  assertAlphabetical('ibm_java.maven')
+}
+
 task copyMavenLibs(type: Copy) {
     from configurations.binaries
     into project.file('mavenlibs')
 }
 
 task dependabotGenerate() {
+  dependsOn checkAlphabetical
   inputs.file('oss_dependencies.maven')
   outputs.file('cnf/dependabot/check_this_in_if_it_changes/pom.xml')
   doLast {

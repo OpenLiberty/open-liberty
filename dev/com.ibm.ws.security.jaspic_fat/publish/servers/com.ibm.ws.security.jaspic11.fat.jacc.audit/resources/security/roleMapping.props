@@ -1,0 +1,11 @@
+
+# <application name>::<role name>::<type : USER, GROUP or SPECIAL>::<accessid of user, group, or special subject name (either EVERYONE or ALLAUTHENTICATEDUSERS)): 
+
+JASPIBasicAuthServlet::jaspi_basic::USER::user:JaspiRealm/jaspiuser1
+JASPIBasicAuthServlet::jaspi_basic::GROUP::group:JaspiRealm/group2
+JASPIBasicAuthServlet::jaspi_basic::USER::user:JaspiRealm/jaspiuser101
+JASPIBasicAuthServlet::jaspi_basic::GROUP::group:JaspiRealm/JASPIGroup
+JASPIFormLoginServlet::jaspi_form::USER::user:JaspiRealm/jaspiuser102
+JASPIFormLoginServlet::jaspi_form::GROUP::group:JaspiRealm/JASPIGroup
+JASPIFormLoginServlet::jaspi_form::USER::user:JaspiRealm/jaspiuser3
+JASPIFormLoginServlet::jaspi_form::GROUP::group:JaspiRealm/group5

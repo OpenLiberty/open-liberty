@@ -82,8 +82,10 @@ public class AcmeConfig {
 	private boolean disableRenewOnNewHistory = false;
 
 	// Minimum allowed time to check for expiration
-	private Long renewCertMin;
+	private Long renewCertMin = AcmeConstants.RENEW_CERT_MIN_DEFAULT;
 	
+	private Long startReadyTimeout = AcmeConstants.START_READY_TIMEOUT_DEFAULT;
+
 	/**
 	 * Create a new {@link AcmeConfig} instance.
 	 * 
@@ -133,7 +135,8 @@ public class AcmeConfig {
 			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2037E"));
 		}
 
-		renewCertMin = getLongValue(properties, AcmeConstants.RENEW_CERT_MIN, AcmeConstants.RENEW_CERT_MIN_DEFAULT);
+		Long certMin = getLongValue(properties, AcmeConstants.RENEW_CERT_MIN, AcmeConstants.RENEW_CERT_MIN_DEFAULT);
+		renewCertMin = (certMin <= 0) ? AcmeConstants.RENEW_CERT_MIN_DEFAULT : certMin;
 		setValidFor(getLongValue(properties, AcmeConstants.VALID_FOR));
 		processSubjectDN(getStringValue(properties, AcmeConstants.SUBJECT_DN));
 		Long temp = getLongValue(properties, AcmeConstants.CHALL_POLL_TIMEOUT);
@@ -187,6 +190,14 @@ public class AcmeConfig {
 		setRenewBeforeExpirationMs(getLongValue(properties, AcmeConstants.RENEW_BEFORE_EXPIRATION), true);
 		disableMinRenewWindow = getBooleanValue(properties, AcmeConstants.DISABLE_MIN_RENEW_WINDOW, false);
 		disableRenewOnNewHistory = getBooleanValue(properties, AcmeConstants.DISABLE_RENEW_ON_NEW_HISTORY, false);
+		
+		/*
+		 * If we make startReadyTimeout, we may want to add messages if we adjusted the
+		 * times.
+		 */
+		Long startReady = getLongValue(properties, AcmeConstants.START_READY_TIMEOUT,
+				AcmeConstants.START_READY_TIMEOUT_DEFAULT);
+		startReadyTimeout = (startReady <= 0) ? AcmeConstants.START_READY_TIMEOUT_DEFAULT : startReady;
 
 		/*
 		 * Get revocation checker configuration.
@@ -820,6 +831,15 @@ public class AcmeConfig {
 		return httpReadTimeout;
 	}
 	
+	/**
+	 * 
+	 * @return startReadyTimeout
+	 */
+	@Trivial
+	public Long getStartReadyTimeout() {
+		return startReadyTimeout;
+	}
+	
 	@Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
@@ -840,6 +860,7 @@ public class AcmeConfig {
         sb.append(", disableMinRenewWindow=").append(disableMinRenewWindow).append("\n");
         sb.append(", disableRenewOnNewHistory=").append(disableRenewOnNewHistory).append("\n");
         sb.append(", renewCertMin=").append(renewCertMin).append("\n");
+		sb.append(", startReadyTimeout=").append(startReadyTimeout).append("\n");
         sb.append(" }");
 
         /* Transport configuration */

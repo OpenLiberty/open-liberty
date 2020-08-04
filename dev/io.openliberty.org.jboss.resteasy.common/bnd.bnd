@@ -110,14 +110,21 @@ Import-Package: \
   javax.activation;version=!, \
   javax.annotation;version=!, \
   javax.annotation.security;version=!, \
+  javax.xml.bind;version=!, \
   javax.xml.bind.annotation;version=!, \
+  javax.xml.bind.annotation.adapters;version=!, \
+  javax.xml.bind.attachment;version=!, \
+  javax.xml.bind.helpers;version=!, \
+  javax.xml.bind.util;version=!, \
   !javax.json.bind, \
   !javax.json.bind.spi, \
+  !com.sun.xml.bind.marshaller, \
   *
 
 DynamicImport-Package: \
   javax.json.bind, \
-  javax.json.bind.spi
+  javax.json.bind.spi, \
+  com.sun.xml.bind.marshaller
 
 
 Private-Package: \
@@ -162,11 +169,10 @@ Include-Resource:\
   com.ibm.ws.classloading;version=latest,\
   com.ibm.ws.container.service;version=latest,\
   com.ibm.ws.logging.core, \
-  com.ibm.ws.microprofile.config.1.4;version=latest, \
   com.ibm.ws.org.jboss.logging, \
-  com.ibm.ws.org.jboss.weld3;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-  com.ibm.ws.org.reactivestreams.reactive-streams.1.0, \
   com.ibm.ws.webcontainer;version=latest, \
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
   javax.activation:activation;version=1.1
+
+jakartaeeMe: true

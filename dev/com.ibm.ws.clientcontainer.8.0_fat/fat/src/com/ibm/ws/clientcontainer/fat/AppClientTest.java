@@ -25,6 +25,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyClient;
 import componenttest.topology.impl.LibertyClientFactory;
@@ -49,7 +50,7 @@ public class AppClientTest extends FATServletClient {
 
     @Before
     public void getClient() throws Exception {
-        client = LibertyClientFactory.getLibertyClient(testName.getMethodName());
+        client = LibertyClientFactory.getLibertyClient(getTestMethodSimpleName());
     }
 
     /*
@@ -58,6 +59,7 @@ public class AppClientTest extends FATServletClient {
      * Check if the test application is printing out "Hello Application Client." to the console.
      */
     @Test
+    @SkipForRepeat({ "JAKARTAEECLIENT-9.0", SkipForRepeat.EE9_FEATURES })
     public void testHelloAppClient() throws Exception {
         ShrinkHelper.exportAppToClient(client, earHAC);
 
@@ -74,6 +76,7 @@ public class AppClientTest extends FATServletClient {
 
     // Test ${client.config.dir}
     @Test
+    @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
     public void testClientConfigDir() throws Exception {
         ShrinkHelper.exportAppToClient(client, earHAC);
         client.startClient();
@@ -128,6 +131,7 @@ public class AppClientTest extends FATServletClient {
 
     // Use <enterpriseApplication/>
     @Test
+    @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
     public void testHelloAppClientWithEnterpriseApplication() throws Exception {
         ShrinkHelper.exportAppToClient(client, earHAC);
 

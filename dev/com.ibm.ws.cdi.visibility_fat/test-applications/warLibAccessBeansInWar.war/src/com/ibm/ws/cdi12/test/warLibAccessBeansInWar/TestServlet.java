@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,20 +10,22 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.test.warLibAccessBeansInWar;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import static org.junit.Assert.assertEquals;
 
 import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+import org.junit.Test;
 
 import com.ibm.ws.cdi12.test.warLibAccessBeansInWarJar.TestInjectionClass;
 import com.ibm.ws.cdi12.test.warLibAccessBeansInWarJar2.TestInjectionClass2;
 
+import componenttest.app.FATServlet;
+
 @WebServlet("/TestServlet")
-public class TestServlet extends HttpServlet {
+public class TestServlet extends FATServlet {
+
+    private static final long serialVersionUID = 1L;
 
     @Inject
     TestInjectionClass injection;
@@ -31,18 +33,12 @@ public class TestServlet extends HttpServlet {
     @Inject
     TestInjectionClass2 injection2;
 
-    @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-        PrintWriter out = response.getWriter();
-        out.println(getMessages());
-    }
-
-    public String getMessages() {
-
+    @Test
+    public void testWarLibsCanAccessBeansInWar() throws Exception {
         String message1 = injection.getMessage();
         String message2 = injection2.getMessage();
 
-        return (message1 + " " + message2);
+        assertEquals("TestInjectionClass: WarBean", message1);
+        assertEquals("TestInjectionClass2: WarBean", message2);
     }
 }

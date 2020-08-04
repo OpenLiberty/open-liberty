@@ -25,7 +25,7 @@ src: \
   test-applications/subResourceApp/src
 
 fat.project: true
-tested.features: cdi-2.0, cdi-1.2, jaxrs-2.1, jaxrs-2.0, mpconfig-1.4, jaxrsclient-3.0, jaxrs-3.0
+tested.features: cdi-2.0, cdi-1.2, jaxrs-2.1, jaxrs-2.0, mpconfig-1.4, jaxrsclient-2.2, jaxrs-2.2
 
 
 -buildpath: \

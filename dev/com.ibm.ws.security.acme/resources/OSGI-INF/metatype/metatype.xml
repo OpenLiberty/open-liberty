@@ -57,7 +57,10 @@
    <AD id="disableRenewOnNewHistory"     name="internal" description="internal use only" type="Boolean"  required="false" default="false" />
    
    <!--  Minimum allowed time to check for expiration -->
-   <AD id="renewCertMin"     name="internal" description="internal use only" type="Long"  required="false" default="15000" />
+   <AD id="renewCertMin"          name="internal" description="internal use only" type="String"  required="false" ibm:type="duration" default="15s" />
+   
+   <!--  Time to allow waiting for internal components to be ready before acmeCA starts (Acme servlet and HTTP port) -->
+   <AD id="startReadyTimeout"     name="internal" description="internal use only" type="String"  required="false" ibm:type="duration" default="120s" />
 
  </OCD>
   

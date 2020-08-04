@@ -189,7 +189,7 @@ public class TAIWebUtils {
         } catch (Exception e) {
             //can be ignored
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Fail to read Header Segments:", e.getMessage());
+                Tr.debug(tc, "Fail to read Header Segments:", e);
             }
         }
         return hdrValue;

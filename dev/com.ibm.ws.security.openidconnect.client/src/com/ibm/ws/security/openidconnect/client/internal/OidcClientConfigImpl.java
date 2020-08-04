@@ -90,6 +90,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     public static final String CFG_KEY_CLIENT_SECRET = "clientSecret";
     public static final String CFG_KEY_REDIRECT_TO_RP_HOST_AND_PORT = "redirectToRPHostAndPort";
     public static final String CFG_KEY_USER_IDENTIFIER = "userIdentifier";
+    public static final String CFG_KEY_INTROSPECTION_TOKEN_TYPE_HINT = "introspectionTokenTypeHint";
     public static final String CFG_KEY_GROUP_IDENTIFIER = "groupIdentifier";
     public static final String CFG_KEY_REALM_IDENTIFIER = "realmIdentifier";
     public static final String CFG_KEY_REALM_NAME = "realmName";
@@ -190,6 +191,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     private String clientSecret;
     private String redirectToRPHostAndPort;
     private String userIdentifier;
+    private String introspectionTokenTypeHint;
     private String groupIdentifier;
     private String realmIdentifier;
     private String realmName;
@@ -396,6 +398,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             }
         }
         userIdentifier = trimIt((String) props.get(CFG_KEY_USER_IDENTIFIER));
+        introspectionTokenTypeHint = trimIt((String) props.get(CFG_KEY_INTROSPECTION_TOKEN_TYPE_HINT));
         groupIdentifier = trimIt((String) props.get(CFG_KEY_GROUP_IDENTIFIER));
         realmIdentifier = trimIt((String) props.get(CFG_KEY_REALM_IDENTIFIER));
         realmName = trimIt((String) props.get(CFG_KEY_REALM_NAME));
@@ -530,6 +533,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             Tr.debug(tc, "clientId: " + clientId);
             Tr.debug(tc, "redirectToRPHostAndPort: " + redirectToRPHostAndPort);
             Tr.debug(tc, "userIdentifier: " + userIdentifier);
+            Tr.debug(tc, "introspectionTokenTypeHint: " + introspectionTokenTypeHint);
             Tr.debug(tc, "groupIdentifier: " + groupIdentifier);
             Tr.debug(tc, "realmIdentifier: " + realmIdentifier);
             Tr.debug(tc, "realmName: " + realmName);
@@ -1009,7 +1013,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             this.discoveryjson = JSONObject.parse(jsonString);
         } catch (Exception e) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Caught exception parsing JSON string [" + jsonString + "]: " + e.getMessage());
+                Tr.debug(tc, "Caught exception parsing JSON string [" + jsonString + "]: " + e);
             }
         }
     }
@@ -1496,7 +1500,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
                 config = configAdmin.getConfiguration(authFilterRef, null);
         } catch (IOException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Invalid authFilterRef configuration", e.getMessage());
+                Tr.debug(tc, "Invalid authFilterRef configuration", e);
             }
             return null;
         }
@@ -1557,6 +1561,13 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     public String getUserIdentifier() {
         // TODO Auto-generated method stub
         return userIdentifier;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getIntrospectionTokenTypeHint() {
+        // TODO Auto-generated method stub
+        return introspectionTokenTypeHint;
     }
 
     /*

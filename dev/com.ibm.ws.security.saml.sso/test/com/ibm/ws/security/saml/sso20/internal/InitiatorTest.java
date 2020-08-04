@@ -274,7 +274,8 @@ public class InitiatorTest {
     }
 
     @Test
-    public void nada() {}
+    public void nada() {
+    }
 
     @Test
     public void testForwardRequestToSamlIdp() {
@@ -302,7 +303,7 @@ public class InitiatorTest {
             assertTrue("The TAIResult must not be null.", result != null);
         } catch (Exception ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 }

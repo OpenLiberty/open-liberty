@@ -17,26 +17,15 @@ import com.ibm.ws.logging.collector.LogFieldConstants;
  */
 public class GCData extends GenericData {
 
-    public static final String[] NAMES = {
-                                           LogFieldConstants.HEAP,
-                                           LogFieldConstants.USED_HEAP,
-                                           LogFieldConstants.MAX_HEAP,
-                                           LogFieldConstants.DURATION,
-                                           LogFieldConstants.GC_TYPE,
-                                           LogFieldConstants.REASON,
-                                           LogFieldConstants.DATETIME,
-                                           LogFieldConstants.SEQUENCE
-    };
-
-    public static final String[] NAMES1_1 = {
-                                              LogFieldConstants.IBM_HEAP,
-                                              LogFieldConstants.IBM_USED_HEAP,
-                                              LogFieldConstants.IBM_MAX_HEAP,
-                                              LogFieldConstants.IBM_DURATION,
-                                              LogFieldConstants.IBM_GC_TYPE,
-                                              LogFieldConstants.IBM_REASON,
-                                              LogFieldConstants.IBM_DATETIME,
-                                              LogFieldConstants.IBM_SEQUENCE
+    public static final String[] NAMES_LC = {
+                                              LogFieldConstants.HEAP,
+                                              LogFieldConstants.USED_HEAP,
+                                              LogFieldConstants.MAX_HEAP,
+                                              LogFieldConstants.DURATION,
+                                              LogFieldConstants.GC_TYPE,
+                                              LogFieldConstants.REASON,
+                                              LogFieldConstants.DATETIME,
+                                              LogFieldConstants.SEQUENCE
     };
 
     public GCData() {
@@ -108,74 +97,42 @@ public class GCData extends GenericData {
     }
 
     public String getHeapKey() {
-        return NAMES[0];
+        return NAMES_LC[0];
     }
 
     public String getUsedHeapKey() {
-        return NAMES[1];
+        return NAMES_LC[1];
     }
 
     public String getMaxHeapKey() {
-        return NAMES[2];
+        return NAMES_LC[2];
     }
 
     public String getDurationKey() {
-        return NAMES[3];
+        return NAMES_LC[3];
     }
 
     public String getGcTypeKey() {
-        return NAMES[4];
+        return NAMES_LC[4];
     }
 
     public String getReasonKey() {
-        return NAMES[5];
+        return NAMES_LC[5];
     }
 
     public String getDatetimeKey() {
-        return NAMES[6];
+        return NAMES_LC[6];
     }
 
     public String getSequenceKey() {
-        return NAMES[7];
-    }
-
-    public String getHeapKey1_1() {
-        return NAMES1_1[0];
-    }
-
-    public String getUsedHeapKey1_1() {
-        return NAMES1_1[1];
-    }
-
-    public String getMaxHeapKey1_1() {
-        return NAMES1_1[2];
-    }
-
-    public String getDurationKey1_1() {
-        return NAMES1_1[3];
-    }
-
-    public String getGcTypeKey1_1() {
-        return NAMES1_1[4];
-    }
-
-    public String getReasonKey1_1() {
-        return NAMES1_1[5];
-    }
-
-    public String getDatetimeKey1_1() {
-        return NAMES1_1[6];
-    }
-
-    public String getSequenceKey1_1() {
-        return NAMES1_1[7];
+        return NAMES_LC[7];
     }
 
     private void setPair(int index, String s) {
-        setPair(index, NAMES1_1[index], s);
+        setPair(index, NAMES_LC[index], s);
     }
 
     private void setPair(int index, long l) {
-        setPair(index, NAMES1_1[index], l);
+        setPair(index, NAMES_LC[index], l);
     }
 }

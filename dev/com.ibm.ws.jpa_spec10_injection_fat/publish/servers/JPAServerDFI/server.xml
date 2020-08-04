@@ -13,8 +13,8 @@
     <include location="${shared.config.dir}/${env.repeat_phase}"/>
     <include location="database.xml"/>
     
-<!--  
-    <logging  traceSpecification="JPA=all=enabled:EJBContainer=all=enabled"
+    <!--
+    <logging  traceSpecification="JPA=all=enabled:EJBContainer=all=enabled:jakarta.xml.bind.*=all:org.glassfish.jaxb*=all:com.sun.istack.*=all:com.sun.tools.rngdatatype.*=all:com.sun.tools.rngom.*=all"
               traceFileName="trace.log"
               maxFileSize="2000"
               maxFiles="10"

@@ -62,14 +62,14 @@ public class StoreServicesTests extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultDropinApp(storeServer, "StoreApp.war",
-                                      "com.ibm.testapp.g3store.cache",
-                                      "com.ibm.testapp.g3store.exception",
-                                      "com.ibm.testapp.g3store.interceptor",
-                                      "com.ibm.testapp.g3store.grpcservice",
-                                      "com.ibm.testapp.g3store.servletStore",
-                                      "com.ibm.testapp.g3store.utilsStore",
-                                      "com.ibm.test.g3store.grpc"); // add generated src
+        ShrinkHelper.defaultApp(storeServer, "StoreApp.war",
+                                "com.ibm.testapp.g3store.cache",
+                                "com.ibm.testapp.g3store.exception",
+                                "com.ibm.testapp.g3store.interceptor",
+                                "com.ibm.testapp.g3store.grpcservice",
+                                "com.ibm.testapp.g3store.servletStore",
+                                "com.ibm.testapp.g3store.utilsStore",
+                                "com.ibm.test.g3store.grpc"); // add generated src
 
         ShrinkHelper.defaultDropinApp(producerServer, "StoreProducerApp.war",
                                       "com.ibm.testapp.g3store.grpcProducer.api",
@@ -81,8 +81,8 @@ public class StoreServicesTests extends FATServletClient {
                                       "com.ibm.testapp.g3store.servletProducer",
                                       "com.ibm.test.g3store.grpc"); // add generated src
 
-        // since the <application> element is used in server.xml for security, cannot use dropin
-        // since consumer needs to create data also , we will need to add producer files also
+        // Use defaultApp the <application> element is used in server.xml for security, cannot use dropin
+        // The consumer tests needs to create data also , we will need to add producer files also
         ShrinkHelper.defaultApp(consumerServer, "StoreConsumerApp.war",
                                 "com.ibm.testapp.g3store.grpcConsumer.api",
                                 "com.ibm.testapp.g3store.grpcConsumer.security",
@@ -102,25 +102,34 @@ public class StoreServicesTests extends FATServletClient {
                                 "com.ibm.testapp.g3store.restProducer.client");
 
         storeServer.startServer(StoreServicesTests.class.getSimpleName() + ".log");
+        assertNotNull("CWWKO0219I.*ssl not recieved", storeServer.waitForStringInLog("CWWKO0219I.*ssl"));
 
         producerServer.useSecondaryHTTPPort(); // sets httpSecondaryPort and httpSecondarySecurePort
         producerServer.startServer(StoreServicesTests.class.getSimpleName() + ".log");
+        assertNotNull("CWWKO0219I.*ssl not recieved", producerServer.waitForStringInLog("CWWKO0219I.*ssl"));
 
         // set bvt.prop.member_1.http=8080 and bvt.prop.member_1.https=8081
         consumerServer.setHttpDefaultPort(Integer.parseInt(getSysProp("member_1.http")));
-        consumerServer.setHttpDefaultSecurePort(Integer.parseInt(getSysProp("member_1.https")));
+        int securePort = Integer.parseInt(getSysProp("member_1.https"));
+
+        Log.info(StoreServicesTests.class, "setUp", "here is the secure port " + securePort);
+
+        consumerServer.setHttpDefaultSecurePort(securePort);
         consumerServer.startServer(StoreServicesTests.class.getSimpleName() + ".log");
+        assertNotNull("CWWKO0219I.*ssl not recieved", consumerServer.waitForStringInLog("CWWKO0219I.*ssl"));
 
     }
 
+    //[07/31/2020 14:42:29:356 EDT] 001 LibertyServer                  checkLogsForErrorsAndWarnings  I Error/warning found in log ORIGINALLY: [7/31/20, 14:41:34:361 EDT] 00000038 m.ibm.ws.container.service.app.deploy.ManifestClassPathUtils W SRVE9967W: The manifest class path xml-apis.jar can not be found in jar file wsjar:file:/.../open-liberty/dev/build.image/wlp/usr/servers/StoreServer/apps/StoreApp.war!/WEB-INF/lib/serializer-2.7.2.jar or its parent.
+    //[07/31/2020 14:42:29:356 EDT] 001 LibertyServer                  checkLogsForErrorsAndWarnings  I Error/warning found in log ORIGINALLY: [7/31/20, 14:41:34:449 EDT] 00000038 m.ibm.ws.container.service.app.deploy.ManifestClassPathUtils W SRVE9967W: The manifest class path xercesImpl.jar can not be found in jar file wsjar:file:/.../open-liberty/dev/build.image/wlp/usr/servers/StoreServer/apps/StoreApp.war!/WEB-INF/lib/xalan-2.7.2.jar or its parent.
     @AfterClass
     public static void tearDown() throws Exception {
         if (storeServer != null)
-            storeServer.stopServer();
+            storeServer.stopServer("SRVE9967W");
         if (producerServer != null)
             producerServer.stopServer();
         if (consumerServer != null)
-            consumerServer.stopServer();
+            consumerServer.stopServer("SRVE9967W");
     }
 
     @Test

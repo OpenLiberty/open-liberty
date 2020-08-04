@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.cdi20.fat.tests;
+
+import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 
@@ -53,6 +55,10 @@ public class SecureAsyncEventsTest extends FATServletClient {
         ShrinkHelper.exportAppToServer(server1, app1);
 
         server1.startServer();
+
+        assertNotNull("CWWKF0011I.* not received on server", server1.waitForStringInLog("CWWKF0011I.*")); // wait for server is ready to run a smarter planet
+        assertNotNull("Security service did not report it was ready", server1.waitForStringInLog("CWWKS0008I"));
+        assertNotNull("CWWKS4105I.* not received on server", server1.waitForStringInLog("CWWKS4105I.*")); // wait for LTPA key to be available
     }
 
     @AfterClass

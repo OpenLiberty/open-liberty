@@ -45,7 +45,7 @@ import componenttest.topology.utils.FATServletClient;
 public class SimpleTest extends FATServletClient {
 
     public static final String APP_NAME = "transaction";
-    public static final String SERVLET_NAME = "transaction/SimpleServlet";
+    public static final String SERVLET_NAME = APP_NAME + "/SimpleServlet";
 
     @Server("com.ibm.ws.transaction")
     @TestServlet(servlet = SimpleServlet.class, contextRoot = APP_NAME)
@@ -57,7 +57,7 @@ public class SimpleTest extends FATServletClient {
         // Include the 'app1.web' package and all of it's java classes and sub-packages
         // Automatically includes resources under 'test-applications/APP_NAME/resources/' folder
         // Exports the resulting application to the ${server.config.dir}/apps/ directory
-        ShrinkHelper.defaultApp(server, APP_NAME, "com.ibm.ws.transaction.*");
+        ShrinkHelper.defaultApp(server, APP_NAME, "com.ibm.ws.transaction.web.*");
 
         // TODO: Revisit this after all features required by this FAT suite are available.
         // The test-specific public features, txtest-x.y, are not in the repeatable EE feature
@@ -77,6 +77,7 @@ public class SimpleTest extends FATServletClient {
             @Override
             public Void run() throws Exception {
                 server.stopServer("WTRN0017W");
+                ShrinkHelper.cleanAllExportedArchives();
                 return null;
             }
         });

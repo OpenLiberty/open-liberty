@@ -15,7 +15,7 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS5775 - CWWKS5799
+# Message prefix block: CWWKS5775 - CWWKS5779
 
 MPJWT_11_CONFIG_PROXY_PROCESSED=CWWKS5775I: O mpConfigProxy do MicroProfile JWT vers\u00e3o 1.1 foi processado com sucesso.
 MPJWT_11_CONFIG_PROXY_PROCESSED.explanation=A configura\u00e7\u00e3o indicada foi processada com \u00eaxito.

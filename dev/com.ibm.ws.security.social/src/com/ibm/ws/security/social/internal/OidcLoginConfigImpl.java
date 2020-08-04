@@ -318,7 +318,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
             this.discoveryjson = JSONObject.parse(jsonString);
         } catch (Exception e) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Caught exception parsing JSON string [" + jsonString + "]: " + e.getMessage());
+                Tr.debug(tc, "Caught exception parsing JSON string [" + jsonString + "]: " + e);
             }
         }
     }

@@ -10,27 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.graphql.authorization.component;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRegistration;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;

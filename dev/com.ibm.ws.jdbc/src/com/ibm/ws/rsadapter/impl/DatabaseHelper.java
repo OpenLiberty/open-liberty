@@ -945,7 +945,7 @@ public class DatabaseHelper {
             final String user = userName == null ? null : userName.trim();
             final String pwd = password == null ? null : password.trim();
 
-            PooledConnection pConn = AccessController.doPrivileged(new PrivilegedExceptionAction<PooledConnection>() {
+            PooledConnection pConn = AccessController.doPrivilegedWithCombiner(new PrivilegedExceptionAction<PooledConnection>() {
                 public PooledConnection run() throws SQLException {
                     boolean buildConnection = cri.ivShardingKey != null || cri.ivSuperShardingKey != null;
                     if (is2Phase)

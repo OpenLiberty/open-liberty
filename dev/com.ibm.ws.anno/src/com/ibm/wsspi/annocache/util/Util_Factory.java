@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.ibm.wsspi.anno.util.Util_BidirectionalMap;
-import com.ibm.wsspi.anno.util.Util_InternMap;
 import com.ibm.wsspi.anno.util.Util_InternMap.ValueType;
 
 public interface Util_Factory extends com.ibm.wsspi.anno.util.Util_Factory {

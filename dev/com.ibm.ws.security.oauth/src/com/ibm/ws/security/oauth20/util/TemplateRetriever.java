@@ -115,7 +115,7 @@ public class TemplateRetriever {
                 factory = context.getSocketFactory();
             } catch (Exception e) {
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Failed to get SSL socket factory for connection to OP server, exception [" + e.getMessage() + "]");
+                    Tr.debug(tc, "Failed to get SSL socket factory for connection to OP server, exception [" + e + "]");
                 }
                 throw new IOException(e.getMessage(), e);
             }

@@ -41,12 +41,12 @@ import componenttest.custom.junit.runner.FATRunner;
 public class ExternalTestServiceDockerClientStrategy extends DockerClientProviderStrategy {
 
     private static final Class<?> c = ExternalTestServiceDockerClientStrategy.class;
-    private static final boolean USE_REMOTE_DOCKER = Boolean.getBoolean("fat.test.use.remote.docker");
 
     /**
      * Used to specify a particular docker host machine to run with. For example: -Dfat.test.docker.host=some-docker-host.mycompany.com
      */
     private static final String USE_DOCKER_HOST = System.getProperty("fat.test.docker.host");
+    private static final boolean USE_REMOTE_DOCKER = Boolean.getBoolean("fat.test.use.remote.docker") || USE_DOCKER_HOST != null;
 
     /**
      * By default, Testcontainrs will cache the DockerClient strategy in <code>~/.testcontainers.properties</code>.
@@ -196,10 +196,9 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
         return true;
     }
 
-    private static boolean useRemoteDocker() {
+    public static boolean useRemoteDocker() {
         return !FATRunner.FAT_TEST_LOCALRUN || // this is a remote run
-               USE_REMOTE_DOCKER || // or if remote docker hosts are specifically requested
-               USE_DOCKER_HOST != null; // or if a specific docker host machine was requested
+               USE_REMOTE_DOCKER; // or if remote docker hosts are specifically requested
     }
 
 }

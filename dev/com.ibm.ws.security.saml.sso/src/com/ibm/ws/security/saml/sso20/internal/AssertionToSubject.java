@@ -128,7 +128,7 @@ public class AssertionToSubject {
                 throw new SamlException("SAML20_CANNOT_RESOLVE_ASSERTION",
                                 // SAML20_CANNOT_RESOLVE_ASSERTION=CWWKS5076E: The UserCredentialResolver fails to resolve the SAML Assertion and throws a UserIdentityException with message [{0}].
                                 e, false, // ffdc is not hanlded yet
-                                new Object[] { e.getMessage() });
+                                new Object[] { e });
             }
         }
         return userid;
@@ -198,7 +198,7 @@ public class AssertionToSubject {
             } catch (UserIdentityException e) {
                 throw new SamlException("SAML20_CANNOT_RESOLVE_ASSERTION",
                                 // SAML20_CANNOT_RESOLVE_ASSERTION=CWWKS5076E: The UserCredentialResolver fails to resolve the SAML Assertion and throws a UserIdentityException with message [{0}].
-                                e, new Object[] { e.getMessage() });
+                                e, new Object[] { e });
             }
         }
         return realm;
@@ -277,7 +277,7 @@ public class AssertionToSubject {
             } catch (UserIdentityException e) {
                 throw new SamlException("SAML20_CANNOT_RESOLVE_ASSERTION",
                                 // SAML20_CANNOT_RESOLVE_ASSERTION=CWWKS5076E: The UserCredentialResolver fails to resolve the SAML Assertion and throws a UserIdentityException with message [{0}].
-                                e, new Object[] { e.getMessage() });
+                                e, new Object[] { e });
             }
         }
         return uid;
@@ -392,7 +392,7 @@ public class AssertionToSubject {
             } catch (UserIdentityException e) {
                 throw new SamlException("SAML20_CANNOT_RESOLVE_ASSERTION",
                                 // SAML20_CANNOT_RESOLVE_ASSERTION=CWWKS5076E: The UserCredentialResolver fails to resolve the SAML Assertion and throws a UserIdentityException with message [{0}].
-                                e, new Object[] { e.getMessage() });
+                                e, new Object[] { e });
             }
         }
         return groups;

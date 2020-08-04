@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2014 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<web-app id="WebApp_ID" version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+	 <display-name>Context</display-name>
+	 
+	     <!-- RESOURCE REFERENCES -->
+
+       <resource-ref>
+        <res-ref-name>jmsTCF</res-ref-name>
+        <res-type>javax.jms.TopicConnectionFactory</res-type>
+        <lookup-name>jmsTCF</lookup-name>
+      </resource-ref>
+
+       <resource-env-ref>
+        <resource-env-ref-name>jmsTopic</resource-env-ref-name>
+        <resource-env-ref-type>javax.jms.Topic</resource-env-ref-type>
+      </resource-env-ref>   
+
+       <resource-ref>
+        <res-ref-name>jndi_JMS_BASE_QCF</res-ref-name>
+        <res-type>javax.jms.QueueConnectionFactory</res-type>
+        <lookup-name>jndi_JMS_BASE_QCF</lookup-name>
+      </resource-ref>  
+
+      <resource-env-ref>
+        <resource-env-ref-name>jndi_INPUT_Q</resource-env-ref-name>
+        <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+      </resource-env-ref>  
+
+      <resource-env-ref>
+        <resource-env-ref-name>jndi/MDBQ</resource-env-ref-name>
+        <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+      </resource-env-ref>  
+
+      <resource-env-ref>
+        <resource-env-ref-name>jndi/MDBREPLYQ</resource-env-ref-name>
+        <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+      </resource-env-ref>   
+	 
+	   <servlet>
+        <servlet-name>SingleRequestTestRunner</servlet-name>
+ 	    <servlet-class>io.openliberty.wsoc.common.SingleRequestClientTestRunner</servlet-class>
+       </servlet>
+      
+       <servlet-mapping>
+        <servlet-name>SingleRequestTestRunner</servlet-name>
+        <url-pattern>/SingleRequest</url-pattern>
+       </servlet-mapping>
+    
+</web-app>

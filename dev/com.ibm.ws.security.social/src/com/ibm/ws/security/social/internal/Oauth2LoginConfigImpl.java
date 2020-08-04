@@ -147,6 +147,9 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     public static final String KEY_userNameAttribute = "userNameAttribute";
     protected String userNameAttribute = null;
     private final String DEFAULT_USER_NAME_ATTRIBUTE = "email";
+    
+    public static final String KEY_INTROSPECTION_TOKEN_TYPE_HINT = "introspectionTokenTypeHint";
+    protected String introspectionTokenTypeHint = null;
 
     public static final String KEY_groupNameAttribute = "groupNameAttribute";
     protected String groupNameAttribute = null;
@@ -312,6 +315,7 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
         this.authFilterRef = configUtils.getConfigAttribute(props, KEY_authFilterRef);
         this.redirectToRPHostAndPort = configUtils.getConfigAttribute(props, KEY_redirectToRPHostAndPort);
         this.userNameAttribute = configUtils.getConfigAttributeWithDefaultValue(props, KEY_userNameAttribute, DEFAULT_USER_NAME_ATTRIBUTE);
+        this.introspectionTokenTypeHint = configUtils.getConfigAttribute(props, KEY_INTROSPECTION_TOKEN_TYPE_HINT);
         this.userApi = configUtils.getConfigAttribute(props, KEY_userApi);
         this.realmName = configUtils.getConfigAttribute(props, KEY_realmName);
         this.realmNameAttribute = configUtils.getConfigAttribute(props, KEY_realmNameAttribute);
@@ -452,6 +456,7 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
             Tr.debug(tc, KEY_authFilterRef + " = " + authFilterRef);
             Tr.debug(tc, KEY_redirectToRPHostAndPort + " = " + redirectToRPHostAndPort);
             Tr.debug(tc, KEY_userNameAttribute + " = " + userNameAttribute);
+            Tr.debug(tc, KEY_INTROSPECTION_TOKEN_TYPE_HINT + " = " + introspectionTokenTypeHint);
             Tr.debug(tc, KEY_userApi + " = " + userApi);
             Tr.debug(tc, "userApiConfigs = " + (userApiConfigs == null ? "null" : userApiConfigs.length));
             Tr.debug(tc, KEY_realmName + " = " + realmName);
@@ -661,6 +666,12 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     @Override
     public String getUserNameAttribute() {
         return this.userNameAttribute;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public String getIntrospectionTokenTypeHint() {
+        return this.introspectionTokenTypeHint;
     }
 
     /** {@inheritDoc} */

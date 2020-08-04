@@ -275,7 +275,7 @@ public class AssertionValidatorTest {
             validator.validateAssertion();
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -772,7 +772,7 @@ public class AssertionValidatorTest {
             validator.verifyConditions();
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 

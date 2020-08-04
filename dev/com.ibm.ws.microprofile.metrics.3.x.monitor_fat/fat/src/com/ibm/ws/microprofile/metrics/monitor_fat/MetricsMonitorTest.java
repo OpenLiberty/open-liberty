@@ -112,9 +112,9 @@ public class MetricsMonitorTest {
 
         Log.info(c, testName, "------- Remove mpMetrics-3.0: no metrics should be available ------");
         server.setServerConfigurationFile("server_monitorOnly.xml");
-        String logMsg = server.waitForStringInLogUsingMark("CWPMI2009I");
+        String logMsg = server.waitForStringInLogUsingMark("CWPMI2003I");
         Log.info(c, testName, logMsg);
-        Assert.assertNotNull("No CWPMI2009I message", logMsg);
+        Assert.assertNotNull("No CWPMI2003I message", logMsg);
     }
 
     private String getHttpServlet(String servletPath) throws Exception {
