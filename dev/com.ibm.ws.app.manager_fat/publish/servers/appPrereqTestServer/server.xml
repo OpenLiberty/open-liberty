@@ -6,8 +6,6 @@
 	   <feature>servlet-4.0</feature>
     </featureManager>
     
-    <logging traceSpecification="*=info:com.ibm.ws.app.manager.internal.lifecycle.ApplicationStartBarrierImpl=all" />
-    
     <!-- Automatically expand WAR files and EAR files -->
     <applicationManager autoExpand="true"/>
      
@@ -15,5 +13,5 @@
     
     <webContainer deferServletLoad="false"/>
     
-    <com.ibm.wsspi.application.lifecycle.ApplicationPrereq className="test.app.prereq.Prereq"/>
+    <com.ibm.wsspi.application.lifecycle.ApplicationPrereq id="test.app.prereq.Prereq"/>
 </server>
