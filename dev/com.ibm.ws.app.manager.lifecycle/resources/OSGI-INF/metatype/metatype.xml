@@ -13,7 +13,7 @@
                    xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0">
     
     <OCD id="com.ibm.wsspi.application.lifecycle.ApplicationPrereq" description="internal use only" name="internal" ibm:objectClass="com.ibm.wsspi.application.lifecycle.ApplicationPrereq">
-         <AD id="className" description="internal use only" name="internal" type="String" required="true"/>
+         <AD id="id" description="internal use only" name="internal" type="String" required="true"/>
     </OCD>
     
     <Designate factoryPid="com.ibm.wsspi.application.lifecycle.ApplicationPrereq">

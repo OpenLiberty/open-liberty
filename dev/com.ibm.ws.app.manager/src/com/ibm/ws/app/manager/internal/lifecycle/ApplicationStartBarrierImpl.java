@@ -20,6 +20,8 @@ import java.util.Collections;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
+import org.osgi.service.cm.ConfigurationEvent;
+import org.osgi.service.cm.ConfigurationListener;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -30,6 +32,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.application.lifecycle.ApplicationPrereq;
 import com.ibm.wsspi.application.lifecycle.ApplicationStartBarrier;
 
@@ -43,14 +46,18 @@ public class ApplicationStartBarrierImpl implements ApplicationStartBarrier {
     private static final TraceComponent tc = Tr.register(ApplicationStartBarrierImpl.class);
 
     @Reference(cardinality = ReferenceCardinality.MULTIPLE)
-    void setApplicationPrereq(ApplicationPrereq applicationPrereq) {
-    }
+    void setApplicationPrereq(ApplicationPrereq applicationPrereq) {}
+
+    @Activate
+    public void activate() {}
 
     /**
      * Non configurable immediate component to track prereqs as they appear.
      */
+    @Trivial
     @Component(configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
-    public static class PrereqWatcher {
+    public static class PrereqWatcher implements ConfigurationListener {
+        public static final TraceComponent tc = Tr.register(PrereqWatcher.class);
         private final ConfigurationAdmin configurationAdmin;
         private final ArrayList<String> realisedPrereqs = new ArrayList<>();
 
@@ -64,6 +71,14 @@ public class ApplicationStartBarrierImpl implements ApplicationStartBarrier {
             this.configurationAdmin = configurationAdmin;
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Known configured application prereqs:" + listConfiguredPrereqs());
+            }
+        }
+
+        public void configurationEvent(ConfigurationEvent event) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Configuration changed: "
+                             + "\nConfigured:" + listConfiguredPrereqs()
+                             + "\n  Realised:" + realisedPrereqs);
             }
         }
 
@@ -109,3 +124,4 @@ public class ApplicationStartBarrierImpl implements ApplicationStartBarrier {
         }
     }
 }
+
