@@ -99,6 +99,7 @@ import com.ibm.websphere.servlet.event.ServletErrorEvent;
 import com.ibm.websphere.servlet.event.ServletErrorListener;
 import com.ibm.websphere.servlet.event.ServletInvocationListener;
 import com.ibm.websphere.servlet.event.ServletListener;
+import com.ibm.websphere.servlet.request.extended.IRequestExtended;
 import com.ibm.websphere.webcontainer.async.AsyncRequestDispatcher;
 import com.ibm.ws.container.Container;
 import com.ibm.ws.container.DeployedModule;
@@ -108,6 +109,7 @@ import com.ibm.ws.container.service.annotations.WebAnnotations;
 import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
 import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.session.SessionCookieConfigImpl;
 import com.ibm.ws.session.utils.IDGeneratorImpl;
@@ -141,6 +143,7 @@ import com.ibm.ws.webcontainer.servlet.ServletWrapper;
 import com.ibm.ws.webcontainer.servlet.exception.NoTargetForURIException;
 import com.ibm.ws.webcontainer.session.IHttpSessionContext;
 import com.ibm.ws.webcontainer.spiadapter.collaborator.IInvocationCollaborator;
+import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.ws.webcontainer.util.DocumentRootUtils;
 import com.ibm.ws.webcontainer.util.EmptyEnumeration;
 import com.ibm.ws.webcontainer.util.IteratorEnumerator;
@@ -150,6 +153,7 @@ import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
 import com.ibm.wsspi.http.HttpInboundConnection;
+import com.ibm.wsspi.http.ee7.HttpInboundConnectionExtended;
 import com.ibm.wsspi.injectionengine.InjectionException;
 import com.ibm.wsspi.webcontainer.ClosedConnectionException;
 import com.ibm.wsspi.webcontainer.RequestProcessor;
@@ -4095,8 +4099,24 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
         WebContainerRequestState reqState = WebContainerRequestState.getInstance(true);   //PI80786
 
         // PK82794
-        if (WCCustomProperties.SUPPRESS_LAST_ZERO_BYTE_PACKAGE)
-            reqState.setAttribute("com.ibm.ws.webcontainer.suppresslastzerobytepackage", "true");
+        if (WCCustomProperties.SUPPRESS_LAST_ZERO_BYTE_PACKAGE) {
+           // reqState.setAttribute("com.ibm.ws.webcontainer.suppresslastzerobytepackage", "true");
+            if (req instanceof SRTServletRequest) {
+                SRTServletRequest srtReq = (SRTServletRequest) req;
+                IRequestExtended iReq = (IRequestExtended)srtReq.getIRequest();
+                if (iReq != null) {
+                    HttpInboundConnection httpInboundConnection = iReq.getHttpInboundConnection();
+                    logger.logp(Level.FINE, CLASS_NAME, "sendError", "TESTMESSAGE");
+                    HttpInboundConnectionExtended extendedConnection= (HttpInboundConnectionExtended) httpInboundConnection;
+                    logger.logp(Level.FINE, CLASS_NAME, "sendError", "TESTMESSAGE2");
+                    HttpDispatcherLink dispatcherLink=(HttpDispatcherLink) extendedConnection.getHttpDispatcherLink();
+                    logger.logp(Level.FINE, CLASS_NAME, "sendError", "HttpInboundConnection: " + httpInboundConnection);
+                    dispatcherLink.setSuppressZeroByteChunk(true);
+                    logger.logp(Level.FINE, CLASS_NAME, "sendError", "TESTMESSAGE3");
+
+                }
+            }
+        }
         // PK82794
 
         if (!res.isCommitted())

@@ -2853,7 +2853,16 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 }
 
             } else if (msg.isChunkedEncodingSet()) {
-                createEndOfBodyChunk();
+                HttpInboundServiceContextImpl localHisc = null;
+                if (this instanceof HttpInboundServiceContextImpl) {
+                    localHisc = (HttpInboundServiceContextImpl) this;
+                }
+                if (localHisc != null && !(localHisc.getLink() instanceof H2HttpInboundLinkWrap)
+                    && localHisc.getSuppress0ByteChunk()) {
+                    localHisc.setPersistent(false);
+                } else {
+                    createEndOfBodyChunk();
+                }
             }
         }
         setMessageSent();
@@ -2893,7 +2902,14 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 hisc = (HttpInboundServiceContextImpl) this;
             }
             if (hisc != null && !(hisc.getLink() instanceof H2HttpInboundLinkWrap)) {
+                if(hisc.getSuppress0ByteChunk()) {
+                    hisc.setPersistent(false);
+                }
+                else {
                 createEndOfBodyChunk();
+                }
+                
+                
             }
         }
         setMessageSent();
