@@ -599,7 +599,7 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
     }
 
     @Override
-    public void checkTMState() throws NotSupportedException {
+    public synchronized void checkTMState() throws NotSupportedException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "checkTMState");
         if (_state != TMService.TMStates.ACTIVE) {
