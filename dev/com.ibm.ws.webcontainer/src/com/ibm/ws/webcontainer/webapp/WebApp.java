@@ -4106,13 +4106,10 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
                 IRequestExtended iReq = (IRequestExtended)srtReq.getIRequest();
                 if (iReq != null) {
                     HttpInboundConnection httpInboundConnection = iReq.getHttpInboundConnection();
-                    logger.logp(Level.FINE, CLASS_NAME, "sendError", "TESTMESSAGE");
                     HttpInboundConnectionExtended extendedConnection= (HttpInboundConnectionExtended) httpInboundConnection;
-                    logger.logp(Level.FINE, CLASS_NAME, "sendError", "TESTMESSAGE2");
                     HttpDispatcherLink dispatcherLink=(HttpDispatcherLink) extendedConnection.getHttpDispatcherLink();
-                    logger.logp(Level.FINE, CLASS_NAME, "sendError", "HttpInboundConnection: " + httpInboundConnection);
+                    logger.logp(Level.FINE, CLASS_NAME, "sendError", "Setting SuppressZeroByteChunk");
                     dispatcherLink.setSuppressZeroByteChunk(true);
-                    logger.logp(Level.FINE, CLASS_NAME, "sendError", "TESTMESSAGE3");
 
                 }
             }

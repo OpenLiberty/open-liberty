@@ -26,6 +26,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.zip.DataFormatException;
 
@@ -2857,8 +2858,11 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 if (this instanceof HttpInboundServiceContextImpl) {
                     localHisc = (HttpInboundServiceContextImpl) this;
                 }
-                if (localHisc != null && !(localHisc.getLink() instanceof H2HttpInboundLinkWrap)
+                if (localHisc != null && localHisc instanceof HttpInboundServiceContextImpl
                     && localHisc.getSuppress0ByteChunk()) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Suppressing Zero Byte Chunk and setting persistence to false.");
+                    }
                     localHisc.setPersistent(false);
                 } else {
                     createEndOfBodyChunk();
@@ -2901,8 +2905,11 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             if (this instanceof HttpInboundServiceContextImpl) {
                 hisc = (HttpInboundServiceContextImpl) this;
             }
-            if (hisc != null && !(hisc.getLink() instanceof H2HttpInboundLinkWrap)) {
+            if (hisc != null && hisc instanceof HttpInboundServiceContextImpl) {
                 if(hisc.getSuppress0ByteChunk()) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Suppressing Zero Byte Chunk and setting persistence to false.");
+                    }
                     hisc.setPersistent(false);
                 }
                 else {
