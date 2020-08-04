@@ -47,6 +47,7 @@
             <Option label="%jwkSigningKeySize.4096" value="4096"/>
          </AD>
          <AD id="elapsedNBF" name="%elapsedNBF" description="%elapsedNBF.desc" required="false" type="String" default="-1" ibm:type="duration(s)" ibm:beta="true"/>
+         <AD id="amrInclude" name="%amrInclude" description="%amrInclude.desc" required="false" type="String" cardinality="400"/>
     </OCD>
 
     <Designate factoryPid="com.ibm.ws.security.jwt.builder">
@@ -76,7 +77,7 @@
         <AD id="validationRequired" name="internal" description="internal use only"  required="false" type="Boolean" default="true"/>
         <AD id="jwkEnabled" name="%jwkEnabled" description="%jwkEnabled.desc" required="false" type="Boolean" default="false"/>
         <AD id="jwkEndpointUrl" name="%jwkEndpointUrl" description="%jwkEndpointUrl.desc"  required="false"  type="String" />
-        <AD id="authenticationMethodsReferences" name="authenticationMethodsReferences" description="%%authenticationMethodsReferences.desc" required="false" type="String" cardinality="400"/>
+        <AD id="amrValues" name="%amrValues" description="%amrValues.desc" required="false" type="String" cardinality="400"/>
         <AD id="sslRef" name="%sslRef" description="%sslRef.desc" required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />
          <AD id="useSystemPropertiesForHttpClientConnections" name="%useSystemPropertiesForHttpClientConnections" description="%useSystemPropertiesForHttpClientConnections.desc" required="false" type="Boolean" default="false"/>
     </OCD>

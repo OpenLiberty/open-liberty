@@ -13,6 +13,10 @@ package com.ibm.ws.security.jwtsso.fat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -24,8 +28,10 @@ import org.junit.runner.RunWith;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.util.Cookie;
+import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import com.ibm.ws.security.fat.common.actions.TestActions;
+import com.ibm.ws.security.fat.common.apps.jwtbuilder.JwtBuilderServlet;
 import com.ibm.ws.security.fat.common.expectations.Expectation;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
@@ -757,6 +763,47 @@ public class ConfigAttributeTests extends CommonSecurityFat {
 
         response = actions.doFormLogin(response, defaultUser, defaultPassword);
         validationUtils.validateResult(response, currentAction, expectations);
+    }
+
+    /**
+     * Test that the amr security attribute specified in the config is included in jwtToken. Uses the amrbuilder web app to 
+     * add the specified attribute to the subject and built a new token. Token is then decoded and sent back as reponse and 
+     * inspect the response to check the amrValue.
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void test_amrValue() throws Exception {
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_amrValues.xml", MessageConstants.CWWKT0016I_WEB_APP_AVAILABLE + ".*amrbuilder");
+        
+        WebClient webClient = new WebClient();
+        Cookie cookie = actions.logInAndObtainJwtCookie(_testName, webClient, protectedUrl, defaultUser, defaultPassword);
+
+        Page response = buildNewJwtAfterAddingSecurityAttribute(cookie);
+        String responseStr = response.getWebResponse().getContentAsString();
+        boolean check = responseStr.contains("\"amr\":[\"amrValue\"]");
+        assertTrue("AMR in token did not match the one configured in the builder", check);
+
+        
+    }
+
+    /**
+     * Invokes the amrbuilder web application configured in the server with cookie to build JWT to check the amrValue is
+     * included. A JWT is built using the amrBuilder configuration with the defaultJwtSso and the jwt is printed
+     * in the response.
+     */
+    private Page buildNewJwtAfterAddingSecurityAttribute(Cookie cookie) throws Exception {
+        String jwtBuilderUrl = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/amrbuilder/AmrServlet";
+
+        List<NameValuePair> requestParams = new ArrayList<NameValuePair>();
+        requestParams.add(new NameValuePair(JwtBuilderServlet.PARAM_BUILDER_ID, "defaultJwtSso"));
+        
+        Map<String, String> requestHeaders = new HashMap<>();
+        requestHeaders.put("Cookie", cookie.getName() + "=" + cookie.getValue());
+
+        WebClient webClient = new WebClient();
+        Page response = actions.invokeUrlWithParametersAndHeaders(_testName, webClient, jwtBuilderUrl, requestParams, requestHeaders);
+
+        return response;
     }
 
 }

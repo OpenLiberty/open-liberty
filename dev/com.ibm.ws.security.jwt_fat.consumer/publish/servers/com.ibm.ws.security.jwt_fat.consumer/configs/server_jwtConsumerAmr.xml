@@ -15,7 +15,7 @@
 		issuer="client01"
 		signatureAlgorithm="HS256"
 		sharedKey="mySharedKeyNowHasToBeLongerStrongerAndMoreSecure"
-		authenticationMethodsReferences="OTP iris, pwd kba"
+		amrValues="OTP iris, pwd kba"
 	/>
 	
 	<jwtConsumer
@@ -23,7 +23,7 @@
 		issuer="client01"
 		signatureAlgorithm="HS256"
 		sharedKey="mySharedKeyNowHasToBeLongerStrongerAndMoreSecure"
-		authenticationMethodsReferences="OTP iris"
+		amrValues="OTP iris"
 	/>
 
 </server>

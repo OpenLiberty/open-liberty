@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.security.auth.Subject;
+
 import org.jose4j.lang.JoseException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
@@ -34,6 +36,8 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.security.auth.WSSubject;
+import com.ibm.websphere.security.cred.WSCredential;
 import com.ibm.websphere.security.jwt.Builder;
 import com.ibm.websphere.security.jwt.Claims;
 import com.ibm.websphere.security.jwt.InvalidBuilderException;
@@ -162,7 +166,15 @@ public class BuilderImpl implements Builder {
         if (jwtConfig.getSharedKey() != null) {
             sharedKey = jwtConfig.getSharedKey();
         }
-
+        
+        List<String> amrAttr = jwtConfig.getAMRAttributes();// getProperty(amrAttributes);
+        if (amrAttr != null) {
+            try {
+                checkAmrAttrInSubject(amrAttr);
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+            }
+        }
     }
 
     private JwtConfig getTheServiceConfig(String builderConfigId) {
@@ -844,5 +856,42 @@ public class BuilderImpl implements Builder {
         }
         return this;
     }
+    
+	/**
+	 * Checks the attributes provided exists in the subject, if so add it to the
+	 * claims as "amr" values
+	 *
+	 * @param amrAttr
+	 * @throws Exception
+	 */
+	private void checkAmrAttrInSubject(List<String> amrAttr) throws Exception {
+		Subject subj = WSSubject.getRunAsSubject();
+		List<Object> amrValues = new ArrayList<Object>();
+		if (subj != null) {
+			WSCredential wscred = getWSCredential(subj);
+			for (String attr : amrAttr) {
+				Object subjValue = wscred != null ? wscred.get(attr) : null;
+				if (subjValue != null) {
+					amrValues.add(subjValue);
+				}
+			}
+		}
+		if (amrValues.size() > 0) {
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+				Tr.debug(tc, "Builder Claims Key: amr: [" + amrValues + "]");
+			}
+			getClaims().put("amr", amrValues);
+		}
+	}
+
+	private WSCredential getWSCredential(Subject subject) {
+		WSCredential wsCredential = null;
+		Set<WSCredential> wsCredentials = subject.getPublicCredentials(WSCredential.class);
+		Iterator<WSCredential> wsCredentialsIterator = wsCredentials.iterator();
+		if (wsCredentialsIterator.hasNext()) {
+			wsCredential = wsCredentialsIterator.next();
+		}
+		return wsCredential;
+	}
 
 }

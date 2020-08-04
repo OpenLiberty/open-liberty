@@ -85,12 +85,9 @@ public class JwtUtils {
 	public static final String CFG_KEY_SSL_REF = "sslRef";
 	public static final String CFG_KEY_EXPIRES_IN_SECONDS = "expiresInSeconds";
 	public static final String CFG_KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS = "useSystemPropertiesForHttpClientConnections";
-
-<<<<<<< HEAD
 	public static final String CFG_KEY_ELAPSED_NBF = "elapsedNBF";
-=======
-	public static final String CFG_AMR_CLAIM = "authenticationMethodsReferences";
->>>>>>> Added all test for consumer
+	public static final String CFG_AMR_CLAIM = "amrValues";
+	public static final String CFG_AMR_ATTR = "amrInclude";
 
 	public static final String JCEPROVIDER_IBM = "IBMJCE";
 	public static final String SECRANDOM_SHA1PRNG = "SHA1PRNG";
@@ -633,4 +630,5 @@ public class JwtUtils {
 	public static String processProtectedString(Map<String, Object> props, String cfgKey) {
 		return JwtConfigUtil.processProtectedString(props, cfgKey);
 	}
+
 }

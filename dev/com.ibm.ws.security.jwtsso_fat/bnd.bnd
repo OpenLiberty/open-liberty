@@ -13,6 +13,7 @@ bVersion=1.0
 
 src: \
     fat/src, \
+    test-applications/amrbuilder/src, \
     test-applications/jwtbuilder/src, \
     test-applications/formlogin.jwtsso/src
 
