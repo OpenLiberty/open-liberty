@@ -15,7 +15,6 @@ Subsystem-Name: MicroProfile GraphQL 1.0
  com.ibm.websphere.appserver.servlet-4.0, \
  com.ibm.websphere.appserver.internal.slf4j-1.7.7
 -bundles= \
- com.ibm.ws.require.java8, \
  com.ibm.ws.com.graphql.java, \
  com.ibm.ws.io.smallrye.graphql, \
  com.ibm.ws.org.jboss.logging, \
