@@ -14,31 +14,29 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.security.fat.common.AlwaysRunAndPassTest;
-
 @RunWith(Suite.class)
 @SuiteClasses({
-        // Ported list of tests (some already renamed)
-        AlwaysRunAndPassTest.class,
-
-        // Basic Functional tests
-        JwtBuilderApiBasicTests.class,
-        JwtBuilderApiWithLDAPBasicTests.class,
-        JwkEndpointValidationUrlTests.class,
-
-        // Configuration Tests
-        JwtBuilderAPIConfigTests.class,
-        JwtBuilderAPIConfigAltKeyStoreTests.class,
-        JwtBuilderAPIWithLDAPConfigTests.class,
-        JwtBuilderAPIMinimumConfigTests.class,
-        JwtBuilderAPIMinimumRunnableConfigTests.class,
-        JwtBuilderAPIMinimumSSLConfigGlobalTests.class,
-        JwtBuilderAPIMinimumSSLConfigBuilderTests.class
+		// // Ported list of tests (some already renamed)
+		// AlwaysRunAndPassTest.class,
+		//
+		// // Basic Functional tests
+		// JwtBuilderApiBasicTests.class,
+		// JwtBuilderApiWithLDAPBasicTests.class,
+		JwkEndpointValidationUrlTests.class,
+		//
+		// // Configuration Tests
+		JwtBuilderAPIConfigTests.class,
+		// JwtBuilderAPIConfigAltKeyStoreTests.class,
+		// JwtBuilderAPIWithLDAPConfigTests.class,
+		// JwtBuilderAPIMinimumConfigTests.class,
+		// JwtBuilderAPIMinimumRunnableConfigTests.class,
+		// JwtBuilderAPIMinimumSSLConfigGlobalTests.class,
+		// JwtBuilderAPIMinimumSSLConfigBuilderTests.class
 
 })
 
 public class FATSuite {
 
-    public static boolean runAsCollection = false;
+	public static boolean runAsCollection = false;
 
 }

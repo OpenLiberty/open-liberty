@@ -41,4 +41,23 @@
 		trustStoreRef="configServerDefault"
 		clientAuthenticationSupported="true" />
 
+
+	<keyStore
+		id="trust_1_2"
+		password="Liberty"
+		type="PKCS12"
+		location="${server.config.dir}/MpJwtTrustStore.p12" />
+
+	<keyStore
+		id="key_1_2"
+		password="Liberty"
+		type="PKCS12"
+		location="${server.config.dir}/MpJwtKeyStore.p12" />
+
+	<ssl
+		id="ssl_1_2"
+		keyStoreRef="key_1_2"
+		trustStoreRef="trust_1_2"
+		clientAuthenticationSupported="true" />
+
 </server>        
