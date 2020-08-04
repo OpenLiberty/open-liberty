@@ -380,8 +380,8 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     /**
      * Test Purpose:
      * <OL>
-	 * <LI>Invoke the JWT Builder using a config that has amrInclude set to "amrTest" which has a value "amrTestValue"
-	 * <LI>in the security subject. The builderAPI sets that value into the subject.
+     * <LI>Invoke the JWT Builder using a config that has amrInclude set to "amrTest" which has a value "amrTestValue"
+     * <LI>in the security subject. The builderAPI sets that value into the subject.
      * <LI>What this means is that the token we create will include "amr" set to ["amrValue"]
      * </OL>
      * <P>
@@ -389,20 +389,20 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
      * <OL>
      * <LI>Should get a token built valid amr claim set to ["amrValue"]
      * </OL>
-	 * 
-	 * @throws Exception
-	 */
-	@Mode(TestMode.LITE)
+     * 
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
     @Test
     public void JwtBuilderAPIConfigTests_amrValue_valid() throws Exception {
 
-		String builderId = "AMRTestValid";
+        String builderId = "AMRTestValid";
         JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
         expectationSettings.put(PayloadConstants.METHODS_REFERENCE, "amrValue");
 
         // have to set amr
         JSONObject testSettings = new JSONObject();
-		testSettings.put(PayloadConstants.METHODS_REFERENCE, "amrTest");
+        testSettings.put(PayloadConstants.METHODS_REFERENCE, "amrTest");
         expectationSettings.put("overrideSettings", testSettings);
         Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_PROTECTED_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
@@ -414,8 +414,8 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     /**
      * Test Purpose:
      * <OL>
-	 * <LI>Invoke the JWT Builder using a config that has amrInclude set to "random" which has no value
-	 * <LI>in the security subject.
+     * <LI>Invoke the JWT Builder using a config that has amrInclude set to "random" which has no value
+     * <LI>in the security subject.
      * <LI>What this means is that the token we create should not include "amr"
      * </OL>
      * <P>
@@ -423,20 +423,20 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
      * <OL>
      * <LI>Should get a token built without amr claim set
      * </OL>
-	 * 
-	 * @throws Exception
-	 */
-	@Mode(TestMode.LITE)
+     * 
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
     @Test
     public void JwtBuilderAPIConfigTests_amrValue_invalid() throws Exception {
 
-		String builderId = "AMRTestInvalid";
+        String builderId = "AMRTestInvalid";
         JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+        JSONObject testSettings = new JSONObject();
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_PROTECTED_SETAPIS_ENDPOINT, expectationSettings, builderServer);
         expectations = BuilderHelpers.buildBuilderClaimsNotFound(expectations, JWTBuilderConstants.JWT_CLAIM, PayloadConstants.METHODS_REFERENCE);
         
-		Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        Page response = actions.invokeProtectedJwtBuilder(_testName, builderServer, builderId, testSettings, "testuser", "testuserpwd");
         validationUtils.validateResult(response, expectations);
 
     }
@@ -444,7 +444,7 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     /**
      * Test Purpose:
      * <OL>
-	 * <LI>Invoke the JWT Builder using a config that has amrInclude set to empty string
+     * <LI>Invoke the JWT Builder using a config that has amrInclude set to empty string
      * <LI>What this means is that the token we create should not include "amr"
      * </OL>
      * <P>
@@ -452,20 +452,20 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
      * <OL>
      * <LI>Should get a token built without amr claim set
      * </OL>
-	 * 
-	 * @throws Exception
-	 */
+     * 
+     * @throws Exception
+     */
 	@Mode(TestMode.LITE)
     @Test
     public void JwtBuilderAPIConfigTests_amrValue_empty() throws Exception {
 
-		String builderId = "AMRTestEmpty";
+        String builderId = "AMRTestEmpty";
         JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+        JSONObject testSettings = new JSONObject();
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_PROTECTED_SETAPIS_ENDPOINT, expectationSettings, builderServer);
         expectations = BuilderHelpers.buildBuilderClaimsNotFound(expectations, JWTBuilderConstants.JWT_CLAIM, PayloadConstants.METHODS_REFERENCE);
         
-		Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        Page response = actions.invokeProtectedJwtBuilder(_testName, builderServer, builderId, testSettings, "testuser", "testuserpwd");
         validationUtils.validateResult(response, expectations);
 
     }

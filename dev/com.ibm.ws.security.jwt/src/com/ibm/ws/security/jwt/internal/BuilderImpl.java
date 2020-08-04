@@ -864,34 +864,34 @@ public class BuilderImpl implements Builder {
 	 * @param amrAttr
 	 * @throws Exception
 	 */
-	private void checkAmrAttrInSubject(List<String> amrAttr) throws Exception {
-		Subject subj = WSSubject.getRunAsSubject();
-		List<Object> amrValues = new ArrayList<Object>();
-		if (subj != null) {
-			WSCredential wscred = getWSCredential(subj);
-			for (String attr : amrAttr) {
-				Object subjValue = wscred != null ? wscred.get(attr) : null;
-				if (subjValue != null) {
-					amrValues.add(subjValue);
-				}
-			}
-		}
-		if (amrValues.size() > 0) {
-			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-				Tr.debug(tc, "Builder Claims Key: amr: [" + amrValues + "]");
-			}
-			getClaims().put("amr", amrValues);
-		}
-	}
+    private void checkAmrAttrInSubject(List<String> amrAttr) throws Exception {
+        Subject subj = WSSubject.getRunAsSubject();
+        List<Object> amrValues = new ArrayList<Object>();
+        if (subj != null) {
+            WSCredential wscred = getWSCredential(subj);
+            for (String attr : amrAttr) {
+                Object subjValue = wscred != null ? wscred.get(attr) : null;
+                if (subjValue != null) {
+                    amrValues.add(subjValue);
+                }
+            }
+        }
+        if (amrValues.size() > 0) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Builder Claims Key: amr: [" + amrValues + "]");
+            }
+            getClaims().put("amr", amrValues);
+        }
+    }
 
-	private WSCredential getWSCredential(Subject subject) {
-		WSCredential wsCredential = null;
-		Set<WSCredential> wsCredentials = subject.getPublicCredentials(WSCredential.class);
-		Iterator<WSCredential> wsCredentialsIterator = wsCredentials.iterator();
-		if (wsCredentialsIterator.hasNext()) {
-			wsCredential = wsCredentialsIterator.next();
-		}
-		return wsCredential;
-	}
+    private WSCredential getWSCredential(Subject subject) {
+        WSCredential wsCredential = null;
+        Set<WSCredential> wsCredentials = subject.getPublicCredentials(WSCredential.class);
+        Iterator<WSCredential> wsCredentialsIterator = wsCredentials.iterator();
+        if (wsCredentialsIterator.hasNext()) {
+            wsCredential = wsCredentialsIterator.next();
+        }
+        return wsCredential;
+    }
 
 }

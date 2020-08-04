@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -380,14 +380,14 @@ public class JwtBuilderSetApisClient extends HttpServlet {
     
     protected void setAMRInSubject(PrintWriter pw, HttpServletRequest request) throws Exception {
 
-    	String attrsString = request.getParameter("attrs");
+        String attrsString = request.getParameter("attrs");
         if (attrsString == null) {
             return;
         }
         JSONObject attrs = (JSONObject) JSON.parse(attrsString);
         if (attrs.containsKey(PayloadConstants.METHODS_REFERENCE)) {
-        	String amrAttr = (String) attrs.get(PayloadConstants.METHODS_REFERENCE);
-			Subject callerSubject = WSSubject.getCallerSubject();
+            String amrAttr = (String) attrs.get(PayloadConstants.METHODS_REFERENCE);
+            Subject callerSubject = WSSubject.getCallerSubject();
             WSCredential callerCredential = getWSCredential(callerSubject);
             if (callerCredential != null) {
                 callerCredential.set(amrAttr, "amrTestValue");
@@ -396,18 +396,18 @@ public class JwtBuilderSetApisClient extends HttpServlet {
         }
 
     }
-    
+
     protected WSCredential getWSCredential(Subject subject) {
-		WSCredential wsCredential = null;
-		if (subject != null) {
-			Set<WSCredential> wsCredentials = subject.getPublicCredentials(WSCredential.class);
-			Iterator<WSCredential> wsCredentialsIterator = wsCredentials.iterator();
-			if (wsCredentialsIterator.hasNext()) {
-				wsCredential = wsCredentialsIterator.next();
-			}
-		}
-		return wsCredential;
-	}
+        WSCredential wsCredential = null;
+        if (subject != null) {
+            Set<WSCredential> wsCredentials = subject.getPublicCredentials(WSCredential.class);
+            Iterator<WSCredential> wsCredentialsIterator = wsCredentials.iterator();
+            if (wsCredentialsIterator.hasNext()) {
+                wsCredential = wsCredentialsIterator.next();
+            }
+        }
+        return wsCredential;
+    }
 
     protected void runClaimFrom(PrintWriter pw, JSONObject attrs) throws Exception {
 
