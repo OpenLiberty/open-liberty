@@ -18,6 +18,7 @@ import static org.junit.Assert.fail;
 import java.io.BufferedReader;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -129,12 +130,15 @@ public class DelayAppStartupHealthCheckTest {
                 try {
                     conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, READY_ENDPOINT);
                     responseCode = conReady.getResponseCode();
-                } catch (ConnectException e) {
-                    if (e.getMessage().contains("Connection refused")) {
+                } catch (ConnectException ce) {
+                    if (ce.getMessage().contains("Connection refused")) {
                         connectionExceptionEncountered = true;
                     }
-                } catch (SocketTimeoutException exception) {
-                    log("testReadinessEndpointOnServerStart", "Encountered a SocketTimeoutException. Retrying connection.");
+                } catch (SocketTimeoutException ste) {
+                    log("testReadinessEndpointOnServerStart", "Encountered a SocketTimeoutException. Retrying connection. Exception: " + ste.getMessage());
+                    continue;
+                } catch (SocketException se) {
+                    log("testReadinessEndpointOnServerStart", "Encountered a SocketException. Retrying connection. Exception: " + se.getMessage());
                     continue;
                 }
 
