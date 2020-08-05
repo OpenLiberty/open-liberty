@@ -42,7 +42,7 @@ DynamicImport-Package: \
 
 Export-Package: \
   com.ibm.ws.io.smallrye.graphql.component;thread-context=true,\
-  io.smallrye.graphql.*;version=1.0.2;thread-context=true,\
+  io.smallrye.graphql.*;version=${smallryeGraphQLVersion};thread-context=true,\
 
 Include-Resource: \
   META-INF=resources/META-INF
