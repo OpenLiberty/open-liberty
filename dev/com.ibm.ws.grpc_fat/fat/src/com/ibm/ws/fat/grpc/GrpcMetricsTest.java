@@ -77,13 +77,12 @@ public class GrpcMetricsTest extends FATServletClient {
     }
 
     /**
-     * Tests a basic gRPC helloworld app. HelloWorldClient.war contains a servlet that can be
-     * used to connect to a gRPC service that will deployed via HelloWorldService.war.
+     * Tests gRPC server-side and client-side metrics.
      *
      * @throws Exception
      */
     @Test
-    public void testHelloWorld() throws Exception {
+    public void testGrpcMetrics() throws Exception {
         String contextRoot = "HelloWorldClient";
         try (WebClient webClient = new WebClient()) {
 
@@ -117,17 +116,17 @@ public class GrpcMetricsTest extends FATServletClient {
             HtmlSubmitInput submitButton = form.getInputByName("submit");
             page = submitButton.click();
 
-            // check the gRPC client metrics
-            checkMetricsStrings("/metrics/vendor/grpc.client.rpcStarted.total", "1");
-            checkMetricsStrings("/metrics/vendor/grpc.client.rpcCompleted.total", "1");
-            checkMetricsStrings("/metrics/vendor/grpc.client.sentMessages.total", "1");
-            checkMetricsStrings("/metrics/vendor/grpc.client.receivedMessages.total", "1");
+            // check the gRPC client-side metrics
+            checkMetric("/metrics/vendor/grpc.client.rpcStarted.total", "1");
+            checkMetric("/metrics/vendor/grpc.client.rpcCompleted.total", "1");
+            checkMetric("/metrics/vendor/grpc.client.sentMessages.total", "1");
+            checkMetric("/metrics/vendor/grpc.client.receivedMessages.total", "1");
 
-            // check the gRPC server metrics
-            checkMetricsStrings("/metrics/vendor/grpc.server.rpcStarted.total", "1");
-            checkMetricsStrings("/metrics/vendor/grpc.server.rpcCompleted.total", "1");
-            checkMetricsStrings("/metrics/vendor/grpc.server.sentMessages.total", "1");
-            checkMetricsStrings("/metrics/vendor/grpc.server.receivedMessages.total", "1");
+            // check the gRPC server-side metrics
+            checkMetric("/metrics/vendor/grpc.server.rpcStarted.total", "1");
+            checkMetric("/metrics/vendor/grpc.server.rpcCompleted.total", "1");
+            checkMetric("/metrics/vendor/grpc.server.sentMessages.total", "1");
+            checkMetric("/metrics/vendor/grpc.server.receivedMessages.total", "1");
 
             // Log the page for debugging if necessary in the future.
             Log.info(c, name.getMethodName(), page.asText());
@@ -135,11 +134,17 @@ public class GrpcMetricsTest extends FATServletClient {
         }
     }
 
-    private String checkMetricsStrings(String metricString, String value) {
-        //  grpc.server.rpcStarted.total
+    /**
+     * Verifies the given metric by comparing the actual value with the given value
+     *
+     * @param metricName    - the metric to verify
+     * @param expectedValue - the expected value
+     * @return the actual value received from the Metrics endpoint
+     */
+    private String checkMetric(String metricName, String expectedValue) {
         HttpURLConnection con = null;
         try {
-            URL url = new URL("http://" + grpcMetricsServer.getHostname() + ":" + grpcMetricsServer.getHttpDefaultPort() + metricString);
+            URL url = new URL("http://" + grpcMetricsServer.getHostname() + ":" + grpcMetricsServer.getHttpDefaultPort() + metricName);
             int retcode;
             con = (HttpURLConnection) url.openConnection();
             con.setDoInput(true);
@@ -170,8 +175,8 @@ public class GrpcMetricsTest extends FATServletClient {
                 }
             }
 
-            if (metricValue == null || !metricValue.equals(value)) {
-                fail(String.format("Incorrect metric value [%s]. Expected [%s], got [%s]", metricString, value, metricValue));
+            if (metricValue == null || !metricValue.equals(expectedValue)) {
+                fail(String.format("Incorrect metric value [%s]. Expected [%s], got [%s]", metricName, expectedValue, metricValue));
             }
             return metricValue;
 
