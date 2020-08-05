@@ -45,5 +45,5 @@ tested.features: mpOpenTracing-2.0
     io.jaegertracing:jaeger-client;version=1.2.0,\
     io.jaegertracing:jaeger-tracerresolver;version=1.2.0,\
     org.apache.thrift:libthrift;version=0.13.0,\
-    org.slf4j:slf4j-simple;version=1.7.28,\
+    org.slf4j:slf4j-simple;version=1.7.30,\
     org.slf4j:slf4j-api;version=1.7.28
