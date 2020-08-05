@@ -15,8 +15,14 @@ public class Constants {
     public static final String UTF_8 = "UTF-8";
 
     public static final String SIGNATURE_ALG_HS256 = "HS256";
+    public static final String SIGNATURE_ALG_HS384 = "HS384";
+    public static final String SIGNATURE_ALG_HS512 = "HS512";
     public static final String SIGNATURE_ALG_RS256 = "RS256";
+    public static final String SIGNATURE_ALG_RS384 = "RS384";
+    public static final String SIGNATURE_ALG_RS512 = "RS512";
     public static final String SIGNATURE_ALG_ES256 = "ES256";
+    public static final String SIGNATURE_ALG_ES384 = "ES384";
+    public static final String SIGNATURE_ALG_ES512 = "ES512";
 
     public static final String SIGNING_KEY_X509 = "x509";
     public static final String SIGNING_KEY_JWK = "jwk";

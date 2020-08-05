@@ -300,9 +300,12 @@ public class JwtEndpointServices {
     }
 
     String getAcceptableJwkSignatureAlgorithms() {
-        // TODO more will be added
         return Constants.SIGNATURE_ALG_RS256 + ", " +
-                Constants.SIGNATURE_ALG_ES256;
+                Constants.SIGNATURE_ALG_RS384 + ", " +
+                Constants.SIGNATURE_ALG_RS512 + ", " +
+                Constants.SIGNATURE_ALG_ES256 + ", " +
+                Constants.SIGNATURE_ALG_ES384 + ", " +
+                Constants.SIGNATURE_ALG_ES512;
     }
 
     /**
