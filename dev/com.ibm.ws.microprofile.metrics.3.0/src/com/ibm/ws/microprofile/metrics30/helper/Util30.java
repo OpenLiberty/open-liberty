@@ -21,6 +21,7 @@ import org.eclipse.microprofile.metrics.Metric;
 import org.eclipse.microprofile.metrics.MetricID;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.SimpleTimer;
+import org.eclipse.microprofile.metrics.Tag;
 import org.eclipse.microprofile.metrics.Timer;
 
 import com.ibm.websphere.ras.Tr;
@@ -30,6 +31,7 @@ import com.ibm.ws.microprofile.metrics.exceptions.EmptyRegistryException;
 import com.ibm.ws.microprofile.metrics.exceptions.NoSuchMetricException;
 import com.ibm.ws.microprofile.metrics.exceptions.NoSuchRegistryException;
 import com.ibm.ws.microprofile.metrics23.helper.Util23;
+import com.ibm.ws.microprofile.metrics30.impl.MetricRegistry30Impl;
 
 /**
  *
@@ -63,6 +65,15 @@ public class Util30 extends Util23 {
             }
         }
         return returnMap;
+    }
+
+    /**
+     * This static utility function will call the MetricRegistry's getCachedGlobalTag() method to retrieve the server level global tags
+     *
+     * @return Tag[] An array of Tag that represents the server level global tags. This can be null if none has been defined/resolved.
+     */
+    public static Tag[] getCachedGlobalTags() {
+        return MetricRegistry30Impl.getCachedGlobalTags();
     }
 
     public static Map<MetricID, Metric> getMetricsAsMap(String registryName) throws NoSuchRegistryException, EmptyRegistryException {
