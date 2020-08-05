@@ -729,42 +729,42 @@
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-graphql-api</artifactId>
-      <version>1.0.5</version>
+      <version>1.0.7</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-graphql-cdi</artifactId>
-      <version>1.0.5</version>
+      <version>1.0.7</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-graphql-client-api</artifactId>
-      <version>1.0.5</version>
+      <version>1.0.7</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-graphql-client</artifactId>
-      <version>1.0.5</version>
+      <version>1.0.7</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-graphql-schema-builder</artifactId>
-      <version>1.0.5</version>
+      <version>1.0.7</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-graphql-schema-model</artifactId>
-      <version>1.0.5</version>
+      <version>1.0.7</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-graphql-servlet</artifactId>
-      <version>1.0.5</version>
+      <version>1.0.7</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-graphql</artifactId>
-      <version>1.0.5</version>
+      <version>1.0.7</version>
     </dependency>
     <dependency>
       <groupId>jakarta.activation</groupId>
