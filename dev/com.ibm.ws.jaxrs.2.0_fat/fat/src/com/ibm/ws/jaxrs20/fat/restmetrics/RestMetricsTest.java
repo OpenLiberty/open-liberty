@@ -60,6 +60,9 @@ public class RestMetricsTest {
                                             "getCheckedException_java.lang.String",
                                             "getUncheckedException_java.lang.String"};
 
+    static final int CHECKED_METHOD_INDEX = 9;
+    static final int UNCHECKED_METHOD_INDEX = 10;
+
     static final String URI_CONTEXT_ROOT = "http://localhost:" + Integer.getInteger("bvt.prop.HTTP_default") +
                     "/restmetrics/rest/";
 
@@ -69,7 +72,7 @@ public class RestMetricsTest {
 
     private final String MAPPEDURI = getBaseTestUri(METRICSWAR, "rest", "restmetrics");
 
-    private static final int BUFFER = 300; // margin or error in ms for response times.
+    private static final int BUFFER = 2000; // margin or error in ms for response times.
 
     private static final int EXPECTEDRT = 200; // Expected min. response time for a single request.
 
@@ -168,7 +171,7 @@ public class RestMetricsTest {
         ArrayList<String> metricsList = getMetricsStrings(METRICS_URL_STRING);
 
         //Confirm the metrics information is available.
-        for (int i = 0; i == method_Index; i++) {
+        for (int i = 0; i <= method_Index; i++) {
             // Confirm the metrics data
             responseTimes[i] = checkMetrics(metricsList, i);
             // Confirm the monitor data
@@ -183,35 +186,35 @@ public class RestMetricsTest {
     public void testCheckedExceptions() throws IOException {
 
 
-        runGetCheckedExceptionMethod(++method_Index, 200, "/restmetrics/rest/restmetrics/checked/mappedChecked", "Mapped Checked");
+        runGetCheckedExceptionMethod(CHECKED_METHOD_INDEX, 200, "/restmetrics/rest/restmetrics/checked/mappedChecked", "Mapped Checked");
 
-        runGetCheckedExceptionMethod(method_Index, 500, "/restmetrics/rest/restmetrics/checked/unmappedChecked", "Unmapped Checked");
+        runGetCheckedExceptionMethod(CHECKED_METHOD_INDEX, 500, "/restmetrics/rest/restmetrics/checked/unmappedChecked", "Unmapped Checked");
 
         ArrayList<String> metricsList = getMetricsStrings(METRICS_URL_STRING);
 
         // Confirm the metrics data
-        responseTimes[method_Index] = checkMetrics(metricsList, method_Index);
+        responseTimes[CHECKED_METHOD_INDEX] = checkMetrics(metricsList, CHECKED_METHOD_INDEX);
 
         // Confirm the monitor data
-        runCheckMonitorStats(200, method_Index);
+        runCheckMonitorStats(200, CHECKED_METHOD_INDEX);
     }
 
     @Test
     @AllowedFFDC("com.ibm.ws.jaxrs.fat.restmetrics.MetricsUnmappedUncheckedException")
     public void testUncheckedExceptions() throws IOException {
 
-        runGetUncheckedExceptionMethod(++method_Index, 200, "/restmetrics/rest/restmetrics/unchecked/mappedUnchecked", "Mapped Unchecked");
+        runGetUncheckedExceptionMethod(UNCHECKED_METHOD_INDEX, 200, "/restmetrics/rest/restmetrics/unchecked/mappedUnchecked", "Mapped Unchecked");
 
-        runGetUncheckedExceptionMethod(method_Index, 500, "/restmetrics/rest/restmetrics/unchecked/unmappedUnchecked", "Unmapped Unchecked");
+        runGetUncheckedExceptionMethod(UNCHECKED_METHOD_INDEX, 500, "/restmetrics/rest/restmetrics/unchecked/unmappedUnchecked", "Unmapped Unchecked");
 
 
         ArrayList<String> metricsList = getMetricsStrings(METRICS_URL_STRING);
 
         // Confirm the metrics data
-        responseTimes[method_Index] = checkMetrics(metricsList, method_Index);
+        responseTimes[UNCHECKED_METHOD_INDEX] = checkMetrics(metricsList, UNCHECKED_METHOD_INDEX);
 
         // Confirm the monitor data
-        runCheckMonitorStats(200, method_Index);
+        runCheckMonitorStats(200, UNCHECKED_METHOD_INDEX);
 
     }
 
