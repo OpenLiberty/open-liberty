@@ -25,4 +25,5 @@ tested.features: servlet-5.0
     com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
+	com.ibm.ws.jca.cm;version=latest,\
 	org.apache.derby:derby;version=10.11.1.1
