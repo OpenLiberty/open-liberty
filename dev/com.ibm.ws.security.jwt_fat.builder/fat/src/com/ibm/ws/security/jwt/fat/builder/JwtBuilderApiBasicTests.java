@@ -4612,6 +4612,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
      */
     @Mode(TestMode.LITE)
     @Test
+    // TODO - dup for other signatures
     public void JwtBuilderAPIBasicTests_signWith_sigAlg_RS256_key_privKey() throws Exception {
 
         String builderId = "jwt1";
@@ -4620,6 +4621,106 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
         testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS256);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
+        expectationSettings.put("overrideSettings", testSettings);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    @Mode(TestMode.LITE)
+    @Test
+    public void JwtBuilderAPIBasicTests_signWith_sigAlg_RS384_key_privKey() throws Exception {
+
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS384);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
+        expectationSettings.put("overrideSettings", testSettings);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    @Mode(TestMode.LITE)
+    @Test
+    public void JwtBuilderAPIBasicTests_signWith_sigAlg_RS512_key_privKey() throws Exception {
+
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS512);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
+        expectationSettings.put("overrideSettings", testSettings);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    @Mode(TestMode.LITE)
+    @Test
+    public void JwtBuilderAPIBasicTests_signWith_sigAlg_ES256_key_privKey() throws Exception {
+
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_ES256);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
+        expectationSettings.put("overrideSettings", testSettings);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    @Mode(TestMode.LITE)
+    @Test
+    public void JwtBuilderAPIBasicTests_signWith_sigAlg_ES384_key_privKey() throws Exception {
+
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_ES384);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
+        expectationSettings.put("overrideSettings", testSettings);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    @Mode(TestMode.LITE)
+    @Test
+    public void JwtBuilderAPIBasicTests_signWith_sigAlg_ES512_key_privKey() throws Exception {
+
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_ES512);
         testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
         expectationSettings.put("overrideSettings", testSettings);
 
