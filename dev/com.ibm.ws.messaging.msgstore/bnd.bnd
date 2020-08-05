@@ -70,3 +70,5 @@ instrument.disabled: true
 	org.jmock:jmock;strategy=exact;version=2.5.1, \
 	com.ibm.ws.messaging_test.fw;version=latest, \
 	com.ibm.ws.messaging.utils;version=latest
+
+jakartaeeMe: true

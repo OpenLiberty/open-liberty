@@ -11,9 +11,14 @@
  */
 package com.ibm.ws.messaging.open;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -21,5 +26,11 @@ import org.junit.runners.Suite.SuiteClasses;
         TestRemote.class,
 })
 public class FATSuite {
-
+    // Using the RepeatTests @ClassRule will cause all tests to be run thrice.
+    // First without any modifications, then again with all features upgraded 
+    // to their EE8 equivalents, and then again with their EE9 equivalents.
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(FeatureReplacementAction.EE8_FEATURES())
+                    .with(new JakartaEE9Action());
 }
