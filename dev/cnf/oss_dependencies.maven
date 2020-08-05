@@ -392,6 +392,7 @@ org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-api:1.0
 org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-api:1.1
 org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-api:2.0.1
 org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-api:2.1
+org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-api:3.0-RC1
 org.eclipse.microprofile.graphql:microprofile-graphql-api:1.0.2
 org.eclipse.microprofile.health:microprofile-health-api:2.0.1
 org.eclipse.microprofile.health:microprofile-health-api:2.1
