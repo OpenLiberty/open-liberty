@@ -34,7 +34,8 @@ Import-Package: \
 
 Include-Resource: \
   @${repo;org.eclipse.microprofile.rest.client:microprofile-rest-client-api;2.0}
-
+# TODO: when replacing 2.0-RC2 with 2.0, make sure to add EXACT:
+#   @${repo;org.eclipse.microprofile.rest.client:microprofile-rest-client-api;2.0;EXACT}
 
 
 -buildpath: \
