@@ -25,12 +25,15 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
+/**
+ * An access-ordered LRU cache for Subjects contianing Kerberos credentials
+ */
 @Trivial
 public class LRUCache {
 
     private static final TraceComponent tc = Tr.register(LRUCache.class);
 
-    private final Map<KerberosPrincipal, Subject> cache = new LinkedHashMap<KerberosPrincipal, Subject>() {
+    private final Map<KerberosPrincipal, Subject> cache = new LinkedHashMap<KerberosPrincipal, Subject>(16, 0.75f, true) {
         private static final long serialVersionUID = -2909022937597369536L;
 
         @Override
