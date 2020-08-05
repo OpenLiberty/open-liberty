@@ -134,6 +134,15 @@ def setProperties = { props ->
     props.setProperty('version.qualifier', qualifier)
     props.setProperty('buildLabel', timestamp)
 
+    /**
+	 * Properties used for making test outputs available in a commmon location.
+	 */
+
+	props.setProperty('published.outputs'       , 'published_outputs')
+	props.setProperty('published.outputs.files' , 'published_outputs/files')
+	props.setProperty('published.outputs.events', 'published_outputs/events')
+	
+
     // The qualifier below is needed for service builds only, do not delete it.
     gradle.rootProject { rootProject ->
         rootProject.ext.qualifier = gradle.userProps.getProperty("version.qualifier")

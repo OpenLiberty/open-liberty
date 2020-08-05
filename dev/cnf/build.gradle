@@ -144,6 +144,14 @@ task updatePluginClasses(type: Copy) {
     }
 }
 
+
+task cleanPublishedOutputs(type: Delete) {
+	doLast {
+		println rootProject.file(rootProject.ext.get('published.outputs'))
+		rootProject.delete rootProject.file(rootProject.ext.get('published.outputs'))
+	}
+}
+
 task cleanRepos(type: Delete) {
     doLast {
         project.delete('release')
@@ -156,6 +164,7 @@ task cleanRepos(type: Delete) {
 
 task initialize {
     dependsOn cleanRepos
+	dependsOn cleanPublishedOutputs
     dependsOn copyMavenLibs
     dependsOn updatePluginClasses
     doLast {
@@ -165,6 +174,7 @@ task initialize {
 
 clean {
     dependsOn cleanRepos
+	dependsOn cleanPublishedOutputs
 }
 
 classes {
