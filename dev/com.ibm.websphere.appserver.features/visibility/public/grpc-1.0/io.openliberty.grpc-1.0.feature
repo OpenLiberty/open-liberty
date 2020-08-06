@@ -12,7 +12,6 @@ Subsystem-Version: 1.0.0
 Subsystem-Name: gRPC 1.0
 -bundles=\
   io.openliberty.grpc.1.0.internal,\
-  io.openliberty.grpc.1.0.internal.monitor,\
   com.ibm.ws.security.authorization.util
 -features=\
   io.openliberty.internal.grpc-1.0, \
