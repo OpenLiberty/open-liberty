@@ -14,7 +14,7 @@ IBM-SPI-Package: com.ibm.wsspi.tx
 IBM-API-Service: com.ibm.wsspi.uow.UOWManager, \
  jakarta.transaction.TransactionSynchronizationRegistry, \
  jakarta.transaction.UserTransaction
--features=io.openliberty.jakarta.connectors-2.0.internal.api, \
+-features=io.openliberty.jakarta.connectors-2.0, \
  io.openliberty.jakarta.cdi-3.0; apiJar=false, \
  io.openliberty.jta-2.0, \
  com.ibm.websphere.appserver.injection-2.0, \
