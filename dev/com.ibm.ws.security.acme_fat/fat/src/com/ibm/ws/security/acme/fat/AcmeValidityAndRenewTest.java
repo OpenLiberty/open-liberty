@@ -25,15 +25,6 @@ import java.security.cert.X509Certificate;
 import java.util.Calendar;
 import java.util.Date;
 
-import javax.xml.bind.DatatypeConverter;
-
-import org.apache.http.Header;
-import org.apache.http.StatusLine;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -42,13 +33,11 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.AcmeCA.AcmeRevocationChecker;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.acme.docker.CAContainer;
-import com.ibm.ws.security.acme.docker.pebble.PebbleContainer;
 import com.ibm.ws.security.acme.internal.util.AcmeConstants;
-import com.ibm.ws.security.acme.internal.web.AcmeCaRestHandler;
 import com.ibm.ws.security.acme.utils.AcmeFatUtils;
 
 import componenttest.annotation.AllowedFFDC;
@@ -436,7 +425,7 @@ public class AcmeValidityAndRenewTest {
 			// Run a bunch of requests while the cert checker runs in the background
 			long expireTime = System.currentTimeMillis() + (TIME_BUFFER_BEFORE_EXPIRE * 2);
 			while (expireTime >  System.currentTimeMillis()) {
-				renewCertificate();
+				AcmeFatUtils.renewCertificate(server);
 				AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 			}
 
@@ -900,53 +889,6 @@ public class AcmeValidityAndRenewTest {
 			 * Stop the server.
 			 */
 			stopServer("CWPKI2049W", "CWPKI2065W");
-		}
-	}
-
-	/**
-	 * Issue a POST request to the ACME REST API to renew the certificate
-	 * 
-	 * @return The JSON response.
-	 * @throws Exception
-	 *             if the request failed.
-	 */
-	private static String renewCertificate() throws Exception {
-		final String methodName = "renewCertificate()";
-
-		try (CloseableHttpClient httpclient = AcmeFatUtils.getInsecureHttpsClient()) {
-
-			/*
-			 * Create a POST request to the Liberty server.
-			 */
-			HttpPost httpPost = new HttpPost("https://localhost:" + server.getHttpDefaultSecurePort() + "/ibm/api"
-					+ AcmeCaRestHandler.PATH_CERTIFICATE);
-			httpPost.setHeader("Authorization",
-					"Basic " + DatatypeConverter.printBase64Binary((AcmeFatUtils.ADMIN_USER + ":" + AcmeFatUtils.ADMIN_PASS).getBytes()));
-			httpPost.setHeader("Content-Type", "application/json");
-			httpPost.setEntity(new StringEntity("{\"operation\":\"renewCertificate\"}"));
-
-			/*
-			 * Send the POST request and process the response.
-			 */
-			try (final CloseableHttpResponse response = httpclient.execute(httpPost)) {
-				AcmeFatUtils.logHttpResponse(AcmeRevocationTest.class, methodName, httpPost, response);
-
-				StatusLine statusLine = response.getStatusLine();
-				assertEquals("Unexpected status code response.", 200, statusLine.getStatusCode());
-
-				/*
-				 * Check content type header.
-				 */
-				Header[] headers = response.getHeaders("content-type");
-				assertNotNull("Expected content type header.", headers);
-				assertEquals("Expected 1 content type header.", 1, headers.length);
-				assertEquals("Unexpected content type.", "application/json", headers[0].getValue());
-
-				String contentString = EntityUtils.toString(response.getEntity());
-				Log.info(AcmeValidityAndRenewTest.class, methodName, "HTTP post contents: \n" + contentString);
-
-				return contentString;
-			}
 		}
 	}
 	
