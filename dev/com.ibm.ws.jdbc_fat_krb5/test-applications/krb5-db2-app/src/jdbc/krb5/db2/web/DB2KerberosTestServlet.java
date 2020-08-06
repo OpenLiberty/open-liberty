@@ -46,6 +46,12 @@ public class DB2KerberosTestServlet extends FATServlet {
     @Resource(lookup = "jdbc/krb/invalidPrincipal")
     DataSource invalidPrincipalDs;
 
+    // The jdbc/noAuth datasource would normally fail due to no credentials,
+    // but since we have bound the 'krb5Auth' auth alias to 'java:app/env/jdbc/reboundAuth'
+    // in the ibm-web-bnd.xml it will work
+    @Resource(lookup = "jdbc/noAuth", name = "java:app/env/jdbc/reboundAuth")
+    DataSource reboundAuth;
+
     @Test
     @AllowedFFDC
     public void testNonKerberosConnectionRejected() throws Exception {
@@ -66,6 +72,18 @@ public class DB2KerberosTestServlet extends FATServlet {
     @Test
     public void testKerberosXAConnection() throws Exception {
         try (Connection con = krb5XADataSource.getConnection()) {
+            con.createStatement().execute("SELECT 1 FROM SYSIBM.SYSDUMMY1");
+        }
+    }
+
+    /**
+     * Test getting a connection from a datasource that has no auth-data configured
+     * in server.xml, which would normally fail, but has a valid auth-data alias
+     * configured in ibm-web-bnd.xml and therefore should be able to get a connection
+     */
+    @Test
+    public void testReboundAuthAlias() throws Exception {
+        try (Connection con = reboundAuth.getConnection()) {
             con.createStatement().execute("SELECT 1 FROM SYSIBM.SYSDUMMY1");
         }
     }
