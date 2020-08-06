@@ -7,7 +7,7 @@
   </featureManager>
     
   <applicationManager autoExpand="true"/>
-  <webContainer deferServletLoad="false"/>
+  <webContainer deferServletLoad="true"/>
 
   <application location="snoop.war" />
     

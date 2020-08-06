@@ -9,7 +9,5 @@
   <webContainer deferServletLoad="true"/>
 
   <application location="snoop.war" />
-    
-  <com.ibm.wsspi.application.lifecycle.ApplicationPrereq id="test.app.prereq.Prereq"/>
 </server>
 

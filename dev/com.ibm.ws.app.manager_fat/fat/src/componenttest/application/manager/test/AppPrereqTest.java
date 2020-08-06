@@ -77,6 +77,10 @@ public class AppPrereqTest extends AbstractAppManagerTest {
         assertSnoopNotStarted();
         changeServerConfig(ServerXml.PREREQ_CONFIG_AND_PREREQ_FEATURE);
         assertSnoopStarted();
+        changeServerConfig(ServerXml.PREREQ_CONFIG_AND_NO_PREREQ_FEATURE);
+        assertSnoopStopped();
+        changeServerConfig(ServerXml.NO_PREREQ_CONFIG_AND_NO_PREREQ_FEATURE);
+        assertSnoopStarted();
     }
 
     @Test
@@ -84,7 +88,7 @@ public class AppPrereqTest extends AbstractAppManagerTest {
         startServer(ServerXml.PREREQ_CONFIG_AND_PREREQ_FEATURE);
         assertSnoopStarted();
         changeServerConfig(ServerXml.PREREQ_CONFIG_AND_NO_PREREQ_FEATURE);
-        assertSnoopNotStarted();        
+        assertSnoopStopped();        
     }
 
     enum ServerXml { 
@@ -115,12 +119,16 @@ public class AppPrereqTest extends AbstractAppManagerTest {
 
     private void assertSnoopStarted() {
         // After config processing has completed, the Snoop app should start.
-        assertNotNull(server.waitForStringInLogUsingMark("CWWKZ0018I.* snoop"));
+        assertNotNull(server.waitForStringInLogUsingMark("CWWKZ0018I:.* snoop"));
+    }
+
+    private void assertSnoopStopped() {
+        assertNotNull(server.waitForStringInLogUsingMark("CWWKZ0009I:.* snoop"));
     }
 
     private void assertSnoopNotStarted() {
         // Check that the Snoop application has not started
-        assertNull(server.verifyStringNotInLogUsingMark("CWWKZ0018I.* snoop", SHORT_TIMEOUT));
+        assertNull(server.verifyStringNotInLogUsingMark("CWWKZ0018I:.* snoop", SHORT_TIMEOUT));
     }
 }
 
