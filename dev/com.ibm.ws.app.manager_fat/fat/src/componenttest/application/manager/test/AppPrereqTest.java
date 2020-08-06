@@ -73,24 +73,54 @@ public class AppPrereqTest extends AbstractAppManagerTest {
 
     @Test
     public void testAppWaitsForDeclaredPrereq() throws Exception {
-        // The test server has a configuration that requires that the ApplicationManager waits for the test feature.
-        // Start the server with the Snoop app but without the feature configured.
-        server.setServerConfigurationFile("/appPrereq/declared-unsatisfied-prereq.xml");
-        server.startServer(testName.getMethodName() + ".log");
+        startServer(ServerXml.PREREQ_CONFIG_AND_NO_PREREQ_FEATURE);
+        assertSnoopNotStarted();
+        changeServerConfig(ServerXml.PREREQ_CONFIG_AND_PREREQ_FEATURE);
+        assertSnoopStarted();
+    }
 
-        // Show that the Snoop application has not started.
+    @Test
+    public void testAppStartsImmediatelyWhenDeclaredPrereqIsSatisfied() throws Exception {
+        startServer(ServerXml.PREREQ_CONFIG_AND_PREREQ_FEATURE);
+        assertSnoopStarted();
+        changeServerConfig(ServerXml.PREREQ_CONFIG_AND_NO_PREREQ_FEATURE);
+        assertSnoopNotStarted();        
+    }
+
+    enum ServerXml { 
+        NO_PREREQ_CONFIG_AND_NO_PREREQ_FEATURE, 
+        NO_PREREQ_CONFIG_AND_PREREQ_FEATURE, 
+        PREREQ_CONFIG_AND_NO_PREREQ_FEATURE, 
+        PREREQ_CONFIG_AND_PREREQ_FEATURE
+    }
+
+    private static void setServerConfig(ServerXml config) throws Exception {
+        server.setServerConfigurationFile("/appPrereq/" + config.name().toLowerCase() + ".xml");
+    }
+    
+    private void startServer(ServerXml config) throws Exception { 
+        setServerConfig(config);
+        server.startServer(testName.getMethodName() + ".log"); 
+        // Wait for the timed exit feature to be enabled 
+        // (a useful observation point we discovered)
         assertNotNull(server.waitForStringInLog("TE9900A"));
-        assertNull(server.verifyStringNotInLogUsingMark("CWWKZ0018I.* snoop", SHORT_TIMEOUT));
+    }
 
-        // Add the missing test feature to the server configuration.
-        // This SHOULD allow the Snoop application to start.
+    private static void changeServerConfig(ServerXml config) throws Exception {
         server.setMarkToEndOfLog();
-        server.setServerConfigurationFile("/appPrereq/declared-satisfied-prereq.xml");
-
+        setServerConfig(config);
         // Wait for CWWKG0017I: The server configuration was successfully updated...
         assertNotNull(server.waitForStringInLogUsingMark("CWWKG0017I:"));
+    }
+
+    private void assertSnoopStarted() {
         // After config processing has completed, the Snoop app should start.
         assertNotNull(server.waitForStringInLogUsingMark("CWWKZ0018I.* snoop"));
+    }
+
+    private void assertSnoopNotStarted() {
+        // Check that the Snoop application has not started
+        assertNull(server.verifyStringNotInLogUsingMark("CWWKZ0018I.* snoop", SHORT_TIMEOUT));
     }
 }
 
