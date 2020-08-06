@@ -181,7 +181,7 @@ public class JwtData {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "RSAPrivateKey: " + (_signingKey instanceof RSAPrivateKey));
         }
-        if (_signingKey != null && !(_signingKey instanceof PrivateKey)) {
+        if (!isPrivateKeyValidType()) {
             // error handling
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "clear _signingKey and _keyId");
@@ -189,6 +189,16 @@ public class JwtData {
             _signingKey = null; // we will catch this later in jwtSigner
             _keyId = null;
         }
+    }
+
+    boolean isPrivateKeyValidType() {
+        if (_signingKey == null) {
+            return true;
+        }
+        if (signatureAlgorithm.matches("RS[0-9]{3,}")) {
+            return (_signingKey instanceof RSAPrivateKey);
+        }
+        return (_signingKey instanceof PrivateKey);
     }
 
     private String buildKidFromPublicKey(PublicKey cert) {
