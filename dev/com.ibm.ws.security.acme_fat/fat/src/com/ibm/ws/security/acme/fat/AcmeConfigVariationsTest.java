@@ -10,7 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.security.acme.fat;
 
+import static com.ibm.websphere.simplicity.ShrinkHelper.addDirectory;
+import static com.ibm.websphere.simplicity.ShrinkHelper.buildDefaultApp;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
@@ -30,6 +33,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -38,12 +42,15 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.AcmeCA;
 import com.ibm.websphere.simplicity.config.AcmeCA.AcmeTransportConfig;
+import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.acme.docker.CAContainer;
 import com.ibm.ws.security.acme.docker.pebble.PebbleContainer;
+import com.ibm.ws.security.acme.internal.util.AcmeConstants;
 import com.ibm.ws.security.acme.utils.AcmeFatUtils;
 
 import componenttest.annotation.AllowedFFDC;
@@ -65,7 +72,7 @@ import componenttest.topology.impl.LibertyServer;
 @Mode(TestMode.FULL)
 public class AcmeConfigVariationsTest {
 
-	@Server("com.ibm.ws.security.acme.fat.simple")
+	@Server("com.ibm.ws.security.acme.fat.config_var")
 	public static LibertyServer server;
 
 	protected static ServerConfiguration ORIGINAL_CONFIG;
@@ -78,6 +85,10 @@ public class AcmeConfigVariationsTest {
 	private static final String[] DOMAINS_2 = { "domain1.com", "domain2.com", "domain3.com" };
 	private static final String[] DOMAINS_3 = { "domain1.com", "domain2.com" };
 	private static final String[] DOMAINS_4 = { "domain2.com" };
+
+	protected static final String SLOW_APP = "slowapp.war";
+	protected final static String PUBLISH_FILES = "publish/files";
+	protected static final String APPS_DIR = "apps";
 
 	public static CAContainer caContainer;
 
@@ -290,8 +301,6 @@ public class AcmeConfigVariationsTest {
 		acmeTransportConfig.setTrustStore("INVALID_TRUSTSTORE");
 		acmeTransportConfig.setTrustStorePassword("INVALID_PASSWORD");
 		acmeTransportConfig.setTrustStoreType("INVALID_TYPE");
-		acmeTransportConfig.setHttpConnectTimeout("1ms");
-		acmeTransportConfig.setHttpReadTimeout("1ms");
 
 		AcmeCA acmeCA = configuration.getAcmeCA();
 		acmeCA.setAccountKeyFile(unreadableFile.getAbsolutePath());
@@ -471,37 +480,15 @@ public class AcmeConfigVariationsTest {
 			assertNotNull("Expected CWPKI2016E in logs.",
 					server.waitForStringInLog("CWPKI2016E.*https://invalid.com/directory"));
 
+			
 			/***********************************************************************
 			 * 
-			 * Set the domain key file to default. The request will now timeout on http connect.
+			 * Set the domain key file to default. The certificate should now be configured.
 			 * 
 			 **********************************************************************/
-			Log.info(AcmeConfigVariationsTest.class, testName.getMethodName(), "Test 14 - http connect timeout");
+			Log.info(AcmeConfigVariationsTest.class, testName.getMethodName(),
+					"Test 14 - successful certificate generation");
 			acmeCA.setDirectoryURI(caContainer.getAcmeDirectoryURI(false));
-			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
-			assertNotNull("Expected CWPKI2016E in logs.",
-					server.waitForStringInLog("CWPKI2016E.*SocketTimeoutException"));
-			
-			/***********************************************************************
-			 * 
-			 * Set the http connect time to better length. The request will now timeout on http read.
-			 * 
-			 **********************************************************************/
-			Log.info(AcmeConfigVariationsTest.class, testName.getMethodName(), "Test 15 - http read timeout");
-			server.setMarkToEndOfLog(server.getDefaultLogFile());
-			acmeTransportConfig.setHttpConnectTimeout("45s");
-			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
-			assertNotNull("Expected CWPKI2016E in logs.",
-					server.waitForStringInLog("CWPKI2016E.*SocketTimeoutException"));
-			
-			/***********************************************************************
-			 * 
-			 * Set the http read time to better length. The certificate should now be
-			 * configured.
-			 * 
-			 **********************************************************************/
-			Log.info(AcmeConfigVariationsTest.class, testName.getMethodName(), "Test 16 - successful certificate generation");
-			acmeTransportConfig.setHttpReadTimeout("45s");
 			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
 			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
 			AcmeFatUtils.waitForSslToCreateKeystore(server);
@@ -515,7 +502,7 @@ public class AcmeConfigVariationsTest {
 		} finally {
 			stopServer("CWWKG0095E", "CWWKE0701E", "CWPKI2016E", "CWPKI2020E", "CWPKI2021E", "CWPKI2022E",
 					"CWPKI2023E", "CWPKI2008E", "CWPKI2037E", "CWPKI2039E", "CWPKI2040E", "CWPKI2041E", "CWPKI2042E",
-					"CWPKI0823E", "CWPKI0828E", "CWPKI2070W", "CWPKI2071W");
+					"CWPKI0823E", "CWPKI0828E", "CWPKI2070W", "CWPKI2071W", "CWPKI0804E");
 			/*
 			 * Running on Sun produces some additional errors on the invalid directory URI,
 			 * added them to the stop list
@@ -604,5 +591,131 @@ public class AcmeConfigVariationsTest {
 	
 	protected void stopServer(String ...msgs) throws Exception {
 		AcmeFatUtils.stopServer(server, msgs);
+	}
+
+	@Test
+	@CheckForLeakedPasswords(AcmeFatUtils.CACERTS_TRUSTSTORE_PASSWORD)
+	public void slowAppStartup() throws Exception {
+
+		/*
+		 * Build our slow starting app
+		 */
+		WebArchive slow = buildDefaultApp("slowapp.war", "test.app.*");
+		addDirectory(slow, "test-applications/slowapp.war/resources");
+		ShrinkHelper.exportArtifact(slow, PUBLISH_FILES, true, true);
+
+		/*
+		 * Configure the acmeCA-2.0 feature and add intentionally "slow" app to make
+		 * sure acmeCA still starts and fetches a certificate. The server should stop
+		 * waiting after 30 seconds and open the HTTP port
+		 */
+		ServerConfiguration configuration = ORIGINAL_CONFIG.clone();
+		configuration.getFeatureManager().getFeatures().add("servlet-4.0");
+		Application slowApp = new Application();
+		slowApp.setId("slow");
+		slowApp.setLocation("slowapp.war");
+		configuration.getApplications().add(slowApp);
+		AcmeFatUtils.configureAcmeCA(server, caContainer, configuration, false, DOMAINS_1);
+
+		server.copyFileToLibertyServerRoot(PUBLISH_FILES, APPS_DIR, SLOW_APP);
+
+		try {
+			Log.info(this.getClass(), testName.getMethodName(), "TEST 1: Start");
+
+			/*
+			 * Start the server and wait for the certificate to be installed.
+			 */
+			server.startServer();
+			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
+			AcmeFatUtils.waitForSslToCreateKeystore(server);
+			AcmeFatUtils.waitForSslEndpoint(server);
+
+			/*
+			 * Verify that the server is now using a certificate signed by the CA.
+			 */
+			AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
+
+			File file = new File(server.getServerRoot() + "/workarea/acmeca/" + AcmeConstants.ACME_HISTORY_FILE);
+			if (!file.exists()) {
+				fail("The ACME file should exist at: " + file.getAbsolutePath());
+			}
+
+			/*
+			 * Double check that the slow app installed
+			 */
+			assertFalse("Slow app not installed", server.findStringsInLogs("SlowApp is sleeping").isEmpty());
+		} finally {
+			stopServer();
+		}
+	}
+
+	@Test
+	@CheckForLeakedPasswords(AcmeFatUtils.CACERTS_TRUSTSTORE_PASSWORD)
+	@AllowedFFDC(value = { "java.io.IOException", "org.shredzone.acme4j.exception.AcmeNetworkException" })
+	public void httpReadConnectTimeouts() throws Exception {
+
+		ServerConfiguration configuration = ORIGINAL_CONFIG.clone();
+		AcmeFatUtils.configureAcmeCA(server, caContainer, configuration, false, true, DOMAINS_1);
+
+		try {
+			Log.info(this.getClass(), testName.getMethodName(), "TEST 1: Start");
+
+			/*
+			 * Start the server and wait for the certificate to be installed.
+			 */
+			server.startServer();
+			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
+			AcmeFatUtils.waitForSslToCreateKeystore(server);
+			AcmeFatUtils.waitForSslEndpoint(server);
+
+			/*
+			 * Verify that the server is now using a certificate signed by the CA.
+			 */
+			AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
+
+			/***********************************************************************
+			 * 
+			 * Set a super low http connect and read timeout
+			 * 
+			 **********************************************************************/
+			Log.info(AcmeConfigVariationsTest.class, testName.getMethodName(), "Test 2 - http connect timeout");
+			configuration = server.getServerConfiguration().clone();
+			AcmeTransportConfig acmeTransportConfig = new AcmeTransportConfig();
+			acmeTransportConfig.setHttpConnectTimeout("1ms");
+			configuration.getAcmeCA().setAcmeTransportConfig(acmeTransportConfig);
+			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
+			AcmeFatUtils.renewCertificate(server);
+			assertNotNull("Expected CWPKI2016E in logs.",
+					server.waitForStringInLog("CWPKI2016E.*SocketTimeoutException"));
+
+			/***********************************************************************
+			 * 
+			 * Set the http connect time to better length. The request will now timeout on
+			 * http read.
+			 * 
+			 **********************************************************************/
+			Log.info(AcmeConfigVariationsTest.class, testName.getMethodName(), "Test 3 - http read timeout");
+			server.setMarkToEndOfLog(server.getDefaultLogFile());
+			acmeTransportConfig.setHttpConnectTimeout("45s");
+			acmeTransportConfig.setHttpReadTimeout("1ms");
+			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
+			AcmeFatUtils.renewCertificate(server);
+			assertNotNull("Expected CWPKI2016E in logs.",
+					server.waitForStringInLog("CWPKI2016E.*SocketTimeoutException"));
+
+			/***********************************************************************
+			 * 
+			 * Set the http read time to better length. The certificate should now be
+			 * configured.
+			 * 
+			 **********************************************************************/
+			Log.info(AcmeConfigVariationsTest.class, testName.getMethodName(),
+					"Test 4 - successful certificate generation");
+			acmeTransportConfig.setHttpReadTimeout("45s");
+			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
+
+		} finally {
+			stopServer("CWPKI2016E");
+		}
 	}
 }

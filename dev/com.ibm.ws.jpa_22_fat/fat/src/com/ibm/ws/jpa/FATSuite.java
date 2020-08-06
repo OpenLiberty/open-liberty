@@ -29,4 +29,8 @@ public class FATSuite {
     public final static String[] JAXB_PERMS = { "permission java.lang.RuntimePermission \"accessClassInPackage.com.sun.xml.internal.bind.v2.runtime.reflect\";",
                                                 "permission java.lang.RuntimePermission \"accessClassInPackage.com.sun.xml.internal.bind\";" };
 
+//    @ClassRule
+//    public static RepeatTests repeat = RepeatTests
+//                    .with(new EmptyAction().fullFATOnly())
+//                    .andWith(FeatureReplacementAction.EE9_FEATURES()); // Blocked by CDI
 }

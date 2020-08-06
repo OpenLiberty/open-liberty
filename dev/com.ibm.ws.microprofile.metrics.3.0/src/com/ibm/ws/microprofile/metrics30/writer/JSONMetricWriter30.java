@@ -13,6 +13,7 @@ package com.ibm.ws.microprofile.metrics30.writer;
 import java.io.Writer;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import org.eclipse.microprofile.metrics.ConcurrentGauge;
 import org.eclipse.microprofile.metrics.Counter;
@@ -24,6 +25,7 @@ import org.eclipse.microprofile.metrics.Metric;
 import org.eclipse.microprofile.metrics.MetricID;
 import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.SimpleTimer;
+import org.eclipse.microprofile.metrics.Tag;
 import org.eclipse.microprofile.metrics.Timer;
 
 import com.ibm.json.java.JSONObject;
@@ -68,7 +70,29 @@ public class JSONMetricWriter30 extends JSONMetricWriter23 {
         //For each Metric that was returned
         for (Entry<MetricID, Metric> entry : metricMap.entrySet()) {
             MetricID metricID = entry.getKey();
+
             Map<String, String> tagsMap = metricID.getTags();
+
+            Tag[] globalTags = Util30.getCachedGlobalTags();
+
+            /*
+             * Inject Global Tags with the Metric's tags. Use a Tree map to order alphabetically as is expected for JSON output.
+             * Global Tags are added first so that application defined tags can override them.
+             * This is the behaviour seen in MP Metrics 2.3 and below.
+             */
+            if (globalTags != null) {
+                Tag[] metricTags = metricID.getTagsAsArray();
+
+                TreeMap<String, String> tagsMapWithGlobalTags = new TreeMap<String, String>();
+                for (Tag t : globalTags) {
+                    tagsMapWithGlobalTags.put(t.getTagName(), t.getTagValue());
+                }
+                for (Tag t : metricTags) {
+                    tagsMapWithGlobalTags.put(t.getTagName(), t.getTagValue());
+                }
+                tagsMap = tagsMapWithGlobalTags;
+            }
+
             String metricName = metricID.getName();
             String metricNameWithTags = metricName;
             String tags = "";
@@ -120,6 +144,7 @@ public class JSONMetricWriter30 extends JSONMetricWriter23 {
                 }
                 metricNameWithTags = metricName + tags;
             }
+
             Metric metric = entry.getValue();
 
             if (Counter.class.isInstance(metric)) {

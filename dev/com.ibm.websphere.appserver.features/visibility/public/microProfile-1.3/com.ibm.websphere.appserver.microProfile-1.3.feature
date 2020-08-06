@@ -22,7 +22,5 @@ Subsystem-Name: MicroProfile 1.3
   com.ibm.websphere.appserver.mpOpenAPI-1.0, \
   com.ibm.websphere.appserver.mpOpenTracing-1.0, \
   com.ibm.websphere.appserver.mpRestClient-1.0
--bundles=\
-  com.ibm.ws.require.java8
 kind=ga
 edition=core

@@ -179,9 +179,9 @@ CWPKI2035E=CWPKI2035E: The ACME service could not store the signed certificate i
 CWPKI2035E.explanation=The certificate was successfully retrieved from the certificate authority, but it cannot be stored locally.
 CWPKI2035E.useraction=Review the error message for details on the failure. Verify the keystore file location is correct and the server has write file permissions.
 
-CWPKI2036E=CWPKI2036E: The ACME service timed out waiting for the web authorization application to start. The application is required to complete a certificate request with an ACME certificate authority. The service waited for {0} minutes.
-CWPKI2036E.explanation=The application used to complete a certificate request did not start in the expected time frame. A signed certificate cannot be requested.
-CWPKI2036E.useraction=Review the log for earlier messages or errors.
+CWPKI2036W=CWPKI2036W: The ACME service timed out waiting for the web authorization application to start. The application is required to complete a certificate request with an ACME certificate authority. The certificate request is attempted. The service waited for {0}.
+CWPKI2036W.explanation=The application used to complete a certificate request did not start in the expected time frame. If the application starts, the request proceeds. If the application does not start, the certificate request fails.
+CWPKI2036W.useraction=Review the log for earlier messages or errors. Review the log for a CWWKT0016I message that includes a web application with the ''acme-challenge'' URL to indicate that the internal application started.
 
 CWPKI2037E=CWPKI2037E: The domains for the ACME service were either null or empty.
 CWPKI2037E.explanation=The domains were either null or empty and cannot be used.
@@ -330,3 +330,7 @@ CWPKI2072W.useraction=Ensure that the historical ACME directory has read and wri
 CWPKI2073W=CWPKI2073W: No account contact was specified. It is recommended to set this property in server configuration. If a key is lost or the account is compromised, access to the account is lost.
 CWPKI2073W.explanation=The value for the accountContact property was not specified in the server configuration.
 CWPKI2073W.useraction=Set the accountContact property in server configuration.
+
+CWPKI2074W=CWPKI2074W: The ACME service timed out waiting to be signaled that the HTTP port is open. An available HTTP port is required to complete a certificate request with an ACME certificate authority. The certificate request is attempted. The service waited for {0}.
+CWPKI2074W.explanation=The service attempts a certificate request. If an HTTP port is open, the request proceeds. If an HTTP port is not open, the certificate request fails.
+CWPKI2074W.useraction=Review the log for earlier messages or errors. Review the log for CWWKO0219I messages, which lists available endpoints and ports. 

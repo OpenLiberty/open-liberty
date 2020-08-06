@@ -15,9 +15,6 @@ Bundle-Name: WAS Secuity MP JWT 1.0
 Bundle-SymbolicName: com.ibm.ws.security.mp.jwt
 Bundle-Description: WAS security jwt authentication for microprofile, version=${bVersion}
 
-#Web-ContextPath: /ibm/api/social-login
-
-
 WS-TraceGroup: \
   MPJWT
 
@@ -31,7 +28,8 @@ Export-Package: \
    com.ibm.ws.security.mp.jwt, \
    com.ibm.ws.security.mp.jwt.impl, \
    com.ibm.ws.security.mp.jwt.error, \
-   com.ibm.ws.security.mp.jwt.tai
+   com.ibm.ws.security.mp.jwt.tai, \
+   io.openliberty.security.mp.jwt.osgi
 
 
 Import-Package: \
@@ -50,10 +48,9 @@ Private-Package: \
 
 
 -dsannotations: com.ibm.ws.security.mp.jwt.impl.MicroProfileJwtConfigImpl, \
-	com.ibm.ws.security.mp.jwt.impl.utils.JsonWebTokenUtilImpl, \
-        com.ibm.ws.security.mp.jwt.impl.MicroProfileJwtServiceImpl, \
-	com.ibm.ws.security.mp.jwt.tai.MicroProfileJwtTAI
-
+    com.ibm.ws.security.mp.jwt.impl.utils.JsonWebTokenUtilImpl, \
+    com.ibm.ws.security.mp.jwt.impl.MicroProfileJwtServiceImpl, \
+    com.ibm.ws.security.mp.jwt.tai.MicroProfileJwtTAI
 
 -dsannotations-inherit = true
 
@@ -85,7 +82,7 @@ Include-Resource: \
         com.ibm.ws.security.token;version=latest, \
         com.ibm.ws.security.common;version=latest, \
         com.ibm.ws.security.common.jsonwebkey;version=latest, \
-        com.ibm.ws.org.apache.commons.codec.1.4;version=latest, \
+        com.ibm.ws.org.apache.commons.codec;version=latest, \
         com.ibm.websphere.org.eclipse.microprofile.jwt.1.0;version=latest, \
         com.ibm.ws.security.mp.jwt.proxy;version=latest, \
         com.ibm.ws.transport.http;version=latest

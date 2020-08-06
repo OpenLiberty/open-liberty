@@ -49,7 +49,7 @@ SPNEGO_NOT_SUPPORTED_ERROR_PAGE.useraction=Configure the client browser to perfo
 
 SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE=CWWKS4307E: <html><head><title>An NTLM Token was received.</title></head> \
 <body>Your client browser configuration is correct, but you have not logged into a supported Windows Domain.<p> \
-Please login to the supported Windows Domain.</html>.
+Please login to the supported Windows Domain.</body></html>.
 SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE.explanation=The client browser configuration is correct, but you have not logged into a supported Windows domain. \
 Or the SPNEGO configuration is not correct so the client browser does not send the SPNEGO or Kerberos token.
 SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE.useraction=Verify that you login to the supported Windows domain and also verify the SPNEGO configuration on the server and Windows domain.
@@ -117,3 +117,9 @@ SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE.useraction=Verify the service principal
 SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E=CWWKS4323E: The [{0}] attribute from the {1} element conflicts with the [{2}] attribute from the {3} element. Specify a value only on either the {1} or the {3} element, not on both elements. It is suggested to specify the value only on the {1} element.
 SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E.explanation=To recognize each attribute, a system property needs to be set, which is a system-wide setting. Different values for a system-wide setting cannot be recognized.
 SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E.useraction=Specify the attribute in only one of the configuration elements.
+
+SPNEGO_AUTHENTICATION_ERROR_PAGE=CWWKS4324E: <html><head><title>SPNEGO authentication failed. Contact your system administrator to resolve the problem.</title></head> \
+<body>The client sent the SPNEGO token. The server cannot validate the client's SPNEGO token. Contact your system administrator to resolve the problem.</body></html>.
+SPNEGO_AUTHENTICATION_ERROR_PAGE.explanation=SPNEGO authentication failed. For more information, check the server log messages.
+SPNEGO_AUTHENTICATION_ERROR_PAGE.useraction=Verify the server configuration and the Kerberos configuration and make sure that the server clock is in sync with the Key Distribution Center (KDC).
+

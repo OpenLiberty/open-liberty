@@ -1,0 +1,24 @@
+<server>
+	<featureManager>
+		<feature>localConnector-1.0</feature>
+        <feature>jsp-2.3</feature>
+		<feature>wsAtomicTransaction-1.2</feature>
+		<feature>jndi-1.0</feature>
+		<feature>cdi-1.2</feature>
+		<feature>servlet-3.1</feature>
+		<feature>txtest-1.0</feature>
+	</featureManager>
+
+	<include location="../fatTestPorts.xml" />
+	
+  <logging
+    traceSpecification="Transaction=all:wsat=all:ClassLoadingService=all"
+		traceFileName="trace.log"
+		maxFileSize="2000"
+		maxFiles="20"
+		traceFormat="BASIC"
+	/>
+
+  <javaPermission name="*" actions="*" className="java.security.AllPermission"/>
+
+</server>

@@ -39,6 +39,16 @@ public final class AppProducerProto {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_test_g3store_grpc_MultiCreateResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_test_g3store_grpc_StreamRequestA_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_test_g3store_grpc_StreamRequestA_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_test_g3store_grpc_StreamReplyA_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_test_g3store_grpc_StreamReplyA_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -54,17 +64,21 @@ public final class AppProducerProto {
       "est\022\035\n\tretailApp\030\001 \001(\0132\n.RetailApp\" \n\rDe" +
       "leteRequest\022\017\n\007appName\030\001 \001(\t\" \n\016DeleteRe" +
       "sponse\022\016\n\006result\030\001 \001(\t\"%\n\023MultiCreateRes" +
-      "ponse\022\016\n\006result\030\001 \001(\t2\337\002\n\022AppProducerSer" +
-      "vice\022L\n\tcreateApp\022\035.test.g3store.grpc.Ap" +
-      "pRequest\032\036.test.g3store.grpc.AppResponse" +
-      "\"\000\022R\n\tdeleteApp\022 .test.g3store.grpc.Dele" +
-      "teRequest\032!.test.g3store.grpc.DeleteResp" +
-      "onse\"\000\022N\n\rdeleteAllApps\022\026.google.protobu" +
-      "f.Empty\032!.test.g3store.grpc.DeleteRespon" +
-      "se\"\0000\001\022W\n\ncreateApps\022\035.test.g3store.grpc" +
-      ".AppRequest\032&.test.g3store.grpc.MultiCre" +
-      "ateResponse\"\000(\001B/\n\031com.ibm.test.g3store." +
-      "grpcB\020AppProducerProtoP\001b\006proto3"
+      "ponse\022\016\n\006result\030\001 \001(\t\"!\n\016StreamRequestA\022" +
+      "\017\n\007message\030\001 \001(\t\"\037\n\014StreamReplyA\022\017\n\007mess" +
+      "age\030\001 \001(\t2\270\003\n\022AppProducerService\022L\n\tcrea" +
+      "teApp\022\035.test.g3store.grpc.AppRequest\032\036.t" +
+      "est.g3store.grpc.AppResponse\"\000\022R\n\tdelete" +
+      "App\022 .test.g3store.grpc.DeleteRequest\032!." +
+      "test.g3store.grpc.DeleteResponse\"\000\022N\n\rde" +
+      "leteAllApps\022\026.google.protobuf.Empty\032!.te" +
+      "st.g3store.grpc.DeleteResponse\"\0000\001\022W\n\ncr" +
+      "eateApps\022\035.test.g3store.grpc.AppRequest\032" +
+      "&.test.g3store.grpc.MultiCreateResponse\"" +
+      "\000(\001\022W\n\rclientStreamA\022!.test.g3store.grpc" +
+      ".StreamRequestA\032\037.test.g3store.grpc.Stre" +
+      "amReplyA\"\000(\001B/\n\031com.ibm.test.g3store.grp" +
+      "cB\020AppProducerProtoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -102,6 +116,18 @@ public final class AppProducerProto {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_test_g3store_grpc_MultiCreateResponse_descriptor,
         new java.lang.String[] { "Result", });
+    internal_static_test_g3store_grpc_StreamRequestA_descriptor =
+      getDescriptor().getMessageTypes().get(5);
+    internal_static_test_g3store_grpc_StreamRequestA_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_test_g3store_grpc_StreamRequestA_descriptor,
+        new java.lang.String[] { "Message", });
+    internal_static_test_g3store_grpc_StreamReplyA_descriptor =
+      getDescriptor().getMessageTypes().get(6);
+    internal_static_test_g3store_grpc_StreamReplyA_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_test_g3store_grpc_StreamReplyA_descriptor,
+        new java.lang.String[] { "Message", });
     com.ibm.test.g3store.grpc.StoreProto.getDescriptor();
     com.google.protobuf.EmptyProto.getDescriptor();
   }

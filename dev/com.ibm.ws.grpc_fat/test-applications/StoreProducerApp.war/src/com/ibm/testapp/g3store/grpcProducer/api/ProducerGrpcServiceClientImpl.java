@@ -27,6 +27,8 @@ import com.ibm.test.g3store.grpc.Price;
 import com.ibm.test.g3store.grpc.RetailApp;
 import com.ibm.test.g3store.grpc.RetailApp.Builder;
 import com.ibm.test.g3store.grpc.SecurityType;
+import com.ibm.test.g3store.grpc.StreamReplyA;
+import com.ibm.test.g3store.grpc.StreamRequestA;
 import com.ibm.testapp.g3store.exception.AlreadyExistException;
 import com.ibm.testapp.g3store.exception.HandleExceptionsAsyncgRPCService;
 import com.ibm.testapp.g3store.exception.InvalidArgException;
@@ -52,6 +54,8 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
 
     private static Logger log = Logger.getLogger(ProducerGrpcServiceClientImpl.class.getName());
 
+    private final int deadlineMs = 30 * 1000;
+
     // gRPC client implementation(s)
     /**
      * @param reqPOJO
@@ -70,7 +74,6 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
                      + "send it to Store, name=[" + app.getName() + "]");
         }
         AppResponse response = null;
-        int deadlineMs = 20 * 1000;
 
         try {
             // and send the request
@@ -100,7 +103,6 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         // create the request
         DeleteRequest appReq = DeleteRequest.newBuilder().setAppName(name).build();
         DeleteResponse appResp = null;
-        int deadlineMs = 20 * 1000;
 
         if (log.isLoggable(Level.FINE)) {
             log.fine("Producer: deleteApp, prodcuer ,request sent  to grpc server to remove app " + name);
@@ -125,7 +127,6 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
     public DeleteAllRestResponse deleteMultiAppsinStore() throws Exception {
 
         DeleteAllRestResponse response = new DeleteAllRestResponse();
-        int deadlineMs = 20 * 1000;
 
         if (log.isLoggable(Level.FINE)) {
             log.fine(
@@ -158,38 +159,40 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         CountDownLatch latch = new CountDownLatch(1);
 
         ProducerRestResponse response = new ProducerRestResponse();
-        StreamObserver<AppRequest> requestObserver = _producerAsyncStub.createApps(new StreamObserver<MultiCreateResponse>() {
+        StreamObserver<AppRequest> requestObserver = _producerAsyncStub
+                        .withDeadlineAfter(deadlineMs, TimeUnit.SECONDS)
+                        .createApps(new StreamObserver<MultiCreateResponse>() {
 
-            @Override
-            public void onNext(MultiCreateResponse value) {
-                // response from server
-                // called only once
-                log.info("Producer: createMultiAppsinStore:: Recvd a response from server " + value.getResult());
-                // now send this response back to REST client
-                response.concatProducerResults(value.getResult());
-            }
+                            @Override
+                            public void onNext(MultiCreateResponse value) {
+                                // response from server
+                                // called only once
+                                log.info("Producer: createMultiAppsinStore:: Recvd a response from server " + value.getResult());
+                                // now send this response back to REST client
+                                response.concatProducerResults(value.getResult());
+                            }
 
-            @Override
-            public void onError(Throwable t) {
-                try {
-                    handleStatusRunTimeException(null, "createMultiApps", t, asyncServiceException);
-                } catch (Exception e) {
-                    // nothing to do, exception set in HandleExceptionsFromgRPCService
-                }
-                log.info("Producer: createMultiAppsinStore:: completed response from server due to error");
-                latch.countDown();
-            }
+                            @Override
+                            public void onError(Throwable t) {
+                                try {
+                                    handleStatusRunTimeException(null, "createMultiApps", t, asyncServiceException);
+                                } catch (Exception e) {
+                                    // nothing to do, exception set in HandleExceptionsFromgRPCService
+                                }
+                                log.info("Producer: createMultiAppsinStore:: completed response from server due to error");
+                                latch.countDown();
+                            }
 
-            @Override
-            public void onCompleted() {
-                // omComplete
-                // called after onNext
-                log.info("Producer: createMultiAppsinStore:: completed response from server ");
-                latch.countDown();
+                            @Override
+                            public void onCompleted() {
+                                // omComplete
+                                // called after onNext
+                                log.info("Producer: createMultiAppsinStore:: completed response from server ");
+                                latch.countDown();
 
-            }
+                            }
 
-        });
+                        });
 
         // now get the data from the input and send it to Store service
         reqPOJO.getStructureList().stream().forEach((appStructListItem) -> {
@@ -210,7 +213,9 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         log.info("Producer: createMultiAppsinStore:: done from client");
 
         try {
-            latch.await(3, TimeUnit.SECONDS);
+            // Wait for the grpc service response to complete. If we return the client response too quickly (ie. this timeout is too small)  
+            // the connection will be closed  and the test will not get the correct response data and IOExceptions might be thrown.
+            latch.await(deadlineMs, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -434,6 +439,95 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
                 return com.ibm.test.g3store.grpc.PurchaseType.BLUEPOINTS;
 
         }
+    }
+
+    public String replyAfterClientStream = "Null";
+
+    public String grpcClientStreamApp() {
+        // This if for sending a stream of data to the server and then get a single reply
+        StreamObserver<StreamRequestA> clientStreamAX = _producerAsyncStub.clientStreamA(new StreamObserver<StreamReplyA>() {
+            @Override
+            public void onNext(StreamReplyA response) {
+                // response from server
+                // called only once
+                replyAfterClientStream = response.toString();
+            }
+
+            @Override
+            public void onError(Throwable t) {
+
+            }
+
+            @Override
+            public void onCompleted() {
+                // called after onNext
+            }
+        });
+
+        // client streaming
+        int numberOfMessages = 200;
+        int timeBetweenMessagesMsec = 0;
+        StreamRequestA nextRequest = null;
+
+        String nextMessage = null;
+        String firstMessage = "This is the first Message...";
+        String lastMessage = "This is the last Message";
+
+        //String s5chars = "12345";
+        String s50chars = "12345678901234567890123456789012345678901234567890";
+        //String s500chars = s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars;
+        //String s5000chars = s500chars + s500chars + s500chars + s500chars + s500chars + s500chars + s500chars + s500chars + s500chars + s500chars;
+
+        for (int i = 1; i <= numberOfMessages; i++) {
+
+            if (i == 1) {
+                nextMessage = firstMessage;
+            } else if (i == numberOfMessages) {
+                nextMessage = lastMessage;
+            } else {
+                nextMessage = "--Message " + i + " of " + numberOfMessages + " left client at time: " + System.currentTimeMillis() + "--";
+                nextMessage = nextMessage + s50chars;
+            }
+
+            nextRequest = StreamRequestA.newBuilder().setMessage(nextMessage).build();
+            clientStreamAX.onNext(nextRequest);
+            try {
+                if (timeBetweenMessagesMsec > 0) {
+                    Thread.sleep(timeBetweenMessagesMsec);
+                }
+            } catch (Exception x) {
+                // do nothing
+            }
+        }
+
+        // wait to send onCompleted for now
+        try {
+            Thread.sleep(500);
+        } catch (Exception x) {
+            // do nothing
+        }
+        log.info("Client calling onCompleted");
+        clientStreamAX.onCompleted();
+
+        // wait for the response from server
+        try {
+            Thread.sleep(1000);
+        } catch (Exception x) {
+            // do nothing
+        }
+
+        // test that this is what was expected:
+        log.info("reply message was: " + replyAfterClientStream);
+        int i1 = replyAfterClientStream.indexOf(firstMessage);
+        int i2 = replyAfterClientStream.indexOf(lastMessage);
+        log.info("firstMessage index at: " + i1 + " lastMessage index at: " + i2);
+
+        if ((i1 >= 0) && (i2 >= 0)) {
+            return ("success");
+        } else {
+            return ("failed");
+        }
+
     }
 
 }

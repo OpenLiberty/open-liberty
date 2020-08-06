@@ -11,10 +11,13 @@
 package com.ibm.ws.rest.handler.validator.cloudant.fat;
 
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(Suite.class)
@@ -22,6 +25,9 @@ import componenttest.topology.utils.HttpUtils;
                 ValidateCloudantTest.class
 })
 public class FATSuite {
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification() // run all tests as-is (e.g. EE8 features)
+                    .andWith(new JakartaEE9Action()); // run all tests again with EE9 features+packages
 
     static {
         // TODO: temporary debug setting so we can further investigate intermittent

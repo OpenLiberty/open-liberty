@@ -19,6 +19,7 @@ Private-Package: \
     com.ibm.ws.jsf.container.*
 
 # Ensure we do NOT import JSF spec API from server-side
+# TODO: we should find a way to avoid importing Weld packages directly 
 Import-Package: \
     !javax.faces.*,\
     javax.validation;version="[1.1,3)",\

@@ -41,6 +41,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import javax.enterprise.concurrent.ContextService;
+import javax.enterprise.concurrent.ManagedTask;
+
 import org.eclipse.microprofile.context.ThreadContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
@@ -79,16 +82,10 @@ import com.ibm.wsspi.threadcontext.WSContextService;
  */
 @Component(name = "com.ibm.ws.context.service",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
-           service = { ResourceFactory.class, //
-                       jakarta.enterprise.concurrent.ContextService.class, //
-                       javax.enterprise.concurrent.ContextService.class, //
-                       ThreadContext.class, WSContextService.class, ApplicationRecycleComponent.class },
-           property = { "creates.objectClass=jakarta.enterprise.concurrent.ContextService",
-                        "creates.objectClass=javax.enterprise.concurrent.ContextService",
+           service = { ResourceFactory.class, ContextService.class, ThreadContext.class, WSContextService.class, ApplicationRecycleComponent.class },
+           property = { "creates.objectClass=javax.enterprise.concurrent.ContextService",
                         "creates.objectClass=org.eclipse.microprofile.context.ThreadContext" })
-public class ContextServiceImpl implements //
-                jakarta.enterprise.concurrent.ContextService, //
-                javax.enterprise.concurrent.ContextService, //
+public class ContextServiceImpl implements ContextService, //
                 ResourceFactory, ThreadContext, WSContextService, ApplicationRecycleComponent {
     private static final TraceComponent tc = Tr.register(ContextServiceImpl.class);
 

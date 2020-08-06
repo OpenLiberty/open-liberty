@@ -45,7 +45,6 @@ Import-Package: \
 	com.ibm.websphere.javaee.ejb.3.1;version=latest,\
 	com.ibm.websphere.appserver.spi.logging,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
-	com.ibm.ws.javaee.version;version=latest,\
 	com.ibm.ws.jaxrpc.stub;version=latest,\
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\

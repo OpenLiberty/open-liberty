@@ -11,7 +11,10 @@
 package com.ibm.ws.cdi12.test.shared;
 
 public class NonInjectedHello {
+
+    public static final String PREFIX = "Hello from a non injected class name: ";
+
     public String areYouThere(String name) {
-        return "Hello from a non injected class name: " + name;
+        return PREFIX + name;
     }
 }

@@ -18,6 +18,8 @@ src: \
 
 fat.project: true
 
+tested.features: appsecurity-4.0, cdi-3.0, concurrent-2.0, ejblite-4.0, el-4.0, jsp-3.0, servlet-5.0
+
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)
 -buildpath: \

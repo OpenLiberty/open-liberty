@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2018 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.injection.fat;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -18,6 +21,7 @@ import org.junit.runner.RunWith;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -37,7 +41,7 @@ public class RepeatableDSDTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification();
+    public static RepeatTests r = RepeatTests.withoutModification().andWith(new JakartaEE9Action().fullFATOnly().forServers("com.ibm.ws.injection.fat.RepeatableDSDServer"));
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -69,11 +73,27 @@ public class RepeatableDSDTest extends FATServletClient {
 //        ShrinkHelper.exportAppToServer(server, RepeatableDSDMixTest);
 //        ShrinkHelper.exportAppToServer(server, RepeatableDSDXMLTest);
 
+        // Since not using ShrinkWrap, manually transform the applications if required
+        if (JakartaEE9Action.isActive()) {
+            transformJakartaEE9App(server, "apps", "RepeatableDSDAnnTest.ear");
+            transformJakartaEE9App(server, "apps", "RepeatableDSDMixTest.ear");
+            transformJakartaEE9App(server, "apps", "RepeatableDSDXMLTest.ear");
+        }
+
         server.addInstalledAppForValidation("RepeatableDSDAnnTest");
         server.addInstalledAppForValidation("RepeatableDSDMixTest");
         server.addInstalledAppForValidation("RepeatableDSDXMLTest");
 
         server.startServer();
+    }
+
+    private static void transformJakartaEE9App(LibertyServer server, String path, String filename) throws Exception {
+        String localLocation = "publish/servers/" + server.getServerName() + "/" + path;
+
+        Path localAppPath = Paths.get(localLocation + "/" + filename);
+        JakartaEE9Action.transformApp(localAppPath);
+
+        server.copyFileToLibertyServerRoot(localLocation, path, filename);
     }
 
     @AfterClass
@@ -109,22 +129,22 @@ public class RepeatableDSDTest extends FATServletClient {
 
     @Test
     public void testRepeatableDSDAnnOnly() throws Exception {
-        runTest(APP_MIX_WEB, testName.getMethodName());
+        runTest(APP_MIX_WEB, getTestMethodSimpleName());
     }
 
     @Test
     public void testRepeatableDSDMerge() throws Exception {
-        runTest(APP_MIX_WEB, testName.getMethodName());
+        runTest(APP_MIX_WEB, getTestMethodSimpleName());
     }
 
     @Test
     public void testRepeatableDSDOverride() throws Exception {
-        runTest(APP_MIX_WEB, testName.getMethodName());
+        runTest(APP_MIX_WEB, getTestMethodSimpleName());
     }
 
     @Test
     public void testRepeatableDSDXMLOnly() throws Exception {
-        runTest(APP_MIX_WEB, testName.getMethodName());
+        runTest(APP_MIX_WEB, getTestMethodSimpleName());
     }
 
     @Test
@@ -144,12 +164,12 @@ public class RepeatableDSDTest extends FATServletClient {
 
     @Test
     public void testRepeatableDSDMetaDataCompleteAnnOnly() throws Exception {
-        runTest(APP_XML_WEB, testName.getMethodName());
+        runTest(APP_XML_WEB, getTestMethodSimpleName());
     }
 
     @Test
     public void testRepeatableDSDMetaDataCompleteValid() throws Exception {
-        runTest(APP_XML_WEB, testName.getMethodName());
+        runTest(APP_XML_WEB, getTestMethodSimpleName());
     }
 
     @Test

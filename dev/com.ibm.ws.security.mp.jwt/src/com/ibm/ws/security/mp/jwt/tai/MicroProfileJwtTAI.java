@@ -282,7 +282,7 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
         } catch (MpJwtProcessingException e) {
             // did not find unique mpJwt config to serve this request
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "A unique mpJwt config wasn't found for this request. Exception was " + e.getMessage());
+                Tr.debug(tc, "A unique mpJwt config wasn't found for this request. Exception was " + e);
             }
             TAIResult result = sendToErrorPage(response, defaultTaiResult);
             if (tc.isDebugEnabled()) {

@@ -11,7 +11,6 @@ IBM-API-Package: \
 -features=\
   com.ibm.websphere.appserver.concurrent-2.0; ibm.tolerates:=1.0
 -bundles=\
-  com.ibm.ws.require.java8, \
   com.ibm.ws.microprofile.contextpropagation.1.0
 kind=noship
 edition=full

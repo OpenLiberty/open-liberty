@@ -63,6 +63,7 @@ public class XATestBase {
      */
     public void tearDown() throws Exception {
         _server.stopServer("WTRN0075W", "WTRN0076W"); // Stop the server and indicate the '"WTRN0075W", "WTRN0076W" error messages were expected
+        ShrinkHelper.cleanAllExportedArchives();
     }
 
     /**

@@ -36,6 +36,9 @@ Export-Package: \
 	org.checkerframework.checker.nullness.qual,\
 	org.checkerframework.checker.nullness.compatqual
 
+-dsannotations: \
+  io.openliberty.grpc.internal.GrpcManagedObjectProvider
+
 Include-Resource: \
   @${repo;io.grpc:grpc-core;1.27.0;EXACT}!/META-INF/**, \
 
@@ -46,6 +49,9 @@ instrument.disabled: true
   com.ibm.websphere.org.osgi.core;version=latest,\
   com.ibm.websphere.org.osgi.service.component;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.ws.managedobject;version=latest,\
+  com.ibm.ws.container.service;version=latest,\
+  com.ibm.ws.kernel.service;version=latest,\
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
   com.google.api.grpc:proto-google-common-protos;version=1.17.0, \
   com.google.code.findbugs:jsr305;version=3.0.2,\

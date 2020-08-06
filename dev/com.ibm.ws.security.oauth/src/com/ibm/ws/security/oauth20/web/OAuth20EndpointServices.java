@@ -692,7 +692,7 @@ public class OAuth20EndpointServices {
             reducedScopes = clientAuthorization.getReducedScopes(provider, request, clientId, true);
         } catch (Exception e1) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Caught exception, so setting reduced scopes to null. Exception was: " + e1.getMessage());
+                Tr.debug(tc, "Caught exception, so setting reduced scopes to null. Exception was: " + e1);
             }
             reducedScopes = null;
         }
@@ -1125,7 +1125,7 @@ public class OAuth20EndpointServices {
             }
         } catch (WSSecurityException e) {
             if (tc.isDebugEnabled())
-                Tr.debug(tc, methodName + " failed. Nothing changed. WSSecurityException:" + e.getMessage());
+                Tr.debug(tc, methodName + " failed. Nothing changed. WSSecurityException:" + e);
         }
         return null;
     }
@@ -1160,7 +1160,7 @@ public class OAuth20EndpointServices {
 
         } catch (Exception e) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Unable to match predefined cache key." + e.getMessage());
+                Tr.debug(tc, "Unable to match predefined cache key." + e);
             }
         }
         return obj;

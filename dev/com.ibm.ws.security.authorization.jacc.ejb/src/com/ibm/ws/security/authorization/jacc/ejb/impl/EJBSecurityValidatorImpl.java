@@ -51,9 +51,12 @@ public class EJBSecurityValidatorImpl implements EJBSecurityValidator {
     private static PolicyContextHandlerImpl pch = PolicyContextHandlerImpl.getInstance();
 
     /**
-     * Jakarta EE version if Jakarta EE 9 or higher. If 0, assume a lesser EE spec version.
+     * Are we running with <code>jakarta.ejb.*</code> packages? This will indicate we are running with (at least) Jakarta EE 9.
+     *
+     * This check may seem silly on the surface, but the packages are transformed at build time to swap the <code>javax.ejb.*</code> packages with
+     * <code>jakarta.ejb.*</code>.
      */
-    private volatile int eeVersion = 0;
+    private static boolean isEENineOrHigher = SessionContext.class.getCanonicalName().startsWith("jakarta.ejb");
 
     public EJBSecurityValidatorImpl() {}
 
@@ -124,7 +127,7 @@ public class EJBSecurityValidatorImpl implements EJBSecurityValidator {
                                                        /*
                                                         * EE 8 and below support JAX-RPC MessageContext. EE 9 removed this support.
                                                         */
-                                                       if (eeVersion < 9) {
+                                                       if (!isEENineOrHigher) {
                                                            Object mc = null;
                                                            try {
                                                                InitialContext ic = new InitialContext();
@@ -175,9 +178,5 @@ public class EJBSecurityValidatorImpl implements EJBSecurityValidator {
                 Tr.debug(tc, "IllegalStateException is caught. Safe to ignore.", ise);
         }
         return mc;
-    }
-
-    public void setEEVersion(int eeVersion) {
-        this.eeVersion = eeVersion;
     }
 }

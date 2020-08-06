@@ -371,7 +371,7 @@ public class AcmeCaRestHandler implements RESTHandler {
 				return;
 			}
 		} else {
-			commitJsonResponse(response, 405, Tr.formatMessage(tc, "REST_METHOD_NOT_SUPPORTED"));
+			commitJsonResponse(response, 405, Tr.formatMessage(tc, "REST_METHOD_NOT_SUPPORTED", method));
 			return;
 		}
 	}

@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.token;
 
@@ -343,7 +343,7 @@ public class JWT {
                     getClass().getName(), "createJsonToken",
                     new Object[] { this.header.getAlgorithm() }); //TODO
             Tr.error(tc, "OIDC_IDTOKEN_SIGNATURE_ERR", new Object[] {
-                    this.header.getAlgorithm(), e.getMessage() != null ? e.getMessage() : e.getClass().getSimpleName() });
+                    this.header.getAlgorithm(), e });
             throw new SignatureException(e);
         }
         return token;
@@ -494,13 +494,13 @@ public class JWT {
             JsonTokenUtil.validateTokenString(this.tokenString, alg, getKey(alg), this.clockSkewInSeconds, true);
         } catch (InvalidKeyException e) {
             Object[] objs = new Object[] { this.clientId,
-                    e.getMessage() == null ? e.getClass().getSimpleName() : e.getMessage(),
+                    e,
                     this.signingAlgorithm };
             Tr.error(tc, "OIDC_IDTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR", objs);
             throw new IDTokenValidationFailedException("InvalidKeyException Message:" + e.getMessage(), e);
 
         } catch (InvalidJwtException e) {
-            Object[] objs = new Object[] { this.clientId, e.getMessage() == null ? e.getClass().getSimpleName() : e.getMessage(), this.signingAlgorithm };
+            Object[] objs = new Object[] { this.clientId, e, this.signingAlgorithm };
             Tr.error(tc, "OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR", objs);
             throw new IDTokenValidationFailedException("SignatureException Message:" + e.getMessage(), e);
         } catch (Exception ise) {
@@ -623,12 +623,12 @@ public class JWT {
 
             } catch (InvalidKeyException e) {
                 Object[] objs = new Object[] { this.clientId,
-                        e.getMessage() == null ? e.getClass().getSimpleName() : e.getMessage(),
+                        e,
                         this.signingAlgorithm };
                 Tr.error(tc, "OIDC_IDTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR", objs);
                 throw new IDTokenValidationFailedException("InvalidKeyException Message:" + e.getMessage(), e);
             } catch (InvalidJwtException e) {
-                Object[] objs = new Object[] { this.clientId, e.getMessage() == null ? e.getClass().getSimpleName() : e.getMessage(), this.signingAlgorithm };
+                Object[] objs = new Object[] { this.clientId, e, this.signingAlgorithm };
                 Tr.error(tc, "OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR", objs);
                 throw new IDTokenValidationFailedException("SignatureException Message:" + e.getMessage(), e);
             } catch (IllegalStateException e) {
@@ -645,7 +645,7 @@ public class JWT {
                     Tr.error(tc, "OIDC_IDTOKEN_VERIFY_STATE_ERR", objs);
                 throw new IDTokenValidationFailedException("IllegalStateException Message:" + e.getMessage(), e);
             } catch (Exception e) {
-                Tr.error(tc, "OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR", new Object[] { this.clientId, e.getMessage() == null ? e.getClass().getSimpleName() : e.getMessage(), this.signingAlgorithm });
+                Tr.error(tc, "OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR", new Object[] { this.clientId, e, this.signingAlgorithm });
                 throw new IDTokenValidationFailedException(e.getClass().getName() + " Message:" + e.getMessage() == null ? "" : e.getMessage(), e);
             }
             /*

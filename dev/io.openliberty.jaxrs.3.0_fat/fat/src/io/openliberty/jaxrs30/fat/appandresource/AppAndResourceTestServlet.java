@@ -16,10 +16,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 
-import javax.servlet.annotation.WebServlet;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import jakarta.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
@@ -28,7 +25,6 @@ import componenttest.app.FATServlet;
 @SuppressWarnings("serial")
 @WebServlet("/AppAndResourceTestServlet")
 public class AppAndResourceTestServlet extends FATServlet {
-    private final static ClassLoader THIS_CLASSLOADER = AppAndResourceTestServlet.class.getClassLoader();
 
     @Test
     public void testCanInvokeCombinedAppAndResourceClass() throws Exception {
@@ -36,6 +32,15 @@ public class AppAndResourceTestServlet extends FATServlet {
         HttpURLConnection conn = (HttpURLConnection) uri.toURL().openConnection();
         assertEquals(200, conn.getResponseCode());
         assertEquals("foo", readEntity(conn.getInputStream()));
+    }
+
+    @Test
+    public void testCanInvokeQueryParametersWithArrayType() throws Exception {
+        URI uri = URI.create("http://localhost:" + System.getProperty("bvt.prop.HTTP_default")
+            + "/appandresource/app/path/queryArrays?stringArray=ab&stringArray=cd&stringArray=ef&stringArray=gh");
+        HttpURLConnection conn = (HttpURLConnection) uri.toURL().openConnection();
+        assertEquals(200, conn.getResponseCode());
+        assertEquals("2", readEntity(conn.getInputStream()));
     }
 
     private String readEntity(InputStream is) throws Exception {
@@ -46,6 +51,6 @@ public class AppAndResourceTestServlet extends FATServlet {
             sb.append(new String(b, 0, i));
             i = is.read(b);
         }
-        return sb.toString();
+        return sb.toString().trim();
     }
 }

@@ -15,8 +15,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeSet;
@@ -40,8 +43,20 @@ public class FeatureReplacementAction implements RepeatTestAction {
 
     private static final Class<?> c = FeatureReplacementAction.class;
 
-    static final String ALL_SERVERS = "ALL_SERVERS";
-    static final String ALL_CLIENTS = "ALL_CLIENTS";
+    public static final String ALL_SERVERS = "ALL_SERVERS";
+    public static final String ALL_CLIENTS = "ALL_CLIENTS";
+    public static final String NO_SERVERS = "NO_SERVERS";
+    public static final String NO_CLIENTS = "NO_CLIENTS";
+
+    private static final Map<String, String> featuresWithNameChangeOnEE9;
+
+    static {
+        Map<String, String> featureNameMapping = new HashMap<String, String>(4);
+        featureNameMapping.put("javaee", "jakartaee");
+        featureNameMapping.put("javaeeClient", "jakartaeeClient");
+        featureNameMapping.put("jca", "connectors");
+        featuresWithNameChangeOnEE9 = Collections.unmodifiableMap(featureNameMapping);
+    }
 
     /**
      * Replaces any Java EE 8 features with the Java EE 7 equivalent feature.
@@ -82,7 +97,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * By default features are added even if there was not another version already there
      *
      * @param removeFeature the feature to be removed
-     * @param addFeature    the feature to add
+     * @param addFeature the feature to add
      */
     public FeatureReplacementAction(String removeFeature, String addFeature) {
         this(addFeature);
@@ -95,7 +110,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * By default features are added even if there was not another version already there
      *
      * @param removeFeatures the features to remove
-     * @param addFeatures    the features to add
+     * @param addFeatures the features to add
      */
     public FeatureReplacementAction(Set<String> removeFeatures, Set<String> addFeatures) {
         this(addFeatures);
@@ -198,8 +213,12 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * By default, all server config files in publish/servers/ and publish/files/ will be scanned for updates.
      */
     public FeatureReplacementAction forServers(String... serverNames) {
-        servers.remove(ALL_SERVERS);
-        servers.addAll(Arrays.asList(serverNames));
+        if (NO_SERVERS.equals(serverNames[0])) {
+            servers.clear();
+        } else {
+            servers.remove(ALL_SERVERS);
+            servers.addAll(Arrays.asList(serverNames));
+        }
         return this;
     }
 
@@ -209,8 +228,12 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * By default, all server config files in publish/clients/ will be scanned for updates.
      */
     public FeatureReplacementAction forClients(String... clientNames) {
-        clients.remove(ALL_CLIENTS);
-        clients.addAll(Arrays.asList(clientNames));
+        if (NO_CLIENTS.equals(clientNames[0])) {
+            clients.clear();
+        } else {
+            clients.remove(ALL_CLIENTS);
+            clients.addAll(Arrays.asList(clientNames));
+        }
         return this;
     }
 
@@ -267,8 +290,9 @@ public class FeatureReplacementAction implements RepeatTestAction {
                     if (f.isDirectory())
                         servers.add(f.getName());
         }
-        for (String serverName : servers)
-            serverConfigs.add(new File(pathToAutoFVTTestServers + serverName + "/server.xml"));
+        for (String serverName : servers) {
+            serverConfigs.addAll(findFile(new File(pathToAutoFVTTestServers + serverName), ".xml"));
+        }
 
         // Find all of the client configurations to replace features in
         Set<File> clientConfigs = new HashSet<>();
@@ -282,8 +306,9 @@ public class FeatureReplacementAction implements RepeatTestAction {
                     if (f.isDirectory())
                         clients.add(f.getName());
         }
-        for (String clientName : clients)
-            clientConfigs.add(new File(pathToAutoFVTTestClients + clientName + "/client.xml"));
+        for (String clientName : clients) {
+            clientConfigs.addAll(findFile(new File(pathToAutoFVTTestServers + clientName), ".xml"));
+        }
 
         // Make sure that XML file we find is a server config file, by checking if it contains the <server> tag
         Log.info(c, m, "Replacing features in files: " + serverConfigs.toString() + "  and  " + clientConfigs.toString());
@@ -378,14 +403,77 @@ public class FeatureReplacementAction implements RepeatTestAction {
             LibertyClientFactory.getLibertyClient(clientName);
     }
 
-    private static String getReplacementFeature(String originalFeature, Set<String> featuresToAdd) {
+    /**
+     * Obtain the replacement for a feature for this replacement action.
+     *
+     * The lookup uses the base feature name, which is the feature name up to
+     * the first '-' character.
+     *
+     * If EE9 replacement is active, allow the base feature name to be replaced
+     * with an EE9 replacement.
+     *
+     * If no replacement is located, answer null, which indicates that the feature
+     * should be removed instead of being replaced.
+     *
+     * Feature names are required to have a '-', for example, "servlet-3.1". Null
+     * is answered for feature names which do not have a '-'.
+     *
+     * @param  originalFeature     The feature name which is to be replaced.
+     * @param  replacementFeatures Table of replacement features.
+     *
+     * @return                     The replacement feature name. Null if no replacement is available.
+     */
+    private static String getReplacementFeature(String originalFeature, Set<String> replacementFeatures) {
+        String methodName = "getReplacementFeature";
         // Example: servlet-3.1 --> servlet-4.0
-        String featureBasename = originalFeature.substring(0, originalFeature.indexOf('-') + 1); // "servlet-"
-        for (String featureToAdd : featuresToAdd)
-            if (featureToAdd.contains(featureBasename)) // "servlet-4.0".contains("servlet-")
-                return featureToAdd;
+        int dashOffset = originalFeature.indexOf('-');
+        if (dashOffset == -1)
+            throw new IllegalArgumentException("Remove feature [ " + originalFeature + " ]: No '-' was found.");
+        // "servlet-3.1" ==> "servlet"
+        String baseFeature = originalFeature.substring(0, dashOffset + 1);
+        // "servlet-4.0".contains("servlet-")
+        for (String replacementFeature : replacementFeatures) {
+            if (replacementFeature.toLowerCase().contains(baseFeature.toLowerCase())) {
+                Log.info(c, methodName, "Replace feature [ " + originalFeature + " ] with [ " + replacementFeature + " ]");
+                return replacementFeature;
+            }
+        }
+        // We need to check that the feature passed is an EE7/EE8 feature which could have a name change on EE9 that doesnt match
+        // the original feature name it replaces. We also check viceversa if the feature is an EE9 feature that involves a name change
+        // to update from EE9 to EE7/EE8
+        Log.info(c, methodName, "No feature replacement found for [ " + originalFeature + " ]. Verifying if feature name was changed on EE9.");
+        // Reset base feature to not include the "-"
+        baseFeature = baseFeature.substring(0, dashOffset);
+        String featureReplacement = null;
+        for (Map.Entry<String, String> nameChangeEntry : featuresWithNameChangeOnEE9.entrySet()) {
+            if (nameChangeEntry.getValue().equalsIgnoreCase(baseFeature)) {
+                featureReplacement = nameChangeEntry.getKey();
+                Log.info(c, methodName, "Replace EE9 feature [ " + baseFeature + " ] with feature [ " + featureReplacement + " ]");
+                baseFeature = featureReplacement;
+                break;
+            }
+            if (nameChangeEntry.getKey().equalsIgnoreCase(baseFeature)) {
+                featureReplacement = nameChangeEntry.getValue();
+                Log.info(c, methodName, "Replace base feature [ " + baseFeature + " ] with EE9 feature [ " + featureReplacement + " ]");
+                baseFeature = featureReplacement;
+                break;
+            }
+        }
+        if (featureReplacement == null) {
+            Log.info(c, methodName, "Remove feature [ " + originalFeature + " ]: No replacement is available");
+            return null;
+        }
+        baseFeature += "-";
+        // Re-check the features with the name changes
+        for (String replacementFeature : replacementFeatures) {
+            if (replacementFeature.toLowerCase().contains(baseFeature.toLowerCase())) {
+                Log.info(c, methodName, "Replace feature [ " + originalFeature + " ] with [ " + replacementFeature + " ]");
+                return replacementFeature;
+            }
+        }
         // We may need to remove a feature without adding any replacement
         // (e.g. jsonb-1.0 is EE8 only) so in this case return null
+        Log.info(c, methodName, "Remove feature [ " + originalFeature + " ]: No replacement is available");
         return null;
     }
 

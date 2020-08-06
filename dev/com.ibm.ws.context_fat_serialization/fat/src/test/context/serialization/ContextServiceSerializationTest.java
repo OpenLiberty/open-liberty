@@ -28,6 +28,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -36,11 +37,18 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
 public class ContextServiceSerializationTest extends FATServletClient {
+    @ClassRule
+    public static RepeatTests r = RepeatTests
+                    .withoutModification()
+                    .andWith(new JakartaEE9Action());
+
     @Server("com.ibm.ws.context.fat.serialization")
     //@TestServlet(servlet = ContextServiceSerializationTestServlet.class, path = "contextserbvt/ContextServiceSerializationTestServlet")
     public static LibertyServer server;
@@ -52,20 +60,36 @@ public class ContextServiceSerializationTest extends FATServletClient {
                         .addAsWebInfResource(new File("test-applications/contextserbvt.war/resources/WEB-INF/web.xml"))
                         .addAsWebInfResource(new File("test-applications/contextserbvt.war/resources/WEB-INF/serialized/classloaderContext-EJB-v8.5.5.4.ser"),
                                              "serialized/classloaderContext-EJB-v8.5.5.4.ser")
+                        .addAsWebInfResource(new File("test-applications/contextserbvt.war/resources/WEB-INF/serialized/classloaderContext-EJB-v20.0.0.8-jakarta.ser"),
+                                             "serialized/classloaderContext-EJB-v20.0.0.8-jakarta.ser")
                         .addAsWebInfResource(new File("test-applications/contextserbvt.war/resources/WEB-INF/serialized/classloaderContext-v8.5.5.4.ser"),
                                              "serialized/classloaderContext-v8.5.5.4.ser")
+                        .addAsWebInfResource(new File("test-applications/contextserbvt.war/resources/WEB-INF/serialized/classloaderContext-v20.0.0.8-jakarta.ser"),
+                                             "serialized/classloaderContext-v20.0.0.8-jakarta.ser")
                         .addAsWebInfResource(new File("test-applications/contextserbvt.war/resources/WEB-INF/serialized/defaultContext_ALL_CONTEXT_TYPES-v8.5.5.4.ser"),
                                              "serialized/defaultContext_ALL_CONTEXT_TYPES-v8.5.5.4.ser")
+                        .addAsWebInfResource(new File("test-applications/contextserbvt.war/resources/WEB-INF/serialized/defaultContext_ALL_CONTEXT_TYPES-v20.0.0.8-jakarta.ser"),
+                                             "serialized/defaultContext_ALL_CONTEXT_TYPES-v20.0.0.8-jakarta.ser")
                         .addAsWebInfResource(new File("test-applications/contextserbvt.war/resources/WEB-INF/serialized/jeeMetadataContext-EJB-v8.5.5.4.ser"),
                                              "serialized/jeeMetadataContext-EJB-v8.5.5.4.ser")
+                        .addAsWebInfResource(new File("test-applications/contextserbvt.war/resources/WEB-INF/serialized/jeeMetadataContext-EJB-v20.0.0.8-jakarta.ser"),
+                                             "serialized/jeeMetadataContext-EJB-v20.0.0.8-jakarta.ser")
                         .addAsWebInfResource(new File("test-applications/contextserbvt.war/resources/WEB-INF/serialized/jeeMetadataContext-JSP-v8.5.5.4.ser"),
                                              "serialized/jeeMetadataContext-JSP-v8.5.5.4.ser")
+                        .addAsWebInfResource(new File("test-applications/contextserbvt.war/resources/WEB-INF/serialized/jeeMetadataContext-JSP-v20.0.0.8-jakarta.ser"),
+                                             "serialized/jeeMetadataContext-JSP-v20.0.0.8-jakarta.ser")
                         .addAsWebInfResource(new File("test-applications/contextserbvt.war/resources/WEB-INF/serialized/jeeMetadataContext-v8.5.5.4.ser"),
                                              "serialized/jeeMetadataContext-v8.5.5.4.ser")
+                        .addAsWebInfResource(new File("test-applications/contextserbvt.war/resources/WEB-INF/serialized/jeeMetadataContext-v20.0.0.8-jakarta.ser"),
+                                             "serialized/jeeMetadataContext-v20.0.0.8-jakarta.ser")
                         .addAsWebInfResource(new File("test-applications/contextserbvt.war/resources/WEB-INF/serialized/securityContext-user3-user3-v8.5.5.4.ser"),
                                              "serialized/securityContext-user3-user3-v8.5.5.4.ser")
+                        .addAsWebInfResource(new File("test-applications/contextserbvt.war/resources/WEB-INF/serialized/securityContext-user3-user3-v20.0.0.8-jakarta.ser"),
+                                             "serialized/securityContext-user3-user3-v20.0.0.8-jakarta.ser")
                         .addAsWebInfResource(new File("test-applications/contextserbvt.war/resources/WEB-INF/serialized/transactionContext-v8.5.5.4.ser"),
                                              "serialized/transactionContext-v8.5.5.4.ser")
+                        .addAsWebInfResource(new File("test-applications/contextserbvt.war/resources/WEB-INF/serialized/transactionContext-v20.0.0.8-jakarta.ser"),
+                                             "serialized/transactionContext-v20.0.0.8-jakarta.ser")
                         .addAsWebResource(new File("test-applications/contextserbvt.war/resources/SerializationTestJSP.jsp"));
 
         JavaArchive ejb = ShrinkWrap.create(JavaArchive.class, "contextserejb.jar")
@@ -133,62 +157,122 @@ public class ContextServiceSerializationTest extends FATServletClient {
     }
 
     @Test
-    public void testDeserializeClassloaderContext() throws Exception {
+    public void testDeserializeClassloaderContextFromV20_0_0_8_Jakarta() throws Exception {
+        runIn("TestServlet", "testDeserializeClassloaderContextV20_0_0_8_Jakarta", "user1", "pwd1");
+    }
+
+    @Test
+    public void testDeserializeClassloaderContextFromV8_5_5_4() throws Exception {
         runIn("TestServlet", "testDeserializeClassloaderContextV8_5_5_4", "user1", "pwd1");
     }
 
     @Test
-    public void testDeserializeClassloaderContextThatCameFromEJB() throws Exception {
+    public void testDeserializeClassloaderContextFromV20_0_0_8_Jakarta_EJB() throws Exception {
+        runIn("TestServlet", "testDeserializeClassloaderContextV20_0_0_8_Jakarta_EJB", "user1", "pwd1");
+    }
+
+    @Test
+    public void testDeserializeClassloaderContextFromV8_5_5_4_EJB() throws Exception {
         runIn("TestServlet", "testDeserializeClassloaderContextV8_5_5_4_EJB", "user1", "pwd1");
     }
 
     @Test
-    public void testDeserializeDefaultClassloaderContext() throws Exception {
+    public void testDeserializeDefaultClassloaderContextFromV20_0_0_8_Jakarta() throws Exception {
+        runIn("TestServlet", "testDeserializeDefaultClassloaderContextV20_0_0_8_Jakarta", "user1", "pwd1");
+    }
+
+    @Test
+    public void testDeserializeDefaultClassloaderContextFromV8_5_5_4() throws Exception {
         runIn("TestServlet", "testDeserializeDefaultClassloaderContextV8_5_5_4", "user1", "pwd1");
     }
 
     @Test
-    public void testDeserializeDefaultJEEMetadataContext() throws Exception {
+    public void testDeserializeDefaultJEEMetadataContextFromV20_0_0_8_Jakarta() throws Exception {
+        runIn("TestServlet", "testDeserializeDefaultJEEMetadataContextV20_0_0_8_Jakarta", "user1", "pwd1");
+    }
+
+    @Test
+    public void testDeserializeDefaultJEEMetadataContextFromV8_5_5_4() throws Exception {
         runIn("TestServlet", "testDeserializeDefaultJEEMetadataContextV8_5_5_4", "user1", "pwd1");
     }
 
     @Test
-    public void testDeserializeDefaultSecurityContext() throws Exception {
+    public void testDeserializeDefaultSecurityContextFromV20_0_0_8_Jakarta() throws Exception {
+        runIn("TestServlet", "testDeserializeDefaultSecurityContextV20_0_0_8_Jakarta", "user2", "pwd2");
+    }
+
+    @Test
+    public void testDeserializeDefaultSecurityContextFromV8_5_5_4() throws Exception {
         runIn("TestServlet", "testDeserializeDefaultSecurityContextV8_5_5_4", "user2", "pwd2");
     }
 
     @Test
-    public void testDeserializeDefaultTransactionContext() throws Exception {
+    public void testDeserializeDefaultTransactionContextFromV20_0_0_8_Jakarta() throws Exception {
+        runIn("TestServlet", "testDeserializeDefaultTransactionContextV20_0_0_8_Jakarta", "user1", "pwd1");
+    }
+
+    @Test
+    public void testDeserializeDefaultTransactionContextFromV8_5_5_4() throws Exception {
         runIn("TestServlet", "testDeserializeDefaultTransactionContextV8_5_5_4", "user1", "pwd1");
     }
 
     @Test
-    public void testDeserializeExecutionProperties() throws Exception {
+    public void testDeserializeExecutionPropertiesFromV20_0_0_8_Jakarta() throws Exception {
+        runIn("TestServlet", "testDeserializeExecutionPropertiesV20_0_0_8_Jakarta", "user1", "pwd1");
+    }
+
+    @Test
+    public void testDeserializeExecutionPropertiesFromV8_5_5_4() throws Exception {
         runIn("TestServlet", "testDeserializeExecutionPropertiesV8_5_5_4", "user1", "pwd1");
     }
 
     @Test
-    public void testDeserializeJEEMetadataContext() throws Exception {
+    public void testDeserializeJEEMetadataContextFromV20_0_0_8_Jakarta() throws Exception {
+        runIn("TestServlet", "testDeserializeJEEMetadataContextV20_0_0_8_Jakarta", "user1", "pwd1");
+    }
+
+    @Test
+    public void testDeserializeJEEMetadataContextFromV20_0_0_8_Jakarta_EJB() throws Exception {
+        runIn("TestServlet", "testDeserializeJEEMetadataContextV20_0_0_8_Jakarta_EJB", "user1", "pwd1");
+    }
+
+    @Test
+    public void testDeserializeJEEMetadataContextFromV20_0_0_8_Jakarta_JSP() throws Exception {
+        runIn("TestServlet", "testDeserializeJEEMetadataContextV20_0_0_8_Jakarta_JSP", "user1", "pwd1");
+    }
+
+    @Test
+    public void testDeserializeJEEMetadataContextFromV8_5_5_4() throws Exception {
         runIn("TestServlet", "testDeserializeJEEMetadataContextV8_5_5_4", "user1", "pwd1");
     }
 
     @Test
-    public void testDeserializeJEEMetadataContextThatCameFromJSP() throws Exception {
-        runIn("TestServlet", "testDeserializeJEEMetadataContextV8_5_5_4_JSP", "user1", "pwd1");
-    }
-
-    @Test
-    public void testDeserializeJEEMetadataContextThatCameFromEJB() throws Exception {
+    public void testDeserializeJEEMetadataContextFromV8_5_5_4_EJB() throws Exception {
         runIn("TestServlet", "testDeserializeJEEMetadataContextV8_5_5_4_EJB", "user1", "pwd1");
     }
 
     @Test
-    public void testDeserializeSecurityContext() throws Exception {
+    public void testDeserializeJEEMetadataContextFromV8_5_5_4_JSP() throws Exception {
+        runIn("TestServlet", "testDeserializeJEEMetadataContextV8_5_5_4_JSP", "user1", "pwd1");
+    }
+
+    @Test
+    public void testDeserializeSecurityContextFromV20_0_0_8_Jakarta() throws Exception {
+        runIn("TestServlet", "testDeserializeSecurityContextV20_0_0_8_Jakarta", "user2", "pwd2");
+    }
+
+    @Test
+    public void testDeserializeSecurityContextFromV8_5_5_4() throws Exception {
         runIn("TestServlet", "testDeserializeSecurityContextV8_5_5_4", "user2", "pwd2");
     }
 
     @Test
-    public void testDeserializeTransactionContext() throws Exception {
+    public void testDeserializeTransactionContextFromV20_0_0_8_Jakarta() throws Exception {
+        runIn("TestServlet", "testDeserializeTransactionContextV20_0_0_8_Jakarta", "user1", "pwd1");
+    }
+
+    @Test
+    public void testDeserializeTransactionContextFromV8_5_5_4() throws Exception {
         runIn("TestServlet", "testDeserializeTransactionContextV8_5_5_4", "user1", "pwd1");
     }
 
@@ -198,8 +282,13 @@ public class ContextServiceSerializationTest extends FATServletClient {
     }
 
     @Test
-    public void testReserializeJEEMetadataContext() throws Exception {
-        runIn("TestServlet", "testReserializeJEEMetadataContext", "user1", "pwd1");
+    public void testReserializeJEEMetadataContextV20_0_0_8_Jakarta() throws Exception {
+        runIn("TestServlet", "testReserializeJEEMetadataContextV20_0_0_8_Jakarta", "user1", "pwd1");
+    }
+
+    @Test
+    public void testReserializeJEEMetadataContextV8_5_5_4() throws Exception {
+        runIn("TestServlet", "testReserializeJEEMetadataContextV8_5_5_4", "user1", "pwd1");
     }
 
     @Test

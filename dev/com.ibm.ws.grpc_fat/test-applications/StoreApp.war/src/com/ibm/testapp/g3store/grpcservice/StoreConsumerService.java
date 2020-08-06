@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.security.RolesAllowed;
+
 import com.ibm.test.g3store.grpc.AppConsumerServiceGrpc;
 import com.ibm.test.g3store.grpc.AppNameRequest;
 import com.ibm.test.g3store.grpc.NameResponse;
@@ -85,6 +87,7 @@ public class StoreConsumerService extends AppConsumerServiceGrpc.AppConsumerServ
      *
      */
     @Override
+    @RolesAllowed({ "students", "Administrator" })
     public void getAppInfo(com.ibm.test.g3store.grpc.AppNameRequest request,
                            io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.RetailAppResponse> responseObserver) {
 

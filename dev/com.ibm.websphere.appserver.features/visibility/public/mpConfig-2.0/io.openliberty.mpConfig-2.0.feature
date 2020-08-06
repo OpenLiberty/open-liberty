@@ -16,8 +16,7 @@ Subsystem-Name: MicroProfile Config 2.0
  com.ibm.websphere.appserver.containerServices-1.0, \
  com.ibm.websphere.appserver.appmanager-1.0, \
  com.ibm.websphere.appserver.internal.slf4j-1.7.7
--bundles=com.ibm.ws.require.java8, \
- io.openliberty.microprofile.config.2.0.internal, \
+-bundles=io.openliberty.microprofile.config.2.0.internal, \
  io.openliberty.microprofile.config.internal.common, \
  io.openliberty.microprofile.config.internal.serverxml, \
  com.ibm.ws.org.apache.commons.lang3, \

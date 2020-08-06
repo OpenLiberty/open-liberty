@@ -99,7 +99,8 @@ instrument.classesExcludes: com/ibm/ws/security/acme/resources/*.class
 	com.ibm.ws.crypto.certificateutil;version=latest,\
 	com.ibm.websphere.rest.handler;version=latest,\
 	com.ibm.ws.rest.handler;version=latest,\
-	com.ibm.ws.management.security;version=latest
+	com.ibm.ws.management.security;version=latest,\
+	com.ibm.ws.kernel.feature;version=latest
 	
 
 -testpath: \

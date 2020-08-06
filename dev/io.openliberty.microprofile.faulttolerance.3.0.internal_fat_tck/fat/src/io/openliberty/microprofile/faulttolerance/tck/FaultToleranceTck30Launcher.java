@@ -11,6 +11,7 @@
 package io.openliberty.microprofile.faulttolerance.tck;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.AfterClass;
@@ -21,7 +22,6 @@ import org.junit.runner.RunWith;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.topology.impl.JavaInfo;
@@ -37,10 +37,11 @@ import componenttest.topology.utils.MvnUtils;
  * location.
  */
 @RunWith(FATRunner.class)
-@Mode(TestMode.EXPERIMENTAL)
 public class FaultToleranceTck30Launcher {
 
     private static final String SERVER_NAME = "FaultTolerance30TCKServer";
+
+    private static final boolean FAT_TEST_LOCALRUN = Boolean.getBoolean("fat.test.localrun");
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
@@ -114,8 +115,14 @@ public class FaultToleranceTck30Launcher {
 
         String suiteFileName = isFullMode ? "tck-suite.xml" : "tck-suite-lite.xml";
 
+        Map<String, String> additionalProps = new HashMap<>();
+        if (FAT_TEST_LOCALRUN) {
+            // Reduce timeout multiplier when running locally
+            additionalProps.put("timeoutMultiplier", "1.0");
+        }
+
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.faulttolerance.3.0_fat_tck", this.getClass() + ":launchFaultToleranceTCK", suiteFileName,
-                              Collections.emptyMap(), Collections.emptySet());
+                              additionalProps, Collections.emptySet());
     }
 
 }

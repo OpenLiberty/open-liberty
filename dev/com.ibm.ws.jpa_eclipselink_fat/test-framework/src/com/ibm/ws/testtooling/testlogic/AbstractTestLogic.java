@@ -413,6 +413,11 @@ public abstract class AbstractTestLogic {
         return instFeatureSet.contains("jpa-2.2");
     }
 
+    protected boolean isUsingJPA30Feature() {
+        Set<String> instFeatureSet = getInstalledFeatures();
+        return instFeatureSet.contains("jpa-3.0");
+    }
+
     protected boolean isUsingJPA21ContainerFeature(boolean onlyContainerFeature) {
         Set<String> instFeatureSet = getInstalledFeatures();
         if (onlyContainerFeature && instFeatureSet.contains("jpa-2.1"))
@@ -425,5 +430,12 @@ public abstract class AbstractTestLogic {
         if (onlyContainerFeature && instFeatureSet.contains("jpa-2.2"))
             return false;
         return instFeatureSet.contains("jpaContainer-2.2");
+    }
+
+    protected boolean isUsingJPA30ContainerFeature(boolean onlyContainerFeature) {
+        Set<String> instFeatureSet = getInstalledFeatures();
+        if (onlyContainerFeature && instFeatureSet.contains("jpa-3.0"))
+            return false;
+        return instFeatureSet.contains("jpaContainer-3.0");
     }
 }

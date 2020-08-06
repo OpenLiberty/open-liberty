@@ -18,6 +18,7 @@ import static org.junit.Assert.fail;
 import java.io.BufferedReader;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -29,6 +30,7 @@ import javax.json.JsonObject;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -39,13 +41,15 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
 public class DelayAppStartupHealthCheckTest {
 
-    private static final String[] EXPECTED_FAILURES = { "CWWKE1102W", "CWWKE1105W", "CWMH0052W", "CWMH0053W" };
+    private static final String[] EXPECTED_FAILURES = { "CWWKE1102W", "CWWKE1105W", "CWMH0052W", "CWMH0053W", "CWMMH0052W", "CWMMH0053W" };
 
     public static final String APP_NAME = "DelayedHealthCheckApp";
     private static final String MESSAGE_LOG = "logs/messages.log";
@@ -58,7 +62,17 @@ public class DelayAppStartupHealthCheckTest {
     private final int SUCCESS_RESPONSE_CODE = 200;
     private final int FAILED_RESPONSE_CODE = 503; // Response when port is open but Application is not ready
 
-    @Server("DelayedHealthCheck")
+    final static String SERVER_NAME = "DelayedHealthCheck";
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(new FeatureReplacementAction()
+                                    .withID("mpHealth-3.0")
+                                    .addFeature("mpHealth-3.0")
+                                    .removeFeature("mpHealth-2.0")
+                                    .forServers(SERVER_NAME));
+
+    @Server(SERVER_NAME)
     public static LibertyServer server1;
 
     @Before
@@ -116,12 +130,15 @@ public class DelayAppStartupHealthCheckTest {
                 try {
                     conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, READY_ENDPOINT);
                     responseCode = conReady.getResponseCode();
-                } catch (ConnectException e) {
-                    if (e.getMessage().contains("Connection refused")) {
+                } catch (ConnectException ce) {
+                    if (ce.getMessage().contains("Connection refused")) {
                         connectionExceptionEncountered = true;
                     }
-                } catch (SocketTimeoutException exception) {
-                    log("testReadinessEndpointOnServerStart", "Encountered a SocketTimeoutException. Retrying connection.");
+                } catch (SocketTimeoutException ste) {
+                    log("testReadinessEndpointOnServerStart", "Encountered a SocketTimeoutException. Retrying connection. Exception: " + ste.getMessage());
+                    continue;
+                } catch (SocketException se) {
+                    log("testReadinessEndpointOnServerStart", "Encountered a SocketException. Retrying connection. Exception: " + se.getMessage());
                     continue;
                 }
 
@@ -170,8 +187,8 @@ public class DelayAppStartupHealthCheckTest {
 
         server1.setMarkToEndOfLog();
 
-        List<String> lines = server1.findStringsInFileInLibertyServerRoot("CWMH0053W:", MESSAGE_LOG);
-        assertEquals("The CWMH0053W warning did not appear in messages.log", 1, lines.size());
+        List<String> lines = server1.findStringsInFileInLibertyServerRoot("CWM*H0053W:", MESSAGE_LOG);
+        assertEquals("The CWM*H0053W warning did not appear in messages.log", 1, lines.size());
 
         String line = server1.waitForStringInLogUsingMark("(CWWKZ0001I: Application DelayedHealthCheckApp started)+", 60000);
         log("testDelayedAppStartUpHealthCheck", "Application Started message found: " + line);
@@ -202,8 +219,8 @@ public class DelayAppStartupHealthCheckTest {
 
         server1.setMarkToEndOfLog();
 
-        List<String> lines = server1.findStringsInFileInLibertyServerRoot("CWMH0053W:", MESSAGE_LOG);
-        assertEquals("The CWMH0053W warning did not appear in messages.log", 0, lines.size());
+        List<String> lines = server1.findStringsInFileInLibertyServerRoot("CWM*H0053W:", MESSAGE_LOG);
+        assertEquals("The CWM*H0053W warning did not appear in messages.log", 0, lines.size());
 
         String line = server1.waitForStringInLogUsingMark("(CWWKZ0001I: Application DelayedHealthCheckApp started)+", 60000);
         log("testDelayedAppStartUpHealthCheck", "Application Started message found: " + line);
@@ -233,8 +250,8 @@ public class DelayAppStartupHealthCheckTest {
 
         server1.setMarkToEndOfLog();
 
-        List<String> lines = server1.findStringsInFileInLibertyServerRoot("CWMH0053W:", MESSAGE_LOG);
-        assertEquals("The CWMH0053W warning did not appear in messages.log", 1, lines.size());
+        List<String> lines = server1.findStringsInFileInLibertyServerRoot("CWM*H0053W:", MESSAGE_LOG);
+        assertEquals("The CWM*H0053W warning did not appear in messages.log", 1, lines.size());
 
         String line = server1.waitForStringInLogUsingMark("(CWWKZ0001I: Application DelayedHealthCheckApp started)+", 60000);
         log("testDelayedAppStartUpHealthCheck", "Application Started message found: " + line);

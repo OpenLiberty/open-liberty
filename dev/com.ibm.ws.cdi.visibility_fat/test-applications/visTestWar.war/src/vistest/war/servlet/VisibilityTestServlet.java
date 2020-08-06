@@ -17,10 +17,10 @@ import javax.enterprise.inject.UnsatisfiedResolutionException;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import componenttest.app.FATServlet;
 import vistest.appClientAsEjbLib.AppClientAsEjbLibTestingBean;
 import vistest.appClientAsWarLib.AppClientAsWarLibTestingBean;
 import vistest.earLib.EarLibTestingBean;
@@ -42,7 +42,7 @@ import vistest.warWebinfLib.WarWebinfLibTestingBean;
  * We select the TestingBean which resides in the requested BDA, call its doTest method and return the result to the caller.
  */
 @WebServlet("/")
-public class VisibilityTestServlet extends HttpServlet {
+public class VisibilityTestServlet extends FATServlet {
 
     private static final long serialVersionUID = 1L;
 
@@ -99,50 +99,35 @@ public class VisibilityTestServlet extends HttpServlet {
         try {
             if (location == null) {
                 result = "ERROR: No qualifier provided\n";
-            }
-            else if (location.equals("InWar")) {
+            } else if (location.equals("InWar")) {
                 result = warTestingInstance.get().doTest();
-            }
-            else if (location.equals("InEjb")) {
+            } else if (location.equals("InEjb")) {
                 result = ejbTestingInstance.get().doTest();
-            }
-            else if (location.equals("InWarLib")) {
+            } else if (location.equals("InWarLib")) {
                 result = warLibTestingInstance.get().doTest();
-            }
-            else if (location.equals("InWarWebinfLib")) {
+            } else if (location.equals("InWarWebinfLib")) {
                 result = warWebinfLibTestingInstance.get().doTest();
-            }
-            else if (location.equals("InEjbLib")) {
+            } else if (location.equals("InEjbLib")) {
                 result = ejbLibTestingInstance.get().doTest();
-            }
-            else if (location.equals("InEjbWarLib")) {
+            } else if (location.equals("InEjbWarLib")) {
                 result = ejbWarLibTestingInstance.get().doTest();
-            }
-            else if (location.equals("InEjbAppClientLib")) {
+            } else if (location.equals("InEjbAppClientLib")) {
                 result = ejbAppClientLibTestingInstance.get().doTest();
-            }
-            else if (location.equals("InWarAppClientLib")) {
+            } else if (location.equals("InWarAppClientLib")) {
                 result = warAppClientLibTestingInstance.get().doTest();
-            }
-            else if (location.equals("InEarLib")) {
+            } else if (location.equals("InEarLib")) {
                 result = earLibTestingInstance.get().doTest();
-            }
-            else if (location.equals("InEjbAsEjbLib")) {
+            } else if (location.equals("InEjbAsEjbLib")) {
                 result = ejbAsEjbLibTestingInstance.get().doTest();
-            }
-            else if (location.equals("InEjbAsWarLib")) {
+            } else if (location.equals("InEjbAsWarLib")) {
                 result = ejbAsWarLibTestingInstance.get().doTest();
-            }
-            else if (location.equals("InEjbAsAppClientLib")) {
+            } else if (location.equals("InEjbAsAppClientLib")) {
                 result = ejbAsAppClientLibTestingInstance.get().doTest();
-            }
-            else if (location.equals("InAppClientAsEjbLib")) {
+            } else if (location.equals("InAppClientAsEjbLib")) {
                 result = appClientAsEjbLibTestingInstance.get().doTest();
-            }
-            else if (location.equals("InAppClientAsWarLib")) {
+            } else if (location.equals("InAppClientAsWarLib")) {
                 result = appClientAsWarLibTestingInstance.get().doTest();
-            }
-            else {
+            } else {
                 result = "ERROR: unrecognised qualifier\n";
             }
         } catch (UnsatisfiedResolutionException ex) {

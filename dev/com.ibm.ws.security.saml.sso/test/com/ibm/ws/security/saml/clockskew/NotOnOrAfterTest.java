@@ -226,7 +226,7 @@ public class NotOnOrAfterTest extends AssertionValidator {
             validator.verifySubject();
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -261,7 +261,7 @@ public class NotOnOrAfterTest extends AssertionValidator {
             validator.verifySubject();
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -332,7 +332,7 @@ public class NotOnOrAfterTest extends AssertionValidator {
             validator.verifySubject();
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -367,7 +367,7 @@ public class NotOnOrAfterTest extends AssertionValidator {
             validator.verifySubject();
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -402,7 +402,7 @@ public class NotOnOrAfterTest extends AssertionValidator {
             validator.verifySubject();
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -437,7 +437,7 @@ public class NotOnOrAfterTest extends AssertionValidator {
             validator.verifySubject();
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -508,7 +508,7 @@ public class NotOnOrAfterTest extends AssertionValidator {
             validator.verifySubject();
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -543,7 +543,7 @@ public class NotOnOrAfterTest extends AssertionValidator {
             validator.verifySubject();
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 

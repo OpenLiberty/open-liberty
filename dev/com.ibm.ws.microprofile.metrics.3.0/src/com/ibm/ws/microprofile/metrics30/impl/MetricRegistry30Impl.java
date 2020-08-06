@@ -12,13 +12,12 @@ package com.ibm.ws.microprofile.metrics30.impl;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
@@ -26,6 +25,8 @@ import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import javax.enterprise.inject.Vetoed;
 
@@ -49,7 +50,6 @@ import org.eclipse.microprofile.metrics.Timer;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.metrics.impl.ConcurrentGaugeImpl;
 import com.ibm.ws.microprofile.metrics.impl.CounterImpl;
 import com.ibm.ws.microprofile.metrics.impl.ExponentiallyDecayingReservoir;
@@ -62,11 +62,49 @@ import com.ibm.ws.microprofile.metrics.impl.MeterImpl;
 @Vetoed
 public class MetricRegistry30Impl implements MetricRegistry {
 
-    private static final TraceComponent tc = Tr.register(MetricRegistry30Impl.class);
+    protected static final TraceComponent tc = Tr.register(MetricRegistry30Impl.class);
+
+    protected static final String GLOBAL_TAGS_VARIABLE = "mp.metrics.tags";
+
+    protected static final String APPLICATION_NAME_VARIABLE = "mp.metrics.appName";
+
+    protected static final String APPLICATION_NAME_TAG = "_app";
+
+    protected static final String GLOBAL_TAG_MALFORMED_EXCEPTION = "Malformed list of Global Tags. Tag names "
+                                                                   + "must match the following regex [a-zA-Z_][a-zA-Z0-9_]*."
+                                                                   + " Global Tag values must not be empty."
+                                                                   + " Global Tag values MUST escape equal signs `=` and commas `,`"
+                                                                   + " with a backslash `\\` ";
+
+    /**
+     * This static Tag[] represents the server level global tags retrieved from MP Config for mp.metrics.tags. This value will be 'null' when not initialized. If during
+     * initialization and no global tag has been resolved this will be to an array of size 0. Using an array of size 0 is to represent that an attempt on start up was made to
+     * resolve the value, but none was found. This prevents later instantiations of MetricRegistry to avoid attempting to resolve the MP Config value for the slight performance
+     * boon.
+     *
+     * This server level value will not change at all throughout the life time of the server as it is defined by env vars or sys props.
+     */
+    protected static Tag[] SERVER_LEVEL_MPCONFIG_GLOBAL_TAGS = null;
+
+    /**
+     * This static Tag[] represents the server level global tags retrieved from MP Config for mp.metrics.appName. This value will be 'null' when not initialized. If during
+     * initialization and no global tag has been resolved this will be to an array of size 0. Using an array of size 0 is to represent that an attempt was made to
+     * resolve the value, but none was found. As the MP Config mp.metrics.appName is retrieved each time register/retrieve is used. This helps with performance tremendously.
+     *
+     * This server level value will not change at all throughout the life time of the server as it is defined by env vars or sys props.
+     */
+    protected static Tag[] SERVER_LEVEL_MPCONFIG_APPLICATION_NAME_TAG = null;
 
     protected final ConcurrentMap<MetricID, Metric> metricsMID;
     protected final ConcurrentMap<String, Metadata> metadataMID;
+
     protected final ConcurrentHashMap<String, ConcurrentLinkedQueue<MetricID>> applicationMap;
+
+    /**
+     * This ConcurrentHashMap<String,Tag> holds the cached value of the MP Config mp.metrics.appName value for each appliation.
+     */
+    protected final ConcurrentHashMap<String, Tag> applicationMPConfigAppNameTagCache;
+
     private final ConfigProviderResolver configResolver;
 
     private final static boolean usingJava2Security = System.getSecurityManager() != null;
@@ -86,9 +124,13 @@ public class MetricRegistry30Impl implements MetricRegistry {
 
         this.applicationMap = new ConcurrentHashMap<String, ConcurrentLinkedQueue<MetricID>>();
 
+        this.applicationMPConfigAppNameTagCache = new ConcurrentHashMap<String, Tag>();
+
         this.configResolver = configResolver;
 
         this.registryType = typeOf(name);
+
+        this.resolveMPConfigGlobalTagsByServer();
     }
 
     /**
@@ -138,7 +180,6 @@ public class MetricRegistry30Impl implements MetricRegistry {
     public <T extends Metric> T register(String name, T metric) throws IllegalArgumentException {
         // For MP Metrics 1.0, MetricType.from(Class in) does not support lambdas or proxy classes
 
-        //return register(new Metadata(name, from(metric)), metric);
         return register(Metadata.builder().withName(name).withType(from(metric)).build(), metric);
     }
 
@@ -148,8 +189,12 @@ public class MetricRegistry30Impl implements MetricRegistry {
     }
 
     @Override
-    @FFDCIgnore({ NoSuchElementException.class })
+
     public <T extends Metric> T register(Metadata metadata, T metric, Tag... tags) throws IllegalArgumentException {
+        return register(metadata, metric, false, tags);
+    }
+
+    private <T extends Metric> T register(Metadata metadata, T metric, boolean isResolvedMPConfigAppNameTag, Tag... tags) throws IllegalArgumentException {
 
         /*
          * Checks if MetaData with the given name already exists or not.
@@ -165,36 +210,14 @@ public class MetricRegistry30Impl implements MetricRegistry {
             }
         }
         //Create Copy of Metadata object so it can't be changed after its registered
-        //rf-rm
         MetadataBuilder metadataBuilder = Metadata.builder(metadata);
 
-        ArrayList<Tag> cumulativeTags = (tags == null) ? new ArrayList<Tag>() : new ArrayList<Tag>(Arrays.asList(tags));
-
-        //Append global tags to the metric
-        //rf-rm
-        Config config = configResolver.getConfig(getThreadContextClassLoader());
-        try {
-            String[] globaltags = config.getValue("MP_METRICS_TAGS", String.class).split("(?<!\\\\),");
-            for (String tag : globaltags) {
-                if (!(tag == null || tag.isEmpty() || !tag.contains("="))) {
-                    String key = tag.substring(0, tag.indexOf("="));
-                    String val = tag.substring(tag.indexOf("=") + 1);
-                    if (key.length() == 0 || val.length() == 0) {
-                        throw new IllegalArgumentException("Malformed list of Global Tags. Tag names "
-                                                           + "must match the following regex [a-zA-Z_][a-zA-Z0-9_]*."
-                                                           + " Global Tag values must not be empty."
-                                                           + " Global Tag values MUST escape equal signs `=` and commas `,`"
-                                                           + "with a backslash `\\` ");
-                    }
-                    val = val.replace("\\,", ",");
-                    val = val.replace("\\=", "=");
-                    if (!cumulativeTags.contains(key)) {
-                        cumulativeTags.add(new Tag(key, val));
-                    }
-                }
-            }
-        } catch (NoSuchElementException e) {
-            //Continue if there is no global tags
+        /*
+         * Need to resolve MP Config for Global and Application tags
+         * before creating Metric ID
+         */
+        if (!isResolvedMPConfigAppNameTag) {
+            tags = combineApplicationTagsWithMPConfigAppNameTag(tags);
         }
 
         MetricID MetricID = new MetricID(metadata.getName(), tags);
@@ -207,7 +230,6 @@ public class MetricRegistry30Impl implements MetricRegistry {
          * Rest of the method officialy registers the metric
          * Add to MetricID -> Metric Map and Name -> MetaData map
          */
-
         final Metric existingMetric = metricsMID.putIfAbsent(MetricID, metric);
 
         if (existingMetric != null) {
@@ -278,6 +300,11 @@ public class MetricRegistry30Impl implements MetricRegistry {
         }
     }
 
+    /**
+     * Leveraging the Thread Context Class Loader to resolve the application name from the component metadata
+     *
+     * @return String the application name; can be null
+     */
     private String getApplicationName() {
         com.ibm.ws.runtime.metadata.ComponentMetaData metaData = com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
         if (metaData != null) {
@@ -664,6 +691,192 @@ public class MetricRegistry30Impl implements MetricRegistry {
         return getMetrics(Timer.class, filter);
     }
 
+    /**
+     * This method will retrieve cached tag values for the mp.metrics.appName or resolve it and cache it
+     *
+     * @return The application level MP Config mp.metrics.appName tag of the application; Or if it exists the server level value; Or null
+     */
+    private synchronized Tag resolveMPConfigAppNameTag() {
+
+        String appName = getApplicationName();
+
+        /*
+         * If appName is null then we aren't running in an application context.
+         * This is possible when resolving metrics for BASE or VENDOR.
+         *
+         * Since we're using a ConcurrentHashMap, can't store a null key and don't want
+         * to risk making up a key a user might use as their appName. So we'll call two methods
+         * that are similar. resolveAppTagByServer() will, however, store to a static array.
+         *
+         */
+        Tag tag = (appName == null) ? resolveMPConfigAppNameTagByServer() : resolveMPConfigAppNameTagByApplication(appName);
+        return tag;
+    }
+
+    /**
+     * This will return server level global tag
+     * i.e defined in env var or sys props
+     *
+     * Will return null if no MP Config value is set
+     * for the mp.metrics.tags on the server level
+     *
+     * @return Tag[] The server wide global tag; can return null
+     */
+    private synchronized Tag[] resolveMPConfigGlobalTagsByServer() {
+        if (SERVER_LEVEL_MPCONFIG_GLOBAL_TAGS == null) {
+
+            Config config = configResolver.getConfig();
+
+            //Using MP Config to retreive the mp.metrics.tags Config value
+            Optional<String> globalTags = config.getOptionalValue(GLOBAL_TAGS_VARIABLE, String.class);
+
+            //evaluate if there exists tag values or set tag[0] to be null for no value;
+            SERVER_LEVEL_MPCONFIG_GLOBAL_TAGS = (globalTags.isPresent()) ? parseGlobalTags(globalTags.get()) : new Tag[0];
+        }
+        return (SERVER_LEVEL_MPCONFIG_GLOBAL_TAGS.length == 0) ? null : SERVER_LEVEL_MPCONFIG_GLOBAL_TAGS;
+
+    }
+
+    private Tag[] parseGlobalTags(String globalTags) {
+        if (globalTags == null || globalTags.length() == 0) {
+            return null;
+        }
+        String[] kvPairs = globalTags.split("(?<!\\\\),");
+
+        Tag[] arrayOfTags = new Tag[kvPairs.length];
+        int count = 0;
+        for (String kvString : kvPairs) {
+
+            if (kvString.length() == 0) {
+                throw new IllegalArgumentException(GLOBAL_TAG_MALFORMED_EXCEPTION);
+            }
+
+            String[] keyValueSplit = kvString.split("(?<!\\\\)=");
+
+            if (keyValueSplit.length != 2 || keyValueSplit[0].length() == 0 || keyValueSplit[1].length() == 0) {
+                throw new IllegalArgumentException(GLOBAL_TAG_MALFORMED_EXCEPTION);
+            }
+
+            String key = keyValueSplit[0];
+            String value = keyValueSplit[1];
+
+            if (!key.matches("[a-zA-Z_][a-zA-Z0-9_]*")) {
+                throw new IllegalArgumentException("Invalid Tag name. Tag names must match the following regex "
+                                                   + "[a-zA-Z_][a-zA-Z0-9_]*");
+            }
+            value = value.replace("\\,", ",");
+            value = value.replace("\\=", "=");
+
+            arrayOfTags[count] = new Tag(key, value);
+            count++;
+        }
+        return arrayOfTags;
+    }
+
+    /**
+     * This will return server level application tag
+     * i.e defined in env var or sys props
+     *
+     * Will return null if no MP Config value is set
+     * for the mp.metrics.appName on the server level
+     *
+     * @return Tag The server wide application tag; can return null
+     */
+    private synchronized Tag resolveMPConfigAppNameTagByServer() {
+
+        if (SERVER_LEVEL_MPCONFIG_APPLICATION_NAME_TAG == null) {
+            SERVER_LEVEL_MPCONFIG_APPLICATION_NAME_TAG = new Tag[1];
+            Config config = configResolver.getConfig();
+
+            //Using MP Config to retreive the mp.metrics.appName Config value
+            Optional<String> applicationName = config.getOptionalValue(APPLICATION_NAME_VARIABLE, String.class);
+
+            //Evaluate if there exists a tag value or set tag[0] to be null for no value;
+            SERVER_LEVEL_MPCONFIG_APPLICATION_NAME_TAG[0] = (applicationName.isPresent()) ? new Tag(APPLICATION_NAME_TAG, applicationName.get()) : null;
+        }
+        return SERVER_LEVEL_MPCONFIG_APPLICATION_NAME_TAG[0];
+    }
+
+    /**
+     * This will return the MP Config value for
+     * mp.metrics.appName for the application
+     * that the current TCCL is running for
+     *
+     * @param appName the application name to look up from cache
+     * @return Tag The mp.metrics.appName MP Config value associated to the appName; can return null if non exists
+     */
+    private synchronized Tag resolveMPConfigAppNameTagByApplication(String appName) {
+        //Return cached value
+        if (!applicationMPConfigAppNameTagCache.containsKey(appName)) {
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            Config config = configResolver.getConfig(classLoader);
+
+            //Using MP Config to retreive the mp.metrics.appName Config value
+            Optional<String> applicationName = config.getOptionalValue(APPLICATION_NAME_VARIABLE, String.class);
+
+            /*
+             * Evaluate if there exists a tag value. If there is not then we must create an "invalid" Tag to represent no value resolved.
+             * This is used later to return a null value.
+             * This is due the use of ConcurrentHashMap and we cannot set a null key.
+             */
+            Tag appTag = (applicationName.isPresent()) ? new Tag(APPLICATION_NAME_TAG, applicationName.get()) : new Tag("null", "null");
+
+            //Cache the value
+            applicationMPConfigAppNameTagCache.put(appName, appTag);
+        }
+
+        //Perhaps we don't really need a concurrent hashmap.. so we can avoid this.
+        Tag returnTag;
+        return ((returnTag = applicationMPConfigAppNameTagCache.get(appName)).getTagName().equals("null")) ? null : returnTag;
+    }
+
+    /**
+     *
+     * @param tags the application tags to be merged with the MP Config mp.metrics.appName tag
+     * @return combined Tag array of the MP Config mp.metrics.appName tag with application tags; can return null
+     */
+    private Tag[] combineApplicationTagsWithMPConfigAppNameTag(Tag... tags) {
+        return combineApplicationTagsWithMPConfigAppNameTag(false, tags);
+    }
+
+    /**
+     *
+     * @param sorted boolean to choose if the Tag array returned is sorted by key or not
+     * @param tags   the application tags to be merged with the MP Config mp.metrics.appName tag
+     * @return combined Tag array of the MP Config mp.metrics.appName tag with application tags; can return null
+     */
+    private Tag[] combineApplicationTagsWithMPConfigAppNameTag(boolean isSorted, Tag... tags) {
+        Tag mpConfigAppTag = resolveMPConfigAppNameTag();
+
+        Map<String, String> tagMap = (isSorted) ? new TreeMap<String, String>() : new HashMap<String, String>();
+        if (mpConfigAppTag != null && tags != null) {
+            tagMap.put(mpConfigAppTag.getTagName(), mpConfigAppTag.getTagValue());
+
+            /*
+             * Application Metric tags are put into the map second
+             * this will over write any conflicting tags. This is similar
+             * to the old behaviour when MetricID auto-resolved MP Config tags
+             * it would resolve MP COnfig tags first then add application tags
+             */
+            for (Tag tag : tags) {
+                tagMap.put(tag.getTagName(), tag.getTagValue());
+            }
+
+            Tag[] result = new Tag[tagMap.size()];
+            int i = 0;
+            for (Entry<String, String> entry : tagMap.entrySet()) {
+                result[i] = new Tag(entry.getKey(), entry.getValue());
+                i++;
+            }
+            tags = result;
+        } else if (mpConfigAppTag != null && tags == null) {
+            tags = new Tag[] { mpConfigAppTag };
+        }
+
+        return tags;
+
+    }
+
     @SuppressWarnings("unchecked")
     protected <T extends Metric> T getOrAdd(Metadata metadata, MetricBuilder30<T> builder, Tag... tags) {
         /*
@@ -673,6 +886,8 @@ public class MetricRegistry30Impl implements MetricRegistry {
          */
         validateMetricNameToSingleType(metadata.getName(), builder);
 
+        tags = combineApplicationTagsWithMPConfigAppNameTag(tags);
+
         MetricID metricID = new MetricID(metadata.getName(), tags);
         final Metric metric = metricsMID.get(metricID);
 
@@ -681,10 +896,9 @@ public class MetricRegistry30Impl implements MetricRegistry {
             return (T) metric;
         } else if (metric == null) { //otherwise register this new metric..
             try {
-                return register(metadata, builder.newMetric(), tags);
+                return register(metadata, builder.newMetric(), true, tags);
             } catch (IllegalArgumentException e) {
 
-                //rf-rm
                 validateMetricNameToSingleType(metadata.getName(), builder);
 
                 final Metric added = metricsMID.get(metricID);
@@ -697,13 +911,12 @@ public class MetricRegistry30Impl implements MetricRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public Gauge<?> getOrAdd(Metadata metadata, Gauge<?> incomingMetric, Tag[] tags) {
+    public <T> Gauge<T> getOrAdd(Metadata metadata, Gauge<T> incomingMetric, Tag[] tags) {
         /*
          * Check if metric with this name already exists or not.
          * If it does exist, checks if is of the same metric type.
          * Will throw an exception otherwise
          */
-        //validateMetricNameToSingleType(metadata.getName(), builder);
         MetricType mt = from(incomingMetric);
         for (MetricID mid : metricsMID.keySet()) {
             if (mid.getName().equals(metadata.getName()) && !incomingMetric.getClass().isInstance(metricsMID.get(mid))) {
@@ -711,19 +924,19 @@ public class MetricRegistry30Impl implements MetricRegistry {
             }
         }
 
+        tags = combineApplicationTagsWithMPConfigAppNameTag(tags);
+
         MetricID metricID = new MetricID(metadata.getName(), tags);
         final Metric metric = metricsMID.get(metricID);
 
         //Found an existing metric with matching MetricID
         if (incomingMetric.getClass().isInstance(metric)) {
-            return (Gauge<?>) metric;
+            return (Gauge<T>) metric;
         } else if (metric == null) { //otherwise register this new metric..
             try {
-                return register(metadata, incomingMetric, tags);
+                return register(metadata, incomingMetric, true, tags);
             } catch (IllegalArgumentException e) {
 
-                //rf-rm
-                //validateMetricNameToSingleType(metadata.getName(), builder);
                 for (MetricID mid : metricsMID.keySet()) {
                     if (mid.getName().equals(metadata.getName()) && !incomingMetric.getClass().isInstance(metricsMID.get(mid))) {
                         throw new IllegalArgumentException(metadata.getName() + " is already used for a different type of metric");
@@ -732,7 +945,7 @@ public class MetricRegistry30Impl implements MetricRegistry {
 
                 final Metric added = metricsMID.get(metricID);
                 if (incomingMetric.getClass().isInstance(added)) {
-                    return (Gauge<?>) added;
+                    return (Gauge<T>) added;
                 }
             }
         }
@@ -1028,23 +1241,10 @@ public class MetricRegistry30Impl implements MetricRegistry {
     /** {@inheritDoc} */
     @Override
     public Metric getMetric(MetricID metricID) {
-        return metricsMID.get(metricID);
-    }
 
-    @Override
-    public Gauge<?> gauge(String name, Gauge<?> gauge) {
-        return gauge(name, gauge, null);
-    }
-
-    @Override
-    public Gauge<?> gauge(String name, Gauge<?> gauge, Tag... tags) {
-        return gauge(new MetricID(name, tags), gauge);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Gauge<?> gauge(MetricID metricID, Gauge<?> gauge) {
-        return getOrAdd(Metadata.builder().withName(metricID.getName()).withType(MetricType.GAUGE).build(), gauge, metricID.getTagsAsArray());
+        Tag[] combinedTags = combineApplicationTagsWithMPConfigAppNameTag(metricID.getTagsAsArray());
+        MetricID metricIDWithMPConfigAppTags = new MetricID(metricID.getName(), combinedTags);
+        return metricsMID.get(metricIDWithMPConfigAppTags);
     }
 
     /** {@inheritDoc} */
@@ -1118,6 +1318,151 @@ public class MetricRegistry30Impl implements MetricRegistry {
             throw new IllegalArgumentException("Name of registry must be base vendor or application");
         }
 
+    }
+
+    /**
+     * Retrieves the cached server level MP Config mp.metrics.tag (global tags) that is stored
+     * in a static Tag[]
+     *
+     * @return Tag[] The Tag array of cached server level global tags. Can return null if none was set.
+     */
+    public static Tag[] getCachedGlobalTags() {
+        return (SERVER_LEVEL_MPCONFIG_GLOBAL_TAGS.length == 0) ? null : SERVER_LEVEL_MPCONFIG_GLOBAL_TAGS;
+    }
+
+    @Override
+    public <T, R extends Number> Gauge<R> gauge(String name, T object, Function<T, R> func, Tag... tags) {
+        return gauge(new MetricID(name, tags), object, func);
+    }
+
+    @Override
+    public <T, R extends Number> Gauge<R> gauge(MetricID metricID, T object, Function<T, R> func) {
+        Metadata metadata = Metadata.builder().withName(metricID.getName()).withType(MetricType.GAUGE).build();
+        return gauge(metadata, object, func, null);
+    }
+
+    @Override
+    public <T extends Number> Gauge<T> gauge(String name, Supplier<T> supplier, Tag... tags) {
+
+        return gauge(new MetricID(name, tags), supplier);
+    }
+
+    @Override
+    public <T extends Number> Gauge<T> gauge(MetricID metricID, Supplier<T> supplier) {
+        Metadata metadata = Metadata.builder().withName(metricID.getName()).withType(MetricType.GAUGE).build();
+        return gauge(metadata, supplier, null);
+    }
+
+    private static class GaugeToDoubleFunction<T, R extends Number> implements Gauge<R> {
+
+        final Function<T, R> func;
+        final T object;
+
+        GaugeToDoubleFunction(T object, Function<T, R> func) {
+            this.func = func;
+            this.object = object;
+
+        }
+
+        @Override
+        public R getValue() {
+            return func.apply(object);
+
+        }
+
+    }
+
+    private static class GaugeSupplier<T extends Number> implements Gauge<T> {
+        final Supplier<T> supplier;
+
+        GaugeSupplier(Supplier<T> supplier) {
+            this.supplier = supplier;
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public T getValue() {
+            return supplier.get();
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public <T extends Number> Gauge<T> gauge(Metadata inputMetadata, Supplier<T> supplier, Tag... tags) {
+
+        /*
+         * If metadata has Metric Type unspecified then set it
+         * (by creating a new metadata since the existing metadata is immutable
+         *
+         * Then check if the metadata contains the correct Gauge
+         * Metric Type. If not throw an exception.
+         *
+         * Otherwise, use the metadata as-is
+         */
+        Metadata metadata = null;
+        if (inputMetadata.getTypeRaw() == MetricType.INVALID) {
+            metadata = Metadata.builder(inputMetadata).withType(MetricType.GAUGE).build();
+        } else if (inputMetadata.getTypeRaw() != MetricType.GAUGE) {
+            throw new IllegalArgumentException("The Metadata does not contain the appropriate Metric Type for a Gauge. The value retrieved is " + inputMetadata.getType());
+        } else {
+            metadata = inputMetadata;
+        }
+
+        /*
+         * Double check that a metadata of this name isn't already
+         * used for another metric type
+         */
+        String name = metadata.getName();
+
+        if (metadataMID.keySet().contains(name)) {
+            metadata = metadataMID.get(name);
+
+            if (!metadata.getTypeRaw().equals(MetricType.GAUGE)) {
+                throw new IllegalArgumentException(name + " is already used for a different type of metric");
+            }
+        }
+
+        Gauge<T> gauge = new GaugeSupplier<T>(supplier);
+        return getOrAdd(metadata, gauge, tags);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public <T, R extends Number> Gauge<R> gauge(Metadata inputMetadata, T object, Function<T, R> func, Tag... tags) {
+        /*
+         * If metadata has Metric Type unspecified then set it
+         * (by creating a new metadata since the existing metadata is immutable
+         *
+         * Then check if the metadata contains the correct Gauge
+         * Metric Type. If not throw an exception.
+         *
+         * Otherwise, use the metadata as-is
+         */
+        Metadata metadata = null;
+        if (inputMetadata.getTypeRaw() == MetricType.INVALID) {
+            metadata = Metadata.builder(inputMetadata).withType(MetricType.GAUGE).build();
+        } else if (inputMetadata.getTypeRaw() != MetricType.GAUGE) {
+            throw new IllegalArgumentException("The Metadata does not contain the appropriate Metric Type for a Gauge. The value retrieved is " + inputMetadata.getType());
+        } else {
+            metadata = inputMetadata;
+        }
+
+        /*
+         * Double check that a metadata of this name isn't already
+         * used for another metric type
+         */
+        String name = metadata.getName();
+
+        if (metadataMID.keySet().contains(name)) {
+            metadata = metadataMID.get(name);
+
+            if (!metadata.getTypeRaw().equals(MetricType.GAUGE)) {
+                throw new IllegalArgumentException(name + " is already used for a different type of metric");
+            }
+        }
+
+        Gauge<R> gauge = new GaugeToDoubleFunction<T, R>(object, func);
+        return getOrAdd(metadata, gauge, tags);
     }
 
 }

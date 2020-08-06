@@ -18,9 +18,9 @@ IBM-API-Package: \
   com.ibm.ws.beanvalidation.accessor; type="internal"
 -features=\
   com.ibm.websphere.appserver.eeCompatible-9.0, \
-  com.ibm.websphere.appserver.el-4.0, \
   com.ibm.websphere.appserver.transaction-2.0, \
   io.openliberty.beanValidationCore-2.0, \
+  io.openliberty.el-4.0, \
   io.openliberty.jakarta.cdi-3.0, \
   io.openliberty.jakarta.interceptor-2.0, \
   io.openliberty.jakarta.validation-3.0

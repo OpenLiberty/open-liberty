@@ -15,6 +15,8 @@ Bundle-Name: EJB EPC enablement feature for JPA
 Bundle-SymbolicName: com.ibm.ws.ejbcontainer.jpa
 Bundle-Description: EJB EPC enablement feature for JPA; version=${bVersion}
 
+jakartaeeMe: true
+
 WS-TraceGroup: EJBContainer
   
 Export-Package: \

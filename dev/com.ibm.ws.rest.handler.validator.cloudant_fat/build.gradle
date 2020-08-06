@@ -45,3 +45,5 @@ task copyCloudantOld(type: Copy) {
 }
 addRequiredLibraries.dependsOn copyCloudant
 addRequiredLibraries.dependsOn copyCloudantOld
+
+addRequiredLibraries.dependsOn addJakartaTransformer

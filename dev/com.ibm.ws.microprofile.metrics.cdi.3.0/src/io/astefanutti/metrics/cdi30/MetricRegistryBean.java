@@ -44,9 +44,9 @@ import javax.enterprise.util.AnnotationLiteral;
 
 import org.eclipse.microprofile.metrics.MetricRegistry;
 
-import com.ibm.ws.microprofile.metrics23.impl.MetricRegistry23Impl;
+import com.ibm.ws.microprofile.metrics30.impl.MetricRegistry30Impl;
 
-public final class MetricRegistryBean implements Bean<MetricRegistry23Impl>, PassivationCapable {
+public final class MetricRegistryBean implements Bean<MetricRegistry30Impl>, PassivationCapable {
 
     private final Set<Annotation> qualifiers = new HashSet<>(Arrays.<Annotation> asList(new AnnotationLiteral<Any>() {
     }, new AnnotationLiteral<Default>() {
@@ -54,10 +54,10 @@ public final class MetricRegistryBean implements Bean<MetricRegistry23Impl>, Pas
 
     private final Set<Type> types;
 
-    private final InjectionTarget<MetricRegistry23Impl> target;
+    private final InjectionTarget<MetricRegistry30Impl> target;
 
     public MetricRegistryBean(BeanManager manager) {
-        AnnotatedType<MetricRegistry23Impl> annotatedType = manager.createAnnotatedType(MetricRegistry23Impl.class);
+        AnnotatedType<MetricRegistry30Impl> annotatedType = manager.createAnnotatedType(MetricRegistry30Impl.class);
         this.types = annotatedType.getTypeClosure();
         this.target = manager.createInjectionTarget(annotatedType);
     }
@@ -73,8 +73,8 @@ public final class MetricRegistryBean implements Bean<MetricRegistry23Impl>, Pas
     }
 
     @Override
-    public MetricRegistry23Impl create(CreationalContext<MetricRegistry23Impl> context) {
-        MetricRegistry23Impl registry = target.produce(context);
+    public MetricRegistry30Impl create(CreationalContext<MetricRegistry30Impl> context) {
+        MetricRegistry30Impl registry = target.produce(context);
         target.inject(registry, context);
         target.postConstruct(registry);
         context.push(registry);
@@ -82,7 +82,7 @@ public final class MetricRegistryBean implements Bean<MetricRegistry23Impl>, Pas
     }
 
     @Override
-    public void destroy(MetricRegistry23Impl instance, CreationalContext<MetricRegistry23Impl> context) {
+    public void destroy(MetricRegistry30Impl instance, CreationalContext<MetricRegistry30Impl> context) {
         target.preDestroy(instance);
         target.dispose(instance);
         context.release();

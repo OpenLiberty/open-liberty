@@ -319,7 +319,7 @@ public class WebSSOConsumerTest {
                          result, messageContext);
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -469,7 +469,7 @@ public class WebSSOConsumerTest {
             }
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 

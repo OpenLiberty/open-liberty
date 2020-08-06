@@ -30,6 +30,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.http2.GrpcServletServices;
 import com.ibm.ws.http2.GrpcServletServices.ServiceInformation;
+import com.ibm.ws.managedobject.ManagedObjectException;
 import com.ibm.ws.security.authorization.util.RoleMethodAuthUtil;
 import com.ibm.ws.security.authorization.util.UnauthenticatedException;
 
@@ -38,6 +39,7 @@ import io.grpc.Metadata;
 import io.grpc.ServerInterceptor;
 import io.grpc.ServerInterceptors;
 import io.grpc.servlet.ServletServerBuilder;
+import io.openliberty.grpc.internal.GrpcManagedObjectProvider;
 import io.openliberty.grpc.internal.GrpcMessages;
 import io.openliberty.grpc.internal.config.GrpcServiceConfigHolder;
 
@@ -207,15 +209,14 @@ public class GrpcServletUtils {
 			if (!items.isEmpty()) {
 				for (String className : items) {
 					try {
-						// use the app classloader to load the interceptor
-						ClassLoader cl = Thread.currentThread().getContextClassLoader();
-						Class<?> clazz = Class.forName(className, true, cl);
-						ServerInterceptor interceptor = (ServerInterceptor) clazz.getDeclaredConstructor()
-								.newInstance();
-						interceptors.add(interceptor);
+						// TODO: cache interceptors?
+						ServerInterceptor interceptor = (ServerInterceptor) GrpcManagedObjectProvider.createObjectFromClassName(className);
+						if (interceptor != null) {
+							interceptors.add(interceptor);
+						}
 					} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
 							| IllegalArgumentException | InvocationTargetException | NoSuchMethodException
-							| SecurityException e) {
+							| SecurityException | ManagedObjectException e) {
 						Tr.warning(tc, "invalid.serverinterceptor", e.getMessage());
 					}
 				}

@@ -1,37 +1,33 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.v11.config.impl;
 
-import java.util.Map;
-import java.util.NoSuchElementException;
-
-import org.eclipse.microprofile.config.Config;
-
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import org.eclipse.microprofile.config.Config;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
-import org.osgi.framework.ServiceReference;
+import com.ibm.ws.security.mp.jwt.config.MpConstants;
 
 import test.common.SharedOutputManager;
 
@@ -147,17 +143,27 @@ public class MpConfigProxyServiceImplTest {
         MpConfigProxyServiceImpl mpConfigProxyServiceImpl = new MpConfigProxyServiceImplDouble();
         String NAME = "name";
         Class CLAZZ = Object.class;
+
+        String output = (String) mpConfigProxyServiceImpl.getConfigValue(null, NAME, CLAZZ);
+        assertNull("Expected the result to be null but was [" + output + "].", output);
+    }
+
+    @Test
+    public void testGetConfigValueNoCL_supportedMpJwtConfigProperty() {
+        MpConfigProxyServiceImpl mpConfigProxyServiceImpl = new MpConfigProxyServiceImplDouble();
+        String NAME = MpConstants.PUBLIC_KEY;
+        Class CLAZZ = Object.class;
         String VALUE = "value";
 
         mockery.checking(new Expectations() {
             {
+                never(configCL).getValue(NAME, CLAZZ);
                 one(configNoCL).getValue(NAME, CLAZZ);
                 will(returnValue(VALUE));
-                never(configCL).getValue(NAME, CLAZZ);
             }
         });
 
-        String output = (String)mpConfigProxyServiceImpl.getConfigValue(null, NAME, CLAZZ);
+        String output = (String) mpConfigProxyServiceImpl.getConfigValue(null, NAME, CLAZZ);
         assertEquals("the expected value should be returned", VALUE, output);
     }
 
@@ -165,9 +171,19 @@ public class MpConfigProxyServiceImplTest {
      * Tests getConfigValue method
      */
     @Test
-    public void testGetConfigValueCL() {
+    public void testGetConfigValueCL_unknownMpJwtConfigProperty() {
         MpConfigProxyServiceImpl mpConfigProxyServiceImpl = new MpConfigProxyServiceImplDouble();
         String NAME = "name";
+        Class CLAZZ = Object.class;
+
+        String output = (String) mpConfigProxyServiceImpl.getConfigValue(cl, NAME, CLAZZ);
+        assertNull("Expected the result to be null but was [" + output + "].", output);
+    }
+
+    @Test
+    public void testGetConfigValueCL_supportedMpJwtConfigProperty() {
+        MpConfigProxyServiceImpl mpConfigProxyServiceImpl = new MpConfigProxyServiceImplDouble();
+        String NAME = MpConstants.ISSUER;
         Class CLAZZ = Object.class;
         String VALUE = "value";
 
@@ -179,7 +195,7 @@ public class MpConfigProxyServiceImplTest {
             }
         });
 
-        String output = (String)mpConfigProxyServiceImpl.getConfigValue(cl, NAME, CLAZZ);
+        String output = (String) mpConfigProxyServiceImpl.getConfigValue(cl, NAME, CLAZZ);
         assertEquals("the expected value should be returned", VALUE, output);
     }
 
@@ -193,6 +209,5 @@ public class MpConfigProxyServiceImplTest {
             }
         }
     }
-
 
 }

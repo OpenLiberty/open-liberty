@@ -15,15 +15,23 @@ src:\
     fat/src,\
     test-applications/basic.jar/src,\
     test-applications/basic.war/src,\
-    test-applications/websocket11.war/src
+    test-applications/websocket11.war/src,\
+    test-applications/cdi.war/src,\
+    test-applications/context.war/src
 
 fat.project: true
 
 # Define additional tested features that are NOT present any any XML files in this bucket.
-#tested.features:\
+tested.features: \
+    servlet-4.0,\
+    servlet-5.0,\
+    websocket-2.0
 
 
 -buildpath: \
     com.ibm.websphere.javaee.servlet.3.1;version=latest,\
     com.ibm.websphere.javaee.websocket.1.1;version=latest,\
+    com.ibm.websphere.javaee.cdi.1.0;version=latest,\
+    com.ibm.websphere.javaee.interceptor.1.1;version=latest,\
+    com.ibm.websphere.javaee.jms.1.1;version=latest,\
     com.ibm.ws.wsoc;version=latest

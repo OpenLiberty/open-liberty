@@ -21,10 +21,13 @@ import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
 public class JDBC41UpgradeTest extends FATServletClient {
     private static final String servlet_basic = "BasicTestServlet";
