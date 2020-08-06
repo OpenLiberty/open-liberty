@@ -14,6 +14,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Duration;
+import java.util.Date;
+import java.util.List;
 import java.util.Map.Entry;
 
 import org.testcontainers.Testcontainers;
@@ -21,6 +23,7 @@ import org.testcontainers.containers.ContainerLaunchException;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 
+import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.api.model.ContainerNetwork;
 import com.github.dockerjava.api.model.ContainerNetwork.Ipam;
 import com.github.dockerjava.api.model.PruneType;
@@ -51,6 +54,12 @@ public class BoulderContainer extends CAContainer {
 	private static final int OCSP_PORT = 4002;
 
 	private static final String FILE_INTERMEDIATE_PEM = "lib/LibertyFATTestFiles/boulder.intermediate.pem";
+
+	private static final Long EXPIRE_TIME = 3600000L; // 7200000L;
+
+	private static final long LONG_SLEEP = 120000;
+
+	private static final long SHORT_SLEEP = 1000;
 
 	public Network bluenet = Network.builder().createNetworkCmdModifier(cmd -> {
 		cmd.withDriver("bridge");
@@ -128,7 +137,7 @@ public class BoulderContainer extends CAContainer {
 				.withCreateContainerCmdModifier(cmd -> cmd.withHostName("boulder"))
 				.withExposedPorts(getDnsManagementPort(), getAcmeListenPort(), OCSP_PORT)
 				.withLogConsumer(o -> System.out.print("[BOL] " + o.getUtf8String()))
-				.withStartupTimeout(Duration.ofMinutes(3));
+				.withStartupTimeout(Duration.ofMinutes(7));
 	}
 
 	@Override
@@ -168,30 +177,93 @@ public class BoulderContainer extends CAContainer {
 		 * addresses are hardcoded in the Boulder imaging we are using, we can't start
 		 * another container without conflicting with the stale container.
 		 * 
-		 * To clean:
+		 * To manually clean:
 		 * 
 		 * You will need to have a docker client installed.
 		 * 
-		 * Check the output.txt for this, If you need to connect to any currently
-		 * running docker containers manually, export the following environment
-		 * variables in your terminal, and set the three variables in a terminal (swap
-		 * export to set for windows).
+		 * Check the output.txt for this, "If you need to connect to any currently
+		 * running docker containers manually." Look at a local output.txt (run acme_fat
+		 * if you don't have current out). There are three DOCKER environment variables
+		 * to export (DOCKER_HOST, etc).
 		 * 
-		 * Now when you run docker commands, you will be connected to the remote
-		 * machine.
+		 * After exporting (or setting) the three DOCKER variables, when you run docker
+		 * commands, you will be connected to the remote machine.
 		 * 
 		 * Run this to view the running containers:
 		 * 
 		 * > docker container ls
 		 * 
-		 * In the output, look for images with these names that are old (like > 1 hour)
-		 * mariaDB boulder letsencrypt
+		 * In the output, look for images with these names that are old (like > 1 hour):
+		 * mariaDB boulder letsencrypt pebble
 		 * 
 		 * Copy the CONTAINER ID (first column) and then run
 		 * 
 		 * > docker container stop CONTAINER_ID
 		 */
 		boolean everythingStarted = false;
+
+		/*
+		 * Try to wait if there's another boulder instance running. If we just try to
+		 * start/stop/restart, we can stop the instance for another test, causing
+		 * Connection Failed exceptions.
+		 * 
+		 * If the Boulder/MariaDB refs have been running for a long time, try to clean
+		 * it up or it will block us from starting
+		 */
+		Log.info(BoulderContainer.class, "start", "Checking for other Boulder/MariaDB containers");
+		try {
+			boolean clearToContinue = true;
+			boolean sleep = false;
+			for (int b = 1; b <= NUM_RESTART_ATTEMPTS_ON_EXCEPTION; b++) {
+				clearToContinue = true;
+				sleep = false;
+				Log.info(BoulderContainer.class, "start", "Checking Round " + b);
+				List<Container> currentContainers = super.getDockerClient().listContainersCmd().exec();
+				for (Container container : currentContainers) {
+					String imageName = container.getImage();
+					Log.info(BoulderContainer.class, "start", "ImageName: " + imageName);
+					if (imageName.toLowerCase().contains("acme-boulder")
+							|| imageName.toLowerCase().contains("mariadb")) {
+						Long created = container.getCreated() * 1000; // Adjust time to milliseconds
+						if ((System.currentTimeMillis() - created) > EXPIRE_TIME) {
+							String id = container.getId();
+							Log.info(BoulderContainer.class, "start",
+									"*****Found a " + imageName + " container already running on the server for "
+											+ created + " (" + new Date(created) + ") which is longer than "
+											+ EXPIRE_TIME + "ms. Attempt to stop ID " + id);
+							super.getDockerClient().stopContainerCmd(id).exec();
+						} else {
+							Log.info(BoulderContainer.class, "start",
+									imageName + " already running on this container from " + created + " ("
+											+ new Date(created) + "). Sleep and recheck. Create time on image is "
+											+ created + "ms.");
+							sleep = true;
+						}
+						clearToContinue = false;
+					}
+				}
+				if (clearToContinue) {
+					break;
+				}
+				if (sleep) {
+					Log.info(BoulderContainer.class, "start",
+							"Found running Boulder/MariaDB containers, sleep and recheck");
+					try {
+						/*
+						 * Currently the AcmeRevocationTest runs about 5-6 minutes
+						 */
+						Thread.sleep(LONG_SLEEP);
+					} catch (InterruptedException e) {
+
+					}
+				}
+			}
+		} catch (Exception e) {
+			Log.error(BoulderContainer.class, "start", e,
+					"Failed to clean up prior containers. Proceeding in case the next series of retries will work.");
+		}
+
+		Log.info(BoulderContainer.class, "start", "Start Boulder containers: Maria DB, Faux Domain server and Boulder");
 		try {
 			initSQL();
 			for (int i = 0; i < (NUM_RESTART_ATTEMPTS_ON_EXCEPTION * 2); i++) {
@@ -219,7 +291,7 @@ public class BoulderContainer extends CAContainer {
 						 * com/sun/jna/platform/win32/Kernel32 and a shorter sleep before a retry
 						 * normally works around it
 						 */
-						Thread.sleep(t instanceof NoClassDefFoundError ? 1000 : (120000));
+						Thread.sleep(t instanceof NoClassDefFoundError ? SHORT_SLEEP : (LONG_SLEEP));
 					} catch (InterruptedException e) {
 					}
 					initSQL();
@@ -243,7 +315,7 @@ public class BoulderContainer extends CAContainer {
 					bhsm.stop();
 					initSM();
 					try {
-						Thread.sleep(t instanceof NoClassDefFoundError ? 1000 : (120000));
+						Thread.sleep(t instanceof NoClassDefFoundError ? SHORT_SLEEP : (LONG_SLEEP));
 					} catch (InterruptedException e) {
 					}
 				}
@@ -255,7 +327,14 @@ public class BoulderContainer extends CAContainer {
 				bhsm.start();
 			}
 
-			super.withStartupAttempts(WITH_STARTUP_ATTEMPTS);
+			/*
+			 * Only do 1 internal restart. If we hit a ContainerLaunchException and
+			 * auto-retry, we'll get a Pool overlap exception (aka, docker container still
+			 * running on our ports).
+			 * 
+			 * Manually clear the boulder container and restart.
+			 */
+			super.withStartupAttempts(1);
 			for (int i = 0; i < NUM_RESTART_ATTEMPTS_ON_EXCEPTION; i++) {
 				try {
 					super.start();
@@ -263,8 +342,24 @@ public class BoulderContainer extends CAContainer {
 				} catch (Throwable t) {
 					if (t instanceof ContainerLaunchException) {
 						Log.error(BoulderContainer.class, "start", t,
-								"Possibly failed to start boulder, to far along in the init process to restart.");
-						break;
+								"Failed mid-start on Boulder container. Stop container manually and try to restart.");
+
+						List<Container> currentContainers = super.getDockerClient().listContainersCmd().exec();
+						for (Container container : currentContainers) {
+							String imageName = container.getImage();
+							if (imageName.toLowerCase().contains("acme-boulder")
+									&& !container.getId().equals(bhsm.getContainerId())) {
+								/*
+								 * Only stop the Boulder image that we just tried to start -- don't stop the
+								 * bhsm (domain server). They have the same image name.
+								 */
+								String id = container.getId();
+								Log.info(BoulderContainer.class, "start",
+										"Stopping failed boulder image at container ID " + id);
+								super.getDockerClient().stopContainerCmd(id).exec();
+								break;
+							}
+						}
 					}
 
 					Log.error(BoulderContainer.class, "start", t, "Failed to start boulder, try again.");
@@ -276,7 +371,7 @@ public class BoulderContainer extends CAContainer {
 						 * com/sun/jna/platform/win32/Kernel32 and a shorter sleep before a retry
 						 * normally works around it
 						 */
-						Thread.sleep(t instanceof NoClassDefFoundError ? 1000 : (120000 * i));
+						Thread.sleep(t instanceof NoClassDefFoundError ? SHORT_SLEEP : (LONG_SLEEP * i));
 					} catch (InterruptedException e) {
 					}
 				}
@@ -329,8 +424,8 @@ public class BoulderContainer extends CAContainer {
 		}
 
 		try {
-			super.getDockerClient().disconnectFromNetworkCmd().withNetworkId(bluenet.getId());
-			super.getDockerClient().disconnectFromNetworkCmd().withNetworkId(rednet.getId());
+			super.getDockerClient().disconnectFromNetworkCmd().withNetworkId(bluenet.getId()).exec();
+			super.getDockerClient().disconnectFromNetworkCmd().withNetworkId(rednet.getId()).exec();
 		} catch (Exception e) {
 
 		}
@@ -352,7 +447,7 @@ public class BoulderContainer extends CAContainer {
 
 		super.stop();
 
-		super.getDockerClient().pruneCmd(PruneType.NETWORKS);
+		pruneNetwork();
 
 		Log.info(BoulderContainer.class, "stop", "Stopped Boulder services");
 	}
@@ -403,7 +498,7 @@ public class BoulderContainer extends CAContainer {
 	}
 
 	private void initSQL() {
-		super.getDockerClient().pruneCmd(PruneType.NETWORKS);
+		pruneNetwork();
 
 		if (bluenet == null) {
 			bluenet = Network.builder().createNetworkCmdModifier(cmd -> {
@@ -426,11 +521,14 @@ public class BoulderContainer extends CAContainer {
 	}
 
 	private void initSM() {
-		bhsm = new GenericContainer<>(DOCKER_IMAGE)
-		.withEnv("PKCS11_DAEMON_SOCKET", "tcp://0.0.0.0:5657").withExposedPorts(5657).withNetwork(bluenet)
-		.withNetworkAliases("boulder-hsm")
-		.withCommand("/usr/local/bin/pkcs11-daemon /usr/lib/softhsm/libsofthsm2.so")
-		.withLogConsumer(o -> System.out.print("[HSM] " + o.getUtf8String()));
+		bhsm = new GenericContainer<>(DOCKER_IMAGE).withEnv("PKCS11_DAEMON_SOCKET", "tcp://0.0.0.0:5657")
+				.withExposedPorts(5657).withNetwork(bluenet).withNetworkAliases("boulder-hsm")
+				.withCommand("/usr/local/bin/pkcs11-daemon /usr/lib/softhsm/libsofthsm2.so")
+				.withLogConsumer(o -> System.out.print("[HSM] " + o.getUtf8String()));
 		bhsm.withStartupAttempts(WITH_STARTUP_ATTEMPTS);
+	}
+
+	private void pruneNetwork() {
+		super.getDockerClient().pruneCmd(PruneType.NETWORKS).exec();
 	}
 }
