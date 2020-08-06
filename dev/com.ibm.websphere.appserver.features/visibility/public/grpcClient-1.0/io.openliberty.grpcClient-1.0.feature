@@ -25,7 +25,6 @@ Subsystem-Name: gRPC Client 1.0
 -bundles=\
   io.openliberty.grpc.1.0.internal.common, \
   io.openliberty.grpc.1.0.internal.client, \
-  io.openliberty.grpc.1.0.internal.monitor,\
   com.ibm.ws.org.apache.commons.logging.1.0.3
 kind=beta
 edition=full
