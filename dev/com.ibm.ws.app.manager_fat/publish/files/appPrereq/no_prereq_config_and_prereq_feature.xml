@@ -1,0 +1,14 @@
+<server description="default server">
+  <include location="../fatTestPorts.xml"/>
+
+  <featureManager>
+    <feature>servlet-4.0</feature>
+    <feature>test.app.prereq</feature>
+  </featureManager>
+    
+  <applicationManager autoExpand="true"/>
+  <webContainer deferServletLoad="true"/>
+
+  <application location="snoop.war" />
+</server>
+

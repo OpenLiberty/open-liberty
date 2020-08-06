@@ -24,6 +24,7 @@ import org.junit.AfterClass;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -89,6 +90,13 @@ public class AppPrereqTest extends AbstractAppManagerTest {
         assertSnoopStarted();
         changeServerConfig(ServerXml.PREREQ_CONFIG_AND_NO_PREREQ_FEATURE);
         assertSnoopStopped();        
+    }
+
+    @ExpectedFFDC("java.lang.IllegalStateException")
+    @Test
+    public void testUnconfiguredPrereqCauseFFDC() throws Exception {
+        // expect alarums and excursions
+        startServer(ServerXml.NO_PREREQ_CONFIG_AND_PREREQ_FEATURE);
     }
 
     enum ServerXml { 
