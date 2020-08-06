@@ -35,11 +35,7 @@ public class GrpcServerMonitor {
 	@ProbeSite(clazz = "io.openliberty.grpc.internal.monitor.GrpcServerStatsMonitor", method = "recordCallStarted")
 	public void atGrpcServerStart(@This Object serverStats) {
 		GrpcServerStatsMonitor stats = (GrpcServerStatsMonitor) serverStats;
-		getGrpcServerStats(stats.getAppName(), stats.getServiceName()).recordCallStarted();
-		
-		System.out.println(String.format("ANNA atGrpcServerStart: service[%s] application[%s] - [%s]",
-				stats.getServiceName(), stats.getAppName(),
-				getGrpcServerStats(stats.getAppName(), stats.getServiceName()).getCallStartedCount()));
+		getGrpcServerStats(stats.getAppName(), stats.getServiceName()).recordCallStarted();		
 	}
 
 	@ProbeAtEntry
@@ -47,10 +43,6 @@ public class GrpcServerMonitor {
 	public void atGrpcServerHandled(@This Object serverStats) {
 		GrpcServerStatsMonitor stats = (GrpcServerStatsMonitor) serverStats;
 		getGrpcServerStats(stats.getAppName(), stats.getServiceName()).recordServerHandled();
-		
-		System.out.println(String.format("ANNA atGrpcServerHandled: service[%s] application[%s] - [%s]",
-				stats.getServiceName(), stats.getAppName(),
-				getGrpcServerStats(stats.getAppName(), stats.getServiceName()).getServiceHandledCount()));
 	}
 
 	@ProbeAtReturn
@@ -58,10 +50,6 @@ public class GrpcServerMonitor {
 	public void atGrpcServerMsgReceived(@This Object serverStats) {
 		GrpcServerStatsMonitor stats = (GrpcServerStatsMonitor) serverStats;
 		getGrpcServerStats(stats.getAppName(), stats.getServiceName()).incrementReceivedMsgCountBy(1);
-		
-		System.out.println(String.format("ANNA atGrpcServerMsgReceived: service[%s] application[%s] - [%s]",
-				stats.getServiceName(), stats.getAppName(),
-				getGrpcServerStats(stats.getAppName(), stats.getServiceName()).getReceivedMessagesCount()));
 	}
 
 	@ProbeAtReturn
@@ -69,10 +57,6 @@ public class GrpcServerMonitor {
 	public void atGrpcServerMsgSent(@This Object serverStats) {
 		GrpcServerStatsMonitor stats = (GrpcServerStatsMonitor) serverStats;
 		getGrpcServerStats(stats.getAppName(), stats.getServiceName()).incrementSentMsgCountBy(1);
-		
-		System.out.println(String.format("ANNA atGrpcServerMsgSent: service[%s] application[%s] - [%s]",
-				stats.getServiceName(), stats.getAppName(),
-				getGrpcServerStats(stats.getAppName(), stats.getServiceName()).getSentMessagesCount()));
 	}
 
 	private synchronized GrpcServerStats getGrpcServerStats(String appName, String serviceName) {

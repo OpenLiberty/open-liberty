@@ -13,7 +13,7 @@ package io.openliberty.grpc.internal.monitor;
 import com.ibm.websphere.monitor.meters.Counter;
 import com.ibm.websphere.monitor.meters.Meter;
 
-import io.openliberty.grpc.GrpcServerStatsMXBean;
+import io.openliberty.grpc.monitor.GrpcServerStatsMXBean;
 
 /**
  * This is used to report gRPC Server related statistics. </br>
@@ -129,12 +129,12 @@ public class GrpcServerStats extends Meter implements GrpcServerStatsMXBean {
 	}
 
 	@Override
-	public long getCallStartedCount() {
+	public long getRpcStartedCount() {
 		return serverStarted.getCurrentValue();
 	}
 
 	@Override
-	public long getServiceHandledCount() {
+	public long getRpcCompletedCount() {
 		return serverHandled.getCurrentValue();
 	}
 }

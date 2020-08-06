@@ -22,8 +22,8 @@ Import-Package: \
   !*.internal.*,*
 	
 Export-Package: \
-  io.openliberty.grpc; type="ibm-api", \
-  io.openliberty.grpc.internal.monitor
+	io.openliberty.grpc.monitor,\
+	io.openliberty.grpc.internal.monitor
   
 
 DynamicImport-Package: com.ibm.websphere.monitor.meters;version="1.0.0", \

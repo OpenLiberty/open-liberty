@@ -253,7 +253,7 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
 	}
 
 	/**
-	 * Set useSecurity to true if any of the appSecurity features are enabled
+	 * Set the indication whether the monitor feature is enabled 
 	 */
 	private void setMonitoringEnabled() {
 		Set<String> currentFeatureSet = _featureProvisioner.getService().getInstalledFeatures();

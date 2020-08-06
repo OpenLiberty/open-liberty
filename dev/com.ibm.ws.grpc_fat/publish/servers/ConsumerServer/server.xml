@@ -14,6 +14,7 @@
 		<feature>jwt-1.0</feature>
 		<feature>ssl-1.0</feature>
 		<feature>appSecurity-2.0</feature>
+        <feature>mpOpenAPI-1.1</feature>
 	</featureManager>
 
 	<include location="../fatTestCommon.xml"/>
@@ -69,7 +70,5 @@
 		
 	<grpcTarget target="test.g3store.grpc.AppConsumerService/getAppInfo" headersToPropagate="authorization"/>
 	<grpcTarget target="test.g3store.grpc.AppConsumerService/getAllAppNames" authnToken="jwt"/>
-
-		
 
 </server>

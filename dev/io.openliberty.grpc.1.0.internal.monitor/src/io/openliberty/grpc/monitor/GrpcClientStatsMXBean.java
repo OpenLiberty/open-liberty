@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.grpc;
+package io.openliberty.grpc.monitor;
 
 /**
  * Management interface for MBeans with names of the form "WebSphere:type=GrpcClientStats,name=*"

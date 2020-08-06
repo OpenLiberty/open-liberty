@@ -13,7 +13,7 @@ package io.openliberty.grpc.internal.monitor;
 import com.ibm.websphere.monitor.meters.Counter;
 import com.ibm.websphere.monitor.meters.Meter;
 
-import io.openliberty.grpc.GrpcClientStatsMXBean;
+import io.openliberty.grpc.monitor.GrpcClientStatsMXBean;
 
 /**
  * Holds metrics used for client-side monitoring of gRPC services. </br>

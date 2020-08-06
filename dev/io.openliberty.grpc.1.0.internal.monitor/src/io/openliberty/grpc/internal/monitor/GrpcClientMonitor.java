@@ -37,9 +37,6 @@ public class GrpcClientMonitor {
 	public void atRpcCallStart(@This Object clientStats) {
 		GrpcClientStatsMonitor stats = (GrpcClientStatsMonitor) clientStats;
 		getGrpcClientStats(stats.getMethod()).recordCallStarted();
-		
-		System.out.println(String.format("ANNA atRpcCallStart: service[%s] method[%s] - [%s]", stats.getServiceName(),
-				stats.getMethod().methodName(), getGrpcClientStats(stats.getMethod()).getRpcStartedCount()));
 	}
 
 	@ProbeAtEntry
@@ -47,9 +44,6 @@ public class GrpcClientMonitor {
 	public void atGrpcClientHandled(@This Object clientStats) {
 		GrpcClientStatsMonitor stats = (GrpcClientStatsMonitor) clientStats;
 		getGrpcClientStats(stats.getMethod()).recordClientHandled();
-		
-		System.out.println(String.format("ANNA atGrpcClientHandled: service[%s] method[%s] - [%s]", stats.getServiceName(),
-				stats.getMethod().methodName(), getGrpcClientStats(stats.getMethod()).getRpcCompletedCount()));
 	}
 
 	@ProbeAtReturn
@@ -57,9 +51,6 @@ public class GrpcClientMonitor {
 	public void atClientMsgReceived(@This Object clientStats) {
 		GrpcClientStatsMonitor stats = (GrpcClientStatsMonitor) clientStats;
 		getGrpcClientStats(stats.getMethod()).incrementReceivedMsgCountBy(1);
-		
-		System.out.println(String.format("ANNA atClientMsgReceived: service[%s] method[%s] - [%s]", stats.getServiceName(),
-				stats.getMethod().methodName(), getGrpcClientStats(stats.getMethod()).getReceivedMessagesCount()));
 	}
 
 	@ProbeAtReturn
@@ -67,9 +58,6 @@ public class GrpcClientMonitor {
 	public void atGrpcClientMsgSent(@This Object clientStats) {
 		GrpcClientStatsMonitor stats = (GrpcClientStatsMonitor) clientStats;
 		getGrpcClientStats(stats.getMethod()).incrementSentMsgCountBy(1);
-		
-		System.out.println(String.format("ANNA atGrpcClientMsgSent: service[%s] method[%s] - [%s]", stats.getServiceName(),
-				stats.getMethod().methodName(), getGrpcClientStats(stats.getMethod()).getSentMessagesCount()));
 	}
 
 	private synchronized GrpcClientStats getGrpcClientStats(GrpcMethod method) {
@@ -81,5 +69,4 @@ public class GrpcClientMonitor {
 		}
 		return stats;
 	}
-
 }
