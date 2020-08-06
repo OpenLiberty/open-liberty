@@ -47,6 +47,10 @@ public class LRUCache {
             throw new IllegalArgumentException("Size < 1: " + size);
     }
 
+    public void clear() {
+        cache.clear();
+    }
+
     public void put(KerberosPrincipal key, Subject value) {
         cache.put(key, value);
     }

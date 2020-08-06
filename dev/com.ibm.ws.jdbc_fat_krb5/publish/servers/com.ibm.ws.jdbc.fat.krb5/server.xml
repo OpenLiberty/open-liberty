@@ -27,6 +27,12 @@
     <properties.db2.jcc databaseName="${DB2_DBNAME}" serverName="${DB2_HOSTNAME}" portNumber="${DB2_PORT}"/>
   </dataSource>
   
+  <dataSource jndiName="jdbc/krb/basicPassword">
+    <jdbcDriver libraryRef="DB2JCCLib"/>
+    <properties.db2.jcc databaseName="${DB2_DBNAME}" serverName="${DB2_HOSTNAME}" portNumber="${DB2_PORT}"/>
+    <containerAuthData krb5Principal="${KRB5_USER}" password="password"/>
+  </dataSource>
+  
   <!-- Mis-configured datasource: no auth -->
   <dataSource jndiName="jdbc/noAuth">
     <jdbcDriver libraryRef="DB2JCCLib"/>

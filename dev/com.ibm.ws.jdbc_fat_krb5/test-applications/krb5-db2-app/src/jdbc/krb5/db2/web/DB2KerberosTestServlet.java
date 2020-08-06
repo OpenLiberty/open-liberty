@@ -31,7 +31,7 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
-@WebServlet(urlPatterns = "/JDBCKerberosTestServlet")
+@WebServlet(urlPatterns = "/DB2KerberosTestServlet")
 public class DB2KerberosTestServlet extends FATServlet {
 
     @Resource(lookup = "jdbc/nokrb5")
@@ -45,6 +45,9 @@ public class DB2KerberosTestServlet extends FATServlet {
 
     @Resource(lookup = "jdbc/krb/invalidPrincipal")
     DataSource invalidPrincipalDs;
+
+    @Resource(lookup = "jdbc/krb/basicPassword")
+    DataSource basicPassword;
 
     // The jdbc/noAuth datasource would normally fail due to no credentials,
     // but since we have bound the 'krb5Auth' auth alias to 'java:app/env/jdbc/reboundAuth'
@@ -84,6 +87,17 @@ public class DB2KerberosTestServlet extends FATServlet {
     @Test
     public void testReboundAuthAlias() throws Exception {
         try (Connection con = reboundAuth.getConnection()) {
+            con.createStatement().execute("SELECT 1 FROM SYSIBM.SYSDUMMY1");
+        }
+    }
+
+    /**
+     * Before this test runs the server config is modified to remove the keytab attribute from
+     * kerberos config. Then, we attempt to get a connection to a datasource that supplies a
+     * password using <authData password="..."/>
+     */
+    public void testBasicPassword() throws Exception {
+        try (Connection con = basicPassword.getConnection()) {
             con.createStatement().execute("SELECT 1 FROM SYSIBM.SYSDUMMY1");
         }
     }
