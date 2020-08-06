@@ -18,7 +18,7 @@ Subsystem-Name: Jakarta Authentication SPI for Containers (JASPIC) 2.0
 -bundles=\
   io.openliberty.jakarta.jaspic.2.0; location:=dev/api/spec/; mavenCoordinates="jakarta.security.auth.message:jakarta.security.auth.message-api:2.0.0-RC1", \
   io.openliberty.security.jaspic.2.0.internal
-kind=noship
-edition=full
+kind=beta
+edition=core
 -jars=io.openliberty.jaspic.2.0.spi; location:=dev/spi/ibm/
 -files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.jaspic_1.1-javadoc.zip
