@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: BasicAuthWAB
+Bundle-SymbolicName: BasicAuthWAB
+Bundle-Version: 1.0.0.qualifier
+Bundle-ClassPath: WEB-INF/classes
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Web-ContextPath: /BasicAuthWAB
+Import-Package: javax.security.auth,
+ javax.security.auth.callback,
+ javax.security.auth.login,
+ javax.servlet;version="2.6.0",
+ javax.servlet.http;version="2.6.0",
+ javax.servlet.annotation;version="2.6.0",
+ com.ibm.wsspi.security.token;version="1.1.0"
