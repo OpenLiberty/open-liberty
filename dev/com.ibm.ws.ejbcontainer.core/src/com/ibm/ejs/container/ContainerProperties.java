@@ -501,6 +501,7 @@ public final class ContainerProperties {
     /**
      * Temporary property to gate custom bindings behind until feature is out of beta
      */
+    // TODO: #13338 remove this
     public static boolean customBindingsEnabledBeta;
 
     /**
