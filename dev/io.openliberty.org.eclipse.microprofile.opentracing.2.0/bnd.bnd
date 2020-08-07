@@ -22,7 +22,7 @@ Export-Package: \
   org.eclipse.microprofile.opentracing;version=2.0
 
 Include-Resource: \
-  @${repo;org.eclipse.microprofile.opentracing:microprofile-opentracing-api;2.0.0.RC1;EXACT}
+  @${repo;org.eclipse.microprofile.opentracing:microprofile-opentracing-api;2.0.0.RC2;EXACT}
 
 
 WS-TraceGroup: OPENTRACING
