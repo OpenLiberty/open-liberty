@@ -12,8 +12,10 @@
 <metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
                    xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0">
     
-    <OCD id="com.ibm.wsspi.application.lifecycle.ApplicationPrereq" description="internal use only" name="internal" ibm:objectClass="com.ibm.wsspi.application.lifecycle.ApplicationPrereq">
-         <AD id="id" description="internal use only" name="internal" type="String" required="true"/>
+    <OCD id="com.ibm.wsspi.application.lifecycle.ApplicationPrereq" 
+         description="internal use only" name="internal" 
+         ibm:objectClass="com.ibm.wsspi.application.lifecycle.ApplicationPrereq">
+        <AD id="id" description="internal use only" name="internal" type="String" required="true"/>
     </OCD>
     
     <Designate factoryPid="com.ibm.wsspi.application.lifecycle.ApplicationPrereq">
