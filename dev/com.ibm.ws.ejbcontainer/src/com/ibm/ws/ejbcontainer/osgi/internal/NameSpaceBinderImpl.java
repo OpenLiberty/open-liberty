@@ -486,6 +486,7 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
             remoteRuntime.bind(hrImpl.remoteBindingData, interfaceIndex, interfaceName);
         }
 
+        // TODO: #13338 change to check ContainerProperties.bindToServerRoot
         if (ContainerProperties.customBindingsEnabledBeta) {
             BeanMetaData bmd = hr.getBeanMetaData();
             boolean hasCustomBindings = false;
