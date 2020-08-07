@@ -31,7 +31,7 @@ Import-Package: \
     io.opentracing.tag;version=0.33.0,\
     io.opentracing.util;version=0.33.0,\
     io.opentracing.noop;version=0.33.0,\
-    org.eclipse.microprofile.config.*;version="[1.0,2)",\
+    org.eclipse.microprofile.config.*;version="[1.0,3)",\
     *
 
 Export-Package: \
@@ -53,7 +53,7 @@ Private-Package: io.openliberty.opentracing.internal.resources
     com.ibm.websphere.org.osgi.service.cm;version=latest, \
     io.openliberty.io.opentracing.opentracing-api.0.33.0;version=latest, \
     io.openliberty.io.opentracing.opentracing-util.0.33.0;version=latest, \
-    com.ibm.websphere.org.eclipse.microprofile.config.1.4;version=latest,\
+    io.openliberty.org.eclipse.microprofile.config.2.0;version=latest,\
     com.ibm.websphere.javaee.servlet.3.1; version=latest, \
     io.openliberty.org.eclipse.microprofile.opentracing.2.0;version=latest, \
     com.ibm.ws.container.service;version=latest, \
