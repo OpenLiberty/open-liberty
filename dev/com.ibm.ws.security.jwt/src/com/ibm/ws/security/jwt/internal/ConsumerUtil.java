@@ -141,17 +141,24 @@ public class ConsumerUtil {
         Key signingKey = null;
         String sigAlg = config.getSignatureAlgorithm();
 
-        if (Constants.SIGNATURE_ALG_HS256.equals(sigAlg)) {
-            signingKey = getSigningKeyForHS256(config);
-        } else if (Constants.SIGNATURE_ALG_RS256.equals(sigAlg)) {
-            signingKey = getSigningKeyForRS256(config, jwtContext, properties);
-        } else if (Constants.SIGNATURE_ALG_ES256.equals(sigAlg)) {
-            signingKey = getSigningKeyForES256(config, jwtContext, properties);
+        if (isHSAlgorithm(sigAlg)) {
+            signingKey = getSigningKeyForHS(config);
+        } else if (isRSAlgorithm(sigAlg)) {
+            signingKey = getSigningKeyForRS(config, jwtContext, properties);
+        } else if (isESAlgorithm(sigAlg)) {
+            signingKey = getSigningKeyForES(config, jwtContext, properties);
         }
         return signingKey;
     }
 
-    Key getSigningKeyForHS256(JwtConsumerConfig config) throws KeyException {
+    boolean isHSAlgorithm(String sigAlg) {
+        if (sigAlg == null) {
+            return false;
+        }
+        return sigAlg.matches("HS[0-9]{3,}");
+    }
+
+    Key getSigningKeyForHS(JwtConsumerConfig config) throws KeyException {
         Key signingKey = null;
         try {
             signingKey = getSharedSecretKey(config);
@@ -193,6 +200,13 @@ public class ConsumerUtil {
         return null;
     }
 
+    boolean isESAlgorithm(String sigAlg) {
+        if (sigAlg == null) {
+            return false;
+        }
+        return sigAlg.matches("ES[0-9]{3,}");
+    }
+
     boolean isPublicKeyPropsPresent(Map props) {
         if (props == null) {
             return false;
@@ -200,7 +214,14 @@ public class ConsumerUtil {
         return props.get(PUBLIC_KEY) != null || props.get(KEY_LOCATION) != null;
     }
 
-    Key getSigningKeyForRS256(JwtConsumerConfig config, JwtContext jwtContext, Map properties) throws KeyException {
+    boolean isRSAlgorithm(String sigAlg) {
+        if (sigAlg == null) {
+            return false;
+        }
+        return sigAlg.matches("RS[0-9]{3,}");
+    }
+
+    Key getSigningKeyForRS(JwtConsumerConfig config, JwtContext jwtContext, Map properties) throws KeyException {
         return getKeyFromJwkOrTrustStore(config, jwtContext, properties);
     }
 
@@ -312,7 +333,7 @@ public class ConsumerUtil {
         }
     }
 
-    Key getSigningKeyForES256(JwtConsumerConfig config, JwtContext jwtContext, Map properties) throws KeyException {
+    Key getSigningKeyForES(JwtConsumerConfig config, JwtContext jwtContext, Map properties) throws KeyException {
         return getKeyFromJwkOrTrustStore(config, jwtContext, properties);
     }
 

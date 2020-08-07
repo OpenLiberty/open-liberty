@@ -150,7 +150,7 @@ public class JWKProvider {
         if (isRsaAlgorithm(alg)) {
             jwk = generateRsaJWK(alg, size);
         } else if (isEcAlgorithm(alg)) {
-            jwk = generateEcJwk(alg, size);
+            jwk = generateEcJwk(alg);
         }
         return jwk;
     }
@@ -170,8 +170,8 @@ public class JWKProvider {
         return jwk;
     }
 
-    protected JWK generateEcJwk(String alg, int size) {
-        JWK jwk = Jose4jEllipticCurveJWK.getInstance(size, alg, null, "EC");
+    protected JWK generateEcJwk(String alg) {
+        JWK jwk = Jose4jEllipticCurveJWK.getInstance(alg, null);
         jwk.generateKey();
         return jwk;
     }
