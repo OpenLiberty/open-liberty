@@ -15,7 +15,7 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS5775 - CWWKS5799
+# Message prefix block: CWWKS5775 - CWWKS5779
 
 MPJWT_11_CONFIG_PROXY_PROCESSED=CWWKS5775I: \u5df2\u6210\u529f\u5904\u7406 MicroProfile JWT V1.1 mpConfigProxy\u3002
 MPJWT_11_CONFIG_PROXY_PROCESSED.explanation=\u5df2\u6210\u529f\u5904\u7406\u6240\u6307\u793a\u7684\u914d\u7f6e\u3002

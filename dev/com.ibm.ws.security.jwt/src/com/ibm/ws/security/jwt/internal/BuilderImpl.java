@@ -443,7 +443,11 @@ public class BuilderImpl implements Builder {
 
     String getValidAlgorithmListForJavaSecurityKey() {
         return Constants.SIGNATURE_ALG_RS256 + ", " +
-                Constants.SIGNATURE_ALG_ES256;
+                Constants.SIGNATURE_ALG_RS384 + ", " +
+                Constants.SIGNATURE_ALG_RS512 + ", " +
+                Constants.SIGNATURE_ALG_ES256 + ", " +
+                Constants.SIGNATURE_ALG_ES384 + ", " +
+                Constants.SIGNATURE_ALG_ES512;
     }
 
     boolean isValidKeyType(Key key) {
@@ -482,8 +486,9 @@ public class BuilderImpl implements Builder {
     }
 
     String getValidAlgorithmListForStringKey() {
-        // More algorithms will be added
-        return Constants.SIGNATURE_ALG_HS256;
+        return Constants.SIGNATURE_ALG_HS256 + ", " +
+                Constants.SIGNATURE_ALG_HS384 + ", " +
+                Constants.SIGNATURE_ALG_HS512;
     }
 
     // add claims with the given name and value

@@ -189,7 +189,7 @@ public class WadlGenerator implements ContainerRequestFilter {
 
     private ElementQNameResolver resolver;
     private List<String> privateAddresses;
-    private List<String> whiteList;
+    private List<String> allowList; // Liberty change
     private String applicationTitle;
     private String nsPrefix = DEFAULT_NS_PREFIX;
     private MediaType defaultWadlResponseMediaType = MediaType.APPLICATION_XML_TYPE;
@@ -245,7 +245,7 @@ public class WadlGenerator implements ContainerRequestFilter {
             return;
         }
 
-        if (whiteList != null && !whiteList.isEmpty()) {
+        if (allowList != null && !allowList.isEmpty()) { //Liberty change
             ServletRequest servletRequest = (ServletRequest)m.getContextualProperty(
                 "HTTP.REQUEST");
             String remoteAddress = null;
@@ -255,7 +255,7 @@ public class WadlGenerator implements ContainerRequestFilter {
                 remoteAddress = "";
             }
             boolean foundMatch = false;
-            for (String addr : whiteList) {
+            for (String addr : allowList) { //Liberty change
                 if (addr.equals(remoteAddress)) {
                     foundMatch = true;
                     break;
@@ -2281,12 +2281,12 @@ public class WadlGenerator implements ContainerRequestFilter {
     }
 
 
-    public List<String> getWhiteList() {
-        return whiteList;
+    public List<String> getAllowList() {  //Liberty change
+        return allowList;
     }
 
-    public void setWhiteList(List<String> whiteList) {
-        this.whiteList = whiteList;
+    public void setAllowList(List<String> allowList) { //Liberty change
+        this.allowList = allowList;
     }
 
     private static class SchemaConverter extends DelegatingXMLStreamWriter {

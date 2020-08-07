@@ -1,0 +1,56 @@
+<server>
+  <featureManager>
+    <feature>componenttest-1.0</feature>
+    <feature>servlet-4.0</feature>
+    <feature>jdbc-4.2</feature>
+    <feature>jca-1.7</feature>
+  </featureManager>
+    
+  <include location="../fatTestPorts.xml"/>
+
+  <library id="OracleLib">
+    <fileset dir="${server.config.dir}/oracle"/>
+  </library>
+  
+  <kerberos keytab="${server.config.dir}security/oracle_client.keytab" configFile="${KRB5_CONF}"/>
+  
+  <variable name="oracle.url" value="jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=${ORACLE_HOSTNAME})(PORT=${ORACLE_PORT}))(CONNECT_DATA=(SERVICE_NAME=${ORACLE_DBNAME})))"/>
+  
+  <dataSource jndiName="jdbc/krb/basic">
+    <jdbcDriver libraryRef="OracleLib"/>
+    <properties.oracle URL="${oracle.url}"
+        connectionProperties="
+            oracle.net.authentication_services=( KERBEROS5 );
+            oracle.net.kerberos5_mutual_authentication=true"/>
+    <containerAuthData krb5Principal="${KRB5_USER}"/>
+  </dataSource>
+  
+  <dataSource jndiName="jdbc/krb/xa" type="javax.sql.XADataSource">
+    <jdbcDriver libraryRef="OracleLib" />
+    <properties.oracle URL="${oracle.url}"
+        connectionProperties="
+            oracle.net.authentication_services=( KERBEROS5 );
+            oracle.net.kerberos5_mutual_authentication=true"/>
+    <containerAuthData krb5Principal="${KRB5_USER}"/>
+  </dataSource>
+  
+  <!-- Mis-configured datasource: bogus name for krb5Principal -->
+  <dataSource jndiName="jdbc/krb/invalidPrincipal">
+    <jdbcDriver libraryRef="OracleLib"/>
+    <properties.oracle URL="${oracle.url}"
+        connectionProperties="
+            oracle.net.authentication_services=( KERBEROS5 );
+            oracle.net.kerberos5_mutual_authentication=true"/>
+    <containerAuthData krb5Principal="BOGUS@EXAMPLE.COM"/>
+  </dataSource>
+  
+  <!-- basic user/password authentication -->
+  <dataSource jndiName="jdbc/nokrb5">
+    <jdbcDriver libraryRef="OracleLib"/>
+    <properties.oracle databaseName="${ORACLE_DBNAME}" serverName="${ORACLE_HOSTNAME}" portNumber="${ORACLE_PORT}" driverType="thin"/>
+    <containerAuthData user="${ORACLE_USER}" password="${ORACLE_PASS}"/>
+  </dataSource>
+    
+  <javaPermission className="javax.security.auth.kerberos.ServicePermission" name="*" actions="initiate"/>
+  <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+</server>

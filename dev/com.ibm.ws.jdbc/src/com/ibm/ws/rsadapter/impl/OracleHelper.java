@@ -245,6 +245,11 @@ public class OracleHelper extends DatabaseHelper {
             }
         }
     }
+    
+    @Override
+    public boolean supportsSubjectDoAsForKerberos() {
+        return true;
+    }
 
     /**
      * Indicates if setAutoCommit requests should always be sent to the JDBC driver, even

@@ -28,6 +28,11 @@
 	<jwtBuilder
 		id="specificIssuer"
 		issuer="someSpecificIssuer" />
+		
+	<jwtBuilder
+		id="specificElapsedNBF"
+		elapsedNBF="1800s"
+	/>
 
 	<jwtBuilder
 		id="emptyClaims"
