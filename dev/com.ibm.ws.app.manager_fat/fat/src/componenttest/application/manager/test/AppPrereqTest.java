@@ -13,14 +13,12 @@ package componenttest.application.manager.test;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.util.Arrays;
-
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
@@ -89,31 +87,32 @@ public class AppPrereqTest extends AbstractAppManagerTest {
         startServer(ServerXml.PREREQ_CONFIG_AND_PREREQ_FEATURE);
         assertSnoopStarted();
         changeServerConfig(ServerXml.PREREQ_CONFIG_AND_NO_PREREQ_FEATURE);
-        assertSnoopStopped();        
+        assertSnoopStopped();
     }
 
     @ExpectedFFDC("java.lang.IllegalStateException")
     @Test
-    public void testUnconfiguredPrereqCauseFFDC() throws Exception {
-        // expect alarums and excursions
+    public void testUnconfiguredPrereqCausesIllegalStateException() throws Exception {
         startServer(ServerXml.NO_PREREQ_CONFIG_AND_PREREQ_FEATURE);
+        // Expect: [ERROR   ] CWWKE0701E: bundle com.ibm.ws.app.manager: ... setApplicationPrereq method has thrown an exception java.lang.IllegalStateException ...
+        server.stopServer("CWWKE0701E:.* java.lang.IllegalStateException");
     }
 
-    enum ServerXml { 
-        NO_PREREQ_CONFIG_AND_NO_PREREQ_FEATURE, 
-        NO_PREREQ_CONFIG_AND_PREREQ_FEATURE, 
-        PREREQ_CONFIG_AND_NO_PREREQ_FEATURE, 
+    enum ServerXml {
+        NO_PREREQ_CONFIG_AND_NO_PREREQ_FEATURE,
+        NO_PREREQ_CONFIG_AND_PREREQ_FEATURE,
+        PREREQ_CONFIG_AND_NO_PREREQ_FEATURE,
         PREREQ_CONFIG_AND_PREREQ_FEATURE
     }
 
     private static void setServerConfig(ServerXml config) throws Exception {
         server.setServerConfigurationFile("/appPrereq/" + config.name().toLowerCase() + ".xml");
     }
-    
-    private void startServer(ServerXml config) throws Exception { 
+
+    private void startServer(ServerXml config) throws Exception {
         setServerConfig(config);
-        server.startServer(testName.getMethodName() + ".log"); 
-        // Wait for the timed exit feature to be enabled 
+        server.startServer(testName.getMethodName() + ".log");
+        // Wait for the timed exit feature to be enabled
         // (a useful observation point we discovered)
         assertNotNull(server.waitForStringInLog("TE9900A"));
     }
@@ -139,4 +138,3 @@ public class AppPrereqTest extends AbstractAppManagerTest {
         assertNull(server.verifyStringNotInLogUsingMark("CWWKZ0018I:.* snoop", SHORT_TIMEOUT));
     }
 }
-
