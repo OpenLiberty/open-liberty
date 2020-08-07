@@ -54,7 +54,6 @@ public class ClientInterceptorTests extends FATServletClient {
 
     private static final Logger LOG = Logger.getLogger(c.getName());
 
-    public static final int STARTUP_TIMEOUT = 120 * 1000; // 120 seconds
     public static final int SHORT_TIMEOUT = 500; // .5 seconds
 
     private static final String DEFAULT_CONFIG_FILE = "none";
@@ -104,12 +103,6 @@ public class ClientInterceptorTests extends FATServletClient {
         grpcClient.startServer(ClientInterceptorTests.class.getSimpleName() + ".client.log");
         grpcServer.startServer(ClientInterceptorTests.class.getSimpleName() + ".server.log");
 
-        LOG.info("ClientInterceptorTests : Client port default " + grpcClient.getHttpDefaultPort());
-        LOG.info("ClientInterceptorTests : Server port default " + grpcServer.getHttpDefaultPort());
-
-        LOG.info("ClientInterceptorTests : Client port secondary " + grpcClient.getHttpSecondaryPort());
-        LOG.info("ClientInterceptorTests : Sserver port secondary " + grpcServer.getHttpSecondaryPort());
-
         worldChannel = ManagedChannelBuilder.forAddress(grpcClient.getHostname(), grpcClient.getHttpDefaultPort()).usePlaintext().build();
         worldServiceBlockingStub = GreeterGrpc.newBlockingStub(worldChannel);
     }
@@ -158,12 +151,6 @@ public class ClientInterceptorTests extends FATServletClient {
         LOG.info("ClientInterceptorTests : testSingleClientInterceptor() : update the server.xml file to one with a </grpc> element with no interceptor");
         setServerConfiguration(grpcClient, GRPC_CLIENT_CONFIG_FILE);
         grpcClient.waitForConfigUpdateInLogUsingMark(appName);
-
-        LOG.info("ClientInterceptorTests : Client port default " + grpcClient.getHttpDefaultPort());
-        LOG.info("ClientInterceptorTests : Server port default " + grpcServer.getHttpDefaultPort());
-
-        LOG.info("ClientInterceptorTests : Client port secondary " + grpcClient.getHttpSecondaryPort());
-        LOG.info("ClientInterceptorTests : Sserver port secondary " + grpcServer.getHttpSecondaryPort());
 
         String contextRoot = "HelloWorldClient";
         try (WebClient webClient = new WebClient()) {
@@ -215,12 +202,6 @@ public class ClientInterceptorTests extends FATServletClient {
         setServerConfiguration(grpcClient, GRPC_CLIENT_INTERCEPTOR_FILE);
         grpcClient.waitForConfigUpdateInLogUsingMark(appName);
 
-        LOG.info("ClientInterceptorTests : Client port default " + grpcClient.getHttpDefaultPort());
-        LOG.info("ClientInterceptorTests : Server port default " + grpcServer.getHttpDefaultPort());
-
-        LOG.info("ClientInterceptorTests : Client port secondary " + grpcClient.getHttpSecondaryPort());
-        LOG.info("ClientInterceptorTests : Sserver port secondary " + grpcServer.getHttpSecondaryPort());
-
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test, get the form from the client
@@ -238,7 +219,7 @@ public class ClientInterceptorTests extends FATServletClient {
 
             // set a name in the form, which we'll expect the RPC to return
             HtmlTextInput inputText = (HtmlTextInput) form.getInputByName("user");
-            inputText.setValueAttribute("us3r1");
+            inputText.setValueAttribute("us3r2");
 
             // set the port in the form
             HtmlTextInput inputPort = (HtmlTextInput) form.getInputByName("port");
@@ -254,11 +235,11 @@ public class ClientInterceptorTests extends FATServletClient {
 
             // Log the page for debugging if necessary in the future.
             Log.info(c, name.getMethodName(), page.asText());
-            assertTrue("the gRPC request did not complete correctly", page.asText().contains("us3r1"));
+            assertTrue("the gRPC request did not complete correctly", page.asText().contains("us3r2"));
 
             //Make sure the Interceptor was called and logged a message
-            String interceptorHasRun = grpcClient.verifyStringNotInLogUsingMark("com.ibm.ws.grpc.fat.helloworld.client.HelloWorldClientInterceptor has been invoked!",
-                                                                                SHORT_TIMEOUT);
+            String interceptorHasRun = grpcClient.waitForStringInLog("com.ibm.ws.grpc.fat.helloworld.client.HelloWorldClientInterceptor has been invoked!",
+                                                                     SHORT_TIMEOUT);
             if (interceptorHasRun == null) {
                 Assert.fail(c + ": server.xml with <grpc> element no interceptor ran when it should not have in " + SHORT_TIMEOUT + "ms");
             }
@@ -310,7 +291,7 @@ public class ClientInterceptorTests extends FATServletClient {
 
             // set a name in the form, which we'll expect the RPC to return
             HtmlTextInput inputText = (HtmlTextInput) form.getInputByName("user");
-            inputText.setValueAttribute("us3r1");
+            inputText.setValueAttribute("us3r3");
 
             // set the port in the form
             HtmlTextInput inputPort = (HtmlTextInput) form.getInputByName("port");
@@ -326,13 +307,13 @@ public class ClientInterceptorTests extends FATServletClient {
 
             // Log the page for debugging if necessary in the future.
             Log.info(c, name.getMethodName(), page.asText());
-            assertTrue("the gRPC request did not complete correctly", page.asText().contains("us3r1"));
+            assertTrue("the gRPC request did not complete correctly", page.asText().contains("us3r3"));
 
             //Make sure both Interceptors ran and logged a message
-            String interceptorHasRun = grpcClient.verifyStringNotInLogUsingMark("com.ibm.ws.grpc.fat.helloworld.client.HelloWorldClientInterceptor has been invoked!",
-                                                                                SHORT_TIMEOUT);
-            String interceptor2HasRun = grpcClient.verifyStringNotInLogUsingMark("com.ibm.ws.grpc.fat.helloworld.client.HelloWorldClientInterceptor2 has been invoked!",
-                                                                                 SHORT_TIMEOUT);
+            String interceptorHasRun = grpcClient.waitForStringInLog("com.ibm.ws.grpc.fat.helloworld.client.HelloWorldClientInterceptor has been invoked!",
+                                                                     SHORT_TIMEOUT);
+            String interceptor2HasRun = grpcClient.waitForStringInLog("com.ibm.ws.grpc.fat.helloworld.client.HelloWorldClientInterceptor2 has been invoked!",
+                                                                      SHORT_TIMEOUT);
             if (interceptorHasRun == null || interceptor2HasRun == null) {
                 Assert.fail(c + ": server.xml with <grpc> element and two interceptors did not log interceptor messages in " + SHORT_TIMEOUT + "ms");
             }
@@ -349,7 +330,7 @@ public class ClientInterceptorTests extends FATServletClient {
      * @throws Exception
      *
      **/
-    // this test is currently not working
+    // this test currently fails
     //@Test
     @ExpectedFFDC({ "java.lang.ClassNotFoundException" })
     public void testInvalidClientInterceptor() throws Exception {
