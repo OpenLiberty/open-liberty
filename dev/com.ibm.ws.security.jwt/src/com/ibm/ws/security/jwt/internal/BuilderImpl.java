@@ -12,7 +12,6 @@
 package com.ibm.ws.security.jwt.internal;
 
 import java.security.Key;
-import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -43,6 +42,7 @@ import com.ibm.websphere.security.jwt.InvalidTokenException;
 import com.ibm.websphere.security.jwt.JwtException;
 import com.ibm.websphere.security.jwt.JwtToken;
 import com.ibm.websphere.security.jwt.KeyException;
+import com.ibm.ws.security.common.crypto.KeyAlgorithmChecker;
 import com.ibm.ws.security.jwt.config.JwtConfig;
 import com.ibm.ws.security.jwt.utils.Constants;
 import com.ibm.ws.security.jwt.utils.IssuerUtils;
@@ -73,6 +73,8 @@ public class BuilderImpl implements Builder {
     private String sharedKey;
     private Key privateKey;
     private String configId;
+
+    private final KeyAlgorithmChecker keyAlgChecker = new KeyAlgorithmChecker();
 
     private final static String DEFAULT_ID = "defaultJWT";
     private final static String KEY_JWT_SERVICE = "jwtConfig";
@@ -425,7 +427,7 @@ public class BuilderImpl implements Builder {
             String err = Tr.formatMessage(tc, "JWT_INVALID_ALGORITHM_ERR", new Object[] { algorithm, getValidAlgorithmListForJavaSecurityKey() });
             throw new KeyException(err);
         }
-        if (!isValidKeyType(key)) {
+        if (!isValidKeyType(key, algorithm)) {
             String err = Tr.formatMessage(tc, "JWT_INVALID_KEY_ERR", new Object[] { algorithm, key });
             throw new KeyException(err);
         }
@@ -435,10 +437,7 @@ public class BuilderImpl implements Builder {
     }
 
     boolean isValidAlgorithmForJavaSecurityKey(String algorithm) {
-        if (algorithm == null || algorithm.isEmpty()) {
-            return false;
-        }
-        return algorithm.matches("[RE]S[0-9]{3,}");
+        return (keyAlgChecker.isRSAlgorithm(algorithm) || keyAlgChecker.isESAlgorithm(algorithm));
     }
 
     String getValidAlgorithmListForJavaSecurityKey() {
@@ -450,11 +449,8 @@ public class BuilderImpl implements Builder {
                 Constants.SIGNATURE_ALG_ES512;
     }
 
-    boolean isValidKeyType(Key key) {
-        if (key == null || !(key instanceof PrivateKey)) {
-            return false;
-        }
-        return true;
+    boolean isValidKeyType(Key key, String algorithm) {
+        return keyAlgChecker.isPrivateKeyValidType(key, algorithm);
     }
 
     // shared key for signing
@@ -479,10 +475,7 @@ public class BuilderImpl implements Builder {
     }
 
     boolean isValidAlgorithmForStringKey(String algorithm) {
-        if (algorithm == null || algorithm.isEmpty()) {
-            return false;
-        }
-        return algorithm.matches("HS[0-9]{3,}");
+        return keyAlgChecker.isHSAlgorithm(algorithm);
     }
 
     String getValidAlgorithmListForStringKey() {
