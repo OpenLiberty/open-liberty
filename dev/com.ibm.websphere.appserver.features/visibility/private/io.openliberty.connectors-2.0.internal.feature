@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=io.openliberty.jakarta.internal.connectors-2.0
+symbolicName=io.openliberty.connectors-2.0.internal
 IBM-API-Package: \
   com.ibm.ws.jca.service; type="internal", \
   jakarta.resource; type="spec", \
