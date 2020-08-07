@@ -9,5 +9,7 @@
         IBM Corporation - initial API and implementation
  -->
 <server>
-    <com.ibm.ws.app.manager.internal.lifecycle.ApplicationStartBarrierImpl />
+    <!-- declare the start barrier and prereq monitor so that configuration processing can provide the properties for these services -->
+    <com.ibm.ws.app.startbarrier />
+    <com.ibm.ws.app.prereqmonitor />
 </server>
