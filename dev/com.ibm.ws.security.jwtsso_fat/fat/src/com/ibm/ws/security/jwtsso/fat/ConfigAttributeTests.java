@@ -767,7 +767,7 @@ public class ConfigAttributeTests extends CommonSecurityFat {
 
     /**
      * Test that the amr security attribute specified in the config is included in jwtToken. Uses the amrbuilder web app to 
-     * add the specified attribute to the subject and built a new token. Token is then decoded and sent back as reponse and 
+     * add the specified attribute to the subject and built a new token. Token is then decoded and sent back as response and 
      * inspect the response to check the amrValue.
      */
     @Mode(TestMode.LITE)

@@ -2109,7 +2109,7 @@ public class ConsumerUtilTest {
             assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAMRClaim(emptyList, emptyList));
 
             // Null/empty allowed amr, single amr in the token
-            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAMRClaim(null, singleList));
+            assertTrue("Validation should have succeeded.", consumerUtil.validateAMRClaim(null, singleList));
             assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAMRClaim(emptyList, singleList));
 
             // Null/empty amr in token, single amr in allowed audiences

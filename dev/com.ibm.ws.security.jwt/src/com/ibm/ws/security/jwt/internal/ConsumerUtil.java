@@ -830,9 +830,10 @@ public class ConsumerUtil {
 
                 }
             }
-        } else if (allowedAmrClaim == null && (jwtAMRClaims == null || jwtAMRClaims.isEmpty())) {
+        } else if (allowedAmrClaim == null) {
+            //To avoid regression, if new amr config is not specified then return true
             valid = true;
-        }
+        } 
         return valid;
     }
 
