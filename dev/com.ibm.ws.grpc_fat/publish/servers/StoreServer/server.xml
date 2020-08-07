@@ -20,6 +20,8 @@
 		<feature>ssl-1.0</feature>
 		<feature>jwt-1.0</feature>
 	</featureManager>
+	
+	<webContainer deferServletLoad="false"/>
 
 	<include location="../fatTestPorts.xml" />
 
