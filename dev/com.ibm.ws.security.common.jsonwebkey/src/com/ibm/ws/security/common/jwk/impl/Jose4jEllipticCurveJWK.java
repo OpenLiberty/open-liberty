@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.security.common.jwk.impl;
@@ -64,6 +64,7 @@ public class Jose4jEllipticCurveJWK extends EllipticCurveJsonWebKey implements J
         }
 
         keyGenerator.initialize(size);
+        //            keyGenerator.initialize(new ECGenParameterSpec("secp256r1"));
         KeyPair keypair = keyGenerator.generateKeyPair();
 
         ECPublicKey pubKey = (ECPublicKey) keypair.getPublic();

@@ -162,7 +162,7 @@ public class JwtComponent implements JwtConfig {
         jwkSigningKeySize = ((Long) props.get(JwtUtils.CFG_KEY_JWK_SIGNING_KEY_SIZE)).intValue();
         elapsedNbfTime = ((Long) props.get(JwtUtils.CFG_KEY_ELAPSED_NBF)).longValue();
 
-        if ("RS256".equals(sigAlg)) {
+        if (isJwkCapableSigAlgorithm()) {
             initializeJwkProvider(this);
         }
 
@@ -172,6 +172,13 @@ public class JwtComponent implements JwtConfig {
         } else {
             valid = valid * 3600;
         }
+    }
+
+    private boolean isJwkCapableSigAlgorithm() {
+        if (sigAlg == null) {
+            return false;
+        }
+        return sigAlg.matches("[RE]S[0-9]{3,}");
     }
 
     private void initializeJwkProvider(JwtConfig jwtConfig) {
