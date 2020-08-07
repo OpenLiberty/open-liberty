@@ -13,14 +13,17 @@ package com.ibm.ws.jdbc.fat.krb5;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jdbc.fat.krb5.containers.DB2KerberosContainer;
 import com.ibm.ws.jdbc.fat.krb5.containers.KerberosPlatformRule;
@@ -28,6 +31,8 @@ import com.ibm.ws.jdbc.fat.krb5.containers.KerberosPlatformRule;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import jdbc.krb5.db2.web.DB2KerberosTestServlet;
@@ -79,7 +84,7 @@ public class DB2KerberosTest extends FATServletClient {
         Exception firstError = null;
 
         try {
-            server.stopServer();
+            server.stopServer("CWWKS4345E: .*BOGUS_KEYTAB"); // expected by testBasicPassword
         } catch (Exception e) {
             firstError = e;
             Log.error(c, "tearDown", e);
@@ -94,6 +99,26 @@ public class DB2KerberosTest extends FATServletClient {
 
         if (firstError != null)
             throw firstError;
+    }
+
+    @Test
+    @Mode(TestMode.FULL)
+    public void testBasicPassword() throws Exception {
+        ServerConfiguration config = server.getServerConfiguration();
+        String originalKeytab = config.getKerberos().keytab;
+        try {
+            Log.info(c, testName.getMethodName(), "Changing the keystore to an invalid value so that password from the <authData> gets used");
+            config.getKerberos().keytab = "BOGUS_KEYTAB";
+            server.updateServerConfiguration(config);
+            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+
+            FATServletClient.runTest(server, APP_NAME + "/DB2KerberosTestServlet", testName);
+        } finally {
+            Log.info(c, testName.getMethodName(), "Restoring original config");
+            config.getKerberos().keytab = originalKeytab;
+            server.updateServerConfiguration(config);
+            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        }
     }
 
 }

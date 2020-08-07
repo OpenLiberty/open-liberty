@@ -8,9 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.kerberos.auth;
+/**
+ * @version 1.0
+ */
+@org.osgi.annotation.versioning.Version("1.0")
+@TraceOptions(traceGroup = TraceConstants.TRACE_GROUP, messageBundle = TraceConstants.MESSAGE_BUNDLE)
+package com.ibm.ws.security.kerberos.auth.internal;
 
-public interface TraceConstants {
-    public final static String TRACE_GROUP = "Kerberos";
-    public final static String MESSAGE_BUNDLE = "com.ibm.ws.security.kerberos.auth.internal.resources.KerberosMessages";
-}
+import com.ibm.websphere.ras.annotation.TraceOptions;
+import com.ibm.ws.security.kerberos.auth.TraceConstants;
