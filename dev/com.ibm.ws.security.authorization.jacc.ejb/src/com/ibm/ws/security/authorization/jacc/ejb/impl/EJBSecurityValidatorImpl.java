@@ -43,8 +43,8 @@ public class EJBSecurityValidatorImpl implements EJBSecurityValidator {
                                                                     "javax.xml.soap.SOAPMessage" };
 
     /** Keys for Jakarta EE 9 and higher. */
-    private static String[] jaccHandlerKeyArrayEe9 = new String[] { "javax.security.auth.Subject.container", "javax.ejb.EnterpriseBean", "jakarta.ejb.arguments",
-                                                                    "javax.xml.soap.SOAPMessage" };
+    private static String[] jaccHandlerKeyArrayEe9 = new String[] { "javax.security.auth.Subject.container", "jakarta.ejb.EnterpriseBean", "jakarta.ejb.arguments",
+                                                                    "jakarta.xml.soap.SOAPMessage" };
 
     private static ProtectionDomain nullPd = new ProtectionDomain(new CodeSource(null, (java.security.cert.Certificate[]) null), null, null, null);
     private static CodeSource nullCs = new CodeSource(null, (java.security.cert.Certificate[]) null);
