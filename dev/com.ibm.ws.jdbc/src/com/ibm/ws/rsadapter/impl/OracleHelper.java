@@ -10,11 +10,23 @@
  *******************************************************************************/
 package com.ibm.ws.rsadapter.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringReader;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLInvalidAuthorizationSpecException; 
+import java.sql.SQLInvalidAuthorizationSpecException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,23 +40,19 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.XMLFormatter;
-import java.sql.PreparedStatement; 
-import java.sql.ResultSet;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.StringReader; 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 
 import javax.resource.ResourceException;
+import javax.sql.CommonDataSource;
+import javax.sql.PooledConnection;
 import javax.transaction.xa.XAException;
+
+import org.ietf.jgss.GSSCredential;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.rsadapter.AdapterUtil;
+import com.ibm.ws.rsadapter.impl.WSManagedConnectionFactoryImpl.KerbUsage;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcTracer;
 
 /**
@@ -82,6 +90,9 @@ public class OracleHelper extends DatabaseHelper {
     /**
      * Oracle methods
      */
+    private static final MethodHandles.Lookup lookup = MethodHandles.publicLookup();
+    private MethodHandle setConnectionProperties,
+                         getConnectionProperties;
     private final AtomicReference<Method>
                     clearDefines = new AtomicReference<Method>(),
                     close = new AtomicReference<Method>(),
@@ -762,6 +773,52 @@ public class OracleHelper extends DatabaseHelper {
         } else {
             pstmtImpl.setString(i, x);
         }
+    }
+    
+    private void setKerberosDatasourceProperties(CommonDataSource ds) throws ResourceException {
+        try {
+            if (getConnectionProperties == null) {
+                getConnectionProperties = lookup.findVirtual(ds.getClass(), "getConnectionProperties", MethodType.methodType(Properties.class));
+                setConnectionProperties = lookup.findVirtual(ds.getClass(), "setConnectionProperties", MethodType.methodType(void.class, Properties.class));
+            }
+
+            Properties connProps = (Properties) getConnectionProperties.invoke(ds);
+            if (connProps == null)
+                connProps = new Properties();
+            
+            if (!connProps.containsKey("oracle.net.authentication_services") &&
+                !connProps.containsKey("oracle.net.kerberos5_mutual_authentication")) {
+                connProps.put("oracle.net.authentication_services", "( KERBEROS5 )");
+                connProps.put("oracle.net.kerberos5_mutual_authentications", "true");
+                
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "Automatically setting kerberos connectionProperties for Oracle: ", connProps);
+
+                setConnectionProperties.invoke(ds, connProps);
+            }
+        } catch (Throwable e) {
+            throw new ResourceException(e);
+        }
+    }
+
+    @Override
+    public ConnectionResults getPooledConnection(final CommonDataSource ds, String userName, String password, final boolean is2Phase, 
+                                                 WSConnectionRequestInfoImpl cri, KerbUsage useKerberos, Object gssCredential) throws ResourceException {
+        final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); 
+
+        if (isTraceOn && tc.isEntryEnabled()) 
+            Tr.entry(this, tc, "getPooledConnection", AdapterUtil.toString(ds), userName, "******", is2Phase ? "two-phase" : "one-phase",
+                     cri, useKerberos, gssCredential);
+
+        ConnectionResults results;
+        if (useKerberos != KerbUsage.NONE) {
+            setKerberosDatasourceProperties(ds);
+        }
+        results = super.getPooledConnection(ds, userName, password, is2Phase, cri, useKerberos, gssCredential);
+
+        if (isTraceOn && tc.isEntryEnabled()) 
+            Tr.exit(this, tc, "getPooledConnection", results);
+        return results;
     }
 
     /**

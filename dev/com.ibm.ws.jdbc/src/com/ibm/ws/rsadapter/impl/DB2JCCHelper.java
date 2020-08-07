@@ -44,6 +44,7 @@ import com.ibm.ws.jdbc.internal.PropertyService;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.DSConfig;
+import com.ibm.ws.rsadapter.impl.WSManagedConnectionFactoryImpl.KerbUsage;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcUtil;
 
 /**
@@ -651,7 +652,7 @@ public class DB2JCCHelper extends DB2Helper {
 
     @Override
     public ConnectionResults getPooledConnection(final CommonDataSource ds, String userName, String password, final boolean is2Phase, 
-                                                 WSConnectionRequestInfoImpl cri, final boolean useKerberos, final Object gssCredential) throws ResourceException {
+                                                 WSConnectionRequestInfoImpl cri, final KerbUsage useKerberos, final Object gssCredential) throws ResourceException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); 
 
         if (isTraceOn && tc.isEntryEnabled()) 
@@ -659,7 +660,7 @@ public class DB2JCCHelper extends DB2Helper {
                      cri, useKerberos, gssCredential);
 
         ConnectionResults results;
-        if (useKerberos) {
+        if (useKerberos == KerbUsage.USE_CREDENTIAL) {
             return new ConnectionResults(
                                          getPooledConnectionUsingKerberos(ds, gssCredential, is2Phase),
                                          null);

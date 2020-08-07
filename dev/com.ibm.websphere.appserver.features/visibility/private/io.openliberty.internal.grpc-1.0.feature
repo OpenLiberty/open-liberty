@@ -2,6 +2,7 @@
 symbolicName=io.openliberty.internal.grpc-1.0
 singleton=true
 IBM-API-Package: \
+  com.google.common.util.concurrent; type="stable",\
   com.google.protobuf;  type="stable",\
   io.grpc;  type="stable", \
   io.grpc.protobuf;  type="stable", \

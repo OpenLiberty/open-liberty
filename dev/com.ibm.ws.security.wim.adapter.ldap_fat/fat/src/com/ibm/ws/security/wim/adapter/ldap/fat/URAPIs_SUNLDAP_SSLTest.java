@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,10 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.websphere.simplicity.config.wim.LdapRegistry;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.com.unboundid.InMemorySunLDAPServer;
 import com.ibm.ws.security.registry.EntryNotFoundException;
 import com.ibm.ws.security.registry.SearchResult;
 import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
@@ -51,6 +54,8 @@ public class URAPIs_SUNLDAP_SSLTest {
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
+    private static InMemorySunLDAPServer ldapServer;
+
     //private final LeakedPasswordChecker passwordChecker = new LeakedPasswordChecker(server);
 
     /**
@@ -59,11 +64,34 @@ public class URAPIs_SUNLDAP_SSLTest {
      */
     @BeforeClass
     public static void setUp() throws Exception {
-        // Add LDAP variables to bootstrap properties file
-        LDAPUtils.addLDAPVariables(server);
+        setupLdapServer();
+        setupLibertyServer();
+    }
+
+    /**
+     * Setup the Liberty server. This server will start with very basic configuration. The tests
+     * will configure the server dynamically.
+     *
+     * @throws Exception If there was an issue setting up the Liberty server.
+     */
+    public static void setupLibertyServer() throws Exception {
         Log.info(c, "setUp", "Starting the server... (will wait for userRegistry servlet to start)");
         server.copyFileToLibertyInstallRoot("lib/features", "internalfeatures/securitylibertyinternals-1.0.mf");
         server.addInstalledAppForValidation("userRegistry");
+
+        /*
+         * Update LDAP configuration with In-Memory Server
+         */
+        ServerConfiguration serverConfig = server.getServerConfiguration();
+        LdapRegistry ldap = serverConfig.getLdapRegistries().get(0);
+        ldap.setHost("localhost");
+        ldap.setPort(String.valueOf(ldapServer.getLdapsPort()));
+        ldap.setBindDN(InMemorySunLDAPServer.getBindDN());
+        ldap.setBindPassword(InMemorySunLDAPServer.getBindPassword());
+        server.updateServerConfiguration(serverConfig);
+        /*
+         * Make sure the application has come up before proceeding
+         */
         server.startServer(c.getName() + ".log");
 
         //Make sure the application has come up before proceeding
@@ -83,12 +111,30 @@ public class URAPIs_SUNLDAP_SSLTest {
         }
     }
 
+    /**
+     * Configure the embedded LDAP server.
+     *
+     * @throws Exception If the server failed to start for some reason.
+     */
+    private static void setupLdapServer() throws Exception {
+        ldapServer = new InMemorySunLDAPServer();
+    }
+
     @AfterClass
     public static void tearDown() throws Exception {
         Log.info(c, "tearDown", "Stopping the server...");
         try {
-            server.stopServer("CWIML4529E", "CWIML4537E", "CWPKI0041W");
+            if (server != null) {
+                server.stopServer("CWIML4529E", "CWIML4537E", "CWPKI0041W");
+            }
         } finally {
+            try {
+                if (ldapServer != null) {
+                    ldapServer.shutDown(true);
+                }
+            } catch (Exception e) {
+                Log.error(c, "teardown", e, "LDAP server threw error while shutting down. " + e.getMessage());
+            }
             server.deleteFileFromLibertyInstallRoot("lib/features/internalfeatures/securitylibertyinternals-1.0.mf");
         }
     }

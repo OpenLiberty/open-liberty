@@ -13,7 +13,6 @@ IBM-API-Package: \
     io.openliberty.org.eclipse.microprofile.opentracing-2.0, \
     com.ibm.websphere.appserver.mpConfig-1.4
 -bundles=\
-    com.ibm.ws.require.java8, \
     io.openliberty.microprofile.opentracing.2.0.internal
 kind=noship
 edition=core

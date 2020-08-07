@@ -220,7 +220,7 @@ public class ClientTestServlet extends HttpServlet {
 //        assertEquals(check, entity);
         if (check.compareToIgnoreCase(entity) != 0)
         {
-            return "failure";
+            return "failure: check = " + check + ": entity = " + entity;
         }
         else
         {
@@ -235,7 +235,7 @@ public class ClientTestServlet extends HttpServlet {
         response.close();
         if (204 != code)
         {
-            return "failure";
+            return "failure: code = " + code;
         }
         else
         {
@@ -252,7 +252,7 @@ public class ClientTestServlet extends HttpServlet {
         response.close();
         if (204 != code)
         {
-            return "failure";
+            return "failure: code = " + code;
         }
         else
         {
@@ -268,7 +268,7 @@ public class ClientTestServlet extends HttpServlet {
         System.out.println(b);
         if (a != b)
         {
-            return "failure";
+            return "failure: a = " + a + ": b = " + b;
         }
         else
         {
@@ -283,7 +283,7 @@ public class ClientTestServlet extends HttpServlet {
         System.out.println(b);
         if (a.compareToIgnoreCase(b) != 0)
         {
-            return "failure";
+            return "failure: a = " + a + ": b = " + b;
         }
         else
         {

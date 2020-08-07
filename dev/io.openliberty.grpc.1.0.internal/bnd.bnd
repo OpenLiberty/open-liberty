@@ -47,6 +47,7 @@ Include-Resource: \
   com.ibm.websphere.org.osgi.service.component;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+  com.ibm.ws.injection.core;version=latest,\
   com.ibm.ws.kernel.boot;version=latest,\
   com.ibm.ws.kernel.service;version=latest,\
   com.ibm.ws.kernel.feature;version=latest,\
@@ -57,6 +58,7 @@ Include-Resource: \
   com.ibm.ws.logging.core,\
   com.ibm.ws.transport.http;version=latest,\
   com.ibm.ws.webcontainer,\
+  com.ibm.ws.managedobject,\
   com.google.code.findbugs:jsr305;version=3.0.2,\
   com.google.guava:guava;version=27.0.1,\
   com.ibm.ws.security.authorization.util,\

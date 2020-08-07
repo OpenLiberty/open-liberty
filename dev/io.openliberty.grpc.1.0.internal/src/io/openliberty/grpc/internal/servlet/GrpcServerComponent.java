@@ -10,8 +10,6 @@
  *******************************************************************************/
 package io.openliberty.grpc.internal.servlet;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,17 +37,20 @@ import com.ibm.ws.container.service.annotations.WebAnnotations;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
-
 import com.ibm.ws.kernel.feature.FeatureProvisioner;
+import com.ibm.ws.managedobject.ManagedObject;
+import com.ibm.ws.managedobject.ManagedObjectException;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
-import com.ibm.ws.webcontainer.webapp.WebApp;
+import com.ibm.ws.webcontainer.osgi.webapp.WebApp;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
+import com.ibm.wsspi.injectionengine.InjectionException;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 import io.grpc.BindableService;
 import io.grpc.servlet.GrpcServlet;
+import io.openliberty.grpc.internal.GrpcManagedObjectProvider;
 import io.openliberty.grpc.internal.GrpcMessages;
 
 @Component(service = { ApplicationStateListener.class,
@@ -95,7 +96,6 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
 	public void onStartup(Set<Class<?>> ctx, ServletContext sc) throws ServletException {
 		synchronized (grpcApplicationLock) {
 			if (!grpcApplications.isEmpty()) {
-
 				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 					Tr.debug(tc, "Attempting to load gRPC services for app {0}", sc.getServletContextName());
 				}
@@ -105,10 +105,11 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
 				GrpcServletApplication currentApp = grpcApplications.get(((WebApp) sc).getApplicationName());
 				if (currentApp != null) {
 					Set<String> services = currentApp.getServiceClassNames();
+
 					if (services != null) {
 						Map<String, BindableService> grpcServiceClasses = new HashMap<String, BindableService>();
 						for (String serviceClassName : services) {
-							BindableService service = newServiceInstanceFromClassName(serviceClassName);
+							BindableService service = newServiceInstanceFromClassName(currentApp, serviceClassName);
 							if (service != null) {
 								grpcServiceClasses.put(serviceClassName, service);
 							}
@@ -154,24 +155,27 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
 	 * @param String classname of the io.grpc.BindableService
 	 * @return BindableService or null if the class could not be initialized
 	 */
-	private BindableService newServiceInstanceFromClassName(String serviceClassName) {
+	@SuppressWarnings("unchecked")
+	private BindableService newServiceInstanceFromClassName(GrpcServletApplication grpcApp, String serviceClassName) {
 		try {
 			// use the TCCL to load app classes
 			ClassLoader cl = Thread.currentThread().getContextClassLoader();
-			Class<?> serviceClass = Class.forName(serviceClassName, true, cl);
+			Class<BindableService> serviceClass = (Class<BindableService>) Class.forName(serviceClassName, true, cl);
 			// don't init the class if it's abstract
 			if (!Modifier.isAbstract(serviceClass.getModifiers())) {
-				// get the no-arg constructor and ensure it's accessible
-				Constructor<?> ctor = serviceClass.getDeclaredConstructor();
-				ctor.setAccessible(true);
-				BindableService service = (BindableService) ctor.newInstance();
-				return service;
+				// use the managed object service to create a new instance of the BindableService class
+				// this enables container/CDI support for the instance
+				ManagedObject<BindableService> mo = 
+						(ManagedObject<BindableService>) GrpcManagedObjectProvider.createManagedObject(serviceClass);
+				// keep track of the ManagedObject so we can call release() on it during app stop
+				grpcApp.addManagedObjectContext(mo.getContext());
+				return mo.getObject();
 			}
-		} catch (InvocationTargetException | ClassNotFoundException | NoSuchMethodException | SecurityException
-				| InstantiationException | IllegalAccessException | IllegalArgumentException e) {
+		} catch (ClassNotFoundException | SecurityException | IllegalArgumentException | ManagedObjectException e) {
 			// FFDC
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-				Tr.debug(tc, "The following class extended io.grpc.BindableService but could not be loaded: {0} due to {1}", serviceClassName, e);
+				Tr.debug(tc, "The following class extended io.grpc.BindableService but could not be loaded: {0} due to {1}", 
+						serviceClassName, e);
 			}
 		}
 		return null;

@@ -85,19 +85,19 @@ public class PrometheusMetricWriter30 extends PrometheusMetricWriter23 implement
             String appendUnit = conversionAppendEntry.getKey();
 
             if (metricMetadata.getTypeRaw().equals(MetricType.COUNTER)) {
-                PrometheusBuilder30.buildCounter(builder, metricNamePrometheus, description, currentMetricMap);
+                PrometheusBuilder30.buildCounter30(builder, metricNamePrometheus, description, currentMetricMap);
             } else if (metricMetadata.getTypeRaw().equals(MetricType.CONCURRENT_GAUGE)) {
-                PrometheusBuilder30.buildConcurrentGauge(builder, metricNamePrometheus, description, currentMetricMap);
+                PrometheusBuilder30.buildConcurrentGauge30(builder, metricNamePrometheus, description, currentMetricMap);
             } else if (metricMetadata.getTypeRaw().equals(MetricType.GAUGE)) {
-                PrometheusBuilder30.buildGauge(builder, metricNamePrometheus, description, currentMetricMap, conversionFactor, appendUnit);
+                PrometheusBuilder30.buildGauge30(builder, metricNamePrometheus, description, currentMetricMap, conversionFactor, appendUnit);
             } else if (metricMetadata.getTypeRaw().equals(MetricType.TIMER)) {
-                PrometheusBuilder30.buildTimer(builder, metricNamePrometheus, description, currentMetricMap);
+                PrometheusBuilder30.buildTimer30(builder, metricNamePrometheus, description, currentMetricMap);
             } else if (metricMetadata.getTypeRaw().equals(MetricType.HISTOGRAM)) {
-                PrometheusBuilder30.buildHistogram(builder, metricNamePrometheus, description, currentMetricMap, conversionFactor, appendUnit);
+                PrometheusBuilder30.buildHistogram30(builder, metricNamePrometheus, description, currentMetricMap, conversionFactor, appendUnit);
             } else if (metricMetadata.getTypeRaw().equals(MetricType.METERED)) {
-                PrometheusBuilder30.buildMeter(builder, metricNamePrometheus, description, currentMetricMap);
+                PrometheusBuilder30.buildMeter30(builder, metricNamePrometheus, description, currentMetricMap);
             } else if (metricMetadata.getTypeRaw().equals(MetricType.SIMPLE_TIMER)) {
-                PrometheusBuilder30.buildSimpleTimer(builder, metricNamePrometheus, description, currentMetricMap);
+                PrometheusBuilder30.buildSimpleTimer30(builder, metricNamePrometheus, description, currentMetricMap);
             } else {
                 Tr.event(tc, "Metadata " + metricMetadata.toString() + " does not have an appropriate Metric Type");
             }

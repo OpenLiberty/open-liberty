@@ -20,6 +20,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.eclipse.microprofile.metrics.MetricRegistry.Type;
+import org.eclipse.microprofile.metrics.annotation.RegistryType;
 
 /**
  * Lists the metrics currently registered in the application registry
@@ -32,9 +34,16 @@ public class MetricListServlet extends HttpServlet {
     @Inject
     MetricRegistry reg;
 
+    @Inject
+    @RegistryType(type = Type.BASE)
+    MetricRegistry baseReg;
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         for (String metricName : reg.getNames()) {
+            resp.getWriter().println(metricName);
+        }
+        for (String metricName : baseReg.getNames()) {
             resp.getWriter().println(metricName);
         }
     }
