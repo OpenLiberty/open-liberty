@@ -70,6 +70,7 @@
 	<grpcTarget target="test.g3store.grpc.AppConsumerService/getAppInfo" headersToPropagate="authorization"/>
 	<grpcTarget target="test.g3store.grpc.AppConsumerService/getAllAppNames" authnToken="jwt"/>
 
+
 		
 
 </server>
