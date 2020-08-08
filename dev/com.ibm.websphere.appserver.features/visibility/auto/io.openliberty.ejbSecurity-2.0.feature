@@ -9,5 +9,5 @@ IBM-Install-Policy: when-satisfied
 -bundles=com.ibm.ws.security.appbnd, \
  io.openliberty.ejbcontainer.security.internal, \
  com.ibm.ws.security.audit.utils
-kind=noship
-edition=full
+kind=beta
+edition=core

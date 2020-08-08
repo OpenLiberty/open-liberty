@@ -16,7 +16,7 @@ IBM-Install-Policy: when-satisfied
 -bundles=io.openliberty.jakarta.jacc.2.0; location:=dev/api/spec/; mavenCoordinates="jakarta.authorization:jakarta.authorization-api:2.0.0-RC1", \
  io.openliberty.security.authorization.internal.jacc, \
  com.ibm.ws.security.audit.utils
-kind=noship
-edition=full
+kind=beta
+edition=core
 -jars=io.openliberty.jacc.2.0; location:=dev/api/ibm/
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.jacc_2.0-javadoc.zip
