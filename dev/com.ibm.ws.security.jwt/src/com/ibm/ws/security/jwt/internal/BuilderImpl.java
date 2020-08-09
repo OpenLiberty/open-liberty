@@ -450,6 +450,9 @@ public class BuilderImpl implements Builder {
     }
 
     boolean isValidKeyType(Key key, String algorithm) {
+        if (key == null) {
+            return false;
+        }
         return keyAlgChecker.isPrivateKeyValidType(key, algorithm);
     }
 

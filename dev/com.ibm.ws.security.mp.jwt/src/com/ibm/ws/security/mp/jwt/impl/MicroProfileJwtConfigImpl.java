@@ -207,7 +207,7 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
             return;
         }
         // TODO
-        System.out.println("Loaded MP JWT runtime: " + runtimeVersion + " (version " + runtimeVersion.getVersion() + ")");
+        //        System.out.println("Loaded MP JWT runtime: " + runtimeVersion + " (version " + runtimeVersion.getVersion() + ")");
     }
 
     protected void debug() {
