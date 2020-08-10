@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,8 @@ import org.jose4j.jwt.NumericDate;
 import org.jose4j.keys.HmacKey;
 import org.jose4j.lang.JoseException;
 
+import com.ibm.websphere.simplicity.log.Log;
+
 /**
  * Convenience class to build jwt tokens to test consumption of them by WebSphere.
  * Uses a constant public and private key, so the public key only has to
@@ -54,6 +56,8 @@ import org.jose4j.lang.JoseException;
  *
  */
 public class JWTTokenBuilder {
+
+    protected static Class<?> thisClass = JWTTokenBuilder.class;
     JwtClaims _claims = null;
     JsonWebSignature _jws = null;
     RsaJsonWebKey _rsajwk = null;
@@ -110,10 +114,12 @@ public class JWTTokenBuilder {
     }
 
     private PrivateKey fromPemEncoded(String pem) throws JoseException, InvalidKeySpecException, NoSuchAlgorithmException {
+
+        String thisMethod = "fromPemEncoded";
         int beginIndex = pem.indexOf(BEGIN_PRIV_KEY) + BEGIN_PRIV_KEY.length();
         int endIndex = pem.indexOf(END_PRIV_KEY);
         String base64 = pem.substring(beginIndex, endIndex).trim();
-        System.out.println("base64: " + base64 + " end");
+        Log.info(thisClass, thisMethod, "base64: " + base64 + " end");
         byte[] decode = SimplePEMEncoder.decode(base64);
 
         PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(decode);
@@ -255,13 +261,15 @@ public class JWTTokenBuilder {
 //    }
 
     public JWTTokenBuilder setRSAKey(String keyFile) {
+
+        String thisMethod = "setRSAKey";
         try {
             if (keyFile == null) {
 //                return setRSAKey();
                 throw new IOException("Can not load a key file that was not specified...");
             }
             String key = readKeyFromFile(keyFile);
-            System.out.println("Read from file: " + keyFile + " key is: " + key);
+            Log.info(thisClass, thisMethod, "Read from file: " + keyFile + " key is: " + key);
             _jws.setKey(this.fromPemEncoded(key));
         } catch (Exception e) {
             e.printStackTrace(System.out);
@@ -281,6 +289,8 @@ public class JWTTokenBuilder {
     }
 
     public String build() {
+        String thisMethod = "build";
+
         try {
             if (_claims.getIssuedAt() == null) {
                 _claims.setIssuedAtToNow();
@@ -290,7 +300,7 @@ public class JWTTokenBuilder {
         }
         try {
             _jws.setPayload(_claims.toJson());
-            System.out.println("after setPayload");
+            Log.info(thisClass, thisMethod, "after setPayload");
         } catch (Exception e) {
             e.printStackTrace(System.out);
             return null;
@@ -299,12 +309,12 @@ public class JWTTokenBuilder {
         // kidheadervalue may have already been set
         // algoheadervalue may have already been set
         try {
-            System.out.println("jwt: " + _jwt);
-            System.out.println("jws: " + _jws);
-            System.out.println("jws: " + _jws.getKey());
+            Log.info(thisClass, thisMethod, "jwt: " + _jwt);
+            Log.info(thisClass, thisMethod, "jws: " + _jws);
+            Log.info(thisClass, thisMethod, "jws: " + _jws.getKey());
 //            _jws.setKey(this.fromPemEncoded(privKey));
             _jwt = _jws.getCompactSerialization();
-            System.out.println("after compact");
+            Log.info(thisClass, thisMethod, "after compact");
             return _jwt;
         } catch (Exception e) {
             e.printStackTrace(System.out);
