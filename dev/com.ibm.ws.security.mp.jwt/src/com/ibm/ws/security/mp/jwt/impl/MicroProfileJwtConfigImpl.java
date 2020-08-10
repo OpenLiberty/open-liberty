@@ -111,7 +111,7 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
 
     public static final String CFG_KEY_SIGALG = "signatureAlgorithm";
 
-    String signatureAlgorithm = "RS256";
+    String signatureAlgorithm = null;
 
     public static final String KEY_authFilterRef = "authFilterRef";
     protected String authFilterRef;
@@ -197,17 +197,25 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     }
 
     void loadConfigValuesForHigherVersions(ComponentContext cc, Map<String, Object> props) {
-        MicroProfileJwtService mpJwtService = mpJwtServiceRef.getService();
-        if (mpJwtService == null) {
+        MpJwtRuntimeVersion runtimeVersion = getMpJwtRuntimeVersion();
+        if (runtimeVersion == null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Failed to find runtime version");
+            }
             return;
         }
-        MpJwtRuntimeVersion runtimeVersion = mpJwtService.getMpJwtRuntimeVersion();
-        if (runtimeVersion == null) {
-            System.out.println("Failed to find runtime version");
-            return;
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Loaded MP JWT runtime: " + runtimeVersion + " (version " + runtimeVersion.getVersion() + ")");
         }
         // TODO
-        //        System.out.println("Loaded MP JWT runtime: " + runtimeVersion + " (version " + runtimeVersion.getVersion() + ")");
+    }
+
+    MpJwtRuntimeVersion getMpJwtRuntimeVersion() {
+        MicroProfileJwtService mpJwtService = mpJwtServiceRef.getService();
+        if (mpJwtService == null) {
+            return null;
+        }
+        return mpJwtService.getMpJwtRuntimeVersion();
     }
 
     protected void debug() {

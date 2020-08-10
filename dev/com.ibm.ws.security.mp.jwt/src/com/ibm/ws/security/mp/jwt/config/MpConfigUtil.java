@@ -10,10 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.config;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -67,7 +67,8 @@ public class MpConfigUtil {
 
     // no null check. make sure that the caller sets non null objects.
     protected Map<String, String> getMpConfigMap(MpConfigProxyService service, ClassLoader cl, Map<String, String> map) {
-        Arrays.asList(MpConstants.ISSUER, MpConstants.PUBLIC_KEY, MpConstants.KEY_LOCATION).forEach(s -> getMpConfig(service, cl, s, map));
+        Set<String> supportedMpConfigPropNames = service.getSupportedConfigPropertyNames();
+        supportedMpConfigPropNames.forEach(s -> getMpConfig(service, cl, s, map));
         return map;
     }
 
