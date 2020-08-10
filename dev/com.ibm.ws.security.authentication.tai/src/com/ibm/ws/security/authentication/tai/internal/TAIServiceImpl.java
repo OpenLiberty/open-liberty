@@ -49,7 +49,7 @@ public class TAIServiceImpl implements TAIService {
     private final Map<String, Boolean> disableLtpaCookieTais = new HashMap<String, Boolean>();
 
     private final Set<String> orderOfInterceptorIds = new TreeSet<String>();
-    private boolean startInitializeTais = false;
+    private boolean startInitializeTais = false; // Start initialize TAI when the first authenticate request come in
 
     protected synchronized void setInterceptorService(ServiceReference<TrustAssociationInterceptor> ref) {
         String id = getComponentId(ref);
