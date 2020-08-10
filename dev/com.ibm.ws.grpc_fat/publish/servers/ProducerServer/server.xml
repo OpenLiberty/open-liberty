@@ -35,6 +35,4 @@
 		traceSpecification="*=info=enabled:io.openliberty.grpc*=all:com.ibm.testapp.g3store*=all"
 		maxFileSize="40" maxFiles="20" traceFormat="BASIC" />
 
-    <webContainer deferServletLoad="false"/>              
-
 </server>

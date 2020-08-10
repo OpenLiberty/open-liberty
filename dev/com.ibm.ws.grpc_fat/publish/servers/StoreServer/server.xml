@@ -21,8 +21,6 @@
 		<feature>jwt-1.0</feature>
 	</featureManager>
 	
-	<webContainer deferServletLoad="false"/>
-
 	<include location="../fatTestPorts.xml" />
 
 	<distributedMap id="gRPCDistMap" />
