@@ -23,6 +23,7 @@ import java.security.KeyStoreException;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.security.PublicKey;
+import java.security.interfaces.ECPublicKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Collections;
 import java.util.HashSet;
@@ -54,6 +55,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.common.crypto.KeyAlgorithmChecker;
 import com.ibm.ws.security.common.jwk.interfaces.JWK;
 import com.ibm.ws.security.common.jwk.internal.JwkConstants;
 import com.ibm.wsspi.ssl.SSLSupport;
@@ -73,10 +75,8 @@ public class JwKRetriever {
     String sslConfigurationName = null;
     String jwkEndpointUrl = null; // jwksUri
 
-    String sigAlg = "RS256"; // TODO may need to allow it to be set in
-                             // configuration
-    JWKSet jwkSet = null; // using the JWKSet from the JwtConsumerConfig. Do not
-                          // create it every time
+    String sigAlg = null;
+    JWKSet jwkSet = null; // using the JWKSet from the JwtConsumerConfig. Do not create it every time
     SSLSupport sslSupport = null;//JwtUtils.getSSLSupportService();
 
     String keyFileName = null;
@@ -91,6 +91,8 @@ public class JwKRetriever {
     String publicKeyText = null;
     String locationUsed = null;
 
+    KeyAlgorithmChecker keyAlgChecker = new KeyAlgorithmChecker();
+
     /**
      *
      * @param configId
@@ -103,19 +105,12 @@ public class JwKRetriever {
      *            using the jwkSet from the config
      * @param hnvEnabled
      */
-    public JwKRetriever(String configId, String sslConfigurationName, String jwkEndpointUrl, JWKSet jwkSet, SSLSupport sslSupport, boolean hnvEnabled, String jwkClientId, @Sensitive String jwkClientSecret) {
-        this.configId = configId;
-        this.sslConfigurationName = sslConfigurationName;
-        this.jwkEndpointUrl = jwkEndpointUrl;
-        this.jwkSet = jwkSet; // get the JWKSet from the Config
-        this.sslSupport = sslSupport;
-        this.hostNameVerificationEnabled = hnvEnabled;
-        this.jwkClientId = jwkClientId;
-        this.jwkClientSecret = jwkClientSecret;
+    public JwKRetriever(String configId, String sslConfigurationName, String jwkEndpointUrl, JWKSet jwkSet, SSLSupport sslSupport, boolean hnvEnabled, String jwkClientId, @Sensitive String jwkClientSecret, String signatureAlgorithm) {
+        this(configId, sslConfigurationName, jwkEndpointUrl, jwkSet, sslSupport, hnvEnabled, jwkClientId, jwkClientSecret, signatureAlgorithm, null, null);
     }
 
     public JwKRetriever(String configId, String sslConfigurationName, String jwkEndpointUrl, JWKSet jwkSet, SSLSupport sslSupport, boolean hnvEnabled, String jwkClientId, @Sensitive String jwkClientSecret,
-            String publicKeyText, String keyLocation) {
+            String signatureAlgorithm, String publicKeyText, String keyLocation) {
         this.configId = configId;
         this.sslConfigurationName = sslConfigurationName;
         this.jwkEndpointUrl = jwkEndpointUrl;
@@ -124,6 +119,7 @@ public class JwKRetriever {
         this.hostNameVerificationEnabled = hnvEnabled;
         this.jwkClientId = jwkClientId;
         this.jwkClientSecret = jwkClientSecret;
+        this.sigAlg = signatureAlgorithm;
         this.publicKeyText = publicKeyText;
         this.keyLocation = keyLocation;
     }
@@ -417,7 +413,7 @@ public class JwKRetriever {
         Set<JWK> jwks = new HashSet<JWK>();
         JWK jwk = null;
 
-        if (isPEM(keyText) && "RS256".equals(signatureAlgorithm)) {
+        if (isPEM(keyText) && isPemSupportedAlgorithm(signatureAlgorithm)) {
             jwk = parsePEMFormat(keyText, signatureAlgorithm);
         } else {
             JSONObject jsonObject = parseJsonObject(keyText);
@@ -447,18 +443,56 @@ public class JwKRetriever {
         return !jwks.isEmpty();
     }
 
+    boolean isPemSupportedAlgorithm(String signatureAlgorithm) {
+        return keyAlgChecker.isRSAlgorithm(signatureAlgorithm) || keyAlgChecker.isESAlgorithm(signatureAlgorithm);
+    }
+
     @FFDCIgnore(Exception.class)
     private JWK parsePEMFormat(String keyText, String signatureAlgorithm) {
         Jose4jRsaJWK jwk = null;
-
         try {
-            RSAPublicKey pubKey = (RSAPublicKey) PemKeyUtil.getPublicKey(keyText);
-            jwk = new Jose4jRsaJWK(pubKey);
+            PublicKey pubKey = PemKeyUtil.getPublicKey(keyText);
+            if (keyAlgChecker.isESAlgorithm(signatureAlgorithm)) {
+                return getEcJwk(pubKey, signatureAlgorithm);
+            } else {
+                return getRsaJwk(pubKey, signatureAlgorithm);
+            }
+        } catch (Exception e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Caught exception parsing PEM file: " + e);
+            }
+        }
+        return jwk;
+    }
+
+    @FFDCIgnore(Exception.class)
+    private Jose4jEllipticCurveJWK getEcJwk(PublicKey publicKey, String signatureAlgorithm) {
+        if (!(publicKey instanceof ECPublicKey)) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Provided public key was not of type ECPublicKey");
+            }
+            return null;
+        }
+        Jose4jEllipticCurveJWK jwk = null;
+        try {
+            jwk = Jose4jEllipticCurveJWK.getInstance((ECPublicKey) publicKey, signatureAlgorithm, JwkConstants.sig);
+        } catch (Exception e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Caught exception instantiating EC JWK object: " + e);
+            }
+        }
+        return jwk;
+    }
+
+    @FFDCIgnore(Exception.class)
+    private Jose4jRsaJWK getRsaJwk(PublicKey pubKey, String signatureAlgorithm) {
+        Jose4jRsaJWK jwk = null;
+        try {
+            jwk = new Jose4jRsaJWK((RSAPublicKey) pubKey);
             jwk.setAlgorithm(signatureAlgorithm);
             jwk.setUse(JwkConstants.sig);
         } catch (Exception e) {
         }
-
         return jwk;
     }
 
