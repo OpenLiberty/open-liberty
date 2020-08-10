@@ -132,7 +132,11 @@ public class DumpCommandTest {
         if (server.getMachine().getOperatingSystem() == OperatingSystem.ZOS) {
             assertNotNull("Did not find expected CWWKE0092I message for java system dump on zos in logs", server.waitForStringInLog("CWWKE0092I"));
         } else {
-            assertNotNull("Did not find expected CWWKE0068I message for system core in logs", server.waitForStringInLog("CWWKE0068I.*dmp")); //system core
+            // On Linux systems (like CENTOS, RHEL, SUSE) if there is a proc/sys/kernel/core_pattern which pipes the core to some other program
+            // the core file will not be found as the JVM cannot rename it.  In that case we should skip checking for the "CWWKE0068I.*dmp" message.
+            if (server.waitForStringInLog("JVMPORT030W") == null) {
+                assertNotNull("Did not find expected CWWKE0068I message for system core in logs", server.waitForStringInLog("CWWKE0068I.*dmp")); //system core
+            }
         }
         assertNotNull("Did not find expected CWWKE0068I message for javacore in logs", server.waitForStringInLog("CWWKE0068I.*javacore")); //javacore
 
