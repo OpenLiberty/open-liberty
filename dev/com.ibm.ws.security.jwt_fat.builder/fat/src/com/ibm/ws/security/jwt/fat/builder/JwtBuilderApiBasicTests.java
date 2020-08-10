@@ -4591,8 +4591,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
      * Test Purpose:
      * <OL>
      * <LI>Create a builder using the specified configId (a generic config used for most tests)
-     * <LI>Run the signWith api to update the builder with a good value
-     * <LI>generate a JWT token
+     * <LI>Run the signWith api to update the builder with a good value to generate a JWT token
      * </OL>
      * <P>
      * Expected Results:
@@ -4610,9 +4609,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
      * </UL>
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
-    // TODO - dup for other signatures
     public void JwtBuilderAPIBasicTests_signWith_sigAlg_RS256_key_privKey() throws Exception {
 
         String builderId = "jwt1";
@@ -4631,6 +4628,29 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
     }
 
+    /**
+     * <p>
+     * Test Purpose:
+     * <OL>
+     * <LI>Create a builder using the specified configId (a generic config used for most tests)
+     * <LI>Run the signWith api to update the builder with a good value to generate a JWT token
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>The builder should be created with default values as there is not much defined in the specified config
+     * <LI>The builder should have updated signWith (value should be created from sigALg RS384/signingKey <privateKey>)
+     * <LI>The JWT Token should be created based on the builder
+     * <LI>The JWT Token will be used to display the claim values
+     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
+     * <LI>The test case will validate the content of:
+     * <UL>
+     * <LI>The messages logged indicating that we were invoking "signWith"
+     * <LI>The content of the returned token
+     * <LI>The output from running the query apis
+     * </UL>
+     * </OL>
+     */
     @Mode(TestMode.LITE)
     @Test
     public void JwtBuilderAPIBasicTests_signWith_sigAlg_RS384_key_privKey() throws Exception {
@@ -4651,7 +4671,29 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
     }
 
-    @Mode(TestMode.LITE)
+    /**
+     * <p>
+     * Test Purpose:
+     * <OL>
+     * <LI>Create a builder using the specified configId (a generic config used for most tests)
+     * <LI>Run the signWith api to update the builder with a good value to generate a JWT token
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>The builder should be created with default values as there is not much defined in the specified config
+     * <LI>The builder should have updated signWith (value should be created from sigALg RS512/signingKey <privateKey>)
+     * <LI>The JWT Token should be created based on the builder
+     * <LI>The JWT Token will be used to display the claim values
+     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
+     * <LI>The test case will validate the content of:
+     * <UL>
+     * <LI>The messages logged indicating that we were invoking "signWith"
+     * <LI>The content of the returned token
+     * <LI>The output from running the query apis
+     * </UL>
+     * </OL>
+     */
     @Test
     public void JwtBuilderAPIBasicTests_signWith_sigAlg_RS512_key_privKey() throws Exception {
 
@@ -4671,7 +4713,29 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
     }
 
-    @Mode(TestMode.LITE)
+    /**
+     * <p>
+     * Test Purpose:
+     * <OL>
+     * <LI>Create a builder using the specified configId (a generic config used for most tests)
+     * <LI>Run the signWith api to update the builder with a good value to generate a JWT token
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>The builder should be created with default values as there is not much defined in the specified config
+     * <LI>The builder should have updated signWith (value should be created from sigALg ES256/signingKey <privateKey>)
+     * <LI>The JWT Token should be created based on the builder
+     * <LI>The JWT Token will be used to display the claim values
+     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
+     * <LI>The test case will validate the content of:
+     * <UL>
+     * <LI>The messages logged indicating that we were invoking "signWith"
+     * <LI>The content of the returned token
+     * <LI>The output from running the query apis
+     * </UL>
+     * </OL>
+     */
     @Test
     public void JwtBuilderAPIBasicTests_signWith_sigAlg_ES256_key_privKey() throws Exception {
 
@@ -4691,7 +4755,29 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
     }
 
-    @Mode(TestMode.LITE)
+    /**
+     * <p>
+     * Test Purpose:
+     * <OL>
+     * <LI>Create a builder using the specified configId (a generic config used for most tests)
+     * <LI>Run the signWith api to update the builder with a good value to generate a JWT token
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>The builder should be created with default values as there is not much defined in the specified config
+     * <LI>The builder should have updated signWith (value should be created from sigALg ES384/signingKey <privateKey>)
+     * <LI>The JWT Token should be created based on the builder
+     * <LI>The JWT Token will be used to display the claim values
+     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
+     * <LI>The test case will validate the content of:
+     * <UL>
+     * <LI>The messages logged indicating that we were invoking "signWith"
+     * <LI>The content of the returned token
+     * <LI>The output from running the query apis
+     * </UL>
+     * </OL>
+     */
     @Test
     public void JwtBuilderAPIBasicTests_signWith_sigAlg_ES384_key_privKey() throws Exception {
 
@@ -4711,6 +4797,29 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
     }
 
+    /**
+     * <p>
+     * Test Purpose:
+     * <OL>
+     * <LI>Create a builder using the specified configId (a generic config used for most tests)
+     * <LI>Run the signWith api to update the builder with a good value to generate a JWT token
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>The builder should be created with default values as there is not much defined in the specified config
+     * <LI>The builder should have updated signWith (value should be created from sigALg ES512/signingKey <privateKey>)
+     * <LI>The JWT Token should be created based on the builder
+     * <LI>The JWT Token will be used to display the claim values
+     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
+     * <LI>The test case will validate the content of:
+     * <UL>
+     * <LI>The messages logged indicating that we were invoking "signWith"
+     * <LI>The content of the returned token
+     * <LI>The output from running the query apis
+     * </UL>
+     * </OL>
+     */
     @Mode(TestMode.LITE)
     @Test
     public void JwtBuilderAPIBasicTests_signWith_sigAlg_ES512_key_privKey() throws Exception {
@@ -4730,6 +4839,224 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         validationUtils.validateResult(response, expectations);
 
     }
+
+    /**
+     * <p>
+     * Test Purpose:
+     * <OL>
+     * <LI>Create a builder using the specified configId (a generic config used for most tests)
+     * <LI>Run the signWith api to update the builder with a good value to generate a JWT token
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>The builder should be created with default values as there is not much defined in the specified config
+     * <LI>The builder should have updated signWith (value should be created from sigALg PS256/signingKey <privateKey>)
+     * <LI>The JWT Token should be created based on the builder
+     * <LI>The JWT Token will be used to display the claim values
+     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
+     * <LI>The test case will validate the content of:
+     * <UL>
+     * <LI>The messages logged indicating that we were invoking "signWith"
+     * <LI>The content of the returned token
+     * <LI>The output from running the query apis
+     * </UL>
+     * </OL>
+     */
+    //    @Test
+    public void JwtBuilderAPIBasicTests_signWith_sigAlg_PS256_key_privKey() throws Exception {
+
+        // TODO - need to add code to handle non-Java 11 case handling - it may/may not make sense depending on whether we can get through the test client to actually call the builder with the alg set to PS256
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_PS256);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
+        expectationSettings.put("overrideSettings", testSettings);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * <p>
+     * Test Purpose:
+     * <OL>
+     * <LI>Create a builder using the specified configId (a generic config used for most tests)
+     * <LI>Run the signWith api to update the builder with a good value to generate a JWT token
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>The builder should be created with default values as there is not much defined in the specified config
+     * <LI>The builder should have updated signWith (value should be created from sigALg PS384/signingKey <privateKey>)
+     * <LI>The JWT Token should be created based on the builder
+     * <LI>The JWT Token will be used to display the claim values
+     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
+     * <LI>The test case will validate the content of:
+     * <UL>
+     * <LI>The messages logged indicating that we were invoking "signWith"
+     * <LI>The content of the returned token
+     * <LI>The output from running the query apis
+     * </UL>
+     * </OL>
+     */
+    @Mode(TestMode.LITE)
+    //    @Test
+    public void JwtBuilderAPIBasicTests_signWith_sigAlg_PS384_key_privKey() throws Exception {
+
+        // TODO - need to add code to handle non-Java 11 case handling - it may/may not make sense depending on whether we can get through the test client to actually call the builder with the alg set to PS384
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_PS384);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
+        expectationSettings.put("overrideSettings", testSettings);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * <p>
+     * Test Purpose:
+     * <OL>
+     * <LI>Create a builder using the specified configId (a generic config used for most tests)
+     * <LI>Run the signWith api to update the builder with a good value to generate a JWT token
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>The builder should be created with default values as there is not much defined in the specified config
+     * <LI>The builder should have updated signWith (value should be created from sigALg PS512/signingKey <privateKey>)
+     * <LI>The JWT Token should be created based on the builder
+     * <LI>The JWT Token will be used to display the claim values
+     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
+     * <LI>The test case will validate the content of:
+     * <UL>
+     * <LI>The messages logged indicating that we were invoking "signWith"
+     * <LI>The content of the returned token
+     * <LI>The output from running the query apis
+     * </UL>
+     * </OL>
+     */
+    //    @Test
+    public void JwtBuilderAPIBasicTests_signWith_sigAlg_PS512_key_privKey() throws Exception {
+
+        // TODO - need to add code to handle non-Java 11 case handling - it may/may not make sense depending on whether we can get through the test client to actually call the builder with the alg set to PS512
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_ES512);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
+        expectationSettings.put("overrideSettings", testSettings);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * <p>
+     * Test Purpose:
+     * <OL>
+     * <LI>Create a builder using the specified configId (a generic config used for most tests)
+     * <LI>Run the signWith api to update the builder with a good value generate a JWT token
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>The builder should be created with default values as there is not much defined in the specified config
+     * <LI>The builder should have updated signWith (value should be created from sigALg HS384/signingKey "useThisToSign")
+     * <LI>The JWT Token should be created based on the builder
+     * <LI>The JWT Token will be used to display the claim values
+     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
+     * <LI>The test case will validate the content of:
+     * <UL>
+     * <LI>The messages logged indicating that we were invoking "signWith"
+     * <LI>The content of the returned token
+     * <LI>The output from running the query apis
+     * </UL>
+     * </OL>
+     */
+    @Test
+    public void JwtBuilderAPIBasicTests_signWith_sigAlg_HS384_key_string() throws Exception {
+
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_HS384);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY, "useThisToSign");
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_STRING_TYPE);
+        expectationSettings.put("overrideSettings", testSettings);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * <p>
+     * Test Purpose:
+     * <OL>
+     * <LI>Create a builder using the specified configId (a generic config used for most tests)
+     * <LI>Run the signWith api to update the builder with a good value generate a JWT token
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>The builder should be created with default values as there is not much defined in the specified config
+     * <LI>The builder should have updated signWith (value should be created from sigALg HS512/signingKey "useThisToSign")
+     * <LI>The JWT Token should be created based on the builder
+     * <LI>The JWT Token will be used to display the claim values
+     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
+     * <LI>The test case will validate the content of:
+     * <UL>
+     * <LI>The messages logged indicating that we were invoking "signWith"
+     * <LI>The content of the returned token
+     * <LI>The output from running the query apis
+     * </UL>
+     * </OL>
+     */
+    @Test
+    public void JwtBuilderAPIBasicTests_signWith_sigAlg_HS512_key_string() throws Exception {
+
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_HS512);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY, "useThisToSign");
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_STRING_TYPE);
+        expectationSettings.put("overrideSettings", testSettings);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    // TODO - should add cases where we specify one alg, and then point to the private key of another alg - need runtime updates before this can be done.
 
     /**
      * <p>
