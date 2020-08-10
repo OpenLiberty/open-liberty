@@ -81,8 +81,7 @@ public class Krb5LoginModuleWrapper implements LoginModule {
         this.callbackHandler = callbackHandler;
         this.subject = subject;
         this.sharedState = (Map<String, Object>) sharedState;
-        options = new HashMap<>();
-        options.putAll(opts);
+        this.options = new HashMap<>(opts);
 
         if (!isIBMJdk8)
             useKeytabValue = options.get("useKeyTab");
@@ -106,6 +105,9 @@ public class Krb5LoginModuleWrapper implements LoginModule {
                 options.remove("useKeyTab");
                 options.put("useKeytab", keytab);
             }
+            if (options.containsKey("clearPass")) {
+                options.remove("clearPass");
+            }
         }
 
         if (useKeytabValue != null && useKeytabValue.equals("true") && options.get("keyTab") == null) {
@@ -115,7 +117,7 @@ public class Krb5LoginModuleWrapper implements LoginModule {
             options.put("debug", "true");
         }
 
-        krb5loginModule.initialize(subject, null, sharedState, options);
+        krb5loginModule.initialize(subject, callbackHandler, sharedState, options);
     }
 
     @Override
@@ -170,5 +172,5 @@ public class Krb5LoginModuleWrapper implements LoginModule {
             throw new IllegalStateException(e);
         }
     }
-}
 
+}

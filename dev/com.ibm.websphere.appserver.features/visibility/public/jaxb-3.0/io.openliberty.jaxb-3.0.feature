@@ -23,4 +23,4 @@ Subsystem-Name: Jakarta XML Bindings 3.0
 -bundles=\
   io.openliberty.jaxb.3.0.internal.tools
 kind=beta
-edition=base
+edition=core

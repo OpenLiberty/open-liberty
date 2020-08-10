@@ -11,6 +11,9 @@
 
 apply plugin: 'war'
 
+// We aren't making a war for the entire project
+war { enabled false }
+
 /* 
  * This is where all application ZIP and WARs will be built.
  */
@@ -55,8 +58,8 @@ task staticAnnotationMixed_WAR(type: War, dependsOn: staticAnnotationMixed_JAR) 
     include 'web/common/*.class'
     into 'WEB-INF/classes'
   }
-  from ('build/libs/test-application') { 
-    include "${appBuildDir}/staticAnnotationMixed.jar"
+  from (appBuildDir) { 
+    include "staticAnnotationMixed.jar"
     into 'WEB-INF/lib'
   }
 }
@@ -124,8 +127,8 @@ task dynamicAnnotationConflict_WAR(type: War, dependsOn: dynamicAnnotationConfli
     include 'web/common/*.class'
     into 'WEB-INF/classes'
   }
-  from ('build/libs/test-application') { 
-    include "${appBuildDir}/dynamicAnnotationConflict.jar"
+  from (appBuildDir) { 
+    include "dynamicAnnotationConflict.jar"
     into 'WEB-INF/lib'
   }
 }
@@ -187,8 +190,8 @@ task metadataCompleteTrueWebXML_WAR(type: War, dependsOn: metadataCompleteTrueWe
     include 'web/common/*.class'
     into 'WEB-INF/classes'
   }
-  from ('build/libs/test-application') { 
-    include "${appBuildDir}/metadataCompleteTrueWebXML.jar"
+  from (appBuildDir) { 
+    include "metadataCompleteTrueWebXML.jar"
     into 'WEB-INF/lib'
   }
 }
@@ -250,8 +253,8 @@ task metadataCompleteTrueWebFragment_WAR(type: War, dependsOn: metadataCompleteT
     include 'web/common/*.class'
     into 'WEB-INF/classes'
   }
-  from ('build/libs/test-application') { 
-    include "${appBuildDir}/metadataCompleteTrueWebFragment.jar"
+  from (appBuildDir) { 
+    include "metadataCompleteTrueWebFragment.jar"
     into 'WEB-INF/lib'
   }
 }
@@ -323,9 +326,9 @@ task webFragmentDeploymentFailureForRunAs_WAR(type: War, dependsOn: [webFragment
     include 'web/common/*.class'
     into 'WEB-INF/classes'
   }
-  from ('build/libs/test-application') { 
-    include "${appBuildDir}/webFragmentDeploymentFailureForRunAs1.jar"
-    include "${appBuildDir}/webFragmentDeploymentFailureForRunAs2.jar"
+  from (appBuildDir) { 
+    include "webFragmentDeploymentFailureForRunAs1.jar"
+    include "webFragmentDeploymentFailureForRunAs2.jar"
     into 'WEB-INF/lib'
   }
 }
@@ -397,9 +400,9 @@ task webFragmentDeploymentFailureForAuthConstraint_WAR(type: War, dependsOn: [we
     include 'web/common/*.class'
     into 'WEB-INF/classes'
   }
-  from ('build/libs/test-application') { 
-    include "${appBuildDir}/webFragmentDeploymentFailureForAuthConstraint1.jar"
-    include "${appBuildDir}/webFragmentDeploymentFailureForAuthConstraint2.jar"
+  from (appBuildDir) { 
+    include "webFragmentDeploymentFailureForAuthConstraint1.jar"
+    include "webFragmentDeploymentFailureForAuthConstraint2.jar"
     into 'WEB-INF/lib'
   }
 }
@@ -471,9 +474,9 @@ task webFragmentDeploymentFailureForUserDataConstraint_WAR(type: War, dependsOn:
     include 'web/common/*.class'
     into 'WEB-INF/classes'
   }
-  from ('build/libs/test-application') { 
-    include "${appBuildDir}/webFragmentDeploymentFailureForUserDataConstraint1.jar"
-    include "${appBuildDir}/webFragmentDeploymentFailureForUserDataConstraint2.jar"
+  from (appBuildDir) { 
+    include "webFragmentDeploymentFailureForUserDataConstraint1.jar"
+    include "webFragmentDeploymentFailureForUserDataConstraint2.jar"
     into 'WEB-INF/lib'
   }
 }
@@ -823,6 +826,3 @@ assemble {
     webFragmentDeploymentFailureForUserDataConstraint
     
 }
-
-// We aren't making a war for the entire project
-war { enabled false }

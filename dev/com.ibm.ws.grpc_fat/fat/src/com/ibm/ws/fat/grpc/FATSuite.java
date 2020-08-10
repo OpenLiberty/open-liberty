@@ -18,6 +18,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
                 HelloWorldCDITests.class,
                 HelloWorldTest.class,
+                GrpcMetricsTest.class,
                 ServiceSupportTests.class,
                 ServiceConfigTests.class,
                 ServiceInterceptorTests.class,

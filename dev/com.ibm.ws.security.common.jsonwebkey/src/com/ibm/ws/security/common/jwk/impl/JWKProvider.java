@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.common.jwk.impl;
 
@@ -50,7 +50,7 @@ public class JWKProvider {
 
     protected PublicKey publicKey = null;
     protected PrivateKey privateKey = null;
-    
+
     protected String publicKeyKid = null;
 
     protected JWKProvider() {
@@ -102,7 +102,7 @@ public class JWKProvider {
             Tr.debug(tc, "kid = " + this.publicKeyKid);
         }
     }
-    
+
     private String buildKidFromPublicKey(PublicKey cert) {
         JwkKidBuilder kidbuilder = new JwkKidBuilder();
         return kidbuilder.buildKeyId(cert);
@@ -113,7 +113,7 @@ public class JWKProvider {
         while (jwks.size() < JWKS_TO_GENERATE) {
             generateJWKs();
         }
-        jwk = jwks.get(JWKS_TO_GENERATE-1);
+        jwk = jwks.get(JWKS_TO_GENERATE - 1);
         return jwk;
     }
 
@@ -127,21 +127,52 @@ public class JWKProvider {
 
     protected JWK generateJWK(String alg, int size) {
         JWK jwk = null;
-        if (RS256.equals(alg)) {
+        if (isValidJwkAlgorithm(alg)) {
             if (publicKey != null && privateKey != null) {
                 jwk = Jose4jRsaJWK.getInstance(alg, use, publicKey, privateKey, publicKeyKid);
                 jwk.generateKey();
             } else {
-                jwk = generateRsaJWK(alg, size);
+                jwk = generateJwkForValidAlgorithm(alg, size);
             }
         }
         return jwk;
+    }
+
+    boolean isValidJwkAlgorithm(String alg) {
+        if (alg == null) {
+            return false;
+        }
+        return alg.matches("[RE]S[0-9]{3,}");
+    }
+
+    JWK generateJwkForValidAlgorithm(String alg, int size) {
+        JWK jwk = null;
+        if (isRsaAlgorithm(alg)) {
+            jwk = generateRsaJWK(alg, size);
+        } else if (isEcAlgorithm(alg)) {
+            jwk = generateEcJwk(alg);
+        }
+        return jwk;
+    }
+
+    boolean isRsaAlgorithm(String alg) {
+        return alg.matches("RS[0-9]{3,}");
+    }
+
+    boolean isEcAlgorithm(String alg) {
+        return alg.matches("ES[0-9]{3,}");
     }
 
     protected JWK generateRsaJWK(String alg, int size) {
         JWK jwk = Jose4jRsaJWK.getInstance(size, alg, null, RSA);
         jwk.generateKey();
 
+        return jwk;
+    }
+
+    protected JWK generateEcJwk(String alg) {
+        JWK jwk = Jose4jEllipticCurveJWK.getInstance(alg, null);
+        jwk.generateKey();
         return jwk;
     }
 

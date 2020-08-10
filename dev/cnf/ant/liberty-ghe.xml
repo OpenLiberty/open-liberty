@@ -26,6 +26,9 @@
 		<!-- Depending whether ghe.build.type is Continuous or Release or Stabilization, we use a
              different matching pattern to find tags. -->
  		<script language="javascript">
+ 		  <classpath>
+ 		    <pathelement location="${nashorn.jar.file}"/>
+ 		  </classpath>
           <![CDATA[
           var buildType = project.getProperty("ghe.build.type");
           if (buildType == "Continuous") {

@@ -44,6 +44,7 @@ import com.ibm.ws.security.intfc.SubjectManagerService;
 import com.ibm.ws.security.jca.AuthDataService;
 import com.ibm.ws.security.kerberos.auth.KerberosService;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
+import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 import com.ibm.wsspi.security.auth.callback.WSMappingCallbackHandler;
 
 /**
@@ -159,7 +160,8 @@ public class AuthDataServiceImpl implements AuthDataService {
 
     private Subject obtainSubject(ManagedConnectionFactory managedConnectionFactory, AuthData authData) throws LoginException {
         if (authData.getKrb5Principal() != null) {
-            return krb5Service.getOrCreateSubject(authData.getKrb5Principal());
+            SerializableProtectedString pass = authData.getPassword() == null ? null : new SerializableProtectedString(authData.getPassword());
+            return krb5Service.getOrCreateSubject(authData.getKrb5Principal(), pass);
         } else {
             Subject subject = createSubject(managedConnectionFactory, authData);
             addInvocationSubjectPrincipal(subject);

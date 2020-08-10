@@ -16,5 +16,5 @@ IBM-Install-Policy: when-satisfied
  io.openliberty.security.authentication.internal.tai
 -jars=com.ibm.websphere.appserver.api.webcontainer.security.app; location:=dev/api/ibm/
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.webcontainer.security.app_1.4-javadoc.zip
-kind=noship
-edition=full
+kind=beta
+edition=core
