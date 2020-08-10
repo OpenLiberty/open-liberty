@@ -4,9 +4,19 @@
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
         http://xmlns.jcp.org/xml/ns/javaee/permissions_7.xsd"
 	version="7">
+
+	<permission>
+		<class-name>java.io.FilePermission</class-name>
+		<name>ALL FILES</name>
+		<actions>read,write</actions>
+	</permission>
+
 	<permission>
 		<class-name>java.security.AllPermission</class-name>
 		<name>*</name>
 		<actions>*</actions>
 	</permission>
+
+
+
 </permissions>

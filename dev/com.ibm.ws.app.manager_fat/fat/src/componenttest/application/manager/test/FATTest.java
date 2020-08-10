@@ -30,7 +30,6 @@ import java.util.Collection;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
-import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.config.Application;
@@ -40,7 +39,6 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import componenttest.annotation.ExpectedFFDC;
-import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyFileManager;
@@ -49,7 +47,6 @@ import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
 import test.utils.TestUtils;
 
-@RunWith(FATRunner.class)
 public class FATTest extends AbstractAppManagerTest {
 
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("appManagerTestServer");
@@ -86,6 +83,7 @@ public class FATTest extends AbstractAppManagerTest {
     @FFDCIgnore(value = { java.io.FileNotFoundException.class })
     public void testStartStopFromXmlFull() throws Exception {
         final String method = testName.getMethodName();
+        RemoteFile consoleLogFile = null;
         try {
             //load a new server xml
             server.setServerConfigurationFile("/appsConfigured/server.xml");
@@ -95,9 +93,11 @@ public class FATTest extends AbstractAppManagerTest {
             //copy invalid file to the second location we should check - it should not pick this file up!
             server.copyFileToLibertyInstallRoot("usr/shared/apps",
                                                 "invalidSnoopWar/snoop.war");
-            server.startServer(method + ".log");
+            server.startServer(method + ".log", true);
+            consoleLogFile = server.getConsoleLogFile();
+
             // Wait for the application to be installed before proceeding
-            assertNotNull("The snoop application never came up", server.waitForStringInLog("CWWKZ0001I.* snoop"));
+            assertNotNull("The snoop application never came up", server.waitForStringInLog("CWWKZ0001I.* snoop", consoleLogFile));
 
             URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/snoop");
             Log.info(c, method, "Calling Snoop Application with URL=" + url.toString());
@@ -123,10 +123,10 @@ public class FATTest extends AbstractAppManagerTest {
             }
 
             assertNotNull("The snoop application was not stopped when removed",
-                          server.waitForStringInLog("CWWKZ0059E.* snoop"));
+                          server.waitForStringInLog("CWWKZ0059E.* snoop", consoleLogFile));
 
             assertNotNull("The snoop application was not removed from the web container when stopped",
-                          server.waitForStringInLog("CWWKT0017I.*snoop.*"));
+                          server.waitForStringInLog("CWWKT0017I.*snoop.*", consoleLogFile));
 
             try {
                 //check that the application won't load in the web container once stopped
@@ -143,7 +143,7 @@ public class FATTest extends AbstractAppManagerTest {
             }
 
             //re-add the application to make sure it resumes working
-            server.setMarkToEndOfLog();
+            server.setMarkToEndOfLog(consoleLogFile);
             server.copyFileToLibertyServerRoot(PUBLISH_FILES, "tmp",
                                                SNOOP_WAR);
 
@@ -152,20 +152,24 @@ public class FATTest extends AbstractAppManagerTest {
                             new File(server.getServerRoot() + "/tmp/unzip/snoop.war"));
 
             // Copy the expanded snoop.war to "apps"
+            Log.info(c, method, "Copy the expanded snoop.war to \"apps\"");
             server.renameLibertyServerRootFile("tmp/unzip/snoop.war", "apps/snoop.war");
 
             //make sure the started message has been output twice by the server (once earlier, once now).
+            Log.info(c, method, "Checking that CWWKZ0003I is found");
             assertNotNull("The snoop application never resumed running after being stopped",
-                          server.waitForStringInLog("CWWKZ0003I.* snoop"));
+                          server.waitForStringInLog("CWWKZ0003I.* snoop", consoleLogFile));
 
             //add a file to the extracted snoop application
-            server.setMarkToEndOfLog();
+            Log.info(c, method, "add a file to the extracted snoop application");
+            server.setMarkToEndOfLog(consoleLogFile);
             server.copyFileToLibertyServerRoot("/apps/snoop.war/",
                                                "updatedApplications/blankFile.txt");
 
             // Make sure we don't update the app a second time.
+            Log.info(c, method, "Waiting on CWWKZ0003I from the blankFile.txt update... ");
             assertNull("The application snoop should not have been updated.",
-                       server.waitForStringInLog("CWWKZ0003I.* snoop"));
+                       server.waitForStringInLog("CWWKZ0003I.* snoop", consoleLogFile));
 
             //make sure it loads into the web front end correctly again
             con = HttpUtils.getHttpConnection(url, HttpURLConnection.HTTP_OK, CONN_TIMEOUT);
