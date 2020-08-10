@@ -318,7 +318,7 @@
         <AD id="stopAppStartUponListenerException"
             name="%stopAppStartUponListenerException.name"
             description="%stopAppStartUponListenerException.desc"
-            required="false" type="Boolean" default="false" />
+            required="false" type="Boolean" />
             
         <AD name="internal" description="internal use only"
             id="extensionFactory" required="true" type="String" cardinality="100"
