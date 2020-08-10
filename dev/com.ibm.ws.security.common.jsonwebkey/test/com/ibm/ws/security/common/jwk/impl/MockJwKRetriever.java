@@ -14,8 +14,8 @@ import com.ibm.wsspi.ssl.SSLSupport;
 public class MockJwKRetriever extends JwKRetriever{
     public boolean jvmPropWasSet = false;
     
-    public MockJwKRetriever(String configId, String sslConfigurationName, String jwkEndpointUrl, JWKSet jwkSet, SSLSupport sslSupport, boolean hnvEnabled, String jwkClientId, String jwkClientSecret, String publicKeyText, String keyLocation) {
-        super(configId, sslConfigurationName, jwkEndpointUrl, jwkSet, sslSupport, hnvEnabled, jwkClientId, jwkClientSecret, publicKeyText, keyLocation);
+    public MockJwKRetriever(String configId, String sslConfigurationName, String jwkEndpointUrl, JWKSet jwkSet, SSLSupport sslSupport, boolean hnvEnabled, String jwkClientId, String jwkClientSecret, String signatureAlgorithm, String publicKeyText, String keyLocation) {
+        super(configId, sslConfigurationName, jwkEndpointUrl, jwkSet, sslSupport, hnvEnabled, jwkClientId, jwkClientSecret, signatureAlgorithm, publicKeyText, keyLocation);
         
     }
     
