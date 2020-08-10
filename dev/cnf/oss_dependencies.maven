@@ -565,10 +565,7 @@ org.slf4j:slf4j-api:1.7.26
 org.slf4j:slf4j-api:1.7.28
 org.slf4j:slf4j-api:1.7.7
 org.slf4j:slf4j-jdk14:1.7.7
-org.slf4j:slf4j-simple:1.7.25
-org.slf4j:slf4j-simple:1.7.26
-org.slf4j:slf4j-simple:1.7.28
-org.slf4j:slf4j-simple:1.7.29
+org.slf4j:slf4j-simple:1.7.30
 org.sonatype.goodies:package-url-java:1.0.1
 org.springframework.boot:spring-boot-autoconfigure:1.5.9.RELEASE
 org.springframework.boot:spring-boot-autoconfigure:2.0.0.RELEASE
