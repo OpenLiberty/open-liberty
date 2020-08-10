@@ -2,8 +2,8 @@
 symbolicName=io.openliberty.jpaContainer-3.0
 visibility=public
 singleton=true
-kind=noship
-edition=full
+kind=beta
+edition=core
 Subsystem-Name: Jakarta Persistence API Container 3.0
 IBM-ShortName: jpaContainer-3.0
 IBM-API-Package: jakarta.persistence; type="spec", \
