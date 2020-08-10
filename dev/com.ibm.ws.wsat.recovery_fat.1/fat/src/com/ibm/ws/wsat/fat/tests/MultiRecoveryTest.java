@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.wsat.fat;
+package com.ibm.ws.wsat.fat.tests;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -108,7 +108,6 @@ public class MultiRecoveryTest {
 	
 	@Test
 	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException" })
-	@Mode(TestMode.LITE)
 	public void WSTXMPR001AFVT() throws Exception {
 		recoveryTest("101","server1");
 	}
@@ -133,7 +132,6 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-    @Mode(TestMode.LITE)
 	public void WSTXMPR002AFVT() throws Exception {
 		recoveryTest("201","server1");
 	}
@@ -158,7 +156,6 @@ public class MultiRecoveryTest {
 	}
 
 	@Test
-    @Mode(TestMode.LITE)
 	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException" })
 	public void WSTXMPR003AFVT() throws Exception {
 		recoveryTest("301","server1");
@@ -180,7 +177,6 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-    @Mode(TestMode.LITE)
 	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException"/*, "com.ibm.ws.wsat.service.WSATException" */})
 	public void WSTXMPR004AFVT() throws Exception {
 		recoveryTest("401","server1");
@@ -201,7 +197,6 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-    @Mode(TestMode.LITE)
 	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException"/*, "com.ibm.ws.wsat.service.WSATException" */})
 	public void WSTXMPR005AFVT() throws Exception {
 		recoveryTest("501","server1");
@@ -231,7 +226,6 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-    @Mode(TestMode.LITE)
 	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException" })
 	public void WSTXMPR006AFVT() throws Exception {
 		recoveryTest("601","server1");
@@ -256,7 +250,6 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-    @Mode(TestMode.LITE)
 	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.SystemException" })
 	public void WSTXMPR007AFVT() throws Exception {
 		recoveryTest("701","server1");
@@ -276,6 +269,7 @@ public class MultiRecoveryTest {
 		}
 	}
 	
+  @Mode(TestMode.LITE)
 	@Test
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException" })
 	@AllowedFFDC(value = { "javax.transaction.SystemException", "com.ibm.ws.Transaction.JTA.HeuristicHazardException" })
@@ -293,7 +287,6 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-    @Mode(TestMode.LITE)
 	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.SystemException" })
 	public void WSTXMPR008AFVT() throws Exception {
 		recoveryTest("801","server1");
@@ -330,7 +323,6 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-    @Mode(TestMode.LITE)
 	@AllowedFFDC(value = {"javax.transaction.xa.XAException", "javax.xml.ws.WebServiceException"})
 	public void WSTXMPR009AFVT() throws Exception {
 		recoveryTest("901","server1");
@@ -365,7 +357,6 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-    @Mode(TestMode.LITE)
 	@AllowedFFDC(value = {"javax.transaction.xa.XAException", "javax.xml.ws.WebServiceException"})
 	public void WSTXMPR010AFVT() throws Exception {
 		recoveryTest("1001","server1");
@@ -405,7 +396,6 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-    @Mode(TestMode.LITE)
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
 	public void WSTXMPR011AFVT() throws Exception {
 		recoveryTest("1101","server1");
@@ -424,7 +414,6 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-    @Mode(TestMode.LITE)
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
 	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException" })
 	public void WSTXMPR012AFVT() throws Exception {
@@ -448,7 +437,6 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-    @Mode(TestMode.LITE)
 	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException" })
 	public void WSTXMPR013AFVT() throws Exception {
 		recoveryTest("1301","server1");
@@ -471,7 +459,6 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-    @Mode(TestMode.LITE)
 	public void WSTXMPR014AFVT() throws Exception {
 		recoveryTest("1401","server1");
 	}
@@ -497,7 +484,6 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-    @Mode(TestMode.LITE)
 	public void WSTXMPR015AFVT() throws Exception {
 		recoveryTest("1501","server1");
 	}
@@ -514,7 +500,6 @@ public class MultiRecoveryTest {
 	}
 	
 	@Test
-    @Mode(TestMode.LITE)
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
 	public void WSTXMPR016AFVT() throws Exception {
 		recoveryTest("1601","server1");
@@ -531,60 +516,6 @@ public class MultiRecoveryTest {
 	public void WSTXMPR016CFVT() throws Exception {
 		recoveryTest("1603","both");
 	}
-	
-	
-	/**
-	 * 
-	 * Multiple Recovery + LPS test
-	 */
-	
-	@Test
-    @Mode(TestMode.LITE)
-	public void WSTXLPS301AFVT() throws Exception {
-		recoveryTest("3011","server1");
-	}
-	
-	@Test
-	@AllowedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.SystemException"})
-	public void WSTXLPS301BFVT() throws Exception {
-		recoveryTest("3012","server2");
-		if (server != null && server.isStarted()) {
-			server.stopServer("WTRN0049W"); //ensure server has stopped
-		}
-	}
-	
-	@Test
-	public void WSTXLPS301CFVT() throws Exception {
-		recoveryTest("3013","both");
-	}
-	
-	@Test
-    @Mode(TestMode.LITE)
-	public void WSTXLPS302AFVT() throws Exception {
-		recoveryTest("3021","server1");
-	}
-	
-	@Test
-	@AllowedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.SystemException"})
-	public void WSTXLPS302BFVT() throws Exception {
-		recoveryTest("3022","server2");
-		if (server != null && server.isStarted()) {
-			server.stopServer("WTRN0049W"); //ensure server has stopped
-		}
-	}
-	
-	@Test
-	public void WSTXLPS302CFVT() throws Exception {
-		recoveryTest("3023","both");
-	}
-	
-	@Test
-    @Mode(TestMode.LITE)
-	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException"})
-	public void WSTXLPS303AFVT() throws Exception {
-		recoveryTest("3031","server1");
-	}
-	
 	
 	protected void recoveryTest(String id, String startServer) throws Exception {
         final String method = "recoveryTest";

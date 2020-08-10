@@ -13,5 +13,4 @@ bVersion=1.0
 
 #This file defines the main fat bundle
 
-Bundle-Name: com.ibm.ws.wsat.recovery_fat
-Bundle-SymbolicName: com.ibm.ws.wsat.recovery_fat
+Bundle-SymbolicName: ${basename;${basedir}}
