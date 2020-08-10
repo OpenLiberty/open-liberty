@@ -91,7 +91,7 @@ public class DelayAppStartupHealthCheckTest {
 
     @After
     public void cleanUp() throws Exception {
-        if (!server1.isStarted()) {
+        if (server1.isStarted()) {
             server1.stopServer(EXPECTED_FAILURES);
         }
     }
@@ -172,8 +172,10 @@ public class DelayAppStartupHealthCheckTest {
                             if (num_of_attempts == max_num_of_attempts) {
                                 log("testReadinessEndpointOnServerStart",
                                     message + " Skipping test case due to multiple failed attempts in hitting the readiness endpoint faster than the server can start.");
+                                startServerThread.join();
                                 Assume.assumeTrue(false); // Skip the test
                             }
+
                             log("testReadinessEndpointOnServerStart", message + " At this point the test will be re-run. Number of current attempts ---> " + num_of_attempts);
                             startServerThread.join();
                             cleanUp();
@@ -183,6 +185,7 @@ public class DelayAppStartupHealthCheckTest {
                         if (responseCode == 200) {
                             app_ready = true;
                             repeat = false;
+                            startServerThread.join();
                         } else if (System.currentTimeMillis() - start_time > time_out) {
                             throw new TimeoutException("Timed out waiting for server and app to be ready. Timeout set to " + time_out + "ms.");
                         }
