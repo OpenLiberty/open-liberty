@@ -216,6 +216,37 @@ public final class AppProducerServiceGrpc {
     return getServerStreamAMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<com.ibm.test.g3store.grpc.StreamRequestA,
+      com.ibm.test.g3store.grpc.StreamReplyA> getTwoWayStreamAMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "twoWayStreamA",
+      requestType = com.ibm.test.g3store.grpc.StreamRequestA.class,
+      responseType = com.ibm.test.g3store.grpc.StreamReplyA.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.BIDI_STREAMING)
+  public static io.grpc.MethodDescriptor<com.ibm.test.g3store.grpc.StreamRequestA,
+      com.ibm.test.g3store.grpc.StreamReplyA> getTwoWayStreamAMethod() {
+    io.grpc.MethodDescriptor<com.ibm.test.g3store.grpc.StreamRequestA, com.ibm.test.g3store.grpc.StreamReplyA> getTwoWayStreamAMethod;
+    if ((getTwoWayStreamAMethod = AppProducerServiceGrpc.getTwoWayStreamAMethod) == null) {
+      synchronized (AppProducerServiceGrpc.class) {
+        if ((getTwoWayStreamAMethod = AppProducerServiceGrpc.getTwoWayStreamAMethod) == null) {
+          AppProducerServiceGrpc.getTwoWayStreamAMethod = getTwoWayStreamAMethod =
+              io.grpc.MethodDescriptor.<com.ibm.test.g3store.grpc.StreamRequestA, com.ibm.test.g3store.grpc.StreamReplyA>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.BIDI_STREAMING)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "twoWayStreamA"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.ibm.test.g3store.grpc.StreamRequestA.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.ibm.test.g3store.grpc.StreamReplyA.getDefaultInstance()))
+              .setSchemaDescriptor(new AppProducerServiceMethodDescriptorSupplier("twoWayStreamA"))
+              .build();
+        }
+      }
+    }
+    return getTwoWayStreamAMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -336,6 +367,13 @@ public final class AppProducerServiceGrpc {
       asyncUnimplementedUnaryCall(getServerStreamAMethod(), responseObserver);
     }
 
+    /**
+     */
+    public io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.StreamRequestA> twoWayStreamA(
+        io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.StreamReplyA> responseObserver) {
+      return asyncUnimplementedStreamingCall(getTwoWayStreamAMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -380,6 +418,13 @@ public final class AppProducerServiceGrpc {
                 com.ibm.test.g3store.grpc.StreamRequestA,
                 com.ibm.test.g3store.grpc.StreamReplyA>(
                   this, METHODID_SERVER_STREAM_A)))
+          .addMethod(
+            getTwoWayStreamAMethod(),
+            asyncBidiStreamingCall(
+              new MethodHandlers<
+                com.ibm.test.g3store.grpc.StreamRequestA,
+                com.ibm.test.g3store.grpc.StreamReplyA>(
+                  this, METHODID_TWO_WAY_STREAM_A)))
           .build();
     }
   }
@@ -474,6 +519,14 @@ public final class AppProducerServiceGrpc {
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.StreamReplyA> responseObserver) {
       asyncServerStreamingCall(
           getChannel().newCall(getServerStreamAMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.StreamRequestA> twoWayStreamA(
+        io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.StreamReplyA> responseObserver) {
+      return asyncBidiStreamingCall(
+          getChannel().newCall(getTwoWayStreamAMethod(), getCallOptions()), responseObserver);
     }
   }
 
@@ -590,6 +643,7 @@ public final class AppProducerServiceGrpc {
   private static final int METHODID_SERVER_STREAM_A = 3;
   private static final int METHODID_CREATE_APPS = 4;
   private static final int METHODID_CLIENT_STREAM_A = 5;
+  private static final int METHODID_TWO_WAY_STREAM_A = 6;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -639,6 +693,9 @@ public final class AppProducerServiceGrpc {
               (io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.MultiCreateResponse>) responseObserver);
         case METHODID_CLIENT_STREAM_A:
           return (io.grpc.stub.StreamObserver<Req>) serviceImpl.clientStreamA(
+              (io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.StreamReplyA>) responseObserver);
+        case METHODID_TWO_WAY_STREAM_A:
+          return (io.grpc.stub.StreamObserver<Req>) serviceImpl.twoWayStreamA(
               (io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.StreamReplyA>) responseObserver);
         default:
           throw new AssertionError();
@@ -697,6 +754,7 @@ public final class AppProducerServiceGrpc {
               .addMethod(getCreateAppsMethod())
               .addMethod(getClientStreamAMethod())
               .addMethod(getServerStreamAMethod())
+              .addMethod(getTwoWayStreamAMethod())
               .build();
         }
       }

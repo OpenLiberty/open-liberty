@@ -412,8 +412,6 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
 
         log.info("clientStreamA: Service Entry --------------------------------------------------");
 
-        // two way streaming, maybe return new StreamObserver<StreamRequest> requestObserver =
-        //      new StreamObserver<StreamRequest>() {
         return new StreamObserver<StreamRequestA>() {
 
             @Override
@@ -426,12 +424,17 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
                 if (s.length() > 200) {
                     s = s.substring(0, 200);
                 }
+                // If response is greater than 64K, let's take some off of it
+                if (responseString.length() > 65536) {
+                    responseString = responseString.substring(0, 32768);
+                }
+
                 responseString = responseString + s;
             }
 
             @Override
             public void onError(Throwable t) {
-                log.log(Level.SEVERE, "Store: clientStreamA: Encountered error in createApps", t);
+                log.log(Level.SEVERE, "Store: Encountered error in clientStreamA: ", t);
             }
 
             @Override
@@ -440,7 +443,7 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
                 String s = responseString + "...[[time response sent back to Client: " + System.currentTimeMillis() + "]]";
 
                 int maxStringLength = 32768 - lastClientMessage.length() - 1;
-                // limit response string to 32K, make sure the last message concatentated at the end
+                // limit response string to 32K, make sure the last message concatenated at the end
                 if (s.length() > maxStringLength) {
                     s = s.substring(0, maxStringLength);
                     s = s + lastClientMessage;
@@ -508,6 +511,66 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
         }
         log.info("serverStreamA: calling onCompleted");
         responseObserver.onCompleted();
+
+    }
+
+    @Override
+    public StreamObserver<StreamRequestA> twoWayStreamA(StreamObserver<StreamReplyA> responseObserver) {
+
+        log.info("twoWayStreamA: Service Entry --------------------------------------------------");
+
+        return new StreamObserver<StreamRequestA>() {
+
+            @Override
+            public void onNext(StreamRequestA request) {
+                String s = request.toString();
+                lastClientMessage = s;
+
+                s = "<br>...(( " + s + " onNext at server called at: " + System.currentTimeMillis() + " ))";
+                // limit string to first 200 characters
+                if (s.length() > 200) {
+                    s = s.substring(0, 200);
+                }
+
+                // If response is greater than 64K, let's take some off of it
+                if (responseString.length() > 65536) {
+                    responseString = responseString.substring(0, 32768);
+                }
+
+                responseString = responseString + s;
+
+                // turnaround the message back to the client
+                StreamReplyA reply = StreamReplyA.newBuilder().setMessage(s).build();
+                responseObserver.onNext(reply);
+
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                log.log(Level.SEVERE, "Store: Encountered error in twoWayStreamA: ", t);
+            }
+
+            @Override
+            public void onCompleted() {
+                log.info("twoWayStreamA: onComplete() called");
+                String s = responseString + "...[[time response sent back to Client: " + System.currentTimeMillis() + "]]";
+
+                int maxStringLength = 32768 - lastClientMessage.length() - 1;
+                // limit response string to 32K, make sure the last message concatenated at the end
+                if (s.length() > maxStringLength) {
+                    s = s.substring(0, maxStringLength);
+                    s = s + lastClientMessage;
+                } else {
+                    s = s + lastClientMessage;
+                }
+                log.info("twoWayStreamA: onComplete() sending string of length: " + s.length());
+
+                StreamReplyA reply = StreamReplyA.newBuilder().setMessage(s).build();
+                responseObserver.onNext(reply);
+                responseObserver.onCompleted();
+
+            }
+        };
 
     }
 
