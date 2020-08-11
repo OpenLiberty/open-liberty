@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,20 +41,38 @@ public class IMAPJNDIServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // TODO Auto-generated method stub		
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
+        Object jndiConstant;
+
+        try {
+            jndiConstant = new InitialContext().lookup("TestingApp/imap_port");
+        } catch (NamingException e) {
+            System.out.println("Failed to lookup 'TestingApp/imap_port': "+e.getMessage());
+            e.printStackTrace(System.out);
+            throw new RuntimeException(e);
+        }
+        String imapPort = Integer.toString((Integer) jndiConstant);
+
+        try {
+            jndiConstant = new InitialContext().lookup("TestingApp/smtp_port");
+        } catch (NamingException e) {
+            System.out.println("Failed to lookup 'TestingApp/smtp_port': "+e.getMessage());
+            e.printStackTrace(System.out);
+            throw new RuntimeException(e);
+        }
+        String smtpPort = Integer.toString((Integer) jndiConstant);
 
         Properties props = new Properties();
         props.setProperty("mail.store.protocol", "imap");
         props.setProperty("mail.imap.host", "localhost");
         props.setProperty("user", "imap@testserver.com");
         props.setProperty("password", "imapPa$$word4U2C");
-        props.setProperty("mail.imap.port", "6663");
+        props.setProperty("mail.imap.port", imapPort);
         props.setProperty("mail.transport.protocol", "smtp");
         props.setProperty("mail.transport.host", "smtp");
         props.setProperty("from", "imap@testserver.com");
-        props.setProperty("mail.smtp.port", "3025");
+        props.setProperty("mail.smtp.port", smtpPort);
 
         session = Session.getInstance(props, new Authenticator() {
             @Override
@@ -76,8 +94,8 @@ public class IMAPJNDIServlet extends HttpServlet {
             }
             ic.unbind(jndiName);
         } catch (NamingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            e.printStackTrace(System.out);
+            throw new RuntimeException(e);
         }
 
     }
@@ -87,8 +105,6 @@ public class IMAPJNDIServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // TODO Auto-generated method stub
-
     }
 
 }
