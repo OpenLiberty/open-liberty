@@ -26,10 +26,10 @@ Import-Package: \
 
 Private-Package: \
 	com.ibm.ws.microprofile.metrics.exceptions,\
-	com.ibm.ws.microprofile.metrics.resources,\
 	com.ibm.ws.microprofile.metrics.writer,\
 	com.ibm.ws.microprofile.metrics23.helper,\
-	com.ibm.ws.microprofile.metrics23.writer
+	com.ibm.ws.microprofile.metrics23.writer,\
+	io.openliberty.microprofile.metrics.internal.resources
 
 Export-Package: \
 	com.ibm.ws.microprofile.metrics,\

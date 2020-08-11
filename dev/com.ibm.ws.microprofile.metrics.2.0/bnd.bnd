@@ -28,7 +28,7 @@ Private-Package: \
 	com.ibm.ws.microprofile.metrics.exceptions,\
 	com.ibm.ws.microprofile.metrics.helper,\
 	com.ibm.ws.microprofile.metrics.writer,\
-	com.ibm.ws.microprofile.metrics.resources
+	io.openliberty.microprofile.metrics.internal.resources
 
 Export-Package: \
 	com.ibm.ws.microprofile.metrics,\

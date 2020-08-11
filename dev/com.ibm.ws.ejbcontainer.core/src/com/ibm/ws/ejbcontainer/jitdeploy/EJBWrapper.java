@@ -206,7 +206,8 @@ public final class EJBWrapper {
         String internalParentName = getParentClassName(wrapperType, internalEJBClassName);
 
         // Remote Business interfaces may or may not extend java.rmi.Remote
-        boolean isRmiRemote = (Remote.class).isAssignableFrom(wrapperInterface);
+        // EJBDeploy allowed local interfaces to extend java.rmi.Remote, but did not treat differently
+        boolean isRmiRemote = (wrapperType == REMOTE || wrapperType == REMOTE_HOME || wrapperType == BUSINESS_REMOTE) ? (Remote.class).isAssignableFrom(wrapperInterface) : false;
 
         // For No-Interface View (LocalBean), switch the interface and parent
         // names, as the EJB itself must be the parent and it will implement
