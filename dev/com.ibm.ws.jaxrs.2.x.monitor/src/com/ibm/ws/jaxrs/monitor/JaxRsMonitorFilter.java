@@ -136,6 +136,11 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
 			 */
 			String metricsHeader = respCtx
 			        .getHeaderString("com.ibm.ws.microprofile.metrics.monitor.MetricsJaxRsEMCallbackImpl.Exception");
+			
+			//Check for MP Metrics 30 header;
+			if (metricsHeader == null)
+				metricsHeader = respCtx.getHeaderString("io.openliberty.microprofile.metrics.internal.monitor.MetricsJaxRsEMCallbackImpl.Exception");
+			
 			if (metricsHeader == null) {
 				// Need to start new minute here.. we need to pass in the stat object so we can
 				// actually update Mbean
