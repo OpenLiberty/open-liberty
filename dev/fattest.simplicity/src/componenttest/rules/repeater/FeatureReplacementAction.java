@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,6 +55,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
         featureNameMapping.put("javaee", "jakartaee");
         featureNameMapping.put("javaeeClient", "jakartaeeClient");
         featureNameMapping.put("jca", "connectors");
+        featureNameMapping.put("jmsMdb", "mdb");
         featuresWithNameChangeOnEE9 = Collections.unmodifiableMap(featureNameMapping);
     }
 
@@ -97,7 +98,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * By default features are added even if there was not another version already there
      *
      * @param removeFeature the feature to be removed
-     * @param addFeature the feature to add
+     * @param addFeature    the feature to add
      */
     public FeatureReplacementAction(String removeFeature, String addFeature) {
         this(addFeature);
@@ -110,7 +111,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * By default features are added even if there was not another version already there
      *
      * @param removeFeatures the features to remove
-     * @param addFeatures the features to add
+     * @param addFeatures    the features to add
      */
     public FeatureReplacementAction(Set<String> removeFeatures, Set<String> addFeatures) {
         this(addFeatures);
@@ -173,7 +174,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * @param addFeature the feature to be added
      */
     public FeatureReplacementAction addFeature(String addFeature) {
-        this.addFeatures.add(addFeature.toLowerCase());
+        this.addFeatures.add(addFeature);
         return this;
     }
 
@@ -431,9 +432,9 @@ public class FeatureReplacementAction implements RepeatTestAction {
             throw new IllegalArgumentException("Remove feature [ " + originalFeature + " ]: No '-' was found.");
         // "servlet-3.1" ==> "servlet"
         String baseFeature = originalFeature.substring(0, dashOffset + 1);
-        // "servlet-4.0".contains("servlet-")
+        // "servlet-4.0".startsWith("servlet-")
         for (String replacementFeature : replacementFeatures) {
-            if (replacementFeature.toLowerCase().contains(baseFeature.toLowerCase())) {
+            if (replacementFeature.toLowerCase().startsWith(baseFeature.toLowerCase())) {
                 Log.info(c, methodName, "Replace feature [ " + originalFeature + " ] with [ " + replacementFeature + " ]");
                 return replacementFeature;
             }
