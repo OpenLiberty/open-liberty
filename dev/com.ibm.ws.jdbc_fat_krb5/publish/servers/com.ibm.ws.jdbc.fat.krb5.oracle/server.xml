@@ -27,6 +27,12 @@
     <properties.oracle URL="${oracle.url}"/>
     <containerAuthData krb5Principal="${KRB5_USER}"/>
   </dataSource>
+
+  <dataSource jndiName="jdbc/krb/DataSource" type="javax.sql.DataSource">
+    <jdbcDriver libraryRef="OracleLib" />
+    <properties.oracle URL="${oracle.url}"/>
+    <containerAuthData krb5Principal="${KRB5_USER}"/>
+  </dataSource>
   
   <!-- Mis-configured datasource: bogus name for krb5Principal -->
   <dataSource jndiName="jdbc/krb/invalidPrincipal">

@@ -33,6 +33,7 @@ import java.sql.PreparedStatement;
 import javax.naming.Context; 
 import javax.sql.CommonDataSource;
 import javax.sql.ConnectionPoolDataSource;
+import javax.sql.DataSource;
 import javax.sql.PooledConnection;
 import javax.sql.XADataSource;
 import javax.transaction.xa.XAException;
@@ -911,6 +912,10 @@ public class DatabaseHelper {
     public boolean isInDatabaseUnitOfWork(Connection conn) throws SQLException {
         Tr.info(tc, "UNSUPPORTED_METHOD", "isInDatabaseUnitOfWork");
         throw new SQLException("method not supported for this backend database");
+    }
+    
+    public Connection getConnectionFromDatasource(DataSource ds, KerbUsage useKerb, Object gssCredential) throws SQLException {
+        return ds.getConnection();
     }
 
     /**

@@ -49,12 +49,19 @@ public class DB2KerberosTestServlet extends FATServlet {
     @Resource(lookup = "jdbc/krb/basicPassword")
     DataSource basicPassword;
 
+    @Resource(lookup = "jdbc/krb/DataSource")
+    DataSource regularDs;
+
     // The jdbc/noAuth datasource would normally fail due to no credentials,
     // but since we have bound the 'krb5Auth' auth alias to 'java:app/env/jdbc/reboundAuth'
     // in the ibm-web-bnd.xml it will work
     @Resource(lookup = "jdbc/noAuth", name = "java:app/env/jdbc/reboundAuth")
     DataSource reboundAuth;
 
+    /**
+     * Attempt to get a connection from a datasource that has basic auth configured, which
+     * should fail because the backend DB2 database has been configured to require Kerberos
+     */
     @Test
     @AllowedFFDC
     public void testNonKerberosConnectionRejected() throws Exception {
@@ -65,6 +72,9 @@ public class DB2KerberosTestServlet extends FATServlet {
         }
     }
 
+    /**
+     * Get a connection with a javax.sql.ConnectionPoolDataSource
+     */
     @Test
     public void testKerberosBasicConnection() throws Exception {
         try (Connection con = krb5DataSource.getConnection()) {
@@ -72,9 +82,22 @@ public class DB2KerberosTestServlet extends FATServlet {
         }
     }
 
+    /**
+     * Get a connection with a javax.sql.XADatasource
+     */
     @Test
     public void testKerberosXAConnection() throws Exception {
         try (Connection con = krb5XADataSource.getConnection()) {
+            con.createStatement().execute("SELECT 1 FROM SYSIBM.SYSDUMMY1");
+        }
+    }
+
+    /**
+     * Get a connection with a javax.sql.Datasource
+     */
+    @Test
+    public void testKerberosRegularConnection() throws Exception {
+        try (Connection con = regularDs.getConnection()) {
             con.createStatement().execute("SELECT 1 FROM SYSIBM.SYSDUMMY1");
         }
     }
@@ -120,6 +143,11 @@ public class DB2KerberosTestServlet extends FATServlet {
         }
     }
 
+    /**
+     * Get two connection handles from the same datasource.
+     * Ensure that both connection handles share the same managed connection (i.e. phyiscal connection)
+     * to prove that Subject reuse is working
+     */
     @Test
     public void testConnectionReuse() throws Exception {
         String managedConn1 = null;
