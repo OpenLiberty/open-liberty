@@ -1,0 +1,359 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/QueryExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+6001=Le query SQL con cursore devono fornire una query aggiuntiva per richiamare la dimensione della serie di risultati.
+
+6002=Gli oggetti aggregati non possono essere scritti/eliminati/interrogati indipendentemente dai loro proprietari. {1}Descrittore: [{0}]
+
+6003=Il numero di argomenti forniti alla query per l''esecuzione non corrisponde al numero di argomenti nella definizione della query.
+
+6004=L''oggetto [{0}], della classe [{1}], con hashcode identit\u00e0 (System.identityHashCode()) [{2}], {3}non viene da questo spazio oggetti unit\u00e0 di lavoro, ma della sessione parent.  L''oggetto non \u00e8 mai stato registrato in questa unit\u00e0 di lavoro, {3}ma letto dalla sessione parent e correlato ad un oggetto registrato nell''unit\u00e0 di lavoro.  Verificare che si stiano registrando{3}correttamente gli oggetti.  Se i problemi persistono, \u00e8 possibile utilizzare il metodo UnitOfWork.validateObjectSpace() come {3}aiuto nel debug dove si \u00e8 verificato l''errore.  Per ulteriori informazioni, consultare il manuale o le FAQ.
+
+6005=L''oggetto [{0}], della classe [{1}], con hashcode identit\u00e0 (System.identityHashCode()) [{2}], {3}\u00e8 l''originale di un nuovo oggetto registrato.  L''unit\u00e0 di lavoro clona i nuovi oggetti registrati, quindi \u00e8 necessario assicurarsi che un oggetto {3}sia registrato prima che gli venga fatto riferimento da un altro oggetto.  Se non si desidera che il nuovo oggetto sia clonato, utilizzare l''API{3}UnitOfWork.registerNewObject(Object).  Se i problemi persistono, \u00e8 possibile utilizzare il metodo UnitOfWork.validateObjectSpace() come {3}aiuto nel debug dove si \u00e8 verificato l''errore.  Per ulteriori informazioni, consultare il manuale o le FAQ.
+
+6006=L''associazione [{0}] non supporta la lettura batch.
+
+6007=Descrittore mancante per [{0}].
+
+6008=Descrittore mancante per [{0}] per la query denominata [{1}].
+
+6013=Fornita dimensione query non corretta a CursoredStream.
+
+6014=Gli oggetti non possono essere scritti durante una unit\u00e0 di lavoro, devono essere registrati.
+
+6015=Chiave di query non valida [{0}] nell''espressione.
+
+6016=Gli oggetti o il database non possono essere modificati tramite una ServerSession.  Tutte le modifiche devono essere eseguite tramite l''unit\u00e0 di lavora di una ClientSession.
+
+6020=Nessuna classe concreta indicata per il tipo nella riga [{0}].
+
+6021=I cursori non sono supportati per i descrittori di interfaccia o i descrittori di tabella multipla di classe astratta che utilizzano espressioni.  Considerare l''utilizzo di SQL personalizzato o pi\u00f9 query.
+
+6023=L''elenco dei campi da inserire nella tabella [{0}] \u00e8 vuoto.  \u00c8 necessario definire almeno un''associazione per questa tabella.
+
+6024=Le query di modifica richiedono un oggetto da modificare.
+
+6026=La query denominata [{0}] non \u00e8 definita. Classe dominio: [{1}]
+
+6027=Query inviata ad un''unit\u00e0 di lavoro non attivata.
+
+6028=Si \u00e8 verificato un tentativo di leggere oltre la fine del flusso.
+
+6029=\u00c8 necessario fornire una classe di riferimento.
+
+6030=L''aggiornamento non \u00e8 possibile se la memorizzazione in cache non \u00e8 abilitata.
+
+6031=size() \u00e8 supportato solo su query di espressioni, a meno che non sia fornita una query di dimensione.
+
+6032=L''istruzione SQL non \u00e8 stata impostata correttamente.
+
+6034=Espressione elemento query non valida [{0}].
+
+6041=L''oggetto di selezione passato a ReadObjectQuery era null.
+
+6042=\u00c8 necessario specificare un nome sessione per le query non a livello di oggetto.  Consultare il metodo setSessionName(String).
+
+6043=ReportQueries senza chiavi primarie non pu\u00f2 utilizzare readObject(). {1}ReportQueryResult: [{0}].
+
+6044=\u00c8 stato rilevato che la chiave primaria letta dalla riga [{0}] durante l''esecuzione della query \u00e8 null.  Le chiavi primarie non devono contenere valori null.
+
+6045=La sottoclasse [{0}], indicata nella riga durante la creazione dell''oggetto, non ha alcun descrittore definito per essa.
+
+6046=Non \u00e8 possibile eliminare un oggetto di una classe di sola lettura.  La classe [{0}] \u00e8 dichiarata come di sola lettura in questa unit\u00e0 di lavoro.
+
+6047=Operatore non valido [{0}] nell''espressione.
+
+6048=Utilizzo non consentito di getField() [{0}] nell''espressione.
+
+6049=Utilizzo non consentito di getTable() [{0}] nell''espressione.
+
+6050=Mancata corrispondenza di dimensione del risultato ReportQuery.  Previsto [{0}], richiamato [{1}]
+
+6051=Alle query di oggetti parziali non \u00e8 consentito di mantenere la cache o di essere modificate.  \u00c8 necessario utilizzare dontMaintainCache().
+
+6052=Un''unione esterna (getAllowingNull o anyOfAllowingNone) \u00e8 valida solo per associazioni OneToOne, OneToMany, ManyToMany, AggregateCollection e DirectCollection e non pu\u00f2 essere utilizzato per l''associazione [{0}].
+
+6054=Impossibile aggiungere l''oggetto [{0}], della classe [{1}], alla classe contenitore [{2}] utilizzando la politica [{3}].
+
+6055=Il richiamo del metodo [{0}] sull''oggetto [{1}], della classe [{2}], ha provocato un''eccezione.
+
+6056=Impossibile creare un clone dell''oggetto [{0}], della classe [{1}], [{2}].
+
+6057=Il metodo [{0}] non \u00e8 un metodo valido da richiamare sull''oggetto [{1}].
+
+6058=Il metodo [{0}] non \u00e8 stato trovato nella classe [{1}].
+
+6059=La classe [{0}] non pu\u00f2 essere utilizzata come contenitore per i risultati di una query perch\u00e9 non pu\u00f2 essere istanziata.
+
+6060=Impossibile utilizzare un oggetto [{0}] di tipo [{1}] come una chiave in [{2}] di tipo [{3}].  La chiave non pu\u00f2 essere confrontata con le chiavi attualmente nell''associazione.
+
+6061=Impossibile accedere riflessivamente al metodo [{0}] per l''oggetto [{1}], della classe [{2}].
+
+6062=Il metodo [{0}], chiamato riflessivamente sull''oggetto [{1}], della classe [{2}], ha provocato un''eccezione.
+
+6063=Operazione non valida [{0}] sul cursore.
+
+6064=Impossibile rimuovere l''oggetto [{0}], della classe [{1}], dalla classe contenitore [{2}] utilizzando la politica [{3}].
+
+6065=Impossibile aggiungere l''oggetto [{0}], della classe [{1}], al contenitore [{2}].
+
+6066=L''oggetto [{0}], della classe [{1}], con hashcode identit\u00e0 (System.identityHashCode()) [{2}], {3}\u00e8 stato eliminato, ma ha ancora dei riferimenti.  Non \u00e8 possibile fare riferimento a oggetti dopo che sono stati eliminati. {3}Verificare che si stiano registrando correttamente gli oggetti.  Se i problemi persistono, \u00e8 possibile utilizzare il metodo UnitOfWork.validateObjectSpace() come {3}aiuto nel debug dove si \u00e8 verificato l''errore.  Per ulteriori informazioni, consultare il manuale o le FAQ.
+
+6067=Impossibile accedere riflessivamente al campo [{0}] per l''oggetto [{1}], della classe [{2}].
+
+6068=Impossibile confrontare il riferimento tabella con [{0}] nell''espressione.
+
+6069=Il campo [{0}] in questa espressione ha una tabella non valida in questo contesto.
+
+6070=Utilizzo non valido di una chiave di query [{0}] che rappresenta una relazione "a molti" in un''espressione.  Utilizzare anyOf() piuttosto che get().
+
+6071=Utilizzo non valido di anyOf() per una chiave di query [{0}] che non rappresenta una relazione "a molti" in un''espressione.  Utilizzare get() piuttosto che anyOf().
+
+6072=La query in una VariableOneToOneMapping non \u00e8 supportata. {2}Descrittore: [{0}] {2}Associazione: [{1}]
+
+6073=Espressione non corretta nella query.  Tentativo di stampare un riferimento oggetto in un''istruzione SQL per la chiave di query [{0}].
+
+6074=Questa espressione non pu\u00f2 determinare se l''oggetto \u00e8 conforme in memoria.  \u00c8 necessario impostare la query per controllare il database.
+
+6075=I confronti di oggetti possono utilizzare solo gli operatori equal() o notEqual().  Altri confronti devono essere effettuati tramite chiavi di query o confronti a livello di attributo diretti. {1}Espressione: [{0}]
+
+6076=I confronti di oggetti possono essere utilizzati solo con OneToOneMappings.  Altri confronti di associazioni devono essere effettuati tramite chiavi di query o confronti a livello di attributo diretti. {2}Associazione: [{0}] {2}Espressione: [{1}]
+
+6077=I confronti di oggetti non possono essere utilizzati nelle query di parametro.  \u00c8 necessario creare l''espressione dinamicamente. {1}Espressione: [{0}]
+
+6078=La classe dell''argomento per il confronto di oggetti non \u00e8 corretta. {3}Espressione: [{0}] {3}Associazione: [{1}] {3}Argomento: [{2}]
+
+6079=Il confronto oggetto su NULL non pu\u00f2 essere utilizzato per le relazioni di chiavi esterne di destinazione.  Eseguire la query sulla chiave primaria di origine invece. {3}Espressione: [{0}] {3}Associazione: [{1}] {3}Argomento: [{2}]
+
+6080=Chiamata database non valida [{0}].  La chiamata deve essere un''istanza di DatabaseCall.
+
+6081=Accessor database non valido [{0}].  L''accessor deve essere un''istanza di DatabaseAccessor.
+
+6082=Il metodo [{0}] con i tipi di argomento [{1}] non pu\u00f2 essere richiamato sull''espressione.
+
+6083=Le query che utilizzano in() non possono essere parametrizzate.  Disabilitare la preparazione query o il bind.
+
+6084=La query di reindirizzamento non \u00e8 stata configurata correttamente.  Il nome della classe o del metodo non sono stati impostati.
+
+6085=Il metodo della query di reindirizzamento non \u00e8 definito o \u00e8 definito con argomenti errati.  Deve essere dichiarato "public static" e avere gli argomenti (DatabaseQuery, Record, Session) o (Session, Vector). {2}Classe: [{0}] {2}Metodo: [{1}]
+
+6086=Il richiamo del metodo della query di reindirizzamento ha provocato un''eccezione.
+
+6087=La classe oggetto di esempio [{0}] non corrisponde alla classe oggetto di riferimento [{1}].
+
+6088=Non sono presenti attributi per ReportQuery.
+
+6089=L''espressione non \u00e8 stata inizializzata correttamente.  Deve essere utilizzato un solo ExpressionBuilder per una query. {1}Per espressioni parallele, deve essere fornita la classe di query al costruttore ExpressionBuilder e l''ExpressionBuilder della query deve {1}essere sempre nella parte sinistra dell''espressione. {1}Espressione: [{0}]
+
+6090=Impossibile impostare ReportQuery su "check cache only".
+
+6091=Il tipo di costante [{0}], utilizzato per il confronto nell''espressione, non corrisponde al tipo di attributo [{1}].
+
+6092=Rilevato ValueHolder non istanziato. \u00c8 necessario creare un''istanza dei Valueholders per eseguire questa query in memoria.
+
+6093=Espressione tipo non valida su [{0}].  La classe non dispone di un descrittore o dispone di un descrittore che non utilizza l''eredit\u00e0 o che utilizza un ClassExtractor per l''eredit\u00e0
+
+6094=Il nome del parametro [{0}] nei criteri di selezione della query non corrisponde ad alcun nome parametro definito nella query.
+
+6095=\u00c8 richiesto il metodo clone pubblico.
+
+6096=Il metodo clone \u00e8 inaccessibile.
+
+6097=Il metodo clone ha generato un''eccezione: {0}.
+
+6098=Eccezione di richiamo imprevista: {0}.
+
+6099=L''unione di classi di eredit\u00e0 con pi\u00f9 sottoclassi tabella non \u00e8 supportata: {0}, {1}
+
+6100=Pi\u00f9 lavori rilevati per query lettura oggetto singolo.
+
+6101=L''esecuzione di questa query potrebbe violare l''integrit\u00e0 della cache di sessione globale che deve contenere solo le ultime versioni degli oggetti.  Per eseguire una query che restituisca oggetti a partire da un''ora nel passato, eseguire una delle seguenti operazioni: utilizzare una HistoricalSession (acquireSessionAsOf), tutti gli oggetti letti verranno memorizzati nella cache e letti automaticamente a partire dalla stessa ora.  Ci\u00f2 si applica anche all''attivazione di relazioni dell''oggetto.  Impostare shouldMaintainCache su false.  \u00c8 possibile rendere qualsiasi espressione oggetto ''a partire da un''ora nel passato'', purch\u00e9 nessuno dei suoi campi sia rappresentato nell''insieme di risultati (cio\u00e8 utilizzato solo nella clausola where).
+
+6102=Al momento le query cronologiche funzionano solo con Oracle 9R2 o database successivi, in quanto utilizzano la funzione flashback di Oracle.
+
+6103=Non \u00e8 possibile eseguire una WriteQuery dall''interno di una HistoricalSession di sola lettura.  Per ripristinare gli oggetti del passato, effettuare le seguenti operazioni: leggere lo stesso oggetto come se fosse ora con una unit\u00e0 di lavoro ed eseguire il commit dell''unit\u00e0 di lavoro.
+
+6104=L''oggetto, {0}, non esiste nella cache.
+
+6105=La query deve essere reinizializzata con una politica di flusso del cursore.
+
+6106=L''oggetto di tipo [{0}] con chiave primaria [{1}] non esiste nella cache.
+
+6107=Mancano le istruzioni di aggiornamento su UpdateAllQuery.
+
+6108=Aggiornare tutte le query non supporta l''eredit\u00e0 con pi\u00f9 tabelle
+
+6109=Il gruppo di fetch denominato ({0}) non \u00e8 definito al livello del descrittore.
+
+6110=La query di lettura non \u00e8 conforme all''attributo non richiamato ({0}) dell''oggetto parzialmente richiamato nell''associazione identit\u00e0 dell''unit\u00e0 di  lavoro.
+
+6111=L''attributo del gruppo di fetch ({0}) non \u00e8 definito o non \u00e8 associato.
+
+6112=Il gruppo di fetch non pu\u00f2 essere impostato sulla query di report.
+
+6113=Il gruppo di fetch non pu\u00f2 essere utilizzato insieme alla lettura attributo parziale.
+
+6114=\u00c8 necessario definire un gestore gruppo di fetch nel descrittore ({0}) per poter impostare un gruppo di fetch sulla query ({1})
+
+6115=Le query su classi isolate, o le query impostate per utilizzare le connessioni esclusive, non devono essere eseguite su una ServerSession o, in CMP, al di fuori di una transazione.
+
+6116=Nessuna chiamata o interazione specificati per l''operazione tentata.
+
+6117=Impossibile impostare una query, che utilizza un risultato con cursore, per memorizzare nella cache i risultati della query.
+
+6118=Una query su una classe isolate non deve memorizzare in cache i risultati della query nella query.
+
+6119=L''espressione di unione {0} non \u00e8 valida o \u00e8 per un tipo di associazione che non supporta l''unione.
+
+6120=L''attributo parziale {0} non \u00e8 un attributo valido della classe {1}.
+
+6121=La query non \u00e8 stata definita correttamente, il builder di espressioni risulta mancante.  Per sottoquery e query parallele accertarsi che il builder di espressioni sia sempre sulla sinistra.
+
+6122=L''espressione non \u00e8 un''espressione valida. {0}
+
+6123=La classe contenitore specificata [{0}] non pu\u00f2 essere utilizzata poich\u00e9 il contenitore deve implementare {1}.
+
+6124=Richiesta query di {0}, trovato {1}
+
+6125=ReadQuery.clearQueryResults() non pu\u00f2 pi\u00f9 essere richiamato. La chiamata a clearQueryResults ora richiede che sia fornita la sessione. Deve essere chiamato clearQueryResults(sessione).
+
+6126=\u00c8 in fase di esecuzione una query che utilizza sia i risultati della query memorizzati in cache che la conformit\u00e0.  Queste due impostazioni sono incompatibili.
+
+6127=Una chiamata riflessiva non \u00e8 riuscita sulla classe EclipseLink {0}, l''ambiente deve essere configurato per consentire la riflessione Java.
+
+6128=La lettura batch non \u00e8 supportata su query che utilizzando chiamate personalizzate.
+
+6129=L''aggiornamento non \u00e8 possibile se la query non va al database.
+
+6130=L''SQL personalizzato non \u00e8 stato in grado di fornire la colonna discriminatore: {0}, come definito in SQLResultSetMapping: {1}.
+
+6131=DeleteAllQuery che definisce gli oggetti per l''eliminazione utilizzando il metodo setObjects con argomento non null deve anche definire i criteri di selezione corrispondenti. {1}Oggetti: [{2}]{1}Descrittore: [{0}]
+
+6132=L''argomento query {0} non trovato nell''elenco dei parametri forniti durante l''esecuzione della query.
+
+6133=Il primo argomento del metodo addUpdate definisce un campo cui deve essere assegnato un nuovo valore \u2013 non pu\u00f2 essere null.
+
+6134=Il nome dell''attributo o l''espressione passati come primo parametro al metodo addUpdate non definiscono un campo. {1}Nome attributo o espressione: [{2}]{1}Descrittore: [{0}]
+
+6135=Il nome dell''attributo o l''espressione passati come primo parametro al metodo addUpdate definiscono un campo da una tabella che non \u00e8 associata al descrittore query. {1}Nome attributo o espressione: [{2}]{1}Campo errato: [{3}]{1}Descrittore: [{0}]
+
+6136=Le classi associate con pi\u00f9 eredit\u00e0 di tabella non possono essere elementi ReportQuery. Elemento: {0}, Espressione: {1}.
+
+6137=\u00c8 stata generata un''eccezione durante l''esecuzione di una ReportQuery con un''espressione costruttore: {0}
+
+6138=La query richiede memoria temporanea, ma {0} non supporta le tabelle temporanee.
+
+6139=Problema nel trovare l''associazione per {0} definita nel risultato campo denominato {1}
+
+6140=Si \u00e8 tentato di assegnare espressioni di unione all''elemento report {1} di tipo {0}.  Le espressioni di unione sono applicabili solo su elementi che restituiscono un oggetto permanente.
+
+6141=Generata una ClassCastException durante il tentativo di convertire {0} in una classe in un suggerimento di query.
+
+6142=Il valore {1} specificato per il suggerimento di query {0} ha navigato una relazione non valida.  La relazione {2} non \u00e8 una relazione OneToOne o OneToMany.
+
+6143=Il valore {1} specificato per il suggerimento di query {0} ha navigato una relazione non esistente.  La relazione {2} non esiste.
+
+6144=Il valore {1} specificato per il suggerimento di query {0} non conteneva sufficienti token.  L''unione deve iniziare con la variabile di identificazione della query.  Ad esempio, nella query "SELECT x from X x", per fare riferimento a una "y" appartenente alla "x", \u00e8 necessario utilizzare il suggerimento "x.y".
+
+6145=Il conteggio distinto su una classe chiave primaria composita [{0}] non \u00e8 supportato. Descrittore [{1}] 
+
+6146=Il valore {1} specificato per il suggerimento di query {0} non \u00e8 un valore valido, i valori validi sono numeri interi o stringhe che possono essere analizzati in valori int.
+
+6147=L''espressione {0} non \u00e8 valida per la lettura dell''attributo parziale.
+
+6148=L''aggiunta di {0} a PLSQLStoredProcedureCall non \u00e8 supportata.
+
+6149=PLSQLStoredProcedureCall non pu\u00f2 utilizzare un argomento senza nome.
+
+6150=Un valore null non pu\u00f2 essere utilizzato come una chiave in un contenitore di tipo [{1}]. Assicurarsi che i valori chiave per gli oggetti di tipo [{0}] non siano null.
+
+6151=Si \u00e8 verificata un''eccezione durante il tentativo di impostare un reindirizzatore {0} passato tramite un suggerimento query JPA {1}.  Verificare che il reindirizzatore fornito implementi org.eclipse.persistence.queries.QueryRedirector.
+
+6152=Si \u00e8 verificata un''eccezione durante il tentativo di creare un''istanza della classe {0} passata tramite un suggerimento query JPA {1}.  Verificare che la classe disponga di un costruttore predefinito.
+
+6153=CompatibleType deve essere impostato sul tipo complesso: {0}.
+
+6154=TypeName deve essere impostato sul tipo complesso: {0}.
+
+6155=Nessuna tabella di relazione trovata in {0}. {2}Espressione joinCriteria: [{1}]
+
+6156=Si \u00e8 verificata un''eccezione durante il tentativo di impostare/leggere la chiave di associazione per [{0}]: [{1}].
+
+6157=L''elemento [{0}] \u00e8 in fase di aggiunta ad una associazione senza una chiave.  Questo in genere indica che il database non contiene una chiave prevista.
+
+6158=A MapContainerPolicy \u00e8 stato richiesto di eseguire l''unwrap dell''elemento [{0}] che non \u00e8 un elemento di associazione.  Ci\u00f2 significa che si sta utilizzando una politica del contenitore non corretta.
+
+6159=Impossibile trovare l''associazione per MapEntryExpression con base: [{0}].
+
+6160=MapEntryExpression con base: [{0}] fa riferimento all''associazione [{1}] che non \u00e8 un''associazione di raccolta.  Le associazioni possono esistere solo su associazioni di raccolta.
+
+6161=MapEntryExpression con base: [{0}] fa riferimento all''associazione [{1}] che non fa riferimento a un''associazione.
+
+6162=La colonna ordine elenco [{0}] contiene valori non corretti. {2}{1}
+
+6163=index() richiede QueryKeyExpression, impossibile applicare a [{0}]
+
+6164=index() richiede QueryKeyExpression con CollectionMapping che ha la colonna ordine elenco non null. [{1}] non rispetta la condizione in [{0}]
+
+6165=Il richiamo batch con IN richiede la chiave primaria del singleton.
+
+6166=\u00c8 stato effettuato un tentativo di eseguire il casting al di fuori di una gerarchia di eredit\u00e0.  [{0}] non appare nella gerarchia della classe per [{1}]. Nota: questa eccezione potrebbe indicare anche che si sta eseguendo il casting su una relazione di eredit\u00e0 tabella-per-classe che non \u00e8 supportato per il casting.
+
+6167=\u00c8 stato richiamato un casting su un''espressione che non utilizza l''eredit\u00e0: [{0}].
+
+6168=Preparazione query non riuscita, si \u00e8 verificato un errore non previsto: [{0}].
+
+6169=Un''associazione \u00e8 stata configurata per utilizzare il fetch batch IN, ma la query originale non \u00e8 stata configurata per utilizzare il fetch batch IN e deve essere: [{0}].
+
+6171=Partizionamento non supportato per il tipo di sessione [{0}]. Sono supportati solo ServerSession e ClientSession.
+
+6172=Manca il pool di connessione per il partizionamento [{0}].
+
+6173=Failover pool di connessione [{0}] non riuscito, tutti i server inattivi.
+
+6174=Non \u00e8 stato fornito un valore per la propriet\u00e0 della sessione [{0}]. Questa eccezione pu\u00f2 verificarsi quando si utilizzano criteri supplementari o colonne discriminatore titolare senza specificare la propriet\u00e0 contestuale associata. Queste propriet\u00e0 devono essere impostate mediante EntityManager, EntityManagerFactory o le propriet\u00e0 unit\u00e0 permanente. Se si utilizza EclipseLink nativo, queste propriet\u00e0 devono essere impostate direttamente nella sessione.
+
+6175=Le query SQL native sono state disabilitate. Questa operazione viene effettuata impostando la propriet\u00e0 unit\u00e0 permanente "eclipselink.jdbc.allow-native-sql-queries" su false o disponendo di almeno una entit\u00e0 multititolare definita nell''unit\u00e0 permanente. Controllare la specifica dell''unit\u00e0 permanente. Per consentire le query SQL native, impostare questa propriet\u00e0 su true. In alternativa, le query individuali possono ignorare questa impostazione impostando il suggerimento di query "eclipselink.jdbc.allow-native-sql-query" su true.
+
+6176=\u00c8 stata generata un''eccezione durante l''inizializzazione del costruttore dalla classe [{0}]: [{1}]
+
+6177=Il risultato della colonna [{0}] non \u00e8 stato trovato nei risultati della query.
+
+6178=isResultSetAccessOptimizedQuery impostato su true \u00e8 in conflitto con altre impostazioni della query.
+
+6179=Deserializzazione sopObject da [{0}] in [{1}] non riuscita
+
+6180=sopObject serializzato non trovato in [{0}] in [{1}]
+
+6181=sopObject ha una versione errata [{0}] in [{1}] in [{2}]
+
+6182=sopObject ha una chiave primaria errata [{0}] in [{1}] in [{2}]
+
+6183=Il tipo di associazione {1} per l''attributo {2} da {0} non \u00e8 supportato con la funzionalit\u00e0 Query per esempio.  Se l''attributo pu\u00f2 essere tranquillamente ignorato, aggiungerlo all''elenco degli elementi da ignorare o impostare la convalida di esempio su false nella politica.
+

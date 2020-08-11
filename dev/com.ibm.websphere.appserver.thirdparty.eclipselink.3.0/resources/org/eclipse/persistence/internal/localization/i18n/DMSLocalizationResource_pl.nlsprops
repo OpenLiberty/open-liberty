@@ -1,0 +1,111 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/DMSLocalizationResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+assigning_sequence_numbers=Zawiera czas obs\u0142ugi mechanizmu numeru kolejnego i rzeczywiste ustawienie numeru kolejnego dla obiekt\u00f3w
+
+cache_hits=Liczba wskazuj\u0105ca ile razy obiekt zosta\u0142 znaleziony w pami\u0119ci podr\u0119cznej
+
+cache_misses=Liczba okre\u015blaj\u0105ca, ile razy nie znaleziono obiektu w pami\u0119ci podr\u0119cznej
+
+caching=Obejmuje czas przeznaczony na dodawanie, wyszukiwanie i usuwanie obiekt\u00f3w w pami\u0119ci podr\u0119cznej
+
+change_set_not_processed=Liczba zestaw\u00f3w ObjectChangeSet zg\u0142oszonych z powodu nieznalezienia obiektu w pami\u0119ci podr\u0119cznej
+
+change_set_processed=Liczba zestaw\u00f3w ObjectChangeSet znalezionych w pami\u0119ci podr\u0119cznej
+
+client_session_count=Liczba zalogowanych sesji ClientSession
+
+connect_call=\u0141\u0105czna liczba nawi\u0105zanych po\u0142\u0105cze\u0144
+
+connection=Czas sp\u0119dzony na zarz\u0105dzaniu po\u0142\u0105czeniami (\u0142\u0105czenie, ponowne \u0142\u0105czenie i roz\u0142\u0105czanie) ze \u017ar\u00f3d\u0142em danych
+
+connection_in_used=Liczba po\u0142\u0105cze\u0144 w u\u017cyciu na pul\u0119 dla dowolnego wy\u0142\u0105cznego obiektu ConnectionPool(Write, ExclusiveRead)
+
+connection_ping=Czas sp\u0119dzony na testowaniu po\u0142\u0105czenia z baz\u0105 danych w celu okre\u015blenia, czy mo\u017ce by\u0107 ono u\u017cywane.
+
+database_execute=Czas sp\u0119dzony na wywo\u0142aniach instrukcji JDBC, w tym czas sp\u0119dzony na wywo\u0142aniach instrukcji close, executeUpdate i executeQuery
+
+deleted_object=Obiekt musi zosta\u0107 usuni\u0119ty z obiektu identityMap z zestawu ObjectChangeSet
+
+descriptor_event=Czas sp\u0119dzony na wywo\u0142ywaniu zdarzenia DescriptorEvent
+
+disconnect_call=\u0141\u0105czna liczba roz\u0142\u0105czonych po\u0142\u0105cze\u0144
+
+distributed_merge=Czas scalania zmian transakcji zdalnych w lokalnej wsp\u00f3\u0142u\u017cytkowanej pami\u0119ci podr\u0119cznej. Wyst\u0119puje w przypadku u\u017cycia funkcji synchronizacji pami\u0119ci podr\u0119cznej
+
+jts_aftercompletion=Czas sp\u0119dzony na metodzie JTS afterCompletion(Object status)
+
+jts_beforecompletion=Czas sp\u0119dzony na metodzie JTS beforeCompletion()
+
+logging=Czas sp\u0119dzony na rejestrowaniu dzia\u0142a\u0144 TopLink
+
+merge_time=Czas scalania zmian we wsp\u00f3\u0142u\u017cytkowanej pami\u0119ci podr\u0119cznej.
+
+object_building=Czas budowania obiekt\u00f3w trwa\u0142ych na podstawie wierszy bazy danych
+
+optimistic_lock=Liczba zg\u0142oszonych wyj\u0105tk\u00f3w blokad optymistycznych
+
+query=\u0141\u0105czny czas wykonywania operacji: {0}
+
+query_misc=\u0141\u0105czny czas wykonywania operacji: {0}.  Jest to czas wykonywania specjalnych operacji, takich jak zapisywanie wsadowe, kt\u00f3re nie zosta\u0142y uwzgl\u0119dnione w rzeczownikach zapyta\u0144.
+
+query_prepareation=Czas przygotowywania zapytania
+
+rcm_message_received=Liczba komunikat\u00f3w odebranych za pomoc\u0105 RCM
+
+rcm_message_sent=Liczba komunikat\u00f3w wys\u0142anych za pomoc\u0105 RCM
+
+rcm_status=Jeden z nast\u0119puj\u0105cych: [nieskonfigurowany, uruchomiony, zatrzymany]
+
+remote_change_set=Liczba zestaw\u00f3w zmian odebranych z komputer\u00f3w zdalnych i przetworzonych
+
+row_fetch=Czas wymagany do zbudowania obiekt\u00f3w rekord\u00f3w na podstawie tabeli wynikowej JDBC. Zawiera zwyk\u0142e wywo\u0142ania SQL i wywo\u0142ania procedur sk\u0142adowanych
+
+session_event=Czas sp\u0119dzony na wykonywaniu zdarzenia SessionEvent
+
+session_login_time=Czas zalogowanej sesji
+
+session_name=Nazwa sesji
+
+sql_generation=Czas tworzenia kodu SQL. W przypadku wyra\u017ce\u0144 TopLink jest to czas przekszta\u0142cania wyra\u017cenia w kod SQL
+
+sql_prepare=Czas przygotowywania instrukcji JDBC. Obejmuje on r\u00f3wnie\u017c czas sp\u0119dzony w systemie EIS na tworzeniu interakcji powi\u0105zanej z po\u0142\u0105czeniem i tworzeniu obiekt\u00f3w rekord\u00f3w wej\u015bciowych i wyj\u015bciowych
+
+unitofwork_commit=Mierzy proces zatwierdzania obiektu UnitOfWork
+
+unitofwork_commits=Liczba zatwierdze\u0144 obiekt\u00f3w UnitOfWork
+
+unitofwork_count=\u0141\u0105czna liczba utworzonych obiekt\u00f3w UnitOfWork
+
+unitofwork_register=Uwzgl\u0119dnia czas sp\u0119dzony nad obiektami registerExistingObject, registerNewContainerBean, registerNewContainerBeanForCMP, registerNewObject, registerObject i readIntoWorkingCopy
+
+unitofwork_rollback=Liczba wycofanych zatwierdze\u0144 obiekt\u00f3w UnitOfWork
+
+wrapping=Czas pakowania komponent\u00f3w bean CMP i BMP
+

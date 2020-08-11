@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DiscoveryExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+22001=\uba40\ud2f0\uce90\uc2a4\ud2b8 \uadf8\ub8f9\uc744 \uacb0\ud569\ud560 \uc218 \uc5c6\uc74c
+
+22002=\uc11c\ube44\uc2a4 \uacf5\uc9c0\uc0ac\ud56d\uc744 \ubc1c\uc1a1\ud560 \uc218 \uc5c6\uc74c
+
+22003=\ub85c\uceec \ud638\uc2a4\ud2b8 \uc870\ud68c \uc218\ud589\uc5d0 \uc2e4\ud328\ud568
+
+22004=\uc6d0\uaca9 \uc11c\ube44\uc2a4\uc5d0\uc11c \uc11c\ube44\uc2a4 \uacf5\uc9c0\uc0ac\ud56d \uc218\uc2e0\uc5d0 \uc2e4\ud328\ud568
+

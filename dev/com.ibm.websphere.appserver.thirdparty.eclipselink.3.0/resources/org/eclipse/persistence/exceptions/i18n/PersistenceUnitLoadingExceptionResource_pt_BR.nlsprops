@@ -1,0 +1,67 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/PersistenceUnitLoadingExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+30001=Uma exce\u00e7\u00e3o foi lan\u00e7ada ao tentar carregar uma unidade de persist\u00eancia para o diret\u00f3rio: {0}
+
+30002=Uma exce\u00e7\u00e3o foi lan\u00e7ada ao tentar carregar uma unidade de persist\u00eancia para o arquivo jar: {0}
+
+30003=Uma exce\u00e7\u00e3o foi lan\u00e7ada ao processar a unidade de persist\u00eancia na URL: {0}
+
+30004=Uma exce\u00e7\u00e3o foi lan\u00e7ada ao processar persistence.xml da URL: {0}
+
+30005=Uma exce\u00e7\u00e3o foi lan\u00e7ada ao procurar arquivos de persist\u00eancia com o ClassLoader: {0}
+
+30006=Uma exce\u00e7\u00e3o foi lan\u00e7ada ao procurar entidades na URL: {0}
+
+30007=Uma exce\u00e7\u00e3o foi lan\u00e7ada ao carregar a classe {0} para verificar se ela implementa @Entity, @Embeddable ou @MappedSuperclass.
+
+30008=O caminho de arquivo retornado estava vazio ou era nulo
+
+30009=Uma exce\u00e7\u00e3o foi lan\u00e7ada ao tentar carregar a unidade de persist\u00eancia na URL: {0}
+
+30010=Uma exce\u00e7\u00e3o foi lan\u00e7ada ao carregar o arquivo XML ORM: {0}
+
+30011=O EclipseLink n\u00e3o p\u00f4de obter classes da URL: {0}.  O EclipseLink tentou ler essa URL como um jarFile e como um Diret\u00f3rio e n\u00e3o p\u00f4de process\u00e1-la.
+
+30012=O EclipseLink n\u00e3o p\u00f4de obter informa\u00e7\u00f5es de unidade de persist\u00eancia da URL:{0}
+
+30013=Uma exce\u00e7\u00e3o foi lan\u00e7ada ao tentar construir um nome de unidade de persist\u00eancia para a unidade de persist\u00eancia [{1}] da URL: {0}.
+
+30014=A unidade de persist\u00eancia especifica o modo de valida\u00e7\u00e3o como "CALLBACK", mas um ValidatorFactory de valida\u00e7\u00e3o de bean n\u00e3o p\u00f4de ser inicializado. Consulte a exce\u00e7\u00e3o aninhada para obter detalhes. Assegure-se de que a API de valida\u00e7\u00e3o de bean e o Provedor de valida\u00e7\u00e3o de bean estejam dispon\u00edveis no caminho de classe.
+
+30015=Uma exce\u00e7\u00e3o foi lan\u00e7ada ao carregar a classe do grupo de valida\u00e7\u00e3o: {0}.
+
+30016=O nome da sess\u00e3o {0} n\u00e3o pode ser usado pela unidade de persist\u00eancia {1}, ele j\u00e1 \u00e9 usado pela unidade de persist\u00eancia {2}
+
+30017=A unidade de persist\u00eancia {0} est\u00e1 definida nas URLs {1} e {2}. N\u00e3o \u00e9 poss\u00edvel ter v\u00e1rias unidades de persist\u00eancia com o mesmo nome carregadas pelo mesmo carregador de classes.
+
+30018=Ocorreu uma exce\u00e7\u00e3o {1} ao tentar instanciar ArchiveFactory especificado pelo usu\u00e1rio: {0}.
+
+30019=Voc\u00ea est\u00e1 chamando refreshMetadata em um EntityManagerFactory para a unidade de persist\u00eancia {0}.  Os metadados n\u00e3o podem ser atualizados porque esse EntityManagerFactory foi criado a partir de um objeto de sess\u00e3o derivado de uma unidade de persist\u00eancia.
+

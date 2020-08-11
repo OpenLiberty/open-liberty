@@ -1,0 +1,61 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/TransactionExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+23001=Eroare la blocarea resursei Tranzac\u0163ie extern\u0103 sub numele JNDI [{0}]
+
+23002=Eroare la ob\u0163inerea st\u0103rii de tranzac\u0163ie curent\u0103 gestionat\u0103 extern
+
+23003=Eroare la ob\u0163inerea tranzac\u0163iei curente gestionate extern
+
+23004=Eroare la ob\u0163inerea Managerului de tranzac\u0163ii
+
+23005=Eroare la legarea la tranzac\u0163ie gestionat\u0103 extern
+
+23006=Eroare la legarea unei tranzac\u0163ii noi gestionate extern
+
+23007=Eroare la comiterea tranzac\u0163iei gestionate extern
+
+23008=Eroare la derularea \u00eenapoi a tranzac\u0163iei gestionate extern
+
+23009=Eroare la marcarea tranzac\u0163iei gestionate extern pentru derulare \u00eenapoi
+
+23010=Nu exist\u0103 momentan o tranzac\u0163ie gestionat\u0103 extern pentru acest fir de execu\u0163ie
+
+23011=UnitOfWork [{0}] a fost randat inactiv \u00eenainte ca tranzac\u0163ia asociat\u0103 gestionat\u0103 extern s\u0103 se fi finalizat.
+
+23012=Nu exist\u0103 momentan o tranzac\u0163ie activ\u0103
+
+23013=Tranzac\u0163ia este momentan activ\u0103
+
+23014=Nu se poate utiliza o EntityTransaction c\u00e2d se utilizeaz\u0103 JTA.
+
+23015=Nu se pot trece \u00een list\u0103 mai multe surse de date \u00een tranzac\u0163ie.
+
+23016=Excep\u0163ie la executarea Proxy.
+

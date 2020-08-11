@@ -559,7 +559,7 @@ ssl.create.certificate.end.useraction=Es ist keine Aktion erforderlich.
 #--------------------------------------------------------------------------------------------------
 ssl.create.certificate.error=CWPKI0804E: Fehler beim Erstellen des SSL-Zertifikats. {0}
 ssl.create.certificate.error.explanation=Das SSL-Zertifikat konnte an der angegebenen Position nicht erstellt werden.
-ssl.create.certificate.error.useraction=Stellen Sie sicher, dass die Position f\u00fcr den Serverprozess zug\u00e4nglich ist. Alle FFDCs k\u00f6nnen auf einen schwerwiegenden Fehler bei der Generierung oder beim Laden der Schl\u00fcssel hinweisen.
+ssl.create.certificate.error.useraction=Stellen Sie sicher, dass die Position f\u00fcr den Serverprozess zug\u00e4nglich ist. Suchen Sie in den FFDC-Protokollen nach weiteren Fehlern im Zusammenhang mit dem Generieren oder Laden von Schl\u00fcsseln.
 
 # Messages for the CWPKI0804E message descriptor {0}.
 ssl.create.certificate.error.reason1=Die SSL-Schl\u00fcsseldatei {0} kann nicht erstellt werden.
@@ -661,4 +661,8 @@ ssl.using.cacerts.CWPKI0827I.useraction=Es ist keine Aktion erforderlich.
 ssl.client.handshake.cacerts.error.CWPKI0828E=CWPKI0828E: Das Attibut trustDefaultCerts ist aktiviert, aber es konnte keine Vertrauensbeziehung mithilfe des Standardtruststores hergestellt werden. Die erweiterte Fehlernachricht aus der SSL-Handshake-Ausnahme lautet wie folgt: {0}.
 ssl.client.handshake.cacerts.error.CWPKI0828E.explanation=Der Standardtruststore ist nicht ordnungsgem\u00e4\u00df zum Herstellen der Vertrauensstellung konfiguriert. 
 ssl.client.handshake.cacerts.error.CWPKI0828E.useraction=\u00dcberpr\u00fcfen Sie die erweiterte Fehlernachricht, um zu ermitteln, was in der Konfiguration ge\u00e4ndert werden muss.
+# -------------------------------------------------------------------------------------------------
+ssl.update.certificate.error=CWPKI0829E: Fehler beim Aktualisieren des SSL-Zertifikats. {0}
+ssl.update.certificate.error.explanation=Das SSL-Zertifikat konnte an der angegebenen Position nicht aktualisiert werden.
+ssl.update.certificate.error.useraction=Stellen Sie sicher, dass die Position f\u00fcr den Serverprozess zug\u00e4nglich ist. Suchen Sie in den FFDC-Protokollen nach weiteren Fehlern im Zusammenhang mit dem Generieren oder Laden von Schl\u00fcsseln.
 # -------------------------------------------------------------------------------------------------

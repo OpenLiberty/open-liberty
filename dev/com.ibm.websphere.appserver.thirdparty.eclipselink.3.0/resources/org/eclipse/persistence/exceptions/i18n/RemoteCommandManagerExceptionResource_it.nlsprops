@@ -1,0 +1,65 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/RemoteCommandManagerExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+22101=Impossibile ottenere il contesto JNDI; controllare che le propriet\u00e0 siano impostate correttamente.
+
+22102=Impossibile eseguire il post della connessione nel servizio di denominazione locale con il nome {0}
+
+22103=Impossibile cercare la connessione remota con il nome {0} con l''URL {1}
+
+22104=Impossibile cercare il nome host
+
+22105=Impossibile propagare il comando a {0}
+
+22106=Impossibile creare la connessione JMS esterna con l''argomento {0} e il factory di argomenti {1}. Controllare inoltre che le propriet\u00e0 di contesto siano impostate correttamente.
+
+22107=Impossibile rimuovere la connessione locale nel servizio di denominazione locale con il nome {0}
+
+22108=Impossibile serializzare o deserializzare il comando
+
+22109=Impossibile ricevere il messaggio JMS dal provider JMS
+
+22110=Impossibile rilevare l''indirizzo IP dell''host locale.
+
+22111=Impossibile ottenere ServerPlatform. ServerPlatform deve essere impostata su Session o RemoteCommandManager.
+
+22112=Impossibile creare la connessione JMS locale con l''argomento {0} e il factory di argomenti {1}. Controllare inoltre che le propriet\u00e0 di contesto siano impostate correttamente.
+
+22113=Impossibile creare l''ID servizio Oc4jJGroupsRemoteConnection {0}, argomento {1}, utilizzando il factory {2}. Controllare inoltre che le propriet\u00e0 di contesto siano impostate correttamente.
+
+22114={0}: impossibile deserializzare il messaggio richiamato {1}.
+
+22115={0}: impossibile elaborare il comando remoto richiamato dal messaggio {1}, da {2}, tipo di comando {3}
+
+22116=Il messaggio JMS ricevuto \u00e8 null. Verr\u00e0 elaborato come una JMSException
+
+22117=Il RemoteCommandManager della sessione \u00e8 chiuso oppure non \u00e8 stato inizializzato durante l''elaborazione dei messaggi in entrata
+
+22118=Impossibile creare la connessione JGroups utilizzando il file di configurazione: {0}
+

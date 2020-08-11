@@ -37,9 +37,9 @@ KRB_S4U2PROXY_IS_NOT_SUPPORT=CWWKS4344E: Kerberos\uc758 \uc81c\ud55c\ub41c \uc70
 KRB_S4U2PROXY_IS_NOT_SUPPORT.explanation=Kerberos\uc758 \uc81c\ud55c\ub41c \uc704\uc784 \uae30\ub2a5\uc740 Java \ub7f0\ud0c0\uc784 \uacf5\uae09\uc5c5\uccb4 \ubc0f \ubc84\uc804\uc73c\ub85c \uc778\ud574 \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 KRB_S4U2PROXY_IS_NOT_SUPPORT.useraction=Kerberos\uc758 \uc81c\ud55c\ub41c \uc704\uc784 \uae30\ub2a5\uc5d0\uc11c \uc9c0\uc6d0\ud558\ub294 Java \uacf5\uae09\uc5c5\uccb4 \ubc0f \ubc84\uc804\uc744 \uc0ac\uc6a9\ud558\uc2ed\uc2dc\uc624.
 
+# CWWKS4345E is used by the com.ibm.ws.security.kerberos.auth bundle
 
-
-
+# CWWKS4346I is used by the com.ibm.ws.security.kerberos.auth bundle
 
 
 

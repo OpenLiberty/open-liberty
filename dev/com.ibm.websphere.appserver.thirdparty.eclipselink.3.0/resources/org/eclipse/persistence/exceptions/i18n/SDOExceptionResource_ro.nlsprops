@@ -1,0 +1,147 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/SDOExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+45000=Nu s-a g\u0103sit elementul ID de tip ID \u00een tipul cu uti [{0}] \u015fi numele [{1}] .
+
+45001=A survenit o eroare la procesarea importului cu shemaLocation [{0}] \u015fi spa\u0163iul nume [{1}] .
+
+45002=A survenit o eroare la procesarea includerii cu schemaLocation [{0}] .
+
+45003=O proprietate de referin\u0163\u0103 cu uri [{0}] \u015fi numele [{1}] a fost g\u0103sit\u0103.
+
+45004=Secven\u0163a veche nu a fost g\u0103sit\u0103 \u00een changesummary.
+
+45005=Valoarea propriet\u0103\u0163ii numite [{0}] trebuie s\u0103 fie un DataObject
+
+45006=Secven\u0163a nu poate fi nul\u0103 atunci c\u00e2nd type.isSequenced() este true.
+
+45007=Un tip nu a fost setat pentru proprietatea cu numele [{0}]
+
+45008=A avut loc o excep\u0163ie IO.
+
+45009=Tipul nu a fost g\u0103sit cu uri [{0}] \u015fi numele [{1}]
+
+45010=Un tip nu a putut fi g\u0103sit pentru clasa de interfe\u0163e [{0}]. V\u0103 rug\u0103m s\u0103 v\u0103 asigura\u0163i c\u0103 tipul a fost definit.  \u00cen plus, classloader-ul interfe\u0163ei ar trebui s\u0103 fie un num\u0103r al ierarhiei classholder contextual de ajutor: apare ca \u015fi cum este [{1}].
+
+45011=Nu s-a putut crea un DataObject pentru tipul cu uri [{0}] \u015fi numele [{1}] deoarece type.isAbstract() returneaz\u0103 true.
+
+45012=Nu s-a putut crea un DataObject pentru interfa\u0163a [{0}], se \u00eencearc\u0103 crearea unui DataObject pentru tip cu uri [{1}] \u015fi numele [{2}] 
+
+45013=Nu se pot c\u0103uta informa\u0163iile de aplica\u0163ie pentru argumentul nul.
+
+45014=Nu s-a putut defini tipul.  Tipruile pt fi definite numai pentru DataObjects cu Tip setat pe commonj.sdo.Type
+
+45015=Nu s-a putut defini tipul cu un nume nul.
+
+45016=Un obiect modificat \u00een changesummary XML nu are un atribut ref sau valoarea nu este specificat\u0103.
+
+45017=A survenit o eroare la procesarea xpath [{0}] .
+
+45018=Ad\u0103ugarea unei intr\u0103ri duplicat pentru setarea singular\u0103 complex\u0103 [{1}] \u00eentr-o secven\u0163\u0103 la pozi\u0163ia [{0}] nu este suportat\u0103.
+
+45019=Ad\u0103ugarea unei propriet\u0103\u0163i de atribut [{0}] pentru o secven\u0163\u0103, nu este suportat\u0103.
+
+45020=Nu a fost g\u0103sit\u0103 o secven\u0163\u0103 pentru calea [{0}].
+
+45021=A survenit o eroare la \u00eencercarea de instan\u0163iere a obiectului Secven\u0163\u0103 cu un c\u00e2mp de instan\u0163\u0103 dataObject nul.
+
+45022=Nici o secven\u0163\u0103 nu este suportat\u0103 pentru proprietatea [{0}].
+
+45023=Nu s-a putut seta proprietatea de tip cu uri [{0}] \u015fi nume [{1}] pentru valoarea de clas\u0103 [{2}]
+
+45024=A survenit o eroare de conversie.
+
+45025=Nu s-a putut g\u0103si proprietatea la indexul [{0}]
+
+45026=Nu se poate efectua opera\u0163ia [{0}] pentru parametru nul.
+
+45027=Nu se poate g\u0103si clasa pentru tipul cu uri [{0}] \u015fi numele [{1}].
+
+45028=Un tip nu poate fi setat pentru a deschide \u015fi datatype.  Eroare cu tip cu uri [{0}] \u015fi nume [{1}].
+
+45029=Index invalid [{0}] a fost transmis la metoda [{1}].
+
+45030=A survenit o eroare la invocarea constructorului cu un argument \u015eir \u00een clasa [{0}].
+
+45031=Nu se poate seta tipul \u0163int\u0103 invalid [{0}] \u00een proprietatea [{1}] deoarece \u0163inta type.dataType este true.
+
+45032=O XMLMarshalException a survenit pentru uri [{1}] \u015fi numele local [{2}].  Excep\u0163ie: [{0}]
+
+45033=A survenit o eroare la generarea tipurilor. Componenta XML Schema cu numele [{1}] \u015fi spa\u0163iul nume URI [{0}] este referen\u0163iat dar niciodat\u0103 definit.  Un import sau o includere pentru spa\u0163iul nume URI[{0}] poate s\u0103 lipseasc\u0103 din XML Schema.
+
+45034=Valoarea parametrului de op\u0163iuni trebuie s\u0103 fie un DataObject de Tip cu uri [{0}] \u015fi numele [{1}].
+
+45035=Valoarea ce corespunde pentru proprietatea "tip" trebuie s\u0103 fie un obiect Tip.
+
+45036=O proprietate global\u0103 corespunz\u0103toare nodului XML localizat, nu a fost g\u0103sit\u0103.
+
+45037=Prefixul [{0}] este utilizat dar nu este declarat \u00een schema XML.
+
+45038=Nu se poate efectua opera\u0163ia pentru proprietatea [{0}] deoarece nu poate fi g\u0103sit din calea [{1}]. Calea este invalid\u0103, sau unul sau mai multe Obiecte de date din cale sunt nule.
+
+45039=A survenit o eroare la accesarea c\u00e2mpului externalizableDelegator [{0}] \u00een DataObject.
+
+45040=Nu se poate efectua opera\u0163ia [{0}] cu parametrul nul [{1}].
+
+45041=Valoarea [{0}] de clas\u0103 [{1}] este invalid\u0103 pentru proprietatea [{2}] de tip [{3}].
+
+45100=A survenit o eroare la \u00eencercarea de returnare a SDOHelperContext cerut.  \u00centr-o instan\u0163\u0103 WebLogic activ\u0103, numele aplica\u0163iei este necesar pentru c\u0103ut\u0103rile \u00een cache de context ajutor.  Numele aplica\u0163iei nu a putut fi determinat deoarece c\u0103utarea {0} a e\u015fuat.
+
+45101=A survenit o eroare la \u00eencercarea de returnare a SDOHelperContext cerut.  \u00centr-o instan\u0163\u0103 WebLogic activ\u0103, numele aplica\u0163iei este necesar pentru c\u0103ut\u0103rile \u00een cache de context ajutor.  Numele aplica\u0163iei nu a putut fi determinat deoarece {0} nu a putut fi invocat reflectiv \u00een {1}.
+
+45102=A survenit o eroare la \u00eencercarea de returnare a SDOHelperContext cerut.  \u00centr-o instan\u0163\u0103 WebLogic activ\u0103, numele aplica\u0163iei este necesar pentru c\u0103ut\u0103rile \u00een cache de context ajutor.  Numele aplica\u0163iei nu a putut fi determinat deoarece un ObjectName nu a putut fi creat/returnat pentru {0}.
+
+45103=A survenit o eroare la \u00eencercarea de returnare a SDOHelperContext cerut.  \u00centr-o instan\u0163\u0103 WebLogic activ\u0103, numele aplica\u0163iei este necesar pentru c\u0103ut\u0103rile \u00een cache de context ajutor.  Numele aplica\u0163iei nu a putut fi determinat deoarece un InitialContext nu a putut fi instan\u0163iat.
+
+45200=SDO/JAXB - Un descriptor OXM nu a putut fi g\u0103sit, care s\u0103 corespund\u0103 tipului SDO [{0}], asigura\u0163i-v\u0103 c\u0103 este mapat\u0103 clasa Java la tipul XML [{1}].
+
+45201=SDO/JAXB - O mapare OXM nu a putut fi g\u0103sit\u0103, care s\u0103 corespund\u0103 propriet\u0103\u0163ii SDO [{0}], asigura\u0163i-v\u0103 c\u0103 este mapat\u0103 proprietatea Java la nodul XML [{1}].
+
+45202=SDO/JAXB - Un tip SDO nu a putut fi g\u0103sit, care s\u0103 corespund\u0103 clasi Java [{0}].
+
+45203=SDO/JAXB - O referin\u0163\u0103 de schem\u0103 trebuie setat\u0103 \u00een descriptorul pentru clasa Java [{0}].
+
+45204=SDO/JAXB - Un context de schem\u0103 trebuie setat \u00een referin\u0163a de schem\u0103 \u00een descriptorul pentru clasa Java [{0}].
+
+45205=SDO/JAXB - Un tip SDO nu a putut fi g\u0103sit, care s\u0103 corespund\u0103 clasei Java [{0}], asigura\u0163i-v\u0103 c\u0103 un tip SDO corespunde tipului XML [{1}].
+
+45206=SDO/JAXB - A survenit o eroare la crearea unui JAXB Unmarshaller.
+
+45207=A survenit o eroare la \u00eencercarea de rezolvare a unei scheme utiliz\u00e2nd SchemaResolver furnizor.
+
+45208=Nu se poate mapa proprietatea {0} din tipul {1}. Pachetele javax.activation \u015fi javax.mail sunt necesare pentru maparea propriet\u0103\u0163ilor de tip DataHandler. Asigura\u0163i-v\u0103 c\u0103 ambele sunt disponibile \u00een calea de clase.
+
+45209=A fost f\u0103cut\u0103 o \u00eencercare de resetare a instan\u0163ei ApplicationResolver \u00een SDOHelperContext.  Numai o setare este permis\u0103.
+
+45210=DataObject ce este marshalled nu este din acela\u015fi HelperContext ca \u015fi XMLHelper.
+
+45211=Tipul nu a putut fi definit cu numele [{0}]. Numele nu este un nume valid XML.
+
+45212=Proprietatea nu a putut fi definit\u0103 cu numele [{0}]. Numele nu este un nume valid XML.
+

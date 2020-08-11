@@ -1,0 +1,43 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/StaticWeaveExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+40001=Une exception a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e lors de la tentative d''ouverture d''une archive depuis l''URL : {0}
+
+40002=Aucune source n''a \u00e9t\u00e9 sp\u00e9cifi\u00e9 pour la g\u00e9n\u00e9ration
+
+40003=Aucune cible n''a \u00e9t\u00e9 sp\u00e9cifi\u00e9 pour la g\u00e9n\u00e9ration
+
+40004=L''ex\u00e9cution de la g\u00e9n\u00e9ration pour le fichier JAR n''est pas autoris\u00e9e
+
+40005=Une exception a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e lors de la tentative d''ouverture d''un fichier de journalisation : {0}
+
+40006=Le niveau de journalisation a \u00e9t\u00e9 sp\u00e9cifi\u00e9 dans une valeur erron\u00e9e, il doit s''agir de l''une des valeurs suivantes : OFF,SEVERE,WARNING,INFO,CONFIG,FINE,FINER,FINEST
+
+40007=Une exception a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e lors de la g\u00e9n\u00e9ration : {0}
+
