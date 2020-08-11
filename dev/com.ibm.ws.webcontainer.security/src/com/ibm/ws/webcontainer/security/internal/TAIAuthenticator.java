@@ -58,6 +58,8 @@ public class TAIAuthenticator implements WebAuthenticator {
     private SSOCookieHelper ssoCookieHelper = null;
     private AuthenticationService authenticationService = null;
     private static final String APPLICATION_AUTH_TYPE = "com.ibm.ws.security.tai.appAuthType";
+    //The first authenticate request come in, we will initialize the TAI
+    private boolean initializeTai = false;
 
     private final String[] hashtableLoginProperties = { AttributeNameConstants.WSCREDENTIAL_UNIQUEID,
                                                         AttributeNameConstants.WSCREDENTIAL_SECURITYNAME };
@@ -97,6 +99,13 @@ public class TAIAuthenticator implements WebAuthenticator {
     }
 
     public AuthenticationResult authenticate(WebRequest webRequest, boolean invokeBeforeSSO) {
+        if (!initializeTai) {
+            if (taiService != null) {
+                // Initialize all TAI when the first request come in
+                taiService.initializeTais();
+                initializeTai = true;
+            }
+        }
         AuthenticationResult authResult = AUTHN_CONTINUE_RESULT;
         TAIResult taiResult = null;
         String taiType = null;
