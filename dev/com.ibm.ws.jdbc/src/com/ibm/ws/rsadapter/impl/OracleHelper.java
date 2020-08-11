@@ -51,6 +51,8 @@ import org.ietf.jgss.GSSCredential;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.kernel.service.util.JavaInfo;
+import com.ibm.ws.kernel.service.util.JavaInfo.Vendor;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.impl.WSManagedConnectionFactoryImpl.KerbUsage;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcTracer;
@@ -809,6 +811,13 @@ public class OracleHelper extends DatabaseHelper {
         if (isTraceOn && tc.isEntryEnabled()) 
             Tr.entry(this, tc, "getPooledConnection", AdapterUtil.toString(ds), userName, "******", is2Phase ? "two-phase" : "one-phase",
                      cri, useKerberos, gssCredential);
+        
+        if (useKerberos != KerbUsage.NONE && JavaInfo.majorVersion() == 8 && JavaInfo.vendor() == Vendor.IBM) {
+            // The Oracle JDBC driver does not support kerberos authentication on IBM JDK 8 because
+            // it has dependencies to the internal Sun security APIs which don't exist in IBM JDK 8
+            Tr.error(tc, "KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED");
+            throw new ResourceException(AdapterUtil.getNLSMessage("KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED"));
+        }
 
         ConnectionResults results;
         if (useKerberos != KerbUsage.NONE) {
