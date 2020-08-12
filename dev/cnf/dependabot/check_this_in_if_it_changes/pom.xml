@@ -2124,7 +2124,7 @@
     <dependency>
       <groupId>org.eclipse.microprofile.opentracing</groupId>
       <artifactId>microprofile-opentracing-api</artifactId>
-      <version>2.0-RC1</version>
+      <version>2.0-RC2</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.reactive-streams-operators</groupId>
