@@ -94,7 +94,7 @@ public class ApplicationPrereqMonitor {
 
     @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     synchronized void setApplicationPrereq(ApplicationPrereq applicationPrereq) {
-        realisedPrereqs.add(applicationPrereq.getClass().getName());
+        realisedPrereqs.add(applicationPrereq.getApplicationPrereqID());
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Prereq added:" + applicationPrereq.getClass().getName()
                          + "\nConfigured:" + declaredPrereqs
@@ -114,7 +114,7 @@ public class ApplicationPrereqMonitor {
     }
 
     synchronized void unsetApplicationPrereq(ApplicationPrereq applicationPrereq) {
-        realisedPrereqs.remove(applicationPrereq.getClass().getName());
+        realisedPrereqs.remove(applicationPrereq.getApplicationPrereqID());
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Prereq removed:" + applicationPrereq.getClass().getName()
                          + "\nConfigured:" + declaredPrereqs

@@ -13,5 +13,7 @@ package test.app.prereq;
 import com.ibm.wsspi.application.lifecycle.ApplicationPrereq;
 
 public class Prereq implements ApplicationPrereq {
-
+    public String getApplicationPrereqID() {
+        return "simple test prereq";
+    }
 }

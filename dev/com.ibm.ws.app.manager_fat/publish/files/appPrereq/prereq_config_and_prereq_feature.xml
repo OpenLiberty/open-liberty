@@ -11,6 +11,6 @@
 
   <application location="snoop.war" />
     
-  <com.ibm.wsspi.application.lifecycle.ApplicationPrereq id="test.app.prereq.Prereq"/>
+  <com.ibm.wsspi.application.lifecycle.ApplicationPrereq id="simple test prereq"/>
 </server>
 

@@ -19,5 +19,5 @@ package com.ibm.wsspi.application.lifecycle;
  * }
  */
 public interface ApplicationPrereq {
-
+    String getApplicationPrereqID();
 }
