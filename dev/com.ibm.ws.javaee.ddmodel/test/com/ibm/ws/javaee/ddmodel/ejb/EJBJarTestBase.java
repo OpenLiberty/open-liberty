@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,13 +31,13 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
  * -concentrate on the pristine path where the ejb-jar.xml file is well formed
  * -testing entity and relationships is optional
  * -testing error handling is secondary
- * 
+ *
  * -Error handling philosophy:
  * As determined by Glann marcy and Brett Kail, the easiest thing to do at this point is to change the parser to return a "sensible default",
  * but if not possible, unwind by discarding objects until something valid is returned (e.g., EJBRelation.getRelationshipRoles()
  * should be discarded if only one <ejb-relation/> is specified).
  * If we can match the defaults used by WCCM (by looking at WCCMBASE/ws/code/jst.j2ee.core.mofj2ee), that would be ideal.
- * 
+ *
  */
 
 public class EJBJarTestBase {
@@ -45,7 +45,7 @@ public class EJBJarTestBase {
     private int mockId;
 
     EJBJar parse(final String xml) throws Exception {
-        return parse(xml, EJBJar.VERSION_3_2);
+        return parse(xml, EJBJar.VERSION_4_0);
     }
 
     EJBJar parse(final String xml, final int maxVersion) throws Exception {
@@ -155,6 +155,20 @@ public class EJBJarTestBase {
 
     static String ejbJar32() {
         return ejbJar32("");
+    }
+
+    static final String ejbJar40(String attrs) {
+        return "<ejb-jar" +
+               " xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"" +
+               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+               " xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/ejb-jar_4_0.xsd\"" +
+               " version=\"4.0\"" +
+               " " + attrs +
+               ">";
+    }
+
+    static String ejbJar40() {
+        return ejbJar40("");
     }
 
 }
