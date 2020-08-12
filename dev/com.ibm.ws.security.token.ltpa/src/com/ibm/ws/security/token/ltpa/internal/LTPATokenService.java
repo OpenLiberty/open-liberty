@@ -17,6 +17,7 @@ import org.osgi.service.component.ComponentContext;
 import com.ibm.websphere.security.auth.InvalidTokenException;
 import com.ibm.websphere.security.auth.TokenCreationFailedException;
 import com.ibm.websphere.security.auth.TokenExpiredException;
+import com.ibm.ws.security.sso.LTPAConfiguration;
 import com.ibm.ws.security.token.TokenService;
 import com.ibm.wsspi.security.ltpa.Token;
 import com.ibm.wsspi.security.ltpa.TokenFactory;

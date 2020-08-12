@@ -16,6 +16,7 @@ import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.authentication.UnauthenticatedSubjectService;
 import com.ibm.ws.security.authentication.tai.TAIService;
 import com.ibm.ws.security.collaborator.CollaboratorUtils;
+import com.ibm.ws.security.sso.SSOService;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
@@ -47,7 +48,8 @@ public interface WebAuthenticatorFactory {
                                           CollaboratorUtils collabUtils,
                                           ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRef,
                                           ConcurrentServiceReferenceMap<String, UnprotectedResourceService> unprotectedResourceServiceRef,
-                                          UnauthenticatedSubjectService unauthenticatedSubjectService);
+                                          UnauthenticatedSubjectService unauthenticatedSubjectService,
+                                          AtomicServiceReference<SSOService> ssoServiceRe);
 
     /**
      * @param securityServiceRef
@@ -73,7 +75,8 @@ public interface WebAuthenticatorFactory {
     WebAuthenticatorProxy createWebAuthenticatorProxy(WebAppSecurityConfig webAppSecConfig,
                                                       PostParameterHelper postParameterHelper,
                                                       AtomicServiceReference<SecurityService> securityServiceRef,
-                                                      WebProviderAuthenticatorProxy providerAuthenticatorProxy);
+                                                      WebProviderAuthenticatorProxy providerAuthenticatorProxy,
+                                                      AtomicServiceReference<SSOService> ssoServiceRef);
 
     /**
      * @param webRequest

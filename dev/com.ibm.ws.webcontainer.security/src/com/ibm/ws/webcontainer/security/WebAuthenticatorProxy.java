@@ -25,6 +25,7 @@ import com.ibm.ws.security.audit.utils.AuditConstants;
 import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.ws.security.registry.UserRegistry;
 import com.ibm.ws.security.registry.UserRegistryService;
+import com.ibm.ws.security.sso.SSOService;
 import com.ibm.ws.webcontainer.security.internal.BasicAuthAuthenticator;
 import com.ibm.ws.webcontainer.security.internal.CertificateLoginAuthenticator;
 import com.ibm.ws.webcontainer.security.internal.DenyReply;
@@ -47,6 +48,7 @@ public class WebAuthenticatorProxy implements WebAuthenticator {
     protected final AtomicServiceReference<SecurityService> securityServiceRef;
     protected volatile WebAppSecurityConfig webAppSecurityConfig;
     private volatile PostParameterHelper postParameterHelper;
+    private final AtomicServiceReference<SSOService> ssoServiceRef;
     private final WebProviderAuthenticatorProxy providerAuthenticatorProxy;
     public HashMap<String, Object> extraAuditData = new HashMap<String, Object>();
 
@@ -54,12 +56,14 @@ public class WebAuthenticatorProxy implements WebAuthenticator {
                                  PostParameterHelper postParameterHelper,
                                  AtomicServiceReference<SecurityService> securityServiceRef,
                                  WebProviderAuthenticatorProxy providerAuthenticatorProxy,
-                                 AtomicServiceReference<OidcServer> oidcServerRef) {
+                                 AtomicServiceReference<OidcServer> oidcServerRef,
+                                 AtomicServiceReference<SSOService> ssoServiceRef) {
         this.webAppSecurityConfig = webAppSecurityConfig;
         this.postParameterHelper = postParameterHelper;
         this.securityServiceRef = securityServiceRef;
         this.providerAuthenticatorProxy = providerAuthenticatorProxy;
         this.oidcServerRef = oidcServerRef;
+        this.ssoServiceRef = ssoServiceRef;
     }
 
     /** {@inheritDoc} */

@@ -57,11 +57,11 @@ public class WebAdminSecurityCollaboratorImpl extends WebAppSecurityCollaborator
         webAppSecConfig = webAdminSecConfig;
         SSOCookieHelper ssoCookieHelper = webAppSecConfig.createSSOCookieHelper();
         authenticateApi = authenticatorFactory.createAuthenticateApi(ssoCookieHelper, securityServiceRef, collabUtils, webAuthenticatorRef, unprotectedResourceServiceRef,
-                                                                     unauthenticatedSubjectService);
+                                                                     unauthenticatedSubjectService, ssoServiceRef);
         postParameterHelper = new PostParameterHelper(webAppSecConfig);
         providerAuthenticatorProxy = authenticatorFactory.createWebProviderAuthenticatorProxy(securityServiceRef, taiServiceRef, interceptorServiceRef, webAppSecConfig,
                                                                                               webAuthenticatorRef);
-        authenticatorProxy = authenticatorFactory.createWebAuthenticatorProxy(webAppSecConfig, postParameterHelper, securityServiceRef, providerAuthenticatorProxy);
+        authenticatorProxy = authenticatorFactory.createWebAuthenticatorProxy(webAppSecConfig, postParameterHelper, securityServiceRef, providerAuthenticatorProxy, ssoServiceRef);
     }
 
     @Override

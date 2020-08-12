@@ -37,6 +37,7 @@ Service-Component: \
     configuration-policy:=optional; \
     immediate:=true; \
     securityService=com.ibm.ws.security.SecurityService; \
+    ssoService=com.ibm.ws.security.sso.SSOService; \
     taiService=com.ibm.ws.security.authentication.tai.TAIService; \
     interceptorService='com.ibm.wsspi.security.tai.TrustAssociationInterceptor(id=*)'; \
     webAuthenticator=com.ibm.ws.webcontainer.security.WebAuthenticator; \
@@ -65,6 +66,7 @@ instrument.classesExcludes: com/ibm/ws/webcontainer/security/feature/resources/*
 	com.ibm.ws.security.registry;version=latest,\
 	com.ibm.ws.security.authorization.builtin;version=latest,\
 	com.ibm.ws.security;version=latest,\
+	com.ibm.ws.security.sso;version=latest,\
 	com.ibm.ws.security.authentication.tai;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

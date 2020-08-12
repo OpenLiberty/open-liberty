@@ -34,6 +34,7 @@ Service-Component: \
     locationAdmin=com.ibm.wsspi.kernel.service.location.WsLocationAdmin; \
     authenticatorFactory=com.ibm.ws.webcontainer.security.WebAuthenticatorFactory; \
     unauthenticatedSubjectService=com.ibm.ws.security.authentication.UnauthenticatedSubjectService; \
+    ssoService=com.ibm.ws.security.sso.SSOService; \
     kernelProvisioner=com.ibm.ws.kernel.feature.FeatureProvisioner; \
     multiple:='interceptorService,webAuthenticator'; \
     greedy:='interceptorService,webAuthenticator,authenticatorFactory'; \
@@ -51,6 +52,7 @@ Service-Component: \
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
 	com.ibm.ws.security.authentication;version=latest,\
+	com.ibm.ws.security.sso;version=latest,\
 	com.ibm.ws.security;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.security.authentication.tai;version=latest,\

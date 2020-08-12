@@ -30,6 +30,7 @@ import org.osgi.service.component.ComponentContext;
 
 import test.common.SharedOutputManager;
 
+import com.ibm.ws.security.sso.LTPAConfiguration;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 

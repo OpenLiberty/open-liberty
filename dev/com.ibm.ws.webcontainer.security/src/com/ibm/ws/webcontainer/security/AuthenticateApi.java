@@ -43,6 +43,7 @@ import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.security.collaborator.CollaboratorUtils;
 import com.ibm.ws.security.context.SubjectManager;
 import com.ibm.ws.security.mp.jwt.proxy.MpJwtHelper;
+import com.ibm.ws.security.sso.SSOService;
 import com.ibm.ws.webcontainer.security.internal.BasicAuthAuthenticator;
 import com.ibm.ws.webcontainer.security.internal.ChallengeReply;
 import com.ibm.ws.webcontainer.security.internal.DenyReply;
@@ -71,6 +72,7 @@ public class AuthenticateApi {
     private AuthCacheService authCacheService = null;
     private final CollaboratorUtils collabUtils;
     private AuthenticationService authService = null;
+    private AtomicServiceReference<SSOService> ssoServiceRef;
     private ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRefs = null;
     private ConcurrentServiceReferenceMap<String, UnprotectedResourceService> unprotectedResourceServiceRef = null;
     private UnauthenticatedSubjectService unauthenticatedSubjectService;
@@ -83,13 +85,15 @@ public class AuthenticateApi {
                            CollaboratorUtils collabUtils,
                            ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRef,
                            ConcurrentServiceReferenceMap<String, UnprotectedResourceService> unprotectedResourceServiceRef,
-                           UnauthenticatedSubjectService unauthenticatedSubjectService) {
+                           UnauthenticatedSubjectService unauthenticatedSubjectService,
+                           AtomicServiceReference<SSOService> ssoServiceRef) {
         this.ssoCookieHelper = ssoCookieHelper;
         this.securityServiceRef = securityServiceRef;
         this.collabUtils = collabUtils;
         this.webAuthenticatorRefs = webAuthenticatorRef;
         this.unprotectedResourceServiceRef = unprotectedResourceServiceRef;
         this.unauthenticatedSubjectService = unauthenticatedSubjectService;
+        this.ssoServiceRef = ssoServiceRef;
 
         // securityService may or may not be available at this point. so if it is available, do the the initialization work,
         // otherwise defer getting authService and authCacheService when it is ready.
@@ -548,7 +552,7 @@ public class AuthenticateApi {
             if (authService == null && securityServiceRef != null) {
                 authService = securityServiceRef.getService().getAuthenticationService();
             }
-            SSOAuthenticator ssoAuthenticator = new SSOAuthenticator(authService, null, null, ssoCookieHelper);
+            SSOAuthenticator ssoAuthenticator = new SSOAuthenticator(authService, null, null, ssoCookieHelper, ssoServiceRef);
             //TODO: We can not call ssoAuthenticator.authenticate because it can not handle multiple tokens.
             //In the next release, authenticate need to handle multiple authentication data. See story
             AuthenticationResult authResult = ssoAuthenticator.handleSSO(req, res);

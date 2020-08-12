@@ -27,6 +27,7 @@ import org.osgi.service.component.ComponentContext;
 
 import test.common.SharedOutputManager;
 
+import com.ibm.ws.security.sso.LTPAConfiguration;
 import com.ibm.wsspi.security.ltpa.TokenFactory;
 
 /**

@@ -20,6 +20,7 @@ import java.util.TreeMap;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.SecurityService;
+import com.ibm.ws.security.sso.SSOService;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
 import com.ibm.ws.webcontainer.security.SSOCookieHelper;
 import com.ibm.ws.webcontainer.security.SSOCookieHelperImpl;
@@ -107,6 +108,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     protected final AtomicServiceReference<SecurityService> securityServiceRef;
     protected final AtomicServiceReference<OidcServer> oidcServerRef;
     protected final AtomicServiceReference<OidcClient> oidcClientRef;
+    protected final AtomicServiceReference<SSOService> ssoServiceRef;
 
     static Map<String, String> configAttributes = new TreeMap<String, String>() {
         /**  */
@@ -149,12 +151,14 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
                                     AtomicServiceReference<WsLocationAdmin> locationAdminRef,
                                     AtomicServiceReference<SecurityService> securityServiceRef,
                                     AtomicServiceReference<OidcServer> oidcServerRef,
-                                    AtomicServiceReference<OidcClient> oidcClientRef) {
+                                    AtomicServiceReference<OidcClient> oidcClientRef,
+                                    AtomicServiceReference<SSOService> ssoServiceRef) {
         this.locationAdminRef = locationAdminRef;
         this.securityServiceRef = securityServiceRef;
         this.oidcServerRef = oidcServerRef;
         this.oidcClientRef = oidcClientRef;
         setSsoCookieName(oidcServerRef, oidcClientRef);
+        this.ssoServiceRef = ssoServiceRef;
 
         logoutOnHttpSessionExpire = (Boolean) newProperties.get(CFG_KEY_LOGOUT_ON_HTTP_SESSION_EXPIRE);
         singleSignonEnabled = (Boolean) newProperties.get(CFG_KEY_SINGLE_SIGN_ON_ENABLED);
@@ -578,7 +582,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     /** {@inheritDoc} */
     @Override
     public WebAuthenticatorProxy createWebAuthenticatorProxy() {
-        return new WebAuthenticatorProxy(this, null, securityServiceRef, null, oidcServerRef);
+        return new WebAuthenticatorProxy(this, null, securityServiceRef, null, oidcServerRef, ssoServiceRef);
     }
 
     @Override

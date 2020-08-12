@@ -38,6 +38,8 @@ import org.osgi.service.component.ComponentContext;
 import test.common.SharedOutputManager;
 
 import com.ibm.ws.security.filemonitor.SecurityFileMonitor;
+import com.ibm.ws.security.sso.LTPAConfiguration;
+import com.ibm.ws.security.sso.internal.LTPAKeyInfoManager;
 import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;

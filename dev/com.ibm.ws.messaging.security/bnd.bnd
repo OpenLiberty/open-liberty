@@ -45,4 +45,5 @@ instrument.disabled: true
 	com.ibm.ws.messaging.security.common;version=latest,\
 	com.ibm.ws.security.registry;version=latest,\
 	com.ibm.ws.security.token.ltpa;version=latest,\
+	com.ibm.ws.security.sso;version=latest,\
 	com.ibm.ws.messaging.comms.client;version=latest

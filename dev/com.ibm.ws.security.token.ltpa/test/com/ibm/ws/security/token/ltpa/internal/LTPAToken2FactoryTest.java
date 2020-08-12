@@ -30,6 +30,7 @@ import com.ibm.websphere.security.auth.TokenCreationFailedException;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAPrivateKey;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAPublicKey;
+import com.ibm.ws.security.sso.internal.LTPAKeyInfoManager;
 import com.ibm.wsspi.security.ltpa.Token;
 import com.ibm.wsspi.security.ltpa.TokenFactory;
 

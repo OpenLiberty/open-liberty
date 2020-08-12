@@ -24,6 +24,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.crypto.ltpakeyutil.KeyEncryptor;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyFileUtility;
+import com.ibm.ws.security.sso.LTPAKeyInfo;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 import com.ibm.wsspi.kernel.service.utils.TimestampUtils;
@@ -46,7 +47,7 @@ import com.ibm.wsspi.kernel.service.utils.TimestampUtils;
  * HlYYOHnLtmcWYQOPseqn638nkRWVpVsayIWx9jonjFJx+vbsi5ah3volxurVWZe/AQAB
  * </pre>
  */
-public class LTPAKeyInfoManager {
+public class LTPAKeyInfoManager implements LTPAKeyInfo {
 
     private static final TraceComponent tc = Tr.register(LTPAKeyInfoManager.class);
 
@@ -95,6 +96,7 @@ public class LTPAKeyInfoManager {
      * @param keyPassword The password of the LTPA keys
      * @throws IOException
      */
+    @Override
     @SuppressWarnings("deprecation")
     public synchronized final void prepareLTPAKeyInfo(WsLocationAdmin locService, String keyImportFile, @Sensitive byte[] keyPassword) throws Exception {
         if (!this.importFileCache.contains(keyImportFile)) {
@@ -201,6 +203,7 @@ public class LTPAKeyInfoManager {
      *            ${App.root}/config
      * @return The LTPA secret key
      */
+    @Override
     @Sensitive
     public final byte[] getSecretKey(String keyImportFile) {
         return this.keyCache.get(keyImportFile + SECRETKEY);
@@ -213,6 +216,7 @@ public class LTPAKeyInfoManager {
      *            ${App.root}/config
      * @return The LTPA private key
      */
+    @Override
     @Sensitive
     public final byte[] getPrivateKey(String keyImportFile) {
         return this.keyCache.get(keyImportFile + PRIVATEKEY);
@@ -225,6 +229,7 @@ public class LTPAKeyInfoManager {
      *            ${App.root}/config
      * @return The LTPA public key
      */
+    @Override
     public final byte[] getPublicKey(String keyImportFile) {
         return this.keyCache.get(keyImportFile + PUBLICKEY);
     }

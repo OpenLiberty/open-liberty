@@ -17,9 +17,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.audit.AuditEvent;
@@ -28,10 +25,10 @@ import com.ibm.ws.security.authentication.AuthenticationData;
 import com.ibm.ws.security.authentication.AuthenticationException;
 import com.ibm.ws.security.authentication.AuthenticationService;
 import com.ibm.ws.security.authentication.WSAuthenticationData;
-import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
+//import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.authentication.utility.JaasLoginConfigConstants;
 import com.ibm.ws.security.jwtsso.token.proxy.JwtSSOTokenHelper;
-import com.ibm.ws.security.token.LtpaAuthFilterRef;
+import com.ibm.ws.security.sso.SSOService;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.AuthenticateApi;
 import com.ibm.ws.webcontainer.security.AuthenticationResult;
@@ -48,7 +45,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 /**
  * This class perform authentication for web request using single sign on cookie.
  */
-@Component(service = WebAuthenticator.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
+//@Component(service = WebAuthenticator.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
 public class SSOAuthenticator implements WebAuthenticator {
     public static final String DEFAULT_SSO_COOKIE_NAME = "LtpaToken2";
     private static final String Authorization_Header = "Authorization";
@@ -58,15 +55,16 @@ public class SSOAuthenticator implements WebAuthenticator {
     private static final String ACCESS_TOKEN = "access_token";
     private static final String LTPA_OID = "oid:1.3.18.0.2.30.2";
     private static final String JWT_OID = "oid:1.3.18.0.2.30.3"; // ?????
-    public final static String KEY_FILTER = "authenticationFilter";
+//    public final static String KEY_FILTER = "authenticationFilter";
 
     private static final TraceComponent tc = Tr.register(SSOAuthenticator.class);
     private final AuthenticationService authenticationService;
     private final WebAppSecurityConfig webAppSecurityConfig;
     private final SSOCookieHelper ssoCookieHelper;
     private final String challengeType;
+    AtomicServiceReference<SSOService> ssoServiceRef;
 
-    protected final AtomicServiceReference<AuthenticationFilter> authFilterServiceRef = new AtomicServiceReference<AuthenticationFilter>(KEY_FILTER);
+//    protected final AtomicServiceReference<AuthenticationFilter> authFilterServiceRef = new AtomicServiceReference<AuthenticationFilter>(KEY_FILTER);
 
     /**
      * @param authenticationServ
@@ -75,10 +73,12 @@ public class SSOAuthenticator implements WebAuthenticator {
     public SSOAuthenticator(AuthenticationService authenticationService,
                             SecurityMetadata securityMetadata,
                             WebAppSecurityConfig webAppSecurityConfig,
-                            SSOCookieHelper ssoCookieHelper) {
+                            SSOCookieHelper ssoCookieHelper,
+                            AtomicServiceReference<SSOService> ssoServiceRef) {
         this.authenticationService = authenticationService;
         this.webAppSecurityConfig = webAppSecurityConfig;
         this.ssoCookieHelper = ssoCookieHelper;
+        this.ssoServiceRef = ssoServiceRef;
 
         LoginConfiguration loginConfig = securityMetadata == null ? null : securityMetadata.getLoginConfiguration();
         challengeType = loginConfig == null ? null : loginConfig.getAuthenticationMethod();
@@ -333,14 +333,14 @@ public class SSOAuthenticator implements WebAuthenticator {
     /*
      */
     protected boolean isAuthFilterAccept(HttpServletRequest req) {
-        AuthenticationFilter authFilter = LtpaAuthFilterRef.getLtpaAuthFiler();
+//        AuthenticationFilter authFilter = null;
 //        AuthenticationFilter authFilter = authFilterServiceRef.
 //        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 //            Tr.debug(tc, "authFilter:" + authFilter);
 //        }
-        if (authFilter != null) {
-            return authFilter.isAccepted(req);
-        }
+//        if (authFilter != null) {
+//            return authFilter.isAccepted(req);
+//        }
 //        if (tc.isDebugEnabled()) {
 //            Tr.debug(tc, "Authentication filter service is not avaliale, all HTTP LTPA SSO requests will be processed");
 //        }

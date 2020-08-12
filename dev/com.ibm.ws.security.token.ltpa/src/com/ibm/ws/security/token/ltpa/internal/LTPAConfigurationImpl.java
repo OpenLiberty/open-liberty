@@ -27,15 +27,13 @@ import org.osgi.service.component.ComponentContext;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.filemonitor.FileBasedActionable;
 import com.ibm.ws.security.filemonitor.SecurityFileMonitor;
-import com.ibm.ws.security.token.LtpaAuthFilterRef;
+import com.ibm.ws.security.sso.LTPAConfiguration;
 import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
-import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 import com.ibm.wsspi.security.ltpa.TokenFactory;
 
@@ -59,13 +57,12 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     static final String DEFAULT_CONFIG_LOCATION = "${server.config.dir}/resources/security/ltpa.keys";
     static final String DEFAULT_OUTPUT_LOCATION = "${server.output.dir}/resources/security/ltpa.keys";
     static final String KEY_AUTH_FILTER_REF = "authFilterRef";
-    public final static String KEY_AUTH_FILTER = "authFilter";
+//    public static final String KEY_FILTER = "authenticationFilter";
     static protected final String KEY_SERVICE_PID = "service.pid";
     private final AtomicServiceReference<WsLocationAdmin> locationService = new AtomicServiceReference<WsLocationAdmin>(KEY_LOCATION_SERVICE);
     private final AtomicServiceReference<ExecutorService> executorService = new AtomicServiceReference<ExecutorService>(KEY_EXECUTOR_SERVICE);
     private final AtomicServiceReference<LTPAKeysChangeNotifier> ltpaKeysChangeNotifierService = new AtomicServiceReference<LTPAKeysChangeNotifier>(KEY_CHANGE_SERVICE);
-//    private final AtomicServiceReference<AuthenticationFilter> authFilterServiceRef = new AtomicServiceReference<AuthenticationFilter>(KEY_FILTER);
-    static protected final ConcurrentServiceReferenceMap<String, AuthenticationFilter> authFilterServiceRef = new ConcurrentServiceReferenceMap<String, AuthenticationFilter>(KEY_AUTH_FILTER);
+//    protected final AtomicServiceReference<AuthenticationFilter> authFilterServiceRef = new AtomicServiceReference<>(KEY_FILTER);
     private ServiceRegistration<LTPAConfiguration> registration = null;
     private volatile ComponentContext cc = null;
     private LTPAKeyCreateTask createTask;
@@ -88,12 +85,10 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
 //            Tr.debug(tc, "authFilter id: " + ref.getProperty(AuthFilterConfig.KEY_ID) + " authFilterRef: " + ref);
 //        }
 //        authFilterServiceRef.setReference(ref);
-//        LtpaAuthFilterRef.setLtpaAuthFilerRef(authFilterServiceRef);
 //    }
 //
 //    protected void updatedAuthenticationFilter(ServiceReference<AuthenticationFilter> ref) {
 //        authFilterServiceRef.setReference(ref);
-//        LtpaAuthFilterRef.setLtpaAuthFilerRef(authFilterServiceRef);
 //    }
 //
 //    protected void unsetAuthenticationFilter(ServiceReference<AuthenticationFilter> ref) {
@@ -101,45 +96,11 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
 //            Tr.debug(tc, "authFilter id: " + ref.getProperty(AuthFilterConfig.KEY_ID) + " authFilterRef: " + ref);
 //        }
 //        authFilterServiceRef.unsetReference(ref);
-//        LtpaAuthFilterRef.setLtpaAuthFilerRef(null);
 //    }
-
-    protected void setAuthFilter(ServiceReference<AuthenticationFilter> ref) {
-        String pid = (String) ref.getProperty(KEY_SERVICE_PID);
-        synchronized (authFilterServiceRef) {
-            authFilterServiceRef.putReference(pid, ref);
-        }
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, " setAuthFilter pid:" + pid);
-        }
-        LtpaAuthFilterRef.setLtpaAuthFilerRef(getAuthFilter(pid));
-    }
-
-    protected void updatedAuthFilter(ServiceReference<AuthenticationFilter> ref) {
-        String pid = (String) ref.getProperty(KEY_SERVICE_PID);
-        synchronized (authFilterServiceRef) {
-            authFilterServiceRef.putReference(pid, ref);
-        }
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, " updatedAuthFilter pid:" + pid);
-        }
-        LtpaAuthFilterRef.setLtpaAuthFilerRef(getAuthFilter(pid));
-    }
-
-    protected void unsetAuthFilter(ServiceReference<AuthenticationFilter> ref) {
-        String pid = (String) ref.getProperty(KEY_SERVICE_PID);
-        synchronized (authFilterServiceRef) {
-            authFilterServiceRef.removeReference(pid, ref);
-        }
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, " unsetAuthFilter pid:" + pid);
-        }
-        LtpaAuthFilterRef.setLtpaAuthFilerRef(null);
-    }
-
-    static public AuthenticationFilter getAuthFilter(String pid) {
-        return authFilterServiceRef.getService(pid);
-    }
+//
+//    public AuthenticationFilter getAuthFilter(String pid) {
+//        return authFilterServiceRef.getService();
+//    }
 
     protected void setExecutorService(ServiceReference<ExecutorService> ref) {
         executorService.setReference(ref);
@@ -170,7 +131,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         locationService.activate(context);
         executorService.activate(context);
         ltpaKeysChangeNotifierService.activate(context);
-        authFilterServiceRef.activate(cc);
+//        authFilterServiceRef.activate(cc);
 
         loadConfig(props);
         setupRuntimeLTPAInfrastructure();
@@ -304,7 +265,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         executorService.deactivate(context);
         locationService.deactivate(context);
         ltpaKeysChangeNotifierService.deactivate(context);
-        authFilterServiceRef.deactivate(cc);
+//        authFilterServiceRef.deactivate(cc);
     }
 
     protected void unsetFileMonitorRegistration() {
@@ -420,6 +381,11 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     @Override
     public long getTokenExpiration() {
         return keyTokenExpiration;
+    }
+
+    @Override
+    public String getAuthFilterId() {
+        return authFilterRef;
     }
 
     /**

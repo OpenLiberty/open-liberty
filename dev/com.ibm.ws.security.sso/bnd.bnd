@@ -1,0 +1,54 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: WAS Security SSO 1.0
+Bundle-SymbolicName: com.ibm.ws.security.sso
+Bundle-Description: WAS Security SSO 1.0, version=${bVersion}
+
+WS-TraceGroup: SSO
+
+# For each exported package, create (in that package) a package-info.java...
+# file, and place an @version javadoc tag in package-level javadoc. 
+# Append ";provide:=true" if this bundle also provides an implementation
+# for the exported API.
+ 
+Export-Package: com.ibm.ws.security.sso;provide:=true
+
+Import-Package:  !*.internal.*, *
+         
+#Private-Package: com.ibm.ws.security.sso.internal.*
+
+#Include-Resource:  OSGI-INF=resources/OSGI-INF
+
+#IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+    
+-dsannotations: com.ibm.ws.security.sso.SSOService
+
+-dsannotations-inherit: true
+
+-buildpath: \
+	com.ibm.ws.security;version=latest,\
+	com.ibm.ws.security.token;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.ws.security.authentication.filter;version=latest,\
+	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.filemonitor,\
+	com.ibm.websphere.appserver.spi.kernel.service,\
+	com.ibm.ws.common.encoder,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
+
+#instrument.classesExcludes: com/ibm/ws/security/sso/internal/resources/SsoMessages*.class

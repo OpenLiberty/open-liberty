@@ -35,6 +35,7 @@ Service-Component: \
     configuration-policy:=optional; \
     immediate:=true; \
     securityService='com.ibm.ws.security.SecurityService(Authentication=*)'; \
+    ssoService=com.ibm.ws.security.sso.SSOService; \
     taiService=com.ibm.ws.security.authentication.tai.TAIService; \
     interceptorService='com.ibm.wsspi.security.tai.TrustAssociationInterceptor'; \
     webAuthenticator=com.ibm.ws.webcontainer.security.WebAuthenticator; \
@@ -48,7 +49,7 @@ Service-Component: \
     multiple:='interceptorService, webAuthenticator, unprotectedResourceService, webAppSecurityConfigChangeListener'; \
     greedy:='interceptorService, webAuthenticator, unprotectedResourceService,authenticatorFactory'; \
     optional:='taiService,interceptorService,webAuthenticator,jaccService,unprotectedResourceService,webAppSecurityConfigChangeListener'; \
-    dynamic:='taiService,interceptorService,webAuthenticator,jaccService,unprotectedResourceService,authenticatorFactory,webAppSecurityConfigChangeListener'; \
+    dynamic:='ssoService,taiService,interceptorService,webAuthenticator,jaccService,unprotectedResourceService,authenticatorFactory,webAppSecurityConfigChangeListener'; \
     properties:="service.vendor=IBM", \
   com.ibm.ws.webcontainer.security.ServletStartedListener; \
     implementation:=com.ibm.ws.webcontainer.security.ServletStartedListener; \
