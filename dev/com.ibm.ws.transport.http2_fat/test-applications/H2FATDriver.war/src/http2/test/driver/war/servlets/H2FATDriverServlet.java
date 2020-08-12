@@ -2627,7 +2627,6 @@ public class H2FATDriverServlet extends FATServlet {
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
         h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
-        addFirstExpectedHeaders(h2Client);
 
         byte[] debugData = "CONTINUATION Frame Received when not in a Continuation State".getBytes();
         FrameGoAwayClient errorFrame = new FrameGoAwayClient(0, debugData, new int[] { STREAM_CLOSED, PROTOCOL_ERROR }, new int[] { 1, 3 });
