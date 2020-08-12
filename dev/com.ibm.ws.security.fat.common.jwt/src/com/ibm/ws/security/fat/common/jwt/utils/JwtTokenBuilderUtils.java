@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -75,13 +75,19 @@ public class JwtTokenBuilderUtils {
     }
 
     public void updateBuilderWithRSASettings(JWTTokenBuilder builder, String overrideKeyFile) throws Exception {
-
         String keyFile = defaultKeyFile;
         // if an override wasn't given, use the default key file
         if (overrideKeyFile != null) {
             keyFile = overrideKeyFile;
         }
-        builder.setAlorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA256);
+
+        updateBuilderWithRSASettings(builder, AlgorithmIdentifiers.RSA_USING_SHA256, keyFile);
+    }
+
+    public void updateBuilderWithRSASettings(JWTTokenBuilder builder, String alg, String keyFile) throws Exception {
+
+        Log.info(thisClass, "updateBuilderWithRSASettings", "alg: " + alg + " keyFile: " + keyFile);
+        builder.setAlorithmHeaderValue(alg);
         builder.setRSAKey(keyFile);
     }
 }
