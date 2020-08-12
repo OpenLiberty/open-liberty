@@ -627,7 +627,7 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
     public String firstTwoWayMessageReceived = null;
     public String lastTwoWayMessageReceived = null;
 
-    public String grpcTwoWayStreamApp() {
+    public String grpcTwoWayStreamApp(boolean asyncThread) {
 
         firstTwoWayMessageReceived = null;
         lastTwoWayMessageReceived = null;
@@ -635,36 +635,63 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         replyAfterClientStream = "Null";
         errorMessage = null;
         errorCaught = null;
+        StreamObserver<StreamRequestA> twoWayStreamAX = null;
 
         log.info("Producer: grpcTwoWayStreamApp(): Entered");
         // This if for sending a stream of data to the server and then getting a stream reply
-        StreamObserver<StreamRequestA> twoWayStreamAX = _producerAsyncStub.twoWayStreamA(new StreamObserver<StreamReplyA>() {
-            @Override
-            public void onNext(StreamReplyA response) {
-                if (firstTwoWayMessageReceived == null) {
-                    firstTwoWayMessageReceived = response.toString();
-                    lastTwoWayMessageReceived = response.toString();
-                } else {
-                    lastTwoWayMessageReceived = response.toString();
+        if (asyncThread == false) {
+            twoWayStreamAX = _producerAsyncStub.twoWayStreamA(new StreamObserver<StreamReplyA>() {
+                @Override
+                public void onNext(StreamReplyA response) {
+                    if (firstTwoWayMessageReceived == null) {
+                        firstTwoWayMessageReceived = response.toString();
+                        lastTwoWayMessageReceived = response.toString();
+                    } else {
+                        lastTwoWayMessageReceived = response.toString();
+                    }
                 }
 
-            }
+                @Override
+                public void onError(Throwable t) {
+                    // Error on the reply from the server service
+                    errorMessage = t.getMessage();
+                    log.info("grpcTwoWayStreamApp: onError received from server service: " + errorMessage);
+                    latch.countDown();
+                }
 
-            @Override
-            public void onError(Throwable t) {
-                // Error on the reply from the server service
-                errorCaught = t;
-                errorMessage = errorCaught.getMessage();
-                log.info("grpcTwoWayStreamApp: onError received from server service: " + errorMessage);
-                latch.countDown();
-            }
+                @Override
+                public void onCompleted() {
+                    log.info("grpcTwoWayStreamApp: onCompleted received from server service");
+                    latch.countDown();
+                }
+            });
+        } else {
+            twoWayStreamAX = _producerAsyncStub.twoWayStreamAsyncThread(new StreamObserver<StreamReplyA>() {
+                @Override
+                public void onNext(StreamReplyA response) {
+                    if (firstTwoWayMessageReceived == null) {
+                        firstTwoWayMessageReceived = response.toString();
+                        lastTwoWayMessageReceived = response.toString();
+                    } else {
+                        lastTwoWayMessageReceived = response.toString();
+                    }
+                }
 
-            @Override
-            public void onCompleted() {
-                log.info("grpcTwoWayStreamApp: onCompleted received from server service");
-                latch.countDown();
-            }
-        });
+                @Override
+                public void onError(Throwable t) {
+                    // Error on the reply from the server service
+                    errorMessage = t.getMessage();
+                    log.info("grpcTwoWayStreamApp: onError received from server service: " + errorMessage);
+                    latch.countDown();
+                }
+
+                @Override
+                public void onCompleted() {
+                    log.info("grpcTwoWayStreamApp: onCompleted received from server service");
+                    latch.countDown();
+                }
+            });
+        }
 
         // client streaming
         int numberOfMessages = 200;
@@ -672,8 +699,8 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         StreamRequestA nextRequest = null;
 
         String nextMessage = null;
-        String firstMessage = "This is the first Message...";
-        String lastMessage = "And this is the last Message";
+        String firstMessage = "This is the first Response Message..."; // don't change, hardcode to match string in StoreProducerService
+        String lastMessage = "And this is the last Response Message"; // don't change, hardcode to match string in StoreProducerService
 
         //String s5chars = "12345";
         String s50chars = "12345678901234567890123456789012345678901234567890";
@@ -721,6 +748,7 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         // test that this is what was expected:
         int i1 = firstTwoWayMessageReceived.indexOf(firstMessage);
         int i2 = lastTwoWayMessageReceived.indexOf(lastMessage);
+        log.info("grpcTwoWayStreamApp: i1: " + i1 + " i2: " + i2);
 
         // change these two parms to print more of the string
         int maxStringLength = 32768;
@@ -733,12 +761,13 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         }
 
         if (errorMessage != null) {
+            log.info("grpcTwoWayStreamApp: Error received: " + errorMessage);
             return (errorMessage);
         } else if ((i1 >= 0) && (i2 >= 0)) {
             log.info("grpcTwoWayStreamApp: success, firstMessage index at: " + i1 + " lastMessage index at: " + i2);
             return ("success");
         } else {
-            return ("grpcTwoWayStreamApp: failed, incorrect response from service");
+            return ("grpcTwoWayStreamApp: failed, incorrect response from service. i1: " + i1 + " i2: " + i2);
         }
     }
 }
