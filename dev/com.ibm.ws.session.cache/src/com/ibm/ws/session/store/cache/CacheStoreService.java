@@ -216,7 +216,6 @@ public class CacheStoreService implements Introspector, SessionStoreService {
                 // For embedded Infinispan, augment existing config file to recognize cache names used by HTTP Session Persistence,
                 // or create a new config file if absent altogether.
                 URI uri = "org.infinispan.jcache.embedded.JCachingProvider".equals(cachingProviderClassName)
-                                && Boolean.TRUE.equals(configurationProperties.get("enableBetaSupportForInfinispan")) // TODO remove temporary gating code once ready
                                 ? generateOrUpdateInfinispanConfig(configuredURI)
                                                 : configuredURI;
                                 
