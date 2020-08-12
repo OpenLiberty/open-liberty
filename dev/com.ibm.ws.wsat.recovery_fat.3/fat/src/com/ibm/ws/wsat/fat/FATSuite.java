@@ -13,13 +13,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import componenttest.custom.junit.runner.AlwaysPassesTest;
+import com.ibm.ws.wsat.fat.tests.LPSTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-	AlwaysPassesTest.class,
-	SingleRecoveryTest.class,
-	MultiRecoveryTest.class,
+	LPSTest.class,
 })
 public class FATSuite {
 
