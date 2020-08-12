@@ -20,7 +20,7 @@
 		<feature>ssl-1.0</feature>
 		<feature>jwt-1.0</feature>
 	</featureManager>
-
+	
 	<include location="../fatTestPorts.xml" />
 
 	<distributedMap id="gRPCDistMap" />
