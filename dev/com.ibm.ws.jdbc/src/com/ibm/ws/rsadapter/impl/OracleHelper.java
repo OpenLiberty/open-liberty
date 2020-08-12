@@ -43,14 +43,14 @@ import java.util.logging.XMLFormatter;
 
 import javax.resource.ResourceException;
 import javax.sql.CommonDataSource;
-import javax.sql.PooledConnection;
+import javax.sql.DataSource;
 import javax.transaction.xa.XAException;
-
-import org.ietf.jgss.GSSCredential;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.kernel.service.util.JavaInfo;
+import com.ibm.ws.kernel.service.util.JavaInfo.Vendor;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.impl.WSManagedConnectionFactoryImpl.KerbUsage;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcTracer;
@@ -777,7 +777,7 @@ public class OracleHelper extends DatabaseHelper {
     
     private void setKerberosDatasourceProperties(CommonDataSource ds) throws ResourceException {
         try {
-            if (getConnectionProperties == null) {
+            if (setConnectionProperties == null) {
                 getConnectionProperties = lookup.findVirtual(ds.getClass(), "getConnectionProperties", MethodType.methodType(Properties.class));
                 setConnectionProperties = lookup.findVirtual(ds.getClass(), "setConnectionProperties", MethodType.methodType(void.class, Properties.class));
             }
@@ -800,6 +800,21 @@ public class OracleHelper extends DatabaseHelper {
             throw new ResourceException(e);
         }
     }
+    
+    @Override
+    public Connection getConnectionFromDatasource(DataSource ds, KerbUsage useKerb, Object gssCredential) throws SQLException {
+        
+        if (useKerb != KerbUsage.NONE) {
+            try {
+                checkIBMJava8();
+                setKerberosDatasourceProperties(ds);
+            } catch (ResourceException ex) {
+                throw AdapterUtil.toSQLException(ex);
+            }
+        }
+        
+        return super.getConnectionFromDatasource(ds, useKerb, gssCredential);
+    }
 
     @Override
     public ConnectionResults getPooledConnection(final CommonDataSource ds, String userName, String password, final boolean is2Phase, 
@@ -809,16 +824,25 @@ public class OracleHelper extends DatabaseHelper {
         if (isTraceOn && tc.isEntryEnabled()) 
             Tr.entry(this, tc, "getPooledConnection", AdapterUtil.toString(ds), userName, "******", is2Phase ? "two-phase" : "one-phase",
                      cri, useKerberos, gssCredential);
-
-        ConnectionResults results;
+        
         if (useKerberos != KerbUsage.NONE) {
+            checkIBMJava8();
             setKerberosDatasourceProperties(ds);
         }
-        results = super.getPooledConnection(ds, userName, password, is2Phase, cri, useKerberos, gssCredential);
+        ConnectionResults results = super.getPooledConnection(ds, userName, password, is2Phase, cri, useKerberos, gssCredential);
 
         if (isTraceOn && tc.isEntryEnabled()) 
             Tr.exit(this, tc, "getPooledConnection", results);
         return results;
+    }
+    
+    private static void checkIBMJava8() throws ResourceException {
+        if (JavaInfo.majorVersion() == 8 && JavaInfo.vendor() == Vendor.IBM) {
+            // The Oracle JDBC driver does not support kerberos authentication on IBM JDK 8 because
+            // it has dependencies to the internal Sun security APIs which don't exist in IBM JDK 8
+            Tr.error(tc, "KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED");
+            throw new ResourceException(AdapterUtil.getNLSMessage("KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED"));
+        }
     }
 
     /**

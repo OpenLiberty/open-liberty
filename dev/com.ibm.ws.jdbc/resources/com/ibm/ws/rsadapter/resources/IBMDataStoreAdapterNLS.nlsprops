@@ -648,5 +648,9 @@ KERBEROS_NOT_SUPPORTED_WARNING.useraction= Disable Kerberos, or use a DB2 backen
 
 # 9544-9548 deleted
 
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED=DSRA9549E: Using the IBM Java 8 SDK with an Oracle database is not supported. The Oracle JDBC driver only supports Kerberos authentication using the default security APIs available in OpenJDK, OpenJ9, or other similar SDKs.
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED.explanation=Using the IBM Java 8 SDK with an Oracle database is not supported. The Oracle JDBC driver only supports Kerberos authentication using the default security APIs available in OpenJDK, OpenJ9, or other similar SDKs.
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED.useraction=Disable Kerberos authentication for the Oracle data source, or switch to a different Java SDK besides the IBM Java 8 SDK.
+
 # 9600-9603 deleted 
 # 9900 deleted

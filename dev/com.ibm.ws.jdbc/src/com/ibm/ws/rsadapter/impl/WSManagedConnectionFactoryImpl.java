@@ -816,7 +816,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "Getting a connection using Datasource. Is UCP? " + isUCP);
-            conn = getConnectionUsingDS(userName, password, cri);
+            conn = getConnectionUsingDS(userName, password, cri, useKerb, credential);
             results = new ConnectionResults(null, conn);
         } else if (Driver.class.equals(type)) {
             if (trace && tc.isDebugEnabled())
@@ -974,7 +974,8 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
      * @return a Connection.
      * @throws ResourceException
      */
-    private final Connection getConnectionUsingDS(String userN, String password, final WSConnectionRequestInfoImpl cri) throws ResourceException 
+    private final Connection getConnectionUsingDS(String userN, String password, final WSConnectionRequestInfoImpl cri,
+                                                  KerbUsage useKerb, Object gssCredential) throws ResourceException 
     {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
@@ -986,7 +987,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         Connection conn = null;
         boolean isConnectionSetupComplete = false;
         try {
-            conn = AccessController.doPrivileged(new PrivilegedExceptionAction<Connection>() {
+            conn = AccessController.doPrivilegedWithCombiner(new PrivilegedExceptionAction<Connection>() {
                 public Connection run() throws Exception {
                     boolean buildConnection = cri.ivShardingKey != null || cri.ivSuperShardingKey != null;
                     if (!buildConnection && dataSourceOrDriver instanceof XADataSource) {
@@ -996,9 +997,13 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
                         return user == null ? ((XADataSource) dataSourceOrDriver).getXAConnection().getConnection()
                                             : ((XADataSource) dataSourceOrDriver).getXAConnection(user, pwd).getConnection();
                     } else {
-                        return buildConnection ? jdbcRuntime.buildConnection((DataSource) dataSourceOrDriver, user, pwd, cri)
-                                        : user == null ? ((DataSource) dataSourceOrDriver).getConnection()
-                                                        : ((DataSource) dataSourceOrDriver).getConnection(user, pwd);
+                        if (buildConnection) {
+                            return jdbcRuntime.buildConnection((DataSource) dataSourceOrDriver, user, pwd, cri);
+                        } else if (user == null) {
+                            return helper.getConnectionFromDatasource((DataSource) dataSourceOrDriver, useKerb, gssCredential);
+                        } else {
+                            return ((DataSource) dataSourceOrDriver).getConnection(user, pwd);
+                        }
                     }
                 }
             });

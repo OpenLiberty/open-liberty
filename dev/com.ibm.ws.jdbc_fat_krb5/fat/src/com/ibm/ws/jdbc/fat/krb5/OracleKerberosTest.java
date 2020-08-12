@@ -18,7 +18,10 @@ import java.util.List;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.rules.TestRule;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
+import org.junit.runners.model.Statement;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
@@ -30,6 +33,8 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.JavaInfo;
+import componenttest.topology.impl.JavaInfo.Vendor;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import jdbc.krb5.oracle.web.OracleKerberosTestServlet;
@@ -50,6 +55,9 @@ public class OracleKerberosTest extends FATServletClient {
 
     @ClassRule
     public static KerberosPlatformRule skipRule = new KerberosPlatformRule();
+
+    @ClassRule
+    public static IBMJava8Rule skipOnIBMJava8 = new IBMJava8Rule();
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -96,6 +104,35 @@ public class OracleKerberosTest extends FATServletClient {
 
         if (firstError != null)
             throw firstError;
+    }
+
+    private static class IBMJava8Rule implements TestRule {
+
+        @Override
+        public Statement apply(Statement stmt, Description desc) {
+            return new Statement() {
+                @Override
+                public void evaluate() throws Throwable {
+                    if (shouldRun(desc)) {
+                        stmt.evaluate();
+                    }
+                }
+            };
+        }
+
+        public static boolean shouldRun(Description desc) {
+            Class<?> c = desc == null ? KerberosPlatformRule.class : desc.getTestClass();
+            String m = (desc == null || desc.getMethodName() == null) ? "shouldRun" : desc.getMethodName();
+
+            JavaInfo java = JavaInfo.forCurrentVM();
+            if (java.majorVersion() == 8 && java.vendor() == Vendor.IBM) {
+                Log.info(c, m, "Skipping tests because Oracle JDBC driver does not work with IBM JDK 8");
+                return false;
+            }
+
+            return true;
+        }
+
     }
 
 }
