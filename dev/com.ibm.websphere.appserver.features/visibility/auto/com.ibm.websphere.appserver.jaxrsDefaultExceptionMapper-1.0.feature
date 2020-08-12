@@ -8,5 +8,5 @@ IBM-Provision-Capability: \
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=com.ibm.websphere.appserver.jaxrs-2.0)(osgi.identity=com.ibm.websphere.appserver.jaxrs-2.1)))"
 IBM-Install-Policy: when-satisfied
 -bundles=com.ibm.ws.jaxrs.defaultexceptionmapper
-kind=noship
+kind=beta
 edition=core

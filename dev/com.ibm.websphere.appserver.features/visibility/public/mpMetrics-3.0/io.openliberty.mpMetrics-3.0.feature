@@ -18,5 +18,5 @@ Subsystem-Name: MicroProfile Metrics 3.0
  io.openliberty.microprofile.metrics.internal.cdi.3.0, \
  io.openliberty.microprofile.metrics.internal.private, \
  io.openliberty.microprofile.metrics.internal.public
-kind=noship
-edition=full
+kind=beta
+edition=core
