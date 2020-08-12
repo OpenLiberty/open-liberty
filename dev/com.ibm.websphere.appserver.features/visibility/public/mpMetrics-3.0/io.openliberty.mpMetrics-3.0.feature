@@ -12,11 +12,11 @@ Subsystem-Name: MicroProfile Metrics 3.0
  com.ibm.websphere.appserver.restHandler-1.0, \
  com.ibm.websphere.appserver.monitor-1.0, \
  com.ibm.websphere.appserver.servlet-4.0; ibm.tolerates:=3.1,\
- io.openliberty.mpConfig-2.0
+ com.ibm.websphere.appserver.mpConfig-1.4
 -bundles=com.ibm.ws.microprofile.metrics.common, \
  io.openliberty.microprofile.metrics.internal.3.0, \
  io.openliberty.microprofile.metrics.internal.cdi.3.0, \
  io.openliberty.microprofile.metrics.internal.private, \
  io.openliberty.microprofile.metrics.internal.public
-kind=noship
-edition=full
+kind=beta
+edition=core
