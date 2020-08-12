@@ -48,6 +48,7 @@ public class StoreConsumerService extends AppConsumerServiceGrpc.AppConsumerServ
     /**
      * runtime exception as Status.NOTFOUND
      *
+     * The Auth header is sent via grpcTarget
      * This is secured with JWT token, openidconnectclient will auth the user
      */
     @Override
@@ -55,7 +56,45 @@ public class StoreConsumerService extends AppConsumerServiceGrpc.AppConsumerServ
     public void getAllAppNames(com.google.protobuf.Empty request,
                                io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.NameResponse> responseObserver) {
 
-        final String m = "getAllAppNames";
+        this.doAppNamesWork("getAllAppNames", responseObserver);
+
+    }
+
+    /**
+     * runtime exception as Status.NOTFOUND
+     * The Auth header is sent via added with CallCredential
+     *
+     * This is secured with JWT token, openidconnectclient will auth the user
+     */
+    @Override
+    @RolesAllowed({ "students" })
+    public void getAllAppNamesAuthHeaderViaCallCred(com.google.protobuf.Empty request,
+                                                    io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.NameResponse> responseObserver) {
+
+        this.doAppNamesWork("getAllAppNamesAuthHeaderViaCallCred", responseObserver);
+
+    }
+
+    /**
+     * runtime exception as Status.NOTFOUND
+     * The Auth header is sent via Client Intercepter
+     *
+     * This is secured with JWT token, openidconnectclient will auth the user
+     */
+    @Override
+    @RolesAllowed({ "students" })
+    public void getAllAppNamesAuthHeaderViaClientInterceptor(com.google.protobuf.Empty request,
+                                                             io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.NameResponse> responseObserver) {
+
+        this.doAppNamesWork("getAllAppNamesAuthHeaderViaClientInterceptor", responseObserver);
+
+    }
+
+    /**
+     * @param m
+     * @param responseObserver
+     */
+    private void doAppNamesWork(String m, io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.NameResponse> responseObserver) {
 
         log.info(m + " ------------------------------------------------------------");
         log.info(" -----------------------" + m + " START-----------------------");

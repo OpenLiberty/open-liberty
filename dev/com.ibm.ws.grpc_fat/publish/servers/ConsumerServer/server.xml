@@ -78,7 +78,7 @@
 
 	<logging
 		traceSpecification="*=info=enabled:io.openliberty.grpc*=all:com.ibm.testapp.g3store*=all"
-		maxFileSize="40" maxFiles="20" traceFormat="BASIC" />
+		maxFileSize="200" maxFiles="4" traceFormat="BASIC" />
 		
 		
 	<jwtBuilder

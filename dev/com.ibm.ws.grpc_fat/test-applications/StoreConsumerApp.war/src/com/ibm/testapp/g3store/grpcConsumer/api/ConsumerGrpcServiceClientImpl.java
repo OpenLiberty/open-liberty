@@ -95,6 +95,47 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
     }
 
     /**
+     * @return
+     * @throws NotFoundException
+     */
+    public List<String> getAllAppNameList_Auth_CallCred() throws NotFoundException {
+
+        List<String> nameList = null;
+        try {
+
+            if (log.isLoggable(Level.FINE)) {
+                log.fine("Consumer: getAllAppNameList_Auth_CallCred: send grpc request");
+            }
+            // get the data back from grpc service
+            NameResponse resp = get_consumerService()
+                            .withDeadlineAfter(deadlineMs, TimeUnit.SECONDS)
+                            .getAllAppNamesAuthHeaderViaCallCred(Empty.getDefaultInstance());
+
+            if (log.isLoggable(Level.FINE)) {
+                log.fine("Consumer: getAllAppNameList_Auth_CallCred: Received respnse, number of apps = " + resp.getNamesCount());
+            }
+
+            nameList = resp.getNamesList();
+
+        } catch (StatusRuntimeException e) {
+            if (e.getStatus().getCode() == Status.Code.NOT_FOUND) {
+                e.printStackTrace();
+                throw new NotFoundException(e.getMessage());
+            }
+            if (e.getStatus().getCode() == Status.Code.UNAUTHENTICATED) {
+                e.printStackTrace();
+                throw new NotFoundException(e.getMessage());
+            }
+
+        } catch (Exception e) {
+            log.severe("Consumer: getAllAppNameList_Auth_CallCred : An exception is reported on getAllNames request");
+            e.printStackTrace();
+        }
+
+        return nameList;
+    }
+
+    /**
      * @param appName
      * @return
      */

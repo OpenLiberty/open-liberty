@@ -15,6 +15,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -168,6 +170,31 @@ public class ConsumerUtils {
      */
     private void printRequestBody(WebRequest request, String testName) {
         _log.info("Request body: " + request.getRequestBody());
+    }
+
+    /**
+     * @param key
+     * @return
+     */
+    public static String getSysProp(String key) {
+        return AccessController.doPrivileged(
+                                             (PrivilegedAction<String>) () -> System.getProperty(key));
+    }
+
+    /**
+     * @return
+     */
+    public static String getServerConfigFolder() {
+
+        String serverDirKey = "server.config.dir";
+
+        String base = getSysProp(serverDirKey);
+
+        if (base == null) {
+            _log.severe("no property SERVER_CONFIG_DIR defined.");
+        }
+
+        return base;
     }
 
 }
