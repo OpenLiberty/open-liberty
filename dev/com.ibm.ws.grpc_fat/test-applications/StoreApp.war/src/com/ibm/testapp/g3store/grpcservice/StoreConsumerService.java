@@ -47,44 +47,50 @@ public class StoreConsumerService extends AppConsumerServiceGrpc.AppConsumerServ
 
     /**
      * runtime exception as Status.NOTFOUND
+     *
+     * This is secured with JWT token, openidconnectclient will auth the user
      */
     @Override
+    @RolesAllowed({ "students" })
     public void getAllAppNames(com.google.protobuf.Empty request,
                                io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.NameResponse> responseObserver) {
 
         final String m = "getAllAppNames";
+
         log.info(m + " ------------------------------------------------------------");
-        log.info(m + " -----------------------getAllAppNames-----------------------");
+        log.info(" -----------------------" + m + " START-----------------------");
         log.info(m + " ----- request received by StoreConsumer grpcService to return the app names ");
 
-        AppCache cacheInstance = AppCacheFactory.getInstance();
+        try {
+            AppCache cacheInstance = AppCacheFactory.getInstance();
 
-        if (cacheInstance.getAllKeys().size() > 0) {
-            NameResponse response = NameResponse.newBuilder()
-                            .addAllNames(cacheInstance.getAllKeys())
-                            .build();
+            if (cacheInstance.getAllKeys().size() > 0) {
+                NameResponse response = NameResponse.newBuilder()
+                                .addAllNames(cacheInstance.getAllKeys())
+                                .build();
 
-            log.info(m + " -----  StoreConsumer grpcService is returning the list of app names, count = ["
-                     + response.getNamesCount() + "]");
+                log.info(m + " -----  StoreConsumer grpcService is returning the list of app names, count = ["
+                         + response.getNamesCount() + "]");
 
-            responseObserver.onNext(response);
-            responseObserver.onCompleted();
-        } else {
-            log.severe(m + "-----  StoreConsumer grpcService is returning with NOTFOUND status ");
-            responseObserver.onError(
-                                     Status.NOT_FOUND
-                                                     .withDescription("There are no apps in the cache.")
-                                                     .augmentDescription("First run the producerService to create the apps.")
-                                                     .asRuntimeException());
+                responseObserver.onNext(response);
+                responseObserver.onCompleted();
+            } else {
+                log.severe(m + "-----  StoreConsumer grpcService is returning with NOTFOUND status ");
+                responseObserver.onError(
+                                         Status.NOT_FOUND
+                                                         .withDescription("There are no apps in the cache.")
+                                                         .augmentDescription("First run the producerService to create the apps.")
+                                                         .asRuntimeException());
+            }
+        } finally {
+            log.info(" -----------------------" + m + " FINISH-----------------------");
+            log.info(m + " ------------------------------------------------------------");
         }
-
-        log.info(m + " -----------------------getAllAppNames-----------------------");
-        log.info(m + " ------------------------------------------------------------");
     }
 
     /**
      * runtime exception as Status.INVALID_ARGUMENT
-     *
+     * This is secured with Basic Auth
      */
     @Override
     @RolesAllowed({ "students", "Administrator" })
@@ -94,7 +100,7 @@ public class StoreConsumerService extends AppConsumerServiceGrpc.AppConsumerServ
         final String m = "getAppInfo";
         String name = request.getName();
         log.info(m + " ------------------------------------------------------------");
-        log.info(m + " -----------------------getAppInfo---------------------------");
+        log.info(" -----------------------" + m + " START-----------------------");
         log.info(m + " ----- request received by StoreConsumer grpcService to return the app info =" + name);
 
         AppCache cacheInstance = AppCacheFactory.getInstance();
@@ -117,7 +123,7 @@ public class StoreConsumerService extends AppConsumerServiceGrpc.AppConsumerServ
                             .asRuntimeException());
         }
 
-        log.info(m + " -----------------------getAppInfo---------------------------");
+        log.info(" -----------------------" + m + " FINISH-----------------------");
         log.info(m + " ------------------------------------------------------------");
 
     }
@@ -132,7 +138,7 @@ public class StoreConsumerService extends AppConsumerServiceGrpc.AppConsumerServ
 
         final String m = "getPrices";
         log.info(m + " ------------------------------------------------------------");
-        log.info(m + " -----------------------getPrices----------------------------");
+        log.info(" -----------------------" + m + " START-----------------------");
         log.info(m + " ----- request received by StoreConsumer grpcService to return the app price list using bidi streaming ");
 
         StreamObserver<AppNameRequest> requestObserver = new StreamObserver<AppNameRequest>() {
@@ -182,7 +188,7 @@ public class StoreConsumerService extends AppConsumerServiceGrpc.AppConsumerServ
             public void onCompleted() {
                 responseObserver.onCompleted();
                 log.info(m + " -----  StoreConsumer grpcService get Prices completed on server. ");
-                log.info(m + " -----------------------getPrices----------------------------");
+                log.info(" -----------------------" + m + " FINISH-----------------------");
                 log.info(m + " ------------------------------------------------------------");
 
             }

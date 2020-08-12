@@ -24,7 +24,7 @@
 				  httpsPort="${bvt.prop.member_1.https}"/>
 				  
 				  
-	 <keyStore id="defaultKeyStore" password="passw0rd" />
+<!-- 	 <keyStore id="defaultKeyStore" password="passw0rd" /> -->
 
 	<javaPermission className="java.security.AllPermission"
 		name="*" actions="*" />
@@ -32,12 +32,29 @@
 
 	<!-- Default SSL configuration enables trust for default certificates from 
 		the Java runtime -->
-	<ssl id="defaultSSLConfig" trustDefaultCerts="true" />
+	<!-- <ssl id="defaultSSLConfig" trustDefaultCerts="true" /> -->
+	
+	<sslDefault sslRef="DefaultSSLSettings" />
+	<ssl
+		id="DefaultSSLSettings"
+		keyStoreRef="rsa_key"
+		trustStoreRef="rsa_trust"
+		clientAuthenticationSupported="true" />
+	<keyStore
+		id="rsa_key"
+		password="Liberty"
+		type="jks"
+		location="${server.config.dir}/rsa_key.jks" />
+	<keyStore
+		id="rsa_trust"
+		password="LibertyServer"
+		type="jks"
+		location="${server.config.dir}/rsa_trust.jks" />
 
 	<basicRegistry id="basic" realm="consumerRealmBasicReg">
-		<user name="dev" password="hello" /> <!--user name="${env.BASIC_REGISTRY_USERNAME}" -->
+		<user name="dev" password="hello" /> 
 		<user name="test" password="bug" />
-		<group name="students"> <!-- group name="${env.ROLE_NAME_ADMINISTRATOR}" -->
+		<group name="students">
 			<member name="dev" />
 			<member name="test" />
 		</group>
@@ -60,15 +77,18 @@
 	</application>
 
 	<logging
-		traceSpecification="*=info=enabled:io.openliberty.grpc*=all:com.ibm.testapp.g3store*=all:TCPChannel=all"
+		traceSpecification="*=info=enabled:io.openliberty.grpc*=all:com.ibm.testapp.g3store*=all"
 		maxFileSize="40" maxFiles="20" traceFormat="BASIC" />
 		
 		
-		<jwtBuilder
-		id="defaultJWT" />
+	<jwtBuilder
+		id="defaultJWT" 
+		issuer="testIssuer"
+		 />
 		
 	<grpcTarget target="test.g3store.grpc.AppConsumerService/getAppInfo" headersToPropagate="authorization"/>
-	<grpcTarget target="test.g3store.grpc.AppConsumerService/getAllAppNames" authnToken="jwt"/>
+	<grpcTarget target="test.g3store.grpc.AppConsumerService/getAllAppNames" headersToPropagate="authorization"/>
+	<!-- <grpcTarget target="test.g3store.grpc.AppConsumerService/getAllAppNames" authnToken="jwt"/> -->
 
 
 		

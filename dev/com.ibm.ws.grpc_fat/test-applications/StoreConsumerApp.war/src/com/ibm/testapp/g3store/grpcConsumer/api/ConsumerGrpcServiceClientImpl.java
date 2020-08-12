@@ -61,6 +61,10 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
 
         List<String> nameList = null;
         try {
+
+            if (log.isLoggable(Level.FINE)) {
+                log.fine("Consumer: getAllAppNames: send grpc request");
+            }
             // get the data back from grpc service
             NameResponse resp = get_consumerService()
                             .withDeadlineAfter(deadlineMs, TimeUnit.SECONDS)
@@ -74,6 +78,10 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
 
         } catch (StatusRuntimeException e) {
             if (e.getStatus().getCode() == Status.Code.NOT_FOUND) {
+                e.printStackTrace();
+                throw new NotFoundException(e.getMessage());
+            }
+            if (e.getStatus().getCode() == Status.Code.UNAUTHENTICATED) {
                 e.printStackTrace();
                 throw new NotFoundException(e.getMessage());
             }
@@ -95,7 +103,7 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
         AppNameRequest appReq = AppNameRequest.newBuilder().setName(appName).build();
 
         if (log.isLoggable(Level.FINE)) {
-            log.finest("Consumer: getAppInfo: appReq for name " + appReq.getName());
+            log.finest("Consumer: getAppInfo: appReq for name " + appReq.getName() + " send grpc request.");
         }
         // get results from rpc call
         // This is a Unary call
