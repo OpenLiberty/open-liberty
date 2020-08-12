@@ -10,8 +10,8 @@
  *******************************************************************************/
 package com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests;
 
+import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anyOf;
-import static org.hamcrest.Matchers.both;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertNotNull;
@@ -24,13 +24,11 @@ import java.net.HttpURLConnection;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.removal.MetricListServlet;
 import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.removal.RemovalBean;
 import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.removal.RemovalServlet;
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -54,8 +52,12 @@ public class MetricRemovalTest {
     public static RepeatTests r = RepeatFaultTolerance.repeatDefault(SERVER_NAME)
                     .andWith(RepeatFaultTolerance.ft11metrics20Features(SERVER_NAME));
 
-    private final static String TEST_METRIC = "ft.com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.removal.RemovalBean.doWorkWithRetry.invocations.total";
-    private final static String TEST_METRIC2 = "ft.retry.retries.total";
+    // FT 1.x, 2.x & Metrics 2.0+
+    private final static String TEST_METRIC = "ft_com_ibm_websphere_microprofile_faulttolerance_metrics_fat_tests_removal_RemovalBean_doWorkWithRetry_invocations_total";
+    // FT 1.x, 2.x & Metrics 1.x
+    private final static String TEST_METRIC2 = "ft_com_ibm_websphere_microprofile_faulttolerance_metrics_fat_tests_removal_removal_bean_do_work_with_retry_invocations_total";
+    // FT 3.0 & Metrics 2.0+
+    private final static String TEST_METRIC3 = "ft_retry_retries_total";
 
     @Test
     public void metricRemovalTest() throws Exception {
@@ -63,23 +65,18 @@ public class MetricRemovalTest {
                         .addClasses(RemovalBean.class, RemovalServlet.class)
                         .addAsManifestResource(MetricRemovalTest.class.getResource("removal/permissions.xml"), "permissions.xml");
 
-        WebArchive metricReporter = ShrinkWrap.create(WebArchive.class, "metricReporter.war")
-                        .addClass(MetricListServlet.class)
-                        .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
-                        .addAsManifestResource(MetricRemovalTest.class.getResource("removal/permissions.xml"), "permissions.xml");
-
         try {
             server.startServer();
             deployApp(removalTest);
 
             try {
-                deployApp(metricReporter);
-
                 // Call the test app
                 HttpUtils.findStringInUrl(server, "removalTest/removaltest", "OK");
 
                 // Check that metrics exist
-                assertThat(getMetricsPage(), anyOf(containsString(TEST_METRIC), containsString(TEST_METRIC2)));
+                assertThat(getMetricsPage(), anyOf(containsString(TEST_METRIC),
+                                                   containsString(TEST_METRIC2),
+                                                   containsString(TEST_METRIC3)));
 
             } finally {
                 // Remove the test app
@@ -87,7 +84,9 @@ public class MetricRemovalTest {
             }
 
             // Check that metrics do not exist
-            assertThat(getMetricsPage(), both(not(containsString(TEST_METRIC))).and(not(containsString(TEST_METRIC2))));
+            assertThat(getMetricsPage(), allOf(not(containsString(TEST_METRIC)),
+                                               not(containsString(TEST_METRIC2)),
+                                               not(containsString(TEST_METRIC3))));
         } finally {
             server.stopServer();
         }
@@ -95,10 +94,10 @@ public class MetricRemovalTest {
     }
 
     /**
-     * Retrieve the list of registered metrics from the {@link MetricListServlet}
+     * Retrieve the list of registered metrics from the /metrics endpoint
      */
     private String getMetricsPage() throws IOException {
-        HttpURLConnection con = HttpUtils.getHttpConnection(server, "metricReporter/metriclist");
+        HttpURLConnection con = HttpUtils.getHttpConnection(server, "metrics");
         BufferedReader reader = HttpUtils.getResponseBody(con, "UTF-8");
 
         StringBuilder b = new StringBuilder();
