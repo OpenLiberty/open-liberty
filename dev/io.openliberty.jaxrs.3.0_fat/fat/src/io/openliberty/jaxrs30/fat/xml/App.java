@@ -8,18 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.jaxrs30.fat;
+package io.openliberty.jaxrs30.fat.xml;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import jakarta.ws.rs.ApplicationPath;
+import jakarta.ws.rs.core.Application;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                AppAndResourceTest.class,
-                XmlWithJaxbTest.class,
-                XmlWithoutJaxbTest.class
-})
-public class FATSuite {
+@ApplicationPath("/app")
+public class App extends Application {
 
 }

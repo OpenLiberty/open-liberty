@@ -20,6 +20,7 @@ fat.project: true
 
 -buildpath: \
     io.openliberty.jakarta.annotation.2.0;version=latest,\
+    io.openliberty.jakarta.jaxb.3.0;version=latest,\
     io.openliberty.jakarta.jaxrs.3.0;version=latest,\
 	io.openliberty.jakarta.servlet.5.0;version=latest,\
 	com.ibm.ws.componenttest.2.0
