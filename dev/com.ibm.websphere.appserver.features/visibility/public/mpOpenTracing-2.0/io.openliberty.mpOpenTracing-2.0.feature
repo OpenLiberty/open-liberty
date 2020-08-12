@@ -14,6 +14,6 @@ IBM-API-Package: \
     com.ibm.websphere.appserver.mpConfig-1.4
 -bundles=\
     io.openliberty.microprofile.opentracing.2.0.internal
-kind=noship
+kind=beta
 edition=core
 WLP-Activation-Type: parallel
