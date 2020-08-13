@@ -10,6 +10,12 @@
  *******************************************************************************/
 package io.openliberty.org.jboss.resteasy.common.client;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
+import java.util.Optional;
+
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.internal.ResteasyClientBuilderImpl;
 import org.osgi.framework.BundleContext;
@@ -20,29 +26,58 @@ import io.openliberty.jaxrs.client.ClientBuilderListener;
 import org.osgi.framework.ServiceReference;
 
 public class LibertyResteasyClientBuilderImpl extends ResteasyClientBuilderImpl {
-
     @SuppressWarnings("unchecked")
+    private final static ServiceReference<ClientBuilderListener>[] EMPTY_ARRAY = new ServiceReference[] {};
+    private final boolean isSecurityManagerPresent = null != System.getSecurityManager();
+
     @Override
     public ResteasyClient build() {
-        BundleContext ctx = FrameworkUtil.getBundle(getClass()).getBundleContext();
-        ServiceReference<ClientBuilderListener>[] refs;
-        try {
-            refs = (ServiceReference<ClientBuilderListener>[]) 
-                            ctx.getServiceReferences(ClientBuilderListener.class.getName(), null);
-        } catch (InvalidSyntaxException e) {
-            throw new RuntimeException(e);
-        }
+        BundleContext ctx = getBundleContext();
+        ServiceReference<ClientBuilderListener>[] refs = getServiceRefs(ctx).orElse(EMPTY_ARRAY);
         for (ServiceReference<ClientBuilderListener> ref : refs) {
-            ClientBuilderListener listener = ctx.getService(ref);
+            ClientBuilderListener listener = getService(ctx, ref);
             listener.building(this);
         }
 
         ResteasyClient client = super.build();
 
         for (ServiceReference<ClientBuilderListener> ref : refs) {
-            ClientBuilderListener listener = ctx.getService(ref);
+            ClientBuilderListener listener = getService(ctx, ref);
             listener.built(client);
         }
         return client;
+    }
+    
+    private BundleContext getBundleContext() {
+        if (isSecurityManagerPresent) {
+            return AccessController.doPrivileged((PrivilegedAction<BundleContext>) () -> 
+                FrameworkUtil.getBundle(getClass()).getBundleContext());
+        }
+        return FrameworkUtil.getBundle(getClass()).getBundleContext();
+    }
+
+    @SuppressWarnings("unchecked")
+    private Optional<ServiceReference<ClientBuilderListener>[]> getServiceRefs(BundleContext ctx) {
+        try {
+            if (isSecurityManagerPresent) {
+                return Optional.ofNullable(AccessController.doPrivileged(
+                    (PrivilegedExceptionAction<ServiceReference<ClientBuilderListener>[]>) () -> 
+                        (ServiceReference<ClientBuilderListener>[]) 
+                        ctx.getServiceReferences(ClientBuilderListener.class.getName(), null)));
+            }
+            return Optional.ofNullable((ServiceReference<ClientBuilderListener>[])
+                ctx.getServiceReferences(ClientBuilderListener.class.getName(), null));
+        } catch (PrivilegedActionException pae) {
+            throw new RuntimeException(pae.getCause());
+        } catch (InvalidSyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    private <T> T getService(BundleContext ctx, ServiceReference<T> ref) {
+        if (isSecurityManagerPresent) {
+            return AccessController.doPrivileged((PrivilegedAction<T>) () -> ctx.getService(ref));
+        }
+        return ctx.getService(ref);
     }
 }
