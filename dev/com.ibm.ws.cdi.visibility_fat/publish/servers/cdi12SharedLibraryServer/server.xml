@@ -20,6 +20,8 @@
        
     <library id="InjectionSharedLibrary">
         <fileset dir="${server.config.dir}/InjectionSharedLibrary" includes="sharedLibrary.jar" />
-    </library> 
+    </library>
+    
+    <orb id="defaultOrb" orbSSLInitTimeout="60"/>
         
 </server>
