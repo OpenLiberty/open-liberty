@@ -44,6 +44,7 @@ public class MpJwtMessageConstants extends MessageConstants {
     public static final String CWWKS6022E_ISSUER_NOT_TRUSTED = "CWWKS6022E";
     public static final String CWWKS6023E_AUDIENCE_NOT_TRUSTED = "CWWKS6023E";
     public static final String CWWKS6025E_TOKEN_EXPIRED = "CWWKS6025E";
+    public static final String CWWKS6028E_SIG_ALG_MISMATCH = "CWWKS6028E";
     public static final String CWWKS6029E_SIGNING_KEY_CANNOT_BE_FOUND = "CWWKS6029E";
     public static final String CWWKS6031E_CAN_NOT_PROCESS_TOKEN = "CWWKS6031E";
     public static final String CWWKS6033E_JWT_CONSUMER_PUBLIC_KEY_NOT_RETRIEVED = "CWWKS6033E";

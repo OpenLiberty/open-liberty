@@ -304,7 +304,7 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
 
         try {
             String fixedJwksUri = resolvedJwksUri(MPConfigSettings.jwksUri);
-            String fileLoc = server.getServerRoot() + "/";
+            String fileLoc = mpConfigSettings.getDefaultKeyFileLoc(server);
 
             // the microprofile-config.properties files will have xxx_<attr>_xxx values that need to be replaced
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_CONFIG_IN_META_INF_ROOT_CONTEXT,
@@ -474,6 +474,7 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
 
     public void standardTestFlow(String builder, LibertyServer server, String rootContext, String theApp, String className, Expectations expectations) throws Exception {
 
+        Log.info(thisClass, "standardTestFlow", "builderId: " + builder);
         String builtToken = actions.getJwtFromTokenEndpoint(_testName, builder, SecurityFatHttpUtils.getServerSecureUrlBase(jwtBuilderServer), defaultUser, defaultPassword);
 
         String testUrl = buildAppUrl(server, rootContext, theApp);

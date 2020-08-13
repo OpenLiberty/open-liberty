@@ -16,7 +16,7 @@
 		id="mpJwt_1"
         authFilterRef="mpJwtAppAuthFilter"
 		jwksUri="${mpJwt_jwksUri}"
-		sslRef="ssl_1_2"
+		sslRef="ssl_allSigAlg"
 		keyName="ps256"
 		signatureAlgorithm="PS256"
 		audiences="client01, client02"

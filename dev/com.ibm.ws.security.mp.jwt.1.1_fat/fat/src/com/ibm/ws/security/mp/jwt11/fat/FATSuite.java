@@ -15,6 +15,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
+import com.ibm.ws.security.mp.jwt11.fat.configInAppTests.MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Tests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -26,7 +27,7 @@ import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
 //                // -- the config attribute authorizationHeaderPrefix will tell runtime what prefix to look for
 //                MPJwtBasicTests.class,
 //                // More targeted tests
-                MPJwtConfigUsingBuilderTests.class,
+//                MPJwtConfigUsingBuilderTests.class,
 //                MPJwtApplicationAndSessionScopedClaimInjectionTests.class,
 //                MPJwtLoginConfig_ignoreApplicationAuthMethodTrueTests.class,
 //                MPJwtLoginConfig_ignoreApplicationAuthMethodFalseTests.class,
@@ -35,6 +36,7 @@ import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
 //                MPJwtPropagationTests_notUsingWebTarget.class,
 //                // mp-config specified in the applications
 //                MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_Tests.class,
+                MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Tests.class,
 //                MPJwtMPConfigInApp_BadIssuerMPJwtConfigInServerXml_Tests.class,
 //                MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_Tests.class,
 //                MPJwtMPConfigInApp_BadKeyNameMPJwtConfigInServerXml_Tests.class,

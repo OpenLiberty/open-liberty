@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -100,6 +100,21 @@ public class CommonSecurityFat {
             } catch (Exception e) {
                 e.printStackTrace(System.out);
                 Log.info(thisClass, "restoreTestServers", "**********************FAILED to restore original server configuration**********************");
+            }
+        }
+    }
+
+    public void logTestCaseMarkerInServerLogs(String actionToLog, String infoToLog) {
+        Set<LibertyServer> testServers = serverTracker.getServers();
+        for (LibertyServer server : testServers) {
+            if (server != null && !server.isStarted()) {
+                continue;
+            }
+            loggingUtils.logTestCaseInServerLog(server, _testName + ": " + infoToLog, actionToLog);
+            try {
+                server.setMarkToEndOfLog(server.getDefaultLogFile());
+            } catch (Exception e) {
+                Log.error(thisClass, "Failed to set mark to end of default log file for server " + server.getServerName(), e);
             }
         }
     }

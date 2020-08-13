@@ -82,6 +82,7 @@ import componenttest.topology.impl.LibertyServer;
  *
  **/
 
+@SuppressWarnings("restriction")
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
@@ -101,13 +102,12 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
 
 //  String[] algList = { MpJwtFatConstants.SIGALG_HS256, MpJwtFatConstants.SIGALG_HS384, MpJwtFatConstants.SIGALG_HS512,
 //  MpJwtFatConstants.SIGALG_RS256, MpJwtFatConstants.SIGALG_RS384, MpJwtFatConstants.SIGALG_RS512,
-//  MpJwtFatConstants.SIGALG_HS512, MpJwtFatConstants.SIGALG_ES384, MpJwtFatConstants.SIGALG_ES512,
+//  MpJwtFatConstants.SIGALG_ES512, MpJwtFatConstants.SIGALG_ES384, MpJwtFatConstants.SIGALG_ES512,
 //  MpJwtFatConstants.SIGALG_PS256, MpJwtFatConstants.SIGALG_PS384, MpJwtFatConstants.SIGALG_PS512 };
 
-    String[] algList = { MpJwtFatConstants.SIGALG_HS256, MpJwtFatConstants.SIGALG_RS256 };
-
-//String[] rsAlgList = {MpJwtFatConstants.SIGALG_RS256, MpJwtFatConstants.SIGALG_RS384, MpJwtFatConstants.SIGALG_RS512} ;
-    String[] rsAlgList = { MpJwtFatConstants.SIGALG_RS256 };
+    String[] algList = { MpJwtFatConstants.SIGALG_HS256, MpJwtFatConstants.SIGALG_HS384, MpJwtFatConstants.SIGALG_HS512,
+                         MpJwtFatConstants.SIGALG_RS256, MpJwtFatConstants.SIGALG_RS384, MpJwtFatConstants.SIGALG_RS512,
+                         MpJwtFatConstants.SIGALG_ES256, MpJwtFatConstants.SIGALG_ES384, MpJwtFatConstants.SIGALG_ES512 };
 
     private static final String SavedPS256Token = null;
     private static final String SavedPS384Token = null;
@@ -128,8 +128,6 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
 
         setUpAndStartRSServerForTests(resourceServer, "rs_server_orig_withAudience.xml", false);
 
-        //TODO remove next line when additional signature algorithms added
-        jwtBuilderServer.addIgnoredErrors(Arrays.asList("CWWKG0032W"));
     }
 
     /**
@@ -249,6 +247,39 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
 
         expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Messagelog did not contain an error indicating a problem authenticating the request with the provided token."));
         expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS5524E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Messagelog did not contain an exception indicating that the Signature Algorithm is NOT valid."));
+        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6031E_CAN_NOT_PROCESS_TOKEN, "Messagelog did not contain an exception indicating the token can not be processed"));
+
+        return expectations;
+
+    }
+
+    /**
+     * Set expectations for tests that have bad Signature Algorithms
+     *
+     * @param server - server whose logs will be searched
+     * @return Expectations - built expectations
+     * @throws Exception
+     */
+    public Expectations setMisMatchedCertsExpectations(LibertyServer server) throws Exception {
+
+        Expectations expectations = setBadSigALgExpectations(server);
+        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6041E_JWT_SIGNATURE_INVALID, "Messagelog did not contain an error indicating an invalid signature."));
+
+        return expectations;
+
+    }
+
+    /**
+     * Set expectations for tests that have bad Signature Algorithms
+     *
+     * @param server - server whose logs will be searched
+     * @return Expectations - built expectations
+     * @throws Exception
+     */
+    public Expectations setMisMatchedSigAlagExpectations(LibertyServer server) throws Exception {
+
+        Expectations expectations = setBadSigALgExpectations(server);
+        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6028E_SIG_ALG_MISMATCH, "Messagelog did not contain an error indicating that the signature algorithm in the token and the config were mis-matched."));
 
         return expectations;
 
@@ -262,24 +293,6 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
      * @throws Exception
      */
     public Expectations setPSAlgWithoutJava11Expectations(LibertyServer server) throws Exception {
-
-        Expectations expectations = badAppExpectations(MpJwtFatConstants.UNAUTHORIZED_MESSAGE);
-
-//        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Messagelog did not contain an error indicating a problem authenticating the request with the provided token."));
-//        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS5524E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Messagelog did not contain an exception indicating that the Signature Algorithm is NOT valid."));
-
-        return expectations;
-
-    }
-
-    /**
-     * Set expectations for tests that use a cert that is less that 2048 bytes
-     *
-     * @param server - server whose logs will be searched
-     * @return Expectations - built expectations
-     * @throws Exception
-     */
-    public Expectations setShortCertExpectations(LibertyServer server) throws Exception {
 
         Expectations expectations = badAppExpectations(MpJwtFatConstants.UNAUTHORIZED_MESSAGE);
 
@@ -664,7 +677,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_audience_hs256.xml");
 
-        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "hs256");
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "HS256");
         // make sur we issued the correct token
         Expectations builderExpectations = new Expectations();
         builderExpectations.addExpectation(new JwtTokenHeaderExpectation(HeaderConstants.ALGORITHM, StringCheckType.CONTAINS, MpJwtFatConstants.SIGALG_HS256));
@@ -1147,34 +1160,37 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
     // test name "MPJwtConfigUsingBuilderTests_userNameAttribute_UserNotInRegistry_WithMapToUserRegistryTrue" will verify that using userNameAttribute and mapToUserRegistry=true will behave in the same way.
 
     /******************************** Start signatureAlgorithm (new Algorithms) ***************************************/
+
+    private void logSubTestMsg(String serverAlg, String sigAlg, String extraText) throws Exception {
+
+        if (extraText == null) {
+            extraText = "";
+        }
+        String logMsg = "*   Config contains " + serverAlg + "      Token contains " + sigAlg + "          " + extraText + " *";
+        logTestCaseMarkerInServerLogs("Sub", logMsg);
+        Log.info(thisClass, "genericSigAlgTest", "********************************************");
+        Log.info(thisClass, "genericSigAlgTest", logMsg);
+        Log.info(thisClass, "genericSigAlgTest", "********************************************");
+
+    }
+
     /**
-     * Code to loop through signature alg of all types and
+     * Code to loop through signature alg of all supported types and
      * validate behavior (success if they match, failure if they do not)
+     * Also test that using a mis-matched private/public key pair
      *
      * @param serverAlg - the alg that should match the config -this is the sigAlg that will result in success - all other sigAlg will fail
      * @throws Exception
      */
     public void genericSigAlgTest(String serverAlg) throws Exception {
 
-        // TODO
-        // may need unique expectations for conflicts between types vs conflicts between "size"
-        // ie HS256 and RS256 vs RS256 and RS512
-        Expectations misMatchExpectations = setBadSigALgExpectations(resourceServer);
-        // TODO - what's going to happen with PS and NOT Java 11?  Server startup may end up using RS256 instead of what we configure
-        // so, this may be a useless test - may just want to skip ps tests and java 11 if that's the case
-        Expectations psAlgWithoutJava11Expectations = setPSAlgWithoutJava11Expectations(resourceServer);
-        boolean useMisMatchExpectations = true;
-
         for (String sigAlg : algList) {
-            // note the build name must match the name in the list
-            // thought about creating the tokens once, but:
-            // 1) that makes it harder to reference
-            // 2) this puts more stress on our builder...
-            Log.info(thisClass, "genericSigAlgTest", "********************************************");
-            Log.info(thisClass, "genericSigAlgTest", "* Config: " + serverAlg + "      Token: " + sigAlg + "          *");
-            Log.info(thisClass, "genericSigAlgTest", "********************************************");
+            // note the builder names must match the names in the algList
+            logSubTestMsg(serverAlg, sigAlg, null);
+            boolean useNotJava11MisMatchExpectations = false;
             String builtToken = null;
-            // TODO - if server won't allow config with PS alg's on non-java 11, we may be able to remove this chunk of code and skip tests??? or should we still try to use pre-defined tokens?
+            String mismatchBuiltToken = null;
+            // TODO - if server won't allow configs with PS alg's on non-java 11, we may be able to skip testing ps algs in that case or could try to use hardcoded (previously created) tokens?
             // we can only generate a token using a PS algorithm on Java 11 or above
             // we'd like to test that the code receiving a PS signed token fails appropriately
             // when we're running with Java 8 or 9.  So, we'll use a saved long lived JWT token
@@ -1192,103 +1208,144 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
                     default:
                         throw new Exception("PS signature algorithm is not supported by the test code");
                 }
-                useMisMatchExpectations = false;
+                // TODO - error messages may/may not be different in this case...
+                useNotJava11MisMatchExpectations = true;
             } else {
+                // for matching signature algorithms we want to make sure that even with the same alg, using the wrong public key to sign the token will result in failure.
+                if (sigAlg.equals(serverAlg) && !sigAlg.startsWith("HS")) {
+                    // our key/trust stores have 2 keys for each sig alg.  We typically use one that is 4096 is size, but we'll use the "short" (1024 in size) cert
+                    // here to create the "mis-match" - the mpJwt config doesn't use the "short" certs
+                    mismatchBuiltToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "short_" + sigAlg);
+                }
+                // test case uses builder configs where the id's are the same as the sigAlg string (ie:  RS256, ES384, ...)
                 builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, sigAlg);
-                useMisMatchExpectations = true;
             }
+            // try to use the built token with mp.jwt (behavior varies based on sig alg matching between token and config and if sig alg is PS and we're using java 11)
             if (sigAlg.equals(serverAlg)) {
                 genericConfigTest(builtToken);
+                // now test that mismatched certs for the same non-HS sigAlg won't work
+                if (!sigAlg.startsWith("HS")) {
+                    logSubTestMsg(serverAlg, sigAlg, "*Mis-Match*");
+                    genericConfigTest(mismatchBuiltToken, setMisMatchedCertsExpectations(resourceServer));
+                }
             } else {
-                if (useMisMatchExpectations) {
-                    genericConfigTest(builtToken, misMatchExpectations);
+                if (useNotJava11MisMatchExpectations) {
+                    genericConfigTest(builtToken, setPSAlgWithoutJava11Expectations(resourceServer));
                 } else {
-                    genericConfigTest(builtToken, psAlgWithoutJava11Expectations);
+                    genericConfigTest(builtToken, setMisMatchedSigAlagExpectations(resourceServer));
                 }
             }
         }
     }
 
-//    /**
-//     * Signature Alg in server.xml is ES256
-//     *
-//     * @throws Exception
-//     */
-//    @Test
-//    public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingES256() throws Exception {
-//
-//        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_ES256.xml");
-//        genericSigAlgTest(MpJwtFatConstants.SIGALG_ES256);
-//    }
-//
-//    /**
-//     * Signature Alg in server.xml is ES384
-//     *
-//     * @throws Exception
-//     */
-//    @Test
-//    public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingES384() throws Exception {
-//
-//        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_ES384.xml");
-//        genericSigAlgTest(MpJwtFatConstants.SIGALG_ES384);
-//    }
-//
-//    /**
-//     * Signature Alg in server.xml is ES512
-//     *
-//     * @throws Exception
-//     */
-//    @Test
-//    public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingES512() throws Exception {
-//
-//        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_ES512.xml");
-//        genericSigAlgTest(MpJwtFatConstants.SIGALG_ES512);
-//    }
-//
     /**
-     * Signature Alg in server.xml is RS256
+     * Signature Alg in server.xml is ES256
+     * A request is made using tokens created with each of the supported signature algorithms.
+     * Test that we receive access when we use a token built with the same signature algorithm (and private/public key pair)
+     * as the mpJwt config and receive a 401 in all other cases (including using a mis-matched private/public key pair with the same sig alg)
      *
      * @throws Exception
      */
+    @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
     @Test
-    public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingRS256() throws Exception {
+    public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingES256_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
+
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_ES256.xml");
+        genericSigAlgTest(MpJwtFatConstants.SIGALG_ES256);
+    }
+
+    /**
+     * Signature Alg in server.xml is ES384
+     * A request is made using tokens created with each of the supported signature algorithms.
+     * Test that we receive access when we use a token built with the same signature algorithm (and private/public key pair)
+     * as the mpJwt config and receive a 401 in all other cases (including using a mis-matched private/public key pair with the same sig alg)
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
+    @Test
+    public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingES384_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
+
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_ES384.xml");
+        genericSigAlgTest(MpJwtFatConstants.SIGALG_ES384);
+    }
+
+    /**
+     * Signature Alg in server.xml is ES512
+     * A request is made using tokens created with each of the supported signature algorithms.
+     * Test that we receive access when we use a token built with the same signature algorithm (and private/public key pair)
+     * as the mpJwt config and receive a 401 in all other cases (including using a mis-matched private/public key pair with the same sig alg)
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
+    @Test
+    public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingES512_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
+
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_ES512.xml");
+        genericSigAlgTest(MpJwtFatConstants.SIGALG_ES512);
+    }
+
+    /**
+     * Signature Alg in server.xml is RS256
+     * A request is made using tokens created with each of the supported signature algorithms.
+     * Test that we receive access when we use a token built with the same signature algorithm (and private/public key pair)
+     * as the mpJwt config and receive a 401 in all other cases (including using a mis-matched private/public key pair with the same sig alg)
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
+    @Test
+    public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingRS256_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_RS256.xml");
         genericSigAlgTest(MpJwtFatConstants.SIGALG_RS256);
     }
 
-//    /**
-//     * Signature Alg in server.xml is RS384
-//     *
-//     * @throws Exception
-//     */
-//    @Test
-//    public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingRS384() throws Exception {
-//
-//        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_RS384.xml");
-//        genericSigAlgTest(MpJwtFatConstants.SIGALG_RS384);
-//    }
-//
-//    /**
-//     * Signature Alg in server.xml is RS512
-//     *
-//     * @throws Exception
-//     */
-//    @Test
-//    public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingRS512() throws Exception {
-//
-//        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_RS512.xml");
-//        genericSigAlgTest(MpJwtFatConstants.SIGALG_RS512);
-//    }
-//
+    /**
+     * Signature Alg in server.xml is RS384
+     * A request is made using tokens created with each of the supported signature algorithms.
+     * Test that we receive access when we use a token built with the same signature algorithm (and private/public key pair)
+     * as the mpJwt config and receive a 401 in all other cases (including using a mis-matched private/public key pair with the same sig alg)
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
+    @Test
+    public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingRS384_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
+
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_RS384.xml");
+        genericSigAlgTest(MpJwtFatConstants.SIGALG_RS384);
+    }
+
+    /**
+     * Signature Alg in server.xml is RS512
+     * A request is made using tokens created with each of the supported signature algorithms.
+     * Test that we receive access when we use a token built with the same signature algorithm (and private/public key pair)
+     * as the mpJwt config and receive a 401 in all other cases (including using a mis-matched private/public key pair with the same sig alg)
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
+    @Test
+    public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingRS512_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
+
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_RS512.xml");
+        genericSigAlgTest(MpJwtFatConstants.SIGALG_RS512);
+    }
+
+    // TODO - enable once PS is supported - make sure that 1) things behave well with Java 11 and b) things fail appropriately with older java versions
 //    /**
 //     * Signature Alg in server.xml is PS256
+//     * A request is made using tokens created with each of the supported signature algorithms.
+//     * Test that we receive access when we use a token built with the same signature algorithm (and private/public key pair)
+//     * as the mpJwt config and receive a 401 in all other cases (including using a mis-matched private/public key pair with the same sig alg)
 //     *
 //     * @throws Exception
 //     */
-////    @MinimumJavaLevel(javaLevel = 11)
+//    @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
 //    @Test
-//    public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingPS256() throws Exception {
+//    public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingPS256_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
 //
 //        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_PS256.xml");
 //        genericSigAlgTest(MpJwtFatConstants.SIGALG_PS256);
@@ -1296,12 +1353,15 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
 //
 //    /**
 //     * Signature Alg in server.xml is PS384
+//     * A request is made using tokens created with each of the supported signature algorithms.
+//     * Test that we receive access when we use a token built with the same signature algorithm (and private/public key pair)
+//     * as the mpJwt config and receive a 401 in all other cases (including using a mis-matched private/public key pair with the same sig alg)
 //     *
 //     * @throws Exception
 //     */
-////    @MinimumJavaLevel(javaLevel = 11)
+//    @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
 //    @Test
-//    public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingPS384() throws Exception {
+//    public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingPS384_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
 //
 //        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_PS384.xml");
 //        genericSigAlgTest(MpJwtFatConstants.SIGALG_PS384);
@@ -1309,12 +1369,15 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
 //
 //    /**
 //     * Signature Alg in server.xml is PS512
+//     * A request is made using tokens created with each of the supported signature algorithms.
+//     * Test that we receive access when we use a token built with the same signature algorithm (and private/public key pair)
+//     * as the mpJwt config and receive a 401 in all other cases (including using a mis-matched private/public key pair with the same sig alg)
 //     *
 //     * @throws Exception
 //     */
-////    @MinimumJavaLevel(javaLevel = 11)
+//    @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
 //    @Test
-//    public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingPS512() throws Exception {
+//    public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingPS512_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
 //
 //        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_PS512.xml");
 //        genericSigAlgTest(MpJwtFatConstants.SIGALG_PS512);
@@ -1326,36 +1389,35 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
      * @throws Exception
      */
     @Test
-    public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingHS256() throws Exception {
+    public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingHS256_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_HS256.xml");
         genericSigAlgTest(MpJwtFatConstants.SIGALG_HS256);
     }
 
-//    /**
-//     * Signature Alg in server.xml is HS384
-//     *
-//     * @throws Exception
-//     */
-//    @Test
-//    public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingHS384() throws Exception {
-//
-//        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_HS384.xml");
-//        genericSigAlgTest(MpJwtFatConstants.SIGALG_HS384);
-//    }
-//
-//    /**
-//     * Signature Alg in server.xml is HS512
-//     *
-//     * @throws Exception
-//     */
-//    @Test
-//    public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingHS512() throws Exception {
-//
-//        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_HS512.xml");
-//        genericSigAlgTest(MpJwtFatConstants.SIGALG_HS512);
-//    }
-//
+    /**
+     * Signature Alg in server.xml is HS384
+     *
+     * @throws Exception
+     */
+    @Test
+    public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingHS384_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
+
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_HS384.xml");
+        genericSigAlgTest(MpJwtFatConstants.SIGALG_HS384);
+    }
+
+    /**
+     * Signature Alg in server.xml is HS512
+     *
+     * @throws Exception
+     */
+    @Test
+    public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingHS512_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
+
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_HS512.xml");
+        genericSigAlgTest(MpJwtFatConstants.SIGALG_HS512);
+    }
 
     /******************************** End signatureAlgorithm (new Algorithms) ***************************************/
 
