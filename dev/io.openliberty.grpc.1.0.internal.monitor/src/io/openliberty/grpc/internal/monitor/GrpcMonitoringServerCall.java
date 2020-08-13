@@ -24,8 +24,6 @@ import io.grpc.Status;
  * etc.
  */
 public class GrpcMonitoringServerCall<R, S> extends ForwardingServerCall.SimpleForwardingServerCall<R, S> {
-	private static final long MILLIS_PER_SECOND = 1000L;
-
 	private final Clock clock;
 	private final GrpcMethod grpcMethod;
 	private final GrpcServerStatsMonitor serverMetrics;
@@ -60,8 +58,8 @@ public class GrpcMonitoringServerCall<R, S> extends ForwardingServerCall.SimpleF
 	}
 
 	private void reportEndMetrics(Status status) {
+		long latencyMs = clock.millis() - startInstant.toEpochMilli();
+		serverMetrics.recordLatency(latencyMs);
 		serverMetrics.recordServerHandled();//(status.getCode());
-		double latencySec = (clock.millis() - startInstant.toEpochMilli()) / (double) MILLIS_PER_SECOND;
-		serverMetrics.recordLatency(latencySec);
 	}
 }

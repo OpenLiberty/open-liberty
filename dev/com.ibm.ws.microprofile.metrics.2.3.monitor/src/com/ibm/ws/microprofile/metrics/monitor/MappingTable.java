@@ -124,15 +124,17 @@ public class MappingTable {
 	    	{ "vendor", "grpc.server.rpcStarted.total", "Total Server RPCs Started Count", "grpc.server.rpcStarted.total.description", COUNTER, MetricUnits.NONE, "RpcStartedCount", null, GRPC_SERVER_TAG_NAME },
 	    	{ "vendor", "grpc.server.rpcCompleted.total", "Total Server RPCs Completed Count", "grpc.server.rpcCompleted	.total.description", COUNTER, MetricUnits.NONE, "RpcCompletedCount", null, GRPC_SERVER_TAG_NAME },
         	{ "vendor", "grpc.server.sentMessages.total", "Total Sent Stream Messages", "grpc.server.sentMessages.total.description", COUNTER, MetricUnits.NONE, "SentMessagesCount", null, GRPC_SERVER_TAG_NAME },
-        	{ "vendor", "grpc.server.receivedMessages.total", "Total Received Stream Messages", "grpc.server.receivedMessages.total.description", COUNTER, MetricUnits.NONE, "ReceivedMessagesCount", null, GRPC_SERVER_TAG_NAME }
+        	{ "vendor", "grpc.server.receivedMessages.total", "Total Received Stream Messages", "grpc.server.receivedMessages.total.description", COUNTER, MetricUnits.NONE, "ReceivedMessagesCount", null, GRPC_SERVER_TAG_NAME },
+        	{ "vendor", "grpc.server.responseTime.total", "Total Response Time", "grpc.server.responseTime.total.description", GAUGE, MetricUnits.MILLISECONDS, "ResponseTimeDetails", "total", GRPC_SERVER_TAG_NAME }
 		};
 		mappingTable.put("WebSphere:type=GrpcServerStats,name=*", grpcServerTable);
 
 		String[][] grpcClientTable = new String[][]{
-	    	{ "vendor", "grpc.client.rpcStarted.total", "Total Client RPCs Started Count", "grpc.client.rpcStarted.total.description", COUNTER, MetricUnits.NONE, "RpcStartedCount", null, GRPC_SERVER_TAG_NAME },
-	    	{ "vendor", "grpc.client.rpcCompleted.total", "Total Client RPCs Completed Count", "grpc.client.rpcCompleted.total.description", COUNTER, MetricUnits.NONE, "RpcCompletedCount", null, GRPC_SERVER_TAG_NAME },
-        	{ "vendor", "grpc.client.sentMessages.total", "Total Sent Stream Messages", "grpc.client.sentMessages.total.description", COUNTER, MetricUnits.NONE, "SentMessagesCount", null, GRPC_SERVER_TAG_NAME },
-        	{ "vendor", "grpc.client.receivedMessages.total", "Total Received Stream Messages", "grpc.client.receivedMessages.total.description", COUNTER, MetricUnits.NONE, "ReceivedMessagesCount", null, GRPC_SERVER_TAG_NAME }
+	    	{ "vendor", "grpc.client.rpcStarted.total", "Total Client RPCs Started Count", "grpc.client.rpcStarted.total.description", COUNTER, MetricUnits.NONE, "RpcStartedCount", null, GRPC_CLIENT_TAG_NAME },
+	    	{ "vendor", "grpc.client.rpcCompleted.total", "Total Client RPCs Completed Count", "grpc.client.rpcCompleted.total.description", COUNTER, MetricUnits.NONE, "RpcCompletedCount", null, GRPC_CLIENT_TAG_NAME },
+        	{ "vendor", "grpc.client.sentMessages.total", "Total Sent Stream Messages", "grpc.client.sentMessages.total.description", COUNTER, MetricUnits.NONE, "SentMessagesCount", null, GRPC_CLIENT_TAG_NAME },
+        	{ "vendor", "grpc.client.receivedMessages.total", "Total Received Stream Messages", "grpc.client.receivedMessages.total.description", COUNTER, MetricUnits.NONE, "ReceivedMessagesCount", null, GRPC_CLIENT_TAG_NAME },
+        	{ "vendor", "grpc.client.responseTime.total", "Total Response Time", "grpc.client.responseTime.total.description", GAUGE, MetricUnits.MILLISECONDS, "ResponseTimeDetails", "total", GRPC_CLIENT_TAG_NAME }
 		};
 		mappingTable.put("WebSphere:type=GrpcClientStats,name=*", grpcClientTable);
 	}
