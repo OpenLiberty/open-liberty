@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.grpc.internal.client.security;
+package io.openliberty.grpc.internal.client.security.authorization;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -18,7 +18,7 @@ import io.grpc.MethodDescriptor;
 import io.openliberty.grpc.internal.client.GrpcClientConstants;
 import io.openliberty.grpc.internal.client.GrpcClientMessages;
 import io.openliberty.grpc.internal.client.config.GrpcClientConfigHolder;
-import io.openliberty.grpc.internal.client.security.oauth.GrpcOAuthPropagationHelper;
+import io.openliberty.grpc.internal.client.security.authorization.oauth.GrpcOAuthPropagationHelper;
 
 /**
  * Support for adding authorization tokens to outbound client calls

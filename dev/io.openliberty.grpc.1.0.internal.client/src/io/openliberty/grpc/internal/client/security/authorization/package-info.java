@@ -10,4 +10,4 @@
  *******************************************************************************/
 
 @org.osgi.annotation.versioning.Version("1.0")
-package io.openliberty.grpc.internal.client.security.oauth;
+package io.openliberty.grpc.internal.client.security.authorization;
