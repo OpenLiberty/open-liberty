@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.org.jboss.resteasy.common.providers;
+package io.openliberty.jaxrs30.jsonb20provider;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -92,21 +92,18 @@ public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyRead
     }
     
 
-    JsonBProvider(Providers providers) {
-
-        this.providers = providers;
-
+    public JsonBProvider() {
         JsonbProvider jsonbProvider = AccessController.doPrivileged(new PrivilegedAction<JsonbProvider>(){
 
             @Override
             public JsonbProvider run() {
                 try {
-                Bundle b = FrameworkUtil.getBundle(JsonBProvider.class);
-                if(b != null) {
-                    BundleContext bc = b.getBundleContext();
-                    ServiceReference<JsonbProvider> sr = bc.getServiceReference(JsonbProvider.class);
-                    return (JsonbProvider)bc.getService(sr);
-                }
+                    Bundle b = FrameworkUtil.getBundle(JsonBProvider.class);
+                    if(b != null) {
+                        BundleContext bc = b.getBundleContext();
+                        ServiceReference<JsonbProvider> sr = bc.getServiceReference(JsonbProvider.class);
+                        return (JsonbProvider)bc.getService(sr);
+                    }
                 } catch (NoClassDefFoundError ncdfe) {
                     // ignore - return null
                 }
@@ -235,16 +232,6 @@ public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyRead
         if (cr != null) {
             return cr.getContext(Jsonb.class);
         }
-        /*
-        for (ProviderInfo<ContextResolver<?>> crPi : contextResolvers) {
-            ContextResolver<?> cr = crPi.getProvider();
-            InjectionUtils.injectContexts(cr, crPi, JAXRSUtils.getCurrentMessage());
-            Object o = cr.getContext(null);
-            if (o instanceof Jsonb) {
-                return (Jsonb) o;
-            }
-        }
-        */
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Context-injected Providers is null");
@@ -340,4 +327,3 @@ public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyRead
         }
     }
 }
-
