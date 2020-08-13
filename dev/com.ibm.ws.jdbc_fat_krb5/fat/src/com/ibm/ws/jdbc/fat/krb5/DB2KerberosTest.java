@@ -84,7 +84,8 @@ public class DB2KerberosTest extends FATServletClient {
         Exception firstError = null;
 
         try {
-            server.stopServer("CWWKS4345E: .*BOGUS_KEYTAB"); // expected by testBasicPassword
+            server.stopServer("CWWKS4345E: .*BOGUS_KEYTAB", // expected by testBasicPassword
+                              "DSRA0304E", "DSRA0302E", "WTRN0048W"); // expected by testXARecovery
         } catch (Exception e) {
             firstError = e;
             Log.error(c, "tearDown", e);
