@@ -17,7 +17,7 @@ package io.openliberty.grpc.internal.monitor;
  * <li>Total number of RPCs started on the client.
  * <li>Total number of RPCs completed on the client, regardless of success or
  * failure.
- * <li>Histogram of RPC response latency for completed RPCs, in seconds.
+ * <li>Histogram of RPC response latency for completed RPCs, in milliseconds.
  * <li>Total number of stream messages received from the server.
  * <li>Total number of stream messages sent by the client.
  * </ul>
