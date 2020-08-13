@@ -120,16 +120,41 @@ public class StoreServicesTests extends FATServletClient {
 
     }
 
-    //[07/31/2020 14:42:29:356 EDT] 001 LibertyServer                  checkLogsForErrorsAndWarnings  I Error/warning found in log ORIGINALLY: [7/31/20, 14:41:34:361 EDT] 00000038 m.ibm.ws.container.service.app.deploy.ManifestClassPathUtils W SRVE9967W: The manifest class path xml-apis.jar can not be found in jar file wsjar:file:/.../open-liberty/dev/build.image/wlp/usr/servers/StoreServer/apps/StoreApp.war!/WEB-INF/lib/serializer-2.7.2.jar or its parent.
-    //[07/31/2020 14:42:29:356 EDT] 001 LibertyServer                  checkLogsForErrorsAndWarnings  I Error/warning found in log ORIGINALLY: [7/31/20, 14:41:34:449 EDT] 00000038 m.ibm.ws.container.service.app.deploy.ManifestClassPathUtils W SRVE9967W: The manifest class path xercesImpl.jar can not be found in jar file wsjar:file:/.../open-liberty/dev/build.image/wlp/usr/servers/StoreServer/apps/StoreApp.war!/WEB-INF/lib/xalan-2.7.2.jar or its parent.
+    //Similar to these are added in logs and we can ignore
+    //m.ibm.ws.container.service.app.deploy.ManifestClassPathUtils W SRVE9967W: The manifest class path xml-apis.jar can not be found in jar file wsjar:file:/.../open-liberty/dev/build.image/wlp/usr/servers/StoreServer/apps/StoreApp.war!/WEB-INF/lib/serializer-2.7.2.jar or its parent.
+    //m.ibm.ws.container.service.app.deploy.ManifestClassPathUtils W SRVE9967W: The manifest class path xercesImpl.jar can not be found in jar file wsjar:file:/.../open-liberty/dev/build.image/wlp/usr/servers/StoreServer/apps/StoreApp.war!/WEB-INF/lib/xalan-2.7.2.jar or its parent.
     @AfterClass
     public static void tearDown() throws Exception {
-        if (storeServer != null)
-            storeServer.stopServer("SRVE9967W");
-        if (producerServer != null)
-            producerServer.stopServer();
-        if (consumerServer != null)
-            consumerServer.stopServer("SRVE9967W");
+        Exception excep = null;
+
+        try {
+            if (storeServer != null)
+                storeServer.stopServer("SRVE9967W");
+        } catch (Exception e) {
+            excep = e;
+            Log.error(c, "store tearDown", e);
+        }
+
+        try {
+            if (consumerServer != null)
+                consumerServer.stopServer("SRVE9967W");
+        } catch (Exception e) {
+            if (excep == null)
+                excep = e;
+            Log.error(c, "consumer tearDown", e);
+        }
+
+        try {
+            if (producerServer != null)
+                producerServer.stopServer();
+        } catch (Exception e) {
+            if (excep == null)
+                excep = e;
+            Log.error(c, "producer tearDown", e);
+        }
+
+        if (excep != null)
+            throw excep;
     }
 
     @Test
