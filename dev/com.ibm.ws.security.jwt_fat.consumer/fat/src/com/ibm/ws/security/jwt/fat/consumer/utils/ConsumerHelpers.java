@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import java.util.List;
 import org.jose4j.jwt.JwtClaims;
 
 import com.ibm.ws.security.fat.common.expectations.Expectations;
+import com.ibm.ws.security.fat.common.jwt.HeaderConstants;
 import com.ibm.ws.security.fat.common.jwt.JWTTokenBuilder;
 import com.ibm.ws.security.fat.common.jwt.PayloadConstants;
 import com.ibm.ws.security.fat.common.jwt.expectations.JwtApiExpectation;
@@ -48,6 +49,15 @@ public class ConsumerHelpers extends JwtTokenBuilderUtils {
 
         Expectations expectations = buildConsumerClientAppExpectations(currentAction, consumerServer);
         expectations = updateExpectationsForConsumerAppOutput(expectations, currentAction, builder);
+        return expectations;
+    }
+
+    public Expectations addGoodConsumerAlgExpectations(String currentAction, LibertyServer consumerServer, String sigAlg) throws Exception {
+
+        Expectations expectations = buildConsumerClientAppExpectations(currentAction, consumerServer);
+        expectations.addExpectation(new JwtApiExpectation(JwtConsumerConstants.JWT_TOKEN_HEADER, HeaderConstants.ALGORITHM, sigAlg, JwtApiExpectation.ValidationMsgType.HEADER_CLAIM_FROM_LIST));
+        expectations.addExpectation(new JwtApiExpectation(JwtConsumerConstants.JWT_TOKEN_HEADER, HeaderConstants.ALGORITHM, sigAlg, JwtApiExpectation.ValidationMsgType.CLAIM_LIST_MEMBER));
+
         return expectations;
     }
 

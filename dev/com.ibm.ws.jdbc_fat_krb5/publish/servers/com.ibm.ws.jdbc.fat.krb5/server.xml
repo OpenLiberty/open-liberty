@@ -27,6 +27,21 @@
     <properties.db2.jcc databaseName="${DB2_DBNAME}" serverName="${DB2_HOSTNAME}" portNumber="${DB2_PORT}"/>
   </dataSource>
   
+  <dataSource jndiName="jdbc/krb/xaRecovery" type="javax.sql.XADataSource" isolationLevel="TRANSACTION_SERIALIZABLE" 
+              queryTimeout="2m" syncQueryTimeoutWithTransactionTimeout="true">
+    <jdbcDriver libraryRef="DB2JCCLib" />
+    <connectionManager agedTimeout="1s" connectionTimeout="10" maxIdleTime="1s" maxPoolSize="3" minPoolSize="0" reapTime="2s"/>
+    <properties.db2.jcc databaseName="${DB2_DBNAME}" serverName="${DB2_HOSTNAME}" portNumber="${DB2_PORT}"/>
+    <containerAuthData krb5Principal="${KRB5_USER}"/>
+    <!-- Recovery auth defailts to <containerAuthData> if unspecified, but specify here for clarity anyway -->
+    <recoveryAuthData krb5Principal="${KRB5_USER}"/>
+  </dataSource>
+  
+  <dataSource jndiName="jdbc/krb/DataSource" type="javax.sql.DataSource" containerAuthDataRef="krb5Auth">
+    <jdbcDriver libraryRef="DB2JCCLib" javax.sql.DataSource="com.ibm.db2.jcc.DB2SimpleDataSource"/>
+    <properties.db2.jcc databaseName="${DB2_DBNAME}" serverName="${DB2_HOSTNAME}" portNumber="${DB2_PORT}"/>
+  </dataSource>
+  
   <dataSource jndiName="jdbc/krb/basicPassword">
     <jdbcDriver libraryRef="DB2JCCLib"/>
     <properties.db2.jcc databaseName="${DB2_DBNAME}" serverName="${DB2_HOSTNAME}" portNumber="${DB2_PORT}"/>

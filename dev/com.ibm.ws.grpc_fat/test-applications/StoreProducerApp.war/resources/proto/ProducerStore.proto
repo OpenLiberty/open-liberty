@@ -59,6 +59,8 @@ service AppProducerService {
   */
   rpc clientStreamA(stream StreamRequestA) returns (StreamReplyA) {}
   
+  rpc serverStreamA(StreamRequestA) returns (stream StreamReplyA) {}
+  
 }
 
 message AppResponse{

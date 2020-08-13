@@ -60,6 +60,8 @@ public class BoulderContainer extends CAContainer {
 	private static final long LONG_SLEEP = 120000;
 
 	private static final long SHORT_SLEEP = 1000;
+	
+	private static final long WAITING_FOR_RUNNING_BOULDER = 8;
 
 	public Network bluenet = Network.builder().createNetworkCmdModifier(cmd -> {
 		cmd.withDriver("bridge");
@@ -137,7 +139,7 @@ public class BoulderContainer extends CAContainer {
 				.withCreateContainerCmdModifier(cmd -> cmd.withHostName("boulder"))
 				.withExposedPorts(getDnsManagementPort(), getAcmeListenPort(), OCSP_PORT)
 				.withLogConsumer(o -> System.out.print("[BOL] " + o.getUtf8String()))
-				.withStartupTimeout(Duration.ofMinutes(7));
+				.withStartupTimeout(Duration.ofMinutes(10));
 	}
 
 	@Override
@@ -214,7 +216,7 @@ public class BoulderContainer extends CAContainer {
 		try {
 			boolean clearToContinue = true;
 			boolean sleep = false;
-			for (int b = 1; b <= NUM_RESTART_ATTEMPTS_ON_EXCEPTION; b++) {
+			for (int b = 1; b <= WAITING_FOR_RUNNING_BOULDER; b++) {
 				clearToContinue = true;
 				sleep = false;
 				Log.info(BoulderContainer.class, "start", "Checking Round " + b);
@@ -234,9 +236,8 @@ public class BoulderContainer extends CAContainer {
 							super.getDockerClient().stopContainerCmd(id).exec();
 						} else {
 							Log.info(BoulderContainer.class, "start",
-									imageName + " already running on this container from " + created + " ("
-											+ new Date(created) + "). Sleep and recheck. Create time on image is "
-											+ created + "ms.");
+									imageName + " already running on this container from " + created + "ms ("
+											+ new Date(created) + "). Sleep and recheck.");
 							sleep = true;
 						}
 						clearToContinue = false;
@@ -529,6 +530,10 @@ public class BoulderContainer extends CAContainer {
 	}
 
 	private void pruneNetwork() {
-		super.getDockerClient().pruneCmd(PruneType.NETWORKS).exec();
+		try {
+			super.getDockerClient().pruneCmd(PruneType.NETWORKS).exec();
+		} catch (Exception e) {
+			Log.info(BoulderContainer.class, "pruneNetwork", "Ignoring exception on prune: " + e);			
+		}
 	}
 }

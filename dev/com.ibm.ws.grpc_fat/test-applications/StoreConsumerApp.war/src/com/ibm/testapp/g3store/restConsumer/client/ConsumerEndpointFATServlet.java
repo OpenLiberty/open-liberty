@@ -14,24 +14,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.logging.Logger;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -43,12 +32,9 @@ import javax.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.junit.Test;
 
-import com.gargoylesoftware.htmlunit.CookieManager;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.WebResponse;
-import com.gargoylesoftware.htmlunit.util.Cookie;
-import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.testapp.g3store.restProducer.client.ProducerServiceRestClient;
 import com.ibm.testapp.g3store.restProducer.model.AppStructure;
 import com.ibm.testapp.g3store.restProducer.model.AppStructure.GenreType;
@@ -57,6 +43,7 @@ import com.ibm.testapp.g3store.restProducer.model.Creator;
 import com.ibm.testapp.g3store.restProducer.model.MultiAppStructues;
 import com.ibm.testapp.g3store.restProducer.model.Price;
 import com.ibm.testapp.g3store.restProducer.model.Price.PurchaseType;
+import com.ibm.testapp.g3store.utilsConsumer.ConsumerUtils;
 
 import componenttest.app.FATServlet;
 
@@ -77,9 +64,8 @@ public class ConsumerEndpointFATServlet extends FATServlet {
     private RestClientBuilder builderConsumer;
     private RestClientBuilder builderProducer;
 
-    private static String getSysProp(String key) {
-        return AccessController.doPrivileged((PrivilegedAction<String>) () -> System.getProperty(key));
-    }
+    // The baseURL URL of the remote endpoint of Consumer Wrapper application
+    private static String baseConsumerUrlStr = "http://" + "localhost:" + ConsumerUtils.getSysProp("bvt.prop.member_1.http") + "/StoreConsumerApp/v1C/";
 
     /**
      *
@@ -89,7 +75,7 @@ public class ConsumerEndpointFATServlet extends FATServlet {
 
         String m = "ConsumerEndpoint.init";
         // The baseURL URL of the remote endpoint of Producer Wrapper application
-        String baseUrlStrProducer = "http://" + "localhost:" + getSysProp("bvt.prop.member_1.http") + "/StoreConsumerApp/v1P/";
+        String baseUrlStrProducer = "http://" + "localhost:" + ConsumerUtils.getSysProp("bvt.prop.member_1.http") + "/StoreConsumerApp/v1P/";
 
         _log.info(m + ": baseUrlStrProducer = " + baseUrlStrProducer);
 
@@ -119,14 +105,11 @@ public class ConsumerEndpointFATServlet extends FATServlet {
      */
     private RestClientBuilder createConsumerRestClient(String m) throws Exception {
 
-        // The baseURL URL of the remote endpoint of Consumer Wrapper application
-        String baseUrlStr = "http://" + "localhost:" + getSysProp("bvt.prop.member_1.http") + "/StoreConsumerApp/v1C/";
-
-        _log.info(m + ": baseUrlConsumer = " + baseUrlStr);
+        _log.info(m + ": baseUrlConsumer = " + baseConsumerUrlStr);
 
         URL baseUrl;
         try {
-            baseUrl = new URL(baseUrlStr);
+            baseUrl = new URL(baseConsumerUrlStr);
         } catch (MalformedURLException ex) {
             throw new ServletException(ex);
         }
@@ -300,8 +283,8 @@ public class ConsumerEndpointFATServlet extends FATServlet {
      * @throws Exception
      */
     @Test
-    public void testGetAppName(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        final String m = "testGetAppName";
+    public void testGetAppName_Auth_GrpcTarget(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        final String m = "testGetAppName_Auth_GrpcTarget";
 
         // create
         // query name
@@ -321,7 +304,7 @@ public class ConsumerEndpointFATServlet extends FATServlet {
 
         try {
 
-            _log.info(m + " ------------------ testGetAppName--START ---------------------");
+            _log.info(m + " ------------------ " + m + "--START ---------------------");
 
             assertCreateSingleAppData(m, service, appName);
 
@@ -331,25 +314,7 @@ public class ConsumerEndpointFATServlet extends FATServlet {
 
             builderConsumer = createConsumerRestClient(m);
 
-            ConsumerServiceRestClient client = builderConsumer
-                            .property("com.ibm.ws.jaxrs.client.keepalive.connection", "close")
-                            .register(
-                                      (ClientRequestFilter) requestContext -> {
-                                          MultivaluedMap<String, Object> headers = requestContext.getHeaders();
-                                          try {
-                                              _log.info(m + " ----------- Add Bearer Token to the request --------------");
-                                              headers.add("Authorization", "Bearer " + testGetToken(req, resp));
-
-                                              for (Entry<String, List<Object>> entry : headers.entrySet()) {
-                                                  _log.info("Request headers Bearer: " + entry.getKey() + ", set to: " + entry.getValue());
-                                              }
-
-                                          } catch (Exception e) {
-                                              _log.info(m + " -------------- Failed --------------");
-                                              e.printStackTrace();
-                                          }
-                                      })
-                            .build(ConsumerServiceRestClient.class);
+            ConsumerServiceRestClient client = this.add_AuthHeader_Filter(appName, builderConsumer, req, resp);
 
             _log.info(m + " ----- invoking consumer rest client: " + client);
 
@@ -371,10 +336,109 @@ public class ConsumerEndpointFATServlet extends FATServlet {
 
             assertDeleteSingleAppData(m, service, appName);
 
-            _log.info(m + " ----------------testGetAppName--FINISH -------------------");
+            _log.info(m + " ---------------- " + m + "--FINISH -------------------");
             _log.info(m + " ------------------------------------------------------------");
 
         }
+
+    }
+
+    /**
+     * @param req
+     * @param resp
+     * @throws Exception
+     */
+    @Test
+    public void testGetAppName_Auth_CallCred(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        final String m = "testGetAppName_Auth_CallCred";
+
+        // create
+        // query name
+        // get app info with the name
+        // get Price list for the app
+        // delete
+        ProducerServiceRestClient service = null;
+        String appName = "myAppConsumer";
+        boolean isValidResponse = false;
+
+        try {
+            service = builderProducer.build(ProducerServiceRestClient.class);
+        } catch (Exception e) {
+            _log.severe("Check ProducerServiceRestClient proxy");
+            throw e;
+        }
+
+        try {
+
+            _log.info(m + " ------------------ " + m + "--START ---------------------");
+
+            assertCreateSingleAppData(m, service, appName);
+
+            _log.info(m + " ----- invoking consumer rest client for available app names");
+
+            // Now get the data using Consumer
+
+            builderConsumer = createConsumerRestClient(m);
+
+            ConsumerServiceRestClient client = this.add_AuthHeader_Filter(m, builderConsumer, req, resp);
+
+            _log.info(m + " ----- invoking consumer rest client: " + client);
+
+            Response r = client.getAllAppNames_Auth_CallCred();
+
+            assertEquals(200, r.getStatus());
+
+            String entityName = r.readEntity(String.class);
+            _log.info(m + " entityName: " + entityName);
+            // Expected output in logs
+            //entityName: ["myApp"]
+
+            isValidResponse = entityName.contains(appName);
+            assertTrue(isValidResponse);
+
+            _log.info(m + " ------------------------------------------------------------");
+
+        } finally {
+
+            assertDeleteSingleAppData(m, service, appName);
+
+            _log.info(m + " ---------------- " + m + "--FINISH -------------------");
+            _log.info(m + " ------------------------------------------------------------");
+
+        }
+
+    }
+
+    /**
+     * @param m
+     * @param builderConsumer
+     * @param req
+     * @param resp
+     * @return
+     */
+    private ConsumerServiceRestClient add_AuthHeader_Filter(String m, RestClientBuilder builderConsumer, HttpServletRequest req, HttpServletResponse resp) {
+
+        ConsumerServiceRestClient client = builderConsumer
+                        .property("com.ibm.ws.jaxrs.client.keepalive.connection", "close")
+                        .register(
+                                  (ClientRequestFilter) requestContext -> {
+                                      MultivaluedMap<String, Object> headers = requestContext.getHeaders();
+                                      try {
+                                          _log.info(m + " ----------- Add Bearer Token to the request --------------");
+                                          headers.add("Authorization", "Bearer " + getToken(req, resp));
+
+                                          for (Entry<String, List<Object>> entry : headers.entrySet()) {
+                                              _log.info("Request headers Bearer: " + entry.getKey() + ", set to: " + entry.getValue());
+                                          }
+
+                                      } catch (Exception e) {
+                                          _log.info(m + " -------------- Failed --------------");
+                                          e.printStackTrace();
+                                      }
+                                  })
+                        .build(ConsumerServiceRestClient.class);
+
+        return client;
 
     }
 
@@ -554,7 +618,7 @@ public class ConsumerEndpointFATServlet extends FATServlet {
 
         try {
 
-            _log.info(m + " ------------------------------------------------------------");
+            _log.info(m + " ----------------testGetMultiAppPrices--START -----------------------");
 
             this.assertCreateMultipleAppData(m, service, app1, app2, app3, app4);
             // Now get the app names using Consumer
@@ -593,7 +657,7 @@ public class ConsumerEndpointFATServlet extends FATServlet {
             _log.info(m + " ------------------------------------------------------------");
 
             this.assertDeleteMultipleAppData(m, service, app1, app2, app3, app4);
-            _log.info(m + " ------------------------------------------------------------");
+            _log.info(m + " ----------------testGetMultiAppPrices--FINISH -----------------------");
             _log.info(m + " ------------------------------------------------------------");
 
         }
@@ -641,9 +705,8 @@ public class ConsumerEndpointFATServlet extends FATServlet {
 
                 builderConsumer = createConsumerRestClient(m);
 
-                client = builderConsumer
-                                .property("com.ibm.ws.jaxrs.client.keepalive.connection", "close")
-                                .build(ConsumerServiceRestClient.class);
+                client = this.add_AuthHeader_Filter(m, builderConsumer, req, resp);
+
             } catch (Exception e) {
                 _log.severe(m + " , Error creating ConsumerServiceRestClient proxy");
                 throw e;
@@ -709,7 +772,7 @@ public class ConsumerEndpointFATServlet extends FATServlet {
 
         try {
 
-            _log.info(m + " -----------------getMultiAppsInfo --- START------------------------");
+            _log.info(m + " -----------------testGetMultiAppsInfo --- START------------------------");
 
             this.assertCreateMultipleAppData(m, service, app1, app2, app3, app4);
 
@@ -763,7 +826,7 @@ public class ConsumerEndpointFATServlet extends FATServlet {
 
             this.assertDeleteMultipleAppData(m, service, app1, app2, app3, app4);
 
-            _log.info(m + " ---------------getMultiAppsInfo --- FINISH -----------------");
+            _log.info(m + " ---------------testGetMultiAppsInfo --- FINISH -----------------");
             _log.info(m + " ------------------------------------------------------------");
 
         }
@@ -872,25 +935,15 @@ public class ConsumerEndpointFATServlet extends FATServlet {
      * @return
      * @throws Exception
      */
-    public String testGetToken(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    private String getToken(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
-        String m = "testGetToken";
-        _log.info(m + " ------------------------------------------------------------");
-        _log.info(m + " ------------------------------------------------------------");
+        String builtToken = getJwtFromTokenEndpoint("https://" + req.getServerName() + ":" + ConsumerUtils.getSysProp("bvt.prop.member_1.https") + "/");
 
-        String baseUrlStr = "https://" + req.getServerName() + ":" + getSysProp("bvt.prop.member_1.https") + "/";
-
-        String builtToken = getJwtFromTokenEndpoint(baseUrlStr);
-
-        _log.info(m + " ------------------------------------------------------------ " + builtToken);
+        _log.info("getToken ------------------------------------------------------------ " + builtToken);
 
         assertNotNull(builtToken);
 
-        _log.info(m + " ------------------------------------------------------------");
-        _log.info(m + " ------------------------------------------------------------");
-
         return builtToken;
-
     }
 
     /**
@@ -900,136 +953,16 @@ public class ConsumerEndpointFATServlet extends FATServlet {
      */
     private String getJwtFromTokenEndpoint(String baseUrlStr) throws Exception {
 
-        WebRequest request = buildJwtTokenEndpointRequest("defaultJWT", "dev", "hello", baseUrlStr);
+        WebRequest request = ConsumerUtils.buildJwtTokenEndpointRequest("defaultJWT", "dev", "hello", baseUrlStr);
 
-        printRequestHeaders(request, "getJwtFromTokenEndpoint");
+        ConsumerUtils.printRequestHeaders(request, "getJwtFromTokenEndpoint");
 
         WebClient wc = new WebClient();
         wc.getOptions().setUseInsecureSSL(true);
 
         WebResponse response = wc.getPage(request).getWebResponse();
 
-        return extractJwtFromTokenEndpointResponse(response);
+        return ConsumerUtils.extractJwtFromTokenEndpointResponse(response);
     }
 
-    /**
-     * @param builderId
-     * @param user
-     * @param pw
-     * @param baseUrlStr
-     * @return
-     * @throws MalformedURLException
-     * @throws UnsupportedEncodingException
-     */
-    private WebRequest buildJwtTokenEndpointRequest(String builderId, String user, String pw, String baseUrlStr) throws MalformedURLException, UnsupportedEncodingException {
-
-        String jwtTokenEndpoint = "jwt/ibm/api/" + "%s" + "/token";
-        String jwtBuilderUrl = baseUrlStr + String.format(jwtTokenEndpoint, builderId);
-
-        _log.info(" ----------------------------jwtBuilderUrl= " + jwtBuilderUrl);
-
-        WebRequest request = new WebRequest(new URL(jwtBuilderUrl));
-        // Token endpoint requires authentication, so provide credentials
-        request.setAdditionalHeader("Authorization", createBasicAuthHeaderValue(user, pw));
-
-        return request;
-    }
-
-    /**
-     * JWT /token endpoint should return a JSON object whose only key, "token", stores the JWT built by the builder.
-     */
-    /**
-     * @param response
-     * @return
-     * @throws Exception
-     */
-    private String extractJwtFromTokenEndpointResponse(WebResponse response) throws Exception {
-        JsonReader reader = Json.createReader(new StringReader(response.getContentAsString()));
-        JsonObject jsonResponse = reader.readObject();
-        return jsonResponse.getString("token");
-    }
-
-    private String createBasicAuthHeaderValue(String username, String password) throws UnsupportedEncodingException {
-        return "Basic " + Base64.getEncoder().encodeToString((username + ":" + password).getBytes(StandardCharsets.UTF_8));
-    }
-
-    // Helper methods
-    /**
-     * @param webClient
-     * @param request
-     * @param testName
-     */
-    private void printRequestParts(WebClient webClient, WebRequest request, String testName) {
-
-        if (request == null) {
-            _log.info("The request is null - nothing to print");
-            return;
-        }
-        if (webClient != null) {
-            printAllCookies(webClient);
-        }
-        printRequestInfo(request, testName);
-
-    }
-
-    /**
-     * @param webClient
-     */
-    private void printAllCookies(WebClient webClient) {
-        if (webClient == null) {
-            return;
-        }
-        CookieManager cookieManager = webClient.getCookieManager();
-        Set<Cookie> cookies = cookieManager.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                _log.info("Cookie: " + cookie.getName() + " Value: " + cookie.getValue());
-            }
-        }
-    }
-
-    /**
-     * @param request
-     * @param testName
-     */
-    private void printRequestInfo(WebRequest request, String testName) {
-        _log.info("Request URL: " + request.getUrl());
-        printRequestHeaders(request, testName);
-        printRequestParameters(request, testName);
-        printRequestBody(request, testName);
-    }
-
-    /**
-     * @param request
-     * @param testName
-     */
-    private void printRequestHeaders(WebRequest request, String testName) {
-        Map<String, String> requestHeaders = request.getAdditionalHeaders();
-        if (requestHeaders != null) {
-            for (Map.Entry<String, String> entry : requestHeaders.entrySet()) {
-                _log.info("Request header: " + entry.getKey() + ", set to: " + entry.getValue());
-            }
-        }
-    }
-
-    /**
-     * @param request
-     * @param testName
-     */
-    private void printRequestParameters(WebRequest request, String testName) {
-        List<NameValuePair> requestParms = request.getRequestParameters();
-        if (requestParms != null) {
-            for (NameValuePair req : requestParms) {
-                _log.info("Request parameter: " + req.getName() + ", set to: " + req.getValue());
-            }
-        }
-    }
-
-    /**
-     * @param request
-     * @param testName
-     */
-    private void printRequestBody(WebRequest request, String testName) {
-        _log.info("Request body: " + request.getRequestBody());
-    }
 }

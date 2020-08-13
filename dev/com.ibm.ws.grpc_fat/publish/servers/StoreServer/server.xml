@@ -19,26 +19,69 @@
 		<feature>appSecurity-2.0</feature>
 		<feature>ssl-1.0</feature>
 		<feature>jwt-1.0</feature>
+		<feature>openidConnectClient-1.0</feature>
+		<feature>jsp-2.3</feature>
 	</featureManager>
-
+	
 	<include location="../fatTestPorts.xml" />
 
 	<distributedMap id="gRPCDistMap" />
 	
-	<keyStore id="defaultKeyStore" password="passw0rd" />
+<!-- 	<keyStore id="defaultKeyStore" password="passw0rd" /> -->
 
 	<javaPermission className="java.security.AllPermission"
 		name="*" actions="*" />
 
 	<!-- Default SSL configuration enables trust for default certificates from 
 		the Java runtime -->
-	<ssl id="defaultSSLConfig" trustDefaultCerts="true" />
+	<!-- <ssl id="defaultSSLConfig" trustDefaultCerts="true" /> -->
 	
-	<logging
-		traceSpecification="*=info=enabled:io.openliberty.grpc*=all:com.ibm.testapp.g3store*=all:io.grpc*=all"
-		maxFileSize="40" maxFiles="20" traceFormat="BASIC" />
-		
-		
+	<sslDefault sslRef="DefaultSSLSettings" />
+	
+	<ssl
+		id="DefaultSSLSettings"
+		keyStoreRef="rsa_key"
+		trustStoreRef="rsa_trust"
+		clientAuthenticationSupported="true" />
+	<keyStore
+		id="rsa_key"
+		password="Liberty"
+		type="jks"
+		location="${server.config.dir}/rsa_key.jks" />
+	<keyStore
+		id="rsa_trust"
+		password="LibertyServer"
+		type="jks"
+		location="${server.config.dir}/rsa_trust.jks" />
+	
+	
+	<!-- The security setup in this server will apply on grpc services -->
+	
+	<openidConnectClient
+		id="defaultJWT"
+		scope="openid profile"
+		httpsRequired="false"
+		inboundPropagation="required"
+		issuerIdentifier="testIssuer"
+		signatureAlgorithm="RS256"
+		trustStoreRef="rsa_trust"
+		trustAliasName="rsacert"
+		clockSkew="2s"
+		groupIdentifier="groups"
+		authFilterRef="myAuthFilter">
+	</openidConnectClient>
+	
+	<authFilter id="myAuthFilter">
+		<requestUrl
+			id="myRequestUrla"
+			urlPattern="getAllAppNames"
+			matchType="contains" />
+	</authFilter>
+	
+	<!-- the openidConnectClient does not use the registry by default, 
+so the group information is what is in the token, 
+and that access id must then exist in the role map -->
+
 	<basicRegistry id="basic" realm="storeRealmBasicReg">
 		<user name="dev" password="hello" /> <!--user name="${env.BASIC_REGISTRY_USERNAME}" -->
 		<user name="test" password="bug" />
@@ -51,17 +94,23 @@
 	<application id="StoreApp"
 		location="StoreApp.war" name="StoreApp" type="war">
 		<application-bnd>
-			<security-role name="Administrator">
-				<!--group name="${env.ROLE_NAME_ADMINISTRATOR}" access-id="group:${env.OIDC_REALM}/${env.ROLE_NAME_ADMINISTRATOR}"/ -->
+			<security-role name="Administrator">				
 				<group name="Administrator"
-					access-id="group:storeRealmBasicReg/Administrator" />
+					access-id="group:testIssuer/Administrator" />
 			</security-role>
 			<security-role name="students">
-				<!--group name="${env.ROLE_NAME_EDITOR}" access-id="group:${env.OIDC_REALM}/${env.ROLE_NAME_EDITOR}"/ -->
+			<!-- For Token auth case -->
+				<group name="students-jwt"
+					access-id="group:testIssuer/students" />
+				<!-- For basic auth case -->
 				<group name="students"
 					access-id="group:storeRealmBasicReg/students" />
 			</security-role>
 		</application-bnd>
 	</application>
+		
+	<logging
+		traceSpecification="*=info=enabled:io.openliberty.grpc*=all:com.ibm.testapp.g3store*=all:io.grpc*=all"
+		maxFileSize="200" maxFiles="4" traceFormat="BASIC" />
 
 </server>

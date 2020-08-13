@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs21.client.fat.test;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,6 +60,10 @@ public class JAXRS21ClientJerseyRxInvokerTest extends JAXRS21AbstractTest {
         } catch (Exception e) {
             System.out.println(e.toString());
         }
+
+        // Pause for the smarter planet message
+        assertNotNull("The smarter planet message did not get printed on server",
+                      server.waitForStringInLog("CWWKF0011I"));
 
     }
 

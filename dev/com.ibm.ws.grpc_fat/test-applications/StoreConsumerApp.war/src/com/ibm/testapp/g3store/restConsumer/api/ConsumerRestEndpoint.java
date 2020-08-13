@@ -99,9 +99,7 @@ public class ConsumerRestEndpoint extends ConsumerGrpcServiceClientImpl {
             log.finest("getAllAppNames: authHeader " + authHeader);
         }
 
-        // secure connect to gRPC service
-//        startServiceSecure_BlockingStub("localhost", getPort(), authHeader);
-
+        // Authorization header will be passed with grpcTarget
         // connect to gRPC service
         startService_BlockingStub("localhost", getPort());
 
@@ -110,6 +108,46 @@ public class ConsumerRestEndpoint extends ConsumerGrpcServiceClientImpl {
             List<String> nameList = getAllAppNameList();
 
             log.info("getAllAppNames: request to get appName has been completed by ConsumerRestEndpoint ");
+            // respond as JSON
+            return Response.ok().entity(nameList).build();
+
+        } catch (NotFoundException e) {
+            return Response.status(Status.NOT_FOUND).build();
+        } finally {
+            // shurdown the gRPC connection
+            stopService();
+        }
+    }
+
+    /**
+     * @param httpHeaders
+     * @return
+     * @throws Exception
+     */
+    @GET
+    @Path("/appNames_CC")
+    @APIResponses(value = {
+                            @APIResponse(responseCode = "400", description = "Bad Request — Client sent an invalid request", content = @Content(mediaType = "text/plain")),
+                            @APIResponse(responseCode = "404", description = "Not Found — The requested resources does not exist.", content = @Content(mediaType = "text/plain")),
+                            @APIResponse(responseCode = "200", description = "The list of app names are returned.",
+                                         content = @Content(mediaType = "application/json", schema = @Schema(type = SchemaType.OBJECT, implementation = AppNameList.class))) })
+    public Response getAllAppNames_Auth_CallCred() {
+
+        log.info("getAllAppNames_Auth_CallCred: Received request to get all available AppNames");
+
+        String authHeader = httpHeaders.getRequestHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+        if (log.isLoggable(Level.FINE)) {
+            log.finest("getAllAppNames_Auth_CallCred: authHeader " + authHeader);
+        }
+
+        // Add Auth header using CallCred and connect to gRPC service
+        this.startService_Auth_CallCred_BlockingStub("localhost", getPort(), authHeader);
+
+        try {
+            // call the gRPC API and get Result
+            List<String> nameList = getAllAppNameList_Auth_CallCred();
+
+            log.info("getAllAppNames_Auth_CallCred: request to get appName has been completed by ConsumerRestEndpoint ");
             // respond as JSON
             return Response.ok().entity(nameList).build();
 

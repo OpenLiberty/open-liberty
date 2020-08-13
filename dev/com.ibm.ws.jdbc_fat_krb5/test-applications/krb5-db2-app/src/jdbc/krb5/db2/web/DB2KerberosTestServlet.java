@@ -17,22 +17,32 @@ import static org.junit.Assert.fail;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.SQLInvalidAuthorizationSpecException;
+import java.sql.Statement;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.security.auth.login.LoginException;
 import javax.servlet.annotation.WebServlet;
 import javax.sql.DataSource;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.UserTransaction;
 
 import org.junit.Test;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/DB2KerberosTestServlet")
 public class DB2KerberosTestServlet extends FATServlet {
+
+    @Resource
+    UserTransaction tran;
 
     @Resource(lookup = "jdbc/nokrb5")
     DataSource noKrb5;
@@ -49,12 +59,24 @@ public class DB2KerberosTestServlet extends FATServlet {
     @Resource(lookup = "jdbc/krb/basicPassword")
     DataSource basicPassword;
 
+    @Resource(lookup = "jdbc/krb/DataSource")
+    DataSource regularDs;
+
     // The jdbc/noAuth datasource would normally fail due to no credentials,
     // but since we have bound the 'krb5Auth' auth alias to 'java:app/env/jdbc/reboundAuth'
     // in the ibm-web-bnd.xml it will work
     @Resource(lookup = "jdbc/noAuth", name = "java:app/env/jdbc/reboundAuth")
     DataSource reboundAuth;
 
+    // Uses kerberos authData for container auth and recovery auth
+    // Unshareable so we we can have multiple XA resources to cause in-doubt tran
+    @Resource(lookup = "jdbc/krb/xaRecovery", shareable = false)
+    DataSource xaRecoveryDs;
+
+    /**
+     * Attempt to get a connection from a datasource that has basic auth configured, which
+     * should fail because the backend DB2 database has been configured to require Kerberos
+     */
     @Test
     @AllowedFFDC
     public void testNonKerberosConnectionRejected() throws Exception {
@@ -65,6 +87,9 @@ public class DB2KerberosTestServlet extends FATServlet {
         }
     }
 
+    /**
+     * Get a connection with a javax.sql.ConnectionPoolDataSource
+     */
     @Test
     public void testKerberosBasicConnection() throws Exception {
         try (Connection con = krb5DataSource.getConnection()) {
@@ -72,9 +97,22 @@ public class DB2KerberosTestServlet extends FATServlet {
         }
     }
 
+    /**
+     * Get a connection with a javax.sql.XADatasource
+     */
     @Test
     public void testKerberosXAConnection() throws Exception {
         try (Connection con = krb5XADataSource.getConnection()) {
+            con.createStatement().execute("SELECT 1 FROM SYSIBM.SYSDUMMY1");
+        }
+    }
+
+    /**
+     * Get a connection with a javax.sql.Datasource
+     */
+    @Test
+    public void testKerberosRegularConnection() throws Exception {
+        try (Connection con = regularDs.getConnection()) {
             con.createStatement().execute("SELECT 1 FROM SYSIBM.SYSDUMMY1");
         }
     }
@@ -120,6 +158,11 @@ public class DB2KerberosTestServlet extends FATServlet {
         }
     }
 
+    /**
+     * Get two connection handles from the same datasource.
+     * Ensure that both connection handles share the same managed connection (i.e. phyiscal connection)
+     * to prove that Subject reuse is working
+     */
     @Test
     public void testConnectionReuse() throws Exception {
         String managedConn1 = null;
@@ -138,6 +181,140 @@ public class DB2KerberosTestServlet extends FATServlet {
         assertEquals("Expected two connections from the same datasource to share the same underlying managed connection",
                      managedConn1, managedConn2);
 
+    }
+
+    /**
+     * Cause an in-doubt transaction and verify that XA recovery resolves it.
+     * The recoveryAuthData should be used for recovery.
+     */
+    @Test
+    @ExpectedFFDC({ "javax.transaction.xa.XAException", "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException" })
+    public void testXARecovery() throws Throwable {
+        initTable(xaRecoveryDs);
+        Connection[] cons = new Connection[3];
+        tran.begin();
+        try {
+            // Use unsharable connections, so that they all get their own XA resources
+            cons[0] = xaRecoveryDs.getConnection();
+            cons[1] = xaRecoveryDs.getConnection();
+            cons[2] = xaRecoveryDs.getConnection();
+
+            String dbProductName = cons[0].getMetaData().getDatabaseProductName().toUpperCase();
+            System.out.println("Product Name is " + dbProductName);
+
+            PreparedStatement pstmt;
+            pstmt = cons[0].prepareStatement("insert into cities values (?, ?, ?)");
+            pstmt.setString(1, "Edina");
+            pstmt.setInt(2, 47941);
+            pstmt.setString(3, "Hennepin");
+            pstmt.executeUpdate();
+            pstmt.close();
+
+            pstmt = cons[1].prepareStatement("insert into cities values (?, ?, ?)");
+            pstmt.setString(1, "St. Louis Park");
+            pstmt.setInt(2, 45250);
+            pstmt.setString(3, "Hennepin");
+            pstmt.executeUpdate();
+            pstmt.close();
+
+            pstmt = cons[2].prepareStatement("insert into cities values (?, ?, ?)");
+            pstmt.setString(1, "Moorhead");
+            pstmt.setInt(2, 38065);
+            pstmt.setString(3, "Clay");
+            pstmt.executeUpdate();
+            pstmt.close();
+
+            System.out.println("Intentionally causing in-doubt transaction");
+            TestXAResource.assignSuccessLimit(1, cons);
+            try {
+                tran.commit();
+                throw new Exception("Commit should not have succeeded because the test infrastructure is supposed to cause an in-doubt transaction.");
+            } catch (HeuristicMixedException x) {
+                TestXAResource.removeSuccessLimit(cons);
+                System.out.println("Caught expected HeuristicMixedException: " + x.getMessage());
+            }
+        } catch (Throwable x) {
+            TestXAResource.removeSuccessLimit(cons);
+            try {
+                tran.rollback();
+            } catch (Throwable t) {
+            }
+            throw x;
+        } finally {
+            for (Connection con : cons)
+                if (con != null)
+                    try {
+                        con.close();
+                    } catch (Throwable x) {
+                    }
+        }
+
+        // At this point, the transaction is in-doubt.
+        // We won't be able to access the data until the transaction manager recovers
+        // the transaction and resolves it.
+        //
+        // A connection configured with TRANSACTION_SERIALIZABLE is necessary in
+        // order to allow the recovery to kick in before using the connection.
+
+        System.out.println("attempting to access data (only possible after recovery)");
+        try (Connection con = xaRecoveryDs.getConnection()) {
+            assertEquals("Isolation level must be 8 (TRANSACTION_SERIALIZABLE) for XA recovery",
+                         Connection.TRANSACTION_SERIALIZABLE, con.getTransactionIsolation());
+
+            PreparedStatement pstmt = con.prepareStatement("select name, population, county from cities where name = ?");
+
+            /*
+             * Poll for results once a second for 60 seconds.
+             * Most databases will have XA recovery done by this point
+             *
+             */
+            Set<String> cities = new HashSet<>();
+            for (int count = 0; cities.size() < 3 && count < 60; Thread.sleep(1000)) {
+                if (!cities.contains("Edina")) {
+                    pstmt.setString(1, "Edina");
+                    if (pstmt.executeQuery().next())
+                        cities.add("Edina");
+                }
+
+                if (!cities.contains("St. Louis Park")) {
+                    pstmt.setString(1, "St. Louis Park");
+                    if (pstmt.executeQuery().next())
+                        cities.add("St. Louis Park");
+                }
+
+                if (!cities.contains("Moorhead")) {
+                    pstmt.setString(1, "Moorhead");
+                    if (pstmt.executeQuery().next())
+                        cities.add("Moorhead");
+                }
+                count++;
+                System.out.println("Attempt " + count + " to retrieve recovered XA data. Current status: " + cities);
+                if (cities.size() == 3)
+                    break; // success
+            }
+
+            if (cities.size() < 3)
+                throw new Exception("Missing entry in database. Results: " + cities);
+            else
+                System.out.println("successfully accessed the data");
+        }
+    }
+
+    /**
+     * clears table of all data to ensure fresh start for this test.
+     *
+     * @param datasource the data source to clear the table for
+     */
+    private void initTable(DataSource datasource) throws Exception {
+        try (Connection con = datasource.getConnection()) {
+            Statement st = con.createStatement();
+            st.execute("DROP TABLE IF EXISTS cities");
+            st.execute("create table cities (name varchar(50) not null primary key, population int, county varchar(30))");
+        }
+
+        // End the current LTC and get a new one, so that test methods start from the correct place
+        tran.begin();
+        tran.commit();
     }
 
     /**

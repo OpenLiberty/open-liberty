@@ -89,7 +89,6 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
      */
 	@Override
 	public void filter(ContainerRequestContext reqCtx, ContainerResponseContext respCtx) throws IOException {
-
 		long elapsedTime = 0;
 		// Calculate the response time for the resource method.
 		Long startTime = (Long) reqCtx.getProperty(START_TIME);
@@ -98,7 +97,7 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
 		}
 
 		Class<?> resourceClass = resourceInfo.getResourceClass();
-
+		
 		if (resourceClass != null) {
 			Method resourceMethod = resourceInfo.getResourceMethod();
 
@@ -136,13 +135,19 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
 			 */
 			String metricsHeader = respCtx
 			        .getHeaderString("com.ibm.ws.microprofile.metrics.monitor.MetricsJaxRsEMCallbackImpl.Exception");
+			
+			//Check for MP Metrics 30 header;
+			if (metricsHeader == null)
+				metricsHeader = respCtx.getHeaderString("io.openliberty.microprofile.metrics.internal.monitor.MetricsJaxRsEMCallbackImpl.Exception");
+
+			// Save key in appMetricInfos for cleanup on application stop.
+			addKeyToMetricInfo(appName, key);
+			
 			if (metricsHeader == null) {
 				// Need to start new minute here.. we need to pass in the stat object so we can
 				// actually update Mbean
 				maybeStartNewMinute(stats);
 
-				// Save key in appMetricInfos for cleanup on application stop.
-				addKeyToMetricInfo(appName, key);
 
 				// Increment the request count for the resource method.
 				stats.incrementCountBy(1);

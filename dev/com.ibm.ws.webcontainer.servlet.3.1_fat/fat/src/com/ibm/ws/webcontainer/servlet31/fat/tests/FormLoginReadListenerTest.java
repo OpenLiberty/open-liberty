@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
@@ -29,7 +29,6 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -44,10 +43,10 @@ import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.webcontainer.security.test.servlets.PostParamsClient;
 
 import componenttest.annotation.SkipForRepeat;
-import componenttest.topology.impl.LibertyServer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.LibertyServer;
 
 //Temporarily skipped for EE9 jakarta until jakarta repeat bug is fixed and jakartaee 9 feature is developed
 @Mode(TestMode.FULL)
@@ -79,21 +78,23 @@ public class FormLoginReadListenerTest extends LoggingTest {
             Set<String> appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(FORM_LOGIN_READ_LISTENER_APP_NAME);
             LOG.info("addAppToServer : " + FORM_LOGIN_READ_LISTENER_APP_NAME + " already installed : " + !appInstalled.isEmpty());
             if (appInstalled.isEmpty())
-              ShrinkHelper.exportAppToServer(SHARED_SERVER.getLibertyServer(), FormLoginReadListenerApp);
-          }
+                ShrinkHelper.exportAppToServer(SHARED_SERVER.getLibertyServer(), FormLoginReadListenerApp);
+        }
         //Replace config for the other server
         LibertyServer wlp = SHARED_SERVER.getLibertyServer();
         wlp.saveServerConfiguration();
         wlp.setServerConfigurationFile("FormLogin_ReadListener/server.xml");
-        
+
         SHARED_SERVER.startIfNotStarted();
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + FORM_LOGIN_READ_LISTENER_APP_NAME);
+        wlp.waitForStringInLog("CWWKZ0001I.* " + FORM_LOGIN_READ_LISTENER_APP_NAME);
     }
-    
+
     @AfterClass
     public static void testCleanup() throws Exception {
         // test cleanup
+        SHARED_SERVER.getLibertyServer().setMarkToEndOfLog();
         SHARED_SERVER.getLibertyServer().restoreServerConfiguration();
+        SHARED_SERVER.getLibertyServer().waitForConfigUpdateInLogUsingMark(null);
         if (SHARED_SERVER.getLibertyServer() != null && SHARED_SERVER.getLibertyServer().isStarted()) {
             SHARED_SERVER.getLibertyServer().stopServer("SRVE8015E:.*");
         }
@@ -177,7 +178,7 @@ public class FormLoginReadListenerTest extends LoggingTest {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
      */
     @Override
