@@ -180,15 +180,15 @@ public class GenericFrameTests extends H2FATDriverServlet {
 
         setupDefaultPreface(h2Client);
 
-        // send over a PING frame and expect a response
-        pingFrame = new FramePing(0, pingData, false);
-        h2Client.sendFrame(pingFrame);
-
         // malformed frame: set frame type byte to unknown
         //_________________________||____________________ - frame type byte
         String dataString = "0000060f0000000003414243313233";
         byte[] b = parseHexBinary(dataString);
         h2Client.sendBytesAfterPreface(b);
+
+        // send over a PING frame and expect a response
+        pingFrame = new FramePing(0, pingData, false);
+        h2Client.sendFrame(pingFrame);
 
         waitForTestCompletion(blockUntilConnectionIsDone);
         handleErrors(h2Client, testName);
