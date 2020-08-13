@@ -685,8 +685,7 @@ public class AcmeConfigVariationsTest {
 			configuration.getAcmeCA().setAcmeTransportConfig(acmeTransportConfig);
 			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
 			AcmeFatUtils.renewCertificate(server);
-			assertNotNull("Expected CWPKI2016E in logs.",
-					server.waitForStringInLog("CWPKI2016E.*SocketTimeoutException"));
+			assertNotNull("Expected CWPKI2016E in logs.", server.waitForStringInLog("CWPKI2016E"));
 
 			/***********************************************************************
 			 * 
@@ -700,8 +699,7 @@ public class AcmeConfigVariationsTest {
 			acmeTransportConfig.setHttpReadTimeout("1ms");
 			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration);
 			AcmeFatUtils.renewCertificate(server);
-			assertNotNull("Expected CWPKI2016E in logs.",
-					server.waitForStringInLog("CWPKI2016E.*SocketTimeoutException"));
+			assertNotNull("Expected CWPKI2016E in logs.", server.waitForStringInLog("CWPKI2016E"));
 
 			/***********************************************************************
 			 * 
