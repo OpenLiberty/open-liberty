@@ -433,7 +433,7 @@ org.eclipse.microprofile.rest.client:microprofile-rest-client-api:1.4.0
 org.eclipse.microprofile.rest.client:microprofile-rest-client-api:2.0-RC2
 org.eclipse.transformer:org.eclipse.transformer.cli:0.2.0-SNAPSHOT
 org.eclipse.transformer:org.eclipse.transformer:0.2.0-SNAPSHOT
-org.eclipse:yasson:1.0.7
+org.eclipse:yasson:1.0.8
 org.eclipse:yasson:2.0.0-M1
 org.ektorp:org.ektorp:1.4.1
 org.fusesource.jansi:jansi:1.18
