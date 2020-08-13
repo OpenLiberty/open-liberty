@@ -1,0 +1,88 @@
+<server>
+  <featureManager>
+    <feature>osgiconsole-1.0</feature>
+    <feature>servlet-3.1</feature>
+    <feature>wasJmsClient-2.0</feature>
+    <feature>wasJmsServer-1.0</feature>
+    <feature>cdi-1.2</feature>
+    <feature>jndi-1.0</feature>
+    <feature>testjmsinternals-1.0</feature>
+  </featureManager>
+
+  <include optional="true" location="../fatTestPorts.xml"/>
+
+  <variable name="onError" value="FAIL"/>
+
+  <logging
+    traceSpecification="*=info:logservice=all:SIBJms*=all:com.ibm.ws.cdi.*=all"
+    maxFileSize="200"/>
+
+  <messagingEngine id="defaultME">
+
+	<queue id="newQueue"/>
+	<queue id="QUEUE1"/>
+	<queue id="QUEUE2"/>
+	<queue id="DeletionQueue"/>
+	<queue id="null"/>
+	<queue id=""/>
+	<queue id="abc.*"/>
+	<queue id="abc xyz"/>
+	<queue id="_tempXYZ"/>
+	<queue id="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"/>
+	<queue id="myqueue"/>
+	<queue id="QUEUE/queue"/>
+		
+	<topicSpace id="NewTopic1"/>
+	<topicSpace id="NewTopic2"/>
+	<topicSpace id="NewTopic3"/>
+	<topicSpace id="DeletionTopicSpace"/>
+		
+    <fileStore id="com.ibm.ws.sib.fileStore" logFileSize="10"/>
+
+  </messagingEngine>
+   
+  <jmsQueue id="jndi_INPUT_Q" jndiName="jndi_INPUT_Q">
+    <properties.wasJms queueName="newQueue"/>
+  </jmsQueue>
+  
+  <jmsQueue jndiName="eis/queue1">
+    <properties.wasJms queueName="QUEUE1"/>
+  </jmsQueue>
+  
+  <jmsQueue id="eis/queue2" jndiName="eis/queue2">
+    <properties.wasJms queueName="QUEUE2"/>
+  </jmsQueue>
+  
+  <jmsQueue id="eis/queue3" jndiName="eis/queue3">
+    <properties.wasJms queueName="DeletionQueue"/>
+  </jmsQueue>
+  
+  <jmsQueue jndiName="eis/queue11">
+    <properties.wasJms queueName="InvalidQueue"/>
+  </jmsQueue>
+  
+  <jmsTopic jndiName="eis/topic1">
+    <properties.wasJms topicSpace="NewTopic1"/>
+  </jmsTopic>
+  
+  <jmsTopic jndiName="eis/topic">
+    <properties.wasJms topicSpace="NewTopic1" timeToLive="1000"/>
+  </jmsTopic>
+  
+  <jmsTopic jndiName="eis/topic2">
+    <properties.wasJms topicSpace="NewTopic2"/>
+  </jmsTopic>
+  
+  <jmsTopic jndiName="eis/topic3">
+    <properties.wasJms topicSpace="DeletionTopicSpace"/>
+  </jmsTopic>
+  
+  <jmsTopic jndiName="eis/topic11">
+    <properties.wasJms topicSpace="InvalidTopic"/>
+  </jmsTopic>
+  
+  <jmsTopic jndiName="eis/topic12">
+    <properties.wasJms topicSpace="NewTopic3"/>
+  </jmsTopic>
+  
+</server>

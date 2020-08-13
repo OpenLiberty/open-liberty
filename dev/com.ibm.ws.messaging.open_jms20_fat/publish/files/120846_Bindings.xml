@@ -1,0 +1,86 @@
+<server>
+
+  <featureManager>
+    <feature>osgiconsole-1.0</feature>
+    <feature>servlet-3.1</feature>
+    <feature>wasJmsClient-2.0</feature>
+    <feature>wasJmsServer-1.0</feature>
+    <feature>jndi-1.0</feature>
+    <feature>jmsMdb-3.2</feature>
+    <feature>jsp-2.3</feature>   
+    <feature>testjmsinternals-1.0</feature>
+    <feature>cdi-1.2</feature>   
+    <feature>ejbLite-3.2</feature>
+  </featureManager>
+  
+  <include optional="true" location="../fatTestPorts.xml"/>
+    
+  <variable name="onError" value="FAIL"/>
+    
+  <messagingEngine id="defaultME">
+    <queue id="Queue1" maxRedeliveryCount="2"/>
+	<queue id="Queue2" maxRedeliveryCount="2"/>
+    <queue id="newQueue"/>
+    <queue id="Queue10" maxRedeliveryCount="2"/>
+	<queue id="Queue11" maxRedeliveryCount="2"/>
+    <fileStore id="com.ibm.ws.sib.fileStore" logFileSize="10"/>
+  </messagingEngine>
+
+<!-- <jmsQueue id="jndi_INPUT_Q" jndiName="jndi_INPUT_Q">
+      <properties.wasJms queueName="newQueue"/>
+    </jmsQueue> -->
+          
+  <jmsQueue id="eis/queue1" jndiName="eis/queue1">
+    <properties.wasJms queueName="Queue1"/>
+  </jmsQueue>
+    
+  <jmsQueue id="eis/queue2" jndiName="eis/queue2">
+    <properties.wasJms queueName="Queue2"/>
+  </jmsQueue>
+    
+  <jmsQueue id="jndi_INPUT_Q" jndiName="jndi_INPUT_Q">
+    <properties.wasJms queueName="newQueue"/>
+  </jmsQueue>
+    
+  <jmsQueue id="queue/test" jndiName="queue/test">
+    <properties.wasJms queueName="Queue10"/>
+  </jmsQueue>
+    
+  <jmsQueue id="Queue11/test" jndiName="Queue11/test">
+    <properties.wasJms queueName="Queue11"/>
+  </jmsQueue>
+   
+  <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF" connectionManagerRef="ConMgr6">
+    <properties.wasJms userName="CF1USER" password="junkpassword"/> 
+  </jmsQueueConnectionFactory>
+
+  <connectionManager id="ConMgr6" maxPoolSize="5"/>
+    
+  <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF1" connectionManagerRef="ConMgr5">
+    <properties.wasJms
+      userName="CF1USER"
+      password="junkpassword"
+      remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/> 
+  </jmsQueueConnectionFactory>
+
+  <connectionManager id="ConMgr5" maxPoolSize="2"/>
+
+  <!--
+  <properties.wasJms
+    destinationRef="jndi_INPUT_Q"
+    remoteServerAddress="localhost:${bvt.prop.jms.2}:BootstrapBasicMessaging"
+    userName="user1"
+    password="user1pwd"/>
+    -->
+
+  <jmsActivationSpec id="jmsapp/jmsmdb/RDCMessageDrivenBean">
+    <properties.wasJms destinationRef="eis/queue1" userName="user1" password="user1pwd"/> 
+  </jmsActivationSpec>
+    
+  <jmsActivationSpec id="jmsapp/jmsmdb/MaxRDCMessageDrivenBean">
+    <properties.wasJms destinationRef="eis/queue2" userName="user1" password="user1pwd"/> 
+  </jmsActivationSpec>
+
+  <application type="ear" name="jmsapp" location="jmsapp.ear" id="jmsapp"/>
+
+</server>
