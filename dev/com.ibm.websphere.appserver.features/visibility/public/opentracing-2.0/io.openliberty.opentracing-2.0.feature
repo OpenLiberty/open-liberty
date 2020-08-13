@@ -23,6 +23,6 @@ IBM-API-Package: io.opentracing;  type="third-party",\
          com.ibm.ws.microprofile.opentracing.jaeger.adapter.impl
 -jars=io.openliberty.opentracing.2.0.spi; location:=dev/spi/ibm/
 -files= dev/spi/ibm/javadoc/io.openliberty.opentracing.2.0.spi_1.0-javadoc.zip
-kind=noship
+kind=beta
 edition=core
 WLP-Activation-Type: parallel
