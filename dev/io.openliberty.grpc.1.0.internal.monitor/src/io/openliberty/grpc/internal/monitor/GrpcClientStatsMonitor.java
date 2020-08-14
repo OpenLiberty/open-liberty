@@ -17,7 +17,7 @@ package io.openliberty.grpc.internal.monitor;
  * <li>Total number of RPCs started on the client.
  * <li>Total number of RPCs completed on the client, regardless of success or
  * failure.
- * <li>TODO Histogram of RPC response latency for completed RPCs, in seconds.
+ * <li>Histogram of RPC response latency for completed RPCs, in milliseconds.
  * <li>Total number of stream messages received from the server.
  * <li>Total number of stream messages sent by the client.
  * </ul>
@@ -25,6 +25,7 @@ package io.openliberty.grpc.internal.monitor;
 public class GrpcClientStatsMonitor {
 
 	private final GrpcMethod method;
+	private long latency;
 
 	public GrpcClientStatsMonitor(GrpcMethod method) {
 		this.method = method;
@@ -42,8 +43,8 @@ public class GrpcClientStatsMonitor {
 	public void recordMsgSent() {
 	}
 
-	public void recordLatency(double latencySec) {
-		// TODO implement
+	public void recordLatency(long latencyMs) {
+		this.latency = latencyMs;
 	}
 
 	public String getServiceName() {
@@ -52,5 +53,9 @@ public class GrpcClientStatsMonitor {
 
 	public GrpcMethod getMethod() {
 		return method;
+	}
+	
+	public long getLatency() {
+		return latency;
 	}
 }

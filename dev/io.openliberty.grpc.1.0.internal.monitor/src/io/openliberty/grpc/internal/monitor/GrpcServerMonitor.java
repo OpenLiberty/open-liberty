@@ -38,11 +38,16 @@ public class GrpcServerMonitor {
 		getGrpcServerStats(stats.getAppName(), stats.getServiceName()).recordCallStarted();		
 	}
 
-	@ProbeAtEntry
+	@ProbeAtReturn
 	@ProbeSite(clazz = "io.openliberty.grpc.internal.monitor.GrpcServerStatsMonitor", method = "recordServerHandled")
 	public void atGrpcServerHandled(@This Object serverStats) {
 		GrpcServerStatsMonitor stats = (GrpcServerStatsMonitor) serverStats;
-		getGrpcServerStats(stats.getAppName(), stats.getServiceName()).recordServerHandled();
+		
+		GrpcServerStats grpcServerStats = getGrpcServerStats(stats.getAppName(), stats.getServiceName());
+		grpcServerStats.recordServerHandled();
+
+        long elapsed = stats.getLatency();
+        grpcServerStats.recordLatency(elapsed < 0 ? 0 : elapsed);
 	}
 
 	@ProbeAtReturn

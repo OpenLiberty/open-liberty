@@ -13,7 +13,9 @@ package com.ibm.testapp.g3store.grpcservice;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -410,11 +412,11 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
     @Override
     public StreamObserver<StreamRequestA> clientStreamA(final StreamObserver<StreamReplyA> responseObserver) {
 
+        responseString = "Response from Server: ";
         log.info("clientStreamA: Service Entry --------------------------------------------------");
 
-        // two way streaming, maybe return new StreamObserver<StreamRequest> requestObserver =
-        //      new StreamObserver<StreamRequest>() {
         return new StreamObserver<StreamRequestA>() {
+            int count = 0;
 
             @Override
             public void onNext(StreamRequestA request) {
@@ -426,12 +428,24 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
                 if (s.length() > 200) {
                     s = s.substring(0, 200);
                 }
+
+                //print out first 10 messages
+                if (count < 10) {
+                    count++;
+                    log.info("clientStreamA: count: " + count + " received: " + s);
+                }
+
+                // If response is greater than 64K, let's take some off of it
+                if (responseString.length() > 65536) {
+                    responseString = responseString.substring(0, 32768);
+                }
+
                 responseString = responseString + s;
             }
 
             @Override
             public void onError(Throwable t) {
-                log.log(Level.SEVERE, "Store: clientStreamA: Encountered error in createApps", t);
+                log.log(Level.SEVERE, "Store: Encountered error in clientStreamA: ", t);
             }
 
             @Override
@@ -440,7 +454,7 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
                 String s = responseString + "...[[time response sent back to Client: " + System.currentTimeMillis() + "]]";
 
                 int maxStringLength = 32768 - lastClientMessage.length() - 1;
-                // limit response string to 32K, make sure the last message concatentated at the end
+                // limit response string to 32K, make sure the last message concatenated at the end
                 if (s.length() > maxStringLength) {
                     s = s.substring(0, maxStringLength);
                     s = s + lastClientMessage;
@@ -509,6 +523,219 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
         log.info("serverStreamA: calling onCompleted");
         responseObserver.onCompleted();
 
+    }
+
+    private static String responseStringTwoWay = "Response from Server: ";
+
+    @Override
+    public StreamObserver<StreamRequestA> twoWayStreamA(StreamObserver<StreamReplyA> responseObserver) {
+
+        responseStringTwoWay = "Response from Server: ";
+        log.info("twoWayStreamA: Service Entry --------------------------------------------------");
+        Object messageSync = new Object() {
+        };
+
+        return new StreamObserver<StreamRequestA>() {
+
+            int count = 0;
+
+            @Override
+            public void onNext(StreamRequestA request) {
+                synchronized (messageSync) {
+
+                    String s = request.toString();
+                    lastClientMessage = s;
+
+                    s = "<br>...(( " + s + " onNext at server called at: " + System.currentTimeMillis() + " ))";
+                    // limit string to first 200 characters
+                    if (s.length() > 200) {
+                        s = s.substring(0, 200);
+                    }
+                    //print out first 10 messages
+                    if (count < 10) {
+                        count++;
+                        log.info("twoWayStreamA: count: " + count + " received: " + s);
+                    }
+
+                    // If response is greater than 64K, let's take some off of it
+                    if (responseStringTwoWay.length() > 65536) {
+                        responseStringTwoWay = responseStringTwoWay.substring(0, 32768);
+                    }
+
+                    responseStringTwoWay = responseStringTwoWay + s;
+
+                    // turnaround the message back to the client
+                    StreamReplyA reply = StreamReplyA.newBuilder().setMessage(s).build();
+                    responseObserver.onNext(reply);
+                }
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                log.log(Level.SEVERE, "Store: Encountered error in twoWayStreamA: ", t);
+            }
+
+            @Override
+            public void onCompleted() {
+                log.info("twoWayStreamA: onComplete() called");
+                String s = responseStringTwoWay + "...[[time response sent back to Client: " + System.currentTimeMillis() + "]]";
+
+                int maxStringLength = 32768 - lastClientMessage.length() - 1;
+                // limit response string to 32K, make sure the last message concatenated at the end
+                if (s.length() > maxStringLength) {
+                    s = s.substring(0, maxStringLength);
+                    s = s + lastClientMessage;
+                } else {
+                    s = s + lastClientMessage;
+                }
+                log.info("twoWayStreamA: onComplete() sending string of length: " + s.length());
+
+                StreamReplyA reply = StreamReplyA.newBuilder().setMessage(s).build();
+                responseObserver.onNext(reply);
+                responseObserver.onCompleted();
+
+            }
+        };
+
+    }
+
+    public int twoWayThreadCount = 0;
+    public CountDownLatch twoWayAsyncThreadLatch = new CountDownLatch(1);
+
+    @Override
+    public StreamObserver<StreamRequestA> twoWayStreamAsyncThread(StreamObserver<StreamReplyA> responseObserver) {
+
+        Object messageSync = new Object() {
+        };
+
+        responseStringTwoWay = "Response from Server: ";
+        log.info("twoWayStreamAsyncThread: Service Entry --------------------------------------------------");
+
+        return new StreamObserver<StreamRequestA>() {
+
+            int count = 0;
+
+            @Override
+            public void onNext(StreamRequestA request) {
+                synchronized (messageSync) {
+
+                    if (twoWayThreadCount == 0) {
+                        twoWayThreadCount++;
+                        Thread t = new Thread(new AsyncStreaming(responseObserver));
+                        t.start();
+                    }
+
+                    String s = request.toString();
+                    lastClientMessage = s;
+
+                    s = "<br>...(( " + s + " onNext at server called at: " + System.currentTimeMillis() + " ))";
+                    // limit string to first 200 characters
+                    if (s.length() > 200) {
+                        s = s.substring(0, 200);
+                    }
+                    //print out first 10 messages
+                    if (count < 10) {
+                        count++;
+                        log.info("twoWayStreamAsyncThread: count: " + count + " received: " + s);
+                    }
+
+                    // If response is greater than 64K, let's take some off of it
+                    if (responseStringTwoWay.length() > 65536) {
+                        responseStringTwoWay = responseStringTwoWay.substring(0, 32768);
+                    }
+
+                    responseStringTwoWay = responseStringTwoWay + s;
+                }
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                log.log(Level.SEVERE, "Store: Encountered error in twoWayStreamA: ", t);
+            }
+
+            @Override
+            public void onCompleted() {
+                log.info("twoWayStreamAsyncThread: onComplete() called - wait for response thread to finish");
+
+                // wait till AsyncStreaming is done
+                try {
+                    twoWayAsyncThreadLatch.await(30, TimeUnit.SECONDS);
+                } catch (InterruptedException e) {
+                }
+
+                String s = responseStringTwoWay + "...[[time response sent back to Client: " + System.currentTimeMillis() + "]]";
+
+                int maxStringLength = 32768 - lastClientMessage.length() - 1;
+                // limit response string to 32K, make sure the last message concatenated at the end
+                if (s.length() > maxStringLength) {
+                    s = s.substring(0, maxStringLength);
+                    s = s + lastClientMessage;
+                } else {
+                    s = s + lastClientMessage;
+                }
+
+                // Print out message in the logs, but don't send the message to the client since the async thread
+                // needs to send a hardcoded string for the last message for the client to verify
+                log.info("twoWayStreamAsyncThread: onComplete() sending string of length: " + s.length());
+
+                responseObserver.onCompleted();
+
+            }
+        };
+
+    }
+
+    class AsyncStreaming implements Runnable {
+        StreamObserver<StreamReplyA> responseObserver = null;
+
+        public AsyncStreaming(StreamObserver<StreamReplyA> observer) {
+            responseObserver = observer;
+        }
+
+        @Override
+        public void run() {
+            log.info("twoWayStreamAsyncThread: AsyncStreaming Thread: run() entered");
+            int numberOfMessages = 200;
+            int timeBetweenMessagesMsec = 0;
+
+            String nextMessage = null;
+            String firstMessage = "This is the first Response Message..."; // don't change, hardcode to match string in ProducerGrpcServiceClientImpl
+            String lastMessage = "And this is the last Response Message"; // don't change, hardcode to match string in ProducerGrpcServiceClientImpl
+
+            //String s5chars = "12345";
+            String s50chars = "12345678901234567890123456789012345678901234567890";
+            //String s500chars = s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars;
+            //String s5000chars = s500chars + s500chars + s500chars + s500chars + s500chars + s500chars + s500chars + s500chars + s500chars + s500chars;
+
+            for (int i = 1; i <= numberOfMessages; i++) {
+
+                if (i == 1) {
+                    nextMessage = firstMessage;
+                } else if (i == numberOfMessages) {
+                    nextMessage = lastMessage;
+                } else {
+                    nextMessage = "--Message " + i + " of " + numberOfMessages + " left client at time: " + System.currentTimeMillis() + "--";
+                    nextMessage = nextMessage + s50chars;
+                }
+
+                StreamReplyA reply = StreamReplyA.newBuilder().setMessage(nextMessage).build();
+                responseObserver.onNext(reply);
+
+                try {
+                    if (timeBetweenMessagesMsec > 0) {
+                        Thread.sleep(timeBetweenMessagesMsec);
+                    } else if ((i % 100) == 0) {
+                        // throw in a small delay every 100 iterations
+                        Thread.sleep(200);
+                    }
+                } catch (Exception x) {
+                    // do nothing
+                }
+            }
+
+            log.info("twoWayStreamAsyncThread: AsyncStreaming Thread: run() completed, countDown the latch");
+            twoWayAsyncThreadLatch.countDown();
+        }
     }
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,11 +34,18 @@ public class EJBJarTest extends EJBJarTestBase {
         Assert.assertEquals(EJBJar.VERSION_3_0, parse(ejbJar30() + "</ejb-jar>").getVersionID());
         Assert.assertEquals(EJBJar.VERSION_3_1, parse(ejbJar31() + "</ejb-jar>").getVersionID());
         Assert.assertEquals(EJBJar.VERSION_3_2, parse(ejbJar32() + "</ejb-jar>").getVersionID());
+        Assert.assertEquals(EJBJar.VERSION_4_0, parse(ejbJar40() + "</ejb-jar>").getVersionID());
     }
 
+    // Tests that we get ParseException if ejb-jar.xml version is above feature level version
     @Test(expected = DDParser.ParseException.class)
     public void testMaxVersion31() throws Exception {
         parse(ejbJar32() + "</ejb-jar>", EJBJar.VERSION_3_1);
+    }
+
+    @Test(expected = DDParser.ParseException.class)
+    public void testMaxVersion32() throws Exception {
+        parse(ejbJar40() + "</ejb-jar>", EJBJar.VERSION_3_2);
     }
 
     @Test
@@ -66,6 +73,10 @@ public class EJBJarTest extends EJBJarTestBase {
         Assert.assertTrue(parse(ejbJar32("metadata-complete='true'") + "</ejb-jar>").isMetadataComplete());
         Assert.assertFalse(parse(ejbJar32("metadata-complete='false'") + "</ejb-jar>").isMetadataComplete());
         Assert.assertFalse(parse(ejbJar32() + "</ejb-jar>").isMetadataComplete());
+
+        Assert.assertTrue(parse(ejbJar40("metadata-complete='true'") + "</ejb-jar>").isMetadataComplete());
+        Assert.assertFalse(parse(ejbJar40("metadata-complete='false'") + "</ejb-jar>").isMetadataComplete());
+        Assert.assertFalse(parse(ejbJar40() + "</ejb-jar>").isMetadataComplete());
     }
 
     @Test
@@ -221,21 +232,21 @@ public class EJBJarTest extends EJBJarTestBase {
         try {
             List<EnterpriseBean> beans = parse(
                                                "<!DOCTYPE ejb-jar PUBLIC \"-//Sun Microsystems, Inc.//DTD Enterprise JavaBeans 1.1//EN\" \"http://java.sun.com/j2ee/dtds/ejb-jar_1_1.dtd\">"
-                                                               +
-                                                               "<ejb-NOT-jar>" + //invalid root name
-                                                               "<enterprise-beans>" +
-                                                               "<session>" +
-                                                               "<ejb-name>TestSession1</ejb-name>" +
-                                                               "<local>com.ibm.example.Test1</local>" +
-                                                               "</session>" +
-                                                               "</enterprise-beans>" +
-                                                               "</ejb-NOT-jar>").getEnterpriseBeans();
+                                               +
+                                               "<ejb-NOT-jar>" + //invalid root name
+                                               "<enterprise-beans>" +
+                                               "<session>" +
+                                               "<ejb-name>TestSession1</ejb-name>" +
+                                               "<local>com.ibm.example.Test1</local>" +
+                                               "</session>" +
+                                               "</enterprise-beans>" +
+                                               "</ejb-NOT-jar>").getEnterpriseBeans();
         } catch (Exception pe) {
             String msg = pe.getMessage();
             Assert.assertTrue("Not expected exception. Got: " + pe.getMessage(),
                               msg.contains("CWWKC2252") &&
-                                              msg.contains("ejb-NOT-jar") &&
-                                              msg.contains("ejb-jar.xml"));
+                                                                                 msg.contains("ejb-NOT-jar") &&
+                                                                                 msg.contains("ejb-jar.xml"));
         }
     }
 }

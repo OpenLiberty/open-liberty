@@ -10,53 +10,71 @@
  *******************************************************************************/
 package io.openliberty.grpc.monitor;
 
+import com.ibm.websphere.monitor.jmx.StatisticsMeter;
+
 /**
- * Management interface for MBeans with names of the form "WebSphere:type=GrpcServerStats,name=*"
- * where * is the name of a gRPC service.
+ * Management interface for MBeans with names of the form
+ * "WebSphere:type=GrpcServerStats,name=*" where * is the name of a gRPC
+ * service.
  * 
  * @ibm-api
  */
 public interface GrpcServerStatsMXBean {
 
-    /**
-     * Retrieves the gRPC service name.
-     * 
-     * @return the gRPC service name
-     */
-    public String getServiceName();
+	/**
+	 * Retrieves the gRPC service name.
+	 * 
+	 * @return the gRPC service name
+	 */
+	public String getServiceName();
 
-    /**
-     * Retrieves the total number of RPCs started on the server.
-     * 
-     * @return the total number of RPCs started on the server
-     */
-    public long getRpcStartedCount();
+	/**
+	 * Retrieves the total number of RPCs started on the server.
+	 * 
+	 * @return the total number of RPCs started on the server
+	 */
+	public long getRpcStartedCount();
 
-    /**
-     * Retrieves the total number of RPCs completed on the server,
-     * 
-     * @return the total number of RPCs completed on the server
-     */
-    public long getRpcCompletedCount();
+	/**
+	 * Retrieves the total number of RPCs completed on the server,
+	 * 
+	 * @return the total number of RPCs completed on the server
+	 */
+	public long getRpcCompletedCount();
 
-    /**
-     * Retrieves the total number of stream messages that the server has received for this gRPC service.
-     * 
-     * @return the total number of stream messages received for this service
-     */
-    public long getReceivedMessagesCount();
+	/**
+	 * Retrieves the total number of stream messages that the server has received
+	 * for this gRPC service.
+	 * 
+	 * @return the total number of stream messages received for this service
+	 */
+	public long getReceivedMessagesCount();
 
-    /**
-     * Retrieves the total number of stream messages sent by this gRPC service.
-     * 
-     * @return the total number of stream messages sent by this service
-     */
-    public long getSentMessagesCount();
+	/**
+	 * Retrieves the total number of stream messages sent by this gRPC service.
+	 * 
+	 * @return the total number of stream messages sent by this service
+	 */
+	public long getSentMessagesCount();
 
-    /**
-     * Retrieves the name of the application of which the gRPC service is a member.
-     * 
-     * @return application name
-     */
-    public String getAppName();
+	/**
+	 * Retrieves the average response time for specified RPC.
+	 * 
+	 * @return the average response time
+	 */
+	public double getResponseTime();
+
+	/**
+	 * Retrieves the statistical details on the response time.
+	 * 
+	 * @return response time details
+	 */
+	public StatisticsMeter getResponseTimeDetails();
+
+	/**
+	 * Retrieves the name of the application of which the gRPC service is a member.
+	 * 
+	 * @return application name
+	 */
+	public String getAppName();
 }
