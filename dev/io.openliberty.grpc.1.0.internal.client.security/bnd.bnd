@@ -24,8 +24,12 @@ Export-Package: \
   io.openliberty.grpc.internal.client.security.ssl.LibertyGrpcClientSSLSupport
 
 -buildpath: \
+  com.ibm.ws.kernel.service;version=latest,\
   com.ibm.ws.ssl;version=latest,\
   com.ibm.ws.logging.core;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.websphere.org.osgi.core;version=latest,\
+  com.ibm.websphere.org.osgi.service.component;version=latest,\
+  com.ibm.websphere.security;version=latest,\
   org.osgi.service.component.annotations;version=latest,\
   io.openliberty.grpc.1.0.internal.client;version=latest
