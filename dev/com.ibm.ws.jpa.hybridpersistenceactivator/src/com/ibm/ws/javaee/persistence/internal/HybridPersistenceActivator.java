@@ -13,6 +13,7 @@ package com.ibm.ws.javaee.persistence.internal;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.WeakHashMap;
@@ -23,14 +24,16 @@ import javax.persistence.spi.PersistenceProvider;
 import org.apache.geronimo.osgi.locator.ProviderLocator;
 import org.apache.geronimo.specs.jpa.PersistenceActivator;
 
+import com.ibm.ws.runtime.metadata.ModuleMetaData;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
+
 /**
  * An override of the default persistence activator that provides a hybrid mechanism
  * to discover persistence providers by searching for providers available from
  * META-INF/services in addition to those registered in the OSGi service registry.
  */
 public class HybridPersistenceActivator extends PersistenceActivator {
-
-    private volatile WeakHashMap<ClassLoader, List<PersistenceProvider>> providerCache = new WeakHashMap<ClassLoader, List<PersistenceProvider>>();
+    private volatile WeakHashMap<ModuleMetaData, List<PersistenceProvider>> providerCache = new WeakHashMap<ModuleMetaData, List<PersistenceProvider>>();
 
     /**
      * This method returns a combination of those persistence providers available from
@@ -41,35 +44,59 @@ public class HybridPersistenceActivator extends PersistenceActivator {
      */
     @Override
     public List<PersistenceProvider> getPersistenceProviders() {
+        List<PersistenceProvider> nonOSGiProviders = null;
+
+        final ModuleMetaData mmd = getModuleMetaData();
+
+        // Query the provider cache per-ModuleMetaData
+        if (mmd != null) {
+            synchronized (providerCache) {
+                nonOSGiProviders = providerCache.get(mmd);
+                if (nonOSGiProviders == null) {
+                    nonOSGiProviders = findProviders();
+                    providerCache.put(mmd, nonOSGiProviders);
+                }
+            }
+        } else {
+            nonOSGiProviders = findProviders();
+        }
+
+        List<PersistenceProvider> combinedProviders = new ArrayList<PersistenceProvider>(nonOSGiProviders);
+        combinedProviders.addAll(super.getPersistenceProviders());
+        return combinedProviders;
+    }
+
+    private ModuleMetaData getModuleMetaData() {
+        try {
+            return ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData().getModuleMetaData();
+        } catch (Throwable t) {
+            return null;
+        }
+    }
+
+    private List<PersistenceProvider> findProviders() {
+        List<PersistenceProvider> nonOSGiProviders = new ArrayList<PersistenceProvider>();
+
         // try to get the context classloader first, if that fails, use the loader
         // that loaded this class
         ClassLoader cl = PrivClassLoader.get(null);
         if (cl == null) {
             cl = PrivClassLoader.get(HybridPersistenceActivator.class);
         }
-        // Query the provider cache per-classloader
-        List<PersistenceProvider> nonOSGiProviders = providerCache.get(cl);
-        // Get all providers not registered in OSGi.  These will be any third-party providers
-        // available to the application classloader.
-        if (nonOSGiProviders == null) {
-            nonOSGiProviders = new ArrayList<PersistenceProvider>();
-            try {
-                List<Object> providers = ProviderLocator.getServices(PersistenceProvider.class.getName(), getClass(), cl);
-                for (Iterator<Object> provider = providers.iterator(); provider.hasNext();) {
-                    Object o = provider.next();
-                    if (o instanceof PersistenceProvider) {
-                        nonOSGiProviders.add((PersistenceProvider) o);
-                    }
+        try {
+            // load the providers into the provider cache for the context (or current) classloader
+            List<Object> providers = ProviderLocator.getServices(PersistenceProvider.class.getName(), getClass(), cl);
+            for (Iterator<Object> provider = providers.iterator(); provider.hasNext();) {
+                Object o = provider.next();
+                if (o instanceof PersistenceProvider) {
+                    nonOSGiProviders.add((PersistenceProvider) o);
                 }
-                // load the providers into the provider cache for the context (or current) classloader
-                providerCache.put(cl, nonOSGiProviders);
-            } catch (Exception e) {
-                throw new PersistenceException("Failed to load provider from META-INF/services", e);
             }
+        } catch (Exception e) {
+            throw new PersistenceException("Failed to load provider from META-INF/services", e);
         }
-        List<PersistenceProvider> combinedProviders = new ArrayList<PersistenceProvider>(nonOSGiProviders);
-        combinedProviders.addAll(super.getPersistenceProviders());
-        return combinedProviders;
+
+        return Collections.unmodifiableList(nonOSGiProviders);
     }
 
     /**
@@ -90,7 +117,7 @@ public class HybridPersistenceActivator extends PersistenceActivator {
         public static ClassLoader get(Class<?> c) {
             PrivClassLoader action = new PrivClassLoader(c);
             if (System.getSecurityManager() != null) {
-                return (ClassLoader) AccessController.doPrivileged(action);
+                return AccessController.doPrivileged(action);
             }
             return action.run();
         }
@@ -99,6 +126,7 @@ public class HybridPersistenceActivator extends PersistenceActivator {
             this.c = c;
         }
 
+        @Override
         public ClassLoader run() {
             if (this.c != null) {
                 return this.c.getClassLoader();
