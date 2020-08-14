@@ -20,6 +20,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 MPConcurrentConfigTest.class,
                 MPConcurrentJAXRSTest.class,
                 MPConcurrentTxTest.class,
+                MPContextProp1_1_Test.class,
                 MPConcurrentCDITest.class // moved last because @RepeatTests, when added to this class, interferes with test classes that run after it // TODO
 })
 public class FATSuite {
