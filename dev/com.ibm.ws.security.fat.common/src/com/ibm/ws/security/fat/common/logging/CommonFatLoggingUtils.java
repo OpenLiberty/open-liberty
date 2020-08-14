@@ -1,6 +1,17 @@
+/*******************************************************************************
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ * IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.security.fat.common.logging;
 
 import java.net.HttpURLConnection;
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -40,13 +51,22 @@ public class CommonFatLoggingUtils {
     public void logTestCaseInServerLog(LibertyServer server, String testName, String actionToLog) {
         try {
             if (server != null) {
-                String parameters = TestMarker.PARAM_TEST_NAME + "=" + testName + "&" + TestMarker.PARAM_ACTION + "=" + actionToLog;
+                String parameters = urlEncodeIt(TestMarker.PARAM_TEST_NAME) + "=" + urlEncodeIt(testName) + "&" + urlEncodeIt(TestMarker.PARAM_ACTION) + "=" + urlEncodeIt(actionToLog);
                 HttpURLConnection connection = SecurityFatHttpUtils.getHttpConnectionWithAnyResponseCode(server, "/testmarker/testMarker?" + parameters);
                 Log.info(thisClass, "logTestCaseInServerLog", connection.toString());
                 SecurityFatHttpUtils.getResponseBody(connection);
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public String urlEncodeIt(String inString) {
+        try {
+            return URLEncoder.encode(inString, "UTF-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "valueCouldNotUrlEncoded";
         }
     }
 

@@ -10,15 +10,20 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt11.fat.utils;
 
+import com.ibm.ws.security.fat.common.utils.CommonIOUtils;
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
+
+import componenttest.topology.impl.LibertyServer;
 
 public class MPConfigSettings {
 
     public static String cert_type = MpJwtFatConstants.X509_CERT;
 
     // if you recreate the rsa_cert.pem file, please update the PublicKey value saved here.
+    public final static String rsaPrefix = "-----BEGIN PUBLIC KEY-----";
+    public final static String rsaSuffix = "-----END PUBLIC KEY-----";
     public final static String SimplePublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAl66sYoc5HXGHnrtGCMZ6G8zLHnAl+xhP7bOQMmqwEqtwI+yJJG3asvLhJQiizP0cMA317ekJE6VAJ2DBT8g2npqJSXK/IuVQokM4CNp0IIbD66qgVLJ4DS1jzf6GFciJAiGOHztl8ICd7/q0EvuYcwd/sUjTrwRpkLcEH2Z/FE2sh4a82UwyxZkX3ghbZ/3MFtsMjzw0cSqKPUrgGCr4ZcAWZeoye81cLybY5Vb/5/eZfkeBIDwSSssqJRmsNBFs23c+RAymtKaP7wsQw5ATEeI7pe0kiWLpqH4wtsDVyN1C/p+vZJSia0OQJ/z89b5OkmpFC6qGBGxC7eOk71wCJwIDAQAB";
-    public final static String ComplexPublicKey = "-----BEGIN PUBLIC KEY-----" + SimplePublicKey + "-----END PUBLIC KEY-----";
+    public final static String ComplexPublicKey = rsaPrefix + SimplePublicKey + rsaSuffix;
     public final static String PemFile = "rsa_key.pem";
     public final static String ComplexPemFile = "rsa_key_withCert.pem";
     public final static String BadPemFile = "bad_key.pem";
@@ -73,5 +78,32 @@ public class MPConfigSettings {
 
     public String getCertType() {
         return certType;
+    }
+
+    public String getComplexKey(LibertyServer server, String fileName) throws Exception {
+        return getCertFromFile(server, fileName);
+    }
+
+    public String getSimpleKey(LibertyServer server, String fileName) throws Exception {
+        String rawKey = getCertFromFile(server, fileName);
+        if (rawKey != null) {
+            return rawKey.replace(rsaPrefix, "").replace(rsaSuffix, "");
+        }
+        return rawKey;
+    }
+
+    public String getCertFromFile(LibertyServer server, String fileName) throws Exception {
+
+        String fullPathToFile = getDefaultKeyFileLoc(server) + fileName;
+
+        CommonIOUtils cioTools = new CommonIOUtils();
+        String key = cioTools.readFileAsString(fullPathToFile);
+
+        return key;
+    }
+
+    public String getDefaultKeyFileLoc(LibertyServer server) throws Exception {
+
+        return server.getServerRoot() + "/";
     }
 }

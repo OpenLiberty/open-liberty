@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ public abstract class Expectation {
     protected String validationValue;
     protected String failureMsg;
     protected boolean isExpectationHandled;
+    protected boolean failureMsgAlreadyUpdated = false;
 
     protected TestValidationUtils validationUtils = new TestValidationUtils();
 
@@ -44,6 +45,7 @@ public abstract class Expectation {
         this.validationValue = searchFor;
         this.failureMsg = failureMsg;
         this.isExpectationHandled = false;
+        this.failureMsgAlreadyUpdated = false;
     }
 
     public String getAction() {
@@ -99,7 +101,11 @@ public abstract class Expectation {
         if (printValidationMessage == null || printValidationMessage.equals("true")) {
             Log.info(thisClass, "validate", "Checking " + this);
         } else { // otherwise, only log the Expectation if we hit a failure
-            failureMsg = "Checking " + this.toString() + System.lineSeparator() + "Error message: " + failureMsg;
+            // Only update the msg once to avoid an OOM condition that we hit when the same expectation was reused over and over like inside a loop :)
+            if (!failureMsgAlreadyUpdated) {
+                failureMsgAlreadyUpdated = true;
+                failureMsg = "Checking " + this.toString() + System.lineSeparator() + "Error message: " + failureMsg;
+            }
         }
         validate(contentToValidate);
     }
