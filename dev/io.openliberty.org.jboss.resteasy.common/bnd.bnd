@@ -50,7 +50,6 @@ Export-Package: \
   com.ibm.ws.resteasy.cdi.component;version=4.5.2.Final;thread-context=true, \
   io.openliberty.jaxrs.client, \
   io.openliberty.org.jboss.resteasy.common.client;thread-context=true, \
-  io.openliberty.org.jboss.resteasy.common.providers;thread-context=true, \
   org.jboss.resteasy.annotations.cache;version=4.5.2.Final, \
   org.jboss.resteasy.annotations.jaxrs;version=4.5.2.Final, \
   org.jboss.resteasy.annotations.providers.img;version=4.5.2.Final, \

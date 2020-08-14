@@ -16,7 +16,8 @@ IBM-App-ForceRestart: uninstall, \
 IBM-ShortName: jaxrsClient-3.0
 Subsystem-Name: Java RESTful Services Client 3.0
 -features=\
- io.openliberty.jakarta.jaxrs-3.0
+ io.openliberty.jakarta.jaxrs-3.0, \
+ io.openliberty.jsonp-2.0
 -bundles=\
   com.ibm.ws.org.apache.httpcomponents, \
   com.ibm.ws.org.apache.commons.codec.1.3, \

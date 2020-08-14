@@ -8,19 +8,20 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.jaxrs30.fat;
+package io.openliberty.jaxrs30.fat.jsonb;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                AppAndResourceTest.class,
-                JsonbTest.class,
-                XmlWithJaxbTest.class,
-                XmlWithoutJaxbTest.class
-})
-public class FATSuite {
-
+@Path("/widget")
+@Produces("application/json")
+public class Resource {
+    
+    @GET
+    @Path("/{id}")
+    public Widget widget(@PathParam("id") int id) {
+        return App.WIDGETS[id];
+    }
 }

@@ -10,6 +10,6 @@
  *******************************************************************************/
 @org.osgi.annotation.versioning.Version("1.0")
 @TraceOptions(traceGroup = "JAXRS", messageBundle="io.openliberty.org.jboss.resteasy.common.nls.JAXRSServer")
-package io.openliberty.org.jboss.resteasy.common.providers;
+package io.openliberty.jaxrs30.jsonb20provider;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
