@@ -486,4 +486,84 @@ public class ProducerEndpointFATServlet extends FATServlet {
         }
     }
 
+    /**
+     * @param req
+     * @param resp
+     * @throws Exception
+     */
+    @Test
+    public void testTwoWayStreaming(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+
+        String m = "testTwoWayStreaming";
+        LOG.info(m + " ----------------------------------------------------------------");
+        LOG.info(m + " ------------ testTwoWayStreaming--START -----------------------");
+
+        // before coming here, code in ProducerGrpcServiceClient will have made the GRPC calls
+        // to ManagedChannelBuilder.forAddress and newStub to setup the RPC code for client side usage
+
+        ProducerServiceRestClient service = builder.build(ProducerServiceRestClient.class);
+        LOG.info("testTwoWayStream: service = " + service.toString());
+        try {
+            // call Remote REST service
+            // tell the rest client to send data to the grpc client.  grpc client will then make
+            // grpc calls to the grpc server.
+            LOG.info(m + " ------------------------------------------------------------");
+            LOG.info(m + " ----- invoking producer REST client to perform TwoWayStream test: twoWayStreamApp(false)");
+            Response r = service.twoWayStreamApp(false);
+
+            // check response
+            String result = r.readEntity(String.class);
+            LOG.info(m + ": client stream entity/result: " + result);
+            boolean isValidResponse = result.contains("success");
+            assertTrue(isValidResponse);
+
+        } catch (Exception e) {
+            e.getMessage();
+            e.printStackTrace();
+        } finally {
+            LOG.info(m + " ------------ testTwoWayStreaming--FINISH -----------------------");
+            LOG.info(m + " ----------------------------------------------------------------");
+        }
+    }
+
+    /**
+     * @param req
+     * @param resp
+     * @throws Exception
+     */
+    @Test
+    public void testTwoWayStreamingAsyncThread(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+
+        String m = "testTwoWayStreamingAsyncThread";
+        LOG.info(m + " ----------------------------------------------------------------");
+        LOG.info(m + " ------------ testTwoWayStreamingAsyncThread--START -------------");
+
+        // before coming here, code in ProducerGrpcServiceClient will have made the GRPC calls
+        // to ManagedChannelBuilder.forAddress and newStub to setup the RPC code for client side usage
+
+        ProducerServiceRestClient service = builder.build(ProducerServiceRestClient.class);
+        LOG.info("testTwoWayStreamAsyncThread: service = " + service.toString());
+        try {
+            // call Remote REST service
+            // tell the rest client to send data to the grpc client.  grpc client will then make
+            // grpc calls to the grpc server.
+            LOG.info(m + " ------------------------------------------------------------");
+            LOG.info(m + " ----- invoking producer REST client to perform TwoWayStream test: twoWayStreamApp(true)");
+            Response r = service.twoWayStreamApp(true);
+
+            // check response
+            String result = r.readEntity(String.class);
+            LOG.info(m + ": client stream entity/result: " + result);
+            boolean isValidResponse = result.contains("success");
+            assertTrue(isValidResponse);
+
+        } catch (Exception e) {
+            e.getMessage();
+            e.printStackTrace();
+        } finally {
+            LOG.info(m + " ------------ testTwoWayStreamingAsyncThread--FINISH ------------");
+            LOG.info(m + " ----------------------------------------------------------------");
+        }
+    }
+
 }

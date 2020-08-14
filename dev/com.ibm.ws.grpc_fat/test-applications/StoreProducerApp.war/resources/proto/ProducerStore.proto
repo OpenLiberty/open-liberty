@@ -61,6 +61,10 @@ service AppProducerService {
   
   rpc serverStreamA(StreamRequestA) returns (stream StreamReplyA) {}
   
+  rpc twoWayStreamA(stream StreamRequestA) returns (stream StreamReplyA) {}
+
+  rpc twoWayStreamAsyncThread(stream StreamRequestA) returns (stream StreamReplyA) {}
+  
 }
 
 message AppResponse{
