@@ -82,7 +82,7 @@ public class SQLRecoverableUnitImpl implements RecoverableUnit {
      * </ul>
      * </p>
      */
-    private final java.util.HashMap _recoverableUnitSections;
+    private final java.util.HashMap<Integer, SQLRecoverableUnitSectionImpl> _recoverableUnitSections;
 
     /**
      * The RecoveryLog to which this RecoverableUnit belongs.
@@ -146,12 +146,12 @@ public class SQLRecoverableUnitImpl implements RecoverableUnit {
      * <p>
      * Package access constructor for the creation of recoverable units.
      * </p>
-     * 
+     *
      * <p>
      * This method should only be called by the RLS itself during either initial
      * creation of a recoverable unit or recreation during server startup.
      * </p>
-     * 
+     *
      * @param recLog The parent recovery log reference.
      * @param identity The identity of the new recoverable unit (must be unique
      *            within the associated recovery log.)
@@ -171,7 +171,7 @@ public class SQLRecoverableUnitImpl implements RecoverableUnit {
 
         // Allocate the map used to contain the recoverable unit sections created within
         // the new recoverable unit.
-        _recoverableUnitSections = new java.util.HashMap();
+        _recoverableUnitSections = new java.util.HashMap<Integer, SQLRecoverableUnitSectionImpl>();
 
         _recLog.addRecoverableUnit(this, recovered);
 
@@ -326,7 +326,7 @@ public class SQLRecoverableUnitImpl implements RecoverableUnit {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "lookupSection", new java.lang.Object[] { this, new Integer(identity) });
 
-        SQLRecoverableUnitSectionImpl recoverableUnitSection = (SQLRecoverableUnitSectionImpl) _recoverableUnitSections.get(new Integer(identity));
+        SQLRecoverableUnitSectionImpl recoverableUnitSection = _recoverableUnitSections.get(new Integer(identity));
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "lookupSection", recoverableUnitSection);
@@ -376,7 +376,7 @@ public class SQLRecoverableUnitImpl implements RecoverableUnit {
     @Override
     public void writeSections() throws InternalLogException {
         // Lack of trace or ffdc is deliberate. This method is the external interface
-        // for the real writeSections call and as such we don't want to see two entries for the 
+        // for the real writeSections call and as such we don't want to see two entries for the
         // same method in the trace.
         this.writeSections(false);
     }
@@ -445,61 +445,12 @@ public class SQLRecoverableUnitImpl implements RecoverableUnit {
         }
 
         // Obtain an iterator that can be used to access each of the recoverable unit sections in turn.
-        Iterator recoverableUnitSectionsIterator = _recoverableUnitSections.values().iterator();
+        Iterator<SQLRecoverableUnitSectionImpl> recoverableUnitSectionsIterator = _recoverableUnitSections.values().iterator();
 
-        synchronized (_recLog) {
-            while (recoverableUnitSectionsIterator.hasNext()) {
-                SQLRecoverableUnitSectionImpl section = (SQLRecoverableUnitSectionImpl) (recoverableUnitSectionsIterator.next());
-
-                // Now direct the recoverable unit section to write its content. If the recoverable unit 
-                // section has no data to write then this will be a no-op.
-                writeSection(section);
-            }
-        }
+        _recLog.writeSections(recoverableUnitSectionsIterator);
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "writeSections");
-    }
-
-    //------------------------------------------------------------------------------
-    // Method: SQLRecoverableUnitImpl.writeSection
-    //------------------------------------------------------------------------------
-    /**
-     * <p>
-     * Writes to the underlying recovery log information from the specified
-     * recoverable unit section that has not already been written by a previous call.
-     * This ensures that the recovery log contains an up to date copy of the
-     * information retained in the target recoverable unit section.
-     * </p>
-     *
-     * <p>
-     * The information is written to the underlying recovery log, but not forced
-     * through to persisent storage. After this call, the information is not
-     * guaranteed to be retrieved during any post-failure recovery processing.
-     * To ensure that this information will be recovered, a force operation
-     * should be used instead (eg SQLRecoverableUnitImpl.forceSections)
-     * </p>
-     *
-     * @param target The target recoverable unit section reference
-     *
-     * @exception InternalLogException An unexpected error has occured.
-     */
-    void writeSection(SQLRecoverableUnitSectionImpl target) throws InternalLogException {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "writeSection", new java.lang.Object[] { this, target });
-
-        // If the parent recovery log instance has experienced a serious internal error then prevent
-        // this operation from executing.
-        if (_recLog.failed()) {
-            if (tc.isEntryEnabled())
-                Tr.exit(tc, "writeSection", this);
-            throw new InternalLogException(null);
-        }
-
-        target.write();
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "writeSection");
     }
 
     //------------------------------------------------------------------------------
@@ -543,7 +494,7 @@ public class SQLRecoverableUnitImpl implements RecoverableUnit {
     @Override
     public void forceSections() throws InternalLogException {
         // Lack of trace or exception handling is deliberate. This method is the external interface
-        // for the real forceSections call and as such we don't want to see two entries for the 
+        // for the real forceSections call and as such we don't want to see two entries for the
         // same method in the trace.
         this.forceSections(false);
     }
@@ -715,7 +666,7 @@ public class SQLRecoverableUnitImpl implements RecoverableUnit {
 
         // Next, "forget" all stored recoverable unit sections. This will ensure that no further
         // reference to this recoverable unit can be written to disk even if the client service
-        // invokes a write or force method on it in the future. We also need to clear out the 
+        // invokes a write or force method on it in the future. We also need to clear out the
         // total and unwritten data size fields to ensure that we don't attempt to begin
         // writing even when there are no sections to write.
         if (tc.isEventEnabled())
@@ -739,7 +690,7 @@ public class SQLRecoverableUnitImpl implements RecoverableUnit {
     //------------------------------------------------------------------------------
     /**
      * Returns the string representation of this object instance.
-     * 
+     *
      * @return String The string representation of this object instance.
      */
     @Override
