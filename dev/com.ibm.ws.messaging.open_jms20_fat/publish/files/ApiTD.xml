@@ -1,0 +1,99 @@
+<server>
+
+  <featureManager>
+    <feature>servlet-3.1</feature>
+    <feature>jndi-1.0</feature>
+    <feature>wasJmsClient-2.0</feature>
+    <feature>wasJmsServer-1.0</feature>      
+    <feature>testjmsinternals-1.0</feature>
+  </featureManager>
+
+  <include optional="true" location="../fatTestPorts.xml"/>
+  
+  <variable name="onError" value="FAIL"/>
+
+  <messagingEngine id="defaultME">
+	<queue id="QUEUE1"/>
+	<topicSpace id="NewTopic3"/>
+    <fileStore id="com.ibm.ws.sib.fileStore" logFileSize="10"/>
+  </messagingEngine>
+ 
+  <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF1" connectionManagerRef="ConMgr1">
+    <properties.wasJms
+      remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"  
+	  producerDoesNotModifyPayloadAfterSet="false"/>
+  </jmsQueueConnectionFactory>
+  
+  <connectionManager id="ConMgr1" maxPoolSize="2"/>
+    
+  <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF" connectionManagerRef="ConMgr2">
+    <properties.wasJms
+      temporaryQueueNamePrefix="tempor"  
+	  producerDoesNotModifyPayloadAfterSet="false"/>
+  </jmsQueueConnectionFactory>
+
+  <connectionManager id="ConMgr2" maxPoolSize="2"/>
+    
+  <jmsTopicConnectionFactory jndiName="eis/tcf" connectionManagerRef="ConMgr3">
+    <properties.wasJms
+      userName="CF1USER" 
+	  busName="defaultBus"  
+	  clientID="clientId"  
+	  nonPersistentMapping="ExpressNonPersistent"  
+	  password="junkpassword"  
+	  persistentMapping="ReliablePersistent"  
+	  readAhead="Default" 
+	  target=""      
+	  targetType="BusMember" 
+	  targetSignificance="Preferred"  
+	  targetTransportChain=""   
+	  connectionProximity="Bus" 
+	  temporaryQueueNamePrefix="tempor"												 
+	  producerDoesNotModifyPayloadAfterSet="false" 												
+	  durableSubscriptionHome="defaultME"/> 
+  </jmsTopicConnectionFactory>
+
+  <connectionManager id="ConMgr3" maxPoolSize="2"/>
+
+  <jmsTopicConnectionFactory jndiName="eis/tcf1" connectionManagerRef="ConMgr4">
+    <properties.wasJms
+      userName="CF1USER" 
+	  busName="defaultBus"  
+	  clientID="clientId"  
+	  nonPersistentMapping="ExpressNonPersistent"  
+	  password="junkpassword"  
+	  persistentMapping="ReliablePersistent"  
+	  readAhead="Default" 
+	  target=""      
+	  targetType="BusMember" 
+	  targetSignificance="Preferred"  
+	  targetTransportChain=""   
+	  connectionProximity="Bus" 
+	  temporaryQueueNamePrefix="tempor"  
+	  remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging" 
+	  producerDoesNotModifyPayloadAfterSet="false" 
+	  durableSubscriptionHome="defaultME"/> 
+  </jmsTopicConnectionFactory>
+
+  <connectionManager id="ConMgr4" maxPoolSize="2"/>
+  
+  <jmsQueue jndiName="jndi_INPUT_Q">
+    <properties.wasJms
+      queueName="QUEUE1" 
+	  timeToLive="500000"  
+	  busName="defaultBus"  />
+  </jmsQueue>
+    
+  <jmsTopic jndiName="eis/topic1">
+    <properties.wasJms topicName="DEFAULT"/>
+  </jmsTopic>
+    
+  <jmsTopic jndiName="eis/topic2">
+    <properties.wasJms/>
+  </jmsTopic>
+    
+  <jmsTopic jndiName="eis/topic12">
+    <properties.wasJms topicSpace="NewTopic3"/>
+  </jmsTopic>	
+
+</server>
