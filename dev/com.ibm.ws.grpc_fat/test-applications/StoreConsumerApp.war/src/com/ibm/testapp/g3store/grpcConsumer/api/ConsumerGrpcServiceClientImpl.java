@@ -165,6 +165,10 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
                 e.printStackTrace();
                 throw new InvalidArgException(e.getMessage());
             }
+            if (e.getStatus().getCode() == Status.Code.UNAUTHENTICATED) {
+                e.printStackTrace();
+                throw new InvalidArgException(e.getMessage());
+            }
         }
 
         if (log.isLoggable(Level.FINE)) {

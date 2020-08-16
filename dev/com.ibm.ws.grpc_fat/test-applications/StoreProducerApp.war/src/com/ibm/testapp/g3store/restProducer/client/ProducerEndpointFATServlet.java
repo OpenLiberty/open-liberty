@@ -67,13 +67,15 @@ public class ProducerEndpointFATServlet extends FATServlet {
         return AccessController.doPrivileged((PrivilegedAction<String>) () -> System.getProperty(key));
     }
 
+    private static String hostname = getSysProp("testing.ProducerServer.hostname");
+
     private RestClientBuilder builder;
 
     @Override
     public void init() throws ServletException {
 
         // The baseURL URL of the remote endpoint
-        String baseUrlStr = "http://" + "localhost:" + getSysProp("bvt.prop.HTTP_secondary") + "/StoreProducerApp/v1P/";
+        String baseUrlStr = "http://" + hostname + ":" + getSysProp("bvt.prop.HTTP_secondary") + "/StoreProducerApp/v1P/";
 
         LOG.info("baseUrl = " + baseUrlStr);
 
