@@ -64,8 +64,13 @@ public class ConsumerEndpointFATServlet extends FATServlet {
     private RestClientBuilder builderConsumer;
     private RestClientBuilder builderProducer;
 
+    private static String consumerServerBaseURL = "http://" + ConsumerUtils.getConsumerServerHost() + ":" + ConsumerUtils.getConsumerServerPort();
+
     // The baseURL URL of the remote endpoint of Consumer Wrapper application
-    private static String baseConsumerUrlStr = "http://" + "localhost:" + ConsumerUtils.getSysProp("bvt.prop.member_1.http") + "/StoreConsumerApp/v1C/";
+    private static String consumerUrlStr = consumerServerBaseURL + "/StoreConsumerApp/v1C/";
+
+    // The baseURL URL of the remote endpoint of Producer Wrapper application
+    private static String producerUrlStr = consumerServerBaseURL + "/StoreConsumerApp/v1P/";
 
     /**
      *
@@ -74,14 +79,11 @@ public class ConsumerEndpointFATServlet extends FATServlet {
     public void init() throws ServletException {
 
         String m = "ConsumerEndpoint.init";
-        // The baseURL URL of the remote endpoint of Producer Wrapper application
-        String baseUrlStrProducer = "http://" + "localhost:" + ConsumerUtils.getSysProp("bvt.prop.member_1.http") + "/StoreConsumerApp/v1P/";
-
-        _log.info(m + ": baseUrlStrProducer = " + baseUrlStrProducer);
+        _log.info(m + ": baseUrlStrProducer = " + producerUrlStr);
 
         URL baseUrlProducer;
         try {
-            baseUrlProducer = new URL(baseUrlStrProducer);
+            baseUrlProducer = new URL(producerUrlStr);
         } catch (MalformedURLException ex) {
             throw new ServletException(ex);
         }
@@ -91,6 +93,232 @@ public class ConsumerEndpointFATServlet extends FATServlet {
                         .baseUrl(baseUrlProducer);
 
         _log.info(m + ": builderProducer = " + builderProducer.toString());
+
+    }
+
+    @Test
+    public void testGetAppInfo(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        this.getAppInfo(req, resp);
+    }
+
+//    @Test
+    public void testGetAppInfo_BadBasicAuth(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        this.getAppInfo_BadBasicAuth(req, resp);
+    }
+
+    @Test
+    public void testGetAppName_Auth_GrpcTarget(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        this.getAppName_Auth_GrpcTarget(req, resp);
+    }
+
+//    @Test
+    public void testGetAppName_BadJWTAuth_GrpcTarget(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        this.getAppName_BadJWTAuth_GrpcTarget(req, resp);
+    }
+
+    @Test
+    public void testGetAppName_Auth_CallCred(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        this.getAppName_Auth_CallCred(req, resp);
+    }
+
+    @Test
+    public void testGetAppPrice(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        this.getAppPrice(req, resp);
+    }
+
+    @Test
+    public void testGetMultiAppsInfo(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        this.getMultiAppsInfo(req, resp);
+    }
+
+    @Test
+    public void testGetMultiAppNames(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        this.getMultiAppNames(req, resp);
+    }
+
+    @Test
+    public void testGetMultiAppPrices(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        this.getMultiAppPrices(req, resp);
+    }
+
+    /**
+     * @param req
+     * @param resp
+     * @throws Exception
+     */
+    private void getAppName_Auth_CallCred(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+
+        final String m = "testGetAppName_Auth_CallCred";
+
+        // create
+        // query name
+        // get app info with the name
+        // delete
+
+        ProducerServiceRestClient service = null;
+        String appName = "myAppConsumer";
+        boolean isValidResponse = false;
+
+        try {
+
+            _log.info(m + " ------------------ " + m + "--START ---------------------");
+
+            service = assertCreateSingleAppData(m, appName);
+
+            _log.info(m + " ----- invoking consumer rest client for available app names");
+            ConsumerServiceRestClient client = null;
+            // Now get the data using Consumer
+            try {
+                client = this.add_AuthHeader_Filter(m, req, resp);
+            } catch (Exception e) {
+                _log.severe(m + " , Error creating ConsumerServiceRestClient proxy");
+                throw e;
+            }
+
+            _log.info(m + " ----- invoking consumer rest client: " + client);
+
+            Response r = client.getAllAppNames_Auth_CallCred();
+
+            assertEquals(200, r.getStatus());
+
+            String entityName = r.readEntity(String.class);
+            _log.info(m + " entityName: " + entityName);
+            // Expected output in logs
+            //entityName: ["myApp"]
+
+            isValidResponse = entityName.contains(appName);
+            assertTrue(isValidResponse);
+
+            _log.info(m + " ------------------------------------------------------------");
+
+        } finally {
+
+            assertDeleteSingleAppData(m, service, appName);
+
+            _log.info(m + " ---------------- " + m + "--FINISH -------------------");
+            _log.info(m + " ------------------------------------------------------------");
+
+        }
+    }
+
+    /**
+     * @param req
+     * @param resp
+     * @throws Exception
+     */
+    private void getAppName_BadJWTAuth_GrpcTarget(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+
+        final String m = "testGetAppName_BadJWTAuth_GrpcTarget";
+
+        // create
+        // query name
+        // get app info with the name
+
+        // delete
+        ProducerServiceRestClient service = null;
+        String appName = "myAppConsumer";
+        boolean isValidResponse = false;
+
+        try {
+
+            _log.info(m + " ------------------ " + m + "--START ---------------------");
+
+            service = assertCreateSingleAppData(m, appName);
+
+            _log.info(m + " ----- invoking consumer rest client for available app names");
+
+            // Now get the data using Consumer
+
+            ConsumerServiceRestClient client = this.add_BadAuthHeader_Filter(appName, req, resp);
+
+            _log.info(m + " ----- invoking consumer rest client: " + client);
+
+            Response r = client.getAllAppNames();
+
+            assertEquals(200, r.getStatus());
+
+            //this should return any value, update this when fixed server side
+
+            String entityName = r.readEntity(String.class);
+            _log.info(m + " entityName: " + entityName);
+            // Expected output in logs
+            //entityName: ["myApp"]
+
+            isValidResponse = entityName.contains(appName);
+            assertTrue(isValidResponse);
+
+            _log.info(m + " ------------------------------------------------------------");
+
+        } finally {
+
+            assertDeleteSingleAppData(m, service, appName);
+
+            _log.info(m + " ---------------- " + m + "--FINISH -------------------");
+            _log.info(m + " ------------------------------------------------------------");
+
+        }
+
+    }
+
+    /**
+     * @param req
+     * @param resp
+     * @throws Exception
+     */
+    private void getAppName_Auth_GrpcTarget(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+
+        final String m = "testGetAppName_Auth_GrpcTarget";
+
+        // create
+        // query name
+        // get app info with the name
+        // get Price list for the app
+        // delete
+        ProducerServiceRestClient service = null;
+        String appName = "myAppConsumer";
+        boolean isValidResponse = false;
+
+        try {
+
+            _log.info(m + " ------------------ " + m + "--START ---------------------");
+
+            service = assertCreateSingleAppData(m, appName);
+
+            _log.info(m + " ----- invoking consumer rest client for available app names");
+
+            ConsumerServiceRestClient client = null;
+            // Now get the data using Consumer
+            try {
+                client = this.add_AuthHeader_Filter(m, req, resp);
+            } catch (Exception e) {
+                _log.severe(m + " , Error creating ConsumerServiceRestClient proxy");
+                throw e;
+            }
+
+            _log.info(m + " ----- invoking consumer rest client: " + client);
+
+            Response r = client.getAllAppNames();
+
+            assertEquals(200, r.getStatus());
+
+            String entityName = r.readEntity(String.class);
+            _log.info(m + " entityName: " + entityName);
+            // Expected output in logs
+            //entityName: ["myApp"]
+
+            isValidResponse = entityName.contains(appName);
+            assertTrue(isValidResponse);
+
+            _log.info(m + " ------------------------------------------------------------");
+
+        } finally {
+
+            assertDeleteSingleAppData(m, service, appName);
+
+            _log.info(m + " ---------------- " + m + "--FINISH -------------------");
+            _log.info(m + " ------------------------------------------------------------");
+
+        }
 
     }
 
@@ -105,11 +333,11 @@ public class ConsumerEndpointFATServlet extends FATServlet {
      */
     private RestClientBuilder createConsumerRestClient(String m) throws Exception {
 
-        _log.info(m + ": baseUrlConsumer = " + baseConsumerUrlStr);
+        _log.info(m + ": baseUrlConsumer = " + consumerUrlStr);
 
         URL baseUrl;
         try {
-            baseUrl = new URL(baseConsumerUrlStr);
+            baseUrl = new URL(consumerUrlStr);
         } catch (MalformedURLException ex) {
             throw new ServletException(ex);
         }
@@ -126,11 +354,18 @@ public class ConsumerEndpointFATServlet extends FATServlet {
 
     /**
      * @param m
-     * @param service
      * @param appName
      * @throws Exception
      */
-    private void assertCreateSingleAppData(String m, ProducerServiceRestClient service, String appName) throws Exception {
+    private ProducerServiceRestClient assertCreateSingleAppData(String m, String appName) throws Exception {
+
+        ProducerServiceRestClient service = null;
+        try {
+            service = builderProducer.build(ProducerServiceRestClient.class);
+        } catch (Exception e) {
+            _log.severe("Check ProducerServiceRestClient proxy");
+            throw e;
+        }
 
         _log.info(m + " ----- invoking producer rest client to create data: " + appName);
         // create input data
@@ -149,6 +384,8 @@ public class ConsumerEndpointFATServlet extends FATServlet {
         // Expected output in logs
 
         _log.info(m + " ------ data created -----");
+
+        return service;
     }
 
     /**
@@ -183,13 +420,25 @@ public class ConsumerEndpointFATServlet extends FATServlet {
 
     /**
      * @param m
-     * @param service
-     * @param appName
+     * @param app1
+     * @param app2
+     * @param app3
+     * @param app4
+     * @return
      * @throws Exception
      */
-    private void assertCreateMultipleAppData(String m, ProducerServiceRestClient service, String app1, String app2, String app3, String app4) throws Exception {
+    private ProducerServiceRestClient assertCreateMultipleAppData(String m, String app1, String app2, String app3, String app4) throws Exception {
 
         _log.info(m + " ----- invoking producer rest client to create apps to test client streaming  ----- ");
+
+        ProducerServiceRestClient service = null;
+
+        try {
+            service = builderProducer.build(ProducerServiceRestClient.class);
+        } catch (Exception e) {
+            _log.severe(m + " , Error creating ProducerServiceRestClient proxy");
+            throw e;
+        }
 
         // create input data
         AppStructure reqPOJO1 = createAppData(app1, "Famous myApp1", true,
@@ -237,6 +486,8 @@ public class ConsumerEndpointFATServlet extends FATServlet {
         assertTrue(entity.contains("Store has successfully added the app [" + app4 + "]"));
 
         _log.info(m + " ------ multi app data created -----");
+
+        return service;
     }
 
     /**
@@ -278,145 +529,15 @@ public class ConsumerEndpointFATServlet extends FATServlet {
     }
 
     /**
-     * @param req
-     * @param resp
-     * @throws Exception
-     */
-    @Test
-    public void testGetAppName_Auth_GrpcTarget(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        final String m = "testGetAppName_Auth_GrpcTarget";
-
-        // create
-        // query name
-        // get app info with the name
-        // get Price list for the app
-        // delete
-        ProducerServiceRestClient service = null;
-        String appName = "myAppConsumer";
-        boolean isValidResponse = false;
-
-        try {
-            service = builderProducer.build(ProducerServiceRestClient.class);
-        } catch (Exception e) {
-            _log.severe("Check ProducerServiceRestClient proxy");
-            throw e;
-        }
-
-        try {
-
-            _log.info(m + " ------------------ " + m + "--START ---------------------");
-
-            assertCreateSingleAppData(m, service, appName);
-
-            _log.info(m + " ----- invoking consumer rest client for available app names");
-
-            // Now get the data using Consumer
-
-            builderConsumer = createConsumerRestClient(m);
-
-            ConsumerServiceRestClient client = this.add_AuthHeader_Filter(appName, builderConsumer, req, resp);
-
-            _log.info(m + " ----- invoking consumer rest client: " + client);
-
-            Response r = client.getAllAppNames();
-
-            assertEquals(200, r.getStatus());
-
-            String entityName = r.readEntity(String.class);
-            _log.info(m + " entityName: " + entityName);
-            // Expected output in logs
-            //entityName: ["myApp"]
-
-            isValidResponse = entityName.contains(appName);
-            assertTrue(isValidResponse);
-
-            _log.info(m + " ------------------------------------------------------------");
-
-        } finally {
-
-            assertDeleteSingleAppData(m, service, appName);
-
-            _log.info(m + " ---------------- " + m + "--FINISH -------------------");
-            _log.info(m + " ------------------------------------------------------------");
-
-        }
-
-    }
-
-    /**
-     * @param req
-     * @param resp
-     * @throws Exception
-     */
-    @Test
-    public void testGetAppName_Auth_CallCred(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        final String m = "testGetAppName_Auth_CallCred";
-
-        // create
-        // query name
-        // get app info with the name
-        // get Price list for the app
-        // delete
-        ProducerServiceRestClient service = null;
-        String appName = "myAppConsumer";
-        boolean isValidResponse = false;
-
-        try {
-            service = builderProducer.build(ProducerServiceRestClient.class);
-        } catch (Exception e) {
-            _log.severe("Check ProducerServiceRestClient proxy");
-            throw e;
-        }
-
-        try {
-
-            _log.info(m + " ------------------ " + m + "--START ---------------------");
-
-            assertCreateSingleAppData(m, service, appName);
-
-            _log.info(m + " ----- invoking consumer rest client for available app names");
-
-            // Now get the data using Consumer
-
-            builderConsumer = createConsumerRestClient(m);
-
-            ConsumerServiceRestClient client = this.add_AuthHeader_Filter(m, builderConsumer, req, resp);
-
-            _log.info(m + " ----- invoking consumer rest client: " + client);
-
-            Response r = client.getAllAppNames_Auth_CallCred();
-
-            assertEquals(200, r.getStatus());
-
-            String entityName = r.readEntity(String.class);
-            _log.info(m + " entityName: " + entityName);
-            // Expected output in logs
-            //entityName: ["myApp"]
-
-            isValidResponse = entityName.contains(appName);
-            assertTrue(isValidResponse);
-
-            _log.info(m + " ------------------------------------------------------------");
-
-        } finally {
-
-            assertDeleteSingleAppData(m, service, appName);
-
-            _log.info(m + " ---------------- " + m + "--FINISH -------------------");
-            _log.info(m + " ------------------------------------------------------------");
-
-        }
-
-    }
-
-    /**
      * @param m
-     * @param builderConsumer
      * @param req
      * @param resp
      * @return
+     * @throws Exception
      */
-    private ConsumerServiceRestClient add_AuthHeader_Filter(String m, RestClientBuilder builderConsumer, HttpServletRequest req, HttpServletResponse resp) {
+    private ConsumerServiceRestClient add_AuthHeader_Filter(String m, HttpServletRequest req, HttpServletResponse resp) throws Exception {
+
+        builderConsumer = createConsumerRestClient(m);
 
         ConsumerServiceRestClient client = builderConsumer
                         .property("com.ibm.ws.jaxrs.client.keepalive.connection", "close")
@@ -443,12 +564,46 @@ public class ConsumerEndpointFATServlet extends FATServlet {
     }
 
     /**
+     * @param m
+     * @param req
+     * @param resp
+     * @return
+     * @throws Exception
+     */
+    private ConsumerServiceRestClient add_BadAuthHeader_Filter(String m, HttpServletRequest req, HttpServletResponse resp) throws Exception {
+
+        builderConsumer = createConsumerRestClient(m);
+
+        ConsumerServiceRestClient client = builderConsumer
+                        .property("com.ibm.ws.jaxrs.client.keepalive.connection", "close")
+                        .register(
+                                  (ClientRequestFilter) requestContext -> {
+                                      MultivaluedMap<String, Object> headers = requestContext.getHeaders();
+                                      try {
+                                          _log.info(m + " ----------- Add Bearer Token to the request --------------");
+                                          headers.add("Authorization", "Bearer " + getBadToken(req, resp));
+
+                                          for (Entry<String, List<Object>> entry : headers.entrySet()) {
+                                              _log.info("Request headers Bearer: " + entry.getKey() + ", set to: " + entry.getValue());
+                                          }
+
+                                      } catch (Exception e) {
+                                          _log.info(m + " -------------- Failed --------------");
+                                          e.printStackTrace();
+                                      }
+                                  })
+                        .build(ConsumerServiceRestClient.class);
+
+        return client;
+
+    }
+
+    /**
      * @param req
      * @param resp
      * @throws Exception
      */
-    @Test
-    public void testGetAppInfo(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    private void getAppInfo(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         final String m = "testGetAppInfo";
 
         // create
@@ -461,17 +616,10 @@ public class ConsumerEndpointFATServlet extends FATServlet {
         boolean isValidResponse = false;
 
         try {
-            service = builderProducer.build(ProducerServiceRestClient.class);
-        } catch (Exception e) {
-            _log.severe("Check ProducerServiceRestClient proxy");
-            throw e;
-        }
-
-        try {
 
             _log.info(m + " ------------------ testGetAppInfo--START ---------------------");
 
-            assertCreateSingleAppData(m, service, appName);
+            service = assertCreateSingleAppData(m, appName);
 
             _log.info(m + " ------------------------------------------------------------");
             _log.info(m + " ----- invoking consumer rest client to get app info: " + appName);
@@ -517,6 +665,7 @@ public class ConsumerEndpointFATServlet extends FATServlet {
         } finally {
 
             assertDeleteSingleAppData(m, service, appName);
+            builderConsumer = null;
 
             _log.info(m + " ----------------testGetAppInfo--FINISH -------------------");
             _log.info(m + " ------------------------------------------------------------");
@@ -530,8 +679,68 @@ public class ConsumerEndpointFATServlet extends FATServlet {
      * @param resp
      * @throws Exception
      */
-    @Test
-    public void testGetAppPrice(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    private void getAppInfo_BadBasicAuth(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        final String m = "testGetAppInfo_BadBasicAuth";
+
+        // create
+
+        // get app info with the name
+
+        // delete
+        ProducerServiceRestClient service = null;
+        String appName = "myAppConsumer1";
+        boolean isValidResponse = false;
+
+        try {
+
+            _log.info(m + " ------------------ testGetAppInfo_BadBasicAuth--START ---------------------");
+
+            service = assertCreateSingleAppData(m, appName);
+
+            _log.info(m + " ------------------------------------------------------------");
+            _log.info(m + " ----- invoking consumer rest client to get app info: " + appName);
+
+            builderConsumer = createConsumerRestClient(m);
+
+            ConsumerServiceRestClient client2 = builderConsumer
+                            .property("com.ibm.ws.jaxrs.client.keepalive.connection", "close")
+                            .build(ConsumerServiceRestClient.class);
+
+            _log.info(m + " ----- invoking consumer rest client: " + client2);
+
+            Response r = client2.getAppInfoBadAuth(appName);
+
+            assertEquals(200, r.getStatus());
+
+            String entityAppInfo = r.readEntity(String.class);
+            _log.info(m + " entityAppInfo: " + entityAppInfo);
+
+            // since we are sending bad auth , we should not recv any value back
+            // once server side is fixed, fix this
+
+            isValidResponse = entityAppInfo.contains(appName);
+            assertTrue(isValidResponse);
+
+            _log.info(m + " ------------------------------------------------------------");
+
+        } finally {
+
+            assertDeleteSingleAppData(m, service, appName);
+            builderConsumer = null;
+
+            _log.info(m + " ----------------testGetAppInfo_BadBasicAuth--FINISH -------------------");
+            _log.info(m + " ------------------------------------------------------------");
+
+        }
+
+    }
+
+    /**
+     * @param req
+     * @param resp
+     * @throws Exception
+     */
+    private void getAppPrice(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         final String m = "testGetAppPrice";
 
         // create
@@ -545,16 +754,9 @@ public class ConsumerEndpointFATServlet extends FATServlet {
         boolean isValidResponse = false;
 
         try {
-            service = builderProducer.build(ProducerServiceRestClient.class);
-        } catch (Exception e) {
-            _log.severe("Check ProducerServiceRestClient proxy");
-            throw e;
-        }
-
-        try {
 
             _log.info(m + " ------------------ testGetAppPrice--START ---------------------");
-            assertCreateSingleAppData(m, service, appName);
+            service = assertCreateSingleAppData(m, appName);
 
             builderConsumer = createConsumerRestClient(m);
 
@@ -593,21 +795,13 @@ public class ConsumerEndpointFATServlet extends FATServlet {
      * @param resp
      * @throws Exception
      */
-    @Test
-    public void testGetMultiAppPrices(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    private void getMultiAppPrices(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
         final String m = "testGetMultiAppPrices";
         // create
         // get Price list for the app
         // delete
         ProducerServiceRestClient service = null;
-        try {
-            service = builderProducer.build(ProducerServiceRestClient.class);
-        } catch (Exception e) {
-            _log.severe(m + " , Error creating ProducerServiceRestClient proxy");
-            throw e;
-        }
-
         ConsumerServiceRestClient client = null;
         boolean isValidResponse = false;
 
@@ -620,7 +814,7 @@ public class ConsumerEndpointFATServlet extends FATServlet {
 
             _log.info(m + " ----------------testGetMultiAppPrices--START -----------------------");
 
-            this.assertCreateMultipleAppData(m, service, app1, app2, app3, app4);
+            service = this.assertCreateMultipleAppData(m, app1, app2, app3, app4);
             // Now get the app names using Consumer
             _log.info(m + " ------------------------------------------------------------");
             _log.info(m + " ----- invoking consumer rest client for available app names ----- ");
@@ -669,20 +863,14 @@ public class ConsumerEndpointFATServlet extends FATServlet {
      * @param resp
      * @throws Exception
      */
-    @Test
-    public void testGetMultiAppNames(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+
+    private void getMultiAppNames(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
         final String m = "testGetMultiAppNames";
         // create
         // query names
         // delete
         ProducerServiceRestClient service = null;
-        try {
-            service = builderProducer.build(ProducerServiceRestClient.class);
-        } catch (Exception e) {
-            _log.severe(m + " , Error creating ProducerServiceRestClient proxy");
-            throw e;
-        }
 
         ConsumerServiceRestClient client = null;
 
@@ -695,7 +883,7 @@ public class ConsumerEndpointFATServlet extends FATServlet {
 
             _log.info(m + " ----------------testGetMultiAppNames--START -----------------------");
 
-            this.assertCreateMultipleAppData(m, service, app1, app2, app3, app4);
+            service = this.assertCreateMultipleAppData(m, app1, app2, app3, app4);
 
             // Now get the app names using Consumer
             _log.info(m + " ------------------------------------------------------------");
@@ -703,9 +891,7 @@ public class ConsumerEndpointFATServlet extends FATServlet {
 
             try {
 
-                builderConsumer = createConsumerRestClient(m);
-
-                client = this.add_AuthHeader_Filter(m, builderConsumer, req, resp);
+                client = this.add_AuthHeader_Filter(m, req, resp);
 
             } catch (Exception e) {
                 _log.severe(m + " , Error creating ConsumerServiceRestClient proxy");
@@ -745,8 +931,7 @@ public class ConsumerEndpointFATServlet extends FATServlet {
      * @param resp
      * @throws Exception
      */
-    @Test
-    public void testGetMultiAppsInfo(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    private void getMultiAppsInfo(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
         final String m = "testGetMultiAppsInfo";
         // create
@@ -755,13 +940,6 @@ public class ConsumerEndpointFATServlet extends FATServlet {
 
         // delete
         ProducerServiceRestClient service = null;
-        try {
-            service = builderProducer.build(ProducerServiceRestClient.class);
-        } catch (Exception e) {
-            _log.severe(m + " , Error creating ProducerServiceRestClient proxy");
-            throw e;
-        }
-
         ConsumerServiceRestClient client = null;
         boolean isValidResponse = false;
 
@@ -774,7 +952,7 @@ public class ConsumerEndpointFATServlet extends FATServlet {
 
             _log.info(m + " -----------------testGetMultiAppsInfo --- START------------------------");
 
-            this.assertCreateMultipleAppData(m, service, app1, app2, app3, app4);
+            service = this.assertCreateMultipleAppData(m, app1, app2, app3, app4);
 
             // Now get the app names using Consumer
             _log.info(m + " ------------------------------------------------------------");
@@ -937,9 +1115,29 @@ public class ConsumerEndpointFATServlet extends FATServlet {
      */
     private String getToken(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
-        String builtToken = getJwtFromTokenEndpoint("https://" + req.getServerName() + ":" + ConsumerUtils.getSysProp("bvt.prop.member_1.https") + "/");
+        String builtToken = getJwtFromTokenEndpoint("https://" + req.getServerName() + ":" + ConsumerUtils.getSysProp("bvt.prop.member_1.https") + "/", "dev", "hello");
 
         _log.info("getToken ------------------------------------------------------------ " + builtToken);
+
+        assertNotNull(builtToken);
+
+        return builtToken;
+    }
+
+    // create token , return token
+    /**
+     * @param req
+     * @param resp
+     * @return
+     * @throws Exception
+     */
+    private String getBadToken(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+
+        //server.xml has "dev", "hello", send something different
+
+        String builtToken = getJwtFromTokenEndpoint("https://" + req.getServerName() + ":" + ConsumerUtils.getSysProp("bvt.prop.member_1.https") + "/", "dev2", "hello2");
+
+        _log.info("getBadToken ------------------------------------------------------------ " + builtToken);
 
         assertNotNull(builtToken);
 
@@ -951,9 +1149,9 @@ public class ConsumerEndpointFATServlet extends FATServlet {
      * @return
      * @throws Exception
      */
-    private String getJwtFromTokenEndpoint(String baseUrlStr) throws Exception {
+    private String getJwtFromTokenEndpoint(String baseUrlStr, String user, String password) throws Exception {
 
-        WebRequest request = ConsumerUtils.buildJwtTokenEndpointRequest("defaultJWT", "dev", "hello", baseUrlStr);
+        WebRequest request = ConsumerUtils.buildJwtTokenEndpointRequest("defaultJWT", user, password, baseUrlStr);
 
         ConsumerUtils.printRequestHeaders(request, "getJwtFromTokenEndpoint");
 
