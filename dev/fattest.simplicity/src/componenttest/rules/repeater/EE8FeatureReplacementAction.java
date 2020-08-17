@@ -41,6 +41,7 @@ public class EE8FeatureReplacementAction extends FeatureReplacementAction {
                                                  "ejbLite-3.2",
                                                  "ejbPersistentTimer-3.2",
                                                  "ejbRemote-3.2",
+                                                 "ejbTest-1.0",
                                                  "el-3.0",
                                                  "jmsMdb-3.2",
                                                  "jsp-2.3",

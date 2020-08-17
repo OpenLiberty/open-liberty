@@ -20,10 +20,12 @@ repositories {
 
 configurations {
   ejbTools
+  enterpriseBeansTools
 }
 
 dependencies {
   ejbTools 'test:com.ibm.ws.ejbcontainer.fat_tools:1.+'
+  enterpriseBeansTools 'test:io.openliberty.ejbcontainer.jakarta.fat_tools:1.+'
 }
 
 task addEJBTools {
@@ -41,8 +43,25 @@ task addEJBTools {
   }
 }
 
+task addEnterpriseBeansTools {
+  dependsOn ':io.openliberty.ejbcontainer.jakarta.fat_tools:release'
+  doLast {
+    copy {
+      from configurations.enterpriseBeansTools
+      into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.injection.fat.DSDServer/lib/global"
+      rename 'io.openliberty.ejbcontainer.jakarta.fat_tools-(.*).jar', 'io.openliberty.ejbcontainer.jakarta.fat_tools.jar'
+    }
+    copy {
+      from configurations.enterpriseBeansTools
+      into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.injection.fat.RepeatableDSDServer/lib/global"
+      rename 'io.openliberty.ejbcontainer.jakarta.fat_tools-(.*).jar', 'io.openliberty.ejbcontainer.jakarta.fat_tools.jar'
+    }
+  }
+}
+
 addRequiredLibraries {
   dependsOn addEJBTools
+  dependsOn addEnterpriseBeansTools
   dependsOn addDerby
   dependsOn addJakartaTransformer
 }
