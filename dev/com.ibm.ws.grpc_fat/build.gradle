@@ -60,7 +60,7 @@ dependencies {
 	storeAppWarLibs 'com.google.protobuf:protobuf-java-util:3.11.4',
 	'com.google.code.gson:gson:2.8.6',
 	'com.google.guava:guava:28.1-android', // following are dependencies of this 28.1-android
-	'com.google.errorprone:error_prone_annotations:2.3.4',
+	'com.google.errorprone:error_prone_annotations:2.4.0',
 	'com.google.guava:failureaccess:1.0.1',
 	'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava',
 	'org.codehaus.mojo:animal-sniffer-annotations:1.18',
