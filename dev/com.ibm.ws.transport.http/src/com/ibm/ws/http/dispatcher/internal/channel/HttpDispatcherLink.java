@@ -1261,7 +1261,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     }
 
     /**
-     * @param b
+     * Calls function to set the supress 0 byte chunk flag.
      */
     public void setSuppressZeroByteChunk(boolean suppress0ByteChunk) {
         if (this.isc != null) {
