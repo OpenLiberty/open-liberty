@@ -1,0 +1,50 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMH
+#COMPONENTNAMEFOR CWMMH MicroProfile Health API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Health Impl -  range is 0000-0999
+# The range 0000-0049 has been reserved for messages issued above the HealthCheckExecutor within the call stack
+# The range 0050-0099 has been reserved for messages issued at or below the HealthCheckExecutor within the call stack
+#-----------------------------------------------------------------------------------------------------------------------------
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Health error message
+#-----------------------------------------------------------------------------------------------------------------------------
+OSGI_SERVICE_ERROR=CWMMH0000E: {0} OSGi \u670d\u52a1\u4e0d\u53ef\u7528\u3002
+OSGI_SERVICE_ERROR.explanation=\u629b\u51fa\u6b64\u5185\u90e8\u670d\u52a1\u5668\u9519\u8bef\u662f\u56e0\u4e3a\u6307\u5b9a\u7684\u670d\u52a1\u4e0d\u53ef\u7528\u3002
+OSGI_SERVICE_ERROR.useraction=\u8bf7\u4f7f\u7528 clean \u9009\u9879\u91cd\u65b0\u542f\u52a8\u670d\u52a1\u5668\u3002
+
+# The HealthCheck bean call method had an exception
+healthcheck.bean.call.exception.CWMMH0050E=CWMMH0050E: {2} \u6a21\u5757\u7684 {1} \u5e94\u7528\u7a0b\u5e8f\u4e2d\u7684 {0} HealthCheck \u65b9\u6cd5\u629b\u51fa\u4e86\u5f02\u5e38 {3}\uff0c\u5e26\u6709\u4ee5\u4e0b\u6d88\u606f\uff1a{4}
+healthcheck.bean.call.exception.CWMMH0050E.explanation=\u6240\u6307\u5b9a\u8c03\u7528\u65b9\u6cd5\u4ea7\u751f\u4e86\u5f02\u5e38\u3002
+healthcheck.bean.call.exception.CWMMH0050E.useraction=\u67e5\u770b HealthCheck bean \u4e2d\u7684\u8c03\u7528\u65b9\u6cd5\u4ee5\u786e\u5b9a\u6240\u53d1\u751f\u7684\u5f02\u5e38\u3002
+
+# The HealthCheck bean call method had a DOWN outcome
+healthcheck.application.down.CWMMH0052W=CWMMH0052W: \u6a21\u5757 {2} \u7684 {1} \u5e94\u7528\u7a0b\u5e8f\u4e2d\u5b9e\u73b0 HealthCheckResponse \u7684 {0} \u62a5\u544a\u4e86 {3} \u72b6\u6001\u4ee5\u53ca\u6570\u636e {4}\u3002
+healthcheck.application.down.CWMMH0052W.explanation=DOWN \u72b6\u6001\u53ef\u80fd\u5bfc\u81f4\u76d1\u89c6\u670d\u52a1\u5728\u6b64\u670d\u52a1\u5668\u4e0a\u6267\u884c\u64cd\u4f5c\u3002
+healthcheck.application.down.CWMMH0052W.useraction=\u7528\u6237\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002\u6b64\u8b66\u544a\u662f\u4e00\u6761 DOWN \u72b6\u6001\u8bb0\u5f55\u3002
+
+# The Readiness HealthCheck had a DOWN outcome, when applications are not started yet
+readiness.healthcheck.applications.not.started.down.CWMMH0053W=CWMMH0053W: \u51c6\u5907\u8fd0\u884c\u72b6\u51b5\u68c0\u67e5\u62a5\u544a\u4e86 DOWN \u6574\u4f53\u72b6\u6001\uff0c\u56e0\u4e3a\u4ee5\u4e0b\u5e94\u7528\u7a0b\u5e8f\u5c1a\u672a\u542f\u52a8\uff1a{0}
+readiness.healthcheck.applications.not.started.down.CWMMH0053W.explanation=\u6307\u5b9a\u7684\u5e94\u7528\u7a0b\u5e8f\u5c1a\u672a\u5b8c\u5168\u542f\u52a8\uff0c\u5e76\u4e14\u672a\u51c6\u5907\u597d\u5904\u7406\u8bf7\u6c42\uff0c\u56e0\u6b64\u51c6\u5907\u8fd0\u884c\u72b6\u51b5\u68c0\u67e5\u62a5\u544a\u4e86 DOWN \u72b6\u6001\u3002
+readiness.healthcheck.applications.not.started.down.CWMMH0053W.useraction=\u7528\u6237\u65e0\u9700\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\uff0c\u8bf7\u7b49\u5f85\u5e94\u7528\u7a0b\u5e8f\u542f\u52a8\u3002\u6b64\u8b66\u544a\u662f\u4e00\u6761 DOWN \u72b6\u6001\u8bb0\u5f55\u3002

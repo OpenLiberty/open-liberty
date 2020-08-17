@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/ConversionExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+3001=Obiectul [{0}], de clas\u0103 [{1}] nu poate fi convertit la [{2}].
+3002=Obiectul [{0}], de clas\u0103 [{1}], din maparea [{2}] cu descriptorul [{3}], nu a putut fi convertit la [{4}].
+
+3003=Format de dat\u0103 incorect: [{0}] (a\u015fteptat [YYYY-MM-DD])
+
+3004=Format de or\u0103 incorect: [{0}] (a\u015fteptat [HH:MM:SS])
+
+3005=Format al amprentei de timp incorect: [{0}] (a\u015fteptat [YYYY-MM-DD HH:MM:SS.NNNNNNNNN])
+
+3006=[{0}] trebuie s\u0103 fie de lungime egal\u0103 pentru a fi convertit \u00eentr-o matrice octet.
+
+3007=Obiectul [{0}], de clas\u0103 [{1}] nu poate fi convertit la [{2}]. Asigura\u0163i-v\u0103 c\u0103 clasa [{2}] este \u00een CLASSPATH.  S-ar putea s\u0103 fie nevoie s\u0103 utiliza\u0163i API-ul alternativ care trece \u00een \u00eenc\u0103rc\u0103torul de clase corespunz\u0103tor, dup\u0103 cum este necesar, sau s\u0103 o seta\u0163i \u00een ConversionManager implicit.
+3008=Format dat\u0103-or\u0103 incorect: [{0}] (a\u015fteptat [YYYY-MM-DD''T''HH:MM:SS])
+
+3009=Nu s-au putut seta {0} propriet\u0103\u0163i [{1}] la [{2}].
+

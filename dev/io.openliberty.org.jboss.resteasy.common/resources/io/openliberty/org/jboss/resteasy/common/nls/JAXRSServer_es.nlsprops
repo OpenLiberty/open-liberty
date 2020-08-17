@@ -1,0 +1,63 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the
+#           message text must be followed by a 2nd apostrophe to work correctly.
+#-------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CWWKW
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers start with '0' and are filled to a width of 4 digits.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME com.ibm.ws.injection/resources/com/ibm/ws/injection/resources/InjectionMessages.nlsprops
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW io.openliberty.jaxrs-3.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWMGQ1xxxI=CWMGQ1xxxI: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWMGQ1xxxI.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWMGQ1xxxI.useraction=User action text for the message
+#
+#-------------------------------------------------------------------------------
+
+MULTIPLE_REST_SERVLETS_CWWKW1300W=CWWKW1300W: Se han definido varios servlets REST para el m\u00f3dulo web, {0}. S\u00f3lo se permiten cero o un servlet REST por m\u00f3dulo web.
+MULTIPLE_REST_SERVLETS_CWWKW1300W.explanation=S\u00f3lo se permite definir un servlet REST por m\u00f3dulo web. Un servlet REST es cualquier servlet que utilice uno de los siguientes nombres de clase: com.ibm.websphere.jaxrs.server.IBMRestServlet, org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher u org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher. Este mensaje indica que m\u00e1s de un servlet se ha especificado en web.xml o se ha configurado din\u00e1micamente.
+MULTIPLE_REST_SERVLETS_CWWKW1300W.useraction=Revise el web.xml para estos servlets y elim\u00ednelos todos o todos excepto uno.
+
+MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W=CWWKW1301W: Se han definido varias correlaciones de servlets REST para el m\u00f3dulo web, {0}. Un servlet REST s\u00f3lo se puede asociar con una correlaci\u00f3n de v\u00eda de acceso \u00fanica.
+MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.explanation=S\u00f3lo se permite configurar un servlet REST con cero o una correlaci\u00f3n de v\u00eda de acceso. Un servlet REST es cualquier servlet que utilice uno de los siguientes nombres de clase: com.ibm.websphere.jaxrs.server.IBMRestServlet, org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher u org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher. Este mensaje indica que se ha asociado m\u00e1s de una correlaci\u00f3n con un servlet REST en web.xml.
+MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.useraction=Revise el web.xml para las correlaciones de servlet que est\u00e1n asociadas con el servlet REST y elim\u00ednelas todas o todas excepto una.
+
+

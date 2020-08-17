@@ -179,9 +179,9 @@ CWPKI2035E=CWPKI2035E: Il servizio ACME non ha potuto memorizzare il certificato
 CWPKI2035E.explanation=Il certificato \u00e8 stato richiamato correttamente dalla CA, ma non pu\u00f2 essere memorizzato in locale.
 CWPKI2035E.useraction=Esaminare il messaggio di errore per i dettagli. Verificare che l'ubicazione del file keystore sia corretta e che il server abbia le autorizzazioni di scrittura sul file.
 
-CWPKI2036E=CWPKI2036E: Il servizio ACME \u00e8 scaduto in attesa dell''avvio dell''applicazione di autorizzazione web. L''applicazione \u00e8 necessaria per completare una richiesta di certificato con una CA ACME. Il servizio ha atteso {0} minuti.
-CWPKI2036E.explanation=L'applicazione utilizzata per completare una richiesta di certificato non \u00e8 stata avviata nell'intervallo di tempo previsto. Un certificato firmato non pu\u00f2 essere richiesto.
-CWPKI2036E.useraction=Esaminare il log per i messaggi o gli errori precedenti.
+CWPKI2036W=CWPKI2036W: Il servizio ACME \u00e8 scaduto in attesa dell''avvio dell''applicazione di autorizzazione web. L''applicazione \u00e8 necessaria per completare una richiesta di certificato con una CA ACME. La richiesta del certificato \u00e8 stata tentata. Il servizio ha atteso {0}.
+CWPKI2036W.explanation=L'applicazione utilizzata per completare una richiesta di certificato non \u00e8 stata avviata nell'intervallo di tempo previsto. Se l'applicazione viene avviata, la richiesta procede. Se l'applicazione non viene avviata, la richiesta del certificato non riesce.
+CWPKI2036W.useraction=Esaminare il log per i messaggi o gli errori precedenti. Esaminare il log per un messaggio CWWKT0016I che include un'applicazione web con l'URL 'acme-challenge' per indicare che l'applicazione interna \u00e8 stata avviata.
 
 CWPKI2037E=CWPKI2037E: I domini per il servizio ACME erano null o vuoti.
 CWPKI2037E.explanation=I domini erano null o vuoti e non possono essere utilizzati.
@@ -330,3 +330,7 @@ CWPKI2072W.useraction=Assicurarsi che la directory della cronologia ACME abbia l
 CWPKI2073W=CWPKI2073W: Non \u00e8 stato specificato alcun contatto account. Si consiglia di impostare questa propriet\u00e0\u00a0nella configurazione del server. Se si perde una chiave o l'account \u00e8 compromesso, si perde l'accesso all'account.
 CWPKI2073W.explanation=Il valore per la propriet\u00e0 accountContact non \u00e8 stato specificato nella configurazione del server.
 CWPKI2073W.useraction=Ilmpostare la propriet\u00e0\u00a0accountContact nella configurazione del server.
+
+CWPKI2074W=CWPKI2074W: Il servizio ACME \u00e8 scaduto durante l''attesa che gli venisse segnalato che la porta HTTP \u00e8 aperta. Una porta HTTP disponibile \u00e8 necessaria per completare una richiesta di certificato con una CA ACME. La richiesta del certificato \u00e8 stata tentata. Il servizio ha atteso {0}.
+CWPKI2074W.explanation=Il servizio tenta una richiesta di certificato. Se una porta HTTP \u00e8 aperta, la richiesta procede. Se una porta HTTP non \u00e8 aperta, la richiesta di certificato non riesce.
+CWPKI2074W.useraction=Esaminare il log per i messaggi o gli errori precedenti. Esaminare il log per i messaggi CWWKO0219I, che elencano endpoint e porte disponibili. 

@@ -1,0 +1,763 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/LoggingLocalizationResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+External_transaction_controller_not_defined_by_server_platform=La DatabaseSession tiene un controlador de transacciones externas definida por algo distinto a ServerPlatform. EclipseLink permitir\u00e1 alterar temporalmente el controlador de transacciones externas, pero le recomendamos que considere la alternativa de subclases org.eclipse.persistence.platform.server.ServerPlatformBase y alterargetExternalTransactionControllerClass().
+
+JDBC_driver_does_not_support_meta_data=Conectado: desconocido (el controlador JDBC no soporta metadatos).
+
+all_registered_clones=Todos los clones registrados:
+
+an_error_executing_ejbSelect=Se ha producido un error al ejecutar ejbSelect: {0}
+
+an_error_executing_finder=Se ha producido un error al ejecutar el buscador: {0}
+
+an_error_occured_executing_findByPrimaryKey=Se ha producido un error al ejecutar findByPrimaryKey: {0}
+
+an_error_occured_initializing_dms_listener=Excepci\u00f3n lanzada al inicializar escucha incorporado DMS y el servlet SPY
+
+an_error_occured_preparing_bean=Se ha producido un error al preparar bean para la invocaci\u00f3n: {0}
+
+an_error_occured_trying_to_undeploy_bean=Se ha producido un error al intentar anular el despliegue bean (despu\u00e9s de error de despliegue): {0}
+
+annotation_warning_ignore_annotation=Ignorando la anotaci\u00f3n [{0}] en el elemento [{1}] debido a un valor completo de metadatos XML de verdadero para esta clase.
+
+annotation_warning_ignore_private_owned=Ignorando @PrivateOwned en elemento[{1}] dentro de la clase de entidad [{0}]. Un @PrivateOwned solo se puede utilizar con un @OneToOne, @OneToMany y @VariableOneToOne. Adem\u00e1s tenga en cuenta que la propiedad privada est\u00e1 impl\u00edcita a un @BasicCollection y @BasicMap.
+
+annotation_warning_ignore_return_insert=Se ignora el @ReturnInsert en el elemento [{0}]. Un @ReturnInsert solo est\u00e1 soportado con una correlaci\u00f3n b\u00e1sica.
+
+annotation_warning_ignore_return_update=Se ignora el @ReturnUpdate en el elemento [{0}]. Un @ReturnUpdate solo est\u00e1 soportado con una correlaci\u00f3n b\u00e1sica.
+
+application_server_name_and_version=Servidor: {0}
+
+archive_not_found_in_input=El archivo de archivado ({0}) no exist\u00eda en el directorio de entrada ({1}).
+
+associate_using_third_table_not_migrated=La funci\u00f3n CMP nativa de Oc4j -DassociateUsingThirdTable=true para correlacionar 1:m est\u00e1 utilizando una tabla de relaci\u00f3n no migrada. Debe volver a correlacionar el campo cmr ({1}) de la entidad ({0}) como una correlaci\u00f3n de uno con muchos a trav\u00e9s del entorno de trabajo de correlaci\u00f3n tras el proceso de migraci\u00f3n.
+
+attempted_to_open_entry_in_url_as_jar={2} se ha lanzado en el intento de abrir {0} como jar y acceder a la entrada: {1}.
+
+attempted_to_open_file_url_as_directory={2} se ha lanzado en un intento de abrir {0} como directorio y acceder a la entrada: {1}.
+
+attempted_to_open_url_as_directory={1} se ha lanzado en un intento de abrir {0} como un directorio.
+
+attempted_to_open_url_as_jar={1} se ha lanzado en un intento de abrir {0} como jar.
+
+automatic_key_generation_not_supported=El valor CMP nativa de WLS "generaci\u00f3n-clave-autom\u00e1tica" en la entidad ({0}) no est\u00e1 soportado directamente en la CMP EclipseLink. Consulte el documento de migraci\u00f3n para ver detalles.
+
+bacth_update_not_supported=El tama\u00f1o de lote del valor de actualizaci\u00f3n por lotes con el valor ({0}) definido en el bean de entidad ({1}) no est\u00e1 soportado directamente en la CMP EclipseLink. Consulte el documento de migraci\u00f3n para ver detalles.
+
+broadcast_connection_already_closed=Aviso: {0}: intento de cerrar conexi\u00f3n que se ya se ha cerrado. Ignorando.
+
+broadcast_connection_already_closing=Aviso: {0}: intento de cerrar conexi\u00f3n que se est\u00e1 cerrando actualmente. Ignorando.
+
+broadcast_exception_thrown_when_attempting_to_close_connection=Aviso: {0}: el intento de cerrar conexi\u00f3n ha provocado una excepci\u00f3n {1}
+
+broadcast_ignored_command_while_closing_connection=Aviso: {0}: ignorando solicitud para publicar mandato mientras se est\u00e1 cerrando la conexi\u00f3n.
+
+broadcast_listening_sleep_on_error=Aviso: {0}: Se ha lanzado la excepci\u00f3n {1}. La hebra estar\u00e1 en suspensi\u00f3n durante {2} milisegundos antes de reanudar la escucha.
+
+broadcast_remote_command_is_null=Aviso: {0}: se ha recibido el mensaje {1} que contiene nulo en lugar de RemoteCommand.
+
+broadcast_remote_command_wrong_type=Aviso: {0}: ha recibido el mensaje {1} que contiene un objeto del tipo {2} en lugar del tipo esperado RemoteCommand.
+
+call_timeout_not_migrated=El valor de tiempo de espera de llamada={1} est\u00e1 definido en la entidad {0} en orion-ejb-jar.xml pero no est\u00e1n definidas correlaciones persistentes en el archivo de descriptor, por lo tanto, no se producir\u00e1 la migraci\u00f3n.  Si utiliza la correlaci\u00f3n predeterminada de EclipseLink m\u00e1s tarde para generar el descriptor de correlaci\u00f3n EclipseLink, tenga en cuenta que el valor de tiempo de espera de llamada se perder\u00e1 ya que la correlaci\u00f3n predeterminada EclipseLink no tiene acceso al archivo descriptor nativo.  Tendr\u00e1 que restablecer el tiempo de espera de llamada manualmente o a trav\u00e9s del entorno de correlaciones EclipseLink tras la generaci\u00f3n de correlaci\u00f3n predeterminada.
+
+cannot_get_nested_collection_type=El tipo de colecci\u00f3n anidada no se puede obtener.
+
+cannot_get_server_name_and_version=No se puede obtener el nombre y la versi\u00f3n de servidor debido a la excepci\u00f3n siguiente.  {0}
+
+cannot_unwrap_connection=No se puede anular la derivaci\u00f3n de la conexi\u00f3n oracle derivada por el servidor de aplicaciones debido a la excepci\u00f3n siguiente.  {0}
+
+cannot_weave_changetracking=La clase {0} no se ha podido entrelazar para el rastreo de cambios ya que no es compatible con sus correlaciones.
+
+cannot_weave_virtual_one_to_one=La clase {0} tiene el atributo {1} que utiliza una correlaci\u00f3n OneToOne o ManyToOne en un atributo virtual.  El entrelazado de estos tipos de correlaciones no est\u00e1 soportado.  El entrelazado se inhabilitar\u00e1 para {0}.
+
+check_exist_on_method_as_true_not_supported=El valor CMP nativa de WLS "comprobar-existencia-en-m\u00e9todo-como-verdadero" en la entidad ({0}) no est\u00e1 soportado directamente en la CMP EclipseLink. Consulte el documento de migraci\u00f3n para ver detalles.
+
+class_list_created_by=Lista de clases creada por el m\u00e9todo ({0}).({1})().
+
+cmp_and_cmr_field=La entrada de ejb-jar.xml para [{0}] contiene ambas entradas, <cmp-field> y <cmr-field>, para el atributo [{1}].  La entrada <cmp-field> se ignorar\u00e1.
+
+column_size_not_migrated=El tama\u00f1o de columna de la BD ({0}) no se ha migrado. Consulte el documento de migraci\u00f3n para ver detalles.
+
+communication_failure_attempting_begintransaction_retry=Se ha detectado una anomal\u00eda en las comunicaciones al intentar crear transacci\u00f3n en base de datos.  Intentando reintentar transacci\u00f3n de inicio. El errar fue: {0}.
+
+communication_failure_attempting_query_retry=Se ha detectado una anomal\u00eda en las comunicaciones al intentar realizar una consulta de lectura fuera de una transacci\u00f3n. Intentando reintentar la consulta. El errar fue: {0}.
+
+config_factory=F\u00e1brica de config: ({0}) = ({1})
+
+connected_sdk=Conectado: SDK
+
+connected_user_database=Conectado: {3}{4}Usuario: {0}{3}{4}Base de datos: {1}  Versi\u00f3n: {2}
+
+connected_user_database_driver=Conectado: {0}{6}Usuario: {1}{6}Base de datos: {2}  Versi\u00f3n: {3}{6}Controlador: {4}  Versi\u00f3n: {5}
+
+corrupted_session_announcement=SessionID: {0}  El gestor de descubrimiento ha recibido un anuncio de sesi\u00f3n da\u00f1ado - ignorando.
+
+create_default_dbms_tables_not_supported=El valor CMP nativa de WLS "crear-tablas-dbms-predeterminadas" no est\u00e1 soportado directamente en la CMP EclipseLink. Consulte el documento de migraci\u00f3n para ver detalles.
+
+data_sync_on_ejb_create_not_supported=El valor de sincronizaci\u00f3n de datos "opci\u00f3n-sincronizaci\u00f3n-datos"="ejbCreate" definido en el bean de entidad ({0}) no est\u00e1 soportado directamente en la CMP EclipseLink. Consulte el documento de migraci\u00f3n para ver detalles.
+
+dbPlatformHelper_defaultingPlatform=No se puede detectar la plataforma para el nombre de proveedor [{0}]. Toma como valor predeterminado [{1}]. El dialecto de la base de datos utilizado no puede coincidir con la base de datos que est\u00e1 utilizando. Proporcione expl\u00edcitamente una plataforma utilizando la propiedad "eclipselink.target-database".
+
+dbPlatformHelper_noMappingFound=No se puede cargar el recurso [{0}] que carga la correlaci\u00f3n del nombre de proveedor en la plataforma de base de datos. La detecci\u00f3n autom\u00e1tica de la plataforma de base de datos no funcionar\u00e1.
+
+dbws_no_wsdl_inline_schema=El esquema incorporado WSDL [{0}] no se ha podido leer.
+
+dbws_orm_metadata_read_error=Los metadatos ORM [{0}] no se han podido leer.
+
+dbws_oxm_metadata_read_error=Los metadatos OXM [{0}] no se han podido leer.
+
+dbws_xml_schema_read_error=El esquema XML [{0}] no se ha podido leer.
+
+ddl_generation_unknown_property_value=Valor {0} desconocido proporcionado [{1}] para la unidad de persistencia [{2}]. Las opciones v\u00e1lidas son: [{3}]
+
+default_dbms_tables_ddl_not_supported=El valor CMP nativa de WLS "ddl-tablas-dbms-predeterminado" no est\u00e1 soportado directamente en la CMP EclipseLink. Consulte el documento de migraci\u00f3n para ver detalles.
+
+default_tables_already_existed=La tabla ({0}) ya est\u00e1 en la base de datos y no se crear\u00e1.
+
+delay_database_insert_until_ejb_create_not_supported=El valor CMP nativa de WLS "retardo-inserci\u00f3n-base-datos-hasta-ejbCreate" en la entidad ({0}) no est\u00e1 soportado directamente en la CMP EclipseLink. Consulte el documento de migraci\u00f3n para ver detalles.
+
+delay_database_insert_until_ejb_post_create_not_supported=El valor CMP nativa de WLS "retardo-inserci\u00f3n-base-datos-hasta-ejbPostCreate" en la entidad ({0}) no est\u00e1 soportado directamente en la CMP de EclipseLink. Consulte el documento de migraci\u00f3n para ver detalles.
+
+delay_updates_until_commit_not_supported=La funci\u00f3n CMP nativa de Oc4j "retardo-actualizaciones-hasta-compromiso" en la entidad ({0}) no est\u00e1 soportada directamente en la CMP EclipseLink. Consulte el documento de migraci\u00f3n para ver detalles.
+
+deleted_objects=Objetos suprimidos:
+
+deleting_object=La operaci\u00f3n de eliminaci\u00f3n se ha realizado en: {0}
+
+deprecated_property=la propiedad {1} est\u00e1 en desuso, la propiedad {0} se debe utilizar en su lugar.
+
+descriptor_named_query_cannot_be_added=No se puede a\u00f1adir un descriptor con el nombre de consulta cuyo conflicto de nombre con una consulta existente. Consulta que se va a a\u00f1adir: [{0}] se denomina: [{1}] con argumentos [{2}].
+
+dir_cleaned_for_mw_files=Los archivos y subdirectorios en el directorio{0} se han suprimido para poder crear un directorio limpio para los nuevos archivos de proyecto del entorno de trabajo de correlaci\u00f3n EclipseLink generados
+
+do_select_before_insert_not_supported=La funci\u00f3n CMP nativa Oc4j "seleccionar-antes-insertar" en la entidad ({0}) no est\u00e1 soportada directamente en la CMP EclipseLink. Consulte el documento de migraci\u00f3n para ver detalles.
+
+drop_connection_on_error=Aviso: Descartando conexi\u00f3n de mandato remoto para {0} en error {1}
+
+ejbSelect2=EjbSelect: {0}
+
+ejb_jar_xml_not_found_in_input=El ejb-jar.xml no est\u00e1 presente en el directorio de entrada ({0}).
+
+elements={0}{1} elementos
+
+enable_batch_operations_as_true_not_supported=El valor CMP nativa de WLS "habilitar-operaciones-lotes-como-verdadero" no est\u00e1 soportado directamente en la CMP de EclipseLink. Consulte el documento de migraci\u00f3n para ver detalles.
+
+entity_manager_ignores_jta_data_source=La unidad de persistencia no utiliza JTA, por lo tanto, EntityManager ignora el origen de datos jta. 
+
+entity_manager_ignores_nonjta_data_source=La unidad de persistencia utiliza JTA, por lo tanto, EntityManager ignora los or\u00edgenes de datos no jta. 
+
+entity_manager_sets_property_while_context_is_active=La propiedad {0} est\u00e1 definida en EntityManager cuando el contexto de persistencia activo ya existe, se procesar\u00e1 y entrar\u00e1 en vigor solo cuando se crea un contexto de persistencia activo nuevo. Para crear un nuevo contexto de persistencia activo, el existente se debe eliminar, esto se podr\u00eda realizar llamando al m\u00e9todo de borrado en el EntityManager.
+
+entity_not_available_during_merge=Se ha excedido el m\u00e1x de intentos.  No se ha podido encontrar el valor de cacheKey bloqueado.  Clase [{0}] ID:[{1}] Esta hebra: [{2}] Hebra de propiedad: [{3}]
+
+error_during_PersistenceManager_setup_for_bean=Error durante la configuraci\u00f3n de PersistenceManager para el bean: {0}
+
+error_executing_ejbHome=Error al ejecutar ejbHome: {0}
+
+error_executing_remote_command=Ha fallado el mandato {0} debido a: {1}
+
+error_getting_transaction_status=Error al obtener estado de transacci\u00f3n.  {0}
+
+error_in_codegen=Error durante la generaci\u00f3n de clase de bean particular.
+
+error_in_create=Error en la creaci\u00f3n.
+
+error_in_remove=Error en la eliminaci\u00f3n.
+
+error_loading_xml_file=Excepci\u00f3n al cargar archivo xml ORM: {0}: {1}
+
+exception_loading_entity_class=Una excepci\u00f3n al intentar inicializar la persistencia.  Se ha producido {1} al intentar cargar la clase de identidad: {0}.
+
+exception_thrown_when_attempting_to_close_connection=Aviso: excepci\u00f3n lanzada al intentar cerrar conexi\u00f3n
+
+exception_thrown_when_attempting_to_close_listening_topic_connection=Excepci\u00f3n lanzada al intentar cerrar la conexi\u00f3n de tema de escucha: {0}
+
+exception_thrown_when_attempting_to_shutdown_cache_synch=Excepci\u00f3n lanzada al intentar cerrar la sincronizaci\u00f3n de cach\u00e9: {0}
+
+exception_while_weaving=El tejedor ha encontrado una excepci\u00f3n al intentar entrelazar la clase {0}. La excepci\u00f3n es: {1}
+
+extra_cmp_field=Hay un m\u00e9todo getter y/o setter abstracto definido en la clase de bean abstracta [{0}] pero el campo cmp correspondiente [{1}] no est\u00e1 declarado en el ejb-jar.xml.
+
+extra_ejb_select=Hay un ejbSelect abstracto definido en la clase de bean abstracto [{0}], pero la entrada del ejbSelect correspondiente [{1}{2}] no est\u00e1 declarada en el ejb-jar.xml.
+
+extra_finder=Hay un buscador definido en la interfaz de inicio [{0}] pero el la entrada del buscador correspondiente [{1}{2}] no est\u00e1 declarada en el ejb-jar.xml.
+
+failed_command_propagation=Error: no se ha podido intentar propagar el mandato en {0} debido a {1}
+
+failed_to_find_mbean_server=Error al encontrar el servidor MBean: {0}
+
+failed_to_propogate_to=CacheSynchronization : error al propagar en {0}.  {1}
+
+field_group_not_supported=El valor CMP nativa de WLS "grupo-campo" en la entidad ({0}) no est\u00e1 soportado directamente en la CMP EclipseLink. Consulte el documento de migraci\u00f3n para ver detalles.
+
+field_type_set_to_java_lang_string=El generador de tabla predeterminado no se ha podido localizar ni convertir un tipo java ({1}) en un tipo de base de datos para el campo de base de datos ({0}). El generador utiliza "java.lang.String" como tipo java predeterminado para el campo.
+
+force_update_not_supported=La funci\u00f3n CMP nativa de Oc4j "forzar-actualizar" en la entidad({0}) no se soporta directamente en la CMP EclipseLink. Consulte el documento de migraci\u00f3n para ver detalles.
+
+identitymap_for={0}{1} para: {2}
+
+includes=(incluye: 
+
+input_and_output_dir_be_different=Debe definir un directorio de salida diferente al de entrada.
+
+input_archive_format_not_supported=El programa de utilidad de migraci\u00f3n soporta .ear y .jar y el formato de archivo de entrada. El formato de archivo de entrada como ({0}) no est\u00e1 soportado.
+
+input_at_least_either_archive_or_xml=Utilice -e para especificar el nombre de archivo de archivado migrado, o -x para se\u00f1alar que los archivos xml de descriptor en el directorio de entrada se migrar\u00e1 y debe especificar uno y solo uno de ellos.
+
+input_minimum_arguments=Los argumentos de entrada de la l\u00ednea de mandatos deben incluir al menos -s, -a o -x, y -o.
+
+input_not_both_archive_and_xml=Utilice -e para especificar el nombre de archivo de archivado, o -x para se\u00f1alar que los archivos de descriptor en el directorio de entrada se migrar\u00e1n, pero no ambas opciones.
+
+input_orione_ejb_jar_augmented=El archivo orion-ejb-jar.xml de entrada se ha aumentado para especificar EclipseLink como gestor persistente de OC4J.
+
+invalid_command_line_argument=El argumento de l\u00ednea de mandatos ({0}) no es v\u00e1lido
+
+invalid_datasource_property_value={1} no es un objeto v\u00e1lido que se va a pasar para la propiedad {0}.  Los valores v\u00e1lidos son String o instancias de javax.sql.DataSource.
+
+invalid_property_value={1} no es un objeto v\u00e1lido que se va a pasar para la propiedad {0}.
+
+isolation_level_not_supported=El valor CMP nativa de Oc4j "nivel-aislamiento" en la entidad ({0}) no est\u00e1 soportado directamente en la CMP EclipseLink. Consulte el documento de migraci\u00f3n para ver detalles.
+
+jar_entry_has_been_migrated=El archivo descriptor de CMP nativa en la entrada jar ({0}) del archivo EAR de entrada ({1}) se ha migrado.
+
+jar_entry_not_migratable=La entrada jar ({0}) en el archivo EAR de entrada ({1}) no se puede migrar.
+
+jar_file_url_exception=Excepci\u00f3n al analizar persistence.xml.  La ubicaci\u00f3n del archivo jar no se ha podido encontrar: {0}
+
+jaxb_metadata_warning_ignoring_java_attribute=Ignorando atributo [{0}] en la clase [{1}] ya que no se ha generado ninguna propiedad para este.
+
+jaxb_metadata_warning_ignoring_type_on_map=Se ignora el atributo de tipo definido en xml-element ya que xml-map se ha especificado en la propiedad [{0}].
+
+jaxb_metadata_warning_invalid_bound_type=El tipo de l\u00edmite [{0}] para la clase de adaptador [{1}] no es v\u00e1lido y se ignorar\u00e1.
+
+jaxb_metadata_warning_invalid_java_attribute=Se ha encontrado un JavaAttribute no soportado [{0}] y se ignorar\u00e1.
+
+jaxb_metadata_warning_invalid_package_level_xml_java_type_adapter=Se ha especificado un XmlJavaTypeAdapter no v\u00e1lido [{0}] para el paquete [{1}], y se ignorar\u00e1.
+
+jaxb_metadata_warning_invalid_property_level_xml_java_type_adapter=Se ha especificado un XmlJavaTypeAdapter no v\u00e1lido [{0}] para el campo/propiedad [{1}] en la clase [{2}], y se ignorar\u00e1.
+
+jaxb_metadata_warning_invalid_type_level_xml_java_type_adapter=Se ha especificado un XmlJavaTypeAdapter no v\u00e1lido [{0}] para la clase [{1}], y se ignorar\u00e1.
+
+jaxb_metadata_warning_no_classes_to_process=No hay clases para procesar para el paquete [{0}].
+
+jmx_mbean_runtime_services_failed_toget_initial_context=No se ha podido obtener el InitialContext para el registro de MBean: {0}
+
+jmx_mbean_runtime_services_get_executethreadruntime_object_failed=La versi\u00f3n de WebLogic no soporta executeThreadRuntime - utilizando ClassLoader: {0}
+
+jmx_mbean_runtime_services_identity_map_class=Mapa de identidad [{0}] clase = {1}
+
+jmx_mbean_runtime_services_identity_map_empty=El mapa de identidad [{0}] est\u00e1 vac\u00edo.
+
+jmx_mbean_runtime_services_identity_map_initialized=El mapa de identidad [{0}] se ha inicializado.
+
+jmx_mbean_runtime_services_identity_map_invalidated=El mapa de identidad [{0}] se ha invalidado.
+
+jmx_mbean_runtime_services_identity_map_non_existent=El mapa de identidad [{0}] no existe.
+
+jmx_mbean_runtime_services_mbeanserver_lookup_failed=No se ha podido obtener el InitialContext para el registro de MBean: {0}
+
+jmx_mbean_runtime_services_no_classes_in_session=Sin clases en sesi\u00f3n.
+
+jmx_mbean_runtime_services_no_connection_pools_available=No hay agrupaciones de conexiones disponibles.
+
+jmx_mbean_runtime_services_no_identity_maps_in_session=No hay mapas de identidad en esta sesi\u00f3n.
+
+jmx_mbean_runtime_services_pool_name=Nombre de agrupaci\u00f3n = {0}
+
+jmx_mbean_runtime_services_print_cache_key_value=Clave [{0}] => Valor [{1}]
+
+jmx_mbean_runtime_services_registration_encountered_multiple_mbeanserver_instances=Ha varias instancias de JMX MBeanServer [{0}], utilizaremos el servidor en el \u00edndice [{1}] : [{2}].
+
+jmx_mbean_runtime_services_registration_mbeanserver_print=Se ha encontrado la instancia JMX MBeanServer: [{0}], n\u00famero de beans: [{1}], dominio: [{2}] en el \u00edndice: [{3}].
+
+jmx_mbean_runtime_services_statement_cache_cleared=Cach\u00e9 de sentencia borrada.
+
+jmx_mbean_runtime_services_switching_to_alternate_mbeanserver=JMX MBeanServer en uso: [{0}] del \u00edndice [{1}] 
+
+jmx_mbean_runtime_services_threadpool_initialize_failed=No se ha podido inicializar MBean threadPoolRuntime: {0}
+
+jmx_unable_to_unregister_mbean=No se ha podido anular registro de MBean [{0}] porque MBeanServer es nulo. Verifique que la ServerPlatform tiene JMX habilitado.
+
+jmx_unregistered_mbean=MBean con el registro anulado [{0}] de MBeanServer [{1}].
+
+jpars_could_bootstrap_persistence_context=El contexto de persistencia: [{0}] no se ha podido arrancar.
+
+jpars_could_not_find_class_in_persistence_unit=El tipo: [{0}] no se puede encontrar en la unidad de persistencia: [{1}].
+
+jpars_could_not_find_persistence_context=Una llamada JPA-RS est\u00e1 solicitando contexto de persistencia: [{0}].  Dicho contexto de persistencia no se ha encontrado.
+
+jpars_could_not_find_session_bean=Se est\u00e1 realizando una llamada a un bean de sesi\u00f3n con nombre JNDI: [{0}].  Dicho bean no se puede encontrar.
+
+jta_cannot_be_disabled_in_cmp=Al utilizar la persistencia gestionada por contenedor (CMP), no se puede inhabilitar JTA. EclipseLink actuar\u00e1 como si JTA estuviera habilitado.
+
+key_identity_hash_code_object={0}Clave: {1}{2}C\u00f3digo hash de identidad: {3}{2}Objeto: {4}
+
+key_object_null={0}Clave: {1}{2}Objeto: nulo
+
+key_version_identity_hash_code_object={0}Clave: {1}{2}Versi\u00f3n: {5}{2}C\u00f3digo hash de identidad: {3}{2}Objeto: {4}
+
+locking_mode_not_valid=La modalidad de bloqueo ({1}) en la entidad({0} en orion-ejb-jar.xml no est\u00e1 bien definida y por lo tanto no se ha migrado.
+
+locking_required_for_database_change_notification=La entidad {0} no est\u00e1 utilizando el bloqueo de versi\u00f3n, pero tiene varias tablas o relaciones y est\u00e1 utilizando la notificaci\u00f3n de cambio de la base de datos Oracle, los cambios en relaciones o tablas secundarias pueden no invalidar la cach\u00e9.
+
+log_file_under_output_dir=Hay un archivo de registro llamado ({0}) en el directorio de salida ({1}).
+
+mapping_not_supported_by_mw=La correlaci\u00f3n EclipseLink {0} no est\u00e1 soportada por el entorno de correlaci\u00f3n
+
+marshal_warning_null_document_root_element={0}: El elemento ra\u00edz de documento no definido de un objeto referenciado [{1}] se ignora durante la ordenaci\u00f3n con cualquier correlaci\u00f3n colecci\u00f3n|objeto.
+
+max_instance_not_supported=El valor de CMP nativa de Oc4j "m\u00e1x-instancia" en la entidad ({0}) no est\u00e1 soportado directamente en la CMP EclipseLink. Consulte el documento de migraci\u00f3n para ver detalles.
+
+max_tx_retries_not_supported=El valor de CMP nativa de Oc4j "m\u00e1x-reintentos-tx" en la entidad ({0}) no est\u00e1 soportado directamente en la CMP EclipseLink. Consulte el documento de migraci\u00f3n para ver detalles.
+
+metadata_access_type=El tipo de acceso para la clase persistente [{1}] est\u00e1 definido [{0}].
+
+metadata_default_alias=El nombre de alias para la clase identidad [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_collection_catalog=El nombre de tabla de colecci\u00f3n para la correlaci\u00f3n b\u00e1sica colecci\u00f3n/mapa [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_collection_schema=El nombre de tabla de colecci\u00f3n para la correlaci\u00f3n b\u00e1sica colecci\u00f3n/mapa [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_collection_table_name=El nombre de tabla de colecci\u00f3n para la correlaci\u00f3n b\u00e1sica colecci\u00f3n/mapa [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_column=EL nombre de columna para el elemento [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_converter_data_type=El tipo de datos para el conversor llamado [{2}] utilizado con el elemento [{1}] en la entidad [{0}] est\u00e1 tomando como valor predeterminado [{3}].
+
+metadata_default_converter_object_type=El tipo de objeto para el conversor llamado [{2}] utilizado con el elemento [{1}] en la entidad [{0}] est\u00e1 tomando como valor predeterminado [{3}].
+
+metadata_default_element_collection_reference_class=La clase de destino (referencia) para el elemento de correlaci\u00f3n de colecci\u00f3n de elementos [{0}] est\u00e1 tomando como valor predeterminada a: {1}.
+
+metadata_default_entity_graph_name=El nombre de la especificaci\u00f3n de EntityGroup denominada en la clase [{1}] est\u00e1 tomando como valor predeterminado: {0}
+
+metadata_default_fk_column=El nombre de columna de la clave for\u00e1nea para el elemento de correlaci\u00f3n [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_inheritance_discriminator_column=EL nombre de columna de discriminador para la clase de herencia ra\u00edz [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_inheritance_fk_column=El nombre de columna de clave for\u00e1nea para la clase de herencia [{0}] est\u00e1 tomando como valor predeterminado:{1}.
+
+metadata_default_inheritance_pk_column=El nombre de columna de clave primaria para la clase de herencia [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_join_catalog=El cat\u00e1logo de tabla de uni\u00f3n para la correlaci\u00f3n de muchos con muchos [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_join_schema=El esquema de la tabla de uni\u00f3n para la correlaci\u00f3n de muchos con muchos [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_join_table_name=El nombre de tabla de uni\u00f3n para la correlaci\u00f3n de muchos con muchos [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_key_column=El nombre de columna de clave para el elemento de correlaci\u00f3n de mapa b\u00e1sico [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_many_to_many_reference_class=La clase de la entidad de destino (referencia) para el elemento de la correlaci\u00f3n de muchos con muchos [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_many_to_one_reference_class=La clase de entidad de destino (referencia) para el elemento de correlaci\u00f3n de muchos con uno [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_map_key_attribute_name=El nombre del atributo de clave de correlaci\u00f3n para el elemento de correlaci\u00f3n [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_one_to_many_mapping=El elemento [{0}] est\u00e1 tomando como valor predeterminado una correlaci\u00f3n de uno con muchos.
+
+metadata_default_one_to_many_reference_class=La clase de entidad de destino (referencia) para el elemento de correlaci\u00f3n de uno con muchos [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_one_to_one_mapping=El elemento [{0}] est\u00e1 tomando como valor predeterminado una correlaci\u00f3n de uno con uno.
+
+metadata_default_one_to_one_reference_class=La clase de entidad de destino (referencia) para el elemento de correlaci\u00f3n de uno con uno [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_order_column=El nombre de columna de orden para el elemento [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_pk_column=El nombre de columna de clave primaria para el elemento de correlaci\u00f3n [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_qk_column=El nombre de clave de consulta para la variable de una correlaci\u00f3n de uno con uno [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_secondary_catalog=El nombre de tabla secundaria para la entidad [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_secondary_schema=El nombre de tabla secundaria para la entidad [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_secondary_table_fk_column=EL nombre de columna de clave for\u00e1nea de tabla secundaria para el elemento [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_secondary_table_name=El nombre de tabla secundaria para la entidad [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_secondary_table_pk_column=El nombre de columna de clave primaria de la tabla secundaria para el elemento [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_sequence_generator_catalog=El cat\u00e1logo del generador de secuencias definido en [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_sequence_generator_schema=El esquema del generador de secuencia definido en [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_sequence_generator_sequence_name=El nombre de secuencia para el generador de secuencia llamado [{0}] definido en [{1}] desde [{2}] est\u00e1 tomando como valor predeterminado: {0}.
+
+metadata_default_source_fk_column=El nombre de columna de clave for\u00e1nea de origen para la correlaci\u00f3n de muchos con muchos [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_source_pk_column=El nombre de columna de clave primaria de origen para la correlaci\u00f3n de muchos con muchos [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_table_catalog=El cat\u00e1logo de tablas para la entidad [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_table_generator_catalog=El cat\u00e1logo de generador de tablas definido en [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_table_generator_name=El nombre del generador de tabla definido en [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_table_generator_pk_column_value=El valor de la columna pk para el generador de tablas llamado [{0}] definido en [{1}] desde [{2}] est\u00e1 tomando como valor predeterminado: {0}.
+
+metadata_default_table_generator_schema=El esquema del generador de tabla definido en [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_table_name=El nombre de tabla para la entidad [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_table_schema=El esquema de tabla para la entidad [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_target_fk_column=EL nombre de columna de clave for\u00e1nea de destino para la correlaci\u00f3n de muchos con muchos [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_target_pk_column=El nombre de columna de clave principal de destino para la correlaci\u00f3n de muchos con muchos [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_tenant_discriminator_column=El nombre de columna de discriminador de inquilino para el elemento [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_tenant_discriminator_context_property=La propiedad de contexto de discriminador de inquilino para la columna de discriminador de inquilino [{1}] en el elemento [{0}] est\u00e1 tomando como valor predeterminado: {2}.
+
+metadata_default_tenant_table_discriminator_context_property=La propiedad de contexto de discriminador de tabla de inquilino para la entidad [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_tenant_table_discriminator_type=El tipo de discriminador de la tabla de inquilino para la entidad [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_value_column=El nombre de columna de valor para el elemento de correlaci\u00f3n de elemento de correlaci\u00f3n b\u00e1sica colecci\u00f3n/mapa [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_variable_one_to_one_discriminator_column=EL nombre de columna de discriminador para la correlaci\u00f3n de una variable con una [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_default_variable_one_to_one_mapping=El elemento [{0}] est\u00e1 tomando como valor predeterminado una correlaci\u00f3n de una variable con una.
+
+metadata_default_variable_one_to_one_reference_class=La clase de interfaz de destino (referencia) para el elemento de correlaci\u00f3n de una variable con una [{0}] est\u00e1 tomando como valor predeterminado: {1}.
+
+metadata_warning_ignore_association_override=Ignorando la alteraci\u00f3n de la asociaci\u00f3n llamada [{0}] en el elemento [{1}] de la superclase correlacionada [{2}] puesto que se ha especificado una alteraci\u00f3n de asociaci\u00f3n con el mismo nombre en la clase de entidad [{3}].
+
+metadata_warning_ignore_attribute_override=Ignorando la alteraci\u00f3n de atributo llamada [{0}] en el elemento [{1}] de la superclase correlacionada [{2}] puesto que se ha especificado una alteraci\u00f3n de atributo con el mismo nombre en la clase de entidad [{3}].
+
+metadata_warning_ignore_auto_apply_converter=Se ignora el conversor de aplicaci\u00f3n autom\u00e1tica para el elemento [{1}] en la clase de entidad [{0}] puesto que se han especificado metadatos de conversi\u00f3n EclipseLink.
+
+metadata_warning_ignore_cacheable_false=Se ignora el valor cacheable=false expl\u00edcito definido para la clase de entidad [{0}] puesto que un tipo de almacenamiento en cach\u00e9 de ALL se ha especificado en el archivo persistence.xml.
+
+metadata_warning_ignore_cacheable_true=Se ignora el valor cacheable=true expl\u00edcito definido para la clase de entidad [{0}] puesto que un tipo de almacenamiento en cach\u00e9 de NONE se ha especificado en el archivo persistence.xml.
+
+metadata_warning_ignore_converts=Ignorando la especificaci\u00f3n de conversi\u00f3n JPA en el elemento [{1}] dentro de la clase de entidad [{0}] puesto que se han especificado metadatos de conversi\u00f3n EclipseLink.
+
+metadata_warning_ignore_enumerated=Ignorando la especificaci\u00f3n enumerada en el elemento [{1}] dentro de la clase de entidad [{0}] puesto que se han especificado metadatos de conversi\u00f3n EclipseLink.
+
+metadata_warning_ignore_fetch_group=Ignorando los grupos de captaci\u00f3n especificados en la clase [{0}] para la entidad [{1}] puesto que no est\u00e1 habilitado el entrelazado y la clase de entidad no implementa la interfaz FetchGroupTracker.
+
+metadata_warning_ignore_inheritance_subclass_cache=Ignorando los metadatos de cach\u00e9 en la subclase de herencia [{0}]. Los metadatos de cach\u00e9 solo se deben especificar en la ra\u00edz de la jerarqu\u00eda de la herencia y no se pueden modificar en un subclase de herencia.
+
+metadata_warning_ignore_inheritance_subclass_cache_interceptor=Ignorando los metadatos de interceptor de cach\u00e9 en la subclase de herencia [{0}]. Los metadatos de interceptor de cach\u00e9 solo se deben especificar en la ra\u00edz de la jerarqu\u00eda de herencia y no se pueden modificar en una subclase de herencia.
+
+metadata_warning_ignore_inheritance_subclass_default_redirectors=Ignorando los metadatos de redirector predeterminado en la subclase de herencia [{0}]. Los metadatos del redirector predeterminado solo se deben especificar en la ra\u00edz de la jerarqu\u00eda de la herencia y no se pueden modificar en una subclase de herencia.
+
+metadata_warning_ignore_inheritance_subclass_read_only=Se ignora el valor de solo lectura en la subclase de herencia [{0}]. Un valor de solo lectura solo se debe especificar en la ra\u00edz de la jerarqu\u00eda de herencia y no se pueden modificar en una subclase de herencia.
+
+metadata_warning_ignore_inheritance_tenant_discriminator_column=Se ignora el valor de la columna de discriminador de inquilino en la subclase de herencia [{0}]. Las columnas de discriminador de inquilino solo se deben especificar en la ra\u00edz de la jerarqu\u00eda de herencia y no se pueden modificar y/o especificar en una subclase de herencia.
+
+metadata_warning_ignore_inheritance_tenant_table_discriminator=Se ignora el valor de discriminador de tabla de inquilino en la subclase de herencia [{0}]. El discriminador de la tabla de inquilino solo se debe especificar en la ra\u00edz de la jerarqu\u00eda de herencia y no se puede modificar y/o especificar en una subclase de herencia.
+
+metadata_warning_ignore_is_null_allowed=isNullAllowed est\u00e1 restablecido en false en {0} porque el agregado tiene una correlaci\u00f3n de claves for\u00e1neas de destino (posiblemente anidadas)
+
+metadata_warning_ignore_lazy=Revirtiendo el valor poco activo en el atributo OneToOne o ManyToOne [{0}] para la clase de entidad [{1}] puesto que el entrelazado no estaba habilitado o no se ha producido.
+
+metadata_warning_ignore_lob=Ignorando la especificaci\u00f3n de lob en el elemento [{1}] dentro de la clase de entidad [{0}] puesto que se han especificado metadatos de conversi\u00f3n EclipseLink.
+
+metadata_warning_ignore_mapped_superclass_additional_criteria=Ignorando los metadatos de criterios adicionales en la superclase correlacionada [{1}] para la clase de entidad [{0}] puesto que los metadatos de criterios adicionales se hab\u00edan descubierto previamente para dicha entidad (en la propia entidad o en otra superclase correlacionada).
+
+metadata_warning_ignore_mapped_superclass_annotation=Se ignora el valor de metadatos [{0}] en la superclase correlacionada [{1}] para la clase de entidad [{2}] puesto que los metadatos se hab\u00edan descubierto previamente para dicha entidad (en la propia entidad o en otra superclase correlacionada).
+
+metadata_warning_ignore_mapped_superclass_association_override=Ignorando la alteraci\u00f3n de asociaci\u00f3n llamada [{0}] definida en la superclase correlacionada [{1}] para la entidad [{2}] puesto que una alteraci\u00f3n de asociaci\u00f3n con el mismo nombre se hab\u00eda descubierto previamente para dicha entidad (en la propia entidad o en otra superclase correlacionada).
+
+metadata_warning_ignore_mapped_superclass_attribute_override=Se ignora la alteraci\u00f3n temporal de atributo llamado [{0}] definido en la superclase correlacionada [{1}] para la entidad [{2}] puesto que una alteraci\u00f3n temporal de atributo con el mismo nombre se hab\u00eda descubierto previamente para dicha entidad (en la propia entidad o en otra superclase correlacionada).
+
+metadata_warning_ignore_mapped_superclass_cache=Se ignoran los metadatos de cach\u00e9 en la superclase correlacionada [{1}] para la clase de entidad [{0}] puesto que los metadatos de cach\u00e9 se hab\u00edan descubierto previamente para dicha entidad (la propia entidad u otra superclase correlacionada).
+
+metadata_warning_ignore_mapped_superclass_cache_interceptor=Se ignoran los metadatos de interceptor de cach\u00e9 en la superclase correlacionada [{1}] para la clase de entidad [{0}] puesto que los metadatos de interceptor de cach\u00e9 se hab\u00edan descubrimiento previamente para dicha entidad (ya sea en la propia entidad o en otra superclase correlacionada).
+
+metadata_warning_ignore_mapped_superclass_cacheable=Se ignoran los metadatos que se pueden almacenar en la cach\u00e9 en la superclase correlacionada [{1}] para la clase de entidad [{0}] puesto que los metadatos que se pueden almacenar en la cach\u00e9 se hab\u00edan descubierto previamente para dicha entidad (ya sea en la propia entidad o en otra superclase correlacionada).
+
+metadata_warning_ignore_mapped_superclass_change_tracking=Se ignoran los metadatos de rastreo de cambio en la superclase correlacionada [{1}] para la clase de entidad [{0}] puesto que los metadatos de rastreo de cambio se hab\u00edan descubierto previamente para dicha entidad (ya sea en la propia entidad o en otra superclase correlacionada).
+
+metadata_warning_ignore_mapped_superclass_copy_policy=Se ignoran los metadatos de la pol\u00edtica de copia en la superclase correlacionada [{1}] para la clase de entidad [{0}] puesto que los metadatos de la pol\u00edtica de copia se hab\u00edan descubierto para dicha entidad (ya sea en la propia entidad o en otra superclase correlacionada).
+
+metadata_warning_ignore_mapped_superclass_customizer=Se ignora el personalizador en la superclase correlacionada [{1}] para la clase de entidad [{0}] puesto que los metadatos de personalizador se hab\u00edan descubierto previamente para dicha entidad (ya sea en la propia entidad o en otra superclase correlacionada).
+
+metadata_warning_ignore_mapped_superclass_default_redirectors=Se ignoran los metadatos de redirector predeterminado en la superclase correlacionada [{1}] para la clase de entidad [{0}] puesto que los metadatos del redirector predeterminado se hab\u00edan descubierto previamente para dicha entidad (ya sea en la propia entidad o en otra superclase correlacionada).
+
+metadata_warning_ignore_mapped_superclass_existence_checking=Se ignora el valor de comprobaci\u00f3n de existencia en la superclase correlacionada [{1}] para la clase de entidad [{0}] puesto que los metadatos de comprobaci\u00f3n de existencia se hab\u00edan descubierto previamente para dicha entidad (ya sea en la propia entidad o en otra superclase correlacionada).
+
+metadata_warning_ignore_mapped_superclass_fetch_group=Se ignora el grupo de captaci\u00f3n denominado [{2}] en la superclase correlacionada [{1}] para la clase de entidad [{0}] puesto que un grupo de captaci\u00f3n con el mismo nombre se hab\u00eda descubierto previamente para dicha entidad (ya sea en la propia entidad o en otra superclase correlacionada).
+
+metadata_warning_ignore_mapped_superclass_id_class=Se ignora la clase de ID en la superclase correlacionada [{1}] para la clase de entidad [{0}] puesto que una clase de ID se hab\u00eda descubierto previamente para dicha entidad (ya sea en la propia entidad o en otra superclase correlacionada).
+
+metadata_warning_ignore_mapped_superclass_multitenant=Se ignora el valor de varios inquilinos en la superclase correlacionada [{1}] para la clase de entidad [{0}] puesto que se hab\u00edan descubierto previamente metadatos de varios inquilinos para dicha entidad (ya sea en la propia entidad o en otra superclase correlacionada).
+
+metadata_warning_ignore_mapped_superclass_optimistic_locking=Se ignoran los metadatos de bloqueo optimista en la superclase correlacionada [{1}] para la clase de entidad [{0}] puesto que los metadatos de bloqueo optimista se hab\u00edan descubierto previamente para dicha entidad (ya sea en la propia entidad o en otra superclase correlacionada).
+
+metadata_warning_ignore_mapped_superclass_primary_key=Se ignora el valor de la clave principal en la superclase correlacionada [{1}] para la clase de entidad [{0}] puesto que se hab\u00edan descubierto previamente metadatos de clave principal para dicha entidad (ya sea en la propia entidad o en otra superclase correlacionada).
+
+metadata_warning_ignore_mapped_superclass_read_only=Se ignora el valor de solo lectura en la superclase gestionada [{1}] para la clase de entidad [{0}] puesto que se hab\u00edan descubierto previamente metadatos de solo lectura para dicha entidad (ya sea en la propia entidad o en otra superclase correlacionada).
+
+metadata_warning_ignore_mapping_metadata=Se ignoran los metadatos javax.persistence aplicados al atributo [{0}] desde la clase [{1}]. Los metadatos javax.persistence se ignoran en los campos o propiedades que son transitorios, est\u00e1ticos o abstractos.
+
+metadata_warning_ignore_serialized=Se ignora el elemento de serializaci\u00f3n predeterminado [{1}] en la clase de entidad [{0}] puesto que se han especificado metadatos de conversi\u00f3n EclipseLink.
+
+metadata_warning_ignore_temporal=Se ignora la especificaci\u00f3n temporal en el elemento [{1}] dentro de la clase de entidad [{0}] puesto que se han especificado metadatos de conversi\u00f3n de EclipseLink.
+
+metadata_warning_ignore_version_locking=Los metadatos de bloqueo optimista ya est\u00e1n definidos en el descriptor para la entidad [{0}]. Se ignora la especificaci\u00f3n de versi\u00f3n en el elemento [{1}].
+
+metadata_warning_integer_discriminator_could_not_be_built=La clase [{0}] especifica discriminatorType=INTEGER y utiliza [{1}] como el discriminatorValue.  Dicho valor no se puede convertir a un entero.  Intentaremos utilizar este valor en el formato de serie.
+
+metadata_warning_inverse_access_type_mapping_override=Alterando temporalmente el atributo de correlaci\u00f3n {2} [{1}] con el atributo de correlaci\u00f3n {4} [{3}] desde la clase [{0}]. Para evitar este aviso deber\u00e1 marcar el atributo [{1}] como transitorio.
+
+metadata_warning_multiple_id_fields_without_id_class=Ha especificado varios ID para la clase de entidad [{0}] sin especificar un @IdClass. Al hacer esto, puede perder la capacidad para buscar por identidad, soporte de cach\u00e9 distribuido, etc. Nota: Sin embargo, puede utilizar operaciones de b\u00fasqueda de EntityManager pasando una lista de campos de campos principales. Adem\u00e1s, tendr\u00e1 que utilizar consultas JPQL para leer las entidades. Para otras opciones de id, consulte @PrimaryKey.
+
+metadata_warning_override_annotation_with_xml=Se ignora la anotaci\u00f3n [{0}] de [{1}] porque se ha definido un elemento XML en el archivo de correlaciones [{2}].
+
+metadata_warning_override_named_annotation_with_xml=Se ignora la anotaci\u00f3n [{0}] desde [{2}] porque un elemento XML con el mismo nombre [{1}] se ha definido en el archivo de correlaciones [{3}]
+
+metadata_warning_override_named_xml_with_eclipselink_xml=Se ignora el elemento [{0}] llamado [{1}] definido en el archivo de correlaciones [{2}] porque un elemento con el mismo nombre se ha definido en el archivo de correlaciones eclipselink-orm [{3}]
+
+metadata_warning_override_xml_with_eclipselink_xml=Se ignora el elemento [{0}] desde [{1}] definido en el archivo de correlaciones [{2}] puesto que este elemento se hab\u00eda definido en el archivo de correlaciones eclipselink-orm [{3}]
+
+metadata_warning_partitioned_not_set=@Partitioning encontrada en el elemento {1} de la clase {0}, pero no @Partitioned.  La anotaci\u00f3n @Partitioned se debe utilizar para establecer la pol\u00edtica de particionamiento, @Partitioning solo define la pol\u00edtica, pero no la establece.
+
+metadata_warning_reference_column_not_found=El nombre de columna de referencia [{0}] correlacionado en el elemento [{1}] no corresponde a un ID v\u00e1lido o un campo/columna b\u00e1sico en la referencia de correlaci\u00f3n. Se utilizar\u00e1 el nombre de columna nombre de columna seg\u00fan se ha proporcionado.
+
+metamodel_print_type_header=Lista impresa de tipos de metamodelo [{0}] para seguir:
+
+metamodel_print_type_value=Tipo de metamodelo: [{0}]}
+
+metamodel_type_collection_empty=La colecci\u00f3n de tipos de metamodelo est\u00e1 vac\u00eda. Las clases de modelo es posible que no se hayan encontrado durante la b\u00fasqueda de entidad para Java SE y algunas unidades de persistencia gestionada por contenedor Java EE.  Verifique que las clases de entidad est\u00e1n referenciadas en persistence.xml utilizando elementos <class> o un elemento global <exclude-unlisted-classes>false</exclude-unlisted-classes>
+
+metamodel_type_collection_empty_during_lookup=La colecci\u00f3n de tipos de metamodelo [{1}] est\u00e1 vac\u00eda. Las clases de modelo es posible que no se hayan encontrado durante la b\u00fasqueda de entidad para Java SE y algunas unidades de persistencia gestionada por contenedor Java EE.  Verifique que se hace referencia a sus clases de entidad en persistence.xml utilizando elementos <class> o un elemento global <exclude-unlisted-classes>false</exclude-unlisted-classes>.  La b\u00fasqueda en [{0}] devolver\u00e1 un valor nulo.
+
+migration_failed=La migraci\u00f3n no ha sido satisfactoria.
+
+migration_input_dir_not_valid=El directorio de entrada ({0}) que ha definido no es v\u00e1lido
+
+migration_output_dir_not_valid=El directorio de salida ({0}) que ha definido no es v\u00e1lido
+
+migration_successful=\u00a1Migraci\u00f3n correcta!
+
+min_instance_not_supported=El valor de CMP nativa de Oc4j "m\u00edn-instancia" en la entidad ({0}) no est\u00e1 soportado directamente en la CMP EclipseLink. Consulte el documento de migraci\u00f3n para ver detalles.
+
+missing_converter=Aviso: No se puede convertir el mandato {0} porque falta CommandConverter - se ignora el mandato
+
+multiple_ds_not_supported=La CMP EclipseLink no soporta varios or\u00edgenes de datos y solo utilizar\u00e1 uno de ellos llamado ({0}), que est\u00e1 especificado en el orion-ejb-jar.xml y se est\u00e1 asociando a un bean de entidad definido por \u00faltima vez en el ejb-jar.xml correspondiente.
+
+must_define_migration_output_dir=Debe definir un directorio de salida para la herramienta de migraci\u00f3n.
+
+mw_project_generated_and_under=Los archivos del proyecto de entorno de EclipseLink migrados est\u00e1n en ({0}).
+
+named_argument_not_found_in_query_parameters=Falta par\u00e1metro de consulta para el argumento especificado: {0} se sustituir\u00e1 por "nulo".
+
+nested_entity_manager_flush_not_executed_pre_query_changes_may_be_pending=La clase {0} ya se est\u00e1 desechando. La consulta se ejecutar\u00e1 sin se que se escriban m\u00e1s cambios en la base de datos.  Si la consulta est\u00e1 condicionada a datos modificados, los cambios es posible que no se vean reflejados en los resultados.  Los usuarios deber\u00e1n emitir una llamada flush() al finalizar los cambios dependientes y antes de esta flush() para garantizar unos resultados correctos.
+
+new_objects=Objetos nuevos:
+
+no_exclusive_write_access_not_supported=La funci\u00f3n de CMP nativa de Oc4j "acceso-escritura-no-exclusivo" en la entidad ({0}) no est\u00e1 soportada directamente en la CMP EclipseLink. Consulte el documento de migraci\u00f3n para ver detalles.
+
+no_jar_entry_migratable_in_ear=Ninguna de la entrada jar del archivo EAR de entrada ({0}) se puede migrar.
+
+no_session_found=No se ha podido encontrar la sesi\u00f3n con el nombre [{0}] en el archivo session.xml [{1}]
+
+non_jpa_allowed_type_used_for_collection_using_lazy_access=El elemento [{1}] dentro de la clase de entidad [{0}] utiliza un tipo de colecci\u00f3n [{2}] cuando la especificaci\u00f3n JPA solo soporta java.util.Collection, java.util.Set, java.util.List o java.util.Map.  Este tipo est\u00e1 soportado con una carga intensiva; utiliza la carga poco activa con este tipo de colecci\u00f3n requiere una configuraci\u00f3n adicional y una implementaci\u00f3n IndirectContainer que ampl\u00eda [{2}] o definir la correlaci\u00f3n para utilizar la indirecci\u00f3n b\u00e1sica y para que el tipo sea ValueholderInterface.
+
+objectchangepolicy_turned_off=Rastreo de cambios desactivado para: {0}
+
+oc4j_native_migration_start=CMP nativa de OC4J -> Migraci\u00f3n de CMP OC4J EclipseLink SE INICIA...
+
+old_pessimistic_locking_not_supported=El valor de CMP nativa de Oc4j "bloqueo-pesimista-antiguo" en la entidad ({0}) no est\u00e1 soportado directamente en la CMP EclipseLink. Consulte el documento de migraci\u00f3n para ver detalles.
+
+one_to_one_join_outer_migrated=La uni\u00f3n externa de uno con uno definida para el campo cmr ({0}) del bean de entidad ({1}) no est\u00e1 soportada directamente en la CMP EclipseLink. Consulte el documento de migraci\u00f3n para ver detalles.
+
+optimistic_locking_not_supported=El valor de CMP nativa de Oc4j modalidad-bloqueo="optimista" en la entidad ({0}) no est\u00e1 soportado directamente en la CMP EclipseLink. Consulte el documento de migraci\u00f3n para ver detalles.
+
+orion_ejb_jar_xml_not_found_in_input=orion-ejb-jar.xml no exist\u00eda en el directorio de entrada ({0}) que ha especificado.
+
+osgi_initializer=Utilizando el inicializador de OSGi: [{0}].
+
+osgi_initializer_failed=La construcci\u00f3n del inicializador OSGi espec\u00edfico del entorno, [{0}] ha fallado con el mensaje: [{1}].
+
+overriding_cache_isolation=La entidad padre {0} tiene un nivel de aislamiento de: {1} que es m\u00e1s protector que la subclase {2} con aislamiento: {3} de forma que la subclase se ha establecido en el nivel de aislamiento {1}.
+
+ox_lowering_global_logging_from_default_info_to_warning= {0} Reduciendo el registro del nivel predeterminado INFO a WARNING.
+
+ox_lowering_session_logging_from_default_info_to_warning= {0} Reduciendo el registro de servicio del nivel predeterminado INFO a WARNING.
+
+ox_turn_global_logging_off= {0} Desactivando el registro de sesi\u00f3n global.
+
+ox_turn_session_logging_off= {0} Desactivando el registro de sesi\u00f3n.
+
+parse_ejb_jar_with_validation_fails=El an\u00e1lisis de ejb-jar.xml con validaci\u00f3n falla con el error ({0}). La herramienta de migraci\u00f3n analizar\u00e1 el archivo xml sin validaci\u00f3n.
+
+persistence_unit_ignores_statments_cache_setting=La cach\u00e9 de sentencia no se puede habilitar porque no se ha configurado ninguna agrupaci\u00f3n de conexiones.
+
+persistence_unit_processor_error_in_class_forname_weaving_disabled=El classLoader [{0}]: no ha podido cargar la clase [{1}]. El entrelazado se ha inhabilitado para esta sesi\u00f3n. EclipseLink podr\u00eda ser incapaz de obtener un cargador de clases temporal ordenados de especificaci\u00f3n del servidor, podr\u00eda utilizar el entrelazado est\u00e1tico como soluci\u00f3n opcional. 
+
+persistence_unit_processor_error_loading_class={0}: {1} se ha lanzado al intentar PersistenceLoadProcessor cargar la clase {2}. Se ignora la clase.
+
+persistence_unit_processor_error_loading_class_weaving_disabled=El classLoader [{0}]: para PersistenceLoadProcessor [{1}] no ha podido cargar la clase [{2}]. El entrelazado se ha inhabilitado para esta sesi\u00f3n. EclipseLink podr\u00eda ser incapaz de obtener un cargador de clases temporal ordenados de especificaci\u00f3n del servidor, podr\u00eda utilizar el entrelazado est\u00e1tico como soluci\u00f3n opcional. 
+
+persistence_unit_processor_jboss_temp_classloader_bypassed=El classLoader temporal para PersistenceLoadProcessor [{0}] no est\u00e1 disponible.  Cambiando classLoader a [{1}].  El entrelazado se ha inhabilitado para esta sesi\u00f3n. EclipseLink podr\u00eda ser incapaz de obtener un cargador de clases temporal ordenados de especificaci\u00f3n del servidor, podr\u00eda utilizar el entrelazado est\u00e1tico como soluci\u00f3n opcional. 
+
+persistence_unit_processor_npe_temp_classloader=El classLoader [{0}] para PersistenceLoadProcessor [{1}] est\u00e1 provocando un NPE en loadClass. Cambiando classLoader a [{2}].  El entrelazado se ha inhabilitado para esta sesi\u00f3n. EclipseLink podr\u00eda ser incapaz de obtener un cargador de clases temporal ordenados de especificaci\u00f3n del servidor, podr\u00eda utilizar el entrelazado est\u00e1tico como soluci\u00f3n opcional. 
+
+persistence_unit_processor_null_temp_classloader=El classLoader para PersistenceLoadProcessor [{0}] es nulo. El entrelazado se ha inhabilitado para esta sesi\u00f3n. EclipseLink podr\u00eda ser incapaz de obtener un cargador de clases temporal ordenados de especificaci\u00f3n del servidor, podr\u00eda utilizar el entrelazado est\u00e1tico como soluci\u00f3n opcional. 
+
+persistence_unit_processor_sap_temp_classloader_bypassed=El classLoader temporal para PersistenceLoadProcessor [{0}] no est\u00e1 disponible.  Cambiando classLoader a [{1}].  El entrelazado se ha inhabilitado para esta sesi\u00f3n. EclipseLink podr\u00eda ser incapaz de obtener un cargador de clases temporal ordenados de especificaci\u00f3n del servidor, podr\u00eda utilizar el entrelazado est\u00e1tico como soluci\u00f3n opcional. 
+
+problem_adding_connection=No se ha podido a\u00f1adir una conexi\u00f3n remota desde {0} debido al error: {1}
+
+problem_adding_remote_connection=Problema al a\u00f1adir conexi\u00f3n remota: {0}
+
+problem_reconnect_to_jms=No se ha podido volver a conectar al nombre de tema JMS {0} debido al error: {1}
+
+problem_registering_mbean=Problema al registrar el MBean: {0}
+
+problem_unregistering_mbean=Problema al anular registro del MBean: {0}
+
+problem_while_registering=Problema al registrar: {0}
+
+query_has_both_join_attributes_and_partial_attributes={0} especificado {1} tiene ambos atributos, el de uni\u00f3n y el parcial. Estas dos tecnolog\u00edas no se han dise\u00f1ado para trabajar de forma conjunta, el resultado puede ser imprevisible.
+
+query_has_joined_attribute_outside_fetch_group={0}: el atributo unido[{1}] no est\u00e1 incluido en el grupo de captaci\u00f3n. Los datos de atributo unido (a trav\u00e9s de la lectura de la base de datos) se ignorar\u00e1n. Se ejecutar\u00e1 un nuevo sql para volver a leer el objeto referenciado por el atributo unido; y todav\u00eda otro sql para leer todo el objeto principal (debido al establecimiento del valor en el atributo fuera del grupo de captaci\u00f3n). Incluya el atributo captado en el grupo de captaci\u00f3n o elim\u00ednelo.
+
+received_corrupt_announcement=Aviso: el gestor de descubrimiento podr\u00eda no procesar el anuncio de servicio debido a {0} - se ignora el anuncio
+
+received_unexpected_message_type=Se ha recibido un tipo de mensaje inesperado: {0} del tema: {1}; se ignora
+
+register_new_for_persist=Se ha llamado la operaci\u00f3n PERSIST en: {0}.
+
+relational_descriptor_support_only=El generador de la tabla predeterminada solo soporta actualmente generar el esquema de tabla predeterminada desde un proyecto relacional.
+
+relationship_cacheing_not_supported=El valor de CMP nativa de WLS "cach\u00e9-relaciones" en la entidad ({0}) no est\u00e1 soportado directamente en la CMP EclipseLink. Consulte el documento de migraci\u00f3n para ver detalles.
+
+removeEJB_return=devoluci\u00f3n de removeEJB: {0}
+
+removing_unique_constraint=Eliminando la restricci\u00f3n de UNICIDAD de [{0}] porque tambi\u00e9n es una clave primaria.
+
+resource_local_persistence_init_info_ignores_jta_data_source=PersistenceUnitInfo {0} tiene un transactionType RESOURCE_LOCAL y por lo tanto jtaDataSource se ignorar\u00e1
+
+retreived_null_message=Se ha recuperado un mensaje nulo del tema: {0}; se ignora
+
+retreived_unknown_message_type=Se ha recuperado un tipo de mensaje desconocido: {0} del tema: {1}; se ignora
+
+sdo_classgenerator_exception={2} Se ha producido una excepci\u00f3n [{0}] - el mensaje es [{1}]
+
+sdo_error_deserialization=Intento de deserializaci\u00f3n no autorizado con la clase {0}.
+
+sdo_error_processing_referenced_schema=Se ha producido un esquema referenciado en un proceso {0} con el uri {1} con schemaLocation {2}.
+
+sdo_invalid_schemaLocation=No se ha podido crear schemaLocation [{0}] para la importaci\u00f3n con el uri [{1}].
+
+sdo_missing_schemaLocation=El esquema referenciado con el uri {0} no se ha podido procesar porque no se ha especificado el atributo schemaLocation.
+
+sdo_type_generation_modified_class_naming_format_to={0}: El nombre de clase java del tipo generado [{1}] ha cambiado a [{2}] para seguir los convenios de denominaci\u00f3n de la clase.
+
+sdo_type_generation_modified_function_naming_format_to={0}: El nombre del m\u00e9todo get/set de java del tipo generado [{1}] ha cambiado a [{2}] para seguir los convenios de denominaci\u00f3n de la clase.
+
+sdo_type_generation_warning_class_name_violates_java_spec={0}: El tipo generado [{1}] entra en conflicto con las reglas denominaci\u00f3n de especificaci\u00f3n Java para [{2}] y se debe renombrar.
+
+sdo_type_generation_warning_class_name_violates_sdo_spec={0}: El tipo generado [{1}] entra en conflicto con las reglas de denominaci\u00f3n de especificaci\u00f3n SDO para [{2}] y se debe renombrar.
+
+sequence_cachekey_improper_format=El valor de CMP nativa de WLS "tama\u00f1o-cach\u00e9-clave" en la entidad ({0}) tiene un formato incorrecto con el valor ({1})
+
+session_key_for_mbean_name_is_null=El nombre de sesi\u00f3n utilizado para el registro de MBean no puede ser nulo.
+
+session_manager_no_partition=No hay ninguna instancia de partici\u00f3n asociada con la instancia de SessionManager actual.
+
+sessions_xml_path_where_session_load_from=La informaci\u00f3n de sesi\u00f3n se ha cargado desde [{0}].
+
+sop_object_deserialze_failed=Error al deserializar sopObject desde [{0}] en [{1}]
+
+sop_object_not_found=No se ha encontrado el sopObject serializado en [{0}] en [{1}]
+
+sop_object_wrong_pk=Eliminando sopObject serializado de la fila porque tiene una clave principal incorrecta [{0}] en [{1}] en [{2}]
+
+sop_object_wrong_version=Eliminando sopObject serializado de la fila porque tiene una versi\u00f3n incorrecta [{0}] en [{1}] en [{2}]
+
+src_pm_name_first_argument=Debe especificar el nombre PM de origen en el primer argumento de entrada ya sea como: -sOc4j-native o -sWeblogic.
+
+table_existed_during_creation=Error al crear la tabla. Si ya existe, se debe eliminar primero. Esto se puede realizar manualmente o definiendo el atributo db-table-gen en orion-ejb-jar.xml.
+
+template_orion_ejb_jar_created=Se ha creado un archivo orion-ejb-jar.xml con plantilla.
+
+topLink_version=EclipseLink, versi\u00f3n: {0}
+
+toplink=[EL]: 
+
+toplink_cmp_bean_name_xml_deprecated=El soporte para toplink-cmp-bean_name.xml est\u00e1 en desuso. Consulte la documentaci\u00f3n para el uso de toplink-ejb-jar.xml
+
+toplink_config=[Config de EL]: 
+
+toplink_ejb_jar_in_jar=toplink-ejb-jar.xml est\u00e1 incluido en el archivo jar({0}), por lo tanto, no se realizar\u00e1 ninguna migraci\u00f3n para este jar.
+
+toplink_ejb_jar_xml_found_in_input=El toplink-ejb-jar.xml est\u00e1 en el directorio de entrada ({0}). Debe eliminar el descriptor toplink del directorio de entrada para procesar la migraci\u00f3n.
+
+toplink_fine=[EL Preciso]: 
+
+toplink_finer=[EL M\u00e1s preciso]: 
+
+toplink_finest=[EL El m\u00e1s preciso]: 
+
+toplink_info=[Info de EL]: 
+
+toplink_severe=[EL Grave]: 
+
+toplink_warning=[Aviso de EL]: 
+
+unitofwork_identity_hashcode={0}C\u00f3digo hash de identidad de UnitOfWork: {1}
+
+update_all_fields_not_supported=La funci\u00f3n CMP nativa de Oc4j "actualizar-todos-campos" en la entidad ({0}) no est\u00e1 soportada directamente en la CMP EclipseLink. Consulte el documento de migraci\u00f3n para ver detalles.
+
+update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery no puede utilizar el enlace en esta plataforma de base de datos. Se ha cambiado el valor de consulta para ejecutar sin enlaces.
+
+validate_db_schema_with_not_supported=El valor de CMP nativa de WLS "validar-esquema-bd-con" no est\u00e1 soportado directamente en la CMP EclipseLink. Consulte el documento de migraci\u00f3n para ver detalles.
+
+validate_ejb_jar=Inicia la validaci\u00f3n de ejb-jar.xml, a veces puede tardar...
+
+validity_timeout_not_supported=El valor de CMP nativa de Oc4j "tiempo-espera-validez" en la entidad ({0}) no est\u00e1 soportado directamente en la CMP EclipseLink. Consulte el documento de migraci\u00f3n para ver detalles.
+
+verifiy_columns_read_locking_not_supported=El valor optimista "Leer" en "verificar-columnas" en la entidad ({0}) no est\u00e1 soportado directamente en la CMP EclipseLink. Consulte el documento de migraci\u00f3n para ver detalles.
+
+verifiy_rows_read_locking_not_supported=El valor optimista "Leer" en "verificar-columnas" en la entidad ({0}) no est\u00e1 soportado directamente en la CMP EclipseLink. Consulte el documento de migraci\u00f3n para ver detalles.
+
+weaver_class_not_in_project=El tejedor ha encontrado una clase que no forma parte del proyecto: {0}.
+
+weaver_could_not_write=El tejedor ha encontrado una excepci\u00f3n al intentar escribir la clase {0} en el sistema de archivos.  La excepci\u00f3n es: {1}
+
+weaver_disable_by_system_property=Entrelazado inhabilitado por la propiedad de sistema {0}
+
+weaver_not_overwriting=El tejedor no est\u00e1 sobrescribiendo la clase {0} porque no se ha establecido para ser sobrescrita.
+
+weaver_null_project=El proyecto de la sesi\u00f3n del tejedor no puede ser nulo.
+
+weblogic_ejb_jar_xml_not_found_in_input=weblogic-ejb-jar.xml no exist\u00eda en el directorio de entrada ({0}) que ha especificado.
+
+weblogic_native_migration_start=WebLogic-CMP nativa -> Migraci\u00f3n de CMP OC4J EclipseLink CMP SE INICIA...
+
+weblogic_ql_not_supported=WebLogic-QL({0}) del m\u00e9todo ({1} de la entidad ({2}) no se ha migrado ya que EclipseLink no soporta el lenguaje WebLogic QL.
+
+weblogic_query_not_supported=El valor de CMP nativa de WLS "consulta-weblogic" en la entidad ({0}) no est\u00e1 soportado directamente en la CMP EclipseLink. Consulte el documento de migraci\u00f3n para ver detalles.
+

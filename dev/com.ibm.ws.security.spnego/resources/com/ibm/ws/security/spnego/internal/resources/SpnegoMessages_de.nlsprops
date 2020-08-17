@@ -49,10 +49,10 @@ SPNEGO_NOT_SUPPORTED_ERROR_PAGE=CWWKS4306E: <html><head><title>SPNEGO-Authentifi
 SPNEGO_NOT_SUPPORTED_ERROR_PAGE.explanation=SPNEGO-Authentifizierung wird f\u00fcr diesen Client-Browser nicht unterst\u00fctzt.
 SPNEGO_NOT_SUPPORTED_ERROR_PAGE.useraction=Konfigurieren Sie den Client-Browser so, dass eine SPNEGO-Authentifizierung durchgef\u00fchrt wird.
 
-SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE=CWWKS4307E: <html><head><title>Es wurde ein NTLM-Token empfangen.\
+SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE=CWWKS4307E: <html><head><title>Es wurde ein NTLM-Token empfangen. \
 </title></head> <body>Ihre Client-Browser-Konfiguration ist zwar korrekt, aber Sie haben sich nicht an einer unterst\u00fctzten Windows-Dom\u00e4ne angemeldet. \
 <p> Melden Sie sich an der unterst\u00fctzten Windows-Dom\u00e4ne an.\
-</html>.
+</body></html>.
 SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE.explanation=Die Client-Browserkonfiguration ist zwar korrekt, aber Sie haben sich nicht an einer unterst\u00fctzten Windows-Dom\u00e4ne angemeldet. \
 Oder die SPNEGO-Konfiguration ist nicht korrekt, und deshalb sendet der Client-Browser das SPNEGO-Token oder das Kerberos-Token nicht.
 SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE.useraction=Melden Sie sich an der unterst\u00fctzten Windows-Dom\u00e4ne an und \u00fcberpr\u00fcfen Sie die SPNEGO-Konfiguration auf dem Server und in der Windows-Dom\u00e4ne.
@@ -115,3 +115,19 @@ SPNEGO_CAN_NOT_GET_DELEGATE_SERVICE_SPN.useraction=\u00dcberpr\u00fcfen Sie das 
 SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE=CWWKS4322E: Der SPN {0} f\u00fcr die Delegierung kann anhand der Kerberos-Konfigurationsdatei {1} und der Chiffrierschl\u00fcsseldatei {2} nicht beim Key Distribution Center (KDC) authentifiziert werden. Die folgende Anmeldungsausnahme wurde empfangen: {3}
 SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE.explanation=Die Authentifizierung beim Key Distribution Center (KDC) ist nicht m\u00f6glich.
 SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE.useraction=\u00dcberpr\u00fcfen Sie das Format des Service-Principalnamens und stellen Sie sicher, dass der Name in der Windows-Dom\u00e4ne vorhanden ist und dass die Kerberos-Chiffrierschl\u00fcsseldatei den Service-Principalnamen enth\u00e4lt.
+
+SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E=CWWKS4323E: Das Attribut [{0}] im Element {1} steht in Konflikt mit dem Attribut [{2}] im Element {3}. Geben Sie entweder einen Wert im Element {1} oder im Element {3} an, aber nicht f\u00fcr beide Elemente. Es wird empfohlen, den Wert nur im Element {1} anzugeben.
+SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E.explanation=Damit jedes Attribut erkannt werden kann, muss eine systemweite Systemeigenschaft definiert werden. Unterschiedliche Werte f\u00fcr eine systemweite Einstellung werden nicht erkannt.
+SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E.useraction=Geben Sie das Attribut nur in einem der Konfigurationselemente an.
+
+SPNEGO_AUTHENTICATION_ERROR_PAGE=CWWKS4324E: <html><head><title>Die SPNEGO-Authentifizierung ist fehlgeschlagen. \
+Bitten Sie Ihren Systemadministrator, das Problem zu beheben. \
+\
+</title></head> <body>Der Client hat das SPNEGO-Token gesendet. \
+Der Server kann das SPNEGO-Token des Clients nicht validieren. \
+Bitten Sie Ihren Systemadministrator, das Problem zu beheben. \
+\
+</body></html>.
+SPNEGO_AUTHENTICATION_ERROR_PAGE.explanation=Die SPNEGO-Authentifizierung ist fehlgeschlagen. Weitere Informationen finden Sie in den Serverprotokollnachrichten.
+SPNEGO_AUTHENTICATION_ERROR_PAGE.useraction=\u00dcberpr\u00fcfen Sie die Serverkonfiguration und die Kerberos-Konfiguration und vergewissern Sie sich, dass die Systemzeit des Servers mit dem KDC (Key Distribution Center) synchron ist.
+

@@ -1,0 +1,67 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/EISExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+17007={0} \ud2b9\uc131\uc774 \uc124\uc815\ub418\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+
+17008=\uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 {0} \ud2b9\uc131\uc774 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+
+17009={0} \ub610\ub294 {1} \ud2b9\uc131\uc774 \uc124\uc815\ub418\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+
+17010=\ucd9c\ub825 \ub808\ucf54\ub4dc\uc5d0 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\ub294 \uba54\uc2dc\uc9c0 \uc720\ud615\uc774 \ub4e4\uc5b4 \uc788\uc2b5\ub2c8\ub2e4.
+
+17011=\uc9c0\uc815\ub41c \uc5f0\uacb0 \ud329\ud1a0\ub9ac\uac00 \uc5c6\uc2b5\ub2c8\ub2e4.
+
+17012=InteractionSspec\uc740 CciJMSInteractionSpec\uc774\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+
+17013=\ub808\ucf54\ub4dc\ub294 CciJMSRecord\uc5ec\uc57c \ud569\ub2c8\ub2e4.
+
+17014=\uc0c1\ud638\uc791\uc6a9 \uc2a4\ud399 \uc720\ud615\uc744 \uc54c \uc218 \uc5c6\uc74c
+
+17015=\uc785\ub825\uc5d0 \ub2e8\uc77c \ud14d\uc2a4\ud2b8 \uc694\uc18c\uac00 \ud3ec\ud568\ub418\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+
+17016=\uc2dc\uac04 \ucd08\uacfc\uac00 \ubc1c\uc0dd\ud568 - \uba54\uc2dc\uc9c0\uac00 \uc218\uc2e0\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+
+17017=\uc785\ub825 \ub808\ucf54\ub4dc\uc5d0 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\ub294 \uba54\uc2dc\uc9c0 \uc720\ud615\uc774 \ub4e4\uc5b4 \uc788\uc2b5\ub2c8\ub2e4.
+
+17018=\ud2b8\ub79c\uc7ad\uc158\ub418\uc9c0 \uc54a\uc740 \uc138\uc158\uc5d0\uc11c "begin()"\uc744 \ud638\ucd9c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+
+17019=\ud2b8\ub79c\uc7ad\uc158\ub41c \uc138\uc158\uc5d0 \ub300\ud574 \ud14c\uc2a4\ud2b8\ud558\ub294 \uc911\uc5d0 \ubb38\uc81c\uc810\uc774 \ubc1c\uc0dd\ud568: 
+
+17020=InteractionSspec\uc740 AQInteractionSpec\uc774\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+
+17021=\ub808\ucf54\ub4dc\ub294 AQRecord\uc5ec\uc57c \ud569\ub2c8\ub2e4.
+
+17022=\uc785\ub825\uc5d0 \ub2e8\uc77c \uc6d0\uc2dc \uc694\uc18c\uac00 \ud3ec\ud568\ub418\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+
+17023=MQQueueConnectionFactory \uc18d\uc131\uc744 \uc124\uc815\ud558\ub294 \uc911\uc5d0 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+
+17024=\ud30c\uc77c: {0}\uc744(\ub97c) \uc0ad\uc81c\ud560 \uc218 \uc5c6\uc74c
+
+17025=\uc774 \ub9f5\ud551\uc5d0\uc11c\ub294 \ub2e4\uc911 \uc678\ubd80 \ud0a4\uac00 \uc874\uc7ac\ud558\ubbc0\ub85c \uc678\ubd80 \ud0a4 \uadf8\ub8f9\ud654 \uc694\uc18c\uac00 \ud544\uc694\ud569\ub2c8\ub2e4.
+

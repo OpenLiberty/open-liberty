@@ -1,0 +1,439 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/ExceptionLocalizationResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+CRITERIA_NON_LITERAL_PASSED_TO_IN="in(Expression<?>... values)" s-a invocat cu un tip de expresie: {0} care nu era nici literal, nici parametru.  Acest lucru nu este suportat.
+
+CRITERIA_NO_ROOT_FOR_COMPOUND_QUERY=Se \u00eencearc\u0103 crearea unei interog\u0103ri de criterii f\u0103r\u0103 root.
+
+INCORRECT_PARAMETER_TYPE=Parametrul din indexul: {0} nu era de tipul: {1}.
+
+MULTIPLE_SELECTIONS_PASSED_TO_QUERY_WITH_PRIMITIVE_RESULT="multiSelect" s-a invocat pe o CriteriaQuery cu un tip de rezultat primitiv.  Fie tipul return\u0103rii este incorect, fie ar trebui folosit \u00een schimb "select".
+
+NO_PARAMETER_WITH_INDEX=Niciun parametru cu indexul: {0} nu a fost g\u0103sit \u00een interogarea: {1}.
+
+NO_PARAMETER_WITH_NAME=Niciun parametru cu numele: {0} nu a fost g\u0103sit \u00een interogarea: {1}.
+
+NO_VALUE_BOUND=Nicio valoare nu a fost legat\u0103 de parametrul numit: {0}
+
+NULL_PARAMETER_PASSED_TO_SET_PARAMETER=Parametrul nul a fostr transmis la "setParameter".  Nu se pot indexa parametrii cu "Null".
+
+PARAMETER_NILL_NOT_FOUND=Parametrul nul a fost transmis la getParameterValue()
+
+add_attribute_key_was_null=C\u00e2nd se specific\u0103 un AttributeGroup pentru o subclas\u0103 a unui tip de atribut, parametrul tip nu trebuie s\u0103 fie nul
+
+argument_collection_was_null=Colec\u0163ia de argumente era null
+
+argument_keyed_named_query_with_JPA=Mai multe interog\u0103ri cu numele: {0} exist\u0103, dar numele trebuie s\u0103 fie unice c\u00e2nd folosi\u0163i EntityManagerFactory.addNamedQuery()
+
+attribute_is_not_map_with_managed_key=Nu se poate ad\u0103uga subgraficul de cheie la EntityGroup ca atribut {0} \u00een clasa {1}, deoarece nu este o hart\u0103 cu o cheie de tip gestionat.
+
+bean_definition_vector_arguments_are_of_different_sizes=Argumentele vectorului de defini\u0163ie bean sunt de dimensiuni diferite
+
+bean_not_found_on_database=Bean-ul {0} nu a fost g\u0103sit\u0103 \u00een baza de date.
+
+bean_validation_constraint_violated=Una sau mai multe constr\u00e2ngeri Validare bean au fost \u00eenc\u0103lcate \u00een timp ce se executa Validare automat\u0103 bean pentru evenimentul callback: {0} pentru clasa: {1}. Pentru detalii, consulta\u0163i \u00eenc\u0103lc\u0103rile de constr\u00e2ngeri \u00eenglobate.
+
+cache_descriptor_has_no_cmppolicy_set_cannot_create_primary_key=Clasa [{0}] cu descriptorul [{1}] nu are un set de CMPPolicy, nu putem crea o instan\u0163\u0103 cheie primar\u0103 pentru tipul de ID [{2}].
+
+cache_impl_class_has_no_descriptor_is_not_a_persistent_type=Clasa [{0}] nu este un tip persistent - nu are niciun descriptor asociat.
+
+cache_impl_object_descriptor_has_no_cmppolicy_set=Obiectul [{0}] cu descriptorul [{1}] nu are un set de CMPPolicy, nu putem returna un ID.
+
+cache_impl_object_has_no_descriptor_is_not_a_persistent_type=Obiectul [{0}] nu este de un tip persistent - nu are niciun descriptor asociat.
+
+called_get_entity_manager_from_non_jta=getEntityManager() este apelat dintr-un EntityManagerFactory de activare non-JTA.  V\u0103 rug\u0103m s\u0103 v\u0103 asigura\u0163i c\u0103 JTA este setat corespunz\u0103tor pe EntityManagerFactory-ul dumneavoastr\u0103.
+
+can_not_create_directory=Nu s-a putut crea directorul {0}.
+
+can_not_create_file=Nu s-a putut crea fi\u015fierul {0}.
+
+can_not_move_directory=Nu se pot muta directoare.
+
+cannot_get_from_non_correlated_query=getCorrelationParent() a apelat o clauz\u0103 "from" care nu a fost ob\u0163inutp prin corelare.
+
+cannot_get_unfetched_attribute=Nu se poate ob\u0163ine atributul neadus [{1}] din obiectul deta\u015fat {0}.
+
+cannot_merge_removed_entity=Nu se poate combina o Entitate ce a fost \u00eenl\u0103turat\u0103: {0}
+
+cannot_read_through_txn_for_unsynced_pc=Proprietatea a fost setat\u0103 s\u0103 uneasc\u0103 acest context de persisten\u0163\u0103 la tranzac\u0163ia activ\u0103 momentan, dar acesta nu este un context de persisten\u0163\u0103 SINCRONIZAT.
+
+cannot_remove_detatched_entity=Entitatea trebuie s\u0103 fie gestonat\u0103 pentru a apela \u00eenl\u0103turarea: {0}, \u00eencerca\u0163i s\u0103 combina\u0163i deta\u015fatul \u015fi \u00eencerca\u0163i din nou \u00eenl\u0103turarea.
+
+cannot_remove_removed_entity=Entitatea este deja \u00eenl\u0103turat\u0103: {0}
+
+cannot_update_entity_fetch-group=Se \u00eencearc\u0103 ad\u0103ugarea sau \u00eenl\u0103turarea atributului [{1}] la {0} - obiectul EntityFetchGroup este nemodificabil.
+
+cannot_use_transaction_on_unsynced_pc=Nu se pot apela metode ce necesit\u0103 o tranzac\u0163ie dac\u0103 EntityManager nu a fost unit\u0103 cu tranzac\u0163ia curent\u0103.
+
+cant_lock_not_managed_object=Entitatea trebuie gestionat\u0103 pentru a apela blocarea: {0}, \u00eencerca\u0163i combinarea deta\u015fatului \u015fi \u00eencerca\u0163i din nou blocarea.
+
+cant_persist_detatched_object=Nu se poate PERSISTA obiectul deta\u015fat, cheie primar\u0103 posibil duplicat\u0103: {0}.
+
+cant_refresh_not_managed_object=Nu se poate re\u00eemprosp\u0103ta obiectul negestionat: {0}.
+
+create_insertion_failed=A e\u015fuat crearea inser\u0163iei.
+
+criteria_no_constructor_found=A ap\u0103rut o excep\u0163ie la inspectarea clasei {0} pentru un constructor ce utilizeaz\u0103 ca argumente tipuri de criteriu de selec\u0163ie.  Dac\u0103 nu s-a inten\u0163ionat ca aceast\u0103 CriteriaQuery s\u0103 fie o interogare de constructor, verifica\u0163i c\u0103 selec\u0163ia se potrive\u015fte cu tipul de retur.
+
+directory_not_exist=Directorul {0} nu exist\u0103.
+
+ejb30-default-for-unknown-property=Nu se poate returna valoarea implicit\u0103 pentru proprietatea necunoscut\u0103 {0}.
+
+ejb30-illegal-property-value=Proprietatea {0} are o valoare ilegal\u0103 {1}.
+
+ejb30-incorrect-parameter-type=A\u0163i \u00eencercat s\u0103 seta\u0163i o valoare de tipul {1} pentru parametrul {0} cu tipul a\u015fteptat {2} din \u015firul de interogare {3}.
+
+ejb30-wrong-argument-index=A\u0163i \u00eencercat s\u0103 seta\u0163i un parametru la pozi\u0163ia {0} care nu exist\u0103 \u00een acest \u015fir de interogare {1}.
+
+ejb30-wrong-argument-name=A\u0163i \u00eencercat s\u0103 seta\u0163i o valoare de parametru folosind numele {0} care nu exist\u0103 \u00een \u015firul de interogare {1}.
+
+ejb30-wrong-lock_called_without_version_locking-index=Tip de mod de blocare invalid pentru o Entitate ce nu are un index de blocare versiune. Numai un tip mod de blocare PESIMIST poate fi folosit c\u00e2nd nu este niciun index de blocare a versiunii.
+
+ejb30-wrong-query-hint-value=Interogarea {0}, indica\u0163ia de interogare {1} are valoarea ilegal\u0103 {2}.
+
+ejb30-wrong-type-for-query-hint=Interogarea {0}, indica\u0163ia de interogare {1} nu este valid\u0103 pentru acest tip de interogare.
+
+entity_manager_properties_conflict_default_connector_vs_external_transaction_controller=Propriet\u0103\u0163ile EntityManager sunt \u00een conflict: javax.persistence.driver \u015fi/sau javax.persistence.url necesit\u0103 DefaultConnector, dar unitatea de persisten\u0163\u0103 utilizeaz\u0103 controler de tranzac\u0163ie extern\u0103, prin urmare JNDIConnector este necesar.
+
+entity_manager_properties_conflict_default_connector_vs_jndi_connector=Propriet\u0103\u0163ile EntityManager sunt \u00een conflict: javax.persistence.driver \u015fi/sau javax.persistence.url necesit\u0103 DefaultConnector, dar javax.persistence.jtaDataSource \u015fi/sau javax.persistence.nonjtaDataSource necesit\u0103 JNDIConnector.
+
+entity_no_longer_exists_in_db=Entitatea nu mai exist\u0103 \u00een baza de date: {0}.
+
+error_executing_jar_process=Eroare la execu\u0163ia procesului jar
+
+error_invoking_deploy=Eroare la invocarea implement\u0103rii
+
+error_loading_resources=Eroare la \u00eenc\u0103rcarea resurselor {0} din calea de clase
+
+error_marshalling_arguments=Eroare la triere argumentelor
+
+error_marshalling_return=Eroare la trierea returului
+
+error_parsing_resources=Eroare la parsarea resurselor {0}
+
+error_reading_jar_file=Eroare la citirea fi\u015fierului jar: {0} intrare: {1}
+
+error_unmarshalling_arguments=Eroare la anularea trierii argumentelor
+
+error_unmarshalling_return=eroare la anularea trierii returului
+
+file_exists=Fi\u015fierul {0} exist\u0103 deja.
+
+file_not_exist=Fi\u015fierul {0} nu exist\u0103.
+
+finder_query_failed=Interogarea c\u0103ut\u0103torului a e\u015fuat:
+
+getpersistenceunitutil_called_on_closed_emf=getPersistenceUnitUtil() s-a apelat pe un EntityManagerFactory \u00eenchis.
+
+illegal_state_while_closing=Se \u00eencearc\u0103 \u00eenchiderea unui EntityManager cu o alt\u0103 stare de tranzac\u0163ie dec\u00e2t NO_TRANSACTION, COMMITTED sau ROLLEDBACK.
+
+incorrect_hint=Tip de obiect incorect specificat pentru indica\u0163ia: {0}.
+
+incorrect_query_for_get_result_collection=Nu pute\u0163i apela getResultCollection() pe aceast\u0103 interogare.  Este de tipul de interogare incorect.
+
+incorrect_query_for_get_result_list=Nu pute\u0163i apela getResultList() pe aceast\u0103 interogare.  Este de tipul de interogare incorect.
+
+incorrect_query_for_get_single_result=Nu pute\u0163i apela getSingleResult() pe aceast\u0103 interogare.  Este de tipul de interogare incorect.
+
+incorrect_spq_query_for_execute=Nu pute\u0163i apela execute() pe aceast\u0103 interogare de procedur\u0103 stocat\u0103.  Este de tipul de interogare incorect.
+
+incorrect_spq_query_for_execute_update=Nu pute\u0163i apela executeUpdate() pe aceast\u0103 interogare de procedur\u0103 stocat\u0103 \u00eentruc\u00e2t returneaz\u0103 un set de rezultate \u015fi nu doar un num\u0103r de actualiz\u0103ri.
+
+incorrect_spq_query_for_get_result_list=Nu pute\u0163i apela getResultList() pe aceast\u0103 interogare de procedur\u0103 stocat\u0103 \u00eentruc\u00e2t nu returneaz\u0103 un set de rezultate.
+
+incorrect_spq_query_for_get_single_result=Nu pute\u0163i apela getSingleResult() pe aceast\u0103 interogare de procedur\u0103 stocat\u0103 \u00eentruc\u00e2t nu returneaz\u0103 un set de rezultate.
+
+input_source_not_found=Sursa de intrare nu a fost g\u0103sit\u0103 sau e nul\u0103
+
+interface_hash_mismatch=Nepotrivire hash interfa\u0163\u0103
+
+invalid_lock_query=Un tip de blocare poate fi folosit numai cu o interogare de selec\u0163ie (care permite bazei de date s\u0103 fie blocat\u0103 dac\u0103 e necesar).
+
+invalid_method_hash=Hash metod\u0103 invalid\u0103
+
+invalid_method_number=Num\u0103r metod\u0103 invalid
+
+invalid_pk_class=A\u0163i furnizat o instan\u0163\u0103 a unei clase PK incorecte pentru aceast\u0103 opera\u0163ie de g\u0103sire.  Clas\u0103 a\u015fteptat\u0103 : {0}, Clas\u0103 primit\u0103 : {1}.
+
+jar_not_exist=Fi\u015fierul jar {0} nu exist\u0103.
+
+jaxb_helper_invalid_binder=Binder-ul furnizat [{0}] nu este un EclipseLink JAXBBinder \u015fi, prin urmare, nu a putut fi convertit.
+
+jaxb_helper_invalid_jaxbcontext=JAXBContext [{0}] furnizat nu este un EclipseLink JAXBContext \u015fi, prin urmare, nu a putut fi convertit.
+
+jaxb_helper_invalid_marshaller=Marshaller-ul [{0}] furnizat nu este un EclipseLink JAXBMarshaller \u015fi, prin urmare, nu a putut fi convertit.
+
+jaxb_helper_invalid_target_for_binder=Clasa \u0163int\u0103 furnizat\u0103 [{0}] trebuie s\u0103 fie EclipseLink JAXBBinder sau EclipseLink XMLBinder.
+
+jaxb_helper_invalid_target_for_jaxbcontext=Clasa \u0163int\u0103 furnizat\u0103 [{0}] trebuie s\u0103 fie EclipseLink JAXBContext sau EclipseLink XMLContext.
+
+jaxb_helper_invalid_target_for_marshaller=Clasa \u0163int\u0103 furnizat\u0103 [{0}] trebuie s\u0103 fie EclipseLink JAXBMarshaller sau EclipseLink XMLMarshaller.
+
+jaxb_helper_invalid_target_for_unmarshaller=Clasa \u0163int\u0103 furnizat\u0103 [{0}] trebuie s\u0103 fie EclipseLink JAXBUnmarshaller sau EclipseLink XMLUnmarshaller.
+
+jaxb_helper_invalid_unmarshaller=Unmarshaller-ul [{0}] furnizat nu este un EclipseLink JAXBUnmarshaller \u015fi, prin urmare, nu a putut fi convertit.
+
+jmx_enabled_platform_mbean_runtime_exception=A ap\u0103rut o excep\u0163ie la apelarea unei func\u0163ii de serviciu runtime JMX MBean pe {0} care expune informa\u0163ii de sesiune EclipseLink, excep\u0163ia este: {1}
+
+join_trans_called_on_entity_trans=joinTransaction a fost apelat pe un resource-local EntityManager care nu se poate \u00eenregistra pentru o tranzac\u0163ie JTA.
+
+jpa21-ddl-create-script-target-not-specified=C\u00e2nd se genereaz\u0103 DDL la scripturi, trebuie specificat\u0103 o \u0163int\u0103 de script de creare folosind proprietatea [javax.persistence.schema-generation.scripts.create-target].
+
+jpa21-ddl-drop-script-target-not-specified=C\u00e2nd se genereaz\u0103 DDL la scripturi, trebuie specificat\u0103 o \u0163int\u0103 de script de abandonare folosind proprietatea [javax.persistence.schema-generation.scripts.drop-target].
+
+jpa21-ddl-invalid-source-script-type=Scriptul surs\u0103 furnizat {0} este un tip invalid {0}. Tipurile de script surs\u0103 valide sunt: java.io.Reader sau un \u015fir care desemneaz\u0103 un URL de fi\u015fier.
+
+jpa21-ddl-invalid-target-script-type=Scriptul \u0163int\u0103 furnizat {0} este de un tip invalid {0}. Tipurile de script \u0163int\u0103 valide sunt: java.io.Writer sau un \u015fir care desemneaz\u0103 un URL de fi\u015fier.
+
+jpa21-ddl-source-script-io-exception=A survenit o eroare IO cu scriptul surs\u0103 al gener\u0103rii ddl: {0}.
+
+jpa21-ddl-source-script-not-found=Scriptul surs\u0103: {0} pentru apelul generateSchema nu a fost g\u0103sit. Asigura\u0163i-v\u0103 c\u0103 a\u0163i specificat un URL \u015fir valid care folose\u015fte protocolul "file:" sau c\u0103 numele de fi\u015fier \u015fir reprezint\u0103 o resurs\u0103 valid\u0103 disponibil\u0103 din calea de clase.
+
+jpa21-ddl-source-script-sql-exception=A survenit o eroare la executarea {0} de la scriptul surs\u0103 de generare ddl: {1}.
+
+jpa21_invalid_call_on_un_executed_query=Interogarea trebuie executat\u0103 \u00eenainte de a apela aceast\u0103 metod\u0103.
+
+jpa21_invalid_call_with_no_output_parameters=Apel invalid pe o interogare care nu returneaz\u0103 parametri OUT.
+
+jpa21_invalid_call_with_no_result_sets_returned=Apel invalid pe o interogare care nu returneaz\u0103 seturi de rezultate.
+
+jpa21_invalid_parameter_name=Nume parametru de ie\u015fire invalid: {0}. {1}
+
+jpa21_invalid_parameter_position=Pozi\u0163ie parametru de ie\u015fire invalid: {0}. {1}.
+
+jpa_criteriaapi_alias_reused=Mai mult de un articol de selec\u0163ie folose\u015fte acela\u015fi nume alias.  Numele duplicate folosite au fost: {0}
+
+jpa_criteriaapi_illegal_tuple_or_array_value=S-a g\u0103sit articol de selec\u0163ie cu valoare de matrice sau tuplu ilegal. Argument g\u0103sit: {0}
+
+jpa_criteriaapi_invalid_result_index=indexul {0} invalid pentru lista de rezultate de dimensiunea {1}.
+
+jpa_criteriaapi_invalid_result_type=Elementul {0} de tipul {1} este invalid pentru rezultatul {2}.
+
+jpa_criteriaapi_no_corresponding_element_in_result=Elementul {0} nu corespunde unui element din rezultatul interog\u0103rii.
+
+jpa_criteriaapi_null_literal_value=Valoare nul\u0103 transmis\u0103 \u00een CriteriaBuilder.literal().  V\u0103 rug\u0103m s\u0103 folosi\u0163i \u00een schimb nullLiteral(Class<T> resultClass).
+
+jpa_helper_invalid_entity_manager_factory=JPA EntityManagerFactory {0} nu este o EclipseLink EntityManagerFactory \u015fi prin urmare, nu poate fi convertit\u0103.
+
+jpa_helper_invalid_entity_manager_factory_for_refresh=JPA EntityManagerFactory {0} nu este o EclipseLink EntityManagerFactory \u015fi prin urmare, metadatele sale nu pot fi re\u00eemprosp\u0103tate.
+
+jpa_helper_invalid_query=Interogarea de tipul {0} nu este o interogare EclipseLink \u015fi, prin urmare, nu a putut fi convertit\u0103.
+
+jpa_helper_invalid_read_all_query=Interogarea de tipul {0} nu este interogare EclipseLink citire-tot \u015fi, prin urmare, nu a putut fi convertit\u0103.
+
+jpa_helper_invalid_report_query=Interogarea de tipul {0} nu este o interogare EclipseLink raport \u015fi, prin urmare, nu a putut fi convertit\u0103.
+
+jpa_persistence_util_non_persistent_class=PersistenceUtil.getIdentifier(entity) s-a apelat cu obiectul [{0}] care nu este un obiect persistent.
+
+lock_called_without_version_locking=Apelurile la entityManager.lock(Object entity, LockModeType lockMode) necesit\u0103 activarea Bloc\u0103rii versiunii.
+
+managed_component_not_found=Un atribut: {1} listat \u00een EntityGraph: {0} referen\u0163iaz\u0103 un subgrafic numit: {2} ce nu poate fi g\u0103sit.
+
+may_not_contain_xml_entry={0} nu poate con\u0163ine {1}.
+
+metamodel_class_incorrect_type_instance=Tipul [{2}] nu este [{1}] a\u015fteptat pentru clasa cheie [{0}].  V\u0103 rug\u0103m s\u0103 verifica\u0163i c\u0103 clasa [{2}] a fost referit\u0103 \u00een persistence.xml folosind o proprietate specific\u0103 <class/> sau un element global <exclude-unlisted-classes>false</exclude-unlisted-classes>.
+
+metamodel_class_null_type_instance=Nu s-a g\u0103sit niciun [{1}] pentru clasa cheie [{0}] \u00een Metamodel - v\u0103 rug\u0103m verifica\u0163i c\u0103 clasa [{2}] a fost referit\u0103 \u00een persistence.xml folosind o proprietate specific\u0103 <class>{0}</class> sau un element global <exclude-unlisted-classes>false</exclude-unlisted-classes>.
+
+metamodel_class_null_type_instance_for_null_key=Nu s-a g\u0103sit niciun [{0}] pentru parametrul clasei de cheie nul \u00een metamodel - v\u0103 rug\u0103m s\u0103 sprecifica\u0163i clasa de cheie corect\u0103 pentru clasa de metamodel [{1}] \u015fi verifica\u0163i c\u0103 clasa de cheie a fost referit\u0103 \u00een persistence.xml folosind o proprietate specific\u0103 <class/> sau un element global <exclude-unlisted-classes>false</exclude-unlisted-classes>.
+
+metamodel_identifiable_id_attribute_is_incorrect_idclass=Atributul unic a\u015fteptat @Id pentru tipul identificabil [{0}] face parte dintr-un @IdClass nea\u015fteptat.
+
+metamodel_identifiable_id_attribute_type_incorrect=Se a\u015ftepta tipul de atribut ID [{2}] pe atributul ID existent [{0}] pe tipul identificabil [{1}] dar s-a g\u0103sit tipul de atribut [{3}].
+
+metamodel_identifiable_no_id_attribute_present=Nu exist\u0103 niciun atribut @Id pe tipul identificabil [{0}].
+
+metamodel_identifiable_no_version_attribute_present=Nu exist\u0103 niciun atribut @Version pe tipul identificabil [{0}].
+
+metamodel_identifiable_type_has_no_idclass_attribute=Niciun atribut @IdClass nu exist\u0103 pe IdentifiableType [{0}].  Ar mai putea fi unul sau mai multe @Id sau un @EmbeddedId pe tip.
+
+metamodel_identifiable_version_attribute_type_incorrect=Se a\u015ftepta tipul de atribut de versiune [{2}] pe atributul de versiune existent [{0}] pe tipul identificabil [{1}] dar s-a g\u0103sit tipul de atribut [{3}].
+
+metamodel_incompatible_persistence_config_for_getIdType=Configura\u0163ie de persisten\u0163\u0103 incompatibil\u0103 la ob\u0163inerea tipului de ID metamodel pentru ManagedType [{0}].
+
+metamodel_interface_inheritance_not_supported=Descriptorul [{0}], ce utilizeaz\u0103 mo\u015ftenirea ({1}), nu este suportat \u00een prezent pe durata gener\u0103rii metamodelului; \u00eencerca\u0163i s\u0103 utiliza\u0163i mo\u015ftenirea Entity sau MappedSuperclass (clasa Abstract).
+
+metamodel_managed_type_attribute_not_present=Atributul [{0}] nu este prezent \u00een tipul gestionat [{1}].
+
+metamodel_managed_type_attribute_return_type_incorrect=Se a\u015ftepta tipul de retur de atribut [{2}] pe atributul existent [{0}] pe tipul gestionat [{1}] dar s-a g\u0103sit tipul de retur de atribut [{3}].
+
+metamodel_managed_type_attribute_type_incorrect=Se a\u015ftepta tipul de atribut [{2}] pe atributul existent [{0}] pe tipul gestionat [{1}] dar s-a g\u0103sit tipul de atribut [{3}].
+
+metamodel_managed_type_declared_attribute_not_present_but_is_on_superclass=Atributul declarat [{0}] de la tipul gestionat [{1}] nu este prezent - totu\u015fi, este declarat pe o superclas\u0103.
+
+missing_parameter_value=Argumentul interog\u0103rii {0} nu a fost g\u0103sit \u00een lista de parametri furnizat\u0103 \u00een timpul execu\u0163iei interog\u0103rii.
+
+missing_toplink_bean_definition_for=Lipse\u015fte defini\u0163ia de bean TopLink pentru {0}
+
+named_entity_graph_exists=NamedEntityGraph cu numele {0} g\u0103sit pe {1} exist\u0103 deja \u00een aceast\u0103 unitate de persisten\u0163\u0103.
+
+negative_max_result=MaxResult negativ nu este permis.
+
+negative_start_position=Pozi\u0163ia de start negativ\u0103 nu este permis\u0103
+
+new_object_found_during_commit=\u00cen timpul sincroniz\u0103rii, s-a g\u0103sit un nou obiect printr-o rela\u0163ie care nu a fost marcat\u0103 cascade PERSIST: {0}.
+
+no_entities_retrieved_for_get_reference=Nu s-a g\u0103sit Entitatea pentru id-ul: {0}
+
+no_entities_retrieved_for_get_single_result=getSingleResult() nu a extras nicio entitate.
+
+no_entity_graph_of_name=Nu exist\u0103 niciun EntityGraph cu numele {0}
+
+not_an_entity=Obiect: {0} nu este un tip de Entitate cunoscut.
+
+not_jar_file={0} nu este un fi\u015fier jar.
+
+not_usable_passed_to_entitygraph_hint=valoarea {1} transmis\u0103 la indica\u0163ia de interogare {0} nu este corespunz\u0103toare pentru aceast\u0103 indica\u0163ie de interogare
+
+null_argument_get_attributegroup=Numele de c\u0103utare pentru AttributeGroup trebuie s\u0103 nu fie nul.
+
+null_jar_file_names=Nume de fi\u015fiere jar nule
+
+null_not_supported_identityweakhashmap=IdentityWeakHashMap nu suport\u0103 "null" ca cheie sau valoare.
+
+null_pk=O instan\u0163\u0103 a unui PK nul a fost furnizat\u0103 incorect pentru aceast\u0103 opera\u0163ie de g\u0103sire.
+
+null_sqlresultsetmapping_in_query=ResultSetMappingQuery trebuie s\u0103 aib\u0103 o SQLResultSetMapping setat\u0103 pentru a fi valid\u0103
+
+null_value_for_column_result=Numele coloanei trebuie furnizat pentru un ColumnResult
+
+null_value_for_constructor_result=Numele clasei \u0163int\u0103 trebuie furnizat pentru rezultatul constructorului
+
+null_value_for_entity_result=Numele clasei de entitate trebuie furnizat pentru rezultatul entit\u0103\u0163ii
+
+null_value_in_sqlresultsetmapping=Trebuie furnizat un nume pentru SQLResultSetMapping.  Acest nume este folosit pentru a referi SQLResultSetMapping dintr-o interogare.
+
+null_values_for_field_result=At\u00e2t numele atributului, c\u00e2t \u015fi numele coloanei trebuie furnizate pentru un FieldResult
+
+only_one_root_subgraph=Numai subgraficul r\u0103d\u0103cin\u0103 poate fi men\u0163ionat f\u0103r\u0103 un tip.  Orice subgrafic care reprezint\u0103 subclase trebuie s\u0103 aib\u0103 tipul setat.
+
+operation_not_supported=Apelarea {0} pe un {1} nu este suportat\u0103 de specifica\u0163ie.
+
+operation_on_closed_entity_manager=Se \u00eencearc\u0103 executarea unei opera\u0163ii pe un EntityManager \u00eenchis.
+
+operation_on_closed_entity_manager_factory=Se \u00eencearc\u0103 executarea unei opera\u0163ii pe un EntityManagerFactory \u00eenchis.
+
+ora_pessimistic_locking_with_rownum=Blocarea pesimist\u0103 cu limite de linii de interogare nu este suportat\u0103.
+
+parsing_error=parsarea erorii
+
+parsing_fatal_error=parsarea erorii fatale
+
+parsing_warning=parsarea avertismentului
+
+pathnode_is_primitive_node=Expresia criteriilor este de tip primitiv \u015fi nu poate fi navigat mai departe.
+
+pathnode_type_does_not_apply_to_primitive_node=Expresia criteriilor este de tip primitiv \u015fi nu poate fi navigat mai departe.  Expresiile primitive nu permit "tip".
+
+pk_class_not_found=Nu se poate \u00eenc\u0103rca clasa de chei primare {0}
+
+position_bound_param_not_found=Nu a fost niciun parametru legat la pozi\u0163ia: {0}.
+
+position_param_not_found=Nu a fost niciun parametru la pozi\u0163ia: {0}.
+
+pu_configured_for_resource_local=Nu se poate crea un EntityManager cu SynchronizationType deoarece PersistenceUnit este configurat cu tranzac\u0163ii locale resurs\u0103.
+
+remove_deletion_failed=\u015etergerea prin \u00eenl\u0103turare a e\u015fuat:
+
+rollback_because_of_rollback_only=Tranzac\u0163ia "s-a derulat \u00eenapoi" pentru c\u0103 tranzac\u0163ia a fost setat\u0103 la RollbackOnly.
+
+sdo_helper_invalid_changesummary=ChangeSummary [{0}] furnizat nu este un EclipseLink SDOChangeSummary \u015fi, prin urmare, nu a putut fi convertit.
+
+sdo_helper_invalid_copyhelper=CopyHelper [{0}] furnizat nu este un EclipseLink SDOCopyHelper \u015fi, prin urmare, nu a putut fi convertit.
+
+sdo_helper_invalid_datafactory=DataFactory [{0}] furnizat nu este un EclipseLink SDODataFactory \u015fi, prin urmare, nu a putut fi convertit.
+
+sdo_helper_invalid_datahelper=DataHelper [{0}] furnizat nu este un EclipseLink SDODataHelper \u015fi, prin urmare, nu a putut fi convertit.
+
+sdo_helper_invalid_dataobject=DataObject [{0}] furnizat nu este un EclipseLink SDODataObject \u015fi, prin urmare, nu a putut fi convertit.
+
+sdo_helper_invalid_equalityhelper=EqualityHelper [{0}] furnizat nu este un EclipseLink SDOEqualityHelper \u015fi, prin urmare, nu a putut fi convertit.
+
+sdo_helper_invalid_helpercontext=HelperContext [{0}] furnizat nu este un EclipseLink SDOHelperContext \u015fi, prin urmare, nu a putut fi convertit.
+
+sdo_helper_invalid_property=Proprietatea [{0}] furnizat\u0103 nu este o EclipseLink SDOProperty \u015fi, prin urmare, nu a putut fi convertit\u0103.
+
+sdo_helper_invalid_sequence=Secven\u0163a [{0}] furnizat\u0103 nu este o EclipseLink SDOSequence \u015fi, prin urmare, nu a putut fi convertit\u0103.
+
+sdo_helper_invalid_target_for_changesummary=Clasa \u0163int\u0103 furnizat\u0103 [{0}] trebuie s\u0103 fie clas\u0103 EclipseLink SDOChangeSummary.
+
+sdo_helper_invalid_target_for_copyhelper=Clasa \u0163int\u0103 furnizat\u0103 [{0}] trebuie s\u0103 fie clas\u0103 EclipseLink SDOCopyHelper.
+
+sdo_helper_invalid_target_for_datafactory=Clasa \u0163int\u0103 furnizat\u0103 [{0}] trebuie s\u0103 fie clas\u0103 EclipseLink SDODataFactory.
+
+sdo_helper_invalid_target_for_datahelper=Clasa \u0163int\u0103 furnizat\u0103 [{0}] trebuie s\u0103 fie clas\u0103 EclipseLink SDODataHelper.
+
+sdo_helper_invalid_target_for_dataobject=Clasa \u0163int\u0103 furnizat\u0103 [{0}] trebuie s\u0103 fie clas\u0103 EclipseLink SDODataObject.
+
+sdo_helper_invalid_target_for_equalityhelper=Clasa \u0163int\u0103 furnizat\u0103 [{0}] trebuie s\u0103 fie clas\u0103 EclipseLink SDOEqualityHelper.
+
+sdo_helper_invalid_target_for_helpercontext=Clasa \u0163int\u0103 furnizat\u0103 [{0}] trebuie s\u0103 fie clas\u0103 EclipseLink SDOHelperContext.
+
+sdo_helper_invalid_target_for_property=Clasa \u0163int\u0103 furnizat\u0103 [{0}] trebuie s\u0103 fie clas\u0103 EclipseLink SDOProperty.
+
+sdo_helper_invalid_target_for_sequence=Clasa \u0163int\u0103 furnizat\u0103 [{0}] trebuie s\u0103 fie clas\u0103 EclipseLink SDOSequence.
+
+sdo_helper_invalid_target_for_type=Clasa \u0163int\u0103 furnizat\u0103 [{0}] trebuie s\u0103 fie EclipseLink SDOType, SDOTypeType, SDOPropertyType, SDOChangeSummaryType, SDODataObjectType, SDODataType, SDOOpenSequencedType, SDOObjectType, SDOWrapperType sau SDOXMLHelperLoadOptionsType.
+
+sdo_helper_invalid_target_for_typehelper=Clasa \u0163int\u0103 furnizat\u0103 [{0}] trebuie s\u0103 fie clas\u0103 EclipseLink SDOTypeHelper.
+
+sdo_helper_invalid_target_for_xmlhelper=Clasa \u0163int\u0103 furnizat\u0103 [{0}] trebuie s\u0103 fie EclipseLink SDOXMLHelper, EclipseLink XMLMarshaller sau EclipseLink XMLUnmarshaller.
+
+sdo_helper_invalid_target_for_xsdhelper=Clasa \u0163int\u0103 furnizat\u0103 [{0}] trebuie s\u0103 fie clas\u0103 EclipseLink SDOXSDHelper.
+
+sdo_helper_invalid_type=Tipul furnizat [{0}] nu este un EclipseLink SDOType \u015fi, prin urmare, nu a putut fi convertit.
+
+sdo_helper_invalid_typehelper=TypeHelper [{0}] furnizat nu este un EclipseLink SDOTypeHelper \u015fi, prin urmare, nu a putut fi convertit.
+
+sdo_helper_invalid_xmlhelper=XMLHelper [{0}] furnizat nu este un EclipseLink SDOXMLHelper \u015fi, prin urmare, nu a putut fi convertit.
+
+sdo_helper_invalid_xsdhelper=XSDHelper [{0}] furnizat nu este un EclipseLink SDOXSDHelper \u015fi, prin urmare, nu a putut fi convertit.
+
+subclass_sought_not_a_managed_type=Tipul de subgrafic c\u0103utat: {0} nu este un tip gestionat pentru acest atribut: {1}.
+
+too_many_results_for_get_single_result=S-a returnat mai mult de un rezultat din Query.getSingleResult()
+
+unable_to_find_named_query=NamedQuery cu numele: {0} nu s-a g\u0103sit.
+
+unable_to_unwrap_jpa=Furnizorul nu suport\u0103 despachetarea {0} la {1}
+
+undeclared_checked_exception=Excep\u0163ie verificat\u0103 nedeclarat\u0103
+
+unexpect_argument=Argument de intrare nea\u015fteptat {0}
+
+unknown_bean_class=Clas\u0103 bean Entitate necunoscut\u0103: {0}, v\u0103 rug\u0103m s\u0103 verifica\u0163i dac\u0103 aceast\u0103 clas\u0103 a fost marcat\u0103 cu adnotarea @Entity.
+
+unknown_entitybean_name=Nume bean entitate necunoscut: {0}
+
+unsupported_classfile_version=Clasa {0} a fost compilat\u0103 cu un JDK nesuportat. Raporta\u0163i aceast\u0103 eroare la proiectul de surs\u0103 deschis\u0103 EclipseLink.
+
+wrap_convert_exception=A ap\u0103rut o excep\u0163ie \u00een timp ce se apela {0} pe clasa de convertor {1} cu valoarea {2}
+
+wrap_ejbql_exception=A ap\u0103rut o excep\u0163ie la crearea unei interog\u0103ri \u00een EntityManager
+

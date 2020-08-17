@@ -1,0 +1,47 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/OptimisticLockExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+5001=\u5df2\u5c1d\u8bd5\u5220\u9664\u5bf9\u8c61 [{0}]\uff0c\u4f46\u5b83\u5728\u8eab\u4efd\u6620\u5c04\u4e2d\u6ca1\u6709\u4efb\u4f55\u7248\u672c\u53f7\u3002{3}\u5728\u5c1d\u8bd5\u5220\u9664\u4e4b\u524d\uff0c\u53ef\u80fd\u5c1a\u672a\u5bf9\u5176\u8fdb\u884c\u8bfb\u53d6\u3002{3}\u7c7b > {1} \u4e3b\u952e > {2}
+
+5003=\u5bf9\u8c61 [{0}] \u65e0\u6cd5\u5220\u9664\uff0c\u56e0\u4e3a\u81ea\u4ece\u6700\u8fd1\u4e00\u6b21\u8bfb\u53d6\u8be5\u5bf9\u8c61\u4ee5\u6765\u5b83\u5df2\u66f4\u6539\u6216\u5220\u9664\u3002{3}\u7c7b> {1} \u4e3b\u952e> {2}
+
+5004=\u5df2\u5c1d\u8bd5\u66f4\u65b0\u5bf9\u8c61 [{0}]\uff0c\u4f46\u5b83\u5728\u8eab\u4efd\u6620\u5c04\u4e2d\u6ca1\u6709\u4efb\u4f55\u7248\u672c\u53f7\u3002{3}\u5728\u5c1d\u8bd5\u66f4\u65b0\u4e4b\u524d\uff0c\u53ef\u80fd\u5c1a\u672a\u5bf9\u5176\u8fdb\u884c\u8bfb\u53d6\u3002{3}\u7c7b> {1} \u4e3b\u952e> {2}
+
+5006=\u5bf9\u8c61 [{0}] \u65e0\u6cd5\u66f4\u65b0\uff0c\u56e0\u4e3a\u81ea\u4ece\u6700\u8fd1\u4e00\u6b21\u8bfb\u53d6\u8be5\u5bf9\u8c61\u4ee5\u6765\u5b83\u5df2\u66f4\u6539\u6216\u5220\u9664\u3002{3}\u7c7b> {1} \u4e3b\u952e> {2}
+
+5007=\u5bf9\u8c61 [{0}] \u5fc5\u987b\u5177\u6709\u9488\u5bf9\u7248\u672c\u9501\u5b9a\u5b57\u6bb5\u7684\u975e\u53ea\u8bfb\u6620\u5c04\u3002
+
+5008=\u5f53\u4f7f\u7528\u65f6\u95f4\u6233\u8bb0\u9501\u5b9a\u65f6\uff0c\u5fc5\u987b\u5c06\u7248\u672c\u9501\u5b9a\u5b57\u6bb5\u6620\u5c04\u5230 java.sql.Timestamp
+
+5009=\u65e0\u6cd5\u89e3\u5305\u7c7b [{1}] \u7684\u5bf9\u8c61\uff08\u5177\u6709\u4e3b\u952e [{0}]\uff09\uff0c\u56e0\u4e3a\u81ea\u4ece\u6700\u8fd1\u4e00\u6b21\u8bfb\u53d6\u8be5\u5bf9\u8c61\u4ee5\u6765\u5b83\u5df2\u5220\u9664\u3002
+
+5010=\u5bf9\u8c61 [{0}] \u65e0\u6cd5\u5408\u5e76\uff0c\u56e0\u4e3a\u81ea\u4ece\u6700\u8fd1\u4e00\u6b21\u8bfb\u53d6\u8be5\u5bf9\u8c61\u4ee5\u6765\u5b83\u5df2\u66f4\u6539\u6216\u5220\u9664\u3002{2}\u7c7b > {1}
+
+5011=\u4e00\u4e2a\u6216\u591a\u4e2a\u5bf9\u8c61\u65e0\u6cd5\u66f4\u65b0\uff0c\u56e0\u4e3a\u81ea\u4ece\u6700\u8fd1\u4e00\u6b21\u5bf9\u5176\u8bfb\u53d6\u4ee5\u6765\u5176\u5df2\u66f4\u6539\u6216\u5220\u9664
+

@@ -1,0 +1,93 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/EntityManagerSetupExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+28001=A program ValidationException kiv\u00e9telt dobott a munkamenet l\u00e9trehoz\u00e1s\u00e1ra tett k\u00eds\u00e9rlet k\u00f6zben: [{0}] . A probl\u00e9ma legval\u00f3sz\u00edn\u0171bb oka az, hogy a(z) [{1}] f\u00e1jl nem \u00e9rhet\u0151 el az oszt\u00e1ly\u00fatvonalon, vagy nem tartalmazza a k\u00f6vetkez\u0151 nev\u0171 munkamenetet: [{0}].
+
+28002=Az EclipseLink megk\u00eds\u00e9rel bet\u00f6lteni egy [{0}] nev\u0171 ServerSession objektumot a k\u00f6vetkez\u0151b\u0151l: [{1}], \u00e9s nem kap ServerSession objektumot.
+
+28003=Az EclipseLink bet\u00f6lt\u00f6tte a(z) [{0}] munkamenetet a k\u00f6vetkez\u0151b\u0151l: [{1}], \u00e9s annak nincs megadva a kiszolg\u00e1l\u00f3 platformja, vagy egy olyan kiszolg\u00e1l\u00f3 platformot ad meg, amely nem k\u00fcls\u0151 tranzakci\u00f3vez\u00e9rl\u0151t haszn\u00e1l.  Adjon meg egy megfelel\u0151 kiszolg\u00e1l\u00f3 platformot, ha a JTA haszn\u00e1lat\u00e1t tervezi.
+
+28004=Hiba az EntityManager gy\u00e1rt\u00f3 be\u00e1ll\u00edt\u00e1s\u00e1ban: A JavaSECMPInitializer.initializeFromMain false \u00e9rt\u00e9ket adott vissza.
+
+28005=Kiv\u00e9tel t\u00f6rt\u00e9nt az EntityManager gy\u00e1rt\u00f3ban.
+
+28006=ClassNotFound: [{0}] van megadva a(z) [{1}] tulajdons\u00e1gban.
+
+28007=Nem siker\u00fclt p\u00e9ld\u00e1nyos\u00edtani a(z) [{1}] tulajdons\u00e1gban megadott [{0}] t\u00edpus\u00fa ServerPlatform objektumot.
+
+28008=A(z) {0} oszt\u00e1ly nem volt megtal\u00e1lhat\u00f3 az annot\u00e1ci\u00f3k feldolgoz\u00e1sakor.
+
+28009=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt egy {0} nev\u0171 munkamenet \u00fajratelep\u00edt\u00e9s\u00e9re annak bez\u00e1r\u00e1sa n\u00e9lk\u00fcl.
+
+28010=A(z) {0} PersistenceUnitInfo tranzakci\u00f3t\u00edpusa JTA, azonban nincs meghat\u00e1rozva hozz\u00e1 egy jtaDataSource.
+
+28011=A(z) [{0}] munkamenet, amely egy perzisztencia egys\u00e9ghez lett \u00f6ssze\u00e9p\u00edtve, nem volt el\u00e9rhet\u0151 a telep\u00edt\u00e9se id\u0151pontj\u00e1ban.  Ez azt jelenti, hogy a munkamenet valahogy elt\u00e1vol\u00edt\u00e1sra ker\u00fclt a t\u00e1rol\u00f3ban a telep\u00edt\u00e9si folyamat k\u00f6zep\u00e9n.
+
+28012=A(z) [{0}] \u00e9rt\u00e9k helytelen t\u00edpus\u00fa a(z) [{2}] tulajdons\u00e1ghoz, az \u00e9rt\u00e9kt\u00edpusnak a k\u00f6vetkez\u0151nek kellene lennie: [{1}].
+
+28013=A(z) [{0}] perzisztencia egys\u00e9g nem telep\u00edthet\u0151, \u00e9rv\u00e9nytelen \u00e1llapotban van: [{1}].
+
+28014=Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) [{1}] \u00e9rt\u00e9k\u0171 [{0}] tulajdons\u00e1g feldolgoz\u00e1sakor.
+
+28015=A(z) [{1}] tulajdons\u00e1gban megadott [{0}] t\u00edpus\u00fa SessionLog p\u00e9ld\u00e1nyos\u00edt\u00e1sa meghi\u00fasult.
+
+28016=A(z) [{0}] nev\u0171 perzisztencia egys\u00e9g nem l\u00e9tezik.
+
+28017=A(z) [{0}] perzisztencia egys\u00e9g nem telep\u00edthet\u0151 \u00fajra, \u00e9rv\u00e9nytelen \u00e1llapotban van: [{1}].
+
+28018=A(z) [{0}] PersistenceUnit el\u0151zetes telep\u00edt\u00e9se meghi\u00fasult.
+
+28019=A(z) [{0}] PersistenceUnit telep\u00edt\u00e9se meghi\u00fasult. Z\u00e1rja be a PersistenceUnit \u00f6sszes gy\u00e1rt\u00f3j\u00e1t.
+
+28020=A(z) [{1}] helyr\u0151l bet\u00f6lt\u00f6tt [{0}] nev\u0171 munkamenet [{2}], azonban ServerSession t\u00edpus\u00fanak kellene lennie.
+
+28021=A(z) [{0}] PersistenceUnit egy munkamenetn\u00e9v megad\u00e1sa n\u00e9lk\u00fcl pr\u00f3b\u00e1l bet\u00f6lteni egy munkamenetet a(z) [{1}] helyr\u0151l.  Meg kell adni egy munkamenetnevet az eclipselink.session-name tulajdons\u00e1g meghat\u00e1roz\u00e1s\u00e1val.
+
+28022=Az [eclipselink.weaving] tulajdons\u00e1g [true] \u00e9rt\u00e9ke helytelen, amikor a glob\u00e1lis felk\u00e9sz\u00edt\u00e9s null, az \u00e9rt\u00e9k csak null, false vagy static lehet.
+
+28023=A(z) [{0}] met\u00f3dus megh\u00edv\u00e1sa a(z) [{2}] oszt\u00e1ly\u00fa [{1}] objektumhoz egy kiv\u00e9telt aktiv\u00e1lt.
+
+28024=Nem lehet reflekt\u00edven hozz\u00e1f\u00e9rni a(z) [{2}] oszt\u00e1ly\u00fa [{1}] objektum [{0}] met\u00f3dus\u00e1hoz.
+
+28025=A(z) [{0}] nev\u0171 perzisztencia egys\u00e9g egy [null] ideiglenes oszt\u00e1lybet\u00f6lt\u0151t adott vissza - az \u00e1tsz\u00f6v\u00e9s le lett tiltva a munkamenethez.  V\u00e1laszthat\u00f3 \u00e1thidal\u00f3 megold\u00e1sk\u00e9nt haszn\u00e1lhat statikus \u00e1tsz\u00f6v\u00e9st.
+
+28026=Az org.eclipse.persistence.jpa.osgi.PersistenceProvider nem t\u00e1mogatja a t\u00e1rol\u00f3telep\u00edt\u00e9st (createContainerEntityManagerFactory).  Haszn\u00e1lja helyette az org.eclipse.persistence.jpa.PersistenceProvider k\u00f6teget.
+
+28027=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt a(z) [{0}] PersistenceUnit haszn\u00e1lat\u00e1ra, azonban nem \u00e9rhet\u0151 el olyan k\u00f6teg, amely t\u00e1mogatn\u00e1 ezt a perzisztencia egys\u00e9get.
+
+28028=Nem siker\u00fclt p\u00e9ld\u00e1nyos\u00edtani a(z) [{0}] oszt\u00e1lyp\u00e9ld\u00e1nyt a(z) [{1}] perzisztencia egys\u00e9g tulajdons\u00e1ghoz. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a konstruktor helyesen van meghat\u00e1rozva.
+
+28029=A(z) [{0}] PersistenceUnit egyar\u00e1nt megpr\u00f3b\u00e1lja haszn\u00e1lni a sessions.xml f\u00e1jlt (megadja az eclipselink.sessions-xml tulajdons\u00e1got) \u00e9s \u00f6sszet\u00e9telk\u00e9nt viselkedni (true \u00e9rt\u00e9kkel adja meg az eclipselink.composite-unit tulajdons\u00e1got). Ez a k\u00e9t m\u00f3d nem kompatibilis.
+
+28030=A(z) [{0}] PersistenceUnit true \u00e9rt\u00e9kkel adja meg az eclipselink.composite-unit.member tulajdons\u00e1got. Ez azt jelenti, hogy nem haszn\u00e1lhat\u00f3 \u00f6n\u00e1ll\u00f3an, csak egy \u00f6sszet\u00e9tel tagjak\u00e9nt.
+
+28031=Hi\u00e1nyz\u00f3 k\u00f6telez\u0151 tulajdons\u00e1g: [{0}].
+
+28032=Ideiglenes oszt\u00e1lybet\u00f6lt\u0151 l\u00e9trehoz\u00e1sa doPrivileged h\u00edv\u00e1ssal meghi\u00fasult.
+

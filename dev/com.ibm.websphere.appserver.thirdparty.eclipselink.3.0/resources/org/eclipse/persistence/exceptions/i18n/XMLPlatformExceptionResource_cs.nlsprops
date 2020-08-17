@@ -1,0 +1,51 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/XMLPlatformExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+27001=T\u0159\u00edda platformy XML nebyla nalezena: {0}
+
+27002=Platformu XML nelze p\u0159ev\u00e9st na instanci: {0}
+
+27003=Nelze vytvo\u0159it nov\u00fd dokument XML.
+
+27004=Cesta XPath byla neplatn\u00e1.
+
+27005=P\u0159i ov\u011b\u0159ov\u00e1n\u00ed platnosti dokumentu do\u0161lo k chyb\u011b.
+
+27006=Nelze vy\u0159e\u0161it sch\u00e9ma XML:  {0}
+
+27101=P\u0159i anal\u00fdze dokumentu do\u0161lo k chyb\u011b.
+
+27102=Soubor nenalezen: [{0}]
+
+27103=** Chyba p\u0159i anal\u00fdze, \u0159\u00e1dek [{0}], uri [{1}] [{2}]
+
+27201=P\u0159i transformaci dokumentu do\u0161lo k chyb\u011b.
+
+27202=Byl rozpozn\u00e1n nezn\u00e1m\u00fd typ: {0}
+

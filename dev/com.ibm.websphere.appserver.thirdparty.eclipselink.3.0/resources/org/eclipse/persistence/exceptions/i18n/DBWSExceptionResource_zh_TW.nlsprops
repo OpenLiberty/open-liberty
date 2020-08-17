@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DBWSExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+47000=\u627e\u4e0d\u5230 "[{0}]" \u6a94\u3002
+
+47001=\u5728 O-R \u5c08\u6848\u4e2d\u627e\u4e0d\u5230\u4f5c\u696d [{1}] \u7684\u63cf\u8ff0\u5b50 [{0}]\u3002
+
+47002=\u627e\u4e0d\u5230\u63cf\u8ff0\u5b50 [{1}] \u7684\u67e5\u8a62 [{0}]
+
+47003=\u627e\u4e0d\u5230\u968e\u6bb5\u4f5c\u696d [{1}] \u7684\u67e5\u8a62 [{0}]
+
+47004=\u4f5c\u696d [{1}] \u7684\u53c3\u6578\u985e\u578b [{0}] \u4e0d\u5b58\u5728\u65bc\u7db1\u76ee\u4e2d
+
+47005=\u4f5c\u696d [{1}] \u7684\u53c3\u6578\u985e\u578b [{0}] \u6c92\u6709 O-X \u5c0d\u6620
+
+47006=\u4f5c\u696d [{1}] \u7684\u7d50\u679c\u985e\u578b [{0}] \u4e0d\u5b58\u5728\u65bc\u7db1\u76ee\u4e2d
+
+47007=\u4f5c\u696d [{1}] \u7684\u7d50\u679c\u985e\u578b [{0}] \u6c92\u6709 O-X \u5c0d\u6620
+
+47008=\u53ea\u6709 Simple XML Format \u67e5\u8a62\u652f\u63f4\u591a\u500b\u8f38\u51fa\u5f15\u6578
+
+47009=\u4e0d\u652f\u63f4 INOUT \u6e38\u6a19\u53c3\u6578
+
+47010=\u627e\u4e0d\u5230\u670d\u52d9 [{0}] \u7684 O-R \u968e\u6bb5\u4f5c\u696d
+
+47011=\u627e\u4e0d\u5230\u670d\u52d9 [{0}] \u7684 O-X \u968e\u6bb5\u4f5c\u696d
+
+47012=\u7121\u6cd5\u5256\u6790 DBWS \u6a94\u6848
+

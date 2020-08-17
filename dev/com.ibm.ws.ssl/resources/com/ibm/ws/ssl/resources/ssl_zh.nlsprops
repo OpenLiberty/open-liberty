@@ -245,7 +245,9 @@ ssl.trustmanager.signer.prompt.CWPKI0101I=\u5728\u4fe1\u4efb\u5e93 {0} \u4e2d\u6
 \u4ee5\u4e0b\u662f\u7b7e\u7f72\u8005\u4fe1\u606f\uff08\u9a8c\u8bc1\u6458\u8981\u503c\u662f\u5426\u4e0e\u670d\u52a1\u5668\u4e2d\u663e\u793a\u7684\u503c\u76f8\u5339\u914d\uff09\uff1a
 
 ssl.trustmanager.signer.prompt.CWPKI0102I=  \u4e3b\u4f53\u96c6 DN\uff1a
+
 ssl.trustmanager.signer.prompt.CWPKI0103I=  \u53d1\u5e03\u8005 DN\uff1a
+
 ssl.trustmanager.signer.prompt.CWPKI0104I=  \u5e8f\u5217\u53f7\uff1a
 
 ssl.trustmanager.signer.prompt.CWPKI0105I=  SHA-1 \u6458\u8981\uff1a
@@ -573,7 +575,7 @@ ssl.create.certificate.end.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55
 #--------------------------------------------------------------------------------------------------
 ssl.create.certificate.error=CWPKI0804E: SSL \u8bc1\u4e66\u521b\u5efa\u9519\u8bef\u3002{0}
 ssl.create.certificate.error.explanation=\u672a\u80fd\u5728\u6307\u5b9a\u7684\u4f4d\u7f6e\u521b\u5efa SSL \u8bc1\u4e66\u3002
-ssl.create.certificate.error.useraction=\u8bf7\u786e\u4fdd\u670d\u52a1\u5668\u8fdb\u7a0b\u53ef\u8bbf\u95ee\u8be5\u4f4d\u7f6e\u3002\u4efb\u4f55 FFDC \u90fd\u53ef\u80fd\u6307\u793a\u751f\u6210\u6216\u88c5\u5165\u5bc6\u94a5\u65f6\u53d1\u751f\u81f4\u547d\u9519\u8bef\u3002
+ssl.create.certificate.error.useraction=\u786e\u4fdd\u670d\u52a1\u5668\u8fdb\u7a0b\u53ef\u8bbf\u95ee\u8be5\u4f4d\u7f6e\u3002\u67e5\u770b FFDC \u65e5\u5fd7\uff0c\u4ee5\u67e5\u627e\u4e0e\u751f\u6210\u6216\u88c5\u5165\u5bc6\u94a5\u76f8\u5173\u8054\u7684\u5176\u4ed6\u9519\u8bef\u3002
 
 # Messages for the CWPKI0804E message descriptor {0}.
 ssl.create.certificate.error.reason1=\u65e0\u6cd5\u521b\u5efa SSL \u5bc6\u94a5\u6587\u4ef6\uff1a{0}
@@ -675,4 +677,8 @@ ssl.using.cacerts.CWPKI0827I.useraction=\u65e0\u9700\u6267\u884c\u4efb\u4f55\u64
 ssl.client.handshake.cacerts.error.CWPKI0828E=CWPKI0828E: \u5df2\u542f\u7528 trustDefaultCerts \u5c5e\u6027\uff0c\u4f46\u672a\u4f7f\u7528\u7f3a\u7701\u4fe1\u4efb\u5e93\u5efa\u7acb\u4fe1\u4efb\u3002\u6765\u81ea SSL \u63e1\u624b\u5f02\u5e38\u7684\u6269\u5c55\u9519\u8bef\u6d88\u606f\u4e3a\uff1a{0}\u3002
 ssl.client.handshake.cacerts.error.CWPKI0828E.explanation=\u672a\u6b63\u786e\u914d\u7f6e\u7f3a\u7701\u4fe1\u4efb\u5e93\uff0c\u65e0\u6cd5\u5efa\u7acb\u4fe1\u4efb\u3002
 ssl.client.handshake.cacerts.error.CWPKI0828E.useraction=\u67e5\u770b\u6269\u5c55\u9519\u8bef\u6d88\u606f\uff0c\u4ee5\u786e\u5b9a\u8981\u5728\u914d\u7f6e\u4e2d\u8fdb\u884c\u7684\u66f4\u6539\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.update.certificate.error=CWPKI0829E: SSL \u8bc1\u4e66\u66f4\u65b0\u9519\u8bef\u3002{0}
+ssl.update.certificate.error.explanation=\u672a\u80fd\u5728\u6240\u6307\u5b9a\u4f4d\u7f6e\u66f4\u65b0 SSL \u8bc1\u4e66\u3002
+ssl.update.certificate.error.useraction=\u786e\u4fdd\u670d\u52a1\u5668\u8fdb\u7a0b\u53ef\u8bbf\u95ee\u8be5\u4f4d\u7f6e\u3002\u67e5\u770b FFDC \u65e5\u5fd7\uff0c\u4ee5\u67e5\u627e\u4e0e\u751f\u6210\u6216\u88c5\u5165\u5bc6\u94a5\u76f8\u5173\u8054\u7684\u5176\u4ed6\u9519\u8bef\u3002
 # -------------------------------------------------------------------------------------------------
