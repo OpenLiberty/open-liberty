@@ -446,4 +446,9 @@ public class JwtSsoComponent implements JwtSsoConfig {
 		return disableJwtCookie;
 	}
 
+    @Override
+    public String getTokenHeader() {
+        return null;
+    }
+
 }

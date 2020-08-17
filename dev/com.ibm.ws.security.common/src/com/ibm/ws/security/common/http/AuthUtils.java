@@ -36,13 +36,23 @@ public class AuthUtils {
             if (!isAuthorizationHeader(headerName)) {
                 return hdrValue;
             } else {
-                String bearerAuthzMethod = "Bearer ";
-                if (hdrValue != null && hdrValue.startsWith(bearerAuthzMethod)) {
-                    return hdrValue.substring(bearerAuthzMethod.length());
-                }
+                return getBearerTokenFromHeader(hdrValue, "Bearer ");
             }
         }
         return null;
+    }
+
+    @Sensitive
+    public String getBearerTokenFromHeader(@Sensitive String rawHeaderValue, String scheme) {
+        if (rawHeaderValue == null) {
+            return rawHeaderValue;
+        }
+        if (scheme != null) {
+            if (rawHeaderValue.startsWith(scheme)) {
+                return rawHeaderValue.substring(scheme.length());
+            }
+        }
+        return rawHeaderValue;
     }
 
     private boolean isAuthorizationHeader(String headerName) {

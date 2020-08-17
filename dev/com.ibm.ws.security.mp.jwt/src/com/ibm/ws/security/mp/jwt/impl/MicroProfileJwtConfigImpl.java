@@ -20,6 +20,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.Version;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -119,6 +120,12 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     public static final String CFG_KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS = "useSystemPropertiesForHttpClientConnections";
     private boolean useSystemPropertiesForHttpClientConnections = false;
 
+    public static final String KEY_TOKEN_HEADER = "tokenHeader";
+    protected String tokenHeader;
+
+    public static final String KEY_COOKIE_NAME = "cookieName";
+    protected String cookieName;
+
     @com.ibm.websphere.ras.annotation.Sensitive
     private String sharedKey;
 
@@ -204,10 +211,15 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
             }
             return;
         }
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "Loaded MP JWT runtime: " + runtimeVersion + " (version " + runtimeVersion.getVersion() + ")");
+        Version version = runtimeVersion.getVersion();
+        if (version.compareTo(MpJwtRuntimeVersion.VERSION_1_2) < 0) {
+            return;
         }
-        // TODO
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Loading additional properties for runtime version " + MpJwtRuntimeVersion.VERSION_1_2 + " and above");
+        }
+        tokenHeader = configUtils.getConfigAttribute(props, KEY_TOKEN_HEADER);
+        cookieName = configUtils.getConfigAttribute(props, KEY_COOKIE_NAME);
     }
 
     MpJwtRuntimeVersion getMpJwtRuntimeVersion() {
@@ -537,6 +549,16 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     @Override
     public boolean getUseSystemPropertiesForHttpClientConnections() {
         return this.useSystemPropertiesForHttpClientConnections;
+    }
+
+    @Override
+    public String getTokenHeader() {
+        return tokenHeader;
+    }
+
+    @Override
+    public String getCookieName() {
+        return cookieName;
     }
 
 }
