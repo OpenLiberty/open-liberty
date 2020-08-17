@@ -81,18 +81,18 @@ public class MPConfigSettings {
     }
 
     public String getComplexKey(LibertyServer server, String fileName) throws Exception {
-        return getCertFromFile(server, fileName);
+        return getKeyFromFile(server, fileName);
     }
 
     public String getSimpleKey(LibertyServer server, String fileName) throws Exception {
-        String rawKey = getCertFromFile(server, fileName);
+        String rawKey = getKeyFromFile(server, fileName);
         if (rawKey != null) {
             return rawKey.replace(rsaPrefix, "").replace(rsaSuffix, "");
         }
         return rawKey;
     }
 
-    public String getCertFromFile(LibertyServer server, String fileName) throws Exception {
+    public String getKeyFromFile(LibertyServer server, String fileName) throws Exception {
 
         String fullPathToFile = getDefaultKeyFileLoc(server) + fileName;
 

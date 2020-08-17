@@ -37,6 +37,7 @@ public class CommonSecurityFat {
     public final TestName testName = new TestName();
 
     protected static ServerTracker serverTracker = new ServerTracker();
+    protected static ServerTracker skipRestoreServerTracker = new ServerTracker();
 
     protected CommonFatLoggingUtils loggingUtils = new CommonFatLoggingUtils();
 
@@ -46,6 +47,7 @@ public class CommonSecurityFat {
     public static void commonBeforeClass() throws Exception {
         Log.info(thisClass, "commonBeforeClass", "Starting Class");
         serverTracker = new ServerTracker();
+        skipRestoreServerTracker = new ServerTracker();
     }
 
     @Before
@@ -94,9 +96,13 @@ public class CommonSecurityFat {
         logTestCaseInServerLogs("ReStoringConfig");
         for (LibertyServer server : serverTracker.getServers()) {
             try {
-                Log.info(thisClass, "restoreTestServers", "Restoring server: " + server.getServerName());
-                server.restoreServerConfiguration();
-                server.waitForConfigUpdateInLogUsingMark(server.listAllInstalledAppsForValidation());
+                if (skipRestoreServerTracker.trackerContains(server)) {
+                    Log.info(thisClass, "restoreTestServers", "Restore of server: " + server.getServerName() + " has been skipped");
+                } else {
+                    Log.info(thisClass, "restoreTestServers", "Restoring server: " + server.getServerName());
+                    server.restoreServerConfiguration();
+                    server.waitForConfigUpdateInLogUsingMark(server.listAllInstalledAppsForValidation());
+                }
             } catch (Exception e) {
                 e.printStackTrace(System.out);
                 Log.info(thisClass, "restoreTestServers", "**********************FAILED to restore original server configuration**********************");
