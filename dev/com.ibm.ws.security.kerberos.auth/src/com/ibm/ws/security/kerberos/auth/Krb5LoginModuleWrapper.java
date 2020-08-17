@@ -94,19 +94,22 @@ public class Krb5LoginModuleWrapper implements LoginModule {
                     options.put("credsType", "both");
                 }
             }
-            if (options.containsKey("doNotPrompt")) {
-                options.remove("doNotPrompt");
-            }
-            if (options.containsKey("refreshKrb5Config")) {
-                options.remove("refreshKrb5Config");
-            }
+            options.remove("doNotPrompt");
+            options.remove("refreshKrb5Config");
             if (options.containsKey("keyTab")) {
                 String keytab = (String) options.remove("keyTab");
                 options.remove("useKeyTab");
                 options.put("useKeytab", keytab);
             }
-            if (options.containsKey("clearPass")) {
-                options.remove("clearPass");
+            options.remove("clearPass");
+            boolean useTicketCache = Boolean.valueOf((String) options.remove("useTicketCache"));
+            String ticketCache = (String) options.remove("ticketCache");
+            if (useTicketCache) {
+                if (ticketCache != null) {
+                    options.put("useCcache", ticketCache);
+                } else {
+                    options.put("useDefaultCcache", "true");
+                }
             }
         }
 

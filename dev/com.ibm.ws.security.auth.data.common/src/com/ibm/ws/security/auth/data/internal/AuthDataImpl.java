@@ -37,7 +37,7 @@ public class AuthDataImpl implements AuthData {
     private String username;
     private String password;
     private String principal;
-    private Path keytab;
+    private Path krb5TicketCache;
 
     @Activate
     protected void activate(@Sensitive Map<String, Object> props) {
@@ -47,9 +47,12 @@ public class AuthDataImpl implements AuthData {
         password = PasswordUtil.passwordDecode(configuredPassword);
 
         principal = (String) props.get("krb5Principal");
-        String sKeytab = (String) props.get("krb5Keytab");
-        if (sKeytab != null)
-            keytab = Paths.get(sKeytab);
+        String sCcache = (String) props.get("krb5TicketCache");
+        if (sCcache != null) {
+            krb5TicketCache = Paths.get(sCcache);
+        } else {
+            krb5TicketCache = null;
+        }
     }
 
     /**
@@ -77,6 +80,12 @@ public class AuthDataImpl implements AuthData {
     @Override
     public String getKrb5Principal() {
         return principal;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Path getKrb5TicketCache() {
+        return krb5TicketCache;
     }
 
 }
