@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,8 +33,9 @@ public class POP3MailTest {
             Context context = new InitialContext();
             session = (javax.mail.Session) context.lookup("POP3JNDISession");
         } catch (NamingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            System.out.println("Failed to lookup 'POP3JNDISession': "+e.getMessage());
+            e.printStackTrace(System.out);
+            throw new RuntimeException(e);
         }
 
         try {
@@ -68,7 +69,7 @@ public class POP3MailTest {
             store.close();
 
         } catch (Exception mex) {
-            mex.printStackTrace();
+            mex.printStackTrace(System.out);
         }
     }
 }

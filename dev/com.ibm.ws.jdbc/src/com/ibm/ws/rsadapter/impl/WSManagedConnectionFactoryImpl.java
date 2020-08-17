@@ -289,6 +289,12 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
 
     // Indicates whether the DataSource was used to get a connection.
     private boolean wasUsedToGetAConnection;
+    
+    static enum KerbUsage {
+        NONE,
+        USE_CREDENTIAL,
+        SUBJECT_DOAS
+    }
 
     /**
      * Constructs a managed connection factory based on configuration.
@@ -659,7 +665,8 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         WSRdbManagedConnectionImpl mc = null;
         ConnectionResults results = null; 
         try {
-            results = getConnection(userName, password, subject, cri, useKerb, credential);
+            KerbUsage kerbUsage = useKerb ? KerbUsage.USE_CREDENTIAL : KerbUsage.NONE;
+            results = getConnection(userName, password, subject, cri, kerbUsage, credential);
 
             mc = new WSRdbManagedConnectionImpl(this, results.pooledConnection, results.connection, subject, cri);
 
@@ -746,7 +753,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
      * @return the pooled connection, cookie, and connection
      */
     private ConnectionResults getConnection(final String userName, final String password,
-                                            final Subject subject, final WSConnectionRequestInfoImpl cri, boolean useKerb,
+                                            final Subject subject, final WSConnectionRequestInfoImpl cri, KerbUsage useKerb,
                                             final Object credential)
                     throws ResourceException {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
@@ -759,7 +766,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         Connection conn;
 
         // Some JDBC drivers support propagation of GSS credential for kerberos via Subject.doAs
-        if (useKerb && helper.supportsSubjectDoAsForKerberos()) {
+        if (useKerb == KerbUsage.USE_CREDENTIAL && helper.supportsSubjectDoAsForKerberos()) {
             try {
                 // Run this method as the subject.
 
@@ -768,7 +775,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
                                 {
                                     public ConnectionResults run() throws ResourceException
                                     {
-                                        return getConnection(userName, password, subject, cri, false, credential);
+                                        return getConnection(userName, password, subject, cri, KerbUsage.SUBJECT_DOAS, credential);
                                     }
                                 };
 
@@ -809,7 +816,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "Getting a connection using Datasource. Is UCP? " + isUCP);
-            conn = getConnectionUsingDS(userName, password, cri);
+            conn = getConnectionUsingDS(userName, password, cri, useKerb, credential);
             results = new ConnectionResults(null, conn);
         } else if (Driver.class.equals(type)) {
             if (trace && tc.isDebugEnabled())
@@ -818,7 +825,8 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
             results = new ConnectionResults(null, conn);
         } else {
             try {
-                results = helper.getPooledConnection((CommonDataSource) dataSourceOrDriver, userName, password, XADataSource.class.equals(type), cri, useKerb, credential);
+                results = helper.getPooledConnection((CommonDataSource) dataSourceOrDriver, userName, password, 
+                                                     XADataSource.class.equals(type), cri, useKerb, credential);
             } catch (DataStoreAdapterException dae) {
                 throw (ResourceException) AdapterUtil.mapException(dae, null, this, false); // error can't be fired as we don't have an mc
             }
@@ -966,7 +974,8 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
      * @return a Connection.
      * @throws ResourceException
      */
-    private final Connection getConnectionUsingDS(String userN, String password, final WSConnectionRequestInfoImpl cri) throws ResourceException 
+    private final Connection getConnectionUsingDS(String userN, String password, final WSConnectionRequestInfoImpl cri,
+                                                  KerbUsage useKerb, Object gssCredential) throws ResourceException 
     {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
@@ -978,7 +987,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         Connection conn = null;
         boolean isConnectionSetupComplete = false;
         try {
-            conn = AccessController.doPrivileged(new PrivilegedExceptionAction<Connection>() {
+            conn = AccessController.doPrivilegedWithCombiner(new PrivilegedExceptionAction<Connection>() {
                 public Connection run() throws Exception {
                     boolean buildConnection = cri.ivShardingKey != null || cri.ivSuperShardingKey != null;
                     if (!buildConnection && dataSourceOrDriver instanceof XADataSource) {
@@ -988,9 +997,13 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
                         return user == null ? ((XADataSource) dataSourceOrDriver).getXAConnection().getConnection()
                                             : ((XADataSource) dataSourceOrDriver).getXAConnection(user, pwd).getConnection();
                     } else {
-                        return buildConnection ? jdbcRuntime.buildConnection((DataSource) dataSourceOrDriver, user, pwd, cri)
-                                        : user == null ? ((DataSource) dataSourceOrDriver).getConnection()
-                                                        : ((DataSource) dataSourceOrDriver).getConnection(user, pwd);
+                        if (buildConnection) {
+                            return jdbcRuntime.buildConnection((DataSource) dataSourceOrDriver, user, pwd, cri);
+                        } else if (user == null) {
+                            return helper.getConnectionFromDatasource((DataSource) dataSourceOrDriver, useKerb, gssCredential);
+                        } else {
+                            return ((DataSource) dataSourceOrDriver).getConnection(user, pwd);
+                        }
                     }
                 }
             });

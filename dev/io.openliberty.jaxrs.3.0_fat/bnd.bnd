@@ -19,13 +19,8 @@ fat.project: true
 
 
 -buildpath: \
-    com.ibm.websphere.javaee.annotation.1.3;version=latest,\
-    com.ibm.websphere.javaee.jaxrs.2.1;version=latest,\
-	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
-	com.ibm.websphere.org.eclipse.microprofile.rest.client.1.4;version=latest,\
-	com.ibm.ws.componenttest,\
-	io.openliberty.jakarta.jaxrs.3.0;version=latest
-	
-#	com.ibm.websphere.javaee.servlet.5.0;version=latest,\
-#	com.ibm.ws.componenttest.2.0,\
-#   io.openliberty.jakarta.jaxrs.3.0;version=latest
+    io.openliberty.jakarta.annotation.2.0;version=latest,\
+    io.openliberty.jakarta.jaxb.3.0;version=latest,\
+    io.openliberty.jakarta.jaxrs.3.0;version=latest,\
+	io.openliberty.jakarta.servlet.5.0;version=latest,\
+	com.ibm.ws.componenttest.2.0

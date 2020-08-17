@@ -54,6 +54,11 @@ subprojects {
         group = "verification"
         failOnError = true
         rateLimitAsError = false
+        if (gradle.userProps.getProperty("ossindexUser") != null && 
+            gradle.userProps.getProperty("ossindexToken") != null) { 
+              user  = gradle.userProps.getProperty("ossindexUser") 
+              token = gradle.userProps.getProperty("ossindexToken") 
+        }
       }
     }
 

@@ -62,7 +62,7 @@ public class CorsHelper {
     private static final String RESPONSE_HEADER_ACCESS_CONTROL_ALLOW_CREDENTIALS = "Access-Control-Allow-Credentials";
 
     /**
-     * Optional. Response to preFlight(OPTIONS) or cross-origin. Whitelist of custom headers that browsers are allowed to access.
+     * Optional. Response to preFlight(OPTIONS) or cross-origin. Allowlist of custom headers that browsers are allowed to access.
      */
     private static final String RESPONSE_HEADER_ACCESS_CONTROL_EXPOSE_HEADERS = "Access-Control-Expose-Headers";
 

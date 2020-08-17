@@ -36,7 +36,7 @@ tested.features: servlet-5.0,\
 	org.apache.johnzon:johnzon-core;version=1.1.0,\
 	org.apache.johnzon:johnzon-jsonb;version=1.1.0,\
 	org.apache.johnzon:johnzon-mapper;version=1.1.0,\
-	org.eclipse:yasson;version=1.0.7,\
+	org.eclipse:yasson;version=1.0.8,\
 	org.glassfish:javax.json;version=1.1,\
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
 	com.ibm.websphere.javaee.jsonb.1.0;version=latest,\

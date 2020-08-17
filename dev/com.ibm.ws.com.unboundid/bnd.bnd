@@ -19,11 +19,11 @@ Export-Package: \
     com.ibm.ws.com.unboundid; version=1.0.0
 
 Include-Resource: \
-    @${repo;com.unboundid:unboundid-ldapsdk;4.0.14;EXACT}, \
+    @${repo;com.unboundid:unboundid-ldapsdk;5.1.0;EXACT}, \
     resources=resources
   
 -buildpath: \
-	com.unboundid:unboundid-ldapsdk;version=4.0.14,\
+	com.unboundid:unboundid-ldapsdk;version=5.1.0,\
 	com.ibm.ws.componenttest:public.api;version=1.0.0,\
 	org.apache.commons.io
     

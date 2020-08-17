@@ -13,12 +13,6 @@ package io.openliberty.grpc.internal;
 
 import static io.grpc.internal.GrpcUtil.CONTENT_TYPE_KEY;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.FFDCFilter;
-
 import io.grpc.internal.GrpcUtil;
 
 public class Utils {

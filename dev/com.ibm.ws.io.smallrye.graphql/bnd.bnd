@@ -11,7 +11,7 @@
 
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
-smallryeGraphQLVersion=1.0.5
+smallryeGraphQLVersion=1.0.7
 
 Bundle-Name: SmallRye GraphQL and GraphQL Servlet Implementation
 Bundle-SymbolicName: com.ibm.ws.io.smallrye.graphql
@@ -42,7 +42,7 @@ DynamicImport-Package: \
 
 Export-Package: \
   com.ibm.ws.io.smallrye.graphql.component;thread-context=true,\
-  io.smallrye.graphql.*;version=1.0.2;thread-context=true,\
+  io.smallrye.graphql.*;version=${smallryeGraphQLVersion};thread-context=true,\
 
 Include-Resource: \
   META-INF=resources/META-INF

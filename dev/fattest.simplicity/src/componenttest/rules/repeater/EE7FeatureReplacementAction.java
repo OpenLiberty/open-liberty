@@ -40,9 +40,11 @@ public class EE7FeatureReplacementAction extends FeatureReplacementAction {
                                                  "ejbPersistentTimer-3.2",
                                                  "ejbRemote-3.2",
                                                  "el-3.0",
+                                                 "jmsMdb-3.2",
                                                  "concurrent-1.0",
                                                  "jaxb-2.2",
                                                  "managedBeans-1.0",
+                                                 "mdb-3.2",
                                                  "componenttest-1.0",
                                                  "txtest-1.0",
                                                  "websocket-1.1" };

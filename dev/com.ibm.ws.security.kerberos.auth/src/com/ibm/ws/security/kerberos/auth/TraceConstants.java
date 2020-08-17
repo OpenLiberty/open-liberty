@@ -10,7 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.kerberos.auth;
 
-interface TraceConstants {
+public interface TraceConstants {
     public final static String TRACE_GROUP = "Kerberos";
     public final static String MESSAGE_BUNDLE = "com.ibm.ws.security.kerberos.auth.internal.resources.KerberosMessages";
 }

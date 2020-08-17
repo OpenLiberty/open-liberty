@@ -657,3 +657,7 @@ ssl.update.certificate.error=CWPKI0829E: SSL certificate update error. {0}
 ssl.update.certificate.error.explanation=The SSL certificate could not be updated at the specified location.
 ssl.update.certificate.error.useraction=Ensure the location is accessible by the server process.  Review the FFDC logs for additional errors that are associated with generating or loading the keys.
 # -------------------------------------------------------------------------------------------------
+ssl.certificate.add.CWPKI0830I=CWPKI0830I: Certificate with the {0} SubjectDN from the {1} environment variable is being added to the {2} keystore.
+ssl.certificate.add.CWPKI0830I.explanation=A certificate was retrieved from an environment variable in the configuration and is being added to the keystore file.
+ssl.certificate.add.CWPKI0830I.useraction=No action is required.
+# -------------------------------------------------------------------------------------------------

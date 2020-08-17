@@ -16,13 +16,12 @@ Subsystem-Name: MicroProfile Health 3.0
  com.ibm.websphere.appserver.jndi-1.0, \
  com.ibm.websphere.appserver.json-1.0, \
  com.ibm.websphere.appserver.servlet-4.0,\
- com.ibm.websphere.appserver.mpConfig-2.0; ibm.tolerates:=1.4,\
+ com.ibm.websphere.appserver.mpConfig-1.4; ibm.tolerates:=1.3,\
  com.ibm.wsspi.appserver.webBundle-1.0 
--bundles=com.ibm.ws.require.java8, \
- com.ibm.websphere.jsonsupport, \
+-bundles=com.ibm.websphere.jsonsupport, \
  com.ibm.ws.classloader.context, \
  io.openliberty.microprofile.health.3.0.internal; apiJar=false; location:="lib/", \
  com.ibm.ws.org.joda.time.1.6.2
-kind=noship
+kind=beta
 edition=core
 WLP-Activation-Type: parallel

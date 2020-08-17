@@ -28,6 +28,9 @@ public class PolicyContextHandlerImpl implements PolicyContextHandler {
                                                              "javax.ejb.arguments",
 
                                                              // EE9+ unique keys below here.
+                                                             "jakarta.xml.soap.SOAPMessage",
+                                                             "jakarta.servlet.http.HttpServletRequest",
+                                                             "jakarta.ejb.EnterpriseBean",
                                                              "jakarta.ejb.arguments"
     };
 

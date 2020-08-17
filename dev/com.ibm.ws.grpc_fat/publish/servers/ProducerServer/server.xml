@@ -13,6 +13,7 @@
 		<feature>mpConfig-1.3</feature>
 		<feature>mpOpenAPI-1.1</feature>
 		<feature>componenttest-1.0</feature>
+				<feature>ssl-1.0</feature>
 	</featureManager>
 	
 	<include location="../fatTestCommon.xml"/>
@@ -21,8 +22,8 @@
                   host="*"
                   httpPort="${bvt.prop.HTTP_secondary}"
                   httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
-                  
-                  
+      <keyStore id="defaultKeyStore" password="passw0rd" />
+            
 	<javaPermission className="java.security.AllPermission"
 		name="*" actions="*" />
 

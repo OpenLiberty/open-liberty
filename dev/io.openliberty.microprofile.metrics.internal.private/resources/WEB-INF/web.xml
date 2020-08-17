@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app id="PrivateMicroProfileMetricsREST" version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+  <display-name>PrivateMicroProfileMetrics</display-name>
+  <description>IBM MicroProfile Metrics for Liberty server</description>
+
+  <servlet>
+    <servlet-name>PrivateMetricsRESTProxyServlet</servlet-name>
+    <servlet-class>io.openliberty.microprofile.metrics.internal.privateapi.PrivateMetricsRESTProxyServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet-mapping id="ServletMapping_Default">
+    <servlet-name>PrivateMetricsRESTProxyServlet</servlet-name>
+    <url-pattern>/*</url-pattern>
+  </servlet-mapping>
+
+  <security-constraint id="SecurityConstraint_1">
+    <display-name>MicroProfile Metrics Security Constraint - Administrator Role</display-name>
+    <web-resource-collection id="WebResourceCollection_1">
+        <web-resource-name>MicroProfile Metrics URL</web-resource-name>
+        <url-pattern>/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>Administrator</role-name>
+    </auth-constraint>
+    <user-data-constraint id="UserDataConstraint_1">
+      <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
+  </security-constraint>
+
+  <security-constraint id="SecurityConstraint_2">
+    <display-name>MicroProfile Metrics Security Constraint - Reader Role</display-name>
+    <web-resource-collection id="WebResourceCollection_2">
+        <web-resource-name>MicroProfile Metrics URL</web-resource-name>
+        <url-pattern>/*</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>OPTIONS</http-method>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>Reader</role-name>
+    </auth-constraint>
+    <user-data-constraint id="UserDataConstraint_2">
+      <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
+  </security-constraint>
+
+  <security-role id="SecurityRole_1">
+    <description>Administrator Role</description>
+    <role-name>Administrator</role-name>
+  </security-role>
+
+  <security-role id="SecurityRole_2">
+    <description>Reader Role</description>
+    <role-name>Reader</role-name>
+  </security-role>
+
+  <login-config id="LoginConfig_1">
+  	<auth-method>BASIC</auth-method>
+    <realm-name>MicroProfileMetrics</realm-name>
+  </login-config> 
+  
+
+</web-app>

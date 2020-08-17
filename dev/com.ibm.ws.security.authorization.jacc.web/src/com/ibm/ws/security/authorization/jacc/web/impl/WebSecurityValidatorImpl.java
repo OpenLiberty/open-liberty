@@ -32,7 +32,8 @@ import com.ibm.ws.security.authorization.jacc.web.WebSecurityValidator;
 
 public class WebSecurityValidatorImpl implements WebSecurityValidator {
     private static final TraceComponent tc = Tr.register(WebSecurityValidatorImpl.class);
-    private static String[] jaccHandlerKeyArray = new String[] { "javax.security.auth.Subject.container", "javax.servlet.http.HttpServletRequest" };
+    private static String[] jaccHandlerKeyArrayEe8 = new String[] { "javax.security.auth.Subject.container", "javax.servlet.http.HttpServletRequest" };
+    private static String[] jaccHandlerKeyArrayEe9 = new String[] { "javax.security.auth.Subject.container", "jakarta.servlet.http.HttpServletRequest" };
     private static ProtectionDomain nullPd = new ProtectionDomain(new CodeSource(null, (java.security.cert.Certificate[]) null), null, null, null);
     private static CodeSource nullCs = new CodeSource(null, (java.security.cert.Certificate[]) null);
     private static PolicyContextHandlerImpl pch = PolicyContextHandlerImpl.getInstance();
@@ -64,10 +65,14 @@ public class WebSecurityValidatorImpl implements WebSecurityValidator {
                 @Override
                 public Boolean run() throws javax.security.jacc.PolicyContextException {
                     PolicyContext.setContextID(fci);
-                    for (String jaccHandlerKey : jaccHandlerKeyArray) {
+                    for (String jaccHandlerKey : jaccHandlerKeyArrayEe8) {
                         PolicyContext.registerHandler(jaccHandlerKey, pch, true);
                     }
-                    handlerObjects.put(jaccHandlerKeyArray[1], hsr);
+                    for (String jaccHandlerKey : jaccHandlerKeyArrayEe9) {
+                        PolicyContext.registerHandler(jaccHandlerKey, pch, true);
+                    }
+                    handlerObjects.put(jaccHandlerKeyArrayEe8[1], hsr);
+                    handlerObjects.put(jaccHandlerKeyArrayEe9[1], hsr);
                     PolicyContext.setHandlerData(handlerObjects);
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Calling JACC implies");
@@ -123,11 +128,18 @@ public class WebSecurityValidatorImpl implements WebSecurityValidator {
 
                                                        if (tc.isDebugEnabled())
                                                            Tr.debug(tc, "Registering JACC context handlers");
-                                                       for (String key : jaccHandlerKeyArray) {
+                                                       for (String key : jaccHandlerKeyArrayEe8) {
                                                            PolicyContext.registerHandler(key, pch, true);
                                                        }
-                                                       handlerObjects.put(jaccHandlerKeyArray[0], subject);
-                                                       handlerObjects.put(jaccHandlerKeyArray[1], req);
+                                                       for (String key : jaccHandlerKeyArrayEe9) {
+                                                           PolicyContext.registerHandler(key, pch, true);
+                                                       }
+
+                                                       handlerObjects.put(jaccHandlerKeyArrayEe8[0], subject);
+                                                       handlerObjects.put(jaccHandlerKeyArrayEe8[1], req);
+
+                                                       handlerObjects.put(jaccHandlerKeyArrayEe9[0], subject);
+                                                       handlerObjects.put(jaccHandlerKeyArrayEe9[1], req);
 
                                                        ProtectionDomain pd = null;
 

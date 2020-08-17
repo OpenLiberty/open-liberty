@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.security.auth.Subject;
+import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.kerberos.KerberosPrincipal;
 import javax.security.auth.login.LoginException;
 
@@ -27,12 +28,15 @@ import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Modified;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
+import com.ibm.ws.security.kerberos.auth.internal.Krb5CallbackHandler;
 import com.ibm.ws.security.kerberos.auth.internal.LRUCache;
+import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 
 @Component(configurationPolicy = ConfigurationPolicy.REQUIRE,
            service = KerberosService.class,
@@ -49,7 +53,7 @@ public class KerberosService {
 
     private Path keytab;
     private Path configFile;
-    private final LRUCache subjectCache = new LRUCache(100);
+    private final LRUCache subjectCache = new LRUCache(2500);
 
     @Activate
     protected void activate(ComponentContext ctx) {
@@ -89,6 +93,15 @@ public class KerberosService {
         }
     }
 
+    @Modified
+    protected void modified(ComponentContext ctx) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Kerberos config modified. Re-running activate");
+        }
+        subjectCache.clear();
+        activate(ctx);
+    }
+
     public Path getConfigFile() {
         return configFile;
     }
@@ -110,28 +123,48 @@ public class KerberosService {
      * @return A valid subject for the supplied principal
      */
     public Subject getOrCreateSubject(String principal) throws LoginException {
+        return getOrCreateSubject(principal, null);
+    }
+
+    /**
+     * Checks the Subject cache for an existing Subject matching the supplied principal.
+     * A simple LRU cache is used to store cache Subjects
+     * If a valid subject is not found in the cache, then a new Kerberos login is performed and
+     * the resulting Subject is cached.
+     *
+     * @param principal The principal to obtain a subject for
+     * @param pass      The password to be used via CallbackHandler. This will only be used if no password
+     *                      is found in the credential cache or keytab files first.
+     * @return A valid subject for the supplied principal
+     */
+    public Subject getOrCreateSubject(String principal, SerializableProtectedString pass) throws LoginException {
         KerberosPrincipal krb5Principal = new KerberosPrincipal(principal);
         Subject cachedSubject = subjectCache.get(krb5Principal);
         if (cachedSubject != null) {
             return cachedSubject;
         }
 
-        Subject createdSubject = doKerberosLogin(principal);
+        Subject createdSubject = doKerberosLogin(principal, pass);
 
         subjectCache.put(krb5Principal, createdSubject);
         return createdSubject;
     }
 
-    private Subject doKerberosLogin(String principal) throws LoginException {
+    private Subject doKerberosLogin(String principal, SerializableProtectedString pass) throws LoginException {
         Subject subject = new Subject();
         Krb5LoginModuleWrapper krb5 = new Krb5LoginModuleWrapper();
         Map<String, String> options = new HashMap<String, String>();
         Map<String, Object> sharedState = new HashMap<String, Object>();
+        CallbackHandler callback = pass == null ? null : new Krb5CallbackHandler(pass);
 
         options.put("isInitiator", "true");
         options.put("refreshKrb5Config", "true");
-        options.put("doNotPrompt", "true");
+        // If a password was specified, the LoginModule will obtain it from the CallbackHandler
+        // the CallbackHandler is never called if doNotPrompt=true is set
+        if (callback == null)
+            options.put("doNotPrompt", "true");
         options.put("useKeyTab", "true");
+        options.put("clearPass", "true");
         // If no keytab path specified, still set useKeyTab=true because then the
         // default JDK or default OS locations will be checked
         if (keytab != null) {
@@ -143,7 +176,7 @@ public class KerberosService {
             Tr.debug(tc, "All kerberos config properties are: " + options);
         }
 
-        krb5.initialize(subject, null, sharedState, options);
+        krb5.initialize(subject, callback, sharedState, options);
         krb5.login();
         krb5.commit();
 

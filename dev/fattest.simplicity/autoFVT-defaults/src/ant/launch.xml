@@ -98,15 +98,18 @@
 		<property file="${basedir}/fat.sys.properties" />
 		
 		<!-- Enforce fat.minimum.java.level rule. If this test is compiled with a java level 
-           higher than the one we're currently running we should skip these tests. -->
-		<script language="javascript">
-			<![CDATA[
-			var minTestJava = project.getProperty("fat.minimum.java.level");
-			var javaVersion = parseFloat(project.getProperty("java.specification.version"));
-			if(minTestJava != null && javaVersion < parseFloat(minTestJava))
-				project.setProperty("skip.java.level", true);
-        ]]>
-		</script>
+           higher than the one we're currently running we should skip these tests. 
+           Example values for java.specification.version are:
+           1.8,9,10,11,12,etc...
+           -->
+		<condition property="skip.java.level" value="true">
+			<!-- this is tedious but as of Java 15 we can no longer use <script> blocks since nashorn was removed -->
+			<or>
+				<and> <equals arg1="11" arg2="${fat.minimum.java.level}"/> <equals arg1="1.8" arg2="${java.specification.version}"/> </and>
+				<and> <equals arg1="17" arg2="${fat.minimum.java.level}"/> <equals arg1="1.8" arg2="${java.specification.version}"/> </and>
+				<and> <equals arg1="17" arg2="${fat.minimum.java.level}"/> <equals arg1="11"  arg2="${java.specification.version}"/> </and>
+		    </or>
+		</condition>
 		
 		<!-- Output java level info -->
 		<echo message="fat.minimum.java.level=${fat.minimum.java.level}" />
@@ -173,10 +176,11 @@
 		</condition>
 
 		<!-- boolean for Java9+ -->
-		<script language="javascript">
-			var curJava = project.getProperty("java.specification.version");
-			project.setProperty("is.java9", (curJava > 8));
-	    </script>
+		<condition property="is.java9" value="true">
+			<not>
+				<equals arg1="1.8" arg2="${java.specification.version}"/>
+			</not>
+		</condition>
 
 		<!-- Replace LDAP ports of all 3 Apache DS instance in configuration with updated ports from port selector and kill any apache ds related processes -->
 		<replaceLdapPorts />

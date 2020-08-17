@@ -281,4 +281,70 @@ public class ProducerRestEndpoint extends ProducerGrpcServiceClientImpl {
         }
     }
 
+    @POST
+    @Path("/streamingA/server")
+    @APIResponses(value = {
+                            @APIResponse(responseCode = "200", description = "Server Stream test finished", content = @Content(mediaType = MediaType.APPLICATION_JSON)) })
+    public Response serverStreamApp() throws Exception {
+        // stuff to call code the will be the grpc client logic
+
+        // Get the input parameters from the REST request
+        // Each parameter value will have to be transferred to the grpc request object
+        log.info("serverStreamApp(): request to run serverStreamApp test received by ProducerRestEndpoint ");
+
+        String authHeader = httpHeaders.getHeaderString("Authorization");
+
+        if (authHeader == null) {
+            // create grpc client
+            startService_AsyncStub("localhost", getPort());
+        } else {
+            // secure
+        }
+
+        try {
+            String result = grpcServerStreamApp();
+            log.info("serverStreamApp(): request to grpcServerStreamApp() has been completed by ProducerRestEndpoint result: " + result);
+            return Response.ok().entity(result).build();
+
+        } catch (InvalidArgException e) {
+            return Response.ok().entity("failed with exception: " + e.getMessage()).build();
+        }
+
+        finally {
+            // stop this grpc service
+            stopService();
+        }
+    }
+
+    @POST
+    @Path("/streamingA/twoWay")
+    @APIResponses(value = {
+                            @APIResponse(responseCode = "200", description = "TwoWay Stream test finished", content = @Content(mediaType = MediaType.APPLICATION_JSON)) })
+    public Response twoWayStreamApp(boolean asyncThread) throws Exception {
+
+        log.info("twoWayStreamApp(): request to run twoWayStreamApp test received by ProducerRestEndpoint.  asyncThread:  " + asyncThread);
+
+        String authHeader = httpHeaders.getHeaderString("Authorization");
+        if (authHeader == null) {
+            // create grpc client
+            startService_AsyncStub("localhost", getPort());
+        } else {
+            // secure
+        }
+
+        try {
+            String result = grpcTwoWayStreamApp(asyncThread);
+            log.info("serverStreamApp(): request to grpcServerStreamApp() has been completed by ProducerRestEndpoint result: " + result);
+            return Response.ok().entity(result).build();
+
+        } catch (InvalidArgException e) {
+            return Response.ok().entity("failed with exception: " + e.getMessage()).build();
+        }
+
+        finally {
+            // stop this grpc service
+            stopService();
+        }
+    }
+
 }

@@ -62,6 +62,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                                                  "beanValidation-3.0",
                                                  "cdi-3.0",
                                                  "concurrent-2.0",
+                                                 "connectors-2.0",
                                                  "ejb-4.0",
                                                  "ejbHome-4.0",
                                                  "ejbLite-4.0",
@@ -74,7 +75,6 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                                                  "jaxb-3.0",
                                                  "jaxrs-3.0",
                                                  "jaxrsClient-3.0",
-                                                 "jca-2.0",
                                                  "jpa-3.0",
                                                  "jsonp-2.0",
                                                  "jsonb-2.0",
@@ -83,6 +83,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                                                  "jsf-3.0",
                                                  "jsp-3.0",
                                                  "managedBeans-2.0",
+                                                 "mdb-4.0",
                                                  "servlet-5.0",
                                                  "websocket-2.0"
     };

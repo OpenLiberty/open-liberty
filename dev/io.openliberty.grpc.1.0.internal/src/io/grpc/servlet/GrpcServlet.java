@@ -16,18 +16,19 @@
 
 package io.grpc.servlet;
 
+import java.io.IOException;
+import java.util.List;
+
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.ibm.websphere.ras.annotation.Trivial;
 
 import io.grpc.BindableService;
 import io.grpc.ExperimentalApi;
 import io.openliberty.grpc.internal.servlet.GrpcServletUtils;
-
-import java.io.IOException;
-import java.util.List;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * A simple servlet backed by a gRPC server. Must set {@code asyncSupported} to true. The {@code
@@ -55,13 +56,13 @@ public class GrpcServlet extends HttpServlet {
    * added on each gRPC service by {@link
    * io.grpc.ServerInterceptors#intercept(BindableService, io.grpc.ServerInterceptor...)}
    */
-  public GrpcServlet(List<? extends BindableService> bindableServices) {
-    this(loadServices(bindableServices));
+  public GrpcServlet(List<? extends BindableService> bindableServices, String appName) {
+    this(loadServices(bindableServices, appName));
   }
 
-  private static ServletAdapter loadServices(List<? extends BindableService> bindableServices) {
+  private static ServletAdapter loadServices(List<? extends BindableService> bindableServices, String appName) {
     ServletServerBuilder serverBuilder = new ServletServerBuilder();
-    GrpcServletUtils.addServices(bindableServices, serverBuilder);
+    GrpcServletUtils.addServices(bindableServices, serverBuilder, appName);
     return serverBuilder.buildServletAdapter();
   }
 

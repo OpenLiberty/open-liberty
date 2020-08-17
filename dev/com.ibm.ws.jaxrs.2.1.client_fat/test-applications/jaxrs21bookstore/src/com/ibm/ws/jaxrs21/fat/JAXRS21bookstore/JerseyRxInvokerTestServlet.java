@@ -53,8 +53,8 @@ public class JerseyRxInvokerTestServlet extends HttpServlet {
     private static final long serialVersionUID = 2880606295862546001L;
     private static final long TIMEOUT = 5000;
     private static final long SLEEP = 20000;
-    private static final int basicTimeout = 15;
-    private static final int complexTimeout = 20;
+    private static final int basicTimeout = 30;
+    private static final int complexTimeout = 35;
     private static final int messageTimeout = 70;
     private static final int zTimeout = 70;
 

@@ -1,6 +1,7 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.concurrent-1.0
 visibility=public
+singleton=true
 IBM-API-Package: javax.enterprise.concurrent; type="spec"
 IBM-ShortName: concurrent-1.0
 IBM-API-Service: javax.enterprise.concurrent.ContextService; id="DefaultContextService", \
@@ -11,8 +12,8 @@ Subsystem-Name: Concurrency Utilities for Java EE 1.0
  com.ibm.websphere.appserver.appLifecycle-1.0, \
  com.ibm.websphere.appserver.concurrencyPolicy-1.0, \
  com.ibm.websphere.appserver.contextService-1.0, \
- io.openliberty.jakarta.concurrency-2.0; apiJar=false,\
- com.ibm.websphere.appserver.org.eclipse.microprofile.contextpropagation-1.0; ibm.tolerates:="1.1"
+ com.ibm.websphere.appserver.org.eclipse.microprofile.contextpropagation-1.0; ibm.tolerates:="1.1", \
+ com.ibm.websphere.appserver.eeCompatible-7.0; ibm.tolerates:="6.0,8.0"
 -bundles=com.ibm.ws.javaee.platform.defaultresource, \
  com.ibm.websphere.javaee.concurrent.1.0; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.enterprise.concurrent:javax.enterprise.concurrent-api:1.0", \
  com.ibm.ws.resource, \

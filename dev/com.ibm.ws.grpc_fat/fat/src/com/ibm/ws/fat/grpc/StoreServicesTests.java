@@ -102,25 +102,59 @@ public class StoreServicesTests extends FATServletClient {
                                 "com.ibm.testapp.g3store.restProducer.client");
 
         storeServer.startServer(StoreServicesTests.class.getSimpleName() + ".log");
+        assertNotNull("CWWKO0219I.*ssl not recieved", storeServer.waitForStringInLog("CWWKO0219I.*ssl"));
 
         producerServer.useSecondaryHTTPPort(); // sets httpSecondaryPort and httpSecondarySecurePort
         producerServer.startServer(StoreServicesTests.class.getSimpleName() + ".log");
+        assertNotNull("CWWKO0219I.*ssl not recieved", producerServer.waitForStringInLog("CWWKO0219I.*ssl"));
 
         // set bvt.prop.member_1.http=8080 and bvt.prop.member_1.https=8081
         consumerServer.setHttpDefaultPort(Integer.parseInt(getSysProp("member_1.http")));
-        consumerServer.setHttpDefaultSecurePort(Integer.parseInt(getSysProp("member_1.https")));
+        int securePort = Integer.parseInt(getSysProp("member_1.https"));
+
+        Log.info(StoreServicesTests.class, "setUp", "here is the secure port " + securePort);
+
+        consumerServer.setHttpDefaultSecurePort(securePort);
         consumerServer.startServer(StoreServicesTests.class.getSimpleName() + ".log");
+        assertNotNull("CWWKO0219I.*ssl not recieved", consumerServer.waitForStringInLog("CWWKO0219I.*ssl"));
 
     }
 
+    //Similar to these are added in logs and we can ignore
+    //m.ibm.ws.container.service.app.deploy.ManifestClassPathUtils W SRVE9967W: The manifest class path xml-apis.jar can not be found in jar file wsjar:file:/.../open-liberty/dev/build.image/wlp/usr/servers/StoreServer/apps/StoreApp.war!/WEB-INF/lib/serializer-2.7.2.jar or its parent.
+    //m.ibm.ws.container.service.app.deploy.ManifestClassPathUtils W SRVE9967W: The manifest class path xercesImpl.jar can not be found in jar file wsjar:file:/.../open-liberty/dev/build.image/wlp/usr/servers/StoreServer/apps/StoreApp.war!/WEB-INF/lib/xalan-2.7.2.jar or its parent.
     @AfterClass
     public static void tearDown() throws Exception {
-        if (storeServer != null)
-            storeServer.stopServer();
-        if (producerServer != null)
-            producerServer.stopServer();
-        if (consumerServer != null)
-            consumerServer.stopServer();
+        Exception excep = null;
+
+        try {
+            if (storeServer != null)
+                storeServer.stopServer("SRVE9967W");
+        } catch (Exception e) {
+            excep = e;
+            Log.error(c, "store tearDown", e);
+        }
+
+        try {
+            if (consumerServer != null)
+                consumerServer.stopServer("SRVE9967W");
+        } catch (Exception e) {
+            if (excep == null)
+                excep = e;
+            Log.error(c, "consumer tearDown", e);
+        }
+
+        try {
+            if (producerServer != null)
+                producerServer.stopServer();
+        } catch (Exception e) {
+            if (excep == null)
+                excep = e;
+            Log.error(c, "producer tearDown", e);
+        }
+
+        if (excep != null)
+            throw excep;
     }
 
     @Test

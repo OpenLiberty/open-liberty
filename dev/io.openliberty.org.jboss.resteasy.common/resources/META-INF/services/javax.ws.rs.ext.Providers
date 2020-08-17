@@ -1,10 +1,3 @@
-org.jboss.resteasy.plugins.providers.jaxb.JAXBXmlSeeAlsoProvider
-org.jboss.resteasy.plugins.providers.jaxb.JAXBXmlRootElementProvider
-org.jboss.resteasy.plugins.providers.jaxb.JAXBElementProvider
-org.jboss.resteasy.plugins.providers.jaxb.JAXBXmlTypeProvider
-org.jboss.resteasy.plugins.providers.jaxb.CollectionProvider
-org.jboss.resteasy.plugins.providers.jaxb.MapProvider
-org.jboss.resteasy.plugins.providers.jaxb.XmlJAXBContextFinder
 org.jboss.resteasy.client.jaxrs.internal.CompletionStageRxInvokerProvider
 org.jboss.resteasy.plugins.providers.AsyncStreamingOutputProvider
 org.jboss.resteasy.plugins.providers.DataSourceProvider
@@ -33,4 +26,3 @@ org.jboss.resteasy.plugins.interceptors.MessageSanitizerContainerResponseFilter
 org.jboss.resteasy.plugins.providers.sse.SseEventProvider
 org.jboss.resteasy.plugins.providers.sse.SseEventOutputProvider
 org.jboss.resteasy.plugins.providers.sse.SseEventSinkInterceptor
-io.openliberty.org.jboss.resteasy.common.providers.JsonBProviderDelegator

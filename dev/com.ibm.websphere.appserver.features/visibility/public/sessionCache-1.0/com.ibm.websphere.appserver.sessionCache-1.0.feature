@@ -23,7 +23,6 @@ IBM-API-Package: \
 -bundles=\
   com.ibm.websphere.javaee.jcache.1.1; mavenCoordinates="javax.cache:cache-api:1.1.0", \
   com.ibm.websphere.security, \
-  com.ibm.ws.require.java8, \
   com.ibm.ws.session, \
   com.ibm.ws.session.cache, \
   com.ibm.ws.session.store
