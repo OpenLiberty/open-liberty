@@ -25,9 +25,6 @@ Export-Package: \
   io.narayana.lra.*; version=5.10.5, \
   io.narayana.lra; version=5.10.5
 
-# TODO what should this be?
-#WS-TraceGroup: REACTIVESTREAMS
-
 instrument.disabled: true
 
 -buildpath: \
