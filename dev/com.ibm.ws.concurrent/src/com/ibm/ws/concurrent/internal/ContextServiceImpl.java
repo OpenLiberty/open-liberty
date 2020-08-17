@@ -831,7 +831,10 @@ public class ContextServiceImpl implements ContextService, //
     public <T> CompletableFuture<T> withContextCapture(CompletableFuture<T> stage) {
         CompletableFuture<T> newCompletableFuture;
 
-        UnusableExecutor executor = new UnusableExecutor(this);
+        Executor executor = MPContextPropagationVersion.atLeast(MPContextPropagationVersion.V1_1) //
+                        ? new ContextualDefaultExecutor(this) //
+                        : new UnusableExecutor(this);
+
         if (ManagedCompletableFuture.JAVA8)
             newCompletableFuture = new ManagedCompletableFuture<T>(new CompletableFuture<T>(), executor, null);
         else
@@ -853,7 +856,10 @@ public class ContextServiceImpl implements ContextService, //
     public <T> CompletionStage<T> withContextCapture(CompletionStage<T> stage) {
         ManagedCompletionStage<T> newStage;
 
-        UnusableExecutor executor = new UnusableExecutor(this);
+        Executor executor = MPContextPropagationVersion.atLeast(MPContextPropagationVersion.V1_1) //
+                        ? new ContextualDefaultExecutor(this) //
+                        : new UnusableExecutor(this);
+
         if (ManagedCompletableFuture.JAVA8)
             newStage = new ManagedCompletionStage<T>(new CompletableFuture<T>(), executor, null);
         else
