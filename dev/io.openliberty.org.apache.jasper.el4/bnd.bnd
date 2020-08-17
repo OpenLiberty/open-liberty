@@ -1,0 +1,37 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-SymbolicName: io.openliberty.org.apache.jasper.el4
+Bundle-Description: Jakarta Expression Language EE9 Implementation, version 4.0
+Implementation-Version: 4.0.0
+
+Export-Package: org.apache.el;thread-context=true;version=${Implementation-Version}, \
+   org.apache.el.lang;thread-context=true;version=${Implementation-Version}, \
+   org.apache.el.parser;version=${Implementation-Version}, \
+   org.apache.el.util;version=${Implementation-Version}, \
+   org.apache.el.stream;version=${Implementation-Version}, \
+
+Import-Package: \
+    jakarta.el; version=4.0.0, \
+    *
+
+Require-Capability: osgi.contract;
+ filter:="(&(osgi.contract=JavaEL)(version=4.0.0))"
+
+instrument.ffdc: false
+
+-buildpath: \
+    org.apache.tomcat:tomcat-jasper-el;version=10.0.0,\
+    io.openliberty.jakarta.el.4.0;version=latest,\
+    com.ibm.websphere.appserver.spi.logging;version=latest, \
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest

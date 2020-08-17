@@ -20,8 +20,6 @@ import io.grpc.Metadata;
 import io.grpc.Status;
 
 public class GrpcMonitoringClientCallListener<RespT> extends ForwardingClientCallListener<RespT> {
-	private static final long MILLIS_PER_SECOND = 1000L;
-	
 	private final ClientCall.Listener<RespT> delegate;
 	private final GrpcClientStatsMonitor clientMetrics;
 	private final GrpcMethod grpcMethod;
@@ -44,9 +42,10 @@ public class GrpcMonitoringClientCallListener<RespT> extends ForwardingClientCal
 
 	@Override
 	public void onClose(Status status, Metadata metadata) {
+		long latencyMs = clock.millis() - startInstant.toEpochMilli();
+		clientMetrics.recordLatency(latencyMs);
+		
 		clientMetrics.recordClientHandled();// status.getCode());
-		double latencySec = (clock.millis() - startInstant.toEpochMilli()) / (double) MILLIS_PER_SECOND;
-		clientMetrics.recordLatency(latencySec);
 		super.onClose(status, metadata);
 	}
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,10 +47,10 @@ public final class ApplicationAdapter implements ContainerAdapter<Application> {
     @FFDCIgnore(ParseException.class)
     @Override
     public Application adapt(
-        Container root,
-        OverlayContainer rootOverlay,
-        ArtifactContainer artifactContainer,
-        Container containerToAdapt) throws UnableToAdaptException {
+                             Container root,
+                             OverlayContainer rootOverlay,
+                             ArtifactContainer artifactContainer,
+                             Container containerToAdapt) throws UnableToAdaptException {
 
         Application appDD = (Application) rootOverlay.getFromNonPersistentCache(artifactContainer.getPath(), Application.class);
         if (appDD != null) {
@@ -157,6 +157,16 @@ public final class ApplicationAdapter implements ContainerAdapter<Application> {
                     if ("http://xmlns.jcp.org/xml/ns/javaee".equals(namespace)) {
                         version = Application.VERSION_8;
                         eePlatformVersion = Application.VERSION_8;
+                        return new ApplicationType(getDeploymentDescriptorPath());
+                    }
+                }
+            } else if ("9".equals(vers)) {
+                // Supported only when provisioned for java 9 or higher.
+                // The namespace must still be correctly set.
+                if (eeVersion.compareTo(JavaEEVersion.VERSION_9_0) >= 0) {
+                    if ("https://jakarta.ee/xml/ns/jakartaee".equals(namespace)) {
+                        version = Application.VERSION_9;
+                        eePlatformVersion = Application.VERSION_9;
                         return new ApplicationType(getDeploymentDescriptorPath());
                     }
                 }

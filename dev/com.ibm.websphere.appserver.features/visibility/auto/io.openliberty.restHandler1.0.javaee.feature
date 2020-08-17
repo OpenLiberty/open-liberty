@@ -10,6 +10,5 @@ IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature
 
 IBM-Install-Policy: when-satisfied
 
-edition=core
 kind=ga
-WLP-Activation-Type: parallel
+edition=core

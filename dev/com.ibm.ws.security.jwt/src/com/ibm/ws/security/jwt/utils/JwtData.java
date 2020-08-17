@@ -13,7 +13,6 @@ package com.ibm.ws.security.jwt.utils;
 import java.io.UnsupportedEncodingException;
 import java.security.Key;
 import java.security.KeyStoreException;
-import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.CertificateException;
 import java.security.interfaces.RSAPrivateKey;
@@ -25,6 +24,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.security.jwt.InvalidTokenException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.common.crypto.KeyAlgorithmChecker;
 import com.ibm.ws.security.common.jwk.impl.JWKProvider;
 import com.ibm.ws.security.common.jwk.impl.JwkKidBuilder;
 import com.ibm.ws.security.jwt.config.JwtConfig;
@@ -59,6 +59,8 @@ public class JwtData {
 
     String signatureAlgorithm = null;
     JwtTokenException noKeyException = null;
+
+    private final KeyAlgorithmChecker keyAlgChecker = new KeyAlgorithmChecker();
 
     public JwtData(BuilderImpl jwtBuilder, JwtConfig jwtConfig, String tokenType) throws JwtTokenException {
         this.jwtConfig = jwtConfig;
@@ -97,7 +99,7 @@ public class JwtData {
             if (isJwkSignatureAlgorithmType(config)) {
                 initSigningKeyUsingJwk(config);
             } else {
-                if (isHSSignatureAlgorithm()) {
+                if (keyAlgChecker.isHSAlgorithm(signatureAlgorithm)) {
                     initSigningKeyUsingHSAlgorithm(config);
                 } else if (isSignatureAlgorithmUsingKeyStore()) {
                     initSigningKeyUsingKeyStore(config, keyType);
@@ -117,17 +119,13 @@ public class JwtData {
 
     boolean isJwkSignatureAlgorithmType(JwtDataConfig config) {
         // RSxxx or ESxxx signature algorithms
-        return config.isJwkEnabled && config.signatureAlgorithm.matches("[RE]S[0-9]{3,}");
-    }
-
-    boolean isHSSignatureAlgorithm() {
-        // HSxxx signature algorithms
-        return signatureAlgorithm.matches("HS[0-9]{3,}");
+        return config.isJwkEnabled && (keyAlgChecker.isRSAlgorithm(config.signatureAlgorithm)
+                || keyAlgChecker.isESAlgorithm(config.signatureAlgorithm));
     }
 
     boolean isSignatureAlgorithmUsingKeyStore() {
         // RSxxx or ESxxx signature algorithms
-        return signatureAlgorithm.matches("[RE]S[0-9]{3,}");
+        return (keyAlgChecker.isRSAlgorithm(signatureAlgorithm) || keyAlgChecker.isESAlgorithm(signatureAlgorithm));
     }
 
     void initSigningKeyUsingJwk(JwtDataConfig config) {
@@ -181,7 +179,7 @@ public class JwtData {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "RSAPrivateKey: " + (_signingKey instanceof RSAPrivateKey));
         }
-        if (!isPrivateKeyValidType()) {
+        if (!keyAlgChecker.isPrivateKeyValidType(_signingKey, signatureAlgorithm)) {
             // error handling
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "clear _signingKey and _keyId");
@@ -189,16 +187,6 @@ public class JwtData {
             _signingKey = null; // we will catch this later in jwtSigner
             _keyId = null;
         }
-    }
-
-    boolean isPrivateKeyValidType() {
-        if (_signingKey == null) {
-            return true;
-        }
-        if (signatureAlgorithm.matches("RS[0-9]{3,}")) {
-            return (_signingKey instanceof RSAPrivateKey);
-        }
-        return (_signingKey instanceof PrivateKey);
     }
 
     private String buildKidFromPublicKey(PublicKey cert) {

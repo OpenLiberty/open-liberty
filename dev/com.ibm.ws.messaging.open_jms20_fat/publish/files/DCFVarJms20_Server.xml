@@ -1,0 +1,34 @@
+<server>
+  <featureManager>
+    <feature>osgiconsole-1.0</feature>
+    <feature>servlet-3.1</feature>
+    <feature>wasJmsServer-1.0</feature>
+    <feature>jms-2.0</feature>
+    <feature>cdi-1.2</feature>
+    <feature>jndi-1.0</feature>
+    <feature>testjmsinternals-1.0</feature>
+  </featureManager>
+
+  <include optional="true" location="../fatTestPorts.xml"/>
+  
+  <variable name="onError" value="FAIL"/>
+
+  <logging
+    traceSpecification="*=info:logservice=all:SIBJms*=all:com.ibm.ws.cdi.*=all"
+    maxFileSize="200"/>
+  
+  <messagingEngine id="defaultME">
+    <queue id="newQueue"/>
+    <topicSpace id="NewTopic1"/>
+    <fileStore id="com.ibm.ws.sib.fileStore" logFileSize="10"/>
+  </messagingEngine>
+  
+  <jmsQueue id="jndi_INPUT_Q" jndiName="jndi_INPUT_Q">
+    <properties.wasJms queueName="newQueue"/>
+  </jmsQueue>
+  
+  <jmsTopic jndiName="eis/topic1">
+    <properties.wasJms topicSpace="NewTopic1"/>
+  </jmsTopic>  
+
+</server>

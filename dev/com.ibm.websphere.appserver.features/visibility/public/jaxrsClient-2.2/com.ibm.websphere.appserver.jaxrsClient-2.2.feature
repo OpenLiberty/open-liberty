@@ -16,7 +16,8 @@ IBM-App-ForceRestart: uninstall, \
 IBM-ShortName: jaxrsClient-2.2
 Subsystem-Name: Java RESTful Services Client 2.1 (RESTEasy)
 -features=\
- com.ibm.websphere.appserver.javax.jaxrs-2.1
+ com.ibm.websphere.appserver.javax.jaxrs-2.1,\
+ com.ibm.websphere.appserver.jsonp-1.1
 -bundles=\
   io.openliberty.org.jboss.resteasy.common, \
   com.ibm.ws.org.apache.httpcomponents, \

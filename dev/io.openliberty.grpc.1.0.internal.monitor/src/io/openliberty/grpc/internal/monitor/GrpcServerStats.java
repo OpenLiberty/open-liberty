@@ -12,6 +12,7 @@ package io.openliberty.grpc.internal.monitor;
 
 import com.ibm.websphere.monitor.meters.Counter;
 import com.ibm.websphere.monitor.meters.Meter;
+import com.ibm.websphere.monitor.meters.StatisticsMeter;
 
 import io.openliberty.grpc.monitor.GrpcServerStatsMXBean;
 
@@ -22,8 +23,8 @@ import io.openliberty.grpc.monitor.GrpcServerStatsMXBean;
  * <li>Total number of RPCs started on the server.
  * <li>Total number of RPCs completed on the server, regardless of success or
  * failure.
- * <li>TODO Histogram of response latency of RPCs handled by the server, in
- * seconds.
+ * <li>Histogram of response latency of RPCs handled by the server, in
+ * milliseconds.
  * <li>Total number of stream messages received from the client.
  * <li>Total number of stream messages sent by the server.
  * </ul>
@@ -37,6 +38,7 @@ public class GrpcServerStats extends Meter implements GrpcServerStatsMXBean {
 	private Counter sentMsgCount;
 	private Counter serverStarted;
 	private Counter serverHandled;
+    private StatisticsMeter responseTime;
 
 	public GrpcServerStats(String aName, String sName) {
 		setAppName(aName);
@@ -57,6 +59,10 @@ public class GrpcServerStats extends Meter implements GrpcServerStatsMXBean {
 		sentMsgCount = new Counter();
 		sentMsgCount.setDescription("This shows number of stream messages sent by the service");
 		sentMsgCount.setUnit("ns");
+		
+        responseTime = new StatisticsMeter();
+        responseTime.setDescription("Average RPC Response Time");
+        responseTime.setUnit("ns");
 	}
 
 	@Override
@@ -109,8 +115,8 @@ public class GrpcServerStats extends Meter implements GrpcServerStatsMXBean {
 		this.sentMsgCount.incrementBy(i);
 	}
 
-	public void recordLatency(double latencySec) {
-		// TODO implement
+	public void recordLatency(long latencyMs) {
+		responseTime.addDataPoint(latencyMs);
 	}
 
 	@Override
@@ -137,4 +143,13 @@ public class GrpcServerStats extends Meter implements GrpcServerStatsMXBean {
 	public long getRpcCompletedCount() {
 		return serverHandled.getCurrentValue();
 	}
+    @Override
+    public double getResponseTime() {
+        return responseTime.getMean();
+    }
+
+    @Override
+    public StatisticsMeter getResponseTimeDetails() {
+        return responseTime;
+    }
 }

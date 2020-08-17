@@ -132,11 +132,13 @@ grpc.server.rpcStarted.total.description=The total number of RPCs started on the
 grpc.server.rpcCompleted.total.description=The total number of RPCs completed on the server, regardless of success or failure.
 grpc.server.sentMessages.total.description=The total number of stream messages sent by the server.
 grpc.server.receivedMessages.total.description=The total number of stream messages received from the client.
+grpc.server.responseTime.total.description=The total response time of completed RPCs.
 
 grpc.client.rpcStarted.total.description=The total number of RPCs started on the client.
 grpc.client.rpcCompleted.total.description=The total number of RPCs completed on the client, regardless of success or failure.
 grpc.client.sentMessages.total.description=The total number of stream messages sent by the client.
 grpc.client.receivedMessages.total.description=The total number of stream messages received from the server.
+grpc.client.responseTime.total.description=The total response time of completed RPCs.
 
 REST.request.description=The number of invocations and total response time of this RESTful resource method since the start of the server.
 #-----------------------------------------------------------------------------------------------------------------------------

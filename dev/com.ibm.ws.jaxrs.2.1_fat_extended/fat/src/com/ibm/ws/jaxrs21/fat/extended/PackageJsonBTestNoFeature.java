@@ -51,6 +51,6 @@ public class PackageJsonBTestNoFeature extends FATServletClient {
 
     @AfterClass
     public static void afterClass() throws Exception {
-        server.stopServer("CWWKC0044W"); // TODO: remove CWWKC004W once OL issue #1635 is resolved
+        server.stopServer();
     }
 }

@@ -22,6 +22,7 @@ import java.util.TimerTask;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.security.common.crypto.KeyAlgorithmChecker;
 import com.ibm.ws.security.common.jwk.constants.TraceConstants;
 import com.ibm.ws.security.common.jwk.interfaces.JWK;
 import com.ibm.ws.webcontainer.security.jwk.JSONWebKey;
@@ -52,6 +53,8 @@ public class JWKProvider {
     protected PrivateKey privateKey = null;
 
     protected String publicKeyKid = null;
+
+    private KeyAlgorithmChecker keyAlgChecker = new KeyAlgorithmChecker();
 
     protected JWKProvider() {
         this(DEFAULT_KEY_SIZE, RS256, DEFAULT_ROTATION_TIME);
@@ -139,28 +142,17 @@ public class JWKProvider {
     }
 
     boolean isValidJwkAlgorithm(String alg) {
-        if (alg == null) {
-            return false;
-        }
-        return alg.matches("[RE]S[0-9]{3,}");
+        return keyAlgChecker.isRSAlgorithm(alg) || keyAlgChecker.isESAlgorithm(alg);
     }
 
     JWK generateJwkForValidAlgorithm(String alg, int size) {
         JWK jwk = null;
-        if (isRsaAlgorithm(alg)) {
+        if (keyAlgChecker.isRSAlgorithm(alg)) {
             jwk = generateRsaJWK(alg, size);
-        } else if (isEcAlgorithm(alg)) {
+        } else if (keyAlgChecker.isESAlgorithm(alg)) {
             jwk = generateEcJwk(alg);
         }
         return jwk;
-    }
-
-    boolean isRsaAlgorithm(String alg) {
-        return alg.matches("RS[0-9]{3,}");
-    }
-
-    boolean isEcAlgorithm(String alg) {
-        return alg.matches("ES[0-9]{3,}");
     }
 
     protected JWK generateRsaJWK(String alg, int size) {

@@ -3,6 +3,7 @@ symbolicName=com.ibm.websphere.appserver.javax.persistence.base-2.2
 singleton=true
 IBM-Process-Types: server, \
  client
+-features=com.ibm.websphere.appserver.containerServices-1.0
 -bundles=com.ibm.ws.javaee.persistence.2.2; location:=lib/
 kind=ga
 edition=core

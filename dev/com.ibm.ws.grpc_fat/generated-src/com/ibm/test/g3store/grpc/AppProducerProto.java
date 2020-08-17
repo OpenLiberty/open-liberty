@@ -66,7 +66,7 @@ public final class AppProducerProto {
       "sponse\022\016\n\006result\030\001 \001(\t\"%\n\023MultiCreateRes" +
       "ponse\022\016\n\006result\030\001 \001(\t\"!\n\016StreamRequestA\022" +
       "\017\n\007message\030\001 \001(\t\"\037\n\014StreamReplyA\022\017\n\007mess" +
-      "age\030\001 \001(\t2\221\004\n\022AppProducerService\022L\n\tcrea" +
+      "age\030\001 \001(\t2\321\005\n\022AppProducerService\022L\n\tcrea" +
       "teApp\022\035.test.g3store.grpc.AppRequest\032\036.t" +
       "est.g3store.grpc.AppResponse\"\000\022R\n\tdelete" +
       "App\022 .test.g3store.grpc.DeleteRequest\032!." +
@@ -79,8 +79,13 @@ public final class AppProducerProto {
       ".StreamRequestA\032\037.test.g3store.grpc.Stre" +
       "amReplyA\"\000(\001\022W\n\rserverStreamA\022!.test.g3s" +
       "tore.grpc.StreamRequestA\032\037.test.g3store." +
-      "grpc.StreamReplyA\"\0000\001B/\n\031com.ibm.test.g3" +
-      "store.grpcB\020AppProducerProtoP\001b\006proto3"
+      "grpc.StreamReplyA\"\0000\001\022Y\n\rtwoWayStreamA\022!" +
+      ".test.g3store.grpc.StreamRequestA\032\037.test" +
+      ".g3store.grpc.StreamReplyA\"\000(\0010\001\022c\n\027twoW" +
+      "ayStreamAsyncThread\022!.test.g3store.grpc." +
+      "StreamRequestA\032\037.test.g3store.grpc.Strea" +
+      "mReplyA\"\000(\0010\001B/\n\031com.ibm.test.g3store.gr" +
+      "pcB\020AppProducerProtoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
