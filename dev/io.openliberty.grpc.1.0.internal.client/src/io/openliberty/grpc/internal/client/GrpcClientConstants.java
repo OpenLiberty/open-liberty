@@ -24,7 +24,7 @@ public class GrpcClientConstants {
     public static final String KEEP_ALIVE_TIMEOUT_PROP = "keepAliveTimeout";
     public static final String MAX_INBOUND_MSG_SIZE_PROP = "maxInboundMessageSize";
     public static final String CLIENT_INTERCEPTORS_PROP = "clientInterceptors";
-    public static final String SSL_CFG_PROP = "sslRef";
+    public static final String SSL_CFG_PROP = "sslConfig";
     
     // security config related constants
 	public static final Metadata.Key<String> AUTHZ_KEY = Metadata.Key.of("authorization", Metadata.ASCII_STRING_MARSHALLER);
