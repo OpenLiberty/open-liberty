@@ -74,7 +74,6 @@ void assertAlphabetical(String filename) {
 
 task checkAlphabetical() {
   assertAlphabetical('oss_dependencies.maven')
-  assertAlphabetical('oss_source_dependencies.maven')
   assertAlphabetical('oss_ibm.maven')
   assertAlphabetical('ibm_java.maven')
 }
@@ -87,9 +86,7 @@ task copyMavenLibs(type: Copy) {
 task dependabotGenerate() {
   dependsOn checkAlphabetical
   inputs.file('oss_dependencies.maven')
-  inputs.file('oss_source_dependencies.maven')
   outputs.file('cnf/dependabot/check_this_in_if_it_changes/pom.xml')
-  ArrayList inputFiles = [file('oss_dependencies.maven'),file('oss_source_dependencies.maven')]
   doLast {
     // Generate pom.xml
     File pom = rootProject.file('cnf/dependabot/check_this_in_if_it_changes/pom.xml')
@@ -105,19 +102,17 @@ task dependabotGenerate() {
     pom << "  <!-- GENERATED FILE, DO NOT HAND EDIT! -->\n\n"
     pom << "  <!-- If changes are generated from the build, check in the changes -->\n\n"
     pom << "  <dependencies>\n"
-    
-    inputFiles.each { aFile ->  
-        aFile.eachLine { line ->
-          line = line.trim()
-          if (line.startsWith('#') || line.isEmpty())
-            return;
-          def (g,a,v) = line.split(':').collect { it.trim() }
-          pom << "    <dependency>\n"
-          pom << "      <groupId>"    + g + "</groupId>\n"
-          pom << "      <artifactId>" + a + "</artifactId>\n"
-          pom << "      <version>"    + v + "</version>\n"
-          pom << "    </dependency>\n"
-        }
+      
+    file('oss_dependencies.maven').eachLine { line ->
+      line = line.trim()
+      if (line.startsWith('#') || line.isEmpty())
+        return;
+      def (g,a,v) = line.split(':').collect { it.trim() }
+      pom << "    <dependency>\n"
+      pom << "      <groupId>"    + g + "</groupId>\n"
+      pom << "      <artifactId>" + a + "</artifactId>\n"
+      pom << "      <version>"    + v + "</version>\n"
+      pom << "    </dependency>\n"
     }
     pom << "  </dependencies>\n"
     pom << "</project>\n"
