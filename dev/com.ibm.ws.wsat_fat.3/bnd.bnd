@@ -1,0 +1,47 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+  fat/src,\
+  test-applications/assertion/src,\
+  test-applications/endtoend/src,\
+  test-applications/oneway/src,\
+  test-applications/wsatApp/src,\
+  test-applications/wsatAppOptional/src,\
+  test-applications/wsatAppService/src,\
+  test-applications/wsatAppServiceOptional/src,\
+  test-applications/wsatAppWithoutAssertion/src,\
+  test-applications/wsatEJBCDIApp/src
+
+fat.project: true
+
+# Define additional tested features that are NOT present in any XML files in this bucket.
+# In this case, Java EE 8 features are added programmatically at runtime by the RepeatTests rule.
+tested.features: \
+	servlet-4.0, cdi-2.0, jdbc-4.2, appsecurity-3.0, jaxrs-2.1, jpa-2.2
+
+-buildpath: \
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+  com.ibm.tx.jta;version=latest,\
+  com.ibm.websphere.javaee.ejb.3.2;version=latest,\
+  com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
+  com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+  com.ibm.websphere.javaee.transaction.1.2;version=latest,\
+  com.ibm.websphere.org.osgi.core,\
+  com.ibm.websphere.org.osgi.service.component,\
+  com.ibm.ws.transaction.test.util;version=latest,\
+  com.ibm.ws.tx.embeddable;version=latest,\
+  com.ibm.wsspi.org.osgi.service.component.annotations,\
+  com.ibm.ws.wsat_fat.1;version=latest
+
+-testpath: \
+  com.ibm.tx.jta;version=latest,\
+  com.ibm.websphere.javaee.ejb.3.2;version=latest,\
+  com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
+  com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+  com.ibm.websphere.javaee.transaction.1.2;version=latest,\
+  com.ibm.websphere.org.osgi.core,\
+  com.ibm.websphere.org.osgi.service.component,\
+  com.ibm.ws.transaction.test.util;version=latest,\
+  com.ibm.ws.tx.embeddable;version=latest,\
+  com.ibm.wsspi.org.osgi.service.component.annotations
