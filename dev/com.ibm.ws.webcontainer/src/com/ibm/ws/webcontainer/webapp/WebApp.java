@@ -4109,7 +4109,9 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
                     HttpInboundConnectionExtended extendedConnection= (HttpInboundConnectionExtended) httpInboundConnection;
                     if(extendedConnection!=null) {
                         HttpDispatcherLink dispatcherLink=(HttpDispatcherLink) extendedConnection.getHttpDispatcherLink();
-                        logger.logp(Level.FINE, CLASS_NAME, "sendError", "Setting SuppressZeroByteChunk");
+			if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+				logger.logp(Level.FINE, CLASS_NAME, "sendError", "Setting SuppressZeroByteChunk");
+			}
                         dispatcherLink.setSuppressZeroByteChunk(true);
                         }
                 }
