@@ -1,0 +1,699 @@
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+dependencies {
+  requiredLibs 'org.apache.httpcomponents:httpclient:4.1.2',
+               'org.apache.httpcomponents:httpcore:4.1.2',
+               'commons-codec:commons-codec:1.4',
+               'commons-logging:commons-logging:1.1.1',
+               project(':com.ibm.websphere.javaee.servlet.3.0'),
+               project(':com.ibm.ws.security.audit_fat.common.tooling'),
+               project(':com.ibm.ws.webcontainer.security_test.servlets'),
+               project(':com.ibm.json4j')
+}
+
+addRequiredLibraries.dependsOn addJakartaTransformer
+
+/* 
+ * This is where all application will be built.
+ */
+def appBuildDir = "${buildDir}/test-application"
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** basicauthXML.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task basicauthXML_EAR (type: Zip, dependsOn: ':com.ibm.ws.webcontainer.security_test.servlets:basicauth') { 
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'basicauthXML.ear'
+
+  from (new File(projectDir, 'publish/files/basicauthXML')) {
+    include '**' 
+  }
+  from (new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application')) {
+    include 'basicauth.zip' 
+    rename 'basicauth.zip', 'basicauth.war'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** basicauthXMLnoAuthz.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task basicauthXMLnoAuthz_EAR (type: Zip, dependsOn: ':com.ibm.ws.webcontainer.security_test.servlets:basicauth') { 
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'basicauthXMLnoAuthz.ear'
+
+  from (new File(projectDir, 'publish/files/basicauthXMLnoAuthz')) {
+    include '**' 
+  }
+  from (new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application')) {
+    include 'basicauth.zip' 
+    rename 'basicauth.zip', 'basicauth.war'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** basicauthXMI.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task basicauthXMI_EAR (type: Zip, dependsOn: ':com.ibm.ws.webcontainer.security_test.servlets:basicauth') { 
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'basicauthXMI.ear'
+
+  from (new File(projectDir, 'publish/files/basicauthXMI')) {
+    include '**' 
+  }
+  from (new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application')) {
+    include 'basicauth.zip' 
+    rename 'basicauth.zip', 'basicauth.war'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** basicauthXMInoAuthz.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task basicauthXMInoAuthz_EAR (type: Zip, dependsOn: ':com.ibm.ws.webcontainer.security_test.servlets:basicauth') { 
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'basicauthXMInoAuthz.ear'
+
+  from (new File(projectDir, 'publish/files/basicauthXMInoAuthz')) {
+    include '**' 
+  }
+  from (new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application')) {
+    include 'basicauth.zip' 
+    rename 'basicauth.zip', 'basicauth.war'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** delegationXML.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task delegationXML_EAR (type: Zip, dependsOn: ':com.ibm.ws.webcontainer.security_test.servlets:delegation') { 
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'delegationXML.ear'
+
+  from (new File(projectDir, 'publish/files/delegationXML')) {
+    include '**' 
+  }
+  from (new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application')) {
+    include 'delegation.zip' 
+    rename 'delegation.zip', 'delegation.war'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** BasicAuthWAB_1.0.0.qualifier.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task BasicAuth_WAB (type: Zip, dependsOn: ':com.ibm.ws.webcontainer.security_test.servlets:classes') { 
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'BasicAuthWAB_1.0.0.qualifier.jar'
+
+  from (new File(projectDir, 'publish/files/osgiWABBasicAuth')) {
+    include 'META-INF/MANIFEST.MF' 
+  }
+  from (new File(project(':com.ibm.ws.webcontainer.security_test.servlets').projectDir, 'build/fat-application-classes/basicauth')) {
+    include '**/*'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** FormLoginWAB_1.0.0.qualifier.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task FormLogin_WAB (type: Zip, dependsOn: ':com.ibm.ws.webcontainer.security_test.servlets:classes') { 
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'FormLoginWAB_1.0.0.qualifier.jar'
+
+  from (new File(projectDir, 'publish/files/osgiWABFormLogin')) {
+    include 'META-INF/MANIFEST.MF' 
+  }
+  from (new File(project(':com.ibm.ws.webcontainer.security_test.servlets').projectDir, 'build/fat-application-classes/formlogin')) {
+    include '**/*'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** OSGIAppEBA.eba
+ **
+ ******************************************************************
+ ******************************************************************/
+task OSGIApp_EBA (type: Zip) {
+  dependsOn BasicAuth_WAB
+  dependsOn FormLogin_WAB
+
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'OSGIAppEBA.eba'
+
+  from (new File(projectDir, 'publish/files/osgiEBA')) {
+    include '**' 
+  }
+  from (appBuildDir) {
+    include 'BasicAuthWAB_1.0.0.qualifier.jar'
+    include 'FormLoginWAB_1.0.0.qualifier.jar'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** basicauth-altVhost.war
+ **
+ ******************************************************************
+ ******************************************************************/
+task basicauth_altVhost_WAR (type: Zip, dependsOn: ':com.ibm.ws.webcontainer.security_test.servlets:basicauth') { 
+  destinationDirectory = new File(autoFvtDir, 'publish/files/loginmethod')
+  archiveFileName = 'basicauth-altVhost.war'
+
+  from (new File(projectDir, 'publish/files/login-vhost/altVhost')) {
+    include 'WEB-INF/ibm-web-bnd.xml' 
+  }
+  from zipTree (new File(project(':com.ibm.ws.webcontainer.security_test.servlets').projectDir, 'build/libs/test-application/basicauth.zip'))
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** basicauth-httpOnlyVhost.war
+ **
+ ******************************************************************
+ ******************************************************************/
+task basicauth_httpOnlyVhost_WAR (type: Zip, dependsOn: ':com.ibm.ws.webcontainer.security_test.servlets:basicauth') { 
+  destinationDirectory = new File(autoFvtDir, 'publish/files/loginmethod')
+  archiveFileName = 'basicauth-httpOnlyVhost.war'
+
+  from (new File(projectDir, 'publish/files/login-vhost/httpOnlyVhost')) {
+    include 'WEB-INF/ibm-web-bnd.xml' 
+  }
+  from zipTree (new File(project(':com.ibm.ws.webcontainer.security_test.servlets').projectDir, 'build/libs/test-application/basicauth.zip'))
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** basicauth-httpsOnlyVhost.war
+ **
+ ******************************************************************
+ ******************************************************************/
+task basicauth_httpsOnlyVhost_WAR (type: Zip, dependsOn: ':com.ibm.ws.webcontainer.security_test.servlets:basicauth') { 
+  destinationDirectory = new File(autoFvtDir, 'publish/files/loginmethod')
+  archiveFileName = 'basicauth-httpsOnlyVhost.war'
+
+  from (new File(projectDir, 'publish/files/login-vhost/httpsOnlyVhost')) {
+    include 'WEB-INF/ibm-web-bnd.xml' 
+  }
+  from zipTree (new File(project(':com.ibm.ws.webcontainer.security_test.servlets').projectDir, 'build/libs/test-application/basicauth.zip'))
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** formlogin-altVhost.war
+ **
+ ******************************************************************
+ ******************************************************************/
+task formlogin_altVhost_WAR (type: Zip, dependsOn: ':com.ibm.ws.webcontainer.security_test.servlets:formlogin') { 
+  destinationDirectory = new File(autoFvtDir, 'publish/files/loginmethod')
+  archiveFileName = 'formlogin-altVhost.war'
+
+  from (new File(projectDir, 'publish/files/login-vhost/altVhost')) {
+    include 'WEB-INF/ibm-web-bnd.xml' 
+  }
+  from zipTree (new File(project(':com.ibm.ws.webcontainer.security_test.servlets').projectDir, 'build/libs/test-application/formlogin.zip'))
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** formlogin-httpOnlyVhost.war
+ **
+ ******************************************************************
+ ******************************************************************/
+task formlogin_httpOnlyVhost_WAR (type: Zip, dependsOn: ':com.ibm.ws.webcontainer.security_test.servlets:formlogin') { 
+  destinationDirectory = new File(autoFvtDir, 'publish/files/loginmethod')
+  archiveFileName = 'formlogin-httpOnlyVhost.war'
+
+  from (new File(projectDir, 'publish/files/login-vhost/httpOnlyVhost')) {
+    include 'WEB-INF/ibm-web-bnd.xml' 
+  }
+  from zipTree (new File(project(':com.ibm.ws.webcontainer.security_test.servlets').projectDir, 'build/libs/test-application/formlogin.zip'))
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** formlogin-httpsOnlyVhost.war
+ **
+ ******************************************************************
+ ******************************************************************/
+task formlogin_httpsOnlyVhost_WAR (type: Zip, dependsOn: ':com.ibm.ws.webcontainer.security_test.servlets:formlogin') { 
+  destinationDirectory = new File(autoFvtDir, 'publish/files/loginmethod')
+  archiveFileName = 'formlogin-httpsOnlyVhost.war'
+
+  from (new File(projectDir, 'publish/files/login-vhost/httpsOnlyVhost')) {
+    include 'WEB-INF/ibm-web-bnd.xml' 
+  }
+  from zipTree (new File(project(':com.ibm.ws.webcontainer.security_test.servlets').projectDir, 'build/libs/test-application/formlogin.zip'))
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** loginmethod.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task loginmethod_EAR (type: Zip) {
+  dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:assemble'
+  dependsOn basicauth_altVhost_WAR
+  dependsOn basicauth_httpOnlyVhost_WAR
+  dependsOn basicauth_httpsOnlyVhost_WAR
+  dependsOn formlogin_altVhost_WAR
+  dependsOn formlogin_httpOnlyVhost_WAR
+  dependsOn formlogin_httpsOnlyVhost_WAR
+
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'loginmethod.ear'
+
+  from (new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application')) {
+    include 'formlogin.zip'
+    rename 'formlogin.zip', 'formlogin.war'
+    include 'basicauth.zip'
+    rename 'basicauth.zip', 'basicauth.war'
+    include 'loginConfigInvalid.zip'
+    rename 'loginConfigInvalid.zip', 'loginConfigInvalid.war'
+    include 'loginConfigNone.zip'
+    rename 'loginConfigNone.zip', 'loginConfigNone.war'
+    include 'loginConfigNoRealmName.zip'
+    rename 'loginConfigNoRealmName.zip', 'loginConfigNoRealmName.war'
+    include 'clientcert.zip'
+    rename 'clientcert.zip', 'clientcert.war'
+    include 'staticAnnotationPure.zip'
+    rename 'staticAnnotationPure.zip', 'staticAnnotationPure.war'
+    include 'staticAnnotationWebXML.zip'
+    rename 'staticAnnotationWebXML.zip', 'staticAnnotationWebXML.war'
+    include 'staticAnnotationMixed.war'
+    include 'dynamicAnnotationPure.zip'
+    rename 'dynamicAnnotationPure.zip', 'dynamicAnnotationPure.war'
+    include 'dynamicAnnotationConflict.war'
+    include 'inheritance.zip'
+    rename 'inheritance.zip', 'inheritance.war' 
+    include 'metadataCompleteTrueWebXML.war'
+    include 'metadataCompleteTrueWebFragment.war'
+  }
+  
+  from (new File(autoFvtDir, 'publish/files/loginmethod')) {
+  	include 'basicauth-altVhost.war'
+  	include 'basicauth-httpOnlyVhost.war'
+  	include 'basicauth-httpsOnlyVhost.war'
+  	include 'formlogin-altVhost.war'
+  	include 'formlogin-httpOnlyVhost.war'
+  	include 'formlogin-httpsOnlyVhost.war'
+  }
+  
+  from (new File(projectDir, 'publish/files/loginmethod')) {
+  	include 'META-INF/**'
+  }
+}
+
+
+/*
+ * The 'assemble' task should build all these applications.
+ */
+assemble { 
+  dependsOn delegationXML_EAR
+  dependsOn basicauthXMInoAuthz_EAR
+  dependsOn basicauthXMI_EAR
+  dependsOn basicauthXMLnoAuthz_EAR
+  dependsOn basicauthXML_EAR
+  dependsOn OSGIApp_EBA
+  dependsOn loginmethod_EAR
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** Copy feature bundles and applications to specific servers.
+ **
+ ******************************************************************
+ ******************************************************************/
+autoFVT.dependsOn ':com.ibm.ws.security.authorization.jacc.testprovider:jar'
+autoFVT.dependsOn ':com.ibm.ws.security.registry_test.custom:jar'
+autoFVT.dependsOn ':com.ibm.ws.org.apache.directory.server:jar' // Probably don't need.
+autoFVT.doLast {
+
+  /*
+   * Copy the local ApacheDS LDAP instances. 
+   */
+  copy {
+    from project(':com.ibm.ws.org.apache.directory.server').projectDir
+    into autoFvtDir
+    include 'apacheds-2.0.0-M15/**'
+  }
+
+  /*
+   * Copy the JACC test provider feature.
+   */
+  copy {
+     from new File(project(':com.ibm.ws.security.authorization.jacc.testprovider').projectDir, "/build/libs/com.ibm.ws.security.authorization.jacc.testprovider.jar") 
+     into new File(autoFvtDir, 'publish/bundles')
+     rename 'com.ibm.ws.security.authorization.jacc.testprovider.jar', 'com.ibm.ws.security.authorization.jacc.testprovider_1.0.jar'
+  }
+  copy {
+     from new File(project(':com.ibm.ws.security.authorization.jacc.testprovider').projectDir, "/build/libs/com.ibm.ws.security.authorization.jacc.testprovider.jakarta.jar") 
+     into new File(autoFvtDir, 'publish/bundles')
+     rename 'com.ibm.ws.security.authorization.jacc.testprovider.jakarta.jar', 'com.ibm.ws.security.authorization.jacc.testprovider_2.0.jar'
+  }
+  copy {
+     from new File(project(':com.ibm.ws.security.authorization.jacc.testprovider').projectDir ,"/publish/usr/extension/lib/features/jaccTestProvider-1.0.mf")  
+     from new File(project(':com.ibm.ws.security.authorization.jacc.testprovider').projectDir ,"/publish/usr/extension/lib/features/jaccTestProvider-2.0.mf")  
+     into new File(autoFvtDir, 'publish/features')
+  }
+
+  /*
+   * Copy the custom registry sample feature.
+   */
+  copy {
+     from new File(project(':com.ibm.ws.security.registry_test.custom').projectDir, "/build/libs/com.ibm.ws.security.registry_test.custom.jar") 
+     into new File(autoFvtDir, 'publish/files/internalfeatures')
+     rename 'com.ibm.ws.security.registry_test.custom.jar', 'com.ibm.ws.security.registry.custom.sample_1.0.jar'
+  }
+  copy {
+     from new File(project(':com.ibm.ws.security.registry_test.custom').projectDir ,"/publish/features/customRegistrySample-1.0.mf")  
+     into new File(autoFvtDir, 'publish/files/internalfeatures')
+  }
+  
+  /*
+   * Copy webFragmentDeploymentFailureForRunAs.war into test servers.
+   */
+  def servers = [
+    'com.ibm.ws.webcontainer.security.fat.webFragmentDeploymentFailureForRunAs'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/webFragmentDeploymentFailureForRunAs.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+  }
+
+  /*
+   * Copy webFragmentDeploymentFailureForAuthConstraint.war into test servers.
+   */
+  servers = [
+    'com.ibm.ws.webcontainer.security.fat.webFragmentDeploymentFailureForAuthConstraint'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/webFragmentDeploymentFailureForAuthConstraint.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+  }
+  
+  /*
+   * Copy webFragmentDeploymentFailureForUserDataConstraint.war into test servers.
+   */
+  servers = [
+    'com.ibm.ws.webcontainer.security.fat.webFragmentDeploymentFailureForUserDataConstraint'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/webFragmentDeploymentFailureForUserDataConstraint.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+  }
+  
+  /*
+   * Copy clientcert.war into test servers.
+   */
+  servers = [
+    'com.ibm.ws.webcontainer.security.fat.clientcert'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/clientcert.zip')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+      rename 'clientcert.zip', 'clientcert.war'
+    }
+  }
+  
+  /*
+   * Copy basicauth.war into test servers.
+   */
+  servers = [
+    'com.ibm.ws.webcontainer.security.fat.basicauth',
+    'com.ibm.ws.webcontainer.security.fat.basicauth.audit',
+    'com.ibm.ws.webcontainer.security.fat.basicauth.custom',
+    'com.ibm.ws.webcontainer.security.fat.basicauth.ldap',
+    'com.ibm.ws.webcontainer.security.fat.basicauth.ldap.groupMemberIdMaps',
+    'com.ibm.ws.webcontainer.security.fat.basicauth.ldap.tds.nested',
+    'com.ibm.ws.webcontainer.security.fat.basicauth.ldap.ad.nested',
+    'com.ibm.ws.webcontainer.security.fat.basicauthServlet31'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/basicauth.zip')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+      rename 'basicauth.zip', 'basicauth.war'
+    }
+  }
+  
+  /*
+   * Copy basicauthdeny.war into test servers.
+   */
+  servers = [
+    'com.ibm.ws.webcontainer.security.fat.basicauthdeny'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/basicauthdeny.zip')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+      rename 'basicauthdeny.zip', 'basicauthdeny.war'
+    }
+  }
+  
+  /*
+   * Copy formlogin.war into test servers.
+   */
+  servers = [
+    'com.ibm.ws.webcontainer.security.fat.formlogin'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/formlogin.zip')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+      rename 'formlogin.zip', 'formlogin.war'
+    }
+  }
+  
+  /*
+   * Copy delegation.war into test servers.
+   */
+  servers = [
+    'com.ibm.ws.webcontainer.security.fat.delegation'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/delegation.zip')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+      rename 'delegation.zip', 'delegation.war'
+    }
+  }
+  
+  /*
+   * Copy delegationXML.ear into test servers.
+   */
+  servers = [
+    'com.ibm.ws.webcontainer.security.fat.delegation'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(appBuildDir, 'delegationXML.ear')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+  }
+  
+  /*
+   * Copy basicauthXMI.ear into test servers.
+   */
+  servers = [
+    'com.ibm.ws.webcontainer.security.fat.bindings',
+    'com.ibm.ws.webcontainer.security.fat.basicauth',
+    'com.ibm.ws.webcontainer.security.fat.basicauth.audit'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(appBuildDir, 'basicauthXMI.ear')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+  }
+  
+  /*
+   * Copy basicauthXMInoAuthz.ear into test servers.
+   */
+  servers = [
+    'com.ibm.ws.webcontainer.security.fat.bindings',
+    'com.ibm.ws.webcontainer.security.fat.basicauth',
+    'com.ibm.ws.webcontainer.security.fat.basicauth.audit'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(appBuildDir, 'basicauthXMInoAuthz.ear')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+  }
+  
+  /*
+   * Copy basicAuthXML.ear into test servers.
+   */
+  servers = [
+    'com.ibm.ws.webcontainer.security.fat.bindings',
+    'com.ibm.ws.webcontainer.security.fat.basicauth',
+    'com.ibm.ws.webcontainer.security.fat.basicauth.audit'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(appBuildDir, 'basicauthXML.ear')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+  }
+  
+  /*
+   * Copy basicauthXMLnoAuthz.ear into test servers.
+   */
+  servers = [
+    'com.ibm.ws.webcontainer.security.fat.bindings',
+    'com.ibm.ws.webcontainer.security.fat.basicauth',
+    'com.ibm.ws.webcontainer.security.fat.basicauth.audit'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(appBuildDir, 'basicauthXMLnoAuthz.ear')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+  }
+  
+  /*
+   * Copy loginmethod.ear into test servers.
+   */
+  servers = [
+    'com.ibm.ws.webcontainer.security.fat.loginmethod',
+    'com.ibm.ws.webcontainer.security.fat.persistcred.disabled'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(appBuildDir, 'loginmethod.ear')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+  }
+    
+  /*
+   * Copy OSGIAppEBA.eba into test servers.
+   */
+  servers = [
+    'com.ibm.ws.webcontainer.security.fat.osgi'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(appBuildDir, 'OSGIAppEBA.eba')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+  }
+  
+  /*
+   * Copy select server.xml files.
+   */
+  copy { 
+    from new File(projectDir, 'publish/servers/com.ibm.ws.webcontainer.security.fat.basicauth/server.xml')
+    into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
+    rename 'server.xml', 'basicauth.server.orig.xml'
+  }
+  copy { 
+    from new File(projectDir, 'publish/servers/com.ibm.ws.webcontainer.security.fat.basicauth.audit/server.xml')
+    into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
+    rename 'server.xml', 'basicauthaudit.server.orig.xml'
+  }
+  copy { 
+    from new File(projectDir, 'publish/servers/com.ibm.ws.webcontainer.security.fat.basicauthdeny/server.xml')
+    into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
+    rename 'server.xml', 'basicauthdeny.server.orig.xml'
+  }
+  copy { 
+    from new File(projectDir, 'publish/servers/com.ibm.ws.webcontainer.security.fat.bindings/server.xml')
+    into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
+    rename 'server.xml', 'bindings.server.orig.xml'
+  }
+  copy { 
+    from new File(projectDir, 'publish/servers/com.ibm.ws.webcontainer.security.fat.formlogin/server.xml')
+    into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
+    rename 'server.xml', 'formlogin.server.orig.xml'
+  }
+  copy { 
+    from new File(projectDir, 'publish/servers/com.ibm.ws.webcontainer.security.fat.loginmethod/server.xml')
+    into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
+    rename 'server.xml', 'configoptions.server.orig.xml'
+  }
+  copy { 
+    from new File(projectDir, 'publish/servers/com.ibm.ws.webcontainer.security.fat.clientcert/server.xml')
+    into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
+    rename 'server.xml', 'clientcert.server.orig.xml'
+  }
+  copy { 
+    from new File(projectDir, 'publish/servers/com.ibm.ws.webcontainer.security.fat.delegation/server.xml')
+    into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
+    rename 'server.xml', 'delegation.server.orig.xml'
+  }
+  copy { 
+    from new File(projectDir, 'publish/servers/com.ibm.ws.webcontainer.security.fat.basicauthServlet31/server.xml')
+    into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
+    rename 'server.xml', 'basicauthServlet31.server.orig.xml'
+  }
+}

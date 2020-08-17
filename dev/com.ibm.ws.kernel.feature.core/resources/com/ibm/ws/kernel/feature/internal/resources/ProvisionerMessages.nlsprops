@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2014 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -200,12 +200,22 @@ UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR=CWWKF0041E: The {0} feature on
 UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR.explanation=The configured feature does not support the specified process type.
 UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR.useraction=Remove the feature from the configuration or change the feature manifest file to enable support for the desired process type.
 
-# CWWK042E  {0} = feature Name: {1} = server name 
-UPDATE_MISSING_CORE_FEATURE_ERROR=CWWKF0042E: A feature definition cannot  be found for the  {0} feature.  Try running the command, bin/installUtility install {0},  to install the feature. Alternatively, you can run the command, bin/installUtility install {1},  to install all features that are referenced by this configuration.
+# CWWK0042E  {0} = feature Name: {1} = server name 
+UPDATE_MISSING_CORE_FEATURE_ERROR=CWWKF0042E: A feature definition cannot be found for the {0} feature.  Try running the command, bin/installUtility install {0}, to install the feature. Alternatively, you can run the command, bin/installUtility install {1}, to install all features that are referenced by this configuration.
 UPDATE_MISSING_CORE_FEATURE_ERROR.explanation=The feature manager could not find a definition for the specified feature.
 UPDATE_MISSING_CORE_FEATURE_ERROR.useraction=Check that the name of the specified feature is spelled correctly.  \
-Also verify that the feature definition exists and is readable in the lib/features directory. If the feature does not exist,  try running the command, bin/installUtility install feature_name,  to install the feature \
-or try running the command, bin/installUtility install server_name, to install all features that are referenced by this configuration. 
+Also verify that the feature definition exists and is readable in the lib/features directory.  If the feature does not exist, try running the command, bin/installUtility install feature_name, to install the feature \
+or try running the command, bin/installUtility install server_name, to install all features that are referenced by this configuration.
+
+# CWWK0043E  {0} = EeProgModel1: {1} = EeProgModel2: {2} = configuredFeature1: {3} = configuredFeature2: {4} EePlaformCommonToProgModels 
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_SAME_PLATFORM_ERROR=CWWKF0043E: The configured feature {2} of {0} is incompatible with the configured feature {3} of {1}.  The configuration includes an incompatible combination of {4} features that is not supported.  Update the configuration to use compatible versions of the configured features that support the {0} or {1} programming models.
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_SAME_PLATFORM_ERROR.explanation=The server configuration contains an incompatible combination of features for the indicated programming models.  This conflict can happen if the two incompatible features are configured directly in the server configuration, or if the configured features include different versions of a feature that are incompatible.
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_SAME_PLATFORM_ERROR.useraction=Try to specify a compatible version of the configured features that caused the conflict in the server.xml file.  If no other versions are available, then the configured features are not compatible with each other and cannot be configured at the same time.
+
+# CWWK0044E  {0} = EeProgModel1: {1} = EeProgModel2: {2} = EeConflictFeature1: {3} = EeConflictFeature2: {4} = configuredFeature1: {5} configuredFeature2
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR=CWWKF0044E: The features {2} and {3} cannot be loaded at the same time.  The feature {2} of {0} is incompatible with the feature {3} of {1}.  The configured features {4} and {5} include an incompatible combination of features.  Your configuration is not supported.  Update the configuration to use features that support either the Jakarta EE or Java EE programming models, but not both.
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR.explanation=The server configuration contains an incompatible combination of both Jakarta EE and Java EE features.  Features that support the Jakarta EE 9 programming model are incompatible with features that support the Java EE programming models, including Jakarta EE 8.  This conflict can happen if the two incompatible features are configured directly in the server configuration, or if the configured features include different versions of a feature that are incompatible.
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR.useraction=Specify a compatible version of the configured features that caused the conflict in the server.xml file, and ensure the server.xml file uses either Jakarta EE or Java EE features, but not both.
 
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 

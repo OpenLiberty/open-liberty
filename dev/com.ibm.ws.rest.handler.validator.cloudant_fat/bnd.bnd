@@ -22,3 +22,5 @@ fat.project: true
 	com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
 	org.testcontainers:testcontainers;version=1.14.0,\
 	org.slf4j:slf4j-api;version=1.7.7
+
+tested.features: componenttest-2.0

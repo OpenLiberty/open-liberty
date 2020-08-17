@@ -13,9 +13,11 @@ package io.openliberty.grpc.internal.config;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
+import io.openliberty.grpc.internal.GrpcMessages;
+
 public class GrpcServiceConfigValidation {
 
-	private static final TraceComponent tc = Tr.register(GrpcServiceConfigValidation.class);
+	private static final TraceComponent tc = Tr.register(GrpcServiceConfigValidation.class, GrpcMessages.GRPC_TRACE_NAME, GrpcMessages.GRPC_BUNDLE);
 
 	/**
 	 * @param value - key name
@@ -24,7 +26,7 @@ public class GrpcServiceConfigValidation {
 	static boolean validateMaxInboundMessageSize(String value) {
 		int size = Integer.parseInt(value);
 		if (size < 1) {
-			Tr.warning(tc, "grpcTarget maxInboundMessageSize is invalid", size);
+			Tr.error(tc, "invalid.inbound.msg.size", size);
 			return false;
 		}
 		return true;

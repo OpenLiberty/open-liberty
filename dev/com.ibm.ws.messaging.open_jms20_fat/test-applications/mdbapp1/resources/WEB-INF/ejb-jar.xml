@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ejb-jar xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.1" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd">
+
+  <enterprise-beans>
+
+    <message-driven>
+      <ejb-name>MDBQueue</ejb-name>
+      <ejb-class>mdbapp1.ejb.EJBAnnotatedMessageDrivenBean</ejb-class>
+      <activation-config>
+        <activation-config-property>
+          <activation-config-property-name>acknowledgeMode</activation-config-property-name>
+          <activation-config-property-value>Auto-acknowledge</activation-config-property-value>
+        </activation-config-property>
+        <activation-config-property>
+          <activation-config-property-name>destinationType</activation-config-property-name>
+          <activation-config-property-value>javax.jms.Queue</activation-config-property-value>
+        </activation-config-property>
+      </activation-config>
+    </message-driven>
+    
+     <message-driven>
+      <ejb-name>MDBTopic</ejb-name>
+      <ejb-class>mdbapp1.ejb.EJBAnnotatedTopicMessageDrivenBean</ejb-class>
+      <activation-config>
+        <activation-config-property>
+          <activation-config-property-name>acknowledgeMode</activation-config-property-name>
+          <activation-config-property-value>Auto-acknowledge</activation-config-property-value>
+        </activation-config-property>
+        <activation-config-property>
+          <activation-config-property-name>destinationType</activation-config-property-name>
+          <activation-config-property-value>javax.jms.Topic</activation-config-property-value>
+        </activation-config-property> 
+      </activation-config>
+    </message-driven>
+    
+  </enterprise-beans>
+
+</ejb-jar>

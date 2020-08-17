@@ -17,12 +17,14 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import jaxrs21.fat.patch.PatchTestServlet;
 
+@SkipForRepeat("RESTEasy") // requires SSL client enablement
 @RunWith(FATRunner.class)
 public class PatchTest extends FATServletClient {
 

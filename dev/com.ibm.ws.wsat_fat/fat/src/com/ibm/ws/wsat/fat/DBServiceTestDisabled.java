@@ -16,9 +16,11 @@ import static org.junit.Assert.fail;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServerFactory;
 
 /**
@@ -67,7 +69,7 @@ import componenttest.topology.impl.LibertyServerFactory;
  * testDBDisabled16_WTWASo_Commit:           With Client Transaction,          Optional ATAssertion on this service,     client commit,       server1 commit       Result: 0, 0 and WS-AT Feature is not installed
  * 
  */
-
+@RunWith(FATRunner.class)
 public class DBServiceTestDisabled extends DBTestBase {
 
 	public static String notInstalled = "WS-AT Feature is not installed";

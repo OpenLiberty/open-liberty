@@ -26,6 +26,6 @@ Subsystem-Name: gRPC Client 1.0
   io.openliberty.grpc.1.0.internal.common, \
   io.openliberty.grpc.1.0.internal.client, \
   com.ibm.ws.org.apache.commons.logging.1.0.3
-kind=noship
+kind=beta
 edition=full
 WLP-Activation-Type: parallel

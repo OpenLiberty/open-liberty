@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.config.fat.repeat;
 
-import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.custom.junit.runner.TestModeFilter;
+import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
 /**
@@ -19,86 +18,46 @@ import componenttest.rules.repeater.RepeatTests;
  */
 public class RepeatConfigActions {
 
-    /**
-     * Get the RepeatTests actions for Config 1.1 tests. This is the same as for Config 1.2 tests but
-     * if the test mode is FULL the it also adds Config 1.1 + EE7 and Config 1.1 + EE8.
-     *
-     * @param server The name of the test server
-     * @return The RepeatTests for Config 1.1 tests
-     */
-    public static RepeatTests repeatConfig11(String server) {
-        RepeatTests r = repeatConfig12(server);
-        if (TestModeFilter.shouldRun(TestMode.FULL)) {
-            r = r.andWith(new RepeatConfig11EE7(server));
-            r = r.andWith(new RepeatConfig11EE8(server));
+    public enum Version {
+        CONFIG11_EE7, CONFIG11_EE8, CONFIG12_EE7, CONFIG12_EE8, CONFIG13_EE7, CONFIG13_EE8, CONFIG14_EE7, CONFIG14_EE8, CONFIG20_EE8, LATEST
+    };
+
+    public static FeatureReplacementAction getAction(Version version, String server) {
+        switch (version) {
+            case CONFIG11_EE7:
+                return new RepeatConfig11EE7(server);
+            case CONFIG11_EE8:
+                return new RepeatConfig11EE8(server);
+            case CONFIG12_EE7:
+                return new RepeatConfig12EE7(server);
+            case CONFIG12_EE8:
+                return new RepeatConfig12EE8(server);
+            case CONFIG13_EE7:
+                return new RepeatConfig13EE7(server);
+            case CONFIG13_EE8:
+                return new RepeatConfig13EE8(server);
+            case CONFIG14_EE7:
+                return new RepeatConfig14EE7(server);
+            case CONFIG14_EE8:
+                return new RepeatConfig14EE8(server);
+            case CONFIG20_EE8:
+                return new RepeatConfig20EE8(server);
+            case LATEST:
+                return new RepeatConfig14EE8(server); //currently the latest version is 1.4 (EE8). Will update to 2.0 when that reaches a beta standard.
+            default:
+                throw new RuntimeException("Unknown version: " + version);
+        }
+    }
+
+    public static RepeatTests repeatAllConfigVersionsEE8(String server) {
+        return repeat(server, Version.CONFIG11_EE8, Version.CONFIG12_EE8, Version.CONFIG13_EE8, Version.CONFIG14_EE8); //2.0 will be added shortly
+    }
+
+    public static RepeatTests repeat(String server, Version firstVersion, Version... otherVersions) {
+        RepeatTests r = RepeatTests.with(getAction(firstVersion, server));
+        for (int i = 0; i < otherVersions.length; i++) {
+            r = r.andWith(getAction(otherVersions[i], server));
         }
         return r;
     }
-
-    /**
-     * Get the RepeatTests actions for Config 1.2 tests. This is the same as for Config 1.3 tests but
-     * if the test mode is FULL the it also adds Config 1.2 + EE7 and Config 1.2 + EE8.
-     *
-     * @param server The name of the test server
-     * @return The RepeatTests for Config 1.2 tests
-     */
-    public static RepeatTests repeatConfig12(String server) {
-        RepeatTests r = repeatConfig13(server);
-        if (TestModeFilter.shouldRun(TestMode.FULL)) {
-            r = r.andWith(new RepeatConfig12EE7(server));
-            r = r.andWith(new RepeatConfig12EE8(server));
-        }
-        return r;
-    }
-
-    /**
-     * Get the RepeatTests actions for Config 1.3 tests. This is the same as for Config 1.4 tests but
-     * if the test mode is FULL the it also adds Config 1.3 + EE7 and Config 1.3 + EE8.
-     *
-     * @param server The name of the test server
-     * @return The RepeatTests for Config 1.3 tests
-     */
-    public static RepeatTests repeatConfig13(String server) {
-        RepeatTests r = repeatConfig14(server);
-        if (TestModeFilter.shouldRun(TestMode.FULL)) {
-            r = r.andWith(new RepeatConfig13EE7(server));
-            r = r.andWith(new RepeatConfig13EE8(server));
-        }
-        return r;
-    }
-
-    /**
-     * Get the RepeatTests actions for Config 1.4 tests. This is Config 1.4 + EE8 and if the test
-     * mode is full Config 1.4 + EE7.
-     *
-     * @param server The name of the test server
-     * @return The RepeatTests for Config 1.4 tests
-     */
-    public static RepeatTests repeatConfig14(String server) {
-        RepeatTests r = RepeatTests.with(new RepeatConfig14EE8(server));
-        if (TestModeFilter.shouldRun(TestMode.FULL)) {
-            r = r.andWith(new RepeatConfig14EE7(server));
-        }
-        return r;
-    }
-
-    /**
-     * There are some Config 1.1 dynamic tests which are not applicable to MP Config 1.4 and higher.
-     * So this returns Config 1.3 + EE8 in LITE mode and then adds the others if in FULL mode.
-     *
-     * @param server The name of the test server
-     * @return The RepeatTests for Config 1.1 tests which should not be run against Config 1.4
-     */
-    public static RepeatTests repeatConfig11Not14(String server) {
-        RepeatTests r = RepeatTests.with(new RepeatConfig13EE8(server));
-        if (TestModeFilter.shouldRun(TestMode.FULL)) {
-            r = r.andWith(new RepeatConfig11EE7(server));
-            r = r.andWith(new RepeatConfig11EE8(server));
-            r = r.andWith(new RepeatConfig12EE7(server));
-            r = r.andWith(new RepeatConfig12EE8(server));
-            r = r.andWith(new RepeatConfig13EE7(server));
-        }
-        return r;
-    }
-
 }

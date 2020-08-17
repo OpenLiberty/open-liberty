@@ -33,7 +33,6 @@ import com.ibm.ws.security.javaeesec.fat_helper.Constants;
 import com.ibm.ws.security.javaeesec.fat_helper.JavaEESecTestBase;
 import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -43,7 +42,6 @@ import componenttest.topology.impl.LibertyServerFactory;
 /**
  * Test Description: Test with a containerAuthData defined in the server.xml.
  */
-@MinimumJavaLevel(javaLevel = 7, runSyntheticTest = false)
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class HttpAuthenticationMechanismDBAuthAliasTest extends JavaEESecTestBase {

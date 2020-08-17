@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2019 IBM Corporation and others.
+ * Copyright (c) 2002, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 
 package com.ibm.ejb2x.base.spec.sll.web;
 
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -30,6 +31,7 @@ import com.ibm.ejb2x.base.spec.sll.ejb.SLLaHome;
 import com.ibm.websphere.ejbcontainer.test.tools.FATHelper;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 
 /**
@@ -164,6 +166,7 @@ public class SLLocalImplContextServlet extends FATServlet {
      * (ixc04) Test Stateless local EJBContext.getEnvironment().
      */
     @Test
+    @SkipForRepeat({ EE9_FEATURES })
     public void testSLLocalEJBContext_getEnvironment() throws Exception {
         SLLa ejb1 = fhome1.create();
         String tempStr = ejb1.context_getEnvironment("value1");
@@ -175,6 +178,7 @@ public class SLLocalImplContextServlet extends FATServlet {
      */
     @Test
     @SuppressWarnings("deprecation")
+    @SkipForRepeat({ EE9_FEATURES })
     public void testSLLocalEJBContext_getCallerIdentity() throws Exception {
         SLLa ejb1 = fhome1.create();
         Object o = ejb1.context_getCallerIdentity();
@@ -216,6 +220,7 @@ public class SLLocalImplContextServlet extends FATServlet {
      */
     @Test
     @SuppressWarnings("deprecation")
+    @SkipForRepeat({ EE9_FEATURES })
     public void testSLLocalEJBContext_isCallerInRole_Identity() throws Exception {
         SLLa ejb1 = fhome1.create();
         Object o = ejb1.context_isCallerInRole((java.security.Identity) null);

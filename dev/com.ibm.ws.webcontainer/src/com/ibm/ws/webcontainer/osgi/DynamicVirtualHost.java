@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2010 IBM Corporation and others.
+ * Copyright (c) 2004, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -225,7 +225,7 @@ public class DynamicVirtualHost extends com.ibm.ws.webcontainer.VirtualHost impl
             // for performance reasons this was not decoded before doing the first look up, since it is not
             // common to have double byte chars in the context.  
             try {
-                if (this.webContainerParent.getDecodePlusSign()) {
+                if (WCCustomProperties.DECODE_URL_PLUS_SIGN) {
                     requestUri = URLDecoder.decode(requestUri, this.webContainerParent.getURIEncoding());
                 } else {
                     requestUri = WSURLDecoder.decode(requestUri, this.webContainerParent.getURIEncoding());
@@ -456,6 +456,9 @@ public class DynamicVirtualHost extends com.ibm.ws.webcontainer.VirtualHost impl
         String ct = makeProperContextRoot(dm.getContextRoot()); // proper
         WebApp webApp = (WebApp) findContext(ct);
         if (webApp == null) {
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)){
+                logger.logp(Level.FINE, CLASS_NAME,"startWebApplication",  "No webapp mapping found for contextroot ->"+ ct);
+            }
             return false;
         }
 
@@ -467,18 +470,23 @@ public class DynamicVirtualHost extends com.ibm.ws.webcontainer.VirtualHost impl
             webApp.initialize();
             return !webApp.getDestroyed();
         } catch (Throwable th) {
-            stopWebApp(webApp);
+            try {
+                com.ibm.wsspi.webcontainer.util.FFDCWrapper.processException(th, CLASS_NAME, "startWebApp", new Object[] { this, webApp });
 
-            com.ibm.wsspi.webcontainer.util.FFDCWrapper.processException(th, CLASS_NAME, "startWebApp", new Object[] { this, webApp });
-
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(tc, "Error starting web app: " + webApp + "; " + th);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Error starting web app: " + webApp + "; " + th);
+                }
+            } finally {
+            	stopWebApp(webApp);
             }
         }
         return false;
     }
 
     public boolean stopWebApplication(DeployedModule dm) {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)){
+            logger.logp(Level.FINE, CLASS_NAME,"stopWebApplication",  "Enter ");
+        }
 
         String ct = makeProperContextRoot(dm.getContextRoot()); // proper
         WebApp webApp = (WebApp) findContext(ct);

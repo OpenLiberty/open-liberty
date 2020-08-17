@@ -24,6 +24,7 @@ import java.net.URL;
 import java.security.AccessController;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -732,5 +733,11 @@ public class FileUtils {
             return null;
         }
 
+    }
+
+    @Trivial
+    public static boolean isWSL() {
+        return System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("linux") &&
+               System.getProperty("os.version").toLowerCase(Locale.ENGLISH).contains("microsoft");
     }
 }

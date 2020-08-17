@@ -22,14 +22,12 @@ import org.junit.Test;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 /**
  * Tests what can and cannot be loaded by the server's JVM classpath.
  */
-@MinimumJavaLevel(javaLevel = 7)
 public class ServerClasspathTest {
 
     private static final String SERVER_NAME = "com.ibm.ws.kernel.boot.classpath.fat";

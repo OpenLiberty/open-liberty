@@ -16,6 +16,6 @@ Subsystem-Name: gRPC 1.0
 -features=\
   io.openliberty.internal.grpc-1.0, \
   com.ibm.websphere.appserver.servlet-4.0
-kind=noship
+kind=beta
 edition=full
 WLP-Activation-Type: parallel

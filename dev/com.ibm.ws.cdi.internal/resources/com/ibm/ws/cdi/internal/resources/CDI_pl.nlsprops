@@ -69,6 +69,6 @@ implicit.bean.scanning.disabled.CWOWB1009W=CWOWB1009W: Niejawne archiwa komponen
 implicit.bean.scanning.disabled.CWOWB1009W.explanation=Archiwa nie s\u0105 skanowane pod k\u0105tem komponent\u00f3w bean CDI, o ile nie maj\u0105 pliku beans.xml.
 implicit.bean.scanning.disabled.CWOWB1009W.useraction=Upewnij si\u0119, \u017ce ka\u017cde archiwum korzystaj\u0105ce z funkcji CDI ma plik beans.xml, lub ponownie w\u0142\u0105cz skanowanie niejawnych komponent\u00f3w bean w pliku server.xml.
 
-spi.extension.failed.to.construct.CWOWB10010E=CWOWB10010E: Nie powiod\u0142a si\u0119 pr\u00f3ba utworzenia rozszerzenia CDI za po\u015brednictwem interfejsu SPI.
-spi.extension.failed.to.construct.CWOWB10010E.explanation=Nie powiod\u0142a si\u0119 pr\u00f3ba wywo\u0142ania za po\u015brednictwem interfejsu CDI konstruktora klasy rozszerzenia {0} zarejestrowanego za pomoc\u0105 metody getExtensions() implementacji metody WebSphereCDIExtensionMetaData z powodu wyst\u0105pienia wyj\u0105tku {1}.
-spi.extension.failed.to.construct.CWOWB10010E.useraction=Usu\u0144 b\u0142\u0105d uniemo\u017cliwiaj\u0105cy utworzenie instancji rozszerzenia.
+spi.extension.failed.to.construct.CWOWB1010E=CWOWB1010E: Nie powiod\u0142a si\u0119 pr\u00f3ba utworzenia rozszerzenia CDI za pomoc\u0105 interfejsu SPI.
+spi.extension.failed.to.construct.CWOWB1010E.explanation=Nie powiod\u0142a si\u0119 pr\u00f3ba wywo\u0142ania za po\u015brednictwem interfejsu CDI konstruktora klasy rozszerzenia {0} zarejestrowanego za pomoc\u0105 metody getExtensions() implementacji CDIExtensionMetadata z powodu wyst\u0105pienia wyj\u0105tku {1}.
+spi.extension.failed.to.construct.CWOWB1010E.useraction=Usu\u0144 b\u0142\u0105d uniemo\u017cliwiaj\u0105cy utworzenie instancji rozszerzenia.

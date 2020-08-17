@@ -75,8 +75,7 @@ public class AcmeRevocationTest {
 	@Server("com.ibm.ws.security.acme.fat.revocation")
 	public static LibertyServer server;
 
-	@ClassRule
-	public static CAContainer boulder = new BoulderContainer();
+	public static CAContainer boulder = null;
 
 	private static ServerConfiguration originalServerConfig;
 
@@ -106,6 +105,7 @@ public class AcmeRevocationTest {
 
 	@BeforeClass
 	public static void beforeClass() throws Exception {
+		boulder = new BoulderContainer();
 		originalServerConfig = server.getServerConfiguration();
 		AcmeFatUtils.checkPortOpen(boulder.getHttpPort(), 60000);
 	}
@@ -118,7 +118,7 @@ public class AcmeRevocationTest {
 	}
 
 	@After
-	public void after() {
+	public void after() throws Exception {
 		AcmeFatUtils.deleteAcmeFiles(server);
 	}
 
@@ -638,10 +638,12 @@ public class AcmeRevocationTest {
 			server.setMarkToEndOfLog(server.getDefaultLogFile());
 
 		} finally {
-			stopServer();
-
-			if (pebble != null) {
-				pebble.stop();
+			try {
+				stopServer();
+			} finally {
+				if (pebble != null) {
+					pebble.stop();
+				}
 			}
 		}
 	}

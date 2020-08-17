@@ -16,6 +16,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.security.cert.X509Certificate;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -41,9 +43,14 @@ import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 public class AcmeHistory {
 	private static final TraceComponent tc = Tr.register(AcmeHistory.class);
 	private String spaceDelim = "                  ";
-	private String smallSpaceDelim = "         ";
-	private final String acmeFile = "acmeca-history.txt";
+	private final String acmeFileName = AcmeConstants.ACME_HISTORY_FILE;
+	private final int FILE_EXISTS = 0;
+	private final int FILE_CREATED = 1;
+	private final int FILE_NOT_CREATED = 2;
+	private File acmeFile;
 	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+	private static final DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+	private ArrayList<String> headers;
 	
 	/**
 	 * This method determines if the directoryURI has changed by checking
@@ -54,14 +61,14 @@ public class AcmeHistory {
 		int acmefilecreation = createAcmeFile(wslocation);
 		//For testing purposes, check for disableRenewOnNewHistory. For some tests, we need to make sure
 		//the certificate does not refresh when starting a new server and the history file doesn't exist yet.
-		if (acmefilecreation == 1 && disableRenewOnNewHistory) {
+		if (acmefilecreation == FILE_CREATED && disableRenewOnNewHistory) {
 			return false;
 		}
 		//If the ACME file doesn't exist or it failed to create, return true to force refresh.
-		if (acmefilecreation > 0) {
+		if (acmefilecreation > FILE_EXISTS) {
 			return true;
 		}
-		File file = wslocation.getServerWorkareaResource("acme/" + acmeFile).asFile();
+		File file = wslocation.getServerWorkareaResource("acmeca/" + acmeFileName).asFile();
 		String fileDirURI = currentDirectoryURI;
 		try {
 		    BufferedReader br = new BufferedReader(new FileReader(file));
@@ -90,34 +97,43 @@ public class AcmeHistory {
 	 * This method will create the initial acme file in the servers/workarea
 	 * directory. It holds certificate and directoryURI information, eg.
 	 * # Version 1.0
-	 * # Date                Serial                   DirectoryURI                    Account URI
-     * # --------------------------------------------------------------------------------------------
-     *  20200509231118      6542743894787011570      https://localhost:33827/dir     https://localhost:33827/my-account/1
+	 * # Date                Serial                   DirectoryURI                    Account URI                     Expiration
+     * # -----------------------------------------------------------------------------------------------------------
+     *  20200509231118      6542743894787011570      https://localhost:33827/dir     https://localhost:33827/my-account/1   20200509231118
      *  
      *  @return 0 if the file already exists
      *          1 if the file was successfully created
      *          2 if the file was not created
 	 */
 	private int createAcmeFile(WsLocationAdmin wslocation) {
-		File file = wslocation.getServerWorkareaResource("acme/" + acmeFile).asFile();
-		if (file.exists()) return 0;
-		file.getParentFile().mkdirs();
+		acmeFile = wslocation.getServerWorkareaResource("acmeca/" + acmeFileName).asFile();
+		if (acmeFile.exists()) {
+			return FILE_EXISTS;
+		}
+		headers = new ArrayList<String>();
+		acmeFile.getParentFile().mkdirs();
 		LocalDateTime now = LocalDateTime.now();  
 		String date = FORMATTER.format(now);
+		
+		//Save headers
+		headers.add("# WARNING!!! DO NOT MODIFY THIS FILE. IT HAS BEEN AUTO-GENERATED: " + date);
+		headers.add("# Version 1.0");
+		headers.add("# Date" + spaceDelim + "Serial" + spaceDelim + "DirectoryURI" + spaceDelim + "Account URI" + spaceDelim + "Expiration");
+		headers.add("# -------------------------------------------------------------------------------------------------------------------------");
+		
 		try {
-			file.createNewFile();
+			acmeFile.createNewFile();
 			FileWriter fr;
-			fr = new FileWriter(file, false);
-			fr.write("# WARNING!!! DO NOT MODIFY THIS FILE. IT HAS BEEN AUTO-GENERATED: " + date + "\n");
-			fr.write("# Version 1.0" + "\n");
-			fr.write("# Date" + spaceDelim + "Serial" + spaceDelim + "DirectoryURI" + spaceDelim + "Account URI" + "\n");
-			fr.write("# -------------------------------------------------------------------------------------------------------------------------");
+			fr = new FileWriter(acmeFile, false);
+			for (String h: headers) {
+				fr.write(h + "\n");
+			}
 	       	fr.close();
-	       	return 1;
+	       	return FILE_CREATED;
 		} catch (IOException e) {
-			Tr.error(tc, "CWPKI2072W", file.getAbsolutePath(), e.getMessage());
+			Tr.error(tc, "CWPKI2072W", acmeFile.getAbsolutePath(), e.getMessage());
 		}
-		return 2;
+		return FILE_NOT_CREATED;
 	}
 
 	/**
@@ -140,66 +156,50 @@ public class AcmeHistory {
 	 */
 	protected void updateAcmeFile(AcmeCertificate acmeCertificate, X509Certificate certificate, String directoryURI, String accountURI, WsLocationAdmin wslocation) {
 		//If the file doesn't exist and failed to create, return.
-		if (createAcmeFile(wslocation) == 2) {
+		if (createAcmeFile(wslocation) == FILE_NOT_CREATED) {
 			return;
 		}
 		LocalDateTime now = LocalDateTime.now();  
 		String date = FORMATTER.format(now);
-		String serial = null;
-		if (acmeCertificate == null) {
-			if (certificate != null) serial = certificate.getSerialNumber().toString(16);
-		} else {
-			serial = acmeCertificate.getCertificate().getSerialNumber().toString(16);
+		String serial = null, expirationDate = null;
+		X509Certificate cert = certificate;
+		if (acmeCertificate != null) {
+			cert = acmeCertificate.getCertificate();
 		}
+		serial = cert.getSerialNumber().toString(16);
+		expirationDate = df.format(cert.getNotAfter());
 
-		File file = wslocation.getServerWorkareaResource("acme/" + acmeFile).asFile();
-		writeAcmeFileLine(file, date, serial, directoryURI, accountURI);
-
-	}
-	
-	/**
-	 * Helper method to update the ACME file specified using the parameters specified.
-	 * @param file The file to update.
-	 * @param date The current date and time.
-	 * @param serial The certificate serial number.
-	 * @param directoryURI The current directoryURI from config.
-	 * @param accountURI The current accountURI from config.
-	 */
-	public void writeAcmeFileLine(File file, String date, String serial, String directoryURI, String accountURI) {
-		//Enforce max file size
-		ArrayList<String> header = new ArrayList<String>();
-		ArrayList<String> entries = new ArrayList<String>();
-		try {
-		    BufferedReader br = new BufferedReader(new FileReader(file));
-		    String line; 
-			while ((line = br.readLine()) != null && !line.isEmpty()) {
-				if (line.startsWith("#")) {
-					header.add(line);
-				} else {
-					entries.add(line);
-				}
-			}
-			br.close();
-		} catch (Exception e) {
-			Tr.error(tc, "CWPKI2072W", file.getAbsolutePath(), e.getMessage());
+		ArrayList<AcmeHistoryEntry> acmeHistoryEntries = getAcmeHistoryEntries(acmeFile);
+		if (acmeHistoryEntries == null) {
+			acmeHistoryEntries = new ArrayList<AcmeHistoryEntry>();
 		}
-		//remove the oldest entry if we are at max
-		if (entries.size() >= AcmeConstants.ACME_HISTORICAL_FILE_MAX_SIZE) {
-			entries.remove(0);
+		AcmeHistoryEntry newEntry = new AcmeHistoryEntry(date, serial, directoryURI, accountURI, expirationDate);
+		acmeHistoryEntries.add(newEntry);
+		boolean rewriteFile = false;
+		//Enforce max file size and remove the oldest entry if we are over max
+		if (acmeHistoryEntries.size() > AcmeConstants.ACME_HISTORICAL_FILE_MAX_SIZE) {
+			rewriteFile = true;
+			acmeHistoryEntries.remove(0);
 		}
+		File file = wslocation.getServerWorkareaResource("acmeca/" + acmeFileName).asFile();
        	FileWriter fr;
 		try {
-			fr = new FileWriter(file, false);
-			for (String h: header) {
-				fr.write(h);
-				fr.write("\n");
+
+			if (rewriteFile) {
+				fr = new FileWriter(file, false);
+				for (String h: headers) {
+					fr.write(h);
+					fr.write("\n");
+				}
+				for (AcmeHistoryEntry entry: acmeHistoryEntries) {
+					fr.write(entry.toString());
+					fr.write("\n");
+				}
+			} else {
+				fr = new FileWriter(file, true);
+				//write the new entry
+			   	fr.write(newEntry.toString() + "\n");
 			}
-			for (String e: entries) {
-				fr.write(e);
-				fr.write("\n");
-			}
-			//write the new entry
-		   	fr.write(date + smallSpaceDelim + serial + smallSpaceDelim + directoryURI + smallSpaceDelim + accountURI);
 		   	fr.close();
 		} catch (IOException e) {
 			Tr.error(tc, "CWPKI2072W", file.getAbsolutePath(), e.getMessage());
@@ -214,6 +214,21 @@ public class AcmeHistory {
 	 */
 	public ArrayList<String> getDirectoryURIHistory(File file) {
 		ArrayList<String> entries = new ArrayList<String>();
+		ArrayList<AcmeHistoryEntry> acmeentries = getAcmeHistoryEntries(file);
+		for (AcmeHistoryEntry e: acmeentries) {
+			entries.add(e.getDirectoryURI());
+		}
+		return entries;
+	}
+	
+	/**
+	 * Read the ACME history file and return all
+	 * AcmeHistoryEntries.
+	 * @param file The ACME file to pull directoryURIs from.
+	 * @return A list of AcmeHistoryEntries from the ACME file.
+	 */
+	public ArrayList<AcmeHistoryEntry> getAcmeHistoryEntries(File file) {
+		ArrayList<AcmeHistoryEntry> entries = new ArrayList<AcmeHistoryEntry>();
 		if (!file.exists()) {
 			return entries;
 		}
@@ -222,11 +237,30 @@ public class AcmeHistory {
 		    //Read the commented lines
 		    String line;
 			while ((line = br.readLine()) != null && !line.isEmpty() && line.startsWith("#")) {}
+			//If acme file exists but has no entries, return.
+			if (line == null) {
+				br.close();
+				return entries;
+			}
 			do {
+				String date = null, serial = null, directoryURI = null, accountURI = null, expiration = null;
 				StringTokenizer tok = new StringTokenizer(line);
-				if (tok.hasMoreTokens()) tok.nextToken();
-				if (tok.hasMoreTokens()) tok.nextToken();
-				if (tok.hasMoreTokens()) entries.add(tok.nextToken());	
+				if (tok.hasMoreTokens())  { 
+					date = tok.nextToken();
+				}
+				if (tok.hasMoreTokens()) {
+					serial = tok.nextToken();
+				}
+				if (tok.hasMoreTokens()) {
+					directoryURI = tok.nextToken();	
+				}
+				if (tok.hasMoreTokens()) {
+					accountURI = tok.nextToken();	
+				}
+				if (tok.hasMoreTokens()) {
+					expiration = tok.nextToken();	
+				}
+				entries.add(new AcmeHistoryEntry(date, serial, directoryURI, accountURI, expiration));
 			} while ((line = br.readLine()) != null && !line.isEmpty());
 			br.close();
 
@@ -235,5 +269,24 @@ public class AcmeHistory {
 			return null;
 		}
 		return entries;
+	}
+	
+	/**
+	 * Get the directory URI that was used to obtain
+	 * a certificate. This is used for revoking a
+	 * certificate after the configured directory URI
+	 * has changed.
+	 * @param serial The certificate serial number to be revoked.
+	 * @return The directory URI corresponding to the certificate serial number.
+	 */
+	public String getDirectoryURI(String serial) {
+		ArrayList<AcmeHistoryEntry> entries = getAcmeHistoryEntries(acmeFile);
+		if (entries == null) return null;
+		for(AcmeHistoryEntry entry: entries) {
+			if (serial.equals(entry.getSerial())) {
+				return entry.getDirectoryURI();
+			}
+		}
+		return null;
 	}
 }

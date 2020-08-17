@@ -1,0 +1,47 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMCG
+#COMPONENTNAMEFOR CWMCG MicroProfile Config API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Config 1.1 Impl -  range is 0000-0099, plus 9999 for the emergency message
+# Messages used by Config 1.2 Impl -  range is 0100-0199, plus 9998 for the emergency message
+# Messages used by Config 1.3 Impl -  range is 0200-0299, plus 9997 for the emergency message
+# Messages used by Config 1.4 Impl -  range is 0300-0399, plus 9996 for the emergency message
+# Messages used by Config 2.0 Impl -  range is 0400-0499, plus 9995 for the emergency message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# The {0} property was not found in the configuration.
+no.such.element.CWMCG0300E=CWMCG0300E: La propriet\u00e0 {0} non \u00e8 stata trovata nella configurazione.
+no.such.element.CWMCG0300E.explanation=La propriet\u00e0 richiesta non esiste in alcuna delle origini config configurate.
+no.such.element.CWMCG0300E.useraction=Aggiungere la propriet\u00e0 a una delle origini config esistenti oppure aggiungere una origine config che contenga la propriet\u00e0.
+
+failed.to.schedule.cache.invalidation.CWMCG0301E=CWMCG0301E: Impossibile pianificare l'invalidazione della cache di configurazione microprofilo. L'eccezione \u00e8 {0}.
+failed.to.schedule.cache.invalidation.CWMCG0301E.explanation=Le modifiche nella configurazione MicroProfilo potrebbero non essere riflesse nell'applicazione
+failed.to.schedule.cache.invalidation.CWMCG0301E.useraction=Esaminare il file message.log del server e i log FFDC per identificare il problema.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Config 2.0 error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# The following Config API error occurred: {0}.
+temporary.CWMCG9996E=CWMCG9996E: Si \u00e8 verificato il seguente errore dell'API di configurazione: {0}
+temporary.CWMCG9996E.explanation=Si \u00e8 verificato un errore API di configurazione che ha impedito la regolare elaborazione.
+temporary.CWMCG9996E.useraction=Esaminare il file message.log del server e i log FFDC per identificare il problema.

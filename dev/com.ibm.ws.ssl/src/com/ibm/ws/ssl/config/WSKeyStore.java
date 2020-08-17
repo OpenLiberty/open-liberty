@@ -1009,7 +1009,7 @@ public class WSKeyStore extends Properties {
      * @throws Exception
      */
     public KeyStore getKeyStore(boolean reinitialize, boolean createIfNotPresent) throws Exception {
-        return getKeyStore(reinitialize, createIfNotPresent, true);
+        return getKeyStore(reinitialize, createIfNotPresent, false);
     }
 
     /**
@@ -1027,7 +1027,7 @@ public class WSKeyStore extends Properties {
          * write or set the keyStore later. If we get a read lock now, we can't upgrade to a write lock
          * later (for example, when calling store or setCertificateEntry).
          */
-        boolean write = myKeyStore == null || reinitialize;
+        boolean write = myKeyStore == null || reinitialize || clone;
         if (write) {
             acquireWriteLock();
         } else {
@@ -1057,6 +1057,20 @@ public class WSKeyStore extends Properties {
      * @throws Exception
      */
     public void store() throws Exception {
+        store(null);
+    }
+
+    /**
+     * Stores the provided keystore, if not null, otherwise stores
+     * the current information in the wrapped keystore.
+     *
+     * Updating a clone and then storing it prevents a caller from getting a
+     * keystore that we are actively changing.
+     *
+     * @param clonedKeyStore
+     * @throws Exception
+     */
+    public void store(KeyStore clonedKeyStore) throws Exception {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "store");
 
@@ -1075,7 +1089,7 @@ public class WSKeyStore extends Properties {
             boolean fileBased = Boolean.parseBoolean(getProperty(Constants.SSLPROP_KEY_STORE_FILE_BASED));
             String SSLKeyStoreStash = getProperty(Constants.SSLPROP_KEY_STORE_CREATE_CMS_STASH);
 
-            KeyStore ks = getKeyStore(false, false);
+            KeyStore ks = clonedKeyStore == null ? getKeyStore(false, false) : clonedKeyStore;
 
             if (ks != null && !readOnly) {
                 if (fileBased) {
@@ -1102,6 +1116,10 @@ public class WSKeyStore extends Properties {
                     } finally {
                         fos.close();
                     }
+                }
+
+                if (clonedKeyStore != null) {
+                    myKeyStore = ks;
                 }
             }
 
@@ -1340,7 +1358,7 @@ public class WSKeyStore extends Properties {
 
         acquireWriteLock();
         try {
-            KeyStore jKeyStore = getKeyStore(false, false, false);
+            KeyStore jKeyStore = getKeyStore(false, false, true);
             if (null == jKeyStore) {
                 final String keyStoreLocation = getProperty(Constants.SSLPROP_KEY_STORE);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -1353,7 +1371,7 @@ public class WSKeyStore extends Properties {
             jKeyStore.setCertificateEntry(alias, cert);
 
             try {
-                store();
+                store(jKeyStore);
             } catch (IOException e) {
                 // Note: debug + ffdc in store() itself
 
@@ -1430,7 +1448,7 @@ public class WSKeyStore extends Properties {
 
         acquireWriteLock();
         try {
-            KeyStore jKeyStore = getKeyStore(false, false, false);
+            KeyStore jKeyStore = getKeyStore(false, false, true);
             if (null == jKeyStore) {
                 final String keyStoreLocation = getProperty(Constants.SSLPROP_KEY_STORE);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -1449,7 +1467,7 @@ public class WSKeyStore extends Properties {
 
             // store the key... errors are thrown if conflicts or errors occur
             jKeyStore.setKeyEntry(alias, key, decodedPassword.toCharArray(), chain);
-            store();
+            store(jKeyStore);
         } catch (KeyStoreException kse) {
             throw kse;
         } catch (KeyException ke) {
@@ -1585,7 +1603,11 @@ public class WSKeyStore extends Properties {
 
         try {
             for (int i = 0; i < certs.size(); i++) {
-                Certificate cert = certs.get(i);
+                X509Certificate cert = (X509Certificate)certs.get(i);
+                String subject = cert.getSubjectX500Principal().getName();
+                String envKey = "cert_" + name;
+                Tr.info(tc, "ssl.certificate.add.CWPKI0830I",new Object[] {subject, envKey, name});
+                
                 // add the certificate to the keystore with an alias format: envcert-[index]-cert_[keystorename]
                 String alias = "envcert-" + String.valueOf(i) + "-" + key;
                 setCertificateEntryNoStore(alias.toLowerCase(), cert);

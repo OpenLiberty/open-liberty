@@ -1,0 +1,64 @@
+<!--
+    Copyright (c) 2013, 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>ejbLite-3.2</feature>
+        <feature>managedBeans-1.0</feature>
+        <feature>wasJmsClient-2.0</feature>
+        <feature>wasJmsServer-1.0</feature>
+        <feature>jpa-2.1</feature>
+        <feature>componenttest-1.0</feature>
+    </featureManager>
+
+    <messagingEngine id="defaultME" >
+
+        <queue id="MBQueue">
+        </queue>
+
+        <fileStore id="com.ibm.ws.sib.fileStore"
+            logFileSize="10"
+            fileStoreSize="50">
+        </fileStore>
+
+    </messagingEngine>
+
+    <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF" connectionManagerRef="ConMgr6">
+        <properties.wasJms userName="CF1USER"
+                           clientID="clientId"
+                           nonPersistentMapping="ExpressNonPersistent"
+                           password="junkpassword"
+                           persistentMapping="ReliablePersistent"
+                           readAhead="Default"
+                           connectionName=""
+                           targetTransport="BINDING_THEN_CLIENT"
+                           temporaryQueueNamePrefix="tempor"/>
+    </jmsQueueConnectionFactory>
+    <connectionManager id="ConMgr6" maxPoolSize="2"/>
+
+    <jmsQueue id="MBQueue" jndiName="Jetstream/jms/MBQueue">
+        <properties.wasJms queueName="MBQueue"/>
+    </jmsQueue>
+
+    <library id="DerbyLib">
+        <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+    </library>
+
+    <jdbcDriver id="DerbyEmbedded" libraryRef="DerbyLib"/>
+
+    <dataSource id="basicmanagedbeands" jndiName="mbDataSource" jdbcDriverRef="DerbyEmbedded">
+        <properties databaseName="memory:basicmanagedbean" createDatabase="create"/>
+    </dataSource>
+
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+</server>

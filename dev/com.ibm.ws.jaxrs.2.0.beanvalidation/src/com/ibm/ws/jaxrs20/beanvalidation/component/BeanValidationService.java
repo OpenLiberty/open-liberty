@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.beanvalidation.component;
 
+import java.lang.reflect.Method;
+
 import javax.validation.ValidationException;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
@@ -58,7 +60,7 @@ public class BeanValidationService {
 
     /**
      * Called by DS to activate this service
-     * 
+     *
      * @param compcontext the context of this component
      */
     protected void activate(ComponentContext compcontext) {
@@ -71,7 +73,7 @@ public class BeanValidationService {
 
     /**
      * Called by DS to deactivate this service
-     * 
+     *
      * @param compcontext the context of this component
      */
     protected void deactivate(ComponentContext compcontext) {
@@ -84,7 +86,7 @@ public class BeanValidationService {
 
     /**
      * Called by DS to set the service reference
-     * 
+     *
      * @param ref the reference from DS
      */
     @Reference(name = REFERENCE_BEANVALIDATION_SERVICE, service = BeanValidation.class)
@@ -94,7 +96,7 @@ public class BeanValidationService {
 
     /**
      * Called by DS to remove the service reference
-     * 
+     *
      * @param ref the reference from DS
      */
     protected void unsetBeanValidation(ServiceReference<BeanValidation> ref) {
@@ -136,6 +138,25 @@ public class BeanValidationService {
                 Tr.debug(tc, "Returning a null ValidatorFactory: " + e.getMessage());
             }
             return null;
+        }
+    }
+
+    public boolean isMethodConstrained(Method method) {
+        BeanValidation beanValidation = instance().beanValidation.getService();
+        if (beanValidation == null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Returning false for isMethodConstrained() because the BeanValidation service is not currently available.  Is the bean validation feature enabled?");
+            }
+            return false;
+        }
+        try {
+            ComponentMetaData componentMetaData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+            return beanValidation.isMethodConstrained(method);
+        } catch (ValidationException e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Returning false for isMethodConstrained(): " + e.getMessage());
+            }
+            return false;
         }
     }
 }

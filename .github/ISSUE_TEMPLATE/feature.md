@@ -60,7 +60,7 @@ All features (both "Design Approved" and "No Design Approved")
 - [ ] **Performance** - (Jared Anderson). Performance testing is complete with no high severity defects or N/A . Approver adds label focalApproved:performance to the Epic in Github.
 - [ ] **Serviceability** - (Don Bourne). Serviceability has been addressed.
 - [ ] **STE** - (Swati Kasundra). STE chart deck is complete or N/A . Approver adds label focalApproved:ste to the Epic in Github.
-- [ ] **SVT** - (Greg Ecock - Cloud, Brian Hanczaryk- APS). SVT is complete or N/A . Approver adds label focalApproved:svt to the Epic in Github.
+- [ ] **SVT** - (Brian Hanczaryk- APS). SVT is complete or N/A . Approver adds label focalApproved:svt to the Epic in Github.
 
 
 ## **Ready for GA**

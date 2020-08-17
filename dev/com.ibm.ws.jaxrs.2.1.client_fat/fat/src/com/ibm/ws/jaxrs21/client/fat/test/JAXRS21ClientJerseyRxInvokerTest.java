@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs21.client.fat.test;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,9 +39,9 @@ public class JAXRS21ClientJerseyRxInvokerTest extends JAXRS21AbstractTest {
 
     private final static String jerseyRxInvokerTarget = "jaxrs21bookstore/JerseyRxInvokerTestServlet";
 
-    private static final String reactivex = "publish/shared/resources/reactivex/";
+    private static final String reactivex = "lib/";
 
-    private static final String jersey = "publish/shared/resources/jersey/";
+    private static final String jersey = "lib/";
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -58,6 +60,10 @@ public class JAXRS21ClientJerseyRxInvokerTest extends JAXRS21AbstractTest {
         } catch (Exception e) {
             System.out.println(e.toString());
         }
+
+        // Pause for the smarter planet message
+        assertNotNull("The smarter planet message did not get printed on server",
+                      server.waitForStringInLog("CWWKF0011I"));
 
     }
 

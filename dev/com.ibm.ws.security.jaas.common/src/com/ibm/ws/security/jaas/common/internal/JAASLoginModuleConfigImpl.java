@@ -193,7 +193,7 @@ public class JAASLoginModuleConfigImpl implements JAASLoginModuleConfig {
 
             Class<?> cl = null;
             try {
-                if (isIBMJdk18Lower() || !"com.ibm.security.auth.module.Krb5LoginModule".equalsIgnoreCase(target)) {
+                if (isIBMJdk18() || !"com.ibm.security.auth.module.Krb5LoginModule".equalsIgnoreCase(target)) {
                     //Do not initialize the IBM Krb5LoginModule if we are running with IBM JDK 18 or lower
                     cl = Class.forName(target, false, loader);
                 }
@@ -260,7 +260,7 @@ public class JAASLoginModuleConfigImpl implements JAASLoginModuleConfig {
      * or is found to not be loadable from any.
      *
      * @param className class name, including package, of the JAAS custom login module to load.
-     * @param appInfo   information about the enterprise application.
+     * @param appInfo information about the enterprise application.
      * @return the loaded class. Null if unable to load from any web module.
      */
     @FFDCIgnore(ClassNotFoundException.class)
@@ -406,8 +406,8 @@ public class JAASLoginModuleConfigImpl implements JAASLoginModuleConfig {
         this.classLoadingService = classLoadingService;
     }
 
-    private static boolean isIBMJdk18Lower() {
-        return (JavaInfo.vendor() == Vendor.IBM && JavaInfo.majorVersion() <= 8);
+    private static boolean isIBMJdk18() {
+        return (JavaInfo.vendor() == Vendor.IBM && JavaInfo.majorVersion() == 8);
     }
 
 }

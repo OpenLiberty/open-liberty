@@ -166,7 +166,7 @@ decompression.tolerance.reached=CWWKT0034E: The HTTP channel attempted to decomp
 decompression.tolerance.reached.explanation=The maximum number of decompression cycles has reached, resulting in a decompression ratio larger than the configured limit. The decompression limit is defined by the decompressionRatioLimit httpOption attribute.
 decompression.tolerance.reached.useraction=When this exception happens on a valid request body, reconfigure the decompressionTolerance and decompressionRatioLimit httpOption attributes to achieve the appropriate decompression results.
 
-cookies.samesite.duplicateName=CWWKT0035W: A duplicate cookie name or pattern [{0}] was found in the SameSite [{1}] configuration. The [{0}] cookie name or pattern is ignored for all configuration lists. Any cookie name or pattern that is defined by the 'lax', 'none', and 'strict' configurations can be defined in only one of the three configurations. 
+cookies.samesite.duplicateName=CWWKT0035W: A duplicate cookie name or pattern [{0}] was found in the SameSite [{1}] configuration. The [{0}] cookie name or pattern is ignored for all configuration lists. Any cookie name or pattern that is defined by the ‘’lax’’, ‘’none’’, and ‘’strict’' configurations can be defined in only one of the three configurations.
 cookies.samesite.duplicateName.explanation=The specified value was already found by the configuration and mapped to a SameSite value.
 cookies.samesite.duplicateName.useraction=Ensure that cookie names and patterns are unique across the 'lax', 'none', and 'strict' configuration lists.
 
@@ -174,6 +174,6 @@ cookies.samesite.unsupportedWildcard=CWWKT0036W: An unsupported use of the wildc
 cookies.samesite.unsupportedWildcard.explanation=The wildcard (*) character was used in an unsupported way. Support consists of a single wildcard (*) character that is used as a stand-alone value, or following any number of cookie name prefixes.
 cookies.samesite.unsupportedWildcard.useraction=Ensure that only a single wildcard (*) character is used per pattern in the 'lax', 'none', and 'strict' lists. Additionally, use of this character is supported only under the following two conditions: as a stand-alone value or following cookie name prefixes.
 
-cookies.samesite.knownDuplicateName=CWWKT0037W: A cookie name or pattern [{0}], which is marked as a duplicate, was found in the SameSite [{1}] configuration. The [{0}] cookie name or pattern is ignored. Any cookie name or pattern that is defined by the 'lax', 'none', and 'strict' configurations can be defined in only one of the three configurations. 
+cookies.samesite.knownDuplicateName=CWWKT0037W: A cookie name or pattern [{0}], which is marked as a duplicate, was found in the SameSite [{1}] configuration. The [{0}] cookie name or pattern is ignored. Any cookie name or pattern that is defined by the ‘’lax’’, ‘’none’’, and ‘’strict’' configurations can be defined in only one of the three configurations.”
 cookies.samesite.knownDuplicateName.explanation=The specified value was already found by the configuration and mapped to a SameSite value.
 cookies.samesite.knownDuplicateName.useraction=Ensure that cookie names and patterns are unique across the 'lax', 'none', and 'strict' configuration lists.

@@ -38,9 +38,9 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
+import org.apache.http.conn.ssl.DefaultHostnameVerifier;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.StrictHostnameVerifier;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
@@ -211,7 +211,7 @@ public class JwKRetriever {
         try {
             // figure out which cache to use for jwk from classloading
             classLoadingCacheSelector = Thread.currentThread().getContextClassLoader().toString() + location;
-            //figure out which cache to use for jwk from file system            
+            //figure out which cache to use for jwk from file system
             final String keyFile;
             if (location.startsWith("file:")) {
                 URI uri = new URI(location);
@@ -239,7 +239,7 @@ public class JwKRetriever {
 
         } catch (Exception e2) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Caught exception opening file from location [" + location + "]: " + e2.getMessage());
+                Tr.debug(tc, "Caught exception opening file from location [" + location + "]: " + e2);
             }
         }
         return publicKey;
@@ -512,14 +512,14 @@ public class JwKRetriever {
     JSONObject parseJsonObject(String jsonString) {
         JSONObject jsonObject = null;
         try {
-            if (!jsonString.startsWith(JSON_START)) { //convert Base64 encoded String to JSON string               
+            if (!jsonString.startsWith(JSON_START)) { //convert Base64 encoded String to JSON string
                 // jsonString=new String (Base64.getDecoder().decode(jsonString), "UTF-8");
                 jsonString = new String(Base64.decodeBase64(jsonString), "UTF-8");
             }
             jsonObject = JSONObject.parse(jsonString);
         } catch (Exception e) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Caught exception parsing JSON string [" + jsonString + "]: " + e.getMessage());
+                Tr.debug(tc, "Caught exception parsing JSON string [" + jsonString + "]: " + e);
             }
         }
         return jsonObject;
@@ -532,7 +532,7 @@ public class JwKRetriever {
             jsonObject = JSONObject.parse(is);
         } catch (Exception e) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Caught exception parsing input stream [" + is.toString() + "]: " + e.getMessage());
+                Tr.debug(tc, "Caught exception parsing input stream [" + is.toString() + "]: " + e);
             }
         }
         return jsonObject;
@@ -545,7 +545,7 @@ public class JwKRetriever {
             jsonArray = JSONArray.parse(jsonString);
         } catch (Exception e) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Caught exception parsing JSON string [" + jsonString + "]: " + e.getMessage());
+                Tr.debug(tc, "Caught exception parsing JSON string [" + jsonString + "]: " + e);
             }
         }
         return jsonArray;
@@ -594,7 +594,7 @@ public class JwKRetriever {
         try {
             sslSocketFactory = sslSupport.getSSLSocketFactory(sslConfigurationName);
         } catch (javax.net.ssl.SSLException e) {
-            throw new SSLException(e.getMessage());
+            throw new SSLException(e);
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "sslSocketFactory (" + ") get: " + sslSocketFactory);
@@ -688,9 +688,9 @@ public class JwKRetriever {
         if (isSecure) {
             SSLConnectionSocketFactory connectionFactory = null;
             if (!isHostnameVerification) {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new AllowAllHostnameVerifier());
+                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
             } else {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new StrictHostnameVerifier());
+                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
             }
             if (addBasicAuthHeader) {
                 client = getBuilder(useSystemPropertiesForHttpClientConnections).setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();

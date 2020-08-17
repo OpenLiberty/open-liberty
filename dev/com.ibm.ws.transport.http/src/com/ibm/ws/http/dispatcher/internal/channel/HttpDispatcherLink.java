@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2019 IBM Corporation and others.
+ * Copyright (c) 2009, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1193,7 +1193,6 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             else {
                 HttpInboundLink link = isc.getLink();
                 if (link != null) {
-
                     return link.isHTTP2UpgradeRequest(headers);
                 }
             }
@@ -1208,13 +1207,13 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      * @return false if some error occurred while servicing the upgrade request
      */
     @Override
-    public boolean handleHTTP2UpgradeRequest(Map<String, String> headers) {
+    public boolean handleHTTP2UpgradeRequest(Map<String, String> http2Settings) {
         HttpInboundLink link = isc.getLink();
         HttpInboundChannel channel = link.getChannel();
         VirtualConnection vc = link.getVirtualConnection();
         H2InboundLink h2Link = new H2InboundLink(channel, vc, getTCPConnectionContext());
 
-        boolean upgraded = h2Link.handleHTTP2UpgradeRequest(headers, link);
+        boolean upgraded = h2Link.handleHTTP2UpgradeRequest(http2Settings, link);
         if (upgraded) {
             h2Link.startAsyncRead(true);
         } else {

@@ -92,6 +92,7 @@ public class AsyncConfigTests extends AbstractTest {
 
     @AfterClass
     public static void afterClass() throws Exception {
+        server.removeAndStopDropinsApplications("InitTxRecoveryLogApp.ear");
         server.stopServer();
     }
 

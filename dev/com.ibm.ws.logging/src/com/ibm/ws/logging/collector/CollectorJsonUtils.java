@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,15 +10,16 @@
  *******************************************************************************/
 package com.ibm.ws.logging.collector;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 
 import com.ibm.websphere.ras.DataFormatHelper;
 import com.ibm.ws.logging.data.AccessLogData;
+import com.ibm.ws.logging.data.AccessLogDataFormatter;
+import com.ibm.ws.logging.data.AuditData;
 import com.ibm.ws.logging.data.FFDCData;
 import com.ibm.ws.logging.data.GCData;
 import com.ibm.ws.logging.data.GenericData;
+import com.ibm.ws.logging.data.JSONObject.JSONObjectBuilder;
 import com.ibm.ws.logging.data.KeyValuePair;
 import com.ibm.ws.logging.data.KeyValuePairList;
 import com.ibm.ws.logging.data.LogTraceData;
@@ -31,6 +32,7 @@ import com.ibm.ws.logging.data.LogTraceData;
 public class CollectorJsonUtils {
 
     public static final int MAX_USER_AGENT_LENGTH = 2048;
+    private static final int LOGSTASH_KEY = CollectorConstants.KEYS_LOGSTASH;
 
     public static String getEventType(String source, String location) {
         return CollectorJsonHelpers.getEventType(source, location);
@@ -40,14 +42,14 @@ public class CollectorJsonUtils {
      * Method to return log event data in json format. If the collector version passed is greater than 1.0
      * then the jsonifyEvent call is passed to another version of CollectorJsonUtils.
      *
-     * @param event The object originating from logging source which contains necessary fields
-     * @param eventType The type of event
-     * @param servername The name of the server
-     * @param wlpUserDir The name of wlp user directory
-     * @param serverHostName The name of server host
+     * @param event            The object originating from logging source which contains necessary fields
+     * @param eventType        The type of event
+     * @param servername       The name of the server
+     * @param wlpUserDir       The name of wlp user directory
+     * @param serverHostName   The name of server host
      * @param collectorVersion The version number
-     * @param tags An array of tags
-     * @param maxFieldLength The max character length of strings
+     * @param tags             An array of tags
+     * @param maxFieldLength   The max character length of strings
      */
     public static String jsonifyEvent(Object event, String eventType, String serverName, String wlpUserDir, String serverHostName, String collectorVersion, String[] tags,
                                       int maxFieldLength) {
@@ -91,42 +93,43 @@ public class CollectorJsonUtils {
                                          String serverName, String hostName, Object event, String[] tags) {
         GCData gcData = (GCData) event;
 
-        StringBuilder sb = CollectorJsonHelpers.startGCJson(hostName, wlpUserDir, serverName);
+        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startGC();
 
-        CollectorJsonHelpers.addToJSON(sb, gcData.getHeapKey(), Long.toString(gcData.getHeap()), false, false, false, false, true);
-        CollectorJsonHelpers.addToJSON(sb, gcData.getUsedHeapKey(), Long.toString(gcData.getUsedHeap()), false, false, false, false, true);
-        CollectorJsonHelpers.addToJSON(sb, gcData.getMaxHeapKey(), Long.toString(gcData.getMaxHeap()), false, false, false, false, true);
+        jsonBuilder.addField(gcData.getHeapKey(), gcData.getHeap(), false);
+        jsonBuilder.addField(gcData.getUsedHeapKey(), gcData.getUsedHeap(), false);
+        jsonBuilder.addField(gcData.getMaxHeapKey(), gcData.getMaxHeap(), false);
 
         long duration = gcData.getDuration() * 1000;
-        CollectorJsonHelpers.addToJSON(sb, gcData.getDurationKey(), Long.toString(duration), false, false, false, false, true);
+        jsonBuilder.addField(gcData.getDurationKey(), duration, false);
 
-        CollectorJsonHelpers.addToJSON(sb, gcData.getGcTypeKey(), gcData.getGcType(), false, false, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, gcData.getReasonKey(), gcData.getReason(), false, false, false, false, false);
+        jsonBuilder.addField(gcData.getGcTypeKey(), gcData.getGcType(), false, true);
+        jsonBuilder.addField(gcData.getReasonKey(), gcData.getReason(), false, true);
 
         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(gcData.getDatetime());
-        CollectorJsonHelpers.addToJSON(sb, gcData.getDatetimeKey(), datetime, false, false, false, false, false);
+        jsonBuilder.addField(gcData.getDatetimeKey(), datetime, false, true);
 
-        CollectorJsonHelpers.addToJSON(sb, gcData.getSequenceKey(), gcData.getSequence(), false, false, false, false, false);
+        jsonBuilder.addField(gcData.getSequenceKey(), gcData.getSequence(), false, true);
 
         if (tags != null) {
-            addTagNameForVersion(sb).append(CollectorJsonHelpers.jsonifyTags(tags));
+            jsonBuilder.addPreformattedField("tags", CollectorJsonHelpers.jsonifyTags(tags));
         }
 
-        sb.append("}");
-
-        return sb.toString();
+        return jsonBuilder.build().toString();
     }
 
     private static String jsonifyTraceAndMessage(int maxFieldLength, String wlpUserDir,
                                                  String serverName, String hostName, String eventType, Object event, String[] tags) {
 
         LogTraceData logData = (LogTraceData) event;
-        StringBuilder sb = null;
+        JSONObjectBuilder jsonBuilder = null;
+        boolean isMessageEvent = eventType.equals(CollectorConstants.MESSAGES_LOG_EVENT_TYPE);
 
-        if (eventType.equals(CollectorConstants.MESSAGES_LOG_EVENT_TYPE))
-            sb = CollectorJsonHelpers.startMessageJson(hostName, wlpUserDir, serverName);
-        if (eventType.equals(CollectorConstants.TRACE_LOG_EVENT_TYPE))
-            sb = CollectorJsonHelpers.startTraceJson(hostName, wlpUserDir, serverName);
+        if (isMessageEvent) {
+            jsonBuilder = CollectorJsonHelpers.startMessage(LOGSTASH_KEY);
+        }
+        if (!isMessageEvent) {
+            jsonBuilder = CollectorJsonHelpers.startTrace(LOGSTASH_KEY);
+        }
 
         String message = logData.getMessage();
         String loglevel = logData.getLoglevel();
@@ -142,44 +145,50 @@ public class CollectorJsonUtils {
             formattedValue.append(CollectorJsonHelpers.LINE_SEPARATOR).append(throwable);
         }
 
-        CollectorJsonHelpers.addToJSON(sb, logData.getMessageKey(), formattedValue.toString(), false, true, false, false);
-        CollectorJsonHelpers.addToJSON(sb, logData.getThreadIdKey(), DataFormatHelper.padHexString(logData.getThreadId(), 8), false, true, false, false);
         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(logData.getDatetime());
-        CollectorJsonHelpers.addToJSON(sb, logData.getDatetimeKey(), datetime, false, true, false, false);
-        CollectorJsonHelpers.addToJSON(sb, logData.getModuleKey(), logData.getModule(), false, true, false, false);
-        CollectorJsonHelpers.addToJSON(sb, logData.getMessageIdKey(), logData.getMessageId(), false, true, false, false);
-        CollectorJsonHelpers.addToJSON(sb, logData.getSeverityKey(), logData.getSeverity(), false, true, false, false);
-        CollectorJsonHelpers.addToJSON(sb, logData.getMethodNameKey(), logData.getMethodName(), false, true, false, false);
-        CollectorJsonHelpers.addToJSON(sb, logData.getClassNameKey(), logData.getClassName(), false, true, false, false);
-        CollectorJsonHelpers.addToJSON(sb, logData.getSequenceKey(), logData.getSequence(), false, true, false, false);
-        KeyValuePairList kvpl = logData.getExtensions();
+
+        //@formatter:off
+        jsonBuilder.addField(LogTraceData.getMessageKey(LOGSTASH_KEY, isMessageEvent), formattedValue.toString(), false, true)
+                   .addField(LogTraceData.getThreadIdKey(LOGSTASH_KEY, isMessageEvent), DataFormatHelper.padHexString(logData.getThreadId(), 8), false, true)
+                   .addField(LogTraceData.getDatetimeKey(LOGSTASH_KEY, isMessageEvent), datetime, false, true)
+                   .addField(LogTraceData.getModuleKey(LOGSTASH_KEY, isMessageEvent), logData.getModule(), false, true)
+                   .addField(LogTraceData.getMessageIdKey(LOGSTASH_KEY, isMessageEvent), logData.getMessageId(), false, true)
+                   .addField(LogTraceData.getSeverityKey(LOGSTASH_KEY, isMessageEvent), logData.getSeverity(), false, true)
+                   .addField(LogTraceData.getMethodNameKey(LOGSTASH_KEY, isMessageEvent), logData.getMethodName(), false, true)
+                   .addField(LogTraceData.getClassNameKey(LOGSTASH_KEY, isMessageEvent), logData.getClassName(), false, true)
+                   .addField(LogTraceData.getSequenceKey(LOGSTASH_KEY, isMessageEvent), logData.getSequence(), false, true);
+        //@formatter:on
+
+        ArrayList<KeyValuePair> extensions = null;
+        KeyValuePairList kvpl = null;
+        kvpl = logData.getExtensions();
         if (kvpl != null) {
             if (kvpl.getKey().equals(LogFieldConstants.EXTENSIONS_KVPL)) {
-                ArrayList<KeyValuePair> extensions = kvpl.getList();
+                extensions = kvpl.getList();
                 for (KeyValuePair k : extensions) {
                     String extKey = k.getKey();
                     if (extKey.endsWith(CollectorJsonHelpers.INT_SUFFIX)) {
-                        CollectorJsonHelpers.addToJSON(sb, extKey, Integer.toString(k.getIntValue()), false, true, false, false, true);
+                        jsonBuilder.addField(extKey, k.getIntValue(), false);
                     } else if (extKey.endsWith(CollectorJsonHelpers.FLOAT_SUFFIX)) {
-                        CollectorJsonHelpers.addToJSON(sb, extKey, Float.toString(k.getFloatValue()), false, true, false, false, true);
+                        jsonBuilder.addField(extKey, k.getFloatValue(), false);
                     } else if (extKey.endsWith(CollectorJsonHelpers.LONG_SUFFIX)) {
-                        CollectorJsonHelpers.addToJSON(sb, extKey, Long.toString(k.getLongValue()), false, true, false, false, true);
+                        jsonBuilder.addField(extKey, k.getLongValue(), false);
                     } else if (extKey.endsWith(CollectorJsonHelpers.BOOL_SUFFIX)) {
-                        CollectorJsonHelpers.addToJSON(sb, extKey, Boolean.toString(k.getBooleanValue()), false, true, false, false, true);
+                        jsonBuilder.addField(extKey, k.getBooleanValue(), false);
                     } else {
-                        CollectorJsonHelpers.addToJSON(sb, extKey, k.getStringValue(), false, true, false, false, false);
+                        jsonBuilder.addField(extKey, k.getStringValue(), false, true);
                     }
                 }
             }
         }
 
+        //append tags with preformatted string field value
         if (tags != null) {
-            addTagNameForVersion(sb).append(CollectorJsonHelpers.jsonifyTags(tags));
+            jsonBuilder.addPreformattedField("tags", CollectorJsonHelpers.jsonifyTags(tags));
         }
 
-        sb.append("}");
+        return jsonBuilder.build().toString();
 
-        return sb.toString();
     }
 
     private static String jsonifyFFDC(int maxFieldLength, String wlpUserDir,
@@ -187,30 +196,27 @@ public class CollectorJsonUtils {
 
         FFDCData ffdcData = (FFDCData) event;
 
-        StringBuilder sb = CollectorJsonHelpers.startFFDCJson(hostName, wlpUserDir, serverName);
+        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startFFDC(LOGSTASH_KEY);
 
         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(ffdcData.getDatetime());
-        CollectorJsonHelpers.addToJSON(sb, ffdcData.getDatetimeKey(), datetime, false, true, false, false, false);
-
-        CollectorJsonHelpers.addToJSON(sb, ffdcData.getMessageKey(), ffdcData.getMessage(), false, true, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, ffdcData.getClassNameKey(), ffdcData.getClassName(), false, true, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, ffdcData.getExceptionNameKey(), ffdcData.getExceptionName(), false, true, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, ffdcData.getProbeIdKey(), ffdcData.getProbeId(), false, true, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, ffdcData.getThreadIdKey(), DataFormatHelper.padHexString((int) ffdcData.getThreadId(), 8), false, true, false, false, false);
-
         String formattedValue = CollectorJsonHelpers.formatMessage(ffdcData.getStacktrace(), maxFieldLength);
-        CollectorJsonHelpers.addToJSON(sb, ffdcData.getStacktraceKey(), formattedValue, false, true, false, false, false);
-
-        CollectorJsonHelpers.addToJSON(sb, ffdcData.getObjectDetailsKey(), ffdcData.getObjectDetails(), false, true, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, ffdcData.getSequenceKey(), ffdcData.getSequence(), false, true, false, false, false);
+        //@formatter:off
+        jsonBuilder.addField(FFDCData.getDatetimeKey(LOGSTASH_KEY), datetime, false, true)
+                   .addField(FFDCData.getMessageKey(LOGSTASH_KEY), ffdcData.getMessage(), false, true)
+                   .addField(FFDCData.getClassNameKey(LOGSTASH_KEY), ffdcData.getClassName(), false, true)
+                   .addField(FFDCData.getExceptionNameKey(LOGSTASH_KEY), ffdcData.getExceptionName(), false, true)
+                   .addField(FFDCData.getProbeIdKey(LOGSTASH_KEY), ffdcData.getProbeId(), false, true)
+                   .addField(FFDCData.getThreadIdKey(LOGSTASH_KEY), DataFormatHelper.padHexString((int) ffdcData.getThreadId(), 8), false, true)
+                   .addField(FFDCData.getStacktraceKey(LOGSTASH_KEY), formattedValue, false, true)
+                   .addField(FFDCData.getObjectDetailsKey(LOGSTASH_KEY), ffdcData.getObjectDetails(), false, true)
+                   .addField(FFDCData.getSequenceKey(LOGSTASH_KEY), ffdcData.getSequence(), false, true);
+        //@formatter:on
 
         if (tags != null) {
-            addTagNameForVersion(sb).append(CollectorJsonHelpers.jsonifyTags(tags));
+            jsonBuilder.addPreformattedField("tags", CollectorJsonHelpers.jsonifyTags(tags));
         }
 
-        sb.append("}");
-
-        return sb.toString();
+        return jsonBuilder.build().toString();
     }
 
     private static String jsonifyAccess(String wlpUserDir,
@@ -218,58 +224,31 @@ public class CollectorJsonUtils {
 
         AccessLogData accessLogData = (AccessLogData) event;
 
-        StringBuilder sb = CollectorJsonHelpers.startAccessLogJson(hostName, wlpUserDir, serverName);
+        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startAccessLog(LOGSTASH_KEY);
 
-        CollectorJsonHelpers.addToJSON(sb, accessLogData.getUriPathKey(), accessLogData.getUriPath(), false, true, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, accessLogData.getRequestMethodKey(), accessLogData.getRequestMethod(), false, true, false, false, false);
+        AccessLogDataFormatter[] formatters = accessLogData.getFormatters();
 
-        String jsonQueryString = accessLogData.getQueryString();
-        if (jsonQueryString != null) {
-            try {
-                jsonQueryString = URLDecoder.decode(jsonQueryString, LogFieldConstants.UTF_8);
-            } catch (UnsupportedEncodingException e) {
-                // ignore, use the original value;
-            }
-
-        }
-        CollectorJsonHelpers.addToJSON(sb, accessLogData.getQueryStringKey(), jsonQueryString, false, true, false, false, false);
-
-        CollectorJsonHelpers.addToJSON(sb, accessLogData.getRequestHostKey(), accessLogData.getRequestHost(), false, true, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, accessLogData.getRequestPortKey(), accessLogData.getRequestPort(), false, true, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, accessLogData.getRemoteHostKey(), accessLogData.getRemoteHost(), false, true, false, false, false);
-
-        String userAgent = accessLogData.getUserAgent();
-
-        if (userAgent != null && userAgent.length() > MAX_USER_AGENT_LENGTH) {
-            userAgent = userAgent.substring(0, MAX_USER_AGENT_LENGTH);
-        }
-
-        CollectorJsonHelpers.addToJSON(sb, accessLogData.getUserAgentKey(), userAgent, false, false, false, false, false);
-
-        CollectorJsonHelpers.addToJSON(sb, accessLogData.getRequestProtocolKey(), accessLogData.getRequestProtocol(), false, true, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, accessLogData.getBytesReceivedKey(), Long.toString(accessLogData.getBytesReceived()), false, true, false, false, true);
-        CollectorJsonHelpers.addToJSON(sb, accessLogData.getResponseCodeKey(), Integer.toString(accessLogData.getResponseCode()), false, true, false, false, true);
-        CollectorJsonHelpers.addToJSON(sb, accessLogData.getElapsedTimeKey(), Long.toString(accessLogData.getElapsedTime()), false, true, false, false, true);
-
-        String datetime = CollectorJsonHelpers.dateFormatTL.get().format(accessLogData.getDatetime());
-        CollectorJsonHelpers.addToJSON(sb, accessLogData.getDatetimeKey(), datetime, false, true, false, false, false);
-
-        CollectorJsonHelpers.addToJSON(sb, accessLogData.getSequenceKey(), accessLogData.getSequence(), false, true, false, false, false);
+        // Only one of these will not be null - there is only one formatter per event. If both are not null, we made a mistake earlier in AccessLogSource
+        if (formatters[3] != null)
+            formatters[3].populate(jsonBuilder, accessLogData);
+        else if (formatters[2] != null)
+            formatters[2].populate(jsonBuilder, accessLogData);
+        else
+            throw new RuntimeException("There is no formatter available for this event.");
 
         if (tags != null) {
-            addTagNameForVersion(sb).append(CollectorJsonHelpers.jsonifyTags(tags));
+            jsonBuilder.addPreformattedField("tags", CollectorJsonHelpers.jsonifyTags(tags));
         }
 
-        sb.append("}");
-
-        return sb.toString();
+        return jsonBuilder.build().toString();
     }
 
     public static String jsonifyAudit(String wlpUserDir, String serverName, String hostName, Object event, String[] tags) {
         GenericData genData = (GenericData) event;
         KeyValuePair[] pairs = genData.getPairs();
         String key = null;
-        StringBuilder sb = CollectorJsonHelpers.startAuditJson(hostName, wlpUserDir, serverName);
+
+        JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startAudit(LOGSTASH_KEY);
 
         for (KeyValuePair kvp : pairs) {
 
@@ -296,21 +275,20 @@ public class CollectorJsonUtils {
                      */
                     if (key.equals(LogFieldConstants.IBM_DATETIME) || key.equals("loggingEventTime")) {
                         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(kvp.getLongValue());
-                        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.DATETIME, datetime, false, true, false, false, false);
+                        jsonBuilder.addField(AuditData.getDatetimeKey(LOGSTASH_KEY), datetime, false, true);
                     } else if (key.equals(LogFieldConstants.IBM_SEQUENCE) || key.equals("loggingSequenceNumber")) {
-                        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.SEQUENCE, kvp.getStringValue(), false, false, false, false, !kvp.isString());
+                        jsonBuilder.addField(AuditData.getSequenceKey(LOGSTASH_KEY), kvp.getStringValue(), false, false);
                     } else if (key.equals(LogFieldConstants.IBM_THREADID)) {
-                        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.THREADID, DataFormatHelper.padHexString(kvp.getIntValue(), 8), false, true, false, false, false);
+                        jsonBuilder.addField(AuditData.getThreadIDKey(LOGSTASH_KEY), DataFormatHelper.padHexString(kvp.getIntValue(), 8), false, true);
                     } else {
-                        CollectorJsonHelpers.addToJSON(sb, "ibm_audit_" + key, kvp.getStringValue(), false, false, false, false, !kvp.isString());
+                        jsonBuilder.addField("ibm_audit_" + key, kvp.getStringValue(), false, false);
                     }
 
                 } //There shouldn't be any list items from Audit's Generic Data object
             }
 
         }
-        sb.append("}");
-        return sb.toString();
+        return jsonBuilder.build().toString();
     }
 
     private static StringBuilder addTagNameForVersion(StringBuilder sb) {

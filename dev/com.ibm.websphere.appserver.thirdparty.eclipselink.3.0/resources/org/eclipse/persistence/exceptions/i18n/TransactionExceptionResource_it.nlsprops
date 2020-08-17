@@ -1,0 +1,61 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/TransactionExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+23001=Errore durante la ricerca della risorsa transazione esterna con nome JNDI [{0}]
+
+23002=Errore durante l''ottenimento dello stato della transazione gestita esternamente corrente
+
+23003=Errore durante l''ottenimento della transazione gestita esternamente corrente
+
+23004=Errore durante l''ottenimento del gestore transazioni
+
+23005=Errore durante l''esecuzione del bind alla transazione gestita esternamente
+
+23006=Errore durante l''avvio della nuova transazione gestita esternamente
+
+23007=Errore durante l''esecuzione del commit della transazione gestita esternamente
+
+23008=Errore durante il rollback della transazione gestita esternamente
+
+23009=Errore nel contrassegnare la transazione gestita esternamente per il rollback
+
+23010=Nessuna transazione gestita esternamente \u00e8 attualmente attiva per questo thread
+
+23011=Unit\u00e0 di lavoro [{0}] resa inattiva prima che la transazione gestita esternamente associata fosse completata.
+
+23012=Nessuna transazione correntemente attiva
+
+23013=La transazione \u00e8 correntemente attiva
+
+23014=Impossibile utilizzare EntityTransaction mentre si utilizza JTA.
+
+23015=Impossibile inserire pi\u00f9 origini dati nella transazione.
+
+23016=Eccezione nell''esecuzione del proxy.
+

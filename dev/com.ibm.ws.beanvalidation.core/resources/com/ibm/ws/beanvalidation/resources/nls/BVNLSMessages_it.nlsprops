@@ -87,3 +87,16 @@ JNDI_NON_JEE_THREAD_CWNBV0006E.explanation=Le operazioni JNDI su un nome java:co
 JNDI_NON_JEE_THREAD_CWNBV0006E.useraction=Modificare l'applicazione in modo che l'operazione JNDI venga eseguita su un thread associato ad un componente dell'applicazione Java EE.
 
 # -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the method with the invalid ValidateOnExecution annotation
+# -----------------------------------------------------------------------
+BVKEY_VALIDATE_ON_EXECUTION_NOT_ALLOWED_CWNBV0007E=CWNBV0007E: @ValidateOnExecution non \u00e8 consentito sui metodi che sovrascrivono un metodo superclasse o implementano un''interfaccia. Controllare la configurazione per {0}
+BVKEY_VALIDATE_ON_EXECUTION_NOT_ALLOWED_CWNBV0007E.explanation= @ValidateOnExecution non \u00e8 consentito sui metodi che sovrascrivono un metodo superclasse o implementano un'interfaccia. Un metodo che sovrascrive un metodo superclasse o implementa un metodo di interfaccia eredita il comportamento del metodo che sovrascrive o implementa.
+BVKEY_VALIDATE_ON_EXECUTION_NOT_ALLOWED_CWNBV0007E.useraction= Rimuovere @ValidateOnExecution dal metodo specificato.
+
+# -----------------------------------------------------------------------
+BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E=CWNBV0008E: Combinare il tipo IMPLICIT con altri tipi eseguibili non \u00e8 consentito. Controllare i tipi eseguibili impostati per: \n {0}
+BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E.explanation=Secondo la specifica di convalida del bean, la combinazione del tipo IMPLICIT con altri tipi eseguibili non \u00e8 consentita per l'annotazione @ValidateOnExecution.
+BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E.useraction=Aggiornare le impostazioni di metodo, classe o XML globali per i tipi eseguibili per evitare la combinazione del tipo IMPLICIT con altri tipi eseguibili.
+
+# -----------------------------------------------------------------------

@@ -16,6 +16,9 @@ import java.util.stream.Stream;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.utility.LicenseAcceptance;
 
+
+//TODO This class can be removed once we have updated past org.testcontainers:mssqlserver:1.14.3
+// since this code went in: https://github.com/testcontainers/testcontainers-java/pull/2085
 public class SQLServerContainer<SELF extends SQLServerContainer<SELF>> extends JdbcDatabaseContainer<SELF> {
 
     public static final String NAME = "sqlserver";
@@ -46,6 +49,10 @@ public class SQLServerContainer<SELF extends SQLServerContainer<SELF>> extends J
         super(dockerImageName);
         withStartupTimeoutSeconds(DEFAULT_STARTUP_TIMEOUT_SECONDS);
         withConnectTimeoutSeconds(DEFAULT_CONNECT_TIMEOUT_SECONDS);
+        
+        addExposedPort(MS_SQL_SERVER_PORT);
+        addExposedPort(MSSQL_DTC_TCP_PORT);
+        addExposedPort(MSSQL_RPC_PORT);
     }
 
     @Override
@@ -60,10 +67,6 @@ public class SQLServerContainer<SELF extends SQLServerContainer<SELF>> extends J
             LicenseAcceptance.assertLicenseAccepted(this.getDockerImageName());
             acceptLicense();
         }
-
-        addExposedPort(MS_SQL_SERVER_PORT);
-        addExposedPort(MSSQL_DTC_TCP_PORT);
-        addExposedPort(MSSQL_RPC_PORT);
         
         addEnv("MSSQL_RPC_PORT", MSSQL_RPC_PORT.toString());
         addEnv("MSSQL_DTC_TCP_PORT", MSSQL_DTC_TCP_PORT.toString());

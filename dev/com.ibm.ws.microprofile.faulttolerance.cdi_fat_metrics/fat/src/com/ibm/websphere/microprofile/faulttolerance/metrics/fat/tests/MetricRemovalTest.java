@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests;
 
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.both;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertNotNull;
@@ -53,6 +55,7 @@ public class MetricRemovalTest {
                     .andWith(RepeatFaultTolerance.ft11metrics20Features(SERVER_NAME));
 
     private final static String TEST_METRIC = "ft.com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.removal.RemovalBean.doWorkWithRetry.invocations.total";
+    private final static String TEST_METRIC2 = "ft.retry.retries.total";
 
     @Test
     public void metricRemovalTest() throws Exception {
@@ -76,7 +79,7 @@ public class MetricRemovalTest {
                 HttpUtils.findStringInUrl(server, "removalTest/removaltest", "OK");
 
                 // Check that metrics exist
-                assertThat(getMetricsPage(), containsString(TEST_METRIC));
+                assertThat(getMetricsPage(), anyOf(containsString(TEST_METRIC), containsString(TEST_METRIC2)));
 
             } finally {
                 // Remove the test app
@@ -84,7 +87,7 @@ public class MetricRemovalTest {
             }
 
             // Check that metrics do not exist
-            assertThat(getMetricsPage(), not(containsString(TEST_METRIC)));
+            assertThat(getMetricsPage(), both(not(containsString(TEST_METRIC))).and(not(containsString(TEST_METRIC2))));
         } finally {
             server.stopServer();
         }

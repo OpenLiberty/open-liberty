@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2019 IBM Corporation and others.
+    Copyright (c) 2019, 2020 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -260,6 +260,7 @@
         <!--  this is fixing a corner bug and has to be behind a property to protect existing users.  -->
         <AD id="ropcPreferUserSecurityName" name="%ropcPreferUserSecurityName" description="%ropcPreferUserSecurityName.desc" required="false" type="Boolean"  default="false"/>
         <AD id="trackOAuthClients" name="%trackOAuthClients" description="%trackOAuthClients.desc" required="false" type="Boolean" default="false" />
+        <AD id="oauthEndpoint" name="internal" description="internal use only" required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.security.oauth.endpoint" cardinality="20" />
     </OCD>
    <!--   
     <Designate factoryPid="com.ibm.ws.security.oauth20.provider.config">
@@ -268,6 +269,38 @@
     -->
     <Designate factoryPid="com.ibm.ws.security.oauth20.provider">
         <Object ocdref="com.ibm.ws.security.oauth20.provider.metatype" />
+    </Designate>
+
+     <OCD id="com.ibm.ws.security.oauth.endpoint.metatype" name="internal" description="internal use only" >
+         <AD id="name" name="internal" description="internal use only" required="true" type="String" >
+             <Option label="authorize" value="authorize" />
+             <Option label="introspect" value="introspect" />
+             <Option label="revoke" value="revoke" />
+             <Option label="token" value="token" />
+             <Option label="coverageMap" value="coverageMap" />
+             <Option label="registration" value="registration" />
+             <Option label="logout" value="logout" />
+             <Option label="appPasswords" value="appPasswords" />
+             <Option label="appTokens" value="appTokens" />
+             <Option label="clientManagement" value="clientManagement" />
+             <Option label="personalTokenManagement" value="personalTokenManagement" />
+             <Option label="usersTokenManagement" value="usersTokenManagement" />
+             <Option label="clientMetatype" value="clientMetatype" />
+         </AD>
+         <AD id="supportedHttpMethods" name="internal" description="internal use only" required="false" type="String" default="all" cardinality="6" >
+             <Option label="all" value="all" />
+             <Option label="none" value="none" />
+             <Option label="get" value="GET" />
+             <Option label="head" value="HEAD" />
+             <Option label="post" value="POST" />
+             <Option label="delete" value="DELETE" />
+             <Option label="put" value="PUT" />
+             <Option label="trace" value="TRACE" />
+         </AD>
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.oauth.endpoint">
+        <Object ocdref="com.ibm.ws.security.oauth.endpoint.metatype" />
     </Designate>
 
     <OCD id="com.ibm.ws.security.oauth20.server.store.metatype"  

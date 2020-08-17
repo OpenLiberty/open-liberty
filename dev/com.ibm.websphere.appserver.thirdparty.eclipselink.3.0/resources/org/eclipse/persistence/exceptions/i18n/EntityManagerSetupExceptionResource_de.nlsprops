@@ -1,0 +1,93 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/EntityManagerSetupExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+28001=Beim Versuch, die Sitzung [{0}] zu erstellen, wurde eine ValidationException ausgel\u00f6st. Die wahrscheinlichsten Ursachen dieses Problems sind, dass Ihre Datei [{1}] nicht im Klassenpfad verf\u00fcgbar ist oder dass sie keine Sitzung mit dem Namen [{0}] enth\u00e4lt.
+
+28002=EclipseLink versucht, eine ServerSession mit dem  Namen [{0}] aus [{1}] zu laden, ruft aber keine ServerSession ab.
+
+28003=EclipseLink hat die Session [{0}] aus [{1}] geladen und es ist entweder keine Serverplattform oder eine Serverplattform angegeben, die keinen externen Transaktionscontroller verwendet. Geben Sie eine geeignete Serverplattform an, wenn Sie vorhaben, die JTA zu verwenden.
+
+28004=Fehler bei der Konfiguration der EntityManager-Factory: JavaSECMPInitializer.initializeFromMain hat false zur\u00fcckgegeben.
+
+28005=Bei der Konfiguration der EntityManager-Factory wurde eine Ausnahme ausgel\u00f6st.
+
+28006=ClassNotFound: [{0}] in der Eigenschaft [{1}] angegeben.
+
+28007=Die Instanziierung der ServerPlatform vom Typ [{0}], die in der Eigenschaft [{1}] angegeben ist, ist fehlgeschlagen.
+
+28008=Klasse: {0} wurde w\u00e4hrend der Verarbeitung von Annotationen nicht gefunden.
+
+28009=Es wurde versucht, eine Sitzung mit dem Namen {0} erneut zu implementieren, ohne sie zu schlie\u00dfen.
+
+28010=PersistenceUnitInfo {0} hat den Transaktionstyp JTA, aber keine definierte JTA-Datenquelle.
+
+28011=Die f\u00fcr eine Persistenzeinheit erstellte Sitzung [{0}] war bei ihrer Implementierung nicht verf\u00fcgbar. Das bedeutet, dass die Sitzung beim Implementierungsprozess aus dem Container entfernt wurde.
+
+28012=Der Wert [{0}] hat den falschen Typ f\u00fcr die Eigenschaft [{2}]. Der Werttyp muss [{1}] sein.
+
+28013=Die Persistenzeinheit [{0}] kann im ung\u00fcltigen Status [{1}] nicht implementiert werden.
+
+28014=Bei der Verarbeitung der Eigenschaft [{0}] mit dem Wert [{1}] wurde eine Ausnahme ausgel\u00f6st.
+
+28015=Die Instanziierung des Sitzungsprotokolls vom Typ [{0}], das in der Eigenschaft [{1}] angegeben ist, ist fehlgeschlagen.
+
+28016=Die Persistenzeinheit mit dem Namen [{0}] ist nicht vorhanden.
+
+28017=Die Persistenzeinheit [{0}] kann im ung\u00fcltigen Status [{1}] nicht vorab implementiert werden.
+
+28018=Die Vorabimplementierung der Persistenzeinheit [{0}] ist fehlgeschlagen.
+
+28019=Die Implementierung der Persistenzeinheit [{0}] ist fehlgeschlagen. Schlie\u00dfen Sie alle Factorys f\u00fcr diese Persistenzeinheit.
+
+28020=Die Sitzung mit dem Namen [{0}], die aus [{1}] geladen wurde, ist [{2}], muss aber ServerSession sein.
+
+28021=Die Persistenzeinheit [{0}] versucht, eine Sitzung aus [{1}] zu laden, ohne einen Sitzungsnamen anzugeben. Ein Sitzungsname muss durch Definieren der Eigenschaft eclipselink.session-name angegeben werden.
+
+28022=Der Wert [true] f\u00fcr die Eigenschaft [eclipselink.weaving] ist falsch, wenn die globale Instrumentierung null ist. Der Wert muss null, false oder statisch sein.
+
+28023=Der Methodenaufruf der Methode [{0}] f\u00fcr das Objekt [{1}] der Klasse [{2}] hat eine Ausnahme ausgel\u00f6st.
+
+28024=Auf die Methode [{0}] f\u00fcr das Objekt [{1}] der Klasse [{2}] kann nicht reflektiv zugegriffen werden.
+
+28025=Die Persistenzeinheit mit dem Namen [{0}] hat ein tempor\u00e4res Klassenladeprogramm mit Nullwert zur\u00fcckgegeben. Das Weaving wurde f\u00fcr diese Sitzung inaktiviert. Sie k\u00f6nnen statisches Weaving als optionale Problemumgehung verwenden.
+
+28026=org.eclipse.persistence.jpa.osgi.PersistenceProvider unterst\u00fctzt keine Containerimplementierung (createContainerEntityManagerFactory). Verwenden Sie stattdessen org.eclipse.persistence.jpa.PersistenceProvider.
+
+28027=Es wurde versucht, die Persistenzeinheit [{0}] zu verwenden, aber es ist kein Bundle verf\u00fcgbar, das diese Persistenzeinheit definiert.
+
+28028=Die Instanziierung der Klasseninstanz [{0}] f\u00fcr die Persistenzeinheiteneigenschaft [{1}] ist fehlgeschlagen. Vergewissern Sie sich, dass der Konstruktor ordnungsgem\u00e4\u00df definiert ist.
+
+28029=Die Persistenzeinheit [{0}] versucht sessions.xml zu verwenden (gibt die Eigenschaft eclipselink.sessions-xml an) und ein Verbund zu sein (gibt die Eigenschaft eclipselink.composite-unit mit dem Wert true an). Diese Modi sind nicht kompatibel.
+
+28030=Die Persistenzeinheit [{0}] gibt die Eigenschaft eclipselink.composite-unit.member mit dem Wert true an. Das bedeutet, dass sie nicht eigenst\u00e4ndig, sondern nur als Verbundmember verwendet werden kann.
+
+28031=Die erforderliche Eigenschaft [{0}] fehlt.
+
+28032=Fehler beim Erstellen eines tempor\u00e4ren Klassenladeprogramms mit doPrivileged.
+

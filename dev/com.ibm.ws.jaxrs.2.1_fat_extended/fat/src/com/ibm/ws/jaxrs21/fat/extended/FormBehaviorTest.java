@@ -17,12 +17,15 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import jaxrs21.fat.form.FormBehaviorTestServlet;
 
+@SkipForRepeat("RESTEasy") // RESTEasy does not support the proper form behavior from issue https://github.com/eclipse-ee4j/jaxrs-api/issues/659
+// see also: https://github.com/OpenLiberty/open-liberty/pull/5281
 @RunWith(FATRunner.class)
 public class FormBehaviorTest extends FATServletClient {
 

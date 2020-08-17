@@ -11,8 +11,11 @@
 package componenttest.topology.utils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Properties;
 
 import javax.net.SocketFactory;
 
@@ -38,12 +41,12 @@ import componenttest.custom.junit.runner.FATRunner;
 public class ExternalTestServiceDockerClientStrategy extends DockerClientProviderStrategy {
 
     private static final Class<?> c = ExternalTestServiceDockerClientStrategy.class;
-    private static final boolean USE_REMOTE_DOCKER = Boolean.getBoolean("fat.test.use.remote.docker");
 
     /**
      * Used to specify a particular docker host machine to run with. For example: -Dfat.test.docker.host=some-docker-host.mycompany.com
      */
     private static final String USE_DOCKER_HOST = System.getProperty("fat.test.docker.host");
+    private static final boolean USE_REMOTE_DOCKER = Boolean.getBoolean("fat.test.use.remote.docker") || USE_DOCKER_HOST != null;
 
     /**
      * By default, Testcontainrs will cache the DockerClient strategy in <code>~/.testcontainers.properties</code>.
@@ -53,9 +56,16 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
      */
     public static void clearTestcontainersConfig() {
         File testcontainersConfigFile = new File(System.getProperty("user.home"), ".testcontainers.properties");
-        Log.info(c, "clearTestcontainersConfig", "Removing testcontainers property file at: " + testcontainersConfigFile.getAbsolutePath());
+        if (!testcontainersConfigFile.exists())
+            return;
+
+        Log.info(c, "clearTestcontainersConfig", "Resetting testcontainers property file at: " + testcontainersConfigFile.getAbsolutePath());
         try {
+            Properties tcProps = new Properties();
+            tcProps.load(new FileInputStream(testcontainersConfigFile));
+            tcProps.remove("docker.client.strategy");
             Files.deleteIfExists(testcontainersConfigFile.toPath());
+            tcProps.store(new FileOutputStream(testcontainersConfigFile), "Modified by FAT framework");
         } catch (IOException e) {
             Log.error(c, "clearTestcontainersConfig", e);
         }
@@ -113,7 +123,7 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
 
         public void test() throws InvalidConfigurationException {
             final String m = "test";
-            final int maxAttempts = FATRunner.FAT_TEST_LOCALRUN ? 1 : 7; // attempt up to 7 times for remote builds
+            final int maxAttempts = FATRunner.FAT_TEST_LOCALRUN ? 1 : 4; // attempt up to 4 times for remote builds
             config = DefaultDockerClientConfig.createDefaultConfigBuilder().build();
             client = getClientForConfig(config);
             Throwable firstIssue = null;
@@ -138,7 +148,7 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
                     if (firstIssue == null)
                         firstIssue = t;
                     if (attempt < maxAttempts) {
-                        int sleepForSec = Math.min(10 * attempt, 45); // increase wait by 10s each attempt up to 45s max
+                        int sleepForSec = 15;
                         Log.info(c, m, "Waiting " + sleepForSec + " seconds before attempting again");
                         try {
                             Thread.sleep(sleepForSec * 1000);
@@ -186,10 +196,9 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
         return true;
     }
 
-    private static boolean useRemoteDocker() {
+    public static boolean useRemoteDocker() {
         return !FATRunner.FAT_TEST_LOCALRUN || // this is a remote run
-               USE_REMOTE_DOCKER || // or if remote docker hosts are specifically requested
-               USE_DOCKER_HOST != null; // or if a specific docker host machine was requested
+               USE_REMOTE_DOCKER; // or if remote docker hosts are specifically requested
     }
 
 }

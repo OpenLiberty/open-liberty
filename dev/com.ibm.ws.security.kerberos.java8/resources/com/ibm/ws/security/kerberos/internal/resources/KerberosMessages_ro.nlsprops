@@ -37,9 +37,9 @@ KRB_S4U2PROXY_IS_NOT_SUPPORT=CWWKS4344E: Caracteristica de delegare impus\u0103 
 KRB_S4U2PROXY_IS_NOT_SUPPORT.explanation=Caracteristica de delegare impus\u0103 de Kerberos nu poate fi activat\u0103 din cauza vendorului de runtime Java \u015fi versiunii.
 KRB_S4U2PROXY_IS_NOT_SUPPORT.useraction=Utiliza\u0163i vendor Java \u015fi versiune corecte care sunt suportate de caracteristica de delegare impus\u0103 de Kerberos.
 
+# CWWKS4345E is used by the com.ibm.ws.security.kerberos.auth bundle
 
-
-
+# CWWKS4346I is used by the com.ibm.ws.security.kerberos.auth bundle
 
 
 

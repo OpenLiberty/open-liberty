@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2013, 2015 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<web-app id="WebApp_ID" version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+	 <display-name>BasicWeb</display-name>
+
+	<listener>
+	    <listener-class>basic.war.CodedEndpointListener</listener-class>
+	</listener>
+	
+	<servlet>
+        <servlet-name>SingleRequestTestRunner</servlet-name>
+ 	      <servlet-class>io.openliberty.wsoc.common.SingleRequestClientTestRunner</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>SingleRequestTestRunner</servlet-name>
+        <url-pattern>/SingleRequest</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>WsocUpgradeServlet</servlet-name>
+ 	      <servlet-class>io.openliberty.wsoc.common.WsocUpgradeServlet</servlet-class>
+    </servlet>
+    
+   <servlet>
+        <servlet-name>PathParamUpgradeServlet</servlet-name>
+ 	      <servlet-class>basic.war.PathParamUpgradeServlet</servlet-class>
+    </servlet>
+    
+    <filter> 
+       <filter-name>UpgradeFilter</filter-name>
+       <filter-class>basic.war.UpgradeFilter</filter-class>
+    </filter>
+
+    <servlet-mapping>
+        <servlet-name>WsocUpgradeServlet</servlet-name>
+        <url-pattern>/upgradeServlet/*</url-pattern>
+    </servlet-mapping>
+    
+    
+    <servlet-mapping>
+        <servlet-name>PathParamUpgradeServlet</servlet-name>
+        <url-pattern>/pathUpgradeServlet/*</url-pattern>
+    </servlet-mapping>
+    
+    <filter-mapping>
+        <filter-name>UpgradeFilter</filter-name>
+        <url-pattern>/pathUpgradeFilter/*</url-pattern>
+    </filter-mapping>
+    
+    
+    <absolute-ordering /> 
+	
+</web-app>

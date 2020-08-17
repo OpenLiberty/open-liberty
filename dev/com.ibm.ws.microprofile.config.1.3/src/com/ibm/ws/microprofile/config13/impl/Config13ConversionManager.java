@@ -16,9 +16,10 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.config.converters.BuiltInConverter;
 import com.ibm.ws.microprofile.config.converters.PriorityConverterMap;
-import com.ibm.ws.microprofile.config.interfaces.ConfigException;
 import com.ibm.ws.microprofile.config12.impl.Config12ConversionManager;
 import com.ibm.ws.microprofile.config13.converters.Config13ImplicitConverter;
+
+import io.openliberty.microprofile.config.internal.common.ConfigException;
 
 public class Config13ConversionManager extends Config12ConversionManager {
 

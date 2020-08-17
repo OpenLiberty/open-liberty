@@ -19,13 +19,13 @@ dependencies {
   johnzon 'org.apache.johnzon:johnzon-core:1.1.5',
     'org.apache.johnzon:johnzon-jsonb:1.1.5',
     'org.apache.johnzon:johnzon-mapper:1.1.5'
-  refImpls 'org.eclipse:yasson:1.0.7',
+  refImpls 'org.eclipse:yasson:1.0.8',
     'org.glassfish:javax.json:1.1.3'
 }
 
 task addJohnzon(type: Copy) {
   from configurations.johnzon
-  into "${buildDir}/autoFVT/publish/shared/resources/johnzon/"
+  into "${buildDir}/autoFVT/publish/shared/resources/johnzon/1.1.5/"
 }
 
 task addRefImpls(type: Copy) {

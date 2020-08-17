@@ -117,7 +117,7 @@ public class SuperSLEnvInjectBean extends SuperSuperEnvInject {
             Context initCtx = new InitialContext();
             Context myEnv = (Context) initCtx.lookup("java:comp/env");
 
-            envName = "suite.r70.base.injection.xml.ejb.SuperSuperEnvInject/field2";
+            envName = "com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject/field2";
             Object aString = myEnv.lookup(envName);
             assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                          "lookup:" + envName + ":" + aString,
@@ -134,7 +134,7 @@ public class SuperSLEnvInjectBean extends SuperSuperEnvInject {
         }
 
         // Next, insure the above may be looked up from the SessionContext
-        envName = "suite.r70.base.injection.xml.ejb.SuperSuperEnvInject/field2";
+        envName = "com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject/field2";
         Object aString = ivContext.lookup(envName);
         assertEquals(testpoint + (testpoint > 9 ? " --> " : " ---> ") +
                      "lookup:" + envName + ":" + aString,

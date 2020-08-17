@@ -86,7 +86,7 @@ public class JAXRS20CallBackTest {
         BufferedReader br = HttpUtils.getConnectionStream(con);
         String line = br.readLine();
 
-        assertEquals(line, "success");
+        assertEquals("success", line);
     }
 
     @Mode(TestMode.FULL)
@@ -103,7 +103,7 @@ public class JAXRS20CallBackTest {
         con = HttpUtils.getHttpConnection(new URL(urlStr), HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT);
         BufferedReader br = HttpUtils.getConnectionStream(con);
         String line = br.readLine();
-        assertEquals(line, "successsuccesssuccesssuccess");
+        assertEquals("successsuccesssuccesssuccess",line);
     }
 
     @Mode(TestMode.FULL)
@@ -121,6 +121,6 @@ public class JAXRS20CallBackTest {
         BufferedReader br = HttpUtils.getConnectionStream(con);
         String line = br.readLine();
         System.out.println(line);
-        assertEquals(line, "successsuccesssuccesssuccess");
+        assertEquals("successsuccesssuccesssuccess", line);
     }
 }

@@ -223,6 +223,7 @@ public class AcmeClientTest {
 	 */
 	@Test
 	public void fetchCertificate_Revoke() throws Exception {
+		String method = "fetchCertificate_Revoke";
 		/*
 		 * Create an AcmeService to test.
 		 */
@@ -231,7 +232,14 @@ public class AcmeClientTest {
 		/*
 		 * Get the certificate from the ACME CA server.
 		 */
-		AcmeCertificate newCertificate = acmeClient.fetchCertificate(false);
+		AcmeCertificate newCertificate;
+		try {
+			newCertificate = acmeClient.fetchCertificate(false);
+		} catch (AcmeCaException e) {
+			Log.error(AcmeClientTest.class, method, e, "Hit exception on fetchCertificate, sleep and retry");
+			Thread.sleep(1000);
+			newCertificate = acmeClient.fetchCertificate(false);
+		}
 
 		/*
 		 * The certificate should be valid.
@@ -242,7 +250,13 @@ public class AcmeClientTest {
 		/*
 		 * Revoke the certificate.
 		 */
-		acmeClient.revoke(newCertificate.getCertificate(), null);
+		try {
+			acmeClient.revoke(newCertificate.getCertificate(), null);
+		} catch (AcmeCaException e) {
+			Log.error(AcmeClientTest.class, method, e, "Hit exception on revoke, sleep and retry");
+			Thread.sleep(1000);
+			acmeClient.revoke(newCertificate.getCertificate(), null);
+		}
 
 		/*
 		 * The certificate should now be revoked.

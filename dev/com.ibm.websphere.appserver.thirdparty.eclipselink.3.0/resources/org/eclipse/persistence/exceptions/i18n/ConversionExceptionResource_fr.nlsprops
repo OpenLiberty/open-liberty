@@ -1,0 +1,47 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/ConversionExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+3001=L''objet [{0}] de la classe [{1}] ne peut pas \u00eatre converti en [{2}].
+
+3002=L''objet [{0}], de la classe [{1}], du mappage [{2}] avec le descripteur [{3}], n''a pas pu \u00eatre converti en {4}].
+
+3003=Format de date incorrect : [{0}] (attendu [AAAA-MM-JJ])
+
+3004=Format d''heure incorrect : [{0}] (attendu [HH:MM:SS])
+
+3005=Format d''horodatage incorrect : [{0}] (attendu [AAAA-MM-JJ HH:MM:SS.NNNNNNNNN])
+
+3006=[{0}] doit \u00eatre de longueur \u00e9gale pour \u00eatre converti en tableau d''octets.
+
+3007=L''objet [{0}] de la classe [{1}] ne peut pas \u00eatre converti en [{2}]. Assurez-vous que la classe [{2}] se trouve dans le chemin d''acc\u00e8s aux classes. Il peut \u00eatre n\u00e9cessaire d''utiliser une autre API pour transmettre le chargeur de classe appropri\u00e9 si n\u00e9cessaire, ou de d\u00e9finir l''objet dans le gestionnaire de conversion par d\u00e9faut.
+
+3008=Format de date-heure incorrect : [{0}] (attendu [AAAA-MM-JJ''T''HH:MM:SS])
+
+3009=Impossible de d\u00e9finir {0} propri\u00e9t\u00e9s [{1}] dans [{2}].
+

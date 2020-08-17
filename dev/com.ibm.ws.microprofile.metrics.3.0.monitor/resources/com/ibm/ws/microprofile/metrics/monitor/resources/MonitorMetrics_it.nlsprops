@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -18,10 +18,10 @@
 #-----------------------------------------------------------------------------------------------------------------------------
 # Messages used by MonitorMetrics Impl -  range is 2000-2199
 #-----------------------------------------------------------------------------------------------------------------------------
-FEATURE_REGISTERED=CWPMI2003I: Le metriche di monitoraggio possono essere richiamate tramite mpMetrics.
+FEATURE_REGISTERED=CWPMI2009I: Le metriche di monitoraggio possono essere richiamate tramite mpMetrics.
 FEATURE_REGISTERED.explanation=Le funzioni monitor-1.0 e mpMetrics-3.0 sono abilitate e le metriche di monitoraggio possono essere richiamate tramite mpMetrics.
 FEATURE_REGISTERED.useraction=Non \u00e8 richiesta alcuna azione da parte dell'utente.
 
-FEATURE_UNREGISTERED=CWPMI2004I: Tutte le metriche di monitoraggio sono state deregistrate da mpMetrics.
+FEATURE_UNREGISTERED=CWPMI2010I: Tutte le metriche di monitoraggio sono state deregistrate da mpMetrics.
 FEATURE_UNREGISTERED.explanation=La funzione monitor-1.0, la funzione mpMetrics-3.0 o entrambe le funzioni sono state rimosse dal server e tutte le metriche di monitoraggio sono state deregistrate da mpMetrics.
 FEATURE_UNREGISTERED.useraction=Non \u00e8 richiesta alcuna azione da parte dell'utente.

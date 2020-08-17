@@ -35,6 +35,7 @@ import org.junit.runner.RunWith;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpsRequest;
@@ -675,12 +676,16 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertEquals(err, 5, length);
         List<String> features = new ArrayList<String>();
         for (int i = 0; i < length; i++)
-            features.add(ja.getString(i));
-        assertTrue(err, features.contains("componenttest-1.0"));
-        assertTrue(err, features.contains("restConnector-2.0"));
+            features.add(ja.getString(i).toLowerCase());
+        if (JakartaEE9Action.isActive()) {
+            assertTrue(err, features.contains("componenttest-2.0"));
+        } else {
+            assertTrue(err, features.contains("componenttest-1.0"));
+        }
+        assertTrue(err, features.contains("restconnector-2.0"));
         assertTrue(err, features.contains("jdbc-4.2"));
         assertTrue(err, features.contains("timedexit-1.0"));
-        assertTrue(err, features.contains("usr:nestedFlat-1.0"));
+        assertTrue(err, features.contains("usr:nestedflat-1.0"));
         assertEquals(err, "FAIL", j.getString("onError"));
     }
 

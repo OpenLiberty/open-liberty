@@ -1074,26 +1074,31 @@ public class H2StreamProcessor {
         }
 
         if (direction == Constants.Direction.READ_IN) {
-            if (currentFrame.flagEndStreamSet()) {
-                endStream = true;
-                updateStreamState(StreamState.HALF_CLOSED_REMOTE);
-            }
             if (frameType == FrameTypes.DATA) {
                 if (GrpcServletServices.grpcInUse == false) {
                     getBodyFromFrame();
                     if (currentFrame.flagEndStreamSet()) {
+                        endStream = true;
+                        updateStreamState(StreamState.HALF_CLOSED_REMOTE);
                         processCompleteData(true);
                         setReadyForRead();
                     }
                 } else {
                     if (passCount == 0) {
                         // latch so we don't overwrite the first data frame that comes in
-                        firstReadLatch = new CountDownLatch(1);
+                        firstReadLatch = new CountDownLatch(2);
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "processOpen: first DATA frame read. using firstReadLatch of: " + firstReadLatch.hashCode());
+                        }
                         passCount++;
                         getBodyFromFrame();
+                        if (currentFrame.flagEndStreamSet()) {
+                            endStream = true;
+                            updateStreamState(StreamState.HALF_CLOSED_REMOTE);
+                        }
                         processCompleteData(true);
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "processOpen: first time in. calling setReadyForRead() getEndStream returns: " + this.getEndStream());
+                            Tr.debug(tc, "processOpen: first DATA frame read. calling setReadyForRead() getEndStream returns: " + this.getEndStream());
                         }
                         setReadyForRead();
                     } else {
@@ -1104,13 +1109,13 @@ public class H2StreamProcessor {
                             passCount++;
                             try {
                                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                    Tr.debug(tc, "processOpen: new data frame received, wait for the first data frame to get processed completely");
+                                    Tr.debug(tc, "processOpen: another DATA frame received, wait for the first data frame to get processed completely");
                                 }
 
                                 firstReadLatch.await();
 
                                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                    Tr.debug(tc, "processOpen: finished waiting for first data read");
+                                    Tr.debug(tc, "processOpen: finished waiting for first DATA to be fully processed");
                                 }
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
@@ -1118,6 +1123,11 @@ public class H2StreamProcessor {
                         }
 
                         getBodyFromFrame();
+                        if (currentFrame.flagEndStreamSet()) {
+                            endStream = true;
+                            updateStreamState(StreamState.HALF_CLOSED_REMOTE);
+                        }
+
                         WsByteBuffer buf = processCompleteData(false);
 
                         if (buf != null) {
@@ -1148,6 +1158,8 @@ public class H2StreamProcessor {
                     processCompleteHeaders(false);
                     setHeadersComplete();
                     if (currentFrame.flagEndStreamSet()) {
+                        endStream = true;
+                        updateStreamState(StreamState.HALF_CLOSED_REMOTE);
                         setReadyForRead();
                     }
                 } else {
@@ -1388,14 +1400,14 @@ public class H2StreamProcessor {
                 // As an HTTP/2 server, and not a client, this code should not receive a PUSH_PROMISE frame
                 throw new ProtocolException("PUSH_PROMISE Frame Received on server side");
 
-                //case PING:   PING frame is not stream based.
-                //      break;
+            //case PING:   PING frame is not stream based.
+            //      break;
 
-                //case GOAWAY:   GOAWAY is not stream based, but does have some stream awareness, see spec.
-                //      break;
+            //case GOAWAY:   GOAWAY is not stream based, but does have some stream awareness, see spec.
+            //      break;
 
-                // case SETTINGS:  Setting is not stream based.
-                //      break;
+            // case SETTINGS:  Setting is not stream based.
+            //      break;
 
             case WINDOW_UPDATE:
                 if (state == StreamState.IDLE && myID != 0) {
@@ -1807,7 +1819,7 @@ public class H2StreamProcessor {
     /**
      * Read the HTTP header and data bytes for this stream
      *
-     * @param numBytes the number of bytes to read
+     * @param numBytes       the number of bytes to read
      * @param requestBuffers an array of buffers to copy the read data into
      * @return this stream's VirtualConnection or null if too many bytes were requested
      */
@@ -1866,9 +1878,7 @@ public class H2StreamProcessor {
 //            }
 
         if (this.streamReadSize == 0) {
-            if (firstReadLatch != null) {
-                firstReadLatch.countDown();
-            }
+            countDownFirstReadLatch();
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -1878,10 +1888,19 @@ public class H2StreamProcessor {
         return h2HttpInboundLinkWrap.getVirtualConnection();
     }
 
+    public void countDownFirstReadLatch() {
+        if (firstReadLatch != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "counting down firstReadLatch: " + firstReadLatch.hashCode());
+            }
+            firstReadLatch.countDown();
+        }
+    }
+
     /**
      * Read the http header and data bytes for this stream
      *
-     * @param numBytes the number of bytes requested
+     * @param numBytes       the number of bytes requested
      * @param requestBuffers an array of buffers to copy the read data into
      * @return the number of bytes that were actually copied into requestBuffers
      */

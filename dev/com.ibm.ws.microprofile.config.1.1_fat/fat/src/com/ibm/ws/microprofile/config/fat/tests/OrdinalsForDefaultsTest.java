@@ -23,11 +23,14 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.appConfig.ordForDefaults.test.OrdinalsForDefaultsTestServlet;
 import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions.Version;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -36,25 +39,26 @@ import componenttest.topology.utils.FATServletClient;
  *
  */
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class OrdinalsForDefaultsTest extends FATServletClient {
 
     public static final String APP_NAME = "ordForDefaults";
-
-    @ClassRule
-    public static RepeatTests r = RepeatConfigActions.repeatConfig11("OrdForDefaultsServer");
 
     @Server("OrdForDefaultsServer")
     @TestServlet(servlet = OrdinalsForDefaultsTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
+    @ClassRule
+    public static RepeatTests r = RepeatConfigActions.repeat("OrdForDefaultsServer", Version.LATEST, Version.CONFIG12_EE8);
+
     @BeforeClass
     public static void setUp() throws Exception {
         WebArchive ordForDefaults_war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                        .addPackages(true, "com.ibm.ws.microprofile.appConfig.ordForDefaults.test")
-                        .addAsLibrary(SharedShrinkWrapApps.getTestAppUtilsJar())
-                        .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/permissions.xml"), "permissions.xml")
-                        .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/microprofile-config.properties"),
-                                               "microprofile-config.properties");
+                                                  .addPackages(true, "com.ibm.ws.microprofile.appConfig.ordForDefaults.test")
+                                                  .addAsLibrary(SharedShrinkWrapApps.getTestAppUtilsJar())
+                                                  .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/permissions.xml"), "permissions.xml")
+                                                  .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/microprofile-config.properties"),
+                                                                         "microprofile-config.properties");
 
         ShrinkHelper.exportDropinAppToServer(server, ordForDefaults_war);
 

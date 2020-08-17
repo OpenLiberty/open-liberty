@@ -12,4 +12,5 @@
 	<httpEndpoint httpPort="9888" httpsPort="9889"
 		id="defaultHttpEndpoint" />
 	<logging traceSpecification="*=info: wsat=all: Transaction=all"></logging>
+  <javaPermission codebase="${server.config.dir}/dropins/endtoend.war" className="java.security.AllPermission"/>
 </server>

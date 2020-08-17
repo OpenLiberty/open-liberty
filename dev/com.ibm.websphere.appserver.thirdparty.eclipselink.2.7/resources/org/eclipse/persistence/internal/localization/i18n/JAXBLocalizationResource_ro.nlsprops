@@ -1,3 +1,4 @@
+###############################################################################
 # Copyright (c) 2014 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -6,7 +7,7 @@
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
-# -------------------------------------------------------------------------------------------------
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -30,7 +31,7 @@ add_namespace_resolvers=Ad\u0103ugarea rezolvatorilor de spa\u0163iu nume
 
 create_descriptors=Crearea descriptorilor
 
-create_mappings=Ad\u0103ugarea map\u0103rilor la descriptori
+create_mappings=Ad\u0103ugare map\u0103ri la descriptor {0}
 
 error=Eroare: 
 

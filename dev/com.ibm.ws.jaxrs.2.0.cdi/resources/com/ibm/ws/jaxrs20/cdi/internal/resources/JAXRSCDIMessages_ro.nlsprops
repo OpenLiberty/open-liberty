@@ -19,15 +19,15 @@
 #
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
-# JAXRS 2.0 CDI Message ------------------------
-warning.jaxrs.cdi.resource=CWWKW1000W: Domeniul resursei JAXRS-2.0 {0} este {1}. Liberty ob\u0163ine instan\u0163a resursei de la {2}.
+# JAXRS CDI Message ------------------------
+warning.jaxrs.cdi.resource=CWWKW1000W: Domeniul resursei JAXRS {0} este {1}. Liberty ob\u0163ine instan\u0163a resursei de la {2}.
 warning.jaxrs.cdi.resource.explanation=Liberty ob\u0163ine instan\u0163a resursei de la JAXRS dac\u0103 nu poate ob\u0163ine instan\u0163a de la CDI.
 warning.jaxrs.cdi.resource.useraction=Nicio ac\u0163iune necesar\u0103. 
 
-warning.jaxrs.cdi.resource.mismatch=CWWKW1001W: Domeniul {1} al resursei JAXRS-2.0 {0} nu se potrive\u015fte domeniului CDI {2}. Liberty ob\u0163ine instan\u0163a resursei de la {3}.
-warning.jaxrs.cdi.resource.mismatch.explanation=Dac\u0103 domeniul resursei JAXRS-2.0 nu se potrive\u015fte cu domeniul CDI \u015fi instan\u0163a resursei exist\u0103 \u00een CDI, Liberty ob\u0163ine instan\u0163a resursei de la CDI. Instan\u0163a nu include injec\u0163ia CDI dac\u0103 este de la JAXRS.
+warning.jaxrs.cdi.resource.mismatch=CWWKW1001W: Domeniul {1} al resursei JAXRS {0} nu se potrive\u015fte cu domeniul CDI {2}. Liberty ob\u0163ine instan\u0163a resursei de la {3}.
+warning.jaxrs.cdi.resource.mismatch.explanation=Dac\u0103 domeniul resursei JAXRS nu se potrive\u015fte cu domeniul CDI \u015fi instan\u0163a resursei exist\u0103 \u00een CDI, Liberty ob\u0163ine instan\u0163a resursei de la CDI. Instan\u0163a nu include injec\u0163ia CDI dac\u0103 este de la JAXRS.
 warning.jaxrs.cdi.resource.mismatch.useraction=Nicio ac\u0163iune necesar\u0103. 
 
-warning.jaxrs.cdi.provider.mismatch=CWWKW1002W: Domeniul CDI al furnizorului JAXRS-2.0 {0} este {1}. Liberty ob\u0163ine instan\u0163a furnizorului de la {2}.
+warning.jaxrs.cdi.provider.mismatch=CWWKW1002W: Domeniul CDI al furnizorului JAXRS {0} este {1}. Liberty ob\u0163ine instan\u0163a furnizorului de la {2}.
 warning.jaxrs.cdi.provider.mismatch.explanation=Instan\u0163a furnizorului este numai Singleton. Liberty ob\u0163ine instan\u0163a de furnizor de la CDI dac\u0103 domeniul CDI al furnizorului este Dependent sau ApplicationScoped. Instan\u0163a nu include injec\u0163ia CDI dac\u0103 este de la JAXRS.
 warning.jaxrs.cdi.provider.mismatch.useraction=Nicio ac\u0163iune necesar\u0103.

@@ -65,6 +65,13 @@ public class AcmeConstants {
 	// Minimum allowed time to check for expiration
 	public static final String RENEW_CERT_MIN = "renewCertMin";
 
+	// HTTP timeouts connecting to the CA
+	public static final String HTTP_CONNECT_TIMEOUT = "httpConnectTimeout";
+	public static final String HTTP_READ_TIMEOUT = "httpReadTimeout";
+	
+	// Startup timeout for ACME servlet and HTTP port
+	public static final String START_READY_TIMEOUT = "startReadyTimeout";
+
 	/*
 	 * End constants that match the metatype fields
 	 */
@@ -90,8 +97,13 @@ public class AcmeConstants {
 	public static final long ORDER_POLL_DEFAULT = 120000l;
 	public static final long RENEW_CERT_MIN_DEFAULT = 15000L; 
 
-
 	public static final Long SCHEDULER_MS = TimeUnit.HOURS.toMillis(24L);
 	public static final Long SCHEDULER_ERROR_MS = TimeUnit.HOURS.toMillis(1L);
+	
+	public static final String ACME_HISTORY_FILE = "acmeca-history.txt";
 
+	public static final Integer HTTP_CONNECT_TIMEOUT_DEFAULT = 30000;
+	public static final Integer HTTP_READ_TIMEOUT_DEFAULT = 30000;
+
+	public static final Long START_READY_TIMEOUT_DEFAULT = 120000L;
 }

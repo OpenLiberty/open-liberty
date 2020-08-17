@@ -1,0 +1,55 @@
+<html>
+    <!--
+    Copyright (c) 2013 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+    -->
+ <head>
+ <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Test Program></title>
+
+    <script language="javascript" type="text/javascript">
+        
+       
+        var websocket = new WebSocket("ws://localhost:9080/basic/sample/MyEndpoint");
+        websocket.onopen = function(evt) { onOpen(evt) };
+        websocket.onmessage = function(evt) { onMessage(evt) };
+        websocket.onerror = function(evt) { onError(evt) };
+   
+        function onOpen(msg) {
+            
+        }
+
+        function onMessage(msg) {
+          alert("GOT DATA" + msg.data);
+         
+        }
+
+        function onError(msg) {
+         alert("ERROR" + msg.data);
+        } 
+        
+        function publish(msg) {
+                 websocket.send("MyEndpoint");
+                 alert("SENT");
+            
+        }
+
+          
+        </script> 
+    </head>
+    <body>
+        <h1>Sample - hoping to talk with MyEndPoint WebSocket App on the server</h1>
+
+         Look for alerts!
+         <form>
+        <P><INPUT TYPE="BUTTON" NAME="Send It" VALUE="SendIt" ONCLICK=publish();></P>
+        </form>
+
+    </body>
+</html>

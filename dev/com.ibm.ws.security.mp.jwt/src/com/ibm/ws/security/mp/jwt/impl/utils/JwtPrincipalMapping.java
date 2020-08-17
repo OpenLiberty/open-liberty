@@ -212,7 +212,7 @@ public class JwtPrincipalMapping {
             groupIds.add(groupName);
         } catch (ClassCastException cce) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "cannot get meaningful group due to CCE: " + cce.getMessage());
+                Tr.debug(tc, "cannot get meaningful group due to CCE: " + cce);
             }
         }
         if (tc.isDebugEnabled()) {

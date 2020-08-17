@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -286,7 +286,7 @@ public class ConsumerUtilTest {
             ConsumerUtil testConsumerUtil = new ConsumerUtil(null);
             mockery.checking(new Expectations() {
                 {
-                    one(jwtConfig).getSignatureAlgorithm();
+                    allowing(jwtConfig).getSignatureAlgorithm();
                     will(returnValue(RS256));
                     one(jwtConfig).getJwkEnabled(); // for jwksUri(jwkEndpointUrl
                     will(returnValue(false)); //
@@ -316,7 +316,7 @@ public class ConsumerUtilTest {
             mockery.checking(new Expectations() {
                 {
 
-                    one(jwtConfig).getSignatureAlgorithm();
+                    allowing(jwtConfig).getSignatureAlgorithm();
                     will(returnValue(RS256));
                     one(jwtConfig).getJwkEnabled(); // for jwksUri
                     will(returnValue(false)); //
@@ -494,7 +494,7 @@ public class ConsumerUtilTest {
                 }
             });
             Key result = consumerUtil.getPublicKey(trustedAlias, trustStoreRef, randomAlg);
-            assertNull("Resulting key was not null when it should have been. Result: " + result, result);
+            assertEquals("Returned PublicKey did not match the expected object.", publicKey, result);
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);

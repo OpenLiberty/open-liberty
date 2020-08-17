@@ -20,7 +20,7 @@ src: \
 	test-framework/src
 
 fat.project: true
-tested.features: jdbc-4.0, beanvalidation-1.1, jpa-2.0, el-3.0
+tested.features: jdbc-4.0, beanvalidation-1.1, jpa-2.0, el-3.0, jpa-3.0
 
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)
@@ -32,4 +32,5 @@ tested.features: jdbc-4.0, beanvalidation-1.1, jpa-2.0, el-3.0
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
 	com.ibm.websphere.javaee.persistence.2.1;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.2;version=latest,\
-	com.ibm.websphere.javaee.validation.2.0;version=latest
+	com.ibm.websphere.javaee.validation.2.0;version=latest,\
+	io.openliberty.jakarta.persistence.3.0;version=latest

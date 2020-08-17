@@ -9,6 +9,4 @@
 		<feature>componentTest-1.0</feature>
 		<feature>mpConfig-1.4</feature>
 	</featureManager>
-
-	<application location="converterApp.war" />
 </server>

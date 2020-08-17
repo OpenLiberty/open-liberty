@@ -78,22 +78,22 @@ dependencies {
 }
 task addReactivex(type: Copy) {
   from configurations.reactivex
-  into "${buildDir}/autoFVT/publish/shared/resources/reactivex/"
+  into "${buildDir}/autoFVT/lib/"
 }
 
 task addCXF(type: Copy) {
   from configurations.cxf
-  into "${buildDir}/autoFVT/publish/shared/resources/cxf/"
+  into "${buildDir}/autoFVT/lib/"
 }
 
 task addJersey(type: Copy) {
   from configurations.jersey
-  into "${buildDir}/autoFVT/publish/shared/resources/jersey/"
+  into "${buildDir}/autoFVT/lib/"
 }
 
 task addMockserver(type: Copy) {
   from configurations.mockserver
-  into "${buildDir}/autoFVT/publish/shared/resources/mockserver/"
+  into "${buildDir}/autoFVT/lib/"
 }
 
 

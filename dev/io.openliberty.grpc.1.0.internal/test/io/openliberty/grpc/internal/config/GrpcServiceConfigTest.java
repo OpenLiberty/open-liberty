@@ -60,6 +60,7 @@ public class GrpcServiceConfigTest {
 		Set<String> apps = config.getDependentApplications();
 		Assert.assertEquals(1, apps.size());
 		Assert.assertTrue(apps.contains(app_name_3));
+		GrpcServiceConfigImpl.removeApplication(app_name_3);
 		Assert.assertEquals(0, config.getDependentApplications().size());
 	}
 	

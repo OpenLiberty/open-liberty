@@ -20,7 +20,7 @@
 #-----  ACME messages
 
 # The ACME referred to in these messages stands for Automatic Certificate Management Environment.
-# The term "certificate authority" is in reference to SSL/TLS certificate providers.
+# The term "certificate authority" is in reference to SSL and TLS requests certificate providers.
 # The URI parameter in these messages is for the ACME certificate authority, such as https://sampleCAProvider.org/directory
 
 ###############################################################################
@@ -32,10 +32,12 @@ REST_FORBIDDEN=Dost\u0119p zabroniony
 REST_INVALID_CONTENT_TYPE=Nag\u0142\u00f3wek content-type \u017c\u0105dania nie mia\u0142 warto\u015bci application/json.
 REST_MISSING_OPERATION=Nie okre\u015blono operacji w \u017c\u0105daniu.
 REST_NO_ACME_SERVICE=Us\u0142uga AcmeProvider nie zosta\u0142a zarejestrowana.
+REST_TOO_MANY_REQUESTS=U\u017cytkownik wys\u0142a\u0142 zbyt wiele \u017c\u0105da\u0144 w danym przedziale czasu. Nast\u0119pne \u017c\u0105danie b\u0119dzie dozwolone po: {0}.
 ###############################################################################
 
 FILE_NOT_READABLE=nie mo\u017cna odczyta\u0107 pliku
 FILE_NOT_WRITABLE=plik lub jego katalog nadrz\u0119dny nie jest dost\u0119pny do zapisu
+
 
 CWPKI2001E=CWPKI2001E: O\u015brodek certyfikacji ACME pod identyfikatorem URI {0} poinformowa\u0142, \u017ce wezwanie do autoryzacji nie powiod\u0142o si\u0119 w przypadku domeny {1}. Status wezwania to {2}.  B\u0142\u0105d to ''{3}''.
 CWPKI2001E.explanation=Status wezwania wskazywa\u0142, \u017ce \u017c\u0105danie wezwania do autoryzacji nie powiod\u0142o si\u0119, a utworzenie certyfikatu nie jest mo\u017cliwe.
@@ -57,7 +59,7 @@ CWPKI2005E=CWPKI2005E: Autoryzacja zwr\u00f3cona z o\u015brodka certyfikacji ACM
 CWPKI2005E.explanation=O\u015brodek certyfikacji zwr\u00f3ci\u0142 typ wyzwania, kt\u00f3ry jest obecnie nieobs\u0142ugiwany. Upewnij si\u0119, \u017ce o\u015brodek certyfikacji u\u017cywa typu z listy obs\u0142ugiwanych.
 CWPKI2005E.useraction=Wybierz o\u015brodek certyfikacji, kt\u00f3ry generuje obs\u0142ugiwane typy wezwa\u0144.
 
-CWPKI2006I=CWPKI2006I: O\u015brodek certyfikacji ACME pod identyfikatorem URI {0} poinformowa\u0142, \u017ce zam\u00f3wienie na certyfikat nie powiod\u0142o si\u0119 dla {1} domen.
+CWPKI2006I=CWPKI2006I: O\u015brodek certyfikacji ACME pod identyfikatorem URI {0} udost\u0119pni\u0142 nast\u0119puj\u0105ce warunki us\u0142ugi: {1}
 CWPKI2006I.explanation=O\u015brodek certyfikacji udost\u0119pnia warunki us\u0142ugi.
 CWPKI2006I.useraction=Zapoznaj si\u0119 z udost\u0119pnionymi warunkami us\u0142ugi.
 
@@ -129,7 +131,7 @@ CWPKI2023E=CWPKI2023E: Us\u0142uga ACME nie mog\u0142a zapisywa\u0107 w pliku kl
 CWPKI2023E.explanation=Zapisanie kluczy konta w pliku kluczy konta nie powiod\u0142o si\u0119. Taka sytuacja mo\u017ce wyst\u0105pi\u0107, je\u015bli uprawnienia do pliku s\u0105 nieprawid\u0142owe lub je\u015bli plik nie istnieje.
 CWPKI2023E.useraction=Zapoznaj si\u0119 z komunikatem o b\u0142\u0119dzie, aby uzyska\u0107 informacje o szczeg\u00f3\u0142ach niepowodzenia. Upewnij si\u0119, \u017ce po\u0142o\u017cenie pliku jest prawid\u0142owe, a serwer ma uprawnienia do zapisu w pliku.
 
-CWPKI2024E=CWPKI2024E: Us\u0142uga ACME nie mog\u0142a uniewa\u017cni\u0107 \u017c\u0105danego certyfikatu dla o\u015brodka certyfikacji ACME pod identyfikatorem URI {0}. Numer seryjny certyfikatu: {1}. B\u0142\u0105d to ''{2}''.
+CWPKI2024E=CWPKI2024E: Us\u0142uga ACME nie mog\u0142a uniewa\u017cni\u0107 \u017c\u0105danego certyfikatu dla o\u015brodka certyfikacji ACME pod identyfikatorem URI {0}. Numer seryjny certyfikatu: {1}. B\u0142\u0105d to ''{2}''. Taka sytuacja mo\u017ce wyst\u0105pi\u0107, je\u015bli identyfikator URI katalogu zosta\u0142 zmieniony. W takiej sytuacji mo\u017cna j\u0105 zignorowa\u0107.
 CWPKI2024E.explanation=\u017b\u0105danie uniewa\u017cnienia certyfikatu nie powiod\u0142o si\u0119. Mo\u017cliwe, \u017ce uniewa\u017cnienie certyfikatu nie by\u0142o mo\u017cliwe i \u017ce nadal mo\u017cna go u\u017cywa\u0107.
 CWPKI2024E.useraction=Zapoznaj si\u0119 z komunikatem o b\u0142\u0119dzie, aby uzyska\u0107 informacje o szczeg\u00f3\u0142ach niepowodzenia.
 
@@ -168,6 +170,7 @@ CWPKI2032E.useraction=Zapoznaj si\u0119 z komunikatem o b\u0142\u0119dzie, aby u
 CWPKI2033E=CWPKI2033E: Us\u0142uga ACME nie mo\u017ce zaktualizowa\u0107 konta {0} dla o\u015brodka certyfikacji ACME pod identyfikatorem URI {1}. B\u0142\u0105d to ''{2}''.
 CWPKI2033E.explanation=\u017b\u0105danie zaktualizowania konta nie powiod\u0142o si\u0119 z powodu wyst\u0105pienia wskazanego b\u0142\u0119du.
 CWPKI2033E.useraction=Zapoznaj si\u0119 z komunikatem o b\u0142\u0119dzie, aby uzyska\u0107 informacje o szczeg\u00f3\u0142ach niepowodzenia. Upewnij si\u0119, \u017ce plik kluczy konta dotyczy poprawnego konta.
+
 CWPKI2034E=CWPKI2034E: Us\u0142uga ACME nie mog\u0142a utworzy\u0107 instancji magazynu kluczy. B\u0142\u0105d to ''{0}''.
 CWPKI2034E.explanation=Us\u0142uga ACME pobra\u0142a nowy certyfikat, ale nie powiod\u0142o si\u0119 utworzenie lub zainicjowanie magazynu kluczy do przechowywania certyfikatu.
 CWPKI2034E.useraction=Zapoznaj si\u0119 z komunikatem o b\u0142\u0119dzie, aby uzyska\u0107 informacje o szczeg\u00f3\u0142ach niepowodzenia.
@@ -176,10 +179,9 @@ CWPKI2035E=CWPKI2035E: Us\u0142uga ACME nie mog\u0142a zapisa\u0107 podpisanego 
 CWPKI2035E.explanation=Certyfikat zosta\u0142 pomy\u015blnie pobrany z o\u015brodka certyfikacji, ale tego certyfikatu nie mo\u017cna zapisa\u0107 lokalnie.
 CWPKI2035E.useraction=Zapoznaj si\u0119 z komunikatem o b\u0142\u0119dzie, aby uzyska\u0107 informacje o szczeg\u00f3\u0142ach niepowodzenia. Upewnij si\u0119, \u017ce po\u0142o\u017cenie pliku magazynu kluczy jest prawid\u0142owe, a serwer ma uprawnienia do zapisu w pliku.
 
-CWPKI2036E=CWPKI2036E: W us\u0142udze ACME up\u0142yn\u0105\u0142 limit czasu oczekiwania na uruchomienie aplikacji autoryzacji WWW. Aplikacja ta jest wymagana do uko\u0144czenia obs\u0142ugi \u017c\u0105dania certyfikatu w o\u015brodku certyfikacji ACME. Us\u0142uga czeka\u0142a przez {0} min.
-CWPKI2036E.explanation=Aplikacja s\u0142u\u017c\u0105ca do obs\u0142ugi \u017c\u0105dania certyfikatu nie zosta\u0142a uruchomiona w oczekiwanym czasie. Nie mo\u017cna za\u017c\u0105da\u0107 podpisanego certyfikatu.
-CWPKI2036E.useraction=Przejrzyj zawarto\u015b\u0107 dziennika w poszukiwaniu wcze\u015bniejszych komunikat\u00f3w lub b\u0142\u0119d\u00f3w.
-
+CWPKI2036W=CWPKI2036W: W us\u0142udze ACME up\u0142yn\u0105\u0142 limit czasu oczekiwania na uruchomienie aplikacji autoryzacji WWW. Aplikacja ta jest wymagana do uko\u0144czenia obs\u0142ugi \u017c\u0105dania certyfikatu w o\u015brodku certyfikacji ACME. Podejmowana jest pr\u00f3ba realizacji \u017c\u0105dania certyfikatu. Us\u0142uga oczekuje przez {0}.
+CWPKI2036W.explanation=Aplikacja s\u0142u\u017c\u0105ca do obs\u0142ugi \u017c\u0105dania certyfikatu nie zosta\u0142a uruchomiona w oczekiwanym czasie. Je\u015bli aplikacja uruchomi si\u0119, \u017c\u0105danie jest realizowane. Je\u015bli aplikacja nie uruchomi si\u0119, \u017c\u0105danie certyfikatu ko\u0144czy si\u0119 niepowodzeniem.
+CWPKI2036W.useraction=Przejrzyj zawarto\u015b\u0107 dziennika w poszukiwaniu wcze\u015bniejszych komunikat\u00f3w lub b\u0142\u0119d\u00f3w. Przejrzyj dziennik w poszukiwaniu komunikatu CWWKT0016I, kt\u00f3ry wskazuje na aplikacj\u0119 WWW z adresem URL 'acme-challenge'. Sygnalizuje on, \u017ce wewn\u0119trzna aplikacja zosta\u0142a uruchomiona.
 CWPKI2037E=CWPKI2037E: Domeny dla us\u0142ugi ACME by\u0142y r\u00f3wne null lub puste.
 CWPKI2037E.explanation=Domeny by\u0142y r\u00f3wne null lub puste i nie mo\u017cna ich u\u017cywa\u0107.
 CWPKI2037E.useraction=W konfiguracji podaj co najmniej jedn\u0105 domen\u0119 r\u00f3\u017cn\u0105 od null i niepust\u0105.
@@ -213,11 +215,13 @@ CWPKI2044E.explanation=Us\u0142uga ACME oczekuje, \u017ce wszystkie certyfikaty 
 CWPKI2044E.useraction=Upewnij si\u0119, \u017ce wszystkie certyfikaty w \u0142a\u0144cuchu certyfikat\u00f3w s\u0105 certyfikatami X.509, i spr\u00f3buj ponownie.
 
 CWPKI2045W=CWPKI2045W: Certyfikat o numerze seryjnym {0} podpisany przez o\u015brodek certyfikacji ACME pod identyfikatorem URI {1} jest niewa\u017cny do {2}.
-CWPKI2045W.explanation=Okres wa\u017cno\u015bci certyfikatu wypada w przysz\u0142o\u015bci. \u017b\u0105dania SSL/TLS nie powiod\u0105 si\u0119, dop\u00f3ki bie\u017c\u0105ca data i godzina nie b\u0119d\u0105 znajdowa\u0107 si\u0119 w okresie wa\u017cno\u015bci certyfikatu.
+CWPKI2045W.explanation=Okres wa\u017cno\u015bci certyfikatu wypada w przysz\u0142o\u015bci. \u017b\u0105dania SSL i TLS nie powiod\u0105 si\u0119, dop\u00f3ki bie\u017c\u0105ca data i godzina nie b\u0119d\u0105 w zakresie wynikaj\u0105cym z okresu wa\u017cno\u015bci certyfikatu.
 CWPKI2045W.useraction=Je\u015bli data/godzina jest niepoprawna, zaktualizuj czas miejscowy na serwerze.
+
 CWPKI2046E=CWPKI2046E: Przyczyna uniewa\u017cnienia certyfikatu {0} jest niepoprawna. Obs\u0142ugiwane przyczyny uniewa\u017cnienia to: unspecified, key_compromise, ca_compromise, affiliation_changed, superseded, cessation_of_operations, certificate_hold, remove_from_crl, privilege_withdrawn i aa_compromise.
 CWPKI2046E.explanation=Podana przyczyna uniewa\u017cnienia nie jest obs\u0142ugiwana.
 CWPKI2046E.useraction=Pon\u00f3w \u017c\u0105danie, podaj\u0105c poprawn\u0105 przyczyn\u0119 uniewa\u017cnienia.
+
 CWPKI2047E=CWPKI2047E: Nie powiod\u0142o si\u0119 zarejestrowanie nowej pary kluczy konta w o\u015brodku certyfikacji ACME. B\u0142\u0105d to ''{0}''.
 CWPKI2047E.explanation=O\u015brodek certyfikacji ACME zwr\u00f3ci\u0142 b\u0142\u0105d podczas odnawiania pary kluczy konta.
 CWPKI2047E.useraction=Upewnij si\u0119, \u017ce istniej\u0105ca para kluczy konta jest poprawna. Zapoznaj si\u0119 z komunikatem o b\u0142\u0119dzie, aby uzyska\u0107 informacje o szczeg\u00f3\u0142ach niepowodzenia. 
@@ -226,50 +230,106 @@ CWPKI2048I=CWPKI2048I: Odnowienie pary kluczy konta powiod\u0142o si\u0119. Kopi
 CWPKI2048I.explanation=Poprzednia para kluczy konta nie jest ju\u017c powi\u0105zana z kontem, a jej kopia zapasowa zosta\u0142a zapisana w pliku. Nowa para kluczy konta zast\u0105pi\u0142a stary plik pary kluczy konta.
 CWPKI2048I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
-CWPKI2049E=CWPKI2049E: Para kluczy konta nie zosta\u0142a odnowiona lub nie zosta\u0142 odtworzony istniej\u0105cy plik par kluczy. R\u0119cznie zast\u0105p plik par kluczy konta {0} plikiem par kluczy konta {1}.
+CWPKI2049E=CWPKI2049E: Para kluczy konta nie zosta\u0142a pomy\u015blnie lub nie zosta\u0142 odtworzony istniej\u0105cy plik par kluczy. R\u0119cznie zast\u0105p plik par kluczy konta {0} plikiem par kluczy konta {1}.
 CWPKI2049E.explanation=Para kluczy nie zosta\u0142a odnowiona lub nie zosta\u0142 odtworzony istniej\u0105cy pliku par kluczy.
 CWPKI2049E.useraction=Zast\u0105p r\u0119cznie pliki par kluczy konta zgodnie z tym komunikatem.
+
 CWPKI2050E=CWPKI2050E: Podczas odnawiania pary kluczy konta nie zosta\u0142a utworzona kopia zapasowa istniej\u0105cego pliku pary kluczy konta. B\u0142\u0105d to ''{0}''.
 CWPKI2050E.explanation=Utworzenie kopii zapasowej istniej\u0105cego pliku kluczy konta nie by\u0142o mo\u017cliwe. 
 CWPKI2050E.useraction=Upewnij si\u0119, \u017ce katalog, kt\u00f3ry zawiera istniej\u0105cy plik par kluczy konta, jest dost\u0119pny do zapisu. Zapoznaj si\u0119 z komunikatem o b\u0142\u0119dzie, aby uzyska\u0107 informacje o szczeg\u00f3\u0142ach niepowodzenia.
 
 CWPKI2051W=CWPKI2051W: W\u0142a\u015bciwo\u015b\u0107 renewBeforeExpiration zosta\u0142a ustawiona na warto\u015b\u0107 {0}, kt\u00f3ra jest kr\u00f3tsza ni\u017c minimalny czas odnowienia. W\u0142a\u015bciwo\u015b\u0107 renewBeforeExpiration zostanie zresetowana do warto\u015bci {1}.
 CWPKI2051W.explanation=Warto\u015b\u0107 w\u0142a\u015bciwo\u015bci renewBeforeExpiration by\u0142a mniejsza ni\u017c minimalny czas na za\u017c\u0105danie nowego certyfikatu i zostanie resetowana do minimalnego czasu odnowienia. Mo\u017ce to mie\u0107 negatywny wp\u0142yw na wydajno\u015b\u0107 serwera.
-CWPKI2051W.useraction=Aby unikn\u0105\u0107 tego komunikatu ostrzegawczego, ustaw w\u0142a\u015bciwo\u015b\u0107 renewBeforeExpiration w konfiguracji serwera na wi\u0119ksz\u0105 warto\u015b\u0107. Aby u\u017cy\u0107 ustawienia domy\u015blnego, usu\u0144 w\u0142a\u015bciwo\u015b\u0107 renewBeforeExpiration z konfiguracji serwera.
+CWPKI2051W.useraction=Aby unikn\u0105\u0107 tego komunikatu ostrzegawczego, ustaw w\u0142a\u015bciwo\u015b\u0107 renewBeforeExpiration w konfiguracji serwera na warto\u015b\u0107 wi\u0119ksz\u0105 ni\u017c minimalny czas odnowienia. Aby u\u017cy\u0107 ustawienia domy\u015blnego, usu\u0144 w\u0142a\u015bciwo\u015b\u0107 renewBeforeExpiration z konfiguracji serwera.
+
 CWPKI2052I=CWPKI2052I: Certyfikat o numerze seryjnym {0} traci wa\u017cno\u015b\u0107 {1}. Us\u0142uga ACME za\u017c\u0105da nowego certyfikatu od o\u015brodka certyfikacji ACME pod identyfikatorem URI {2}.
 CWPKI2052I.explanation=Us\u0142uga ACME \u017c\u0105da nowego certyfikatu na podstawie w\u0142a\u015bciwo\u015bci renewBeforeExpiration w konfiguracji serwera i daty wa\u017cno\u015bci certyfikatu. Je\u015bli w\u0142a\u015bciwo\u015b\u0107 renewBeforeExpiration nie jest skonfigurowana, zostanie u\u017cyta warto\u015b\u0107 domy\u015blna.
 CWPKI2052I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
 CWPKI2053W=CWPKI2053W: Certyfikat o numerze seryjnym {0} utraci\u0142 wa\u017cno\u015b\u0107 {1}. Us\u0142uga ACME nie jest skonfigurowana do automatycznego \u017c\u0105dania nowego certyfikatu.
-CWPKI2053W.explanation=\u017b\u0105dania TLS/SSL nie mog\u0105 by\u0107 realizowane, poniewa\u017c certyfikat utraci\u0142 wa\u017cno\u015b\u0107.
+CWPKI2053W.explanation=\u017b\u0105dania TLS i SSL nie mog\u0105 by\u0107 realizowane, poniewa\u017c certyfikat utraci\u0142 wa\u017cno\u015b\u0107.
 CWPKI2053W.useraction=Zmie\u0144 w\u0142a\u015bciwo\u015b\u0107 renewBeforeExpiration w konfiguracji serwera na warto\u015b\u0107 wi\u0119ksz\u0105 ni\u017c 0, aby automatycznie \u017c\u0105da\u0107 nowego certyfikatu, lub u\u017cyj interfejsu REST ACME, aby za\u017c\u0105da\u0107 nowego certyfikatu.
+
 CWPKI2054W=CWPKI2054W: W\u0142a\u015bciwo\u015b\u0107 renewBeforeExpiration zosta\u0142a ustawiona na warto\u015b\u0107 {0}, kt\u00f3ra jest r\u00f3wna lub d\u0142u\u017csza ni\u017c okres wa\u017cno\u015bci certyfikatu o numerze seryjnym {1}. Okres wa\u017cno\u015bci certyfikatu to {2}. W\u0142a\u015bciwo\u015b\u0107 renewBeforeExpiration zostanie zresetowana do warto\u015bci {3}.
 CWPKI2054W.explanation=Warto\u015b\u0107 w\u0142a\u015bciwo\u015bci renewBeforeExpiration by\u0142a d\u0142u\u017csza ni\u017c okres wa\u017cno\u015bci certyfikatu. W\u0142a\u015bciwo\u015b\u0107 renewBeforeExpiration zostanie zresetowana do warto\u015bci domy\u015blnej.
 CWPKI2054W.useraction=Aby unikn\u0105\u0107 tego komunikatu ostrzegawczego, nale\u017cy ustawi\u0107 w\u0142a\u015bciwo\u015b\u0107 renewBeforeExpiration w konfiguracji serwera na warto\u015b\u0107 mniejsz\u0105 od d\u0142ugo\u015bci okresu wa\u017cno\u015bci certyfikatu. Aby u\u017cy\u0107 ustawienia domy\u015blnego, usu\u0144 w\u0142a\u015bciwo\u015b\u0107 renewBeforeExpiration.
+
 CWPKI2055W=CWPKI2055W: W\u0142a\u015bciwo\u015b\u0107 renewBeforeExpiration jest ustawiona na kr\u00f3tki czas. Us\u0142uga ACME cz\u0119sto \u017c\u0105da nowego certyfikatu. W\u0142a\u015bciwo\u015b\u0107 renewBeforeExpiration ma warto\u015b\u0107 {0}.
 CWPKI2055W.explanation=Cz\u0119ste \u017c\u0105danie certyfikatu mog\u0105 mie\u0107 negatywny wp\u0142yw na wydajno\u015b\u0107 serwera. Ponadto liczba \u017c\u0105da\u0144 mo\u017ce przekroczy\u0107 liczb\u0119 dozwolon\u0105 przez o\u015brodek certyfikacji.
 CWPKI2055W.useraction=Aby unikn\u0105\u0107 tego komunikatu ostrzegawczego, ustaw w\u0142a\u015bciwo\u015b\u0107 renewBeforeExpiration w konfiguracji serwera na wi\u0119ksz\u0105 warto\u015b\u0107. Aby u\u017cy\u0107 ustawienia domy\u015blnego, usu\u0144 w\u0142a\u015bciwo\u015b\u0107 renewBeforeExpiration z konfiguracji serwera.
+
 CWPKI2056W=CWPKI2056W: Okres wa\u017cno\u015bci certyfikatu o numerze seryjnym {0} jest kr\u00f3tszy ni\u017c minimalny czas odnowienia {1}. Okres wa\u017cno\u015bci certyfikatu to {2}. W\u0142a\u015bciwo\u015b\u0107 renewBeforeExpiration zostanie zresetowana do warto\u015bci {3}.
 CWPKI2056W.explanation=Okres wa\u017cno\u015bci jest kr\u00f3tszy ni\u017c minimalny czas odnowienia. Certyfikat utraci wa\u017cno\u015b\u0107 przed za\u017c\u0105daniem nowego certyfikatu.
 CWPKI2056W.useraction=Aby unikn\u0105\u0107 utraty wa\u017cno\u015bci certyfikatu, za\u017c\u0105daj certyfikatu o d\u0142u\u017cszym okresie wa\u017cno\u015bci. Je\u015bli o\u015brodek certyfikacji obs\u0142uguje niestandardowy okres wa\u017cno\u015bci, ustaw w\u0142a\u015bciwo\u015b\u0107 validFor w konfiguracji serwera.
-CWPKI2057E=CWPKI2057E: Sprawdzanie statusu uniewa\u017cnienia certyfikatu nie spowodowa\u0142o utworzenia obiektu CertPathValidator w celu sprawdzenia wa\u017cno\u015bci certyfikatu. B\u0142\u0105d to: ''{0}}''.
-CWPKI2057E.explanation=Program sprawdzaj\u0105cy uniewa\u017cnienie certyfikat\u00f3w musi zbudowa\u0107 obiekt CertPathValidator, aby sprawdzi\u0107 status uniewa\u017cnienia za pomoc\u0105 protoko\u0142u OCSP i listy CRL.
+
+CWPKI2057E=CWPKI2057E: Sprawdzanie statusu uniewa\u017cnienia certyfikatu nie spowodowa\u0142o utworzenia narz\u0119dzia sprawdzania \u015bcie\u017cki certyfikatu Java s\u0142u\u017c\u0105cego do sprawdzania wa\u017cno\u015bci certyfikatu. B\u0142\u0105d to ''{0}''.
+CWPKI2057E.explanation=Program sprawdzaj\u0105cy uniewa\u017cnienie certyfikat\u00f3w musi zbudowa\u0107 narz\u0119dzie sprawdzania \u015bcie\u017cki certyfikatu Java, aby sprawdzi\u0107 status uniewa\u017cnienia za pomoc\u0105 protoko\u0142u OCSP i listy CRL.
 CWPKI2057E.useraction=Szczeg\u00f3\u0142owe informacje mo\u017cna znale\u017a\u0107 w komunikacie o statusie i b\u0142\u0119dzie.
+
 CWPKI2058W=CWPKI2058W: Sprawdzanie statusu uniewa\u017cnienia certyfikatu zignorowa\u0142o niepowodzenia niekrytyczne. Mo\u017cliwe, \u017ce sprawdzenie uniewa\u017cnienia nie zosta\u0142o zrealizowane do ko\u0144ca. Niepowodzenia: ''{0}''.
 CWPKI2058W.explanation=Do niepowodze\u0144 niekrytycznych nale\u017c\u0105 b\u0142\u0119dy sieciowe. Us\u0142uga ACME ignoruje b\u0142\u0119dy niekrytyczne, poniewa\u017c mog\u0105 mie\u0107 charakter przej\u015bciowy. 
-CWPKI2058W.useraction=Je\u015bli ten komunikat regularnie si\u0119 pojawia, nale\u017cy wyeliminowa\u0107 przyczyn\u0119 niepowodzenia, poniewa\u017c mo\u017ce ono uniemo\u017cliwi\u0107 prawid\u0142owe sprawdzanie statusu uniewa\u017cnienia. W przeciwnym razie to ostrze\u017cenie mo\u017ce zosta\u0107 bezpiecznie zignorowane. 
+CWPKI2058W.useraction=Je\u015bli ten komunikat regularnie si\u0119 pojawia, nale\u017cy wyeliminowa\u0107 przyczyn\u0119 niepowodzenia, poniewa\u017c mo\u017ce ono uniemo\u017cliwi\u0107 prawid\u0142owe sprawdzanie statusu uniewa\u017cnienia. W przeciwnym razie to ostrze\u017cenie mo\u017ce zosta\u0107 bezpiecznie zignorowane.  
 
 CWPKI2059I=CWPKI2059I: Sprawdzenie statusu uniewa\u017cnienia certyfikatu wykaza\u0142o, \u017ce certyfikat o numerze seryjnym {0} zosta\u0142 uniewa\u017cniony.
-CWPKI2059I.explanation=Us\u0142uga ACME stwierdzi\u0142a, \u017ce certyfikat zosta\u0142 oznaczony jako uniewa\u017cniony za po\u015brednictwem listy CRL lub respondera OSCP.
-
+CWPKI2059I.explanation=Us\u0142uga ACME stwierdzi\u0142a, \u017ce certyfikat zosta\u0142 oznaczony jako uniewa\u017cniony za po\u015brednictwem listy CRL lub respondera OSCP. 
 CWPKI2059I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
 CWPKI2060E=CWPKI2060E: Adres URL protoko\u0142u OCSP z certyfikatu o numerze seryjnym {0} nie zosta\u0142 pobrany. B\u0142\u0105d to: ''{1}''.
 CWPKI2060E.explanation=Adres URL protoko\u0142u OCSP nie zosta\u0142 pobrany.
 CWPKI2060E.useraction=Sprawd\u017a, czy certyfikat jest wa\u017cnym certyfikatem X.509. Je\u015bli nie jest on wa\u017cny, za\u017c\u0105daj nowego certyfikatu.
+
 CWPKI2061E=CWPKI2061E: Punkty dystrybucji listy CRL z certyfikatu o numerze seryjnym {0} nie zosta\u0142y pobrane. B\u0142\u0105d to ''{1}''.
 CWPKI2061E.explanation=Punkty dystrybucji listy CRL nie zosta\u0142y pobrane.
 CWPKI2061E.useraction=Sprawd\u017a, czy certyfikat jest wa\u017cnym certyfikatem X.509. Je\u015bli nie jest on wa\u017cny, za\u017c\u0105daj nowego certyfikatu.
+
 CWPKI2062E=CWPKI2062E: Adres URL respondera OCSP {0} zdefiniowany w konfiguracji serwera nie jest poprawnym identyfikatorem URI. Je\u015bli ten adres jest zdefiniowany, musi by\u0107 poprawnym identyfikatorem URI, kt\u00f3ry przes\u0142oni adres URL respondera OSCP zawarty w certyfikacie.
 CWPKI2062E.explanation=Do sprawdzenia uniewa\u017cnienia certyfikatu wymagany jest poprawny adres URL respondera OCSP.
 CWPKI2062E.useraction=Podaj poprawny adres URL respondera OCSP w konfiguracji serwera.
+
+CWPKI2063E=CWPKI2063E: O\u015brodek certyfikacji ACME pod identyfikatorem URI {0} zaktualizowa\u0142 swoje warunki \u015bwiadczenia us\u0142ug, a teraz wymaga, aby u\u017cytkownik zgodzi\u0142 si\u0119 na nowe warunki \u015bwiadczenia us\u0142ug pod nast\u0119puj\u0105cym identyfikatorem URI przed przetworzeniem kolejnych \u017c\u0105da\u0144: {1}
+CWPKI2063E.explanation=O\u015brodek certyfikacji zaktualizowa\u0142 swoje warunki \u015bwiadczenia us\u0142ug i wymaga interakcji z u\u017cytkownikiem.
+CWPKI2063E.useraction=Zapoznaj si\u0119 z udost\u0119pnionymi warunkami us\u0142ugi.
+
+CWPKI2064I=CWPKI2064I: Us\u0142uga ACME pobra\u0142a certyfikat z numerem seryjnym {0} z identyfikatora URI {1} w czasie {2} s.
+CWPKI2064I.explanation=Us\u0142uga ACME pomy\u015blnie za\u017c\u0105da\u0142a certyfikatu.
+CWPKI2064I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+CWPKI2065W=CWPKI2065W: Us\u0142uga ACME nie mog\u0142a automatycznie odnowi\u0107 certyfikatu z numerem seryjnym {0}. Pr\u00f3ba ponowienia \u017c\u0105dania zosta\u0142a zaplanowana za {1}. Certyfikat utraci wa\u017cno\u015b\u0107 w dniu {2}. B\u0142\u0105d \u017c\u0105dania odnowienia: ''{3}''.
+CWPKI2065W.explanation=Us\u0142uga ACME pr\u00f3bowa\u0142a odnowi\u0107 certyfikat, ale napotka\u0142a b\u0142\u0105d. Us\u0142uga ACME kontynuuje \u017c\u0105danie nowego certyfikatu, dop\u00f3ki nowy certyfikat nie zostanie wystawiony.
+CWPKI2065W.useraction=Zapoznaj si\u0119 z komunikatem o b\u0142\u0119dzie, aby uzyska\u0107 informacje o szczeg\u00f3\u0142ach niepowodzenia.
+
+CWPKI2066E=CWPKI2066E: Us\u0142uga ACME nie mog\u0142a automatycznie odnowi\u0107 certyfikatu z numerem seryjnym {0}. Certyfikat zosta\u0142 uniewa\u017cniony. Pr\u00f3ba ponowienia \u017c\u0105dania zosta\u0142a zaplanowana za {1}. B\u0142\u0105d \u017c\u0105dania odnowienia: ''{2}''.
+CWPKI2066E.explanation=Us\u0142uga ACME pr\u00f3bowa\u0142a odnowi\u0107 certyfikat, ale napotka\u0142a b\u0142\u0105d. Us\u0142uga ACME kontynuuje \u017c\u0105danie nowego certyfikatu, dop\u00f3ki nowy certyfikat nie zostanie wystawiony. \u017b\u0105dania SSL i TLS b\u0119d\u0105 ko\u0144czy\u0107 si\u0119 niepowodzeniem do czasu, a\u017c \u017c\u0105danie nowego certyfikatu powiedzie si\u0119.
+CWPKI2066E.useraction=Zapoznaj si\u0119 z komunikatem o b\u0142\u0119dzie, aby uzyska\u0107 informacje o szczeg\u00f3\u0142ach niepowodzenia. 
+
+CWPKI2067I=CWPKI2067I: Certyfikat z numerem seryjnym {0} zosta\u0142 uniewa\u017cniony. Us\u0142uga ACME \u017c\u0105da nowego certyfikatu z o\u015brodka certyfikacji ACME pod identyfikatorem URI {1}.
+CWPKI2067I.explanation=Gdy us\u0142uga ACME wykryje, \u017ce certyfikat zosta\u0142 uniewa\u017cniony, automatycznie \u017c\u0105da nowego certyfikatu.
+CWPKI2067I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+CWPKI2068W=CWPKI2068W: Us\u0142uga ACME nie mog\u0142a automatycznie sprawdzi\u0107, czy certyfikat z numerem seryjnym {0} traci wa\u017cno\u015b\u0107 lub zosta\u0142 uniewa\u017cniony. Zaplanowano ponown\u0105 pr\u00f3b\u0119 sprawdzenia za {1}. B\u0142\u0105d to ''{2}''.
+CWPKI2068W.explanation=Us\u0142uga ACME rozpocz\u0119\u0142a sprawdzanie, czy certyfikat traci wa\u017cno\u015b\u0107 lub jest uniewa\u017cniony, ale to sprawdzanie nie powiod\u0142o si\u0119.
+CWPKI2068W.useraction=Zapoznaj si\u0119 z komunikatem o b\u0142\u0119dzie, aby uzyska\u0107 informacje o szczeg\u00f3\u0142ach niepowodzenia. Sprawd\u017a status certyfikatu przy u\u017cyciu interfejsu REST ACME. Je\u015bli certyfikat musi zosta\u0107 odnowiony, u\u017cyj interfejsu REST ACME, aby za\u017c\u0105da\u0107 nowego certyfikatu.
+
+CWPKI2069I=CWPKI2069I: Automatyczne sprawdzanie certyfikatu przez us\u0142ug\u0119 ACME jest wy\u0142\u0105czone. Certyfikaty trac\u0105ce wa\u017cno\u015b\u0107 lub uniewa\u017cnione nie s\u0105 automatycznie odnawiane.
+CWPKI2069I.explanation=Us\u0142uga ACME nie sprawdza, czy certyfikaty trac\u0105 wa\u017cno\u015b\u0107 lub s\u0105 uniewa\u017cnione, wed\u0142ug zautomatyzowanego harmonogramu. Je\u015bli certyfikat utraci wa\u017cno\u015b\u0107 lub zostanie uniewa\u017cniony, \u017c\u0105dania SSL i TLS nie b\u0119d\u0105 realizowane, dop\u00f3ki serwer nie zostanie zrestartowany lub certyfikat nie zostanie odnowiony przy u\u017cyciu interfejsu REST.
+CWPKI2069I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. Aby w\u0142\u0105czy\u0107 automatyczne sprawdzanie certyfikatu, zmie\u0144 warto\u015b\u0107 w\u0142a\u015bciwo\u015bci certCheckerSchedule w konfiguracji serwera na wi\u0119ksz\u0105 ni\u017c 0.
+
+CWPKI2070W=CWPKI2070W: W\u0142a\u015bciwo\u015b\u0107 certCheckerSchedule zosta\u0142a ustawiona na warto\u015b\u0107 {0}, kt\u00f3ra jest kr\u00f3tsza ni\u017c minimalny czas harmonogramu. W\u0142a\u015bciwo\u015b\u0107 certCheckerSchedule zostanie zresetowana do warto\u015bci {1}.
+CWPKI2070W.explanation=Warto\u015b\u0107 w\u0142a\u015bciwo\u015bci certCheckerSchedule by\u0142a mniejsza ni\u017c minimalny czas trwania sprawdzania, czy certyfikaty trac\u0105 wa\u017cno\u015b\u0107 lub zosta\u0142y uniewa\u017cnione, i zosta\u0142a zresetowana na minimalny czas trwania harmonogramu.
+CWPKI2070W.useraction=Aby unikn\u0105\u0107 tego komunikatu ostrzegawczego, ustaw w\u0142a\u015bciwo\u015b\u0107 certCheckerSchedule w konfiguracji serwera na czas d\u0142u\u017cszy ni\u017c minimalny czas trwania harmonogramu. Aby u\u017cy\u0107 ustawienia domy\u015blnego, usu\u0144 w\u0142a\u015bciwo\u015b\u0107 certCheckerSchedule z konfiguracji serwera.
+
+CWPKI2071W=CWPKI2071W: W\u0142a\u015bciwo\u015b\u0107 certCheckerErrorSchedule zosta\u0142a ustawiona na warto\u015b\u0107 {0}, kt\u00f3ra jest kr\u00f3tsza ni\u017c minimalny czas harmonogramu. W\u0142a\u015bciwo\u015b\u0107 certCheckerErrorSchedule zosta\u0142a zresetowana do warto\u015bci {1}.
+CWPKI2071W.explanation=Warto\u015b\u0107 w\u0142a\u015bciwo\u015bci certCheckerErrorSchedule zosta\u0142a by\u0142a mniejsza ni\u017c minimalny czas trwania sprawdzania, czy certyfikaty trac\u0105 wa\u017cno\u015b\u0107 lub zosta\u0142y uniewa\u017cnione, i zosta\u0142a zresetowana na minimalny czas trwania harmonogramu.
+CWPKI2071W.useraction=Aby unikn\u0105\u0107 tego komunikatu ostrzegawczego, ustaw w\u0142a\u015bciwo\u015b\u0107 certCheckerErrorSchedule w konfiguracji serwera na czas d\u0142u\u017cszy ni\u017c minimalny czas trwania harmonogramu. Aby u\u017cy\u0107 ustawienia domy\u015blnego, usu\u0144 w\u0142a\u015bciwo\u015b\u0107 certCheckerErrorSchedule z konfiguracji serwera.
+
+CWPKI2072W=CWPKI2072W: Us\u0142uga ACME nie mog\u0142a odczyta\u0107 ani zapisa\u0107 historycznego pliku ACME w: {0}. B\u0142\u0105d to ''{1}''.
+CWPKI2072W.explanation=Us\u0142uga ACME nie mog\u0142a uzyska\u0107 dost\u0119pu do historycznego pliku ACME.
+CWPKI2072W.useraction=Upewnij si\u0119, \u017ce masz uprawnienia do odczytu i zapisu w historycznym katalogu ACME.
+
+CWPKI2073W=CWPKI2073W: Nie podano osoby kontaktowej w sprawie konta. Zaleca si\u0119 ustawienie tej w\u0142a\u015bciwo\u015bci w konfiguracji serwera. Je\u015bli dojdzie do utraty klucza lub naruszenia konta, dost\u0119p do niego zostanie utracony.
+CWPKI2073W.explanation=W konfiguracji serwera nie podano warto\u015bci w\u0142a\u015bciwo\u015bci accountContact.
+CWPKI2073W.useraction=Ustaw w\u0142a\u015bciwo\u015b\u0107 accountContact w konfiguracji serwera.
+
+CWPKI2074W=CWPKI2074W: Up\u0142yn\u0105\u0142 limit czasu us\u0142ugi ACME w oczekiwaniu na sygna\u0142 o otwarciu portu HTTP. Do uko\u0144czenia obs\u0142ugi \u017c\u0105dania certyfikatu w o\u015brodku certyfikacji ACME jest wymagany dost\u0119pny port HTTP. Podejmowana jest pr\u00f3ba realizacji \u017c\u0105dania certyfikatu. Us\u0142uga oczekuje przez {0}.
+CWPKI2074W.explanation=Us\u0142uga pr\u00f3buje zrealizowa\u0107 \u017c\u0105danie certyfikatu. Je\u015bli port HTTP zostanie otwarty, \u017c\u0105danie jest realizowane. Je\u015bli port HTTP nie zostanie otwarty, \u017c\u0105danie certyfikatu ko\u0144czy si\u0119 niepowodzeniem.
+CWPKI2074W.useraction=Przejrzyj zawarto\u015b\u0107 dziennika w poszukiwaniu wcze\u015bniejszych komunikat\u00f3w lub b\u0142\u0119d\u00f3w. Przejrzyj dziennik w poszukiwaniu komunikat\u00f3w CWWKO0219I, w kt\u00f3rych podane s\u0105 dost\u0119pne punkty ko\u0144cowe i porty. 

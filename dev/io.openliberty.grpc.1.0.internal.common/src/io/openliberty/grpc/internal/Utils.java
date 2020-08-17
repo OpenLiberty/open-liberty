@@ -13,12 +13,6 @@ package io.openliberty.grpc.internal;
 
 import static io.grpc.internal.GrpcUtil.CONTENT_TYPE_KEY;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.FFDCFilter;
-
 import io.grpc.internal.GrpcUtil;
 
 public class Utils {
@@ -39,19 +33,4 @@ public class Utils {
 	protected final static String PATH = ":path";
 	protected final static String SCHEME = ":scheme";
 	protected final static String STATUS = ":status";
-
-	public static void traceMessage(Logger logger, String className, Level level, String method, String message) {
-		traceMessage(logger, className, level, method, message, null);
-	}
-
-	public static void traceMessage(Logger logger, String className, Level level, String method, String message,
-			Throwable exception) {
-		if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(level)) {
-			if (exception != null) {
-				logger.logp(level, className, method, message, exception);
-			} else {
-				logger.logp(level, className, method, message);
-			}
-		}
-	}	
 }

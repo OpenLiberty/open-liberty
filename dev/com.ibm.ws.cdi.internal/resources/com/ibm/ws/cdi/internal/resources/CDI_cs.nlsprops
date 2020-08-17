@@ -69,6 +69,6 @@ implicit.bean.scanning.disabled.CWOWB1009W=CWOWB1009W: Implicitn\u00ed archivy o
 implicit.bean.scanning.disabled.CWOWB1009W.explanation=Archivy nejsou skenov\u00e1ny pro objekty typu CDI bean, pokud nemaj\u00ed soubor beans.xml.
 implicit.bean.scanning.disabled.CWOWB1009W.useraction=Ujist\u011bte se, \u017ee ka\u017ed\u00fd archivu, kter\u00fd pou\u017e\u00edv\u00e1 CDI, m\u00e1 soubor beans.xml, nebo znovu povolte skenov\u00e1n\u00ed implicitn\u00edch objekt\u016f typu bean v souboru server.xml.
 
-spi.extension.failed.to.construct.CWOWB10010E=CWOWB10010E: Nezda\u0159ilo se vytvo\u0159it roz\u0161\u00ed\u0159en\u00ed CDI prost\u0159ednictv\u00edm rozhran\u00ed SPI.
-spi.extension.failed.to.construct.CWOWB10010E.explanation=CDI se nepoda\u0159ilo vyvolat konstruktor t\u0159\u00eddy roz\u0161\u00ed\u0159en\u00ed {0} registrovan\u00e9 prost\u0159ednictv\u00edm metody getExtensions() pro implementaci WebSphereCCDIExtensionMetaData, proto\u017ee do\u0161lo k v\u00fdjimce {1}.
-spi.extension.failed.to.construct.CWOWB10010E.useraction=Opravte chybu, kter\u00e1 br\u00e1n\u00ed va\u0161emu roz\u0161\u00ed\u0159en\u00ed p\u0159i vytv\u00e1\u0159en\u00ed instance.
+spi.extension.failed.to.construct.CWOWB1010E=CWOWB1010E: Nezda\u0159ilo se vytvo\u0159it roz\u0161\u00ed\u0159en\u00ed CDI pomoc\u00ed rozhran\u00ed SPI.
+spi.extension.failed.to.construct.CWOWB1010E.explanation=CDI se nezda\u0159ilo vyvolat konstruktor t\u0159\u00eddy roz\u0161\u00ed\u0159en\u00ed {0} registrovan\u00fd prost\u0159ednictv\u00edm metody getExtensions() pro implementaci CDIExtensionMetadata, proto\u017ee do\u0161lo k v\u00fdjimce {1}.
+spi.extension.failed.to.construct.CWOWB1010E.useraction=Opravte chybu, kter\u00e1 br\u00e1n\u00ed va\u0161emu roz\u0161\u00ed\u0159en\u00ed p\u0159i vytv\u00e1\u0159en\u00ed instance.

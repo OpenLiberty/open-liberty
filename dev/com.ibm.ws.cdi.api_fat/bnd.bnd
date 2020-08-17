@@ -23,6 +23,7 @@ src: \
 	test-applications/cdiCurrentTest.jar/src,\
 	test-applications/cdiCurrentTest.war/src,\
         test-applications/injectInjectionPoint.war/src,\
+        test-applications/injectInjectionPointBeansXML.war/src,\
         test-applications/injectInjectionPointXML.war/src,\
         test-applications/injectInjectionPointAsParam.war/src
 	
@@ -35,8 +36,9 @@ tested.features:\
         jpa-2.2,\
         beanValidation-2.0,\
         jaxrs-2.1,\
-        jsf-2.3
-	
+        jsf-2.3,\
+        el-4.0,\
+        jsp-3.0
 	
 test.project: true
 

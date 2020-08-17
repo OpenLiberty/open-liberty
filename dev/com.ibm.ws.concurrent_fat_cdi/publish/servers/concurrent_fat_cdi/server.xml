@@ -20,4 +20,6 @@
     
     <include location="../fatTestPorts.xml"/>
     
+    <managedExecutorService jndiName="concurrent/sampleExecutor"/>
+    
 </server>

@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKT
+#COMPONENTNAMEFOR CWWKT OpenLiberty gRPC Client
+#CMVCPATHNAME io.openliberty.grpc.1.0.internal/resources/io/openliberty/grpc/internal/client/resources/grpcclientmessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+invalid.clientinterceptor=CWWKT0301W: A(z) {0} clientInterceptors be\u00e1ll\u00edt\u00e1sban megadott gRPC elfog\u00f3 nem t\u00f6lthet\u0151 be
+invalid.clientinterceptor.explanation=A clientInterceptors be\u00e1ll\u00edt\u00e1sban megadott gRPC elfog\u00f3 nem t\u00f6lthet\u0151 be.
+invalid.clientinterceptor.useraction=Ellen\u0151rizze a be\u00e1ll\u00edtott elfog\u00f3 nev\u00e9t \u00e9s az alkalmaz\u00e1s oszt\u00e1ly\u00fatvonal\u00e1t.
+
+invalid.keepalive.time=CWWKT0302E: A gRPC \u00fcgyf\u00e9l {0} keepAliveTime \u00e9rt\u00e9ke nem \u00e9rv\u00e9nyes. Az \u00e9rt\u00e9kek csak 0-n\u00e1l nagyobbak lehetnek.
+invalid.keepalive.time.explanation=A keepAliveTime be\u00e1ll\u00edtott \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen.
+invalid.keepalive.time.useraction=Adjon meg \u00e9rv\u00e9nyes \u00e9rt\u00e9ket a keepAliveTime \u00e9rt\u00e9kek\u00e9nt.
+
+invalid.keepalive.timeout=CWWKT0303E: A gRPC \u00fcgyf\u00e9l {0} keepAliveTimeout \u00e9rt\u00e9ke nem \u00e9rv\u00e9nyes. Az \u00e9rt\u00e9kek csak 0-n\u00e1l nagyobbak lehetnek.
+invalid.keepalive.timeout.explanation=A keepAliveTimeout be\u00e1ll\u00edtott \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen.
+invalid.keepalive.timeout.useraction=Adjon meg \u00e9rv\u00e9nyes \u00e9rt\u00e9ket a keepAliveTimeout \u00e9rt\u00e9kek\u00e9nt.
+
+invalid.client.inbound.msg.size=CWWKT0304E: A gRPC \u00fcgyf\u00e9l {0} maxInboundMessageSize \u00e9rt\u00e9ke nem \u00e9rv\u00e9nyes. Az \u00e9rt\u00e9kek csak 0-n\u00e1l nagyobbak lehetnek.
+invalid.client.inbound.msg.size.explanation=A maxInboundMessageSize be\u00e1ll\u00edtott \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen.
+invalid.client.inbound.msg.size.useraction=Adjon meg \u00e9rv\u00e9nyes \u00e9rt\u00e9ket a maxInboundMessageSize \u00e9rt\u00e9kek\u00e9nt. 
+invalid.authn.token=CWWKT0305E: A gRPC \u00fcgyf\u00e9l "{0}" authnToken \u00e9rt\u00e9ke nem \u00e9rv\u00e9nyes. Az \u00e9rt\u00e9k csak "jwt" vagy "oauth" lehet.
+invalid.authn.token.explanation=Az authnToken be\u00e1ll\u00edtott \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen.
+invalid.authn.token.useraction=Adjon meg \u00e9rv\u00e9nyes \u00e9rt\u00e9ket az authnToken \u00e9rt\u00e9kek\u00e9nt.

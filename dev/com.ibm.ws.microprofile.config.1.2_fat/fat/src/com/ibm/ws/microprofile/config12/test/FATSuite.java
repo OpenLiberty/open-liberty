@@ -16,9 +16,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                ConverterPriorityTest.class,
-                TypeConverterTest.class,
-                ImplicitConverterTest.class,
+                Config12ConverterTests.class //LITE
 })
 public class FATSuite {
 

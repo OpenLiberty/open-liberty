@@ -33,8 +33,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import java.util.regex.Pattern;
 
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.ComponentContext;
 
 import com.ibm.oauth.core.internal.oauth20.OAuth20Constants;
@@ -45,15 +45,17 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.common.config.CommonConfigUtils;
 import com.ibm.ws.security.common.jwk.impl.JWKProvider;
 import com.ibm.ws.security.openidconnect.common.ConfigUtils;
-import com.ibm.ws.security.openidconnect.server.ServerConstants;
 import com.ibm.ws.security.openidconnect.server.plugins.OIDCProvidersConfig;
 import com.ibm.ws.ssl.KeyStoreService;
 import com.ibm.ws.webcontainer.security.jwk.JSONWebKey;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.ssl.SSLSupport;
+
+import io.openliberty.security.openidconnect.server.config.OidcEndpointSettings;
 
 /**
  * Process the OpenID Connect OP entry in the server.xml file
@@ -105,6 +107,7 @@ public class OidcServerConfigImpl implements OidcServerConfig {
     public static final String CFG_KEY_BACKING_IDP_URI_PREFIX = "backingIdpUriPrefix";
     public static final String CFG_KEY_AUTH_PROXY_ENDPOINT_URL = "authProxyEndpointUrl";
     public static final String CFG_KEY_REQUIRE_OPENID_SCOPE_FOR_USERINFO = "requireOpenidScopeForUserInfo";
+    public static final String CFG_KEY_OIDC_ENDPOINT = "oidcEndpoint";
 
     public static final String CFG_KEY_JWK_ENABLED = "jwkEnabled";
     public static final String CFG_KEY_JWK_ROTATION = "jwkRotationTime";
@@ -119,6 +122,7 @@ public class OidcServerConfigImpl implements OidcServerConfig {
     public static final String KEY_SSL_SUPPORT = "sslSupport";
     protected final AtomicServiceReference<SSLSupport> sslSupportRef = new AtomicServiceReference<SSLSupport>(KEY_SSL_SUPPORT);
     private ConfigUtils configUtils;
+    private final CommonConfigUtils commonConfigUtils = new CommonConfigUtils();
 
     private String providerId;
     private String oauthProviderRef;
@@ -178,6 +182,7 @@ public class OidcServerConfigImpl implements OidcServerConfig {
     private boolean allowLtpaToken2Name = false;
     private boolean requireOpenidScopeForUserInfo = true;
     // End of OIDC Discovery Configuration Metadata
+    private OidcEndpointSettings oidcEndpointSettings;
 
     // Use locks instead of synchronize blocks to ensure concurrent access while reading and lock during modification only
     private final ReentrantReadWriteLock reentrantReadWriteLock = new ReentrantReadWriteLock();;
@@ -284,7 +289,7 @@ public class OidcServerConfigImpl implements OidcServerConfig {
 
         } catch (IOException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Invalid oauthProviderRef configuration", e.getMessage());
+                Tr.debug(tc, "Invalid oauthProviderRef configuration", e);
             }
             return null;
         }
@@ -351,6 +356,8 @@ public class OidcServerConfigImpl implements OidcServerConfig {
         jwkSigningKeySize = ((Long) props.get(CFG_KEY_JWK_SIGNING_KEY_SIZE)).intValue();
         buildJwk();
 
+        oidcEndpointSettings = populateOidcEndpointSettings(props, CFG_KEY_OIDC_ENDPOINT);
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "providerId: " + providerId);
             Tr.debug(tc, "oauthProviderRef: " + oauthProviderRef);
@@ -383,6 +390,36 @@ public class OidcServerConfigImpl implements OidcServerConfig {
             //TODO: Joe Add debug statements for Discovery Properties
         }
         OIDCProvidersConfig.putOidcServerConfig(providerId, this);
+    }
+
+    private OidcEndpointSettings populateOidcEndpointSettings(Map<String, Object> configProps, String endpointSettingsElementName) {
+        OidcEndpointSettings endpointSettings = null;
+        String[] endpointSettingsElementPids = commonConfigUtils.getStringArrayConfigAttribute(configProps, endpointSettingsElementName);
+        if (endpointSettingsElementPids != null && endpointSettingsElementPids.length > 0) {
+            endpointSettings = populateOidcEndpointSettings(endpointSettingsElementPids);
+        }
+        return endpointSettings;
+    }
+
+    private OidcEndpointSettings populateOidcEndpointSettings(String[] endpointSettingsElementPids) {
+        OidcEndpointSettings endpointSettings = new OidcEndpointSettings();
+        for (String elementPid : endpointSettingsElementPids) {
+            Configuration config = getConfigurationFromConfigAdmin(elementPid);
+            endpointSettings.addOidcEndpointSettings(config);
+        }
+        return endpointSettings;
+    }
+
+    Configuration getConfigurationFromConfigAdmin(String elementPid) {
+        Configuration config = null;
+        try {
+            ConfigurationAdmin configAdmin = configAdminRef.getService();
+            if (configAdmin != null) {
+                config = configAdmin.getConfiguration(elementPid, "");
+            }
+        } catch (IOException e) {
+        }
+        return config;
     }
 
     /**
@@ -453,7 +490,7 @@ public class OidcServerConfigImpl implements OidcServerConfig {
             config = configAdmin.getConfiguration(oauthProviderRef, null);
         } catch (IOException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Invalid oauthProviderRef configuration", e.getMessage());
+                Tr.debug(tc, "Invalid oauthProviderRef configuration", e);
             }
             return null;
         }
@@ -1176,7 +1213,7 @@ public class OidcServerConfigImpl implements OidcServerConfig {
     @FFDCIgnore({ KeyStoreException.class, CertificateException.class })
     private JWKProvider getJwkProviderWithX509() {
         JWKProvider jwkX509Provider = null;
-        if (signatureAlgorithm.equals("RS256") && !ServerConstants.JAVA_VERSION_6) {
+        if (signatureAlgorithm.equals("RS256")) {
             PublicKey publicKey = null;
             PrivateKey privateKey = null;
             try {
@@ -1223,10 +1260,10 @@ public class OidcServerConfigImpl implements OidcServerConfig {
         String retVal = str.trim();
 
         if (retVal.isEmpty())
-            retVal= null;
+            retVal = null;
 
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc,"trimIt("+str+") returns ["+retVal+"]");
+            Tr.debug(tc, "trimIt(" + str + ") returns [" + retVal + "]");
         }
         return retVal;
     }
@@ -1237,4 +1274,9 @@ public class OidcServerConfigImpl implements OidcServerConfig {
         // TODO Auto-generated method stub
         return this.cacheIDToken;
     }
+
+    public OidcEndpointSettings getOidcEndpointSettings() {
+        return oidcEndpointSettings;
+    }
+
 }

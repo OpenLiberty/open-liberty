@@ -33,7 +33,6 @@ Include-Resource: \
   @${repo;org.eclipse.microprofile.jwt:microprofile-jwt-auth-api;1.0}                
 	
 -buildpath: \
-    com.ibm.ws.require.java8;version=latest, \
 	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
 	com.ibm.websphere.javaee.jsonp.1.0
 

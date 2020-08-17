@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2014 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -230,7 +230,7 @@ processo do servidor, o que resultar\u00e1 na n\u00e3o execu\u00e7\u00e3o desse 
 UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR.explanation=O recurso configurado n\u00e3o suporta o tipo de processo especificado.
 UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR.useraction=Remova o recurso da configura\u00e7\u00e3o ou altere o arquivo manifest do recurso para ativar o suporte para o tipo de processo desejado.
 
-# CWWK042E  {0} = feature Name: {1} = server name 
+# CWWK0042E  {0} = feature Name: {1} = server name 
 UPDATE_MISSING_CORE_FEATURE_ERROR=CWWKF0042E: Uma defini\u00e7\u00e3o de recurso n\u00e3o pode ser localizada para o recurso {0}.  Tente \
 executar o comando bin/installUtility install {0} para instalar o \
 recurso. Alternativamente, \u00e9 poss\u00edvel executar o comando \
@@ -240,12 +240,21 @@ UPDATE_MISSING_CORE_FEATURE_ERROR.explanation=O gerenciador do recurso n\u00e3o 
 UPDATE_MISSING_CORE_FEATURE_ERROR.useraction=Verifique \
 se o nome do recurso especificado est\u00e1 escrito corretamente.  \
 Verifique tamb\u00e9m se a defini\u00e7\u00e3o do recurso existe e est\u00e1 leg\u00edvel \
-no diret\u00f3rio lib/features. \
+no diret\u00f3rio lib/features.  \
 Se o recurso n\u00e3o existir, tente executar o comando bin/installUtility \
 install feature_name para instalar o recurso ou tentar executar o \
 comando bin/installUtility install server_name para instalar todos os \
-recursos referenciados por esta configura\u00e7\u00e3o. 
+recursos referenciados por esta configura\u00e7\u00e3o.
 
+# CWWK0043E  {0} = EeProgModel1: {1} = EeProgModel2: {2} = configuredFeature1: {3} = configuredFeature2: {4} EePlaformCommonToProgModels 
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_SAME_PLATFORM_ERROR=CWWKF0043E: O recurso configurado {2} de {0} \u00e9 incompat\u00edvel com o recurso configurado {3} de {1}. A configura\u00e7\u00e3o inclui uma combina\u00e7\u00e3o incompat\u00edvel de recursos {4} que n\u00e3o \u00e9 suportada. Atualize a configura\u00e7\u00e3o para usar vers\u00f5es compat\u00edveis dos recursos configurados que suportem os modelos de programa\u00e7\u00e3o {0} ou {1}.
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_SAME_PLATFORM_ERROR.explanation=A configura\u00e7\u00e3o do servidor cont\u00e9m uma combina\u00e7\u00e3o incompat\u00edvel de recursos para os modelos de programa\u00e7\u00e3o indicados. Esse conflito pode acontecer se os dois recursos incompat\u00edveis forem definidos diretamente na configura\u00e7\u00e3o do servidor ou se os recursos configurados inclu\u00edrem vers\u00f5es diferentes de um recurso que s\u00e3o incompat\u00edveis.
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_SAME_PLATFORM_ERROR.useraction=Tente especificar uma vers\u00e3o compat\u00edvel dos recursos configurados que causaram o conflito no arquivo server.xml. Se n\u00e3o houver outras vers\u00f5es dispon\u00edveis, os recursos configurados n\u00e3o ser\u00e3o compat\u00edveis uns com os outros e n\u00e3o poder\u00e3o ser configurados ao mesmo tempo.
+
+# CWWK0044E  {0} = EeProgModel1: {1} = EeProgModel2: {2} = EeConflictFeature1: {3} = EeConflictFeature2: {4} = configuredFeature1: {5} configuredFeature2
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR=CWWKF0044E: Os recursos {2} e {3} n\u00e3o podem ser carregados ao mesmo tempo. O recurso {2} de {0} \u00e9 incompat\u00edvel com o recurso {3} de {1}. Os recursos configurados {4} e {5} incluem uma combina\u00e7\u00e3o incompat\u00edvel de recursos. Sua configura\u00e7\u00e3o n\u00e3o \u00e9 suportada. Atualize a configura\u00e7\u00e3o para usar recursos que suportem os modelos de programa\u00e7\u00e3o Jakarta EE ou Java EE, mas n\u00e3o ambos.
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR.explanation=A configura\u00e7\u00e3o do servidor cont\u00e9m uma combina\u00e7\u00e3o incompat\u00edvel de recursos Jakarta EE e Java EE. Os recursos que suportam o modelo de programa\u00e7\u00e3o Jakarta EE 9 s\u00e3o incompat\u00edveis com os recursos que suportam os modelos de programa\u00e7\u00e3o Java EE, incluindo o Jakarta EE 8. Esse conflito pode acontecer se os dois recursos incompat\u00edveis forem definidos diretamente na configura\u00e7\u00e3o do servidor ou se os recursos configurados inclu\u00edrem vers\u00f5es diferentes de um recurso que s\u00e3o incompat\u00edveis.
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR.useraction=Especifique uma vers\u00e3o compat\u00edvel dos recursos configurados que causaram o conflito no arquivo server.xml, e certifique-se de que o arquivo server.xml use recursos Jakarta EE ou Java EE, mas n\u00e3o ambos.
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 
 tool.feature.exists=CWWKF1000I: O recurso {0} j\u00e1 existe. Ele n\u00e3o ser\u00e1 reinstalado. Para modificar um recurso existente, \u00e9 necess\u00e1rio primeiro desinstal\u00e1-lo manualmente.

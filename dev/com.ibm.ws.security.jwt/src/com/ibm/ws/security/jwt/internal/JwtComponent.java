@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -65,6 +65,7 @@ public class JwtComponent implements JwtConfig {
     private String trustedAlias;
     private long jwkRotationTime;
     private int jwkSigningKeySize;
+    private long elapsedNbfTime;
 
     private PublicKey publicKey = null;
     private PrivateKey privateKey = null;
@@ -159,8 +160,9 @@ public class JwtComponent implements JwtConfig {
         // Rotation time is in minutes, so convert value to milliseconds
         jwkRotationTime = jwkRotationTime * 60 * 1000;
         jwkSigningKeySize = ((Long) props.get(JwtUtils.CFG_KEY_JWK_SIGNING_KEY_SIZE)).intValue();
+        elapsedNbfTime = ((Long) props.get(JwtUtils.CFG_KEY_ELAPSED_NBF)).longValue();
 
-        if ("RS256".equals(sigAlg)) {
+        if (isJwkCapableSigAlgorithm()) {
             initializeJwkProvider(this);
         }
 
@@ -170,6 +172,13 @@ public class JwtComponent implements JwtConfig {
         } else {
             valid = valid * 3600;
         }
+    }
+
+    private boolean isJwkCapableSigAlgorithm() {
+        if (sigAlg == null) {
+            return false;
+        }
+        return sigAlg.matches("[RE]S[0-9]{3,}");
     }
 
     private void initializeJwkProvider(JwtConfig jwtConfig) {
@@ -340,6 +349,11 @@ public class JwtComponent implements JwtConfig {
             }
         }
         return null;
+    }
+    
+    @Override
+    public long getElapsedNbfTime() {
+        return elapsedNbfTime;
     }
 
     /**

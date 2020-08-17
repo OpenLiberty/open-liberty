@@ -36,20 +36,20 @@ IBM-API-Package: jakarta.decorator;  type="spec", \
 IBM-SPI-Package: io.openliberty.cdi.spi;type="ibm-spi"
 IBM-ShortName: cdi-3.0
 Subsystem-Name: Jakarta Contexts and Dependency Injection 3.0
--features=com.ibm.websphere.appserver.jakarta.jsp-3.0, \
+-features=io.openliberty.jakarta.jsp-3.0, \
  com.ibm.websphere.appserver.containerServices-1.0, \
- com.ibm.websphere.appserver.jakarta.persistence-3.0, \
- com.ibm.websphere.appserver.jakartaeePlatform-9.0, \
- com.ibm.websphere.appserver.jakarta.ejb-4.0, \
- com.ibm.websphere.appserver.jakarta.annotation-2.0, \
+ io.openliberty.jakarta.persistence-3.0, \
+ io.openliberty.jakartaeePlatform-9.0, \
+ io.openliberty.jakarta.ejb-4.0, \
+ io.openliberty.jakarta.annotation-2.0, \
  com.ibm.websphere.appserver.eeCompatible-9.0, \
- com.ibm.websphere.appserver.jakarta.interceptor-2.0, \
+ io.openliberty.jakarta.interceptor-2.0, \
  io.openliberty.jakarta.cdi-3.0, \
  com.ibm.websphere.appserver.injection-2.0, \
  com.ibm.websphere.appserver.classloading-1.0, \
  com.ibm.websphere.appserver.appmanager-1.0, \
  com.ibm.websphere.appserver.transaction-2.0, \
- com.ibm.websphere.appserver.jakarta.servlet-5.0, \
+ io.openliberty.jakarta.servlet-5.0, \
  io.openliberty.jakarta.jaxws-3.0, \
  io.openliberty.jakarta.jaxb-3.0, \
  com.ibm.websphere.appserver.internal.slf4j-1.7.7, \
@@ -68,6 +68,6 @@ Subsystem-Name: Jakarta Contexts and Dependency Injection 3.0
 -jars=io.openliberty.cdi.3.0.thirdparty; location:="dev/api/third-party/,lib/"; mavenCoordinates="org.jboss.weld:weld-osgi-bundle:4.0.0"
 -files=dev/api/ibm/schema/ibm-managed-bean-bnd_1_0.xsd, \
  dev/api/ibm/schema/ibm-managed-bean-bnd_1_1.xsd
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel

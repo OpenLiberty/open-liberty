@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import test.common.SharedOutputManager;
 
 import com.ibm.ws.anno.classsource.internal.ClassSourceImpl_Factory;
 import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Direct;
+import com.ibm.ws.anno.info.internal.InfoStoreFactoryImpl;
 import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Service;
 import com.ibm.ws.anno.targets.internal.AnnotationTargetsImpl_Factory;
 import com.ibm.ws.anno.targets.internal.AnnotationTargetsImpl_Targets;
@@ -159,12 +160,11 @@ public abstract class AnnotationTest_BaseClass {
     //
 
     protected void setFactories() throws Exception {
-        this.targetsService = new AnnotationServiceImpl_Service();
-
-        this.utilFactory = this.targetsService.getUtilFactory();
-        this.classSourceFactory = this.targetsService.getClassSourceFactory();
-        this.annotationTargetsFactory = this.targetsService.getAnnotationTargetsFactory();
-        this.infoStoreFactory = this.targetsService.getInfoStoreFactory();
+        this.utilFactory = new UtilImpl_Factory();
+        this.classSourceFactory = new ClassSourceImpl_Factory(utilFactory);
+        this.annotationTargetsFactory = new AnnotationTargetsImpl_Factory(utilFactory, classSourceFactory);
+        this.infoStoreFactory = new InfoStoreFactoryImpl(utilFactory);
+        this.targetsService = new AnnotationServiceImpl_Service(null, utilFactory, classSourceFactory, annotationTargetsFactory, infoStoreFactory);
     }
 
     //

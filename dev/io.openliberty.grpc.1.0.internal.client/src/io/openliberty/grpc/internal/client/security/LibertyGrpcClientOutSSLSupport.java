@@ -25,6 +25,8 @@ public class LibertyGrpcClientOutSSLSupport {
 		String sslRef = GrpcClientConfigHolder.getSSLConfig(target);
 		SslContext context = null;
 		
+		// See com.ibm.ws.jaxrs20.client.security.LibertyJaxRsClientSSLOutInterceptor
+		
 		/* 
 		 * TODO: actually map sslRef to the Liberty SSL config
 		 * see LibertyJaxRsClientSSLOutInterceptor

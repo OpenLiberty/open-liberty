@@ -2,7 +2,9 @@
 symbolicName=com.ibm.websphere.appserver.mpGraphQL-1.0
 visibility=public
 singleton=true
-IBM-API-Package: org.eclipse.microprofile.graphql;  type="stable"
+IBM-API-Package: org.eclipse.microprofile.graphql; type="stable", \
+ io.smallrye.graphql.api; type="third-party", \
+ io.smallrye.graphql.client.typesafe.api;  type="third-party"
 IBM-ShortName: mpGraphQL-1.0
 Subsystem-Name: MicroProfile GraphQL 1.0
 -features=com.ibm.websphere.appserver.org.eclipse.microprofile.graphql-1.0, \
@@ -12,7 +14,7 @@ Subsystem-Name: MicroProfile GraphQL 1.0
  com.ibm.websphere.appserver.jsonb-1.0, \
  com.ibm.websphere.appserver.servlet-4.0, \
  com.ibm.websphere.appserver.internal.slf4j-1.7.7
--bundles=com.ibm.ws.require.java8, \
+-bundles= \
  com.ibm.ws.com.graphql.java, \
  com.ibm.ws.io.smallrye.graphql, \
  com.ibm.ws.org.jboss.logging, \

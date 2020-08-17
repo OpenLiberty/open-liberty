@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="new server">
+
+    <!-- Enable features -->
+    <featureManager>
+        <feature>jsp-2.2</feature>
+	   <feature>logstashCollector-1.0</feature>
+	   <feature>ssl-1.0</feature>
+	   <feature>timedexit-1.0</feature>
+    </featureManager>
+    
+    <httpEndpoint id="defaultHttpEndpoint" httpPort="${bvt.prop.HTTP_default}" httpsPort="${bvt.prop.HTTP_default.secure}">
+        <accessLogging enabled="false"  filepath="${server.output.dir}/logs/http_defaultEndpoint_access.log" logFormat="%h %u %t &quot;%r&quot; %s %b %D %{User-agent}i"/>
+    </httpEndpoint>
+
+	<!-- Automatically expand WAR files and EAR files -->
+	<applicationManager autoExpand="true"/>
+
+
+	<logstashCollector port="5043" hostName="localhost"
+		sslRef="testSSLConfig">
+		<source>garbageCollection</source>
+	</logstashCollector> 
+
+   <keyStore password="passw0rd" id="testKeyStore" location="${server.output.dir}/resources/security/keystorelogstash.jks"></keyStore>
+
+	<ssl keyStoreRef="testKeyStore" id="testSSLConfig"></ssl>
+
+	
+</server>

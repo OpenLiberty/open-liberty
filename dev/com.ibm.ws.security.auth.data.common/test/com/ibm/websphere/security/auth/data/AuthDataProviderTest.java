@@ -74,6 +74,8 @@ public class AuthDataProviderTest {
                 will(returnValue(name));
                 allowing(authData).getPassword();
                 will(returnValue(password.toCharArray()));
+                allowing(authData).getKrb5Principal();
+                will(returnValue(null));
             }
         });
         return authData;

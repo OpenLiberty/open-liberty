@@ -23,11 +23,11 @@
 
 
 
-warning.jaxrs.ejb.resource.mismatch=CWWKW1100W: L''ambito {1} della risorsa JAXRS-2.0 {0} non corrisponde all''ambito EJB {2}. Liberty ottiene l''istanza risorsa da {3}.
-warning.jaxrs.ejb.resource.mismatch.explanation=Se l'ambito della risorsa JAXRS-2.0 non corrisponde all'ambito EJB, e l'istanza risorsa esiste in EJB, Liberty ottiene l'istanza risorsa da EJB.
+warning.jaxrs.ejb.resource.mismatch=CWWKW1100W: La risorsa JAXRS {0} ambito {1} non corrisponde all''ambito EJB {2}. Liberty ottiene l''istanza risorsa da {3}.
+warning.jaxrs.ejb.resource.mismatch.explanation=Se l'ambito della risorsa JAXRS non corrisponde all'ambito EJB e l'istanza risorsa esiste in EJB, Liberty richiama l'istanza risorsa da EJB.
 warning.jaxrs.ejb.resource.mismatch.useraction=Non \u00e8 richiesta alcuna azione. 
 
-warning.jaxrs.ejb.provider.mismatch=CWWKW1102W: L''ambito EJB del provider JAXRS-2.0 {0} \u00e8 {1}. Liberty ottiene l''istanza provider da {2}.
+warning.jaxrs.ejb.provider.mismatch=CWWKW1102W: L''ambito EJB del provider JAXRS {0} \u00e8 {1}. Liberty ottiene l''istanza provider da {2}.
 warning.jaxrs.ejb.provider.mismatch.explanation=L'istanza provider \u00e8 solo Singleton. Liberty ottiene le istanze provider da EJB se l'ambito EJB del provider \u00e8 Dependent o ApplicationScoped.
 warning.jaxrs.ejb.provider.mismatch.useraction=Non \u00e8 richiesta alcuna azione.
 

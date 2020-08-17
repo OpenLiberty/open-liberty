@@ -14,9 +14,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -32,7 +29,6 @@ import componenttest.vulnerability.LeakedPasswordChecker;
 
 public class DefaultPKCS12DoesNotExistSSLTest extends CommonSSLTest {
     private static final Class<?> c = DefaultPKCS12DoesNotExistSSLTest.class;
-    private static boolean isOracle6 = false;
 
     public DefaultPKCS12DoesNotExistSSLTest() {
         super(LibertyServerFactory.getLibertyServer("com.ibm.ws.ssl.fat.pkcs12.nokeyp12"));
@@ -45,8 +41,6 @@ public class DefaultPKCS12DoesNotExistSSLTest extends CommonSSLTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        if (!isIBMJVM() && isVersion6())
-            isOracle6 = true;
     }
 
     @Override
@@ -68,7 +62,7 @@ public class DefaultPKCS12DoesNotExistSSLTest extends CommonSSLTest {
     public void testDefaultMinimalSSLConfigWithPKCS12Type() throws Exception {
 
         Log.info(c, name.getMethodName(), "Entering " + name.getMethodName());
-        String protocol = isOracle6 ? TLS_PROTOCOL : TLSV11_PROTOCOL;
+        String protocol = TLSV11_PROTOCOL;
 
         server.setServerConfigurationFile(DEFAULT_MINIMAL_SSL_CONFIG_WITH_PKCS12_TYPE);
         server.startServer(name.getMethodName() + ".log");
@@ -114,25 +108,4 @@ public class DefaultPKCS12DoesNotExistSSLTest extends CommonSSLTest {
         Log.info(c, name.getMethodName(), "Exiting " + name.getMethodName());
 
     }
-
-    private static boolean isIBMJVM() {
-        String vendorName = AccessController.doPrivileged(new PrivilegedAction<String>() {
-            @Override
-            public String run() {
-                return System.getProperty("java.vendor");
-            }
-        });
-        return (vendorName != null && vendorName.toLowerCase().contains("ibm"));
-    }
-
-    private static boolean isVersion6() {
-        String version = AccessController.doPrivileged(new PrivilegedAction<String>() {
-            @Override
-            public String run() {
-                return System.getProperty("java.version");
-            }
-        });
-        return (version != null && version.startsWith("1.6"));
-    }
-
 }

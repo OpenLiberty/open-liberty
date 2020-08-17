@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.spnego.internal;
 
+import java.nio.file.Path;
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import org.ietf.jgss.GSSCredential;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.security.kerberos.auth.KerberosService;
 import com.ibm.ws.security.spnego.ErrorPageConfig;
 import com.ibm.ws.security.spnego.SpnegoConfig;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
@@ -50,6 +52,7 @@ public class SpnegoConfigImpl implements SpnegoConfig {
 
     public static final String KEY_SPNEGO_NOT_SUPPORTED_ERROR_PAGE_URL = "spnegoNotSupportedErrorPageURL";
     public static final String KEY_NTLM_TOKEN_RECEIVED_ERROR_PAGE_URL = "ntlmTokenReceivedErrorPageURL";
+    public static final String KEY_SPNEGO_AUTHENTICATION_ERROR_PAGE_URL = "spnegoAuthenticationErrorPageURL";
 
     public static final String KEY_TRIM_KERBEROS_REALM_NAME_FROM_PRINCIPAL = "trimKerberosRealmNameFromPrincipal";
 
@@ -65,6 +68,7 @@ public class SpnegoConfigImpl implements SpnegoConfig {
 
     static final String KEY_CONFIGURATION_ADMIN = "configurationAdmin";
     private WsLocationAdmin locationAdmin = null;
+    private final KerberosService kerbSvc;
     private String id;
     private String authFilterRef;
     private boolean allowLocalHost;
@@ -79,6 +83,7 @@ public class SpnegoConfigImpl implements SpnegoConfig {
     private boolean invokeAfterSSO;
     private String spnegoNotSupportedErrorPageURL;
     private String ntlmTokenReceivedErrorPageURL;
+    private String spnegoAuthenticationErrorPageURL;
     private boolean includeCustomCacheKeyInSubject;
 
     private boolean trimKerberosRealmNameFromPrincipal;
@@ -88,8 +93,11 @@ public class SpnegoConfigImpl implements SpnegoConfig {
     private Krb5DefaultFile krb5DefaultFile = null;
     private boolean disableLtpaCookie;
 
-    public SpnegoConfigImpl(WsLocationAdmin locationAdmin, Map<String, Object> props) {
+    public SpnegoConfigImpl(WsLocationAdmin locationAdmin,
+                            KerberosService kerberosService,
+                            Map<String, Object> props) {
         this.locationAdmin = locationAdmin;
+        this.kerbSvc = kerberosService;
         krb5DefaultFile = new Krb5DefaultFile(locationAdmin);
         processConfig(props);
         initSpnGssCrendential();
@@ -97,7 +105,7 @@ public class SpnegoConfigImpl implements SpnegoConfig {
 
     protected boolean initSpnGssCrendential() {
         boolean result = true;
-        errorPageConfig = new ErrorPageConfig(spnegoNotSupportedErrorPageURL, ntlmTokenReceivedErrorPageURL);
+        errorPageConfig = new ErrorPageConfig(spnegoNotSupportedErrorPageURL, ntlmTokenReceivedErrorPageURL, spnegoAuthenticationErrorPageURL);
 
         if (krb5Keytab == null || krb5Keytab.length() == 0) {
             result = false;
@@ -130,6 +138,7 @@ public class SpnegoConfigImpl implements SpnegoConfig {
         invokeAfterSSO = (Boolean) props.get(KEY_INVOKE_AFTER_SSO);
         spnegoNotSupportedErrorPageURL = (String) props.get(KEY_SPNEGO_NOT_SUPPORTED_ERROR_PAGE_URL);
         ntlmTokenReceivedErrorPageURL = (String) props.get(KEY_NTLM_TOKEN_RECEIVED_ERROR_PAGE_URL);
+        spnegoAuthenticationErrorPageURL = (String) props.get(KEY_SPNEGO_AUTHENTICATION_ERROR_PAGE_URL);
         trimKerberosRealmNameFromPrincipal = (Boolean) props.get(KEY_TRIM_KERBEROS_REALM_NAME_FROM_PRINCIPAL);
         includeClientGSSCredentialInSubject = (Boolean) props.get(KEY_INCLUDE_CLIENT_GSS_CREDENTIAL_IN_SUBJECT);
         servicePrincipalNames = resolveServicePrincipalNames((String) props.get(KEY_SERVICE_PRINCIPAL_NAMES));
@@ -150,6 +159,7 @@ public class SpnegoConfigImpl implements SpnegoConfig {
             Tr.debug(tc, "invokeAfterSSO: " + invokeAfterSSO);
             Tr.debug(tc, "spnegoNotSupportedErrorPageURL: " + spnegoNotSupportedErrorPageURL);
             Tr.debug(tc, "ntlmTokenReceivedErrorPageURL: " + ntlmTokenReceivedErrorPageURL);
+            Tr.debug(tc, "spnegoAuthenticationErrorPageURL: " + spnegoAuthenticationErrorPageURL);
             Tr.debug(tc, "trimKerberosRealmNameFromPrincipal: " + trimKerberosRealmNameFromPrincipal);
             Tr.debug(tc, "includeClientGSSCredentialInSubject: " + includeClientGSSCredentialInSubject);
             Tr.debug(tc, "includeCustomCacheKeyInSubject: " + includeCustomCacheKeyInSubject);
@@ -161,14 +171,28 @@ public class SpnegoConfigImpl implements SpnegoConfig {
      * @param props
      */
     protected String processKrb5Keytab(Map<String, Object> props) {
-        String keytab = (String) props.get(KEY_KRB5_KEYTAB);
-        if (keytab != null) {
-            WsResource kt = locationAdmin.resolveResource(keytab);
-            if (kt == null || !kt.exists()) {
-                Tr.error(tc, "SPNEGO_KRB5_KEYTAB_FILE_NOT_FOUND", keytab);
+        String spnegoKeytab = (String) props.get(KEY_KRB5_KEYTAB);
+        Path kerberosKeytab = kerbSvc.getKeytab(); // from the <kerberos> element
+
+        if (kerberosKeytab != null) {
+            if (spnegoKeytab == null) {
+                spnegoKeytab = kerberosKeytab.toAbsolutePath().toString();
+            } else if (!kerberosKeytab.toAbsolutePath().toString().equals(spnegoKeytab)) {
+                // Error: Conflicting values specified on <spnego> and <kerberos> element
+                Tr.error(tc, "SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E", "keytab", "<kerberos>", KEY_KRB5_KEYTAB, "<spnego>");
                 return null;
             } else {
-                return keytab;
+                // both values are set but are equal, tolerate it
+            }
+        }
+
+        if (spnegoKeytab != null) {
+            WsResource kt = locationAdmin.resolveResource(spnegoKeytab);
+            if (kt == null || !kt.exists()) {
+                Tr.error(tc, "SPNEGO_KRB5_KEYTAB_FILE_NOT_FOUND", spnegoKeytab);
+                return null;
+            } else {
+                return spnegoKeytab;
             }
         } else {
             return krb5DefaultFile.getDefaultKrb5KeytabFile();
@@ -179,14 +203,28 @@ public class SpnegoConfigImpl implements SpnegoConfig {
      * @param props
      */
     protected String processKrb5Config(Map<String, Object> props) {
-        String krbCf = (String) props.get(KEY_KRB5_CONFIG);
-        if (krbCf != null) {
-            WsResource kcf = locationAdmin.resolveResource(krbCf);
-            if (kcf == null || !kcf.exists()) {
-                Tr.error(tc, "SPNEGO_KRB5_CONFIG_FILE_NOT_FOUND", krbCf);
+        String spnegoConfigFile = (String) props.get(KEY_KRB5_CONFIG);
+        Path kerberosConfigFile = kerbSvc.getConfigFile(); // from the <kerberos> element
+
+        if (kerberosConfigFile != null) {
+            if (spnegoConfigFile == null) {
+                spnegoConfigFile = kerberosConfigFile.toAbsolutePath().toString();
+            } else if (!kerberosConfigFile.toAbsolutePath().toString().equals(spnegoConfigFile)) {
+                // Error: Conflicting values specified on <spnego> and <kerberos> element
+                Tr.error(tc, "SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E", "configFile", "<kerberos>", KEY_KRB5_CONFIG, "<spnego>");
                 return null;
             } else {
-                return krbCf;
+                // both values are set but are equal, tolerate it
+            }
+        }
+
+        if (spnegoConfigFile != null) {
+            WsResource kcf = locationAdmin.resolveResource(spnegoConfigFile);
+            if (kcf == null || !kcf.exists()) {
+                Tr.error(tc, "SPNEGO_KRB5_CONFIG_FILE_NOT_FOUND", spnegoConfigFile);
+                return null;
+            } else {
+                return spnegoConfigFile;
             }
         } else {
             return krb5DefaultFile.getDefaultKrb5ConfigFile();
@@ -271,6 +309,14 @@ public class SpnegoConfigImpl implements SpnegoConfig {
     @Override
     public String getNtlmTokenReceivedErrorPageURL() {
         return ntlmTokenReceivedErrorPageURL;
+    }
+
+    /**
+     * @return the spnegoAuthenticationErrorPageURL
+     */
+    @Override
+    public String getSpnegoAuthenticationErrorPageURL() {
+        return spnegoAuthenticationErrorPageURL;
     }
 
     /**

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2014 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -203,14 +203,24 @@ UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR=CWWKF0041E: Funkce {0} podporu
 UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR.explanation=Zkonfigurovan\u00e1 funkce nepodporuje ur\u010den\u00fd typ procesu.
 UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR.useraction=Odeberte funkci z konfigurace nebo zm\u011b\u0148te soubor typu manifest funkce, abyste povolili podporu pro po\u017eadovan\u00fd typ procesu.
 
-# CWWK042E  {0} = feature Name: {1} = server name 
+# CWWK0042E  {0} = feature Name: {1} = server name 
 UPDATE_MISSING_CORE_FEATURE_ERROR=CWWKF0042E: Nelze naj\u00edt definici funkce pro funkci {0}. Zkuste spustit p\u0159\u00edkaz bin/installUtility install {0} a funkci nainstalovat. P\u0159\u00edpadn\u011b \
 m\u016f\u017eete spustit p\u0159\u00edkaz bin/installUtility install {1} a nainstalovat v\u0161echny funkce, na kter\u00e9 tato konfigurace odkazuje.
 UPDATE_MISSING_CORE_FEATURE_ERROR.explanation=Spr\u00e1vce funkce nemohl nal\u00e9zt definici zadan\u00e9 funkce.
 UPDATE_MISSING_CORE_FEATURE_ERROR.useraction=Zkontrolujte, zda je n\u00e1zev uveden\u00e9 funkce naps\u00e1n spr\u00e1vn\u011b. \
 Tak\u00e9 zkontrolujte, zda definice funkce existuje v adres\u00e1\u0159i lib/features a je \u010diteln\u00e1. \
 Pokud funkce neexistuje, zkuste spustit p\u0159\u00edkaz bin/installUtility install n\u00e1zev_funkce a funkci nainstalovat, nebo zkuste spustit p\u0159\u00edkaz bin/installUtility install n\u00e1zev_serveru a nainstalovat \
-v\u0161echny funkce, na kter\u00e9 odkazuje tato konfigurace. 
+v\u0161echny funkce, na kter\u00e9 odkazuje tato konfigurace.
+
+# CWWK0043E  {0} = EeProgModel1: {1} = EeProgModel2: {2} = configuredFeature1: {3} = configuredFeature2: {4} EePlaformCommonToProgModels 
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_SAME_PLATFORM_ERROR=CWWKF0043E: Konfigurovan\u00e1 funkce {2} z {0} nen\u00ed kompatibiln\u00ed s konfigurovanou funkc\u00ed {3} z {1}. Konfigurace obsahuje nekompatibiln\u00ed kombinaci funkc\u00ed {4}, kter\u00e9 nejsou podporov\u00e1ny. Aktualizujte konfiguraci tak, aby pou\u017e\u00edvala kompatibiln\u00ed verze nakonfigurovan\u00fdch funkc\u00ed, kter\u00e9 podporuj\u00ed programovac\u00ed modely {0} nebo {1}.
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_SAME_PLATFORM_ERROR.explanation=Konfigurace serveru obsahuje nekompatibiln\u00ed kombinaci funkc\u00ed pro uveden\u00e9 programovac\u00ed modely. K tomuto konfliktu doch\u00e1z\u00ed, pokud jsou dv\u011b nekompatibiln\u00ed funkce nakonfigurov\u00e1ny p\u0159\u00edmo v konfiguraci serveru nebo pokud nakonfigurovan\u00e9 funkce zahrnuj\u00ed r\u016fzn\u00e9 verze nekompatibiln\u00ed funkce.
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_SAME_PLATFORM_ERROR.useraction=Pokuste se zadat do souboru server.xml kompatibiln\u00ed verzi nakonfigurovan\u00fdch funkc\u00ed, kter\u00e9 zp\u016fsobuj\u00ed konflikt. Pokud nem\u00e1te k dispozici jin\u00e9 verze, nejsou nakonfigurovan\u00e9 funkce mezi sebou kompatibiln\u00ed a nelze je sou\u010dasn\u011b nakonfigurovat.
+
+# CWWK0044E  {0} = EeProgModel1: {1} = EeProgModel2: {2} = EeConflictFeature1: {3} = EeConflictFeature2: {4} = configuredFeature1: {5} configuredFeature2
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR=CWWKF0044E: Funkce {2} a {3} nelze na\u010d\u00edst sou\u010dasn\u011b. Funkce {2} z {0} nen\u00ed kompatibiln\u00ed s funkc\u00ed {3} z {1}. Konfigurovan\u00e9 funkce {4} a {5} obsahuj\u00ed nekompatibiln\u00ed kombinaci funkc\u00ed. Va\u0161e konfigurace nen\u00ed podporov\u00e1na. Aktualizujte konfiguraci tak, aby pou\u017e\u00edvala funkce, kter\u00e9 podporuj\u00ed programovac\u00ed modely Jakarta EE nebo Java EE, nikoli v\u0161ak oboj\u00ed.
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR.explanation=Konfigurace serveru obsahuje nekompatibiln\u00ed kombinaci funkc\u00ed Jakarta EE a Java EE. Funkce, kter\u00e9 podporuj\u00ed programovac\u00ed model Jakarta EE 9, jsou nekompatibiln\u00ed s funkcemi, kter\u00e9 podporuj\u00ed programovac\u00ed modely Java EE, v\u010detn\u011b Jakarta EE 8. K tomuto konfliktu doch\u00e1z\u00ed, pokud jsou dv\u011b nekompatibiln\u00ed funkce nakonfigurov\u00e1ny p\u0159\u00edmo v konfiguraci serveru nebo pokud nakonfigurovan\u00e9 funkce zahrnuj\u00ed r\u016fzn\u00e9 verze nekompatibiln\u00ed funkce.
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR.useraction=Uve\u010fte kompatibiln\u00ed verzi nakonfigurovan\u00fdch funkc\u00ed, kter\u00e9 zp\u016fsobily konflikt v souboru server.xml, a ujist\u011bte se, \u017ee soubor server.xml pou\u017e\u00edv\u00e1 bu\u010f funkce Jakarta EE, nebo Java EE, ale ne oboj\u00ed.
 
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 

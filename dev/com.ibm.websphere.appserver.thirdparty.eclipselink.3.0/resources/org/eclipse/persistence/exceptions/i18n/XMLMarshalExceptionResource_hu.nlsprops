@@ -1,0 +1,111 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/XMLMarshalExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+25001=\u00c9rv\u00e9nytelen XPath karaktersorozat: {0}
+
+25002=A k\u00f6vetkez\u0151 XPath karaktersorozatb\u00f3l nem \u00e9rtelmezhet\u0151 eg\u00e9sz sz\u00e1m index: {0}
+
+25003=Hiba t\u00f6rt\u00e9nt az objektum rendez\u00e9sekor
+
+25004=Hiba t\u00f6rt\u00e9nt a dokumentum visszarendez\u00e9sekor
+
+25005=Hiba t\u00f6rt\u00e9nt az objektum \u00e9rv\u00e9nyes\u00edt\u00e9sekor
+
+25006=Nem lett megadva alap\u00e9rtelmezett gy\u00f6k\u00e9relem a k\u00f6vetkez\u0151re lek\u00e9pezett XMLDescriptor eset\u00e9n: {0}
+
+25007=A(z) {0} oszt\u00e1lyhoz nem tal\u00e1lhat\u00f3 le\u00edr\u00f3 a projektben.  JAXB eset\u00e9n, ha a JAXBContext el\u0151bet\u00f6lt\u00e9se a TypeMappingInfo[] haszn\u00e1lat\u00e1val t\u00f6rt\u00e9nt, akkor meg kell h\u00edvnia egy visszarendez\u0151 met\u00f3dust, amely bemeneti param\u00e9terk\u00e9nt a TypeMappingInfo t\u00f6mb\u00f6t fogad.
+
+25008=A(z) {0} gy\u00f6k\u00e9relemhez nem tal\u00e1lhat\u00f3 le\u00edr\u00f3 a projektben.
+
+25010=Nem lett megadva s\u00e9mahivatkoz\u00e1s a k\u00f6vetkez\u0151re lek\u00e9pezett XMLDescriptor eset\u00e9n: {0}
+
+25011=Null argumentum fordult el\u0151
+
+25012=Hiba t\u00f6rt\u00e9nt az XML s\u00e9ma felold\u00e1sakor.
+
+25013=Hiba t\u00f6rt\u00e9nt a s\u00e9m\u00e1k be\u00e1ll\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.
+
+25014=Hiba t\u00f6rt\u00e9nt a s\u00e9maplatform p\u00e9ld\u00e1ny\u00e1nak l\u00e9trehoz\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.
+
+25015=Hiba t\u00f6rt\u00e9nt a(z) {0} n\u00e9vt\u00e9r URI azonos\u00edt\u00f3j\u00e1nak felold\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n. A le\u00edr\u00f3hoz nem lett megadva n\u00e9vt\u00e9rfelold\u00f3.
+
+25016=Nem tal\u00e1lhat\u00f3 n\u00e9vt\u00e9r a(z) {0} el\u0151taghoz a n\u00e9vt\u00e9rfelold\u00f3ban.
+
+25017=A JAXBTypesafeEnumConverter sz\u00e1m\u00e1ra a k\u00f6vetkez\u0151k egyik\u00e9t kell be\u00e1ll\u00edtani: enumClass vagy enumClassName.
+
+25018=A(z) {0} felsorol\u00e1si oszt\u00e1lyhoz megh\u00edvott fromString met\u00f3dus nem l\u00e9tezik vagy nem h\u00edvhat\u00f3 meg.
+
+25019=A megadott {0} felsorol\u00e1si oszt\u00e1ly nem tal\u00e1lhat\u00f3.
+
+25020=A "getResult()" met\u00f3dus nem h\u00edvhat\u00f3 meg az "endDocument()" esem\u00e9ny h\u00edv\u00e1sa el\u0151tt.
+
+25021=A(z) {0} \u00e9rv\u00e9nytelen az SwaRef eset\u00e9n. Csak javax.activation.DataHandler lehet.
+
+25022=A k\u00e9p nem rendezhet\u0151 el. A(z) {0} mimeType sz\u00e1m\u00e1ra nem \u00e9rhet\u0151 el k\u00f3dol\u00f3.
+
+25023=Nem tal\u00e1lhat\u00f3 le\u00edr\u00f3 a(z) {0} attrib\u00fatumra lek\u00e9pezett elem visszaalak\u00edt\u00e1sakor.
+
+25024=Hiba t\u00f6rt\u00e9nt a(z) {0} UnmappedContentHandler oszt\u00e1ly p\u00e9ld\u00e1nyos\u00edt\u00e1sakor.
+
+25025=A(z) XMLUnmarshaller eset\u00e9n be\u00e1ll\u00edtott {0} UnmappedContentHandler oszt\u00e1lynak meg kell val\u00f3s\u00edtania a(z) org.eclipse.persistence.oxm.unmapped.UnmappedContentHandler fel\u00fcletet.
+
+25026=A(z) [{0}] csom\u00f3pont nem friss\u00edthet\u0151, az objektum nem tal\u00e1lhat\u00f3 a gyors\u00edt\u00f3t\u00e1rban.
+
+25027=A(z) {0} cid azonos\u00edt\u00f3j\u00fa mell\u00e9klet nem k\u00e9rhet\u0151 le, mert nem lett be\u00e1ll\u00edtva AttachmentUnmarshaller.
+
+25028=Nem tal\u00e1lhat\u00f3 hivatkoz\u00e1sle\u00edr\u00f3 a(z) {1} lek\u00e9pez\u00e9shez ismeretlen xsi:type \u00e9rt\u00e9k miatt: {0}.
+
+25029=A(z) [{0}] el\u0151tag eset\u00e9n a(z) [{1}] oszt\u00e1ly megk\u00eds\u00e9relte hozz\u00e1rendelni a(z) [{2}] n\u00e9vt\u00e9r URI azonos\u00edt\u00f3t, azonban annak [{3}] sz\u00fcl\u0151oszt\u00e1lya m\u00e1r hozz\u00e1 van rendelve a(z) [{4}] n\u00e9vt\u00e9r URI azonos\u00edt\u00f3hoz.
+
+25030=Hiba t\u00f6rt\u00e9nt a(z) {0} met\u00f3dus megh\u00edv\u00e1sakor az egy\u00e9ni NamespacePrefixMapper oszt\u00e1lyhoz: {1}.
+
+25031=Hiba t\u00f6rt\u00e9nt a NamespacePrefixMapper feldolgoz\u00e1sakor: {1}. A(z) {0} met\u00f3dus nem tal\u00e1lhat\u00f3.
+
+25032=Hiba t\u00f6rt\u00e9nt a(z) {0} met\u00f3dus megh\u00edv\u00e1sakor az egy\u00e9ni CharacterEscapeHandler oszt\u00e1lyhoz: {1}.
+
+25033=Hiba t\u00f6rt\u00e9nt a CharacterEscapeHandler feldolgoz\u00e1sa sor\u00e1n: {1}. A(z) {0} met\u00f3dus nem tal\u00e1lhat\u00f3.
+
+25034=Hiba t\u00f6rt\u00e9nt a(z) {0} met\u00f3dus megh\u00edv\u00e1sakor az egy\u00e9ni IDResolver oszt\u00e1lyhoz: {1}.
+
+25035=Hiba t\u00f6rt\u00e9nt az IDResolver feldolgoz\u00e1sa sor\u00e1n: {1}. A(z) {0} met\u00f3dus nem tal\u00e1lhat\u00f3.
+
+25036=Az egy\u00e9ni {1} IDResolver nem t\u00e1mogat t\u00f6bb {0} XML azonos\u00edt\u00f3t.  T\u00f6bb azonos\u00edt\u00f3 haszn\u00e1lata eset\u00e9n az egy\u00e9ni IDResolver oszt\u00e1lyoknak az org.eclipse.persistence.jaxb.IDResolver sz\u00e1rmaztatott oszt\u00e1lyainak kell lenni\u00fck.
+
+25037=Ciklus \u00e9szlel\u00e9se az objektumdiagramban.  Ez v\u00e9gtelen ciklust fog okozni: {0}
+
+25038=A DOMPlatform nem t\u00e1mogatott az application/json m\u00e9diat\u00edpussal.
+
+25039=Hiba t\u00f6rt\u00e9nt a visszarendez\u00e9s sor\u00e1n a k\u00f6vetkez\u0151b\u0151l: {0}
+
+25040=Nem tal\u00e1lhat\u00f3 {1} azonos\u00edt\u00f3j\u00fa {0} t\u00edpus\u00fa objektum.
+
+25041=Az attrib\u00fatumcsoport \u00e1ltal megadott {0} nincs meghat\u00e1rozva a(z) {1} oszt\u00e1lyhoz.
+
+25042=A(z) {1} oszt\u00e1lyhoz megadott {0} v\u00e1ltoz\u00f3 tulajdons\u00e1g \u00e9rt\u00e9ke nem lehet null.
+

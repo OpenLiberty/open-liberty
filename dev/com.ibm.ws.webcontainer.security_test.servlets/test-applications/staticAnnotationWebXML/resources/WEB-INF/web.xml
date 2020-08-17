@@ -16,7 +16,7 @@
     <description></description>
         <display-name>StaticAnnotationWebXML1</display-name>
         <servlet-name>StaticAnnotationWebXML1</servlet-name>
-        <servlet-class>web.StaticAnnotationWebXML1</servlet-class>
+        <servlet-class>web.staticannotationwebxml.StaticAnnotationWebXML1</servlet-class>
   </servlet>
   <servlet-mapping id="ServletMapping_1">
      <servlet-name>StaticAnnotationWebXML1</servlet-name>

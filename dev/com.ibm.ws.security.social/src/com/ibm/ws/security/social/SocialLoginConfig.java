@@ -121,4 +121,6 @@ public interface SocialLoginConfig {
 
     public long getApiResponseCacheTime();
 
+    public String getIntrospectionTokenTypeHint();
+
 }

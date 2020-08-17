@@ -30,6 +30,7 @@ import java.util.Collection;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.config.Application;
@@ -39,7 +40,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import componenttest.annotation.ExpectedFFDC;
-import componenttest.annotation.MinimumJavaLevel;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyFileManager;
@@ -48,6 +49,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
 import test.utils.TestUtils;
 
+@RunWith(FATRunner.class)
 public class FATTest extends AbstractAppManagerTest {
 
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("appManagerTestServer");
@@ -78,103 +80,10 @@ public class FATTest extends AbstractAppManagerTest {
      *
      * It then removes the applications at the end of the test.
      */
-    @Test
-    public void testStartStopFromXml() throws Exception {
-        final String method = testName.getMethodName();
-        try {
-            //load a new server xml
-            server.setServerConfigurationFile("/appsConfigured/server.xml");
-            //copy file to correct location
-            server.copyFileToLibertyServerRoot(PUBLISH_FILES, "apps",
-                                               SNOOP_WAR);
-            //copy invalid file to the second location we should check - it should not pick this file up!
-            server.copyFileToLibertyInstallRoot("usr/shared/apps",
-                                                "invalidSnoopWar/snoop.war");
-            server.startServer(method + ".log");
-            // Wait for the application to be installed before proceeding
-            assertNotNull("The snoop application never came up", server.waitForStringInLog("CWWKZ0001I.* snoop"));
-
-            URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/snoop");
-            Log.info(c, method, "Calling Snoop Application with URL=" + url.toString());
-            //check application is installed
-            HttpURLConnection con = HttpUtils.getHttpConnection(url, HttpURLConnection.HTTP_OK, CONN_TIMEOUT);
-            BufferedReader br = HttpUtils.getConnectionStream(con);
-            String line = br.readLine();
-            assertTrue("The response did not contain the \'Snoop Servlet\'",
-                       line.contains("Snoop Servlet"));
-            con.disconnect();
-
-            //application is working, so now remove it from the install location (we should get an error message)
-            boolean deleted = deleteFile(server.getMachine(),
-                                         server.getInstallRoot() + "/usr/shared/apps/snoop.war");
-
-            //application is working, so now remove it from the install location (we should get an error message)
-            deleted &= deleteFile(server.getMachine(), server.getServerRoot() + "/apps/snoop.war");
-
-            if (!deleted) {
-                // If we can't delete files the test is worthless. This tends to happen on Windows randomly.
-                Log.info(c, method, "WARNING: Exiting from test early because files could not be deleted.");
-                return;
-            }
-
-            assertNotNull("The snoop application was not stopped when removed",
-                          server.waitForStringInLog("CWWKZ0059E.* snoop"));
-
-            assertNotNull("The snoop application was not removed from the web container when stopped",
-                          server.waitForStringInLog("CWWKT0017I.*snoop.*"));
-
-            try {
-                //check that the application won't load in the web container once stopped
-                Log.info(c, method, "Calling Snoop Application with URL=" + url.toString() + ", expecting no response.");
-                con = HttpUtils.getHttpConnection(url, HttpURLConnection.HTTP_NOT_FOUND, CONN_TIMEOUT);
-                br = HttpUtils.getConnectionStream(con);
-                line = br.readLine();
-                assertFalse("The response did contain the \'Snoop Servlet\' when it shouldn't",
-                            line.contains("Snoop Servlet"));
-                con.disconnect();
-
-            } catch (java.io.FileNotFoundException ex) {
-                //expected if the web container has unloaded the page already (it could be blank or not there)
-            }
-
-            //re-add the application to make sure it resumes working
-            server.setMarkToEndOfLog();
-            server.copyFileToLibertyServerRoot(PUBLISH_FILES, "tmp",
-                                               SNOOP_WAR);
-
-            //unzip the application into a temp location so that we can easily modify the application in a minute
-            TestUtils.unzip(new File(server.getServerRoot() + "/tmp/snoop.war"),
-                            new File(server.getServerRoot() + "/tmp/unzip/snoop.war"));
-
-            // Copy the expanded snoop.war to "apps"
-            server.renameLibertyServerRootFile("tmp/unzip/snoop.war", "apps/snoop.war");
-
-            //make sure the started message has been output twice by the server (once earlier, once now).
-            assertNotNull("The snoop application never resumed running after being stopped",
-                          server.waitForStringInLog("CWWKZ0003I.* snoop"));
-
-            //add a file to the extracted snoop application
-            server.setMarkToEndOfLog();
-            server.copyFileToLibertyServerRoot("/apps/snoop.war/",
-                                               "updatedApplications/blankFile.txt");
-
-            //make sure it loads into the web front end correctly again
-            con = HttpUtils.getHttpConnection(url, HttpURLConnection.HTTP_OK, CONN_TIMEOUT);
-            br = HttpUtils.getConnectionStream(con);
-            line = br.readLine();
-            assertTrue("The response did not contain the \'Snoop Servlet\'",
-                       line.contains("Snoop Servlet"));
-            con.disconnect();
-        } finally {
-            pathsToCleanup.add(server.getServerRoot() + "/apps");
-            pathsToCleanup.add(server.getServerRoot() + "/tmp");
-            pathsToCleanup.add(server.getInstallRoot() + "/usr/shared/apps/snoop.war");
-            server.stopServer("CWWKZ0059E", "CWWKZ0014W");
-        }
-    }
 
     @Test
     @Mode(TestMode.FULL)
+    @FFDCIgnore(value = { java.io.FileNotFoundException.class })
     public void testStartStopFromXmlFull() throws Exception {
         final String method = testName.getMethodName();
         try {
@@ -274,6 +183,7 @@ public class FATTest extends AbstractAppManagerTest {
     }
 
     @Test
+    @Mode(TestMode.FULL)
     public void testSymbolicLinkInLooseApp() throws Exception {
         File link = new File("/bin/ln");
         if (link.exists() && link.canExecute()) {
@@ -357,6 +267,7 @@ public class FATTest extends AbstractAppManagerTest {
      * It then removes the applications at the end of the test.
      */
     @Test
+    @Mode(TestMode.FULL)
     public void testYouCannotDeployTwoAppsWithTheSameName() throws Exception {
         final String method = testName.getMethodName();
         try {
@@ -479,39 +390,6 @@ public class FATTest extends AbstractAppManagerTest {
      * application (one which does not exist) correctly.
      */
     @Test
-    public void testConfigureMissingApplication() throws Exception {
-        final String method = testName.getMethodName();
-
-        //load a new server xml
-        server.setServerConfigurationFile("/appsConfigured/server.xml");
-
-        server.startServer(method + ".log", true);
-        // Wait for the application to be installed before proceeding
-        assertNotNull("Snoop application start failure message not found", server.waitForStringInLog("CWWKZ0014W.* snoop"));
-
-        URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/snoop");
-        Log.info(c, method, "Calling Snoop Application with URL=" + url.toString());
-        try {
-            //check application is not installed
-            HttpURLConnection con = HttpUtils.getHttpConnection(url, HttpURLConnection.HTTP_NOT_FOUND, CONN_TIMEOUT);
-            BufferedReader br = HttpUtils.getConnectionStream(con);
-            String line = br.readLine();
-            fail("was expecting exception, but got nothing! In fact we got text output as: " + line);
-            con.disconnect();
-        } catch (FileNotFoundException e) {
-            //expected.
-        } catch (Exception e) {
-            fail("unexpected exception thrown. Expecting FileNotFoundException, got: " + e.getMessage());
-        }
-
-        server.stopServer("CWWKZ0014W");
-    }
-
-    /**
-     * This tests to see that the application manager handles being given an invalid
-     * application (one which does not exist) correctly.
-     */
-    @Test
     @Mode(TestMode.FULL)
     public void testConfigureMissingApplicationFull() throws Exception {
         final String method = testName.getMethodName();
@@ -542,6 +420,7 @@ public class FATTest extends AbstractAppManagerTest {
     }
 
     @Test
+    @Mode(TestMode.FULL)
     public void testConfigureInvalidApplication() throws Exception {
         final String method = testName.getMethodName();
 
@@ -564,7 +443,7 @@ public class FATTest extends AbstractAppManagerTest {
     }
 
     /**
-     * This is a test for defect 48922 to make sure that when application monitor is enabled on a directory and the directory changes in the server.xml then the application is
+     * This is a test to make sure that when application monitor is enabled on a directory and the directory changes in the server.xml then the application is
      * removed
      */
     @Test
@@ -712,20 +591,11 @@ public class FATTest extends AbstractAppManagerTest {
     }
 
     @Test
+    @Mode(TestMode.FULL)
     public void testDataSourceStillUsableByAppDuringServerShutdown() throws Exception {
         final String method = testName.getMethodName();
 
         try {
-
-            //ensure that derby.jar is available in the server_home/derby directory
-//            File derbyDir = new File(server.getServerRoot(), DERBY_DIR);
-//            if (!derbyDir.exists())
-//                assertTrue("Unable to create derby directory", derbyDir.mkdir());
-//            File derbyJar = new File(derbyDir, "derby.jar");
-//            if (!derbyJar.exists()) {
-//                server.copyFileToLibertyServerRoot(DERBY_DIR, "dataSourceApp/derby.jar");
-//            }
-//            assertTrue("derby.jar not available for JDBC driver: " + derbyJar.getAbsolutePath(), derbyJar.exists());
 
             //make sure we are using the correct server configuration before starting the server
             server.setServerConfigurationFile("/dataSourceApp/server.xml");
@@ -990,7 +860,6 @@ public class FATTest extends AbstractAppManagerTest {
      * @throws Exception
      */
     @Test
-    @MinimumJavaLevel(javaLevel = 7)
     public void testApplicationAutoStartProperty() throws Exception {
         final String method = testName.getMethodName();
         try {

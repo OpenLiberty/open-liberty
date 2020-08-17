@@ -37,9 +37,9 @@ KRB_S4U2PROXY_IS_NOT_SUPPORT=CWWKS4344E: La funzione di delega vincolata Kerbero
 KRB_S4U2PROXY_IS_NOT_SUPPORT.explanation=Impossibile abilitare la funzione di delega vincolata Kerberos a causa del fornitore del runtime Java e della versione.
 KRB_S4U2PROXY_IS_NOT_SUPPORT.useraction=Utilizzare il fornitore e la versione Java supportati dalla funzione di delega vincolata Kerberos.
 
+# CWWKS4345E is used by the com.ibm.ws.security.kerberos.auth bundle
 
-
-
+# CWWKS4346I is used by the com.ibm.ws.security.kerberos.auth bundle
 
 
 

@@ -23,8 +23,11 @@ import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 	AcmeCaRestHandlerTest.class,
 	AcmeSwapDirectoriesTest.class,
 	AcmeValidityAndRenewTest.class,
-	AcmeRevocationTest.class,
-	AcmeDisableTriggerSimpleTest.class
+	AcmeDisableTriggerSimpleTest.class,
+	AcmeConfigVariationsTest.class,
+	AcmeURIConfigVariationsTest.class,
+	AcmeRevocationTest.class
+
 	 })
 public class FATSuite {
 

@@ -41,9 +41,9 @@ public class JAXRS21ReactiveSampleTest extends JAXRS21AbstractTest {
 
     private static final String reactivesamplewar = "jaxrs21reactivesample";
 
-    private static final String reactivex = "publish/shared/resources/reactivex/";
+    private static final String reactivex = "lib/";
 
-    private static final String cxf = "publish/shared/resources/cxf/";
+    private static final String cxf = "lib/";
 
     @BeforeClass
     public static void setup() throws Exception {

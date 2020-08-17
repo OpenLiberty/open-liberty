@@ -494,7 +494,7 @@ public interface IPersistenceManagerService extends IBatchServiceBase {
      * @param key
      * @param logDirPath
      */
-    public RemotablePartitionEntity updatePartitionExecutionLogDir(RemotablePartitionKey key, String logDirPath);
+    public RemotablePartitionEntity updateRemotablePartitionLogDir(RemotablePartitionKey key, String logDirPath);
 
     // purge
     public void purgeInGlassfish(String submitter);
@@ -585,4 +585,10 @@ public interface IPersistenceManagerService extends IBatchServiceBase {
      * @return
      */
     public WSRemotablePartitionState getRemotablePartitionInternalState(RemotablePartitionKey remotablePartitionKey);
+
+    /**
+     * @param jobExecutionId
+     * @return
+     */
+    public List<WSRemotablePartitionExecution> getRemotablePartitionsForJobExecution(long jobExecutionId);
 }

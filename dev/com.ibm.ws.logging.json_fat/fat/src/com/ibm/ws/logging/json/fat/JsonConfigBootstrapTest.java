@@ -22,6 +22,7 @@ import java.util.Properties;
 
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,6 +45,9 @@ public class JsonConfigBootstrapTest {
     @Server("com.ibm.ws.logging.json.JsonConfigServer")
     public static LibertyServer server;
 
+    @Server("com.ibm.ws.logging.json.JsonConfigServer2")
+    public static LibertyServer appsWriteJsonServer;
+
     public static final String APP_NAME = "LogstashApp";
     public static final String SERVER_XML_CLLERROR = "consoleLogLevelError.xml";
     public static final String SERVER_XML_CLLWARNING = "consoleLogLevelWarning.xml";
@@ -62,6 +66,7 @@ public class JsonConfigBootstrapTest {
     public static final String SERVER_XML_JSON_SOURCE_MESSAGETRACEACCESS = "jsonSourceMessageTraceAccess.xml";
     public static final String SERVER_XML_JSON_MESSAGE_ACCESS = "jsonMessageSourceAccessLog.xml";
     public static final String SERVER_XML_JSON_CONFIG_FIELD_EXT = "jsonConfigFieldExt.xml";
+    public static final String SERVER_XML_APPS_WRITE_JSON_ENABLED = "appsWriteJsonEnabled.xml";
 
     private static final String SIMPLE_FORMAT = "simple";
     private static final String JSON_FORMAT = "json";
@@ -72,10 +77,12 @@ public class JsonConfigBootstrapTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        ShrinkHelper.defaultApp(appsWriteJsonServer, APP_NAME, "com.ibm.logs");
         ShrinkHelper.defaultApp(server, APP_NAME, "com.ibm.logs");
 
         // Preserve the original server configuration
         server.saveServerConfiguration();
+        appsWriteJsonServer.saveServerConfiguration();
     }
 
     /*
@@ -200,6 +207,9 @@ public class JsonConfigBootstrapTest {
             consolesourceList = new ArrayList<String>(Arrays.asList("trace"));
             checkConsoleLogUpdate(true, consoleLogFile, "INFO", consolesourceList, "");
 
+            //set server.xml to a basic config so that when server stops, it can successfully check for CWWKE0036I in console log
+            setServerConfig(SERVER_XML_BASIC);
+
         } finally {
             // Restore the initial contents of bootstrap.properties
             FileOutputStream out = getFileOutputStreamForRemoteFile(bootstrapFile, false);
@@ -240,6 +250,9 @@ public class JsonConfigBootstrapTest {
             // Check in console.log file to see consoleLogLevel is set to WARNING
             checkConsoleLogUpdate(true, consoleLogFile, "ERROR", ALL_SOURCE_LIST, "");
 
+            //set server.xml to a basic config so that when server stops, it can successfully check for CWWKE0036I in console log
+            setServerConfig(SERVER_XML_BASIC);
+
         } finally {
             // Restore the initial contents of bootstrap.properties
             FileOutputStream out = getFileOutputStreamForRemoteFile(bootstrapFile, false);
@@ -279,6 +292,109 @@ public class JsonConfigBootstrapTest {
             FileOutputStream out = getFileOutputStreamForRemoteFile(bootstrapFile, false);
             writeProperties(initialBootstrapProps, out);
         }
+    }
+
+    /*
+     * Test enabling com.ibm.ws.logging.apps.write.json in bootstrap.properties
+     */
+    @Test
+    public void testEnableAppsWriteJsonInProperties() throws Exception {
+
+        // Get the bootstrap.properties file and store the original content
+        RemoteFile bootstrapFile = server.getServerBootstrapPropertiesFile();
+        FileInputStream in = getFileInputStreamForRemoteFile(bootstrapFile);
+        Properties initialBootstrapProps = loadProperties(in);
+
+        try {
+            // Set appsWriteJson to true in bootstrap.properties
+            setInBootstrapPropertiesFile(bootstrapFile, "com.ibm.ws.logging.apps.write.json", "true");
+            server.startServer();
+
+            RemoteFile consoleLogFile = server.getConsoleLogFile();
+            RemoteFile messageLogFile = server.getDefaultLogFile();
+            runApplication(consoleLogFile);
+
+            //check output are in application's JSON format
+            checkLine("\\{\"key\":\"value\"\\}", messageLogFile);
+            checkLine("\\{\"key\":\"value\",\"loglevel\":\"System.err\"\\}", messageLogFile);
+            checkLine("\\{\"key\":\"value\"\\}", consoleLogFile);
+            checkLine("\\{\"key\":\"value\",\"loglevel\":\"System.err\"\\}", consoleLogFile);
+
+        } finally {
+            // Restore the initial contents of bootstrap.properties
+            FileOutputStream out = getFileOutputStreamForRemoteFile(bootstrapFile, false);
+            writeProperties(initialBootstrapProps, out);
+        }
+    }
+
+    /*
+     * Test enabling WLP_LOGGING_APPS_WRITE_JSON in environment
+     */
+    @Test
+    public void testEnableAppsWriteJsonEnv() throws Exception {
+
+        appsWriteJsonServer.startServer();
+
+        RemoteFile consoleLogFile = appsWriteJsonServer.getConsoleLogFile();
+        RemoteFile messageLogFile = appsWriteJsonServer.getDefaultLogFile();
+        appsWriteJsonServer.setMarkToEndOfLog(consoleLogFile);
+        TestUtils.runApp(appsWriteJsonServer, "logServlet");
+        //check output are in application's JSON format
+        checkLine(appsWriteJsonServer, "\\{\"key\":\"value\"\\}", messageLogFile);
+        checkLine(appsWriteJsonServer, "\\{\"key\":\"value\",\"loglevel\":\"System.err\"\\}", messageLogFile);
+        checkLine(appsWriteJsonServer, "\\{\"key\":\"value\"\\}", consoleLogFile);
+        checkLine(appsWriteJsonServer, "\\{\"key\":\"value\",\"loglevel\":\"System.err\"\\}", consoleLogFile);
+        appsWriteJsonServer.stopServer();
+
+    }
+
+    /*
+     * Check if precedence of appsWriteJson is honored
+     * WLP_LOGGING_APPS_WRITE_JSON=true in server.env
+     * com.ibm.ws.logging.apps.write.json=false in bootstrap.properties
+     * appsWriteJson=true in server.xml
+     */
+    @Test
+    public void testAppsWriteJsonPrecedence() throws Exception {
+        RemoteFile bootstrapFile = appsWriteJsonServer.getServerBootstrapPropertiesFile();
+        FileInputStream in = getFileInputStreamForRemoteFile(bootstrapFile);
+        Properties initialBootstrapProps = loadProperties(in);
+        try {
+            // Set appsWriteJson to false in bootstrap.properties
+            setInBootstrapPropertiesFile(bootstrapFile, "com.ibm.ws.logging.apps.write.json", "false");
+            appsWriteJsonServer.startServer();
+
+            RemoteFile consoleLogFile = appsWriteJsonServer.getConsoleLogFile();
+            RemoteFile messageLogFile = appsWriteJsonServer.getDefaultLogFile();
+            runApplication(consoleLogFile);
+
+            //check output are in Liberty JSON format
+            checkLine("\\{.*\"message\":\".*key.*value.*\".*\\}", messageLogFile);
+            checkLine("\\{.*\"message\":\".*key.*value.*,.*loglevel.*System.err.*\".*\\}", messageLogFile);
+            checkLine("\\{.*\"message\":\".*\".*\\}", messageLogFile);
+            checkLine("\\{.*\"message\":\".*key.*value.*\".*\\}", consoleLogFile);
+            checkLine("\\{.*\"message\":\".*key.*value.*,.*loglevel.*System.err.*\".*\\}", consoleLogFile);
+            checkLine("\\{.*\"message\":\".*\".*\\}", consoleLogFile);
+
+            //set appsWriteJson=true in server.xml
+            setServerConfig(appsWriteJsonServer, SERVER_XML_APPS_WRITE_JSON_ENABLED);
+
+            runApplication(consoleLogFile);
+
+            checkLine("\\{\"key\":\"value\"\\}", messageLogFile);
+            checkLine("\\{\"key\":\"value\",\"loglevel\":\"System.err\"\\}", messageLogFile);
+            checkLine("\\{\\}", messageLogFile);
+            checkLine("\\{\"key\":\"value\"\\}", consoleLogFile);
+            checkLine("\\{\"key\":\"value\",\"loglevel\":\"System.err\"\\}", consoleLogFile);
+            checkLine("\\{\\}", consoleLogFile);
+
+        } finally {
+            // Restore the initial contents of bootstrap.properties
+            FileOutputStream out = getFileOutputStreamForRemoteFile(bootstrapFile, false);
+            writeProperties(initialBootstrapProps, out);
+        }
+        appsWriteJsonServer.stopServer();
+
     }
 
     private void checkMessageLogUpdate(boolean isJson, ArrayList<String> sourceList, String traceSpec) throws Exception {
@@ -423,12 +539,29 @@ public class JsonConfigBootstrapTest {
         assertNotNull("Cannot find" + message + "from JsonConfigTest.log", line);
     }
 
+    private void checkLine(LibertyServer server, String message, RemoteFile remoteFile) throws Exception {
+        String line = server.waitForStringInLog(message, remoteFile);
+        assertNotNull("Cannot find" + message + "from messages.log", line);
+    }
+
+    private void checkLine(LibertyServer server, String message) throws Exception {
+        String line = server.waitForStringInLog(message, server.getDefaultLogFile());
+        assertNotNull("Cannot find" + message + "from JsonConfigTest.log", line);
+    }
+
     private void runApplication(RemoteFile consoleLogFile) throws Exception {
         server.setMarkToEndOfLog(consoleLogFile);
         TestUtils.runApp(server, "logServlet");
     }
 
-    private static String setServerConfig(String fileName) throws Exception {
+    private static void setServerConfig(String fileName) throws Exception {
+        RemoteFile log = server.getDefaultTraceFile();
+        server.setMarkToEndOfLog(log);
+        server.setServerConfigurationFile(fileName);
+        Assert.assertNotNull(server.waitForStringInLog("CWWKG0017I.*|CWWKG0018I.*", log));
+    }
+
+    private static String setServerConfig(LibertyServer server, String fileName) throws Exception {
         server.setMarkToEndOfLog();
         server.setServerConfigurationFile(fileName);
         return server.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*");

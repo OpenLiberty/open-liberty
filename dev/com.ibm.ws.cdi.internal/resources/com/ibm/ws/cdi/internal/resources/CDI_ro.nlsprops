@@ -69,6 +69,6 @@ implicit.bean.scanning.disabled.CWOWB1009W=CWOWB1009W: Sunt dezactivate arhivele
 implicit.bean.scanning.disabled.CWOWB1009W.explanation=Arhivele nu sunt scanate pentru bean-uri CDI \u00een afar\u0103 de cazul au un fi\u015fier beans.xml.
 implicit.bean.scanning.disabled.CWOWB1009W.useraction=Asigura\u0163i-v\u0103 c\u0103 fiecare arhiv\u0103 care utilizeaz\u0103 CDI are fi\u015fierul beans.xml sau c\u0103 re-activa\u0163i bean-urile implicite scan\u00e2nd \u00een fi\u015fierul dumneavoastr\u0103 server.xml.
 
-spi.extension.failed.to.construct.CWOWB10010E=CWOWB10010E: A e\u015fuat crearea Extensiei CDI via SPI.
-spi.extension.failed.to.construct.CWOWB10010E.explanation=CDI a e\u015fuat s\u0103 invoce constructorul clasei de extensie {0} \u00eenregistrat\u0103 prin metoda getExtensions() a unei implement\u0103ri WebSphereCDIExtensionMetaData din cauza excep\u0163iei {1}.
-spi.extension.failed.to.construct.CWOWB10010E.useraction=Rezolva\u0163i eroarea care \u00eempiedic\u0103 extensia de la instan\u0163iere.
+spi.extension.failed.to.construct.CWOWB1010E=CWOWB1010E: A e\u015fuat crearea extensiei CDI cu SPI.
+spi.extension.failed.to.construct.CWOWB1010E.explanation=CDI a e\u015fuat s\u0103 invoce constructorul clasei de extensie {0} care este \u00eenregistrat\u0103 prin metoda getExtensions() a unei implement\u0103ri CDIExtensionMetadata din cauza excep\u0163iei {1}.
+spi.extension.failed.to.construct.CWOWB1010E.useraction=Rezolva\u0163i eroarea care \u00eempiedic\u0103 extensia de la instan\u0163iere.

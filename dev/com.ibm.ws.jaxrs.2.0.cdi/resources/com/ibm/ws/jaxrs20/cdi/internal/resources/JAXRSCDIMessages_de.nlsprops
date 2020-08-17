@@ -19,17 +19,17 @@
 #
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
-# JAXRS 2.0 CDI Message ------------------------
-warning.jaxrs.cdi.resource=CWWKW1000W: Der Geltungsbereich der JAXRS-2.0-Ressource {0} ist {1}. Liberty ruft die Ressourceninstanz aus {2} ab.
+# JAXRS CDI Message ------------------------
+warning.jaxrs.cdi.resource=CWWKW1000W: Der Geltungsbereich der JAXRS-Ressource {0} ist {1}. Liberty ruft die Ressourceninstanz aus {2} ab.
 warning.jaxrs.cdi.resource.explanation=Liberty ruft die Ressourceninstanz aus JAXRS ab, wenn keine Instanz aus CDI abgerufen werden kann.
 warning.jaxrs.cdi.resource.useraction=Es ist keine Aktion erforderlich.
 
 
-warning.jaxrs.cdi.resource.mismatch=CWWKW1001W: Der Geltungsbereich {1} der JAXRS-2.0-Ressource {0} stimmt nicht mit dem CDI-Geltungsbereich {2} \u00fcberein. Liberty ruft die Ressourceninstanz aus {3} ab.
-warning.jaxrs.cdi.resource.mismatch.explanation=Wenn der Geltungsbereich der JAXRS-2.0-Ressource nicht mit dem CDI-Geltungsbereich \u00fcbereinstimmt und die Ressourceninstanz in CDI vorhanden ist, ruft Liberty die Ressourceninstanz aus CDI ab. Die Instanz beinhaltet keine CDI-Injektion, wenn sie aus JAXRS stammt.
+warning.jaxrs.cdi.resource.mismatch=CWWKW1001W: Der Geltungsbereich {1} der JAXRS-Ressource {0} stimmt nicht mit dem CDI-Geltungsbereich {2} \u00fcberein. Liberty ruft die Ressourceninstanz aus {3} ab.
+warning.jaxrs.cdi.resource.mismatch.explanation=Wenn der Geltungsbereich der JAXRS-Ressource nicht mit dem CDI-Geltungsbereich \u00fcbereinstimmt und die Ressourceninstanz in CDI vorhanden ist, ruft Liberty die Ressourceninstanz aus CDI ab. Die Instanz beinhaltet keine CDI-Injektion, wenn sie aus JAXRS stammt.
 warning.jaxrs.cdi.resource.mismatch.useraction=Es ist keine Aktion erforderlich.
 
 
-warning.jaxrs.cdi.provider.mismatch=CWWKW1002W: Der CDI-Geltungsbereich f\u00fcr den JAXRS-2.0-Provider {0} ist {1}. Liberty ruft die Providerinstanz aus {2} ab.
+warning.jaxrs.cdi.provider.mismatch=CWWKW1002W: Der CDI-Geltungsbereich f\u00fcr den JAXRS-Provider {0} ist {1}. Liberty ruft die Providerinstanz aus {2} ab.
 warning.jaxrs.cdi.provider.mismatch.explanation=Die Providerinstanz ist nur ein Singleton. Liberty ruft die Providerinstanz aus CDI ab, wenn der CDI-Providergeltungsbereich vom Typ Dependent oder ApplicationScoped ist. Die Instanz beinhaltet keine CDI-Injektion, wenn sie aus JAXRS stammt.
 warning.jaxrs.cdi.provider.mismatch.useraction=Es ist keine Aktion erforderlich.

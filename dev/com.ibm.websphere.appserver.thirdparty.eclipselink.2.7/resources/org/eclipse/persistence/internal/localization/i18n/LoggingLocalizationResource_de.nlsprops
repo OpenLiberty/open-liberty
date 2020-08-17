@@ -88,6 +88,7 @@ broadcast_remote_command_wrong_type=Warnung: {0}: Empfangene Nachricht {1} enh\u
 call_timeout_not_migrated=Der Wert f\u00fcr call-timeout (Wert={1}) ist in der Entit\u00e4t {0} in der Datei orion-ejb-jar.xml definiert. In der Deskriptordatei sind jedoch keine persistenten Zuordnungen definiert. Daher findet keine Migration statt. Wenn Sie die EclipseLink-Standardzuordnung sp\u00e4ter zum Generieren des EclipseLink-Zuordnungsdeskriptors verwenden, beachten Sie, dass die call-timeout-Einstellung nicht mehr vorhanden ist, weil die EclipseLink-Standardzuordnung keinen Zugriff auf die native Deskriptordatei hat. Sie m\u00fcssen daher nach der Generierung der Standardzuordnungen die call-timeout-Einstellung manuell oder in der EclipseLink Mapping Workbench zur\u00fccksetzen.
 
 cannot_get_nested_collection_type=Der Typ der verschachtelten Datensammlung kann nicht abgerufen werden.
+
 cannot_get_server_name_and_version=Servername und Version k\u00f6nnen aufgrund der folgenden Ausnahme nicht abgerufen werden. {0}
 
 cannot_unwrap_connection=Das Wrapping der vom Anwendungsserver eingeschlossenen Oracle-Verbindung kann aufgrund der folgenden Ausnahme nicht aufgehoben werden. {0}
@@ -241,6 +242,7 @@ invalid_command_line_argument=Das Befehlszeilenargument ({0}) ist ung\u00fcltig.
 invalid_datasource_property_value={1} ist kein g\u00fcltiges Objekt, das an die Eigenschaft {0} \u00fcbergeben werden kann. G\u00fcltige Werte sind String oder Instanzen von javax.sql.DataSource.
 
 invalid_property_value={1} ist kein g\u00fcltiges Objekt, das an die Eigenschaft {0} \u00fcbergeben werden kann. 
+
 isolation_level_not_supported=Die native Oc4j-CMP-Einstellung "isolation-level" f\u00fcr entity({0}) wird in EclipseLink CMP nicht direkt unterst\u00fctzt. Weitere Einzelheiten finden Sie in der Ver\u00f6ffentlichung zur Migration.
 
 jar_entry_has_been_migrated=Die native cmp-Deskriptordatei im jar-Eintrag ({0}) aus der EAR-Eingabedatei ({1}) wurde migriert.
@@ -663,6 +665,8 @@ retreived_unknown_message_type=Unbekannten Nachrichtentyp abgerufen: {0} von Top
 
 sdo_classgenerator_exception={2} Eine [{0}]-Ausnahme ist eingetreten. Die Nachricht ist: [{1}]
 
+sdo_error_deserialization=Unauthorized deserialization attempt with class {0}.
+
 sdo_error_processing_referenced_schema={0} ist beim Verarbeiten des referenzierten Schemas mit der URI {1} mit schemaLocation {2} aufgetreten.
 
 sdo_invalid_schemaLocation=schemaLocation [{0}] konnte nicht f\u00fcr den Import \u00fcber die URI [{1}] erstellt werden.
@@ -704,6 +708,7 @@ topLink_version=EclipseLink Version: {0}
 toplink=[EL]: 
 
 toplink_cmp_bean_name_xml_deprecated=Die Datei toplink-cmp-bean_name.xml wird nicht mehr unterst\u00fctzt. Ziehen Sie die Dokumentation zu Rate, um Informationen zur Verwendung der Datei toplink-ejb-jar.xml zu erhalten.  
+
 toplink_config=[EL Config]: 
 
 toplink_ejb_jar_in_jar=Die Datei toplink-ejb-jar.xml ist in der JAR-Datei ({0}) enthalten, daher wird diese JAR-Datei nicht migriert.

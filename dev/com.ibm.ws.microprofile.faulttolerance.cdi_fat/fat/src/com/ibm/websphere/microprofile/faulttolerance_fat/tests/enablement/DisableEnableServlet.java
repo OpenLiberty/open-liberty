@@ -15,6 +15,8 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
+import java.util.Optional;
+
 import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
 
@@ -31,20 +33,21 @@ public class DisableEnableServlet extends FATServlet {
     private static final long serialVersionUID = 1L;
 
     @Inject
-    @ConfigProperty(name = "fault.tolerance.version")
-    String faultToleranceVersion;
+    @ConfigProperty(name = "FAULT_TOLERANCE_VERSION")
+    private Optional<String> faultToleranceVersion;
 
     @Inject
-    DisableEnableClient client;
+    private DisableEnableClient client;
 
     @Test
     public void testDisableAtClassLevel() {
         assertThrows(ConnectException.class, client::failWithOneRetryAgain);
 
-        System.out.println("FT Version: " + faultToleranceVersion);
+        assertThat("FAULT_TOLERANCE_VERSION not set", faultToleranceVersion.isPresent(), is(true));
+        System.out.println("FT Version: " + faultToleranceVersion.get());
 
         // Note, Retry is disabled for DisableEnableClient using config, but that option is only available in FT 1.1
-        if (faultToleranceVersion.equals("1.0")) {
+        if (faultToleranceVersion.get().equals("1.0")) {
             // Expect retries for FT 1.0
             assertThat(client.getFailWithOneRetryAgainCounter(), is(2));
         } else {

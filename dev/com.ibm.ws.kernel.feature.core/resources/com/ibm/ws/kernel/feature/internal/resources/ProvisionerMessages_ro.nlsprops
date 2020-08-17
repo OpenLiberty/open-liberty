@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2014 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -216,12 +216,23 @@ UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR=CWWKF0041E: Caracteristica {0}
 UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR.explanation=Caracteristica configurat\u0103 nu suport\u0103 tipul de proces specificat.
 UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR.useraction=\u00cenl\u0103tura\u0163i caracteristica din configura\u0163ie sau modifica\u0163i fi\u015fierul manifest de caracteristic\u0103 pentru a activa suportul pentru tipul de proces dorit.
 
-# CWWK042E  {0} = feature Name: {1} = server name 
+# CWWK0042E  {0} = feature Name: {1} = server name 
 UPDATE_MISSING_CORE_FEATURE_ERROR=CWWKF0042E: Nu s-a putut g\u0103si o defini\u0163ie de caracteristic\u0103 pentru caracteristica {0}.  \u00cencerca\u0163i rularea comenzii bin/installUtility install {0} pentru a instala caracteristica. Alternativ, pute\u0163i rula comanda bin/installUtility install {1}pentru a instala toate caracteristicile la care se face referire \u00een aceast\u0103 configura\u0163ie.
 UPDATE_MISSING_CORE_FEATURE_ERROR.explanation=Managerul de caracteristici nu a putut g\u0103si o defini\u0163ie pentru caracteristica specificat\u0103.
 UPDATE_MISSING_CORE_FEATURE_ERROR.useraction=Verifica\u0163i c\u0103 numele caracteristicii specificate este scris corect.  \
-De asemenea, verifica\u0163i c\u0103 exist\u0103 defini\u0163ia caracteristicii \u015fi c\u0103 este lizibil\u0103 \u00een directorul lib/features. \
-Dac\u0103 caracteristica nu exist\u0103,  \u00eencerca\u0163i s\u0103 rula\u0163i comanda bin/installUtility install feature_name pentru a instala caracteristica sau \u00eencerca\u0163i s\u0103 rula\u0163i comanda bin/installUtility install server_name, pentru a instala toate caracteristicile la care se face referire \u00een aceast\u0103 configura\u0163ie. 
+De asemenea, verifica\u0163i c\u0103 exist\u0103 defini\u0163ia caracteristicii \u015fi c\u0103 este lizibil\u0103 \u00een directorul lib/features.  \
+Dac\u0103 caracteristica nu exist\u0103,  \u00eencerca\u0163i s\u0103 rula\u0163i comanda bin/installUtility install feature_name pentru a instala caracteristica sau \u00eencerca\u0163i s\u0103 rula\u0163i comanda bin/installUtility install server_name, pentru a instala toate caracteristicile la care se face referire \u00een aceast\u0103 configura\u0163ie.
+
+# CWWK0043E  {0} = EeProgModel1: {1} = EeProgModel2: {2} = configuredFeature1: {3} = configuredFeature2: {4} EePlaformCommonToProgModels 
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_SAME_PLATFORM_ERROR=CWWKF0043E: Caracteristica configurat\u0103 {2} din {0} este incompatibil\u0103 cu caracteristica configurat\u0103 {3} din {1}.  Configura\u0163ia include o combina\u0163ie incompatibil\u0103 de {4} caracteristici care nu sunt suportate.  Actualiza\u0163i configura\u0163ia pentru a utiliza versiuni compatibile ale caracteristicilor configurate care suport\u0103 modelele de programare {0} sau {1}.
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_SAME_PLATFORM_ERROR.explanation=Configura\u0163ia serverului con\u0163ine o combina\u0163ie incompatibil\u0103 de caracteristici pentru modelele de programare indicate.  Acest conflict poate ap\u0103rea dac\u0103 cele dou\u0103 caracteristici incompatibile sunt configurate direct \u00een configura\u0163ia de server sau dac\u0103 caracteristicile configurate includ versiuni diferite ale unei caracteristici care sunt incompatibile.
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_SAME_PLATFORM_ERROR.useraction=\u00cencerca\u0163i s\u0103 specifica\u0163i o versiune compatibil\u0103 pentru caracteristicile configurate care au cauzat conflictul \u00een fi\u015fierul server.xml.  Dac\u0103 nu sunt disponibile alte versiuni, \
+caracteristicile configurate nu sunt compatibile una cu alta \u015fi nu pot fi configurate \u00een acela\u015fi timp.
+
+# CWWK0044E  {0} = EeProgModel1: {1} = EeProgModel2: {2} = EeConflictFeature1: {3} = EeConflictFeature2: {4} = configuredFeature1: {5} configuredFeature2
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR=CWWKF0044E: Caracteristicile {2} \u015fi {3} nu pot fi \u00eenc\u0103rcate \u00een acela\u015fi timp.  Caracteristica {2} din {0} este incompatibil\u0103 cu caracteristica {3} din {1}. Caracteristicile configurate {4} \u015fi {5} includ o combina\u0163ie incompatibil\u0103 de caracteristici. Configura\u0163ia dumneavoastr\u0103 nu este suportat\u0103. Actualiza\u0163i configura\u0163ia pentru a utiliza caracteristici care suport\u0103 oricare din modelele de programare Jakarta EE sau Java EE, dar nu ambele.
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR.explanation=Configura\u0163ia serverului con\u0163ine o combina\u0163ie incompatibil\u0103 de caracteristici Jakarta EE \u015fi Java EE.  Caracteristicile care suport\u0103 modelul de programare Jakarta EE 9 sunt incompatibile cu caracteristicile care suport\u0103 modelele de programare Java EE, inclusiv Jakarta EE 8.  Acest conflict poate ap\u0103rea dac\u0103 cele dou\u0103 caracteristici incompatibile sunt configurate direct \u00een configura\u0163ia de server sau dac\u0103 caracteristicile configurate includ versiuni diferite ale unei caracteristici care sunt incompatibile.
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR.useraction=Specifica\u0163i o versiune compatibil\u0103 a caracteristicilor configurate care au cauzat conflictul \u00een fi\u015fierul server.xml \u015fi asigura\u0163i-v\u0103 c\u0103 fi\u015fierul server.xml utilizeaz\u0103 fie caracteristici Jakarta EE, fie Java EE, dar nu ambele.
 
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 

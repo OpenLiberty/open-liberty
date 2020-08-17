@@ -20,7 +20,7 @@
 #-----  ACME messages
 
 # The ACME referred to in these messages stands for Automatic Certificate Management Environment.
-# The term "certificate authority" is in reference to SSL/TLS certificate providers.
+# The term "certificate authority" is in reference to SSL and TLS requests certificate providers.
 # The URI parameter in these messages is for the ACME certificate authority, such as https://sampleCAProvider.org/directory
 
 ###############################################################################
@@ -32,6 +32,7 @@ REST_FORBIDDEN=Zak\u00e1z\u00e1no
 REST_INVALID_CONTENT_TYPE=Z\u00e1hlav\u00ed typu obsahu po\u017eadavku nebylo 'application/json'.
 REST_MISSING_OPERATION=Operace nebyla pro po\u017eadavek zad\u00e1na.
 REST_NO_ACME_SERVICE=Slu\u017eba AcmeProvider nebyla registrov\u00e1na.
+REST_TOO_MANY_REQUESTS=U\u017eivatel poslal v dan\u00e9 dob\u011b p\u0159\u00edli\u0161 mnoho po\u017eadavk\u016f. Zb\u00fdvaj\u00edc\u00ed doba do povolen\u00ed p\u0159\u00ed\u0161t\u00edho po\u017eadavku je {0}.
 ###############################################################################
 
 FILE_NOT_READABLE=soubor nelze \u010d\u00edst
@@ -130,7 +131,7 @@ CWPKI2023E=CWPKI2023E: Slu\u017eba ACME nem\u016f\u017ee ps\u00e1t soubor s kl\u
 CWPKI2023E.explanation=Kl\u00ed\u010de \u00fa\u010dtu nelze ulo\u017eit do souboru s kl\u00ed\u010di \u00fa\u010dtu. K tomu m\u016f\u017ee doj\u00edt, jsou-li opr\u00e1vn\u011bn\u00ed k souboru chybn\u00e1 nebo soubor neexistuje.
 CWPKI2023E.useraction=Podrobnosti o selh\u00e1n\u00ed najdete v chybov\u00e9 zpr\u00e1v\u011b. Ov\u011b\u0159te, \u017ee um\u00edst\u011bn\u00ed souboru je spr\u00e1vn\u00e9 a server m\u00e1 opr\u00e1vn\u011bn\u00ed k z\u00e1pisu souboru.
 
-CWPKI2024E=CWPKI2024E: Slu\u017eb\u011b ACME se nezda\u0159ilo zru\u0161it p\u0159\u00edstup k po\u017eadovan\u00e9mu certifik\u00e1tu pro certifika\u010dn\u00ed autoritu ACME v identifik\u00e1toru URI {0}. Certifik\u00e1t m\u00e1 s\u00e9riov\u00e9 \u010d\u00edslo {1}. Chyba: ''{2}''.
+CWPKI2024E=CWPKI2024E: Slu\u017eb\u011b ACME se nezda\u0159ilo zru\u0161it p\u0159\u00edstup k po\u017eadovan\u00e9mu certifik\u00e1tu pro certifika\u010dn\u00ed autoritu ACME v identifik\u00e1toru URI {0}. Certifik\u00e1t m\u00e1 s\u00e9riov\u00e9 \u010d\u00edslo {1}. Chyba: ''{2}''. K tomu m\u016f\u017ee doj\u00edt, pokud se zm\u011bnil adres\u00e1\u0159 URI, a pokud ano, lze jej ignorovat.
 CWPKI2024E.explanation=\u017d\u00e1dost o zru\u0161en\u00ed certifik\u00e1tu se nezda\u0159ila. Certifik\u00e1tu nemus\u00ed b\u00fdt zru\u0161en p\u0159\u00edstup, a m\u016f\u017ee b\u00fdt st\u00e1le pou\u017e\u00edv\u00e1n.
 CWPKI2024E.useraction=Podrobnosti o selh\u00e1n\u00ed najdete v chybov\u00e9 zpr\u00e1v\u011b.
 
@@ -178,9 +179,9 @@ CWPKI2035E=CWPKI2035E: Slu\u017eba ACME nemohla ulo\u017eit podepsan\u00fd certi
 CWPKI2035E.explanation=Certifik\u00e1t byl \u00fasp\u011b\u0161n\u011b na\u010dten z certifika\u010dn\u00ed autority, ale nelze jej ulo\u017eit lok\u00e1ln\u011b.
 CWPKI2035E.useraction=Podrobnosti o selh\u00e1n\u00ed najdete v chybov\u00e9 zpr\u00e1v\u011b. Ov\u011b\u0159te, \u017ee um\u00edst\u011bn\u00ed souboru \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f je spr\u00e1vn\u00e9 a server m\u00e1 opr\u00e1vn\u011bn\u00ed k z\u00e1pisu souboru.
 
-CWPKI2036E=CWPKI2036E: Vypr\u0161el \u010dasov\u00fd limit slu\u017eby ACME p\u0159i \u010dek\u00e1n\u00ed na spu\u0161t\u011bn\u00ed aplikace webov\u00e9 autorizace. Aplikace je vy\u017eadov\u00e1na k dokon\u010den\u00ed \u017e\u00e1dosti o certifik\u00e1t pomoc\u00ed certifika\u010dn\u00ed autority ACME. Slu\u017eba \u010dekala {0} min.
-CWPKI2036E.explanation=Aplikace pou\u017eit\u00e1 k dokon\u010den\u00ed \u017e\u00e1dosti o certifik\u00e1t se nespustila v o\u010dek\u00e1van\u00e9m \u010dasov\u00e9m r\u00e1mci. Podepsan\u00fd certifik\u00e1t nelze po\u017eadovat.
-CWPKI2036E.useraction=Vyhledejte v protokolu p\u0159edchoz\u00ed zpr\u00e1vy nebo chyby.
+CWPKI2036W=CWPKI2036W: Vypr\u0161el \u010dasov\u00fd limit slu\u017eby ACME p\u0159i \u010dek\u00e1n\u00ed na spu\u0161t\u011bn\u00ed aplikace webov\u00e9 autorizace. Aplikace je vy\u017eadov\u00e1na k dokon\u010den\u00ed \u017e\u00e1dosti o certifik\u00e1t pomoc\u00ed certifika\u010dn\u00ed autority ACME. Byl proveden pokus o \u017e\u00e1dost o certifik\u00e1t. Slu\u017eba \u010dekala {0}.
+CWPKI2036W.explanation=Aplikace pou\u017eit\u00e1 k dokon\u010den\u00ed \u017e\u00e1dosti o certifik\u00e1t se nespustila v o\u010dek\u00e1van\u00e9m \u010dasov\u00e9m r\u00e1mci. Pokud se aplikace spust\u00ed, bude po\u017eadavek pokra\u010dovat. Jestli\u017ee se aplikace nespust\u00ed, \u017e\u00e1dost o certifik\u00e1t se nezda\u0159\u00ed.
+CWPKI2036W.useraction=Vyhledejte v protokolu p\u0159edchoz\u00ed zpr\u00e1vy nebo chyby. Zkontrolujte protokol pro zpr\u00e1vu CWWKT0016I, kter\u00e1 obsahuje webovou aplikaci s adresou URL 'acme-challenge' ozna\u010duj\u00edc\u00ed, \u017ee byla spu\u0161t\u011bna intern\u00ed aplikace.
 
 CWPKI2037E=CWPKI2037E: Dom\u00e9ny pro slu\u017ebu ACME m\u011bly hodnotu Null nebo byly pr\u00e1zdn\u00e9.
 CWPKI2037E.explanation=Dom\u00e9ny byly bu\u010f Null, nebo pr\u00e1zdn\u00e9, a nelze je pou\u017e\u00edt.
@@ -215,7 +216,7 @@ CWPKI2044E.explanation=Slu\u017eba ACME o\u010dek\u00e1v\u00e1, \u017ee v\u0161e
 CWPKI2044E.useraction=Ujist\u011bte se, \u017ee v\u0161echny certifik\u00e1ty v \u0159et\u011bzu certifik\u00e1t\u016f jsou certifik\u00e1ty X.509, a operaci opakujte.
 
 CWPKI2045W=CWPKI2045W: Certifik\u00e1t se s\u00e9riov\u00fdm \u010d\u00edslem {0}, kter\u00fd je podeps\u00e1n certifika\u010dn\u00ed autoritou ACME v identifik\u00e1toru URI {1}, je neplatn\u00fd do {2}.
-CWPKI2045W.explanation=TX_ACF20AAD007P01Platn\u00e9 obdob\u00ed na certifik\u00e1tu je v budoucnosti. Po\u017eadavky SSL/TLS se nezda\u0159\u00ed, dokud nejsou aktu\u00e1ln\u00ed datum a \u010das v rozsahu ur\u010den\u00e9m platn\u00fdm obdob\u00edm na certifik\u00e1tu.
+CWPKI2045W.explanation=TX_ACF20AAD007P01Platn\u00e9 obdob\u00ed na certifik\u00e1tu je v budoucnosti. Po\u017eadavky SSL a TLS se nezda\u0159\u00ed, dokud nejsou aktu\u00e1ln\u00ed datum a \u010das v rozsahu ur\u010den\u00e9m platn\u00fdm obdob\u00edm na certifik\u00e1tu.
 CWPKI2045W.useraction=Pokud je \u010das nespr\u00e1vn\u00fd, aktualizujte m\u00edstn\u00ed \u010das na serveru.
 
 CWPKI2046E=CWPKI2046E: D\u016fvod odvol\u00e1n\u00ed certifik\u00e1tu {0} je neplatn\u00fd. Podporovan\u00e9 p\u0159\u00ed\u010diny odvol\u00e1n\u00ed jsou: unspecified, key_compromise, ca_compromise, affiliation_changed, superseded, cessation_of_operations, certificate_hold, remove_from_crl, privilege_withdrawn a aa_compromise.
@@ -238,16 +239,16 @@ CWPKI2050E=CWPKI2050E: Existuj\u00edc\u00ed soubor dvojice kl\u00ed\u010d\u016f 
 CWPKI2050E.explanation=Existuj\u00edc\u00ed soubor dvojice kl\u00ed\u010d\u016f \u00fa\u010dtu nelze zaz\u00e1lohovat. 
 CWPKI2050E.useraction=Ujist\u011bte se, \u017ee do adres\u00e1\u0159e, kter\u00fd obsahuje existuj\u00edc\u00ed soubor dvojice kl\u00ed\u010d\u016f \u00fa\u010dtu, lze zapisovat. Podrobnosti o selh\u00e1n\u00ed najdete v chybov\u00e9 zpr\u00e1v\u011b.
 
-CWPKI2051W=CWPKI2051W: Vlastnost renewBeforeExpiration byla nastavena na hodnotu {0}, kter\u00e1 je krat\u0161\u00ed ne\u017e minim\u00e1ln\u00ed doba obnoven\u00ed. Vlastnost renewBeforeExpiration je resetov\u00e1na na hodnotu {1}.
-CWPKI2051W.explanation=Hodnota pro vlastnost renewBeforeExpiration byla pod minim\u00e1ln\u00ed dobou platnosti pro \u017e\u00e1dost o nov\u00fd certifik\u00e1t. Je resetov\u00e1na na minim\u00e1ln\u00ed dobu obnoven\u00ed. To by mohlo m\u00edt negativn\u00ed vliv na v\u00fdkon serveru.
-CWPKI2051W.useraction=Chcete-li se t\u00e9to varovn\u00e9 zpr\u00e1v\u011b vyhnout, nastavte vlastnost restoreBeforeExpiration v konfiguraci serveru na dobu del\u0161\u00ed, ne\u017e je minim\u00e1ln\u00ed doba obnoven\u00ed. Chcete-li pou\u017e\u00edt v\u00fdchoz\u00ed nastaven\u00ed, odeberte vlastnost renewBeforeExpiration z konfigurace serveru.
+CWPKI2051W=CWPKI2051W: Vlastnost renewBeforeExpiration byla nastavena na hodnotu {0}, kter\u00e1 je krat\u0161\u00ed ne\u017e minim\u00e1ln\u00ed doba obnovy. Vlastnost renewBeforeExpiration je resetov\u00e1na na hodnotu {1}.
+CWPKI2051W.explanation=Hodnota pro vlastnost renewBeforeExpiration byla pod minim\u00e1ln\u00ed dobou platnosti pro \u017e\u00e1dost o nov\u00fd certifik\u00e1t. Je resetov\u00e1na na minim\u00e1ln\u00ed dobu obnovy. To by mohlo m\u00edt negativn\u00ed vliv na v\u00fdkon serveru.
+CWPKI2051W.useraction=Chcete-li se t\u00e9to varovn\u00e9 zpr\u00e1v\u011b vyhnout, nastavte vlastnost restoreBeforeExpiration v konfiguraci serveru na dobu del\u0161\u00ed, ne\u017e je minim\u00e1ln\u00ed doba obnovy. Chcete-li pou\u017e\u00edt v\u00fdchoz\u00ed nastaven\u00ed, odeberte vlastnost renewBeforeExpiration z konfigurace serveru.
 
 CWPKI2052I=CWPKI2052I: Platnost certifik\u00e1tu se s\u00e9riov\u00fdm \u010d\u00edslem {0} vypr\u0161\u00ed dne {1}. Slu\u017eba ACME po\u017e\u00e1d\u00e1 o nov\u00fd certifik\u00e1t od certifika\u010dn\u00ed autority ACME v identifik\u00e1toru URI {2}.
 CWPKI2052I.explanation=Slu\u017eba ACME po\u017eaduje nov\u00fd certifik\u00e1t zalo\u017een\u00fd na vlastnosti renewBeforeExpiration v konfiguraci serveru a datu vypr\u0161en\u00ed platnosti certifik\u00e1tu. Nen\u00ed-li vlastnost renewBeforeExpiration nakonfigurov\u00e1na, bude pou\u017eita v\u00fdchoz\u00ed hodnota.
 CWPKI2052I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
 CWPKI2053W=CWPKI2053W: Platnost certifik\u00e1tu se s\u00e9riov\u00fdm \u010d\u00edslem {0} vypr\u0161ela dne {1}. Slu\u017eba ACME nen\u00ed nakonfigurov\u00e1na pro automatick\u00e9 vy\u017e\u00e1d\u00e1n\u00ed nov\u00e9ho certifik\u00e1tu.
-CWPKI2053W.explanation=Po\u017eadavky TLS/SSL nelze dokon\u010dit, proto\u017ee certifik\u00e1tu vypr\u0161ela platnost.
+CWPKI2053W.explanation=Po\u017eadavky SSL a TLS nelze dokon\u010dit, proto\u017ee certifik\u00e1tu vypr\u0161ela platnost.
 CWPKI2053W.useraction=Aktualizujte vlastnost renewBeforeExpiration v konfiguraci serveru na hodnotu vy\u0161\u0161\u00ed ne\u017e 0, aby bylo mo\u017en\u00e9 automaticky po\u017e\u00e1dat o nov\u00fd certifik\u00e1t nebo pou\u017e\u00edt rozhran\u00ed ACME REST k vy\u017e\u00e1d\u00e1n\u00ed nov\u00e9ho certifik\u00e1tu.
 
 CWPKI2054W=CWPKI2054W: Vlastnost renewBeforeExpiration byla nastavena na hodnotu {0}, kter\u00e1 je rovna nebo del\u0161\u00ed ne\u017e obdob\u00ed platnosti certifik\u00e1tu se s\u00e9riov\u00fdm \u010d\u00edslem {1}. Obdob\u00ed platnosti certifik\u00e1tu je {2}. Vlastnost renewBeforeExpiration je resetov\u00e1na na hodnotu {3}.
@@ -258,12 +259,12 @@ CWPKI2055W=CWPKI2055W: Vlastnost renewBeforeExpiration je nastavena na kr\u00e1t
 CWPKI2055W.explanation=\u010cast\u00e9 \u017e\u00e1dosti na certifik\u00e1ty mohou m\u00edt negativn\u00ed vliv na v\u00fdkon serveru. Po\u010det \u017e\u00e1dost\u00ed m\u016f\u017ee tak\u00e9 p\u0159ekro\u010dit po\u010det povolen\u00fd certifika\u010dn\u00ed autoritou.
 CWPKI2055W.useraction=Chcete-li se t\u00e9to varovn\u00e9 zpr\u00e1v\u011b vyhnout, nastavte vlastnost restoreBeforeExpiration v konfiguraci serveru na del\u0161\u00ed dobu. Chcete-li pou\u017e\u00edt v\u00fdchoz\u00ed nastaven\u00ed, odeberte vlastnost renewBeforeExpiration z konfigurace serveru.
 
-CWPKI2056W=CWPKI2056W: Obdob\u00ed platnosti certifik\u00e1tu se s\u00e9riov\u00fdm \u010d\u00edslem {0} je krat\u0161\u00ed ne\u017e minim\u00e1ln\u00ed doba obnoven\u00ed {1}. Doba platnosti certifikace je {2}. Vlastnost renewBeforeExpiration je resetov\u00e1na na hodnotu {3}.
-CWPKI2056W.explanation=Obdob\u00ed platnosti je krat\u0161\u00ed ne\u017e minim\u00e1ln\u00ed doba obnoven\u00ed. Platnost certifik\u00e1tu vypr\u0161\u00ed p\u0159ed po\u017eadavkem na nov\u00fd certifik\u00e1t.
+CWPKI2056W=CWPKI2056W: Obdob\u00ed platnosti certifik\u00e1tu se s\u00e9riov\u00fdm \u010d\u00edslem {0} je krat\u0161\u00ed ne\u017e minim\u00e1ln\u00ed doba obnovy {1}. Doba platnosti certifikace je {2}. Vlastnost renewBeforeExpiration je resetov\u00e1na na hodnotu {3}.
+CWPKI2056W.explanation=Obdob\u00ed platnosti je krat\u0161\u00ed ne\u017e minim\u00e1ln\u00ed doba obnovy. Platnost certifik\u00e1tu vypr\u0161\u00ed p\u0159ed po\u017eadavkem na nov\u00fd certifik\u00e1t.
 CWPKI2056W.useraction=Chcete-li se vypr\u0161en\u00ed platnosti certifik\u00e1tu vyhnout, vy\u017e\u00e1dejte si certifik\u00e1t s del\u0161\u00edm obdob\u00edm platnosti. Podporuje-li certifika\u010dn\u00ed autorita vlastn\u00ed obdob\u00ed platnosti, nastavte vlastnost validFor v konfiguraci serveru.
 
-CWPKI2057E=CWPKI2057E: Kontrola stavu odvol\u00e1n\u00ed certifik\u00e1tu nevytvo\u0159ila CertPathValidator pro ov\u011b\u0159en\u00ed platnosti certifik\u00e1tu. Chyba je ''{0}}''.
-CWPKI2057E.explanation=Kontrolor odvol\u00e1n\u00ed certifik\u00e1t\u016f mus\u00ed sestavit CertPathValidator pro kontrolu stavu odvol\u00e1n\u00ed OCSP a CRL.
+CWPKI2057E=CWPKI2057E: Kontrola stavu odvol\u00e1n\u00ed certifik\u00e1t\u016f nevytvo\u0159ila n\u00e1stroj pro ov\u011b\u0159ov\u00e1n\u00ed cesty certifik\u00e1tu Java k ov\u011b\u0159en\u00ed certifik\u00e1tu. Chyba: ''{0}''.
+CWPKI2057E.explanation=Kontrolor odvol\u00e1n\u00ed certifik\u00e1t\u016f mus\u00ed sestavit n\u00e1stroj pro ov\u011b\u0159ov\u00e1n\u00ed cesty certifik\u00e1tu Java pro kontrolu stavu odvol\u00e1n\u00ed OCSP a CRL.
 CWPKI2057E.useraction=P\u0159e\u010dt\u011bte si stavovou zpr\u00e1vu a chybu.
 
 CWPKI2058W=CWPKI2058W: Kontrola stavu odvol\u00e1n\u00ed certifik\u00e1t\u016f ignorovala ob\u010dasn\u00e9 poruchy. Kontrola odvol\u00e1n\u00ed m\u016f\u017ee b\u00fdt ne\u00fapln\u00e1. Selh\u00e1n\u00ed jsou: ''{0}''.
@@ -285,3 +286,51 @@ CWPKI2061E.useraction=Ujist\u011bte se, \u017ee certifik\u00e1t je platn\u00fdm 
 CWPKI2062E=CWPKI2062E: Adresa URL odpov\u00eddac\u00edho modulu OCSP {0} definovan\u00e1 v konfiguraci serveru nen\u00ed platn\u00fdm identifik\u00e1torem URI. Je-li definov\u00e1n, mus\u00ed se jednat o platn\u00fd identifik\u00e1tor URI pro potla\u010den\u00ed adresy URL odpov\u00eddac\u00edho modulu OSCRP obsa\u017een\u00e9 v certifik\u00e1tu.
 CWPKI2062E.explanation=Kontrola odvol\u00e1n\u00ed certifik\u00e1t\u016f vy\u017eaduje platnou adresu URL odpov\u00eddac\u00edho modulu OCSP.
 CWPKI2062E.useraction=Zadejte platnou adresu URL odpov\u00eddac\u00edho modulu OCSP v konfiguraci serveru.
+
+CWPKI2063E=CWPKI2063E: Certifika\u010dn\u00ed autorita ACME v identifik\u00e1toru URI {0} aktualizovala sv\u00e9 podm\u00ednky slu\u017eby a nyn\u00ed vy\u017eaduje, aby u\u017eivatel souhlasil s nov\u00fdmi podm\u00ednkami slu\u017eby v n\u00e1sleduj\u00edc\u00edm identifik\u00e1toru URI, ne\u017e zpracuje jak\u00e9koli dal\u0161\u00ed po\u017eadavky: {1}
+CWPKI2063E.explanation=Certifika\u010dn\u00ed autorita aktualizovala sv\u00e9 podm\u00ednky slu\u017eby a vy\u017eaduje interakci u\u017eivatele.
+CWPKI2063E.useraction=Zkontrolujte poskytnut\u00e9 podm\u00ednky slu\u017eby.
+
+CWPKI2064I=CWPKI2064I: Slu\u017eba ACME na\u010detla certifik\u00e1t se s\u00e9riov\u00fdm \u010d\u00edslem {0} z  identifik\u00e1toru URI {1} za {2} sekund.
+CWPKI2064I.explanation=Slu\u017eba ACME \u00fasp\u011b\u0161n\u011b po\u017e\u00e1dala o certifik\u00e1t.
+CWPKI2064I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+CWPKI2065W=CWPKI2065W: Slu\u017eb\u011b ACME se nezda\u0159ilo automaticky obnovit certifik\u00e1t se s\u00e9riov\u00fdm \u010d\u00edslem {0}. Zopakov\u00e1n\u00ed po\u017eadavku je napl\u00e1nov\u00e1no za {1}. Certifik\u00e1t vypr\u0161\u00ed dne {2}. Chyba po\u017eadavku na obnovu je ''{3}''.
+CWPKI2065W.explanation=Slu\u017eba ACME se pokusila obnovit certifik\u00e1t, ale rozpoznala chybu. Slu\u017eba ACME pokra\u010duje v po\u017eadavku na nov\u00fd certifik\u00e1t, dokud nen\u00ed vyd\u00e1n nov\u00fd certifik\u00e1t.
+CWPKI2065W.useraction=Podrobnosti o selh\u00e1n\u00ed najdete v chybov\u00e9 zpr\u00e1v\u011b.
+
+CWPKI2066E=CWPKI2066E: Slu\u017eb\u011b ACME se nezda\u0159ilo automaticky obnovit certifik\u00e1t se s\u00e9riov\u00fdm \u010d\u00edslem {0}. Certifik\u00e1t je zru\u0161en\u00fd. Zopakov\u00e1n\u00ed po\u017eadavku je napl\u00e1nov\u00e1no za {1}. Chyba po\u017eadavku na obnovu je ''{2}''.
+CWPKI2066E.explanation=Slu\u017eba ACME se pokusila obnovit certifik\u00e1t, ale rozpoznala chybu. Slu\u017eba ACME pokra\u010duje v po\u017eadavku na nov\u00fd certifik\u00e1t, dokud nen\u00ed vyd\u00e1n nov\u00fd certifik\u00e1t. Po\u017eadavky SSL a TLS se nezda\u0159\u00ed, dokud nebude \u00fasp\u011b\u0161n\u00fd nov\u00fd po\u017eadavek na certifik\u00e1t.
+CWPKI2066E.useraction=Podrobnosti o selh\u00e1n\u00ed najdete v chybov\u00e9 zpr\u00e1v\u011b. 
+
+CWPKI2067I=CWPKI2067I: Byl zru\u0161en certifik\u00e1t se s\u00e9riov\u00fdm \u010d\u00edslem {0}. Slu\u017eba ACME po\u017eaduje nov\u00fd certifik\u00e1t od certifika\u010dn\u00ed autority ACME v identifik\u00e1toru URI {1}.
+CWPKI2067I.explanation=Kdy\u017e slu\u017eba ACME zjist\u00ed, \u017ee je certifik\u00e1t odvol\u00e1n, automaticky si vy\u017e\u00e1d\u00e1 nov\u00fd certifik\u00e1t.
+CWPKI2067I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+CWPKI2068W=CWPKI2068W: Automatick\u00e9 kontrole certifik\u00e1t\u016f slu\u017eby ACME se nezda\u0159ilo zkontrolovat, zda platnost certifik\u00e1tu se s\u00e9riov\u00fdm \u010d\u00edslem {0} vypr\u0161\u00ed nebo je zru\u0161ena. Zopakov\u00e1n\u00ed kontroly je napl\u00e1nov\u00e1no za {1}. Chyba: ''{2}''.
+CWPKI2068W.explanation=Slu\u017eba ACME zah\u00e1jila kontrolu, zda platnost certifik\u00e1tu vypr\u0161\u00ed nebo je zru\u0161ena, ale operace se nezda\u0159ila.
+CWPKI2068W.useraction=Podrobnosti o selh\u00e1n\u00ed najdete v chybov\u00e9 zpr\u00e1v\u011b. Zkontrolujte stav certifik\u00e1tu pomoc\u00ed rozhran\u00ed slu\u017eby ACME REST. Pokud je t\u0159eba certifik\u00e1t obnovit, pou\u017eijte rozhran\u00ed ACME REST a vy\u017e\u00e1dejte si nov\u00fd certifik\u00e1t.
+
+CWPKI2069I=CWPKI2069I: Automatick\u00e1 kontrola certifik\u00e1t\u016f slu\u017eby ACME je zak\u00e1z\u00e1na. Vypr\u0161el\u00e9 nebo zru\u0161en\u00e9 certifik\u00e1ty se automaticky neobnovuj\u00ed.
+CWPKI2069I.explanation=Slu\u017eba ACME nekontroluje vypr\u0161en\u00ed platnosti ani zru\u0161en\u00ed certifik\u00e1t\u016f podle automatick\u00e9ho pl\u00e1nu. Pokud platnost certifik\u00e1tu vypr\u0161\u00ed nebo je zru\u0161ena, po\u017eadavky SSL a TLS nemohou b\u00fdt dokon\u010deny, dokud nen\u00ed restartov\u00e1n server nebo pokud nen\u00ed pro obnoven\u00ed certifik\u00e1tu pou\u017eito rozhran\u00ed REST.
+CWPKI2069I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. Chcete-li povolit automatickou kontrolu certifik\u00e1t\u016f, aktualizujte vlastnost certCheckerSchedule v konfiguraci serveru na hodnotu v\u011bt\u0161\u00ed ne\u017e 0.
+
+CWPKI2070W=CWPKI2070W: Vlastnost certCheckerSchedule byla nastavena na {0}, co\u017e je krat\u0161\u00ed doba ne\u017e minim\u00e1ln\u00ed napl\u00e1novan\u00fd \u010das. Vlastnost certCheckerSchedule je resetov\u00e1na na {1}.
+CWPKI2070W.explanation=Hodnota vlastnosti certCheckerSchedule byla pod minim\u00e1ln\u00ed dobou trv\u00e1n\u00ed pro kontrolu vypr\u0161en\u00ed platnosti nebo odvol\u00e1n\u00ed certifik\u00e1t\u016f a je resetov\u00e1na na minim\u00e1ln\u00ed napl\u00e1novan\u00fd \u010das.
+CWPKI2070W.useraction=Chcete-li se t\u00e9to varovn\u00e9 zpr\u00e1v\u011b vyhnout, nastavte vlastnost restoreBeforeExpiration v konfiguraci serveru na dobu del\u0161\u00ed, ne\u017e je minim\u00e1ln\u00ed napl\u00e1novan\u00fd \u010das. Chcete-li pou\u017e\u00edt v\u00fdchoz\u00ed nastaven\u00ed, odeberte vlastnost certCheckerSchedule z konfigurace serveru.
+
+CWPKI2071W=CWPKI2071W: Vlastnost certCheckerErrorSchedule byla nastavena na {0}, co\u017e je krat\u0161\u00ed doba ne\u017e minim\u00e1ln\u00ed napl\u00e1novan\u00fd \u010das. Vlastnost certCheckerErrorSchedule je resetov\u00e1na na {1}.
+CWPKI2071W.explanation=Hodnota vlastnosti certCheckerErrorSchedule byla pod minim\u00e1ln\u00ed dobou trv\u00e1n\u00ed pro kontrolu vypr\u0161en\u00ed platnosti nebo odvol\u00e1n\u00ed certifik\u00e1t\u016f a je resetov\u00e1na na minim\u00e1ln\u00ed napl\u00e1novan\u00fd \u010das.
+CWPKI2071W.useraction=Chcete-li se t\u00e9to varovn\u00e9 zpr\u00e1v\u011b vyhnout, nastavte vlastnost restoreBeforeExpiration v konfiguraci serveru na dobu del\u0161\u00ed, ne\u017e je minim\u00e1ln\u00ed napl\u00e1novan\u00fd \u010das. Chcete-li pou\u017e\u00edt v\u00fdchoz\u00ed nastaven\u00ed, odeberte vlastnost certCheckerErrorSchedule z konfigurace serveru.
+
+CWPKI2072W=CWPKI2072W: Slu\u017eba ACME nemohla p\u0159e\u010d\u00edst nebo zapsat soubor historie ACME v {0}. Chyba: ''{1}''.
+CWPKI2072W.explanation=Slu\u017eba ACME nem\u00e1 p\u0159\u00edstup k souboru historie ACME.
+CWPKI2072W.useraction=Ujist\u011bte se, \u017ee adres\u00e1\u0159 historie ACME m\u00e1 opr\u00e1vn\u011bn\u00ed ke \u010dten\u00ed a z\u00e1pisu.
+
+CWPKI2073W=CWPKI2073W: Byl ur\u010den kontakt na \u00fa\u010det. Doporu\u010duje se nastavit tuto vlastnost v konfiguraci serveru. Pokud dojde ke ztr\u00e1t\u011b kl\u00ed\u010de nebo k ohro\u017een\u00ed bezpe\u010dnosti \u00fa\u010dtu, dojde ke ztr\u00e1t\u011b p\u0159\u00edstupu k \u00fa\u010dtu.
+CWPKI2073W.explanation=Hodnota pro vlastnost accountContact nebyla ur\u010dena v konfiguraci serveru.
+CWPKI2073W.useraction=Nastavte vlastnost accountContact v konfiguraci serveru.
+
+CWPKI2074W=CWPKI2074W: Vypr\u0161el \u010dasov\u00fd limit slu\u017eby ACME p\u0159i \u010dek\u00e1n\u00ed na sign\u00e1l, \u017ee je port HTTP otev\u0159en\u00fd. Dostupn\u00fd port HTTP je vy\u017eadov\u00e1n k dokon\u010den\u00ed \u017e\u00e1dosti o certifik\u00e1t pomoc\u00ed certifika\u010dn\u00ed autority ACME. Byl proveden pokus o \u017e\u00e1dost o certifik\u00e1t. Slu\u017eba \u010dekala {0}.
+CWPKI2074W.explanation=Slu\u017eba se pokus\u00ed o \u017e\u00e1dost o certifik\u00e1t. Je-li port HTTP otev\u0159en\u00fd, bude po\u017eadavek pokra\u010dovat. Jestli\u017ee port HTTP nen\u00ed otev\u0159\u00edt, \u017e\u00e1dost o certifik\u00e1t se nezda\u0159\u00ed.
+CWPKI2074W.useraction=Vyhledejte v protokolu p\u0159edchoz\u00ed zpr\u00e1vy nebo chyby. P\u0159ezkoumejte protokol pro zpr\u00e1vy CWWKO0219I, kter\u00e9 uv\u00e1d\u00ed dostupn\u00e9 koncov\u00e9 body a porty. 

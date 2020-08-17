@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,15 +12,21 @@ package com.ibm.ws.anno.info.internal;
 
 import java.text.MessageFormat;
 
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Logging;
-import com.ibm.ws.anno.util.internal.UtilImpl_Factory;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.anno.info.InfoStore;
 import com.ibm.wsspi.anno.info.InfoStoreException;
 import com.ibm.wsspi.anno.info.InfoStoreFactory;
+import com.ibm.wsspi.anno.util.Util_Factory;
 
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM"})
 public class InfoStoreFactoryImpl implements InfoStoreFactory {
 
     public static final TraceComponent tc = Tr.register(InfoStoreFactoryImpl.class);
@@ -35,9 +41,8 @@ public class InfoStoreFactoryImpl implements InfoStoreFactory {
         return hashText;
     }
 
-    //
-
-    public InfoStoreFactoryImpl(UtilImpl_Factory utilFactory) {
+    @Activate
+    public InfoStoreFactoryImpl(@Reference Util_Factory utilFactory) {
         super();
 
         this.hashText = AnnotationServiceImpl_Logging.getBaseHash(this);
@@ -53,10 +58,10 @@ public class InfoStoreFactoryImpl implements InfoStoreFactory {
 
     //
 
-    protected UtilImpl_Factory utilFactory;
+    protected Util_Factory utilFactory;
 
     @Override
-    public UtilImpl_Factory getUtilFactory() {
+    public Util_Factory getUtilFactory() {
         return utilFactory;
     }
 

@@ -69,6 +69,6 @@ implicit.bean.scanning.disabled.CWOWB1009W=CWOWB1009W: Az implicit komponens arc
 implicit.bean.scanning.disabled.CWOWB1009W.explanation=A rendszer az arch\u00edvumokban nem keres CDI komponenseket, hacsak nincs beans.xml f\u00e1jljuk.
 implicit.bean.scanning.disabled.CWOWB1009W.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy minden CDI komponenst haszn\u00e1l\u00f3 arch\u00edvum rendelkezik beans.xml f\u00e1jllal vagy enged\u00e9lyezze \u00fajra az implicit komponensek keres\u00e9s\u00e9t a server.xml f\u00e1jlban.
 
-spi.extension.failed.to.construct.CWOWB10010E=CWOWB10010E: A CDI b\u0151v\u00edtm\u00e9ny l\u00e9trehoz\u00e1sa az SPI fel\u00fcleten kereszt\u00fcl meghi\u00fasult.
-spi.extension.failed.to.construct.CWOWB10010E.explanation={1} kiv\u00e9tel miatt a CDI nem tudta megh\u00edvni a WebSphereCDIExtensionMetaData megval\u00f3s\u00edt\u00e1s getExtensions () met\u00f3dus\u00e1n kereszt\u00fcl regisztr\u00e1lt {0} kiterjeszt\u00e9si oszt\u00e1ly konstruktor\u00e1t.
-spi.extension.failed.to.construct.CWOWB10010E.useraction=Jav\u00edtsa ki a hib\u00e1t, amely megakad\u00e1lyozza a b\u0151v\u00edtm\u00e9ny p\u00e9ld\u00e1nyos\u00edt\u00e1s\u00e1t.
+spi.extension.failed.to.construct.CWOWB1010E=CWOWB1010E: A CDI b\u0151v\u00edtm\u00e9ny l\u00e9trehoz\u00e1sa az SPI fel\u00fcleten kereszt\u00fcl meghi\u00fasult.
+spi.extension.failed.to.construct.CWOWB1010E.explanation={1} kiv\u00e9tel miatt a CDI nem tudta megh\u00edvni a CDIExtensionMetadata megval\u00f3s\u00edt\u00e1s getExtensions() met\u00f3dus\u00e1n kereszt\u00fcl regisztr\u00e1lt {0} kiterjeszt\u00e9si oszt\u00e1ly konstruktor\u00e1t.
+spi.extension.failed.to.construct.CWOWB1010E.useraction=Jav\u00edtsa ki a hib\u00e1t, amely megakad\u00e1lyozza a b\u0151v\u00edtm\u00e9ny p\u00e9ld\u00e1nyos\u00edt\u00e1s\u00e1t.

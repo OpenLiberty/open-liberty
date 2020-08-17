@@ -1,0 +1,111 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/XMLMarshalExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+25001=Niepoprawny \u0142a\u0144cuch wyra\u017cenia XPath: {0}
+
+25002=Nie mo\u017cna przeanalizowa\u0107 indeksu liczby ca\u0142kowitej z tego \u0142a\u0144cucha wyra\u017cenia XPath: {0}
+
+25003=Wyst\u0105pi\u0142 b\u0142\u0105d podczas marszalingu obiektu
+
+25004=Wyst\u0105pi\u0142 b\u0142\u0105d podczas demarszalingu dokumentu
+
+25005=Wyst\u0105pi\u0142 b\u0142\u0105d podczas sprawdzania poprawno\u015bci obiektu
+
+25006=Nie okre\u015blono domy\u015blnego elementu g\u0142\u00f3wnego dla obiektu XMLDescriptor odwzorowanego na element {0}
+
+25007=W projekcie nie znaleziono deskryptora dla klasy {0}.  W przypadku architektury JAXB, je\u015bli obiekt JAXBContext zosta\u0142 uruchomiony za pomoc\u0105 obiektu TypeMappingInfo[], nale\u017cy wywo\u0142a\u0107 metod\u0119 marszalingu, kt\u00f3ra akceptuje obiekt TypeMappingInfo jako parametr wej\u015bciowy.
+
+25008=W projekcie nie znaleziono deskryptora z domy\u015blnym elementem g\u0142\u00f3wnym {0}
+
+25010=Nie okre\u015blono odwo\u0142ania do schematu dla obiektu XMLDescriptor odwzorowanego na element {0}
+
+25011=Napotkano argument o warto\u015bci NULL
+
+25012=Wyst\u0105pi\u0142 b\u0142\u0105d podczas rozstrzygania schematu XML.
+
+25013=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by ustawienia schemat\u00f3w.
+
+25014=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by utworzenia instancji platformy schematu.
+
+25015=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by rozstrzygni\u0119cia identyfikatora URI przestrzeni nazw dla elementu {0}. Nie okre\u015blono obiektu t\u0142umacz\u0105cego przestrzeni nazw dla deskryptora.
+
+25016=Nie znaleziono przestrzeni nazw dla przedrostka {0} w obiekcie t\u0142umacz\u0105cym przestrzeni nazw.
+
+25017=Element enumClass lub enumClassName musi by\u0107 ustawiony dla obiektu JAXBTypesafeEnumConverter.
+
+25018=Metoda fromString dla klasy wyliczenia {0} nie istnieje lub nie mo\u017cna jej wywo\u0142a\u0107.
+
+25019=Nie mo\u017cna znale\u017a\u0107 okre\u015blonej klasy wyliczenia {0}.
+
+25020=Nie wolno wywo\u0142ywa\u0107 metody getResult() przed wywo\u0142aniem zdarzenia endDocument().
+
+25021=Klasa {0} jest niepoprawna dla elementu SwaRef. Wymagana jest klasa javax.activation.DataHandler.
+
+25022=Nie mo\u017cna zestawi\u0107 obrazu. Brak dost\u0119pnego kodera dla typu mimeType {0}.
+
+25023=Nie znaleziono deskryptora podczas demarszalingu elementu odwzorowanego na atrybut {0}.
+
+25024=Wyst\u0105pi\u0142 b\u0142\u0105d podczas tworzenia instancji klasy UnmappedContentHandler {0}.
+
+25025=Klasa UnmappedContentHandler {0} ustawiona w obiekcie XMLUnmarshaller musi implementowa\u0107 interfejs org.eclipse.persistence.oxm.unmapped.UnmappedContentHandler.
+
+25026=Nie mo\u017cna zaktualizowa\u0107 w\u0119z\u0142a [{0}]. Nie znaleziono obiektu w pami\u0119ci podr\u0119cznej.
+
+25027=Nie mo\u017cna pobra\u0107 za\u0142\u0105cznika z identyfikatorem CID {0}, poniewa\u017c nie ustawiono obiektu AttachmentUnmarshaller.
+
+25028=Nie znaleziono deskryptora odwo\u0142ania dla odwzorowania {1} ze wzgl\u0119du na nieznan\u0105 warto\u015b\u0107 xsi:type: {0}.
+
+25029=W przypadku przedrostka [{0}] klasa [{1}] podj\u0119\u0142a pr\u00f3b\u0119 przypisania identyfikatora URI przestrzeni nazw [{2}], ale jej klasa nadrz\u0119dna [{3}] ju\u017c przypisa\u0142a identyfikator URI przestrzeni nazw [{4}].
+
+25030=Wyst\u0105pi\u0142 b\u0142\u0105d podczas wywo\u0142ywania metody {0} dla niestandardowego obiektu NamespacePrefixMapper: {1}.
+
+25031=Wyst\u0105pi\u0142 b\u0142\u0105d podczas przetwarzania programu odwzorowuj\u0105cego przedrostki przestrzeni nazw: {1}. Nie znaleziono metody {0}.
+
+25032=Wyst\u0105pi\u0142 b\u0142\u0105d podczas wywo\u0142ywania metody {0} dla niestandardowego interfejsu CharacterEscapeHandler: {1}.
+
+25033=Wyst\u0105pi\u0142 b\u0142\u0105d podczas przetwarzania interfejsu CharacterEscapeHandler: {1}. Nie znaleziono metody {0}.
+
+25034=Wyst\u0105pi\u0142 b\u0142\u0105d podczas wywo\u0142ywania metody {0} dla niestandardowego obiektu IDResolver: {1}.
+
+25035=Wyst\u0105pi\u0142 b\u0142\u0105d podczas przetwarzania obiektu IDResolver: {1}. Nie znaleziono metody {0}.
+
+25036=Niestandardowa klasa IDResolver {1} nie obs\u0142uguje wielu identyfikator\u00f3w XML {0}.  Niestandardowe klasy IDResolver musz\u0105 by\u0107 podklasami klasy org.eclipse.persistence.jaxb.IDResolver, je\u015bli u\u017cywanych jest wiele identyfikator\u00f3w.
+
+25037=Wykryto cykl w grafie obiektu.  Spowoduje to p\u0119tl\u0119 niesko\u0144czon\u0105: {0}
+
+25038=Obiekt DOMPlatform nie jest obs\u0142ugiwany z typem no\u015bnika application/json.
+
+25039=Wyst\u0105pi\u0142 b\u0142\u0105d podczas demarszalingu z {0}
+
+25040=Nie znaleziono obiektu typu {0} o identyfikatorze {1}.
+
+25041=Okre\u015blona grupa atrybut\u00f3w {0} nie jest zdefiniowana dla klasy {1}.
+
+25042=Warto\u015b\u0107 w\u0142a\u015bciwo\u015bci zmiennej {0} dla klasy {1} nie mo\u017ce by\u0107 r\u00f3wna NULL.
+

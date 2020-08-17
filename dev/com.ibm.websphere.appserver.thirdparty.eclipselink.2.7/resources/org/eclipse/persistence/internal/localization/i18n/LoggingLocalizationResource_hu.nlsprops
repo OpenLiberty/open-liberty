@@ -665,6 +665,8 @@ retreived_unknown_message_type=Ismeretlen {0} \u00fczenett\u00edpus lek\u00e9r\u
 
 sdo_classgenerator_exception={2} [{0}] kiv\u00e9tel t\u00f6rt\u00e9nt - \u00fczenet: [{1}]
 
+sdo_error_deserialization=Jogosulatlan visszaalak\u00edt\u00e1si k\u00eds\u00e9rlet a(z) {0} oszt\u00e1llyal.
+
 sdo_error_processing_referenced_schema={0} t\u00f6rt\u00e9nt a hivatkozott s\u00e9ma feldolgoz\u00e1sa sor\u00e1n {1} uri-val, schemaLocation: {2}.
 
 sdo_invalid_schemaLocation=A(z) [{0}] schemaLocation nem hozhat\u00f3 l\u00e9tre import\u00e1l\u00e1sra [{1}] uri-val.

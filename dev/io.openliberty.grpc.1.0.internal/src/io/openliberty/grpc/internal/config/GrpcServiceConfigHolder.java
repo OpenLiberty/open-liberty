@@ -18,11 +18,13 @@ import java.util.TreeMap;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
+import io.openliberty.grpc.internal.GrpcMessages;
+
 /**
  * Adapted from com.ibm.ws.jaxrs20.clientconfig.JAXRSClientConfigHolder
  */
 public class GrpcServiceConfigHolder {
-	private static final TraceComponent tc = Tr.register(GrpcServiceConfigHolder.class);
+	private static final TraceComponent tc = Tr.register(GrpcServiceConfigHolder.class, GrpcMessages.GRPC_TRACE_NAME, GrpcMessages.GRPC_BUNDLE);
 
 	// a map of configuration properties keyed on uri.
 	// note that treemap sorts by key order, which we need to properly deal with the

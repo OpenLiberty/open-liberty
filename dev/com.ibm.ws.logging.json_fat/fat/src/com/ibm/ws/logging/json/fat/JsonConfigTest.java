@@ -57,6 +57,8 @@ public class JsonConfigTest {
     public static final String SERVER_XML_JSON_SOURCE_MESSAGETRACEACCESS = "jsonSourceMessageTraceAccess.xml";
     public static final String SERVER_XML_JSON_MESSAGE_ACCESS = "jsonMessageSourceAccessLog.xml";
     public static final String SERVER_XML_JSON_CONFIG_FIELD_EXT = "jsonConfigFieldExt.xml";
+    public static final String SERVER_XML_APPS_WRITE_JSON_ENABLED = "appsWriteJsonEnabled.xml";
+    public static final String SERVER_XML_APPS_WRITE_JSON_DISABLED = "appsWriteJsonDisabled.xml";
 
     ArrayList<String> ALL_SOURCE_LIST = new ArrayList<String>(Arrays.asList("message", "trace", "accesslog", "ffdc"));
 
@@ -249,6 +251,34 @@ public class JsonConfigTest {
 
     }
 
+    @Test
+    public void testAppsWriteJson() throws Exception {
+        //update file
+        setServerConfig(SERVER_XML_APPS_WRITE_JSON_ENABLED);
+        //run LogServlet
+        RemoteFile consoleLogFile = server.getConsoleLogFile();
+        runApplication(consoleLogFile);
+        //check output are in application's JSON format
+        checkLine("\\{\"key\":\"value\"\\}");
+        checkLine("\\{\"key\":\"value\",\"loglevel\":\"System.err\"\\}");
+        checkLine("\\{\\}");
+        checkLine("\\{\"key\":\"value\"\\}", consoleLogFile);
+        checkLine("\\{\"key\":\"value\",\"loglevel\":\"System.err\"\\}", consoleLogFile);
+        checkLine("\\{\\}", consoleLogFile);
+
+        //update file
+        setServerConfig(SERVER_XML_APPS_WRITE_JSON_DISABLED);
+        //check output are in liberty JSON format
+        runApplication(consoleLogFile);
+        checkLine("\\{.*\"message\":\".*key.*value.*\".*\\}");
+        checkLine("\\{.*\"message\":\".*key.*value.*,.*loglevel.*System.err.*\".*\\}");
+        checkLine("\\{.*\"message\":\".*\".*\\}");
+        checkLine("\\{.*\"message\":\".*key.*value.*\".*\\}", consoleLogFile);
+        checkLine("\\{.*\"message\":\".*key.*value.*,.*loglevel.*System.err.*\".*\\}", consoleLogFile);
+        checkLine("\\{.*\"message\":\".*\".*\\}", consoleLogFile);
+
+    }
+
     private void checkMessageLogUpdate(boolean isJson, ArrayList<String> sourceList, String traceSpec) throws Exception {
         if (isJson) {
             if (sourceList.contains("trace") && traceSpec.equals("finest")) {
@@ -331,10 +361,12 @@ public class JsonConfigTest {
         TestUtils.runApp(server, "logServlet");
     }
 
-    private static String setServerConfig(String fileName) throws Exception {
-        server.setMarkToEndOfLog();
+    //check message.log for CWWKG0017I.*|CWWKG0018I. message, messageSource must have "message"
+    private static void setServerConfig(String fileName) throws Exception {
+        RemoteFile log = server.getDefaultTraceFile();
+        server.setMarkToEndOfLog(log);
         server.setServerConfigurationFile(fileName);
-        return server.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*");
+        Assert.assertNotNull(server.waitForStringInLog("CWWKG0017I.*|CWWKG0018I.*", log));
     }
 
     @AfterClass

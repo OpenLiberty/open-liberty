@@ -80,6 +80,11 @@ public class FeatureUpdate extends FATBase {
                                                        ,client_.getMatchingLogFile("messages.log")
                                                        );
     assertNotNull("Could not find expected exception in the messages.log", message);
+    // because we have an expected error above, we want to make sure subsequent tests don't pick up
+    // on this in their interaction with client_
+    Util.TRACE("restart client");
+    client_.stopServer("^.*[EW] .*\\d{4}[EW]:.*$");   // ignore all errors from prior tests
+    client_.startServer();                            // leave the server clean for future tests
 
     Util.TRACE("stop server");
     server_.stopServer();
@@ -101,7 +106,7 @@ public class FeatureUpdate extends FATBase {
   public void testSSLFeatureUpdate() throws Exception {
     Util.TRACE_ENTRY();
     // When the client AppServer stops it might observe FFDCs left behind by prior tests, hence the allowed FFDCs.
-    client_.stopServer();
+    client_.stopServer("^.*[EW] .*\\d{4}[EW]:.*$");   // ignore all errors from prior tests
     client_.setServerConfigurationFile("SecurityDisabledClient.xml");
     client_.startServer();
 
@@ -117,6 +122,11 @@ public class FeatureUpdate extends FATBase {
                                                 ,client_.getMatchingLogFile("messages.log")
                                                 );
     assertNotNull("Could not find expected exception in the messages.log", message);
+    // because we have an expected error above, we want to make sure subsequent tests don't pick up
+    // on this in their interaction with client_
+    Util.TRACE("restart client");
+    client_.stopServer("^.*[EW] .*\\d{4}[EW]:.*$");   // ignore all errors from prior tests
+    client_.startServer();                            // leave the server clean for future tests
     Util.TRACE_EXIT();
   }
 

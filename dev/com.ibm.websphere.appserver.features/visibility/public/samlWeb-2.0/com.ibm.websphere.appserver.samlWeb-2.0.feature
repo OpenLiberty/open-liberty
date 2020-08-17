@@ -19,7 +19,7 @@ Subsystem-Name: SAML Web Single Sign-On 2.0
   com.ibm.ws.org.apache.commons.logging.1.0.3, \
   com.ibm.ws.security.common, \
   com.ibm.json4j, \
-  com.ibm.ws.org.apache.commons.codec.1.4, \
+  com.ibm.ws.org.apache.commons.codec, \
   com.ibm.ws.org.jose4j, \
   com.ibm.ws.org.apache.commons.httpclient
 kind=ga

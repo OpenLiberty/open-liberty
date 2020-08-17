@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2019 IBM Corporation and others.
+ * Copyright (c) 2004, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -85,7 +85,6 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     private String forwardedRemoteAddress = null;
     private String forwardedProto = null;
     private String forwardedHost = null;
-    private int h2ContentLength = -1;
     private boolean suppress0ByteChunk = false;
 
     /**
@@ -2097,13 +2096,13 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         boolean isHTTP2Enabled = false;
 
         //If servlet-3.1 is enabled, HTTP/2 is optional and by default off.
-        if (HttpConfigConstants.OPTIONAL_DEFAULT_OFF_20.equalsIgnoreCase(CHFWBundle.getServletConfiguredHttpVersionSetting())) {
+        if (CHFWBundle.isHttp2DisabledByDefault()) {
             //If so, check if the httpEndpoint was configured for HTTP/2
             isHTTP2Enabled = (getHttpConfig().getUseH2ProtocolAttribute() != null && getHttpConfig().getUseH2ProtocolAttribute());
         }
 
         //If servlet-4.0 is enabled, HTTP/2 is optional and by default on.
-        else if (HttpConfigConstants.OPTIONAL_DEFAULT_ON_20.equalsIgnoreCase(CHFWBundle.getServletConfiguredHttpVersionSetting())) {
+        else if (CHFWBundle.isHttp2EnabledByDefault()) {
             //If not configured as an attribute, getUseH2ProtocolAttribute will be null, which returns true
             //to use HTTP/2.
             isHTTP2Enabled = (getHttpConfig().getUseH2ProtocolAttribute() == null || getHttpConfig().getUseH2ProtocolAttribute());

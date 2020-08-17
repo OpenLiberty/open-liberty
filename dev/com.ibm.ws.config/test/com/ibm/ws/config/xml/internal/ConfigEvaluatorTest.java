@@ -815,6 +815,48 @@ public class ConfigEvaluatorTest {
     }
 
     @Test
+    public void testVariablesNoConflict() throws Exception {
+        changeLocationSettings("default");
+
+        String loggingPid = "com.ibm.ws.logging";
+
+        MockObjectClassDefinition loggingOCD = new MockObjectClassDefinition("logging");
+        MockAttributeDefinition logDirectoryAttribute = new MockAttributeDefinition("logDirectory", AttributeDefinition.STRING, 0, null);
+        loggingOCD.addAttributeDefinition(logDirectoryAttribute);
+        loggingOCD.setAlias("logging");
+
+        MockBundle bundle = new MockBundle();
+        MockMetaTypeInformation metatype = new MockMetaTypeInformation(bundle);
+        metatype.add(loggingPid, true, loggingOCD);
+
+        MetaTypeRegistry registry = new MetaTypeRegistry();
+        assertFalse("The registry should be updated", registry.addMetaType(metatype).isEmpty());
+
+        RegistryEntry loggingRE = registry.getRegistryEntry(loggingPid);
+
+        String xml = "<server>" +
+                     "  <logging id=\"log1\" logDirectory=\"${one}\" />\n" +
+                     "  <logging id=\"log1\" logDirectory=\"logs_directory\"/>\n" +
+                     "</server>";
+        ServerConfiguration serverConfig = configParser.parseServerConfiguration(new StringReader(xml));
+
+        VariableRegistryHelper variableRegistryHelper = new VariableRegistryHelper(new SymbolRegistry());
+        variableRegistryHelper.addVariable("one", "logs_directory");
+        ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(variableRegistryHelper, new String[0], null);
+        TestConfigEvaluator evaluator = createConfigEvaluator(registry, variableRegistry, null);
+
+        ConfigElement entry = serverConfig.getFactoryInstance(loggingPid, "logging", "log1");
+
+        EvaluationResult result = evaluator.evaluate(entry, loggingRE);
+        Dictionary<String, Object> dictionary = result.getProperties();
+        assertEquals("logs_directory", dictionary.get("logDirectory"));
+
+        assertFalse("We should not get warning messages about a conflict",
+                    outputMgr.checkForMessages("CWWKG0102I.*"));
+
+    }
+
+    @Test
     public void testVariablesInIDFields() throws Exception {
         changeLocationSettings("default");
 

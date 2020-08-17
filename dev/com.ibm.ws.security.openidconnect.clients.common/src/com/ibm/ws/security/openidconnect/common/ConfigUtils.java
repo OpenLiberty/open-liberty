@@ -363,31 +363,31 @@ public class ConfigUtils {
             return new ArrayList<String>();
         }
         List<String> configuredForwardAuthzParamList = new ArrayList<String>(Arrays.asList(attributeValue));
-        return removeBlacklistedForwardAuthzParametersFromConfiguredList(configuredForwardAuthzParamList, configId, configAttributeName);
+        return removeDisallowedForwardAuthzParametersFromConfiguredList(configuredForwardAuthzParamList, configId, configAttributeName);
     }
 
-    List<String> removeBlacklistedForwardAuthzParametersFromConfiguredList(List<String> configuredList, String configId, String configAttributeName) {
+    List<String> removeDisallowedForwardAuthzParametersFromConfiguredList(List<String> configuredList, String configId, String configAttributeName) {
         if (configuredList == null) {
             return new ArrayList<String>();
         }
-        Set<String> configuredBlacklistedParameters = new HashSet<String>(configuredList);
-        configuredBlacklistedParameters.retainAll(getBlacklistedForwardAuthzParameterNames());
-        if (!configuredBlacklistedParameters.isEmpty()) {
-            Tr.warning(tc, "BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED", new Object[] { configId, configuredBlacklistedParameters, configAttributeName });
-            configuredList.removeAll(configuredBlacklistedParameters);
+        Set<String> configuredDisallowedParameters = new HashSet<String>(configuredList);
+        configuredDisallowedParameters.retainAll(getDisallowedForwardAuthzParameterNames());
+        if (!configuredDisallowedParameters.isEmpty()) {
+            Tr.warning(tc, "DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED", new Object[] { configId, configuredDisallowedParameters, configAttributeName });
+            configuredList.removeAll(configuredDisallowedParameters);
         }
         return configuredList;
     }
 
-    Set<String> getBlacklistedForwardAuthzParameterNames() {
-        Set<String> blacklistedParamNames = new HashSet<String>();
-        blacklistedParamNames.add(Constants.REDIRECT_URI);
-        blacklistedParamNames.add(Constants.CLIENT_ID);
-        blacklistedParamNames.add(Constants.RESPONSE_TYPE);
-        blacklistedParamNames.add(Constants.NONCE);
-        blacklistedParamNames.add(Constants.STATE);
-        blacklistedParamNames.add(Constants.SCOPE);
-        return blacklistedParamNames;
+    Set<String> getDisallowedForwardAuthzParameterNames() {
+        Set<String> disallowedParamNames = new HashSet<String>();
+        disallowedParamNames.add(Constants.REDIRECT_URI);
+        disallowedParamNames.add(Constants.CLIENT_ID);
+        disallowedParamNames.add(Constants.RESPONSE_TYPE);
+        disallowedParamNames.add(Constants.NONCE);
+        disallowedParamNames.add(Constants.STATE);
+        disallowedParamNames.add(Constants.SCOPE);
+        return disallowedParamNames;
     }
 
     /**

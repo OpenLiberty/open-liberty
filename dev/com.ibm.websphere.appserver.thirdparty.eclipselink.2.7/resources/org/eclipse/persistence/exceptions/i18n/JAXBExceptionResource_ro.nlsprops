@@ -1,3 +1,4 @@
+###############################################################################
 # Copyright (c) 2014 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -6,7 +7,7 @@
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
-# -------------------------------------------------------------------------------------------------
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -44,17 +45,17 @@
 
 50008=Clas\u0103 Node ce nu este suportat\u0103 {0}.  Metoda createBinder(Class) suport\u0103 numai clasa org.w3c.dom.Node.
 
-50009=Proprietatea sau c\u00e2mpul {0} sunt adnotate pentru a fi tranzitorii, astfel c\u0103 nu pot fi incluse \u00een adnotarea propOrder.
+50009=Proprietatea sau c\u00e2mpul {0} pe clasa {1} este adnotat\u0103 ca fiind tranzitorie, a\u015fa c\u0103 nu poate fi inclus\u0103 \u00een adnotarea propOrder.
 
-50010=Proprietatea sau c\u00e2mpul {0} trebuie s\u0103 fie un atribut deoarece un alt c\u00e2mp sau o alt\u0103 proprietate este adnotat\u0103 cu XmlValue.
+50010=Proprietatea sau c\u00e2mpul {0} pe clasa {1} trebuie s\u0103 fie un atribut deoarece un alt c\u00e2mp sau alt\u0103 proprietate este adnotat\u0103 cu XmlValue.
 
-50011=Proprietatea sau c\u00e2mpul {0} nu pot fi adnotate cu XmlValue deoarece este o sub-clas\u0103 a unei alte clase XML-bound.
+50011=Proprietatea sau c\u00e2mpul {0} pe clasa {1} nu poate fi adnotat\u0103 cu valoarea XmlValue deoarece este o subclas\u0103 a altei clase XML-bound.
 
-50012=Proprietatea sau c\u00e2mpul {0} a fost specificat\u0103 \u00een propOrder dar nu este o proprietate valid\u0103.
+50012=Proprietatea sau c\u00e2mpul {0} pe clasa {1} a fost specificat \u00een propOrder, dar nu este o proprietate valid\u0103.
 
 50013=Proprietatea sau c\u00e2mpul {0} din clasa {1} este necesar\u0103 pentru a fi inclus\u0103 \u00een elementul propOrder al adnot\u0103rii XmlType.
 
-50014=Proprietatea sau c\u00e2mpul {0} cu adnotarea XmlValue trebuie s\u0103 fie un tip ce se mapeaz\u0103 la un tip simplu de schem\u0103.
+50014=Proprietatea sau c\u00e2mpul {0} pe clasa {1} cu adnotarea XmlValue trebuie s\u0103 fie de un tip care se mapeaz\u0103 la un tip de schem\u0103 simplu.
 
 50015=XmlElementWrapper este permis numai pentru o colec\u0163ie sau o proprietate matrice, dar [{0}] nu este o colec\u0163ie sau o proprietate matrice.
 

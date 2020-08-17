@@ -37,18 +37,23 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.acme.docker.CAContainer;
 import com.ibm.ws.security.acme.docker.pebble.PebbleContainer;
 import com.ibm.ws.security.acme.internal.AcmeHistory;
+import com.ibm.ws.security.acme.internal.AcmeHistoryEntry;
+import com.ibm.ws.security.acme.internal.util.AcmeConstants;
 import com.ibm.ws.security.acme.utils.AcmeFatUtils;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.CheckForLeakedPasswords;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 /**
  * Test for AcmeHistoricalFile. Ensure the file is created, updated, and
  * causes refreshing of certificates.
  */
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class AcmeSwapDirectoriesTest {
 
 	@Server("com.ibm.ws.security.acme.fat.simple")
@@ -56,12 +61,13 @@ public class AcmeSwapDirectoriesTest {
 
 	protected static ServerConfiguration ORIGINAL_CONFIG;
 	
-	private final String acmeFile = "acmeca-history.txt";
+	private final String acmeFile = AcmeConstants.ACME_HISTORY_FILE;
 
 	/*
 	 * Domains that are configured and cleared before and after the class.
 	 */
 	private static final String[] DOMAINS_1 = { "domain1.com" };
+	private static final String spaceDelim = "                  ";
 	
 	private AcmeHistory acmeHelper = new AcmeHistory();
 
@@ -138,7 +144,7 @@ public class AcmeSwapDirectoriesTest {
 			 * 
 			 **********************************************************************/
 			Log.info(this.getClass(), testName.getMethodName(), "TEST 1: START");
-			File file = new File(server.getServerRoot() + "/workarea/acme/" + acmeFile);
+			File file = new File(server.getServerRoot() + "/workarea/acmeca/" + acmeFile);
 			if (!file.exists()) {
 				fail("The ACME file should exist at: " + file.getAbsolutePath());
 			}
@@ -153,12 +159,13 @@ public class AcmeSwapDirectoriesTest {
 			/***********************************************************************
 			 * 
 			 * TEST 2: Update the directoryURI. This should result in a refreshed
-			 * certificate.
+			 * and revoked certificate.
 			 * 
 			 **********************************************************************/
 			Log.info(this.getClass(), testName.getMethodName(), "TEST 2: START");
 			AcmeFatUtils.configureAcmeCA(server, caContainer2, ORIGINAL_CONFIG, false, false, false, DOMAINS_1);
 			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
+			AcmeFatUtils.waitForAcmeToRevokeCertificate(server);
 
 			/*
 			 * Verify that the server is now using a certificate signed by the
@@ -267,7 +274,7 @@ public class AcmeSwapDirectoriesTest {
 			 * 
 			 **********************************************************************/
 			Log.info(this.getClass(), testName.getMethodName(), "TEST 1: START");
-			File acmefile = new File(server.getServerRoot() + "/workarea/acme/" + acmeFile);
+			File acmefile = new File(server.getServerRoot() + "/workarea/acmeca/" + acmeFile);
 			acmefile.setReadable(false,false);
 
 			AcmeFatUtils.configureAcmeCA(server, caContainer2, ORIGINAL_CONFIG, false, false, false, DOMAINS_1);
@@ -295,11 +302,11 @@ public class AcmeSwapDirectoriesTest {
 
 			Log.info(this.getClass(), testName.getMethodName(), "TEST 2: START");
 			if (acmefile.exists()) {
-				Log.info(this.getClass(), testName.getMethodName(), "deleting acme file " + server.getServerRoot() + "/workarea/acme/" + acmeFile);
+				Log.info(this.getClass(), testName.getMethodName(), "deleting acme file " + server.getServerRoot() + "/workarea/acmeca/" + acmeFile);
 				acmefile.delete();
 			}
 
-			File acmeDir = Files.createDirectories(Paths.get(server.getServerRoot() + "/workarea/acme")).toFile();
+			File acmeDir = Files.createDirectories(Paths.get(server.getServerRoot() + "/workarea/acmeca")).toFile();
 			if (acmeDir.exists()) {
 				Log.info(this.getClass(), testName.getMethodName(), "acme dir " + acmeDir.getAbsolutePath() + " " + Files.isWritable(Paths.get(acmeDir.getAbsolutePath())));
 				acmeDir.setWritable(false);
@@ -361,16 +368,19 @@ public class AcmeSwapDirectoriesTest {
 			AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
 			/***********************************************************************
 			 * 
-			 * TEST 1: Populate the ACME file to max size and update the directoryURI.
+			 * TEST: Populate the ACME file to max size and update the directoryURI.
 			 * We should refresh the certificate and the number of lines in the ACME
 			 * file should stay the same.
 			 * 
 			 **********************************************************************/
 
-			//Write 10 fake entries to the ACME file
-			File file = new File(server.getServerRoot() + "/workarea/acme/" + acmeFile);
-			for (int i=0; i<10; i++) {
-				acmeHelper.writeAcmeFileLine(file, "1234567890", "1122334455667788", "http://directoryURI" + i, "http://accountURI");
+			File file = new File(server.getServerRoot() + "/workarea/acmeca/" + acmeFile);
+			//Write 10 entries to the acme file
+			for (int i=0; i<5; i++) {
+				AcmeFatUtils.configureAcmeCA(server, caContainer2, ORIGINAL_CONFIG, false, false, false, DOMAINS_1);
+				AcmeFatUtils.waitForAcmeToCreateCertificate(server);
+				AcmeFatUtils.configureAcmeCA(server, caContainer, ORIGINAL_CONFIG, false, false, false, DOMAINS_1);
+				AcmeFatUtils.waitForAcmeToCreateCertificate(server);
 			}
 			
 			//Make sure we start with 10 entries.
@@ -387,7 +397,7 @@ public class AcmeSwapDirectoriesTest {
 			//we should still have 10 entries.
 			dirURIs = acmeHelper.getDirectoryURIHistory(file);
 			assertEquals(10, dirURIs.size());
-			assertEquals("http://directoryURI9", dirURIs.get(8));
+			assertEquals(caContainer.getAcmeDirectoryURI(false), dirURIs.get(8));
 			assertEquals(caContainer2.getAcmeDirectoryURI(false), dirURIs.get(9));
 		} finally {
 			/*

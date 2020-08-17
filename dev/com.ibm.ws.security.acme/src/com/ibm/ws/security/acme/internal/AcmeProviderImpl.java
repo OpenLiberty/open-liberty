@@ -62,11 +62,10 @@ import com.ibm.ws.security.acme.AcmeCertificate;
 import com.ibm.ws.security.acme.AcmeProvider;
 import com.ibm.ws.security.acme.internal.AcmeClient.AcmeAccount;
 import com.ibm.ws.security.acme.internal.exceptions.CertificateRenewRequestBlockedException;
-import com.ibm.ws.security.acme.internal.util.AcmeConstants;
 import com.ibm.ws.ssl.JSSEProviderFactory;
 import com.ibm.ws.ssl.KeyStoreService;
-import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
+import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 /**
  * ACME 2.0 support component service.
@@ -169,7 +168,7 @@ public class AcmeProviderImpl implements AcmeProvider {
 		 * Wait until the ACME authorization web application is available. At
 		 * this point, it always should be, but check just in case.
 		 */
-		applicationStateListenerRef.get().waitUntilWebAppAvailable();
+			applicationStateListenerRef.get().waitUntilResourcesAvailable(acmeConfig);
 
 		/*
 		 * Keep a reference to the existing certificate chain that we will
@@ -290,7 +289,19 @@ public class AcmeProviderImpl implements AcmeProvider {
 		acquireWriteLock();
 		try {
 			X509Certificate certificate = getLeafCertificate(certificateChain);
-			getAcmeClient().revoke(certificate, reason);
+			if (certificate == null) {
+				return;
+			}
+			//Check to see if the certificate is in the history file - it should be unless we are transitioning from self-signed to ACME. 
+			//If the certificate isn't in the history file, use the configured directory URI.
+			String directoryURI = acmeHistory.getDirectoryURI(certificate.getSerialNumber().toString(16));
+			if (directoryURI == null) {
+				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+					Tr.debug(tc, "The certificate was not found in the AcmeHistory file. Use the configured directory URI to revoke.");
+				}
+				directoryURI = acmeConfig.getDirectoryURI();
+			}
+			getAcmeClient().revoke(certificate, reason, directoryURI);
 		} finally {
 			releaseWriteLock();
 		}
@@ -319,7 +330,7 @@ public class AcmeProviderImpl implements AcmeProvider {
 	 * 
 	 */
 	@Trivial
-	protected AcmeConfig getAcmeConfig() {
+	public static AcmeConfig getAcmeConfig() {
 		return acmeConfig;
 	}
 
@@ -760,7 +771,7 @@ public class AcmeProviderImpl implements AcmeProvider {
 		 * First wait until the ACME authorization web application is available.
 		 */
 		try {
-			applicationStateListenerRef.get().waitUntilWebAppAvailable();
+			applicationStateListenerRef.get().waitUntilResourcesAvailable(acmeConfig);
 		} catch (AcmeCaException e) {
 			throw new CertificateException(e.getMessage(), e);
 		}
@@ -809,6 +820,11 @@ public class AcmeProviderImpl implements AcmeProvider {
 			createKeyStore(filePath, null, password, keyStoreType, keyStoreProvider);
 
 			throw new CertificateException(ace.getMessage(), ace);
+		} catch (Exception e) {
+			/*
+			 * Process an FFDC before we flow back to WSKeystore
+			 */
+			throw e;
 		}
 	}
 
@@ -879,16 +895,32 @@ public class AcmeProviderImpl implements AcmeProvider {
 		try {
 			boolean dirURIChanged = acmeHistory.directoryURIChanged(acmeConfig.getDirectoryURI(), wslocation, acmeConfig.isDisableRenewOnNewHistory());
 			checkAndInstallCertificate(dirURIChanged, keyStore, keyStoreFile, password);
-			
 			/*
 			 * Update the acme file with the new directoryURI and certificate information.
 			 * This only needs to be done if the URI has changed.
 			 */
 			if (dirURIChanged) {
-				acmeHistory.updateAcmeFile(getLeafCertificate(getConfiguredDefaultCertificateChain()), acmeConfig.getDirectoryURI(), acmeClient.getAccount().getLocation().toString(), wslocation);
+				List<X509Certificate> existingCertChain = null;
+				if (keyStore == null) {
+					existingCertChain = getConfiguredDefaultCertificateChain();
+				} else {
+					try {
+						existingCertChain = convertToX509CertChain(keyStore.getCertificateChain(DEFAULT_ALIAS));
+					} catch (KeyStoreException e) {
+						throw new AcmeCaException(
+								Tr.formatMessage(tc, "CWPKI2029E", keyStoreFile, DEFAULT_ALIAS, e.getMessage()), e);
+					}
+				}
+				acmeHistory.updateAcmeFile(getLeafCertificate(existingCertChain), acmeConfig.getDirectoryURI(), acmeClient.getAccount().getLocation().toString(), wslocation);
 			}
+
 		} catch (AcmeCaException e) {
 			throw new CertificateException(e.getMessage(), e);
+		} catch (Exception e) {
+			/*
+			 * Process an FFDC before we flow back to WSKeystore
+			 */
+			throw e;
 		}
 	}
 

@@ -39,6 +39,7 @@ import org.osgi.framework.ServiceReference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaAdapterException;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaAdapterFactory;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaConsumer;
@@ -138,6 +139,7 @@ public class KafkaIncomingConnector implements IncomingConnectorFactory {
         }
     }
 
+    @FFDCIgnore(KafkaAdapterException.class) // Here we're expecting and retrying a possible failure, so we don't want an FFDC
     private <K, V> KafkaConsumer<K, V> getKafkaConsumerWithRetry(Map<String, Object> consumerConfig, int retrySeconds, String channelName) throws InterruptedException {
         if (retrySeconds == 0) {
             return this.kafkaAdapterFactory.newKafkaConsumer(consumerConfig);

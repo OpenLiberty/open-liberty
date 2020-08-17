@@ -22,11 +22,7 @@ import com.ibm.ws.security.authorization.jacc.ejb.EJBSecurityPropagator;
 import com.ibm.ws.security.authorization.jacc.ejb.EJBSecurityValidator;
 import com.ibm.ws.security.authorization.jacc.ejb.EJBService;
 
-@Component(service = EJBService.class,
-                immediate = true,
-                name = "com.ibm.ws.security.authorization.jacc.ejb.ejbservice",
-                configurationPolicy = ConfigurationPolicy.IGNORE,
-                property = { "service.vendor=IBM" })
+@Component(service = EJBService.class, immediate = true, name = "com.ibm.ws.security.authorization.jacc.ejb.ejbservice", configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
 public class EJBServiceImpl implements EJBService {
     private static final TraceComponent tc = Tr.register(EJBServiceImpl.class);
 

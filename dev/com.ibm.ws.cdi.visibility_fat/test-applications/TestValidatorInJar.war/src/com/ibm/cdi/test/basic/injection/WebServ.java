@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,32 +10,31 @@
  *******************************************************************************/
 package com.ibm.cdi.test.basic.injection;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import static org.junit.Assert.assertEquals;
 
 import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+import org.junit.Test;
 
 import com.ibm.cdi.test.basic.injection.jar.AppScopedBean;
 
-@WebServlet("/testservlet")
-public class WebServ extends HttpServlet {
+import componenttest.app.FATServlet;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
+
+@WebServlet("/")
+public class WebServ extends FATServlet {
+
+    private static final long serialVersionUID = 1L;
 
     @Inject
     AppScopedBean myBean;
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        PrintWriter pw = response.getWriter();
-
-        pw.write(myBean.getMsg());
-
-        pw.flush();
-        pw.close();
-
+    @Test
+    @Mode(TestMode.FULL)
+    public void testValidatorInJar() {
+        assertEquals(AppScopedBean.MSG, myBean.getMsg());
     }
 
 }

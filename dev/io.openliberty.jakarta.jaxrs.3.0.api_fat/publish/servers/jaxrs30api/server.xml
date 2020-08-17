@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<server>
+    <featureManager>
+        <feature>componenttest-2.0</feature>
+        <feature>jaxrs-3.0</feature>
+        <feature>jaxb-3.0</feature>
+    </featureManager>
+    <include location="../fatTestPorts.xml"/>
+</server>

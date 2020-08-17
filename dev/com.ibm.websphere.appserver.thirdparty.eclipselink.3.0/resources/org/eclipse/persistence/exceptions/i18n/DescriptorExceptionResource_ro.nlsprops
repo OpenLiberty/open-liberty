@@ -1,0 +1,441 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DescriptorExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+1=Atributul [{0}] nu este declarat de tip ValueHolderInterface, dar maparea acestuia utilizeaz\u0103 indirec\u0163ia.
+
+10=Aceast\u0103 mapare nu are setat un nume de c\u00e2mp.
+
+100=O metod\u0103 a declan\u015fat o excep\u0163ie.
+
+101=Metoda subiacent\u0103 a declan\u015fat o excep\u0163ie.
+
+102=Metoda [{0}] a declan\u015fat o excep\u0163ie.
+
+103=Ploblem\u0103 la extragerea clasei din r\u00e2ndul [{0}], utiliz\u00e2nd metoda static\u0103 [{1}], cu parametrul (DatabaseRow).  A fost declan\u015fat\u0103 o excep\u0163ie.
+
+104=Problem\u0103 la crearea unei instan\u0163e noi utiliz\u00e2nd metoda de crea\u0163ie [{0}].  Metoda de crea\u0163ie a declan\u015fat o excep\u0163ie.
+
+105=Metoda callback a descriptorului subiacent [{0}], cu parametrul (Sesiune), a declan\u015fat o excep\u0163ie.
+
+106=Metoda [{0}] pentru obiect arunc\u0103 o excep\u0163ie. {2}Argument: [{1}]
+
+108=Nu se poate g\u0103si valoarea \u00een maparea indicatorului de clas\u0103 \u00een descriptorul p\u0103rintelui [{0}].
+
+109=Acest descriptor nu ar trebui s\u0103 aib\u0103 un c\u00e2mp blocat de scriere definit, deoarece este un descriptor copil. Mo\u015ftene\u015fte c\u00e2mpul blocat la scriere al descriptorului p\u0103rinte.
+
+11=Informa\u0163iile de cheie extern\u0103 pentru aceast\u0103 mapare sunt definite incorect.
+
+110=Lipse\u015fte descriptorul pentru clasa [{0}].
+
+111=Mai multe nume de c\u00e2mpuri cu chei primare \u00een tabel trebuiesc s\u0103 fie complet calificate.
+
+112=Numai un tabel poate fi ad\u0103ugat prin utilizarea setTableName(String). Utiliza\u0163i addTableName(String) pentru a ad\u0103uga mai multe tabeluri \u00eentr-un descriptor.
+
+113=Constructorul a fost inaccesibil.
+
+114=Problem\u0103 la crearea unei instan\u0163e noi utiliz\u00e2nd metoda de crea\u0163ie [{0}].  Metoda de crea\u0163ie este inaccesibil\u0103.
+
+115=Nu a fost furnizat\u0103 o valoare de conversie pentru atributul [{0}].
+
+116=Nu a fost furnizat\u0103 o valoare de conversie pentru valoarea [{0}] \u00een c\u00e2mpul [{1}].
+
+118=Obiectul [{0}] trebuie s\u0103 nu aib\u0103 map\u0103ri numai citire pentru c\u00e2mpurile sale blocate la scriere.
+
+119=Map\u0103rile obiectului [{0}] la c\u00e2mpurile sale blocate la scriere trebuie s\u0103 fie numai citire.
+
+12=Descriptorii trebuie s\u0103 utilizeze o hart\u0103 de identitate pentru a utiliza op\u0163iunea de verificare a existen\u0163ei "Verificare Cache".
+
+120=Cheia de interogare [{0}] este definit\u0103 \u00een descriptorul p\u0103rinte [{1}], dar nu \u00een descriptorul copil [{2}].
+
+122=setExistenceCheck() cu argumentul [{0}] nu este \u00een\u0163eles.
+
+125=Maparea pentru atributul [{0}] utilizeaz\u0103 indirec\u0163ie, \u015fi astfel, trebuie ini\u0163ializat\u0103 pentru o nou\u0103 ValueHolder.  \u00cen prezent valoarea este: [{1}].
+
+126=Nici o sub-clas\u0103 se potrive\u015fte cu aceast\u0103 clas\u0103 [{0}] pentru aceast\u0103 mapare Agregat cu mo\u015ftenire.
+
+127=Metoda de ob\u0163inere pentru atributul [{0}] nu returneaz\u0103 o ValueHolderInterface, dar maparea utilizeaz\u0103 indirec\u0163ia.
+
+128=Metoda de ob\u0163inere pentru atributul [{0}] returneaz\u0103 o ValueHolderInterface, dar maparea nu utilizeaz\u0103 indirec\u0163ia.
+
+129=Metoda setat\u0103 pentru atributul [{0}] nu ia o ValueHolderInterface ca \u015fi parametru, dar mapare utilizeaz\u0103 indirec\u0163ia.
+
+13=Variabila instan\u0163ei [{0}] din obiectul [{1}] nu este accesibil\u0103.
+
+130=Metoda de setare pentru atributul [{0}] ia o ValueHolderInterface a \u015fi parametru, dar maparea nu utilizeaz\u0103 indirec\u0163ia.
+
+131=Metoda de ob\u0163inere pentru atributul [{0}] ar trebui s\u0103 returnez un Vector (sau un tip ce implementeaz\u0103 Hart\u0103 sau Colec\u0163ie, dac\u0103 se utilizeaz\u0103 Java 2).
+
+133=Metoda setat\u0103 pentru atributul [{0}] ar trebui s\u0103 ia un Vector ca \u015fi parametru (sau un tip ce implementeaz\u0103 Hart\u0103 sau Colec\u0163ie, dac\u0103 utilizeaz\u0103 Java 2).
+
+135=Rela\u0163iile multiple cheie extern\u0103 din tabel se refer\u0103 la un tabel necunoscut [{0}].
+
+138=Atributul [{0}] este de tip [{1}] dar maparea utilizeaz\u0103 indirec\u0163ia transparent\u0103 (\u00eenc\u0103rcare lazy), care cere s\u0103 fie o super-clas\u0103 de [{2}].
+
+139=Metoda de ob\u0163inere pentru atributul [{0}] returneaz\u0103 [{1}] dar utilizeaz\u0103 indirec\u0163ia transparent\u0103 (\u00eenc\u0103rcare lazy), care cere s\u0103 fie o super-clas\u0103 de [{2}].
+
+14=Problema este clonarea obiectului [{0}].  Metoda de clonare [{1}] nu este accesibil\u0103.
+
+140=Metoda de setare pentru atributul [{0}] ia [{1}], dar maparea utilizeaz\u0103 indirec\u0163ia transparent\u0103 (\u00eenc\u0103rcare lazy), care cere s\u0103 fie o super-clas\u0103 de [{2}].
+
+141=C\u00e2mpul [{0}] nu este prezent \u00een tabelul [{1}] din baza de date.
+
+142=Tabelul [{0}] nu este prezent \u00een baza de date.
+
+143=Vectorul ordine inserat \u00een tabel multiplu specificat, [{0}], are mai multe sau mai pu\u0163ine tabeluri dec\u00e2t sunt specificate \u00een descriptor. {2}Toate tabelurile [{1}] trebuiesc s\u0103 fie incluse \u00een Vectorul ordine de inserare.
+
+144=Indirec\u0163ia transparent\u0103 poate fi utilizat\u0103 numai cu CollectionMappings.
+
+145=Clasa de container indirect\u0103 [{0}] trebuie s\u0103 implementeze constructorul [{1}] cu parametrul (ValueHolderInterface).
+
+146=Clasa de container indirect\u0103 [{0}] nu poate fi instan\u0163iat\u0103 utiliz\u00e2nd constructorul {1}(ValueHolderInterface).
+
+147=Politica de container [{0}] ar trebui utilizat\u0103 numai \u00een JDK 1.1.x.  A fost instan\u0163iat\u0103 pentru [{1}].
+
+148=Politica de container [{0}] nu este compatibil\u0103 cu indirec\u0163ia transparent\u0103.
+
+149=Obiectele NoIndirectionPolicy nu ar trebui s\u0103 primeasc\u0103 acest mesaj.
+
+15=Aceast\u0103 clas\u0103 nu define\u015fte un constructor implicit, necesar pentru EclipseLink.
+
+150=Maparea pentru atributul [{0}] utilizeaz\u0103 indirec\u0163ia transparent\u0103, astfel c\u0103 atributul [{0}] trebuie s\u0103 fie ini\u0163ializat la un container corespunz\u0103tor.  \u00cen prezent valoarea este [{1}]. {2} -  Trebuie s\u0103 fie instan\u0163a unui implementator al Colec\u0163iei sau H\u0103r\u0163ii.
+
+151=Opera\u0163ia [{0}] este invalid\u0103 pentru aceast\u0103 mapare.
+
+152=Opera\u0163ia [{1}] este invalid\u0103 pentru aceast\u0103 politic\u0103 de indirec\u0163ie [{0}].
+
+153=Descriptorul de referin\u0163\u0103 pentru [{0}] ar trebui s\u0103 fie setat s\u0103 fie un descriptor Colec\u0163ie de agregat.
+
+154=Clasa de container indirec\u0163ie [{0}] nu implementeaz\u0103 IndirectContainer.
+
+155=Aceast\u0103 mapare nu include un c\u00e2mp de chei externe legat de c\u00e2mpul de chei primare [{0}].
+
+156=Numele structurii nu este setat pentru aceast\u0103 mapare.
+
+157=Descriptorii normali nu suport\u0103 extensiile non-rela\u0163ionale.
+
+158=Clasa p\u0103rinte a acestui descriptor a fost setat\u0103 pe ea \u00eens\u0103\u015fi.
+
+159=Indirec\u0163ia proxy este disponibil\u0103 numai \u00een ma\u015finile virtuale JDK 1.3-compliant sau superioare.
+
+16=Metoda callback descriptor [{0}], cu parametrul (DescriptorEvent), nu este accesibil\u0103.
+
+160=Atributul [{0}] de clas\u0103 [{1}] este tastat ca \u015fi [{2}], ce nu a fost specificat \u00een lista de interfe\u0163e date pentru metoda useProxyIndirection(). {4}Interfe\u0163ele valide sunt: [{3}].
+
+161=Metoda [{0}] din clasa [{1}] returneaz\u0103 o valoare de tip [{2}], ce nu a fost specificat\u0103 \u00een lista de interfe\u0163e date pentru metoda useProxyIndirection(). {4}Interfe\u0163ele valide sunt: [{3}].
+
+162=Metoda [{0}] din clasa [{1}] ia un parametru de tip [{2}], ce nu a fost specificat \u00een lista de interfe\u0163e date pentru metoda useProxyIndirection().{4}Interfe\u0163ele valide sunt: [{3}].
+
+163=Aceast\u0103 clas\u0103 de atribut a map\u0103rii nu se potrive\u015fte cu clasa de colec\u0163ie.  [{1}] nu poate fi asignat pentru [{0}].
+
+164=Metoda de amendament [{1}], \u00een clasa de amendament [{0}], este invalid\u0103, nu public\u0103, sau nu poate fi g\u0103sit. {2}Metodele de amendament descriptor trebuiesc declarate "vid static public" cu (ClassDescriptor) ca unic parametru.
+
+165=Metoda amendament descriptor [{1}] \u00een clasa amendament [{0}] a declan\u015fat o excep\u0163ie.
+
+166=Nu exist\u0103 o mapare pentru atribut [{0}].
+
+167=Un constructor valid nu a fost g\u0103sit pentru clasa de containere indirec\u0163ie [{0}].
+
+168=Problem\u0103 la crearea unei instan\u0163e noi utiliz\u00e2nd constructorul implicit.  Constructorul implicit a declan\u015fat o excep\u0163ie.
+
+169=Problem\u0103 la crearea unei instan\u0163e noi de fabric\u0103 utiliz\u00e2nd constructorul implicit.  Constructorul implicit a declan\u015fat o excep\u0163ie.
+
+17=Se \u00eencearc\u0103 accesarea metodei [{0}] pentru obiectul [{1}].  Metoda subiacent\u0103 nu este accesibil\u0103.
+
+170=Problem\u0103 (acces ilegal) la crearea unei instan\u0163e noi de fabric\u0103 utiliz\u00e2nd constructorul implicit.
+
+171=Clasa fabric\u0103 nu define\u015fte un constructor public implicit, sau constructorul a ridicat o excep\u0163ie.
+
+172=Constructorul de fabric\u0103 nu a fost g\u0103sit.
+
+173=Constructorul de fabric\u0103 nu a fost accesibil.
+
+174=Problem\u0103 la crearea fabricii.  Metoda de crea\u0163ie [{0}] nu este accesibil\u0103.
+
+175=Problem\u0103 la crearea fabricii utiliz\u00e2nd metoda de crea\u0163ie [{0}].  Metoda de crea\u0163ie a declan\u015fat o excep\u0163ie.
+
+176=Problem\u0103 la crearea fabricii utiliz\u00e2nd metoda de crea\u0163ie [{0}].  Metoda de crea\u0163ie nu este accesibil\u0103.
+
+177=Lipse\u015fte maparea pentru atributul: [{0}].
+
+178=Nu se poate g\u0103si maparea pentru atributul [{0}] \u00een bean-ul entitate [{1}]. Atributul trebuie mapat.
+
+179=Atributul, [{0}] utilizeaz\u0103 \u00centre\u0163inere rela\u0163ional\u0103 bidirec\u0163ional\u0103, dar are ContainerPolicy, [{1}] ce nu o suport\u0103.  Atributul ar trebui mapat cu un tip de colec\u0163ie diferit.
+
+18=Acces cu o metod\u0103 ilegal\u0103 \u00eentr-o mapare Transformare utiliz\u00e2nd un ValueHolder.
+
+181=Clasa AttributeTransformer, [{0}] nu poate fi g\u0103sit.
+
+182=Clasa FieldTransformer, [{0}] nu poate fi g\u0103sit\u0103.
+
+183=Clasa, [{0}] nu poate fi utilizat\u0103 ca \u015fi AttributeTransformer.
+
+184=Clasa, [{0}] nu poate fi utilizat\u0103 ca \u015fi FieldTransformer.
+
+185=ReturningPolicy con\u0163ine c\u00e2mp, [{0}] cu dou\u0103 tipuri diferite: [{1}] \u015fi [{2}].
+
+186=ReturningPolicy con\u0163ine c\u00e2mp, [{0}] ad\u0103ugat de dou\u0103 ori: utiliz\u00e2nd addInsertField \u015fi addInsertFieldReturnOnly.
+
+187=ReturningPolicy con\u0163ine c\u00e2mp, [{0}] cu tip [{1}], dar acela\u015fi c\u00e2mp, \u00een descriptor, are tipul [{2}].
+
+188=ReturningPolicy concon\u0163ine c\u00e2mp ne-mapat, [{0}] ce necesit\u0103 tip.
+
+189=ReturningPolicy con\u0163ine c\u00e2mp mapat, [{0}] ce necesit\u0103 tip.
+
+19=Acces ilegal la invocarea metodei atribut \u00eentr-o mapare Transformation.  Metoda subiacent\u0103 nu este accesibil\u0103.
+
+190=ReturningPolicy con\u0163ine c\u00e2mp, [{0}] mapat cu maparea [{1}] ce nu este suportat\u0103.
+
+191=ReturningPolicy con\u0163ine c\u00e2mp, [{0}] ce nu este suportat: este fie c\u00e2mp secven\u0163\u0103, fie indicator de tip clas\u0103, fie utilizat pentru blocare.
+
+192=ReturningPolicy con\u0163ine c\u00e2mp, [{0}] dar [{1}] personalizat nu \u00eel trimite spre ie\u015fire.
+
+193=Nu exist\u0103 un set personalizat [{0}], dar ReturningPolicy con\u0163ine c\u00e2mp(uri) de returnat \u015fi [{1}] nu suport\u0103 generarea de apel cu returnare.
+
+194=Metoda de extrac\u0163ie clas\u0103 [{0}], trebuie s\u0103 fie o metod\u0103 static\u0103 \u00een clasa descriptorului.
+
+195=Clasa partajat\u0103 {1} trebuie s\u0103 nu fac\u0103 referire la clasa izolat\u0103 {0}.
+
+196=UpdateAllFields nu a fost setat sau a fost setat pe false.  Atunci c\u00e2nd utiliza\u0163i CMPPolicy.setForceUpdate(true) trebuie s\u0103 apela\u0163i de asemenea CMPPolicy.setUpdateAllFields(true)
+
+197=Maparea [{0}] nu este tipul corespunz\u0103tor pentru acest descriptor
+
+198=Pentru a putea utiliza ObjectChangeTrackingPolicy sau AttributeChangeTrackingPolicy, {0} trebuie s\u0103 implementeze interfa\u0163a ChangeTracker.
+
+199=Pentru a putea utiliza Grupul de aducere, clasa de domeniu ({0}) trebuie s\u0103 implementeze interfa\u0163a FetchGroupTracker.
+
+2=Atributul [{0}] este declarat de tip ValueHolderInterface, dar maparea sa nu utilizeaz\u0103 indirec\u0163ia.
+
+20=Metoda [{0}] nu este accesibil\u0103.
+
+200=\u00cencerca\u0163i s\u0103 \u00eenregistra\u0163i un obiect cu indirec\u0163ie nefunc\u0163ional\u0103 ca \u015fi obiect nou.  Este posibil ca obiectul s\u0103 fi fost \u015fters sau \u00eenl\u0103turat din cache \u00een timpul unei combin\u0103ri a unei clone serializate.  Aceasta este o violare a concuren\u0163ei, considera\u0163i o strategie de blocare.
+
+201=S-a \u00eencercat construirea unui obiect \u00een cache-ul de sesiune, dar descriptorul este marcat \u00een unitatea de lucru, astfel c\u0103 nu ar trebui accesat \u00eenafara unit\u0103\u0163ii de lucru.
+
+202=A survenit o eroare intern\u0103 la accesarea obiectului cheie primar\u0103 [{0}].
+
+203=A survenit o eroare intern\u0103 la accesarea metodei [{1}] \u00een clasa [{0}].
+
+204=Inserarea ordinii de tabel intr\u0103 in contradic\u0163ie cu cheile externe de tabeluri multiple - \u00een concordan\u0163\u0103 cu al doilea tabel [{0}] ar trebui inserat \u00eenainte de tabelul [{1}].
+
+205=Ordinea de insEroare tabel are dependen\u0163\u0103 ciclic\u0103 \u00eentre tabeluri [{0}] \u015fi [{1}].
+
+206=Ordinea de inserare tabel are o dependen\u0163\u0103 ciclic\u0103 \u00eentre trei sau mai multe tabeluri.
+
+207=Ordinea de inserare tabel este gre\u015fit\u0103: tabelul [{0}] mapat la p\u0103rinte este specificat pentru a fi inserat dup\u0103 tabelul [{1}] mapat la copil.
+
+208=\u00cencerca\u0163i s\u0103 seta\u0163i un Convertor cu numele de clas\u0103 [{1}] \u00eentr-o mapare indirect\u0103 [{0}].  Numai Map\u0103rilor directe li se permite s\u0103 aib\u0103 convertori.  Aceasta are loc de obicei atunci c\u00e2nd \u00eencerca\u0163i s\u0103 seta\u0163i un convertor cheie \u00eentr-o DirectMapMapping cu o cheie indirect\u0103.
+
+209=Acest descriptor con\u0163ine o mapare cu o DirectMapMapping \u015fi f\u0103r\u0103 un c\u00e2mp de chei setat.
+
+21=Problem\u0103 la extragerea clasei din r\u00e2ndul [{0}].  Metoda static\u0103 [{1}], cu parametrul (DatabaseRow), nu este accesibil\u0103.
+
+210=[{0}] are c\u00e2mpul cu ordinea de list\u0103 setat, dar atributul nu implementeaz\u0103 Lista.
+
+211=[{0}] are c\u00e2mpul cu ordinea de list\u0103 setat \u015fi modul de validare a c\u00e2mpului ordine de list\u0103 este CORRECTION, ce necesit\u0103 ca IndirectList s\u0103 poat\u0103 fi asignat atributului.
+
+212=C\u00e2mpul ordine de list\u0103 pentru [{0}] are un tabel gre\u015fit [{1}]. Trebuie s\u0103 utiliza\u0163i {2} \u00een schimb.
+
+213={0} necesit\u0103 ca toate c\u00e2mpurile cheie extern\u0103 \u0163int\u0103 s\u0103 apar\u0163in\u0103 aceluia\u015fi tabel, dar au fost g\u0103site mai multe: {1}.
+
+214={0} specific\u0103 tabelul rela\u0163ional, ce nu este compatibil cu metoda addForeignKey(Name), sau utiliza\u0163i metodele addSourceRelationKeyField(Name) \u015fi addTargetRelationKeyFieldName \u00een schimb.
+
+215={0} Trebuie s\u0103 aib\u0103 RelationTableMechanism non-nul.
+
+216=CacheKeyType nu poate fi ID_VALUE pentru o cheie primar\u0103 compus\u0103.
+
+217=XPath invalid pentru XMLDirectMapping/XMLCompositeDirectCollectionMapping. XPath trebuie fie s\u0103 con\u0163in\u0103 un simbol @ pentru atribute sau s\u0103 se termine \u00een /text() pentru nodurile text. De exemplu: "@name" sau "name/text()"
+
+218=O NullPointerException ar fi avut loc la accesarea unei weaved _vh_ method [{0}] inexistente.  Clasa nu a fost weaved corespunz\u0103tor - pentru implement\u0103rile EE, verifica\u0163i ordinea modulelor \u00een descriptorul implement\u0103rii application.xml \u015fi verifica\u0163i dac\u0103 modulul ce con\u0163ine unitatea de persisten\u0163\u0103, este \u00eenaintea oric\u0103rui alt modul ce o utilizeaz\u0103.
+
+219=Criteriile suplimentare din [{1}] nu este permis \u00eentr-o ierarhie de mo\u015ftenire utiliz\u00e2nd vizualiz\u0103ri.
+
+22=Problem\u0103 la crearea de instan\u0163\u0103 nou\u0103.  Metoda de crea\u0163ie [{0}] nu este accesibil\u0103.
+
+220=Politic\u0103 de parti\u0163ionare lips\u0103 pentru numele [{0}].
+
+221=C\u00e2mpul SerializedObjectPolicy nu este setat.
+
+222=A fost aruncat\u0103 o excep\u0163ie la \u00eencercarea de ob\u0163inere a instan\u0163ei de clasa a cheii primare.
+
+23=Metoda callback descriptor [{0}], cu parametrul (Session), nu este accesibil\u0103.
+
+24=Variabila de instan\u0163\u0103 [{0}] din obiectul [{1}] nu este accesibil\u0103. {3}Argument: [{2}]
+
+25=Metoda [{0}] cu argumentul [{1}] nu este accesibil\u0103.
+
+26=Se \u00eencearc\u0103 ob\u0163inerea valorii pentru variabila de instan\u0163\u0103 [{0}] de tip [{1}] din obiectul [{2}].  Obiectul specificat nu este o instan\u0163\u0103 a clasei sau a interfe\u0163ei ce declar\u0103 c\u00e2mpul subiacent.
+
+27=Se \u00eencearc\u0103 invocarea metodei [{0}] pentru obiectul [{1}].  Num\u0103rul de parametrii reali \u015fi formali difer\u0103, sau o conversa\u0163ie de dezvelire a e\u015fuat.
+
+28=Argument ilegal la instan\u0163ierea unui proxy bazat pe metod\u0103 \u00eentr-o mapare de Transformare.
+
+29=Num\u0103rul de parametrii actuali \u015fi formali difer\u0103, sau o conversa\u0163ie de dezvelire a e\u015fuat.
+
+30=Num\u0103rul de parametrii actuali \u015fi formali difer\u0103 pentru metoda [{0}], sau o conversa\u0163ie de dezvelire a e\u015fuat.
+
+31=Num\u0103rul de parametrii actuali \u015fi formali pentru metoda callback descriptor [{0}] difer\u0103, sau o conversa\u0163ie de dezvelire a e\u015fuat.
+
+32=Se \u00eencearc\u0103 setarea valorii [{0}] pentru variabila de instan\u0163\u0103 [{1}] de tip [{2}] \u00een obiect.  Obiectul specificat nu este o instan\u0163\u0103 a clasei sau interfe\u0163ei ce declar\u0103 c\u00e2mpul subiacent, sau o conversie de dezvelire a e\u015fuat.
+
+33=Se \u00eencearc\u0103 invocarea [{0}] \u00een obiectul cu valoarea [{1}].  Num\u0103rul de parametrii actuali \u015fi formali difer\u0103, sau o conversie de dezvelire a e\u015fuat.
+
+34=Aceast\u0103 clas\u0103 nu define\u015fte un constructor public implicit, sau constructorul a ridicat o excep\u0163ie.
+
+35=Eveniment invalid
+
+36=Cod de eveniment invalid [{0}].
+
+37=Cod de eveniment descriptor invalid [{0}].
+
+38=Constructorul h\u0103r\u0163ii de identitate a e\u015fuat deoarece a fost specificat\u0103 o hart\u0103 de identitate invalid\u0103.
+
+39=Acest descriptor nu specific\u0103 o clas\u0103 Java.
+
+40=Descriptorul lipse\u015fte pentru [{0}].  Probabil c\u0103 nu a fost ad\u0103ugat \u00een Sesiune.
+
+41=O mapare ce nu este numai citire trebuie definit\u0103 pentru c\u00e2mpul num\u0103r secven\u0163\u0103.
+
+43=Clas\u0103 lips\u0103 pentru valoarea c\u00e2mpului indicator [{0}] de tip [{1}].
+
+44=C\u00e2mp indicator de clas\u0103 lips\u0103 din r\u00e2ndul bazei de date [{0}].
+
+45=Lipse\u015fte maparea pentru c\u00e2mpul [{0}].
+
+46=Ar trebui s\u0103 fie numai o mapare ce s\u0103 nu fie numai citire definit\u0103 pentru c\u00e2mpul cheie primar\u0103 [{0}].
+
+47=Maparea cheii primare de tabel multiplu trebuie s\u0103 fie specificat atunci c\u00e2nd este utilizat\u0103 o uniune de tabele multiple personalizate.
+
+48=Exist\u0103 mai multe map\u0103ri ce pot fi scrise pentru c\u00e2mpul [{0}].  Numai una poate fi definit\u0103 ca \u015fi posibil de scris, toate celelalte trebuiesc specificate numai citire.
+
+49=Un nume de metod\u0103 de transformare atribut nu este specificat\u0103 pentru aceast\u0103 mapare.
+
+50=Un nume de c\u00e2mp nu este setat pentru aceast\u0103 mapare.
+
+51=Nu au fost specificate chei externe pentru aceast\u0103 mapare.
+
+52=Nici o cheie de referin\u0163\u0103 nu a fost specificat\u0103 pentru aceast\u0103 mapare.
+
+53=Numele tabelului rela\u0163ional nu este setat pentru aceast\u0103 mapare.
+
+54=Nu exist\u0103 chei rela\u0163ionale surs\u0103 specificate pentru aceast\u0103 mapare.
+
+55=Metoda callback descriptor [{0}] nu poate fi g\u0103sit\u0103.  Trebuie s\u0103 ia o Sesiune sau un DescriptorEvent ca \u015fi argument.
+
+56=Metoda [{0}] cu parametrii (\u00cenregistrare) sau (\u00cenregistrare, Sesiune) nu est g\u0103sit\u0103.
+
+57=Constructor inaccesibil.
+
+58=Metoda [{0}] cu parametrii () sau (Sesiune) nu a fost g\u0103sit\u0103.
+
+59=Variabila de instan\u0163\u0103 [{0}] nu este definit\u0103 \u00een clasa de domeniu [{1}], sau nu este accesibil\u0103.
+
+6=Lipse\u015fte numele atributului.
+
+60=Metoda [{0}] sau [{1}] nu este definit\u0103 \u00een obiectul [{2}].
+
+61=Metoda static\u0103 de extragere clas\u0103 [{0}], cu parametrul (\u00cenregistrare), nu exist\u0103, sau nu este accesibil\u0103.
+
+62=Metoda de clonare [{0}], f\u0103r\u0103 parametrii, nu exist\u0103, sau nu este accesibil\u0103.
+
+63=Metoda de creare instan\u0163\u0103 [{0}], f\u0103r\u0103 parametrii, nu exist\u0103, sau nu este accesibil\u0103.
+
+64=Nu au fost specificate chei externe \u0163int\u0103 pentru aceast\u0103 mapare.
+
+65=Nu au fost specificate chei rela\u0163ionale \u0163int\u0103 pentru aceast\u0103 mapare.
+
+66=Nu s-a putut deserializa obiectul din matricea de octe\u0163i.
+
+67=Nu s-a putut serializa obiectul \u00eentr-o matrice de octe\u0163i.
+
+68=Valoarea unui agregat \u00een obiectul [{0}] este nul\u0103.  Valorile nule nu sunt permise pentru map\u0103rile Agregat dac\u0103 nu este specificat "Permite nul".
+
+69=O NullPointerException a fost aruncat\u0103 \u00een timpul extragerii unei valori din variabila de instan\u0163\u0103 [{0}] \u00een obiectul [{1}].
+
+7=Atributul [{0}] ar trebui s\u0103 fie un tip ce implementeaz\u0103 {1}.
+
+70=O NullPointerException a fost aruncat\u0103 la extragerea unei valori prin metoda [{0}] \u00een obiectul [{1}].
+
+71=O NullPointerException a fost aruncat\u0103 \u00een timpul set\u0103rii valorii pentru variabila de instan\u0163\u0103 [{0}] pentru valoarea [{1}].
+
+72=O NullPointerException a fost aruncat\u0103 \u00een timpul set\u0103rii unei valori prin metoda [{0}] cu argumentul [{1}].
+
+73=Nu se poate g\u0103si descriptrul pentru clasa p\u0103rinte [{0}].
+
+74=C\u00e2mpurile de chei primar nu sunt setat pentru acest descriptor.
+
+75=Clasa de referin\u0163\u0103 nu est specificat\u0103 pentru acest descriptor.
+
+77=Descriptrul de referin\u0163\u0103 pentru [{0}] ar trebui setat s\u0103 fie un descriptor Agregat.
+
+78=C\u00e2mpul de referin\u0163\u0103 [{0}] pentru aceast\u0103 mapare trebuie s\u0103 existe \u00een tabelul de referin\u0163\u0103.
+
+79=Tabelul de referin\u0163\u0103 nu este specificat pentru aceast\u0103 mapare.
+
+8=Descriptorul [{0}] a fost setat pentru a utiliza mo\u015ftenirea, dar c\u00e2mpul indicator de clas\u0103 nu a fost definit. {2}Atunci c\u00e2nd se utilizeaz\u0103 mo\u015ftenirea, un c\u00e2mp indicator de clas\u0103 sau o metod\u0103 de extrac\u0163ie clas\u0103 trebuie setat\u0103. {2}Descriptor p\u0103rinte [{1}]
+
+80=C\u00e2mpul de chei rela\u0163ionale [{0}] pentru aceast\u0103 mapare trebuie s\u0103 exist \u00een tabelul rela\u0163ional.
+
+81=Metoda [{0}] ar trebui s\u0103 returneze tipul de atribut de mapare, nu vid.
+
+82=Metoda callback descriptor [{0}], cu parametrul (DescriptorEvent), nu este accesibil.
+
+83=Metoda callback descriptor [{0}], cu parametrul (Sesiune), nu este accesibil.
+
+84=Metoda [{0}], cu parametrii (\u00cenregistrare) sau (\u00cenregistrare, Sesiune), nu est accesibil\u0103.
+
+85=Metoda [{0}], cu parametrii () sau (Sesiune), nu este accesibil\u0103.
+
+86=Variabila de instan\u0163\u0103 [{0}] din clasa [{1}] nu este accesibil\u0103.
+
+87=Metodele [{0}], [{1}] din obiectul [{2}] nu sunt accesibile
+
+88=Metoda static\u0103 de extragere clas\u0103 [{0}], cu parametrul (\u00cenregistrare), nu este accesibil\u0103.
+
+89=Metoda de clonare [{0}], f\u0103r\u0103 parametrii, nu este accesibil\u0103.
+
+9=Maparea nu are setat un nume de c\u00e2mp direct.
+
+90=Metoda de crea\u0163ie instan\u0163\u0103 [{0}], f\u0103r\u0103 parametrii, nu est accesibil\u0103.
+
+91=Pentru a genera ID-uri generate de secven\u0163\u0103, ambele propriet\u0103\u0163i "Nume num\u0103r secven\u0163\u0103" \u015fi "Nume c\u00e2mp num\u0103r secven\u0163\u0103" trebuiesc setate pentru acest descriptor.
+
+92=Dimensiunea cheii primare \u0163int\u0103 nu se potrive\u015fte cu dimensiunea cheii externe.
+
+93=Tabelul [{0}] nu este prezent \u00een acest descriptor.
+
+94=Descriptorii trebuie s\u0103 aib\u0103 definit un nume de tabel.
+
+96=Num\u0103rul de chei \u0163int\u0103 nu se potrive\u015fte cu num\u0103rul de chei surs\u0103.
+
+97=Problem\u0103 la clonarea obiectului [{0}].  Metoda de clonare [{1}] a declan\u015fat o excep\u0163ie.
+
+98=Metoda callback descriptor subiacent\u0103 [{0}], cu parametrul (DescriptorEvent), a declan\u015fat o excep\u0163ie.
+
+99=Metoda [{0}] pentru obiectul [{1}] a declan\u015fat o excep\u0163ie.
+

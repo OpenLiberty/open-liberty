@@ -328,7 +328,7 @@ public class SolicitedTest {
             assertTrue("The TAIResult must not be null.", result != null);
         } catch (Exception ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -401,7 +401,7 @@ public class SolicitedTest {
                          SAML20_AUTHENTICATION_FAIL, ex.getMsgKey());
         } catch (WebTrustAssociationFailedException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -573,7 +573,7 @@ public class SolicitedTest {
             assertNull("Expected to receive a null value but was received " + result, result);
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 

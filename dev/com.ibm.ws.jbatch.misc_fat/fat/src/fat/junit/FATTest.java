@@ -22,7 +22,6 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -48,7 +47,6 @@ import web.BatchFATServlet;
  * servlet referenced by the annotation, and will be run whenever this test class runs.
  */
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 7)
 public class FATTest extends FATServletClient {
 
     // Using the RepeatTests @ClassRule in FATSuite will cause all tests in the FAT to be run twice.
@@ -86,7 +84,7 @@ public class FATTest extends FATServletClient {
 
     /**
      * @param implicit archive
-     * @param jslName  Batch Job JSL name
+     * @param jslName Batch Job JSL name
      */
     private static void addBatchJob(WebArchive implicit, String jslName) {
         Log.info(FATTest.class, "addBatchJob", "Adding jslName = " + jslName);

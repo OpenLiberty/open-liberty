@@ -30,6 +30,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.http2.GrpcServletServices;
 import com.ibm.ws.http2.GrpcServletServices.ServiceInformation;
+import com.ibm.ws.managedobject.ManagedObjectException;
 import com.ibm.ws.security.authorization.util.RoleMethodAuthUtil;
 import com.ibm.ws.security.authorization.util.UnauthenticatedException;
 
@@ -38,11 +39,13 @@ import io.grpc.Metadata;
 import io.grpc.ServerInterceptor;
 import io.grpc.ServerInterceptors;
 import io.grpc.servlet.ServletServerBuilder;
+import io.openliberty.grpc.internal.GrpcManagedObjectProvider;
+import io.openliberty.grpc.internal.GrpcMessages;
 import io.openliberty.grpc.internal.config.GrpcServiceConfigHolder;
 
 public class GrpcServletUtils {
 
-	private static final TraceComponent tc = Tr.register(GrpcServletUtils.class);
+	private static final TraceComponent tc = Tr.register(GrpcServletUtils.class, GrpcMessages.GRPC_TRACE_NAME, GrpcMessages.GRPC_BUNDLE);
 
 	public final static String LIBERTY_AUTH_KEY_STRING = "libertyAuthCheck";
 	private final static Map<String, Boolean> authMap = new ConcurrentHashMap<String, Boolean>();
@@ -64,7 +67,7 @@ public class GrpcServletUtils {
 		byteArrays.add((String.valueOf(req.hashCode())).getBytes(StandardCharsets.US_ASCII));
 		authMap.put(String.valueOf(req.hashCode()), authorized);
 		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-			Tr.debug(tc, "adding " + req.hashCode() + "to authMap with value " + authorized);
+			Tr.debug(tc, "adding {0} to authMap with value {1}", req.hashCode(), authorized);
 		}
 	}
 
@@ -206,17 +209,15 @@ public class GrpcServletUtils {
 			if (!items.isEmpty()) {
 				for (String className : items) {
 					try {
-						// use the app classloader to load the interceptor
-						ClassLoader cl = Thread.currentThread().getContextClassLoader();
-						Class<?> clazz = Class.forName(className, true, cl);
-						ServerInterceptor interceptor = (ServerInterceptor) clazz.getDeclaredConstructor()
-								.newInstance();
-						interceptors.add(interceptor);
+						// TODO: cache interceptors?
+						ServerInterceptor interceptor = (ServerInterceptor) GrpcManagedObjectProvider.createObjectFromClassName(className);
+						if (interceptor != null) {
+							interceptors.add(interceptor);
+						}
 					} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
 							| IllegalArgumentException | InvocationTargetException | NoSuchMethodException
-							| SecurityException e) {
-						// TODO: proper warning message
-						Tr.warning(tc, "Could not load user-defined Interceptor", e);
+							| SecurityException | ManagedObjectException e) {
+						Tr.warning(tc, "invalid.serverinterceptor", e.getMessage());
 					}
 				}
 			}
@@ -232,24 +233,52 @@ public class GrpcServletUtils {
 	 * @param serverBuilder
 	 */
 	public static void addServices(List<? extends BindableService> bindableServices,
-			ServletServerBuilder serverBuilder) {
+			ServletServerBuilder serverBuilder, String appName) {
 		for (BindableService service : bindableServices) {
-			String name = service.bindService().getServiceDescriptor().getName();
+			String serviceName = service.bindService().getServiceDescriptor().getName();
 
 			// set any user-defined server interceptors and add the service
-			List<ServerInterceptor> interceptors = GrpcServletUtils.getUserInterceptors(name);
+			List<ServerInterceptor> interceptors = GrpcServletUtils.getUserInterceptors(serviceName);
 			// add Liberty auth interceptor to every service
 			interceptors.add(authInterceptor);
+			// add monitoring interceptor to every service
+			ServerInterceptor monitoringInterceptor = createMonitoringServerInterceptor(serviceName, appName);
+			if (monitoringInterceptor != null) {
+				interceptors.add(monitoringInterceptor);
+			}
 			serverBuilder.addService(ServerInterceptors.intercept(service, interceptors));
 
 			// set the max inbound msg size, if it's configured
-			int maxInboundMsgSize = GrpcServiceConfigHolder.getMaxInboundMessageSize(name);
+			int maxInboundMsgSize = GrpcServiceConfigHolder.getMaxInboundMessageSize(serviceName);
 			if (maxInboundMsgSize != -1) {
 				serverBuilder.maxInboundMessageSize(maxInboundMsgSize);
 			}
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-				Tr.debug(tc, "gRPC service " + name + " has been registered");
+				Tr.debug(tc, "gRPC service {0} has been registered", serviceName);
 			}
 		}
+	}
+	
+	
+	private static ServerInterceptor createMonitoringServerInterceptor(String serviceName, String appName) {
+		// create the monitoring interceptor only if the monitor feature is enabled 
+		if (!GrpcServerComponent.isMonitoringEnabled()) {
+			return null;
+		}
+		ServerInterceptor interceptor = null;
+		// monitoring interceptor 
+		final String className = "io.openliberty.grpc.internal.monitor.GrpcMonitoringServerInterceptor";
+		try {
+			Class<?> clazz = Class.forName(className);
+			interceptor = (ServerInterceptor) clazz.getDeclaredConstructor(String.class, String.class)
+					.newInstance(serviceName, appName);
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+				Tr.debug(tc, "monitoring interceptor has been added to service {0}", serviceName);
+			}
+		} catch (Exception e) {
+			// an exception can happen if the monitoring package is not loaded 
+        }
+
+		return interceptor;
 	}
 }

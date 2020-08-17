@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.ejbcontainer.osgi.internal;
 
+import static com.ibm.ejs.container.ContainerConfigConstants.bindToJavaGlobal;
+import static com.ibm.ejs.container.ContainerConfigConstants.bindToServerRoot;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -251,7 +254,6 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
     private static final String BIND_TO_SERVER_ROOT = "bindToServerRoot";
     private static final String BIND_TO_JAVA_GLOBAL = "bindToJavaGlobal";
     private static final String DISABLE_SHORT_DEFAULT_BINDINGS = "disableShortDefaultBindings";
-    private static final String IGNORE_DUPLICATE_BINDINGS = "ignoreDuplicateEJBBindings";
     private static final String CUSTOM_BINDINGS_ON_ERROR = "customBindingsOnError";
 
     @Override
@@ -392,7 +394,7 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "processCustomBindingsConfig");
 
-        // TODO: remove ContainerProperties.customBindingsEnabledBeta after custom bindings beta
+        // TODO: #13338 remove ContainerProperties.customBindingsEnabledBeta after custom bindings beta
         boolean isBeta = false;
         try {
             final Map<String, ProductInfo> productInfos = ProductInfo.getAllProductInfo();
@@ -425,9 +427,10 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
         // End of beta block ------------------------------------------------------------------------
 
         // Overwrite the JVM properties if config is set, otherwise we will use the JVM props or the JVM property defaults
-        ContainerProperties.BindToServerRoot = properties.get(BIND_TO_SERVER_ROOT) != null ? (Boolean) properties.get(BIND_TO_SERVER_ROOT) : ContainerProperties.BindToServerRoot;
-        ContainerProperties.BindToJavaGlobal = properties.get(BIND_TO_JAVA_GLOBAL) != null ? (Boolean) properties.get(BIND_TO_JAVA_GLOBAL) : ContainerProperties.BindToJavaGlobal;
-        ContainerProperties.IgnoreDuplicateEJBBindings = properties.get(IGNORE_DUPLICATE_BINDINGS) != null ? (Boolean) properties.get(IGNORE_DUPLICATE_BINDINGS) : ContainerProperties.IgnoreDuplicateEJBBindings;
+        ContainerProperties.BindToServerRoot = properties.get(BIND_TO_SERVER_ROOT) != null ? (Boolean) properties.get(BIND_TO_SERVER_ROOT) : System.getProperty(bindToServerRoot,
+                                                                                                                                                                "true").equalsIgnoreCase("true");
+        ContainerProperties.BindToJavaGlobal = properties.get(BIND_TO_JAVA_GLOBAL) != null ? (Boolean) properties.get(BIND_TO_JAVA_GLOBAL) : System.getProperty(bindToJavaGlobal,
+                                                                                                                                                                "true").equalsIgnoreCase("true");
 
         OnError customBindingsOnError = OnError.WARN;
         try {
@@ -459,6 +462,8 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
             }
         } else if (ContainerProperties.DisableShortDefaultBindingsFromJVM != null) {
             ContainerProperties.DisableShortDefaultBindings = ContainerProperties.DisableShortDefaultBindingsFromJVM;
+        } else {
+            ContainerProperties.DisableShortDefaultBindings = null;
         }
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -1564,7 +1569,10 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
             try {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "Waiting 30 seconds for EJBRemoteRuntime");
-                remoteLatch.await(30, TimeUnit.SECONDS);
+                if (remoteLatch.await(30, TimeUnit.SECONDS) == false) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(tc, "EJBRemoteRuntime did not come up within 30 seconds");
+                }
             } catch (InterruptedException e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "Waiting for EJBRemoteRuntime failed: " + e);

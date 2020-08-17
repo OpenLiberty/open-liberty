@@ -26,6 +26,8 @@ import java.io.InputStream;
 import org.apache.cxf.common.util.Base64Exception;
 import org.apache.cxf.common.util.Base64Utility;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 /**
  * An implementation of a FilterInputStream that decodes the
  * stream data in BASE64 encoding format.  This version does the
@@ -33,6 +35,7 @@ import org.apache.cxf.common.util.Base64Utility;
  * data.  Since this version is intended for use by the MimeUtilty class,
  * it also handles line breaks in the encoded data.
  */
+@Trivial
 public class Base64DecoderStream extends FilterInputStream {
 
     static final String MAIL_BASE64_IGNOREERRORS = "mail.mime.base64.ignoreerrors";

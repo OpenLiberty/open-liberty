@@ -870,6 +870,10 @@ ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY=CWWKF1410E: Caracteristica {0} nu 
 ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.explanation=Caracteristica nu este aplicabil\u0103 pentru edi\u0163ia produsului instalat.
 ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.useraction=Instala\u0163i caracteristici ce sunt suportate de edi\u0163ia produsului.
 
+ERROR_BETA_EDITION_NOT_SUPPORTED=CWWKF1411E: Instalarea sau actualizarea caracteristicilor nu este suportat\u0103 pentru edi\u0163iile beta.
+ERROR_BETA_EDITION_NOT_SUPPORTED.explanation=Instalarea sau actualizarea caracteristicilor nu este suportat\u0103 pentru produsul instalat.
+ERROR_BETA_EDITION_NOT_SUPPORTED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: Caracteristica a fost desc\u0103rcat\u0103 cu succes.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=Caracteristica a fost desc\u0103rcat\u0103.
 TOOL_DOWNLOAD_FEATURE_OK.useraction=Nu este necesar\u0103 nicio ac\u0163iune.

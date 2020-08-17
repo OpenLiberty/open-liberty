@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.security.auth.Subject;
 import javax.security.jacc.PolicyContext;
-import javax.xml.rpc.handler.MessageContext;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -38,12 +37,26 @@ import com.ibm.ws.security.authorization.jacc.ejb.EJBSecurityValidator;
 
 public class EJBSecurityValidatorImpl implements EJBSecurityValidator {
     private static final TraceComponent tc = Tr.register(EJBSecurityValidatorImpl.class);
-    private static String[] jaccHandlerKeyArray = new String[] { "javax.security.auth.Subject.container", "javax.ejb.EnterpriseBean", "javax.ejb.arguments",
-                                                                "javax.xml.soap.SOAPMessage" };
+
+    /** Keys for Java / Jakarta EE 8 and lower. */
+    private static String[] jaccHandlerKeyArrayEe8 = new String[] { "javax.security.auth.Subject.container", "javax.ejb.EnterpriseBean", "javax.ejb.arguments",
+                                                                    "javax.xml.soap.SOAPMessage" };
+
+    /** Keys for Jakarta EE 9 and higher. */
+    private static String[] jaccHandlerKeyArrayEe9 = new String[] { "javax.security.auth.Subject.container", "jakarta.ejb.EnterpriseBean", "jakarta.ejb.arguments",
+                                                                    "jakarta.xml.soap.SOAPMessage" };
 
     private static ProtectionDomain nullPd = new ProtectionDomain(new CodeSource(null, (java.security.cert.Certificate[]) null), null, null, null);
     private static CodeSource nullCs = new CodeSource(null, (java.security.cert.Certificate[]) null);
     private static PolicyContextHandlerImpl pch = PolicyContextHandlerImpl.getInstance();
+
+    /**
+     * Are we running with <code>jakarta.ejb.*</code> packages? This will indicate we are running with (at least) Jakarta EE 9.
+     *
+     * This check may seem silly on the surface, but the packages are transformed at build time to swap the <code>javax.ejb.*</code> packages with
+     * <code>jakarta.ejb.*</code>.
+     */
+    private static boolean isEENineOrHigher = SessionContext.class.getCanonicalName().startsWith("jakarta.ejb");
 
     public EJBSecurityValidatorImpl() {}
 
@@ -54,6 +67,10 @@ public class EJBSecurityValidatorImpl implements EJBSecurityValidator {
         final HashMap<String, Object> ho = new HashMap<String, Object>();
         final Subject s = subject;
         final Object[] ma = null;
+
+        /*
+         * TODO Doesn't seem to handle EJB-3.0 annotated beans.
+         */
         EnterpriseBean eb = null;
         if (bean != null) {
             try {
@@ -84,55 +101,70 @@ public class EJBSecurityValidatorImpl implements EJBSecurityValidator {
                                            final HashMap<String, Object> handlerObjects) throws PrivilegedActionException {
         Boolean result = Boolean.FALSE;
         result = AccessController.doPrivileged(
-                        new PrivilegedExceptionAction<Boolean>() {
-                            @Override
-                            public Boolean run() throws javax.security.jacc.PolicyContextException {
-                                PolicyContext.setContextID(contextId);
+                                               new PrivilegedExceptionAction<Boolean>() {
+                                                   @Override
+                                                   public Boolean run() throws javax.security.jacc.PolicyContextException {
+                                                       PolicyContext.setContextID(contextId);
 
-                                if (tc.isDebugEnabled())
-                                    Tr.debug(tc, "Registering JACC context handlers");
-                                for (String key : jaccHandlerKeyArray) {
-                                    PolicyContext.registerHandler(key, pch, true);
-                                }
-                                handlerObjects.put(jaccHandlerKeyArray[0], subject);
-                                handlerObjects.put(jaccHandlerKeyArray[1], bean);
-                                handlerObjects.put(jaccHandlerKeyArray[2], methodParameters);
-                                MessageContext mc = null;
-                                try {
-                                    InitialContext ic = new InitialContext();
-                                    mc = getMessageContext(ic);
-                                } catch (NamingException e) {
-                                    if (tc.isDebugEnabled())
-                                        Tr.debug(tc, "NamingException is caught. Ignoring..", e);
-                                }
-                                if (mc != null) {
-                                    if (tc.isDebugEnabled())
-                                        Tr.debug(tc, "javax.xml.soap.SOAPMessage is set: ", mc);
-                                    handlerObjects.put(jaccHandlerKeyArray[3], mc);
-                                }
-                                ProtectionDomain pd = null;
+                                                       if (tc.isDebugEnabled())
+                                                           Tr.debug(tc, "Registering JACC context handlers");
 
-                                if (subject != null && subject.getPrincipals().size() > 0) {
-                                    Principal[] principalArray = subject.getPrincipals().toArray(new Principal[subject.getPrincipals().size()]);
-                                    pd = new ProtectionDomain(nullCs, null, null, principalArray);
-                                } else {
-                                    pd = nullPd;
-                                }
+                                                       for (String key : jaccHandlerKeyArrayEe8) {
+                                                           PolicyContext.registerHandler(key, pch, true);
+                                                       }
+                                                       for (String key : jaccHandlerKeyArrayEe9) {
+                                                           PolicyContext.registerHandler(key, pch, true);
+                                                       }
 
-                                if (tc.isDebugEnabled())
-                                    Tr.debug(tc, "Setting JACC handler data");
-                                PolicyContext.setHandlerData(handlerObjects);
-                                if (tc.isDebugEnabled())
-                                    Tr.debug(tc, "Calling JACC implies. PD : " + pd);
-                                return Policy.getPolicy().implies(pd, permission);
-                            }
-                        });
+                                                       handlerObjects.put(jaccHandlerKeyArrayEe8[0], subject);
+                                                       handlerObjects.put(jaccHandlerKeyArrayEe8[1], bean);
+                                                       handlerObjects.put(jaccHandlerKeyArrayEe8[2], methodParameters);
+
+                                                       handlerObjects.put(jaccHandlerKeyArrayEe9[0], subject);
+                                                       handlerObjects.put(jaccHandlerKeyArrayEe9[1], bean);
+                                                       handlerObjects.put(jaccHandlerKeyArrayEe9[2], methodParameters);
+
+                                                       /*
+                                                        * EE 8 and below support JAX-RPC MessageContext. EE 9 removed this support.
+                                                        */
+                                                       if (!isEENineOrHigher) {
+                                                           Object mc = null;
+                                                           try {
+                                                               InitialContext ic = new InitialContext();
+                                                               mc = getMessageContext(ic);
+                                                           } catch (NamingException e) {
+                                                               if (tc.isDebugEnabled())
+                                                                   Tr.debug(tc, "NamingException is caught. Ignoring.", e);
+                                                           }
+                                                           if (mc != null) {
+                                                               if (tc.isDebugEnabled())
+                                                                   Tr.debug(tc, "javax.xml.soap.SOAPMessage is set: ", mc);
+                                                               handlerObjects.put(jaccHandlerKeyArrayEe8[3], mc);
+                                                           }
+                                                       }
+
+                                                       ProtectionDomain pd = null;
+                                                       if (subject != null && subject.getPrincipals().size() > 0) {
+                                                           Principal[] principalArray = subject.getPrincipals().toArray(new Principal[subject.getPrincipals().size()]);
+                                                           pd = new ProtectionDomain(nullCs, null, null, principalArray);
+                                                       } else {
+                                                           pd = nullPd;
+                                                       }
+
+                                                       if (tc.isDebugEnabled())
+                                                           Tr.debug(tc, "Setting JACC handler data");
+                                                       PolicyContext.setHandlerData(handlerObjects);
+                                                       if (tc.isDebugEnabled())
+                                                           Tr.debug(tc, "Calling JACC implies. PD : " + pd);
+                                                       return Policy.getPolicy().implies(pd, permission);
+                                                   }
+                                               });
         return result.booleanValue();
     }
 
     @FFDCIgnore({ NamingException.class, IllegalStateException.class })
-    public MessageContext getMessageContext(Context c) {
-        MessageContext mc = null;
+    public Object getMessageContext(Context c) {
+        Object mc = null;
         try {
             SessionContext sc = (SessionContext) c.lookup("java:comp/EJBContext");
             if (sc != null) {

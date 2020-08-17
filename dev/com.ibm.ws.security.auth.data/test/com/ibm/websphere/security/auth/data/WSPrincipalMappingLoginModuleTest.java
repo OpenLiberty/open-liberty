@@ -38,11 +38,11 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.websphere.security.jca.WSPrincipalMappingLoginModule;
 import com.ibm.ws.security.jca.AuthDataService;
 import com.ibm.wsspi.security.auth.callback.WSMappingCallbackHandler;
+
+import test.common.SharedOutputManager;
 
 /**
  *
@@ -184,6 +184,8 @@ public class WSPrincipalMappingLoginModuleTest {
                 will(returnValue(user));
                 allowing(authData).getPassword();
                 will(returnValue(password));
+                allowing(authData).getKrb5Principal();
+                will(returnValue(null));
             }
         });
 

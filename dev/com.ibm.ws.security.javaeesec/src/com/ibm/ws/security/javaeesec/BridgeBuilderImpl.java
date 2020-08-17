@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,8 +48,9 @@ public class BridgeBuilderImpl implements BridgeBuilderService {
     @Deactivate
     protected void deactivate(ComponentContext cc) {}
 
+    // Synchronized since checking if there is a provider and registering one need to be done as a single atomic operation.
     @Override
-    public void buildBridgeIfNeeded(String appContext, AuthConfigFactory providerFactory) {
+    public synchronized void buildBridgeIfNeeded(String appContext, AuthConfigFactory providerFactory) {
         AuthConfigProvider authConfigProvider = providerFactory.getConfigProvider(JASPIC_LAYER_HTTP_SERVLET, appContext, (RegistrationListener) null);
         if (authConfigProvider != null) {
             // A provider was registered already for this application context.

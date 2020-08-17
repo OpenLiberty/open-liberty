@@ -19,7 +19,6 @@ import javax.servlet.annotation.WebServlet;
 import org.junit.Test;
 
 import com.ibm.websphere.ejbcontainer.test.tools.FATHelper;
-import com.ibm.ws.ejbcontainer.injection.xml.ejb.EnvInjectionLocal;
 import com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBInjectionLocal;
 
 import componenttest.app.FATServlet;
@@ -57,7 +56,7 @@ public class BasicSLEJBInjectionServlet extends FATServlet {
     private static final String SLSTestMethodBean = "SLSTestMethodBean";
 
     // Names of the interfaces used for the test
-    private static final String EJBInjectionLocalInterface = EnvInjectionLocal.class.getName();
+    private static final String EJBInjectionLocalInterface = EJBInjectionLocal.class.getName();
 
     /**
      * Test Field injection of EJBs on an EJB 3.0 Stateless Session EJB,

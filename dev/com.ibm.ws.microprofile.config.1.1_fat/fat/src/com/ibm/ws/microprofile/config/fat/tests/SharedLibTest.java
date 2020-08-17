@@ -23,11 +23,14 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.archaius.impl.fat.tests.SharedLibUserTestServlet;
 import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions.Version;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -36,33 +39,37 @@ import componenttest.topology.utils.FATServletClient;
  *
  */
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class SharedLibTest extends FATServletClient {
 
     public static final String APP_NAME = "sharedLibUser";
-
-    @ClassRule
-    public static RepeatTests r = RepeatConfigActions.repeatConfig11("SharedLibUserServer");
 
     @Server("SharedLibUserServer")
     @TestServlet(servlet = SharedLibUserTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
+    @ClassRule
+    public static RepeatTests r = RepeatConfigActions.repeat("SharedLibUserServer", Version.LATEST, Version.CONFIG13_EE8);
+
     @BeforeClass
     public static void setUp() throws Exception {
         //TODO differentiate the pacakage names for these two jars.
         JavaArchive sharedLib_jar = ShrinkWrap.create(JavaArchive.class, "sharedLib.jar")
-                        .addClass("com.ibm.ws.microprofile.archaius.impl.fat.tests.PingableSharedLibClass")
-                        .addAsManifestResource(new File("test-applications/sharedLib.jar/resources/META-INF/microprofile-config.json"), "microprofile-config.json")
-                        .addAsManifestResource(new File("test-applications/sharedLib.jar/resources/META-INF/microprofile-config.properties"), "microprofile-config.properties")
-                        .addAsManifestResource(new File("test-applications/sharedLib.jar/resources/META-INF/microprofile-config.xml"), "microprofile-config.xml");
+                                              .addClass("com.ibm.ws.microprofile.archaius.impl.fat.tests.PingableSharedLibClass")
+                                              .addAsManifestResource(new File("test-applications/sharedLib.jar/resources/META-INF/microprofile-config.json"),
+                                                                     "microprofile-config.json")
+                                              .addAsManifestResource(new File("test-applications/sharedLib.jar/resources/META-INF/microprofile-config.properties"),
+                                                                     "microprofile-config.properties")
+                                              .addAsManifestResource(new File("test-applications/sharedLib.jar/resources/META-INF/microprofile-config.xml"),
+                                                                     "microprofile-config.xml");
 
         JavaArchive sharedLibUser_jar = ShrinkWrap.create(JavaArchive.class, APP_NAME + ".jar")
-                        .addClass("com.ibm.ws.microprofile.archaius.impl.fat.tests.SharedLibUserTestServlet");
+                                                  .addClass("com.ibm.ws.microprofile.archaius.impl.fat.tests.SharedLibUserTestServlet");
 
         WebArchive sharedLibUser_war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                        .addAsLibrary(sharedLibUser_jar)
-                        .addAsLibrary(SharedShrinkWrapApps.getTestAppUtilsJar())
-                        .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/permissions.xml"), "permissions.xml");
+                                                 .addAsLibrary(sharedLibUser_jar)
+                                                 .addAsLibrary(SharedShrinkWrapApps.getTestAppUtilsJar())
+                                                 .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/permissions.xml"), "permissions.xml");
 
         ShrinkHelper.exportAppToServer(server, sharedLibUser_war);
         ShrinkHelper.exportToServer(server, "shared", sharedLib_jar);

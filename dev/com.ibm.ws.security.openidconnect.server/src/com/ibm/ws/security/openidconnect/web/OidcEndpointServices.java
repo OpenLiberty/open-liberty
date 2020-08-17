@@ -83,11 +83,7 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.security.openidconnect.IDTokenMediator;
 import com.ibm.wsspi.security.openidconnect.UserinfoProvider;
 
-@Component(service = { OidcEndpointServices.class },
-                name = "com.ibm.ws.security.openidconnect.web.OidcEndpointServices",
-                immediate = true,
-                configurationPolicy = ConfigurationPolicy.IGNORE,
-                property = "service.vendor=IBM")
+@Component(service = { OidcEndpointServices.class }, name = "com.ibm.ws.security.openidconnect.web.OidcEndpointServices", immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = "service.vendor=IBM")
 public class OidcEndpointServices extends OAuth20EndpointServices {
 
     private static TraceComponent tc = Tr.register(OidcEndpointServices.class,
@@ -98,18 +94,15 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
     public static final String KEY_ID = "id";
     public static final String KEY_SERVICE_PID = "service.pid";
     public static final String KEY_OIDC_SERVER_CONFIG = "oidcServerConfig";
-    private final ConcurrentServiceReferenceMap<String, OidcServerConfig> oidcServerConfigRef =
-                    new ConcurrentServiceReferenceMap<String, OidcServerConfig>(KEY_OIDC_SERVER_CONFIG);
+    private final ConcurrentServiceReferenceMap<String, OidcServerConfig> oidcServerConfigRef = new ConcurrentServiceReferenceMap<String, OidcServerConfig>(KEY_OIDC_SERVER_CONFIG);
     private boolean bOidcUpdated = false;
     private HashMap<String, OidcServerConfig> oidcMap = new HashMap<String, OidcServerConfig>();
 
     public static final String KEY_USER_INFO_PROVIDER = "userinfoProvider";
-    private final ConcurrentServiceReferenceMap<String, UserinfoProvider> userinfoProviderConfigRef =
-                    new ConcurrentServiceReferenceMap<String, UserinfoProvider>(KEY_USER_INFO_PROVIDER);
+    private final ConcurrentServiceReferenceMap<String, UserinfoProvider> userinfoProviderConfigRef = new ConcurrentServiceReferenceMap<String, UserinfoProvider>(KEY_USER_INFO_PROVIDER);
 
     public static final String KEY_IDTOKEN_MEDIATOR = "idTokenMediator";
-    private final ConcurrentServiceReferenceMap<String, IDTokenMediator> idTokenMediatorRef =
-                    new ConcurrentServiceReferenceMap<String, IDTokenMediator>(KEY_IDTOKEN_MEDIATOR);
+    private final ConcurrentServiceReferenceMap<String, IDTokenMediator> idTokenMediatorRef = new ConcurrentServiceReferenceMap<String, IDTokenMediator>(KEY_IDTOKEN_MEDIATOR);
 
     protected final AtomicServiceReference<OAuth20EndpointServices> oauth20EndpointServicesRef = new AtomicServiceReference<OAuth20EndpointServices>(KEY_OAUTH20_ENDPOINT_SERVICES);
     private volatile BrowserState browserState = null;
@@ -118,9 +111,7 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
     private static final String WWW_AUTHENTICATE_HEADER = "WWW-Authenticate";
     ConfigUtils configUtils = new ConfigUtils();
 
-    @Reference(service = OAuth20EndpointServices.class, name = KEY_OAUTH20_ENDPOINT_SERVICES,
-                    policy = ReferencePolicy.DYNAMIC,
-                    policyOption = ReferencePolicyOption.GREEDY)
+    @Reference(service = OAuth20EndpointServices.class, name = KEY_OAUTH20_ENDPOINT_SERVICES, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     protected void setOAuth20EndpointServices(ServiceReference<OAuth20EndpointServices> reference) {
         oauth20EndpointServicesRef.setReference(reference);
     }
@@ -129,10 +120,7 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
         oauth20EndpointServicesRef.unsetReference(reference);
     }
 
-    @Reference(service = UserinfoProvider.class, name = KEY_USER_INFO_PROVIDER,
-                    policy = ReferencePolicy.DYNAMIC,
-                    cardinality = ReferenceCardinality.MULTIPLE,
-                    policyOption = ReferencePolicyOption.GREEDY)
+    @Reference(service = UserinfoProvider.class, name = KEY_USER_INFO_PROVIDER, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE, policyOption = ReferencePolicyOption.GREEDY)
     protected void setUserinfoProvider(ServiceReference<UserinfoProvider> ref) {
         synchronized (userinfoProviderConfigRef) {
             userinfoProviderConfigRef.putReference((String) ref.getProperty(KEY_SERVICE_PID), ref);
@@ -145,8 +133,7 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
         }
     }
 
-    @Reference(service = IDTokenMediator.class, name = KEY_IDTOKEN_MEDIATOR,
-                    policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY)
+    @Reference(service = IDTokenMediator.class, name = KEY_IDTOKEN_MEDIATOR, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY)
     protected void setIdTokenMediator(ServiceReference<IDTokenMediator> ref) {
         synchronized (idTokenMediatorRef) {
             idTokenMediatorRef.putReference((String) ref.getProperty(KEY_SERVICE_PID), ref);
@@ -159,10 +146,7 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
         }
     }
 
-    @Reference(service = OidcServerConfig.class, name = KEY_OIDC_SERVER_CONFIG,
-                    policy = ReferencePolicy.DYNAMIC,
-                    cardinality = ReferenceCardinality.MULTIPLE,
-                    policyOption = ReferencePolicyOption.GREEDY)
+    @Reference(service = OidcServerConfig.class, name = KEY_OIDC_SERVER_CONFIG, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE, policyOption = ReferencePolicyOption.GREEDY)
     protected void setOidcServerConfig(ServiceReference<OidcServerConfig> ref) {
         synchronized (oidcServerConfigRef) {
             oidcServerConfigRef.putReference((String) ref.getProperty(KEY_ID), ref);
@@ -177,6 +161,7 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
         }
     }
 
+    @Override
     @Activate
     protected void activate(ComponentContext cc) {
         securityServiceRef.activate(cc);
@@ -194,6 +179,7 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
         Tr.info(tc, "OIDC_ENDPOINT_SERVICE_ACTIVATED");
     }
 
+    @Override
     @Deactivate
     protected void deactivate(ComponentContext cc) {
         securityServiceRef.deactivate(cc);
@@ -226,7 +212,7 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
 
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "Checking if OIDC Provider should process the request.");
-            Tr.debug(tc, "Inbound request "+com.ibm.ws.security.common.web.WebUtils.getRequestStringForTrace(request, "client_secret"));
+            Tr.debug(tc, "Inbound request " + com.ibm.ws.security.common.web.WebUtils.getRequestStringForTrace(request, "client_secret"));
         }
         OidcRequest oidcRequest = getOidcRequest(request, response);
         if (oidcRequest == null) {
@@ -247,7 +233,7 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
 
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "OIDC _SSO OP PROCESS IS STARTING.");
-            Tr.debug(tc, "OIDC _SSO OP inbound URL "+com.ibm.ws.security.common.web.WebUtils.getRequestStringForTrace(request, "client_secret"));
+            Tr.debug(tc, "OIDC _SSO OP inbound URL " + com.ibm.ws.security.common.web.WebUtils.getRequestStringForTrace(request, "client_secret"));
         }
         EndpointType endpointType = oidcRequest.getType();
 
@@ -354,7 +340,11 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
      * @param oidcProviderName
      * @return
      */
-    private OidcServerConfig getOidcServerConfig(HttpServletResponse response, String oidcProviderName) throws IOException {
+    public OidcServerConfig getOidcServerConfig(HttpServletResponse response, String oidcProviderName) throws IOException {
+        return getOidcServerConfig(response, oidcProviderName, true);
+    }
+
+    public OidcServerConfig getOidcServerConfig(HttpServletResponse response, String oidcProviderName, boolean sendErrorIfProviderNotFound) throws IOException {
         synchronized (oidcServerConfigRef) {
             if (bOidcUpdated) {
                 oidcMap = configUtils.checkDuplicateOAuthProvider(oidcServerConfigRef);
@@ -362,7 +352,7 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
             }
         }
         OidcServerConfig oidcServerConfig = oidcMap.get(oidcProviderName);
-        if (oidcServerConfig == null) {
+        if (oidcServerConfig == null && sendErrorIfProviderNotFound) {
             Tr.error(tc, "OIDC_SERVER_CONFIG_SERVICE_NOT_AVAILABLE", oidcProviderName);
             response.sendError(HttpServletResponse.SC_NOT_FOUND, "OpenID Connect configuration service is not avaliable for OpenID Connect provider name " + oidcProviderName);
         }
@@ -374,17 +364,17 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
      * - delete LTPAToken cookie.
      * - delete refresh token from tokencache if id_token_hint is present.
      * - redirect a request to a URL which is specified by post_logout_redirect_uri
-     * 
-     * @param oauth20provider extracted from the request
+     *
+     * @param oauth20provider  extracted from the request
      * @param oidcServerConfig is the object of oidc server configuration object
-     * @param request is the incoming HttpServletRequest
-     * @param response WAS OIDC response for a given provider
-     * 
+     * @param request          is the incoming HttpServletRequest
+     * @param response         WAS OIDC response for a given provider
+     *
      * @throws IOException
      */
     @FFDCIgnore(IDTokenValidationFailedException.class)
-    protected void processEndSession(OAuth20Provider oauth20provider, OidcServerConfig oidcServerConfig, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-    {
+    protected void processEndSession(OAuth20Provider oauth20provider, OidcServerConfig oidcServerConfig, HttpServletRequest request,
+                                     HttpServletResponse response) throws ServletException, IOException {
         Principal user = request.getUserPrincipal();
         String idTokenString = request.getParameter(OIDCConstants.OIDC_LOGOUT_ID_TOKEN_HINT);
         String redirectUri = request.getParameter(OIDCConstants.OIDC_LOGOUT_REDIRECT_URI);
@@ -448,15 +438,15 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
                             clientId = JsonTokenUtil.getAud(payload);
                         }
                     } catch (Exception e) {
-                        Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { e.getMessage() == null ? "IDTokenValidatonFailedException" : e.getMessage() });
+                        Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { e });
                         continueLogoff = false;
                     }
                 } else {
-                    Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { ivfe.getMessage() == null ? "IDTokenValidatonFailedException" : ivfe.getMessage() });
+                    Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { ivfe });
                     continueLogoff = false;
                 }
             } catch (Exception e) {
-                Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { e.getMessage() == null ? "IDTokenValidatonFailedException" : e.getMessage() });
+                Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { e });
                 continueLogoff = false;
             }
         }
@@ -475,7 +465,7 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
             if (cachedIdToken != null && tokenCache != null) {
                 // delete refreshtoken.
                 CacheUtil cu = new CacheUtil(tokenCache);
-                OAuth20Token refreshToken = cu.getRefreshToken((OAuth20Token) cachedIdToken);
+                OAuth20Token refreshToken = cu.getRefreshToken(cachedIdToken);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "refreshToken : " + refreshToken);
                 }
@@ -512,8 +502,8 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
 
                     }
                 } catch (OidcServerException ose) {
-                    // this should not happen.    
-                    Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { ose.getMessage() == null ? "IDTokenValidatonFailedException" : ose.getMessage() });
+                    // this should not happen.
+                    Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { ose });
                     // this is an error condition. display an error page.
                     redirectUri = request.getContextPath() + "/end_session_error.html";
                 }
@@ -523,7 +513,7 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
             redirectUri = updateRedirectUriWithTrackedOAuthClients(request, response, oauth20provider, redirectUri);
         }
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "OIDC _SSO OP redirecting to [" + redirectUri +"]");
+            Tr.debug(tc, "OIDC _SSO OP redirecting to [" + redirectUri + "]");
         }
         response.sendRedirect(redirectUri);
     }
@@ -536,7 +526,7 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
     /**
      * Process a request for the check_session_iframe endpoint by redirecting
      * the response to the appropriate session management iframe page.
-     * 
+     *
      * @param response
      * @throws IOException
      */
@@ -548,7 +538,7 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
 
         String iframeUrl = oidcServerConfig.getCheckSessionIframeEndpointUrl();
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "OIDC _SSO OP redirecting to [" + iframeUrl +"]");
+            Tr.debug(tc, "OIDC _SSO OP redirecting to [" + iframeUrl + "]");
         }
         response.sendRedirect(iframeUrl);
 
@@ -560,11 +550,11 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
     /**
      * construct JWT which is a super class of IDToken from IdTokenString.
      * JWT class is used in order to just perform signature validation.
-     * 
-     * @param oauth20provider extracted from the request
+     *
+     * @param oauth20provider  extracted from the request
      * @param oidcServerConfig is the object of oidc server configurations
      * @throws OidcServerException
-     * 
+     *
      */
     JWT createJwt(String tokenString, OAuth20Provider oauth20provider, OidcServerConfig oidcServerConfig) throws OidcServerException {
         String aud = null;
@@ -588,11 +578,11 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
 
     /**
      * get Shared key
-     * 
+     *
      * @param oauth20provider extracted from the request
      * @param clientId
      * @throws OidcServerException
-     * 
+     *
      */
     @Sensitive
     Object getSharedKey(OAuth20Provider oauth20provider, String clientId) throws OidcServerException {
@@ -608,11 +598,11 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
 
     /**
      * get PostLogoutRedirectUris
-     * 
+     *
      * @param oauth20provider extracted from the request
      * @param clientId
      * @throws OidcServerException
-     * 
+     *
      */
     String[] getPostLogoutRedirectUris(OAuth20Provider oauth20provider, String clientId) throws OidcServerException {
         String[] uris = null;
@@ -629,10 +619,10 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
 
     /**
      * get check whether the given string contains in the given JsonArray.
-     * 
-     * @param uri String.
+     *
+     * @param uri  String.
      * @param uris String[]
-     * 
+     *
      */
     boolean containUri(String uri, String[] uris) {
         boolean contain = false;
@@ -649,13 +639,13 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
 
     /**
      * Return a JSON object with the claims for the scopes in the provided access token.
-     * 
+     *
      * If the access token is valid return status 200 and a JSON object
      * containing the claims associated with the scopes in the access token.
-     * 
+     *
      * If the token is not valid or the request had other errors return status and error
      * info per IETF RFC 6750: OAuth 2.0 Authorization Framework: Bearer Token Usage
-     * 
+     *
      * @param oauth20provider
      * @param oidcServerConfig
      * @param request
@@ -670,7 +660,7 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
 //        // Must have VMM
 //        VMMService vmmService = ConfigUtils.getVMMService();
 //        if (vmmService == null) {
-//            String errorMsg = 
+//            String errorMsg =
 //                            TraceNLS.getFormattedMessage(this.getClass(),
 //                                                         TraceConstants.MESSAGE_BUNDLE,
 //                                                         "OIDC_SERVER_USERINFO_INTERNAL_ERROR_NO_VMM",
@@ -701,8 +691,7 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
         String reqParamAccessTokenString = accessTokenString;
         String authzHeader = request.getHeader(com.ibm.ws.security.oauth20.util.UtilConstants.AUTHORIZATION_HEADER_NAME);
         if (authzHeader != null) {
-            String hdrAccessTokenString =
-                            com.ibm.oauth.core.util.WebUtils.getBearerTokenFromAuthzHeader(authzHeader);
+            String hdrAccessTokenString = com.ibm.oauth.core.util.WebUtils.getBearerTokenFromAuthzHeader(authzHeader);
             if (accessTokenString != null && hdrAccessTokenString != null) {
                 String errorMsg = TraceNLS.getFormattedMessage(this.getClass(),
                                                                TraceConstants.MESSAGE_BUNDLE,
@@ -741,24 +730,24 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
         if (OidcOAuth20Util.isJwtToken(accessTokenString)) {
             tokenLookupStr = HashUtils.digest(accessTokenString);
         } else if (tokenLookupStr.length() == (oauth20provider.getAccessTokenLength() + 2)) {
-         // app-token or app-password
+            // app-token or app-password
             String encode = oauth20provider.getAccessTokenEncoding();
             if (OAuth20Constants.PLAIN_ENCODING.equals(encode)) { // must be app-password or app-token
                 tokenLookupStr = EndpointUtils.computeTokenHash(accessTokenString);
             } else {
                 tokenLookupStr = EndpointUtils.computeTokenHash(accessTokenString, encode);
-            } 
+            }
             isAppPasswordOrToken = true;
         }
-        OAuth20Token accessToken = null;//oauth20provider.getTokenCache().get(tokenLookupStr);     
+        OAuth20Token accessToken = null;//oauth20provider.getTokenCache().get(tokenLookupStr);
         if (isAppPasswordOrToken) {
             accessToken = oauth20provider.getTokenCache().getByHash(tokenLookupStr);
         } else {
             accessToken = oauth20provider.getTokenCache().get(tokenLookupStr);
         }
-        
+
         boolean isAppPassword = false;
-        if (accessToken != null ) {
+        if (accessToken != null) {
             isAppPassword = accessToken.getGrantType() != null && accessToken.getGrantType().equals(OAuth20Constants.APP_PASSWORD);
         }
         if ((accessToken == null) || (!(oauth20provider.isLocalStoreUsed()) && isAppPassword)) {
@@ -772,11 +761,11 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
             Tr.error(tc, "OIDC_SERVER_USERINFO_BAD_ACCESS_TOKEN", new Object[] { request.getRequestURI() });
             return;
         }
-        if (tc.isDebugEnabled()){
+        if (tc.isDebugEnabled()) {
             Tr.debug(tc, "token type: " + accessToken.getType() + " grant type: " + accessToken.getGrantType());
         }
-           
-        //  if not access token or is app_password,  return 401 "invalid_token" 
+
+        //  if not access token or is app_password,  return 401 "invalid_token"
         boolean isAccessToken = accessToken.getType().equals(OAuth20Constants.TOKENTYPE_ACCESS_TOKEN);
         //boolean isAppPassword = accessToken.getGrantType() != null && accessToken.getGrantType().equals(OAuth20Constants.APP_PASSWORD);
         if (isAppPassword || !isAccessToken) {
@@ -906,11 +895,11 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
     /**
      * Return the JSONObject that will be returned for the userinfo endpoint, this method invokes the userinfo provider SPI
      * that has being installed on liberty
-     * 
-     * @param accessToken the OAuth20Token used to get authentication context
+     *
+     * @param accessToken      the OAuth20Token used to get authentication context
      * @param userinfoProvider the implementation of userinfoProvider which is installed at runtime
-     * @param request the HTTPRequest for the userinfo endpoint
-     * @param response the response for the userinfo endpoint request.
+     * @param request          the HTTPRequest for the userinfo endpoint
+     * @param response         the response for the userinfo endpoint request.
      * @return The JsonObject for userinfo endpoint
      * @throws IOException
      */
@@ -918,21 +907,14 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
                                                      UserinfoProvider userinfoProvider,
                                                      HttpServletRequest request,
                                                      HttpServletResponse response) throws IOException {
-        AuthnContext authnContext = new AuthnContextImpl(request,
-                        response,
-                        accessToken.getTokenString(),
-                        accessToken.getScope(),
-                        accessToken.getCreatedAt(),
-                        accessToken.getLifetimeSeconds(),
-                        accessToken.getUsername(),
-                        accessToken.getExtensionProperties());
+        AuthnContext authnContext = new AuthnContextImpl(request, response, accessToken.getTokenString(), accessToken.getScope(), accessToken.getCreatedAt(), accessToken.getLifetimeSeconds(), accessToken.getUsername(), accessToken.getExtensionProperties());
         String strJsonObject = userinfoProvider.getUserInfo(authnContext);
         if (tc.isDebugEnabled())
             Tr.debug(tc, "getUserInfo:'" + strJsonObject + "'");
         if (strJsonObject != null) {
             return JSONObject.parse(strJsonObject);
         } else {
-            return (JSONObject) null;
+            return null;
         }
 
     }
@@ -950,16 +932,16 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
 
     /**
      * Get the JSONObject that will be returned for userinfo endpoint from the user registry
-     * 
-     * @param oauth20provider The OAuth20Provider
+     *
+     * @param oauth20provider  The OAuth20Provider
      * @param oidcServerConfig The OidcServerConfig
-     * @param request The HttpServletRequest
-     * @param response The HttpServletResponse
-     * @param accessToken The OAuth20Token
-     * @param claims The claims for this granted access
+     * @param request          The HttpServletRequest
+     * @param response         The HttpServletResponse
+     * @param accessToken      The OAuth20Token
+     * @param claims           The claims for this granted access
      * @param response
      * @throws IOException
-     * 
+     *
      */
     protected JSONObject getUserinfoFromRegistry(OAuth20Provider oauth20provider,
                                                  OidcServerConfig oidcServerConfig,
@@ -993,7 +975,7 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
     /**
      * Set the WWW-Authenticate header in the response, using the given
      * error, error description, status and scope.
-     * 
+     *
      * @param response
      * @param status
      * @param error
@@ -1016,7 +998,7 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
 
     /**
      * Convert the String array to a String.
-     * 
+     *
      * @param value
      * @return
      */
@@ -1040,15 +1022,14 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
     }
 
     @FFDCIgnore({ IDTokenValidationFailedException.class, IllegalStateException.class })
-    protected void handleIdTokenHint(OAuth20Provider oauth20provider, OidcServerConfig oidcServerConfig, AttributeList attrs)
-    {
+    protected void handleIdTokenHint(OAuth20Provider oauth20provider, OidcServerConfig oidcServerConfig, AttributeList attrs) {
         String idTokenHint = attrs.getAttributeValueByName(OIDCConstants.OIDC_AUTHZ_PARAM_ID_TOKEN_HINT);
-        if (idTokenHint != null) {            
+        if (idTokenHint != null) {
             OAuth20Token cachedIdToken = null;
             // lookup idtoken cache first.
             OAuth20TokenCache tokenCache = null;
             tokenCache = oauth20provider.getTokenCache();
-            if (tokenCache != null) {                
+            if (tokenCache != null) {
                 String hash = HashUtils.digest(idTokenHint);
                 if (hash != null) {
                     cachedIdToken = tokenCache.get(hash);
@@ -1072,23 +1053,23 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
                 clientId = cachedIdToken.getClientId();
             } else {
                 // if it's not there parse the idTokenString and validate signature.
-                JWT jwt = null;                
+                JWT jwt = null;
                 try {
                     jwt = createJwt(idTokenHint, oauth20provider, oidcServerConfig);
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "JWT : " + jwt);
                     }
-                    //if (jwt.verify()) {                   
+                    //if (jwt.verify()) {
                     if (jwt.verifySignatureOnly()) {
                         tokenUsername = JsonTokenUtil.getSub(jwt.getPayload());
-                        clientId = JsonTokenUtil.getAud(jwt.getPayload());                        
+                        clientId = JsonTokenUtil.getAud(jwt.getPayload());
                     } else {
                         Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { "IDTokenValidatonFailedException" });
                         attrs.setAttribute(OIDCConstants.OIDC_AUTHZ_PARAM_ID_TOKEN_HINT_STATUS, OAuth20Constants.ATTRTYPE_REQUEST,
                                            new String[] { OIDCConstants.OIDC_AUTHZ_PARAM_ID_TOKEN_HINT_STATUS_FAIL_INVALID_ID_TOKEN });
                         return;
                     }
-                } catch (IDTokenValidationFailedException ivfe) {                    
+                } catch (IDTokenValidationFailedException ivfe) {
                     // if this exception is due to exp, iat expiration, the value can be extracted.
                     // otherwise, return error.
                     Throwable cause = ivfe.getCause();
@@ -1100,18 +1081,18 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
                                 clientId = JsonTokenUtil.getAud(payload);
                             }
                         } catch (Exception e) {
-                            Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { e.getMessage() == null ? "IDTokenValidatonFailedException" : e.getMessage() });
+                            Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { e });
                             attrs.setAttribute(OIDCConstants.OIDC_AUTHZ_PARAM_ID_TOKEN_HINT_STATUS, OAuth20Constants.ATTRTYPE_REQUEST,
                                                new String[] { OIDCConstants.OIDC_AUTHZ_PARAM_ID_TOKEN_HINT_STATUS_FAIL_INVALID_ID_TOKEN });
                             return;
                         }
                     } else {
-                        Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { ivfe.getMessage() == null ? "IDTokenValidatonFailedException" : ivfe.getMessage() });
+                        Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { ivfe });
                         attrs.setAttribute(OIDCConstants.OIDC_AUTHZ_PARAM_ID_TOKEN_HINT_STATUS, OAuth20Constants.ATTRTYPE_REQUEST,
                                            new String[] { OIDCConstants.OIDC_AUTHZ_PARAM_ID_TOKEN_HINT_STATUS_FAIL_INVALID_ID_TOKEN });
                         return;
                     }
-                } catch (IllegalStateException ise) {                    
+                } catch (IllegalStateException ise) {
                     try {
                         JWTPayload payload = JsonTokenUtil.getPayload(idTokenHint);
                         if (payload != null) {
@@ -1119,13 +1100,13 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
                             clientId = JsonTokenUtil.getAud(payload);
                         }
                     } catch (IllegalStateException e) {
-                        Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { e.getMessage() == null ? "IllegalStateException" : e.getMessage() });
+                        Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { e });
                         attrs.setAttribute(OIDCConstants.OIDC_AUTHZ_PARAM_ID_TOKEN_HINT_STATUS, OAuth20Constants.ATTRTYPE_REQUEST,
                                            new String[] { OIDCConstants.OIDC_AUTHZ_PARAM_ID_TOKEN_HINT_STATUS_FAIL_INVALID_ID_TOKEN });
                         return;
                     }
-                } catch (Throwable e) {                    
-                    Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { e.getMessage() == null ? "IDTokenValidatonFailedException" : e.getMessage() });
+                } catch (Throwable e) {
+                    Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { e });
                     attrs.setAttribute(OIDCConstants.OIDC_AUTHZ_PARAM_ID_TOKEN_HINT_STATUS, OAuth20Constants.ATTRTYPE_REQUEST,
                                        new String[] { OIDCConstants.OIDC_AUTHZ_PARAM_ID_TOKEN_HINT_STATUS_FAIL_INVALID_ID_TOKEN });
                     return;
@@ -1134,7 +1115,7 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "id_token_hint username : " + tokenUsername + " client id: " + clientId);
             }
-            
+
             if (tokenUsername != null || clientId != null) {
                 attrs.setAttribute(OIDCConstants.OIDC_AUTHZ_PARAM_ID_TOKEN_HINT_STATUS, OAuth20Constants.ATTRTYPE_REQUEST,
                                    new String[] { OIDCConstants.OIDC_AUTHZ_PARAM_ID_TOKEN_HINT_STATUS_SUCCESS });
@@ -1157,8 +1138,7 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
             if (cacheControlValue != null &&
                 !cacheControlValue.isEmpty()) {
                 cacheControlValue = cacheControlValue + ", " + OAuth20Constants.HEADERVAL_CACHE_CONTROL;
-            }
-            else {
+            } else {
                 cacheControlValue = OAuth20Constants.HEADERVAL_CACHE_CONTROL;
             }
             response.setHeader(OAuth20Constants.HEADER_CACHE_CONTROL, cacheControlValue);

@@ -13,6 +13,9 @@ package com.ibm.ws.metadata.ejb;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+
 import org.junit.Test;
 
 /**
@@ -152,11 +155,6 @@ public class AutoTimerBeanTest {
     }
 
     @Test
-    public void testParseSchedule() throws Exception {
-        testParseScheduleHelper(false);
-    }
-
-    @Test
     public void testParseScheduleJavaTimeMethod() throws Exception {
         testParseScheduleHelper(true);
     }
@@ -292,14 +290,7 @@ public class AutoTimerBeanTest {
     private void testReturnedEpochTimeWithMilli(String dateTime, int expectedEpochInSeconds, int yyyy, int mm, int dd, boolean isJavaTimeMethod,
                                                 int milleseconds) throws Exception {
 
-        Class<?> ATBDateHelper = Class.forName("com.ibm.ws.metadata.ejb.AutomaticTimerBean$DateHelper");
-
-        long time = 0;
-        if (isJavaTimeMethod) {
-            time = (long) ATBDateHelper.getMethod("parseJavaTime", String.class).invoke(null, dateTime);
-        } else {
-            time = (long) ATBDateHelper.getMethod("parse", String.class).invoke(null, dateTime);
-        }
+        long time = AutomaticTimerBean.parse(dateTime);
 
         // pass specific date to account for DST
         int offsetSeconds = getOffsetSeconds(yyyy, mm, dd);
@@ -316,14 +307,7 @@ public class AutoTimerBeanTest {
 
     private void testReturnedEpochTimeSetOffsetWithMilli(String dateTime, int expectedEpochInSeconds, int offsetSeconds, boolean isJavaTimeMethod,
                                                          int milleseconds) throws Exception {
-        Class<?> ATBDateHelper = Class.forName("com.ibm.ws.metadata.ejb.AutomaticTimerBean$DateHelper");
-
-        long time = 0;
-        if (isJavaTimeMethod) {
-            time = (long) ATBDateHelper.getMethod("parseJavaTime", String.class).invoke(null, dateTime);
-        } else {
-            time = (long) ATBDateHelper.getMethod("parse", String.class).invoke(null, dateTime);
-        }
+        long time = AutomaticTimerBean.parse(dateTime);
 
         //Epoch time of  minus offset converted to milliseconds
         long expectedTime = ((expectedEpochInSeconds - offsetSeconds) * 1000L) + milleseconds;
@@ -332,14 +316,8 @@ public class AutoTimerBeanTest {
     }
 
     private void testInvalidInput(String dateTime, String inputRepresentation, boolean isJavaTimeMethod) throws Exception {
-        Class<?> ATBDateHelper = Class.forName("com.ibm.ws.metadata.ejb.AutomaticTimerBean$DateHelper");
-
         try {
-            if (isJavaTimeMethod) {
-                ATBDateHelper.getMethod("parseJavaTime", String.class).invoke(null, dateTime);
-            } else {
-                ATBDateHelper.getMethod("parse", String.class).invoke(null, dateTime);
-            }
+            AutomaticTimerBean.parse(dateTime);
             fail("AutomaticTimerBean$DateHelper.parse should have failed for " + inputRepresentation);
         } catch (Exception e) {
 
@@ -347,21 +325,7 @@ public class AutoTimerBeanTest {
     }
 
     private int getOffsetSeconds(int yyyy, int mm, int dd) throws Exception {
-        Class<?> ZoneId = Class.forName("java.time.ZoneId");
-        Class<?> ZDT = Class.forName("java.time.ZonedDateTime");
-        Class<?> LD = Class.forName("java.time.LocalDate");
-        Class<?> ZoneOffset = Class.forName("java.time.ZoneOffset");
-
-        // ZoneID local default zone (system's time zone)
-        Object defaultZone = ZoneId.getMethod("systemDefault").invoke(null);
-        // Create a date of same day as test to account for DST time shift
-        Object localDT = LD.getMethod("of", int.class, int.class, int.class).invoke(null, yyyy, mm, dd);
-        // Create a ZonedDateTime of system's time zone and future date
-        Object zonedDT = LD.getMethod("atStartOfDay", ZoneId).invoke(localDT, defaultZone);
-        // finally get the correct offset
-        Object offset = ZDT.getMethod("getOffset").invoke(zonedDT);
-        // Get the offset in seconds to add to the epoch time.
-        return (int) ZoneOffset.getMethod("getTotalSeconds").invoke(offset);
+        return LocalDate.of(yyyy, mm, dd).atStartOfDay(ZoneId.systemDefault()).getOffset().getTotalSeconds();
     }
 
 }

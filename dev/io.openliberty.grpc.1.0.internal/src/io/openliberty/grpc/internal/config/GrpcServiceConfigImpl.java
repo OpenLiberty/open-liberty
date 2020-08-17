@@ -30,6 +30,9 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleContext;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
+
+import io.openliberty.grpc.internal.GrpcMessages;
 
 /**
  * Adapted from com.ibm.ws.jaxrs20.clientconfig.JAXRSClientConfig
@@ -38,7 +41,7 @@ import com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator;
 		ApplicationRecycleComponent.class }, configurationPid = "io.openliberty.grpc.serverConfig", configurationPolicy = ConfigurationPolicy.REQUIRE, property = {
 				"service.vendor=IBM" })
 public class GrpcServiceConfigImpl implements GrpcServiceConfig, ApplicationRecycleComponent {
-	private static final TraceComponent tc = Tr.register(GrpcServiceConfigImpl.class);
+	private static final TraceComponent tc = Tr.register(GrpcServiceConfigImpl.class, GrpcMessages.GRPC_TRACE_NAME, GrpcMessages.GRPC_BUNDLE);
 
 	/**
 	 * Reference to the ApplicationRecycleCoordinator which will be used to restart
@@ -122,16 +125,19 @@ public class GrpcServiceConfigImpl implements GrpcServiceConfig, ApplicationRecy
 
 	/**
 	 * Invoked when <grpc/> element is first processed; the new configuration
-	 * is processed and added to the GrpcServiceConfigHolder
+	 * is processed and added to the GrpcServiceConfigHolder.  All previously
+	 * initialized gRPC apps will be restarted to propagate the new config.
 	 */
 	@Activate
 	protected void activate(Map<String, Object> properties) {
 		if (properties == null)
 			return;
 		String serviceName = getServiceName(properties);
-		if (serviceName == null)
+		if (serviceName == null) {
 			return;
+		}
 		GrpcServiceConfigHolder.addConfig(this.toString(), serviceName, filterProps(properties));
+		recycleDependentApps();
 	}
 
 	/**
@@ -148,23 +154,34 @@ public class GrpcServiceConfigImpl implements GrpcServiceConfig, ApplicationRecy
 		GrpcServiceConfigHolder.removeConfig(this.toString());
 		String serviceName = getServiceName(properties);
 		if (serviceName == null) {
-			// if there isn't a service name then this config has no meaning
 			return;
 		}
 		GrpcServiceConfigHolder.addConfig(this.toString(), serviceName, filterProps(properties));
-
-		// TODO: for now, any change will force all grpc apps to be restarted
-		if (!applications.isEmpty()) {
-			Set<String> members = getDependentApplications();
-			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-				Tr.debug(this, tc, "recycling applications: " + members);
-			appRecycleSvcRef.recycleApplications(members);
-		}
+		recycleDependentApps();
 	}
 
+	/**
+	 * Invoked when <grpc/> element is first removed; All previously
+	 * initialized gRPC apps will be restarted to propagate the config
+	 * removal.
+	 */
 	@Deactivate
 	protected void deactivate() {
 		GrpcServiceConfigHolder.removeConfig(this.toString());
+		recycleDependentApps();
+	}
+
+	/**
+	 * Restart any previously initialized apps that provide gRPC services
+	 */
+	private void recycleDependentApps() {
+		Set<String> members = getDependentApplications();
+		if (!members.isEmpty() && !FrameworkState.isStopping()) {
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+				Tr.debug(this, tc, "recycling applications: " + members);
+			}
+			appRecycleSvcRef.recycleApplications(members);
+		}
 	}
 
 	@Override
@@ -173,14 +190,15 @@ public class GrpcServiceConfigImpl implements GrpcServiceConfig, ApplicationRecy
 	}
 
 	/**
-	 * Get the J2EE names for apps that provide grpc services, and clear the map
+	 * Get the J2EE names for apps that provide grpc services
 	 */
 	@Override
 	public Set<String> getDependentApplications() {
-		Set<String> members = new HashSet<String>(applications);
-		applications.removeAll(members);
-		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+		Set<String> members = new HashSet<String>();
+		members.addAll(applications);
+		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 			Tr.debug(this, tc, "getDependentApplications: " + members);
+		}
 		return members;
 	}
 

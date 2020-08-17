@@ -15,29 +15,44 @@ src: \
     fat/src,\
     test-applications/HelloWorldClient.war/src,\
     test-applications/HelloWorldService.war/src, \
-    test-applications/FavoriteBeerService.war/src
+    test-applications/FavoriteBeerService.war/src, \
+    test-applications/StreamingService.war/src, \
+    test-applications/InvalidService.war/src, \
+    test-applications/StoreProducerApp.war/src, \
+    test-applications/StoreConsumerApp.war/src, \
+    test-applications/StoreApp.war/src
 
 fat.project: true
 fat.minimum.java.level: 1.8
 
 # Define additional tested features that are NOT present in any XML files in this bucket.
 tested.features:\
-    servlet-4.0
+    servlet-4.0,jaxrs-2.1
 
 -buildpath: \
-    com.ibm.websphere.javaee.servlet.4.0;version=latest,\
-    io.openliberty.grpc.1.0.internal;version=latest, \
-    io.openliberty.grpc.1.0.internal.client;version=latest, \
-    io.openliberty.grpc.1.0.internal.common;version=latest, \
-    commons-logging:commons-logging;version=1.1.3,\
-    com.ibm.ws.org.slf4j.api.1.7.7,\
-    io.grpc:grpc-api;version=1.27.0,\
-    io.grpc:grpc-census;version=1.27.0,\
-    io.grpc:grpc-context;version=1.27.0,\
-    io.grpc:grpc-core;version=1.27.0,\
-    io.grpc:grpc-protobuf;version=1.27.0,\
-    io.grpc:grpc-protobuf-lite;version=1.27.0,\
-    io.grpc:grpc-stub;version=1.27.0,\
-    net.sourceforge.htmlunit:htmlunit;version=2.20,\
-    xml-apis:xml-apis;version=1.4.01,\
-    com.google.protobuf
+	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+	io.openliberty.grpc.1.0.internal;version=latest,\
+	io.openliberty.grpc.1.0.internal.client;version=latest,\
+	io.openliberty.grpc.1.0.internal.common;version=latest,\
+	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
+	commons-logging:commons-logging;version=1.1.3,\
+	com.ibm.websphere.org.eclipse.microprofile.openapi.1.1.1;version=latest,\
+	com.ibm.websphere.org.eclipse.microprofile.config.1.4;version=latest,\
+    com.ibm.websphere.org.eclipse.microprofile.rest.client.1.4;version=latest,\
+	com.ibm.ws.org.slf4j.api.1.7.7,\
+	io.grpc:grpc-api;version=1.27.0,\
+	io.grpc:grpc-census;version=1.27.0,\
+	io.grpc:grpc-context;version=1.27.0,\
+	io.grpc:grpc-core;version=1.27.0,\
+	io.grpc:grpc-protobuf;version=1.27.0,\
+	io.grpc:grpc-protobuf-lite;version=1.27.0,\
+	io.grpc:grpc-stub;version=1.27.0,\
+	net.sourceforge.htmlunit:htmlunit;version=2.20,\
+	xml-apis:xml-apis;version=1.4.01,\
+	com.google.protobuf:protobuf-java;version=3.11.1, \
+	com.google.protobuf:protobuf-java-util;version=3.11.4, \
+	com.ibm.websphere.javaee.jaxrs.2.1,\
+	com.ibm.websphere.javaee.cdi.2.0,\
+	com.ibm.websphere.appserver.api.distributedMap;version=latest,\
+	com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
+    com.ibm.websphere.javaee.jsonb.1.0;version=latest

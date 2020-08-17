@@ -43,6 +43,7 @@ import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
 import org.apache.cxf.jaxrs.model.ProviderInfo;
+import org.apache.cxf.jaxrs.utils.InjectionUtils;
 import org.apache.cxf.jaxrs.utils.JAXRSUtils;
 
 import com.ibm.websphere.ras.Tr;
@@ -209,6 +210,7 @@ public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyRead
     private Jsonb getJsonb() {
         for (ProviderInfo<ContextResolver<?>> crPi : contextResolvers) {
             ContextResolver<?> cr = crPi.getProvider();
+            InjectionUtils.injectContexts(cr, crPi, JAXRSUtils.getCurrentMessage());
             Object o = cr.getContext(null);
             if (o instanceof Jsonb) {
                 return (Jsonb) o;

@@ -440,12 +440,19 @@ public class UsernameTokenValidator implements Validator {
     }
 
     public static Date convertDate(String strTimeStamp) throws WSSecurityException {
+
         Date date;
         try {
-            //System.out.println("Original string: " + strTimeStamp);
 
-            // "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+            //System.out.println("Original string: " + strTimeStamp);
+	    String datePattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";      // default pattern
+
+	    // Use correct date pattern if milliseconds is missing in timestamp
+	    if (strTimeStamp.length() <=  20)  { // 2020-06-08T12:40:10Z
+		datePattern  = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+	    }
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat(datePattern, Locale.US);
             dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
             date = dateFormat.parse(strTimeStamp);
 
