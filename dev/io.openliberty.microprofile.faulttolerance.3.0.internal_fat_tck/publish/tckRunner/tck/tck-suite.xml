@@ -12,7 +12,10 @@
 
     <test name="microprofile-faulttolerance 3.0 TCK">
         <packages>
-            <package name="org.eclipse.microprofile.fault.tolerance.tck.*"/>
+            <package name="org.eclipse.microprofile.fault.tolerance.tck.*">
+                <!-- Metrics tests disabled until TCK is updated to support MP Metrics 3.0 -->
+                <exclude name="org.eclipse.microprofile.fault.tolerance.tck.metrics"></exclude>
+            </package>
         </packages>
     </test>
 </suite>
