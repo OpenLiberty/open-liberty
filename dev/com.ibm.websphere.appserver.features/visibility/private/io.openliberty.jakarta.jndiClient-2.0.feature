@@ -6,5 +6,5 @@ visibility=private
  com.ibm.websphere.appserver.transaction-2.0, \
  com.ibm.websphere.appserver.clientContainerRemoteSupportCommon-1.0
 -bundles=com.ibm.ws.jndi.remote.client
-kind=noship
+kind=beta
 edition=base
