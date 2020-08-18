@@ -20,39 +20,7 @@
     </featureManager>
 
     <include location="../fatTestPorts.xml"/>
-    
-
-	 <dataSource id="jdbc/JPA_DS" jndiName="jdbc/JPA_DS" fat.modify="true">
-            <jdbcDriver libraryRef="AnonymousJDBCLib"/>
-            <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" />
-    </dataSource>
-
-    <dataSource id="jdbc/JPA_NJTADS" jndiName="jdbc/JPA_NJTADS" fat.modify="true" transactional="false">
-            <jdbcDriver libraryRef="AnonymousJDBCLib"/>
-            <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" />
-    </dataSource>
-
-  <library id="AnonymousJDBCLib">
-    <fileset dir="${shared.resource.dir}/jdbc" includes="${env.DB_DRIVER}"/>
-  </library>
-
-  <!-- JDBC driver -->
-  <javaPermission codebase="${shared.resource.dir}/jdbc/${env.DB_DRIVER}" className="java.security.AllPermission"/>
-
-  <!-- Permission needed for SQLServer driver -->
-  <javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
-  <javaPermission className="java.util.PropertyPermission" name="java.specification.version" actions="read"/>
-
-  <!-- Permission needed for Oracle driver -->
-  <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers" />
-
-  <!-- Permission needed for Postgres driver -->
-  <javaPermission className="java.util.PropertyPermission" name="org.postgresql.forceBinary" actions="read"/>
-
-  <!-- File read write permissions -->
-  <javaPermission className="java.util.PropertyPermission" name="user.dir" actions="read"/>
-  <javaPermission className="java.io.FilePermission" name="files/timertestoutput.txt" actions="read,write"/>
-  <javaPermission className="java.io.FilePermission" name="files" actions="write"/>
+    <include location="database.xml"/>
 
     <!--<logging  traceSpecification="JPA=all=enabled:EJBContainer=all=enabled"
               traceFileName="trace.log"
