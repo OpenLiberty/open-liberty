@@ -73,7 +73,10 @@ public class KerberosService {
             } else {
                 Tr.error(tc, "KRB5_FILE_NOT_FOUND_CWWKS4345E", "keytab", "<kerberos>", keytab.toAbsolutePath());
             }
+        } else {
+            keytab = null;
         }
+
         if (rawConfigFile != null) {
             configFile = Paths.get(rawConfigFile);
             String originalConfigFile = priv.getProperty(KRB5_CONFIG_PROPERTY);
@@ -90,6 +93,8 @@ public class KerberosService {
             } else {
                 Tr.error(tc, "KRB5_FILE_NOT_FOUND_CWWKS4345E", "configFile", "<kerberos>", configFile.toAbsolutePath());
             }
+        } else {
+            configFile = null;
         }
     }
 
@@ -123,7 +128,7 @@ public class KerberosService {
      * @return A valid subject for the supplied principal
      */
     public Subject getOrCreateSubject(String principal) throws LoginException {
-        return getOrCreateSubject(principal, null);
+        return getOrCreateSubject(principal, null, null);
     }
 
     /**
@@ -134,23 +139,24 @@ public class KerberosService {
      *
      * @param principal The principal to obtain a subject for
      * @param pass      The password to be used via CallbackHandler. This will only be used if no password
-     *                      is found in the credential cache or keytab files first.
+     *                      is found in the credential cache or keytab files first. May be null.
+     * @param ccache    The path to the credential cache to be used for this principal. May be null.
      * @return A valid subject for the supplied principal
      */
-    public Subject getOrCreateSubject(String principal, SerializableProtectedString pass) throws LoginException {
+    public Subject getOrCreateSubject(String principal, SerializableProtectedString pass, Path ccache) throws LoginException {
         KerberosPrincipal krb5Principal = new KerberosPrincipal(principal);
         Subject cachedSubject = subjectCache.get(krb5Principal);
         if (cachedSubject != null) {
             return cachedSubject;
         }
 
-        Subject createdSubject = doKerberosLogin(principal, pass);
+        Subject createdSubject = doKerberosLogin(principal, pass, ccache);
 
         subjectCache.put(krb5Principal, createdSubject);
         return createdSubject;
     }
 
-    private Subject doKerberosLogin(String principal, SerializableProtectedString pass) throws LoginException {
+    private Subject doKerberosLogin(String principal, SerializableProtectedString pass, Path ccache) throws LoginException {
         Subject subject = new Subject();
         Krb5LoginModuleWrapper krb5 = new Krb5LoginModuleWrapper();
         Map<String, String> options = new HashMap<String, String>();
@@ -163,10 +169,15 @@ public class KerberosService {
         // the CallbackHandler is never called if doNotPrompt=true is set
         if (callback == null)
             options.put("doNotPrompt", "true");
-        options.put("useKeyTab", "true");
         options.put("clearPass", "true");
+
+        if (ccache != null) {
+            options.put("useTicketCache", "true");
+            options.put("ticketCache", ccache.toAbsolutePath().toString());
+        }
         // If no keytab path specified, still set useKeyTab=true because then the
         // default JDK or default OS locations will be checked
+        options.put("useKeyTab", "true");
         if (keytab != null) {
             options.put("keyTab", keytab.toAbsolutePath().toString());
         }

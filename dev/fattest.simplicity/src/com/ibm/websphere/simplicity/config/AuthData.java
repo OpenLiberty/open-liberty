@@ -13,6 +13,7 @@ package com.ibm.websphere.simplicity.config;
 import javax.xml.bind.annotation.XmlAttribute;
 
 import com.ibm.websphere.simplicity.log.Log;
+
 import componenttest.common.apiservices.Bootstrap;
 import componenttest.common.apiservices.BootstrapProperty;
 
@@ -25,6 +26,13 @@ public class AuthData extends ConfigElement implements ModifiableConfigElement {
 
     private String user;
     private String password;
+
+    @XmlAttribute
+    public String krb5Principal;
+
+    @XmlAttribute
+    public String krb5TicketCache;
+
     private String fatModify;
 
     public String getUser() {
@@ -56,7 +64,7 @@ public class AuthData extends ConfigElement implements ModifiableConfigElement {
 
     /**
      * Modifies the element if the fat.modify="true" attribute was configured for this element.
-     * 
+     *
      * @param config The ServerConfiguration instance.
      */
     @Override
@@ -103,7 +111,7 @@ public class AuthData extends ConfigElement implements ModifiableConfigElement {
     /**
      * Returns a string containing a list of the properties and their values stored
      * for this AuthData object.
-     * 
+     *
      * @return String representing the data
      */
     @Override
@@ -112,6 +120,10 @@ public class AuthData extends ConfigElement implements ModifiableConfigElement {
         buf.append("id=\"" + (getId() == null ? "" : getId()) + "\" ");
         buf.append("user=\"" + (user == null ? "" : user) + "\" ");
         buf.append("password=\"" + (password == null ? "" : "*****") + "\"");
+        if (krb5Principal != null)
+            buf.append(", krb5Principal=\"" + krb5Principal + "\"");
+        if (krb5TicketCache != null)
+            buf.append(", krb5TokenCache=\"" + krb5TicketCache + "\"");
         buf.append("}");
         return buf.toString();
     }

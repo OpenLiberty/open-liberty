@@ -16,10 +16,9 @@
   
   <authData id="krb5Auth" krb5Principal="${KRB5_USER}"/>
   
-  <dataSource jndiName="jdbc/krb/basic">
+  <dataSource jndiName="jdbc/krb/basic" containerAuthDataRef="krb5Auth">
     <jdbcDriver libraryRef="DB2JCCLib"/>
     <properties.db2.jcc databaseName="${DB2_DBNAME}" serverName="${DB2_HOSTNAME}" portNumber="${DB2_PORT}"/>
-    <containerAuthData krb5Principal="${KRB5_USER}"/>
   </dataSource>
   
   <dataSource jndiName="jdbc/krb/xa" type="javax.sql.XADataSource" containerAuthDataRef="krb5Auth">
