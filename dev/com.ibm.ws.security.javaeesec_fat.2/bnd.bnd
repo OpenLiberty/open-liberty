@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -11,7 +11,11 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
+
+fat.project: true
+tested.features: el-4.0, mpconfig-1.4, appsecurity-4.0, servlet-5.0, jsonp-2.0, cdi-3.0, ejblite-4.0, jaxrsclient-3.0, jsp-3.0, jaxrs-3.0, enterprisebeanslite-4.0, faces-3.0, restfulwsclient-3.0, restfulws-3.0
 #fat.test.mode=full
+
 src: \
 	fat/src,\
 	test-applications/JavaEESecBase.jar/src,\
@@ -41,7 +45,6 @@ src: \
 	test-applications/AnnotatedEjbinWarServletLdapRealm2.war/src
 
 
-fat.project: true
 -buildpath: \
 	org.apache.httpcomponents:httpclient;strategy=exact;version=4.1.2,\
 	org.apache.httpcomponents:httpcore;strategy=exact;version=4.1.2,\

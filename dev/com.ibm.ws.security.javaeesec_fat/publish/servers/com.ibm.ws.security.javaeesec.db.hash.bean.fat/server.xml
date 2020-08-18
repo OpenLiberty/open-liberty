@@ -29,7 +29,7 @@
 				<special-subject type="ALL_AUTHENTICATED_USERS" />
 			</security-role>
 		</application-bnd>
-		<classloader commonLibraryRef="DerbyLib, CustomHashLibBean" />
+		<classloader commonLibraryRef="DerbyLib,CustomHashLibBean" />
 	</application>
 	
 	<dataSource id="DefaultDataSource" fat.modify="true">

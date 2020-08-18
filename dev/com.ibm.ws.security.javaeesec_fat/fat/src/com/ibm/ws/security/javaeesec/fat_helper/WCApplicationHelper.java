@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -200,7 +200,8 @@ public class WCApplicationHelper {
     }
 
     private static void addEarToServer(LibertyServer server, String dir, String earName, boolean addEarResources,
-                                       String warName, boolean addWarResources,  String warResourceLocation,  String jarName, boolean addJarResources, String... packageNames) throws Exception {
+                                       String warName, boolean addWarResources, String warResourceLocation, String jarName, boolean addJarResources,
+                                       String... packageNames) throws Exception {
 
         if (warName == null)
             return;
@@ -256,7 +257,7 @@ public class WCApplicationHelper {
         }
 
         if (earName != null) {
-            LOG.info("addEarToServer : crteate ear " + earName + ", ear include application/.xml : " + addEarResources);
+            LOG.info("addEarToServer : create ear " + earName + ", ear include application/.xml : " + addEarResources);
             EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, earName);
             ear.addAsModule(war);
             if (addEarResources) {

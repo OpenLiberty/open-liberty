@@ -1,0 +1,3 @@
+customClientContainer {
+	com.ibm.ws.security.client.fat.CustomJaasLoginModule required;
+};
