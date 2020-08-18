@@ -1,0 +1,26 @@
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.jakarta.mail.repository/resources/com/ibm/ws/jakarta/mail/repository/internal/resources/MailMessages.nlsprops
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR WebSphere Jakarta Mail API
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# TODO: Get the correct Message Prefix block for JAKARTA MAIL feature
+# liberty wiki should have a list of the Message Prefix
+# Message prefix block: CWWKJ0200 - CWWKJ0299
+
+#-----  Jakarta Mail messages
+
+CWWKX0957I=CWWKX0957I: A jakarta.mail.Session object as been successfully created by a mailSession in the server.xml
+CWWKX0957I.explanation= mailSession was created successfully with the information provided in the server.xml
+CWWKX0957I.useraction= No action is necessary at this time
