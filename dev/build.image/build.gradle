@@ -247,6 +247,11 @@ def microProfile3Features() {
     features
 }
 
+def microProfile4Features() {
+    String features = project.file('profiles/microProfile4/features.xml').readLines()
+    features
+}
+
 def getFeaturePath(feature) {
     def file = getFeaturePath(feature, "")
     file
@@ -433,6 +438,28 @@ if (isAutomatedBuild && !isIFIXBuild) {
             }
         }
     }
+    
+    task packageOpenLibertyMicroProfile4(type: PackageLibertyWithFeatures) {
+        doFirst {
+            excludedEE7Features.each {
+                this.&removeFeature("${it}")
+            }
+        }
+
+        dependsOn parent.subprojects.assemble
+        dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
+        withFeatures this.&microProfile4Features
+        outputTo packageDir
+        doLast {
+            copy {
+                from "$packageDir/wlp/templates/servers/microProfile4/server.xml"
+                into "$packageDir/wlp/templates/servers/defaultServer"
+            }
+            excludedEE7Features.each {
+                this.&restoreFeature("${it}")
+            }
+        }
+    }
 }
 
 // Generate checksums
@@ -548,6 +575,20 @@ if (isAutomatedBuild && !isIFIXBuild) {
         }
     }
     publish.dependsOn zipOpenLibertyMicroProfile3
+
+    task zipOpenLibertyMicroProfile4(type: Zip) {
+        dependsOn packageOpenLibertyMicroProfile4
+        dependsOn genChecksums
+        baseName 'openliberty-microProfile4'
+        from packageDir
+        destinationDir distsDir
+        version releaseVersion
+        doLast {
+            rootProject.userProps.setProperty('zipopenliberty.microprofile4.archivename', archivePath.toString())
+            rootProject.storeProps()
+        }
+    }
+    publish.dependsOn zipOpenLibertyMicroProfile4
 
     // Includes both kind=ga and kind=beta features.
     task zipOpenLibertyBeta(type: Zip) {
