@@ -115,24 +115,23 @@
             <class name="org.eclipse.microprofile.fault.tolerance.tck.config.FallbackConfigTest"></class>
             <class name="org.eclipse.microprofile.fault.tolerance.tck.config.FallbackSkipOnConfigTest"></class>
             <class name="org.eclipse.microprofile.fault.tolerance.tck.interceptor.FaultToleranceInterceptorTest"></class>
-            <!-- Metrics tests disabled until TCK is updated to support MP Metrics 3.0 -->
-<!--             <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.AllMetricsTest"></class> -->
-<!--             <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.BulkheadMetricTest"> -->
-<!--                 <methods> -->
-<!--                     <include name="bulkheadMetricTest"/> -->
-<!--                     <include name="bulkheadMetricRejectionTest"/> -->
-<!--                 </methods> -->
-<!--             </class> -->
-<!--             <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.CircuitBreakerMetricTest"></class> -->
-<!--             <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.ClassLevelMetricTest"></class> -->
-<!--             <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.FallbackMetricTest"></class> -->
-<!--             <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.MetricsDisabledTest"></class> -->
-<!--             <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.RetryMetricTest"></class> -->
-<!--             <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.TimeoutMetricTest"> -->
-<!--                 <methods> -->
-<!--                     <include name="testTimeoutMetric"/> -->
-<!--                 </methods> -->
-<!--             </class> -->
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.AllMetricsTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.BulkheadMetricTest">
+                <methods>
+                    <include name="bulkheadMetricTest"/>
+                    <include name="bulkheadMetricRejectionTest"/>
+                </methods>
+            </class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.CircuitBreakerMetricTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.ClassLevelMetricTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.FallbackMetricTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.MetricsDisabledTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.RetryMetricTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.TimeoutMetricTest">
+                <methods>
+                    <include name="testTimeoutMetric"/>
+                </methods>
+            </class>
             <class name="org.eclipse.microprofile.fault.tolerance.tck.visibility.retry.RetryVisibilityTest"></class>
         </classes>
     </test>
