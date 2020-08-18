@@ -38,6 +38,7 @@ import com.ibm.websphere.kernel.server.ServerInfoMBean;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.security.common.crypto.KeyAlgorithmChecker;
 import com.ibm.ws.security.common.jwk.impl.JWKProvider;
 import com.ibm.ws.security.jwt.config.JwtConfig;
 import com.ibm.ws.security.jwt.utils.JwtUtils;
@@ -77,6 +78,8 @@ public class JwtComponent implements JwtConfig {
     private DynamicMBean httpendpointInfoMBean;
 
     private ServerInfoMBean serverInfoMBean;
+
+    private final KeyAlgorithmChecker keyAlgChecker = new KeyAlgorithmChecker();
 
     @org.osgi.service.component.annotations.Reference(target = "(jmx.objectname=WebSphere:feature=channelfw,type=endpoint,name=defaultHttpEndpoint)", cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     protected void setEndPointInfoMBean(DynamicMBean endpointInfoMBean) {
@@ -178,7 +181,7 @@ public class JwtComponent implements JwtConfig {
         if (sigAlg == null) {
             return false;
         }
-        return sigAlg.matches("[RE]S[0-9]{3,}");
+        return (keyAlgChecker.isRSAlgorithm(sigAlg) || keyAlgChecker.isESAlgorithm(sigAlg));
     }
 
     private void initializeJwkProvider(JwtConfig jwtConfig) {
@@ -350,7 +353,7 @@ public class JwtComponent implements JwtConfig {
         }
         return null;
     }
-    
+
     @Override
     public long getElapsedNbfTime() {
         return elapsedNbfTime;

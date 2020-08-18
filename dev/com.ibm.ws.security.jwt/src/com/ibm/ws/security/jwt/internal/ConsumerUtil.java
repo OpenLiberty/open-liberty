@@ -41,6 +41,7 @@ import com.ibm.websphere.security.jwt.InvalidTokenException;
 import com.ibm.websphere.security.jwt.JwtToken;
 import com.ibm.websphere.security.jwt.KeyException;
 import com.ibm.websphere.security.jwt.KeyStoreServiceException;
+import com.ibm.ws.security.common.crypto.KeyAlgorithmChecker;
 import com.ibm.ws.security.common.jwk.impl.JwKRetriever;
 import com.ibm.ws.security.common.time.TimeUtils;
 import com.ibm.ws.security.jwt.config.JwtConsumerConfig;
@@ -61,6 +62,8 @@ public class ConsumerUtil {
     public final static String ISSUER = "mp.jwt.verify.issuer";
     public final static String PUBLIC_KEY = "mp.jwt.verify.publickey";
     public final static String KEY_LOCATION = "mp.jwt.verify.publickey.location";
+
+    KeyAlgorithmChecker keyAlgChecker = new KeyAlgorithmChecker();
 
     public ConsumerUtil(AtomicServiceReference<KeyStoreService> kss) {
         keyStoreService = kss;
@@ -141,21 +144,26 @@ public class ConsumerUtil {
         Key signingKey = null;
         String sigAlg = config.getSignatureAlgorithm();
 
-        if (isHSAlgorithm(sigAlg)) {
+        if (keyAlgChecker.isHSAlgorithm(sigAlg)) {
             signingKey = getSigningKeyForHS(config);
-        } else if (isRSAlgorithm(sigAlg)) {
+        } else if (keyAlgChecker.isRSAlgorithm(sigAlg)) {
             signingKey = getSigningKeyForRS(config, jwtContext, properties);
-        } else if (isESAlgorithm(sigAlg)) {
+        } else if (keyAlgChecker.isESAlgorithm(sigAlg)) {
             signingKey = getSigningKeyForES(config, jwtContext, properties);
+        }
+        if (isAsymmetricAlgorithm(sigAlg)) {
+            if (!keyAlgChecker.isPublicKeyValidType(signingKey, sigAlg)) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Public key " + signingKey + " does not match the parameters of the " + sigAlg + " algorithm");
+                }
+                return null;
+            }
         }
         return signingKey;
     }
 
-    boolean isHSAlgorithm(String sigAlg) {
-        if (sigAlg == null) {
-            return false;
-        }
-        return sigAlg.matches("HS[0-9]{3,}");
+    boolean isAsymmetricAlgorithm(String sigAlg) {
+        return (keyAlgChecker.isRSAlgorithm(sigAlg) || keyAlgChecker.isESAlgorithm(sigAlg));
     }
 
     Key getSigningKeyForHS(JwtConsumerConfig config) throws KeyException {
@@ -200,25 +208,11 @@ public class ConsumerUtil {
         return null;
     }
 
-    boolean isESAlgorithm(String sigAlg) {
-        if (sigAlg == null) {
-            return false;
-        }
-        return sigAlg.matches("ES[0-9]{3,}");
-    }
-
     boolean isPublicKeyPropsPresent(Map props) {
         if (props == null) {
             return false;
         }
         return props.get(PUBLIC_KEY) != null || props.get(KEY_LOCATION) != null;
-    }
-
-    boolean isRSAlgorithm(String sigAlg) {
-        if (sigAlg == null) {
-            return false;
-        }
-        return sigAlg.matches("RS[0-9]{3,}");
     }
 
     Key getSigningKeyForRS(JwtConsumerConfig config, JwtContext jwtContext, Map properties) throws KeyException {
