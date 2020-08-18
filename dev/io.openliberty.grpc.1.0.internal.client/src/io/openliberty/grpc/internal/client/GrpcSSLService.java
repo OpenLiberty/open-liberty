@@ -8,6 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package io.openliberty.grpc.internal.client;
 
-@org.osgi.annotation.versioning.Version("1.0")
-package io.openliberty.grpc.internal.client.security;
+import io.grpc.netty.shaded.io.netty.handler.ssl.SslContext;
+
+public interface GrpcSSLService {
+
+	public SslContext getOutboundClientSSLContext(String sslRef, String host, String port);
+
+}

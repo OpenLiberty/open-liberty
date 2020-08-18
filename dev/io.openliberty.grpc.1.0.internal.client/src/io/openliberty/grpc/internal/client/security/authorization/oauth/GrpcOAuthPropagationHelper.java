@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.grpc.internal.client.security.oauth;
+package io.openliberty.grpc.internal.client.security.authorization.oauth;
 
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
@@ -79,9 +79,6 @@ public class GrpcOAuthPropagationHelper {
 			if (tc.isDebugEnabled()) {
 				Tr.debug(tc, "Exception while getting runAsSubject:", e.getCause());
 			}
-			// OIDC_FAILED_RUN_AS_SUBJCET=CWWKS1772W: An exception occurred while attempting
-			// to get RunAsSubject. The exception was: [{0}]
-			Tr.warning(tc, "failed_run_as_subject", e.getLocalizedMessage());
 		}
 		return null;
 	}
