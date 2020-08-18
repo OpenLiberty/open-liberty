@@ -1,12 +1,19 @@
 <server>
+
   <featureManager>
     <feature>servlet-3.1</feature>
-    <feature>jndi-1.0</feature>
     <feature>wasJmsServer-1.0</feature>
     <feature>testjmsinternals-1.0</feature>
+    <feature>timedexit-1.0</feature>
   </featureManager>
 
   <include location="../fatTestPorts.xml"/>
+
+  <variable name="onError" value="FAIL"/>
+
+  <logging 
+    traceSpecification="com.ibm.ws.sib.processor.impl.JSLocalConsumerPoint=all: com.ibm.ws.sib.processor.impl.RemoteConsumerDispatcher=all: com.ibm.ws.sib.processor.impl.ConsumerDispatcher=all: com.ibm.ws.sib.comms.client.ConsumerSessionProxy=all: com.ibm.ws.sib.api.jms.impl.JmsMsgConsumerImpl=all: SIBMessageTrace=all"
+    maxFileSize="200"/>
 
   <!-- Deconflict the engine server default http endpoint port configuration from the client configuration. -->
   <variable name="bvt.prop.HTTP_default"         value="${bvt.prop.http.1}"/>
@@ -15,15 +22,7 @@
   <!-- Set the JMS endpoint port configuration to values which are known to the client. -->
   <wasJmsEndpoint host="*" wasJmsPort="${bvt.prop.jms.1}" wasJmsSSLPort="${bvt.prop.jms.1.ssl}"/> 
 
-  <variable name="onError" value="FAIL"/>
-
-  <logging 
-    traceSpecification="com.ibm.ws.sib.processor.impl.JSLocalConsumerPoint=all: com.ibm.ws.sib.processor.impl.RemoteConsumerDispatcher=all: com.ibm.ws.sib.processor.impl.ConsumerDispatcher=all: com.ibm.ws.sib.comms.client.ConsumerSessionProxy=all: com.ibm.ws.sib.api.jms.impl.JmsMsgConsumerImpl=all: SIBMessageTrace=all"
-    traceFileName="trace.log"
-    maxFileSize="100"
-    maxFiles="2"/> 
-
-  <messagingEngine>
+  <messagingEngine id="defaultME">
     <queue id="QUEUE1"/>
     <queue id="QUEUE2"/>
     <queue id="QUEUE3"/>

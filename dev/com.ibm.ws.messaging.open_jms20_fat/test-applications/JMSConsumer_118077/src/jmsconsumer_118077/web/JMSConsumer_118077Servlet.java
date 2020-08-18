@@ -74,27 +74,38 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
+        System.out.println("JMSConsumer_118077Servlet.init ENTRY");
+
         super.init();
 
         try {
             jmsQCFBindings = (QueueConnectionFactory)
                 new InitialContext().lookup("java:comp/env/jndi_JMS_BASE_QCF");
-            jmsQCFTCP = (QueueConnectionFactory)
-                new InitialContext().lookup("java:comp/env/jndi_JMS_BASE_QCF1");
-            jmsQueue = (Queue)
-                new InitialContext() .lookup("java:comp/env/jndi_INPUT_Q");
         } catch ( NamingException e ) {
             e.printStackTrace();
         }
+        System.out.println("Queue connection factory 'java:comp/env/jndi_JMS_BASE_QCF':\n" + jmsQCFBindings);
 
-        if ( jmsQCFBindings == null ) {
-            System.out.println("Null queue connection factory 'java:comp/env/jndi_JMS_BASE_QCF'");
+        try {
+            jmsQCFTCP = (QueueConnectionFactory)
+                new InitialContext().lookup("java:comp/env/jndi_JMS_BASE_QCF1");
+        } catch ( NamingException e ) {
+            e.printStackTrace();
         }
-        if ( jmsQCFTCP  == null ) {
-            System.out.println("Null queue connection factory 'java:comp/env/jndi_JMS_BASE_QCF1'");
+        System.out.println("Queue connection factory 'java:comp/env/jndi_JMS_BASE_QCF1':\n" + jmsQCFTCP);
+
+        try {
+            jmsQueue = (Queue)
+                new InitialContext().lookup("java:comp/env/jndi_INPUT_Q1");
+        } catch ( NamingException e ) {
+            e.printStackTrace();
         }
-        if ( jmsQueue == null ) {
-            System.out.println("Null queue 'java:comp/env/jndi_INPUT_Q'");
+        System.out.println("Queue 'java:comp/env/jndi_INPUT_Q1':\n" + jmsQueue);
+
+        System.out.println("JMSConsumer_118077Servlet.init RETURN");
+
+        if ( (jmsQCFBindings == null) || (jmsQCFTCP == null) || (jmsQueue == null) ) {
+            throw new ServletException("Failed JMS initialization");
         }
     }
 

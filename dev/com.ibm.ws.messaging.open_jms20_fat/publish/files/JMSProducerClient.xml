@@ -15,8 +15,8 @@
   <include location="../fatTestPorts.xml"/>
 
   <variable name="onError" value="FAIL"/>
-
-  <logging
+  
+  <logging 
     traceSpecification="*=info:logservice=all:SIBJms*=all:com.ibm.ws.cdi.*=all"
     maxFileSize="200"/>
 
@@ -26,13 +26,13 @@
 
   <!-- Point the connection factories to the JMS endpoint defined in the engine configuration. -->
 
-  <jmsConnectionFactory jndiName="jndi_JMS_BASE_CF" connectionManagerRef="ConMgr9">
+  <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_CF" connectionManagerRef="ConMgr9">
     <properties.wasJms remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/> 
-  </jmsConnectionFactory>
+  </jmsQueueConnectionFactory>
   <connectionManager id="ConMgr9" maxPoolSize="2"/>
 
   <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF" connectionManagerRef="ConMgr6">
-    <properties.wasJms remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/>
+    <properties.wasJms remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/> 
   </jmsQueueConnectionFactory>
   <connectionManager id="ConMgr6" maxPoolSize="2"/>
 
@@ -69,23 +69,11 @@
   </jmsQueue>
 
   <jmsTopic jndiName="eis/topic1">
-    <properties.wasJms topicSpace="NewTopic1" topicName="testTopic"/>
+    <properties.wasJms topicSpace="NewTopic1" topicName="testTopic1"/>
   </jmsTopic>
 
   <jmsTopic jndiName="eis/topic2">
-    <properties.wasJms topicSpace="NewTopic2" topicName="testTopic" timeToLive="1000"/>
-  </jmsTopic>
-
-  <jmsTopic jndiName="eis/topic3">
-    <properties.wasJms topicSpace="NewTopic3" topicName="testTopic"/>
-  </jmsTopic>
-
-  <jmsTopic jndiName="eis/topic4">
-    <properties.wasJms topicSpace="NewTopic4" topicName="testTopic"/>
-  </jmsTopic>
-
-  <jmsTopic jndiName="eis/topic5">
-    <properties.wasJms topicSpace="NewTopic5" topicName="testTopic"/>
+    <properties.wasJms topicSpace="NewTopic2" topicName="testTopic2" timeToLive="1000"/>
   </jmsTopic>
     
 </server>

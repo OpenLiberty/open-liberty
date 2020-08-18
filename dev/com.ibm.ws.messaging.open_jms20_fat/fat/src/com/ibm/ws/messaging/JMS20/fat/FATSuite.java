@@ -33,32 +33,30 @@ import com.ibm.ws.messaging.JMS20.fat.SharedSubscription.SharedSubscriptionWithM
 
 @RunWith(Suite.class)
 @SuiteClasses({
-        DummyTest.class,
+            // DummyTest.class,
         LiteBucketSet1Test.class,
         LiteBucketSet2Test.class,
             // JmsMBeanTest.class,
 
-            /*
-                JMSProducerTest_118071.class, //full
-                JMSProducerTest_118073.class, //full
-                SharedSubscriptionTest_129623.class,
+        JMSProducerTest_118071.class, //full
+        JMSProducerTest_118073.class, //full
+            // SharedSubscriptionTest_129623.class,
 
-                JMSConsumerTest_118077.class, //full
-                JMSConsumerTest_118076.class, //full
-                JMSRedeliveryTest_120846.class,
+            // JMSConsumerTest_118077.class, //full
+            // JMSConsumerTest_118076.class, //full
+            // JMSRedeliveryTest_120846.class,
 
-                SharedSubscriptionWithMsgSelTest_129623.class,
-                SharedSubscriptionWithMsgSelTest_129626.class, //full 2nd
-                SharedSubscriptionTest_129626.class, //full 2nd
-                JMSProducer_Test118073.class, //full
+            // SharedSubscriptionWithMsgSelTest_129623.class,
+            // SharedSubscriptionWithMsgSelTest_129626.class, //full 2nd
+            // SharedSubscriptionTest_129626.class, //full 2nd
+            // JMSProducer_Test118073.class, //full // Uses JMSContext servers
 
-                DurableUnsharedTest.class,
-                JMSContextInjectTest.class, //full
+            // DurableUnsharedTest.class,
+            // JMSContextInjectTest.class, //full
 
-                JMSDefaultConnectionFactoryTest.class,
-                JMSEjbJarXmlMdbTest.class,
-                JMSDefaultConnFactoryVariationTest.class //full 2nd
-                    */
+            // JMSDefaultConnectionFactoryTest.class,
+            // JMSEjbJarXmlMdbTest.class,
+            // JMSDefaultConnFactoryVariationTest.class //full 2nd
 })
 public class FATSuite {
     // EMPTY

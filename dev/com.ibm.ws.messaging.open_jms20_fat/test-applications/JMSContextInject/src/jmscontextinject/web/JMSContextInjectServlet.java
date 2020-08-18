@@ -49,6 +49,43 @@ public class JMSContextInjectServlet extends HttpServlet {
     public static QueueConnectionFactory jmsQCFTCP;
     public static Queue jmsQueue;
 
+    @Override
+    public void init() throws ServletException {
+        System.out.println("JMSContextInjectServlet.init ENTRY");
+
+        super.init();
+
+        try {
+            jmsQCFBindings = (QueueConnectionFactory)
+                new InitialContext().lookup("java:comp/env/jndi_JMS_BASE_QCF");
+        } catch ( NamingException ex ) {
+            ex.printStackTrace();
+        }
+        System.out.println("Queue connection factory 'java:comp/env/jndi_JMS_BASE_QCF':\n" + jmsQCFBindings);
+
+        try {
+            jmsQCFTCP = (QueueConnectionFactory)
+                new InitialContext().lookup("java:comp/env/jndi_JMS_BASE_QCF1");
+        } catch ( NamingException ex ) {
+            ex.printStackTrace();
+        }
+        System.out.println("Queue connection factory 'java:comp/env/jndi_JMS_BASE_QCF1':\n" + jmsQCFTCP);
+
+        try {
+            jmsQueue = (Queue)
+                new InitialContext().lookup("java:comp/env/jndi_INPUT_Q1");
+        } catch ( NamingException ex ) {
+            ex.printStackTrace();
+        }
+        System.out.println("Queue 'java:comp/env/jndi_INPUT_Q1':\n" + jmsQueue);
+
+        System.out.println("JMSContextInjectServlet.init RETURN");
+
+        if ( (jmsQCFBindings == null) || (jmsQCFTCP == null) || (jmsQueue == null) ) {
+            throw new ServletException("Failed JMS initialization");
+        }
+    }
+
     public void emptyQueue(QueueConnectionFactory qcf, Queue q) throws Exception {
         JMSContext context = qcf.createContext();
         JMSConsumer consumer = context.createConsumer(q);
@@ -67,33 +104,6 @@ public class JMSContextInjectServlet extends HttpServlet {
         }
 
         context.close();
-    }
-
-    @Override
-    public void init() throws ServletException {
-        super.init();
-
-        try {
-            jmsQCFBindings = (QueueConnectionFactory)
-                new InitialContext().lookup("java:comp/env/jndi_JMS_BASE_QCF");
-            jmsQCFTCP = (QueueConnectionFactory)
-                new InitialContext().lookup("java:comp/env/jndi_JMS_BASE_QCF1");
-            jmsQueue = (Queue)
-                new InitialContext().lookup("java:comp/env/jndi_INPUT_Q");
-
-        } catch ( NamingException ex ) {
-            ex.printStackTrace();
-        }
-
-        if ( jmsQCFBindings == null ) {
-            System.out.println("Null queue connection factory 'java:comp/env/jndi_JMS_BASE_QCF'");
-        }
-        if ( jmsQCFTCP == null ) {
-            System.out.println("Null queue connection factory 'java:comp/env/jndi_JMS_BASE_QCF1'");
-        }
-        if ( jmsQueue == null ) {
-            System.out.println("Null queue 'java:comp/env/jndi_INPUT_Q'");
-        }
     }
 
     //
