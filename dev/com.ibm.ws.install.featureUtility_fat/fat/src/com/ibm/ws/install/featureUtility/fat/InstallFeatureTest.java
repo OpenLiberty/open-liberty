@@ -127,6 +127,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
      * @throws Exception
      */
     @Test
+    @Ignore
     public void testBaseLicenseAccept() throws Exception {
         final String METHOD_NAME = "testBaseLicenseAccept";
         Log.entering(c, METHOD_NAME);
@@ -176,6 +177,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
      * @throws Exception
      */
     @Test
+    @Ignore
     public void testMultiFeatureLicenseAccept() throws Exception {
         final String METHOD_NAME = "testMultiFeatureLicenseAccept";
         Log.entering(c, METHOD_NAME);
@@ -224,6 +226,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
      * @throws Exception
      */
     @Test
+    @Ignore
     public void testFeatureLocalRepoOverride() throws Exception {
         final String METHOD_NAME = "testFeatureLocalRepoOverride";
         Log.entering(c, METHOD_NAME);
