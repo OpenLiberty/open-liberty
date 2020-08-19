@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,9 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jaxws.wsat;
+
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import javax.xml.namespace.QName;
 
@@ -37,7 +40,7 @@ public class Constants {
     // Our context ID format
     public static final String CTX_ID_PREFIX = "com.ibm.ws.wsat:";
 
-    // WS-AT protocol 
+    // WS-AT protocol
     public static final String WS_AT_NS = "http://docs.oasis-open.org/ws-tx/wsat/2006/06";
     public static final String WS_AT_PROTOCOL = WS_AT_NS + "/Durable2PC";
     public static final String COORDINATION_REGISTRATION_ENDPOINT = "RegistrationService";
@@ -60,4 +63,13 @@ public class Constants {
     public static final String WS_FACTORY_COORD_FILTER = "(" + WS_FACTORY_COORD + ")";
 
     public static final String WS_INTERCEPTOR_CLASSNAME = WSATPolicyAwareInterceptor.class.getName();
+
+    private static final String ASYNC_TIMEOUT = "com.ibm.ws.wsat.asyncResponseTimeout";
+
+    public static final long ASYNC_RESPONSE_TIMEOUT = AccessController.doPrivileged(new PrivilegedAction<Long>() {
+        @Override
+        public Long run() {
+            return Long.parseLong(System.getProperty(ASYNC_TIMEOUT, "30000"));
+        }
+    });
 }

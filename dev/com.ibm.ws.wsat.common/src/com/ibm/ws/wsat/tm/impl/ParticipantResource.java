@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,15 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.wsat.tm.impl;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-
 import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.jaxws.wsat.Constants;
 import com.ibm.ws.wsat.common.impl.WSATParticipant;
 import com.ibm.ws.wsat.common.impl.WSATParticipantState;
 import com.ibm.ws.wsat.service.WSATException;
@@ -32,30 +30,19 @@ import com.ibm.ws.wsat.service.WebClient;
  */
 public class ParticipantResource implements XAResource {
 
-    private static final String CLASS_NAME = ParticipantResource.class.getName();
-    private static final TraceComponent TC = Tr.register(ParticipantResource.class);
+    private static final TraceComponent TC = Tr.register(ParticipantResource.class, Constants.TRACE_GROUP, null);
 
-    private static final String ASYNC_TIMEOUT = "com.ibm.ws.wsat.asyncResponseTimeout";
-    private static final String DEFAULT_ASYNC_TIMEOUT = "30000";
-
-    private WSATParticipant participant = null;
+    private final WSATParticipant participant;
     private long timeoutMillis = 0;
-    private long defaultTimeout = 0;
 
     public ParticipantResource(WSATParticipant participant) {
-        defaultTimeout = AccessController.doPrivileged(new PrivilegedAction<Long>() {
-            @Override
-            public Long run() {
-                return Long.parseLong(System.getProperty(ASYNC_TIMEOUT, DEFAULT_ASYNC_TIMEOUT));
-            }
-        });
-        this.timeoutMillis = defaultTimeout;
+        this.timeoutMillis = Constants.ASYNC_RESPONSE_TIMEOUT;
         this.participant = participant;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.transaction.xa.XAResource#prepare(javax.transaction.xa.Xid)
      */
     @Override
@@ -64,6 +51,9 @@ public class ParticipantResource implements XAResource {
         WebClient webClient = WebClient.getWebClient(participant, participant.getCoordinator());
         try {
             participant.setState(WSATParticipantState.PREPARE);
+            if (TC.isDebugEnabled()) { // Only other option here ought to be TIMEOUT
+                Tr.debug(TC, "Sending prepare with timeout: " + timeoutMillis);
+            }
             webClient.prepare();
             WSATParticipantState state = participant.waitResponse(timeoutMillis, WSATParticipantState.PREPARED, WSATParticipantState.READONLY, WSATParticipantState.ABORTED);
             if (state == WSATParticipantState.PREPARED) {
@@ -86,7 +76,7 @@ public class ParticipantResource implements XAResource {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.transaction.xa.XAResource#forget(javax.transaction.xa.Xid)
      */
     @Override
@@ -96,7 +86,7 @@ public class ParticipantResource implements XAResource {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.transaction.xa.XAResource#commit(javax.transaction.xa.Xid, boolean)
      */
     @Override
@@ -121,7 +111,7 @@ public class ParticipantResource implements XAResource {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.transaction.xa.XAResource#rollback(javax.transaction.xa.Xid)
      */
     @Override
@@ -146,7 +136,7 @@ public class ParticipantResource implements XAResource {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.transaction.xa.XAResource#recover(int)
      */
     @Override
@@ -156,7 +146,7 @@ public class ParticipantResource implements XAResource {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.transaction.xa.XAResource#start(javax.transaction.xa.Xid, int)
      */
     @Override
@@ -166,7 +156,7 @@ public class ParticipantResource implements XAResource {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.transaction.xa.XAResource#end(javax.transaction.xa.Xid, int)
      */
     @Override
@@ -176,7 +166,7 @@ public class ParticipantResource implements XAResource {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.transaction.xa.XAResource#isSameRM(javax.transaction.xa.XAResource)
      */
     @Override
@@ -186,13 +176,13 @@ public class ParticipantResource implements XAResource {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.transaction.xa.XAResource#setTransactionTimeout(int)
      */
     @Override
     public boolean setTransactionTimeout(int timeout) throws XAException {
         if (timeout == 0) {
-            timeoutMillis = defaultTimeout;
+            timeoutMillis = Constants.ASYNC_RESPONSE_TIMEOUT;
         } else {
             timeoutMillis = timeout * 1000;
         }
@@ -201,7 +191,7 @@ public class ParticipantResource implements XAResource {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.transaction.xa.XAResource#getTransactionTimeout()
      */
     @Override

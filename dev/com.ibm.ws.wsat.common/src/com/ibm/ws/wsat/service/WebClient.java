@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.wsat.service;
 
+import java.util.Map;
+
+import javax.xml.ws.BindingProvider;
+
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 
+import com.ibm.ws.jaxws.wsat.Constants;
 import com.ibm.ws.wsat.common.impl.WSATEndpoint;
 import com.ibm.ws.wsat.service.impl.WebClientImpl;
 
@@ -32,6 +37,12 @@ public abstract class WebClient {
             return testClient;
         }
         return new WebClientImpl(toEpr, fromEpr);
+    }
+
+    protected void setTimeouts(Object bp) {
+        Map<String, Object> requestContext = ((BindingProvider) bp).getRequestContext();
+        requestContext.put("javax.xml.ws.client.connectionTimeout", Constants.ASYNC_RESPONSE_TIMEOUT);
+        requestContext.put("javax.xml.ws.client.receiveTimeout", Constants.ASYNC_RESPONSE_TIMEOUT);
     }
 
     /*
