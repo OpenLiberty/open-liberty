@@ -39,6 +39,14 @@ import com.ibm.websphere.ras.TraceComponent;
 @SuppressWarnings("serial")
 public class JMSConsumer_118076Servlet extends HttpServlet {
 
+    // JMSConnectionFactory "java:comp/env/jndi_JMS_BASE_CF"
+    // JMSQueueConnectionFactory "java:comp/env/jndi_JMS_BASE_QCF"
+    // JMSQueueConnectionFactory"java:comp/env/jndi_JMS_BASE_QCF1"
+    // JMSTopicConnectionFactory "java:comp/env/eis/tcf"
+    //
+    // Queue "java:comp/env/jndi_INPUT_Q1"
+    // Topic "java:comp/env/eis/topic2"
+
     private static QueueConnectionFactory jmsQCFBindings;
     private static QueueConnectionFactory jmsQCFTCP;
     private static Queue jmsQueue;

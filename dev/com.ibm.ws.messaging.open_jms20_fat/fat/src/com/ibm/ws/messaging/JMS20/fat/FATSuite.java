@@ -33,7 +33,7 @@ import com.ibm.ws.messaging.JMS20.fat.SharedSubscription.SharedSubscriptionWithM
 
 @RunWith(Suite.class)
 @SuiteClasses({
-            // DummyTest.class,
+        DummyTest.class,
         LiteBucketSet1Test.class,
         LiteBucketSet2Test.class,
             // JmsMBeanTest.class,
@@ -42,8 +42,8 @@ import com.ibm.ws.messaging.JMS20.fat.SharedSubscription.SharedSubscriptionWithM
         JMSProducerTest_118073.class, //full
             // SharedSubscriptionTest_129623.class,
 
-            // JMSConsumerTest_118077.class, //full
-            // JMSConsumerTest_118076.class, //full
+        JMSConsumerTest_118076.class, //full
+        JMSConsumerTest_118077.class, //full
             // JMSRedeliveryTest_120846.class,
 
             // SharedSubscriptionWithMsgSelTest_129623.class,
