@@ -634,7 +634,10 @@ public class AcmeFatUtils {
 
 				StatusLine statusLine = response.getStatusLine();
 				if (statusLine.getStatusCode() != 200) {
-					fail(methodName + ": Expected response 200, but received response: " + statusLine);
+					/*
+					 * We can still get the certificate even if we get a non-200 response.
+					 */
+					Log.info(AcmeFatUtils.class, "assertAndGetServerCertificate", "Expected response 200, but received response: " + statusLine +". " + response);
 				}
 
 				/*
