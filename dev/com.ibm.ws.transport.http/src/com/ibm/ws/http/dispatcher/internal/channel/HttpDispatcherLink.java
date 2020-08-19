@@ -1267,6 +1267,11 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         if (this.isc != null) {
             this.isc.setSuppress0ByteChunk(suppress0ByteChunk);
         }
+        else{
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Failed to set isc zero byte chunk because isc is null");
+            }
+        }
         
     }
 
