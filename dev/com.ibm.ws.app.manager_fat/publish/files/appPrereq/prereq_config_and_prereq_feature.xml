@@ -6,11 +6,15 @@
     <feature>test.app.prereq</feature>
   </featureManager>
     
-  <applicationManager autoExpand="true"/>
   <webContainer deferServletLoad="true"/>
 
   <application location="snoop.war" />
     
   <com.ibm.wsspi.application.lifecycle.ApplicationPrereq id="simple test prereq"/>
+
+  <widget id="foo" />
+
+  <test.app.prereq.WidgetEnabler />
+
 </server>
 

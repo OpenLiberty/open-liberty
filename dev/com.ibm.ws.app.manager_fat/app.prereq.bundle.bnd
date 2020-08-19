@@ -20,3 +20,7 @@ Bundle-Activator: test.app.prereq.Activator
 Private-Package: test.app.prereq
 
 Import-Package: *
+
+Include-Resource: OSGI-INF/metatype/metatype.xml=test-bundles/test.app.prereq/resources/OSGI-INF/metatype/metatype.xml
+
+-dsannotations: *

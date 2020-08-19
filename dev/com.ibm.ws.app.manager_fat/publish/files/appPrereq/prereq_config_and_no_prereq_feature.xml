@@ -5,7 +5,6 @@
     <feature>servlet-4.0</feature>
   </featureManager>
     
-  <applicationManager autoExpand="true"/>
   <webContainer deferServletLoad="true"/>
 
   <application location="snoop.war" />

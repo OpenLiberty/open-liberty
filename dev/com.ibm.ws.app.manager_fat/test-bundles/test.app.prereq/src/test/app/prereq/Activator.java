@@ -24,6 +24,7 @@ public class Activator implements BundleActivator {
     public void start(BundleContext ctx) throws Exception {
         Prereq p = new Prereq();
         this.reg = ctx.registerService(ApplicationPrereq.class, p, null);
+        System.out.println("### Registered service programmatically: Prereq[" + p.getApplicationPrereqID() + "]");
     }
 
     @Override

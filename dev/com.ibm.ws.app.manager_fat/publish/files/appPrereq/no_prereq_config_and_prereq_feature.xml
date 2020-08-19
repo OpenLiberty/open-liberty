@@ -6,9 +6,9 @@
     <feature>test.app.prereq</feature>
   </featureManager>
     
-  <applicationManager autoExpand="true"/>
   <webContainer deferServletLoad="true"/>
 
   <application location="snoop.war" />
+  
 </server>
 
