@@ -125,58 +125,82 @@ public class OAuth20GrantTypeHandlerRefreshImpl implements
     }
 
     void validateRefreshedAccessTokenLimit(String clientId, String username) throws OAuth20Exception {
-        if (config == null) {
-            _log.logp(Level.FINEST, CLASS, "validateRefreshedAccessTokenLimit", "No OAuth config object found");
-            return;
-        }
-        if (isRefreshTokenLimitReached(clientId, username)) {
-            String errorMsg = Tr.formatMessage(tc, "security.oauth20.refreshed.access.token.limit.reached", new Object[] { username, clientId, config.getRefreshedAccessTokenLimit() });
-            throw new InvalidGrantException(errorMsg, null);
+        String methodName = "validateRefreshedAccessTokenLimit";
+        _log.entering(CLASS, methodName, new Object[] { clientId, username });
+        try {
+            if (config == null) {
+                _log.logp(Level.FINEST, CLASS, "validateRefreshedAccessTokenLimit", "No OAuth config object found");
+                return;
+            }
+            if (isRefreshTokenLimitReached(clientId, username)) {
+                String errorMsg = Tr.formatMessage(tc, "security.oauth20.refreshed.access.token.limit.reached", new Object[] { username, clientId, config.getRefreshedAccessTokenLimit() });
+                throw new InvalidGrantException(errorMsg, null);
+            }
+        } finally {
+            _log.exiting(CLASS, methodName);
         }
     }
 
     boolean isRefreshTokenLimitReached(String clientId, String username) {
-        Collection<OAuth20Token> userAndClientTokens = getUserAndClientTokens(clientId, username);
-        if (userAndClientTokens == null || userAndClientTokens.isEmpty()) {
+        String methodName = "isRefreshTokenLimitReached";
+        _log.entering(CLASS, methodName, new Object[] { clientId, username });
+        try {
+            Collection<OAuth20Token> userAndClientTokens = getUserAndClientTokens(clientId, username);
+            if (userAndClientTokens == null || userAndClientTokens.isEmpty()) {
+                return false;
+            }
+            long tokenLimit = config.getRefreshedAccessTokenLimit();
+            if (userAndClientTokens.size() < tokenLimit) {
+                // Regardless of what kind of tokens are in the cache, if there are fewer than the configured limit
+                // then we should, by definition, still be allowed to create another refreshed access token
+                return false;
+            }
+            long numberOfRefreshedAccessTokens = getNumberOfRefreshedAccessTokens(userAndClientTokens);
+            if (numberOfRefreshedAccessTokens >= tokenLimit) {
+                _log.logp(Level.FINEST, CLASS, "isRefreshTokenLimitReached", "The refresh token limit has been reached.");
+                return true;
+            }
             return false;
+        } finally {
+            _log.exiting(CLASS, methodName);
         }
-        long tokenLimit = config.getRefreshedAccessTokenLimit();
-        if (userAndClientTokens.size() < tokenLimit) {
-            // Regardless of what kind of tokens are in the cache, if there are fewer than the configured limit
-            // then we should, by definition, still be allowed to create another refreshed access token
-            return false;
-        }
-        long numberOfRefreshedAccessTokens = getNumberOfRefreshedAccessTokens(userAndClientTokens);
-        if (numberOfRefreshedAccessTokens >= tokenLimit) {
-            _log.logp(Level.FINEST, CLASS, "isRefreshTokenLimitReached", "The refresh token limit has been reached.");
-            return true;
-        }
-        return false;
     }
 
     Collection<OAuth20Token> getUserAndClientTokens(String clientId, String username) {
-        if (username == null || clientId == null) {
-            _log.logp(Level.FINEST, CLASS, "getUserAndClientTokens", "Failed to find username and/or client ID.");
+        String methodName = "getUserAndClientTokens";
+        _log.entering(CLASS, methodName, new Object[] { clientId, username });
+        try {
+            if (username == null || clientId == null) {
+                _log.logp(Level.FINEST, CLASS, "getUserAndClientTokens", "Failed to find username and/or client ID.");
+                return null;
+            }
+            OAuth20TokenCache cache = config.getTokenCache();
+            if (cache != null && cache instanceof OAuth20EnhancedTokenCache) {
+                OAuth20EnhancedTokenCache tokenCache = (OAuth20EnhancedTokenCache) cache;
+                return tokenCache.getUserAndClientTokens(username, clientId);
+            }
             return null;
+        } finally {
+            _log.exiting(CLASS, methodName);
         }
-        OAuth20TokenCache cache = config.getTokenCache();
-        if (cache != null && cache.toString().contains("OAuth20EnhancedTokenCache")) {
-            OAuth20EnhancedTokenCache tokenCache = (OAuth20EnhancedTokenCache) cache;
-            return tokenCache.getUserAndClientTokens(username, clientId);
-        }
-        return null;
     }
 
     long getNumberOfRefreshedAccessTokens(Collection<OAuth20Token> userAndClientTokens) {
-        long numberOfRefreshedAccessTokens = 0;
-        for (OAuth20Token cachedToken : userAndClientTokens) {
-            String type = cachedToken.getType();
-            String grantType = cachedToken.getGrantType();
-            if (OAuth20Constants.ACCESS_TOKEN.equals(type) && OAuth20Constants.GRANT_TYPE_REFRESH_TOKEN.equals(grantType)) {
-                numberOfRefreshedAccessTokens++;
+        String methodName = "getNumberOfRefreshedAccessTokens";
+        _log.entering(CLASS, methodName, new Object[] { userAndClientTokens });
+        try {
+            long numberOfRefreshedAccessTokens = 0;
+            for (OAuth20Token cachedToken : userAndClientTokens) {
+                String type = cachedToken.getType();
+                String grantType = cachedToken.getGrantType();
+                if (OAuth20Constants.ACCESS_TOKEN.equals(type) && OAuth20Constants.GRANT_TYPE_REFRESH_TOKEN.equals(grantType)) {
+                    numberOfRefreshedAccessTokens++;
+                }
             }
+            return numberOfRefreshedAccessTokens;
+        } finally {
+            _log.exiting(CLASS, methodName);
         }
-        return numberOfRefreshedAccessTokens;
     }
 
     @Override
