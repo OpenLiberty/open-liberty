@@ -11,6 +11,7 @@
 
 package io.openliberty.jpa;
 
+import java.io.File;
 import java.util.HashSet;
 
 import org.jboss.shrinkwrap.api.ArchivePath;
@@ -25,6 +26,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -33,6 +35,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.PrivHelper;
 import io.openliberty.jpa.cev.web.TestConcurrentEnhancementVerificationServlet;
 
@@ -46,6 +49,7 @@ public class TestConcurrentEnhancement extends JPAFATServletClient {
     private final static String appNameEar = appName + ".ear";
 
     private static long timestart = 0;
+    private static final Class<?> c = TestConcurrentEnhancement.class;
 
     @Server("ConcurrentEnhancementVerification")
     @TestServlets({
@@ -55,6 +59,11 @@ public class TestConcurrentEnhancement extends JPAFATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        LibertyServer serverTest = LibertyServerFactory.getLibertyServer("ConcurrentEnhancementVerification");
+
+        File jpa20FeatureMF = new File(serverTest.getInstallRoot() + "/lib/features/com.ibm.websphere.appserver.jpa-2.0.mf");
+        Log.info(c, "isEnabled", "Before class1: Does the jpa-2.0 feature exist? " + jpa20FeatureMF.exists());
+
         PrivHelper.generateCustomPolicy(server, FATSuite.JAXB_PERMS);
         bannerStart(TestConcurrentEnhancement.class);
         timestart = System.currentTimeMillis();
@@ -72,6 +81,10 @@ public class TestConcurrentEnhancement extends JPAFATServletClient {
         server.startServer();
 
         setupTestApplication();
+
+        File jpa20FeatureMF2 = new File(serverTest.getInstallRoot() + "/lib/features/com.ibm.websphere.appserver.jpa-2.0.mf");
+        Log.info(c, "isEnabled", "Before class2: Does the jpa-2.0 feature exist? " + jpa20FeatureMF2.exists());
+
     }
 
     private static void setupTestApplication() throws Exception {
@@ -117,6 +130,11 @@ public class TestConcurrentEnhancement extends JPAFATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         try {
+            LibertyServer serverTest = LibertyServerFactory.getLibertyServer("ConcurrentEnhancementVerification");
+
+            File jpa20FeatureMF = new File(serverTest.getInstallRoot() + "/lib/features/com.ibm.websphere.appserver.jpa-2.0.mf");
+            Log.info(c, "isEnabled", "Before class1: Does the jpa-2.0 feature exist? " + jpa20FeatureMF.exists());
+
             server.stopServer("CWWJP9991W", // From Eclipselink drop-and-create tables option
                               "WTRN0074E: Exception caught from before_completion synchronization operation" // RuntimeException test, expected
             );
