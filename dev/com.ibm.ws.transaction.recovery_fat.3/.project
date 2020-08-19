@@ -20,4 +20,21 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>bndtools.core.bndnature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>com.ibm.ws.transaction.recovery_fat.1-fatsrc</name>
+			<type>2</type>
+			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.transaction.recovery_fat.1/fat/src</locationURI>
+		</link>
+		<link>
+			<name>com.ibm.ws.transaction.recovery_fat.1-transaction</name>
+			<type>2</type>
+			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.transaction.recovery_fat.1/test-applications/transaction/src</locationURI>
+		</link>
+		<link>
+			<name>com.ibm.ws.transaction.recovery_fat.1-xaflowcallback</name>
+			<type>2</type>
+			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.transaction.recovery_fat.1/test-bundles/xaflowcallback/src</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>

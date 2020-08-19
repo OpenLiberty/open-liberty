@@ -20,9 +20,6 @@ Export-Package: io.openliberty.microprofile.lra.internal;provide:=true
 
 Private-Package: io.openliberty.microprofile.lra.internal.resources
 
-javac.source: 1.8
-javac.target: 1.8
-
 #Private-Package: com.ibm.ws.example.internal
 
 # This is how a component is declared in bnd (i.e. not through annotations)
