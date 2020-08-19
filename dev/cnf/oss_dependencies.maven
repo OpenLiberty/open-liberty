@@ -35,7 +35,7 @@ com.google.errorprone:error_prone_annotations:2.4.0
 com.google.guava:failureaccess:1.0.1
 com.google.inject:guice:2.0
 com.google.j2objc:j2objc-annotations:1.1
-com.google.protobuf:protobuf-java-util:3.11.4
+com.google.protobuf:protobuf-java-util:3.13.0
 com.google.protobuf:protobuf-java:3.13.0
 com.googlecode.java-diff-utils:diffutils:1.2.1
 com.graphql-java:graphql-java:14.0

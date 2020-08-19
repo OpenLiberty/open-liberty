@@ -6,7 +6,7 @@ package com.ibm.test.g3store.grpc;
 /**
  * Protobuf type {@code test.g3store.grpc.RetailAppResponse}
  */
-public  final class RetailAppResponse extends
+public final class RetailAppResponse extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:test.g3store.grpc.RetailAppResponse)
     RetailAppResponseOrBuilder {
@@ -99,6 +99,7 @@ private static final long serialVersionUID = 0L;
    * <code>.RetailApp retailApp = 1;</code>
    * @return Whether the retailApp field is set.
    */
+  @java.lang.Override
   public boolean hasRetailApp() {
     return retailApp_ != null;
   }
@@ -106,12 +107,14 @@ private static final long serialVersionUID = 0L;
    * <code>.RetailApp retailApp = 1;</code>
    * @return The retailApp.
    */
+  @java.lang.Override
   public com.ibm.test.g3store.grpc.RetailApp getRetailApp() {
     return retailApp_ == null ? com.ibm.test.g3store.grpc.RetailApp.getDefaultInstance() : retailApp_;
   }
   /**
    * <code>.RetailApp retailApp = 1;</code>
    */
+  @java.lang.Override
   public com.ibm.test.g3store.grpc.RetailAppOrBuilder getRetailAppOrBuilder() {
     return getRetailApp();
   }
