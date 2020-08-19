@@ -35,7 +35,8 @@ public class FATSuite {
     public static Db2Container db2 = new Db2Container()
                     .acceptLicense()
                     // Use 5m timeout for local runs, 25m timeout for remote runs (extra time since the DB2 container can be slow to start)
-                    .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 5 : 25))
+                    .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 5 : 12))
+                    .withStartupAttempts(3)
                     .withLogConsumer(FATSuite::log);
 
     private static void log(OutputFrame frame) {
