@@ -51,5 +51,5 @@
     <resource-env-ref-name>eis/topic2</resource-env-ref-name>
     <resource-env-ref-type>javax.jms.Topic</resource-env-ref-type>
   </resource-env-ref>
-  
+
 </web-app>

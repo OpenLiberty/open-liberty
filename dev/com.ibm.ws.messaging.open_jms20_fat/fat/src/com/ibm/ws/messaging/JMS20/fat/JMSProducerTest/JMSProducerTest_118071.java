@@ -53,11 +53,15 @@ public class JMSProducerTest_118071 {
 
     @BeforeClass
     public static void testConfigFileChange() throws Exception {
-        engineServer.copyFileToLibertyInstallRoot("lib/features", "features/testjmsinternals-1.0.mf");
+        engineServer.copyFileToLibertyInstallRoot(
+            "lib/features",
+            "features/testjmsinternals-1.0.mf");
         engineServer.setServerConfigurationFile("JMSProducerEngine.xml");
         engineServer.startServer("JMSProducerEngine_118071.log");
 
-        clientServer.copyFileToLibertyInstallRoot("lib/features", "features/testjmsinternals-1.0.mf");
+        clientServer.copyFileToLibertyInstallRoot(
+            "lib/features",
+            "features/testjmsinternals-1.0.mf");
         clientServer.setServerConfigurationFile("JMSProducerClient.xml");
         TestUtils.addDropinsWebApp(clientServer, producerAppName, producerPackages);
         clientServer.startServer("JMSProducerClient_118071.log");
