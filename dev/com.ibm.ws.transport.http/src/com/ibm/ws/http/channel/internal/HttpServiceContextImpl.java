@@ -2903,7 +2903,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             if (this instanceof HttpInboundServiceContextImpl) {
                 hisc = (HttpInboundServiceContextImpl) this;
             }
-            if (hisc != null) {
+            if (hisc != null && !(hisc.getLink() instanceof H2HttpInboundLinkWrap)) {
                 if (hisc.getSuppress0ByteChunk()) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Suppressing Zero Byte Chunk and setting persistence to false.");
