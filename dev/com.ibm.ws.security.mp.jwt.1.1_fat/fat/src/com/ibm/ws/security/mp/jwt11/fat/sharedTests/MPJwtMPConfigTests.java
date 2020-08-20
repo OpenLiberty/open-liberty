@@ -285,6 +285,7 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
      * @return - return the microprofile-config.properties file content
      */
     protected static String buildMPConfigFileContent(String publicKey, String publicKeyLocation, String issuer) {
+        Log.info(thisClass, "", "mp.jwt.verify.publickey=" + publicKey + " mp.jwt.verify.publickey.location=" + publicKeyLocation + " mp.jwt.verify.issuer=" + issuer);
         return "mp.jwt.verify.publickey=" + publicKey + System.lineSeparator() + "mp.jwt.verify.publickey.location=" + publicKeyLocation + System.lineSeparator()
                + "mp.jwt.verify.issuer=" + issuer;
 

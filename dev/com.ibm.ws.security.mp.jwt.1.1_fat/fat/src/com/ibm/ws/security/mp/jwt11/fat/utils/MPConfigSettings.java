@@ -10,12 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt11.fat.utils;
 
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.utils.CommonIOUtils;
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
 
 import componenttest.topology.impl.LibertyServer;
 
 public class MPConfigSettings {
+
+    public static Class<?> thisClass = MPConfigSettings.class;
 
     public static String cert_type = MpJwtFatConstants.X509_CERT;
 
@@ -81,6 +84,7 @@ public class MPConfigSettings {
     }
 
     public String getComplexKey(LibertyServer server, String fileName) throws Exception {
+        Log.info(thisClass, "getComplexKey", "fileName: " + fileName);
         return getKeyFromFile(server, fileName);
     }
 
