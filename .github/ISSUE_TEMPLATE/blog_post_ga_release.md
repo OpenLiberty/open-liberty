@@ -2,7 +2,7 @@
 name: Open Liberty GA release blog post
 about: Information to be included in the Open Liberty GA release blog post.
 title: GA BLOG - title_of_your_update
-labels: release
+labels: ''
 assignees: lauracowen, jakub-pomykala
 
 ---
@@ -35,4 +35,4 @@ If you have previously provided this information for an Open Liberty beta blog p
 
 - Your paragraph will be included in the GA release blog post. It might be edited for style and consistency.
 - You will be asked to review a draft before publication.
-- If you would _also_ like to write a standalone blog post about your update, raise an issue on the [Open Liberty blogs repo](https://github.com/OpenLiberty/blogs/issues/new/choose). State in the issue that the blog post relates to a specific release so that we can ensure it is published on an appropriate date (it won't be the same day as the GA blog post).
+- If you would _also_ like to write a standalone blog post about your update (highly recommended), raise an issue on the [Open Liberty blogs repo](https://github.com/OpenLiberty/blogs/issues/new/choose). State in the issue that the blog post relates to a specific release so that we can ensure it is published on an appropriate date (it won't be the same day as the GA blog post).
