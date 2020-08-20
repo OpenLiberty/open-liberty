@@ -52,6 +52,8 @@ public class FeatureReplacementAction implements RepeatTestAction {
 
     static {
         Map<String, String> featureNameMapping = new HashMap<String, String>(4);
+        featureNameMapping.put("ejbRemote", "enterpriseBeansRemote");
+        featureNameMapping.put("ejbTest", "enterpriseBeansTest");
         featureNameMapping.put("javaee", "jakartaee");
         featureNameMapping.put("javaeeClient", "jakartaeeClient");
         featureNameMapping.put("jca", "connectors");

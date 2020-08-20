@@ -30,6 +30,7 @@ public class EE6FeatureReplacementAction extends FeatureReplacementAction {
                                                  "jsp-2.2",
                                                  "servlet-3.0",
                                                  "ejbLite-3.1",
+                                                 "ejbTest-1.0",
                                                  "jmsMdb-3.1",
                                                  "managedBeans-1.0",
                                                  "mdb-3.1",
