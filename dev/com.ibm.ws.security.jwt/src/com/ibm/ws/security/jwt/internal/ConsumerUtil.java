@@ -308,13 +308,13 @@ public class ConsumerUtil {
             if (publickey != null || keyLocation != null) {
                 jwkRetriever = new JwKRetriever(config.getId(), config.getSslRef(), config.getJwkEndpointUrl(),
                         config.getJwkSet(), JwtUtils.getSSLSupportService(), config.isHostNameVerificationEnabled(),
-                        null, null, config.getSignatureAlgorithm(), publickey, keyLocation);
+                        null, null, getConfiguredSignatureAlgorithm(config), publickey, keyLocation);
             }
         }
         if (jwkRetriever == null) {
             jwkRetriever = new JwKRetriever(config.getId(), config.getSslRef(), config.getJwkEndpointUrl(),
                     config.getJwkSet(), JwtUtils.getSSLSupportService(), config.isHostNameVerificationEnabled(), null,
-                    null, config.getSignatureAlgorithm());
+                    null, getConfiguredSignatureAlgorithm(config));
         }
         Key signingKey = jwkRetriever.getPublicKeyFromJwk(kid, null,
                 config.getUseSystemPropertiesForHttpClientConnections()); // only kid or x5t will work but not both
