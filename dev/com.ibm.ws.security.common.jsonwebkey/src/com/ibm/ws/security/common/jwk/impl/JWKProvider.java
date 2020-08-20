@@ -12,6 +12,7 @@ package com.ibm.ws.security.common.jwk.impl;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.interfaces.ECPublicKey;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -132,8 +133,7 @@ public class JWKProvider {
         JWK jwk = null;
         if (isValidJwkAlgorithm(alg)) {
             if (publicKey != null && privateKey != null) {
-                jwk = Jose4jRsaJWK.getInstance(alg, use, publicKey, privateKey, publicKeyKid);
-                jwk.generateKey();
+                jwk = generateJwkForValidAlgorithmWithExistingKeys(alg, size, publicKey, privateKey);
             } else {
                 jwk = generateJwkForValidAlgorithm(alg, size);
             }
@@ -143,6 +143,33 @@ public class JWKProvider {
 
     boolean isValidJwkAlgorithm(String alg) {
         return keyAlgChecker.isRSAlgorithm(alg) || keyAlgChecker.isESAlgorithm(alg);
+    }
+
+    JWK generateJwkForValidAlgorithmWithExistingKeys(String alg, int size, PublicKey publicKey, PrivateKey privateKey) {
+        JWK jwk = null;
+        if (keyAlgChecker.isRSAlgorithm(alg)) {
+            jwk = generateRsaJwkWithExistingKeys(alg, publicKey, privateKey);
+        } else if (keyAlgChecker.isESAlgorithm(alg)) {
+            jwk = generateEcJwkWithExistingKeys(alg, publicKey, privateKey);
+        }
+        if (jwk != null) {
+            jwk.generateKey();
+        }
+        return jwk;
+    }
+
+    JWK generateRsaJwkWithExistingKeys(String alg, PublicKey publicKey, PrivateKey privateKey) {
+        return Jose4jRsaJWK.getInstance(alg, use, publicKey, privateKey, publicKeyKid);
+    }
+
+    JWK generateEcJwkWithExistingKeys(String alg, PublicKey publicKey, PrivateKey privateKey) {
+        Jose4jEllipticCurveJWK jwk = null;
+        if (publicKey instanceof ECPublicKey) {
+            jwk = Jose4jEllipticCurveJWK.getInstance((ECPublicKey) publicKey, alg, null);
+            jwk.setPrivateKey(privateKey);
+            jwk.setKeyId(publicKeyKid);
+        }
+        return jwk;
     }
 
     JWK generateJwkForValidAlgorithm(String alg, int size) {
