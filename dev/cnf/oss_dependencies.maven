@@ -64,8 +64,6 @@ com.sun.faces:jsf-api:2.2.14
 com.sun.faces:jsf-impl:2.2.14
 com.sun.istack:istack-commons-runtime:4.0.0-M3
 com.sun.istack:istack-commons-tools:4.0.0-M3
-com.sun.mail:javax.mail:1.5.6
-com.sun.mail:javax.mail:1.6.2
 com.sun.xml.bind.external:relaxng-datatype:3.0.0-M4
 com.sun.xml.bind.external:rngom:3.0.0-M3
 com.sun.xml.bind:jaxb-core:2.2.10
@@ -90,8 +88,6 @@ commons-codec:commons-codec:1.14
 commons-codec:commons-codec:1.3
 commons-codec:commons-codec:1.6
 commons-collections:commons-collections:3.2.2
-commons-discovery:commons-discovery:0.2
-commons-httpclient:commons-httpclient:3.1
 commons-lang:commons-lang:2.4
 commons-logging:commons-logging:1.1.1
 commons-logging:commons-logging:1.1.3
@@ -137,7 +133,6 @@ io.smallrye.common:smallrye-common-expression:1.0.2
 io.smallrye.common:smallrye-common-function:1.0.2
 io.smallrye.config:smallrye-config-common:1.8.0
 io.smallrye.config:smallrye-config:1.8.0
-io.smallrye.reactive:smallrye-reactive-streams-operators:1.0.10
 io.smallrye:smallrye-graphql-api:1.0.7
 io.smallrye:smallrye-graphql-cdi:1.0.7
 io.smallrye:smallrye-graphql-client-api:1.0.7
@@ -182,7 +177,6 @@ javax.json:javax.json-api:1.1.3
 javax.jws:jsr181-api:1.0-MR1
 javax.mail:javax.mail-api:1.5.6
 javax.mail:javax.mail-api:1.6.2
-javax.persistence:javax.persistence-api:2.2
 javax.persistence:persistence-api:1.0.2
 javax.security.enterprise:javax.security.enterprise-api:1.0
 javax.security.jacc:javax.security.jacc-api:1.5
@@ -299,7 +293,6 @@ org.apache.johnzon:johnzon-jsonb:1.1.5
 org.apache.johnzon:johnzon-jsonb:1.1.8
 org.apache.johnzon:johnzon-mapper:1.1.5
 org.apache.johnzon:johnzon-mapper:1.1.8
-org.apache.kafka:kafka-clients:2.3.0
 org.apache.maven:maven-model:3.5.0
 org.apache.myfaces.core:myfaces-api:2.2.12
 org.apache.myfaces.core:myfaces-api:2.3.6
@@ -431,7 +424,6 @@ org.jboss.arquillian.container:arquillian-container-test-spi:1.3.0.Final
 org.jboss.arquillian.core:arquillian-core-api:1.3.0.Final
 org.jboss.arquillian.core:arquillian-core-spi:1.3.0.Final
 org.jboss.arquillian.test:arquillian-test-spi:1.3.0.Final
-org.jboss.classfilewriter:jboss-classfilewriter:1.1.2.Final
 org.jboss.logging:jboss-logging:3.4.1.Final
 org.jboss.narayana.rts:lra-client:5.10.5.Final
 org.jboss.narayana.rts:lra-coordinator-jar:5.10.5.Final
@@ -508,7 +500,6 @@ org.reactivestreams:reactive-streams-tck:1.0.2
 org.reactivestreams:reactive-streams:1.0.2
 org.reactivestreams:reactive-streams:1.0.3
 org.rnorth.duct-tape:duct-tape:1.0.7
-org.shredzone.acme4j:acme4j-client:2.7
 org.slf4j:slf4j-api:1.7.26
 org.slf4j:slf4j-api:1.7.28
 org.slf4j:slf4j-api:1.7.7
@@ -540,8 +531,6 @@ org.springframework.security:spring-security-web:5.1.3.RELEASE
 org.springframework.security:spring-security-web:5.2.2.RELEASE
 org.springframework.security:spring-security-web:5.3.2.RELEASE
 org.springframework:spring-aop:3.0.7.RELEASE
-org.springframework:spring-aop:4.3.13.RELEASE
-org.springframework:spring-aop:5.0.4.RELEASE
 org.springframework:spring-asm:3.0.7.RELEASE
 org.springframework:spring-beans:3.0.7.RELEASE
 org.springframework:spring-beans:4.3.13.RELEASE
@@ -551,7 +540,6 @@ org.springframework:spring-beans:5.1.4.RELEASE
 org.springframework:spring-beans:5.2.4.RELEASE
 org.springframework:spring-beans:5.2.6.RELEASE
 org.springframework:spring-context:3.0.7.RELEASE
-org.springframework:spring-context:4.3.13.RELEASE
 org.springframework:spring-context:5.0.4.RELEASE
 org.springframework:spring-context:5.0.8.RELEASE
 org.springframework:spring-context:5.1.4.RELEASE
@@ -567,7 +555,6 @@ org.springframework:spring-core:5.2.6.RELEASE
 org.springframework:spring-expression:3.0.7.RELEASE
 org.springframework:spring-expression:5.0.4.RELEASE
 org.springframework:spring-web:3.0.7.RELEASE
-org.springframework:spring-web:5.0.4.RELEASE
 org.springframework:spring-web:5.0.8.RELEASE
 org.springframework:spring-web:5.1.4.RELEASE
 org.springframework:spring-web:5.2.4.RELEASE
@@ -594,4 +581,3 @@ xalan:xalan:2.7.1
 xalan:xalan:2.7.2
 xerces:xercesImpl:2.11.0
 xml-apis:xml-apis:1.4.01
-xml-resolver:xml-resolver:1.2
