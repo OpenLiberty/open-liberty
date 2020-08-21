@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,10 +17,11 @@ import java.util.Set;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.anno.util.internal.UtilImpl_BidirectionalMap;
-import com.ibm.ws.anno.util.internal.UtilImpl_InternMap;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
+import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets.AnnotationCategory;
 import com.ibm.wsspi.anno.util.Util_BidirectionalMap;
+import com.ibm.wsspi.anno.util.Util_InternMap;
 
 /**
  * Wrapper for policy data for a single scan policy. Used for SEED, PARTIAL, and EXCLUDED.
@@ -28,29 +29,29 @@ import com.ibm.wsspi.anno.util.Util_BidirectionalMap;
  */
 public class AnnotationTargetsImpl_PolicyData {
 
-    protected AnnotationTargetsImpl_PolicyData(AnnotationTargetsImpl_Targets targets,
-                                               UtilImpl_InternMap classInternMap,
+    protected AnnotationTargetsImpl_PolicyData(AnnotationTargets_Targets targets,
+                                               Util_InternMap classInternMap,
                                                ScanPolicy scanPolicy,
                                                boolean isDetailEnabled) {
 
-        this.targets = targets;
+        this.targets = (AnnotationTargetsImpl_Targets) targets;
         this.scanPolicy = scanPolicy;
 
         this.i_classNames = new IdentityHashMap<String, String>();
 
-        this.packageAnnotationData = targets.createBidiMap(scanPolicy + " packages with annotations", classInternMap,
+        this.packageAnnotationData = this.targets.createBidiMap(scanPolicy + " packages with annotations", classInternMap,
                                                            "annotations", classInternMap,
                                                            Util_BidirectionalMap.IS_ENABLED);
 
-        this.classAnnotationData = targets.createBidiMap(scanPolicy + " class with annotations", classInternMap,
+        this.classAnnotationData = this.targets.createBidiMap(scanPolicy + " class with annotations", classInternMap,
                                                          "annotations", classInternMap,
                                                          Util_BidirectionalMap.IS_ENABLED);
 
-        this.fieldAnnotationData = targets.createBidiMap(scanPolicy + " class with field annotations", classInternMap,
+        this.fieldAnnotationData = this.targets.createBidiMap(scanPolicy + " class with field annotations", classInternMap,
                                                          "annotations", classInternMap,
                                                          isDetailEnabled);
 
-        this.methodAnnotationData = targets.createBidiMap(scanPolicy + " class with method annotations", classInternMap,
+        this.methodAnnotationData = this.targets.createBidiMap(scanPolicy + " class with method annotations", classInternMap,
                                                           "annotations", classInternMap,
                                                           isDetailEnabled);
     }
@@ -59,7 +60,7 @@ public class AnnotationTargetsImpl_PolicyData {
 
     protected final AnnotationTargetsImpl_Targets targets;
 
-    public AnnotationTargetsImpl_Targets getTargets() {
+    public AnnotationTargets_Targets getTargets() {
         return targets;
     }
 

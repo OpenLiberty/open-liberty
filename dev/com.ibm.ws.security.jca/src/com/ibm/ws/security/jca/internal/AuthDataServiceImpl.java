@@ -10,10 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.security.jca.internal;
 
-import java.nio.file.Path;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,9 +22,12 @@ import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
-import org.ietf.jgss.GSSCredential;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
@@ -39,12 +40,11 @@ import com.ibm.websphere.security.auth.data.AuthDataProvider;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.authentication.principals.WSPrincipal;
-import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.security.intfc.SubjectManagerService;
 import com.ibm.ws.security.jca.AuthDataService;
 import com.ibm.ws.security.kerberos.auth.KerberosService;
-import com.ibm.ws.security.kerberos.auth.Krb5LoginModuleWrapper;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
+import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 import com.ibm.wsspi.security.auth.callback.WSMappingCallbackHandler;
 
 /**
@@ -62,6 +62,7 @@ import com.ibm.wsspi.security.auth.callback.WSMappingCallbackHandler;
  * 2) ManagedConnectionFactory holds references to the JDBC driver classloader, and when configuration changes are made
  * since the subject cache keeps a reference to the old ManagedConnectionFactory, it causes a classloader leak.
  */
+@Component(name = "com.ibm.ws.security.jca.authdata.service", configurationPolicy = ConfigurationPolicy.IGNORE, property = "service.vendor=IBM")
 public class AuthDataServiceImpl implements AuthDataService {
 
     private static final TraceComponent tc = Tr.register(AuthDataServiceImpl.class);
@@ -75,11 +76,11 @@ public class AuthDataServiceImpl implements AuthDataService {
     private static final String KEY_AUTH_DATA_ALIAS = "com.ibm.mapping.authDataAlias";
 
     private final AtomicServiceReference<SecurityService> securityServiceRef = new AtomicServiceReference<SecurityService>(KEY_SECURITY_SERVICE);
-    private final AtomicServiceReference<KerberosService> krb5ServiceRef = new AtomicServiceReference<KerberosService>("krb5Service");
-    private final AtomicServiceReference<AuthDataProvider> authDataProviderRef = new AtomicServiceReference<AuthDataProvider>("authDataProvider");
     private final AtomicServiceReference<SubjectManagerService> smServiceRef = new AtomicServiceReference<SubjectManagerService>(SubjectManagerService.KEY_SUBJECT_MANAGER_SERVICE);
 
-    @Reference(service = SecurityService.class, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL)
+    @Reference(name = KEY_SECURITY_SERVICE,
+               policy = ReferencePolicy.DYNAMIC,
+               cardinality = ReferenceCardinality.OPTIONAL)
     protected void setSecurityService(ServiceReference<SecurityService> ref) {
         securityServiceRef.setReference(ref);
     }
@@ -88,22 +89,15 @@ public class AuthDataServiceImpl implements AuthDataService {
         securityServiceRef.unsetReference(reference);
     }
 
-    protected void setKrb5Service(ServiceReference<KerberosService> ref) {
-        krb5ServiceRef.setReference(ref);
-    }
+    @Reference
+    protected KerberosService krb5Service;
 
-    protected void unsetKrb5Service(ServiceReference<KerberosService> ref) {
-        krb5ServiceRef.unsetReference(ref);
-    }
+    @Reference
+    protected AuthDataProvider authDataProvider;
 
-    protected void setAuthDataProvider(ServiceReference<AuthDataProvider> reference) {
-        authDataProviderRef.setReference(reference);
-    }
-
-    protected void unsetAuthDataProvider(ServiceReference<AuthDataProvider> reference) {
-        authDataProviderRef.unsetReference(reference);
-    }
-
+    @Reference(name = SubjectManagerService.KEY_SUBJECT_MANAGER_SERVICE,
+               policy = ReferencePolicy.DYNAMIC,
+               cardinality = ReferenceCardinality.OPTIONAL)
     protected void setSubjectManagerService(ServiceReference<SubjectManagerService> reference) {
         smServiceRef.setReference(reference);
     }
@@ -112,16 +106,14 @@ public class AuthDataServiceImpl implements AuthDataService {
         smServiceRef.unsetReference(reference);
     }
 
+    @Activate
     protected void activate(ComponentContext cc, Map<String, Object> props) {
-        krb5ServiceRef.activate(cc);
-        authDataProviderRef.activate(cc);
         securityServiceRef.activate(cc);
         smServiceRef.activate(cc);
     }
 
+    @Deactivate
     protected void deactivate(ComponentContext cc) {
-        krb5ServiceRef.deactivate(cc);
-        authDataProviderRef.deactivate(cc);
         securityServiceRef.deactivate(cc);
         smServiceRef.deactivate(cc);
     }
@@ -162,68 +154,20 @@ public class AuthDataServiceImpl implements AuthDataService {
      * @param authDataAlias the auth data alias representing the auth data entry in the configuration.
      * @return the auth data.
      */
-    @SuppressWarnings("static-access")
     private AuthData getAuthData(String authDataAlias) throws LoginException {
-        return authDataProviderRef.getService().getAuthData(authDataAlias);
+        return AuthDataProvider.getAuthData(authDataAlias);
     }
 
     private Subject obtainSubject(ManagedConnectionFactory managedConnectionFactory, AuthData authData) throws LoginException {
         if (authData.getKrb5Principal() != null) {
-            return doKerberosLogin(authData.getKrb5Principal());
+            SerializableProtectedString pass = authData.getPassword() == null ? null : new SerializableProtectedString(authData.getPassword());
+            return krb5Service.getOrCreateSubject(authData.getKrb5Principal(), pass, authData.getKrb5TicketCache());
         } else {
             Subject subject = createSubject(managedConnectionFactory, authData);
             addInvocationSubjectPrincipal(subject);
             optimize(subject);
             return subject;
         }
-    }
-
-    private Subject doKerberosLogin(String principal) throws LoginException {
-        Subject subject = new Subject();
-        Krb5LoginModuleWrapper krb5 = new Krb5LoginModuleWrapper();
-        Map<String, String> options = new HashMap<String, String>();
-        Map<String, Object> sharedState = new HashMap<String, Object>();
-
-        Path keytab = krb5ServiceRef.getService().getKeytab();
-
-        options.put("isInitiator", "true");
-        options.put("refreshKrb5Config", "true");
-        options.put("doNotPrompt", "true");
-        options.put("useKeyTab", "true");
-        // If no keytab path specified, still set useKeyTab=true because then the
-        // default JDK or default OS locations will be checked
-        if (keytab != null) {
-            options.put("keyTab", keytab.toAbsolutePath().toString());
-        }
-        options.put("principal", principal);
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            options.put("debug", "true");
-            Tr.debug(tc, "All kerberos config properties are: " + options);
-        }
-
-        krb5.initialize(subject, null, sharedState, options);
-        krb5.login();
-        krb5.commit();
-
-        // If the created Subject does not have a GSSCredential, then create one and
-        // associate it with the Subject
-        Set<GSSCredential> gssCreds = subject.getPrivateCredentials(GSSCredential.class);
-        if (gssCreds == null || gssCreds.size() == 0) {
-            GSSCredential gssCred = SubjectHelper.createGSSCredential(subject);
-            if (System.getSecurityManager() == null) {
-                subject.getPrivateCredentials().add(gssCred);
-            } else {
-                AccessController.doPrivileged(new PrivilegedAction<Void>() {
-                    @Override
-                    public Void run() {
-                        subject.getPrivateCredentials().add(gssCred);
-                        return null;
-                    }
-                });
-            }
-        }
-
-        return subject;
     }
 
     private Subject createSubject(ManagedConnectionFactory managedConnectionFactory, AuthData authData) {

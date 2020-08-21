@@ -33,7 +33,7 @@ Import-Package: \
 	*
 
 Include-Resource: \
-  @${repo;org.eclipse.microprofile.rest.client:microprofile-rest-client-api;1.4}
+  @${repo;org.eclipse.microprofile.rest.client:microprofile-rest-client-api;1.4;EXACT}
 
 
 

@@ -37,5 +37,5 @@ import componenttest.rules.repeater.RepeatTests;
 public class FATSuite {
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-        .andWith(new FeatureReplacementAction("jaxrs-2.1", "jaxrs-3.0").withID("RESTEasy"));
+        .andWith(new FeatureReplacementAction("jaxrs-2.1", "jaxrs-2.2").withID("RESTEasy"));
 }

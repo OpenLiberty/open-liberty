@@ -382,7 +382,7 @@ public class ServiceSupportTests extends FATServletClient {
      *
      **/
     @Test
-    @ExpectedFFDC({ "java.lang.RuntimeException", "java.lang.Exception" })
+    @ExpectedFFDC({ "java.lang.RuntimeException" })
     public void testDuplicateService() throws Exception {
         LOG.info("testDuplicateService() : add FavoriteBeerService to the server if not already present.");
 

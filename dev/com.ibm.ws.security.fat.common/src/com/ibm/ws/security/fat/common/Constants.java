@@ -85,6 +85,8 @@ public class Constants {
     public static final String PUTMETHOD = "PUT";
     public static final String HEADMETHOD = "HEAD";
 
+    public static final String AUTHORIZATION = "Authorization";
+
     public static final String UNAUTHORIZED_MESSAGE = "Unauthorized";
     public static final String UNAUTHORIZED_EXCEPTION = "401 Unauthorized";
     public static final String HTTP_UNAUTHORIZED_EXCEPTION = "HTTP " + UNAUTHORIZED_EXCEPTION;

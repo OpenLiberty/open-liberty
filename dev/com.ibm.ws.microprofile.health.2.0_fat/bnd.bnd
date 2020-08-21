@@ -19,6 +19,8 @@ src: \
 
 fat.project: true
 
+tested.features=servlet-4.0,cdi-2.0,mphealth-3.0,mpConfig-1.4,mpConfig-2.0
+
 -buildpath: \
 	org.apache.commons:commons-compress;version=1.19, \
 	org.apache.johnzon:johnzon-core;version=1.1.0, \

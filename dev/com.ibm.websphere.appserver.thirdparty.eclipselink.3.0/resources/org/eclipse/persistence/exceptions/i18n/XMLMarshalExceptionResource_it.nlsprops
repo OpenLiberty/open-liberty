@@ -1,0 +1,111 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/XMLMarshalExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+25001=Stringa XPath non valida: {0}
+
+25002=Questa stringa XPath non ha potuto analizzare un indice numero intero: {0}
+
+25003=Si \u00e8 verificato un errore durante il marshalling dell''oggetto
+
+25004=Si \u00e8 verificato un errore durante l''unmarshalling del documento
+
+25005=Si \u00e8 verificato un errore durante la convalida dell''oggetto
+
+25006=Un elemento root predefinito non \u00e8 stato specificato per l''XMLDescriptor associato a {0}
+
+25007=Nel progetto non \u00e8 stato trovato un descrittore per la classe {0}.  Per JAXB, se JAXBContext \u00e8 stato sottoposto a bootstrap tramite TypeMappingInfo[] \u00e8 necessario chiamare un metodo di marshalling che accetti TypeMappingInfo come parametro di input.
+
+25008=Nel progetto non \u00e8 stato trovato un descrittore con l''elemento root predefinito {0}
+
+25010=Un riferimento schema non \u00e8 stato specificato per l''XMLDescriptor associato a {0}
+
+25011=Rilevato argomento null
+
+25012=Si \u00e8 verificato un errore durante la risoluzione dello schema XML.
+
+25013=Si \u00e8 verificato un errore durante il tentativo di impostare gli schemi.
+
+25014=Si \u00e8 verificato un errore durante il tentativo di creare un''istanza della piattaforma schema.
+
+25015=Si \u00e8 verificato un errore durante il tentativo di risolvere l''URI spazio dei nomi per {0}. Sul descrittore non \u00e8 stato specificato un resolver spazio dei nomi.
+
+25016=Nel resolver spazio dei nomi non \u00e8 stato trovato uno spazio dei nomi per il prefisso {0}.
+
+25017=Su JAXBTypesafeEnumConverter deve essere impostato enumClass o enumClassName.
+
+25018=Il metodo fromString sulla classe enum {0} non esiste o non pu\u00f2 essere richiamato.
+
+25019=Impossibile trovare la classe enum specificata {0}.
+
+25020=Il metodo "getResult()" non deve essere chiamato prima di aver chiamato l''evento "endDocument()".
+
+25021=Classe {0} non valida per SwaRef. Deve essere javax.activation.DataHandler.
+
+25022=Impossibile eseguire il marshalling dell''immagine. Nessun programma di codifica disponibile per mimeType {0}.
+
+25023=Nessun descrittore trovato durante l''unmarshalling dell''elemento  associato all''attributo {0}.
+
+25024=Si \u00e8 verificato un errore durante la creazione dell''istanza della classe UnmappedContentHandler {0}.
+
+25025=La classe UnmappedContentHandler {0} impostata su XMLUnmarshaller deve implementare org.eclipse.persistence.oxm.unmapped.UnmappedContentHandler.
+
+25026=Impossibile aggiornare il nodo [{0}], oggetto non trovato nella cache.
+
+25027=Impossibile richiamare il collegamento con cid {0} perch\u00e9 non \u00e8 stato impostato un AttachmentUnmarshaller.
+
+25028=Nessun descrittore riferimento trovato per l''associazione {1} a causa di un valore xsi:type sconosciuto: {0}.
+
+25029=Per il prefisso [{0}] la classe [{1}] ha tentato di assegnare l''URI spazio dei nomi [{2}], ma la relativa classe parent [{3}] ha gi\u00e0 l''URI spazio dei nomi [{4}] assegnato.
+
+25030=Si \u00e8 verificato un errore durante la chiamata del metodo {0} sul NamespacePrefixMapper personalizzato: {1}.
+
+25031=Si \u00e8 verificato un errore durante l''elaborazione del mapper del prefisso dello spazio dei nomi: {1}. Metodo {0} non trovato.
+
+25032=Si \u00e8 verificato un errore durante la chiamata del metodo {0} sul CharacterEscapeHandler personalizzato: {1}.
+
+25033=Si \u00e8 verificato un errore durante l''elaborazione di CharacterEscapeHandler: {1} Metodo {0} non trovato.
+
+25034=Si \u00e8 verificato un errore durante la chiamata del metodo {0} sul IDResolver personalizzato: {1}.
+
+25035=Si \u00e8 verificato un errore durante l''elaborazione di IDResolver: {1} Metodo {0} non trovato.
+
+25036=IDResolver personalizzato {1} non supporta ID XML multipli {0}.  Gli IDResolver personalizzati devono essere sottoclassi org.eclipse.persistence.jaxb.IDResolver se vengono utilizzati ID multipli.
+
+25037=Nel grafico dell''oggetto \u00e8 stato rilevato un ciclo.  Ci\u00f2 causer\u00e0 un loop infinito: {0}
+
+25038=DOMPlatform non supportato con tipo di supporto applicazione/json.
+
+25039=Si \u00e8 verificato un errore durante l''unmarshalling da {0}
+
+25040=Un oggetto di tipo {0} con ID {1} non \u00e8 stato trovato.
+
+25041=Il gruppo attributi specificato {0} non \u00e8 definito per la classe {1}.
+
+25042=Il valore della propriet\u00e0 variabile {0} sulla classe {1} non pu\u00f2 essere null.
+

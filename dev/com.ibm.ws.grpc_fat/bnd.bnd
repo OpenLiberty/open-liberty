@@ -40,16 +40,16 @@ tested.features:\
 	com.ibm.websphere.org.eclipse.microprofile.config.1.4;version=latest,\
     com.ibm.websphere.org.eclipse.microprofile.rest.client.1.4;version=latest,\
 	com.ibm.ws.org.slf4j.api.1.7.7,\
-	io.grpc:grpc-api;version=1.27.0,\
-	io.grpc:grpc-census;version=1.27.0,\
-	io.grpc:grpc-context;version=1.27.0,\
-	io.grpc:grpc-core;version=1.27.0,\
-	io.grpc:grpc-protobuf;version=1.27.0,\
-	io.grpc:grpc-protobuf-lite;version=1.27.0,\
-	io.grpc:grpc-stub;version=1.27.0,\
+	io.grpc:grpc-api;version=1.31.1,\
+	io.grpc:grpc-census;version=1.31.1,\
+	io.grpc:grpc-context;version=1.31.1,\
+	io.grpc:grpc-core;version=1.31.1,\
+	io.grpc:grpc-protobuf;version=1.31.1,\
+	io.grpc:grpc-protobuf-lite;version=1.31.1,\
+	io.grpc:grpc-stub;version=1.31.1,\
 	net.sourceforge.htmlunit:htmlunit;version=2.20,\
 	xml-apis:xml-apis;version=1.4.01,\
-	com.google.protobuf:protobuf-java;version=3.11.1, \
+	com.google.protobuf:protobuf-java;version=3.13.0, \
 	com.google.protobuf:protobuf-java-util;version=3.11.4, \
 	com.ibm.websphere.javaee.jaxrs.2.1,\
 	com.ibm.websphere.javaee.cdi.2.0,\

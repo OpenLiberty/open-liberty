@@ -19,7 +19,6 @@
  </Designate>
 
  <OCD id="com.ibm.ws.session.cache" ibm:alias="httpSessionCache" name="%httpSessionCache" description="%httpSessionCache.desc" ibmui:localization="OSGI-INF/l10n/metatype">
-  <AD id="enableBetaSupportForInfinispan" type="Boolean" ibm:beta="true" default="false" name="%enableBetaSupportForInfinispan.name" description="%enableBetaSupportForInfinispan.desc"/> <!-- Remove when ready to GA -->
   <AD id="libraryRef"                     type="String"  required="false" ibm:type="pid" ibm:reference="com.ibm.ws.classloading.sharedlibrary" cardinality="1" name="%libraryRef" description="%libraryRef.desc"/>
   <AD id="library.target"                 type="String"  default="(|(service.pid=${libraryRef})(&amp;(zero=${count(libraryRef)})(id=com.ibm.ws.session.cache.defaultprovider.library)))" ibm:final="true" name="internal" description="internal use only"/>
   <AD id="monitor.target"                 type="String"  default="(|(!(filter>=!))(filter=*Session*))" ibm:final="true" name="internal" description="internal use only"/>

@@ -19,7 +19,10 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -41,6 +44,20 @@ import componenttest.topology.utils.FATServletClient;
  */
 @RunWith(FATRunner.class)
 public class BindToJavaGlobalTest extends FATServletClient {
+
+    @Rule
+    public TestWatcher watchman = new TestWatcher() {
+        @Override
+        protected void failed(Throwable e, Description description) {
+            try {
+                server.dumpServer("serverDump");
+            } catch (Exception e1) {
+                System.out.println("Failed to dump server");
+                e1.printStackTrace();
+            }
+        }
+    };
+
     private static final Class<?> c = BindToJavaGlobalTest.class;
     private static HashSet<String> apps = new HashSet<String>();
     private static String servlet = "ConfigTestsWeb/BindToJavaGlobalServlet";

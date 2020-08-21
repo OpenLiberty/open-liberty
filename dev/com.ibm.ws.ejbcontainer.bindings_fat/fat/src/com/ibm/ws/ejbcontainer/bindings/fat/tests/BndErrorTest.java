@@ -18,7 +18,10 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -35,6 +38,19 @@ import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
 public class BndErrorTest extends FATServletClient {
+
+    @Rule
+    public TestWatcher watchman = new TestWatcher() {
+        @Override
+        protected void failed(Throwable e, Description description) {
+            try {
+                server.dumpServer("serverDump");
+            } catch (Exception e1) {
+                System.out.println("Failed to dump server");
+                e1.printStackTrace();
+            }
+        }
+    };
 
     @Server("com.ibm.ws.ejbcontainer.bindings.fat.server.err")
     public static LibertyServer server;

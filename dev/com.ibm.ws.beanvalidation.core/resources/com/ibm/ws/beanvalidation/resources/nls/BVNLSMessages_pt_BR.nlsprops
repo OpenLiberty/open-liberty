@@ -87,3 +87,15 @@ JNDI_NON_JEE_THREAD_CWNBV0006E.explanation=As opera\u00e7\u00f5es de JNDI em um 
 JNDI_NON_JEE_THREAD_CWNBV0006E.useraction=Modifique o aplicativo para que a opera\u00e7\u00e3o de JNDI ocorra em um encadeamento associado a um componente de aplicativo Java EE.
 
 # -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the method with the invalid ValidateOnExecution annotation
+# -----------------------------------------------------------------------
+BVKEY_VALIDATE_ON_EXECUTION_NOT_ALLOWED_CWNBV0007E=CWNBV0007E: @ValidateOnExecution n\u00e3o \u00e9 permitido em m\u00e9todos que substituem um m\u00e9todo de superclasse ou implementam uma interface. Verifique a configura\u00e7\u00e3o de {0}
+BVKEY_VALIDATE_ON_EXECUTION_NOT_ALLOWED_CWNBV0007E.explanation= @ValidateOnExecution n\u00e3o \u00e9 permitido em m\u00e9todos que substituem um m\u00e9todo de superclasse ou implementam uma interface. Um m\u00e9todo que substitui um m\u00e9todo de superclasse ou implementa um m\u00e9todo de interface herda o comportamento do m\u00e9todo que ele substitui ou implementa.
+BVKEY_VALIDATE_ON_EXECUTION_NOT_ALLOWED_CWNBV0007E.useraction= Remova o @ValidateOnExecution do m\u00e9todo especificado.
+
+# -----------------------------------------------------------------------
+BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E=CWNBV0008E: N\u00e3o \u00e9 permitida a combina\u00e7\u00e3o do tipo IMPL\u00cdCITO com outros tipos execut\u00e1veis. Verifique os tipos execut\u00e1veis configurados para: \n {0}
+BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E.explanation=De acordo com a Especifica\u00e7\u00e3o de valida\u00e7\u00e3o de bean, n\u00e3o \u00e9 permitida a combina\u00e7\u00e3o do tipo IMPL\u00cdCITO com outros tipos execut\u00e1veis para a anota\u00e7\u00e3o @ValidateOnExecution.
+BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E.useraction=Atualize as configura\u00e7\u00f5es de m\u00e9todo, classe ou XML global para tipos execut\u00e1veis para evitar a combina\u00e7\u00e3o do tipo IMPL\u00cdCITO com outros tipos execut\u00e1veis.
+# -----------------------------------------------------------------------

@@ -37,7 +37,6 @@ import com.ibm.websphere.ssl.SSLConfig;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.security.acme.internal.AcmeConfigService;
 import com.ibm.ws.security.acme.internal.AcmeProviderImpl;
-import com.ibm.ws.security.acme.internal.util.AcmeConstants;
 import com.ibm.ws.ssl.provider.AbstractJSSEProvider;
 
 /**
@@ -119,6 +118,10 @@ public class HttpConnector {
 		} else {
 			connectTimeout = AcmeProviderImpl.getAcmeConfig().getHTTPConnectTimeout();
 			readTimeout = AcmeProviderImpl.getAcmeConfig().getHTTPReadTimeout();
+		}
+		if (tc.isDebugEnabled()) {
+			Tr.debug(tc, "Setting http timeouts for ACME calls, connectTimeout: " + connectTimeout
+					+ " and readTimeout: " + readTimeout);
 		}
 		conn.setConnectTimeout(connectTimeout);
 		conn.setReadTimeout(readTimeout);

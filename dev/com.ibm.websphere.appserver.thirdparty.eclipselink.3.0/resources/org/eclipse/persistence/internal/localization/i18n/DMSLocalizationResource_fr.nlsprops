@@ -1,0 +1,111 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/DMSLocalizationResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+assigning_sequence_numbers=Inclut le temps pass\u00e9 \u00e0 g\u00e9rer le m\u00e9canisme de num\u00e9ro de s\u00e9quence et \u00e0 d\u00e9finir effectivement le num\u00e9ro de s\u00e9quence sur les objets
+
+cache_hits=Nombre de fois que l''objet a \u00e9t\u00e9 d\u00e9tect\u00e9 dans la m\u00e9moire cache
+
+cache_misses=Nombre de fois auquel l''objet n''a pas \u00e9t\u00e9 trouv\u00e9 dans le cache
+
+caching=Inclut le temps pass\u00e9 \u00e0 ajouter, rechercher et retirer des objets dans la m\u00e9moire cache
+
+change_set_not_processed=Nombre d''\u00e9l\u00e9ments ObjectChangeSets rejet\u00e9s parce que l''objet n''a PAS \u00e9t\u00e9 d\u00e9tect\u00e9 dans la m\u00e9moire cache
+
+change_set_processed=Le nombre d''\u00e9l\u00e9ments ObjectChangeSets a \u00e9t\u00e9 d\u00e9tect\u00e9 dans la m\u00e9moire cache
+
+client_session_count=Nombre de connexions de ClientSession
+
+connect_call=Nombre total d''appels de connexion effectu\u00e9s
+
+connection=Temps pass\u00e9 \u00e0 g\u00e9rer les connexions, y compris la connexion, la reconnexion et la d\u00e9connexion d''une source de donn\u00e9es
+
+connection_in_used=Nombre de connexions en cours d''utilisation par pool pour un pool de connexion exclusif (Write, ExclusiveRead)
+
+connection_ping=Temps pass\u00e9 \u00e0 tester la connexion de base de donn\u00e9es afin de d\u00e9terminer si elle peut \u00eatre utilis\u00e9e.
+
+database_execute=Temps pass\u00e9 dans les appels de l''instruction JDBC ; inclut le temps pass\u00e9 dans les appels \u00e0 : close, executeUpdate et executeQuery
+
+deleted_object=L''objet doit \u00eatre retir\u00e9 de identityMap de ObjectChangeSet
+
+descriptor_event=Temps pass\u00e9 \u00e0 ex\u00e9cuter DescriptorEvent
+
+disconnect_call=Nombre total d''appels de d\u00e9connexion effectu\u00e9s
+
+distributed_merge=Temps pass\u00e9 \u00e0 fusionner des modifications de transaction \u00e0 distance dans le cache partag\u00e9 en local. Appara\u00eet lorsque la sync de cache est utilis\u00e9e
+
+jts_aftercompletion=Temps pass\u00e9 sur la m\u00e9thode JTS afterCompletion(Object status)
+
+jts_beforecompletion=Temps pass\u00e9 sur la m\u00e9thode JTS beforeCompletion()
+
+logging=Temps pass\u00e9 \u00e0 la journalisation des activit\u00e9s TopLink
+
+merge_time=Temps pass\u00e9 \u00e0 la fusion des modifications dans le cache partag\u00e9.
+
+object_building=Temps pass\u00e9 \u00e0 g\u00e9n\u00e9rer des objets persistants depuis les lignes de base de donn\u00e9es
+
+optimistic_lock=Nombre de verrouillages optimistes qui ont \u00e9t\u00e9 lanc\u00e9s
+
+query=Temps total consacr\u00e9 \u00e0 l''op\u00e9ration : {0}
+
+query_misc=Temps total consacr\u00e9 \u00e0 l''op\u00e9ration : {0}.  Concerne les op\u00e9rations sp\u00e9ciales non incluses dans un nom de requ\u00eate, par exemple l''\u00e9criture par lots.
+
+query_prepareation=Temps de pr\u00e9paration de la requ\u00eate
+
+rcm_message_received=Nombre de messages qui ont \u00e9t\u00e9 re\u00e7us via RCM
+
+rcm_message_sent=Nombre de messages qui ont \u00e9t\u00e9 envoy\u00e9s via RCM
+
+rcm_status=Un sur [non configur\u00e9, d\u00e9marr\u00e9, arr\u00eat\u00e9]
+
+remote_change_set=Nombre d''ensembles de changements re\u00e7us des machines distantes et trait\u00e9s
+
+row_fetch=Temps n\u00e9cessaire \u00e0 la g\u00e9n\u00e9ration d''objets d''enregistrement de l''ensemble de changements jdbc. Inclut les appels SQL r\u00e9guliers et les appels de proc\u00e9dure stock\u00e9s
+
+session_event=Temps pass\u00e9 \u00e0 ex\u00e9cuter SessionEvent
+
+session_login_time=Temps de connexion \u00e0 la session
+
+session_name=Nom de la session
+
+sql_generation=Temps pass\u00e9 \u00e0 g\u00e9n\u00e9rer des requ\u00eates SQL. Dans le cas d''expressions TopLink, temps pass\u00e9 \u00e0 convertir l''expression en instruction SQL
+
+sql_prepare=Temps pass\u00e9 dans JDBC \u00e0 pr\u00e9parer l''instruction. Inclut \u00e9galement le temps pass\u00e9 dans EIS \u00e0 cr\u00e9er une interaction associ\u00e9e \u00e0 une connexion, et \u00e0 cr\u00e9er des objets d''enregistrement en entr\u00e9e et en sortie
+
+unitofwork_commit=Mesure le processus de validation de l''unit\u00e9 d''oeuvre
+
+unitofwork_commits=Nombre de validations d''unit\u00e9 d''oeuvre
+
+unitofwork_count=Nombre total d''objets unit\u00e9 d''oeuvre cr\u00e9\u00e9s
+
+unitofwork_register=Inclut le temps pass\u00e9 dans registerExistingObject, registerNewContainerBean, registerNewContainerBeanForCMP, registerNewObject, registerObject, readIntoWorkingCopy)
+
+unitofwork_rollback=Nombre de validations d''unit\u00e9 d''oeuvre qui ont \u00e9t\u00e9 annul\u00e9es
+
+wrapping=Temps pass\u00e9 \u00e0 encapsuler les beans CMP et BMP
+

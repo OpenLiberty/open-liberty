@@ -13,7 +13,7 @@ IBM-API-Package: jakarta.security.enterprise; type="spec", \
 IBM-ShortName: appSecurity-4.0
 Subsystem-Name: Application Security 4.0
 -features=io.openliberty.cdi-3.0, \
- com.ibm.websphere.appserver.el-4.0, \
+ io.openliberty.el-4.0, \
  com.ibm.websphere.appserver.security-1.0, \
  com.ibm.websphere.appserver.servlet-5.0, \
  com.ibm.websphere.appserver.eeCompatible-9.0
@@ -23,7 +23,7 @@ Subsystem-Name: Application Security 4.0
  io.openliberty.security.authentication.internal.tai, \
  io.openliberty.jakarta.jaspic.2.0; location:=dev/api/spec/; mavenCoordinates="jakarta.security.auth.message:jakarta.security.auth.message-api:2.0.0-RC1", \
  io.openliberty.security.jaspic.2.0.internal
-kind=noship
-edition=full
+kind=beta
+edition=core
 -jars=io.openliberty.jaspic.2.0.spi; location:=dev/spi/ibm/
 -files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.jaspic_1.1-javadoc.zip

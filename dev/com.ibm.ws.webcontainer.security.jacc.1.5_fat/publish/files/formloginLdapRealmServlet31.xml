@@ -1,0 +1,65 @@
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="com.ibm.ws.webcontainer.security.fat.formlogin">
+
+	<featureManager>
+		<feature>appSecurity-2.0</feature>
+		<feature>jsp-2.2</feature>
+		<feature>servlet-3.1</feature>
+	</featureManager>
+
+	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
+
+	<basicRegistry id="basic" realm="ldap://myrealm:1234">
+		<user name="user0" password="user0pwd" />
+		<user name="user1" password="user1pwd" />
+		<user name="http://user.employee-group-realm.com/" password="complexpwd" />
+		<group name="group1">
+			<member name="user0" />
+			<member name="user1" />
+			<member name="http://user.employee-group-realm.com/" />
+		</group>
+		<user name="user2" password="user2pwd" />
+		<group name="group2">
+			<member name="user2" />
+		</group>
+		<user name="http://user.unauthorized-group-realm.com/" password="complexpwd" />
+		<group name="unauthorizedGroup">
+			<member name="http://user.unauthorized-group-realm.com/" />
+		</group>
+		<user name="http://www.no-role-realm.com/user/" password="complexpwd" />
+		<user name="http://user.employee-realm.com/" password="complexpwd" />
+		<user name="http://user.manager-realm.com/" password="complexpwd" />
+		<user name="https://user.test-realm.com:1234/`~!@#$%^&amp;*()-_=+[{]}\|;:&apos;&quot;,&lt;.&gt;/?/end/" password="complexpwd" />
+	</basicRegistry> 	
+
+	<application type="war" id="formlogin" name="formlogin" location="${server.config.dir}/apps/formlogin.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<user name="user1" />
+				<user name="http://user.employee-realm.com/" />
+				<user name="https://user.test-realm.com:1234/`~!@#$%^&amp;*()-_=+[{]}\|;:&apos;&quot;,&lt;.&gt;/?/end/" />
+				<group name="group1" />
+			</security-role>
+			<security-role name="Manager">
+				<user name="user2" />
+				<user name="http://user.manager-realm.com/" />
+				<group name="group2" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<include location="../fatTestPorts.xml"/>
+
+</server>

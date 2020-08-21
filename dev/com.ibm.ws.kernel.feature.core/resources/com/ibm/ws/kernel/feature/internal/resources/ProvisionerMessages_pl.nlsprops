@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2014 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -278,14 +278,23 @@ UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR=CWWKF0041E: Sk\u0142adnik {0} 
 UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR.explanation=Skonfigurowany sk\u0142adnik nie obs\u0142uguje okre\u015blonego typu procesu.
 UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR.useraction=Usu\u0144 sk\u0142adnik z konfiguracji lub zmie\u0144 plik manifestu sk\u0142adnika tak, aby w\u0142\u0105czy\u0107 obs\u0142ug\u0119 \u017c\u0105danego typu procesu.
 
-# CWWK042E  {0} = feature Name: {1} = server name 
+# CWWK0042E  {0} = feature Name: {1} = server name 
 UPDATE_MISSING_CORE_FEATURE_ERROR=CWWKF0042E: Nie mo\u017cna \
 znale\u017a\u0107 definicji sk\u0142adnika {0}.  Spr\u00f3buj uruchomi\u0107 komend\u0119 bin/installUtility install {0}, aby zainstalowa\u0107 ten sk\u0142adnik. Mo\u017cna r\u00f3wnie\u017c uruchomi\u0107 komend\u0119 bin/installUtility install {1}, aby zainstalowa\u0107 wszystkie sk\u0142adniki przywo\u0142ywane przez t\u0119 konfiguracj\u0119.
 UPDATE_MISSING_CORE_FEATURE_ERROR.explanation=Mened\u017cer sk\u0142adnik\u00f3w nie mo\u017ce znale\u017a\u0107 definicji okre\u015blonego sk\u0142adnika.
 UPDATE_MISSING_CORE_FEATURE_ERROR.useraction=Sprawd\u017a, czy nazwa okre\u015blonego sk\u0142adnika zosta\u0142a podana bez b\u0142\u0119d\u00f3w.  \
-Sprawd\u017a r\u00f3wnie\u017c, czy definicja sk\u0142adnika istnieje i czy jest dost\u0119pna do odczytu w katalogu lib/features. \
-Je\u015bli sk\u0142adnik nie istnieje, spr\u00f3buj uruchomi\u0107 komend\u0119 bin/installUtility install nazwa_sk\u0142adnika, aby zainstalowa\u0107 sk\u0142adnik, lub spr\u00f3buj uruchomi\u0107 komend\u0119 bin/installUtility install nazwa_serwera, aby zainstalowa\u0107 wszystkie sk\u0142adniki przywo\u0142ywane przez t\u0119 konfiguracj\u0119. 
+Sprawd\u017a r\u00f3wnie\u017c, czy definicja sk\u0142adnika istnieje i czy jest dost\u0119pna do odczytu w katalogu lib/features.  \
+Je\u015bli sk\u0142adnik nie istnieje, spr\u00f3buj uruchomi\u0107 komend\u0119 bin/installUtility install nazwa_sk\u0142adnika, aby zainstalowa\u0107 sk\u0142adnik, lub spr\u00f3buj uruchomi\u0107 komend\u0119 bin/installUtility install nazwa_serwera, aby zainstalowa\u0107 wszystkie sk\u0142adniki przywo\u0142ywane przez t\u0119 konfiguracj\u0119.
 
+# CWWK0043E  {0} = EeProgModel1: {1} = EeProgModel2: {2} = configuredFeature1: {3} = configuredFeature2: {4} EePlaformCommonToProgModels 
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_SAME_PLATFORM_ERROR=CWWKF0043E: Skonfigurowany sk\u0142adnik {2} modelu {0} jest niekompatybilny ze skonfigurowanym sk\u0142adnikiem {3} modelu {1}. Konfiguracja zawiera niekompatybiln\u0105 i nieobs\u0142ugiwan\u0105 kombinacj\u0119 sk\u0142adnik\u00f3w {4}. Zmie\u0144 konfiguracj\u0119 tak, aby korzysta\u0142a z kompatybilnych wersji skonfigurowanych sk\u0142adnik\u00f3w, kt\u00f3re obs\u0142uguj\u0105 model programowania {0} lub {1}.
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_SAME_PLATFORM_ERROR.explanation=Konfiguracja serwera zawiera nieobs\u0142ugiwan\u0105 kombinacj\u0119 sk\u0142adnik\u00f3w wskazanych modeli programowania. Ten konflikt mo\u017ce wyst\u0105pi\u0107, je\u015bli dwa niekompatybilne sk\u0142adniki zostan\u0105 okre\u015blone bezpo\u015brednio w konfiguracji serwera lub je\u015bli skonfigurowane sk\u0142adniki maj\u0105 niekompatybilne wersje.
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_SAME_PLATFORM_ERROR.useraction=Spr\u00f3buj okre\u015bli\u0107 w pliku server.xml kompatybiln\u0105 wersj\u0119 skonfigurowanych sk\u0142adnik\u00f3w, kt\u00f3re spowodowa\u0142y konflikt. Je\u015bli nie s\u0105 dost\u0119pne inne wersje, skonfigurowane sk\u0142adniki nie s\u0105 ze sob\u0105 kompatybilne i nie mo\u017cna ich skonfigurowa\u0107 w tym samym czasie.
+
+# CWWK0044E  {0} = EeProgModel1: {1} = EeProgModel2: {2} = EeConflictFeature1: {3} = EeConflictFeature2: {4} = configuredFeature1: {5} configuredFeature2
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR=CWWKF0044E: Sk\u0142adnik\u00f3w {2} i {3} nie mo\u017cna za\u0142adowa\u0107 w tym samym czasie. Sk\u0142adnik {2} modelu {0} jest niekompatybilny ze sk\u0142adnikiem {3} modelu {1}. Skonfigurowana kombinacja sk\u0142adnik\u00f3w {4} i {5} jest niekompatybilna. Ta konfiguracja nie jest obs\u0142ugiwana. Zmie\u0144 konfiguracj\u0119 w taki spos\u00f3b, aby korzysta\u0142a ze sk\u0142adnik\u00f3w obs\u0142uguj\u0105cych albo model programowania Jakarta EE, albo Java EE, ale nie obydwa.
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR.explanation=Konfiguracja serwera zawiera niekompatybiln\u0105 kombinacj\u0119 sk\u0142adnik\u00f3w modeli Jakarta EE i Java EE. Sk\u0142adniki obs\u0142uguj\u0105ce model programowania Jakarta EE 9 s\u0105 niekompatybilne ze sk\u0142adnikami obs\u0142uguj\u0105cymi modele programowania Java EE, w tym Jakarta EE 8. Ten konflikt mo\u017ce wyst\u0105pi\u0107, je\u015bli dwa niekompatybilne sk\u0142adniki zostan\u0105 okre\u015blone bezpo\u015brednio w konfiguracji serwera lub je\u015bli skonfigurowane sk\u0142adniki maj\u0105 niekompatybilne wersje.
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR.useraction=Okre\u015bl w pliku server.xml kompatybilne wersje sk\u0142adnik\u00f3w, kt\u00f3re spowodowa\u0142y konflikt, i upewnij si\u0119, \u017ce w pliku server.xml u\u017cywany jest albo model Jakarta EE, albo model Java EE, ale nie obydwa.
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 
 tool.feature.exists=CWWKF1000I: Sk\u0142adnik {0} ju\u017c istnieje. Nie zostanie on ponownie zainstalowany. Aby zmodyfikowa\u0107 istniej\u0105cy sk\u0142adnik, nale\u017cy najpierw r\u0119cznie go zdeinstalowa\u0107.

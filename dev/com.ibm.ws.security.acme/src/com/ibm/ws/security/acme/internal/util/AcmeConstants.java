@@ -68,6 +68,9 @@ public class AcmeConstants {
 	// HTTP timeouts connecting to the CA
 	public static final String HTTP_CONNECT_TIMEOUT = "httpConnectTimeout";
 	public static final String HTTP_READ_TIMEOUT = "httpReadTimeout";
+	
+	// Startup timeout for ACME servlet and HTTP port
+	public static final String START_READY_TIMEOUT = "startReadyTimeout";
 
 	/*
 	 * End constants that match the metatype fields
@@ -102,4 +105,5 @@ public class AcmeConstants {
 	public static final Integer HTTP_CONNECT_TIMEOUT_DEFAULT = 30000;
 	public static final Integer HTTP_READ_TIMEOUT_DEFAULT = 30000;
 
+	public static final Long START_READY_TIMEOUT_DEFAULT = 120000L;
 }

@@ -1,7 +1,5 @@
-package com.ibm.tx.jta.util;
-
 /*******************************************************************************
- * Copyright (c) 2002, 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2002, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +8,8 @@ package com.ibm.tx.jta.util;
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+
+package com.ibm.tx.jta.util;
 
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
@@ -63,23 +63,20 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
 
     protected RecoveryDirector _recoveryDirector;
 
-    private UOWEventListener _uowEventListener;
+    protected boolean _recoverDBLogStarted;
 
-    protected boolean _recoverDBLogStarted = false;
+    protected String _recoveryIdentity;
+    protected String _recoveryGroup;
 
-    protected String _recoveryIdentity = null;
-    protected String _recoveryGroup = null;
+    private static boolean _xaResourceFactoryReady;
+    private boolean _waitForRecovery;
+    private boolean _tmsReady;
+    private static boolean _recoveryLogFactoryReady;
+    private static RecoveryLogFactory _recoveryLogFactory;
+    private static boolean _recoveryLogServiceReady;
+    private static boolean _requireDataSourceActive;
 
-    private static boolean _xaResourceFactoryReady = false;
-    private boolean _waitForRecovery = false;
-    private boolean _tmsReady = false;
-    private static boolean _requireRecoveryLogFactory = false;
-    private static boolean _recoveryLogFactoryReady = false;
-    private static RecoveryLogFactory _recoveryLogFactory = null;
-    private static boolean _recoveryLogServiceReady = false;
-    private static boolean _requireDataSourceActive = false;
-
-    protected static BundleContext _bc = null;
+    protected static BundleContext _bc;
 
     static public TMService.TMStates getState() {
         return _state;
@@ -321,7 +318,7 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
 
                 if (getState() != TMService.TMStates.INACTIVE && getState() != TMService.TMStates.STOPPED) {
                     if (tc.isEntryEnabled())
-                        Tr.exit(tc, "start", "Already started");
+                        Tr.exit(tc, "startRecovery", "Already started");
                     return;
                 }
 
@@ -367,7 +364,7 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
 
                     final Throwable se = new SystemException();
                     if (tc.isEntryEnabled())
-                        Tr.exit(tc, "start", se);
+                        Tr.exit(tc, "startRecovery", se);
                     throw (SystemException) se;
                 }
 
@@ -392,8 +389,6 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
                     Tr.audit(tc, "WTRN0108I: Server with identity " + _recoveryIdentity + " is monitoring its peers for Transaction Peer Recovery");
                 }
 
-                //TODO: We don't currently use the recoveryGroup....but in due course we will, so retain this
-                // code snippet
                 if (_recoveryGroup != null && !_recoveryGroup.isEmpty()) {
                     txAgent.setRecoveryGroup(_recoveryGroup);
 
@@ -428,7 +423,7 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
 
                         final Throwable se = new SystemException().initCause(_resyncException);
                         if (tc.isEntryEnabled())
-                            Tr.exit(tc, "start", se);
+                            Tr.exit(tc, "startRecovery", se);
                         throw (SystemException) se;
                     }
                 } // eof if waitForRecovery

@@ -39,12 +39,16 @@ public class EE7FeatureReplacementAction extends FeatureReplacementAction {
                                                  "ejbLite-3.2",
                                                  "ejbPersistentTimer-3.2",
                                                  "ejbRemote-3.2",
+                                                 "ejbTest-1.0",
                                                  "el-3.0",
+                                                 "jmsMdb-3.2",
                                                  "concurrent-1.0",
                                                  "jaxb-2.2",
                                                  "managedBeans-1.0",
+                                                 "mdb-3.2",
                                                  "componenttest-1.0",
-                                                 "websocket-1.1"  };
+                                                 "txtest-1.0",
+                                                 "websocket-1.1" };
 
     public static final Set<String> EE7_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE7_FEATURES_ARRAY)));
 

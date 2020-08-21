@@ -15,7 +15,7 @@ Subsystem-Name: Social Media Login 1.0
   com.ibm.ws.security.social, \
   com.ibm.ws.security.openidconnect.clients.common, \
   com.ibm.ws.security.common.jsonwebkey, \
-  com.ibm.ws.org.apache.commons.codec.1.4, \
+  com.ibm.ws.org.apache.commons.codec, \
   com.ibm.ws.com.google.gson.2.2.4, \
   com.ibm.json4j, \
   com.ibm.ws.org.joda.time.1.6.2, \

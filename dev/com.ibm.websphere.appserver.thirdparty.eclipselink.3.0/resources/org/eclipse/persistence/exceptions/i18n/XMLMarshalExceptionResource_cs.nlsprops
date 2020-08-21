@@ -1,0 +1,111 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/XMLMarshalExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+25001=Neplatn\u00fd \u0159et\u011bzec XPath: {0}
+
+25002=Z tohoto \u0159et\u011bzce jazyka XPath nelze analyzovat celo\u010d\u00edseln\u00fd index: {0}
+
+25003=Do\u0161lo k chyb\u011b p\u0159i za\u0159azov\u00e1n\u00ed objektu.
+
+25004=Do\u0161lo k chyb\u011b p\u0159i vy\u0159azov\u00e1n\u00ed dokumentu.
+
+25005=Do\u0161lo k chyb\u011b p\u0159i ov\u011b\u0159ov\u00e1n\u00ed objektu.
+
+25006=Nebyl ur\u010den v\u00fdchoz\u00ed ko\u0159enov\u00fd prvek pro t\u0159\u00eddu XMLDescriptor mapovanou na {0}.
+
+25007=V projektu nebyl nalezen deskriptor pro t\u0159\u00eddu {0}. Pokud byla t\u0159\u00edda JAXBContext v p\u0159\u00edpad\u011b JAXB samozavedena pomoc\u00ed t\u0159\u00eddy TypeMappingInfo[], mus\u00edte zavolat metodu za\u0159azen\u00ed, kter\u00e1 p\u0159ijme t\u0159\u00eddu TypeMappingInfo jako vstupn\u00ed parametr.
+
+25008=V projektu nebyl nalezen deskriptor s v\u00fdchoz\u00edm ko\u0159enov\u00fdm prvkem {0}.
+
+25010=Pro t\u0159\u00eddu XMLDescriptor mapovanou na {0} nebyl ur\u010den odkaz na sch\u00e9ma.
+
+25011=Byl rozpozn\u00e1n argument s hodnotou null.
+
+25012=Do\u0161lo k chyb\u011b p\u0159i interpretaci sch\u00e9matu XML.
+
+25013=Do\u0161lo k chyb\u011b p\u0159i pokusu o nastaven\u00ed sch\u00e9mat.
+
+25014=Do\u0161lo k chyb\u011b p\u0159i pokusu o vytvo\u0159en\u00ed instance platformy sch\u00e9matu.
+
+25015=Do\u0161lo k chyb\u011b p\u0159i pokusu o vy\u0159e\u0161en\u00ed identifik\u00e1toru URI oboru n\u00e1zv\u016f pro {0}. Na deskriptoru nebyl ur\u010den vyhodnocovac\u00ed modul oboru n\u00e1zv\u016f.
+
+25016=Ve vyhodnocovac\u00edm modulu oboru n\u00e1zv\u016f nebyl nalezen obor n\u00e1zv\u016f pro p\u0159edponu {0}.
+
+25017=Na t\u0159\u00edd\u011b JAXBTypesafeEnumConverter je t\u0159eba nastavit t\u0159\u00eddu enumClass nebo enumClassName.
+
+25018=Metoda fromString na t\u0159\u00edd\u011b v\u00fd\u010dtu {0} neexistuje nebo ji nelze vyvolat.
+
+25019=Nelze naj\u00edt ur\u010denou t\u0159\u00eddu v\u00fd\u010dtu {0}.
+
+25020=Metoda "getResult()" nesm\u00ed b\u00fdt vol\u00e1na p\u0159ed vol\u00e1n\u00edm ud\u00e1losti "endDocument()".
+
+25021=T\u0159\u00edda {0} je neplatn\u00e1 pro SwaRef. Mus\u00ed to b\u00fdt t\u0159\u00edda javax.activation.DataHandler.
+
+25022=Obr\u00e1zek nelze za\u0159adit. Pro typ mimeType {0} nen\u00ed k dispozici \u017e\u00e1dn\u00fd kod\u00e9r.
+
+25023=P\u0159i vy\u0159azov\u00e1n\u00ed prvku mapovan\u00e9ho na atribut {0} nebyl nalezen \u017e\u00e1dn\u00fd deskriptor.
+
+25024=Do\u0161lo k chyb\u011b p\u0159i vytv\u00e1\u0159en\u00ed instance t\u0159\u00eddy UnmappedContentHandler {0}.
+
+25025=T\u0159\u00edda UnmappedContentHandler {0} nastaven\u00e1 na t\u0159\u00edd\u011b XMLUnmarshaller mus\u00ed implementovat t\u0159\u00eddu org.eclipse.persistence.oxm.unmapped.UnmappedContentHandler.
+
+25026=Nelze aktualizovat uzel [{0}], objekt nebyl nalezen v mezipam\u011bti.
+
+25027=Nelze na\u010d\u00edst p\u0159\u00edlohu s CID {0}, proto\u017ee nebylo nastaveno \u017e\u00e1dn\u00e9 rozhran\u00ed AttachmentUnmarshaller.
+
+25028=Nebyl nalezen \u017e\u00e1dn\u00fd deskriptor odkazu pro mapov\u00e1n\u00ed {1} v d\u016fsledku nezn\u00e1m\u00e9 hodnoty xsi:type {0}.
+
+25029=T\u0159\u00edda [{1}] se pokusila p\u0159i\u0159adit p\u0159edpon\u011b [{0}] identifik\u00e1tor URI oboru n\u00e1zv\u016f [{2}], ale jej\u00ed nad\u0159\u00edzen\u00e1 t\u0159\u00edda [{3}] ji\u017e p\u0159i\u0159adila identifik\u00e1tor URI oboru n\u00e1zv\u016f [{4}].
+
+25030=Do\u0161lo k chyb\u011b p\u0159i vyvol\u00e1n\u00ed metody {0} na vlastn\u00ed t\u0159\u00edd\u011b NamespacePrefixMapper: {1}.
+
+25031=Do\u0161lo k chyb\u011b p\u0159i zpracov\u00e1n\u00ed mapova\u010de p\u0159edpon oboru n\u00e1zv\u016f: {1}. Nebyla nalezena metoda {0}.
+
+25032=Do\u0161lo k chyb\u011b p\u0159i vyvol\u00e1n\u00ed metody {0} na vlastn\u00edm rozhran\u00ed CharacterEscapeHandler: {1}.
+
+25033=Do\u0161lo k chyb\u011b p\u0159i zpracov\u00e1n\u00ed rozhran\u00ed CharacterEscapeHandler: {1}. Nebyla nalezena metoda {0}.
+
+25034=Do\u0161lo k chyb\u011b p\u0159i vyvol\u00e1n\u00ed metody {0} na vlastn\u00ed t\u0159\u00edd\u011b IDResolver: {1}.
+
+25035=Do\u0161lo k chyb\u011b p\u0159i zpracov\u00e1n\u00ed t\u0159\u00eddy IDResolver: {1}. Nebyla nalezena metoda {0}.
+
+25036=Vlastn\u00ed t\u0159\u00edda IDResolver {1} nepodporuje v\u00edce ID XML {0}. P\u0159i pou\u017eit\u00ed v\u00edce ID mus\u00ed b\u00fdt vlastn\u00ed t\u0159\u00eddy IDResolver podt\u0159\u00eddami t\u0159\u00eddy org.eclipse.persistence.jaxb.IDResolver.
+
+25037=Byl zji\u0161t\u011bn cyklus v grafu objektu. Ten zp\u016fsob\u00ed nekone\u010dnou smy\u010dku: {0}
+
+25038=T\u0159\u00edda DOMPlatform nen\u00ed podporov\u00e1na s typem m\u00e9dia application/json.
+
+25039=Do\u0161lo k chyb\u011b p\u0159i vy\u0159azov\u00e1n\u00ed z {0}
+
+25040=Nebyl nalezen objekt typu {0} s ID {1}.
+
+25041=Ur\u010den\u00e1 skupina atribut\u016f {0} nen\u00ed definov\u00e1na pro t\u0159\u00eddu {1}.
+
+25042=Hodnota vlastnosti prom\u011bnn\u00e9 {0} na t\u0159\u00edd\u011b {1} nem\u016f\u017ee b\u00fdt null.
+

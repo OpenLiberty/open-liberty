@@ -1,0 +1,441 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DescriptorExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+1=El atributo [{0}] no se ha declarado como el tipo ValueHolderInterface, pero su correlaci\u00f3n utiliza la indirecci\u00f3n.
+
+10=Esta correlaci\u00f3n no tiene establecido un nombre de campo.
+
+100=Un m\u00e9todo ha desencadenado una excepci\u00f3n.
+
+101=El m\u00e9todo subyacente ha desencadenado una excepci\u00f3n.
+
+102=El m\u00e9todo [{0}] ha desencadenado una excepci\u00f3n.
+
+103=Problema al extraer la clase de la fila [{0}] utilizando el m\u00e9todo est\u00e1tico [{1}] con el par\u00e1metro (DatabaseRow).  Se ha desencadenado una excepci\u00f3n.
+
+104=Problema al crear la nueva instancia utilizando el m\u00e9todo de creaci\u00f3n [{0}].  El m\u00e9todo de creaci\u00f3n ha desencadenado una excepci\u00f3n.
+
+105=El m\u00e9todo de devoluci\u00f3n de llamada del descriptor subyacente [{0}] con el par\u00e1metro (Session) ha desencadenado una excepci\u00f3n.
+
+106=El m\u00e9todo [{0}] en objeto est\u00e1 generando una excepci\u00f3n. {2}Argumento: [{1}]
+
+108=No se puede encontrar el valor en la correlaci\u00f3n de indicadores de clase en el descriptor padre [{0}].
+
+109=Este descriptor no puede tener definido un campo de bloqueo de escritura porque es un descriptor hijo. Hereda el campo de bloqueo de escritura del descriptor padre.
+
+11=La informaci\u00f3n de clave for\u00e1nea de esta correlaci\u00f3n se ha definido incorrectamente.
+
+110=Falta el descriptor para la clase [{0}].
+
+111=Varios nombres de campo de clave primaria de la tabla debe estar calificados completamente.
+
+112=S\u00f3lo puede a\u00f1adirse una tabla utilizando setTableName(String). Utilice addTableName(String) para a\u00f1adir varias tablas a un descriptor.
+
+113=No se ha podido acceder al constructor.
+
+114=Problema al crear la nueva instancia utilizando el m\u00e9todo de creaci\u00f3n [{0}].  No se ha podido acceder al m\u00e9todo de creaci\u00f3n.
+
+115=No se ha proporcionado ning\u00fan valor de conversi\u00f3n para el atributo [{0}].
+
+116=No se ha proporcionado ning\u00fan valor de conversi\u00f3n para el valor [{0}] en el campo [{1}].
+
+118=El objeto [{0}] no puede tener correlaciones de s\u00f3lo lectura en sus campos de bloqueo de escritura.
+
+119=Las correlaciones [{0}] del objeto con sus campos de bloqueo de escritura deben ser de s\u00f3lo lectura.
+
+12=Los descriptores deben utilizar una correlaci\u00f3n de identidades para poder utilizar la opci\u00f3n de comprobaci\u00f3n de existencia "Comprobar cach\u00e9".
+
+120=La clave de consulta [{0}] est\u00e1 definida en el descriptor padre [{1}], pero no en el descriptor hijo [{2}].
+
+122=No se entiende setExistenceCheck() con el argumento [{0}].
+
+125=La correlaci\u00f3n del atributo [{0}] utiliza la indirecci\u00f3n, por lo que debe inicializarse en un nuevo ValueHolder.  Actualmente, el valor es: [{1}].
+
+126=Ninguna subclase coincide con esta clase [{0}] para esta correlaci\u00f3n de agregaci\u00f3n con herencia.
+
+127=El m\u00e9todo get del atributo [{0}] no devuelve una ValueHolderInterface, pero la correlaci\u00f3n utiliza la indirecci\u00f3n.
+
+128=El m\u00e9todo get del atributo [{0}] devuelve una ValueHolderInterface, pero la correlaci\u00f3n no utiliza la indirecci\u00f3n.
+
+129=El m\u00e9todo set del atributo [{0}] no utiliza una ValueHolderInterface como par\u00e1metro, pero la correlaci\u00f3n utiliza la indirecci\u00f3n.
+
+13=La variable de instancia [{0}] en el objeto [{1}] no es accesible.
+
+130=El m\u00e9todo set del atributo [{0}] utiliza una ValueHolderInterface como par\u00e1metro, pero la correlaci\u00f3n no utiliza la indirecci\u00f3n.
+
+131=El m\u00e9todo get del atributo [{0}] debe devolver un vector (o un tipo que implemente de correlaci\u00f3n o la colecci\u00f3n, si se utiliza Java 2).
+
+133=El m\u00e9todo set del atributo [{0}] debe utilizar un vector como par\u00e1metro (o un tipo que implemente de correlaci\u00f3n o la colecci\u00f3n, si se utiliza Java 2).
+
+135=La relaci\u00f3n de clave for\u00e1nea de tabla m\u00faltiple hace referencia a una tabla desconocida [{0}].
+
+138=El atributo [{0}] es de tipo [{1}], pero la correlaci\u00f3n utiliza una indirecci\u00f3n transparente (carga poco activa), por lo que es necesario que sea una superclase de [{2}].
+
+139=El m\u00e9todo get del atributo [{0}] devuelve [{1}], pero la correlaci\u00f3n utiliza una indirecci\u00f3n transparente (carga poco activa), por lo que es necesario que sea una superclase de [{2}].
+
+14=Problema al clonar el objeto [{0}].  El m\u00e9todo de clonaci\u00f3n [{1}] no es accesible.
+
+140=El m\u00e9todo set del atributo [{0}] utiliza [{1}], pero la correlaci\u00f3n utiliza una indirecci\u00f3n transparente (carga poco activa), por lo que es necesario que sea una superclase de [{2}].
+
+141=El campo [{0}] no est\u00e1 presente en la tabla [{1}] en la base de datos.
+
+142=La tabla [{0}] no est\u00e1 presente en la base de datos.
+
+143=El vector de orden de inserci\u00f3n de tabla m\u00faltiple especificado, [{0}], tiene m\u00e1s o menos tablas de lo especificado en el descriptor. {2}Todas las tablas [{1}] deben incluirse en el vector de orden de inserci\u00f3n.
+
+144=La indirecci\u00f3n transparente s\u00f3lo puede utilizarse con CollectionMappings.
+
+145=La clase de contenedor indirecta [{0}] debe implementar el constructor [{1}] con el par\u00e1metro (ValueHolderInterface).
+
+146=No puede crearse una instancia de la clase de contenedor indirecta [{0}] utilizando el constructor {1}(ValueHolderInterface).
+
+147=La pol\u00edtica de contenedor [{0}] s\u00f3lo debe utilizarse en el JDK 1.1.x.  Se creado una instancia para [{1}].
+
+148=La pol\u00edtica de contenedor [{0}] no es compatible con la indirecci\u00f3n transparente.
+
+149=Los objetos NoIndirectionPolicy no deben recibir este mensaje.
+
+15=Esta clase no define un constructor predeterminado, que es necesario para EclipseLink.
+
+150=La correlaci\u00f3n del atributo [{0}] utiliza la indirecci\u00f3n transparente, por lo que el atributo [{0}] debe inicializarse en el contenedor adecuado.  Actualmente, el valor es [{1}]. {2} \u2013 Debe ser una instancia de un implementador de una colecci\u00f3n o una correlaci\u00f3n.
+
+151=La operaci\u00f3n [{0}] no es v\u00e1lida para esta correlaci\u00f3n.
+
+152=La operaci\u00f3n [{1}] no es v\u00e1lida para esta pol\u00edtica de indirecci\u00f3n [{0}].
+
+153=El descriptor de referencia [{0}] debe establecerse en un descriptor de colecci\u00f3n de agregados.
+
+154=La clase de contenedor de indirecci\u00f3n [{0}] no implementa IndirectContainer.
+
+155=Esta correlaci\u00f3n no incluye un campo de clave for\u00e1nea enlazado con el campo de clave primaria [{0}].
+
+156=El nombre de estructura no est\u00e1 establecido para esta correlaci\u00f3n.
+
+157=Los descriptores normales no dan soporte a extensiones no relacionales.
+
+158=La clase padre de este descriptor se ha establecido en s\u00ed misma.
+
+159=La indirecci\u00f3n de proxy s\u00f3lo est\u00e1 disponible en las m\u00e1quinas virtuales compatibles con JDK 1.3 o superior.
+
+16=No se puede acceder al m\u00e9todo de devoluci\u00f3n de llamada del descriptor [{0}] con el par\u00e1metro (DescriptorEvent).
+
+160=El atributo [{0}] de la clase [{1}] tiene un tipo [{2}], que no se ha especificado en la lista de interfaces proporcionada al m\u00e9todo useProxyIndirection(). {4}Las interfaces v\u00e1lidas son: [{3}].
+
+161=El m\u00e9todo [{0}] en la clase [{1}] devuelve un valor de tipo [{2}], que no se ha especificado en la lista de interfaces proporcionada al m\u00e9todo useProxyIndirection(). {4}Las interfaces v\u00e1lidas son: [{3}].
+
+162=El m\u00e9todo [{0}] en la clase [{1}] utiliza un par\u00e1metro de tipo [{2}], que no se ha especificado en la lista de interfaces proporcionada al m\u00e9todo useProxyIndirection().{4}Las interfaces v\u00e1lidas son: [{3}].
+
+163=La clase de atributo de esta correlaci\u00f3n no coincide con la clase de colecci\u00f3n.  [{1}] no puede asignarse a [{0}].
+
+164=El m\u00e9todo de enmienda [{1}] en la clase de enmienda [{0}] no es v\u00e1lido, no es p\u00fablico o no puede encontrarse. {2}Los m\u00e9todos de enmienda de descriptor deben declararse como "public static void" con (ClassDescriptor) como par\u00e1metro \u00fanico.
+
+165=El m\u00e9todo de enmienda de este descriptor [{1}] en la clase de enmienda [{0}] ha desencadenado una excepci\u00f3n.
+
+166=No hay ninguna correlaci\u00f3n para el atributo [{0}].
+
+167=No se ha encontrado un constructor v\u00e1lido para la clase de contenedor de indirecci\u00f3n [{0}].
+
+168=Problema al crear la nueva instancia utilizando el constructor predeterminado.  El constructor predeterminado ha desencadenado una excepci\u00f3n.
+
+169=Problema al crear la nueva instancia de la f\u00e1brica utilizando el constructor predeterminado.  El constructor predeterminado ha desencadenado una excepci\u00f3n.
+
+17=Intentando acceder al m\u00e9todo [{0}] en el objeto [{1}].  El m\u00e9todo subyacente es inaccesible.
+
+170=Problema (acceso no permitido) al crear la nueva instancia de la f\u00e1brica utilizando el constructor predeterminado.
+
+171=La clase de f\u00e1brica no define un constructor predeterminado p\u00fablico o el constructor ha generado una excepci\u00f3n.
+
+172=No se ha encontrado el constructor de f\u00e1brica.
+
+173=No se ha podido acceder al constructor de f\u00e1brica.
+
+174=Problema al crear la f\u00e1brica.  No se ha podido acceder al m\u00e9todo de creaci\u00f3n [{0}].
+
+175=Problema al crear la f\u00e1brica utilizando el m\u00e9todo de creaci\u00f3n [{0}].  El m\u00e9todo de creaci\u00f3n ha desencadenado una excepci\u00f3n.
+
+176=Problema al crear la f\u00e1brica utilizando el m\u00e9todo de creaci\u00f3n [{0}].  No se ha podido acceder al m\u00e9todo de creaci\u00f3n.
+
+177=Falta la correlaci\u00f3n para el atributo: [{0}].
+
+178=No se puede encontrar la correlaci\u00f3n para el atributo [{0}] en el bean de entidad [{1}]. El atributo debe estar correlacionado.
+
+179=El atributo [{0}] utiliza el mantenimiento de relaci\u00f3n bidireccional, pero tiene una ContainerPolicy [{1}] que no le da soporte.  El atributo debe estar correlacionado con un tipo de colecci\u00f3n diferente.
+
+18=Acceso de m\u00e9todo no permitido en una correlaci\u00f3n de transformaci\u00f3n utilizando un ValueHolder.
+
+181=No se ha encontrado la clase AttributeTransformer [{0}].
+
+182=No se ha encontrado la clase FieldTransformer [{0}].
+
+183=La clase [{0}] no puede utilizarse como AttributeTransformer.
+
+184=La clase [{0}] no puede utilizarse como FieldTransformer.
+
+185=ReturningPolicy contiene el campo [{0}] con dos tipos diferentes: [{1}] y [{2}].
+
+186=ReturningPolicy contiene el campo [{0}] que se ha a\u00f1adido dos veces: utilizando addInsertField y addInsertFieldReturnOnly.
+
+187=ReturningPolicy contiene el campo [{0}] con el tipo [{1}], pero el mismo campo en el descriptor tiene el tipo [{2}].
+
+188=ReturningPolicy contiene un campo no correlacionado [{0}] que requiere un tipo.
+
+189=ReturningPolicy contiene un campo correlacionado [{0}] que requiere un tipo.
+
+19=Acceso no permitido al invocar el m\u00e9todo de atributo en una correlaci\u00f3n de transformaci\u00f3n.  El m\u00e9todo subyacente es inaccesible.
+
+190=ReturningPolicy contiene el campo [{0}] correlacionado con [{1}], que no est\u00e1 soportado.
+
+191=ReturningPolicy contiene el campo [{0}], que no est\u00e1 soportado: es un campo de secuencia o un indicador de tipo de clase, o se utiliza para el bloqueo.
+
+192=ReturningPolicy contiene el campo [{0}], pero el [{1}] personalizado no lo proporciona como salida.
+
+193=No hay ning\u00fan [{0}] personalizado establecido, pero ReturningPolicy contiene los campos que se van a devolver y [{1}] no da soporte a la generaci\u00f3n de una llamada con devoluci\u00f3n.
+
+194=El m\u00e9todo de extracci\u00f3n de clase [{0}] debe ser un m\u00e9todo est\u00e1tico en la clase del descriptor.
+
+195=La clase compartida {1} no debe hacer referencia a la clase aislada {0}.
+
+196=UpdateAllFields no se ha establecido o se ha establecido en false.  Cuando se utiliza CMPPolicy.setForceUpdate(true), tambi\u00e9n debe invocar CMPPolicy.setUpdateAllFields(true)
+
+197=La correlaci\u00f3n [{0}] no es del tipo adecuado para este descriptor
+
+198=Para poder utilizar ObjectChangeTrackingPolicy o AttributeChangeTrackingPolicy, {0} debe implementar la interfaz ChangeTracker.
+
+199=Para utilizar el grupo de captaci\u00f3n, la clase de dominio ({0}) debe implementar la interfaz FetchGroupTracker.
+
+2=El atributo [{0}] se ha declarado como el tipo ValueHolderInterface, pero su correlaci\u00f3n no utiliza la indirecci\u00f3n.
+
+20=El m\u00e9todo [{0}] no es accesible.
+
+200=Se ha intentado registrar un objeto con una indirecci\u00f3n muerta como un nuevo objeto.  Es posible que el objeto se ha suprimido o eliminado de la cach\u00e9 durante una fusi\u00f3n de un clon serializado.  Esta es una violaci\u00f3n de simultaneidad; se recomienda una estrategia de bloqueo.
+
+201=Se ha intentado crear un objeto en la cach\u00e9 de la sesi\u00f3n, pero el descriptor se ha marcado como aislado en la unidad de trabajo, por lo que no se debe acceder a \u00e9l nunca fuera de una unidad de trabajo.
+
+202=Se ha producido un error interno al acceder al objeto de clave primaria [{0}].
+
+203=Se ha producido un error interno mientras se acced\u00eda al m\u00e9todo [{1}] en la clase [{0}].
+
+204=El orden de inserci\u00f3n de tablas contradice las claves for\u00e1neas de varias tablas; seg\u00fan la \u00faltima tabla [{0}], debe insertarse antes de la tabla [{1}].
+
+205=El orden de inserci\u00f3n de tablas tiene dependencias c\u00edclicas entre las tablas [{0}] y [{1}].
+
+206=El orden de inserci\u00f3n de tablas tiene dependencias c\u00edclicas entre tres o m\u00e1s tablas.
+
+207=El orden de inserci\u00f3n de tablas es incorrecto: la tabla [{0}] correlacionada con el padre se ha especificado para insertarse despu\u00e9s de la tabla [{1}] correlacionada con el hijo.
+
+208=Est\u00e1 intentando establecer un conversor con el nombre de clase [{1}] en una correlaci\u00f3n no directa [{0}].  Las correlaciones directas son las \u00fanicas que pueden tener conversores.  Esto ocurre normalmente cuando se intenta establecer un conversor de clave en una DirectMapMapping con una clave que no es directa.
+
+209=Este descriptor contiene una correlaci\u00f3n con una DirectMapMapping y no se ha establecido ning\u00fan campo de clave.
+
+21=Problema al extraer la clase de la fila [{0}].  No se puede acceder al m\u00e9todo est\u00e1tico [{1}] con el par\u00e1metro (DatabaseRow).
+
+210=[{0}] tiene un campo de orden de lista establecido, pero el atributo no implementa la lista.
+
+211=[{0}] tiene un campo de orden de lista establecido y la modalidad de validaci\u00f3n de campos de orden de lista es CORRECTION, que requiere que IndirectList pueda asignarse al atributo.
+
+212=El campo de orden de lista especificado para [{0}] tiene una tabla incorrecta [{1}]. En su lugar, debe utilizar {2}.
+
+213={0} requiere que todos los campos de clave for\u00e1nea de destino pertenezcan a la misma tabla, pero se han encontrado varias: {1}.
+
+214={0} especifica una tabla de relaci\u00f3n que no es compatible con el m\u00e9todo addForeignKey(Name); utilice los m\u00e9todos addSourceRelationKeyField(Name) y addTargetRelationKeyFieldName en su lugar.
+
+215={0} debe tener un RelationTableMechanism no nulo.
+
+216=CacheKeyType no puede ser ID_VALUE para una clave primaria compuesta.
+
+217=XPath no v\u00e1lida para XMLDirectMapping/XMLCompositeDirectCollectionMapping. La XPath debe contener un s\u00edmbolo @ para los atributos o terminar en /text() para los nodos de texto. Por ejemplo: "@name" o "name/text()"
+
+218=Se ha producido una NullPointerException al acceder a un m\u00e9todo _vh_ entrelazado no existente [{0}].  La clase no se ha entrelazado correctamente; para los despliegues de EE, compruebe el orden de m\u00f3dulos en el descriptor de despliegue application.xml y verifique que el m\u00f3dulo que contiene la unidad de persistencia est\u00e9 por delante de cualquier otro m\u00f3dulo que la utilice.
+
+219=Los criterios adicionales de [{1}] no est\u00e1n permitidos en una jerarqu\u00eda de herencia que utiliza vistas.
+
+22=Problema al crear la nueva instancia.  No se ha podido acceder al m\u00e9todo de creaci\u00f3n [{0}].
+
+220=Falta la pol\u00edtica de particionamiento para el nombre [{0}].
+
+221=El campo SerializedObjectPolicy no se ha establecido.
+
+222=Se ha generado una excepci\u00f3n al intentar obtener una instancia de clase de clave primaria.
+
+23=No se puede acceder al m\u00e9todo de devoluci\u00f3n de llamada del descriptor [{0}] con el par\u00e1metro (Session).
+
+24=La variable de instancia [{0}] en el objeto [{1}] no es accesible. {3}Argumento: [{2}]
+
+25=El m\u00e9todo [{0}] con el argumento [{1}] no es accesible.
+
+26=Intentando obtener el valor para la variable de instancia [{0}] del tipo [{1}] a partir del objeto [{2}].  El objeto especificado no es una instancia de la clase o interfaz que declara el campo subyacente.
+
+27=Intentando invocar al m\u00e9todo [{0}] en el objeto [{1}].  El n\u00famero de par\u00e1metros reales y formales difiere o ha fallado una conversi\u00f3n de anulaci\u00f3n de derivaci\u00f3n.
+
+28=Argumento no permitido al crear una instancia de un proxy basado en m\u00e9todo en una correlaci\u00f3n de transformaci\u00f3n.
+
+29=El n\u00famero de par\u00e1metros reales y formales difiere o ha fallado una conversi\u00f3n de anulaci\u00f3n de derivaci\u00f3n.
+
+30=El n\u00famero de par\u00e1metros reales y formales difiere para el m\u00e9todo [{0}] o ha fallado una conversi\u00f3n de anulaci\u00f3n de derivaci\u00f3n.
+
+31=El n\u00famero de par\u00e1metros reales y formales para el m\u00e9todo callback del descriptor [{0}] difiere o ha fallado una conversi\u00f3n de anulaci\u00f3n de derivaci\u00f3n.
+
+32=Intentando establecer el valor [{0}] para la variable de instancia [{1}] del tipo [{2}] en el objeto.  El objeto especificado no es una instancia de la clase o interfaz que declara el campo subyacente o ha fallado una conversi\u00f3n de anulaci\u00f3n de derivaci\u00f3n.
+
+33=Intentando invocar [{0}] en el objeto con el valor [{1}].  El n\u00famero de par\u00e1metros reales y formales difiere o ha fallado una conversi\u00f3n de anulaci\u00f3n de derivaci\u00f3n.
+
+34=Esta clase no define un constructor predeterminado p\u00fablico o el constructor ha generado una excepci\u00f3n.
+
+35=Suceso no v\u00e1lido.
+
+36=C\u00f3digo de suceso no v\u00e1lido [{0}].
+
+37=C\u00f3digo de suceso de descriptor no v\u00e1lido [{0}].
+
+38=El constructor de correlaci\u00f3n de identidades ha fallado porque se ha especificado una correlaci\u00f3n de identidades no v\u00e1lida.
+
+39=Este descriptor no especifica una clase Java.
+
+40=Falta el descriptor para [{0}].  Probablemente no se ha a\u00f1adido a la sesi\u00f3n.
+
+41=Debe definirse una correlaci\u00f3n que no sea de s\u00f3lo lectura para el campo de n\u00famero de secuencia.
+
+43=Falta la clase para el valor del campo de indicador [{0}] del tipo [{1}].
+
+44=Falta el campo de indicador de clase en la fila de base de datos [{0}].
+
+45=Falta la correlaci\u00f3n para el campo [{0}].
+
+46=Debe haber una correlaci\u00f3n que no sea de s\u00f3lo lectura definida para el campo de clave primaria [{0}].
+
+47=Debe especificarse la correlaci\u00f3n de clave primaria de tabla m\u00faltiple cuando se utiliza una uni\u00f3n de varias tablas personalizada.
+
+48=Existen varias correlaciones grabables para el campo [{0}].  S\u00f3lo puede definirse una como grabable, las dem\u00e1s deben especificarse como de s\u00f3lo lectura.
+
+49=No se ha especificado un nombre de m\u00e9todo de transformaci\u00f3n de atributo para esta correlaci\u00f3n.
+
+50=No se ha establecido un nombre de campo para esta correlaci\u00f3n.
+
+51=No se han especificado claves for\u00e1neas para esta correlaci\u00f3n.
+
+52=No se ha especificado ninguna clave de referencia para esta correlaci\u00f3n.
+
+53=No se ha establecido el nombre de tabla de relaci\u00f3n para esta correlaci\u00f3n.
+
+54=No se han especificado claves de relaci\u00f3n de origen para esta correlaci\u00f3n.
+
+55=No se ha encontrado el m\u00e9todo callback de descriptor [{0}].  Debe utilizar Session o DescriptorEvent como argumento.
+
+56=No se ha encontrado el m\u00e9todo [{0}] con los par\u00e1metros (Record) o (Record, Session).
+
+57=Constructor inaccesible.
+
+58=No se ha encontrado el m\u00e9todo [{0}] con los par\u00e1metros () o (Session).
+
+59=La variable de instancia [{0}] no se ha definido en la clase de dominio [{1}] o no es accesible.
+
+6=Falta el nombre de atributo.
+
+60=El m\u00e9todo [{0}] o [{1}] no se ha definido en el objeto [{2}].
+
+61=El m\u00e9todo de extracci\u00f3n de clase est\u00e1tica [{0}] con el par\u00e1metro (Record) no existe o no es accesible.
+
+62=El m\u00e9todo de clonaci\u00f3n [{0}] sin par\u00e1metros no existe o no es accesible.
+
+63=El m\u00e9todo de creaci\u00f3n de instancias [{0}] sin par\u00e1metros no existe o no es accesible.
+
+64=No se han especificado claves for\u00e1neas de destino para esta correlaci\u00f3n.
+
+65=No se han especificado claves de relaci\u00f3n de destino para esta correlaci\u00f3n.
+
+66=No se ha podido deserializar el objeto de la matriz de bytes.
+
+67=No se ha podido serializar el objeto en la matriz de bytes.
+
+68=El valor de un agregado en el objeto [{0}] es nulo.  No se permiten valores nulos para las correlaciones de agregados a menos que se especifique "Allow Null".
+
+69=Se ha generado una NullPointerException al extraer un valor de la variable de instancia [{0}] en el objeto [{1}].
+
+7=El atributo [{0}] debe ser un tipo que implemente {1}.
+
+70=Se ha generado una NullPointerException al extraer un valor mediante el m\u00e9todo [{0}] en el objeto [{1}].
+
+71=Se ha generado una NullPointerException al establecer el valor de la variable de instancia [{0}] en el valor [{1}].
+
+72=Se ha generado una NullPointerException al establecer un valor mediante el m\u00e9todo [{0}] con el argumento [{1}].
+
+73=No se encuentra el descriptor para la clase padre [{0}].
+
+74=Los campos de clave primaria no se han establecido para este descriptor.
+
+75=No se ha especificado la clase de referencia para este descriptor.
+
+77=El descriptor de referencia [{0}] debe establecerse en un descriptor de agregados.
+
+78=El campo de referencia [{0}] para esta correlaci\u00f3n debe existir en la tabla de referencia.
+
+79=No se ha especificado la tabla de referencia para esta correlaci\u00f3n.
+
+8=El descriptor [{0}] se ha establecido para utilizar la herencia, pero no se ha definido un campo de indicador de clase. {2}Cuando se utiliza la herencia, debe establecer un campo de indicador de clase o un m\u00e9todo de extracci\u00f3n de clase. {2}Descriptor padre: [{1}]
+
+80=El campo de clave de relaci\u00f3n [{0}] para esta correlaci\u00f3n debe existir en la tabla de relaci\u00f3n.
+
+81=El m\u00e9todo [{0}] debe devolver el tipo del atributo correlacionado, no void.
+
+82=No se puede acceder al m\u00e9todo de devoluci\u00f3n de llamada del descriptor [{0}] con el par\u00e1metro (DescriptorEvent).
+
+83=No se puede acceder al m\u00e9todo de devoluci\u00f3n de llamada del descriptor [{0}] con el par\u00e1metro (Session).
+
+84=No se puede acceder al m\u00e9todo [{0}] con los par\u00e1metros (Record) o (Record, Session).
+
+85=No se puede acceder al m\u00e9todo [{0}] con los par\u00e1metros () o (Session).
+
+86=La variable de instancia [{0}] en la clase [{1}] no es accesible.
+
+87=Los m\u00e9todos [{0}], [{1}] en el objeto [{2}] no son accesibles
+
+88=No se puede acceder al m\u00e9todo de extracci\u00f3n de clase est\u00e1tica [{0}] con el par\u00e1metro (Record).
+
+89=El m\u00e9todo de clonaci\u00f3n [{0}] sin par\u00e1metros no es accesible.
+
+9=Esta correlaci\u00f3n no tiene establecido un nombre de campo directo.
+
+90=El m\u00e9todo de creaci\u00f3n de instancias [{0}] sin par\u00e1metros no es accesible.
+
+91=Para utilizar los ID generados en secuencia, deben establecerse las propiedades "Sequence Number Name" y "Sequence Number Field Name" para este descriptor.
+
+92=El tama\u00f1o de la clave primaria del destino no coincide con el tama\u00f1o de la clave for\u00e1nea.
+
+93=La tabla [{0}] no est\u00e1 presente en este descriptor.
+
+94=Los descriptores deben tener un nombre de tabla definido.
+
+96=El n\u00famero de claves de destino no coincide con el n\u00famero de claves de origen.
+
+97=Problema al clonar el objeto [{0}].  El m\u00e9todo de clonaci\u00f3n [{1}] ha desencadenado una excepci\u00f3n.
+
+98=El m\u00e9todo de devoluci\u00f3n de llamada del descriptor subyacente [{0}] con el par\u00e1metro (DescriptorEvent) ha desencadenado una excepci\u00f3n.
+
+99=El m\u00e9todo [{0}] en el objeto [{1}] ha desencadenado una excepci\u00f3n.
+

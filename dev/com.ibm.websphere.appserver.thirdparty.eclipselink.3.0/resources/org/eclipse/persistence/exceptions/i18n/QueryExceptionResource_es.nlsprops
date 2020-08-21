@@ -1,0 +1,359 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/QueryExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+6001=Las consultas SQL con cursor deben proporcionar una consulta adicional para recuperar el tama\u00f1o del conjunto de resultados.
+
+6002=Los objetos agregados no se pueden escribir/suprimir/consultar independientemente de sus propietarios. {1}Descriptor: [{0}]
+
+6003=El n\u00famero de argumentos proporcionados a la consulta para la ejecuci\u00f3n no coincide con el n\u00famero de argumentos en la definici\u00f3n de consulta.
+
+6004=El objeto [{0}], de la clase [{1}], con el c\u00f3digo hash de identidad (System.identityHashCode()) [{2}], {3}no es de este espacio de objeto UnitOfWork,  sino de la sesi\u00f3n padre.  El objeto no se ha registrado nunca en esta UnitOfWork, {3}pero se ha le\u00eddo en la sesi\u00f3n padre y se ha relacionado con un objeto registrado en la UnitOfWork.  Aseg\u00farese de que est\u00e1 registrando {3}correctamente los objetos.  Si sigue teniendo problemas, puede utilizar el m\u00e9todo UnitOfWork.validateObjectSpace() para {3}ayudar a depurar donde se ha producido el error.  Para obtener m\u00e1s informaci\u00f3n, consulte el manual o las preguntas frecuentes.
+
+6005=El objeto [{0}], de la clase [{1}], con el c\u00f3digo hash de identidad (System.identityHashCode()) [{2}], {3}es el original de un nuevo objeto registrado.  Los clones de UnitOfWork han registrado nuevos objetos, por lo que debe asegurarse de que se {3}registre un objeto antes de que se haga referencia a \u00e9l en otro objeto.  Si no desea que se clone el nuevo objeto, utilice la API {3}UnitOfWork.registerNewObject(Object).  Si sigue teniendo problemas, puede utilizar el m\u00e9todo UnitOfWork.validateObjectSpace() para {3}ayudar a depurar donde se ha producido el error.  Para obtener m\u00e1s informaci\u00f3n, consulte el manual o las preguntas frecuentes.
+
+6006=La correlaci\u00f3n [{0}] no da soporte a la lectura por lotes.
+
+6007=Falta el descriptor para [{0}].
+
+6008=Falta el descriptor para [{0}] para la consulta denominada [{1}].
+
+6013=Se ha proporcionado un tama\u00f1o de consulta incorrecto a CursoredStream.
+
+6014=Los objetos no pueden grabarse durante una UnitOfWork; deben estar registrados.
+
+6015=Clave de consulta no v\u00e1lida [{0}] en la expresi\u00f3n.
+
+6016=Los objetos o la base de datos no pueden modificarse en una ServerSession.  Todos los cambios deben realizarse en una UnitOfWork de una ClientSession.
+
+6020=No se ha indicado ninguna clase concreta para el tipo en la fila [{0}].
+
+6021=Los cursores no est\u00e1n soportados para los descriptores de interfaz o varios descriptores de tabla de clase abstracta que utilizan expresiones.  Se recomienda utilizar SQL personalizado o varias consultas.
+
+6023=La lista de campos que se van a insertar en la tabla [{0}] est\u00e1 vac\u00eda.  Debe definir al menos una correlaci\u00f3n para esta tabla.
+
+6024=Las consultas de modificaci\u00f3n requieren un objeto que modificar.
+
+6026=La consulta denominada [{0}] no est\u00e1 definida. Clase de dominio: [{1}]
+
+6027=Consulta enviada a una UnitOfWork desactivada.
+
+6028=Se ha intentado leer m\u00e1s all\u00e1 del final de la corriente.
+
+6029=Debe proporcionarse una clase de referencia.
+
+6030=No se puede renovar si la cach\u00e9 no est\u00e1 habilitada.
+
+6031=size() s\u00f3lo est\u00e1 soportado en las consultas expresi\u00f3n, a menos que se proporcione una consulta de tama\u00f1o.
+
+6032=La sentencia SQL no se ha establecido correctamente.
+
+6034=Expresi\u00f3n de elemento de consulta no v\u00e1lida [{0}].
+
+6041=El objeto de selecci\u00f3n pasado a una ReadObjectQuery era nulo.
+
+6042=Debe especificarse un nombre de sesi\u00f3n para las consultas que no son a nivel de objeto.  Consulte el m\u00e9todo setSessionName(String).
+
+6043=Las ReportQueries sin claves primarias no pueden utilizar readObject(). {1}ReportQueryResult: [{0}].
+
+6044=La lectura de la clave primaria de la fila [{0}] durante la ejecuci\u00f3n de la consulta se ha detectado que era nula.  Las claves primarias no pueden contener nulos.
+
+6045=La subclase [{0}], indicada en la fila al crear el objeto, no tiene ning\u00fan descriptor definido.
+
+6046=No se puede suprimir un objeto de una clase de s\u00f3lo lectura.  La clase [{0}] se ha declarado como de s\u00f3lo lectura en esta UnitOfWork.
+
+6047=Operador no v\u00e1lido [{0}] en la expresi\u00f3n.
+
+6048=Uso no permitido de getField() [{0}] en la expresi\u00f3n.
+
+6049=Uso no permitido de getTable() [{0}] en la expresi\u00f3n.
+
+6050=Discrepancia de tama\u00f1o de resultado de ReportQuery.  Se esperaba [{0}], pero se ha recuperado [{1}]
+
+6051=Las consultas de objeto parciales no tienen permiso para mantener la cach\u00e9 o editarse.  Debe utilizar dontMaintainCache().
+
+6052=Una uni\u00f3n externa (getAllowingNull o anyOfAllowingNone) s\u00f3lo es v\u00e1lida para las correlaciones OneToOne, OneToMany, ManyToMany, AggregateCollection y DirectCollection, y no pueden utilizarse para la correlaci\u00f3n [{0}].
+
+6054=No se puede a\u00f1adir el objeto [{0}] de la clase [{1}] a la clase de contenedor [{2}] utilizando la pol\u00edtica [{3}].
+
+6055=La invocaci\u00f3n del m\u00e9todo [{0}] en el objeto [{1}] de la clase [{2}] ha desencadenado una excepci\u00f3n.
+
+6056=No se puede crear un clon del objeto [{0}] de la clase [{1}] utilizando [{2}].
+
+6057=El m\u00e9todo [{0}] no es un m\u00e9todo v\u00e1lido para realizar una llamada en el objeto [{1}].
+
+6058=No se ha encontrado el m\u00e9todo [{0}] en la clase [{1}].
+
+6059=La clase [{0}] no puede utilizarse como contenedor de los resultados de una consulta porque no se puede crear una instancia de ella.
+
+6060=No se ha podido utilizar el objeto [{0}] de tipo [{1}] como una clave en el [{2}] del tipo [{3}].  La clave no puede compararse con las claves que hay actualmente en la correlaci\u00f3n.
+
+6061=No se puede acceder de forma reflexiva al m\u00e9todo [{0}] para el objeto [{1}] de la clase [{2}].
+
+6062=El m\u00e9todo [{0}], invocado de forma reflexiva en el objeto [{1}], de la clase [{2}], ha desencadenado una excepci\u00f3n.
+
+6063=Operaci\u00f3n no v\u00e1lida [{0}] en el cursor.
+
+6064=No se puede eliminar el objeto [{0}] de la clase [{1}] de la clase de contenedor [{2}] utilizando la pol\u00edtica [{3}].
+
+6065=No se puede a\u00f1adir el objeto [{0}] de la clase [{1}] al contenedor [{2}].
+
+6066=El objeto [{0}] de la clase [{1}] con el c\u00f3digo hash de identidad (System.identityHashCode()) [{2}] {3}se ha suprimido, pero contin\u00faa teniendo referencias.  Los objetos suprimidos no pueden referenciarse una vez suprimidos. {3}Aseg\u00farese de que est\u00e1 registrando correctamente los objetos.  Si sigue teniendo problemas, puede utilizar el m\u00e9todo UnitOfWork.validateObjectSpace() para {3}ayudar a depurar donde se ha producido el error.  Para obtener m\u00e1s informaci\u00f3n, consulte el manual o las preguntas frecuentes.
+
+6067=No se puede acceder de forma reflexiva al campo [{0}] para el objeto [{1}] de la clase [{2}].
+
+6068=No se puede comparar la referencia de tabla con [{0}] en la expresi\u00f3n.
+
+6069=El campo [{0}] en esta expresi\u00f3n tiene una tabla no v\u00e1lida en este contexto.
+
+6070=Uso no v\u00e1lido de una clave de consulta [{0}] que representa una relaci\u00f3n "con muchos" en una expresi\u00f3n.  Utilice anyOf() en lugar de get().
+
+6071=Uso no v\u00e1lido de anyOf() para una clave de consulta [{0}] que no representa una relaci\u00f3n "con muchos" en una expresi\u00f3n.  Utilice get() en lugar de anyOf().
+
+6072=La consulta en una VariableOneToOneMapping no est\u00e1 soportada. {2}Descriptor: [{0}] {2}Correlaci\u00f3n: [{1}]
+
+6073=Expresi\u00f3n mal formada en una consulta.  Intentando imprimir una referencia de objeto en una sentencia SQL para la clave de consulta [{0}].
+
+6074=Esta expresi\u00f3n no puede determinar si el objeto se ajusta a la memoria.  Debe establecer la consulta para comprobar la base de datos.
+
+6075=Las comparaciones de objetos s\u00f3lo pueden utilizar los operadores equal() o notEqual().  Las otras comparaciones deben realizarse utilizando claves de consulta o comparaciones directas a nivel de atributo. {1}Expresi\u00f3n: [{0}]
+
+6076=Las comparaciones de objetos s\u00f3lo puede utilizarse con OneToOneMappings.  Las otras comparaciones de correlaciones deben realizarse utilizando claves de consulta o comparaciones directas a nivel de atributo. {2}Correlaci\u00f3n: [{0}] {2}Expresi\u00f3n: [{1}]
+
+6077=Las comparaciones de objetos no pueden utilizarse en las consultas de par\u00e1metros.  Debe crear la expresi\u00f3n din\u00e1micamente. {1}Expresi\u00f3n: [{0}]
+
+6078=La clase del argumento para la comparaci\u00f3n de objetos es incorrecta. {3}Expresi\u00f3n: [{0}] {3}Correlaci\u00f3n: [{1}] {3}Argumento: [{2}]
+
+6079=La comparaci\u00f3n de objetos con NULL no puede utilizarse para las relaciones de clave for\u00e1nea de destino.  Consulte la clave primaria de origen en su lugar. {3}Expresi\u00f3n: [{0}] {3}Correlaci\u00f3n: [{1}] {3}Argumento: [{2}]
+
+6080=Llamada de base de datos no v\u00e1lida [{0}].  La llamada debe ser una instancia de DatabaseCall.
+
+6081=Descriptor de acceso de base de datos no v\u00e1lido[{0}].  El descriptor de acceso debe ser una instancia de DatabaseAccessor.
+
+6082=El m\u00e9todo [{0}] con los tipos de argumento [{1}] no puede invocarse en la expresi\u00f3n.
+
+6083=Las consultas que utilizan in() no pueden parametrizarse.  Inhabilite el enlace o la preparaci\u00f3n de consulta.
+
+6084=La consulta de redirecci\u00f3n no se ha configurado correctamente.  No se ha establecido el nombre de m\u00e9todo o clase.
+
+6085=El m\u00e9todo de la consulta de redirecci\u00f3n no est\u00e1 definido o se definido con los argumentos incorrectos.  Debe declararse como "est\u00e1tico p\u00fablico" y tener los argumentos (DatabaseQuery, Registro, Sesi\u00f3n) o (Sesi\u00f3n, Vector). {2}Clase: [{0}] {2}M\u00e9todo: [{1}]
+
+6086=La invocaci\u00f3n del m\u00e9todo de la consulta de redirecci\u00f3n ha desencadenado una excepci\u00f3n.
+
+6087=La clase de objeto de ejemplo [{0}] no coincide con la clase de objeto de referencia [{1}].
+
+6088=No hay atributos para ReportQuery.
+
+6089=La expresi\u00f3n no se ha inicializado correctamente.  S\u00f3lo debe utilizarse un ExpressionBuilder individual para una consulta. {1}Para las expresiones paralelas, debe proporcionarse la clase de consulta al constructor de ExpressionBuilder, y el ExpressionBuilder de la consulta debe {1}estar siempre a la izquierda de la expresi\u00f3n. {1}Expresi\u00f3n: [{0}]
+
+6090=No se puede establecer ReportQuery en "comprobar s\u00f3lo cach\u00e9".
+
+6091=El tipo de la constante [{0}] utilizado para la comparaci\u00f3n en la expresi\u00f3n no coincide con el tipo del atributo [{1}].
+
+6092=Se ha detectado un ValueHolder sin instancias. Debe crear una instancia de los Valueholders relevantes para realizar esta consulta en memoria.
+
+6093=Expresi\u00f3n de tipo no v\u00e1lida en [{0}].  La clase no tiene un descriptor, o tiene un descriptor que no utiliza la herencia o utiliza un ClassExtractor para la herencia.
+
+6094=El nombre de par\u00e1metro [{0}] en los criterios de selecci\u00f3n de la consulta no coincide con ning\u00fan nombre de par\u00e1metro definido en la consulta.
+
+6095=Se necesita un m\u00e9todo de clon p\u00fablico.
+
+6096=El m\u00e9todo de clon es inaccesible.
+
+6097=El m\u00e9todo de clon ha generado una excepci\u00f3n: {0}.
+
+6098=Exception de invocaci\u00f3n inesperada: {0}.
+
+6099=No se permite la uni\u00f3n en una clase de herencia con varias subclases de tabla: {0}, {1}
+
+6100=Se han detectado varios valores para una consulta de lectura de un solo objeto.
+
+6101=La ejecuci\u00f3n de esta consulta puede violar la integridad de la cach\u00e9 de sesi\u00f3n global que debe contener s\u00f3lo las \u00faltimas versiones de los objetos.  Para poder ejecutar una consulta que devuelva objetos a partir de una hora en el pasado, pruebe lo siguiente: utilice una HistoricalSession (acquireSessionAsOf); todas las lecturas de objetos se almacenar\u00e1n en la cach\u00e9 y se leer\u00e1n autom\u00e1ticamente a partir de la misma hora.  Esto se aplicar\u00e1 incluso para desencadenar relaciones de objetos.  Establezca shouldMaintainCache en false.  Puede crear una expresi\u00f3n de objeto cualquiera a partir de una hora en el pasado, siempre que ninguno de sus campos se representen en el conjunto de resultados (es decir, se utilice s\u00f3lo en la cl\u00e1usula where).
+
+6102=Actualmente, las consultas hist\u00f3ricas s\u00f3lo funcionan con las bases de datos Oracle 9R2 o posteriores, ya que se utiliza la caracter\u00edstica Flashback de Oracle.
+
+6103=No puede ejecutar una WriteQuery desde dentro de una HistoricalSession de s\u00f3lo lectura.  Para restaurar objetos del pasado, pruebe lo siguiente: lea el mismo objeto como si fuera una UnitOfWork y confirme la UnitOfWork.
+
+6104=El objeto {0} no existe en la cach\u00e9.
+
+6105=La consulta debe reinicializarse con una pol\u00edtica de corriente de cursor.
+
+6106=El objeto del tipo [{0}] con la clave primaria [{1}] no existe en la cach\u00e9.
+
+6107=Faltan sentencias de actualizaci\u00f3n en UpdateAllQuery.
+
+6108=Actualizar todas las consultas no da soporte a la herencia con varias tablas
+
+6109=El grupo de captaci\u00f3n especificado ({0}) no est\u00e1 definido en el nivel del descriptor.
+
+6110=La consulta de lectura no cumple el atributo no captado ({0}) del objeto captado parcialmente en la correlaci\u00f3n de identidades de la unidad de trabajo.
+
+6111=El atributo de grupo de captaci\u00f3n ({0}) no est\u00e1 definido o no se ha correlacionado.
+
+6112=El grupo de captaci\u00f3n no puede establecerse en la consulta de informe.
+
+6113=El grupo de captaci\u00f3n no puede utilizarse junto con una lectura de atributos parcial.
+
+6114=Debe definir un gestor de grupo de captaci\u00f3n en el descriptor ({0}) para poder establecer un grupo de captaci\u00f3n en la consulta ({1})
+
+6115=Las consultas sobre clases aisladas o las consultas establecidas para utilizar conexiones exclusivas no deben ejecutarse en una ServerSession o en CMP fuera de una transacci\u00f3n.
+
+6116=No se ha especificado ninguna llamada o interacci\u00f3n para la operaci\u00f3n intentada.
+
+6117=No se puede establecer una consulta que utiliza un resultado con cursor para guardar en la cach\u00e9 los resultados de la consulta.
+
+6118=Una consulta sobre una clase aislada no debe almacenar en la cach\u00e9 de la consulta los resultados de la consulta.
+
+6119=La expresi\u00f3n de uni\u00f3n {0} no es v\u00e1lida o para un tipo de correlaci\u00f3n que no da soporte a la uni\u00f3n.
+
+6120=El atributo parcial {0} no es un atributo v\u00e1lido de la clase {1}.
+
+6121=La consulta no se ha definido correctamente; falta el creador de expresiones.  Para las subconsultas y las consultas paralelas, aseg\u00farese de que el creador de consultas est\u00e9 siempre a la izquierda.
+
+6122=La expresi\u00f3n no es una expresi\u00f3n v\u00e1lida. {0}
+
+6123=La clase de contenedor especificada [{0}] no puede utilizarse porque el contenedor necesita implementar {1}.
+
+6124=Se requiere una consulta {0} y se ha encontrado {1}
+
+6125=Ya no se puede invocar ReadQuery.clearQueryResults(). La llamada a clearQueryResults ahora requiere que se proporcione la sesi\u00f3n. Debe invocarse clearQueryResults(session).
+
+6126=Se est\u00e1 ejecutando una consulta que utiliza resultados de consulta conformes y almacenados en la cach\u00e9.  Estos dos valores son incompatibles.
+
+6127=Una llamada reflexiva ha fallado en la clase EclipseLink {0}; su entorno debe estar configurado para permitir la reflexi\u00f3n Java.
+
+6128=La lectura por lotes no est\u00e1 soportada en las consultas utilizando llamadas personalizadas.
+
+6129=La renovaci\u00f3n no es posible si la consulta no va a la base de datos.
+
+6130=El SQL personalizado no ha podido proporcionar la columna de discriminador: {0}, tal como se define en SQLResultSetMapping: {1}.
+
+6131=El DeleteAllQuery que define los objetos que se van a suprimir utilizando el m\u00e9todo setObjects con un argumento no nulo tambi\u00e9n debe definir los criterios de selecci\u00f3n correspondientes. {1}Objetos: [{2}]{1}Descriptor: [{0}]
+
+6132=El argumento de consulta {0} no se ha encontrado en la lista de par\u00e1metros proporcionada durante la ejecuci\u00f3n de la consulta.
+
+6133=El primer argumento del m\u00e9todo addupdate define el campo al que se va a asignar un nuevo valor; no puede ser nulo.
+
+6134=El nombre de atributo o la expresi\u00f3n que se pasado como primer par\u00e1metro al m\u00e9todo addupdate no define un campo. {1}Nombre de atributo o expresi\u00f3n: [{2}]{1}Descriptor: [{0}]
+
+6135=El nombre de atributo o la expresi\u00f3n que se ha pasado como primer par\u00e1metro al m\u00e9todo addupdate define un campo de una tabla que no est\u00e1 correlacionada con el descriptor de consulta. {1}Nombre de atributo o expresi\u00f3n: [{2}]{1}Campo incorrecto: [{3}]{1}Descriptor: [{0}]
+
+6136=Las clases correlacionadas con la herencia de multitabla no pueden ser elementos de ReportQuery. Elemento: {0}, Expresi\u00f3n: {1}.
+
+6137=Se ha generado una excepci\u00f3n al ejecutar una ReportQuery con una expresi\u00f3n de constructor: {0}
+
+6138=La consulta requiere un almacenamiento temporal, pero {0} no da soporte a las tablas temporales.
+
+6139=Problema al encontrar la correlaci\u00f3n de {0} definida en el resultado de campo denominado {1}
+
+6140=Ha intentado asignar expresiones de uni\u00f3n al elemento de informe {1} de tipo {0}.  Las expresiones de uni\u00f3n s\u00f3lo son aplicables en los elementos que devuelven un objeto persistente.
+
+6141=Se ha generado una ClassCastException al intentar convertir {0} en una clase en una sugerencia de consulta.
+
+6142=El valor {1} proporcionado a la sugerencia de consulta {0} navega por una relaci\u00f3n no permitida.  La relaci\u00f3n {2} no es una relaci\u00f3n OneToOne o OneToMany.
+
+6143=El valor {1} proporcionado a la sugerencia de consulta {0} navega por una relaci\u00f3n no existente.  La relaci\u00f3n {2} no existe.
+
+6144=El valor {1} proporcionado a la sugerencia de consulta {0} no conten\u00eda suficientes s\u00edmbolos.  La uni\u00f3n debe empezar por la variable de identificaci\u00f3n de la consulta.  Por ejemplo, en la consulta "SELECT x from X x", para hacer referencia a una "y" que pertenece a "x", debe utilizar la sugerencia "x.y".
+
+6145=El recuento de distintos en una clase de clave primaria compuesta [{0}] no est\u00e1 soportado. Descriptor [{1}] 
+
+6146=El valor {1} proporcionado a la sugerencia de consulta {0} no es un valor v\u00e1lido; los valores v\u00e1lidos son enteros o series que se pueden analizar en valores int.
+
+6147=La expresi\u00f3n {0} no es v\u00e1lida para una lectura de atributo parcial.
+
+6148=La adici\u00f3n de {0} a PLSQLStoredProcedureCall no est\u00e1 soportada.
+
+6149=PLSQLStoredProcedureCall no puede utilizar un argumento sin nombre.
+
+6150=No puede utilizarse un valor nulo como clave en un contenedor de tipo [{1}]. Aseg\u00farese de los valores de clave para los objetos de tipo [{0}] no sean nulos.
+
+6151=Se ha producido una excepci\u00f3n al intentar establecer un redireccionador {0} pasado a trav\u00e9s de una sugerencia de consulta JPA {1}.  Verifique que el redireccionador proporcionado implemente org.eclipse.persistence.queries.QueryRedirector.
+
+6152=Se ha producido una excepci\u00f3n al intentar crear una instancia de la clase {0} pasada a trav\u00e9s de una sugerencia de consulta JPA {1}.  Verifique que la clase tenga un constructor predeterminado.
+
+6153=CompatibleType debe establecerse en el tipo complejo: {0}.
+
+6154=TypeName debe establecerse en el tipo complejo: {0}.
+
+6155=No se ha encontrado ninguna tabla de relaci\u00f3n en {0}. {2}Expresi\u00f3n de joinCriteria: [{1}]
+
+6156=Se ha producido una excepci\u00f3n al intentar establecer la lectura de la clave de correlaci\u00f3n para [{0}]: [{1}].
+
+6157=El elemento [{0}] se est\u00e1 a\u00f1adiendo a una correlaci\u00f3n sin una clave.  Generalmente, esto significa que la base de datos no contiene la clave esperada.
+
+6158=Se ha solicitado a MapContainerPolicy que anule la derivaci\u00f3n del elemento [{0}] que no es un elemento de correlaci\u00f3n.  Esto significa que se est\u00e1 utilizando la pol\u00edtica de contenedor incorrecta.
+
+6159=No se puede encontrar la correlaci\u00f3n para MapEntryExpression con la base: [{0}].
+
+6160=La MapEntryExpression con la base: [{0}] hace referencia a la correlaci\u00f3n [{1}], que no es una correlaci\u00f3n de colecciones.  Las correlaciones s\u00f3lo pueden existir en las correlaciones de colecciones.
+
+6161=La MapEntryExpression con la base: [{0}] hace referencia a la correlaci\u00f3n [{1}], que no hace referencia a una correlaci\u00f3n.
+
+6162=La columna de orden de lista [{0}] contiene valores incorrectos:{2}{1}
+
+6163=index() requiere una QueryKeyExpression; no puede aplicarse a [{0}]
+
+6164=index() requiere una QueryKeyExpression con una CollectionMapping que tenga una columna de orden de lista no nula. [{1}] no cumple esta condici\u00f3n en [{0}]
+
+6165=La captaci\u00f3n por lotes que utiliza IN requiere una clave primaria de singleton.
+
+6166=Se ha intentado una conversi\u00f3n fuera de una jerarqu\u00eda de herencia.  [{0}] no aparece en la jerarqu\u00eda de clase para [{1}]. Nota: esta excepci\u00f3n tambi\u00e9n puede indicar que la conversi\u00f3n se realiza en una relaci\u00f3n de herencia de tabla-por-clase que no est\u00e1 soportada para la conversi\u00f3n.
+
+6167=Se ha invocado una conversi\u00f3n en una expresi\u00f3n que no utiliza la herencia: [{0}].
+
+6168=La consulta no se ha podido preparar; se ha producido un error inesperado : [{0}].
+
+6169=Se ha configurado una correlaci\u00f3n para utilizar la captaci\u00f3n por lotes IN, pero la consulta original no se ha configurado para utilizar la captaci\u00f3n por lotes IN y debe ser: [{0}].
+
+6171=El particionamiento no da soporte al tipo de sesi\u00f3n [{0}]. S\u00f3lo tienen soporte ServerSession y ClientSession.
+
+6172=Falta la agrupaci\u00f3n de conexiones para el particionamiento [{0}].
+
+6173=La migraci\u00f3n tras error de la agrupaci\u00f3n de conexiones [{0}] ha fallado; todos los servidores est\u00e1n desactivados.
+
+6174=No se ha proporcionado ning\u00fan valor para la propiedad de sesi\u00f3n [{0}]. Esta excepci\u00f3n es posible cuando se utilizan criterios adicionales o columnas de discriminador de inquilino sin especificar la propiedad contextual asociada. Estas propiedades deben establecerse utilizando EntityManager, EntityManagerFactory o las propiedades de unidad de persistencia. Si se utiliza EclipseLink nativo, estas propiedades deben establecerse directamente en la sesi\u00f3n.
+
+6175=Las consultas de SQL nativo se han inhabilitado. Esto se hace estableciendo la propiedad de unidad de persistencia "eclipselink.jdbc.allow-native-sql-queries" en false o teniendo al menos una entidad de varios inquilinos definida en la unidad de persistencia. Compruebe la especificaci\u00f3n de la unidad de persistencia. Para permitir las consultas de SQL nativo, establezca esta propiedad en true. De forma alternativa, las consultas individuales pueden ignorar este valor estableciendo la sugerencia de consulta "eclipselink.jdbc.allow-native-sql-query" en true.
+
+6176=Se ha generado una excepci\u00f3n al inicializar el constructor a partir de la clase [{0}]: [{1}]
+
+6177=El resultado de la columna [{0}] no se ha encontrado en los resultados de la consulta.
+
+6178=Si se establece isResultSetAccessOptimizedQuery en true, se producen conflictos con otros valores de la consulta.
+
+6179=Error al deserializar sopObject desde [{0}] en [{1}]
+
+6180=No se ha encontrado el sopObject serializado en [{0}] en [{1}]
+
+6181=sopObject tiene una versi\u00f3n incorrecta [{0}] en [{1}] en [{2}]
+
+6182=sopObject tiene una clave primaria incorrecta [{0}] en [{1}] en [{2}]
+
+6183=El tipo de correlaci\u00f3n {1} para el atributo {2} de {0} no est\u00e1 soportado con la funcionalidad Consultar por ejemplo.  Si el atributo puede ignorarse de forma segura, a\u00f1\u00e1dalo a la lista de ignorar o establezca la validaci\u00f3n de ejemplo en false en la pol\u00edtica.
+

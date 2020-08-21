@@ -62,11 +62,10 @@ import com.ibm.ws.security.acme.AcmeCertificate;
 import com.ibm.ws.security.acme.AcmeProvider;
 import com.ibm.ws.security.acme.internal.AcmeClient.AcmeAccount;
 import com.ibm.ws.security.acme.internal.exceptions.CertificateRenewRequestBlockedException;
-import com.ibm.ws.security.acme.internal.util.AcmeConstants;
 import com.ibm.ws.ssl.JSSEProviderFactory;
 import com.ibm.ws.ssl.KeyStoreService;
-import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
+import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 /**
  * ACME 2.0 support component service.
@@ -169,7 +168,7 @@ public class AcmeProviderImpl implements AcmeProvider {
 		 * Wait until the ACME authorization web application is available. At
 		 * this point, it always should be, but check just in case.
 		 */
-		applicationStateListenerRef.get().waitUntilWebAppAvailable();
+			applicationStateListenerRef.get().waitUntilResourcesAvailable(acmeConfig);
 
 		/*
 		 * Keep a reference to the existing certificate chain that we will
@@ -772,7 +771,7 @@ public class AcmeProviderImpl implements AcmeProvider {
 		 * First wait until the ACME authorization web application is available.
 		 */
 		try {
-			applicationStateListenerRef.get().waitUntilWebAppAvailable();
+			applicationStateListenerRef.get().waitUntilResourcesAvailable(acmeConfig);
 		} catch (AcmeCaException e) {
 			throw new CertificateException(e.getMessage(), e);
 		}

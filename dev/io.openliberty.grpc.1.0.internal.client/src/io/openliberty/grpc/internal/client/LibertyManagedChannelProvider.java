@@ -17,13 +17,14 @@ import java.util.concurrent.TimeUnit;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.managedobject.ManagedObjectException;
 
 import io.grpc.ClientInterceptor;
 import io.grpc.ManagedChannelProvider;
 import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder;
 import io.grpc.netty.shaded.io.netty.handler.ssl.SslContext;
+import io.openliberty.grpc.internal.GrpcManagedObjectProvider;
 import io.openliberty.grpc.internal.client.config.GrpcClientConfigHolder;
-import io.openliberty.grpc.internal.client.security.LibertyGrpcClientOutSSLSupport;
 
 /**
  * io.grpc.ManagedChannelProvider that takes care of any required Liberty
@@ -47,7 +48,7 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 	public NettyChannelBuilder builderForAddress(String name, int port) {
 
 		NettyChannelBuilder builder = NettyChannelBuilder.forAddress(name, port);
-		configureLibertyBuilder(builder, name + String.valueOf(port));
+		configureLibertyBuilder(builder, name, String.valueOf(port));
 
 		return builder;
 	}
@@ -55,26 +56,35 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 	@Override
 	public NettyChannelBuilder builderForTarget(String target) {
 		NettyChannelBuilder builder = NettyChannelBuilder.forTarget(target);
-		configureLibertyBuilder(builder, target);
+		configureLibertyBuilder(builder, target, "");
 		return builder;
 	}
 
-	private void configureLibertyBuilder(NettyChannelBuilder builder, String target) {
+	private void configureLibertyBuilder(NettyChannelBuilder builder, String target, String port) {
 		addLibertyInterceptors(builder);
 		addUserInterceptors(builder, target);
-		addLibertySSLConfig(builder, target);
+		addLibertySSLConfig(builder, target, port);
 		addKeepAliveConfiguration(builder, target);
 		addMaxInboundMessageSize(builder, target);
 	}
 
 	private void addLibertyInterceptors(NettyChannelBuilder builder) {
 		builder.intercept(new LibertyClientInterceptor());
+		ClientInterceptor monitoringInterceptor = createMonitoringClientInterceptor();
+		if (monitoringInterceptor != null) {
+			builder.intercept(monitoringInterceptor);
+		}
 	}
 
-	private void addLibertySSLConfig(NettyChannelBuilder builder, String target) {
-		SslContext context = LibertyGrpcClientOutSSLSupport.getOutboundClientSSLContext(target);
-		if (context != null) {
-			builder.sslContext(context);
+	private void addLibertySSLConfig(NettyChannelBuilder builder, String target, String port) {
+		String sslRef = GrpcClientConfigHolder.getSSLConfig(target);
+		SslContext context = null;
+		GrpcSSLService sslService = GrpcClientComponent.getGrpcSSLService();
+		if (sslService != null) {
+			context = sslService.getOutboundClientSSLContext(sslRef, target, port);
+			if (context != null) {
+				builder.sslContext(context);
+			}
 		}
 	}
 
@@ -113,24 +123,43 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 		String interceptorListString = GrpcClientConfigHolder.getClientInterceptors(target);
 
 		if (interceptorListString != null) {
-			// TODO: wildcard support
 			List<String> items = Arrays.asList(interceptorListString.split("\\s*,\\s*"));
 			if (!items.isEmpty()) {
 				for (String className : items) {
 					try {
-						// use the app classloader to load the interceptor
-						ClassLoader cl = Thread.currentThread().getContextClassLoader();
-						Class<?> clazz = Class.forName(className, true, cl);
-						ClientInterceptor interceptor = (ClientInterceptor) clazz.getDeclaredConstructor()
-								.newInstance();
-						builder.intercept(interceptor);
-					} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-							| IllegalArgumentException | InvocationTargetException | NoSuchMethodException
-							| SecurityException e) {
+						// use the managed object service to load the interceptor 
+						ClientInterceptor interceptor = 
+								(ClientInterceptor) GrpcManagedObjectProvider.createObjectFromClassName(className);
+						if (interceptor != null) {
+							builder.intercept(interceptor);
+						}
+					} catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
+							IllegalArgumentException | InvocationTargetException | NoSuchMethodException |
+							SecurityException | ManagedObjectException e) {
 						Tr.warning(tc, "invalid.clientinterceptor", e.getMessage());
 					}
 				}
 			}
 		}
 	}
+	
+	private ClientInterceptor createMonitoringClientInterceptor() {
+		// create the interceptor only if the monitor feature is enabled
+		if (!GrpcClientComponent.isMonitoringEnabled()) {
+			return null;
+		}
+		ClientInterceptor interceptor = null;
+		// monitoring interceptor 
+		final String className = "io.openliberty.grpc.internal.monitor.GrpcMonitoringClientInterceptor";
+		try {
+			Class<?> clazz = Class.forName(className);
+			interceptor = (ClientInterceptor) clazz.getDeclaredConstructor()
+					.newInstance();
+		} catch (Exception e) {
+			// an exception can happen if the monitoring package is not loaded 
+        }
+
+		return interceptor;
+	}
+
 }

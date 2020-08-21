@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/JMSProcessingExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+18001=\u7740\u4fe1 JMS \u30e1\u30c3\u30bb\u30fc\u30b8\u306e\u51e6\u7406\u4e2d\u306b\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f
+
+18002=\u30bb\u30c3\u30b7\u30e7\u30f3\u306e\u76f8\u4e92\u63a5\u7d9a\u3067 JMS \u30b5\u30fc\u30d3\u30b9\u306b\u4f5c\u6210\u3055\u308c\u308b\u30c8\u30d4\u30c3\u30af\u306f JMSClusteringService \u3067\u8a2d\u5b9a\u3059\u308b\u5fc5\u8981\u304c\u3042\u308a\u307e\u3059
+
+18003=\u30e1\u30c3\u30bb\u30fc\u30b8\u99c6\u52d5\u578b Bean \u306e env-entry \u30a8\u30ec\u30e1\u30f3\u30c8\u3067\u5b9a\u7fa9\u3055\u308c\u305f\u30bb\u30c3\u30b7\u30e7\u30f3\u306e\u540d\u524d\u306e\u30eb\u30c3\u30af\u30a2\u30c3\u30d7\u306b\u5931\u6557\u3057\u307e\u3057\u305f
+
+18004=\u30e1\u30c3\u30bb\u30fc\u30b8\u99c6\u52d5\u578b Bean (MDB) \u3067\u30bb\u30c3\u30b7\u30e7\u30f3\u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3002  MDB getSession() \u30e1\u30bd\u30c3\u30c9\u306f\u975e\u30cc\u30eb\u306e\u30bb\u30c3\u30b7\u30e7\u30f3\u3092\u8fd4\u3059\u5fc5\u8981\u304c\u3042\u308a\u307e\u3059
+

@@ -1,0 +1,633 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/ValidationExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+7001=Vous devez vous connecter \u00e0 la ServerSession avant d''acqu\u00e9rir ClientSessions.
+
+7002=Le pool nomm\u00e9 [{0}] n''existe pas.
+
+7003=La taille max doit \u00eatre sup\u00e9rieure \u00e0 la taille min.
+
+7004=Les pools doivent \u00eatre configur\u00e9s avant la connexion.
+
+7008=Le type Java [{0}] n''est pas un type de base de donn\u00e9es valide.
+
+7009=Descripteur manquant pour [{0}].  V\u00e9rifiez que le descripteur a \u00e9t\u00e9 correctement enregistr\u00e9 avec la session.
+
+7010=Le d\u00e9marrage d''index est hors plage.
+
+7011=L''arr\u00eat d''index est hors plage.
+
+7012=Une erreur fatale s''est produite.
+
+7013=Vous utilisez l''API obsol\u00e8te SessionManager et aucun fichier EclipseLink.properties n''a \u00e9t\u00e9 trouv\u00e9 dans votre chemin d''acc\u00e8s aux classes.  Aucune session n''a pu \u00eatre lue depuis le fichier.
+
+7017=Les descripteurs enfant n''ont pas de mappe d''identit\u00e9, ils partagent leurs parents
+
+7018=Erreur de fichier.
+
+7023=L''instance de connexion fournie est incorrecte.  Une connexion \u00e0 la base de donn\u00e9es doit \u00eatre fournie.
+
+7024=R\u00e8gle de fusion non valide.
+
+7025=Les seules cl\u00e9s valides pour les lignes de base de donn\u00e9es sont des cha\u00eenes et des zones de base de donn\u00e9es.
+
+7027=La s\u00e9quence nomm\u00e9e [{0}] n''est pas correctement configur\u00e9e.  Son incr\u00e9ment ne correspond pas \u00e0 sa taille de pr\u00e9allocation.
+
+7028=L''\u00e9l\u00e9ment writeObject() n''est pas autoris\u00e9 dans une unit\u00e9 d''oeuvre.
+
+7030=Vous ne pouvez pas d\u00e9finir la taille de pool de lecture apr\u00e8s la connexion.
+
+7031=Vous ne pouvez pas ajouter des descripteurs \u00e0 un SessionBroker.
+
+7032=Aucune session n''est enregistr\u00e9e pour la classe [{0}].
+
+7033=Aucune session n''est enregistr\u00e9e sous le nom [{0}].
+
+7038=Erreur lors de la consignation du message dans le journal de session.
+
+7039=Retrait impossible de l''ensemble de classes en lecture seule dans une unit\u00e9 d''oeuvre imbriqu\u00e9e. {0}L''ensemble d''une unit\u00e9 d''oeuvre imbriqu\u00e9e des classes en lecture seule doit \u00eatre \u00e9gal \u00e0 ou un superensemble de l''ensemble de ses de classes en lecture seule.
+
+7040=Impossible de modifier l''ensemble de classes en lecture seule dans une unit\u00e9 d''oeuvre apr\u00e8s que cette derni\u00e8re \u00e0 \u00e9t\u00e9 utilis\u00e9e. {0}Les modifications apport\u00e9es \u00e0 l''ensemble en lecture seule doivent \u00eatre effectu\u00e9es lors de l''acquisition de l''unit\u00e9 d''oeuvre ou imm\u00e9diatement apr\u00e8s.
+
+7042=Classe de plateforme de base de donn\u00e9es [{0}] non trouv\u00e9e.
+
+7043=[{0}] ne comporte aucune table \u00e0 cr\u00e9er sur la base de donn\u00e9es.
+
+7044=La classe de conteneur sp\u00e9cifi\u00e9e [{0}] ne peut pas \u00eatre utilis\u00e9e comme conteneur car elle n''impl\u00e9mente pas de collection ou de mappe.
+
+7047=Le conteneur sp\u00e9cifi\u00e9 [{0}] ne requiert pas de cl\u00e9s.  Vous avez essay\u00e9 d''utiliser la m\u00e9thode [{1}].
+
+7048=Aucune m\u00e9thode d''instance ni de zone nomm\u00e9e [{0}] n''existe pour la classe d''\u00e9l\u00e9ment [{1}] ; elle ne peut donc pas \u00eatre utilis\u00e9e pour cr\u00e9er une cl\u00e9 pour la mappe.
+
+7051=Attribut manquant [{1}] pour le descripteur [{0}], appel\u00e9 depuis [{2}]
+
+7052=Tentative d''utilisation de [{0}] (avec la m\u00e9thode [{1}]) en tant que conteneur pour l''\u00e9l\u00e9ment DirectCollectionMapping.  La m\u00e9thode useMapClass() ne peut pas \u00eatre utilis\u00e9e ; seule l''API useCollectionClass() est prise en charge pour l''\u00e9l\u00e9ment DirectCollectionMappings.
+
+7053=Tentative d''op\u00e9ration release() sur une session qui n''est pas de type ClientSession.  Seules les sessions ClientSessions peuvent \u00eatre publi\u00e9es.
+
+7054=Tentative d''op\u00e9ration acquire() sur une session qui n''est pas de type ServerSession.  Seules les sessions ClientSessions peuvent \u00eatre acquises depuis des sessions ServerSessions.
+
+7055=Le verrouillage optimiste n''est pas pris en charge avec la g\u00e9n\u00e9ration de proc\u00e9dure m\u00e9moris\u00e9e.
+
+7056=L''objet erron\u00e9 a \u00e9t\u00e9 enregistr\u00e9 dans l''unit\u00e9 d''oeuvre.  L''objet [{0}] doit \u00eatre l''objet du cache parent [{1}].
+
+7058=Connecteur non valide [{0}] (doit \u00eatre de type DefaultConnector).
+
+7059=Nom de source de donn\u00e9es non valide [{0}].
+
+7060=Impossible d''acqu\u00e9rir la source de donn\u00e9es [{0}].
+
+7061=Une exception s''est produite au sein de JTS.
+
+7062=Le verrouillage de niveau zone n''est pas pris en charge \u00e0 l''ext\u00e9rieur d''une unit\u00e9 d''oeuvre.  Pour que le verrouillage de niveau zone puisse \u00eatre utilis\u00e9, une unit\u00e9 d''oeuvre doit \u00eatre utilis\u00e9e pour l''\u00e9criture ALL.
+
+7063=Une exception s''est produite au sein du conteneur EJB.
+
+7064=Une exception s''est produite lors de l''extraction d''une cl\u00e9 primaire EJB r\u00e9flexive.  V\u00e9rifiez que votre objet de cl\u00e9 primaire est d\u00e9fini correctement. {2}Cl\u00e9 : [{0}] {2}Bean : [{1}]
+
+7065=La classe distance pour le bean ne peut pas \u00eatre charg\u00e9e ou d\u00e9tect\u00e9e.  Assurez-vous que le chargeur de classe correct est indiqu\u00e9. {2}Bean : [{0}] {2}Classe distante : [{1}]
+
+7066=Impossible de cr\u00e9er ou de retirer des beans sauf si une transaction JTS est pr\u00e9sente. {1}Bean : [{0}]
+
+7068=La classe de projets [{0}] est introuvable pour le projet [{1}] avec le chargeur de classes par d\u00e9faut.
+
+7071=Impossible d''utiliser les param\u00e8tres d''entr\u00e9e-sortie sans utiliser une liaison.
+
+7072=La plateforme de plateforme de base de donn\u00e9es [{0}] est introuvable pour le projet [{1}] avec le chargeur de classes par d\u00e9faut.
+
+7073=Le type d''objet Oracle avec le nom de type [{0}] n''est pas d\u00e9fini.
+
+7074=Le nom de type d''objet Oracle [{0}] n''est pas d\u00e9fini.
+
+7075=La taille maximum n''est pas d\u00e9finie pour le type VARRAY Oracle [{0}].  Une taille maximum doit \u00eatre d\u00e9finie.
+
+7076=Lors de la g\u00e9n\u00e9ration de la classe de projets, les descripteurs du projets ne doivent pas \u00eatre initialis\u00e9s. {1}Descripteur : [{0}]
+
+7077=L''interface home [{0}], indiqu\u00e9e lors de la cr\u00e9ation de l''\u00e9l\u00e9ment BMPWrapperPolicy, ne contient pas une m\u00e9thode findByPrimaryKey() correcte.  Une m\u00e9thode findByPrimaryKey() doit exister qui prend la classe PrimaryKey pour ce bean.
+
+7079=Le descripteur de [{0}] est introuvable dans la session [{1}].  V\u00e9rifiez le projet qui est utilis\u00e9 pour cette session.
+
+7080=Une exception FinderException a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e lors d''une tentative de chargement de [{0}], de classe [{1}], avec la cl\u00e9 primaire [{2}].
+
+7081=L''objet de consolidation [{0}] ne peut pas \u00eatre directement enregistr\u00e9 dans l''unit\u00e9 d''oeuvre.  Il doit \u00eatre associ\u00e9 \u00e0 l''objet source (propri\u00e9taire).
+
+7084=Le fichier [{0}] n''est pas d''un type valide pour la lecture.  Le fichier projet XML d\u00e9ploy\u00e9 doit \u00eatre attribu\u00e9 \u00e0 ProjectReader.
+
+7086=Le type de session [{0}] du nom de session [{1}] n''a pas \u00e9t\u00e9 correctement d\u00e9fini.
+
+7087=Le type de session [{0}] est introuvable pour l''\u00e9l\u00e9ment [{1}] avec le chargeur de classes par d\u00e9faut.
+
+7088=Impossible de cr\u00e9er une instance du contr\u00f4leur de transaction externe [{0}], sp\u00e9cifi\u00e9 dans le fichier de propri\u00e9t\u00e9s.
+
+7089=Une exception s''est produite lors de la recherche ou de l''appel de la m\u00e9thode d''amendement de session [{0}] sur la classe [{1}] avec les param\u00e8tres [{2}].
+
+7091=Impossible de d\u00e9finir les classes de l''\u00e9couteur.
+
+7092=Impossible d''ajouter une requ\u00eate dont les types sont en conflit avec une requ\u00eate existante. Requ\u00eate \u00e0 ajouter : [{0}] est nomm\u00e9e : [{1}] avec les arguments [{2}]. La requ\u00eate en conflit existante : [{3}] est nomm\u00e9e : [{4}] avec les arguments : [{5}].
+
+7093=Dans la requ\u00eate nomm\u00e9e [{0}], la classe [{2}] pour l''argument de requ\u00eate nomm\u00e9 [{1}] est introuvable. Incluez la classe manquante dans votre chemin d''acc\u00e8s aux classes.
+
+7095=La ressource sessions.xml [{0}] est introuvable dans le chemin d''acc\u00e8s \u00e0 la ressource.  V\u00e9rifiez que le nom/chemin de ressource et le chargeur de classe transmis \u00e0 l''\u00e9l\u00e9ment SessionManager.getSession sont corrects.  Le fichier sessions.xml doit \u00eatre inclus \u00e0 la racine du fichier jar d\u00e9ploy\u00e9e de l''application ; si le fichier sessions.xml est d\u00e9ploy\u00e9 dans un sous-r\u00e9pertoire du jar de l''application, assurez-vous que le chemin de ressource correct utilisant "/" not "\" est utilis\u00e9.
+
+7096=Impossible d''utiliser la m\u00e9thode commit() pour valider de nouveau l''unit\u00e9 d''oeuvre.
+
+7097=Op\u00e9ration non prise en charge : [{0}].
+
+7099=La ressource XML du projet de d\u00e9ploiement [{0}] est introuvable dans le chemin d''acc\u00e8s \u00e0 la ressource.  V\u00e9rifiez que le nom/chemin de ressource et le chargeur de classe transmis \u00e0 l''\u00e9l\u00e9ment XMLProjectReader sont corrects.  Le fichier XML de projet doit \u00eatre inclus \u00e0 la racine du fichier jar d\u00e9ploy\u00e9e de l''application ; si le fichier XML du projet est d\u00e9ploy\u00e9 dans un sous-r\u00e9pertoire du jar de l''application, assurez-vous que le chemin de ressource correct utilisant "/" not "\" est utilis\u00e9.
+
+7100=Impossible de trouver la session nomm\u00e9e [{0}] dans le fichier session.xml [{1}]
+
+7101=Aucun fichier "meta-inf/eclipselink-ejb-jar.xml" n''a pu \u00eatre trouv\u00e9 dans votre chemin d''acc\u00e8s aux classes.  La session CMP n''a pas pu \u00eatre lue \u00e0 partir du fichier.
+
+7102=D\u00e9tection d''une valeur nulle pour cl\u00e9 de cache lors d''une tentative de retrait {2}d''un objet de la mappe d''identit\u00e9 : [{0}]{2}contenant un objet de classe : [{1}] (ou une classe dans cette hi\u00e9rarchie){2}La cause la plus probable de cette situation est que l''objet a d\u00e9j\u00e0 r\u00e9cup\u00e9r\u00e9 de la place-{2}et, par cons\u00e9quent, il n''existe pas au sein de la mappe d''identit\u00e9.{2}Pensez \u00e0 utiliser une autre mappe d''identit\u00e9 pour emp\u00eacher cette situation.{2}Consultez la documentation EclipseLink pour plus de d\u00e9tails sur les mappes d''identit\u00e9.
+
+7103=Une r\u00e9f\u00e9rence nulle a \u00e9t\u00e9 d\u00e9tect\u00e9e lors d''une tentative d''appel {1}de la m\u00e9thode : [{0}] sur un objet qui utilise l''adressage indirect de proxy.{1}V\u00e9rifiez que cet objet n''est pas nul avant d''appeler ses m\u00e9thodes.
+
+7104=La s\u00e9quence de connexion ne doit pas utiliser un contr\u00f4leur de transaction externe.
+
+7105=Erreur d\u00e9tect\u00e9e lors de la conversion de la classe de chiffrement : [{0}]
+
+7106=Erreur d\u00e9tect\u00e9e lors du chiffrement de cha\u00eene.
+
+7107=Erreur d\u00e9tect\u00e9e lors du d\u00e9chiffrement de cha\u00eene.
+
+7108=Cette op\u00e9ration n''est pas prise en charge pour les plateformes non relationnelles.
+
+7109=La connexion que le projet a utilis\u00e9 pour cr\u00e9er la session est nulle, il doit s''agir d''une connexion valide.
+
+7110=A pr\u00e9sent, l''\u00e9l\u00e9ment HistoricalSession fonctionne uniquement avec des bases de donn\u00e9es Oracle 9R2 ou versions suivantes, car elles utilisent la fonction Flashback d''Oracle.
+
+7111=Vous ne pouvez pas acqu\u00e9rir un \u00e9l\u00e9ment HistoricalSession depuis une unit\u00e9 d''oeuvre, une autre session HistoricalSession, ServerSession ou ServerSessionBroker.  Vous pouvez en acqu\u00e9rir un depuis une session r\u00e9guli\u00e8re, une session ClientSession ou une session ClientSessionBroker.
+
+7112=Vous avez sp\u00e9cifi\u00e9 que EclipseLink utilise la fonction : {0}, mais cette fonction n''est pas disponible dans la version JDK actuelle :{1}.
+
+7113={0} ne prend pas en charge l''appel avec retour.
+
+7114=Des donn\u00e9es isol\u00e9es ne sont actuellement pas prises en charge dans un courtier de session de client. La session nomm\u00e9e {0} contient des descripteurs repr\u00e9sentant des donn\u00e9es isol\u00e9es.
+
+7115=Une connexion exclusive ne peut pas \u00eatre utilis\u00e9e pour les lectures ClientSession sans des donn\u00e9es isol\u00e9es.  Mettez \u00e0 jour l''\u00e9l\u00e9ment ConnectionPolicy pour retirer la configuration ExclusiveConnection ou le projet afin de d\u00e9finir certaines donn\u00e9es comme devant \u00eatre exclusives.
+
+7116=Des arguments non valides sont utilis\u00e9s.  Consultez l''interface de programme d''application publique de la m\u00e9thode d''appel et utiliser des valeurs valides pour les arguments.
+
+7117=Vous avez tent\u00e9 d''utiliser plusieurs curseurs dans SQLCall {0}
+
+7118=La m\u00e9thode setCustomSQLArgumentType a \u00e9t\u00e9 appel\u00e9e sur SQLCall {0}, mais cet appel n''utilise pas SQL personnalis\u00e9
+
+7119=Un appel SQLCall non pr\u00e9par\u00e9 {0} a tent\u00e9 une traduction
+
+7120=Le param\u00e8tre {0} de l''appel SQLCall {1} ne peut pas \u00eatre utilis\u00e9 comme curseur, car il a un type de param\u00e8tre autre que OUT
+
+7121={0} ne prend pas en charge les fonctions m\u00e9moris\u00e9es
+
+7122=La connexion exclusive associ\u00e9e \u00e0 la session est indisponible pour la requ\u00eate sur {0}
+
+7123=Une op\u00e9ration writeChanges() r\u00e9ussie a \u00e9t\u00e9 appel\u00e9e sur cette unit\u00e9 d''oeuvre.  Comme me processus de validation a d\u00e9marr\u00e9 mais n''est pas encore finalis\u00e9, les seules op\u00e9rations prises d\u00e9sormais en charge sont : commit, commitAndResume, release, toute requ\u00eate de niveau non objet un ex\u00e9cution SQLCall.  L''op\u00e9ration {0} n''est pas autoris\u00e9e \u00e0 ce stade.
+
+7124=Une op\u00e9ration writeChanges() non r\u00e9ussie a \u00e9t\u00e9 appel\u00e9e sur cette unit\u00e9 d''oeuvre.  Etant donn\u00e9 qu''il y a danger que les modifications partielles soient \u00e9crites dans le magasin de donn\u00e9es et ne soient pas annul\u00e9es (si \u00e0 l''int\u00e9rieur d''une transaction externe), les seules op\u00e9rations d\u00e9sormais prises en charge sont : release, global transaction rollback, toute requ\u00eate de niveau non objet ou une ex\u00e9cution SQLCall.  L''op\u00e9ration {0} a \u00e9t\u00e9 tent\u00e9e.
+
+7125=Une fois que l''unit\u00e9 d''oeuvre a \u00e9t\u00e9 valid\u00e9e et/ou publi\u00e9e, aucune autre op\u00e9ration ne doit \u00eatre effectu\u00e9e sur celle-ci.  L''op\u00e9ration {0} a \u00e9t\u00e9 tent\u00e9e sur cette derni\u00e8re.
+
+7126=Impossible d''appeler l''\u00e9l\u00e9ment writeChanges sur une unit\u00e9 d''oeuvre imbriqu\u00e9e.  Une unit\u00e9 d''oeuvre imbriqu\u00e9e n''\u00e9crit jamais directement dans le magasin de donn\u00e9es, seule l''unit\u00e9 d''oeuvre parent fonctionne.
+
+7127=Vous pouvez uniquement \u00e9crire des modifications dans le magasin de donn\u00e9es une seule fois d\u00e8s lors que vous pouvez uniquement appeler la validation une fois.
+
+7128=La session [{0}] est d\u00e9j\u00e0 connect\u00e9e.
+
+7129=Les arguments de m\u00e9thode ne peuvent pas comporter une valeur nulle.
+
+7130=L''unit\u00e9 d''oeuvre imbriqu\u00e9e n''est pas prise en charge pour le suivi des modifications d''attribut.
+
+7131={0} est de type incorrect.  Le type d''\u00e9v\u00e9nement de changement de collection doit \u00eatre ajout ou retrait.
+
+7132={0} est une classe d''\u00e9v\u00e9nement incorrecte.  Seuls les \u00e9v\u00e9nements PropertyChangeEvent et CollectionChangeEvent sont pris en charge.
+
+7133=L''ancienne validation n''est pas prise en charge pour le suivi des modifications d''attribut.
+
+7134=La plateforme serveur {0} est en lecture seule apr\u00e8s la connexion.
+
+7135=Vous ne pouvez pas valider puis reprendre une unit\u00e9 d''oeuvre contenant des requ\u00eates Modify all
+
+7136=L''unit\u00e9 d''oeuvre imbriqu\u00e9e n''est pas prise en charge pour une requ\u00eate Modify all.
+
+7137=L''objet est partiellement extrait (avec un groupe d''extraction), l''attribut non extrait ({0}) n''est pas \u00e9ditable.
+
+7139=Les requ\u00eates Modify all ne peuvent \u00eatre \u00e9mises dans une unit\u00e9 d''oeuvre contenant d''autres op\u00e9rations d''\u00e9criture.
+
+7140=Le type de s\u00e9quence {0} n''a pas de m\u00e9thode {1}.
+
+7141=La s\u00e9quence {0} est de type DefaultSequence, laquelle ne peut pas \u00eatre utilis\u00e9e dans la m\u00e9thode setDefaultSequence.
+
+7142=La s\u00e9quence {0} ne peut pas \u00eatre d\u00e9finie par d\u00e9faut, car une s\u00e9quence de ce nom a d\u00e9j\u00e0 \u00e9t\u00e9 ajout\u00e9e
+
+7143=La s\u00e9quence {0} ne peut pas \u00eatre ajout\u00e9e, car une s\u00e9quence de ce nom a d\u00e9j\u00e0 \u00e9t\u00e9 ajout\u00e9e par d\u00e9faut.
+
+7144={0} : la plateforme {1} ne prend pas en charge {2}.
+
+7145={2} essaie de se connecter \u00e0 la s\u00e9quence {0}, mais il est d\u00e9j\u00e0 connect\u00e9 \u00e0 {1}. Il est vraisemblable que les deux sessions partagent l''objet DatasourcePlatform
+
+7146=L''\u00e9l\u00e9ment QuerySequence {1} n''a pas la requ\u00eate s\u00e9lectionn\u00e9e.
+
+7147=La plateforme {0} ne peut pas cr\u00e9er une s\u00e9quence de plateforme  par d\u00e9faut, elle ne remplace pas la m\u00e9thode createPlatformDefaultSequence
+
+7148=L''\u00e9l\u00e9ment commitAndResume() ne peut \u00eatre utilis\u00e9 avec une unit\u00e9 d''oeuvre JTA/synchronis\u00e9e.
+
+7149=L''attribut de cl\u00e9 primaire compos\u00e9e [{2}] de type [{4}] sur la classe d''entit\u00e9[{0}] doit \u00eatre du m\u00eame type que celui d\u00e9fini sur se classe de cl\u00e9 primaire [{1}]. C''est-\u00e0-dire qu''il doit \u00eatre de type [{3}].
+
+7150=Sp\u00e9cification de cl\u00e9 primaire compos\u00e9e non valide. Les noms des zones de cl\u00e9 primaire ou des propri\u00e9t\u00e9s dans la classe de cl\u00e9 primaire [{1}] et ceux de la classe de bean d''entit\u00e9 [{0}] doivent correspondre et leurs types doivent \u00eatre identiques. Assurez-vous \u00e9galement que vous avez sp\u00e9cifi\u00e9 des \u00e9l\u00e9ments d''ID pour les attributs correspondants dans XML et/ou un @Id sur les zones correspondantes ou les propri\u00e9t\u00e9s de la classe d''entit\u00e9.
+
+7151=Le type [{1}] pour l''attribut [{0}] sur la classe entit\u00e9 [{2}] n''est pas un type valide pour un mappage \u00e9num\u00e9r\u00e9. L''attribut doit \u00eatre d\u00e9fini comme une \u00e9num\u00e9ration java.
+
+7153=Les annotations de mappage ne peuvent pas \u00eatre appliqu\u00e9es aux zones ou aux propri\u00e9t\u00e9s pour lesquelles un \u00e9l\u00e9ment @Transient est sp\u00e9cifi\u00e9. [{0}] est en violation de cette restriction.
+
+7154=L''attribut [{3}] de classe entit\u00e9 [{2}] a une valeur mappedBy de [{1}] laquelle n''existe pas dans sa classe entit\u00e9 de propri\u00e9t\u00e9 [{0}]. Si la classe entit\u00e9 de propri\u00e9t\u00e9  est une classe @MappedSuperclass, ce n''est pas valide, et votre attribut doit r\u00e9f\u00e9rencer la sous-classe correcte.
+
+7155=Le type [{1}] pour l''attribut [{0}] sur la classe entit\u00e9 [{2}] n''est pas un type valide pour un mappage s\u00e9rialis\u00e9. Le type d''attribut doit impl\u00e9menter l''interface s\u00e9rialisable.
+
+7156=Impossible de trouver la classe nomm\u00e9e [{0}]. Assurez-vous que le nom/chemin de classe est correct et disponible pour le chargeur de classe.
+
+7157=La classe entit\u00e9 [{0}] doit utiliser un \u00e9l\u00e9ment @JoinColumn au lieu d''un \u00e9l\u00e9ment @Column pour mapper son attribut de relation [{1}].
+
+7158=Erreur d\u00e9tect\u00e9e lors de la g\u00e9n\u00e9ration de l''\u00e9l\u00e9ment @NamedQuery [{1}] depuis la classe entit\u00e9 [{0}].
+
+7159=La cl\u00e9 de mappe [{0}] sur la classe entit\u00e9 [{1}] est introuvable pour le mappage [{2}].
+
+7160=Des \u00e9l\u00e9ments JoinColumn(s) ne doivent pas \u00eatre sp\u00e9cifi\u00e9s pour @OneToMany pour le nom d''attribut [{1}] dans la classe entit\u00e9 [{0}]. Lorsqu''un \u00e9l\u00e9ment @OneToMany n''est pas mapp\u00e9 \u00e0 une autre entit\u00e9 (c''est-\u00e0-dire qu''il s''agit du c\u00f4t\u00e9 propri\u00e9taire et qu''il est unidirectionnel), un \u00e9l\u00e9ment @JoinTable doit \u00eatre sp\u00e9cifi\u00e9, et non un \u00e9l\u00e9ment @JoinColumn(s). Si @JoinTable n''est pas sp\u00e9cifi\u00e9, une table de jointure par d\u00e9faut sera utilis\u00e9e \u00e0 la place ; Sp\u00e9cifiez @JoinTable uniquement si la configuration par d\u00e9faut doit \u00eatre remplac\u00e9e.
+
+7161=Aucune cl\u00e9 primaire n''est sp\u00e9cifi\u00e9e pour la classe entit\u00e9 [{0}]. Elle doit d\u00e9finir un \u00e9l\u00e9ment @Id, @EmbeddedId ou @IdClass. Si vous avez d\u00e9fini PK avec l''une de ces annotations, assurez-vous que vous n''avez pas m\u00e9lang\u00e9 le type d''acc\u00e8s (zones et propri\u00e9t\u00e9s annot\u00e9es) dans votre hi\u00e9rarchie de classe entit\u00e9.
+
+7162=Plusieurs annotations @EmbeddedId sont sp\u00e9cifi\u00e9es pour la classe entit\u00e9 [{0}] (sur les attributs [{1}] et [{2}]). Un seul \u00e9l\u00e9ment @EmbeddedId peut \u00eatre sp\u00e9cifi\u00e9 par entit\u00e9.
+
+7163=La classe entit\u00e9 [{0}] comporte un \u00e9l\u00e9ment @EmbdeddedId (sur l''attribut [{1}]) et un \u00e9l\u00e9ment @Id (sur l''attribut [{2}]. Les deux types d''ID ne peuvent pas \u00eatre sp\u00e9cifi\u00e9s sur la m\u00eame entit\u00e9.
+
+7164=Le type [{1}] pour l''attribut [{0}] sur la classe entit\u00e9 [{2}] n''est pas un type valide pour un mappage d''objet LOB. Pour un objet LOB de type BLOB, l''attribut doit \u00eatre d\u00e9fini en tant que type java.sql.Blob, byte[], Byte[] ou Serializable. Pour un objet LOB de type CLOB, l''attribut doit \u00eatre d\u00e9fini en tant que type java.sql.Clob, char[], Character[] ou String.
+
+7165=Le type [{1}] de l''attribut [{0}] sur la classe entit\u00e9 [{2}] n''est pas un type valide pour un mappage temporel. L''attribut doit \u00eatre d\u00e9fini comme un \u00e9l\u00e9ment java.util.Date ou java.util.Calendar.
+
+7166=Un g\u00e9n\u00e9rateur de table qui utilise le nom r\u00e9serv\u00e9 [{0}] comme "nom" a \u00e9t\u00e9 d\u00e9tect\u00e9 dans [{1}]. Il ne peut pas utiliser ce nom car il est r\u00e9serv\u00e9 pour \u00eatre par d\u00e9faut un g\u00e9n\u00e9rateur de s\u00e9quence "nom de s\u00e9quence".
+
+7167=Un g\u00e9n\u00e9rateur de s\u00e9quence qui utilise le nom r\u00e9serv\u00e9 [{0}] comme "nom de s\u00e9quence" a \u00e9t\u00e9 d\u00e9tect\u00e9 dans [{1}]. Il ne peut pas utiliser ce nom car il est r\u00e9serv\u00e9 pour \u00eatre par d\u00e9faut un "nom de g\u00e9n\u00e9rateur" de table.
+
+7168=L''attribut [{0}] de type [{1}] sur la classe entit\u00e9 [{2}] n''est pas valide pour une propri\u00e9t\u00e9 de version. Les types suivants sont pris en charge : int, Integer, short, Short, long, Long, Timestamp.
+
+7169=La classe [{0}] comporte deux \u00e9l\u00e9ments @GeneratedValues : pour les zones [{1}] et [{2}]. Un seul \u00e9l\u00e9ment sur les deux est admis.
+
+7172=Erreur d\u00e9tect\u00e9e lors de l''instanciation de la classe [{0}].
+
+7173=Un \u00e9v\u00e9nement de modification de propri\u00e9t\u00e9 a \u00e9t\u00e9 d\u00e9clench\u00e9 sur une propri\u00e9t\u00e9 nomm\u00e9e [{1}] dans [{0}].  >Toutefois, cette propri\u00e9t\u00e9 n''existe pas.
+
+7174=La m\u00e9thode d''acc\u00e8s get [{1}] sur la classe entit\u00e9 [{0}] n''a pas de m\u00e9thode d''acc\u00e8s get correspondante d\u00e9finie.
+
+7175=Le mappage [{0}] ne prend pas en charge le verrouillage optimiste de version en cascade.
+
+7176=Le mappage [{0}] ne prend pas en charge le verrouillage optimiste de version en cascade car il a une requ\u00eate personnalis\u00e9e.
+
+7177=Le descripteur d''agr\u00e9gat [{0}] comporte des mappages de propri\u00e9t\u00e9 priv\u00e9e. Les descripteurs d''agr\u00e9gat ne prennent pas en charge le verrouillage optimiste de version en cascade.
+
+7178=OracleOCIProxyConnector requiert la source de donn\u00e9es OracleOCIConnectionPool.
+
+7179=OracleJDBC_10_1_0_2ProxyConnectionCustomizer requiert la source de donn\u00e9es produisant OracleConnections.
+
+7180=OracleJDBC_10_1_0_2ProxyConnectionCustomizer requiert Oracle JDBC version 10.1.0.2 ou version suivante de sorte que OracleConnection d\u00e9clare la m\u00e9thode openProxySession.
+
+7181=OracleJDBC_10_1_0_2ProxyConnectionCustomizer requiert que la valeur de propri\u00e9t\u00e9 PersistenceUnitProperties.ORACLE_PROXY_TYPE  soit de type Entier ou convertible en entier : par exemple, instance OracleConnection.PROXYTYPE_USER_NAME ou Integer.toString(OracleConnection.PROXYTYPE_USER_NAME)
+
+7182=EC - Impossible de trouver la classe de pilote [{0}]
+
+7183=Erreur lors de la fermeture du fichier persistence.xml.
+
+7184=Propri\u00e9t\u00e9 syst\u00e8me [{0}] non sp\u00e9cifi\u00e9e. Elle doit \u00eatre d\u00e9finie par une classe qui d\u00e9finit une m\u00e9thode "getContainerConfig()".
+
+7185=Impossible de trouver la classe [{0}] sp\u00e9cifi\u00e9e dans [{1}]
+
+7186=Impossible d''appeler la m\u00e9thode [{0}] sur la classe [{1}] sp\u00e9cifi\u00e9e dans [{2}]
+
+7187=[{0}] doit d\u00e9finir une m\u00e9thode statique publique [{1}] qui n''a pas de param\u00e8tres et retourne une collection
+
+7188=Une liste de classe non nulle est obligatoire.
+
+7189=Impossible de cr\u00e9er un chargeur de classe temp depuis le chargeur de classe en cours : [{0}]
+
+7190=Echec de [{0}]
+
+7191=La classe entit\u00e9 [{0}] n''a pas \u00e9t\u00e9 trouv\u00e9e avec le chargeur de classe [{1}].
+
+7192=L''\u00e9l\u00e9ment ClassFileTransformer [{0}] g\u00e9n\u00e8re une exception lors de l''ex\u00e9cution de transform() sur la classe [{1}].
+
+7193=Les fichiers Jar dans le XML de persistance ne sont pas pris en charge dans cette version de EclipseLink.
+
+7194=Impossible de lier : [{0}] \u00e0 : [{1}].
+
+7195=Exception lors de la configuration de l''\u00e9l\u00e9ment EntityManagerFactory.
+
+7196=[{0}] de type [{1}] ne peut pas \u00eatre transtyp\u00e9 en [{2}].
+
+7197=Une cl\u00e9 primaire nulle (ou aucune cl\u00e9 primaire) a \u00e9t\u00e9 trouv\u00e9e dans le clone de l''unit\u00e9 d''oeuvre [{0}], cl\u00e9 primaire [{1}]. D\u00e9finissez l''\u00e9l\u00e9ment IdValidation du descripteur ou la propri\u00e9t\u00e9 "eclipselink.id-validation".
+
+7198=Classe : [{0}] non trouv\u00e9e lors de la conversion des noms de classe en classes.
+
+7199=Aucune table primaire n''a \u00e9t\u00e9 d\u00e9finie pour l''entit\u00e9 {0} dans le fichier de mappages d''entit\u00e9 : {1}.  Une table primaire est obligatoire pour traiter une relation d''entit\u00e9.
+
+7200=L''attribut [{1}] est introuvable dans la classe imbriquable [{0}]. Celui-ci est r\u00e9f\u00e9renc\u00e9 dans un attribut de substitution de l''attribut imbriqu\u00e9 [{3}] dans la classe [{2}].
+
+7201=Une exception s''est produite lors de l''analyse syntaxique du fichier de mappages d''entit\u00e9 : {0}.
+
+7202=Nom de substitution d''attribut {0} non valide - assurez-vous qu''un attribut du m\u00eame nom existe dans l''\u00e9l\u00e9ment {1} imbriquable.
+
+7203=l''\u00e9l\u00e9ment de mappage [{1}] pour la classe [{2}] comporte un type de collection non pris en charge [{0}]. Seuls les types Set, List, Map et Collection sont pris en charge.
+
+7207=L''attribut [{1}] dans la classe entit\u00e9 [{0}] comporte un type non valide pour un objet LOB de type BLOB. L''attribut doit \u00eatre d\u00e9fini en tant que type java.sql.Blob, byte[], Byte[] ou Serializable.
+
+7208=L''attribut [{1}] dans la classe entit\u00e9 [{0}] comporte un type non valide pour un objet LOB de type CLOB. L''attribut doit \u00eatre d\u00e9fini en tant que type java.sql.Clob, char[], Character[] ou String.
+
+7212=L''attribut [{0}] de la classe entit\u00e9 [{1}] n''indique pas de type temporel. Un type temporel doit \u00eatre sp\u00e9cifi\u00e9 pour les zones ou propri\u00e9t\u00e9s persistantes de type java.util.Date et java.util.Calendar.
+
+7213=Des r\u00e9f\u00e9rences mappedBy circulaires ont \u00e9t\u00e9 sp\u00e9cifi\u00e9es (Classe : [{0}], attribut : [{1}] et classe : [{2}], attribut : [{3}]. Ceci n''est pas valide, un seul c\u00f4t\u00e9 peut \u00eatre propri\u00e9taire de la relation. Par cons\u00e9quent, indiquez une valeur mappedBy uniquement sur le c\u00f4t\u00e9 non propri\u00e9taire de la relation.
+
+7214=L''entit\u00e9 cible de l''attribut de relation [{0}] sur la classe[{1}] ne peut pas \u00eatre d\u00e9termin\u00e9e.  Lorsqu''aucun g\u00e9n\u00e9rique n''est utilis\u00e9, assurez-vous que l''entit\u00e9 cible est d\u00e9finie sur le mappage de relation.
+
+7215=Impossible de charger la zone nomm\u00e9e [{0}] sur la classe[{1}]. Assurez-vous qu''une zone correspondant portant ce nom est d\u00e9finie sur la classe.
+
+7216=Impossible de charger la m\u00e9thode pour le nom de propri\u00e9t\u00e9 [{0}] sur la classe [{1}]. Assurez-vous qu''une m\u00e9thode get correspondant pour ce nom de propri\u00e9t\u00e9 est d\u00e9finie sur la classe.
+
+7217=La valeur order by [{0}], sp\u00e9cifi\u00e9e sur l''\u00e9l\u00e9ment [{2}] de l''entit\u00e9[{3}], n''est pas valide. Aucune propri\u00e9t\u00e9 ou zone portant ce nom n''existe sur l''entit\u00e9 cible [{1}].
+
+7218=[{0}] ne remplace pas la m\u00e9thode getCreateTempTableSqlPrefix. Les \u00e9l\u00e9ments DatabasePlatforms qui prennent en charge les tables temporaires doivent remplacer cette m\u00e9thode.
+
+7219=[{0}] ne remplace pas la m\u00e9thode valueFromRowInternalWithJoin, mais sa m\u00e9thode isJoiningSupported renvoie true. Le mappage de r\u00e9f\u00e9rence externe qui prend en charge la jointure doit remplacer cette m\u00e9thode.
+
+7220=L''\u00e9l\u00e9ment @JoinColumns sur l''\u00e9l\u00e9ment annot\u00e9 [{0}] de la classe entit\u00e9 [{1}] est incomplet. Lorsque la classe entit\u00e9 source utilise une cl\u00e9 primaire compos\u00e9e, un \u00e9l\u00e9ment @JoinColumn doit \u00eatre sp\u00e9cifi\u00e9 pour chaque colonne de jointure utilisent les \u00e9l\u00e9ments @JoinColumns. Le nom et les \u00e9l\u00e9ments referencedColumnName doivent \u00eatre sp\u00e9cifi\u00e9s dans chaque \u00e9l\u00e9ment @JoinColumn.
+
+7222=Un \u00e9l\u00e9ment @PrimaryKeyJoinColumns incomplet a \u00e9t\u00e9 sp\u00e9cifi\u00e9 sur l''\u00e9l\u00e9ment annot\u00e9 [{0}]. Lors de la sp\u00e9cification de l''\u00e9l\u00e9ment @PrimaryKeyJoinColumns pour une entit\u00e9 comportant une cl\u00e9 primaire compos\u00e9e, un \u00e9l\u00e9ment @PrimaryKeyJoinColumn doit \u00eatre sp\u00e9cifi\u00e9 pour chaque jointure de cl\u00e9 primaire utilisant les \u00e9l\u00e9ments @PrimaryKeyJoinColumns. Le nom et les \u00e9l\u00e9ments referencedColumnName doivent \u00eatre sp\u00e9cifi\u00e9s dans chaque \u00e9l\u00e9ment @PrimaryKeyJoinColumn.
+
+7223=Un \u00e9l\u00e9ment @PrimaryKeyJoinColumns a \u00e9t\u00e9 d\u00e9tect\u00e9 sur l''\u00e9l\u00e9ment annot\u00e9 [{0}]. Lorsque l''entit\u00e9 utilise une seule cl\u00e9 primaire, seulement un seul (ou z\u00e9ro) \u00e9l\u00e9ment @PrimaryKeyJoinColumn doit \u00eatre sp\u00e9cifi\u00e9.
+
+7224=La m\u00e9thode [{1}] sur la classe d''\u00e9couteur [{0}] est une m\u00e9thode de rappel non valide.
+
+7225=La m\u00e9thode [{1}] est introuvable sur la classe d''\u00e9couteur [{0}].
+
+7226=La m\u00e9thode [{1}] sur la classe d''\u00e9couteur [{0}] comporte un modificateur non valide. Les m\u00e9thodes de rappel ne peuvent pas \u00eatre statiques ou finales.
+
+7227=La classe d''\u00e9couteur [{0}] comporte plusieurs m\u00e9thodes de rappel de cycle de vie pour le m\u00eame \u00e9v\u00e9nement de cycle de vie ([{1}] et [{2}]).
+
+7228=la m\u00e9thode de rappel [{1}] sur la classe d''\u00e9couteur [{0}] comporte une signature incorrecte. Elle ne doit avoir aucun param\u00e8tre.
+
+7229=la m\u00e9thode de rappel [{3}] sur la classe d''\u00e9couteur d''entit\u00e9 [{2}] comporte une signature incorrecte. La m\u00e9thode doit prendre 1 param\u00e8tre qui doit pouvoir \u00eatre affect\u00e9 depuis la classe entit\u00e9. Ici, la classe de param\u00e8tre [{1}] ne peut pas \u00eatre affect\u00e9e depuis la classe entit\u00e9 [{0}].
+
+7231=Impossible de conserver l''objet d\u00e9tach\u00e9 [{0}]. {3}Classe> {1} Cl\u00e9 primaire > {2}
+
+7232=La classe entit\u00e9 [{0}] contient plusieurs d\u00e9clarations @Id mais elle ne d\u00e9finit aucun <id> \u00e9l\u00e9ment dans le document d''instance des mappages d''entit\u00e9.  Assurez-vous que s''il y a plusieurs d\u00e9clarations @Id pour une classe entit\u00e9 donn\u00e9e, la d\u00e9finition <entity> correspondante contient un <id> \u00e9l\u00e9ment pour chaque.
+
+7233=Les m\u00e9tadonn\u00e9es de mappage ne peuvent pas \u00eatre appliqu\u00e9es aux propri\u00e9t\u00e9s/m\u00e9thodes qui prennent des arguments. L''attribut [{0}] de classe [{1}] est en violation de cette restriction. Assurez-vous que la m\u00e9thode ne comporte pas d''arguments si elle est mapp\u00e9e avec des annotations ou dans un fichier de mappage XML.
+
+7234=La g\u00e9n\u00e9ration DDL requiert que le transformateur de classe, utilis\u00e9 avec le mappage de transformation de l''attribut [{1}] du descripteur [{0}], indique un type de retour sp\u00e9cifique pour sa m\u00e9thode [{2}] (et non un objet). La g\u00e9n\u00e9ration DDL requiert ce type de retour sp\u00e9cifique afin de pouvoir g\u00e9n\u00e9rer le type de zone correct.
+
+7235=Le transformateur de classe utilis\u00e9 avec le mappage de transformation de l''attribut [{1}] du descripteur [{0}] n''impl\u00e9mente pas la m\u00e9thode [{2}]. Cette m\u00e9thode fait partie de l''interface FieldTransformer et doit \u00eatre impl\u00e9ment\u00e9e. Notez aussi, qu''une fois impl\u00e9ment\u00e9e, son type de retour doit aussi \u00eatre un type explicite (et non un objet) lors de l''utilisation de la g\u00e9n\u00e9ration DDL.
+
+7237=Le nom d''entit\u00e9 doit \u00eatre unique dans une unit\u00e9 de persistance. Le nom d''entit\u00e9 [{0}] est utilis\u00e9 pour les classes d''entit\u00e9 [{1}] et [{2}].
+
+7238=Le g\u00e9n\u00e9rateur de table sp\u00e9cifi\u00e9 dans [{2}] avec le nom == [{0}] est en conflit avec le g\u00e9n\u00e9rateur de s\u00e9quence sous le m\u00eame nom sp\u00e9cifi\u00e9 dans [{1}].
+
+7240=Le g\u00e9n\u00e9rateur de table sp\u00e9cifi\u00e9 dans [{2}] avec la valeur de colonne pk == [{0}] est en conflit avec le g\u00e9n\u00e9rateur de s\u00e9quence sp\u00e9cifi\u00e9 dans [{1}] avec le nom de s\u00e9quence == [{0}]. Ils ne peuvent pas utiliser la m\u00eame valeur.
+
+7242=Une tentative a \u00e9t\u00e9 effectu\u00e9e pour passer \u00e0 travers une relation avec un adressage indirect comportant une session nulle.  Ceci se produit souvent lorsqu''une entit\u00e9 avec une relation LAZY non instanci\u00e9e est s\u00e9rialis\u00e9e et que l''on tente de passer \u00e0 travers cette relation apr\u00e8s la s\u00e9rialisation.  Pour \u00e9viter ce probl\u00e8me, instanciez la relation LAZY avant la s\u00e9rialisation.
+
+7243=M\u00e9tadonn\u00e9es manquantes pour la classe [{0}]. Assurez-vous que la classe n''est pas en cours d''exclusion de votre unit\u00e9 de persistance par un param\u00e8tre <exclude-unlisted-classes>true</exclude-unlisted-classes>. Si c''est le cas, vous devrez inclure la classe directement en ajoutant une entr\u00e9e <class>[{0}]</class> pour votre unit\u00e9 de persistance.
+
+7244=Un mappage incompatible a \u00e9t\u00e9 d\u00e9tect\u00e9e entre [{0}] et [{1}]. Cela se produit g\u00e9n\u00e9ralement lorsque la cardinalit\u00e9 d''un mappage ne correspond pas \u00e0 la cardinalit\u00e9 de ses backpointer.
+
+7245=La classe imbriquable [{0}] est utilis\u00e9e dans des classes avec des types d''acc\u00e8s en conflit. La classe [{1}] utilise l''acc\u00e8s [{2}] et la classe[{3}] utilise l''acc\u00e8s [{4}]. Lors du partage d''un objet imbriquable antre classes, les types d''acc\u00e8s de cette classe imbriquable doivent \u00eatre identiques.
+
+7246=La classe entit\u00e9 [{0}] comporte un attribut imbriqu\u00e9 [{1}] de type [{2}] qui n''est PAS une classe imbriquable. Cause probable : \u00e9l\u00e9ment @Embeddable manquant<embeddable> dans orm.xml si metadata-complete = true
+
+7247=Une r\u00e9f\u00e9rence circulaire a \u00e9t\u00e9 d\u00e9tect\u00e9e lors du traitement des ID d\u00e9riv\u00e9s sur les classes entit\u00e9 suivantes : [{0}] 
+
+7249=L''entit\u00e9 [{0}] utilise [{1}] comme classe d''ID imbriqu\u00e9e dont le type d''acc\u00e8s a \u00e9t\u00e9 d\u00e9termin\u00e9 comme [{2}]. Cependant, [{1}] ne d\u00e9finit aucun [{2}]. Il est probable que vous n''avez pas fourni suffisamment de m\u00e9tadonn\u00e9es dans votre classe d''ID [{1}].
+
+7250=[{0}] utilise une non-entit\u00e9 [{1}] comme entit\u00e9 cible dans l''attribut de relation [{2}].
+
+7251=L''attribut [{1}] de classe [{0}] est mapp\u00e9 \u00e0 une colonne de cl\u00e9 primaire dans la base de donn\u00e9es. Les mises \u00e0 jour ne sont pas autoris\u00e9es.
+
+7252=Plusieurs fichiers de mappage ont appel\u00e9[{1}] dans le chemin d''acc\u00e8s aux classes pour l''unit\u00e9 de persistance nomm\u00e9e [ {0} ].
+
+7253=Aucun fichier de mappage n''a appel\u00e9 [{1}] dans le chemin d''acc\u00e8s aux classes pour l''unit\u00e9 de persistance nomm\u00e9e[{0}].
+
+7254=Le convertisseur nomm\u00e9 [{1}] dans la classe [{0}] a mapp\u00e9 la valeur de donn\u00e9es [{2}] \u00e0 plusieurs valeurs d''objet. Une valeur de conversion doit mapper chaque valeur de donn\u00e9es une seule fois uniquement.
+
+7255=La classe [{0}] sp\u00e9cifies un \u00e9l\u00e9ment @Convert sur [{1}]. Cette op\u00e9ration n''est pas autoris\u00e9e. Un \u00e9l\u00e9ment @Convert est uniquement pris en charge avec un \u00e9l\u00e9ment @Basic, @BasicCollection, @BasicMap et @ElementCollection. Pour les mappages \u00e0-plusieurs qui utilisent une mappe, vous pouvez utiliser un \u00e9l\u00e9ment @MapKeyConvert uniquement.
+
+7256=Le convertisseur nomm\u00e9 [{1}] utilis\u00e9 avec l''\u00e9l\u00e9ment [{2}] dans la classe [{0}] est introuvable au sein de l''unit\u00e9 de persistance. V\u00e9rifiez que vous avez fourni le nom de convertisseur correct.
+
+7257=Impossible d''instancier la valeur de donn\u00e9es avec le type [{2}] et la valeur [{1}] depuis le convertisseur de type d''objet nomm\u00e9 [{0}]
+
+7258=Impossible d''instancier la valeur d''objet avec le type [{2}] et la valeur [{1}] depuis le convertisseur de type d''objet nomm\u00e9 [{0}]
+
+7259=Impossible de d\u00e9terminer le type de donn\u00e9es pour l''attribut [{1}] depuis la classe entit\u00e9 [{0}] qui utilise le convertisseur nomm\u00e9 [{2}]. Un type doit \u00eatre sp\u00e9cifi\u00e9 avec le type de donn\u00e9es sur le convertisseur ou votre attribut doit utiliser sp\u00e9cification g\u00e9n\u00e9rique.
+
+7260=Impossible de d\u00e9terminer le type d''objet pour l''attribut [{1}] depuis la classe entit\u00e9 [{0}] qui utilise le convertisseur nomm\u00e9 [{2}]. Un type doit \u00eatre sp\u00e9cifi\u00e9 avec le type d''objet sur le convertisseur ou votre attribut doit utiliser sp\u00e9cification g\u00e9n\u00e9rique.
+
+7261=Le type [{1}] pour l''attribut [{0}] sur la classe entit\u00e9 [{2}] n''est pas un type valide pour un mappage de collection de base. L''attribut doit \u00eatre de type Collection.class, List.class ou Set.class.
+
+7262=Le type [{1}] pour l''attribut [{0}] sur la classe entit\u00e9 [{2}] n''est pas un type valide pour un mappage de mappe de base. L''attribut doit \u00eatre de type Map.class.
+
+7263=La classe [{0}] comporte une sp\u00e9cification de verrouillage optimiste incompl\u00e8te. Pour une r\u00e8gle de verrouillage optimiste de type SELECTED_COLUMNS, les colonnes s\u00e9lectionn\u00e9es doivent \u00eatre sp\u00e9cifi\u00e9es et les noms de ces colonnes ne peuvent pas \u00eatre omis.
+
+7264=La classe [{0}] comporte une sp\u00e9cification de verrouillage optimiste incompl\u00e8te. Pour une r\u00e8gle de verrouillage optimiste de type VERSION_COLUMN, un \u00e9l\u00e9ment @Version doit \u00eatre sp\u00e9cifi\u00e9 dans la zone de version ou la propri\u00e9t\u00e9.
+
+7265=Une annotation @Cache n''est pas autoris\u00e9e dans une classe imbriquable.
+
+7266=L''annotation @Cache sur la classe [{0}] comporte \u00e0 la fois expiry() et expiryTimeOfDay(). Un seul de ces deux \u00e9l\u00e9ments peut \u00eatre sp\u00e9cifi\u00e9 dans un param\u00e8tre d''annotation @Cache.
+
+7267=La classe de gestionnaire d''exceptions sp\u00e9cifi\u00e9e [{0}] n''est pas valide, elle doit exister dans le chemin d''acc\u00e8s aux classes et impl\u00e9menter l''interface ExceptionHandler.
+
+7268=La classe d''\u00e9couteur d''\u00e9v\u00e9nement de session sp\u00e9cifi\u00e9e [{0}] n''est pas valide, elle doit exister dans le chemin d''acc\u00e8s aux classes et impl\u00e9menter l''interface SessionEventListener.
+
+7270=La valeur de taille des instructions sp\u00e9cifi\u00e9e [{0}] n''est pas valide [{1}].
+
+7271=La valeur bool\u00e9enne sp\u00e9cifi\u00e9e [{0}] pour la d\u00e9finition de SQL natif n''est pas valide, elle doit \u00eatre "true" ou "false".
+
+7272=La valeur bool\u00e9enne sp\u00e9cifi\u00e9e [{0}] pour le cache d''instruction SQL n''est pas valide, elle doit \u00eatre "true" ou "false".
+
+7273=La valeur bool\u00e9enne sp\u00e9cifi\u00e9e [{0}] pour la copie des requ\u00eates nomm\u00e9es de descripteur dans la session n''est pas valide, elle doit \u00eatre "true" ou "false".
+
+7274=Une exception a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e lors d''une tentative de cr\u00e9ation du fichier de journalisation [{0}] : [{1}].
+
+7275=Impossible d''instancier La classe de gestionnaire d''exceptions [{0}] sp\u00e9cifi\u00e9e dans la propri\u00e9t\u00e9 eclipselink.exception-handler [{1}].
+
+7276=Impossible d''instancier la classe d''\u00e9couteur d''\u00e9v\u00e9nement de session [{0}] sp\u00e9cifi\u00e9e dans la propri\u00e9t\u00e9 eclipselink.session-event-listener [{1}].
+
+7277=Le nom du fichier de journalisation n''a pas \u00e9t\u00e9 sp\u00e9cifi\u00e9.
+
+7278=La valeur bool\u00e9enne sp\u00e9cifi\u00e9e [{0}] pour la propri\u00e9t\u00e9 de persistance [{1}] n''est pas valide, elle doit \u00eatre "true" ou "false".
+
+7282=L''\u00e9l\u00e9ment StructConverter : {0} n''est peut-\u00eatre pas d\u00e9fini sur le mappage {1}.  Les \u00e9l\u00e9ments StructConverters peuvent uniquement \u00eatre utilis\u00e9s sur les mappages directs.
+
+7283=Deux \u00e9l\u00e9ments StructConverters ont \u00e9t\u00e9 ajout\u00e9s pour la classe {0}.  Un seul \u00e9l\u00e9ment StructConverter peut \u00eatre ajout\u00e9 par classe.
+
+7284=La classe [{0}] n''est pas un comparateur valide. Elle doit impl\u00e9menter l''interface Comparator.
+
+7285=La classe de profileur sp\u00e9cifi\u00e9e [{0}] n''est pas valide, elle doit exister dans le chemin d''acc\u00e8s aux classes et impl\u00e9menter l''interface SessionProfiler.
+
+7286=Impossible d''instancier la classe de profileur [{0}] sp\u00e9cifi\u00e9e dans la propri\u00e9t\u00e9 eclipselink.profiler [{1}].
+
+7287=Le transformateur de lecture sp\u00e9cifi\u00e9 pour l''\u00e9l\u00e9ment [{0}] n''impl\u00e9mente pas l''interface requise AttributeTransformer.
+
+7288=Le transformateur de lecture sp\u00e9cifi\u00e9 pour l''\u00e9l\u00e9ment [{0}] comporte une classe et une m\u00e9thode. La classe ou la m\u00e9thode sont obligatoires mais pas les deux.
+
+7289=Le transformateur de lecture sp\u00e9cifi\u00e9 pour l''\u00e9l\u00e9ment [{0}] ne comporte ni classe ni m\u00e9thode. La classe ou la m\u00e9thode sont obligatoires mais pas les deux.
+
+7290=Le transformateur d''\u00e9criture sp\u00e9cifi\u00e9 pour la colonne [{1}] de l''\u00e9l\u00e9ment [{0}] n''impl\u00e9mente pas l''interface requise FieldTransformer.
+
+7291=Le transformateur d''\u00e9criture sp\u00e9cifi\u00e9 pour la colonne [{1}] de l''\u00e9l\u00e9ment [{0}] comporte une classe et une m\u00e9thode. La classe ou la m\u00e9thode sont obligatoires mais pas les deux.
+
+7292=Le transformateur d''\u00e9criture sp\u00e9cifi\u00e9 pour la colonne [{1}] de l''\u00e9l\u00e9ment [{0}] ne comporte ni classe ni m\u00e9thode. La classe ou la m\u00e9thode sont obligatoires mais pas les deux.
+
+7293=Le transformateur d''\u00e9criture sp\u00e9cifi\u00e9 pour l''\u00e9l\u00e9ment [{0}] ne comporte pas de colonne ou la colonne n''a pas de nom.
+
+7294=La variable d''\u00e9l\u00e9ment un \u00e0 un [{1}] comporte plusieurs entit\u00e9s mapp\u00e9es au m\u00eame discriminateur [{0}]. Chaque entit\u00e9 qui impl\u00e9mente l''interface un \u00e0 un de la variable doit avoir son propre discriminateur unique.
+
+7295=L''\u00e9l\u00e9ment CloneCopyPolicy sp\u00e9cifi\u00e9 sur la classe [{0}] n''indique pas une m\u00e9thode ou un \u00e9l\u00e9ment workingCopyMethod.  Il est obligatoire que l''une d''elles soit sp\u00e9cifi\u00e9e.
+
+7296=La classe [{0}] comporte plusieurs annotations CopyPolicy.  Une seule annotation CopyPolicyAnnotation est autoris\u00e9e par classe.
+
+7297=Une exception a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e lors de l''instanciation r\u00e9flexive de la classe [{0}].  Cela signifie g\u00e9n\u00e9ralement que cette classe est sp\u00e9cifi\u00e9e dans vos m\u00e9tadonn\u00e9es et que pour une raison quelconque, Java ne peut pas l''instancier de mani\u00e8re r\u00e9flexive avec constructeur no-args.  Consultez l''exception cha\u00een\u00e9e pour plus d''informations.  Remarque : Pour voir l''exception cha\u00een\u00e9e, vous devrez peut-\u00eatre augmenter votre niveau de consignation.
+
+7298=Le mappage [{2}] de la classe d''ID imbriqu\u00e9e [{3}] est un mappage non valide pour cette classe. Une classe imbriquable qui est utilis\u00e9e avec une sp\u00e9cification d''ID imbriqu\u00e9e (attribut [{0}] de la source [{1}]) peut uniquement contenir des mappages de base. Retirez le mappage qui n''est pas de base ou modifiez la sp\u00e9cification d''ID imbriqu\u00e9e sur la source afin qu''elle soit imbriqu\u00e9e.
+
+7299=Des annotations en conflit avec le m\u00eame nom [{0}] ont \u00e9t\u00e9 d\u00e9tect\u00e9es. La premi\u00e8re [{1}] a \u00e9t\u00e9 d\u00e9tect\u00e9e dans [{2}] et la seconde [{3}] a \u00e9t\u00e9 d\u00e9tect\u00e9e dans [{4}]. Les annotations nomm\u00e9es doivent \u00eatre uniques entre les unit\u00e9s de persistance.
+
+7300=Des \u00e9l\u00e9ments XML en conflit [{1}] avec le m\u00eame nom [{0}] ont \u00e9t\u00e9 d\u00e9tect\u00e9s. Le premier a \u00e9t\u00e9 d\u00e9tect\u00e9 dans le fichier de mappage [{2}] et le second dans le fichier de mappage [{3}]. Les \u00e9l\u00e9ments XML nomm\u00e9s doivent \u00eatre uniques entre les unit\u00e9s de persistance.
+
+7301=Des annotations en conflit ont \u00e9t\u00e9 d\u00e9tect\u00e9es. La premi\u00e8re [{0}] a \u00e9t\u00e9 d\u00e9tect\u00e9e dans [{1}] et la seconde [{2}] a \u00e9t\u00e9 d\u00e9tect\u00e9e dans [{3}]. Corrigez cette erreur en retirant l''annotation qui ne s''applique pas.
+
+7302=Des \u00e9l\u00e9ments XML en conflit [{0}] ont \u00e9t\u00e9 d\u00e9tect\u00e9s pour l''\u00e9l\u00e9ment [{1}]. Le premier a \u00e9t\u00e9 d\u00e9tect\u00e9 dans le fichier de mappage [{2}] et le second dans le fichier de mappage [{3}]. Corrigez cette erreur en retirant l''\u00e9l\u00e9ment XML qui ne s''applique pas.
+
+7303=La propri\u00e9t\u00e9 PersistenceUnitProperties.ORACLE_PROXY_TYPE d\u00e9finie sur [{0}], requise pour cette propri\u00e9t\u00e9 de type de proxy [{1}] est introuvable.
+
+7304=La propri\u00e9t\u00e9 PersistenceUnitProperties.ORACLE_PROXY_TYPE est d\u00e9finie sur un type inconnu [{0}], les types connus sont : [{1}], [{2}], [{3}].
+
+7305=Une exception a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e lors du traitement du fichier de mappage depuis l''URL : [{0}].
+
+7306=L''\u00e9l\u00e9ment annot\u00e9 [{0}] de la classe [{1}] indique un type d''acc\u00e8s explicite incorrect. Il doit indiquer un type d''acc\u00e8s [{2}].
+
+7307=Cha\u00eene de contexte de consignation manquante pour le contexte [{0}]. Il s''agit d''une exception interne qui s''est produite lors de l''extraction d''un message de journal pour le traitement des m\u00e9tadonn\u00e9es JPA. Signalez-le comme bogue.
+
+7308=La valeur sp\u00e9cifi\u00e9e [{0}] pour la propri\u00e9t\u00e9 de persistance [{1}] n''est pas valide - [{2}].
+
+7309=L''attribut nomm\u00e9 [{1}] de la class\u00e9 imbriquable [{0}] ne constitue pas un mappage valide \u00e0 utiliser avec un attribut de substitution de l''attribut [{3}] dans la classe [{2}].
+
+7310=La classe cible de l''attribut de collection d''\u00e9l\u00e9ment [{0}] sur la classe [{1}] ne peut pas \u00eatre d\u00e9termin\u00e9e.  Lorsqu''aucun g\u00e9n\u00e9rique n''est utilis\u00e9, assurez-vous que la classe cible est d\u00e9finie sur le mappage de collection d''\u00e9l\u00e9ment.
+
+7311=Une classe cible incorrecte est utilis\u00e9e avec l''attribut de collection d''\u00e9l\u00e9ment [{0}] sur la classe [{1}].  Seuls les types de base et les classes imbriquables sont autoris\u00e9s.
+
+7312=Une classe imbriquable non valide [{0}] est utilis\u00e9e avec l''attribut de collection d''\u00e9l\u00e9ment [{1}] sur la classe [{2}]. Voir la section 2.6 de la sp\u00e9c : "Une classe imbriquable (y compris une classe imbriquable au sein d''une autre classe imbriquable) contenue au sein d''une collection d''\u00e9l\u00e9ment ne doit pas contenir une collection d''\u00e9l\u00e9ment, elle ne peut pas non plus contenir une relation \u00e0 une entit\u00e9 autre qu''une relation plusieurs-\u00e0-un ou un-\u00e0-un. La classe imbriquable doit \u00eatre c\u00f4t\u00e9 propri\u00e9taire d''une telle relation et cette derni\u00e8re doit \u00eatre mapp\u00e9e par un mappage de cl\u00e9 externe." Le mappage pour l''attribut [{3}] dans la classe imbriquable ne respecte pas cette exigence.
+
+7313=L''attribut [{1}] est introuvable dans la classe imbriquable [{0}]. Celui-ci est r\u00e9f\u00e9renc\u00e9 dans une association de substitution de l''attribut imbriqu\u00e9 [{3}] dans la classe [{2}].
+
+7314=Le mappage [{0}] est utilis\u00e9 pour mapper la cl\u00e9 dans un \u00e9l\u00e9ment MappedKeyMapContainerPolicy et il utilise l''adressage indirect.  Les mappages utilis\u00e9s pour mes cl\u00e9s de mappe ne peuvent pas utiliser l''adressage indirect.
+
+7315=La classe de cl\u00e9 de mappe de l''attribut de collection d''\u00e9l\u00e9ment [{0}] sur la classe [{1}] ne peut pas \u00eatre d\u00e9termin\u00e9.  Lors de la sp\u00e9cification d''une cl\u00e9 de conversion avec une collection d''\u00e9l\u00e9ment, assurez-vous d''utiliser une d\u00e9finition g\u00e9n\u00e9rique de sorte qu''un type de classe puisse \u00eatre d\u00e9termin\u00e9 pour le convertisseur.
+
+7316=La valeur MapsId [{0}] de l''attribut de mappage [{1}] n''est pas valide. Un attribut \u00e9quivalent \u00e0 ce nom doit \u00eatre d\u00e9fini sur l''\u00e9l\u00e9ment IdClass [{2}]
+
+7317=La zone de classement de liste n''est pas prise en charge pour [{0}].
+
+7318=[{0}] comporte un classement de liste d\u00e9fini, mais l''\u00e9l\u00e9ment CollectionChangeEvent.REMOVE a \u00e9t\u00e9 envoy\u00e9 sans index.
+
+7319=L''attribut nomm\u00e9 [{1}] de la classe imbriquable [{0}] ne constitue pas une relation valide \u00e0 utiliser avec l''association de substitution nomm\u00e9e [{2}] de [{3}]. Une association de substitution peut \u00eatre sp\u00e9cifi\u00e9e uniquement lorsque l''\u00e9l\u00e9ment imbriquable se trouve sur le c\u00f4t\u00e9 propri\u00e9taire de la relation.
+
+7320=L''attribut [{0}] de la classe [{1}] (ou h\u00e9rit\u00e9 d''une superclasse mapp\u00e9e) n''est pas un type valide \u00e0 utiliser avec une sp\u00e9cification de colonne de classement. Lors de l''indication d''une colonne de classement, l''attribut doit \u00eatre de type Liste.
+
+7321=La zone [{1}] du mappage d''ID d\u00e9riv\u00e9 [{2}] de la classe [{3}] est une zone d''ID non valide de la classe de r\u00e9f\u00e9rence [{0}]. Assurez-vous qu''il s''agit d''un mappage d''ID correspondant \u00e0 cette zone. 
+
+7322=Le nom de la colonne de r\u00e9f\u00e9rence [{0}] de l''association de substitution nomm\u00e9e [{1}] sur l''attribut [{2}] de la classe [{3}] ne constitue pas une zone pour une cl\u00e9 primaire mapp\u00e9e valide. Assurez-vous qu''il s''agit d''un mappage d''ID correspondant \u00e0 cette zone.
+
+7323=La table nomm\u00e9e [{1}] depuis [{2}] comporte plusieurs contraintes unique avec le nom [{0}]. Ceci n''est pas autoris\u00e9, les noms de contrainte uniques doivent \u00eatre unique dans toutes les tables.
+
+7324=La classe entit\u00e9 [{1}] indique un \u00e9l\u00e9ment @ClassExtractor et des m\u00e9tadonn\u00e9es de discriminateur. Lors de l''utilisation d''un \u00e9l\u00e9ment @ClassExtractor, un \u00e9l\u00e9ment @DiscriminatorColumn et/ou @DiscriminatorValue ne doit pas \u00eatre sp\u00e9cifi\u00e9 sur cette classe et aucune m\u00e9tadonn\u00e9e de valeur de discriminateur ne doit \u00eatre d\u00e9finie sur ses sous-classes.
+
+7325=Le mappage d''ensemble de r\u00e9sultats sql [{0}] utilis\u00e9 avec la requ\u00eate nomm\u00e9e [{1}] depuis [{2}] n''est pas un ensemble de r\u00e9sultats sql reconnu. Assurez-vous que le nom est correct et que le mappage de l''ensemble de r\u00e9sultats sql avec ce nom existe.
+
+7326=L''attribut [{0}] de la classe [{1}] mapp\u00e9e dans [{2}] qui utilise un acc\u00e8s VIRTUAL n''indique pas un type d''attribut. Lors de l''utilisation d''un acc\u00e8s VIRTUAL, un type d''attribut doit \u00eatre sp\u00e9cifi\u00e9. Remarque : pour une relation un-\u00e0-un ou plusieurs-\u00e0-un, le type d''attribut est sp\u00e9cifi\u00e9 avec l''entit\u00e9 cible. Pour une relation un-\u00e0-un variable, elle est sp\u00e9cifi\u00e9e avec la classe cible.
+
+7327=La classe imbriquable [{0}] est utilis\u00e9e dans des classes avec des m\u00e9thodes d''acc\u00e8s en conflit. La classe [{1}] utilise l''acc\u00e8s [{2}] et la classe [{3}] utilise les m\u00e9thodes d''acc\u00e8s [{4}]. Lors du partage d''un objet imbriquable antre classes, les m\u00e9thodes d''acc\u00e8s de cette classe imbriquable doivent \u00eatre identiques.
+
+7328=Lors de l''utilisation d''un acc\u00e8s VIRTUAL, un \u00e9l\u00e9ment DynamicClassLoader doit \u00eatre fourni lors de la cr\u00e9ation de l''\u00e9l\u00e9ment EntityManagerFactory \u00e0 l''aide de la propri\u00e9t\u00e9 eclipselink [eclipselink.classloader]. createEntityManagerFactory(String persistenceUnitName, Map) doit \u00eatre indiqu\u00e9 et un nouvel \u00e9l\u00e9ment DynamicClassLoader() doit \u00eatre ajout\u00e9 aux propri\u00e9t\u00e9s de mappe.
+
+7329=L''attribut {1} de {0} n''est pas mapp\u00e9.
+
+7330=L''attribut {1} de {0} fait r\u00e9f\u00e9rence \u00e0 un groupe d''extraction imbriqu\u00e9 mais il n''est pas mapp\u00e9 \u00e0 l''\u00e9l\u00e9ment ForeignReferenceMapping ou le mappage n''a pas de descripteur de r\u00e9f\u00e9rence.
+
+7331=L''attribut {1} de {0} fait r\u00e9f\u00e9rence \u00e0 un groupe d''extraction imbriqu\u00e9e mais la classe cible ne prend pas en charge les groupes d''extraction.
+
+7332=L''attribut de cl\u00e9 primaire compos\u00e9e d\u00e9riv\u00e9e [{2}] de type [{4}] de [{1}] doit \u00eatre du m\u00eame type que sa zone d''ID parente de [{0}]. C''est-\u00e0-dire qu''il doit \u00eatre de type [{3}].
+
+7334=La classe [{0}] comporte une sp\u00e9cification de cl\u00e9 primaire incompl\u00e8te. Lors de l''indication des colonnes de cl\u00e9 primaire,les noms de ces colonnes doivent \u00eatre sp\u00e9cifi\u00e9s.
+
+7335=Valeur de partition en double [{1}] fournie pour @ValuePartitioning nomm\u00e9e [{0}]
+
+7336=Plusieurs propri\u00e9t\u00e9s de contexte [{2}] et [{3}] sp\u00e9cifi\u00e9es pour la m\u00eame zone de discriminateur de titulaire [{1}] pour la classe [{0}]
+
+7337=La colonne de discriminateur de titulaire mapp\u00e9e [{1}] sur la classe [{0}] doit \u00eatre marqu\u00e9e en lecture seule. Dans JPA, cela s''effectue en d\u00e9finissant setting insertable=false et updatable=false sur la colonne, par exemple, @Column(name="TENANT_ID", insertable=false, updatable=false).
+
+7338=Vous ne pouvez pas ajouter des s\u00e9quences \u00e0 un \u00e9l\u00e9ment SessionBroker.
+
+7339=L''alias [{0}] est utilis\u00e9 par les classes [{1}] et [{2}]. L''alias de descripteur doit \u00eatre unique.
+
+7340=Plusieurs fichiers de mappage ont appel\u00e9 [{0}] dans le chemin d''acc\u00e8s aux classes.
+
+7341=Aucun fichier eclipselink-orm.xml n''a \u00e9t\u00e9 sp\u00e9cifi\u00e9 pour l''\u00e9l\u00e9ment XMLMetadataSource.  Indiquez l''utilisation d''une propri\u00e9t\u00e9 d''unit\u00e9 de persistance eclipselink.metadata-source.xml.file ou eclipselink.metadata-source.xml.url
+
+7342=La valeur bool\u00e9enne sp\u00e9cifi\u00e9e [{0}] pour la d\u00e9finition de SQL natif autoris\u00e9 n''est pas valide, elle doit \u00eatre "true" ou "false".
+
+7343=Plusieurs identificateurs VPD (propri\u00e9t\u00e9 de contexte de discriminateur de titulaire) ont \u00e9t\u00e9 sp\u00e9cifi\u00e9es. L''entit\u00e9 [{1}] utilise [{0}] et l''entit\u00e9 [{3]} utilise [{2}]. Lors de l''utilisation d''une strat\u00e9gie VPD \u00e0 plusieurs titulaires, il ne peut y avoir qu''une seule colonne de discriminateur de titulaire par entit\u00e9 et sa propri\u00e9t\u00e9 de contexte doit \u00eatre coh\u00e9rente dans toutes les entit\u00e9s VPD \u00e0 plusieurs titulaires.
+
+7344=VPD (connexions et g\u00e9n\u00e9ration DDL) n''est pas pris en charge pour la plateforme : [{0}].
+
+7345=Le fichier {0} sp\u00e9cifi\u00e9 pour l''\u00e9l\u00e9ment XMLMetadataSource est introuvable
+
+7346=La propri\u00e9t\u00e9 de contexte \u00e0 plusieurs titulaires [{0}] n''a pas \u00e9t\u00e9 fournie. Lorsque la propri\u00e9t\u00e9 d''unit\u00e9 de persistance (eclipselink.multitenant.tenants-share-emf) est d\u00e9finie sur false, toutes les propri\u00e9t\u00e9s de contexte \u00e0 plusieurs titulaires doivent \u00eatre fournies au d\u00e9but. Cela peut s''effectuer via la d\u00e9finition d''unit\u00e9 de persistance directement ou par la transmission d''une mappe de propri\u00e9t\u00e9s contenant toutes les propri\u00e9t\u00e9s de contexte \u00e0 plusieurs titulaires dans la cr\u00e9ation de l''appel EntityManagerFactory.
+
+7347=La classe [{0}] sp\u00e9cifie les m\u00e9tadonn\u00e9es de conversion de niveau de type sans sp\u00e9cifier un nom d''attribut pour chaque. Un nom d''attribut doit \u00eatre fourni pour toutes les m\u00e9tadonn\u00e9es de conversion de niveau de type afin de garantir l''application correcte \u00e0 un super attribut de classe.
+
+7348=Le localisation imbriqu\u00e9 [{1}] de [{0}] n''indique pas de nom d''attribut auquel la conversion doit \u00eatre appliqu\u00e9e. Vous devez sp\u00e9cifier un nom d''attribut sur l''\u00e9l\u00e9ment imbriquable.
+
+7350=Le nom d''attribut de conversion [{3}] du mappage [{1}] de la classe[{0}] est introuvable sur la classe imbriquable [{2}]. Assurez-vous que l''attribut existe et qu''il est correctement nomm\u00e9.
+
+7351=La classe de convertisseur [{2}] sp\u00e9cifi\u00e9e sur l''attribut de mappage [{1}] de la classe [{0}] est introuvable. Assurez-vous que le nom de la classe de convertisseur est correct et qu''il existe avec la d\u00e9finition d''unit\u00e9 de persistance.
+
+7352=La classe de convertisseur [{0}] doit impl\u00e9menter l''interface JPA javax.persistence.AttributeConverter<X, Y> afin qu''elle soit une classe de convertisseur valide.
+
+7353=L''attribut de mappage [{1}] de la classe [{0}] n''est pas un type de mappage valide pour une sp\u00e9cification de conversion.
+
+7354=L''attribut de mappage [{1}] de la classe [{0}] n''est pas un type de mappage valide pour une sp\u00e9cification de conversion de cl\u00e9.
+
+7355=L''attribut de mappage [{1}] de la classe [{0}] n''est pas un type de mappage valide pour une conversion utilisant une sp\u00e9cification de nom d''attribut. Un nom d''attribut doit uniquement \u00eatre sp\u00e9cifi\u00e9 pour traverser un type de mappage imbriqu\u00e9.
+
+7356=La proc\u00e9dure : [{1}] ne peut pas \u00eatre ex\u00e9cut\u00e9e car {0} ne prend actuellement pas en charge plusieurs param\u00e8tres de sortie
+

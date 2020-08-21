@@ -16,10 +16,10 @@ package componenttest.rules.repeater;
 public class EERepeatTests {
 
     public static enum EEVersion {
-        EE7, EE8, EE9
+        EE7, EE8, EE9, EE7_FULL, EE8_FULL, EE9_FULL
     }
 
-    public static FeatureReplacementAction getEEAction(EEVersion version, String serverName) {
+    public static FeatureReplacementAction getEEAction(EEVersion version, String serverName, String clientName) {
         FeatureReplacementAction action = null;
         switch (version) {
             case EE7: {
@@ -34,12 +34,27 @@ public class EERepeatTests {
                 action = FeatureReplacementAction.EE9_FEATURES();
                 break;
             }
+            case EE7_FULL: {
+                action = FeatureReplacementAction.EE7_FEATURES().fullFATOnly();
+                break;
+            }
+            case EE8_FULL: {
+                action = FeatureReplacementAction.EE8_FEATURES().fullFATOnly();
+                break;
+            }
+            case EE9_FULL: {
+                action = FeatureReplacementAction.EE9_FEATURES().fullFATOnly();
+                break;
+            }
             default: {
                 throw new IllegalArgumentException("Unknown EE version: " + version);
             }
         }
         if (serverName != null) {
             action = action.forServers(serverName);
+        }
+        if (clientName != null) {
+            action = action.forClients(clientName);
         }
         return action;
     }
@@ -59,9 +74,13 @@ public class EERepeatTests {
      * @return
      */
     public static RepeatTests with(String serverName, EEVersion version, EEVersion... otherVersions) {
-        RepeatTests r = RepeatTests.with(getEEAction(version, serverName));
+        return with(serverName, FeatureReplacementAction.NO_CLIENTS, version, otherVersions);
+    }
+
+    public static RepeatTests with(String serverName, String clientName, EEVersion version, EEVersion... otherVersions) {
+        RepeatTests r = RepeatTests.with(getEEAction(version, serverName, clientName));
         for (EEVersion ver : otherVersions) {
-            r = r.andWith(getEEAction(ver, serverName));
+            r = r.andWith(getEEAction(ver, serverName, clientName));
         }
         return r;
     }

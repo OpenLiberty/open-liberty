@@ -44,6 +44,7 @@ public class Http2FullTracingTests extends FATServletClient {
     String defaultServletPath = "H2FATDriver/H2FATDriverServlet?hostName=";
     String dataServletPath = "H2FATDriver/DataFrameTests?hostName=";
     String genericServletPath = "H2FATDriver/GenericFrameTests?hostName=";
+    String methodServletPath = "H2FATDriver/HttpMethodTests?hostName=";
 
     @Rule
     public TestName testName = new TestName();
@@ -143,4 +144,25 @@ public class Http2FullTracingTests extends FATServletClient {
     public void testInvalidPaddingValue() throws Exception {
         runTest(dataServletPath, testName.getMethodName());
     }
+
+    @Test
+    public void testInvalidStreamIdSequence() throws Exception {
+        runTest(genericServletPath, testName.getMethodName());
+    }
+
+    @Test
+    public void testConnectMethod() throws Exception {
+        runTest(methodServletPath, testName.getMethodName());
+    }
+
+    @Test
+    public void testConnectMethodError() throws Exception {
+        runTest(methodServletPath, testName.getMethodName());
+    }
+
+    @Test
+    public void testPriorityFrameAfterHeaderFrameNoEndHeaders() throws Exception {
+        runTest(defaultServletPath, testName.getMethodName());
+    }
+
 }

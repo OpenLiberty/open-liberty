@@ -1,0 +1,63 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the
+#           message text must be followed by a 2nd apostrophe to work correctly.
+#-------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CWWKW
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers start with '0' and are filled to a width of 4 digits.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME com.ibm.ws.injection/resources/com/ibm/ws/injection/resources/InjectionMessages.nlsprops
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW io.openliberty.jaxrs-3.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWMGQ1xxxI=CWMGQ1xxxI: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWMGQ1xxxI.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWMGQ1xxxI.useraction=User action text for the message
+#
+#-------------------------------------------------------------------------------
+
+MULTIPLE_REST_SERVLETS_CWWKW1300W=CWWKW1300W: Es wurden mehrere REST-Servlets f\u00fcr das Webmodul {0} definiert. Pro Webmodul ist maximal ein REST-Servlet zul\u00e4ssig.
+MULTIPLE_REST_SERVLETS_CWWKW1300W.explanation=Pro Webmodul darf nur ein einziges REST-Servlet definiert werden. Ein REST-Servlet ist ein beliebiges Servlet, das einen der folgenden Klassennamen verwendet: com.ibm.websphere.jaxrs.server.IBMRestServlet, org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher oder org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher. Aus dieser Nachricht geht hervor, dass in der Datei web.xml oder in der dynamischen Konfiguration mehr als ein Servlet definiert ist. 
+MULTIPLE_REST_SERVLETS_CWWKW1300W.useraction=Suchen Sie in der Datei web.xml nach diesen Servlets und entfernen Sie alle Servlets oder lassen Sie ein Servlet \u00fcbrig.
+
+MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W=CWWKW1301W: Es wurden mehrere REST-Servletzuordnungen f\u00fcr das Webmodul {0} definiert. Es kann immer nur ein REST-Servlet einer einzigen Pfadzuordnung zugeordnet werden.
+MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.explanation=Ein REST-Servlet darf mit maximal einer Pfadzuordnung konfiguriert werden. Ein REST-Servlet ist ein beliebiges Servlet, das einen der folgenden Klassennamen verwendet: com.ibm.websphere.jaxrs.server.IBMRestServlet, org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher oder org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher. Aus dieser Nachricht geht hervor, dass mehr als eine Zuordnung in der Datei web.xml einem REST-Servlet zugeordnet ist. 
+MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.useraction=Suchen Sie in der Datei web.xml nach den Servletzuordnungen, die dem REST-Servlet zugeordnet sind, und entfernen Sie entweder alle Zuordnungen oder lassen Sie eine Zuordnung \u00fcbrig.
+
+

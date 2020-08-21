@@ -42,13 +42,7 @@ Import-Package: \
     com.ibm.ws.ras.instrument.annotation, \
     com.ibm.websphere.logging.hpel, \
     com.ibm.ws.ffdc, \
-    com.ibm.ws.security.common.random, \
-    com.ibm.ws.security.common.structures, \
-    com.ibm.ws.security.common.time, \
-    com.ibm.ws.security.common.token.propagation, \
-    com.ibm.ws.security.common.web, \
-    com.ibm.ws.security.common.jwk.impl, \
-    com.ibm.ws.security.common.jwk.interfaces, \
+    com.ibm.ws.security.common.*, \
     com.ibm.ws.webcontainer.security.jwk, \
     com.ibm.json.java.*, \
     org.osgi.service.component.*, \
@@ -112,7 +106,7 @@ instrument.classesExcludes: com/ibm/ws/security/jwt/internal/resources/*.class
     com.ibm.ws.webcontainer.security;version=latest, \
     com.ibm.ws.crypto.passwordutil;version=latest, \
     com.ibm.ws.org.joda.time.1.6.2;version=latest, \
-    com.ibm.ws.org.apache.commons.codec.1.4;version=latest, \
+    com.ibm.ws.org.apache.commons.codec;version=latest, \
     com.ibm.ws.config;version=latest, \
     com.ibm.ws.org.jose4j;version=latest, \
     com.ibm.ws.security.common;version=latest, \

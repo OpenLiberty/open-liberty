@@ -1,0 +1,93 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/EntityManagerSetupExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+28001=Do\u0161lo k v\u00fdjimce ValidationException p\u0159i pokusu o vytvo\u0159en\u00ed relace: [{0}]. Nejpravd\u011bpodobn\u011bj\u0161\u00ed p\u0159\u00ed\u010dinou tohoto probl\u00e9mu je to, \u017ee v\u00e1\u0161 soubor [{1}] nen\u00ed dostupn\u00fd na cest\u011b ke t\u0159\u00edd\u011b nebo neobsahuje relaci s n\u00e1zvem: [{0}].
+
+28002=EclipseLink se pokou\u0161\u00ed na\u010d\u00edst z [{1}] t\u0159\u00eddu ServerSession s n\u00e1zvem [{0}] a nez\u00edsk\u00e1v\u00e1 t\u0159\u00eddu ServerSession.
+
+28003=EclipseLink na\u010detl relaci [{0}] z [{1}] a bu\u010f nem\u00e1 ur\u010denou platformu serveru, nebo ur\u010duje platformu serveru, kter\u00e1 nepou\u017e\u00edv\u00e1 extern\u00ed \u0159adi\u010d transakc\u00ed. Pokud pl\u00e1nujete pou\u017e\u00edvat JTA, ur\u010dete p\u0159\u00edslu\u0161nou platformu serveru.
+
+28004=Chyba p\u0159i nastaven\u00ed tov\u00e1rny EntityManager: metoda JavaSECMPInitializer.initializeFromMain vr\u00e1tila hodnotu false.
+
+28005=Do\u0161lo k v\u00fdjimce p\u0159i nastaven\u00ed tov\u00e1rny EntityManager.
+
+28006=ClassNotFound: [{0}] ur\u010den\u00e1 ve vlastnosti [{1}].
+
+28007=Nezda\u0159ilo se vytvo\u0159it instanci rozhran\u00ed ServerPlatform typu [{0}] ur\u010denou ve vlastnosti [{1}].
+
+28008=T\u0159\u00edda: {0} nebyla nalezena p\u0159i zpracov\u00e1n\u00ed anotac\u00ed.
+
+28009=Do\u0161lo k pokusu o novou implementaci relace s n\u00e1zvem {0} bez jej\u00edho zav\u0159en\u00ed.
+
+28010=Rozhran\u00ed PersistenceUnitInfo {0} m\u00e1 typ transactionType JTA, ale nem\u00e1 definovan\u00fd zdroj jtaDataSource.
+
+28011=Relace [{0}] sestaven\u00e1 pro jednotku perzistence nebyla v dob\u011b implementace dostupn\u00e1. To znamen\u00e1, \u017ee relace byla odebr\u00e1na z kontejneru uprost\u0159ed procesu implementace.
+
+28012=Hodnota [{0}] m\u00e1 nespr\u00e1vn\u00fd typ pro vlastnost [{2}], typ hodnoty by m\u011bl b\u00fdt [{1}].
+
+28013=Nelze implementovat typ PersistenceUnit [{0}] v neplatn\u00e9m stavu [{1}].
+
+28014=Do\u0161lo k v\u00fdjimce p\u0159i zpracov\u00e1n\u00ed vlastnosti [{0}] s hodnotou [{1}].
+
+28015=Nezda\u0159ilo se vytvo\u0159it instanci rozhran\u00ed SessionLog typu [{0}] ur\u010den\u00e9ho ve vlastnosti [{1}].
+
+28016=Jednotka perzistence s n\u00e1zvem [{0}] neexistuje.
+
+28017=Nelze p\u0159edem implementovat typ PersistenceUnit [{0}] v neplatn\u00e9m stavu [{1}].
+
+28018=P\u0159edb\u011b\u017en\u00e1 implementace typu PersistenceUnit [{0}] se nezda\u0159ila.
+
+28019=Implementace typu PersistenceUnit [{0}] se nezda\u0159ila. Zav\u0159ete v\u0161echny tov\u00e1rny pro tento typ PersistenceUnit.
+
+28020=Relace s n\u00e1zvem [{0}] na\u010dten\u00e1 z [{1}] je [{2}], ale mus\u00ed se jednat o t\u0159\u00eddu ServerSession.
+
+28021=Typ PersistenceUnit [{0}] se pokou\u0161\u00ed na\u010d\u00edst relaci z [{1}] bez poskytnut\u00ed n\u00e1zvu relace. N\u00e1zev relace by m\u011bl b\u00fdt poskytnut\u00fd definov\u00e1n\u00edm vlastnosti eclipselink.session-name property.
+
+28022=Hodnota [true] pro vlastnost [eclipselink.weaving] je nespr\u00e1vn\u00e1. Kdy\u017e m\u00e1 glob\u00e1ln\u00ed p\u0159\u00edprava n\u00e1stroj\u016f hodnotu null, hodnota by m\u011bla b\u00fdt bu\u010f null, false nebo static.
+
+28023=Vyvol\u00e1n\u00ed metody [{0}] na objektu [{1}] t\u0159\u00eddy [{2}] spustilo v\u00fdjimku.
+
+28024=K metod\u011b [{0}] pro objekt [{1}] t\u0159\u00eddy [{2}] nelze p\u0159istupovat reflexivn\u011b.
+
+28025=Jednotka perzistence s n\u00e1zvem [{0}] vr\u00e1tila do\u010dasnou prom\u011bnnou classLoader [null] - zakomponov\u00e1n\u00ed bylo pro tuto relaci vypnuto. Jako voliteln\u00e9 n\u00e1hradn\u00ed \u0159e\u0161en\u00ed m\u016f\u017eete pou\u017e\u00edt statick\u00e9 zakomponov\u00e1n\u00ed.
+
+28026=T\u0159\u00edda org.eclipse.persistence.jpa.osgi.PersistenceProvider nepodporuje implementaci kontejneru (createContainerEntityManagerFactory). Nam\u00edsto n\u00ed pou\u017eijte t\u0159\u00eddu org.eclipse.persistence.jpa.PersistenceProvider.
+
+28027=Do\u0161lo k pokusu o pou\u017eit\u00ed typu PersistenceUnit [{0}], ale nen\u00ed dostupn\u00fd \u017e\u00e1dn\u00fd bal\u00edk, kter\u00fd by tuto jednotku perzistence definoval.
+
+28028=Nezda\u0159ilo se vytvo\u0159it instanci t\u0159\u00eddy [{0}] pro vlastnost jednotky perzistence [{1}], ov\u011b\u0159te, zda je spr\u00e1vn\u011b definovan\u00fd konstruktor.
+
+28029=Typ PersistenceUnit [{0}] se pokou\u0161\u00ed pou\u017e\u00edt soubor sessions.xml (ur\u010duje vlastnost eclipselink.sessions-xml) a z\u00e1rove\u0148 b\u00fdt slo\u017een\u00fd (ur\u010duje vlastnost eclipselink.composite-unit s hodnotou true). Tyto re\u017eimy jsou nekompatibiln\u00ed.
+
+28030=Typ PersistenceUnit [{0}] ur\u010duje vlastnost eclipselink.composite-unit.member s hodnotou true. To znamen\u00e1, \u017ee ho nelze pou\u017e\u00edt samostatn\u011b, ale pouze jako slo\u017een\u00fd \u010dlen.
+
+28031=Chyb\u00ed povinn\u00e1 vlastnost [{0}].
+
+28032=Nezda\u0159ilo se vytvo\u0159it do\u010dasn\u00fd zavad\u011b\u010d t\u0159\u00edd pomoc\u00ed doPrivileged.
+

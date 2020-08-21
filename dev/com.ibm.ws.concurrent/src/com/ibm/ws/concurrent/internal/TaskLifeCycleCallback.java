@@ -16,6 +16,10 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.RejectedExecutionException;
 
+import javax.enterprise.concurrent.AbortedException;
+import javax.enterprise.concurrent.ManagedTask;
+import javax.enterprise.concurrent.ManagedTaskListener;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -129,170 +133,90 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
         }
     }
 
-    @Trivial
-    private ExecutionException newAbortedException(Throwable failure) {
-        return managedExecutor.eeVersion < 9 //
-                        ? new javax.enterprise.concurrent.AbortedException(failure) //
-                        : new jakarta.enterprise.concurrent.AbortedException(failure);
-    }
-
     @FFDCIgnore({ Error.class, RuntimeException.class }) // No need for FFDC, error is logged instead
     @Override
     public void onCancel(Object task, PolicyTaskFuture<?> future, boolean whileRunning) {
         // Tasks that are canceled while running have the taskAborted notification sent on the thread of execution instead.
 
         // notify listener: taskAborted (if task was canceled before it started)
-        if (!whileRunning)
-            if (task instanceof jakarta.enterprise.concurrent.ManagedTask) {
-                jakarta.enterprise.concurrent.ManagedTaskListener listener = ((jakarta.enterprise.concurrent.ManagedTask) task).getManagedTaskListener();
-                if (listener != null) {
-                    Throwable failure = null;
-                    ThreadContext tranContextRestorer = managedExecutor.suspendTransaction();
-                    try {
-                        CancellationException x = new CancellationException(Tr.formatMessage(tc, "CWWKC1110.task.canceled", getName(task), managedExecutor.name));
+        if (!whileRunning && task instanceof ManagedTask) {
+            ManagedTaskListener listener = ((ManagedTask) task).getManagedTaskListener();
+            if (listener != null) {
+                Throwable failure = null;
+                ThreadContext tranContextRestorer = managedExecutor.suspendTransaction();
+                try {
+                    CancellationException x = new CancellationException(Tr.formatMessage(tc, "CWWKC1110.task.canceled", getName(task), managedExecutor.name));
 
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+                        Tr.event(this, tc, "taskAborted", managedExecutor, task, x);
+                    listener.taskAborted(future, managedExecutor, task, x);
+                } catch (Error x) {
+                    Tr.error(tc, "CWWKC1102.listener.failed", getName(task), managedExecutor.name, x);
+                    failure = x;
+                    throw x;
+                } catch (RuntimeException x) {
+                    Tr.error(tc, "CWWKC1102.listener.failed", getName(task), managedExecutor.name, x);
+                    failure = x;
+                    throw x;
+                } finally {
+                    try {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
-                            Tr.event(this, tc, "taskAborted", managedExecutor, task, x);
-                        listener.taskAborted(future, managedExecutor, task, x);
+                            Tr.event(this, tc, "taskDone", managedExecutor, task, failure);
+                        listener.taskDone(future, managedExecutor, task, failure);
                     } catch (Error x) {
                         Tr.error(tc, "CWWKC1102.listener.failed", getName(task), managedExecutor.name, x);
-                        failure = x;
                         throw x;
                     } catch (RuntimeException x) {
                         Tr.error(tc, "CWWKC1102.listener.failed", getName(task), managedExecutor.name, x);
-                        failure = x;
                         throw x;
                     } finally {
-                        try {
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
-                                Tr.event(this, tc, "taskDone", managedExecutor, task, failure);
-                            listener.taskDone(future, managedExecutor, task, failure);
-                        } catch (Error x) {
-                            Tr.error(tc, "CWWKC1102.listener.failed", getName(task), managedExecutor.name, x);
-                            throw x;
-                        } catch (RuntimeException x) {
-                            Tr.error(tc, "CWWKC1102.listener.failed", getName(task), managedExecutor.name, x);
-                            throw x;
-                        } finally {
-                            if (tranContextRestorer != null)
-                                tranContextRestorer.taskStopping();
-                        }
-                    }
-                }
-            } else if (task instanceof javax.enterprise.concurrent.ManagedTask) {
-                javax.enterprise.concurrent.ManagedTaskListener listener = ((javax.enterprise.concurrent.ManagedTask) task).getManagedTaskListener();
-                if (listener != null) {
-                    Throwable failure = null;
-                    ThreadContext tranContextRestorer = managedExecutor.suspendTransaction();
-                    try {
-                        CancellationException x = new CancellationException(Tr.formatMessage(tc, "CWWKC1110.task.canceled", getName(task), managedExecutor.name));
-
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
-                            Tr.event(this, tc, "taskAborted", managedExecutor, task, x);
-                        listener.taskAborted(future, managedExecutor, task, x);
-                    } catch (Error x) {
-                        Tr.error(tc, "CWWKC1102.listener.failed", getName(task), managedExecutor.name, x);
-                        failure = x;
-                        throw x;
-                    } catch (RuntimeException x) {
-                        Tr.error(tc, "CWWKC1102.listener.failed", getName(task), managedExecutor.name, x);
-                        failure = x;
-                        throw x;
-                    } finally {
-                        try {
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
-                                Tr.event(this, tc, "taskDone", managedExecutor, task, failure);
-                            listener.taskDone(future, managedExecutor, task, failure);
-                        } catch (Error x) {
-                            Tr.error(tc, "CWWKC1102.listener.failed", getName(task), managedExecutor.name, x);
-                            throw x;
-                        } catch (RuntimeException x) {
-                            Tr.error(tc, "CWWKC1102.listener.failed", getName(task), managedExecutor.name, x);
-                            throw x;
-                        } finally {
-                            if (tranContextRestorer != null)
-                                tranContextRestorer.taskStopping();
-                        }
+                        if (tranContextRestorer != null)
+                            tranContextRestorer.taskStopping();
                     }
                 }
             }
+        }
     }
 
     @FFDCIgnore(Throwable.class) // No need for FFDC given that an error is already logged
     @Override
     public void onEnd(Object task, PolicyTaskFuture<?> future, Object startObj, boolean aborted, int pending, Throwable failure) {
-        if (pending >= 0)
-            if (task instanceof jakarta.enterprise.concurrent.ManagedTask) {
-                jakarta.enterprise.concurrent.ManagedTaskListener listener = ((jakarta.enterprise.concurrent.ManagedTask) task).getManagedTaskListener();
-                if (listener != null) {
-                    // notify listener: taskAborted
-                    try {
-                        Throwable x;
-                        boolean canceled = future.isCancelled();
-                        if (canceled || aborted) {
-                            if (failure instanceof CancellationException)
-                                x = failure;
-                            else if (canceled)
-                                x = new CancellationException(Tr.formatMessage(tc, "CWWKC1110.task.canceled", getName(task), managedExecutor.name));
-                            else if (aborted)
-                                x = newAbortedException(failure);
-                            else
-                                x = failure;
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
-                                Tr.event(this, tc, "taskAborted", managedExecutor, task, x);
-                            listener.taskAborted(future, managedExecutor, task, x);
-                        }
-                    } catch (Throwable x) {
-                        Tr.error(tc, "CWWKC1102.listener.failed", getName(task), managedExecutor.name, x);
-                        if (failure == null)
-                            failure = x;
-                    }
-
-                    // notify listener: taskDone
-                    try {
+        if (pending >= 0 && task instanceof ManagedTask) {
+            ManagedTaskListener listener = ((ManagedTask) task).getManagedTaskListener();
+            if (listener != null) {
+                // notify listener: taskAborted
+                try {
+                    Throwable x;
+                    boolean canceled = future.isCancelled();
+                    if (canceled || aborted) {
+                        if (failure instanceof CancellationException)
+                            x = failure;
+                        else if (canceled)
+                            x = new CancellationException(Tr.formatMessage(tc, "CWWKC1110.task.canceled", getName(task), managedExecutor.name));
+                        else if (aborted)
+                            x = new AbortedException(failure);
+                        else
+                            x = failure;
                         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
-                            Tr.event(this, tc, "taskDone", managedExecutor, task, failure);
-                        listener.taskDone(future, managedExecutor, task, failure);
-                    } catch (Throwable x) {
-                        Tr.error(tc, "CWWKC1102.listener.failed", getName(task), managedExecutor.name, x);
+                            Tr.event(this, tc, "taskAborted", managedExecutor, task, x);
+                        listener.taskAborted(future, managedExecutor, task, x);
                     }
+                } catch (Throwable x) {
+                    Tr.error(tc, "CWWKC1102.listener.failed", getName(task), managedExecutor.name, x);
+                    if (failure == null)
+                        failure = x;
                 }
-            } else if (task instanceof javax.enterprise.concurrent.ManagedTask) {
-                javax.enterprise.concurrent.ManagedTaskListener listener = ((javax.enterprise.concurrent.ManagedTask) task).getManagedTaskListener();
-                if (listener != null) {
-                    // notify listener: taskAborted
-                    try {
-                        Throwable x;
-                        boolean canceled = future.isCancelled();
-                        if (canceled || aborted) {
-                            if (failure instanceof CancellationException)
-                                x = failure;
-                            else if (canceled)
-                                x = new CancellationException(Tr.formatMessage(tc, "CWWKC1110.task.canceled", getName(task), managedExecutor.name));
-                            else if (aborted)
-                                x = newAbortedException(failure);
-                            else
-                                x = failure;
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
-                                Tr.event(this, tc, "taskAborted", managedExecutor, task, x);
-                            listener.taskAborted(future, managedExecutor, task, x);
-                        }
-                    } catch (Throwable x) {
-                        Tr.error(tc, "CWWKC1102.listener.failed", getName(task), managedExecutor.name, x);
-                        if (failure == null)
-                            failure = x;
-                    }
 
-                    // notify listener: taskDone
-                    try {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
-                            Tr.event(this, tc, "taskDone", managedExecutor, task, failure);
-                        listener.taskDone(future, managedExecutor, task, failure);
-                    } catch (Throwable x) {
-                        Tr.error(tc, "CWWKC1102.listener.failed", getName(task), managedExecutor.name, x);
-                    }
+                // notify listener: taskDone
+                try {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+                        Tr.event(this, tc, "taskDone", managedExecutor, task, failure);
+                    listener.taskDone(future, managedExecutor, task, failure);
+                } catch (Throwable x) {
+                    Tr.error(tc, "CWWKC1102.listener.failed", getName(task), managedExecutor.name, x);
                 }
             }
+        }
 
         // Restore thread context
         if (pending <= 0 && startObj != null) {
@@ -310,24 +234,8 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
         ArrayList<ThreadContext> contextAppliedToThread = threadContextDescriptor.taskStarting();
 
         // notify listener: taskStarting
-        if (task instanceof jakarta.enterprise.concurrent.ManagedTask) {
-            jakarta.enterprise.concurrent.ManagedTaskListener listener = ((jakarta.enterprise.concurrent.ManagedTask) task).getManagedTaskListener();
-            if (listener != null)
-                try {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
-                        Tr.event(this, tc, "taskStarting", managedExecutor, task);
-                    listener.taskStarting(future, managedExecutor, task);
-                } catch (Error x) {
-                    Tr.error(tc, "CWWKC1102.listener.failed", getName(task), managedExecutor.name, x);
-                    threadContextDescriptor.taskStopping(contextAppliedToThread);
-                    throw x;
-                } catch (RuntimeException x) {
-                    Tr.error(tc, "CWWKC1102.listener.failed", getName(task), managedExecutor.name, x);
-                    threadContextDescriptor.taskStopping(contextAppliedToThread);
-                    throw x;
-                }
-        } else if (task instanceof javax.enterprise.concurrent.ManagedTask) {
-            javax.enterprise.concurrent.ManagedTaskListener listener = ((javax.enterprise.concurrent.ManagedTask) task).getManagedTaskListener();
+        if (task instanceof ManagedTask) {
+            ManagedTaskListener listener = ((ManagedTask) task).getManagedTaskListener();
             if (listener != null)
                 try {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
@@ -350,27 +258,8 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
     @Override
     public void onSubmit(Object task, PolicyTaskFuture<?> future, int invokeAnyCount) {
         // notify listener: taskSubmitted
-        if (task instanceof jakarta.enterprise.concurrent.ManagedTask) {
-            jakarta.enterprise.concurrent.ManagedTaskListener listener = ((jakarta.enterprise.concurrent.ManagedTask) task).getManagedTaskListener();
-            if (listener != null) {
-                ThreadContext tranContextRestorer = managedExecutor.suspendTransaction();
-                try {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
-                        Tr.event(this, tc, "taskSubmitted", managedExecutor, task);
-                    listener.taskSubmitted(future, managedExecutor, task);
-                } finally {
-                    if (tranContextRestorer != null)
-                        tranContextRestorer.taskStopping();
-                }
-
-                if (invokeAnyCount <= 1 && future.isCancelled())
-                    if (invokeAnyCount == 1)
-                        throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKC1112.all.tasks.canceled"));
-                    else
-                        throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKC1110.task.canceled", getName(task), managedExecutor.name));
-            }
-        } else if (task instanceof javax.enterprise.concurrent.ManagedTask) {
-            javax.enterprise.concurrent.ManagedTaskListener listener = ((javax.enterprise.concurrent.ManagedTask) task).getManagedTaskListener();
+        if (task instanceof ManagedTask) {
+            ManagedTaskListener listener = ((ManagedTask) task).getManagedTaskListener();
             if (listener != null) {
                 ThreadContext tranContextRestorer = managedExecutor.suspendTransaction();
                 try {
@@ -393,7 +282,7 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
 
     @Override
     public void raiseAbortedException(Throwable x) throws ExecutionException {
-        throw newAbortedException(x);
+        throw new AbortedException(x);
     }
 
     @Override

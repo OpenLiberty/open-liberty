@@ -39,8 +39,10 @@ public class CircuitBreakerMetricTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatFaultTolerance.repeatDefault(SERVER_NAME)
-                    .andWith(RepeatFaultTolerance.ft11metrics20Features(SERVER_NAME));
+    // Note: this test only runs against FT 1.1 and 2.0 as later versions of the TCK include this test.
+    public static RepeatTests r = RepeatTests.with(RepeatFaultTolerance.mp32Features(SERVER_NAME))
+                    .andWith(RepeatFaultTolerance.ft11metrics20Features(SERVER_NAME).fullFATOnly())
+                    .andWith(RepeatFaultTolerance.mp20Features(SERVER_NAME).fullFATOnly());
 
     @BeforeClass
     public static void setup() throws Exception {

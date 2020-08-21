@@ -1,0 +1,633 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/ValidationExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+7001=Nale\u017cy zalogowa\u0107 si\u0119 do sesji serwera przed uzyskaniem sesji klienta.
+
+7002=Pula o nazwie [{0}] nie istnieje.
+
+7003=Maksymalna wielko\u015b\u0107 musi by\u0107 wi\u0119ksza ni\u017c minimalna.
+
+7004=Pule nale\u017cy skonfigurowa\u0107 przed zalogowaniem.
+
+7008=Typ Java [{0}] nie jest poprawnym typem bazy danych.
+
+7009=Brak deskryptora dla elementu [{0}].  Sprawd\u017a, czy deskryptor zosta\u0142 poprawnie zarejestrowany w sesji.
+
+7010=Indeks pocz\u0105tkowy jest poza zakresem.
+
+7011=Indeks ko\u0144cowy jest poza zakresem.
+
+7012=Wyst\u0105pi\u0142 b\u0142\u0105d krytyczny.
+
+7013=U\u017cywasz nieaktualnego interfejsu API SessionManager i nie mo\u017cna znale\u017a\u0107 pliku EclipseLink.properties w \u015bcie\u017cce klas.  Nie mo\u017cna odczyta\u0107 \u017cadnej sesji z pliku.
+
+7017=Deskryptory podrz\u0119dne nie maj\u0105 odwzorowania to\u017csamo\u015bci. Wsp\u00f3\u0142u\u017cytkuj\u0105 odwzorowania element\u00f3w macierzystych.
+
+7018=B\u0142\u0105d pliku.
+
+7023=Podano niepoprawn\u0105 instancj\u0119 logowania.  Nale\u017cy poda\u0107 nazw\u0119 logowanie do bazy danych.
+
+7024=Niepoprawna strategia scalania.
+
+7025=Jedynymi poprawnymi kluczami wierszy bazy danych s\u0105 \u0142a\u0144cuchy i pola bazy danych.
+
+7027=Sekwencja o nazwie [{0}] jest niepoprawnie skonfigurowana.  Warto\u015b\u0107 przyrostu jest niezgodna ze wst\u0119pnie przydzielon\u0105 wielko\u015bci\u0105.
+
+7028=Funkcja writeObject() jest niedozwolona w obr\u0119bie jednostki pracy.
+
+7030=Nie mo\u017cna ustawi\u0107 wielko\u015b\u0107 puli odczytu po zalogowaniu.
+
+7031=Nie mo\u017cna dodawa\u0107 deskryptor\u00f3w do brokera sesji.
+
+7032=Nie zarejestrowano sesji dla klasy [{0}].
+
+7033=Nie zarejestrowano sesji o nazwie [{0}].
+
+7038=B\u0142\u0105d podczas rejestrowania komunikatu w dzienniku sesji.
+
+7039=Nie mo\u017cna usuwa\u0107 z zestawu klas tylko do odczytu w zagnie\u017cd\u017conej jednostce pracy. {0}Zestaw klas tylko do odczytu zagnie\u017cd\u017conej jednostki pracy musi by\u0107 r\u00f3wny zestawowi klas tylko do odczytu elementu macierzystego lub jego nadzbiorem.
+
+7040=Nie mo\u017cna zmieni\u0107 zestawu klas tylko do odczytu w jednostce pracy po jej u\u017cyciu. {0}Zmiany w zestawie tylko do odczytu mo\u017cna wprowadza\u0107 podczas uzyskiwania jednostki pracy lub bezpo\u015brednio potem.
+
+7042=Nie znaleziono klasy platformy bazy danych [{0}].
+
+7043=W [{0}] nie ma \u017cadnych tabel do utworzenia w bazie danych.
+
+7044=Podanej klasy kontenera [{0}] nie mo\u017cna u\u017cy\u0107 jako kontenera, poniewa\u017c nie implementuje ona kolekcji ani odwzorowania.
+
+7047=Podany kontener [{0}] nie wymaga kluczy.  Pr\u00f3bowano u\u017cy\u0107 metody [{1}].
+
+7048=Nie istnieje metoda instancji ani pole o nazwie [{0}] dla klasy elementu [{1}] i dlatego nie mo\u017cna ich u\u017cy\u0107 do utworzenia klucza dla odwzorowania.
+
+7051=Brak atrybutu [{1}] dla deskryptora [{0}]; wywo\u0142ywany z [{2}]
+
+7052=Podj\u0119to pr\u00f3b\u0119 u\u017cycia elementu [{0}] (z metod\u0105 klucza [{1}]) jako kontenera dla odwzorowania DirectCollectionMapping.  Nie mo\u017cna u\u017cy\u0107 metody useMapClass(), gdy\u017c tylko interfejs API useCollectionClass() jest obs\u0142ugiwany w przypadku odwzorowa\u0144 DirectCollectionMapping.
+
+7053=Podj\u0119to pr\u00f3b\u0119 wykonania metody release() na sesji, kt\u00f3ra nie jest sesj\u0105 klienta.  Zwalnia\u0107 mo\u017cna tylko sesje klienta.
+
+7054=Podj\u0119to pr\u00f3b\u0119 wykonania metody acquire() na sesji, kt\u00f3ra nie jest sesj\u0105 serwera.  Sesje klienta mo\u017cna pobiera\u0107 tylko z sesji serwera.
+
+7055=Optymistyczne blokowanie nie jest obs\u0142ugiwane w przypadku generowania procedur sk\u0142adowanych.
+
+7056=W jednostce pracy zarejestrowano b\u0142\u0119dny obiekt.  Obiekt [{0}] powinien by\u0107 obiektem z macierzystej pami\u0119ci podr\u0119cznej [{1}].
+
+7058=Niepoprawny konektor [{0}] (musi by\u0107 typu DefaultConnector).
+
+7059=Niepoprawna nazwa \u017ar\u00f3d\u0142a danych [{0}].
+
+7060=Nie mo\u017cna uzyska\u0107 \u017ar\u00f3d\u0142a danych [{0}].
+
+7061=Wyst\u0105pi\u0142 wyj\u0105tek w obr\u0119bie serwera JTS.
+
+7062=Blokowanie na poziomie pola nie jest obs\u0142ugiwane poza jednostk\u0105 pracy.  Aby u\u017cy\u0107 blokowania na poziomie pola, jednostka pracy musi by\u0107 u\u017cywana do WSZYSTKICH zapis\u00f3w.
+
+7063=Wyst\u0105pi\u0142 wyj\u0105tek w kontenerze EJB.
+
+7064=Wyst\u0105pi\u0142 wyj\u0105tek podczas wyodr\u0119bniania klucza podstawowego okre\u015blaj\u0105cego komponentu EJB.  Upewnij si\u0119, \u017ce obiekt klucza podstawowego jest poprawnie zdefiniowany. {2}Klucz: [{0}] {2}komponent Bean: [{1}]
+
+7065=Nie mo\u017cna za\u0142adowa\u0107 lub znale\u017a\u0107 zdalnej klasy dla komponentu.  Upewnij si\u0119, \u017ce ustawiony jest poprawny program \u0142aduj\u0105cy klasy. {2}Komponent Bean: [{0}] {2}klasa zdalna: [{1}]
+
+7066=Nie mo\u017cna utworzy\u0107 lub usun\u0105\u0107 komponent\u00f3w bean, chyba \u017ce obecna jest transakcja JTS. {1}Komponent Bean: [{0}]
+
+7068=Nie znaleziono klasy [{0}] dla projektu [{1}] przy u\u017cyciu domy\u015blnego programu \u0142aduj\u0105cego klasy.
+
+7071=Nie mo\u017cna u\u017cy\u0107 parametr\u00f3w wej\u015bcia/wyj\u015bcia bez u\u017cycia powi\u0105zania.
+
+7072=Nie znaleziono klasy platformy bazy danych [{0}] dla projektu [{1}] przy u\u017cyciu domy\u015blnego programu \u0142aduj\u0105cego klasy.
+
+7073=Typ obiektu Oracle o nazwie typu [{0}] nie jest zdefiniowany.
+
+7074=Nazwa typu obiektu Oracle [{0}] nie jest zdefiniowana.
+
+7075=Nie zdefiniowano maksymalnej wielko\u015bci dla typu Oracle VARRAY [{0}].  Maksymalna wielko\u015b\u0107 musi by\u0107 zdefiniowana.
+
+7076=Podczas generowania klasy projektu nie mo\u017cna inicjowa\u0107 deskryptor\u00f3w projektu. {1}Deskryptor: [{0}]
+
+7077=Interfejs g\u0142\u00f3wny [{0}] okre\u015blony podczas tworzenia strategii BMPWrapperPolicy nie zawiera poprawnej metody findByPrimaryKey().  Musi istnie\u0107 metoda findByPrimaryKey(), kt\u00f3ra pobiera klas\u0119 PrimaryKey dla tego komponentu bean.
+
+7079=Deskryptor dla [{0}] nie zosta\u0142 znaleziony w sesji [{1}].  Sprawd\u017a projekt u\u017cywany na potrzeby tej sesji.
+
+7080=Wyj\u0105tek FinderException zosta\u0142 zg\u0142oszony podczas pr\u00f3by za\u0142adowania elementu [{0}] klasy [{1}] o kluczu podstawowym [{2}].
+
+7081=Obiektu agregatu [{0}] nie mo\u017cna rejestrowa\u0107 bezpo\u015brednio w jednostce pracy.  Musi by\u0107 powi\u0105zany z obiektem \u017ar\u00f3d\u0142a (w\u0142a\u015bciciela).
+
+7084=Plik [{0}] nie ma poprawnego typu w celu odczytu.  Do czytnika projekt\u00f3w nale\u017cy przekaza\u0107 wdro\u017cony plik XML projektu.
+
+7086=Typ [{0}] sesji o nazwie [{1}] nie zosta\u0142 zdefiniowany poprawnie.
+
+7087=Nie znaleziono typu sesji [{0}] dla [{1}] przy u\u017cyciu domy\u015blnego programu \u0142aduj\u0105cego klasy.
+
+7088=Nie mo\u017cna utworzy\u0107 instancji zewn\u0119trznego kontrolera transakcji [{0}] okre\u015blonego w pliku w\u0142a\u015bciwo\u015bci.
+
+7089=Wyst\u0105pi\u0142 wyj\u0105tek podczas wyszukiwania lub wywo\u0142ywania metody amendment sesji [{0}] w klasie [{1}] z parametrami [{2}].
+
+7091=Nie mo\u017cna ustawi\u0107 klas proces\u00f3w nas\u0142uchuj\u0105cych.
+
+7092=Nie mo\u017cna doda\u0107 zapytania, kt\u00f3rego typy koliduj\u0105 z istniej\u0105cym zapytaniem. Zapytanie do dodania: [{0}] ma nazw\u0119: [{1}] z argumentami [{2}]. Istniej\u0105ce koliduj\u0105ce zapytanie: [{3}] o nazwie: [{4}] z argumentami: [{5}].
+
+7093=W zapytaniu o nazwie [{0}], nie mo\u017cna znale\u017a\u0107 klasy [{2}] dla argumentu zapytania o nazwie [{1}]. Uwzgl\u0119dnij brakuj\u0105c\u0105 klas\u0119 w \u015bcie\u017cce klas.
+
+7095=Zas\u00f3b sessions.xml [{0}] nie zosta\u0142 znaleziony w \u015bcie\u017cce zasob\u00f3w.  Sprawd\u017a, czy nazwa/\u015bcie\u017cka zasobu i program \u0142aduj\u0105cy klasy przekazane do SessionManager.getSession s\u0105 poprawne.  Plik sessions.xml powinien znajdowa\u0107 si\u0119 w katalogu g\u0142\u00f3wnym wdro\u017conego pliku jar aplikacji. Je\u015bli plik sessions.xml jest wdro\u017cony w podkatalogu w pliku jar aplikacji, upewnij si\u0119, \u017ce u\u017cywana jest poprawna \u015bcie\u017cka zasob\u00f3w ze znakami \u201e/\u201d, a nie \u201e\\u201d.
+
+7096=Nie mo\u017cna u\u017cy\u0107 metody commit(), aby ponownie zatwierdzi\u0107 jednostk\u0119 pracy.
+
+7097=Operacja nie jest obs\u0142ugiwana: [{0}].
+
+7099=Zas\u00f3b XML wdro\u017cenia projektu [{0}] nie zosta\u0142 znaleziony w \u015bcie\u017cce zasob\u00f3w.  Sprawd\u017a, czy nazwa/\u015bcie\u017cka zasobu i program \u0142aduj\u0105cy klasy przekazane do XMLProjectReader s\u0105 poprawne.  Plik XML projektu powinien znajdowa\u0107 si\u0119 w katalogu g\u0142\u00f3wnym wdro\u017conego pliku jar aplikacji. Je\u015bli plik XML projektu jest wdro\u017cony w podkatalogu w pliku jar aplikacji, upewnij si\u0119, \u017ce u\u017cywana jest poprawna \u015bcie\u017cka zasob\u00f3w ze znakami \u201e/\u201d, a nie \u201e\\u201d.
+
+7100=Nie mo\u017cna znale\u017a\u0107 sesji o nazwie [{0}] w pliku session.xml [{1}]
+
+7101=Nie mo\u017cna znale\u017a\u0107 pliku meta-inf/eclipselink-ejb-jar.xml w \u015bcie\u017cce klas.  Nie mo\u017cna odczyta\u0107 sesji CMP z pliku.
+
+7102=Napotkano warto\u015b\u0107 null klucza pami\u0119ci podr\u0119cznej podczas pr\u00f3by usuni\u0119cia{2}obiektu z odwzorowania to\u017csamo\u015bci: [{0}]{2}zawieraj\u0105cego obiekt klasy: [{1}] (lub klas\u0119 w tej hierarchii).{2}Najbardziej prawdopodobn\u0105 przyczyn\u0105 tej sytuacji jest to, \u017ce obiekt zosta\u0142 ju\u017c zebrany w procesie czyszczenia pami\u0119ci{2}i dlatego nie istnieje w obr\u0119bie odwzorowania to\u017csamo\u015bci.{2}Nale\u017cy rozwa\u017cy\u0107 u\u017cycie alternatywnego odwzorowania to\u017csamo\u015bci, aby zapobiec tej sytuacji.{2}Zapoznaj si\u0119 z dokumentacj\u0105 EclipseLink, aby uzyska\u0107 wi\u0119cej szczeg\u00f3\u0142\u00f3w dotycz\u0105cych odwzorowa\u0144 to\u017csamo\u015bci.
+
+7103=Napotkano odwo\u0142anie o warto\u015bci null podczas pr\u00f3by wywo\u0142ania{1}metody [{0}] na obiekcie, kt\u00f3ry u\u017cywa po\u015brednictwa proxy.{1}Sprawd\u017a przed wywo\u0142aniem jej metod, czy ten obiekt nie ma warto\u015bci null.
+
+7104=Przy okre\u015blaniu kolejno\u015bci logowania nie nale\u017cy u\u017cywa\u0107 zewn\u0119trznego kontrolera transakcji.
+
+7105=Napotkano b\u0142\u0105d podczas przekszta\u0142cania klasy szyfruj\u0105cej: [{0}]
+
+7106=Napotkano b\u0142\u0105d podczas szyfrowania \u0142a\u0144cucha.
+
+7107=Napotkano b\u0142\u0105d podczas deszyfrowania \u0142a\u0144cucha.
+
+7108=Ta operacja nie jest obs\u0142ugiwana w przypadku platform innych ni\u017c relacyjne.
+
+7109=Nazwa logowania w projekcie u\u017cywana przy tworzeniu sesji ma warto\u015b\u0107 null, musi to by\u0107 poprawna nazwa logowania.
+
+7110=Obecnie sesja historyczna dzia\u0142a tylko z bazami danych Oracle 9R2 lub nowszymi, poniewa\u017c u\u017cywa funkcji Flashback Oracle.
+
+7111=Nie mo\u017cna uzyska\u0107 sesji historycznej z jednostki pracy, innej sesji historycznej, sesji serwera lub brokera sesji serwera.  Mo\u017cna uzyska\u0107 jedn\u0105 z sesji regularnych, sesj\u0119 klienta lub sesj\u0119 brokera klienta.
+
+7112=Okre\u015blono projekt EclipseLink, kt\u00f3ry korzysta z funkcji {0}, ale ta funkcja nie jest dost\u0119pna w obecnie dzia\u0142aj\u0105cej wersji pakietu JDK {1}.
+
+7113={0} nie obs\u0142uguje wywo\u0142a\u0144 z powrotem.
+
+7114=Dane izolowane nie s\u0105 obecnie obs\u0142ugiwane w obr\u0119bie brokera sesji klienta. Sesja o nazwie {0} zawiera deskryptory reprezentuj\u0105ce izolowane dane.
+
+7115=Po\u0142\u0105czenia wy\u0142\u0105cznego nie mo\u017cna u\u017cywa\u0107 dla odczyt\u00f3w sesji klienta bez danych izolowanych.  Zaktualizuj strategi\u0119 po\u0142\u0105czenia u\u017cywan\u0105 do usuwania konfiguracji po\u0142\u0105cze\u0144 wy\u0142\u0105cznych lub projekt ustawiaj\u0105cy okre\u015blone dane jako wy\u0142\u0105czne.
+
+7116=U\u017cyto niepoprawnych argument\u00f3w.  Zapoznaj si\u0119 z publicznym interfejsem API metody wywo\u0142uj\u0105cej i u\u017cyj poprawnych warto\u015bci argument\u00f3w.
+
+7117=Podj\u0119to pr\u00f3b\u0119 u\u017cycia wi\u0119cej ni\u017c jednego kursora w wywo\u0142aniu SQLCall {0}
+
+7118=Metoda setCustomSQLArgumentType zosta\u0142a wywo\u0142ana w SQLCall {0}, ale to wywo\u0142anie nie u\u017cywa niestandardowej instrukcji SQL
+
+7119=Nieprzygotowane wywo\u0142anie SQLCall {0} podj\u0119\u0142o pr\u00f3b\u0119 translacji
+
+7120=Parametr {0} w wywo\u0142aniu SQLCall {1} nie mo\u017ce by\u0107 u\u017cywany jako kursor, poniewa\u017c ma on typ parametru inny ni\u017c OUT
+
+7121={0} nie obs\u0142uguje funkcji sk\u0142adowanych
+
+7122=Po\u0142\u0105czenie wy\u0142\u0105czne powi\u0105zane z sesj\u0105 jest niedost\u0119pne dla zapytania w {0}
+
+7123=Z powodzeniem wywo\u0142ano funkcj\u0119 writeChanges() na tej jednostce pracy.  Poniewa\u017c proces zatwierdzania zosta\u0142 uruchomiony, ale jeszcze nie zosta\u0142 zako\u0144czony, jedynymi obs\u0142ugiwanymi operacjami s\u0105 teraz commit, commitAndResume, release, dowolne zapytania na poziomie innym ni\u017c obiektu oraz wykonania SQLCall.  Operacja {0} jest niedozwolona w tym momencie.
+
+7124=Nie powiod\u0142o si\u0119 wywo\u0142anie funkcji writeChanges() na tej jednostce pracy.  Ze wzgl\u0119du na niebezpiecze\u0144stwo, \u017ce cz\u0119\u015bciowe zmiany zosta\u0142y zapisane w sk\u0142adnicy danych, ale nie zosta\u0142y wycofane (je\u015bli znajduj\u0105 si\u0119 w transakcji zewn\u0119trznej), jedynymi obs\u0142ugiwanymi operacjami s\u0105 teraz release, wycofanie transakcji globalnej, dowolne zapytania na poziomie innym ni\u017c obiektu oraz wykonania SQLCall.  Podj\u0119to pr\u00f3b\u0119 wykonania operacji {0}.
+
+7125=Po zatwierdzeniu i/lub zwolnieniu jednostki pracy nie nale\u017cy wykonywa\u0107 na niej \u017cadnych innych operacji.  Podj\u0119to pr\u00f3b\u0119 wykonania na niej operacji {0}.
+
+7126=Funkcji writeChanges nie mo\u017cna wywo\u0142a\u0107 na zagnie\u017cd\u017conej jednostce pracy.  Zagnie\u017cd\u017cona jednostka pracy nigdy nie zapisuje zmian bezpo\u015brednio do sk\u0142adnicy danych. Robi to tylko element macierzysty jednostki pracy.
+
+7127=Zmiany mo\u017cna zapisa\u0107 w sk\u0142adnicy danych tylko raz, podobnie jak tylko raz mo\u017cna wywo\u0142a\u0107 funkcj\u0119 commit.
+
+7128=Sesja [{0}] jest ju\u017c zalogowana.
+
+7129=Argumenty metody nie mog\u0105 mie\u0107 warto\u015bci null.
+
+7130=W zagnie\u017cd\u017conej jednostce pracy nie jest obs\u0142ugiwane \u015bledzenie zmian atrybut\u00f3w.
+
+7131=Zdarzenie {0} ma niew\u0142a\u015bciwy typ.  Typem zdarzenia zmiany kolejki mo\u017ce by\u0107 tylko dodanie lub usuni\u0119cie.
+
+7132=Klasa zdarzenia {0} jest niepoprawna.  Obs\u0142ugiwane s\u0105 tylko PropertyChangeEvent i CollectionChangeEvent.
+
+7133=Stara operacja commit nie jest obs\u0142ugiwana w przypadku \u015bledzenia zmian atrybut\u00f3w.
+
+7134=Platforma serwera {0} jest dost\u0119pna tylko do odczytu po zalogowaniu.
+
+7135=Nie mo\u017cna zatwierdzi\u0107 i wznowi\u0107 jednostki pracy zawieraj\u0105cej dowolne operacje modyfikacji wszystkich zapyta\u0144
+
+7136=Zagnie\u017cd\u017cona jednostka pracy nie jest obs\u0142ugiwana w przypadku operacji modyfikacji wszystkich zapyta\u0144
+
+7137=Obiekt zosta\u0142 cz\u0119\u015bciowo pobrany (za pomoc\u0105 operacji pobierania grupy), niepobrany atrybut ({0}) nie jest edytowalny.
+
+7139=Operacji modyfikacji wszystkich zapyta\u0144 nie mo\u017cna wywo\u0142a\u0107 w jednostce pracy zawieraj\u0105cej inne operacje zapisu.
+
+7140=Typ sekwencji {0} nie ma metody {1}.
+
+7141=Sekwencja {0} ma typ DefaultSequence, kt\u00f3rego nie mo\u017cna u\u017cy\u0107 w metodzie setDefaultSequence.
+
+7142=Sekwencji {0} nie mo\u017cna ustawi\u0107 jako domy\u015blnej, poniewa\u017c sekwencja o tej nazwie zosta\u0142a ju\u017c dodana
+
+7143=Nie mo\u017cna doda\u0107 sekwencji {0}, poniewa\u017c sekwencja o tej nazwie zosta\u0142a ju\u017c ustawiona jako domy\u015blna.
+
+7144={0}: platforma {1} nie obs\u0142uguje {2}.
+
+7145=Element {2} pr\u00f3buje po\u0142\u0105czy\u0107 si\u0119 z sekwencj\u0105 {0}, ale jest ju\u017c po\u0142\u0105czony z {1}. Prawdopodobnie dwie sesje wsp\u00f3\u0142u\u017cytkuj\u0105 obiekt DatasourcePlatform
+
+7146=Klasa QuerySequence {1} nie ma zapytania select.
+
+7147=Platforma {0} nie mo\u017ce utworzy\u0107 sekwencji domy\u015blnej dla platformy - nie przes\u0142ania metody createPlatformDefaultSequence
+
+7148=Funkcji commitAndResume() nie mo\u017cna u\u017cy\u0107 z jednostk\u0105 pracy JTA/zsynchronizowan\u0105.
+
+7149=Atrybut z\u0142o\u017conego klucza podstawowego [{2}] typu [{4}] w klasie obiektu [{0}] musi by\u0107 tego samego typu, co zdefiniowany w jego klasie klucza podstawowego [{1}]. Oznacza to, \u017ce powinien by\u0107 typu [{3}].
+
+7150=Niepoprawna specyfikacja z\u0142o\u017conego klucza podstawowego. Nazwy p\u00f3l klucza podstawowego lub w\u0142a\u015bciwo\u015bci w klasie klucza podstawowego [{1}] i te z klasy komponentu bean obiektu [{0}] musz\u0105 sobie odpowiada\u0107, a ich typy musz\u0105 by\u0107 takie same. Ponadto upewnij si\u0119, \u017ce okre\u015blono elementy identyfikatora dla odpowiednich atrybut\u00f3w XML i/lub adnotacj\u0119 @Id w odpowiednich polach lub w\u0142a\u015bciwo\u015bciach klasy obiektu.
+
+7151=Typ [{1}] atrybutu [{0}] w klasie obiektu [{2}] nie jest poprawnym typem odwzorowania wyliczeniowego. Atrybut musi by\u0107 zdefiniowany jako typ wyliczeniowy Java.
+
+7153=Adnotacji odwzorowania nie mo\u017cna zastosowa\u0107 do p\u00f3l lub w\u0142a\u015bciwo\u015bci, kt\u00f3re maj\u0105 okre\u015blon\u0105 adnotacj\u0119 @Transient. Element [{0}] narusza to ograniczenie.
+
+7154=Atrybut [{3}] w klasie obiektu [{2}] ma warto\u015b\u0107 mappedBy [{1}], kt\u00f3ra nie istnieje w klasie obiektu b\u0119d\u0105cego w\u0142a\u015bcicielem [{0}]. Je\u015bli klasa obiektu b\u0119d\u0105cego w\u0142a\u015bcicielem ma adnotacj\u0119 @MappedSuperclass, jest to niepoprawne, a atrybut powinien odwo\u0142ywa\u0107 si\u0119 do poprawnej podklasy.
+
+7155=Typ [{1}] atrybutu [{0}] w klasie obiektu [{2}] nie jest poprawnym typem odwzorowania zserializowanego. Typ atrybutu musi implementowa\u0107 interfejs Serializable.
+
+7156=Nie mo\u017cna znale\u017a\u0107 klasy o nazwie [{0}]. Upewnij si\u0119, \u017ce nazwa/\u015bcie\u017cka klasy jest poprawna i dost\u0119pna dla programu \u0142aduj\u0105cego klasy.
+
+7157=Klasa obiektu [{0}] musi u\u017cywa\u0107 adnotacji @JoinColumn zamiast @Column do odwzorowania atrybutu relacji [{1}].
+
+7158=Napotkano b\u0142\u0105d podczas budowania adnotacji @NamedQuery [{1}] z klasy obiektu [{0}].
+
+7159=Nie mo\u017cna znale\u017a\u0107 klucza odwzorowania [{0}] w klasie obiektu [{1}] dla odwzorowania [{2}].
+
+7160=Adnotacja @OneToMany dla nazwy atrybutu [{1}] w klasie obiektu [{0}] nie powinna mie\u0107 okre\u015blonych kolumn \u0142\u0105czenia. Tam, gdzie adnotacja @OneToMany nie jest odwzorowana przez inny obiekt (tzn. jest stron\u0105 w\u0142a\u015bcicielem i jest jednokierunkowa), nale\u017cy okre\u015bli\u0107 adnotacj\u0119 @JoinTable, a nie @JoinColumn. Je\u015bli adnotacja @JoinTable nie jest okre\u015blona, zamiast tego u\u017cyta zostanie domy\u015blna tabela \u0142\u0105czenia. Adnotacj\u0119 @JoinTable nale\u017cy okre\u015bla\u0107 tylko wtedy, gdy powinna zosta\u0107 przes\u0142oni\u0119ta konfiguracja domy\u015blna.
+
+7161=Klasa obiektu [{0}] nie ma okre\u015blonego klucza podstawowego. Powinna definiowa\u0107 adnotacj\u0119 @Id, @EmbeddedId lub @IdClass. Je\u015bli zdefiniowano klucz podstawowy za pomoc\u0105 dowolnej z tych adnotacji, upewnij si\u0119, \u017ce nie wyst\u0119puje mieszany typ dost\u0119pu (zar\u00f3wno pola, jak i w\u0142a\u015bciwo\u015bci z adnotacjami) w hierarchii klasy obiektu.
+
+7162=Klasa obiektu [{0}] ma okre\u015blonych wiele adnotacji @EmbeddedId (w atrybutach [{1}] i [{2}]). Dla ka\u017cdego obiektu mo\u017cna okre\u015bli\u0107 tylko jedn\u0105 adnotacj\u0119 @EmbeddedId.
+
+7163=Klasa obiektu [{0}] ma zar\u00f3wno adnotacj\u0119 @EmbdeddedId (dla atrybutu [{1}]), jak i adnotacj\u0119 @Id (dla atrybutu [{2}]). Obu typ\u00f3w identyfikatora nie mo\u017cna okre\u015bli\u0107 w tym samym obiekcie.
+
+7164=Typ [{1}] atrybutu [{0}] w klasie obiektu [{2}] nie jest poprawnym typem odwzorowania obiektu LOB. Dla obiektu LOB typu BLOB atrybut musi by\u0107 zdefiniowany jako typ java.sql.Blob, byte[], byte[] lub Serializable. Dla obiektu LOB typu CLOB atrybut musi by\u0107 zdefiniowany jako typ java.sql.Clob, char[], Character[] lub String.
+
+7165=Typ [{1}] atrybutu [{0}] w klasie obiektu [{2}] nie jest poprawnym typem odwzorowania czasowego. Atrybut musi by\u0107 zdefiniowany jako java.util.Date lub java.util.Calendar.
+
+7166=Znaleziono w [{1}] generator tabel, kt\u00f3ry u\u017cywa zarezerwowanej nazwy [{0}] jako atrybutu "name". Nie mo\u017cna u\u017cywa\u0107 tej nazwy, poniewa\u017c jest zarezerwowana jako domy\u015blna dla atrybutu "sequence name" generatora sekwencji.
+
+7167=Znaleziono w [{1}] generator sekwencji, kt\u00f3ry u\u017cywa zarezerwowanej nazwy [{0}] jako atrybutu "sequence name". Nie mo\u017cna u\u017cywa\u0107 tej nazwy, poniewa\u017c jest zarezerwowana jako domy\u015blna dla atrybutu "name" generatora tabel .
+
+7168=Atrybut [{0}] typu [{1}] w klasie obiektu [{2}] nie jest poprawny dla w\u0142a\u015bciwo\u015bci wersji. Obs\u0142ugiwane s\u0105 nast\u0119puj\u0105ce typy: int, Integer, short, Short, long, Long, Timestamp.
+
+7169=Klasy [{0}] ma dwie wygenerowane nazwy: dla p\u00f3l [{1}] i [{2}]. Dozwolona jest tylko jedna.
+
+7172=Wyst\u0105pi\u0142 b\u0142\u0105d podczas tworzenia instancji klasy [{0}].
+
+7173=Zdarzenie zmiany w\u0142a\u015bciwo\u015bci zosta\u0142o uruchomione na w\u0142a\u015bciwo\u015bci o nazwie [{1}] w [{0}].  Jednak ta w\u0142a\u015bciwo\u015b\u0107 nie istnieje.
+
+7174=Dla metody pobieraj\u0105cej [{1}] w klasie obiektu [{0}] nie zdefiniowano odpowiedniej metody ustawiaj\u0105cej.
+
+7175=Odwzorowanie [{0}] nie obs\u0142uguje blokowania optymistycznego wersji kaskadowej.
+
+7176=Odwzorowanie [{0}] nie obs\u0142uguje blokowania optymistycznego wersji kaskadowej, poniewa\u017c ma zapytanie niestandardowe.
+
+7177=Deskryptor agregatu [{0}] ma odwzorowania prywatne. Deskryptory agregatu nie obs\u0142uguj\u0105 blokowania optymistycznego wersji kaskadowej.
+
+7178=Konektor OracleOCIProxyConnector wymaga \u017ar\u00f3d\u0142a danych OracleOCIConnectionPool.
+
+7179=Klasa OracleJDBC_10_1_0_2ProxyConnectionCustomizer wymaga \u017ar\u00f3d\u0142a danych generuj\u0105cego po\u0142\u0105czenia Oracle.
+
+7180=Klasa OracleJDBC_10_1_0_2ProxyConnectionCustomizer wymaga \u015brodowiska Oracle JDBC w wersji 10.1.0.2 lub nowszej, aby klasa OracleConnection deklarowa\u0142a metod\u0119 openProxySession.
+
+7181=Klasa OracleJDBC_10_1_0_2ProxyConnectionCustomizer wymaga, aby warto\u015b\u0107 w\u0142a\u015bciwo\u015bci PersistenceUnitProperties.ORACLE_PROXY_TYPE by\u0142a typu Integer lub mo\u017cliwego do przekszta\u0142cenia w Integer: na przyk\u0142ad OracleConnection.PROXYTYPE_USER_NAME lub Integer.toString(OracleConnection.PROXYTYPE_USER_NAME)
+
+7182=EC - nie mo\u017cna znale\u017a\u0107 klasy sterownika [{0}]
+
+7183=B\u0142\u0105d podczas zamykania pliku persistence.xml.
+
+7184=Nie okre\u015blono w\u0142a\u015bciwo\u015bci systemowej [{0}]. Nale\u017cy j\u0105 ustawi\u0107 na klas\u0119, kt\u00f3ra definiuje metod\u0119 getContainerConfig().
+
+7185=Nie mo\u017cna znale\u017a\u0107 klasy [{0}] okre\u015blonej w [{1}]
+
+7186=Nie mo\u017cna wywo\u0142a\u0107 metody [{0}] dla klasy [{1}] okre\u015blonej w [{2}]
+
+7187=Klasa [{0}] powinna definiowa\u0107 publiczn\u0105 metod\u0119 statyczn\u0105 [{1}], kt\u00f3ra nie ma parametr\u00f3w i zwraca kolekcj\u0119
+
+7188=Wymagana jest niepusta lista klas.
+
+7189=Nie mo\u017cna utworzy\u0107 tymczasowego programu \u0142aduj\u0105cego klasy z bie\u017c\u0105cego programu \u0142aduj\u0105cego: [{0}]
+
+7190=Niepowodzenie [{0}]
+
+7191=Klasa obiektu [{0}] nie zosta\u0142a znaleziona przy u\u017cyciu programu \u0142aduj\u0105cego klasy [{1}].
+
+7192=Obiekt ClassFileTransformer [{0}] zg\u0142asza wyj\u0105tek podczas wykonywania metody transform() na klasie [{1}].
+
+7193=Pliki Jar w pliku XML trwa\u0142o\u015bci nie s\u0105 obs\u0142ugiwane w tej wersji EclipseLink.
+
+7194=Nie mo\u017cna powi\u0105za\u0107 [{0}] z [{1}].
+
+7195=Wyj\u0105tek podczas konfigurowania fabryki EntityManagerFactory.
+
+7196=Obiektu [{0}] typu [{1}] nie mo\u017cna rzutowa\u0107 na [{2}].
+
+7197=Napotkano klucz podstawowy o warto\u015bci null lub zerowej w klonie jednostki pracy [{0}], klucz podstawowy [{1}]. Ustaw warto\u015b\u0107 IdValidation deskryptora lub w\u0142a\u015bciwo\u015b\u0107 eclipselink.id-validation.
+
+7198=Klasa [{0}] nie zosta\u0142a znaleziona podczas przekszta\u0142cania nazw klas w klasy.
+
+7199=Nie zdefiniowano tabeli podstawowej dla obiektu {0} w pliku entity-mappings: {1}.  Tabela podstawowa jest wymagana w celu przetworzenia relacji obiektu.
+
+7200=Atrybut [{1}] nie zosta\u0142 znaleziony w mo\u017cliwej do osadzenia klasie [{0}]. Jest on przywo\u0142ywany w przes\u0142oni\u0119ciu atrybutu dla osadzonego atrybutu [{3}] w klasie [{2}].
+
+7201=Wyst\u0105pi\u0142 wyj\u0105tek podczas analizowania pliku entity-mappings: {0}.
+
+7202=Nazwa przes\u0142oni\u0119cia atrybutu {0} jest niepoprawna - upewnij si\u0119, \u017ce atrybut o tej samej nazwie istnieje w mo\u017cliwym do osadzenia elemencie {1}.
+
+7203=Element odwzorowania [{1}] dla klasy [{2}] ma nieobs\u0142ugiwany typ kolekcji [{0}]. Obs\u0142ugiwane s\u0105 tylko Set, List, Map i Collection.
+
+7207=Atrybut [{1}] w klasie obiektu [{0}] ma niepoprawny typ dla obiektu LOB typu BLOB. Atrybut musi by\u0107 zdefiniowany jako typ java.sql.Blob, byte[], byte[] lub Serializable.
+
+7208=Atrybut [{1}] w klasie obiektu [{0}] ma niepoprawny typ dla obiektu LOB typu CLOB. Atrybut musi by\u0107 zdefiniowany jako typ java.sql.Clob, char[], Character[] lub String.
+
+7212=Atrybut [{0}] z klasy obiektu [{1}] nie okre\u015bla typu czasowego. Typ czasowy musi by\u0107 okre\u015blony dla trwa\u0142ych p\u00f3l lub w\u0142a\u015bciwo\u015bci typu java.util.Date i java.util.Calendar.
+
+7213=Okre\u015blone zosta\u0142y odwo\u0142ania cykliczne mappedBy (klasa: [{0}], atrybut: [{1}] i klasa: [{2}], atrybut: [{3}]. To jest niepoprawne. Tylko jedna strona mo\u017ce by\u0107 w\u0142a\u015bcicielem relacji. Dlatego nale\u017cy okre\u015bli\u0107 warto\u015b\u0107 mappedBy tylko po stronie relacji, kt\u00f3ra nie jest w\u0142a\u015bcicielem.
+
+7214=Nie mo\u017cna okre\u015bli\u0107 obiektu docelowego atrybutu relacji [{0}] w klasie [{1}].  Gdy nie s\u0105 u\u017cywane typy og\u00f3lne, upewnij si\u0119, \u017ce jednostka docelowa jest zdefiniowana w odwzorowaniu relacji.
+
+7215=Nie mo\u017cna za\u0142adowa\u0107 pola o nazwie [{0}] w klasie [{1}]. Upewnij si\u0119, \u017ce zdefiniowano odpowiednie pole o tej nazwie w klasie.
+
+7216=Nie mo\u017cna za\u0142adowa\u0107 metody dla nazwy w\u0142a\u015bciwo\u015bci [{0}] w klasie [{1}]. Upewnij si\u0119, \u017ce zdefiniowano odpowiedni\u0105 metod\u0119 get dla tej nazwy w\u0142a\u015bciwo\u015bci w klasie.
+
+7217=Warto\u015b\u0107 porz\u0105dkuj wg [{0}] okre\u015blona w elemencie [{2}] z obiektu [{3}] jest niepoprawna. W obiekcie docelowym [{1}] nie istnieje w\u0142a\u015bciwo\u015b\u0107 ani pole o tej nazwie.
+
+7218=Klasa [{0}] nie przes\u0142ania metody getCreateTempTableSqlPrefix. Platformy bazy danych, kt\u00f3re obs\u0142uguj\u0105 tabele tymczasowe, musz\u0105 przes\u0142ania\u0107 t\u0119 metod\u0119.
+
+7219=Klasa [{0}] nie przes\u0142ania metody valueFromRowInternalWithJoin, ale jej metoda isJoiningSupported zwraca warto\u015b\u0107 true. Odwzorowanie zewn\u0119trznego odniesienia, kt\u00f3re obs\u0142uguje \u0142\u0105czenie, musi przes\u0142ania\u0107 t\u0119 metod\u0119.
+
+7220=Adnotacja @JoinColumns elementu z adnotacj\u0105 [{0}] z klasy obiektu [{1}] jest niekompletna. Je\u015bli klasa obiektu \u017ar\u00f3d\u0142owego u\u017cywa z\u0142o\u017conego klucza podstawowego, adnotacja @JoinColumn musi by\u0107 okre\u015blona dla ka\u017cdej kolumny \u0142\u0105czenia za pomoc\u0105 adnotacji @JoinColumns. W ka\u017cdej takiej adnotacji @JoinColumn musz\u0105 by\u0107 okre\u015blone elementy name i referencedColumnName.
+
+7222=Niekompletna adnotacja @PrimaryKeyJoinColumns zosta\u0142a okre\u015blona dla elementu z adnotacj\u0105 [{0}]. Podczas okre\u015blania adnotacji @PrimaryKeyJoinColumns dla obiektu, kt\u00f3ry ma z\u0142o\u017cony klucz podstawowy, adnotacja @PrimaryKeyJoinColumn musi by\u0107 okre\u015blona dla ka\u017cdej kolumny \u0142\u0105czenia klucza podstawowego za pomoc\u0105 adnotacji @PrimaryKeyJoinColumns. W ka\u017cdej takiej adnotacji @PrimaryKeyJoinColumn musz\u0105 by\u0107 okre\u015blone elementy name i referencedColumnName.
+
+7223=Znaleziono adnotacj\u0119 @PrimaryKeyJoinColumns w elemencie z adnotacj\u0105 [{0}]. Je\u015bli jednostka u\u017cywa pojedynczego klucza podstawowego, nale\u017cy okre\u015bli\u0107 tylko pojedyncz\u0105 (lub zerow\u0105) adnotacje @PrimaryKeyJoinColumn.
+
+7224=Metoda [{1}] w klasie nas\u0142uchiwania [{0}] jest niepoprawn\u0105 metod\u0105 wywo\u0142ania zwrotnego.
+
+7225=Metody [{1}] nie mo\u017cna znale\u017a\u0107 w klasie nas\u0142uchiwania [{0}].
+
+7226=Metoda [{1}] w klasie nas\u0142uchiwania [{0}] ma niepoprawny modyfikator. Metody wywo\u0142ania zwrotnego nie mog\u0105 by\u0107 static ani final.
+
+7227=Klasa nas\u0142uchiwania [{0}] ma wiele metod wywo\u0142ania zwrotnego cyklu \u017cycia dla tego samego zdarzenia cyklu \u017cycia ([{1}] i [{2}]).
+
+7228=Metoda wywo\u0142ania zwrotnego [{1}] w klasie nas\u0142uchiwania [{0}] ma niepoprawn\u0105 sygnatur\u0119. Nie powinna mie\u0107 \u017cadnych parametr\u00f3w.
+
+7229=Metoda wywo\u0142ania zwrotnego [{3}] w klasie nas\u0142uchiwania obiektu [{2}] ma niepoprawn\u0105 sygnatur\u0119. Metoda musi pobiera\u0107 jeden parametr, kt\u00f3ry musi by\u0107 mo\u017cliwy do przypisania z klasy obiektu. W tym miejscu klasa parametru [{1}] nie jest mo\u017cliwa do przypisania z klasy obiektu [{0}].
+
+7231=Nie mo\u017cna utrwali\u0107 od\u0142\u0105czonego obiektu [{0}]. {3}Klasa> {1} Klucz podstawowy> {2}
+
+7232=Klasa obiektu [{0}] zawiera wiele deklaracji @Id, ale nie definiuje \u017cadnych element\u00f3w <id> w dokumencie instancji odwzorowa\u0144 obiekt\u00f3w.  Upewnij si\u0119, \u017ce je\u015bli wyst\u0119puje wiele deklaracji @Id dla danej klasy obiektu, odpowiednia definicja <entity> zawiera element <id> dla ka\u017cdej.
+
+7233=Metadanych odwzorowania nie mo\u017cna zastosowa\u0107 do w\u0142a\u015bciwo\u015bci/metod, kt\u00f3re przyjmuj\u0105 argumenty. Atrybut [{0}] w klasie [{1}] narusza to ograniczenie. Upewnij si\u0119, \u017ce metoda nie ma argument\u00f3w, je\u015bli jest odwzorowana z adnotacjami lub znajduje si\u0119 w pliku XML odwzorowania.
+
+7234=Generowanie kodu DDL wymaga, aby transformator klas u\u017cywany z odwzorowaniem transformacji atrybutu [{1}] z deskryptora [{0}] okre\u015bla\u0142 typ zwracany specyficzny dla jego metody [{2}] (a nie Object). Generowanie kodu DDL wymaga tego konkretnego typu zwracanego, aby mo\u017cliwe by\u0142o wygenerowanie poprawnego typu pola.
+
+7235=Transformator klas u\u017cywany z odwzorowaniem transformacji atrybutu [{1}] z deskryptora [{0}] nie implementuje metody [{2}]. Ta metoda jest cz\u0119\u015bci\u0105 interfejsu FieldTransformer i musi by\u0107 zaimplementowana. Nale\u017cy r\u00f3wnie\u017c zauwa\u017cy\u0107, \u017ce gdy jest zaimplementowana, jej typ zwracany powinien by\u0107 tak\u017ce typem jawnym (a nie Object) podczas korzystania z generowania kodu DDL.
+
+7237=Nazwa Obiektu musi by\u0107 unikalna w jednostce trwa\u0142o\u015bci. Nazwa obiektu [{0}] jest u\u017cywana dla klas obiektu [{1}] i [{2}].
+
+7238=Generator tabel okre\u015blony w [{2}] o nazwie = [{0}] powoduje konflikt z generatorem sekwencji o tej samej nazwie okre\u015blonej w [{1}].
+
+7240=Generator tabel okre\u015blony w [{2}] o warto\u015bci kolumny klucza podstawowego = [{0}] powoduje konflikt z generatorem sekwencji okre\u015blonym w [{1}] o nazwie sekwencji = [{0}]. Nie mog\u0105 u\u017cywa\u0107 tej samej warto\u015bci.
+
+7242=Podj\u0119to pr\u00f3b\u0119 przej\u015bcia relacji przy u\u017cyciu po\u015brednictwa o pustej sesji.  To zdarza si\u0119 cz\u0119sto, gdy obiekt o relacji LAZY bez utworzonej instancji jest przekszta\u0142cany do postaci szeregowej, a przej\u015bcie tej relacji ma miejsce po serializacji.  Aby unikn\u0105\u0107 tego problemu, nale\u017cy utworzy\u0107 instancj\u0119 relacji LAZY przed rozpocz\u0119ciem serializacji.
+
+7243=Brak metadanych dla klasy [{0}]. Upewnij si\u0119, \u017ce klasa nie zosta\u0142a wykluczona z jednostki trwa\u0142o\u015bci przez ustawienie <exclude-unlisted-classes>true</exclude-unlisted-classes>. Je\u015bli tak jest, nale\u017cy do\u0142\u0105czy\u0107 klas\u0119 bezpo\u015brednio przez dodanie wpisu <class>[{0}]</class> do pliku persistence-unit.
+
+7244=Napotkano niezgodne odwzorowanie mi\u0119dzy [{0}] i [{1}]. Dzieje si\u0119 tak zwykle wtedy, gdy liczno\u015b\u0107 odwzorowania nie odpowiada liczno\u015b\u0107 jego wska\u017anika zwrotnego.
+
+7245=Mo\u017cliwa do osadzenia klasa [{0}] jest u\u017cywana w klasach z koliduj\u0105cymi typami dost\u0119pu. Klasa [{1}] u\u017cywa dost\u0119pu [{2}], a klasa [{3}] u\u017cywa dost\u0119pu [{4}]. Podczas wsp\u00f3\u0142u\u017cytkowania mo\u017cliwego do osadzenia obiektu przez klasy, typy dost\u0119pu tych klas osadzaj\u0105cych musz\u0105 by\u0107 takie same.
+
+7246=Klasa obiektu [{0}] ma osadzony atrybut [{1}] typu [{2}], kt\u00f3ry NIE jest klas\u0105 Embeddable. Prawdopodobna przyczyna: brak adnotacji @Embeddable lub elementu <embeddable> w pliku orm.xml, gdy metadata-complete = true
+
+7247=Wykryto odwo\u0142anie cykliczne podczas przetwarzania identyfikator\u00f3w pochodnych w nast\u0119puj\u0105cych klasach obiekt\u00f3w: [{0}] 
+
+7249=Obiekt [{0}] u\u017cywa elementu [{1}] jako osadzonej klasy identyfikatora, kt\u00f3rej typ dost\u0119pu zosta\u0142 okre\u015blony jako [{2}]. Jednak element [{1}] nie definiuje \u017cadnych warto\u015bci [{2}]. Jest prawdopodobne, \u017ce nie podano wystarczaj\u0105cych metadanych w klasie identyfikatora [{1}].
+
+7250=Element [{0}] u\u017cywa elementu innego ni\u017c obiekt [{1}] jako obiektu docelowego w atrybucie relacji [{2}].
+
+7251=Atrybut [{1}] klasy [{0}] jest odwzorowany na kolumn\u0119 klucza podstawowego w bazie danych. Aktualizacje nie s\u0105 dozwolone.
+
+7252=Istnieje wiele plik\u00f3w odwzorowania o nazwie [{1}] w \u015bcie\u017cce klas dla jednostki trwa\u0142o\u015bci o nazwie [ {0} ].
+
+7253=Nie ma pliku odwzorowania o nazwie [{1}] w \u015bcie\u017cce klas dla jednostki trwa\u0142o\u015bci o nazwie [ {0} ].
+
+7254=Konwerter o nazwie [{1}] w klasie [{0}] odwzorowa\u0142 warto\u015b\u0107 danych [{2}] na wiele warto\u015bci obiektu. Warto\u015b\u0107 konwersji musi odwzorowywa\u0107 ka\u017cd\u0105 warto\u015b\u0107 danych tylko raz.
+
+7255=Klasa [{0}] okre\u015bla adnotacj\u0119 @Convert na [{1}]. Jest to niepoprawne. Adnotacja @Convert jest obs\u0142ugiwana tylko adnotacjami @Basic, @BasicCollection, @BasicMap i @ElementCollection. W przypadku odwzorowa\u0144 do wielu obiekt\u00f3w, kt\u00f3re u\u017cywaj\u0105 mapy, mo\u017cna u\u017cy\u0107 tylko adnotacji @MapKeyConvert.
+
+7256=Konwerter o nazwie [{1}] u\u017cywany z elementem [{2}] w klasie [{0}] nie zosta\u0142 znaleziony w obr\u0119bie jednostki trwa\u0142o\u015bci. Upewnij si\u0119, \u017ce podano poprawn\u0105 nazw\u0119 konwertera.
+
+7257=Nie mo\u017cna utworzy\u0107 instancji warto\u015bci danych o typie [{2}] i warto\u015bci [{1}] z konwertera typu obiektu o nazwie [{0}].
+
+7258=Nie mo\u017cna utworzy\u0107 instancji warto\u015bci obiektu o typie [{2}] i warto\u015bci [{1}] z konwertera typu obiektu o nazwie [{0}].
+
+7259=Nie mo\u017cna okre\u015bli\u0107 typu danych atrybutu [{1}] z klasy obiektu [{0}], kt\u00f3ry u\u017cywa konwertera o nazwie [{2}]. Typ musi by\u0107 okre\u015blony przy u\u017cyciu typu danych w konwerterze lub atrybut powinien u\u017cywa\u0107 specyfikacji og\u00f3lnej.
+
+7260=Nie mo\u017cna okre\u015bli\u0107 typu obiektu atrybutu [{1}] z klasy obiektu [{0}], kt\u00f3ry u\u017cywa konwertera o nazwie [{2}]. Typ musi by\u0107 okre\u015blony przy u\u017cyciu typu obiektu w konwerterze lub atrybut powinien u\u017cywa\u0107 specyfikacji og\u00f3lnej.
+
+7261=Typ [{1}] atrybutu [{0}] w klasie obiektu [{2}] nie jest poprawnym typem odwzorowania kolekcji podstawowej. Atrybut musi by\u0107 typu Collection.class, List.class lub Set.class.
+
+7262=Typ [{1}] atrybutu [{0}] w klasie obiektu [{2}] nie jest poprawnym typem odwzorowania mapy podstawowej. Atrybut musi by\u0107 typu Map.class.
+
+7263=Klasa [{0}] ma niekompletn\u0105 specyfikacj\u0119 optymistycznego blokowania. W przypadku strategii optymistycznego blokowania typu SELECTED_COLUMNS nale\u017cy okre\u015bli\u0107 wybrane kolumny i nie mo\u017cna pomin\u0105\u0107 nazw tych kolumn.
+
+7264=Klasa [{0}] ma niekompletn\u0105 specyfikacj\u0119 optymistycznego blokowania. W przypadku strategii optymistycznego blokowania typu VERSION_COLUMN, w polu lub w\u0142a\u015bciwo\u015bci wersji nale\u017cy okre\u015bli\u0107 adnotacj\u0119 @Version.
+
+7265=Adnotacja @Cache jest niedozwolona w klasie mo\u017cliwej do osadzenia.
+
+7266=Adnotacja @Cache w klasie [{0}] ma okre\u015blon\u0105 zar\u00f3wno funkcj\u0119 expiry(), jak i expiryTimeOfDay(). Tylko jedn\u0105 z tych dw\u00f3ch mo\u017cna okre\u015bli\u0107 w ustawieniu adnotacji @Cache.
+
+7267=Podana klasa procedury obs\u0142ugi wyj\u0105tku [{0}] jest niepoprawna, klasa musi istnie\u0107 w \u015bcie\u017cce klas i musi implementowa\u0107 interfejs ExceptionHandler.
+
+7268=Podana klasa nas\u0142uchiwania zdarze\u0144 sesji [{0}] jest niepoprawna, klasa musi istnie\u0107 w \u015bcie\u017cce klas i musi implementowa\u0107 interfejs SessionEventListener.
+
+7270=Podana warto\u015b\u0107 wielko\u015bci instrukcji pami\u0119ci podr\u0119cznej [{0}] jest niepoprawna [{1}].
+
+7271=Podana warto\u015b\u0107 boolowska [{0}] ustawienia rodzimego j\u0119zyka SQL jest niepoprawna. Warto\u015bci\u0105 musi by\u0107 true lub false.
+
+7272=Podana warto\u015b\u0107 boolowska [{0}] w\u0142\u0105czenia pami\u0119ci podr\u0119cznej instrukcji SQL jest niepoprawna. Warto\u015bci\u0105 musi by\u0107 true lub false.
+
+7273=Podana warto\u015b\u0107 boolowska [{0}] kopiowania zapyta\u0144 o nazwach jak deskryptory do sesji jest niepoprawna. Warto\u015bci\u0105 musi by\u0107 true lub false.
+
+7274=Zg\u0142oszono wyj\u0105tek podczas pr\u00f3by utworzenia pliku rejestrowania [{0}]:[{1}].
+
+7275=Nie mo\u017cna utworzy\u0107 instancji klasy procedury obs\u0142ugi wyj\u0105tku [{0}] okre\u015blonej we w\u0142a\u015bciwo\u015bci eclipselink.exception-handler [{1}].
+
+7276=Nie mo\u017cna utworzy\u0107 instancji klasy nas\u0142uchiwania zdarze\u0144 sesji [{0}] okre\u015blonej we w\u0142a\u015bciwo\u015bci eclipselink.session-event-listener [{1}].
+
+7277=Nie okre\u015blono nazwy pliku rejestrowania.
+
+7278=Podana warto\u015b\u0107 boolowska [{0}] w\u0142a\u015bciwo\u015bci trwa\u0142o\u015bci [{1}] jest niepoprawna. Warto\u015bci\u0105 musi by\u0107 true lub false.
+
+7282=Nie mo\u017cna zdefiniowa\u0107 konwertera struktury {0} w odwzorowaniu {1}.  Konwertera struktury mo\u017cna u\u017cywa\u0107 tylko w odwzorowaniach bezpo\u015brednich.
+
+7283=Dodano dwa konwertery struktury dla klasy {0}.  Do jednej klasy mo\u017cna doda\u0107 tylko jeden konwerter struktury.
+
+7284=Klasa [{0}] nie jest poprawnym komparatorem. Klasa musi implementowa\u0107 interfejs Comparator.
+
+7285=Podana klasa profilera [{0}] jest niepoprawna, klasa musi istnie\u0107 w \u015bcie\u017cce klas i musi implementowa\u0107 interfejs SessionProfiler.
+
+7286=Nie mo\u017cna utworzy\u0107 instancji klasy profilera [{0}] okre\u015blonej we w\u0142a\u015bciwo\u015bci eclipselink.profiler [{1}].
+
+7287=Transformator odczytu okre\u015blony dla elementu [{0}] nie implementuje wymaganego interfejsu AttributeTransformer.
+
+7288=Transformator odczytu okre\u015blony dla elementu [{0}] ma zar\u00f3wno klas\u0119, jak i metod\u0119. Wymagana jest klasa albo metoda, ale nie oba te elementy jednocze\u015bnie.
+
+7289=Transformator odczytu okre\u015blony dla elementu [{0}] nie ma ani klasy, ani metody. Wymagana jest klasa albo metoda, ale nie oba te elementy jednocze\u015bnie.
+
+7290=Transformator zapisu okre\u015blony dla kolumny [{1}] elementu [{0}] nie implementuje wymaganego interfejsu FieldTransformer.
+
+7291=Transformator zapisu okre\u015blony dla kolumny [{1}] elementu [{0}] ma zar\u00f3wno klas\u0119, jak i metod\u0119. Wymagana jest klasa albo metoda, ale nie oba te elementy jednocze\u015bnie.
+
+7292=Transformator zapisu okre\u015blony dla kolumny [{1}] elementu [{0}] nie ma ani klasy, ani metody. Wymagana jest klasa albo metoda, ale nie oba te elementy jednocze\u015bnie.
+
+7293=Transformator zapisu okre\u015blony dla elementu [{0}] nie ma kolumny albo kolumna ta nie ma nazwy.
+
+7294=Zmienny element jeden do jednego [{1}] ma wiele obiekt\u00f3w odwzorowanych w ten sam wyr\u00f3\u017cnik [{0}]. Ka\u017cdy obiekt, kt\u00f3ry implementuje zmienny interfejs jeden do jednego, musi mie\u0107 w\u0142asny unikalny wyr\u00f3\u017cnik.
+
+7295=Strategia CloneCopyPolicy okre\u015blona w klasie [{0}] nie okre\u015bla metody albo roboczej metody kopiowania.  Wymagane jest okre\u015blenie jednej z nich.
+
+7296=Klasy [{0}] ma wiele adnotacji CopyPolicy.  Dozwolona jest tylko jedna adnotacja CopyPolicyAnnotation na klas\u0119.
+
+7297=Zg\u0142oszono wyj\u0105tek podczas tworzenia instancji klasy [{0}] w spos\u00f3b odzwierciedlaj\u0105cy.  Zwykle oznacza to, \u017ce ta klasa jest okre\u015blona w obszarze metadanych i z jakiego\u015b powodu \u015brodowisko Java nie mo\u017ce utworzy\u0107 instancji refleksyjnie z konstruktorem bezargumentowym.  Wi\u0119cej informacji na ten temat zawiera po\u0142\u0105czony wyj\u0105tek.  Uwaga: aby wy\u015bwietli\u0107 po\u0142\u0105czony wyj\u0105tek, konieczne mo\u017ce by\u0107 podwy\u017cszenie poziomu rejestrowania.
+
+7298=Odwzorowanie [{2}] z osadzonej klasy identyfikatora [{3}] jest niepoprawnym odwzorowaniem dla tej klasy. Mo\u017cliwa do osadzenia klasa, kt\u00f3ra jest u\u017cywana ze specyfikacj\u0105 osadzonego identyfikatora (atrybut [{0}] ze \u017ar\u00f3d\u0142a [{1}]), mo\u017ce zawiera\u0107 tylko odwzorowania podstawowe. Usu\u0144 odwzorowanie inne ni\u017c podstawowe lub zmie\u0144 specyfikacj\u0119 osadzonego identyfikatora w \u017ar\u00f3dle, kt\u00f3re ma zosta\u0107 osadzone.
+
+7299=Znaleziono konflikt adnotacji o tej samej nazwie [{0}]. Pierwsza [{1}] zosta\u0142a znaleziona w [{2}], a druga [{3}] w [{4}]. Adnotacje o okre\u015blonej nazwie musz\u0105 by\u0107 unikalne w obr\u0119bie jednostki trwa\u0142o\u015bci.
+
+7300=Znaleziono konflikt element\u00f3w XML [{1}] o tej samej nazwie [{0}]. Pierwszy zosta\u0142 znaleziony w pliku odwzorowania [{2}], a drugi w pliku odwzorowania [{3}]. Elementy XML o okre\u015blonej nazwie musz\u0105 by\u0107 unikalne w obr\u0119bie jednostki trwa\u0142o\u015bci.
+
+7301=Znaleziono konflikt adnotacji. Pierwsza [{0}] zosta\u0142a znaleziona w [{1}], a druga [{2}] w [{3}]. Rozwi\u0105\u017c ten problem, usuwaj\u0105c adnotacj\u0119, kt\u00f3ra nie ma zastosowania.
+
+7302=Znaleziono konflikt element\u00f3w XML [{0}] dla elementu [{1}]. Pierwszy zosta\u0142 znaleziony w pliku odwzorowania [{2}], a drugi w pliku odwzorowania [{3}]. Rozwi\u0105\u017c ten problem, usuwaj\u0105c element XML, kt\u00f3ry nie ma zastosowania.
+
+7303=W\u0142a\u015bciwo\u015b\u0107 PersistenceUnitProperties.ORACLE_PROXY_TYPE zosta\u0142a ustawiona na [{0}]. Nie znaleziono wymaganej dla tego typu proxy w\u0142a\u015bciwo\u015bci [{1}].
+
+7304=W\u0142a\u015bciwo\u015b\u0107 PersistenceUnitProperties.ORACLE_PROXY_TYPE zosta\u0142a ustawiona na nieznany typ [{0}]. Znane typy to [{1}], [{2}], [{3}].
+
+7305=Zg\u0142oszono wyj\u0105tek podczas przetwarzania pliku odwzorowania z adresu URL: [{0}].
+
+7306=Element z adnotacj\u0105 [{0}] z klasy [{1}] ma okre\u015blony niepoprawny jawny typ dost\u0119pu. Nale\u017cy okre\u015bli\u0107 typ dost\u0119pu [{2}].
+
+7307=Brak \u0142a\u0144cucha kontekstu rejestrowania dla kontekstu [{0}]. Jest to wewn\u0119trzny wyj\u0105tek, kt\u00f3ry wyst\u0105pi\u0142 podczas pobierania komunikatu dziennika na potrzeby przetwarzania metadanych JPA. Zg\u0142o\u015b b\u0142\u0105d.
+
+7308=Podana warto\u015b\u0107 [{0}] w\u0142a\u015bciwo\u015bci trwa\u0142o\u015bci [{1}] jest niepoprawna - [{2}].
+
+7309=Atrybut o nazwie [{1}] z mo\u017cliwej do osadzenia klasy [{0}] nie jest poprawnym odwzorowaniem do u\u017cycia z przes\u0142oni\u0119ciem atrybutu dla atrybutu [{3}] w klasie [{2}].
+
+7310=Nie mo\u017cna okre\u015bli\u0107 klasy docelowej atrybutu kolekcji element\u00f3w [{0}] w klasie [{1}].  Gdy nie s\u0105 u\u017cywane typy og\u00f3lne, upewnij si\u0119, \u017ce klasa docelowa jest zdefiniowana w odwzorowaniu kolekcji element\u00f3w.
+
+7311=Niepoprawna klasa docelowa jest u\u017cywana z atrybutem kolekcji element\u00f3w [{0}] w klasie [{1}].  Dozwolone s\u0105 tylko typy podstawowe i mo\u017cliwe do osadzenia klasy.
+
+7312=Niepoprawna mo\u017cliwa do osadzenia klasa [{0}] jest u\u017cywana z atrybutem kolekcji element\u00f3w [{1}] w klasie [{2}]. Zobacz sekcj\u0119 2.6 specyfikacji: Mo\u017cliwa do osadzenia klasa (w tym mo\u017cliwa do osadzenia klasa w innej mo\u017cliwej do osadzenia klasie) zawarta w kolekcji element\u00f3w nie mo\u017ce zawiera\u0107 kolekcji element\u00f3w ani nie mo\u017ce zawiera\u0107 relacji do obiektu innego ni\u017c relacja wiele do jednego lub jeden do jednego. Mo\u017cliwa do osadzenia klasa musi znajdowa\u0107 si\u0119 po stronie b\u0119d\u0105cej w\u0142a\u015bcicielem takiej relacji, a relacja musi by\u0107 odwzorowana przez odwzorowanie klucza obcego. Odwzorowanie atrybutu [{3}] w mo\u017cliwej do osadzenia klasie narusza to ograniczenie.
+
+7313=Atrybut [{1}] nie zosta\u0142 znaleziony w mo\u017cliwej do osadzenia klasie [{0}]. Jest on przywo\u0142ywany w przes\u0142oni\u0119ciu atrybutu dla osadzonego atrybutu [{3}] w klasie [{2}].
+
+7314=Odwzorowanie [{0}] jest u\u017cywane do odwzorowania klucza w MappedKeyMapContainerPolicy i korzysta z po\u015brednictwa.  Odwzorowania u\u017cywane na potrzeby kluczy odwzorowa\u0144 nie mog\u0105 korzysta\u0107 z po\u015brednictwa.
+
+7315=Nie mo\u017cna okre\u015bli\u0107 klasy klucza odwzorowania atrybutu kolekcji element\u00f3w [{0}] w klasie [{1}].  Podczas okre\u015blania klucza konwersji z kolekcj\u0105 element\u00f3w sprawd\u017a, czy u\u017cywasz definicji og\u00f3lnej, aby mo\u017cna by\u0142o okre\u015bli\u0107 typ klasy dla konwertera.
+
+7316=Warto\u015b\u0107 MapsId [{0}] z atrybutu odwzorowania [{1}] jest niepoprawna. Odpowiedni atrybut o tej nazwie musi by\u0107 zdefiniowany w klasie identyfikatora [{2}]
+
+7317=Pole kolejno\u015bci listy nie jest obs\u0142ugiwane dla [{0}].
+
+7318=Element [{0}] ma ustawion\u0105 kolejno\u015b\u0107 listy, ale zdarzenie CollectionChangeEvent.REMOVE zosta\u0142o wys\u0142ane bez indeksu.
+
+7319=Atrybut o nazwie [{1}] z mo\u017cliwej do osadzenia klasy [{0}] nie jest poprawn\u0105 relacj\u0105 do u\u017cycia z przes\u0142oni\u0119ciem powi\u0105zania o nazwie [{2}] z [{3}]. Przes\u0142oni\u0119cie powi\u0105zania mo\u017cna okre\u015bli\u0107 tylko wtedy, gdy mo\u017cliwa do osadzenia klasa znajduje si\u0119 po stronie b\u0119d\u0105cej w\u0142a\u015bcicielem relacji.
+
+7320=Atrybut [{0}] z klasy [{1}] (lub dziedziczony z odwzorowanej nadklasy) nie jest poprawnego typu do u\u017cycia ze specyfikacj\u0105 kolumny uporz\u0105dkowania. Podczas okre\u015blania kolumny uporz\u0105dkowania atrybut musi by\u0107 typu List.
+
+7321=Pole [{1}] z pochodnego odwzorowania identyfikatora [{2}] z klasy [{3}] jest niepoprawnym polem identyfikatora z klasy odniesienia [{0}]. Upewnij si\u0119, \u017ce istnieje odpowiednie odwzorowanie identyfikatora do tego pola. 
+
+7322=Nazwa kolumny odwo\u0142ania [{0}] z przes\u0142oni\u0119cia powi\u0105zania o nazwie [{1}] w atrybucie [{2}] z klasy [{3}] nie jest poprawnym odwzorowanym polem klucza podstawowego. Upewnij si\u0119, \u017ce istnieje odpowiednie odwzorowanie identyfikatora do tego pola.
+
+7323=Tabela o nazwie [{1}] z [{2}] ma wiele unikalnych ogranicze\u0144 o nazwie [{0}]. Nie jest to dozwolone. Nazwy unikalnych ogranicze\u0144 musz\u0105 by\u0107 unikalne we wszystkich tabelach.
+
+7324=Klasa obiektu [{1}] okre\u015bla zar\u00f3wno adnotacj\u0119 @ClassExtractor, jak i metadane wyr\u00f3\u017cnika. Gdy u\u017cywana jest adnotacja @ClassExtractor, nie nale\u017cy okre\u015bla\u0107 adnotacji @DiscriminatorColumn i/lub @DiscriminatorValue w tej klasie ani nie nale\u017cy definiowa\u0107 \u017cadnych metadanych warto\u015bci wyr\u00f3\u017cnika w jej podklasach.
+
+7325=Odwzorowanie tabeli wynikowej SQL [{0}] u\u017cywane z nazwanym zapytaniem [{1}] z [{2}] nie jest rozpoznawalnym odwzorowaniem tabeli wynikowej SQL. Upewnij si\u0119, \u017ce nazwa jest poprawna i \u017ce istnieje odwzorowanie tabeli wynikowej SQL o tej nazwie.
+
+7326=Atrybut [{0}] z klasy [{1}] odwzorowany w [{2}], kt\u00f3ry u\u017cywa dost\u0119pu VIRTUAL, nie okre\u015bla typu atrybutu. Podczas korzystania z dost\u0119pu VIRTUAL musi by\u0107 okre\u015blony typ atrybutu. Uwaga: w przypadku odwzorowa\u0144 jeden do jednego lub wiele do jednego typ atrybutu jest okre\u015blony przy u\u017cyciu obiektu docelowego. W przypadku zmiennego odwzorowania jeden do jednego jest okre\u015blony za pomoc\u0105 klasy docelowej.
+
+7327=Mo\u017cliwa do osadzenia klasa [{0}] jest u\u017cywana w klasach z koliduj\u0105cymi metodami dost\u0119pu. Klasa [{1}] u\u017cywa metody dost\u0119pu [{2}], a klasa [{3}] metody dost\u0119pu [{4}]. Podczas wsp\u00f3\u0142u\u017cytkowania mo\u017cliwego do osadzenia obiektu przez klasy, metody dost\u0119pu tych klas osadzaj\u0105cych musz\u0105 by\u0107 takie same.
+
+7328=Podczas korzystania z dost\u0119pu VIRTUAL nale\u017cy podczas tworzenia fabryki EntityManagerFactory udost\u0119pni\u0107 dynamiczny program \u0142aduj\u0105cy klasy przy u\u017cyciu w\u0142a\u015bciwo\u015bci eclipselink [eclipselink.classloader]. Tzn. createEntityManagerFactory(String nazwa_jednostki_trwa\u0142o\u015bci, Map w\u0142a\u015bciwo\u015bci) i nale\u017cy doda\u0107 now\u0105 metod\u0119 DynamicClassLoader() do w\u0142a\u015bciwo\u015bci odwzorowania.
+
+7329=Atrybut {1} obiektu {0} nie jest odwzorowany.
+
+7330=Atrybut {1} obiektu {0} odwo\u0142uje si\u0119 do zagnie\u017cd\u017conej grupy pobierania, ale nie jest odwzorowany przy u\u017cyciu odwzorowania ForeignReferenceMapping albo to odwzorowanie nie ma deskryptora odwo\u0142ania.
+
+7331=Atrybut {1} obiektu {0} odwo\u0142uje si\u0119 do zagnie\u017cd\u017conej grupy pobierania, ale klasa docelowa nie obs\u0142uguje grup pobierania.
+
+7332=Pochodny atrybut z\u0142o\u017conego klucza podstawowego [{2}] typu [{4}] z [{1}] musi by\u0107 tego samego typu co pole identyfikatora macierzystego z [{0}]. Oznacza to, \u017ce powinien by\u0107 typu [{3}].
+
+7334=Klasa [{0}] ma niekompletn\u0105 specyfikacj\u0119 klucza podstawowego. Podczas okre\u015blania kolumn klucza podstawowego nale\u017cy okre\u015bli\u0107 nazwy tych kolumn.
+
+7335=Okre\u015blono zduplikowan\u0105 warto\u015b\u0107 partycji [{1}] dla adnotacji @ValuePartitioning o nazwie [{0}]
+
+7336=Okre\u015blono wiele w\u0142a\u015bciwo\u015bci kontekstu [{2}] i [{3}] dla tego samego pola wyr\u00f3\u017cnika klienta [{1}] dla klasy [{0}]
+
+7337=Odwzorowana kolumna wyr\u00f3\u017cnika klienta [{1}] w klasie [{0}] musi by\u0107 oznaczona jako tylko do odczytu. W JPA jest to wykonywane przez ustawienie insertable=false i updatable=false w kolumnie np. @Column(name="TENANT_ID", insertable=false, updatable=false).
+
+7338=Nie mo\u017cna dodawa\u0107 sekwencji do brokera sesji.
+
+7339=Alias [{0}] jest u\u017cywany przez klasy [{1}] i [{2}]. Alias deskryptora musi by\u0107 unikalny.
+
+7340=Istnieje wiele plik\u00f3w odwzorowania o nazwie [{0}] w \u015bcie\u017cce klas.
+
+7341=Nie okre\u015blono pliku eclipselink-orm.xml dla \u017ar\u00f3d\u0142a danych XMLMetadataSource.  Okre\u015bl jeden przy u\u017cyciu w\u0142a\u015bciwo\u015bci jednostki trwa\u0142o\u015bci eclipselink.metadata-source.xml.file lub eclipselink.metadata-source.xml.url
+
+7342=Podana warto\u015b\u0107 boolowska [{0}] ustawienia zezwolenia na zapytania w rodzimym j\u0119zyku SQL jest niepoprawna. Warto\u015bci\u0105 musi by\u0107 true lub false.
+
+7343=Okre\u015blono wiele identyfikator\u00f3w VPD (w\u0142a\u015bciwo\u015b\u0107 kontekstu wyr\u00f3\u017cnika klienta). Obiekt [{1}] u\u017cywa [{0}], a obiekt [{3]} u\u017cywa [{2}]. Podczas stosowania strategii Multitenant VPD mo\u017ce istnie\u0107 tylko jedna kolumna wyr\u00f3\u017cnika klienta na obiekt, a jej w\u0142a\u015bciwo\u015b\u0107 kontekstu musi by\u0107 sp\u00f3jna dla wszystkich obiekt\u00f3w Multitenant VPD.
+
+7344=Strategia VPD (po\u0142\u0105czenia i generowanie kodu DDL) nie jest obs\u0142ugiwana dla platformy [{0}].
+
+7345=Nie znaleziono pliku {0} okre\u015blonego dla \u017ar\u00f3d\u0142a danych XMLMetadataSource
+
+7346=Nie udost\u0119pniono w\u0142a\u015bciwo\u015bci kontekstu wielu klient\u00f3w [{0}]. Gdy w\u0142a\u015bciwo\u015b\u0107 jednostki trwa\u0142o\u015bci (eclipselink.multitenant.tenants-share-emf) jest ustawiona na warto\u015b\u0107 false, wszystkie w\u0142a\u015bciwo\u015bci kontekstu wielu klient\u00f3w musz\u0105 zosta\u0107 udost\u0119pnione na pocz\u0105tku. Mo\u017cna to zrobi\u0107 bezpo\u015brednio w definicji jednostki trwa\u0142o\u015bci lub przez przekazanie odwzorowania w\u0142a\u015bciwo\u015bci zawieraj\u0105cego wszystkie w\u0142a\u015bciwo\u015bci kontekstu wielu klient\u00f3w w wywo\u0142aniu tworz\u0105cym fabryk\u0119 EntityManagerFactory.
+
+7347=Klasa [{0}] okre\u015bla metadane konwersji na poziomie typu bez okre\u015blenia nazwy atrybutu dla ka\u017cdego. Nazwa atrybutu musi by\u0107 okre\u015blona dla wszystkich metadanych konwersji na poziomie typu, aby zapewni\u0107 poprawne zastosowanie do atrybutu klasy nadrz\u0119dnej.
+
+7348=Osadzone odwzorowanie [{1}] z [{0}] nie okre\u015bla nazwy atrybutu, do kt\u00f3rego ma zosta\u0107 zastosowana konwersja. Nazw\u0119 atrybutu nale\u017cy okre\u015bli\u0107 w klasie Embeddable.
+
+7350=Nazwy atrybutu konwersji [{3}] z odwzorowania [{1}] z klasy [{0}] nie znaleziono w mo\u017cliwej do osadzenia klasie [{2}]. Upewnij si\u0119, \u017ce atrybut istnieje i ma poprawn\u0105 nazw\u0119.
+
+7351=Nie znaleziono klasy konwertera [{2}] okre\u015blonej w atrybucie odwzorowania [{1}] z klasy [{0}]. Upewnij si\u0119, \u017ce nazwa klasy konwertera jest poprawna i istnieje z definicj\u0105 jednostki trwa\u0142o\u015bci.
+
+7352=Klasa konwertera [{0}] musi implementowa\u0107 interfejs javax.persistence.AttributeConverter<X, Y>, aby by\u0142a poprawn\u0105 klas\u0105 konwertera.
+
+7353=Atrybut odwzorowania [{1}] z klasy [{0}] nie jest poprawnym typem odwzorowania dla specyfikacji konwersji.
+
+7354=Atrybut odwzorowania [{1}] z klasy [{0}] nie jest poprawnym typem odwzorowania dla specyfikacji konwersji klucza odwzorowania.
+
+7355=Atrybut odwzorowania [{1}] z klasy [{0}] nie jest poprawnym typem odwzorowania dla specyfikacji konwersji z u\u017cyciem nazwy atrybutu. Nazwa atrybutu powinna by\u0107 okre\u015blona tylko w celu przej\u015bcia osadzonego typu odwzorowania.
+
+7356=Nie mo\u017cna wykona\u0107 procedury [{1}], poniewa\u017c {0} nie obs\u0142uguje wielu parametr\u00f3w wyj\u015bciowych
+

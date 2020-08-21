@@ -1,0 +1,26 @@
+<!--Copyright (c) 2020 IBM Corporation and others. All rights reserved. This 
+    program and the accompanying materials are made available under the terms 
+    of the Eclipse Public License v1.0 which accompanies this distribution, and 
+    is available at http://www.eclipse.org/legal/epl-v10.html Contributors: IBM 
+    Corporation - initial API and implementation -->
+<server>
+    <featureManager>
+        <feature>componenttest-1.0</feature>
+        <feature>webProfile-8.0</feature>
+        <feature>localConnector-1.0</feature>
+        <feature>mpOpenTracing-2.0</feature>
+        <feature>usr:opentracingMock-2.0</feature>
+        <feature>mpRestClient-1.4</feature>
+        <feature>arquillian-support-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml" />
+
+    <!--Java2 security -->
+    <javaPermission className="java.security.AllPermission"
+        name="*" actions="*" />
+
+    <logging
+        traceSpecification="*=info:io.openliberty.opentracing*=all:io.openliberty.microprofile.opentracing*=all"
+        maxFileSize="100" maxFiles="1" />
+</server>

@@ -30,7 +30,6 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
@@ -62,7 +61,7 @@ public class RequestProbeTestDynamicFeatureChange {
     }
 
     private int fetchNoENDWarnings() throws Exception {
-        List<String> lines = server.findStringsInFileInLibertyServerRoot("END", MESSAGE_LOG);
+        List<String> lines = server.findStringsInFileInLibertyServerRoot("I END", MESSAGE_LOG);
         for (String line : lines) {
             CommonTasks.writeLogMsg(Level.INFO, "----> END warning : " + line);
         }
@@ -199,7 +198,8 @@ public class RequestProbeTestDynamicFeatureChange {
 
         long duration = 11000;
 
-        public RequestThread() {}
+        public RequestThread() {
+        }
 
         public RequestThread(long duration) {
             this.duration = duration;

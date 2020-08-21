@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2015 IBM Corporation and others.
+ * Copyright (c) 2010, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -500,8 +500,13 @@ class ConfigEvaluator {
                         }
 
                         String defaultString = "";
-                        if (rawValue != null)
+
+                        if (rawValue != null) {
+                            if (badValue != null && rawValue.equals(badValue)) {
+                                rawValue = setRawToDefaultValue(rawValue, attributeDef);
+                            }
                             defaultString = Tr.formatMessage(tc, "default.value.in.use", rawValue);
+                        }
                         Tr.warning(tc, "warn.config.invalid.value", attributeDef.getID(), badValue, strBuffer.toString(), defaultString);
 
                     }
@@ -724,6 +729,16 @@ class ConfigEvaluator {
             if (defaultValues != null) {
                 rawValue = Arrays.asList(defaultValues);
             }
+        }
+
+        return rawValue;
+    }
+
+    private Object setRawToDefaultValue(Object rawValue, ExtendedAttributeDefinition attributeDef) throws ConfigEvaluatorException {
+
+        String[] defaultValues = attributeDef.getDefaultValue();
+        if (defaultValues != null) {
+            rawValue = Arrays.asList(defaultValues);
         }
 
         return rawValue;

@@ -346,6 +346,8 @@ public class AcmeConfigTest {
 		properties.put(AcmeConstants.VALID_FOR, 5L);
 		properties.put(AcmeConstants.RENEW_BEFORE_EXPIRATION, 691200000L); // 8
 																			// days
+		properties.put(AcmeConstants.START_READY_TIMEOUT, 45000L);
+		properties.put(AcmeConstants.RENEW_CERT_MIN, 17000L);
 
 		/*
 		 * Instantiate the ACME configuration.
@@ -382,26 +384,35 @@ public class AcmeConfigTest {
 		assertEquals(Boolean.FALSE, acmeConfig.isRevocationCheckerEnabled());
 		assertEquals(URI.create("http://localhost:4001"), acmeConfig.getOcspResponderUrl());
 		assertTrue(acmeConfig.isPreferCrls());
-		assertEquals(acmeConfig.getHTTPConnectTimeout(), AcmeConstants.HTTP_CONNECT_TIMEOUT_DEFAULT);
-		assertEquals(acmeConfig.getHTTPReadTimeout(), AcmeConstants.HTTP_READ_TIMEOUT_DEFAULT);
+		assertEquals(AcmeConstants.HTTP_CONNECT_TIMEOUT_DEFAULT, acmeConfig.getHTTPConnectTimeout());
+		assertEquals(AcmeConstants.HTTP_READ_TIMEOUT_DEFAULT, acmeConfig.getHTTPReadTimeout());
+		assertEquals(45000, acmeConfig.getStartReadyTimeout().longValue());
+		assertEquals(17000, acmeConfig.getRenewCertMin());
 
 		/*
-		 * Check custom config on httpConnect/httpRead
+		 * Check custom config on httpConnect/httpRead/startReadytimeout
 		 */
 		properties.put(AcmeConstants.TRANSPORT_CONFIG + ".0." + AcmeConstants.HTTP_CONNECT_TIMEOUT, 17000L);
 		properties.put(AcmeConstants.TRANSPORT_CONFIG + ".0." + AcmeConstants.HTTP_READ_TIMEOUT, 60L);
+		properties.put(AcmeConstants.START_READY_TIMEOUT, -1L);
+		properties.put(AcmeConstants.RENEW_CERT_MIN, -1L);
 		acmeConfig = new AcmeConfig(properties);
 		assertEquals(17000, acmeConfig.getHTTPConnectTimeout().intValue());
 		assertEquals(60, acmeConfig.getHTTPReadTimeout().intValue());
+		assertEquals(AcmeConstants.RENEW_CERT_MIN_DEFAULT, acmeConfig.getRenewCertMin());
 
 		/*
-		 * Check zero on httpConnect/httpRead
+		 * Check zero on httpConnect/httpRead/startReadytimeout
 		 */
 		properties.put(AcmeConstants.TRANSPORT_CONFIG + ".0." + AcmeConstants.HTTP_CONNECT_TIMEOUT, 0L);
 		properties.put(AcmeConstants.TRANSPORT_CONFIG + ".0." + AcmeConstants.HTTP_READ_TIMEOUT, 0L);
+		properties.put(AcmeConstants.START_READY_TIMEOUT, 0L);
+		properties.put(AcmeConstants.RENEW_CERT_MIN, 0L);
 		acmeConfig = new AcmeConfig(properties);
 		assertEquals(0, acmeConfig.getHTTPConnectTimeout().intValue());
 		assertEquals(0, acmeConfig.getHTTPReadTimeout().intValue());
+		assertEquals(AcmeConstants.START_READY_TIMEOUT_DEFAULT, acmeConfig.getStartReadyTimeout());
+
 	}
 
 	@Test

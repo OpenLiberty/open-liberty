@@ -1,0 +1,50 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMH
+#COMPONENTNAMEFOR CWMMH MicroProfile Health API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Health Impl -  range is 0000-0999
+# The range 0000-0049 has been reserved for messages issued above the HealthCheckExecutor within the call stack
+# The range 0050-0099 has been reserved for messages issued at or below the HealthCheckExecutor within the call stack
+#-----------------------------------------------------------------------------------------------------------------------------
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Health error message
+#-----------------------------------------------------------------------------------------------------------------------------
+OSGI_SERVICE_ERROR=CWMMH0000E: Le service OSGi {0} n'est pas disponible.
+OSGI_SERVICE_ERROR.explanation=Cette erreur de serveur interne est \u00e9mise car le service sp\u00e9cifi\u00e9 n'est pas disponible.
+OSGI_SERVICE_ERROR.useraction=Red\u00e9marrez le serveur en utilisant l'option clean.
+
+# The HealthCheck bean call method had an exception
+healthcheck.bean.call.exception.CWMMH0050E=CWMMH0050E: La m\u00e9thode HealthCheck {0} dans l'application {1} du module {2} a g\u00e9n\u00e9r\u00e9 une exception {3} avec le message suivant : {4}
+healthcheck.bean.call.exception.CWMMH0050E.explanation=La m\u00e9thode d'appel sp\u00e9cifi\u00e9e a g\u00e9n\u00e9r\u00e9 une exception.
+healthcheck.bean.call.exception.CWMMH0050E.useraction=V\u00e9rifiez votre m\u00e9thode d'appel dans le bean HealthCheck pour identifier l'exception qui s'est produite.
+
+# The HealthCheck bean call method had a DOWN outcome
+healthcheck.application.down.CWMMH0052W=CWMMH0052W: La classe {0} qui impl\u00e9mente HealthCheckResponse dans l'application {1} dans le module {2} a pour statut {3} avec les donn\u00e9es suivantes : {4}.
+healthcheck.application.down.CWMMH0052W.explanation=Le statut DOWN peut entra\u00eener une action du service de surveillance sur ce serveur.
+healthcheck.application.down.CWMMH0052W.useraction=Aucune action utilisateur n'est requise.  Cet avertissement est un enregistrement du statut DOWN.
+
+# The Readiness HealthCheck had a DOWN outcome, when applications are not started yet
+readiness.healthcheck.applications.not.started.down.CWMMH0053W=CWMMH0053W: Le bilan de sant\u00e9 permettant de savoir si le produit est pr\u00eat a signal\u00e9 un statut global DOWN car les applications suivantes n'ont pas encore d\u00e9marr\u00e9 : {0}
+readiness.healthcheck.applications.not.started.down.CWMMH0053W.explanation=Les applications sp\u00e9cifi\u00e9es n'ont pas encore compl\u00e8tement d\u00e9marr\u00e9 et ne peuvent pas traiter de demandes ; par cons\u00e9quent, le bilan de sant\u00e9 permettant de savoir si le produit est pr\u00eat a signal\u00e9 un statut DOWN.
+readiness.healthcheck.applications.not.started.down.CWMMH0053W.useraction=Aucun action utilisateur n'est requise. Patientez jusqu'\u00e0 ce que les applications d\u00e9marrent. Cet avertissement est un enregistrement du statut DOWN.

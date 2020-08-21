@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,24 +30,22 @@ import com.ibm.ws.annocache.targets.cache.internal.TargetCacheImpl_DataApps;
 import com.ibm.ws.annocache.targets.cache.internal.TargetCacheImpl_DataMod;
 import com.ibm.ws.annocache.targets.cache.internal.TargetCacheImpl_DataQueries;
 import com.ibm.ws.annocache.targets.delta.internal.TargetsDeltaImpl;
-import com.ibm.ws.annocache.util.internal.UtilImpl_BidirectionalMap;
 import com.ibm.ws.annocache.util.internal.UtilImpl_EmptyBidirectionalMap;
 import com.ibm.ws.annocache.util.internal.UtilImpl_EmptyInternMap;
 import com.ibm.ws.annocache.util.internal.UtilImpl_IdentityStringSet;
 import com.ibm.ws.annocache.util.internal.UtilImpl_InternMap;
 import com.ibm.ws.annocache.util.internal.UtilImpl_NonInternSet;
 import com.ibm.ws.annocache.util.internal.UtilImpl_Utils;
+import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
+import com.ibm.wsspi.anno.util.Util_InternMap.ValueType;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.annocache.targets.AnnotationTargets_Exception;
 import com.ibm.wsspi.annocache.targets.AnnotationTargets_OpCodes;
 import com.ibm.wsspi.annocache.targets.AnnotationTargets_Targets;
-import com.ibm.wsspi.annocache.targets.cache.TargetCache_Options;
 import com.ibm.wsspi.annocache.targets.cache.TargetCache_InternalConstants.QueryType;
+import com.ibm.wsspi.annocache.targets.cache.TargetCache_Options;
 import com.ibm.wsspi.annocache.util.Util_BidirectionalMap;
 import com.ibm.wsspi.annocache.util.Util_InternMap;
-
-import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
-import com.ibm.wsspi.anno.util.Util_InternMap.ValueType;
 
 /*
  * Summary of scan policies:
@@ -244,7 +242,7 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
         return getFactory().getUtilFactory().createEmptyInternMap(valueType, mapName);
     }
 
-    protected UtilImpl_BidirectionalMap createBidiMap(String holderTag, UtilImpl_InternMap holderInternMap,
+    protected Util_BidirectionalMap createBidiMap(String holderTag, UtilImpl_InternMap holderInternMap,
                                                       String heldTag, UtilImpl_InternMap heldInternMap) {
         return getFactory().getUtilFactory().createBidirectionalMap(holderTag, holderInternMap, heldTag, heldInternMap);
     }

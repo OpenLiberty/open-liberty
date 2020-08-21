@@ -558,8 +558,7 @@ ssl.create.certificate.end.useraction=Nincs teend\u0151.
 #--------------------------------------------------------------------------------------------------
 ssl.create.certificate.error=CWPKI0804E: SSL tan\u00fas\u00edtv\u00e1ny l\u00e9trehoz\u00e1si hiba. {0}
 ssl.create.certificate.error.explanation=Az SSL tan\u00fas\u00edtv\u00e1nyt nem lehet l\u00e9trehozni a megadott helyen.
-ssl.create.certificate.error.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a hely a kiszolg\u00e1l\u00f3 feldolgoz sz\u00e1m\u00e1ra hozz\u00e1f\u00e9rhet\u0151. Az esetleges FFDC-k a kulcsok el\u0151\u00e1ll\u00edt\u00e1sa vagy bet\u00f6lt\u00e9se k\u00f6zben bek\u00f6vetkezett s\u00falyos hib\u00e1t jelezhetnek.
-
+ssl.create.certificate.error.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a hely a kiszolg\u00e1l\u00f3 feldolgoz sz\u00e1m\u00e1ra hozz\u00e1f\u00e9rhet\u0151. A kulcsok el\u0151\u00e1ll\u00edt\u00e1s\u00e1val vagy bet\u00f6lt\u00e9s\u00e9vel kapcsolatos tov\u00e1bbi hib\u00e1k\u00e9rt tekintse \u00e1t az FFDC napl\u00f3kat.
 # Messages for the CWPKI0804E message descriptor {0}.
 ssl.create.certificate.error.reason1=Nem lehet l\u00e9trehozni az SSL kulcsf\u00e1jlt: {0}
 ssl.create.certificate.error.reason2=A hiba a k\u00f6vetkez\u0151: {0}
@@ -667,4 +666,8 @@ ssl.using.cacerts.CWPKI0827I.useraction=Nincs teend\u0151.
 ssl.client.handshake.cacerts.error.CWPKI0828E=CWPKI0828E: A trustDefaultCerts attrib\u00fatum enged\u00e9lyezett, de az alap\u00e9rtelmezett tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3 haszn\u00e1lat\u00e1val nem j\u00f6tt l\u00e9tre a megb\u00edzhat\u00f3s\u00e1g. Az SSL egyeztet\u00e9s kiv\u00e9tel r\u00e9szletes hiba\u00fczenete: {0}
 ssl.client.handshake.cacerts.error.CWPKI0828E.explanation=Az alap\u00e9rtelmezett tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3 nincs megfelel\u0151en be\u00e1ll\u00edtva megb\u00edzhat\u00f3s\u00e1g kialak\u00edt\u00e1s\u00e1hoz. 
 ssl.client.handshake.cacerts.error.CWPKI0828E.useraction=Tekintse \u00e1t a r\u00e9szletes hiba\u00fczenetet, hogy meg\u00e1llap\u00edthassa, mit kell m\u00f3dos\u00edtani a konfigur\u00e1ci\u00f3ban.
+# -------------------------------------------------------------------------------------------------
+ssl.update.certificate.error=CWPKI0829E: SSL tan\u00fas\u00edtv\u00e1nyfriss\u00edt\u00e9si hiba. {0}
+ssl.update.certificate.error.explanation=Az SSL tan\u00fas\u00edtv\u00e1ny nem friss\u00edthet\u0151 a megadott helyen.
+ssl.update.certificate.error.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a hely a kiszolg\u00e1l\u00f3 feldolgoz sz\u00e1m\u00e1ra hozz\u00e1f\u00e9rhet\u0151.  A kulcsok el\u0151\u00e1ll\u00edt\u00e1s\u00e1val vagy bet\u00f6lt\u00e9s\u00e9vel kapcsolatos tov\u00e1bbi hib\u00e1k\u00e9rt tekintse \u00e1t az FFDC napl\u00f3kat.
 # -------------------------------------------------------------------------------------------------

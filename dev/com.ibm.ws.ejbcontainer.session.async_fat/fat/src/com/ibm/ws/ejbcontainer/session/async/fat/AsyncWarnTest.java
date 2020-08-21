@@ -145,7 +145,7 @@ public class AsyncWarnTest extends FATServletClient {
         isCheckTrue = false;
         isEJBTrace = false;
         isMetaDataTrace = false;
-        isDefault = true;
+        isDefault = false;
     }
 
     public void setupTest(String testType) throws Exception {

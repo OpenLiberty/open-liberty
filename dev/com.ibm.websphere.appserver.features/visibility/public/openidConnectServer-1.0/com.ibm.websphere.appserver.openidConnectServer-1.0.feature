@@ -20,7 +20,7 @@ Subsystem-Endpoint-Icons: clientManagement=OSGI-INF/clientManagement_142.png,OSG
 -bundles=com.ibm.ws.net.oauth.jsontoken.1.1-r42, \
   com.ibm.ws.org.joda.time.1.6.2, \
   com.ibm.ws.com.google.guava, \
-  com.ibm.ws.org.apache.commons.codec.1.4, \
+  com.ibm.ws.org.apache.commons.codec, \
   com.ibm.ws.org.apache.commons.logging.1.0.3, \
   com.ibm.ws.security.openidconnect.server, \
   com.ibm.ws.security.oauth.2.0.jwt, \

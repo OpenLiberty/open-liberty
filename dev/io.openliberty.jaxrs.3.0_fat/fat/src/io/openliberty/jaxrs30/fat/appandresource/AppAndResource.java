@@ -10,11 +10,14 @@
  *******************************************************************************/
 package io.openliberty.jaxrs30.fat.appandresource;
 
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Application;
+import java.util.Arrays;
+
+import jakarta.ws.rs.ApplicationPath;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.Application;
 
 @ApplicationPath("/app")
 @Path("/path")
@@ -25,5 +28,25 @@ public class AppAndResource extends Application {
     public String foo() {
         System.out.println("foo invoked!");
         return "foo";
+    }
+    
+    @GET
+    @Path("/queryArrays")
+    public long queryArrays(@QueryParam("stringArray") String[] stringArray) {
+        return Arrays.stream(stringArray).filter(this::startsWithAVowel).count();
+    }
+
+    private boolean startsWithAVowel(String s) {
+        if (s == null || s.length() < 1) {
+            return false;
+        }
+        switch(s.charAt(0)) {
+            case 'a':
+            case 'e':
+            case 'i':
+            case 'o':
+            case 'u': return true;
+        }
+        return false;
     }
 }

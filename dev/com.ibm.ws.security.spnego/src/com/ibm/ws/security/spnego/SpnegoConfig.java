@@ -39,6 +39,8 @@ public interface SpnegoConfig {
 
     public String getNtlmTokenReceivedErrorPageURL();
 
+    public String getSpnegoAuthenticationErrorPageURL();
+
     public boolean isTrimKerberosRealmNameFromPrincipal();
 
     public boolean isIncludeClientGSSCredentialInSubject();

@@ -44,6 +44,7 @@ import com.ibm.ws.microprofile.faulttolerance_fat.cdi.SyncBulkheadServlet;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.TimeoutServlet;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
@@ -83,7 +84,7 @@ public class FaultToleranceMainTest extends FATServletClient {
     @Rule
     public AnnotationFilter filter = AnnotationFilter
                     .requireAnnotations(BasicTest.class)
-                    .forAllRepeatsExcept(RepeatFaultTolerance.MP33_FEATURES_ID)
+                    .forAllRepeatsExcept(RepeatFaultTolerance.MP40_FEATURES_ID)
                     .inModes(TestMode.LITE);
 
     @BeforeClass
@@ -169,6 +170,7 @@ public class FaultToleranceMainTest extends FATServletClient {
         }
     }
 
+    @SkipForRepeat(RepeatFaultTolerance.MP40_FEATURES_ID) // FT 3.0 does not close executors until the application shuts down
     @Test
     public void testExecutorsClose() throws Exception {
 

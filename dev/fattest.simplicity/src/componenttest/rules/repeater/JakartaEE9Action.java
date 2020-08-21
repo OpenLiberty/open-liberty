@@ -57,23 +57,25 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                                                  "webProfile-9.0",
                                                  "jakartaeeClient-9.0",
                                                  "componenttest-2.0", // replaces "componenttest-1.0"
+                                                 "txtest-2.0",
                                                  "appSecurity-4.0",
                                                  "beanValidation-3.0",
                                                  "cdi-3.0",
                                                  "concurrent-2.0",
+                                                 "connectors-2.0",
                                                  "ejb-4.0",
                                                  "ejbHome-4.0",
                                                  "ejbLite-4.0",
                                                  "ejbPersistentTimer-4.0",
-                                                 "ejbRemote-4.0",
                                                  "el-4.0",
+                                                 "enterpriseBeansRemote-4.0",
+                                                 "enterpriseBeansTest-2.0",
                                                  "jacc-2.0",
                                                  "jaspic-2.0",
                                                  "javaMail-2.0",
                                                  "jaxb-3.0",
                                                  "jaxrs-3.0",
                                                  "jaxrsClient-3.0",
-                                                 "jca-2.0",
                                                  "jpa-3.0",
                                                  "jsonp-2.0",
                                                  "jsonb-2.0",
@@ -82,6 +84,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                                                  "jsf-3.0",
                                                  "jsp-3.0",
                                                  "managedBeans-2.0",
+                                                 "mdb-4.0",
                                                  "servlet-5.0",
                                                  "websocket-2.0"
     };
@@ -91,6 +94,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
     public JakartaEE9Action() {
         // Remove the EE7 and EE8 features; replace them with the EE9 features
         super(EE9_FEATURE_SET);
+        removeFeatures(EE6FeatureReplacementAction.EE6_FEATURE_SET);
         removeFeatures(EE7FeatureReplacementAction.EE7_FEATURE_SET);
         removeFeatures(EE8FeatureReplacementAction.EE8_FEATURE_SET);
         forceAddFeatures(false);
