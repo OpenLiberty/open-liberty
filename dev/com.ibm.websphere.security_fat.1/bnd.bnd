@@ -19,7 +19,7 @@ src: \
 
 fat.project: true
 
-#tested.features: el-4.0, appsecurity-4.0, servlet-5.0, cdi-3.0, jsp-3.0, jaxb-3.0, jaspic-2.0, jacc-2.0
+#tested.features: el-4.0, appsecurity-4.0, servlet-5.0, cdi-3.0, pages-3.0, jaxb-3.0, jaspic-2.0, jacc-2.0
 
 -buildpath: \
   com.ibm.websphere.javaee.servlet.3.1;version=latest,\

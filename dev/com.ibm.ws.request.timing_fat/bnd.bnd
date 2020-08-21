@@ -20,7 +20,7 @@ fat.project: true
 
 tested.features: \
 	servlet-5.0,\
-	jsp-3.0,\
+	pages-3.0,\
 	el-4.0
 
 -buildpath: \

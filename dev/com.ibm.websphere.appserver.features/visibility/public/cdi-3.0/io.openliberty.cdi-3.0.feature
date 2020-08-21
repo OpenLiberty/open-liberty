@@ -36,7 +36,7 @@ IBM-API-Package: jakarta.decorator;  type="spec", \
 IBM-SPI-Package: io.openliberty.cdi.spi;type="ibm-spi"
 IBM-ShortName: cdi-3.0
 Subsystem-Name: Jakarta Contexts and Dependency Injection 3.0
--features=io.openliberty.jakarta.jsp-3.0, \
+-features=io.openliberty.jakarta.pages-3.0, \
  com.ibm.websphere.appserver.containerServices-1.0, \
  io.openliberty.jakarta.persistence-3.0, \
  io.openliberty.jakartaeePlatform-9.0, \

@@ -82,7 +82,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                                                  "jsonpContainer-2.0",
                                                  "jsonbContainer-2.0",
                                                  "faces-3.0",
-                                                 "jsp-3.0",
+                                                 "pages-3.0",
                                                  "managedBeans-2.0",
                                                  "mdb-4.0",
                                                  "messaging-3.0",
@@ -208,7 +208,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
      * name the initially transformed application. However,
      * that application is renamed to the initial application name.
      *
-     * @param appPath The application path of file to be transformed to Jakarta
+     * @param appPath    The application path of file to be transformed to Jakarta
      * @param newAppPath The application path of the transformed file (or <code>null<code>)
      */
     public static void transformApp(Path appPath, Path newAppPath) {

@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=io.openliberty.jsp-3.0
+symbolicName=io.openliberty.pages-3.0
 visibility=public
 singleton=true
 IBM-App-ForceRestart: install, \
@@ -29,10 +29,10 @@ IBM-API-Package: jakarta.servlet.jsp;  type="spec", \
  org.apache.el;  type="internal", \
  org.apache.el.lang;  type="internal", \
  org.apache.jasper.el;  type="internal"
-IBM-ShortName: jsp-3.0
+IBM-ShortName: pages-3.0
 IBM-SPI-Package: com.ibm.wsspi.jsp.taglib.config
 Subsystem-Name: Jakarta Server Pages 3.0
--features=io.openliberty.jakarta.jsp-3.0, \
+-features=io.openliberty.jakarta.pages-3.0, \
  com.ibm.websphere.appserver.servlet-5.0, \
  io.openliberty.el-4.0, \
  com.ibm.websphere.appserver.eeCompatible-9.0
