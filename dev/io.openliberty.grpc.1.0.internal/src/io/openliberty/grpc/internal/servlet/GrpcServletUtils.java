@@ -12,7 +12,9 @@ package io.openliberty.grpc.internal.servlet;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +29,7 @@ import io.grpc.BindableService;
 import io.grpc.ServerInterceptor;
 import io.grpc.ServerInterceptors;
 import io.grpc.servlet.ServletServerBuilder;
+import io.openliberty.grpc.annotation.GrpcService;
 import io.openliberty.grpc.internal.GrpcManagedObjectProvider;
 import io.openliberty.grpc.internal.GrpcMessages;
 import io.openliberty.grpc.internal.config.GrpcServiceConfigHolder;
@@ -92,35 +95,87 @@ public class GrpcServletUtils {
 	}
 
 	/**
-	 * @param service name
-	 * @return the list of server interceptors registered for a given service, or an
-	 *         empty list if none are registered
+	 * @param interceptorClassNames
+	 * @param interceptors
 	 */
-	public static List<ServerInterceptor> getUserInterceptors(String service) {
-		List<ServerInterceptor> interceptors = new LinkedList<ServerInterceptor>();
-		String interceptorListString = GrpcServiceConfigHolder.getServiceInterceptors(service);
-
-		if (interceptorListString != null) {
-			// TODO: wildcard support
-			List<String> items = Arrays.asList(interceptorListString.split("\\s*,\\s*"));
-			if (!items.isEmpty()) {
-				for (String className : items) {
-					try {
-						// TODO: cache interceptors?
-						ServerInterceptor interceptor = (ServerInterceptor) GrpcManagedObjectProvider.createObjectFromClassName(className);
-						if (interceptor != null) {
-							interceptors.add(interceptor);
-						}
-					} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-							| IllegalArgumentException | InvocationTargetException | NoSuchMethodException
-							| SecurityException | ManagedObjectException e) {
-						Tr.warning(tc, "invalid.serverinterceptor", e.getMessage());
-					}
+	private static void getServerXmlInterceptors(List<String> interceptorClassNames, List<ServerInterceptor> interceptors) {
+		for (String className : interceptorClassNames) {
+			try {
+				ServerInterceptor interceptor = (ServerInterceptor) GrpcManagedObjectProvider.createObjectFromClassName(className);
+				if (interceptor != null) {
+					interceptors.add(interceptor);
 				}
+			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+					| IllegalArgumentException | InvocationTargetException | NoSuchMethodException
+					| SecurityException | ManagedObjectException e) {
+				Tr.warning(tc, "invalid.serverinterceptor", e.getMessage());
 			}
 		}
-		return interceptors;
 	}
+
+	/**
+	 * @param annotationInterceptors
+	 * @param interceptors
+	 */
+	private static void getAnnotationInterceptors(Class<? extends ServerInterceptor>[] annotationInterceptors, List<ServerInterceptor> interceptors) {
+		for (Class<? extends ServerInterceptor> interceptorClass : annotationInterceptors) {
+			ServerInterceptor interceptor;
+			try {
+				interceptor = (ServerInterceptor) GrpcManagedObjectProvider.createObjectFromClass(interceptorClass);
+				interceptors.add(interceptor);
+			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+					| InvocationTargetException | NoSuchMethodException | SecurityException
+					| ManagedObjectException e) {
+				Tr.warning(tc, "invalid.serverinterceptor", e.getMessage());
+			}
+		}
+	}
+
+	/**
+	 * @param String service name
+	 * @param BindableService service instance
+	 * 
+	 * @return the (merged) list of server interceptors registered in server.xml and via @GrpcService
+	 */
+	private static List<ServerInterceptor> getUserInterceptors(String serviceName, BindableService service) {
+
+		List<ServerInterceptor> interceptors = new LinkedList<ServerInterceptor>();
+
+		// get the string containing any class names of server interceptors defined in server.xml via <gprc serviceInterceptors="..."/>
+		String interceptorListString = GrpcServiceConfigHolder.getServiceInterceptors(serviceName);
+
+		// get the set of classes registered to this class via @GrpcService(interceptors="...")
+		Class<? extends ServerInterceptor>[] annotationInterceptors = null;
+		if (service.getClass().getAnnotation(GrpcService.class) != null) {
+			annotationInterceptors = service.getClass().getAnnotation(GrpcService.class).interceptors();
+		}
+
+		if (interceptorListString != null) {
+			List<String> items = new ArrayList<String>(Arrays.asList(interceptorListString.split("\\s*,\\s*")));
+			if (items != null && !items.isEmpty()) {
+				// filter out interceptors that are also defined via @GrpcService
+				if (annotationInterceptors != null) {
+					for (Class<? extends ServerInterceptor> clazz : annotationInterceptors) {
+						String className = clazz.getName();
+						if (items.contains(className)) {
+							items.remove(className);
+						}
+					}
+				}
+				getServerXmlInterceptors(items, interceptors);
+			}
+		}
+		if (annotationInterceptors != null && annotationInterceptors.length > 0) {
+			getAnnotationInterceptors(annotationInterceptors, interceptors);
+		}
+		// flip the interceptor list so that @GrpcService interceptors will run after <grpc/> interceptors
+		if (!interceptors.isEmpty()) {
+			Collections.reverse(interceptors);
+		}
+		return interceptors;
+
+	}
+
 
 	/**
 	 * Register grpc services with a ServletServerBuilder and apply liberty-specific
@@ -135,7 +190,8 @@ public class GrpcServletUtils {
 			String serviceName = service.bindService().getServiceDescriptor().getName();
 
 			// set any user-defined server interceptors and add the service
-			List<ServerInterceptor> interceptors = GrpcServletUtils.getUserInterceptors(serviceName);
+			List<ServerInterceptor> interceptors = getUserInterceptors(serviceName, service);
+
 			// add Liberty auth interceptor to every service
 			interceptors.add(authInterceptor);
 			// add monitoring interceptor to every service
@@ -174,7 +230,7 @@ public class GrpcServletUtils {
 			}
 		} catch (Exception e) {
 			// an exception can happen if the monitoring package is not loaded 
-        }
+		}
 
 		return interceptor;
 	}
