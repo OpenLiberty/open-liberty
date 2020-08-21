@@ -4,14 +4,14 @@
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
     http://www.eclipse.org/legal/epl-v10.html
-   
+
     Contributors:
         IBM Corporation - initial API and implementation
  -->
 <server description="FormLogin_ReadListener">
 
     <featureManager>
-        <feature>jaspic-1.1</feature>
+        <feature>appSecurity-2.0</feature>
         <feature>servlet-3.1</feature>
         <feature>jsp-2.3</feature>
     </featureManager>

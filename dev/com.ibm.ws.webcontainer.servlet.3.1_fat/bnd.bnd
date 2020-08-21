@@ -13,47 +13,49 @@ bVersion=1.0
 
 src:\
     fat/src,\
-	test-applications/CDI12Test.jar/src,\
-	test-applications/CDI12Test.war/src,\
-	test-applications/CDI12TestV2.jar/src,\
-	test-applications/CDI12TestV2Counter.war/src,\
-	test-applications/CDI12TestV2Currency.war/src,\
-	test-applications/CDI12TestV2Dynamic.war/src,\
-	test-applications/CDI12TestV2Injection.war/src,\
-	test-applications/CDI12TestV2Listeners.war/src,\
-	test-applications/CDI12TestV2NoInjection.war/src,\
-	test-applications/CDI12TestV2Upgrade.war/src,\
-	test-applications/FormLogin_ReadListener.war/src,\
-	test-applications/LibertyReadListenerFilterTest.war/src,\
-	test-applications/LibertyReadWriteListenerTest.war/src,\
-	test-applications/LibertyWriteListenerFilterTest.war/src,\
-	test-applications/multiNBReadApp.war/src,\
-	test-applications/ServletcontextAddListener.war/src,\
-	test-applications/ServletContextCreateListener.war/src,\
-	test-applications/SessionIdListener.jar/src,\
-	test-applications/SessionIdListenerAddListener.war/src,\
-	test-applications/SingletonStore.jar/src,\
-	test-applications/TestHttpSessionAttrListener.war/src,\
-	test-applications/TestMetadataComplete.jar/src,\
-	test-applications/TestMetadataComplete.war/src,\
-	test-applications/TestMetadataCompleteExcludedFragment.jar/src,\
-	test-applications/TestProgrammaticListenerAddition.jar/src,\
-	test-applications/TestServlet31.jar/src,\
-	test-applications/TestServlet31.war/src,\
-	test-applications/TestServlet31AltVHost1.war/src,\
-	test-applications/TestServlet31AltVHost2.war/src,\
-	test-applications/TestServletMapping.war/src,\
-	test-applications/TestServletMappingAnno.war/src,\
+    test-applications/CDI12Test.jar/src,\
+    test-applications/CDI12Test.war/src,\
+    test-applications/CDI12TestV2.jar/src,\
+    test-applications/CDI12TestV2Counter.war/src,\
+    test-applications/CDI12TestV2Currency.war/src,\
+    test-applications/CDI12TestV2Dynamic.war/src,\
+    test-applications/CDI12TestV2Injection.war/src,\
+    test-applications/CDI12TestV2Listeners.war/src,\
+    test-applications/CDI12TestV2NoInjection.war/src,\
+    test-applications/CDI12TestV2Upgrade.war/src,\
+    test-applications/FormLogin_ReadListener.war/src,\
+    test-applications/LibertyReadListenerFilterTest.war/src,\
+    test-applications/LibertyReadWriteListenerTest.war/src,\
+    test-applications/LibertyWriteListenerFilterTest.war/src,\
+    test-applications/multiNBReadApp.war/src,\
+    test-applications/ServletcontextAddListener.war/src,\
+    test-applications/ServletContextCreateListener.war/src,\
+    test-applications/SessionIdListener.jar/src,\
+    test-applications/SessionIdListenerAddListener.war/src,\
+    test-applications/SingletonStore.jar/src,\
+    test-applications/TestHttpSessionAttrListener.war/src,\
+    test-applications/TestMetadataComplete.jar/src,\
+    test-applications/TestMetadataComplete.war/src,\
+    test-applications/TestMetadataCompleteExcludedFragment.jar/src,\
+    test-applications/TestProgrammaticListenerAddition.jar/src,\
+    test-applications/TestServlet31.jar/src,\
+    test-applications/TestServlet31.war/src,\
+    test-applications/TestServlet31AltVHost1.war/src,\
+    test-applications/TestServlet31AltVHost2.war/src,\
+    test-applications/TestServletMapping.war/src,\
+    test-applications/TestServletMappingAnno.war/src,\
 
 fat.project: true
 
 # Define additional tested features that are NOT present any any XML files in this bucket.
 tested.features:\
-	servlet-4.0,\
-	cdi-2.0,\
-	servlet-5.0,\
-	jsp-3.0,\
-	cdi-3.0,\
+    servlet-4.0,\
+    cdi-2.0,\
+    servlet-5.0,\
+    jsp-3.0,\
+    cdi-3.0,\
+    appsecurity-3.0,\
+    appsecurity-4.0,\
 
 -buildpath: \
     com.ibm.websphere.javaee.cdi.1.2;version=latest,\
