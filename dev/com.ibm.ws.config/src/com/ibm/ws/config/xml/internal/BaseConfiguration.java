@@ -23,6 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.config.admin.ConfigID;
 import com.ibm.ws.config.xml.internal.XMLConfigParser.MergeBehavior;
 import com.ibm.wsspi.kernel.service.location.WsResource;
@@ -42,7 +43,8 @@ class BaseConfiguration {
     // Only SimpleElements (corresponding directly to server xml elements) are stored here
     protected final Map<String, ConfigurationList<SimpleElement>> configurationMap = new ConcurrentHashMap<String, ConfigurationList<SimpleElement>>();
 
-    public BaseConfiguration() {}
+    public BaseConfiguration() {
+    }
 
     protected ConfigurationList<SimpleElement> getConfigurationList(String name) {
         ConfigurationList<SimpleElement> list = configurationMap.get(name);
@@ -286,8 +288,8 @@ class BaseConfiguration {
     /**
      * Get a Map of FactoryElements indexed by ConfigID
      *
-     * @param pid The full pid value (must not be null)
-     * @param alias The alias value (may be null)
+     * @param pid       The full pid value (must not be null)
+     * @param alias     The alias value (may be null)
      * @param defaultId If not null, elements in the configuration that don't have an ID will use this
      * @return a Map of FactoryElement instances indexed by ConfigID
      * @throws ConfigMergeException
@@ -320,13 +322,13 @@ class BaseConfiguration {
                 if (!defaultElements.isEmpty()) {
                     FactoryElement merged = new FactoryElement(defaultElements, pid, elementId.getId());
                     // Remove the ID from the list of attributes if its using the non-default ID and
-		    // the element its merging with is using a default ID.
+                    // the element its merging with is using a default ID.
                     // If it's specified, it will be added back by the configured values.
                     if (defaultElements.get(0).isUsingNonDefaultId() == true && entry.getValue().get(0).isUsingNonDefaultId() == false) {
                         merged.attributes.remove(XMLConfigConstants.CFG_INSTANCE_ID);
-			if (tc.isDebugEnabled()) {
-			    Tr.debug(tc, "Removing default id from list of attributes");
-			}
+                        if (tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Removing default id from list of attributes");
+                        }
                     }
                     merged.merge(entry.getValue());
                     mergedMap.put(elementId, merged);
@@ -362,7 +364,7 @@ class BaseConfiguration {
         return Collections.emptyMap();
     }
 
-    public void addVariable(ConfigVariable variable) {
+    public void addVariable(@Sensitive ConfigVariable variable) {
         getVariableEntry(variable.getName()).add(variable);
     }
 
@@ -375,6 +377,7 @@ class BaseConfiguration {
         return variableList;
     }
 
+    @Sensitive
     public Map<String, ConfigVariable> getVariables() {
         HashMap<String, ConfigVariable> variableMap = new HashMap<String, ConfigVariable>();
         for (Map.Entry<String, List<ConfigVariable>> entry : variables.entrySet()) {

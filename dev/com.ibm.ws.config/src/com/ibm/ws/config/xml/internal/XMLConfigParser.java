@@ -30,6 +30,7 @@ import com.ibm.websphere.config.ConfigParserException;
 import com.ibm.websphere.config.ConfigValidationException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.config.xml.internal.DefaultConfiguration.DefaultConfigFile;
 import com.ibm.ws.config.xml.internal.validator.XMLConfigValidator;
@@ -437,6 +438,7 @@ public class XMLConfigParser {
         return MergeBehavior.MERGE;
     }
 
+    @Sensitive
     private ConfigVariable parseVariable(DepthAwareXMLStreamReader parser, String docLocation) throws ConfigParserTolerableException {
         String variableName = null;
         String variableValue = null;
@@ -467,7 +469,7 @@ public class XMLConfigParser {
             throw new ConfigParserTolerableException();
         }
 
-        return new ConfigVariable(variableName, variableValue, variableDefault, behaviorStack.getLast(), docLocation);
+        return new ConfigVariable(variableName, variableValue, variableDefault, behaviorStack.getLast(), docLocation, false);
     }
 
     @FFDCIgnore(XMLStreamException.class)
