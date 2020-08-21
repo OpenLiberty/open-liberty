@@ -1,0 +1,68 @@
+/*
+ * This task is meant to perform a simple verification of all of the bundle jars that have been
+ * created for the liberty image. It runs as part of the Package Verification build. The check
+ * it performs is to simply inspect each bundle jar, and verify that if there is at least one
+ * file with translatable messages in it, there is a file for every language.
+*/
+task verifyBundleNLS {
+    doLast {
+        println "open-liberty verifyBundleNLS"
+
+        // This is the top level reference to each of the jar files in the build image
+        FileTree bundleJars= fileTree(dir: "${rootDir}/../../../wlp/lib/");
+        bundleJars.include "**/*.jar"
+
+        /* This is the String that contains all of the projects that it is safe to IGNORE message
+         * verification failures for. It is loaded from the properties file messageVerifyIgnores.
+         */
+        String ignoresList = new File("${rootDir}/../../resources/configuration/messageVerifyIgnores").text
+
+        // This string holds all the projects with errors
+        String badProjectsProps = "";
+        String badProjectsNLS = "";
+
+        // With the list of bundle jars, loop over each one to perform the check
+        bundleJars.each { File jarFile ->
+            FileTree jarTree = zipTree( jarFile )
+
+            // Find all the NLS metatype.properties files based on a regex
+            FileTree metatypeFiles = jarTree.matching {
+                include 'OSGI-INF/l10n/**/*'
+            }
+
+            // Store the name of the jar file being examined, and strip off the version string and file type
+            String jarName = jarFile.getName()
+            jarName = jarName.replaceFirst( "_[0-9].[0-9]+.[0-9]+", "" )
+            jarName = jarName.replaceFirst( ".jar", "")
+            jarName += "\n"
+
+            // Check the size of the tree to ensure every english file has 14 translations for it
+            if( metatypeFiles.getFiles().size() % 15 != 0 && !ignoresList.contains( jarName ) ) {
+                if( badProjectsProps.isAllWhitespace() )
+                    badProjectsProps += jarFile.getName()
+                else
+                    badProjectsProps += ", " + jarFile.getName()
+            }
+
+            // Find all the NLS .nlsprops files based on a regex
+            // Note that the .nlsprops files have been compiled, so they will be .class files in the jar
+            FileTree nlspropsFiles = jarTree.matching {
+                include '**/resources/[^/]*.class'
+            }
+
+            // Check the size of the tree to ensure every english file has 14 translations for it
+            if( nlspropsFiles.getFiles().size() % 15 != 0 && !ignoresList.contains( jarName ) ) {
+                if( badProjectsNLS.isAllWhitespace() )
+                    badProjectsNLS += jarFile.getName()
+                else
+                    badProjectsNLS += ", " + jarFile.getName()
+            }
+        }
+
+        // If either of the checks have failures in them, fail the task
+        if( !badProjectsProps.isAllWhitespace() )
+            throw new GradleException("Missing metatype.properties files: " + badProjectsProps )
+        if( !badProjectsNLS.isAllWhitespace() )
+            throw new GradleException("Missing nlsprops files: " + badProjectsNLS )
+    }
+}

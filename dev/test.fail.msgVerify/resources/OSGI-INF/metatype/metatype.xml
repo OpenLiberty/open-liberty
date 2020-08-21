@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"  
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+<!-- Delete this comment: 
+     For each component in your configuration (in the bnd file): 
+     * If config is required, add configuration-policy:=require
+     * If config is not required, add configuration-policy:=ignore
+     * If config may or may not be used, use configuration-policy:=optional
+     
+     If no components in the bundle use config (all are ignore), delete the metatype.xml file
+     entirely.
+      -->
+
+    <OCD name="%example" description="%example.desc" id="build.example.project" ibm:alias="example">
+        <AD name="%someProperty" description="%someProperty.desc"
+            id="someProperty" required="false" type="String" default="String value" />
+    </OCD>
+
+    <Designate pid="build.example.project">
+        <Object ocdref="build.example.project" />
+    </Designate>
+  
+</metatype:MetaData>
