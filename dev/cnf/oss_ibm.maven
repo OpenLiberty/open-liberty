@@ -46,6 +46,7 @@ com.ibm.ws.org.apache.cxf:cxf-rt-ws-policy:2.6.2.ibm-s20190515-1254
 com.ibm.ws.org.apache.cxf:cxf-tools-common:3.2.0.20170814-175354-499
 com.ibm.ws.org.apache.cxf:cxf-tools-wadlto-jaxrs:3.2.0.20170814-175516-496
 com.ibm.ws.org.apache.el:jasper-el:2.2
+com.ibm.ws.org.apache.felix:org.apache.felix.scr:2.1.21.ibm20200819-1
 com.ibm.ws.org.apache.geronimo.specs:geronimo-annotation_1.1_spec:1.0.1
 com.ibm.ws.org.apache.geronimo.specs:geronimo-interceptor_1.1_spec:1.0
 com.ibm.ws.org.apache.geronimo.specs:geronimo-jpa_2.0_spec:1.1
