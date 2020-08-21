@@ -355,6 +355,6 @@ security.oauth20.pkce.error.mismatch.codeverifier.explanation=The OAuth provider
 security.oauth20.pkce.error.mismatch.codeverifier.useraction=Make sure to send the matching code_challenge and code_verifier and the correct transformation algorithm with the authorization and token requests.
 
 # 0=User name, 1=OAuth client ID, 2=Maximum number of tokens allowed
-security.oauth20.refreshed.access.token.limit.reached=CWOAU0082E: The [{0}] user and [{1}] OAuth client has reached the maximum number of access tokens ([{2}]) that may be created using refresh tokens. A new access token cannot be created with the provided refresh token.
-security.oauth20.refreshed.access.token.limit.reached.explanation=An OAuth client and user combination may request a limited number of access tokens using refresh tokens. That limit has been reached, so a new access token cannot be created.
-security.oauth20.refreshed.access.token.limit.reached.useraction=Increase the number of access tokens that may be issued through refresh tokens, or revoke some of the existing access tokens for the user and OAuth client that is specified in the message.
+security.oauth20.refreshed.access.token.limit.reached=CWOAU0082E: The [{0}] user and [{1}] OAuth client reached the maximum number ([{2}]) of access tokens that can be created by using refresh tokens. A new access token cannot be created with the provided refresh token.
+security.oauth20.refreshed.access.token.limit.reached.explanation=An OAuth client and user combination can request a limited number of access tokens using refresh tokens. A new access token cannot be created.
+security.oauth20.refreshed.access.token.limit.reached.useraction=Increase the number of access tokens that can be issued through refresh tokens. Alternatively, revoke some of the existing access tokens for the user and OAuth client that is specified in the message.
