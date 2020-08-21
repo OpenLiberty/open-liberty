@@ -57,7 +57,6 @@ instrument.classesExcludes: com/ibm/ws/security/internal/resources/*.class
 -buildpath: \
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.ws.security.authentication;version=latest,\
-	com.ibm.ws.security.authentication.filter;version=latest,\
 	com.ibm.ws.security.authorization;version=latest,\
 	com.ibm.ws.security.registry;version=latest,\
 	com.ibm.ws.security.token;version=latest,\

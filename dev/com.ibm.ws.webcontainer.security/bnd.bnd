@@ -37,7 +37,7 @@ Export-Package: \
   com.ibm.ws.webcontainer.security.openid20, \
   com.ibm.ws.webcontainer.security.openidconnect
 
-Import-Package: com.ibm.ws.common.internal.encoder, !com.ibm.ws.kernel.boot.cmdline, *
+Import-Package: com.ibm.ws.common.internal.encoder, !com.ibm.ws.kernel.boot.cmdline, com.ibm.ws.security.sso, *
 
 Private-Package: \
   com.ibm.ws.webcontainer.security.jacc, \

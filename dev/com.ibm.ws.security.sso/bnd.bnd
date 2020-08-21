@@ -22,7 +22,9 @@ WS-TraceGroup: SSO
 # Append ";provide:=true" if this bundle also provides an implementation
 # for the exported API.
  
-Export-Package: com.ibm.ws.security.sso;provide:=true
+Export-Package: com.ibm.ws.security.sso;provide:=true, \
+  com.ibm.wsspi.security.ltpa
+
 
 Import-Package:  !*.internal.*, *
          
@@ -37,8 +39,6 @@ Import-Package:  !*.internal.*, *
 -dsannotations-inherit: true
 
 -buildpath: \
-	com.ibm.ws.security;version=latest,\
-	com.ibm.ws.security.token;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
