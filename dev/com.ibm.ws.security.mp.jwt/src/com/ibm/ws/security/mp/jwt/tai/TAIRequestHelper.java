@@ -209,7 +209,14 @@ public class TAIRequestHelper {
         if (serverConfigTokenHeader != null) {
             return serverConfigTokenHeader;
         }
-        return getValueFromMpConfigProps(MpConstants.TOKEN_HEADER, Authorization_Header);
+        String tokenHeaderName = getValueFromMpConfigProps(MpConstants.TOKEN_HEADER, Authorization_Header);
+        if (!isSupportedTokenHeaderName(tokenHeaderName)) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Specified token header [" + tokenHeaderName + "] is not supported.");
+            }
+            return Authorization_Header;
+        }
+        return tokenHeaderName;
     }
 
     String getValueFromMpConfigProps(String propName, String defaultValue) {
@@ -224,6 +231,13 @@ public class TAIRequestHelper {
             Tr.debug(tc, "Obtained " + propName + " from MP Config properties: [" + mpConfigPropValue + "]");
         }
         return mpConfigPropValue;
+    }
+
+    boolean isSupportedTokenHeaderName(String tokenHeader) {
+        if (Authorization_Header.equals(tokenHeader) || "Cookie".equals(tokenHeader)) {
+            return true;
+        }
+        return false;
     }
 
     @Sensitive
