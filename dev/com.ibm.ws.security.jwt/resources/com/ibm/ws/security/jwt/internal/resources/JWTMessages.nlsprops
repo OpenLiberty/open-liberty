@@ -313,3 +313,8 @@ JWT_TRUSTED_ISSUERS_NULL.useraction=Ensure that the JWT configuration that is sp
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6052E: HTTP scheme is used at the specified endpoint: {0}, HTTPS is required.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.explanation=The specified endpoint requires HTTPS, but HTTP was used in the request URL.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.useraction=Check the request URL and make sure it uses HTTPS, or change configuration so HTTPS is not required.
+
+# 0=Signature algorithm from MP Config properties, 1=Default algorithm that will be used
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED=CWWKS6053W: The [{0}] signature algorithm that is specified by the MicroProfile Config properties is not supported. The [{1}] signature algorithm will be used.
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.explanation=
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.useraction=
