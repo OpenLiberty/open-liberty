@@ -5,6 +5,7 @@
     	<feature>jaxb-2.2</feature>
         <feature>jaxrs-2.1</feature>
     </featureManager>
+    <include location="../fatTestPorts.xml"/>  
  
  	<basicRegistry id="basic" realm="WebRealm">
 		<user name="user1" password="user1pwd" />

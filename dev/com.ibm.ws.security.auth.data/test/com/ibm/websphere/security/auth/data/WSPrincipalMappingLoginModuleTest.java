@@ -186,6 +186,8 @@ public class WSPrincipalMappingLoginModuleTest {
                 will(returnValue(password));
                 allowing(authData).getKrb5Principal();
                 will(returnValue(null));
+                allowing(authData).getKrb5TicketCache();
+                will(returnValue(null));
             }
         });
 

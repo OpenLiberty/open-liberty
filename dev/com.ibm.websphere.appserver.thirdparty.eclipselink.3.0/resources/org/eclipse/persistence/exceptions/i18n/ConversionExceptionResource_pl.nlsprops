@@ -1,0 +1,46 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/ConversionExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+3001=Nie mo\u017cna przekszta\u0142ci\u0107 obiektu [{0}] klasy [{1}] w [{2}].
+
+3002=Nie mo\u017cna przekszta\u0142ci\u0107 obiektu [{0}] klasy [{1}] z odwzorowania [{2}] o deskryptorze [{3}] w [{4}].
+
+3003=Niepoprawny format daty: [{0}] (oczekiwano [RRRR-MM-DD])
+
+3004=Niepoprawny format godziny: [{0}] (oczekiwano [GG:MM:SS])
+
+3005=Niepoprawny format datownika: [{0}] (oczekiwano [RRRR-MM-DD GG:MM:SS.NNNNNNNNN])
+
+3006=D\u0142ugo\u015b\u0107 [{0}] musi by\u0107 odpowiednia do przekszta\u0142cenia w tablic\u0119 bajtow\u0105.
+
+3007=Nie mo\u017cna przekszta\u0142ci\u0107 obiektu [{0}] klasy [{1}] w [{2}]. Upewnij si\u0119, \u017ce klasa [{2}] znajduje si\u0119 w \u015bcie\u017cce klas CLASSPATH. Mo\u017ce by\u0107 potrzebne u\u017cycie alternatywnego interfejsu API przekazuj\u0105cego odpowiedni program \u0142aduj\u0105cy klas\u0119 zgodnie z wymaganiami lub ustawienie go w domy\u015blnym mened\u017cerze ConversionManager.
+3008=Niepoprawny format daty i godziny: [{0}] (oczekiwano [RRRR-MM-DD''T''GG:MM:SS])
+
+3009=Nie mo\u017cna ustawi\u0107 w\u0142a\u015bciwo\u015bci {0} [{1}] w [{2}].
+

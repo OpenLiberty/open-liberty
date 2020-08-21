@@ -1,0 +1,65 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Enterprise Bean Container Test Tools
+Bundle-SymbolicName: io.openliberty.ejbcontainer.jakarta.fat_tools
+Bundle-Description: Enterprise Bean Container Test Tools; version=${bVersion}
+
+WS-TraceGroup: EJBContainer
+
+Import-Package: \
+ !com.ibm.websphere.security.auth.callback, \
+ !jakarta.jms, \
+ *
+
+DynamicImport-Package: \
+ com.ibm.websphere.security.auth.callback, \
+ jakarta.jms
+
+Export-Package: \
+	io.openliberty.ejbcontainer.jakarta.test.tools;version=1.0,\
+	io.openliberty.ejbcontainer.jakarta.test.osgi.pmi;version=1.0,\
+	io.openliberty.ejbcontainer.jakarta.test.mdb;version=1.0,\
+	io.openliberty.ejbcontainer.jakarta.test.mdb.interceptors;version=1.0
+
+Private-Package: \
+  io.openliberty.ejbcontainer.jakarta.test.*
+  
+instrument.classesIncludes: com/ibm/ws/ejbcontainer/osgi/**/*.class
+
+-dsannotations-inherit: true
+-dsannotations: \
+  io.openliberty.ejbcontainer.jakarta.test.osgi.pmi.internal.TestEJBPMICollaboratorFactory
+  
+test.project: true
+generate.replacement: true
+
+-buildpath: \
+	com.ibm.ws.org.apache.yoko.corba.spec.1.5;version=latest,\
+	com.ibm.ws.org.apache.yoko.rmi.spec.1.5;version=latest,\
+	io.openliberty.jakarta.annotation.2.0;version=latest,\
+	io.openliberty.jakarta.jms.3.0;version=latest,\
+	io.openliberty.jakarta.interceptor.2.0;version=latest,\
+	io.openliberty.jakarta.ejb.4.0;version=latest,\
+	com.ibm.ws.ejbcontainer.core; version=latest, \
+	com.ibm.ws.logging; version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations; version=latest, \
+	io.openliberty.jakarta.transaction.2.0;version=latest,\
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	com.ibm.websphere.security; version=latest, \
+	com.ibm.ws.componenttest; version=latest, \
+	io.openliberty.jakarta.connectors.2.0; version=latest, \
+	com.ibm.ws.tx.embeddable; version=latest, \
+	com.ibm.ws.container.service; version=latest, \
+	com.ibm.ws.security.jaas.common; version=latest
+

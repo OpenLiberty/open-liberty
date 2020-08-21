@@ -10,6 +10,8 @@
  *******************************************************************************/
 package concurrent.cdi.web;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -70,12 +72,21 @@ public class ConcurrentCDIServlet extends FATServlet {
     @Resource(lookup = "java:comp/TransactionSynchronizationRegistry")
     private TransactionSynchronizationRegistry tranSyncRegistry;
 
+    @Inject
+    private ManagedExecutorService injectedExec; // produced by ResourcesProducer.exec field
+
     /**
      * Initialize the transaction service (including recovery logs) so it doesn't slow down our tests and cause timeouts.
      */
     public void initTransactionService() throws Exception {
         tran.begin();
         tran.commit();
+    }
+
+    @Test
+    public void testInjectedManagedExecutorService() {
+        System.out.println("@AGG injected executor is: " + injectedExec);
+        assertNotNull(injectedExec);
     }
 
     /**

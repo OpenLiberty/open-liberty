@@ -51,7 +51,7 @@ SPNEGO_NOT_SUPPORTED_ERROR_PAGE.useraction=Configure o navegador cliente para ex
 SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE=CWWKS4307E: <html><head><title>Um Token NTLM foi recebido.\
 </title></head> <body>Sua configura\u00e7\u00e3o do navegador cliente est\u00e1 correta, mas voc\u00ea efetuou login em um dom\u00ednio do Windows suportado.\
 <p> Efetue login no Dom\u00ednio do Windows suportado.\
-</html>.
+</body></html>.
 SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE.explanation=A configura\u00e7\u00e3o do navegador cliente est\u00e1 correta, mas voc\u00ea n\u00e3o efetuou login em um dom\u00ednio do Windows suportado. \
 Ou a configura\u00e7\u00e3o de SPNEGO n\u00e3o est\u00e1 correta, ent\u00e3o, o navegador do cliente n\u00e3o envia o token SPNEGO ou Kerberos.
 SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE.useraction=Verifique se efetuou login no dom\u00ednio do Windows suportado e verifique tamb\u00e9m a configura\u00e7\u00e3o SPNEGO no servidor e no dom\u00ednio do Windows.
@@ -128,3 +128,17 @@ SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE.useraction= \
 Verifique o formato do Service principal name e assegure-se de que \
 ele exista no dom\u00ednio do Windows e que o arquivo keytab do Kerberos \
 contenha o Service principal name.
+
+SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E=CWWKS4323E: O atributo [{0}] do elemento {1} entra em conflito com o atributo [{2}] do elemento {3}. Especifique um valor somente no elemento {1} ou no {3}, n\u00e3o em ambos os elementos. \u00c9 sugerido especificar o valor somente no elemento {1}.
+SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E.explanation=Para reconhecer cada atributo, uma propriedade de sistema precisa ser configurada, que \u00e9 uma configura\u00e7\u00e3o de todo o sistema. Valores diferentes para uma configura\u00e7\u00e3o de todo o sistema n\u00e3o podem ser reconhecidos.
+SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E.useraction=Especifique o atributo somente em um dos elementos de configura\u00e7\u00e3o.
+
+SPNEGO_AUTHENTICATION_ERROR_PAGE=CWWKS4324E: <html><head><title>A autentica\u00e7\u00e3o SPNEGO falhou. \
+Entre em contato com o administrador do sistema para resolver o problema.\
+</title></head> <body>O cliente enviou o token SPNEGO. \
+O servidor n\u00e3o pode validar o token SPNEGO do cliente. \
+Entre em contato com o administrador do sistema para resolver o problema.\
+</body></html>.
+SPNEGO_AUTHENTICATION_ERROR_PAGE.explanation=A autentica\u00e7\u00e3o SPNEGO falhou. Para obter informa\u00e7\u00f5es adicionais, verifique as mensagens de log do servidor.
+SPNEGO_AUTHENTICATION_ERROR_PAGE.useraction=Verifique a configura\u00e7\u00e3o do servidor e a configura\u00e7\u00e3o do Kerberos e certifique-se de que o clock do servidor esteja em sincroniza\u00e7\u00e3o com o Centro de Distribui\u00e7\u00e3o de Chaves (KDC).
+

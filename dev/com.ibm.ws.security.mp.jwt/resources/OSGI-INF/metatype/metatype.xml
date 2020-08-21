@@ -48,7 +48,14 @@
                     
         <AD id="signatureAlgorithm" required="false" type="String" name="%signatureAlgorithm" description="%signatureAlgorithm.desc" default="RS256">
             <Option label="%tokenSignAlgorithm.RS256" value="RS256" />
+            <Option label="internal" value="RS384" />
+            <Option label="internal" value="RS512" />
             <Option label="%tokenSignAlgorithm.HS256" value="HS256" />
+            <Option label="internal" value="HS384" />
+            <Option label="internal" value="HS512" />
+            <Option label="internal" value="ES256" />
+            <Option label="internal" value="ES384" />
+            <Option label="internal" value="ES512" />
         </AD>
     </OCD>
 

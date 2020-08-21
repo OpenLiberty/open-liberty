@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="fat/src" including="com/ibm/ws/wsat/fat/FATSuite.java"/>
+	<classpathentry kind="src" path="com.ibm.ws.wsat_fat.1-fatsrc" excluding="com/ibm/ws/wsat/fat/FATSuite.java"/>
+	<classpathentry kind="src" path="com.ibm.ws.wsat_fat.1-wsatAppService"/>
+	<classpathentry kind="src" path="com.ibm.ws.wsat_fat.1-wsatAppOptional"/>
+	<classpathentry kind="src" path="com.ibm.ws.wsat_fat.1-wsatEJBCDIApp"/>
+	<classpathentry kind="src" path="com.ibm.ws.wsat_fat.1-wsatApp"/>
+	<classpathentry kind="src" path="com.ibm.ws.wsat_fat.1-oneway"/>
+	<classpathentry kind="src" path="com.ibm.ws.wsat_fat.1-assertion"/>
+	<classpathentry kind="src" path="com.ibm.ws.wsat_fat.1-endtoend"/>
+	<classpathentry kind="src" path="com.ibm.ws.wsat_fat.1-wsatAppServiceOptional"/>
+	<classpathentry kind="src" path="com.ibm.ws.wsat_fat.1-wsatAppWithoutAssertion"/>
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

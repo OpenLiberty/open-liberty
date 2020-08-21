@@ -55,4 +55,12 @@ public interface ProducerServiceRestClient {
     @Path("/streamingA/client")
     public Response clientStreamApp() throws Exception;
 
+    @POST
+    @Path("/streamingA/server")
+    public Response serverStreamApp() throws Exception;
+
+    @POST
+    @Path("/streamingA/twoWay")
+    public Response twoWayStreamApp(boolean asyncThread) throws Exception;
+
 }

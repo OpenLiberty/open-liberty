@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/XMLConversionExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+25501=\u65e0\u6cd5\u4e3a\u6587\u4ef6 [{0}] \u521b\u5efa URL\u3002
+
+25502=\u4ee5\u4e0b gDay \u683c\u5f0f\u4e0d\u6b63\u786e\uff1a[{0}]\uff08\u6240\u9700\u683c\u5f0f\u4e3a [----DD]\uff09
+
+25503=\u4ee5\u4e0b gMonth \u683c\u5f0f\u4e0d\u6b63\u786e\uff1a[{0}]\uff08\u6240\u9700\u683c\u5f0f\u4e3a [--MM--]\uff09
+
+25504=\u4ee5\u4e0b gMonthDay \u683c\u5f0f\u4e0d\u6b63\u786e\uff1a[{0}]\uff08\u6240\u9700\u683c\u5f0f\u4e3a [--MM-DD]\uff09
+
+25505=\u4ee5\u4e0b gYear \u683c\u5f0f\u4e0d\u6b63\u786e\uff1a[{0}]\uff08\u6240\u9700\u683c\u5f0f\u4e3a [YYYY]\uff09
+
+25506=\u4ee5\u4e0b gYearMonth \u683c\u5f0f\u4e0d\u6b63\u786e\uff1a[{0}]\uff08\u6240\u9700\u683c\u5f0f\u4e3a [YYYY-MM]\uff09
+
+25507=\u4ee5\u4e0b\u65f6\u95f4\u6233\u8bb0 dateTime \u683c\u5f0f\u4e0d\u6b63\u786e\uff1a[{0}]\uff08\u6240\u9700\u683c\u5f0f\u4e3a [YYYY-MM-DD''T''HH:MM:SS.NNNNNNNNN]\uff09
+
+25508=\u4ee5\u4e0b\u65f6\u95f4\u6233\u8bb0 Time \u683c\u5f0f\u4e0d\u6b63\u786e\uff1a[{0}]\uff08\u6240\u9700\u683c\u5f0f\u4e3a [HH:MM:SS.NNNNNNNNN]\uff09
+

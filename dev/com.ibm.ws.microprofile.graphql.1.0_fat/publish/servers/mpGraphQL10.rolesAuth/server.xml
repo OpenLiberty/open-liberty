@@ -11,6 +11,10 @@
 
     <include location="../fatTestPorts.xml"/>
 
+    <webApplication id="rolesAuthApp" name="rolesAuthApp" location="rolesAuthApp.war">
+      <classloader apiTypeVisibility="+third-party" />
+    </webApplication>
+
     <basicRegistry id="basic" realm="WebRealm">
      <user name="user1" password="user1pwd" />
      <user name="user2" password="user2pwd" />
@@ -24,7 +28,12 @@
      </group>
    </basicRegistry>
 
-    <!--  Required to read the server's port system property -->
+   <!--  Temporary change until https://github.com/smallrye/smallrye-graphql/issues/331 is resolved and pulled in -->
+   <javaPermission className="java.lang.reflect.ReflectPermission"  name="suppressAccessChecks" actions="*" />
+   <javaPermission className="java.lang.RuntimePermission"  name="getClassLoader" actions="*" />
+   <javaPermission className="java.lang.RuntimePermission"  name="accessDeclaredMembers" actions="*" />
+    
+   <!--  Required to read the server's port system property -->
    <javaPermission className="java.util.PropertyPermission"  name="*" actions="read" />
 
   </server> 

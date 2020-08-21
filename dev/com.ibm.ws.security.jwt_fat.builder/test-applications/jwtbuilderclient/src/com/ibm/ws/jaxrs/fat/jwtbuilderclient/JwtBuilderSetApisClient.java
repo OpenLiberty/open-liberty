@@ -16,8 +16,10 @@ import java.security.Key;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.SecureRandom;
+import java.security.spec.ECGenParameterSpec;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -234,9 +236,9 @@ public class JwtBuilderSetApisClient extends HttpServlet {
                 // generate one of the type requested.
                 if (!attrs.containsKey(JWTBuilderConstants.SHARED_KEY)) {
                     if (JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE.equals(keyType)) {
-                        key = generatePrivateKey();
+                        key = generatePrivateKey(alg);
                     } else {
-                        key = generatePublicKey();
+                        key = generatePublicKey(alg);
                     }
                 }
                 myJwtBuilder.signWith(alg, (Key) key);
@@ -244,15 +246,16 @@ public class JwtBuilderSetApisClient extends HttpServlet {
         }
     }
 
-    private Key generatePrivateKey() throws Exception {
+    private Key generatePrivateKey(String alg) throws Exception {
 
         int DEFAULT_KEY_SIZE = 2048;
-
-        KeyPair keypair = generateKeyPair(DEFAULT_KEY_SIZE);
-
-        RSAPrivateKey priKey = (RSAPrivateKey) keypair.getPrivate();
-
-        return priKey;
+        PrivateKey privKey = null;
+        KeyPair keypair = generateKeyPair(DEFAULT_KEY_SIZE, alg);
+        if (keypair != null) {
+            System.out.println("generatePrivateKey - have keypair");
+            privKey = keypair.getPrivate();
+        }
+        return privKey;
     }
 
     /**
@@ -262,28 +265,47 @@ public class JwtBuilderSetApisClient extends HttpServlet {
      * @return - a public key
      * @throws Exception
      */
-    private Key generatePublicKey() throws Exception {
+    private Key generatePublicKey(String alg) throws Exception {
 
         int DEFAULT_KEY_SIZE = 2048;
+        KeyPair keypair = generateKeyPair(DEFAULT_KEY_SIZE, alg);
 
-        KeyPair keypair = generateKeyPair(DEFAULT_KEY_SIZE);
-
-        RSAPublicKey pubKey = (RSAPublicKey) keypair.getPublic();
-
-        return pubKey;
+        if (keypair != null) {
+            System.out.println("generatePublicKey - have keypair");
+            PublicKey pubKey = keypair.getPublic();
+            return pubKey;
+        } else {
+            return null;
+        }
     }
 
-    private KeyPair generateKeyPair(int size) throws Exception {
+    private KeyPair generateKeyPair(int size, String alg) throws Exception {
 
         KeyPairGenerator keyGenerator = null;
+
         try {
-            keyGenerator = KeyPairGenerator.getInstance("RSA");
+            if (alg == null) {
+                return null;
+            }
+            if (alg.startsWith("ES")) {
+                keyGenerator = KeyPairGenerator.getInstance("EC");
+                String spec = "secp256k1";
+
+                if (alg.contains("384")) {
+                    spec = "secp384r1";
+                }
+                if (alg.contains("512")) {
+                    spec = "secp521r1";
+                }
+                keyGenerator.initialize(new ECGenParameterSpec(spec), new SecureRandom());
+            } else {
+                keyGenerator = KeyPairGenerator.getInstance("RSA");
+                keyGenerator.initialize(size);
+            }
         } catch (NoSuchAlgorithmException e) {
-            // This should not happen, since we hardcoded as "RSA"
             return null;
         }
 
-        keyGenerator.initialize(size);
         KeyPair keypair = keyGenerator.generateKeyPair();
 
         return keypair;

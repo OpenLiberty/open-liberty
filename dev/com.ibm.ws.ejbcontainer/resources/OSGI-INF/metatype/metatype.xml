@@ -48,9 +48,6 @@
         
         <AD name="%disableShortDefaultBindings" description="%disableShortDefaultBindings.desc" 
         	id="disableShortDefaultBindings" type="String" required="false" ibmui:group="Advanced" ibm:beta="true"/>
-        	
-       	<AD name="%ignoreDuplicateEJBBindings" description="%ignoreDuplicateEJBBindings.desc"
-            id="ignoreDuplicateEJBBindings" type="Boolean" required="false" default="false" ibmui:group="Advanced" ibm:beta="true"/>
             
         <AD name="%customBindings.onError" description="%customBindings.onError.desc"
             id="customBindingsOnError" type="String" ibm:type="onError" required="false"

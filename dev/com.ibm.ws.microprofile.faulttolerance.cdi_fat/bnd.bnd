@@ -22,6 +22,7 @@ tested.features: mpFaultTolerance-1.0,\
                  mpFaultTolerance-1.1,\
                  mpFaultTolerance-2.0,\
                  mpFaultTolerance-2.1,\
+                 mpFaultTolerance-3.0,\
                  mpConfig-1.1,\
                  mpConfig-1.2,\
                  mpConfig-1.3,\

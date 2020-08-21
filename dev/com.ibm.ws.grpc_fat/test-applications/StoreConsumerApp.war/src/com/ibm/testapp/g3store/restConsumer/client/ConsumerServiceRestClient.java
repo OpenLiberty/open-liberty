@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.testapp.g3store.restConsumer.client;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -20,6 +21,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import org.eclipse.microprofile.rest.client.annotation.ClientHeaderParam;
+
+import com.ibm.testapp.g3store.utilsConsumer.ConsumerUtils;
 
 /**
  * @author anupag
@@ -35,18 +40,32 @@ public interface ConsumerServiceRestClient {
 
     @GET
     @Path("/appInfo/{appName}")
+    @ClientHeaderParam(name = "Authorization", value = "{getAuthValue}")
     public Response getAppInfo(@PathParam("appName") String appName) throws Exception;
+
+    @GET
+    @Path("/appInfo_BadAuth/{appName}")
+    @ClientHeaderParam(name = "Authorization", value = "{getBadAuthValue}")
+    public Response getAppInfoBadAuth(@PathParam("appName") String appName) throws Exception;
 
     @GET
     @Path("/priceQuery")
     public Response getPrices(@QueryParam("appName") List<String> appNames) throws Exception;
 
-    /**
-     * @param httpHeaders
-     * @return
-     */
     @GET
     @Path("/appNames")
     public Response getAllAppNames() throws Exception;
+
+    @GET
+    @Path("/appNames_CC")
+    public Response getAllAppNames_Auth_CallCred() throws Exception;
+
+    default String getAuthValue() throws UnsupportedEncodingException {
+        return ConsumerUtils.createBasicAuthHeaderValue("dev", "hello");
+    }
+
+    default String getBadAuthValue() throws UnsupportedEncodingException {
+        return ConsumerUtils.createBasicAuthHeaderValue("dev2", "hello2");
+    }
 
 }

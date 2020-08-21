@@ -1,0 +1,69 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/JPARSExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+61000=\u5728\u6301\u4e45\u5355\u5143 {2} \u4e2d\u627e\u4e0d\u5230\u6807\u8bc6\u4e3a {1} \u7684\u5b9e\u4f53\u7c7b\u578b {0}\u3002
+
+61001=\u94fe\u63a5\u6d89\u53ca\u5230\u7684\u5b9e\u4f53\u4e0d\u5b58\u5728\uff0c\u5b9e\u4f53\u7c7b\u578b\u4e3a {0}\uff0c\u6807\u8bc6\u4e3a {1}\u3002
+
+61002=\u65e0\u6548\u914d\u7f6e\u3002
+
+61003=\u6b63\u5728\u4f7f\u7528 PUT \u521b\u5efa\u6301\u4e45\u5355\u5143 {1} \u4e2d\u7684\u5b9e\u4f53\u7c7b\u578b {0}\uff0c\u4f46\u662f\uff0c\u7531\u4e8e\u5e8f\u5217\u751f\u6210\u6216\u7ea7\u8054\uff0c\u56e0\u6b64\u5b9e\u4f53\u4e0d\u662f\u5e42\u7b49\u7684\u3002
+
+61004=\u672a\u80fd\u5f15\u5bfc\u6301\u4e45\u6027\u4e0a\u4e0b\u6587 {0}\u3002
+
+61005=\u5728\u6301\u4e45\u5355\u5143 {1} \u4e2d\uff0c\u627e\u4e0d\u5230\u5b9e\u4f53\u7c7b\u578b {0} \u7684\u7c7b\u6216\u7c7b\u63cf\u8ff0\u7b26\u3002
+
+61006=\u5728\u6301\u4e45\u5355\u5143 {3} \u4e2d\uff0c\u627e\u4e0d\u5230\u5b9e\u4f53\u7c7b\u578b {1} \u548c\u6807\u8bc6 {2} \u7684\u5c5e\u6027 {0} \u7684\u76f8\u5e94\u6570\u636e\u5e93\u6620\u5c04\u3002
+
+61007=\u5728\u6301\u4e45\u5355\u5143 {3} \u4e2d\uff0c\u627e\u4e0d\u5230\u5b9e\u4f53\u7c7b\u578b {1} \u548c\u6807\u8bc6 {2} \u7684\u5c5e\u6027 {0}\u3002
+
+61008=\u5728\u6301\u4e45\u5355\u5143 {3} \u4e2d\uff0c\u627e\u4e0d\u5230\u5b9e\u4f53\u7c7b\u578b {1} \u548c\u6807\u8bc6 {2} \u7684\u5c5e\u6027 {0} \u7684\u9009\u62e9\u67e5\u8be2\u3002
+
+61009=\u9875\u9762\u8c03\u5ea6\u8bf7\u6c42 URL \u5b58\u5728\u65e0\u6548\u53c2\u6570\u3002
+
+61010=\u5728\u6301\u4e45\u5355\u5143 {3} \u4e2d\uff0c\u672a\u80fd\u66f4\u65b0\u5b9e\u4f53\u7c7b\u578b {1} \u548c\u6807\u8bc6 {2} \u7684\u5c5e\u6027 {0}\u3002
+
+61011=\u5728\u6301\u4e45\u5355\u5143 {3} \u4e2d\uff0c\u5b9e\u4f53\u7c7b\u578b {1} \u548c\u6807\u8bc6 {2} \u7684\u5c5e\u6027 {0} \u7684\u5c5e\u6027\u79fb\u9664\u8bf7\u6c42 URL \u5b58\u5728\u65e0\u6548\u53c2\u6570\u3002
+
+61012=\u5728\u6301\u4e45\u5355\u5143 {3} \u4e2d\uff0c\u672a\u80fd\u6210\u529f\u6784\u5efa\u5b9e\u4f53\u7c7b\u578b {1} \u548c\u6807\u8bc6 {2} \u7684\u5c5e\u6027 {0} \u7684\u67e5\u627e\u8bf7\u6c42\u7684\u54cd\u5e94\u3002
+
+61013=\u4f7f\u7528 JNDI \u540d\u79f0 {0} \u8fdb\u884c\u7684\u4f1a\u8bdd Bean \u67e5\u8be2\u5931\u8d25\u3002
+
+61014=\u5728\u6301\u4e45\u5355\u5143 {1} \u4e2d\uff0c\u672a\u80fd\u6210\u529f\u6784\u5efa\u67e5\u8be2 {0} \u7684\u67e5\u627e\u6240\u6307\u5b9a\u7684\u67e5\u8be2\u8bf7\u6c42\u7684\u54cd\u5e94\u3002
+
+61015=\u8bf7\u6c42\u4e2d\u7684\u670d\u52a1\u7248\u672c {0} \u65e0\u6548\u3002
+
+61016=\u7528\u4e8e\u4e0d\u53ef\u5206\u9875\u7684\u8d44\u6e90\u7684\u5206\u9875\u67e5\u8be2\u53c2\u6570\uff08limit \u6216 offset\uff09\u3002
+
+61017=\u65e0\u6cd5\u5728\u540c\u4e00\u8bf7\u6c42\u4e2d\u540c\u65f6\u4f7f\u7528\u201cfields\u201d\u548c\u201cexcludeFields\u201d\u3002
+
+61018=\u65e0\u6548\u53c2\u6570\u503c\uff08\u201c{0}\u201d=\u201c{1}\u201d\uff09\u3002
+
+61999=\u53d1\u751f\u4e86 {0}\u3002
+

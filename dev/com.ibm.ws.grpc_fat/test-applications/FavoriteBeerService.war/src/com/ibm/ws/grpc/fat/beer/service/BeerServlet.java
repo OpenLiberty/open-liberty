@@ -33,10 +33,10 @@ public class BeerServlet extends HttpServlet {
     private static int numBeers;
 
     // implementation of the BeerService service
-    private static final class BeerServiceImpl extends BeerServiceGrpc.BeerServiceImplBase {
+    public static final class BeerServiceImpl extends BeerServiceGrpc.BeerServiceImplBase {
 
-        // a no-arg constructor is required for Liberty to start this service automatically
-        BeerServiceImpl() {
+        // a public no-arg constructor is required for Liberty to start this service automatically
+        public BeerServiceImpl() {
             beerList = new Beer[20];
             numBeers = 0;
         }

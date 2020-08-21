@@ -45,7 +45,13 @@ src: \
 fat.project: true
 
 tested.features: \
-	servlet-4.0, servlet-5.0, jpa-2.2, jdbc-4.2, ejbLite-3.2
+	ejbLite-3.2,\
+	ejbLite-4.0,\
+	jdbc-4.2,\
+	jpa-2.2,\
+	jpa-3.0,\
+	servlet-4.0,\
+	servlet-5.0
 	
 # Intentionally put javax.annotation (as opposed to websphere.javee.annotation) on the -buildpath
 # because otherwise bndtools will merge the artifacts together and it will only be on the classpath.
@@ -56,4 +62,5 @@ tested.features: \
 	com.ibm.websphere.javaee.persistence.2.1;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.1; version=latest, \
-	com.ibm.ws.ejbcontainer.fat_tools; version=latest
+	com.ibm.ws.ejbcontainer.fat_tools; version=latest, \
+	io.openliberty.ejbcontainer.jakarta.fat_tools; version=latest

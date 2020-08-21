@@ -55,6 +55,7 @@ public class ServiceConfigTests extends FATServletClient {
     private static final Logger LOG = Logger.getLogger(c.getName());
 
     public static final int STARTUP_TIMEOUT = 120 * 1000; // 120 seconds
+    public static final int SHORT_TIMEOUT = 500; // .5 second
 
     private static final String DEFAULT_CONFIG_FILE = "grpc.server.xml";
 
@@ -83,7 +84,7 @@ public class ServiceConfigTests extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        grpcServer.startServer(ServiceSupportTests.class.getSimpleName() + ".log");
+        grpcServer.startServer(ServiceConfigTests.class.getSimpleName() + ".log");
 
         LOG.info("ServiceConfigTests : setUp() : add helloWorldService  app");
         // add all classes from com.ibm.ws.grpc.fat.helloworld.service and io.grpc.examples.helloworld
@@ -175,10 +176,9 @@ public class ServiceConfigTests extends FATServletClient {
         assertTrue(greeting.getMessage().contains("Kevin"));
         //Make sure the Interceptor was not called and did not logged a message
         String interceptorHasRun = grpcServer.verifyStringNotInLogUsingMark("com.ibm.ws.grpc.fat.helloworld.service.HelloWorldServerInterceptor has been invoked!",
-                                                                            STARTUP_TIMEOUT);
-
+                                                                            SHORT_TIMEOUT);
         if (interceptorHasRun != null) {
-            Assert.fail(c + ": server.xml with <grpc> element plus interceptor ran when it should not have in " + STARTUP_TIMEOUT + "ms");
+            Assert.fail(c + ": server.xml with <grpc> element plus interceptor ran when it should not have in " + SHORT_TIMEOUT + "ms");
         }
 
         // Update to a config file with a <grpc> element with Interceptor included
@@ -187,7 +187,6 @@ public class ServiceConfigTests extends FATServletClient {
         grpcServer.waitForConfigUpdateInLogUsingMark(appName);
 
         // Send a request to the HelloWorld service and check for a response
-        // The request should work, but there should be no message from the interceptor
         person = HelloRequest.newBuilder().setName("Millie").build();
         greeting = worldServiceBlockingStub.sayHello(person);
         //Make sure the reply has Millie in it
@@ -195,7 +194,7 @@ public class ServiceConfigTests extends FATServletClient {
         //Make sure the Interceptor was called and logged a message
         interceptorHasRun = grpcServer.waitForStringInLogUsingMark("com.ibm.ws.grpc.fat.helloworld.service.HelloWorldServerInterceptor has been invoked!", STARTUP_TIMEOUT);
         if (interceptorHasRun == null) {
-            Assert.fail(c + ": server.xml with <grpc> element plus interceptor failed to update within " + STARTUP_TIMEOUT + "ms");
+            Assert.fail(c + ": interceptor did not print message to the server log as expected");
         }
 
     }
@@ -258,9 +257,7 @@ public class ServiceConfigTests extends FATServletClient {
      *
      **/
 
-    //@Test
-    // This test is failing when I think it should be passing, commenting it out for now
-    //@Mode(FULL)
+    @Test
     public void testServiceTargetWildcard() throws Exception {
 
         ManagedChannel beerChannel;
@@ -276,7 +273,7 @@ public class ServiceConfigTests extends FATServletClient {
                                       "com.ibm.ws.grpc.fat.beer");
         LOG.info("ServiceConfigTests : testServiceTargetWildcard() : dropped the beer app into dropins.");
         // Make sure the beer service has started
-        String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0001I: Application FavoriteBeerService started", STARTUP_TIMEOUT);
+        String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKT0201I.*FavoriteBeerService", STARTUP_TIMEOUT);
         if (appStarted == null) {
             Assert.fail(c + ": application " + "FavoriteBeerService" + " failed to start within " + STARTUP_TIMEOUT + "ms");
         }
@@ -376,7 +373,7 @@ public class ServiceConfigTests extends FATServletClient {
                                       "com.ibm.ws.grpc.fat.beer");
         LOG.info("ServiceConfigTests : testServiceTargetSpecificMatch() : dropped the beer app into dropins.");
         // Make sure the beer service has started
-        String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0001I: Application FavoriteBeerService started", STARTUP_TIMEOUT);
+        String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKT0201I.*FavoriteBeerService", STARTUP_TIMEOUT);
         if (appStarted == null) {
             Assert.fail(c + ": application " + "FavoriteBeerService" + " failed to start within " + STARTUP_TIMEOUT + "ms");
         }

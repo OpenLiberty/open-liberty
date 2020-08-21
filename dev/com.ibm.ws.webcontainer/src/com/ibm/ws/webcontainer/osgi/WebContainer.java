@@ -972,18 +972,21 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
                         @Override
                         public void run() {
                             try {
-                                if (!startWebApplication(dMod)) {
-                                    throw new Exception("startWebApplication async");
+                                if (startWebApplication(dMod)) {
+                                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                        Tr.debug(tc, "startWebApplication async [" + webModule.getName() + "]: success.");
+                                    }
+                                } else {
+                                    throw new Exception("startWebApplication async [" + webModule.getName() + "]: failed.");
                                 }
                             } catch (Throwable e) {
-                                if (dMod!= null && dMod instanceof com.ibm.ws.webcontainer.osgi.container.DeployedModule) {
+                                if (dMod != null && dMod instanceof com.ibm.ws.webcontainer.osgi.container.DeployedModule) {
                                     ((com.ibm.ws.webcontainer.osgi.container.DeployedModule) dMod).initTaskFailed();
                                 }
-                                FFDCWrapper.processException(e, getClass().getName(), "startModule async", new Object[] { webModule, this });
-                                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                                    Tr.event(tc, "startModule async: " + webModule.getName() + "; " + e);
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "startModule async [" + webModule.getContextRoot() + "]; " + e);
                                 }
-                                stopModule(moduleInfo);                             
+                                stopModule(moduleInfo);
                             }
                         }
                     });

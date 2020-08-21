@@ -296,7 +296,7 @@ public class Http2LiteModeTests extends FATServletClient {
      *
      * @throws Exception
      */
-    @Test
+    //@Test Move to trace bucket
     public void testInvalidStreamIdSequence() throws Exception {
         runTest(genericServletPath, testName.getMethodName());
     }
@@ -403,7 +403,7 @@ public class Http2LiteModeTests extends FATServletClient {
      *
      * @throws Exception
      */
-    @Test
+    //@Test moved to trace
     public void testConnectMethod() throws Exception {
         runTest(methodServletPath, testName.getMethodName());
     }
@@ -417,7 +417,7 @@ public class Http2LiteModeTests extends FATServletClient {
      *
      * @throws Exception
      */
-    @Test
+    //@Test moved to trace
     public void testConnectMethodError() throws Exception {
         runTest(methodServletPath, testName.getMethodName());
     }

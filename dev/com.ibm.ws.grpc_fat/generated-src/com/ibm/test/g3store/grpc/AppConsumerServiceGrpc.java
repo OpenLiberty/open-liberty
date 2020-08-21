@@ -185,6 +185,68 @@ public final class AppConsumerServiceGrpc {
     return getPurchaseRetailAppMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<com.google.protobuf.Empty,
+      com.ibm.test.g3store.grpc.NameResponse> getGetAllAppNamesAuthHeaderViaCallCredMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "getAllAppNames_AuthHeader_Via_CallCred",
+      requestType = com.google.protobuf.Empty.class,
+      responseType = com.ibm.test.g3store.grpc.NameResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.google.protobuf.Empty,
+      com.ibm.test.g3store.grpc.NameResponse> getGetAllAppNamesAuthHeaderViaCallCredMethod() {
+    io.grpc.MethodDescriptor<com.google.protobuf.Empty, com.ibm.test.g3store.grpc.NameResponse> getGetAllAppNamesAuthHeaderViaCallCredMethod;
+    if ((getGetAllAppNamesAuthHeaderViaCallCredMethod = AppConsumerServiceGrpc.getGetAllAppNamesAuthHeaderViaCallCredMethod) == null) {
+      synchronized (AppConsumerServiceGrpc.class) {
+        if ((getGetAllAppNamesAuthHeaderViaCallCredMethod = AppConsumerServiceGrpc.getGetAllAppNamesAuthHeaderViaCallCredMethod) == null) {
+          AppConsumerServiceGrpc.getGetAllAppNamesAuthHeaderViaCallCredMethod = getGetAllAppNamesAuthHeaderViaCallCredMethod =
+              io.grpc.MethodDescriptor.<com.google.protobuf.Empty, com.ibm.test.g3store.grpc.NameResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "getAllAppNames_AuthHeader_Via_CallCred"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.google.protobuf.Empty.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.ibm.test.g3store.grpc.NameResponse.getDefaultInstance()))
+              .setSchemaDescriptor(new AppConsumerServiceMethodDescriptorSupplier("getAllAppNames_AuthHeader_Via_CallCred"))
+              .build();
+        }
+      }
+    }
+    return getGetAllAppNamesAuthHeaderViaCallCredMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.google.protobuf.Empty,
+      com.ibm.test.g3store.grpc.NameResponse> getGetAllAppNamesAuthHeaderViaClientInterceptorMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "getAllAppNames_AuthHeader_Via_ClientInterceptor",
+      requestType = com.google.protobuf.Empty.class,
+      responseType = com.ibm.test.g3store.grpc.NameResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.google.protobuf.Empty,
+      com.ibm.test.g3store.grpc.NameResponse> getGetAllAppNamesAuthHeaderViaClientInterceptorMethod() {
+    io.grpc.MethodDescriptor<com.google.protobuf.Empty, com.ibm.test.g3store.grpc.NameResponse> getGetAllAppNamesAuthHeaderViaClientInterceptorMethod;
+    if ((getGetAllAppNamesAuthHeaderViaClientInterceptorMethod = AppConsumerServiceGrpc.getGetAllAppNamesAuthHeaderViaClientInterceptorMethod) == null) {
+      synchronized (AppConsumerServiceGrpc.class) {
+        if ((getGetAllAppNamesAuthHeaderViaClientInterceptorMethod = AppConsumerServiceGrpc.getGetAllAppNamesAuthHeaderViaClientInterceptorMethod) == null) {
+          AppConsumerServiceGrpc.getGetAllAppNamesAuthHeaderViaClientInterceptorMethod = getGetAllAppNamesAuthHeaderViaClientInterceptorMethod =
+              io.grpc.MethodDescriptor.<com.google.protobuf.Empty, com.ibm.test.g3store.grpc.NameResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "getAllAppNames_AuthHeader_Via_ClientInterceptor"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.google.protobuf.Empty.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.ibm.test.g3store.grpc.NameResponse.getDefaultInstance()))
+              .setSchemaDescriptor(new AppConsumerServiceMethodDescriptorSupplier("getAllAppNames_AuthHeader_Via_ClientInterceptor"))
+              .build();
+        }
+      }
+    }
+    return getGetAllAppNamesAuthHeaderViaClientInterceptorMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -286,6 +348,26 @@ public final class AppConsumerServiceGrpc {
       asyncUnimplementedUnaryCall(getPurchaseRetailAppMethod(), responseObserver);
     }
 
+    /**
+     * <pre>
+     * List of all App names available on server 
+     * </pre>
+     */
+    public void getAllAppNamesAuthHeaderViaCallCred(com.google.protobuf.Empty request,
+        io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.NameResponse> responseObserver) {
+      asyncUnimplementedUnaryCall(getGetAllAppNamesAuthHeaderViaCallCredMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * List of all App names available on server 
+     * </pre>
+     */
+    public void getAllAppNamesAuthHeaderViaClientInterceptor(com.google.protobuf.Empty request,
+        io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.NameResponse> responseObserver) {
+      asyncUnimplementedUnaryCall(getGetAllAppNamesAuthHeaderViaClientInterceptorMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -323,6 +405,20 @@ public final class AppConsumerServiceGrpc {
                 com.ibm.test.g3store.grpc.PurchaseRequest,
                 com.ibm.test.g3store.grpc.RetailAppResponse>(
                   this, METHODID_PURCHASE_RETAIL_APP)))
+          .addMethod(
+            getGetAllAppNamesAuthHeaderViaCallCredMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.google.protobuf.Empty,
+                com.ibm.test.g3store.grpc.NameResponse>(
+                  this, METHODID_GET_ALL_APP_NAMES_AUTH_HEADER_VIA_CALL_CRED)))
+          .addMethod(
+            getGetAllAppNamesAuthHeaderViaClientInterceptorMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.google.protobuf.Empty,
+                com.ibm.test.g3store.grpc.NameResponse>(
+                  this, METHODID_GET_ALL_APP_NAMES_AUTH_HEADER_VIA_CLIENT_INTERCEPTOR)))
           .build();
     }
   }
@@ -398,6 +494,28 @@ public final class AppConsumerServiceGrpc {
       asyncUnaryCall(
           getChannel().newCall(getPurchaseRetailAppMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     * <pre>
+     * List of all App names available on server 
+     * </pre>
+     */
+    public void getAllAppNamesAuthHeaderViaCallCred(com.google.protobuf.Empty request,
+        io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.NameResponse> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getGetAllAppNamesAuthHeaderViaCallCredMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * List of all App names available on server 
+     * </pre>
+     */
+    public void getAllAppNamesAuthHeaderViaClientInterceptor(com.google.protobuf.Empty request,
+        io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.NameResponse> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getGetAllAppNamesAuthHeaderViaClientInterceptorMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -445,6 +563,26 @@ public final class AppConsumerServiceGrpc {
     public com.ibm.test.g3store.grpc.RetailAppResponse purchaseRetailApp(com.ibm.test.g3store.grpc.PurchaseRequest request) {
       return blockingUnaryCall(
           getChannel(), getPurchaseRetailAppMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * List of all App names available on server 
+     * </pre>
+     */
+    public com.ibm.test.g3store.grpc.NameResponse getAllAppNamesAuthHeaderViaCallCred(com.google.protobuf.Empty request) {
+      return blockingUnaryCall(
+          getChannel(), getGetAllAppNamesAuthHeaderViaCallCredMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * List of all App names available on server 
+     * </pre>
+     */
+    public com.ibm.test.g3store.grpc.NameResponse getAllAppNamesAuthHeaderViaClientInterceptor(com.google.protobuf.Empty request) {
+      return blockingUnaryCall(
+          getChannel(), getGetAllAppNamesAuthHeaderViaClientInterceptorMethod(), getCallOptions(), request);
     }
   }
 
@@ -497,13 +635,37 @@ public final class AppConsumerServiceGrpc {
       return futureUnaryCall(
           getChannel().newCall(getPurchaseRetailAppMethod(), getCallOptions()), request);
     }
+
+    /**
+     * <pre>
+     * List of all App names available on server 
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.ibm.test.g3store.grpc.NameResponse> getAllAppNamesAuthHeaderViaCallCred(
+        com.google.protobuf.Empty request) {
+      return futureUnaryCall(
+          getChannel().newCall(getGetAllAppNamesAuthHeaderViaCallCredMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * List of all App names available on server 
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.ibm.test.g3store.grpc.NameResponse> getAllAppNamesAuthHeaderViaClientInterceptor(
+        com.google.protobuf.Empty request) {
+      return futureUnaryCall(
+          getChannel().newCall(getGetAllAppNamesAuthHeaderViaClientInterceptorMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_GET_ALL_APP_NAMES = 0;
   private static final int METHODID_GET_APP_INFO = 1;
   private static final int METHODID_PURCHASE_RETAIL_APP = 2;
-  private static final int METHODID_GET_COUNT = 3;
-  private static final int METHODID_GET_PRICES = 4;
+  private static final int METHODID_GET_ALL_APP_NAMES_AUTH_HEADER_VIA_CALL_CRED = 3;
+  private static final int METHODID_GET_ALL_APP_NAMES_AUTH_HEADER_VIA_CLIENT_INTERCEPTOR = 4;
+  private static final int METHODID_GET_COUNT = 5;
+  private static final int METHODID_GET_PRICES = 6;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -533,6 +695,14 @@ public final class AppConsumerServiceGrpc {
         case METHODID_PURCHASE_RETAIL_APP:
           serviceImpl.purchaseRetailApp((com.ibm.test.g3store.grpc.PurchaseRequest) request,
               (io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.RetailAppResponse>) responseObserver);
+          break;
+        case METHODID_GET_ALL_APP_NAMES_AUTH_HEADER_VIA_CALL_CRED:
+          serviceImpl.getAllAppNamesAuthHeaderViaCallCred((com.google.protobuf.Empty) request,
+              (io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.NameResponse>) responseObserver);
+          break;
+        case METHODID_GET_ALL_APP_NAMES_AUTH_HEADER_VIA_CLIENT_INTERCEPTOR:
+          serviceImpl.getAllAppNamesAuthHeaderViaClientInterceptor((com.google.protobuf.Empty) request,
+              (io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.NameResponse>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -606,6 +776,8 @@ public final class AppConsumerServiceGrpc {
               .addMethod(getGetCountMethod())
               .addMethod(getGetPricesMethod())
               .addMethod(getPurchaseRetailAppMethod())
+              .addMethod(getGetAllAppNamesAuthHeaderViaCallCredMethod())
+              .addMethod(getGetAllAppNamesAuthHeaderViaClientInterceptorMethod())
               .build();
         }
       }

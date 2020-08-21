@@ -15,6 +15,16 @@ Bundle-Name: EJB container Application Security Collaborator
 Bundle-Description: EJB container Application Security Collaborator, version=${bVersion}
 Bundle-SymbolicName: com.ibm.ws.ejbcontainer.security
 
+#
+# Produce a JakartaEE compliant JAR.
+#
+jakartaeeMe: true
+#jakartaee.transform.jar.name=io.openliberty.ejbcontainer.security.internal.jar
+#JakartaEE-Bundle-Name: EJB container Security Collaborator internal
+#JakartaEE-Bundle-Symbolic-Name: io.openliberty.ejbcontainer.security.internal
+#JakartaEE-Bundle-Description: EJB container Security Collaborator internal; Jakarta enabled
+#JakartaEE-Bundle-Version: 2.0
+
 WS-TraceGroup: \
   SecurityCollaborator
 

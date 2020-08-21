@@ -1,0 +1,61 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/TransactionExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+23001=Error al buscar el recurso de transacci\u00f3n externa con el nombre JNDI [{0}]
+
+23002=Error al obtener el estado de la transacci\u00f3n gestionada externamente actual
+
+23003=Error al obtener la transacci\u00f3n gestionada externamente actual
+
+23004=Error al obtener el gestor de transacciones
+
+23005=Error al enlazarse con la transacci\u00f3n gestionada externamente
+
+23006=Error al iniciar la nueva transacci\u00f3n gestionada externamente
+
+23007=Error al confirmar la transacci\u00f3n gestionada externamente
+
+23008=Error al retrotraer transacci\u00f3n gestionada externamente
+
+23009=Error al marcar la transacci\u00f3n gestionada externamente para la retrotracci\u00f3n
+
+23010=No hay ninguna transacci\u00f3n gestionada externamente activa actualmente para esta hebra
+
+23011=La UnitOfWork [{0}] se ha representado inactiva antes de que la transacci\u00f3n gestionada externamente asociada estuviera completa.
+
+23012=No hay ninguna transacci\u00f3n activa actualmente
+
+23013=La transacci\u00f3n est\u00e1 activa actualmente
+
+23014=No se puede utilizar una EntityTransaction mientras se utiliza JTA.
+
+23015=No se pueden incluir varios or\u00edgenes de datos en la transacci\u00f3n.
+
+23016=Excepci\u00f3n en la ejecuci\u00f3n de proxy.
+

@@ -1,0 +1,67 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/PersistenceUnitLoadingExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+30001=\u00c8 stata generata un''eccezione durante il tentativo di caricare una unit\u00e0 permanente per la  directory: {0}
+
+30002=\u00c8 stata generata un''eccezione durante il tentativo di caricare una unit\u00e0 permanente per il file jar: {0}
+
+30003=\u00c8 stata generata un''eccezione durante l''elaborazione dell''unit\u00e0 permanente all''URL: {0}
+
+30004=\u00c8 stata generata un''eccezione durante l''elaborazione di persistence.xml dall''URL: {0}
+
+30005=\u00c8 stata generata un''eccezione durante la ricerca degli archivi permanenti con il programma di caricamento classe: {0}
+
+30006=\u00c8 stata generata un''eccezione durante la ricerca delle entit\u00e0\u00a0 all''URL: {0}
+
+30007=\u00c8 stata generata un''eccezione durante il caricamento della classe: {0} per controllare se implementa @Entity, @Embeddable o @MappedSuperclass.
+
+30008=Il percorso file restituito \u00e8 vuoto o null
+
+30009=\u00c8 stata generata un''eccezione durante il tentativo di caricare l''unit\u00e0 permanente all''url: {0}
+
+30010=\u00c8 stata generata un''eccezione durante il caricamento del file XML ORM: {0}
+
+30011=EclipseLink non \u00e8 stato in grado di ottenere le classi dall''URL: {0}.  EclipseLink ha tentato di leggere questo URL come jarFile e come una directory e non \u00e8 stato in grado di elaborarlo.
+
+30012=EclipseLink non \u00e8 stato in grado di ottenere le info sull''unit\u00e0 permanente dall''URL: {0}.
+
+30013=\u00c8 stata generata un''eccezione durante il tentativo di creare un nome unit\u00e0 permanente per l''unit\u00e0 permanente [{1}] dall''URL: {0}.
+
+30014=L''unit\u00e0 permanente specifica la modalit\u00e0 di convalida "CALLBACK" ma non pu\u00f2 essere inizializzato un ValidatorFactory di convalida bean. Fare riferimento all''eccezione nidificata per i dettagli. Assicurarsi che l''API di convalida bean e il provider di convalida bean siano disponibili nel percorso di classe.
+
+30015=\u00c8 stata generata un''eccezione durante il caricamento della classe del gruppo di convalida: {0}.
+
+30016=Il nome sessione {0} non pu\u00f2 essere utilizzato dall''unit\u00e0 permanente {1}, \u00e8 gi\u00e0 utilizzato dall''unit\u00e0 permanente {2}
+
+30017=L''unit\u00e0 permanente {0} \u00e8 definita sia nell''URL: {1} che nell''URL: {2}. Impossibile avere pi\u00f9 unit\u00e0 permanenti con lo stesso nome caricate dallo stesso programma di caricamento classe.
+
+30018=Si \u00e8 verificata l''eccezione: {1} durante il tentativo di creare l''istanza ArchiveFactory specificata dall''utente: {0}.
+
+30019=Si sta richiamando refreshMetadata su un EntityManagerFactory per l''unit\u00e0 permanente {0}.  I metadati non possono essere aggiornati perch\u00e9 questo EntityManagerFactory \u00e8 stato creato da un oggetto sessione piuttosto che derivato da un''unit\u00e0 permanente.
+

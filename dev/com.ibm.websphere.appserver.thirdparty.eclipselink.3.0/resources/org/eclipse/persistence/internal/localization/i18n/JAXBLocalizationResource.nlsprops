@@ -1,0 +1,71 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/JAXBLocalizationResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+add_namespace_resolvers=Adding namespace resolvers
+
+create_descriptors=Creating Descriptors
+
+create_mappings=Adding mappings to descriptor {0}
+
+error=Error: 
+
+generate_files=Writing Deployment XML and Session Configuration
+
+generate_source=Generating Implementation Classes
+
+impl_package_missing=Implementation Class Package Name is missing
+
+io_exception_error=Error: Unexpected IOException
+
+malformed_url_error=Error: Unexpected MalformedURLException
+
+missing_customization=Input customization file is missing
+
+missing_output_dir=TopLink Output Directory name is missing
+
+missing_project_dir=TopLink Workbench Project directory name is missing
+
+missing_schema_file=Input Schema file is missing
+
+missing_src_dir=Source Output Directory name is missing
+
+missing_target_package=Target Package Name is missing
+
+read_customization=Reading Customization File
+
+setup_inheritance=Setting up inheritance
+
+start_mw_project=Creating Mapping Workbench Project
+
+start_orajaxb=Invoking orajaxb
+
+start_toplink=Invoking TopLink Generation
+
+version=Version: 
+

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,43 +10,36 @@
  *******************************************************************************/
 package jp.test;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-
 import javax.inject.Inject;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
+import org.junit.Test;
+
+import componenttest.app.FATServlet;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import jp.test.bean.MyExecutor;
 
 /**
  * Servlet implementation class RunServlet
  */
 @WebServlet("/run")
-public class RunServlet extends HttpServlet {
+public class RunServlet extends FATServlet {
     private static final long serialVersionUID = 1L;
 
     @Inject
     MyExecutor executor;
 
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public RunServlet() {
-        super();
+    @Test
+    @Mode(TestMode.LITE)
+    public void testPublicMethod() {
+        executor.testPublicMethod();
     }
 
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("text/plain; charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        executor.execute(out);
+    @Test
+    @Mode(TestMode.LITE)
+    public void testPackageMethod() {
+        executor.testPackageMethod();
     }
 
 }

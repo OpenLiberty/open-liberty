@@ -40,7 +40,7 @@ public class FATSuite {
     @ClassRule
     public static RepeatTests r = 
         RepeatTests.withoutModification()
-                   .andWith(new FeatureReplacementAction(setOf("jaxrs-2.1", "jaxrs-2.0"), setOf("jaxrs-3.0")).withID("RESTEasy"));
+                   .andWith(new FeatureReplacementAction(setOf("jaxrs-2.1", "jaxrs-2.0"), setOf("jaxrs-2.2")).withID("RESTEasy"));
     
     private static Set<String> setOf(String...strings) {
         Set<String> set = new HashSet<>();

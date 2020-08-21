@@ -1,0 +1,24 @@
+<server>
+
+	<application
+		type="war"
+		id="jwtbuilder"
+		name="jwtbuilder"
+		location="${server.config.dir}/test-apps/jwtbuilder.war"
+	>
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="EVERYONE" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="EVERYONE" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="EVERYONE" />
+			</security-role>
+		</application-bnd>
+	</application>
+	
+	<javaPermission className="java.util.PropertyPermission" actions="read" name="*"/>
+	
+</server>    

@@ -15,5 +15,5 @@ singleton=true
   io.openliberty.security.authentication.internal.builtin, \
   com.ibm.ws.security.mp.jwt.proxy,\
   com.ibm.ws.security.kerberos.auth
-kind=noship
-edition=full
+kind=beta
+edition=core

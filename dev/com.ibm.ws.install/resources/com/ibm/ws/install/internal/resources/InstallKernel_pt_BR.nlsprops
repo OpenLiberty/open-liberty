@@ -870,6 +870,10 @@ ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY=CWWKF1410E: O recurso {0} n\u00e3o
 ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.explanation=O recurso n\u00e3o \u00e9 aplic\u00e1vel para a edi\u00e7\u00e3o do produto instalado.
 ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.useraction=Instale os recursos que s\u00e3o suportados pela edi\u00e7\u00e3o do produto.
 
+ERROR_BETA_EDITION_NOT_SUPPORTED=CWWKF1411E: A instala\u00e7\u00e3o ou a atualiza\u00e7\u00e3o de recursos n\u00e3o \u00e9 suportada para libera\u00e7\u00f5es beta.
+ERROR_BETA_EDITION_NOT_SUPPORTED.explanation=A instala\u00e7\u00e3o ou a atualiza\u00e7\u00e3o de recursos n\u00e3o \u00e9 suportada para o produto instalado.
+ERROR_BETA_EDITION_NOT_SUPPORTED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: O recurso foi transferido por download com sucesso.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=O recurso foi transferido por download.
 TOOL_DOWNLOAD_FEATURE_OK.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.

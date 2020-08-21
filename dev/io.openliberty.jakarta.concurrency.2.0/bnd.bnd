@@ -20,10 +20,7 @@ Include-Resource: \
 
 instrument.disabled: true
 
-#Because the implementation is shared between both 1.0 and 2.0, this API bundle is being shipped as GA already (with the 1.0 feature).
-#However, we don't want to expose it to users just yet because the 2.0 Jakarta API and our 2.0 implementation feature are not ready.
-#When the 2.0 feature moves to beta then this bundle should be moved from lib to dev/api/spec by uncommenting the line below.
-#publish.wlp.jar.suffix: dev/api/spec
+publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
   jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api;version=2.0.0

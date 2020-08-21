@@ -558,7 +558,7 @@ ssl.create.certificate.end.useraction=Non \u00e8 richiesta alcuna azione.
 #--------------------------------------------------------------------------------------------------
 ssl.create.certificate.error=CWPKI0804E: Errore di creazione del certificato SSL. {0}
 ssl.create.certificate.error.explanation=Non \u00e8 stato possibile creare il certificato SSL nell'ubicazione specificata.
-ssl.create.certificate.error.useraction=Verificare che l'ubicazione sia accessibile da parte del processo del server. La presenza di FFDC pu\u00f2 indicare un errore irreversibile durante la creazione o il caricamento delle chiavi.
+ssl.create.certificate.error.useraction=Verificare che l'ubicazione sia accessibile da parte del processo del server. Esaminare i log FFDC per ulteriori errori associati alla generazione o al caricamento delle chiavi.
 
 # Messages for the CWPKI0804E message descriptor {0}.
 ssl.create.certificate.error.reason1=Impossibile creare il file della chiave SSL: {0}
@@ -660,4 +660,8 @@ ssl.using.cacerts.CWPKI0827I.useraction=Non sono richieste azioni.
 ssl.client.handshake.cacerts.error.CWPKI0828E=CWPKI0828E: L''attributo trustDefaultCerts \u00e8 abilitato ma il trust non \u00e8 stato stabilito utilizzando il truststore predefinito. Il messaggio di errore esteso proveniente dall''eccezione handshake SSL \u00e8: {0}.
 ssl.client.handshake.cacerts.error.CWPKI0828E.explanation=Il truststore predefinito non \u00e8 correttamente configurato per stabilire il trust. 
 ssl.client.handshake.cacerts.error.CWPKI0828E.useraction=Esaminare il messaggio di errore esteso per determinare cosa modificare nella configurazione.
+# -------------------------------------------------------------------------------------------------
+ssl.update.certificate.error=CWPKI0829E: Errore di aggiornamento del certificato SSL. {0}
+ssl.update.certificate.error.explanation=Non \u00e8 stato possibile aggiornare il certificato SSL nell'ubicazione specificata.
+ssl.update.certificate.error.useraction=Verificare che l'ubicazione sia accessibile da parte del processo del server.  Esaminare i log FFDC per ulteriori errori associati alla generazione o al caricamento delle chiavi.
 # -------------------------------------------------------------------------------------------------

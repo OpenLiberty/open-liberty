@@ -32,4 +32,5 @@ public class FATSuite {
     public static RepeatTests r = RepeatTests.withoutModification()
                     .andWith(FeatureReplacementAction.EE7_FEATURES())
                     .andWith(new RepeatWithJPA20());
+//                    .andWith(FeatureReplacementAction.EE9_FEATURES()); // Blocked by JMS and MDB
 }

@@ -13,7 +13,8 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-	test-applications/db2fat/src
+	test-applications/krb5-db2-app/src,\
+	test-applications/krb5-oracle-app/src
 
 fat.project: true
 
@@ -28,5 +29,6 @@ fat.project: true
     org.testcontainers:database-commons;version=1.14.0,\
     org.testcontainers:jdbc;version=1.14.0,\
     org.testcontainers:db2;version=1.14.0,\
+    org.testcontainers:oracle-xe;version=1.14.0,\
     org.testcontainers:testcontainers;version=1.14.0,\
     org.slf4j:slf4j-api;version=1.7.7

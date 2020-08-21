@@ -16,7 +16,7 @@ import io.grpc.ClientCall;
 import io.grpc.ClientInterceptor;
 import io.grpc.ForwardingClientCall.SimpleForwardingClientCall;
 import io.grpc.ForwardingClientCallListener.SimpleForwardingClientCallListener;
-import io.openliberty.grpc.internal.client.security.LibertyGrpcAuthPropagationSupport;
+import io.openliberty.grpc.internal.client.security.authorization.LibertyGrpcAuthPropagationSupport;
 import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
 

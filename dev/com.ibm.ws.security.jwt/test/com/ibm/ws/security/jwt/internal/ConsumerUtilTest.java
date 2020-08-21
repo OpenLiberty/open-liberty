@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,6 +54,7 @@ import com.ibm.websphere.security.jwt.Claims;
 import com.ibm.websphere.security.jwt.InvalidClaimException;
 import com.ibm.websphere.security.jwt.InvalidTokenException;
 import com.ibm.websphere.security.jwt.KeyException;
+import com.ibm.ws.security.common.crypto.KeyAlgorithmChecker;
 import com.ibm.ws.security.common.random.RandomUtils;
 import com.ibm.ws.security.common.time.TimeUtils;
 import com.ibm.ws.security.jwt.config.JwtConsumerConfig;
@@ -134,6 +135,7 @@ public class ConsumerUtilTest {
     private final PublicKey publicKey = mockery.mock(PublicKey.class);
     private final RSAPublicKey rsaPublicKey = mockery.mock(RSAPublicKey.class);
     private final X509Certificate cert = mockery.mock(X509Certificate.class);
+    private final KeyAlgorithmChecker keyAlgChecker = mockery.mock(KeyAlgorithmChecker.class);
 
     @Rule
     public final TestName testName = new TestName();
@@ -286,7 +288,7 @@ public class ConsumerUtilTest {
             ConsumerUtil testConsumerUtil = new ConsumerUtil(null);
             mockery.checking(new Expectations() {
                 {
-                    one(jwtConfig).getSignatureAlgorithm();
+                    allowing(jwtConfig).getSignatureAlgorithm();
                     will(returnValue(RS256));
                     one(jwtConfig).getJwkEnabled(); // for jwksUri(jwkEndpointUrl
                     will(returnValue(false)); //
@@ -312,12 +314,17 @@ public class ConsumerUtilTest {
      */
     @Test
     public void testGetSigningKey_RS256Valid() {
+        consumerUtil.keyAlgChecker = keyAlgChecker;
         try {
             mockery.checking(new Expectations() {
                 {
 
-                    one(jwtConfig).getSignatureAlgorithm();
+                    allowing(jwtConfig).getSignatureAlgorithm();
                     will(returnValue(RS256));
+                    one(keyAlgChecker).isHSAlgorithm(RS256);
+                    will(returnValue(false));
+                    allowing(keyAlgChecker).isRSAlgorithm(RS256);
+                    will(returnValue(true));
                     one(jwtConfig).getJwkEnabled(); // for jwksUri
                     will(returnValue(false)); //
                     allowing(jwtConfig).getTrustedAlias();
@@ -330,6 +337,8 @@ public class ConsumerUtilTest {
                     will(returnValue(cert));
                     one(cert).getPublicKey();
                     will(returnValue(rsaPublicKey));
+                    one(keyAlgChecker).isPublicKeyValidType(rsaPublicKey, RS256);
+                    will(returnValue(true));
                 }
             });
             Key result = consumerUtil.getSigningKey(jwtConfig, jwtContext, null);
@@ -494,7 +503,7 @@ public class ConsumerUtilTest {
                 }
             });
             Key result = consumerUtil.getPublicKey(trustedAlias, trustStoreRef, randomAlg);
-            assertNull("Resulting key was not null when it should have been. Result: " + result, result);
+            assertEquals("Returned PublicKey did not match the expected object.", publicKey, result);
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);

@@ -1,0 +1,47 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/ConversionExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+3001=\u985e\u5225 [{1}] \u7684\u7269\u4ef6 [{0}] \u7121\u6cd5\u8f49\u63db\u6210 [{2}]\u3002
+
+3002=\u4f86\u81ea\u4f7f\u7528\u63cf\u8ff0\u5b50 [{3}] \u4e4b\u5c0d\u6620 [{2}] \u7684\u7269\u4ef6 [{0}]\uff08\u985e\u5225 [{1}]\uff09\u7121\u6cd5\u8f49\u63db\u6210 [{4}]\u3002
+
+3003=\u4e0d\u6b63\u78ba\u7684\u65e5\u671f\u683c\u5f0f\uff1a[{0}]\uff08\u61c9\u70ba [YYYY-MM-DD]\uff09
+
+3004=\u4e0d\u6b63\u78ba\u7684\u6642\u9593\u683c\u5f0f\uff1a[{0}]\uff08\u61c9\u70ba [HH:MM:SS]\uff09
+
+3005=\u4e0d\u6b63\u78ba\u7684\u6642\u9593\u6233\u8a18\u683c\u5f0f\uff1a[{0}]\uff08\u61c9\u70ba [YYYY-MM-DD HH:MM:SS.NNNNNNNNN]\uff09
+
+3006=[{0}] \u7684\u9577\u5ea6\u5fc5\u9808\u662f\u5076\u6578\uff0c\u624d\u80fd\u8f49\u63db\u6210\u4f4d\u5143\u7d44\u9663\u5217\u3002
+
+3007=\u985e\u5225 [{1}] \u7684\u7269\u4ef6 [{0}] \u7121\u6cd5\u8f49\u63db\u6210 [{2}]\u3002\u8acb\u78ba\u4fdd [{2}] \u985e\u5225\u5728\u985e\u5225\u8def\u5f91\u4e0a\u3002\u60a8\u53ef\u80fd\u9700\u8981\u4f7f\u7528\u4f9d\u9700\u8981\u5728\u9069\u7576\u985e\u5225\u8f09\u5165\u5668\u4e2d\u50b3\u905e\u7684\u66ff\u4ee3 API\uff0c\u6216\u662f\u5c07\u5176\u8a2d\u5b9a\u5728\u9810\u8a2d ConversionManager \u4e0a\u3002
+
+3008=\u4e0d\u6b63\u78ba\u7684\u65e5\u671f\u6642\u9593\u683c\u5f0f\uff1a[{0}]\uff08\u61c9\u70ba [YYYY-MM-DD''T''HH:MM:SS]\uff09
+
+3009=\u7121\u6cd5\u8a2d\u5b9a {0} \u5167\u5bb9 [{1}] \u81f3 [{2}]\u3002
+

@@ -10,11 +10,16 @@
  *******************************************************************************/
 package com.ibm.testapp.g3store.grpcConsumer.api;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.ibm.test.g3store.grpc.AppConsumerServiceGrpc;
 import com.ibm.testapp.g3store.grpcConsumer.security.TestAppCallCredentials;
+import com.ibm.testapp.g3store.utilsConsumer.ConsumerUtils;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -171,7 +176,7 @@ public class ConsumerGrpcServiceClient {
      * @param port
      * @param authHeader
      */
-    protected void startServiceSecure_BlockingStub(String address, int port, String authHeader) {
+    protected void startService_Auth_CallCred_BlockingStub(String address, int port, String authHeader) {
 
         _channel = ManagedChannelBuilder.forAddress(address, port).usePlaintext().build();
 
@@ -183,7 +188,27 @@ public class ConsumerGrpcServiceClient {
             set_consumerBlockingStub(AppConsumerServiceGrpc.newBlockingStub(_channel).withCallCredentials(secureCred));
         }
         if (log.isLoggable(Level.FINE)) {
-            log.finest("startServiceSecure: " + _channel);
+            log.finest("startService_Auth_CallCred_BlockingStub: " + _channel);
+        }
+
+    }
+
+    //TODO
+    private void getNettySSLContext() {
+        String trustStoreFile = ConsumerUtils.getServerConfigFolder() + "rsa_key.jks";
+        if (log.isLoggable(Level.FINE)) {
+            log.fine("trustStoreFile location: " + trustStoreFile);
+        }
+
+        try {
+
+            File keyFile = Paths.get(trustStoreFile).toFile();
+            FileInputStream is = new FileInputStream(keyFile);
+            byte[] fileBytes = new byte[(int) keyFile.length()];
+            is.read(fileBytes);
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
     }

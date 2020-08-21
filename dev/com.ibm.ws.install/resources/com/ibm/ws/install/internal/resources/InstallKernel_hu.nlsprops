@@ -870,6 +870,10 @@ ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY=CWWKF1410E: A(z) {0} szolg\u00e1lt
 ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.explanation=A szolg\u00e1ltat\u00e1s nem alkalmazhat\u00f3 a telep\u00edtett term\u00e9k aktu\u00e1lis kiad\u00e1s\u00e1hoz.
 ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.useraction=Telep\u00edtsen olyan szolg\u00e1ltat\u00e1sokat, melyeket t\u00e1mogat a term\u00e9k aktu\u00e1lis kiad\u00e1sa.
 
+ERROR_BETA_EDITION_NOT_SUPPORTED=CWWKF1411E: A szolg\u00e1ltat\u00e1stelep\u00edt\u00e9s vagy -friss\u00edt\u00e9s nem t\u00e1mogatott b\u00e9ta kiad\u00e1sok eset\u00e9n.
+ERROR_BETA_EDITION_NOT_SUPPORTED.explanation=A szolg\u00e1ltat\u00e1stelep\u00edt\u00e9s vagy -friss\u00edt\u00e9s nem t\u00e1mogatott a telep\u00edtett term\u00e9k eset\u00e9ben.
+ERROR_BETA_EDITION_NOT_SUPPORTED.useraction=Nem kell semmit tennie.
+
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: A szolg\u00e1ltat\u00e1s let\u00f6lt\u00e9se siker\u00fclt.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=A szolg\u00e1ltat\u00e1s le lett t\u00f6ltve.
 TOOL_DOWNLOAD_FEATURE_OK.useraction=Semmit sem kell tennie.

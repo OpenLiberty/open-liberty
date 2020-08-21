@@ -33,8 +33,9 @@ IBM-ShortName: jsp-3.0
 IBM-SPI-Package: com.ibm.wsspi.jsp.taglib.config
 Subsystem-Name: Jakarta Server Pages 3.0
 -features=io.openliberty.jakarta.jsp-3.0, \
- com.ibm.websphere.appserver.servlet-5.0; \
- io.openliberty.el-4.0
+ com.ibm.websphere.appserver.servlet-5.0, \
+ io.openliberty.el-4.0, \
+ com.ibm.websphere.appserver.eeCompatible-9.0
 -bundles=com.ibm.ws.org.eclipse.jdt.core.3.10.2.v20160712-0000, \
  io.openliberty.jakarta.jstl.2.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.servlet:jstl:2.0", \
  com.ibm.ws.jsp.2.3.jakarta, \

@@ -294,7 +294,7 @@ public class AcmeClient {
 		/*
 		 * Get the Account. If there is no account yet, create a new one.
 		 */
-		Account acct = findOrRegisterAccount(session, accountKeyPair);
+		Account acct = findOrRegisterAccount(session, accountKeyPair, dryRun);
 
 		/*
 		 * Create a key pair for the domains.
@@ -592,7 +592,7 @@ public class AcmeClient {
 	 *             if there was an issue finding or registering an account.
 	 */
 	@FFDCIgnore(AcmeException.class)
-	private Account findOrRegisterAccount(Session session, KeyPair accountKey) throws AcmeCaException {
+	private Account findOrRegisterAccount(Session session, KeyPair accountKey, boolean dryRun) throws AcmeCaException {
 
 		/*
 		 * Find an existing account.
@@ -650,11 +650,13 @@ public class AcmeClient {
 				account = accountBuilder.create(session);
 			} catch (AcmeException e) {
 				throw handleAcmeException(e,
-						Tr.formatMessage(tc, "CWPKI2018E", acmeConfig.getDirectoryURI(), e.getMessage()));
+						Tr.formatMessage(tc, "CWPKI2018E", acmeConfig.getDirectoryURI(), getRootCauseMessage(e)));
 			}
 		}
 
-		Tr.audit(tc, "CWPKI2019I", acmeConfig.getDirectoryURI(), account.getLocation());
+		if (!dryRun) {
+			Tr.audit(tc, "CWPKI2019I", acmeConfig.getDirectoryURI(), account.getLocation());
+		}
 		return account;
 	}
 

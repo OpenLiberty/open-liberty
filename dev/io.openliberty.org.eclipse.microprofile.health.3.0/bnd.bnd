@@ -1,0 +1,24 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+
+Bundle-SymbolicName: io.openliberty.org.eclipse.microprofile.health.3.0; singleton:=true
+
+Import-Package: \
+  *
+
+Export-Package: org.eclipse.microprofile.health;version=3.0, \
+                org.eclipse.microprofile.health.spi;version=3.0
+
+publish.wlp.jar.suffix: dev/api/stable
+
+Include-Resource: \
+  @${repo;org.eclipse.microprofile.health:microprofile-health-api;3.0.0.RC3;EXACT}
+
+WS-TraceGroup: HEALTH
+
+-buildpath: \
+        com.ibm.websphere.javaee.cdi.2.0;version=latest, \
+        com.ibm.ws.org.osgi.annotation.versioning;version=latest
+
+instrument.disabled: true

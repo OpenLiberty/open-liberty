@@ -607,8 +607,7 @@ ssl.create.certificate.end.useraction=Nie jest wymagana \u017cadna czynno\u015b\
 ssl.create.certificate.error=CWPKI0804E: Podczas tworzenia certyfikatu SSL wyst\u0105pi\u0142 b\u0142\u0105d. {0}
 ssl.create.certificate.error.explanation=W podanym po\u0142o\u017ceniu nie mo\u017cna utworzy\u0107 certyfikatu SSL.
 ssl.create.certificate.error.useraction=Upewnij si\u0119, czy to \
-po\u0142o\u017cenie jest dost\u0119pne dla procesu serwera. Dane przechwytywania FFDC mog\u0105 wskazywa\u0107 na b\u0142\u0105d krytyczny podczas generowania lub \u0142adowania kluczy.
-
+po\u0142o\u017cenie jest dost\u0119pne dla procesu serwera. Przejrzyj dzienniki FFDC w poszukiwaniu informacji o innych b\u0142\u0119dach zwi\u0105zanych z generowaniem lub \u0142adowaniem kluczy.
 # Messages for the CWPKI0804E message descriptor {0}.
 ssl.create.certificate.error.reason1=Nie mo\u017cna utworzy\u0107 pliku kluczy SSL: {0}
 ssl.create.certificate.error.reason2=B\u0142\u0105d: {0}.
@@ -729,4 +728,9 @@ ssl.using.cacerts.CWPKI0827I.useraction=Nie jest wymagana \u017cadna czynno\u015
 ssl.client.handshake.cacerts.error.CWPKI0828E=CWPKI0828E: Atrybut trustDefaultCerts jest w\u0142\u0105czony, ale nie mo\u017cna by\u0142o ustanowi\u0107 relacji zaufania przy u\u017cyciu domy\u015blnego magazynu zaufanych certyfikat\u00f3w. Rozszerzony komunikat o b\u0142\u0119dzie pochodz\u0105cy z wyj\u0105tku uzgadniania protoko\u0142u SSL: {0}.
 ssl.client.handshake.cacerts.error.CWPKI0828E.explanation=Domy\u015blny magazyn zaufanych certyfikat\u00f3w nie zosta\u0142 poprawnie skonfigurowany w celu ustanowienia relacji zaufania.  
 ssl.client.handshake.cacerts.error.CWPKI0828E.useraction=Przejrzyj rozszerzony komunikat o b\u0142\u0119dzie, aby ustali\u0107, co zmieni\u0142o si\u0119 w konfiguracji.
+# -------------------------------------------------------------------------------------------------
+ssl.update.certificate.error=CWPKI0829E: Podczas aktualizowania certyfikatu SSL wyst\u0105pi\u0142 b\u0142\u0105d. {0}
+ssl.update.certificate.error.explanation=W podanym po\u0142o\u017ceniu nie mo\u017cna zaktualizowa\u0107 certyfikatu SSL.
+ssl.update.certificate.error.useraction=Upewnij si\u0119, czy to \
+po\u0142o\u017cenie jest dost\u0119pne dla procesu serwera. Przejrzyj dzienniki FFDC w poszukiwaniu informacji o innych b\u0142\u0119dach zwi\u0105zanych z generowaniem lub \u0142adowaniem kluczy.
 # -------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2014 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -200,12 +200,22 @@ UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR=CWWKF0041E: La funzione {0} su
 UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR.explanation=La funzione configurata non supporta il tipo di processo specificato.
 UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR.useraction=Rimuovere la funzione dalla configurazione o modificare il file manifest della funzione per abilitare il supporto per il tipo di processo desiderato.
 
-# CWWK042E  {0} = feature Name: {1} = server name 
+# CWWK0042E  {0} = feature Name: {1} = server name 
 UPDATE_MISSING_CORE_FEATURE_ERROR=CWWKF0042E: Impossibile trovare una definizione di funzione per la funzione {0}.  Provare ad eseguire il comando bin/installUtility install {0},  per installare la funzione. In alternativa \u00e8 possibile eseguire il comando bin/installUtility install {1},  per installare tutte le funzioni cui fa riferimento questa configurazione.
 UPDATE_MISSING_CORE_FEATURE_ERROR.explanation=Il gestore funzioni non \u00e8 stato in grado di trovare una definizione per la funzione specificata.
 UPDATE_MISSING_CORE_FEATURE_ERROR.useraction=Verificare che il nome della funzione specificata sia scritto correttamente.  \
-Verificare anche che  la definizione di funzione esista e sia leggibile nella directory lib/features. \
-Se la funzione non esiste, tentare di eseguire il comando bin/installUtility install nome_funzione,  per installare tutte le funzioni cui fa riferimento questa configurazione. 
+Verificare anche che  la definizione di funzione esista e sia leggibile nella directory lib/features.  \
+Se la funzione non esiste, tentare di eseguire il comando bin/installUtility install nome_funzione,  per installare tutte le funzioni cui fa riferimento questa configurazione.
+
+# CWWK0043E  {0} = EeProgModel1: {1} = EeProgModel2: {2} = configuredFeature1: {3} = configuredFeature2: {4} EePlaformCommonToProgModels 
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_SAME_PLATFORM_ERROR=CWWKF0043E: La funzione configurata {2} di {0} \u00e8 incompatibile con la funzione configurata {3} di {1}.  La configurazione include una combinazione incompatibile di funzioni {4} non supportata.  Aggiornare la configurazione per utilizzare le versioni compatibili delle funzioni configurate che supportino i modelli di programmazione {0} o {1}.
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_SAME_PLATFORM_ERROR.explanation=La configurazione del server contiene una combinazione incompatibile di funzioni per i modelli di programmazione indicati.  Questo conflitto pu\u00f2 accadere se le due funzioni incompatibili sono configurate direttamente nella configurazione del server o se le funzioni configurate includono versioni differenti di una funzione che sono incompatibili.
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_SAME_PLATFORM_ERROR.useraction=Tentare specificando una versione compatibile delle funzioni configurate che hanno causato il conflitto nel file server.xml.  Se non sono disponibili altre versioni, le funzioni configurate non sono compatibili tra loro e non possono essere configurate contemporaneamente.
+
+# CWWK0044E  {0} = EeProgModel1: {1} = EeProgModel2: {2} = EeConflictFeature1: {3} = EeConflictFeature2: {4} = configuredFeature1: {5} configuredFeature2
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR=CWWKF0044E: Le funzioni {2} e {3} non possono essere caricate contemporaneamente.  La funzione {2} di {0} \u00e8 incompatibile con la funzione {3} di {1}.  Le funzioni configurate {4} e {5} includono una combinazione di funzioni incompatibile.  La configurazione non \u00e8 supportata. Aggiornare la configurazione per utilizzare funzioni che supportino i modelli di programmazione Jakarta EE o Java EE, ma non entrambi.
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR.explanation=La configurazione del server contiene una combinazione incompatibile di funzioni Jakarta EE e Java EE.  Le funzioni che supportano il modello di programmazione Jakarta EE 9 sono incompatibili con le funzioni che supportano i modelli di programmazione Java EE, incluso Jakarta EE 8.  Questo conflitto pu\u00f2 accadere se le due funzioni incompatibili sono configurate direttamente nella configurazione del server o se le funzioni configurate includono versioni differenti di una funzione che sono incompatibili.
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR.useraction=Specificare una versione compatibile delle funzioni configurate che hanno causato il conflitto nel file server.xml e assicurarsi che il file server.xml utilizzi le funzioni di Jakarta EE o Java EE, ma non entrambe.
 
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 

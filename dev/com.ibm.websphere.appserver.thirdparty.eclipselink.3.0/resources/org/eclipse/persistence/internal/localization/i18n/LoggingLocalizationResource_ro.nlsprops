@@ -1,0 +1,763 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/LoggingLocalizationResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+External_transaction_controller_not_defined_by_server_platform=DatabaseSession are un controler de tranzac\u0163ii extern definit de altceva dec\u00e2t ServerPlatform. EclipseLink va permite \u00eenlocuirea controlerului de tranzac\u0163ii extern, dar v\u0103 recomand\u0103m s\u0103 ave\u0163i \u00een vedere alternativa subclas\u0103rii org.eclipse.persistence.platform.server.ServerPlatformBase \u015fi \u00eenlocuirea getExternalTransactionControllerClass().
+
+JDBC_driver_does_not_support_meta_data=Conectat: necunoscut (Driverul JDBC nu suport\u0103 metadate.)
+
+all_registered_clones=Toate clonele \u00eenregistrate:
+
+an_error_executing_ejbSelect=A ap\u0103rut o eroare la executarea ejbSelect: {0}
+
+an_error_executing_finder=A ap\u0103rut o eroare la executarea finder-ului: {0}
+
+an_error_occured_executing_findByPrimaryKey=A ap\u0103rut o eroare la executarea findByPrimaryKey: {0}
+
+an_error_occured_initializing_dms_listener=Excep\u0163ie aruncat\u0103 la ini\u0163ializarea ascult\u0103torului \u00eenglobat DMS \u015fi a servletului SPY
+
+an_error_occured_preparing_bean=A ap\u0103rut o eroare la preg\u0103tirea bean-ului pentru invocare: {0}
+
+an_error_occured_trying_to_undeploy_bean=A ap\u0103rut o eroare c\u00e2nd se \u00eencerca anularea implement\u0103rii bean-ului (dup\u0103 e\u015fuarea implement\u0103rii): {0}
+
+annotation_warning_ignore_annotation=Se ignor\u0103 adnotarea [{0}] pe elementul [{1}] din cauza unei set\u0103ri XML metadate-complete la adev\u0103r pentru aceast\u0103 clas\u0103.
+
+annotation_warning_ignore_private_owned=Se ignor\u0103 @PrivateOwned pe elementul [{1}] \u00een clasa de entit\u0103\u0163i [{0}]. Un @PrivateOwned poate fi folosit numai cu @OneToOne, @OneToMany \u015fi @VariableOneToOne. Re\u0163ine\u0163i \u015fi c\u0103 posesiunea privat\u0103 se sub\u00een\u0163elege cu @BasicCollection \u015fi @BasicMap.
+
+annotation_warning_ignore_return_insert=Se ignor\u0103 @ReturnInsert pe elementul [{0}]. Un @ReturnInsert este suportat numai cu o mapare de baz\u0103.
+
+annotation_warning_ignore_return_update=Se ignor\u0103 @ReturnUpdate pe elementul [{0}]. Un @ReturnUpdate este suportat numai cu o mapare de baz\u0103.
+
+application_server_name_and_version=Server: {0}
+
+archive_not_found_in_input=Fi\u015fierul arhiv\u0103 ({0}) nu exist\u0103 \u00een directorul de intrare ({1}).
+
+associate_using_third_table_not_migrated=Caracteristica Oc4j native CMP -DassociateUsingThirdTable=true pentru a mapa 1:m folosind tabelul de rela\u0163ii nu este migrat\u0103. Trebuie s\u0103 mapa\u0163i din nou c\u00e2mpul cmr ({1}) al entit\u0103\u0163ii ({0}) ca mapare unu-la-mai-mul\u0163i prin Bancul de lucru de mapare dup\u0103 procesul de migrare.
+
+attempted_to_open_entry_in_url_as_jar={2} s-a aruncat la \u00eencercarea de a deschide {0} ca jar \u015fi de a accesa intrarea: {1}.
+
+attempted_to_open_file_url_as_directory={2} s-a aruncat la \u00eencercarea de a deschide {0} ca director \u015fi de a accesa intrarea: {1}.
+
+attempted_to_open_url_as_directory={1} s-a aruncat la \u00eencercarea de a deschide {0} ca director.
+
+attempted_to_open_url_as_jar={1} s-a aruncat la \u00eencercarea de a deschide {0} ca jar.
+
+automatic_key_generation_not_supported=Setarea WLS native CMP "automatic-key-generation" pe entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
+
+bacth_update_not_supported=Setarea de actualizare batch batch-size cu valoarea ({0}) definit\u0103 pe bean-ul de entitate ({1}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
+
+broadcast_connection_already_closed=Avertisment: {0}: se \u00eencearc\u0103 \u00eenchiderea conexiunii care a fost deja \u00eenchis\u0103. Se ignor\u0103.
+
+broadcast_connection_already_closing=Avertisment: {0}: se \u00eencearc\u0103 \u00eenchiderea conexiunii care este \u00een curs de \u00eenchidere. Se ignor\u0103.
+
+broadcast_exception_thrown_when_attempting_to_close_connection=Avertisment: {0}: se \u00eencearc\u0103 \u00eenchiderea conexiunii determinat\u0103 de excep\u0163ia {1}
+
+broadcast_ignored_command_while_closing_connection=Avertisment: {0}: se ignor\u0103 cererea de a publica comanda c\u00e2t timp conexiunea se \u00eenchide.
+
+broadcast_listening_sleep_on_error=Avertisment: {0}: Excep\u0163ia {1} a fost aruncat\u0103. Firul de execu\u0163ie va dormi {2} milisecunde \u00eenainte de a relua ascultarea.
+
+broadcast_remote_command_is_null=Avertisment: {0}: S-a primit mesajul {1} ce con\u0163ine null \u00een loc de RemoteCommand.
+
+broadcast_remote_command_wrong_type=Avertisment: {0}: mesajul primit {1} ce con\u0163ine un obiect de tip {2} \u00een locul RemoteCommand de tipul a\u015fteptat.
+
+call_timeout_not_migrated=call-timeout value={1} este definit \u00een entitatea {0} \u00een orion-ejb-jar.xml dar nu este definit\u0103 nicio mapare persistent\u0103 \u00een fi\u015fierul descriptor, prin urmare nu va avea loc nicio migrare.  Dac\u0103 folosi\u0163i maparea implicit\u0103 EclipseLink mai t\u00e2rziu pentru a genera descriptorul de mapare EclipseLink, re\u0163ine\u0163i c\u0103 setarea call-timeout va fi pierdut\u0103, \u00eentruc\u00e2t maparea implicit\u0103 EclipseLink nu are acces la fi\u015fierul descriptor nativ.  Apoi, trebuie s\u0103 reseta\u0163i timeout-ul apelului manual sau prin Bancul de lucru de mapare EclipseLink dup\u0103 generarea map\u0103rii implicite.
+
+cannot_get_nested_collection_type=Nu a putut fi ob\u0163inut tipul colec\u0163iei imbricate.
+
+cannot_get_server_name_and_version=Nu se poate ob\u0163ine numele serverului \u015fi versiunea din cauza urm\u0103toarei excep\u0163ii.  {0}
+
+cannot_unwrap_connection=Nu se poate desf\u0103\u015fura conexiunea Oracle \u00eenf\u0103\u015furat\u0103 de serverul de aplica\u0163iidin cauza urm\u0103toarei excep\u0163ii.  {0}
+
+cannot_weave_changetracking=Clasa {0} nu a putut fi \u015fesut\u0103 pentru urm\u0103rirea modific\u0103rilor \u00eentruc\u00e2t nu e suportat\u0103 de map\u0103rile sale.
+
+cannot_weave_virtual_one_to_one=Clasa {0} are atributul {1} care folose\u015fte o mapare OneToOne sau ManyToOne pe un atribut virtual.  \u0162eserea acestor tipuri de map\u0103ri nu este suportat\u0103.  \u0162eserea va fi dezactivat\u0103 pentru {0}.
+
+check_exist_on_method_as_true_not_supported=Setarea WLS native CMP "check-exists-on-method-as-true" pe entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
+
+class_list_created_by=Lista de clase creat\u0103 de metoda ({0}).({1})().
+
+cmp_and_cmr_field=Intrarea ejb-jar.xml pentru [{0}] con\u0163ine at\u00e2t o intrare <cmp-field>, c\u00e2t \u015fi <cmr-field> pentru atributul [{1}].  Intrarea <cmp-field> va fi ignorat\u0103.
+
+column_size_not_migrated=Dimensiunea de coloan\u0103 DB ({0}) nu este migrat\u0103. Vede\u0163i documentul migr\u0103rii pentru detalii.
+
+communication_failure_attempting_begintransaction_retry=S-a detectat o e\u015fuare de comunica\u0163ii c\u00e2nd se \u00eencerca crearea tranzac\u0163iei pe baza de date.  Se \u00eencearc\u0103 re\u00eencercarea \u00eenceperea tranzac\u0163iei. Eroarea a fost: {0}.
+
+communication_failure_attempting_query_retry=S-a detectat o e\u015fuare de comunica\u0163ii c\u00e2nd se \u00eencerca realizarea interog\u0103rii de citire \u00een afara unei tranzac\u0163ii. Se \u00eencerca re\u00eencercarea interog\u0103rii. Eroarea a fost: {0}.
+
+config_factory=Fabric\u0103 Config: ({0}) = ({1})
+
+connected_sdk=Conectat: SDK
+
+connected_user_database=Conectat: {3}{4}Utilizator: {0}{3}{4}Baz\u0103 de date: {1}  Versiune: {2}
+
+connected_user_database_driver=Conectat: {0}{6}Utilizator: {1}{6}Baz\u0103 de date: {2}  Versiune: {3}{6}Driver: {4}  Versiune: {5}
+
+corrupted_session_announcement=SessionID: {0} Managerul de descoperire a primit un anun\u0163 de sesiune corupt - se ignor\u0103.
+
+create_default_dbms_tables_not_supported=Setarea WLS native CMP "create-default-dbms-tables" nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
+
+data_sync_on_ejb_create_not_supported=Setarea sincroniz\u0103rii datelor data-synchronization-option="ejbCreate" definit\u0103 pe bean-ul de entitate ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
+
+dbPlatformHelper_defaultingPlatform=Nu se poate detecta platforma pentru numele de v\u00e2nz\u0103tor [{0}]. Se trece la valoarea implicit\u0103 [{1}]. Dialectul bazei de date folosit s-ar putea s\u0103 nu se potriveasc\u0103 cu baza de date pe care o folosi\u0163i. V\u0103 rug\u0103m s\u0103 furniza\u0163i explicit o platform\u0103 ce utilizeaz\u0103 proprietatea "eclipselink.target-database".
+
+dbPlatformHelper_noMappingFound=Nu se poate \u00eenc\u0103rca resursa [{0}] care \u00eencarc\u0103 maparea de la numele v\u00e2nz\u0103torului la platforma de baz\u0103 de date. Autodetec\u0163ia platformei de baz\u0103 de date nu va func\u0163iona.
+
+dbws_no_wsdl_inline_schema=Nu a putut fi citit\u0103 schema WSDL [{0}] inline.
+
+dbws_orm_metadata_read_error=Nu au putut fi citite metadatele [{0}] ORM.
+
+dbws_oxm_metadata_read_error=Nu au putut fi citite metadatele [{0}] OXM.
+
+dbws_xml_schema_read_error=Nu a putut fi citit\u0103 schema XML [{0}].
+
+ddl_generation_unknown_property_value=Valoare necunoscut\u0103 {0} furnizat\u0103 [{1}] pentru unitatea de persisten\u0163\u0103 [{2}]. Op\u0163iunile valide sunt: [{3}]
+
+default_dbms_tables_ddl_not_supported=Setarea WLS native CMP "default-dbms-tables-ddl" nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
+
+default_tables_already_existed=Tabelul ({0}) este deja \u00een baza de date \u015fi nu va fi creat.
+
+delay_database_insert_until_ejb_create_not_supported=Setarea WLS native CMP "delay-database-insert-until-ejbCreate" pe entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
+
+delay_database_insert_until_ejb_post_create_not_supported=Setarea WLS native CMP "delay-database-insert-until-ejbPostCreate" pe entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
+
+delay_updates_until_commit_not_supported=Caracteristica Oc4j native CMP "delay-updates-until-commit" pe entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
+
+deleted_objects=Obiecte \u015fterse:
+
+deleting_object=Opera\u0163ia de \u00eenl\u0103turare a fost realizat\u0103 pe: {0}
+
+deprecated_property=proprietatea {1} este perimat\u0103, ar trebui folosit\u0103 \u00een loc proprietatea {0}.
+
+descriptor_named_query_cannot_be_added=Nu se poate ad\u0103uga o interogare numit\u0103 de descriptor, al c\u0103rei nume intr\u0103 \u00een conflict cu o interogare existent\u0103. Interogare de ad\u0103ugat: [{0}] se nume\u015fte: [{1}] cu argumentele [{2}].
+
+dir_cleaned_for_mw_files=Fi\u015fierele \u015fi subdirectoarele de sub directorul {0} au fost \u015fterse pentru a crea un director curat pentru fi\u015fierele de proiect nou generate Banc de lucru mapare EclipseLink
+
+do_select_before_insert_not_supported=Caracteristica Oc4j native CMP "do-select-before-insert" pe entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
+
+drop_connection_on_error=Avertisment: Se abandoneaz\u0103 conexiunea comenzii la distan\u0163\u0103 la {0} la eroarea {1}
+
+ejbSelect2=EjbSelect: {0}
+
+ejb_jar_xml_not_found_in_input=ejb-jar.xml nu este prezent \u00een directorul de intrare ({0}).
+
+elements={0}{1} elemente
+
+enable_batch_operations_as_true_not_supported=Setarea WLS native CMP "enable-batch-operations-as-true" nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
+
+entity_manager_ignores_jta_data_source=Unitatea de persisten\u0163\u0103 nu utilizeaz\u0103 JTA, prin urmare, EntityManager ignor\u0103 sursa de date jta. 
+
+entity_manager_ignores_nonjta_data_source=Unitatea de persisten\u0163\u0103 utilizeaz\u0103 JTA, prin urmare, EntityManager ignor\u0103 sursa de date non jta. 
+
+entity_manager_sets_property_while_context_is_active=Proprietatea {0} este setat\u0103 \u00een EntityManager c\u00e2nd contextul de persisten\u0163\u0103 activ\u0103 exist\u0103 deja, va fi procesat\u0103 \u015fi intr\u0103 \u00een vigoare numai c\u00e2nd este creat un nou context de persisten\u0163\u0103 activ. Pentru a crea un nou context de persisten\u0163\u0103 activ, cel existent ar trebui \u00eenl\u0103turat - asta s-ar putea face apel\u00e2nd metoda de cur\u0103\u0163are pe EntityManager.
+
+entity_not_available_during_merge=S-a dep\u0103\u015fit maximul de \u00eencerc\u0103ri.  Nu se poate g\u0103si valoarea cacheKey blocat\u0103.  Clasa [{0}] ID:[{1}] Acest fir de execu\u0163ie: [{2}] Fir de execu\u0163ie de\u0163in\u0103tor:[{3}]
+
+error_during_PersistenceManager_setup_for_bean=Eroare \u00een timpul set\u0103rii PersistenceManager pentru bean-ul: {0}
+
+error_executing_ejbHome=Eroare la execu\u0163ia ejbHome: {0}
+
+error_executing_remote_command=Comanda {0} a e\u015fuat din cauza: {1}
+
+error_getting_transaction_status=Eroare la ob\u0163inerea st\u0103rii tranzac\u0163iei.  {0}
+
+error_in_codegen=Eroare \u00een timpul gener\u0103rii clasei de bean concrete.
+
+error_in_create=Eroare la creare.
+
+error_in_remove=Eroare la \u00eenl\u0103turare.
+
+error_loading_xml_file=Excep\u0163ie la \u00eenc\u0103rcarea fi\u015fierului ORM xml: {0}: {1}
+
+exception_loading_entity_class=O excep\u0163ie \u00een timp ce se \u00eencerca ini\u0163ializarea persisten\u0163ei.  {1} a ap\u0103rut \u00een timp ce se \u00eencerca \u00eenc\u0103rcarea clasei de entitate: {0}.
+
+exception_thrown_when_attempting_to_close_connection=Avertisment: excep\u0163ie aruncat\u0103 c\u00e2nd se \u00eencerca \u00eenchiderea conexiunii
+
+exception_thrown_when_attempting_to_close_listening_topic_connection=Excep\u0163ie aruncat\u0103 c\u00e2nd se \u00eencerca \u00eenchiderea ascult\u0103rii conexiunii subiectului: {0}
+
+exception_thrown_when_attempting_to_shutdown_cache_synch=Excep\u0163ie aruncat\u0103 c\u00e2nd se \u00eencerca oprirea sincroniz\u0103rii cache: {0}
+
+exception_while_weaving=\u0162es\u0103torul a \u00eent\u00e2lnit o excep\u0163ie \u00een timp ce se \u00eencerca \u0163eserea clasei {0}. Excep\u0163ia a fost: {1}
+
+extra_cmp_field=Este un getter \u015fi/sau setter abstract definit pe clasa bean abstract\u0103 [{0}] dar c\u00e2mpul cmp corespunz\u0103tor [{1}] nu este declarat \u00een ejb-jar.xml.
+
+extra_ejb_select=Este un ejbSelect abstract definit pe clasa bean abstract\u0103 [{0}] dar intrarea ejbSelect corespunz\u0103toare [{1}{2}] nu este declarat\u0103 \u00een ejb-jar.xml.
+
+extra_finder=Este un c\u0103ut\u0103tor definit pe interfa\u0163a de baz\u0103 [{0}] dar intrare de c\u0103ut\u0103tor corespunz\u0103toare [{1}{2}] nu este declarat\u0103 \u00een ejb-jar.xml.
+
+failed_command_propagation=Eroare: A e\u015fuat \u00eencercarea de a propaga comanda la {0} din cauza {1}
+
+failed_to_find_mbean_server=A e\u015fuat g\u0103sirea serverului MBean: {0}
+
+failed_to_propogate_to=CacheSynchronization : A e\u015fuat propagarea la {0}.  {1}
+
+field_group_not_supported=Setarea WLS native CMP "field-group" pe entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
+
+field_type_set_to_java_lang_string=Generatorul de tabel implicit nu a putut localiza sau converti un tip java ({1}) \u00eentr-un tip de baz\u0103 de date pentru c\u00e2mpul de baz\u0103 de date ({0}). Generatorul folose\u015fte "java.lang.String" ca tip java implicit pentru c\u00e2mp.
+
+force_update_not_supported=Caracteristica Oc4j nativ\u0103 CMP "for\u0163are-actualizare" pe entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
+
+identitymap_for={0}{1} pentru: {2}
+
+includes=(include: 
+
+input_and_output_dir_be_different=Trebuie s\u0103 defini\u0163i un director de ie\u015fire diferite de directorul de intrare.
+
+input_archive_format_not_supported=Utilitarul de migrare suport\u0103 formatul de arhiv\u0103 de intrare .ear \u015fi .jar. Formatul fi\u015fierului de intrare ca ({0}) nu este suportat.
+
+input_at_least_either_archive_or_xml=Utiliza\u0163i fie -e pentru a specifica numele de fi\u015fier al arhivei migrate, fie -x pentru a semnala c\u0103 fi\u015fierul xml descriptor din directorul de intrare va fi migrat \u015fi trebuie s\u0103 specifica\u0163i numai una dintre ele.
+
+input_minimum_arguments=Argumentele de intrare ale liniei de comand\u0103 trebuie s\u0103 includ\u0103 cel pu\u0163in -s, -a sau -x \u015fi -o.
+
+input_not_both_archive_and_xml=Folosi\u0163i -e pentru a specifica numelede fi\u015fier arhiv\u0103 sau -x pentru a semnala c\u0103 fi\u015fierele descriptor din directorul de intrare vor fi migrate, dar nu ambele.
+
+input_orione_ejb_jar_augmented=Fi\u015fierul de intrare orion-ejb-jar.xml a fost crescut pentru a specifica EclipseLink ca Managerul de persisten\u0163\u0103 al OC4J
+
+invalid_command_line_argument=Argumentul liniei de comand\u0103 ({0}) este invalid
+
+invalid_datasource_property_value={1} nu este un obiect valid de transmis pentru proprietatea {0}.  Valorile valide sunt String sau instan\u0163e de javax.sql.DataSource.
+
+invalid_property_value={1} nu este un obiect valid de transmis pentru proprietatea {0}.
+
+isolation_level_not_supported=Setarea Oc4j native CMP "isolation-level" pe entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
+
+jar_entry_has_been_migrated=Fi\u015fierul descriptor native cmp din intrarea jar ({0}) din fi\u015fierul de intrare EAR ({1}) a fost migrat.
+
+jar_entry_not_migratable=Intrarea jar ({0}) din fi\u015fierul de intrare EAR ({1}) nu este migrabil.
+
+jar_file_url_exception=Excep\u0163ie la parsarea persistence.xml.  Loca\u0163ia fi\u015fierului jar nu a putut fi g\u0103sit\u0103: {0}
+
+jaxb_metadata_warning_ignoring_java_attribute=Se ignor\u0103 atributul [{0}] pe clasa [{1}] \u00eentruc\u00e2t nu s-a generat nicio proprietate pentru el.
+
+jaxb_metadata_warning_ignoring_type_on_map=Se ignor\u0103 atributul de tip setat pe xml-element \u00eentruc\u00e2t xml-map este specificat pe proprietatea [{0}].
+
+jaxb_metadata_warning_invalid_bound_type=Tipul de legare [{0}] pentru clasa de adaptor [{1}] este invalid \u015fi va fi ignorat.
+
+jaxb_metadata_warning_invalid_java_attribute=S-a \u00eent\u00e2lnit un JavaAttribute nesuportat [{0}] \u015fi va fi ignorat.
+
+jaxb_metadata_warning_invalid_package_level_xml_java_type_adapter=S-a specificat un XmlJavaTypeAdapter invalid [{0}] pentru pachetul [{1}] \u015fi va fi ignorat.
+
+jaxb_metadata_warning_invalid_property_level_xml_java_type_adapter=S-a specificat un XmlJavaTypeAdapter invalid [{0}] pentru c\u00e2mpul/proprietatea [{1}] pe clasa [{2}] \u015fi va fi ignorat.
+
+jaxb_metadata_warning_invalid_type_level_xml_java_type_adapter=S-a specificat un XmlJavaTypeAdapter invalid [{0}] pentru clasa [{1}] \u015fi va fi ignorat.
+
+jaxb_metadata_warning_no_classes_to_process=Nu este nicio clas\u0103 de procesat pentru pachetul [{0}].
+
+jmx_mbean_runtime_services_failed_toget_initial_context=A e\u015fuat ob\u0163inerea InitialContext pentru \u00eenregistrarea MBean: {0}
+
+jmx_mbean_runtime_services_get_executethreadruntime_object_failed=Versiunea de WebLogic nu suport\u0103 executeThreadRuntime - folosind ClassLoader: {0}
+
+jmx_mbean_runtime_services_identity_map_class=Harta de identitate [{0}] clasa = {1}
+
+jmx_mbean_runtime_services_identity_map_empty=Harta de identitate [{0}] este goal\u0103.
+
+jmx_mbean_runtime_services_identity_map_initialized=Harta de identitate [{0}] este ini\u0163ializat\u0103.
+
+jmx_mbean_runtime_services_identity_map_invalidated=Harta de identitate [{0}] este invalidat\u0103.
+
+jmx_mbean_runtime_services_identity_map_non_existent=Harta de identitate [{0}] nu exist\u0103.
+
+jmx_mbean_runtime_services_mbeanserver_lookup_failed=A e\u015fuat ob\u0163inerea InitialContext pentru \u00eenregistrarea MBean: {0}
+
+jmx_mbean_runtime_services_no_classes_in_session=Nicio clas\u0103 \u00een sesiune.
+
+jmx_mbean_runtime_services_no_connection_pools_available=Nu este disponibil niciun pool de conexiuni.
+
+jmx_mbean_runtime_services_no_identity_maps_in_session=Nu este nicio hart\u0103 de identitate \u00een aceast\u0103 sesiune.
+
+jmx_mbean_runtime_services_pool_name=Nume pool = {0}
+
+jmx_mbean_runtime_services_print_cache_key_value=Cheie [{0}] => Valoare [{1}]
+
+jmx_mbean_runtime_services_registration_encountered_multiple_mbeanserver_instances=Exist\u0103 mai multe instan\u0163e JMX MBeanServer instances [{0}], vom utiliza serverul la indexul [{1}] : [{2}].
+
+jmx_mbean_runtime_services_registration_mbeanserver_print=S-a g\u0103sit instana JMX MBeanServer: [{0}], # bean-uri: [{1}], domeniu: [{2}] la indexul: [{3}].
+
+jmx_mbean_runtime_services_statement_cache_cleared=Cache-ul instruc\u0163iuni a fost cur\u0103\u0163at.
+
+jmx_mbean_runtime_services_switching_to_alternate_mbeanserver=JMX MBeanServer \u00een uz: [{0}] de la indexul [{1}] 
+
+jmx_mbean_runtime_services_threadpool_initialize_failed=A e\u015fuat ini\u0163ializarea MBean threadPoolRuntime: {0}
+
+jmx_unable_to_unregister_mbean=Nu se poate anula \u00eenregistrarea MBean [{0}] pentru c\u0103 MBeanServer este nul. Verifica\u0163i c\u0103 ServerPlatform dumneavoastr\u0103 este activat pentru JMX.
+
+jmx_unregistered_mbean=MBean ne\u00eenregistrat [{0}] de la MBeanServer [{1}].
+
+jpars_could_bootstrap_persistence_context=Context persisten\u0163\u0103: pe [{0}] nu s-a putut face bootstrap.
+
+jpars_could_not_find_class_in_persistence_unit=Tip: [{0}] nu poate fi g\u0103sit \u00een unitatea de persisten\u0163\u0103: [{1}].
+
+jpars_could_not_find_persistence_context=Un apel JPA-RS solicit\u0103 contextul de persisten\u0163\u0103: [{0}].  Acel context de persisten\u0163\u0103 nu este g\u0103sit.
+
+jpars_could_not_find_session_bean=Se face un apel la un bean de sesiune cu numele JNDI: [{0}].  Acel bean nu poate fi g\u0103sit.
+
+jta_cannot_be_disabled_in_cmp=C\u00e2nd se folose\u015fte Container Managed Persistence (CMP), JTA nu poate fi dezactivat. EclipseLink se va comporta ca \u015fi cum JTA este activat.
+
+key_identity_hash_code_object={0}Cheie: {1}{2}Cod hash identitate: {3}{2}Obiect: {4}
+
+key_object_null={0}Cheie: {1}{2}Obiect: null
+
+key_version_identity_hash_code_object={0}Cheie: {1}{2}Versiune: {5}{2}Cod hash identitate: {3}{2}Obiect: {4}
+
+locking_mode_not_valid=Modul de blocare({1}) pe entitatea ({0} \u00een orion-ejb-jar.xml nu este bine definit \u015fi, prin urmare, nu e migrat.
+
+locking_required_for_database_change_notification=Entitatea {0} nu folose\u015fte blocarea versiunii, dar are mai multe tabele sau rela\u0163ii \u015fi folose\u015fte notificarea modific\u0103rilor bazei de date Oracle, modific\u0103rile asupra rela\u0163iilor sau tabelelor secundare nu ar putea invalida cache-ul.
+
+log_file_under_output_dir=Exist\u0103 un fi\u015fier istoric numit ({0}) \u00een directorul de ie\u015fire ({1}).
+
+mapping_not_supported_by_mw=Maparea EclipseLink {0} nu este suportat\u0103 de bancul de lucru de mapare
+
+marshal_warning_null_document_root_element={0}: Elementul r\u0103d\u0103cin\u0103 de document nedefinit al unui obiect referit [{1}] este ignorat \u00een timpul trierii cu orice mapare colec\u0163ie|obiect.
+
+max_instance_not_supported=Setarea Oc4j native CMP "max-instance" pe entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
+
+max_tx_retries_not_supported=Setarea Oc4j native CMP "max-tx-retries" pe entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
+
+metadata_access_type=Tipul de acces pentru clasa persistent\u0103 [{1}] este setat la [{0}].
+
+metadata_default_alias=Numele alias pentru clasa de entitate [{0}] este pus la valoarea implicit\u0103: {1}.
+
+metadata_default_collection_catalog=Numele tabelului de colec\u0163ie pentru maparea de baz\u0103 colec\u0163ie/hart\u0103 [{0}] este pus la valoarea implicit\u0103: {1}.
+
+metadata_default_collection_schema=Numele tabelului de colec\u0163ie pentru maparea de baz\u0103 colec\u0163ie/hart\u0103 [{0}] este pus la valoarea implicit\u0103: {1}.
+
+metadata_default_collection_table_name=Numele tabelului de colec\u0163ie pentru maparea de baz\u0103 colec\u0163ie/hart\u0103 [{0}] este pus la valoarea implicit\u0103: {1}.
+
+metadata_default_column=Numele coloanei pentru elementul [{0}] este pus la valoarea implicit\u0103: {1}.
+
+metadata_default_converter_data_type=Tipul de date pentru convertorul numit [{2}] folosit cu elementul [{1}] \u00een entitatea [{0}] este pus la valoarea implicit\u0103 [{3}].
+
+metadata_default_converter_object_type=Tipul de obiect pentru convertorul numit [{2}] folosit cu elementul [{1}] \u00een entitatea [{0}] este pus la valoarea implicit\u0103 [{3}].
+
+metadata_default_element_collection_reference_class=Clasa \u0163int\u0103 (de referin\u0163\u0103) pentru elementul de mapare a colec\u0163iei de elemente [{0}] este pus\u0103 la valoarea implicit\u0103: {1}.
+
+metadata_default_entity_graph_name=Numele pentru specifica\u0163ia numit\u0103 EntityGroup din clasa [{1}] este trecut la valoarea implicit\u0103: {0}
+
+metadata_default_fk_column=Numele coloanei de cheie extern\u0103 pentru elementul de mapare [{0}] este pus la valoarea implicit\u0103: {1}.
+
+metadata_default_inheritance_discriminator_column=Numele coloanei discriminator pentru clasa de mo\u015fternire r\u0103d\u0103cin\u0103 [{0}] este pus la valoarea implicit\u0103: {1}.
+
+metadata_default_inheritance_fk_column=Numele coloanei de cheie extern\u0103 pentru clasa de mo\u015ftenire [{0}] este pus la valoarea implicit\u0103: {1}.
+
+metadata_default_inheritance_pk_column=Numele coloanei de cheie primar\u0103 pentru clasa de mo\u015ftenire [{0}] este pus la valoarea implicit\u0103: {1}.
+
+metadata_default_join_catalog=Catalogul tabelului de unire pentru maparea mul\u0163i la mul\u0163i [{0}] este pus la valoarea implicit\u0103: {1}.
+
+metadata_default_join_schema=Schema tabelului de unire pentru maparea mul\u0163i la mul\u0163i [{0}] este pus\u0103 la valoarea implicit\u0103: {1}.
+
+metadata_default_join_table_name=Numele tabelului de unire pentru maparea mul\u0163i la mul\u0163i [{0}] este pus la valoarea implicit\u0103: {1}.
+
+metadata_default_key_column=Numele coloanei cheie pentru elementul de mapare de baz\u0103 [{0}] este pus la valoarea implicit\u0103: {1}.
+
+metadata_default_many_to_many_reference_class=Clasa entitate \u0163int\u0103 (de referin\u0163\u0103) pentru elementul de mapare mul\u0163i la mul\u0163i [{0}] este pus\u0103 la valoarea implicit\u0103: {1}.
+
+metadata_default_many_to_one_reference_class=Clasa entitate \u0163int\u0103 (de referin\u0163\u0103) pentru elementul de mapare mul\u0163i la unul [{0}] este pus\u0103 la valoarea implicit\u0103: {1}.
+
+metadata_default_map_key_attribute_name=Numele atributului cheie de hart\u0103 pentru elementul de mapare [{0}] este pus la valoarea implicit\u0103: {1}.
+
+metadata_default_one_to_many_mapping=Elementul [{0}] este pus la valoarea implicit\u0103 de mapare unul la mul\u0163i.
+
+metadata_default_one_to_many_reference_class=Clasa entitate \u0163int\u0103 (de referin\u0163\u0103) pentru elementul de mapare unul la mul\u0163i [{0}] este pus\u0103 la valoarea implicit\u0103: {1}.
+
+metadata_default_one_to_one_mapping=Elementul [{0}] este pus la valoarea implicit\u0103 de mapare unul la unul.
+
+metadata_default_one_to_one_reference_class=Clasa entitate \u0163int\u0103 (de referin\u0163\u0103) pentru elementul de mapare unul la unul [{0}] este pus\u0103 la valoarea implicit\u0103: {1}.
+
+metadata_default_order_column=Numele coloanei de ordine pentru elementul [{0}] este pus la valoarea implicit\u0103: {1}.
+
+metadata_default_pk_column=Numele coloanei de cheie primar\u0103 pentru elementul de mapare [{0}] este pus la valoarea implicit\u0103: {1}.
+
+metadata_default_qk_column=Numele cheii de interogare pentru variabila de mapare unul la unul [{0}] este pus la valoarea  implicit\u0103: {1}.
+
+metadata_default_secondary_catalog=Numele tabelului secundar pentru entitatea [{0}] este pus la valoarea implicit\u0103: {1}.
+
+metadata_default_secondary_schema=Numele tabelului secundar pentru entitatea [{0}] este pus la valoarea implicit\u0103: {1}.
+
+metadata_default_secondary_table_fk_column=Numele coloanei de cheie extern\u0103 de tabel secundar pentru elementul de mapare [{0}] este pus la valoarea implicit\u0103: {1}.
+
+metadata_default_secondary_table_name=Numele tabelului secundar pentru entitatea [{0}] este pus la valoarea implicit\u0103: {1}.
+
+metadata_default_secondary_table_pk_column=Numele coloanei de cheie primar\u0103 de tabel secundar pentru elementul [{0}] este pus la valoarea implicit\u0103: {1}.
+
+metadata_default_sequence_generator_catalog=Catalogul de generator de secven\u0163\u0103 definit \u00een [{0}] este pus la valoarea implicit\u0103: {1}.
+
+metadata_default_sequence_generator_schema=Schema de generator de secven\u0163\u0103 definit\u0103 \u00een [{0}] este pus\u0103 la valoarea implicit\u0103: {1}.
+
+metadata_default_sequence_generator_sequence_name=Numele secven\u0163ei pentru generatorul de secven\u0163\u0103 numit [{0}] definit pe [{1}] de la [{2}] este pus la valoarea implicit\u0103: {0}.
+
+metadata_default_source_fk_column=Numele coloanei de cheie extern\u0103 surs\u0103 pentru maparea mul\u0163i la mul\u0163i [{0}] este pus la valoarea implicit\u0103: {1}.
+
+metadata_default_source_pk_column=Numele coloanei de cheie primar\u0103 surs\u0103 pentru maparea mul\u0163i la mul\u0163i [{0}] este pus la valoarea implicit\u0103: {1}.
+
+metadata_default_table_catalog=Catalogul tabelului pentru entitatea [{0}] este pus la valoarea implicit\u0103: {1}.
+
+metadata_default_table_generator_catalog=Catalogul de generator de tabel definit \u00een [{0}] este pus la valoarea implicit\u0103: {1}.
+
+metadata_default_table_generator_name=Numele generatorului de tabel definit \u00een [{0}] este pus la valoarea implicit\u0103: {1}.
+
+metadata_default_table_generator_pk_column_value=Valoarea coloanei pk pentru generatorul de tabel numit [{0}] definit pe [{1}] de la [{2}] este pus\u0103 la valoarea implicit\u0103: {0}.
+
+metadata_default_table_generator_schema=Schema de generator de tabel definit\u0103 \u00een [{0}] este pus\u0103 la valoarea implicit\u0103: {1}.
+
+metadata_default_table_name=Numele tabelului pentru entitatea [{0}] este pus la valoarea implicit\u0103: {1}.
+
+metadata_default_table_schema=Schema tabelului pentru entitatea [{0}] este pus\u0103 la valoarea implicit\u0103: {1}.
+
+metadata_default_target_fk_column=Numele coloanei de cheie extern\u0103 \u0163int\u0103 pentru maparea mul\u0163i la mul\u0163i [{0}] este pus la valoarea implicit\u0103: {1}.
+
+metadata_default_target_pk_column=Numele coloanei de cheie primar\u0103 \u0163int\u0103 pentru maparea mul\u0163i la mul\u0163i [{0}] este pus la valoarea implicit\u0103: {1}.
+
+metadata_default_tenant_discriminator_column=Numele coloanei discriminator chiria\u015f pentru elementul [{0}] este pus la valoarea implicit\u0103: {1}.
+
+metadata_default_tenant_discriminator_context_property=Proprietatea de context discriminator chiria\u015f pentru coloana discriminator chiria\u015f [{1}] pe elementul [{0}] este pus\u0103 la valoarea implicit\u0103: {2}.
+
+metadata_default_tenant_table_discriminator_context_property=Proprietatea de context discriminator tabel chiria\u015f pentru entitatea [{0}] este pus\u0103 la valoarea implicit\u0103: {1}.
+
+metadata_default_tenant_table_discriminator_type=Tipul discriminatorului de tabel chiria\u015f pentru entitatea [{0}] este pus la valoarea implicit\u0103: {1}.
+
+metadata_default_value_column=Numele coloanei de valoare pentru elementul de mapare de baz\u0103 colec\u0163ie/hart\u0103 [{0}] este pus la valoarea implicit\u0103: {1}.
+
+metadata_default_variable_one_to_one_discriminator_column=Numele coloanei de discriminator pentru variabila de mapare unul la unul [{0}] este pus la valoarea implicit\u0103: {1}.
+
+metadata_default_variable_one_to_one_mapping=Elementul [{0}] este pus la valoarea implicit\u0103 de variabil\u0103 de mapare unul la unul.
+
+metadata_default_variable_one_to_one_reference_class=Clasa interfa\u0163\u0103 \u0163int\u0103 (de referin\u0163\u0103) pentru elementul de mapare variabil\u0103 unul la unul [{0}] este pus\u0103 la valoarea implicit\u0103: {1}.
+
+metadata_warning_ignore_association_override=Se ignor\u0103 \u00eenlocuirea asocierii numite [{0}] pe elementul [{1}] al superclasei mapate [{2}] \u00eentruc\u00e2t s-a specificat o \u00eenlocuire de asociere cu acela\u015fi nume pe clasa de entitate [{3}].
+
+metadata_warning_ignore_attribute_override=Se ignor\u0103 \u00eenlocuirea atributului numit [{0}] pe elementul [{1}] al superclasei mapate [{2}] \u00eentruc\u00e2t s-a specificat o \u00eenlocuire de atribut cu acela\u015fi nume pe clasa de entitate [{3}].
+
+metadata_warning_ignore_auto_apply_converter=Se ignor\u0103 convertorul de auto-aplicare pentru elementul [{1}] \u00een clasa de entitate [{0}] \u00eentruc\u00e2t sunt specificate metadate de conversie EclipseLink.
+
+metadata_warning_ignore_cacheable_false=Se ignor\u0103 cacheable=false explicit setat pentru clasa de entitate [{0}] \u00eentruc\u00e2t un tip de punere \u00een cache ALL a fost specificat \u00een fi\u015fierul persistence.xml.
+
+metadata_warning_ignore_cacheable_true=Se ignor\u0103 cacheable=true explicit setat pentru clasa de entitate [{0}] \u00eentruc\u00e2t un tip de punere \u00een cache NONE a fost specificat \u00een fi\u015fierul persistence.xml.
+
+metadata_warning_ignore_converts=Se ignor\u0103 specifica\u0163ia de conversie pe elementul [{1}] \u00een clasa de entitate [{0}] \u00eentruc\u00e2t sunt specificate metadate de conversie EclipseLink.
+
+metadata_warning_ignore_enumerated=Se ignor\u0103 specifica\u0163ia enumerat\u0103 pe elementul [{1}] \u00een clasa de entitate [{0}] \u00eentruc\u00e2t sunt specificate metadate de conversie EclipseLink.
+
+metadata_warning_ignore_fetch_group=Se ignor\u0103 grupurile de aducere specificate pe clasa [{0}] pentru entitatea [{1}] \u00eentruc\u00e2t \u0163eserea nu este activat\u0103 \u015fi clasa de entitate nu implementeaz\u0103 interfa\u0163a FetchGroupTracker.
+
+metadata_warning_ignore_inheritance_subclass_cache=Se ignor\u0103 metadatele cache pe subclasa de mo\u015ftenire [{0}]. Metadatele cache ar trebui specificate numai pe r\u0103d\u0103cina ierarhiei de mo\u015ftenire \u015fi nu pot fi \u00eenlocuite \u00eentr-o subclas\u0103 de mo\u015ftenire.
+
+metadata_warning_ignore_inheritance_subclass_cache_interceptor=Se ignor\u0103 metadatele de interceptor cache pe subclasa de mo\u015ftenire [{0}]. Metadatele de interceptor cache ar trebui specificate numai pe r\u0103d\u0103cina ierarhiei de mo\u015ftenire \u015fi nu pot fi \u00eenlocuite \u00eentr-o subclas\u0103 de mo\u015ftenire.
+
+metadata_warning_ignore_inheritance_subclass_default_redirectors=Se ignor\u0103 metadatele de redirector implicit pe subclasa de mo\u015ftenire [{0}]. Metadatele de redirector implicit ar trebui specificate numai pe r\u0103d\u0103cina ierahiei de mo\u015ftenire \u015fi nu pot fi \u00eenlocuite \u00eentr-o subclas\u0103 de mo\u015ftenire.
+
+metadata_warning_ignore_inheritance_subclass_read_only=Se ignor\u0103 setarea numai-citire pe subclasa de mo\u015ftenire [{0}]. O setare numai-citire ar trebui specificat\u0103 numai pe r\u0103d\u0103cina ierarhiei de mo\u015ftenire \u015fi nu poate fi \u00eenlocuit\u0103 \u00eentr-o subclas\u0103 de mo\u015ftenire.
+
+metadata_warning_ignore_inheritance_tenant_discriminator_column=Se ignor\u0103 setarea coloanei discriminator chiria\u015f pe subclasa de mo\u015ftenire [{0}]. Coloanele discriminator chiria\u015f ar trebui specificate numai pe r\u0103d\u0103cina ierahiei de mo\u015ftenire \u015fi nu pot fi \u00eenlocuite \u015fi/sau specificate \u00eentr-o subclas\u0103 de mo\u015ftenire.
+
+metadata_warning_ignore_inheritance_tenant_table_discriminator=Se ignor\u0103 setarea discriminator tabel chiria\u015f pe subclasa de mo\u015ftenire [{0}]. Discriminatorul tabel chiria\u015f ar trebui specificat numai pe r\u0103d\u0103cina ierarhiei de mo\u015ftenire \u015fi nu poate fi \u00eenlocuit \u015fi/sau specificat \u00eentr-o subclas\u0103 de mo\u015ftenire.
+
+metadata_warning_ignore_is_null_allowed=isNullAllowed este resetat la fals \u00een {0} pentru c\u0103 agregatul are o mapare de cheie extern\u0103 \u0163int\u0103 (posibil imbricat\u0103)
+
+metadata_warning_ignore_lazy=Se readuce setarea lent\u0103 de pe atributul OneToOne sau ManyToOne [{0}] pentru clasa de entitate [{1}] \u00eentruc\u00e2t \u0163eserea nu a fost activat\u0103 sau nu a avut loc.
+
+metadata_warning_ignore_lob=Se ignor\u0103 specifica\u0163ia lobului pe elementul [{1}] din clasa de entitate [{0}] \u00eentruc\u00e2t sunt specificate metadate de conversie EclipseLink.
+
+metadata_warning_ignore_mapped_superclass_additional_criteria=Se ignor\u0103 metadatele de criterii suplimentare pe superclasa mapat\u0103 [{1}] pentru clasa de entitate [{0}] \u00eentruc\u00e2t s-au descoperit anterior metadate de criterii suplimentare pentru acea entitate (fie pe entitatea \u00een sine, fie pe alt\u0103 superclas\u0103 mapat\u0103).
+
+metadata_warning_ignore_mapped_superclass_annotation=Se ignor\u0103 setarea metadatelor [{0}] pe superclasa mapat\u0103 [{1}] pentru clasa de entitate [{2}] \u00eentruc\u00e2t metadatele au fost descoperite anterior pentru acea entitate (fie pe entitatea \u00een sine, fie pe alt\u0103 superclas\u0103 mapat\u0103).
+
+metadata_warning_ignore_mapped_superclass_association_override=Se ignor\u0103 \u00eenlocuirea asocierii numite [{0}] definit\u0103 pe superclasa mapat\u0103 [{1}] pentru entitatea [{2}] \u00eentruc\u00e2t o \u00eenlocuire de asociere cu acela\u015fi nume a fost descoperit\u0103 anterior pentru acea entitate (fie pe entitatea \u00een sine, fie pe alt\u0103 superclas\u0103 mapat\u0103).
+
+metadata_warning_ignore_mapped_superclass_attribute_override=Se ignor\u0103 \u00eenlocuirea atributului numit [{0}] definit pe superclasa mapat\u0103 [{1}] pentru entitatea [{2}] \u00eentruc\u00e2t o \u00eenlocuire a atributului cu acela\u015fi nume a fost descoperit\u0103 anterior pentru acea entitate (fie pe entitatea \u00een sine, fie pe alt\u0103 superclas\u0103 mapat\u0103).
+
+metadata_warning_ignore_mapped_superclass_cache=Se ignor\u0103 metadatele de cache pe superclasa mapat\u0103 [{1}] pentru clasa de entitate [{0}] \u00eentruc\u00e2t s-au descoperit anterior metadate de cache pentru acea entitate (fie pe entitatea \u00een sine, fie pe alt\u0103 superclas\u0103 mapat\u0103).
+
+metadata_warning_ignore_mapped_superclass_cache_interceptor=Se ignor\u0103 metadatele de interceptor cache pe superclasa mapat\u0103 [{1}] pentru clasa de entitate [{0}] \u00eentruc\u00e2t s-au descoperit anterior metadate de interceptor cache pentru acea entitate (fie pe entitatea \u00een sine, fie pe alt\u0103 superclas\u0103 mapat\u0103).
+
+metadata_warning_ignore_mapped_superclass_cacheable=Se ignor\u0103 metadatele ce pot fi puse \u00een cache pe superclasa mapat\u0103 [{1}] pentru clasa de entitate [{0}] \u00eentruc\u00e2t s-au descoperit anterior metadate ce pot fi puse \u00een cache pentru acea entitate (fie pe entitatea \u00een sine, fie pe alt\u0103 superclas\u0103 mapat\u0103).
+
+metadata_warning_ignore_mapped_superclass_change_tracking=Se ignor\u0103 metadatele de urm\u0103rire a modific\u0103rilor pe superclasa mapat\u0103 [{1}] pentru clasa de entitate [{0}] \u00eentruc\u00e2t s-au descoperit anterior metadate de urm\u0103rire a modific\u0103rilor pentru acea entitate (fie pe entitatea \u00een sine, fie pe alt\u0103 superclas\u0103 mapat\u0103).
+
+metadata_warning_ignore_mapped_superclass_copy_policy=Se ignor\u0103 metadatele politicii de copiere pe superclasa mapat\u0103 [{1}] pentru clasa de entitate [{0}] \u00eentruc\u00e2t s-au descoperit anterior metadate ale politicii de copiere pentru acea entitate (fie pe entitatea \u00een sine, fie pe alt\u0103 superclas\u0103 mapat\u0103).
+
+metadata_warning_ignore_mapped_superclass_customizer=Se ignor\u0103 personalizatorul pe superclasa mapat\u0103 [{1}] pentru clasa de entitate [{0}] \u00eentruc\u00e2t s-au descoperit anterior metadate de personalizator pentru acea entitate (fie pe entitatea \u00een sine, fie pe alt\u0103 superclas\u0103 mapat\u0103).
+
+metadata_warning_ignore_mapped_superclass_default_redirectors=Se ignor\u0103 metadatele de redirector implicit pe superclasa mapat\u0103 [{1}] pentru clasa de entitate [{0}] \u00eentruc\u00e2t s-au descoperit anterior metadate de redirector implicit pentru acea entitate (fie pe entitatea \u00een sine, fie pe alt\u0103 superclas\u0103 mapat\u0103).
+
+metadata_warning_ignore_mapped_superclass_existence_checking=Se ignor\u0103 setarea de verificare existen\u0163\u0103 pe superclasa mapat\u0103 [{1}] pentru clasa de entitate [{0}] \u00eentruc\u00e2t s-au descoperit anterior metadate de verificare existen\u0163\u0103 pentru acea entitate (fie pe entitatea \u00een sine, fie pe alt\u0103 superclas\u0103 mapat\u0103).
+
+metadata_warning_ignore_mapped_superclass_fetch_group=Se ignor\u0103 grupul de aducere numit [{2}] pe superclasa mapat\u0103 [{1}] pentru clasa de entitate [{0}] \u00eentruc\u00e2t un grup de aducere cu acela\u015fi nume a fost descoperit anterior pentru acea entitate (fie pe entitatea \u00een sine, fie pe alt\u0103 superclas\u0103 mapat\u0103).
+
+metadata_warning_ignore_mapped_superclass_id_class=Se ignor\u0103 clasa ID pe superclasa mapat\u0103 [{1}] pentru clasa de entitate [{0}] \u00eentruc\u00e2t o clas\u0103 ID a fost descoperit\u0103 anterior pentru acea entitate (fie pe entitatea \u00een sine, fie pe alt\u0103 superclas\u0103 mapat\u0103).
+
+metadata_warning_ignore_mapped_superclass_multitenant=Se ignor\u0103 setarea multichiria\u015f de pe superclasa mapat\u0103 [{1}] pentru clasa de entitate [{0}] \u00eentruc\u00e2t s-au descoperit anterior metadate multichiria\u015f pentru acea entitate (fie pe entitatea \u00een sine, fie pe alt\u0103 superclas\u0103 mapat\u0103).
+
+metadata_warning_ignore_mapped_superclass_optimistic_locking=Se ignor\u0103 metadatele de blocare optimist\u0103  pe superclasa mapat\u0103 [{1}] pentru clasa de entitate [{0}] \u00eentruc\u00e2t s-au descoperit anterior metadate de blocare optimist\u0103 pentru acea entitate (fie pe entitatea \u00een sine, fie pe alt\u0103 superclas\u0103 mapat\u0103).
+
+metadata_warning_ignore_mapped_superclass_primary_key=Se ignor\u0103 setarea de cheie primar\u0103 pe superclasa mapat\u0103 [{1}] pentru clasa de entitate [{0}] \u00eentruc\u00e2t s-au descoperit anterior metadate de cheie primar\u0103 pentru acea entitate (fie pe entitatea \u00een sine, fie pe alt\u0103 superclas\u0103 mapat\u0103).
+
+metadata_warning_ignore_mapped_superclass_read_only=Se ignor\u0103 setarea numai-citire de pe superclasa mapat\u0103 [{1}] pentru clasa de entitate [{0}] \u00eentruc\u00e2t s-au descoperit anterior metadate numai-citire pentru acea entitate (fie pe entitatea \u00een sine, fie pe alt\u0103 superclas\u0103 mapat\u0103).
+
+metadata_warning_ignore_mapping_metadata=Se ignor\u0103 metadatele javax.persistence aplicate atributului [{0}] din clasa [{1}]. Metadatele javax.persistence sunt ignorate pe c\u00e2mpuri sau propriet\u0103\u0163i care sunt ocazionale, statice sau abstracte.
+
+metadata_warning_ignore_serialized=Se ignor\u0103 serializarea implicit\u0103 pe elementul [{1}] \u00een clasa de entitate [{0}] \u00eentruc\u00e2t sunt specificate metadate de conversie EclipseLink.
+
+metadata_warning_ignore_temporal=Se ignor\u0103 specifica\u0163ia temporal\u0103 pe elementul [{1}] \u00een clasa de entitate [{0}] \u00eentruc\u00e2t sunt specificate metadate de conversie EclipseLink.
+
+metadata_warning_ignore_version_locking=Metadatele de blocare optimist\u0103 sunt deja definite pe descriptor pentru entitatea [{0}]. Se ignor\u0103 specifica\u0163ia versiunii pe elementul [{1}].
+
+metadata_warning_integer_discriminator_could_not_be_built=Clasa [{0}] specific\u0103 discriminatorType=INTEGER \u015fi folose\u015fte [{1}] ca discriminatorValue.  Acea valoare nu poate fi convertit\u0103 la un \u00eentreg.  Vom \u00eencerca s\u0103 folosim aceast\u0103 valoare \u00een format String (\u015fir).
+
+metadata_warning_inverse_access_type_mapping_override=Se \u00eenlocuie\u015fte atributul de mapare {2} [{1}] cu atributul de mapare {4} [{3}] din clasa [{0}]. Pentru a evita acest avertisment, ar trebui s\u0103 marca\u0163i atributul [{1}] ca ocazional.
+
+metadata_warning_multiple_id_fields_without_id_class=A\u0163i specificat mai multe ID-uri pentru clasa de entitate [{0}] f\u0103r\u0103 a specifica un @IdClass. F\u0103c\u00e2nd asta, a\u0163i putea pierde abilitatea de a g\u0103si dup\u0103 identitate, suport cache distribuit etc. Not\u0103: Pute\u0163i totu\u015fi s\u0103 utiliza\u0163i opera\u0163iile de g\u0103sire EntityManager prin trecerea unei liste de c\u00e2mpuri chei primare. Altfel, va trebui s\u0103 folosi\u0163i interog\u0103ri JPQL pentru a v\u0103 citi entit\u0103\u0163ile. Pentru alte op\u0163iuni de ID, vede\u0163i @PrimaryKey.
+
+metadata_warning_override_annotation_with_xml=Se ignor\u0103 adnotarea [{0}] de la [{1}] \u00eentruc\u00e2t un element XML a fost definit \u00een fi\u015fierul de mapare [{2}].
+
+metadata_warning_override_named_annotation_with_xml=Se ignor\u0103 adnotarea [{0}] de la [{2}] \u00eentruc\u00e2t un element XML cu acela\u015fi nume [{1}] a fost definit \u00een fi\u015fierul de mapare [{3}]
+
+metadata_warning_override_named_xml_with_eclipselink_xml=Se ignor\u0103 elementul [{0}] numit [{1}] definit \u00een fi\u015fierul de mapare [{2}] \u00eentruc\u00e2t un element cu acela\u015fi nume a fost definit \u00een fi\u015fierul de mapare eclipselink-orm [{3}]
+
+metadata_warning_override_xml_with_eclipselink_xml=Se ignor\u0103 elementul [{0}] de la [{1}] definit \u00een fi\u015fierul de mapare [{2}] \u00eentruc\u00e2t acest element a fost definit \u00een fi\u015fierul de mapare eclipselink-orm [{3}]
+
+metadata_warning_partitioned_not_set=S-a g\u0103sit @Partitioning pe elementul {1} al clasei {0}, dar niciun @Partitioned.  Adnotarea @Partitioned trebuie folosit\u0103 pentru a seta politica de parti\u0163ionare, @Partitioning doar define\u015fte politica, dar nu o seteaz\u0103.
+
+metadata_warning_reference_column_not_found=Numele coloanei de referin\u0163\u0103 [{0}] mapat pe elementul [{1}] nu corespunde la un ID valid sau c\u00e2mp/coloan\u0103 de baz\u0103 pe referin\u0163a de mapare. Se va folosi numele coloanei referite a\u015fa cum e furnizat.
+
+metamodel_print_type_header=List\u0103 tip\u0103rit\u0103 de tipuri de metamodel [{0}] de urm\u0103rit:
+
+metamodel_print_type_value=Tip metamodel: [{0}]}
+
+metamodel_type_collection_empty=Colec\u0163ia tipurilor de metamodele este goal\u0103. Clasele model s-ar putea s\u0103 nu fi fost g\u0103site \u00een timpul c\u0103ut\u0103rii entit\u0103\u0163ii pentru Java SE \u015fi unele unit\u0103\u0163i de persisten\u0163\u0103 gestionate de container Java EE.  V\u0103 rug\u0103m s\u0103 verifica\u0163i c\u0103 clasele dumneavoastr\u0103 de entitate sunt referite \u00een persistence.xml folosind fie elemente <class>, fie un element global <exclude-unlisted-classes>false</exclude-unlisted-classes>
+
+metamodel_type_collection_empty_during_lookup=Colec\u0163ia tipurilor de metamodele [{1}] este goal\u0103. Clasele model se poate s\u0103 nu fi fost g\u0103site \u00een timpul c\u0103ut\u0103rii entit\u0103\u0163ii pentru Java SE \u015fi unele unit\u0103\u0163i de persisten\u0163\u0103 gestionate de container Java EE.  V\u0103 rug\u0103m s\u0103 verifica\u0163i c\u0103 clasele dumneavoastr\u0103 de entitate sunt referite \u00een persistence.xml folosind fie elemente <class>, fie un element global <exclude-unlisted-classes>false</exclude-unlisted-classes>.  C\u0103utarea pe [{0}] va returna null.
+
+migration_failed=Migrarea a e\u015fuat.
+
+migration_input_dir_not_valid=Directorul de intrare ({0}) pe care l-a\u0163i definit nu este valid
+
+migration_output_dir_not_valid=Directorul de ie\u015fire ({0}) pe care l-a\u0163i definit nu este valid
+
+migration_successful=Migrarea a avut succes!
+
+min_instance_not_supported=Setarea Oc4j native CMP "min-instance" pe entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
+
+missing_converter=Avertisment: Nu se poate converti comanda {0} din cauza lipsei CommandConverter - se ignor\u0103 comanda
+
+multiple_ds_not_supported=EclipseLink CMP nu suport\u0103 mai multe surse de date \u015fi va folosi numai una din ele numit\u0103 ({0}), care este specificat\u0103 \u00een orion-ejb-jar.xml \u015fi este asociat\u0103 cu un bean de entitate definit ultimul \u00een ejb-jar.xml corespunz\u0103tor.
+
+must_define_migration_output_dir=Trebuie s\u0103 defini\u0163i un director de ie\u015fire pentru unealta de migrare
+
+mw_project_generated_and_under=Fi\u015fierele de proiect Banc de lucru EclipseLink sunt \u00een ({0}).
+
+named_argument_not_found_in_query_parameters=Lpse\u015fte parametrul Interogare pentru argumentul numit: {0} "null" va fi \u00eenlocuit.
+
+nested_entity_manager_flush_not_executed_pre_query_changes_may_be_pending=Clasa {0} se gole\u015fte deja. Interogarea va fi executat\u0103 f\u0103r\u0103 ca alte modific\u0103ri s\u0103 fie scrise \u00een baza de date.  Dac\u0103 interogarea este condi\u0163ionat\u0103 de datele modificate, modific\u0103rile s-ar putea s\u0103 nu se reflecte \u00een rezultate.  Utilizatorii ar trebui s\u0103 emit\u0103 un apel flush() la finalizarea modific\u0103rilor dependente \u015fi \u00eenainte de acest flush() pentru a asigura rezultate corecte.
+
+new_objects=Obiecte noi:
+
+no_exclusive_write_access_not_supported=Caracteristica Oc4j native CMP "no-exclusive-write-access" pe entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
+
+no_jar_entry_migratable_in_ear=Niciuna din intr\u0103rile jar din fi\u015fierul de intrare EAR ({0}) nu poate fi migrat\u0103.
+
+no_session_found=Nu s-a putut g\u0103si sesiunea cu numele [{0}] \u00een fi\u015fierul session.xml [{1}]
+
+non_jpa_allowed_type_used_for_collection_using_lazy_access=Elementul [{1}] din clasa de entitate [{0}] folose\u015fte un tip de colec\u0163ie [{2}] c\u00e2nd specifica\u0163ia JPA suport\u0103 numai java.util.Collection, java.util.Set, java.util.List sau java.util.Map.  Acest tip este suportat cu \u00eenc\u0103rcare rapid\u0103; folosind \u00eenc\u0103rcarea lent\u0103 cu acest tip de colec\u0163ie necesit\u0103 configurare suplimentar\u0103 \u015fi o implementare IndirectContainer care extinde [{2}] sau setarea map\u0103rii s\u0103 foloseasc\u0103 ocolire de baz\u0103 \u015fi tipul s\u0103 fie ValueholderInterface.
+
+objectchangepolicy_turned_off=Urm\u0103rirea modific\u0103rilor dezactivat\u0103 pentru: {0}
+
+oc4j_native_migration_start=OC4J-Native CMP -> OC4J EclipseLink CMP Migration STARTS......
+
+old_pessimistic_locking_not_supported=Setarea Oc4j native CMP "old-pessimistic-locking" pe entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
+
+one_to_one_join_outer_migrated=Unirea exterioar\u0103 unu-la-unu definit\u0103 pentru c\u00e2mpul cmr ({0}) al bean-ului de entitate ({1}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
+
+optimistic_locking_not_supported=Setarea Oc4j native CMP locking-mode="optimistic" pe entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
+
+orion_ejb_jar_xml_not_found_in_input=orion-ejb-jar.xml nu exist\u0103 \u00een directorul de intrare ({0}) pe care l-a\u0163i specificat.
+
+osgi_initializer=Se folose\u015fte ini\u0163ializatorul OSGi: [{0}].
+
+osgi_initializer_failed=Construc\u0163ia ini\u0163ializatorului OSGi specific mediului [{0}] a e\u015fuat cu mesajul: [{1}].
+
+overriding_cache_isolation=Entitatea p\u0103rinte {0} are un nivel de izolare: {1} care este mai protector dec\u00e2t subclasa {2} cu izolarea: {3} a\u015fa c\u0103 subclasa a fost setat\u0103 la nivelul de izolare {1}.
+
+ox_lowering_global_logging_from_default_info_to_warning= {0} Se scade jurnalizarea global\u0103 de la valoarea implicit\u0103 INFO la nivelul WARNING (avertisment).
+
+ox_lowering_session_logging_from_default_info_to_warning= {0} Se scade jurnalizarea sesiunii de la valoarea implicit\u0103 INFO la nivelul WARNING (avertisment).
+
+ox_turn_global_logging_off= {0} Se dezactiveaz\u0103 jurnalizarea sesiunii globale.
+
+ox_turn_session_logging_off= {0} Se dezactiveaz\u0103 jurnalizarea sesiunii.
+
+parse_ejb_jar_with_validation_fails=Parsarea ejb-jar.xml cu validare e\u015fueaz\u0103 cu eroarea ({0}). Unealta de migrare va parsa fi\u015fierul xml f\u0103r\u0103 validare.
+
+persistence_unit_ignores_statments_cache_setting=Cache-ul instruc\u0163iunii nu poate fi activat pentru c\u0103 nu este configurat niciun pool de conexiuni.
+
+persistence_unit_processor_error_in_class_forname_weaving_disabled=classLoader [{0}]: a e\u015fuat s\u0103 \u00eencarce clasa [{1}]. \u0162eserea a fost dezactivat\u0103 pentru aceast\u0103 sesiune. EclipseLink s-ar putea s\u0103 nu poat\u0103 ob\u0163ine un \u00eenc\u0103rc\u0103tor de clas\u0103 temporar mandatat spec de la server, a\u0163i putea utiliza \u0163eserea static\u0103 ca paliativ op\u0163ional. 
+
+persistence_unit_processor_error_loading_class={0}: {1} s-a aruncat la \u00eencercarea PersistenceLoadProcessor de a \u00eenc\u0103rca clasa {2}. Clasa este ignorat\u0103.
+
+persistence_unit_processor_error_loading_class_weaving_disabled=classLoader [{0}]: pentru PersistenceLoadProcessor [{1}] a e\u015fuat s\u0103 \u00eencarce clasa [{2}]. \u0162eserea a fost dezactivat\u0103 pentru aceast\u0103 sesiune. EclipseLink s-ar putea s\u0103 nu poat\u0103 ob\u0163ine un \u00eenc\u0103rc\u0103tor de clas\u0103 temporar mandatat spec de la server, a\u0163i putea utiliza \u0163eserea static\u0103 ca paliativ op\u0163ional. 
+
+persistence_unit_processor_jboss_temp_classloader_bypassed=classLoader temporar pentru PersistenceLoadProcessor [{0}] nu este disponibil.  Se comut\u0103 classLoader la [{1}].  \u0162eserea a fost dezactivat\u0103 pentru aceast\u0103 sesiune. EclipseLink s-ar putea s\u0103 nu poat\u0103 ob\u0163ine un \u00eenc\u0103rc\u0103tor de clas\u0103 temporar mandatat spec de la server, a\u0163i putea utiliza \u0163eserea static\u0103 ca paliativ op\u0163ional. 
+
+persistence_unit_processor_npe_temp_classloader=classLoader [{0}] pentru PersistenceLoadProcessor [{1}] determin\u0103 un NPE pe loadClass. Se comut\u0103 classLoader la [{2}].  \u0162eserea a fost dezactivat\u0103 pentru aceast\u0103 sesiune. EclipseLink s-ar putea s\u0103 nu poat\u0103 ob\u0163ine un \u00eenc\u0103rc\u0103tor de clas\u0103 temporar mandatat spec de la server, a\u0163i putea utiliza \u0163eserea static\u0103 ca paliativ op\u0163ional. 
+
+persistence_unit_processor_null_temp_classloader=classLoader pentru PersistenceLoadProcessor [{0}] este null. \u0162eserea a fost dezactivat\u0103 pentru aceast\u0103 sesiune. EclipseLink s-ar putea s\u0103 nu poat\u0103 ob\u0163ine un \u00eenc\u0103rc\u0103tor de clas\u0103 temporar mandatat spec de la server, a\u0163i putea utiliza \u0163eserea static\u0103 ca paliativ op\u0163ional. 
+
+persistence_unit_processor_sap_temp_classloader_bypassed=classLoader temporar pentru PersistenceLoadProcessor [{0}] nu este disponibil.  Se comut\u0103 classLoader la [{1}].  \u0162eserea a fost dezactivat\u0103 pentru aceast\u0103 sesiune. EclipseLink s-ar putea s\u0103 nu poat\u0103 ob\u0163ine un \u00eenc\u0103rc\u0103tor de clas\u0103 temporar mandatat spec de la server, a\u0163i putea utiliza \u0163eserea static\u0103 ca paliativ op\u0163ional. 
+
+problem_adding_connection=Nu s-a putut ad\u0103uga conexiunea de la distan\u0163\u0103 de la {0} din cauza erorii: {1}
+
+problem_adding_remote_connection=Problem\u0103 la ad\u0103ugarea conexiunii de la distan\u0163\u0103: {0}
+
+problem_reconnect_to_jms=Nu s-a putut reconecta la numele de subiect JMS {0} din cauza erorii: {1}
+
+problem_registering_mbean=Problem\u0103 la \u00eenregistrarea MBean: {0}
+
+problem_unregistering_mbean=Problem\u0103 la anularea \u00eenregistr\u0103rii MBean: {0}
+
+problem_while_registering=Problem\u0103 la \u00eenregistrarea: {0}
+
+query_has_both_join_attributes_and_partial_attributes={0} numit {1} are at\u00e2t atribute de unire, c\u00e2t \u015fi atribute par\u0163iale. Aceste dou\u0103 tehnologii nu au fost proiectate s\u0103 func\u0163ioneze \u00eempreun\u0103, rezultatul ar putea fi imprevizibil.
+
+query_has_joined_attribute_outside_fetch_group={0}: atributul unit [{1}] nu este inclus \u00een grupul de aducere. Datele atributului unit (de\u015fi citit din baza de date) vor fi ignorate. Un sql nou va fi executat pentru a citi din nou obiectul referit de atributul unit; \u015fi \u00eenc\u0103 un sql pentru a citi \u00eentregul obiect principal (din cauza set\u0103rii valorii la atributul din afara grupului de aducere). Fie include\u0163i atributul adus \u00een grupul de aducere, fie \u00eel \u00eenl\u0103tura\u0163i.
+
+received_corrupt_announcement=Avertisment: Managerul de descoperire nu a putut procesa anun\u0163ul serviciului din cauza {0} - se ignor\u0103 anun\u0163ul
+
+received_unexpected_message_type=S-a primit un tip de mesaj nea\u015fteptat: {0} de la subiectul: {1}; se ignor\u0103
+
+register_new_for_persist=Opera\u0163ia PERSIST apelat\u0103 pe: {0}.
+
+relational_descriptor_support_only=Generatorul de tabel implicit suport\u0103 momentan numai generarea schemei de tabel implicit de la un proiect rela\u0163ional.
+
+relationship_cacheing_not_supported=Setarea WLS native CMP "relationship-caching" pe entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
+
+removeEJB_return=removeEJB return: {0}
+
+removing_unique_constraint=Se \u00eenl\u0103tur\u0103 defini\u0163ia constr\u00e2ngerii de unicitate din [{0}] pentru c\u0103 este \u015fi cheie primar\u0103.
+
+resource_local_persistence_init_info_ignores_jta_data_source=PersistenceUnitInfo {0} are transactionType RESOURCE_LOCAL \u015fi, prin urmare, jtaDataSource va fi ignorat
+
+retreived_null_message=S-a extras mesajul nul de la subiectul: {0}; se ignor\u0103
+
+retreived_unknown_message_type=S-a extras tipul de mesaj necunoscut: {0} de la subiectul: {1}; se ignor\u0103
+
+sdo_classgenerator_exception={2} A ap\u0103rut o excep\u0163ie [{0}] - mesajul este [{1}]
+
+sdo_error_deserialization=\u00cencercare neautorizat\u0103 de deserializare cu clasa {0}.
+
+sdo_error_processing_referenced_schema=A ap\u0103rut o {0} la procesarea schemei referite cu uri {1} cu schemaLocation {2}.
+
+sdo_invalid_schemaLocation=Nu s-a putut crea schemaLocation [{0}] pentru importul cu uri [{1}].
+
+sdo_missing_schemaLocation=Schema referit\u0103 cu uri {0} nu a putut fi procesat\u0103 pentru c\u0103 nu s-a specificat niciun atribut schemaLocation.
+
+sdo_type_generation_modified_class_naming_format_to={0}: Numele de clas\u0103 java de tipul generat [{1}] s-a modificat la [{2}] pentru a urma conven\u0163iile de numire a claselor.
+
+sdo_type_generation_modified_function_naming_format_to={0}: Numele metodei java get/set de tipul generat [{1}] s-a modificat la [{2}] pentru a urma conven\u0163iile de numire a claselor.
+
+sdo_type_generation_warning_class_name_violates_java_spec={0}: Tipul generat [{1}] intr\u0103 \u00een conflict cu regulile de denumire ale specifica\u0163iei Java pentru [{2}] \u015fi ar trebui redenumit.
+
+sdo_type_generation_warning_class_name_violates_sdo_spec={0}: Tipul generat [{1}] intr\u0103 \u00een conflict cu regulile de denumire ale specifica\u0163iei SDO pentru [{2}] \u015fi ar trebui redenumit.
+
+sequence_cachekey_improper_format=Setarea WLS native CMP "key-cache-size" pe entitatea ({0}) este formatat\u0103 gre\u015fit cu valoarea ({1})
+
+session_key_for_mbean_name_is_null=Numele sesiunii folosit pentru \u00eenregistrarea MBean nu poate fi null.
+
+session_manager_no_partition=Nicio parti\u0163ie asociat\u0103 nu este asociat\u0103 cu instan\u0163a SessionManager curent\u0103.
+
+sessions_xml_path_where_session_load_from=Informa\u0163iile sesiunii sunt \u00eenc\u0103rcate de la [{0}].
+
+sop_object_deserialze_failed=A e\u015fuat deserializarea sopObject de la [{0}] \u00een [{1}]
+
+sop_object_not_found=sopObject serializat nu se afl\u0103 \u00een [{0}] \u00een [{1}]
+
+sop_object_wrong_pk=Se \u00eenl\u0103tur\u0103 sopObject-ul serializat de pe linie pentru c\u0103 are o cheie primar\u0103 gre\u015fit\u0103 [{0}] \u00een [{1}] \u00een [{2}]
+
+sop_object_wrong_version=Se \u00eenl\u0103tur\u0103 sopObject-ul serializat de pe linie pentru c\u0103 are o versiune gre\u015fit\u0103 [{0}] \u00een [{1}] \u00een [{2}]
+
+src_pm_name_first_argument=Trebuie s\u0103 specifica\u0163i numele PM surs\u0103 la primul argument de intrare ca: -sOc4j-native sau -sWeblogic.
+
+table_existed_during_creation=A e\u015fuat crearea tabelului. Dac\u0103 exist\u0103 deja, trebuie abandonat mai \u00eent\u00e2i. Aceasta se poate face manual sau set\u00e2nd atributul db-table-gen \u00een orion-ejb-jar.xml.
+
+template_orion_ejb_jar_created=S-a creat un fi\u015fier orion-ejb-jar.xml \u015fablonat
+
+topLink_version=EclipseLink, versiunea: {0}
+
+toplink=[EL]: 
+
+toplink_cmp_bean_name_xml_deprecated=Suportul pentru toplink-cmp-bean_name.xml este perimat. V\u0103 rug\u0103m s\u0103 consulta\u0163i documenta\u0163ia pentru utilizarea toplink-ejb-jar.xml
+
+toplink_config=[EL Config]: 
+
+toplink_ejb_jar_in_jar=toplink-ejb-jar.xml este inclus \u00een fi\u015fierul jar({0}), prin urmare, nu se va realiza nicio migrare pentru acest jar.
+
+toplink_ejb_jar_xml_found_in_input=toplink-ejb-jar.xml este \u00een directorul de intrare ({0}). Trebuie s\u0103 \u00eenl\u0103tura\u0163i descriptorul toplink din directorul de intrare pentru a procesa migrarea.
+
+toplink_fine=[EL Fine]: 
+
+toplink_finer=[EL Finer]: 
+
+toplink_finest=[EL Finest]: 
+
+toplink_info=[EL Info]: 
+
+toplink_severe=[EL Severe]: 
+
+toplink_warning=[EL Warning]: 
+
+unitofwork_identity_hashcode={0}Cod hash identitate UnitOfWork: {1}
+
+update_all_fields_not_supported=Caracteristica Oc4j native CMP "update-all-fields" pe entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
+
+update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery nu poate folosi legarea pe aceast\u0103 platform\u0103 de baz\u0103 de date. S-a modificat setarea interog\u0103rii pentru execu\u0163ie f\u0103r\u0103 legare.
+
+validate_db_schema_with_not_supported=Setarea WLS native CMP "validate-db-schema-with" nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
+
+validate_ejb_jar=Validarea ejb-jar.xml porne\u015fte, ar putea dura c\u00e2tva timp...
+
+validity_timeout_not_supported=Setarea Oc4j native CMP "validity-timeout" pe entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
+
+verifiy_columns_read_locking_not_supported=Setarea optimist\u0103 "Citire" din "verificare-coloane" \u00een entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
+
+verifiy_rows_read_locking_not_supported=Setarea optimist\u0103 "Citire" \u00een "verificare-r\u00e2nduri" din entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul de migrare pentru detalii.
+
+weaver_class_not_in_project=\u0162es\u0103torul a g\u0103sit o clas\u0103 care nu face parte din proiect: {0}.
+
+weaver_could_not_write=\u0162es\u0103torul a \u00eent\u00e2lnit o excep\u0163ie \u00een timp ce \u00eencerca scrierea clasei {0} \u00een sistemul de fi\u015fiere.  Excep\u0163ia a fost: {1}
+
+weaver_disable_by_system_property=\u0162eserea a fost dezactivat\u0103 de proprietatea de sistem {0}
+
+weaver_not_overwriting=\u0162es\u0103torul nu suprascrie clasa {0} pentru c\u0103 nu a fost setat s\u0103 suprascrie.
+
+weaver_null_project=Proiectul sesiunii \u0163es\u0103torului nu poate fi nul
+
+weblogic_ejb_jar_xml_not_found_in_input=weblogic-ejb-jar.xml nu exist\u0103 \u00een directorul de intrare ({0}) pe care l-a\u0163i specificat.
+
+weblogic_native_migration_start=WebLogic-Native CMP -> OC4J EclipseLink CMP Migration STARTS......
+
+weblogic_ql_not_supported=WebLogic-QL({0}) al metodei ({1} a entit\u0103\u0163ii ({2}) nu este migrat\u0103 \u00eentruc\u00e2t EclipseLink nu suport\u0103 limbajul WebLogic QL.
+
+weblogic_query_not_supported=Setarea WLS native CMP "weblogic-query" pe entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
+

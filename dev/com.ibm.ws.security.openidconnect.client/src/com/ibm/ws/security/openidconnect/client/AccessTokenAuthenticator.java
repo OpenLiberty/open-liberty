@@ -403,7 +403,6 @@ public class AccessTokenAuthenticator {
 
     protected ProviderAuthenticationResult introspectToken(OidcClientConfig clientConfig, String accessToken, SSLSocketFactory sslSocketFactory, OidcClientRequest oidcClientRequest) {
         ProviderAuthenticationResult oidcResult = new ProviderAuthenticationResult(AuthResult.FAILURE, HttpServletResponse.SC_UNAUTHORIZED);
-
         try {
 
             Map<String, Object> responseMap = oidcClientUtil.checkToken(clientConfig.getValidationEndpointUrl(),

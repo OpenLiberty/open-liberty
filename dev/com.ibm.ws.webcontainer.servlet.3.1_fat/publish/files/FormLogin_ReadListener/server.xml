@@ -8,32 +8,34 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<server description="JASPIC 1.1 Security FAT">
+<server description="FormLogin_ReadListener">
 
-	<featureManager>
-		<feature>javaee-7.0</feature>
-	</featureManager>
+    <featureManager>
+        <feature>jaspic-1.1</feature>
+        <feature>servlet-3.1</feature>
+        <feature>jsp-2.3</feature>
+    </featureManager>
 
     <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
 
-	<basicRegistry id="basic1" realm="TestRealm">
-		<user name="user1" password="user1Login" />
-		<group name="group1">
-			<member name="user1" />
-		</group>
-	</basicRegistry>
+    <basicRegistry id="basic1" realm="TestRealm">
+        <user name="user1" password="user1Login" />
+        <group name="group1">
+            <member name="user1" />
+        </group>
+    </basicRegistry>
 
- 	<application type="war" id="FormLogin_ReadListener" name="FormLogin_ReadListener" location="FormLogin_ReadListener.war">
- 		<application-bnd>
-			<security-role name="servlet31Test_basic">
-				<user name="user1" />
-				<group name="group1" />
-			</security-role>	
-		</application-bnd>
-	</application>
-	
-	<webContainer servlet31.private.buffersizeforlargepostdata="4096" />
-	<webAppSecurity postParamCookieSize="65536" />
-	
-	<include location="../fatTestPorts.xml" />
+    <application type="war" id="FormLogin_ReadListener" name="FormLogin_ReadListener" location="FormLogin_ReadListener.war">
+        <application-bnd>
+            <security-role name="servlet31Test_basic">
+                <user name="user1" />
+                <group name="group1" />
+            </security-role>
+        </application-bnd>
+    </application>
+
+    <webContainer servlet31.private.buffersizeforlargepostdata="4096" />
+    <webAppSecurity postParamCookieSize="65536" />
+
+    <include location="../fatTestPorts.xml" />
 </server>

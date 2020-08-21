@@ -1603,7 +1603,11 @@ public class WSKeyStore extends Properties {
 
         try {
             for (int i = 0; i < certs.size(); i++) {
-                Certificate cert = certs.get(i);
+                X509Certificate cert = (X509Certificate)certs.get(i);
+                String subject = cert.getSubjectX500Principal().getName();
+                String envKey = "cert_" + name;
+                Tr.info(tc, "ssl.certificate.add.CWPKI0830I",new Object[] {subject, envKey, name});
+                
                 // add the certificate to the keystore with an alias format: envcert-[index]-cert_[keystorename]
                 String alias = "envcert-" + String.valueOf(i) + "-" + key;
                 setCertificateEntryNoStore(alias.toLowerCase(), cert);

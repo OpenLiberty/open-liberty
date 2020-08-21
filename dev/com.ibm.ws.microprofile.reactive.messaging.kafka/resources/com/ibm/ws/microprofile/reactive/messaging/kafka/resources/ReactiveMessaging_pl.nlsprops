@@ -75,6 +75,11 @@ kafka.create.incoming.retry.CWMRX1009W=CWMRX1009W: Nie mo\u017cna utworzy\u0107 
 kafka.create.incoming.retry.CWMRX1009W.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d, gdy konektor Kafka by\u0142 konfigurowany dla przychodz\u0105cego reaktywnego kana\u0142u przesy\u0142ania komunikat\u00f3w. Przyczyn\u0105 mo\u017ce by\u0107 problem z konfiguracj\u0105 konektora lub problem z t\u0142umaczeniem nazwy hosta brokera Kafka.
 kafka.create.incoming.retry.CWMRX1009W.useraction=Przejrzyj komunikat o b\u0142\u0119dzie, plik messages.log na serwerze oraz dzienniki FFDC, aby okre\u015bli\u0107, czy problem by\u0142 przej\u015bciowy, i zosta\u0142 rozwi\u0105zany w wyniku ponowienia pr\u00f3by skonfigurowania konektora.
 
+# {0} = channel name, {1} = error message
+kafka.create.outgoing.retry.CWMRX1010W=CWMRX1010W: Nie mo\u017cna utworzy\u0107 konektora wyj\u015bciowego Kafka dla kana\u0142u {0}, ale ta operacja jest ponawiana. B\u0142\u0105d: {1}
+kafka.create.outgoing.retry.CWMRX1010W.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d, gdy konektor Kafka by\u0142 konfigurowany dla wyj\u015bciowego reaktywnego kana\u0142u przesy\u0142ania komunikat\u00f3w. Przyczyn\u0105 mo\u017ce by\u0107 problem z konfiguracj\u0105 konektora lub problem z t\u0142umaczeniem nazwy hosta brokera Kafka.
+kafka.create.outgoing.retry.CWMRX1010W.useraction=Przejrzyj komunikat o b\u0142\u0119dzie, plik messages.log na serwerze oraz dzienniki FFDC, aby okre\u015bli\u0107, czy problem by\u0142 przej\u015bciowy, i zosta\u0142 rozwi\u0105zany w wyniku ponowienia pr\u00f3by skonfigurowania konektora.
+
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message
