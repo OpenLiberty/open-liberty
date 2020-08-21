@@ -11,6 +11,8 @@
 package com.ibm.ws.fat.grpc;
 
 import java.net.URL;
+import java.util.Set;
+import java.util.logging.Logger;
 
 import componenttest.topology.impl.LibertyServer;
 
@@ -56,5 +58,28 @@ public class GrpcTestUtils {
                         .append(path);
 
         return sb.toString();
+    }
+
+    /**
+     * This method is used to set the server.xml
+     */
+    public static String setServerConfiguration(LibertyServer server,
+                                                String originalServerXML,
+                                                String serverXML,
+                                                Set<String> appName,
+                                                Logger logger) throws Exception {
+        System.out.println("Entered set server config with xml " + serverXML);
+        if (originalServerXML == null || !originalServerXML.equals(serverXML)) {
+            server.setMarkToEndOfLog();
+            // Update server.xml
+            logger.info("setServerConfiguration setServerConfigurationFile to : " + serverXML);
+            server.setMarkToEndOfLog();
+            server.setServerConfigurationFile(serverXML);
+            server.waitForStringInLog("CWWKG0017I");
+            if (appName != null) {
+                server.waitForConfigUpdateInLogUsingMark(appName);
+            }
+        }
+        return serverXML;
     }
 }
