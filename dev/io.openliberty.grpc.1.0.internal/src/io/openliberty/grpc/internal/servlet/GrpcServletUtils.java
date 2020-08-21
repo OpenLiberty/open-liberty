@@ -109,7 +109,9 @@ public class GrpcServletUtils {
 				if (clazz != null) {
 					index = requestPath.indexOf('/');
 					String methodName = requestPath.substring(index + 1);
-					methodName = convertToCamelCase(methodName);
+					if (methodName.contains("_")) {
+						methodName = convertToCamelCase(methodName);
+					}
 					Method[] methods = clazz.getMethods();
 					for (Method m : methods) {
 						if (m.getName().equals(methodName)) {
@@ -289,24 +291,21 @@ public class GrpcServletUtils {
 	 * @return String
 	 */
 	private static String convertToCamelCase(String name) {
-		if (name.contains("_")) {
-		    final StringBuilder builder = new StringBuilder(name.length());
-		    boolean firstSection = true;
-		    for (String section : name.split("_")) {
-		        if (!section.isEmpty()) {
-		        	if (firstSection) {
-			            firstSection = false;
-			            builder.append(Character.toLowerCase(section.charAt(0)));
-		        	} else {
-			            builder.append(Character.toUpperCase(section.charAt(0)));
-		        	}
-		            if (section.length() > 1) {
-			            builder.append(section.substring(1));
-		            }
-		        }
-		    }
-		    return builder.toString();
-		}
-		return name;
+	    final StringBuilder builder = new StringBuilder(name.length());
+	    boolean firstSection = true;
+	    for (String section : name.split("_")) {
+	        if (!section.isEmpty()) {
+	        	if (firstSection) {
+		            firstSection = false;
+		            builder.append(Character.toLowerCase(section.charAt(0)));
+	        	} else {
+		            builder.append(Character.toUpperCase(section.charAt(0)));
+	        	}
+	            if (section.length() > 1) {
+		            builder.append(section.substring(1));
+	            }
+	        }
+	    }
+	    return builder.toString();
 	}
 }
