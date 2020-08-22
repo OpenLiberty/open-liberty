@@ -10,13 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.wsat.service;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Map;
 
 import javax.xml.ws.BindingProvider;
 
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 
-import com.ibm.ws.jaxws.wsat.Constants;
 import com.ibm.ws.wsat.common.impl.WSATEndpoint;
 import com.ibm.ws.wsat.service.impl.WebClientImpl;
 
@@ -27,6 +28,16 @@ import com.ibm.ws.wsat.service.impl.WebClientImpl;
 public abstract class WebClient {
 
     private static WebClient testClient = null;
+
+    public static final String ASYNC_TIMEOUT = "com.ibm.ws.wsat.asyncResponseTimeout";
+    public static final String DEFAULT_ASYNC_TIMEOUT = "30000";
+
+    public static final String ASYNC_RESPONSE_TIMEOUT = AccessController.doPrivileged(new PrivilegedAction<String>() {
+        @Override
+        public String run() {
+            return System.getProperty(ASYNC_TIMEOUT, DEFAULT_ASYNC_TIMEOUT);
+        }
+    });
 
     /*
      * Factory to return WebClient instances. This allows us to consider caching the clients
@@ -41,8 +52,8 @@ public abstract class WebClient {
 
     protected void setTimeouts(Object bp) {
         Map<String, Object> requestContext = ((BindingProvider) bp).getRequestContext();
-        requestContext.put("javax.xml.ws.client.connectionTimeout", Constants.ASYNC_RESPONSE_TIMEOUT);
-        requestContext.put("javax.xml.ws.client.receiveTimeout", Constants.ASYNC_RESPONSE_TIMEOUT);
+        requestContext.put("javax.xml.ws.client.connectionTimeout", ASYNC_RESPONSE_TIMEOUT);
+        requestContext.put("javax.xml.ws.client.receiveTimeout", ASYNC_RESPONSE_TIMEOUT);
     }
 
     /*

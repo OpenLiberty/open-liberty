@@ -10,13 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.wsat.tm.impl;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
 import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.jaxws.wsat.Constants;
 import com.ibm.ws.wsat.common.impl.WSATParticipant;
 import com.ibm.ws.wsat.common.impl.WSATParticipantState;
 import com.ibm.ws.wsat.service.WSATException;
@@ -30,13 +32,21 @@ import com.ibm.ws.wsat.service.WebClient;
  */
 public class ParticipantResource implements XAResource {
 
-    private static final TraceComponent TC = Tr.register(ParticipantResource.class, Constants.TRACE_GROUP, null);
+    private static final String CLASS_NAME = ParticipantResource.class.getName();
+    private static final TraceComponent TC = Tr.register(ParticipantResource.class);
 
-    private final WSATParticipant participant;
-    private long timeoutMillis = 0;
+    private WSATParticipant participant;
+    private long timeoutMillis;
+    private long defaultTimeout;
 
     public ParticipantResource(WSATParticipant participant) {
-        this.timeoutMillis = Constants.ASYNC_RESPONSE_TIMEOUT;
+        defaultTimeout = AccessController.doPrivileged(new PrivilegedAction<Long>() {
+            @Override
+            public Long run() {
+                return Long.parseLong(System.getProperty(WebClient.ASYNC_TIMEOUT, WebClient.DEFAULT_ASYNC_TIMEOUT));
+            }
+        });
+        this.timeoutMillis = defaultTimeout;
         this.participant = participant;
     }
 
@@ -51,9 +61,6 @@ public class ParticipantResource implements XAResource {
         WebClient webClient = WebClient.getWebClient(participant, participant.getCoordinator());
         try {
             participant.setState(WSATParticipantState.PREPARE);
-            if (TC.isDebugEnabled()) { // Only other option here ought to be TIMEOUT
-                Tr.debug(TC, "Sending prepare with timeout: " + timeoutMillis);
-            }
             webClient.prepare();
             WSATParticipantState state = participant.waitResponse(timeoutMillis, WSATParticipantState.PREPARED, WSATParticipantState.READONLY, WSATParticipantState.ABORTED);
             if (state == WSATParticipantState.PREPARED) {
@@ -182,7 +189,7 @@ public class ParticipantResource implements XAResource {
     @Override
     public boolean setTransactionTimeout(int timeout) throws XAException {
         if (timeout == 0) {
-            timeoutMillis = Constants.ASYNC_RESPONSE_TIMEOUT;
+            timeoutMillis = defaultTimeout;
         } else {
             timeoutMillis = timeout * 1000;
         }
