@@ -39,4 +39,5 @@ tested.features: \
   com.ibm.websphere.org.osgi.service.component,\
   com.ibm.ws.transaction.test.util;version=latest,\
   com.ibm.ws.tx.embeddable;version=latest,\
-  com.ibm.wsspi.org.osgi.service.component.annotations
+  com.ibm.wsspi.org.osgi.service.component.annotations,\
+  com.ibm.ws.wsat.migration_fat.1;version=latest
