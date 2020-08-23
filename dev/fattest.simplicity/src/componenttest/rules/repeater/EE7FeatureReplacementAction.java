@@ -19,7 +19,8 @@ public class EE7FeatureReplacementAction extends FeatureReplacementAction {
 
     public static final String ID = "EE7_FEATURES";
 
-    static final String[] EE7_FEATURES_ARRAY = { "javaee-7.0",
+    static final String[] EE7_FEATURES_ARRAY = { "appClientSupport-1.0",
+                                                 "javaee-7.0",
                                                  "webProfile-7.0",
                                                  "javaeeClient-7.0",
                                                  "servlet-3.1",

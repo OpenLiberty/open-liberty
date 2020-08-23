@@ -23,7 +23,15 @@ src: \
 fat.project: true
 
 tested.features: \
-	servlet-4.0, ejbLite-3.2, appsecurity-3.0, cdi-2.0 
+	appClientSupport-2.0, \
+	appSecurity-3.0, \
+	appSecurity-4.0, \
+	cdi-2.0, \
+	cdi-3.0, \
+	enterpriseBeans-4.0, \
+	enterpriseBeansRemote-4.0, \
+	servlet-4.0, \
+	servlet-5.0 
 
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
