@@ -62,6 +62,7 @@ import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
+import com.ibm.ws.threading.CompletionStageExecutor;
 import com.ibm.ws.threading.PolicyExecutor;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleContext;
@@ -81,8 +82,8 @@ import com.ibm.wsspi.threadcontext.WSContextService;
            property = { "creates.objectClass=java.util.concurrent.ExecutorService",
                         "creates.objectClass=javax.enterprise.concurrent.ManagedExecutorService",
                         "creates.objectClass=org.eclipse.microprofile.context.ManagedExecutor" })
-public class ManagedExecutorServiceImpl implements ExecutorService, 
-                ManagedExecutor, ManagedExecutorService, //
+public class ManagedExecutorServiceImpl implements ExecutorService, //
+                ManagedExecutor, ManagedExecutorService, CompletionStageExecutor, //
                 ResourceFactory, ApplicationRecycleComponent, WSManagedExecutorService {
     private static final TraceComponent tc = Tr.register(ManagedExecutorServiceImpl.class);
 

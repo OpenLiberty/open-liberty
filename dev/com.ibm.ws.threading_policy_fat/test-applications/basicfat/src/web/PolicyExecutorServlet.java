@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2019 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,9 +32,13 @@ import java.util.Vector;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionService;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -45,6 +49,7 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletConfig;
@@ -52,6 +57,7 @@ import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
+import com.ibm.ws.threading.CompletionStageFactory;
 import com.ibm.ws.threading.PolicyExecutor;
 import com.ibm.ws.threading.PolicyExecutor.MaxPolicy;
 import com.ibm.ws.threading.PolicyExecutorProvider;
@@ -67,6 +73,9 @@ import componenttest.app.FATServlet;
 public class PolicyExecutorServlet extends FATServlet {
     // Maximum number of nanoseconds to wait for a task to complete
     static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
+
+    @Resource(lookup = "test/CompletionStageFactory")
+    private CompletionStageFactory completionStageFactory;
 
     @Resource(lookup = "test/TestPolicyExecutorProvider")
     private PolicyExecutorProvider provider;
@@ -935,6 +944,140 @@ public class PolicyExecutorServlet extends FATServlet {
             fail("get of canceled future [5] must fail: " + future5.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         } catch (CancellationException x) {
         } // pass
+    }
+
+    /**
+     * Use CompletionStageFactory to create CompletableFutures that run on a supplied executor.
+     * A policy executor with constraints on max concurrency/queue size is used, which helps to
+     * make it obvious that the CompletionStage is running or attempting to run on that executor
+     * versus another.
+     */
+    @Test
+    public void testCompletionStageFactory() throws Exception {
+        PolicyExecutor executor = provider.create("testCompletionStageFactory")
+                        .maxConcurrency(1)
+                        .maxQueueSize(2)
+                        .maxWaitForEnqueue(0)
+                        .runIfQueueFull(false);
+
+        // basic usage
+        CompletableFuture<String> future0 = completionStageFactory.supplyAsync(() -> "successful", executor);
+        for (long start = System.nanoTime(); !future0.isDone() && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(200));
+        assertEquals("successful", future0.getNow("unsuccessful"));
+        assertTrue(future0.isDone());
+        assertFalse(future0.isCancelled());
+        assertFalse(future0.isCompletedExceptionally());
+        assertEquals("successful", future0.join());
+
+        CountDownLatch beginLatch = new CountDownLatch(1);
+        CountDownLatch continueLatch = new CountDownLatch(1);
+        Supplier<Boolean> blockedSupplier = () -> {
+            beginLatch.countDown();
+            try {
+                return continueLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            } catch (InterruptedException x) {
+                throw new CompletionException(x);
+            }
+        };
+
+        // This supplier should start and block on continueLatch
+        CompletableFuture<Boolean> future1 = completionStageFactory.supplyAsync(blockedSupplier, executor);
+
+        // This runnable will be stuck in the queue
+        CompletableFuture<Void> future2 = completionStageFactory.runAsync(() -> System.out.println("Running Async"), executor);
+
+        // Ensure the first has started so that the queue has capacity for another
+        beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+        // This supplier will also be stuck in the queue, after which the queue will be at capacity
+        CompletableFuture<String> future3 = completionStageFactory.supplyAsync(() -> Thread.currentThread().getName(), executor);
+
+        try {
+            // This supplier should be aborted because the queue is at capacity, triggering a RejectedExecutionException
+            CompletableFuture<Integer> future4 = completionStageFactory.supplyAsync(() -> 4, executor);
+
+            fail("The fourth task should have caused a RejectedExecutionException when attempting to queue. Instead " + future4);
+
+        } catch (RejectedExecutionException x) {
+        } //expected
+
+        try {
+            CompletableFuture<Void> future5 = completionStageFactory.runAsync(() -> System.out.println("Async Action #5"), executor);
+
+            fail("The fifth task should have caused a RejectedExecutionException when attempting to queue. Instead " + future5);
+        } catch (RejectedExecutionException x) {
+        } //expected
+
+        // supplyAsync can still run directly on the Liberty global thread pool
+        CompletableFuture<Integer> future6 = completionStageFactory.supplyAsync(() -> 6);
+        assertEquals(Integer.valueOf(6), future6.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // runAsync can still run directly on the Liberty global thread pool
+        CountDownLatch task7Executes = new CountDownLatch(1);
+        CompletableFuture<Void> future7 = completionStageFactory.runAsync(() -> task7Executes.countDown());
+        assertNull(future7.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertTrue(task7Executes.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        CompletableFuture<Integer> future8 = completionStageFactory.newIncompleteFuture();
+        assertFalse(future8.isDone());
+        LinkedBlockingQueue<Integer> queue = new LinkedBlockingQueue<Integer>();
+        CompletableFuture<Void> future9 = future8.thenApply(i -> i + 1).thenAcceptAsync(i -> queue.add(i));
+        assertTrue(future8.complete(8));
+        assertEquals(Integer.valueOf(9), queue.poll(TIMEOUT_NS, TimeUnit.MILLISECONDS));
+        for (long start = System.nanoTime(); !future9.isDone() && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(200));
+        assertTrue(future9.isDone());
+        assertFalse(future9.isCompletedExceptionally());
+        assertFalse(future9.isCancelled());
+
+        CompletionStage<String> minimalStage = null;
+        boolean atLeastJava9 = true;
+        try {
+            // After Java 8 is dropped, switch from reflection to:
+            // minimalStage = future0.minimalCompletionStage();
+            minimalStage = (CompletionStage<String>) CompletableFuture.class.getMethod("minimalCopmletionStage").invoke(future0);
+
+            CompletionStage<String> stage10 = minimalStage.thenApplyAsync(s -> "too " + s);
+
+            fail("The tenth task should have caused a RejectedExecutionException when attempting to queue. Instead " + stage10);
+        } catch (NoSuchMethodException x) {
+            atLeastJava9 = false;
+        } catch (RejectedExecutionException x) {
+        } //expected
+
+        //Let the in-progress task and the two queued tasks complete
+        continueLatch.countDown();
+
+        assertTrue(future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertNull(future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        String asyncThreadName = future3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        String curThreadName = Thread.currentThread().getName();
+        assertNotSame(curThreadName, asyncThreadName);
+        assertTrue(asyncThreadName, asyncThreadName.startsWith("Default Executor-thread-"));
+
+        if (atLeastJava9) {
+            CompletableFuture<String> stage0AsFuture = (CompletableFuture<String>) minimalStage;
+            try {
+                stage0AsFuture.obtrudeValue("improved result");
+                fail("Minimal completion stage " + minimalStage + " should not allow additional CompletableFuture methods");
+            } catch (UnsupportedOperationException x) {
+            } // expected
+
+            CompletableFuture<String> newFuture = minimalStage.toCompletableFuture();
+            newFuture.obtrudeValue("new, improved result");
+
+            // ensure that toCompletableFuture does not revert back to Java's implementation class
+            assertEquals(future0.getClass().getName(), newFuture.getClass().getName());
+
+            assertEquals("successful", future0.join());
+            assertEquals("new, improved result", newFuture.join());
+
+            // After Java 8 is dropped, switch from reflection to:
+            // Executor defaultExecutor = newFuture.getDefaultExecutor();
+            Executor defaultExecutor = (Executor) CompletableFuture.class.getMethod("defaultExecutor").invoke(newFuture);
+            assertEquals(executor, defaultExecutor);
+        }
+
+        executor.shutdownNow();
     }
 
     // Register concurrency callbacks with a policy executor. Verify that at most one can be registered,
