@@ -179,9 +179,9 @@ CWPKI2035E=CWPKI2035E: Le service ACME n''a pas pu stocker le certificat sign\u0
 CWPKI2035E.explanation=Le certificat a \u00e9t\u00e9 extrait de l'autorit\u00e9 de certification mais il ne peut pas \u00eatre stock\u00e9 localement.
 CWPKI2035E.useraction=Consultez le message d'erreur pour des d\u00e9tails sur l'\u00e9chec. V\u00e9rifiez que l'emplacement du fichier de magasin de cl\u00e9s est correct et que le serveur dispose des droits d'acc\u00e8s en \u00e9criture pour le fichier.
 
-CWPKI2036E=CWPKI2036E: Le service ACME a d\u00e9pass\u00e9 le d\u00e9lai d''attente alors qu''il attendait le d\u00e9marrage de l''application d''autorisation Web. L''application est requise pour effectuer une demande de certificat aupr\u00e8s d''une autorit\u00e9 de certification ACME. Le service a attendu {0} minutes.
-CWPKI2036E.explanation=L'application utilis\u00e9e pour effectuer une demande de certificat n'a pas d\u00e9marr\u00e9 dans le d\u00e9lai imparti. Un certificat sign\u00e9 ne peut pas \u00eatre demand\u00e9.
-CWPKI2036E.useraction=Consultez le fichier journal pour prendre connaissance des erreurs ou des messages pr\u00e9c\u00e9dents.
+CWPKI2036W=CWPKI2036W: Le service ACME a d\u00e9pass\u00e9 le d\u00e9lai d''attente alors qu''il attendait le d\u00e9marrage de l''application d''autorisation Web. L''application est requise pour effectuer une demande de certificat aupr\u00e8s d''une autorit\u00e9 de certification ACME. La demande de certificat est tent\u00e9e. Le service a attendu pendant {0}.
+CWPKI2036W.explanation=L'application utilis\u00e9e pour effectuer une demande de certificat n'a pas d\u00e9marr\u00e9 dans le d\u00e9lai imparti. Si l'application d\u00e9marre, la demande est trait\u00e9e. Sinon, la demande de certificat \u00e9choue.
+CWPKI2036W.useraction=Consultez le fichier journal pour prendre connaissance des erreurs ou des messages pr\u00e9c\u00e9dents. Consultez le journal pour d\u00e9terminer s'il contient un message CWWKT0016I qui inclut une application Web avec l'URL 'acme-challenge' afin d'indiquer que l'application interne a d\u00e9marr\u00e9.
 
 CWPKI2037E=CWPKI2037E: Les domaines pour le service ACME sont nuls ou vides.
 CWPKI2037E.explanation=Les domaines sont nuls ou vides et ne peuvent pas \u00eatre utilis\u00e9s.
@@ -330,3 +330,7 @@ CWPKI2072W.useraction=Assurez-vous que le r\u00e9pertoire de l'historique ACME e
 CWPKI2073W=CWPKI2073W: Aucun contact de compte n'a \u00e9t\u00e9 sp\u00e9cifi\u00e9. Il est recommand\u00e9 de d\u00e9finir cette propri\u00e9t\u00e9 dans la configuration du serveur. Si une cl\u00e9 est perdue ou que le compte est compromis, l'acc\u00e8s au compte est perdu.
 CWPKI2073W.explanation=La valeur de la propri\u00e9t\u00e9 accountContact n'a pas \u00e9t\u00e9 sp\u00e9cifi\u00e9e dans la configuration du serveur.
 CWPKI2073W.useraction=D\u00e9finissez la propri\u00e9t\u00e9 accountContact dans la configuration du serveur.
+
+CWPKI2074W=CWPKI2074W: Le service ACME a d\u00e9pass\u00e9 le d\u00e9lai d''attente alors qu''il attendait un message indiquant que le port HTTP \u00e9tait ouvert. Un port HTTP disponible est requis pour effectuer une demande de certificat aupr\u00e8s d''une autorit\u00e9 de certification ACME. La demande de certificat est tent\u00e9e. Le service a attendu pendant {0}.
+CWPKI2074W.explanation=Le service tente une demande de certificat. Si un port HTTP est ouvert, la demande est trait\u00e9e. Sinon, la demande de certificat \u00e9choue.
+CWPKI2074W.useraction=Consultez le fichier journal pour prendre connaissance des erreurs ou des messages pr\u00e9c\u00e9dents. Recherchez dans le journal des messages CWWKO0219I, qui r\u00e9pertorient les noeuds finaux et les ports disponibles. 

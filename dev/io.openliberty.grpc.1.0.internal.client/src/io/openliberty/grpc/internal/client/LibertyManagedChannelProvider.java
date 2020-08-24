@@ -25,7 +25,6 @@ import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder;
 import io.grpc.netty.shaded.io.netty.handler.ssl.SslContext;
 import io.openliberty.grpc.internal.GrpcManagedObjectProvider;
 import io.openliberty.grpc.internal.client.config.GrpcClientConfigHolder;
-import io.openliberty.grpc.internal.client.security.LibertyGrpcClientOutSSLSupport;
 
 /**
  * io.grpc.ManagedChannelProvider that takes care of any required Liberty
@@ -49,7 +48,7 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 	public NettyChannelBuilder builderForAddress(String name, int port) {
 
 		NettyChannelBuilder builder = NettyChannelBuilder.forAddress(name, port);
-		configureLibertyBuilder(builder, name + String.valueOf(port));
+		configureLibertyBuilder(builder, name, String.valueOf(port));
 
 		return builder;
 	}
@@ -57,14 +56,14 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 	@Override
 	public NettyChannelBuilder builderForTarget(String target) {
 		NettyChannelBuilder builder = NettyChannelBuilder.forTarget(target);
-		configureLibertyBuilder(builder, target);
+		configureLibertyBuilder(builder, target, "");
 		return builder;
 	}
 
-	private void configureLibertyBuilder(NettyChannelBuilder builder, String target) {
+	private void configureLibertyBuilder(NettyChannelBuilder builder, String target, String port) {
 		addLibertyInterceptors(builder);
 		addUserInterceptors(builder, target);
-		addLibertySSLConfig(builder, target);
+		addLibertySSLConfig(builder, target, port);
 		addKeepAliveConfiguration(builder, target);
 		addMaxInboundMessageSize(builder, target);
 	}
@@ -77,10 +76,15 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 		}
 	}
 
-	private void addLibertySSLConfig(NettyChannelBuilder builder, String target) {
-		SslContext context = LibertyGrpcClientOutSSLSupport.getOutboundClientSSLContext(target);
-		if (context != null) {
-			builder.sslContext(context);
+	private void addLibertySSLConfig(NettyChannelBuilder builder, String target, String port) {
+		String sslRef = GrpcClientConfigHolder.getSSLConfig(target);
+		SslContext context = null;
+		GrpcSSLService sslService = GrpcClientComponent.getGrpcSSLService();
+		if (sslService != null) {
+			context = sslService.getOutboundClientSSLContext(sslRef, target, port);
+			if (context != null) {
+				builder.sslContext(context);
+			}
 		}
 	}
 

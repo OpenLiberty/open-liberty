@@ -51,7 +51,7 @@ SPNEGO_NOT_SUPPORTED_ERROR_PAGE.useraction=Configurez le navigateur du client af
 SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE=CWWKS4307E: <html><head><title>Un jeton NTLM a \u00e9t\u00e9 re\u00e7u.\
 </title></head> <body>La configuration de votre navigateur est correcte, mais vous n'\u00eates pas connect\u00e9 \u00e0 un domaine Windows pris en charge.\
 <p> Connectez-vous au domaine Windows pris en charge.\
-</html>.
+</body></html>.
 SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE.explanation=La configuration de votre navigateur est correcte, mais vous n'\u00eates pas connect\u00e9 \u00e0 un domaine Windows pris en charge. \
 Il se peut aussi que la configuration SPNEGO soit incorrecte et qu'alors le navigateur du client n'envoie pas les jetons SPNEGO ou Kerberos.
 SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE.useraction=V\u00e9rifiez que vous vous connectez bien au domaine Windows pris en charge et v\u00e9rifiez \u00e9galement la configuration SPNEGO sur le serveur et le domaine Windows.
@@ -118,3 +118,17 @@ SPNEGO_CAN_NOT_GET_DELEGATE_SERVICE_SPN.useraction=V\u00e9rifiez le format du no
 SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE=CWWKS4322E: Le SPN d\u00e9l\u00e9gu\u00e9 {0} ne peut pas s''authentifier aupr\u00e8s de Key Distribution Center (KDC) \u00e0 l''aide du fichier de configuration Kerberos {1} et du fichier de cl\u00e9s {2}. L''exception de connexion suivante a \u00e9t\u00e9 re\u00e7ue : {3}
 SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE.explanation=Authentification impossible aupr\u00e8s de Key Distribution Center (KDC).
 SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE.useraction=V\u00e9rifiez le format du nom du principal de service et assurez-vous qu'il existe sur le domaine Windows et que le fichier keytab Kerberos contient le nom de principal du service.
+
+SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E=CWWKS4323E: L''attribut [{0}] de l''\u00e9l\u00e9ment {1} est en conflit avec l''attribut [{2}] de l''\u00e9l\u00e9ment {3}. Sp\u00e9cifiez une valeur pour l''\u00e9l\u00e9ment {1} ou {3}, mais pas pour les deux. Il est recommand\u00e9 de ne sp\u00e9cifier de valeur que pour l''\u00e9l\u00e9ment {1}.
+SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E.explanation=Pour que chaque attribut puisse \u00eatre reconnu, une propri\u00e9t\u00e9 syst\u00e8me doit \u00eatre d\u00e9finie au niveau du syst\u00e8me. Il n'est pas possible de reconna\u00eetre des valeurs diff\u00e9rentes pour un param\u00e8tre d\u00e9fini au niveau du syst\u00e8me.
+SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E.useraction=Sp\u00e9cifiez l'attribut dans l'un des \u00e9l\u00e9ments de configuration seulement.
+
+SPNEGO_AUTHENTICATION_ERROR_PAGE=CWWKS4324E: <html><head><title>L'authentification SPNEGO a \u00e9chou\u00e9. \
+Contactez votre administrateur syst\u00e8me afin de r\u00e9soudre le probl\u00e8me.\
+</title></head> <body>Le client a envoy\u00e9 le jeton SPNEGO. \
+Le serveur ne peut pas valider le jeton SPNEGO du client. \
+Contactez votre administrateur syst\u00e8me afin de r\u00e9soudre le probl\u00e8me.\
+</body></html>.
+SPNEGO_AUTHENTICATION_ERROR_PAGE.explanation=L'authentification SPNEGO a \u00e9chou\u00e9. Pour plus d'informations, consultez les messages du journal du serveur.
+SPNEGO_AUTHENTICATION_ERROR_PAGE.useraction=V\u00e9rifiez la configuration du serveur et la configuration Kerberos et assurez-vous que l'horloge du serveur est synchronis\u00e9e avec le centre de distribution de cl\u00e9s (KDC). 
+

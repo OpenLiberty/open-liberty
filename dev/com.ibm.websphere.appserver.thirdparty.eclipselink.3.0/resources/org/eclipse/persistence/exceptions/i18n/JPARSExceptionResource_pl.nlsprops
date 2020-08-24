@@ -1,0 +1,69 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/JPARSExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+61000=Nie mo\u017cna znale\u017a\u0107 typu jednostki {0} o identyfikatorze {1} w jednostce trwa\u0142o\u015bci {2}.
+
+61001=Jednostka wskazywana przez odsy\u0142acz nie istnieje \u2013 typ jednostki: {0}, identyfikator: {1}.
+
+61002=Niepoprawna konfiguracja.
+
+61003=Typ jednostki {0} w jednostce trwa\u0142o\u015bci {1} jest tworzony za pomoc\u0105 operacji PUT, ale jednostka nie jest idempotentna z powodu generowania sekwencji albo kaskadowo\u015bci.
+
+61004=Nie mo\u017cna utworzy\u0107 programu startowego dla kontekstu trwa\u0142o\u015bci {0}.
+
+61005=Nie mo\u017cna znale\u017a\u0107 klasy lub deskryptora klasy dla typu jednostki {0} w jednostce trwa\u0142o\u015bci {1}.
+
+61006=Nie mo\u017cna znale\u017a\u0107 odpowiedniego odwzorowania bazy danych dla atrybutu {0} o typie jednostki {1} i identyfikatorze {2} w jednostce trwa\u0142o\u015bci {3}.
+
+61007=Nie mo\u017cna znale\u017a\u0107 atrybutu {0} o typie jednostki {1} i identyfikatorze {2} w jednostce trwa\u0142o\u015bci {3}.
+
+61008=Nie mo\u017cna znale\u017a\u0107 zapytania wyboru dla atrybutu {0} o typie jednostki {1} i identyfikatorze {2} w jednostce trwa\u0142o\u015bci {3}.
+
+61009=Niepoprawne parametry w adresie URL \u017c\u0105dania stronicowania.
+
+61010=Nie mo\u017cna zaktualizowa\u0107 atrybutu {0} o typie jednostki {1} i identyfikatorze {2} w jednostce trwa\u0142o\u015bci {3}.
+
+61011=Niepoprawne parametry w adresie URL \u017c\u0105dania usuni\u0119cia atrybutu {0} o typie jednostki {1} i identyfikatorze {2} w jednostce trwa\u0142o\u015bci {3}.
+
+61012=Nie mo\u017cna pomy\u015blnie zbudowa\u0107 odpowiedzi na \u017c\u0105danie znalezienia atrybutu {0} o typie jednostki {1} i identyfikatorze {2} w jednostce trwa\u0142o\u015bci {3}.
+
+61013=Wyszukiwanie komponentu bean sesji o nazwie JNDI {0} nie powiod\u0142o si\u0119.
+
+61014=Nie mo\u017cna pomy\u015blnie zbudowa\u0107 odpowiedzi na \u017c\u0105danie znalezienia nazwanego zapytania {0} w jednostce trwa\u0142o\u015bci {1}.
+
+61015=Niepoprawna wersja us\u0142ugi {0} w \u017c\u0105daniu.
+
+61016=Parametr zapytania o stronicowanie (limit lub przesuni\u0119cie) u\u017cywany w odniesieniu do zasobu, kt\u00f3rego nie mo\u017cna dzieli\u0107 na strony.
+
+61017=W jednym \u017c\u0105daniu nie mo\u017cna u\u017cywa\u0107 jednocze\u015bnie parametr\u00f3w fields i excludeFields.
+
+61018=Niepoprawna warto\u015b\u0107 parametru ("{0}" = "{1}").
+
+61999=Wyst\u0105pi\u0142 b\u0142\u0105d {0}.
+

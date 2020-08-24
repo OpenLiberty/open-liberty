@@ -558,7 +558,7 @@ ssl.create.certificate.end.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
 #--------------------------------------------------------------------------------------------------
 ssl.create.certificate.error=CWPKI0804E: Eroare crea\u0163ie certificat SSL. {0}
 ssl.create.certificate.error.explanation=Certificatul SSL nu a putut fi creat \u00een loca\u0163ia specificat\u0103.
-ssl.create.certificate.error.useraction=Asigura\u0163i-v\u0103 c\u0103 loca\u0163ie este accesibil\u0103 procesului de server. Orice FFDC poate indica o eroare fatal\u0103 \u00een generarea sau \u00eenc\u0103rcarea cheilor.
+ssl.create.certificate.error.useraction=Asigura\u0163i-v\u0103 c\u0103 loca\u0163ie este accesibil\u0103 procesului de server. Examina\u0163i istoricele FFDC pentru erori suplimentare care sunt asociate cu generarea sau \u00eenc\u0103rcarea cheilor.
 
 # Messages for the CWPKI0804E message descriptor {0}.
 ssl.create.certificate.error.reason1=Nu poate s\u0103 creeze fi\u015fierul cheie SSL: {0}
@@ -659,4 +659,8 @@ ssl.using.cacerts.CWPKI0827I.useraction=Nicio ac\u0163iune nu este necesar\u0103
 ssl.client.handshake.cacerts.error.CWPKI0828E=CWPKI0828E: Atributul trustDefaultCerts este activat, dar \u00eencrederea nu a fost stabilit\u0103 utiliz\u00e2nd depozitul de \u00eencrederi implicit. Mesajul extins al erorii de la excep\u0163ia dialogului de confirmare SSL este: {0}.
 ssl.client.handshake.cacerts.error.CWPKI0828E.explanation=Depozitul de \u00eencrederi implicit nu este configurat corespunz\u0103tor pentru stabilirea \u00eencrederii. 
 ssl.client.handshake.cacerts.error.CWPKI0828E.useraction=Examina\u0163i mesajul de eroare extins pentru a determina ce s\u0103 modifica\u0163i \u00een configura\u0163ie.
+# -------------------------------------------------------------------------------------------------
+ssl.update.certificate.error=CWPKI0829E: Eroare de actualizare certificat SSL. ''{0}''
+ssl.update.certificate.error.explanation=Certificatul SSL nu a putut fi actualizat la loca\u0163ia specificat\u0103.
+ssl.update.certificate.error.useraction=Asigura\u0163i-v\u0103 c\u0103 loca\u0163ie este accesibil\u0103 procesului de server.  Examina\u0163i istoricele FFDC pentru erori suplimentare care sunt asociate cu generarea sau \u00eenc\u0103rcarea cheilor.
 # -------------------------------------------------------------------------------------------------

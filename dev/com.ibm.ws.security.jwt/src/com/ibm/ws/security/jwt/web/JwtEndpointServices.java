@@ -31,6 +31,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.security.common.crypto.KeyAlgorithmChecker;
 import com.ibm.ws.security.jwt.config.JwtConfig;
 import com.ibm.ws.security.jwt.utils.Constants;
 import com.ibm.ws.security.jwt.utils.TokenBuilder;
@@ -41,6 +42,8 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 public class JwtEndpointServices {
     private static TraceComponent tc = Tr.register(JwtEndpointServices.class, TraceConstants.TRACE_GROUP,
             TraceConstants.MESSAGE_BUNDLE);
+
+    private final KeyAlgorithmChecker keyAlgChecker = new KeyAlgorithmChecker();
 
     /***********************************
      * Begin OSGi-related fields and methods
@@ -293,10 +296,7 @@ public class JwtEndpointServices {
     }
 
     boolean isPossibleJwkAlgorithm(String signatureAlgorithm) {
-        if (signatureAlgorithm == null) {
-            return false;
-        }
-        return signatureAlgorithm.matches("[RE]S[0-9]{3,}");
+        return (keyAlgChecker.isRSAlgorithm(signatureAlgorithm) || keyAlgChecker.isESAlgorithm(signatureAlgorithm));
     }
 
     String getAcceptableJwkSignatureAlgorithms() {

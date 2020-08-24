@@ -30,7 +30,8 @@ tested.features: mpfaulttolerance-1.0,\
                  mpmetrics-1.0,\
                  mpMetrics-1.1,\
                  mpMetrics-2.0,\
-                 mpMetrics-2.3
+                 mpMetrics-2.3,\
+                 mpMetrics-3.0
 
 -buildpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

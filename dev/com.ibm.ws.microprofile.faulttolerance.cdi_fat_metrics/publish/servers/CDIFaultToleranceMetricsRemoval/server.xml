@@ -22,5 +22,7 @@
 		<feature>mpFaultTolerance-2.1</feature>
 		<feature>mpMetrics-2.2</feature>
 	</featureManager>
+	
+	<mpMetrics authentication="false"/>
 
 </server>

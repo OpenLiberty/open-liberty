@@ -1,0 +1,147 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/SDOExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+45000=Nebyl nalezen prvek ID pro ID typu na typu s identifik\u00e1torem URI [{0}] a n\u00e1zvem [{1}] .
+
+45001=Do\u0161lo k chyb\u011b p\u0159i zpracov\u00e1n\u00ed importu s atributem schemaLocation [{0}] a oborem n\u00e1zv\u016f [{1}] .
+
+45002=Do\u0161lo k chyb\u011b p\u0159i zpracov\u00e1n\u00ed za\u010dlen\u011bn\u00ed s atributem schemaLocation [{0}] .
+
+45003=Odkazovan\u00e1 vlastnost s identifik\u00e1torem URI [{0}] a n\u00e1zvem [{1}] nebyla nalezena.
+
+45004=V souhrnu zm\u011bn nebyla nalezena star\u00e1 posloupnost.
+
+45005=Hodnotou vlastnosti s n\u00e1zvem [{0}] mus\u00ed b\u00fdt DataObject.
+
+45006=Kdy\u017e m\u00e1 metoda type.isSequenced() hodnotu true, posloupnost nem\u016f\u017ee m\u00edt hodnotu null.
+
+45007=Na vlastnosti s n\u00e1zvem [{0}] nebyl nastaven typ.
+
+45008=Do\u0161lo k v\u00fdjimce IOException.
+
+45009=Nebyl nalezen typ s identifik\u00e1torem URI [{0}] a n\u00e1zvem [{1}].
+
+45010=Nelze naj\u00edt typ pro t\u0159\u00eddu rozhran\u00ed [{0}]. Zkontrolujte, zda je tento typ definov\u00e1n. Krom\u011b toho by m\u011bl b\u00fdt zavad\u011b\u010d t\u0159\u00edd rozhran\u00ed \u010dlenem hierarchie zavad\u011b\u010de t\u0159\u00edd kontextu pomocn\u00edka: Pravd\u011bpodobn\u011b se jedn\u00e1 o [{1}].
+
+45011=Nelze vytvo\u0159it objekt DataObject pro typ s identifik\u00e1torem URI [{0}] a n\u00e1zvem [{1}], proto\u017ee metoda type.isAbstract() vrac\u00ed hodnotu true.
+
+45012=Nelze vytvo\u0159it objekt DataObject pro rozhran\u00ed [{0}], prob\u00edh\u00e1 pokus o vytvo\u0159en\u00ed objektu DataObject pro typ s identifik\u00e1torem URI [{1}] a n\u00e1zvem [{2}]. 
+
+45013=Pro argument s hodnotou null nelze vyhledat informace o aplikaci.
+
+45014=Nelze definovat typ. Typy lze definovat pouze pro objekty DataObject, kter\u00e9 maj\u00ed nastaven\u00fd typ na commonj.sdo.Type.
+
+45015=Nelze definovat typ s n\u00e1zvem s hodnotou null.
+
+45016=U zm\u011bn\u011bn\u00e9ho objektu v XML souhrnu zm\u011bn chyb\u00ed referen\u010dn\u00ed atribut nebo nen\u00ed zad\u00e1na jeho hodnota.
+
+45017=Do\u0161lo k chyb\u011b p\u0159i zpracov\u00e1n\u00ed v\u00fdrazu XPath [{0}] .
+
+45018=P\u0159id\u00e1n\u00ed duplicitn\u00ed polo\u017eky pro komplexn\u00ed jednotliv\u00e9 nastaven\u00ed [{1}] do posloupnosti na pozici [{0}] nen\u00ed podporov\u00e1no.
+
+45019=P\u0159id\u00e1n\u00ed vlastnosti atributu [{0}] do posloupnosti nen\u00ed podporov\u00e1no.
+
+45020=Pro cestu [{0}] nebyla nalezena \u017e\u00e1dn\u00e1 posloupnost.
+
+45021=Do\u0161lo k chyb\u011b p\u0159i pokusu o vytvo\u0159en\u00ed instance objektu posloupnosti s polem instance objektu dataObject s hodnotou null.
+
+45022=Pro vlastnost [{0}] nen\u00ed podporov\u00e1na \u017e\u00e1dn\u00e1 posloupnost.
+
+45023=Nelze nastavit vlastnost typu s identifik\u00e1torem URI [{0}] a n\u00e1zvem [{1}] na hodnotu t\u0159\u00eddy [{2}]
+
+45024=Do\u0161lo k chyb\u011b konverze.
+
+45025=Nebyla nalezena vlastnost s indexem [{0}]
+
+45026=Operaci [{0}] nelze prov\u00e9st na parametru s hodnotou null.
+
+45027=Nelze naj\u00edt t\u0159\u00eddu pro typ s identifik\u00e1torem URI [{0}] a n\u00e1zvem [{1}].
+
+45028=Typ nelze nastavit na otev\u0159en\u00fd a datov\u00fd typ. Chyba typu s identifik\u00e1torem URI [{0}] a n\u00e1zvem [{1}].
+
+45029=Metod\u011b [{1}] byl p\u0159ed\u00e1n neplatn\u00fd index [{0}].
+
+45030=Do\u0161lo k chyb\u011b p\u0159i vyvol\u00e1n\u00ed konstruktoru s \u0159et\u011bzcov\u00fdm argumentem na t\u0159\u00edd\u011b [{0}].
+
+45031=Nelze nastavit neplatn\u00fd c\u00edlov\u00fd typ [{0}] na vlastnosti [{1}], proto\u017ee c\u00edlov\u00e9 rozhran\u00ed type.dataType m\u00e1 hodnotu true.
+
+45032=Do\u0161lo k v\u00fdjimce XMLMarshalException pro identifik\u00e1tor URI [{1}] a lok\u00e1ln\u00ed n\u00e1zev [{2}]. V\u00fdjimka: [{0}]
+
+45033=Do\u0161lo k chyb\u011b p\u0159i generov\u00e1n\u00ed typ\u016f. Odkazuje se na komponentu sch\u00e9matu XML s n\u00e1zvem [{1}] a identifik\u00e1torem URI oboru n\u00e1zv\u016f [{0}], kter\u00e1 v\u0161ak nebyla definov\u00e1na. Je mo\u017en\u00e9, \u017ee ve sch\u00e9matu XML chyb\u00ed import nebo za\u010dlen\u011bn\u00ed pro identifik\u00e1tor URI oboru n\u00e1zv\u016f [{0}].
+
+45034=Hodnotou parametru voleb mus\u00ed b\u00fdt objekt DataObject typu s identifik\u00e1torem URI [{0}] a n\u00e1zvem [{1}].
+
+45035=Hodnotou, kter\u00e1 odpov\u00edd\u00e1 vlastnosti "type", mus\u00ed b\u00fdt objekt Type.
+
+45036=Nebyla nalezena glob\u00e1ln\u00ed vlastnost odpov\u00eddaj\u00edc\u00ed na\u010d\u00edtan\u00e9mu uzlu XML.
+
+45037=Ve sch\u00e9matu XML se pou\u017e\u00edv\u00e1 nedeklarovan\u00e1 p\u0159edpona [{0}].
+
+45038=Nelze prov\u00e9st operaci na vlastnosti [{0}], proto\u017ee nen\u00ed dosa\u017eiteln\u00e1 z cesty [{1}]. Tato cesta je neplatn\u00e1 nebo m\u00e1 minim\u00e1ln\u011b jeden datov\u00fd objekt na t\u00e9to cest\u011b hodnotu null.
+
+45039=Do\u0161lo k chyb\u011b p\u0159i p\u0159\u00edstupu k poli externalizableDelegator [{0}] na objektu DataObject.
+
+45040=Nelze prov\u00e9st operaci [{0}] s parametrem null [{1}].
+
+45041=Hodnota [{0}] t\u0159\u00eddy [{1}] je pro vlastnost [{2}] typu [{3}] neplatn\u00e1.
+
+45100=Do\u0161lo k chyb\u011b p\u0159i pokusu o vr\u00e1cen\u00ed po\u017eadovan\u00e9 t\u0159\u00eddy SDOHelperContext. V aktivn\u00ed instanci WebLogic je pro vyhled\u00e1v\u00e1n\u00ed v mezipam\u011bti kontextu pomocn\u00edka povinn\u00fd n\u00e1zev aplikace. N\u00e1zev aplikace nelze ur\u010dit, proto\u017ee se nezda\u0159ilo vyhled\u00e1n\u00ed {0}.
+
+45101=Do\u0161lo k chyb\u011b p\u0159i pokusu o vr\u00e1cen\u00ed po\u017eadovan\u00e9 t\u0159\u00eddy SDOHelperContext. V aktivn\u00ed instanci WebLogic je pro vyhled\u00e1v\u00e1n\u00ed v mezipam\u011bti kontextu pomocn\u00edka povinn\u00fd n\u00e1zev aplikace. N\u00e1zev aplikace nelze ur\u010dit, proto\u017ee se nezda\u0159ilo reflexivn\u011b vyvolat {0} na {1}.
+
+45102=Do\u0161lo k chyb\u011b p\u0159i pokusu o vr\u00e1cen\u00ed po\u017eadovan\u00e9 t\u0159\u00eddy SDOHelperContext. V aktivn\u00ed instanci WebLogic je pro vyhled\u00e1v\u00e1n\u00ed v mezipam\u011bti kontextu pomocn\u00edka povinn\u00fd n\u00e1zev aplikace. N\u00e1zev aplikace nelze ur\u010dit, proto\u017ee se nezda\u0159ilo vytvo\u0159it/vr\u00e1tit t\u0159\u00eddu ObjectName pro {0}.
+
+45103=Do\u0161lo k chyb\u011b p\u0159i pokusu o vr\u00e1cen\u00ed po\u017eadovan\u00e9 t\u0159\u00eddy SDOHelperContext. V aktivn\u00ed instanci WebLogic je pro vyhled\u00e1v\u00e1n\u00ed v mezipam\u011bti kontextu pomocn\u00edka povinn\u00fd n\u00e1zev aplikace. N\u00e1zev aplikace nelze ur\u010dit, proto\u017ee se nezda\u0159ilo p\u0159ev\u00e9st na instanci t\u0159\u00eddy InitialContext.
+
+45200=SDO/JAXB - Nelze naj\u00edt deskriptor OXM odpov\u00eddaj\u00edc\u00ed typu SDO [{0}], zkontrolujte, zda je t\u0159\u00edda Java mapov\u00e1na na typ XML [{1}].
+
+45201=SDO/JAXB - Nelze naj\u00edt mapov\u00e1n\u00ed OXM odpov\u00eddaj\u00edc\u00ed vlastnosti SDO [{0}], zkontrolujte, zda je vlastnost Java mapov\u00e1na na uzel XML [{1}].
+
+45202=SDO/JAXB - Nelze naj\u00edt typ SDO odpov\u00eddaj\u00edc\u00ed t\u0159\u00edd\u011b Java [{0}].
+
+45203=SDO/JAXB - Na deskriptoru pro t\u0159\u00eddu Java [{0}] mus\u00ed b\u00fdt nastaven odkaz na sch\u00e9ma.
+
+45204=SDO/JAXB - Na odkazu na sch\u00e9ma na deskriptoru pro t\u0159\u00eddu Java [{0}] mus\u00ed b\u00fdt nastaven kontext sch\u00e9matu.
+
+45205=SDO/JAXB - Nelze naj\u00edt typ SDO odpov\u00eddaj\u00edc\u00ed t\u0159\u00edd\u011b Java [{0}], zkontrolujte, zda typ SDO odpov\u00edd\u00e1 typu XML [{1}].
+
+45206=SDO/JAXB - Do\u0161lo k chyb\u011b p\u0159i vytv\u00e1\u0159en\u00ed objektu JAXB Unmarshaller.
+
+45207=Do\u0161lo k chyb\u011b p\u0159i pokusu o vy\u0159e\u0161en\u00ed sch\u00e9matu pomoc\u00ed poskytnut\u00e9 t\u0159\u00eddy SchemaResolver.
+
+45208=Nelze mapovat vlastnost {0} z typu {1}. K mapov\u00e1n\u00ed vlastnost\u00ed typu DataHandler jsou nezbytn\u00e9 bal\u00edky javax.activation a javax.mail. Zkontrolujte, zda jsou na cest\u011b ke t\u0159\u00edd\u011b dostupn\u00e9 oba tyto bal\u00edky.
+
+45209=Do\u0161lo k pokusu o resetov\u00e1n\u00ed instance ApplicationResolver na t\u0159\u00edd\u011b SDOHelperContext. Povolena je pouze jedna sada.
+
+45210=Za\u0159azovan\u00fd objekt DataObject nen\u00ed ze stejn\u00e9ho rozhran\u00ed HelperContext jako XMLHelper.
+
+45211=Typ nelze definovat s n\u00e1zvem [{0}]. N\u00e1zev nen\u00ed platn\u00fdm n\u00e1zvem XML.
+
+45212=Vlastnost nelze definovat s n\u00e1zvem [{0}]. N\u00e1zev nen\u00ed platn\u00fdm n\u00e1zvem XML.
+

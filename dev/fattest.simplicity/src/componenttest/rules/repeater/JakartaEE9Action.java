@@ -53,6 +53,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
     // features, which is necessary for the FATs to run.
 
     static final String[] EE9_FEATURES_ARRAY = {
+                                                 "appClientSupport-2.0",
                                                  "jakartaee-9.0",
                                                  "webProfile-9.0",
                                                  "jakartaeeClient-9.0",
@@ -63,12 +64,13 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                                                  "cdi-3.0",
                                                  "concurrent-2.0",
                                                  "connectors-2.0",
-                                                 "ejb-4.0",
                                                  "ejbHome-4.0",
                                                  "ejbLite-4.0",
                                                  "ejbPersistentTimer-4.0",
-                                                 "ejbRemote-4.0",
                                                  "el-4.0",
+                                                 "enterpriseBeans-4.0",
+                                                 "enterpriseBeansRemote-4.0",
+                                                 "enterpriseBeansTest-2.0",
                                                  "jacc-2.0",
                                                  "jaspic-2.0",
                                                  "javaMail-2.0",

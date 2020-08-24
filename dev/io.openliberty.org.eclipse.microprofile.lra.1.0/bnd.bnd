@@ -13,19 +13,11 @@
 
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
-
 Bundle-SymbolicName: io.openliberty.org.eclipse.microprofile.lra.1.0; singleton:=true
                      
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
-
 # We will whittle this down once it is working
 Export-Package: \
   org.eclipse.microprofile.lra*; version="1.0.0"
-
-# TODO what should this be?
-#WS-TraceGroup: REACTIVESTREAMS
 
 instrument.disabled: true
 

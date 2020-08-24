@@ -75,6 +75,11 @@ kafka.create.incoming.retry.CWMRX1009W=CWMRX1009W: Un connecteur entrant Kafka p
 kafka.create.incoming.retry.CWMRX1009W.explanation=Une erreur est survenue lors de la configuration du connecteur Kafka pour un canal Reactive Messaging entrant. Elle peut \u00eatre due \u00e0 un probl\u00e8me li\u00e9 \u00e0 la configuration du connecteur ou \u00e0 un probl\u00e8me li\u00e9 \u00e0 la r\u00e9solution du nom d'h\u00f4te du courtier Kafka.
 kafka.create.incoming.retry.CWMRX1009W.useraction=Consultez le message d'erreur, le fichier messages.log sur le serveur et les journaux de l'outil de diagnostic de premier niveau (FFDC) pour d\u00e9terminer si le probl\u00e8me est transitoire ou s'il a \u00e9t\u00e9 r\u00e9solu au cours de la nouvelle tentative de configuration du connecteur.
 
+# {0} = channel name, {1} = error message
+kafka.create.outgoing.retry.CWMRX1010W=CWMRX1010W: Un connecteur sortant Kafka pour le canal {0} ne peut pas \u00eatre cr\u00e9\u00e9 mais cette op\u00e9ration est retent\u00e9e. L'erreur est la suivante : {1}
+kafka.create.outgoing.retry.CWMRX1010W.explanation=Une erreur est survenue lors de la configuration du connecteur Kafka pour un canal Reactive Messaging sortant. Elle peut \u00eatre due \u00e0 un probl\u00e8me li\u00e9 \u00e0 la configuration du connecteur ou \u00e0 un probl\u00e8me li\u00e9 \u00e0 la r\u00e9solution du nom d'h\u00f4te du courtier Kafka.
+kafka.create.outgoing.retry.CWMRX1010W.useraction=Consultez le message d'erreur, le fichier messages.log sur le serveur et les journaux de l'outil de diagnostic de premier niveau (FFDC) pour d\u00e9terminer si le probl\u00e8me est transitoire ou s'il a \u00e9t\u00e9 r\u00e9solu au cours de la nouvelle tentative de configuration du connecteur.
+
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message

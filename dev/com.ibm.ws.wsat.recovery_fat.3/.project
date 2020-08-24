@@ -20,4 +20,21 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>bndtools.core.bndnature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>com.ibm.ws.wsat.recovery_fat.1-fatsrc</name>
+			<type>2</type>
+			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.wsat.recovery_fat.1/fat/src</locationURI>
+		</link>
+		<link>
+			<name>com.ibm.ws.wsat.recovery_fat.1-recoveryClient</name>
+			<type>2</type>
+			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.wsat.recovery_fat.1/test-applications/recoveryClient/src</locationURI>
+		</link>
+		<link>
+			<name>com.ibm.ws.wsat.recovery_fat.1-recoveryServer</name>
+			<type>2</type>
+			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.wsat.recovery_fat.1/test-applications/recoveryServer/src</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>

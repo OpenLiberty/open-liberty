@@ -20,16 +20,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ibm.ws.fat.grpc.tls.GrpcTestTlsUtils;
-
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.examples.helloworld.GreeterGrpc;
 import io.grpc.examples.helloworld.HelloReply;
 import io.grpc.examples.helloworld.HelloRequest;
-import io.grpc.netty.shaded.io.grpc.netty.GrpcSslContexts;
-import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder;
-import io.grpc.netty.shaded.io.netty.handler.ssl.SslContext;
 
 @WebServlet(name = "grpcClient", urlPatterns = "/grpcClient")
 public class HelloWorldClientServlet extends HttpServlet {
@@ -46,14 +41,7 @@ public class HelloWorldClientServlet extends HttpServlet {
         if (!useTls) {
             channel = ManagedChannelBuilder.forAddress(address, port).usePlaintext().build();
         } else {
-            SslContext sslContext;
-            sslContext = GrpcSslContexts.forClient()
-                            .trustManager(GrpcTestTlsUtils.getLibertyTrustedManagerFactory(serverPath))
-                            .build();
-            channel = NettyChannelBuilder.forAddress(address, port)
-                            .sslContext(sslContext)
-                            .build();
-
+            channel = ManagedChannelBuilder.forAddress(address, port).build();
         }
         greetingService = GreeterGrpc.newBlockingStub(channel);
     }

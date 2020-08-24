@@ -1,0 +1,61 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/TransactionExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+23001=B\u0142\u0105d podczas wyszukiwania zewn\u0119trznego zasobu transakcji o nazwie JNDI [{0}]
+
+23002=B\u0142\u0105d podczas uzyskiwania statusu bie\u017c\u0105cej transakcji zarz\u0105dzanej zewn\u0119trznie
+
+23003=B\u0142\u0105d podczas uzyskiwania bie\u017c\u0105cej transakcji zarz\u0105dzanej zewn\u0119trznie
+
+23004=B\u0142\u0105d podczas uzyskiwania mened\u017cera transakcji
+
+23005=B\u0142\u0105d podczas wi\u0105zania z transakcj\u0105 zarz\u0105dzan\u0105 zewn\u0119trznie
+
+23006=B\u0142\u0105d podczas rozpoczynania nowej transakcji zarz\u0105dzanej zewn\u0119trznie
+
+23007=B\u0142\u0105d podczas zatwierdzania transakcji zarz\u0105dzanej zewn\u0119trznie
+
+23008=B\u0142\u0105d podczas wycofywania transakcji zarz\u0105dzanej zewn\u0119trznie
+
+23009=B\u0142\u0105d podczas oznaczania transakcji zarz\u0105dzanej zewn\u0119trznie do wycofania zmian
+
+23010=Obecnie nie ma aktywnej transakcji zarz\u0105dzanej zewn\u0119trznie dla tego w\u0105tku
+
+23011=Warto\u015b\u0107 UnitOfWork [{0}] ustawiono na nieaktywn\u0105, zanim zako\u0144czy\u0142a si\u0119 powi\u0105zana transakcja zarz\u0105dzana zewn\u0119trznie.
+
+23012=Nie ma w tej chwili aktywnych transakcji
+
+23013=Transakcja jest w tej chwili aktywna
+
+23014=Nie mo\u017cna u\u017cy\u0107 obiektu EntityTransaction podczas korzystania z JTA.
+
+23015=Nie mo\u017cna zarejestrowa\u0107 wielu \u017ar\u00f3de\u0142 danych w transakcji.
+
+23016=Wyst\u0105pi\u0142 wyj\u0105tek podczas wykonania Proxy.
+

@@ -37,9 +37,9 @@ KRB_S4U2PROXY_IS_NOT_SUPPORT=CWWKS4344E: La caracter\u00edstica de delegaci\u00f
 KRB_S4U2PROXY_IS_NOT_SUPPORT.explanation=La caracter\u00edstica de delegaci\u00f3n restringida de Kerberos no puede habilitarse debido al proveedor y a la versi\u00f3n del tiempo de ejecuci\u00f3n Java.
 KRB_S4U2PROXY_IS_NOT_SUPPORT.useraction=Utilice el proveedor y la versi\u00f3n de Java soportados por la caracter\u00edstica de delegaci\u00f3n restringida de Kerberos.
 
+# CWWKS4345E is used by the com.ibm.ws.security.kerberos.auth bundle
 
-
-
+# CWWKS4346I is used by the com.ibm.ws.security.kerberos.auth bundle
 
 
 

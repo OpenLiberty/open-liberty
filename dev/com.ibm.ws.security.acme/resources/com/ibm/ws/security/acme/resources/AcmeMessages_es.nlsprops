@@ -179,9 +179,9 @@ CWPKI2035E=CWPKI2035E: El servicio ACME no ha podido almacenar el certificado fi
 CWPKI2035E.explanation=El certificado se ha recuperado satisfactoriamente de la entidad emisora de certificados, pero no se puede almacenar localmente.
 CWPKI2035E.useraction=Revise el mensaje de error para obtener detalles sobre la anomal\u00eda. Verifique que la ubicaci\u00f3n de archivo de almac\u00e9n de claves es correcta y el servidor tiene permisos para escribir en archivos.
 
-CWPKI2036E=CWPKI2036E: El servicio ACME ha superado el tiempo de espera esperando a que se inicie la aplicaci\u00f3n de autorizaci\u00f3n web. Se necesita la aplicaci\u00f3n para completar una solicitud de certificado con una entidad emisora de certificados ACME. El servicio ha esperado durante {0} minutos.
-CWPKI2036E.explanation=La aplicaci\u00f3n utilizada para completar una solicitud de certificado no se ha iniciado en el marco de tiempo esperado. No se puede solicitar un certificado firmado.
-CWPKI2036E.useraction=Revise el registro para ver si hay mensajes o errores anteriores.
+CWPKI2036W=CWPKI2036W: El servicio ACME ha superado el tiempo de espera esperando a que se inicie la aplicaci\u00f3n de autorizaci\u00f3n web. Se necesita la aplicaci\u00f3n para completar una solicitud de certificado con una entidad emisora de certificados ACME. Se intenta la solicitud de certificado. El servicio ha esperado {0}.
+CWPKI2036W.explanation=La aplicaci\u00f3n utilizada para completar una solicitud de certificado no se ha iniciado en el marco de tiempo esperado. Si la aplicaci\u00f3n se inicia, la solicitud contin\u00faa. Si la aplicaci\u00f3n no se inicia, la solicitud de certificado falla.
+CWPKI2036W.useraction=Revise el registro para ver si hay mensajes o errores anteriores. Revise el registro de un mensaje CWWKT0016I que incluye una aplicaci\u00f3n web con el URL 'acme-challenge' para indicar que la aplicaci\u00f3n interna se ha iniciado.
 
 CWPKI2037E=CWPKI2037E: Los dominios para el servicio ACME eran nulos o estaban vac\u00edos.
 CWPKI2037E.explanation=Los dominios eran nulos o estaban vac\u00edos y no se pueden utilizar.
@@ -330,3 +330,7 @@ CWPKI2072W.useraction=Aseg\u00farese de que el directorio ACME hist\u00f3rico ti
 CWPKI2073W=CWPKI2073W: No se ha especificado ning\u00fan contacto. Es recomendable establecer esta propiedad en la configuraci\u00f3n del servidor. Si falta una clave o la cuenta queda comprometida, se pierde el acceso a la cuenta.
 CWPKI2073W.explanation=El valor de la propiedad accountContact no est\u00e1 especificado en la configuraci\u00f3n del servidor.
 CWPKI2073W.useraction=Establezca la propiedad accountContact en la configuraci\u00f3n del servidor.
+
+CWPKI2074W=CWPKI2074W: El servicio ACME ha superado el tiempo de espera esperando a que se le indique que el puerto HTTP est\u00e1 abierto. Se necesita un puerto HTPP disponible para completar una solicitud de certificado con una entidad emisora de certificados ACME. Se intenta la solicitud de certificado. El servicio ha esperado {0}.
+CWPKI2074W.explanation=El servicio intenta una solicitud de certificado. Si hay un puerto HTTP abierto, la solicitud contin\u00faa. Si no hay ning\u00fan puerto HTTP abierto, la solicitud de certificado falla.
+CWPKI2074W.useraction=Revise el registro para ver si hay mensajes o errores anteriores. Revise el registro de los mensajes CWWKO0219I, que lista los puntos finales y puertos disponibles.

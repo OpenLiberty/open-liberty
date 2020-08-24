@@ -37,9 +37,9 @@ KRB_S4U2PROXY_IS_NOT_SUPPORT=CWWKS4344E: La fonction de d\u00e9l\u00e9gation con
 KRB_S4U2PROXY_IS_NOT_SUPPORT.explanation=La fonction de d\u00e9l\u00e9gation contrainte Kerberos ne peut pas \u00eatre activ\u00e9e en raison de la combinaison de fournisseur et de version du runtime Java.
 KRB_S4U2PROXY_IS_NOT_SUPPORT.useraction=Utilisez le fournisseur et la version Java accept\u00e9s par la fonction de d\u00e9l\u00e9gation contrainte Kerberos.
 
+# CWWKS4345E is used by the com.ibm.ws.security.kerberos.auth bundle
 
-
-
+# CWWKS4346I is used by the com.ibm.ws.security.kerberos.auth bundle
 
 
 

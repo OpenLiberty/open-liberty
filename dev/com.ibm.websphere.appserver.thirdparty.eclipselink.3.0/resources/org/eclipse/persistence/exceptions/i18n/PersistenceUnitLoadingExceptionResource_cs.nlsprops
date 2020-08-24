@@ -1,0 +1,67 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/PersistenceUnitLoadingExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+30001=Do\u0161lo k v\u00fdjimce p\u0159i pokusu o na\u010dten\u00ed jednotky perzistence pro adres\u00e1\u0159: {0}
+
+30002=Do\u0161lo k v\u00fdjimce p\u0159i pokusu o na\u010dten\u00ed jednotky perzistence pro soubor JAR: {0}
+
+30003=Do\u0161lo k v\u00fdjimce p\u0159i zpracov\u00e1n\u00ed jednotky perzistence na adrese URL: {0}
+
+30004=Do\u0161lo k v\u00fdjimce p\u0159i zpracov\u00e1n\u00ed souboru persistence.xml z adresy URL: {0}
+
+30005=Do\u0161lo k v\u00fdjimce p\u0159i vyhled\u00e1v\u00e1n\u00ed archiv\u016f perzistence pomoc\u00ed zavad\u011b\u010de ClassLoader: {0}
+
+30006=Do\u0161lo k v\u00fdjimce p\u0159i vyhled\u00e1v\u00e1n\u00ed entit na adrese URL: {0}
+
+30007=Do\u0161lo k v\u00fdjimce p\u0159i na\u010d\u00edt\u00e1n\u00ed t\u0159\u00eddy {0} za \u00fa\u010delem kontroly, zda implementuje atributy @Entity, @Embeddable nebo @MappedSuperclass.
+
+30008=Vr\u00e1cen\u00e1 cesta k souboru byla pr\u00e1zdn\u00e1 nebo m\u011bla hodnotu null.
+
+30009=Do\u0161lo k v\u00fdjimce p\u0159i pokusu o na\u010dten\u00ed jednotky perzistence na adrese URL: {0}
+
+30010=Do\u0161lo k v\u00fdjimce p\u0159i na\u010d\u00edt\u00e1n\u00ed souboru ORM XML: {0}
+
+30011=EclipseLink nemohl z\u00edskat t\u0159\u00eddy z adresy URL: {0}. EclipseLink se pokusil na\u010d\u00edst tuto adresu URL jako soubor JAR a adres\u00e1\u0159 a nezda\u0159ilo se mu ho zpracovat.
+
+30012=EclipseLink nemohl z\u00edskat informace o jednotce perzistence z adresy URL:{0}
+
+30013=Do\u0161lo k v\u00fdjimce p\u0159i pokusu o sestaven\u00ed n\u00e1zvu jednotky perzistence pro jednotku perzistence [{1}] z adresy URL: {0}.
+
+30014=Jednotka perzistence ur\u010duje re\u017eim zp\u011btn\u00e9ho vol\u00e1n\u00ed jako "CALLBACK", ale nezda\u0159ilo se inicializovat t\u0159\u00eddu ValidatorFactory pro ov\u011b\u0159ov\u00e1n\u00ed Bean Validation. Podrobnosti naleznete ve vno\u0159en\u00e9 v\u00fdjimce. Zkontrolujte, zda je na cest\u011b ke t\u0159\u00edd\u011b dostupn\u00e9 rozhran\u00ed API ov\u011b\u0159ov\u00e1n\u00ed Bean Validation a poskytovatel ov\u011b\u0159ov\u00e1n\u00ed Bean Validation.
+
+30015=Do\u0161lo k v\u00fdjimce p\u0159i na\u010d\u00edt\u00e1n\u00ed t\u0159\u00eddy skupiny ov\u011b\u0159en\u00ed: {0}.
+
+30016=N\u00e1zev relace {0} nem\u016f\u017ee b\u00fdt pou\u017e\u00edv\u00e1n jednotkou perzistence {1}, ji\u017e je pou\u017e\u00edv\u00e1n jednotkou perzistence {2}.
+
+30017=Jednotka perzistence {0} je definov\u00e1na na adrese URL:{1} a z\u00e1rove\u0148 na adrese URL:{2}. Stejn\u00fd zavad\u011b\u010d t\u0159\u00edd nem\u016f\u017ee na\u010d\u00edst n\u011bkolik jednotek perzistence se stejn\u00fdm n\u00e1zvem.
+
+30018=V\u00fdjimka: P\u0159i pokusu o vytvo\u0159en\u00ed instance u\u017eivatelem ur\u010den\u00e9 t\u0159\u00eddy ArchiveFactory: {0} do\u0161lo k {1}.
+
+30019=Vol\u00e1te metodu refreshMetadata na rozhran\u00ed EntityManagerFactory pro jednotku perzistence {0}. Metadata nelze aktualizovat, proto\u017ee tato tov\u00e1rna EntityManagerFactory byla vytvo\u0159ena z objektu relace, nikoli odvozena z jednotky perzistence.
+

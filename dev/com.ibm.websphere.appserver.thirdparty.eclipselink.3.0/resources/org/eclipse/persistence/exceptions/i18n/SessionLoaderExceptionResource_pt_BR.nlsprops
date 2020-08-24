@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/SessionLoaderExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+9000=Diversas [{0}] SessionLoaderExceptions foram lan\u00e7adas:
+
+9001=Nome de tag desconhecido: [{0}] no n\u00f3 XML: [{1}].
+
+9002=N\u00e3o \u00e9 poss\u00edvel carregar a classe do projeto [{0}].
+
+9003=N\u00e3o \u00e9 poss\u00edvel processar a tag XML [{0}] com o valor [{1}].
+
+9004=O O arquivo project-xml [{0}] n\u00e3o foi localizado no caminho de classe, nem no sistema de arquivos.
+
+9005=Uma exce\u00e7\u00e3o foi lan\u00e7ada ao carregar o arquivo project-xml [{0}].
+
+9006=Um {0} foi lan\u00e7ado ao analisar o arquivo XML.  Ele ocorre na linha {1} e coluna {2} no documento XML.
+
+9007=Uma exce\u00e7\u00e3o foi lan\u00e7ada ao analisar o arquivo XML.
+
+9008=Valor inesperado [{0}] da tag [{1}].
+
+9009=A tag [{0}] tem atributo desconhecido.
+
+9010=Um {0} foi lan\u00e7ado ao analisar o arquivo XML com rela\u00e7\u00e3o ao esquema XML.
+
+9011=A classe de plataforma do servidor {0} foi removida e a vers\u00e3o do servidor de aplicativos correspondente n\u00e3o \u00e9 mais suportada
+
+9012=N\u00e3o \u00e9 poss\u00edvel carregar o arquivo session-xml porque ele cont\u00e9m um formato inv\u00e1lido ou o formato do XML n\u00e3o \u00e9 suportado.
+

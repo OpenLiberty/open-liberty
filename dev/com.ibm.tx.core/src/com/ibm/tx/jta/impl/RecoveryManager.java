@@ -16,9 +16,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import javax.transaction.xa.Xid;
-
 import javax.transaction.SystemException;
+import javax.transaction.xa.Xid;
 
 import com.ibm.tx.TranConstants;
 import com.ibm.tx.config.ConfigurationProviderManager;
@@ -41,6 +40,7 @@ import com.ibm.ws.recoverylog.spi.LogAllocationException;
 import com.ibm.ws.recoverylog.spi.LogCursor;
 import com.ibm.ws.recoverylog.spi.LogIncompatibleException;
 import com.ibm.ws.recoverylog.spi.NotSupportedException;
+import com.ibm.ws.recoverylog.spi.PeerLostLogOwnershipException;
 import com.ibm.ws.recoverylog.spi.RecoverableUnit;
 import com.ibm.ws.recoverylog.spi.RecoverableUnitSection;
 import com.ibm.ws.recoverylog.spi.RecoveryAgent;
@@ -504,6 +504,11 @@ public class RecoveryManager implements Runnable {
                         // transactions stopped running now
                         try {
                             _tranLog.removeRecoverableUnit(_tranlogServiceData.identity());
+                        } catch (PeerLostLogOwnershipException ple) {
+                            // No FFDC in this case
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "PeerLostLogOwnershipException raised", ple);
+                            throw ple;
                         } catch (Exception e) {
                             FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.preShutdown", "359", this);
                             Tr.error(tc, "WTRN0029_ERROR_CLOSE_LOG_IN_SHUTDOWN");
@@ -531,6 +536,12 @@ public class RecoveryManager implements Runnable {
                         try {
                             _tranlogEpochSection.addData(Util.intToBytes(_ourEpoch));
                             _tranlogServiceData.forceSections();
+                        } catch (PeerLostLogOwnershipException ple) {
+                            // No FFDC in this case
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "PeerLostLogOwnershipException raised forcing tranlog at shutdown", ple);
+
+                            throw ple;
                         } catch (Exception e) {
                             // We were unable to force the tranlog, so just return as if we had crashed
                             // (or did an immediate shutdown) and we will recover everything at the next restart.
@@ -556,6 +567,11 @@ public class RecoveryManager implements Runnable {
             if (_tranLog != null && ((!_failureScopeController.localFailureScope()) || (!transactionsLeft))) {
                 try {
                     _tranLog.closeLog();
+                } catch (PeerLostLogOwnershipException ple) {
+                    // No FFDC or Error messaging in this case
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "preShutdown", ple);
+                    throw ple;
                 } catch (Exception e) {
                     FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.preShutdown", "360", this);
                     Tr.error(tc, "WTRN0029_ERROR_CLOSE_LOG_IN_SHUTDOWN");
@@ -589,6 +605,10 @@ public class RecoveryManager implements Runnable {
                     try {
                         updateServerState(STOPPING);
                         _partnerServiceData.forceSections();
+                    } catch (PeerLostLogOwnershipException ple) {
+                        // No FFDC in this case
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "PeerLostLogOwnershipException raised", ple);
                     } catch (Exception e) {
                         FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.postShutdown", "779", this);
                         if (tc.isEventEnabled())
@@ -611,6 +631,10 @@ public class RecoveryManager implements Runnable {
 
                         try {
                             _xaLog.removeRecoverableUnit(_partnerServiceData.identity());
+                        } catch (PeerLostLogOwnershipException ple) {
+                            // No FFDC in this case
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "PeerLostLogOwnershipException raised", ple);
                         } catch (Exception e) {
                             FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.postShutdown", "793", this);
                             if (tc.isEventEnabled())
@@ -626,6 +650,10 @@ public class RecoveryManager implements Runnable {
             if (_xaLog != null) {
                 try {
                     _xaLog.closeLog();
+                } catch (PeerLostLogOwnershipException ple) {
+                    // No FFDC in this case
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "PeerLostLogOwnershipException raised", ple);
                 } catch (Exception e) {
                     FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.postShutdown", "824", this);
                     Tr.error(tc, "WTRN0029_ERROR_CLOSE_LOG_IN_SHUTDOWN");
@@ -1032,6 +1060,11 @@ public class RecoveryManager implements Runnable {
             // Always update this server's current epoch
             _tranlogEpochSection.addData(Util.intToBytes(_ourEpoch));
             _tranlogServiceData.forceSections();
+        } catch (PeerLostLogOwnershipException ple) {
+            // No FFDC in this case
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "updateTranLogServiceData", ple);
+            throw ple;
         } catch (Exception e) {
             FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.updateTranLogSeviceData", "1130", this);
             if (tc.isEntryEnabled())
@@ -1110,6 +1143,11 @@ public class RecoveryManager implements Runnable {
             }
 
             _stateSection.addData(Util.intToBytes(flag));
+        } catch (PeerLostLogOwnershipException ple) {
+            // No FFDC in this case
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "updateServerState", ple);
+            throw ple;
         } catch (Exception e) {
             FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.updateServerState", "1250", this);
             if (tc.isEntryEnabled())
@@ -1510,7 +1548,12 @@ public class RecoveryManager implements Runnable {
 
                             ((DistributedRecoveryLog) _tranLog).keypoint(); /* @PK31789A */
                         } /* @PK31789A */
-                        catch (Exception exc2) /* @PK31789A */
+                        catch (PeerLostLogOwnershipException ple) {
+                            // No FFDC in this case
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "keypoint of transaction log failed ... partner log will not be tidied", ple);
+                            failed = true;
+                        } catch (Exception exc2) /* @PK31789A */
                         { /* @PK31789A */
                             FFDCFilter.processException(exc2, "com.ibm.tx.jta.impl.RecoveryManager.resync", "1974", this); /* @PK31789A */
                             if (tc.isDebugEnabled())
@@ -1993,6 +2036,16 @@ public class RecoveryManager implements Runnable {
                             Tr.exit(tc, "run");
                         return;
                     }
+                } catch (PeerLostLogOwnershipException ple) {
+                    // No FFDC or error messaging in this case
+                    if (tc.isDebugEnabled())
+                        Tr.event(tc, "Caught PeerLostLogOwnershipException during keypointing: " + ple);
+
+                    recoveryFailed(ple); // @254326C
+
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "run");
+                    return;
                 } catch (Exception e) {
                     FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.run", "1866", this);
 

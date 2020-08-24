@@ -197,4 +197,42 @@ public class ConsumerUtils {
         return base;
     }
 
+    /**
+     * default value "bvt.prop.HTTP_default" added where Store server.xml is using
+     *
+     * @return
+     */
+    public static int getStoreServerPort() {
+        String port = getSysProp("bvt.prop.HTTP_default");
+        return Integer.valueOf(port);
+    }
+
+    /**
+     * default value "localhost" added in bootstrap.properties
+     *
+     * @return
+     */
+    public static String getStoreServerHost() {
+        return getSysProp("testing.StoreServer.hostname");
+    }
+
+    /**
+     * default value "bvt.prop.member_1.http" added where Consumer server.xml is using
+     *
+     * @return
+     */
+    public static int getConsumerServerPort() {
+        String port = getSysProp("bvt.prop.member_1.http");
+        return Integer.valueOf(port);
+    }
+
+    /**
+     * default value "localhost" added in bootstrap.properties
+     *
+     * @return
+     */
+    public static String getConsumerServerHost() {
+        return getSysProp("testing.ConsumerServer.hostname");
+    }
+
 }

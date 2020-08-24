@@ -6,11 +6,13 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt;
 
 import java.util.NoSuchElementException;
+import java.util.Set;
+
 public interface MpConfigProxyService {
 
     /**
@@ -27,4 +29,6 @@ public interface MpConfigProxyService {
      * @return
      */
     public <T> T getConfigValue(ClassLoader cl, String propertyName, Class<T> propertyType) throws IllegalArgumentException, NoSuchElementException;
+
+    public Set<String> getSupportedConfigPropertyNames();
 }

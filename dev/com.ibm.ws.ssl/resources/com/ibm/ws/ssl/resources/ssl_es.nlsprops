@@ -559,7 +559,7 @@ ssl.create.certificate.end.useraction=No se requiere ninguna acci\u00f3n.
 #--------------------------------------------------------------------------------------------------
 ssl.create.certificate.error=CWPKI0804E: Error de creaci\u00f3n de certificado SSL. {0}
 ssl.create.certificate.error.explanation=El certificado SSL no se ha podido crear en la ubicaci\u00f3n especificada.
-ssl.create.certificate.error.useraction=Compruebe que el proceso de servidor puede acceder a la ubicaci\u00f3n. Los FFDC podr\u00edan indicar un error muy grave al generar o cargar las claves.
+ssl.create.certificate.error.useraction=Compruebe que el proceso de servidor puede acceder a la ubicaci\u00f3n. Revise los registros de FFDC para encontrar errores adicionales asociados a la generaci\u00f3n o la carga de las claves.
 
 # Messages for the CWPKI0804E message descriptor {0}.
 ssl.create.certificate.error.reason1=No se puede crear el archivo de claves SSL: {0}
@@ -660,4 +660,8 @@ ssl.using.cacerts.CWPKI0827I.useraction=No se requiere ninguna acci\u00f3n.
 ssl.client.handshake.cacerts.error.CWPKI0828E=CWPKI0828E: El atributo trustDefaultCerts est\u00e1 habilitado pero la confianza no se ha establecido utilizando el almac\u00e9n de confianza predeterminado. El mensaje de error ampliado de la excepci\u00f3n del reconocimiento de comunicaci\u00f3n SSL es: {0}.
 ssl.client.handshake.cacerts.error.CWPKI0828E.explanation=El almac\u00e9n de confianza predeterminado no est\u00e1 configurado correctamente para establecer la confianza.  
 ssl.client.handshake.cacerts.error.CWPKI0828E.useraction=Revise el mensaje de error ampliado para determinar qu\u00e9 cambiar en la configuraci\u00f3n.
+# -------------------------------------------------------------------------------------------------
+ssl.update.certificate.error=CWPKI0829E: Error de actualizaci\u00f3n de certificado SSL. {0}
+ssl.update.certificate.error.explanation=El certificado SSL no se ha podido actualizar en la ubicaci\u00f3n especificada.
+ssl.update.certificate.error.useraction=Compruebe que el proceso de servidor puede acceder a la ubicaci\u00f3n. Revise los registros de FFDC para encontrar errores adicionales asociados a la generaci\u00f3n o la carga de las claves.
 # -------------------------------------------------------------------------------------------------

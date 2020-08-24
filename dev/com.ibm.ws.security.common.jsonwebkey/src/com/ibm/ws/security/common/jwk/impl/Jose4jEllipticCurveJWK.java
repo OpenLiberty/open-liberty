@@ -60,13 +60,18 @@ public class Jose4jEllipticCurveJWK extends EllipticCurveJsonWebKey implements J
 
         ECPublicKey pubKey = (ECPublicKey) keypair.getPublic();
         ECPrivateKey priKey = (ECPrivateKey) keypair.getPrivate();
-        Jose4jEllipticCurveJWK jwk = new Jose4jEllipticCurveJWK(pubKey);
+        Jose4jEllipticCurveJWK jwk = getInstance(pubKey, alg, use);
 
         jwk.setPrivateKey(priKey);
-        jwk.setAlgorithm(alg);
         jwk.setKeyId(kid);
-        jwk.setUse(use == null ? JwkConstants.sig : use);
 
+        return jwk;
+    }
+
+    public static Jose4jEllipticCurveJWK getInstance(ECPublicKey publicKey, String alg, String use) {
+        Jose4jEllipticCurveJWK jwk = new Jose4jEllipticCurveJWK(publicKey);
+        jwk.setAlgorithm(alg);
+        jwk.setUse(use == null ? JwkConstants.sig : use);
         return jwk;
     }
 
