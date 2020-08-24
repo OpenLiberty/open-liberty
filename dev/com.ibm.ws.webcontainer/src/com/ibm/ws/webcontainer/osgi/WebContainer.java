@@ -1570,8 +1570,12 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
     
     @Reference(service=ServletVersion.class, cardinality=ReferenceCardinality.MANDATORY, policy=ReferencePolicy.DYNAMIC, policyOption=ReferencePolicyOption.GREEDY)
     protected synchronized void setVersion(ServiceReference<ServletVersion> reference) {
+        String methodName = "setVersion";
         versionRef = reference;
         WebContainer.loadedContainerSpecLevel = (Integer) reference.getProperty("version");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, methodName, "loadedContainerSpecLevel [ " + WebContainer.loadedContainerSpecLevel + " ]");
+        }
     }
 
     protected synchronized void unsetVersion(ServiceReference<ServletVersion> reference) {
@@ -1591,6 +1595,8 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
     private static int loadedContainerSpecLevel = SPEC_LEVEL_UNLOADED;
     
     public static int getServletContainerSpecLevel() {
+        String methodName = "getServletContainerSpecLevel";
+
         if (WebContainer.loadedContainerSpecLevel == SPEC_LEVEL_UNLOADED) {
             CountDownLatch currentLatch = selfInit;
             // wait for activation
@@ -1603,11 +1609,15 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
             currentLatch.countDown(); // don't wait again
 
             if (WebContainer.loadedContainerSpecLevel == SPEC_LEVEL_UNLOADED) {
-                logger.logp(Level.WARNING, CLASS_NAME, "getServletContainerSpecLevel", "servlet.feature.not.loaded.correctly");
+                logger.logp(Level.WARNING, CLASS_NAME, methodName, "servlet.feature.not.loaded.correctly");
                 return WebContainer.DEFAULT_SPEC_LEVEL;
             }
         }
-        
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, methodName, "loadedContainerSpecLevel [ " + WebContainer.loadedContainerSpecLevel + " ]");
+        }
+
         return WebContainer.loadedContainerSpecLevel;
     }
     
