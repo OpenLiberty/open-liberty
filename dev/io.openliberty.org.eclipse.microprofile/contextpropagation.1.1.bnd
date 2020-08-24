@@ -11,12 +11,11 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-
-Bundle-SymbolicName: com.ibm.websphere.org.eclipse.microprofile.contextpropagation.1.1; singleton:=true
+Bundle-SymbolicName: io.openliberty.org.eclipse.microprofile.contextpropagation.1.1; singleton:=true
 
 Import-Package: \
-  javax.inject;resolution:=optional,\
-  javax.enterprise.util;resolution:=optional,\
+  javax.inject;resolution:=optional;version=!,\
+  javax.enterprise.util;resolution:=optional;version=!,\
   *
 
 Export-Package: \
@@ -27,10 +26,3 @@ Include-Resource: \
    @${repo;com.ibm.ws.org.eclipse.microprofile.context-propagation:microprofile-context-propagation-api;1.1.20200728.204607-6;EXACT}
 
 WS-TraceGroup: concurrent
-
--buildpath: \
-  com.ibm.ws.org.osgi.annotation.versioning;version=latest
-
-instrument.disabled: true
-
-publish.wlp.jar.suffix: dev/api/stable
