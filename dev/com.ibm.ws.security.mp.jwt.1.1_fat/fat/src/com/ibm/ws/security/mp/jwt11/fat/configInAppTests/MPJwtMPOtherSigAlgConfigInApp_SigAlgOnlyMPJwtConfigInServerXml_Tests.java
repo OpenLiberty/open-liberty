@@ -45,17 +45,6 @@ public class MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Test
     @Server("com.ibm.ws.security.mp.jwt.1.1.fat")
     public static LibertyServer resourceServer;
 
-    /* key file names */
-    private static final String rs256PubKey = "RS256public-key.pem";
-    private static final String rs384PubKey = "RS384public-key.pem";
-    private static final String rs512PubKey = "RS512public-key.pem";
-    private static final String es256PubKey = "ES256public-key.pem";
-    private static final String es384PubKey = "ES384public-key.pem";
-    private static final String es512PubKey = "ES512public-key.pem";
-    private static final String ps256PubKey = "PS256public-key.pem";
-    private static final String ps384PubKey = "PS384public-key.pem";
-    private static final String ps512PubKey = "PS512public-key.pem";
-
     @BeforeClass
     public static void setUp() throws Exception {
 
@@ -70,7 +59,6 @@ public class MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Test
         // each test case will specify its own config, so skip the between test server config restore
         skipRestoreServerTracker.addServer(resourceServer);
 
-//        startRSServerForMPTests(resourceServer, "rs_server_AltConfigInApp_ES256InServerXmlConfig.xml");
         startRSServerForMPTests(resourceServer, "rs_server_AltConfigInApp_RS256InServerXmlConfig.xml");
 
     }
@@ -80,60 +68,60 @@ public class MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Test
         String thisMethod = "deployRSServerMPConfigInAppApps";
         try {
             String fixedJwksUri = resolvedJwksUri(MPConfigSettings.jwksUri);
-            String fileLoc = mpConfigSettings.getDefaultKeyFileLoc(server);
+            String fileLoc = MPConfigSettings.getDefaultKeyFileLoc(server);
 
             // publicKey (NOT keyLocation)
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_RS256_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                               buildMPConfigFileContent(mpConfigSettings.getComplexKey(server, rs256PubKey),
+                                                               buildMPConfigFileContent(MPConfigSettings.getComplexKey(server, MPConfigSettings.rs256PubKey),
                                                                                         MPConfigSettings.PublicKeyLocationNotSet,
                                                                                         mpConfigSettings.getIssuer()));
             setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_RS256_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                                                                 buildMPConfigFileContent(mpConfigSettings.getComplexKey(server, rs256PubKey),
+                                                                 buildMPConfigFileContent(MPConfigSettings.getComplexKey(server, MPConfigSettings.rs256PubKey),
                                                                                           MPConfigSettings.PublicKeyLocationNotSet,
                                                                                           mpConfigSettings.getIssuer()));
 
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_RS384_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                               buildMPConfigFileContent(mpConfigSettings.getComplexKey(server, rs384PubKey),
+                                                               buildMPConfigFileContent(MPConfigSettings.getComplexKey(server, MPConfigSettings.rs384PubKey),
                                                                                         MPConfigSettings.PublicKeyLocationNotSet,
                                                                                         mpConfigSettings.getIssuer()));
             setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_RS384_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                                                                 buildMPConfigFileContent(mpConfigSettings.getComplexKey(server, rs384PubKey),
+                                                                 buildMPConfigFileContent(MPConfigSettings.getComplexKey(server, MPConfigSettings.rs384PubKey),
                                                                                           MPConfigSettings.PublicKeyLocationNotSet,
                                                                                           mpConfigSettings.getIssuer()));
 
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_RS512_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                               buildMPConfigFileContent(mpConfigSettings.getComplexKey(server, rs512PubKey),
+                                                               buildMPConfigFileContent(MPConfigSettings.getComplexKey(server, MPConfigSettings.rs512PubKey),
                                                                                         MPConfigSettings.PublicKeyLocationNotSet,
                                                                                         mpConfigSettings.getIssuer()));
             setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_RS512_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                                                                 buildMPConfigFileContent(mpConfigSettings.getComplexKey(server, rs512PubKey),
+                                                                 buildMPConfigFileContent(MPConfigSettings.getComplexKey(server, MPConfigSettings.rs512PubKey),
                                                                                           MPConfigSettings.PublicKeyLocationNotSet,
                                                                                           mpConfigSettings.getIssuer()));
 
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_ES256_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                               buildMPConfigFileContent(mpConfigSettings.getComplexKey(server, es256PubKey),
+                                                               buildMPConfigFileContent(MPConfigSettings.getComplexKey(server, MPConfigSettings.es256PubKey),
                                                                                         MPConfigSettings.PublicKeyLocationNotSet,
                                                                                         mpConfigSettings.getIssuer()));
             setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_ES256_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                                                                 buildMPConfigFileContent(mpConfigSettings.getComplexKey(server, es256PubKey),
+                                                                 buildMPConfigFileContent(MPConfigSettings.getComplexKey(server, MPConfigSettings.es256PubKey),
                                                                                           MPConfigSettings.PublicKeyLocationNotSet,
                                                                                           mpConfigSettings.getIssuer()));
 
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_ES384_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                               buildMPConfigFileContent(mpConfigSettings.getComplexKey(server, es384PubKey),
+                                                               buildMPConfigFileContent(MPConfigSettings.getComplexKey(server, MPConfigSettings.es384PubKey),
                                                                                         MPConfigSettings.PublicKeyLocationNotSet,
                                                                                         mpConfigSettings.getIssuer()));
             setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_ES384_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                                                                 buildMPConfigFileContent(mpConfigSettings.getComplexKey(server, es384PubKey),
+                                                                 buildMPConfigFileContent(MPConfigSettings.getComplexKey(server, MPConfigSettings.es384PubKey),
                                                                                           MPConfigSettings.PublicKeyLocationNotSet,
                                                                                           mpConfigSettings.getIssuer()));
 
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_ES512_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                               buildMPConfigFileContent(mpConfigSettings.getComplexKey(server, es512PubKey),
+                                                               buildMPConfigFileContent(MPConfigSettings.getComplexKey(server, MPConfigSettings.es512PubKey),
                                                                                         MPConfigSettings.PublicKeyLocationNotSet,
                                                                                         mpConfigSettings.getIssuer()));
             setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_ES512_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                                                                 buildMPConfigFileContent(mpConfigSettings.getComplexKey(server, es512PubKey),
+                                                                 buildMPConfigFileContent(MPConfigSettings.getComplexKey(server, MPConfigSettings.es512PubKey),
                                                                                           MPConfigSettings.PublicKeyLocationNotSet,
                                                                                           mpConfigSettings.getIssuer()));
 
@@ -141,73 +129,77 @@ public class MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Test
              * TODO - enable when PS supported is added
              */
 //            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_PS256_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-//                                                               buildMPConfigFileContent(mpConfigSettings.getComplexKey(server, ps256PubKey),
+//                                                               buildMPConfigFileContent(mpConfigSettings.getComplexKey(server, MPConfigSettings.ps256PubKey),
 //                                                                                        MPConfigSettings.PublicKeyLocationNotSet,
 //                                                                                        mpConfigSettings.getIssuer()));
 //            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_PS256_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-//                                                                 buildMPConfigFileContent(mpConfigSettings.getComplexKey(server, ps256PubKey),
+//                                                                 buildMPConfigFileContent(mpConfigSettings.getComplexKey(server, MPConfigSettings.ps256PubKey),
 //                                                                                          MPConfigSettings.PublicKeyLocationNotSet,
 //                                                                                          mpConfigSettings.getIssuer()));
 //
 //            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_PS384_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-//                                                               buildMPConfigFileContent(mpConfigSettings.getComplexKey(server, ps384PubKey),
+//                                                               buildMPConfigFileContent(mpConfigSettings.getComplexKey(server, MPConfigSettings.ps384PubKey),
 //                                                                                        MPConfigSettings.PublicKeyLocationNotSet,
 //                                                                                        mpConfigSettings.getIssuer()));
 //            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_PS384_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-//                                                                 buildMPConfigFileContent(mpConfigSettings.getComplexKey(server, ps384PubKey),
+//                                                                 buildMPConfigFileContent(mpConfigSettings.getComplexKey(server, MPConfigSettings.ps384PubKey),
 //                                                                                          MPConfigSettings.PublicKeyLocationNotSet,
 //                                                                                          mpConfigSettings.getIssuer()));
 //
 //            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_PS512_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-//                                                               buildMPConfigFileContent(mpConfigSettings.getComplexKey(server, ps512PubKey),
+//                                                               buildMPConfigFileContent(mpConfigSettings.getComplexKey(server, MPConfigSettings.ps512PubKey),
 //                                                                                        MPConfigSettings.PublicKeyLocationNotSet,
 //                                                                                        mpConfigSettings.getIssuer()));
 //            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_PS512_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-//                                                                 buildMPConfigFileContent(mpConfigSettings.getComplexKey(server, ps512PubKey),
+//                                                                 buildMPConfigFileContent(mpConfigSettings.getComplexKey(server, MPConfigSettings.ps512PubKey),
 //                                                                                          MPConfigSettings.PublicKeyLocationNotSet,
 //                                                                                          mpConfigSettings.getIssuer()));
 
             // publicKeyLocation (NOT publicKey)
             // not testing all locations (relative, file, url, jwksuri) with all signature algorithms
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_RELATIVE_ES512_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                               buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, es512PubKey, mpConfigSettings.getIssuer()));
+                                                               buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, MPConfigSettings.es512PubKey,
+                                                                                        mpConfigSettings.getIssuer()));
             setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_RELATIVE_RS256_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                                                                 buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, rs256PubKey, mpConfigSettings.getIssuer()));
+                                                                 buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, MPConfigSettings.rs256PubKey,
+                                                                                          mpConfigSettings.getIssuer()));
 // TODO - enable when PS algs supported
 //            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_RELATIVE_PS384_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-//                                                                 buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, ps384PubKey, mpConfigSettings.getIssuer()));
+//                                                                 buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, MPConfigSettings.ps384PubKey, mpConfigSettings.getIssuer()));
 
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_FILE_RS256_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                               buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, fileLoc + rs256PubKey,
+                                                               buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, fileLoc + MPConfigSettings.rs256PubKey,
                                                                                         mpConfigSettings.getIssuer()));
             // TODO - enable when PS algs supported
 //            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_FILE_PS384_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-//                                                               buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, fileLoc + ps384PubKey,
+//                                                               buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, fileLoc + MPConfigSettings.ps384PubKey,
 //                                                                                        mpConfigSettings.getIssuer()));
             setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_FILE_ES512_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                                                                 buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, fileLoc + es512PubKey,
+                                                                 buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, fileLoc + MPConfigSettings.es512PubKey,
                                                                                           mpConfigSettings.getIssuer()));
 
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_URL_RS384_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                               buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, "file:///" + fileLoc + rs384PubKey,
+                                                               buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, "file:///" + fileLoc + MPConfigSettings.rs384PubKey,
                                                                                         mpConfigSettings.getIssuer()));
             setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_URL_ES256_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                                                                 buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, "file:///" + fileLoc + es256PubKey,
+                                                                 buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, "file:///" + fileLoc + MPConfigSettings.es256PubKey,
                                                                                           mpConfigSettings.getIssuer()));
             // TODO - enable when PS algs supported
 //            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_URL_PS512_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-//                                                                 buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, "file:///" + fileLoc + ps512PubKey,
+//                                                                 buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, "file:///" + fileLoc + MPConfigSettings.ps512PubKey,
 //                                                                                          mpConfigSettings.getIssuer()));
 
             // TODO - enable when PS algs supported
 //            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_JWKSURI_PS256_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-//                                                               buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, fixedJwksUri.replace("defaultJWT", "PS256"),
+//                                                               buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, fixedJwksUri.replace("defaultJWT", MpJwtFatConstants.SIGALG_PS256),
 //                                                                                        mpConfigSettings.getIssuer()));
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_JWKSURI_RS512_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                               buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, fixedJwksUri.replace("defaultJWT", "RS512"),
+                                                               buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet,
+                                                                                        fixedJwksUri.replace("defaultJWT", MpJwtFatConstants.SIGALG_RS512),
                                                                                         mpConfigSettings.getIssuer()));
             setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_JWKSURI_ES384_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                                                                 buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, fixedJwksUri.replace("defaultJWT", "ES384"),
+                                                                 buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet,
+                                                                                          fixedJwksUri.replace("defaultJWT", MpJwtFatConstants.SIGALG_ES384),
                                                                                           mpConfigSettings.getIssuer()));
 
         } catch (Exception e) {
@@ -232,10 +224,10 @@ public class MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Test
      * @throws Exception
      */
     @Test
-    public void MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_GoodRS256PublicKeyInMPConfigInMetaInf_test() throws Exception {
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_GoodRS256PublicKeyInMPConfigInMetaInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_RS256InServerXmlConfig.xml");
-        standardTestFlow("RS256", resourceServer, MpJwtFatConstants.GOOD_RS256_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+        standardTestFlow(MpJwtFatConstants.SIGALG_RS256, resourceServer, MpJwtFatConstants.GOOD_RS256_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF);
 
     }
@@ -249,10 +241,10 @@ public class MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Test
      */
     @Mode(TestMode.LITE)
     @Test
-    public void MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_GoodRS256PublicKeyInMPConfigUnderWebInf_test() throws Exception {
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_GoodRS256PublicKeyInMPConfigUnderWebInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_RS256InServerXmlConfig.xml");
-        standardTestFlow("RS256", resourceServer, MpJwtFatConstants.GOOD_RS256_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+        standardTestFlow(MpJwtFatConstants.SIGALG_RS256, resourceServer, MpJwtFatConstants.GOOD_RS256_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF);
 
     }
@@ -265,10 +257,10 @@ public class MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Test
      * @throws Exception
      */
     @Test
-    public void MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_GoodRS384PublicKeyInMPConfigInMetaInf_test() throws Exception {
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_GoodRS384PublicKeyInMPConfigInMetaInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_RS384InServerXmlConfig.xml");
-        standardTestFlow("RS384", resourceServer, MpJwtFatConstants.GOOD_RS384_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+        standardTestFlow(MpJwtFatConstants.SIGALG_RS384, resourceServer, MpJwtFatConstants.GOOD_RS384_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF);
 
     }
@@ -282,10 +274,10 @@ public class MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Test
      */
     @Mode(TestMode.LITE)
     @Test
-    public void MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_GoodRS384PublicKeyInMPConfigUnderWebInf_test() throws Exception {
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_GoodRS384PublicKeyInMPConfigUnderWebInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_RS384InServerXmlConfig.xml");
-        standardTestFlow("RS384", resourceServer, MpJwtFatConstants.GOOD_RS384_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+        standardTestFlow(MpJwtFatConstants.SIGALG_RS384, resourceServer, MpJwtFatConstants.GOOD_RS384_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF);
 
     }
@@ -298,10 +290,10 @@ public class MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Test
      * @throws Exception
      */
     @Test
-    public void MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_GoodRS512PublicKeyInMPConfigInMetaInf_test() throws Exception {
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_GoodRS512PublicKeyInMPConfigInMetaInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_RS512InServerXmlConfig.xml");
-        standardTestFlow("RS512", resourceServer, MpJwtFatConstants.GOOD_RS512_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+        standardTestFlow(MpJwtFatConstants.SIGALG_RS512, resourceServer, MpJwtFatConstants.GOOD_RS512_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF);
 
     }
@@ -315,10 +307,10 @@ public class MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Test
      */
     @Mode(TestMode.LITE)
     @Test
-    public void MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_GoodRS512PublicKeyInMPConfigUnderWebInf_test() throws Exception {
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_GoodRS512PublicKeyInMPConfigUnderWebInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_RS512InServerXmlConfig.xml");
-        standardTestFlow("RS512", resourceServer, MpJwtFatConstants.GOOD_RS512_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+        standardTestFlow(MpJwtFatConstants.SIGALG_RS512, resourceServer, MpJwtFatConstants.GOOD_RS512_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF);
 
     }
@@ -333,10 +325,10 @@ public class MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Test
      * @throws Exception
      */
     @Test
-    public void MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_GoodES256PublicKeyInMPConfigInMetaInf_test() throws Exception {
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_GoodES256PublicKeyInMPConfigInMetaInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_ES256InServerXmlConfig.xml");
-        standardTestFlow("ES256", resourceServer, MpJwtFatConstants.GOOD_ES256_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+        standardTestFlow(MpJwtFatConstants.SIGALG_ES256, resourceServer, MpJwtFatConstants.GOOD_ES256_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF);
 
     }
@@ -350,10 +342,10 @@ public class MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Test
      */
     @Mode(TestMode.LITE)
     @Test
-    public void MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_GoodES256PublicKeyInMPConfigUnderWebInf_test() throws Exception {
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_GoodES256PublicKeyInMPConfigUnderWebInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_ES256InServerXmlConfig.xml");
-        standardTestFlow("ES256", resourceServer, MpJwtFatConstants.GOOD_ES256_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+        standardTestFlow(MpJwtFatConstants.SIGALG_ES256, resourceServer, MpJwtFatConstants.GOOD_ES256_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF);
 
     }
@@ -366,10 +358,10 @@ public class MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Test
      * @throws Exception
      */
     @Test
-    public void MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_GoodES384PublicKeyInMPConfigInMetaInf_test() throws Exception {
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_GoodES384PublicKeyInMPConfigInMetaInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_ES384InServerXmlConfig.xml");
-        standardTestFlow("ES384", resourceServer, MpJwtFatConstants.GOOD_ES384_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+        standardTestFlow(MpJwtFatConstants.SIGALG_ES384, resourceServer, MpJwtFatConstants.GOOD_ES384_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF);
 
     }
@@ -383,10 +375,10 @@ public class MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Test
      */
     @Mode(TestMode.LITE)
     @Test
-    public void MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_GoodES384PublicKeyInMPConfigUnderWebInf_test() throws Exception {
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_GoodES384PublicKeyInMPConfigUnderWebInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_ES384InServerXmlConfig.xml");
-        standardTestFlow("ES384", resourceServer, MpJwtFatConstants.GOOD_ES384_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+        standardTestFlow(MpJwtFatConstants.SIGALG_ES384, resourceServer, MpJwtFatConstants.GOOD_ES384_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF);
 
     }
@@ -399,10 +391,10 @@ public class MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Test
      * @throws Exception
      */
     @Test
-    public void MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_GoodES512PublicKeyInMPConfigInMetaInf_test() throws Exception {
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_GoodES512PublicKeyInMPConfigInMetaInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_ES512InServerXmlConfig.xml");
-        standardTestFlow("ES512", resourceServer, MpJwtFatConstants.GOOD_ES512_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+        standardTestFlow(MpJwtFatConstants.SIGALG_ES512, resourceServer, MpJwtFatConstants.GOOD_ES512_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF);
 
     }
@@ -416,10 +408,10 @@ public class MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Test
      */
     @Mode(TestMode.LITE)
     @Test
-    public void MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_GoodES512PublicKeyInMPConfigUnderWebInf_test() throws Exception {
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_GoodES512PublicKeyInMPConfigUnderWebInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_ES512InServerXmlConfig.xml");
-        standardTestFlow("ES512", resourceServer, MpJwtFatConstants.GOOD_ES512_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+        standardTestFlow(MpJwtFatConstants.SIGALG_ES512, resourceServer, MpJwtFatConstants.GOOD_ES512_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF);
 
     }
@@ -433,11 +425,11 @@ public class MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Test
      *
      * @throws Exception
      */
-//    @Test
-    public void MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_GoodPS256PublicKeyInMPConfigInMetaInf_test() throws Exception {
+//TODO - enable when ps algs available    @Test
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_GoodPS256PublicKeyInMPConfigInMetaInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_PS256InServerXmlConfig.xml");
-        standardTestFlow("PS256", resourceServer, MpJwtFatConstants.GOOD_PS256_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+        standardTestFlow(MpJwtFatConstants.SIGALG_PS256, resourceServer, MpJwtFatConstants.GOOD_PS256_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF);
 
     }
@@ -450,11 +442,11 @@ public class MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Test
      * @throws Exception
      */
     @Mode(TestMode.LITE)
-//    @Test
-    public void MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_GoodPS256PublicKeyInMPConfigUnderWebInf_test() throws Exception {
+//TODO - enable when ps algs available    @Test
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_GoodPS256PublicKeyInMPConfigUnderWebInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_PS256InServerXmlConfig.xml");
-        standardTestFlow("PS256", resourceServer, MpJwtFatConstants.GOOD_PS256_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+        standardTestFlow(MpJwtFatConstants.SIGALG_PS256, resourceServer, MpJwtFatConstants.GOOD_PS256_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF);
 
     }
@@ -466,11 +458,11 @@ public class MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Test
      *
      * @throws Exception
      */
-//    @Test
-    public void MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_GoodPS384PublicKeyInMPConfigInMetaInf_test() throws Exception {
+//TODO - enable when ps algs available    @Test
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_GoodPS384PublicKeyInMPConfigInMetaInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_PS384InServerXmlConfig.xml");
-        standardTestFlow("PS384", resourceServer, MpJwtFatConstants.GOOD_PS384_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+        standardTestFlow(MpJwtFatConstants.SIGALG_PS384, resourceServer, MpJwtFatConstants.GOOD_PS384_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF);
 
     }
@@ -483,11 +475,11 @@ public class MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Test
      * @throws Exception
      */
     @Mode(TestMode.LITE)
-//    @Test
-    public void MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_GoodPS384PublicKeyInMPConfigUnderWebInf_test() throws Exception {
+//TODO - enable when ps algs available    @Test
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_GoodPS384PublicKeyInMPConfigUnderWebInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_PS384InServerXmlConfig.xml");
-        standardTestFlow("PS384", resourceServer, MpJwtFatConstants.GOOD_PS384_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+        standardTestFlow(MpJwtFatConstants.SIGALG_PS384, resourceServer, MpJwtFatConstants.GOOD_PS384_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF);
 
     }
@@ -499,11 +491,11 @@ public class MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Test
      *
      * @throws Exception
      */
-//    @Test
-    public void MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_GoodPS512PublicKeyInMPConfigInMetaInf_test() throws Exception {
+//TODO - enable when ps algs available    @Test
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_GoodPS512PublicKeyInMPConfigInMetaInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_PS512InServerXmlConfig.xml");
-        standardTestFlow("PS512", resourceServer, MpJwtFatConstants.GOOD_PS512_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+        standardTestFlow(MpJwtFatConstants.SIGALG_PS512, resourceServer, MpJwtFatConstants.GOOD_PS512_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF);
 
     }
@@ -516,11 +508,11 @@ public class MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Test
      * @throws Exception
      */
     @Mode(TestMode.LITE)
-//    @Test
-    public void MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_GoodPS512PublicKeyInMPConfigUnderWebInf_test() throws Exception {
+//TODO - enable when ps algs available    @Test
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_GoodPS512PublicKeyInMPConfigUnderWebInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_PS512InServerXmlConfig.xml");
-        standardTestFlow("PS512", resourceServer, MpJwtFatConstants.GOOD_PS512_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+        standardTestFlow(MpJwtFatConstants.SIGALG_PS512, resourceServer, MpJwtFatConstants.GOOD_PS512_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF);
 
     }
@@ -539,10 +531,10 @@ public class MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Test
      * @throws Exception
      */
     @Test
-    public void MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_GoodRelativeES512PublicKeyLocationInMPConfigInMetaInf_test() throws Exception {
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_GoodRelativeES512PublicKeyLocationInMPConfigInMetaInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_ES512InServerXmlConfig.xml");
-        standardTestFlow("ES512", resourceServer, MpJwtFatConstants.GOOD_RELATIVE_ES512_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+        standardTestFlow(MpJwtFatConstants.SIGALG_ES512, resourceServer, MpJwtFatConstants.GOOD_RELATIVE_ES512_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF);
 
     }
@@ -556,10 +548,10 @@ public class MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Test
      * @throws Exception
      */
     @Test
-    public void MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_GoodRelativeRS256PublicKeyLocationInMPConfigUnderWebInf_test() throws Exception {
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_GoodRelativeRS256PublicKeyLocationInMPConfigUnderWebInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_RS256InServerXmlConfig.xml");
-        standardTestFlow("RS256", resourceServer, MpJwtFatConstants.GOOD_RELATIVE_RS256_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+        standardTestFlow(MpJwtFatConstants.SIGALG_RS256, resourceServer, MpJwtFatConstants.GOOD_RELATIVE_RS256_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF);
 
     }
@@ -573,10 +565,10 @@ public class MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Test
      * @throws Exception
      */
     //TODO - enable when ps algs available    @Test
-    public void MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_GoodRelativePS384PublicKeyLocationInMPConfigUnderWebInf_test() throws Exception {
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_GoodRelativePS384PublicKeyLocationInMPConfigUnderWebInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_PS384InServerXmlConfig.xml");
-        standardTestFlow("PS384", resourceServer, MpJwtFatConstants.GOOD_RELATIVE_PS384_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+        standardTestFlow(MpJwtFatConstants.SIGALG_PS384, resourceServer, MpJwtFatConstants.GOOD_RELATIVE_PS384_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF);
 
     }
@@ -589,10 +581,10 @@ public class MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Test
      * @throws Exception
      */
     @Test
-    public void MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_GoodFileRS256PublicKeyLocationInMPConfigInMetaInf_test() throws Exception {
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_GoodFileRS256PublicKeyLocationInMPConfigInMetaInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_RS256InServerXmlConfig.xml");
-        standardTestFlow("RS256", resourceServer, MpJwtFatConstants.GOOD_FILE_RS256_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+        standardTestFlow(MpJwtFatConstants.SIGALG_RS256, resourceServer, MpJwtFatConstants.GOOD_FILE_RS256_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF);
 
     }
@@ -605,10 +597,10 @@ public class MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Test
      * @throws Exception
      */
     //TODO - enable when ps algs available    @Test
-    public void MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_GoodFilePS384PublicKeyLocationInMPConfigInMetaInf_test() throws Exception {
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_GoodFilePS384PublicKeyLocationInMPConfigInMetaInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_PS384InServerXmlConfig.xml");
-        standardTestFlow("PS384", resourceServer, MpJwtFatConstants.GOOD_FILE_PS384_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+        standardTestFlow(MpJwtFatConstants.SIGALG_PS384, resourceServer, MpJwtFatConstants.GOOD_FILE_PS384_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF);
 
     }
@@ -621,10 +613,10 @@ public class MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Test
      * @throws Exception
      */
     @Test
-    public void MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_GoodFileES512PublicKeyLocationInMPConfigUnderWebInf_test() throws Exception {
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_GoodFileES512PublicKeyLocationInMPConfigUnderWebInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_ES512InServerXmlConfig.xml");
-        standardTestFlow("ES512", resourceServer, MpJwtFatConstants.GOOD_FILE_ES512_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+        standardTestFlow(MpJwtFatConstants.SIGALG_ES512, resourceServer, MpJwtFatConstants.GOOD_FILE_ES512_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF);
 
     }
@@ -638,10 +630,10 @@ public class MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Test
      */
     @Mode(TestMode.LITE)
     @Test
-    public void MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_GoodUrlRS384PublicKeyLocationInMPConfigInMetaInf_test() throws Exception {
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_GoodUrlRS384PublicKeyLocationInMPConfigInMetaInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_RS384InServerXmlConfig.xml");
-        standardTestFlow("RS384", resourceServer, MpJwtFatConstants.GOOD_URL_RS384_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+        standardTestFlow(MpJwtFatConstants.SIGALG_RS384, resourceServer, MpJwtFatConstants.GOOD_URL_RS384_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF);
 
     }
@@ -654,10 +646,10 @@ public class MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Test
      * @throws Exception
      */
     @Test
-    public void MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_GoodUrlES256PublicKeyLocationInMPConfigUnderWebInf_test() throws Exception {
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_GoodUrlES256PublicKeyLocationInMPConfigUnderWebInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_ES256InServerXmlConfig.xml");
-        standardTestFlow("ES256", resourceServer, MpJwtFatConstants.GOOD_URL_ES256_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+        standardTestFlow(MpJwtFatConstants.SIGALG_ES256, resourceServer, MpJwtFatConstants.GOOD_URL_ES256_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF);
 
     }
@@ -670,10 +662,10 @@ public class MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Test
      * @throws Exception
      */
     //TODO - enable when ps algs available    @Test
-    public void MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_GoodUrlPublicKeyLocationInMPConfigUnderWebInf_test() throws Exception {
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_GoodUrlPublicKeyLocationInMPConfigUnderWebInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_PS512InServerXmlConfig.xml");
-        standardTestFlow("PS512", resourceServer, MpJwtFatConstants.GOOD_URL_PS512_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+        standardTestFlow(MpJwtFatConstants.SIGALG_PS512, resourceServer, MpJwtFatConstants.GOOD_URL_PS512_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF);
 
     }
@@ -685,11 +677,11 @@ public class MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Test
      *
      * @throws Exception
      */
-    //TODO - enable when ps algs available  @Test
-    public void MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_GoodJwksUriPS256PublicKeyLocationInMPConfigInMetaInf_test() throws Exception {
+    //TODO - enable when ps algs available    @Test
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_GoodJwksUriPS256PublicKeyLocationInMPConfigInMetaInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_PS256InServerXmlConfig.xml");
-        standardTestFlow("PS256", resourceServer, MpJwtFatConstants.GOOD_JWKSURI_PS256_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+        standardTestFlow(MpJwtFatConstants.SIGALG_PS256, resourceServer, MpJwtFatConstants.GOOD_JWKSURI_PS256_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF);
 
     }
@@ -702,10 +694,10 @@ public class MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Test
      * @throws Exception
      */
     @Test
-    public void MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_GoodJwksUriRS512PublicKeyLocationInMPConfigInMetaInf_test() throws Exception {
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_GoodJwksUriRS512PublicKeyLocationInMPConfigInMetaInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_RS512InServerXmlConfig.xml");
-        standardTestFlow("RS512", resourceServer, MpJwtFatConstants.GOOD_JWKSURI_RS512_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+        standardTestFlow(MpJwtFatConstants.SIGALG_RS512, resourceServer, MpJwtFatConstants.GOOD_JWKSURI_RS512_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF);
 
     }
@@ -718,11 +710,396 @@ public class MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Test
      * @throws Exception
      */
     @Test
-    public void MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_GoodJwksUriES384PublicKeyLocationInMPConfigUnderWebInf_test() throws Exception {
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_GoodJwksUriES384PublicKeyLocationInMPConfigUnderWebInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_ES384InServerXmlConfig.xml");
-        standardTestFlow("ES384", resourceServer, MpJwtFatConstants.GOOD_JWKSURI_ES384_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+        standardTestFlow(MpJwtFatConstants.SIGALG_ES384, resourceServer, MpJwtFatConstants.GOOD_JWKSURI_ES384_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF);
+
+    }
+
+    //       // test mis-matches between sigAlg and the public key provided
+    /**
+     * The mpJwt config in server.xml only exists to specify the sigAlg. The app has a relative publicKeyLocation in mp-config (in the META-INF
+     * directory of the app) that refers to a public key of a type different than the signature algorithm specified in the config.
+     * This test shows that the runtime uses the mp-config and fails appropriately
+     * Token created with RS384, mpJwt config has RS384, public key is ES512
+     *
+     * @throws Exception
+     */
+    @Test
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_cfgRS384_BadRelativeES512PublicKeyLocationInMPConfigInMetaInf_test() throws Exception {
+
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_RS384InServerXmlConfig.xml");
+        standardTestFlow(MpJwtFatConstants.SIGALG_RS384, resourceServer, MpJwtFatConstants.GOOD_RELATIVE_ES512_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                         MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF,
+                         setBadCertExpectations(resourceServer, BadKey));
+
+    }
+
+    /**
+     * The mpJwt config in server.xml only exists to specify the sigAlg. The app has a relative publicKeyLocation in mp-config (under the
+     * WEB-INF directory of the app) that refers to a public key of a type different than the signature algorithm specified in the config.
+     * This test shows that the runtime uses the mp-config and fails appropriately
+     * Token created with ES512, mpJwt config has ES512, public key is RS256
+     *
+     * @throws Exception
+     */
+    @Test
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_cfgES512_BadRelativeRS256PublicKeyLocationInMPConfigUnderWebInf_test() throws Exception {
+
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_ES512InServerXmlConfig.xml");
+        standardTestFlow(MpJwtFatConstants.SIGALG_ES512, resourceServer, MpJwtFatConstants.GOOD_RELATIVE_RS256_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+                         MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF,
+                         setBadCertExpectations(resourceServer, BadKey));
+
+    }
+
+    /**
+     * The mpJwt config in server.xml only exists to specify the sigAlg. The app has a relative publicKeyLocation in mp-config (under the
+     * WEB-INF directory of the app) that refers to a public key of a type different than the signature algorithm specified in the config.
+     * This test shows that the runtime uses the mp-config and fails appropriately
+     * Token created with ES512, mpJwt config has ES512, public key is PS384
+     *
+     * @throws Exception
+     */
+    //TODO - enable when ps algs available    @Test
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_cfgES512_BadRelativePS384PublicKeyLocationInMPConfigUnderWebInf_test() throws Exception {
+
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_ES512InServerXmlConfig.xml");
+        standardTestFlow(MpJwtFatConstants.SIGALG_ES512, resourceServer, MpJwtFatConstants.GOOD_RELATIVE_PS384_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+                         MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF,
+                         setBadCertExpectations(resourceServer, BadKey));
+
+    }
+
+    /**
+     * The mpJwt config in server.xml only exists to specify the sigAlg. The app has a file based publicKeyLocation in mp-config (in the
+     * META-INF directory of the app) that refers to a public key of a type different than the signature algorithm specified in the config.
+     * This test shows that the runtime uses the mp-config and fails appropriately
+     * Token created with ES512, mpJwt config has ES512, public key is RS256
+     *
+     * @throws Exception
+     */
+    @Test
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_cfgES512_BadFileRS256PublicKeyLocationInMPConfigInMetaInf_test() throws Exception {
+
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_ES512InServerXmlConfig.xml");
+        standardTestFlow(MpJwtFatConstants.SIGALG_ES512, resourceServer, MpJwtFatConstants.GOOD_FILE_RS256_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                         MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF,
+                         setBadCertExpectations(resourceServer, BadKey));
+
+    }
+
+    /**
+     * The mpJwt config in server.xml only exists to specify the sigAlg. The app has a file based publicKeyLocation in mp-config (in the
+     * META-INF directory of the app) that refers to a public key of a type different than the signature algorithm specified in the config.
+     * This test shows that the runtime uses the mp-config and fails appropriately
+     * Token created with ES512, mpJwt config has ES512, public key is PS384
+     *
+     * @throws Exception
+     */
+    //TODO - enable when ps algs available    @Test
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_cfgES512_BadFilePS384PublicKeyLocationInMPConfigInMetaInf_test() throws Exception {
+
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_ES512InServerXmlConfig.xml");
+        standardTestFlow(MpJwtFatConstants.SIGALG_ES512, resourceServer, MpJwtFatConstants.GOOD_FILE_PS384_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                         MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF,
+                         setBadCertExpectations(resourceServer, BadKey));
+
+    }
+
+    /**
+     * The mpJwt config in server.xml only exists to specify the sigAlg. The app has a file based publicKeyLocation in mp-config (under the
+     * WEB-INF directory of the app) that refers to a public key of a type different than the signature algorithm specified in the config.
+     * This test shows that the runtime uses the mp-config and fails appropriately
+     * Token created with RS384, mpJwt config has RS384, public key is ES512
+     *
+     * @throws Exception
+     */
+    @Test
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_cfgRS384_BadFileES512PublicKeyLocationInMPConfigUnderWebInf_test() throws Exception {
+
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_RS384InServerXmlConfig.xml");
+        standardTestFlow(MpJwtFatConstants.SIGALG_RS384, resourceServer, MpJwtFatConstants.GOOD_FILE_ES512_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+                         MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF,
+                         setBadCertExpectations(resourceServer, BadKey));
+
+    }
+
+    /**
+     * The mpJwt config in server.xml only exists to specify the sigAlg. The app has a URL file based publicKeyLocation in mp-config (in the
+     * META-INF directory of the app) that refers to a public key of a type different than the signature algorithm specified in the config.
+     * This test shows that the runtime uses the mp-config and fails appropriately
+     * Token created with ES256, mpJwt config has ES256, public key is RS384
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_cfgES256_BadUrlRS384PublicKeyLocationInMPConfigInMetaInf_test() throws Exception {
+
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_ES256InServerXmlConfig.xml");
+        standardTestFlow(MpJwtFatConstants.SIGALG_ES256, resourceServer, MpJwtFatConstants.GOOD_URL_RS384_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                         MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF,
+                         setBadCertExpectations(resourceServer, BadKey));
+
+    }
+
+    /**
+     * The mpJwt config in server.xml only exists to specify the sigAlg. The app has a URL file based publicKeyLocation in mp-config (under the
+     * WEB-INF directory of the app) that refers to a public key of a type different than the signature algorithm specified in the config.
+     * This test shows that the runtime uses the mp-config and fails appropriately
+     * Token created with RS384, mpJwt config has RS384, public key is ES256
+     *
+     * @throws Exception
+     */
+    @Test
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_cfgRS384_BadUrlES256PublicKeyLocationInMPConfigUnderWebInf_test() throws Exception {
+
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_RS384InServerXmlConfig.xml");
+        standardTestFlow(MpJwtFatConstants.SIGALG_RS384, resourceServer, MpJwtFatConstants.GOOD_URL_ES256_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+                         MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF,
+                         setBadCertExpectations(resourceServer, BadKey));
+
+    }
+
+    /**
+     * The mpJwt config in server.xml only exists to specify the sigAlg. The app has a URL file based publicKeyLocation in mp-config (under the
+     * WEB-INF directory of the app) that refers to a public key of a type different than the signature algorithm specified in the config.
+     * This test shows that the runtime uses the mp-config and fails appropriately
+     * Token created with RS384, mpJwt config has RS384, public key is PS512
+     *
+     * @throws Exception
+     */
+    //TODO - enable when ps algs available    @Test
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_cfgRS384_BadUrlPublicKeyLocationInMPConfigUnderWebInf_test() throws Exception {
+
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_RS384InServerXmlConfig.xml");
+        standardTestFlow(MpJwtFatConstants.SIGALG_RS384, resourceServer, MpJwtFatConstants.GOOD_URL_PS512_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+                         MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF,
+                         setBadCertExpectations(resourceServer, BadKey));
+
+    }
+
+    /**
+     * The mpJwt config in server.xml only exists to specify the sigAlg. The app has a jwksuri based publicKeyLocation in mp-config (in the
+     * META-INF directory of the app) that refers to a public key of a type different than the signature algorithm specified in the config.
+     * This test shows that the runtime uses the mp-config and fails appropriately
+     * Token created with ES384, mpJwt config has ES384, public key is PS256
+     *
+     * @throws Exception
+     */
+    //TODO - enable when ps algs available  @Test
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_cfgES384_BadJwksUriPS256PublicKeyLocationInMPConfigInMetaInf_test() throws Exception {
+
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_ES384InServerXmlConfig.xml");
+        standardTestFlow(MpJwtFatConstants.SIGALG_ES384, resourceServer, MpJwtFatConstants.GOOD_JWKSURI_PS256_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                         MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF,
+                         setBadCertExpectations(resourceServer, BadKey));
+
+    }
+
+    /**
+     * The mpJwt config in server.xml only exists to specify the sigAlg. The app has a jwksuri based publicKeyLocation in mp-config (in the
+     * META-INF directory of the app) that refers to a public key of a type different than the signature algorithm specified in the config.
+     * This test shows that the runtime uses the mp-config and fails appropriately
+     * Token created with ES384, mpJwt config has ES384, public key is RS512
+     *
+     * @throws Exception
+     */
+    @Test
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_cfgES384_BadJwksUriRS512PublicKeyLocationInMPConfigInMetaInf_test() throws Exception {
+
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_ES384InServerXmlConfig.xml");
+        standardTestFlow(MpJwtFatConstants.SIGALG_ES384, resourceServer, MpJwtFatConstants.GOOD_JWKSURI_RS512_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                         MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF,
+                         setBadCertExpectations(resourceServer, BadKey));
+
+    }
+
+    /**
+     * The mpJwt config in server.xml only exists to specify the sigAlg. The app has a jwksuri based publicKeyLocation in mp-config (under the
+     * WEB-INF directory of the app) that refers to a public key of a type different than the signature algorithm specified in the config.
+     * This test shows that the runtime uses the mp-config and fails appropriately
+     * Token created with RS256, mpJwt config has RS256, public key is ES384
+     *
+     * @throws Exception
+     */
+    @Test
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_cfgRS256_BadJwksUriES384PublicKeyLocationInMPConfigUnderWebInf_test() throws Exception {
+
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_RS256InServerXmlConfig.xml");
+        standardTestFlow(MpJwtFatConstants.SIGALG_RS256, resourceServer, MpJwtFatConstants.GOOD_JWKSURI_ES384_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+                         MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF,
+                         setBadCertExpectations(resourceServer, BadKey));
+
+    }
+
+    // test mis-matches between sigAlg/private key in the token vs the mp config
+    /**
+     * The mpJwt config in server.xml only exists to specify the sigAlg. The app has a valid complex publicKey in mp-config (in the META-INF
+     * directory of the app). The token is built using a different alg. (token RS512, mpConfig RS256)
+     * This test shows that the runtime uses the mp-config and will encounter a failure due to the mismatched private key in the token and
+     * public key in the mp config.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_MisMatch_tokenRS512_RS256PublicKeyInMPConfigInMetaInf_test() throws Exception {
+
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_RS256InServerXmlConfig.xml");
+        standardTestFlow(MpJwtFatConstants.SIGALG_RS512, resourceServer, MpJwtFatConstants.GOOD_RS256_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                         MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF,
+                         setBadCertExpectations(resourceServer, KeyMismatch));
+
+    }
+
+    /**
+     * The mpJwt config in server.xml only exists to specify the sigAlg. The app has a valid complex publicKey in mp-config (under the WEB-INF
+     * directory of the app).The token is built using a different alg. (token ES384, mpConfig RS384)
+     * This test shows that the runtime uses the mp-config and will encounter a failure due to the mismatched private key in the token and
+     * public key in the mp config.
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_MisMatch_tokenES384_RS384PublicKeyInMPConfigUnderWebInf_test() throws Exception {
+
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_RS384InServerXmlConfig.xml");
+        standardTestFlow(MpJwtFatConstants.SIGALG_ES384, resourceServer, MpJwtFatConstants.GOOD_RS384_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+                         MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF,
+                         setBadCertExpectations(resourceServer, KeyMismatch));
+
+    }
+
+    /**
+     * The mpJwt config in server.xml only exists to specify the sigAlg. The app has a valid complex publicKey in mp-config (in the META-INF
+     * directory of the app). The token is built using a different alg. (token PS256, mpConfig RS512)
+     * This test shows that the runtime uses the mp-config and will encounter a failure due to the mismatched private key in the token and
+     * public key in the mp config.
+     *
+     * @throws Exception
+     */
+    //TODO - uncomment when PS is supported @Test
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_MisMatch_tokenPS256_RS512PublicKeyInMPConfigInMetaInf_test() throws Exception {
+
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_RS512InServerXmlConfig.xml");
+        standardTestFlow(MpJwtFatConstants.SIGALG_PS256, resourceServer, MpJwtFatConstants.GOOD_RS512_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                         MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF,
+                         setBadCertExpectations(resourceServer, KeyMismatch));
+
+    }
+
+    /**
+     * The mpJwt config in server.xml only exists to specify the sigAlg. The app has a valid complex publicKey in mp-config (under the WEB-INF
+     * directory of the app). The token is built using a different alg. (token PS256, mpConfig ES256)
+     * This test shows that the runtime uses the mp-config and will encounter a failure due to the mismatched private key in the token and
+     * public key in the mp config.
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
+    //TODO - uncomment when PS is supported @Test
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_MisMatch_tokenPS256_ES256PublicKeyInMPConfigUnderWebInf_test() throws Exception {
+
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_ES256InServerXmlConfig.xml");
+        standardTestFlow(MpJwtFatConstants.SIGALG_PS256, resourceServer, MpJwtFatConstants.GOOD_ES256_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+                         MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF,
+                         setBadCertExpectations(resourceServer, KeyMismatch));
+
+    }
+
+    /**
+     * The mpJwt config in server.xml only exists to specify the sigAlg. The app has a valid complex publicKey in mp-config (in the META-INF
+     * directory of the app). The token is built using a different alg. (token RS512, mpConfig ES384)
+     * This test shows that the runtime uses the mp-config and will encounter a failure due to the mismatched private key in the token and
+     * public key in the mp config.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_MisMatch_tokenRS512_ES384PublicKeyInMPConfigInMetaInf_test() throws Exception {
+
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_ES384InServerXmlConfig.xml");
+        standardTestFlow(MpJwtFatConstants.SIGALG_RS512, resourceServer, MpJwtFatConstants.GOOD_ES384_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                         MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF,
+                         setBadCertExpectations(resourceServer, KeyMismatch));
+
+    }
+
+    /**
+     * The mpJwt config in server.xml only exists to specify the sigAlg. The app has a valid complex publicKey in mp-config (under the WEB-INF
+     * directory of the app). The token is built using a different alg. (token ES384, mpConfig ES512)
+     * This test shows that the runtime uses the mp-config and will encounter a failure due to the mismatched private key in the token and
+     * public key in the mp config.
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_MisMatch_tokenES384_ES512PublicKeyInMPConfigUnderWebInf_test() throws Exception {
+
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_ES512InServerXmlConfig.xml");
+        standardTestFlow(MpJwtFatConstants.SIGALG_ES384, resourceServer, MpJwtFatConstants.GOOD_ES512_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+                         MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF,
+                         setBadCertExpectations(resourceServer, KeyMismatch));
+
+    }
+
+    /**
+     * The mpJwt config in server.xml only exists to specify the sigAlg. The app has a valid complex publicKey in mp-config (in the META-INF
+     * directory of the app). The token is built using a different alg. (token ES384, mpConfig PS256)
+     * This test shows that the runtime uses the mp-config and will encounter a failure due to the mismatched private key in the token and
+     * public key in the mp config.
+     *
+     * @throws Exception
+     */
+    //TODO - enable when ps algs available    @Test
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_MisMatch_tokenES384_PS256PublicKeyInMPConfigInMetaInf_test() throws Exception {
+
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_PS256InServerXmlConfig.xml");
+        standardTestFlow(MpJwtFatConstants.SIGALG_ES384, resourceServer, MpJwtFatConstants.GOOD_PS256_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                         MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF,
+                         setBadCertExpectations(resourceServer, KeyMismatch));
+
+    }
+
+    /**
+     * The mpJwt config in server.xml only exists to specify the sigAlg. The app has a valid complex publicKey in mp-config (under the WEB-INF
+     * directory of the app). The token is built using a different alg. (token PS256, mpConfig PS384)
+     * This test shows that the runtime uses the mp-config and will encounter a failure due to the mismatched private key in the token and
+     * public key in the mp config.
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
+    //TODO - enable when ps algs available    @Test
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_MisMatch_tokenPS256_PS384PublicKeyInMPConfigUnderWebInf_test() throws Exception {
+
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_PS384InServerXmlConfig.xml");
+        standardTestFlow(MpJwtFatConstants.SIGALG_PS256, resourceServer, MpJwtFatConstants.GOOD_PS384_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+                         MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF,
+                         setBadCertExpectations(resourceServer, KeyMismatch));
+
+    }
+
+    /**
+     * The mpJwt config in server.xml only exists to specify the sigAlg. The app has a valid complex publicKey in mp-config (in the META-INF
+     * directory of the app). The token is built using a different alg. (token RS512, mpConfig PS512)
+     * This test shows that the runtime uses the mp-config and will encounter a failure due to the mismatched private key in the token and
+     * public key in the mp config.
+     *
+     * @throws Exception
+     */
+    //TODO - enable when ps algs available    @Test
+    public void MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_MisMatch_tokenRS512_PS512PublicKeyInMPConfigInMetaInf_test() throws Exception {
+
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_PS512InServerXmlConfig.xml");
+        standardTestFlow(MpJwtFatConstants.SIGALG_RS512, resourceServer, MpJwtFatConstants.GOOD_PS512_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                         MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF,
+                         setBadCertExpectations(resourceServer, KeyMismatch));
 
     }
 

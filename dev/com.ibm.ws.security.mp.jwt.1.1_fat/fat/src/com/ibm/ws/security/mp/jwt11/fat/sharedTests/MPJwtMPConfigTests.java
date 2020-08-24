@@ -65,6 +65,9 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
 
     protected final TestValidationUtils validationUtils = new TestValidationUtils();
 
+    public static final String BadKey = "BadKey";
+    public static final String KeyMismatch = "KeyMismatch";
+
 //    public static class MPConfigSettings {
 //
 //        String publicKeyLocation = null;
@@ -515,6 +518,12 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
                 break;
             case MpJwtFatConstants.JWK_CERT:
                 expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6029E_SIGNING_KEY_CANNOT_BE_FOUND, "Messages.log did not contain an error indicating that a signing key could not be found."));
+                break;
+            case BadKey:
+                expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6029E_SIGNING_KEY_CANNOT_BE_FOUND, "Messages.log did not contain an error indicating that a signing key could not be found."));
+                break;
+            case KeyMismatch:
+                expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6028E_SIG_ALG_MISMATCH, "Messages.log did not contain an error indicating that there was a mismatch in the signing keys."));
                 break;
             default:
                 break;
