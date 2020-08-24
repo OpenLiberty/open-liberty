@@ -91,7 +91,9 @@ public class HelloWorldTlsTest extends FATServletClient {
      */
     @Test
     public void testHelloWorldWithTls() throws Exception {
-        checkJavaVersion();
+        if (!checkJavaVersion()) {
+            return;
+        }
         testHelloWorldTlsCommon();
     }
 
@@ -103,8 +105,9 @@ public class HelloWorldTlsTest extends FATServletClient {
      */
     @Test
     public void testHelloWorldWithTlsMutualAuth() throws Exception {
-        checkJavaVersion();
-        // set the new server.xml and wait for the SSL port to come up
+        if (!checkJavaVersion()) {
+            return;
+        }
         GrpcTestUtils.setServerConfiguration(helloWorldTlsServer, null, TLS_MUTUAL_AUTH, clientAppName, LOG);
         testHelloWorldTlsCommon();
     }
@@ -118,8 +121,9 @@ public class HelloWorldTlsTest extends FATServletClient {
     @Test
     @ExpectedFFDC("io.grpc.StatusRuntimeException")
     public void testHelloWorldWithTlsInvalidClientTrustStore() throws Exception {
-        checkJavaVersion();
-        // set the new server.xml and wait for the SSL port to come up
+        if (!checkJavaVersion()) {
+            return;
+        }
         GrpcTestUtils.setServerConfiguration(helloWorldTlsServer, null, TLS_INVALID_CLIENT_TRUST_STORE, clientAppName, LOG);
         Exception clientException = null;
 
@@ -219,11 +223,12 @@ public class HelloWorldTlsTest extends FATServletClient {
         }
     }
 
-    private void checkJavaVersion() throws IOException {
+    private boolean checkJavaVersion() throws IOException {
         if (JavaInfo.forServer(helloWorldTlsServer).majorVersion() < 9) {
             Log.info(c, name.getMethodName(), "IBM JDK8 ALPN is not yet supported by the netty grpc client;"
                                               + " this test will be skipped until that support is added");
-            return;
+            return false;
         }
+        return true;
     }
 }
