@@ -1,0 +1,221 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/JAXBExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+50000=La v\u00eda de acceso de contexto {0} no contiene ObjectFactory o jaxb.index, no se han encontrado metadatos externos en la correlaci\u00f3n de propiedades, y se ha encontrado sessions.xml o no era v\u00e1lido.
+
+50001=La clase {0} requiere un constructor de argumentos cero o un m\u00e9todo de f\u00e1brica especificado.  Tenga en cuenta que las clases internas no est\u00e1ticas no tienen constructores de argumentos cero y no est\u00e1n soportadas.
+
+50002=Se ha especificado una clase de f\u00e1brica sin un m\u00e9todo de f\u00e1brica en la clase {0}.
+
+50003=El m\u00e9todo de f\u00e1brica denominado {0} no est\u00e1 declarado en la clase {1}.
+
+50004=XmlAnyAttribute no es v\u00e1lido en la propiedad {0}. Debe utilizarse con una propiedad de tipo Correlaci\u00f3n.
+
+50005=S\u00f3lo se permite una propiedad con XmlAnyAttribute en la clase {0}.
+
+50006=XmlElementRef no v\u00e1lido en la propiedad {0} en la clase {1}. El elemento referenciado no se ha declarado.
+
+50007=Conflicto de nombres.  Dos clases tienen el tipo XML con el uri {0} y el nombre {1}.
+
+50008=Clase de nodo no soportada {0}.  El m\u00e9todo createBinder(Class) s\u00f3lo da soporte a la clase org.w3c.dom.Node.
+
+50009=La propiedad o el campo {0} en la clase {1} se ha notado para ser transitorio por lo que no se puede incluir en la anotaci\u00f3n propOrder.
+
+50010=La propiedad o el campo {0} en la clase {1} debe ser un atributo porque se ha anotado otro campo o propiedad con XmlValue.
+
+50011=La propiedad o el campo {0} en la clase {1} no se puede anotar con XmlValue porque es una subclase de otra clase enlazada a XML.
+
+50012=La propiedad o el campo {0} en la clase {1} se ha especificado en propOrder, pero no es una propiedad v\u00e1lida.
+
+50013=La propiedad o el campo {0} en la clase {1} debe incluirse en el elemento propOrder de la anotaci\u00f3n XmlType.
+
+50014=La propiedad o el campo {0} en la clase {1} con la anotaci\u00f3n XmlValue debe ser de un tipo que se correlacione con un tipo de esquema simple.
+
+50015=XmlElementWrapper s\u00f3lo se permite en una propiedad de matriz o colecci\u00f3n, pero [{0}] no es una propiedad de matriz o colecci\u00f3n.
+
+50016=La propiedad [{0}] tiene una anotaci\u00f3n XmlID, pero su tipo no es Serie.
+
+50017=XmlIDREF no v\u00e1lida en la propiedad [{0}].  La clase [{1}] debe tener una propiedad anotada con XmlID.
+
+50018=XmlList s\u00f3lo se permite en una propiedad de matriz o colecci\u00f3n, pero [{0}] no es una propiedad de matriz o colecci\u00f3n.
+
+50019=Se ha encontrado un tipo de par\u00e1metro no v\u00e1lido al procesar metadatos externo a trav\u00e9s de la correlaci\u00f3n de propiedades.  El valor asociado con la clave [eclipselink-oxm-xml] debe ser uno de los siguientes [Map<String, Object>, List<Object> o Object].  El objeto debe ser uno de los siguientes [java.io.File, java.io.InputStream, java.io.Reader, java.net.URL, javax.xml.stream.XMLEventReader, javax.xml.stream.XMLStreamReader, javax.xml.transform.Source, org.w3c.dom.Node o org.xml.sax.InputSource]. En el caso de [Map<String, Object>], el nombre de paquete es String.
+
+50021=Se ha encontrado un tipo de par\u00e1metro no v\u00e1lido al procesar metadatos externo a trav\u00e9s de la correlaci\u00f3n de propiedades.  Para [Map<String, Object>], la clave debe ser de tipo [String] (lo que indica el nombre de paquete).
+
+50022=Se ha encontrado un tipo de par\u00e1metro no v\u00e1lido al procesar metadatos externo a trav\u00e9s de la correlaci\u00f3n de propiedades.  Para [Map<String, Object>], el valor debe ser uno de los siguientes [java.io.File, java.io.InputStream, java.io.Reader, java.net.URL, javax.xml.stream.XMLEventReader, javax.xml.stream.XMLStreamReader, javax.xml.transform.Source, org.w3c.dom.Node o org.xml.sax.InputSource] (manejador del archivo de metadatos).
+
+50023=Se ha encontrado un valor nulo para la clave [{0}] al procesar metadatos externo a trav\u00e9s de la correlaci\u00f3n de propiedades.  El valor debe ser no nulo y uno de los siguientes [java.io.File, java.io.InputStream, java.io.Reader, java.net.URL, javax.xml.stream.XMLEventReader, javax.xml.stream.XMLStreamReader, javax.xml.transform.Source, org.w3c.dom.Node o org.xml.sax.InputSource] (manejador del archivo de metadatos).
+
+50024=Se ha encontrado una clave nula al procesar metadatos externo a trav\u00e9s de la correlaci\u00f3n de propiedades.  La clave debe ser no nula y de tipo [String] (lo que indica el nombre de paquete).
+
+50025=No se ha podido cargar la clase [{0}] declarada en el archivo de metadatos externo.  Aseg\u00farese de que el nombre de clase sea correcto y que se haya establecido el ClassLoader correcto.
+
+50026=Se ha producido una excepci\u00f3n al intentar crear un JAXBContext para el XmlModel.
+
+50027=Se ha producido una excepci\u00f3n al intentar desordenar el archivo de metadatos externalizado.
+
+50028=No se ha podido crear una nueva instancia de [{0}].
+
+50029=La clase [{0}] proporcionada en el XmlCustomizer no implementa la interfaz org.eclipse.persistence.config.DescriptorCustomizer.
+
+50030=Se ha intentado establecer m\u00e1s de una propiedad XmlID en la clase [{1}].  La propiedad [{0}] no puede establecerse como XmlID, porque la propiedad [{2}] ya est\u00e1 establecida como XmlID.
+
+50031=Se ha intentado establecer m\u00e1s de una propiedad XmlValue en la clase [{0}].  La propiedad [{1}] no puede establecerse como XmlValue, porque la propiedad [{2}] ya est\u00e1 establecida como XmlValue.
+
+50032=Se ha intentado establecer m\u00e1s de una propiedad XmlAnyElement en la clase [{0}].  La propiedad [{1}] no puede establecerse como XmlAnyElement, porque la propiedad [{2}] ya est\u00e1 establecida como XmlAnyElement.
+
+50033=No se ha podido inicializar el DomHandlerConverter para el DomHandler [{0}] establecido en la propiedad [{1}].
+
+50034=La propiedad o el campo [{0}] no puede anotarse con XmlAttachmentRef, ya que no es un DataHandler.
+
+50035=Como la propiedad o el campo [{0}] se ha establecido como XmlIDREF, el tipo de destino de cada XmlElement declarado en la lista de XmlElements debe tener una propiedad XmlID.  Aseg\u00farese de que el tipo de destino de XmlElement [{1}] contenga una propiedad XmlID.
+
+50036=TypeMappingInfo con XmlTagName QName [{0}] debe tener un tipo no nulo establecido.
+
+50037=El tipo java con el paquete [{0}] no est\u00e1 permitido en el archivo de enlaces con las claves en el paquete [{1}].
+
+50038=DynamicJAXBContext no puede crearse a partir de clases concretas.  Utilice org.eclipse.persistence.jaxb.JAXBContext o especifique org.eclipse.persistence.jaxb.JAXBContextFactory en el archivo jaxb.properties para crear un contexto a partir de las clases existentes.
+
+50039=Error al crear DynamicJAXBContext: el nodo debe ser una instancia de un documento o un elemento.
+
+50040=Error al crear DynamicJAXBContext.
+
+50041=No se ha encontrado una constante de enumeraci\u00f3n [{0}].
+
+50042=Error al crear DynamicJAXBContext: el nombre de sesi\u00f3n era nulo.
+
+50043=Error al crear DynamicJAXBContext: el origen era nulo.
+
+50044=Error al crear DynamicJAXBContext: la corriente de entrada era nula.
+
+50045=Error al crear DynamicJAXBContext: el nodo era nulo.
+
+50046=Error al crear DynamicJAXBContext: XJC no ha podido generar un CodeModel.
+
+50047=No se ha encontrado la clase [{0}].
+
+50048=El transformador de lectura especificado para la propiedad [{0}] tiene una clase y un m\u00e9todo. Se requiere una clase o un m\u00e9todo, pero no ambos.
+
+50049=El transformador de lectura especificado para la propiedad [{0}] no tiene ni una clase ni un m\u00e9todo. Se requiere una clase o un m\u00e9todo.
+
+50050=El transformador de escritura especificado para la v\u00eda de acceso xml [{1}] de la propiedad [{0}] tiene una clase y un m\u00e9todo. Se requiere una clase o un m\u00e9todo, pero no ambos.
+
+50051=El transformador de escritura especificado para la v\u00eda de acceso xml [{1}] de la propiedad [{0}] no tiene ni una clase ni un m\u00e9todo. Se requiere una clase o un m\u00e9todo.
+
+50052=El transformador de escritura especificado para la propiedad [{0}] no tiene una v\u00eda de acceso xml establecida. Se requiere una v\u00eda de acceso xml.
+
+50053=No se ha encontrado el m\u00e9todo de transformaci\u00f3n [{0}] con los par\u00e1metros (), (AbstractSession) o (Session).
+
+50054=No se ha encontrado la clase de transformador [{0}]. Aseg\u00farese de que el nombre de clase sea correcto y que se haya establecido el ClassLoader correcto.
+
+50055=Error al crear DynamicJAXBContext: no se ha encontrado eclipselink.oxm.metadata-source (JAXBContextProperties.OXM_METADATA_SOURCE) en la correlaci\u00f3n de propiedades o la correlaci\u00f3n estaba vac\u00eda.
+
+50056=La propiedad [{0}] contiene una declaraci\u00f3n XmlJoinNode, pero la clase referenciada [{1}] no es aplicable para este tipo de relaci\u00f3n.
+
+50057=La propiedad [{1}] en la clase [{0}] hace referencia a una clase [{2}] que est\u00e1 marcada como transitoria, lo que no est\u00e1 permitido.
+
+50058=La propiedad [{1}] en la clase [{0}] tiene una declaraci\u00f3n XmlJoinNode, pero la clase de destino [{2}] no tiene ninguna propiedad XmlID o XmlKey.  Debe existir una propiedad XmlID/XmlKey con una XmlPath coincidente en la clase de destino de cada referencedXmlPath.
+
+50059=La propiedad [{1}] en la clase [{0}] tiene una declaraci\u00f3n XmlJoinNode con referencedXmlPath [{3}], pero no existe ninguna propiedad XmlID o XmlKey en la clase de destino [{2}] con la XmlPath [{3}].  Debe existir una propiedad XmlID/XmlKey con una XmlPath coincidente en la clase de destino de cada referencedXmlPath.
+
+50060=La propiedad [{1}] en la clase [{0}] tiene una declaraci\u00f3n XmlIDREF, pero la clase de destino [{2}] no es aplicable para este tipo de relaci\u00f3n.
+
+50061=Se ha producido una excepci\u00f3n al intentar cargar la XmlAdapterClass [{0}]. Las causas posibles son un nombre de clase de adaptador incorrecto o que se ha establecido el cargador incorrecto.
+
+50062=Se ha producido una excepci\u00f3n al intentar acceder a los m\u00e9todos declarados de XmlAdapterClass [{0}]. Las causas posibles son que el SecurityManager ha negado el acceso a los m\u00e9todos declarados en la clase de adaptador o que el SecuritManager ha denegado el acceso al paquete de la clase de adaptador.
+
+50063=Se ha producido una excepci\u00f3n al intentar crear una instancia de la XmlAdapterClass [{0}]. Una causa posible es que la clase de adaptador no tenga un constructor de argumento cero.
+
+50064=La XmlAdapterClass [{0}] no ampl\u00eda "javax.xml.bind.annotation.adapters.XmlAdapter" como se esperaba.  La clase de adaptador debe ampliar "javax.xml.bind.annotation.adapters.XmlAdapter" y declarar los m\u00e9todos "public abstract BoundType unmarshal(ValueType v)" y "public abstract ValueType marshal(BoundType v)".
+
+50065=Se ha especificado un XmlJavaTypeAdapter no v\u00e1lido [{0}] para el paquete [{1}]. Las causas posibles son un nombre de clase de adaptador incorrecto o que se ha establecido el cargador incorrecto.
+
+50066=Se ha especificado un XmlJavaTypeAdapter no v\u00e1lido [{0}] para la clase [{1}]. Las causas posibles son un nombre de clase de adaptador incorrecto o que se ha establecido el cargador incorrecto.
+
+50067=Se ha especificado un XmlJavaTypeAdapter no v\u00e1lido [{0}] para el campo/propiedad [{1}] en la clase [{2}]. Las causas posibles son un nombre de clase de adaptador incorrecto o que se ha establecido el cargador incorrecto.
+
+50068=Se ha encontrado un valor nula al procesar metadatos externo a trav\u00e9s de la correlaci\u00f3n de propiedades.  El manejador del archivo de metadatos XML debe ser no nulo y uno de los siguientes [java.io.File, java.io.InputStream, java.io.Reader, java.net.URL, javax.xml.stream.XMLEventReader, javax.xml.stream.XMLStreamReader, javax.xml.transform.Source, org.w3c.dom.Node o org.xml.sax.InputSource].
+
+50069=No se ha especificado un paquete para el archivo de metadatos XML proporcionado.  El paquete puede especificarse pasando Map<String, Object> (donde String = paquete, Object = manejador del archivo de metadatos XML) o estableciendo el atributo de nombre de paquete en el elemento de enlaces xml en el archivo de metadatos XML.
+
+50070=La propiedad [{0}] en la clase [{1}] tiene una declaraci\u00f3n XmlElements que contiene una cantidad desigual de XmlElement/XmlJoinNodes.  Es necesario que haya un XmlJoinNodes correspondiente para cada XmlElement contenido en la declaraci\u00f3n XmlElements.
+
+50071=La propiedad [{0}] en la clase [{1}] tiene una declaraci\u00f3n XmlPaths que contiene una XmlPath con un atributo en ra\u00edz de la v\u00eda de acceso [{2}].  En el caso de XmlPaths, los atributos deben estar anidados en la XmlPath, por ejemplo, [foo/{2}].
+
+50072=Se ha encontrado una propiedad duplicada denominada [{0}] en la clase [{1}]
+
+50073=La propiedad [{0}] en la clase [{1}] se ha especificado en varios archivos de enlaces externos. Cada propiedad s\u00f3lo puede especificarse en un archivo
+
+50074=Se ha producido una excepci\u00f3n al acceder al XMLNameTransformer [{0}]
+
+50075=Se ha producido una excepci\u00f3n al intentar transformar el nombre [{0}] con el XMLNameTransformer [{1}]
+
+50076=No se han podido cargar los metadatos externos desde la ubicaci\u00f3n proporcionada: [{0}]. Esta ubicaci\u00f3n debe ser un URL v\u00e1lido o una referencia de classpath.
+
+50077=No se pueden renovar los metadatos.  Los metadatos deben proporcionarse como un nodo XML para poder dar soporte a la renovaci\u00f3n.
+
+50078=No se pueden procesar archivos de enlaces externos (XJB).  Para utilizar archivos de enlaces externos, deben proporcionarse XSD y XJB como javax.xml.transform.Sources.
+
+50079=No se pueden procesar esquemas.  Si se utilizan importaciones de esquema, deben proporcionarse los XSD como un javax.xml.transform.Source.
+
+50080=XmlLocation s\u00f3lo est\u00e1 permitido en las propiedades de tipo org.xml.sax.Locator, pero [{0}] es de tipo [{1}].
+
+50081=Se ha producido una excepci\u00f3n durante la generaci\u00f3n de esquema.
+
+50082=Se ha intentado escribir un valor {0} sin una clave especificada.  Pruebe a establecer JSON_VALUE_WRAPPER en JAXBMarshaller
+
+50083=Se ha producido un error al intentar crear una instancia de la clase AccessorFactory {0}
+
+50084=La clase de AccessorFactory especificada: {0} no es v\u00e1lida. Debe implementar createFieldAccessor(Class, Field, boolean) y createPropertyAccessor(Class, Method, Method).
+
+50085=Se ha producido una excepci\u00f3n al invocar el m\u00e9todo createFieldAccessor en la AccessorFactory {0}
+
+50086=Se ha producido una excepci\u00f3n al invocar el m\u00e9todo createPropertyAccessor en la AccessorFactory {0}
+
+50087=Se ha producido una excepci\u00f3n al intentar invocar el m\u00e9todo {0} en el descriptor de acceso {1}
+
+50088=El valor enum {0} no es v\u00e1lido para una XmlEnum con la clase {1}
+
+50089=La interfaz Java {0} no puede correlacionarse mediante JAXB ya que tiene varias interfaces padre correlacionables. La herencia m\u00faltiple no est\u00e1 soportada
+
+50090=Valor no v\u00e1lido para la gr\u00e1fico de objetos: {0}. El valor debe ser una serie o una instancia de ObjectGraph.
+
+50091=El nombre del elemento {0} tiene m\u00e1s de una correlaci\u00f3n.
+
+50092=S\u00f3lo se permite una propiedad XmlElementRef de tipo {0} en la clase {1}.
+
+50093=La clase {0} no es un tipo correlacionado en JAXBContext.
+
+50094=La propiedad {0} especificada en la anotaci\u00f3n XmlVariableNode no se ha encontrado en la clase {1}.
+
+50095=La propiedad {0} de tipo {1} en la clase {2} no es v\u00e1lida para un XmlVariableNode.  S\u00f3lo se permiten propiedades de tipo String o QName.
+
+50096=La propiedad @XmlAttribute {0} en el tipo {1} debe hacer referencia a un tipo que se correlacione con texto en XML.  {2} no puede correlacionarse con un valor de texto.
+

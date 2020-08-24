@@ -10,11 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.krb5;
 
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -23,9 +26,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.AuthData;
+import com.ibm.websphere.simplicity.config.Kerberos;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jdbc.fat.krb5.containers.DB2KerberosContainer;
+import com.ibm.ws.jdbc.fat.krb5.containers.KerberosContainer;
 import com.ibm.ws.jdbc.fat.krb5.containers.KerberosPlatformRule;
 
 import componenttest.annotation.Server;
@@ -102,6 +108,39 @@ public class DB2KerberosTest extends FATServletClient {
             throw firstError;
     }
 
+    /**
+     * Generate a ticket cache using the 'kinit' operating system command.
+     * Dynamically configure the server to use REMOVE the keyTab configuration (since a bad ticket cache would fallback
+     * to the keyTab) and SET the krb5TicketCache on the authData to be the file we just generated with 'kinit'.
+     * Wait for a config update, and expect the getConnection test to work since the credential should be found in the ccache
+     */
+    @Test
+    @Mode(TestMode.FULL)
+    public void testTicketCache() throws Exception {
+        String ccPath = Paths.get(server.getServerRoot(), "security", "krb5TicketCache_" + KRB5_USER).toAbsolutePath().toString();
+        generateTicketCache(ccPath);
+
+        ServerConfiguration config = server.getServerConfiguration();
+        final String originalKeytab = config.getKerberos().keytab;
+        try {
+            Log.info(c, testName.getMethodName(), "Changing config to use 'krb5TicketCache' instead of 'keytab'");
+            AuthData krb5Auth = config.getAuthDataElements().getById("krb5Auth");
+            krb5Auth.krb5TicketCache = ccPath;
+            Kerberos kerberos = config.getKerberos();
+            kerberos.keytab = null;
+            server.updateServerConfiguration(config);
+            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+
+            FATServletClient.runTest(server, APP_NAME + "/DB2KerberosTestServlet", testName);
+        } finally {
+            Log.info(c, testName.getMethodName(), "Restoring original config");
+            config.getKerberos().keytab = originalKeytab;
+            config.getAuthDataElements().getById("krb5Auth").krb5TicketCache = null;
+            server.updateServerConfiguration(config);
+            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        }
+    }
+
     @Test
     @Mode(TestMode.FULL)
     public void testBasicPassword() throws Exception {
@@ -120,6 +159,34 @@ public class DB2KerberosTest extends FATServletClient {
             server.updateServerConfiguration(config);
             server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
         }
+    }
+
+    private static void generateTicketCache(String ccPath) throws Exception {
+        final String m = "generateTicketCache";
+        String keytabPath = Paths.get("publish", "servers", "com.ibm.ws.jdbc.fat.krb5", "security", "krb5.keytab").toAbsolutePath().toString();
+
+        ProcessBuilder pb = new ProcessBuilder("kinit", "-k", "-t", keytabPath, //
+                        "-c", ccPath, //
+                        KRB5_USER + "@" + KerberosContainer.KRB5_REALM);
+        pb.environment().put("KRB5_CONFIG", Paths.get(server.getServerRoot(), "security", "krb5.conf").toAbsolutePath().toString());
+        pb.redirectErrorStream(true);
+        Process p = pb.start();
+
+        boolean success = p.waitFor(2, TimeUnit.MINUTES);
+        String kinitResult = readInputStream(p.getInputStream());
+        Log.info(c, m, "Output from creating ccache with kinit:\n" + kinitResult);
+        if (success) {
+            Log.info(c, m, "Successfully generated a ccache at: " + ccPath);
+        } else {
+            Log.info(c, m, "FAILED to create ccache");
+            throw new Exception("Failed to create Kerberos ticket cache. Kinit output was: " + kinitResult);
+        }
+    }
+
+    private static String readInputStream(InputStream is) {
+        @SuppressWarnings("resource")
+        Scanner s = new Scanner(is).useDelimiter("\\A");
+        return s.hasNext() ? s.next() : "";
     }
 
 }

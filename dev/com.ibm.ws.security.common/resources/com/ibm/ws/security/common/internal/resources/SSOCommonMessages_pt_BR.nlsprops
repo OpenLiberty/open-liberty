@@ -24,7 +24,7 @@ SUBJECT_MAPPING_MISSING_ATTR=CWWKS6102E: A solicita\u00e7\u00e3o de autentica\u0
 SUBJECT_MAPPING_MISSING_ATTR.explanation=As informa\u00e7\u00f5es do usu\u00e1rio autenticado n\u00e3o cont\u00eam a reclama\u00e7\u00e3o especificada para identificar o atributo nomeado e o tempo de execu\u00e7\u00e3o n\u00e3o pode continuar com o processo de autentica\u00e7\u00e3o.
 SUBJECT_MAPPING_MISSING_ATTR.useraction=Execute um dos seguintes procedimentos. 1) Verifique se a configura\u00e7\u00e3o do cliente de login Social pode especificar uma reclama\u00e7\u00e3o diferente como o atributo 2) Verifique se o provedor emite as informa\u00e7\u00f5es do usu\u00e1rio autenticadas com a reclama\u00e7\u00e3o especificada.
 
-ERROR_AUTHENTICATE=CWWKS6103E: Um assunto de seguran\u00e7a n\u00e3o pode ser criado para o usu\u00e1rio {0}.
+ERROR_AUTHENTICATE=CWWKS6103E: Um assunto de seguran\u00e7a n\u00e3o pode ser criado para o usu\u00e1rio {0}. {1}
 ERROR_AUTHENTICATE.explanation=O usu\u00e1rio n\u00e3o p\u00f4de ser autenticado. 
 ERROR_AUTHENTICATE.useraction=Verifique se o usu\u00e1rio existe no registro e se a senha ou outras credenciais est\u00e3o corretas.
 

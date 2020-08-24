@@ -179,9 +179,9 @@ CWPKI2035E=CWPKI2035E: Slu\u017eba ACME nemohla ulo\u017eit podepsan\u00fd certi
 CWPKI2035E.explanation=Certifik\u00e1t byl \u00fasp\u011b\u0161n\u011b na\u010dten z certifika\u010dn\u00ed autority, ale nelze jej ulo\u017eit lok\u00e1ln\u011b.
 CWPKI2035E.useraction=Podrobnosti o selh\u00e1n\u00ed najdete v chybov\u00e9 zpr\u00e1v\u011b. Ov\u011b\u0159te, \u017ee um\u00edst\u011bn\u00ed souboru \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f je spr\u00e1vn\u00e9 a server m\u00e1 opr\u00e1vn\u011bn\u00ed k z\u00e1pisu souboru.
 
-CWPKI2036E=CWPKI2036E: Vypr\u0161el \u010dasov\u00fd limit slu\u017eby ACME p\u0159i \u010dek\u00e1n\u00ed na spu\u0161t\u011bn\u00ed aplikace webov\u00e9 autorizace. Aplikace je vy\u017eadov\u00e1na k dokon\u010den\u00ed \u017e\u00e1dosti o certifik\u00e1t pomoc\u00ed certifika\u010dn\u00ed autority ACME. Slu\u017eba \u010dekala {0} min.
-CWPKI2036E.explanation=Aplikace pou\u017eit\u00e1 k dokon\u010den\u00ed \u017e\u00e1dosti o certifik\u00e1t se nespustila v o\u010dek\u00e1van\u00e9m \u010dasov\u00e9m r\u00e1mci. Podepsan\u00fd certifik\u00e1t nelze po\u017eadovat.
-CWPKI2036E.useraction=Vyhledejte v protokolu p\u0159edchoz\u00ed zpr\u00e1vy nebo chyby.
+CWPKI2036W=CWPKI2036W: Vypr\u0161el \u010dasov\u00fd limit slu\u017eby ACME p\u0159i \u010dek\u00e1n\u00ed na spu\u0161t\u011bn\u00ed aplikace webov\u00e9 autorizace. Aplikace je vy\u017eadov\u00e1na k dokon\u010den\u00ed \u017e\u00e1dosti o certifik\u00e1t pomoc\u00ed certifika\u010dn\u00ed autority ACME. Byl proveden pokus o \u017e\u00e1dost o certifik\u00e1t. Slu\u017eba \u010dekala {0}.
+CWPKI2036W.explanation=Aplikace pou\u017eit\u00e1 k dokon\u010den\u00ed \u017e\u00e1dosti o certifik\u00e1t se nespustila v o\u010dek\u00e1van\u00e9m \u010dasov\u00e9m r\u00e1mci. Pokud se aplikace spust\u00ed, bude po\u017eadavek pokra\u010dovat. Jestli\u017ee se aplikace nespust\u00ed, \u017e\u00e1dost o certifik\u00e1t se nezda\u0159\u00ed.
+CWPKI2036W.useraction=Vyhledejte v protokolu p\u0159edchoz\u00ed zpr\u00e1vy nebo chyby. Zkontrolujte protokol pro zpr\u00e1vu CWWKT0016I, kter\u00e1 obsahuje webovou aplikaci s adresou URL 'acme-challenge' ozna\u010duj\u00edc\u00ed, \u017ee byla spu\u0161t\u011bna intern\u00ed aplikace.
 
 CWPKI2037E=CWPKI2037E: Dom\u00e9ny pro slu\u017ebu ACME m\u011bly hodnotu Null nebo byly pr\u00e1zdn\u00e9.
 CWPKI2037E.explanation=Dom\u00e9ny byly bu\u010f Null, nebo pr\u00e1zdn\u00e9, a nelze je pou\u017e\u00edt.
@@ -330,3 +330,7 @@ CWPKI2072W.useraction=Ujist\u011bte se, \u017ee adres\u00e1\u0159 historie ACME 
 CWPKI2073W=CWPKI2073W: Byl ur\u010den kontakt na \u00fa\u010det. Doporu\u010duje se nastavit tuto vlastnost v konfiguraci serveru. Pokud dojde ke ztr\u00e1t\u011b kl\u00ed\u010de nebo k ohro\u017een\u00ed bezpe\u010dnosti \u00fa\u010dtu, dojde ke ztr\u00e1t\u011b p\u0159\u00edstupu k \u00fa\u010dtu.
 CWPKI2073W.explanation=Hodnota pro vlastnost accountContact nebyla ur\u010dena v konfiguraci serveru.
 CWPKI2073W.useraction=Nastavte vlastnost accountContact v konfiguraci serveru.
+
+CWPKI2074W=CWPKI2074W: Vypr\u0161el \u010dasov\u00fd limit slu\u017eby ACME p\u0159i \u010dek\u00e1n\u00ed na sign\u00e1l, \u017ee je port HTTP otev\u0159en\u00fd. Dostupn\u00fd port HTTP je vy\u017eadov\u00e1n k dokon\u010den\u00ed \u017e\u00e1dosti o certifik\u00e1t pomoc\u00ed certifika\u010dn\u00ed autority ACME. Byl proveden pokus o \u017e\u00e1dost o certifik\u00e1t. Slu\u017eba \u010dekala {0}.
+CWPKI2074W.explanation=Slu\u017eba se pokus\u00ed o \u017e\u00e1dost o certifik\u00e1t. Je-li port HTTP otev\u0159en\u00fd, bude po\u017eadavek pokra\u010dovat. Jestli\u017ee port HTTP nen\u00ed otev\u0159\u00edt, \u017e\u00e1dost o certifik\u00e1t se nezda\u0159\u00ed.
+CWPKI2074W.useraction=Vyhledejte v protokolu p\u0159edchoz\u00ed zpr\u00e1vy nebo chyby. P\u0159ezkoumejte protokol pro zpr\u00e1vy CWWKO0219I, kter\u00e9 uv\u00e1d\u00ed dostupn\u00e9 koncov\u00e9 body a porty. 

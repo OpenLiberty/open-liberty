@@ -11,7 +11,6 @@
 
 package com.ibm.ws.fat.grpc;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
@@ -33,7 +32,6 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -60,11 +58,9 @@ public class HelloWorldTest extends FATServletClient {
         // and com.ibm.ws.fat.grpc.tls to a new app HelloWorldClient.war.
         ShrinkHelper.defaultDropinApp(helloWorldServer, "HelloWorldClient.war",
                                       "com.ibm.ws.grpc.fat.helloworld.client",
-                                      "io.grpc.examples.helloworld",
-                                      "com.ibm.ws.fat.grpc.tls");
+                                      "io.grpc.examples.helloworld");
 
         helloWorldServer.startServer(HelloWorldTest.class.getSimpleName() + ".log");
-        assertNotNull("CWWKO0219I.*ssl not recieved", helloWorldServer.waitForStringInLog("CWWKO0219I.*ssl"));
     }
 
     @AfterClass
@@ -116,68 +112,6 @@ public class HelloWorldTest extends FATServletClient {
             // Log the page for debugging if necessary in the future.
             Log.info(c, name.getMethodName(), page.asText());
             assertTrue("the gRPC request did not complete correctly", page.asText().contains("us3r1"));
-        }
-    }
-
-    /**
-     * testHelloWorld() with TLS enabled.
-     * This test will only be performed if the native JDK 9+ ALPN provider is available.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testHelloWorldWithTls() throws Exception {
-
-        if (JavaInfo.forServer(helloWorldServer).majorVersion() < 9) {
-            Log.info(c, name.getMethodName(), "IBM JDK8 ALPN is not yet supported by the netty grpc client;"
-                                              + " this test will be skipped until that support is added");
-            return;
-        }
-
-        String contextRoot = "HelloWorldClient";
-        try (WebClient webClient = new WebClient()) {
-
-            // Construct the URL for the test
-            URL url = GrpcTestUtils.createHttpUrl(helloWorldServer, contextRoot, "grpcClient");
-
-            HtmlPage page = (HtmlPage) webClient.getPage(url);
-
-            // Log the page for debugging if necessary in the future.
-            Log.info(c, name.getMethodName(), page.asText());
-            Log.info(c, name.getMethodName(), page.asXml());
-
-            assertTrue("the servlet was not loaded correctly",
-                       page.asText().contains("gRPC helloworld client example"));
-
-            HtmlForm form = page.getFormByName("form1");
-
-            // set a name, which we'll expect the RPC to return
-            HtmlTextInput inputText = (HtmlTextInput) form.getInputByName("user");
-            inputText.setValueAttribute("us3r2");
-
-            // set the port
-            HtmlTextInput inputPort = (HtmlTextInput) form.getInputByName("port");
-            inputPort.setValueAttribute(String.valueOf(helloWorldServer.getHttpDefaultSecurePort()));
-
-            // set the hostname
-            HtmlTextInput inputHost = (HtmlTextInput) form.getInputByName("address");
-            inputHost.setValueAttribute(helloWorldServer.getHostname());
-
-            // enable TLS
-            HtmlTextInput inputTls = (HtmlTextInput) form.getInputByName("useTls");
-            inputTls.setValueAttribute("true");
-
-            String serverRoot = helloWorldServer.getServerRoot();
-            HtmlTextInput serverPath = (HtmlTextInput) form.getInputByName("serverPath");
-            serverPath.setValueAttribute(serverRoot);
-
-            // submit, and execute the RPC
-            HtmlSubmitInput submitButton = form.getInputByName("submit");
-            page = submitButton.click();
-
-            // Log the page for debugging if necessary in the future.
-            Log.info(c, name.getMethodName(), page.asText());
-            assertTrue("the gRPC request did not complete correctly", page.asText().contains("us3r2"));
         }
     }
 }

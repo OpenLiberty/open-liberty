@@ -1,0 +1,67 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/PersistenceUnitLoadingExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+30001=Se ha generado una excepci\u00f3n al intentar cargar una unidad de persistencia para el directorio: {0}.
+
+30002=Se ha generado una excepci\u00f3n al intentar cargar una unidad de persistencia para el archivo jar: {0}.
+
+30003=Se ha generado una excepci\u00f3n al procesar una unidad de persistencia en el URL: {0}.
+
+30004=Se ha generado una excepci\u00f3n al procesar persistence.xml desde el URL: {0}.
+
+30005=Se ha generado una excepci\u00f3n al buscar los archivados de persistencia con el ClassLoader: {0}
+
+30006=Se ha generado una excepci\u00f3n al buscar entidades en el URL: {0}.
+
+30007=Se ha generado una excepci\u00f3n al cargar la clase: {0} para comprobar si implementa @Entity, @Embeddable o @MappedSuperclass.
+
+30008=La v\u00eda de acceso de archivo devuelta estaba vac\u00eda o era nula
+
+30009=Se ha generado una excepci\u00f3n al intentar cargar una unidad de persistencia en el url: {0}.
+
+30010=Se ha generado una excepci\u00f3n al cargar el archivo XML ORM: {0}
+
+30011=EclipseLink no ha podido obtener las clases desde el URL: {0}.  EclipseLink ha intentado leer este URL como un jarFile y como un directorio y no ha podido procesarlo.
+
+30012=EclipseLink no ha podido obtener la informaci\u00f3n de la unidad de persistencia desde el URL: {0}.
+
+30013=Se ha generado una excepci\u00f3n al intentar crear un nombre de unidad de persistencia para la unidad de persistencia [{1}] desde el URL: {0}.
+
+30014=La unidad de persistencia especifica la modalidad de validaci\u00f3n como "CALLBACK", pero no se ha podido inicializar una ValidatorFactory de validaci\u00f3n de beans. Consulte la excepci\u00f3n anidada para obtener detalles. Aseg\u00farese de que la API de validaci\u00f3n de beans y el proveedor de validaci\u00f3n de beans est\u00e9n disponibles en la classpath.
+
+30015=Se ha generado una excepci\u00f3n al cargar la clase de grupo de validaci\u00f3n: {0}.
+
+30016=El nombre de sesi\u00f3n {0} no puede utilizarse en la unidad de persistencia {1} porque ya se est\u00e1 utilizando en la unidad de persistencia {2}
+
+30017=La unidad de persistencia {0} se ha definido en el URL: {1} y el URL: {2}. No se pueden tener varias unidades de persistencia con el mismo nombre cargadas por el mismo cargador de clases.
+
+30018=Se ha producido una excepci\u00f3n: {1} al intentar crear una instancia de la ArchiveFactory especificada por el usuario: {0}.
+
+30019=Est\u00e1 invocando refreshMetadata en una EntityManagerFactory para la unidad de persistencia {0}.  Los metadatos no pueden renovarse porque esta EntityManagerFactory se ha creado a partir de un objeto de sesi\u00f3n, en lugar de derivarse de una unidad de persistencia.
+

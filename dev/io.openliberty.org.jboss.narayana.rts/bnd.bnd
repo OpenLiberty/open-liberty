@@ -13,20 +13,12 @@
 
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
-
 Bundle-SymbolicName: io.openliberty.org.jboss.narayana.rts; singleton:=true
                      
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
-
 # We will whittle this down once it is working
 Export-Package: \
   io.narayana.lra.*; version=5.10.5, \
   io.narayana.lra; version=5.10.5
-
-# TODO what should this be?
-#WS-TraceGroup: REACTIVESTREAMS
 
 instrument.disabled: true
 

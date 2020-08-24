@@ -1,0 +1,48 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/ConcurrencyExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+2001=L''attesa \u00e8 stata interrotta. {0} Messaggio: [{1}]
+
+2002=Errore di attesa su ServerSession.
+
+2003=Errore di attesa su ClientSession.
+
+2004=\u00c8 stato tentato un segnale prima di wait() su ConcurrencyManager. Ci\u00f2 generalmente indica che \u00e8 stato effettuato un tentativo di eseguire il {0}commit o il rollback di una transazione prima del suo avvio oppure il tentativo di eseguire il rollback di una transazione due volte.
+
+2005=Errore di attesa durante la sequenza del gestore connessione per DatabaseSession.
+
+2006=Tentativo di acquisire valori di sequenza attraverso una singola connessione ({0}) simultaneamente in pi\u00f9 thread
+
+2007=Superato numero massimo di tentativi di blocco dell''oggetto: {0}.  Impossibile clonare l''oggetto.
+
+2008=Superato numero massimo di tentativi di blocco dell''oggetto: {0}.  Impossibile unire la transazione.
+
+2009=Superato numero massimo di tentativi di blocco dell''oggetto.  Impossibile creare l''oggetto. Il thread: {0} ha un blocco sull''oggetto ma il thread: {1} sta creando l''oggetto.
+2010=Il blocco \u00e8 ha gi\u00e0 subito la transizione a uno stato di blocco rinviato.  Un secondo tentativo di effettuare la transizione del blocco \u00e8 stato richiesto dal thread: {0} durante l''unione.
+

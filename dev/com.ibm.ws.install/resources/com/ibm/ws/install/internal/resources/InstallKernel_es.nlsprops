@@ -870,6 +870,10 @@ ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY=CWWKF1410E: La caracter\u00edstica
 ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.explanation=La caracter\u00edstica no es aplicable a la edici\u00f3n del producto instalado.
 ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.useraction=Instale las caracter\u00edsticas soportadas por la edici\u00f3n del producto.
 
+ERROR_BETA_EDITION_NOT_SUPPORTED=CWWKF1411E: La instalaci\u00f3n o actualizaci\u00f3n de caracter\u00edsticas no se soporta para los releases beta.
+ERROR_BETA_EDITION_NOT_SUPPORTED.explanation=La instalaci\u00f3n o actualizaci\u00f3n de caracter\u00edsticas no se soporta para el producto instalado.
+ERROR_BETA_EDITION_NOT_SUPPORTED.useraction=No se requiere ninguna acci\u00f3n.
+
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: La caracter\u00edstica se ha descargado satisfactoriamente.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=La caracter\u00edstica se ha descargado.
 TOOL_DOWNLOAD_FEATURE_OK.useraction=No se requiere ninguna acci\u00f3n.

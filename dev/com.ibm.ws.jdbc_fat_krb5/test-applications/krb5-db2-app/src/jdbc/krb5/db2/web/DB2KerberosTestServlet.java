@@ -36,6 +36,8 @@ import org.junit.Test;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.app.FATServlet;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/DB2KerberosTestServlet")
@@ -92,6 +94,12 @@ public class DB2KerberosTestServlet extends FATServlet {
      */
     @Test
     public void testKerberosBasicConnection() throws Exception {
+        try (Connection con = krb5DataSource.getConnection()) {
+            con.createStatement().execute("SELECT 1 FROM SYSIBM.SYSDUMMY1");
+        }
+    }
+
+    public void testTicketCache() throws Exception {
         try (Connection con = krb5DataSource.getConnection()) {
             con.createStatement().execute("SELECT 1 FROM SYSIBM.SYSDUMMY1");
         }
@@ -188,6 +196,7 @@ public class DB2KerberosTestServlet extends FATServlet {
      * The recoveryAuthData should be used for recovery.
      */
     @Test
+    @Mode(TestMode.FULL)
     @ExpectedFFDC({ "javax.transaction.xa.XAException", "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException" })
     public void testXARecovery() throws Throwable {
         initTable(xaRecoveryDs);

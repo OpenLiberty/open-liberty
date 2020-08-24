@@ -72,6 +72,10 @@ public class ProducerRestEndpoint extends ProducerGrpcServiceClientImpl {
         return Integer.valueOf(port);
     }
 
+    private String getHost() {
+        return getSysProp("testing.StoreServer.hostname");
+    }
+
     @Context
     HttpHeaders httpHeaders;
 
@@ -102,7 +106,7 @@ public class ProducerRestEndpoint extends ProducerGrpcServiceClientImpl {
 
         if (authHeader == null) {
             // create grpc client
-            startService_BlockingStub("localhost", getPort());
+            startService_BlockingStub(getHost(), getPort());
         } else {
             // secure
         }
@@ -148,7 +152,7 @@ public class ProducerRestEndpoint extends ProducerGrpcServiceClientImpl {
 
         log.info("createMultiApps: request to create apps has been received by ProducerRestEndpoint " + reqPOJO);
         // create grpc client
-        startService_AsyncStub("localhost", getPort());
+        startService_AsyncStub(getHost(), getPort());
         HandleExceptionsAsyncgRPCService handleException = new HandleExceptionsAsyncgRPCService();
         try {
             ProducerRestResponse response = createMultiAppsinStore(reqPOJO, handleException);
@@ -198,7 +202,7 @@ public class ProducerRestEndpoint extends ProducerGrpcServiceClientImpl {
             log.info("deleteApp: request to delete app has been received by ProducerRestEndpoint " + name);
         }
         // create grpc client and send the request
-        if (startService_BlockingStub("localhost", getPort())) {
+        if (startService_BlockingStub(getHost(), getPort())) {
             try {
                 String appStruct = deleteSingleAppinStore(name);
                 log.info("deleteApp, request to delete app has been completed by ProducerRestEndpoint, result =  "
@@ -231,7 +235,7 @@ public class ProducerRestEndpoint extends ProducerGrpcServiceClientImpl {
         log.info("deleteAllApps, prodcuer ,request received to remove all apps");
 
         // create grpc client and send the request
-        if (startService_BlockingStub("localhost", getPort())) {
+        if (startService_BlockingStub(getHost(), getPort())) {
 
             DeleteAllRestResponse response = deleteMultiAppsinStore();
             stopService();
@@ -261,7 +265,7 @@ public class ProducerRestEndpoint extends ProducerGrpcServiceClientImpl {
 
         if (authHeader == null) {
             // create grpc client
-            startService_AsyncStub("localhost", getPort());
+            startService_AsyncStub(getHost(), getPort());
         } else {
             // secure
         }
@@ -296,7 +300,7 @@ public class ProducerRestEndpoint extends ProducerGrpcServiceClientImpl {
 
         if (authHeader == null) {
             // create grpc client
-            startService_AsyncStub("localhost", getPort());
+            startService_AsyncStub(getHost(), getPort());
         } else {
             // secure
         }
@@ -327,7 +331,7 @@ public class ProducerRestEndpoint extends ProducerGrpcServiceClientImpl {
         String authHeader = httpHeaders.getHeaderString("Authorization");
         if (authHeader == null) {
             // create grpc client
-            startService_AsyncStub("localhost", getPort());
+            startService_AsyncStub(getHost(), getPort());
         } else {
             // secure
         }

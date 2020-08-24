@@ -75,6 +75,11 @@ kafka.create.incoming.retry.CWMRX1009W=CWMRX1009W: Impossibile creare un connett
 kafka.create.incoming.retry.CWMRX1009W.explanation=Si \u00e8 verificato un errore quando il connettore Kafka \u00e8 stato configurato per un canale di messaggistica reattivo in entrata. Questo potrebbe essere causato da un problema con la configurazione del connettore o da un problema nel risolvere il nome host del broker Kafka.
 kafka.create.incoming.retry.CWMRX1009W.useraction=Esaminare il messaggio di errore, il file messages.log sul server e i log FFDC per identificare se il problema era transitorio ed \u00e8 stato risolto riprovando la configurazione del connettore.
 
+# {0} = channel name, {1} = error message
+kafka.create.outgoing.retry.CWMRX1010W=CWMRX1010W: Impossibile creare un connettore in uscita Kafka per il canale {0} ma questa operazione viene ritentata. L'errore \u00e8 {1}
+kafka.create.outgoing.retry.CWMRX1010W.explanation=Si \u00e8 verificato un errore quando il connettore Kafka \u00e8 stato configurato per un canale di messaggistica reattivo in uscita. Questo potrebbe essere causato da un problema con la configurazione del connettore o da un problema nel risolvere il nome host del broker Kafka.
+kafka.create.outgoing.retry.CWMRX1010W.useraction=Esaminare il messaggio di errore, il file messages.log sul server e i log FFDC per identificare se il problema era transitorio ed \u00e8 stato risolto riprovando la configurazione del connettore.
+
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message

@@ -56,8 +56,8 @@ public class LraFilterComponent implements JaxRsProviderRegister {
             Tr.event(tc, "LraFilterComponent activated", properties);
         }
         String coordString = "http://" + config.getHost() + ":" + config.getPort() + "/" + config.getPath();
-        if (TraceComponent.isAnyTracingEnabled() && tc.isInfoEnabled()) {
-            Tr.info(tc, "Attempting to contact coordinator at " + coordString);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(tc, "Attempting to contact coordinator at " + coordString);
         }
         try {
             URI coord = new URI(coordString);

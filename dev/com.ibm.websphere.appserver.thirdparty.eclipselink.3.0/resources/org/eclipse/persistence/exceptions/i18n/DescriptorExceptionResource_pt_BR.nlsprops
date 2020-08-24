@@ -1,0 +1,441 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DescriptorExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+1=O atributo [{0}] n\u00e3o est\u00e1 declarado como tipo ValueHolderInterface, mas seu mapeamento usa via indireta.
+
+10=Este mapeamento n\u00e3o tem um nome de campo configurado.
+
+100=Um m\u00e9todo acionou uma exce\u00e7\u00e3o.
+
+101=O m\u00e9todo subjacente acionou uma exce\u00e7\u00e3o.
+
+102=O m\u00e9todo [{0}] acionou uma exce\u00e7\u00e3o.
+
+103=Problema ao extrair classe da linha [{0}], usando o m\u00e9todo est\u00e1tico [{1}], com o par\u00e2metro (DatabaseRow).  Uma exce\u00e7\u00e3o foi acionada.
+
+104=Problema ao criar nova inst\u00e2ncia usando o m\u00e9todo cria\u00e7\u00e3o [{0}].  O m\u00e9todo de cria\u00e7\u00e3o acionou uma exce\u00e7\u00e3o.
+
+105=O m\u00e9todo de retorno de chamada do descritor subjacente [{0}], com o par\u00e2metro (Sess\u00e3o), acionou uma exce\u00e7\u00e3o.
+
+106=O m\u00e9todo [{0}] no objeto est\u00e1 lan\u00e7ando uma exce\u00e7\u00e3o. {2}Argumento: [{1}]
+
+108=N\u00e3o \u00e9 poss\u00edvel localizar valor no mapeamento do indicador de classe no descritor pai [{0}].
+
+109=Este descritor n\u00e3o deve ter um campo de bloqueio de grava\u00e7\u00e3o definido porque \u00e9 um descritor filho. Ele herda o campo de bloqueio de grava\u00e7\u00e3o de seu descritor pai.
+
+11=As informa\u00e7\u00f5es de chave estrangeira para este mapeamento est\u00e3o definidas incorretamente.
+
+110=O descritor est\u00e1 ausente para a classe [{0}].
+
+111=V\u00e1rios nomes de campo de chave prim\u00e1ria da tabela devem ser completos.
+
+112=Somente uma tabela pode ser inclu\u00edda usando setTableName(String). Use addTableName(String) para incluir v\u00e1rias tabelas em um descritor.
+
+113=O construtor estava inacess\u00edvel.
+
+114=Problema ao criar nova inst\u00e2ncia usando o m\u00e9todo cria\u00e7\u00e3o [{0}].  O m\u00e9todo de cria\u00e7\u00e3o n\u00e3o est\u00e1 acess\u00edvel.
+
+115=Nenhum valor de convers\u00e3o fornecido para o atributo [{0}].
+
+116=Nenhum valor de convers\u00e3o fornecido para o valor [{0}] no campo [{1}].
+
+118=O objeto [{0}] n\u00e3o deve ter mapeamentos somente leitura para seus campos de bloqueio de grava\u00e7\u00e3o.
+
+119=Os mapeamentos [{0}] do objeto para seus campos de bloqueio de grava\u00e7\u00e3o devem ser somente leitura.
+
+12=Os descritores devem usar um mapa de identidade para usar a op\u00e7\u00e3o de verifica\u00e7\u00e3o de exist\u00eancia "Verificar cache".
+
+120=A chave de consulta [{0}] est\u00e1 definida no descritor pai [{1}], mas n\u00e3o no descritor filho [{2}].
+
+122=setExistenceCheck() com argumento [{0}] n\u00e3o \u00e9 entendido.
+
+125=O mapeamento para o atributo [{0}] usa via indireta; portanto, deve ser inicializado para um novo ValueHolder.  Atualmente, o valor \u00e9: [{1}].
+
+126=Nenhuma subclasse corresponde a esta classe [{0}] para este mapeamento agregado com heran\u00e7a.
+
+127=O m\u00e9todo get para o atributo [{0}] n\u00e3o retorna um ValueHolderInterface, mas o mapeamento usa via indireta.
+
+128=O m\u00e9todo get para o atributo [{0}] retorna um ValueHolderInterface, mas o mapeamento n\u00e3o usa via indireta.
+
+129=O m\u00e9todo de configura\u00e7\u00e3o para o atributo [{0}] n\u00e3o utiliza um ValueHolderInterface como seu par\u00e2metro, mas o mapeamento usa via indireta.
+
+13=A vari\u00e1vel de inst\u00e2ncia [{0}] no objeto [{1}] est\u00e1 inacess\u00edvel.
+
+130=O m\u00e9todo de configura\u00e7\u00e3o para o atributo [{0}] utiliza um ValueHolderInterface como seu par\u00e2metro, mas o mapeamento n\u00e3o usa via indireta.
+
+131=O m\u00e9todo get para o atributo [{0}] deve retornar um Vetor (ou um tipo que implemente Mapa ou Cole\u00e7\u00e3o, se estiver usando Java 2).
+
+133=O m\u00e9todo de configura\u00e7\u00e3o para o atributo [{0}] deve utilizar um Vetor como seu par\u00e2metro (ou um tipo que implemente Mapa ou Cole\u00e7\u00e3o, se estiver usando Java 2).
+
+135=O relacionamento de chave estrangeira de v\u00e1rias tabelas refere-se a uma tabela desconhecida [{0}].
+
+138=O atributo [{0}] \u00e9 do tipo [{1}], mas o mapeamento usa via indireta transparente (carregamento lento), requerendo que ele seja uma superclasse de [{2}].
+
+139=O m\u00e9todo get para o atributo [{0}] retorna [{1}], mas o mapeamento usa via indireta transparente (carregamento lento), requerendo que ele seja uma superclasse de [{2}].
+
+14=Problema ao clonar o objeto [{0}].  O m\u00e9todo de clone [{1}] n\u00e3o est\u00e1 acess\u00edvel.
+
+140=O m\u00e9todo de configura\u00e7\u00e3o para o atributo [{0}] utiliza [{1}], mas o mapeamento usa via indireta transparente (carregamento lento), requerendo que ele seja uma superclasse de [{2}].
+
+141=O campo [{0}] n\u00e3o est\u00e1 presente na tabela [{1}] no banco de dados.
+
+142=A tabela [{0}] n\u00e3o est\u00e1 presente no banco de dados.
+
+143=O vetor especificado, [{0}], da ordem de inser\u00e7\u00e3o de v\u00e1rias tabelas tem mais ou menos tabelas do que o especificado no descritor. {2}Todas as tabelas [{1}] devem ser inclu\u00eddas no Vetor de ordem de inser\u00e7\u00e3o.
+
+144=A via indireta transparente pode ser usada somente com CollectionMappings.
+
+145=A classe de cont\u00eainer [{0}] indireta deve implementar a construtor [{1}] com o par\u00e2metro (ValueHolderInterface).
+
+146=A classe de cont\u00eainer [{0}] indireta n\u00e3o p\u00f4de ser instanciada usando o construtor {1}(ValueHolderInterface).
+
+147=A pol\u00edtica de cont\u00eainer [{0}] deve ser usada somente no JDK 1.1.x.  Ela foi instanciada para [{1}].
+
+148=A pol\u00edtica de cont\u00eainer [{0}] n\u00e3o \u00e9 compat\u00edvel com via indireta transparente.
+
+149=Objetos NoIndirectionPolicy n\u00e3o devem receber esta mensagem.
+
+15=Esta classe n\u00e3o define um construtor padr\u00e3o, que o EclipseLink requer.
+
+150=O mapeamento para o atributo [{0}] usa via indireta transparente, de modo que o atributo [{0}] deve ser inicializado para um cont\u00eainer apropriado.  Atualmente, o valor \u00e9 [{1}]. {2} \u2013 Deve ser a inst\u00e2ncia de um implementador de Cole\u00e7\u00e3o ou Mapa.
+
+151=A opera\u00e7\u00e3o [{0}] \u00e9 inv\u00e1lida para este mapeamento.
+
+152=A opera\u00e7\u00e3o [{1}] \u00e9 inv\u00e1lida para esta pol\u00edtica de via indireta [{0}].
+
+153=O descritor de refer\u00eancia para [{0}] deve ser configurado para ser um descritor de Coleta agregada.
+
+154=A classe de cont\u00eainer de via indireta [{0}] n\u00e3o implementa IndirectContainer.
+
+155=Este mapeamento n\u00e3o inclui um campo de chave estrangeira vinculado ao campo de chave prim\u00e1ria [{0}].
+
+156=O nome da estrutura n\u00e3o est\u00e1 configurado para este mapeamento.
+
+157=Descritores normais n\u00e3o suportam extens\u00f5es n\u00e3o relacionais.
+
+158=A classe-pai deste descritor foi configurada para si mesma.
+
+159=A via indireta de proxy est\u00e1 dispon\u00edvel somente em m\u00e1quinas virtuais compat\u00edveis com JDK 1.3 ou superior.
+
+16=O m\u00e9todo de retorno de chamada do descritor [{0}], com o par\u00e2metro (DescriptorEvent), est\u00e1 inacess\u00edvel.
+
+160=O atributo [{0}] da classe [{1}] foi digitado como [{2}], que n\u00e3o foi especificado na lista de interfaces fornecidas para o m\u00e9todo useProxyIndirection(). {4}As interfaces v\u00e1lidas s\u00e3o: [{3}].
+
+161=O m\u00e9todo [{0}] na classe [{1}] retorna um valor do tipo [{2}], que n\u00e3o foi especificado na lista de interfaces fornecidas para o m\u00e9todo useProxyIndirection(). {4}As interfaces v\u00e1lidas s\u00e3o: [{3}].
+
+162=O m\u00e9todo [{0}] na classe [{1}] utiliza um par\u00e2metro do tipo [{2}], que n\u00e3o foi especificado na lista de interfaces fornecidas para o m\u00e9todo useProxyIndirection().{4}As interfaces v\u00e1lidas s\u00e3o: [{3}].
+
+163=A classe de atributos deste mapeamento n\u00e3o corresponde \u00e0 classe de cole\u00e7\u00e3o.  [{1}] n\u00e3o pode ser designada a [{0}].
+
+164=O m\u00e9todo de aditamento [{1}], na classe de aditamento [{0}], \u00e9 inv\u00e1lido, n\u00e3o \u00e9 p\u00fablico ou n\u00e3o pode ser localizado. {2}Os m\u00e9todos de aditamento do descritor devem ser declarados "public static void" com (ClassDescriptor) como o \u00fanico par\u00e2metro.
+
+165=O m\u00e9todo de aditamento deste descritor [{1}] na classe de aditamento [{0}] acionou uma exce\u00e7\u00e3o.
+
+166=N\u00e3o h\u00e1 mapeamento para o atributo [{0}].
+
+167=Um construtor v\u00e1lido n\u00e3o foi localizado para a classe de cont\u00eainer de via indireta [{0}].
+
+168=Problema ao criar nova inst\u00e2ncia usando o construtor padr\u00e3o.  O construtor padr\u00e3o acionou uma exce\u00e7\u00e3o.
+
+169=Problema ao criar nova inst\u00e2ncia de factory usando o construtor padr\u00e3o.  O construtor padr\u00e3o acionou uma exce\u00e7\u00e3o.
+
+17=Tentando acessar o m\u00e9todo [{0}] no objeto [{1}].  O m\u00e9todo subjacente est\u00e1 inacess\u00edvel.
+
+170=Problema (acesso ilegal) ao criar nova inst\u00e2ncia de factory usando o construtor padr\u00e3o.
+
+171=A classe de factory n\u00e3o define um construtor padr\u00e3o p\u00fablico ou o construtor levantou uma exce\u00e7\u00e3o.
+
+172=Construtor de factory n\u00e3o localizado.
+
+173=O construtor de factory estava inacess\u00edvel.
+
+174=Problema ao criar factory.  O m\u00e9todo de cria\u00e7\u00e3o [{0}] n\u00e3o est\u00e1 acess\u00edvel.
+
+175=Problema ao criar factory usando o m\u00e9todo cria\u00e7\u00e3o [{0}].  O m\u00e9todo de cria\u00e7\u00e3o acionou uma exce\u00e7\u00e3o.
+
+176=Problema ao criar factory usando o m\u00e9todo cria\u00e7\u00e3o [{0}].  O m\u00e9todo de cria\u00e7\u00e3o n\u00e3o est\u00e1 acess\u00edvel.
+
+177=O mapeamento est\u00e1 ausente para o atributo: [{0}].
+
+178=N\u00e3o \u00e9 poss\u00edvel localizar o mapeamento do atributo [{0}] no bean de entidade [{1}]. O atributo deve ser mapeado.
+
+179=O atributo [{0}] usa manuten\u00e7\u00e3o de relacionamento bidirecional, mas tem ContainerPolicy [{1}] que n\u00e3o o suporta.  O atributo deve ser mapeado com um tipo de cole\u00e7\u00e3o diferente.
+
+18=Acesso de m\u00e9todo ilegal em um mapeamento de Transforma\u00e7\u00e3o usando um ValueHolder.
+
+181=A classe AttributeTransformer [{0}] n\u00e3o pode ser localizada.
+
+182=A classe FieldTransformer [{0}] n\u00e3o pode ser localizada.
+
+183=A classe [{0}] n\u00e3o pode ser usada como um AttributeTransformer.
+
+184=A classe [{0}] n\u00e3o pode ser usada como um FieldTransformer.
+
+185=ReturningPolicy cont\u00e9m o campo [{0}] com dois tipos diferentes: [{1}] e [{2}].
+
+186=ReturningPolicy cont\u00e9m o campo [{0}] inclu\u00eddo duas vezes: usando addInsertField e addInsertFieldReturnOnly.
+
+187=ReturningPolicy cont\u00e9m o campo [{0}] com o tipo [{1}], mas o mesmo campo no descritor tem o tipo [{2}].
+
+188=ReturningPolicy cont\u00e9m o campo n\u00e3o mapeado [{0}] que requer o tipo.
+
+189=ReturningPolicy cont\u00e9m o campo mapeado [{0}] que requer o tipo.
+
+19=Acesso ilegal ao chamar o m\u00e9todo de atributo em um mapeamento de transforma\u00e7\u00e3o.  O m\u00e9todo subjacente est\u00e1 inacess\u00edvel.
+
+190=ReturningPolicy cont\u00e9m o campo [{0}] mapeado com o mapeamento [{1}] que n\u00e3o \u00e9 suportado.
+
+191=ReturningPolicy cont\u00e9m o campo [{0}] que n\u00e3o \u00e9 suportado: \u00e9 um campo de sequ\u00eancia, indicador de tipo de classe ou usado para bloqueio.
+
+192=ReturningPolicy cont\u00e9m o campo [{0}], mas [{1}] customizado n\u00e3o o gera na sa\u00edda.
+
+193=N\u00e3o h\u00e1 [{0}] customizado configurado, mas ReturningPolicy cont\u00e9m campo(s) a ser retornado(s) e [{1}] n\u00e3o suporta gera\u00e7\u00e3o de chamada com retorno.
+
+194=O m\u00e9todo de extra\u00e7\u00e3o de classe [{0}] deve ser um m\u00e9todo est\u00e1tico na classe do descritor.
+
+195=A classe compartilhada {1} n\u00e3o deve fazer refer\u00eancia \u00e0 classe isolada {0}.
+
+196=UpdateAllFields n\u00e3o foi configurado ou foi configurado como false.  Ao usar CMPPolicy.setForceUpdate(true), deve-se tamb\u00e9m chamar CMPPolicy.setUpdateAllFields(true)
+
+197=O mapeamento [{0}] n\u00e3o \u00e9 o tipo apropriado para esse descritor
+
+198=Para usar ObjectChangeTrackingPolicy ou AttributeChangeTrackingPolicy, {0} deve implementar a interface ChangeTracker.
+
+199=Para usar o grupo de buscas, a classe de dom\u00ednio ({0}) deve implementar a interface FetchGroupTracker.
+
+2=O atributo [{0}] \u00e9 declarado como tipo ValueHolderInterface, mas seu mapeamento n\u00e3o usa via indireta.
+
+20=O m\u00e9todo [{0}] est\u00e1 inacess\u00edvel.
+
+200=Tentativa de registrar um objeto com via indireta inativa como novo objeto.  Possivelmente, o objeto foi exclu\u00eddo ou removido do cache durante uma mesclagem de um clone serializado.  Esta \u00e9 uma viola\u00e7\u00e3o de simultaneidade; considere uma estrat\u00e9gia de bloqueio.
+
+201=Foi tentada a constru\u00e7\u00e3o de um objeto no cache de sess\u00e3o, mas o descritor est\u00e1 marcado como isolado na unidade de trabalho, de modo que nunca deve ser acessado fora de uma unidade de trabalho.
+
+202=Ocorreu um erro interno ao acessar o objeto de chave prim\u00e1ria [{0}].
+
+203=Ocorreu um erro interno ao acessar o m\u00e9todo [{1}] na classe [{0}].
+
+204=A ordem de tabela de inser\u00e7\u00e3o contradiz as chaves estrangeiras de diversas tabelas - de acordo com a \u00faltima tabela [{0}] deve ser inserido antes da tabela [{1}].
+
+205=A ordem de tabela de inser\u00e7\u00e3o tem depend\u00eancia c\u00edclica entre as tabelas [{0}] e [{1}].
+
+206=A ordem de tabela de inser\u00e7\u00e3o tem depend\u00eancia c\u00edclica entre tr\u00eas ou mais tabelas.
+
+207=A ordem de tabela de inser\u00e7\u00e3o est\u00e1 errada: a tabela [{0}] mapeada para pai \u00e9 especificada para ser inserida ap\u00f3s a tabela [{1}] mapeada para filho.
+
+208=Voc\u00ea est\u00e1 tentando configurar um Conversor com o nome de classe [{1}] em um mapeamento n\u00e3o direto [{0}].  Somente Mapeamentos diretos podem ter conversores.  Isso geralmente acontece ao tentar configurar um conversor de chave em um DirectMapMapping com uma chave n\u00e3o direta.
+
+209=Este descritor cont\u00e9m um mapeamento com um DirectMapMapping e nenhum campo-chave configurado.
+
+21=Problema ao extrair classe da linha [{0}].  O m\u00e9todo est\u00e1tico [{1}], com o par\u00e2metro (DatabaseRow), n\u00e3o est\u00e1 acess\u00edvel.
+
+210=[{0}] tem campo de ordem de lista configurado, mas o atributo n\u00e3o implementa Lista.
+
+211=[{0}] tem campo de ordem de lista configurado e o modo de valida\u00e7\u00e3o do campo de ordem de lista \u00e9 CORRECTION, que requer que IndirectList seja design\u00e1vel ao atributo.
+
+212=O campo de ordem de lista especificado para [{0}] tem uma tabela incorreta [{1}]. Em vez disso, deve ser {2}.
+
+213={0} requer que todos os campos de chave estrangeira de destino perten\u00e7am \u00e0 mesma tabela, mas v\u00e1rias foram localizadas: {1}.
+
+214={0} especifica a tabela de rela\u00e7\u00e3o, que n\u00e3o \u00e9 compat\u00edvel com o m\u00e9todo addForeignKey(Nome), ou use os m\u00e9todos addSourceRelationKeyField(Name) e addTargetRelationKeyFieldName em seu lugar.
+
+215={0} deve ter RelationTableMechanism n\u00e3o nulo.
+
+216=CacheKeyType n\u00e3o pode ser ID_VALUE para uma chave prim\u00e1ria composta.
+
+217=XPath inv\u00e1lido para XMLDirectMapping/XMLCompositeDirectCollectionMapping. XPath deve conter um s\u00edmbolo @ para atributos ou terminar com /text() para n\u00f3s de texto. Por exemplo: "@nome" ou "name/text()"
+
+218=Um NullPointerException teria ocorrido ao acessar um m\u00e9todo _vh_ constru\u00eddo n\u00e3o existente [{0}].  A classe n\u00e3o foi constru\u00edda corretamente - para implementa\u00e7\u00f5es EE, verifique a ordem do m\u00f3dulo no descritor de implementa\u00e7\u00e3o application.xml e verifique se o m\u00f3dulo que cont\u00e9m a unidade de persist\u00eancia est\u00e1 \u00e0 frente de qualquer outro m\u00f3dulo que o utiliza.
+
+219=Os crit\u00e9rios adicionais de [{1}] n\u00e3o s\u00e3o permitidos dentro de uma hierarquia de heran\u00e7a usando visualiza\u00e7\u00f5es.
+
+22=Problema ao criar nova inst\u00e2ncia.  O m\u00e9todo de cria\u00e7\u00e3o [{0}] n\u00e3o est\u00e1 acess\u00edvel.
+
+220=Pol\u00edtica de particionamento ausente para o nome [{0}].
+
+221=O campo SerializedObjectPolicy n\u00e3o est\u00e1 configurado.
+
+222=Uma exce\u00e7\u00e3o foi lan\u00e7ada ao tentar obter uma inst\u00e2ncia de classe de chave prim\u00e1ria.
+
+23=O m\u00e9todo de retorno de chamada do descritor [{0}], com o par\u00e2metro (Sess\u00e3o), est\u00e1 inacess\u00edvel.
+
+24=A vari\u00e1vel de inst\u00e2ncia [{0}] no objeto [{1}] est\u00e1 inacess\u00edvel. {3}Argumento: [{2}]
+
+25=O m\u00e9todo [{0}] com o argumento [{1}] n\u00e3o est\u00e1 acess\u00edvel.
+
+26=Tentando obter o valor da vari\u00e1vel de inst\u00e2ncia [{0}] do tipo [{1}] do objeto [{2}].  O objeto especificado n\u00e3o \u00e9 uma inst\u00e2ncia da classe ou interface que declara o campo subjacente.
+
+27=Tentando chamar o m\u00e9todo [{0}] no objeto [{1}].  O n\u00famero de par\u00e2metros reais e formais diferem, ou uma convers\u00e3o de desagrupamento falhou.
+
+28=Argumento ilegal ao instanciar um proxy baseado em m\u00e9todo em um mapeamento de transforma\u00e7\u00e3o.
+
+29=O n\u00famero de par\u00e2metros reais e formais diferem, ou uma convers\u00e3o de desagrupamento falhou.
+
+30=O n\u00famero de par\u00e2metros reais e formais diferem para o m\u00e9todo [{0}], ou uma convers\u00e3o de desagrupamento falhou.
+
+31=O n\u00famero de par\u00e2metros reais e formais para o m\u00e9todo de retorno de chamada do descritor [{0}] difere, ou uma convers\u00e3o de desagrupamento falhou.
+
+32=Tentando configurar o valor [{0}] para a vari\u00e1vel de inst\u00e2ncia [{1}] do tipo [{2}] no objeto.  O objeto especificado n\u00e3o \u00e9 uma inst\u00e2ncia da classe ou interface que declara o campo subjacente, ou uma convers\u00e3o de desagrupamento falhou.
+
+33=Tentando chamar [{0}] no objeto com o valor [{1}].  O n\u00famero de par\u00e2metros reais e formais diferem, ou uma convers\u00e3o de desagrupamento falhou.
+
+34=Esta classe n\u00e3o define um construtor padr\u00e3o p\u00fablico, ou o construtor levantou uma exce\u00e7\u00e3o.
+
+35=Evento inv\u00e1lido.
+
+36=C\u00f3digo de evento inv\u00e1lido [{0}].
+
+37=C\u00f3digo de evento do descritor inv\u00e1lido [{0}].
+
+38=O construtor do mapa de identidade falhou porque um mapa de identidade inv\u00e1lido foi especificado.
+
+39=Este descritor n\u00e3o especifica uma classe Java.
+
+40=O descritor est\u00e1 ausente para [{0}].  Ele provavelmente n\u00e3o foi inclu\u00eddo na Sess\u00e3o.
+
+41=Um mapeamento que n\u00e3o seja somente leitura deve ser definido para o campo de n\u00famero de sequ\u00eancia.
+
+43=Classe ausente para o valor do campo indicador [{0}] do tipo [{1}].
+
+44=Campo indicador de classe ausente da linha do banco de dados [{0}].
+
+45=Mapeamento ausente para o campo [{0}].
+
+46=Deve haver um mapeamento que n\u00e3o seja somente leitura definido para o campo de chave prim\u00e1ria [{0}].
+
+47=O mapeamento de chave prim\u00e1ria de diversas tabelas deve ser especificado quando uma jun\u00e7\u00e3o de v\u00e1rias tabelas customizadas \u00e9 usada.
+
+48=Diversos mapeamentos grav\u00e1veis existem para o campo [{0}].  Somente um pode ser definido como grav\u00e1vel, todos os outros devem ser especificados somente leitura.
+
+49=Um nome de m\u00e9todo de transforma\u00e7\u00e3o de atributo n\u00e3o foi especificado para este mapeamento.
+
+50=Um nome de campo n\u00e3o est\u00e1 configurado para este mapeamento.
+
+51=Nenhuma chave estrangeira foi especificada para este mapeamento.
+
+52=Nenhuma chave de refer\u00eancia foi especificada para este mapeamento.
+
+53=O nome da tabela de rela\u00e7\u00e3o n\u00e3o est\u00e1 configurado para este mapeamento.
+
+54=N\u00e3o existem chaves de rela\u00e7\u00e3o de origem especificadas para esse mapeamento.
+
+55=O m\u00e9todo de retorno de chamada do descritor [{0}] n\u00e3o pode ser localizado.  Ele deve usar uma Sess\u00e3o ou um DescriptorEvent como seu argumento.
+
+56=O m\u00e9todo [{0}] com os par\u00e2metros (Registro) ou (Registro, Sess\u00e3o) n\u00e3o foi localizado.
+
+57=Construtor inacess\u00edvel.
+
+58=O m\u00e9todo [{0}] com os par\u00e2metros () ou (Sess\u00e3o) n\u00e3o foi localizado.
+
+59=A vari\u00e1vel de inst\u00e2ncia [{0}] n\u00e3o est\u00e1 definida na classe de dom\u00ednio [{1}] ou n\u00e3o est\u00e1 acess\u00edvel.
+
+6=O nome do atributo est\u00e1 ausente.
+
+60=O m\u00e9todo [{0}] ou [{1}] n\u00e3o est\u00e1 definido no objeto [{2}].
+
+61=O m\u00e9todo de extra\u00e7\u00e3o de classe est\u00e1tica [{0}], com o par\u00e2metro (Registro), n\u00e3o existe ou n\u00e3o est\u00e1 acess\u00edvel.
+
+62=O m\u00e9todo de clone [{0}], sem par\u00e2metros, n\u00e3o existe ou n\u00e3o est\u00e1 acess\u00edvel.
+
+63=O m\u00e9todo de cria\u00e7\u00e3o de inst\u00e2ncia [{0}], sem par\u00e2metros, n\u00e3o existe ou n\u00e3o est\u00e1 acess\u00edvel.
+
+64=Nenhuma chave estrangeira de destino foi especificada para este mapeamento.
+
+65=Nenhuma chave de rela\u00e7\u00e3o de destino foi especificada para este mapeamento.
+
+66=N\u00e3o foi poss\u00edvel desserializar o objeto da matriz de bytes.
+
+67=N\u00e3o foi poss\u00edvel serializar o objeto na matriz de bytes.
+
+68=O valor de uma agrega\u00e7\u00e3o no objeto [{0}] \u00e9 nulo.  Valores nulos n\u00e3o s\u00e3o permitidos para mapeamentos agregados, a menos que "Permitir nulo" seja especificado.
+
+69=Um NullPointerException foi lan\u00e7ado ao extrair um valor da vari\u00e1vel de inst\u00e2ncia [{0}] no objeto [{1}].
+
+7=O atributo [{0}] deve ser um tipo que implementa {1}.
+
+70=Um NullPointerException foi lan\u00e7ado ao extrair um valor por meio do m\u00e9todo [{0}] no objeto [{1}].
+
+71=Um NullPointerException foi lan\u00e7ado ao configurar o valor da vari\u00e1vel de inst\u00e2ncia [{0}] com o valor [{1}].
+
+72=Um NullPointerException foi lan\u00e7ado ao configurar um valor por meio do m\u00e9todo [{0}] com o argumento [{1}].
+
+73=N\u00e3o \u00e9 poss\u00edvel localizar o descritor para a classe-pai [{0}].
+
+74=Os campos de chave prim\u00e1ria n\u00e3o est\u00e3o configurados para este descritor.
+
+75=A classe de refer\u00eancia n\u00e3o foi especificada para este descritor.
+
+77=O descritor de refer\u00eancia para [{0}] deve ser configurado para ser um descritor agregado.
+
+78=O campo de refer\u00eancia [{0}] para este mapeamento deve existir na tabela de refer\u00eancia.
+
+79=A tabela de refer\u00eancia n\u00e3o foi especificado para este mapeamento.
+
+8=O descritor [{0}] foi configurado para usar heran\u00e7a, mas um campo de indicador de classe n\u00e3o foi definido. {2}Ao usar heran\u00e7a, um campo de indicador de classe ou um m\u00e9todo de extra\u00e7\u00e3o de classe deve ser configurado. {2}Descritor pai: [{1}]
+
+80=O campo de chave de rela\u00e7\u00e3o [{0}] para este mapeamento deve existir na tabela de rela\u00e7\u00e3o.
+
+81=O m\u00e9todo [{0}] deve retornar o tipo do atributo mapeado, n\u00e3o anular.
+
+82=O m\u00e9todo de retorno de chamada do descritor [{0}], com o par\u00e2metro (DescriptorEvent), n\u00e3o est\u00e1 acess\u00edvel.
+
+83=O m\u00e9todo de retorno de chamada do descritor [{0}], com o par\u00e2metro (Sess\u00e3o), n\u00e3o est\u00e1 acess\u00edvel.
+
+84=O m\u00e9todo [{0}], com os par\u00e2metros (Registro) ou (Registro, Sess\u00e3o), n\u00e3o est\u00e1 acess\u00edvel.
+
+85=O m\u00e9todo [{0}], com os par\u00e2metros () ou (Sess\u00e3o), n\u00e3o est\u00e1 acess\u00edvel.
+
+86=A vari\u00e1vel de inst\u00e2ncia [{0}] na classe [{1}] n\u00e3o est\u00e1 acess\u00edvel.
+
+87=Os m\u00e9todos [{0}], [{1}] no objeto [{2}] n\u00e3o est\u00e3o acess\u00edveis
+
+88=O m\u00e9todo de extra\u00e7\u00e3o de classe est\u00e1tica [{0}], com o par\u00e2metro (Registro), n\u00e3o est\u00e1 acess\u00edvel.
+
+89=O m\u00e9todo de clone [{0}], sem par\u00e2metros, n\u00e3o est\u00e1 acess\u00edvel.
+
+9=Este mapeamento n\u00e3o tem um nome de campo direto configurado.
+
+90=O m\u00e9todo de cria\u00e7\u00e3o de inst\u00e2ncia [{0}], sem par\u00e2metros, n\u00e3o est\u00e1 acess\u00edvel.
+
+91=Para usar IDs gerados em sequ\u00eancia, as propriedades "Nome do n\u00famero de sequ\u00eancia" e "Nome do campo de n\u00famero de sequ\u00eancia" devem ser configuradas para este descritor.
+
+92=O tamanho da chave prim\u00e1ria do destino n\u00e3o corresponde ao tamanho da chave estrangeira.
+
+93=A tabela [{0}] n\u00e3o est\u00e1 presente neste descritor.
+
+94=Os descritores devem ter um nome de tabela definido.
+
+96=O n\u00famero de chaves de destino n\u00e3o corresponde ao n\u00famero de chaves de origem.
+
+97=Problema ao clonar o objeto [{0}].  O m\u00e9todo de clone [{1}] acionou uma exce\u00e7\u00e3o.
+
+98=O m\u00e9todo de retorno de chamada do descritor subjacente [{0}], com o par\u00e2metro (DescriptorEvent), acionou uma exce\u00e7\u00e3o.
+
+99=O m\u00e9todo [{0}] no objeto [{1}] acionou uma exce\u00e7\u00e3o.
+

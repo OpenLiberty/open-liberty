@@ -1,0 +1,763 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/LoggingLocalizationResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+External_transaction_controller_not_defined_by_server_platform=Sesja bazy danych ma zewn\u0119trzny kontroler transakcji zdefiniowany przez element inny ni\u017c platforma serwera. Produkt EclipseLink zezwoli na nadpisanie zewn\u0119trznego kontrolera transakcji, ale zaleca si\u0119 rozwa\u017cenie alternatywnego rozwi\u0105zania w postaci utworzenia klasy pochodnej dla klasy org.eclipse.persistence.platform.server.ServerPlatformBase i nadpisania klasy getExternalTransactionControllerClass().
+
+JDBC_driver_does_not_support_meta_data=Nawi\u0105zano po\u0142\u0105czenie: nieznane (sterownik JDBC nie obs\u0142uguje metadanych).
+
+all_registered_clones=Wszystkie zarejestrowane klony:
+
+an_error_executing_ejbSelect=Wyst\u0105pi\u0142 b\u0142\u0105d podczas wykonywania metody ejbSelect: {0}
+
+an_error_executing_finder=Wyst\u0105pi\u0142 b\u0142\u0105d podczas wykonywania wyszukiwarki: {0}
+
+an_error_occured_executing_findByPrimaryKey=Wyst\u0105pi\u0142 b\u0142\u0105d podczas wykonywania metody findByPrimaryKey: {0}
+
+an_error_occured_initializing_dms_listener=Podczas inicjowania procesu nas\u0142uchuj\u0105cego osadzonego w DMS i serwletu SPY zg\u0142oszony zosta\u0142 wyj\u0105tek
+
+an_error_occured_preparing_bean=Wyst\u0105pi\u0142 b\u0142\u0105d podczas przygotowywania komponentu bean do wywo\u0142ania: {0}
+
+an_error_occured_trying_to_undeploy_bean=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by anulowania wdro\u017cenia komponentu bean (po niepowodzeniu wdro\u017cenia): {0}
+
+annotation_warning_ignore_annotation=Adnotacja [{0}] dla elementu [{1}] zostanie zignorowana, poniewa\u017c ustawienie atrybutu XML metadata-complete dla tej klasy ma warto\u015b\u0107 true.
+
+annotation_warning_ignore_private_owned=Adnotacja @PrivateOwned dla elementu [{1}] w klasie jednostki [{0}] zostanie zignorowana. Adnotacji @PrivateOwned mo\u017cna u\u017cywa\u0107 tylko z adnotacjami @OneToOne, @OneToMany i @VariableOneToOne. Nale\u017cy r\u00f3wnie\u017c zauwa\u017cy\u0107, \u017ce adnotacje @BasicCollection i @BasicMap wskazuj\u0105 na w\u0142asno\u015b\u0107 prywatn\u0105.
+
+annotation_warning_ignore_return_insert=Adnotacja @ReturnInsert dla elementu [{0}] zostanie zignorowana. Adnotacja @ReturnInsert jest obs\u0142ugiwana tylko z podstawowym odwzorowaniem.
+
+annotation_warning_ignore_return_update=Adnotacja @ReturnUpdate dla elementu [{0}] zostanie zignorowana. Adnotacja @ReturnUpdate jest obs\u0142ugiwana tylko z podstawowym odwzorowaniem.
+
+application_server_name_and_version=Serwer: {0}
+
+archive_not_found_in_input=Plik archiwum ({0}) nie istnieje w katalogu wej\u015bciowym ({1}).
+
+associate_using_third_table_not_migrated=Sk\u0142adnik komponentu CMP rodzimy dla produktu Oc4j -DassociateUsingThirdTable=true s\u0142u\u017c\u0105cy do odwzorowywania 1:m przy u\u017cyciu tabeli relacji nie zosta\u0142 zmigrowany. Po wykonaniu procesu migracji nale\u017cy ponownie odwzorowa\u0107 pole cmr ({1}) jednostki ({0}) jako odwzorowanie jeden do wielu za pomoc\u0105 \u015brodowiska roboczego odwzorowywania.
+
+attempted_to_open_entry_in_url_as_jar=Podczas pr\u00f3by otworzenia adresu URL {0} jako pliku JAR i uzyskania dost\u0119pu do pozycji: {1} zosta\u0142 zg\u0142oszony wyj\u0105tek {2}.
+
+attempted_to_open_file_url_as_directory=Podczas pr\u00f3by otworzenia adresu URL {0} jako katalogu i uzyskania dost\u0119pu do pozycji: {1} zosta\u0142 zg\u0142oszony wyj\u0105tek {2}.
+
+attempted_to_open_url_as_directory=Podczas pr\u00f3by otworzenia adresu URL {0} jako katalogu zosta\u0142 zg\u0142oszony wyj\u0105tek {1}.
+
+attempted_to_open_url_as_jar=Podczas pr\u00f3by otworzenia adresu URL {0} jako pliku JAR zosta\u0142 zg\u0142oszony wyj\u0105tek {1}.
+
+automatic_key_generation_not_supported=Ustawienie komponentu CMP rodzime dla produktu WLS automatic-key-generation dotycz\u0105ce jednostki ({0}) nie jest bezpo\u015brednio obs\u0142ugiwane w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
+
+bacth_update_not_supported=Ustawienie aktualizacji zadania wsadowego batch-size o warto\u015bci ({0}) zdefiniowane dla komponentu EJB ({1}) nie jest bezpo\u015brednio obs\u0142ugiwane w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
+
+broadcast_connection_already_closed=Ostrze\u017cenie: {0}: podj\u0119to pr\u00f3b\u0119 zamkni\u0119cia po\u0142\u0105czenia, kt\u00f3re zosta\u0142o ju\u017c zamkni\u0119te. Zignorowano.
+
+broadcast_connection_already_closing=Ostrze\u017cenie: {0}: podj\u0119to pr\u00f3b\u0119 zamkni\u0119cia po\u0142\u0105czenia, kt\u00f3re jest aktualnie zamykane. Zignorowano.
+
+broadcast_exception_thrown_when_attempting_to_close_connection=Ostrze\u017cenie: {0}: pr\u00f3ba zamkni\u0119cia po\u0142\u0105czenia spowodowa\u0142a wyj\u0105tek {1}
+
+broadcast_ignored_command_while_closing_connection=Ostrze\u017cenie: {0}: \u017c\u0105danie opublikowania komendy podczas zamykania po\u0142\u0105czenia zostanie zignorowane.
+
+broadcast_listening_sleep_on_error=Ostrze\u017cenie: {0}: zosta\u0142 zg\u0142oszony wyj\u0105tek {1}. W\u0105tek zostanie u\u015bpiony na {2} ms, zanim nas\u0142uchiwanie zostanie wznowione.
+
+broadcast_remote_command_is_null=Ostrze\u017cenie: {0}: otrzymano komunikat {1} zawieraj\u0105cy warto\u015b\u0107 NULL zamiast komendy zdalnej.
+
+broadcast_remote_command_wrong_type=Ostrze\u017cenie: {0}: odebrano komunikat {1} zawieraj\u0105cy obiekt typu {2} zamiast oczekiwanego typu RemoteCommand.
+
+call_timeout_not_migrated=Warto\u015b\u0107 parametru call-timeout {1} jest zdefiniowana w jednostce {0} orion-ejb-jar.xml, ale w pliku deskryptora nie ma zdefiniowanych trwa\u0142ych odwzorowa\u0144, wi\u0119c migracja nie zostanie wykonana.  Je\u015bli p\u00f3\u017aniej domy\u015blne odwzorowanie produktu EclipseLink zostanie u\u017cyte do wygenerowania deskryptora odwzorowania produktu EclipseLink, nale\u017cy wiedzie\u0107, \u017ce ustawienie call-timeout zostanie utracone, poniewa\u017c odwzorowanie domy\u015blne EclipseLink nie ma dost\u0119pu do rodzimego pliku deskryptora.  Po wygenerowaniu odwzorowania domy\u015blnego wymagane b\u0119dzie r\u0119czne zresetowanie limitu czasu wywo\u0142ania lub zresetowanie go za po\u015brednictwem \u015brodowiska roboczego odwzorowywania produktu EclipseLink.
+
+cannot_get_nested_collection_type=Nie mo\u017cna uzyska\u0107 zagnie\u017cd\u017conego typu kolekcji.
+
+cannot_get_server_name_and_version=Nie mo\u017cna uzyska\u0107 nazwy i wersji serwera z powodu nast\u0119puj\u0105cego wyj\u0105tku.  {0}
+
+cannot_unwrap_connection=Nie mo\u017cna rozpakowa\u0107 po\u0142\u0105czenia Oracle opakowanego przez serwer aplikacji z powodu nast\u0119puj\u0105cego wyj\u0105tku.  {0}
+
+cannot_weave_changetracking=Nie mo\u017cna manipulowa\u0107 kodem bajtowym klasy {0} na potrzeby \u015bledzenia zmian, poniewa\u017c nie jest to obs\u0142ugiwane przez jej odwzorowania.
+
+cannot_weave_virtual_one_to_one=Klasa {0} ma atrybut {1}, kt\u00f3ry u\u017cywa odwzorowania jeden do jednego lub wiele do jednego dla atrybutu wirtualnego.  Manipulowanie kodem bajtowym tych typ\u00f3w odwzorowa\u0144 nie jest obs\u0142ugiwane.  Manipulowanie kodem bajtowym zostanie wy\u0142\u0105czone dla klasy {0}.
+
+check_exist_on_method_as_true_not_supported=Ustawienie komponentu CMP rodzime dla produktu WLS check-exists-on-method-as-true dotycz\u0105ce jednostki ({0}) nie jest bezpo\u015brednio obs\u0142ugiwane w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
+
+class_list_created_by=Lista klas utworzona przez metod\u0119 ({0}).({1})().
+
+cmp_and_cmr_field=Pozycja ejb-jar.xml dla [{0}] zawiera pozycj\u0119 <cmp-field> i pozycj\u0119 <cmr-field> dla atrybutu [{1}].  Pozycja <cmp-field> zostanie zignorowana.
+
+column_size_not_migrated=Wielko\u015b\u0107 kolumny bazy danych ({0}) nie zosta\u0142a zmigrowana. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
+
+communication_failure_attempting_begintransaction_retry=Wykryto niepowodzenie komunikacji podczas pr\u00f3by utworzenia transakcji dla bazy danych.  Podj\u0119ta zostanie pr\u00f3ba ponowienia rozpocz\u0119cia transakcji. Napotkany b\u0142\u0105d: {0}.
+
+communication_failure_attempting_query_retry=Wykryto niepowodzenie komunikacji podczas pr\u00f3by wykonania zapytania odczytu poza transakcj\u0105. Podj\u0119ta zostanie pr\u00f3ba ponowienia zapytania. Napotkany b\u0142\u0105d: {0}.
+
+config_factory=Fabryka konfiguracji: ({0}) = ({1})
+
+connected_sdk=Nawi\u0105zano po\u0142\u0105czenie: pakiet SDK
+
+connected_user_database=Nawi\u0105zano po\u0142\u0105czenie: {3}{4} U\u017cytkownik: {0}{3}{4} Baza danych: {1} Wersja: {2}
+
+connected_user_database_driver=Nawi\u0105zano po\u0142\u0105czenie: {0}{6} U\u017cytkownik: {1}{6} Baza danych: {2} Wersja: {3}{6} Sterownik: {4} Wersja: {5}
+
+corrupted_session_announcement=Identyfikator sesji: {0} mened\u017cer wykrywania odebra\u0142 uszkodzone og\u0142oszenie sesji \u2013 zignorowano.
+
+create_default_dbms_tables_not_supported=Ustawienie komponentu CMP rodzime dla produktu WLS create-default-dbms-tables nie jest bezpo\u015brednio obs\u0142ugiwane w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
+
+data_sync_on_ejb_create_not_supported=Ustawienie synchronizacji danych data-synchronization-option="ejbCreate" zdefiniowane dla komponentu EJB ({0}) nie jest bezpo\u015brednio obs\u0142ugiwane w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
+
+dbPlatformHelper_defaultingPlatform=Nie mo\u017cna wykry\u0107 platformy dla nazwy dostawcy [{0}]. U\u017cyta zostanie warto\u015b\u0107 domy\u015blna [{1}]. Dialekt bazy danych, kt\u00f3ry zostanie u\u017cyty, mo\u017ce nie by\u0107 zgodny z u\u017cywan\u0105 baz\u0105 danych. Jawnie podaj platform\u0119 przy u\u017cyciu w\u0142a\u015bciwo\u015bci eclipselink.target-database.
+
+dbPlatformHelper_noMappingFound=Nie mo\u017cna za\u0142adowa\u0107 zasobu [{0}], kt\u00f3ry \u0142aduje odwzorowanie z nazwy dostawcy na platform\u0119 bazy danych. Automatyczne wykrywanie platformy bazy danych nie b\u0119dzie dzia\u0142a\u0107.
+
+dbws_no_wsdl_inline_schema=Nie mo\u017cna odczyta\u0107 schematu wstawianego WSDL [{0}].
+
+dbws_orm_metadata_read_error=Nie mo\u017cna odczyta\u0107 metadanych ORM [{0}].
+
+dbws_oxm_metadata_read_error=Nie mo\u017cna odczyta\u0107 metadanych OXM [{0}].
+
+dbws_xml_schema_read_error=Nie mo\u017cna odczyta\u0107 schematu XML [{0}].
+
+ddl_generation_unknown_property_value=Podano nieznan\u0105 warto\u015b\u0107 {0} [{1}] dla jednostki trwa\u0142o\u015bci [{2}]. Poprawne opcje: [{3}]
+
+default_dbms_tables_ddl_not_supported=Ustawienie komponentu CMP rodzime dla produktu WLS default-dbms-tables-ddl nie jest bezpo\u015brednio obs\u0142ugiwane w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
+
+default_tables_already_existed=Tabela ({0}) znajduje si\u0119 ju\u017c w bazie danych i nie zostanie utworzona.
+
+delay_database_insert_until_ejb_create_not_supported=Ustawienie komponentu CMP rodzime dla produktu WLS delay-database-insert-until-ejbCreate dotycz\u0105ce jednostki ({0}) nie jest bezpo\u015brednio obs\u0142ugiwane w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
+
+delay_database_insert_until_ejb_post_create_not_supported=Ustawienie komponentu CMP rodzime dla produktu WLS delay-database-insert-until-ejbPostCreate dotycz\u0105ce jednostki ({0}) nie jest bezpo\u015brednio obs\u0142ugiwane w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
+
+delay_updates_until_commit_not_supported=Sk\u0142adnik komponentu CMP rodzimy dla produktu Oc4j delay-updates-until-commit dotycz\u0105cy jednostki ({0}) nie jest bezpo\u015brednio obs\u0142ugiwany w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
+
+deleted_objects=Usuni\u0119te obiekty:
+
+deleting_object=Operacja usuwania zosta\u0142a wykonana na obiekcie: {0}
+
+deprecated_property=W\u0142a\u015bciwo\u015b\u0107 {1} jest nieaktualna, zamiast niej nale\u017cy u\u017cywa\u0107 w\u0142a\u015bciwo\u015bci {0}.
+
+descriptor_named_query_cannot_be_added=Nie mo\u017cna doda\u0107 zapytania z nazw\u0105 deskryptora, kt\u00f3rego nazwa powoduje konflikt z istniej\u0105cym zapytaniem. Zapytanie do dodania: [{0}] ma nazw\u0119: [{1}] i argumenty [{2}].
+
+dir_cleaned_for_mw_files=Pliki i podkatalogi w katalogu {0} zosta\u0142y usuni\u0119te, aby utworzy\u0107 pusty katalog na potrzeby nowo generowanych plik\u00f3w projektu \u015brodowiska roboczego odwzorowywania produktu EclipseLink.
+
+do_select_before_insert_not_supported=Sk\u0142adnik komponentu CMP rodzimy dla produktu Oc4j do-select-before-insert dotycz\u0105cy jednostki ({0}) nie jest bezpo\u015brednio obs\u0142ugiwany w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
+
+drop_connection_on_error=Ostrze\u017cenie: usuwanie zdalnego po\u0142\u0105czenia komend z {0} z powodu b\u0142\u0119du {1}
+
+ejbSelect2=Wyb\u00f3r komponentu EJB: {0}
+
+ejb_jar_xml_not_found_in_input=Brak pliku ejb-jar.xml w katalogu wej\u015bciowym ({0}).
+
+elements=Liczba element\u00f3w: {0}{1}
+
+enable_batch_operations_as_true_not_supported=Ustawienie komponentu CMP rodzime dla produktu WLS enable-batch-operations-as-true nie jest bezpo\u015brednio obs\u0142ugiwane w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
+
+entity_manager_ignores_jta_data_source=Jednostka trwa\u0142o\u015bci nie u\u017cywa interfejsu JTA, wi\u0119c interfejs EntityManager ignoruje \u017ar\u00f3d\u0142o danych JTA. 
+
+entity_manager_ignores_nonjta_data_source=Jednostka trwa\u0142o\u015bci u\u017cywa interfejsu JTA, wi\u0119c interfejs EntityManager ignoruje \u017ar\u00f3d\u0142o danych inne ni\u017c JTA. 
+
+entity_manager_sets_property_while_context_is_active=Je\u015bli istnieje ju\u017c aktywny kontekst trwa\u0142o\u015bci, w\u0142a\u015bciwo\u015b\u0107 {0} jest ustawiana w mened\u017cerze jednostek, ale zostanie ona przetworzona i uwzgl\u0119dniona dopiero po utworzeniu nowego aktywnego kontekstu trwa\u0142o\u015bci. W celu utworzenia nowego aktywnego kontekstu trwa\u0142o\u015bci nale\u017cy usun\u0105\u0107 istniej\u0105cy \u2013 mo\u017cna to zrobi\u0107, wywo\u0142uj\u0105c metod\u0119 czyszczenia w mened\u017cerze jednostek.
+
+entity_not_available_during_merge=Maksymalna liczba pr\u00f3b zosta\u0142a przekroczona.  Nie mo\u017cna znale\u017a\u0107 warto\u015bci zablokowanego klucza pami\u0119ci podr\u0119cznej.  Klasa [{0}], identyfikator: [{1}], ten w\u0105tek: [{2}], w\u0105tek w\u0142a\u015bciciela: [{3}].
+
+error_during_PersistenceManager_setup_for_bean=B\u0142\u0105d podczas konfigurowania mened\u017cera trwa\u0142o\u015bci dla komponentu bean: {0}
+
+error_executing_ejbHome=B\u0142\u0105d podczas wykonywania elementu g\u0142\u00f3wnego komponentu EJB: {0}
+
+error_executing_remote_command=Komenda {0} nie powiod\u0142a si\u0119; przyczyna: {1}
+
+error_getting_transaction_status=B\u0142\u0105d podczas uzyskiwania statusu transakcji.  {0}
+
+error_in_codegen=B\u0142\u0105d podczas generowania konkretnej klasy komponentu bean.
+
+error_in_create=B\u0142\u0105d podczas tworzenia.
+
+error_in_remove=B\u0142\u0105d podczas usuwania.
+
+error_loading_xml_file=Wyj\u0105tek podczas \u0142adowania pliku XML ORM: {0}: {1}
+
+exception_loading_entity_class=Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by zainicjowania trwa\u0142o\u015bci.  Wyj\u0105tek {1} wyst\u0105pi\u0142 podczas pr\u00f3by za\u0142adowania klasy jednostki: {0}.
+
+exception_thrown_when_attempting_to_close_connection=Ostrze\u017cenie: podczas pr\u00f3by zamkni\u0119cia po\u0142\u0105czenia zosta\u0142 zg\u0142oszony wyj\u0105tek
+
+exception_thrown_when_attempting_to_close_listening_topic_connection=Podczas pr\u00f3by zamkni\u0119cia po\u0142\u0105czenia z tematem nas\u0142uchiwania zosta\u0142 zg\u0142oszony wyj\u0105tek: {0}
+
+exception_thrown_when_attempting_to_shutdown_cache_synch=Podczas pr\u00f3by zamkni\u0119cia synchronizacji pami\u0119ci podr\u0119cznej zosta\u0142 zg\u0142oszony wyj\u0105tek: {0}
+
+exception_while_weaving=Program do manipulowania kodem bajtowym napotka\u0142 wyj\u0105tek podczas pr\u00f3by manipulowania kodem bajtowym klasy {0}. Wyj\u0105tek: {1}
+
+extra_cmp_field=Istnieje abstrakcyjna procedura pobieraj\u0105ca i/lub procedura ustawiaj\u0105ca zdefiniowana dla abstrakcyjnej klasy komponentu bean [{0}], ale odpowiadaj\u0105ce tym procedurom pole cmp [{1}] nie jest zadeklarowane w pliku ejb-jar.xml.
+
+extra_ejb_select=Istnieje abstrakcyjny wyb\u00f3r komponentu EJB zdefiniowany dla abstrakcyjnej klasy komponentu bean [{0}], ale odpowiadaj\u0105ca mu pozycja wyboru komponentu EJB [{1}{2}] nie jest zadeklarowana w pliku ejb-jar.xml.
+
+extra_finder=Istnieje wyszukiwarka zdefiniowana dla interfejs\u00f3w g\u0142\u00f3wnych [{0}], ale odpowiadaj\u0105ca jej pozycja wyszukiwarki [{1}{2}] nie jest zadeklarowana w pliku ejb-jar.xml.
+
+failed_command_propagation=B\u0142\u0105d: pr\u00f3ba propagowania komendy do {0} nie powiod\u0142a si\u0119; przyczyna: {1}
+
+failed_to_find_mbean_server=Znajdowanie serwera komponentu MBean nie powiod\u0142o si\u0119: {0}
+
+failed_to_propogate_to=Synchronizacja pami\u0119ci podr\u0119cznej: propagowanie do {0} nie powiod\u0142o si\u0119.  {1}
+
+field_group_not_supported=Ustawienie komponentu CMP rodzime dla produktu WLS field-group dotycz\u0105ce jednostki ({0}) nie jest bezpo\u015brednio obs\u0142ugiwane w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
+
+field_type_set_to_java_lang_string=Domy\u015blny generator tabel nie m\u00f3g\u0142 znale\u017a\u0107 lub przekszta\u0142ci\u0107 typu Java ({1}) w typ bazy danych w przypadku pola bazy danych ({0}). Generator u\u017cywa typu java.lang.String jako domy\u015blnego typu Java dla pola.
+
+force_update_not_supported=Sk\u0142adnik komponentu CMP rodzimy dla produktu Oc4j force-update dotycz\u0105cy jednostki ({0}) nie jest bezpo\u015brednio obs\u0142ugiwany w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
+
+identitymap_for={0}{1} dla: {2}
+
+includes=(zawiera: 
+
+input_and_output_dir_be_different=Nale\u017cy zdefiniowa\u0107 katalog wyj\u015bciowy, kt\u00f3ry jest r\u00f3\u017cny od katalogu wej\u015bciowego.
+
+input_archive_format_not_supported=Program narz\u0119dziowy migracji obs\u0142uguje formaty .ear, .jar i archiwum wej\u015bciowego. Format pliku wej\u015bciowego ({0}) nie jest obs\u0142ugiwany.
+
+input_at_least_either_archive_or_xml=Opcja -e umo\u017cliwia okre\u015blenie nazwy migrowanego pliku archiwum, a opcja -x \u2013 zasygnalizowanie, \u017ce pliki XML deskryptora w katalogu wej\u015bciowym b\u0119d\u0105 migrowane. Nale\u017cy poda\u0107 tylko jedn\u0105 z nich.
+
+input_minimum_arguments=Argumenty wej\u015bciowe wiersza komend musz\u0105 zawiera\u0107 co najmniej parametry -s, -a lub -x oraz -o.
+
+input_not_both_archive_and_xml=Opcja -e jest u\u017cywana do okre\u015blenia nazwy pliku archiwum, a opcja -x do zasygnalizowania, \u017ce migrowane b\u0119d\u0105 pliki deskryptora w katalogu wej\u015bciowym; nie mo\u017cna okre\u015bli\u0107 obu tych opcji jednocze\u015bnie.
+
+input_orione_ejb_jar_augmented=Plik orion-ejb-jar.xml zosta\u0142 zmodyfikowany tak, aby produkt EclipseLink by\u0142 okre\u015blony jako mened\u017cer trwa\u0142y produktu OC4J.
+
+invalid_command_line_argument=Argument wiersza komend ({0}) jest niepoprawny
+
+invalid_datasource_property_value=Obiekt {1} nie jest poprawnym obiektem, kt\u00f3ry mo\u017ce by\u0107 przekazywany w ramach w\u0142a\u015bciwo\u015bci {0}.  Poprawne warto\u015bci to \u0142a\u0144cuchy lub instancje klasy javax.sql.DataSource.
+
+invalid_property_value=Obiekt {1} nie jest poprawnym obiektem, kt\u00f3ry mo\u017ce by\u0107 przekazywany w ramach w\u0142a\u015bciwo\u015bci {0}.
+
+isolation_level_not_supported=Ustawienie komponentu CMP rodzime dla produktu Oc4j isolation-level dotycz\u0105ce jednostki ({0}) nie jest bezpo\u015brednio obs\u0142ugiwane w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
+
+jar_entry_has_been_migrated=Plik deskryptora rodzimego cmp w pozycji pliku jar ({0}) z wej\u015bciowego pliku EAR ({1}) zosta\u0142 zmigrowany.
+
+jar_entry_not_migratable=Pozycja pliku jar ({0}) w wej\u015bciowym pliku EAR ({1}) nie jest mo\u017cliwa do migracji.
+
+jar_file_url_exception=Wyj\u0105tek podczas analizowania pliku persistence.xml.  Nie mo\u017cna znale\u017a\u0107 po\u0142o\u017cenia pliku jar: {0}
+
+jaxb_metadata_warning_ignoring_java_attribute=Atrybut [{0}] dla klasy [{1}] zostanie zignorowany, poniewa\u017c nie wygenerowano dla niego \u017cadnej w\u0142a\u015bciwo\u015bci.
+
+jaxb_metadata_warning_ignoring_type_on_map=Atrybut typu ustawiony dla elementu xml-element zostanie zignorowany, poniewa\u017c dla w\u0142a\u015bciwo\u015bci [{0}] okre\u015blony jest element xml-map.
+
+jaxb_metadata_warning_invalid_bound_type=Typ powi\u0105zany [{0}] dla klasy adaptera [{1}] jest niepoprawny i zostanie zignorowany.
+
+jaxb_metadata_warning_invalid_java_attribute=Napotkano nieobs\u0142ugiwany atrybut Java [{0}]; zostanie on zignorowany.
+
+jaxb_metadata_warning_invalid_package_level_xml_java_type_adapter=Okre\u015blono niepoprawny element XmlJavaTypeAdapter [{0}] dla pakietu [{1}]; zostanie on zignorowany.
+
+jaxb_metadata_warning_invalid_property_level_xml_java_type_adapter=Okre\u015blono niepoprawny element XmlJavaTypeAdapter [{0}] dla pola/w\u0142a\u015bciwo\u015bci [{1}] w klasie [{2}]; zostanie on zignorowany.
+
+jaxb_metadata_warning_invalid_type_level_xml_java_type_adapter=Okre\u015blono niepoprawny element XmlJavaTypeAdapter [{0}] dla klasy [{1}]; zostanie on zignorowany.
+
+jaxb_metadata_warning_no_classes_to_process=Brak klas do przetworzenia dla pakietu [{0}].
+
+jmx_mbean_runtime_services_failed_toget_initial_context=Pobieranie kontekstu pocz\u0105tkowego na potrzeby rejestracji komponentu MBean nie powiod\u0142o si\u0119: {0}
+
+jmx_mbean_runtime_services_get_executethreadruntime_object_failed=Wersja produktu WebLogic nie obs\u0142uguje opcji executeThreadRuntime \u2013 u\u017cyty zostanie program \u0142aduj\u0105cy klasy: {0}
+
+jmx_mbean_runtime_services_identity_map_class=Klasa odwzorowania to\u017csamo\u015bci [{0}] = {1}
+
+jmx_mbean_runtime_services_identity_map_empty=Odwzorowanie to\u017csamo\u015bci [{0}] jest puste.
+
+jmx_mbean_runtime_services_identity_map_initialized=Odwzorowanie to\u017csamo\u015bci [{0}] jest zainicjowane.
+
+jmx_mbean_runtime_services_identity_map_invalidated=Odwzorowanie to\u017csamo\u015bci [{0}] jest uniewa\u017cnione.
+
+jmx_mbean_runtime_services_identity_map_non_existent=Odwzorowanie to\u017csamo\u015bci [{0}] nie istnieje.
+
+jmx_mbean_runtime_services_mbeanserver_lookup_failed=Pobieranie kontekstu pocz\u0105tkowego na potrzeby rejestracji komponentu MBean nie powiod\u0142o si\u0119: {0}
+
+jmx_mbean_runtime_services_no_classes_in_session=Brak klas w sesji.
+
+jmx_mbean_runtime_services_no_connection_pools_available=Brak dost\u0119pnych pul po\u0142\u0105cze\u0144.
+
+jmx_mbean_runtime_services_no_identity_maps_in_session=Brak odwzorowa\u0144 to\u017csamo\u015bci w tej sesji.
+
+jmx_mbean_runtime_services_pool_name=Nazwa puli = {0}
+
+jmx_mbean_runtime_services_print_cache_key_value=Klucz [{0}] => Warto\u015b\u0107 [{1}]
+
+jmx_mbean_runtime_services_registration_encountered_multiple_mbeanserver_instances=Istnieje wiele instancji serwera JMX MBeanServer [{0}]. Zostanie u\u017cyty serwer w indeksie [{1}]: [{2}].
+
+jmx_mbean_runtime_services_registration_mbeanserver_print=Znaleziono instancj\u0119 serwera JMX MBeanServer: [{0}], liczba obiekt\u00f3w bean: [{1}], domena: [{2}] w indeksie: [{3}].
+
+jmx_mbean_runtime_services_statement_cache_cleared=Pami\u0119\u0107 podr\u0119czna instrukcji zosta\u0142a wyczyszczona.
+
+jmx_mbean_runtime_services_switching_to_alternate_mbeanserver=U\u017cywany serwer komponent\u00f3w MBean JMX: [{0}] od indeksu [{1}] 
+
+jmx_mbean_runtime_services_threadpool_initialize_failed=Inicjowanie komponentu MBean threadPoolRuntime nie powiod\u0142o si\u0119: {0}
+
+jmx_unable_to_unregister_mbean=Nie mo\u017cna wyrejestrowa\u0107 komponentu MBean [{0}], poniewa\u017c serwer komponent\u00f3w MBean ma warto\u015b\u0107 NULL. Sprawd\u017a, czy na platformie serwera w\u0142\u0105czone s\u0105 rozszerzenia JMX.
+
+jmx_unregistered_mbean=Wyrejestrowano komponent MBean [{0}] z serwera komponent\u00f3w MBean [{1}].
+
+jpars_could_bootstrap_persistence_context=Nie mo\u017cna utworzy\u0107 programu startowego dla kontekstu trwa\u0142o\u015bci: [{0}].
+
+jpars_could_not_find_class_in_persistence_unit=Nie mo\u017cna znale\u017a\u0107 typu [{0}] w jednostce trwa\u0142o\u015bci: [{1}].
+
+jpars_could_not_find_persistence_context=Wywo\u0142anie JPA-RS \u017c\u0105da kontekstu trwa\u0142o\u015bci: [{0}].  Nie znaleziono tego kontekstu trwa\u0142o\u015bci.
+
+jpars_could_not_find_session_bean=Wykonywane jest wywo\u0142anie skierowane do komponentu bean sesji o nazwie JNDI: [{0}].  Nie mo\u017cna znale\u017a\u0107 tego komponentu bean.
+
+jta_cannot_be_disabled_in_cmp=Je\u015bli u\u017cywane jest zarz\u0105dzanie trwa\u0142o\u015bci\u0105 przez kontener (Container Managed Persistence \u2013 CMP), nie mo\u017cna wy\u0142\u0105czy\u0107 transakcji JTA. Produkt EclipseLink b\u0119dzie dzia\u0142a\u0142 z za\u0142o\u017ceniem, \u017ce transakcje JTA s\u0105 w\u0142\u0105czone.
+
+key_identity_hash_code_object={0} Klucz: {1}{2} Kod mieszaj\u0105cy to\u017csamo\u015bci: {3}{2} Obiekt: {4}
+
+key_object_null={0} Klucz: {1}{2} Obiekt: NULL
+
+key_version_identity_hash_code_object={0} Klucz: {1}{2} Wersja: {5}{2} Kod mieszaj\u0105cy to\u017csamo\u015bci: {3}{2} Obiekt: {4}
+
+locking_mode_not_valid=Tryb blokowania ({1}) dla jednostki ({0}) w pliku orion-ejb-jar.xml nie jest dobrze zdefiniowany, a wi\u0119c nie mo\u017cna go zmigrowa\u0107.
+
+locking_required_for_database_change_notification=Jednostka {0} nie u\u017cywa blokowania wersji, ale ma wiele tabel relacji i u\u017cywa powiadomie\u0144 o zmianach bazy danych Oracle; zmiany relacji lub tabele dodatkowe nie mog\u0105 uniewa\u017cnia\u0107 pami\u0119ci podr\u0119cznej.
+
+log_file_under_output_dir=Istnieje plik dziennika o nazwie ({0}) w katalogu wyj\u015bciowym ({1}).
+
+mapping_not_supported_by_mw=Odwzorowanie produktu EclipseLink {0} nie jest obs\u0142ugiwane przez \u015brodowisko robocze odwzorowywania
+
+marshal_warning_null_document_root_element={0}: niezdefiniowany element g\u0142\u00f3wny dokumentu dla przywo\u0142ywanego obiektu [{1}] zostanie zignorowany podczas marszalingu z dowolnym odwzorowaniem kolekcji/obiektu.
+
+max_instance_not_supported=Ustawienie komponentu CMP rodzime dla produktu Oc4j max-instance dotycz\u0105ce jednostki ({0}) nie jest bezpo\u015brednio obs\u0142ugiwane w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
+
+max_tx_retries_not_supported=Ustawienie komponentu CMP rodzime dla produktu Oc4j max-tx-retries dotycz\u0105ce jednostki ({0}) nie jest bezpo\u015brednio obs\u0142ugiwane w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
+
+metadata_access_type=Typ dost\u0119pu dla klasy trwa\u0142ej [{1}] jest ustawiony na [{0}].
+
+metadata_default_alias=Nazwa aliasu dla klasy jednostki [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_collection_catalog=Nazwa tabeli kolekcji dla podstawowego odwzorowania kolekcji/odwzorowania [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_collection_schema=Nazwa tabeli kolekcji dla podstawowego odwzorowania kolekcji/odwzorowania [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_collection_table_name=Nazwa tabeli kolekcji dla podstawowego odwzorowania kolekcji/odwzorowania [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_column=Nazwa kolumny dla elementu [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_converter_data_type=Typ danych dla konwertera o nazwie [{2}] u\u017cywanego z elementem [{1}] w jednostce [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105 [{3}].
+
+metadata_default_converter_object_type=Typ obiektu dla konwertera o nazwie [{2}] u\u017cywanego z elementem [{1}] w jednostce [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105 [{3}].
+
+metadata_default_element_collection_reference_class=Klasa docelowa (odwo\u0142ania) dla elementu odwzorowania kolekcji element\u00f3w [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_entity_graph_name=Nazwa specyfikacji EntityGroup o okre\u015blonej nazwie dla klasy [{1}] otrzyma warto\u015b\u0107 domy\u015bln\u0105: {0}
+
+metadata_default_fk_column=Nazwa kolumny klucza obcego dla elementu odwzorowania [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_inheritance_discriminator_column=Nazwa kolumny wyr\u00f3\u017cnika dla g\u0142\u00f3wnej klasy dziedziczenia [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_inheritance_fk_column=Nazwa kolumny klucza obcego dla klasy dziedziczenia [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_inheritance_pk_column=Nazwa kolumny klucza podstawowego dla klasy dziedziczenia [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_join_catalog=Katalog tabeli \u0142\u0105czenia dla odwzorowania wiele do wielu [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_join_schema=Schemat tabeli \u0142\u0105czenia dla odwzorowania wiele do wielu [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_join_table_name=Nazwa tabeli \u0142\u0105czenia dla odwzorowania wiele do wielu [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_key_column=Nazwa kolumny klucza dla elementu odwzorowania podstawowego [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_many_to_many_reference_class=Klasa docelowa jednostki (odwo\u0142ania) dla elementu odwzorowania wiele do wielu [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_many_to_one_reference_class=Klasa docelowa jednostki (odwo\u0142ania) dla elementu odwzorowania wiele do jednego [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_map_key_attribute_name=Nazwa atrybutu klucza odwzorowania dla elementu odwzorowania [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_one_to_many_mapping=Element [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105 \u2013 odwzorowanie jeden do wielu.
+
+metadata_default_one_to_many_reference_class=Klasa docelowa jednostki (odwo\u0142ania) dla elementu odwzorowania jeden do wielu [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_one_to_one_mapping=Element [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105 \u2013 odwzorowanie jeden do jednego.
+
+metadata_default_one_to_one_reference_class=Klasa docelowa jednostki (odwo\u0142ania) dla elementu odwzorowania jeden do jednego [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_order_column=Nazwa kolumny porz\u0105dkowania dla elementu [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_pk_column=Nazwa kolumny klucza podstawowego dla elementu odwzorowania [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_qk_column=Nazwa klucza zapytania dla odwzorowania jeden do jednego zmiennej [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_secondary_catalog=Nazwa tabeli dodatkowej dla jednostki [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_secondary_schema=Nazwa tabeli dodatkowej dla jednostki [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_secondary_table_fk_column=Nazwa kolumny klucza obcego tabeli dodatkowej dla elementu [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_secondary_table_name=Nazwa tabeli dodatkowej dla jednostki [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_secondary_table_pk_column=Nazwa kolumny klucza podstawowego tabeli dodatkowej dla elementu [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_sequence_generator_catalog=Katalog generatora sekwencji zdefiniowany w elemencie [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_sequence_generator_schema=Schemat generatora sekwencji zdefiniowany w elemencie [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_sequence_generator_sequence_name=Nazwa sekwencji dla generatora sekwencji o nazwie [{0}] zdefiniowanego w [{1}] z [{2}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {0}.
+
+metadata_default_source_fk_column=\u0179r\u00f3d\u0142owa nazwa kolumny klucza obcego dla odwzorowania wiele do wielu [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_source_pk_column=\u0179r\u00f3d\u0142owa nazwa kolumny klucza podstawowego dla odwzorowania wiele do wielu [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_table_catalog=Katalog tabel dla jednostki [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_table_generator_catalog=Katalog generatora tabel zdefiniowany w elemencie [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_table_generator_name=Nazwa generatora tabel zdefiniowana w elemencie [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_table_generator_pk_column_value=Warto\u015b\u0107 kolumny pk dla generatora tabel o nazwie [{0}] zdefiniowanego w [{1}] z [{2}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {0}.
+
+metadata_default_table_generator_schema=Schemat generatora tabel zdefiniowany w elemencie [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_table_name=Nazwa tabeli dla jednostki [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_table_schema=Schemat tabeli dla jednostki [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_target_fk_column=Docelowa nazwa kolumny klucza obcego dla odwzorowania wiele do wielu [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_target_pk_column=Docelowa nazwa kolumny klucza podstawowego dla odwzorowania wiele do wielu [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_tenant_discriminator_column=Nazwa kolumny wyr\u00f3\u017cnika klienta dla elementu [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_tenant_discriminator_context_property=W\u0142a\u015bciwo\u015b\u0107 kontekstu wyr\u00f3\u017cnika klienta dla kolumny wyr\u00f3\u017cnika klienta [{1}] w elemencie [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {2}.
+
+metadata_default_tenant_table_discriminator_context_property=W\u0142a\u015bciwo\u015b\u0107 kontekstu wyr\u00f3\u017cnika tabeli klient\u00f3w dla jednostki [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_tenant_table_discriminator_type=Typ wyr\u00f3\u017cnika tabeli klient\u00f3w dla jednostki [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_value_column=Nazwa kolumny warto\u015bci dla podstawowego elementu odwzorowania kolekcji/odwzorowania [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_variable_one_to_one_discriminator_column=Nazwa kolumny wyr\u00f3\u017cnika dla odwzorowania jeden do jednego zmiennej [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_default_variable_one_to_one_mapping=Element [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105 \u2013 odwzorowanie jeden do jednego zmiennej.
+
+metadata_default_variable_one_to_one_reference_class=Docelowa klasa interfejsu (odwo\u0142ania) dla elementu odwzorowania jeden do jednego zmiennej [{0}] przyjmuje warto\u015b\u0107 domy\u015bln\u0105: {1}.
+
+metadata_warning_ignore_association_override=Przes\u0142oni\u0119cie powi\u0105zania o nazwie [{0}] dla elementu [{1}] odwzorowanej nadklasy [{2}] zostanie zignorowane, poniewa\u017c okre\u015blono przes\u0142oni\u0119cie powi\u0105zania o tej samej nazwie dla klasy jednostki [{3}].
+
+metadata_warning_ignore_attribute_override=Przes\u0142oni\u0119cie atrybutu o nazwie [{0}] dla elementu [{1}] odwzorowanej nadklasy [{2}] zostanie zignorowane, poniewa\u017c okre\u015blono przes\u0142oni\u0119cie atrybutu o tej samej nazwie dla klasy jednostki [{3}].
+
+metadata_warning_ignore_auto_apply_converter=Automatycznie stosowany konwerter dla elementu [{1}] w klasie jednostki [{0}] zostanie zignorowany, poniewa\u017c okre\u015blone s\u0105 metadane przekszta\u0142cania produktu EclipseLink.
+
+metadata_warning_ignore_cacheable_false=Jawne ustawienie cacheable=false okre\u015blone dla klasy jednostki [{0}] zostanie zignorowane, poniewa\u017c okre\u015blono typ buforowania ALL w pliku persistence.xml.
+
+metadata_warning_ignore_cacheable_true=Jawne ustawienie cacheable=true okre\u015blone dla klasy jednostki [{0}] zostanie zignorowane, poniewa\u017c okre\u015blono typ buforowania NONE w pliku persistence.xml.
+
+metadata_warning_ignore_converts=Specyfikacja przekszta\u0142cania JPA dla elementu [{1}] w klasie jednostki [{0}] zostanie zignorowana, poniewa\u017c okre\u015blone s\u0105 metadane przekszta\u0142cania produktu EclipseLink.
+
+metadata_warning_ignore_enumerated=Specyfikacja wyliczenia dla elementu [{1}] w klasie jednostki [{0}] zostanie zignorowana, poniewa\u017c okre\u015blone s\u0105 metadane przekszta\u0142cania produktu EclipseLink.
+
+metadata_warning_ignore_fetch_group=Grupy pobierania okre\u015blone dla klasy [{0}] i jednostki [{1}] zostan\u0105 zignorowane, poniewa\u017c nie jest w\u0142\u0105czone manipulowanie kodem bajtowym, a klasa jednostki nie implementuje interfejsu FetchGroupTracker.
+
+metadata_warning_ignore_inheritance_subclass_cache=Metadane pami\u0119ci podr\u0119cznej dla podklasy dziedziczenia [{0}] zostan\u0105 zignorowane. Metadane pami\u0119ci podr\u0119cznej powinny by\u0107 okre\u015blane tylko dla elementu g\u0142\u00f3wnego hierarchii dziedziczenia i nie mog\u0105 by\u0107 nadpisywane w podklasie dziedziczenia.
+
+metadata_warning_ignore_inheritance_subclass_cache_interceptor=Metadane przechwytywacza pami\u0119ci podr\u0119cznej dla podklasy dziedziczenia [{0}] zostan\u0105 zignorowane. Metadane przechwytywacza pami\u0119ci podr\u0119cznej powinny by\u0107 okre\u015blane tylko dla elementu g\u0142\u00f3wnego hierarchii dziedziczenia i nie mog\u0105 by\u0107 nadpisywane w podklasie dziedziczenia.
+
+metadata_warning_ignore_inheritance_subclass_default_redirectors=Metadane domy\u015blnego programu przekierowuj\u0105cego dla podklasy dziedziczenia [{0}] zostan\u0105 zignorowane. Metadane domy\u015blnego programu przekierowuj\u0105cego powinny by\u0107 okre\u015blane tylko dla elementu g\u0142\u00f3wnego hierarchii dziedziczenia i nie mog\u0105 by\u0107 nadpisywane w podklasie dziedziczenia.
+
+metadata_warning_ignore_inheritance_subclass_read_only=Ustawienie tylko do odczytu dla podklasy dziedziczenia [{0}] zostanie zignorowane. Ustawienie tylko do odczytu powinno by\u0107 okre\u015blane tylko dla elementu g\u0142\u00f3wnego hierarchii dziedziczenia i nie mo\u017ce by\u0107 nadpisywane w podklasie dziedziczenia.
+
+metadata_warning_ignore_inheritance_tenant_discriminator_column=Ustawienie kolumny wyr\u00f3\u017cnika klienta dla podklasy dziedziczenia [{0}] zostanie zignorowane. Kolumny wyr\u00f3\u017cnika klienta powinny by\u0107 okre\u015blane tylko dla elementu g\u0142\u00f3wnego hierarchii dziedziczenia i nie mog\u0105 by\u0107 nadpisywane i/lub okre\u015blane w podklasie dziedziczenia.
+
+metadata_warning_ignore_inheritance_tenant_table_discriminator=Ustawienie wyr\u00f3\u017cnika tabeli klient\u00f3w dla podklasy dziedziczenia [{0}] zostanie zignorowane. Wyr\u00f3\u017cnik tabeli klient\u00f3w powinien by\u0107 okre\u015blany tylko dla elementu g\u0142\u00f3wnego hierarchii dziedziczenia i nie mo\u017ce by\u0107 nadpisywany i/lub okre\u015blany w podklasie dziedziczenia.
+
+metadata_warning_ignore_is_null_allowed=W\u0142a\u015bciwo\u015b\u0107 isNullAllowed zostanie zresetowana do warto\u015bci false w {0}, poniewa\u017c agregat zawiera docelowe odwzorowanie klucza obcego (potencjalnie zagnie\u017cd\u017cone).
+
+metadata_warning_ignore_lazy=Ustawienie op\u00f3\u017anione dla atrybutu OneToOne lub ManyToOne [{0}] dla klasy jednostki [{1}] zostanie przywr\u00f3cone, poniewa\u017c nie w\u0142\u0105czono manipulowania kodem bajtowym lub nie zosta\u0142o ono wykonane.
+
+metadata_warning_ignore_lob=Specyfikacja obiektu LOB dla elementu [{1}] w klasie jednostki [{0}] zostanie zignorowana, poniewa\u017c okre\u015blone s\u0105 metadane przekszta\u0142cania produktu EclipseLink.
+
+metadata_warning_ignore_mapped_superclass_additional_criteria=Metadane kryteri\u00f3w dodatkowych dla odwzorowanej nadklasy [{1}] dla klasy jednostki [{0}] zostan\u0105 zignorowane, poniewa\u017c wcze\u015bniej wykryto metadane kryteri\u00f3w dodatkowych dla tej jednostki (w samej jednostce lub innej odwzorowanej nadklasie).
+
+metadata_warning_ignore_mapped_superclass_annotation=Ustawienie metadanych [{0}] dla odwzorowanej nadklasy [{1}] dla klasy jednostki [{2}] zostanie zignorowane, poniewa\u017c wcze\u015bniej zosta\u0142y wykryte metadane dla tej jednostki (w samej jednostce lub innej odwzorowanej nadklasie).
+
+metadata_warning_ignore_mapped_superclass_association_override=Przes\u0142oni\u0119cie powi\u0105zania o nazwie [{0}] zdefiniowane dla odwzorowanej nadklasy [{1}] dla jednostki [{2}] zostanie zignorowane, poniewa\u017c wcze\u015bniej wykryto przes\u0142oni\u0119cie powi\u0105zania o tej samej nazwie dla tej jednostki (w samej jednostce lub innej odwzorowanej nadklasie).
+
+metadata_warning_ignore_mapped_superclass_attribute_override=Przes\u0142oni\u0119cie atrybutu o nazwie [{0}] zdefiniowane dla odwzorowanej nadklasy [{1}] dla jednostki [{2}] zostanie zignorowane, poniewa\u017c wcze\u015bniej wykryto przes\u0142oni\u0119cie atrybutu o tej samej nazwie dla tej jednostki (w samej jednostce lub innej odwzorowanej nadklasie).
+
+metadata_warning_ignore_mapped_superclass_cache=Metadane pami\u0119ci podr\u0119cznej dla odwzorowanej nadklasy [{1}] dla klasy jednostki [{0}] zostan\u0105 zignorowane, poniewa\u017c wcze\u015bniej wykryto metadane pami\u0119ci podr\u0119cznej dla tej jednostki (w samej jednostce lub innej odwzorowanej nadklasie).
+
+metadata_warning_ignore_mapped_superclass_cache_interceptor=Metadane przechwytywacza pami\u0119ci podr\u0119cznej dla odwzorowanej nadklasy [{1}] dla klasy jednostki [{0}] zostan\u0105 zignorowane, poniewa\u017c wcze\u015bniej wykryto metadane przechwytywacza pami\u0119ci podr\u0119cznej dla tej jednostki (w samej jednostce lub innej odwzorowanej nadklasie).
+
+metadata_warning_ignore_mapped_superclass_cacheable=Metadane mo\u017cliwo\u015bci buforowania dla odwzorowanej nadklasy [{1}] dla klasy jednostki [{0}] zostan\u0105 zignorowane, poniewa\u017c wcze\u015bniej wykryto metadane mo\u017cliwo\u015bci buforowania dla tej jednostki (w samej jednostce lub innej odwzorowanej nadklasie).
+
+metadata_warning_ignore_mapped_superclass_change_tracking=Metadane \u015bledzenia zmian dla odwzorowanej nadklasy [{1}] dla klasy jednostki [{0}] zostan\u0105 zignorowane, poniewa\u017c wcze\u015bniej wykryto metadane \u015bledzenia zmian dla tej jednostki (w samej jednostce lub innej odwzorowanej nadklasie).
+
+metadata_warning_ignore_mapped_superclass_copy_policy=Metadane strategii kopiowania dla odwzorowanej nadklasy [{1}] dla klasy jednostki [{0}] zostan\u0105 zignorowane, poniewa\u017c wcze\u015bniej wykryto metadane strategii kopiowania dla tej jednostki (w samej jednostce lub innej odwzorowanej nadklasie).
+
+metadata_warning_ignore_mapped_superclass_customizer=Konfigurator dla odwzorowanej nadklasy [{1}] dla klasy jednostki [{0}] zostanie zignorowany, poniewa\u017c wcze\u015bniej wykryto metadane konfiguratora dla tej jednostki (w samej jednostce lub innej odwzorowanej nadklasie).
+
+metadata_warning_ignore_mapped_superclass_default_redirectors=Metadane domy\u015blnego programu przekierowuj\u0105cego dla odwzorowanej nadklasy [{1}] dla klasy jednostki [{0}] zostan\u0105 zignorowane, poniewa\u017c wcze\u015bniej wykryto metadane domy\u015blnego programu przekierowuj\u0105cego dla tej jednostki (w samej jednostce lub innej odwzorowanej nadklasie).
+
+metadata_warning_ignore_mapped_superclass_existence_checking=Ustawienie sprawdzania istnienia dla odwzorowanej nadklasy [{1}] dla klasy jednostki [{0}] zostanie zignorowane, poniewa\u017c wcze\u015bniej wykryto metadane sprawdzania istnienia dla tej jednostki (w samej jednostce lub innej odwzorowanej nadklasie).
+
+metadata_warning_ignore_mapped_superclass_fetch_group=Grupa pobierania o nazwie [{2}] dla odwzorowanej nadklasy [{1}] dla klasy jednostki [{0}] zostanie zignorowana, poniewa\u017c wcze\u015bniej wykryto grup\u0119 pobierania o tej samej nazwie dla tej jednostki (w samej jednostce lub innej odwzorowanej nadklasie).
+
+metadata_warning_ignore_mapped_superclass_id_class=Klasa identyfikatora dla odwzorowanej nadklasy [{1}] dla klasy jednostki [{0}] zostanie zignorowana, poniewa\u017c wcze\u015bniej wykryto klas\u0119 identyfikatora dla tej jednostki (w samej jednostce lub innej odwzorowanej nadklasie).
+
+metadata_warning_ignore_mapped_superclass_multitenant=Ustawienie wielu klient\u00f3w dla odwzorowanej nadklasy [{1}] dla klasy jednostki [{0}] zostanie zignorowane, poniewa\u017c wcze\u015bniej wykryto metadane wielu klient\u00f3w dla tej jednostki (w samej jednostce lub innej odwzorowanej nadklasie).
+
+metadata_warning_ignore_mapped_superclass_optimistic_locking=Metadane blokowania optymistycznego dla odwzorowanej nadklasy [{1}] dla klasy jednostki [{0}] zostan\u0105 zignorowane, poniewa\u017c wcze\u015bniej wykryto metadane blokowania optymistycznego dla tej jednostki (w samej jednostce lub innej odwzorowanej nadklasie).
+
+metadata_warning_ignore_mapped_superclass_primary_key=Ustawienie klucza podstawowego dla odwzorowanej nadklasy [{1}] dla klasy jednostki [{0}] zostanie zignorowane, poniewa\u017c wcze\u015bniej wykryto metadane klucza podstawowego dla tej jednostki (w samej jednostce lub innej odwzorowanej nadklasie).
+
+metadata_warning_ignore_mapped_superclass_read_only=Ustawienie tylko do odczytu dla odwzorowanej nadklasy [{1}] dla klasy jednostki [{0}] zostanie zignorowane, poniewa\u017c wcze\u015bniej wykryto metadane tylko do odczytu dla tej jednostki (w samej jednostce lub innej odwzorowanej nadklasie).
+
+metadata_warning_ignore_mapping_metadata=Metadane javax.persistence zastosowane do atrybutu [{0}] z klasy [{1}] zostan\u0105 zignorowane. Metadane javax.persistence s\u0105 ignorowane w przypadku p\u00f3l lub w\u0142a\u015bciwo\u015bci, kt\u00f3re s\u0105 przej\u015bciowe, statyczne lub abstrakcyjne.
+
+metadata_warning_ignore_serialized=Domy\u015blne szeregowanie dla elementu [{1}] w klasie jednostki [{0}] zostanie zignorowane, poniewa\u017c okre\u015blone s\u0105 metadane przekszta\u0142cania produktu EclipseLink.
+
+metadata_warning_ignore_temporal=Specyfikacja czasowa dla elementu [{1}] w klasie jednostki [{0}] zostanie zignorowana, poniewa\u017c okre\u015blone s\u0105 metadane przekszta\u0142cania produktu EclipseLink.
+
+metadata_warning_ignore_version_locking=Metadane blokowania optymistycznego s\u0105 ju\u017c zdefiniowane w deskryptorze dla jednostki [{0}]. Specyfikacja wersji dla elementu [{1}] zostanie zignorowana.
+
+metadata_warning_integer_discriminator_could_not_be_built=Klasa [{0}] okre\u015bla warto\u015b\u0107 discriminatorType=INTEGER i u\u017cywa warto\u015bci [{1}] jako warto\u015bci parametru discriminatorValue.  Tej warto\u015bci nie mo\u017cna przekszta\u0142ci\u0107 w liczb\u0119 ca\u0142kowit\u0105.  Podj\u0119ta zostanie pr\u00f3ba u\u017cycia tej warto\u015bci w postaci \u0142a\u0144cucha.
+
+metadata_warning_inverse_access_type_mapping_override=Nadpisywanie atrybutu odwzorowania {2} [{1}] za pomoc\u0105 atrybutu odwzorowania {4} [{3}] z klasy [{0}]. Aby unikn\u0105\u0107 tego ostrze\u017cenia, nale\u017cy oznaczy\u0107 atrybut [{1}] jako przej\u015bciowy.
+
+metadata_warning_multiple_id_fields_without_id_class=Podano wiele identyfikator\u00f3w dla klasy jednostki [{0}] bez okre\u015blania adnotacji @IdClass. W ten spos\u00f3b mo\u017cna utraci\u0107 mo\u017cliwo\u015b\u0107 wyszukiwania wed\u0142ug to\u017csamo\u015bci, obs\u0142ugi rozproszonej pami\u0119ci masowej itd. Uwaga: mo\u017cna jednak u\u017cywa\u0107 operacji wyszukiwania interfejsu EntityManager, przekazuj\u0105c list\u0119 p\u00f3l klucza podstawowego. W przeciwnym razie konieczne b\u0119dzie u\u017cywanie zapyta\u0144 JPQL do odczytywania jednostek. Inne opcje identyfikatora zawiera opis adnotacji @PrimaryKey.
+
+metadata_warning_override_annotation_with_xml=Adnotacja [{0}] z [{1}] zostanie zignorowana, poniewa\u017c w pliku odwzorowania [{2}] zosta\u0142 zdefiniowany element XML.
+
+metadata_warning_override_named_annotation_with_xml=Adnotacja [{0}] z [{2}] zostanie zignorowana, poniewa\u017c w pliku odwzorowania [{3}] zdefiniowany zosta\u0142 element XML o tej samej nazwie [{1}].
+
+metadata_warning_override_named_xml_with_eclipselink_xml=Element [{0}] o nazwie [{1}] zdefiniowany w pliku odwzorowania [{2}] zostanie zignorowany, poniewa\u017c w pliku odwzorowania eclipselink-orm [{3}] zosta\u0142 zdefiniowany element o tej samej nazwie.
+
+metadata_warning_override_xml_with_eclipselink_xml=Element [{0}] z [{1}] zdefiniowany w pliku odwzorowania [{2}] zostanie zignorowany, poniewa\u017c ten element zosta\u0142 zdefiniowany w pliku odwzorowania eclipselink-orm [{3}].
+
+metadata_warning_partitioned_not_set=Znaleziono adnotacj\u0119 @Partitioning dla elementu {1} klasy {0}, ale brak adnotacji @Partitioned.  Nale\u017cy u\u017cy\u0107 adnotacji @Partitioned do ustawienia strategii partycjonowania. Adnotacja @Partitioning tylko definiuje strategi\u0119, ale jej nie ustawia.
+
+metadata_warning_reference_column_not_found=Nazwa kolumny odwo\u0142ania [{0}] odwzorowana na element [{1}] nie odpowiada poprawnemu identyfikatorowi ani podstawowemu polu/kolumnie w odwo\u0142aniu odwzorowania. Nazwa przywo\u0142ywanej kolumny zostanie u\u017cyta w postaci, w jakiej zosta\u0142a udost\u0119pniona.
+
+metamodel_print_type_header=Drukowana lista typ\u00f3w metamodeli [{0}] do \u015bledzenia:
+
+metamodel_print_type_value=Typ metamodelu: [{0}]}
+
+metamodel_type_collection_empty=Kolekcja typ\u00f3w metamodeli jest pusta. By\u0107 mo\u017ce nie znaleziono klas modeli podczas wyszukiwania jednostek dotycz\u0105cego jednostek trwa\u0142o\u015bci zarz\u0105dzanych przez kontenery Java SE i niekt\u00f3rych jednostek trwa\u0142o\u015bci zarz\u0105dzanych przez kontenery Java EE.  Sprawd\u017a, czy klasy jednostek s\u0105 przywo\u0142ywane w pliku persistence.xml za pomoc\u0105 element\u00f3w <class> lub globalnego elementu <exclude-unlisted-classes>false</exclude-unlisted-classes>
+
+metamodel_type_collection_empty_during_lookup=Kolekcja typ\u00f3w metamodeli [{1}] jest pusta. By\u0107 mo\u017ce nie znaleziono klas modeli podczas wyszukiwania jednostek dotycz\u0105cego jednostek trwa\u0142o\u015bci zarz\u0105dzanych przez kontenery Java SE i niekt\u00f3rych jednostek trwa\u0142o\u015bci zarz\u0105dzanych przez kontenery Java EE.  Sprawd\u017a, czy klasy jednostek s\u0105 przywo\u0142ywane w pliku persistence.xml przy u\u017cyciu element\u00f3w <class> lub globalnego elementu <exclude-unlisted-classes>false</exclude-unlisted-classes>.  Wyszukiwanie elementu [{0}] zwr\u00f3ci warto\u015b\u0107 NULL.
+
+migration_failed=Migracja nie powiod\u0142a si\u0119.
+
+migration_input_dir_not_valid=Katalog wej\u015bciowy ({0}) zdefiniowany przez u\u017cytkownika nie jest poprawny.
+
+migration_output_dir_not_valid=Katalog wyj\u015bciowy ({0}) zdefiniowany przez u\u017cytkownika nie jest poprawny.
+
+migration_successful=Migracja powiod\u0142a si\u0119.
+
+min_instance_not_supported=Ustawienie komponentu CMP rodzime dla produktu Oc4j min-instance dotycz\u0105ce jednostki ({0}) nie jest bezpo\u015brednio obs\u0142ugiwane w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
+
+missing_converter=Ostrze\u017cenie: nie mo\u017cna przekszta\u0142ci\u0107 komendy {0} ze wzgl\u0119du na brak konwertera komend. Komenda zostanie zignorowana.
+
+multiple_ds_not_supported=Komponent CMP produktu EclipseLink nie obs\u0142uguje wielu \u017ar\u00f3de\u0142 danych i b\u0119dzie u\u017cywa\u0142 tylko jednego z nich o nazwie ({0}), kt\u00f3re jest okre\u015blone w pliku orion-ejb-jar.xml i jest powi\u0105zane z komponentem EJB zdefiniowanym jako ostatni w odpowiednim pliku ejb-jar.xml.
+
+must_define_migration_output_dir=Nale\u017cy zdefiniowa\u0107 katalog wyj\u015bciowy dla narz\u0119dzia migracji.
+
+mw_project_generated_and_under=Zmigrowane pliki projektu \u015brodowiska roboczego produktu EclipseLink znajduj\u0105 si\u0119 w po\u0142o\u017ceniu ({0}).
+
+named_argument_not_found_in_query_parameters=Brak parametru zapytania dla argumentu o okre\u015blonej nazwie: {0} zast\u0105piony zostanie \u0142a\u0144cuch \u201enull\u201d.
+
+nested_entity_manager_flush_not_executed_pre_query_changes_may_be_pending=Klasa {0} jest ju\u017c opr\u00f3\u017cniana. Zapytanie zostanie wykonane bez zapisywania dalszych zmian w bazie danych.  Je\u015bli zapytanie zale\u017cy od zmienionych danych, zmiany mog\u0105 nie by\u0107 odzwierciedlone w wynikach.  U\u017cytkownicy powinni wykona\u0107 wywo\u0142anie operacji flush() po zako\u0144czeniu zale\u017cnych zmian i przed wywo\u0142aniem operacji flush(), aby zagwarantowa\u0107 poprawne wyniki.
+
+new_objects=Nowe obiekty:
+
+no_exclusive_write_access_not_supported=Sk\u0142adnik komponentu CMP rodzimy dla produktu Oc4j no-exclusive-write-access dotycz\u0105cy jednostki ({0}) nie jest bezpo\u015brednio obs\u0142ugiwany w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
+
+no_jar_entry_migratable_in_ear=\u017badne pozycje jar w wej\u015bciowym pliku EAR ({0}) nie s\u0105 mo\u017cliwe do migracji.
+
+no_session_found=Nie mo\u017cna znale\u017a\u0107 sesji o nazwie [{0}] w pliku session.xml [{1}]
+
+non_jpa_allowed_type_used_for_collection_using_lazy_access=Element [{1}] w klasie jednostki [{0}] u\u017cywa typu kolekcji [{2}], podczas gdy specyfikacja JPA obs\u0142uguje tylko typy java.util.Collection, java.util.Set, java.util.List lub java.util.Map.  Ten typ jest obs\u0142ugiwany w przypadku szybkiego \u0142adowania. Aby u\u017cywa\u0107 op\u00f3\u017anionego \u0142adowania w przypadku tego typu kolekcji, nale\u017cy wprowadzi\u0107 dodatkow\u0105 konfiguracj\u0119 oraz zaimplementowa\u0107 klas\u0119 IndirectContainer rozszerzaj\u0105c\u0105 [{2}] lub ustawi\u0107 odwzorowanie tak, aby u\u017cywany by\u0142 podstawowy element po\u015bredni i typ ValueholderInterface.
+
+objectchangepolicy_turned_off=\u015aledzenie zmian zosta\u0142o wy\u0142\u0105czone dla: {0}
+
+oc4j_native_migration_start=Rozpocz\u0119cie migracji komponentu CMP rodzimego dla produktu OC4J do komponentu CMP produktu EclipseLink OC4J...
+
+old_pessimistic_locking_not_supported=Ustawienie komponentu CMP rodzime dla produktu Oc4j old-pessimistic-locking dotycz\u0105ce jednostki ({0}) nie jest bezpo\u015brednio obs\u0142ugiwane w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
+
+one_to_one_join_outer_migrated=\u0141\u0105czenie zewn\u0119trzne jeden do jednego zdefiniowane dla pola cmr ({0}) komponentu EJB ({1}) nie jest bezpo\u015brednio obs\u0142ugiwane w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
+
+optimistic_locking_not_supported=Ustawienie komponentu CMP rodzime dla produktu Oc4j locking-mode="optimistic" dotycz\u0105ce jednostki ({0}) nie jest bezpo\u015brednio obs\u0142ugiwane w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
+
+orion_ejb_jar_xml_not_found_in_input=Brak pliku orion-ejb-jar.xml w okre\u015blonym przez u\u017cytkownika katalogu wej\u015bciowym ({0}).
+
+osgi_initializer=U\u017cywany jest inicjator OSGi: [{0}].
+
+osgi_initializer_failed=Konstruowanie inicjatora OSGi specyficznego dla \u015brodowiska [{0}] nie powiod\u0142o si\u0119; komunikat: [{1}].
+
+overriding_cache_isolation=Obiekt nadrz\u0119dny {0} ma poziom odseparowania: {1}, kt\u00f3ry zapewnia wi\u0119ksz\u0105 ochron\u0119, ni\u017c podklasa {2} z odseparowaniem: {3}; dlatego te\u017c dla podklasy ustawiono poziom odseparowania {1}.
+
+ox_lowering_global_logging_from_default_info_to_warning= {0} Obni\u017canie rejestrowania globalnego z poziomu domy\u015blnego INFORMACJA do poziomu OSTRZE\u017bENIE.
+
+ox_lowering_session_logging_from_default_info_to_warning= {0} Obni\u017canie rejestrowania sesji z poziomu domy\u015blnego INFORMACJA do poziomu OSTRZE\u017bENIE.
+
+ox_turn_global_logging_off= {0} Wy\u0142\u0105czanie globalnego rejestrowania sesji.
+
+ox_turn_session_logging_off= {0} Wy\u0142\u0105czanie rejestrowania sesji.
+
+parse_ejb_jar_with_validation_fails=Analizowanie pliku ejb-jar.xml pod k\u0105tem sprawdzenia poprawno\u015bci powoduje niepowodzenie i b\u0142\u0105d ({0}). Narz\u0119dzie migracji przeanalizuje plik XML bez sprawdzania poprawno\u015bci.
+
+persistence_unit_ignores_statments_cache_setting=Nie mo\u017cna w\u0142\u0105czy\u0107 pami\u0119ci podr\u0119cznej instrukcji, poniewa\u017c nie jest skonfigurowana \u017cadna pula po\u0142\u0105cze\u0144.
+
+persistence_unit_processor_error_in_class_forname_weaving_disabled=Program \u0142aduj\u0105cy klasy [{0}] nie m\u00f3g\u0142 za\u0142adowa\u0107 klasy [{1}]. Manipulowanie kodem bajtowym zosta\u0142o wy\u0142\u0105czone dla tej sesji. By\u0107 mo\u017ce produkt EclipseLink nie mo\u017ce za\u0142adowa\u0107 z serwera klasy tymczasowej uprawnionej w ramach specyfikacji. Opcjonalnym obej\u015bciem mo\u017ce by\u0107 u\u017cycie statycznego manipulowania kodem bajtowym. 
+
+persistence_unit_processor_error_loading_class={0}: podczas pr\u00f3by za\u0142adowania klasy {2} przez procesor \u0142adowania trwa\u0142o\u015bci zosta\u0142 zg\u0142oszony wyj\u0105tek {1}. Klasa zostanie zignorowana.
+
+persistence_unit_processor_error_loading_class_weaving_disabled=Program \u0142aduj\u0105cy klasy [{0}] dla procesora \u0142adowania trwa\u0142o\u015bci [{1}] nie m\u00f3g\u0142 za\u0142adowa\u0107 klasy [{2}]. Manipulowanie kodem bajtowym zosta\u0142o wy\u0142\u0105czone dla tej sesji. By\u0107 mo\u017ce produkt EclipseLink nie mo\u017ce za\u0142adowa\u0107 z serwera klasy tymczasowej uprawnionej w ramach specyfikacji. Opcjonalnym obej\u015bciem mo\u017ce by\u0107 u\u017cycie statycznego manipulowania kodem bajtowym. 
+
+persistence_unit_processor_jboss_temp_classloader_bypassed=Tymczasowy program \u0142aduj\u0105cy klasy dla procesora \u0142adowania trwa\u0142o\u015bci [{0}] jest niedost\u0119pny.  Program \u0142aduj\u0105cy klasy zostanie prze\u0142\u0105czony na [{1}].  Manipulowanie kodem bajtowym zosta\u0142o wy\u0142\u0105czone dla tej sesji. By\u0107 mo\u017ce produkt EclipseLink nie mo\u017ce za\u0142adowa\u0107 z serwera klasy tymczasowej uprawnionej w ramach specyfikacji. Opcjonalnym obej\u015bciem mo\u017ce by\u0107 u\u017cycie statycznego manipulowania kodem bajtowym. 
+
+persistence_unit_processor_npe_temp_classloader=Program \u0142aduj\u0105cy klasy [{0}] dla procesora \u0142adowania trwa\u0142o\u015bci [{1}] powoduje wyj\u0105tek wska\u017anika o warto\u015bci NULL (NPE) w klasie \u0142adowania. Program \u0142aduj\u0105cy klasy zostanie prze\u0142\u0105czony na [{2}].  Manipulowanie kodem bajtowym zosta\u0142o wy\u0142\u0105czone dla tej sesji. By\u0107 mo\u017ce produkt EclipseLink nie mo\u017ce za\u0142adowa\u0107 z serwera klasy tymczasowej uprawnionej w ramach specyfikacji. Opcjonalnym obej\u015bciem mo\u017ce by\u0107 u\u017cycie statycznego manipulowania kodem bajtowym. 
+
+persistence_unit_processor_null_temp_classloader=Program \u0142aduj\u0105cy klasy dla procesora \u0142adowania trwa\u0142o\u015bci [{0}] ma warto\u015b\u0107 NULL. Manipulowanie kodem bajtowym zosta\u0142o wy\u0142\u0105czone dla tej sesji. By\u0107 mo\u017ce produkt EclipseLink nie mo\u017ce za\u0142adowa\u0107 z serwera klasy tymczasowej uprawnionej w ramach specyfikacji. Opcjonalnym obej\u015bciem mo\u017ce by\u0107 u\u017cycie statycznego manipulowania kodem bajtowym. 
+
+persistence_unit_processor_sap_temp_classloader_bypassed=Tymczasowy program \u0142aduj\u0105cy klasy dla procesora \u0142adowania trwa\u0142o\u015bci [{0}] jest niedost\u0119pny.  Program \u0142aduj\u0105cy klasy zostanie prze\u0142\u0105czony na [{1}].  Manipulowanie kodem bajtowym zosta\u0142o wy\u0142\u0105czone dla tej sesji. By\u0107 mo\u017ce produkt EclipseLink nie mo\u017ce za\u0142adowa\u0107 z serwera klasy tymczasowej uprawnionej w ramach specyfikacji. Opcjonalnym obej\u015bciem mo\u017ce by\u0107 u\u017cycie statycznego manipulowania kodem bajtowym. 
+
+problem_adding_connection=Nie mo\u017cna doda\u0107 po\u0142\u0105czenia zdalnego z {0} z powodu b\u0142\u0119du: {1}
+
+problem_adding_remote_connection=Problem podczas dodawania po\u0142\u0105czenia zdalnego: {0}
+
+problem_reconnect_to_jms=Nie mo\u017cna nawi\u0105za\u0107 ponownego po\u0142\u0105czenia z nazw\u0105 tematu JMS {0} z powodu b\u0142\u0119du: {1}
+
+problem_registering_mbean=Problem podczas rejestrowania komponentu MBean: {0}
+
+problem_unregistering_mbean=Problem podczas wyrejestrowywania komponentu MBean: {0}
+
+problem_while_registering=Problem podczas rejestrowania: {0}
+
+query_has_both_join_attributes_and_partial_attributes=Element {0} o nazwie {1} ma zar\u00f3wno atrybuty \u0142\u0105czenia, jak i atrybuty cz\u0119\u015bciowe. Te dwie technologie nie zosta\u0142y zaprojektowane pod k\u0105tem wsp\u00f3lnego dzia\u0142ania. Wyniki mog\u0105 by\u0107 nieprzewidywalne.
+
+query_has_joined_attribute_outside_fetch_group={0}: atrybut \u0142\u0105czony [{1}] nie jest do\u0142\u0105czony do grupy pobierania. Dane atrybutu \u0142\u0105czonego zostan\u0105 zignorowane (mimo, \u017ce zostan\u0105 odczytane z bazy danych). Wykonana zostanie nowa instrukcja SQL maj\u0105ca na celu ponowne odczytanie obiektu przywo\u0142ywanego przez atrybut \u0142\u0105czony i jeszcze jedna instrukcja SQL maj\u0105ca na celu odczytanie ca\u0142ego obiektu g\u0142\u00f3wnego (ze wzgl\u0119du na ustawienie warto\u015bci na atrybut poza grup\u0105 pobierania). Do\u0142\u0105cz atrybut pobierania do grupy pobierania lub usu\u0144 go.
+
+received_corrupt_announcement=Ostrze\u017cenie: mened\u017cer wykrywania nie m\u00f3g\u0142 przetworzy\u0107 og\u0142oszenia us\u0142ugi z nast\u0119puj\u0105cego powodu: {0} \u2013 og\u0142oszenie zostanie zignorowane.
+
+received_unexpected_message_type=Otrzymano nieoczekiwany typ komunikatu: {0} z tematu: {1}; zostanie on zignorowany.
+
+register_new_for_persist=Wywo\u0142ano operacj\u0119 PERSIST dla: {0}.
+
+relational_descriptor_support_only=Domy\u015blny generator tabel aktualnie obs\u0142uguje tylko generowanie domy\u015blnego schematu tabeli na podstawie projektu relacyjnego.
+
+relationship_cacheing_not_supported=Ustawienie komponentu CMP rodzime dla produktu WLS relationship-caching dotycz\u0105ce jednostki ({0}) nie jest bezpo\u015brednio obs\u0142ugiwane w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
+
+removeEJB_return=removeEJB - zwr\u00f3cenie: {0}
+
+removing_unique_constraint=Usuwanie definicji ograniczenia przez unikalno\u015b\u0107 z [{0}], poniewa\u017c jest to r\u00f3wnie\u017c klucz podstawowy.
+
+resource_local_persistence_init_info_ignores_jta_data_source=Informacja o jednostce trwa\u0142o\u015bci {0} ma typ transakcji RESOURCE_LOCAL, a wi\u0119c \u017ar\u00f3d\u0142o danych JTA zostanie zignorowane.
+
+retreived_null_message=Otrzymano komunikat o warto\u015bci NULL z tematu: {0}; zostanie on zignorowany.
+
+retreived_unknown_message_type=Otrzymano nieznany typ komunikatu: {0} z tematu: {1}; zostanie on zignorowany.
+
+sdo_classgenerator_exception={2} Wyst\u0105pi\u0142 wyj\u0105tek [{0}] \u2013 komunikat: [{1}]
+
+sdo_error_deserialization=Nieautoryzowana pr\u00f3ba deserializacji z klas\u0105 {0}.
+
+sdo_error_processing_referenced_schema=Wyst\u0105pi\u0142 wyj\u0105tek {0} podczas przetwarzania przywo\u0142ywanego schematu z identyfikatorem URI {1} i po\u0142o\u017ceniem schematu {2}.
+
+sdo_invalid_schemaLocation=Nie mo\u017cna utworzy\u0107 po\u0142o\u017cenia schematu [{0}] na potrzeby importowania z identyfikatorem URI [{1}].
+
+sdo_missing_schemaLocation=Nie mo\u017cna przetworzy\u0107 przywo\u0142ywanego schematu z identyfikatorem URI {0}, poniewa\u017c nie okre\u015blono atrybutu po\u0142o\u017cenia schematu.
+
+sdo_type_generation_modified_class_naming_format_to={0}: Nazwa klasy Java wygenerowanego typu [{1}] zosta\u0142a zmieniona na [{2}], aby by\u0142a zgodna z konwencjami nazewnictwa klas.
+
+sdo_type_generation_modified_function_naming_format_to={0}: Nazwa metody pobierania/ustawiania Java wygenerowanego typu [{1}] zosta\u0142a zmieniona na [{2}], aby by\u0142a zgodna z konwencjami nazewnictwa klas.
+
+sdo_type_generation_warning_class_name_violates_java_spec={0}: Wygenerowany typ [{1}] powoduje konflikt z regu\u0142ami nazewnictwa specyfikacji Java dla [{2}] i wymaga zmiany nazwy.
+
+sdo_type_generation_warning_class_name_violates_sdo_spec={0}: Wygenerowany typ [{1}] powoduje konflikt z regu\u0142ami nazewnictwa specyfikacji SDO dla [{2}] i wymaga zmiany nazwy.
+
+sequence_cachekey_improper_format=Ustawienie komponentu CMP rodzime dla produktu WLS key-cache-size dotycz\u0105ce jednostki ({0}) ma niepoprawny format oraz warto\u015b\u0107 ({1})
+
+session_key_for_mbean_name_is_null=Nazwa sesji u\u017cywana na potrzeby rejestracji komponentu MBean nie mo\u017ce mie\u0107 warto\u015bci NULL.
+
+session_manager_no_partition=Brak instancji partycji powi\u0105zanej z bie\u017c\u0105c\u0105 instancj\u0119 mened\u017cera sesji.
+
+sessions_xml_path_where_session_load_from=Informacje o sesji s\u0105 \u0142adowane z po\u0142o\u017cenia [{0}].
+
+sop_object_deserialze_failed=Przekszta\u0142cenie obiektu sopObject z postaci szeregowej z [{0}] w [{1}] nie powiod\u0142o si\u0119.
+
+sop_object_not_found=Nie znaleziono obiektu sopObject przekszta\u0142conego do postaci szeregowej w [{0}] w [{1}]
+
+sop_object_wrong_pk=Obiekt sopObject przekszta\u0142cony do postaci szeregowej zostanie usuni\u0119ty z wiersza, poniewa\u017c ma niepoprawny klucz podstawowy [{0}] w [{1}] w [{2}]
+
+sop_object_wrong_version=Obiekt sopObject przekszta\u0142cony do postaci szeregowej zostanie usuni\u0119ty z wiersza, poniewa\u017c ma niepoprawn\u0105 wersj\u0119 [{0}] w [{1}] w [{2}]
+
+src_pm_name_first_argument=Nale\u017cy okre\u015bli\u0107 nazw\u0119 \u017ar\u00f3d\u0142owego systemu PM w pierwszym argumencie wej\u015bciowym: -sOc4j-native lub -sWeblogic.
+
+table_existed_during_creation=Tworzenie tabeli nie powiod\u0142o si\u0119. Je\u015bli tabela ju\u017c istnieje, nale\u017cy j\u0105 najpierw usun\u0105\u0107. Mo\u017cna to zrobi\u0107 r\u0119cznie, lub ustawiaj\u0105c atrybut db-table-gen w pliku orion-ejb-jar.xml.
+
+template_orion_ejb_jar_created=Utworzono szablon pliku orion-ejb-jar.xml.
+
+topLink_version=EclipseLink, wersja: {0}
+
+toplink=[EL]: 
+
+toplink_cmp_bean_name_xml_deprecated=Obs\u0142uga pliku toplink-cmp-bean_name.xml jest nieaktualna. Nale\u017cy zapozna\u0107 si\u0119 z dokumentacj\u0105, aby pozna\u0107 spos\u00f3b u\u017cycia pliku toplink-ejb-jar.xml.
+
+toplink_config=[Konfiguracja EL]: 
+
+toplink_ejb_jar_in_jar=Plik toplink-ejb-jar.xml jest do\u0142\u0105czony do pliku jar ({0}), a wi\u0119c dla tego pliku jar nie b\u0119dzie wykonywana migracja.
+
+toplink_ejb_jar_xml_found_in_input=Plik toplink-ejb-jar.xml znajduje si\u0119 w katalogu wej\u015bciowym ({0}). Nale\u017cy usun\u0105\u0107 deskryptor toplink z katalogu wej\u015bciowego, aby mo\u017cliwe by\u0142o przetworzenie migracji.
+
+toplink_fine=[EL \u2013 szczeg\u00f3\u0142owe]: 
+
+toplink_finer=[EL \u2013 bardziej szczeg\u00f3\u0142owe]: 
+
+toplink_finest=[EL \u2013 najbardziej szczeg\u00f3\u0142owe]: 
+
+toplink_info=[EL \u2013 informacje]: 
+
+toplink_severe=[EL \u2013 powa\u017cne]: 
+
+toplink_warning=[EL \u2013 ostrze\u017cenia]: 
+
+unitofwork_identity_hashcode={0} Kod mieszaj\u0105cy to\u017csamo\u015bci jednostki pracy: {1}
+
+update_all_fields_not_supported=Sk\u0142adnik komponentu CMP rodzimy dla produktu Oc4j update-all-fields dotycz\u0105cy jednostki ({0}) nie jest bezpo\u015brednio obs\u0142ugiwany w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
+
+update_all_query_cannot_use_binding_on_this_platform=Zapytanie UpdateAllQuery nie mo\u017ce u\u017cywa\u0107 powi\u0105zania na tej platformie bazy danych. Ustawienia zapytania zosta\u0142y zmienione tak, aby wykona\u0107 zapytanie bez powi\u0105zania.
+
+validate_db_schema_with_not_supported=Ustawienie komponentu CMP rodzime dla produktu WLS validate-db-schema-with nie jest bezpo\u015brednio obs\u0142ugiwane w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
+
+validate_ejb_jar=Rozpocz\u0119to sprawdzanie poprawno\u015bci pliku ejb-jar.xml. Mo\u017ce to zaj\u0105\u0107 troch\u0119 czasu...
+
+validity_timeout_not_supported=Ustawienie komponentu CMP rodzime dla produktu Oc4j validity-timeout dotycz\u0105ce jednostki ({0}) nie jest bezpo\u015brednio obs\u0142ugiwane w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
+
+verifiy_columns_read_locking_not_supported=Ustawienie optymistyczne Read dla w\u0142a\u015bciwo\u015bci verify-columns w jednostce ({0}) nie jest bezpo\u015brednio obs\u0142ugiwane w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
+
+verifiy_rows_read_locking_not_supported=Ustawienie optymistyczne Read dla w\u0142a\u015bciwo\u015bci verify-rows w jednostce ({0}) nie jest bezpo\u015brednio obs\u0142ugiwane w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migracji.
+
+weaver_class_not_in_project=Program do manipulowania kodem bajtowym znalaz\u0142 klas\u0119, kt\u00f3ra nie stanowi cz\u0119\u015bci projektu: {0}.
+
+weaver_could_not_write=Program do manipulowania kodem bajtowym napotka\u0142 wyj\u0105tek podczas pr\u00f3by zapisu klasy {0} w systemie plik\u00f3w.  Wyj\u0105tek: {1}
+
+weaver_disable_by_system_property=Manipulowanie kodem bajtowym zosta\u0142o wy\u0142\u0105czone przez w\u0142a\u015bciwo\u015b\u0107 systemow\u0105 {0}
+
+weaver_not_overwriting=Program do manipulowania kodem bajtowym nie nadpisze klasy {0}, poniewa\u017c nie zosta\u0142 ustawiony w tryb nadpisywania.
+
+weaver_null_project=Projekt sesji programu do manipulowania kodem bajtowym nie mo\u017ce mie\u0107 warto\u015bci NULL.
+
+weblogic_ejb_jar_xml_not_found_in_input=Brak pliku weblogic-ejb-jar.xml w okre\u015blonym przez u\u017cytkownika katalogu wej\u015bciowym ({0}).
+
+weblogic_native_migration_start=Rozpocz\u0119cie migracji komponentu CMP rodzimego dla produktu WebLogic do komponentu CMP produktu EclipseLink OC4J...
+
+weblogic_ql_not_supported=Kod QL produktu WebLogic ({0}) w metodzie ({1}) jednostki ({2}) nie zosta\u0142 zmigrowany, poniewa\u017c produkt EclipseLink nie obs\u0142uguje j\u0119zyka QL produktu WebLogic.
+
+weblogic_query_not_supported=Ustawienie komponentu CMP rodzime dla produktu WLS weblogic-query dotycz\u0105ce jednostki ({0}) nie jest bezpo\u015brednio obs\u0142ugiwane w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
+

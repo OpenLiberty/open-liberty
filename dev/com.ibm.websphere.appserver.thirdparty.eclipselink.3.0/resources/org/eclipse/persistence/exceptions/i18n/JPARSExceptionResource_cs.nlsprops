@@ -1,0 +1,69 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/JPARSExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+61000=Entita typu {0} s ID {1} nebyla nalezena v jednotce perzistence {2}.
+
+61001=Entita uveden\u00e1 v odkazu neexistuje, typ entity {0}, ID {1}.
+
+61002=Neplatn\u00e1 konfigurace.
+
+61003=Entita typu {0} v jednotce perzistence {1} se vytv\u00e1\u0159\u00ed pomoc\u00ed PUT, ale tato entita nen\u00ed kv\u016fli posloupnosti generov\u00e1n\u00ed nebo z\u0159et\u011bzen\u00ed idempotentn\u00ed.
+
+61004=Kontext perzistence {0} nelze zav\u00e9st zav\u00e1d\u011bc\u00edm programem.
+
+61005=T\u0159\u00edda nebo deskriptor t\u0159\u00eddy nebyly pro typ entity {0} v jednotce perzistence {1} nalezeny.
+
+61006=Pro atribut {0} pro typ entity {1} a ID {2} v jednotce perzistence {3} nebylo nalezeno odpov\u00eddaj\u00edc\u00ed mapov\u00e1n\u00ed datab\u00e1ze.
+
+61007=Atribut {0} pro typ entity {1} a ID {2} nebyl v jednotce perzistence {3} nalezen.
+
+61008=Dotaz na v\u00fdb\u011br nebyl pro atribut {0}, typ entity {1} a ID {2} v jednotce perzistence {3} nalezen.
+
+61009=Neplatn\u00e9 parametry v adrese URL po\u017eadavku na str\u00e1nkov\u00e1n\u00ed.
+
+61010=Atribut {0} pro typ entity {1} a ID {2} nelze v jednotce perzistence {3} aktualizovat.
+
+61011=Neplatn\u00e9 parametry v adrese URL po\u017eadavku na odebr\u00e1n\u00ed atributu pro atribut {0}, typ entity {1} a ID {2} v jednotce perzistence {3}.
+
+61012=Nelze \u00fasp\u011b\u0161n\u011b sestavit odezvu na po\u017eadavek na vyhled\u00e1n\u00ed pro atribut {0} typu entity {1} a ID {2} v jednotce perzistence {3}.
+
+61013=Vyhled\u00e1n\u00ed objektu typu session bean s n\u00e1zvem rozhran\u00ed JNDI {0} se nezda\u0159ilo.
+
+61014=Nelze \u00fasp\u011b\u0161n\u011b sestavit odezvu na po\u017eadavek pojmenovan\u00e9ho dotazu na vyhled\u00e1v\u00e1n\u00ed pro dotaz {0} v jednotce perzistence {1}.
+
+61015=Neplatn\u00e1 verze slu\u017eby {0} v po\u017eadavku.
+
+61016=Parametr dotazu str\u00e1nkov\u00e1n\u00ed (limit nebo offset) byl pou\u017eit u nestr\u00e1nkovateln\u00e9ho prost\u0159edku.
+
+61017=V jednom po\u017eadavku nelze pou\u017e\u00edt jak "fields", tak i "excludeFields".
+
+61018=Neplatn\u00e1 hodnota parametru ("{0}" = "{1}").
+
+61999=Objevila se {0}.
+

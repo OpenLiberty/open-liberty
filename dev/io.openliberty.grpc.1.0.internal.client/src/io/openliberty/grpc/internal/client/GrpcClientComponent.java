@@ -20,6 +20,8 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -40,9 +42,11 @@ public class GrpcClientComponent implements ApplicationStateListener {
 	private static boolean monitoringEnabled = false;
 
 	private final String FEATUREPROVISIONER_REFERENCE_NAME = "featureProvisioner";
+	private final String GRPC_SSL_SERVICE_NAME = "GrpcSSLService";
 
 	private final AtomicServiceReference<FeatureProvisioner> featureProvisioner = new AtomicServiceReference<FeatureProvisioner>(
 			FEATUREPROVISIONER_REFERENCE_NAME);
+    private static GrpcSSLService sslService = null;
 
 	@Activate
 	protected void activate(ComponentContext cc) {
@@ -63,6 +67,26 @@ public class GrpcClientComponent implements ApplicationStateListener {
 		featureProvisioner.unsetReference(ref);
 	}
 
+	@Reference(name = "GRPC_SSL_SERVICE_NAME", service = GrpcSSLService.class,
+	        cardinality = ReferenceCardinality.OPTIONAL,
+	        policy = ReferencePolicy.DYNAMIC,
+	        policyOption = ReferencePolicyOption.GREEDY)
+	 protected void setGrpcSSLService(GrpcSSLService service) {
+	     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+	         Tr.debug(this, tc, "registerGrpcSSLService");
+	     }
+	     sslService = service;
+	 }
+
+	 protected void unsetGrpcSSLService(GrpcSSLService service) {
+	     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+	         Tr.debug(this, tc, "unregisterGrpcSSLService");
+	     }
+	     if (sslService == service) {
+	    	 sslService = null;
+	     }
+	 }
+
 	/**
 	 * Set the indication whether the monitor feature is enabled
 	 */
@@ -77,6 +101,13 @@ public class GrpcClientComponent implements ApplicationStateListener {
 	 */
 	public static boolean isMonitoringEnabled() {
 		return monitoringEnabled;
+	}
+
+	/**
+	 * @return a GrpcSSLService if an SSL feature is enabled
+	 */
+	public static GrpcSSLService getGrpcSSLService() {
+		return sslService;
 	}
 
 	@Override

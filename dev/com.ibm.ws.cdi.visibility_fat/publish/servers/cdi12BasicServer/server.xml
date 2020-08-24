@@ -10,4 +10,6 @@
         <feature>localConnector-1.0</feature>
     </featureManager>
 
+	<orb id="defaultOrb" orbSSLInitTimeout="60"/>
+
 </server>

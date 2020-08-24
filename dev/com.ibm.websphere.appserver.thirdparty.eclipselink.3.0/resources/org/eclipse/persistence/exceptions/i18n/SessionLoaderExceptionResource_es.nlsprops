@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/SessionLoaderExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+9000=Se han generado varias [{0}] SessionLoaderExceptions:
+
+9001=Nombre de etiqueta desconocido: [{0}] en el nodo XML: [{1}].
+
+9002=No se puede cargar la clase de proyecto [{0}].
+
+9003=No se puede procesar la etiqueta XML [{0}] con el valor [{1}].
+
+9004=No se ha encontrado el archivo xml de proyecto [{0}] en la classpath ni en el sistema de archivos.
+
+9005=Se ha generado una excepci\u00f3n al cargar el archivo xml de proyecto [{0}].
+
+9006=Se ha generado una {0} al analizar el archivo XML.  Se ha producido en la l\u00ednea {1} y la columna {2} en el documento XML.
+
+9007=Se ha generado una excepci\u00f3n al analizar el archivo XML.
+
+9008=Valor inesperado [{0}] de la etiqueta [{1}].
+
+9009=La etiqueta [{0}] tiene un atributo desconocido.
+
+9010=Se ha generado una {0} al analizar el archivo XML con el esquema XML.
+
+9011=La clase de plataforma del servidor {0} se ha eliminado y la versi\u00f3n del servidor de aplicaciones correspondiente ya no est\u00e1 soportada
+
+9012=No se puede cargar el archivo xml de sesi\u00f3n porque contiene un formato no v\u00e1lido o porque el formato de XML no est\u00e1 soportado.
+

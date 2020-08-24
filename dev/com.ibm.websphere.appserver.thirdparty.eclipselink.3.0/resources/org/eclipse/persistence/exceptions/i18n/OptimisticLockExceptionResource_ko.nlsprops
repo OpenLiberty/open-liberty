@@ -1,0 +1,47 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/OptimisticLockExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+5001=[{0}] \uc624\ube0c\uc81d\ud2b8 \uc0ad\uc81c\ub97c \uc2dc\ub3c4\ud588\uc9c0\ub9cc ID \ub9f5\uc5d0 \ubc84\uc804 \ubc88\ud638\uac00 \uc5c6\uc2b5\ub2c8\ub2e4. {3}\uc0ad\uc81c\ub97c \uc2dc\ub3c4\ud558\uae30 \uc804\uc5d0 \uc624\ube0c\uc81d\ud2b8\ub97c \uc77d\uc9c0 \uc54a\uc558\uc744 \uc218 \uc788\uc2b5\ub2c8\ub2e4. {3}\ud074\ub798\uc2a4> {1} \uae30\ubcf8 \ud0a4> {2}
+
+5003=[{0}] \uc624\ube0c\uc81d\ud2b8\uac00 \ub9c8\uc9c0\ub9c9\uc73c\ub85c \uc77d\ud600\uc9c4 \ud6c4\uc5d0 \ubcc0\uacbd\ub418\uc5c8\uac70\ub098 \uc0ad\uc81c\ub418\uc5c8\uc73c\ubbc0\ub85c \uc774\ub97c \uc0ad\uc81c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. {3}\ud074\ub798\uc2a4> {1} \uae30\ubcf8 \ud0a4> {2}
+
+5004=[{0}] \uc624\ube0c\uc81d\ud2b8 \uc5c5\ub370\uc774\ud2b8\ub97c \uc2dc\ub3c4\ud588\uc9c0\ub9cc ID \ub9f5\uc5d0 \ubc84\uc804 \ubc88\ud638\uac00 \uc5c6\uc2b5\ub2c8\ub2e4. {3}\uc5c5\ub370\uc774\ud2b8\ub97c \uc2dc\ub3c4\ud558\uae30 \uc804\uc5d0 \uc624\ube0c\uc81d\ud2b8\ub97c \uc77d\uc9c0 \uc54a\uc558\uc744 \uc218 \uc788\uc2b5\ub2c8\ub2e4. {3}\ud074\ub798\uc2a4> {1} \uae30\ubcf8 \ud0a4> {2}
+
+5006=[{0}] \uc624\ube0c\uc81d\ud2b8\uac00 \ub9c8\uc9c0\ub9c9\uc73c\ub85c \uc77d\ud600\uc9c4 \ud6c4\uc5d0 \ubcc0\uacbd\ub418\uc5c8\uac70\ub098 \uc0ad\uc81c\ub418\uc5c8\uc73c\ubbc0\ub85c \uc774\ub97c \uc5c5\ub370\uc774\ud2b8\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. {3}\ud074\ub798\uc2a4> {1} \uae30\ubcf8 \ud0a4> {2}
+
+5007=[{0}] \uc624\ube0c\uc81d\ud2b8\uc5d0 \ubc84\uc804 \uc7a0\uae08 \ud544\ub4dc\uc5d0 \ub300\ud55c \uc77d\uae30 \uc804\uc6a9\uc774 \uc544\ub2cc \ub9f5\ud551\uc774 \uc788\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+
+5008=Timestamp \uc7a0\uae08\uc744 \uc0ac\uc6a9 \uc911\uc778 \uacbd\uc6b0 \ubc84\uc804 \uc7a0\uae08 \ud544\ub4dc\ub97c java.sql.Timestamp\ub85c \ub9f5\ud551\ud574\uc57c \ud568
+
+5009=[{0}] \uae30\ubcf8 \ud0a4\uac00 \uc788\ub294 [{1}] \ud074\ub798\uc2a4\uc758 \uc624\ube0c\uc81d\ud2b8\uac00 \ub9c8\uc9c0\ub9c9\uc73c\ub85c \uc77d\ud600\uc9c4 \ud6c4\uc5d0 \uc0ad\uc81c\ub418\uc5c8\uc73c\ubbc0\ub85c \uc774\ub97c \uc5b8\ub7a9\ud551\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+
+5010=[{0}] \uc624\ube0c\uc81d\ud2b8\uac00 \ub9c8\uc9c0\ub9c9\uc73c\ub85c \uc77d\ud600\uc9c4 \ud6c4\uc5d0 \ubcc0\uacbd\ub418\uc5c8\uac70\ub098 \uc0ad\uc81c\ub418\uc5c8\uc73c\ubbc0\ub85c \uc774\ub97c \ubcd1\ud569\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. {2}\ud074\ub798\uc2a4> {1}
+
+5011=\ud558\ub098 \uc774\uc0c1\uc758 \uc624\ube0c\uc81d\ud2b8\uac00 \ub9c8\uc9c0\ub9c9\uc73c\ub85c \uc77d\ud600\uc9c4 \ud6c4\uc5d0 \ubcc0\uacbd\ub418\uc5c8\uac70\ub098 \uc0ad\uc81c\ub418\uc5c8\uc73c\ubbc0\ub85c \uc774\ub97c \uc5c5\ub370\uc774\ud2b8\ud560 \uc218 \uc5c6\uc74c
+

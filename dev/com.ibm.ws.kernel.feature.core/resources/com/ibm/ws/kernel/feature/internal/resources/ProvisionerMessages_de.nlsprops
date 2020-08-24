@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2014 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -200,12 +200,21 @@ UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR=CWWKF0041E: Das Feature {0} un
 UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR.explanation=Das konfigurierte Feature unterst\u00fctzt den angegebenen Prozesstyp nicht.
 UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR.useraction=Entfernen Sie das Feature aus der Konfiguration oder \u00e4ndern Sie die Feature-Manifestdatei so, dass die Unterst\u00fctzung f\u00fcr den gew\u00fcnschten Prozesstyp aktiviert wird.
 
-# CWWK042E  {0} = feature Name: {1} = server name 
+# CWWK0042E  {0} = feature Name: {1} = server name 
 UPDATE_MISSING_CORE_FEATURE_ERROR=CWWKF0042E: Es wurde keine Featuredefinition f\u00fcr das Feature {0} gefunden. Versuchen Sie, das Feature mit dem Befehl bin/installUtility install {0} zu installieren. Alternativ k\u00f6nnen Sie den Befehl bin/installUtility install {1} ausf\u00fchren, um alle Features zu installieren, die von dieser Konfiguration referenziert werden.
 UPDATE_MISSING_CORE_FEATURE_ERROR.explanation=Der Feature-Manager hat keine Definition f\u00fcr das angegebene Feature gefunden.
 UPDATE_MISSING_CORE_FEATURE_ERROR.useraction=\u00dcberpr\u00fcfen Sie, ob der Name des Features richtig angegeben wurde. \
 Stellen Sie au\u00dferdem sicher, dass die Featuredefinition im Verzeichnis lib/features vorhanden und lesbar ist. \
 Wenn das Feature nicht vorhanden ist, versuchen Sie, das Feature mit dem Befehl bin/installUtility install Featurename zu installieren bzw. alle von dieser Konfiguration referenzierten Features mit dem Befehl bin/installUtility install Servername zu installieren.
+# CWWK0043E  {0} = EeProgModel1: {1} = EeProgModel2: {2} = configuredFeature1: {3} = configuredFeature2: {4} EePlaformCommonToProgModels 
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_SAME_PLATFORM_ERROR=CWWKF0043E: Das konfigurierte Feature {2} von {0} ist nicht kompatibel mit dem konfigurierten Feature {3} von {1}. Die Konfiguration enth\u00e4lt eine nicht kompatible Kombination von {4}-Features, die nicht unterst\u00fctzt wird. Aktualisieren Sie die Konfiguration so, dass kompatible Versionen der konfigurierten Features verwendet werden, die {0} oder die {1}-Programmiermodelle unterst\u00fctzen.
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_SAME_PLATFORM_ERROR.explanation=Die Serverkonfiguration enth\u00e4lt eine nicht kompatible Kombination von Features f\u00fcr die angegebenen Programmiermodelle. Dieser Konflikt kann auftreten, wenn die zwei nicht kompatiblen Features direkt in der Serverkonfiguration konfiguriert werden, oder wenn die konfigurierten Features unterschiedliche Versionen eines Features enthalten, die nicht kompatibel sind.
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_SAME_PLATFORM_ERROR.useraction=Versuchen Sie, eine kompatible Version f\u00fcr die konfigurierten Features anzugeben, die den Konflikt in der Datei server.xml verursacht haben. Wenn keine anderen Versionen verf\u00fcgbar sind, sind die konfigurierten Features nicht miteinander kompatibel und k\u00f6nnen nicht gleichzeitig konfiguriert werden.
+
+# CWWK0044E  {0} = EeProgModel1: {1} = EeProgModel2: {2} = EeConflictFeature1: {3} = EeConflictFeature2: {4} = configuredFeature1: {5} configuredFeature2
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR=CWWKF0044E: Die Features {2} und {3} k\u00f6nnen nicht gleichzeitig geladen werden. Das Feature {2} von {0} ist nicht kompatibel mit dem Feature {3} von {1}. Die konfigurierten Features {4} und {5} enthalten eine nicht kompatible Kombination von Features. Ihre Konfiguration wird nicht unterst\u00fctzt. Aktualisieren Sie die Konfiguration so, dass Features verwendet werden, die entweder die Jakarta EE- oder Java EE-Programmiermodelle unterst\u00fctzen, jedoch nicht beide.
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR.explanation=Die Serverkonfiguration enth\u00e4lt eine nicht kompatible Kombination von Jakarta EE- und Java EE-Features. Features, die das Programmiermodell von Jakarta EE 9 unterst\u00fctzen sind nicht kompatibel mit Features, die die Java EE-Programmiermodelle unterst\u00fctzen Dazu geh\u00f6rt auch Jakarta EE 8. Dieser Konflikt kann auftreten, wenn die zwei nicht kompatiblen Features direkt in der Serverkonfiguration konfiguriert werden, oder wenn die konfigurierten Features unterschiedliche Versionen eines Features enthalten, die nicht kompatibel sind.
+UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR.useraction=Geben Sie eine kompatible Version f\u00fcr die konfigurierten Features an, die den Konflikt in der Datei server.xml verursacht haben, und stellen Sie sicher, dass die Datei server.xml entweder Jakarta EE-Features oder Java EE-Features verwendet, jedoch nicht beide Features.
 
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 

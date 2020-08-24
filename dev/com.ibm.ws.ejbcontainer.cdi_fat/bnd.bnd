@@ -37,4 +37,5 @@ tested.features: \
 	com.ibm.websphere.javaee.transaction.1.1; version=latest, \
 	com.ibm.websphere.security; version=latest, \
 	com.ibm.websphere.javaee.cdi.1.0; version=latest, \
-	com.ibm.ws.ejbcontainer.fat_tools; version=latest
+	com.ibm.ws.ejbcontainer.fat_tools; version=latest, \
+	io.openliberty.ejbcontainer.jakarta.fat_tools; version=latest

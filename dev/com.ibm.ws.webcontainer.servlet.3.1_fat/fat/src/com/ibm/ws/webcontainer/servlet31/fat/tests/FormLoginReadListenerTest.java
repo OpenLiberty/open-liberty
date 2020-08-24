@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -42,16 +41,13 @@ import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.webcontainer.security.test.servlets.PostParamsClient;
 
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
-//Temporarily skipped for EE9 jakarta until jakarta repeat bug is fixed and jakartaee 9 feature is developed
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-@SkipForRepeat(EE9_FEATURES)
 public class FormLoginReadListenerTest extends LoggingTest {
     private static final Logger LOG = Logger.getLogger(FormLoginReadListenerTest.class.getName());
 

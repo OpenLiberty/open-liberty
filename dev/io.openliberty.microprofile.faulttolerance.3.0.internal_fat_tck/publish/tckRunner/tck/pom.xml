@@ -57,7 +57,7 @@
         <dependency>
             <groupId>org.eclipse.microprofile.fault-tolerance</groupId>
             <artifactId>microprofile-fault-tolerance-tck</artifactId>
-            <version>3.0-RC1</version>
+            <version>3.0-RC2</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.microprofile.apis</groupId>
