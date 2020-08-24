@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.krb5;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -118,7 +119,12 @@ public class DB2KerberosTest extends FATServletClient {
     @Mode(TestMode.FULL)
     public void testTicketCache() throws Exception {
         String ccPath = Paths.get(server.getServerRoot(), "security", "krb5TicketCache_" + KRB5_USER).toAbsolutePath().toString();
-        generateTicketCache(ccPath);
+        try {
+            generateTicketCache(ccPath);
+        } catch (UnsupportedOperationException e) {
+            Log.info(c, testName.getMethodName(), "Skipping test because OS does not support 'kinit'");
+            return;
+        }
 
         ServerConfiguration config = server.getServerConfiguration();
         final String originalKeytab = config.getKerberos().keytab;
@@ -166,7 +172,13 @@ public class DB2KerberosTest extends FATServletClient {
                         KRB5_USER + "@" + KerberosContainer.KRB5_REALM);
         pb.environment().put("KRB5_CONFIG", Paths.get(server.getServerRoot(), "security", "krb5.conf").toAbsolutePath().toString());
         pb.redirectErrorStream(true);
-        Process p = pb.start();
+        Process p = null;
+        try {
+            p = pb.start();
+        } catch (IOException e) {
+            Log.info(c, m, "Unable to start kinit due to: " + e.getMessage());
+            throw new UnsupportedOperationException(e);
+        }
 
         boolean success = p.waitFor(2, TimeUnit.MINUTES);
         String kinitResult = readInputStream(p.getInputStream());
