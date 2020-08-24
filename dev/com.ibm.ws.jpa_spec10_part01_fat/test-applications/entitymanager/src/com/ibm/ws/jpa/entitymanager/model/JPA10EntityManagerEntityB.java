@@ -43,6 +43,6 @@ public class JPA10EntityManagerEntityB implements java.io.Serializable {
 
     @Override
     public String toString() {
-        return "JPA20EntityManagerEntityB [id=" + id + ", strData=" + strData + "]";
+        return "JPA10EntityManagerEntityB [id=" + id + ", strData=" + strData + "]";
     }
 }
