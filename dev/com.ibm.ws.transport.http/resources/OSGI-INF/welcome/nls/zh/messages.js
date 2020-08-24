@@ -2,7 +2,7 @@ var messages = {
     WELCOME_SECTION: "欢迎部分",
     WELCOME_SECTION_CONTENT: "欢迎部分内容",
     WELCOME_MESSAGE: "欢迎使用",
-    WELCOME_IBM_OPEN_SOURCE: "IBM 开放式源代码",
+    WELCOME_IBM_OPEN_SOURCE: "IBM 开放式源代码项目",
     WELCOME_LIGHTWEIGHT: "用于构建和运行快速高效的云原生 Java 微服务的轻量级开放式框架。",
     UFO: "UFO 和光束",
     CLOUDS: "云",
