@@ -80,8 +80,6 @@ public class ResteasyInjectionClassListCollaborator implements WebAppInjectionCl
         JAXRS_INTERFACE_NAMES.add("javax.ws.rs.container.DynamicFeature");
 
         JAXRS_INTERFACE_NAMES.add("org.apache.cxf.jaxrs.ext.ContextResolver");
-
-        JAXRS_INTERFACE_NAMES.add("javax.ws.rs.core.Application");
     }
 
     private static final Set<String> JAXRS_ABSTRACT_CLASS_NAMES;
