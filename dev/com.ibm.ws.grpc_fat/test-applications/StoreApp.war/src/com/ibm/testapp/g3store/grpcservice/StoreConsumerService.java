@@ -62,6 +62,21 @@ public class StoreConsumerService extends AppConsumerServiceGrpc.AppConsumerServ
 
     /**
      * runtime exception as Status.NOTFOUND
+     *
+     * The Auth header is sent via grpcTarget
+     * This is secured with JWT token, openidconnectclient will auth the user and should
+     * fail as students2 is not right group in token.
+     */
+    @Override
+    @RolesAllowed({ "students2" })
+    public void getAppNameSetBadRoles(com.google.protobuf.Empty request,
+                                      io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.NameResponse> responseObserver) {
+        this.doAppNamesWork("getAppNameSetBadRoles", responseObserver);
+
+    }
+
+    /**
+     * runtime exception as Status.NOTFOUND
      * The Auth header is sent via added with CallCredential
      *
      * This is secured with JWT token, openidconnectclient will auth the user

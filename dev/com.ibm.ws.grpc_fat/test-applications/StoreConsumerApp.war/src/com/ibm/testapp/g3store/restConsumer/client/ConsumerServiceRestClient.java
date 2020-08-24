@@ -53,8 +53,8 @@ public interface ConsumerServiceRestClient {
     public Response getPrices(@QueryParam("appName") List<String> appNames) throws Exception;
 
     @GET
-    @Path("/appNames")
-    public Response getAllAppNames() throws Exception;
+    @Path("/appNames/{testMethodName}")
+    public Response getAllAppNames(@PathParam("testMethodName") String testMethodName) throws Exception;
 
     @GET
     @Path("/appNames_CC")

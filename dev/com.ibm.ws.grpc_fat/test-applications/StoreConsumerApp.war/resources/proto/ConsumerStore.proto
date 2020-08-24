@@ -46,6 +46,8 @@ service AppConsumerService {
   	
   	 // List of all App names available on server 
   	rpc getAllAppNames_AuthHeader_Via_ClientInterceptor(google.protobuf.Empty) returns (NameResponse) {};
+  	
+  	rpc getAppNameSetBadRoles(google.protobuf.Empty) returns (NameResponse) {};
 
   
 }

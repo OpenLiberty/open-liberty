@@ -42,7 +42,8 @@ Export-Package: \
   io.openliberty.grpc.internal,\
   io.openliberty.grpc.internal.config,\
   io.openliberty.grpc.internal.resources,\
-  io.openliberty.grpc.internal.servlet
+  io.openliberty.grpc.internal.servlet,\
+  io.openliberty.grpc.internal.security
 
 Include-Resource: \
   OSGI-INF=resources/OSGI-INF, \

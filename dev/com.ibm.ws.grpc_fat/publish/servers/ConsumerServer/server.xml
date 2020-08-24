@@ -85,6 +85,11 @@
 		id="defaultJWT" 
 		issuer="testIssuer"
 		 />
+		 
+	<jwtBuilder
+		id="defaultBadJWT" 
+		issuer="testIssuerBad"
+		 />
 		
 	<grpcTarget target="test.g3store.grpc.AppConsumerService/getAppInfo" headersToPropagate="authorization"/>
 	<grpcTarget target="test.g3store.grpc.AppConsumerService/getAllAppNames" headersToPropagate="authorization"/>

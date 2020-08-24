@@ -12,6 +12,7 @@ package com.ibm.testapp.g3store.restConsumer.client;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.net.MalformedURLException;
@@ -96,26 +97,100 @@ public class ConsumerEndpointFATServlet extends FATServlet {
 
     }
 
+    /**
+     * This test will send a valid Basic Authorization header created in ConsumerServiceRestClient
+     * The Authorization header will be propagated using GrpcTarget.
+     *
+     * This test will sent grpc requests to create data, getAppInfo with Auth header , delete data.
+     * The test passes when correct "appName" is asserted in response.
+     *
+     * @param req
+     * @param resp
+     * @throws Exception
+     */
     @Test
-    public void testGetAppInfo(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    public void testGetAppInfo_Valid_BasicAuth(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         this.getAppInfo(req, resp);
     }
 
-//    @Test
-    public void testGetAppInfo_BadBasicAuth(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    /**
+     * This test will send a Bad Basic Authorization header created in ConsumerServiceRestClient
+     * The Authorization header will be propagated using GrpcTarget.
+     *
+     * This test will sent grpc requests to create data, getAppInfo with Bad Auth header , delete data.
+     * The test passes when "Expected auth failure" is asserted in response.
+     *
+     * @param req
+     * @param resp
+     * @throws Exception
+     */
+    @Test
+    public void testGetAppInfo_Bad_BasicAuth(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         this.getAppInfo_BadBasicAuth(req, resp);
     }
 
+    /**
+     * This test will send a valid JWT token in Authorization header added via ClientRequestFilter
+     * The Authorization header will be propagated using GrpcTarget.
+     *
+     * This test will sent grpc requests to create data, getAppName with JWT token Auth header , delete data.
+     * The test passes when correct "appName" is asserted in response.
+     *
+     * @param req
+     * @param resp
+     * @throws Exception
+     */
     @Test
     public void testGetAppName_Auth_GrpcTarget(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         this.getAppName_Auth_GrpcTarget(req, resp);
     }
 
-//    @Test
-    public void testGetAppName_BadJWTAuth_GrpcTarget(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        this.getAppName_BadJWTAuth_GrpcTarget(req, resp);
+    /**
+     * This test will send a null JWT token in Authorization header added via ClientRequestFilter
+     * The Authorization header will be propagated using GrpcTarget.
+     *
+     * This test will sent grpc requests to create data, getAppName with null JWT token Auth header , delete data.
+     *
+     * The test passes when "Expected auth failure" is asserted in response.
+     *
+     * @param req
+     * @param resp
+     * @throws Exception
+     */
+    @Test
+    public void testGetAppName_NullJWTAuth_GrpcTarget(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        this.getAppName_NullJWTAuth_GrpcTarget(req, resp);
     }
 
+    /**
+     * This test will send a good JWT token in Authorization header added via ClientRequestFilter
+     * The Authorization header will be propagated using GrpcTarget.
+     *
+     * This test will sent grpc requests to create data, getAppName with good JWT token Auth header
+     * But the server side will have bad RolesAllowed set,
+     *
+     * The test passes when "Expected auth failure" is asserted in response.
+     *
+     * @param req
+     * @param resp
+     * @throws Exception
+     */
+    @Test
+    public void testGetAppName_BadServerRoles_GrpcTarget(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        this.getAppName_BadServerRoles_GrpcTarget(req, resp);
+    }
+
+    /**
+     * This test will send a valid JWT token in Authorization header added via ClientRequestFilter
+     * The Authorization header will be propagated using CallCredentials API.
+     *
+     * This test will sent grpc requests to create data, getAppName with JWT token Auth header , delete data.
+     * The test passes when correct "appName" is asserted in response.
+     *
+     * @param req
+     * @param resp
+     * @throws Exception
+     */
     @Test
     public void testGetAppName_Auth_CallCred(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         this.getAppName_Auth_CallCred(req, resp);
@@ -156,7 +231,7 @@ public class ConsumerEndpointFATServlet extends FATServlet {
         // delete
 
         ProducerServiceRestClient service = null;
-        String appName = "myAppConsumer";
+        String appName = "myAppConsumerAuthCC";
         boolean isValidResponse = false;
 
         try {
@@ -206,9 +281,9 @@ public class ConsumerEndpointFATServlet extends FATServlet {
      * @param resp
      * @throws Exception
      */
-    private void getAppName_BadJWTAuth_GrpcTarget(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    private void getAppName_NullJWTAuth_GrpcTarget(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
-        final String m = "testGetAppName_BadJWTAuth_GrpcTarget";
+        final String m = "getAppName_NullJWTAuth_GrpcTarget";
 
         // create
         // query name
@@ -216,7 +291,7 @@ public class ConsumerEndpointFATServlet extends FATServlet {
 
         // delete
         ProducerServiceRestClient service = null;
-        String appName = "myAppConsumer";
+        String appName = "myAppConsumerNullJWT";
         boolean isValidResponse = false;
 
         try {
@@ -233,18 +308,14 @@ public class ConsumerEndpointFATServlet extends FATServlet {
 
             _log.info(m + " ----- invoking consumer rest client: " + client);
 
-            Response r = client.getAllAppNames();
-
+            Response r = client.getAllAppNames(m);
+            // Always returned 200 from grpc
             assertEquals(200, r.getStatus());
-
-            //this should return any value, update this when fixed server side
 
             String entityName = r.readEntity(String.class);
             _log.info(m + " entityName: " + entityName);
-            // Expected output in logs
-            //entityName: ["myApp"]
 
-            isValidResponse = entityName.contains(appName);
+            isValidResponse = entityName.contains("Expected auth failure");
             assertTrue(isValidResponse);
 
             _log.info(m + " ------------------------------------------------------------");
@@ -275,7 +346,7 @@ public class ConsumerEndpointFATServlet extends FATServlet {
         // get Price list for the app
         // delete
         ProducerServiceRestClient service = null;
-        String appName = "myAppConsumer";
+        String appName = "myAppConsumerAuth";
         boolean isValidResponse = false;
 
         try {
@@ -297,7 +368,7 @@ public class ConsumerEndpointFATServlet extends FATServlet {
 
             _log.info(m + " ----- invoking consumer rest client: " + client);
 
-            Response r = client.getAllAppNames();
+            Response r = client.getAllAppNames(m);
 
             assertEquals(200, r.getStatus());
 
@@ -307,6 +378,64 @@ public class ConsumerEndpointFATServlet extends FATServlet {
             //entityName: ["myApp"]
 
             isValidResponse = entityName.contains(appName);
+            assertTrue(isValidResponse);
+
+            _log.info(m + " ------------------------------------------------------------");
+
+        } finally {
+
+            assertDeleteSingleAppData(m, service, appName);
+
+            _log.info(m + " ---------------- " + m + "--FINISH -------------------");
+            _log.info(m + " ------------------------------------------------------------");
+
+        }
+
+    }
+
+    /**
+     * @param req
+     * @param resp
+     */
+    private void getAppName_BadServerRoles_GrpcTarget(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        final String m = "testGetAppName_BadServerRoles_GrpcTarget";
+
+        // create
+        // query name
+        // get app info with the name
+        // get Price list for the app
+        // delete
+        ProducerServiceRestClient service = null;
+        String appName = "myAppConsumerBadServerRole";
+        boolean isValidResponse = false;
+
+        try {
+
+            _log.info(m + " ------------------ " + m + "--START ---------------------");
+
+            service = assertCreateSingleAppData(m, appName);
+
+            _log.info(m + " ----- invoking consumer rest client for available app names");
+
+            ConsumerServiceRestClient client = null;
+            // Now get the data using Consumer
+            try {
+                client = this.add_AuthHeader_Filter(m, req, resp);
+            } catch (Exception e) {
+                _log.severe(m + " , Error creating ConsumerServiceRestClient proxy");
+                throw e;
+            }
+
+            _log.info(m + " ----- invoking consumer rest client: " + client);
+
+            Response r = client.getAllAppNames(m);
+
+            assertEquals(200, r.getStatus());
+
+            String entityName = r.readEntity(String.class);
+            _log.info(m + " entityName: " + entityName);
+
+            isValidResponse = entityName.contains("Expected auth failure");
             assertTrue(isValidResponse);
 
             _log.info(m + " ------------------------------------------------------------");
@@ -564,6 +693,11 @@ public class ConsumerEndpointFATServlet extends FATServlet {
     }
 
     /**
+     *
+     * This will fail getting the token from the token endpoint,
+     * resulting in a null value in
+     * "Authorization" "Bearer " token
+     *
      * @param m
      * @param req
      * @param resp
@@ -688,7 +822,7 @@ public class ConsumerEndpointFATServlet extends FATServlet {
 
         // delete
         ProducerServiceRestClient service = null;
-        String appName = "myAppConsumer1";
+        String appName = "myAppConsumerBadBasicAuth";
         boolean isValidResponse = false;
 
         try {
@@ -718,7 +852,7 @@ public class ConsumerEndpointFATServlet extends FATServlet {
             // since we are sending bad auth , we should not recv any value back
             // once server side is fixed, fix this
 
-            isValidResponse = entityAppInfo.contains(appName);
+            isValidResponse = entityAppInfo.contains("Expected auth failure");
             assertTrue(isValidResponse);
 
             _log.info(m + " ------------------------------------------------------------");
@@ -898,7 +1032,7 @@ public class ConsumerEndpointFATServlet extends FATServlet {
                 throw e;
             }
 
-            Response r = client.getAllAppNames();
+            Response r = client.getAllAppNames(m);
 
             assertEquals(200, r.getStatus());
 
@@ -1115,7 +1249,8 @@ public class ConsumerEndpointFATServlet extends FATServlet {
      */
     private String getToken(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
-        String builtToken = getJwtFromTokenEndpoint("https://" + req.getServerName() + ":" + ConsumerUtils.getSysProp("bvt.prop.member_1.https") + "/", "dev", "hello");
+        String builtToken = getJwtFromTokenEndpoint("https://" + req.getServerName() + ":" + ConsumerUtils.getSysProp("bvt.prop.member_1.https") + "/", "defaultJWT", "dev",
+                                                    "hello");
 
         _log.info("getToken ------------------------------------------------------------ " + builtToken);
 
@@ -1134,12 +1269,17 @@ public class ConsumerEndpointFATServlet extends FATServlet {
     private String getBadToken(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
         //server.xml has "dev", "hello", send something different
+        String builtToken = null;
+        try {
+            builtToken = getJwtFromTokenEndpoint("https://" + req.getServerName() + ":" + ConsumerUtils.getSysProp("bvt.prop.member_1.https") + "/", "defaultBadJWT", "devBad",
+                                                 "hello");
 
-        String builtToken = getJwtFromTokenEndpoint("https://" + req.getServerName() + ":" + ConsumerUtils.getSysProp("bvt.prop.member_1.https") + "/", "dev2", "hello2");
+            _log.info("getBadToken ------------------------------------------------------------ " + builtToken);
+        } catch (Exception e) {
+            // expected so eat it.
+        }
 
-        _log.info("getBadToken ------------------------------------------------------------ " + builtToken);
-
-        assertNotNull(builtToken);
+        assertNull(builtToken);
 
         return builtToken;
     }
@@ -1149,9 +1289,9 @@ public class ConsumerEndpointFATServlet extends FATServlet {
      * @return
      * @throws Exception
      */
-    private String getJwtFromTokenEndpoint(String baseUrlStr, String user, String password) throws Exception {
+    private String getJwtFromTokenEndpoint(String baseUrlStr, String jwtid, String user, String password) throws Exception {
 
-        WebRequest request = ConsumerUtils.buildJwtTokenEndpointRequest("defaultJWT", user, password, baseUrlStr);
+        WebRequest request = ConsumerUtils.buildJwtTokenEndpointRequest(jwtid, user, password, baseUrlStr);
 
         ConsumerUtils.printRequestHeaders(request, "getJwtFromTokenEndpoint");
 

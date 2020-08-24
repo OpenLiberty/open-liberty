@@ -78,6 +78,28 @@
 			matchType="contains" />
 	</authFilter>
 	
+	
+	<openidConnectClient
+		id="defaultBadJWT"
+		scope="openid profile"
+		httpsRequired="false"
+		inboundPropagation="required"
+		issuerIdentifier="testIssuerBad"
+		signatureAlgorithm="RS256"
+		trustStoreRef="rsa_trust"
+		trustAliasName="rsacert"
+		clockSkew="2s"
+		groupIdentifier="groups"
+		authFilterRef="myBadAuthFilter">
+	</openidConnectClient>
+	
+	<authFilter id="myBadAuthFilter">
+		<requestUrl
+			id="myRequestUrlb"
+			urlPattern="getAppNameSetBadRoles"
+			matchType="contains" />
+	</authFilter>
+	
 	<!-- the openidConnectClient does not use the registry by default, 
 so the group information is what is in the token, 
 and that access id must then exist in the role map -->
@@ -110,7 +132,14 @@ and that access id must then exist in the role map -->
 	</application>
 		
 	<logging
-		traceSpecification="*=info=enabled:io.openliberty.grpc*=all:com.ibm.testapp.g3store*=all:io.grpc*=all"
+		traceSpecification="*=info=enabled
+		:io.openliberty.grpc*=all
+		:com.ibm.testapp.g3store*=all:io.grpc*=all"
 		maxFileSize="200" maxFiles="4" traceFormat="BASIC" />
+		
+		
+		<!-- :com.ibm.ws.webcontainer*=all
+		:com.ibm.wsspi.webcontainer*=all
+		:com.ibm.ws.security*=all" -->
 
 </server>
