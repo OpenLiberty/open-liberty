@@ -529,6 +529,91 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     /******************************************
      * start Additional Signature Algorithms
      ****************************************/
+    /**********************************************************************************************************************
+     * 1) Test with each signature algorithm that we support.
+     * 2) Test setting the signature algorithm to something we support, but use a key that is of another type (1 each
+     * RS, ES, PS)
+     * 3) Test keystore has 2 keys of each algorithm type - there is no concept of use the wrong key (aside from testing
+     * done for #2) since we're not using the token, just validating the content of the token.
+     */
+    /**
+     * Test Purpose:
+     * <OL>
+     * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be RS256. Then defines a builder
+     * specific "keyStoreRef", as well as the keyAlias. The keyAlias references a key of a different RS alg.
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>This will actually build the token - we have no way of differentiating and RS256 from an RS384 or RS512 key...
+     * </OL>
+     */
+    @Test
+    public void JwtBuilderAPIConfigTests_sigAlg_RS256_goodGlobalKeyStore_goodKeyStoreRef_keyAliasMisMatchRS() throws Exception {
+
+        String builderId = "key_sigAlg_RS256_badRSKeyAlias";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        // set alg value
+        expectationSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS256);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * Test Purpose:
+     * <OL>
+     * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be RS256. Then defines a builder
+     * specific "keyStoreRef", as well as the keyAlias. The keyAlias references a key of an ES alg.
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>Should fail to build the requested token as the algorithm and key type do not match
+     * </OL>
+     */
+    @ExpectedFFDC("com.ibm.ws.security.jwt.internal.JwtTokenException")
+    @Test
+    public void JwtBuilderAPIConfigTests_sigAlg_RS256_goodGlobalKeyStore_goodKeyStoreRef_keyAliasMisMatchES() throws Exception {
+
+        String builderId = "key_sigAlg_RS256_badESKeyAlias";
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, builderServer);
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, "Message log did not contain an error indicating a problem with the signing key."));
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * Test Purpose:
+     * <OL>
+     * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be RS256. Then defines a builder
+     * specific "keyStoreRef", as well as the keyAlias. The keyAlias references a key of an PS alg.
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>Should fail to build the requested token as the algorithm and key type do not match
+     * </OL>
+     */
+    @ExpectedFFDC("com.ibm.ws.security.jwt.internal.JwtTokenException")
+    @Test
+    public void JwtBuilderAPIConfigTests_sigAlg_RS256_goodGlobalKeyStore_goodKeyStoreRef_keyAliasMisMatchPS() throws Exception {
+
+        String builderId = "key_sigAlg_RS256_badPSKeyAlias";
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, builderServer);
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, "Message log did not contain an error indicating a problem with the signing key."));
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
     /**
      * Test Purpose:
      * <OL>
@@ -559,6 +644,84 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     /**
      * Test Purpose:
      * <OL>
+     * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be RS384. Then defines a builder
+     * specific "keyStoreRef", as well as the keyAlias. The keyAlias references a key of a different RS alg.
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>This will actually build the token - we have no way of differentiating and RS256 from an RS384 or RS512 key...
+     * </OL>
+     */
+    @Test
+    public void JwtBuilderAPIConfigTests_sigAlg_RS384_goodGlobalKeyStore_goodKeyStoreRef_keyAliasMisMatchRS() throws Exception {
+
+        String builderId = "key_sigAlg_RS384_badRSKeyAlias";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        // set alg value
+        expectationSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS384);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * Test Purpose:
+     * <OL>
+     * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be RS384. Then defines a builder
+     * specific "keyStoreRef", as well as the keyAlias. The keyAlias references a key of an ES alg.
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>Should fail to build the requested token as the algorithm and key type do not match
+     * </OL>
+     */
+    @ExpectedFFDC("com.ibm.ws.security.jwt.internal.JwtTokenException")
+    @Test
+    public void JwtBuilderAPIConfigTests_sigAlg_RS384_goodGlobalKeyStore_goodKeyStoreRef_keyAliasMisMatchES() throws Exception {
+
+        String builderId = "key_sigAlg_RS384_badESKeyAlias";
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, builderServer);
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, "Message log did not contain an error indicating a problem with the signing key."));
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * Test Purpose:
+     * <OL>
+     * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be RS384. Then defines a builder
+     * specific "keyStoreRef", as well as the keyAlias. The keyAlias references a key of an PS alg.
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>Should fail to build the requested token as the algorithm and key type do not match
+     * </OL>
+     */
+    @ExpectedFFDC("com.ibm.ws.security.jwt.internal.JwtTokenException")
+    @Test
+    public void JwtBuilderAPIConfigTests_sigAlg_RS384_goodGlobalKeyStore_goodKeyStoreRef_keyAliasMisMatchPS() throws Exception {
+
+        String builderId = "key_sigAlg_RS384_badPSKeyAlias";
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, builderServer);
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, "Message log did not contain an error indicating a problem with the signing key."));
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * Test Purpose:
+     * <OL>
      * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be RS512. The defines a builder
      * specific "keyStoreRef", as well as the keyAlias
      * <LI>What this means is that the token we create will use the specified RS512 cert from the builder specific keystore
@@ -577,6 +740,84 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
         // set alg value
         expectationSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS512);
         Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * Test Purpose:
+     * <OL>
+     * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be RS512. Then defines a builder
+     * specific "keyStoreRef", as well as the keyAlias. The keyAlias references a key of a different RS alg.
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>This will actually build the token - we have no way of differentiating and RS256 from an RS384 or RS512 key...
+     * </OL>
+     */
+    @Test
+    public void JwtBuilderAPIConfigTests_sigAlg_RS512_goodGlobalKeyStore_goodKeyStoreRef_keyAliasMisMatchRS() throws Exception {
+
+        String builderId = "key_sigAlg_RS512_badRSKeyAlias";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        // set alg value
+        expectationSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS512);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * Test Purpose:
+     * <OL>
+     * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be RS512. Then defines a builder
+     * specific "keyStoreRef", as well as the keyAlias. The keyAlias references a key of an ES alg.
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>Should fail to build the requested token as the algorithm and key type do not match
+     * </OL>
+     */
+    @ExpectedFFDC("com.ibm.ws.security.jwt.internal.JwtTokenException")
+    @Test
+    public void JwtBuilderAPIConfigTests_sigAlg_RS512_goodGlobalKeyStore_goodKeyStoreRef_keyAliasMisMatchES() throws Exception {
+
+        String builderId = "key_sigAlg_RS512_badESKeyAlias";
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, builderServer);
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, "Message log did not contain an error indicating a problem with the signing key."));
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * Test Purpose:
+     * <OL>
+     * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be RS512. Then defines a builder
+     * specific "keyStoreRef", as well as the keyAlias. The keyAlias references a key of an PS alg.
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>Should fail to build the requested token as the algorithm and key type do not match
+     * </OL>
+     */
+    @ExpectedFFDC("com.ibm.ws.security.jwt.internal.JwtTokenException")
+    @Test
+    public void JwtBuilderAPIConfigTests_sigAlg_RS512_goodGlobalKeyStore_goodKeyStoreRef_keyAliasMisMatchPS() throws Exception {
+
+        String builderId = "key_sigAlg_RS512_badPSKeyAlias";
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, builderServer);
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, "Message log did not contain an error indicating a problem with the signing key."));
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
         validationUtils.validateResult(response, expectations);
@@ -614,6 +855,84 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     /**
      * Test Purpose:
      * <OL>
+     * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be ES256. Then defines a builder
+     * specific "keyStoreRef", as well as the keyAlias. The keyAlias references a key of an RS alg.
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>Should fail to build the requested token as the algorithm and key type do not match
+     * </OL>
+     */
+    @ExpectedFFDC("com.ibm.ws.security.jwt.internal.JwtTokenException")
+    @Test
+    public void JwtBuilderAPIConfigTests_sigAlg_ES256_goodGlobalKeyStore_goodKeyStoreRef_keyAliasMisMatchRS() throws Exception {
+
+        String builderId = "key_sigAlg_ES256_badRSKeyAlias";
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, builderServer);
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, "Message log did not contain an error indicating a problem with the signing key."));
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * Test Purpose:
+     * <OL>
+     * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be ES256. Then defines a builder
+     * specific "keyStoreRef", as well as the keyAlias. The keyAlias references a key of a different ES alg.
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>Should fail to build the requested token as the algorithm and key type do not match
+     * </OL>
+     */
+    @ExpectedFFDC("com.ibm.ws.security.jwt.internal.JwtTokenException")
+    @Test
+    public void JwtBuilderAPIConfigTests_sigAlg_ES256_goodGlobalKeyStore_goodKeyStoreRef_keyAliasMisMatchES() throws Exception {
+
+        String builderId = "key_sigAlg_ES256_badESKeyAlias";
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, builderServer);
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, "Message log did not contain an error indicating a problem with the signing key."));
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * Test Purpose:
+     * <OL>
+     * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be ES256. Then defines a builder
+     * specific "keyStoreRef", as well as the keyAlias. The keyAlias references a key of an PS alg.
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>Should fail to build the requested token as the algorithm and key type do not match
+     * </OL>
+     */
+    @ExpectedFFDC("com.ibm.ws.security.jwt.internal.JwtTokenException")
+    @Test
+    public void JwtBuilderAPIConfigTests_sigAlg_ES256_goodGlobalKeyStore_goodKeyStoreRef_keyAliasMisMatchPS() throws Exception {
+
+        String builderId = "key_sigAlg_ES256_badPSKeyAlias";
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, builderServer);
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, "Message log did not contain an error indicating a problem with the signing key."));
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * Test Purpose:
+     * <OL>
      * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be ES384. The defines a builder
      * specific "keyStoreRef", as well as the keyAlias
      * <LI>What this means is that the token we create will use the specified ES384 cert from the builder specific keystore
@@ -632,6 +951,84 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
         // set alg value
         expectationSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_ES384);
         Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * Test Purpose:
+     * <OL>
+     * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be ES384. Then defines a builder
+     * specific "keyStoreRef", as well as the keyAlias. The keyAlias references a key of an RS alg.
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>Should fail to build the requested token as the algorithm and key type do not match
+     * </OL>
+     */
+    @ExpectedFFDC("com.ibm.ws.security.jwt.internal.JwtTokenException")
+    @Test
+    public void JwtBuilderAPIConfigTests_sigAlg_ES384_goodGlobalKeyStore_goodKeyStoreRef_keyAliasMisMatchRS() throws Exception {
+
+        String builderId = "key_sigAlg_ES384_badRSKeyAlias";
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, builderServer);
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, "Message log did not contain an error indicating a problem with the signing key."));
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * Test Purpose:
+     * <OL>
+     * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be ES384. Then defines a builder
+     * specific "keyStoreRef", as well as the keyAlias. The keyAlias references a key of a different ES alg.
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>Should fail to build the requested token as the algorithm and key type do not match
+     * </OL>
+     */
+    @ExpectedFFDC("com.ibm.ws.security.jwt.internal.JwtTokenException")
+    @Test
+    public void JwtBuilderAPIConfigTests_sigAlg_ES384_goodGlobalKeyStore_goodKeyStoreRef_keyAliasMisMatchES() throws Exception {
+
+        String builderId = "key_sigAlg_ES384_badESKeyAlias";
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, builderServer);
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, "Message log did not contain an error indicating a problem with the signing key."));
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * Test Purpose:
+     * <OL>
+     * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be ES384. Then defines a builder
+     * specific "keyStoreRef", as well as the keyAlias. The keyAlias references a key of an PS alg.
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>Should fail to build the requested token as the algorithm and key type do not match
+     * </OL>
+     */
+    @ExpectedFFDC("com.ibm.ws.security.jwt.internal.JwtTokenException")
+    @Test
+    public void JwtBuilderAPIConfigTests_sigAlg_ES384_goodGlobalKeyStore_goodKeyStoreRef_keyAliasMisMatchPS() throws Exception {
+
+        String builderId = "key_sigAlg_ES384_badPSKeyAlias";
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, builderServer);
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, "Message log did not contain an error indicating a problem with the signing key."));
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
         validationUtils.validateResult(response, expectations);
@@ -669,6 +1066,84 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     /**
      * Test Purpose:
      * <OL>
+     * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be ES512. Then defines a builder
+     * specific "keyStoreRef", as well as the keyAlias. The keyAlias references a key of an RS alg.
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>Should fail to build the requested token as the algorithm and key type do not match
+     * </OL>
+     */
+    @ExpectedFFDC("com.ibm.ws.security.jwt.internal.JwtTokenException")
+    @Test
+    public void JwtBuilderAPIConfigTests_sigAlg_ES512_goodGlobalKeyStore_goodKeyStoreRef_keyAliasMisMatchRS() throws Exception {
+
+        String builderId = "key_sigAlg_ES512_badRSKeyAlias";
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, builderServer);
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, "Message log did not contain an error indicating a problem with the signing key."));
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * Test Purpose:
+     * <OL>
+     * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be ES512. Then defines a builder
+     * specific "keyStoreRef", as well as the keyAlias. The keyAlias references a key of a different ES alg.
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>Should fail to build the requested token as the algorithm and key type do not match
+     * </OL>
+     */
+    @ExpectedFFDC("com.ibm.ws.security.jwt.internal.JwtTokenException")
+    @Test
+    public void JwtBuilderAPIConfigTests_sigAlg_ES512_goodGlobalKeyStore_goodKeyStoreRef_keyAliasMisMatchES() throws Exception {
+
+        String builderId = "key_sigAlg_ES512_badESKeyAlias";
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, builderServer);
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, "Message log did not contain an error indicating a problem with the signing key."));
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * Test Purpose:
+     * <OL>
+     * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be ES512. Then defines a builder
+     * specific "keyStoreRef", as well as the keyAlias. The keyAlias references a key of an PS alg.
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>Should fail to build the requested token as the algorithm and key type do not match
+     * </OL>
+     */
+    @ExpectedFFDC("com.ibm.ws.security.jwt.internal.JwtTokenException")
+    @Test
+    public void JwtBuilderAPIConfigTests_sigAlg_ES512_goodGlobalKeyStore_goodKeyStoreRef_keyAliasMisMatchPS() throws Exception {
+
+        String builderId = "key_sigAlg_ES512_badPSKeyAlias";
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, builderServer);
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, "Message log did not contain an error indicating a problem with the signing key."));
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * Test Purpose:
+     * <OL>
      * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be PS256. The defines a builder
      * specific "keyStoreRef", as well as the keyAlias
      * <LI>What this means is that the token we create will use the specified PS256 cert from the builder specific keystore
@@ -679,8 +1154,7 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
      * <LI>Should get a token built using the specified PS256 cert from the builder specific keystore
      * </OL>
      */
-    // TODO - add when supported
-    //    @Test
+    // TODO enable/update when PS algs are supported @Test
     public void JwtBuilderAPIConfigTests_sigAlg_PS256_goodGlobalKeyStore_goodKeyStoreRef_goodKeyAlias() throws Exception {
 
         String builderId = "key_sigAlg_PS256_goodKeyAlias";
@@ -704,6 +1178,84 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     /**
      * Test Purpose:
      * <OL>
+     * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be PS256. Then defines a builder
+     * specific "keyStoreRef", as well as the keyAlias. The keyAlias references a key of an RS alg.
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>Should fail to build the requested token as the algorithm and key type do not match
+     * </OL>
+     */
+    @ExpectedFFDC("com.ibm.ws.security.jwt.internal.JwtTokenException")
+    // TODO enable/update when PS algs are supported@Test
+    public void JwtBuilderAPIConfigTests_sigAlg_PS256_goodGlobalKeyStore_goodKeyStoreRef_keyAliasMisMatchRS() throws Exception {
+
+        String builderId = "key_sigAlg_PS256_badRSKeyAlias";
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, builderServer);
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, "Message log did not contain an error indicating a problem with the signing key."));
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * Test Purpose:
+     * <OL>
+     * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be PS256. Then defines a builder
+     * specific "keyStoreRef", as well as the keyAlias. The keyAlias references a key of an ES alg.
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>Should fail to build the requested token as the algorithm and key type do not match
+     * </OL>
+     */
+    @ExpectedFFDC("com.ibm.ws.security.jwt.internal.JwtTokenException")
+    // TODO enable/update when PS algs are supported@Test
+    public void JwtBuilderAPIConfigTests_sigAlg_PS256_goodGlobalKeyStore_goodKeyStoreRef_keyAliasMisMatchES() throws Exception {
+
+        String builderId = "key_sigAlg_PS256_badESKeyAlias";
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, builderServer);
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, "Message log did not contain an error indicating a problem with the signing key."));
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * Test Purpose:
+     * <OL>
+     * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be PS256. Then defines a builder
+     * specific "keyStoreRef", as well as the keyAlias. The keyAlias references a key of a different PS alg.
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>Should fail to build the requested token as the algorithm and key type do not match
+     * </OL>
+     */
+    @ExpectedFFDC("com.ibm.ws.security.jwt.internal.JwtTokenException")
+    // TODO enable/update when PS algs are supported@Test
+    public void JwtBuilderAPIConfigTests_sigAlg_PS256_goodGlobalKeyStore_goodKeyStoreRef_keyAliasMisMatchPS() throws Exception {
+
+        String builderId = "key_sigAlg_PS256_badPSKeyAlias";
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, builderServer);
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, "Message log did not contain an error indicating a problem with the signing key."));
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * Test Purpose:
+     * <OL>
      * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be PS384. The defines a builder
      * specific "keyStoreRef", as well as the keyAlias
      * <LI>What this means is that the token we create will use the specified PS384 cert from the builder specific keystore
@@ -714,8 +1266,7 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
      * <LI>Should get a token built using the specified PS384 cert from the builder specific keystore
      * </OL>
      */
-    //TODO - add when supported
-    //    @Test
+    // TODO enable/update when PS algs are supported @Test
     public void JwtBuilderAPIConfigTests_sigAlg_PS384_goodGlobalKeyStore_goodKeyStoreRef_goodKeyAlias() throws Exception {
 
         String builderId = "key_sigAlg_PS384_goodKeyAlias";
@@ -739,6 +1290,84 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     /**
      * Test Purpose:
      * <OL>
+     * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be PS384. Then defines a builder
+     * specific "keyStoreRef", as well as the keyAlias. The keyAlias references a key of an RS alg.
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>Should fail to build the requested token as the algorithm and key type do not match
+     * </OL>
+     */
+    @ExpectedFFDC("com.ibm.ws.security.jwt.internal.JwtTokenException")
+    // TODO enable/update when PS algs are supported @Test
+    public void JwtBuilderAPIConfigTests_sigAlg_PS384_goodGlobalKeyStore_goodKeyStoreRef_keyAliasMisMatchRS() throws Exception {
+
+        String builderId = "key_sigAlg_PS384_badRSKeyAlias";
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, builderServer);
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, "Message log did not contain an error indicating a problem with the signing key."));
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * Test Purpose:
+     * <OL>
+     * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be PS384. Then defines a builder
+     * specific "keyStoreRef", as well as the keyAlias. The keyAlias references a key of an ES alg.
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>Should fail to build the requested token as the algorithm and key type do not match
+     * </OL>
+     */
+    @ExpectedFFDC("com.ibm.ws.security.jwt.internal.JwtTokenException")
+    // TODO enable/update when PS algs are supported @Test
+    public void JwtBuilderAPIConfigTests_sigAlg_PS384_goodGlobalKeyStore_goodKeyStoreRef_keyAliasMisMatchES() throws Exception {
+
+        String builderId = "key_sigAlg_PS384_badESKeyAlias";
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, builderServer);
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, "Message log did not contain an error indicating a problem with the signing key."));
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * Test Purpose:
+     * <OL>
+     * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be PS384. Then defines a builder
+     * specific "keyStoreRef", as well as the keyAlias. The keyAlias references a key of a different PS alg.
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>Should fail to build the requested token as the algorithm and key type do not match
+     * </OL>
+     */
+    @ExpectedFFDC("com.ibm.ws.security.jwt.internal.JwtTokenException")
+    // TODO enable/update when PS algs are supported @Test
+    public void JwtBuilderAPIConfigTests_sigAlg_PS384_goodGlobalKeyStore_goodKeyStoreRef_keyAliasMisMatchPS() throws Exception {
+
+        String builderId = "key_sigAlg_PS384_badPSKeyAlias";
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, builderServer);
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, "Message log did not contain an error indicating a problem with the signing key."));
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * Test Purpose:
+     * <OL>
      * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be PS512. The defines a builder
      * specific "keyStoreRef", as well as the keyAlias
      * <LI>What this means is that the token we create will use the specified PS512 cert from the builder specific keystore
@@ -749,8 +1378,7 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
      * <LI>Should get a token built using the specified PS512 cert from the builder specific keystore
      * </OL>
      */
-    // TODO - add when supported
-    //    @Test
+    // TODO enable/update when PS algs are supported @Test
     public void JwtBuilderAPIConfigTests_sigAlg_PS512_goodGlobalKeyStore_goodKeyStoreRef_goodKeyAlias() throws Exception {
 
         String builderId = "key_sigAlg_PS512_goodKeyAlias";
@@ -765,6 +1393,84 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
             expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, builderServer);
             expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, "Message log did not contain an error indicating a problem with the signing key."));
         }
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * Test Purpose:
+     * <OL>
+     * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be PS512. Then defines a builder
+     * specific "keyStoreRef", as well as the keyAlias. The keyAlias references a key of an RS alg.
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>Should fail to build the requested token as the algorithm and key type do not match
+     * </OL>
+     */
+    @ExpectedFFDC("com.ibm.ws.security.jwt.internal.JwtTokenException")
+    // TODO enable/update when PS algs are supported @Test
+    public void JwtBuilderAPIConfigTests_sigAlg_PS512_goodGlobalKeyStore_goodKeyStoreRef_keyAliasMisMatchRS() throws Exception {
+
+        String builderId = "key_sigAlg_PS512_badRSKeyAlias";
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, builderServer);
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, "Message log did not contain an error indicating a problem with the signing key."));
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * Test Purpose:
+     * <OL>
+     * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be PS512. Then defines a builder
+     * specific "keyStoreRef", as well as the keyAlias. The keyAlias references a key of an ES alg.
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>Should fail to build the requested token as the algorithm and key type do not match
+     * </OL>
+     */
+    @ExpectedFFDC("com.ibm.ws.security.jwt.internal.JwtTokenException")
+    // TODO enable/update when PS algs are supported @Test
+    public void JwtBuilderAPIConfigTests_sigAlg_PS512_goodGlobalKeyStore_goodKeyStoreRef_keyAliasMisMatchES() throws Exception {
+
+        String builderId = "key_sigAlg_PS512_badESKeyAlias";
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, builderServer);
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, "Message log did not contain an error indicating a problem with the signing key."));
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * Test Purpose:
+     * <OL>
+     * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be PS512. Then defines a builder
+     * specific "keyStoreRef", as well as the keyAlias. The keyAlias references a key of a different PS alg.
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>Should fail to build the requested token as the algorithm and key type do not match
+     * </OL>
+     */
+    @ExpectedFFDC("com.ibm.ws.security.jwt.internal.JwtTokenException")
+    // TODO enable/update when PS algs are supported @Test
+    public void JwtBuilderAPIConfigTests_sigAlg_PS512_goodGlobalKeyStore_goodKeyStoreRef_keyAliasMisMatchPS() throws Exception {
+
+        String builderId = "key_sigAlg_PS512_badPSKeyAlias";
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, builderServer);
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, "Message log did not contain an error indicating a problem with the signing key."));
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
         validationUtils.validateResult(response, expectations);
@@ -826,8 +1532,6 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
         validationUtils.validateResult(response, expectations);
 
     }
-
-    //TODO - need to add tests where the sigAlg and private keys do NOT match
 
     /******************************************
      * end Additional Signature Algorithms

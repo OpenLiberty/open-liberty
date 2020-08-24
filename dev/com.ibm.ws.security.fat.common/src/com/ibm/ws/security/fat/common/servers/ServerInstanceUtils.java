@@ -11,8 +11,14 @@
 package com.ibm.ws.security.fat.common.servers;
 
 import java.net.InetAddress;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
+import com.ibm.websphere.simplicity.config.ConfigElementList;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.websphere.simplicity.config.Variable;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.MessageConstants;
 
@@ -77,4 +83,71 @@ public class ServerInstanceUtils {
         }
     }
 
+    /**
+     * Update/Set config variables for a server and push the updates to the server.
+     * Method waits for server to update or indicate that no update in needed
+     *
+     * @param server
+     *            - ref to server that will be updated
+     * @param valuesToSet
+     *            - a map of the variables and their values to set
+     * @throws Exception
+     */
+    public static void updateServerSettings(LibertyServer server, Map<String, String> valuesToSet) throws Exception {
+
+        String thisMethod = "updateServerSettings";
+        ServerConfiguration config = server.getServerConfiguration();
+        ConfigElementList<Variable> configVars = config.getVariables();
+
+        for (Variable variableEntry : configVars) {
+            Log.info(thisClass, thisMethod, "Already set configVar: " + variableEntry.getName() + " configVarValue: " + variableEntry.getValue());
+        }
+
+        for (Entry<String, String> variableEntry : valuesToSet.entrySet()) {
+            addOrUpdateConfigVariable(configVars, variableEntry.getKey(), variableEntry.getValue());
+        }
+
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(null);
+    }
+
+    /**
+     * Update a servers variable map with the key/value passed in.
+     *
+     * @param vars
+     *            - map of existing variables
+     * @param name
+     *            - the key to add/update
+     * @param value
+     *            - the value for the key specified
+     */
+    protected static void addOrUpdateConfigVariable(ConfigElementList<Variable> vars, String name, String value) {
+
+        Log.info(thisClass, "addOrUpdateConfigVariable", "Setting/resetting var: " + name + " value: " + value);
+        Variable var = vars.getBy("name", name);
+        if (var == null) {
+            vars.add(new Variable(name, value));
+        } else {
+            var.setValue(value);
+        }
+    }
+
+    // using this method to update multiple variables will result in multiple config updates
+    // if you need to update multiple values, call updateServerSettings directly will all updates
+    /**
+     * Add/update one variable in a server config
+     *
+     * @param server
+     *            - the server to update
+     * @param key
+     *            - The variable's key nane
+     * @param value
+     *            - the variable's value
+     * @throws Exception
+     */
+    public static void setOneVar(LibertyServer server, String key, String value) throws Exception {
+        Map<String, String> vars = new HashMap<String, String>();
+        vars.put(key, value);
+        updateServerSettings(server, vars);
+    }
 }
