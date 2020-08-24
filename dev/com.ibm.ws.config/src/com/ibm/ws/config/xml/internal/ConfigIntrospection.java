@@ -144,10 +144,9 @@ public class ConfigIntrospection extends SensitiveIntrospector {
         print(indent, ps, "");
         print(indent, ps, "Nested Elements for " + element.getNodeDisplayName());
         for (ConfigElement nested : element.getChildren()) {
-            print(indent, ps, "Looking for " + nested.getNodeName());
             // Try by child alias (child first)
             RegistryEntry re = metaTypeRegistry.getRegistryEntry(parent, nested.getNodeName());
-            if (re == null) {
+            if (re == null && parent != null) {
                 // try by PID (parent first)
                 String[] attrNames = getReferenceAttributes(nested.getNodeName());
                 for (String attrName : attrNames) {
