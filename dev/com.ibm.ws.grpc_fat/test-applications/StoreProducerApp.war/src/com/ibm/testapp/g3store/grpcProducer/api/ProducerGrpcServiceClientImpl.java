@@ -553,9 +553,9 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         }
     }
 
-    public String responseFromServer = null;
-    public String firstServerStreamMessage = null;
-    public String lastServerStreamMessage = null;
+    String responseFromServer = null;
+    String firstServerStreamMessage = null;
+    String lastServerStreamMessage = null;
 
     public String grpcServerStreamApp() {
         errorMessage = null;
@@ -625,8 +625,8 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
 
     }
 
-    public String firstTwoWayMessageReceived = null;
-    public String lastTwoWayMessageReceived = null;
+    String firstTwoWayMessageReceived = null;
+    String lastTwoWayMessageReceived = null;
 
     public String grpcTwoWayStreamApp(boolean asyncThread) {
 

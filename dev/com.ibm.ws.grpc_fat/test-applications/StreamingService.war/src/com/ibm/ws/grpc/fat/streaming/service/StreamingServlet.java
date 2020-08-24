@@ -30,10 +30,10 @@ public class StreamingServlet extends HttpServlet {
     private static String responseString = "Response from Server: ";
 
     // implementation of the StreamingServiceImpl service
-    private static final class StreamingServiceImpl extends StreamingServiceGrpc.StreamingServiceImplBase {
+    public static final class StreamingServiceImpl extends StreamingServiceGrpc.StreamingServiceImplBase {
 
         // a no-arg constructor is requird for Liberty to start this service automatically
-        StreamingServiceImpl() {
+        public StreamingServiceImpl() {
         }
 
         @Override
@@ -90,7 +90,7 @@ public class StreamingServlet extends HttpServlet {
                     String s = responseString + "...[[time response sent back to Client: " + System.currentTimeMillis() + "]]";
 
                     int maxStringLength = 32768 - lastClientMessage.length() - 1;
-                    // limit response string to 32K, make sure the last message concatentated at the end
+                    // limit response string to 32K, make sure the last message concatenated at the end
                     if (s.length() > maxStringLength) {
                         s = s.substring(0, maxStringLength);
                         s = s + lastClientMessage;
