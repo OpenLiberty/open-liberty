@@ -71,6 +71,7 @@ public class ProductFeatureTest {
     private static final String serverUpdatedMsgPrefix = "CWWKG0017I:";
     private static final String missingFeatureMsgPrefix = "CWWKF0001E";
     private static final String missingFeatureCoreMsgPrefix = "CWWKF0042E";
+    private static final String kernelStartedPrefix = "CWWKE0002I";
 
     private static final String PRODUCT_FEATURE_PATH = "producttest/lib/features/";
     private static final String PRODUCT_BUNDLE_PATH = "producttest/lib/";
@@ -633,6 +634,7 @@ public class ProductFeatureTest {
         int rc = po.getReturnCode();
         String cmd = po.getCommand();
 
+        // Ensure version command works
         assertTrue("Error when invoking 'server version' command. stdout = " + stdout + " "
                    + "stderr = " + stderr + " cmd = " + cmd + " rc = " + rc, stdout != null);
 
@@ -640,20 +642,34 @@ public class ProductFeatureTest {
         server.setServerConfigurationFile("server_no_features.xml");
         server.startServer(METHOD_NAME + ".log");
 
+        // Wait for the kernel to start up
+        assertNotNull("The kernel did not start properly. stdout = " + po.getStdout() + " stderr = " + po.getStderr() + " rc = " + po.getReturnCode(),
+                      server.waitForStringInLogUsingMark(kernelStartedPrefix));
+
         // Now move the server xml with a product feature that will not be found.
         TestUtils.makeConfigUpdateSetMark(server, "server_core_features_not_found.xml");
 
-        // Get the feature definition could not be found message for Open Liberty or Closed Liberty
-        if (stdout != null && stdout.startsWith("Open Liberty")) {
-            String output = server.waitForStringInLogUsingMark(missingFeatureMsgPrefix);
-            assertNotNull("We haven't found the " + missingFeatureMsgPrefix + " in the logs.", output);
-            assertTrue("coretest-1.0 product feature name was not found in the output: " + output, output.contains("coretest-1.0"));
-            server.stopServer(missingFeatureMsgPrefix);
-        } else {
-            String output = server.waitForStringInLogUsingMark(missingFeatureCoreMsgPrefix);
-            assertNotNull("We haven't found the " + missingFeatureCoreMsgPrefix + " in the logs.", output);
-            assertTrue("coretest-1.0 product feature name was not found in the output: " + output, output.contains("coretest-1.0"));
-            server.stopServer(missingFeatureCoreMsgPrefix);
+        try {
+            // Get the feature definition could not be found message for Open Liberty or Closed Liberty
+            if (stdout != null && stdout.trim().startsWith("Open Liberty")) {
+                String output = server.waitForStringInLogUsingMark(missingFeatureMsgPrefix); // CWWKF0001E
+                Log.info(c, METHOD_NAME, "output = " + output);
+                assertNotNull("We haven't found the " + missingFeatureMsgPrefix + " in the logs.", output);
+                assertTrue("coretest-1.0 product feature name was not found in the output: " + output, output.contains("coretest-1.0"));
+                po = server.stopServer(missingFeatureMsgPrefix);
+            } else {
+                String output = server.waitForStringInLogUsingMark(missingFeatureCoreMsgPrefix); // CWWKF0042E
+                Log.info(c, METHOD_NAME, "output = " + output);
+                assertNotNull("We haven't found the " + missingFeatureCoreMsgPrefix + " in the logs.", output);
+                assertTrue("coretest-1.0 product feature name was not found in the output: " + output, output.contains("coretest-1.0"));
+                po = server.stopServer(missingFeatureCoreMsgPrefix);
+            }
+        } finally {
+            if (server.isStarted()) {
+                Log.info(c, METHOD_NAME, "Server was not stopped in " + METHOD_NAME + ".  Attempting to stop again to ensure other tests will pass.");
+                po = server.stopServer(missingFeatureMsgPrefix, missingFeatureCoreMsgPrefix);
+                printProgramOutput(po, METHOD_NAME);
+            }
         }
 
         Log.exiting(c, METHOD_NAME);
@@ -807,5 +823,14 @@ public class ProductFeatureTest {
             minifyUtils.tearDown();
         }
         Log.exiting(c, METHOD_NAME);
+    }
+
+    private void printProgramOutput(ProgramOutput po, String method) {
+        Log.info(c, method, "Program Output data: ");
+        Log.info(c, method, "\tcommand = " + po.getCommand());
+        Log.info(c, method, "\tstdout = " + po.getStdout());
+        Log.info(c, method, "\tstderr = " + po.getStderr());
+        Log.info(c, method, "\trc = " + po.getReturnCode());
+
     }
 }
