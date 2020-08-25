@@ -1190,7 +1190,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         String jwtToken = buildToken();
 
         Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(
-                JwtMessageConstants.CWWKS6053E_INVALID_AMR_CLAIM + ".+" + "multipleJwtConsumer", currentAction,
+                JwtMessageConstants.CWWKS6054E_INVALID_AMR_CLAIM + ".+" + "multipleJwtConsumer", currentAction,
                 consumerServer, "multipleJwtConsumer");
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, "multipleJwtConsumer", jwtToken);
@@ -1240,7 +1240,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         String jwtToken = buildToken();
 
         Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(
-                JwtMessageConstants.CWWKS6053E_INVALID_AMR_CLAIM + ".+" + "singleJwtConsumer", currentAction,
+                JwtMessageConstants.CWWKS6054E_INVALID_AMR_CLAIM + ".+" + "singleJwtConsumer", currentAction,
                 consumerServer, "singleJwtConsumer");
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, "singleJwtConsumer", jwtToken);
