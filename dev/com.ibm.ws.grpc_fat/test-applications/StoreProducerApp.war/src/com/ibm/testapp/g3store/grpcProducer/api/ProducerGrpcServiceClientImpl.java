@@ -807,8 +807,8 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
     }
 
     class TwoWayStreamClass implements StreamObserver<StreamReplyA> {
-        String firstTwoWayMessageReceived = "NothingSoFar";
-        String lastTwoWayMessageReceived = "NothingSoFar";
+        String firstTwoWayMessageReceived = null;
+        String lastTwoWayMessageReceived = null;
         String errorMessage = null;
         CountDownLatch latch = null;
         Object messageSync = new Object() {
@@ -849,11 +849,19 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         }
 
         public String getFirstMessage() {
-            return firstTwoWayMessageReceived;
+            if (firstTwoWayMessageReceived == null) {
+                return "Null";
+            } else {
+                return firstTwoWayMessageReceived;
+            }
         }
 
         public String getLastMessage() {
-            return lastTwoWayMessageReceived;
+            if (lastTwoWayMessageReceived == null) {
+                return "Null";
+            } else {
+                return lastTwoWayMessageReceived;
+            }
         }
     }
 
