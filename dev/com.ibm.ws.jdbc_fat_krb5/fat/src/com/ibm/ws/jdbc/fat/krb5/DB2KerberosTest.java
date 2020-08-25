@@ -128,16 +128,14 @@ public class DB2KerberosTest extends FATServletClient {
             krb5Auth.krb5TicketCache = ccPath;
             Kerberos kerberos = config.getKerberos();
             kerberos.keytab = null;
-            server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+            updateConfigAndWait(config);
 
             FATServletClient.runTest(server, APP_NAME + "/DB2KerberosTestServlet", testName);
         } finally {
             Log.info(c, testName.getMethodName(), "Restoring original config");
             config.getKerberos().keytab = originalKeytab;
             config.getAuthDataElements().getById("krb5Auth").krb5TicketCache = null;
-            server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+            updateConfigAndWait(config);
         }
     }
 
@@ -149,15 +147,13 @@ public class DB2KerberosTest extends FATServletClient {
         try {
             Log.info(c, testName.getMethodName(), "Changing the keystore to an invalid value so that password from the <authData> gets used");
             config.getKerberos().keytab = "BOGUS_KEYTAB";
-            server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+            updateConfigAndWait(config);
 
             FATServletClient.runTest(server, APP_NAME + "/DB2KerberosTestServlet", testName);
         } finally {
             Log.info(c, testName.getMethodName(), "Restoring original config");
             config.getKerberos().keytab = originalKeytab;
-            server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+            updateConfigAndWait(config);
         }
     }
 
@@ -181,6 +177,12 @@ public class DB2KerberosTest extends FATServletClient {
             Log.info(c, m, "FAILED to create ccache");
             throw new Exception("Failed to create Kerberos ticket cache. Kinit output was: " + kinitResult);
         }
+    }
+
+    private void updateConfigAndWait(ServerConfiguration config) throws Exception {
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
     }
 
     private static String readInputStream(InputStream is) {
