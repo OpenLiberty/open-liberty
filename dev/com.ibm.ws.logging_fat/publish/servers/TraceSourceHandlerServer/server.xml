@@ -4,10 +4,9 @@
 	<featureManager>
 		<feature>jsp-2.2</feature>
 		<feature>sampleTraceSourceHandler-1.0</feature>
-		<feature>jaxrs-1.1</feature>
 		<feature>timedexit-1.0</feature>
 	</featureManager>
-
+	
 	 <httpEndpoint id="defaultHttpEndpoint" host="*"  
 		httpPort="${bvt.prop.HTTP_secondary}"  httpsPort="${bvt.prop.HTTP_secondary.secure}" >
 		<accessLogging filePath="${server.output.dir}/logs/http_access_1.log"></accessLogging>
