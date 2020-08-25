@@ -15,6 +15,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -31,7 +33,6 @@ import java.util.stream.Collectors;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -41,14 +42,14 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfSysProp;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.annotation.TestServlet;
-import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
@@ -118,6 +119,17 @@ public class FailoverTimersTest extends FATServletClient {
 
         serverB.useSecondaryHTTPPort();
         originalConfigB = serverB.getServerConfiguration();
+
+        // Transform serverB's app to Jakarta:
+        Path javaEEApp = Paths.get("publish", "servers", "com.ibm.ws.concurrent.persistent.fat.failovertimers.serverA", "apps", APP_NAME + ".war");
+        Path jakartaEEApp = Paths.get("publish", "servers", "com.ibm.ws.concurrent.persistent.fat.failovertimers.serverB", "apps", APP_NAME + ".jakarta.war"); // TODO omit jakarta in name
+        // /apps/ folder must exist for transform to run
+        Paths.get("publish", "servers", "com.ibm.ws.concurrent.persistent.fat.failovertimers.serverB", "apps").toFile().mkdir();
+
+        JakartaEE9Action.transformApp(javaEEApp, jakartaEEApp);
+        Log.info(c, "setUp", "Transformed app " + javaEEApp + " to " + jakartaEEApp);
+
+        // TODO remove the following line to make the test app use Jakarta (and also update server.xml)
         ShrinkHelper.defaultApp(serverB, APP_NAME, "failovertimers.web", "failovertimers.ejb.autotimer", "failovertimers.ejb.stateless");
     }
 
@@ -298,7 +310,7 @@ public class FailoverTimersTest extends FATServletClient {
             // to the application going away while its scheduled tasks remain.
             serverB.stopServer("CWWKC1556W", // Execution of tasks from application failoverTimersApp is deferred until the application and modules that scheduled the tasks are available.
                                "DSRA0230E", "DSRA0302E", "DSRA0304E", "J2CA0027E" // task running during server shutdown
-                               );
+            );
         }
     }
 
