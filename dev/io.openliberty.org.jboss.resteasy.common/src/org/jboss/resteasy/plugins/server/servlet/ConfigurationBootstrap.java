@@ -236,7 +236,8 @@ public abstract class ConfigurationBootstrap implements ResteasyConfiguration
       }
 
       // Liberty Change: TODO: revert this back when we sort out the config via web fragments.
-      String injectorFactoryClass = "org.jboss.resteasy.cdi.CdiInjectorFactory"; // getParameter("resteasy.injector.factory");
+      //String injectorFactoryClass = "org.jboss.resteasy.cdi.CdiInjectorFactory"; // getParameter("resteasy.injector.factory");
+      String injectorFactoryClass = "io.openliberty.org.jboss.resteasy.common.cdi.LibertyCdiInjectorFactory";
       if (injectorFactoryClass != null)
       {
          deployment.setInjectorFactoryClass(injectorFactoryClass);
