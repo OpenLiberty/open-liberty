@@ -30,10 +30,10 @@ public class StreamingServlet extends HttpServlet {
     private static String responseString = "Response from Server: ";
 
     // implementation of the StreamingServiceImpl service
-    private static final class StreamingServiceImpl extends StreamingServiceGrpc.StreamingServiceImplBase {
+    public static final class StreamingServiceImpl extends StreamingServiceGrpc.StreamingServiceImplBase {
 
-        // a no-arg constructor is requird for Liberty to start this service automatically
-        StreamingServiceImpl() {
+        // a no-arg constructor is required for Liberty to start this service automatically
+        public StreamingServiceImpl() {
         }
 
         @Override

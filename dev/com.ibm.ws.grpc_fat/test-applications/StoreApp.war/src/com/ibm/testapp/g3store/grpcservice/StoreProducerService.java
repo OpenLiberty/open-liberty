@@ -406,69 +406,77 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
         return requestObserver;
     }
 
-    String lastClientMessage = "Nothing yet";
-    private static String responseString = "Response from Server: ";
-
     @Override
     public StreamObserver<StreamRequestA> clientStreamA(final StreamObserver<StreamReplyA> responseObserver) {
 
-        responseString = "Response from Server: ";
+        String lastClientMessage = "Nothing yet";
+        String responseString = "Response from Server: ";
+
         log.info("clientStreamA: Service Entry --------------------------------------------------");
 
-        return new StreamObserver<StreamRequestA>() {
-            int count = 0;
+        return new ClientStreamClass(responseObserver);
+    }
 
-            @Override
-            public void onNext(StreamRequestA request) {
-                String s = request.toString();
-                lastClientMessage = s;
+    class ClientStreamClass implements StreamObserver<StreamRequestA> {
+        String lastClientMessage = "Nothing yet";
+        String responseString = "Response from Server: ";
+        int count = 0;
+        StreamObserver<StreamReplyA> responseObserver = null;
 
-                s = "<br>...(( " + s + " onNext at server called at: " + System.currentTimeMillis() + " ))";
-                // limit string to first 200 characters
-                if (s.length() > 200) {
-                    s = s.substring(0, 200);
-                }
+        public ClientStreamClass(StreamObserver<StreamReplyA> ro) {
+            responseObserver = ro;
+        }
 
-                //print out first 10 messages
-                if (count < 10) {
-                    count++;
-                    log.info("clientStreamA: count: " + count + " received: " + s);
-                }
+        @Override
+        public void onNext(StreamRequestA request) {
+            String s = request.toString();
+            lastClientMessage = s;
 
-                // If response is greater than 64K, let's take some off of it
-                if (responseString.length() > 65536) {
-                    responseString = responseString.substring(0, 32768);
-                }
-
-                responseString = responseString + s;
+            s = "<br>...(( " + s + " onNext at server called at: " + System.currentTimeMillis() + " ))";
+            // limit string to first 200 characters
+            if (s.length() > 200) {
+                s = s.substring(0, 200);
             }
 
-            @Override
-            public void onError(Throwable t) {
-                log.log(Level.SEVERE, "Store: Encountered error in clientStreamA: ", t);
+            //print out first 10 messages
+            if (count < 10) {
+                count++;
+                log.info("clientStreamA: count: " + count + " received: " + s);
             }
 
-            @Override
-            public void onCompleted() {
-                log.info("clientStreamA: onComplete() called");
-                String s = responseString + "...[[time response sent back to Client: " + System.currentTimeMillis() + "]]";
-
-                int maxStringLength = 32768 - lastClientMessage.length() - 1;
-                // limit response string to 32K, make sure the last message concatenated at the end
-                if (s.length() > maxStringLength) {
-                    s = s.substring(0, maxStringLength);
-                    s = s + lastClientMessage;
-                } else {
-                    s = s + lastClientMessage;
-                }
-                log.info("clientStreamA: onComplete() sending string of length: " + s.length());
-
-                StreamReplyA reply = StreamReplyA.newBuilder().setMessage(s).build();
-                responseObserver.onNext(reply);
-                responseObserver.onCompleted();
-
+            // If response is greater than 64K, let's take some off of it
+            if (responseString.length() > 65536) {
+                responseString = responseString.substring(0, 32768);
             }
-        };
+
+            responseString = responseString + s;
+        }
+
+        @Override
+        public void onError(Throwable t) {
+            log.log(Level.SEVERE, "Store: Encountered error in clientStreamA: ", t);
+        }
+
+        @Override
+        public void onCompleted() {
+            log.info("clientStreamA: onComplete() called");
+            String s = responseString + "...[[time response sent back to Client: " + System.currentTimeMillis() + "]]";
+
+            int maxStringLength = 32768 - lastClientMessage.length() - 1;
+            // limit response string to 32K, make sure the last message concatenated at the end
+            if (s.length() > maxStringLength) {
+                s = s.substring(0, maxStringLength);
+                s = s + lastClientMessage;
+            } else {
+                s = s + lastClientMessage;
+            }
+            log.info("clientStreamA: onComplete() sending string of length: " + s.length());
+
+            StreamReplyA reply = StreamReplyA.newBuilder().setMessage(s).build();
+            responseObserver.onNext(reply);
+            responseObserver.onCompleted();
+
+        }
     }
 
     @Override
@@ -526,6 +534,8 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
     }
 
     private static String responseStringTwoWay = "Response from Server: ";
+
+    String lastClientMessage = "Nothing yet";
 
     @Override
     public StreamObserver<StreamRequestA> twoWayStreamA(StreamObserver<StreamReplyA> responseObserver) {
