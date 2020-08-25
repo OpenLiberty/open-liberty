@@ -407,6 +407,24 @@ public class ProducerEndpointFATServlet extends FATServlet {
         return priceList;
     }
 
+    /**
+     * @param req
+     * @param resp
+     * @throws Exception
+     */
+    @Test
+    public void testClientStreaming(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+
+        String m = "testClientStreaming";
+        LOG.info(m + " ----------------------------------------------------------------");
+        LOG.info(m + " ------------ testClientStreaming--START -----------------------");
+
+        startlientStreaming(req, resp);
+
+        LOG.info(m + " ------------ testClientStreaming--FINISH -----------------------");
+        LOG.info(m + " ----------------------------------------------------------------");
+    }
+
     @Test
     public void testClientStreamingMetrics(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
@@ -423,24 +441,6 @@ public class ProducerEndpointFATServlet extends FATServlet {
             fail(String.format("Incorrect metric value [%s]. Expected [%s], got [%s]", "grpc.server.receivedMessages.total", ">=200", metricValue));
         }
         LOG.info(m + " ------------ testClientStreamingMetrics--FINISH -----------------------");
-        LOG.info(m + " ----------------------------------------------------------------");
-    }
-
-    /**
-     * @param req
-     * @param resp
-     * @throws Exception
-     */
-    @Test
-    public void testClientStreaming(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-
-        String m = "testClientStreaming";
-        LOG.info(m + " ----------------------------------------------------------------");
-        LOG.info(m + " ------------ testClientStreaming--START -----------------------");
-
-        startlientStreaming(req, resp);
-
-        LOG.info(m + " ------------ testClientStreaming--FINISH -----------------------");
         LOG.info(m + " ----------------------------------------------------------------");
     }
 
@@ -472,6 +472,19 @@ public class ProducerEndpointFATServlet extends FATServlet {
         }
     }
 
+    @Test
+    public void testServerStreaming(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+
+        String m = "testServerStreaming";
+        LOG.info(m + " ----------------------------------------------------------------");
+        LOG.info(m + " ------------ testServerStreaming--START -----------------------");
+
+        startServerStreaming(req, resp);
+
+        LOG.info(m + " ------------ testServerStreaming--FINISH -----------------------");
+        LOG.info(m + " ----------------------------------------------------------------");
+    }
+
     /**
      * @param req
      * @param resp
@@ -489,22 +502,12 @@ public class ProducerEndpointFATServlet extends FATServlet {
         // retrieve the metrics
         int httpPort = Integer.parseInt(getSysProp("bvt.prop.HTTP_secondary"));
         GrpcMetricsTestUtils.checkMetric("/metrics/vendor/grpc.client.sentMessages.total", "0", "localhost", httpPort);
-        GrpcMetricsTestUtils.checkMetric("/metrics/vendor/grpc.client.receivedMessages.total", "200", "localhost", httpPort);
+        String metricValue = GrpcMetricsTestUtils.getMetric("localhost", httpPort, "/metrics/vendor/grpc.client.receivedMessages.total");
+        if (metricValue == null || Integer.parseInt(metricValue) < 200) {
+            fail(String.format("Incorrect metric value [%s]. Expected [%s], got [%s]", "grpc.client.receivedMessages.total", ">=200", metricValue));
+        }
 
         LOG.info(m + " ------------ testServerStreamingMetrics--FINISH -----------------------");
-        LOG.info(m + " ----------------------------------------------------------------");
-    }
-
-    @Test
-    public void testServerStreaming(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-
-        String m = "testServerStreaming";
-        LOG.info(m + " ----------------------------------------------------------------");
-        LOG.info(m + " ------------ testServerStreaming--START -----------------------");
-
-        startServerStreaming(req, resp);
-
-        LOG.info(m + " ------------ testServerStreaming--FINISH -----------------------");
         LOG.info(m + " ----------------------------------------------------------------");
     }
 
