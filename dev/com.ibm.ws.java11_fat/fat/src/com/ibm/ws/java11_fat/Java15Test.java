@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,20 +26,20 @@ import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 14)
-@MaximumJavaLevel(javaLevel = 14)
-public class Java14Test extends FATServletClient {
+@MinimumJavaLevel(javaLevel = 15)
+@MaximumJavaLevel(javaLevel = 15)
+public class Java15Test extends FATServletClient {
 
-    private static final String APP_NAME = "java14-app";
+    private static final String APP_NAME = "java15-app";
 
-    @Server("java11_fat-java14-server")
+    @Server("java11_fat-java15-server")
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        // NOTE: This FAT uses a pre-compiled application which is compiled at bytecode level
-        // of JDK 14, which is higher than what our build systems normally use
-        // Source for the app can be found here: https://github.com/aguibert/basic-liberty/tree/java14-app/src/main
+        // NOTE: This FAT uses a pre-compiled application which is compiled at the bytecode
+        // level of JDK 15, which is higher than what our build systems normally use
+        // Source for the app can be found here: https://github.com/gjwatts/liberty-misc/tree/java15-app/src/main/java
         server.addInstalledAppForValidation(APP_NAME);
         server.startServer();
     }
@@ -50,7 +50,7 @@ public class Java14Test extends FATServletClient {
     }
 
     @Test
-    public void testJava14App() throws Exception {
+    public void testJava15App() throws Exception {
         String appResponse = HttpUtils.getHttpResponseAsString(server, APP_NAME + '/');
         assertContains(appResponse, "<<< EXIT SUCCESSFUL");
     }
