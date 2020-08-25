@@ -10,4 +10,4 @@ singleton=true
  com.ibm.ws.webcontainer.security.admin, \
  io.openliberty.security.authentication.internal.tai
 kind=beta
-edition=full
+edition=core
