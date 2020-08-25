@@ -1,4 +1,5 @@
 com.googlecode.jsontoken:jsontoken:1.1.0-ibm-s20140416-2113
+com.ibm.ws.com.icegreen:greenmail:2.0.0.fd826131f671b0d3230b0d0e1638d8c4
 com.ibm.ws.commons-collections:commons-collections:3.2.1
 com.ibm.ws.internal.prereq.java:java.ibmjgssprovider:1.8.0
 com.ibm.ws.internal.prereq.java:java.rtSunKrb5:1.8.0

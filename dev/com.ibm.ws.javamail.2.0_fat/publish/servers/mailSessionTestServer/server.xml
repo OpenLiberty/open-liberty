@@ -1,0 +1,66 @@
+<server>
+  <featureManager>
+    <feature>componentTest-1.0</feature>
+    <feature>servlet-4.0</feature>
+    <feature>jndi-1.0</feature>
+    <feature>javaMail-1.6</feature>
+  </featureManager>
+
+  <mailSession>
+    <mailSessionID>testPop3MailSession</mailSessionID>
+    <jndiName>TestingApp/POP3MailSessionServlet/testPOP3MailSession</jndiName>
+    <description>mailSession for testing Pop3 protocol</description>
+    <storeProtocol>pop3</storeProtocol>
+    <host>testserver.com</host>
+    <user>test</user>
+    <password>test</password>
+    <from>smtp@testserver.com</from>
+    <property name="mail.pop3.host" value="localhost" />
+    <property name="mail.pop3.port" value="${bvt.prop.pop3_port}" />
+  </mailSession>
+
+  <mailSession>
+    <mailSessionID>testIMAPMailSession</mailSessionID>
+    <jndiName>TestingApp/IMAPMailSessionServlet/testIMAPMailSession</jndiName>
+    <description>mailSession for testing IMAP protocol</description>
+    <storeProtocol>imap</storeProtocol>
+    <host>localhost</host>
+    <user>imap@testserver.com</user>
+    <password>imapPa$$word4U2C</password>
+    <from>smtp@testserver.com</from>
+    <property name="mail.imap.host" value="localhost" />
+    <property name="mail.imap.port" value="${bvt.prop.imap_port}" />
+  </mailSession>
+
+  <mailSession>
+    <mailSessionID>testSMTPMailSession</mailSessionID>
+    <jndiName>TestingApp/SMTPMailSessionServlet/testSMTPMailSession</jndiName>
+    <description>mailSession for testing SMTP protocol</description>
+    <transportProtocol>smtp</transportProtocol>
+    <host>localhost</host>
+    <user>smtp@testserver.com</user>
+    <password>smtpPa$$word4U2C</password>
+    <from>smtp@testserver.com</from>
+    <property name="mail.smtp.host" value="localhost" />
+    <property name="mail.smtp.port" value="${bvt.prop.smtp_port}" />
+  </mailSession>
+
+  <jndiEntry jndiName="TestingApp/pop3_port" value="${bvt.prop.pop3_port}" />
+  <jndiEntry jndiName="TestingApp/imap_port" value="${bvt.prop.imap_port}" />
+  <jndiEntry jndiName="TestingApp/smtp_port" value="${bvt.prop.smtp_port}" />
+
+  <include location="../fatTestPorts.xml"/>
+
+  <application id="testingApp" name="TestingApp" type="war" location="TestingApp.war">
+    <classloader apiTypeVisibility="+third-party"/>
+  </application>
+
+  <!-- Needed due to missing doPriv in javax.mail.Session.getService() -->
+  <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+  <!-- Needed due to missing doPriv in javax.mail.Service.connect() -->
+  <javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
+  <!-- Needed due to missing doPriv in com.sun.mail.util.PropUtil.getBooleanSystemProperty() -->
+  <javaPermission className="java.util.PropertyPermission" name="*" actions="read,write"/>
+  <!-- Needed due to missing doPriv in javax.mail.Session.loadFile(), and we have no idea of the actual base paths -->
+  <javaPermission className="java.io.FilePermission" name="/-" actions="read"/>
+</server>
