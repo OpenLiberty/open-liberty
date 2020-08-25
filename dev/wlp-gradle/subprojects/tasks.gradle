@@ -127,7 +127,7 @@ task copyPiiFiles(type: Copy) {
   into ext.destinationDir
   include '**/*.nlsprops'
   include 'OSGI-INF/l10n/*'
-  include 'l10n/*'
+  include '**/l10n/*'
   include 'publish/features/l10n/*.properties'
   include 'WEB-CONTENT/**/nls/*.js'
   include 'OSGI-INF/**/nls/*.js'
