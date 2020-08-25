@@ -10,8 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.tai;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.Cookie;
@@ -209,12 +211,11 @@ public class TAIRequestHelper {
         if (serverConfigTokenHeader != null) {
             return serverConfigTokenHeader;
         }
-        String tokenHeaderName = getValueFromMpConfigProps(MpConstants.TOKEN_HEADER, Authorization_Header);
+        String defaultValue = Authorization_Header;
+        String tokenHeaderName = getValueFromMpConfigProps(MpConstants.TOKEN_HEADER, defaultValue);
         if (!isSupportedTokenHeaderName(tokenHeaderName)) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Specified token header [" + tokenHeaderName + "] is not supported.");
-            }
-            return Authorization_Header;
+            Tr.warning(tc, "MP_CONFIG_VALUE_NOT_SUPPORTED", new Object[] { tokenHeaderName, MpConstants.TOKEN_HEADER, getSupportedTokenHeaderNames(), defaultValue });
+            return defaultValue;
         }
         return tokenHeaderName;
     }
@@ -234,10 +235,15 @@ public class TAIRequestHelper {
     }
 
     boolean isSupportedTokenHeaderName(String tokenHeader) {
-        if (Authorization_Header.equals(tokenHeader) || "Cookie".equals(tokenHeader)) {
-            return true;
-        }
-        return false;
+        List<String> supportedNames = getSupportedTokenHeaderNames();
+        return supportedNames.contains(tokenHeader);
+    }
+
+    List<String> getSupportedTokenHeaderNames() {
+        List<String> supportedNames = new ArrayList<String>();
+        supportedNames.add(Authorization_Header);
+        supportedNames.add("Cookie");
+        return supportedNames;
     }
 
     @Sensitive

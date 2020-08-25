@@ -84,9 +84,9 @@ public class AuthUtilsTest extends CommonTestClass {
 
     @Test
     public void test_getBearerTokenFromHeader_whitespaceValid() {
-        String expectedValue = "    some header value ";
+        String expectedValue = "some header value";
         String scheme = "Scheme";
-        String rawHeaderValue = scheme + expectedValue;
+        String rawHeaderValue = scheme + "    " + expectedValue + " ";
         String result = utils.getBearerTokenFromHeader(rawHeaderValue, scheme);
         assertEquals("Returned value did not match the expected value", expectedValue, result);
     }

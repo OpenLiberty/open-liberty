@@ -45,11 +45,11 @@
             
         <AD id="sharedKey" name="%sharedKey" description="%sharedKey.desc" required="false" type="String" ibm:type="password" />
         <AD id="useSystemPropertiesForHttpClientConnections" name="%useSystemPropertiesForHttpClientConnections" description="%useSystemPropertiesForHttpClientConnections.desc" required="false" type="Boolean" default="false"/>
-        <AD id="tokenHeader" name="internal" description="internal use only" required="false" type="String" ibm:beta="true" >
-            <Option label="internal" value="Authorization" />
-            <Option label="internal" value="Cookie" />
+        <AD id="tokenHeader" name="%tokenHeader" description="%tokenHeader.desc" required="false" type="String" ibm:beta="true" >
+            <Option label="%tokenHeader.Authorization" value="Authorization" />
+            <Option label="%tokenHeader.Cookie" value="Cookie" />
         </AD>
-        <AD id="cookieName" name="internal" description="internal use only" required="false" type="String" ibm:beta="true" />
+        <AD id="cookieName" name="%cookieName" description="%cookieName.desc" required="false" type="String" ibm:beta="true" />
 
         <AD id="signatureAlgorithm" required="false" type="String" name="%signatureAlgorithm" description="%signatureAlgorithm.desc" >
             <Option label="%tokenSignAlgorithm.RS256" value="RS256" />
