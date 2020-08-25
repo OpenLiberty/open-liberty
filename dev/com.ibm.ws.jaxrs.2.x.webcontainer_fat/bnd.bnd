@@ -22,7 +22,9 @@ fat.project: true
 # These features get added programatically
 tested.features: \
   jaxrs-2.1,\
+  jaxrs-3.0,\
   cdi-2.0,\
+  cdi-3.0,\
   appsecurity-3.0
 
 -buildpath: \

@@ -92,3 +92,5 @@ addRequiredLibraries {
   dependsOn addJersey
   dependsOn addJersey2
 }
+
+addRequiredLibraries.dependsOn addJakartaTransformer

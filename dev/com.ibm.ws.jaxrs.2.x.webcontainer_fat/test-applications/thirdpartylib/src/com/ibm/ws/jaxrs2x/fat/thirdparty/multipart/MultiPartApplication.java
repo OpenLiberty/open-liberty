@@ -16,7 +16,7 @@ import java.util.Set;
 
 import javax.ws.rs.ApplicationPath;
 
-@ApplicationPath("/multipartapp")
+@ApplicationPath("/multipart")
 public class MultiPartApplication extends javax.ws.rs.core.Application {
 
     @Override
