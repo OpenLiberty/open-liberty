@@ -42,6 +42,7 @@ import componenttest.topology.utils.FATServletClient;
  * reaperPollInterval="30" //Min allowed to not receive random poll interval between 30-60s
  */
 @RunWith(FATRunner.class)
+//@SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
 public class SessionCacheTimeoutTest extends FATServletClient {
     public static final Class<?> c = SessionCacheTimeoutTest.class;
 

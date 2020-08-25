@@ -53,6 +53,7 @@
 	<!-- Perms needed because the application uses Hazelcast directly   -->
     <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.io.FilePermission" actions="read" name="${shared.resource.dir}/hazelcast/*"/>
     <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.management"/>
+    <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.management.internal"/>
     <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.misc"/>
     <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.nio.ch"/>
     <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>

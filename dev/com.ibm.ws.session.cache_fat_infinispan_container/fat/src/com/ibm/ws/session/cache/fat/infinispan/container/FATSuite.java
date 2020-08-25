@@ -30,6 +30,8 @@ import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -40,12 +42,16 @@ import componenttest.topology.utils.HttpUtils;
 @RunWith(Suite.class)
 @SuiteClasses({
                 SessionCacheOneServerTest.class,
-                SessionCacheTwoServerTest.class,
-                SessionCacheTimeoutTest.class,
-                SessionCacheTwoServerTimeoutTest.class
+//                SessionCacheTwoServerTest.class,
+//                SessionCacheTimeoutTest.class,
+//                SessionCacheTwoServerTimeoutTest.class
 })
 
 public class FATSuite {
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification() // run all tests as-is (e.g. EE8 features)
+                    .andWith(new JakartaEE9Action()); // run all tests again with EE9 features+packages
 
     // Used in conjunction with fat.test.use.remote.docker property to use a remote docker host for local testing.
     static {
