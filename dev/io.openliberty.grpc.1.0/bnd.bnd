@@ -13,10 +13,9 @@ bVersion: 1.0
 
 Bundle-Name: WebSphere gRPC API
 Bundle-Description: WebSphere gRPC API, version ${bVersion}
-Bundle-SymbolicName: io.openliberty.api.grpc
+Bundle-SymbolicName: io.openliberty.grpc
 
-Import-Package: \
-    *
+Import-Package: io.openliberty.grpc.annotation
 
 Export-Package: io.openliberty.grpc.annotation
 
