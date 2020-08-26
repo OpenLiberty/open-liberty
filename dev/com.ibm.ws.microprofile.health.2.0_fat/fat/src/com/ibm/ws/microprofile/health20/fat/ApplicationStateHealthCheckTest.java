@@ -53,7 +53,8 @@ import componenttest.topology.utils.HttpUtils;
  */
 @RunWith(FATRunner.class)
 public class ApplicationStateHealthCheckTest {
-    private static final String[] EXPECTED_FAILURES = { "CWWKE1102W", "CWWKE1105W", "CWMH0052W", "CWM*H0053W", "CWMMH0052W", "CWMMH0053W", "CWWKZ0060E", "CWWKZ0002E" };
+    private static final String[] EXPECTED_FAILURES = { "CWWKE1102W", "CWWKE1105W", "CWMH0052W", "CWMH0053W", "CWMMH0052W", "CWMMH0053W" };
+    private static final String[] FAILS_TO_START_EXPECTED_FAILURES = { "CWWKE1102W", "CWWKE1105W", "CWMH0052W", "CWM*H0053W", "CWMMH0052W", "CWMMH0053W", "CWWKZ0060E", "CWWKZ0002E" };
 
     public static final String MULTIPLE_APP_NAME = "MultipleHealthCheckApp";
     public static final String DIFFERENT_APP_NAME = "DifferentApplicationNameHealthCheckApp";
@@ -81,6 +82,7 @@ public class ApplicationStateHealthCheckTest {
     public static KafkaContainer kafkaContainer = new KafkaContainer();
 
     final static String SERVER_NAME = "ApplicationStateHealthCheck";
+    final static String FAILS_TO_START_SERVER_NAME = "FailedApplicationStateHealthCheck";
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
@@ -88,21 +90,31 @@ public class ApplicationStateHealthCheckTest {
                                     .withID("mpHealth-3.0")
                                     .addFeature("mpHealth-3.0")
                                     .removeFeature("mpHealth-2.0")
-                                    .forServers(SERVER_NAME));
+                                    .forServers(SERVER_NAME, FAILS_TO_START_SERVER_NAME));
 
     @Server(SERVER_NAME)
     public static LibertyServer server1;
 
+    @Server(FAILS_TO_START_SERVER_NAME)
+    public static LibertyServer server2;
+
     @Before
     public void setUp() throws Exception {
-        server1.setServerConfigurationFile("applicationstate-original-server.xml");
         server1.deleteAllDropinApplications();
+        server2.deleteAllDropinApplications();
     }
 
     @After
     public void cleanUp() throws Exception {
         server1.removeAllInstalledAppsForValidation();
-        server1.stopServer(EXPECTED_FAILURES);
+        server2.removeAllInstalledAppsForValidation();
+        if (server1.isStarted()) {
+            server1.stopServer(EXPECTED_FAILURES);
+        }
+        if (server2.isStarted()) {
+            server2.stopServer(FAILS_TO_START_EXPECTED_FAILURES);
+        }
+        
     }
 
     /**
@@ -116,29 +128,27 @@ public class ApplicationStateHealthCheckTest {
                     "com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaAdapterException",
                     "org.jboss.weld.exceptions.DeploymentException" })
     public void testFailsToStartApplicationHealthCheckTest() throws Exception {
-        server1.setServerConfigurationFile("applicationstate-fails-server.xml");
-
         log("testFailsToStartApplicationHealthCheckTest", "Pre-loading FailsToStartHealthCheckApp and starting the server");
-        loadServerAndApplication(FAILS_TO_START_APP_NAME, "com.ibm.ws.microprofile.health20.fails.to.start.health.check.app", false);
+        loadServerAndApplication(server2, FAILS_TO_START_APP_NAME, "com.ibm.ws.microprofile.health20.fails.to.start.health.check.app", false);
 
         log("testFailsToStartApplicationHealthCheckTest", "Testing health check endpoints after FailsToStartHealthCheckApp has been loaded");
-        expectHealthCheck(HealthCheck.LIVE, Status.SUCCESS, 0);
+        expectHealthCheck(server2, HealthCheck.LIVE, Status.SUCCESS, 0);
         expectFailsToStartApplicationNotStartedMessage(false);
 
-        expectHealthCheck(HealthCheck.READY, Status.FAILURE, 0);
+        expectHealthCheck(server2, HealthCheck.READY, Status.FAILURE, 0);
         expectFailsToStartApplicationNotStartedMessage(true);
 
-        expectHealthCheck(HealthCheck.HEALTH, Status.FAILURE, 0);
+        expectHealthCheck(server2, HealthCheck.HEALTH, Status.FAILURE, 0);
         expectFailsToStartApplicationNotStartedMessage(true);
 
         log("testFailsToStartApplicationHealthCheckTest", "Adding SuccessfulHealthCheckApp to dropins");
-        addApplication(SUCCESSFUL_APP_NAME, "com.ibm.ws.microprofile.health20.successful.health.checks.app");
-        waitForApplication(SUCCESSFUL_APP_NAME);
+        addApplication(server2, SUCCESSFUL_APP_NAME, "com.ibm.ws.microprofile.health20.successful.health.checks.app");
+        waitForApplication(server2, SUCCESSFUL_APP_NAME);
 
         log("testFailsToStartApplicationHealthCheckTest", "Testing health check endpoints after SuccessfulHealthCheckApp has been loaded");
-        expectHealthCheck(HealthCheck.LIVE, Status.SUCCESS, 1);
-        expectHealthCheck(HealthCheck.READY, Status.FAILURE, 1);
-        expectHealthCheck(HealthCheck.HEALTH, Status.FAILURE, 2);
+        expectHealthCheck(server2, HealthCheck.LIVE, Status.SUCCESS, 1);
+        expectHealthCheck(server2, HealthCheck.READY, Status.FAILURE, 1);
+        expectHealthCheck(server2, HealthCheck.HEALTH, Status.FAILURE, 2);
     }
 
     /**
@@ -146,16 +156,16 @@ public class ApplicationStateHealthCheckTest {
      */
     @Test
     public void testPreLoadedApplicationsHealthCheckTest() throws Exception {
-        log("testPreLoadedApplicationsHealthCheckTest", "Pre-loading " + DIFFERENT_APP_NAME + " and " + MULTIPLE_APP_NAME + " and starting the server");
-        loadServerAndApplications(Arrays.asList(DIFFERENT_APP_NAME, MULTIPLE_APP_NAME),
-                                  Arrays.asList("com.ibm.ws.microprofile.health20.different.app.name.health.checks.app",
+        log("testPreLoadedApplicationsHealthCheckTest", "Pre-loading " + SUCCESSFUL_APP_NAME + " and " + MULTIPLE_APP_NAME + " and starting the server");
+        loadServerAndApplications(server1, Arrays.asList(SUCCESSFUL_APP_NAME, MULTIPLE_APP_NAME),
+                                  Arrays.asList("com.ibm.ws.microprofile.health20.successful.health.checks.app",
                                                 "com.ibm.ws.microprofile.health20.multiple.health.checks.app"),
                                   false);
 
-        log("testPreLoadedApplicationsHealthCheckTest", "Testing health check endpoints after MultipleHealthCheckApp and DifferentAppNameHealthCheckApp have been loaded");
-        expectHealthCheck(HealthCheck.LIVE, Status.FAILURE, 3);
-        expectHealthCheck(HealthCheck.READY, Status.FAILURE, 3);
-        expectHealthCheck(HealthCheck.HEALTH, Status.FAILURE, 7);
+        log("testPreLoadedApplicationsHealthCheckTest", "Testing health check endpoints after " + SUCCESSFUL_APP_NAME + " and " + MULTIPLE_APP_NAME + " have been loaded");
+        expectHealthCheck(server1, HealthCheck.LIVE, Status.FAILURE, 3);
+        expectHealthCheck(server1, HealthCheck.READY, Status.SUCCESS, 3);
+        expectHealthCheck(server1, HealthCheck.HEALTH, Status.FAILURE, 6);
     }
 
     /**
@@ -165,17 +175,16 @@ public class ApplicationStateHealthCheckTest {
      */
     @Test
     public void testDynamicallyLoadedApplicationsHealthCheckTest() throws Exception {
-        server1.setServerConfigurationFile("delayed-server.xml");
         log("testDynamicallyLoadedApplicationsHealthCheckTest", "Starting the server and dynamically adding " + SUCCESSFUL_APP_NAME);
-        loadServerAndApplication(SUCCESSFUL_APP_NAME, "com.ibm.ws.microprofile.health20.successful.health.checks.app", true);
+        loadServerAndApplication(server1, SUCCESSFUL_APP_NAME, "com.ibm.ws.microprofile.health20.successful.health.checks.app", true);
 
         log("testDynamicallyLoadedApplicationsHealthCheckTest", "Testing health check endpoints after " + SUCCESSFUL_APP_NAME + " is dynamically deployed");
-        expectHealthCheck(HealthCheck.LIVE, Status.SUCCESS, 1);
-        expectHealthCheck(HealthCheck.READY, Status.SUCCESS, 1);
-        expectHealthCheck(HealthCheck.HEALTH, Status.SUCCESS, 2);
+        expectHealthCheck(server1, HealthCheck.LIVE, Status.SUCCESS, 1);
+        expectHealthCheck(server1, HealthCheck.READY, Status.SUCCESS, 1);
+        expectHealthCheck(server1, HealthCheck.HEALTH, Status.SUCCESS, 2);
 
         log("testDynamicallyLoadedApplicationsHealthCheckTest", "Adding " + DELAYED_APP_NAME + " to dropins");
-        addApplication(DELAYED_APP_NAME, "com.ibm.ws.microprofile.health20.delayed.health.check.app");
+        addApplication(server1, DELAYED_APP_NAME, "com.ibm.ws.microprofile.health20.delayed.health.check.app");
 
         log("testDynamicallyLoadedApplicationsHealthCheckTest", "Testing for readiness DOWN while " + DELAYED_APP_NAME + " is starting.");
         try {
@@ -213,93 +222,93 @@ public class ApplicationStateHealthCheckTest {
         }
 
         log("testDynamicallyLoadedApplicationsHealthCheckTest", "Testing health check endpoints after " + SUCCESSFUL_APP_NAME + " and " + DELAYED_APP_NAME + " have started");
-        expectHealthCheck(HealthCheck.LIVE, Status.SUCCESS, 2);
-        expectHealthCheck(HealthCheck.READY, Status.SUCCESS, 2);
-        expectHealthCheck(HealthCheck.HEALTH, Status.SUCCESS, 4);
+        expectHealthCheck(server1, HealthCheck.LIVE, Status.SUCCESS, 2);
+        expectHealthCheck(server1, HealthCheck.READY, Status.SUCCESS, 2);
+        expectHealthCheck(server1, HealthCheck.HEALTH, Status.SUCCESS, 4);
     }
 
     private void expectFailsToStartApplicationNotStartedMessage(boolean expectMessage) throws Exception {
         if (expectMessage) {
-            List<String> notStartedMessages = server1.findStringsInLogs("CWM*H0053W");
+            List<String> notStartedMessages = server2.findStringsInLogs("CWM*H0053W");
             assertTrue("The CWM*H0053W message for " + FAILS_TO_START_APP_NAME + " was not found in the logs.",
                        notStartedMessages.size() == 1 && notStartedMessages.get(0).contains(FAILS_TO_START_APP_NAME));
         } else {
             assertEquals("The CWM*H0053W message for " + FAILS_TO_START_APP_NAME + " was found in the logs.",
-                         0, server1.findStringsInLogs("CWM*H0053W").size());
+                         0, server2.findStringsInLogs("CWM*H0053W").size());
         }
     }
 
-    private void loadServerAndApplication(String appName, String packageName, boolean isDynamicallyLoaded) throws Exception {
-        loadServerAndApplications(Arrays.asList(appName), Arrays.asList(packageName), isDynamicallyLoaded);
+    private void loadServerAndApplication(LibertyServer server, String appName, String packageName, boolean isDynamicallyLoaded) throws Exception {
+        loadServerAndApplications(server, Arrays.asList(appName), Arrays.asList(packageName), isDynamicallyLoaded);
     }
 
-    private void loadServerAndApplications(List<String> appNames, List<String> packageNames, boolean isDynamicallyLoaded) throws Exception {
+    private void loadServerAndApplications(LibertyServer server, List<String> appNames, List<String> packageNames, boolean isDynamicallyLoaded) throws Exception {
         if (isDynamicallyLoaded) {
-            startServer(appNames.contains(FAILS_TO_START_APP_NAME));
+            startServer(server, appNames.contains(FAILS_TO_START_APP_NAME));
         }
 
         for (int i = 0; i < appNames.size(); i++) {
             log("loadApplications", "Adding " + appNames.get(i) + " to dropins");
-            addApplication(appNames.get(i), packageNames.get(i));
+            addApplication(server, appNames.get(i), packageNames.get(i));
         }
 
         if (!isDynamicallyLoaded) {
-            startServer(appNames.contains(FAILS_TO_START_APP_NAME));
+            startServer(server, appNames.contains(FAILS_TO_START_APP_NAME));
         }
 
         for (int i = 0; i < appNames.size(); i++) {
-            waitForApplication(appNames.get(i));
+            waitForApplication(server, appNames.get(i));
         }
     }
 
-    private void addApplication(String appName, String packageName) throws Exception {
+    private void addApplication(LibertyServer server, String appName, String packageName) throws Exception {
         log("addApplication", "Adding " + appName + " to the server");
         WebArchive app = ShrinkHelper.buildDefaultApp(appName, packageName);
         if (appName.equals(FAILS_TO_START_APP_NAME)) {
             app = app.addAsManifestResource(ApplicationStateHealthCheckTest.class.getResource("permissions.xml"), "permissions.xml");
             File libsDir = new File("lib/LibertyFATTestFiles/libs");
             for (File file : libsDir.listFiles()) {
-                server1.copyFileToLibertyServerRoot(file.getParent(), "kafkaLib", file.getName());
+                server.copyFileToLibertyServerRoot(file.getParent(), "kafkaLib", file.getName());
             }
-            ShrinkHelper.exportAppToServer(server1, app);
+            ShrinkHelper.exportAppToServer(server, app);
         } else {
-            ShrinkHelper.exportDropinAppToServer(server1, app);
+            ShrinkHelper.exportDropinAppToServer(server, app);
         }
 
     }
 
-    private void waitForApplication(String appName) {
+    private void waitForApplication(LibertyServer server, String appName) {
         if (appName.equals(FAILS_TO_START_APP_NAME)) {
             log("waitForApplication", "Waiting for expected app failure");
-            server1.waitForStringInLog("CWWKZ0012I.* " + FAILS_TO_START_APP_NAME, APP_STARTUP_TIMEOUT);
+            server.waitForStringInLog("CWWKZ0012I.* " + FAILS_TO_START_APP_NAME, APP_STARTUP_TIMEOUT);
             log("waitForApplication", "Waiting for expected FFDC");
-            server1.waitForMultipleStringsInLog(3, "FFDC1015I");
+            server.waitForMultipleStringsInLog(3, "FFDC1015I");
         } else {
             log("waitForApplication", "Waiting for " + appName + " to start");
-            server1.waitForStringInLog("CWWKZ0001I.* " + appName, APP_STARTUP_TIMEOUT);
+            server.waitForStringInLog("CWWKZ0001I.* " + appName, APP_STARTUP_TIMEOUT);
         }
     }
 
-    private void startServer(boolean isFailsToStartApp) throws Exception {
+    private void startServer(LibertyServer server, boolean isFailsToStartApp) throws Exception {
         log("loadApplication", "Starting the server");
         if (isFailsToStartApp) {
             try {
-                server1.startServer();
+                server.startServer();
             } catch (TopologyException e) {
             }
         } else {
-            server1.startServer();
+            server.startServer();
         }
     }
 
-    public void expectHealthCheck(HealthCheck expectedHealthCheck, Status expectedStatus, int expectedChecks) throws Exception {
+    public void expectHealthCheck(LibertyServer server, HealthCheck expectedHealthCheck, Status expectedStatus, int expectedChecks) throws Exception {
         HttpURLConnection con;
         if (expectedHealthCheck == HealthCheck.LIVE) {
-            con = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, LIVE_ENDPOINT);
+            con = HttpUtils.getHttpConnectionWithAnyResponseCode(server, LIVE_ENDPOINT);
         } else if (expectedHealthCheck == HealthCheck.READY) {
-            con = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, READY_ENDPOINT);
+            con = HttpUtils.getHttpConnectionWithAnyResponseCode(server, READY_ENDPOINT);
         } else {
-            con = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, HEALTH_ENDPOINT);
+            con = HttpUtils.getHttpConnectionWithAnyResponseCode(server, HEALTH_ENDPOINT);
         }
 
         JsonObject jsonResponse = getJSONPayload(con);
