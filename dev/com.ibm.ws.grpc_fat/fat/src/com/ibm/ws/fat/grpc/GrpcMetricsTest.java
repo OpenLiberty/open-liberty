@@ -11,14 +11,10 @@
 
 package com.ibm.ws.fat.grpc;
 
+import static com.ibm.ws.fat.grpc.monitoring.GrpcMetricsTestUtils.checkMetric;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
 
 import org.junit.AfterClass;
@@ -50,7 +46,7 @@ public class GrpcMetricsTest extends FATServletClient {
     public TestName name = new TestName();
 
     @Server("HelloWorldServer")
-    public static LibertyServer grpcMetricsServer; //GrpcMetricsServer
+    public static LibertyServer grpcMetricsServer;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -117,16 +113,16 @@ public class GrpcMetricsTest extends FATServletClient {
             page = submitButton.click();
 
             // check the gRPC client-side metrics
-            checkMetric("/metrics/vendor/grpc.client.rpcStarted.total", "1");
-            checkMetric("/metrics/vendor/grpc.client.rpcCompleted.total", "1");
-            checkMetric("/metrics/vendor/grpc.client.sentMessages.total", "1");
-            checkMetric("/metrics/vendor/grpc.client.receivedMessages.total", "1");
+            checkMetric(grpcMetricsServer, "/metrics/vendor/grpc.client.rpcStarted.total", "1");
+            checkMetric(grpcMetricsServer, "/metrics/vendor/grpc.client.rpcCompleted.total", "1");
+            checkMetric(grpcMetricsServer, "/metrics/vendor/grpc.client.sentMessages.total", "1");
+            checkMetric(grpcMetricsServer, "/metrics/vendor/grpc.client.receivedMessages.total", "1");
 
             // check the gRPC server-side metrics
-            checkMetric("/metrics/vendor/grpc.server.rpcStarted.total", "1");
-            checkMetric("/metrics/vendor/grpc.server.rpcCompleted.total", "1");
-            checkMetric("/metrics/vendor/grpc.server.sentMessages.total", "1");
-            checkMetric("/metrics/vendor/grpc.server.receivedMessages.total", "1");
+            checkMetric(grpcMetricsServer, "/metrics/vendor/grpc.server.rpcStarted.total", "1");
+            checkMetric(grpcMetricsServer, "/metrics/vendor/grpc.server.rpcCompleted.total", "1");
+            checkMetric(grpcMetricsServer, "/metrics/vendor/grpc.server.sentMessages.total", "1");
+            checkMetric(grpcMetricsServer, "/metrics/vendor/grpc.server.receivedMessages.total", "1");
 
             // Log the page for debugging if necessary in the future.
             Log.info(c, name.getMethodName(), page.asText());
@@ -134,60 +130,4 @@ public class GrpcMetricsTest extends FATServletClient {
         }
     }
 
-    /**
-     * Verifies the given metric by comparing the actual value with the given value
-     *
-     * @param metricName    - the metric to verify
-     * @param expectedValue - the expected value
-     * @return the actual value received from the Metrics endpoint
-     */
-    private String checkMetric(String metricName, String expectedValue) {
-        HttpURLConnection con = null;
-        try {
-            URL url = new URL("http://" + grpcMetricsServer.getHostname() + ":" + grpcMetricsServer.getHttpDefaultPort() + metricName);
-            int retcode;
-            con = (HttpURLConnection) url.openConnection();
-            con.setDoInput(true);
-            con.setDoOutput(true);
-            con.setUseCaches(false);
-            con.setRequestMethod("GET");
-
-            retcode = con.getResponseCode();
-            if (retcode != 200) {
-                fail("Bad return code from Metrics method call. Expected 200, got " + retcode);
-
-                return null;
-            }
-
-            InputStream is = con.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-
-            BufferedReader br = new BufferedReader(isr);
-
-            String metricValue = null;
-            for (String line = br.readLine(); line != null; line = br.readLine()) {
-                if (!line.startsWith("#")) {
-                    String[] mertricAttr = line.split(" ");
-                    if (mertricAttr.length > 0) {
-                        metricValue = mertricAttr[mertricAttr.length - 1];
-                        break;
-                    }
-                }
-            }
-
-            if (metricValue == null || !metricValue.equals(expectedValue)) {
-                fail(String.format("Incorrect metric value [%s]. Expected [%s], got [%s]", metricName, expectedValue, metricValue));
-            }
-            return metricValue;
-
-        } catch (Exception e) {
-            fail("Caught unexpected exception: " + e);
-            return null;
-        } finally {
-            if (con != null) {
-                con.disconnect();
-            }
-        }
-
-    }
 }
