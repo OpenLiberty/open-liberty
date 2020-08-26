@@ -10,7 +10,7 @@
  *******************************************************************************/
 
 /**
- * Configure 'globalize', 'copyPiiFiles', 'verifyBundleNLS', 'compileJava', 'test', 'apiSpiJavadoc', and 'zipJavadoc' tasks.
+ * Configure 'globalize', 'copyPiiFiles', 'copyCustomPiiFiles', 'verifyBundleNLS', 'compileJava', 'test', 'apiSpiJavadoc', and 'zipJavadoc' tasks.
  */
 defaultTasks 'clean', 'build'
 
@@ -131,6 +131,15 @@ task copyPiiFiles(type: Copy) {
   include 'publish/features/l10n/*.properties'
   include 'WEB-CONTENT/**/nls/*.js'
   include 'OSGI-INF/**/nls/*.js'
+}
+
+task copyCustomPiiFiles(type:copy) {
+  enabled parseBoolean(bnd('copy.pii', 'true'))
+  ext.destinationDir = rootProject.file("build.pii.package/nlssrc/${project.name}")
+  from project.file('.')
+  into ext.destinationDir
+  include '**/l10n/*'
+  exclude 'resources/**'
 }
 
 sourceSets {
