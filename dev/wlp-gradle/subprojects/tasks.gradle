@@ -133,7 +133,7 @@ task copyPiiFiles(type: Copy) {
   include 'OSGI-INF/**/nls/*.js'
 }
 
-task copyCustomPiiFiles(type:copy) {
+task copyCustomPiiFiles(type: Copy) {
   enabled parseBoolean(bnd('copy.pii', 'true'))
   ext.destinationDir = rootProject.file("build.pii.package/nlssrc/${project.name}")
   from project.file('.')
