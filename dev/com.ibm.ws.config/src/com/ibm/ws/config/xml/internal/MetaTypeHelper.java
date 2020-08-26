@@ -14,8 +14,11 @@ package com.ibm.ws.config.xml.internal;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 public class MetaTypeHelper {
 
+    @Trivial
     public static final List<String> parseValue(String value) {
         List<String> values = new ArrayList<String>();
         StringBuilder builder = new StringBuilder();
@@ -48,6 +51,7 @@ public class MetaTypeHelper {
         return values;
     }
 
+    @Trivial
     private static int consumeWhitespace(String value, int start, StringBuilder builder) {
         int whitespace = 0;
         for (int i = start; i < value.length(); i++) {
@@ -73,6 +77,7 @@ public class MetaTypeHelper {
      * expression {@code parseValue(escapeValue(s))} should always contain a
      * single String equal to the input.
      */
+    @Trivial
     public static String escapeValue(String s) {
         if (s.isEmpty()) {
             return s;

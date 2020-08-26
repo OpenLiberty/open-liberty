@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="5.0"
+	xmlns="https://jakarta.ee/xml/ns/jakartaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd">
+	<display-name>Snoop Servlet 50</display-name>
+	<description>This is the IBM WebSphere Application Sever Default Web Application Snoop using Servlet 50, since 2020</description>
+
+	<servlet>
+		<display-name>Snoop Servlet</display-name>
+		<servlet-name>Snoop Servlet</servlet-name>
+		<servlet-class>servlet5snoop.war.servlets.Snoop5Servlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>Snoop Servlet</servlet-name>
+		<url-pattern>/snoop5</url-pattern>
+	</servlet-mapping>
+
+</web-app>

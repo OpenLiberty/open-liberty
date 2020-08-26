@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019-2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -96,15 +96,19 @@ public class HealthCheck20ServiceImpl implements HealthCheck20Service {
     public void performHealthCheck(HttpServletRequest request, HttpServletResponse httpResponse, String healthCheckProcedure) {
         Set<HealthCheckResponse> hcResponses = null;
         Set<String> unstartedAppsSet = new HashSet<String>();
-        Set<String> apps = appTracker.getAppNames();
+        Set<String> apps = appTracker.getAllAppNames();
         Iterator<String> appsIt = apps.iterator();
-
+        boolean anyAppsInstalled = false;
         HealthCheckHttpResponseBuilder hcHttpResponseBuilder = new HealthCheck20HttpResponseBuilder();
 
         while (appsIt.hasNext()) {
             String appName = appsIt.next();
-
-            if (!appTracker.isStarted(appName)) {
+            if(appTracker.isInstalled(appName)) {
+                anyAppsInstalled = true;
+                if (!healthCheckProcedure.equals(HealthCheckConstants.HEALTH_CHECK_LIVE) && !unstartedAppsSet.contains(appName)) {
+                    unstartedAppsSet.add(appName);
+                }
+            } else if (!appTracker.isUninstalled(appName) && !appTracker.isStarted(appName)) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "In performHealthCheck(): Application : " + appName + " has not started yet.");
                 if (!(healthCheckProcedure.equals(HealthCheckConstants.HEALTH_CHECK_LIVE))) {
@@ -119,34 +123,34 @@ public class HealthCheck20ServiceImpl implements HealthCheck20Service {
                     // for liveness check
                     hcHttpResponseBuilder.setOverallState(State.UP);
                 }
+            } else {
+                Set<String> modules = appTracker.getModuleNames(appName);
+                if (modules != null) {
+                    Iterator<String> moduleIt = modules.iterator();
 
-                // Continue and check the state of the other deployed applications
-                continue;
-            }
+                    while (moduleIt.hasNext()) {
+                        String moduleName = moduleIt.next();
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "In performHealthCheck(): appName = " + appName + ", moduleName = " + moduleName);
 
-            Set<String> modules = appTracker.getModuleNames(appName);
-            Iterator<String> moduleIt = modules.iterator();
+                        try {
+                            hcResponses = hcExecutor.runHealthChecks(appName, moduleName, healthCheckProcedure);
+                        } catch (HealthCheckBeanCallException e) {
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "In performHealthCheck(): Caught the exception " + e + " for appName = " + appName + ", moduleName = " + moduleName);
+                            hcHttpResponseBuilder.handleUndeterminedResponse(httpResponse);
+                            return;
+                        }
 
-            while (moduleIt.hasNext()) {
-                String moduleName = moduleIt.next();
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "In performHealthCheck(): appName = " + appName + ", moduleName = " + moduleName);
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "In performHealthCheck(): hcResponses = " + hcResponses);
 
-                try {
-                    hcResponses = hcExecutor.runHealthChecks(appName, moduleName, healthCheckProcedure);
-                } catch (HealthCheckBeanCallException e) {
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "In performHealthCheck(): Caught the exception " + e + " for appName = " + appName + ", moduleName = " + moduleName);
-                    hcHttpResponseBuilder.handleUndeterminedResponse(httpResponse);
-                    return;
+                        if (!hcResponses.isEmpty())
+                            hcHttpResponseBuilder.addResponses(hcResponses);
+                    }
                 }
-
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "In performHealthCheck(): hcResponses = " + hcResponses);
-
-                if (!hcResponses.isEmpty())
-                    hcHttpResponseBuilder.addResponses(hcResponses);
             }
+
         }
 
         if (unstartedAppsSet.isEmpty()) {
@@ -166,6 +170,10 @@ public class HealthCheck20ServiceImpl implements HealthCheck20Service {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "In performHealthCheck(): numOfUnstartedApps = " + unstartedAppsCounter.get());
             Tr.warning(tc, "readiness.healthcheck.applications.not.started.down.CWMH0053W", new Object[] { unstartedAppsSet });
+        }
+
+        if (anyAppsInstalled && !(healthCheckProcedure.equals(HealthCheckConstants.HEALTH_CHECK_LIVE))) {
+            hcHttpResponseBuilder.setOverallState(State.DOWN);
         }
 
         hcHttpResponseBuilder.setHttpResponse(httpResponse);

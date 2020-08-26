@@ -451,4 +451,10 @@ public class JwtSsoComponent implements JwtSsoConfig {
         return null;
     }
 
+    @Override
+	public List<String> getAMRClaim() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

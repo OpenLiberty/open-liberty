@@ -1,4 +1,4 @@
-DROP TABLE ${schemaname}.JPA10EntityManagerEntityA;
-DROP TABLE ${schemaname}.JPA10EntityManagerEntityA_JPA10EntityManagerEntityB;
-DROP TABLE ${schemaname}.JPA10EntityManagerEntityB;
-DROP TABLE ${schemaname}.JPA10EntityManagerEntityC;
+DROP TABLE JPA10EntityManagerEntityA;
+DROP TABLE JPA10EntityManagerEntityA_JPA10EntityManagerEntityB;
+DROP TABLE JPA10EntityManagerEntityB;
+DROP TABLE JPA10EntityManagerEntityC;

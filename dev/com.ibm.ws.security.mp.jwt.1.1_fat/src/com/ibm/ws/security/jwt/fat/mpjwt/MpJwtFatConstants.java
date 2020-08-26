@@ -148,6 +148,42 @@ public class MpJwtFatConstants extends JwtConstants {
     public static final String MPJWT_APP_CLASS_LOGIN_CONFIG_MPJWTINWEBXML_MPJWTINAPP = "com.ibm.ws.jaxrs.fat.microProfileApp.MicroProfileLoginConfigMpJwtInWebXmlMPJWTInApp.MicroProfileApp";
     public static final String MPJWT_APP_CLASS_LOGIN_CONFIG_MULTI_LAYER_MPJWTNOTINWEBXML_MPJWTINAPP = "com.ibm.ws.jaxrs.fat.microProfileApp.MicroProfileLoginConfigMultiLayerNotInWebXmlMPJWTInApp.MicroProfileApp";
 
+    /* App class names for various signature algorithms */
+    public static final String GOOD_RS256_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileGoodRS256PublicKeyInMP-ConfigInMETA-INF";
+    public static final String GOOD_RS256_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileGoodRS256PublicKeyInMP-ConfigUnderWEB-INF";
+    public static final String GOOD_RS384_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileGoodRS384PublicKeyInMP-ConfigInMETA-INF";
+    public static final String GOOD_RS384_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileGoodRS384PublicKeyInMP-ConfigUnderWEB-INF";
+    public static final String GOOD_RS512_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileGoodRS512PublicKeyInMP-ConfigInMETA-INF";
+    public static final String GOOD_RS512_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileGoodRS512PublicKeyInMP-ConfigUnderWEB-INF";
+
+    public static final String GOOD_ES256_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileGoodES256PublicKeyInMP-ConfigInMETA-INF";
+    public static final String GOOD_ES256_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileGoodES256PublicKeyInMP-ConfigUnderWEB-INF";
+    public static final String GOOD_ES384_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileGoodES384PublicKeyInMP-ConfigInMETA-INF";
+    public static final String GOOD_ES384_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileGoodES384PublicKeyInMP-ConfigUnderWEB-INF";
+    public static final String GOOD_ES512_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileGoodES512PublicKeyInMP-ConfigInMETA-INF";
+    public static final String GOOD_ES512_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileGoodES512PublicKeyInMP-ConfigUnderWEB-INF";
+
+    public static final String GOOD_PS256_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileGoodPS256PublicKeyInMP-ConfigInMETA-INF";
+    public static final String GOOD_PS256_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileGoodPS256PublicKeyInMP-ConfigUnderWEB-INF";
+    public static final String GOOD_PS384_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileGoodPS384PublicKeyInMP-ConfigInMETA-INF";
+    public static final String GOOD_PS384_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileGoodPS384PublicKeyInMP-ConfigUnderWEB-INF";
+    public static final String GOOD_PS512_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileGoodPS512PublicKeyInMP-ConfigInMETA-INF";
+    public static final String GOOD_PS512_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileGoodPS512PublicKeyInMP-ConfigUnderWEB-INF";
+
+    public static final String GOOD_RELATIVE_ES512_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileGoodRelativeES512KeyLocationInMP-ConfigInMETA-INF";
+    public static final String GOOD_FILE_RS256_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileGoodFileRS256KeyLocationInMP-ConfigInMETA-INF";
+    public static final String GOOD_FILE_PS384_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileGoodFilePS384KeyLocationInMP-ConfigInMETA-INF";
+    public static final String GOOD_URL_RS384_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileGoodUrlRS384KeyLocationInMP-ConfigInMETA-INF";
+    public static final String GOOD_JWKSURI_PS256_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileGoodJwksuriPS256KeyLocationInMP-ConfigInMETA-INF";
+    public static final String GOOD_JWKSURI_RS512_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileGoodJwksuriRS512KeyLocationInMP-ConfigInMETA-INF";
+
+    public static final String GOOD_RELATIVE_RS256_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileGoodRelativeRS256KeyLocationInMP-ConfigUnderWEB-INF";
+    public static final String GOOD_RELATIVE_PS384_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileGoodRelativePS384KeyLocationInMP-ConfigUnderWEB-INF";
+    public static final String GOOD_FILE_ES512_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileGoodFileES512KeyLocationInMP-ConfigUnderWEB-INF";
+    public static final String GOOD_URL_ES256_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileGoodUrlES256KeyLocationInMP-ConfigUnderWEB-INF";
+    public static final String GOOD_URL_PS512_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileGoodUrlPS512KeyLocationInMP-ConfigUnderWEB-INF";
+    public static final String GOOD_JWKSURI_ES384_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileGoodJwksuriES384KeyLocationInMP-ConfigUnderWEB-INF";
+
     /* Auth Types */
     public static final String AUTH_TYPE_BASIC = "BASIC";
     public static final String AUTH_TYPE_MPJWT = "MP-JWT";

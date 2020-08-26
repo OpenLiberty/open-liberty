@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,6 +49,7 @@ public class JwtConsumerConfigImpl implements JwtConsumerConfig {
     private String jwkEndpointUrl;
     private boolean validationRequired = true;
     private boolean useSystemPropertiesForHttpClientConnections = false;
+    private List<String> amrClaim;
     String sslRef;
 
     private ConsumerUtils consumerUtil = null; // init during process(activate and modify)
@@ -109,6 +110,7 @@ public class JwtConsumerConfigImpl implements JwtConsumerConfig {
         jwkEndpointUrl = JwtUtils.trimIt((String) props.get(JwtUtils.CFG_KEY_JWK_ENDPOINT_URL)); // internal
         sslRef = JwtUtils.trimIt((String) props.get(JwtUtils.CFG_KEY_SSL_REF));
         useSystemPropertiesForHttpClientConnections = (Boolean) props.get(JwtUtils.CFG_KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS);
+        amrClaim = JwtUtils.trimIt((String[]) props.get(JwtUtils.CFG_AMR_CLAIM));
 
         consumerUtil = new ConsumerUtils(keyStoreServiceRef);
         jwkSet = null; // the jwkEndpoint may have been changed during dynamic update
@@ -204,5 +206,10 @@ public class JwtConsumerConfigImpl implements JwtConsumerConfig {
     public boolean getUseSystemPropertiesForHttpClientConnections() {
         return useSystemPropertiesForHttpClientConnections;
     }
+    
+	@Override
+	public List<String> getAMRClaim() {
+		return amrClaim;
+	}
 
 }

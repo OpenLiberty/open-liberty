@@ -52,6 +52,7 @@ runtime.minimum.java.level: 1.8
 	com.ibm.ws.org.apache.commons.codec.1.4;version=latest,\
 	com.ibm.ws.org.apache.commons.lang3;version=latest,\
 	com.ibm.ws.org.apache.commons.logging.1.0.3;version=latest,\
-        org.apache.commons.codec, \
-	net.sourceforge.htmlunit:htmlunit;version=2.27, \
-   	com.ibm.ws.com.meterware.httpunit.1.7;version=latest
+	org.apache.commons.codec,\
+	net.sourceforge.htmlunit:htmlunit;version=2.27,\
+	com.ibm.ws.com.meterware.httpunit.1.7;version=latest,\
+	com.ibm.websphere.security

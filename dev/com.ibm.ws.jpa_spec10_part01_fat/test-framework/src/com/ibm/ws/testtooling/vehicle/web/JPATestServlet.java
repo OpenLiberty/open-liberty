@@ -234,6 +234,8 @@ public abstract class JPATestServlet extends FATServlet {
             productName = "POSTGRES";
         } else if (dbProductName.toLowerCase().contains("sqlserver")) {
             productName = "SQLSERVER";
+        } else if (dbProductName.toLowerCase().contains("microsoft sql server")) {
+            productName = "SQLSERVER";
         } else if (dbProductName.toLowerCase().contains("sybase")) {
             productName = "SYBASE";
         }
