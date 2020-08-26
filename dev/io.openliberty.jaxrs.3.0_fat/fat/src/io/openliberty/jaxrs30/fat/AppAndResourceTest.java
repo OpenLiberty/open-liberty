@@ -19,6 +19,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -54,5 +55,4 @@ public class AppAndResourceTest extends FATServletClient {
     public static void tearDown() throws Exception {
         server.stopServer();
     }
-
 }

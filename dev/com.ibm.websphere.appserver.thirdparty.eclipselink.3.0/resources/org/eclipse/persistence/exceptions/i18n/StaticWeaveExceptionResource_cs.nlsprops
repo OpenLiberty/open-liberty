@@ -1,0 +1,43 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/StaticWeaveExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+40001=Do\u0161lo k v\u00fdjimce p\u0159i pokusu o otev\u0159en\u00ed archivu z adresy URL: {0}
+
+40002=Nebyl ur\u010den \u017e\u00e1dn\u00fd zdroj pro zakomponov\u00e1n\u00ed
+
+40003=Nebyl ur\u010den \u017e\u00e1dn\u00fd c\u00edl pro zakomponov\u00e1n\u00ed
+
+40004=Pro soubory JAR nen\u00ed prov\u00e1d\u011bn\u00ed zakomponov\u00e1n\u00ed povoleno
+
+40005=Do\u0161lo k v\u00fdjimce p\u0159i pokusu o otev\u0159en\u00ed souboru protokolov\u00e1n\u00ed: {0}
+
+40006=\u00darove\u0148 protokolov\u00e1n\u00ed byla ur\u010dena pomoc\u00ed chybn\u00e9 hodnoty, mus\u00ed se jednat o n\u011bkterou z n\u00e1sleduj\u00edc\u00edch hodnot: (OFF,SEVERE,WARNING,INFO,CONFIG,FINE,FINER,FINEST)
+
+40007=Do\u0161lo k v\u00fdjimce b\u011bhem zakomponov\u00e1n\u00ed: {0}
+

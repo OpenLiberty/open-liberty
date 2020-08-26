@@ -96,11 +96,11 @@ public class HungRequestTiming {
 
         assertNotNull("The server configuration was successfully updated message was not found!", srvConfigCompletedMsg);
 
-        CommonTasks.writeLogMsg(Level.INFO, "************ Thread 1 - Runs 4s  ************");
-        CommonTasks.writeLogMsg(Level.INFO, "************ Thread 2 - Runs 6s ************");
+        CommonTasks.writeLogMsg(Level.INFO, "************ Thread 1 - Runs 10s  ************");
+        CommonTasks.writeLogMsg(Level.INFO, "************ Thread 2 - Runs 14s ************");
 
-        HungRequestThread request1 = new HungRequestThread(4000);
-        HungRequestThread request2 = new HungRequestThread(6000);
+        HungRequestThread request1 = new HungRequestThread(10000);
+        HungRequestThread request2 = new HungRequestThread(14000);
 
         request1.start();
         request2.start();

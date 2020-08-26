@@ -179,9 +179,9 @@ CWPKI2035E=CWPKI2035E: Serviciul ACME nu a putut stoca certificatul semnat \u00e
 CWPKI2035E.explanation=Certificatul a fost extras cu succes de la autoritatea de certificare, dar nu poate fi stocat local.
 CWPKI2035E.useraction=Examina\u0163i mesajul de eroare pentru detalii despre e\u015fec. Verifica\u0163i dac\u0103 loca\u0163ia fi\u015fierului depozit de chei este corect\u0103 \u015fi dac\u0103 serverul are permisiuni de scriere.
 
-CWPKI2036E=CWPKI2036E: Serviciul ACME a dep\u0103\u015fit pragul de timeout a\u015ftept\u00e2nd ca aplica\u0163ia de autorizare web s\u0103 porneasc\u0103. Aplica\u0163ia este necesar\u0103 pentru a finaliza o cerere de certificat cu o autoritate de certificare ACME. Serviciul a a\u015fteptat {0} minute.
-CWPKI2036E.explanation=Aplica\u0163ia utilizat\u0103 pentru a finaliza o cerere de certificat nu a pornit \u00een cadrul de timp a\u015fteptat. Nu poate fi cerut un certificat semnat.
-CWPKI2036E.useraction=Examina\u0163i istoricul pentru mesaje sau erori anterioare.
+CWPKI2036W=CWPKI2036W: Serviciul ACME a dep\u0103\u015fit pragul de timeout a\u015ftept\u00e2nd ca aplica\u0163ia de autorizare web s\u0103 porneasc\u0103. Aplica\u0163ia este necesar\u0103 pentru a finaliza o cerere de certificat cu o autoritate de certificare ACME. Cererea de certificat este \u00eencercat\u0103. Serviciul a a\u015fteptat {0}.
+CWPKI2036W.explanation=Aplica\u0163ia utilizat\u0103 pentru a finaliza o cerere de certificat nu a pornit \u00een cadrul de timp a\u015fteptat. Dac\u0103 aplica\u0163ia porne\u015fte, cererea continu\u0103. Dac\u0103 aplica\u0163ia nu porne\u015fte, cererea de certificat e\u015fueaz\u0103.
+CWPKI2036W.useraction=Examina\u0163i istoricul pentru mesaje sau erori anterioare. Examina\u0163i istoricul pentru un mesaj CWWKT0016I care include o aplica\u0163ie web cu URL-ul 'acme-challenge' pentru a indica faptul c\u0103 aplica\u0163ia intern\u0103 a pornit.
 
 CWPKI2037E=CWPKI2037E: Domeniile pentru serviciul ACME sunt fie nule, fie goale.
 CWPKI2037E.explanation=Domeniile sunt nule sau goale \u015fi nu pot fi utilizate.
@@ -330,3 +330,7 @@ CWPKI2072W.useraction=Asigura\u0163i-v\u0103 c\u0103 directorul ACME historical 
 CWPKI2073W=CWPKI2073W: Niciun contact de cont nu a fost specificat. Este recomandat s\u0103 seta\u0163i aceast\u0103 proprietate \u00een configura\u0163ia serverului. Dac\u0103 se pierde o chei sau contul este compromis, accesul la cont se pierde.
 CWPKI2073W.explanation=Valoarea propriet\u0103\u0163ii accountContactnu a fost specificat\u0103 \u00een configura\u0163ia serverului.
 CWPKI2073W.useraction=Seta\u0163i proprietatea accountContact \u00een configura\u0163ia serverului.
+
+CWPKI2074W=CWPKI2074W: Serviciul ACME a expirat a\u015ftept\u00e2nd s\u0103 fie semnalat faptul c\u0103 portul HTTP este deschis. Este necesar un port HTTP disponibil pentru a finaliza o cerere de certificat cu o autoritate de certificare ACME. Cererea de certificat este \u00eencercat\u0103. Serviciul a a\u015fteptat {0}.
+CWPKI2074W.explanation=Serviciul \u00eencearc\u0103 o cerere de certificat. Dac\u0103 un port HTTP este deschis, cererea continu\u0103. Dac\u0103 un port HTTP nu este deschis, cererea e\u015fueaz\u0103.
+CWPKI2074W.useraction=Examina\u0163i istoricul pentru mesaje sau erori anterioare. Examina\u0163i istoricul pentru mesajele CWWKO0219I, care listeaz\u0103 punctele finale \u015fi porturile disponibile.

@@ -30,6 +30,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import javax.resource.ResourceException;
 import javax.sql.CommonDataSource;
+import javax.sql.DataSource;
 import javax.sql.PooledConnection;
 
 import org.ietf.jgss.GSSCredential;
@@ -44,6 +45,7 @@ import com.ibm.ws.jdbc.internal.PropertyService;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.DSConfig;
+import com.ibm.ws.rsadapter.impl.WSManagedConnectionFactoryImpl.KerbUsage;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcUtil;
 
 /**
@@ -64,6 +66,11 @@ public class DB2JCCHelper extends DB2Helper {
     /**
      * DB2 JCC methods
      */
+    private Method getDB2PooledConnection,
+                    getDB2XAConnection,
+                    getSecurityMechanism,
+                    setSecurityMechanism,
+                    getConnectionWithGSS;
     private final AtomicReference<Method>
                     getDB2Correlator = new AtomicReference<Method>(),
                     isInDB2UnitOfWork = new AtomicReference<Method>(),
@@ -74,9 +81,6 @@ public class DB2JCCHelper extends DB2Helper {
                     setDB2ClientAccountingInformation = new AtomicReference<Method>(),
                     setJCCLogWriter = new AtomicReference<Method>(),
                     setJCCLogWriter2 = new AtomicReference<Method>();
-    private Method getDB2PooledConnection;
-    private Method getDB2XAConnection;
-    private Method getSecurityMechanism;
 
     /**
      * DB2 JCC method signatures
@@ -620,38 +624,63 @@ public class DB2JCCHelper extends DB2Helper {
         return flag;
     }
     
-    private PooledConnection getPooledConnectionUsingKerberos(CommonDataSource ds, 
-                                                              Object gssCredential,
-                                                              boolean is2Phase) throws ResourceException {
+    @Override
+    public Connection getConnectionFromDatasource(DataSource ds, KerbUsage useKerb, Object gssCredential) throws SQLException {
+        if (useKerb != KerbUsage.USE_CREDENTIAL) {
+            return super.getConnectionFromDatasource(ds, useKerb, gssCredential);
+        }
+        
         try {
-            // Before getting the connection, ensure securityMechanism is set to 11 (kerberos)
-            if (getSecurityMechanism == null)
-                getSecurityMechanism = ds.getClass().getMethod("getSecurityMechanism");
-            short secMec = (short) getSecurityMechanism.invoke(ds);
-            if (secMec == 0) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(tc, "Overriding existing securityMechanism of " + secMec + " to 11 (kerberos)");
-                ds.getClass().getMethod("setSecurityMechanism", short.class).invoke(ds, (short) 11);
+            configureForKerberos(ds);
+            
+            if (getConnectionWithGSS == null) {
+                getConnectionWithGSS = ds.getClass().getMethod("getConnection", Object.class);
             }
+            return (Connection) getConnectionWithGSS.invoke(ds, gssCredential);
+        } catch (Throwable t) {
+            throw AdapterUtil.toSQLException(t);
+        }
+    }
+    
+    private void configureForKerberos(CommonDataSource ds) throws Throwable {
+        if (setSecurityMechanism == null) {
+            getSecurityMechanism = ds.getClass().getMethod("getSecurityMechanism");
+            setSecurityMechanism = ds.getClass().getMethod("setSecurityMechanism", short.class);
+        }
+        
+        // Before getting the connection, ensure securityMechanism is set to 11 (kerberos)
+        short secMec = (short) getSecurityMechanism.invoke(ds);
+        if (secMec == 0) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Overriding existing securityMechanism of " + secMec + " to 11 (kerberos)");
+            setSecurityMechanism.invoke(ds, (short) 11);
+        }
+    }
+    
+    private PooledConnection getPooledConnectionUsingKerberos(CommonDataSource ds, Object gssCredential, boolean is2Phase) throws ResourceException {
+        try {
+            configureForKerberos(ds);
             
             if (is2Phase) {
-                // Method returns DB2XAConnection which also extends PooledConnection
-                if (getDB2XAConnection == null)
+                if (getDB2XAConnection == null) {
                     getDB2XAConnection = ds.getClass().getMethod("getDB2XAConnection", GSSCredential.class, Properties.class);
+                }
+                // Method returns DB2XAConnection which also extends PooledConnection
                 return (PooledConnection) getDB2XAConnection.invoke(ds, gssCredential, null);
             } else {
-                if (getDB2PooledConnection == null)
+                if (getDB2PooledConnection == null) {
                     getDB2PooledConnection = ds.getClass().getMethod("getDB2PooledConnection", GSSCredential.class, Properties.class);
+                }
                 return (PooledConnection) getDB2PooledConnection.invoke(ds, gssCredential, null);
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new ResourceException(e);
         }
     }
 
     @Override
     public ConnectionResults getPooledConnection(final CommonDataSource ds, String userName, String password, final boolean is2Phase, 
-                                                 WSConnectionRequestInfoImpl cri, final boolean useKerberos, final Object gssCredential) throws ResourceException {
+                                                 WSConnectionRequestInfoImpl cri, final KerbUsage useKerberos, final Object gssCredential) throws ResourceException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); 
 
         if (isTraceOn && tc.isEntryEnabled()) 
@@ -659,7 +688,7 @@ public class DB2JCCHelper extends DB2Helper {
                      cri, useKerberos, gssCredential);
 
         ConnectionResults results;
-        if (useKerberos) {
+        if (useKerberos == KerbUsage.USE_CREDENTIAL) {
             return new ConnectionResults(
                                          getPooledConnectionUsingKerberos(ds, gssCredential, is2Phase),
                                          null);

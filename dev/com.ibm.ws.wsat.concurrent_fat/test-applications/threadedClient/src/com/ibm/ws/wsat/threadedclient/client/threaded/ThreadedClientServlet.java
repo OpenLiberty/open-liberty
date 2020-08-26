@@ -13,13 +13,16 @@ package com.ibm.ws.wsat.threadedclient.client.threaded;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Enumeration;
+import java.util.Map;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -28,7 +31,6 @@ import javax.xml.ws.BindingProvider;
 
 import com.ibm.tx.jta.ExtendedTransactionManager;
 import com.ibm.tx.jta.TransactionManagerFactory;
-import com.ibm.tx.jta.UserTransactionFactory;
 import com.ibm.tx.jta.ut.util.XAResourceFactoryImpl;
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.tx.jta.ut.util.XAResourceInfoFactory;
@@ -44,12 +46,16 @@ public class ThreadedClientServlet extends HttpServlet {
 	private static AtomicInteger xaresourceindex = new AtomicInteger(0);
 	private static AtomicInteger completedCount = new AtomicInteger(0);
 	private static AtomicInteger failedCount = new AtomicInteger(0);
+	
+	@Resource
+	private UserTransaction ut;
 
 	class TestClass implements Runnable {
 
 		private MultiThreaded proxy;
 		private URL location;
 		private int count;
+		private static final int timeout = 900; // Make sure clientInactivityTimeout, heuristicRetryWait & asyncResponseTimeout are consistent with this
 
 		public TestClass(MultiThreaded s, URL wsdlLocation, int count) {
 			this.proxy = s;
@@ -61,27 +67,25 @@ public class ThreadedClientServlet extends HttpServlet {
 		public void run() {
 			try {
 				System.out.println("Thread " + count + ": " + " Thread Start!!!");
-				UserTransaction userTransaction = UserTransactionFactory
-						.getUserTransaction();
 				try {
 					// Try to eliminate tx timeout as a source of failure on slow test machines
-					userTransaction.setTransactionTimeout(300);
-					userTransaction.begin();
+					ut.setTransactionTimeout(timeout);
+					System.out.println("Thread " + count + ": " + "userTransaction.begin() with " + timeout + "s timeout");
+					ut.begin();
 				} catch (Exception e) {
 					failedCount.incrementAndGet();
-					e.printStackTrace();
+					e.printStackTrace(System.out);
 					return;
 				}
 
-				System.out.println("Thread " + count + ": " + "userTransaction.begin()");
 				int index = xaresourceindex.getAndIncrement();
 				boolean result = enlistXAResouce(index);
 				System.out.println("Thread " + count + ": " + "enlistXAResouce("+index+") 1: " + result);
 				if (result == false) {
 					try {
-						userTransaction.rollback();
+						ut.rollback();
 					} catch (Exception e) {
-						e.printStackTrace();
+						e.printStackTrace(System.out);
 					}
 					failedCount.incrementAndGet();
 					System.out.println("Thread " + count + ": " + "Enlist XAResouce failed");
@@ -89,28 +93,31 @@ public class ThreadedClientServlet extends HttpServlet {
 				}
 
 				String response;
+				long time = System.nanoTime();
 				try {
-					BindingProvider bind = (BindingProvider) proxy;
-					bind.getRequestContext().put(
+					Map<String, Object> requestContext = ((BindingProvider) proxy).getRequestContext();
+					requestContext.put(
 							"javax.xml.ws.service.endpoint.address",
 							BASE_URL + "/threadedServer/MultiThreadedService");
-					bind.getRequestContext().put("thread.local.request.context",
+					requestContext.put("thread.local.request.context",
 							"true");
-
+					requestContext.put("javax.xml.ws.client.connectionTimeout", timeout * 1000);
+					requestContext.put("javax.xml.ws.client.receiveTimeout", timeout * 1000);
 					System.out.println("Thread " + count + ": " + "Get service from: " + location);
 					response = proxy.invoke();
 				} catch (Exception e) {
+					System.out.println("Thread " + count + ": " + "Failed to get service from: " + location + " after " + ((System.nanoTime() - time) / 1000000000l) + " seconds");
+					e.printStackTrace(System.out);
 					try {
-						userTransaction.rollback();
+						ut.rollback();
 					} catch (Exception e1) {
-						e1.printStackTrace();
+						e1.printStackTrace(System.out);
 					}
 					failedCount.incrementAndGet();
-					e.printStackTrace();
 					return;
 				}
 
-				System.out.println("Thread " + count + ": " + "proxy.invoke(): " + response);
+				System.out.println("Thread " + count + ": " + "proxy.invoke(): " + response + " after " + ((System.nanoTime() - time) / 1000000000l) + " seconds");
 				if (response.contains("failed")) {
 					failedCount.incrementAndGet();
 					System.out.println("Thread " + count + ": " + "Got failed in web service response.");
@@ -119,11 +126,11 @@ public class ThreadedClientServlet extends HttpServlet {
 
 				try {
 					System.out.println("Thread " + count + ": " + "userTransaction.commit()");
-					userTransaction.commit();
+					ut.commit();
 				} catch (Exception e) {
 					failedCount.incrementAndGet();
 					System.out.println("If we get here we've probably started getting timeouts: Thread " + count + ": " + e.getMessage());
-					e.printStackTrace();
+					e.printStackTrace(System.out);
 				}
 			} finally {
 				completedCount.incrementAndGet();
@@ -131,7 +138,6 @@ public class ThreadedClientServlet extends HttpServlet {
 			}
 		}
 	}
-
 
     private static String TEST_NAME_PARAM = "testName";
 
@@ -178,13 +184,26 @@ public class ThreadedClientServlet extends HttpServlet {
     		if (clearResult == false) {
     			return "<html><header></header><body>Fail to clear XAResources.</body></html>";
     		}
+    		
+    		Future<?> f = null;
     		ExecutorService es = Executors.newFixedThreadPool(count);
     		for (int i = 1; i <= count; i++) {
     			System.out.println("Start Thread " + i);
 
-    			es.submit(new TestClass(proxy, wsdlLocation, i));
+    			f = es.submit(new TestClass(proxy, wsdlLocation, i));
     		}
 
+    		// Wait for the last one
+    		if (f != null) {
+    			try {
+    				System.out.println("First wait for thread " + count + " to finish");
+    				f.get();
+    			} catch (Exception e) {
+    				e.printStackTrace(System.out);
+    			}
+    		}
+
+			System.out.println("Now wait for the rest");
     		while (completedCount.get() < count) {
     			System.out
     			.println("Current completedCount = " + completedCount.get());

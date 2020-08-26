@@ -41,6 +41,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -70,7 +71,8 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
         builderServer.startServerUsingExpandedConfiguration("server_configTests.xml", CommonWaitForAppChecks.getSecurityReadyMsgs());
         SecurityFatHttpUtils.saveServerPorts(builderServer, JWTBuilderConstants.BVT_SERVER_1_PORT_NAME_ROOT);
 
-        // the server's default config contains an invalid value (on purpose), tell the fat framework to ignore it!
+        // the server's default config contains an invalid value (on purpose),
+        // tell the fat framework to ignore it!
         builderServer.addIgnoredErrors(Arrays.asList(JwtMessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE));
 
     }
@@ -81,8 +83,9 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
      * </p>
      * <OL>
      * <LI>Invoke the JWT Builder using the default builder config.
-     * <LI>What this means is that we're not specifying any JWT Builder id, therefore, we'll use attributes from base config
-     * as well as embedded defaults
+     * <LI>What this means is that we're not specifying any JWT Builder id,
+     * therefore, we'll use attributes from base config as well as embedded
+     * defaults
      * </OL>
      * <P>
      * Expected Results:
@@ -106,15 +109,15 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
      * Test Purpose:
      * <OL>
      * <LI>Invoke the JWT Builder using a config that has "" as the id
-     * <LI>Create a JWT build specifying "" as the config id and show that even with a config with "" as the id, the builder
-     * throws and exception
-     * *
+     * <LI>Create a JWT build specifying "" as the config id and show that even
+     * with a config with "" as the id, the builder throws and exception *
      * <LI>The builder does not pick up the config that has the id ""
      * </OL>
      * <P>
      * Expected Results:
      * <OL>
-     * <LI>Should get another token built using the default values for the JWT Token
+     * <LI>Should get another token built using the default values for the JWT
+     * Token
      * </OL>
      */
     @Mode(TestMode.LITE)
@@ -135,9 +138,11 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     /**
      * Test Purpose:
      * <OL>
-     * <LI>Invoke the JWT Builder using an empty config (the config just has an id, nothing more).
-     * <LI>What this means is that we're not specifying any JWT Builder config, therefore, we'll use attributes from base config
-     * as well as embedded defaults
+     * <LI>Invoke the JWT Builder using an empty config (the config just has an
+     * id, nothing more).
+     * <LI>What this means is that we're not specifying any JWT Builder config,
+     * therefore, we'll use attributes from base config as well as embedded
+     * defaults
      * </OL>
      * <P>
      * Expected Results:
@@ -160,14 +165,16 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     /**
      * Test Purpose:
      * <UL>
-     * <LI>Invoke the JWT Builder using a config that has a specific "expiry" defined..
-     * <LI>What this means is that the token we create will use the "expiry" to calculate the expiration time of the token instead
-     * of using 2 hours
+     * <LI>Invoke the JWT Builder using a config that has a specific "expiry"
+     * defined..
+     * <LI>What this means is that the token we create will use the "expiry" to
+     * calculate the expiration time of the token instead of using 2 hours
      * </UL>
      * <P>
      * Expected Results:
      * <UL>
-     * <LI>Should get a valid JWT Token with a lifetime of 1 hour instead of 2 hours
+     * <LI>Should get a valid JWT Token with a lifetime of 1 hour instead of 2
+     * hours
      * </UL>
      */
     @Mode(TestMode.LITE)
@@ -188,15 +195,18 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     /**
      * Test Purpose:
      * <UL>
-     * <LI>Invoke the JWT Builder using a config that has a specific "expiresInSeconds" defined..
-     * <LI>What this means is that the token we create will use the "expiresInSeconds" to calculate the expiration time.
+     * <LI>Invoke the JWT Builder using a config that has a specific
+     * "expiresInSeconds" defined..
+     * <LI>What this means is that the token we create will use the
+     * "expiresInSeconds" to calculate the expiration time.
      * <LI>This will override the 1h expiry defined in the config.
      *
      * </UL>
      * <P>
      * Expected Results:
      * <UL>
-     * <LI>Should get a valid JWT Token with a lifetime of 1800 seconds (one half hour) instead of one or two hours.
+     * <LI>Should get a valid JWT Token with a lifetime of 1800 seconds (one
+     * half hour) instead of one or two hours.
      * </UL>
      */
     @Mode(TestMode.LITE)
@@ -216,14 +226,45 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
 
     /**
      * Test Purpose:
-     * <UL>
-     * <LI>Invoke the JWT Builder using a config that has a specific "audience" defined..
-     * <LI>What this means is that the token we create will include "aud" set to the value specified
+     * <LI>Invoke the JWT Builder using a config that does define elapsedNBF.
+     * <LI>What this means is that the token we create will use the "elapsedNBF" to calculate the time passed since token issued
+     * and set that as the NBF claim.
+     *
      * </UL>
      * <P>
      * Expected Results:
      * <UL>
-     * <LI>Should get a valid JWT Token with a "aud" set to a list containing "Client02" and "Client03"
+     * <LI>Should get a valid JWT Token with a NBF set to 1800 seconds.
+     * </UL>
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void JwtBuilderAPIConfigTests_specificElapsedNotBefore() throws Exception {
+
+        String builderId = "specificElapsedNBF";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        // override the default expiration time
+        expectationSettings.put(PayloadConstants.NOT_BEFORE, BuilderHelpers.setNowLong() + (1800));
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * Test Purpose:
+     * <UL>
+     * <LI>Invoke the JWT Builder using a config that has a specific "audience"
+     * defined..
+     * <LI>What this means is that the token we create will include "aud" set to
+     * the value specified
+     * </UL>
+     * <P>
+     * Expected Results:
+     * <UL>
+     * <LI>Should get a valid JWT Token with a "aud" set to a list containing
+     * "Client02" and "Client03"
      * </UL>
      */
     @Mode(TestMode.LITE)
@@ -247,13 +288,16 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     /**
      * Test Purpose:
      * <UL>
-     * <LI>Invoke the JWT Builder using a config that has a specific "scopes" defined..
-     * <LI>What this means is that the token we create will include "scope" set to the value specified
+     * <LI>Invoke the JWT Builder using a config that has a specific "scopes"
+     * defined..
+     * <LI>What this means is that the token we create will include "scope" set
+     * to the value specified
      * </UL>
      * <P>
      * Expected Results:
      * <UL>
-     * <LI>Should get a valid JWT Token with a "scope" set to a string containing "myScope yourScope"
+     * <LI>Should get a valid JWT Token with a "scope" set to a string
+     * containing "myScope yourScope"
      * </UL>
      */
     @Mode(TestMode.LITE)
@@ -277,8 +321,10 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     /**
      * Test Purpose:
      * <OL>
-     * <LI>Invoke the JWT Builder using a config that has the "jti" attribute set to "true".
-     * <LI>What this means is that the token we create will include "jti" set to some generated value
+     * <LI>Invoke the JWT Builder using a config that has the "jti" attribute
+     * set to "true".
+     * <LI>What this means is that the token we create will include "jti" set to
+     * some generated value
      * </OL>
      * <P>
      * Expected Results:
@@ -305,8 +351,10 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     /**
      * Test Purpose:
      * <OL>
-     * <LI>Invoke the JWT Builder using a config that has the "issuer" set to a specific value.
-     * <LI>What this means is that the token we create will include "iss" set to the specified value
+     * <LI>Invoke the JWT Builder using a config that has the "issuer" set to a
+     * specific value.
+     * <LI>What this means is that the token we create will include "iss" set to
+     * the specified value
      * </OL>
      * <P>
      * Expected Results:
@@ -330,15 +378,17 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     }
 
     // **************************************************************************************************************************
-    // Claim tests are run using an LDAP registry, refer to tests in the JwtBuilderAPIWithLDAPConfigTests for coverage
+    // Claim tests are run using an LDAP registry, refer to tests in the
+    // JwtBuilderAPIWithLDAPConfigTests for coverage
     // **************************************************************************************************************************
 
     /**
      * Test Purpose:
      * <OL>
-     * <LI>Invoke the JWT Builder using a config that has does not define a builder specific "keyStoreRef" - we only have the
-     * global keystore
-     * <LI>What this means is that the token we create will use the cert from the global keystore
+     * <LI>Invoke the JWT Builder using a config that has does not define a
+     * builder specific "keyStoreRef" - we only have the global keystore
+     * <LI>What this means is that the token we create will use the cert from
+     * the global keystore
      * </OL>
      * <P>
      * Expected Results:
@@ -363,13 +413,16 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     /**
      * Test Purpose:
      * <OL>
-     * <LI>Invoke the JWT Builder using a config that defines a builder specific "keyStoreRef", but does NOT specifiy the alias
-     * <LI>What this means is that the token we create will use the cert from the builder specific keystore
+     * <LI>Invoke the JWT Builder using a config that defines a builder specific
+     * "keyStoreRef", but does NOT specifiy the alias
+     * <LI>What this means is that the token we create will use the cert from
+     * the builder specific keystore
      * </OL>
      * <P>
      * Expected Results:
      * <OL>
-     * <LI>Should get a token built using the one cert from the builder specific keystore
+     * <LI>Should get a token built using the one cert from the builder specific
+     * keystore
      * </OL>
      */
     @Test
@@ -389,13 +442,16 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     /**
      * Test Purpose:
      * <OL>
-     * <LI>Invoke the JWT Builder using a config that defines a builder specific "keyStoreRef", as well as the keyAlias
-     * <LI>What this means is that the token we create will use the specified cert from the builder specific keystore
+     * <LI>Invoke the JWT Builder using a config that defines a builder specific
+     * "keyStoreRef", as well as the keyAlias
+     * <LI>What this means is that the token we create will use the specified
+     * cert from the builder specific keystore
      * </OL>
      * <P>
      * Expected Results:
      * <OL>
-     * <LI>Should get a token built using the specified cert from the builder specific keystore
+     * <LI>Should get a token built using the specified cert from the builder
+     * specific keystore
      * </OL>
      */
     @Mode(TestMode.LITE)
@@ -416,8 +472,10 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     /**
      * Test Purpose:
      * <OL>
-     * <LI>Invoke the JWT Builder using a config that defines a builder specific "keyStoreRef", as well as a non-existant keyAlias
-     * <LI>What this means is that we can not create the token because we can't find the specified cert
+     * <LI>Invoke the JWT Builder using a config that defines a builder specific
+     * "keyStoreRef", as well as a non-existant keyAlias
+     * <LI>What this means is that we can not create the token because we can't
+     * find the specified cert
      * </OL>
      * <P>
      * Expected Results:
@@ -441,14 +499,16 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     /**
      * Test Purpose:
      * <OL>
-     * <LI>Invoke the JWT Builder using a config that does NOT define a builder specific "keyStoreRef", but, does define the
-     * keyAlias
-     * <LI>What this means is that the token we create will use the specified cert from the global specific keystore
+     * <LI>Invoke the JWT Builder using a config that does NOT define a builder
+     * specific "keyStoreRef", but, does define the keyAlias
+     * <LI>What this means is that the token we create will use the specified
+     * cert from the global specific keystore
      * </OL>
      * <P>
      * Expected Results:
      * <OL>
-     * <LI>Should get a token built using the specified cert from the global keystore
+     * <LI>Should get a token built using the specified cert from the global
+     * keystore
      * </OL>
      */
     @Mode(TestMode.LITE)
@@ -466,12 +526,320 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
 
     }
 
+    /******************************************
+     * start Additional Signature Algorithms
+     ****************************************/
     /**
      * Test Purpose:
      * <OL>
-     * <LI>Invoke the JWT Builder using a config that does NOT define a builder specific "keyStoreRef", but does specify a
-     * non-existant keyAlias
-     * <LI>What this means is that we can not create the token because we can't find the specified cert
+     * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be RS384. The defines a builder
+     * specific "keyStoreRef", as well as the keyAlias
+     * <LI>What this means is that the token we create will use the specified RS384 cert from the builder specific keystore
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>Should get a token built using the specified RS384 cert from the builder specific keystore
+     * </OL>
+     */
+    @Test
+    public void JwtBuilderAPIConfigTests_sigAlg_RS384_goodGlobalKeyStore_goodKeyStoreRef_goodKeyAlias() throws Exception {
+
+        String builderId = "key_sigAlg_RS384_goodKeyAlias";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        // set alg value
+        expectationSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS384);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * Test Purpose:
+     * <OL>
+     * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be RS512. The defines a builder
+     * specific "keyStoreRef", as well as the keyAlias
+     * <LI>What this means is that the token we create will use the specified RS512 cert from the builder specific keystore
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>Should get a token built using the specified RS512 cert from the builder specific keystore
+     * </OL>
+     */
+    @Test
+    public void JwtBuilderAPIConfigTests_sigAlg_RS512_goodGlobalKeyStore_goodKeyStoreRef_goodKeyAlias() throws Exception {
+
+        String builderId = "key_sigAlg_RS512_goodKeyAlias";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        // set alg value
+        expectationSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS512);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * Test Purpose:
+     * <OL>
+     * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be ES256. The defines a builder
+     * specific "keyStoreRef", as well as the keyAlias
+     * <LI>What this means is that the token we create will use the specified ES256 cert from the builder specific keystore
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>Should get a token built using the specified ES256 cert from the builder specific keystore
+     * </OL>
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void JwtBuilderAPIConfigTests_sigAlg_ES256_goodGlobalKeyStore_goodKeyStoreRef_goodKeyAlias() throws Exception {
+
+        String builderId = "key_sigAlg_ES256_goodKeyAlias";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        // set alg value
+        expectationSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_ES256);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * Test Purpose:
+     * <OL>
+     * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be ES384. The defines a builder
+     * specific "keyStoreRef", as well as the keyAlias
+     * <LI>What this means is that the token we create will use the specified ES384 cert from the builder specific keystore
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>Should get a token built using the specified ES384 cert from the builder specific keystore
+     * </OL>
+     */
+    @Test
+    public void JwtBuilderAPIConfigTests_sigAlg_ES384_goodGlobalKeyStore_goodKeyStoreRef_goodKeyAlias() throws Exception {
+
+        String builderId = "key_sigAlg_ES384_goodKeyAlias";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        // set alg value
+        expectationSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_ES384);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * Test Purpose:
+     * <OL>
+     * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be ES512. The defines a builder
+     * specific "keyStoreRef", as well as the keyAlias
+     * <LI>What this means is that the token we create will use the specified ES512 cert from the builder specific keystore
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>Should get a token built using the specified ES512 cert from the builder specific keystore
+     * </OL>
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void JwtBuilderAPIConfigTests_sigAlg_ES512_goodGlobalKeyStore_goodKeyStoreRef_goodKeyAlias() throws Exception {
+
+        String builderId = "key_sigAlg_ES512_goodKeyAlias";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        // set alg value
+        expectationSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_ES512);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * Test Purpose:
+     * <OL>
+     * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be PS256. The defines a builder
+     * specific "keyStoreRef", as well as the keyAlias
+     * <LI>What this means is that the token we create will use the specified PS256 cert from the builder specific keystore
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>Should get a token built using the specified PS256 cert from the builder specific keystore
+     * </OL>
+     */
+    // TODO - add when supported
+    //    @Test
+    public void JwtBuilderAPIConfigTests_sigAlg_PS256_goodGlobalKeyStore_goodKeyStoreRef_goodKeyAlias() throws Exception {
+
+        String builderId = "key_sigAlg_PS256_goodKeyAlias";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        // set alg value
+        expectationSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_PS256);
+        Expectations expectations = null;
+        if (JavaInfo.JAVA_VERSION >= 11) {
+            expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+        } else {
+            // TODO fix checks for failures once PS algs are supported (the failure will be different from it not being supported)
+            expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, builderServer);
+            expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, "Message log did not contain an error indicating a problem with the signing key."));
+        }
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * Test Purpose:
+     * <OL>
+     * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be PS384. The defines a builder
+     * specific "keyStoreRef", as well as the keyAlias
+     * <LI>What this means is that the token we create will use the specified PS384 cert from the builder specific keystore
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>Should get a token built using the specified PS384 cert from the builder specific keystore
+     * </OL>
+     */
+    //TODO - add when supported
+    //    @Test
+    public void JwtBuilderAPIConfigTests_sigAlg_PS384_goodGlobalKeyStore_goodKeyStoreRef_goodKeyAlias() throws Exception {
+
+        String builderId = "key_sigAlg_PS384_goodKeyAlias";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        // set alg value
+        expectationSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_PS384);
+        Expectations expectations = null;
+        if (JavaInfo.JAVA_VERSION >= 11) {
+            expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+        } else {
+            // TODO fix checks for failures once PS algs are supported (the failure will be different from it not being supported)
+            expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, builderServer);
+            expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, "Message log did not contain an error indicating a problem with the signing key."));
+        }
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * Test Purpose:
+     * <OL>
+     * <LI>Invoke the JWT Builder using a config that specifies the signature algorithm to be PS512. The defines a builder
+     * specific "keyStoreRef", as well as the keyAlias
+     * <LI>What this means is that the token we create will use the specified PS512 cert from the builder specific keystore
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>Should get a token built using the specified PS512 cert from the builder specific keystore
+     * </OL>
+     */
+    // TODO - add when supported
+    //    @Test
+    public void JwtBuilderAPIConfigTests_sigAlg_PS512_goodGlobalKeyStore_goodKeyStoreRef_goodKeyAlias() throws Exception {
+
+        String builderId = "key_sigAlg_PS512_goodKeyAlias";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        // set alg value
+        expectationSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_PS512);
+        Expectations expectations = null;
+        if (JavaInfo.JAVA_VERSION >= 11) {
+            expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+        } else {
+            // TODO fix checks for failures once PS algs are supported (the failure will be different from it not being supported)
+            expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, builderServer);
+            expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, "Message log did not contain an error indicating a problem with the signing key."));
+        }
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * Test Purpose:
+     * <OL>
+     * <LI>Invoke the JWT Builder using a config that specifies that the signatureAlgorithm be HS384 - it also specifies a
+     * sharedKey
+     * <LI>What this means is that we can create a jwt token using the specified shared key
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>We will create a jwt token signing with a shared key
+     * </OL>
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void JwtBuilderAPIConfigTests_sigAlg_HS384_with_sharedKey() throws Exception {
+
+        String builderId = "key_sigAlg_HS384_with_sharedKey";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        // set alg value
+        expectationSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_HS384);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * Test Purpose:
+     * <OL>
+     * <LI>Invoke the JWT Builder using a config that specifies that the signatureAlgorithm be HS512 - it also specifies a
+     * sharedKey
+     * <LI>What this means is that we can create a jwt token using the specified shared key
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>We will create a jwt token signing with a shared key
+     * </OL>
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void JwtBuilderAPIConfigTests_sigAlg_HS512_with_sharedKey() throws Exception {
+
+        String builderId = "key_sigAlg_HS512_with_sharedKey";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        // set alg value
+        expectationSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_HS512);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    //TODO - need to add tests where the sigAlg and private keys do NOT match
+
+    /******************************************
+     * end Additional Signature Algorithms
+     ****************************************/
+
+    /**
+     * Test Purpose:
+     * <OL>
+     * <LI>Invoke the JWT Builder using a config that does NOT define a builder
+     * specific "keyStoreRef", but does specify a non-existant keyAlias
+     * <LI>What this means is that we can not create the token because we can't
+     * find the specified cert
      * </OL>
      * <P>
      * Expected Results:
@@ -495,8 +863,10 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     /**
      * Test Purpose:
      * <OL>
-     * <LI>Invoke the JWT Builder using a config that defines a bad builder specific "keyStoreRef"
-     * <LI>What this means is that we can not create the token because we can't find the keystore
+     * <LI>Invoke the JWT Builder using a config that defines a bad builder
+     * specific "keyStoreRef"
+     * <LI>What this means is that we can not create the token because we can't
+     * find the keystore
      * </OL>
      * <P>
      * Expected Results:
@@ -520,9 +890,10 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     /**
      * Test Purpose:
      * <OL>
-     * <LI>Invoke the JWT Builder using a config that specifies that the signatureAlgorithm be HS256 - it also specifies a
-     * sharedKey
-     * <LI>What this means is that we can create a jwt token using the specified shared key
+     * <LI>Invoke the JWT Builder using a config that specifies that the
+     * signatureAlgorithm be HS256 - it also specifies a sharedKey
+     * <LI>What this means is that we can create a jwt token using the specified
+     * shared key
      * </OL>
      * <P>
      * Expected Results:
@@ -548,9 +919,10 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     /**
      * Test Purpose:
      * <OL>
-     * <LI>Invoke the JWT Builder using a config that specifies that the signatureAlgorithm be HS256 - it also specifies a
-     * sharedKey
-     * <LI>What this means is that we can create a jwt token using the specified shared key
+     * <LI>Invoke the JWT Builder using a config that specifies that the
+     * signatureAlgorithm be HS256 - it also specifies a sharedKey
+     * <LI>What this means is that we can create a jwt token using the specified
+     * shared key
      * </OL>
      * <P>
      * Expected Results:
@@ -576,8 +948,10 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     /**
      * Test Purpose:
      * <OL>
-     * <LI>Invoke the JWT Builder using a config that specifies that the signatureAlgorithm be HS256 - it omits the sharedKey
-     * <LI>What this means is that we can NOT create a jwt token because we do NOT have a shared key
+     * <LI>Invoke the JWT Builder using a config that specifies that the
+     * signatureAlgorithm be HS256 - it omits the sharedKey
+     * <LI>What this means is that we can NOT create a jwt token because we do
+     * NOT have a shared key
      * </OL>
      * <P>
      * Expected Results:
@@ -616,7 +990,8 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
 
         String builderId = "jwkEnabled";
         JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-        // add a check just to make sure that the kid is in the header (can't do anything about checking the value)
+        // add a check just to make sure that the kid is in the header (can't do
+        // anything about checking the value)
         expectationSettings.put(HeaderConstants.KEY_ID, "");
 
         Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
@@ -629,7 +1004,8 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     /**
      * Test Purpose:
      * <OL>
-     * <LI>Invoke the JWT Builder using a config that jwkEnabled is true and signatureAlgorithm set to RS256
+     * <LI>Invoke the JWT Builder using a config that jwkEnabled is true and
+     * signatureAlgorithm set to RS256
      * <LI>What this means is that we can create a jwt token with a valid "kid"
      * </OL>
      * <P>
@@ -644,7 +1020,8 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
 
         String builderId = "jwkEnabled_RS256";
         JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-        // add a check just to make sure that the kid is in the header (can't do anything about checking the value)
+        // add a check just to make sure that the kid is in the header (can't do
+        // anything about checking the value)
         expectationSettings.put(HeaderConstants.KEY_ID, "");
         // set alg value
         expectationSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS256);
@@ -658,8 +1035,10 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     /**
      * Test Purpose:
      * <OL>
-     * <LI>Invoke the JWT Builder using a config that jwkEnabled is true and signatureAlgorithm set to HS256
-     * <LI>What this means is that we can NOT create a jwt token with a valid "kid", we create a token with an X509 signature
+     * <LI>Invoke the JWT Builder using a config that jwkEnabled is true and
+     * signatureAlgorithm set to HS256
+     * <LI>What this means is that we can NOT create a jwt token with a valid
+     * "kid", we create a token with an X509 signature
      * </OL>
      * <P>
      * Expected Results:
@@ -701,8 +1080,10 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     /**
      * Test Purpose:
      * <OL>
-     * <LI>Invoke the JWT Builder using a config that jwkSigningKeySize set to 1024
-     * <LI>What this means is that we can create a jwt token with a signature of length 1024
+     * <LI>Invoke the JWT Builder using a config that jwkSigningKeySize set to
+     * 1024
+     * <LI>What this means is that we can create a jwt token with a signature of
+     * length 1024
      * </OL>
      * <P>
      * Expected Results:
@@ -715,7 +1096,8 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
 
         String builderId = "jwkEnabled_size_1024";
         JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-        // add a check just to make sure that the kid is in the header (can't do anything about checking the value)
+        // add a check just to make sure that the kid is in the header (can't do
+        // anything about checking the value)
         expectationSettings.put(HeaderConstants.KEY_ID, "");
 
         Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
@@ -728,8 +1110,10 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     /**
      * Test Purpose:
      * <OL>
-     * <LI>Invoke the JWT Builder using a config that jwkSigningKeySize set to 2048
-     * <LI>What this means is that we can create a jwt token with a signature of length 2048
+     * <LI>Invoke the JWT Builder using a config that jwkSigningKeySize set to
+     * 2048
+     * <LI>What this means is that we can create a jwt token with a signature of
+     * length 2048
      * </OL>
      * <P>
      * Expected Results:
@@ -742,7 +1126,8 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
 
         String builderId = "jwkEnabled_size_2048";
         JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-        // add a check just to make sure that the kid is in the header (can't do anything about checking the value)
+        // add a check just to make sure that the kid is in the header (can't do
+        // anything about checking the value)
         expectationSettings.put(HeaderConstants.KEY_ID, "");
 
         Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
@@ -755,8 +1140,10 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     /**
      * Test Purpose:
      * <OL>
-     * <LI>Invoke the JWT Builder using a config that jwkSigningKeySize set to 4096
-     * <LI>What this means is that we can create a jwt token with a signature of length 4096
+     * <LI>Invoke the JWT Builder using a config that jwkSigningKeySize set to
+     * 4096
+     * <LI>What this means is that we can create a jwt token with a signature of
+     * length 4096
      * </OL>
      * <P>
      * Expected Results:
@@ -769,7 +1156,8 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
 
         String builderId = "jwkEnabled_size_4096";
         JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-        // add a check just to make sure that the kid is in the header (can't do anything about checking the value)
+        // add a check just to make sure that the kid is in the header (can't do
+        // anything about checking the value)
         expectationSettings.put(HeaderConstants.KEY_ID, "");
 
         Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);

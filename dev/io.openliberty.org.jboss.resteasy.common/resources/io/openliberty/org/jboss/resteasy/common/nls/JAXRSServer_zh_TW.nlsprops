@@ -1,0 +1,63 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the
+#           message text must be followed by a 2nd apostrophe to work correctly.
+#-------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CWWKW
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers start with '0' and are filled to a width of 4 digits.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME com.ibm.ws.injection/resources/com/ibm/ws/injection/resources/InjectionMessages.nlsprops
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW io.openliberty.jaxrs-3.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWMGQ1xxxI=CWMGQ1xxxI: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWMGQ1xxxI.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWMGQ1xxxI.useraction=User action text for the message
+#
+#-------------------------------------------------------------------------------
+
+MULTIPLE_REST_SERVLETS_CWWKW1300W=CWWKW1300W: \u70ba\u4e0b\u5217 Web \u6a21\u7d44\u5b9a\u7fa9\u4e86\u591a\u500b REST Servlet\uff1a{0}\u3002\u6bcf\u500b Web \u6a21\u7d44\u53ea\u63a5\u53d7\u96f6\u500b\u6216\u4e00\u500b REST Servlet\u3002
+MULTIPLE_REST_SERVLETS_CWWKW1300W.explanation=\u6bcf\u500b Web \u6a21\u7d44\u53ea\u5bb9\u8a31\u5b9a\u7fa9\u4e00\u500b REST Servlet\u3002REST Servlet \u662f\u4f7f\u7528\u4e0b\u5217\u5176\u4e2d\u4e00\u500b\u985e\u5225\u540d\u7a31\u7684\u4efb\u4f55 Servlet\uff1acom.ibm.websphere.jaxrs.server.IBMRestServlet\u3001org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher \u6216 org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher\u3002\u6b64\u8a0a\u606f\u6307\u793a\u5728 web.xml \u4e2d\u6307\u5b9a\u4e86\u591a\u500b Servlet\uff0c\u6216\u8005\u52d5\u614b\u5730\u914d\u7f6e\u4e86\u591a\u500b Servlet\u3002
+MULTIPLE_REST_SERVLETS_CWWKW1300W.useraction=\u8acb\u6aa2\u95b1 web.xml \u4ee5\u627e\u51fa\u9019\u4e9b Servlet\uff0c\u4e26\u5168\u90e8\u79fb\u9664\u6216\u8005\u53ea\u4fdd\u7559\u4e00\u500b\u3002
+
+MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W=CWWKW1301W: \u70ba\u4e0b\u5217 Web \u6a21\u7d44\u5b9a\u7fa9\u4e86\u591a\u500b REST Servlet\uff1a{0}\u3002\u4e00\u500b REST Servlet \u53ea\u80fd\u8207\u55ae\u500b\u8def\u5f91\u5c0d\u6620\u76f8\u95dc\u806f\u3002
+MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.explanation=\u53ea\u5bb9\u8a31\u4f7f\u7528\u96f6\u500b\u6216\u4e00\u500b\u8def\u5f91\u5c0d\u6620\u4f86\u914d\u7f6e REST Servlet\u3002REST Servlet \u662f\u4f7f\u7528\u4e0b\u5217\u5176\u4e2d\u4e00\u500b\u985e\u5225\u540d\u7a31\u7684\u4efb\u4f55 Servlet\uff1acom.ibm.websphere.jaxrs.server.IBMRestServlet\u3001org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher \u6216 org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher\u3002\u6b64\u8a0a\u606f\u6307\u793a\u6709\u591a\u500b\u5c0d\u6620\u8207 web.xml \u4e2d\u7684\u67d0\u500b REST Servlet \u76f8\u95dc\u806f\u3002
+MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.useraction=\u8acb\u6aa2\u95b1 web.xml \u4ee5\u627e\u51fa\u8207 REST Servlet \u76f8\u95dc\u806f\u7684 Servlet \u5c0d\u6620\uff0c\u4e26\u5168\u90e8\u79fb\u9664\u6216\u8005\u53ea\u4fdd\u7559\u4e00\u500b\u3002
+
+

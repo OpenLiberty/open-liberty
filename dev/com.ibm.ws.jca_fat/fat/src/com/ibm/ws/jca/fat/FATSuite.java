@@ -19,13 +19,11 @@ import com.ibm.ws.jca.fat.app.ConnectionManagerMBeanTest;
 import com.ibm.ws.jca.fat.app.DependantApplicationTest;
 import com.ibm.ws.jca.fat.app.JCATest;
 
-import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                AlwaysPassesTest.class,
                 DependantApplicationTest.class,
                 JCATest.class,
                 ConnectionManagerMBeanTest.class

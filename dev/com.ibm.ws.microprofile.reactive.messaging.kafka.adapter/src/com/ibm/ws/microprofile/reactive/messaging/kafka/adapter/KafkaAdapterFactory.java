@@ -51,6 +51,8 @@ public abstract class KafkaAdapterFactory {
     private static final String PRODUCER_RECORD_IMPL = "com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.impl.ProducerRecordImpl";
     private static final Class<?>[] PRODUCER_RECORD_ARG_TYPES = { String.class, String.class, Object.class };
 
+    private static final String RETRIABLE_EXCEPTION_IMPL = "org.apache.kafka.common.errors.RetriableException";
+
     /**
      * Class from the Kafka client jar which we use to test whether the client library is present
      */
@@ -135,6 +137,15 @@ public abstract class KafkaAdapterFactory {
     public Exception newCommitFailedException() {
         Exception e = getInstance(getClassLoader(), Exception.class, COMMIT_FAILED_EXCEPTION, COMMIT_FAILED_EXCEPTION_ARG_TYPES);
         return e;
+    }
+
+    /**
+     * Get the {@code Class} for {@value #RETRIABLE_EXCEPTION_IMPL}
+     *
+     * @return the {@code RetriableException} class
+     */
+    public Class<?> getRetryableExceptionClass() {
+        return getImplClass(getClassLoader(), Exception.class, RETRIABLE_EXCEPTION_IMPL);
     }
 
     /**

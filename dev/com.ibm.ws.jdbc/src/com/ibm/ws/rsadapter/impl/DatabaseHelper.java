@@ -33,6 +33,7 @@ import java.sql.PreparedStatement;
 import javax.naming.Context; 
 import javax.sql.CommonDataSource;
 import javax.sql.ConnectionPoolDataSource;
+import javax.sql.DataSource;
 import javax.sql.PooledConnection;
 import javax.sql.XADataSource;
 import javax.transaction.xa.XAException;
@@ -52,6 +53,7 @@ import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.DSConfig;
 import com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException;
+import com.ibm.ws.rsadapter.impl.WSManagedConnectionFactoryImpl.KerbUsage;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcStatement;
 
 /**
@@ -911,6 +913,10 @@ public class DatabaseHelper {
         Tr.info(tc, "UNSUPPORTED_METHOD", "isInDatabaseUnitOfWork");
         throw new SQLException("method not supported for this backend database");
     }
+    
+    public Connection getConnectionFromDatasource(DataSource ds, KerbUsage useKerb, Object gssCredential) throws SQLException {
+        return ds.getConnection();
+    }
 
     /**
      * Get a Pooled or XA Connection from the specified DataSource.
@@ -929,15 +935,14 @@ public class DatabaseHelper {
      *             not match the DataSource type.
      */
     public ConnectionResults getPooledConnection(final CommonDataSource ds, String userName, String password, final boolean is2Phase, 
-                                                 final WSConnectionRequestInfoImpl cri, boolean useKerberos, Object gssCredential) throws ResourceException {
+                                                 final WSConnectionRequestInfoImpl cri, KerbUsage useKerberos, Object gssCredential) throws ResourceException {
         if (tc.isEntryEnabled())
             Tr.entry(this, tc, "getPooledConnection",
                      AdapterUtil.toString(ds), userName, "******", is2Phase ? "two-phase" : "one-phase", cri, useKerberos, gssCredential);
 
         // if kerberose is set then issue a warning that no special APIs are used instead, 
-        // a getConnection() without username/password will be used.
-        // to get a connection.
-        if (useKerberos) {
+        // a getConnection() without username/password will be used to get a connection.
+        if (useKerberos == KerbUsage.USE_CREDENTIAL) { 
             Tr.warning(tc, "KERBEROS_NOT_SUPPORTED_WARNING");
         }
 

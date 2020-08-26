@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <server>
     <featureManager>
-        <feature>componenttest-1.0</feature>
+        <feature>componenttest-2.0</feature>
         <feature>jaxrs-3.0</feature>
         <!-- jaxb-3.0 is required to load Link.JaxbAdapter & Link.JaxbLink, but since the 
              jaxrs-3.0 feature is still based on the EE 8 APIs, we cannot mix EE 8 and EE 9.
@@ -12,5 +12,5 @@
     <include location="../fatTestPorts.xml"/>
     
     <javaPermission className="java.util.PropertyPermission"  name="*" actions="read" />
-    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/appandresource/app/path" actions="GET:"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/appandresource/app/-" actions="GET:"/>
 </server>

@@ -18,29 +18,26 @@
   
   <dataSource jndiName="jdbc/krb/basic">
     <jdbcDriver libraryRef="OracleLib"/>
-    <properties.oracle URL="${oracle.url}"
-        connectionProperties="
-            oracle.net.authentication_services=( KERBEROS5 );
-            oracle.net.kerberos5_mutual_authentication=true"/>
+    <properties.oracle URL="${oracle.url}"/>
     <containerAuthData krb5Principal="${KRB5_USER}"/>
   </dataSource>
   
   <dataSource jndiName="jdbc/krb/xa" type="javax.sql.XADataSource">
     <jdbcDriver libraryRef="OracleLib" />
-    <properties.oracle URL="${oracle.url}"
-        connectionProperties="
-            oracle.net.authentication_services=( KERBEROS5 );
-            oracle.net.kerberos5_mutual_authentication=true"/>
+    <properties.oracle URL="${oracle.url}"/>
+    <containerAuthData krb5Principal="${KRB5_USER}"/>
+  </dataSource>
+
+  <dataSource jndiName="jdbc/krb/DataSource" type="javax.sql.DataSource">
+    <jdbcDriver libraryRef="OracleLib" />
+    <properties.oracle URL="${oracle.url}"/>
     <containerAuthData krb5Principal="${KRB5_USER}"/>
   </dataSource>
   
   <!-- Mis-configured datasource: bogus name for krb5Principal -->
   <dataSource jndiName="jdbc/krb/invalidPrincipal">
     <jdbcDriver libraryRef="OracleLib"/>
-    <properties.oracle URL="${oracle.url}"
-        connectionProperties="
-            oracle.net.authentication_services=( KERBEROS5 );
-            oracle.net.kerberos5_mutual_authentication=true"/>
+    <properties.oracle URL="${oracle.url}"/>
     <containerAuthData krb5Principal="BOGUS@EXAMPLE.COM"/>
   </dataSource>
   

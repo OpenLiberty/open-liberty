@@ -46,6 +46,8 @@ import com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.ssl.SSLSupport;
 
+import io.openliberty.security.mp.jwt.osgi.MpJwtRuntimeVersion;
+
 /**
  *
  */
@@ -109,7 +111,7 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
 
     public static final String CFG_KEY_SIGALG = "signatureAlgorithm";
 
-    String signatureAlgorithm = "RS256";
+    String signatureAlgorithm = null;
 
     public static final String KEY_authFilterRef = "authFilterRef";
     protected String authFilterRef;
@@ -186,10 +188,34 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
         this.signatureAlgorithm = configUtils.getConfigAttribute(props, CFG_KEY_SIGALG);
         sharedKey = JwtUtils.processProtectedString(props, JwtUtils.CFG_KEY_SHARED_KEY);
 
+        loadConfigValuesForHigherVersions(cc, props);
+
         debug();
         if (tc.isDebugEnabled()) {
             Tr.exit(tc, methodName);
         }
+    }
+
+    void loadConfigValuesForHigherVersions(ComponentContext cc, Map<String, Object> props) {
+        MpJwtRuntimeVersion runtimeVersion = getMpJwtRuntimeVersion();
+        if (runtimeVersion == null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Failed to find runtime version");
+            }
+            return;
+        }
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Loaded MP JWT runtime: " + runtimeVersion + " (version " + runtimeVersion.getVersion() + ")");
+        }
+        // TODO
+    }
+
+    MpJwtRuntimeVersion getMpJwtRuntimeVersion() {
+        MicroProfileJwtService mpJwtService = mpJwtServiceRef.getService();
+        if (mpJwtService == null) {
+            return null;
+        }
+        return mpJwtService.getMpJwtRuntimeVersion();
     }
 
     protected void debug() {

@@ -135,6 +135,12 @@ autoFVT.doLast {
       into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
     }
     
+        /* copy the all signature alg config file from security_fat.common */
+    copy {
+      from project(':com.ibm.ws.security.fat.common').file('publish/shared/config')
+      into new File(autoFvtDir, 'publish/shared/config')
+    }
+    
    }
     
     rsServers.each { server ->

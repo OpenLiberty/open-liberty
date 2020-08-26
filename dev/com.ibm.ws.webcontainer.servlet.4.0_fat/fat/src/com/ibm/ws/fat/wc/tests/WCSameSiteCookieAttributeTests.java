@@ -390,7 +390,6 @@ public class WCSameSiteCookieAttributeTests {
 
         ServerConfiguration configuration = sameSiteServer.getServerConfiguration();
         LOG.info("Server configuration that was saved: " + configuration);
-        LOG.info("Server configuration that was saved: " + sameSiteServer.getServerConfigurationFile().toString());
 
         HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
         httpEndpoint.getSameSite().setLax("cookieOne");

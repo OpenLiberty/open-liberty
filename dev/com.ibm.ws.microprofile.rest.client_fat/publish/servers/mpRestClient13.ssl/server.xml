@@ -13,5 +13,6 @@
 
   <!--  Required to read the remote server's port system property -->
   <javaPermission className="java.util.PropertyPermission"  name="*" actions="read" />
-
+  <!--  Required to read the trust store -->
+  <javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read" />
 </server>

@@ -50,6 +50,11 @@ public class RepeatFaultTolerance {
     static final Set<String> MP33_FEATURE_SET = new HashSet<>(Arrays.asList(MP33_FEATURES_ARRAY));
     public static final String MP33_FEATURES_ID = "MICROPROFILE33";
 
+    // TODO: update this once all features are ready and integrated correctly
+    static final String[] MP40_FEATURES_ARRAY = { "mpConfig-1.4" /* 2.0 */, "mpFaultTolerance-3.0", "servlet-4.0", "cdi-2.0", "appSecurity-3.0", "mpMetrics-3.0" };
+    static final Set<String> MP40_FEATURE_SET = new HashSet<>(Arrays.asList(MP40_FEATURES_ARRAY));
+    public static final String MP40_FEATURES_ID = "MICROPROFILE40";
+
     static final Set<String> ALL_FEATURE_SET = new HashSet<>();
     static {
         ALL_FEATURE_SET.addAll(MP13_FEATURE_SET);
@@ -59,6 +64,7 @@ public class RepeatFaultTolerance {
         ALL_FEATURE_SET.addAll(FT11_METRICS20_FEATURE_SET);
         ALL_FEATURE_SET.addAll(MP32_FEATURE_SET);
         ALL_FEATURE_SET.addAll(MP33_FEATURE_SET);
+        ALL_FEATURE_SET.addAll(MP40_FEATURE_SET);
     }
 
     public static FeatureReplacementAction mp20Features(String server) {
@@ -110,10 +116,17 @@ public class RepeatFaultTolerance {
                         .forServers(server);
     }
 
+    public static FeatureReplacementAction mp40Features(String server) {
+        return new FeatureReplacementAction(ALL_FEATURE_SET, MP40_FEATURE_SET)
+                        .withID(MP40_FEATURES_ID)
+                        .forceAddFeatures(false)
+                        .forServers(server);
+    }
+
     /**
-     * Return a rule to repeat tests for FT 1.1 and 2.1
+     * Return a rule to repeat tests for FT 1.1 and 3.0
      * <p>
-     * This is the default because FT 1.* and 2.* have a mostly separate implementation so we want to ensure both are tested
+     * This is the default because FT 1.* and 2.*+ have a mostly separate implementation so we want to ensure both are tested
      * mp20Features includes FT 1.1, and as it is an older version it will only run in full mode.
      *
      * @param server the server name
@@ -121,11 +134,11 @@ public class RepeatFaultTolerance {
      */
     public static RepeatTests repeatDefault(String server) {
         return RepeatTests.with(mp20Features(server).fullFATOnly())
-                        .andWith(mp33Features(server));
+                        .andWith(mp40Features(server));
     }
 
     /**
-     * Return a rule to repeat tests for FT 1.0, 1.1, 2.0, and 2.1
+     * Return a rule to repeat tests for FT 1.0, 1.1, 2.0, 2.1 and 3.0
      * <p>
      * We run a few tests using this rule so that we have some coverage of all implementations
      *
@@ -138,14 +151,16 @@ public class RepeatFaultTolerance {
                         .andWith(ft20metrics11Features(server))
                         .andWith(mp30Features(server))
                         .andWith(mp32Features(server))
-                        .andWith(mp33Features(server));
+                        .andWith(mp33Features(server))
+                        .andWith(mp40Features(server));
     }
 
     public static RepeatTests repeat20AndAbove(String server) {
         return RepeatTests.with(ft20metrics11Features(server).fullFATOnly())
                         .andWith(mp30Features(server).fullFATOnly())
                         .andWith(mp32Features(server).fullFATOnly())
-                        .andWith(mp33Features(server));
+                        .andWith(mp33Features(server).fullFATOnly())
+                        .andWith(mp40Features(server));
     }
 
 }

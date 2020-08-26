@@ -394,7 +394,7 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "processCustomBindingsConfig");
 
-        // TODO: remove ContainerProperties.customBindingsEnabledBeta after custom bindings beta
+        // TODO: #13338 remove ContainerProperties.customBindingsEnabledBeta after custom bindings beta
         boolean isBeta = false;
         try {
             final Map<String, ProductInfo> productInfos = ProductInfo.getAllProductInfo();
@@ -462,6 +462,8 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
             }
         } else if (ContainerProperties.DisableShortDefaultBindingsFromJVM != null) {
             ContainerProperties.DisableShortDefaultBindings = ContainerProperties.DisableShortDefaultBindingsFromJVM;
+        } else {
+            ContainerProperties.DisableShortDefaultBindings = null;
         }
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -1567,7 +1569,10 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
             try {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "Waiting 30 seconds for EJBRemoteRuntime");
-                remoteLatch.await(30, TimeUnit.SECONDS);
+                if (remoteLatch.await(30, TimeUnit.SECONDS) == false) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(tc, "EJBRemoteRuntime did not come up within 30 seconds");
+                }
             } catch (InterruptedException e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "Waiting for EJBRemoteRuntime failed: " + e);

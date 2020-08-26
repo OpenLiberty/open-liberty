@@ -14,9 +14,10 @@ bVersion=1.0
 
 Bundle-SymbolicName: com.ibm.websphere.javaee.persistence.2.0; singleton:=true
 Bundle-Activator: com.ibm.ws.javaee.persistence.internal.HybridPersistenceActivator
-# Bundle-Activator: org.apache.geronimo.specs.jpa.PersistenceActivator
 
 Import-Package: \
+  com.ibm.ws.threadContext, \
+  com.ibm.ws.runtime.metadata, \
   org.osgi.framework;version="[1.6,2)", \
   org.osgi.util.tracker;version="[1.5,2)", \
   javax.sql; resolution:=optional
@@ -28,18 +29,18 @@ DynamicImport-Package: \
 
 Export-Package: javax.persistence.*; jpa=2.0
 
-Private-Package: com.ibm.ws.javaee.persistence.internal, \
-   org.apache.geronimo.osgi.locator, \
-   org.apache.geronimo.specs.jpa
+Private-Package: \
+  com.ibm.ws.javaee.persistence.internal, \
+  org.apache.geronimo.osgi.locator, \
+  org.apache.geronimo.specs.jpa
 
 Include-Resource: \
    @${repo;com.ibm.ws.org.apache.geronimo.specs:geronimo-jpa_2.0_spec;1.1}!/META-INF/NOTICE
-
 
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-	com.ibm.ws.org.apache.geronimo.specs:geronimo-jpa_2.0_spec;version=1.1,\
-	com.ibm.websphere.org.osgi.core
+	com.ibm.ws.org.apache.geronimo.specs:geronimo-jpa_2.0_spec;version=1.1, \
+	com.ibm.ws.jpa.hybridpersistenceactivator

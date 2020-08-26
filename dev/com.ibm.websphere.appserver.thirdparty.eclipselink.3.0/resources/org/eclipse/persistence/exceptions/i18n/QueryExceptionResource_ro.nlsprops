@@ -1,0 +1,359 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/QueryExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+6001=Interog\u0103rile SQL cu cursor trebuie s\u0103 furnizeze o interogare suplimentar\u0103 pentru a extrage dimensiunea setului de rezultate.
+
+6002=Obiectele agregate nu pot fi scrise/\u015fterse/interogate independent de proprietarii acestora. {1}Descriptor: [{0}]
+
+6003=Num\u0103rul de argumente furnizate la interogare pentru execu\u0163ie, nu se potrivesc cu num\u0103rul de argumente din defini\u0163ia interog\u0103rii.
+
+6004=Obiectul [{0}], de clas\u0103 [{1}], cu hashcode de identitate (System.identityHashCode()) [{2}], {3}nu este din spa\u0163iul acestui obiect UnitOfWork, ci din sesiunea p\u0103rinte.  Obiectul nu a fost niciodat\u0103 \u00eenregistrat \u00een acest UnitOfWork, {3}dar cite\u015fte din sesiunea p\u0103rinte \u015fi este \u00eenrudit cu un obiect \u00eenregistrat \u00een UnitOfWork.  Asigura\u0163i-v\u0103 c\u0103 v\u0103 \u00eenregistra\u0163i {3} corect obiectele dumneavoastr\u0103.  Dac\u0103 ave\u0163i probleme \u00een continuare, pute\u0163i utiliza metoda UnitOfWork.validateObjectSpace() pentru a ajuta {3} la depanare acolo unde a survenit eroarea.  Pentru informa\u0163ii suplimentare, vede\u0163i manualul sau FAQ.
+
+6005=Obiectul [{0}], de clas\u0103 [{1}], cu hashcode de identitate (System.identityHashCode()) [{2}], {3}este originalul pentru un obiect nou \u00eenregistrat.  UnitOfWork cloneaz\u0103 obiecte noi \u00eenregistrate, astfel \u00eenc\u00e2t trebuie s\u0103 v\u0103 asigura\u0163i c\u0103 un obiect {3}este \u00eenregistrat \u00eenainte de a fi referen\u0163iat de un alt obiect.  Dac\u0103 nu dori\u0163i ca noul obiect s\u0103 fie clonat, utiliza\u0163i the{3}UnitOfWork.registerNewObject(Object) API.  Dac\u0103 ave\u0163i probleme \u00een continuare, pute\u0163i utiliza metoda UnitOfWork.validateObjectSpace() {3}pentru a v\u0103 ajuta la depanare acolo unde a survenit eroarea.  Pentru informa\u0163ii suplimentare, vede\u0163i manualul sau FAQ.
+
+6006=Maparea [{0}] nu suport\u0103 citirea batch.
+
+6007=Descriptor lips\u0103 pentru [{0}].
+
+6008=Descriptor lips\u0103 pentru [{0}] pentru interogarea numit\u0103 [{1}].
+
+6013=Interogare cu dimensiune incorect\u0103 dat\u0103 pentru CursoredStream.
+
+6014=Obiectele nu pot fi scrise \u00een timpul unui UnitOfWork, acestea trebuiesc \u00eenregistrate.
+
+6015=Cheie de interogare invalid\u0103 [{0}] \u00een expresie.
+
+6016=Obiectele sau baza de date nu pot fi modificate printr-o ServerSession.  Toate modific\u0103rile trebuiesc efectuate printr-o ClientSession''s UnitOfWork.
+
+6020=Nici o clas\u0103 concret\u0103 indicat\u0103 pentru tip \u00een r\u00e2ndul [{0}].
+
+6021=Cursoarele nu sunt suportate pentru descriptorii de interfa\u0163\u0103, sau descriptorii abstrac\u0163i tabel de clas\u0103 multipl\u0103 utiliz\u00e2nd expresii.  Considera\u0163i utilizarea de SQL personalizate sau interog\u0103ri multiple.
+
+6023=Lista de c\u00e2mpuri de inserat \u00een tabelul [{0}] este goal\u0103.  Trebuie s\u0103 defini\u0163i cel pu\u0163in o mapare pentru acest tabel.
+
+6024=Interog\u0103rile de modificare necesit\u0103 un obiect de modificat.
+
+6026=Interogarea numit\u0103 [{0}] nu este definit\u0103. Clas\u0103 de domeniu: [{1}]
+
+6027=Interogare trimis\u0103 c\u0103tre o UnitOfWork ce nu e activat\u0103.
+
+6028=A survenit o \u00eencercare de citire dincolo de sf\u00e2r\u015fitul fluxului.
+
+6029=Trebuie furnizat\u0103 o clas\u0103 de referin\u0163\u0103.
+
+6030=Re\u00eemprosp\u0103tarea nu este posibil\u0103 dac\u0103 memorarea \u00een cache nu este activat\u0103.
+
+6031=size() este suportat\u0103 numai \u00een interog\u0103rile expresie, dac\u0103 nu este dat\u0103 o interogare de dimensiune.
+
+6032=Declara\u0163ia SQL nu a fost setat\u0103 corespunz\u0103tor.
+
+6034=Expresie articolului de interogare invalid\u0103 [{0}].
+
+6041=Obiectul de selec\u0163ie trecut la o ReadObjectQuery a fost nul.
+
+6042=Un nume de sesiune trebuie specificat pentru interog\u0103rile la nivel de non-obiect.  Vede\u0163i metoda setSessionName(String).
+
+6043=ReportQueries f\u0103r\u0103 chei primare nu pot utiliza readObject(). {1}ReportQueryResult: [{0}].
+
+6044=Cheia primar\u0103 citit\u0103 din r\u00e2ndul [{0}] \u00een timpul execu\u0163iei interog\u0103rii, a fost detectat\u0103 a fi nul\u0103.  Cheile primare trebuie s\u0103 nu con\u0163in\u0103 nul.
+
+6045=Sub-clasa [{0}], indicat\u0103 \u00een r\u00e2nd la construc\u0163ia obiectului, nu are un descriptor definit pentru aceasta.
+
+6046=Nu se poate \u015fterge un obiect de clas\u0103 numai citire.  Clasa [{0}] este declarat\u0103 ca fiind numai citire \u00een aceast\u0103 UnitOfWork.
+
+6047=Opera\u0163ie invalid\u0103 [{0}] \u00een expresie.
+
+6048=Utilizare ilegal\u0103 de getField() [{0}] \u00een expresie.
+
+6049=Utilizare ilegal\u0103 de getTable() [{0}] \u00een expresie.
+
+6050=nepotrivire de dimensiune rezultat ReportQuery.  Se a\u015fteapt\u0103 [{0}], dar s-a extras [{1}]
+
+6051=Interog\u0103rile par\u0163iale de obiect nu sunt permise pentru a men\u0163ine cache sau pentru a fi editat.  Trebuie s\u0103 utiliza\u0163i dontMaintainCache().
+
+6052=O unire exterioar\u0103 (getAllowingNull sau anyOfAllowingNone) este valid\u0103 numai pentru map\u0103rile OneToOne, OneToMany, ManyToMany, AggregateCollection \u015fi DirectCollection, \u015fi nu poate fi utilizat\u0103 pentru maparea [{0}].
+
+6054=Nu se poate ad\u0103uga obiectul [{0}], de clas\u0103 [{1}], \u00een clasa de container [{2}] utiliz\u00e2nd politica [{3}].
+
+6055=Invocarea metodei pentru metoda [{0}] \u00een obiectul [{1}], de clas\u0103 [{2}], a declan\u015fat o excep\u0163ie.
+
+6056=Nu se poate crea o clon\u0103 a obiectului [{0}], de clas\u0103 [{1}], utiliz\u00e2nd [{2}].
+
+6057=Metoda [{0}] nu este o metod\u0103 valid\u0103 pentru apelarea unui obiect [{1}].
+
+6058=Metoda [{0}] nu a fost g\u0103sit\u0103 \u00een clasa [{1}].
+
+6059=Clasa [{0}] nu poate fi utilizat\u0103 ca \u015fi container pentru rezultatele unei interog\u0103ri deoarece nu poate fi instan\u0163iat\u0103.
+
+6060=Nu s-a putut utiliza obiectul [{0}] de tip [{1}] ca \u015fi cheie \u00een [{2}] de tip [{3}].  Cheia nu poate fi comparat\u0103 cu cheile aflate \u00een prezent \u00een Hart\u0103.
+
+6061=Nu se poate accesa reflexiv metoda [{0}] pentru obiectul [{1}], de clas\u0103 [{2}].
+
+6062=Metoda [{0}], a apelat reflexiv un obiect [{1}], de clas\u0103 [{2}], a declan\u015fat o excep\u0163ie.
+
+6063=Opera\u0163ie invalid\u0103 [{0}] pentru cursor.
+
+6064=Nu se poate \u00eenl\u0103tura obiectul [{0}], de clas\u0103 [{1}], din clasa container [{2}] utiliz\u00e2nd politica [{3}].
+
+6065=Nu se poate ad\u0103uga obiectul [{0}], de clas\u0103 [{1}], \u00een containerul [{2}].
+
+6066=Obiectul [{0}], de clas\u0103 [{1}], cu hashcode identitate (System.identityHashCode()) [{2}], {3}a fost \u015fters, dar are \u00een continuare referin\u0163e.  Obiectele \u015fterse nu pot fi referen\u0163iate dup\u0103 ce au fost \u015ftese. {3}Asigura\u0163i-v\u0103 c\u0103 v\u0103 \u00eenregistra\u015fi corect obiectele.  Dac\u0103 ave\u0163i \u00een continuare probleme, pute\u0163i utiliza metoda UnitOfWork.validateObjectSpace() {3} pentru a v\u0103 ajuta acolo unde survine eroarea.  Pentru informa\u0163ii suplimentare, vede\u0163i manualul sau FAQ.
+
+6067=Nu se poate accesa reflectiv c\u00e2mpul [{0}] pentru obiectul [{1}], de clas\u0103 [{2}].
+
+6068=Nu se poate compara referin\u0163a de tabel cu [{0}] din expresie.
+
+6069=C\u00e2mpul [{0}] din aceast\u0103 expresie are un tabel invalid \u00een acest context.
+
+6070=Utilizare invalid\u0103 a cheii de interogare [{0}] ce reprezint\u0103 o rela\u0163ie "prea multe" \u00eentr-o expresie.  Utiliza\u0163i mai degrab\u0103 anyOf() dec\u00e2t get().
+
+6071=Utilizare invalid\u0103 a anyOf() pentru o cheie de interogare [{0}] nu reprezint\u0103 o rela\u0163ie prea multe \u00eentr-o expresie.  Utiliza\u0163i mai degrab\u0103 get() dec\u00e2t anyOf().
+
+6072=Interogarea peste o VariableOneToOneMapping nu este suportat\u0103. {2}Descriptor: [{0}] {2}Mapare: [{1}]
+
+6073=Expresie format\u0103 gre\u015fit \u00een interogare.  Se \u00eencearc\u0103 tip\u0103rirea unei referin\u0163e de obiect \u00eentr-o declara\u0163ie SQL pentru cheia de interogare [{0}].
+
+6074=Aceast\u0103 expresie nu poate determina dac\u0103 obiectul este conform \u00een memorie.  Trebuie s\u0103 seta\u0163i interogarea pentru a verifica baza de date.
+
+6075=Compara\u0163ia obiectului poate utiliza numai operatorii equal() sau notEqual().  Alte compara\u0163ii trebuiesc f\u0103cute prin chei de interogare sau compara\u0163ii directe la nivel de atribut. {1}Expresia: [{0}]
+
+6076=Compara\u0163iile de obiect pot fi utilizate numai cu OneToOneMappings.  Alte compara\u0163ii de mapare trebuiesc f\u0103cute prin chei de interogare sau prin compara\u0163ii directe la nivel de atribut. {2}Mapare: [{0}] {2}Expresie: [{1}]
+
+6077=Compara\u0163iile de obiect nu pot fi utilizate \u00een interog\u0103rile de parametru.  Trebuie s\u0103 construi\u0163i expresia dinamic. {1}Expresie: [{0}]
+
+6078=Clasa argumentului pentru compara\u0163ia obiectului este incorect\u0103. {3}Expresie: [{0}] {3}Mapare: [{1}] {3}Argument: [{2}]
+
+6079=Compara\u0163ia obiectului cu Null nu poate fi utilizat\u0103 pentru rela\u0163iile cheilor externe \u0163int\u0103.  Interoga\u0163i \u00een schimb cheia primar\u0103 surs\u0103. {3}Expresie: [{0}] {3}Mapare: [{1}] {3}Argument: [{2}]
+
+6080=Apelare invalid\u0103 a bazei de date [{0}].  Apelarea trebuie s\u0103 fie o instan\u0163\u0103 a DatabaseCall.
+
+6081=Accesator de baz\u0103 de date invalid [{0}].  Accesatorul trebuie s\u0103 fie o instan\u0163\u0103 a DatabaseAccessor.
+
+6082=Metoda [{0}] cu tipurile de argumente [{1}] nu poate fi invocat\u0103 Expression.
+
+6083=Interog\u0103rile ce utilizeaz\u0103 in() nu pot fi parametrizate.  Dezactiva\u0163i fie preg\u0103tirea interog\u0103rii, fie legarea.
+
+6084=Interogarea de redirec\u0163ionare nu a fost configurat\u0103 corespunz\u0103tor.  Numele clasei sau al metodei nu a fost setat.
+
+6085=Metoda interog\u0103rii de redirec\u0163ionare nu este definit\u0103 sau este definit\u0103 cu argumente gre\u015fite.  Trebuie declarat\u0103 "starea public\u0103" \u015fi trebuiesc avute argumentele (DatabaseQuery, \u00cenregistrare, Sesiune) sau (Sesiune, Vector). {2}Clasa: [{0}] {2}Metoda: [{1}]
+
+6086=Invocarea metodei de interogare redirec\u0163ionat\u0103 a declan\u015fat o excep\u0163ie.
+
+6087=Clasa de obiecte exemplu [{0}] nu se potrive\u015fte cu clasa de obiecte referin\u0163\u0103 [{1}].
+
+6088=Nu exist\u0103 atribute pentru ReportQuery.
+
+6089=Expresia nu a fost ini\u0163ializat\u0103 corect.  Ar trebui utilizat numai un singur ExpressionBuilder pentru o interogare. {1}Pentru expresii paralele, clasa de interogare trebuie furnizat\u0103 pentru constructorul ExpressionBuilder, \u015fi ExpressionBuilder pentru interogare trebuie {1}s\u0103 fie \u00eentotdeauna \u00een partea st\u00e2ng\u0103 a expresiei. {1}Expresie: [{0}]
+
+6090=Nu se poate seta ReportQuery pe "verificare numai cache".
+
+6091=Tipul de constant\u0103 [{0}], utilizat pentru compara\u0163ie \u00een expresie nu se potrive\u015fte cu tipul de atribut [{1}].
+
+6092=A fost detectat un ValueHolder neinstan\u0163iat. Trebuie s\u0103 instan\u0163ia\u0163i Valueholder-ele relevante pentru a efectua aceast\u0103 interogare \u00een memorie.
+
+6093=Expresie de tip invalid \u00een [{0}].  Clasa nu are un descriptor, sau descriptorul nu utilizeaz\u0103 mo\u015ftenirea sau utilizeaz\u0103 un ClassExtractor pentru mo\u015ftenire
+
+6094=Numele parametrului [{0}] \u00een criteriile de selec\u0163ie ale interog\u0103rii nu se potrive\u015fte cu nici un nume de parametru definit \u00een interogare.
+
+6095=Este necesar\u0103 metoda de clonare public\u0103.
+
+6096=Metoda de clonare este inaccesibil\u0103.
+
+6097=Metoda de clonare a aruncat o excep\u0163ie: {0}.
+
+6098=Excep\u0163ie de invocare nea\u015fteptat\u0103: {0}.
+
+6099=Unirea peste clasele mo\u015ftenite cu subclase de tabel multiple nu este suportat\u0103: {0}, {1}
+
+6100=Au fost detectate mai multe valori pentru o interogare de citire a unui singur obiect.
+
+6101=Executarea acestei interog\u0103ri ar putea viola integritatea cache-ului sesiunii globale ce trebuie s\u0103 con\u0163in\u0103 numai cele mai recente versiuni ale obiectelor.  Pentru a executa o interogare ce returneaz\u0103 obiecte ca la un timp trecut, \u00eencerca\u0163i una dintre urm\u0103toarele: Utiliza\u0163i o HistoricalSession (acquireSessionAsOf), toate obiectele citite vor fi memorate \u00een cache \u015fi citite automat ca fiind din acela\u015fi timp.  Aceasta se va aplica chiar \u015fi pentru rela\u0163iile declan\u015fatoare de obiecte.  Seta\u0163i shouldMaintainCache pe false.  Pute\u0163i face orice expresie obiect ca fiind dintr-un timp trecut, dac\u0103 nici unul dintre c\u00e2mpurile sale nu sunt reprezentate \u00een setul de rezultate (i.e. utilizate numai \u00een clauza unde).
+
+6102=\u00cen prezent, interog\u0103rile istorice lucreaz\u0103 numai cu Oracle 9R2 sau baze de date ulterioare, deoarece utilizeaz\u0103 caracteristica Oracle Flashback.
+
+6103=Nu pute\u0163i executa o WriteQuery din interiorul unei HistoricalSession numai citire.  Pentru a restaura obiectele trecute, \u00eencerca\u0163i urm\u0103toarele: citi\u0163i acela\u015fi obiect ca \u015fi cum ar fi unul nou cu o UnitOfWork \u015fi comite\u0163i UnitOfWork.
+
+6104=Obiectul, {0}, nu exist\u0103 \u00een cache.
+
+6105=Interogarea trebuie determinat\u0103 cu o politic\u0103 flux de cursor.
+
+6106=Obiectul de tip [{0}] cu cheia primar\u0103 [{1}] nu exist\u0103 \u00een cache.
+
+6107=Lipsesc declara\u0163iile de actualizare din UpdateAllQuery.
+
+6108=Actualizarea tuturor interog\u0103rilor nu suport\u0103 mo\u015ftenirea cu tabeluri multiple
+
+6109=Grupul de aducere numit ({0}) nu este definit la nivel de descriptor.
+
+6110=Interog\u0103rile de citire nu pot fi conforme cu atributul ce nu este adus ({0}) al obiectului adus par\u0163ial \u00een unitatea h\u0103r\u0163ii identitate de lucru.
+
+6111=Atributul grupului de aducere ({0}) nu este definit sau nu este mapat.
+
+6112=Grupul de aducere nu poate fi setat \u00een interogarea raportului.
+
+6113=Grupul de aducere nu poate fi utilizat \u00eempreun\u0103 cu citirea atributului par\u0163ial.
+
+6114=Trebuie s\u0103 defini\u0163i un manager al grupului de aducere la descriptorul ({0}) pentru a seta un grup de aducere \u00een interogarea ({1})
+
+6115=Interog\u0103rile pentru clasele izolate sau interog\u0103rile setate s\u0103 utilizeze conexiuni exclusive, nu trebuiesc executate \u00eentr-o ServerSession sau, \u00een CMP, \u00een afara unei tranzac\u0163ii.
+
+6116=Nu au fost specificate Apel\u0103ri sau Interac\u0163iuni pentru opera\u0163ia \u00eencercat\u0103.
+
+6117=Nu se poate seta o interogare ce utilizeaz\u0103 un rezultat cu cursor, pentru rezultate de interogare memorate \u00een cache.
+
+6118=O interogare \u00eentr-o clas\u0103 Izolat\u0103 nu trebuie s\u0103 memoreze \u00een cache rezultatele de interogare ale interog\u0103rii.
+
+6119=Expresia de uniune {0} nu este valid\u0103, sau pentru un tip de mapare ce nu suport\u0103 uniunea.
+
+6120=Atributul par\u0163ial {0} nu este un atribut valid al clasei {1}.
+
+6121=Interogarea nu a fost definit\u0103 corect, lipse\u015fte builder-ul expresiei.  Pentru sub-interog\u0103ri sau interog\u0103ri paralele, asigura\u0163i-v\u0103 c\u0103 builder-ul de interog\u0103ri este \u00eentotdeauna \u00een st\u00e2nga.
+
+6122=Expresia nu este o expresie valid\u0103. {0}
+
+6123=Clasa de containere specificat\u0103 [{0}] nu poate fi utilizat\u0103 deoarece containerul trebuie s\u0103 implementeze {1}.
+
+6124=Interogare necesar\u0103 de {0}, a g\u0103sit {1}
+
+6125=ReadQuery.clearQueryResults() nu mai poate fi apelat\u0103. Apelarea clearQueryResults necesita acum ca sesiunea s\u0103 fie furnizat\u0103. clearQueryResults(session) ar trebui apelat\u0103.
+
+6126=O interogare ce este executat\u0103, ce utilizeaz\u0103 at\u00e2t rezultatele de interogare memorate \u00een cache, c\u00e2t \u015fi pe cele conforme.  Aceste dou\u0103 set\u0103ri sunt incompatibile.
+
+6127=A e\u015fuat o apelare reflexiv\u0103 \u00een clasa EclipseLink {0}, mediul dumneavoastr\u0103 trebuie setat pentru a permite reflexia Java.
+
+6128=Citire lot nu este suportat\u0103 pentru Interog\u0103ri ce utilizeaz\u0103 Apel\u0103ri personalizate.
+
+6129=Re\u00eemprosp\u0103tarea nu este posibil\u0103 dac\u0103 interogarea nu este direc\u0163ionat\u0103 c\u0103tre baza de date.
+
+6130=SQL personalizat a e\u015fuat \u00een a furniza coloana discriminator : {0}, a\u015fa cum este definit \u00een SQLResultSetMapping : {1}.
+
+6131=DeleteAllQuery ce define\u015fte obiecte pentru a fi \u015fterse utiliz\u00e2nd metoda setObjects cu argument non-nul trebuie de asemenea s\u0103 defineasc\u0103 criteriile de selec\u0163ie corespunz\u0103toare. {1}Obiecte: [{2}]{1}Descriptor: [{0}]
+
+6132=Argumentul de interogare {0} nu a fost g\u0103sit \u00een lista de parametrii furnizat\u0103 \u00een timpul execu\u0163iei interog\u0103rii.
+
+6133=Primul argument al metodei addUpdate define\u015fte un c\u00e2mp c\u0103ruia \u00eei va fi asignat\u0103 o nou\u0103 valoare - nu poate fi nul.
+
+6134=Numele atributului sau expresia transmis\u0103 ca prim parametru pentru metoda addUpdate nu define\u015fte un c\u00e2mp. {1}Numele de atribut sau Expresia: [{2}]{1}Descriptor: [{0}]
+
+6135=Numele atributului sau expresia transmis\u0103 ca prim parametru pentru metoda addUpdate nu define\u015fte un c\u00e2mp dintr-un tabel ce nu este mapat la un descriptor de interogare. {1}Numele de atribut sau Expresia: [{2}]{1}C\u00e2mp gre\u015fit: [{3}]{1}Descriptor: [{0}]
+
+6136=Clasele mapate cu mo\u015ftenire din mai multe tabele nu pot fi articole ReportQuery. Articol: {0}, Expresie: {1}.
+
+6137=A fost aruncat\u0103 o Excep\u0163ie \u00een timpul execu\u0163iei unei ReportQuery cu o expresie de constructor: {0}
+
+6138=Interogare necesit\u0103 depozitare temporar\u0103, dar {0} nu suport\u0103 tabele temporare.
+
+6139=Problem\u0103 la g\u0103sirea map\u0103rii pentru {0} definit \u00e2n c\u00e2mpul de rezultate numit {1}
+
+6140=A\u0163i \u00eencercat s\u0103 asigna\u0163i expresii de uniune pentru Articolele raport {1} de tip {0}.  Expresiile de uniune sunt aplicabile numai pentru Articole ce returneaz\u0103 un Obiect persistent.
+
+6141=A fost aruncat\u0103 o ClassCastException la \u00eencercarea de conversie a {0} la o clas\u0103, \u00eentr-un indiciu de interogare.
+
+6142=Valoarea {1} furnizat\u0103 pentru indiciul de interogare {0} a navigat \u00eentr-o rela\u0163ie ilegal\u0103.  Rela\u0163ia {2} nu este o rela\u0163ie OneToOne sau OneToMany.
+
+6143=Valoarea {1} furnizat\u0103 pentru indiciul de interogare {0} a navigat \u00eentr-o rela\u0163ie non-existent\u0103.  Rela\u0163ia {2} nu exist\u0103.
+
+6144=Valoarea {1} furnizat\u0103 pentru un indiciu de interogare {0} nu a con\u0163inut suficiente token-uri.  Uniunea trebuie s\u0103 \u00eenceap\u0103 cu variabila de identificare a interog\u0103rii.  De exemplu, \u00een interogarea "SELECT x from X x", pentru a face referire la un "y" ce apar\u0163ine unui "x", ar trebui s\u0103 utiliza\u0163i indiciul "x.y".
+
+6145=Contorizarea distinct\u0103 \u00eentr-o clas\u0103 de chei primare compuse [{0}] nu este suportat\u0103. Descriptor [{1}] 
+
+6146=Valoarea {1} furnizat\u0103 pentru indiciul de interogare {0} nu este o valoare valid\u0103, valorile valide sunt \u00centreg sau \u015eiruri ce pot fi parsate \u00een valori \u00eentregi.
+
+6147=Expresia {0} nu este valid\u0103 pentru citirea atributului par\u0163ial.
+
+6148=Ad\u0103ugarea {0} la PLSQLStoredProcedureCall nu este suportat\u0103.
+
+6149=PLSQLStoredProcedureCall nu poate utiliza un argument f\u0103r\u0103 nume.
+
+6150=O valoare nul\u0103 nu poate fi utilizat ca \u015fi cheie \u00eentr-un container de tip [{1}]. Asigura\u0163i-v\u0103 c\u0103 valorile cheilor dumneavoastr\u0103 pentru obiectele de tip [{0}] nu pot fi nule.
+
+6151=A survenit o excep\u0163ie la \u00eencercarea de setare a Redirectorului {0} transmis printr-un Indiciu de interogare JPA {1}.  V\u0103 rug\u0103m s\u0103 verifica\u0163i dac\u0103 Redirectorul furnizat implementeaz\u0103 org.eclipse.persistence.queries.QueryRedirector.
+
+6152=A survenit o excep\u0163ie la \u00eencercarea de instan\u0163iere a clasei {0} transmis\u0103 printr-un Indiciu de interogare JPA {1}.  V\u0103 rug\u0103m s\u0103 verifica\u0163i dac\u0103 clasa are un constructor implicit.
+
+6153=CompatibleType trebuie setat \u00eentr-un tip complex: {0}.
+
+6154=TypeName trebuie setat \u00eentr-un tip complex: {0}.
+
+6155=Nu a fost g\u0103sit un tabel rela\u0163ional \u00een {0}. {2}joinCriteria Expresie: [{1}]
+
+6156=A survenit o excep\u0163ie la \u00eencercarea de setare a citirii cheii de hart\u0103 pentru [{0}]: [{1}].
+
+6157=Elementul [{0}] este ad\u0103ugat \u00eentr-o hart\u0103 f\u0103r\u0103 o cheie.  Aceasta \u00eenseamn\u0103 \u00een general c\u0103 baza de date nu re\u0163ine o cheie ce este a\u015fteptat\u0103.
+
+6158=MapContainerPolicy i-a fost cerut s\u0103 unwrap elementul [{0}] ce nu este un element de hart\u0103.  Aceasta \u00eenseamn\u0103 c\u0103 este utilizat\u0103 politica de container incorect\u0103.
+
+6159=Nu se poate g\u0103si mapare pentru MapEntryExpression cu baza: [{0}].
+
+6160=MapEntryExpression cu baza: [{0}] face referire la maparea [{1}] ce nu este o mapare de colec\u0163ie.  H\u0103r\u0163ile exist\u0103 numai \u00een map\u0103rile de colec\u0163ie.
+
+6161=MapEntryExpression cu baza: [{0}] face referire la maparea [{1}] ce nu se refer\u0103 la o hart\u0103.
+
+6162=Coloana cu ordinea listei [{0}] con\u0163ine valori gre\u015fite:{2}{1}
+
+6163=index() necesit\u0103 QueryKeyExpression, nu poate fi aplicat pentru [{0}]
+
+6164=index() necesit\u0103 QueryKeyExpression cu CollectionMapping ce are o coloan\u0103 de ordine list\u0103 non-nul\u0103. [{1}] nu \u00eendepline\u015fte aceast\u0103 condi\u0163ie \u00een [{0}]
+
+6165=Aducerea lotului utiliz\u00e2nd IN necesit\u0103 o cheie primar\u0103 singleton.
+
+6166=A fost f\u0103cut\u0103 o \u00eencercare de aruncare \u00eenafara unei ierarhii mo\u015ftenite.  [{0}] nu apare \u00een ierarhia clasei pentru [{1}]. Not\u0103: Aceast\u0103 excep\u0163ie ar putea de asemenea s\u0103 indice c\u0103 face\u0163i conversia tipului de date \u00eentr-o rela\u0163ie de mo\u015ftenire Tabel-Per-Clas\u0103 ce nu este suportat\u0103 pentru conversia tipului de date.
+
+6167=O conversie a tipului de date a fost invocat\u0103 \u00eentr-o expresie ce nu utilizeaz\u0103 mo\u015ftenirea: [{0}].
+
+6168=Preg\u0103tirea interog\u0103rii a e\u015fuat, a survenit o eroare nea\u015fteptat\u0103: [{0}].
+
+6169=A fost configurat\u0103 o mapare pentru utilizare a aducerii lotului In, dar interogarea original\u0103 nu a fost configurat\u0103 s\u0103 utilizeze aducerea de lot IN \u015fi trebuie s\u0103 fie: [{0}].
+
+6171=Parti\u0163ionarea nu este suportat\u0103 pentru tipul de sesiune [{0}]. Numai ServerSession \u015fi ClientSession sunt suportate.
+
+6172=Lipse\u015fte pool-ul de conexiune pentru parti\u0163ionarea [{0}].
+
+6173=Pool-ul de conexiune [{0}] a e\u015fuat s\u0103 fac\u0103 preluarea la defect, toate serverele sunt nefunc\u0163ionale.
+
+6174=Nu a fost furnizat\u0103 nici o valoare pentru proprietatea sesiunii [{0}]. Excep\u0163ia este posibil\u0103 atunci c\u00e2nd utiliza\u0163i criterii suplimentare sau coloane discriminator chiria\u015f f\u0103r\u0103 specificarea propriet\u0103\u0163ii contextuale asociate. Aceste propriet\u0103\u0163i trebuiesc setate prin propriet\u0103\u0163ile unit\u0103\u0163ii EntityManager, EntityManagerFactory sau persisten\u0163\u0103. Dac\u0103 se utilizeaz\u0103 EclipseLink nativ, aceste propriet\u0103\u0163i ar trebui setate direct \u00een sesiune.
+
+6175=Interog\u0103rile SQL native au fost dezactivate. Acest lucru este f\u0103cut fie prin setarea propriet\u0103\u0163ii unit\u0103\u0163ii de persisten\u0163\u0103 "eclipselink.jdbc.allow-native-sql-queries" pe false, fie av\u00e2nd cel pu\u0163in o entitate multi-chiria\u015f definit\u0103 \u00een unitatea dumneavoastr\u0103 de persisten\u0163\u0103. Verifica\u0163i specifica\u0163iile unit\u0103\u0163ii dumneavoastr\u0103 de persisten\u0163\u0103. Pentru a permite interog\u0103ri sql native, seta\u0163i aceast\u0103 proprietate pe true. Alternativ, interog\u0103rile individuale pot ocoli aceast\u0103 setare prin setarea indiciului de interogare "eclipselink.jdbc.allow-native-sql-query" pe true.
+
+6176=A fost aruncat\u0103 o excep\u0163ie \u00een timpul ini\u0163ializ\u0103rii constructorului din clasa [{0}]:  [{1}]
+
+6177=Rezultatul coloanei [{0}] nu a fost g\u0103sit \u00een rezultatele interog\u0103rii.
+
+6178=isResultSetAccessOptimizedQuery setat pe true intr\u0103 \u00een conflict cu alte set\u0103ri de interogare.
+
+6179=A e\u015fuat deserializarea sopObject de la [{0}] \u00een [{1}]
+
+6180=sopObject serializat nu este g\u0103sit \u00een [{0}] \u00een [{1}]
+
+6181=sopObject are o versiune gre\u015fit\u0103 [{0}] \u00een [{1}] \u00een [{2}]
+
+6182=sopObject are o cheie primar\u0103 gre\u015fit\u0103 [{0}] \u00een [{1}] \u00een [{2}]
+
+6183=Tipul de mapare {1} pentru atributul {2} din {0} nu este suportat cu func\u0163ionalitatea Interogare dup\u0103 exemplu.  Dac\u0103 atributul poate fi ignorat \u00een siguran\u0163\u0103, atunci ad\u0103uga\u0163i-l \u00een lista de ignorare sau seta\u0163i validarea exemplului pe false \u00een politic\u0103.
+

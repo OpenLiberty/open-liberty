@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2017,2019 IBM Corporation and others.
+    Copyright (c) 2017,2020 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -60,9 +60,6 @@
         <attributesCache size="4000" timeout="1200ms" enabled="true" sizeLimit="2000"/>
         <searchResultsCache size="2000" timeout="600ms" enabled="true" resultsSizeLimit="1000"/>
       </ldapCache>
-      <failoverServers name="failoverLdapServers">
-      	<server host="${ldap.server.3.name}" port="${ldap.server.3.ssl.port}"/>
-       </failoverServers>
 	</ldapRegistry>
 
     <federatedRepository>
@@ -84,7 +81,7 @@
 
 	<!-- PKCS12 keystore does not work with SUN JDK, so using JKS -->
 	<keyStore id="LDAPKeyStore" location="${server.config.dir}/key.jks" type="JKS" password="{xor}CDo9Hgw=" />
-	<keyStore id="LDAPTrustStore" location="${server.config.dir}/trust.jks" type="JKS" password="{xor}CDo9Hgw=" />
+	<keyStore id="LDAPTrustStore" location="${server.config.dir}/truststore.p12" type="PKCS12" password="LDAPpassword" />
 
 	<ssl id="DefaultSSLSettings" keyStoreRef="defaultKeyStore" />
 	<keyStore id="defaultKeyStore" location="defaultkey.jks" type="JKS" password="default" />

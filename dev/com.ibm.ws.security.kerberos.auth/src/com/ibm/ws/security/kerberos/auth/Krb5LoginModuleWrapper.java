@@ -81,8 +81,7 @@ public class Krb5LoginModuleWrapper implements LoginModule {
         this.callbackHandler = callbackHandler;
         this.subject = subject;
         this.sharedState = (Map<String, Object>) sharedState;
-        options = new HashMap<>();
-        options.putAll(opts);
+        this.options = new HashMap<>(opts);
 
         if (!isIBMJdk8)
             useKeytabValue = options.get("useKeyTab");
@@ -95,16 +94,22 @@ public class Krb5LoginModuleWrapper implements LoginModule {
                     options.put("credsType", "both");
                 }
             }
-            if (options.containsKey("doNotPrompt")) {
-                options.remove("doNotPrompt");
-            }
-            if (options.containsKey("refreshKrb5Config")) {
-                options.remove("refreshKrb5Config");
-            }
+            options.remove("doNotPrompt");
+            options.remove("refreshKrb5Config");
             if (options.containsKey("keyTab")) {
                 String keytab = (String) options.remove("keyTab");
                 options.remove("useKeyTab");
                 options.put("useKeytab", keytab);
+            }
+            options.remove("clearPass");
+            boolean useTicketCache = Boolean.valueOf((String) options.remove("useTicketCache"));
+            String ticketCache = (String) options.remove("ticketCache");
+            if (useTicketCache) {
+                if (ticketCache != null) {
+                    options.put("useCcache", ticketCache);
+                } else {
+                    options.put("useDefaultCcache", "true");
+                }
             }
         }
 
@@ -115,7 +120,7 @@ public class Krb5LoginModuleWrapper implements LoginModule {
             options.put("debug", "true");
         }
 
-        krb5loginModule.initialize(subject, null, sharedState, options);
+        krb5loginModule.initialize(subject, callbackHandler, sharedState, options);
     }
 
     @Override
@@ -170,5 +175,5 @@ public class Krb5LoginModuleWrapper implements LoginModule {
             throw new IllegalStateException(e);
         }
     }
-}
 
+}

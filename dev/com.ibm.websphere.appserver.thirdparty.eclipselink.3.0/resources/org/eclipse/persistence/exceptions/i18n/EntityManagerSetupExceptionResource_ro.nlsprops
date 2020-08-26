@@ -1,0 +1,93 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/EntityManagerSetupExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+28001=A fost aruncat\u0103 o ValidationException \u00een timp ce se \u00eencerca crearea unei sesiuni: [{0}] . Cele mai probabile cauze ale acestei probleme sunt c\u0103 fi\u015fierul dumneavoastr\u0103 [{1}] nu este disponibil \u00een calea de clase sau nu con\u0163ine o sesiune numit\u0103: [{0}].
+
+28002=EclipseLink \u00eencearc\u0103 s\u0103 \u00eencarce o ServerSession numit\u0103 [{0}] din [{1}], \u015fi nu ob\u0163ine o ServerSession.
+
+28003=EclipseLink a \u00eenc\u0103rcat Sesiunea [{0}] din [{1}] \u015fi fie nu are o platform\u0103 de server specificat\u0103 sau specific\u0103 o platform\u0103 de server ce nu utilizeaz\u0103 \u015fi controlerul de tranzac\u0163ii externe.  Specifica\u0163i o platform\u0103 de server corespunz\u0103toare dac\u0103 inten\u0163iona\u0163i s\u0103 utiliza\u0163i JTA.
+
+28004=Eroare la setarea fabricii EntityManager: JavaSECMPInitializer.initializeFromMain a returnat false.
+
+28005=A fost aruncat\u0103 o Excep\u0163ie \u00een setarea fabricii EntityManager.
+
+28006=ClassNotFound: [{0}] specificat\u0103 \u00een proprietatea [{1}].
+
+28007=E\u015fuare la instan\u0163ierea ServerPlatform de tip [{0}] specificat \u00een proprietatea [{1}].
+
+28008=Clasa: {0} nu a fost g\u0103sit \u00een timpul proces\u0103rii adnot\u0103rilor.
+
+28009=S-a \u00eencercat reimplementarea unei sesiuni numite {0} f\u0103r\u0103 \u00eenchiderea acesteia.
+
+28010=PersistenceUnitInfo {0} are transactionType JTA, dar nu are o jtaDataSource definit\u0103.
+
+28011=Sesiunea, [{0}], construit\u0103 pentru o unitate de persisten\u0163\u0103, nu a fost disponibil\u0103 la momentul la care a fost implementat\u0103.  Aceasta \u00eenseamn\u0103 c\u0103 \u00eentr-un fel, sesiunea a fost \u00eenl\u0103turat\u0103 din container \u00een mijlocul procesului de implementare.
+
+28012=Valoarea [{0}] este de tip incorect pentru proprietatea [{2}], tipul de valoare ar trebui s\u0103 fie [{1}].
+
+28013=Nu se poate implementa PersistenceUnit [{0}] \u00een starea invalid\u0103 [{1}].
+
+28014=Excep\u0163ia a fost aruncat\u0103 \u00een timpul proces\u0103rii propriet\u0103\u0163ii [{0}] cu valoarea [{1}].
+
+28015=E\u015fuare la instan\u0163ierea SessionLog de tip [{0}] specificat\u0103 \u00een proprietatea [{1}].
+
+28016=Unitatea de persisten\u0163\u0103 cu numele [{0}] nu exist\u0103.
+
+28017=Nu se poate lansa anterior PersistenceUnit [{0}] \u00een starea invalid\u0103 [{1}].
+
+28018=Lansarea anticipat\u0103 a PersistenceUnit [{0}] a e\u015fuat.
+
+28019=Implementarea PersistenceUnit [{0}] a e\u015fuat. \u00cenchide\u0163i toate fabricile pentru aceast\u0103 PersistenceUnit.
+
+28020=Sesiunea cu numele [{0}] \u00eenc\u0103rcat\u0103 din [{1}] este [{2}], totu\u015fi trebuie s\u0103 fie ServerSession.
+
+28021=PersistenceUnit [{0}] \u00eencearc\u0103 s\u0103 \u00eencarce o sesiune din [{1}] f\u0103r\u0103 furnizarea unui nume de sesiune.  Un nume de sesiune ar trebui furnizat prin definirea propriet\u0103\u0163ii eclipselink.session-name.
+
+28022=Valoarea [true] pentru proprietatea [eclipselink.weaving] este incorect\u0103 atunci c\u00e2nd instrumentarea global\u0103 este nul\u0103, valoarea ar trebui s\u0103 fie null, false sau static.
+
+28023=Invocarea metodei pentru metoda [{0}] din obiectul [{1}], de clas\u0103 [{2}], a declan\u015fat o excep\u0163ie.
+
+28024=Nu poate accesa reflexiv metoda [{0}] pentru obiectul [{1}], din clasa [{2}].
+
+28025=Unitatea de persisten\u0163\u0103 cu numele [{0}] a returnatun classLoader temporar [null] - weaving a fost dezactivat pentru aceast\u0103 sesiune.  Pute\u0163i utiliza static weaving este un paliativ op\u0163ional.
+
+28026=org.eclipse.persistence.jpa.osgi.PersistenceProvider nu suport\u0103 implementarea containerului (createContainerEntityManagerFactory).  Utiliza\u0163i \u00een schimb org.eclipse.persistence.jpa.PersistenceProvider.
+
+28027=A fost f\u0103cut\u0103 o \u00eencercare de utilizare a PersistenceUnit [{0}], dar nu este disponibil nici un bundle care s\u0103 defineasc\u0103 acea unitate de persisten\u0163\u0103.
+
+28028=E\u015fuare la instan\u0163ierea instan\u0163ei de clas\u0103 [{0}] pentru proprietatea unit\u0103\u0163ii de persisten\u0163\u0103 [{1}], asigur\u0103 faptul c\u0103 este definit corect constructorul.
+
+28029=PersistenceUnit [{0}] \u00eencearc\u0103 s\u0103 utilizeze sessions.xml (specific\u0103 proprietatea eclipselink.sessions-xml) \u015fi s\u0103 fie un compozit (specific\u0103 proprietatea eclipselink.composite-unit cu valoarea true). Aceste moduri sunt incompatibil\u0103.
+
+28030=PersistenceUnit [{0}] specific\u0103 proprietatea eclipselink.composite-unit.member cu valoarea true. Asta \u00eenseamn\u0103 c\u0103 nu poate fi utilizat autonom, dar numai ca \u015fi membru compozit.
+
+28031=Lipse\u015fte proprietatea necesar\u0103 [{0}].
+
+28032=A e\u015fuat crearea classloader temporar cu doPrivileged.
+

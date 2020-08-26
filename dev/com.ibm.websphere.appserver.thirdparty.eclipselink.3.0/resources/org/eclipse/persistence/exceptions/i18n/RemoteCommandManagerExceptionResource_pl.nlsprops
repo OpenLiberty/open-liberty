@@ -1,0 +1,65 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/RemoteCommandManagerExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+22101=Nie mo\u017cna uzyska\u0107 kontekstu JNDI. Sprawd\u017a, czy w\u0142a\u015bciwo\u015bci s\u0105 ustawione poprawnie.
+
+22102=Nie mo\u017cna opublikowa\u0107 po\u0142\u0105czenia w lokalnej us\u0142udze nazewnictwa pod nazw\u0105 {0}
+
+22103=Nie mo\u017cna wyszuka\u0107 zdalnego po\u0142\u0105czenia pod nazw\u0105 {0} o adresie URL {1}
+
+22104=Nie mo\u017cna wyszuka\u0107 nazwy hosta
+
+22105=Nie mo\u017cna propagowa\u0107 komendy do {0}
+
+22106=Nie mo\u017cna utworzy\u0107 zewn\u0119trznego po\u0142\u0105czenia JMS o temacie {0} i fabryce temat\u00f3w {1}. Sprawd\u017a te\u017c poprawno\u015b\u0107 ustawienia w\u0142a\u015bciwo\u015bci kontekstu.
+
+22107=Nie mo\u017cna usun\u0105\u0107 po\u0142\u0105czenia w lokalnej us\u0142udze nazewnictwa pod nazw\u0105 {0}
+
+22108=Nie mo\u017cna zserializowa\u0107 ani zdeserializowa\u0107 komendy
+
+22109=Nie powiod\u0142a si\u0119 pr\u00f3ba odebrania komunikatu JMS od dostawcy JMS
+
+22110=Nie powiod\u0142o si\u0119 wykrycie adresu IP hosta lokalnego.
+
+22111=Nie powiod\u0142a si\u0119 pr\u00f3ba pobrania platformy serwera. Platforma serwera musi by\u0107 ustawiona w sesji lub mened\u017cerze komend zdalnych.
+
+22112=Nie mo\u017cna utworzy\u0107 lokalnego po\u0142\u0105czenia JMS o temacie {0} i fabryce temat\u00f3w {1}. Sprawd\u017a te\u017c poprawno\u015b\u0107 ustawienia w\u0142a\u015bciwo\u015bci kontekstu.
+
+22113=Nie mo\u017cna utworzy\u0107 us\u0142ugi Oc4jJGroupsRemoteConnection o identyfikatorze {0} (temat {1}) przy u\u017cyciu fabryki {2}. Sprawd\u017a te\u017c poprawno\u015b\u0107 ustawienia w\u0142a\u015bciwo\u015bci kontekstu.
+
+22114={0}: nie powiod\u0142o si\u0119 zdeserializowanie pobranego komunikatu {1}.
+
+22115={0}: nie powiod\u0142o si\u0119 przetworzenie komendy zdalnej pobranej z komunikatu {1}, od {2}, typ komendy {3}
+
+22116=Odebrany komunikat JMS ma warto\u015b\u0107 null. Jest traktowany jako wyj\u0105tek JMSException
+
+22117=Mened\u017cer komend zdalnych sesji jest zamkni\u0119ty lub nie zosta\u0142 zainicjowany podczas przetwarzania komunikat\u00f3w przychodz\u0105cych
+
+22118=Nie powiod\u0142a si\u0119 pr\u00f3ba utworzenia po\u0142\u0105czenia JGroups za pomoc\u0105 pliku konfiguracyjnego: {0}
+

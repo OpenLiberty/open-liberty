@@ -1,0 +1,63 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the
+#           message text must be followed by a 2nd apostrophe to work correctly.
+#-------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CWWKW
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers start with '0' and are filled to a width of 4 digits.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME com.ibm.ws.injection/resources/com/ibm/ws/injection/resources/InjectionMessages.nlsprops
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW io.openliberty.jaxrs-3.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWMGQ1xxxI=CWMGQ1xxxI: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWMGQ1xxxI.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWMGQ1xxxI.useraction=User action text for the message
+#
+#-------------------------------------------------------------------------------
+
+MULTIPLE_REST_SERVLETS_CWWKW1300W=CWWKW1300W: Pro webov\u00fd modul {0} je definov\u00e1no v\u00edce servlet\u016f REST. Pro ka\u017ed\u00fd webov\u00fd modul je povolena pouze nula nebo jeden servlet REST.
+MULTIPLE_REST_SERVLETS_CWWKW1300W.explanation=Pro ka\u017ed\u00fd webov\u00fd modul je povoleno definovat pouze jeden servlet REST. Servlet REST je jak\u00fdkoli server, kter\u00fd pou\u017e\u00edv\u00e1 jeden z n\u00e1sleduj\u00edc\u00edch n\u00e1zv\u016f t\u0159\u00edd: com.ibm.websphere.jaxrs.server.IBMRestServlet, org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher nebo org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher. Tato zpr\u00e1va ozna\u010duje, \u017ee v souboru web.xml je ur\u010deno v\u00edce servlet\u016f nebo \u017ee je konfigurov\u00e1n dynamicky. 
+MULTIPLE_REST_SERVLETS_CWWKW1300W.useraction=Zkontrolujte soubor web.xml pro tyto servlety a odeberte v\u0161echny nebo v\u0161echny krom\u011b jednoho.
+
+MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W=CWWKW1301W: Pro webov\u00fd modul {0} je definov\u00e1no v\u00edce servlet\u016f REST. Servlet REST m\u016f\u017ee b\u00fdt p\u0159idru\u017een pouze k jednomu mapov\u00e1n\u00ed cesty.
+MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.explanation=Servlet REST je povolen pouze pro konfiguraci se \u017e\u00e1dn\u00fdm nebo jedn\u00edm mapov\u00e1n\u00edm cesty. Servlet REST je jak\u00fdkoli server, kter\u00fd pou\u017e\u00edv\u00e1 jeden z n\u00e1sleduj\u00edc\u00edch n\u00e1zv\u016f t\u0159\u00edd: com.ibm.websphere.jaxrs.server.IBMRestServlet, org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher nebo org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher. Tato zpr\u00e1va ozna\u010duje, \u017ee je v souboru web.xml p\u0159idru\u017eeno k servletu REST v\u00edce mapov\u00e1n\u00ed. 
+MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.useraction=Zkontrolujte soubor web.xml pro mapov\u00e1n\u00ed servlet-mappings, kter\u00e1 jsou p\u0159idru\u017eena k servletu REST, a odeberte je v\u0161echny nebo v\u0161echny krom\u011b jednoho.
+
+

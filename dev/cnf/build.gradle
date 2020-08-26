@@ -37,14 +37,59 @@ dependencies {
     binaries "org.apache.ant:ant:1.9.6"
 }
 
+//TODO: move this function somewhere common
+void sortAlphabetical(String filename){
+  def list = []
+  def orig = file(filename)
+  orig.eachLine { line ->
+      line = line.trim()
+      list << line
+  }
+  orig.delete()
+  
+  println("Sorting "+filename)
+  def newfile = file(filename)
+  list.sort()
+  for(String line:list){
+    newfile << line
+    newfile << "\n"
+  }
+  
+}
+
+//TODO: move this function somewhere common
+void assertAlphabetical(String filename) {
+  def prev = ""
+  def lines = file(filename).readLines()
+  for(String line:lines){
+      line = line.trim()
+      if(line.compareTo(prev) < 0){
+          println(filename+' is not alphabetical. \"' + prev + '\" should be after \"' +line+ '\"')
+          sortAlphabetical(filename)
+          break;
+      }
+      prev = line
+  }
+}
+
+task checkAlphabetical() {
+  assertAlphabetical('oss_dependencies.maven')
+  assertAlphabetical('oss_source_dependencies.maven')
+  assertAlphabetical('oss_ibm.maven')
+  assertAlphabetical('ibm_java.maven')
+}
+
 task copyMavenLibs(type: Copy) {
     from configurations.binaries
     into project.file('mavenlibs')
 }
 
 task dependabotGenerate() {
+  dependsOn checkAlphabetical
   inputs.file('oss_dependencies.maven')
+  inputs.file('oss_source_dependencies.maven')
   outputs.file('cnf/dependabot/check_this_in_if_it_changes/pom.xml')
+  ArrayList inputFiles = [file('oss_dependencies.maven'),file('oss_source_dependencies.maven')]
   doLast {
     // Generate pom.xml
     File pom = rootProject.file('cnf/dependabot/check_this_in_if_it_changes/pom.xml')
@@ -60,17 +105,19 @@ task dependabotGenerate() {
     pom << "  <!-- GENERATED FILE, DO NOT HAND EDIT! -->\n\n"
     pom << "  <!-- If changes are generated from the build, check in the changes -->\n\n"
     pom << "  <dependencies>\n"
-      
-    file('oss_dependencies.maven').eachLine { line ->
-      line = line.trim()
-      if (line.startsWith('#') || line.isEmpty())
-        return;
-      def (g,a,v) = line.split(':').collect { it.trim() }
-      pom << "    <dependency>\n"
-      pom << "      <groupId>"    + g + "</groupId>\n"
-      pom << "      <artifactId>" + a + "</artifactId>\n"
-      pom << "      <version>"    + v + "</version>\n"
-      pom << "    </dependency>\n"
+    
+    inputFiles.each { aFile ->  
+        aFile.eachLine { line ->
+          line = line.trim()
+          if (line.startsWith('#') || line.isEmpty())
+            return;
+          def (g,a,v) = line.split(':').collect { it.trim() }
+          pom << "    <dependency>\n"
+          pom << "      <groupId>"    + g + "</groupId>\n"
+          pom << "      <artifactId>" + a + "</artifactId>\n"
+          pom << "      <version>"    + v + "</version>\n"
+          pom << "    </dependency>\n"
+        }
     }
     pom << "  </dependencies>\n"
     pom << "</project>\n"

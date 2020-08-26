@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.metrics23.tck.launcher;
 
+import static org.junit.Assume.assumeTrue;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,6 +23,7 @@ import org.junit.runner.RunWith;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.MvnUtils;
 
@@ -48,6 +51,10 @@ public class MetricsTCKLauncher {
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchTck() throws Exception {
+        //disable tests for Java versions 11.0.0 - 11.0.3 since there's a bug in TLS 1.3 implementation
+        JavaInfo javaInfo = JavaInfo.forServer(server);
+        assumeTrue(!(javaInfo.majorVersion() == 11 && javaInfo.minorVersion() == 0
+                     && javaInfo.microVersion() <= 3));
         String protocol = "https";
         String host = server.getHostname();
         String port = Integer.toString(server.getHttpDefaultSecurePort());

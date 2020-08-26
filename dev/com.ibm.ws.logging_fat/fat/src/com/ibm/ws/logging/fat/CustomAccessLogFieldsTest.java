@@ -178,7 +178,7 @@ public class CustomAccessLogFieldsTest {
         waitForSecurityPrerequisites(envServer, WAIT_TIMEOUT);
         waitForMetricsToStart(envServer, WAIT_TIMEOUT);
         hitHttpsEndpointSecure("/metrics", envServer);
-        String line = envServer.waitForStringInLog("liberty_accesslog");
+        String line = envServer.waitForStringInLog("liberty_accesslog.*/metrics");
         assertNotNull("No liberty_accesslog found in the output JSON log.", line);
 
         assertTrue("There are fields missing in the output JSON log.", areFieldsPresent(line, newFields));
@@ -194,7 +194,7 @@ public class CustomAccessLogFieldsTest {
         waitForSecurityPrerequisites(bootstrapServer, WAIT_TIMEOUT);
         waitForMetricsToStart(bootstrapServer, WAIT_TIMEOUT);
         hitHttpsEndpointSecure("/metrics", bootstrapServer);
-        String line = bootstrapServer.waitForStringInLog("liberty_accesslog");
+        String line = bootstrapServer.waitForStringInLog("liberty_accesslog.*/metrics");
         assertNotNull("No liberty_accesslog found in the output JSON log.", line);
 
         assertTrue("There are fields missing in the output JSON log.", areFieldsPresent(line, newFields));
@@ -214,7 +214,7 @@ public class CustomAccessLogFieldsTest {
 
         isFirstTimeUsingXmlServerWithMetrics = false;
         hitHttpsEndpointSecure("/metrics", xmlServer);
-        String line = xmlServerWithMetrics.waitForStringInLog("liberty_accesslog");
+        String line = xmlServerWithMetrics.waitForStringInLog("liberty_accesslog.*/metrics");
         assertNotNull("No liberty_accesslog found in the output JSON log.", line);
 
         assertTrue("There are fields missing in the output JSON log.", areFieldsPresent(line, newFields));
@@ -288,7 +288,7 @@ public class CustomAccessLogFieldsTest {
         isFirstTimeUsingXmlServerWithMetrics = false;
 
         hitHttpsEndpointSecure("/metrics", xmlServerWithMetrics);
-        String line = xmlServerWithMetrics.waitForStringInLog("liberty_accesslog");
+        String line = xmlServerWithMetrics.waitForStringInLog("liberty_accesslog.*/metrics");
         assertNotNull("No liberty_accesslog found in the output JSON log.", line);
 
         // Easier to just use two asserts instead of trying to join those two arrays together
@@ -343,7 +343,7 @@ public class CustomAccessLogFieldsTest {
         isFirstTimeUsingXmlServerWithMetrics = false;
 
         hitHttpsEndpointSecure("/metrics", xmlServerWithMetrics);
-        String line = xmlServerWithMetrics.waitForStringInLog("liberty_accesslog");
+        String line = xmlServerWithMetrics.waitForStringInLog("liberty_accesslog.*/metrics");
         assertNotNull("No liberty_accesslog found in the output JSON log.", line);
 
         // create a map of the strings
@@ -398,17 +398,18 @@ public class CustomAccessLogFieldsTest {
         waitForMetricsToStart(changeConfigServer, WAIT_TIMEOUT);
 
         hitHttpsEndpointSecure("/metrics", changeConfigServer);
-        String line = changeConfigServer.waitForStringInLogUsingMark("liberty_accesslog");
+        String line = changeConfigServer.waitForStringInLogUsingMark("liberty_accesslog.*/metrics");
         assertNotNull("No liberty_accesslog found in the output JSON log.", line);
-        changeConfigServer.setMarkToEndOfLog();
 
         assertTrue("There are fields missing in the output JSON log.", areFieldsPresent(line, newFields));
         assertTrue("There are unexpected fields in the output JSON log.", areFieldsNotPresent(line, defaultFields));
 
         // change to default
         setServerConfiguration("default", changeConfigServer);
+        changeConfigServer.setMarkToEndOfLog();
+
         hitHttpsEndpointSecure("/metrics", changeConfigServer);
-        line = changeConfigServer.waitForStringInLogUsingMark("liberty_accesslog");
+        line = changeConfigServer.waitForStringInLogUsingMark("liberty_accesslog.*/metrics");
         assertNotNull("No liberty_accesslog found in the output JSON log.", line);
         changeConfigServer.setMarkToEndOfLog();
 
@@ -419,7 +420,7 @@ public class CustomAccessLogFieldsTest {
         // change back again to logFormat
         setServerConfiguration("logFormat", changeConfigServer);
         hitHttpsEndpointSecure("/metrics", changeConfigServer);
-        line = changeConfigServer.waitForStringInLogUsingMark("liberty_accesslog");
+        line = changeConfigServer.waitForStringInLogUsingMark("liberty_accesslog.*/metrics");
         assertNotNull("No liberty_accesslog found in the output JSON log.", line);
         changeConfigServer.setMarkToEndOfLog();
 

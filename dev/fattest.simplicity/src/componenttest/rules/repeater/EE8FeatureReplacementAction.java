@@ -19,7 +19,8 @@ public class EE8FeatureReplacementAction extends FeatureReplacementAction {
 
     public static final String ID = "EE8_FEATURES";
 
-    static final String[] EE8_FEATURES_ARRAY = { "javaee-8.0",
+    static final String[] EE8_FEATURES_ARRAY = { "appClientSupport-1.0",
+                                                 "javaee-8.0",
                                                  "webProfile-8.0",
                                                  "javaeeClient-8.0",
                                                  "servlet-4.0",
@@ -41,11 +42,14 @@ public class EE8FeatureReplacementAction extends FeatureReplacementAction {
                                                  "ejbLite-3.2",
                                                  "ejbPersistentTimer-3.2",
                                                  "ejbRemote-3.2",
+                                                 "ejbTest-1.0",
                                                  "el-3.0",
+                                                 "jmsMdb-3.2",
                                                  "jsp-2.3",
                                                  "concurrent-1.0",
                                                  "jaxb-2.2",
                                                  "managedBeans-1.0",
+                                                 "mdb-3.2",
                                                  "componenttest-1.0",
                                                  "txtest-1.0",
                                                  "websocket-1.1" };

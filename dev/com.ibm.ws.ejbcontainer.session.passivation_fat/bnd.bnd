@@ -30,4 +30,5 @@ tested.features: \
 	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.1; version=latest, \
 	com.ibm.websphere.security; version=latest, \
-	com.ibm.ws.ejbcontainer.fat_tools; version=latest
+	com.ibm.ws.ejbcontainer.fat_tools; version=latest, \
+	io.openliberty.ejbcontainer.jakarta.fat_tools; version=latest

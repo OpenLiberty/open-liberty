@@ -12,7 +12,7 @@
 
     <test name="microprofile-faulttolerance 2.1 TCK">
         <classes>
-            <!-- Reduced test list for lite mode, retains coverate of core and new functionality -->
+            <!-- Reduced test list for lite mode, retains coverage of core and new functionality -->
             <class name="org.eclipse.microprofile.fault.tolerance.tck.AsyncCancellationTest">
                 <methods>
                     <include name="testCancel"/>

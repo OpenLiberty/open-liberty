@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,6 +54,7 @@ import com.ibm.websphere.security.jwt.Claims;
 import com.ibm.websphere.security.jwt.InvalidClaimException;
 import com.ibm.websphere.security.jwt.InvalidTokenException;
 import com.ibm.websphere.security.jwt.KeyException;
+import com.ibm.ws.security.common.crypto.KeyAlgorithmChecker;
 import com.ibm.ws.security.common.random.RandomUtils;
 import com.ibm.ws.security.common.time.TimeUtils;
 import com.ibm.ws.security.jwt.config.JwtConsumerConfig;
@@ -134,6 +135,7 @@ public class ConsumerUtilTest {
     private final PublicKey publicKey = mockery.mock(PublicKey.class);
     private final RSAPublicKey rsaPublicKey = mockery.mock(RSAPublicKey.class);
     private final X509Certificate cert = mockery.mock(X509Certificate.class);
+    private final KeyAlgorithmChecker keyAlgChecker = mockery.mock(KeyAlgorithmChecker.class);
 
     @Rule
     public final TestName testName = new TestName();
@@ -186,8 +188,9 @@ public class ConsumerUtilTest {
         TestConsumerUtil01 cu = new TestConsumerUtil01();
         Map<String, String> propsMap = new HashMap<String, String>();
         propsMap.put(ConsumerUtil.ISSUER, "issuerFromMap");
+        cu.setMpConfigProps(propsMap);
         try {
-            cu.validateClaims(jwtClaims, jwtContext, null, propsMap);
+            cu.validateClaims(jwtClaims, jwtContext, null);
         } catch (Exception e) {
             if (e instanceof RuntimeException) {
                 valid = true;
@@ -204,7 +207,7 @@ public class ConsumerUtilTest {
     @Test
     public void testGetSigningKey_nullConfig() {
         try {
-            Key result = consumerUtil.getSigningKey((JwtConsumerConfig) null, (JwtContext) null, null);
+            Key result = consumerUtil.getSigningKey((JwtConsumerConfig) null, (JwtContext) null);
             assertNull("Result was not null when it should have been. Result: " + result, result);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -223,7 +226,7 @@ public class ConsumerUtilTest {
                     will(returnValue("SomeUnknownAlg"));
                 }
             });
-            Key result = consumerUtil.getSigningKey(jwtConfig, jwtContext, null);
+            Key result = consumerUtil.getSigningKey(jwtConfig, jwtContext);
             assertNull("Result was not null when it should have been. Result: " + result, result);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -245,7 +248,7 @@ public class ConsumerUtilTest {
                 }
             });
             try {
-                Key result = consumerUtil.getSigningKey(jwtConfig, jwtContext, null);
+                Key result = consumerUtil.getSigningKey(jwtConfig, jwtContext);
                 fail("Should have thrown KeyException but did not. Got key: " + result);
             } catch (KeyException e) {
                 validateException(e, MSG_JWT_ERROR_GETTING_SHARED_KEY + ".+" + MSG_JWT_MISSING_SHARED_KEY);
@@ -269,7 +272,7 @@ public class ConsumerUtilTest {
                     will(returnValue(sharedKey));
                 }
             });
-            Key result = consumerUtil.getSigningKey(jwtConfig, jwtContext, null);
+            Key result = consumerUtil.getSigningKey(jwtConfig, jwtContext);
             assertNotNull("Result was null when it should not have been.", result);
             assertTrue("Result was not an HmacKey. Result was: " + result, result instanceof HmacKey);
         } catch (Throwable t) {
@@ -286,7 +289,7 @@ public class ConsumerUtilTest {
             ConsumerUtil testConsumerUtil = new ConsumerUtil(null);
             mockery.checking(new Expectations() {
                 {
-                    one(jwtConfig).getSignatureAlgorithm();
+                    allowing(jwtConfig).getSignatureAlgorithm();
                     will(returnValue(RS256));
                     one(jwtConfig).getJwkEnabled(); // for jwksUri(jwkEndpointUrl
                     will(returnValue(false)); //
@@ -297,7 +300,7 @@ public class ConsumerUtilTest {
                 }
             });
             try {
-                Key result = testConsumerUtil.getSigningKey(jwtConfig, jwtContext, null);
+                Key result = testConsumerUtil.getSigningKey(jwtConfig, jwtContext);
                 fail("Should have thrown Exception but did not. Got key: " + result);
             } catch (Exception e) {
                 validateException(e, MSG_JWT_ERROR_GETTING_PRIVATE_KEY + ".+\\[" + trustedAlias + "\\].+\\[" + trustStoreRef + "\\].+" + MSG_JWT_TRUSTSTORE_SERVICE_NOT_AVAILABLE);
@@ -312,12 +315,17 @@ public class ConsumerUtilTest {
      */
     @Test
     public void testGetSigningKey_RS256Valid() {
+        consumerUtil.keyAlgChecker = keyAlgChecker;
         try {
             mockery.checking(new Expectations() {
                 {
 
-                    one(jwtConfig).getSignatureAlgorithm();
+                    allowing(jwtConfig).getSignatureAlgorithm();
                     will(returnValue(RS256));
+                    one(keyAlgChecker).isHSAlgorithm(RS256);
+                    will(returnValue(false));
+                    allowing(keyAlgChecker).isRSAlgorithm(RS256);
+                    will(returnValue(true));
                     one(jwtConfig).getJwkEnabled(); // for jwksUri
                     will(returnValue(false)); //
                     allowing(jwtConfig).getTrustedAlias();
@@ -330,13 +338,205 @@ public class ConsumerUtilTest {
                     will(returnValue(cert));
                     one(cert).getPublicKey();
                     will(returnValue(rsaPublicKey));
+                    one(keyAlgChecker).isPublicKeyValidType(rsaPublicKey, RS256);
+                    will(returnValue(true));
                 }
             });
-            Key result = consumerUtil.getSigningKey(jwtConfig, jwtContext, null);
+            Key result = consumerUtil.getSigningKey(jwtConfig, jwtContext);
             assertNotNull("Resulting key was null when it should not have been.", result);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
+    }
+
+    /********************************************* getConfiguredSignatureAlgorithm *********************************************/
+
+    @Test
+    public void test_getConfiguredSignatureAlgorithm_sigAlgInServerConfig() {
+        final String serverConfigAlg = "RS512";
+        mockery.checking(new Expectations() {
+            {
+                one(jwtConfig).getSignatureAlgorithm();
+                will(returnValue(serverConfigAlg));
+            }
+        });
+        String result = consumerUtil.getConfiguredSignatureAlgorithm(jwtConfig);
+        assertEquals("Did not get expected signature algorithm value.", serverConfigAlg, result);
+    }
+
+    @Test
+    public void test_getConfiguredSignatureAlgorithm_sigAlgMissingFromServerConfigAndMpConfig() {
+        mockery.checking(new Expectations() {
+            {
+                one(jwtConfig).getSignatureAlgorithm();
+                will(returnValue(null));
+            }
+        });
+        String result = consumerUtil.getConfiguredSignatureAlgorithm(jwtConfig);
+        assertEquals("Did not get expected default signature algorithm value.", RS256, result);
+    }
+
+    @Test
+    public void test_getConfiguredSignatureAlgorithm_mpConfigPropsUnsupportedAlg() {
+        Map<String, String> props = new HashMap<String, String>();
+        props.put(ConsumerUtil.PUBLIC_KEY_ALG, "NO256");
+        consumerUtil.setMpConfigProps(props);
+
+        mockery.checking(new Expectations() {
+            {
+                one(jwtConfig).getSignatureAlgorithm();
+                will(returnValue(null));
+            }
+        });
+        String result = consumerUtil.getConfiguredSignatureAlgorithm(jwtConfig);
+        assertEquals("Did not get expected default signature algorithm value.", RS256, result);
+    }
+
+    @Test
+    public void test_getConfiguredSignatureAlgorithm_mpConfigPropsSupportedAlg() {
+        String mpConfigSigAlg = "HS512";
+        Map<String, String> props = new HashMap<String, String>();
+        props.put(ConsumerUtil.PUBLIC_KEY_ALG, mpConfigSigAlg);
+        consumerUtil.setMpConfigProps(props);
+
+        mockery.checking(new Expectations() {
+            {
+                one(jwtConfig).getSignatureAlgorithm();
+                will(returnValue(null));
+            }
+        });
+        String result = consumerUtil.getConfiguredSignatureAlgorithm(jwtConfig);
+        assertEquals("Did not get expected signature algorithm value.", mpConfigSigAlg, result);
+    }
+
+    /****************************** getSignatureAlgorithmFromMpConfigProps ******************************/
+
+    @Test
+    public void test_getSignatureAlgorithmFromMpConfigProps_noConfigProps() {
+        String result = consumerUtil.getSignatureAlgorithmFromMpConfigProps();
+        assertEquals("Did not get expected default signature algorithm value.", RS256, result);
+    }
+
+    @Test
+    public void test_getSignatureAlgorithmFromMpConfigProps_emptyConfigProps() {
+        Map<String, String> props = new HashMap<String, String>();
+        consumerUtil.setMpConfigProps(props);
+
+        String result = consumerUtil.getSignatureAlgorithmFromMpConfigProps();
+        assertEquals("Did not get expected default signature algorithm value.", RS256, result);
+    }
+
+    @Test
+    public void test_getSignatureAlgorithmFromMpConfigProps_unsupportedAlgorithm() {
+        Map<String, String> props = new HashMap<String, String>();
+        props.put(ConsumerUtil.PUBLIC_KEY_ALG, "unknown algorithm");
+        consumerUtil.setMpConfigProps(props);
+        
+        String result = consumerUtil.getSignatureAlgorithmFromMpConfigProps();
+        assertEquals("Did not get expected default signature algorithm value.", RS256, result);
+    }
+
+    @Test
+    public void test_getSignatureAlgorithmFromMpConfigProps() {
+        String knownAlgorithm = "ES384";
+        Map<String, String> props = new HashMap<String, String>();
+        props.put(ConsumerUtil.PUBLIC_KEY_ALG, knownAlgorithm);
+        consumerUtil.setMpConfigProps(props);
+        
+        String result = consumerUtil.getSignatureAlgorithmFromMpConfigProps();
+        assertEquals("Did not get expected signature algorithm value.", knownAlgorithm, result);
+    }
+
+    /********************************************* getMpConfigProperty *********************************************/
+
+    @Test
+    public void test_getMpConfigProperty_noPropsSet() {
+        String propName = ConsumerUtil.PUBLIC_KEY_ALG;
+        String result = consumerUtil.getMpConfigProperty(propName);
+        assertNull("Returned value should have been null but was [" + result + "].", result);
+    }
+
+    @Test
+    public void test_getMpConfigProperty_nullPropName() {
+        String propName = null;
+        Map<String, String> props = new HashMap<String, String>();
+        consumerUtil.setMpConfigProps(props);
+
+        String result = consumerUtil.getMpConfigProperty(propName);
+        assertNull("Returned value should have been null but was [" + result + "].", result);
+    }
+
+    @Test
+    public void test_getMpConfigProperty_missingProperty() {
+        String propName = "some prop";
+        Map<String, String> props = new HashMap<String, String>();
+        consumerUtil.setMpConfigProps(props);
+
+        String result = consumerUtil.getMpConfigProperty(propName);
+        assertNull("Returned value should have been null but was [" + result + "].", result);
+    }
+
+    @Test
+    public void test_getMpConfigProperty() {
+        String propName = "some prop";
+        String propValue = "expected prop value";
+        Map<String, String> props = new HashMap<String, String>();
+        props.put(propName, propValue);
+        consumerUtil.setMpConfigProps(props);
+
+        String result = consumerUtil.getMpConfigProperty(propName);
+        assertEquals("Returned value did not match expected value.", propValue, result);
+    }
+
+    /********************************************* isSupportedSignatureAlgorithm *********************************************/
+
+    @Test
+    public void test_isSupportedSignatureAlgorithm_nullAlg() {
+        String sigAlg = null;
+        boolean result = consumerUtil.isSupportedSignatureAlgorithm(sigAlg);
+        assertFalse("Input algorithm [" + sigAlg + "] should not have been considered supported.", result);
+    }
+
+    @Test
+    public void test_isSupportedSignatureAlgorithm_emptyAlg() {
+        String sigAlg = "";
+        boolean result = consumerUtil.isSupportedSignatureAlgorithm(sigAlg);
+        assertFalse("Input algorithm [" + sigAlg + "] should not have been considered supported.", result);
+    }
+
+    @Test
+    public void test_isSupportedSignatureAlgorithm_rs2560() {
+        String sigAlg = "RS2560";
+        boolean result = consumerUtil.isSupportedSignatureAlgorithm(sigAlg);
+        assertFalse("Input algorithm [" + sigAlg + "] should not have been considered supported.", result);
+    }
+
+    @Test
+    public void test_isSupportedSignatureAlgorithm_rs256() {
+        String sigAlg = "RS256";
+        boolean result = consumerUtil.isSupportedSignatureAlgorithm(sigAlg);
+        assertTrue("Input algorithm [" + sigAlg + "] should have been considered supported.", result);
+    }
+
+    @Test
+    public void test_isSupportedSignatureAlgorithm_rs1024() {
+        String sigAlg = "RS1024";
+        boolean result = consumerUtil.isSupportedSignatureAlgorithm(sigAlg);
+        assertFalse("Input algorithm [" + sigAlg + "] should not have been considered supported.", result);
+    }
+
+    @Test
+    public void test_isSupportedSignatureAlgorithm_hs384() {
+        String sigAlg = "HS384";
+        boolean result = consumerUtil.isSupportedSignatureAlgorithm(sigAlg);
+        assertTrue("Input algorithm [" + sigAlg + "] should have been considered supported.", result);
+    }
+
+    @Test
+    public void test_isSupportedSignatureAlgorithm_es512() {
+        String sigAlg = "ES512";
+        boolean result = consumerUtil.isSupportedSignatureAlgorithm(sigAlg);
+        assertTrue("Input algorithm [" + sigAlg + "] should have been considered supported.", result);
     }
 
     /********************************************* getSharedSecretKey *********************************************/
@@ -494,7 +694,7 @@ public class ConsumerUtilTest {
                 }
             });
             Key result = consumerUtil.getPublicKey(trustedAlias, trustStoreRef, randomAlg);
-            assertNull("Resulting key was not null when it should have been. Result: " + result, result);
+            assertEquals("Returned PublicKey did not match the expected object.", publicKey, result);
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);

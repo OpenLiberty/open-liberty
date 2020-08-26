@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -48,6 +49,9 @@ public class OracleKerberosTestServlet extends FATServlet {
     @Resource(lookup = "jdbc/krb/invalidPrincipal")
     DataSource invalidPrincipalDs;
 
+    @Resource(lookup = "jdbc/krb/DataSource")
+    DataSource krb5RegularDs;
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
@@ -69,6 +73,9 @@ public class OracleKerberosTestServlet extends FATServlet {
         }
     }
 
+    /**
+     * Get a connection from a javax.sql.ConnectionPoolDataSource
+     */
     @Test
     public void testKerberosBasicConnection() throws Exception {
         try (Connection con = krb5DataSource.getConnection()) {
@@ -76,9 +83,22 @@ public class OracleKerberosTestServlet extends FATServlet {
         }
     }
 
+    /**
+     * Get a connection from a javax.sql.XADataSource
+     */
     @Test
     public void testKerberosXAConnection() throws Exception {
         try (Connection con = krb5XADataSource.getConnection()) {
+            con.createStatement().execute("SELECT 1 FROM DUAL");
+        }
+    }
+
+    /**
+     * Get a connection from a javax.sql.DataSource
+     */
+    @Test
+    public void testKerberosRegularConnection() throws Exception {
+        try (Connection con = krb5RegularDs.getConnection()) {
             con.createStatement().execute("SELECT 1 FROM DUAL");
         }
     }
@@ -99,6 +119,50 @@ public class OracleKerberosTestServlet extends FATServlet {
             assertTrue("Expected cause to be instanceof LoginException but was: " + cause.getClass().getCanonicalName(),
                        cause instanceof LoginException);
         }
+    }
+
+    /**
+     * Get two connection handles from the same datasource.
+     * Ensure that both connection handles share the same managed connection (i.e. phyiscal connection)
+     * to prove that Subject reuse is working
+     */
+    @Test
+    public void testConnectionReuse() throws Exception {
+        String managedConn1 = null;
+        String managedConn2 = null;
+
+        try (Connection conn = krb5DataSource.getConnection()) {
+            managedConn1 = getManagedConnectionID(conn);
+            System.out.println("Managed connection 1 is: " + managedConn1);
+        }
+
+        try (Connection conn = krb5DataSource.getConnection()) {
+            managedConn2 = getManagedConnectionID(conn);
+            System.out.println("Managed connection 2 is: " + managedConn2);
+        }
+
+        assertEquals("Expected two connections from the same datasource to share the same underlying managed connection",
+                     managedConn1, managedConn2);
+    }
+
+    /**
+     * Get the managed connection ID of a given Connection
+     * The managed connection ID is an implementation detail of Liberty that a real app would never care
+     * about, but it's a simple way for us to verify that the underlying managed connections are being
+     * reused.
+     */
+    private String getManagedConnectionID(Connection conn1) {
+        for (Class<?> clazz = conn1.getClass(); clazz != Object.class; clazz = clazz.getSuperclass()) {
+            try {
+                Field f1 = clazz.getDeclaredField("managedConn");
+                f1.setAccessible(true);
+                String mc1 = String.valueOf(f1.get(conn1));
+                f1.setAccessible(false);
+                return mc1;
+            } catch (Exception ignore) {
+            }
+        }
+        throw new RuntimeException("Did not find field 'managedConn' on " + conn1.getClass());
     }
 
 }

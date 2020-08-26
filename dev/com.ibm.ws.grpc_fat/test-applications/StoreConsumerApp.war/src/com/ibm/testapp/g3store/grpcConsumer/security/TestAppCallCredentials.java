@@ -11,6 +11,8 @@
 package com.ibm.testapp.g3store.grpcConsumer.security;
 
 import java.util.concurrent.Executor;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import io.grpc.CallCredentials;
 import io.grpc.Metadata;
@@ -21,6 +23,8 @@ import io.grpc.Status;
  *
  */
 public class TestAppCallCredentials extends CallCredentials {
+
+    private static Logger log = Logger.getLogger(TestAppCallCredentials.class.getName());
 
     String _authHeader = null;
 
@@ -37,6 +41,10 @@ public class TestAppCallCredentials extends CallCredentials {
                 try {
                     Metadata headers = new Metadata();
                     Metadata.Key<String> authHeader = Metadata.Key.of("AUTHORIZATION", Metadata.ASCII_STRING_MARSHALLER);
+
+                    if (log.isLoggable(Level.FINE)) {
+                        log.finest("Auth_CallCred: Add auth header to Metadata");
+                    }
 
                     headers.put(authHeader, _authHeader);
                     applier.apply(headers);

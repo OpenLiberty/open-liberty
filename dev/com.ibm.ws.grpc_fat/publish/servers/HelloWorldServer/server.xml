@@ -7,17 +7,23 @@
    
     Contributors:
         IBM Corporation - initial API and implementation
- -->
+-->
 <server>
     <featureManager>
         <feature>grpc-1.0</feature>
         <feature>grpcClient-1.0</feature>
         <feature>ssl-1.0</feature>
+        <feature>monitor-1.0</feature>
+        <feature>mpMetrics-2.3</feature>
     </featureManager>
 
+    <mpMetrics authentication = "false"/>
     <keyStore id="defaultKeyStore" password="passw0rd" />
 
     <include location="../fatTestPorts.xml"/>
     
     <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
+	<logging
+		traceSpecification="*=info=enabled:io.openliberty.grpc*=all"
+		maxFileSize="40" maxFiles="1" traceFormat="BASIC" />
 </server>

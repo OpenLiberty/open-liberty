@@ -12,7 +12,6 @@
 package com.ibm.ws.security.jwt.internal;
 
 import java.security.Key;
-import java.security.interfaces.RSAPrivateKey;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -43,6 +42,7 @@ import com.ibm.websphere.security.jwt.InvalidTokenException;
 import com.ibm.websphere.security.jwt.JwtException;
 import com.ibm.websphere.security.jwt.JwtToken;
 import com.ibm.websphere.security.jwt.KeyException;
+import com.ibm.ws.security.common.crypto.KeyAlgorithmChecker;
 import com.ibm.ws.security.jwt.config.JwtConfig;
 import com.ibm.ws.security.jwt.utils.Constants;
 import com.ibm.ws.security.jwt.utils.IssuerUtils;
@@ -73,6 +73,8 @@ public class BuilderImpl implements Builder {
     private String sharedKey;
     private Key privateKey;
     private String configId;
+
+    private final KeyAlgorithmChecker keyAlgChecker = new KeyAlgorithmChecker();
 
     private final static String DEFAULT_ID = "defaultJWT";
     private final static String KEY_JWT_SERVICE = "jwtConfig";
@@ -421,18 +423,37 @@ public class BuilderImpl implements Builder {
      */
     @Override
     public Builder signWith(String algorithm, Key key) throws KeyException {
-
-        if (algorithm == null || algorithm.isEmpty() || !algorithm.equals(Constants.SIGNATURE_ALG_RS256)) {
-            String err = Tr.formatMessage(tc, "JWT_INVALID_ALGORITHM_ERR", new Object[] { algorithm, Constants.SIGNATURE_ALG_RS256 });
+        if (!isValidAlgorithmForJavaSecurityKey(algorithm)) {
+            String err = Tr.formatMessage(tc, "JWT_INVALID_ALGORITHM_ERR", new Object[] { algorithm, getValidAlgorithmListForJavaSecurityKey() });
             throw new KeyException(err);
         }
-        if (key == null || !(key instanceof RSAPrivateKey)) {
+        if (!isValidKeyType(key, algorithm)) {
             String err = Tr.formatMessage(tc, "JWT_INVALID_KEY_ERR", new Object[] { algorithm, key });
             throw new KeyException(err);
         }
         alg = algorithm;
         privateKey = key;
         return this;
+    }
+
+    boolean isValidAlgorithmForJavaSecurityKey(String algorithm) {
+        return (keyAlgChecker.isRSAlgorithm(algorithm) || keyAlgChecker.isESAlgorithm(algorithm));
+    }
+
+    String getValidAlgorithmListForJavaSecurityKey() {
+        return Constants.SIGNATURE_ALG_RS256 + ", " +
+                Constants.SIGNATURE_ALG_RS384 + ", " +
+                Constants.SIGNATURE_ALG_RS512 + ", " +
+                Constants.SIGNATURE_ALG_ES256 + ", " +
+                Constants.SIGNATURE_ALG_ES384 + ", " +
+                Constants.SIGNATURE_ALG_ES512;
+    }
+
+    boolean isValidKeyType(Key key, String algorithm) {
+        if (key == null) {
+            return false;
+        }
+        return keyAlgChecker.isPrivateKeyValidType(key, algorithm);
     }
 
     // shared key for signing
@@ -443,9 +464,8 @@ public class BuilderImpl implements Builder {
      */
     @Override
     public Builder signWith(String algorithm, String key) throws KeyException {
-
-        if (algorithm == null || algorithm.isEmpty() || !algorithm.equals(Constants.SIGNATURE_ALG_HS256)) {
-            String err = Tr.formatMessage(tc, "JWT_INVALID_ALGORITHM_ERR", new Object[] { algorithm, Constants.SIGNATURE_ALG_HS256 });
+        if (!isValidAlgorithmForStringKey(algorithm)) {
+            String err = Tr.formatMessage(tc, "JWT_INVALID_ALGORITHM_ERR", new Object[] { algorithm, getValidAlgorithmListForStringKey() });
             throw new KeyException(err);
         }
         if (key == null || key.isEmpty()) {
@@ -455,6 +475,16 @@ public class BuilderImpl implements Builder {
         alg = algorithm;
         sharedKey = key;
         return this;
+    }
+
+    boolean isValidAlgorithmForStringKey(String algorithm) {
+        return keyAlgChecker.isHSAlgorithm(algorithm);
+    }
+
+    String getValidAlgorithmListForStringKey() {
+        return Constants.SIGNATURE_ALG_HS256 + ", " +
+                Constants.SIGNATURE_ALG_HS384 + ", " +
+                Constants.SIGNATURE_ALG_HS512;
     }
 
     // add claims with the given name and value

@@ -34,6 +34,7 @@ import com.ibm.ws.http.channel.internal.values.AccessLogResponseSize;
 import com.ibm.ws.http.channel.internal.values.AccessLogStartTime;
 import com.ibm.ws.http.logging.internal.AccessLogRecordDataExt;
 import com.ibm.ws.http.logging.internal.AccessLogger.FormatSegment;
+import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.ws.logging.collector.CollectorJsonHelpers;
 import com.ibm.ws.logging.collector.LogFieldConstants;
 import com.ibm.ws.logging.data.AccessLogConfig;
@@ -422,15 +423,15 @@ public class AccessLogSource implements Source {
         fieldSetters.add((ald, alrd) -> ald.setDatetime(alrd.getTimestamp()));
 
         if (jsonAccessLogFieldsConfig.equals("default")) {
-            formatters[0] = populateDefaultFormatters(AccessLogData.KEYS_JSON);
+            formatters[0] = populateDefaultFormatters(CollectorConstants.KEYS_JSON);
         } else if (jsonAccessLogFieldsConfig.equals("logFormat")) {
-            formatters[1] = populateCustomFormatters(fieldsToAddJson, AccessLogData.KEYS_JSON);
+            formatters[1] = populateCustomFormatters(fieldsToAddJson, CollectorConstants.KEYS_JSON);
         }
 
         if (jsonAccessLogFieldsLogstashConfig.equals("default")) {
-            formatters[2] = populateDefaultFormatters(AccessLogData.KEYS_LOGSTASH);
+            formatters[2] = populateDefaultFormatters(CollectorConstants.KEYS_LOGSTASH);
         } else if (jsonAccessLogFieldsLogstashConfig.equals("logFormat")) {
-            formatters[3] = populateCustomFormatters(fieldsToAddLogstash, AccessLogData.KEYS_LOGSTASH);
+            formatters[3] = populateCustomFormatters(fieldsToAddLogstash, CollectorConstants.KEYS_LOGSTASH);
         }
         newSF.setSettersAndFormatters(fieldSetters, formatters);
 

@@ -19,7 +19,8 @@ public class EE7FeatureReplacementAction extends FeatureReplacementAction {
 
     public static final String ID = "EE7_FEATURES";
 
-    static final String[] EE7_FEATURES_ARRAY = { "javaee-7.0",
+    static final String[] EE7_FEATURES_ARRAY = { "appClientSupport-1.0",
+                                                 "javaee-7.0",
                                                  "webProfile-7.0",
                                                  "javaeeClient-7.0",
                                                  "servlet-3.1",
@@ -39,10 +40,13 @@ public class EE7FeatureReplacementAction extends FeatureReplacementAction {
                                                  "ejbLite-3.2",
                                                  "ejbPersistentTimer-3.2",
                                                  "ejbRemote-3.2",
+                                                 "ejbTest-1.0",
                                                  "el-3.0",
+                                                 "jmsMdb-3.2",
                                                  "concurrent-1.0",
                                                  "jaxb-2.2",
                                                  "managedBeans-1.0",
+                                                 "mdb-3.2",
                                                  "componenttest-1.0",
                                                  "txtest-1.0",
                                                  "websocket-1.1" };

@@ -1,0 +1,111 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/JPQLExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+8001=Problema de reconhecimento de sintaxe ao analisar a consulta [{0}]. O analisador retornou o seguinte [{1}].
+
+8002=Problema geral ao analisar a consulta [{0}]. O analisador retornou o seguinte [{1}].
+
+8003=A classe [{0}] n\u00e3o foi localizada. O analisador retornou o seguinte [{1}].
+
+8004=Erro ao compilar a consulta [{0}], linha {1}, coluna {2}: vari\u00e1vel de identifica\u00e7\u00e3o desconhecida [{3}]. A cl\u00e1usula FROM da consulta n\u00e3o declara uma vari\u00e1vel de identifica\u00e7\u00e3o [{3}].
+
+8005=Erro ao compilar a consulta [{0}]. Um problema foi encontrado ao resolver o nome de classe - a classe [{1}] n\u00e3o foi localizada.
+
+8006=Erro ao compilar a consulta [{0}]. Um problema foi encontrado ao resolver o nome de classe - o descritor para [{1}] n\u00e3o foi localizado.
+
+8007=Erro ao compilar a consulta [{0}]. Um problema foi encontrado ao resolver o nome de classe - o mapeamento para [{1}] n\u00e3o foi localizado.
+
+8008=Erro ao compilar a consulta [{0}]. Um problema foi encontrado ao construir a express\u00e3o de consulta - o expressionBuilder para [{1}] n\u00e3o foi localizado.
+
+8009=Problema ao compilar a consulta [{0}]. A express\u00e3o [{1}] n\u00e3o \u00e9 suportada atualmente.
+
+8010=Problema geral ao analisar a consulta [{0}].
+
+8011=Erro ao compilar a consulta [{0}], linha {1}, coluna {2}: declara\u00e7\u00e3o de membro de cole\u00e7\u00e3o inv\u00e1lido [{3}], esperava-se um campo de associa\u00e7\u00e3o com valor de cole\u00e7\u00e3o.
+
+8012=Problema ao compilar a consulta [{0}]. N\u00e3o implementado ainda: {1}.
+
+8013=Erro ao compilar a consulta [{0}], linha {1}, coluna {2}: classe de construtor [{3}] n\u00e3o localizada.
+
+8014=Erro ao compilar a consulta [{0}], linha {1}, coluna {2}: argumento SIZE inv\u00e1lido [{3}], esperava-se um campo de associa\u00e7\u00e3o com valor de cole\u00e7\u00e3o.
+
+8015=Erro ao compilar a consulta [{0}], linha {1}, coluna {2}: literal de enumera\u00e7\u00e3o inv\u00e1lido, o tipo de enumera\u00e7\u00e3o {3} n\u00e3o tem um literal de enumera\u00e7\u00e3o {4}.
+
+8016=Erro ao compilar a consulta [{0}], linha {1}, coluna {2}: express\u00e3o SELECT inv\u00e1lida [{3}] para consulta com agrupamento [{4}]. Somente agrega\u00e7\u00f5es, itens de GROUP BY ou express\u00f5es de construtor destes s\u00e3o permitidos na cl\u00e1usula SELECT de uma consulta GROUP BY.
+
+8017=Erro ao compilar a consulta [{0}], linha {1}, coluna {2}: express\u00e3o HAVING inv\u00e1lida [{3}] para consulta com agrupamento [{4}]. A cl\u00e1usula HAVING deve especificar as condi\u00e7\u00f5es de procura sobre os itens de agrupamento ou fun\u00e7\u00f5es agregadas que se apliquem aos itens de agrupamento.
+
+8018=Erro ao compilar a consulta [{0}], linha {1}, coluna {2}: uso m\u00faltiplo inv\u00e1lido do par\u00e2metro [{3}], assumindo tipos de par\u00e2metro diferentes [{4}] e [{5}].
+
+8019=Erro ao compilar a consulta [{0}], linha {1}, coluna {2}: declara\u00e7\u00e3o m\u00faltipla da vari\u00e1vel de identifica\u00e7\u00e3o [{3}], anteriormente declarada como [{4} {3}].
+
+8020=Erro ao compilar a consulta [{0}], linha {1}, coluna {2}: argumento de fun\u00e7\u00e3o {3} inv\u00e1lido [{4}], esperava-se um argumento do tipo [{5}].
+
+8021=Erro ao compilar a consulta [{0}], linha {1}, coluna {2}: item de ORDER BY inv\u00e1lido [{3}] do tipo [{4}], esperava-se a express\u00e3o de um tipo orden\u00e1vel.
+
+8022=Erro ao compilar a consulta [{0}], linha {1}, coluna {2}: argumento de express\u00e3o {3} inv\u00e1lido [{4}], esperava-se um argumento do tipo [{5}].
+
+8023=Erro de sintaxe ao analisar a consulta [{0}].
+
+8024=Erro de sintaxe ao analisar a consulta [{0}], linha {1}, coluna {2}: erro de sintaxe em [{3}].
+
+8025=Erro de sintaxe ao analisar a consulta [{0}], linha {1}, coluna {2}: token inesperado [{3}].
+
+8026=Erro de sintaxe ao analisar a consulta [{0}], linha {1}, coluna {2}: caractere inesperado [{3}].
+
+8027=Erro de sintaxe ao analisar a consulta [{0}], linha {1}, coluna {2}: caractere esperado [{3}], encontrado [{4}].
+
+8028=Erro de sintaxe ao analisar a consulta [{0}], linha {1}, coluna {2}: fim inesperado da consulta.
+
+8029=Erro ao compilar a consulta [{0}], linha {1}, coluna {2}: express\u00e3o de navega\u00e7\u00e3o inv\u00e1lida [{3}], n\u00e3o \u00e9 poss\u00edvel navegar na express\u00e3o [{4}] do tipo [{5}] dentro de uma consulta.
+
+8030=Erro ao compilar a consulta [{0}], linha {1}, coluna {2}: campo de estado ou associa\u00e7\u00e3o desconhecido [{3}] de classe [{4}].
+
+8031=Erro ao compilar a consulta [{0}], linha {1}, coluna {2}: {3} da entidade integrada {4} n\u00e3o \u00e9 suportado.
+
+8032=Erro ao compilar a consulta [{0}], linha {1}, coluna {2}: acesso inv\u00e1lido do atributo [{3}] na cl\u00e1usula SET de destino [{4}], somente campos de estado e campos de associa\u00e7\u00e3o com valor \u00fanico podem ser atualizados em uma cl\u00e1usula SET.
+
+8033=Erro ao compilar a consulta [{0}], linha {1}, coluna {2}: express\u00e3o de navega\u00e7\u00e3o inv\u00e1lida [{3}], n\u00e3o \u00e9 poss\u00edvel navegar no campo de associa\u00e7\u00e3o [{4}] no destino da cl\u00e1usula SET.
+
+8034=Erro ao compilar a consulta [{0}]. Tipo de entidade desconhecido [{1}].
+
+8035=Erro ao compilar a consulta [{0}], linha {1}, coluna {2}: express\u00e3o igual de enumera\u00e7\u00e3o inv\u00e1lida, n\u00e3o \u00e9 poss\u00edvel comparar valor de enumera\u00e7\u00e3o do tipo [{3}} com um valor que n\u00e3o \u00e9 de enumera\u00e7\u00e3o do tipo [{4}].
+
+8036=Erro ao compilar a consulta [{0}], linha {1}, coluna {2}: express\u00e3o de navega\u00e7\u00e3o inv\u00e1lida [{3}], n\u00e3o \u00e9 poss\u00edvel navegar no campo de associa\u00e7\u00e3o com valor de cole\u00e7\u00e3o [{4}].
+
+8037=Erro ao compilar a consulta [{0}], linha {1}, coluna {2}: tipo de entidade desconhecido [{3}].
+
+8038=Erro ao compilar a consulta [{0}], linha {1}, coluna {2}: um problema foi encontrado ao resolver o nome de classe - a classe [{3}] n\u00e3o foi localizada.
+
+8039=Erro ao compilar a consulta [{0}], linha {1}, coluna {2}: a vari\u00e1vel {3} n\u00e3o \u00e9 um mapa e uma chave de mapa est\u00e1 sendo solicitada dela.
+
+8040=Erro ao compilar a consulta [{0}], linha {1}, coluna {2}: o alias {3} \u00e9 usado na cl\u00e1usula ORDER BY, mas n\u00e3o est\u00e1 definido na consulta.
+
+8041=Erro ao compilar a consulta [{0}], linha {1}, coluna {2}: o \u00edndice pode ser usado somente em uma vari\u00e1vel e est\u00e1 sendo chamado em n\u00e3o vari\u00e1vel {3}.
+

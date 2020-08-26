@@ -64,7 +64,7 @@ public class MultiThreadedTest extends WSATTest {
 
 	@AfterClass
 	public static void tearDown() throws Exception {
-		server.stopServer();
+		server.stopServer("WTRN0046E", "WTRN0048W", "WTRN0049W");
 		server2.stopServer();
 		
 		ShrinkHelper.cleanAllExportedArchives();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,9 +9,6 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.appsecurity.component;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLSocketFactory;
@@ -36,7 +33,6 @@ public class SSLSupportService {
 
     private static final TraceComponent tc = Tr.register(SSLSupportService.class);
     private static volatile SSLSupport sslSupport;
-    private static final Map<String, SSLSocketFactory> socketFactories = new HashMap<>();
 
     @Reference(name = "SSLSupportService",
                service = SSLSupport.class,
@@ -54,9 +50,6 @@ public class SSLSupportService {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "unregisterSSLSupportService");
         }
-        synchronized (socketFactories) {
-            socketFactories.clear();
-        }
         if (sslSupport == service)
             sslSupport = null;
     }
@@ -72,14 +65,6 @@ public class SSLSupportService {
     }
 
     public static SSLSocketFactory getSSLSocketFactory(String sslRef) throws SSLException {
-        SSLSocketFactory factory;
-        synchronized (socketFactories) {
-            factory = socketFactories.get(sslRef);
-            if (factory == null) {
-                factory = sslSupport.getSSLSocketFactory(sslRef);
-                socketFactories.put(sslRef, factory);
-            }
-        }
-        return factory;
+        return sslSupport.getSSLSocketFactory(sslRef);
     }
 }

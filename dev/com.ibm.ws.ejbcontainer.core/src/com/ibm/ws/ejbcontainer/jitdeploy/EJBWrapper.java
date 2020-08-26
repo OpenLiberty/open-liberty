@@ -206,7 +206,8 @@ public final class EJBWrapper {
         String internalParentName = getParentClassName(wrapperType, internalEJBClassName);
 
         // Remote Business interfaces may or may not extend java.rmi.Remote
-        boolean isRmiRemote = (Remote.class).isAssignableFrom(wrapperInterface);
+        // EJBDeploy allowed local interfaces to extend java.rmi.Remote, but did not treat differently
+        boolean isRmiRemote = (wrapperType == REMOTE || wrapperType == REMOTE_HOME || wrapperType == BUSINESS_REMOTE) ? (Remote.class).isAssignableFrom(wrapperInterface) : false;
 
         // For No-Interface View (LocalBean), switch the interface and parent
         // names, as the EJB itself must be the parent and it will implement
@@ -344,6 +345,14 @@ public final class EJBWrapper {
                 // or throw a RemoteException.                             F743-1756
                 if (isLocalBean) {
                     validateLocalBeanMethod(method, beanName);
+                } else if (isNoMethodInterfaceMDB) {
+                    // No methods listener method should not be final, cannot override; skipping
+                    // for backward compatibility with apps prior to no methods interface support.
+                    if (Modifier.isFinal(method.getModifiers())) {
+                        if (isTraceOn && tc.isDebugEnabled())
+                            Tr.debug(tc, INDENT + "skipping public final method : " + method.getName());
+                        continue;
+                    }
                 }
             }
 
@@ -439,13 +448,22 @@ public final class EJBWrapper {
             }
             ArrayList<Method> nonPublicMethods = DeploymentUtil.getNonPublicMethods(ejbClass,
                                                                                     methods);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, INDENT + "Non-public methods : " +
-                             nonPublicMethods.size());
+            if (isTraceOn && tc.isDebugEnabled())
+                Tr.debug(tc, INDENT + "Non-public methods : " + nonPublicMethods.size());
 
             for (Method method : nonPublicMethods) {
                 if (!isAggregateWrapper && isLocalBean) {
                     validateLocalBeanMethod(method, beanName); // must not be final
+                } else if (isNoMethodInterfaceMDB) {
+                    // No methods listener allows private final; protected should not be final
+                    // as protected cannot be overridden; skipping for backward compatibility
+                    // with apps prior to no methods interface support.
+                    int modifiers = method.getModifiers();
+                    if (Modifier.isFinal(modifiers) && !Modifier.isPrivate(modifiers)) {
+                        if (isTraceOn && tc.isDebugEnabled())
+                            Tr.debug(tc, INDENT + "skipping protected/default final method : " + method.getName());
+                        continue;
+                    }
                 }
                 addNonPublicMethod(cw, method);
             }

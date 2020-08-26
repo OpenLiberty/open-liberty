@@ -30,6 +30,7 @@ Import-Package: \
   javax.xml.bind.annotation;version=!,\
   javax.xml.bind.annotation.adapters;version=!,\
   javax.xml.bind.attachment;version=!,\
+  javax.ws.rs.sse,\
   *
 
 exportVer=3.3.0

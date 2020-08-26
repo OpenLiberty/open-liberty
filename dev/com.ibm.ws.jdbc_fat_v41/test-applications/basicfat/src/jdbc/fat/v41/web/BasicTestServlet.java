@@ -16,6 +16,7 @@ import static com.ibm.websphere.simplicity.config.DataSourceProperties.MICROSOFT
 import static com.ibm.websphere.simplicity.config.DataSourceProperties.SYBASE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Field;
@@ -41,6 +42,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 import javax.annotation.Resource.AuthenticationType;
+import javax.management.JMX;
 import javax.management.MBeanServer;
 import javax.management.ObjectInstance;
 import javax.management.ObjectName;
@@ -57,6 +59,7 @@ import org.junit.Test;
 
 import com.ibm.websphere.simplicity.config.dsprops.testrules.OnlyIfDataSourceProperties;
 import com.ibm.websphere.simplicity.config.dsprops.testrules.SkipIfDataSourceProperties;
+import com.ibm.ws.jca.cm.mbean.ConnectionManagerMBean;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
@@ -1187,6 +1190,45 @@ public class BasicTestServlet extends FATDatabaseServlet {
         }
     }
 
+    @Test
+    public void testMBeanShowPoolConents() throws Exception {
+        ConnectionManagerMBean cmBean = getConnectionManagerBean("jdbc/ds1");
+        String poolContents = cmBean.showPoolContents();
+        assertContains(poolContents, "name=WebSphere:type=com.ibm.ws.jca.cm.mbean.ConnectionManagerMBean,jndiName=jdbc/ds1,name=dataSource");
+        assertContains(poolContents, "jndiName=jdbc/ds1");
+        assertContains(poolContents, "maxPoolSize=50");
+        assertContains(poolContents, "size=");
+        assertContains(poolContents, "waiting=");
+        assertContains(poolContents, "unshared=");
+        assertContains(poolContents, "shared=");
+        assertContains(poolContents, "available=");
+    }
+
+    @Test
+    public void testMBeanGetSize() throws Exception {
+        ConnectionManagerMBean cmBean = getConnectionManagerBean("jdbc/ds1");
+        long available = cmBean.getAvailable();
+        if (available < 0 || available > 100)
+            fail("Expected available connections to be between 0-100 but was: " + available);
+    }
+
+    @Test
+    public void testMBeanGetMaxSize() throws Exception {
+        ConnectionManagerMBean cmBean = getConnectionManagerBean("jdbc/ds1");
+        assertEquals(50, cmBean.getMaxSize());
+    }
+
+    @Test
+    public void testMBeanGetJndiName() throws Exception {
+        ConnectionManagerMBean cmBean = getConnectionManagerBean("jdbc/ds1");
+        assertEquals("jdbc/ds1", cmBean.getJndiName());
+    }
+
+    private static void assertContains(String str, String lookFor) {
+        assertTrue("Expected string [" + str + "] to contain the text [" + lookFor + "] but it was not found.",
+                   str.contains(lookFor));
+    }
+
     /**
      * Using 2 datasources, gets a configuration where there is 1 shared, 1 free, and 1 unshared connection<br>
      * Invoke purge pool("abort") on each of the two pool manager MBeans.<br>
@@ -1205,9 +1247,8 @@ public class BasicTestServlet extends FATDatabaseServlet {
         // Purge the connection pool for ds1 and ds2 using abort
         System.out.println("--- About to purge connection pools.");
 
-        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-        mbs.invoke(getMBeanObjectInstance("jdbc/ds1").getObjectName(), "purgePoolContents", new Object[] { "abort" }, null);
-        mbs.invoke(getMBeanObjectInstance("jdbc/ds2").getObjectName(), "purgePoolContents", new Object[] { "abort" }, null);
+        getConnectionManagerBean("jdbc/ds1").purgePoolContents("abort");
+        getConnectionManagerBean("jdbc/ds2").purgePoolContents("abort");
 
         System.out.println("--- Pools should now be empty");
 
@@ -1295,8 +1336,8 @@ public class BasicTestServlet extends FATDatabaseServlet {
      *
      * @param color1 Color to be retrieved into rs1
      * @param color2 Color to be retrieved into rs2
-     * @param rs1 Result set of color1 query
-     * @param rs2 Result set of color2 query
+     * @param rs1    Result set of color1 query
+     * @param rs2    Result set of color2 query
      */
     public static void getColors(int color1, int color2, ResultSet[] rs1, ResultSet[] rs2) throws SQLException {
         // Get the connection of the calling procedure
@@ -1373,7 +1414,7 @@ public class BasicTestServlet extends FATDatabaseServlet {
         throw new RuntimeException("Did not find field 'cstmtImpl' on " + stmt.getClass());
     }
 
-    private ObjectInstance getMBeanObjectInstance(String jndiName) throws Exception {
+    private ConnectionManagerMBean getConnectionManagerBean(String jndiName) throws Exception {
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
         ObjectName obn = new ObjectName("WebSphere:type=" + MBEAN_TYPE + ",jndiName=" + jndiName + ",*");
         Set<ObjectInstance> s = mbs.queryMBeans(obn, null);
@@ -1383,17 +1424,12 @@ public class BasicTestServlet extends FATDatabaseServlet {
                 System.out.println("  Found MBean: " + i.getObjectName());
             throw new Exception("Expected to find exactly 1 MBean, instead found " + s.size());
         }
-        return s.iterator().next();
+        return JMX.newMBeanProxy(mbs, s.iterator().next().getObjectName(), ConnectionManagerMBean.class);
     }
 
     private int getPoolSize(String jndiName) throws Exception {
-        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-        ObjectInstance bean = getMBeanObjectInstance(jndiName);
-        System.out.println("Found " + bean.getObjectName().toString());
-        String contents = (String) mbs.invoke(bean.getObjectName(), "showPoolContents", null, null);
-        System.out.println("   " + contents.replace("\n", "\n   "));
-
-        return Integer.parseInt((String) mbs.getAttribute(bean.getObjectName(), "size"));
+        ConnectionManagerMBean cmBean = getConnectionManagerBean(jndiName);
+        return (int) cmBean.getSize();
     }
 
     /**

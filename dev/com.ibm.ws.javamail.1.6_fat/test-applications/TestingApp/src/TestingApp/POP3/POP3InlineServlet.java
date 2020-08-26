@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,17 +43,16 @@ public class POP3InlineServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // TODO Auto-generated method stub
-
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
+        Object jndiConstant;
 
         try {
-            jndiConstant = new InitialContext().lookup("TestingApp/POP3InlineServlet/pop3_port");
-
+            jndiConstant = new InitialContext().lookup("TestingApp/pop3_port");
         } catch (NamingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            System.out.println("Failed to lookup 'TestingApp/pop3_port': "+e.getMessage());
+            e.printStackTrace(System.out);
+            throw new RuntimeException(e);
         }
 
         String pop3Port = Integer.toString((Integer) jndiConstant);
@@ -106,7 +105,7 @@ public class POP3InlineServlet extends HttpServlet {
 
             store.close();
         } catch (Exception mex) {
-            mex.printStackTrace();
+            mex.printStackTrace(System.out);
         }
     }
 
@@ -115,8 +114,5 @@ public class POP3InlineServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // TODO Auto-generated method stub
-
     }
-
 }

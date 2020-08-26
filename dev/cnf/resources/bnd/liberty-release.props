@@ -12,12 +12,12 @@
 releaseTypeGA=true
 
 libertyBaseVersion=20.0.0
-libertyFixpackVersion=8
+libertyFixpackVersion=10
 libertyServiceVersion=${libertyBaseVersion}.${libertyFixpackVersion}
-libertyBetaVersion=2020.8.0.0
+libertyBetaVersion=2020.10.0.0
 libertyRelease=${if;${releaseTypeGA};${libertyServiceVersion};${libertyBetaVersion}}
 
-libertyBundleMicroVersion=43
+libertyBundleMicroVersion=45
 copyrightBuildYear=2020
 buildID=${libertyRelease}-${buildLabel}
 productEdition=BASE_ILAN

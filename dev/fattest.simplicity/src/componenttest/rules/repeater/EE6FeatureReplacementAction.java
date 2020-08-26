@@ -30,7 +30,10 @@ public class EE6FeatureReplacementAction extends FeatureReplacementAction {
                                                  "jsp-2.2",
                                                  "servlet-3.0",
                                                  "ejbLite-3.1",
+                                                 "ejbTest-1.0",
+                                                 "jmsMdb-3.1",
                                                  "managedBeans-1.0",
+                                                 "mdb-3.1",
                                                  "componenttest-1.0", };
 
     public static final Set<String> EE6_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE6_FEATURES_ARRAY)));

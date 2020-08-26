@@ -14,5 +14,7 @@
     
     <enterpriseApplication location="visTest.ear"
                            defaultClientModule="visTestAppClient.jar"/>
+                           
+    <orb id="defaultOrb" orbSSLInitTimeout="60"/>
 
 </server>

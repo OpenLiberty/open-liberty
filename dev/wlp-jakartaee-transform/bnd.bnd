@@ -20,4 +20,4 @@
     org.slf4j:slf4j-api;version=1.7.26,\
     org.eclipse.transformer:org.eclipse.transformer;version=0.2.0.SNAPSHOT,\
     commons-cli:commons-cli;version=1.4,\
-    org.slf4j:slf4j-simple;version=1.7.29
+    org.slf4j:slf4j-simple;version=1.7.30
