@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.config.xml.internal;
 
+import java.util.regex.Pattern;
+
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.config.xml.internal.XMLConfigParser.MergeBehavior;
 
 /**
@@ -22,23 +25,27 @@ class ConfigVariable {
     private final String defaultValue;
     private final MergeBehavior mergeBehavior;
     private final String location;
+    private final boolean sensitive;
 
-    public ConfigVariable(String name, String value, String variableDefault, MergeBehavior mb, String l) {
+    public ConfigVariable(String name, @Sensitive String value, String variableDefault, MergeBehavior mb, String l, boolean isSensitive) {
         this.name = name;
         this.value = value;
         this.defaultValue = variableDefault;
         this.mergeBehavior = mb;
         this.location = l;
+        this.sensitive = isSensitive;
     }
 
     public String getName() {
         return name;
     }
 
+    @Sensitive
     public String getValue() {
         return value;
     }
 
+    @Sensitive
     public String getDefaultValue() {
         return defaultValue;
     }
@@ -51,15 +58,33 @@ class ConfigVariable {
     public String toString() {
         StringBuilder builder = new StringBuilder("ConfigVariable[");
         builder.append("name=").append(name).append(", ");
-        builder.append("value=").append(value);
+        builder.append("value=").append(getObscuredValue(name, value));
         builder.append("]");
         return builder.toString();
     }
 
-    /**
-     * @return
-     */
+    final Pattern obscuredValuePattern = Pattern.compile("(\\{aes\\}|\\{xor\\}).*");
+    final String OBSCURED_VALUE = "*****";
+    final String ENCRYPTION_KEY = "wlp.password.encryption.key";
+
+    protected String getObscuredValue(String name, @Sensitive Object o) {
+        if (isSensitive())
+            return OBSCURED_VALUE;
+
+        if (ENCRYPTION_KEY.equals(name))
+            return OBSCURED_VALUE;
+
+        String value = String.valueOf(o);
+        if (obscuredValuePattern.matcher(value).matches())
+            return OBSCURED_VALUE;
+        return value;
+    }
+
     public String getDocumentLocation() {
         return location;
+    }
+
+    public boolean isSensitive() {
+        return this.sensitive;
     }
 }

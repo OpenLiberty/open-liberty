@@ -16,17 +16,23 @@ import java.security.PrivilegedAction;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.config.xml.ConfigVariables;
 import com.ibm.wsspi.logging.Introspector;
+import com.ibm.wsspi.logging.SensitiveIntrospector;
 
-/**
- *
- */
-@Component
-public class ConfigVariableIntrospection implements Introspector {
+@Component(service = { Introspector.class },
+           immediate = true,
+           configurationPolicy = ConfigurationPolicy.IGNORE,
+           property = {
+                        Constants.SERVICE_VENDOR + "=" + "IBM"
+           })
+public class ConfigVariableIntrospection extends SensitiveIntrospector {
 
     ConfigVariables configVariables;
 
@@ -64,7 +70,7 @@ public class ConfigVariableIntrospection implements Introspector {
         for (Map.Entry<String, String> entry : env.entrySet()) {
             writer.print(entry.getKey());
             writer.print("=");
-            writer.println(entry.getValue().replaceAll("\\\n", "<nl>"));
+            writer.println(getObscuredValue(entry.getKey(), entry.getValue()).replaceAll("\\\n", "<nl>"));
         }
         writer.println("---------------------");
         writer.flush();
@@ -75,6 +81,7 @@ public class ConfigVariableIntrospection implements Introspector {
      *
      * @return the Config variables
      */
+    @Sensitive
     private Map<String, String> getConfigVariables() {
         return AccessController.doPrivileged(new PrivilegedAction<Map<String, String>>() {
             @Override

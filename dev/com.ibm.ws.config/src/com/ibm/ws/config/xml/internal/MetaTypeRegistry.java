@@ -1196,6 +1196,33 @@ final class MetaTypeRegistry {
             return super.toString() + "[" + pid + "]";
         }
 
+        /**
+         * @param key
+         * @return
+         */
+        public boolean isObscuredAttribute(String key) {
+            return traverseHierarchy(new EntryAction<Boolean>() {
+
+                boolean result = false;
+
+                @Override
+                public boolean entry(RegistryEntry registryEntry) {
+                    ExtendedAttributeDefinition ad = registryEntry.getAttributeMap().get(key);
+
+                    if (ad != null && (ad.isObscured() || ad.getType() == MetaTypeFactory.PASSWORD_TYPE || ad.getType() == MetaTypeFactory.HASHED_PASSWORD_TYPE))
+                        result = true;
+
+                    return true;
+                }
+
+                @Override
+                public Boolean getResult() {
+                    return result;
+                }
+
+            });
+        }
+
     }
 
     /**
