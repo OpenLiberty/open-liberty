@@ -80,6 +80,7 @@ public class StoreServicesTests extends FATServletClient {
                                                                 "com.ibm.testapp.g3store.restProducer.model",
                                                                 "com.ibm.testapp.g3store.restProducer.client",
                                                                 "com.ibm.testapp.g3store.servletProducer",
+                                                                "com.ibm.ws.fat.grpc.monitoring",
                                                                 "com.ibm.test.g3store.grpc"); // add generated src
 
         // Use defaultApp the <application> element is used in server.xml for security, cannot use dropin

@@ -10,10 +10,8 @@
 		<feature>grpc-1.0</feature>
 		<feature>grpcClient-1.0</feature>
 		<feature>mpRestClient-1.3</feature>
-		<feature>mpConfig-1.3</feature>
 		<feature>mpOpenAPI-1.1</feature>
 		<feature>componenttest-1.0</feature>
-		<feature>ssl-1.0</feature>
         <feature>monitor-1.0</feature>
         <feature>mpMetrics-2.3</feature>
     </featureManager>

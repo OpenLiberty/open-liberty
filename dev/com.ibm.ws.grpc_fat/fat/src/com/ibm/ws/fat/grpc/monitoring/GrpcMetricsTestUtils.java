@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.testapp.g3store.restProducer.client;
+package com.ibm.ws.fat.grpc.monitoring;
 
 import static org.junit.Assert.fail;
 
@@ -29,7 +29,7 @@ public class GrpcMetricsTestUtils {
      * @param expectedValue - the expected value
      * @return the actual value received from the Metrics endpoint
      */
-    protected static String checkMetric(LibertyServer server, String metricName, String expectedValue) {
+    public static String checkMetric(LibertyServer server, String metricName, String expectedValue) {
         String metricValue = getMetric(server, metricName);
         if (metricValue == null || !metricValue.equals(expectedValue)) {
             fail(String.format("Incorrect metric value [%s]. Expected [%s], got [%s]", metricName, expectedValue, metricValue));
