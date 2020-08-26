@@ -16,6 +16,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Properties;
+import java.util.function.Predicate;
 
 import javax.net.SocketFactory;
 
@@ -41,6 +42,8 @@ import componenttest.custom.junit.runner.FATRunner;
 public class ExternalTestServiceDockerClientStrategy extends DockerClientProviderStrategy {
 
     private static final Class<?> c = ExternalTestServiceDockerClientStrategy.class;
+
+    public static Predicate<ExternalTestService> serviceFilter = null;
 
     /**
      * Used to specify a particular docker host machine to run with. For example: -Dfat.test.docker.host=some-docker-host.mycompany.com
@@ -90,6 +93,11 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
 
             if (USE_DOCKER_HOST != null && !dockerHostURL.contains(USE_DOCKER_HOST)) {
                 Log.info(c, m, "Will not select " + dockerHostURL + " because " + USE_DOCKER_HOST + " was specifically requested.");
+                return false;
+            }
+
+            if (serviceFilter != null && !serviceFilter.test(dockerService)) {
+                Log.info(c, m, "Will not select " + dockerHostURL + " because custom service filter returned 'false'");
                 return false;
             }
 
