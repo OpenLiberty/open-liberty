@@ -1714,5 +1714,105 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         validationUtils.validateResult(response, currentAction, expectations);
 
     }
+    
+    /**
+     * server.xml has a config that has authenticationMethodsReferences set to
+     * "OTP iris, pwd kba". For multiple values (array) in server.xml, the
+     * provided jwtClaim must be an exact match on one of the elements. We
+     * expect a failure indicating that the provided amrClaim is not listed in
+     * the trusted ones
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void JwtConsumerApiConfigTests_multiple_invalid_amr() throws Exception {
+
+        consumerServer.reconfigureServerUsingExpandedConfiguration(_testName, "server_jwtConsumerAmr.xml");
+        builder.setClaim("amr", new String[] { "iris", "pwd" });
+        String jwtToken = buildToken();
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(
+                JwtMessageConstants.CWWKS6054E_INVALID_AMR_CLAIM + ".+" + "multipleJwtConsumer", currentAction,
+                consumerServer, "multipleJwtConsumer");
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, "multipleJwtConsumer", jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that has authenticationMethodsReferences set to
+     * "OTP iris, pwd kba". For multiple values (array) in server.xml, the
+     * provided jwtClaim must be an exact match on one of the elements. We
+     * expect a successful outcome since the provided values match the exact
+     * element of the server.xml
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void JwtConsumerApiConfigTests_multiple_valid_amr() throws Exception {
+
+        consumerServer.reconfigureServerUsingExpandedConfiguration(_testName, "server_jwtConsumerAmr.xml");
+        builder.setClaim("amr", new String[] { "pwd", "kba" });
+        String jwtToken = buildToken();
+
+        Expectations expectations = addGoodConsumerClientResponseAndClaimsExpectations();
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, "multipleJwtConsumer", jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that has authenticationMethodsReferences set to
+     * "OTP iris". For single value (not array) in server.xml, the provided
+     * jwtClaim must include all the required values from server and any other.
+     * We expect a failure indicating that the provided amrClaim is not listed
+     * since not all of the required values are specified
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void JwtConsumerApiConfigTests_single_invalid_amr() throws Exception {
+
+        consumerServer.reconfigureServerUsingExpandedConfiguration(_testName, "server_jwtConsumerAmr.xml");
+        builder.setClaim("amr", new String[] { "OTP" });
+        String jwtToken = buildToken();
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(
+                JwtMessageConstants.CWWKS6054E_INVALID_AMR_CLAIM + ".+" + "singleJwtConsumer", currentAction,
+                consumerServer, "singleJwtConsumer");
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, "singleJwtConsumer", jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that has authenticationMethodsReferences set to
+     * "OTP iris". For single value (not array) in server.xml, the provided
+     * jwtClaim must include all the required values from server and any other.
+     * We expect a successful outcome since the provided values includes the
+     * required values
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void JwtConsumerApiConfigTests_single_valid_amr() throws Exception {
+
+        consumerServer.reconfigureServerUsingExpandedConfiguration(_testName, "server_jwtConsumerAmr.xml");
+        builder.setClaim("amr", new String[] { "OTP", "iris", "pwd", "kba" });
+        String jwtToken = buildToken();
+
+        Expectations expectations = addGoodConsumerClientResponseAndClaimsExpectations();
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, "singleJwtConsumer", jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
 
 }

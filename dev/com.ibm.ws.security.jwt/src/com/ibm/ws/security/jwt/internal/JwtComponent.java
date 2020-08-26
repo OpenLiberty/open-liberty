@@ -78,6 +78,8 @@ public class JwtComponent implements JwtConfig {
     private DynamicMBean httpendpointInfoMBean;
 
     private ServerInfoMBean serverInfoMBean;
+    
+    private List<String> amrAttributes;
 
     private final KeyAlgorithmChecker keyAlgChecker = new KeyAlgorithmChecker();
 
@@ -164,6 +166,7 @@ public class JwtComponent implements JwtConfig {
         jwkRotationTime = jwkRotationTime * 60 * 1000;
         jwkSigningKeySize = ((Long) props.get(JwtUtils.CFG_KEY_JWK_SIGNING_KEY_SIZE)).intValue();
         elapsedNbfTime = ((Long) props.get(JwtUtils.CFG_KEY_ELAPSED_NBF)).longValue();
+        amrAttributes = JwtUtils.trimIt((String[]) props.get(JwtUtils.CFG_AMR_ATTR));
 
         if (isJwkCapableSigAlgorithm()) {
             initializeJwkProvider(this);
@@ -404,5 +407,10 @@ public class JwtComponent implements JwtConfig {
             return null;
         }
     }
+
+	@Override
+	public List<String> getAMRAttributes() {
+		return amrAttributes;
+	}
 
 }

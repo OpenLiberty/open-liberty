@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,8 +21,10 @@ public class JWTBuilderConstants extends JwtConstants {
 
     /********************************* JWT Builder API Servlet ********************************/
     public static final String JWT_BUILDER_SERVLET = "jwtbuilderclient";
+    public static final String JWT_BUILDER_PROTECTED_SERVLET = "jwtprotectedbuilderclient";
     public static final String JWT_BUILDER_CREATE_ENDPOINT = JWT_BUILDER_SERVLET + "/JwtBuilderCreateClient";
     public static final String JWT_BUILDER_SETAPIS_ENDPOINT = JWT_BUILDER_SERVLET + "/JwtBuilderSetApisClient";
+    public static final String JWT_BUILDER_PROTECTED_SETAPIS_ENDPOINT = JWT_BUILDER_PROTECTED_SERVLET + "/JwtBuilderSetApisClient";
 
     public static final String JWT_BUILDER_ACTION_CLAIM_FROM = "claim_from";
     public static final String JWT_BUILDER_ACTION_CLAIM_FROM_JWT_TOKEN = "claim_from_JwtToken";

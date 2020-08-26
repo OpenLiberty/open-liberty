@@ -2086,6 +2086,61 @@ public class ConsumerUtilTest {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
+    
+    /********************************************* validateAMRClaim *********************************************/
+
+    /**
+     * Method under test: {@link ConsumerUtil#validateAMRClaim(List, List)}
+     */
+    @Test
+    public void testValidateAMRClaim() {
+        try {
+            List<String> emptyList = new ArrayList<String>();
+            List<String> singleList = new ArrayList<String>();
+            singleList.add("OTP iris");
+            List<String> multipleList = new ArrayList<String>();
+            multipleList.add("OTP iris");
+            multipleList.add("pwd kba");
+
+            // Null/empty token and allowed amrClaims
+            assertTrue("Validation should have succeeded.", consumerUtil.validateAMRClaim(null, null));
+            assertTrue("Validation should have succeeded.", consumerUtil.validateAMRClaim(null, emptyList));
+            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAMRClaim(emptyList, null));
+            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAMRClaim(emptyList, emptyList));
+
+            // Null/empty allowed amr, single amr in the token
+            assertTrue("Validation should have succeeded.", consumerUtil.validateAMRClaim(null, singleList));
+            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAMRClaim(emptyList, singleList));
+
+            // Null/empty amr in token, single amr in allowed audiences
+            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAMRClaim(singleList, null));
+            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAMRClaim(singleList, emptyList));
+
+            // Single entries in both - match and mismatch
+            List<String> tokenAMR = new ArrayList<String>();
+            tokenAMR.add("OTP");
+            tokenAMR.add("iris");
+            tokenAMR.add("pwd");
+            assertTrue("Validation should have succeeded.", consumerUtil.validateAMRClaim(singleList, tokenAMR));
+            tokenAMR = new ArrayList<String>();
+            tokenAMR.add(ENTRY2);
+            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAMRClaim(singleList, tokenAMR));
+
+            // Multiple entries in both
+            tokenAMR = new ArrayList<String>();
+            tokenAMR.add("pwd");
+            tokenAMR.add("kba");
+            tokenAMR.add("iris");
+            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAMRClaim(multipleList, tokenAMR));
+            tokenAMR = new ArrayList<String>();
+            tokenAMR.add("pwd");
+            tokenAMR.add("kba");
+            assertTrue("Validation should have succeeded.", consumerUtil.validateAMRClaim(multipleList, tokenAMR));
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
 
     /********************************************** Helper methods **********************************************/
 

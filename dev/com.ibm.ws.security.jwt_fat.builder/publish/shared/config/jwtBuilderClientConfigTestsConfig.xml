@@ -45,6 +45,12 @@
 	<jwtBuilder
 		id="specificClaims_someNotSet"
 		claims="uid, cn, sn, yourClaim" />
+		
+	<jwtBuilder id="AMRTestValid" amrInclude="amrTest" />
+	
+	<jwtBuilder id="AMRTestInvalid" amrInclude="random" />
+	
+	<jwtBuilder id="AMRTestEmpty" amrInclude="" />
 
 	<jwtBuilder
 		id="key_x509"
