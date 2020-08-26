@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
@@ -1666,13 +1667,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
                 }
             } else if (subj == null) {
                 // Check to see if a SPNEGO subject is already passed in by the caller. If so, use it
-                Subject callerSubject = null;
-                try {
-                    callerSubject = WSSubject.getCallerSubject();
-                } catch (WSSecurityException e) {
-                    if (isTraceOn && tc.isDebugEnabled())
-                        Tr.debug(tc, "Unable to obtain caller Subject because of: " + e.getMessage());
-                }
+                Subject callerSubject = getCallerSubject();
                 if (callerSubject != null) {
                     boolean isSpnegoSubject = callerSubject.getPrivateCredentials(KerberosTicket.class).size() > 0 ||
                                               callerSubject.getPrivateCredentials(GSSCredential.class).size() > 0;
@@ -1773,5 +1768,30 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
             }
         }
         return i;
+    }
+
+    private static Subject getCallerSubject() {
+        if (System.getSecurityManager() == null) {
+            try {
+                return WSSubject.getCallerSubject();
+            } catch (WSSecurityException e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "Unable to obtain caller Subject because of: " + e.getMessage());
+                return null;
+            }
+        } else {
+            return AccessController.doPrivileged(new PrivilegedAction<Subject>() {
+                @Override
+                public Subject run() {
+                    try {
+                        return WSSubject.getCallerSubject();
+                    } catch (WSSecurityException e) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                            Tr.debug(tc, "Unable to obtain caller Subject because of: " + e.getMessage());
+                        return null;
+                    }
+                }
+            });
+        }
     }
 }
