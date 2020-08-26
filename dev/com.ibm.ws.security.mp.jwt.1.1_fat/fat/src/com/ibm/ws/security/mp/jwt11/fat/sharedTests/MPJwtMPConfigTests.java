@@ -65,6 +65,9 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
 
     protected final TestValidationUtils validationUtils = new TestValidationUtils();
 
+    public static final String BadKey = "BadKey";
+    public static final String KeyMismatch = "KeyMismatch";
+
 //    public static class MPConfigSettings {
 //
 //        String publicKeyLocation = null;
@@ -285,6 +288,7 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
      * @return - return the microprofile-config.properties file content
      */
     protected static String buildMPConfigFileContent(String publicKey, String publicKeyLocation, String issuer) {
+        Log.info(thisClass, "", "mp.jwt.verify.publickey=" + publicKey + " mp.jwt.verify.publickey.location=" + publicKeyLocation + " mp.jwt.verify.issuer=" + issuer);
         return "mp.jwt.verify.publickey=" + publicKey + System.lineSeparator() + "mp.jwt.verify.publickey.location=" + publicKeyLocation + System.lineSeparator()
                + "mp.jwt.verify.issuer=" + issuer;
 
@@ -304,7 +308,7 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
 
         try {
             String fixedJwksUri = resolvedJwksUri(MPConfigSettings.jwksUri);
-            String fileLoc = server.getServerRoot() + "/";
+            String fileLoc = mpConfigSettings.getDefaultKeyFileLoc(server);
 
             // the microprofile-config.properties files will have xxx_<attr>_xxx values that need to be replaced
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_CONFIG_IN_META_INF_ROOT_CONTEXT,
@@ -474,6 +478,7 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
 
     public void standardTestFlow(String builder, LibertyServer server, String rootContext, String theApp, String className, Expectations expectations) throws Exception {
 
+        Log.info(thisClass, "standardTestFlow", "builderId: " + builder);
         String builtToken = actions.getJwtFromTokenEndpoint(_testName, builder, SecurityFatHttpUtils.getServerSecureUrlBase(jwtBuilderServer), defaultUser, defaultPassword);
 
         String testUrl = buildAppUrl(server, rootContext, theApp);
@@ -513,6 +518,12 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
                 break;
             case MpJwtFatConstants.JWK_CERT:
                 expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6029E_SIGNING_KEY_CANNOT_BE_FOUND, "Messages.log did not contain an error indicating that a signing key could not be found."));
+                break;
+            case BadKey:
+                expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6029E_SIGNING_KEY_CANNOT_BE_FOUND, "Messages.log did not contain an error indicating that a signing key could not be found."));
+                break;
+            case KeyMismatch:
+                expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6028E_SIG_ALG_MISMATCH, "Messages.log did not contain an error indicating that there was a mismatch in the signing keys."));
                 break;
             default:
                 break;

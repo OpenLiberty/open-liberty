@@ -102,7 +102,7 @@
 				claims="sub"
 				/>			
 					
-	<jwtBuilder id="hs256" 
+	<jwtBuilder id="hs256_match" 
 				audiences="client01, client02"
 				issuer="testIssuer"
 				jwkEnabled="true"
