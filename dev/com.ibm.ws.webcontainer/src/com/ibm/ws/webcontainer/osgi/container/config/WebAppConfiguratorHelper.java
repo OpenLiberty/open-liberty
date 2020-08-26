@@ -222,7 +222,9 @@ public class WebAppConfiguratorHelper implements ServletConfiguratorHelper {
      */
     public static int getVersionId(String version) throws IllegalStateException {
         int versionID = 0;
-        if ("4.0".equals(version)) {
+        if ("5.0".equals(version)) {
+            versionID = 50;
+        }else if ("4.0".equals(version)) {
             versionID = 40;
         }else if ("3.1".equals(version)) {
             versionID = 31;

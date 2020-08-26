@@ -25,7 +25,8 @@ src: \
     test-applications/SCIExceptionTest.jar/src,\
     test-applications/SCIFilterServletNameMapping.jar/src,\
     test-applications/SameSiteTest.war/src,\
-    test-applications/SameSiteSecurityTest.war/src
+    test-applications/SameSiteSecurityTest.war/src,\
+    test-applications/Servlet5TestApp.war/src
 
 fat.project: true
 
