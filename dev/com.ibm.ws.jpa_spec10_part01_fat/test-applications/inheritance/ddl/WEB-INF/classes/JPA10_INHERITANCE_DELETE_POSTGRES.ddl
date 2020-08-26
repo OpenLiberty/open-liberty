@@ -1,49 +1,41 @@
-             <sql>DELETE FROM ${schemaname}.AnoConcreteLeaf1;
-DELETE FROM ${schemaname}.AnoConcreteLeaf2;    
-DELETE FROM ${schemaname}.AnoConcreteLeaf3;      
+DELETE FROM AnoAnoMSCEntity;
+DELETE FROM AnoConcreteLeaf1;
+DELETE FROM AnoConcreteLeaf2;
+DELETE FROM AnoConcreteLeaf3;
+DELETE FROM AnoJTCDLeaf1;
+DELETE FROM AnoJTCDLeaf2;
+DELETE FROM AnoJTCDLeaf3;
+DELETE FROM AnoJTCDRoot;
+DELETE FROM AnoJTIDLeaf1;
+DELETE FROM AnoJTIDLeaf2;
+DELETE FROM AnoJTIDLeaf3;
+DELETE FROM AnoJTIDRoot;
+DELETE FROM AnoJTSDLeaf1;
+DELETE FROM AnoJTSDLeaf2;
+DELETE FROM AnoJTSDLeaf3;
+DELETE FROM AnoJTSDRoot;
+DELETE FROM AnoSTCDRoot;
+DELETE FROM AnoSTIDRoot;
+DELETE FROM AnoSTSDRoot;
+DELETE FROM AnoXMLMSCEntity;
 
-DELETE FROM ${schemaname}.XMLConcreteLeaf1;
-DELETE FROM ${schemaname}.XMLConcreteLeaf2;    
-DELETE FROM ${schemaname}.XMLConcreteLeaf3;      
-
-DELETE FROM ${schemaname}.AnoJTCDRoot;
-DELETE FROM ${schemaname}.AnoJTCDLeaf1;
-DELETE FROM ${schemaname}.AnoJTCDLeaf2;
-DELETE FROM ${schemaname}.AnoJTCDLeaf3; 
-            
-DELETE FROM ${schemaname}.XMLJTCDRoot;
-DELETE FROM ${schemaname}.XMLJTCDLeaf1;
-DELETE FROM ${schemaname}.XMLJTCDLeaf2;
-DELETE FROM ${schemaname}.XMLJTCDLeaf3;     
-            
-DELETE FROM ${schemaname}.AnoJTIDRoot;
-DELETE FROM ${schemaname}.AnoJTIDLeaf1;
-DELETE FROM ${schemaname}.AnoJTIDLeaf2;
-DELETE FROM ${schemaname}.AnoJTIDLeaf3; 
-            
-DELETE FROM ${schemaname}.XMLJTIDRoot;
-DELETE FROM ${schemaname}.XMLJTIDLeaf1;
-DELETE FROM ${schemaname}.XMLJTIDLeaf2;
-DELETE FROM ${schemaname}.XMLJTIDLeaf3;     
- 
-DELETE FROM ${schemaname}.AnoJTSDRoot;
-DELETE FROM ${schemaname}.AnoJTSDLeaf1;
-DELETE FROM ${schemaname}.AnoJTSDLeaf2;
-DELETE FROM ${schemaname}.AnoJTSDLeaf3; 
-            
-DELETE FROM ${schemaname}.XMLJTSDRoot;
-DELETE FROM ${schemaname}.XMLJTSDLeaf1;
-DELETE FROM ${schemaname}.XMLJTSDLeaf2;
-DELETE FROM ${schemaname}.XMLJTSDLeaf3;     
-
-DELETE FROM ${schemaname}.AnoSTCDRoot;
-DELETE FROM ${schemaname}.AnoSTIDRoot;
-DELETE FROM ${schemaname}.AnoSTSDRoot;
-DELETE FROM ${schemaname}.XMLSTCDRoot;
-DELETE FROM ${schemaname}.XMLSTIDRoot;
-DELETE FROM ${schemaname}.XMLSTSDRoot;
-
-DELETE FROM   ${schemaname}.AnoAnoMSCEntity;
-DELETE FROM   ${schemaname}.AnoXMLMSCEntity;
-DELETE FROM   ${schemaname}.XMLAnoMSCEntity;
-DELETE FROM   ${schemaname}.XMLXMLMSCEntity;    
+DELETE FROM XMLAnoMSCEntity;
+DELETE FROM XMLConcreteLeaf1;
+DELETE FROM XMLConcreteLeaf2;
+DELETE FROM XMLConcreteLeaf3;
+DELETE FROM XMLJTCDLeaf1;
+DELETE FROM XMLJTCDLeaf2;
+DELETE FROM XMLJTCDLeaf3;
+DELETE FROM XMLJTCDRoot;
+DELETE FROM XMLJTIDLeaf1;
+DELETE FROM XMLJTIDLeaf2;
+DELETE FROM XMLJTIDLeaf3;
+DELETE FROM XMLJTIDRoot;
+DELETE FROM XMLJTSDLeaf1;
+DELETE FROM XMLJTSDLeaf2;
+DELETE FROM XMLJTSDLeaf3;
+DELETE FROM XMLJTSDRoot;
+DELETE FROM XMLSTCDRoot;
+DELETE FROM XMLSTIDRoot;
+DELETE FROM XMLSTSDRoot;
+DELETE FROM XMLXMLMSCEntity;

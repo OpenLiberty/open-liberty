@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.krb5;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -118,7 +119,12 @@ public class DB2KerberosTest extends FATServletClient {
     @Mode(TestMode.FULL)
     public void testTicketCache() throws Exception {
         String ccPath = Paths.get(server.getServerRoot(), "security", "krb5TicketCache_" + KRB5_USER).toAbsolutePath().toString();
-        generateTicketCache(ccPath);
+        try {
+            generateTicketCache(ccPath);
+        } catch (UnsupportedOperationException e) {
+            Log.info(c, testName.getMethodName(), "Skipping test because OS does not support 'kinit'");
+            return;
+        }
 
         ServerConfiguration config = server.getServerConfiguration();
         final String originalKeytab = config.getKerberos().keytab;
@@ -128,16 +134,14 @@ public class DB2KerberosTest extends FATServletClient {
             krb5Auth.krb5TicketCache = ccPath;
             Kerberos kerberos = config.getKerberos();
             kerberos.keytab = null;
-            server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+            updateConfigAndWait(config);
 
             FATServletClient.runTest(server, APP_NAME + "/DB2KerberosTestServlet", testName);
         } finally {
             Log.info(c, testName.getMethodName(), "Restoring original config");
             config.getKerberos().keytab = originalKeytab;
             config.getAuthDataElements().getById("krb5Auth").krb5TicketCache = null;
-            server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+            updateConfigAndWait(config);
         }
     }
 
@@ -149,15 +153,13 @@ public class DB2KerberosTest extends FATServletClient {
         try {
             Log.info(c, testName.getMethodName(), "Changing the keystore to an invalid value so that password from the <authData> gets used");
             config.getKerberos().keytab = "BOGUS_KEYTAB";
-            server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+            updateConfigAndWait(config);
 
             FATServletClient.runTest(server, APP_NAME + "/DB2KerberosTestServlet", testName);
         } finally {
             Log.info(c, testName.getMethodName(), "Restoring original config");
             config.getKerberos().keytab = originalKeytab;
-            server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+            updateConfigAndWait(config);
         }
     }
 
@@ -170,7 +172,13 @@ public class DB2KerberosTest extends FATServletClient {
                         KRB5_USER + "@" + KerberosContainer.KRB5_REALM);
         pb.environment().put("KRB5_CONFIG", Paths.get(server.getServerRoot(), "security", "krb5.conf").toAbsolutePath().toString());
         pb.redirectErrorStream(true);
-        Process p = pb.start();
+        Process p = null;
+        try {
+            p = pb.start();
+        } catch (IOException e) {
+            Log.info(c, m, "Unable to start kinit due to: " + e.getMessage());
+            throw new UnsupportedOperationException(e);
+        }
 
         boolean success = p.waitFor(2, TimeUnit.MINUTES);
         String kinitResult = readInputStream(p.getInputStream());
@@ -181,6 +189,12 @@ public class DB2KerberosTest extends FATServletClient {
             Log.info(c, m, "FAILED to create ccache");
             throw new Exception("Failed to create Kerberos ticket cache. Kinit output was: " + kinitResult);
         }
+    }
+
+    private void updateConfigAndWait(ServerConfiguration config) throws Exception {
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
     }
 
     private static String readInputStream(InputStream is) {

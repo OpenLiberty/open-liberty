@@ -98,7 +98,6 @@ public class GrpcServletUtils {
 	 * @return Method invoked by the request
 	 */
 	public static Method getTargetMethod(String requestPath) {
-
 		int index = requestPath.indexOf('/');
 		String service = requestPath.substring(0, index);
 
@@ -110,9 +109,9 @@ public class GrpcServletUtils {
 				if (clazz != null) {
 					index = requestPath.indexOf('/');
 					String methodName = requestPath.substring(index + 1);
-					char c[] = methodName.toCharArray();
-					c[0] = Character.toLowerCase(c[0]);
-					methodName = new String(c);
+					if (methodName.contains("_")) {
+						methodName = convertToCamelCase(methodName);
+					}
 					Method[] methods = clazz.getMethods();
 					for (Method m : methods) {
 						if (m.getName().equals(methodName)) {
@@ -280,5 +279,33 @@ public class GrpcServletUtils {
         }
 
 		return interceptor;
+	}
+
+	/**
+	 * Given a String, remove any underscores and convert to camel case
+	 * Examples:
+	 *    "some_method_name" -> "someMethodName",
+	 *    "some_MeTHod_NAME" -> "someMethodName"
+	 *
+	 * @param String name
+	 * @return String
+	 */
+	private static String convertToCamelCase(String name) {
+	    final StringBuilder builder = new StringBuilder(name.length());
+	    boolean firstSection = true;
+	    for (String section : name.split("_")) {
+	        if (!section.isEmpty()) {
+	        	if (firstSection) {
+		            firstSection = false;
+		            builder.append(Character.toLowerCase(section.charAt(0)));
+	        	} else {
+		            builder.append(Character.toUpperCase(section.charAt(0)));
+	        	}
+	            if (section.length() > 1) {
+		            builder.append(section.substring(1));
+	            }
+	        }
+	    }
+	    return builder.toString();
 	}
 }

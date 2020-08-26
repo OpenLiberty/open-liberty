@@ -32,7 +32,7 @@ public class StreamingServlet extends HttpServlet {
     // implementation of the StreamingServiceImpl service
     public static final class StreamingServiceImpl extends StreamingServiceGrpc.StreamingServiceImplBase {
 
-        // a no-arg constructor is requird for Liberty to start this service automatically
+        // a no-arg constructor is required for Liberty to start this service automatically
         public StreamingServiceImpl() {
         }
 

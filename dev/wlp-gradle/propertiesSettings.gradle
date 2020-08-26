@@ -28,7 +28,8 @@ def setProperties = { props ->
         'zipopenliberty.kernel.archivename',
         'zipopenliberty.webprofile8.archivename',
         'zipopenliberty.javaee8.archivename',
-        'zipopenliberty.microprofile3.archivename'
+        'zipopenliberty.microprofile3.archivename',
+        'zipopenliberty.microprofile4.archivename'
     ]
     if (genPropsFile.exists()) {
         Properties genProps = new Properties()

@@ -19,7 +19,8 @@ public class EE8FeatureReplacementAction extends FeatureReplacementAction {
 
     public static final String ID = "EE8_FEATURES";
 
-    static final String[] EE8_FEATURES_ARRAY = { "javaee-8.0",
+    static final String[] EE8_FEATURES_ARRAY = { "appClientSupport-1.0",
+                                                 "javaee-8.0",
                                                  "webProfile-8.0",
                                                  "javaeeClient-8.0",
                                                  "servlet-4.0",

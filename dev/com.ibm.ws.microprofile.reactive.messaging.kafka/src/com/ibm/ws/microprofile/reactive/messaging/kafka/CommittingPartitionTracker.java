@@ -246,38 +246,84 @@ public class CommittingPartitionTracker extends PartitionTracker {
      */
     private void processCommittedWork(long originalOffset, long committedOffset, Throwable exception) {
 
+        boolean isRetriable = false;
+        if ((exception != null) && factory.getRetryableExceptionClass().isInstance(exception)) {
+            isRetriable = true;
+        }
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             if (exception == null) {
                 Tr.debug(this, tc, "Commit from " + originalOffset + " to " + committedOffset + " completed successfully", this);
+            } else if (isRetriable) {
+                Tr.debug(this, tc, "Commit from " + originalOffset + " to " + committedOffset + " failed with retriable exception", this, exception);
             } else {
-                Tr.debug(this, tc, "Commit from " + originalOffset + " to " + committedOffset + " failed", this, exception);
+                Tr.debug(this, tc, "Commit from " + originalOffset + " to " + committedOffset + " failed with non-retriable exception", this, exception);
             }
         }
 
-        // Note: Pull out the list of completed work inside the synchronized block
-        //       but complete the CompletionStage outside the synchronized block
-        List<CompletedWork> committedWork = new ArrayList<>();
-        synchronized (completedWork) {
-            for (Iterator<CompletedWork> i = completedWork.iterator(); i.hasNext();) {
-                CompletedWork work = i.next();
-                if (work.offset < originalOffset) {
-                    continue;
-                }
-                if (work.offset >= committedOffset) {
-                    break;
-                }
-                committedWork.add(work);
-                i.remove();
-            }
-        }
+        if (isRetriable) {
+            // Commit has failed, but it's going to be retried
+            // Don't remove anything from the completed work list
+            // Don't complete any of the completions
 
-        if (exception == null) {
-            for (CompletedWork work : committedWork) {
-                work.completion.complete(null);
+            synchronized (completedWork) {
+                if (committedOffset == this.committedOffset) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "Retriable exception is for the most recent commit attempt", this);
+                    }
+
+                    // This is the most recent commit request. Given that it's failed, we don't know that anyone else will
+                    // be requesting a commit so we should retry it now
+
+                    // Find the last item in completedWork with an offset less than committedOffset
+                    CompletedWork lastWork = null;
+                    for (CompletedWork work : completedWork) {
+                        if (work.offset >= committedOffset) {
+                            break;
+                        }
+                        lastWork = work;
+                    }
+
+                    // lastWork _should_ always be non-null, but if it isn't then presumably it's already been committed (maybe if we've somehow committed this offset twice?)
+                    if (lastWork != null) {
+                        commitUpTo(lastWork).whenCompleteAsync((r, t) -> processCommittedWork(originalOffset, committedOffset, t), executor);
+                    } else {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(this, tc, "Would retry commit to " + committedOffset + " but completedWork contains nothing before this offset");
+                        }
+                    }
+                }
             }
+
+            return;
         } else {
-            for (CompletedWork work : committedWork) {
-                work.completion.completeExceptionally(exception);
+            // Commit has either succeeded or failed and won't be retired, remove the completedWork from the queue and complete the completions
+
+            // Note: Pull out the list of completed work inside the synchronized block
+            //       but complete the CompletionStage outside the synchronized block
+            List<CompletedWork> committedWork = new ArrayList<>();
+            synchronized (completedWork) {
+                for (Iterator<CompletedWork> i = completedWork.iterator(); i.hasNext();) {
+                    CompletedWork work = i.next();
+                    if (work.offset < originalOffset) {
+                        continue;
+                    }
+                    if (work.offset >= committedOffset) {
+                        break;
+                    }
+                    committedWork.add(work);
+                    i.remove();
+                }
+            }
+
+            if (exception == null) {
+                for (CompletedWork work : committedWork) {
+                    work.completion.complete(null);
+                }
+            } else {
+                for (CompletedWork work : committedWork) {
+                    work.completion.completeExceptionally(exception);
+                }
             }
         }
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -222,7 +222,7 @@ public class URBridge implements Repository {
      *
      * @return
      */
-    @SuppressWarnings("unchecked")
+
     public void initialize(Map<String, Object> configProps) throws WIMException {
         try {
             reposId = (String) configProps.get(KEY_ID);
@@ -437,9 +437,7 @@ public class URBridge implements Repository {
                     }
                 }
 
-                String[] validateEntityResults = validateEntity(entity);
-                String memberType = validateEntityResults[0];
-                String securityName = validateEntityResults[1];
+                String memberType = validateEntity(entity);
 
                 Entity returnEntity = null;
                 if (Service.DO_GROUP.equalsIgnoreCase(memberType))
@@ -458,9 +456,16 @@ public class URBridge implements Repository {
                                                                        propsMap, baseEntryName, entityConfigMap);
 
                 /*
-                 * Set the security name returned above to retrieve the entity.
+                 * To retrieve the entity, we need 1 of 2 properties set: securityName or uniqueId.
                  */
-                osEntity.setSecurityNameProp(securityName);
+                if (uniqueName != null) {
+                    osEntity.setSecurityNameProp(uniqueName);
+                } else if (uniqueId != null) {
+                    osEntity.setUniqueIdProp(uniqueId);
+                } else if (externalId != null) {
+                    /* The URBridgeEntity class sets externalId from uniqueId, so do the same here. */
+                    osEntity.setUniqueIdProp(externalId);
+                }
 
                 // Get the attributes and populate the entity.
                 attrList = getAttributes(propertyCtrl, memberType);
@@ -579,13 +584,12 @@ public class URBridge implements Repository {
      * Validates if a entity is member of the registry.
      *
      * @param controlObject the control object containing the attrs.
-	 * @return A size-2 array containing the entity type and the security name.
      * @throws WIMException if the entity is not valid in the Registry or if the registry is bad or down.
      */
     //Get secName from uniqueName=externlName/uniqueId=externalId.
     //get Entity Type as User or Group from secName.
     //if type is null throw ENFE to be handled by get API.
-    private String[] validateEntity(Entity entity) throws WIMException {
+    private String validateEntity(Entity entity) throws WIMException {
         String METHODNAME = "validateEntity";
         String type = null;
         String secName = null;
@@ -631,9 +635,7 @@ public class URBridge implements Repository {
             //handle if entities.size== or >1 then respect entity.getType from input DO
             //this is better than just letting the last matching type be returned.
             String inputType = entity.getTypeName();
-            String[] entityTypeResults = getEntityTypeFromUniqueName(secName, entities, inputType);
-            type = entityTypeResults[0];
-            secName = entityTypeResults[1];
+            type = getEntityTypeFromUniqueName(secName, entities, inputType);
             entity.getIdentifier().setUniqueName(uniqueName);
         }
 
@@ -644,7 +646,7 @@ public class URBridge implements Repository {
             throw new EntityNotFoundException(WIMMessageKey.ENTITY_NOT_FOUND, Tr.formatMessage(tc, WIMMessageKey.ENTITY_NOT_FOUND,
                                                                                                WIMMessageHelper.generateMsgParms(secName)));
         }
-        return new String[] { type, secName };
+        return type;
     }
 
     /**
@@ -683,7 +685,7 @@ public class URBridge implements Repository {
         return secName;
     }
 
-    private String[] getEntityTypeFromUniqueName(String secName, List<String> entityType, String inputType) throws WIMException {
+    private String getEntityTypeFromUniqueName(String secName, List<String> entityType, String inputType) throws WIMException {
         String METHODNAME = "getEntityTypeFromUniqueName";
         String type = null;
         ArrayList<String> typeList = new ArrayList<String>();
@@ -694,7 +696,6 @@ public class URBridge implements Repository {
                 noSpecificEntityType = true;
             }
 
-            List<String> matchingEntities = new ArrayList<String>();
             if (isSafRegistry()) {
                 if (entityType.contains(personAccountType) || noSpecificEntityType) {
                     if (userRegistry.isValidUser(secName)) {
@@ -708,18 +709,16 @@ public class URBridge implements Repository {
                 }
             } else {
                 if (entityType.contains(personAccountType) || noSpecificEntityType) {
-                    List<String> results = searchUsers(secName, 1).getList();
-                    matchingEntities.addAll(results);
+                    int resultSize = searchUsers(secName, 1).getList().size();
 
-                    if (results.size() > 0) {
+                    if (resultSize > 0) {
                         typeList.add(personAccountType);
                     }
                 }
                 if (entityType.contains(groupAccountType) || noSpecificEntityType) {
-                    List<String> results = searchGroups(secName, 1).getList();
-                    matchingEntities.addAll(results);
+                    int resultSize = searchGroups(secName, 1).getList().size();
 
-                    if (results.size() > 0) {
+                    if (resultSize > 0) {
                         typeList.add(groupAccountType);
                     }
                 }
@@ -730,26 +729,14 @@ public class URBridge implements Repository {
                 for (int i = 0; i < typeList.size(); i++) {
                     if (typeList.get(i).equals(inputType)) {
                         type = typeList.get(i);
-                        if (!matchingEntities.isEmpty()) {
-                            /*
-                             * The basic registry doesn't consistently ignore case on
-                             * user lookups. For instance if ignoreCaseForAuthentication
-                             * is set on the basic registry, getUsers will ignore case
-                             * but getGroupsForUser will not. So lets use the case returned
-                             * from the registry here to ensure consistency.
-                             */
-                            secName = matchingEntities.get(i);
-                        }
                         break;
                     }
                 }
             }
 
             // If only one matching type or any of types returned not same as input DO type return first match.
-            if (type == null && typeList.size() > 0) {
+            if (type == null && typeList.size() > 0)
                 type = typeList.get(0);
-                secName = matchingEntities.get(0); // See comment above about basic registry behavior.
-            }
         } catch (RegistryException e) {
             throw new EntityNotFoundException(WIMMessageKey.ENTITY_NOT_FOUND, Tr.formatMessage(tc, WIMMessageKey.ENTITY_NOT_FOUND,
                                                                                                WIMMessageHelper.generateMsgParms(secName)));
@@ -758,7 +745,7 @@ public class URBridge implements Repository {
         if (tc.isDebugEnabled())
             Tr.debug(tc, METHODNAME + " The entity type for " + secName + " is " + type);
 
-        return new String[] { type, secName };
+        return type;
     }
 
     /**
