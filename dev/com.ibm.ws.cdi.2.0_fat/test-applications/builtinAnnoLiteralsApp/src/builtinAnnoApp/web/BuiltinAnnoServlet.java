@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,8 @@ import javax.servlet.annotation.WebServlet;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/builtin")
@@ -52,6 +54,7 @@ public class BuiltinAnnoServlet extends FATServlet {
      * @throws Exception
      */
     @Test
+    @Mode(TestMode.LITE)
     public void testNamedLiteral() throws Exception {
         Cake builtinAnnoBean = null;
 
@@ -80,6 +83,7 @@ public class BuiltinAnnoServlet extends FATServlet {
      * @throws Exception
      */
     @Test
+    @Mode(TestMode.LITE)
     public void testAnyLiteral() throws Exception {
         boolean foundVictoriaSponge = false;
         boolean foundBattenberg = false;
@@ -113,6 +117,7 @@ public class BuiltinAnnoServlet extends FATServlet {
      * @throws Exception
      */
     @Test
+    @Mode(TestMode.LITE)
     public void testRequestScopeLiteral() throws Exception {
         Cake builtinAnnoBean = null;
         builtinAnnoBean = builtinAnnoInstance.select(NamedLiteral.of("VICTORIA")).get();
@@ -137,6 +142,7 @@ public class BuiltinAnnoServlet extends FATServlet {
      * @throws Exception
      */
     @Test
+    @Mode(TestMode.LITE)
     public void testInjectLiteral() throws Exception {
         Cake builtinAnnoBean = null;
         builtinAnnoBean = builtinAnnoInstance.select(NamedLiteral.of("VICTORIA")).get();
@@ -156,6 +162,7 @@ public class BuiltinAnnoServlet extends FATServlet {
      * We check that a Rumbaba Cake is found and that a Weld UnsatisfiedResolutionException was not thrown.
      */
     @Test
+    @Mode(TestMode.LITE)
     public void testNonbindingLiteral() throws Exception {
         Cake builtinAnnoBean = null;
 
@@ -179,6 +186,7 @@ public class BuiltinAnnoServlet extends FATServlet {
      * bean but CAN be found by a generic Cake search.
      */
     @Test
+    @Mode(TestMode.LITE)
     public void testTypedLiteral() throws Exception {
         boolean foundLemondrizzle = false;
 

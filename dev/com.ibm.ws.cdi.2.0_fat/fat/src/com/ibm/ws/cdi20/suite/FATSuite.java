@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,23 +8,25 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi20.fat.tests;
+package com.ibm.ws.cdi20.suite;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.cdi20.fat.tests.AsyncEventsTest;
+import com.ibm.ws.cdi20.fat.tests.BasicCdi20Tests;
+import com.ibm.ws.cdi20.fat.tests.BuiltinAnnoLiteralsTest;
+import com.ibm.ws.cdi20.fat.tests.CDIContainerConfigTest;
+import com.ibm.ws.cdi20.fat.tests.SecureAsyncEventsTest;
+
 @RunWith(Suite.class)
 @SuiteClasses({
                 AsyncEventsTest.class,
-                BeanManagerLookupTest.class,
+                BasicCdi20Tests.class,
                 BuiltinAnnoLiteralsTest.class,
                 CDIContainerConfigTest.class,
-                ConfiguratorTest.class,
-                InterceptionFactoryTest.class,
-                TrimTest.class,
-                SecureAsyncEventsTest.class,
-                SecureAsyncEventsAS20Test.class,
+                SecureAsyncEventsTest.class
 })
 public class FATSuite {
 
