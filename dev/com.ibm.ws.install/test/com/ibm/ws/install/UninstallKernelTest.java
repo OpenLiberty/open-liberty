@@ -16,14 +16,34 @@ import static org.junit.Assert.assertNotNull;
 import java.io.File;
 import java.io.FilenameFilter;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.ws.install.internal.InstallKernelImpl;
+
+import test.common.SharedOutputManager;
 
 /**
  *
  */
 public class UninstallKernelTest {
+    public static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("*=all");
+
+    /**
+     * Capture stdout/stderr output to the manager.
+     *
+     * @throws Exception
+     */
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        outputMgr.captureStreams();
+    }
+
+    @AfterClass
+    public static void tearDownAfterClass() throws Exception {
+        outputMgr.restoreStreams();
+    }
 
     private static File getInstallDir(String testName) throws Exception {
         File installDir = new File("build/unittest/wlpDirs/" + testName + "/developers/wlp").getAbsoluteFile();
