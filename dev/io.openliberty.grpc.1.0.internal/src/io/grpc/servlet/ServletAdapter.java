@@ -179,12 +179,23 @@ public final class ServletAdapter {
         getAuthority(req),
         logId);
 
+
+	if (logger.isLoggable(FINEST)) {
+		logger.log(FINE, "set the listeners on async request " + asyncCtx);
+	}
+	
+    asyncCtx.getRequest().getInputStream()
+    .setReadListener(new GrpcReadListener(stream, asyncCtx, logId));
+    
+    asyncCtx.addListener(new GrpcAsycListener(stream, logId));
+    
+	if (logger.isLoggable(FINEST)) {
+		logger.log(FINE, "the listeners set on async request");
+	}
+
     transportListener.streamCreated(stream, method, headers);
     stream.transportState().runOnTransportThread(stream.transportState()::onStreamAllocated);
-
-    asyncCtx.getRequest().getInputStream()
-        .setReadListener(new GrpcReadListener(stream, asyncCtx, logId));
-    asyncCtx.addListener(new GrpcAsycListener(stream, logId));
+    
   }
 
   private static Metadata getHeaders(HttpServletRequest req, boolean libertyAuth) {
