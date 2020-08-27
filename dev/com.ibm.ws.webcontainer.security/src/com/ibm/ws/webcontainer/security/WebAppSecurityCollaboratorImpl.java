@@ -336,6 +336,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         locationAdminRef.activate(cc);
         securityServiceRef.activate(cc);
         interceptorServiceRef.activate(cc);
+        ssoServiceRef.activate(cc);
         taiServiceRef.activate(cc);
         jaccServiceRef.activate(cc);
         webAuthenticatorRef.activate(cc);
@@ -360,7 +361,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
                                                                      unauthenticatedSubjectService, ssoServiceRef);
         postParameterHelper = new PostParameterHelper(webAppSecConfig);
         providerAuthenticatorProxy = authenticatorFactory.createWebProviderAuthenticatorProxy(securityServiceRef, taiServiceRef, interceptorServiceRef, webAppSecConfig,
-                                                                                              webAuthenticatorRef);
+                                                                                              webAuthenticatorRef, ssoServiceRef);
         authenticatorProxy = authenticatorFactory.createWebAuthenticatorProxy(webAppSecConfig, postParameterHelper, securityServiceRef, providerAuthenticatorProxy, ssoServiceRef);
     }
 
@@ -386,6 +387,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         isActive = false;
         locationAdminRef.deactivate(cc);
         securityServiceRef.deactivate(cc);
+        ssoServiceRef.deactivate(cc);
         taiServiceRef.deactivate(cc);
         interceptorServiceRef.deactivate(cc);
         jaccServiceRef.deactivate(cc);

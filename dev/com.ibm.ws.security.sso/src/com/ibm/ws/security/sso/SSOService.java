@@ -29,28 +29,27 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
-import com.ibm.ws.security.authentication.filter.internal.AuthFilterConfig;
+import com.ibm.ws.security.token.ltpa.LTPAConfiguration;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 
 /**
  *
  */
-@SuppressWarnings("restriction")
 @Component(service = { SSOService.class },
            name = "com.ibm.ws.security.sso.SSOService",
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = { "service.vendor=IBM",
-           })
+           immediate = true,
+           property = { "service.vendor=IBM" })
 public class SSOService {
     public static final TraceComponent tc = Tr.register(SSOService.class);
+    public static final String KEY_SERVICE_PID = "service.pid";
     static final String LTPA_CONFIGURATION = "ltpaConfiguration";
     public final static String KEY_FILTER = "authenticationFilter";
     protected final AtomicServiceReference<LTPAConfiguration> ltpaConfigurationRef = new AtomicServiceReference<>(LTPA_CONFIGURATION);
     protected final ConcurrentServiceReferenceMap<String, AuthenticationFilter> authFilterServiceRef = new ConcurrentServiceReferenceMap<String, AuthenticationFilter>(KEY_FILTER);
 
     private LTPAConfiguration ltpaConfig;
-    AuthenticationFilter authFilter = null;
 
     @Reference(name = LTPA_CONFIGURATION,
                service = LTPAConfiguration.class,
@@ -71,63 +70,37 @@ public class SSOService {
                policy = ReferencePolicy.DYNAMIC,
                policyOption = ReferencePolicyOption.GREEDY)
     protected void setAuthenticationFilter(ServiceReference<AuthenticationFilter> ref) {
+        String pid = (String) ref.getProperty(KEY_SERVICE_PID);
+        authFilterServiceRef.putReference(pid, ref);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "setAuthenticationFilter id:" + ref.getProperty(AuthFilterConfig.KEY_ID));
+            Tr.debug(tc, "authFilter pid: " + pid);
+            Tr.debug(tc, "setAuthFilter service pid: " + getAuthFilterService(pid));
         }
-        authFilterServiceRef.putReference((String) ref.getProperty(AuthFilterConfig.KEY_ID), ref);
     }
 
     protected void updatedAuthenticationFilter(ServiceReference<AuthenticationFilter> ref) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "updatedAuthenticationFilter id:" + ref.getProperty(AuthFilterConfig.KEY_ID));
+            Tr.debug(tc, "updatedAuthenticationFilter service.pid:" + ref.getProperty(KEY_SERVICE_PID));
         }
-        authFilterServiceRef.putReference((String) ref.getProperty(AuthFilterConfig.KEY_ID), ref);
+        authFilterServiceRef.putReference((String) ref.getProperty(KEY_SERVICE_PID), ref);
     }
 
     protected void unsetAuthenticationFilter(ServiceReference<AuthenticationFilter> ref) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "unsetAuthenticationFilter id:" + ref.getProperty(AuthFilterConfig.KEY_ID));
+            Tr.debug(tc, "unsetAuthenticationFilter service.pid:" + ref.getProperty(KEY_SERVICE_PID));
         }
-        authFilterServiceRef.removeReference((String) ref.getProperty(AuthFilterConfig.KEY_ID), ref);
+        authFilterServiceRef.removeReference((String) ref.getProperty(KEY_SERVICE_PID), ref);
     }
 
-//    protected void setAuthenticationFilter(ServiceReference<AuthenticationFilter> ref) {
-//        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//            Tr.debug(tc, "authFilter id: " + ref.getProperty(AuthFilterConfig.KEY_ID) + " authFilterRef: " + ref);
-//        }
-//        authFilterServiceRef.setReference(ref);
-//    }
-//
-//    protected void updatedAuthenticationFilter(ServiceReference<AuthenticationFilter> ref) {
-//        authFilterServiceRef.setReference(ref);
-//    }
-//
-//    protected void unsetAuthenticationFilter(ServiceReference<AuthenticationFilter> ref) {
-//        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//            Tr.debug(tc, "authFilter id: " + ref.getProperty(AuthFilterConfig.KEY_ID) + " authFilterRef: " + ref);
-//        }
-//        authFilterServiceRef.unsetReference(ref);
-//    }
+    public AuthenticationFilter getAuthFilterService(String pid) {
+        return authFilterServiceRef.getService(pid);
+    }
+
 /*
  * If there no authentication filter defined, then process the request
  */
-    public boolean isTargetInterceptor(HttpServletRequest req) {
-//        if (ltpaConfigurationRef != null) {
-//            // handle filter if any
-//            ltpaConfig = ltpaConfigurationRef.getService();
-//            String authFilterId = ltpaConfig.getAuthFilterId();
-//            if (authFilterId != null && authFilterId.length() > 0) {
-//                AuthenticationFilter authFilter = authFilterServiceRef.getService(authFilterId);
-//                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//                    Tr.debug(tc, "authFilter id:" + authFilterId + " authFilter:" + authFilter);
-//                }
-//                if (authFilter != null) {
-//                    if (!authFilter.isAccepted(req))
-//                        return false;
-//                }
-//            }
-//        }
-        AuthenticationFilter authFilter = getAuthenticationFilter();
+    public boolean processRequest(HttpServletRequest req) {
+        AuthenticationFilter authFilter = getAuthFilter();
         if (authFilter != null) {
             if (!authFilter.isAccepted(req))
                 return false;
@@ -135,13 +108,13 @@ public class SSOService {
         return true;
     }
 
-    public AuthenticationFilter getAuthenticationFilter() {
+    public AuthenticationFilter getAuthFilter() {
+        AuthenticationFilter authFilter = null;
         if (ltpaConfigurationRef != null) {
-            // handle filter if any
             ltpaConfig = ltpaConfigurationRef.getService();
-            String authFilterId = ltpaConfig.getAuthFilterId();
-            if (authFilterId != null && authFilterId.length() > 0) {
-                authFilter = authFilterServiceRef.getService(authFilterId);
+            String authFilterRef = ltpaConfig.getAuthFilterRef();
+            if (authFilterRef != null && authFilterRef.length() > 0) {
+                authFilter = authFilterServiceRef.getService(authFilterRef);
             }
         }
         return authFilter;
@@ -149,13 +122,18 @@ public class SSOService {
 
     @Activate
     protected synchronized void activate(ComponentContext cc, Map<String, Object> props) {
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, " SSOService active:" + props);
+        }
         ltpaConfigurationRef.activate(cc);
         authFilterServiceRef.activate(cc);
     }
 
     @Modified
     protected synchronized void modified(Map<String, Object> props) {
-        Tr.info(tc, "debug");
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, " SSOService modified:" + props);
+        }
     }
 
     @Deactivate

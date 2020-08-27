@@ -47,7 +47,7 @@ Service-Component: \
     kernelProvisioner=com.ibm.ws.kernel.feature.FeatureProvisioner;\
     webAppSecurityConfigChangeListener=com.ibm.ws.webcontainer.security.WebAppSecurityConfigChangeListener;\
     multiple:='interceptorService, webAuthenticator, unprotectedResourceService, webAppSecurityConfigChangeListener'; \
-    greedy:='interceptorService, webAuthenticator, unprotectedResourceService,authenticatorFactory'; \
+    greedy:='ssoService,interceptorService, webAuthenticator, unprotectedResourceService,authenticatorFactory'; \
     optional:='taiService,interceptorService,webAuthenticator,jaccService,unprotectedResourceService,webAppSecurityConfigChangeListener'; \
     dynamic:='ssoService,taiService,interceptorService,webAuthenticator,jaccService,unprotectedResourceService,authenticatorFactory,webAppSecurityConfigChangeListener'; \
     properties:="service.vendor=IBM", \

@@ -95,7 +95,8 @@ public class WebAuthenticatorFactoryImpl implements WebAuthenticatorFactory {
                                                                              AtomicServiceReference<TAIService> taiServiceRef,
                                                                              ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor> interceptorServiceRef,
                                                                              WebAppSecurityConfig webAppSecConfig,
-                                                                             ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRef) {
+                                                                             ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRef,
+                                                                             AtomicServiceReference<SSOService> ssoServiceRef) {
         providerAuthenticatorProxy = new WebProviderAuthenticatorProxy(securityServiceRef, taiServiceRef, interceptorServiceRef, webAppSecConfig, oauthServiceRef, openidClientRef, oidcServerRef, oidcClientRef, webAuthenticatorRef, ssoServiceRef);
         return providerAuthenticatorProxy;
     }

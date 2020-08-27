@@ -22,23 +22,19 @@ WS-TraceGroup: SSO
 # Append ";provide:=true" if this bundle also provides an implementation
 # for the exported API.
  
-Export-Package: com.ibm.ws.security.sso;provide:=true, \
-  com.ibm.wsspi.security.ltpa
+Export-Package: com.ibm.ws.security.sso;provide:=true
 
 
 Import-Package:  !*.internal.*, *
          
 #Private-Package: com.ibm.ws.security.sso.internal.*
 
-#Include-Resource:  OSGI-INF=resources/OSGI-INF
-
-#IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
-    
 -dsannotations: com.ibm.ws.security.sso.SSOService
 
 -dsannotations-inherit: true
 
 -buildpath: \
+    com.ibm.ws.security.token.ltpa;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
@@ -47,8 +43,5 @@ Import-Package:  !*.internal.*, *
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.filemonitor,\
 	com.ibm.websphere.appserver.spi.kernel.service,\
-	com.ibm.ws.common.encoder,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
-
-#instrument.classesExcludes: com/ibm/ws/security/sso/internal/resources/SsoMessages*.class

@@ -29,7 +29,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.filemonitor.FileBasedActionable;
 import com.ibm.ws.security.filemonitor.SecurityFileMonitor;
-import com.ibm.ws.security.sso.LTPAConfiguration;
+import com.ibm.ws.security.token.ltpa.LTPAConfiguration;
+import com.ibm.ws.security.token.ltpa.LTPAKeyInfoManager;
 import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
@@ -57,12 +58,10 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     static final String DEFAULT_CONFIG_LOCATION = "${server.config.dir}/resources/security/ltpa.keys";
     static final String DEFAULT_OUTPUT_LOCATION = "${server.output.dir}/resources/security/ltpa.keys";
     static final String KEY_AUTH_FILTER_REF = "authFilterRef";
-//    public static final String KEY_FILTER = "authenticationFilter";
     static protected final String KEY_SERVICE_PID = "service.pid";
     private final AtomicServiceReference<WsLocationAdmin> locationService = new AtomicServiceReference<WsLocationAdmin>(KEY_LOCATION_SERVICE);
     private final AtomicServiceReference<ExecutorService> executorService = new AtomicServiceReference<ExecutorService>(KEY_EXECUTOR_SERVICE);
     private final AtomicServiceReference<LTPAKeysChangeNotifier> ltpaKeysChangeNotifierService = new AtomicServiceReference<LTPAKeysChangeNotifier>(KEY_CHANGE_SERVICE);
-//    protected final AtomicServiceReference<AuthenticationFilter> authFilterServiceRef = new AtomicServiceReference<>(KEY_FILTER);
     private ServiceRegistration<LTPAConfiguration> registration = null;
     private volatile ComponentContext cc = null;
     private LTPAKeyCreateTask createTask;
@@ -79,28 +78,6 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     private final WriteLock writeLock = reentrantReadWriteLock.writeLock();
     private final ReadLock readLock = reentrantReadWriteLock.readLock();
     private String authFilterRef;
-
-//    protected void setAuthenticationFilter(ServiceReference<AuthenticationFilter> ref) {
-//        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//            Tr.debug(tc, "authFilter id: " + ref.getProperty(AuthFilterConfig.KEY_ID) + " authFilterRef: " + ref);
-//        }
-//        authFilterServiceRef.setReference(ref);
-//    }
-//
-//    protected void updatedAuthenticationFilter(ServiceReference<AuthenticationFilter> ref) {
-//        authFilterServiceRef.setReference(ref);
-//    }
-//
-//    protected void unsetAuthenticationFilter(ServiceReference<AuthenticationFilter> ref) {
-//        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//            Tr.debug(tc, "authFilter id: " + ref.getProperty(AuthFilterConfig.KEY_ID) + " authFilterRef: " + ref);
-//        }
-//        authFilterServiceRef.unsetReference(ref);
-//    }
-//
-//    public AuthenticationFilter getAuthFilter(String pid) {
-//        return authFilterServiceRef.getService();
-//    }
 
     protected void setExecutorService(ServiceReference<ExecutorService> ref) {
         executorService.setReference(ref);
@@ -131,7 +108,6 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         locationService.activate(context);
         executorService.activate(context);
         ltpaKeysChangeNotifierService.activate(context);
-//        authFilterServiceRef.activate(cc);
 
         loadConfig(props);
         setupRuntimeLTPAInfrastructure();
@@ -265,7 +241,6 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         executorService.deactivate(context);
         locationService.deactivate(context);
         ltpaKeysChangeNotifierService.deactivate(context);
-//        authFilterServiceRef.deactivate(cc);
     }
 
     protected void unsetFileMonitorRegistration() {
@@ -384,7 +359,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     }
 
     @Override
-    public String getAuthFilterId() {
+    public String getAuthFilterRef() {
         return authFilterRef;
     }
 

@@ -63,7 +63,8 @@ public interface WebAuthenticatorFactory {
                                                                       AtomicServiceReference<TAIService> taiServiceRef,
                                                                       ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor> interceptorServiceRef,
                                                                       WebAppSecurityConfig webAppSecConfig,
-                                                                      ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRef);
+                                                                      ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRef,
+                                                                      AtomicServiceReference<SSOService> ssoServiceRef);
 
     /**
      * @param webAppSecConfig

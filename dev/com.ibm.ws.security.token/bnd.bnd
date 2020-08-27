@@ -24,7 +24,7 @@ Export-Package: \
   com.ibm.wsspi.security.ltpa, \
   com.ibm.wsspi.security.token
 
-Import-Package: com.ibm.ws.common.internal.encoder, !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, com.ibm.ws.security.authentication.filter, *
+Import-Package: com.ibm.ws.common.internal.encoder, !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
 
 Private-Package: \
   com.ibm.ws.security.token.internal.*

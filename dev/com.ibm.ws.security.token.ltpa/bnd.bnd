@@ -18,7 +18,9 @@ Bundle-Description: Security LTPA Token, version=${bVersion}
 WS-TraceGroup: \
   Token
 
-Import-Package: com.ibm.ws.security.sso, com.ibm.ws.common.internal.encoder, !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
+Import-Package: com.ibm.ws.common.internal.encoder, !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
+
+Export-Package: com.ibm.ws.security.token.ltpa
 
 Private-Package: \
   com.ibm.ws.security.token.ltpa.internal.*
@@ -29,7 +31,7 @@ Include-Resource: \
     OSGI-INF/l10n=resources/OSGI-INF/l10n
 
 Service-Component: \
-  com.ibm.ws.security.sso.LTPAConfiguration; \
+  com.ibm.ws.security.token.ltpa.LTPAConfiguration; \
     implementation:=com.ibm.ws.security.token.ltpa.internal.LTPAConfigurationImpl; \
     activate:=activate; \
     deactivate:=deactivate; \
@@ -47,7 +49,7 @@ Service-Component: \
     activate:=activate; \
     deactivate:=deactivate; \
     configuration-policy:=ignore; \
-    ltpaConfig=com.ibm.ws.security.sso.LTPAConfiguration; \
+    ltpaConfig=com.ibm.ws.security.token.ltpa.LTPAConfiguration; \
     properties:='service.vendor=IBM,tokenType=Ltpa2', \
   com.ibm.ws.security.token.ltpa.internal.LTPAKeysChangeNotifier; \
     implementation:=com.ibm.ws.security.token.ltpa.internal.LTPAKeysChangeNotifier; \
@@ -65,7 +67,6 @@ Service-Component: \
 instrument.classesExcludes: com/ibm/ws/security/token/ltpa/internal/resources/*.class
 
 -buildpath: \
-    com.ibm.ws.security.sso;version=latest,\
 	com.ibm.ws.security.token;version=latest,\
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.websphere.org.osgi.core,\

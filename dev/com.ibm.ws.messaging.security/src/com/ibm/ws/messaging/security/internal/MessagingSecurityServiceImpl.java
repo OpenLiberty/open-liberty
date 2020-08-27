@@ -176,7 +176,7 @@ public class MessagingSecurityServiceImpl implements MessagingSecurityService, C
      * is raised during authentication resulting in an FFDC dump.
      * This function is a "dummy" that will influence OSGi's running of this bundle, delaying until the service can be resolved.
      */
-    @Reference( service = com.ibm.ws.security.sso.LTPAConfiguration.class )
+    @Reference( service = com.ibm.ws.security.token.ltpa.LTPAConfiguration.class )
     protected void setLTPA2(Object arg) {
         SibTr.entry(tc, CLASS_NAME + "setLTPA2");
         SibTr.exit(tc, CLASS_NAME + "setLTPA2");

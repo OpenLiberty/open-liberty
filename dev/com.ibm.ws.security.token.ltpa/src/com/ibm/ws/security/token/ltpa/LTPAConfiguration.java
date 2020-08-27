@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.sso;
+package com.ibm.ws.security.token.ltpa;
 
 import com.ibm.wsspi.security.ltpa.TokenFactory;
 
@@ -46,7 +46,7 @@ public interface LTPAConfiguration {
     /**
      * @return LTPAKeyInfoManager instance corresponding to this LTPA configuration
      */
-    LTPAKeyInfo getLTPAKeyInfoManager();
+    LTPAKeyInfoManager getLTPAKeyInfoManager();
 
     /**
      * @return LTPA key file
@@ -63,6 +63,6 @@ public interface LTPAConfiguration {
      */
     long getTokenExpiration();
 
-    String getAuthFilterId();
+    String getAuthFilterRef();
 
 }

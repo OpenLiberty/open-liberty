@@ -6,6 +6,7 @@ symbolicName=com.ibm.websphere.appserver.securityInfrastructure-1.0
  com.ibm.ws.security.token, \
  com.ibm.ws.security.authorization, \
  com.ibm.ws.security, \
+ com.ibm.ws.security.sso, \
  com.ibm.websphere.security, \
  com.ibm.ws.security.registry; start-phase:=CONTAINER_EARLY, \
  com.ibm.ws.management.security, \

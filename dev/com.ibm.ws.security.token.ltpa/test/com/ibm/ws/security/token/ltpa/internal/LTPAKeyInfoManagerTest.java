@@ -24,7 +24,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyFileUtility;
-import com.ibm.ws.security.sso.internal.LTPAKeyInfoManager;
+import com.ibm.ws.security.token.ltpa.LTPAKeyInfoManager;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 

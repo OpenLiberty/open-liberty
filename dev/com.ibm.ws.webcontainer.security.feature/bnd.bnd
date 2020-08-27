@@ -46,9 +46,9 @@ Service-Component: \
     unauthenticatedSubjectService=com.ibm.ws.security.authentication.UnauthenticatedSubjectService; \
     kernelProvisioner=com.ibm.ws.kernel.feature.FeatureProvisioner; \
     multiple:='interceptorService,webAuthenticator'; \
-    greedy:='interceptorService,webAuthenticator,authenticatorFactory'; \
+    greedy:='ssoService,interceptorService,webAuthenticator,authenticatorFactory'; \
     optional:='taiService,interceptorService,webAuthenticator'; \
-    dynamic:='securityService,taiService,interceptorService,webAuthenticator,authenticatorFactory'; \
+    dynamic:='securityService,ssoService,taiService,interceptorService,webAuthenticator,authenticatorFactory'; \
     properties:="service.vendor=IBM,com.ibm.ws.security.type=com.ibm.ws.feature"
 
 instrument.classesExcludes: com/ibm/ws/webcontainer/security/feature/resources/*.class

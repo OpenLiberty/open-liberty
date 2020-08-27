@@ -37,7 +37,7 @@ Export-Package: \
   com.ibm.ws.webcontainer.security.openid20, \
   com.ibm.ws.webcontainer.security.openidconnect
 
-Import-Package: com.ibm.ws.common.internal.encoder, !com.ibm.ws.kernel.boot.cmdline, com.ibm.ws.security.sso, *
+Import-Package: com.ibm.ws.common.internal.encoder, !com.ibm.ws.kernel.boot.cmdline, *
 
 Private-Package: \
   com.ibm.ws.webcontainer.security.jacc, \
@@ -68,8 +68,7 @@ Service-Component: \
     tokenManager=com.ibm.ws.security.token.TokenManager;\
     properties:="service.vendor=IBM"
 
--dsannotations: com.ibm.ws.webcontainer.security.internal.WebAuthenticatorFactoryImpl, \
-                com.ibm.ws.webcontainer.security.internal.SSOAuthenticator
+-dsannotations: com.ibm.ws.webcontainer.security.internal.WebAuthenticatorFactoryImpl
 
 instrument.classesExcludes: com/ibm/ws/webcontainer/security/resources/*.class
 
@@ -82,7 +81,6 @@ instrument.classesExcludes: com/ibm/ws/webcontainer/security/resources/*.class
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
 	com.ibm.ws.security;version=latest,\
 	com.ibm.ws.security.authentication;version=latest,\
-	com.ibm.ws.security.authentication.filter;version=latest,\
 	com.ibm.ws.kernel.feature.core;version=latest,\
 	com.ibm.ws.kernel.security.thread,\
 	com.ibm.ws.security.authorization;version=latest,\
@@ -93,7 +91,6 @@ instrument.classesExcludes: com/ibm/ws/webcontainer/security/resources/*.class
 	com.ibm.ws.webcontainer;version=latest,\
 	com.ibm.ws.security.credentials;version=latest,\
 	com.ibm.websphere.security;version=latest,\
-	com.ibm.ws.security.authentication.filter;version=latest,\
 	com.ibm.ws.security.authentication.tai;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
 	com.ibm.ws.javaee.dd;version=latest,\
