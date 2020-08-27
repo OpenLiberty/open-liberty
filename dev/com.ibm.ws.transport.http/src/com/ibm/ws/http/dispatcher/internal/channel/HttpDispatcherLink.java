@@ -1260,4 +1260,19 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         return false;
     }
 
+    /**
+     * Calls function to set the supress 0 byte chunk flag.
+     */
+    public void setSuppressZeroByteChunk(boolean suppress0ByteChunk) {
+        if (this.isc != null) {
+            this.isc.setSuppress0ByteChunk(suppress0ByteChunk);
+        }
+        else{
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Failed to set isc zero byte chunk because isc is null");
+            }
+        }
+        
+    }
+
 }
