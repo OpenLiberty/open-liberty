@@ -34,11 +34,8 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.grpc.ManagedChannel;
@@ -47,7 +44,7 @@ import io.grpc.examples.helloworld.GreeterGrpc;
 import io.grpc.examples.helloworld.GreeterGrpc.GreeterBlockingStub;
 
 @RunWith(FATRunner.class)
-@Mode(TestMode.FULL)
+//@Mode(TestMode.FULL)
 public class ClientInterceptorTests extends FATServletClient {
 
     protected static final Class<?> c = ClientInterceptorTests.class;
@@ -67,14 +64,12 @@ public class ClientInterceptorTests extends FATServletClient {
     static ManagedChannel worldChannel;
     private static GreeterBlockingStub worldServiceBlockingStub;
 
-    private static String hwc = new String("HelloWorldclient.war");
-
     private static final Set<String> appName = Collections.singleton("HelloWorldClient");
 
     @Rule
     public TestName name = new TestName();
 
-    // Create two servers, one for grpc client only and the other for grpc server only
+    // Create two servers, one for gRPC client only and the other for gRPC server only
     @Server("GrpcClientOnly")
     public static LibertyServer grpcClient;
 
@@ -84,7 +79,7 @@ public class ClientInterceptorTests extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        LOG.info("ClientInterceptorTests : setUp() : add helloWorldClient app to the grpc client");
+        LOG.info("ClientInterceptorTests : setUp() : add helloWorldClient app to the gRPC client");
         // add all classes from com.ibm.ws.grpc.fat.helloworld.client, io.grpc.examples.helloworld,
         // and com.ibm.ws.fat.grpc.tls to a new app HelloWorldClient.war in the server that holds
         // the client.
@@ -93,12 +88,12 @@ public class ClientInterceptorTests extends FATServletClient {
                                       "io.grpc.examples.helloworld");
 
         // Drop the server app into a different server
-        LOG.info("ClientInterceptorTests : setUp() : add helloWorldServer app to the grpc server");
+        LOG.info("ClientInterceptorTests : setUp() : add helloWorldServer app to the gRPC server");
         ShrinkHelper.defaultDropinApp(grpcServer, "HelloWorldService.war",
                                       "com.ibm.ws.grpc.fat.helloworld.service",
                                       "io.grpc.examples.helloworld");
 
-        LOG.info("ClientInterceptorTests : setUp() : start the grpc servers");
+        LOG.info("ClientInterceptorTests : setUp() : start the gRPC servers");
         grpcClient.useSecondaryHTTPPort();
         grpcClient.startServer(ClientInterceptorTests.class.getSimpleName() + ".client.log");
         grpcServer.startServer(ClientInterceptorTests.class.getSimpleName() + ".server.log");
@@ -110,7 +105,7 @@ public class ClientInterceptorTests extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         worldChannel.shutdownNow();
-        grpcClient.stopServer();
+        grpcClient.stopServer("CWWKT0301W");
         grpcServer.stopServer();
     }
 
@@ -131,13 +126,13 @@ public class ClientInterceptorTests extends FATServletClient {
     }
 
     /**
-     * Test a single grpc service interceptor
+     * Test a single gRPC service interceptor
      *
-     * This test adds a grpc element without a grpc interceptor and then updates
-     * to a grpc element with a grpc interceptor. Make sure the interceptor does not run
+     * This test adds a gRPC element without a gRPC interceptor and then updates
+     * to a gRPC element with a gRPC interceptor. Make sure the interceptor does not run
      * when not configured, and make sure it runs when configured.
      *
-     * <grpc target="helloworld.Greeter" serverInterceptors="com.ibm.ws.grpc.fat.helloworld.service.HelloWorldServerInterceptor"/>
+     * <gRPC target="helloworld.Greeter" serverInterceptors="com.ibm.ws.grpc.fat.helloworld.service.HelloWorldServerInterceptor"/>
      *
      * The simple interceptor prints a message to the log.
      *
@@ -152,41 +147,8 @@ public class ClientInterceptorTests extends FATServletClient {
         setServerConfiguration(grpcClient, GRPC_CLIENT_CONFIG_FILE);
         grpcClient.waitForConfigUpdateInLogUsingMark(appName);
 
-        String contextRoot = "HelloWorldClient";
         try (WebClient webClient = new WebClient()) {
-
-            // Construct the URL for the test
-            URL url = GrpcTestUtils.createHttpUrl(grpcClient, contextRoot, "grpcClient");
-            HtmlPage page = (HtmlPage) webClient.getPage(url);
-
-            // Log the page for debugging if necessary in the future.
-            Log.info(c, name.getMethodName(), page.asText());
-            Log.info(c, name.getMethodName(), page.asXml());
-
-            assertTrue("the servlet was not loaded correctly",
-                       page.asText().contains("gRPC helloworld client example"));
-
-            HtmlForm form = page.getFormByName("form1");
-
-            // set a name in the form, which we'll expect the RPC to return
-            HtmlTextInput inputText = (HtmlTextInput) form.getInputByName("user");
-            inputText.setValueAttribute("us3r1");
-
-            // set the port of the grpcserver in the form
-            HtmlTextInput inputPort = (HtmlTextInput) form.getInputByName("port");
-            inputPort.setValueAttribute(String.valueOf(grpcServer.getHttpDefaultPort()));
-
-            // set the hostname of the gprcserver in the form
-            HtmlTextInput inputHost = (HtmlTextInput) form.getInputByName("address");
-            inputHost.setValueAttribute(grpcServer.getHostname());
-
-            // submit to the grpcClient, and execute the RPC
-            HtmlSubmitInput submitButton = form.getInputByName("submit");
-            page = submitButton.click();
-
-            // Log the page for debugging if necessary in the future.
-            Log.info(c, name.getMethodName(), page.asText());
-            assertTrue("the gRPC request did not complete correctly", page.asText().contains("us3r1"));
+            execureRPC(webClient, "us3r1");
 
             //Make sure the Interceptor was not called and did not log a message
             String interceptorHasRun = grpcClient.verifyStringNotInLogUsingMark("com.ibm.ws.grpc.fat.helloworld.client.HelloWorldClientInterceptor has been invoked!",
@@ -203,39 +165,7 @@ public class ClientInterceptorTests extends FATServletClient {
         grpcClient.waitForConfigUpdateInLogUsingMark(appName);
 
         try (WebClient webClient = new WebClient()) {
-
-            // Construct the URL for the test, get the form from the client
-            URL url = GrpcTestUtils.createHttpUrl(grpcClient, contextRoot, "grpcClient");
-            HtmlPage page = (HtmlPage) webClient.getPage(url);
-
-            // Log the page for debugging if necessary in the future.
-            Log.info(c, name.getMethodName(), page.asText());
-            Log.info(c, name.getMethodName(), page.asXml());
-
-            assertTrue("the servlet was not loaded correctly",
-                       page.asText().contains("gRPC helloworld client example"));
-
-            HtmlForm form = page.getFormByName("form1");
-
-            // set a name in the form, which we'll expect the RPC to return
-            HtmlTextInput inputText = (HtmlTextInput) form.getInputByName("user");
-            inputText.setValueAttribute("us3r2");
-
-            // set the port in the form
-            HtmlTextInput inputPort = (HtmlTextInput) form.getInputByName("port");
-            inputPort.setValueAttribute(String.valueOf(grpcServer.getHttpDefaultPort()));
-
-            // set the hostname in the form
-            HtmlTextInput inputHost = (HtmlTextInput) form.getInputByName("address");
-            inputHost.setValueAttribute(grpcServer.getHostname());
-
-            // submit the form to the client which will execute the RPC to the server
-            HtmlSubmitInput submitButton = form.getInputByName("submit");
-            page = submitButton.click();
-
-            // Log the page for debugging if necessary in the future.
-            Log.info(c, name.getMethodName(), page.asText());
-            assertTrue("the gRPC request did not complete correctly", page.asText().contains("us3r2"));
+            execureRPC(webClient, "us3r2");
 
             //Make sure the Interceptor was called and logged a message
             String interceptorHasRun = grpcClient.waitForStringInLog("com.ibm.ws.grpc.fat.helloworld.client.HelloWorldClientInterceptor has been invoked!",
@@ -248,11 +178,11 @@ public class ClientInterceptorTests extends FATServletClient {
     }
 
     /**
-     * Test a multiple grpc service interceptors
+     * Test a multiple gRPC service interceptors
      *
-     * This test adds a grpc element with multiple grpc interceptors. Make sure they both run.
+     * This test adds a gRPC element with multiple gRPC interceptors. Make sure they both run.
      *
-     * <grpc target="helloworld.Greeter" serverInterceptors="com.ibm.ws.grpc.fat.helloworld.service.HelloWorldServerInterceptor"/>
+     * <gRPC target="helloworld.Greeter" serverInterceptors="com.ibm.ws.grpc.fat.helloworld.service.HelloWorldServerInterceptor"/>
      *
      * These simple interceptors prints a message to the log.
      *
@@ -273,41 +203,9 @@ public class ClientInterceptorTests extends FATServletClient {
         LOG.info("ClientInterceptorTests : Client port secondary " + grpcClient.getHttpSecondaryPort());
         LOG.info("ClientInterceptorTests : Sserver port secondary " + grpcServer.getHttpSecondaryPort());
 
-        String contextRoot = "HelloWorldClient";
         try (WebClient webClient = new WebClient()) {
 
-            // Construct the URL for the test
-            URL url = GrpcTestUtils.createHttpUrl(grpcClient, contextRoot, "grpcClient");
-            HtmlPage page = (HtmlPage) webClient.getPage(url);
-
-            // Log the page for debugging if necessary in the future.
-            Log.info(c, name.getMethodName(), page.asText());
-            Log.info(c, name.getMethodName(), page.asXml());
-
-            assertTrue("the servlet was not loaded correctly",
-                       page.asText().contains("gRPC helloworld client example"));
-
-            HtmlForm form = page.getFormByName("form1");
-
-            // set a name in the form, which we'll expect the RPC to return
-            HtmlTextInput inputText = (HtmlTextInput) form.getInputByName("user");
-            inputText.setValueAttribute("us3r3");
-
-            // set the port in the form
-            HtmlTextInput inputPort = (HtmlTextInput) form.getInputByName("port");
-            inputPort.setValueAttribute(String.valueOf(grpcServer.getHttpDefaultPort()));
-
-            // set the hostname in the form
-            HtmlTextInput inputHost = (HtmlTextInput) form.getInputByName("address");
-            inputHost.setValueAttribute(grpcServer.getHostname());
-
-            // submit, and execute the RPC
-            HtmlSubmitInput submitButton = form.getInputByName("submit");
-            page = submitButton.click();
-
-            // Log the page for debugging if necessary in the future.
-            Log.info(c, name.getMethodName(), page.asText());
-            assertTrue("the gRPC request did not complete correctly", page.asText().contains("us3r3"));
+            execureRPC(webClient, "us3r3");
 
             //Make sure both Interceptors ran and logged a message
             String interceptorHasRun = grpcClient.waitForStringInLog("com.ibm.ws.grpc.fat.helloworld.client.HelloWorldClientInterceptor has been invoked!",
@@ -321,18 +219,16 @@ public class ClientInterceptorTests extends FATServletClient {
     }
 
     /**
-     * Test an invalid grpc client interceptor
+     * Test an invalid gRPC client interceptor
      *
-     * This test adds a grpc element with a non-existent grpc interceptor. Check for a log error.
+     * This test adds a gRPC element with a non-existent gRPC interceptor. Check for a log error.
      *
-     * <grpc target="helloworld.Greeter" serverInterceptors="com.ibm.ws.grpc.fat.helloworld.service.HelloWorldServerInterceptor"/>
+     * <gRPC target="helloworld.Greeter" serverInterceptors="com.ibm.ws.grpc.fat.helloworld.service.HelloWorldServerInterceptor"/>
      *
      * @throws Exception
      *
      **/
-    // this test currently fails
-    //@Test
-    @ExpectedFFDC({ "java.lang.ClassNotFoundException" })
+    @Test
     public void testInvalidClientInterceptor() throws Exception {
 
         LOG.info("ClientInterceptorTests : testInvalidClientInterceptor() : update the server.xml file to one with a </grpc> element with an invalid interceptor");
@@ -340,12 +236,50 @@ public class ClientInterceptorTests extends FATServletClient {
         // Update to a config file with a <grpc> element with invalid interceptor
         setServerConfiguration(grpcClient, GRPC_CLIENT_INVALID_CLIENT_INTERCEPTOR_FILE);
 
-        String interceptorError = grpcClient.waitForStringInLogUsingMark("CWWKT0301W: Could not load gRPC interceptor defined in clientInterceptors",
-                                                                         SHORT_TIMEOUT);
+        try (WebClient webClient = new WebClient()) {
+            execureRPC(webClient, "us3r4");
+            String interceptorError = grpcClient.waitForStringInLogUsingMark("CWWKT0301W: Could not load gRPC interceptor defined in clientInterceptors",
+                                                                             SHORT_TIMEOUT);
 
-        if (interceptorError == null) {
-            Assert.fail(c + ": Did not log grpc client interceptor error msg as expected in " + SHORT_TIMEOUT + "ms");
+            if (interceptorError == null) {
+                Assert.fail(c + ": Did not log gRPC client interceptor error msg as expected in " + SHORT_TIMEOUT + "ms");
+            }
         }
     }
 
+    private void execureRPC(WebClient webClient, String user) throws Exception {
+        String contextRoot = "HelloWorldClient";
+        // Construct the URL for the test
+        URL url = GrpcTestUtils.createHttpUrl(grpcClient, contextRoot, "grpcClient");
+        HtmlPage page = (HtmlPage) webClient.getPage(url);
+
+        // Log the page for debugging if necessary in the future.
+        Log.info(c, name.getMethodName(), page.asText());
+        Log.info(c, name.getMethodName(), page.asXml());
+
+        assertTrue("the servlet was not loaded correctly",
+                   page.asText().contains("gRPC helloworld client example"));
+
+        HtmlForm form = page.getFormByName("form1");
+
+        // set a name in the form, which we'll expect the RPC to return
+        HtmlTextInput inputText = (HtmlTextInput) form.getInputByName("user");
+        inputText.setValueAttribute(user);
+
+        // set the port in the form
+        HtmlTextInput inputPort = (HtmlTextInput) form.getInputByName("port");
+        inputPort.setValueAttribute(String.valueOf(grpcServer.getHttpDefaultPort()));
+
+        // set the hostname in the form
+        HtmlTextInput inputHost = (HtmlTextInput) form.getInputByName("address");
+        inputHost.setValueAttribute(grpcServer.getHostname());
+
+        // submit, and execute the RPC
+        HtmlSubmitInput submitButton = form.getInputByName("submit");
+        page = submitButton.click();
+
+        // Log the page for debugging if necessary in the future.
+        Log.info(c, name.getMethodName(), page.asText());
+        assertTrue("the gRPC request did not complete correctly", page.asText().contains(user));
+    }
 }
