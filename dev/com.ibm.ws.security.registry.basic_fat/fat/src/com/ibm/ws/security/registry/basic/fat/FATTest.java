@@ -53,13 +53,21 @@ public class FATTest {
 
         Log.info(c, "setUp", "Starting the server... (will wait for userRegistry servlet to start)");
         server.addInstalledAppForValidation("userRegistry");
+        startServer();
+        Log.info(c, "setUp", "Creating servlet connection the server");
+        servlet = new UserRegistryServletConnection(server.getHostname(), server.getHttpDefaultPort());
+    }
+
+    /**
+     * @throws Exception
+     */
+    private static void startServer() throws Exception {
+        Log.info(c, "startServer", "Starting the server...");
         server.startServer(c.getName() + ".log");
         assertNotNull("Security service did not report it was ready",
                       server.waitForStringInLog("CWWKS0008I"));
         assertNotNull("The application did not report is was started",
                       server.waitForStringInLog("CWWKZ0001I"));
-        Log.info(c, "setUp", "Creating servlet connection the server");
-        servlet = new UserRegistryServletConnection(server.getHostname(), server.getHttpDefaultPort());
     }
 
     @AfterClass
@@ -211,9 +219,9 @@ public class FATTest {
         if (!serverConfigurationFile.equals(serverXML)) {
             // Update server.xml
             Log.info(c, "setServerConfiguration", "setServerConfigurationFile to : " + serverXML);
-            server.setMarkToEndOfLog();
+            server.stopServer();
             server.setServerConfigurationFile(serverXML);
-            server.waitForStringInLog("CWWKG0017I");
+            startServer();
             serverConfigurationFile = serverXML;
         }
     }
