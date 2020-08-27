@@ -89,6 +89,10 @@ public class ClientListener implements Runnable, Closeable {
     @Override
     public void close() throws IOException {
         privateLatch.countDown();
+        if (holder == null || holder.value == null ) {
+            // nothing to close
+            return;
+        }
         holder.value.close();
     }
     
