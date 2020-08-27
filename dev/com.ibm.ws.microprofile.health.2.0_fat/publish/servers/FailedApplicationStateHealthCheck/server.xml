@@ -32,7 +32,7 @@
         </appProperties>
     </application>
     
-    <logging traceSpecification="*=info:HEALTH=all:com.ibm.websphere.org.eclipse.microprofile.health.2.0.*=all=enabled"/>
+    <logging traceSpecification="*=info:HEALTH=all:logservice=all=enabled:com.ibm.websphere.org.eclipse.microprofile.health.2.0.*=all=enabled"/>
 
     <!-- this sections mirrors permissions.xml to apply the permissions to the Kafka client jar in the shared library -->
     <variable name="kafkaCodebase" value="${server.config.dir}/kafkaLib/kafka-clients-2.3.0.jar"/>
