@@ -441,7 +441,7 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         }
     }
 
-    public final static int CLIENT_STREAM_NUMBERS_OF_MESSAGES_PER_CONNECTION = 200;
+    public final static int CLIENT_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION = 200;
     public final static int CLIENT_STREAM_TIME_BETWEEN_MESSAGES_MSEC = 0;
     public final static int CLIENT_STREAM_MESSAGE_SIZE = 50; // set to 5, 50, 500, 5000, or else you will get 50.
 
@@ -459,7 +459,7 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         StreamObserver<StreamRequestA> clientStreamAX = _producerAsyncStub.clientStreamA(csc);
 
         // client streaming
-        int numberOfMessages = CLIENT_STREAM_NUMBERS_OF_MESSAGES_PER_CONNECTION;
+        int numberOfMessages = CLIENT_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION;
         int timeBetweenMessagesMsec = CLIENT_STREAM_TIME_BETWEEN_MESSAGES_MSEC;
         StreamRequestA nextRequest = null;
 
@@ -479,7 +479,6 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         }
 
         for (int i = 1; i <= numberOfMessages; i++) {
-
             if (i == 1) {
                 nextMessage = firstMessage;
             } else if (i == numberOfMessages) {
@@ -697,7 +696,14 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         }
     }
 
+    // -------------------------------------------------------------
+
+    public final static int TWOWAY_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION = 200;
+    public final static int TWOWAY_STREAM_TIME_BETWEEN_MESSAGES_MSEC = 0;
+    public final static int TWOWAY_STREAM_MESSAGE_SIZE = 50; // set to 5, 50, 500, 5000, or else you will get 50.
+
     public String grpcTwoWayStreamApp(boolean asyncThread) {
+        log.info("Producer: grpcTwoWayStreamApp(): Entered");
 
         String firstTwoWayMessageReceived = null;
         String lastTwoWayMessageReceived = null;
@@ -707,30 +713,34 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         StreamObserver<StreamRequestA> twoWayStreamAX = null;
         TwoWayStreamClass tws = null;
 
-        log.info("Producer: grpcTwoWayStreamApp(): Entered");
+        String sChars = "12345678901234567890123456789012345678901234567890"; // 50 characters
+        if (TWOWAY_STREAM_MESSAGE_SIZE == 5) {
+            sChars = "12345";
+        } else if (TWOWAY_STREAM_MESSAGE_SIZE == 500) {
+            String s50chars = "12345678901234567890123456789012345678901234567890";
+            sChars = s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars;
+        } else if (TWOWAY_STREAM_MESSAGE_SIZE == 5000) {
+            String s50chars = "12345678901234567890123456789012345678901234567890";
+            String s500chars = s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars;
+            sChars = s500chars + s500chars + s500chars + s500chars + s500chars + s500chars + s500chars + s500chars + s500chars + s500chars;
+        }
+
         // This if for sending a stream of data to the server and then getting a stream reply
         tws = new TwoWayStreamClass(latch);
         if (asyncThread == false) {
             twoWayStreamAX = _producerAsyncStub.twoWayStreamA(tws);
-            // twoWayStreamAX = _producerAsyncStub.twoWayStreamA(new StreamObserver<StreamReplyA>() {
         } else {
             twoWayStreamAX = _producerAsyncStub.twoWayStreamAsyncThread(tws);
-            // twoWayStreamAX = _producerAsyncStub.twoWayStreamAsyncThread(new StreamObserver<StreamReplyA>() {
         }
 
         // client streaming
-        int numberOfMessages = 200;
-        int timeBetweenMessagesMsec = 0;
+        int numberOfMessages = TWOWAY_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION;
+        int timeBetweenMessagesMsec = TWOWAY_STREAM_TIME_BETWEEN_MESSAGES_MSEC;
         StreamRequestA nextRequest = null;
 
         String nextMessage = null;
         String firstMessage = "This is the first Response Message..."; // don't change, hardcode to match string in StoreProducerService
         String lastMessage = "And this is the last Response Message"; // don't change, hardcode to match string in StoreProducerService
-
-        //String s5chars = "12345";
-        String s50chars = "12345678901234567890123456789012345678901234567890";
-        //String s500chars = s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars;
-        //String s5000chars = s500chars + s500chars + s500chars + s500chars + s500chars + s500chars + s500chars + s500chars + s500chars + s500chars;
 
         for (int i = 1; i <= numberOfMessages; i++) {
             if (i == 1) {
@@ -739,7 +749,7 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
                 nextMessage = lastMessage;
             } else {
                 nextMessage = "--Message " + i + " of " + numberOfMessages + " left client at time: " + System.currentTimeMillis() + "--";
-                nextMessage = nextMessage + s50chars;
+                nextMessage = nextMessage + sChars;
             }
 
             nextRequest = StreamRequestA.newBuilder().setMessage(nextMessage).build();
@@ -764,7 +774,7 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
 
         // wait for the response from server
         try {
-            latch.await(5, TimeUnit.SECONDS);
+            latch.await(25, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             log.info("grpcTwoWayStreamApp: latch.await got interrupted");
         }
