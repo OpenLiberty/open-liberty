@@ -91,8 +91,6 @@ public class BasicCdi20Tests extends FATServletClient {
         
         ShrinkHelper.exportDropinAppToServer(server, app1, DeployOptions.SERVER_ONLY);
         
-        server.addInstalledAppForValidation(BEAN_MANAGER_LOOKUP_APP_NAME);
-        
         if (TestModeFilter.shouldRun(TestMode.FULL)) {
 
             WebArchive app2 = ShrinkWrap.create(WebArchive.class, CONFIGURATION_APP_NAME+ ".war")
@@ -117,11 +115,6 @@ public class BasicCdi20Tests extends FATServletClient {
             ShrinkHelper.exportDropinAppToServer(server, app2, DeployOptions.SERVER_ONLY);
             ShrinkHelper.exportDropinAppToServer(server, app3, DeployOptions.SERVER_ONLY);
             ShrinkHelper.exportDropinAppToServer(server, app4, DeployOptions.SERVER_ONLY);
-
-            
-            server.addInstalledAppForValidation(CONFIGURATION_APP_NAME);
-            server.addInstalledAppForValidation(INTERCEPTION_FACTORY_APP_NAME);
-            server.addInstalledAppForValidation(TRIM_TEST_APP_NAME);
 
         }
 
