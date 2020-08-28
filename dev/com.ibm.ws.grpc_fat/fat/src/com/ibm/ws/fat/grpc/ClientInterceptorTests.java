@@ -150,7 +150,7 @@ public class ClientInterceptorTests extends FATServletClient {
         grpcClient.waitForConfigUpdateInLogUsingMark(appName);
 
         try (WebClient webClient = new WebClient()) {
-            execureRPC(webClient, "us3r1");
+            executeRPC(webClient, "us3r1");
 
             //Make sure the Interceptor was not called and did not log a message
             String interceptorHasRun = grpcClient.verifyStringNotInLogUsingMark("com.ibm.ws.grpc.fat.helloworld.client.HelloWorldClientInterceptor has been invoked!",
@@ -167,7 +167,7 @@ public class ClientInterceptorTests extends FATServletClient {
         grpcClient.waitForConfigUpdateInLogUsingMark(appName);
 
         try (WebClient webClient = new WebClient()) {
-            execureRPC(webClient, "us3r2");
+            executeRPC(webClient, "us3r2");
 
             //Make sure the Interceptor was called and logged a message
             String interceptorHasRun = grpcClient.waitForStringInLog("com.ibm.ws.grpc.fat.helloworld.client.HelloWorldClientInterceptor has been invoked!",
@@ -207,7 +207,7 @@ public class ClientInterceptorTests extends FATServletClient {
 
         try (WebClient webClient = new WebClient()) {
 
-            execureRPC(webClient, "us3r3");
+            executeRPC(webClient, "us3r3");
 
             //Make sure both Interceptors ran and logged a message
             String interceptorHasRun = grpcClient.waitForStringInLog("com.ibm.ws.grpc.fat.helloworld.client.HelloWorldClientInterceptor has been invoked!",
@@ -239,7 +239,7 @@ public class ClientInterceptorTests extends FATServletClient {
         setServerConfiguration(grpcClient, GRPC_CLIENT_INVALID_CLIENT_INTERCEPTOR_FILE);
 
         try (WebClient webClient = new WebClient()) {
-            execureRPC(webClient, "us3r4");
+            executeRPC(webClient, "us3r4");
             String interceptorError = grpcClient.waitForStringInLogUsingMark("CWWKT0301W: Could not load gRPC interceptor defined in clientInterceptors",
                                                                              SHORT_TIMEOUT);
 
@@ -249,7 +249,7 @@ public class ClientInterceptorTests extends FATServletClient {
         }
     }
 
-    private void execureRPC(WebClient webClient, String user) throws Exception {
+    private void executeRPC(WebClient webClient, String user) throws Exception {
         String contextRoot = "HelloWorldClient";
         // Construct the URL for the test
         URL url = GrpcTestUtils.createHttpUrl(grpcClient, contextRoot, "grpcClient");
