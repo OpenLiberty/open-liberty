@@ -25,6 +25,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 StackTraceFilteringForNoClassDefFoundErrorTest.class, StackTraceFilteringForBadlyWrittenThrowableTest.class,
                 StackTraceFilteringForIBMFeatureExceptionTest.class, StackTraceFilteringForUserFeatureExceptionTest.class,
                 StackTraceFilteringForSpecificationClassesExceptionTest.class,
+                StackTraceJoinerTest.class,
                 InvalidTraceSpecificationTest.class,
                 HealthCenterTest.class,
                 TestHideMessages.class,
