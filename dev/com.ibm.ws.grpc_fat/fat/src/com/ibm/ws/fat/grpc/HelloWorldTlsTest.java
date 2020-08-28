@@ -35,7 +35,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.JavaInfo;
@@ -119,7 +119,7 @@ public class HelloWorldTlsTest extends FATServletClient {
      * @throws Exception
      */
     @Test
-    @ExpectedFFDC("io.grpc.StatusRuntimeException")
+    @AllowedFFDC("io.grpc.StatusRuntimeException")
     public void testHelloWorldWithTlsInvalidClientTrustStore() throws Exception {
         if (!checkJavaVersion()) {
             return;
