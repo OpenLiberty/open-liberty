@@ -22,6 +22,26 @@ import static io.grpc.internal.GrpcUtil.TIMEOUT_KEY;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINEST;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
+
+import javax.servlet.AsyncContext;
+import javax.servlet.AsyncEvent;
+import javax.servlet.AsyncListener;
+import javax.servlet.ReadListener;
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.google.common.io.BaseEncoding;
 import com.ibm.websphere.ras.annotation.Trivial;
 
@@ -37,27 +57,9 @@ import io.grpc.internal.GrpcUtil;
 import io.grpc.internal.ReadableBuffers;
 import io.grpc.internal.ServerTransportListener;
 import io.grpc.internal.StatsTraceContext;
+import io.openliberty.grpc.internal.security.GrpcServerSecurity;
 import io.openliberty.grpc.internal.servlet.GrpcServerComponent;
 import io.openliberty.grpc.internal.servlet.GrpcServletUtils;
-
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
-import javax.servlet.AsyncContext;
-import javax.servlet.AsyncEvent;
-import javax.servlet.AsyncListener;
-import javax.servlet.ReadListener;
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * An adapter that transforms {@link HttpServletRequest} into gRPC request and lets a gRPC server
@@ -116,30 +118,38 @@ public final class ServletAdapter {
    * <p>Do not modify {@code req} and {@code resp} before or after calling this method. However,
    * calling {@code resp.setBufferSize()} before invocation is allowed.
    */
-  public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    checkArgument(req.isAsyncSupported(), "servlet does not support asynchronous operation");
-    checkArgument(ServletAdapter.isGrpc(req), "the request is not a gRPC request");
+	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+	  checkArgument(req.isAsyncSupported(), "servlet does not support asynchronous operation");
+	  checkArgument(ServletAdapter.isGrpc(req), "the request is not a gRPC request");
 
-    InternalLogId logId = InternalLogId.allocate(ServletAdapter.class, null);
-    logger.log(FINE, "[{0}] RPC started", logId);
+	  InternalLogId logId = InternalLogId.allocate(ServletAdapter.class, null);
+	  logger.log(FINE, "[{0}] RPC started", logId);
 
-    String method = req.getRequestURI().substring(1); // remove the leading "/"
+	  String method = req.getRequestURI().substring(1); // remove the leading "/"
 
-    // Liberty change: remove application context root from path 
-    // then perform authentication/authorization
-    method = GrpcServletUtils.translateLibertyPath(method);
-    boolean libertyAuth = true;
-    if (GrpcServerComponent.isSecurityEnabled()) {
-      libertyAuth = GrpcServletUtils.doServletAuth(req, resp, method);
-    }
+		// Liberty change: remove application context root from path
+		// then perform authentication/authorization
+		method = GrpcServletUtils.translateLibertyPath(method);
+		boolean libertyAuth = true;
+		if (GrpcServerComponent.isSecurityEnabled()) {
+			if (resp.isCommitted()) {
+				if (logger.isLoggable(FINEST)) {
+					logger.log(FINE, "gRPC request for {0} had security failure.", method );
+				}
+				return;
 
-    AsyncContext asyncCtx = req.startAsync(req, resp);
+			} else {
+				libertyAuth = GrpcServerSecurity.doServletAuth(req, resp, method);
+			}
+		}
 
-    if (logger.isLoggable(FINEST)) {
-        logger.log(FINE, "Liberty inbound gRPC request path translated to {0}", method);
-    }
+		AsyncContext asyncCtx = req.startAsync(req, resp);
 
-    Metadata headers = getHeaders(req, libertyAuth);
+		if (logger.isLoggable(FINEST)) {
+			logger.log(FINE, "Liberty inbound gRPC request path translated to {0}", method);
+		}
+
+		Metadata headers = getHeaders(req, libertyAuth);
 
     if (logger.isLoggable(FINEST)) {
       logger.log(FINEST, "[{0}] method: {1}", new Object[] {logId, method});
@@ -169,12 +179,23 @@ public final class ServletAdapter {
         getAuthority(req),
         logId);
 
+
+	if (logger.isLoggable(FINEST)) {
+		logger.log(FINE, "set the listeners on async request " + asyncCtx);
+	}
+	
+    asyncCtx.getRequest().getInputStream()
+    .setReadListener(new GrpcReadListener(stream, asyncCtx, logId));
+    
+    asyncCtx.addListener(new GrpcAsycListener(stream, logId));
+    
+	if (logger.isLoggable(FINEST)) {
+		logger.log(FINE, "the listeners set on async request");
+	}
+
     transportListener.streamCreated(stream, method, headers);
     stream.transportState().runOnTransportThread(stream.transportState()::onStreamAllocated);
-
-    asyncCtx.getRequest().getInputStream()
-        .setReadListener(new GrpcReadListener(stream, asyncCtx, logId));
-    asyncCtx.addListener(new GrpcAsycListener(stream, logId));
+    
   }
 
   private static Metadata getHeaders(HttpServletRequest req, boolean libertyAuth) {
@@ -201,7 +222,7 @@ public final class ServletAdapter {
     }
 
     // liberty change: add result of authorization to headers
-    GrpcServletUtils.addLibertyAuthHeader(byteArrays, req, libertyAuth);
+    GrpcServerSecurity.addLibertyAuthHeader(byteArrays, req, libertyAuth);
 
     return InternalMetadata.newMetadata(byteArrays.toArray(new byte[][]{}));
   }

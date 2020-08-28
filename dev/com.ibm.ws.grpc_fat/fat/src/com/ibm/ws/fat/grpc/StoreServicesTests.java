@@ -135,15 +135,24 @@ public class StoreServicesTests extends FATServletClient {
     }
 
     //Similar to these are added in logs and we can ignore
-    //m.ibm.ws.container.service.app.deploy.ManifestClassPathUtils W SRVE9967W: The manifest class path xml-apis.jar can not be found in jar file wsjar:file:/.../open-liberty/dev/build.image/wlp/usr/servers/StoreServer/apps/StoreApp.war!/WEB-INF/lib/serializer-2.7.2.jar or its parent.
-    //m.ibm.ws.container.service.app.deploy.ManifestClassPathUtils W SRVE9967W: The manifest class path xercesImpl.jar can not be found in jar file wsjar:file:/.../open-liberty/dev/build.image/wlp/usr/servers/StoreServer/apps/StoreApp.war!/WEB-INF/lib/xalan-2.7.2.jar or its parent.
+    //SRVE9967W: The manifest class path xml-apis.jar can not be found in jar file wsjar:file:/.../open-liberty/dev/build.image/wlp/usr/servers/StoreServer/apps/StoreApp.war!/WEB-INF/lib/serializer-2.7.2.jar or its parent.
+    //SRVE9967W: The manifest class path xercesImpl.jar can not be found in jar file wsjar:file:/.../open-liberty/dev/build.image/wlp/usr/servers/StoreServer/apps/StoreApp.war!/WEB-INF/lib/xalan-2.7.2.jar or its parent.
     @AfterClass
     public static void tearDown() throws Exception {
         Exception excep = null;
 
         try {
+            //Expected failures
+
+            //CWIML4537E: The login operation could not be completed.
+            //The specified principal name dev2 is not found in the back-end repository.
+
+            //CWWKS1725E: The resource server failed to validate the access token
+            //because the validationEndpointUrl [null] was either not a valid URL
+            // or could not perform the validation.
+
             if (storeServer != null)
-                storeServer.stopServer("SRVE9967W");
+                storeServer.stopServer("SRVE9967W", "CWIML4537E", "CWWKS1725E");
         } catch (Exception e) {
             excep = e;
             Log.error(c, "store tearDown", e);

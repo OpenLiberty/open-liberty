@@ -247,6 +247,37 @@ public final class AppConsumerServiceGrpc {
     return getGetAllAppNamesAuthHeaderViaClientInterceptorMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<com.google.protobuf.Empty,
+      com.ibm.test.g3store.grpc.NameResponse> getGetAppNameSetBadRolesMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "getAppNameSetBadRoles",
+      requestType = com.google.protobuf.Empty.class,
+      responseType = com.ibm.test.g3store.grpc.NameResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.google.protobuf.Empty,
+      com.ibm.test.g3store.grpc.NameResponse> getGetAppNameSetBadRolesMethod() {
+    io.grpc.MethodDescriptor<com.google.protobuf.Empty, com.ibm.test.g3store.grpc.NameResponse> getGetAppNameSetBadRolesMethod;
+    if ((getGetAppNameSetBadRolesMethod = AppConsumerServiceGrpc.getGetAppNameSetBadRolesMethod) == null) {
+      synchronized (AppConsumerServiceGrpc.class) {
+        if ((getGetAppNameSetBadRolesMethod = AppConsumerServiceGrpc.getGetAppNameSetBadRolesMethod) == null) {
+          AppConsumerServiceGrpc.getGetAppNameSetBadRolesMethod = getGetAppNameSetBadRolesMethod =
+              io.grpc.MethodDescriptor.<com.google.protobuf.Empty, com.ibm.test.g3store.grpc.NameResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "getAppNameSetBadRoles"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.google.protobuf.Empty.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.ibm.test.g3store.grpc.NameResponse.getDefaultInstance()))
+              .setSchemaDescriptor(new AppConsumerServiceMethodDescriptorSupplier("getAppNameSetBadRoles"))
+              .build();
+        }
+      }
+    }
+    return getGetAppNameSetBadRolesMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -368,6 +399,13 @@ public final class AppConsumerServiceGrpc {
       asyncUnimplementedUnaryCall(getGetAllAppNamesAuthHeaderViaClientInterceptorMethod(), responseObserver);
     }
 
+    /**
+     */
+    public void getAppNameSetBadRoles(com.google.protobuf.Empty request,
+        io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.NameResponse> responseObserver) {
+      asyncUnimplementedUnaryCall(getGetAppNameSetBadRolesMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -419,6 +457,13 @@ public final class AppConsumerServiceGrpc {
                 com.google.protobuf.Empty,
                 com.ibm.test.g3store.grpc.NameResponse>(
                   this, METHODID_GET_ALL_APP_NAMES_AUTH_HEADER_VIA_CLIENT_INTERCEPTOR)))
+          .addMethod(
+            getGetAppNameSetBadRolesMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.google.protobuf.Empty,
+                com.ibm.test.g3store.grpc.NameResponse>(
+                  this, METHODID_GET_APP_NAME_SET_BAD_ROLES)))
           .build();
     }
   }
@@ -516,6 +561,14 @@ public final class AppConsumerServiceGrpc {
       asyncUnaryCall(
           getChannel().newCall(getGetAllAppNamesAuthHeaderViaClientInterceptorMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     */
+    public void getAppNameSetBadRoles(com.google.protobuf.Empty request,
+        io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.NameResponse> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getGetAppNameSetBadRolesMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -583,6 +636,13 @@ public final class AppConsumerServiceGrpc {
     public com.ibm.test.g3store.grpc.NameResponse getAllAppNamesAuthHeaderViaClientInterceptor(com.google.protobuf.Empty request) {
       return blockingUnaryCall(
           getChannel(), getGetAllAppNamesAuthHeaderViaClientInterceptorMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public com.ibm.test.g3store.grpc.NameResponse getAppNameSetBadRoles(com.google.protobuf.Empty request) {
+      return blockingUnaryCall(
+          getChannel(), getGetAppNameSetBadRolesMethod(), getCallOptions(), request);
     }
   }
 
@@ -657,6 +717,14 @@ public final class AppConsumerServiceGrpc {
       return futureUnaryCall(
           getChannel().newCall(getGetAllAppNamesAuthHeaderViaClientInterceptorMethod(), getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.ibm.test.g3store.grpc.NameResponse> getAppNameSetBadRoles(
+        com.google.protobuf.Empty request) {
+      return futureUnaryCall(
+          getChannel().newCall(getGetAppNameSetBadRolesMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_GET_ALL_APP_NAMES = 0;
@@ -664,8 +732,9 @@ public final class AppConsumerServiceGrpc {
   private static final int METHODID_PURCHASE_RETAIL_APP = 2;
   private static final int METHODID_GET_ALL_APP_NAMES_AUTH_HEADER_VIA_CALL_CRED = 3;
   private static final int METHODID_GET_ALL_APP_NAMES_AUTH_HEADER_VIA_CLIENT_INTERCEPTOR = 4;
-  private static final int METHODID_GET_COUNT = 5;
-  private static final int METHODID_GET_PRICES = 6;
+  private static final int METHODID_GET_APP_NAME_SET_BAD_ROLES = 5;
+  private static final int METHODID_GET_COUNT = 6;
+  private static final int METHODID_GET_PRICES = 7;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -702,6 +771,10 @@ public final class AppConsumerServiceGrpc {
           break;
         case METHODID_GET_ALL_APP_NAMES_AUTH_HEADER_VIA_CLIENT_INTERCEPTOR:
           serviceImpl.getAllAppNamesAuthHeaderViaClientInterceptor((com.google.protobuf.Empty) request,
+              (io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.NameResponse>) responseObserver);
+          break;
+        case METHODID_GET_APP_NAME_SET_BAD_ROLES:
+          serviceImpl.getAppNameSetBadRoles((com.google.protobuf.Empty) request,
               (io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.NameResponse>) responseObserver);
           break;
         default:
@@ -778,6 +851,7 @@ public final class AppConsumerServiceGrpc {
               .addMethod(getPurchaseRetailAppMethod())
               .addMethod(getGetAllAppNamesAuthHeaderViaCallCredMethod())
               .addMethod(getGetAllAppNamesAuthHeaderViaClientInterceptorMethod())
+              .addMethod(getGetAppNameSetBadRolesMethod())
               .build();
         }
       }

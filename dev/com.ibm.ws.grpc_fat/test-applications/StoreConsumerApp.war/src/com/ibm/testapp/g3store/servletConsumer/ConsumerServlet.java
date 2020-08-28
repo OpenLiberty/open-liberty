@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.testapp.g3store.exception.InvalidArgException;
 import com.ibm.testapp.g3store.exception.NotFoundException;
+import com.ibm.testapp.g3store.exception.UnauthException;
 import com.ibm.testapp.g3store.grpcConsumer.api.ConsumerGrpcServiceClientImpl;
 
 /**
@@ -85,6 +86,8 @@ public class ConsumerServlet extends HttpServlet {
      */
     private List<String> getAllAppNames(String address, int port) {
 
+        String m = "getAllAppNames";
+
         if (log.isLoggable(Level.FINE)) {
             log.finest("ConsumerServlet: getAllAppNames: Received request to get AppNames");
         }
@@ -97,12 +100,14 @@ public class ConsumerServlet extends HttpServlet {
         // get the value from RPC
         List<String> nameList = null;
         try {
-            nameList = helper.getAllAppNameList();
+            nameList = helper.getAllAppNameList(m);
         } catch (NotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }
 
+        } catch (UnauthException e) {
+            e.printStackTrace();
+        }
         // stop service
         helper.stopService();
 
@@ -110,6 +115,12 @@ public class ConsumerServlet extends HttpServlet {
 
     }
 
+    /**
+     * @param appName
+     * @param address
+     * @param port
+     * @return
+     */
     private String getAppInfo(String appName, String address, int port) {
 
         if (log.isLoggable(Level.FINE)) {
@@ -123,9 +134,11 @@ public class ConsumerServlet extends HttpServlet {
 
         String appStruct = null;
         try {
-            appStruct = helper.getAppJSONStructure(appName);
+            appStruct = helper.getAppJSONStructure(appName, "getAppInfo");
         } catch (InvalidArgException e) {
             // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (UnauthException e) {
             e.printStackTrace();
         }
 
