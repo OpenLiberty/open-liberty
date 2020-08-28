@@ -260,7 +260,7 @@ public class BaseTraceService implements TrService {
      * of system properties we expect (for FFDC and logging).
      *
      * @param config a {@link LogProviderConfigImpl} containing TrService configuration
-     *                   from bootstrap properties
+     *            from bootstrap properties
      */
     @Override
     public void init(LogProviderConfig config) {
@@ -286,12 +286,10 @@ public class BaseTraceService implements TrService {
             }
 
             @Override
-            public void flush() {
-            }
+            public void flush() {}
 
             @Override
-            public void close() {
-            }
+            public void close() {}
         });
     }
 
@@ -308,7 +306,7 @@ public class BaseTraceService implements TrService {
      * so values set there are not unset by metatype defaults.
      *
      * @param config a {@link LogProviderConfigImpl} containing dynamic updates from
-     *                   the OSGi managed service.
+     *            the OSGi managed service.
      */
     @Override
     public synchronized void update(LogProviderConfig config) {
@@ -1043,10 +1041,10 @@ public class BaseTraceService implements TrService {
     /**
      * Publish a trace log record.
      *
-     * @param detailLog           the trace writer
+     * @param detailLog the trace writer
      * @param logRecord
-     * @param id                  the trace object id
-     * @param formattedMsg        the result of {@link BaseTraceFormatter#formatMessage}
+     * @param id the trace object id
+     * @param formattedMsg the result of {@link BaseTraceFormatter#formatMessage}
      * @param formattedVerboseMsg the result of {@link BaseTraceFormatter#formatVerboseMessage}
      */
     protected void publishTraceLogRecord(TraceWriter detailLog, LogRecord logRecord, Object id, String formattedMsg, String formattedVerboseMsg) {
@@ -1193,7 +1191,7 @@ public class BaseTraceService implements TrService {
      * the trace file.
      *
      * @param config a {@link LogProviderConfigImpl} containing TrService configuration
-     *                   from bootstrap properties
+     *            from bootstrap properties
      */
     protected void initializeWriters(LogProviderConfigImpl config) {
         // createFileLog may or may not return the original log holder..
@@ -1337,8 +1335,7 @@ public class BaseTraceService implements TrService {
 
         /** {@inheritDoc} */
         @Override
-        public void close() throws IOException {
-        }
+        public void close() throws IOException {}
 
         /**
          * Only allow "off" as a valid value for toggling system.out
@@ -1550,7 +1547,10 @@ public class BaseTraceService implements TrService {
         public synchronized void println(String s) {
             TrOutputStream.isPrinting.set(true);
             try {
-                super.print(s);
+                if (TrOutputStream.isPrintingStackTrace.get())
+                    super.println(s);
+                else
+                    super.print(s);
             } finally {
                 TrOutputStream.isPrinting.set(false);
                 super.flush();
@@ -1561,7 +1561,10 @@ public class BaseTraceService implements TrService {
         public synchronized void println(Object obj) {
             TrOutputStream.isPrinting.set(true);
             try {
-                super.print(obj);
+                if (TrOutputStream.isPrintingStackTrace.get())
+                    super.println(obj);
+                else
+                    super.print(obj);
             } finally {
                 TrOutputStream.isPrinting.set(false);
                 super.flush();
@@ -1585,6 +1588,12 @@ public class BaseTraceService implements TrService {
                 return Boolean.FALSE;
             }
         };
+        public static ThreadLocal<Boolean> isPrintingStackTrace = new ThreadLocal<Boolean>() {
+            @Override
+            protected Boolean initialValue() {
+                return Boolean.FALSE;
+            }
+        };
 
         public TrOutputStream(SystemLogHolder slh, BaseTraceService service) {
             this.holder = slh;
@@ -1595,11 +1604,11 @@ public class BaseTraceService implements TrService {
         public synchronized void flush() throws IOException {
 
             /*
-             * sPrinting is a ThreadLocal that is set to disable flushing while printing.
+             * isPrinting is a ThreadLocal that is set to disable flushing while printing.
              * This helps us ignore flush requests that the JDK automatically creates in the middle of printing large (>8k) strings.
              * We want the whole String to be flushed in one shot for benefit of downstream event consumers.
              */
-            if (isPrinting.get())
+            if (isPrinting.get() || isPrintingStackTrace.get())
                 return;
 
             super.flush();
@@ -1654,8 +1663,8 @@ public class BaseTraceService implements TrService {
      * Write the text to the associated original stream.
      * This is preserved as a subroutine for extension by other delegates (test, JSR47 logging)
      *
-     * @param tc        StreamTraceComponent associated with original stream
-     * @param txt       pre-formatted or raw message
+     * @param tc StreamTraceComponent associated with original stream
+     * @param txt pre-formatted or raw message
      * @param rawStream if true, this is from direct invocation of System.out or System.err
      */
     protected synchronized void writeStreamOutput(SystemLogHolder holder, String txt, boolean rawStream) {
@@ -1663,6 +1672,46 @@ public class BaseTraceService implements TrService {
             txt = "[err] " + txt;
         }
         holder.originalStream.println(txt);
+    }
+
+    /**
+     * This method is accessed via reflection by the com.ibm.ws.logging.osgi.stackjoiner.bci.ThrowableInfo class
+     * It will be called on any Throwable.printStackTrace(PrintStream) invocation.
+     *
+     * @param t reference to the current Throwable object calling printStackTrace
+     * @param originalStream reference to the PrintStream object to be written to
+     * @return true if the printStackTrace method was overridden, false otherwise
+     */
+    public static boolean printStackTraceOverride(Throwable t, PrintStream originalStream) {
+        if ((originalStream == System.err || originalStream == System.out) && !TrOutputStream.isPrintingStackTrace.get()) {
+            TrOutputStream.isPrintingStackTrace.set(true);
+            t.printStackTrace(originalStream);
+            TrOutputStream.isPrintingStackTrace.set(false);
+            originalStream.flush();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Trim multi or single line stack traces
+     */
+    public static String filterStackTraces(String txt) {
+        String[] lines = txt.split("\\r?\\n");
+        if (lines.length > 1) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < lines.length; i++) {
+                String filteredLine = filterStackTracesOriginal(lines[i]);
+                if (filteredLine != null) {
+                    sb.append(filteredLine);
+                    if (i != lines.length - 1) {
+                        sb.append("\n");
+                    }
+                }
+            }
+            return sb.toString();
+        }
+        return filterStackTracesOriginal(txt);
     }
 
     /**
@@ -1686,7 +1735,7 @@ public class BaseTraceService implements TrService {
      * @return null if the stack trace should be suppressed, or an indicator we're suppressing,
      *         or maybe the original stack trace
      */
-    public static String filterStackTraces(String txt) {
+    public static String filterStackTracesOriginal(String txt) {
         // Check for stack traces, which we may want to trim
         StackTraceFlags stackTraceFlags = traceFlags.get();
         // We have a little thread-local state machine here with four states controlled by two
