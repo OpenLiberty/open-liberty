@@ -1,0 +1,25 @@
+Subsystem-ManifestVersion: 1
+Subsystem-SymbolicName: com.ibm.ws.persistence.consumer.jakarta-1.0; visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Content: com.ibm.ws.persistence.consumer.jakarta; version="[1,1.0.100)",
+  com.ibm.websphere.appserver.transaction-2.0; type="osgi.subsystem.feature",
+  com.ibm.ws.persistence.jakarta-1.0; type="osgi.subsystem.feature",
+  com.ibm.ws.org.apache.commons.io; version="[1.0.0,1.0.200)",
+  com.ibm.websphere.appserver.jdbc-4.1; ibm.tolerates:="4.0, 4.2"; type="osgi.subsystem.feature"
+IBM-Feature-Version: 2
+Subsystem-Type: osgi.subsystem.feature
+IBM-ShortName: consumer.jakarta-1.0
+IBM-Test-Feature: true
+IBM-API-Package: persistence_fat.persistence.test; type="internal",
+  org.eclipse.persistence.descriptors.changetracking; type="internal",
+  org.eclipse.persistence.queries; type="internal",
+  org.eclipse.persistence.indirection; type="internal",
+  org.eclipse.persistence.internal.descriptors; type="internal",
+  org.eclipse.persistence.internal.identitymaps; type="internal",
+  org.eclipse.persistence.internal.jpa; type="internal",
+  org.eclipse.persistence.internal.jpa.rs.metadata.model; type="internal",
+  org.eclipse.persistence.internal.weaving; type="internal",
+  org.eclipse.persistence.jpa; type="internal",
+  org.eclipse.persistence.platform.server.was; type="internal",
+  org.eclipse.persistence.sessions; type="internal",
+  org.eclipse.persistence.internal.sessions.cdi; type="internal"
