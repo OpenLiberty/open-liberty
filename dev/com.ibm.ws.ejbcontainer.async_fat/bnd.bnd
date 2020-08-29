@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -35,7 +35,19 @@ src: \
 fat.project: true
 
 tested.features: \
-	appsecurity-3.0, cdi-2.0, el-3.0, ejbLite-3.2, ejbRemote-3.2, servlet-4.0
+	appsecurity-3.0,\
+	appsecurity-4.0,\
+	cdi-2.0,\
+	cdi-3.0,\
+	concurrent-2.0,\
+	el-3.0,\
+	el-4.0,\
+	ejbLite-3.2,\
+	ejbLite-4.0,\
+	ejbRemote-3.2,\
+	enterpriseBeansRemote-4.0,\
+	servlet-4.0,\
+	servlet-5.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
@@ -47,4 +59,5 @@ tested.features: \
 	com.ibm.websphere.security; version=latest, \
 	com.ibm.ws.security.jaas.common; version=latest, \
 	com.ibm.ws.ejbcontainer.fat_tools; version=latest, \
-	com.ibm.tx.jta;version=latest
+	com.ibm.tx.jta;version=latest, \
+	io.openliberty.ejbcontainer.jakarta.fat_tools; version=latest
