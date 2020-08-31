@@ -13,30 +13,23 @@ package com.ibm.ws.fat.grpc;
 
 import static org.junit.Assert.assertTrue;
 
-import java.net.URL;
-
+import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlForm;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-public class HelloWorldTest extends FATServletClient {
+public class HelloWorldTest extends HelloWorldBasicTest {
 
     protected static final Class<?> c = HelloWorldTest.class;
 
@@ -68,50 +61,19 @@ public class HelloWorldTest extends FATServletClient {
         helloWorldServer.stopServer();
     }
 
-    /**
-     * Tests a basic gRPC helloworld app. HelloWorldClient.war contains a servlet that can be
-     * used to connect to a gRPC service that will deployed via HelloWorldService.war.
-     *
-     * @throws Exception
-     */
+    @Before
+    public void preTest() {
+        serverRef = helloWorldServer;
+    }
+
+    @After
+    public void afterTest() {
+        serverRef = null;
+    }
+
     @Test
     public void testHelloWorld() throws Exception {
-        String contextRoot = "HelloWorldClient";
-        try (WebClient webClient = new WebClient()) {
-
-            // Construct the URL for the test
-            URL url = GrpcTestUtils.createHttpUrl(helloWorldServer, contextRoot, "grpcClient");
-
-            HtmlPage page = (HtmlPage) webClient.getPage(url);
-
-            // Log the page for debugging if necessary in the future.
-            Log.info(c, name.getMethodName(), page.asText());
-            Log.info(c, name.getMethodName(), page.asXml());
-
-            assertTrue("the servlet was not loaded correctly",
-                       page.asText().contains("gRPC helloworld client example"));
-
-            HtmlForm form = page.getFormByName("form1");
-
-            // set a name, which we'll expect the RPC to return
-            HtmlTextInput inputText = (HtmlTextInput) form.getInputByName("user");
-            inputText.setValueAttribute("us3r1");
-
-            // set the port
-            HtmlTextInput inputPort = (HtmlTextInput) form.getInputByName("port");
-            inputPort.setValueAttribute(String.valueOf(helloWorldServer.getHttpDefaultPort()));
-
-            // set the hostname
-            HtmlTextInput inputHost = (HtmlTextInput) form.getInputByName("address");
-            inputHost.setValueAttribute(helloWorldServer.getHostname());
-
-            // submit, and execute the RPC
-            HtmlSubmitInput submitButton = form.getInputByName("submit");
-            page = submitButton.click();
-
-            // Log the page for debugging if necessary in the future.
-            Log.info(c, name.getMethodName(), page.asText());
-            assertTrue("the gRPC request did not complete correctly", page.asText().contains("us3r1"));
-        }
+        String response = runHelloWorldTest();
+        assertTrue("the gRPC request did not complete correctly", response.contains("us3r1"));
     }
 }
