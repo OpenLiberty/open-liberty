@@ -12,7 +12,8 @@
 bVersion=1.0
 
 Bundle-SymbolicName: com.ibm.ws.jakartaee.persistence.3.0; singleton:=true
-#Bundle-Activator: com.ibm.ws.javaee.persistence.internal.HybridPersistenceActivator
+
+Bundle-Activator: io.openliberty.jakarta.persistence.internal.JakartaPersistenceActivator
 
 Import-Package: \
   org.osgi.framework;version="[1.6,2)", \
@@ -21,12 +22,12 @@ Import-Package: \
    
 # the jaxb feature will bring geronimo.osgi.registry to liberty, and the jpa api bundle
 # tracks the ProviderRegistry service, so we need dynamicly import the package.
-DynamicImport-Package: \
-  org.apache.geronimo.osgi.registry.api
+#DynamicImport-Package: \
+#  org.apache.geronimo.osgi.registry.api
 
 Export-Package: jakarta.persistence.*; jpa=3.0; consumer=persistenceService; mandatory:=consumer; -split-package:=first
 
-Private-Package: com.ibm.ws.javaee.persistence.internal, \
+Private-Package: io.openliberty.jakarta.persistence.internal, \
    org.apache.geronimo.osgi.locator, \
    org.apache.geronimo.specs.jpa
 
@@ -39,4 +40,5 @@ instrument.disabled: true
 	jakarta.persistence:jakarta.persistence-api;version=3.0.0,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
-	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+    io.openliberty.jakartapersistenceactivator
