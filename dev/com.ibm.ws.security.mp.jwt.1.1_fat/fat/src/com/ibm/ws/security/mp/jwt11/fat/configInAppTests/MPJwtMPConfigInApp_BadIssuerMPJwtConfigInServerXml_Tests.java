@@ -14,7 +14,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
-import com.ibm.ws.security.mp.jwt11.fat.sharedTests.MPJwtMPConfigTests;
+import com.ibm.ws.security.mp.jwt11.fat.sharedTests.MPJwt11MPConfigTests;
 import com.ibm.ws.security.mp.jwt11.fat.utils.MPConfigSettings;
 
 import componenttest.annotation.Server;
@@ -33,7 +33,7 @@ import componenttest.topology.impl.LibertyServer;
  **/
 
 @Mode(TestMode.FULL)
-public class MPJwtMPConfigInApp_BadIssuerMPJwtConfigInServerXml_Tests extends MPJwtMPConfigTests {
+public class MPJwtMPConfigInApp_BadIssuerMPJwtConfigInServerXml_Tests extends MPJwt11MPConfigTests {
 
     public static Class<?> thisClass = MPJwtMPConfigInApp_BadIssuerMPJwtConfigInServerXml_Tests.class;
 

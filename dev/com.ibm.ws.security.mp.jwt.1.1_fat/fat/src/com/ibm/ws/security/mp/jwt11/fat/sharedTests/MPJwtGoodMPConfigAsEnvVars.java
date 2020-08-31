@@ -27,7 +27,7 @@ import componenttest.topology.impl.LibertyServer;
  */
 
 @RunWith(FATRunner.class)
-public class MPJwtGoodMPConfigAsEnvVars extends MPJwtMPConfigTests {
+public class MPJwtGoodMPConfigAsEnvVars extends MPJwt11MPConfigTests {
 
     @Server("com.ibm.ws.security.mp.jwt.1.1.fat")
     public static LibertyServer resourceServer;

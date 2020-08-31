@@ -15,7 +15,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
-import com.ibm.ws.security.mp.jwt11.fat.sharedTests.MPJwtMPConfigTests;
+import com.ibm.ws.security.mp.jwt11.fat.sharedTests.MPJwt11MPConfigTests;
 import com.ibm.ws.security.mp.jwt11.fat.utils.MPConfigSettings;
 
 import componenttest.annotation.AllowedFFDC;
@@ -35,9 +35,10 @@ import componenttest.topology.impl.LibertyServer;
  *
  **/
 
+@SuppressWarnings("restriction")
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-public class MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_Tests extends MPJwtMPConfigTests {
+public class MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_Tests extends MPJwt11MPConfigTests {
 
     public static Class<?> thisClass = MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_Tests.class;
 

@@ -10,14 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt11.fat.sharedTests;
 
-import java.util.Arrays;
-
 import org.junit.runner.RunWith;
 
 import com.ibm.ws.security.fat.common.servers.ServerInstanceUtils;
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
 import com.ibm.ws.security.mp.jwt11.fat.utils.MPConfigSettings;
-import com.ibm.ws.security.mp.jwt11.fat.utils.MpJwtMessageConstants;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -36,9 +33,13 @@ import componenttest.topology.impl.LibertyServer;
  * So, the test with NO mpJwt config will fail with an sigAlg mismatch
  */
 @RunWith(FATRunner.class)
-public class MPJwtWithGoodAltSigAlgMPConfig extends MPJwtMPConfigTests {
+public class MPJwtWithGoodAltSigAlgMPConfig extends MPJwt11MPConfigTests {
 
     @Server("com.ibm.ws.security.mp.jwt.1.1.fat")
+    public static LibertyServer envVarsResourceServer;
+    @Server("com.ibm.ws.security.mp.jwt.1.1.fat.jvmOptions")
+    public static LibertyServer sysPropResourceServer;
+
     public static LibertyServer resourceServer;
 
     private static String sigAlg = null;
@@ -46,19 +47,24 @@ public class MPJwtWithGoodAltSigAlgMPConfig extends MPJwtMPConfigTests {
 
     public static void commonSetup(String requestedSigAlg, String location, String key, MPConfigLocation where) throws Exception {
 
+        // decide which server we'll be using
+        if (where.equals(MPConfigLocation.ENV_VAR)) {
+            resourceServer = envVarsResourceServer;
+        } else {
+            resourceServer = sysPropResourceServer;
+        }
+
         sigAlg = requestedSigAlg;
 
         setUpAndStartBuilderServer(jwtBuilderServer, "server_using_buildApp.xml");
 
         // when building the jwksuri, we need the real port of the builder - caller just
         if (location != null && location.equals(JwksUriFlag)) {
-            location = resolvedJwksUri(MPConfigSettings.jwksUri).replace("defaultJWT", sigAlg);
+            location = resolvedJwksUri(jwtBuilderServer, MPConfigSettings.jwksUri).replace("defaultJWT", sigAlg);
         }
 
         MPConfigSettings mpConfigSettings = new MPConfigSettings(location, key, MPConfigSettings.IssuerNotSet, MpJwtFatConstants.X509_CERT);
         setUpAndStartRSServerForTests(resourceServer, "rs_server_AltConfigNotInApp_goodSigAlgServerXmlConfig.xml", mpConfigSettings, where);
-
-        resourceServer.addIgnoredErrors(Arrays.asList(MpJwtMessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE));
 
         // set signatureAlgorithm attribute in server.xml
         ServerInstanceUtils.setOneVar(resourceServer, "sigAlg", requestedSigAlg);

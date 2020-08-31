@@ -16,7 +16,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
-import com.ibm.ws.security.mp.jwt11.fat.sharedTests.MPJwtMPConfigTests;
+import com.ibm.ws.security.mp.jwt11.fat.sharedTests.MPJwt11MPConfigTests;
 import com.ibm.ws.security.mp.jwt11.fat.utils.MPConfigSettings;
 
 import componenttest.annotation.Server;
@@ -38,7 +38,7 @@ import componenttest.topology.impl.LibertyServer;
 @SuppressWarnings("restriction")
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-public class MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Tests extends MPJwtMPConfigTests {
+public class MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Tests extends MPJwt11MPConfigTests {
 
     public static Class<?> thisClass = MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Tests.class;
 
@@ -67,7 +67,7 @@ public class MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Test
 
         String thisMethod = "deployRSServerMPConfigInAppApps";
         try {
-            String fixedJwksUri = resolvedJwksUri(MPConfigSettings.jwksUri);
+            String fixedJwksUri = resolvedJwksUri(jwtBuilderServer, MPConfigSettings.jwksUri);
             String fileLoc = MPConfigSettings.getDefaultKeyFileLoc(server);
 
             // publicKey (NOT keyLocation)

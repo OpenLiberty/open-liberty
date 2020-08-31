@@ -1,0 +1,636 @@
+<server>
+<!-- 
+	<application
+		type="war"
+		id="microProfileGoodHeaderAuthorizationInMP-ConfigInMETA-INF"
+		name="microProfileGoodHeaderAuthorizationInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileGoodHeaderAuthorizationInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application
+		type="war"
+		id="microProfileGoodHeaderAuthorizationInMP-ConfigUnderWEB-INF"
+		name="microProfileGoodHeaderAuthorizationInMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileGoodHeaderAuthorizationInMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>	
+-->
+	<application
+		type="war"
+		id="microProfileGoodHeaderCookieInMP-ConfigInMETA-INF"
+		name="microProfileGoodHeaderCookieInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileGoodHeaderCookieInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+<!--  
+	<application
+		type="war"
+		id="microProfileGoodHeaderCookieInMP-ConfigUnderWEB-INF"
+		name="microProfileGoodHeaderCookieInMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileGoodHeaderCookieInMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>	
+		
+	<application
+		type="war"
+		id="microProfileBadHeaderInMP-ConfigInMETA-INF"
+		name="microProfileBadHeaderInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileBadHeaderInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application
+		type="war"
+		id="microProfileBadHeaderInMP-ConfigUnderWEB-INF"
+		name="microProfileBadHeaderInMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileBadHeaderInMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>	
+-->		
+<!-- Above are the ones I'm currently using -->		
+	<!-- <application type="war" id="microProfileBadMP-ConfigInMETA-INF" name="microProfileBadMP-ConfigInMETA-INF" 
+		location="${server.config.dir}/apps/microProfileBadMP-ConfigInMETA-INF.war" 
+		> <application-bnd> <security-role name="Employee"> <special-subject type="ALL_AUTHENTICATED_USERS" 
+		/> </security-role> <security-role name="Manager"> <special-subject type="ALL_AUTHENTICATED_USERS" 
+		/> </security-role> <security-role name="AllAuthenticated"> <special-subject 
+		type="ALL_AUTHENTICATED_USERS" /> </security-role> </application-bnd> </application> -->
+<!--
+	<application
+		type="war"
+		id="microProfileGoodHeaderInMP-ConfigInMETA-INF"
+		name="microProfileGoodHeaderInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileGoodHeaderInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application
+		type="war"
+		id="microProfileBadHeaderInMP-ConfigInMETA-INF"
+		name="microProfileBadHeaderInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileBadHeaderInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application
+		type="war"
+		id="microProfileGoodHeaderOnlyInMP-ConfigInMETA-INF"
+		name="microProfileGoodHeaderOnlyInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileGoodHeaderOnlyInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application
+		type="war"
+		id="microProfileBadHeaderOnlyInMP-ConfigInMETA-INF"
+		name="microProfileBadHeaderOnlyInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileBadHeaderOnlyInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+	
+	<application
+		type="war"
+		id="microProfileGoodMP-ConfigUnderWEB-INF"
+		name="microProfileGoodMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileGoodMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+		
+	<application
+		type="war"
+		id="microProfileGoodHeaderInMP-ConfigUnderWEB-INF"
+		name="microProfileGoodHeaderInMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileGoodHeaderInMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application
+		type="war"
+		id="microProfileBadHeaderInMP-ConfigUnderWEB-INF"
+		name="microProfileBadHeaderInMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileBadHeaderInMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application
+		type="war"
+		id="microProfileGoodHeaderOnlyInMP-ConfigUnderWEB-INF"
+		name="microProfileGoodHeaderOnlyInMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileGoodHeaderOnlyInMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application
+		type="war"
+		id="microProfileBadHeaderOnlyInMP-ConfigUnderWEB-INF"
+		name="microProfileBadHeaderOnlyInMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileBadHeaderOnlyInMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+-->
+<!-- 
+	<application
+		type="war"
+		id="microProfileGoodComplexPublicKeyInMP-ConfigInMETA-INF"
+		name="microProfileGoodComplexPublicKeyInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileGoodComplexPublicKeyInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application
+		type="war"
+		id="microProfileGoodSimplePublicKeyInMP-ConfigInMETA-INF"
+		name="microProfileGoodSimplePublicKeyInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileGoodSimplePublicKeyInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application
+		type="war"
+		id="microProfileBadPublicKeyInMP-ConfigInMETA-INF"
+		name="microProfileBadPublicKeyInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileBadPublicKeyInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application
+		type="war"
+		id="microProfileGoodRelativeKeyLocationInMP-ConfigInMETA-INF"
+		name="microProfileGoodRelativeKeyLocationInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileGoodRelativeKeyLocationInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application
+		type="war"
+		id="microProfileGoodRelativeComplexKeyLocationInMP-ConfigInMETA-INF"
+		name="microProfileGoodRelativeComplexKeyLocationInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileGoodRelativeComplexKeyLocationInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application
+		type="war"
+		id="microProfileGoodFileKeyLocationInMP-ConfigInMETA-INF"
+		name="microProfileGoodFileKeyLocationInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileGoodFileKeyLocationInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application
+		type="war"
+		id="microProfileGoodUrlKeyLocationInMP-ConfigInMETA-INF"
+		name="microProfileGoodUrlKeyLocationInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileGoodUrlKeyLocationInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application
+		type="war"
+		id="microProfileGoodJwksuriKeyLocationInMP-ConfigInMETA-INF"
+		name="microProfileGoodJwksuriKeyLocationInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileGoodJwksuriKeyLocationInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application
+		type="war"
+		id="microProfileBadFileKeyLocationInMP-ConfigInMETA-INF"
+		name="microProfileBadFileKeyLocationInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileBadFileKeyLocationInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application
+		type="war"
+		id="microProfileBadUrlKeyLocationInMP-ConfigInMETA-INF"
+		name="microProfileBadUrlKeyLocationInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileBadUrlKeyLocationInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+
+	-->
+	<!-- <application type="war" id="microProfileBadMP-ConfigUnderWEB-INF" name="microProfileBadMP-ConfigUnderWEB-INF" 
+		location="${server.config.dir}/apps/microProfileBadMP-ConfigUnderWEB-INF.war" 
+		> <application-bnd> <security-role name="Employee"> <special-subject type="ALL_AUTHENTICATED_USERS" 
+		/> </security-role> <security-role name="Manager"> <special-subject type="ALL_AUTHENTICATED_USERS" 
+		/> </security-role> <security-role name="AllAuthenticated"> <special-subject 
+		type="ALL_AUTHENTICATED_USERS" /> </security-role> </application-bnd> </application> -->
+
+
+<!-- 
+	<application
+		type="war"
+		id="microProfileGoodComplexPublicKeyInMP-ConfigUnderWEB-INF"
+		name="microProfileGoodComplexPublicKeyInMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileGoodComplexPublicKeyInMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application
+		type="war"
+		id="microProfileGoodSimplePublicKeyInMP-ConfigUnderWEB-INF"
+		name="microProfileGoodSimplePublicKeyInMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileGoodSimplePublicKeyInMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application
+		type="war"
+		id="microProfileBadPublicKeyInMP-ConfigUnderWEB-INF"
+		name="microProfileBadPublicKeyInMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileBadPublicKeyInMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application
+		type="war"
+		id="microProfileGoodRelativeKeyLocationInMP-ConfigUnderWEB-INF"
+		name="microProfileGoodRelativeKeyLocationInMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileGoodRelativeKeyLocationInMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application
+		type="war"
+		id="microProfileGoodFileKeyLocationInMP-ConfigUnderWEB-INF"
+		name="microProfileGoodFileKeyLocationInMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileGoodFileKeyLocationInMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application
+		type="war"
+		id="microProfileGoodFileComplexKeyLocationInMP-ConfigUnderWEB-INF"
+		name="microProfileGoodFileComplexKeyLocationInMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileGoodFileComplexKeyLocationInMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application
+		type="war"
+		id="microProfileGoodUrlKeyLocationInMP-ConfigUnderWEB-INF"
+		name="microProfileGoodUrlKeyLocationInMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileGoodUrlKeyLocationInMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application
+		type="war"
+		id="microProfileGoodJwksuriKeyLocationInMP-ConfigUnderWEB-INF"
+		name="microProfileGoodJwksuriKeyLocationInMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileGoodJwksuriKeyLocationInMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application
+		type="war"
+		id="microProfileBadRelativeKeyLocationInMP-ConfigUnderWEB-INF"
+		name="microProfileBadRelativeKeyLocationInMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileBadRelativeKeyLocationInMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+	
+	-->
+</server>    

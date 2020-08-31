@@ -1,0 +1,213 @@
+/*******************************************************************************
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+apply from: '../wlp-gradle/subprojects/fat.gradle'
+
+dependencies {
+  requiredLibs project(':com.ibm.ws.security.fat.common.jwt'),
+  		project(':com.ibm.ws.security.mp.jwt.1.1_fat'),
+      'commons-logging:commons-logging:1.1.3',
+      'org.apache.httpcomponents:httpclient:4.5.4',
+      'org.apache.httpcomponents:httpcore:4.4.9',
+      'net.sourceforge.htmlunit:htmlunit:2.27',
+      'net.sourceforge.htmlunit:htmlunit-core-js:2.27',
+      'net.sourceforge.cssparser:cssparser:0.9.23',
+      'org.apache.commons:commons-lang3:3.5',
+      'org.eclipse.jetty:jetty-websocket:8.2.0.v20160908',
+      'org.eclipse.jetty.websocket:websocket-api:9.4.5.v20170502',
+      'org.eclipse.jetty.websocket:websocket-common:9.4.5.v20170502',
+      'org.eclipse.jetty.websocket:websocket-client:9.4.5.v20170502',
+      'org.eclipse.jetty:jetty-util:9.4.7.RC0',
+      'org.eclipse.birt.runtime:org.w3c.css.sac:1.3.1.v200903091627',
+      'commons-codec:commons-codec:1.6',
+      'xml-apis:xml-apis:1.4.01',
+      'xerces:xercesImpl:2.11.0'
+}
+
+ gradle.taskGraph.whenReady {taskGraph ->
+    println "Found task graph: " + taskGraph
+    println "Found " + taskGraph.allTasks.size() + " tasks."
+    taskGraph.allTasks.forEach { task ->
+        println task
+        task.dependsOn.forEach { dep ->
+            println "  - " + dep
+        }
+    }
+}
+
+/* task copyCommonFiles { */
+ /*doLast { */
+    /*
+     * Copy test application resources.
+     */
+     /*
+    copy {
+      from project(':com.ibm.ws.security.mp.jwt.1.1_fat').file('test-applications')
+      into new File('test-applications')
+    }
+*/
+    /*
+     * Copy common publish files.
+     */
+     /*
+    copy {
+      from project(':com.ibm.ws.security.mp.jwt.1.1_fat').file('publish')
+      into new File(autoFvtDir, 'publish')
+    }
+*/
+    /*
+     * Copy test application binaries.
+     */
+/*      from new File(project(':com.ibm.ws.security.mp.jwt.1.1_fat').buildDir, 'com.ibm.ws.security.mp.jwt.1.1_fat.jar')      */
+ 
+  
+     /* 
+  from(zipTree("../com.ibm.ws.security.fat.common/build/libs/com.ibm.ws.security.fat.common.jar")) {
+    include 'com/ibm/ws/security/fat/common/Constants.class'
+    into "WEB-INF/classes"
+  }
+  */
+   
+/*  } */
+/* } */
+
+/* task copyServerFiles { */
+/*
+ doLast {
+ */ 
+ autoFVT.doLast {
+    /*
+     * Copy test application resources.
+     */
+ /*   copy {
+      from project(':com.ibm.ws.security.mp.jwt.1.1_fat').file('test-applications')
+      into new File('test-applications')
+    }
+    */
+
+    /*
+     * Copy common publish files.
+     */
+/*      from project(':com.ibm.ws.security.mp.jwt.1.1_fat').buildDir.file('publish') */
+/*
+    copy {
+      from new File(project(':com.ibm.ws.security.mp.jwt.1.1_fat').buildDir, 'autoFVT/publish')
+      into new File(autoFvtDir, 'publish')
+      eachFile { println it.name }
+    }
+    */
+   copy {
+      from project(':com.ibm.ws.security.fat.common').file('publish/shared/config')
+      into new File(autoFvtDir, 'publish/shared/config')
+    }
+    
+   copy {
+      from project(':com.ibm.ws.security.mp.jwt.1.1_fat').file('publish')
+      into new File(autoFvtDir, 'publish')
+      eachFile { println it.name }
+    }
+
+    /*
+     * Copy test application binaries.
+     */
+   copy {
+      from(zipTree(new File(project(':com.ibm.ws.security.mp.jwt.1.1_fat').buildDir, 'com.ibm.ws.security.mp.jwt.1.1_fat.jar')))      
+      into new File(autoFvtDir, 'build/classes')
+   }
+    /*
+  } 
+  */
+    def servers = [
+	'com.ibm.ws.security.mp.jwt.fat',
+	'com.ibm.ws.security.mp.jwt.fat.jvmOptions',
+	'com.ibm.ws.security.mp.jwt.fat.client',
+	'com.ibm.ws.security.mp.jwt.1.2.fat.builder'
+  ]
+
+  servers.each { server ->
+
+	/* copy test marker (small test app that marks the start/end of each test case in the server side logs */  
+    copy { 
+      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
+    }
+
+  	/* Copy all shared key/trust stores from the common security FAT */
+    copy { 
+     from project(':com.ibm.ws.security.fat.common').file('publish/shared/securityKeys')
+     into new File(autoFvtDir, 'publish/servers/' + server + '/')
+    }
+
+  	/* copy shared key/trust stores from the mpjwt 1.1 project */
+    copy { 
+     from project(':com.ibm.ws.security.mp.jwt.1.1_fat').file('publish/shared/securityKeys')
+     into new File(autoFvtDir, 'publish/servers/' + server + '/')
+    }
+  
+    /* Copy all shared key/trust stores from this project
+  		overwrites shared jks files from the common security FAT 
+    */	
+    copy { 
+     from ('publish/shared/securityKeys')
+     into new File(autoFvtDir, 'publish/servers/' + server + '/')
+    }
+  	/* Copy all server specific key/trust stores - overwrites shared
+  		key/trust stores from either the common security FAT, or this
+  		project
+  	 */
+    copy { 
+     from new File(autoFvtDir, 'publish/servers/' + server + '/securityKeys')
+     into new File(autoFvtDir, 'publish/servers/' + server + '/')
+    }
+  }
+  
+  	/* copy builder assistance apps */  
+    /* maybe rename this simple builder */
+    copy { 
+      from new File(project(':com.ibm.ws.security.fat.common.jwt').buildDir, 'test-application/jwtbuilder.war')
+      into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.mp.jwt.1.2.fat.builder/apps')
+    }
+
+    copy { 
+      from new File(project(':com.ibm.ws.security.fat.common.jwt').buildDir, 'test-application/jwtbuilderAddClaim.war')
+      into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.mp.jwt.1.2.fat.builder/apps')
+    }
+    
+    copy { 
+      from new File(project(':com.ibm.ws.security.fat.common.jwt').buildDir, 'test-application/jwtbuilderclient.war')
+      into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.mp.jwt.1.2.fat.builder/apps')
+    }
+    
+    copy {
+      from new File(project(':com.ibm.ws.security.mp.jwt.1.1_fat').buildDir, 'autoFVT/test-applications')
+      into new File(autoFvtDir, 'test-applications') ;
+    }
+    
+    /* override the feature file (replacing 1.1 with 1.2) */
+    copy { 
+      from ('publish/shared/config')
+      into new File(autoFvtDir, 'publish/shared/config')
+    } 
+}
+
+/* compileJava.dependsOn copyCommonFiles */
+/* autoFVT.dependsOn copyServerFiles */
+
+/*
+clean.doLast {
+  if (file('test-applications').exists()){
+    file('test-applications').deleteDir()
+  }
+  if (file('build').exists()){
+    file('build').deleteDir()
+  }
+}
+*/
+//}

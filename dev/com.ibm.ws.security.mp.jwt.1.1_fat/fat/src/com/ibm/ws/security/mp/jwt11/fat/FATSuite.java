@@ -48,7 +48,7 @@ import com.ibm.ws.security.mp.jwt11.fat.systemPropertiesTests.MPJwtGoodMPConfigA
 
 @RunWith(Suite.class)
 @SuiteClasses({
-//                // Ported list of tests (some already renamed)
+                // Ported list of tests (some already renamed)
                 AlwaysRunAndPassTest.class,
                 // Basic Functional tests
                 // -- These tests will run 3 times - tests that pass the token in the Authorization header

@@ -15,7 +15,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
-import com.ibm.ws.security.mp.jwt11.fat.sharedTests.MPJwtMPConfigTests;
+import com.ibm.ws.security.mp.jwt11.fat.sharedTests.MPJwt11MPConfigTests;
 import com.ibm.ws.security.mp.jwt11.fat.utils.MPConfigSettings;
 
 import componenttest.annotation.Server;
@@ -37,7 +37,7 @@ import componenttest.topology.impl.LibertyServer;
 
 @Mode(TestMode.LITE)
 @RunWith(FATRunner.class)
-public class MPJwtBadMPConfigAsEnvVars extends MPJwtMPConfigTests {
+public class MPJwtBadMPConfigAsEnvVars extends MPJwt11MPConfigTests {
 
     public static Class<?> thisClass = MPJwtBadMPConfigAsEnvVars.class;
 
