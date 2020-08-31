@@ -13,7 +13,7 @@ bVersion=1.0
 
 
 Bundle-SymbolicName: io.openliberty.jakarta.persistence.3.0; singleton:=true
-Bundle-Activator: io.openliberty.jakarta.persistence.internal.JakartaPersistenceActivator
+#Bundle-Activator: com.ibm.ws.jakartaee.persistence.internal.HybridPersistenceActivator
 
 
 Import-Package: \
@@ -28,9 +28,10 @@ Import-Package: \
 
 Export-Package: jakarta.persistence.*; jpa=3.0; -split-package:=first
 
-Private-Package: io.openliberty.jakarta.persistence.internal, \
-   org.apache.geronimo.osgi.locator, \
-   org.apache.geronimo.specs.jpa
+#Private-Package: com.ibm.ws.jakartaee.persistence.internal
+#, \
+#   org.apache.geronimo.osgi.locator, \
+#   org.apache.geronimo.specs.jpa
 
 #Include-Resource: \
 #   @${repo;jakarta.persistence:jakarta.persistence-api;3.0.0-RC1}!/about.html
@@ -40,5 +41,4 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-        jakarta.persistence:jakarta.persistence-api;version=3.0.0,\
-        io.openliberty.jakartapersistenceactivator
+        jakarta.persistence:jakarta.persistence-api;version=3.0.0

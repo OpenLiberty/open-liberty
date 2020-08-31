@@ -11,6 +11,7 @@
 package com.ibm.wsspi.persistence.internal;
 
 import static org.eclipse.persistence.config.PersistenceUnitProperties.SCHEMA_GENERATION_CREATE_ACTION;
+import static org.eclipse.persistence.config.PersistenceUnitProperties.SCHEMA_GENERATION_DATABASE_ACTION;
 import static org.eclipse.persistence.config.PersistenceUnitProperties.SESSION_EVENT_LISTENER_CLASS;
 
 import java.net.URL;
@@ -20,7 +21,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.persistence.EntityManager;
 import javax.persistence.SharedCacheMode;
 import javax.persistence.ValidationMode;
 import javax.persistence.spi.ClassTransformer;
@@ -38,15 +38,6 @@ import com.ibm.wsspi.persistence.internal.util.DoPrivHelper;
 import com.ibm.wsspi.persistence.internal.util.PersistenceClassLoader;
 
 public final class PUInfoImpl implements PersistenceUnitInfo {
-    private final static String SCHEMA_GENERATION_DATABASE_ACTION;
-
-    static {
-        final String emName = EntityManager.class.getName();
-        final boolean isJakarta = emName.startsWith("jakarta");
-        final String prefix = isJakarta ? "jakarta" : "javax";
-        SCHEMA_GENERATION_DATABASE_ACTION = prefix + ".persistence.schema-generation.database.action";
-    }
-
     private final DataSource _jtaDataSource;
     private final DataSource _nonJtaDataSource;
     private final List<String> _classes;
@@ -255,7 +246,7 @@ public final class PUInfoImpl implements PersistenceUnitInfo {
      * by the PersistenceProvider to generate schema. The name of the PUInfoImpl will differ from
      * the name of this PUInfoImpl. The PersistenceProvider appears to be ignoring repeated
      * requests for schema with the same name.
-     *
+     * 
      * @return A copy of this PUInfoImpl with a modified name.
      */
     PersistenceUnitInfo createCopyWithNewName() {
@@ -264,7 +255,7 @@ public final class PUInfoImpl implements PersistenceUnitInfo {
 
     /**
      * Registers all mapping files with : ResourceResolver and InMemoryURLStreamHandler
-     *
+     * 
      * Returns a List containing the names of all InMemoryMappingFiles.
      */
     @Trivial
