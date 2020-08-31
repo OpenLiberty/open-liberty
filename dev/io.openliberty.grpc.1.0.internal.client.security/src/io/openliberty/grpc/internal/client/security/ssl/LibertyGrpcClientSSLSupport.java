@@ -90,10 +90,7 @@ public class LibertyGrpcClientSSLSupport implements GrpcSSLService{
 		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 			Tr.debug(tc, "getOutboundClientSSLContext ssl reference ID: {0}", sslRef);
 		}
-<<<<<<< HEAD
-=======
 
->>>>>>> 45d6be0f836a657e31af00a80d3bcda973b733a5
 		Properties props = getSSLProps(sslRef, host, port);
 		if (props != null) {
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -133,12 +130,8 @@ public class LibertyGrpcClientSSLSupport implements GrpcSSLService{
 					Tr.debug(tc, "getOutboundClientSSLContext failed to create SslContext due to: {0}", e);
 				}
 			}
-<<<<<<< HEAD
-		}	
-=======
 		}		
 		
->>>>>>> 45d6be0f836a657e31af00a80d3bcda973b733a5
 		return context;
 	}
 
