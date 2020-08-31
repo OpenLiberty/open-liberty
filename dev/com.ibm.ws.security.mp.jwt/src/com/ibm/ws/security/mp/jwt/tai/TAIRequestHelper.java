@@ -10,11 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.tai;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -26,7 +22,6 @@ import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.common.http.AuthUtils;
 import com.ibm.ws.security.mp.jwt.MicroProfileJwtConfig;
 import com.ibm.ws.security.mp.jwt.TraceConstants;
-import com.ibm.ws.security.mp.jwt.config.MpConstants;
 import com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException;
 import com.ibm.ws.security.mp.jwt.impl.utils.MicroProfileJwtTaiRequest;
 
@@ -49,14 +44,6 @@ public class TAIRequestHelper {
     public static final String KEY_AUTHORIZATION_HEADER_SCHEME = "authorizationHeaderScheme";
 
     private final AuthUtils authUtils = new AuthUtils();
-
-    private Map<String, String> mpConfigProps = null;
-
-    public void setMpConfigProperties(Map<String, String> mpConfigProps) {
-        if (mpConfigProps != null) {
-            this.mpConfigProps = new HashMap<String, String>(mpConfigProps);
-        }
-    }
 
     /**
      * Creates a new {@link MicroProfileJwtTaiRequest} object and sets the object as an attribute in the request object provided.
@@ -81,13 +68,13 @@ public class TAIRequestHelper {
      * Returns whether the provided request should be handled by the microprofile jwt TAI, based on the request path and
      * information in the {@link McroProfileJwtTaiRequest} object provided.
      */
-    public boolean requestShouldBeHandledByTAI(HttpServletRequest request, MicroProfileJwtTaiRequest mpJwtTaiRequest) {
+    public boolean requestShouldBeHandledByTAI(HttpServletRequest request, MicroProfileJwtTaiRequest mpJwtTaiRequest, boolean isMpConfigPropsAvailable) {
         String methodName = "requestShouldBeHandledByTAI";
         if (tc.isDebugEnabled()) {
             Tr.entry(tc, methodName, request, mpJwtTaiRequest);
         }
 
-        mpJwtTaiRequest = setTaiRequestConfigInfo(request, mpJwtTaiRequest, isNewMpJwtAndMpConfig());
+        mpJwtTaiRequest = setTaiRequestConfigInfo(request, mpJwtTaiRequest, isMpConfigPropsAvailable);
         boolean result = false;
         boolean ignoreAppAuthMethod = true;
 
@@ -117,14 +104,6 @@ public class TAIRequestHelper {
         }
 
         return result;
-    }
-
-    private boolean isNewMpJwtAndMpConfig() {
-        boolean newMpjwtAndMpConfig = false;
-        if (mpConfigProps != null && !mpConfigProps.isEmpty()) {
-            newMpjwtAndMpConfig = true;
-        }
-        return newMpjwtAndMpConfig;
     }
 
     // if we don't have a valid bearer header, and jwtsso is active, we should defer.
@@ -194,7 +173,7 @@ public class TAIRequestHelper {
             Tr.entry(tc, methodName, req);
         }
         String token = null;
-        String tokenHeaderName = getTokenHeaderName(clientConfig);
+        String tokenHeaderName = clientConfig.getTokenHeader();
         if ("Cookie".equals(tokenHeaderName)) {
             token = getTokenFromCookie(req, clientConfig);
         } else {
@@ -206,49 +185,12 @@ public class TAIRequestHelper {
         return token;
     }
 
-    String getTokenHeaderName(MicroProfileJwtConfig clientConfig) {
-        String serverConfigTokenHeader = clientConfig.getTokenHeader();
-        if (serverConfigTokenHeader != null) {
-            return serverConfigTokenHeader;
-        }
-        String defaultValue = Authorization_Header;
-        String tokenHeaderName = getValueFromMpConfigProps(MpConstants.TOKEN_HEADER, defaultValue);
-        if (!isSupportedTokenHeaderName(tokenHeaderName)) {
-            Tr.warning(tc, "MP_CONFIG_VALUE_NOT_SUPPORTED", new Object[] { tokenHeaderName, MpConstants.TOKEN_HEADER, getSupportedTokenHeaderNames(), defaultValue });
-            return defaultValue;
-        }
-        return tokenHeaderName;
-    }
-
-    String getValueFromMpConfigProps(String propName, String defaultValue) {
-        if (mpConfigProps == null) {
-            return defaultValue;
-        }
-        String mpConfigPropValue = mpConfigProps.get(propName);
-        if (mpConfigPropValue == null || mpConfigPropValue.isEmpty()) {
-            return defaultValue;
-        }
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "Obtained " + propName + " from MP Config properties: [" + mpConfigPropValue + "]");
-        }
-        return mpConfigPropValue;
-    }
-
-    boolean isSupportedTokenHeaderName(String tokenHeader) {
-        List<String> supportedNames = getSupportedTokenHeaderNames();
-        return supportedNames.contains(tokenHeader);
-    }
-
-    List<String> getSupportedTokenHeaderNames() {
-        List<String> supportedNames = new ArrayList<String>();
-        supportedNames.add(Authorization_Header);
-        supportedNames.add("Cookie");
-        return supportedNames;
-    }
-
     @Sensitive
     String getTokenFromCookie(HttpServletRequest req, MicroProfileJwtConfig clientConfig) {
-        String tokenCookieName = getTokenCookieName(clientConfig);
+        String tokenCookieName = clientConfig.getCookieName();
+        if (tokenCookieName == null) {
+            return null;
+        }
         Cookie[] cookies = req.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
@@ -261,14 +203,6 @@ public class TAIRequestHelper {
             }
         }
         return null;
-    }
-
-    String getTokenCookieName(MicroProfileJwtConfig clientConfig) {
-        String serverConfigCookieName = clientConfig.getCookieName();
-        if (serverConfigCookieName != null) {
-            return serverConfigCookieName;
-        }
-        return getValueFromMpConfigProps(MpConstants.TOKEN_COOKIE, "Bearer");
     }
 
     @Sensitive

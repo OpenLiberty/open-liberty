@@ -339,7 +339,7 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     public Key getJwksKey(String kid) throws Exception {
         JwKRetriever jwkRetriever = new JwKRetriever(getId(), getSslRef(), getJwkEndpointUrl(), getJwkSet(),
                 JwtUtils.getSSLSupportService(), isHostNameVerificationEnabled(), null, null, getSignatureAlgorithm());
-    
+
         return jwkRetriever.getPublicKeyFromJwk(kid, null, getUseSystemPropertiesForHttpClientConnections());
     }
 

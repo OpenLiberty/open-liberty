@@ -106,4 +106,5 @@ Include-Resource: \
     com.ibm.ws.injection.core;version=latest,\
     com.ibm.websphere.appserver.spi.servlet;version=latest, \
     com.ibm.ws.anno;version=latest, \
-    com.ibm.ws.threading;version=latest
+    com.ibm.ws.threading;version=latest, \
+    com.ibm.ws.security.test.common;version=latest

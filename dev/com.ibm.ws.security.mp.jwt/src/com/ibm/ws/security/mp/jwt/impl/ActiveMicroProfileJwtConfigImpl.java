@@ -11,6 +11,7 @@
 package com.ibm.ws.security.mp.jwt.impl;
 
 import java.security.Key;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,24 +25,15 @@ import com.ibm.ws.security.jwt.config.ConsumerUtils;
 import com.ibm.ws.security.jwt.utils.JwtUtils;
 import com.ibm.ws.security.mp.jwt.MicroProfileJwtConfig;
 import com.ibm.ws.security.mp.jwt.TraceConstants;
+import com.ibm.ws.security.mp.jwt.config.MpConstants;
+import com.ibm.ws.security.mp.jwt.impl.utils.ClientConstants;
 
 public class ActiveMicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
 
     private static TraceComponent tc = Tr.register(ActiveMicroProfileJwtConfigImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
-    public final static String ISSUER = "mp.jwt.verify.issuer";
-    public final static String PUBLIC_KEY = "mp.jwt.verify.publickey";
-    public final static String KEY_LOCATION = "mp.jwt.verify.publickey.location";
-
-    // Properties added by MP JWT 1.2 specification
-    public final static String PUBLIC_KEY_ALG = "mp.jwt.verify.publickey.algorithm";
-    public final static String DECRYPT_KEY_LOCATION = "mp.jwt.decrypt.key.location";
-    public final static String VERIFY_AUDIENCES = "mp.jwt.verify.audiences";
-    public final static String TOKEN_HEADER = "mp.jwt.token.header";
-    public final static String TOKEN_COOKIE = "mp.jwt.token.cookie";
-
     private final MicroProfileJwtConfig config;
-    private Map<String, String> mpConfigProps = null;
+    private Map<String, String> mpConfigProps = new HashMap<String, String>();
 
     public ActiveMicroProfileJwtConfigImpl(MicroProfileJwtConfig config, Map<String, String> mpConfigProps) {
         this.config = config;
@@ -60,11 +52,11 @@ public class ActiveMicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     @Override
     public String getIssuer() {
         String issuer = config.getIssuer();
-        if (issuer == null) {
-            issuer = mpConfigProps.get(ISSUER);
+        if (issuer != null) {
+            // Server configuration takes precedence over MP Config property values
+            return issuer;
         }
-
-        return issuer;
+        return mpConfigProps.get(MpConstants.ISSUER);
     }
 
     /** {@inheritDoc} */
@@ -76,7 +68,31 @@ public class ActiveMicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     /** {@inheritDoc} */
     @Override
     public List<String> getAudiences() {
-        return config.getAudiences();
+        List<String> audiences = config.getAudiences();
+        if (audiences != null) {
+            // Server configuration takes precedence over MP Config property values
+            return audiences;
+        }
+        return getAudiencesFromMpConfigProps();
+    }
+
+    List<String> getAudiencesFromMpConfigProps() {
+        List<String> audiences = null;
+        String audiencesMpConfigProp = getMpConfigProperty(MpConstants.VERIFY_AUDIENCES);
+        if (audiencesMpConfigProp == null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Didn't find " + MpConstants.VERIFY_AUDIENCES + " property in MP Config props; defaulting to " + audiences);
+            }
+            return audiences;
+        }
+        audiences = new ArrayList<String>();
+        String[] splitAudiences = audiencesMpConfigProp.split(",");
+        for (String rawAudience : splitAudiences) {
+            if (!rawAudience.isEmpty()) {
+                audiences.add(rawAudience);
+            }
+        }
+        return audiences;
     }
 
     /** {@inheritDoc} */
@@ -90,12 +106,12 @@ public class ActiveMicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
         return getSignatureAlgorithmFromMpConfigProps();
     }
 
-    private String getSignatureAlgorithmFromMpConfigProps() {
+    String getSignatureAlgorithmFromMpConfigProps() {
         String defaultAlg = "RS256";
-        String publicKeyAlgMpConfigProp = getMpConfigProperty(PUBLIC_KEY_ALG);
+        String publicKeyAlgMpConfigProp = getMpConfigProperty(MpConstants.PUBLIC_KEY_ALG);
         if (publicKeyAlgMpConfigProp == null) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Didn't find " + PUBLIC_KEY_ALG + " property in MP Config props; defaulting to " + defaultAlg);
+                Tr.debug(tc, "Didn't find " + MpConstants.PUBLIC_KEY_ALG + " property in MP Config props; defaulting to " + defaultAlg);
             }
             return defaultAlg;
         }
@@ -106,17 +122,7 @@ public class ActiveMicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
         return publicKeyAlgMpConfigProp;
     }
 
-    private String getMpConfigProperty(String propName) {
-        if (propName == null) {
-            return null;
-        }
-        if (mpConfigProps.containsKey(propName)) {
-            return String.valueOf(mpConfigProps.get(propName));
-        }
-        return null;
-    }
-
-    private boolean isSupportedSignatureAlgorithm(String sigAlg) {
+    boolean isSupportedSignatureAlgorithm(String sigAlg) {
         if (sigAlg == null) {
             return false;
         }
@@ -148,7 +154,7 @@ public class ActiveMicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     }
 
     private boolean isPublicKeyPropsPresent() {
-        return mpConfigProps.get(PUBLIC_KEY) != null || mpConfigProps.get(KEY_LOCATION) != null;
+        return mpConfigProps.get(MpConstants.PUBLIC_KEY) != null || mpConfigProps.get(MpConstants.KEY_LOCATION) != null;
     }
 
     /** {@inheritDoc} */
@@ -160,16 +166,13 @@ public class ActiveMicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     @Override
     public Key getJwksKey(String kid) throws Exception {
         JwKRetriever jwkRetriever = null;
-        if (mpConfigProps != null) {
-            String publickey = mpConfigProps.get(PUBLIC_KEY);
-            String keyLocation = mpConfigProps.get(KEY_LOCATION);
-            if (publickey != null || keyLocation != null) {
-                jwkRetriever = new JwKRetriever(getId(), getSslRef(), getJwkEndpointUrl(),
-                        getJwkSet(), JwtUtils.getSSLSupportService(), isHostNameVerificationEnabled(),
-                        null, null, getSignatureAlgorithm(), publickey, keyLocation);
-            }
-        }
-        if (jwkRetriever == null) {
+        String publickey = mpConfigProps.get(MpConstants.PUBLIC_KEY);
+        String keyLocation = mpConfigProps.get(MpConstants.KEY_LOCATION);
+        if (publickey != null || keyLocation != null) {
+            jwkRetriever = new JwKRetriever(getId(), getSslRef(), getJwkEndpointUrl(),
+                    getJwkSet(), JwtUtils.getSSLSupportService(), isHostNameVerificationEnabled(),
+                    null, null, getSignatureAlgorithm(), publickey, keyLocation);
+        } else {
             jwkRetriever = new JwKRetriever(getId(), getSslRef(), getJwkEndpointUrl(),
                     getJwkSet(), JwtUtils.getSSLSupportService(), isHostNameVerificationEnabled(), null,
                     null, getSignatureAlgorithm());
@@ -266,6 +269,78 @@ public class ActiveMicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     @SuppressWarnings("restriction")
     public JwtToken createJwt(String token) throws Exception {
         return config.getConsumerUtils().parseJwt(token, this);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public List<String> getAMRClaim() {
+        return config.getAMRClaim();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getTokenHeader() {
+        String tokenHeader = config.getTokenHeader();
+        if (tokenHeader != null) {
+            // Server configuration takes precedence over MP Config property values
+            return tokenHeader;
+        }
+        return getTokenHeaderNameFromMpConfigProps();
+    }
+
+    String getTokenHeaderNameFromMpConfigProps() {
+        String defaultValue = ClientConstants.AUTHORIZATION;
+        String tokenHeaderName = getMpConfigProperty(MpConstants.TOKEN_HEADER);
+        if (!isSupportedTokenHeaderName(tokenHeaderName)) {
+            Tr.warning(tc, "MP_CONFIG_VALUE_NOT_SUPPORTED", new Object[] { tokenHeaderName, MpConstants.TOKEN_HEADER, getSupportedTokenHeaderNames(), defaultValue });
+            return defaultValue;
+        }
+        return tokenHeaderName;
+    }
+
+    boolean isSupportedTokenHeaderName(String tokenHeader) {
+        List<String> supportedNames = getSupportedTokenHeaderNames();
+        return supportedNames.contains(tokenHeader);
+    }
+
+    List<String> getSupportedTokenHeaderNames() {
+        List<String> supportedNames = new ArrayList<String>();
+        supportedNames.add(ClientConstants.AUTHORIZATION);
+        supportedNames.add("Cookie");
+        return supportedNames;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getCookieName() {
+        String cookieName = config.getCookieName();
+        if (cookieName != null) {
+            // Server configuration takes precedence over MP Config property values
+            return cookieName;
+        }
+        return getCookieNameFromMpConfigProps();
+    }
+
+    String getCookieNameFromMpConfigProps() {
+        String defaultValue = "Bearer";
+        String cookieName = getMpConfigProperty(MpConstants.TOKEN_COOKIE);
+        if (cookieName == null || cookieName.isEmpty()) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Found null or empty " + MpConstants.TOKEN_COOKIE + " property in MP Config props; defaulting to " + defaultValue);
+            }
+            return defaultValue;
+        }
+        return cookieName;
+    }
+
+    private String getMpConfigProperty(String propName) {
+        if (propName == null) {
+            return null;
+        }
+        if (mpConfigProps.containsKey(propName)) {
+            return String.valueOf(mpConfigProps.get(propName));
+        }
+        return null;
     }
 
 }

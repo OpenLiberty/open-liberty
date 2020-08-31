@@ -834,19 +834,19 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
         }
         oidcConfigUtils.populateCustomRequestParameterMap(socialLoginService.getConfigAdmin(), paramMapToPopulate, configuredCustomRequestParams, KEY_PARAM_NAME, KEY_PARAM_VALUE);
     }
-    
+
     @Override
-	public Key getJwksKey(String kid) throws Exception {
-		JwKRetriever jwkRetriever = new JwKRetriever(getId(), getSslRef(), getJwkEndpointUrl(), getJwkSet(),
-				JwtUtils.getSSLSupportService(), isHostNameVerificationEnabled(), null, null, getSignatureAlgorithm());
+    public Key getJwksKey(String kid) throws Exception {
+        JwKRetriever jwkRetriever = new JwKRetriever(getId(), getSslRef(), getJwkEndpointUrl(), getJwkSet(),
+                JwtUtils.getSSLSupportService(), isHostNameVerificationEnabled(), null, null, getSignatureAlgorithm());
 
-		return jwkRetriever.getPublicKeyFromJwk(kid, null, getUseSystemPropertiesForHttpClientConnections());
-	}
+        return jwkRetriever.getPublicKeyFromJwk(kid, null, getUseSystemPropertiesForHttpClientConnections());
+    }
 
-	@Override
-	public List<String> getAMRClaim() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public List<String> getAMRClaim() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

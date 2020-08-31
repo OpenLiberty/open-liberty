@@ -232,13 +232,22 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
         if (tc.isDebugEnabled()) {
             Tr.entry(tc, methodName, request);
         }
-        taiRequestHelper.setMpConfigProperties(mpConfigUtil.getMpConfig(request));
         MicroProfileJwtTaiRequest mpJwtTaiRequest = taiRequestHelper.createMicroProfileJwtTaiRequestAndSetRequestAttribute(request);
-        boolean result = taiRequestHelper.requestShouldBeHandledByTAI(request, mpJwtTaiRequest);
+        boolean isMpConfigPropsAvailable = isMpConfigPropsAvailable(request);
+        boolean result = taiRequestHelper.requestShouldBeHandledByTAI(request, mpJwtTaiRequest, isMpConfigPropsAvailable);
         if (tc.isDebugEnabled()) {
             Tr.exit(tc, methodName, result);
         }
         return result;
+    }
+
+    private boolean isMpConfigPropsAvailable(HttpServletRequest request) {
+        boolean isMpConfigPropsAvailable = false;
+        Map mpCfg = mpConfigUtil.getMpConfig(request);
+        if (!mpCfg.isEmpty()) {
+            isMpConfigPropsAvailable = true;
+        }
+        return isMpConfigPropsAvailable;
     }
 
     /**
@@ -344,7 +353,10 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
             Tr.entry(tc, methodName, request, response, mpJwtConfig);
         }
 
-        taiRequestHelper.setMpConfigProperties(mpConfigUtil.getMpConfig(request));
+        Map<String, String> mpCfg = mpConfigUtil.getMpConfig(request);
+        if (!mpCfg.isEmpty()) {
+            mpJwtConfig = new ActiveMicroProfileJwtConfigImpl(mpJwtConfig, mpCfg);
+        }
         String token = taiRequestHelper.getBearerToken(request, mpJwtConfig);
         if (token == null) {
             Tr.error(tc, "JWT_NOT_FOUND_IN_REQUEST");
