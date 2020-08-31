@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.jwt.internal;
 
+import java.security.Key;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +28,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.common.jwk.impl.JWKSet;
+import com.ibm.ws.security.common.jwk.impl.JwKRetriever;
 import com.ibm.ws.security.jwt.config.ConsumerUtils;
 import com.ibm.ws.security.jwt.config.JwtConsumerConfig;
 import com.ibm.ws.security.jwt.utils.JwtUtils;
@@ -198,7 +200,8 @@ public class JwtConsumerConfigImpl implements JwtConsumerConfig {
 
     @Override
     public boolean getTokenReuse() {
-        // The common JWT code is not allowed to reuse JWTs. This could be revisited later as a potential config option.
+        // The common JWT code is not allowed to reuse JWTs. This could be
+        // revisited later as a potential config option.
         return false;
     }
 
@@ -206,10 +209,18 @@ public class JwtConsumerConfigImpl implements JwtConsumerConfig {
     public boolean getUseSystemPropertiesForHttpClientConnections() {
         return useSystemPropertiesForHttpClientConnections;
     }
-    
-	@Override
-	public List<String> getAMRClaim() {
-		return amrClaim;
-	}
+
+    @Override
+    public List<String> getAMRClaim() {
+        return amrClaim;
+    }
+
+    @Override
+    public Key getJwksKey(String kid) throws Exception {
+        JwKRetriever jwkRetriever = new JwKRetriever(getId(), getSslRef(), getJwkEndpointUrl(), getJwkSet(),
+                JwtUtils.getSSLSupportService(), isHostNameVerificationEnabled(), null, null, getSignatureAlgorithm());
+
+        return jwkRetriever.getPublicKeyFromJwk(kid, null, getUseSystemPropertiesForHttpClientConnections());
+    }
 
 }

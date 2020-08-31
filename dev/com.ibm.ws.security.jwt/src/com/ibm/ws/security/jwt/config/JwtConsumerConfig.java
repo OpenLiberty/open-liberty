@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.jwt.config;
 
+import java.security.Key;
 import java.util.List;
 
 import com.ibm.websphere.ras.annotation.Sensitive;
@@ -51,6 +52,8 @@ public interface JwtConsumerConfig {
     boolean getTokenReuse();
 
     boolean getUseSystemPropertiesForHttpClientConnections();
-    
-	List<String> getAMRClaim();
+
+    List<String> getAMRClaim();
+
+    Key getJwksKey(String kid) throws Exception;
 }

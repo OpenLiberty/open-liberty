@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.impl;
 
+import java.security.Key;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +37,7 @@ import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.config.CommonConfigUtils;
 import com.ibm.ws.security.common.jwk.impl.JWKSet;
+import com.ibm.ws.security.common.jwk.impl.JwKRetriever;
 import com.ibm.ws.security.jwt.config.ConsumerUtils;
 import com.ibm.ws.security.jwt.config.JwtConsumerConfig;
 import com.ibm.ws.security.jwt.utils.JwtUtils;
@@ -331,6 +333,14 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     @Override
     public String getJwkEndpointUrl() {
         return jwksUri;
+    }
+
+    @Override
+    public Key getJwksKey(String kid) throws Exception {
+        JwKRetriever jwkRetriever = new JwKRetriever(getId(), getSslRef(), getJwkEndpointUrl(), getJwkSet(),
+                JwtUtils.getSSLSupportService(), isHostNameVerificationEnabled(), null, null, getSignatureAlgorithm());
+    
+        return jwkRetriever.getPublicKeyFromJwk(kid, null, getUseSystemPropertiesForHttpClientConnections());
     }
 
     /** {@inheritDoc} */

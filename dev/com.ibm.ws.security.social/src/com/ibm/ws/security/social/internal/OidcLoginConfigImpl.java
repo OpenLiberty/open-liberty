@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.social.internal;
 
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -29,8 +30,10 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.config.DiscoveryConfigUtils;
 import com.ibm.ws.security.common.http.HttpUtils;
 import com.ibm.ws.security.common.jwk.impl.JWKSet;
+import com.ibm.ws.security.common.jwk.impl.JwKRetriever;
 import com.ibm.ws.security.jwt.config.ConsumerUtils;
 import com.ibm.ws.security.jwt.config.JwtConsumerConfig;
+import com.ibm.ws.security.jwt.utils.JwtUtils;
 import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
 import com.ibm.ws.security.openidconnect.common.ConfigUtils;
@@ -831,6 +834,14 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
         }
         oidcConfigUtils.populateCustomRequestParameterMap(socialLoginService.getConfigAdmin(), paramMapToPopulate, configuredCustomRequestParams, KEY_PARAM_NAME, KEY_PARAM_VALUE);
     }
+    
+    @Override
+	public Key getJwksKey(String kid) throws Exception {
+		JwKRetriever jwkRetriever = new JwKRetriever(getId(), getSslRef(), getJwkEndpointUrl(), getJwkSet(),
+				JwtUtils.getSSLSupportService(), isHostNameVerificationEnabled(), null, null, getSignatureAlgorithm());
+
+		return jwkRetriever.getPublicKeyFromJwk(kid, null, getUseSystemPropertiesForHttpClientConnections());
+	}
 
 	@Override
 	public List<String> getAMRClaim() {
