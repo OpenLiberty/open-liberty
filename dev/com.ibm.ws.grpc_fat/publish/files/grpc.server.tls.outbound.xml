@@ -15,7 +15,7 @@
         <feature>ssl-1.0</feature>
     </featureManager>
     
-    <grpcTarget target="*" sslConfig="CustomSSLSettings" />
+    <grpcTarget target="*"/>
     
     <include location="../fatTestPorts.xml" />
 
