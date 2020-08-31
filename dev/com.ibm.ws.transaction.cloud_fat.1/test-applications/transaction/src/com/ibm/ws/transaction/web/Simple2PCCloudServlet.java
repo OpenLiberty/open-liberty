@@ -11,6 +11,7 @@
 package com.ibm.ws.transaction.web;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -33,6 +34,8 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
     public void testLeaseTableAccess(HttpServletRequest request,
                                      HttpServletResponse response) throws Exception {
         Connection con = ds.getConnection();
+        con.setAutoCommit(false);
+
         try {
             // Statement used to drop table
             Statement stmt = con.createStatement();
@@ -68,6 +71,11 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
                                  HttpServletResponse response) throws Exception {
 
         Connection con = dsTranLog.getConnection();
+        con.setAutoCommit(false);
+        DatabaseMetaData mdata = con.getMetaData();
+        String dbName = mdata.getDatabaseProductName();
+        boolean isPostgreSQL = dbName.toLowerCase().contains("postgresql");
+
         try {
             // Statement used to drop table
             Statement stmt = con.createStatement();
@@ -76,7 +84,8 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
                 System.out.println("modifyLeaseOwner: sel-for-update against Lease table");
                 String selForUpdateString = "SELECT LEASE_OWNER" +
                                             " FROM WAS_LEASES_LOG" +
-                                            " WHERE SERVER_IDENTITY='cloud001' FOR UPDATE OF LEASE_OWNER";
+                                            " WHERE SERVER_IDENTITY='cloud001' FOR UPDATE" +
+                                            (isPostgreSQL ? "" : " OF LEASE_OWNER");
                 ResultSet rs = stmt.executeQuery(selForUpdateString);
                 while (rs.next()) {
                     String owner = rs.getString("LEASE_OWNER");
