@@ -130,6 +130,9 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
         if (newContext.containsKey(clazz)) {
             return true;
         }
+        if (cdiService == null) {
+            return false;
+        }
         if (cdiService.isWeldProxy(clazz)) {
             return true;
         }
@@ -270,7 +273,7 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
                 Tr.debug(tc, "getInstanceFromManagedObejct - \"clobbered\" " + oldMO + " with " + newServiceObject + " for key " + clazz + " in map " + newContext);
             }
 
-            return (T) newServiceObject.getObject();
+            return newServiceObject.getObject();
         } else {
             newContext.remove(clazz);
         }
