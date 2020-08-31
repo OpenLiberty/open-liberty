@@ -30,6 +30,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -124,7 +125,7 @@ public class HelloWorldTlsTest extends HelloWorldBasicTest {
      * @throws Exception
      */
     @Test
-    //@ExpectedFFDC("io.grpc.StatusRuntimeException")
+    @ExpectedFFDC("io.grpc.StatusRuntimeException")
     public void testHelloWorldWithTlsInvalidClientTrustStore() throws Exception {
         if (!checkJavaVersion()) {
             return;
