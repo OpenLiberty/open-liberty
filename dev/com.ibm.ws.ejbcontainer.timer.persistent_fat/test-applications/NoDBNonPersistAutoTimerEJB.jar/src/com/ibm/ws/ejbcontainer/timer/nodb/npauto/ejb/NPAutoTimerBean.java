@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,8 @@ import javax.ejb.Stateless;
 import javax.ejb.Timer;
 import javax.ejb.TimerService;
 
+import com.ibm.websphere.ejbcontainer.test.tools.FATHelper;
+
 /**
  * A simple stateless bean with non-persistent automatically created timers and methods
  * to verify the timers run as expected.
@@ -36,6 +38,7 @@ public class NPAutoTimerBean {
     private static final Logger logger = Logger.getLogger(NPAutoTimerBean.class.getName());
 
     private static final CountDownLatch autoTimerLatch = new CountDownLatch(1);
+    private static long POST_INVOKE_FUDGE_FACTOR = 400; //ms
 
     @Resource
     private TimerService ts;
@@ -57,6 +60,7 @@ public class NPAutoTimerBean {
         logger.info("> waitForAutomaticTimer");
         try {
             autoTimerLatch.await(30, TimeUnit.SECONDS);
+            FATHelper.sleep(POST_INVOKE_FUDGE_FACTOR);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

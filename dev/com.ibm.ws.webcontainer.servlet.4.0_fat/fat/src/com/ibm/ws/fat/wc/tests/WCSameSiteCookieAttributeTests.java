@@ -27,18 +27,10 @@ import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
-import org.apache.hc.core5.http.ClassicHttpRequest;
-import org.apache.hc.core5.http.ClassicHttpResponse;
 import org.apache.hc.core5.http.Header;
-import org.apache.hc.core5.http.HttpHost;
 import org.apache.hc.core5.http.NameValuePair;
-import org.apache.hc.core5.http.impl.bootstrap.HttpRequester;
-import org.apache.hc.core5.http.impl.bootstrap.RequesterBootstrap;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
-import org.apache.hc.core5.http.message.BasicClassicHttpRequest;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
-import org.apache.hc.core5.http.protocol.BasicHttpContext;
-import org.apache.hc.core5.util.Timeout;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -124,45 +116,39 @@ public class WCSameSiteCookieAttributeTests {
         boolean foundSetHeader = false;
         boolean splitSameSiteHeaderFound = false;
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE + "/TestSetCookie";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/TestSetCookie";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie headers were found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedSetHeader)) {
-                    foundSetHeader = true;
-                } else if (headerValue.equals(expectedAddHeader)) {
-                    foundAddHeader = true;
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=None")) {
-                    splitSameSiteHeaderFound = true;
+                // Verify that the expected Set-Cookie headers were found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedSetHeader)) {
+                        foundSetHeader = true;
+                    } else if (headerValue.equals(expectedAddHeader)) {
+                        foundAddHeader = true;
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=None")) {
+                        splitSameSiteHeaderFound = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
+                assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSetHeader, foundSetHeader);
+                assertTrue("The response did not contain the expected Set-Cookie header: " + expectedAddHeader, foundAddHeader);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
-            assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSetHeader, foundSetHeader);
-            assertTrue("The response did not contain the expected Set-Cookie header: " + expectedAddHeader, foundAddHeader);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         }
     }
 
@@ -191,45 +177,40 @@ public class WCSameSiteCookieAttributeTests {
         boolean foundSetHeader = false;
         boolean splitSameSiteHeaderFound = false;
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/TestSetCookie?testIncorrectSameSiteValue=true";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/TestSetCookie?testIncorrectSameSiteValue=true";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie headers were found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedSetHeader)) {
-                    foundSetHeader = true;
-                } else if (headerValue.equals(expectedAddHeader)) {
-                    foundAddHeader = true;
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Incorrect")) {
-                    splitSameSiteHeaderFound = true;
+                // Verify that the expected Set-Cookie headers were found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedSetHeader)) {
+                        foundSetHeader = true;
+                    } else if (headerValue.equals(expectedAddHeader)) {
+                        foundAddHeader = true;
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Incorrect")) {
+                        splitSameSiteHeaderFound = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
+                assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSetHeader, foundSetHeader);
+                assertTrue("The response did not contain the expected Set-Cookie header: " + expectedAddHeader, foundAddHeader);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
-            assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSetHeader, foundSetHeader);
-            assertTrue("The response did not contain the expected Set-Cookie header: " + expectedAddHeader, foundAddHeader);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         }
     }
 
@@ -258,45 +239,40 @@ public class WCSameSiteCookieAttributeTests {
         boolean foundSetHeader = false;
         boolean splitSameSiteHeaderFound = false;
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/TestSetCookie?testDuplicateSameSiteValue=true";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/TestSetCookie?testDuplicateSameSiteValue=true";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie headers were found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedSetHeader)) {
-                    foundSetHeader = true;
-                } else if (headerValue.equals(expectedAddHeader)) {
-                    foundAddHeader = true;
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax") || isSplitSameSiteSetCookieHeader(headerValue, "SameSite=None")) {
-                    splitSameSiteHeaderFound = true;
+                // Verify that the expected Set-Cookie headers were found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedSetHeader)) {
+                        foundSetHeader = true;
+                    } else if (headerValue.equals(expectedAddHeader)) {
+                        foundAddHeader = true;
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax") || isSplitSameSiteSetCookieHeader(headerValue, "SameSite=None")) {
+                        splitSameSiteHeaderFound = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
+                assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSetHeader, foundSetHeader);
+                assertTrue("The response did not contain the expected Set-Cookie header: " + expectedAddHeader, foundAddHeader);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
-            assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSetHeader, foundSetHeader);
-            assertTrue("The response did not contain the expected Set-Cookie header: " + expectedAddHeader, foundAddHeader);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         }
     }
 
@@ -325,45 +301,39 @@ public class WCSameSiteCookieAttributeTests {
         boolean foundSetHeader = false;
         boolean splitSameSiteHeaderFound = false;
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE + "/TestSetCookie?testEmptySameSiteValue=true";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/TestSetCookie?testEmptySameSiteValue=true";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie headers were found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedSetHeader)) {
-                    foundSetHeader = true;
-                } else if (headerValue.equals(expectedAddHeader)) {
-                    foundAddHeader = true;
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "")) {
-                    splitSameSiteHeaderFound = true;
+                // Verify that the expected Set-Cookie headers were found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedSetHeader)) {
+                        foundSetHeader = true;
+                    } else if (headerValue.equals(expectedAddHeader)) {
+                        foundAddHeader = true;
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "")) {
+                        splitSameSiteHeaderFound = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
+                assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSetHeader, foundSetHeader);
+                assertTrue("The response did not contain the expected Set-Cookie header: " + expectedAddHeader, foundAddHeader);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
-            assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSetHeader, foundSetHeader);
-            assertTrue("The response did not contain the expected Set-Cookie header: " + expectedAddHeader, foundAddHeader);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         }
     }
 
@@ -396,46 +366,40 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie header was found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedHeader)) {
-                    headerFound = true;
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax")) {
-                    splitSameSiteHeaderFound = true;
+                // Verify that the expected Set-Cookie header was found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedHeader)) {
+                        headerFound = true;
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax")) {
+                        splitSameSiteHeaderFound = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -472,46 +436,40 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie header was found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedHeader)) {
-                    headerFound = true;
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Strict")) {
-                    splitSameSiteHeaderFound = true;
+                // Verify that the expected Set-Cookie header was found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedHeader)) {
+                        headerFound = true;
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Strict")) {
+                        splitSameSiteHeaderFound = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -556,48 +514,42 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie_secure";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie_secure";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie header was found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedHeader)) {
-                    headerFound = true;
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=None")) {
-                    splitSameSiteHeaderFound = true;
+                // Verify that the expected Set-Cookie header was found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedHeader)) {
+                        headerFound = true;
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=None")) {
+                        splitSameSiteHeaderFound = true;
+                    }
                 }
+
+                assertNull("The Channel Framework incorrectly added the Secure attribute.",
+                           sameSiteServer.waitForStringInTraceUsingMark("Setting the Secure attribute for SameSite=None"));
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertNull("The Channel Framework incorrectly added the Secure attribute.",
-                       sameSiteServer.waitForStringInTraceUsingMark("Setting the Secure attribute for SameSite=None"));
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -636,46 +588,40 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie header was found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedHeader)) {
-                    headerFound = true;
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=None")) {
-                    splitSameSiteHeaderFound = true;
+                // Verify that the expected Set-Cookie header was found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedHeader)) {
+                        headerFound = true;
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=None")) {
+                        splitSameSiteHeaderFound = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -716,49 +662,43 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie header was found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedHeaderOne)) {
-                    headerFoundOne = true;
-                } else if (headerValue.equals(expectedHeaderTwo)) {
-                    headerFoundTwo = true;
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax")) {
-                    splitSameSiteHeaderFound = true;
+                // Verify that the expected Set-Cookie header was found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedHeaderOne)) {
+                        headerFoundOne = true;
+                    } else if (headerValue.equals(expectedHeaderTwo)) {
+                        headerFoundTwo = true;
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax")) {
+                        splitSameSiteHeaderFound = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderOne, headerFoundOne);
+                assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderTwo, headerFoundTwo);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderOne, headerFoundOne);
-            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderTwo, headerFoundTwo);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -799,49 +739,43 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie header was found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedHeaderOne)) {
-                    headerFoundOne = true;
-                } else if (headerValue.equals(expectedHeaderTwo)) {
-                    headerFoundTwo = true;
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax")) {
-                    splitSameSiteHeaderFound = true;
+                // Verify that the expected Set-Cookie header was found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedHeaderOne)) {
+                        headerFoundOne = true;
+                    } else if (headerValue.equals(expectedHeaderTwo)) {
+                        headerFoundTwo = true;
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax")) {
+                        splitSameSiteHeaderFound = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderOne, headerFoundOne);
+                assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderTwo, headerFoundTwo);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderOne, headerFoundOne);
-            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderTwo, headerFoundTwo);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -883,51 +817,45 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie header was found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedHeaderOne)) {
-                    headerFoundOne = true;
-                } else if (headerValue.equals(expectedHeaderTwo)) {
-                    headerFoundTwo = true;
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax")) {
-                    splitSameSiteHeaderFound = true;
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Strict")) {
-                    splitSameSiteHeaderFound = true;
+                // Verify that the expected Set-Cookie header was found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedHeaderOne)) {
+                        headerFoundOne = true;
+                    } else if (headerValue.equals(expectedHeaderTwo)) {
+                        headerFoundTwo = true;
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax")) {
+                        splitSameSiteHeaderFound = true;
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Strict")) {
+                        splitSameSiteHeaderFound = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderOne, headerFoundOne);
+                assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderTwo, headerFoundTwo);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderOne, headerFoundOne);
-            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderTwo, headerFoundTwo);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -967,46 +895,40 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie header was found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedHeader)) {
-                    headerFound = true;
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax")) {
-                    splitSameSiteHeaderFound = true;
+                // Verify that the expected Set-Cookie header was found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedHeader)) {
+                        headerFound = true;
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax")) {
+                        splitSameSiteHeaderFound = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -1046,46 +968,40 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie header was found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedHeader)) {
-                    headerFound = true;
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax")) {
-                    splitSameSiteHeaderFound = true;
+                // Verify that the expected Set-Cookie header was found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedHeader)) {
+                        headerFound = true;
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax")) {
+                        splitSameSiteHeaderFound = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -1129,51 +1045,45 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie header was found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedHeader)) {
-                    headerFound = true;
-                } else if (headerValue.equals(expectedHeaderTwo)) {
-                    headerFoundTwo = true;
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax")) {
-                    splitSameSiteHeaderFound = true;
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Strict")) {
-                    splitSameSiteHeaderFound = true;
+                // Verify that the expected Set-Cookie header was found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedHeader)) {
+                        headerFound = true;
+                    } else if (headerValue.equals(expectedHeaderTwo)) {
+                        headerFoundTwo = true;
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax")) {
+                        splitSameSiteHeaderFound = true;
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Strict")) {
+                        splitSameSiteHeaderFound = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
+                assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderTwo, headerFoundTwo);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
-            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderTwo, headerFoundTwo);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -1213,43 +1123,37 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedHeader)) {
-                    headerFound = true;
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedHeader)) {
+                        headerFound = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
+                assertNotNull("The CWWKT0035W should have been logged for an invalid configuration but was not.", sameSiteServer.waitForStringInLogUsingMark("CWWKT0035W.*"));
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
-            assertNotNull("The CWWKT0035W should have been logged for an invalid configuration but was not.", sameSiteServer.waitForStringInLogUsingMark("CWWKT0035W.*"));
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -1289,43 +1193,37 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedHeader)) {
-                    headerFound = true;
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedHeader)) {
+                        headerFound = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
+                assertNotNull("The CWWKT0035W should have been logged for an invalid configuration but was not.", sameSiteServer.waitForStringInLogUsingMark("CWWKT0035W.*"));
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
-            assertNotNull("The CWWKT0035W should have been logged for an invalid configuration but was not.", sameSiteServer.waitForStringInLogUsingMark("CWWKT0035W.*"));
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -1377,49 +1275,43 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedHeader)) {
-                    headerFound = true;
-                } else if (headerValue.equals(expectedHeaderTwo)) {
-                    headerFoundTwo = true;
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=None")) {
-                    splitSameSiteHeaderFound = true;
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedHeader)) {
+                        headerFound = true;
+                    } else if (headerValue.equals(expectedHeaderTwo)) {
+                        headerFoundTwo = true;
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=None")) {
+                        splitSameSiteHeaderFound = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertNotNull("The CWWKT0035W should have been logged for an invalid configuration but was not.", sameSiteServer.waitForStringInLogUsingMark("CWWKT0035W.*"));
+                assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
+                assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderTwo, headerFoundTwo);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertNotNull("The CWWKT0035W should have been logged for an invalid configuration but was not.", sameSiteServer.waitForStringInLogUsingMark("CWWKT0035W.*"));
-            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
-            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderTwo, headerFoundTwo);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -1460,43 +1352,37 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedHeader)) {
-                    headerFound = true;
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedHeader)) {
+                        headerFound = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
+                assertNotNull("The CWWKT0037W should have been logged for an invalid configuration but was not.", sameSiteServer.waitForStringInLogUsingMark("CWWKT0037W.*"));
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
-            assertNotNull("The CWWKT0037W should have been logged for an invalid configuration but was not.", sameSiteServer.waitForStringInLogUsingMark("CWWKT0037W.*"));
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -1535,43 +1421,37 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedHeader)) {
-                    headerFound = true;
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedHeader)) {
+                        headerFound = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
+                assertNotNull("The CWWKT0036W should have been logged for an invalid configuration but was not.", sameSiteServer.waitForStringInLogUsingMark("CWWKT0036W.*"));
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
-            assertNotNull("The CWWKT0036W should have been logged for an invalid configuration but was not.", sameSiteServer.waitForStringInLogUsingMark("CWWKT0036W.*"));
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -1612,49 +1492,43 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie header was found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedHeaderOne)) {
-                    headerFoundOne = true;
-                } else if (headerValue.equals(expectedHeaderTwo)) {
-                    headerFoundTwo = true;
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Strict")) {
-                    splitSameSiteHeaderFound = true;
+                // Verify that the expected Set-Cookie header was found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedHeaderOne)) {
+                        headerFoundOne = true;
+                    } else if (headerValue.equals(expectedHeaderTwo)) {
+                        headerFoundTwo = true;
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Strict")) {
+                        splitSameSiteHeaderFound = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderOne, headerFoundOne);
+                assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderTwo, headerFoundTwo);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderOne, headerFoundOne);
-            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderTwo, headerFoundTwo);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -1695,49 +1569,43 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie header was found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedHeaderOne)) {
-                    headerFoundOne = true;
-                } else if (headerValue.equals(expectedHeaderTwo)) {
-                    headerFoundTwo = true;
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Strict")) {
-                    splitSameSiteHeaderFound = true;
+                // Verify that the expected Set-Cookie header was found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedHeaderOne)) {
+                        headerFoundOne = true;
+                    } else if (headerValue.equals(expectedHeaderTwo)) {
+                        headerFoundTwo = true;
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Strict")) {
+                        splitSameSiteHeaderFound = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderOne, headerFoundOne);
+                assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderTwo, headerFoundTwo);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderOne, headerFoundOne);
-            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderTwo, headerFoundTwo);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -1778,49 +1646,43 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie header was found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedHeaderOne)) {
-                    headerFoundOne = true;
-                } else if (headerValue.equals(expectedHeaderTwo)) {
-                    headerFoundTwo = true;
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=None")) {
-                    splitSameSiteHeaderFound = true;
+                // Verify that the expected Set-Cookie header was found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedHeaderOne)) {
+                        headerFoundOne = true;
+                    } else if (headerValue.equals(expectedHeaderTwo)) {
+                        headerFoundTwo = true;
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=None")) {
+                        splitSameSiteHeaderFound = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderOne, headerFoundOne);
+                assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderTwo, headerFoundTwo);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderOne, headerFoundOne);
-            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderTwo, headerFoundTwo);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -1861,49 +1723,43 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie header was found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedHeaderOne)) {
-                    headerFoundOne = true;
-                } else if (headerValue.equals(expectedHeaderTwo)) {
-                    headerFoundTwo = true;
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=None")) {
-                    splitSameSiteHeaderFound = true;
+                // Verify that the expected Set-Cookie header was found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedHeaderOne)) {
+                        headerFoundOne = true;
+                    } else if (headerValue.equals(expectedHeaderTwo)) {
+                        headerFoundTwo = true;
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=None")) {
+                        splitSameSiteHeaderFound = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderOne, headerFoundOne);
+                assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderTwo, headerFoundTwo);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderOne, headerFoundOne);
-            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderTwo, headerFoundTwo);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -1950,51 +1806,45 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies_secure";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies_secure";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie header was found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedHeaderOne)) {
-                    headerFoundOne = true;
-                } else if (headerValue.equals(expectedHeaderTwo)) {
-                    headerFoundTwo = true;
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=None")) {
-                    splitSameSiteHeaderFound = true;
+                // Verify that the expected Set-Cookie header was found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedHeaderOne)) {
+                        headerFoundOne = true;
+                    } else if (headerValue.equals(expectedHeaderTwo)) {
+                        headerFoundTwo = true;
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=None")) {
+                        splitSameSiteHeaderFound = true;
+                    }
                 }
+
+                assertNull("The Channel Framework incorrectly added the Secure attribute.",
+                           sameSiteServer.waitForStringInTraceUsingMark("Setting the Secure attribute for SameSite=None"));
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderOne, headerFoundOne);
+                assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderTwo, headerFoundTwo);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertNull("The Channel Framework incorrectly added the Secure attribute.",
-                       sameSiteServer.waitForStringInTraceUsingMark("Setting the Secure attribute for SameSite=None"));
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderOne, headerFoundOne);
-            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderTwo, headerFoundTwo);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -2035,50 +1885,44 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteAddCookieServlet?cookieToAdd=add_same_cookie_twice";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_same_cookie_twice";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie header was found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                // Headers are the same, ensure both are found.
-                if (headerValue.equals(expectedHeaderOne) && !headerFoundOne) {
-                    headerFoundOne = true;
-                } else if (headerValue.equals(expectedHeaderTwo)) {
-                    headerFoundTwo = true;
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax")) {
-                    splitSameSiteHeaderFound = true;
+                // Verify that the expected Set-Cookie header was found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    // Headers are the same, ensure both are found.
+                    if (headerValue.equals(expectedHeaderOne) && !headerFoundOne) {
+                        headerFoundOne = true;
+                    } else if (headerValue.equals(expectedHeaderTwo)) {
+                        headerFoundTwo = true;
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax")) {
+                        splitSameSiteHeaderFound = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderOne, headerFoundOne);
+                assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderTwo, headerFoundTwo);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderOne, headerFoundOne);
-            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderTwo, headerFoundTwo);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -2121,48 +1965,42 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/TestSetCookie?testSameSiteConfigSetAddHeader=true";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/TestSetCookie?testSameSiteConfigSetAddHeader=true";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie headers were found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedSetHeader)) {
-                    foundSetHeader = true;
-                } else if (headerValue.equals(expectedAddHeader)) {
-                    foundAddHeader = true;
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax")) {
-                    splitSameSiteHeaderFound = true;
+                // Verify that the expected Set-Cookie headers were found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedSetHeader)) {
+                        foundSetHeader = true;
+                    } else if (headerValue.equals(expectedAddHeader)) {
+                        foundAddHeader = true;
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax")) {
+                        splitSameSiteHeaderFound = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
+                assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSetHeader, foundSetHeader);
+                assertTrue("The response did not contain the expected Set-Cookie header: " + expectedAddHeader, foundAddHeader);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
-            assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSetHeader, foundSetHeader);
-            assertTrue("The response did not contain the expected Set-Cookie header: " + expectedAddHeader, foundAddHeader);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -2197,49 +2035,43 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteSessionCreationServlet";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteSessionCreationServlet";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie header was found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (header.getName().equals("Set-Cookie") && header.getValue().contains("JSESSIONID=")) {
-                    LOG.info("\n" + "Set-Cookie header for JSESSIONID found.");
-                    if (header.getValue().contains("SameSite=Lax")) {
-                        headerFound = true;
+                // Verify that the expected Set-Cookie header was found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (header.getName().equals("Set-Cookie") && header.getValue().contains("JSESSIONID=")) {
+                        LOG.info("\n" + "Set-Cookie header for JSESSIONID found.");
+                        if (header.getValue().contains("SameSite=Lax")) {
+                            headerFound = true;
+                        }
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax")) {
+                        splitSameSiteHeaderFound = true;
                     }
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax")) {
-                    splitSameSiteHeaderFound = true;
                 }
+
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=Lax attribute.", headerFound);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=Lax attribute.", headerFound);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -2274,49 +2106,43 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteSessionCreationServlet";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteSessionCreationServlet";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie header was found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (header.getName().equals("Set-Cookie") && header.getValue().contains("JSESSIONID=")) {
-                    LOG.info("\n" + "Set-Cookie header for JSESSIONID found.");
-                    if (header.getValue().contains("SameSite=Lax")) {
-                        headerFound = true;
+                // Verify that the expected Set-Cookie header was found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (header.getName().equals("Set-Cookie") && header.getValue().contains("JSESSIONID=")) {
+                        LOG.info("\n" + "Set-Cookie header for JSESSIONID found.");
+                        if (header.getValue().contains("SameSite=Lax")) {
+                            headerFound = true;
+                        }
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax")) {
+                        splitSameSiteHeaderFound = true;
                     }
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax")) {
-                    splitSameSiteHeaderFound = true;
                 }
+
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=Lax attribute.", headerFound);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=Lax attribute.", headerFound);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -2355,49 +2181,43 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteSessionCreationServlet";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteSessionCreationServlet";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie header was found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (header.getName().equals("Set-Cookie") && header.getValue().contains("JSESSIONID=")) {
-                    LOG.info("\n" + "Set-Cookie header for JSESSIONID found.");
-                    if (header.getValue().contains("SameSite=Strict")) {
-                        headerFound = true;
+                // Verify that the expected Set-Cookie header was found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (header.getName().equals("Set-Cookie") && header.getValue().contains("JSESSIONID=")) {
+                        LOG.info("\n" + "Set-Cookie header for JSESSIONID found.");
+                        if (header.getValue().contains("SameSite=Strict")) {
+                            headerFound = true;
+                        }
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Strict")) {
+                        splitSameSiteHeaderFound = true;
                     }
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Strict")) {
-                    splitSameSiteHeaderFound = true;
                 }
+
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=Strict attribute.", headerFound);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=Strict attribute.", headerFound);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -2436,49 +2256,43 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteSessionCreationServlet";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteSessionCreationServlet";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie header was found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (header.getName().equals("Set-Cookie") && header.getValue().contains("JSESSIONID=")) {
-                    LOG.info("\n" + "Set-Cookie header for JSESSIONID found.");
-                    if (header.getValue().contains("SameSite=Strict")) {
-                        headerFound = true;
+                // Verify that the expected Set-Cookie header was found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (header.getName().equals("Set-Cookie") && header.getValue().contains("JSESSIONID=")) {
+                        LOG.info("\n" + "Set-Cookie header for JSESSIONID found.");
+                        if (header.getValue().contains("SameSite=Strict")) {
+                            headerFound = true;
+                        }
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Strict")) {
+                        splitSameSiteHeaderFound = true;
                     }
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Strict")) {
-                    splitSameSiteHeaderFound = true;
                 }
+
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=Strict attribute.", headerFound);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=Strict attribute.", headerFound);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -2518,49 +2332,43 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies_different_case";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies_different_case";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie header was found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedHeaderOne)) {
-                    headerFoundOne = true;
-                } else if (headerValue.equals(expectedHeaderTwo)) {
-                    headerFoundTwo = true;
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax")) {
-                    splitSameSiteHeaderFound = true;
+                // Verify that the expected Set-Cookie header was found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedHeaderOne)) {
+                        headerFoundOne = true;
+                    } else if (headerValue.equals(expectedHeaderTwo)) {
+                        headerFoundTwo = true;
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax")) {
+                        splitSameSiteHeaderFound = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderOne, headerFoundOne);
+                assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderTwo, headerFoundTwo);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderOne, headerFoundOne);
-            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderTwo, headerFoundTwo);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -2600,46 +2408,40 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie header was found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedHeaderOne)) {
-                    headerFoundOne = true;
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Strict")) {
-                    splitSameSiteHeaderFound = true;
+                // Verify that the expected Set-Cookie header was found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedHeaderOne)) {
+                        headerFoundOne = true;
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Strict")) {
+                        splitSameSiteHeaderFound = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderOne, headerFoundOne);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeaderOne, headerFoundOne);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -2688,43 +2490,38 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie header was found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedHeader)) {
-                    headerFound = true;
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Strict")) {
-                    splitSameSiteHeaderFound = true;
+                // Verify that the expected Set-Cookie header was found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedHeader)) {
+                        headerFound = true;
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Strict")) {
+                        splitSameSiteHeaderFound = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertTrue("The Response did not contain the following Set-Cookie header: " + expectedHeader, headerFound);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -2772,48 +2569,42 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/TestAddCookieSetCookieHeader?testDuplicateSameSiteValue=true";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/TestAddCookieSetCookieHeader?testDuplicateSameSiteValue=true";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie headers were found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedSetHeader)) {
-                    foundSetHeader = true;
-                } else if (headerValue.equals(expectedAddHeader)) {
-                    foundAddHeader = true;
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=None")) {
-                    splitSameSiteHeaderFound = true;
+                // Verify that the expected Set-Cookie headers were found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedSetHeader)) {
+                        foundSetHeader = true;
+                    } else if (headerValue.equals(expectedAddHeader)) {
+                        foundAddHeader = true;
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=None")) {
+                        splitSameSiteHeaderFound = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
+                assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSetHeader, foundSetHeader);
+                assertTrue("The response did not contain the expected Set-Cookie header: " + expectedAddHeader, foundAddHeader);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
-            assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSetHeader, foundSetHeader);
-            assertTrue("The response did not contain the expected Set-Cookie header: " + expectedAddHeader, foundAddHeader);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -2863,48 +2654,42 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/TestSetCookie?testDuplicateSameSiteValue=true";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/TestSetCookie?testDuplicateSameSiteValue=true";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie headers were found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedSetHeader)) {
-                    foundSetHeader = true;
-                } else if (headerValue.equals(expectedAddHeader)) {
-                    foundAddHeader = true;
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=None")) {
-                    splitSameSiteHeaderFound = true;
+                // Verify that the expected Set-Cookie headers were found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedSetHeader)) {
+                        foundSetHeader = true;
+                    } else if (headerValue.equals(expectedAddHeader)) {
+                        foundAddHeader = true;
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=None")) {
+                        splitSameSiteHeaderFound = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
+                assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSetHeader, foundSetHeader);
+                assertTrue("The response did not contain the expected Set-Cookie header: " + expectedAddHeader, foundAddHeader);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
-            assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSetHeader, foundSetHeader);
-            assertTrue("The response did not contain the expected Set-Cookie header: " + expectedAddHeader, foundAddHeader);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -2954,48 +2739,42 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/TestAddCookieSetCookieHeader?testEmptySameSiteValue=true";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/TestAddCookieSetCookieHeader?testEmptySameSiteValue=true";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie headers were found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedSetHeader)) {
-                    foundSetHeader = true;
-                } else if (headerValue.equals(expectedAddHeader)) {
-                    foundAddHeader = true;
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Strict")) {
-                    splitSameSiteHeaderFound = true;
+                // Verify that the expected Set-Cookie headers were found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedSetHeader)) {
+                        foundSetHeader = true;
+                    } else if (headerValue.equals(expectedAddHeader)) {
+                        foundAddHeader = true;
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Strict")) {
+                        splitSameSiteHeaderFound = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
+                assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSetHeader, foundSetHeader);
+                assertTrue("The response did not contain the expected Set-Cookie header: " + expectedAddHeader, foundAddHeader);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
-            assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSetHeader, foundSetHeader);
-            assertTrue("The response did not contain the expected Set-Cookie header: " + expectedAddHeader, foundAddHeader);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -3045,48 +2824,42 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/TestSetCookie?testEmptySameSiteValue=true";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/TestSetCookie?testEmptySameSiteValue=true";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie headers were found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedSetHeader)) {
-                    foundSetHeader = true;
-                } else if (headerValue.equals(expectedAddHeader)) {
-                    foundAddHeader = true;
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Strict")) {
-                    splitSameSiteHeaderFound = true;
+                // Verify that the expected Set-Cookie headers were found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedSetHeader)) {
+                        foundSetHeader = true;
+                    } else if (headerValue.equals(expectedAddHeader)) {
+                        foundAddHeader = true;
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Strict")) {
+                        splitSameSiteHeaderFound = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
+                assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSetHeader, foundSetHeader);
+                assertTrue("The response did not contain the expected Set-Cookie header: " + expectedAddHeader, foundAddHeader);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
-            assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSetHeader, foundSetHeader);
-            assertTrue("The response did not contain the expected Set-Cookie header: " + expectedAddHeader, foundAddHeader);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -3137,52 +2910,46 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/TestAddCookieSetCookieHeader?testIncorrectSameSiteValue=true";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/TestAddCookieSetCookieHeader?testIncorrectSameSiteValue=true";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie headers were found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedSetHeader)) {
-                    foundSetHeader = true;
-                } else if (headerValue.equals(expectedAddHeader)) {
-                    foundAddHeader = true;
-                } else if (headerValue.equals(expectedCookie)) {
-                    foundCookieHeader = true;
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Incorrect") ||
-                           isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax")) {
-                    splitSameSiteHeaderFound = true;
+                // Verify that the expected Set-Cookie headers were found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedSetHeader)) {
+                        foundSetHeader = true;
+                    } else if (headerValue.equals(expectedAddHeader)) {
+                        foundAddHeader = true;
+                    } else if (headerValue.equals(expectedCookie)) {
+                        foundCookieHeader = true;
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Incorrect") ||
+                               isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax")) {
+                        splitSameSiteHeaderFound = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
+                assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSetHeader, foundSetHeader);
+                assertTrue("The response did not contain the expected Set-Cookie header: " + expectedAddHeader, foundAddHeader);
+                assertTrue("The response did not contain the expected Set-Cookie header: " + expectedCookie, foundCookieHeader);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
-            assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSetHeader, foundSetHeader);
-            assertTrue("The response did not contain the expected Set-Cookie header: " + expectedAddHeader, foundAddHeader);
-            assertTrue("The response did not contain the expected Set-Cookie header: " + expectedCookie, foundCookieHeader);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -3214,49 +2981,43 @@ public class WCSameSiteCookieAttributeTests {
         configuration.getHttpSession().setCookieSameSite("Lax");
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteSessionCreationServlet";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteSessionCreationServlet";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie header was found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (header.getName().equals("Set-Cookie") && header.getValue().contains("JSESSIONID=")) {
-                    LOG.info("\n" + "Set-Cookie header for JSESSIONID found.");
-                    if (header.getValue().contains("SameSite=Lax") && !header.getValue().contains("Secure")) {
-                        headerFound = true;
+                // Verify that the expected Set-Cookie header was found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (header.getName().equals("Set-Cookie") && header.getValue().contains("JSESSIONID=")) {
+                        LOG.info("\n" + "Set-Cookie header for JSESSIONID found.");
+                        if (header.getValue().contains("SameSite=Lax") && !header.getValue().contains("Secure")) {
+                            headerFound = true;
+                        }
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax")) {
+                        splitSameSiteHeaderFound = true;
                     }
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax")) {
-                    splitSameSiteHeaderFound = true;
                 }
+
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=Lax attribute.", headerFound);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=Lax attribute.", headerFound);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -3288,49 +3049,43 @@ public class WCSameSiteCookieAttributeTests {
         configuration.getHttpSession().setCookieSameSite("Strict");
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteSessionCreationServlet";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteSessionCreationServlet";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie header was found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (header.getName().equals("Set-Cookie") && header.getValue().contains("JSESSIONID=")) {
-                    LOG.info("\n" + "Set-Cookie header for JSESSIONID found.");
-                    if (header.getValue().contains("SameSite=Strict") && !header.getValue().contains("Secure")) {
-                        headerFound = true;
+                // Verify that the expected Set-Cookie header was found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (header.getName().equals("Set-Cookie") && header.getValue().contains("JSESSIONID=")) {
+                        LOG.info("\n" + "Set-Cookie header for JSESSIONID found.");
+                        if (header.getValue().contains("SameSite=Strict") && !header.getValue().contains("Secure")) {
+                            headerFound = true;
+                        }
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Strict")) {
+                        splitSameSiteHeaderFound = true;
                     }
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Strict")) {
-                    splitSameSiteHeaderFound = true;
                 }
+
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=Strict attribute or the Secure attribute was found.", headerFound);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=Strict attribute or the Secure attribute was found.", headerFound);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -3365,49 +3120,43 @@ public class WCSameSiteCookieAttributeTests {
         configuration.getHttpSession().setCookieSecure(true);
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteSessionCreationServlet";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteSessionCreationServlet";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie header was found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (header.getName().equals("Set-Cookie") && header.getValue().contains("JSESSIONID=")) {
-                    LOG.info("\n" + "Set-Cookie header for JSESSIONID found.");
-                    if (header.getValue().contains("SameSite=None") && header.getValue().contains("Secure")) {
-                        headerFound = true;
+                // Verify that the expected Set-Cookie header was found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (header.getName().equals("Set-Cookie") && header.getValue().contains("JSESSIONID=")) {
+                        LOG.info("\n" + "Set-Cookie header for JSESSIONID found.");
+                        if (header.getValue().contains("SameSite=None") && header.getValue().contains("Secure")) {
+                            headerFound = true;
+                        }
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=None")) {
+                        splitSameSiteHeaderFound = true;
                     }
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=None")) {
-                    splitSameSiteHeaderFound = true;
                 }
+
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=None and Secure attributes.", headerFound);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=None and Secure attributes.", headerFound);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -3442,49 +3191,43 @@ public class WCSameSiteCookieAttributeTests {
         configuration.getHttpSession().setCookieSameSite("None");
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteSessionCreationServlet";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteSessionCreationServlet";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie header was found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (header.getName().equals("Set-Cookie") && header.getValue().contains("JSESSIONID=")) {
-                    LOG.info("\n" + "Set-Cookie header for JSESSIONID found.");
-                    if (header.getValue().contains("SameSite=None") && header.getValue().contains("Secure")) {
-                        headerFound = true;
+                // Verify that the expected Set-Cookie header was found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (header.getName().equals("Set-Cookie") && header.getValue().contains("JSESSIONID=")) {
+                        LOG.info("\n" + "Set-Cookie header for JSESSIONID found.");
+                        if (header.getValue().contains("SameSite=None") && header.getValue().contains("Secure")) {
+                            headerFound = true;
+                        }
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=None")) {
+                        splitSameSiteHeaderFound = true;
                     }
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=None")) {
-                    splitSameSiteHeaderFound = true;
                 }
+
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=None and Secure attributes.", headerFound);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=None and Secure attributes.", headerFound);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -3514,46 +3257,40 @@ public class WCSameSiteCookieAttributeTests {
         configuration.getHttpSession().setCookieSameSite("Disabled");
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteSessionCreationServlet";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteSessionCreationServlet";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie header was found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (header.getName().equals("Set-Cookie") && header.getValue().contains("JSESSIONID=")) {
-                    LOG.info("\n" + "Set-Cookie header for JSESSIONID found.");
-                    if (header.getValue().contains("SameSite")) {
-                        headerFound = true;
+                // Verify that the expected Set-Cookie header was found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (header.getName().equals("Set-Cookie") && header.getValue().contains("JSESSIONID=")) {
+                        LOG.info("\n" + "Set-Cookie header for JSESSIONID found.");
+                        if (header.getValue().contains("SameSite")) {
+                            headerFound = true;
+                        }
                     }
                 }
+
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertFalse("The JSESSIONID Set-Cookie header contained the SameSite attribute and it should not have.", headerFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertFalse("The JSESSIONID Set-Cookie header contained the SameSite attribute and it should not have.", headerFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -3577,43 +3314,38 @@ public class WCSameSiteCookieAttributeTests {
         boolean headerFound = false;
         String expectedResponse = "Welcome to the SameSiteSessionCreationServlet!";
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteSessionCreationServlet";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteSessionCreationServlet";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie header was found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (header.getName().equals("Set-Cookie") && header.getValue().contains("JSESSIONID=")) {
-                    LOG.info("\n" + "Set-Cookie header for JSESSIONID found.");
-                    if (header.getValue().contains("SameSite") || header.getValue().contains("Secure")) {
-                        headerFound = true;
+                // Verify that the expected Set-Cookie header was found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (header.getName().equals("Set-Cookie") && header.getValue().contains("JSESSIONID=")) {
+                        LOG.info("\n" + "Set-Cookie header for JSESSIONID found.");
+                        if (header.getValue().contains("SameSite") || header.getValue().contains("Secure")) {
+                            headerFound = true;
+                        }
                     }
                 }
+
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertFalse("The JSESSIONID Set-Cookie header contained the SameSite or Secure attributes and it should not have.", headerFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertFalse("The JSESSIONID Set-Cookie header contained the SameSite or Secure attributes and it should not have.", headerFound);
         }
     }
 
@@ -3643,48 +3375,42 @@ public class WCSameSiteCookieAttributeTests {
         configuration.getHttpSession().setCookieSameSite("InvalidValue");
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteSessionCreationServlet";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteSessionCreationServlet";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie header was found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (header.getName().equals("Set-Cookie") && header.getValue().contains("JSESSIONID=")) {
-                    LOG.info("\n" + "Set-Cookie header for JSESSIONID found.");
-                    if (header.getValue().contains("SameSite")) {
-                        headerFound = true;
+                // Verify that the expected Set-Cookie header was found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (header.getName().equals("Set-Cookie") && header.getValue().contains("JSESSIONID=")) {
+                        LOG.info("\n" + "Set-Cookie header for JSESSIONID found.");
+                        if (header.getValue().contains("SameSite")) {
+                            headerFound = true;
+                        }
                     }
                 }
+
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertFalse("The JSESSIONID Set-Cookie header contained a SameSite attribute and it should not have.", headerFound);
+                assertTrue("The following Warning was not found in the logs: CWWKG0032W: Unexpected value specified for property [cookieSameSite]",
+                           sameSiteServer.waitForStringInLogUsingMark("CWWKG0032W.*cookieSameSite.*InvalidValue") != null);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertFalse("The JSESSIONID Set-Cookie header contained a SameSite attribute and it should not have.", headerFound);
-            assertTrue("The following Warning was not found in the logs: CWWKG0032W: Unexpected value specified for property [cookieSameSite]",
-                       sameSiteServer.waitForStringInLogUsingMark("CWWKG0032W.*cookieSameSite.*InvalidValue") != null);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -3720,49 +3446,43 @@ public class WCSameSiteCookieAttributeTests {
         configuration.getHttpSession().setCookieSameSite("LaX");
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteSessionCreationServlet";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteSessionCreationServlet";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie header was found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (header.getName().equals("Set-Cookie") && header.getValue().contains("JSESSIONID=")) {
-                    LOG.info("\n" + "Set-Cookie header for JSESSIONID found.");
-                    if (header.getValue().contains("SameSite=Lax") && !header.getValue().contains("Secure")) {
-                        headerFound = true;
+                // Verify that the expected Set-Cookie header was found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (header.getName().equals("Set-Cookie") && header.getValue().contains("JSESSIONID=")) {
+                        LOG.info("\n" + "Set-Cookie header for JSESSIONID found.");
+                        if (header.getValue().contains("SameSite=Lax") && !header.getValue().contains("Secure")) {
+                            headerFound = true;
+                        }
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax")) {
+                        splitSameSiteHeaderFound = true;
                     }
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax")) {
-                    splitSameSiteHeaderFound = true;
                 }
+
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=Lax attribute or the Secure attribute was found.", headerFound);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=Lax attribute or the Secure attribute was found.", headerFound);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -3797,50 +3517,44 @@ public class WCSameSiteCookieAttributeTests {
         configuration.getHttpSession().setCookieName("uniqueSessionIdCookieName");
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteSessionCreationServlet";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteSessionCreationServlet";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
+                // Verify that the expected Set-Cookie header was found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
 
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie header was found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-
-                if (header.getName().equals("Set-Cookie") && header.getValue().contains("uniqueSessionIdCookieName=")) {
-                    LOG.info("\n" + "Set-Cookie header for JSESSIONID found.");
-                    if (header.getValue().contains("SameSite=Lax") && !header.getValue().contains("Secure")) {
-                        headerFound = true;
+                    if (header.getName().equals("Set-Cookie") && header.getValue().contains("uniqueSessionIdCookieName=")) {
+                        LOG.info("\n" + "Set-Cookie header for JSESSIONID found.");
+                        if (header.getValue().contains("SameSite=Lax") && !header.getValue().contains("Secure")) {
+                            headerFound = true;
+                        }
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax")) {
+                        splitSameSiteHeaderFound = true;
                     }
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Lax")) {
-                    splitSameSiteHeaderFound = true;
                 }
+
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertTrue("The uniqueSessionIdCookieName Set-Cookie header did not contain the SameSite=None attribute or the Secure attribute was found.", headerFound);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertTrue("The uniqueSessionIdCookieName Set-Cookie header did not contain the SameSite=None attribute or the Secure attribute was found.", headerFound);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -3873,49 +3587,43 @@ public class WCSameSiteCookieAttributeTests {
         configuration.getHttpSession().setCookieSecure(true);
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteSessionCreationServlet";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteSessionCreationServlet";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie header was found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (header.getName().equals("Set-Cookie") && header.getValue().contains("JSESSIONID=")) {
-                    LOG.info("\n" + "Set-Cookie header for JSESSIONID found.");
-                    if (header.getValue().contains("SameSite=Strict") && header.getValue().contains("Secure")) {
-                        headerFound = true;
+                // Verify that the expected Set-Cookie header was found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (header.getName().equals("Set-Cookie") && header.getValue().contains("JSESSIONID=")) {
+                        LOG.info("\n" + "Set-Cookie header for JSESSIONID found.");
+                        if (header.getValue().contains("SameSite=Strict") && header.getValue().contains("Secure")) {
+                            headerFound = true;
+                        }
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Strict")) {
+                        splitSameSiteHeaderFound = true;
                     }
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Strict")) {
-                    splitSameSiteHeaderFound = true;
                 }
+
+                assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
+                           responseText.equals(expectedResponse));
+                assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=Strict and Secure attributes.", headerFound);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
-                       responseText.equals(expectedResponse));
-            assertTrue("The JSESSIONID Set-Cookie header did not contain the SameSite=Strict and Secure attributes.", headerFound);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
@@ -3945,45 +3653,40 @@ public class WCSameSiteCookieAttributeTests {
         boolean foundSetHeader = false;
         boolean splitSameSiteHeaderFound = false;
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/SameSiteSetCookie.jsp";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/SameSiteSetCookie.jsp";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie headers were found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedSetHeader)) {
-                    foundSetHeader = true;
-                } else if (headerValue.equals(expectedAddHeader)) {
-                    foundAddHeader = true;
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=None")) {
-                    splitSameSiteHeaderFound = true;
+                // Verify that the expected Set-Cookie headers were found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedSetHeader)) {
+                        foundSetHeader = true;
+                    } else if (headerValue.equals(expectedAddHeader)) {
+                        foundAddHeader = true;
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=None")) {
+                        splitSameSiteHeaderFound = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
+                assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSetHeader, foundSetHeader);
+                assertTrue("The response did not contain the expected Set-Cookie header: " + expectedAddHeader, foundAddHeader);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
-            assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSetHeader, foundSetHeader);
-            assertTrue("The response did not contain the expected Set-Cookie header: " + expectedAddHeader, foundAddHeader);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         }
     }
 
@@ -4012,48 +3715,43 @@ public class WCSameSiteCookieAttributeTests {
         boolean foundAddedCookieHeader = false;
         boolean splitSameSiteHeaderFound = false;
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/TestAddCookieSetCookieHeader?testSameSiteAddCookieFirst=true";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/TestAddCookieSetCookieHeader?testSameSiteAddCookieFirst=true";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie headers were found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedSetHeader)) {
-                    foundSetHeader = true;
-                } else if (headerValue.equals(expectedAddHeader)) {
-                    foundAddHeader = true;
-                } else if (headerValue.equals(expectedAddedCookieHeader)) {
-                    foundAddedCookieHeader = true;
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=None")) {
-                    splitSameSiteHeaderFound = true;
+                // Verify that the expected Set-Cookie headers were found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedSetHeader)) {
+                        foundSetHeader = true;
+                    } else if (headerValue.equals(expectedAddHeader)) {
+                        foundAddHeader = true;
+                    } else if (headerValue.equals(expectedAddedCookieHeader)) {
+                        foundAddedCookieHeader = true;
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=None")) {
+                        splitSameSiteHeaderFound = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
+                assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSetHeader, foundSetHeader);
+                assertTrue("The response did not contain the expected Set-Cookie header: " + expectedAddHeader, foundAddHeader);
+                assertTrue("The response did not contain the expected Set-Cookie header for the Cookie added: " + expectedAddedCookieHeader, foundAddedCookieHeader);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
-            assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSetHeader, foundSetHeader);
-            assertTrue("The response did not contain the expected Set-Cookie header: " + expectedAddHeader, foundAddHeader);
-            assertTrue("The response did not contain the expected Set-Cookie header for the Cookie added: " + expectedAddedCookieHeader, foundAddedCookieHeader);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         }
     }
 
@@ -4083,48 +3781,43 @@ public class WCSameSiteCookieAttributeTests {
         boolean foundAddedCookieHeader = false;
         boolean splitSameSiteHeaderFound = false;
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/TestAddCookieSetCookieHeader?testSameSiteAddCookieFirst=false";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/TestAddCookieSetCookieHeader?testSameSiteAddCookieFirst=false";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie headers were found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedSetHeader)) {
-                    foundSetHeader = true;
-                } else if (headerValue.equals(expectedAddHeader)) {
-                    foundAddHeader = true;
-                } else if (headerValue.equals(expectedAddedCookieHeader)) {
-                    foundAddedCookieHeader = true;
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=None")) {
-                    splitSameSiteHeaderFound = true;
+                // Verify that the expected Set-Cookie headers were found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedSetHeader)) {
+                        foundSetHeader = true;
+                    } else if (headerValue.equals(expectedAddHeader)) {
+                        foundAddHeader = true;
+                    } else if (headerValue.equals(expectedAddedCookieHeader)) {
+                        foundAddedCookieHeader = true;
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=None")) {
+                        splitSameSiteHeaderFound = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
+                assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSetHeader, foundSetHeader);
+                assertTrue("The response did not contain the expected Set-Cookie header: " + expectedAddHeader, foundAddHeader);
+                assertTrue("The response did not contain the expected Set-Cookie header for the Cookie added: " + expectedAddedCookieHeader, foundAddedCookieHeader);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
-            assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSetHeader, foundSetHeader);
-            assertTrue("The response did not contain the expected Set-Cookie header: " + expectedAddHeader, foundAddHeader);
-            assertTrue("The response did not contain the expected Set-Cookie header for the Cookie added: " + expectedAddedCookieHeader, foundAddedCookieHeader);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         }
     }
 
@@ -4154,45 +3847,40 @@ public class WCSameSiteCookieAttributeTests {
         boolean foundSetHeader = false;
         boolean splitSameSiteHeaderFound = false;
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/TestAddCookieSetCookieHeader?testIncorrectSameSiteValue=true";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/TestAddCookieSetCookieHeader?testIncorrectSameSiteValue=true";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie headers were found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedSetHeader)) {
-                    foundSetHeader = true;
-                } else if (headerValue.equals(expectedAddHeader)) {
-                    foundAddHeader = true;
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Incorrect")) {
-                    splitSameSiteHeaderFound = true;
+                // Verify that the expected Set-Cookie headers were found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedSetHeader)) {
+                        foundSetHeader = true;
+                    } else if (headerValue.equals(expectedAddHeader)) {
+                        foundAddHeader = true;
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=Incorrect")) {
+                        splitSameSiteHeaderFound = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
+                assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSetHeader, foundSetHeader);
+                assertTrue("The response did not contain the expected Set-Cookie header: " + expectedAddHeader, foundAddHeader);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
-            assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSetHeader, foundSetHeader);
-            assertTrue("The response did not contain the expected Set-Cookie header: " + expectedAddHeader, foundAddHeader);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         }
     }
 
@@ -4221,45 +3909,40 @@ public class WCSameSiteCookieAttributeTests {
         boolean foundSetHeader = false;
         boolean splitSameSiteHeaderFound = false;
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/TestAddCookieSetCookieHeader?testDuplicateSameSiteValue=true";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/TestAddCookieSetCookieHeader?testDuplicateSameSiteValue=true";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie headers were found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedSetHeader)) {
-                    foundSetHeader = true;
-                } else if (headerValue.equals(expectedAddHeader)) {
-                    foundAddHeader = true;
-                } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=None")) {
-                    splitSameSiteHeaderFound = true;
+                // Verify that the expected Set-Cookie headers were found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedSetHeader)) {
+                        foundSetHeader = true;
+                    } else if (headerValue.equals(expectedAddHeader)) {
+                        foundAddHeader = true;
+                    } else if (isSplitSameSiteSetCookieHeader(headerValue, "SameSite=None")) {
+                        splitSameSiteHeaderFound = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
+                assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSetHeader, foundSetHeader);
+                assertTrue("The response did not contain the expected Set-Cookie header: " + expectedAddHeader, foundAddHeader);
+                assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
-            assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSetHeader, foundSetHeader);
-            assertTrue("The response did not contain the expected Set-Cookie header: " + expectedAddHeader, foundAddHeader);
-            assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
         }
     }
 
@@ -4288,42 +3971,37 @@ public class WCSameSiteCookieAttributeTests {
         boolean foundAddHeader = false;
         boolean foundSetHeader = false;
 
-        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(sameSiteServer.getHostname(), sameSiteServer.getHttpDefaultPort());
-        BasicHttpContext coreContext = new BasicHttpContext();
+        String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
+                     + "/TestAddCookieSetCookieHeader?testEmptySameSiteValue=true";
+        LOG.info("url: " + url);
 
-        LOG.info("Target host : " + target.toURI());
+        HttpGet getMethod = new HttpGet(url);
 
-        String requestUri = "/" + APP_NAME_SAMESITE + "/TestAddCookieSetCookieHeader?testEmptySameSiteValue=true";
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
 
-        LOG.info("requestUri : " + requestUri);
+                Header[] headers = response.getHeaders("Set-Cookie");
+                LOG.info("\n" + "Set-Cookie headers contained in the response:");
 
-        ClassicHttpRequest request = new BasicClassicHttpRequest("GET", requestUri);
-
-        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
-
-            String responseText = EntityUtils.toString(response.getEntity());
-            Header[] headers = response.getHeaders("Set-Cookie");
-            LOG.info("\n" + "Set-Cookie headers contained in the response:");
-
-            // Verify that the expected Set-Cookie headers were found by the client.
-            String headerValue;
-            for (Header header : headers) {
-                headerValue = header.toString();
-                LOG.info("\n" + headerValue);
-                if (headerValue.equals(expectedSetHeader)) {
-                    foundSetHeader = true;
-                } else if (headerValue.equals(expectedAddHeader)) {
-                    foundAddHeader = true;
+                // Verify that the expected Set-Cookie headers were found by the client.
+                String headerValue;
+                for (Header header : headers) {
+                    headerValue = header.toString();
+                    LOG.info("\n" + headerValue);
+                    if (headerValue.equals(expectedSetHeader)) {
+                        foundSetHeader = true;
+                    } else if (headerValue.equals(expectedAddHeader)) {
+                        foundAddHeader = true;
+                    }
                 }
+
+                assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
+                assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSetHeader, foundSetHeader);
+                assertTrue("The response did not contain the expected Set-Cookie header: " + expectedAddHeader, foundAddHeader);
             }
-
-            LOG.info("\n" + "Response Text:");
-            LOG.info("\n" + responseText);
-
-            assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
-            assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSetHeader, foundSetHeader);
-            assertTrue("The response did not contain the expected Set-Cookie header: " + expectedAddHeader, foundAddHeader);
         }
     }
 
@@ -4373,7 +4051,6 @@ public class WCSameSiteCookieAttributeTests {
         LOG.info("Initial Request: url = " + getMethod.getUri().toString() + " request method = " + getMethod);
         try (final CloseableHttpClient client = HttpClientBuilder.create().disableRedirectHandling().build()) {
             try (final CloseableHttpResponse response = client.execute(getMethod)) {
-
                 LOG.info("Initial request result: " + response.getReasonPhrase());
                 LOG.info("Initial request page status code: " + response.getCode());
                 assertEquals("The expected status code for the initial request was not returned: ",
@@ -4451,7 +4128,6 @@ public class WCSameSiteCookieAttributeTests {
             getMethod = new HttpGet(location);
 
             try (final CloseableHttpResponse response = client.execute(getMethod)) {
-
                 LOG.info("getMethod status: " + response.getReasonPhrase());
                 assertEquals("The expected status code was not returned: ",
                              200, response.getCode());

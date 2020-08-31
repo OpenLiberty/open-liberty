@@ -22,6 +22,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.ejbcontainer.async.fat.secure.web.AsyncSecureServlet;
 
 import componenttest.annotation.Server;
@@ -29,6 +30,7 @@ import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
@@ -45,10 +47,14 @@ public class AsyncSecureTests extends AbstractTest {
     }
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.async.fat.AsyncSecureServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.async.fat.AsyncSecureServer"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.async.fat.AsyncSecureServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.async.fat.AsyncSecureServer")).andWith(new JakartaEE9Action().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.async.fat.AsyncSecureServer"));
 
     @BeforeClass
     public static void beforeClass() throws Exception {
+        // cleanup from prior repeat actions
+        server.deleteAllDropinApplications();
+        server.removeAllInstalledAppsForValidation();
+
         // Use ShrinkHelper to build the Ears & Wars
 
         //#################### AsyncSecureTestApp.ear
@@ -58,7 +64,7 @@ public class AsyncSecureTests extends AbstractTest {
         AsyncSecureTestApp.addAsModule(AsyncSecureTestEJB).addAsModule(AsyncSecureTestWeb);
         AsyncSecureTestApp = (EnterpriseArchive) ShrinkHelper.addDirectory(AsyncSecureTestApp, "test-applications/AsyncSecureTestApp.ear/resources");
 
-        ShrinkHelper.exportAppToServer(server, AsyncSecureTestApp);
+        ShrinkHelper.exportAppToServer(server, AsyncSecureTestApp, DeployOptions.SERVER_ONLY);
         server.addInstalledAppForValidation("AsyncSecureTestApp");
 
         // Finally, start server
@@ -67,6 +73,7 @@ public class AsyncSecureTests extends AbstractTest {
         // verify the appSecurity-2.0 feature is ready
         assertNotNull("Security service did not report it was ready", server.waitForStringInLogUsingMark("CWWKS0008I"));
         assertNotNull("LTPA configuration did not report it was ready", server.waitForStringInLogUsingMark("CWWKS4105I"));
+        server.setMarkToEndOfLog();
 
         //#################### InitTxRecoveryLogApp.ear (Automatically initializes transaction recovery logs)
         JavaArchive InitTxRecoveryLogEJBJar = ShrinkHelper.buildJavaArchive("InitTxRecoveryLogEJB.jar", "com.ibm.ws.ejbcontainer.init.recovery.ejb.");
@@ -76,7 +83,7 @@ public class AsyncSecureTests extends AbstractTest {
 
         // Only after the server has started and appSecurity-2.0 feature is ready,
         // then allow the @Startup InitTxRecoveryLog bean to start.
-        ShrinkHelper.exportDropinAppToServer(server, InitTxRecoveryLogApp);
+        ShrinkHelper.exportDropinAppToServer(server, InitTxRecoveryLogApp, DeployOptions.SERVER_ONLY);
     }
 
     @AfterClass
