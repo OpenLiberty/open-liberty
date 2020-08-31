@@ -10,14 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.boot.internal.commands;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -30,6 +31,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
+import com.ibm.websphere.simplicity.log.Log;
+
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -37,6 +40,8 @@ import componenttest.topology.impl.LibertyServerFactory;
  *
  */
 public class PackageLooseConfigTest extends AbstractLooseConfigTest {
+
+    private static final Class<? extends PackageLooseConfigTest> CLASS = PackageLooseConfigTest.class;
 
     LibertyServer server;
     private static String ARCHIVE = "DefaultArchive.war";
@@ -144,45 +149,69 @@ public class PackageLooseConfigTest extends AbstractLooseConfigTest {
      */
     @Test
     public void testCreateAndStartRunnableJar() throws Exception {
+        String method = "testCreateAndStartRunnableJar";
+        Log.info(CLASS, method, "Entering");
+
         try {
+
             String archivePackage = "runnablePackage.jar";
             String[] cmd = new String[] { "--archive=" + archivePackage, "--include=runnable" };
+            Log.info(CLASS, method, "Package Command = " + Arrays.toString(cmd));;
             packageWithConfig(server, cmd);
 
             // Start a separate process to run the jar
+            Log.info(CLASS, method, "Executing server");
             Process proc = Runtime.getRuntime().exec(new String[] { "java", "-jar", server.getServerRoot() + "/" + archivePackage });
+            Log.info(CLASS, method, "Server command is: java -jar " + server.getServerRoot() + "/" + archivePackage);
+
+            String line = null;
+            boolean serverDidLaunch = false;
+            boolean serverIsReady = false;
             try {
+
                 BufferedReader brOutput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
                 BufferedReader brError = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
 
-                // Timeout after 20 seconds if the server still hasn't started
-                long timeStart = System.nanoTime();
-                long timeLimit = 20 * (long) Math.pow(10, 9);
+                line = brOutput.readLine();
+                Log.info(CLASS, method, "cmd output = " + line);
 
-                boolean serverDidLaunch = false;
-                boolean serverIsReady = false;
-                while (!(serverDidLaunch && serverIsReady) && timeLimit - (System.nanoTime() - timeStart) > 0) {
+                while (line != null) {
+                    Log.info(CLASS, method, "cmd output = " + line);
+                    if (line.contains("CWWKE0001I"))
+                        serverDidLaunch = true;
 
-                    // If an error is read fail the test
-                    if (brError.ready()) {
-                        fail("The server package " + archivePackage + " encountered the following error(s):\n\t"
-                             + brError.readLine());
-                    }
+                    if (line.contains("CWWKF0011I"))
+                        serverIsReady = true;
 
-                    if (brOutput.ready()) {
-                        String line = brOutput.readLine();
-                        serverDidLaunch |= line.matches("^.* CWWKE0001I: .* " + SERVER_NAME + " .*$");
-                        serverIsReady |= line.matches(".* CWWKF0011I: .* " + SERVER_NAME + " .*$");
+                    if (serverDidLaunch && serverIsReady)
+                        break;
+
+                    line = brOutput.readLine();
+                }
+
+                // If there is an error on the inputstream, capture output stream data
+                if (line == null) {
+                    String errLine = brError.readLine();
+                    Log.info(CLASS, method, "cmd err = " + errLine);
+                    while (errLine != null) {
+                        Log.info(CLASS, method, "cmd err = " + errLine);
+                        errLine = brError.readLine();
                     }
                 }
 
-                assertTrue("The server package " + archivePackage + " did not launch successfully", serverDidLaunch);
-                assertTrue("The server package " + archivePackage + " was not ready to run in time", serverIsReady);
             } finally {
                 proc.destroy();
+                Log.info(CLASS, method, "Executing " + method + " finally() block.");
             }
+
+            assertNotNull("The server did not start as a runnable correctly.  See 'cmd err' in logs above for details.", line);
+            assertTrue("The server package " + archivePackage + " did not launch successfully", serverDidLaunch);
+            assertTrue("The server package " + archivePackage + " was not ready to run in time", serverIsReady);
+
         } catch (FileNotFoundException ex) {
+            Log.info(CLASS, method, "FileNotFoundException - directory doesnt exist, thus skipping this test.");
             assumeTrue(false); // the directory does not exist, so we skip this test.
         }
+        Log.info(CLASS, method, "Exiting");
     }
 }
