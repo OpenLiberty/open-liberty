@@ -19,6 +19,7 @@ src: \
 	test-applications/consumer/src
 
 fat.project: true
+tested.features: jaxb-3.0, servlet-5.0, jpacontainer-3.0, jpa-3.0, ejblite-4.0
 
 -buildpath: \
     com.ibm.websphere.appserver.api.persistence;version=latest,\
