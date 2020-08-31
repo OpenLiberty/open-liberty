@@ -13,32 +13,26 @@ package com.ibm.ws.fat.grpc;
 
 import static org.junit.Assert.assertTrue;
 
-import java.net.URL;
 import java.util.Collections;
 import java.util.logging.Logger;
 
+import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlForm;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-public class HelloWorldCDITests extends FATServletClient {
+public class HelloWorldCDITests extends HelloWorldBasicTest {
 
     protected static final Class<?> c = HelloWorldCDITests.class;
 
@@ -76,6 +70,16 @@ public class HelloWorldCDITests extends FATServletClient {
         helloWorldServer.stopServer();
     }
 
+    @Before
+    public void preTest() {
+        serverRef = helloWorldServer;
+    }
+
+    @After
+    public void afterTest() {
+        serverRef = null;
+    }
+
     /**
      * This method is used to set the server.xml
      */
@@ -98,48 +102,13 @@ public class HelloWorldCDITests extends FATServletClient {
      */
     @Test
     public void testCDIService() throws Exception {
-        String contextRoot = "HelloWorldClient";
-
         // enable cdi-2.0
         setServerConfiguration(helloWorldServer, CDI_ENABLED);
         helloWorldServer.waitForConfigUpdateInLogUsingMark(Collections.singleton("HelloWorldService"));
 
-        try (WebClient webClient = new WebClient()) {
+        String response = runHelloWorldTest();
+        assertTrue("the gRPC CDI request did not complete correctly", response.contains("howdy from GreetingCDIBean us3r1"));
 
-            // Construct the URL for the test
-            URL url = GrpcTestUtils.createHttpUrl(helloWorldServer, contextRoot, "grpcClient");
-
-            HtmlPage page = (HtmlPage) webClient.getPage(url);
-
-            // Log the page for debugging if necessary in the future.
-            Log.info(c, name.getMethodName(), page.asText());
-            Log.info(c, name.getMethodName(), page.asXml());
-
-            assertTrue("the servlet was not loaded correctly",
-                       page.asText().contains("gRPC helloworld client example"));
-
-            HtmlForm form = page.getFormByName("form1");
-
-            // set a name, which we'll expect the RPC to return
-            HtmlTextInput inputText = (HtmlTextInput) form.getInputByName("user");
-            inputText.setValueAttribute("us3r1");
-
-            // set the port
-            HtmlTextInput inputPort = (HtmlTextInput) form.getInputByName("port");
-            inputPort.setValueAttribute(String.valueOf(helloWorldServer.getHttpDefaultPort()));
-
-            // set the hostname
-            HtmlTextInput inputHost = (HtmlTextInput) form.getInputByName("address");
-            inputHost.setValueAttribute(helloWorldServer.getHostname());
-
-            // submit, and execute the RPC
-            HtmlSubmitInput submitButton = form.getInputByName("submit");
-            page = submitButton.click();
-
-            // Log the page for debugging if necessary in the future.
-            Log.info(c, name.getMethodName(), page.asText());
-            assertTrue("the gRPC CDI request did not complete correctly", page.asText().contains("howdy from GreetingCDIBean us3r1"));
-        }
     }
 
     /**
@@ -149,48 +118,14 @@ public class HelloWorldCDITests extends FATServletClient {
      */
     @Test
     public void testCDIInterceptor() throws Exception {
-        String contextRoot = "HelloWorldClient";
-
         // enable cdi-2.0
         setServerConfiguration(helloWorldServer, CDI_ENABLED_INTERCEPTOR);
         helloWorldServer.waitForConfigUpdateInLogUsingMark(Collections.singleton("HelloWorldService"));
 
-        try (WebClient webClient = new WebClient()) {
+        String response = runHelloWorldTest();
 
-            // Construct the URL for the test
-            URL url = GrpcTestUtils.createHttpUrl(helloWorldServer, contextRoot, "grpcClient");
+        assertTrue("the gRPC CDI interceptor was not invoked correctly", response.contains("server CDI interceptor invoked"));
+        assertTrue("the gRPC request did not complete correctly", response.contains("us3r1"));
 
-            HtmlPage page = (HtmlPage) webClient.getPage(url);
-
-            // Log the page for debugging if necessary in the future.
-            Log.info(c, name.getMethodName(), page.asText());
-            Log.info(c, name.getMethodName(), page.asXml());
-
-            assertTrue("the servlet was not loaded correctly",
-                       page.asText().contains("gRPC helloworld client example"));
-
-            HtmlForm form = page.getFormByName("form1");
-
-            // set a name, which we'll expect the RPC to return
-            HtmlTextInput inputText = (HtmlTextInput) form.getInputByName("user");
-            inputText.setValueAttribute("us3r1");
-
-            // set the port
-            HtmlTextInput inputPort = (HtmlTextInput) form.getInputByName("port");
-            inputPort.setValueAttribute(String.valueOf(helloWorldServer.getHttpDefaultPort()));
-
-            // set the hostname
-            HtmlTextInput inputHost = (HtmlTextInput) form.getInputByName("address");
-            inputHost.setValueAttribute(helloWorldServer.getHostname());
-
-            // submit, and execute the RPC
-            HtmlSubmitInput submitButton = form.getInputByName("submit");
-            page = submitButton.click();
-
-            // Log the page for debugging if necessary in the future.
-            Log.info(c, name.getMethodName(), page.asText());
-            assertTrue("the gRPC CDI interceptor was not invoked correctly", page.asText().contains("server CDI interceptor invoked"));
-            assertTrue("the gRPC request did not complete correctly", page.asText().contains("us3r1"));
-        }
     }
 }
