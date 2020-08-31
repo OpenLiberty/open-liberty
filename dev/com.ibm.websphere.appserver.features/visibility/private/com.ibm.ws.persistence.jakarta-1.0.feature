@@ -10,7 +10,7 @@ IBM-API-Package: com.ibm.websphere.persistence.mbean; type="ibm-api"
  com.ibm.websphere.appserver.org.eclipse.persistence-3.0
 -bundles=com.ibm.ws.persistence.jakarta, \
  com.ibm.ws.persistence.mbean.jakarta
--jars=com.ibm.websphere.appserver.api.persistence; location:=dev/api/ibm/, \
+-jars=com.ibm.websphere.appserver.api.persistence.jakarta; location:=dev/api/ibm/, \
  com.ibm.ws.persistence.utility.jakarta
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.persistence_1.0-javadoc.zip, \
  bin/tools/ws-generateddlutil.jar, \
