@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.jakartaee-9.0
+symbolicName=io.openliberty.jakartaee-9.0
 visibility=public
 singleton=true
 IBM-App-ForceRestart: install, uninstall
@@ -15,6 +15,7 @@ Subsystem-Name: Jakarta EE Platform 9.0
  com.ibm.websphere.appserver.webProfile-9.0,\
  io.openliberty.enterpriseBeansHome-4.0,\
  io.openliberty.enterpriseBeansRemote-4.0,\
+ io.openliberty.appClientSupport-2.0,\
  io.openliberty.jacc-2.0,\
  io.openliberty.jaxb-3.0
 kind=beta
