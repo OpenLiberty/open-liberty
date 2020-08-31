@@ -11,6 +11,13 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+# Eclipselink version info
+eclVersion=3.0.0
+#eclHash=69f2c2b
+#eclFullVersion=${eclVersion}.${eclHash}
+eclFullVersion=${eclVersion}
+eclPackageVersion=3.0.0
+
 Bundle-SymbolicName: com.ibm.websphere.appserver.thirdparty.eclipselink.3.0
 Bundle-Description: EclipseLink JPA
 Bundle-Distributor: IBM
@@ -23,16 +30,16 @@ Bundle-ManifestVersion: 2
 Specification-Version: 3.0.0
 
 Export-Package: \
-            org.eclipse.persistence.javax.persistence.osgi;version="3.0.0", \
-            org.eclipse.persistence.jpa.config;version="3.0.0", \
-            org.eclipse.persistence.sessions.serializers.kryo;version="3.0.0", \
-            org.eclipse.persistence.internal.jpa.config.*;version="3.0.0", \
-            org.eclipse.persistence.internal.jpa.metadata.graphs;version="3.0.0", \
-            org.eclipse.persistence.internal.jpa.metadata.sop;version="3.0.0", \
-            org.eclipse.persistence.internal.libraries.asm*;version="3.0.0", \
-            org.eclipse.persistence.internal.libraries.antlr.runtime*;version="3.0.0", \
-            org.eclipse.persistence.jpa.jpql*;version="3.0.0", \
-            org.eclipse.persistence.*;version="3.0.0"
+            org.eclipse.persistence.javax.persistence.osgi;version="${eclPackageVersion}", \
+            org.eclipse.persistence.jpa.config;version="${eclPackageVersion}", \
+            org.eclipse.persistence.sessions.serializers.kryo;version="${eclPackageVersion}", \
+            org.eclipse.persistence.internal.jpa.config.*;version="${eclPackageVersion}", \
+            org.eclipse.persistence.internal.jpa.metadata.graphs;version="${eclPackageVersion}", \
+            org.eclipse.persistence.internal.jpa.metadata.sop;version="${eclPackageVersion}", \
+            org.eclipse.persistence.internal.libraries.asm*;version="${eclPackageVersion}", \
+            org.eclipse.persistence.internal.libraries.antlr.runtime*;version="${eclPackageVersion}", \
+            org.eclipse.persistence.jpa.jpql*;version="${eclPackageVersion}", \
+            org.eclipse.persistence.*;version="${eclVersion}"
 
 Import-Package: \
             com.ibm.tx.jta;resolution:=optional, \
@@ -102,11 +109,11 @@ DynamicImport-Package: \
 Private-Package: io.openliberty.persistence.internal.helper
 
 Include-Resource: \
-  @${repo;org.eclipse.persistence.asm;3.0.0}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence.corba;3.0.0}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence.core;3.0.0}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence.jpa;3.0.0}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence.jpa.jpql;3.0.0}!/!META-INF/maven/*
+  @${repo;org.eclipse.persistence:org.eclipse.persistence.asm;${eclFullVersion}}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence:org.eclipse.persistence.corba;${eclFullVersion}}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence:org.eclipse.persistence.core;${eclFullVersion}}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa;${eclFullVersion}}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa.jpql;${eclFullVersion}}!/!META-INF/maven/*
 
 publish.wlp.jar.suffix: dev/api/third-party
 
@@ -116,7 +123,11 @@ instrument.classesExcludes: \
   org/eclipse/persistence/internal/helper/*.class
 
 -buildpath: \
-    org.eclipse.persistence.core;version=3.0.0,\
-    org.eclipse.persistence.jpa;version=3.0.0,\
+    org.eclipse.persistence:org.eclipse.persistence.asm;version=${eclFullVersion},\
+    org.eclipse.persistence:org.eclipse.persistence.corba;version=${eclFullVersion},\
+    org.eclipse.persistence:org.eclipse.persistence.core;version=${eclFullVersion},\
+    org.eclipse.persistence:org.eclipse.persistence.jpa;version=${eclFullVersion},\
+    org.eclipse.persistence:org.eclipse.persistence.jpa.jpql;version=${eclFullVersion},\
+    org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen;version=${eclFullVersion},\
     jakarta.persistence:jakarta.persistence-api;version=3.0.0,\
     com.ibm.websphere.org.osgi.core
