@@ -19,7 +19,5 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
                 ConsumerTest_JPA21.class,
                 ConsumerTest_JPA22.class,
-                ConsumerTest_JPA30.class,
 })
-public class FATSuite {
-}
+public class FATSuite {}

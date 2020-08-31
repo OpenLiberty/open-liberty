@@ -12,8 +12,11 @@ package com.ibm.wsspi.persistence.internal;
 
 import static org.eclipse.persistence.config.PersistenceUnitProperties.CREATE_OR_EXTEND;
 import static org.eclipse.persistence.config.PersistenceUnitProperties.SCHEMA_GENERATION_CREATE_ACTION;
+import static org.eclipse.persistence.config.PersistenceUnitProperties.SCHEMA_GENERATION_DATABASE_ACTION;
 import static org.eclipse.persistence.config.PersistenceUnitProperties.SCHEMA_GENERATION_DROP_ACTION;
 import static org.eclipse.persistence.config.PersistenceUnitProperties.SCHEMA_GENERATION_DROP_AND_CREATE_ACTION;
+import static org.eclipse.persistence.config.PersistenceUnitProperties.SCHEMA_GENERATION_SCRIPTS_ACTION;
+import static org.eclipse.persistence.config.PersistenceUnitProperties.SCHEMA_GENERATION_SCRIPTS_CREATE_TARGET;
 import static org.eclipse.persistence.config.PersistenceUnitProperties.SCHEMA_GENERATION_SCRIPT_TERMINATE_STATEMENTS;
 import static org.eclipse.persistence.config.PersistenceUnitProperties.TARGET_DATABASE_PROPERTIES;
 import static org.eclipse.persistence.config.PersistenceUnitProperties.TARGET_SERVER;
@@ -41,20 +44,9 @@ import com.ibm.wsspi.persistence.internal.eclipselink.TargetServer;
  * PersistenceServiceUnit implementation
  */
 public final class PersistenceServiceUnitImpl implements PersistenceServiceUnit {
-    private static final String SCHEMA_GENERATION_DATABASE_ACTION;
-    private static final String SCHEMA_GENERATION_SCRIPTS_ACTION;
-    private static final String SCHEMA_GENERATION_SCRIPTS_CREATE_TARGET;
 
     static {
         PrivilegedAccessHelper.setDefaultUseDoPrivilegedValue(true);
-
-        final String emName = EntityManager.class.getName();
-        final boolean isJakarta = emName.startsWith("jakarta");
-        final String prefix = isJakarta ? "jakarta" : "javax";
-
-        SCHEMA_GENERATION_DATABASE_ACTION = prefix + ".persistence.schema-generation.database.action";
-        SCHEMA_GENERATION_SCRIPTS_ACTION = prefix + ".persistence.schema-generation.scripts.action";
-        SCHEMA_GENERATION_SCRIPTS_CREATE_TARGET = prefix + ".persistence.schema-generation.scripts.create-target";
     }
 
     private final PsPersistenceProvider _provider;
@@ -95,7 +87,7 @@ public final class PersistenceServiceUnitImpl implements PersistenceServiceUnit 
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see com.ibm.wsspi.persistence.PersistenceUnit#createEntityManager()
      */
     @Override
@@ -139,7 +131,7 @@ public final class PersistenceServiceUnitImpl implements PersistenceServiceUnit 
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see com.ibm.wsspi.persistence.internal.PersistenceServiceInternal#setTransactionManager(com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager)
      */
     void setTransactionManager(TransactionManager tranMgr) {

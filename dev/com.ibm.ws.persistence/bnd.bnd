@@ -15,8 +15,6 @@ Bundle-Name: PersistenceService
 Bundle-SymbolicName: com.ibm.ws.persistence
 Bundle-Description: WebSphere Persistence Service; version=${bVersion}
 
-jakartaeeMe: true
-
 WS-TraceGroup: persistenceservice
 
 Export-Package: com.ibm.wsspi.persistence
