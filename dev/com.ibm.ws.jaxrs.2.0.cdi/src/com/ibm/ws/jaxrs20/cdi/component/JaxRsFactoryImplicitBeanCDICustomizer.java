@@ -273,7 +273,7 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
                 Tr.debug(tc, "getInstanceFromManagedObejct - \"clobbered\" " + oldMO + " with " + newServiceObject + " for key " + clazz + " in map " + newContext);
             }
 
-            return newServiceObject.getObject();
+            return (T) newServiceObject.getObject();
         } else {
             newContext.remove(clazz);
         }
