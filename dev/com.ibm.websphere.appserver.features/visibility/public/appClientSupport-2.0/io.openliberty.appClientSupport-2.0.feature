@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=io.openliberty.appserver.appClientSupport-2.0
+symbolicName=io.openliberty.appClientSupport-2.0
 visibility=public
 IBM-ShortName: appClientSupport-2.0
 Subsystem-Name: Jakarta Application Client Support for Server 2.0
