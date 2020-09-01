@@ -98,7 +98,6 @@ io.grpc:grpc-api:1.31.1
 io.grpc:grpc-census:1.31.1
 io.grpc:grpc-context:1.31.1
 io.grpc:grpc-core:1.31.1
-io.grpc:grpc-netty-shaded:1.31.1
 io.grpc:grpc-netty:1.31.1
 io.grpc:grpc-protobuf-lite:1.31.1
 io.grpc:grpc-protobuf:1.31.1
