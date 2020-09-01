@@ -214,9 +214,9 @@ public class ServiceInterceptorTests extends FATServletClient {
     @ExpectedFFDC({ "java.lang.ClassNotFoundException" })
     public void testInvalidServerInterceptor() throws Exception {
 
-        LOG.info("ServiceInterceptorTests : testInvalidServerInterceptor() : update the server.xml file to one with a </grpc> element with no interceptor");
+        LOG.info("ServiceInterceptorTests : testInvalidServerInterceptor() : update the server.xml file to one with a </grpc> element with an invalid interceptor");
 
-        // Update to a config file with a <grpc> element with multiple interceptors
+        // Update to a config file with a <grpc> element with an invalid interceptor classname
         setServerConfiguration(grpcServer, GRPC_INVALID_INTERCEPTOR);
 
         String interceptorError = grpcServer.waitForStringInLogUsingMark("CWWKT0202W: Could not load gRPC interceptor",
@@ -227,4 +227,76 @@ public class ServiceInterceptorTests extends FATServletClient {
         }
     }
 
+    /**
+     * Test that interceptors defined in @GrpcService work correctly.
+     *
+     * @GrpcService(interceptors = { HelloWorldServerAnnotationInterceptor.class,
+     *                           HelloWorldServerAnnotationInterceptor2.class })
+     * @throws Exception
+     *
+     **/
+    @Test
+    public void testServerInterceptorAnnotations() throws Exception {
+
+        // Update to a config file with a <grpc> element with no interceptor
+        LOG.info("ServiceInterceptorTests : testServerInterceptorAnnotations() : update the server.xml file to one with a </grpc> element with no interceptor");
+        setServerConfiguration(grpcServer, GRPC_ELEMENT);
+        grpcServer.waitForConfigUpdateInLogUsingMark(appName);
+
+        // Send a request to the HelloWorld service and check for a response
+        HelloRequest person = HelloRequest.newBuilder().setName("Annotated").build();
+        HelloReply greeting = worldServiceBlockingStub.sayHello(person);
+
+        //Make sure the reply has Leigh in it
+        assertTrue(greeting.getMessage().contains("Annotated"));
+
+        //Make sure the Interceptor was called and logged a message
+        String interceptor1HasRun = grpcServer.waitForStringInLogUsingMark("com.ibm.ws.grpc.fat.helloworld.service.HelloWorldServerAnnotationInterceptor has been invoked!",
+                                                                           STARTUP_TIMEOUT);
+        String interceptor2HasRun = grpcServer.waitForStringInLogUsingMark("com.ibm.ws.grpc.fat.helloworld.service.HelloWorldServerAnnotationInterceptor2 has been invoked!",
+                                                                           STARTUP_TIMEOUT);
+        if (interceptor1HasRun == null || interceptor2HasRun == null) {
+            Assert.fail(c + " testServerInterceptorAnnotations() : interceptors did not print message to the server log as expected");
+        }
+    }
+
+    /**
+     * Test that interceptors defined in @GrpcService work correctly in conjunction with interceptors defined in server.xml
+     *
+     * @GrpcService(interceptors = { HelloWorldServerAnnotationInterceptor.class, HelloWorldServerAnnotationInterceptor2.class })
+     *
+     *                           <grpc target="helloworld.Greeter" serverInterceptors="com.ibm.ws.grpc.fat.helloworld.service.HelloWorldServerInterceptor"/>
+     * @throws Exception
+     *
+     **/
+    @Test
+    public void testMultipleServerInterceptorsAndAnnotations() throws Exception {
+
+        // Update to a config file with a <grpc> element with multiple interceptors
+        LOG.info("ServiceInterceptorTests : testMultipleServerInterceptorsAndAnnotations() : update the server.xml file to one with a </grpc> element with multiple interceptors");
+        setServerConfiguration(grpcServer, GRPC_MULTIPLE_INTERCEPTOR);
+        grpcServer.waitForConfigUpdateInLogUsingMark(appName);
+
+        // Send a request to the HelloWorld service and check for a response
+        HelloRequest person = HelloRequest.newBuilder().setName("Annotated").build();
+        HelloReply greeting = worldServiceBlockingStub.sayHello(person);
+
+        //Make sure the reply has Leigh in it
+        assertTrue(greeting.getMessage().contains("Annotated"));
+
+        //Make sure the Interceptor was called and logged a message
+        String interceptor1HasRun = grpcServer.waitForStringInLogUsingMark("com.ibm.ws.grpc.fat.helloworld.service.HelloWorldServerAnnotationInterceptor has been invoked!",
+                                                                           STARTUP_TIMEOUT);
+        String interceptor2HasRun = grpcServer.waitForStringInLogUsingMark("com.ibm.ws.grpc.fat.helloworld.service.HelloWorldServerAnnotationInterceptor2 has been invoked!",
+                                                                           STARTUP_TIMEOUT);
+        //Make sure the Interceptor 1 and Interceptor 2 were both called and logged a message
+        String interceptor3HasRun = grpcServer.waitForStringInLogUsingMark("com.ibm.ws.grpc.fat.helloworld.service.HelloWorldServerInterceptor has been invoked!",
+                                                                           STARTUP_TIMEOUT);
+        String interceptor4HasRun = grpcServer.waitForStringInLogUsingMark("com.ibm.ws.grpc.fat.helloworld.service.HelloWorldServerInterceptor2 has been invoked!",
+                                                                           STARTUP_TIMEOUT);
+
+        if (interceptor1HasRun == null || interceptor2HasRun == null || interceptor3HasRun == null || interceptor4HasRun == null) {
+            Assert.fail(c + " testServerInterceptorAnnotations() : interceptors did not print message to the server log as expected");
+        }
+    }
 }
