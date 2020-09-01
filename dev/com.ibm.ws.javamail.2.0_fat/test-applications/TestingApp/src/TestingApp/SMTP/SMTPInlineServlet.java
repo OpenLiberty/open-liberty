@@ -15,12 +15,16 @@ import java.io.PrintWriter;
 import java.util.Properties;
 
 import jakarta.mail.Address;
+import jakarta.mail.Authenticator;
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
 import jakarta.mail.Session;
 import jakarta.mail.Transport;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.PasswordAuthentication;
+import jakarta.mail.Store;
+import jakarta.mail.Folder;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;

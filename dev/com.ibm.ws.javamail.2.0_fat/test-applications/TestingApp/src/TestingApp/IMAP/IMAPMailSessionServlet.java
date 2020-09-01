@@ -13,11 +13,14 @@ package TestingApp.IMAP;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Enumeration;
-
+import jakarta.mail.Authenticator;
 import javax.annotation.Resource;
 import jakarta.mail.Header;
+import jakarta.mail.PasswordAuthentication;
 import jakarta.mail.Message;
 import jakarta.mail.Session;
+import jakarta.mail.Store;
+import jakarta.mail.Folder;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
