@@ -31,7 +31,8 @@
         <AD id="keepAliveTimeout" name="%keepAliveTimeout" description="%keepAliveTimeout.desc" required="false" type="Integer" />
         <AD id="maxInboundMessageSize" name="%maxInboundMessageSize" description="%maxInboundMessageSize.desc" required="false" type="Integer" />
         <AD id="clientInterceptors" name="%clientInterceptors" description="%clientInterceptors.desc" required="false" type="String" />
-        <AD id="sslConfig" name="%sslConfig" description="%sslConfig.desc" required="false" type="String" />
+        <AD id="sslRef" name="%sslRef" description="%sslRef.desc" ibm:type="pid"  ibm:reference="com.ibm.ws.ssl.repertoire" 
+            required="false" type="String"/>
 
     </OCD>
 
