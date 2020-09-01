@@ -286,6 +286,9 @@ org.apache.httpcomponents:httpcore:4.1.2
 org.apache.httpcomponents:httpcore:4.3
 org.apache.httpcomponents:httpmime:4.1.2
 org.apache.httpcomponents:httpmime:4.3.1
+org.apache.james:apache-mime4j-core:0.7.2
+org.apache.james:apache-mime4j-dom:0.7.2
+org.apache.james:apache-mime4j-storage:0.7.2
 org.apache.johnzon:johnzon-core:1.1.5
 org.apache.johnzon:johnzon-core:1.1.8
 org.apache.johnzon:johnzon-jsonb:1.1.5
@@ -437,6 +440,7 @@ org.jboss.resteasy:resteasy-client:4.5.2.Final
 org.jboss.resteasy:resteasy-core-spi:4.5.2.Final
 org.jboss.resteasy:resteasy-core:4.5.2.Final
 org.jboss.resteasy:resteasy-jaxb-provider:4.5.2.Final
+org.jboss.resteasy:resteasy-multipart-provider:4.5.2.Final
 org.jboss.resteasy:resteasy-servlet-initializer:4.5.2.Final
 org.jboss.resteasy:resteasy-tracing-api:1.0.0.Final
 org.jboss.shrinkwrap:shrinkwrap-api:1.2.3

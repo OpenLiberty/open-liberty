@@ -1452,6 +1452,21 @@
       <version>4.3.1</version>
     </dependency>
     <dependency>
+      <groupId>org.apache.james</groupId>
+      <artifactId>apache-mime4j-core</artifactId>
+      <version>0.7.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.james</groupId>
+      <artifactId>apache-mime4j-dom</artifactId>
+      <version>0.7.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.james</groupId>
+      <artifactId>apache-mime4j-storage</artifactId>
+      <version>0.7.2</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.johnzon</groupId>
       <artifactId>johnzon-core</artifactId>
       <version>1.1.5</version>
@@ -2204,6 +2219,11 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxb-provider</artifactId>
+      <version>4.5.2.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-multipart-provider</artifactId>
       <version>4.5.2.Final</version>
     </dependency>
     <dependency>

@@ -8,22 +8,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+@org.osgi.annotation.versioning.Version("1.0")
+@TraceOptions(traceGroup = "JAXRS", messageBundle="io.openliberty.org.jboss.resteasy.common.nls.JAXRSServer")
+package io.openliberty.jaxrs.providers;
 
-package com.ibm.ws.jaxrs2x.fat.thirdparty.multipart;
-
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.ws.rs.ApplicationPath;
-
-@ApplicationPath("/multipart")
-public class MultiPartApplication extends javax.ws.rs.core.Application {
-
-    @Override
-    public Set<Class<?>> getClasses() {
-        Set<Class<?>> classes = new HashSet<Class<?>>();
-        classes.add(UploadServiceImpl.class);
-        classes.add(MultipartServiceImpl.class);
-        return classes;
-    }
-}
+import com.ibm.websphere.ras.annotation.TraceOptions;
