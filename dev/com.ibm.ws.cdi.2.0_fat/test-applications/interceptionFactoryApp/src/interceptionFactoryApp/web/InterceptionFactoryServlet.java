@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,8 @@ import javax.servlet.annotation.WebServlet;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 
 @WebServlet(urlPatterns = "/interceptionFactoryTest")
 public class InterceptionFactoryServlet extends FATServlet {
@@ -29,6 +31,7 @@ public class InterceptionFactoryServlet extends FATServlet {
     Thing t;
 
     @Test
+    @Mode(TestMode.FULL)
     public void testInterceptionFactory() throws Exception {
         t.hello();
         assertTrue("Interceptor was not invoked", Intercepted.get());
