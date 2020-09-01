@@ -71,16 +71,18 @@ import componenttest.rules.repeater.RepeatTests;
                 // I'm still determining if this is purely a local problem.
                 //              WCPushBuilderSecurityTest.class,
                 WCAddJspFileTest.class,
-                WCServletPathForDefaultMappingDefault.class,
-                WCServletPathForDefaultMappingFalse.class,
-                WCGetMappingSlashStarTest.class,
                 WCServletContainerInitializerFilterServletNameMappingTest.class,
                 WCApplicationMBeanStatusTest.class,
                 WC5JakartaServletTest.class,
                 // @Server Annotations
                 WCServletContainerInitializerExceptionTest.class,
-                WCSameSiteCookieAttributeTests.class
+                WCSameSiteCookieAttributeTests.class,
+                WCServletPathForDefaultMappingDefault.class,
+                WCServletPathForDefaultMappingFalse.class,
+                WCGetMappingSlashStarTest.class
+
 })
+
 public class FATSuite {
 
     @ClassRule
