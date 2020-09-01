@@ -23,7 +23,7 @@ src: \
 
 fat.project: true
 fat.test.databases: true
-tested.features: jdbc-4.0, beanvalidation-1.1, jpa-2.0, el-3.0, jpa-3.0, servlet-5.0, cdi-3.0, beanValidation-3.0, ejblite-4.0
+tested.features: jdbc-4.0, beanvalidation-1.1, jpa-2.0, el-3.0, jpa-3.0, servlet-5.0, cdi-3.0, beanValidation-3.0, enterpriseBeansLite-4.0
 
 
 # Uncomment to test against alternative databases

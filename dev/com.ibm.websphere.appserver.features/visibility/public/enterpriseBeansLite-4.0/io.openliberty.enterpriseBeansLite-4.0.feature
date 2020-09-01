@@ -1,10 +1,10 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=io.openliberty.ejbLite-4.0
+symbolicName=io.openliberty.enterpriseBeansLite-4.0
 visibility=public
 singleton=true
 IBM-App-ForceRestart: install, \
  uninstall
-IBM-ShortName: ejbLite-4.0
+IBM-ShortName: enterpriseBeansLite-4.0
 IBM-API-Package: com.ibm.websphere.ejbcontainer.mbean; type="ibm-api"
 Subsystem-Category: JakartaEE9Application
 -features=io.openliberty.jakartaeePlatform-9.0, \

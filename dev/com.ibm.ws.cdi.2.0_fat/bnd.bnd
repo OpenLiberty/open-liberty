@@ -29,7 +29,7 @@ tested.features:\
 	servlet-5.0,\
 	concurrent-2.0,\
 	jsp-3.0,\
-	ejblite-4.0,\
+	enterpriseBeansLite-4.0,\
 	componenttest-2.0
 
 fat.project: true

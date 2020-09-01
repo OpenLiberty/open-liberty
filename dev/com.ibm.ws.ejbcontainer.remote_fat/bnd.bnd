@@ -56,8 +56,8 @@ src: \
 fat.project: true
 
 tested.features: \
-	ejbHome-4.0,\
-	ejbLite-4.0,\
+	enterpriseBeansHome-4.0,\
+	enterpriseBeansLite-4.0,\
 	enterpriseBeansRemote-4.0,\
 	servlet-4.0,\
 	servlet-5.0

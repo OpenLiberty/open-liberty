@@ -46,7 +46,7 @@ fat.project: true
 
 tested.features: \
 	ejbLite-3.2,\
-	ejbLite-4.0,\
+	enterpriseBeansLite-4.0,\
 	jdbc-4.2,\
 	jpa-2.2,\
 	jpa-3.0,\
