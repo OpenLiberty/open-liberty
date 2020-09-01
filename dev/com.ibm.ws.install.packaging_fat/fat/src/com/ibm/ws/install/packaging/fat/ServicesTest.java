@@ -37,14 +37,13 @@ public class ServicesTest extends InstallPackagesToolTest {
     /**
      * Service Test.
      * <p>
-     * 1. Install Test RPM
+     * 1. install open liberty
      * 2. start service
      * 3. stop service
      * 4. restart service
      * 5. stop service
-     * 6. Uninstall TestRPM
+     * 6. uninstall open liberty
      */
-//  currently disabled.
     @Test
     public void testService() throws Exception {
 
@@ -100,9 +99,12 @@ public class ServicesTest extends InstallPackagesToolTest {
                           + "status defaultServer.service RC4a:" + po4a.getReturnCode() + "\n"
                           + "stop defaultServer.service RC5:" + po5.getReturnCode() + "\n"
                           + "uninstall openliberty RC6:" + po6.getReturnCode() + "\n");
-        testsPassed = ((po1.getReturnCode() == 0) && (po2.getReturnCode() == 0) && (po2a.getReturnCode() == 0) && (po3.getReturnCode() == 0) && (po4.getReturnCode() == 0)
-                       && (po5.getReturnCode() == 0)
-                       && (po6.getReturnCode() == 0));
+        testsPassed = ((po1.getReturnCode() == 0) 
+                        && (po2.getReturnCode() == 0) 
+                        && (po3.getReturnCode() == 0) 
+                        && (po4.getReturnCode() == 0)
+                        && (po5.getReturnCode() == 0)
+                        && (po6.getReturnCode() == 0));
         Assert.assertTrue("Non zero return code in service test case. " + packageExt
                           + "Install Current openliberty RC1:" + po1.getReturnCode() + "\n"
                           + "start defaultServer.service RC2:" + po2.getReturnCode() + "\n"
