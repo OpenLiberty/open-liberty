@@ -12,12 +12,12 @@ package fvtweb.web;
 
 import java.util.Properties;
 
-import javax.annotation.Resource;
-import javax.ejb.EJB;
+import jakarta.annotation.Resource;
+import jakarta.ejb.EJB;
 import jakarta.mail.MailSessionDefinition;
 import jakarta.mail.Session;
 import javax.naming.InitialContext;
-import javax.servlet.annotation.WebServlet;
+import jakarta.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 

@@ -21,6 +21,6 @@
 
 #-----  Jakarta Mail messages
 
-CWWKX0957I=CWWKX0957I: A jakarta.mail.Session object as been successfully created by a mailSession in the server.xml
-CWWKX0957I.explanation= mailSession was created successfully with the information provided in the server.xml
+CWWKX0957I=CWWKX0957I: A mailSession object in the server.xml file successfully a A jakarta.mail.Session object
+CWWKX0957I.explanation= A jakarta.mail.Session object was created successfully with the information that was provided in the server.xml file
 CWWKX0957I.useraction= No action is necessary at this time

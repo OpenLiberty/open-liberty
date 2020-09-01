@@ -22,6 +22,8 @@ import jakarta.mail.FolderClosedException;
 import jakarta.mail.Header;
 import jakarta.mail.Message;
 import jakarta.mail.Session;
+import jakarta.mail.Folder; 
+import jakarta.mail.Store;
 
 public class IMAPMailTest {
     Session session;

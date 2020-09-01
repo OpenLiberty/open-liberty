@@ -14,9 +14,13 @@ import java.io.PrintWriter;
 import java.util.Enumeration;
 
 import jakarta.mail.FolderClosedException;
+import jakarta.mail.Authenticator;
+import jakarta.mail.PasswordAuthentication;
 import jakarta.mail.Header;
 import jakarta.mail.Message;
 import jakarta.mail.Session;
+import jakarta.mail.Store;
+import jakarta.mail.Folder;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;

@@ -16,6 +16,7 @@ src: \
   test-applications/fvtweb/src, \
   test-applications/TestingApp/src
   
+#-include= jar:${fileuri;${repo;com.ibm.ws.com.icegreen:greenmail;2.0.0.fd826131f671b0d3230b0d0e1638d8c4;EXACT}}
 
 fat.project: true
 
@@ -25,7 +26,6 @@ fat.project: true
   com.ibm.websphere.jakartaee.mail.2.0;version=latest, \
   com.ibm.websphere.appserver.thirdparty.mail-2.0;version=latest, \
   com.ibm.ws.org.apache.commons.logging.1.0.3;version=latest, \
-  com.ibm.websphere.javaee.ejb.3.2;version=latest, \
-  com.ibm.ws.com.icegreen:greenmail;strategy=exact;version=2.0.0.fd826131f671b0d3230b0d0e1638d8c4 \
   org.slf4j:slf4j-api;version=1.7.7, \
-  org.slf4j:slf4j-jdk14;version=1.7.7
+  org.slf4j:slf4j-jdk14;version=1.7.7, \
+  com.ibm.ws.com.icegreen:greenmail;strategy=exact;version=2.0.0.fd826131f671b0d3230b0d0e1638d8c4
