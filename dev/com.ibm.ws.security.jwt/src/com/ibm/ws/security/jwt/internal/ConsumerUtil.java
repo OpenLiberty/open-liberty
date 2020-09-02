@@ -15,6 +15,7 @@ import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -448,9 +449,10 @@ public class ConsumerUtil {
 
         validateIssuer(config.getId(), issuer, jwtClaims.getIssuer());
 
-        if (!validateAudience(config.getAudiences(), jwtClaims.getAudience())) {
+        List<String> allowedAudiences = getConfiguredAudiences(config);
+        if (!validateAudience(allowedAudiences, jwtClaims.getAudience())) {
             String msg = Tr.formatMessage(tc, "JWT_AUDIENCE_NOT_TRUSTED",
-                    new Object[] { jwtClaims.getAudience(), config.getId(), config.getAudiences() });
+                    new Object[] { jwtClaims.getAudience(), config.getId(), allowedAudiences });
             throw new InvalidClaimException(msg);
         }
 
@@ -511,6 +513,34 @@ public class ConsumerUtil {
             throw new InvalidClaimException(msg);
         }
         return isIssuer;
+    }
+
+    public List<String> getConfiguredAudiences(JwtConsumerConfig config) {
+        List<String> audiences = config.getAudiences();
+        if (audiences != null) {
+            // Server configuration takes precedence over MP Config property values
+            return audiences;
+        }
+        return getAudiencesFromMpConfigProps();
+    }
+
+    List<String> getAudiencesFromMpConfigProps() {
+        List<String> audiences = null;
+        String audiencesMpConfigProp = getMpConfigProperty(VERIFY_AUDIENCES);
+        if (audiencesMpConfigProp == null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Didn't find " + VERIFY_AUDIENCES + " property in MP Config props; defaulting to " + audiences);
+            }
+            return audiences;
+        }
+        audiences = new ArrayList<String>();
+        String[] splitAudiences = audiencesMpConfigProp.split(",");
+        for (String rawAudience : splitAudiences) {
+            if (!rawAudience.isEmpty()) {
+                audiences.add(rawAudience);
+            }
+        }
+        return audiences;
     }
 
     /**
@@ -817,7 +847,7 @@ public class ConsumerUtil {
         } else if (allowedAmrClaim == null) {
             //To avoid regression, if new amr config is not specified then return true
             valid = true;
-        } 
+        }
         return valid;
     }
 
