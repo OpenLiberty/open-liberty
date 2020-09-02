@@ -48,7 +48,7 @@ public class StoreConsumerService extends AppConsumerServiceGrpc.AppConsumerServ
     /**
      * runtime exception as Status.NOTFOUND
      *
-     * The Auth header is sent via grpcTarget
+     * The Auth header is sent via grpcClient
      * This is secured with JWT token, openidconnectclient will auth the user
      */
     @Override

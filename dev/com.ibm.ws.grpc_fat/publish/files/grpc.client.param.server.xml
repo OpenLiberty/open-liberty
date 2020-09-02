@@ -20,7 +20,7 @@
     
     <include location="../fatTestCommon.xml"/>
         
-    <grpcTarget target="*" 
+    <grpcClient target="*" 
                 authntoken="oauth" 
                 maxInboundMessageSize="32000" 
                 enableKeepAlive="true" 

@@ -96,7 +96,7 @@ public class ConsumerEndpointFATServlet extends FATServlet {
 
     /**
      * This test will send a valid Basic Authorization header created in ConsumerServiceRestClient
-     * The Authorization header will be propagated using GrpcTarget.
+     * The Authorization header will be propagated using grpcClient.
      *
      * This test will sent grpc requests to create data, getAppInfo with Auth header , delete data.
      * The test passes when correct "appName" is asserted in response.
@@ -112,7 +112,7 @@ public class ConsumerEndpointFATServlet extends FATServlet {
 
     /**
      * This test will send a Bad Basic Authorization header created in ConsumerServiceRestClient
-     * The Authorization header will be propagated using GrpcTarget.
+     * The Authorization header will be propagated using grpcClient.
      *
      * This test will sent grpc requests to create data, getAppInfo with Bad Auth header , delete data.
      * The test passes when "Expected auth failure" is asserted in response.
@@ -128,7 +128,7 @@ public class ConsumerEndpointFATServlet extends FATServlet {
 
     /**
      * This test will send a valid JWT token in Authorization header added via ClientRequestFilter
-     * The Authorization header will be propagated using GrpcTarget.
+     * The Authorization header will be propagated using grpcClient.
      *
      * This test will sent grpc requests to create data, getAppName with JWT token Auth header , delete data.
      * The test passes when correct "appName" is asserted in response.
@@ -144,7 +144,7 @@ public class ConsumerEndpointFATServlet extends FATServlet {
 
     /**
      * This test will send a null JWT token in Authorization header added via ClientRequestFilter
-     * The Authorization header will be propagated using GrpcTarget.
+     * The Authorization header will be propagated using grpcClient.
      *
      * This test will sent grpc requests to create data, getAppName with null JWT token Auth header , delete data.
      *
@@ -155,13 +155,13 @@ public class ConsumerEndpointFATServlet extends FATServlet {
      * @throws Exception
      */
     @Test
-    public void testGetAppName_NullJWTAuth_GrpcTarget(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        this.getAppName_NullJWTAuth_GrpcTarget(req, resp);
+    public void testGetAppName_NullJWTAuth_grpcClient(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        this.getAppName_NullJWTAuth_grpcClient(req, resp);
     }
 
     /**
      * This test will send a good JWT token in Authorization header added via ClientRequestFilter
-     * The Authorization header will be propagated using GrpcTarget.
+     * The Authorization header will be propagated using grpcClient.
      *
      * This test will sent grpc requests to create data, getAppName with good JWT token Auth header
      * But the server side will have bad RolesAllowed set,
@@ -173,8 +173,8 @@ public class ConsumerEndpointFATServlet extends FATServlet {
      * @throws Exception
      */
     @Test
-    public void testGetAppName_BadServerRoles_GrpcTarget(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        this.getAppName_BadServerRoles_GrpcTarget(req, resp);
+    public void testGetAppName_BadServerRoles_grpcClient(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        this.getAppName_BadServerRoles_grpcClient(req, resp);
     }
 
     /**
@@ -278,9 +278,9 @@ public class ConsumerEndpointFATServlet extends FATServlet {
      * @param resp
      * @throws Exception
      */
-    private void getAppName_NullJWTAuth_GrpcTarget(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    private void getAppName_NullJWTAuth_grpcClient(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
-        final String m = "getAppName_NullJWTAuth_GrpcTarget";
+        final String m = "getAppName_NullJWTAuth_grpcClient";
 
         // create
         // query name
@@ -333,9 +333,9 @@ public class ConsumerEndpointFATServlet extends FATServlet {
      * @param resp
      * @throws Exception
      */
-    private void getAppName_Auth_GrpcTarget(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    private void getAppName_Auth_grpcClient(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
-        final String m = "testGetAppName_Auth_GrpcTarget";
+        final String m = "testGetAppName_Auth_grpcClient";
 
         // create
         // query name
@@ -394,8 +394,8 @@ public class ConsumerEndpointFATServlet extends FATServlet {
      * @param req
      * @param resp
      */
-    private void getAppName_BadServerRoles_GrpcTarget(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        final String m = "testGetAppName_BadServerRoles_GrpcTarget";
+    private void getAppName_BadServerRoles_grpcClient(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        final String m = "testGetAppName_BadServerRoles_grpcClient";
 
         // create
         // get app name

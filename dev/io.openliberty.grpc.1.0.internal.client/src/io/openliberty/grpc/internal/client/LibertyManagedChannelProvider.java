@@ -127,9 +127,9 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 		if (maxMetaString != null && !maxMetaString.isEmpty()) {
 			int maxSize = Integer.parseInt(maxMetaString);
 			if (maxSize == -1) {
-				builder.maxInboundMessageSize(Integer.MAX_VALUE);
+				builder.maxInboundMetadataSize(Integer.MAX_VALUE);
 			} else if (maxSize > 0) {
-				builder.maxInboundMessageSize(maxSize);
+				builder.maxInboundMetadataSize(maxSize);
 			}
 		}
 	}

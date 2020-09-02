@@ -54,14 +54,14 @@ public class ClientConfigTests extends FATServletClient {
     private static final Set<String> appName = Collections.singleton("HelloWorldClient");
     private static final Set<String> appName_srv = Collections.singleton("HelloWorldService");
     private static final String DEFAULT_CONFIG_FILE = "grpc.client.xml";
-    private static final String GRPCTARGET_ELEMENT = "grpc.client.target.server.xml";
-    private static final String GRPCTARGET_PARAM = "grpc.client.param.server.xml";
-    private static final String GRPCTARGET_NOMATCH = "grpc.client.nomatch.server.xml";
-    private static final String GRPCTARGET_SPEC = "grpc.client.spec.server.xml";
-    private static final String GRPCTARGET_WILDCARD = "grpc.client.wildcard.server.xml";
-    private static final String NO_GRPCTARGET_ELEMENT = "grpc.client.notarget.server.xml";
-    private static final String GRPCTARGET_MSGSIZEINVALID = "grpc.client.invalidmsgsize.server.xml";
-    private static final String GRPCTARGET_MSGSIZESM = "grpc.client.smallmsgsize.server.xml";
+    private static final String grpcClient_ELEMENT = "grpc.client.target.server.xml";
+    private static final String grpcClient_PARAM = "grpc.client.param.server.xml";
+    private static final String grpcClient_NOMATCH = "grpc.client.nomatch.server.xml";
+    private static final String grpcClient_SPEC = "grpc.client.spec.server.xml";
+    private static final String grpcClient_WILDCARD = "grpc.client.wildcard.server.xml";
+    private static final String NO_grpcClient_ELEMENT = "grpc.client.notarget.server.xml";
+    private static final String grpcClient_MSGSIZEINVALID = "grpc.client.invalidmsgsize.server.xml";
+    private static final String grpcClient_MSGSIZESM = "grpc.client.smallmsgsize.server.xml";
     private static final String GRPCSERVER_SPEC = "grpc.server.spec.server.xml";
     private static final int SHORT_TIMEOUT = 500; // .5 seconds
     private static String serverConfigurationFile = DEFAULT_CONFIG_FILE;
@@ -101,7 +101,7 @@ public class ClientConfigTests extends FATServletClient {
     public static void tearDown() throws Exception {
         // Stop the servers
         if (GrpcClientOnly != null && GrpcClientOnly.isStarted()) {
-            GrpcClientOnly.stopServer("CWWKG0075E", "CWWKG0076W", "SRVE0777E");
+            GrpcClientOnly.stopServer("CWWKG0083W", "CWWKG0076W", "SRVE0777E");
         }
         if (GrpcServerOnly != null && GrpcServerOnly.isStarted()) {
             GrpcServerOnly.stopServer();
@@ -109,9 +109,9 @@ public class ClientConfigTests extends FATServletClient {
     }
 
     /**
-     * Add a new <grpcTarget/> element and make sure it's applied
-     * The original server.xml enables the grpc feature, but has no grpcTarget element.
-     * Update the server with a server.xml that has a grpcTarget element,
+     * Add a new <grpcClient/> element and make sure it's applied
+     * The original server.xml enables the grpc feature, but has no grpcClient element.
+     * Update the server with a server.xml that has a grpcClient element,
      * make sure no errors, send a request.
      *
      * @throws Exception
@@ -120,10 +120,10 @@ public class ClientConfigTests extends FATServletClient {
     @Test
     public void testAddGrpcClientElement() throws Exception {
 
-        LOG.info("ServiceConfigTests : testAddGrpcTargetElement() : update the server.xml file to one with a <grpcTarget> element.");
+        LOG.info("ServiceConfigTests : testAddgrpcClientElement() : update the server.xml file to one with a <grpcClient> element.");
 
-        // Update to a config file with a <grpcTarget> element
-        setServerConfiguration(GrpcClientOnly, GRPCTARGET_ELEMENT);
+        // Update to a config file with a <grpcClient> element
+        setServerConfiguration(GrpcClientOnly, grpcClient_ELEMENT);
         GrpcClientOnly.waitForConfigUpdateInLogUsingMark(appName);
         String contextRoot = "HelloWorldClient";
         try (WebClient webClient = new WebClient()) {
@@ -165,27 +165,27 @@ public class ClientConfigTests extends FATServletClient {
             String interceptorHasRun = GrpcClientOnly.waitForStringInLog("com.ibm.ws.grpc.fat.helloworld.client.HelloWorldClientInterceptor has been invoked!",
                                                                          SHORT_TIMEOUT);
             if (interceptorHasRun == null) {
-                Assert.fail(c + ": server.xml with <grpcTarget> element: no interceptor ran when it should have in " + SHORT_TIMEOUT + "ms");
+                Assert.fail(c + ": server.xml with <grpcClient> element: no interceptor ran when it should have in " + SHORT_TIMEOUT + "ms");
             }
         }
     }
 
     /**
-     * Update an existing grpcTarget element
+     * Update an existing grpcClient element
      *
      * @throws Exception
      *
      **/
     @Test
     public void testUpdateGrpcClientParam() throws Exception {
-        LOG.info("ServiceConfigTests : testUpdateGrpcClientParam() : update <grpcTarget> element with new parms.");
+        LOG.info("ServiceConfigTests : testUpdateGrpcClientParam() : update <grpcClient> element with new parms.");
 
-        // First set a config with a <grpcTarget> that wouldn't match the helloworld client
-        setServerConfiguration(GrpcClientOnly, GRPCTARGET_NOMATCH);
+        // First set a config with a <grpcClient> that wouldn't match the helloworld client
+        setServerConfiguration(GrpcClientOnly, grpcClient_NOMATCH);
         GrpcClientOnly.waitForConfigUpdateInLogUsingMark(appName);
 
-        // Update to a config with a <grpcTarget> element with different parms
-        setServerConfiguration(GrpcClientOnly, GRPCTARGET_PARAM);
+        // Update to a config with a <grpcClient> element with different parms
+        setServerConfiguration(GrpcClientOnly, grpcClient_PARAM);
         GrpcClientOnly.waitForConfigUpdateInLogUsingMark(appName);
 
         String contextRoot = "HelloWorldClient";
@@ -228,22 +228,22 @@ public class ClientConfigTests extends FATServletClient {
             String interceptorHasRun = GrpcClientOnly.waitForStringInLog("com.ibm.ws.grpc.fat.helloworld.client.HelloWorldClientInterceptor has been invoked!",
                                                                          SHORT_TIMEOUT);
             if (interceptorHasRun == null) {
-                Assert.fail(c + ": server.xml with <grpcTarget> element: no interceptor ran when it should have in " + SHORT_TIMEOUT + "ms");
+                Assert.fail(c + ": server.xml with <grpcClient> element: no interceptor ran when it should have in " + SHORT_TIMEOUT + "ms");
             }
         }
     }
 
     /**
-     * remove an existing grpcTarget element
+     * remove an existing grpcClient element
      *
      * @throws Exception
      */
     @Test
     public void testRemoveGrpcClientElement() throws Exception {
-        LOG.info("ServiceConfigTests : testRemoveGrpcClientElement() : remove <grpcTarget> element.");
+        LOG.info("ServiceConfigTests : testRemoveGrpcClientElement() : remove <grpcClient> element.");
 
-        // First set a config with a <grpcTarget>
-        setServerConfiguration(GrpcClientOnly, GRPCTARGET_ELEMENT);
+        // First set a config with a <grpcClient>
+        setServerConfiguration(GrpcClientOnly, grpcClient_ELEMENT);
         GrpcClientOnly.waitForConfigUpdateInLogUsingMark(appName);
 
         // verify this client uses the target
@@ -287,12 +287,12 @@ public class ClientConfigTests extends FATServletClient {
             String interceptorHasRun = GrpcClientOnly.waitForStringInLog("com.ibm.ws.grpc.fat.helloworld.client.HelloWorldClientInterceptor has been invoked!",
                                                                          SHORT_TIMEOUT);
             if (interceptorHasRun == null) {
-                Assert.fail(c + ": server.xml with <grpcTarget> element: no interceptor ran when it should have in " + SHORT_TIMEOUT + "ms");
+                Assert.fail(c + ": server.xml with <grpcClient> element: no interceptor ran when it should have in " + SHORT_TIMEOUT + "ms");
             }
         }
 
-        // Update to a config file without a <grpcTarget> element
-        setServerConfiguration(GrpcClientOnly, NO_GRPCTARGET_ELEMENT);
+        // Update to a config file without a <grpcClient> element
+        setServerConfiguration(GrpcClientOnly, NO_grpcClient_ELEMENT);
         GrpcClientOnly.waitForConfigUpdateInLogUsingMark(appName);
 
         try (WebClient webClient = new WebClient()) {
@@ -334,7 +334,7 @@ public class ClientConfigTests extends FATServletClient {
             String interceptorHasRun = GrpcClientOnly.verifyStringNotInLogUsingMark("com.ibm.ws.grpc.fat.helloworld.client.HelloWorldClientInterceptor has been invoked!",
                                                                                     SHORT_TIMEOUT);
             if (interceptorHasRun != null) {
-                Assert.fail(c + ": server.xml with <grpcTarget> element interceptor ran when it should not have");
+                Assert.fail(c + ": server.xml with <grpcClient> element interceptor ran when it should not have");
             }
         }
     }
@@ -348,7 +348,7 @@ public class ClientConfigTests extends FATServletClient {
     public void testClientTargetWildcard() throws Exception {
         LOG.info("ServiceConfigTests : testClientTargetWildcard() : validate that * matches all outbound calls.");
 
-        setServerConfiguration(GrpcClientOnly, GRPCTARGET_WILDCARD);
+        setServerConfiguration(GrpcClientOnly, grpcClient_WILDCARD);
         GrpcClientOnly.waitForConfigUpdateInLogUsingMark(appName);
         String contextRoot = "HelloWorldClient";
         try (WebClient webClient = new WebClient()) {
@@ -390,7 +390,7 @@ public class ClientConfigTests extends FATServletClient {
             String interceptorHasRun = GrpcClientOnly.waitForStringInLog("com.ibm.ws.grpc.fat.helloworld.client.HelloWorldClientInterceptor has been invoked!",
                                                                          SHORT_TIMEOUT);
             if (interceptorHasRun == null) {
-                Assert.fail(c + ": server.xml with <grpcTarget> element: no interceptor ran when it should have in " + SHORT_TIMEOUT + "ms");
+                Assert.fail(c + ": server.xml with <grpcClient> element: no interceptor ran when it should have in " + SHORT_TIMEOUT + "ms");
             }
         }
     }
@@ -405,7 +405,7 @@ public class ClientConfigTests extends FATServletClient {
     public void testClientTargetNoMatch() throws Exception {
         LOG.info("ServiceConfigTests : testClientTargetNoMatch() : validate no matches.");
 
-        setServerConfiguration(GrpcClientOnly, GRPCTARGET_NOMATCH);
+        setServerConfiguration(GrpcClientOnly, grpcClient_NOMATCH);
         GrpcClientOnly.waitForConfigUpdateInLogUsingMark(appName);
         String contextRoot = "HelloWorldClient";
         try (WebClient webClient = new WebClient()) {
@@ -447,7 +447,7 @@ public class ClientConfigTests extends FATServletClient {
             String interceptorHasRun = GrpcClientOnly.verifyStringNotInLogUsingMark("com.ibm.ws.grpc.fat.helloworld.client.HelloWorldClientInterceptor has been invoked!",
                                                                                     SHORT_TIMEOUT);
             if (interceptorHasRun != null) {
-                Assert.fail(c + ": server.xml with <grpcTarget> element interceptor ran when it should not have");
+                Assert.fail(c + ": server.xml with <grpcClient> element interceptor ran when it should not have");
             }
         }
     }
@@ -463,7 +463,7 @@ public class ClientConfigTests extends FATServletClient {
         LOG.info("ServiceConfigTests : testClientTargetSpecificMatch() : validate a specific match.");
 
         // set up client and server with same target name
-        setServerConfiguration(GrpcClientOnly, GRPCTARGET_SPEC);
+        setServerConfiguration(GrpcClientOnly, grpcClient_SPEC);
         GrpcClientOnly.waitForConfigUpdateInLogUsingMark(appName);
 
         String contextRoot = "HelloWorldClient";
@@ -506,13 +506,13 @@ public class ClientConfigTests extends FATServletClient {
             String interceptorHasRun = GrpcClientOnly.waitForStringInLog("com.ibm.ws.grpc.fat.helloworld.client.HelloWorldClientInterceptor has been invoked!",
                                                                          SHORT_TIMEOUT);
             if (interceptorHasRun == null) {
-                Assert.fail(c + ": server.xml with <grpcTarget> element: no interceptor ran when it should have in " + SHORT_TIMEOUT + "ms");
+                Assert.fail(c + ": server.xml with <grpcClient> element: no interceptor ran when it should have in " + SHORT_TIMEOUT + "ms");
             }
         }
     }
 
     /**
-     * test an invalid setting, verify error CWWKG0075E occurs
+     * test an invalid setting, verify error CWWKG0083W occurs
      *
      * @throws Exception
      */
@@ -520,9 +520,9 @@ public class ClientConfigTests extends FATServletClient {
     public void testInvalidMaxInboundMessageSize() throws Exception {
         LOG.info("ServiceConfigTests : testInvalidMaxInboundMessageSize() : test an invalid setting.");
 
-        setServerConfiguration(GrpcClientOnly, GRPCTARGET_MSGSIZEINVALID);
+        setServerConfiguration(GrpcClientOnly, grpcClient_MSGSIZEINVALID);
         GrpcClientOnly.waitForConfigUpdateInLogUsingMark(appName);
-        assertNotNull(GrpcClientOnly.waitForStringInLog("CWWKG0075E: The value junk is not valid for attribute maxInboundMessageSize of configuration element grpcTarget"));
+        assertNotNull(GrpcClientOnly.waitForStringInLog("CWWKG0083W.*.junk"));
     }
 
     /**
@@ -536,7 +536,7 @@ public class ClientConfigTests extends FATServletClient {
     public void testSmallMaxInboundMessageSize() throws Exception {
         LOG.info("ServiceConfigTests : testSmallMaxInboundMessageSize() : test very small MaxInboundMessageSize.");
 
-        setServerConfiguration(GrpcClientOnly, GRPCTARGET_MSGSIZESM);
+        setServerConfiguration(GrpcClientOnly, grpcClient_MSGSIZESM);
         GrpcClientOnly.waitForConfigUpdateInLogUsingMark(appName);
         String contextRoot = "HelloWorldClient";
         try (WebClient webClient = new WebClient()) {
@@ -574,7 +574,7 @@ public class ClientConfigTests extends FATServletClient {
             String hitMax = GrpcClientOnly.waitForStringInLog("RESOURCE_EXHAUSTED: gRPC message exceeds maximum size 12",
                                                               SHORT_TIMEOUT);
             if (hitMax == null) {
-                Assert.fail(c + ": server.xml with <grpcTarget> element: did not get expected message size exceeded in " + SHORT_TIMEOUT + "ms");
+                Assert.fail(c + ": server.xml with <grpcClient> element: did not get expected message size exceeded in " + SHORT_TIMEOUT + "ms");
             }
         }
     }

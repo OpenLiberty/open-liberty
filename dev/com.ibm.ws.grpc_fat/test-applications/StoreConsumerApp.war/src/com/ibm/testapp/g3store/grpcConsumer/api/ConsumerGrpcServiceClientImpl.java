@@ -66,7 +66,7 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
         try {
 
             NameResponse resp = null;
-            if (testMethodName.equalsIgnoreCase("testGetAppName_BadServerRoles_GrpcTarget")) {
+            if (testMethodName.equalsIgnoreCase("testGetAppName_BadServerRoles_grpcClient")) {
 
                 if (log.isLoggable(Level.FINE)) {
                     log.fine(testMethodName + " ,Consumer: send grpc request to getAppNameSetBadRoles");

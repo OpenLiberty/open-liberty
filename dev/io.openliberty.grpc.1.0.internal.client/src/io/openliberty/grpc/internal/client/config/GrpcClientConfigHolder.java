@@ -22,12 +22,7 @@ import io.openliberty.grpc.internal.client.GrpcClientConstants;
 import io.openliberty.grpc.internal.client.GrpcClientMessages;
 
 /**
- * A class to collect the properties that the Client config services have read
- * from server.xml, so the Apache code can access them in a convenient and
- * performant way.
- * 
  * Adapted from com.ibm.ws.jaxrs20.clientconfig.JAXRSClientConfigHolder
- *
  */
 public class GrpcClientConfigHolder {
 	private static final TraceComponent tc = Tr.register(GrpcClientConfigHolder.class, GrpcClientMessages.GRPC_TRACE_NAME, GrpcClientMessages.GRPC_BUNDLE);

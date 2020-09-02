@@ -69,7 +69,7 @@ public class ConsumerRestEndpoint extends ConsumerGrpcServiceClientImpl {
 
     /**
      * The Authorization header with JWT token
-     * will be propagated using grpcTarget for this API.
+     * will be propagated using grpcClient for this API.
      *
      * Only uncomment RolesAllowed here if need to test security for RestEndpoint.
      *
@@ -181,7 +181,7 @@ public class ConsumerRestEndpoint extends ConsumerGrpcServiceClientImpl {
 
     /**
      * The Authorization header with Basic
-     * will be propagated using grpcTarget for this API.
+     * will be propagated using grpcClient for this API.
      *
      * This will also test the security for this RESTEndpoint.
      *
@@ -234,7 +234,7 @@ public class ConsumerRestEndpoint extends ConsumerGrpcServiceClientImpl {
 
     /**
      * The Authorization header with Bad Basic Auth values
-     * will be propagated using grpcTarget for this API.
+     * will be propagated using grpcClient for this API.
      * Test if correct grpc return code are sent from the server.
      *
      *

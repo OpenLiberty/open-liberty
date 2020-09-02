@@ -43,7 +43,7 @@ public class GrpcClientConfigTest {
 	}
 
 	/**
-	 * verify a basic grpcTarget configuration
+	 * verify a basic grpcClient configuration
 	 */
 	@Test
 	public void testSimpleClientConfig() {
@@ -87,7 +87,7 @@ public class GrpcClientConfigTest {
 	}
 	
 	/**
-	 * verify updating a single grpcTarget config
+	 * verify updating a single grpcClient config
 	 */
 	@Test
 	public void testConfigUpdate() {
@@ -124,7 +124,7 @@ public class GrpcClientConfigTest {
 	}
 	
 	/**
-	 * verify precedence with multiple grpcTarget elements
+	 * verify precedence with multiple grpcClient elements
 	 */
 	@Test
 	public void testMultipleElements() {

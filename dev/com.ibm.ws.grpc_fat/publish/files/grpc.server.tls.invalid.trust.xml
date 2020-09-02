@@ -17,7 +17,7 @@
 
     <sslDefault sslRef="CustomSSLSettings" />
 
-    <grpcTarget target="*" sslConfig="invalidClientSSLSettings" />
+    <grpcClient target="*" sslConfig="invalidClientSSLSettings" />
 
     <include location="../fatTestPorts.xml" />
 
