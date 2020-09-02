@@ -809,7 +809,9 @@ public class WCCustomProperties {
     }
 
     private static void setCustomizedDefaultValues(){
-        Tr.debug(tc, "Customized default values: ");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Customized default values: ");
+        }
 
         //18.0.0.4 SERVLET_PATH_FOR_DEFAULT_MAPPING has highest priority.  If not present AND ENABLE_DEFAULT_SERVLET_REQUEST_PATH_ELEMENTS is true, set SERVLET_PATH_FOR_DEFAULT_MAPPING
         if (SERVLET_PATH_FOR_DEFAULT_MAPPING == null || SERVLET_PATH_FOR_DEFAULT_MAPPING.isEmpty()){
@@ -818,7 +820,9 @@ public class WCCustomProperties {
             else
                 SERVLET_PATH_FOR_DEFAULT_MAPPING = ((com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_40) ? "true" : "false" );
 
-            Tr.debug(tc, "servletpathfordefaultmapping = " + SERVLET_PATH_FOR_DEFAULT_MAPPING);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "servletpathfordefaultmapping = " + SERVLET_PATH_FOR_DEFAULT_MAPPING);
+            }
         }
     }
 
