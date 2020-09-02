@@ -93,11 +93,14 @@
 		
 	<grpcTarget target="test.g3store.grpc.AppConsumerService/getAppInfo" headersToPropagate="authorization"/>
 	<grpcTarget target="test.g3store.grpc.AppConsumerService/getAllAppNames" headersToPropagate="authorization"/>
+<<<<<<< HEAD
 	<grpcTarget target="test.g3store.grpc.AppConsumerService/getAppNameSetBadRoles" headersToPropagate="authorization"/>
 	<grpcTarget target="test.g3store.grpc.AppConsumerService/getNameCookieJWTHeader" headersToPropagate="Cookie"/>
 	<grpcTarget target="test.g3store.grpc.AppConsumerService/getAppSetBadRoleCookieJWTHeader" headersToPropagate="Cookie"/>
 	
 	<!-- <grpcTarget target="test.g3store.grpc.AppConsumerService/getAllAppNames" authnToken="jwt"/> -->
+=======
+>>>>>>> remove authnToken config from grpcClient
 
 
 		

@@ -78,11 +78,6 @@ public class GrpcClientConfigImpl implements GrpcClientConfig {
 			if (propertiesToRemove.contains(key)) {
 				continue;
 			}
-
-			if (key.compareTo(GrpcClientConstants.AUTH_TOKEN_PROP) == 0) {
-				if (!GrpcClientConfigValidation.validateAuthn(props.get(key).toString()))
-					continue;
-			}
 			if (key.compareTo(GrpcClientConstants.KEEP_ALIVE_TIME_PROP) == 0) {
 				if (!GrpcClientConfigValidation.validateKeepAliveTime(props.get(key).toString()))
 					continue;

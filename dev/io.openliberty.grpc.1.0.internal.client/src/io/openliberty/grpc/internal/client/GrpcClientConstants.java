@@ -16,7 +16,6 @@ public class GrpcClientConstants {
 	
 	// config related constants
     public static final String WEB_TARGET = "webTarget";
-    public static final String AUTH_TOKEN_PROP = "authnToken";
     public static final String HEADER_PROPAGATION_PROP = "headersToPropagate";
     public static final String TARGET_PROP = "target";
     public static final String KEEP_ALIVE_WITHOUT_CALLS_PROP = "keepAliveWithoutCalls";
@@ -28,14 +27,4 @@ public class GrpcClientConstants {
     public static final String SSL_CFG_PROP = "sslRef";
     public static final String OVERRIDE_AUTHORITY_PROP = "overrideAuthority";
     public static final String USER_AGENT_PROP = "userAgent";
-    
-    // security config related constants
-	public static final Metadata.Key<String> AUTHZ_KEY = Metadata.Key.of("authorization", Metadata.ASCII_STRING_MARSHALLER);
-	public static final String JWT = "jwt";
-	public static final String MPJWT = "mpjwt";
-	public static final String OAUTH = "oauth";
-	public static final String SAML = "saml";
-	public static final String LTPA = "ltpa";
-	public static final String BASIC = "basic";
-	public static final String BEARER_TOKEN = "bearer";
 }

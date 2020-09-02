@@ -89,15 +89,6 @@ public class GrpcClientConfigHolder {
 		}
 	}
 
-	public static String getAuthnSupport(String uri) {
-		Map<String, String> props = getURIProps(uri);
-		if (props != null) {
-			return props.get(GrpcClientConstants.AUTH_TOKEN_PROP);
-		} else {
-			return null;
-		}
-	}
-
 	public static String getSSLConfig(String uri) {
 		Map<String, String> props = getURIProps(uri);
 		if (props != null) {

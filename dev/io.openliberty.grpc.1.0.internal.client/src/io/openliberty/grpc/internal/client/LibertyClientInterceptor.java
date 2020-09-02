@@ -16,14 +16,12 @@ import io.grpc.ClientCall;
 import io.grpc.ClientInterceptor;
 import io.grpc.ForwardingClientCall.SimpleForwardingClientCall;
 import io.grpc.ForwardingClientCallListener.SimpleForwardingClientCallListener;
-import io.openliberty.grpc.internal.client.security.authorization.LibertyGrpcAuthPropagationSupport;
 import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
 
 /**
  * An Interceptor used to provide Liberty integrations to outbound gRPC calls.
- * This currently provides authorization token propagation and generic HTTP
- * header propagation
+ * This currently provides generic HTTP header propagation
  */
 public class LibertyClientInterceptor implements ClientInterceptor {
 
@@ -35,9 +33,6 @@ public class LibertyClientInterceptor implements ClientInterceptor {
 
 			@Override
 			public void start(Listener<RespT> responseListener, Metadata headers) {
-
-				// add authorization header if configured
-				LibertyGrpcAuthPropagationSupport.handleAuthorization(method, headers);
 
 				// forward any headers that are configured
 				LibertyHeaderPropagationSupport.handleHeaderPropagation(method, headers);

@@ -24,7 +24,6 @@
          -->
          
         <AD id="target" name="%target" description="%target.desc" required="true" type="String" />
-        <AD id="authnToken" name="%authnToken" description="%authnToken.desc" required="false" type="String" />
         <AD id="headersToPropagate" name="%headersToPropagate" description="%headersToPropagate.desc" required="false" type="String" />
         <AD id="keepAliveTime" name="%keepAliveTime" description="%keepAliveTime.desc" required="false" type="String" ibm:type="duration(s)" min="1" />
         <AD id="keepAliveTimeout" name="%keepAliveTimeout" description="%keepAliveTimeout.desc" required="false" type="String" ibm:type="duration(s)" default="20s" min="1" />

@@ -68,20 +68,4 @@ public class GrpcClientConfigValidation {
 		// TODO: actually validate
 		return true;
 	}
-
-	/**
-	 * validate the value for authnToken key
-	 *
-	 * @param value - shorthand key name
-	 * @return true if authnToken value is valid
-	 */
-	static boolean validateAuthn(String value) {
-
-		String valueLower = value.toLowerCase();
-		boolean valid = valueLower.equals(GrpcClientConstants.JWT) || valueLower.equals(GrpcClientConstants.OAUTH);
-		if (!valid) {
-			Tr.error(tc, "invalid.authn.token", valueLower);
-		}
-		return valid;
-	}
 }
