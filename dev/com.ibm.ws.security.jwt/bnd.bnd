@@ -120,7 +120,8 @@ instrument.classesExcludes: com/ibm/ws/security/jwt/internal/resources/*.class
     org.apache.httpcomponents:httpcore;version=4.4.9, \
     com.ibm.ws.com.google.gson.2.2.4;version=latest, \
     com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-    com.ibm.json4j;version=latest
+    com.ibm.json4j;version=latest, \
+    com.ibm.ws.kernel.boot.core;version=latest
 
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \

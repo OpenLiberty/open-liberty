@@ -38,6 +38,7 @@ import com.ibm.ws.security.common.config.CommonConfigUtils;
 import com.ibm.ws.security.common.jwk.impl.JWKSet;
 import com.ibm.ws.security.jwt.config.ConsumerUtils;
 import com.ibm.ws.security.jwt.config.JwtConsumerConfig;
+import com.ibm.ws.security.jwt.internal.JwtConfigUtil;
 import com.ibm.ws.security.jwt.utils.JwtUtils;
 import com.ibm.ws.security.mp.jwt.MicroProfileJwtConfig;
 import com.ibm.ws.security.mp.jwt.MicroProfileJwtService;
@@ -192,7 +193,7 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
         this.mapToUserRegistry = configUtils.getBooleanConfigAttribute(props, CFG_KEY_mapToUserRegistry, mapToUserRegistry);
         jwkSet = null; // the jwkEndpoint may have been changed during dynamic update
         consumerUtils = null; // the parameters in consumerUtils may have been changed during dynamic changing
-        this.signatureAlgorithm = configUtils.getConfigAttribute(props, CFG_KEY_SIGALG);
+        this.signatureAlgorithm = JwtConfigUtil.getSignatureAlgorithm(props, CFG_KEY_SIGALG);
         sharedKey = JwtUtils.processProtectedString(props, JwtUtils.CFG_KEY_SHARED_KEY);
 
         loadConfigValuesForHigherVersions(cc, props);
