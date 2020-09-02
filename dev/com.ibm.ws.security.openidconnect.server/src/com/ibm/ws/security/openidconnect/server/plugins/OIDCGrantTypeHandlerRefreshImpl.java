@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 
 import com.ibm.oauth.core.api.attributes.AttributeList;
 import com.ibm.oauth.core.api.oauth20.token.OAuth20Token;
+import com.ibm.oauth.core.internal.oauth20.config.OAuth20ConfigProvider;
 import com.ibm.oauth.core.internal.oauth20.granttype.impl.OAuth20GrantTypeHandlerRefreshImpl;
 import com.ibm.oauth.core.internal.oauth20.token.OAuth20TokenFactory;
 import com.ibm.ws.security.openidconnect.common.cl.BuildResponseTypeUtil;
@@ -23,6 +24,10 @@ public class OIDCGrantTypeHandlerRefreshImpl extends OAuth20GrantTypeHandlerRefr
 
     private static final String CLASS = OIDCGrantTypeHandlerRefreshImpl.class.getName();
     private static Logger log = Logger.getLogger(CLASS);
+
+    public OIDCGrantTypeHandlerRefreshImpl(OAuth20ConfigProvider config) {
+        super(config);
+    }
 
     @Override
     public List<OAuth20Token> buildTokensGrantType(AttributeList attributeList, OAuth20TokenFactory tokenFactory, List<OAuth20Token> tokens) {
