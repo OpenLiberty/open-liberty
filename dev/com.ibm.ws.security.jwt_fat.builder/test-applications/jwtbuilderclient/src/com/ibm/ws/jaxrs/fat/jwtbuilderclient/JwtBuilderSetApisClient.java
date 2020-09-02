@@ -36,7 +36,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.ibm.json.java.JSON;
 import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONObject;
-import com.ibm.websphere.security.WSSecurityException;
 import com.ibm.websphere.security.auth.WSSubject;
 import com.ibm.websphere.security.cred.WSCredential;
 import com.ibm.websphere.security.jwt.JwtBuilder;
@@ -102,7 +101,7 @@ public class JwtBuilderSetApisClient extends HttpServlet {
 
             String configId = request.getParameter(JWTBuilderConstants.JWT_BUILDER_PARAM_BUILDER_ID);
             appUtils.logIt(pw, JWTBuilderConstants.JWT_BUILDER_PARAM_BUILDER_ID + ": " + configId);
-			// Setting amr in the subject if it is in params
+            // Setting amr in the subject if it is in params
             setAMRInSubject(pw, request);
             // create a builder
             if (configId != null) {
@@ -295,7 +294,7 @@ public class JwtBuilderSetApisClient extends HttpServlet {
             }
             if (alg.startsWith("ES")) {
                 keyGenerator = KeyPairGenerator.getInstance("EC");
-                String spec = "secp256k1";
+                String spec = "secp256r1";
 
                 if (alg.contains("384")) {
                     spec = "secp384r1";
@@ -377,7 +376,7 @@ public class JwtBuilderSetApisClient extends HttpServlet {
             }
         }
     }
-    
+
     protected void setAMRInSubject(PrintWriter pw, HttpServletRequest request) throws Exception {
 
         String attrsString = request.getParameter("attrs");
