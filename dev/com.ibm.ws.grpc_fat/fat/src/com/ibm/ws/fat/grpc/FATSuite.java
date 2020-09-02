@@ -25,6 +25,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 ServiceConfigTests.class,
                 ServiceInterceptorTests.class,
                 StoreServicesTests.class,
+                StoreServicesSecurityTests.class,
                 // leave out for now, to avoid intermittent build breaks StreamingTests.class,
                 ClientInterceptorTests.class,
 

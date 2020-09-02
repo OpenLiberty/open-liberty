@@ -75,10 +75,26 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
                 resp = get_consumerService()
                                 .withDeadlineAfter(deadlineMs, TimeUnit.SECONDS)
                                 .getAppNameSetBadRoles(Empty.getDefaultInstance());
+            } else if (testMethodName.equalsIgnoreCase("testGetAppName_CookieAuth_GrpcTarget")) {
+                if (log.isLoggable(Level.FINE)) {
+                    log.fine(testMethodName + " ,Consumer: send grpc request to getNameCookieJWTHeader");
+                }
+                // get the data back from grpc service
+                resp = get_consumerService()
+                                .withDeadlineAfter(deadlineMs, TimeUnit.SECONDS)
+                                .getNameCookieJWTHeader(Empty.getDefaultInstance());
+            } else if (testMethodName.equalsIgnoreCase("testGetAppName_BadRole_CookieAuth_GrpcTarget")) {
+                if (log.isLoggable(Level.FINE)) {
+                    log.fine(testMethodName + " ,Consumer: send grpc request to getAppSetBadRoleCookieJWTHeader");
+                }
+                // get the data back from grpc service
+                resp = get_consumerService()
+                                .withDeadlineAfter(deadlineMs, TimeUnit.SECONDS)
+                                .getAppSetBadRoleCookieJWTHeader(Empty.getDefaultInstance());
             } else {
 
                 if (log.isLoggable(Level.FINE)) {
-                    log.fine(testMethodName + " ,Consumer: send grpc request");
+                    log.fine(testMethodName + " ,Consumer: send grpc request to getAllAppNames");
                 }
                 // get the data back from grpc service
                 resp = get_consumerService()
@@ -86,11 +102,15 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
                                 .getAllAppNames(Empty.getDefaultInstance());
             }
 
-            if (log.isLoggable(Level.FINE)) {
-                log.fine(testMethodName + " ,Consumer: Received response, number of apps = " + resp.getNamesCount());
-            }
+            if (resp != null) {
+                if (log.isLoggable(Level.FINE)) {
+                    log.fine(testMethodName + " ,Consumer: Received response, number of apps = " + resp.getNamesCount());
+                }
 
-            nameList = resp.getNamesList();
+                nameList = resp.getNamesList();
+            } else {
+                log.severe(testMethodName + " check the grpc request connection and check the store logs. ");
+            }
 
         } catch (StatusRuntimeException e) {
             if (e.getStatus().getCode() == Status.Code.NOT_FOUND) {
@@ -99,7 +119,8 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
             }
             if (e.getStatus().getCode() == Status.Code.UNAUTHENTICATED) {
                 if ((testMethodName.equalsIgnoreCase("getAppName_NullJWTAuth_GrpcTarget")) ||
-                    (testMethodName.equalsIgnoreCase("testGetAppName_BadServerRoles_GrpcTarget"))) {
+                    (testMethodName.equalsIgnoreCase("testGetAppName_BadServerRoles_GrpcTarget")) ||
+                    (testMethodName.equalsIgnoreCase("testGetAppName_BadRole_CookieAuth_GrpcTarget"))) {
 
                     /*
                      * if need to print exception trailers

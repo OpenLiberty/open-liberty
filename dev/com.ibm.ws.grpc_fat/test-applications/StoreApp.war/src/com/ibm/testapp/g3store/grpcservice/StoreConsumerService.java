@@ -63,6 +63,33 @@ public class StoreConsumerService extends AppConsumerServiceGrpc.AppConsumerServ
     /**
      * runtime exception as Status.NOTFOUND
      *
+     * The Cookie header is sent via grpcTarget
+     * This is secured with JWT token, Cookie will auth the user
+     */
+    @Override
+    @RolesAllowed({ "students" })
+    public void getNameCookieJWTHeader(com.google.protobuf.Empty request,
+                                       io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.NameResponse> responseObserver) {
+        this.doAppNamesWork("getNameCookieJWTHeader", responseObserver);
+    }
+
+    /**
+     * runtime exception as Status.NOTFOUND
+     *
+     * The Cookie header is sent via grpcTarget
+     * This is secured with JWT token, Cookie will auth the user
+     * But bad role is set
+     */
+    @Override
+    @RolesAllowed({ "studentsBad" })
+    public void getAppSetBadRoleCookieJWTHeader(com.google.protobuf.Empty request,
+                                                io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.NameResponse> responseObserver) {
+        this.doAppNamesWork("getAppSetBadRoleCookieJWTHeader", responseObserver);
+    }
+
+    /**
+     * runtime exception as Status.NOTFOUND
+     *
      * The Auth header is sent via grpcTarget
      * This is secured with JWT token, openidconnectclient will auth the user and should
      * fail as students2 is not right group in token.

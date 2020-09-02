@@ -1,13 +1,6 @@
-/*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+/**
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ */
 package com.ibm.ws.fat.grpc;
 
 import static org.junit.Assert.assertNotNull;
@@ -23,8 +16,7 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
-import com.ibm.testapp.g3store.restConsumer.client.ConsumerEndpointFATServlet;
-import com.ibm.testapp.g3store.restProducer.client.ProducerEndpointFATServlet;
+import com.ibm.testapp.g3store.restConsumer.client.ConsumerEndpointJWTCookieFATServlet;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -35,26 +27,22 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 /**
- * @author anupag
  *
  */
-@RunWith(FATRunner.class)
-public class StoreServicesTests extends FATServletClient {
 
-    protected static final Class<?> c = StoreServicesTests.class;
+@RunWith(FATRunner.class)
+public class StoreServicesSecurityTests extends FATServletClient {
+
+    protected static final Class<?> c = StoreServicesSecurityTests.class;
 
     @Rule
     public TestName name = new TestName();
 
-    @Server("StoreServer")
-    public static LibertyServer storeServer;
-
-    @Server("ProducerServer")
-    @TestServlet(servlet = ProducerEndpointFATServlet.class, contextRoot = "StoreProducerApp")
-    public static LibertyServer producerServer;
+    @Server("StoreJWTSSoServer")
+    public static LibertyServer storeJWTSSoServer;
 
     @Server("ConsumerServer")
-    @TestServlet(servlet = ConsumerEndpointFATServlet.class, contextRoot = "StoreConsumerApp")
+    @TestServlet(servlet = ConsumerEndpointJWTCookieFATServlet.class, contextRoot = "StoreConsumerApp")
     public static LibertyServer consumerServer;
 
     private static String getSysProp(String key) {
@@ -63,7 +51,7 @@ public class StoreServicesTests extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        WebArchive store_war = ShrinkHelper.defaultApp(storeServer, "StoreApp.war",
+        WebArchive store_war = ShrinkHelper.defaultApp(storeJWTSSoServer, "StoreApp.war",
                                                        "com.ibm.testapp.g3store.cache",
                                                        "com.ibm.testapp.g3store.exception",
                                                        "com.ibm.testapp.g3store.interceptor",
@@ -71,17 +59,6 @@ public class StoreServicesTests extends FATServletClient {
                                                        "com.ibm.testapp.g3store.servletStore",
                                                        "com.ibm.testapp.g3store.utilsStore",
                                                        "com.ibm.test.g3store.grpc"); // add generated src
-
-        WebArchive producer_war = ShrinkHelper.defaultDropinApp(producerServer, "StoreProducerApp.war",
-                                                                "com.ibm.testapp.g3store.grpcProducer.api",
-                                                                "com.ibm.testapp.g3store.exception",
-                                                                "com.ibm.testapp.g3store.restProducer",
-                                                                "com.ibm.testapp.g3store.restProducer.api",
-                                                                "com.ibm.testapp.g3store.restProducer.model",
-                                                                "com.ibm.testapp.g3store.restProducer.client",
-                                                                "com.ibm.testapp.g3store.servletProducer",
-                                                                "com.ibm.ws.fat.grpc.monitoring",
-                                                                "com.ibm.test.g3store.grpc"); // add generated src
 
         // Use defaultApp the <application> element is used in server.xml for security, cannot use dropin
         // The consumer tests needs to create data also , we will need to add producer files also
@@ -103,28 +80,23 @@ public class StoreServicesTests extends FATServletClient {
                                                           "com.ibm.test.g3store.grpc", // add generated src
                                                           "com.ibm.testapp.g3store.restProducer.client");
 
-        storeServer.startServer(StoreServicesTests.class.getSimpleName() + ".log");
-        assertNotNull("CWWKO0219I.*ssl not recieved", storeServer.waitForStringInLog("CWWKO0219I.*ssl"));
-
-        producerServer.useSecondaryHTTPPort(); // sets httpSecondaryPort and httpSecondarySecurePort
-        producerServer.startServer(StoreServicesTests.class.getSimpleName() + ".log");
-        assertNotNull("CWWKO0219I.*ssl not recieved", producerServer.waitForStringInLog("CWWKO0219I.*ssl"));
+        storeJWTSSoServer.startServer(c.getSimpleName() + ".log");
+        assertNotNull("CWWKO0219I.*ssl not recieved", storeJWTSSoServer.waitForStringInLog("CWWKO0219I.*ssl"));
 
         // set bvt.prop.member_1.http=8080 and bvt.prop.member_1.https=8081
         consumerServer.setHttpDefaultPort(Integer.parseInt(getSysProp("member_1.http")));
         int securePort = Integer.parseInt(getSysProp("member_1.https"));
 
-        Log.info(StoreServicesTests.class, "setUp", "here is the secure port " + securePort);
+        Log.info(c, "setUp", "here is the secure port " + securePort);
 
         consumerServer.setHttpDefaultSecurePort(securePort);
-        consumerServer.startServer(StoreServicesTests.class.getSimpleName() + ".log");
+        consumerServer.startServer(c.getSimpleName() + ".log");
         assertNotNull("CWWKO0219I.*ssl not recieved", consumerServer.waitForStringInLog("CWWKO0219I.*ssl"));
 
         // To export the assembled services application archive files, uncomment the following
         // run it locally , keep them commented when merging
 
-//        ShrinkHelper.exportArtifact(store_war, "publish/savedApps/StoreServer/");
-//        ShrinkHelper.exportArtifact(producer_war, "publish/savedApps/ProducerServer/");
+//        ShrinkHelper.exportArtifact(store_war, "publish/savedApps/StoreJWTSSoServer/");
 //        ShrinkHelper.exportArtifact(consumer_war, "publish/savedApps/ConsumerServer/");
 //
 
@@ -142,27 +114,12 @@ public class StoreServicesTests extends FATServletClient {
         Exception excep = null;
 
         try {
-            //Expected failures
-
-            //CWIML4537E: The login operation could not be completed.
-            //The specified principal name dev2 is not found in the back-end repository.
-
-            //CWWKS1725E: The resource server failed to validate the access token
-            //because the validationEndpointUrl [null] was either not a valid URL
-            // or could not perform the validation.
-
-            //CWWKS1737E: The OpenID Connect client [null] failed to validate the JSON Web Token.
-            //The cause of the error was: [CWWKS1781E: Validation failed for the token requested
-            //by the client [null] because the (iss) issuer [testIssuer] that is specified in
-            //the token does not match any of the trusted issuers [testIssuerBad]
-            //that are specified by the [issuerIdentifier] attribute of the OpenID
-            //Connect client configuration.]
-
-            if (storeServer != null)
-                storeServer.stopServer("SRVE9967W", "CWIML4537E", "CWWKS1725E", "CWWKS1737E");
+            // CWWKT0202W need to fix this in grpc server code
+            if (storeJWTSSoServer != null)
+                storeJWTSSoServer.stopServer("SRVE9967W", "CWWKT0202W");
         } catch (Exception e) {
             excep = e;
-            Log.error(c, "store tearDown", e);
+            Log.error(c, "storeJWTSSoServer tearDown", e);
         }
 
         try {
@@ -174,15 +131,6 @@ public class StoreServicesTests extends FATServletClient {
             Log.error(c, "consumer tearDown", e);
         }
 
-        try {
-            if (producerServer != null)
-                producerServer.stopServer();
-        } catch (Exception e) {
-            if (excep == null)
-                excep = e;
-            Log.error(c, "producer tearDown", e);
-        }
-
         if (excep != null)
             throw excep;
     }
@@ -190,14 +138,7 @@ public class StoreServicesTests extends FATServletClient {
     @Test
     public void testStoreWarStartWithGrpcService() throws Exception {
         Log.info(getClass(), "testStoreWarStartWithGrpcService", "Check if Store.war started");
-        assertNotNull(storeServer.waitForStringInLog("CWWKZ0001I: Application StoreApp started"));
-
-    }
-
-    @Test
-    public void testProducerWarStartWithGrpcService() throws Exception {
-        Log.info(getClass(), "testProducerWarStartWithGrpcService", "Check if Prodcuer.war started");
-        assertNotNull(producerServer.waitForStringInLog("CWWKZ0001I: Application StoreProducerApp started"));
+        assertNotNull(storeJWTSSoServer.waitForStringInLog("CWWKZ0001I: Application StoreApp started"));
 
     }
 
