@@ -17,6 +17,7 @@ src: \
 
 fat.project: true
 
+tested.features=cdi-1.2,servlet-3.1,cdi-2.0,servlet-4.0
 
 # To define a global minimum java level for the FAT, use the following property.
 # If unspecified, the default value is ${javac.source}
