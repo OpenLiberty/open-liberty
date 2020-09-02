@@ -533,6 +533,12 @@ public class SlowRequestTiming {
         createRequest("?sleepTime=3000");
 
         int slowCount = fetchNoOfslowRequestWarnings();
+        //Retry the request again
+        if (slowCount == 0) {
+            CommonTasks.writeLogMsg(Level.INFO, "$$$$ -----> Retry because no slow request warning found!");
+            createRequest("?sleepTime=3000");
+            slowCount = fetchNoOfslowRequestWarnings();
+        }
         assertTrue("No Slow request timing records found! : ", (slowCount > 0));
 
         List<String> lines = server.findStringsInFileInLibertyServerRoot("ms", MESSAGE_LOG);
