@@ -60,6 +60,8 @@ public class FeatureReplacementAction implements RepeatTestAction {
         featureNameMapping.put("ejbTest", "enterpriseBeansTest");
         featureNameMapping.put("javaee", "jakartaee");
         featureNameMapping.put("javaeeClient", "jakartaeeClient");
+        featureNameMapping.put("jaxrs", "restfulWS");
+        featureNameMapping.put("jaxrsClient", "restfulWSClient");
         featureNameMapping.put("jca", "connectors");
         featureNameMapping.put("jmsMdb", "mdb");
         featuresWithNameChangeOnEE9 = Collections.unmodifiableMap(featureNameMapping);

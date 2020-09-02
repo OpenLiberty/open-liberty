@@ -28,17 +28,17 @@ app-resources= \
 -dsannotations-inherit: true
 
 Service-Component: \
-  com.ibm.ws.org.jboss.resteasy.servlet.initializer; \
+  io.openliberty.org.jboss.resteasy.servlet.initializer; \
      implementation:=io.openliberty.org.jboss.resteasy.common.component.RESTfulServletContainerInitializer; \
      provide:=javax.servlet.ServletContainerInitializer; \
      immediate:=true;\
      properties:="service.vendor=IBM", \
-  com.ibm.ws.org.jboss.resteasy.client.clientbuilder; \
+  io.openliberty.org.jboss.resteasy.client.clientbuilder; \
      implementation:=org.jboss.resteasy.client.jaxrs.internal.ResteasyClientBuilderImpl; \
      provide:=javax.ws.rs.client.ClientBuilder; \
      immediate:=true;\
      properties:="service.vendor=IBM", \
-  com.ibm.ws.jaxrs21.client.ResourceProvider; \
+  io.openliberty.restfulWS.client.ResourceProvider; \
     implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
     provide:=com.ibm.wsspi.classloading.ResourceProvider; \
     configuration-policy:=optional; \
@@ -49,10 +49,10 @@ Export-Package: \
   com.ibm.websphere.jaxrs20.multipart;version=3.0.0;thread-local=true, \
   com.ibm.ws.jaxrs20.providers.api, \
   com.ibm.ws.resteasy.cdi.component;version=4.5.2.Final;thread-context=true, \
-  io.openliberty.jaxrs.client, \
+  io.openliberty.restfulWS.client, \
   io.openliberty.org.jboss.resteasy.common.cdi;thread-context=true, \
   io.openliberty.org.jboss.resteasy.common.client;thread-context=true, \
-  io.openliberty.jaxrs.providers;thread-context=true, \
+  io.openliberty.restfulWS.providers;thread-context=true, \
   org.jboss.resteasy.annotations.cache;version=4.5.2.Final, \
   org.jboss.resteasy.annotations.jaxrs;version=4.5.2.Final, \
   org.jboss.resteasy.annotations.providers.img;version=4.5.2.Final, \

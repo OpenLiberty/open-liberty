@@ -75,8 +75,6 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                                                  "jaspic-2.0",
                                                  "javaMail-2.0",
                                                  "jaxb-3.0",
-                                                 "jaxrs-3.0",
-                                                 "jaxrsClient-3.0",
                                                  "jpa-3.0",
                                                  "jsonp-2.0",
                                                  "jsonb-2.0",
@@ -86,6 +84,8 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                                                  "jsp-3.0",
                                                  "managedBeans-2.0",
                                                  "mdb-4.0",
+                                                 "restfulWS-3.0",
+                                                 "restfulWSClient-3.0",
                                                  "servlet-5.0",
                                                  "websocket-2.0"
     };

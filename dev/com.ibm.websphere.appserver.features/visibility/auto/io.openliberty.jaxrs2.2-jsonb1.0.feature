@@ -6,7 +6,7 @@ IBM-App-ForceRestart: install, \
 Subsystem-Version: 1.1.0
 IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.jaxrsClient-2.2))", \
  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.jsonb-1.0))"
--bundles=io.openliberty.jaxrs30.jsonb20provider
+-bundles=io.openliberty.restfulWS30.jsonb20provider
 IBM-Install-Policy: when-satisfied
 kind=noship
 edition=base
