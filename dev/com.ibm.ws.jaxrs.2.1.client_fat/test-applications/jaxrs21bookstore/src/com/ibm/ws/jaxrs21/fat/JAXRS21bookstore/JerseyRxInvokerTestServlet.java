@@ -147,8 +147,8 @@ public class JerseyRxInvokerTestServlet extends HttpServlet {
         });
 
         try {
-            if (!(countDownLatch.await(basicTimeout, TimeUnit.SECONDS))) {
-                throw new RuntimeException("testRxObservableInvoker_get1: Response took too long. Waited " + basicTimeout);
+            if (!(countDownLatch.await(complexTimeout, TimeUnit.SECONDS))) {
+                throw new RuntimeException("testRxObservableInvoker_get1: Response took too long. Waited " + complexTimeout);
             }
         } catch (InterruptedException ex) {
             ex.printStackTrace();
