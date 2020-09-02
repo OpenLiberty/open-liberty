@@ -6,7 +6,7 @@ package com.ibm.test.g3store.grpc;
 /**
  * Protobuf type {@code test.g3store.grpc.DeleteRequest}
  */
-public  final class DeleteRequest extends
+public final class DeleteRequest extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:test.g3store.grpc.DeleteRequest)
     DeleteRequestOrBuilder {
@@ -93,6 +93,7 @@ private static final long serialVersionUID = 0L;
    * <code>string appName = 1;</code>
    * @return The appName.
    */
+  @java.lang.Override
   public java.lang.String getAppName() {
     java.lang.Object ref = appName_;
     if (ref instanceof java.lang.String) {
@@ -109,6 +110,7 @@ private static final long serialVersionUID = 0L;
    * <code>string appName = 1;</code>
    * @return The bytes for appName.
    */
+  @java.lang.Override
   public com.google.protobuf.ByteString
       getAppNameBytes() {
     java.lang.Object ref = appName_;

@@ -5,17 +5,17 @@ singleton=true
 IBM-App-ForceRestart: install, \
   uninstall
 IBM-API-Package: \
+  io.grpc.netty; type="internal", \
+  io.netty.bootstrap; type="internal", \
+  io.netty.buffer; type="internal", \
+  io.netty.channel; type="internal", \
+  io.netty.channel.embedded; type="internal", \
+  io.netty.channel.epoll; type="internal", \
+  io.netty.channel.group; type="internal", \
+  io.netty.channel.internal; type="internal", \
+  io.netty.handler.ssl; type="internal", \
   io.openliberty.grpc.annotation; type="ibm-api",\
-  io.openliberty.grpc.internal.client; type="internal", \
-  io.grpc.netty.shaded.io.grpc.netty; type="internal", \
-  io.grpc.netty.shaded.io.netty.bootstrap; type="internal", \
-  io.grpc.netty.shaded.io.netty.buffer; type="internal", \
-  io.grpc.netty.shaded.io.netty.channel; type="internal", \
-  io.grpc.netty.shaded.io.netty.channel.embedded; type="internal", \
-  io.grpc.netty.shaded.io.netty.channel.epoll; type="internal", \
-  io.grpc.netty.shaded.io.netty.channel.group; type="internal", \
-  io.grpc.netty.shaded.io.netty.channel.internal; type="internal", \
-  io.grpc.netty.shaded.io.netty.handler.ssl; type="internal"
+  io.openliberty.grpc.internal.client; type="internal"
 IBM-ShortName: grpcClient-1.0
 Subsystem-Version: 1.0.0
 Subsystem-Name: gRPC Client 1.0
