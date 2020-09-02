@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>com.ibm.ws.transaction.cloud_fat.7</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>bndtools.core.bndbuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+		<nature>bndtools.core.bndnature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>com.ibm.ws.transaction.cloud_fat.1-cloudtx</name>
+			<type>2</type>
+			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.transaction.cloud_fat.1/test-bundles/cloudtx/src</locationURI>
+		</link>
+		<link>
+			<name>com.ibm.ws.transaction.cloud_fat.1-fatsrc</name>
+			<type>2</type>
+			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.transaction.cloud_fat.1/fat/src</locationURI>
+		</link>
+		<link>
+			<name>com.ibm.ws.transaction.cloud_fat.1-transaction</name>
+			<type>2</type>
+			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.transaction.cloud_fat.1/test-applications/transaction/src</locationURI>
+		</link>
+	</linkedResources>
+</projectDescription>
