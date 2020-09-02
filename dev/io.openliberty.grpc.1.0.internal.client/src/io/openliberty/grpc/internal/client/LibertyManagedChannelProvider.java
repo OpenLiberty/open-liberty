@@ -66,6 +66,9 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 		addLibertySSLConfig(builder, target, port);
 		addKeepAliveConfiguration(builder, target);
 		addMaxInboundMessageSize(builder, target);
+		addMaxInboundMetadataSize(builder, target);
+		addUserAgent(builder, target);
+		addOverrideAuthority(builder, target);
 	}
 
 	private void addLibertyInterceptors(NettyChannelBuilder builder) {
@@ -90,15 +93,15 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 
 	private void addKeepAliveConfiguration(NettyChannelBuilder builder, String target) {
 		String keepAliveTime = GrpcClientConfigHolder.getKeepAliveTime(target);
-		String keepAlive = GrpcClientConfigHolder.getEnableKeepAlive(target);
+		String keepAliveWithoutCalls = GrpcClientConfigHolder.getKeepAliveWithoutCalls(target);
 		String keepAliveTimeout = GrpcClientConfigHolder.getKeepAliveTimeout(target);
 
 		if (keepAliveTime != null && !keepAliveTime.isEmpty()) {
 			int time = Integer.parseInt(keepAliveTime);
 			builder.keepAliveTime(time, TimeUnit.SECONDS);
 		}
-		if (keepAlive != null && !keepAlive.isEmpty()) {
-			Boolean enabled = Boolean.parseBoolean(keepAlive);
+		if (keepAliveWithoutCalls != null && !keepAliveWithoutCalls.isEmpty()) {
+			Boolean enabled = Boolean.parseBoolean(keepAliveWithoutCalls);
 			builder.keepAliveWithoutCalls(enabled);
 		}
 		if (keepAliveTimeout != null && !keepAliveTimeout.isEmpty()) {
@@ -116,6 +119,32 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 			} else if (maxSize > 0) {
 				builder.maxInboundMessageSize(maxSize);
 			}
+		}
+	}
+
+	private void addMaxInboundMetadataSize(NettyChannelBuilder builder, String target) {
+		String maxMetaString = GrpcClientConfigHolder.getMaxInboundMetadataSize(target);
+		if (maxMetaString != null && !maxMetaString.isEmpty()) {
+			int maxSize = Integer.parseInt(maxMetaString);
+			if (maxSize == -1) {
+				builder.maxInboundMessageSize(Integer.MAX_VALUE);
+			} else if (maxSize > 0) {
+				builder.maxInboundMessageSize(maxSize);
+			}
+		}
+	}
+
+	private void addUserAgent(NettyChannelBuilder builder, String target) {
+		String userAgent = GrpcClientConfigHolder.getUserAgent(target);
+		if (userAgent != null && !userAgent.isEmpty()) {
+			builder.userAgent(userAgent);
+		}
+	}
+
+	private void addOverrideAuthority(NettyChannelBuilder builder, String target) {
+		String authority = GrpcClientConfigHolder.getOverrideAuthority(target);
+		if (authority != null && !authority.isEmpty()) {
+			builder.overrideAuthority(authority);
 		}
 	}
 

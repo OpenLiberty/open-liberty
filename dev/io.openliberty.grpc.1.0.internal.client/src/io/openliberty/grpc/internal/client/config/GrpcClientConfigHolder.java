@@ -107,10 +107,10 @@ public class GrpcClientConfigHolder {
 		}
 	}
 
-	public static String getEnableKeepAlive(String uri) {
+	public static String getKeepAliveWithoutCalls(String uri) {
 		Map<String, String> props = getURIProps(uri);
 		if (props != null) {
-			return props.get(GrpcClientConstants.ENABLE_KEEP_ALIVE_TIME_PROP);
+			return props.get(GrpcClientConstants.KEEP_ALIVE_WITHOUT_CALLS_PROP);
 		} else {
 			return null;
 		}
@@ -147,6 +147,33 @@ public class GrpcClientConfigHolder {
 		Map<String, String> props = getURIProps(uri);
 		if (props != null) {
 			return props.get(GrpcClientConstants.MAX_INBOUND_MSG_SIZE_PROP);
+		} else {
+			return null;
+		}
+	}
+
+	public static String getMaxInboundMetadataSize(String uri) {
+		Map<String, String> props = getURIProps(uri);
+		if (props != null) {
+			return props.get(GrpcClientConstants.MAX_INBOUND_METADATA_SIZE_PROP);
+		} else {
+			return null;
+		}
+	}
+
+	public static String getOverrideAuthority(String uri) {
+		Map<String, String> props = getURIProps(uri);
+		if (props != null) {
+			return props.get(GrpcClientConstants.OVERRIDE_AUTHORITY_PROP);
+		} else {
+			return null;
+		}
+	}
+
+	public static String getUserAgent(String uri) {
+		Map<String, String> props = getURIProps(uri);
+		if (props != null) {
+			return props.get(GrpcClientConstants.USER_AGENT_PROP);
 		} else {
 			return null;
 		}

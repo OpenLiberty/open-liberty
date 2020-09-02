@@ -52,13 +52,18 @@ public class GrpcClientConfigTest {
 		
 		// this properties map should map to all requests 
 		basicProps.put(GrpcClientConstants.TARGET_PROP, "*");
-		basicProps.put(GrpcClientConstants.ENABLE_KEEP_ALIVE_TIME_PROP, true);
+		basicProps.put(GrpcClientConstants.KEEP_ALIVE_WITHOUT_CALLS_PROP, true);
 		basicProps.put(GrpcClientConstants.KEEP_ALIVE_TIME_PROP, 6);
 		basicProps.put(GrpcClientConstants.AUTH_TOKEN_PROP, GrpcClientConstants.JWT);
 		basicProps.put(GrpcClientConstants.KEEP_ALIVE_TIMEOUT_PROP, 6);
 		basicProps.put(GrpcClientConstants.MAX_INBOUND_MSG_SIZE_PROP, 9001);
 		basicProps.put(GrpcClientConstants.SSL_CFG_PROP, "fakeSSLCfg");
 		basicProps.put(GrpcClientConstants.CLIENT_INTERCEPTORS_PROP, "some.example.Class");
+		basicProps.put(GrpcClientConstants.MAX_INBOUND_MSG_SIZE_PROP, 9001);
+		basicProps.put(GrpcClientConstants.MAX_INBOUND_METADATA_SIZE_PROP, 9001);
+		basicProps.put(GrpcClientConstants.OVERRIDE_AUTHORITY_PROP, "fakeDomain");
+		basicProps.put(GrpcClientConstants.USER_AGENT_PROP, "fake_client");
+
 
 		config.activate(basicProps);
 
@@ -69,12 +74,16 @@ public class GrpcClientConfigTest {
 		
 		for (String uri : urisToTest) {
 			Assert.assertEquals(GrpcClientConstants.JWT, GrpcClientConfigHolder.getAuthnSupport(uri));
-			Assert.assertTrue(Boolean.parseBoolean(GrpcClientConfigHolder.getEnableKeepAlive(uri)));
+			Assert.assertTrue(Boolean.parseBoolean(GrpcClientConfigHolder.getKeepAliveWithoutCalls(uri)));
 			Assert.assertEquals(6, Integer.parseInt(GrpcClientConfigHolder.getKeepAliveTime(uri)));
 			Assert.assertEquals(9001, Integer.parseInt(GrpcClientConfigHolder.getMaxInboundMessageSize(uri)));
+			Assert.assertEquals(9001, Integer.parseInt(GrpcClientConfigHolder.getMaxInboundMetadataSize(uri)));
 			Assert.assertEquals(6, Integer.parseInt(GrpcClientConfigHolder.getKeepAliveTimeout(uri)));
 			Assert.assertEquals("fakeSSLCfg", GrpcClientConfigHolder.getSSLConfig(uri));
 			Assert.assertEquals("some.example.Class", GrpcClientConfigHolder.getClientInterceptors(uri));
+			Assert.assertEquals("fakeDomain", GrpcClientConfigHolder.getOverrideAuthority(uri));
+			Assert.assertEquals("fake_client", GrpcClientConfigHolder.getUserAgent(uri));
+
 		}
 		config.deactivate();
 	}
@@ -125,7 +134,6 @@ public class GrpcClientConfigTest {
 		GrpcClientConfigImpl config2 = new GrpcClientConfigImpl();
 		GrpcClientConfigImpl config3 = new GrpcClientConfigImpl();
 		Map<String, Object> basicProps1 = new HashMap<String, Object>();
-		Map<String, Object> basicProps2 = new HashMap<String, Object>();
 		Map<String, Object> basicProps3 = new HashMap<String, Object>();
 		String uri1 = "/some.Service/Method";
 		String uri2 = "/some.Service/Method2";
