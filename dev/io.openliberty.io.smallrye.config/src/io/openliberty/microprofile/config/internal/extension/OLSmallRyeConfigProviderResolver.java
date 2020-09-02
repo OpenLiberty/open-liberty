@@ -11,8 +11,6 @@
 package io.openliberty.microprofile.config.internal.extension;
 
 import java.io.IOException;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.osgi.service.component.ComponentContext;
@@ -42,22 +40,9 @@ public class OLSmallRyeConfigProviderResolver extends SmallRyeConfigProviderReso
         ConfigProviderResolver.setInstance(null);
     }
 
-    /**
-     * The following method is a temporary solution to a Security manager issue with the SmallRye Config code.
-     *
-     * When the new version of SmallRye Config is uploaded to Maven Central, resolving the issue, this method will be removed.
-     */
     @Override
     public SmallRyeConfigBuilder getBuilder() {
-        SmallRyeConfigBuilder builder = null;
-        final SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            builder = AccessController.doPrivileged((PrivilegedAction<SmallRyeConfigBuilder>) OLSmallRyeConfigBuilder::new);
-        } else {
-            builder = new OLSmallRyeConfigBuilder();
-        }
-
-        return builder;
+        return new OLSmallRyeConfigBuilder();
     }
 
 }

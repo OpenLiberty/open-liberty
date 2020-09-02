@@ -137,12 +137,11 @@ io.perfmark:perfmark-api:0.22.0
 io.projectreactor:reactor-core:3.1.8.RELEASE
 io.reactivex.rxjava2:rxjava:2.2.19
 io.reactivex:rxjava:1.3.8
-io.smallrye.common:smallrye-common-annotation:1.0.2
-io.smallrye.common:smallrye-common-constraint:1.0.2
-io.smallrye.common:smallrye-common-expression:1.0.2
-io.smallrye.common:smallrye-common-function:1.0.2
-io.smallrye.config:smallrye-config-common:1.8.0
-io.smallrye.config:smallrye-config:1.8.0
+io.smallrye.common:smallrye-common-annotation:1.3.0
+io.smallrye.common:smallrye-common-classloader:1.3.0
+io.smallrye.common:smallrye-common-constraint:1.3.0
+io.smallrye.common:smallrye-common-expression:1.3.0
+io.smallrye.common:smallrye-common-function:1.3.0
 io.smallrye:smallrye-graphql-api:1.0.7
 io.smallrye:smallrye-graphql-cdi:1.0.7
 io.smallrye:smallrye-graphql-client-api:1.0.7

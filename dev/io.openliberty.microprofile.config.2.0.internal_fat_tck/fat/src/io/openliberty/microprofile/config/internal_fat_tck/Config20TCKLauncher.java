@@ -35,8 +35,7 @@ import componenttest.topology.utils.MvnUtils;
 public class Config20TCKLauncher {
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES())
-                    .andWith(FeatureReplacementAction.EE8_FEATURES());
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE8_FEATURES());
 
     @Server("Config20TCKServer")
     public static LibertyServer server;
