@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.managedobject.ManagedObjectException;
 
 import io.grpc.ClientInterceptor;
@@ -76,12 +77,17 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 		}
 	}
 
+	@FFDCIgnore(IllegalStateException.class)
 	private void addLibertySSLConfig(NettyChannelBuilder builder, String target, String port) {
 		String sslRef = GrpcClientConfigHolder.getSSLConfig(target);
 		SslContext context = null;
 		GrpcSSLService sslService = GrpcClientComponent.getGrpcSSLService();
 		if (sslService != null) {
-			context = sslService.getOutboundClientSSLContext(sslRef, target, port);
+			try {
+				context = sslService.getOutboundClientSSLContext(sslRef, target, port);
+			} catch (IllegalStateException e) {
+				// suppress an exception for a plain non-SSL connection 
+			}
 			if (context != null) {
 				builder.sslContext(context);
 			}
