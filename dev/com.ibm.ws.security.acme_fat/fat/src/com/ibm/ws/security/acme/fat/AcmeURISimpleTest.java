@@ -38,11 +38,12 @@ public class AcmeURISimpleTest extends AcmeSimpleTest {
 
 	@Override
 	protected void stopServer(String... msgs) throws Exception {
-		if (JavaInfo.JAVA_VERSION > 8) {
+		String os = System.getProperty("os.name").toLowerCase();
+		if (JavaInfo.JAVA_VERSION > 8 && !os.startsWith("z/os")) {
 			AcmeFatUtils.stopServer(server, msgs);
 		} else {
 			/*
-			 * HttpConnector.config runs oddly slow on Java 8 and can trigger the update
+			 * HttpConnector.config runs oddly slow on Java 8 and z/OS and can trigger the update
 			 * timeout warning
 			 */
 			List<String> tempList = new ArrayList<String>(Arrays.asList(msgs));
