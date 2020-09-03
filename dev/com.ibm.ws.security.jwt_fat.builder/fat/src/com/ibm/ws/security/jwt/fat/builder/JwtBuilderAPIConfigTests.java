@@ -73,7 +73,7 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
 
         // the server's default config contains an invalid value (on purpose),
         // tell the fat framework to ignore it!
-        builderServer.addIgnoredErrors(Arrays.asList(JwtMessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE));
+        builderServer.addIgnoredErrors(Arrays.asList(JwtMessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE, JwtMessageConstants.CWPKI0812E_CANT_FIND_KEY));
 
     }
 
@@ -376,7 +376,7 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
         validationUtils.validateResult(response, expectations);
 
     }
-    
+
     /**
      * Test Purpose:
      * <OL>
@@ -389,7 +389,7 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
      * <OL>
      * <LI>Should get a token built valid amr claim set to ["amrValue"]
      * </OL>
-     * 
+     *
      * @throws Exception
      */
     @Mode(TestMode.LITE)
@@ -410,7 +410,7 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
         validationUtils.validateResult(response, expectations);
 
     }
-	
+
     /**
      * Test Purpose:
      * <OL>
@@ -423,7 +423,7 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
      * <OL>
      * <LI>Should get a token built without amr claim set
      * </OL>
-     * 
+     *
      * @throws Exception
      */
     @Mode(TestMode.LITE)
@@ -435,12 +435,12 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
         JSONObject testSettings = new JSONObject();
         Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_PROTECTED_SETAPIS_ENDPOINT, expectationSettings, builderServer);
         expectations = BuilderHelpers.buildBuilderClaimsNotFound(expectations, JWTBuilderConstants.JWT_CLAIM, PayloadConstants.METHODS_REFERENCE);
-        
+
         Page response = actions.invokeProtectedJwtBuilder(_testName, builderServer, builderId, testSettings, "testuser", "testuserpwd");
         validationUtils.validateResult(response, expectations);
 
     }
-	
+
     /**
      * Test Purpose:
      * <OL>
@@ -452,10 +452,10 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
      * <OL>
      * <LI>Should get a token built without amr claim set
      * </OL>
-     * 
+     *
      * @throws Exception
      */
-	@Mode(TestMode.LITE)
+    @Mode(TestMode.LITE)
     @Test
     public void JwtBuilderAPIConfigTests_amrValue_empty() throws Exception {
 
@@ -464,7 +464,7 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
         JSONObject testSettings = new JSONObject();
         Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_PROTECTED_SETAPIS_ENDPOINT, expectationSettings, builderServer);
         expectations = BuilderHelpers.buildBuilderClaimsNotFound(expectations, JWTBuilderConstants.JWT_CLAIM, PayloadConstants.METHODS_REFERENCE);
-        
+
         Page response = actions.invokeProtectedJwtBuilder(_testName, builderServer, builderId, testSettings, "testuser", "testuserpwd");
         validationUtils.validateResult(response, expectations);
 
