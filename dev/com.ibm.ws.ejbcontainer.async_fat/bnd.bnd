@@ -43,8 +43,8 @@ tested.features: \
 	el-3.0,\
 	el-4.0,\
 	ejbLite-3.2,\
-	ejbLite-4.0,\
 	ejbRemote-3.2,\
+	enterpriseBeansLite-4.0,\
 	enterpriseBeansRemote-4.0,\
 	servlet-4.0,\
 	servlet-5.0

@@ -11,7 +11,7 @@
 <server>
     <featureManager>
         <feature>concurrent-2.0</feature>
-        <feature>ejbLite-4.0</feature>
+        <feature>enterpriseBeansLite-4.0</feature>
         <feature>servlet-5.0</feature>
         <feature>usr:concurrentInternals-1.0</feature>
         <feature>componenttest-2.0</feature>

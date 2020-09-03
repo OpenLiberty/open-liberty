@@ -30,7 +30,7 @@ fat.project: true
 tested.features:\
 	cdi-2.0,\
 	cdi-3.0,\
-	ejbLite-4.0,\
+	enterpriseBeansLite-4.0,\
 	jdbc-4.2,\
 	jpa-2.2,\
 	jpaContainer-2.2,\
