@@ -48,6 +48,12 @@ service AppConsumerService {
   	rpc getAllAppNames_AuthHeader_Via_ClientInterceptor(google.protobuf.Empty) returns (NameResponse) {};
   	
   	rpc getAppNameSetBadRoles(google.protobuf.Empty) returns (NameResponse) {};
+  	
+  	// List all app names where JWT token is propagated as Cookie header
+  	rpc getNameCookieJWTHeader(google.protobuf.Empty) returns (NameResponse) {};
+  	
+  	// List all app names where JWT token is propagated as Cookie header but bad role
+  	rpc getAppSetBadRoleCookieJWTHeader(google.protobuf.Empty) returns (NameResponse) {};
 
   
 }

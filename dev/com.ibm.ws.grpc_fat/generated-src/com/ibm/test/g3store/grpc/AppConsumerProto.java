@@ -69,7 +69,7 @@ public final class AppConsumerProto {
       "unts\"@\n\013GenreCounts\022\035\n\tgenreType\030\001 \001(\0162\n" +
       ".GenreType\022\022\n\ntotalCount\030\002 \001(\005\"5\n\rPriceR" +
       "esponse\022\014\n\004name\030\001 \001(\t\022\026\n\006prices\030\002 \003(\0132\006." +
-      "Price2\340\005\n\022AppConsumerService\022K\n\016getAllAp" +
+      "Price2\223\007\n\022AppConsumerService\022K\n\016getAllAp" +
       "pNames\022\026.google.protobuf.Empty\032\037.test.g3" +
       "store.grpc.NameResponse\"\000\022W\n\ngetAppInfo\022" +
       "!.test.g3store.grpc.AppNameRequest\032$.tes" +
@@ -87,9 +87,13 @@ public final class AppConsumerProto {
       "r\022\026.google.protobuf.Empty\032\037.test.g3store" +
       ".grpc.NameResponse\"\000\022R\n\025getAppNameSetBad" +
       "Roles\022\026.google.protobuf.Empty\032\037.test.g3s" +
-      "tore.grpc.NameResponse\"\000B/\n\031com.ibm.test" +
-      ".g3store.grpcB\020AppConsumerProtoP\001b\006proto" +
-      "3"
+      "tore.grpc.NameResponse\"\000\022S\n\026getNameCooki" +
+      "eJWTHeader\022\026.google.protobuf.Empty\032\037.tes" +
+      "t.g3store.grpc.NameResponse\"\000\022\\\n\037getAppS" +
+      "etBadRoleCookieJWTHeader\022\026.google.protob" +
+      "uf.Empty\032\037.test.g3store.grpc.NameRespons" +
+      "e\"\000B/\n\031com.ibm.test.g3store.grpcB\020AppCon" +
+      "sumerProtoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

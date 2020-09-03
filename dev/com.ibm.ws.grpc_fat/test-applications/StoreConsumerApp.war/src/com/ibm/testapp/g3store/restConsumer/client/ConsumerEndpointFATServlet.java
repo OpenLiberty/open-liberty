@@ -33,9 +33,6 @@ import javax.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.junit.Test;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.WebRequest;
-import com.gargoylesoftware.htmlunit.WebResponse;
 import com.ibm.testapp.g3store.restProducer.client.ProducerServiceRestClient;
 import com.ibm.testapp.g3store.restProducer.model.AppStructure;
 import com.ibm.testapp.g3store.restProducer.model.AppStructure.GenreType;
@@ -141,7 +138,7 @@ public class ConsumerEndpointFATServlet extends FATServlet {
      * @throws Exception
      */
     @Test
-    public void testGetAppName_Auth_GrpcTarget(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    public void testGetAppName_JWTAuth_GrpcTarget(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         this.getAppName_Auth_GrpcTarget(req, resp);
     }
 
@@ -401,9 +398,7 @@ public class ConsumerEndpointFATServlet extends FATServlet {
         final String m = "testGetAppName_BadServerRoles_GrpcTarget";
 
         // create
-        // query name
-        // get app info with the name
-        // get Price list for the app
+        // get app name
         // delete
         ProducerServiceRestClient service = null;
         String appName = "myAppConsumerBadServerRole";
@@ -718,7 +713,7 @@ public class ConsumerEndpointFATServlet extends FATServlet {
                                           headers.add("Authorization", "Bearer " + getBadToken(req, resp));
 
                                           for (Entry<String, List<Object>> entry : headers.entrySet()) {
-                                              _log.info("Request headers Bearer: " + entry.getKey() + ", set to: " + entry.getValue());
+                                              _log.info(m + "Request headers Bearer: " + entry.getKey() + ", set to: " + entry.getValue());
                                           }
 
                                       } catch (Exception e) {
@@ -1249,8 +1244,9 @@ public class ConsumerEndpointFATServlet extends FATServlet {
      */
     private String getToken(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
-        String builtToken = getJwtFromTokenEndpoint("https://" + req.getServerName() + ":" + ConsumerUtils.getSysProp("bvt.prop.member_1.https") + "/", "defaultJWT", "dev",
-                                                    "hello");
+        String builtToken = ConsumerUtils.getJwtFromTokenEndpoint("https://" + req.getServerName() + ":" + ConsumerUtils.getSysProp("bvt.prop.member_1.https") + "/", "defaultJWT",
+                                                                  "dev",
+                                                                  "hello");
 
         _log.info("getToken ------------------------------------------------------------ " + builtToken);
 
@@ -1259,7 +1255,6 @@ public class ConsumerEndpointFATServlet extends FATServlet {
         return builtToken;
     }
 
-    // create token , return token
     /**
      * @param req
      * @param resp
@@ -1271,8 +1266,9 @@ public class ConsumerEndpointFATServlet extends FATServlet {
         //server.xml has "dev", "hello", send something different
         String builtToken = null;
         try {
-            builtToken = getJwtFromTokenEndpoint("https://" + req.getServerName() + ":" + ConsumerUtils.getSysProp("bvt.prop.member_1.https") + "/", "defaultBadJWT", "devBad",
-                                                 "hello");
+            builtToken = ConsumerUtils.getJwtFromTokenEndpoint("https://" + req.getServerName() + ":" + ConsumerUtils.getSysProp("bvt.prop.member_1.https") + "/", "defaultBadJWT",
+                                                               "devBad",
+                                                               "hello");
 
             _log.info("getBadToken ------------------------------------------------------------ " + builtToken);
         } catch (Exception e) {
@@ -1282,25 +1278,6 @@ public class ConsumerEndpointFATServlet extends FATServlet {
         assertNull(builtToken);
 
         return builtToken;
-    }
-
-    /**
-     * @param baseUrlStr
-     * @return
-     * @throws Exception
-     */
-    private String getJwtFromTokenEndpoint(String baseUrlStr, String jwtid, String user, String password) throws Exception {
-
-        WebRequest request = ConsumerUtils.buildJwtTokenEndpointRequest(jwtid, user, password, baseUrlStr);
-
-        ConsumerUtils.printRequestHeaders(request, "getJwtFromTokenEndpoint");
-
-        WebClient wc = new WebClient();
-        wc.getOptions().setUseInsecureSSL(true);
-
-        WebResponse response = wc.getPage(request).getWebResponse();
-
-        return ConsumerUtils.extractJwtFromTokenEndpointResponse(response);
     }
 
 }
