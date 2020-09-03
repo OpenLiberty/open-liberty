@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,13 +38,13 @@ import org.junit.Test;
 
 import com.ibm.websphere.security.auth.WSSubject;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
 @SuppressWarnings("serial")
-@WebServlet(urlPatterns = "/secureasyncevents")
-@Mode(TestMode.FULL)
+@WebServlet("/secureasyncevents")
 public class SecureAsyncEventsServlet extends FATServlet {
     @Inject
     private MultiThreadCDIBean multiThreadCDIBean;
@@ -88,6 +88,7 @@ public class SecureAsyncEventsServlet extends FATServlet {
      * @throws Exception
      */
     @Test
+    @Mode(TestMode.FULL)
     public void testSecureSyncObserver() throws Exception {
 
         long myTid = Thread.currentThread().getId();
@@ -127,6 +128,7 @@ public class SecureAsyncEventsServlet extends FATServlet {
      * @throws Exception
      */
     @Test
+    @Mode(TestMode.FULL)
     public void testSecureAsyncObserver() throws Exception {
         long myTid = Thread.currentThread().getId();
         Subject runAsSubject = null;
@@ -170,6 +172,7 @@ public class SecureAsyncEventsServlet extends FATServlet {
      * @throws Exception
      */
     @Test
+    @Mode(TestMode.FULL)
     public void testSecureAsyncObserverWithExecutor() throws Exception {
         long myTid = Thread.currentThread().getId();
         Subject runAsSubject = null;
@@ -211,6 +214,8 @@ public class SecureAsyncEventsServlet extends FATServlet {
      * @throws Exception
      */
     @Test
+    @Mode(TestMode.FULL)
+    @SkipForRepeat("EE9_FEATURES") // TODO: Needs removing when https://github.com/OpenLiberty/open-liberty/pull/13630 is merged
     public void testMultiThreadSecurityContext() throws Exception {
         String mtBeanName = multiThreadCDIBean.getName();
         assertTrue("Unexpected multi thread bean name - " + mtBeanName, mtBeanName.equals("Faulty"));
@@ -228,6 +233,7 @@ public class SecureAsyncEventsServlet extends FATServlet {
      * @throws Exception
      */
     @Test
+    @Mode(TestMode.FULL)
     public void testSecureAsyncObserverUsingRunAsWithAuthority() throws Exception {
         RecipeArrival recipeArrival = secureApprentice.produceARecipe();
 
@@ -247,6 +253,7 @@ public class SecureAsyncEventsServlet extends FATServlet {
      * @throws Exception
      */
     @Test
+    @Mode(TestMode.FULL)
     public void testSecureAsyncObserverUsingRunAsWithNOAuthority() throws Exception {
         try {
             RecipeArrival recipeArrival = secureChef.produceARecipe();

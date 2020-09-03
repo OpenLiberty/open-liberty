@@ -21,8 +21,8 @@ import com.ibm.ws.managedobject.ManagedObjectException;
 
 import io.grpc.ClientInterceptor;
 import io.grpc.ManagedChannelProvider;
-import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder;
-import io.grpc.netty.shaded.io.netty.handler.ssl.SslContext;
+import io.grpc.netty.NettyChannelBuilder;
+import io.netty.handler.ssl.SslContext;
 import io.openliberty.grpc.internal.GrpcManagedObjectProvider;
 import io.openliberty.grpc.internal.client.config.GrpcClientConfigHolder;
 

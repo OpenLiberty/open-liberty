@@ -151,8 +151,15 @@ public class StoreServicesTests extends FATServletClient {
             //because the validationEndpointUrl [null] was either not a valid URL
             // or could not perform the validation.
 
+            //CWWKS1737E: The OpenID Connect client [null] failed to validate the JSON Web Token.
+            //The cause of the error was: [CWWKS1781E: Validation failed for the token requested
+            //by the client [null] because the (iss) issuer [testIssuer] that is specified in
+            //the token does not match any of the trusted issuers [testIssuerBad]
+            //that are specified by the [issuerIdentifier] attribute of the OpenID
+            //Connect client configuration.]
+
             if (storeServer != null)
-                storeServer.stopServer("SRVE9967W", "CWIML4537E", "CWWKS1725E");
+                storeServer.stopServer("SRVE9967W", "CWIML4537E", "CWWKS1725E", "CWWKS1737E");
         } catch (Exception e) {
             excep = e;
             Log.error(c, "store tearDown", e);

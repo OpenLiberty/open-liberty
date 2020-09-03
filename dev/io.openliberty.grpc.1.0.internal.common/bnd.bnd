@@ -26,15 +26,16 @@ Import-Package: !sun.*,\
   *
 	
 Export-Package: \
-	io.openliberty.grpc.internal,\
-	io.grpc.*,\
-	google.*,\
-	com.google.*,\
-	io.perfmark,\
-	io.opencensus.*,\
-	org.checkerframework.framework.qual,\
-	org.checkerframework.checker.nullness.qual,\
-	org.checkerframework.checker.nullness.compatqual
+    io.openliberty.grpc.annotation,\
+    io.openliberty.grpc.internal,\
+    io.grpc.*,\
+    google.*,\
+    com.google.*,\
+    io.perfmark,\
+    io.opencensus.*,\
+    org.checkerframework.framework.qual,\
+    org.checkerframework.checker.nullness.qual,\
+    org.checkerframework.checker.nullness.compatqual
 
 -dsannotations: \
   io.openliberty.grpc.internal.GrpcManagedObjectProvider

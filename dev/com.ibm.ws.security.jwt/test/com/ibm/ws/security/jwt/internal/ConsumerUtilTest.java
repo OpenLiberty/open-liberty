@@ -349,6 +349,115 @@ public class ConsumerUtilTest {
         }
     }
 
+    /********************************************* getConfiguredAudiences *********************************************/
+
+    @Test
+    public void test_getConfiguredAudiences_noAudiencesConfigured() {
+        mockery.checking(new Expectations() {
+            {
+                allowing(jwtConfig).getAudiences();
+                will(returnValue(null));
+            }
+        });
+        List<String> result = consumerUtil.getConfiguredAudiences(jwtConfig);
+        assertNull("Should not have gotten any audiences, but got " + result, result);
+    }
+
+    @Test
+    public void test_getConfiguredAudiences_audiencesInServerConfig_emptyList() {
+        final List<String> serverAudiences = new ArrayList<String>();
+        mockery.checking(new Expectations() {
+            {
+                allowing(jwtConfig).getAudiences();
+                will(returnValue(serverAudiences));
+            }
+        });
+        List<String> result = consumerUtil.getConfiguredAudiences(jwtConfig);
+        assertEquals("Returned audiences did not match configured value.", serverAudiences, result);
+    }
+
+    @Test
+    public void test_getConfiguredAudiences_audiencesInServerConfig_nonEmptyList() {
+        final List<String> serverAudiences = new ArrayList<String>();
+        serverAudiences.add("1");
+        serverAudiences.add("2 2");
+        serverAudiences.add(" three ");
+        mockery.checking(new Expectations() {
+            {
+                allowing(jwtConfig).getAudiences();
+                will(returnValue(serverAudiences));
+            }
+        });
+        List<String> result = consumerUtil.getConfiguredAudiences(jwtConfig);
+        assertEquals("Returned audiences did not match configured value.", serverAudiences, result);
+    }
+
+    @Test
+    public void test_getConfiguredAudiences_audiencesInMpConfig() {
+        String audience = "http://www.example.com";
+        Map<String, String> props = new HashMap<String, String>();
+        props.put(ConsumerUtil.VERIFY_AUDIENCES, audience);
+        consumerUtil.setMpConfigProps(props);
+        mockery.checking(new Expectations() {
+            {
+                allowing(jwtConfig).getAudiences();
+                will(returnValue(null));
+            }
+        });
+
+        List<String> result = consumerUtil.getConfiguredAudiences(jwtConfig);
+        assertEquals("Did not get the expected number of audiences. Got: " + result, 1, result.size());
+        assertTrue("List of audiences did not contain [" + audience + "]. Audiences were: " + result, result.contains(audience));
+    }
+
+    /********************************************* getAudiencesFromMpConfigProps *********************************************/
+
+    @Test
+    public void test_getAudiencesFromMpConfigProps_noMpConfigProps() {
+        List<String> result = consumerUtil.getAudiencesFromMpConfigProps();
+        assertNull("Should not have gotten any audiences, but got " + result, result);
+    }
+
+    @Test
+    public void test_getAudiencesFromMpConfigProps_missingAudiences() {
+        Map<String, String> props = new HashMap<String, String>();
+        props.put(ConsumerUtil.ISSUER, "blah");
+        consumerUtil.setMpConfigProps(props);
+
+        List<String> result = consumerUtil.getAudiencesFromMpConfigProps();
+        assertNull("Should not have gotten any audiences, but got " + result, result);
+    }
+
+    @Test
+    public void test_getAudiencesFromMpConfigProps_singleAudience() {
+        String audience = "my audience";
+        Map<String, String> props = new HashMap<String, String>();
+        props.put(ConsumerUtil.VERIFY_AUDIENCES, audience);
+        consumerUtil.setMpConfigProps(props);
+
+        List<String> result = consumerUtil.getAudiencesFromMpConfigProps();
+        assertNotNull("Should have gotten a non-null list of audiences.", result);
+        assertEquals("Did not get the expected number of audiences. Got: " + result, 1, result.size());
+        assertTrue("List of audiences did not contain [" + audience + "]. Audiences were: " + result, result.contains(audience));
+    }
+
+    @Test
+    public void test_getAudiencesFromMpConfigProps_multipleAudiences() {
+        String audience1 = "aud1";
+        String audience2 = " aud 2";
+        String audience3 = "aud 3 ";
+        Map<String, String> props = new HashMap<String, String>();
+        props.put(ConsumerUtil.VERIFY_AUDIENCES, audience1 + "," + audience2 + "," + audience3);
+        consumerUtil.setMpConfigProps(props);
+
+        List<String> result = consumerUtil.getAudiencesFromMpConfigProps();
+        assertNotNull("Should have gotten a non-null list of audiences.", result);
+        assertEquals("Did not get the expected number of audiences. Got: " + result, 3, result.size());
+        assertTrue("List of audiences did not contain [" + audience1 + "]. Audiences were: " + result, result.contains(audience1));
+        assertTrue("List of audiences did not contain [" + audience2 + "]. Audiences were: " + result, result.contains(audience2));
+        assertTrue("List of audiences did not contain [" + audience3 + "]. Audiences were: " + result, result.contains(audience3));
+    }
+
     /********************************************* getConfiguredSignatureAlgorithm *********************************************/
 
     @Test
@@ -431,7 +540,7 @@ public class ConsumerUtilTest {
         Map<String, String> props = new HashMap<String, String>();
         props.put(ConsumerUtil.PUBLIC_KEY_ALG, "unknown algorithm");
         consumerUtil.setMpConfigProps(props);
-        
+
         String result = consumerUtil.getSignatureAlgorithmFromMpConfigProps();
         assertEquals("Did not get expected default signature algorithm value.", RS256, result);
     }
@@ -442,7 +551,7 @@ public class ConsumerUtilTest {
         Map<String, String> props = new HashMap<String, String>();
         props.put(ConsumerUtil.PUBLIC_KEY_ALG, knownAlgorithm);
         consumerUtil.setMpConfigProps(props);
-        
+
         String result = consumerUtil.getSignatureAlgorithmFromMpConfigProps();
         assertEquals("Did not get expected signature algorithm value.", knownAlgorithm, result);
     }

@@ -1,5 +1,4 @@
 -include= ~../cnf/resources/bnd/bundle.props
-          
 bVersion=1.0
 
 Bundle-Name: WebService AtomicTransaction Common
@@ -39,10 +38,6 @@ Include-Resource: \
 instrument.classesExcludes: com/ibm/ws/wsat/resources/*.class
 
 -buildpath: \
-	com.ibm.ws.org.apache.cxf.cxf.api.2.6.2;version=latest,\
-	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.2.6.2;version=latest,\
-	com.ibm.ws.org.apache.cxf.cxf.rt.ws.addr.2.6.2;version=latest,\
-	com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.2.6.2;version=latest,\
 	com.ibm.tx.jta;version=latest,\
 	com.ibm.websphere.appserver.spi.httptransport;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
@@ -58,9 +53,30 @@ instrument.classesExcludes: com/ibm/ws/wsat/resources/*.class
 	com.ibm.ws.kernel.feature;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.api.2.6.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.2.6.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.ws.addr.2.6.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.2.6.2;version=latest,\
 	com.ibm.ws.org.apache.neethi.3.0.2;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.transport.http;version=latest,\
 	com.ibm.ws.tx.embeddable;version=latest,\
 	com.ibm.ws.wsat.webclient;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
+
+-testpath: \
+  ../build.sharedResources/lib/junit/old/junit.jar;version=file,\
+  com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
+  com.ibm.websphere.javaee.wsdl4j.1.2;version=latest,\
+  com.ibm.ws.jaxb.tools.2.2.10;version=latest,\
+  com.ibm.ws.jaxws.2.3.common;version=latest,\
+  com.ibm.ws.jaxws.clientcontainer;version=latest,\
+  com.ibm.ws.jaxws.common;version=latest,\
+  com.ibm.ws.jaxws.webcontainer;version=latest,\
+  com.ibm.ws.jaxws.wsat;version=latest,\
+  com.ibm.ws.jdbc;version=latest,\
+  com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.2.6.2;version=latest,\
+  com.ibm.ws.org.apache.cxf.cxf.rt.management.3.2;version=latest,\
+  com.ibm.ws.org.apache.cxf.cxf.rt.rs.client.3.2;version=latest,\
+  com.ibm.ws.org.apache.cxf.cxf.rt.rs.sse.3.2;version=latest,\
+  javax.activation:activation;version=1.1

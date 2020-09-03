@@ -6,6 +6,7 @@ IBM-App-ForceRestart: install, \
   uninstall
 IBM-API-Package: \
   io.grpc.servlet;  type="stable",\
+  io.openliberty.grpc.annotation; type="ibm-api",\
   com.google.common.collect; type="internal"
 IBM-ShortName: grpc-1.0
 Subsystem-Version: 1.0.0

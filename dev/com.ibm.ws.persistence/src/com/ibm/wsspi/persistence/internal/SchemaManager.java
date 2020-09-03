@@ -40,8 +40,6 @@ import com.ibm.wsspi.persistence.internal.eclipselink.PsPersistenceProvider;
  */
 class SchemaManager {
 
-    private static final String SCHEMA_GENERATION_SCRIPTS_CREATE_TARGET;
-
     private static final Map<String, String> platformTerminationToken = new ConcurrentHashMap<String, String>();
     static {
         platformTerminationToken.put(DB2Platform.class.getCanonicalName(), ";");
@@ -64,11 +62,6 @@ class SchemaManager {
         // platformTerminationToken.put(SybasePlatform.class.getCanonicalName(), "\ngo");
         platformTerminationToken.put(SQLServerPlatform.class.getCanonicalName(), ";");
         platformTerminationToken.put("org.eclipse.persistence.platform.database.MySQLPlatform", ";");
-
-        final String emName = EntityManager.class.getName();
-        final boolean isJakarta = emName.startsWith("jakarta");
-        final String prefix = isJakarta ? "jakarta" : "javax";
-        SCHEMA_GENERATION_SCRIPTS_CREATE_TARGET = prefix + ".persistence.schema-generation.scripts.create-target";
     }
 
     // Care needs to be taken to not modify this map as it is shared with the
@@ -92,13 +85,13 @@ class SchemaManager {
         }
         props.putAll(_serviceProperties);
 
-        Writer writer = (Writer) props.get(SCHEMA_GENERATION_SCRIPTS_CREATE_TARGET);
+        Writer writer = (Writer) props.get(PersistenceUnitProperties.SCHEMA_GENERATION_SCRIPTS_CREATE_TARGET);
         if (writer != null) {
             // replace the provided writer with our own implementation that ignores close()
             // calls. This allows us to add some extra bits onto the end of the writer prior to
             // really closing
             writer = new DelegatingWriter(writer, false);
-            props.put(SCHEMA_GENERATION_SCRIPTS_CREATE_TARGET, writer);
+            props.put(PersistenceUnitProperties.SCHEMA_GENERATION_SCRIPTS_CREATE_TARGET, writer);
         }
 
         // TODO(151909) -- Need to investigate via an EclipseLink bug.
@@ -165,7 +158,7 @@ class SchemaManager {
     /**
      * Helper method that will override the termination token if the database detected is in our
      * platformTerminationToken list.
-     *
+     * 
      */
     private void overrideDatabaseTerminationToken(Map<Object, Object> props) {
         String overrideTermToken = null;

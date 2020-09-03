@@ -26,6 +26,7 @@ Import-Package: \
   !com.jcraft.jzlib,\
   !com.ning.*,\
   !com.oracle.svm.core.annotate,\
+  !io.netty.internal.tcnative,\
   !lzma.*,\
   !net.jpountz.*,\
   !org.apache.log4j.*,\
@@ -48,7 +49,8 @@ DynamicImport-Package: com.ibm.websphere.monitor.meters;version="1.0.0", \
  
 Export-Package: \
   io.openliberty.grpc.internal.client.* ,\
-  io.grpc.netty.shaded.io.*
+  io.grpc.netty, \
+  io.netty.*
 
 -dsannotations: \
   io.openliberty.grpc.internal.client.config.GrpcClientConfigImpl,\
@@ -68,16 +70,17 @@ Service-Component: \
     provide:=com.ibm.wsspi.classloading.ResourceProvider; \
     configuration-policy:=optional; \
     properties:="resources=${app-resources}"
-    
+
 app-resources= \
   META-INF/services/io.grpc.ManagedChannelProvider
-    
+
 Provide-Capability: osgi.serviceloader;osgi.serviceloader=io.grpc.ManagedChannelProvider
-  
+
 instrument.disabled: true
 
+-fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
+
 -buildpath: \
-  com.ibm.ws.container.service;version=latest,\
   com.ibm.websphere.javaee.servlet.4.0;version=latest,\
   com.ibm.websphere.security;version=latest,\
   com.ibm.ws.container.service;version=latest,\
@@ -92,8 +95,17 @@ instrument.disabled: true
   com.ibm.ws.kernel.boot;version=latest,\
   com.ibm.ws.kernel.service;version=latest,\
   com.ibm.ws.kernel.feature;version=latest,\
-  org.osgi.service.component.annotations;version=latest,\
-  io.grpc:grpc-netty-shaded;version=1.31.1,\
+  io.grpc:grpc-netty;version=1.31.1,\
+  io.netty:netty-buffer;version=4.1.51.Final,\
+  io.netty:netty-codec;version=4.1.51.Final,\
+  io.netty:netty-codec-http;version=4.1.51.Final,\
+  io.netty:netty-codec-http2;version=4.1.51.Final,\
+  io.netty:netty-codec-socks;version=4.1.51.Final,\
+  io.netty:netty-common;version=4.1.51.Final,\
+  io.netty:netty-handler;version=4.1.51.Final,\
+  io.netty:netty-handler-proxy;version=4.1.51.Final,\
+  io.netty:netty-resolver;version=4.1.51.Final,\
+  io.netty:netty-transport;version=4.1.51.Final,\
   io.openliberty.grpc.1.0.internal.common;version=latest,\
   org.osgi.service.component.annotations;version=latest
 
@@ -109,5 +121,3 @@ instrument.disabled: true
   com.ibm.ws.logging;version=latest, \
   com.ibm.ws.kernel.boot;version=latest,\
   com.ibm.websphere.org.osgi.core;version=latest
-  
--fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore

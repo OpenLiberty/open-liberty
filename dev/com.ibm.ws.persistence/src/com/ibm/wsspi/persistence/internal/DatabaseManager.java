@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
+import org.eclipse.persistence.config.PersistenceUnitProperties;
 import org.eclipse.persistence.internal.databaseaccess.DatabasePlatform;
 import org.eclipse.persistence.internal.helper.DBPlatformHelper;
 import org.eclipse.persistence.internal.sessions.AbstractSession;
@@ -44,10 +45,6 @@ import com.ibm.wsspi.persistence.internal.eclipselink.TraceLog;
 public class DatabaseManager {
     private final static TraceComponent tc = Tr.register(DatabaseManager.class);
 
-    private static final String SCHEMA_DATABASE_PRODUCT_NAME;
-    private static final String SCHEMA_DATABASE_MAJOR_VERSION;
-    private static final String SCHEMA_DATABASE_MINOR_VERSION;
-
     // A set of database products that we know do not support passing unicode values
     private static Set<Pattern> _noUnicodeSupportPlatform;
 
@@ -65,15 +62,6 @@ public class DatabaseManager {
          */
         _unicodeSupportPlatform.add(Pattern.compile("(?i)(.)*db2(.)*"));
         _unicodeSupportPlatform.add(Pattern.compile("(?i)(.)*derby(.)*"));
-
-        final String emName = EntityManagerFactory.class.getName();
-        final boolean isJakarta = emName.startsWith("jakarta");
-        final String prefix = isJakarta ? "jakarta" : "javax";
-
-        SCHEMA_DATABASE_PRODUCT_NAME = prefix + ".persistence.database-product-name";
-        SCHEMA_DATABASE_MAJOR_VERSION = prefix + ".persistence.database-major-version";
-        SCHEMA_DATABASE_MINOR_VERSION = prefix + ".persistence.database-minor-version";
-
     }
 
     public DatabasePlatform getPlatform(EntityManagerFactory emf) {
@@ -158,10 +146,10 @@ public class DatabaseManager {
         String minorVersion = null;
         String majorVersion = null;
         // check persistent properties
-        if (properties.containsKey(SCHEMA_DATABASE_PRODUCT_NAME)) {
-            vendorName = properties.getProperty(SCHEMA_DATABASE_PRODUCT_NAME);
-            minorVersion = properties.getProperty(SCHEMA_DATABASE_MINOR_VERSION);
-            majorVersion = properties.getProperty(SCHEMA_DATABASE_MAJOR_VERSION);
+        if (properties.containsKey(PersistenceUnitProperties.SCHEMA_DATABASE_PRODUCT_NAME)) {
+            vendorName = properties.getProperty(PersistenceUnitProperties.SCHEMA_DATABASE_PRODUCT_NAME);
+            minorVersion = properties.getProperty(PersistenceUnitProperties.SCHEMA_DATABASE_MINOR_VERSION);
+            majorVersion = properties.getProperty(PersistenceUnitProperties.SCHEMA_DATABASE_MAJOR_VERSION);
         } else {
             DataSource ds = pui.getJtaDataSource();
             if (ds == null) {

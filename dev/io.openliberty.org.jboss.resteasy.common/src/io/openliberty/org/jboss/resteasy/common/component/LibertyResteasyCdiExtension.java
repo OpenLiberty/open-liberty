@@ -31,8 +31,12 @@ import org.jboss.resteasy.cdi.i18n.LogMessages;
 import org.jboss.resteasy.cdi.i18n.Messages;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
 
+import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
+
+import io.openliberty.org.jboss.resteasy.common.cdi.LibertyCdiInjectorFactory;
 
 @Component(service = WebSphereCDIExtension.class,
     configurationPolicy = ConfigurationPolicy.IGNORE,
@@ -151,5 +155,14 @@ public class LibertyResteasyCdiExtension extends ResteasyCdiExtension implements
           return true;
        }
        return Modifier.isPrivate(constructor.getModifiers());
+    }
+
+    @Reference
+    protected void setCdiService(CDIService cdiService) {
+        LibertyCdiInjectorFactory.cdiService = cdiService;
+    }
+
+    protected void unsetCdiService(CDIService cdiService) {
+        LibertyCdiInjectorFactory.cdiService = null;
     }
 }

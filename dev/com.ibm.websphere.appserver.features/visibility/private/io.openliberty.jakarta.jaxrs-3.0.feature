@@ -6,6 +6,8 @@ IBM-App-ForceRestart: uninstall, \
  install
 IBM-Process-Types: client, \
  server
+IBM-API-Package: \
+  jakarta.activation; type="spec"
 Subsystem-Name: Jakarta RESTful Web Services 3.0
 -features=\
   io.openliberty.jakarta.activation-2.0

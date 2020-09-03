@@ -17,8 +17,8 @@ Subsystem-Name: Jakarta EE Web Profile 9.0
   io.openliberty.jsonb-2.0,\
   io.openliberty.jsonp-2.0,\
   io.openliberty.cdi-3.0,\
-  io.openliberty.ejbLite-4.0,\
   io.openliberty.el-4.0,\
+  io.openliberty.enterpriseBeansLite-4.0,\
   io.openliberty.jaspic-2.0,\
   io.openliberty.jpa-3.0,\
   io.openliberty.jsp-3.0,\

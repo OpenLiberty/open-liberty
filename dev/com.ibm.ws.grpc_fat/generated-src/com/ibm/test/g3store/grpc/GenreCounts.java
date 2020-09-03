@@ -6,7 +6,7 @@ package com.ibm.test.g3store.grpc;
 /**
  * Protobuf type {@code test.g3store.grpc.GenreCounts}
  */
-public  final class GenreCounts extends
+public final class GenreCounts extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:test.g3store.grpc.GenreCounts)
     GenreCountsOrBuilder {
@@ -98,14 +98,14 @@ private static final long serialVersionUID = 0L;
    * <code>.GenreType genreType = 1;</code>
    * @return The enum numeric value on the wire for genreType.
    */
-  public int getGenreTypeValue() {
+  @java.lang.Override public int getGenreTypeValue() {
     return genreType_;
   }
   /**
    * <code>.GenreType genreType = 1;</code>
    * @return The genreType.
    */
-  public com.ibm.test.g3store.grpc.GenreType getGenreType() {
+  @java.lang.Override public com.ibm.test.g3store.grpc.GenreType getGenreType() {
     @SuppressWarnings("deprecation")
     com.ibm.test.g3store.grpc.GenreType result = com.ibm.test.g3store.grpc.GenreType.valueOf(genreType_);
     return result == null ? com.ibm.test.g3store.grpc.GenreType.UNRECOGNIZED : result;
@@ -117,6 +117,7 @@ private static final long serialVersionUID = 0L;
    * <code>int32 totalCount = 2;</code>
    * @return The totalCount.
    */
+  @java.lang.Override
   public int getTotalCount() {
     return totalCount_;
   }
@@ -444,7 +445,7 @@ private static final long serialVersionUID = 0L;
      * <code>.GenreType genreType = 1;</code>
      * @return The enum numeric value on the wire for genreType.
      */
-    public int getGenreTypeValue() {
+    @java.lang.Override public int getGenreTypeValue() {
       return genreType_;
     }
     /**
@@ -453,6 +454,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setGenreTypeValue(int value) {
+      
       genreType_ = value;
       onChanged();
       return this;
@@ -461,6 +463,7 @@ private static final long serialVersionUID = 0L;
      * <code>.GenreType genreType = 1;</code>
      * @return The genreType.
      */
+    @java.lang.Override
     public com.ibm.test.g3store.grpc.GenreType getGenreType() {
       @SuppressWarnings("deprecation")
       com.ibm.test.g3store.grpc.GenreType result = com.ibm.test.g3store.grpc.GenreType.valueOf(genreType_);
@@ -496,6 +499,7 @@ private static final long serialVersionUID = 0L;
      * <code>int32 totalCount = 2;</code>
      * @return The totalCount.
      */
+    @java.lang.Override
     public int getTotalCount() {
       return totalCount_;
     }
