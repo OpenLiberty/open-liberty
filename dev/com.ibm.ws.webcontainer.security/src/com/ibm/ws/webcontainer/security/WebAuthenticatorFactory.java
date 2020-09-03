@@ -76,8 +76,7 @@ public interface WebAuthenticatorFactory {
     WebAuthenticatorProxy createWebAuthenticatorProxy(WebAppSecurityConfig webAppSecConfig,
                                                       PostParameterHelper postParameterHelper,
                                                       AtomicServiceReference<SecurityService> securityServiceRef,
-                                                      WebProviderAuthenticatorProxy providerAuthenticatorProxy,
-                                                      AtomicServiceReference<SSOAuthFilter> ssoAuthFilterRef);
+                                                      WebProviderAuthenticatorProxy providerAuthenticatorProxy);
 
     /**
      * @param webRequest
