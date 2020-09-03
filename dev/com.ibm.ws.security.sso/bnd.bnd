@@ -29,7 +29,7 @@ Import-Package:  !*.internal.*, *
          
 #Private-Package: com.ibm.ws.security.sso.internal.*
 
--dsannotations: com.ibm.ws.security.sso.SSOService
+-dsannotations: com.ibm.ws.security.sso.SSOAuthFilter
 
 -dsannotations-inherit: true
 

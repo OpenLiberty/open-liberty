@@ -36,13 +36,13 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 /**
  *
  */
-@Component(service = { SSOService.class },
-           name = "com.ibm.ws.security.sso.SSOService",
+@Component(service = { SSOAuthFilter.class },
+           name = "com.ibm.ws.security.sso.SSOAuthFilter",
            configurationPolicy = ConfigurationPolicy.IGNORE,
            immediate = true,
            property = { "service.vendor=IBM" })
-public class SSOService {
-    public static final TraceComponent tc = Tr.register(SSOService.class);
+public class SSOAuthFilter {
+    public static final TraceComponent tc = Tr.register(SSOAuthFilter.class);
     public static final String KEY_SERVICE_PID = "service.pid";
     static final String LTPA_CONFIGURATION = "ltpaConfiguration";
     public final static String KEY_FILTER = "authenticationFilter";
@@ -73,7 +73,6 @@ public class SSOService {
         String pid = (String) ref.getProperty(KEY_SERVICE_PID);
         authFilterServiceRef.putReference(pid, ref);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "authFilter pid: " + pid);
             Tr.debug(tc, "setAuthFilter service pid: " + getAuthFilterService(pid));
         }
     }
@@ -112,9 +111,9 @@ public class SSOService {
         AuthenticationFilter authFilter = null;
         if (ltpaConfigurationRef != null) {
             ltpaConfig = ltpaConfigurationRef.getService();
-            String authFilterRef = ltpaConfig.getAuthFilterRef();
-            if (authFilterRef != null && authFilterRef.length() > 0) {
-                authFilter = authFilterServiceRef.getService(authFilterRef);
+            String pid = ltpaConfig.getAuthFilterRef();
+            if (pid != null && pid.length() > 0) {
+                authFilter = getAuthFilterService(pid);
             }
         }
         return authFilter;
@@ -122,17 +121,17 @@ public class SSOService {
 
     @Activate
     protected synchronized void activate(ComponentContext cc, Map<String, Object> props) {
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, " SSOService active:" + props);
-        }
         ltpaConfigurationRef.activate(cc);
         authFilterServiceRef.activate(cc);
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, " SSOAuthFilter is actived:" + props);
+        }
     }
 
     @Modified
     protected synchronized void modified(Map<String, Object> props) {
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, " SSOService modified:" + props);
+            Tr.debug(tc, " SSOAuthFilter is modified:" + props);
         }
     }
 

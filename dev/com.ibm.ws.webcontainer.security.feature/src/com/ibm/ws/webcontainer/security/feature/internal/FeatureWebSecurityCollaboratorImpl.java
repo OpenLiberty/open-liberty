@@ -50,8 +50,8 @@ public class FeatureWebSecurityCollaboratorImpl extends WebAppSecurityCollaborat
         webAppSecConfig = featureSecConfig;
         postParameterHelper = new PostParameterHelper(webAppSecConfig);
         providerAuthenticatorProxy = authenticatorFactory.createWebProviderAuthenticatorProxy(securityServiceRef, taiServiceRef, interceptorServiceRef, webAppSecConfig,
-                                                                                              webAuthenticatorRef, ssoServiceRef);
-        authenticatorProxy = authenticatorFactory.createWebAuthenticatorProxy(webAppSecConfig, postParameterHelper, securityServiceRef, providerAuthenticatorProxy, ssoServiceRef);
+                                                                                              webAuthenticatorRef, ssoAuthFilterRef);
+        authenticatorProxy = authenticatorFactory.createWebAuthenticatorProxy(webAppSecConfig, postParameterHelper, securityServiceRef, providerAuthenticatorProxy, ssoAuthFilterRef);
     }
 
     @Override

@@ -28,7 +28,7 @@ Service-Component: \
     configuration-policy:=optional; \
     immediate:=true; \
     securityService='com.ibm.ws.security.SecurityService(Authentication=*)'; \
-    ssoService=com.ibm.ws.security.sso.SSOService; \
+    ssoAuthFilter=com.ibm.ws.security.sso.SSOAuthFilter; \
     taiService=com.ibm.ws.security.authentication.tai.TAIService; \
     interceptorService='com.ibm.wsspi.security.tai.TrustAssociationInterceptor(id=*)'; \
 	webAuthenticator=com.ibm.ws.webcontainer.security.WebAuthenticator; \
@@ -37,9 +37,9 @@ Service-Component: \
     unauthenticatedSubjectService=com.ibm.ws.security.authentication.UnauthenticatedSubjectService; \
     kernelProvisioner=com.ibm.ws.kernel.feature.FeatureProvisioner; \
     multiple:='interceptorService,webAuthenticator'; \
-    greedy:='ssoService,interceptorService,webAuthenticator,authenticatorFactory'; \
+    greedy:='ssoAuthFilter,interceptorService,webAuthenticator,authenticatorFactory'; \
     optional:='taiService,interceptorService,webAuthenticator'; \
-    dynamic:='ssoService,taiService,interceptorService,webAuthenticator,authenticatorFactory'; \
+    dynamic:='ssoAuthFilter,taiService,interceptorService,webAuthenticator,authenticatorFactory'; \
     properties:="service.vendor=IBM,com.ibm.ws.security.type=com.ibm.ws.management"
 
 -buildpath: \

@@ -28,7 +28,7 @@ import com.ibm.ws.security.authentication.WSAuthenticationData;
 //import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.authentication.utility.JaasLoginConfigConstants;
 import com.ibm.ws.security.jwtsso.token.proxy.JwtSSOTokenHelper;
-import com.ibm.ws.security.sso.SSOService;
+import com.ibm.ws.security.sso.SSOAuthFilter;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.AuthenticateApi;
 import com.ibm.ws.webcontainer.security.AuthenticationResult;
@@ -60,7 +60,7 @@ public class SSOAuthenticator implements WebAuthenticator {
     private final WebAppSecurityConfig webAppSecurityConfig;
     private final SSOCookieHelper ssoCookieHelper;
     private final String challengeType;
-    private final AtomicServiceReference<SSOService> ssoServiceRef;
+    private final AtomicServiceReference<SSOAuthFilter> ssoAuthFilterRef;
 
     /**
      * @param authenticationServ
@@ -70,11 +70,11 @@ public class SSOAuthenticator implements WebAuthenticator {
                             SecurityMetadata securityMetadata,
                             WebAppSecurityConfig webAppSecurityConfig,
                             SSOCookieHelper ssoCookieHelper,
-                            AtomicServiceReference<SSOService> ssoServiceRef) {
+                            AtomicServiceReference<SSOAuthFilter> ssoAuthFilterRef) {
         this.authenticationService = authenticationService;
         this.webAppSecurityConfig = webAppSecurityConfig;
         this.ssoCookieHelper = ssoCookieHelper;
-        this.ssoServiceRef = ssoServiceRef;
+        this.ssoAuthFilterRef = ssoAuthFilterRef;
 
         LoginConfiguration loginConfig = securityMetadata == null ? null : securityMetadata.getLoginConfiguration();
         challengeType = loginConfig == null ? null : loginConfig.getAuthenticationMethod();
@@ -329,10 +329,10 @@ public class SSOAuthenticator implements WebAuthenticator {
     /*
      */
     protected boolean isAuthFilterAccept(HttpServletRequest req) {
-        if (ssoServiceRef != null) {
-            SSOService ssoService = ssoServiceRef.getService();
-            if (ssoService != null) {
-                return ssoService.processRequest(req);
+        if (ssoAuthFilterRef != null) {
+            SSOAuthFilter ssoAuthFilter = ssoAuthFilterRef.getService();
+            if (ssoAuthFilter != null) {
+                return ssoAuthFilter.processRequest(req);
             }
         }
         //If no authFilter serivce, then we will process all request

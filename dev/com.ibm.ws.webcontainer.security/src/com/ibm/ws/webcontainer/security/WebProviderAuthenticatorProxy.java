@@ -37,7 +37,7 @@ import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.authentication.cache.AuthCacheService;
 import com.ibm.ws.security.authentication.tai.TAIService;
-import com.ibm.ws.security.sso.SSOService;
+import com.ibm.ws.security.sso.SSOAuthFilter;
 import com.ibm.ws.webcontainer.security.internal.SSOAuthenticator;
 import com.ibm.ws.webcontainer.security.internal.TAIAuthenticator;
 import com.ibm.ws.webcontainer.security.metadata.SecurityMetadata;
@@ -75,7 +75,7 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
     private final AtomicServiceReference<OpenidClientService> openIdClientServiceRef;
     private final AtomicServiceReference<OidcServer> oidcServerRef;
     private final AtomicServiceReference<OidcClient> oidcClientRef;
-    private final AtomicServiceReference<SSOService> ssoServiceRef;
+    private final AtomicServiceReference<SSOAuthFilter> ssoAuthFilterRef;
     private WebProviderAuthenticatorHelper authHelper;
     private ReferrerURLCookieHandler referrerURLCookieHandler = null;
     private WebAppSecurityConfig webAppSecurityConfig = null;
@@ -91,7 +91,7 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
                                          AtomicServiceReference<OidcServer> oidcServerRef,
                                          AtomicServiceReference<OidcClient> oidcClientRef,
                                          ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRef,
-                                         AtomicServiceReference<SSOService> ssoServiceRef) {
+                                         AtomicServiceReference<SSOAuthFilter> ssoAuthFilterRef) {
 
         this.securityServiceRef = securityServiceRef;
         this.taiServiceRef = taiServiceRef;
@@ -103,7 +103,7 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
         this.oidcServerRef = oidcServerRef;
         this.openIdClientServiceRef = openIdClientServiceRef;
         this.oidcClientRef = oidcClientRef;
-        this.ssoServiceRef = ssoServiceRef;
+        this.ssoAuthFilterRef = ssoAuthFilterRef;
 
         authHelper = new WebProviderAuthenticatorHelper(securityServiceRef);
         referrerURLCookieHandler = new ReferrerURLCookieHandler(webAppSecurityConfig);
@@ -813,6 +813,6 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
         } else {
             cookieHelper = new SSOCookieHelperImpl(webAppSecurityConfig);
         }
-        return new SSOAuthenticator(securityService.getAuthenticationService(), securityMetadata, webAppSecurityConfig, cookieHelper, ssoServiceRef);
+        return new SSOAuthenticator(securityService.getAuthenticationService(), securityMetadata, webAppSecurityConfig, cookieHelper, ssoAuthFilterRef);
     }
 }

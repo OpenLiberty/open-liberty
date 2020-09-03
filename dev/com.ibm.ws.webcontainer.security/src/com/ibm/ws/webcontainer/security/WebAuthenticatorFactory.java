@@ -16,7 +16,7 @@ import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.authentication.UnauthenticatedSubjectService;
 import com.ibm.ws.security.authentication.tai.TAIService;
 import com.ibm.ws.security.collaborator.CollaboratorUtils;
-import com.ibm.ws.security.sso.SSOService;
+import com.ibm.ws.security.sso.SSOAuthFilter;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
@@ -49,7 +49,7 @@ public interface WebAuthenticatorFactory {
                                           ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRef,
                                           ConcurrentServiceReferenceMap<String, UnprotectedResourceService> unprotectedResourceServiceRef,
                                           UnauthenticatedSubjectService unauthenticatedSubjectService,
-                                          AtomicServiceReference<SSOService> ssoServiceRe);
+                                          AtomicServiceReference<SSOAuthFilter> ssoAuthFilterRe);
 
     /**
      * @param securityServiceRef
@@ -64,7 +64,7 @@ public interface WebAuthenticatorFactory {
                                                                       ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor> interceptorServiceRef,
                                                                       WebAppSecurityConfig webAppSecConfig,
                                                                       ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRef,
-                                                                      AtomicServiceReference<SSOService> ssoServiceRef);
+                                                                      AtomicServiceReference<SSOAuthFilter> ssoAuthFilterRef);
 
     /**
      * @param webAppSecConfig
@@ -77,7 +77,7 @@ public interface WebAuthenticatorFactory {
                                                       PostParameterHelper postParameterHelper,
                                                       AtomicServiceReference<SecurityService> securityServiceRef,
                                                       WebProviderAuthenticatorProxy providerAuthenticatorProxy,
-                                                      AtomicServiceReference<SSOService> ssoServiceRef);
+                                                      AtomicServiceReference<SSOAuthFilter> ssoAuthFilterRef);
 
     /**
      * @param webRequest

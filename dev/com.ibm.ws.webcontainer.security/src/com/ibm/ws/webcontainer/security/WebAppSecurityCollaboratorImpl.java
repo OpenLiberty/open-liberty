@@ -58,7 +58,7 @@ import com.ibm.ws.security.context.SubjectManager;
 import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.ws.security.registry.UserRegistry;
 import com.ibm.ws.security.registry.UserRegistryService;
-import com.ibm.ws.security.sso.SSOService;
+import com.ibm.ws.security.sso.SSOAuthFilter;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.webcontainer.osgi.WebContainer;
 import com.ibm.ws.webcontainer.security.internal.BasicAuthAuthenticator;
@@ -106,7 +106,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     static final String KEY_SERVICE_ID = "service.id";
     static final String KEY_COMPONENT_NAME = "component.name";
     public static final String KEY_SECURITY_SERVICE = "securityService";
-    public static final String KEY_SSO_SERVICE = "ssoService";
+    public static final String KEY_SSO_SERVICE = "ssoAuthFilter";
     public static final String KEY_TAI_SERVICE = "taiService";
     public static final String KEY_INTERCEPTOR_SERVICE = "interceptorService";
     static final String KEY_JACC_SERVICE = "jaccService";
@@ -119,7 +119,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     protected final ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRef = new ConcurrentServiceReferenceMap<String, WebAuthenticator>(KEY_WEB_AUTHENTICATOR);
     protected final ConcurrentServiceReferenceMap<String, UnprotectedResourceService> unprotectedResourceServiceRef = new ConcurrentServiceReferenceMap<String, UnprotectedResourceService>(KEY_UNPROTECTED_RESOURCE_SERVICE);
 
-    protected final AtomicServiceReference<SSOService> ssoServiceRef = new AtomicServiceReference<SSOService>(KEY_SSO_SERVICE);
+    protected final AtomicServiceReference<SSOAuthFilter> ssoAuthFilterRef = new AtomicServiceReference<SSOAuthFilter>(KEY_SSO_SERVICE);
     protected final AtomicServiceReference<TAIService> taiServiceRef = new AtomicServiceReference<TAIService>(KEY_TAI_SERVICE);
     protected final ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor> interceptorServiceRef = new ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor>(KEY_INTERCEPTOR_SERVICE);
     protected final AtomicServiceReference<SecurityService> securityServiceRef = new AtomicServiceReference<SecurityService>(KEY_SECURITY_SERVICE);
@@ -212,12 +212,12 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         securityServiceRef.unsetReference(reference);
     }
 
-    public void setSsoService(ServiceReference<SSOService> reference) {
-        ssoServiceRef.setReference(reference);
+    public void setSsoAuthFilter(ServiceReference<SSOAuthFilter> reference) {
+        ssoAuthFilterRef.setReference(reference);
     }
 
-    public void unsetSsoService(ServiceReference<SSOService> reference) {
-        ssoServiceRef.unsetReference(reference);
+    public void unsetSsoAuthFilter(ServiceReference<SSOAuthFilter> reference) {
+        ssoAuthFilterRef.unsetReference(reference);
     }
 
     public void setTaiService(ServiceReference<TAIService> reference) {
@@ -336,7 +336,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         locationAdminRef.activate(cc);
         securityServiceRef.activate(cc);
         interceptorServiceRef.activate(cc);
-        ssoServiceRef.activate(cc);
+        ssoAuthFilterRef.activate(cc);
         taiServiceRef.activate(cc);
         jaccServiceRef.activate(cc);
         webAuthenticatorRef.activate(cc);
@@ -358,11 +358,12 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         WebSecurityHelperImpl.setWebAppSecurityConfig(webAppSecConfig);
         SSOCookieHelper ssoCookieHelper = webAppSecConfig.createSSOCookieHelper();
         authenticateApi = authenticatorFactory.createAuthenticateApi(ssoCookieHelper, securityServiceRef, collabUtils, webAuthenticatorRef, unprotectedResourceServiceRef,
-                                                                     unauthenticatedSubjectService, ssoServiceRef);
+                                                                     unauthenticatedSubjectService, ssoAuthFilterRef);
         postParameterHelper = new PostParameterHelper(webAppSecConfig);
         providerAuthenticatorProxy = authenticatorFactory.createWebProviderAuthenticatorProxy(securityServiceRef, taiServiceRef, interceptorServiceRef, webAppSecConfig,
-                                                                                              webAuthenticatorRef, ssoServiceRef);
-        authenticatorProxy = authenticatorFactory.createWebAuthenticatorProxy(webAppSecConfig, postParameterHelper, securityServiceRef, providerAuthenticatorProxy, ssoServiceRef);
+                                                                                              webAuthenticatorRef, ssoAuthFilterRef);
+        authenticatorProxy = authenticatorFactory.createWebAuthenticatorProxy(webAppSecConfig, postParameterHelper, securityServiceRef, providerAuthenticatorProxy,
+                                                                              ssoAuthFilterRef);
     }
 
     protected void modified(Map<String, Object> newProperties) {
@@ -387,7 +388,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         isActive = false;
         locationAdminRef.deactivate(cc);
         securityServiceRef.deactivate(cc);
-        ssoServiceRef.deactivate(cc);
+        ssoAuthFilterRef.deactivate(cc);
         taiServiceRef.deactivate(cc);
         interceptorServiceRef.deactivate(cc);
         jaccServiceRef.deactivate(cc);
@@ -1517,7 +1518,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         if (authenticateApi == null) {
             SSOCookieHelper ssoCookieHelper = webAppSecConfig.createSSOCookieHelper();
             authenticateApi = authenticatorFactory.createAuthenticateApi(ssoCookieHelper, securityServiceRef, collabUtils, webAuthenticatorRef, unprotectedResourceServiceRef,
-                                                                         unauthenticatedSubjectService, ssoServiceRef);
+                                                                         unauthenticatedSubjectService, ssoAuthFilterRef);
         }
         return authenticateApi;
     }

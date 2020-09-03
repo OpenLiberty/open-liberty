@@ -29,7 +29,7 @@ import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.authentication.UnauthenticatedSubjectService;
 import com.ibm.ws.security.authentication.tai.TAIService;
 import com.ibm.ws.security.collaborator.CollaboratorUtils;
-import com.ibm.ws.security.sso.SSOService;
+import com.ibm.ws.security.sso.SSOAuthFilter;
 import com.ibm.ws.webcontainer.security.AuthenticateApi;
 import com.ibm.ws.webcontainer.security.PostParameterHelper;
 import com.ibm.ws.webcontainer.security.SSOCookieHelper;
@@ -59,7 +59,7 @@ public class WebAuthenticatorFactoryImpl implements WebAuthenticatorFactory {
     static final String KEY_OIDC_SERVER = "oidcServer";
     static final String KEY_OIDC_CLIENT = "oidcClient";
     static final String KEY_OPENID_CLIENT_SERVICE = "openidClientService";
-    private AtomicServiceReference<SSOService> ssoServiceRef;
+    private AtomicServiceReference<SSOAuthFilter> ssoAuthFilterRef;
 
     protected final AtomicServiceReference<OAuth20Service> oauthServiceRef = new AtomicServiceReference<OAuth20Service>(KEY_OAUTH_SERVICE);
     protected final AtomicServiceReference<OidcServer> oidcServerRef = new AtomicServiceReference<OidcServer>(KEY_OIDC_SERVER);
@@ -75,7 +75,7 @@ public class WebAuthenticatorFactoryImpl implements WebAuthenticatorFactory {
     public WebAppSecurityConfig createWebAppSecurityConfigImpl(Map<String, Object> props,
                                                                AtomicServiceReference<WsLocationAdmin> locationAdminRef,
                                                                AtomicServiceReference<SecurityService> securityServiceRef) {
-        globalConfig = new WebAppSecurityConfigImpl(props, locationAdminRef, securityServiceRef, oidcServerRef, oidcClientRef, ssoServiceRef);
+        globalConfig = new WebAppSecurityConfigImpl(props, locationAdminRef, securityServiceRef, oidcServerRef, oidcClientRef, ssoAuthFilterRef);
         return globalConfig;
     }
 
@@ -86,8 +86,8 @@ public class WebAuthenticatorFactoryImpl implements WebAuthenticatorFactory {
                                                  ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRef,
                                                  ConcurrentServiceReferenceMap<String, UnprotectedResourceService> unprotectedResourceServiceRef,
                                                  UnauthenticatedSubjectService unauthSubjectService,
-                                                 AtomicServiceReference<SSOService> ssoServiceRef) {
-        return new AuthenticateApi(ssoCookieHelper, securityServiceRef, collabUtils, webAuthenticatorRef, unprotectedResourceServiceRef, unauthSubjectService, ssoServiceRef);
+                                                 AtomicServiceReference<SSOAuthFilter> ssoAuthFilterRef) {
+        return new AuthenticateApi(ssoCookieHelper, securityServiceRef, collabUtils, webAuthenticatorRef, unprotectedResourceServiceRef, unauthSubjectService, ssoAuthFilterRef);
     }
 
     @Override
@@ -96,8 +96,8 @@ public class WebAuthenticatorFactoryImpl implements WebAuthenticatorFactory {
                                                                              ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor> interceptorServiceRef,
                                                                              WebAppSecurityConfig webAppSecConfig,
                                                                              ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRef,
-                                                                             AtomicServiceReference<SSOService> ssoServiceRef) {
-        providerAuthenticatorProxy = new WebProviderAuthenticatorProxy(securityServiceRef, taiServiceRef, interceptorServiceRef, webAppSecConfig, oauthServiceRef, openidClientRef, oidcServerRef, oidcClientRef, webAuthenticatorRef, ssoServiceRef);
+                                                                             AtomicServiceReference<SSOAuthFilter> ssoAuthFilterRef) {
+        providerAuthenticatorProxy = new WebProviderAuthenticatorProxy(securityServiceRef, taiServiceRef, interceptorServiceRef, webAppSecConfig, oauthServiceRef, openidClientRef, oidcServerRef, oidcClientRef, webAuthenticatorRef, ssoAuthFilterRef);
         return providerAuthenticatorProxy;
     }
 
@@ -106,8 +106,8 @@ public class WebAuthenticatorFactoryImpl implements WebAuthenticatorFactory {
                                                              PostParameterHelper postParameterHelper,
                                                              AtomicServiceReference<SecurityService> securityServiceRef,
                                                              WebProviderAuthenticatorProxy providerAuthenticatorProxy,
-                                                             AtomicServiceReference<SSOService> ssoServiceRef) {
-        authenticatorProxy = new WebAuthenticatorProxy(webAppSecConfig, postParameterHelper, securityServiceRef, providerAuthenticatorProxy, oidcServerRef, ssoServiceRef);
+                                                             AtomicServiceReference<SSOAuthFilter> ssoAuthFilterRef) {
+        authenticatorProxy = new WebAuthenticatorProxy(webAppSecConfig, postParameterHelper, securityServiceRef, providerAuthenticatorProxy, oidcServerRef, ssoAuthFilterRef);
         return authenticatorProxy;
     }
 
