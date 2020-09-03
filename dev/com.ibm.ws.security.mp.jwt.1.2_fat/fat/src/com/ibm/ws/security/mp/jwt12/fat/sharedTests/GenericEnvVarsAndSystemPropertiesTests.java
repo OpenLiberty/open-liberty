@@ -12,6 +12,7 @@ package com.ibm.ws.security.mp.jwt12.fat.sharedTests;
 
 import org.junit.runner.RunWith;
 
+import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwt12FatConstants;
 import com.ibm.ws.security.mp.jwt12.fat.utils.MP12ConfigSettings;
 
@@ -33,12 +34,6 @@ import componenttest.topology.impl.LibertyServer;
 @RunWith(FATRunner.class)
 public class GenericEnvVarsAndSystemPropertiesTests extends MPJwt12MPConfigTests {
 
-    // TODO - rename server (issue is what files are getting copied from 1.1)
-//    @Server("com.ibm.ws.security.mp.jwt.fat")
-//    public static LibertyServer envVarsResourceServer;
-//    @Server("com.ibm.ws.security.mp.jwt.fat.jvmOptions")
-//    public static LibertyServer sysPropResourceServer;
-
     public static LibertyServer resourceServer;
 
     private static String headerValue = MpJwt12FatConstants.AUTHORIZATION;
@@ -56,7 +51,9 @@ public class GenericEnvVarsAndSystemPropertiesTests extends MPJwt12MPConfigTests
         setUpAndStartBuilderServer(jwtBuilderServer, "server_using_buildApp.xml");
 
         MP12ConfigSettings mpConfigSettings = new MP12ConfigSettings(MP12ConfigSettings.PublicKeyLocationNotSet, MP12ConfigSettings.PublicKeyNotSet, MP12ConfigSettings.IssuerNotSet, MpJwt12FatConstants.X509_CERT, header, name, audience);
-        setUpAndStart12RSServerForTests(resourceServer, config, mpConfigSettings, where);
+        setUpAndStartRSServerForTests(resourceServer, config, mpConfigSettings, where);
+        // don't restore servers between test cases
+        skipRestoreServerTracker.addServer(resourceServer);
 
     }
 
@@ -70,18 +67,19 @@ public class GenericEnvVarsAndSystemPropertiesTests extends MPJwt12MPConfigTests
      */
     public void genericGoodTest() throws Exception {
 
+        resourceServer.restoreServerConfiguration(); // this test case wants the original server config
         standardTestFlow(resourceServer, MpJwt12FatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT,
                          MpJwt12FatConstants.NO_MP_CONFIG_IN_APP_APP, MpJwt12FatConstants.MPJWT_APP_CLASS_NO_MP_CONFIG_IN_APP, headerValue,
                          cookieName);
 
     }
 
-    // TODO  - update test - are these really good and bad tests or tests with and without values in server.xml?
-    public void genericBadTest() throws Exception {
+    public void genericBadTest(String config, Expectations expectations) throws Exception {
 
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, config);
         standardTestFlow(resourceServer, MpJwt12FatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT,
                          MpJwt12FatConstants.NO_MP_CONFIG_IN_APP_APP, MpJwt12FatConstants.MPJWT_APP_CLASS_NO_MP_CONFIG_IN_APP, headerValue,
-                         cookieName);
+                         cookieName, expectations);
 
     }
 

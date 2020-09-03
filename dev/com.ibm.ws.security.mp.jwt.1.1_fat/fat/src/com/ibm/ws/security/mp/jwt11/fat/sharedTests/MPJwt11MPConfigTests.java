@@ -26,7 +26,7 @@ import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
 import com.ibm.ws.security.fat.common.utils.CommonIOUtils;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
-import com.ibm.ws.security.mp.jwt11.fat.utils.MPConfigSettings;
+import com.ibm.ws.security.mp.jwt11.fat.utils.MP11ConfigSettings;
 import com.ibm.ws.security.mp.jwt11.fat.utils.MpJwtMessageConstants;
 
 import componenttest.annotation.Server;
@@ -76,7 +76,7 @@ public class MPJwt11MPConfigTests extends MPJwtMPConfigTests {
      */
 
     // Need to pass in the resource server reference as we can be using one of several
-    protected static void setUpAndStartRSServerForTests(LibertyServer server, String configFile, MPConfigSettings mpConfigSettings,
+    protected static void setUpAndStartRSServerForTests(LibertyServer server, String configFile, MP11ConfigSettings mpConfigSettings,
                                                         MPConfigLocation mpConfigLocation) throws Exception {
 
         setupBootstrapPropertiesForMPTests(server, mpConfigSettings);
@@ -86,26 +86,6 @@ public class MPJwt11MPConfigTests extends MPJwtMPConfigTests {
         startRSServerForMPTests(server, configFile);
 
     }
-
-//    protected static void setupBootstrapPropertiesForMPTests(LibertyServer server, MPConfigSettings mpConfigSettings) throws Exception {
-//        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTNAME, SecurityFatHttpUtils.getServerHostName());
-//        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTIP, SecurityFatHttpUtils.getServerHostIp());
-//        if (mpConfigSettings.getCertType().equals(MpJwtFatConstants.JWK_CERT)) {
-//            bootstrapUtils.writeBootstrapProperty(server, "mpJwt_keyName", "");
-//            bootstrapUtils.writeBootstrapProperty(server, "mpJwt_jwksUri", MPConfigSettings.jwksUri);
-//        } else {
-//            bootstrapUtils.writeBootstrapProperty(server, "mpJwt_keyName", "rsacert");
-//            bootstrapUtils.writeBootstrapProperty(server, "mpJwt_jwksUri", "");
-//        }
-//
-//    }
-//
-//    protected static void startRSServerForMPTests(LibertyServer server, String configFile) throws Exception {
-//        serverTracker.addServer(server);
-//        server.startServerUsingExpandedConfiguration(configFile, commonStartMsgs);
-//        SecurityFatHttpUtils.saveServerPorts(server, MpJwtFatConstants.BVT_SERVER_1_PORT_NAME_ROOT);
-//        server.addIgnoredErrors(Arrays.asList(MpJwtMessageConstants.CWWKW1001W_CDI_RESOURCE_SCOPE_MISMATCH));
-//    }
 
     /**
      * Setup the system properties, environment variables or microprofile-config.properties in the test apps as appropriate.
@@ -120,7 +100,7 @@ public class MPJwt11MPConfigTests extends MPJwtMPConfigTests {
      * @param mpConfigLocation - where this test instance would like the MPConfig settings (system properties, environment variables, or microprofile-config.properties in apps)
      * @throws Exception
      */
-    public static void setupMPConfig(LibertyServer theServer, MPConfigSettings mpConfigSettings, MPConfigLocation mpConfigLocation) throws Exception {
+    public static void setupMPConfig(LibertyServer theServer, MP11ConfigSettings mpConfigSettings, MPConfigLocation mpConfigLocation) throws Exception {
 
         // build fully resolved issuer
         mpConfigSettings.setIssuer(buildIssuer(jwtBuilderServer, mpConfigSettings.getIssuer()));
@@ -155,7 +135,7 @@ public class MPJwt11MPConfigTests extends MPJwtMPConfigTests {
      * @param mpConfigSettings - the mp-config settings values
      * @throws Exception
      */
-    public static void setAlternateMP_ConfigProperties_InJvmOptions(LibertyServer theServer, MPConfigSettings mpConfigSettings) throws Exception {
+    public static void setAlternateMP_ConfigProperties_InJvmOptions(LibertyServer theServer, MP11ConfigSettings mpConfigSettings) throws Exception {
 
         String jvmFile = theServer.getServerRoot() + "/jvm.options";
         updateJvmOptionsFile(jvmFile, mpConfigSettings);
@@ -170,7 +150,7 @@ public class MPJwt11MPConfigTests extends MPJwtMPConfigTests {
      * @param keyLoc - the keyLocation value to update
      * @param issuer - the issuer value to update
      */
-    public static void updateJvmOptionsFile(String jvmOptionsFile, MPConfigSettings mpConfigSettings) throws Exception {
+    public static void updateJvmOptionsFile(String jvmOptionsFile, MP11ConfigSettings mpConfigSettings) throws Exception {
 
         HashMap<String, String> optionMap = new HashMap<String, String>();
         optionMap.put("xxx_publicKeyName_xxx", mpConfigSettings.getPublicKey());
@@ -192,13 +172,13 @@ public class MPJwt11MPConfigTests extends MPJwtMPConfigTests {
      * @param mpConfigSettings - the mp-config settings values
      * @throws Exception
      */
-    public static void setAlternateMP_ConfigProperties_envVars(LibertyServer server, MPConfigSettings mpConfigSettings) throws Exception {
+    public static void setAlternateMP_ConfigProperties_envVars(LibertyServer server, MP11ConfigSettings mpConfigSettings) throws Exception {
 
         setAlternateMP_ConfigProperties_envVars(null, server, mpConfigSettings);
 
     }
 
-    public static void setAlternateMP_ConfigProperties_envVars(HashMap<String, String> envVars, LibertyServer server, MPConfigSettings mpConfigSettings) throws Exception {
+    public static void setAlternateMP_ConfigProperties_envVars(HashMap<String, String> envVars, LibertyServer server, MP11ConfigSettings mpConfigSettings) throws Exception {
 
         // some platforms do NOT support env vars with ".", so, we'll use underscores "_" (our runtime allows either)
         String PublicKeyName = "mp_jwt_verify_publickey";
@@ -251,10 +231,10 @@ public class MPJwt11MPConfigTests extends MPJwtMPConfigTests {
      * @param mpConfigSettings- a master/default set of mp-config settings (the wars will be created with specific good or bad values)
      * @throws Exception
      */
-    public static void deployRSServerMPConfigInAppApps(LibertyServer server, MPConfigSettings mpConfigSettings) throws Exception {
+    public static void deployRSServerMPConfigInAppApps(LibertyServer server, MP11ConfigSettings mpConfigSettings) throws Exception {
 
         try {
-            String fixedJwksUri = resolvedJwksUri(jwtBuilderServer, MPConfigSettings.jwksUri);
+            String fixedJwksUri = resolvedJwksUri(jwtBuilderServer, MP11ConfigSettings.jwksUri);
             String fileLoc = mpConfigSettings.getDefaultKeyFileLoc(server);
 
             // the microprofile-config.properties files will have xxx_<attr>_xxx values that need to be replaced
@@ -273,76 +253,76 @@ public class MPJwt11MPConfigTests extends MPJwtMPConfigTests {
                                                                  buildMPConfigFileContent(mpConfigSettings.getPublicKey(), mpConfigSettings.getPublicKeyLocation(),
                                                                                           mpConfigSettings.getIssuer()));
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_ISSUER_ONLY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                               buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, MPConfigSettings.PublicKeyLocationNotSet,
+                                                               buildMPConfigFileContent(MP11ConfigSettings.PublicKeyNotSet, MP11ConfigSettings.PublicKeyLocationNotSet,
                                                                                         mpConfigSettings.getIssuer()));
             setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_ISSUER_ONLY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                                                                 buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, MPConfigSettings.PublicKeyLocationNotSet,
+                                                                 buildMPConfigFileContent(MP11ConfigSettings.PublicKeyNotSet, MP11ConfigSettings.PublicKeyLocationNotSet,
                                                                                           mpConfigSettings.getIssuer()));
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.BAD_ISSUER_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                                                                buildMPConfigFileContent(mpConfigSettings.getPublicKey(), mpConfigSettings.getPublicKeyLocation(), "badIssuer"));
             setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.BAD_ISSUER_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                                                                  buildMPConfigFileContent(mpConfigSettings.getPublicKey(), mpConfigSettings.getPublicKeyLocation(), "badIssuer"));
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.BAD_ISSUER_ONLY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                               buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, MPConfigSettings.PublicKeyLocationNotSet, "badIssuer"));
+                                                               buildMPConfigFileContent(MP11ConfigSettings.PublicKeyNotSet, MP11ConfigSettings.PublicKeyLocationNotSet, "badIssuer"));
             setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.BAD_ISSUER_ONLY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                                                                 buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, MPConfigSettings.PublicKeyLocationNotSet, "badIssuer"));
+                                                                 buildMPConfigFileContent(MP11ConfigSettings.PublicKeyNotSet, MP11ConfigSettings.PublicKeyLocationNotSet, "badIssuer"));
 
             // publicKey (NOT keyLocation)
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_COMPLEX_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                               buildMPConfigFileContent(MPConfigSettings.ComplexPublicKey, MPConfigSettings.PublicKeyLocationNotSet,
+                                                               buildMPConfigFileContent(MP11ConfigSettings.ComplexPublicKey, MP11ConfigSettings.PublicKeyLocationNotSet,
                                                                                         mpConfigSettings.getIssuer()));
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_SIMPLE_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                               buildMPConfigFileContent(MPConfigSettings.SimplePublicKey, MPConfigSettings.PublicKeyLocationNotSet,
+                                                               buildMPConfigFileContent(MP11ConfigSettings.SimplePublicKey, MP11ConfigSettings.PublicKeyLocationNotSet,
                                                                                         mpConfigSettings.getIssuer()));
             setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_COMPLEX_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                                                                 buildMPConfigFileContent(MPConfigSettings.ComplexPublicKey, MPConfigSettings.PublicKeyLocationNotSet,
+                                                                 buildMPConfigFileContent(MP11ConfigSettings.ComplexPublicKey, MP11ConfigSettings.PublicKeyLocationNotSet,
                                                                                           mpConfigSettings.getIssuer()));
             setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_SIMPLE_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                                                                 buildMPConfigFileContent(MPConfigSettings.SimplePublicKey, MPConfigSettings.PublicKeyLocationNotSet,
+                                                                 buildMPConfigFileContent(MP11ConfigSettings.SimplePublicKey, MP11ConfigSettings.PublicKeyLocationNotSet,
                                                                                           mpConfigSettings.getIssuer()));
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.BAD_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                               buildMPConfigFileContent("badPublicKey", MPConfigSettings.PublicKeyLocationNotSet, mpConfigSettings.getIssuer()));
+                                                               buildMPConfigFileContent("badPublicKey", MP11ConfigSettings.PublicKeyLocationNotSet, mpConfigSettings.getIssuer()));
             setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.BAD_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                                                                 buildMPConfigFileContent("badPublicKey", MPConfigSettings.PublicKeyLocationNotSet, mpConfigSettings.getIssuer()));
+                                                                 buildMPConfigFileContent("badPublicKey", MP11ConfigSettings.PublicKeyLocationNotSet, mpConfigSettings.getIssuer()));
 
             // publicKeyLocation (NOT publicKey)
             // not testing all locations (relative, file, url, jwksuri) with all pem loc types (good pem, complex pem, bad pem)
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_RELATIVE_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                               buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, MPConfigSettings.PemFile, mpConfigSettings.getIssuer()));
+                                                               buildMPConfigFileContent(MP11ConfigSettings.PublicKeyNotSet, MP11ConfigSettings.PemFile, mpConfigSettings.getIssuer()));
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_RELATIVE_COMPLEX_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                               buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, MPConfigSettings.ComplexPemFile,
+                                                               buildMPConfigFileContent(MP11ConfigSettings.PublicKeyNotSet, MP11ConfigSettings.ComplexPemFile,
                                                                                         mpConfigSettings.getIssuer()));
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_FILE_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                               buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, fileLoc + MPConfigSettings.PemFile,
+                                                               buildMPConfigFileContent(MP11ConfigSettings.PublicKeyNotSet, fileLoc + MP11ConfigSettings.PemFile,
                                                                                         mpConfigSettings.getIssuer()));
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_URL_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                               buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, "file:///" + fileLoc + MPConfigSettings.PemFile,
+                                                               buildMPConfigFileContent(MP11ConfigSettings.PublicKeyNotSet, "file:///" + fileLoc + MP11ConfigSettings.PemFile,
                                                                                         mpConfigSettings.getIssuer()));
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_JWKSURI_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                               buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, fixedJwksUri, mpConfigSettings.getIssuer()));
+                                                               buildMPConfigFileContent(MP11ConfigSettings.PublicKeyNotSet, fixedJwksUri, mpConfigSettings.getIssuer()));
             setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_RELATIVE_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                                                                 buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, MPConfigSettings.PemFile,
+                                                                 buildMPConfigFileContent(MP11ConfigSettings.PublicKeyNotSet, MP11ConfigSettings.PemFile,
                                                                                           mpConfigSettings.getIssuer()));
             setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_FILE_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                                                                 buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, fileLoc + MPConfigSettings.PemFile,
+                                                                 buildMPConfigFileContent(MP11ConfigSettings.PublicKeyNotSet, fileLoc + MP11ConfigSettings.PemFile,
                                                                                           mpConfigSettings.getIssuer()));
             setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_FILE_COMPLEX_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                                                                 buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, fileLoc + MPConfigSettings.ComplexPemFile,
+                                                                 buildMPConfigFileContent(MP11ConfigSettings.PublicKeyNotSet, fileLoc + MP11ConfigSettings.ComplexPemFile,
                                                                                           mpConfigSettings.getIssuer()));
             setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_URL_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                                                                 buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, "file:///" + fileLoc + MPConfigSettings.PemFile,
+                                                                 buildMPConfigFileContent(MP11ConfigSettings.PublicKeyNotSet, "file:///" + fileLoc + MP11ConfigSettings.PemFile,
                                                                                           mpConfigSettings.getIssuer()));
             setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_JWKSURI_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                                                                 buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, fixedJwksUri, mpConfigSettings.getIssuer()));
+                                                                 buildMPConfigFileContent(MP11ConfigSettings.PublicKeyNotSet, fixedJwksUri, mpConfigSettings.getIssuer()));
 
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.BAD_FILE_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                               buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, fileLoc + MPConfigSettings.BadPemFile,
+                                                               buildMPConfigFileContent(MP11ConfigSettings.PublicKeyNotSet, fileLoc + MP11ConfigSettings.BadPemFile,
                                                                                         mpConfigSettings.getIssuer()));
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.BAD_URL_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                               buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, "file:///" + fileLoc + "someKey.pem",
+                                                               buildMPConfigFileContent(MP11ConfigSettings.PublicKeyNotSet, "file:///" + fileLoc + "someKey.pem",
                                                                                         mpConfigSettings.getIssuer()));
             setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.BAD_RELATIVE_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                                                                 buildMPConfigFileContent(MPConfigSettings.PublicKeyNotSet, "badPublicKeyLocation", mpConfigSettings.getIssuer()));
+                                                                 buildMPConfigFileContent(MP11ConfigSettings.PublicKeyNotSet, "badPublicKeyLocation", mpConfigSettings.getIssuer()));
 
         } catch (Exception e) {
             Log.info(thisClass, "MPJwtAltConfig", "Hit an exception updating the war file" + e.getMessage());
@@ -433,43 +413,5 @@ public class MPJwt11MPConfigTests extends MPJwtMPConfigTests {
         return expectations;
 
     }
-
-//    /**
-//     * Setup expectations for a valid/good path (we get to invoke the app). Expectations set status codes to check and content to
-//     * validate in the response from the app.
-//     *
-//     * @param step - the step to check after
-//     * @param testUrl - the app that should have benn invoked
-//     * @param theClass - the class that should be invoked
-//     * @return - the formatted expectations - for a test with a good result
-//     * @throws Exception
-//     */
-//    @Override
-//    public Expectations setGoodAppExpectations(String testUrl, String theClass) throws Exception {
-//
-//        Expectations expectations = new Expectations();
-//        expectations.addExpectations(CommonExpectations.successfullyReachedUrl(testUrl));
-//        expectations.addExpectation(new ResponseFullExpectation(MpJwtFatConstants.STRING_CONTAINS, theClass, "Did not invoke the app " + theClass + "."));
-//
-//        return expectations;
-//    }
-//
-//    /**
-//     * The test framework randomly chooses between x509 and jwks. We need to set the config based on what the
-//     * framework has chosen for this spcific run.
-//     *
-//     * @param certType - the cert type being tested - indicates which config to load
-//     * @throws Exception
-//     */
-//    @Override
-//    public void badTokenVerificationReconfig(LibertyServer server, String certType) throws Exception {
-//
-//        if (MpJwtFatConstants.X509_CERT.equals(MPConfigSettings.cert_type)) {
-//            server.reconfigureServer("rs_server_AltConfigInApp_badServerXmlKeyName.xml", _testName);
-//        } else {
-//            server.reconfigureServer("rs_server_AltConfigInApp_badServerXmlJwksUri.xml", _testName);
-//        }
-//
-//    }
 
 }

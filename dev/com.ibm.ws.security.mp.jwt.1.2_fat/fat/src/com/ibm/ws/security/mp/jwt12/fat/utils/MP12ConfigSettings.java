@@ -11,18 +11,18 @@
 package com.ibm.ws.security.mp.jwt12.fat.utils;
 
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwt12FatConstants;
-import com.ibm.ws.security.mp.jwt11.fat.utils.MPConfigSettings;
+import com.ibm.ws.security.mp.jwt11.fat.utils.MP11ConfigSettings;
 
-public class MP12ConfigSettings extends MPConfigSettings {
+public class MP12ConfigSettings extends MP11ConfigSettings {
 
-    public static final String Header = MpJwt12FatConstants.AUTHORIZATION;
-    public static final String Cookie = MpJwt12FatConstants.TOKEN_TYPE_BEARER;
+    public static final String DefaultHeader = MpJwt12FatConstants.AUTHORIZATION;
+    public static final String DefaultCookieName = MpJwt12FatConstants.TOKEN_TYPE_BEARER;
     public final static String HeaderNotSet = "";
     public final static String CookieNotSet = "";
     public final static String AudiencesNotSet = "";
 
-    private String header = Header;
-    private String cookie = Cookie;
+    private String header = DefaultHeader;
+    private String cookie = DefaultCookieName;
     private String audience = AudiencesNotSet;
 
     public MP12ConfigSettings() {

@@ -1,5 +1,5 @@
 <server>
-<!-- 
+
 	<application
 		type="war"
 		id="microProfileGoodHeaderAuthorizationInMP-ConfigInMETA-INF"
@@ -35,7 +35,7 @@
 			</security-role>
 		</application-bnd>
 	</application>	
--->
+
 	<application
 		type="war"
 		id="microProfileGoodHeaderCookieInMP-ConfigInMETA-INF"
@@ -53,12 +53,84 @@
 			</security-role>
 		</application-bnd>
 	</application>
-<!--  
+ 
 	<application
 		type="war"
 		id="microProfileGoodHeaderCookieInMP-ConfigUnderWEB-INF"
 		name="microProfileGoodHeaderCookieInMP-ConfigUnderWEB-INF"
 		location="${server.config.dir}/apps/microProfileGoodHeaderCookieInMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>	
+
+	<application
+		type="war"
+		id="microProfileGoodHeaderCookieWithCookieNameInMP-ConfigInMETA-INF"
+		name="microProfileGoodHeaderCookieWithCookieNameInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileGoodHeaderCookieWithCookieNameInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+ 
+	<application
+		type="war"
+		id="microProfileGoodHeaderCookieWithCookieNameInMP-ConfigUnderWEB-INF"
+		name="microProfileGoodHeaderCookieWithCookieNameInMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileGoodHeaderCookieWithCookieNameInMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>	
+
+	<application
+		type="war"
+		id="microProfileGoodHeaderCookieWithOtherCookieNameInMP-ConfigInMETA-INF"
+		name="microProfileGoodHeaderCookieWithOtherCookieNameInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileGoodHeaderCookieWithOtherCookieNameInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+ 
+	<application
+		type="war"
+		id="microProfileGoodHeaderCookieWithOtherCookieNameInMP-ConfigUnderWEB-INF"
+		name="microProfileGoodHeaderCookieWithOtherCookieNameInMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileGoodHeaderCookieWithOtherCookieNameInMP-ConfigUnderWEB-INF.war">
 		<application-bnd>
 			<security-role name="Employee">
 				<special-subject type="ALL_AUTHENTICATED_USERS" />
@@ -107,7 +179,7 @@
 			</security-role>
 		</application-bnd>
 	</application>	
--->		
+	
 <!-- Above are the ones I'm currently using -->		
 	<!-- <application type="war" id="microProfileBadMP-ConfigInMETA-INF" name="microProfileBadMP-ConfigInMETA-INF" 
 		location="${server.config.dir}/apps/microProfileBadMP-ConfigInMETA-INF.war" 

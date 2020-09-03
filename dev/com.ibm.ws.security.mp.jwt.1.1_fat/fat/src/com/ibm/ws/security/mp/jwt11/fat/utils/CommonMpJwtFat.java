@@ -55,7 +55,6 @@ public class CommonMpJwtFat extends CommonSecurityFat {
      */
     protected static void setUpAndStartBuilderServer(LibertyServer server, String configFile) throws Exception {
         setUpAndStartBuilderServer(server, configFile, false);
-        server.addIgnoredErrors(Arrays.asList(MpJwtMessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE));
     }
 
     /**
@@ -71,6 +70,7 @@ public class CommonMpJwtFat extends CommonSecurityFat {
         serverTracker.addServer(server);
         server.startServerUsingExpandedConfiguration(configFile, commonStartMsgs);
         SecurityFatHttpUtils.saveServerPorts(server, MpJwtFatConstants.BVT_SERVER_2_PORT_NAME_ROOT);
+        server.addIgnoredErrors(Arrays.asList(MpJwtMessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE));
     }
 
     /**

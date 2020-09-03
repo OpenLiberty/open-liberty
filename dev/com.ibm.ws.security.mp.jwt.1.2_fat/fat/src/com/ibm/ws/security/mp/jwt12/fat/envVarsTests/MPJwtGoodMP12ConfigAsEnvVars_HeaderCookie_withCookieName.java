@@ -25,17 +25,18 @@ import componenttest.topology.impl.LibertyServer;
 
 /**
  * This is the test class that will verify that we get the correct behavior when we
- * have mp-config defined as environment variables.
+ * have mp-config defined as environment variables
  * We'll test with a server.xml that will NOT have a mpJwt config, the app will NOT have mp-config specified
- * Therefore, we'll be able to show that the config is coming from the environment variables
+ * Therefore, we'll be able to show that the config is coming from the system properties
+ * We also test with a conflicting config in server.xml - we'll show that this value overrides the environment variables
  *
  **/
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-public class MPJwtGooMP12ConfigAsEnvVars_HeaderAuthorization extends GenericEnvVarsAndSystemPropertiesTests {
+public class MPJwtGoodMP12ConfigAsEnvVars_HeaderCookie_withCookieName extends GenericEnvVarsAndSystemPropertiesTests {
 
-    public static Class<?> thisClass = MPJwtGooMP12ConfigAsEnvVars_HeaderAuthorization.class;
+    public static Class<?> thisClass = MPJwtGoodMP12ConfigAsEnvVars_HeaderCookie_withCookieName.class;
 
     @Server("com.ibm.ws.security.mp.jwt.fat")
     public static LibertyServer envVarsResourceServer;
@@ -43,14 +44,18 @@ public class MPJwtGooMP12ConfigAsEnvVars_HeaderAuthorization extends GenericEnvV
     @BeforeClass
     public static void setUp() throws Exception {
 
-        commonSetup(envVarsResourceServer, "rs_server_AltConfigNotInApp_good12ServerXmlConfigWithAudiences.xml", MpJwt12FatConstants.AUTHORIZATION,
-                    MpJwt12FatConstants.TOKEN_TYPE_BEARER,
+        commonSetup(envVarsResourceServer, "rs_server_AltConfigNotInApp_good12ServerXmlConfigWithAudiences.xml", MpJwt12FatConstants.COOKIE, "testCookie",
                     "client01, client02", MPConfigLocation.ENV_VAR);
 
     }
 
     @Test
-    public void MPJwtGooMP12ConfigAsEnvVars_HeaderAuthorization_test() throws Exception {
+    public void MPJwtGoodMP12ConfigAsEnvVars_HeaderCookie_withCookieName_test() throws Exception {
         genericGoodTest();
+    }
+
+    @Test
+    public void MPJwtGoodMP12ConfigAsEnvVars_HeaderCookie_withCookieName_overriddenByServerXml_test() throws Exception {
+        genericBadTest("rs_server_AltConfigNotInApp_Header_Authorization.xml", setMissingTokenExpectations(resourceServer));
     }
 }

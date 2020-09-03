@@ -6,7 +6,7 @@
 
 	<include location="${shared.config.dir}/goodSSLSettings.xml" />
 
-	<include location="${shared.config.dir}/microProfileApplication.xml" />
+	<include location="${shared.config.dir}/microProfileMPConfigNotInApps.xml" />
 
 	<include location="${shared.config.dir}/rs_fatTestPorts.xml" />
 

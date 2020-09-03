@@ -13,15 +13,12 @@ package com.ibm.ws.security.mp.jwt12.fat.sharedTests;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
-import com.ibm.ws.security.fat.common.expectations.ResponseStatusExpectation;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
 import com.ibm.ws.security.fat.common.utils.CommonIOUtils;
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwt12FatConstants;
@@ -48,7 +45,6 @@ import componenttest.topology.impl.LibertyServer;
  *
  **/
 
-@SuppressWarnings("restriction")
 @MinimumJavaLevel(javaLevel = 8)
 @RunWith(FATRunner.class)
 public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
@@ -58,71 +54,8 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
     @Server("com.ibm.ws.security.mp.jwt.1.2.fat.builder")
     public static LibertyServer jwtBuilderServer;
 
-    public static MPJwt11MPConfigTests mpTests = new MPJwt11MPConfigTests();
-
     protected static final String BothHeaderGood = "HeaderGood";
     protected static final String BothCookieGood = "CookieGood";
-
-    // @Server("com.ibm.ws.security.mp.jwt.fat.builder")
-    // public static LibertyServer jwtBuilderServer;
-    //
-    // @ClassRule
-    // public static RepeatTests r = RepeatTests.withoutModification();
-    //
-    // private final TestValidationUtils validationUtils = new
-    // TestValidationUtils();
-
-    // public static class MP12ConfigSettings {
-    //
-    // String publicKeyLocation = null;
-    // String publicKey = ComplexPublicKey;
-    // String issuer = null;
-    // String certType = MpJwt12FatConstants.X509_CERT;
-    // String header = "Authorization";
-    // String cookie = "mpJwtCookie";
-    //
-    // public MP12ConfigSettings() {
-    // }
-    //
-    // public MP12ConfigSettings(String inPublicKeyLocation, String inPublicKey,
-    // String inIssuer, String inCertType) {
-    //
-    // publicKeyLocation = inPublicKeyLocation;
-    // publicKey = inPublicKey;
-    // issuer = inIssuer;
-    // certType = inCertType;
-    // }
-    // }
-
-    // protected static String cert_type = MpJwt12FatConstants.X509_CERT;
-
-    // public static enum MPConfigLocation {
-    // IN_APP, SYSTEM_VAR, ENV_VAR
-    // };
-    //
-    // // if you recreate the rsa_cert.pem file, please update the PublicKey
-    // value
-    // // saved here.
-    // protected final static String SimplePublicKey =
-    // "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAl66sYoc5HXGHnrtGCMZ6G8zLHnAl+xhP7bOQMmqwEqtwI+yJJG3asvLhJQiizP0cMA317ekJE6VAJ2DBT8g2npqJSXK/IuVQokM4CNp0IIbD66qgVLJ4DS1jzf6GFciJAiGOHztl8ICd7/q0EvuYcwd/sUjTrwRpkLcEH2Z/FE2sh4a82UwyxZkX3ghbZ/3MFtsMjzw0cSqKPUrgGCr4ZcAWZeoye81cLybY5Vb/5/eZfkeBIDwSSssqJRmsNBFs23c+RAymtKaP7wsQw5ATEeI7pe0kiWLpqH4wtsDVyN1C/p+vZJSia0OQJ/z89b5OkmpFC6qGBGxC7eOk71wCJwIDAQAB";
-    // protected final static String ComplexPublicKey = "-----BEGIN PUBLIC
-    // KEY-----" + SimplePublicKey + "-----END PUBLIC KEY-----";
-    // protected final static String PemFile = "rsa_key.pem";
-    // protected final static String ComplexPemFile = "rsa_key_withCert.pem";
-    // protected final static String BadPemFile = "bad_key.pem";
-    // protected final static String jwksUri =
-    // "\"http://localhost:${bvt.prop.security_2_HTTP_default}/jwt/ibm/api/defaultJWT/jwk\"";
-    // protected final static String PublicKeyNotSet = "";
-    // protected final static String PublicKeyLocationNotSet = "";
-    // protected final static String IssuerNotSet = null;
-    //
-    // @SuppressWarnings("serial")
-    // List<String> reconfigMsgs = new ArrayList<String>() {
-    // {
-    // add("CWWKS5603E");
-    // add("CWWKZ0002E");
-    // }
-    // };
 
     /********************************************
      * helper methods
@@ -145,45 +78,17 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
 
     // Need to pass in the resource server reference as we can be using one
     // of several
-    protected static void setUpAndStart12RSServerForTests(LibertyServer server, String configFile, MP12ConfigSettings mpConfigSettings,
-                                                          MPConfigLocation mpConfigLocation) throws Exception {
+    protected static void setUpAndStartRSServerForTests(LibertyServer server, String configFile, MP12ConfigSettings mpConfigSettings,
+                                                        MPConfigLocation mpConfigLocation) throws Exception {
 
         Log.info(thisClass, "setUpAndStartRSServerFortTests", "enteredOverride method");
 
         setupBootstrapPropertiesForMPTests(server, mpConfigSettings);
 
-        setupMP12Config(server, mpConfigSettings, mpConfigLocation);
+        setupMPConfig(server, mpConfigSettings, mpConfigLocation);
 
         startRSServerForMPTests(server, configFile);
 
-        // // mpTests.setUpAndStartRSServerForTests(server, configFile,
-        // // mpConfigSettings, mpConfigLocation);
-        //
-        // bootstrapUtils.writeBootstrapProperty(server,
-        // MpJwt12FatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTNAME,
-        // SecurityFatHttpUtils.getServerHostName());
-        // bootstrapUtils.writeBootstrapProperty(server,
-        // MpJwt12FatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTIP,
-        // SecurityFatHttpUtils.getServerHostIp());
-        // if
-        // (mpConfigSettings.getCertType().equals(MpJwt12FatConstants.JWK_CERT)) {
-        // bootstrapUtils.writeBootstrapProperty(server, "mpJwt_keyName", "");
-        // bootstrapUtils.writeBootstrapProperty(server, "mpJwt_jwksUri",
-        // MP12ConfigSettings.jwksUri);
-        // } else {
-        // bootstrapUtils.writeBootstrapProperty(server, "mpJwt_keyName",
-        // "rsacert");
-        // bootstrapUtils.writeBootstrapProperty(server, "mpJwt_jwksUri", "");
-        // }
-        //
-        // // do we need to set any of the 1.2 vars here?
-        // setupMPConfig(server, mpConfigSettings, mpConfigLocation);
-        // serverTracker.addServer(server);
-        // server.startServerUsingExpandedConfiguration(configFile,
-        // commonStartMsgs);
-        // SecurityFatHttpUtils.saveServerPorts(server,
-        // MpJwt12FatConstants.BVT_SERVER_1_PORT_NAME_ROOT);
-        // server.addIgnoredErrors(Arrays.asList(MpJwtMessageConstants.CWWKW1001W_CDI_RESOURCE_SCOPE_MISMATCH));
     }
 
     /**
@@ -211,7 +116,7 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
      * @throws Exception
      */
 
-    public static void setupMP12Config(LibertyServer theServer, MP12ConfigSettings mpConfigSettings, MPConfigLocation mpConfigLocation) throws Exception {
+    public static void setupMPConfig(LibertyServer theServer, MP12ConfigSettings mpConfigSettings, MPConfigLocation mpConfigLocation) throws Exception {
 
         // build fully resolved issuer
         mpConfigSettings.setIssuer(buildIssuer(jwtBuilderServer, mpConfigSettings.getIssuer()));
@@ -230,11 +135,11 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
             case ENV_VAR:
                 // if we're testing env variables, we'll need to set environment
                 // variables
-                setAlternateMP12_ConfigProperties_envVars(theServer, mpConfigSettings);
+                setAlternateMP_ConfigProperties_envVars(theServer, mpConfigSettings);
                 setupUtils.deployRSServerNoMPConfigInAppApp(theServer);
                 break;
             case IN_APP:
-                deployRSServerMP12ConfigInAppApps(theServer, mpConfigSettings);
+                deployRSServerMPConfigInAppApps(theServer, mpConfigSettings);
                 break;
             default:
                 throw new Exception("Invalid MP Config location passed to setupMP12Config - tests do NOT understand " + mpConfigLocation);
@@ -296,7 +201,7 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
      *            - the mp-config settings values
      * @throws Exception
      */
-    public static void setAlternateMP12_ConfigProperties_envVars(LibertyServer server, MP12ConfigSettings mpConfigSettings) throws Exception {
+    public static void setAlternateMP_ConfigProperties_envVars(LibertyServer server, MP12ConfigSettings mpConfigSettings) throws Exception {
 
         // some platforms do NOT support env vars with ".", so, we'll use
         // underscores "_" (our runtime allows either)
@@ -312,7 +217,7 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
         Log.info(thisClass, "setAlternateMP_ConfigProperties_envVars", AudienceName + "=" + mpConfigSettings.getAudience());
         envVars.put(AudienceName, mpConfigSettings.getAudience());
 
-        mpTests.setAlternateMP_ConfigProperties_envVars(envVars, server, mpConfigSettings);
+        MPJwt11MPConfigTests.setAlternateMP_ConfigProperties_envVars(envVars, server, mpConfigSettings);
     }
 
     /**
@@ -326,8 +231,7 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
      *            - issuer value to add to the properties file
      * @return - return the microprofile-config.properties file content
      */
-//    public static String buildMP12ConfigFileContent(String publicKey, String publicKeyLocation, String issuer, String header, String cookie, String audience) {
-    public static String buildMP12ConfigFileContent(MP12ConfigSettings mpConfigSettings, String header, String cookie, String audience) {
+    public static String buildMPConfigFileContent(MP12ConfigSettings mpConfigSettings, String header, String cookie, String audience) {
         Log.info(thisClass, "", "mp.jwt.token.header=" + header + " mp.jwt.token.cookie=" + cookie + " mp.jwt.verify.audiences=" + audience);
         return MPJwt11MPConfigTests.buildMPConfigFileContent(mpConfigSettings.getPublicKey(), mpConfigSettings.getPublicKeyLocation(), mpConfigSettings.getIssuer())
                + System.lineSeparator() + "mp.jwt.token.header=" + header + System.lineSeparator()
@@ -348,22 +252,20 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
      *            created with specific good or bad values)
      * @throws Exception
      */
-    public static void deployRSServerMP12ConfigInAppApps(LibertyServer server, MP12ConfigSettings mpConfigSettings) throws Exception {
+    public static void deployRSServerMPConfigInAppApps(LibertyServer server, MP12ConfigSettings mpConfigSettings) throws Exception {
 
         Log.info(thisClass, "1.2 deployRSServerMPConfigInAppApps", "1.2");
 
         try {
-            String fixedJwksUri = resolvedJwksUri(jwtBuilderServer, MP12ConfigSettings.jwksUri);
-            String fileLoc = server.getServerRoot() + "/";
 
             // the microprofile-config.properties files will have xxx_<attr>_xxx
             // values that need to be replaced
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.GOOD_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                               buildMP12ConfigFileContent(mpConfigSettings, mpConfigSettings.getHeader(), mpConfigSettings.getCookie(),
-                                                                                          mpConfigSettings.getAudience()));
+                                                               buildMPConfigFileContent(mpConfigSettings, mpConfigSettings.getHeader(), mpConfigSettings.getCookie(),
+                                                                                        mpConfigSettings.getAudience()));
             setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.GOOD_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                                                                 buildMP12ConfigFileContent(mpConfigSettings, mpConfigSettings.getHeader(), mpConfigSettings.getCookie(),
-                                                                                            mpConfigSettings.getAudience()));
+                                                                 buildMPConfigFileContent(mpConfigSettings, mpConfigSettings.getHeader(), mpConfigSettings.getCookie(),
+                                                                                          mpConfigSettings.getAudience()));
 
         } catch (Exception e) {
             Log.info(thisClass, "MPJwtAltConfig", "Hit an exception updating the war file" + e.getMessage());
@@ -372,136 +274,44 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
 
     }
 
-    public static void deployRSServerMP12ConfigInAppHeaderApps(LibertyServer server, MP12ConfigSettings mpConfigSettings) throws Exception {
+    public static void deployRSServerMPConfigInAppHeaderApps(LibertyServer server, MP12ConfigSettings mpConfigSettings) throws Exception {
 
         Log.info(thisClass, "1.2 deployRSServerMPConfigInAppHeaderApps", "1.2");
 
-        try { // apps with some "bad" and some "good" values do need to be updated
-              // Header test setup
-//            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.GOOD_HEADER_AUTHORIZATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-//                                                               buildMP12ConfigFileContent(mpConfigSettings, MpJwt12FatConstants.AUTHORIZATION, MP12ConfigSettings.CookieNotSet,
-//                                                                                          mpConfigSettings.getAudience()));
-//            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.GOOD_HEADER_AUTHORIZATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-//                                                                 buildMP12ConfigFileContent(mpConfigSettings, MpJwt12FatConstants.AUTHORIZATION, MP12ConfigSettings.CookieNotSet,
-//                                                                                            mpConfigSettings.getAudience()));
-            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.GOOD_HEADER_COOKIE_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                               buildMP12ConfigFileContent(mpConfigSettings, MpJwt12FatConstants.COOKIE, MP12ConfigSettings.CookieNotSet,
+        try {
+            // Header and cookie test setup
+            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.GOOD_HEADER_AUTHORIZATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                                                               buildMPConfigFileContent(mpConfigSettings, MpJwt12FatConstants.AUTHORIZATION, MP12ConfigSettings.CookieNotSet,
+                                                                                        mpConfigSettings.getAudience()));
+            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.GOOD_HEADER_AUTHORIZATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+                                                                 buildMPConfigFileContent(mpConfigSettings, MpJwt12FatConstants.AUTHORIZATION, MP12ConfigSettings.CookieNotSet,
                                                                                           mpConfigSettings.getAudience()));
-//            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.GOOD_HEADER_COOKIE_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-//                                                                 buildMP12ConfigFileContent(mpConfigSettings, MpJwt12FatConstants.COOKIE, MP12ConfigSettings.CookieNotSet,
-//                                                                                            mpConfigSettings.getAudience()));
-//            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.BAD_HEADER_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-//                                                               buildMP12ConfigFileContent(mpConfigSettings, "badHeader", MP12ConfigSettings.CookieNotSet,
-//                                                                                          mpConfigSettings.getAudience()));
-//            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.BAD_HEADER_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-//                                                                 buildMP12ConfigFileContent(mpConfigSettings, "badHeader", mpConfigSettings.getCookie(),
-//                                                                                            mpConfigSettings.getAudience()));
-//
-//            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.GOOD_HEADER_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-//                                                               buildMP12ConfigFileContent(mpConfigSettings, mpConfigSettings.getHeader(), mpConfigSettings.getCookie(),
-//                                                                                          mpConfigSettings.getAudience()));
-//            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.GOOD_HEADER_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-//                                                                 buildMP12ConfigFileContent(mpConfigSettings, mpConfigSettings.getHeader(), mpConfigSettings.getCookie(),
-//                                                                                            mpConfigSettings.getAudience()));
-//            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.GOOD_HEADER_ONLY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-//                                                               buildMP12ConfigFileContent(mpConfigSettings, mpConfigSettings.getHeader(), MP12ConfigSettings.CookieNotSet,
-//                                                                                          MP12ConfigSettings.AudiencesNotSet));
-//            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.GOOD_HEADER_ONLY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-//                                                                 buildMP12ConfigFileContent(mpConfigSettings, mpConfigSettings.getHeader(), MP12ConfigSettings.CookieNotSet,
-//                                                                                            MP12ConfigSettings.AudiencesNotSet));
-//            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.BAD_HEADER_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-//                                                               buildMP12ConfigFileContent(mpConfigSettings, "badHeader", mpConfigSettings.getCookie(),
-//                                                                                          mpConfigSettings.getAudience()));
-//            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.BAD_HEADER_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-//                                                                 buildMP12ConfigFileContent(mpConfigSettings, "badHeader", mpConfigSettings.getCookie(),
-//                                                                                            mpConfigSettings.getAudience()));
-//            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.BAD_HEADER_ONLY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-//                                                               buildMP12ConfigFileContent(mpConfigSettings, "badHeader", MP12ConfigSettings.CookieNotSet,
-//                                                                                          MP12ConfigSettings.AudiencesNotSet));
-//            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.BAD_HEADER_ONLY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-//                                                                 buildMP12ConfigFileContent(mpConfigSettings, "badHeader", MP12ConfigSettings.CookieNotSet,
-//                                                                                            MP12ConfigSettings.AudiencesNotSet));
+            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.GOOD_HEADER_COOKIE_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                                                               buildMPConfigFileContent(mpConfigSettings, MpJwt12FatConstants.COOKIE, MP12ConfigSettings.CookieNotSet,
+                                                                                        mpConfigSettings.getAudience()));
+            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.GOOD_HEADER_COOKIE_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+                                                                 buildMPConfigFileContent(mpConfigSettings, MpJwt12FatConstants.COOKIE, MP12ConfigSettings.CookieNotSet,
+                                                                                          mpConfigSettings.getAudience()));
+            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.GOOD_HEADER_COOKIE_IN_CONFIG_WITH_COOKIENAME_IN_META_INF_ROOT_CONTEXT,
+                                                               buildMPConfigFileContent(mpConfigSettings, MpJwt12FatConstants.COOKIE, MP12ConfigSettings.DefaultCookieName,
+                                                                                        mpConfigSettings.getAudience()));
+            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.GOOD_HEADER_COOKIE_IN_CONFIG_WITH_COOKIENAME_UNDER_WEB_INF_ROOT_CONTEXT,
+                                                                 buildMPConfigFileContent(mpConfigSettings, MpJwt12FatConstants.COOKIE, MP12ConfigSettings.DefaultCookieName,
+                                                                                          mpConfigSettings.getAudience()));
+            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.GOOD_HEADER_COOKIE_IN_CONFIG_WITH_OTHER_COOKIENAME_IN_META_INF_ROOT_CONTEXT,
+                                                               buildMPConfigFileContent(mpConfigSettings, MpJwt12FatConstants.COOKIE, "OtherCookieName",
+                                                                                        mpConfigSettings.getAudience()));
+            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.GOOD_HEADER_COOKIE_IN_CONFIG_WITH_OTHER_COOKIENAME_UNDER_WEB_INF_ROOT_CONTEXT,
+                                                                 buildMPConfigFileContent(mpConfigSettings, MpJwt12FatConstants.COOKIE, "OtherCookieName",
+                                                                                          mpConfigSettings.getAudience()));
+            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.BAD_HEADER_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                                                               buildMPConfigFileContent(mpConfigSettings, "badHeader", MP12ConfigSettings.CookieNotSet,
+                                                                                        mpConfigSettings.getAudience()));
+            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.BAD_HEADER_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+                                                                 buildMPConfigFileContent(mpConfigSettings, "badHeader", mpConfigSettings.getCookie(),
+                                                                                          mpConfigSettings.getAudience()));
 
-            // Cookie test setup
-            // Audiences test setup
-//            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.GOOD_AUDIENCES_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-//                                                               buildMPConfigFileContent(mpConfigSettings.getPublicKey(), mpConfigSettings.getPublicKeyLocation(),
-//                                                                                        mpConfigSettings.getIssuer()));
-//            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.GOOD_ISSUER_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-//                                                                 buildMPConfigFileContent(mpConfigSettings.getPublicKey(), mpConfigSettings.getPublicKeyLocation(),
-//                                                                                          mpConfigSettings.getIssuer()));
-//            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.GOOD_ISSUER_ONLY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-//                                                               buildMPConfigFileContent(MP12ConfigSettings.PublicKeyNotSet, MP12ConfigSettings.PublicKeyLocationNotSet,
-//                                                                                        mpConfigSettings.getIssuer()));
-//            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.GOOD_ISSUER_ONLY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-//                                                                 buildMPConfigFileContent(MP12ConfigSettings.PublicKeyNotSet, MP12ConfigSettings.PublicKeyLocationNotSet,
-//                                                                                          mpConfigSettings.getIssuer()));
-//            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.BAD_ISSUER_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-//                                                               buildMPConfigFileContent(mpConfigSettings.getPublicKey(), mpConfigSettings.getPublicKeyLocation(), "badIssuer"));
-//            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.BAD_ISSUER_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-//                                                                 buildMPConfigFileContent(mpConfigSettings.getPublicKey(), mpConfigSettings.getPublicKeyLocation(), "badIssuer"));
-//            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.BAD_ISSUER_ONLY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-//                                                               buildMPConfigFileContent(MP12ConfigSettings.PublicKeyNotSet, MP12ConfigSettings.PublicKeyLocationNotSet, "badIssuer"));
-//            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.BAD_ISSUER_ONLY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-//                                                                 buildMPConfigFileContent(MP12ConfigSettings.PublicKeyNotSet, MP12ConfigSettings.PublicKeyLocationNotSet, "badIssuer"));
-//
-//            // publicKey (NOT keyLocation)
-//            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.GOOD_COMPLEX_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-//                                                               buildMPConfigFileContent(MP12ConfigSettings.ComplexPublicKey, MP12ConfigSettings.PublicKeyLocationNotSet,
-//                                                                                        mpConfigSettings.getIssuer()));
-//            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.GOOD_SIMPLE_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-//                                                               buildMPConfigFileContent(MP12ConfigSettings.SimplePublicKey, MP12ConfigSettings.PublicKeyLocationNotSet,
-//                                                                                        mpConfigSettings.getIssuer()));
-//            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.GOOD_COMPLEX_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-//                                                                 buildMPConfigFileContent(MP12ConfigSettings.ComplexPublicKey, MP12ConfigSettings.PublicKeyLocationNotSet,
-//                                                                                          mpConfigSettings.getIssuer()));
-//            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.GOOD_SIMPLE_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-//                                                                 buildMPConfigFileContent(MP12ConfigSettings.SimplePublicKey, MP12ConfigSettings.PublicKeyLocationNotSet,
-//                                                                                          mpConfigSettings.getIssuer()));
-//            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.BAD_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-//                                                               buildMPConfigFileContent("badPublicKey", MP12ConfigSettings.PublicKeyLocationNotSet, mpConfigSettings.getIssuer()));
-//            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.BAD_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-//                                                                 buildMPConfigFileContent("badPublicKey", MP12ConfigSettings.PublicKeyLocationNotSet, mpConfigSettings.getIssuer()));
-//
-//            // publicKeyLocation (NOT publicKey)
-//            // not testing all locations (relative, file, url, jwksuri) with all
-//            // pem loc types (good pem, complex pem, bad pem)
-//            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.GOOD_RELATIVE_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-//                                                               buildMPConfigFileContent(MP12ConfigSettings.PublicKeyNotSet, MP12ConfigSettings.PemFile, mpConfigSettings.getIssuer()));
-//            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.GOOD_RELATIVE_COMPLEX_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-//                                                               buildMPConfigFileContent(MP12ConfigSettings.PublicKeyNotSet, MP12ConfigSettings.ComplexPemFile,
-//                                                                                        mpConfigSettings.getIssuer()));
-//            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.GOOD_FILE_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-//                                                               buildMPConfigFileContent(MP12ConfigSettings.PublicKeyNotSet, fileLoc + MP12ConfigSettings.PemFile,
-//                                                                                        mpConfigSettings.getIssuer()));
-//            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.GOOD_URL_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-//                                                               buildMPConfigFileContent(MP12ConfigSettings.PublicKeyNotSet, "file:///" + fileLoc + MP12ConfigSettings.PemFile,
-//                                                                                        mpConfigSettings.getIssuer()));
-//            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.GOOD_JWKSURI_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-//                                                               buildMPConfigFileContent(MP12ConfigSettings.PublicKeyNotSet, fixedJwksUri, mpConfigSettings.getIssuer()));
-//            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.GOOD_RELATIVE_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-//                                                                 buildMPConfigFileContent(MP12ConfigSettings.PublicKeyNotSet, MP12ConfigSettings.PemFile,
-//                                                                                          mpConfigSettings.getIssuer()));
-//            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.GOOD_FILE_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-//                                                                 buildMPConfigFileContent(MP12ConfigSettings.PublicKeyNotSet, fileLoc + MP12ConfigSettings.PemFile,
-//                                                                                          mpConfigSettings.getIssuer()));
-//            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.GOOD_FILE_COMPLEX_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-//                                                                 buildMPConfigFileContent(MP12ConfigSettings.PublicKeyNotSet, fileLoc + MP12ConfigSettings.ComplexPemFile,
-//                                                                                          mpConfigSettings.getIssuer()));
-//            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.GOOD_URL_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-//                                                                 buildMPConfigFileContent(MP12ConfigSettings.PublicKeyNotSet, "file:///" + fileLoc + MP12ConfigSettings.PemFile,
-//                                                                                          mpConfigSettings.getIssuer()));
-//            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.GOOD_JWKSURI_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-//                                                                 buildMPConfigFileContent(MP12ConfigSettings.PublicKeyNotSet, fixedJwksUri, mpConfigSettings.getIssuer()));
-//
-//            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.BAD_FILE_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-//                                                               buildMPConfigFileContent(MP12ConfigSettings.PublicKeyNotSet, fileLoc + MP12ConfigSettings.BadPemFile,
-//                                                                                        mpConfigSettings.getIssuer()));
-//            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.BAD_URL_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-//                                                               buildMPConfigFileContent(MP12ConfigSettings.PublicKeyNotSet, "file:///" + fileLoc + "someKey.pem",
-//                                                                                        mpConfigSettings.getIssuer()));
-//            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.BAD_RELATIVE_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-//                                                                 buildMPConfigFileContent(MP12ConfigSettings.PublicKeyNotSet, "badPublicKeyLocation", mpConfigSettings.getIssuer()));
+            // audiences test setup
 
         } catch (Exception e) {
             Log.info(thisClass, "MPJwtAltConfig", "Hit an exception updating the war file" + e.getMessage());
@@ -509,67 +319,6 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
         }
 
     }
-
-    // /**
-    // * Builds the issuer value based on the test machine name and ports. THe
-    // * issuer is a list of valid hostname:port, hostname:securePort,
-    // * ipAddr:port, ipAddr:securePort + "/jwt/defaultJWT"
-    // *
-    // * @param issuer
-    // * - for negative issuer tests, we will already have set the
-    // * issuer to something like "badIssuer", pass in a value to
-    // * override the default value being set.
-    // * @return - return either the passed in override, or the generated valid
-    // * for your test system value
-    // * @throws Exception
-    // */
-    // public static String buildIssuer(String issuer) throws Exception {
-    // if (issuer == null) {
-    // return SecurityFatHttpUtils.getServerUrlBase(jwtBuilderServer) +
-    // "jwt/defaultJWT, " +
-    // SecurityFatHttpUtils.getServerIpUrlBase(jwtBuilderServer) +
-    // "jwt/defaultJWT, " +
-    // SecurityFatHttpUtils.getServerSecureUrlBase(jwtBuilderServer) +
-    // "jwt/defaultJWT, " +
-    // SecurityFatHttpUtils.getServerIpSecureUrlBase(jwtBuilderServer) +
-    // "jwt/defaultJWT, " + "https://localhost:" + jwtBuilderServer.getBvtPort()
-    // + "/oidc/endpoint/OidcConfigSample, " + "https://localhost:" +
-    // jwtBuilderServer.getBvtSecurePort() + "/oidc/endpoint/OidcConfigSample";
-    //
-    // } else {
-    // return issuer;
-    // }
-    //
-    // }
-    //
-    // /**
-    // * The jwksuri value in the server.xml contains variables for the server
-    // and
-    // * port. The server can not resolve these variables in the
-    // * microprofile.properties file, in system properties or in env variables.
-    // * We need to use the fully resolved string there. This method generates
-    // the
-    // * resolved string.
-    // *
-    // * @param rawJwksUri
-    // * - the raw value if we need to set a value, "" if we don't want
-    // * to put a value into the mp-config
-    // *
-    // * @return - return the fully expanded jwksuri (no $variables in it)
-    // * @throws Exception
-    // */
-    // public static String resolvedJwksUri(String rawJwksUri) throws Exception
-    // {
-    //
-    // if (rawJwksUri != "" && rawJwksUri.contains("bvt.prop")) {
-    // return SecurityFatHttpUtils.getServerUrlBase(jwtBuilderServer) +
-    // "jwt/ibm/api/defaultJWT/jwk";
-    //
-    // } else {
-    // return rawJwksUri;
-    // }
-    //
-    // }
 
     public Map<String, String> addToMap(Map<String, String> currentMap, String name, String value) throws Exception {
 
@@ -653,11 +402,6 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
 
     public void standardTestFlow(String builder, String testUrl, String className, String location, String name, Expectations expectations) throws Exception {
 
-//        String builtToken = actions.getJwtFromTokenEndpoint(_testName,
-//                                                            builder,
-//                                                            SecurityFatHttpUtils.getServerSecureUrlBase(jwtBuilderServer),
-//                                                            defaultUser, defaultPassword);
-
         String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, builder);
 
         WebClient webClient = actions.createWebClient();
@@ -700,109 +444,6 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
 
     }
 
-    // /**
-    // * Set expectations for tests that have bad keyName/publicKey or
-    // * jwksuri/keyLocations
-    // *
-    // * @param server
-    // * - the server whose log we'll need to check for failure
-    // * messages
-    // * @param failureCause
-    // * - the cause of the failure (failures that occur validating
-    // * each type of cert x509/jwk)
-    // * @return - an expectation object with a variety of errors to check for
-    // * @throws Exception
-    // */
-    // @Override
-    // public Expectations setBadCertExpectations(LibertyServer server, String
-    // failureCause) throws Exception {
-    //
-    // Expectations expectations = new Expectations();
-    // expectations.addExpectation(new
-    // ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
-    // expectations.addExpectation(new ServerMessageExpectation(server,
-    // MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ,
-    // "Messages.log did not contain an error indicating a problem
-    // authenticating the request the provided token."));
-    // switch (failureCause) {
-    // case MpJwt12FatConstants.X509_CERT:
-    // String invalidKeyName = "badKeyName";
-    // expectations.addExpectation(new ServerMessageExpectation(server,
-    // invalidKeyName + ".*is not present in the KeyStore as a certificate
-    // entry", "Messages.log did not contain a message stating that the alias
-    // was NOT found in the keystore."));
-    // expectations.addExpectation(new ServerMessageExpectation(server,
-    // MpJwtMessageConstants.CWWKS6007E_BAD_KEY_ALIAS + ".*" + invalidKeyName,
-    // "Messages.log did not indicate that the signing key is NOT available."));
-    // expectations.addExpectation(new ServerMessageExpectation(server,
-    // MpJwtMessageConstants.CWWKS6033E_JWT_CONSUMER_PUBLIC_KEY_NOT_RETRIEVED +
-    // ".*" + invalidKeyName, "Message log did not indicate that the signing key
-    // is NOT available."));
-    // break;
-    // case MpJwt12FatConstants.JWK_CERT:
-    // expectations.addExpectation(new ServerMessageExpectation(server,
-    // MpJwtMessageConstants.CWWKS6029E_SIGNING_KEY_CANNOT_BE_FOUND,
-    // "Messages.log did not contain an error indicating that a signing key
-    // could not be found."));
-    // break;
-    // default:
-    // break;
-    // }
-    //
-    // return expectations;
-    //
-    // }
-    //
-    // /**
-    // * Setup expectations for a valid/good path (we get to invoke the app).
-    // * Expectations set status codes to check and content to validate in the
-    // * response from the app.
-    // *
-    // * @param step
-    // * - the step to check after
-    // * @param testUrl
-    // * - the app that should have benn invoked
-    // * @param theClass
-    // * - the class that should be invoked
-    // * @return - the formatted expectations - for a test with a good result
-    // * @throws Exception
-    // */
-    // @Override
-    // public Expectations setGoodAppExpectations(String testUrl, String
-    // theClass) throws Exception {
-    //
-    // Expectations expectations = new Expectations();
-    // expectations.addExpectations(CommonExpectations.successfullyReachedUrl(testUrl));
-    // expectations.addExpectation(new
-    // ResponseFullExpectation(MpJwt12FatConstants.STRING_CONTAINS, theClass, "Did
-    // not invoke the app " + theClass + "."));
-    //
-    // return expectations;
-    // }
-    //
-    // /**
-    // * The test framework randomly chooses between x509 and jwks. We need to
-    // set
-    // * the config based on what the framework has chosen for this spcific run.
-    // *
-    // * @param certType
-    // * - the cert type being tested - indicates which config to load
-    // * @throws Exception
-    // */
-    // @Override
-    // public void badTokenVerificationReconfig(LibertyServer server, String
-    // certType) throws Exception {
-    //
-    // if (MpJwt12FatConstants.X509_CERT.equals(cert_type)) {
-    // server.reconfigureServer("rs_server_AltConfigInApp_badServerXmlKeyName.xml",
-    // _testName);
-    // } else {
-    // server.reconfigureServer("rs_server_AltConfigInApp_badServerXmlJwksUri.xml",
-    // _testName);
-    // }
-    //
-    // }
-
     /**
      * Set expectations for tests that have bad Header values
      *
@@ -812,83 +453,81 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
     public Expectations setBadHeaderValueExpectations(LibertyServer server, String testUrl, String className) throws Exception {
 
         Expectations expectations = setGoodAppExpectations(testUrl, className);
-        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS5528W_blah, "Messagelog did not contain an error indicating a problem authenticating the request with the provided token."));
+        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS5528W_BAD_HEADER_VALUE_IN_MP_CONFIG, "Message.log did not contain an error indicating a problem with the value specified for mp.jwt.token.header in the microprofile-config.properties file."));
+
+        return expectations;
+
+    }
+
+//    /**
+//     * Set expectations for tests that have bad Audiences values
+//     *
+//     * @return Expectations
+//     * @throws Exception
+//     */
+//    public Expectations setBadAudiencesExpectations(LibertyServer server) throws Exception {
+//
+//        Expectations expectations = new Expectations();
+//        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
+//
+//        // TODO - fix when we have the correct messages
+//        //expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Messagelog did not contain an error indicating a problem authenticating the request with the provided token."));
+//        //expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6022E_ISSUER_NOT_TRUSTED, "Messagelog did not contain an exception indicating that the issuer is NOT valid."));
+//
+//        return expectations;
+//
+//    }
+//
+//    /**
+//     * Set expectations for tests that have bad Decryption key location values
+//     *
+//     * @return Expectations
+//     * @throws Exception
+//     */
+//    public Expectations setBadDecryptionKeyLocationExpectations(LibertyServer server) throws Exception {
+//
+//        Expectations expectations = new Expectations();
+//        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
+//
+//        // TODO - fix when we have the correct messages
+//        //expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Messagelog did not contain an error indicating a problem authenticating the request with the provided token."));
+//        //expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6022E_ISSUER_NOT_TRUSTED, "Messagelog did not contain an exception indicating that the issuer is NOT valid."));
+//
+//        return expectations;
+//
+//    }
+
+    /**
+     * Runtime finds the Authorization header, but the name within the token is not recognized
+     *
+     * @param server - server whose logs will be searched
+     * @return Expectations - built expectations
+     * @throws Exception
+     */
+    public Expectations setMissingTokenBadNameExpectations(LibertyServer server) throws Exception {
+
+        Expectations expectations = badAppExpectations(MpJwt12FatConstants.UNAUTHORIZED_MESSAGE);
+
+        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6031E_CAN_NOT_PROCESS_TOKEN, "Messagelog did not contain an error indicating a problem processing the request."));
+
+        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Messagelog did not contain and exception indicating that the JWT feature cannot authenticate the request."));
+        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS5524E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Messagelog did not contain an exception indicating that the Signature Algorithm is NOT valid."));
 
         return expectations;
 
     }
 
     /**
-     * Set expectations for tests that have bad Header values
+     * Set expectations for tests that are missing the token
      *
-     * @return Expectations
+     * @param server - server whose logs will be searched
+     * @return Expectations - built expectations
      * @throws Exception
      */
-    public Expectations setBadHeaderExpectations(LibertyServer server) throws Exception {
+    public Expectations setMissingTokenExpectations(LibertyServer server) throws Exception {
 
-        Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
-
-        // TODO - fix when we have the correct messages
-        //expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Messagelog did not contain an error indicating a problem authenticating the request with the provided token."));
-        //expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6022E_ISSUER_NOT_TRUSTED, "Messagelog did not contain an exception indicating that the issuer is NOT valid."));
-
-        return expectations;
-
-    }
-
-    /**
-     * Set expectations for tests that have bad Cookie values
-     *
-     * @return Expectations
-     * @throws Exception
-     */
-    public Expectations setBadCookieExpectations(LibertyServer server) throws Exception {
-
-        Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
-
-        // TODO - fix when we have the correct messages
-        //expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Messagelog did not contain an error indicating a problem authenticating the request with the provided token."));
-        //expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6022E_ISSUER_NOT_TRUSTED, "Messagelog did not contain an exception indicating that the issuer is NOT valid."));
-
-        return expectations;
-
-    }
-
-    /**
-     * Set expectations for tests that have bad Audiences values
-     *
-     * @return Expectations
-     * @throws Exception
-     */
-    public Expectations setBadAudiencesExpectations(LibertyServer server) throws Exception {
-
-        Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
-
-        // TODO - fix when we have the correct messages
-        //expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Messagelog did not contain an error indicating a problem authenticating the request with the provided token."));
-        //expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6022E_ISSUER_NOT_TRUSTED, "Messagelog did not contain an exception indicating that the issuer is NOT valid."));
-
-        return expectations;
-
-    }
-
-    /**
-     * Set expectations for tests that have bad Decryption key location values
-     *
-     * @return Expectations
-     * @throws Exception
-     */
-    public Expectations setBadDecryptionKeyLocationExpectations(LibertyServer server) throws Exception {
-
-        Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
-
-        // TODO - fix when we have the correct messages
-        //expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Messagelog did not contain an error indicating a problem authenticating the request with the provided token."));
-        //expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6022E_ISSUER_NOT_TRUSTED, "Messagelog did not contain an exception indicating that the issuer is NOT valid."));
+        Expectations expectations = badAppExpectations(MpJwt12FatConstants.UNAUTHORIZED_MESSAGE);
+        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS5522E_MPJWT_TOKEN_NOT_FOUND, "Messagelog did not contain an error indicating that the JWT token was not found."));
 
         return expectations;
 

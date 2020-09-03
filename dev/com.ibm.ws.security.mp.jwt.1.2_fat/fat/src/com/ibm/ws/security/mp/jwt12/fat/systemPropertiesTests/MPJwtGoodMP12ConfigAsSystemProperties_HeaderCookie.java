@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.mp.jwt12.fat.envVarsTests;
+package com.ibm.ws.security.mp.jwt12.fat.systemPropertiesTests;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -25,31 +25,37 @@ import componenttest.topology.impl.LibertyServer;
 
 /**
  * This is the test class that will verify that we get the correct behavior when we
- * have mp-config defined as environment variables.
+ * have mp-config defined as system properties
  * We'll test with a server.xml that will NOT have a mpJwt config, the app will NOT have mp-config specified
- * Therefore, we'll be able to show that the config is coming from the environment variables
+ * Therefore, we'll be able to show that the config is coming from the system properties
+ * We also test with a conflicting config in server.xml - we'll show that this value overrides the system properties
  *
  **/
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-public class MPJwtGooMP12ConfigAsEnvVars_HeaderCookie extends GenericEnvVarsAndSystemPropertiesTests {
+public class MPJwtGoodMP12ConfigAsSystemProperties_HeaderCookie extends GenericEnvVarsAndSystemPropertiesTests {
 
-    public static Class<?> thisClass = MPJwtGooMP12ConfigAsEnvVars_HeaderCookie.class;
+    public static Class<?> thisClass = MPJwtGoodMP12ConfigAsSystemProperties_HeaderCookie.class;
 
-    @Server("com.ibm.ws.security.mp.jwt.fat")
-    public static LibertyServer envVarsResourceServer;
+    @Server("com.ibm.ws.security.mp.jwt.fat.jvmOptions")
+    public static LibertyServer sysPropResourceServer;
 
     @BeforeClass
     public static void setUp() throws Exception {
 
-        commonSetup(envVarsResourceServer, "rs_server_AltConfigNotInApp_good12ServerXmlConfigWithAudiences.xml", MpJwt12FatConstants.COOKIE, MpJwt12FatConstants.TOKEN_TYPE_BEARER,
-                    "client01, client02", MPConfigLocation.ENV_VAR);
+        commonSetup(sysPropResourceServer, "rs_server_AltConfigNotInApp_good12ServerXmlConfigWithAudiences.xml", MpJwt12FatConstants.COOKIE, MpJwt12FatConstants.TOKEN_TYPE_BEARER,
+                    "client01, client02", MPConfigLocation.SYSTEM_VAR);
 
     }
 
     @Test
-    public void MPJwtGooMP12ConfigAsEnvVars_HeaderCookie_test() throws Exception {
+    public void MPJwtGoodMP12ConfigAsSystemProperties_HeaderCookie_test() throws Exception {
         genericGoodTest();
+    }
+
+    @Test
+    public void MPJwtGoodMP12ConfigAsSystemProperties_HeaderCookie_overriddenByServerXml_test() throws Exception {
+        genericBadTest("rs_server_AltConfigNotInApp_Header_Authorization.xml", setMissingTokenExpectations(resourceServer));
     }
 }

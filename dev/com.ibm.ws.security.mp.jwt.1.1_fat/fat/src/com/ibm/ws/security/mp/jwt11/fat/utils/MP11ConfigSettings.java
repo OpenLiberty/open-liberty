@@ -17,9 +17,9 @@ import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
 import componenttest.topology.impl.LibertyServer;
 
 @SuppressWarnings("restriction")
-public class MPConfigSettings {
+public class MP11ConfigSettings {
 
-    public static Class<?> thisClass = MPConfigSettings.class;
+    public static Class<?> thisClass = MP11ConfigSettings.class;
 
     public static String cert_type = MpJwtFatConstants.X509_CERT;
 
@@ -52,10 +52,10 @@ public class MPConfigSettings {
     public static final String ps384PubKey = "PS384public-key.pem";
     public static final String ps512PubKey = "PS512public-key.pem";
 
-    public MPConfigSettings() {
+    public MP11ConfigSettings() {
     }
 
-    public MPConfigSettings(String inPublicKeyLocation, String inPublicKey, String inIssuer, String inCertType) {
+    public MP11ConfigSettings(String inPublicKeyLocation, String inPublicKey, String inIssuer, String inCertType) {
 
         publicKeyLocation = inPublicKeyLocation;
         publicKey = inPublicKey;

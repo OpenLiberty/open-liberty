@@ -14,7 +14,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.ws.security.fat.common.servers.ServerInstanceUtils;
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
-import com.ibm.ws.security.mp.jwt11.fat.utils.MPConfigSettings;
+import com.ibm.ws.security.mp.jwt11.fat.utils.MP11ConfigSettings;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -60,10 +60,10 @@ public class MPJwtWithGoodAltSigAlgMPConfig extends MPJwt11MPConfigTests {
 
         // when building the jwksuri, we need the real port of the builder - caller just
         if (location != null && location.equals(JwksUriFlag)) {
-            location = resolvedJwksUri(jwtBuilderServer, MPConfigSettings.jwksUri).replace("defaultJWT", sigAlg);
+            location = resolvedJwksUri(jwtBuilderServer, MP11ConfigSettings.jwksUri).replace("defaultJWT", sigAlg);
         }
 
-        MPConfigSettings mpConfigSettings = new MPConfigSettings(location, key, MPConfigSettings.IssuerNotSet, MpJwtFatConstants.X509_CERT);
+        MP11ConfigSettings mpConfigSettings = new MP11ConfigSettings(location, key, MP11ConfigSettings.IssuerNotSet, MpJwtFatConstants.X509_CERT);
         setUpAndStartRSServerForTests(resourceServer, "rs_server_AltConfigNotInApp_goodSigAlgServerXmlConfig.xml", mpConfigSettings, where);
 
         // set signatureAlgorithm attribute in server.xml

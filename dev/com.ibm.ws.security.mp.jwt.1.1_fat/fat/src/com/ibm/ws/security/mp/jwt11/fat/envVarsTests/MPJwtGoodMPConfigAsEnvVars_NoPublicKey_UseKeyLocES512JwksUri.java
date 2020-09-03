@@ -16,7 +16,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
 import com.ibm.ws.security.mp.jwt11.fat.sharedTests.MPJwtWithGoodAltSigAlgMPConfig;
-import com.ibm.ws.security.mp.jwt11.fat.utils.MPConfigSettings;
+import com.ibm.ws.security.mp.jwt11.fat.utils.MP11ConfigSettings;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -44,7 +44,7 @@ public class MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseKeyLocES512JwksUri extend
     public static void setUp() throws Exception {
 
         String sigAlg = MpJwtFatConstants.SIGALG_ES512;
-        commonSetup(sigAlg, JwksUriFlag, MPConfigSettings.PublicKeyNotSet, MPConfigLocation.ENV_VAR);
+        commonSetup(sigAlg, JwksUriFlag, MP11ConfigSettings.PublicKeyNotSet, MPConfigLocation.ENV_VAR);
 
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,13 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwt12FatConstants;
-import com.ibm.ws.security.mp.jwt12.fat.envVarsTests.MPJwtGooMP12ConfigAsEnvVars_HeaderCookie;
+import com.ibm.ws.security.mp.jwt12.fat.configInAppTests.MPJwt12MPConfigInApp_Tests;
+import com.ibm.ws.security.mp.jwt12.fat.envVarsTests.MPJwtGoodMP12ConfigAsEnvVars_HeaderAuthorization;
+import com.ibm.ws.security.mp.jwt12.fat.envVarsTests.MPJwtGoodMP12ConfigAsEnvVars_HeaderCookie;
+import com.ibm.ws.security.mp.jwt12.fat.envVarsTests.MPJwtGoodMP12ConfigAsEnvVars_HeaderCookie_withCookieName;
+import com.ibm.ws.security.mp.jwt12.fat.systemPropertiesTests.MPJwtGoodMP12ConfigAsSystemProperties_HeaderAuthorization;
+import com.ibm.ws.security.mp.jwt12.fat.systemPropertiesTests.MPJwtGoodMP12ConfigAsSystemProperties_HeaderCookie;
+import com.ibm.ws.security.mp.jwt12.fat.systemPropertiesTests.MPJwtGoodMP12ConfigAsSystemProperties_HeaderCookie_withCookieName;
 
 @SuppressWarnings("restriction")
 @RunWith(Suite.class)
@@ -66,17 +72,19 @@ import com.ibm.ws.security.mp.jwt12.fat.envVarsTests.MPJwtGooMP12ConfigAsEnvVars
 //                MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseJwksUri_JWK.class,
 //                MPJwtBadMPConfigAsEnvVars.class,
 
-//                // 1.2 tests
-//                MPJwt12ConfigUsingBuilderTests.class,
-//                // mp-config specified in applications
-//                MPJwt12MPConfigInApp_MPJwtConfigInServerXml_Tests.class,
-//                // mp-config specified as system properties
-//                MPJwtGooMP12ConfigAsSystemProperties_HeaderAuthorization.class,
-//                MPJwtGooMP12ConfigAsSystemProperties_HeaderCookie.class,
-////                MPJwtGoodMP12ConfigAsSystemProperties_Audience.class,
-////                // mp-config specified as env vars
-//                MPJwtGooMP12ConfigAsEnvVars_HeaderAuthorization.class,
-                MPJwtGooMP12ConfigAsEnvVars_HeaderCookie.class,
+                // 1.2 tests
+                MPJwt12ConfigUsingBuilderTests.class,
+                // mp-config specified in applications
+                MPJwt12MPConfigInApp_Tests.class,
+                // mp-config specified as system properties
+                MPJwtGoodMP12ConfigAsSystemProperties_HeaderAuthorization.class,
+                MPJwtGoodMP12ConfigAsSystemProperties_HeaderCookie.class,
+                MPJwtGoodMP12ConfigAsSystemProperties_HeaderCookie_withCookieName.class,
+//                MPJwtGoodMP12ConfigAsSystemProperties_Audience.class,
+                // mp-config specified as env vars
+                MPJwtGoodMP12ConfigAsEnvVars_HeaderAuthorization.class,
+                MPJwtGoodMP12ConfigAsEnvVars_HeaderCookie.class,
+                MPJwtGoodMP12ConfigAsEnvVars_HeaderCookie_withCookieName.class,
 //                MPJwtGoodMP12ConfigAsEnvVars_Audience.class,
 
 })
