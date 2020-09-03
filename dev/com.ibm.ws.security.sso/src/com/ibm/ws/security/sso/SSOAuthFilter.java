@@ -33,9 +33,6 @@ import com.ibm.ws.security.token.ltpa.LTPAConfiguration;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 
-/**
- *
- */
 @Component(service = { SSOAuthFilter.class },
            name = "com.ibm.ws.security.sso.SSOAuthFilter",
            configurationPolicy = ConfigurationPolicy.IGNORE,
@@ -96,7 +93,7 @@ public class SSOAuthFilter {
     }
 
 /*
- * If there no authentication filter defined, then process the request
+ * If there no authentication filter defined, we will process all requests
  */
     public boolean processRequest(HttpServletRequest req) {
         AuthenticationFilter authFilter = getAuthFilter();

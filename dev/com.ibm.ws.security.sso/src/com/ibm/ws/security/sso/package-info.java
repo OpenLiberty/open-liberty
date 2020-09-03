@@ -12,7 +12,7 @@
  * @version 1.0
  */
 @org.osgi.annotation.versioning.Version("1.0")
-//@TraceOptions(traceGroup = TraceConstants.TRACE_GROUP, messageBundle = TraceConstants.MESSAGE_BUNDLE)
+@TraceOptions(traceGroup = TraceConstants.TRACE_GROUP)
 package com.ibm.ws.security.sso;
 
-//import com.ibm.websphere.ras.annotation.TraceOptions;
+import com.ibm.websphere.ras.annotation.TraceOptions;

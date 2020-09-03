@@ -14,6 +14,5 @@ package com.ibm.ws.security.sso;
  *
  */
 interface TraceConstants {
-    public final static String TRACE_GROUP = "sso";
-//    public final static String MESSAGE_BUNDLE = "com.ibm.ws.security.sso.internal.resources.Sso ssssMessages";
+    public final static String TRACE_GROUP = "SSO";
 }

@@ -27,8 +27,6 @@ Export-Package: com.ibm.ws.security.sso;provide:=true
 
 Import-Package:  !*.internal.*, *
          
-#Private-Package: com.ibm.ws.security.sso.internal.*
-
 -dsannotations: com.ibm.ws.security.sso.SSOAuthFilter
 
 -dsannotations-inherit: true
