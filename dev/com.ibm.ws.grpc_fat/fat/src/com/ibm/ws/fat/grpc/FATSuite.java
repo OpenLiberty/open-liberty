@@ -20,6 +20,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 HelloWorldCDITests.class,
                 HelloWorldTest.class,
                 HelloWorldTlsTest.class,
+                SecureHelloWorldTest.class,
                 GrpcMetricsTest.class,
                 ServiceSupportTests.class,
                 ServiceConfigTests.class,
