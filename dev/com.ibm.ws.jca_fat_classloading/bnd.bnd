@@ -20,6 +20,6 @@ fat.project: true
 
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
-	com.ibm.websphere.javaee.servlet.3.0,\
-	com.ibm.websphere.javaee.jms.1.1,\
-	com.ibm.websphere.javaee.connector.1.7
+	io.openliberty.jakarta.servlet.5.0;version=latest,\
+	io.openliberty.jakarta.connectors.2.0;version=latest,\
+	io.openliberty.jakarta.messaging.3.0;version=latest

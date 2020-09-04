@@ -12,8 +12,8 @@ package ra;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import javax.jms.JMSException;
-import javax.jms.Topic;
+import jakarta.jms.JMSException;
+import jakarta.jms.Topic;
 
 public class DummyTopic implements Topic {
 
