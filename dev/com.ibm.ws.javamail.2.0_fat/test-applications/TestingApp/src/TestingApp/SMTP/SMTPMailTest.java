@@ -15,19 +15,15 @@ import java.io.PrintWriter;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.http.HttpServletResponse;
 
 import jakarta.mail.FolderClosedException;
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
-import jakarta.mail.PasswordAuthentication;
 import jakarta.mail.Session;
 import jakarta.mail.Transport;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
-import jakarta.mail.Store;
-import jakarta.mail.Folder;
-import jakarta.mail.Authenticator;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class SMTPMailTest {
     private Session session;

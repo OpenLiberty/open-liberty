@@ -13,18 +13,17 @@ package TestingApp.POP3;
 import java.io.PrintWriter;
 import java.util.Enumeration;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import jakarta.mail.Folder;
 import jakarta.mail.FolderClosedException;
-import jakarta.mail.Authenticator;
-import jakarta.mail.PasswordAuthentication;
 import jakarta.mail.Header;
 import jakarta.mail.Message;
 import jakarta.mail.Session;
 import jakarta.mail.Store;
-import jakarta.mail.Folder;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class POP3MailTest {
     Session session;
