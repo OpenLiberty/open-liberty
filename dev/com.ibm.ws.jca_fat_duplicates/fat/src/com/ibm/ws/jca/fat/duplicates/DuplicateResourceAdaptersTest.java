@@ -11,10 +11,8 @@
 package com.ibm.ws.jca.fat.duplicates;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 import java.io.File;
-import java.time.Duration;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
@@ -70,16 +68,9 @@ public class DuplicateResourceAdaptersTest {
     @Test
     public void testDuplicateResourceAdapterNames_OneShouldInstall() throws Exception {
         // Either "duplicatera" or "DuplicateRA" will start, so only scan for what is common
-        // Note in cases where server takes a while to install a resource adapter this trace string may not
-        // be logged and instead we will get "J2CA7022W: Resource adapter {} has not installed in 30.016 seconds."
-        // This consistently happens when using repeat tests
+        // Note in cases where a slow test system takes a while to install a resource adapter this trace string may not
+        // be logged and instead we will get "J2CA7022W: Resource adapter {} has not installed in 30.x seconds."
         server.waitForStringInLog("J2CA7001I.*uplicate.*");
-
-        // Ensure service components have correctly been provided.
-        assertNull("Server should be able to load jca service components",
-                   server.verifyStringNotInLogUsingMark("BootstrapContext service event has not arrived",
-                                                        Duration.ofSeconds(10).toMillis(),
-                                                        server.getDefaultTraceFile()));
     }
 
     @Test
