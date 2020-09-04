@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.testapp.g3store.restProducer.api;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.concurrent.CountDownLatch;
@@ -64,6 +66,13 @@ import com.ibm.testapp.g3store.restProducer.model.ProducerRestResponse;
 public class ProducerRestEndpoint extends ProducerGrpcServiceClientImpl {
 
     public static Logger log = Logger.getLogger(ProducerRestEndpoint.class.getName());
+    public static boolean PERF_LOGGING_ON = true;
+
+    public ProducerRestEndpoint() {
+        if (PERF_LOGGING_ON) {
+            readStreamParmsFromFile();
+        }
+    }
 
     private static String getSysProp(String key) {
         return AccessController.doPrivileged((PrivilegedAction<String>) () -> System.getProperty(key));
@@ -252,10 +261,10 @@ public class ProducerRestEndpoint extends ProducerGrpcServiceClientImpl {
 
     }
 
-    public final static int SERVER_STREAM_MAX_STRESS_CONNECTIONS = 100;
-    public final static int SERVER_STREAM_SLEEP_BETWEEN_STARTING_CONNECTIONS_MSEC = 100;
-    public final static int SERVER_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC = 600;
-    public final static int SERVER_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS = 10;
+    public static int SERVER_STREAM_MAX_STRESS_CONNECTIONS = 100;
+    public static int SERVER_STREAM_SLEEP_BETWEEN_STARTING_CONNECTIONS_MSEC = 100;
+    public static int SERVER_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC = 600;
+    public static int SERVER_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS = 10;
 
     @POST
     @Path("/streamingA/server")
@@ -457,10 +466,10 @@ public class ProducerRestEndpoint extends ProducerGrpcServiceClientImpl {
 
     // ----------------------------------------------------------------------------------------
 
-    public final static int CLIENT_STREAM_MAX_STRESS_CONNECTIONS = 100;
-    public final static int CLIENT_STREAM_SLEEP_BETWEEN_STARTING_CONNECTIONS_MSEC = 100;
-    public final static int CLIENT_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC = 600;
-    public final static int CLIENT_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS = 10;
+    public static int CLIENT_STREAM_MAX_STRESS_CONNECTIONS = 100;
+    public static int CLIENT_STREAM_SLEEP_BETWEEN_STARTING_CONNECTIONS_MSEC = 100;
+    public static int CLIENT_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC = 600;
+    public static int CLIENT_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS = 10;
 
     public static CountDownLatch stressLatch = null;
 
@@ -561,4 +570,60 @@ public class ProducerRestEndpoint extends ProducerGrpcServiceClientImpl {
             return result;
         }
     }
+
+    @Override
+    public void readStreamParmsFromFile() {
+
+        BufferedReader br = null;
+        FileReader fr = null;
+        String sCurrentLine;
+
+        System.out.println("Reading parms in from: GrpcStreamParms.txt");
+        try {
+            fr = new FileReader("GrpcStreamParms.txt");
+            if (fr == null)
+                return;
+            br = new BufferedReader(fr);
+            if (br == null)
+                return;
+            while ((sCurrentLine = br.readLine()) != null) {
+                if (sCurrentLine.indexOf("SERVER_STREAM_MAX_STRESS_CONNECTIONS") != -1) {
+                    sCurrentLine = br.readLine();
+                    SERVER_STREAM_MAX_STRESS_CONNECTIONS = new Integer(sCurrentLine).intValue();
+                    System.out.println("setting SERVER_STREAM_MAX_STRESS_CONNECTIONS to: " + SERVER_STREAM_MAX_STRESS_CONNECTIONS);
+                } else if (sCurrentLine.indexOf("SERVER_STREAM_SLEEP_BETWEEN_STARTING_CONNECTIONS_MSEC") != -1) {
+                    sCurrentLine = br.readLine();
+                    SERVER_STREAM_SLEEP_BETWEEN_STARTING_CONNECTIONS_MSEC = new Integer(sCurrentLine).intValue();
+                    System.out.println("setting SERVER_STREAM_SLEEP_BETWEEN_STARTING_CONNECTIONS_MSEC to: " + SERVER_STREAM_SLEEP_BETWEEN_STARTING_CONNECTIONS_MSEC);
+                } else if (sCurrentLine.indexOf("SERVER_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC") != -1) {
+                    sCurrentLine = br.readLine();
+                    SERVER_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC = new Integer(sCurrentLine).intValue();
+                    System.out.println("setting SERVER_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC to: " + SERVER_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC);
+                } else if (sCurrentLine.indexOf("SERVER_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS") != -1) {
+                    sCurrentLine = br.readLine();
+                    SERVER_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS = new Integer(sCurrentLine).intValue();
+                    System.out.println("setting SERVER_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS to: " + SERVER_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS);
+                } else if (sCurrentLine.indexOf("CLIENT_STREAM_MAX_STRESS_CONNECTIONS") != -1) {
+                    sCurrentLine = br.readLine();
+                    CLIENT_STREAM_MAX_STRESS_CONNECTIONS = new Integer(sCurrentLine).intValue();
+                    System.out.println("setting CLIENT_STREAM_MAX_STRESS_CONNECTIONS to: " + CLIENT_STREAM_MAX_STRESS_CONNECTIONS);
+                } else if (sCurrentLine.indexOf("CLIENT_STREAM_SLEEP_BETWEEN_STARTING_CONNECTIONS_MSEC") != -1) {
+                    sCurrentLine = br.readLine();
+                    CLIENT_STREAM_SLEEP_BETWEEN_STARTING_CONNECTIONS_MSEC = new Integer(sCurrentLine).intValue();
+                    System.out.println("setting CLIENT_STREAM_SLEEP_BETWEEN_STARTING_CONNECTIONS_MSEC to: " + CLIENT_STREAM_SLEEP_BETWEEN_STARTING_CONNECTIONS_MSEC);
+                } else if (sCurrentLine.indexOf("CLIENT_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC") != -1) {
+                    sCurrentLine = br.readLine();
+                    CLIENT_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC = new Integer(sCurrentLine).intValue();
+                    System.out.println("setting CLIENT_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC to: " + CLIENT_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC);
+                } else if (sCurrentLine.indexOf("CLIENT_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS") != -1) {
+                    sCurrentLine = br.readLine();
+                    CLIENT_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS = new Integer(sCurrentLine).intValue();
+                    System.out.println("setting CLIENT_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS to: " + CLIENT_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS);
+                }
+            }
+        } catch (Exception x) {
+            System.out.println("Error caught while reading GrpcStreamParms.txt: " + x);
+        }
+    }
+
 }

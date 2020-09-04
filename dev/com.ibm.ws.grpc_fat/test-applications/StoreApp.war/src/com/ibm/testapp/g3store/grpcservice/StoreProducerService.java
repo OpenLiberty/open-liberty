@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.testapp.g3store.grpcservice;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.UUID;
@@ -52,10 +54,14 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
     private static String CLASSNAME = StoreProducerService.class.getName();
     private static Logger log = Logger.getLogger(CLASSNAME);
 
-    public static boolean PERF_LOGGING_ON = false;
+    public static boolean PERF_LOGGING_ON = true;
 
     public StoreProducerService() {
         // this constructor is required to run the gRPC on Liberty server.
+
+        if (PERF_LOGGING_ON) {
+            readStreamParmsFromFile();
+        }
     }
 
     /**
@@ -493,9 +499,9 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
 
     // -------------------------------------------------------------------------
 
-    public final static int SERVER_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION = 10 * 1000000;
-    public final static int SERVER_STREAM_TIME_BETWEEN_MESSAGES_MSEC = 0;
-    public final static int SERVER_STREAM_MESSAGE_SIZE = 50; // set to 5, 50, 500, 5000, or else you will get 50.
+    public static int SERVER_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION = 10000000;
+    public static int SERVER_STREAM_TIME_BETWEEN_MESSAGES_MSEC = 0;
+    public static int SERVER_STREAM_MESSAGE_SIZE = 50; // set to 5, 50, 500, 5000, or else you will get 50.
 
     @Override
     public void serverStreamA(StreamRequestA req, StreamObserver<StreamReplyA> responseObserver) {
@@ -810,4 +816,40 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
         String result = sec + "." + msec;
         return result;
     }
+
+    public void readStreamParmsFromFile() {
+
+        BufferedReader br = null;
+        FileReader fr = null;
+        String sCurrentLine;
+
+        System.out.println("Reading parms in from: GrpcStreamParms.txt");
+        try {
+            fr = new FileReader("GrpcStreamParms.txt");
+            if (fr == null)
+                return;
+            br = new BufferedReader(fr);
+            if (br == null)
+                return;
+            while ((sCurrentLine = br.readLine()) != null) {
+
+                if (sCurrentLine.indexOf("SERVER_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION") != -1) {
+                    sCurrentLine = br.readLine();
+                    SERVER_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION = new Integer(sCurrentLine).intValue();
+                    System.out.println("setting SERVER_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION to: " + SERVER_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION);
+                } else if (sCurrentLine.indexOf("SERVER_STREAM_TIME_BETWEEN_MESSAGES_MSEC") != -1) {
+                    sCurrentLine = br.readLine();
+                    SERVER_STREAM_TIME_BETWEEN_MESSAGES_MSEC = new Integer(sCurrentLine).intValue();
+                    System.out.println("setting SERVER_STREAM_TIME_BETWEEN_MESSAGES_MSEC to: " + SERVER_STREAM_TIME_BETWEEN_MESSAGES_MSEC);
+                } else if (sCurrentLine.indexOf("SERVER_STREAM_MESSAGE_SIZE") != -1) {
+                    sCurrentLine = br.readLine();
+                    SERVER_STREAM_MESSAGE_SIZE = new Integer(sCurrentLine).intValue();
+                    System.out.println("setting SERVER_STREAM_MESSAGE_SIZE to: " + SERVER_STREAM_MESSAGE_SIZE);
+                }
+            }
+        } catch (Exception x) {
+            System.out.println("Error caught while reading GrpcStreamParms.txt: " + x);
+        }
+    }
+
 }

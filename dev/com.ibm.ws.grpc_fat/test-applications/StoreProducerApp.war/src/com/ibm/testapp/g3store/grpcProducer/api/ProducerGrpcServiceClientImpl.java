@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.testapp.g3store.grpcProducer.api;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -60,6 +62,12 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
     public static boolean PERF_LOGGING_ON = true;
 
     private final int deadlineMs = 30 * 1000;
+
+    public ProducerGrpcServiceClientImpl() {
+        if (PERF_LOGGING_ON) {
+            readStreamParmsFromFile();
+        }
+    }
 
     // gRPC client implementation(s)
     /**
@@ -446,10 +454,10 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         }
     }
 
-    public final static int CLIENT_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION = 1000000 * 2;
-    public final static int CLIENT_STREAM_TIME_BETWEEN_MESSAGES_MSEC = 0;
-    public final static int CLIENT_STREAM_MESSAGE_SIZE = 50; // set to 5, 50, 500, 5000, or else you will get 50.
-    public final static int CLIENT_STREAM_SLEEP_WHEN_NOT_READY_MSEC = 50;
+    public static int CLIENT_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION = 2000000;
+    public static int CLIENT_STREAM_TIME_BETWEEN_MESSAGES_MSEC = 0;
+    public static int CLIENT_STREAM_MESSAGE_SIZE = 50; // set to 5, 50, 500, 5000, or else you will get 50.
+    public static int CLIENT_STREAM_SLEEP_WHEN_NOT_READY_MSEC = 50;
 
     public String grpcClientStreamApp() {
         String replyAfterClientStream = "Null";
@@ -938,6 +946,44 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         long sec = time / 1000;
         String result = sec + "." + msec;
         return result;
+    }
+
+    public void readStreamParmsFromFile() {
+
+        BufferedReader br = null;
+        FileReader fr = null;
+        String sCurrentLine;
+
+        System.out.println("Reading parms in from: GrpcStreamParms.txt");
+        try {
+            fr = new FileReader("GrpcStreamParms.txt");
+            if (fr == null)
+                return;
+            br = new BufferedReader(fr);
+            if (br == null)
+                return;
+            while ((sCurrentLine = br.readLine()) != null) {
+                if (sCurrentLine.indexOf("CLIENT_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION") != -1) {
+                    sCurrentLine = br.readLine();
+                    CLIENT_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION = new Integer(sCurrentLine).intValue();
+                    System.out.println("setting CLIENT_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION to: " + CLIENT_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION);
+                } else if (sCurrentLine.indexOf("CLIENT_STREAM_TIME_BETWEEN_MESSAGES_MSEC") != -1) {
+                    sCurrentLine = br.readLine();
+                    CLIENT_STREAM_TIME_BETWEEN_MESSAGES_MSEC = new Integer(sCurrentLine).intValue();
+                    System.out.println("setting CLIENT_STREAM_TIME_BETWEEN_MESSAGES_MSEC to: " + CLIENT_STREAM_TIME_BETWEEN_MESSAGES_MSEC);
+                } else if (sCurrentLine.indexOf("CLIENT_STREAM_MESSAGE_SIZE") != -1) {
+                    sCurrentLine = br.readLine();
+                    CLIENT_STREAM_MESSAGE_SIZE = new Integer(sCurrentLine).intValue();
+                    System.out.println("setting CLIENT_STREAM_MESSAGE_SIZE to: " + CLIENT_STREAM_MESSAGE_SIZE);
+                } else if (sCurrentLine.indexOf("CLIENT_STREAM_SLEEP_WHEN_NOT_READY_MSEC") != -1) {
+                    sCurrentLine = br.readLine();
+                    CLIENT_STREAM_SLEEP_WHEN_NOT_READY_MSEC = new Integer(sCurrentLine).intValue();
+                    System.out.println("setting CLIENT_STREAM_SLEEP_WHEN_NOT_READY_MSEC to: " + CLIENT_STREAM_SLEEP_WHEN_NOT_READY_MSEC);
+                }
+            }
+        } catch (Exception x) {
+            System.out.println("Error caught while reading GrpcStreamParms.txt: " + x);
+        }
     }
 
 }
