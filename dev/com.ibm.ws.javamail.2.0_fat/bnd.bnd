@@ -21,8 +21,10 @@ src: \
 fat.project: true
 
 -buildpath: \
-  com.ibm.websphere.javaee.annotation.1.2;version=latest,\
-  com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+  io.openliberty.jakarta.annotation.2.0;version=latest,\
+  io.openliberty.jakarta.activation.2.0;version=latest,\
+  io.openliberty.jakarta.servlet.5.0;version=latest,\
+  io.openliberty.jakarta.ejb.4.0;version=latest, \
   com.ibm.websphere.jakartaee.mail.2.0;version=latest, \
   com.ibm.websphere.appserver.thirdparty.mail-2.0;version=latest, \
   com.ibm.ws.org.apache.commons.logging.1.0.3;version=latest, \

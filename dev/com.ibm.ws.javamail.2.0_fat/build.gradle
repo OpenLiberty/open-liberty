@@ -15,10 +15,9 @@ dependencies {
                'org.slf4j:slf4j-jdk14:1.7.7',
                'jakarta.mail:jakarta.mail-api:2.0.0',
                'com.sun.mail:jakarta.mail:2.0.0',
-               'com.ibm.ws.com.icegreen:greenmail:2.0.0.fd826131f671b0d3230b0d0e1638d8c4',
+               'com.ibm.ws.com.icegreen:greenmail:2.0.0',
                // Deps needed for when running on Java 9 (EE-type APIs were removed from JDK)
                'com.ibm.ws.org.apache.yoko:yoko-spec-corba:1.5.+',
-               'jakarta.activation:jakarta.activation-api:2.0.0',
                'javax.xml.bind:jaxb-api:2.2.+',
                'com.sun.xml.bind:jaxb-core:2.2.+',
                'com.sun.xml.bind:jaxb-impl:2.2.+'

@@ -11,7 +11,8 @@
 package fvtweb.ejb;
 
 import javax.annotation.Resource;
-import javax.ejb.Stateless;
+
+import jakarta.ejb.Stateless;
 import jakarta.mail.MailSessionDefinition;
 
 /**
