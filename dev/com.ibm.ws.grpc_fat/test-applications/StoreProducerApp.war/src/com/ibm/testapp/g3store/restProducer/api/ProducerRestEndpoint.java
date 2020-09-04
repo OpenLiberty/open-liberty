@@ -254,8 +254,8 @@ public class ProducerRestEndpoint extends ProducerGrpcServiceClientImpl {
 
     public final static int SERVER_STREAM_MAX_STRESS_CONNECTIONS = 100;
     public final static int SERVER_STREAM_SLEEP_BETWEEN_STARTING_CONNECTIONS_MSEC = 100;
-    public final static int SERVER_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC = 60;
-    public final static int SERVER_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS = 1;
+    public final static int SERVER_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC = 600;
+    public final static int SERVER_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS = 10;
 
     @POST
     @Path("/streamingA/server")
@@ -459,8 +459,8 @@ public class ProducerRestEndpoint extends ProducerGrpcServiceClientImpl {
 
     public final static int CLIENT_STREAM_MAX_STRESS_CONNECTIONS = 100;
     public final static int CLIENT_STREAM_SLEEP_BETWEEN_STARTING_CONNECTIONS_MSEC = 100;
-    public final static int CLIENT_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC = 60;
-    public final static int CLIENT_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS = 1;
+    public final static int CLIENT_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC = 600;
+    public final static int CLIENT_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS = 10;
 
     public static CountDownLatch stressLatch = null;
 

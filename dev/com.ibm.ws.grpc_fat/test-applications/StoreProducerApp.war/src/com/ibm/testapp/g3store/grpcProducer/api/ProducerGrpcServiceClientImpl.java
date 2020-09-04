@@ -15,6 +15,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.net.ssl.SSLEngineResult.Status;
+
 import com.google.protobuf.Empty;
 import com.ibm.test.g3store.grpc.AppRequest;
 import com.ibm.test.g3store.grpc.AppResponse;
@@ -33,14 +35,15 @@ import com.ibm.testapp.g3store.exception.AlreadyExistException;
 import com.ibm.testapp.g3store.exception.HandleExceptionsAsyncgRPCService;
 import com.ibm.testapp.g3store.exception.InvalidArgException;
 import com.ibm.testapp.g3store.exception.NotFoundException;
+import com.ibm.testapp.g3store.restProducer.api.ProducerRestEndpoint;
 import com.ibm.testapp.g3store.restProducer.model.AppStructure;
 import com.ibm.testapp.g3store.restProducer.model.DeleteAllRestResponse;
 import com.ibm.testapp.g3store.restProducer.model.MultiAppStructues;
 import com.ibm.testapp.g3store.restProducer.model.ProducerRestResponse;
 
-import io.grpc.Status;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
+import io.grpc.stub.ClientCallStreamObserver;
 import io.grpc.stub.StreamObserver;
 
 /**
@@ -53,6 +56,8 @@ import io.grpc.stub.StreamObserver;
 public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
 
     private static Logger log = Logger.getLogger(ProducerGrpcServiceClientImpl.class.getName());
+
+    public static boolean PERF_LOGGING_ON = true;
 
     private final int deadlineMs = 30 * 1000;
 
@@ -441,22 +446,27 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         }
     }
 
-    public final static int CLIENT_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION = 200;
+    public final static int CLIENT_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION = 1000000 * 2;
     public final static int CLIENT_STREAM_TIME_BETWEEN_MESSAGES_MSEC = 0;
     public final static int CLIENT_STREAM_MESSAGE_SIZE = 50; // set to 5, 50, 500, 5000, or else you will get 50.
+    public final static int CLIENT_STREAM_SLEEP_WHEN_NOT_READY_MSEC = 50;
 
     public String grpcClientStreamApp() {
         String replyAfterClientStream = "Null";
         String errorMessage = null;
         Throwable errorCaught = null;
         String sChars = "12345678901234567890123456789012345678901234567890"; // 50 characters
+        int readyLoopMax = 50;
+        int readyLoopCount = 0;
 
         CountDownLatch latch = new CountDownLatch(1);
 
         log.info("Producer: grpcClientStreamApp(): Entered");
+
         // This if for sending a stream of data to the server and then get a single reply
         ClientStreamClass csc = new ClientStreamClass(latch);
-        StreamObserver<StreamRequestA> clientStreamAX = _producerAsyncStub.clientStreamA(csc);
+        // StreamObserver<StreamRequestA> clientStreamAX = _producerAsyncStub.clientStreamA(csc);
+        ClientCallStreamObserver<StreamRequestA> clientStreamAX = (ClientCallStreamObserver) (_producerAsyncStub.clientStreamA(csc));
 
         // client streaming
         int numberOfMessages = CLIENT_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION;
@@ -480,15 +490,45 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
 
         for (int i = 1; i <= numberOfMessages; i++) {
             if (i == 1) {
+                if (PERF_LOGGING_ON)
+                    System.out.println(qtf() + " ServerStream: CLIENT sending message 1 hc: " + clientStreamAX.hashCode());
                 nextMessage = firstMessage;
             } else if (i == numberOfMessages) {
+                if (PERF_LOGGING_ON)
+                    System.out.println(qtf() + " ServerStream: CLIENT sending message " + i + " last message. hc: " + clientStreamAX.hashCode());
+                nextMessage = firstMessage;
                 nextMessage = lastMessage;
             } else {
+                if (PERF_LOGGING_ON && ((i % 1000) == 0))
+                    System.out.println(qtf() + " ServerStream: CLIENT sending message " + i + " hc: " + clientStreamAX.hashCode());
+                nextMessage = firstMessage;
                 nextMessage = "--Message " + i + " of " + numberOfMessages + " left client at time: " + System.currentTimeMillis() + "--";
                 nextMessage = nextMessage + sChars;
             }
 
             nextRequest = StreamRequestA.newBuilder().setMessage(nextMessage).build();
+
+            readyLoopCount = 0;
+            while (clientStreamAX.isReady() != true) {
+                if (PERF_LOGGING_ON)
+                    System.out.println(qtf() + " ServerStream: CLIENT.  isReady() returned false, sleep "
+                                       + CLIENT_STREAM_SLEEP_WHEN_NOT_READY_MSEC + " ms. hc: " + clientStreamAX.hashCode());
+                try {
+                    Thread.sleep(CLIENT_STREAM_SLEEP_WHEN_NOT_READY_MSEC);
+                } catch (Exception x) {
+                    // do nothing
+                }
+                readyLoopCount++;
+                if (readyLoopCount > readyLoopMax)
+                    break;
+            }
+
+            if (readyLoopCount > readyLoopMax) {
+                if (PERF_LOGGING_ON)
+                    System.out.println(qtf() + " ServerStream: CLIENT.  isReady() returned false " + readyLoopCount + " times. quit sending. hc: " + clientStreamAX.hashCode());
+                break;
+            }
+
             clientStreamAX.onNext(nextRequest);
             try {
                 if (timeBetweenMessagesMsec > 0) {
@@ -501,7 +541,7 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
 
         // wait to send onCompleted for now
         try {
-            Thread.sleep(500);
+            Thread.sleep(100);
         } catch (Exception x) {
             // do nothing
         }
@@ -510,7 +550,7 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
 
         // wait for the response from server
         try {
-            latch.await(28, TimeUnit.SECONDS);
+            latch.await(ProducerRestEndpoint.CLIENT_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC / 2, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             log.info("grpcClientStreamApp: latch.await got interrupted");
         }
@@ -547,6 +587,7 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
     }
 
     class ClientStreamClass implements StreamObserver<StreamReplyA> {
+        // class ClientStreamClass implements ClientCallStreamObserver<StreamReplyA> {
 
         String replyAfterClientStream = "Null";
         String errorMessage = null;
@@ -602,7 +643,7 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         int i2 = -1;
         CountDownLatch latch = new CountDownLatch(1);
 
-        log.info("Producer: grpcServerStreamApp(): Entered");
+        log.info(qtf() + " grpcServerStreamApp(): Entered hc: " + this.hashCode());
 
         StreamRequestA nextRequest = StreamRequestA.newBuilder().setMessage("From Client").build();
 
@@ -612,7 +653,7 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
 
         // wait for the response from server
         try {
-            latch.await(28, TimeUnit.SECONDS);
+            latch.await(ProducerRestEndpoint.SERVER_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             log.info("grpcServerStreamApp: latch.await got interrupted");
         }
@@ -648,6 +689,7 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         String errorMessage = null;
         Throwable errorCaught = null;
         CountDownLatch latch = null;
+        long messageCount = 0;
 
         public ServerStreamClass(CountDownLatch inLatch) {
             latch = inLatch;
@@ -655,10 +697,18 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
 
         @Override
         public void onNext(StreamReplyA response) {
+            messageCount++;
             if (firstServerStreamMessage == null) {
+                if (PERF_LOGGING_ON)
+                    System.out.println(qtf() + " ServerStream: CLIENT received message 1 hc: " + this.hashCode());
+
                 firstServerStreamMessage = response.toString();
                 lastServerStreamMessage = response.toString();
             } else {
+                if (PERF_LOGGING_ON && (messageCount % 1000) == 0) {
+                    System.out.println(qtf() + " ServerStream: CLIENT received message " + messageCount + " hc: " + this.hashCode());
+                }
+
                 lastServerStreamMessage = response.toString();
             }
 
@@ -670,11 +720,18 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
             errorCaught = t;
             errorMessage = errorCaught.getMessage();
             log.info("grpcServerStreamApp: caught error from server service: " + errorMessage);
+
+            if (PERF_LOGGING_ON)
+                System.out.println(qtf() + "grpcServerStreamApp: caught error from server service: " + errorMessage + " hc: " + this.hashCode());
+
             latch.countDown();
         }
 
         @Override
         public void onCompleted() {
+            if (PERF_LOGGING_ON)
+                System.out.println(qtf() + " ServerStream: CLIENT received onCompleted. message count: " + messageCount + " hc: " + this.hashCode());
+
             log.info("grpcServerStreamApp: onCompleted called from server service");
             latch.countDown();
         }
@@ -821,7 +878,8 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         String lastTwoWayMessageReceived = null;
         String errorMessage = null;
         CountDownLatch latch = null;
-        Object messageSync = new Object() {};
+        Object messageSync = new Object() {
+        };
 
         public TwoWayStreamClass(CountDownLatch inLatch) {
             latch = inLatch;
@@ -872,6 +930,14 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
                 return lastTwoWayMessageReceived;
             }
         }
+    }
+
+    public String qtf() {
+        long time = System.currentTimeMillis() & 0xfffffff;
+        long msec = time % 1000;
+        long sec = time / 1000;
+        String result = sec + "." + msec;
+        return result;
     }
 
 }

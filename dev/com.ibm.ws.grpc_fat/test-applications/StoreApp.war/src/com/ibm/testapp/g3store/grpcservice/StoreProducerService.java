@@ -52,6 +52,8 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
     private static String CLASSNAME = StoreProducerService.class.getName();
     private static Logger log = Logger.getLogger(CLASSNAME);
 
+    public static boolean PERF_LOGGING_ON = false;
+
     public StoreProducerService() {
         // this constructor is required to run the gRPC on Liberty server.
     }
@@ -435,10 +437,17 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
                 s = s.substring(0, 200);
             }
 
-            //print out first 10 messages
-            if (count < 10) {
-                count++;
+            //print out first first message
+            count++;
+            if (count == 1) {
                 log.info("clientStreamA: count: " + count + " received: " + s);
+            }
+
+            if (PERF_LOGGING_ON) {
+                if (count == 1)
+                    System.out.println(qtf() + " ClientStream: SERVER received message 1 hc: " + responseObserver.hashCode());
+                else if ((count % 1000) == 0)
+                    System.out.println(qtf() + " ClientStream: SERVER received message " + count + " hc: " + responseObserver.hashCode());
             }
 
             // If response is greater than 64K, let's take some off of it
@@ -452,11 +461,17 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
         @Override
         public void onError(Throwable t) {
             log.log(Level.SEVERE, "Store: Encountered error in clientStreamA: ", t);
+            if (PERF_LOGGING_ON)
+                System.out.println(qtf() + " ClientStream: SERVER received onError: hc: " + responseObserver.hashCode() + " throwable: " + t);
         }
 
         @Override
         public void onCompleted() {
             log.info("clientStreamA: onComplete() called");
+
+            if (PERF_LOGGING_ON)
+                System.out.println(qtf() + " ClientStream: SERVER received onCompleted hc: " + responseObserver.hashCode());
+
             String s = responseString + "...[[time response sent back to Client: " + System.currentTimeMillis() + "]]";
 
             int maxStringLength = 32768 - lastClientMessage.length() - 1;
@@ -478,7 +493,7 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
 
     // -------------------------------------------------------------------------
 
-    public final static int SERVER_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION = 200;
+    public final static int SERVER_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION = 10 * 1000000;
     public final static int SERVER_STREAM_TIME_BETWEEN_MESSAGES_MSEC = 0;
     public final static int SERVER_STREAM_MESSAGE_SIZE = 50; // set to 5, 50, 500, 5000, or else you will get 50.
 
@@ -513,10 +528,17 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
             if (i == 1) {
                 log.info("serverStreamA: sending first message");
                 nextMessage = firstMessage;
+                if (PERF_LOGGING_ON)
+                    System.out.println(qtf() + " ServerStream: SERVER sending message 1 hc: " + responseObserver.hashCode());
             } else if (i == numberOfMessages) {
                 log.info("serverStreamA: sending last message. number of messages was: " + numberOfMessages);
                 nextMessage = lastMessage;
+                if (PERF_LOGGING_ON)
+                    System.out.println(qtf() + " ServerStream: SERVER sending message " + i + " last message. hc: " + responseObserver.hashCode());
             } else {
+                if (PERF_LOGGING_ON && (i % 1000) == 0) {
+                    System.out.println(qtf() + " ServerStream: SERVER sending message " + i + " hc: " + responseObserver.hashCode());
+                }
                 nextMessage = "--Message " + i + " of " + numberOfMessages + " left server at time: " + System.currentTimeMillis() + "--";
                 nextMessage = nextMessage + sChars;
             }
@@ -534,7 +556,7 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
 
         // wait to send onCompleted for now
         try {
-            Thread.sleep(500);
+            Thread.sleep(10);
         } catch (Exception x) {
             // do nothing
         }
@@ -781,4 +803,11 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
         }
     }
 
+    public String qtf() {
+        long time = System.currentTimeMillis() & 0xfffffff;
+        long msec = time % 1000;
+        long sec = time / 1000;
+        String result = sec + "." + msec;
+        return result;
+    }
 }
