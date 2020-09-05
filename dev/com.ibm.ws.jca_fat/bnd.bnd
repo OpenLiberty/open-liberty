@@ -19,9 +19,11 @@ src: \
 fat.project: true
 
 # Define additional tested features that are NOT present in any XML files in this bucket.
-# In this case, Java EE 8 features are added programatically at runtime by the RepeatTests rule.
+#Java EE 8 Features 
+#Jakarta EE 9 Features 
 tested.features:\
-	appsecurity-3.0, servlet-4.0, cdi-2.0, el-3.0
+	appsecurity-3.0, servlet-4.0, cdi-2.0, el-3.0,\
+	el-4.0, appsecurity-4.0, mdb-4.0, servlet-5.0, concurrent-2.0, cdi-3.0, connectors-2.0, messaging-3.0
 
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)
@@ -34,4 +36,5 @@ tested.features:\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
 	com.ibm.ws.logging,\
-	com.ibm.ws.security.jaas.common;version=latest
+	com.ibm.ws.security.jaas.common;version=latest,\
+	io.openliberty.jakarta.messaging.3.0;version=latest

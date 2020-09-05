@@ -53,7 +53,7 @@
     </jmsTopic>
     
     <jmsActivationSpec id="FVTMessageDrivenBeanBindingOverride">
-      <properties.FAT1 destinationRef="topic1" destinationType="javax.jms.Topic"/>
+      <properties.FAT1 destinationRef="topic1" destinationType="jakarta.jms.Topic"/>
     </jmsActivationSpec>
 
     <resourceAdapter id="FAT1" location="${server.config.dir}/connectors/JCAFAT1.rar">
@@ -89,10 +89,10 @@
     <!-- needed by fake resource adapter -->
     <javaPermission codebase="${server.config.dir}/connectors/JCAFAT1.rar" className="java.lang.RuntimePermission" name="getClassLoader"/>
     <javaPermission codebase="${server.config.dir}/connectors/JCAFAT1.rar" className="javax.security.auth.PrivateCredentialPermission"
-                    name="javax.resource.spi.security.PasswordCredential * &quot;*&quot;" actions="read"/>
+                    name="jakarta.resource.spi.security.PasswordCredential * &quot;*&quot;" actions="read"/>
 
     <!-- TODO switch to resource adapter (should be covered above) once it replaces the temporary login module jar -->
     <javaPermission codebase="${server.config.dir}/connectors/JCAFAT1.rar" className="javax.security.auth.PrivateCredentialPermission"
-                    signedBy="javax.resource.spi.security.PasswordCredential" principalType="*" principalName="*" actions="read"/>
+                    signedBy="jakarta.resource.spi.security.PasswordCredential" principalType="*" principalName="*" actions="read"/>
     <javaPermission codebase="${server.config.dir}/connectors/JCAFAT1.rar" className="javax.security.auth.AuthPermission" name="modifyPrivateCredentials"/>
 </server>
