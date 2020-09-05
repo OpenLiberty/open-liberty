@@ -35,8 +35,7 @@ jakartaeeMe: true
 -dsannotations: \
   com.ibm.ws.concurrent.internal.ContextServiceImpl,\
   com.ibm.ws.concurrent.internal.ManagedExecutorServiceImpl,\
-  com.ibm.ws.concurrent.internal.ManagedScheduledExecutorServiceImpl,\
-  com.ibm.ws.concurrent.mp.spi.CompletionStageFactory
+  com.ibm.ws.concurrent.internal.ManagedScheduledExecutorServiceImpl
 
 Service-Component:\
   com.ibm.ws.concurrent.managedThreadFactory;\
