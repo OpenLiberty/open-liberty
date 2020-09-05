@@ -17,4 +17,5 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses(JCAClassLoadingTest.class)
 public class FATSuite {
+    //This suite runs against JakartaEE9 by default without transformer
 }

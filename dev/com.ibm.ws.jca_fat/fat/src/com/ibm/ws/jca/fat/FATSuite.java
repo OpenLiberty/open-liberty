@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011,2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,13 +42,11 @@ public class FATSuite {
     public static final String jakartaeeServer = "com.ibm.ws.jca.fat.jakarta";
 
     /*
-     * EE7 and EE8 will run with full fat only. EE9 will be run with lite and full fat.
+     * EE7 will run with full fat only. EE9 will be run with lite and full fat.
      */
     @ClassRule
     public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
                     .andWith(FeatureReplacementAction.EE9_FEATURES());
-
 
     public static LibertyServer getServer() {
         if (JakartaEE9Action.isActive()) {

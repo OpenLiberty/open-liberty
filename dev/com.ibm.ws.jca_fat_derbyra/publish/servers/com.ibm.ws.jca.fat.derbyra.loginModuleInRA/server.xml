@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2020 IBM Corporation and others.
+    Copyright (c) 2020, 2021 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -57,7 +57,7 @@
     <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
     <javaPermission codebase="${server.config.dir}/connectors/DerbyLMRA.rar" className="javax.security.auth.AuthPermission" name="modifyPrivateCredentials"/>
     <javaPermission className="javax.security.auth.AuthPermission" name="createLoginContext.myJAASLoginEntryName"/>
-    <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="javax.resource.spi.security.PasswordCredential" principalType="*" principalName="*" actions="read"/>
+    <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="${env.PERMISSION}" principalType="*" principalName="*" actions="read"/>
     <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="java.util.HashMap" principalType="*" principalName="*" actions="read"/>
     <javaPermission className="java.lang.RuntimePermission" name="modifyThread"/>
     <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
