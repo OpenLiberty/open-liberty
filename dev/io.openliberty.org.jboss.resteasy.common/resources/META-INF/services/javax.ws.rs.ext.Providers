@@ -26,5 +26,5 @@ org.jboss.resteasy.plugins.interceptors.MessageSanitizerContainerResponseFilter
 org.jboss.resteasy.plugins.providers.sse.SseEventProvider
 org.jboss.resteasy.plugins.providers.sse.SseEventOutputProvider
 org.jboss.resteasy.plugins.providers.sse.SseEventSinkInterceptor
-io.openliberty.jaxrs.providers.JsonPProvider
+io.openliberty.restfulWS.providers.JsonPProvider
 org.jboss.resteasy.plugins.providers.multipart.IBMMultipartProvider

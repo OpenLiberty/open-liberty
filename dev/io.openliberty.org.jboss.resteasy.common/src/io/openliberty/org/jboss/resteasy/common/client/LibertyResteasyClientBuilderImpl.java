@@ -21,9 +21,9 @@ import org.jboss.resteasy.client.jaxrs.internal.ResteasyClientBuilderImpl;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
-
-import io.openliberty.jaxrs.client.ClientBuilderListener;
 import org.osgi.framework.ServiceReference;
+
+import io.openliberty.restfulWS.client.ClientBuilderListener;
 
 public class LibertyResteasyClientBuilderImpl extends ResteasyClientBuilderImpl {
     @SuppressWarnings("unchecked")
