@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="fat/src" including="com/ibm/ws/transaction/test/CustompostgreSQLContainer.java"/>
-	<classpathentry kind="src" path="fat/src" including="com/ibm/ws/transaction/test/DualServerDynamicPostgreSQLTest.java"/>
-	<classpathentry kind="src" path="fat/src" including="com/ibm/ws/transaction/test/FATSuite.java"/>
-	<classpathentry kind="src" path="fat/src" including="com/ibm/ws/transaction/test/PostgreSQLTest.java"/>
+	<classpathentry kind="src" path="fat/src" including="com/ibm/ws/transaction/test/*.java"/>
 	<classpathentry kind="src" path="com.ibm.ws.transaction.cloud_fat.1-fatsrc" excluding="com/ibm/ws/transaction/test/FATSuite.java"/>
 	<classpathentry kind="src" path="com.ibm.ws.transaction.cloud_fat.1-cloudtx"/>
 	<classpathentry kind="src" path="com.ibm.ws.transaction.cloud_fat.1-transaction"/>

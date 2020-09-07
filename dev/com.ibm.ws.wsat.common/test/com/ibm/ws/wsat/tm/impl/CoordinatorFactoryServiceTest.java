@@ -21,6 +21,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import org.apache.cxf.ws.addressing.AttributedURIType;
+import org.apache.cxf.ws.addressing.EndpointReferenceType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -44,6 +46,7 @@ public class CoordinatorFactoryServiceTest {
 
     private WSATTransaction tran = null;
     private WSATCoordinator coordinator = null;
+    private EndpointReferenceType epr;
 
     @Before
     public void setup() throws Exception {
@@ -51,6 +54,12 @@ public class CoordinatorFactoryServiceTest {
         Utils.setTranService("syncRegistry", new MockProxy());
         tran = new WSATTransaction(Utils.tranId(), 10);
         coordinator = new WSATCoordinator(tran.getGlobalId(), null);
+        epr = new EndpointReferenceType();
+        AttributedURIType uri = new AttributedURIType();
+        uri.setValue("http://www.example.com/endpoint");
+        epr.setAddress(uri);
+
+        ProtocolImpl.getInstance().setParticipantEndpoint(epr);
     }
 
     @Test
