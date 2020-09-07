@@ -55,7 +55,7 @@ All features (both "Design Approved" and "No Design Approved")
 - [ ] **Globalization** (Sam Wong - Liberty / Simy Cheeran - tWAS). Translation is complete or N/A. TVT - complete or N/A. Approver adds label focalApproved:globalization to the Epic in Github.
 
 "Design Approved" features
-- [ ] **Accessibility** - (G Scott Johnston). Accessibility testing is complete or N/A. Approver adds label focalApproved:accessibility to the Epic in Github.
+- [ ] **Accessibility** - (Steven Zvonek). Accessibility testing is complete or N/A. Approver adds label focalApproved:accessibility to the Epic in Github.
 - [ ] **ID** - (Kareen Deen). Documentation work is complete or N/A . Approver adds label focalApproved:id to the Epic in Github.
 - [ ] **Performance** - (Jared Anderson). Performance testing is complete with no high severity defects or N/A . Approver adds label focalApproved:performance to the Epic in Github.
 - [ ] **Serviceability** - (Don Bourne). Serviceability has been addressed.
