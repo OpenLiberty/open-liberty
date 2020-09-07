@@ -14,8 +14,8 @@ package com.ibm.ws.microprofile.config14.impl;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.microprofile.config.converters.BuiltInConverter;
 import com.ibm.ws.microprofile.config.converters.PriorityConverterMap;
+import com.ibm.ws.microprofile.config12.converters.ImplicitConverter;
 import com.ibm.ws.microprofile.config13.impl.Config13ConversionManager;
 import com.ibm.ws.microprofile.config14.converters.Config14ImplicitConverter;
 
@@ -34,11 +34,10 @@ public class Config14ConversionManager extends Config13ConversionManager {
 
     @Override
     @FFDCIgnore(IllegalArgumentException.class)
-    protected <T> BuiltInConverter getConverter(Class<T> type) {
-        BuiltInConverter automaticConverter = null;
-
+    protected <T> ImplicitConverter newImplicitConverter(Class<T> type) {
+        ImplicitConverter implicitConverter = null;
         try {
-            automaticConverter = new Config14ImplicitConverter(type);
+            implicitConverter = new Config14ImplicitConverter(type);
         } catch (IllegalArgumentException e) {
             //no FFDC
             //this means that a suitable string constuctor method could not be found for the given class
@@ -52,8 +51,6 @@ public class Config14ConversionManager extends Config13ConversionManager {
             }
             throw new ConfigException(t);
         }
-
-        return automaticConverter;
+        return implicitConverter;
     }
-
 }

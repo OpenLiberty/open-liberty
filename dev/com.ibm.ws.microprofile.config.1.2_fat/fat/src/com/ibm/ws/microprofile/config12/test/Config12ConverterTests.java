@@ -67,7 +67,7 @@ public class Config12ConverterTests extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer("CWMCG0017E"); //stringConstructorMissingTest expects implicit.string.constructor.method.not.found.CWMCG0017E
     }
 
 }
