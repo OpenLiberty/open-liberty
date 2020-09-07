@@ -12,6 +12,7 @@
 
 #ISMESSAGEFILE true
 #NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
 #COMPONENTPREFIX CWMRX
 
 # LRA is currently using the message prefix CWMRX in the range 5000-5999
