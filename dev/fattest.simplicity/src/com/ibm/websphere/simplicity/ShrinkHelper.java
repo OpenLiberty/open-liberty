@@ -43,7 +43,7 @@ public class ShrinkHelper {
 
     public static void cleanAllExportedArchives() {
         for (File exportedArchive : exportedArchives) {
-            Log.info(ShrinkHelper.class, "cleanAllExportedArchives", "Deleting arhive at: " + exportedArchive.getAbsolutePath());
+            Log.info(ShrinkHelper.class, "cleanAllExportedArchives", "Deleting archive at: " + exportedArchive.getAbsolutePath());
             exportedArchive.delete();
         }
         exportedArchives.clear();
