@@ -66,7 +66,8 @@ public class HibernateSearchTest extends FATServletClient {
 
         //Hibernate Search Test
         WebArchive hibernateSearchTest = ShrinkWrap.create(WebArchive.class, HIBERNATE_SEARCH_APP_NAME+".war")
-                        .addPackages(true, "cdi.hibernate.test")
+                        .addPackages(true, cdi.hibernate.test.model.BasicFieldBridge.class.getPackage())
+                        .addPackages(true, cdi.hibernate.test.web.SimpleTestServlet.class.getPackage())
                         .add(new FileAsset(new File("test-applications/hibernateSearchTest.war/resources/WEB-INF/classes/META-INF/persistence.xml")), "/WEB-INF/classes/META-INF/persistence.xml")
                         .add(new FileAsset(new File("test-applications/hibernateSearchTest.war/resources/WEB-INF/classes/META-INF/jpaorm.xml")), "/WEB-INF/classes/META-INF/jpaorm.xml");
 
