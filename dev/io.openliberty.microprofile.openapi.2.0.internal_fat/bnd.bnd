@@ -25,9 +25,9 @@ tested.features=mpOpenAPI-2.0
 -buildpath: \
     com.ibm.ws.microprofile.openapi;version=latest, \
     com.ibm.websphere.javaee.jaxrs.2.1;version=latest, \
-    com.ibm.websphere.javaee.servlet.3.1;version=latest, \
+    com.ibm.websphere.javaee.servlet.4.0;version=latest, \
     io.openliberty.org.eclipse.microprofile.openapi.2.0;version=latest,\
-    com.ibm.websphere.org.eclipse.microprofile.config.1.2.1;version=latest, \
+    io.openliberty.org.eclipse.microprofile.config.2.0;version=latest,\
     com.ibm.ws.common.encoder;version=latest, \
     com.fasterxml.jackson.core.jackson-core;version=2.11.2, \
     com.fasterxml.jackson.core.jackson-annotations;version=2.11.2, \

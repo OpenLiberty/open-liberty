@@ -37,7 +37,7 @@ IBM-SPI-Package: \
     org.eclipse.microprofile.openapi.spi; type="stable"
 -features=\
     io.openliberty.org.eclipse.microprofile.openapi-2.0, \
-    com.ibm.websphere.appserver.mpConfig-1.3; ibm.tolerates:="1.4", \
+    io.openliberty.mpConfig-2.0, \
     com.ibm.websphere.appserver.servlet-4.0, \
     com.ibm.wsspi.appserver.webBundle-1.0, \
     com.ibm.websphere.appserver.jaxrs-2.1
