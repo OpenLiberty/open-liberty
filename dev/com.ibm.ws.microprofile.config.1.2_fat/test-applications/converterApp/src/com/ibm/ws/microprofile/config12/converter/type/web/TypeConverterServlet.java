@@ -15,6 +15,9 @@ import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig20EE8;
+
+import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
@@ -45,6 +48,7 @@ public class TypeConverterServlet extends FATServlet {
     }
 
     @Test
+    @SkipForRepeat(RepeatConfig20EE8.ID)
     public void optionalConverterTest() throws Exception {
         bean.optionalConverterTest();
     }
