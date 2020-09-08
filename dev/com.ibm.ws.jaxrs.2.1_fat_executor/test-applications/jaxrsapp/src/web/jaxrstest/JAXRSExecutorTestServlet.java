@@ -149,7 +149,12 @@ public class JAXRSExecutorTestServlet extends FATServlet {
         assertEquals("test456", results[0]);
 
         String executionThreadName = (String) results[1];
-        assertTrue(resultString, executionThreadName.startsWith("Default Executor-thread-"));
+        // On JDK 8, it will use the ForkJoin pool now
+        if (System.getProperty("java.specification.version").startsWith("1.")) {
+            assertTrue(resultString, executionThreadName.startsWith("ForkJoin"));
+        } else {
+            assertTrue(resultString, executionThreadName.startsWith("Default Executor-thread-"));
+        }
         assertTrue(resultString, results[2] instanceof NamingException);
     }
 
