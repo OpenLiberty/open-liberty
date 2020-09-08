@@ -15,25 +15,27 @@ bVersion=1.0
 Bundle-Name: JSFBeanValidation
 Bundle-SymbolicName: com.ibm.ws.jsf.beanvalidation
 Bundle-Description: JSF 2.2 (or JSF 2.3) / Bean Validation 1.1 Integration Bundle; version=${bVersion}
- 
+
+jakartaeeMe:true
+
 Service-Component: com.ibm.ws.jsf.beanvalidation; \
    implementation:=com.ibm.ws.jsf.beanvalidation.extprocessor.JSFBeanValidationExtensionFactory; \
    provide:='com.ibm.wsspi.webcontainer.extension.ExtensionFactory'; \
    beanValidation=com.ibm.ws.beanvalidation.service.BeanValidation; \
    properties:="service.vendor=IBM"
- 
+
 Import-Package: \
   javax.validation; version="[1.1,3)",\
   *
 
 Private-Package: \
   com.ibm.ws.jsf.beanvalidation.*
-  
+
 Include-Resource: \
     OSGI-INF=resources/OSGI-INF
-    
+
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
-  
+
 -buildpath: \
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.component,\

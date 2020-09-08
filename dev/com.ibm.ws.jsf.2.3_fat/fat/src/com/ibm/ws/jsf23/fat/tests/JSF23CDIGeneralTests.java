@@ -50,6 +50,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -317,16 +318,27 @@ public class JSF23CDIGeneralTests {
             assertTrue(resultPage.asText().contains("Char set from SessionMap: UTF-8"));
             assertTrue(resultPage.asText().contains("ViewMap isEmpty: true"));
             assertTrue(resultPage.asText().contains("URI from RequestMap: /ELImplicitObjectsViaCDI/index.xhtml"));
-            assertTrue(resultPage.asText()
-                            .contains("Flow map object is null: Exception: WELD-001303: No active contexts "
-                                      + "for scope type javax.faces.flow.FlowScoped")); // Expected exception
             assertTrue(resultPage.asText().contains("Message from HeaderMap: This is a test"));
-            assertTrue(resultPage.asText().contains("Cookie object from CookieMap: javax.servlet.http.Cookie"));
             assertTrue(resultPage.asText().contains("WELD_CONTEXT_ID_KEY from InitParameterMap: ELImplicitObjectsViaCDI"));
             assertTrue(resultPage.asText().contains("Message from RequestParameterMap: Hello World"));
             assertTrue(resultPage.asText().contains("Message from RequestParameterValuesMap: [Hello World]"));
             assertTrue(resultPage.asText().contains("Message from HeaderValuesMap: [This is a test]"));
-            assertTrue(resultPage.asText().contains("Resource handler JSF_SCRIPT_LIBRARY_NAME constant: javax.faces"));
+
+            if(JakartaEE9Action.isActive()){
+              assertTrue(resultPage.asText().contains("Resource handler JSF_SCRIPT_LIBRARY_NAME constant: jakarta.faces"));
+              assertTrue(resultPage.asText()
+                              .contains("Flow map object is null: Exception: WELD-001303: No active contexts "
+                                        + "for scope type jakarta.faces.flow.FlowScoped")); // Expected exception
+              assertTrue(resultPage.asText().contains("Cookie object from CookieMap: jakarta.servlet.http.Cookie"));
+
+            } else {
+              assertTrue(resultPage.asText().contains("Resource handler JSF_SCRIPT_LIBRARY_NAME constant: javax.faces"));
+              assertTrue(resultPage.asText()
+                              .contains("Flow map object is null: Exception: WELD-001303: No active contexts "
+                                        + "for scope type javax.faces.flow.FlowScoped")); // Expected exception
+              assertTrue(resultPage.asText().contains("Cookie object from CookieMap: javax.servlet.http.Cookie"));
+            }
+
     }
 
     /**
