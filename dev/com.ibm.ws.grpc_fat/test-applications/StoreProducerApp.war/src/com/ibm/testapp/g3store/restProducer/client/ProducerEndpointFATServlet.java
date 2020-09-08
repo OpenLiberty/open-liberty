@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.testapp.g3store.restProducer.client;
 
-import static com.ibm.ws.fat.grpc.monitoring.GrpcMetricsTestUtils.checkMetric;
 import static com.ibm.ws.fat.grpc.monitoring.GrpcMetricsTestUtils.getMetric;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -503,7 +502,6 @@ public class ProducerEndpointFATServlet extends FATServlet {
 
         // retrieve the metrics
         int httpPort = Integer.parseInt(getSysProp("bvt.prop.HTTP_secondary"));
-        checkMetric("/metrics/vendor/grpc.client.sentMessages.total", "0", "localhost", httpPort);
         String metricValue = getMetric("localhost", httpPort, "/metrics/vendor/grpc.client.receivedMessages.total");
         if (metricValue == null || Integer.parseInt(metricValue) < 200) {
             fail(String.format("Incorrect metric value [%s]. Expected [%s], got [%s]", "grpc.client.receivedMessages.total", ">=200", metricValue));
