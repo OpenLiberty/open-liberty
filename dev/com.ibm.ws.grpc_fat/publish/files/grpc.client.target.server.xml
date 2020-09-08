@@ -20,7 +20,7 @@
     
     <include location="../fatTestCommon.xml"/>
     
-    <grpcClient target="*" clientInterceptors="com.ibm.ws.grpc.fat.helloworld.client.HelloWorldClientInterceptor" />
+    <grpcClient host="*" clientInterceptors="com.ibm.ws.grpc.fat.helloworld.client.HelloWorldClientInterceptor" />
     
     <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
 </server>

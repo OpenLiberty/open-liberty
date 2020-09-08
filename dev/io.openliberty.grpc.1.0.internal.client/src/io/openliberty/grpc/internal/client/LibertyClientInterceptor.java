@@ -33,9 +33,17 @@ public class LibertyClientInterceptor implements ClientInterceptor {
 
 			@Override
 			public void start(Listener<RespT> responseListener, Metadata headers) {
+				// grab authority and remove port
+				String remoteHost = next.authority();
+				if (remoteHost != null) {
+					int colonIndex = remoteHost.indexOf(":");
+					if (colonIndex > 1) {
+						remoteHost = remoteHost.substring(0, colonIndex); 
+					}
+				}
 
 				// forward any headers that are configured
-				LibertyHeaderPropagationSupport.handleHeaderPropagation(method, headers);
+				LibertyHeaderPropagationSupport.handleHeaderPropagation(remoteHost, method, headers);
 
 				super.start(new SimpleForwardingClientCallListener<RespT>(responseListener) {
 				}, headers);

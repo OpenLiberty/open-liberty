@@ -52,7 +52,7 @@ public class GrpcClientConfigImpl implements GrpcClientConfig {
 		propertiesToRemove.add("service.pid");
 		propertiesToRemove.add("service.vendor");
 		propertiesToRemove.add("service.factoryPid");
-		propertiesToRemove.add(GrpcClientConstants.TARGET_PROP);
+		propertiesToRemove.add(GrpcClientConstants.HOST_PROP);
 
 	}
 
@@ -101,16 +101,32 @@ public class GrpcClientConfigImpl implements GrpcClientConfig {
 	}
 
 	/**
-	 * find the uri parameter which we will key off of
+	 * find the host parameter which we will key off of
 	 *
 	 * @param props
-	 * @return value of uri param within props, or null if no uri param
+	 * @return value of host param within props, or null if no host param
 	 */
-	private String getURI(Map<String, Object> props) {
+	private String getHost(Map<String, Object> props) {
 		if (props == null)
 			return null;
-		if (props.keySet().contains(GrpcClientConstants.TARGET_PROP)) {
-			return (props.get(GrpcClientConstants.TARGET_PROP).toString());
+		if (props.keySet().contains(GrpcClientConstants.HOST_PROP)) {
+			return (props.get(GrpcClientConstants.HOST_PROP).toString());
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * find the path parameter which we will key off of
+	 *
+	 * @param props
+	 * @return value of path param within props, or null if no path param
+	 */
+	private String getPath(Map<String, Object> props) {
+		if (props == null)
+			return null;
+		if (props.keySet().contains(GrpcClientConstants.PATH_PROP)) {
+			return (props.get(GrpcClientConstants.PATH_PROP).toString());
 		} else {
 			return null;
 		}
@@ -120,10 +136,12 @@ public class GrpcClientConfigImpl implements GrpcClientConfig {
 	protected void activate(Map<String, Object> properties) {
 		if (properties == null)
 			return;
-		String uri = getURI(properties);
-		if (uri == null)
+		String host = getHost(properties);
+		String path = getPath(properties);
+		if (host == null)
 			return;
-		GrpcClientConfigHolder.addConfig(this.toString(), uri, filterProps(properties));
+		GrpcClientConfigHolder.addConfig(this.toString(), GrpcClientConfigHolder.getPathID(host, path),
+				filterProps(properties));
 	}
 
 	@Modified
@@ -132,15 +150,16 @@ public class GrpcClientConfigImpl implements GrpcClientConfig {
 			return;
 		GrpcClientConfigHolder.removeConfig(this.toString());
 		// if they deleted the uri attribute, no point in adding.
-		String uri = getURI(properties);
-		if (uri == null)
+		String host = getHost(properties);
+		String path = getPath(properties);
+		if (host == null)
 			return;
-		GrpcClientConfigHolder.addConfig(this.toString(), uri, filterProps(properties));
+		GrpcClientConfigHolder.addConfig(this.toString(), GrpcClientConfigHolder.getPathID(host, path),
+				filterProps(properties));
 	}
 
 	@Deactivate
 	protected void deactivate() {
 		GrpcClientConfigHolder.removeConfig(this.toString());
-
 	}
 }

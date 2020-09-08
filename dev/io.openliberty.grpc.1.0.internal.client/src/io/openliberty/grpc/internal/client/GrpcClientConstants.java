@@ -10,14 +10,12 @@
  *******************************************************************************/
 package io.openliberty.grpc.internal.client;
 
-import io.grpc.Metadata;
-
 public class GrpcClientConstants {
 	
 	// config related constants
-    public static final String WEB_TARGET = "webTarget";
     public static final String HEADER_PROPAGATION_PROP = "headersToPropagate";
-    public static final String TARGET_PROP = "target";
+    public static final String HOST_PROP = "host";
+    public static final String PATH_PROP = "path";
     public static final String KEEP_ALIVE_WITHOUT_CALLS_PROP = "keepAliveWithoutCalls";
     public static final String KEEP_ALIVE_TIME_PROP = "keepAliveTime";
     public static final String KEEP_ALIVE_TIMEOUT_PROP = "keepAliveTimeout";

@@ -8,12 +8,12 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<server description="FAT configuration for gRPC Client with single target and Interceptor">
+<server description="FAT configuration for gRPC Client with single host and Interceptor">
     <featureManager>
         <feature>grpcClient-1.0</feature>
      </featureManager>
      
-     <grpcClient target="*" clientInterceptors="com.ibm.ws.grpc.fat.helloworld.client.HelloWorldClientInterceptor"/>
+     <grpcClient host="*" clientInterceptors="com.ibm.ws.grpc.fat.helloworld.client.HelloWorldClientInterceptor"/>
 
      <httpEndpoint id="defaultHttpEndpoint"
                   host="*"
