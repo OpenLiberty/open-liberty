@@ -79,7 +79,10 @@ public class AutonomicalPolling1ServerTest extends FATServletClient {
 	// "ERROR 40XL1: A lock could not be obtained within the time requested"
 	// This later results in a XA_RBTIMEOUT (106) error on the transaction (javax.transaction.xa.XAException).
 	// We recover/retry just fine, but this is a reason why Derby is not used for production.
-	@AllowedFFDC("javax.transaction.xa.XAException")
+	@AllowedFFDC({
+	    "javax.transaction.xa.XAException",
+	    "java.sql.SQLSyntaxErrorException" // if EclipseLink creates duplicate tables/constraints concurrently
+	})
 	@Test
 	@Mode(TestMode.FULL)
 	public void testAdd10Remove1PersistentExecs() throws Exception {
@@ -150,8 +153,11 @@ public class AutonomicalPolling1ServerTest extends FATServletClient {
 	// "ERROR 40XL1: A lock could not be obtained within the time requested"
 	// This later results in a XA_RBTIMEOUT (106) error on the transaction (javax.transaction.xa.XAException).
 	// We recover/retry just fine, but this is a reason why Derby is not used for production.
-	@AllowedFFDC("javax.transaction.xa.XAException")
-	@Test
+    @AllowedFFDC({
+        "javax.transaction.xa.XAException",
+        "java.sql.SQLSyntaxErrorException" // if EclipseLink creates duplicate tables/constraints concurrently
+    })
+    @Test
 	@Mode(TestMode.FULL)
 	public void testAdd10Remove9PersistentExecs() throws Exception {
 		PersistentExecutor persistentExecs[] = new PersistentExecutor[10];
@@ -223,8 +229,11 @@ public class AutonomicalPolling1ServerTest extends FATServletClient {
 	// "ERROR 40XL1: A lock could not be obtained within the time requested"
 	// This later results in a XA_RBTIMEOUT (106) error on the transaction (javax.transaction.xa.XAException).
 	// We recover/retry just fine, but this is a reason why Derby is not used for production.
-	@AllowedFFDC("javax.transaction.xa.XAException")
-	@Test
+    @AllowedFFDC({
+        "javax.transaction.xa.XAException",
+        "java.sql.SQLSyntaxErrorException" // if EclipseLink creates duplicate tables/constraints concurrently
+    })
+    @Test
 	@Mode(TestMode.FULL)
 	public void testAdd10RemoveAllImmediatelyAdd10PersistentExecs() throws Exception {
 		PersistentExecutor persistentExecs[] = new PersistentExecutor[10];
@@ -307,8 +316,11 @@ public class AutonomicalPolling1ServerTest extends FATServletClient {
 	// "ERROR 40XL1: A lock could not be obtained within the time requested"
 	// This later results in a XA_RBTIMEOUT (106) error on the transaction (javax.transaction.xa.XAException).
 	// We recover/retry just fine, but this is a reason why Derby is not used for production.
-	@AllowedFFDC("javax.transaction.xa.XAException")
-	@Test
+    @AllowedFFDC({
+        "javax.transaction.xa.XAException",
+        "java.sql.SQLSyntaxErrorException" // if EclipseLink creates duplicate tables/constraints concurrently
+    })
+    @Test
 	@Mode(TestMode.FULL)
 	public void testAdd10RemoveAllWaitAdd10PersistentExecs() throws Exception {
 		PersistentExecutor persistentExecs[] = new PersistentExecutor[10];
@@ -391,8 +403,11 @@ public class AutonomicalPolling1ServerTest extends FATServletClient {
 	// "ERROR 40XL1: A lock could not be obtained within the time requested"
 	// This later results in a XA_RBTIMEOUT (106) error on the transaction (javax.transaction.xa.XAException).
 	// We recover/retry just fine, but this is a reason why Derby is not used for production.
-	@AllowedFFDC("javax.transaction.xa.XAException")
-	@Test
+    @AllowedFFDC({
+        "javax.transaction.xa.XAException",
+        "java.sql.SQLSyntaxErrorException" // if EclipseLink creates duplicate tables/constraints concurrently
+    })
+    @Test
 	@Mode(TestMode.FULL)
 	public void testAdd10Remove5PersistentExecs() throws Exception {
 		PersistentExecutor persistentExecs[] = new PersistentExecutor[10];
@@ -465,8 +480,11 @@ public class AutonomicalPolling1ServerTest extends FATServletClient {
 	// "ERROR 40XL1: A lock could not be obtained within the time requested"
 	// This later results in a XA_RBTIMEOUT (106) error on the transaction (javax.transaction.xa.XAException).
 	// We recover/retry just fine, but this is a reason why Derby is not used for production.
-	@AllowedFFDC("javax.transaction.xa.XAException")
-	@Test
+    @AllowedFFDC({
+        "javax.transaction.xa.XAException",
+        "java.sql.SQLSyntaxErrorException" // if EclipseLink creates duplicate tables/constraints concurrently
+    })
+    @Test
 	public void testAdd3Remove2Add4PersistentExecs() throws Exception {
 		PersistentExecutor persistentExecs[] = new PersistentExecutor[7];
 
@@ -553,8 +571,11 @@ public class AutonomicalPolling1ServerTest extends FATServletClient {
 	// "ERROR 40XL1: A lock could not be obtained within the time requested"
 	// This later results in a XA_RBTIMEOUT (106) error on the transaction (javax.transaction.xa.XAException).
 	// We recover/retry just fine, but this is a reason why Derby is not used for production.
-	@AllowedFFDC("javax.transaction.xa.XAException")
-	@Test
+    @AllowedFFDC({
+        "javax.transaction.xa.XAException",
+        "java.sql.SQLSyntaxErrorException" // if EclipseLink creates duplicate tables/constraints concurrently
+    })
+    @Test
 	public void testAddPersistentExecs() throws Exception {
 		PersistentExecutor persistentExecs[] = new PersistentExecutor[10];
 
@@ -612,8 +633,11 @@ public class AutonomicalPolling1ServerTest extends FATServletClient {
 	// "ERROR 40XL1: A lock could not be obtained within the time requested"
 	// This later results in a XA_RBTIMEOUT (106) error on the transaction (javax.transaction.xa.XAException).
 	// We recover/retry just fine, but this is a reason why Derby is not used for production.
-	@AllowedFFDC("javax.transaction.xa.XAException")
-	@Test
+    @AllowedFFDC({
+        "javax.transaction.xa.XAException",
+        "java.sql.SQLSyntaxErrorException" // if EclipseLink creates duplicate tables/constraints concurrently
+    })
+    @Test
 	public void testPollIntervalStable() throws Exception {
 		int attempts = 0;
 
