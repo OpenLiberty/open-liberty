@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 @org.osgi.annotation.versioning.Version("1.0")
-@TraceOptions(traceGroup = "JAXRS", messageBundle="io.openliberty.org.jboss.resteasy.common.nls.JAXRSServer")
+@TraceOptions(traceGroup = "RESTfulWS", messageBundle="io.openliberty.org.jboss.resteasy.common.nls.RESTfulWSServer")
 package io.openliberty.org.jboss.resteasy.common.client;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;

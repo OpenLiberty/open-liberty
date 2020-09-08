@@ -72,7 +72,7 @@ public class LibertyResteasyCdiExtension extends ResteasyCdiExtension implements
     }
 
     /**
-     * Set a default scope for each CDI bean which is a JAX-RS Resource.
+     * Set a default scope for each CDI bean which is a RESTful WS Resource.
      *
      * @param <T> type
      * @param event event
@@ -98,7 +98,7 @@ public class LibertyResteasyCdiExtension extends ResteasyCdiExtension implements
     }
 
     /**
-     * Set a default scope for each CDI bean which is a JAX-RS Provider.
+     * Set a default scope for each CDI bean which is a RESTful WS Provider.
      *
      * @param <T> type
      * @param event event

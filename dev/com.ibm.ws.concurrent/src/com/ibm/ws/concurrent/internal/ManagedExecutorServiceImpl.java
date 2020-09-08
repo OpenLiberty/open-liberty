@@ -30,6 +30,7 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -85,6 +86,19 @@ import com.ibm.wsspi.threadcontext.WSContextService;
 public class ManagedExecutorServiceImpl implements ExecutorService, //
                 ManagedExecutor, ManagedExecutorService, CompletionStageExecutor, //
                 ResourceFactory, ApplicationRecycleComponent, WSManagedExecutorService {
+
+    static {
+        // Initialize ForkJoinPool when this class is initialized to avoid it failing later with access
+        // control issues since ForkJoinPool doesn't have doPriv calls for getting some properties
+        AccessController.doPrivileged(new PrivilegedAction<Void>() {
+            @Override
+            public Void run() {
+                ForkJoinPool.commonPool();
+                return null;
+            }
+        });
+    }
+
     private static final TraceComponent tc = Tr.register(ManagedExecutorServiceImpl.class);
 
     /**
@@ -477,8 +491,8 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
      * We prepend the managed executor name if it isn't already included in the policy executor's identifier.
      *
      * @param policyExecutorIdentifier unique identifier for the policy executor. Some examples:
-     *                                     concurrencyPolicy[longRunningPolicy]
-     *                                     managedExecutorService[executor1]/longRunningPolicy[default-0]
+     *            concurrencyPolicy[longRunningPolicy]
+     *            managedExecutorService[executor1]/longRunningPolicy[default-0]
      * @return identifier to use in messages and for matching of tasks upon shutdown.
      */
     @Trivial

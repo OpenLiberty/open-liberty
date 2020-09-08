@@ -3,7 +3,7 @@
  visibility=private
  IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.jaxrs-2.2))", \
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.ssl-1.0))"
- -bundles=io.openliberty.jaxrs.internal.ssl
+ -bundles=io.openliberty.restfulWS.internal.ssl
  IBM-Install-Policy: when-satisfied
  kind=noship
  edition=base

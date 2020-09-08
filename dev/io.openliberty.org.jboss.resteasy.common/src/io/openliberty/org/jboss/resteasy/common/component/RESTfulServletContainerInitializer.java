@@ -188,7 +188,7 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
 
     /**
      * RESTEasy requires a resteasy.servlet.mapping.prefix parameter to be set if the 
-     * web.xml declares a servlet to handle JAX-RS requests AND if that servlet is mapped
+     * web.xml declares a servlet to handle RESTful WS requests AND if that servlet is mapped
      * to paths other than "/*". For example, if the IBMRestServlet is mapped to "/rest/*"
      * then the following code would also be needed in the web.xml:
      * <pre>
