@@ -51,8 +51,13 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
     }
 
     public void dynamicTest(LibertyServer server1, LibertyServer server2, int test, int resourceCount) throws Exception {
+        String testSuffix = String.format("%03d", test);
+        dynamicTest(server1, server2, testSuffix, resourceCount);
+    }
+
+    public void dynamicTest(LibertyServer server1, LibertyServer server2, String testSuffix, int resourceCount) throws Exception {
         final String method = "dynamicTest";
-        final String id = String.format("%03d", test);
+
         StringBuilder sb = null;
         boolean testFailed = false;
         String testFailureString = "";
@@ -62,12 +67,12 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
 
         try {
             // We expect this to fail since it is gonna crash the server
-            sb = runTestWithResponse(server1, servletName, "setupRec" + id);
+            sb = runTestWithResponse(server1, servletName, "setupRec" + testSuffix);
         } catch (Throwable e) {
             // as expected
             Log.error(this.getClass(), method, e); // TODO remove this
         }
-        Log.info(this.getClass(), method, "setupRec" + id + " returned: " + sb);
+        Log.info(this.getClass(), method, "setupRec" + testSuffix + " returned: " + sb);
 
         // wait for 1st server to have gone away
         if (server1.waitForStringInLog("Dump State:") == null) {
@@ -122,14 +127,14 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
         if (!testFailed) {
 
             // check resource states
-            Log.info(this.getClass(), method, "calling checkRec" + id);
+            Log.info(this.getClass(), method, "calling checkRec" + testSuffix);
             try {
-                sb = runTestWithResponse(server1, servletName, "checkRec" + id);
+                sb = runTestWithResponse(server1, servletName, "checkRec" + testSuffix);
             } catch (Exception e) {
                 Log.error(this.getClass(), "dynamicTest", e);
                 throw e;
             }
-            Log.info(this.getClass(), method, "checkRec" + id + " returned: " + sb);
+            Log.info(this.getClass(), method, "checkRec" + testSuffix + " returned: " + sb);
 
             // Bounce first server to clear log
             server1.stopServer((String[]) null);

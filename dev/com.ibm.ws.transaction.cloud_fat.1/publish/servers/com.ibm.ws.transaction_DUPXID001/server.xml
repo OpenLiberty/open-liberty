@@ -16,7 +16,6 @@
       <feature>servlet-3.1</feature>
       <feature>componentTest-1.0</feature>
       <feature>txtest-1.0</feature>
-      <feature>cloudtxfat-1.0</feature>
       <feature>osgiconsole-1.0</feature>
       <feature>jndi-1.0</feature>
       <feature>cdi-1.2</feature>

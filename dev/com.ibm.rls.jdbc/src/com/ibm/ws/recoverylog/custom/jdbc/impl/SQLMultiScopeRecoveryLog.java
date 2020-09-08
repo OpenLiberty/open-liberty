@@ -3031,7 +3031,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     Tr.debug(tc, "associated log will be marked as failed", _associatedLog);
                 _associatedLog.markFailedByAssociation(_peerServerLostLogOwnership);
             } else {
-                _associatedLog.provideServiceability();
+                if (!_peerServerLostLogOwnership)
+                    _associatedLog.provideServiceability();
             }
         }
     }
