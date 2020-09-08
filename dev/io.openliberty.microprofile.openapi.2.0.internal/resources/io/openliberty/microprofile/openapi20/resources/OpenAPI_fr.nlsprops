@@ -1,0 +1,62 @@
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO MicroProfile OpenAPI API
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKO1650 - CWWKO1699
+
+OPENAPI_DOCUMENT_VALIDATION_ERROR=CWWKO1650E: La validation du document OpenAPI a g\u00e9n\u00e9r\u00e9 l'erreur ou les erreurs suivantes :
+OPENAPI_DOCUMENT_VALIDATION_ERROR.explanation=Le document OpenAPI n'est pas valide.
+OPENAPI_DOCUMENT_VALIDATION_ERROR.useraction=Fournissez un document OpenAPI valide r\u00e9solvant l'erreur signal\u00e9e.
+
+OPENAPI_DOCUMENT_VALIDATION_WARNING=CWWKO1651W: La validation du document OpenAPI a g\u00e9n\u00e9r\u00e9 l'avertissement ou les avertissements suivants :
+OPENAPI_DOCUMENT_VALIDATION_WARNING.explanation=Le document OpenAPI contient des donn\u00e9es qui ne sont pas au format recommand\u00e9.
+OPENAPI_DOCUMENT_VALIDATION_WARNING.useraction=Fournissez un document OpenAPI valide r\u00e9solvant l'avertissement signal\u00e9.
+
+CSS_NOT_PROCESSED=CWWKO1652W: Le serveur ne peut pas lire le document CSS sp\u00e9cifi\u00e9 {0} pour la raison suivante : {1} : {2}.
+CSS_NOT_PROCESSED.explanation=Le document CSS n'a pas pu \u00eatre trait\u00e9 en raison d'un probl\u00e8me de validit\u00e9.
+CSS_NOT_PROCESSED.useraction=Fournissez un document CSS valide.
+
+UNSUPPORTED_CSS_VALUE=CWWKO1653W: La valeur qui a \u00e9t\u00e9 sp\u00e9cifi\u00e9e pour la propri\u00e9t\u00e9 {0} n''est pas prise en charge. La valeur doit \u00eatre {1}.
+UNSUPPORTED_CSS_VALUE.explanation=La valeur de la propri\u00e9t\u00e9 sp\u00e9cifi\u00e9e n'est pas valide ou n'est pas prise en charge par l'infrastructure OpenAPI.
+UNSUPPORTED_CSS_VALUE.useraction=Fournissez une valeur valide pour la propri\u00e9t\u00e9 dans le fichier CSS personnalis\u00e9 pour l'interface utilisateur OpenAPI. 
+
+INVALID_CSS_BACKGROUND_IMAGE=CWWKO1654W: L''image d''arri\u00e8re-plan qui a \u00e9t\u00e9 sp\u00e9cifi\u00e9e dans {0} n''existe pas ou n''est pas valide.
+INVALID_CSS_BACKGROUND_IMAGE.explanation=L'image d'arri\u00e8re-plan n'existe pas ou n'est pas valide.
+INVALID_CSS_BACKGROUND_IMAGE.useraction=Fournissez une image valide.
+
+CUSTOM_CSS_NOT_PROCESSED=CWWKO1655W: Le fichier CSS personnalis\u00e9 {0} sp\u00e9cifi\u00e9 pour l''interface utilisateur OpenAPI n''a pas \u00e9t\u00e9 trait\u00e9. Le serveur va restaurer les valeurs par d\u00e9faut pour l''interface utilisateur OpenAPI. Motif={1} : {2}.
+CUSTOM_CSS_NOT_PROCESSED.explanation=Le serveur ne peut pas traiter le fichier CSS personnalis\u00e9. Il va restaurer les valeurs par d\u00e9faut pour l'interface utilisateur OpenAPI.
+CUSTOM_CSS_NOT_PROCESSED.useraction=Fournissez un fichier CSS personnalis\u00e9 valide pour l'interface utilisateur OpenAPI avec toutes les d\u00e9pendances.
+
+CSS_SECTION_NOT_FOUND=CWWKO1656W: Le serveur a lu le document CSS sp\u00e9cifi\u00e9 {0} mais n''a pas trouv\u00e9 d''\u00e9l\u00e9ment <.swagger-ui .headerbar >.
+CSS_SECTION_NOT_FOUND.explanation=Le document CSS sp\u00e9cifi\u00e9 ne contient pas d'\u00e9l\u00e9ment <.swagger-ui .headerbar >, ou son formatage ne r\u00e9pond pas aux contraintes impos\u00e9es par le serveur.
+CSS_SECTION_NOT_FOUND.useraction=Fournissez un fichier CSS valide contenant un \u00e9l\u00e9ment <.swagger-ui .headerbar > au format requis.
+
+OPENAPI_FILTER_LOAD_ERROR=CWWKO1657E: Echec du chargement de la classe de filtre OpenAPI : {0}.
+OPENAPI_FILTER_LOAD_ERROR.explanation=La classe de filtre OpenAPI sp\u00e9cifi\u00e9e est introuvable ou n'a pas pu \u00eatre charg\u00e9e.
+OPENAPI_FILTER_LOAD_ERROR.useraction=Assurez-vous que la classe sp\u00e9cifi\u00e9e existe et impl\u00e9mente l'interface OASFilter.
+
+OPENAPI_MODEL_READER_LOAD_ERROR=CWWKO1658E: Echec du chargement de la classe de lecteur de mod\u00e8le OpenAPI : {0}.
+OPENAPI_MODEL_READER_LOAD_ERROR.explanation=La classe de lecteur de mod\u00e8le OpenAPI sp\u00e9cifi\u00e9e est introuvable ou n'a pas pu \u00eatre charg\u00e9e.
+OPENAPI_MODEL_READER_LOAD_ERROR.useraction=Assurez-vous que la classe sp\u00e9cifi\u00e9e existe et impl\u00e9mente l'interface OASModelReader.
+
+OPENAPI_FILE_PARSE_ERROR=CWWKO1659E: Echec de l''analyse du document OpenAPI pour l''application : {0}.
+OPENAPI_FILE_PARSE_ERROR.explanation=Echec de l'analyse du document OpenAPI depuis le dossier META-INF.
+OPENAPI_FILE_PARSE_ERROR.useraction=Assurez-vous que le fichier est au format correct YAML ou JSON.
+
+OPENAPI_APPLICATION_PROCESSED=CWWKO1660I: L''application {0} a \u00e9t\u00e9 trait\u00e9e et un document OpenAPI a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9.
+OPENAPI_APPLICATION_PROCESSED.explanation=Document OpenAPI g\u00e9n\u00e9r\u00e9 pour l'application sp\u00e9cifi\u00e9e. Il peut \u00eatre affich\u00e9 sur un noeud final /openapi.
+OPENAPI_APPLICATION_PROCESSED.useraction=Aucune action n'est requise.

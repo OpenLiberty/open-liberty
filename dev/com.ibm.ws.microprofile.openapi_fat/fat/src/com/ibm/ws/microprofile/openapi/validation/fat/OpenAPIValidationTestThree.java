@@ -12,6 +12,7 @@ import com.ibm.ws.microprofile.openapi.fat.utils.OpenAPIConnection;
 import com.ibm.ws.microprofile.openapi.fat.utils.OpenAPITestUtil;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
@@ -56,11 +57,22 @@ public class OpenAPIValidationTestThree {
     }
 
     @Test
+    @SkipForRepeat("mpOpenAPI-2.0")
     public void testBlankInfo() throws Exception {
         OpenAPITestUtil.waitForApplicationProcessorProcessedEvent(server, OPENAPI_VALIDATION_YAML);
         OpenAPITestUtil.waitForApplicationProcessorAddedEvent(server, OPENAPI_VALIDATION_YAML);
         String openapiDoc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(openapiDoc);
         OpenAPITestUtil.checkInfo(openapiNode, "Deployed APIs", "1.0.0");
+    }
+
+    @Test
+    @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION, "mpOpenAPI-1.1" })
+    public void testBlankInfo20() throws Exception {
+        OpenAPITestUtil.waitForApplicationProcessorProcessedEvent(server, OPENAPI_VALIDATION_YAML);
+        OpenAPITestUtil.waitForApplicationProcessorAddedEvent(server, OPENAPI_VALIDATION_YAML);
+        String openapiDoc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
+        JsonNode openapiNode = OpenAPITestUtil.readYamlTree(openapiDoc);
+        OpenAPITestUtil.checkInfo(openapiNode, "Generated API", "1.0");
     }
 }

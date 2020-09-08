@@ -1,0 +1,62 @@
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO MicroProfile OpenAPI API
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKO1650 - CWWKO1699
+
+OPENAPI_DOCUMENT_VALIDATION_ERROR=CWWKO1650E: \u9a57\u8b49 OpenAPI \u6587\u4ef6\u6642\u7522\u751f\u4e86\u4e0b\u5217\u932f\u8aa4\uff1a
+OPENAPI_DOCUMENT_VALIDATION_ERROR.explanation=OpenAPI \u6587\u4ef6\u7121\u6548\u3002
+OPENAPI_DOCUMENT_VALIDATION_ERROR.useraction=\u8acb\u63d0\u4f9b\u6709\u6548\u7684 OpenAPI \u6587\u4ef6\uff0c\u4ee5\u89e3\u6c7a\u6240\u5831\u544a\u7684\u932f\u8aa4\u3002
+
+OPENAPI_DOCUMENT_VALIDATION_WARNING=CWWKO1651W: \u9a57\u8b49 OpenAPI \u6587\u4ef6\u6642\u7522\u751f\u4e86\u4e0b\u5217\u8b66\u544a\uff1a
+OPENAPI_DOCUMENT_VALIDATION_WARNING.explanation=OpenAPI \u6587\u4ef6\u6240\u5305\u542b\u7684\u8cc7\u6599\u4e0d\u662f\u63a1\u7528\u5efa\u8b70\u7684\u683c\u5f0f\u3002
+OPENAPI_DOCUMENT_VALIDATION_WARNING.useraction=\u8acb\u63d0\u4f9b\u6709\u6548\u7684 OpenAPI \u6587\u4ef6\uff0c\u4ee5\u89e3\u6c7a\u6240\u5831\u544a\u7684\u8b66\u544a\u3002
+
+CSS_NOT_PROCESSED=CWWKO1652W: \u4f3a\u670d\u5668\u7121\u6cd5\u8b80\u53d6\u6307\u5b9a\u7684 CSS \u6587\u4ef6 {0}\uff0c\u56e0\u70ba {1}\uff1a{2}\u3002
+CSS_NOT_PROCESSED.explanation=\u56e0\u70ba\u6709\u6548\u7684\u932f\u8aa4\uff0c\u7121\u6cd5\u8655\u7406 CSS \u6587\u4ef6\u3002
+CSS_NOT_PROCESSED.useraction=\u8acb\u63d0\u4f9b\u6709\u6548\u7684 CSS \u6587\u4ef6\u3002
+
+UNSUPPORTED_CSS_VALUE=CWWKO1653W: \u4e0d\u652f\u63f4\u6307\u5b9a\u7d66 {0} \u5167\u5bb9\u7684\u503c\u3002\u503c\u5fc5\u9808\u662f {1}\u3002
+UNSUPPORTED_CSS_VALUE.explanation=\u6307\u5b9a\u5167\u5bb9\u7684\u503c\u7121\u6548\uff0c\u6216\u8005 OpenAPI \u67b6\u69cb\u4e0d\u652f\u63f4\u5b83\u3002
+UNSUPPORTED_CSS_VALUE.useraction=\u8acb\u5728 OpenAPI \u4f7f\u7528\u8005\u4ecb\u9762\u7684\u81ea\u8a02 CSS \u6a94\u4e2d\uff0c\u63d0\u4f9b\u8a72\u5167\u5bb9\u7684\u6709\u6548\u503c\u3002
+
+INVALID_CSS_BACKGROUND_IMAGE=CWWKO1654W: \u6307\u5b9a\u65bc {0} \u7684\u80cc\u666f\u5f71\u50cf\u4e0d\u5b58\u5728\u6216\u7121\u6548\u3002
+INVALID_CSS_BACKGROUND_IMAGE.explanation=\u80cc\u666f\u5f71\u50cf\u4e0d\u5b58\u5728\u6216\u7121\u6548\u3002
+INVALID_CSS_BACKGROUND_IMAGE.useraction=\u8acb\u63d0\u4f9b\u6709\u6548\u7684\u5f71\u50cf\u3002
+
+CUSTOM_CSS_NOT_PROCESSED=CWWKO1655W: \u672a\u8655\u7406\u6307\u5b9a\u7d66 OpenAPI \u4f7f\u7528\u8005\u4ecb\u9762\u7684\u81ea\u8a02 CSS \u6a94\u6848 {0}\u3002\u4f3a\u670d\u5668\u5c07\u9084\u539f OpenAPI \u4f7f\u7528\u8005\u4ecb\u9762\u7684\u9810\u8a2d\u503c\u3002\u539f\u56e0={1}\uff1a{2}\u3002
+CUSTOM_CSS_NOT_PROCESSED.explanation=\u4f3a\u670d\u5668\u7121\u6cd5\u8655\u7406\u81ea\u8a02 CSS \u6a94\u6848\u3002\u4f3a\u670d\u5668\u5c07\u9084\u539f OpenAPI \u4f7f\u7528\u8005\u4ecb\u9762\u7684\u9810\u8a2d\u503c\u3002
+CUSTOM_CSS_NOT_PROCESSED.useraction=\u8acb\u70ba OpenAPI \u4f7f\u7528\u8005\u4ecb\u9762\u63d0\u4f9b\u6709\u6548\u7684\u81ea\u8a02 CSS \u6a94\u6848\uff0c\u4ee5\u53ca\u63d0\u4f9b\u6240\u6709\u7684\u4f9d\u8cf4\u95dc\u4fc2\u3002
+
+CSS_SECTION_NOT_FOUND=CWWKO1656W: \u4f3a\u670d\u5668\u8b80\u53d6\u4e86\u6307\u5b9a\u7684 CSS \u6587\u4ef6 {0}\uff0c\u4f46\u537b\u627e\u4e0d\u5230 <.swagger-ui .headerbar >\u3002
+CSS_SECTION_NOT_FOUND.explanation=\u6307\u5b9a\u7684 CSS \u6587\u4ef6\u4e0d\u5305\u542b <.swagger-ui .headerbar >\uff0c\u6216\u8005\u5176\u683c\u5f0f\u4e0d\u7b26\u5408\u4f3a\u670d\u5668\u6240\u9700\u7684\u9650\u5236\u3002
+CSS_SECTION_NOT_FOUND.useraction=\u8acb\u4ee5\u5fc5\u8981\u683c\u5f0f\u63d0\u4f9b\u542b\u6709 <.swagger-ui .headerbar > \u7684\u6709\u6548 CSS \u6a94\u6848\u3002
+
+OPENAPI_FILTER_LOAD_ERROR=CWWKO1657E: \u7121\u6cd5\u8f09\u5165 OpenAPI \u904e\u6ffe\u5668\u985e\u5225\uff1a{0}\u3002
+OPENAPI_FILTER_LOAD_ERROR.explanation=\u627e\u4e0d\u5230\u6216\u7121\u6cd5\u8f09\u5165\u6307\u5b9a\u7684 OpenAPI \u904e\u6ffe\u5668\u985e\u5225\u3002
+OPENAPI_FILTER_LOAD_ERROR.useraction=\u8acb\u78ba\u5b9a\u6307\u5b9a\u7684\u985e\u5225\u5df2\u5b58\u5728\uff0c\u4e14\u6703\u5be6\u4f5c OASFilter \u5be6\u4f8b\u3002
+
+OPENAPI_MODEL_READER_LOAD_ERROR=CWWKO1658E: \u7121\u6cd5\u8f09\u5165 OpenAPI \u6a21\u578b\u8b80\u53d6\u5668\u985e\u5225\uff1a{0}\u3002
+OPENAPI_MODEL_READER_LOAD_ERROR.explanation=\u627e\u4e0d\u5230\u6216\u7121\u6cd5\u8f09\u5165\u6307\u5b9a\u7684 OpenAPI \u6a21\u578b\u8b80\u53d6\u5668\u985e\u5225\u3002
+OPENAPI_MODEL_READER_LOAD_ERROR.useraction=\u8acb\u78ba\u5b9a\u6307\u5b9a\u7684\u985e\u5225\u5df2\u5b58\u5728\uff0c\u4e14\u6703\u5be6\u4f5c OASModelReader \u5be6\u4f8b\u3002
+
+OPENAPI_FILE_PARSE_ERROR=CWWKO1659E: \u7121\u6cd5\u5256\u6790\u61c9\u7528\u7a0b\u5f0f\u7684 OpenAPI \u6587\u4ef6\uff1a{0}\u3002
+OPENAPI_FILE_PARSE_ERROR.explanation=\u7121\u6cd5\u5256\u6790 META-INF \u8cc7\u6599\u593e\u4e2d\u7684 OpenAPI \u6587\u4ef6\u3002
+OPENAPI_FILE_PARSE_ERROR.useraction=\u8acb\u78ba\u5b9a\u6a94\u6848\u662f\u6b63\u78ba\u7684 YAML \u6216 JSON \u683c\u5f0f\u3002
+
+OPENAPI_APPLICATION_PROCESSED=CWWKO1660I: \u5df2\u8655\u7406\u61c9\u7528\u7a0b\u5f0f {0}\uff0c\u4e26\u4e14\u5df2\u7522\u751f OpenAPI \u6587\u4ef6\u3002
+OPENAPI_APPLICATION_PROCESSED.explanation=\u5df2\u7522\u751f\u6307\u5b9a\u61c9\u7528\u7a0b\u5f0f\u7684 OpenAPI \u6587\u4ef6\u3002\u53ef\u4ee5\u5728 /openapi \u7aef\u9ede\u6aa2\u8996\u5b83\u3002
+OPENAPI_APPLICATION_PROCESSED.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002

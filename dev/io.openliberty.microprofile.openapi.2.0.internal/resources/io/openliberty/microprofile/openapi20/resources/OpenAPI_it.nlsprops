@@ -1,0 +1,62 @@
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO MicroProfile OpenAPI API
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKO1650 - CWWKO1699
+
+OPENAPI_DOCUMENT_VALIDATION_ERROR=CWWKO1650E: La convalida del documento OpenAPI ha prodotto i seguenti errori:
+OPENAPI_DOCUMENT_VALIDATION_ERROR.explanation=Il documento OpenAPI non \u00e8 valido.
+OPENAPI_DOCUMENT_VALIDATION_ERROR.useraction=Fornire un documento OpenAPI valido che risolva l'errore riportato.
+
+OPENAPI_DOCUMENT_VALIDATION_WARNING=CWWKO1651W: La convalida del documento OpenAPI ha prodotto le seguenti avvertenze:
+OPENAPI_DOCUMENT_VALIDATION_WARNING.explanation=Il documento OpenAPI contiene dati che non sono nel formato consigliato.
+OPENAPI_DOCUMENT_VALIDATION_WARNING.useraction=Fornire un documento OpenAPI valido che risolva l'avvertenza riportata.
+
+CSS_NOT_PROCESSED=CWWKO1652W: Il server non pu\u00f2 leggere il documento CSS specificato {0} a causa di {1} : {2}.
+CSS_NOT_PROCESSED.explanation=Il documento CSS non pu\u00f2 essere elaborato a causa di un errore di validit\u00e0.
+CSS_NOT_PROCESSED.useraction=Fornire un documento CSS valido.
+
+UNSUPPORTED_CSS_VALUE=CWWKO1653W: Il valore specificato per la propriet\u00e0 {0} non \u00e8 supportato. Il valore deve essere {1}.
+UNSUPPORTED_CSS_VALUE.explanation=Il valore della propriet\u00e0 specificata non \u00e8 valido o non \u00e8 supportato dal framework OpenAPI.
+UNSUPPORTED_CSS_VALUE.useraction=Fornire un valore valido per la propriet\u00e0 nel file CSS personalizzato valido per la UI OpenAPI. 
+
+INVALID_CSS_BACKGROUND_IMAGE=CWWKO1654W: L''immagine di sfondo specificata in {0} non esiste o non \u00e8 valida.
+INVALID_CSS_BACKGROUND_IMAGE.explanation=L'immagine di sfondo non esiste o non \u00e8 valida.
+INVALID_CSS_BACKGROUND_IMAGE.useraction=Fornire un'immagine valida.
+
+CUSTOM_CSS_NOT_PROCESSED=CWWKO1655W: Il file CSS personalizzato {0} specificato per la UI OpenAPI non \u00e8 stato elaborato. Il server ripristiner\u00e0 i valori predefiniti per la UI OpenAPI. Causa={1} : {2}.
+CUSTOM_CSS_NOT_PROCESSED.explanation=Il server non pu\u00f2 elaborare il file CSS personalizzato. Il server ripristiner\u00e0 i valori predefiniti per la UI OpenAPI.
+CUSTOM_CSS_NOT_PROCESSED.useraction=Fornire un file CSS personalizzato valido per la UI OpenAPI e tutte le dipendenze.
+
+CSS_SECTION_NOT_FOUND=CWWKO1656W: Il server ha letto il documento CSS specificato {0}, ma non \u00e8 riuscito a trovare <.swagger-ui .headerbar >.
+CSS_SECTION_NOT_FOUND.explanation=Il documento CSS specificato non contiene <.swagger-ui .headerbar > o non \u00e8 nel formato che rispetta i vincoli richiesti dal server.
+CSS_SECTION_NOT_FOUND.useraction=Fornire un file CSS valido che contenga < .swagger-ui .headerbar > nel formato richiesto.
+
+OPENAPI_FILTER_LOAD_ERROR=CWWKO1657E: Impossibile caricare la classe filtro OpenAPI: {0}.
+OPENAPI_FILTER_LOAD_ERROR.explanation=La classe filtro OpenAPI specificata non pu\u00f2 essere trovata o caricata.
+OPENAPI_FILTER_LOAD_ERROR.useraction=Assicurarsi che la classe specificata esista e implementi l'interfaccia OASFilter.
+
+OPENAPI_MODEL_READER_LOAD_ERROR=CWWKO1658E: Impossibile caricare la classe lettore modello OpenAPI: {0}.
+OPENAPI_MODEL_READER_LOAD_ERROR.explanation=La classe lettore modello OpenAPI specificata non pu\u00f2 essere trovata o caricata.
+OPENAPI_MODEL_READER_LOAD_ERROR.useraction=Assicurarsi che la classe specificata esista e implementi l'interfaccia OASModelReader.
+
+OPENAPI_FILE_PARSE_ERROR=CWWKO1659E: Impossibile analizzare il documento OpenAPI per l''applicazione: {0}.
+OPENAPI_FILE_PARSE_ERROR.explanation=Impossibile analizzare il documento OpenAPI dalla cartella META-INF.
+OPENAPI_FILE_PARSE_ERROR.useraction=Assicurarsi che il file sia nel formato YAML o JSON corretto.
+
+OPENAPI_APPLICATION_PROCESSED=CWWKO1660I: L''applicazione {0} \u00e8 stata elaborata ed \u00e8 stato prodotto un documento OpenAPI.
+OPENAPI_APPLICATION_PROCESSED.explanation=Documento OpenAPI per l'applicazione specificata generato. Pu\u00f2 essere visualizzato all'endpoint /openapi.
+OPENAPI_APPLICATION_PROCESSED.useraction=Non \u00e8 richiesta alcuna azione.
