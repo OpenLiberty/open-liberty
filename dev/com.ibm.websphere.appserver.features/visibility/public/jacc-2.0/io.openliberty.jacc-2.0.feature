@@ -19,4 +19,4 @@ IBM-Install-Policy: when-satisfied
 kind=beta
 edition=core
 -jars=io.openliberty.jacc.2.0; location:=dev/api/ibm/
--files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.jacc_2.0-javadoc.zip
+-files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.jacc_1.0-javadoc.zip
