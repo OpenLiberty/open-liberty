@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2017 IBM Corporation and others.
+# Copyright (c) 2016, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -324,3 +324,8 @@ MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.useraction=Specify a supported signature 
 JWT_AMR_CLAIM_NOT_VALID=CWWKS6054E: The AMR [{0}] of the provided JSON web token (JWT) is not listed as a trusted AMR in the [{1}] JWT configuration. The trusted AMR are [{2}].
 JWT_AMR_CLAIM_NOT_VALID.explanation=The server configuration specifies which AMR are trusted when validating JWTs. The provided token is not intended for a trusted AMR, so the token cannot be validated.
 JWT_AMR_CLAIM_NOT_VALID.useraction=Obtain a new token for one of the trusted AMR specified in your JWT configuration, or add the AMR specified in the message as a trusted AMR in your JWT configuration.
+
+# 0=JWT configuration ID, 1=Signature algorithm configured in server.xml, 2=Signature algorithm that will be used by default
+BETA_SIGNATURE_ALGORITHM_USED=CWWKS6055W: The [{0}] configuration specifies the {1} signature algorithm, but that algorithm is only available in the beta edition. The {2} signature algorithm is used instead.
+BETA_SIGNATURE_ALGORITHM_USED.explanation=Support for the signature algorithm that is specified in the message might be incomplete, so the signature algorithm can only be used in the beta edition.
+BETA_SIGNATURE_ALGORITHM_USED.useraction=Configure a signature algorithm that is supported, or use the beta edition of this product to use the signature algorithm that is specified in the message.

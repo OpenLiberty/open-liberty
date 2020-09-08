@@ -101,7 +101,7 @@ public class JwtConsumerConfigImpl implements JwtConsumerConfig {
         issuer = JwtUtils.trimIt((String) props.get(JwtUtils.CFG_KEY_ISSUER));
         sharedKey = JwtConfigUtil.processProtectedString(props, JwtUtils.CFG_KEY_SHARED_KEY);
         audiences = JwtUtils.trimIt((String[]) props.get(JwtUtils.CFG_KEY_AUDIENCES));
-        sigAlg = JwtConfigUtil.getSignatureAlgorithm(props, JwtUtils.CFG_KEY_SIGNATURE_ALGORITHM);
+        sigAlg = JwtConfigUtil.getSignatureAlgorithm(getId(), props, JwtUtils.CFG_KEY_SIGNATURE_ALGORITHM);
         trustStoreRef = JwtUtils.trimIt((String) props.get(JwtUtils.CFG_KEY_TRUSTSTORE_REF));
         trustedAlias = JwtUtils.trimIt((String) props.get(JwtUtils.CFG_KEY_TRUSTED_ALIAS));
         clockSkewMilliSeconds = (Long) props.get(JwtUtils.CFG_KEY_CLOCK_SKEW);
@@ -206,10 +206,10 @@ public class JwtConsumerConfigImpl implements JwtConsumerConfig {
     public boolean getUseSystemPropertiesForHttpClientConnections() {
         return useSystemPropertiesForHttpClientConnections;
     }
-    
-	@Override
-	public List<String> getAMRClaim() {
-		return amrClaim;
-	}
+
+    @Override
+    public List<String> getAMRClaim() {
+        return amrClaim;
+    }
 
 }

@@ -134,4 +134,5 @@ instrument.classesExcludes: com/ibm/ws/security/jwt/internal/resources/*.class
     com.ibm.ws.org.objenesis:objenesis;version=1.0, \
     com.ibm.ws.kernel.boot;version=latest, \
     com.ibm.ws.org.jose4j;version=latest, \
-    com.ibm.ws.org.slf4j.api.1.7.7;version=latest
+    com.ibm.ws.org.slf4j.api.1.7.7;version=latest, \
+    com.ibm.ws.security.test.common;version=latest

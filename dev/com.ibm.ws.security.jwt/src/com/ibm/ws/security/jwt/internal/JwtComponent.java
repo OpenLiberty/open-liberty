@@ -145,7 +145,7 @@ public class JwtComponent implements JwtConfig {
         jti = (Boolean) props.get(JwtUtils.CFG_KEY_JTI);
         valid = ((Long) props.get(JwtUtils.CFG_KEY_VALID)).longValue();
         expiresInSeconds = ((Long) props.get(JwtUtils.CFG_KEY_EXPIRES_IN_SECONDS)).longValue();
-        sigAlg = JwtConfigUtil.getSignatureAlgorithm(props, JwtUtils.CFG_KEY_SIGNATURE_ALGORITHM);
+        sigAlg = JwtConfigUtil.getSignatureAlgorithm(getId(), props, JwtUtils.CFG_KEY_SIGNATURE_ALGORITHM);
         audiences = JwtUtils.trimIt((String[]) props.get(JwtUtils.CFG_KEY_AUDIENCES));
         scope = JwtUtils.trimIt((String) props.get(JwtUtils.CFG_KEY_SCOPE));
         claims = JwtUtils.trimIt((String[]) props.get(JwtUtils.CFG_KEY_CLAIMS));

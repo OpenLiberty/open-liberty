@@ -19,22 +19,21 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestName;
+
+import com.ibm.ws.security.test.common.CommonTestClass;
 
 import test.common.SharedOutputManager;
 
-public class JwtConfigUtilTest {
+public class JwtConfigUtilTest extends CommonTestClass {
 
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.jwt.*=all:com.ibm.ws.security.common.*=all:io.openliberty.security*=all");
-
-    @Rule
-    public final TestName testName = new TestName();
 
     static final String SIG_ALG_ATTR_NAME = "signatureAlgorithm";
 
     static final String DEFAULT_SIG_ALG = "RS256";
+
+    protected final static String MSG_CWWKS6055W_BETA_SIGNATURE_ALGORITHM_USED = "CWWKS6055W";
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -63,8 +62,10 @@ public class JwtConfigUtilTest {
     public void test_getSignatureAlgorithm_betaDisabled_noOtherProps() {
         Map<String, Object> props = new HashMap<String, Object>();
 
-        String result = JwtConfigUtil.getSignatureAlgorithm(props, SIG_ALG_ATTR_NAME);
+        String result = JwtConfigUtil.getSignatureAlgorithm(testName.getMethodName(), props, SIG_ALG_ATTR_NAME);
         assertEquals("Did not get the default signature algorithm as expected.", DEFAULT_SIG_ALG, result);
+
+        verifyLogMessage(outputMgr, MSG_CWWKS6055W_BETA_SIGNATURE_ALGORITHM_USED + ".+" + "null");
     }
 
     @Test
@@ -72,8 +73,26 @@ public class JwtConfigUtilTest {
         Map<String, Object> props = new HashMap<String, Object>();
         props.put(SIG_ALG_ATTR_NAME, "ES256");
 
-        String result = JwtConfigUtil.getSignatureAlgorithm(props, SIG_ALG_ATTR_NAME);
+        String result = JwtConfigUtil.getSignatureAlgorithm(testName.getMethodName(), props, SIG_ALG_ATTR_NAME);
         assertEquals("Did not get the default signature algorithm as expected.", DEFAULT_SIG_ALG, result);
+
+        verifyLogMessage(outputMgr, MSG_CWWKS6055W_BETA_SIGNATURE_ALGORITHM_USED + ".+" + "ES256");
+    }
+
+    @Test
+    public void test_getSignatureAlgorithm_betaDisabled_betaAlgorithm_callMethodTwice() {
+        Map<String, Object> props = new HashMap<String, Object>();
+        props.put(SIG_ALG_ATTR_NAME, "ES256");
+
+        String result = JwtConfigUtil.getSignatureAlgorithm(testName.getMethodName(), props, SIG_ALG_ATTR_NAME);
+        assertEquals("Did not get the default signature algorithm as expected.", DEFAULT_SIG_ALG, result);
+
+        verifyLogMessage(outputMgr, MSG_CWWKS6055W_BETA_SIGNATURE_ALGORITHM_USED + ".+" + "ES256");
+
+        // Second call to the method for the same ID should not issue the warning message
+        outputMgr.resetStreams();
+        result = JwtConfigUtil.getSignatureAlgorithm(testName.getMethodName(), props, SIG_ALG_ATTR_NAME);
+        verifyNoLogMessage(outputMgr, MSG_BASE);
     }
 
     @Test
@@ -82,8 +101,10 @@ public class JwtConfigUtilTest {
         Map<String, Object> props = new HashMap<String, Object>();
         props.put(SIG_ALG_ATTR_NAME, validNonBetaAlgorithm);
 
-        String result = JwtConfigUtil.getSignatureAlgorithm(props, SIG_ALG_ATTR_NAME);
+        String result = JwtConfigUtil.getSignatureAlgorithm(testName.getMethodName(), props, SIG_ALG_ATTR_NAME);
         assertEquals("Did not get the expected signature algorithm.", validNonBetaAlgorithm, result);
+
+        verifyNoLogMessage(outputMgr, MSG_BASE);
     }
 
     @Test
@@ -91,8 +112,10 @@ public class JwtConfigUtilTest {
         setBeta(true);
         Map<String, Object> props = new HashMap<String, Object>();
 
-        String result = JwtConfigUtil.getSignatureAlgorithm(props, SIG_ALG_ATTR_NAME);
+        String result = JwtConfigUtil.getSignatureAlgorithm(testName.getMethodName(), props, SIG_ALG_ATTR_NAME);
         assertEquals("Did not get the default signature algorithm as expected.", DEFAULT_SIG_ALG, result);
+
+        verifyNoLogMessage(outputMgr, MSG_BASE);
     }
 
     @Test
@@ -102,8 +125,10 @@ public class JwtConfigUtilTest {
         Map<String, Object> props = new HashMap<String, Object>();
         props.put(SIG_ALG_ATTR_NAME, validBetaAlgorithm);
 
-        String result = JwtConfigUtil.getSignatureAlgorithm(props, SIG_ALG_ATTR_NAME);
+        String result = JwtConfigUtil.getSignatureAlgorithm(testName.getMethodName(), props, SIG_ALG_ATTR_NAME);
         assertEquals("Did not get the expected signature algorithm.", validBetaAlgorithm, result);
+
+        verifyNoLogMessage(outputMgr, MSG_BASE);
     }
 
     @Test
@@ -113,8 +138,10 @@ public class JwtConfigUtilTest {
         Map<String, Object> props = new HashMap<String, Object>();
         props.put(SIG_ALG_ATTR_NAME, validNonBetaAlgorithm);
 
-        String result = JwtConfigUtil.getSignatureAlgorithm(props, SIG_ALG_ATTR_NAME);
+        String result = JwtConfigUtil.getSignatureAlgorithm(testName.getMethodName(), props, SIG_ALG_ATTR_NAME);
         assertEquals("Did not get the expected signature algorithm.", validNonBetaAlgorithm, result);
+
+        verifyNoLogMessage(outputMgr, MSG_BASE);
     }
 
     private void setBeta(boolean enable) {

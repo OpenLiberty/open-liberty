@@ -193,7 +193,7 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
         this.mapToUserRegistry = configUtils.getBooleanConfigAttribute(props, CFG_KEY_mapToUserRegistry, mapToUserRegistry);
         jwkSet = null; // the jwkEndpoint may have been changed during dynamic update
         consumerUtils = null; // the parameters in consumerUtils may have been changed during dynamic changing
-        this.signatureAlgorithm = JwtConfigUtil.getSignatureAlgorithm(props, CFG_KEY_SIGALG);
+        this.signatureAlgorithm = JwtConfigUtil.getSignatureAlgorithm(getUniqueId(), props, CFG_KEY_SIGALG);
         sharedKey = JwtUtils.processProtectedString(props, JwtUtils.CFG_KEY_SHARED_KEY);
 
         loadConfigValuesForHigherVersions(cc, props);

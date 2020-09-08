@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.security.jwt.internal;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
@@ -29,6 +31,9 @@ import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 public class JwtConfigUtil {
 
     private static final TraceComponent tc = Tr.register(JwtConfigUtil.class);
+
+    // Tells us if the message for a call to a beta method has been issued
+    private static List<String> issuedBetaMessageForConfigs = new ArrayList<String>();
 
     private static final String KEY_JWT_SERVICE = "jwtComponent";
     private static ConcurrentServiceReferenceMap<String, JwtConfig> jwtServiceRef = new ConcurrentServiceReferenceMap<String, JwtConfig>(KEY_JWT_SERVICE);
@@ -59,13 +64,14 @@ public class JwtConfigUtil {
         return secret;
     }
 
-    public static String getSignatureAlgorithm(Map<String, Object> props, String sigAlgAttrName) {
+    public static String getSignatureAlgorithm(String configId, Map<String, Object> props, String sigAlgAttrName) {
         String defaultSignatureAlgorithm = "RS256";
         String signatureAlgorithm = JwtUtils.trimIt((String) props.get(sigAlgAttrName));
         boolean isBetaEnabled = ProductInfo.getBetaEdition();
         if (!isBetaEnabled && isBetaAlgorithm(signatureAlgorithm)) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "A signature algorithm (" + signatureAlgorithm + ") is specified that's only available in the beta edition. Defaulting to " + defaultSignatureAlgorithm);
+            if (!isBetaMessageIssuedForConfig(configId)) {
+                Tr.warning(tc, "BETA_SIGNATURE_ALGORITHM_USED", new Object[] { configId, signatureAlgorithm, defaultSignatureAlgorithm });
+                issuedBetaMessageForConfigs.add(configId);
             }
             signatureAlgorithm = defaultSignatureAlgorithm;
         }
@@ -80,6 +86,10 @@ public class JwtConfigUtil {
             return true;
         }
         return !algorithm.matches("RS256|HS256");
+    }
+
+    private static boolean isBetaMessageIssuedForConfig(String configId) {
+        return issuedBetaMessageForConfigs.contains(configId);
     }
 
 }
