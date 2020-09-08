@@ -58,11 +58,11 @@ public class ThirdPartyTests extends LoggingTest {
     public static void setUp() throws Exception {
 
         JavaArchive cdiInEntityListernersTestEarLib = ShrinkWrap.create(JavaArchive.class, "CDIInEntityListernersTestEarLib.jar")
-                        .addPackage("cdi.entity.listeners.test.model.lib");
+                        .addPackage(cdi.entity.listeners.test.model.lib.EntityBListener.class.getPackage());
 
         WebArchive cdiInEntityListernersTestWar = ShrinkWrap.create(WebArchive.class, "CDIInEntityListernersTest.war")
-                        .addPackage("cdi.entity.listeners.test.web")
-                        .addPackage("cdi.entity.listeners.test.model")
+                        .addPackage(cdi.entity.listeners.test.web.SimpleTestServlet.class.getPackage())
+                        .addPackage(cdi.entity.listeners.test.model.EntityA.class.getPackage())
                         .add(new FileAsset(new File("test-applications/CDIInEntityListernersTest.war/resources/WEB-INF/classes/META-INF/persistence.xml")), "/WEB-INF/classes/META-INF/persistence.xml")
                         .add(new FileAsset(new File("test-applications/CDIInEntityListernersTest.war/resources/WEB-INF/classes/META-INF/jpaorm.xml")), "/WEB-INF/classes/META-INF/jpaorm.xml");
 
@@ -72,7 +72,7 @@ public class ThirdPartyTests extends LoggingTest {
 
 
         WebArchive deltaspikeTest = ShrinkWrap.create(WebArchive.class, "deltaspikeTest.war")
-                        .addPackage("com.ibm.ws.cdi.deltaspike.scheduler")
+                        .addPackage(com.ibm.ws.cdi.deltaspike.scheduler.RequestScopedNumberProvider.class.getPackage())
                         .add(new FileAsset(new File("test-applications/deltaspikeTest.war/resources/WEB-INF/quartz-config.xml")), "/WEB-INF/quartz-config.xml")
                         .add(new FileAsset(new File("test-applications/deltaspikeTest.war/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml")
                         .add(new FileAsset(new File("test-applications/deltaspikeTest.war/resources/WEB-INF/lib/deltaspike-scheduler-module-impl-1.5.0.jar")), "/WEB-INF/lib/deltaspike-scheduler-module-impl-1.5.0.jar")
