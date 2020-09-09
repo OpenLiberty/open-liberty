@@ -12,6 +12,9 @@ package com.ibm.ws.install;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 
 import com.ibm.ws.install.internal.InstallLicenseImpl;
@@ -19,10 +22,24 @@ import com.ibm.ws.repository.common.enums.LicenseType;
 import com.ibm.ws.repository.exceptions.RepositoryException;
 import com.ibm.ws.repository.resources.AttachmentResource;
 
+import test.common.SharedOutputManager;
+
 /**
  *
  */
 public class InstallLicenseTest {
+    @Rule
+    public static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("*=all");
+
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        outputMgr.captureStreams();
+    }
+
+    @AfterClass
+    public static void tearDownAfterClass() throws Exception {
+        outputMgr.restoreStreams();
+    }
 
     @Test
     public void testInstallLicenseImpl() throws RepositoryException {

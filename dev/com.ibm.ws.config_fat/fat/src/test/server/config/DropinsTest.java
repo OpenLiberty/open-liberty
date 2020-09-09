@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
@@ -246,7 +247,7 @@ public class DropinsTest extends ServletRunner {
         server.deleteAllDropinConfigurations();
 
         WebArchive dropinsApp = ShrinkHelper.buildDefaultApp("configdropins", "test.config.dropins");
-        ShrinkHelper.exportAppToServer(server, dropinsApp);
+        ShrinkHelper.exportAppToServer(server, dropinsApp, DeployOptions.DISABLE_VALIDATION);
 
         server.startServer("configDropins.log");
 
