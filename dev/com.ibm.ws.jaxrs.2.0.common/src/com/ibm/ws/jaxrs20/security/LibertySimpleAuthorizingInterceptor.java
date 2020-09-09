@@ -15,9 +15,11 @@ import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.annotation.Priority;
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.Priorities;
 
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.interceptor.security.AbstractAuthorizingInInterceptor;
@@ -29,6 +31,7 @@ import org.apache.cxf.security.SecurityContext;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
+@Priority(Priorities.AUTHORIZATION)
 public class LibertySimpleAuthorizingInterceptor extends
                 AbstractAuthorizingInInterceptor {
     private static final TraceComponent tc = Tr
@@ -36,10 +39,16 @@ public class LibertySimpleAuthorizingInterceptor extends
 
     @Override
     public void handleMessage(Message message) throws Fault {
-        SecurityContext sc = message.get(SecurityContext.class);
-        if (sc != null) {
+        SecurityContext cxfSecurityContext = message.get(SecurityContext.class);
+        javax.ws.rs.core.SecurityContext jaxrsSecurityContext = message.get(javax.ws.rs.core.SecurityContext.class);
+        if (jaxrsSecurityContext != null && jaxrsSecurityContext instanceof javax.ws.rs.core.SecurityContext) {
             Method method = getTargetMethod(message);
-            if (parseMethodSecurity(method, sc)) {
+            if (parseMethodSecurity(method, jaxrsSecurityContext)) {
+                return;
+            }
+        } else if (cxfSecurityContext != null) {
+            Method method = getTargetMethod(message);
+            if (parseMethodSecurity(method, cxfSecurityContext)) {
                 return;
             }
         }
@@ -48,6 +57,14 @@ public class LibertySimpleAuthorizingInterceptor extends
     }
 
     private boolean ensureAuthentication(SecurityContext sc) {
+        Principal p = sc.getUserPrincipal();
+        if (p == null || "UNAUTHENTICATED".equals(p.getName())) {
+            throw new AuthenticationException();
+        }
+        return true;
+    }
+    
+    private boolean ensureAuthentication(javax.ws.rs.core.SecurityContext sc) {
         Principal p = sc.getUserPrincipal();
         if (p == null || "UNAUTHENTICATED".equals(p.getName())) {
             throw new AuthenticationException();
@@ -104,8 +121,58 @@ public class LibertySimpleAuthorizingInterceptor extends
                 }
             }
         }
+    }
+    
+    private boolean parseMethodSecurity(Method method, javax.ws.rs.core.SecurityContext sc) {
 
-    } // end parseMethodSecurity
+        boolean denyAll = getDenyAll(method);
+        if (denyAll) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Found DenyAll for method: {} " + method.getName()
+                             + ", Injection Processing for web service is ignored");
+            }
+            // throw new WebApplicationException(Response.Status.FORBIDDEN);
+            return false;
+
+        } else { // try RolesAllowed
+
+            RolesAllowed rolesAllowed = getRolesAllowed(method);
+            if (rolesAllowed != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(
+                             tc,
+                             "found RolesAllowed in method: {} "
+                                 + method.getName(),
+                             new Object[] { rolesAllowed.value() });
+                }
+                if (!ensureAuthentication(sc)) {
+                    return false;
+                }
+                String[] theseroles = rolesAllowed.value();
+
+                if (!isUserInRole(sc, Arrays.asList(theseroles), false)) {
+                    return false;
+                }
+                return true;
+
+            } else {
+                boolean permitAll = getPermitAll(method);
+                if (permitAll) {
+                    if (TraceComponent.isAnyTracingEnabled()
+                        && tc.isDebugEnabled()) {
+                        Tr.debug(
+                                 tc,
+                                 "Found PermitAll for method: {}"
+                                                 + method.getName());
+                    }
+                    return true;
+                } else { // try class level annotations
+                    Class<?> cls = method.getDeclaringClass();
+                    return parseClassSecurity(cls, sc);
+                }
+            }
+        }
+    }
 
     // parse security JSR250 annotations at the class level
     private boolean parseClassSecurity(Class<?> cls, SecurityContext sc) {
@@ -137,14 +204,46 @@ public class LibertySimpleAuthorizingInterceptor extends
                     return false;
                 }
                 return true;
-            } else { // try PermitAll
-//				PermitAll permitAll = cls.getAnnotation(PermitAll.class);
+            } else {
                 return true;
             }
-
         }
+    }
+    
+    private boolean parseClassSecurity(Class<?> cls, javax.ws.rs.core.SecurityContext sc) {
 
-    } // end parseClassSecurity
+        // try DenyAll
+        DenyAll denyAll = cls.getAnnotation(DenyAll.class);
+        if (denyAll != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Found class level @DenyAll - authorization denied for " + cls.getName());
+            }
+            return false;
+        } else { // try RolesAllowed
+
+            RolesAllowed rolesAllowed = cls.getAnnotation(RolesAllowed.class);
+            if (rolesAllowed != null) {
+
+                String[] theseroles = rolesAllowed.value();
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(
+                             tc,
+                             "found RolesAllowed in class level: {} "
+                                 + cls.getName(),
+                             new Object[] { theseroles });
+                }
+                if (!ensureAuthentication(sc)) {
+                    return false;
+                }
+                if (!isUserInRole(sc, Arrays.asList(theseroles), false)) {
+                    return false;
+                }
+                return true;
+            } else {
+                return true;
+            }
+        }
+    }
 
     private RolesAllowed getRolesAllowed(Method method) {
         return method.getAnnotation(RolesAllowed.class);
@@ -163,5 +262,20 @@ public class LibertySimpleAuthorizingInterceptor extends
         // TODO Auto-generated method stub
         return null;
     }
-
+    
+    private static final String ALL_ROLES = "*";
+    
+    protected boolean isUserInRole(javax.ws.rs.core.SecurityContext sc, List<String> roles, boolean deny) {
+        
+        if (roles.size() == 1 && ALL_ROLES.equals(roles.get(0))) {
+            return !deny;
+        }
+        
+        for (String role : roles) {
+            if (sc.isUserInRole(role)) {
+                return !deny;
+            }
+        }
+        return deny;
+    }
 }

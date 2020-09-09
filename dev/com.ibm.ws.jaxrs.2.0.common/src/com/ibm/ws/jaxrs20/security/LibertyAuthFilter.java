@@ -29,7 +29,8 @@ import org.apache.cxf.transport.http.AbstractHTTPDestination;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
-@Priority(Priorities.AUTHORIZATION)
+//Set the Priority to Priorities.AUTHORIZATION + 1 so that user filters take precedence.
+@Priority(Priorities.AUTHORIZATION + 1)
 public class LibertyAuthFilter implements ContainerRequestFilter {
     private LibertySimpleAuthorizingInterceptor interceptor;
 
