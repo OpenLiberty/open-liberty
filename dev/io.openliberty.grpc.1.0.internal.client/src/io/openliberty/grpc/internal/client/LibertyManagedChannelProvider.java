@@ -73,7 +73,10 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 			addUserAgent(builder, config);
 			addOverrideAuthority(builder, config);
 		}
-		addLibertySSLConfig(builder, target, port, config);
+		// only create an SSL context if usePlaintext is disabled (default)
+		if (!isUsePlaintextEnabled(config)) {
+			addLibertySSLConfig(builder, target, port, config);
+		}
 	}
 
 	private void addLibertyInterceptors(NettyChannelBuilder builder) {
@@ -156,6 +159,16 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 		}
 	}
 
+	private boolean isUsePlaintextEnabled(Map<String, String> config) {
+		if (config != null) {
+			String usePlaintext = config.get(GrpcClientConstants.USE_PLAINTEXT_PROP);
+			if (usePlaintext != null && !usePlaintext.isEmpty()) {
+				return Boolean.parseBoolean(usePlaintext);
+			}
+		}
+		return false;
+	}
+
 	private void addUserInterceptors(NettyChannelBuilder builder, Map<String, String> config) {
 		String interceptorListString = config.get(GrpcClientConstants.CLIENT_INTERCEPTORS_PROP);
 
@@ -179,7 +192,7 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 			}
 		}
 	}
-	
+
 	private ClientInterceptor createMonitoringClientInterceptor() {
 		// create the interceptor only if the monitor feature is enabled
 		if (!GrpcClientComponent.isMonitoringEnabled()) {
@@ -198,5 +211,4 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 
 		return interceptor;
 	}
-
 }

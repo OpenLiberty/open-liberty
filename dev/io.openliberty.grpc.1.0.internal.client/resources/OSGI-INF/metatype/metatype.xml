@@ -35,6 +35,7 @@
             required="false" type="String"/>
         <AD id="overrideAuthority" name="%overrideAuthority" description="%overrideAuthority.desc" required="false" type="String" />
         <AD id="userAgent" name="%userAgent" description="%userAgent.desc" required="false" type="String" />
+        <AD id="usePlaintext" name="%usePlaintext" description="%usePlaintext.desc" required="false" type="Boolean" default="false" />
     </OCD>
 
     <!-- factoryPid allows multiple instances in server.xml, activate will be called multiple times --> 

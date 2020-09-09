@@ -25,4 +25,5 @@ public class GrpcClientConstants {
     public static final String SSL_CFG_PROP = "sslRef";
     public static final String OVERRIDE_AUTHORITY_PROP = "overrideAuthority";
     public static final String USER_AGENT_PROP = "userAgent";
+    public static final String USE_PLAINTEXT_PROP = "usePlaintext";
 }
