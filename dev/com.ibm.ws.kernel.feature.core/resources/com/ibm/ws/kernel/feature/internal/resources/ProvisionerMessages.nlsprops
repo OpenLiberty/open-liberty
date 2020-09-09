@@ -217,6 +217,11 @@ UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR=CWWKF0044E: Th
 UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR.explanation=The server configuration contains an incompatible combination of both Jakarta EE and Java EE features.  Features that support the Jakarta EE 9 programming model are incompatible with features that support the Java EE programming models, including Jakarta EE 8.  This conflict can happen if the two incompatible features are configured directly in the server configuration, or if the configured features include different versions of a feature that are incompatible.
 UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR.useraction=Specify a compatible version of the configured features that caused the conflict in the server.xml file, and ensure the server.xml file uses either Jakarta EE or Java EE features, but not both.
 
+#CWWK0045E {0} = feature appearing in server xml; {1} = a real feature def name which is a probable match for name 0.
+MISSING_FEATURE_HAS_ALT_NAME=CWWKF0045E: An existing feature definition, {1}, is a possible match for the feature definition {0} which was not found. 
+MISSING_FEATURE_HAS_ALT_NAME.explanation=The feature manager could not find a definition for a feature specified in the server configuration. The name specified may match an existing feature definition.
+MISSING_FEATURE_HAS_ALT_NAME.useraction=Consider specifying the named, existing feature definition instead. 
+
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 
 tool.feature.exists=CWWKF1000I: The feature {0} already exists. It will not be reinstalled. To modify an existing feature, you need to manually uninstall it first.
