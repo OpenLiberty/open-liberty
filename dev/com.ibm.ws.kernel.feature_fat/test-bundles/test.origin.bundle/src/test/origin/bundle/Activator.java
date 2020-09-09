@@ -66,11 +66,12 @@ public class Activator implements BundleActivator {
         for (Bundle bundle : origins) {
             bundle.uninstall();
         }
-        allTrackedRemoved.await(5, TimeUnit.SECONDS);
+        allTrackedRemoved.await(10, TimeUnit.SECONDS);
         if (tracked.isEmpty()) {
             System.out.println("BundleInstallOriginTest: PASSED");
         } else {
             System.out.println("BundleInstallOriginTest: FAILED");
+            System.out.println("tracked.size() = " + tracked.size() + " allTrackedRemoved.getCount = " + allTrackedRemoved.getCount());
         }
     }
 
