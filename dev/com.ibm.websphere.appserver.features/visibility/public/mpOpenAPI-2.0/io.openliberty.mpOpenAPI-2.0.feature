@@ -48,6 +48,6 @@ IBM-SPI-Package: \
     com.ibm.ws.microprofile.openapi.ui, \
     com.ibm.ws.com.fasterxml.jackson.2.9.1, \
     com.ibm.ws.org.jboss.logging
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel
