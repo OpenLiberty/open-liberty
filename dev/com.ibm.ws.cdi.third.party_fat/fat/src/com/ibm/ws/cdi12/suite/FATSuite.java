@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,8 +29,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.cdi12.fat.tests.DeltaSpikeSchedulerTest;
+import com.ibm.ws.cdi12.fat.tests.EntityListenerTest;
 import com.ibm.ws.cdi12.fat.tests.HibernateSearchTest;
-import com.ibm.ws.cdi12.fat.tests.ThirdPartyTests;
 import com.ibm.ws.fat.util.FatLogHandler;
 
 /**
@@ -38,8 +39,9 @@ import com.ibm.ws.fat.util.FatLogHandler;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-             HibernateSearchTest.class,
-             ThirdPartyTests.class
+             DeltaSpikeSchedulerTest.class,
+             EntityListenerTest.class,
+             HibernateSearchTest.class
 })
 public class FATSuite {
     
