@@ -156,7 +156,7 @@ public class LibertyGrpcClientSSLSupport implements GrpcSSLService{
         	sslProps = AccessController.doPrivileged(new PrivilegedExceptionAction<Properties>() {
 			    @Override
 			    public Properties run() throws Exception {
-			        return helper.getProperties(sslRef, connectionInfo, null);
+			        return helper.getProperties(sslRef, connectionInfo, null, false);
 			    }
 			});
 		} catch (PrivilegedActionException e) {
