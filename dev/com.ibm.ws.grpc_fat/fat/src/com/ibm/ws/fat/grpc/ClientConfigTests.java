@@ -54,14 +54,14 @@ public class ClientConfigTests extends FATServletClient {
     private static final Set<String> appName = Collections.singleton("HelloWorldClient");
     private static final Set<String> appName_srv = Collections.singleton("HelloWorldService");
     private static final String DEFAULT_CONFIG_FILE = "grpc.client.xml";
-    private static final String grpcClient_ELEMENT = "grpc.client.target.server.xml";
-    private static final String grpcClient_PARAM = "grpc.client.param.server.xml";
-    private static final String grpcClient_NOMATCH = "grpc.client.nomatch.server.xml";
-    private static final String grpcClient_SPEC = "grpc.client.spec.server.xml";
-    private static final String grpcClient_WILDCARD = "grpc.client.wildcard.server.xml";
-    private static final String NO_grpcClient_ELEMENT = "grpc.client.notarget.server.xml";
-    private static final String grpcClient_MSGSIZEINVALID = "grpc.client.invalidmsgsize.server.xml";
-    private static final String grpcClient_MSGSIZESM = "grpc.client.smallmsgsize.server.xml";
+    private static final String GRPC_CLIENT_ELEMENT = "grpc.client.target.server.xml";
+    private static final String GRPC_CLIENT_PARAM = "grpc.client.param.server.xml";
+    private static final String GRPC_CLIENT_NOMATCH = "grpc.client.nomatch.server.xml";
+    private static final String GRPC_CLIENT_SPEC = "grpc.client.spec.server.xml";
+    private static final String GRPC_CLIENT_WILDCARD = "grpc.client.wildcard.server.xml";
+    private static final String NO_GRPC_CLIENT_ELEMENT = "grpc.client.notarget.server.xml";
+    private static final String GRPC_CLIENT_MSGSIZEINVALID = "grpc.client.invalidmsgsize.server.xml";
+    private static final String GRPC_CLIENT_MSGSIZESM = "grpc.client.smallmsgsize.server.xml";
     private static final String GRPCSERVER_SPEC = "grpc.server.spec.server.xml";
     private static final int SHORT_TIMEOUT = 500; // .5 seconds
     private static String serverConfigurationFile = DEFAULT_CONFIG_FILE;
@@ -101,6 +101,11 @@ public class ClientConfigTests extends FATServletClient {
     public static void tearDown() throws Exception {
         // Stop the servers
         if (GrpcClientOnly != null && GrpcClientOnly.isStarted()) {
+            /*
+             * CWWKG0083W: expected by testInvalidMaxInboundMessageSize due to invalid message size config
+             * CWWKG0076W: expected when a previous config is still in use because an invalid config was rejected
+             * SRVE0777E: "Exception thrown by application class..." expected with invalid config settings
+             */
             GrpcClientOnly.stopServer("CWWKG0083W", "CWWKG0076W", "SRVE0777E");
         }
         if (GrpcServerOnly != null && GrpcServerOnly.isStarted()) {
@@ -123,7 +128,7 @@ public class ClientConfigTests extends FATServletClient {
         LOG.info("ServiceConfigTests : testAddgrpcClientElement() : update the server.xml file to one with a <grpcClient> element.");
 
         // Update to a config file with a <grpcClient> element
-        setServerConfiguration(GrpcClientOnly, grpcClient_ELEMENT);
+        setServerConfiguration(GrpcClientOnly, GRPC_CLIENT_ELEMENT);
         GrpcClientOnly.waitForConfigUpdateInLogUsingMark(appName);
         String contextRoot = "HelloWorldClient";
         try (WebClient webClient = new WebClient()) {
@@ -181,11 +186,11 @@ public class ClientConfigTests extends FATServletClient {
         LOG.info("ServiceConfigTests : testUpdateGrpcClientParam() : update <grpcClient> element with new parms.");
 
         // First set a config with a <grpcClient> that wouldn't match the helloworld client
-        setServerConfiguration(GrpcClientOnly, grpcClient_NOMATCH);
+        setServerConfiguration(GrpcClientOnly, GRPC_CLIENT_NOMATCH);
         GrpcClientOnly.waitForConfigUpdateInLogUsingMark(appName);
 
         // Update to a config with a <grpcClient> element with different parms
-        setServerConfiguration(GrpcClientOnly, grpcClient_PARAM);
+        setServerConfiguration(GrpcClientOnly, GRPC_CLIENT_PARAM);
         GrpcClientOnly.waitForConfigUpdateInLogUsingMark(appName);
 
         String contextRoot = "HelloWorldClient";
@@ -243,7 +248,7 @@ public class ClientConfigTests extends FATServletClient {
         LOG.info("ServiceConfigTests : testRemoveGrpcClientElement() : remove <grpcClient> element.");
 
         // First set a config with a <grpcClient>
-        setServerConfiguration(GrpcClientOnly, grpcClient_ELEMENT);
+        setServerConfiguration(GrpcClientOnly, GRPC_CLIENT_ELEMENT);
         GrpcClientOnly.waitForConfigUpdateInLogUsingMark(appName);
 
         // verify this client uses the target
@@ -292,7 +297,7 @@ public class ClientConfigTests extends FATServletClient {
         }
 
         // Update to a config file without a <grpcClient> element
-        setServerConfiguration(GrpcClientOnly, NO_grpcClient_ELEMENT);
+        setServerConfiguration(GrpcClientOnly, NO_GRPC_CLIENT_ELEMENT);
         GrpcClientOnly.waitForConfigUpdateInLogUsingMark(appName);
 
         try (WebClient webClient = new WebClient()) {
@@ -348,7 +353,7 @@ public class ClientConfigTests extends FATServletClient {
     public void testClientTargetWildcard() throws Exception {
         LOG.info("ServiceConfigTests : testClientTargetWildcard() : validate that * matches all outbound calls.");
 
-        setServerConfiguration(GrpcClientOnly, grpcClient_WILDCARD);
+        setServerConfiguration(GrpcClientOnly, GRPC_CLIENT_WILDCARD);
         GrpcClientOnly.waitForConfigUpdateInLogUsingMark(appName);
         String contextRoot = "HelloWorldClient";
         try (WebClient webClient = new WebClient()) {
@@ -405,7 +410,7 @@ public class ClientConfigTests extends FATServletClient {
     public void testClientTargetNoMatch() throws Exception {
         LOG.info("ServiceConfigTests : testClientTargetNoMatch() : validate no matches.");
 
-        setServerConfiguration(GrpcClientOnly, grpcClient_NOMATCH);
+        setServerConfiguration(GrpcClientOnly, GRPC_CLIENT_NOMATCH);
         GrpcClientOnly.waitForConfigUpdateInLogUsingMark(appName);
         String contextRoot = "HelloWorldClient";
         try (WebClient webClient = new WebClient()) {
@@ -463,7 +468,7 @@ public class ClientConfigTests extends FATServletClient {
         LOG.info("ServiceConfigTests : testClientTargetSpecificMatch() : validate a specific match.");
 
         // set up client and server with same target name
-        setServerConfiguration(GrpcClientOnly, grpcClient_SPEC);
+        setServerConfiguration(GrpcClientOnly, GRPC_CLIENT_SPEC);
         GrpcClientOnly.waitForConfigUpdateInLogUsingMark(appName);
 
         String contextRoot = "HelloWorldClient";
@@ -520,7 +525,7 @@ public class ClientConfigTests extends FATServletClient {
     public void testInvalidMaxInboundMessageSize() throws Exception {
         LOG.info("ServiceConfigTests : testInvalidMaxInboundMessageSize() : test an invalid setting.");
 
-        setServerConfiguration(GrpcClientOnly, grpcClient_MSGSIZEINVALID);
+        setServerConfiguration(GrpcClientOnly, GRPC_CLIENT_MSGSIZEINVALID);
         GrpcClientOnly.waitForConfigUpdateInLogUsingMark(appName);
         assertNotNull(GrpcClientOnly.waitForStringInLog("CWWKG0083W.*.junk"));
     }
@@ -536,7 +541,7 @@ public class ClientConfigTests extends FATServletClient {
     public void testSmallMaxInboundMessageSize() throws Exception {
         LOG.info("ServiceConfigTests : testSmallMaxInboundMessageSize() : test very small MaxInboundMessageSize.");
 
-        setServerConfiguration(GrpcClientOnly, grpcClient_MSGSIZESM);
+        setServerConfiguration(GrpcClientOnly, GRPC_CLIENT_MSGSIZESM);
         GrpcClientOnly.waitForConfigUpdateInLogUsingMark(appName);
         String contextRoot = "HelloWorldClient";
         try (WebClient webClient = new WebClient()) {

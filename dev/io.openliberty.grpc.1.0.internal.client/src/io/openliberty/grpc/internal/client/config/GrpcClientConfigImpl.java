@@ -138,8 +138,6 @@ public class GrpcClientConfigImpl implements GrpcClientConfig {
 			return;
 		String host = getHost(properties);
 		String path = getPath(properties);
-		if (host == null)
-			return;
 		GrpcClientConfigHolder.addConfig(this.toString(), GrpcClientConfigHolder.getPathID(host, path),
 				filterProps(properties));
 	}
@@ -152,8 +150,6 @@ public class GrpcClientConfigImpl implements GrpcClientConfig {
 		// if they deleted the uri attribute, no point in adding.
 		String host = getHost(properties);
 		String path = getPath(properties);
-		if (host == null)
-			return;
 		GrpcClientConfigHolder.addConfig(this.toString(), GrpcClientConfigHolder.getPathID(host, path),
 				filterProps(properties));
 	}

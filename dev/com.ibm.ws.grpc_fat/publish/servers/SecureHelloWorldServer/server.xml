@@ -15,7 +15,7 @@
         <feature>appSecurity-2.0</feature>
     </featureManager>
     
-    <grpcClient host="*" sslConfig="CustomSSLSettings" />
+    <grpcClient host="*" sslRef="CustomSSLSettings" />
     
     <include location="../fatTestPorts.xml" />
 
