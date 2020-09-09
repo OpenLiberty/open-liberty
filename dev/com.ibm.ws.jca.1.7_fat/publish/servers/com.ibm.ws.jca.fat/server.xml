@@ -1,0 +1,38 @@
+<!--
+    Copyright (c) 2012 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <featureManager>
+      <feature>componenttest-1.0</feature>
+      <feature>servlet-3.1</feature>
+      <feature>localConnector-1.0</feature>
+      <feature>concurrent-1.0</feature>
+      <feature>jca-1.7</feature>
+      <feature>jms-2.0</feature>
+      <feature>osgiConsole-1.0</feature>
+      <feature>ejbLite-3.2</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <variable name="onError" value="FAIL"/>
+
+    <connectionManager id="externalConnectionManager" maxPoolSize="20"/>
+
+    <resourceAdapter id="IMS1" location="${server.config.dir}/connectors/imsico1210.rar"/>
+    <resourceAdapter id="HELLOWORLD1" location="${server.config.dir}/connectors/helloworldra.rar"/>
+    <resourceAdapter id="HELLOWORLD2" location="${server.config.dir}/connectors/helloworldbeanra.rar"/>
+	<resourceAdapter id="ADO" location="${server.config.dir}/connectors/adapter_administrator_object.rar"/>
+	<resourceAdapter id="ZRA" location="${server.config.dir}/connectors/fvtra.rar"/>
+	
+    <application type="ear" id="fvtapp" name="fvtapp" location="fvtapp.ear"/>
+    
+	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+</server>
