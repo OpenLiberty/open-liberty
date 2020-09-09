@@ -72,8 +72,8 @@ import componenttest.rules.repeater.RepeatTests;
                 WCAddJspFileTest.class,
                 WCServletContainerInitializerFilterServletNameMappingTest.class,
                 WCApplicationMBeanStatusTest.class,
-                WC5JakartaServletTest.class,
                 // @Server Annotations
+                WC5JakartaServletTest.class,
                 WCGetMappingTest.class,
                 WCServletContainerInitializerExceptionTest.class,
                 WCSameSiteCookieAttributeTests.class,
