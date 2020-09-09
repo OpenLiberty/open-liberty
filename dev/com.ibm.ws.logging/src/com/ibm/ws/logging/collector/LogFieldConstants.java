@@ -98,14 +98,10 @@ public class LogFieldConstants {
 
     //liberty_ffdc
     //fields that contain 'XXXXXXX' are not expected to be used
-    public static final String DATEOFFIRSTOCCURENCE = "XXXXXXX_dateOfFirstOccurence";
-    public static final String COUNT = "XXXXXXX_count";
-    public static final String LABEL = "XXXXXXX_label";
     public static final String IBM_EXCEPTIONNAME = "ibm_exceptionName";
     public static final String EXCEPTIONNAME = "exceptionName";
     public static final String IBM_PROBEID = "ibm_probeID";
     public static final String PROBEID = "probeID";
-    public static final String SOURCEID = "XXXXXXX_sourceID";
     public static final String IBM_STACKTRACE = "ibm_stackTrace";
     public static final String STACKTRACE = "stackTrace";
     public static final String IBM_OBJECTDETAILS = "ibm_objectDetails";
