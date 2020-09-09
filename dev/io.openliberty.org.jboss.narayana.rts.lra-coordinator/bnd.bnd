@@ -25,7 +25,7 @@ Bundle-SymbolicName: io.openliberty.org.jboss.narayana.rts.lra-coordinator; sing
                      
 # This bnd file is used to build a wab, which is then loaded as a war file via
 # defaultInstances.xml in the mpLraCoordinator feature
--wab
+-wab:
 -outputmask: mpLRACoordinator.jar
 
   

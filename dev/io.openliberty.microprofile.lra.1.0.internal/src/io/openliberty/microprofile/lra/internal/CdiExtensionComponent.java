@@ -13,6 +13,8 @@ package io.openliberty.microprofile.lra.internal;
 import java.util.Collections;
 import java.util.Set;
 
+import javax.enterprise.inject.spi.Extension;
+
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
@@ -25,7 +27,8 @@ import io.openliberty.cdi.spi.CDIExtensionMetadata;
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE)
 public class CdiExtensionComponent implements CDIExtensionMetadata {
 
-    public Set<Class<?>> getBeanClasses() {
+    @Override
+    public Set<Class<? extends Extension>> getExtensions() {
         return Collections.singleton(LRACDIExtension.class);
     }
 

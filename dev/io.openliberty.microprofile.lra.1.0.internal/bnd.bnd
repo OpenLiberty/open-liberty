@@ -47,6 +47,7 @@ Include-Resource: \
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
 	com.ibm.websphere.javaee.jaxrs.2.1;version=latest, \
 	com.ibm.ws.jaxrs.2.1.common;version=latest, \
-	com.ibm.ws.cdi.interfaces;version=latest
+	com.ibm.ws.cdi.interfaces;version=latest, \
+	com.ibm.websphere.javaee.cdi.2.0
 	
 	
