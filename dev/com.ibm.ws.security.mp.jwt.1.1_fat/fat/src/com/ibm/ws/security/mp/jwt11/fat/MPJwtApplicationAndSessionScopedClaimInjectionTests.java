@@ -20,7 +20,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
@@ -175,7 +174,7 @@ public class MPJwtApplicationAndSessionScopedClaimInjectionTests extends CommonM
     private static void genericDeployApp(LibertyServer server, String warName, String className) throws Exception {
         List<String> classList = new ArrayList<String>();
         classList.add(className);
-        ShrinkHelper.exportAppToServer(server, setupUtils.genericCreateArchiveWithoutJsps(warName, classList), DeployOptions.DISABLE_VALIDATION);
+        ShrinkHelper.exportAppToServer(server, setupUtils.genericCreateArchiveWithoutJsps(warName, classList));
 
     }
 

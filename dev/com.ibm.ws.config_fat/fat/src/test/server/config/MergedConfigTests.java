@@ -20,7 +20,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -153,7 +152,7 @@ public class MergedConfigTests extends ServletRunner {
         server.copyFileToLibertyInstallRoot("lib", "bundles/test.merged.config.jar");
 
         WebArchive mergedconfigApp = ShrinkHelper.buildDefaultApp("mergedconfig", "test.config.merged");
-        ShrinkHelper.exportAppToServer(server, mergedconfigApp, DeployOptions.DISABLE_VALIDATION);
+        ShrinkHelper.exportAppToServer(server, mergedconfigApp);
 
         server.startServer("mergedConfig.log");
         //make sure the URL is available
