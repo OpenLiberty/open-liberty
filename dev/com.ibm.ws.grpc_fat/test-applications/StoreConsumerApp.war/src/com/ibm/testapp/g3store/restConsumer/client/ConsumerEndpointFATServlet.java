@@ -138,8 +138,8 @@ public class ConsumerEndpointFATServlet extends FATServlet {
      * @throws Exception
      */
     @Test
-    public void testGetAppName_JWTAuth_GrpcTarget(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        this.getAppName_Auth_GrpcTarget(req, resp);
+    public void testGetAppName_JWTAuth_GrpcClient(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        this.getAppName_Auth_grpcClient(req, resp);
     }
 
     /**

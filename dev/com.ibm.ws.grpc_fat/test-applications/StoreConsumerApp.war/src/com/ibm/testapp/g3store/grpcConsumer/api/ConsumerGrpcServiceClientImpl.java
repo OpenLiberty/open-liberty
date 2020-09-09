@@ -75,7 +75,7 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
                 resp = get_consumerService()
                                 .withDeadlineAfter(deadlineMs, TimeUnit.SECONDS)
                                 .getAppNameSetBadRoles(Empty.getDefaultInstance());
-            } else if (testMethodName.equalsIgnoreCase("testGetAppName_CookieAuth_GrpcTarget")) {
+            } else if (testMethodName.equalsIgnoreCase("testGetAppName_CookieAuth_GrpcClient")) {
                 if (log.isLoggable(Level.FINE)) {
                     log.fine(testMethodName + " ,Consumer: send grpc request to getNameCookieJWTHeader");
                 }
@@ -83,7 +83,7 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
                 resp = get_consumerService()
                                 .withDeadlineAfter(deadlineMs, TimeUnit.SECONDS)
                                 .getNameCookieJWTHeader(Empty.getDefaultInstance());
-            } else if (testMethodName.equalsIgnoreCase("testGetAppName_BadRole_CookieAuth_GrpcTarget")) {
+            } else if (testMethodName.equalsIgnoreCase("testGetAppName_BadRole_CookieAuth_GrpcClient")) {
                 if (log.isLoggable(Level.FINE)) {
                     log.fine(testMethodName + " ,Consumer: send grpc request to getAppSetBadRoleCookieJWTHeader");
                 }
@@ -118,9 +118,9 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
                 throw new NotFoundException(e.getMessage());
             }
             if (e.getStatus().getCode() == Status.Code.UNAUTHENTICATED) {
-                if ((testMethodName.equalsIgnoreCase("getAppName_NullJWTAuth_GrpcTarget")) ||
-                    (testMethodName.equalsIgnoreCase("testGetAppName_BadServerRoles_GrpcTarget")) ||
-                    (testMethodName.equalsIgnoreCase("testGetAppName_BadRole_CookieAuth_GrpcTarget"))) {
+                if ((testMethodName.equalsIgnoreCase("getAppName_NullJWTAuth_GrpcClient")) ||
+                    (testMethodName.equalsIgnoreCase("testGetAppName_BadServerRoles_GrpcClient")) ||
+                    (testMethodName.equalsIgnoreCase("testGetAppName_BadRole_CookieAuth_GrpcClient"))) {
 
                     /*
                      * if need to print exception trailers
