@@ -44,6 +44,7 @@ subprojects {
     // Configure 'buildfat', 'runfat', 'buildandrun', and 'cleanFat' tasks.	
     if (bndis('fat.project')) {
       apply from: rootProject.file('wlp-gradle/subprojects/fat.gradle')
+      releasefat.dependsOn buildfat
 
     // Apply OSS Audit plugin to all non-test projects that output bundles.
     // See: https://github.com/OSSIndex/ossindex-gradle-plugin/blob/master/README.md
@@ -67,6 +68,7 @@ subprojects {
     task publish { }
     task release { }
     task releaseNeeded { dependsOn release }
+    task releasefat { }
     task copyPiiFiles { }
   }
   
@@ -74,6 +76,7 @@ subprojects {
   // will publish jar updates to the local `build.image/wlp` image and `cnf/release` repository
   release.dependsOn assemble
   release.dependsOn publish
+  releasefat.dependsOn release
 }
 
 // Ensure the root project has the 'audit' task so it shows up in the output of `./gradlew tasks`

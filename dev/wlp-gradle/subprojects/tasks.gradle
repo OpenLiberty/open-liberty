@@ -369,6 +369,10 @@ task buildfat {
   group = "build"
 }
 
+task releasefat {
+  // A no-op task which will run release for all projects including FATs
+}
+
 task apiSpiJavadoc(type: Javadoc) {
   dependsOn jar
   def publishSuffix = bnd('publish.wlp.jar.suffix', 'lib')
