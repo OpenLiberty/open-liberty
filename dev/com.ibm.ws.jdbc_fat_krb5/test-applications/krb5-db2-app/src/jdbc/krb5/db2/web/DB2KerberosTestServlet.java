@@ -148,6 +148,11 @@ public class DB2KerberosTestServlet extends FATServlet {
         }
     }
 
+    /**
+     * Test that attempting to get connection using a bogus principal (i.e. bogus username)
+     * is rejected. This is a negative test that will give us confidence that the positive
+     * tests are actually using kerberos.
+     */
     @Test
     @AllowedFFDC
     public void testInvalidPrincipal() throws Exception {

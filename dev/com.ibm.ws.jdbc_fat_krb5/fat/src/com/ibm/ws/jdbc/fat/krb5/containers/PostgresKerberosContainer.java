@@ -10,55 +10,67 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.krb5.containers;
 
-import static com.ibm.ws.jdbc.fat.krb5.containers.KerberosContainer.KRB5_KDC;
-import static com.ibm.ws.jdbc.fat.krb5.containers.KerberosContainer.KRB5_REALM;
-
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Duration;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 
-import org.testcontainers.containers.Db2Container;
+import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.Network;
+import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.output.OutputFrame;
-import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jdbc.fat.krb5.FATSuite;
 
-import componenttest.custom.junit.runner.FATRunner;
+public class PostgresKerberosContainer extends PostgreSQLContainer<PostgresKerberosContainer> {
 
-public class DB2KerberosContainer extends Db2Container {
-
-    private static final Class<?> c = DB2KerberosContainer.class;
-    private static final Path reuseCache = Paths.get("..", "..", "cache", "db2.properties");
+    private static final Class<?> c = PostgresKerberosContainer.class;
+    private static final Path reuseCache = Paths.get("..", "..", "cache", "postgres.properties");
     // NOTE: If this is ever updated, don't forget to push to docker hub, but DO NOT overwrite existing versions
-    private static final String IMAGE = "aguibert/krb5-db2:1.0";
+    private static final String IMAGE = "aguibert/krb5-postgresql:1.0";
+
+    public static final int PG_PORT = 5432;
 
     private boolean reused = false;
     private String reused_hostname;
     private int reused_port;
+    private final Map<String, String> options = new HashMap<>();
 
-    public DB2KerberosContainer(Network network) {
+    public PostgresKerberosContainer(Network network) {
         super(IMAGE);
         withNetwork(network);
-    }
 
-    @Override
-    protected void configure() {
-        acceptLicense();
-        withExposedPorts(50000);
-        withEnv("KRB5_REALM", KRB5_REALM);
-        withEnv("KRB5_KDC", KRB5_KDC);
-        withEnv("DB2_KRB5_PRINCIPAL", "db2srvc@EXAMPLE.COM");
-        waitingFor(new LogMessageWaitStrategy()
-                        .withRegEx("^.*SETUP SCRIPT COMPLETE.*$")
-                        .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 3 : 25)));
-        withLogConsumer(DB2KerberosContainer::log);
+        withNetworkAliases("postgresql");
+        withCreateContainerCmdModifier(cmd -> {
+            cmd.withHostName("postgresql");
+        });
+        if (!options.containsKey("fsync"))
+            withConfigOption("fsync", "off");
+        List<String> command = new ArrayList<>();
+        for (Entry<String, String> e : options.entrySet()) {
+            command.add("-c");
+            command.add(e.getKey() + '=' + e.getValue());
+        }
+        setCommand(command.toArray(new String[command.size()]));
+        withUsername("nonkrbuser");
+        withPassword("password");
+        withDatabaseName("pg");
+
+        withEnv("POSTGRES_HOST_AUTH_METHOD", "gss");
+        withEnv("KRB5_KTNAME", "/etc/krb5.keytab");
+        withEnv("KRB5_TRACE", "/dev/stdout");
+
+        withExposedPorts(PG_PORT);
+        withLogConsumer(PostgresKerberosContainer::log);
         withReuse(true);
     }
 
@@ -66,13 +78,17 @@ public class DB2KerberosContainer extends Db2Container {
         String msg = frame.getUtf8String();
         if (msg.endsWith("\n"))
             msg = msg.substring(0, msg.length() - 1);
-        Log.info(DB2KerberosContainer.class, "[DB2]", msg);
+        Log.info(PostgresKerberosContainer.class, "[PG]", msg);
     }
 
     @Override
     public void start() {
+        String dockerHostIp = DockerClientFactory.instance().dockerHostIpAddress();
+        withEnv("EXTERNAL_HOSTNAME", dockerHostIp);
+        Log.info(c, "start", "Using EXTERNAL_HOSTNAME=" + dockerHostIp);
+
         if (hasCachedContainers()) {
-            // If this is a local run and a cache file exists, that means a DB2 container is already running
+            // If this is a local run and a cache file exists, that means a container is already running
             // and we can just read the host/port from the cache file
             Log.info(c, "start", "Found existing container cache file. Skipping container start.");
             Properties props = new Properties();
@@ -82,8 +98,8 @@ public class DB2KerberosContainer extends Db2Container {
                 throw new RuntimeException(e);
             }
             reused = true;
-            reused_hostname = props.getProperty("db2.hostname");
-            reused_port = Integer.valueOf(props.getProperty("db2.port"));
+            reused_hostname = props.getProperty("postgresql.hostname");
+            reused_port = Integer.valueOf(props.getProperty("postgresql.port"));
             Log.info(c, "start", "Found existing container at host = " + reused_hostname);
             Log.info(c, "start", "Found existing container on port = " + reused_port);
             return;
@@ -92,7 +108,7 @@ public class DB2KerberosContainer extends Db2Container {
         super.start();
 
         if (FATSuite.REUSE_CONTAINERS) {
-            Log.info(c, "start", "Saving DB2 properties for future runs at: " + reuseCache.toAbsolutePath());
+            Log.info(c, "start", "Saving properties for future runs at: " + reuseCache.toAbsolutePath());
             try {
                 Files.createDirectories(reuseCache.getParent());
                 Properties props = new Properties();
@@ -101,8 +117,8 @@ public class DB2KerberosContainer extends Db2Container {
                         props.load(fis);
                     }
                 }
-                props.setProperty("db2.hostname", getContainerIpAddress());
-                props.setProperty("db2.port", "" + getMappedPort(50000));
+                props.setProperty("postgresql.hostname", getContainerIpAddress());
+                props.setProperty("postgresql.port", "" + getMappedPort(PG_PORT));
                 props.store(new FileWriter(reuseCache.toFile()), "Generated by FAT run");
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -123,7 +139,25 @@ public class DB2KerberosContainer extends Db2Container {
 
     @Override
     public Integer getMappedPort(int originalPort) {
-        return (reused && originalPort == 50000) ? reused_port : super.getMappedPort(originalPort);
+        return (reused && originalPort == PG_PORT) ? reused_port : super.getMappedPort(originalPort);
+    }
+
+    /**
+     * Add additional configuration options that should be used for this container.
+     *
+     * @param key   The PostgreSQL configuration option key. For example: "max_connections"
+     * @param value The PostgreSQL configuration option value. For example: "200"
+     * @return this
+     */
+    public PostgresKerberosContainer withConfigOption(String key, String value) {
+        if (key == null) {
+            throw new java.lang.NullPointerException("key marked @NonNull but is null");
+        }
+        if (value == null) {
+            throw new java.lang.NullPointerException("value marked @NonNull but is null");
+        }
+        options.put(key, value);
+        return self();
     }
 
     @Override
@@ -131,34 +165,12 @@ public class DB2KerberosContainer extends Db2Container {
         return reused ? reused_hostname : super.getContainerIpAddress();
     }
 
-    @Override
-    public String getUsername() {
-        return "db2inst1";
+    public String getKerberosUsername() {
+        return "pguser@" + KerberosContainer.KRB5_REALM;
     }
 
-    @Override
-    public String getPassword() {
+    public String getKerberosPassword() {
         return "password";
-    }
-
-    @Override
-    public String getDatabaseName() {
-        return "testdb";
-    }
-
-    @Override
-    public Db2Container withUsername(String username) {
-        throw new UnsupportedOperationException("Username is hardcoded in container");
-    }
-
-    @Override
-    public Db2Container withPassword(String password) {
-        throw new UnsupportedOperationException("Password is hardcoded in container");
-    }
-
-    @Override
-    public Db2Container withDatabaseName(String dbName) {
-        throw new UnsupportedOperationException("DB name is hardcoded in container");
     }
 
     private static boolean hasCachedContainers() {
@@ -172,8 +184,8 @@ public class DB2KerberosContainer extends Db2Container {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return props.containsKey("db2.hostname") &&
-               props.containsKey("db2.port");
+        return props.containsKey("postgresql.hostname") &&
+               props.containsKey("postgresql.port");
     }
 
 }
