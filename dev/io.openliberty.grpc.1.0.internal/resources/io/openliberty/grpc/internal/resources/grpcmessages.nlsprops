@@ -27,3 +27,15 @@ invalid.serverinterceptor.useraction=Verify the configured interceptor name and 
 invalid.inbound.msg.size=CWWKT0203E: The maxInboundMessageSize {0} is not valid. Sizes must greater than 0.
 invalid.inbound.msg.size.explanation=The configured value for the maxInboundMessageSize is not valid.
 invalid.inbound.msg.size.useraction=Configure a valid value for the maxInboundMessageSize.
+
+response.already.committed=CWWKT0204E: gRPC request for {0} cannot continue. The response has already been committed.
+response.already.committed.explanation=The gRPC request is not valid as the response has already been committed before invoking the gRPC methods.
+response.already.committed.useraction=Analyze the logs for other warnings or errors messages prior to this message. This may occur due to a previous security error.
+
+authentication.error=CWWKT0205E: gRPC service request for {0} failed with authentication error {1}.
+authentication.error.explanation=The gRPC request failed to authenticate before invoking the gRPC methods.
+authentication.error.useraction=Analyze the logs for other warnings or errors messages prior to this message. This may occur due to a invalid or no credentials provided with the request.
+
+authorization.error=CWWKT0206E: gRPC service request for {0} failed with authorization error {1}.
+authorization.error.explanation=The gRPC request failed to authenticate before invoking the gRPC methods.
+authorization.error.useraction=Analyze the logs for other warnings or errors messages prior to this message. This may occur due to a invalid or no credentials provided with the request.

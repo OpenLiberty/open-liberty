@@ -114,9 +114,11 @@ public class StoreServicesSecurityTests extends FATServletClient {
         Exception excep = null;
 
         try {
-            // CWWKT0202W need to fix this in grpc server code
+
+            //CWWKT0206E: gRPC service request for test.g3store.grpc.AppConsumerService/getAppSetBadRoleCookieJWTHeader
+            // failed with authorization error Unauthorized.
             if (storeJWTSSoServer != null)
-                storeJWTSSoServer.stopServer("SRVE9967W", "CWWKT0202W");
+                storeJWTSSoServer.stopServer("SRVE9967W", "CWWKT0206E");
         } catch (Exception e) {
             excep = e;
             Log.error(c, "storeJWTSSoServer tearDown", e);
