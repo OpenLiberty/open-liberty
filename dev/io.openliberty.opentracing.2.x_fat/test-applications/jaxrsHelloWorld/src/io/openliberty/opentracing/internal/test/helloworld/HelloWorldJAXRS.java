@@ -21,12 +21,17 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * Hello World JAXRS service.
  */
 @ApplicationPath("rest")
 @Path("ws")
 public class HelloWorldJAXRS extends Application {
+    
+    private final static Logger LOGGER = Logger.getLogger(HelloWorldJAXRS.class.getName());
     /**
      * Return Hello World OK response.
      * @return Hello World text/plain.
@@ -35,7 +40,7 @@ public class HelloWorldJAXRS extends Application {
     @Path("helloWorld")
     @Produces(MediaType.TEXT_PLAIN)
     public String helloWorld() {
-        System.out.println("helloWorld web service called");
+        LOGGER.log(Level.INFO, "helloWorld web service called");
         return "Hello World";
     }
 

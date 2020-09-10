@@ -10,19 +10,18 @@
  *******************************************************************************/
 package io.openliberty.opentracing.internal.test;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import componenttest.annotation.MinimumJavaLevel;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 /**
- * <p>Test that a JAXRS application works even if the opentracing
- * feature is enabled without a Tracer.</p>
+ * <p>Test that a JAXRS application with LogRecordContext and JSON logging.</p>
  * 
  * <p>The test suite:</p>
  *
@@ -30,9 +29,7 @@ import componenttest.topology.impl.LibertyServerFactory;
  * <li>{@link #testHelloWorld()}</li>
  * </ul>
  */
-@Mode(TestMode.FULL)
-@MinimumJavaLevel(javaLevel = 8)
-public class FATOpentracingHelloWorld extends FATTestBase {
+public class FATOpentracingHelloWorldLRC extends FATTestBase {
     /**
      * Set to the generated server before any tests are run.
      */
@@ -45,7 +42,7 @@ public class FATOpentracingHelloWorld extends FATTestBase {
      */
     @BeforeClass
     public static void setUp() throws Exception {
-        server = LibertyServerFactory.getLibertyServer("opentracingFATServer2");
+        server = LibertyServerFactory.getLibertyServer("opentracingFATServer5");
         deployHelloWorldApp(server);
         server.startServer();
     }
@@ -61,12 +58,15 @@ public class FATOpentracingHelloWorld extends FATTestBase {
     }
 
     /**
-     * Execute the Hello World JAXRS service and ensure it returns the expected response.
+     * Execute the Hello World JAXRS service and ensure JSON log contains ext_traceId and ext_spanId.
      * 
      * @throws Exception Errors executing the service.
      */
     @Test
-    public void testHelloWorld() throws Exception {
+    public void testLogRecordContext() throws Exception {
         testHelloWorld(server);
+        String line = server.waitForStringInLog("helloWorld web service called");
+        assertNotNull(line);
+        assertTrue(line.contains("ext_traceId") && line.contains("ext_spanId"));
     }
 }
