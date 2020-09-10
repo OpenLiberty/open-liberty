@@ -20,7 +20,7 @@ IBM-Web-Extension-Processing-Disabled: true
 Web-ContextPath: /openapi
 
 Import-Package: \
-    org.eclipse.microprofile.config.*;version="[1.0,2)",\
+    org.eclipse.microprofile.config.*;version="[1.0,3)",\
     javax.xml.bind.annotation;version=!,\
     *
 
