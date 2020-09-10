@@ -5,7 +5,8 @@ singleton=true
 IBM-App-ForceRestart: install, \
  uninstall
 IBM-ShortName: ejbLite-3.2
-IBM-API-Package: com.ibm.websphere.ejbcontainer.mbean; type="ibm-api"
+IBM-API-Package: com.ibm.websphere.ejbcontainer.mbean; type="ibm-api", \
+ com.ibm.websphere.ejbcontainer; type="internal"
 Subsystem-Category: JavaEE7Application
 -features=com.ibm.websphere.appserver.javaeePlatform-7.0, \
  com.ibm.websphere.appserver.javax.ejb-3.2, \

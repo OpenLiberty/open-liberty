@@ -55,6 +55,10 @@ public class EJBLocalNamingHelperImpl extends EJBNamingInstancer implements EJBL
             readLock.unlock();
         }
 
+        if (binding != null && binding.isAmbiguousReference) {
+            throwAmbiguousEJBReferenceException(binding, name);
+        }
+
         return initializeEJB(binding, "ejblocal:" + name);
     }
 
@@ -70,8 +74,10 @@ public class EJBLocalNamingHelperImpl extends EJBNamingInstancer implements EJBL
     }
 
     @Override
-    public synchronized void bind(EJBBinding binding, String name) {
+    public synchronized boolean bind(EJBBinding binding, String name, boolean isSimpleName) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+        boolean notAmbiguous = true;
+        EJBBinding localBinding = new EJBBinding(binding.homeRecord, binding.interfaceName, binding.interfaceIndex, binding.isLocal);
 
         if (name.toLowerCase().startsWith("ejblocal:")) {
             name = name.substring(9);
@@ -81,18 +87,33 @@ public class EJBLocalNamingHelperImpl extends EJBNamingInstancer implements EJBL
             Tr.entry(tc, "bind: " + name);
         }
 
+        EJBBinding previousBinding = EJBLocalBindings.get(name);
+
+        // There won't be a previous binding for an ambiguous simple binding name
+        if (isSimpleName) {
+            localBinding.setAmbiguousReference();
+            notAmbiguous = false;
+        }
+
+        if (previousBinding != null) {
+            localBinding.setAmbiguousReference();
+            localBinding.addJ2EENames(previousBinding.getJ2EENames());
+            notAmbiguous = false;
+        }
+
         Lock writeLock = javaColonLock.writeLock();
         writeLock.lock();
         try {
-            //TODO: If EJBLocalBindings already contains name, bind ambiguous reference exception
-            EJBLocalBindings.put(name, binding);
+            EJBLocalBindings.put(name, localBinding);
         } finally {
             writeLock.unlock();
         }
 
         if (isTraceOn && tc.isEntryEnabled()) {
-            Tr.exit(tc, "bind");
+            Tr.exit(tc, "bind: " + notAmbiguous);
         }
+
+        return notAmbiguous;
     }
 
     public void unbind(String name) {

@@ -61,6 +61,9 @@ public class ComponentIDTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        server.deleteAllDropinApplications();
+        server.removeAllInstalledAppsForValidation();
+
         // Use ShrinkHelper to build the ears
         JavaArchive ComponentIDBndEJB = ShrinkHelper.buildJavaArchive("ComponentIDBndEJB.jar", "com.ibm.ejb3x.ComponentIDBnd.ejb.");
         ShrinkHelper.addDirectory(ComponentIDBndEJB, "test-applications/ComponentIDBndEJB.jar/resources");

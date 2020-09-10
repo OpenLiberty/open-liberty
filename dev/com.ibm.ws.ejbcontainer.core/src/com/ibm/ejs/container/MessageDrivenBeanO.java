@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2015 IBM Corporation and others.
+ * Copyright (c) 2001, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -272,11 +272,11 @@ public class MessageDrivenBeanO extends ManagedBeanOBase implements MessageDrive
      * <code>BeanO</code>. <p>
      *
      * @param supportEJBPostCreateChanges a <code>boolean</code> which is set to
-     *            true if database inserts in ejbPostCreate will
-     *            be supported. <p>
+     *                                        true if database inserts in ejbPostCreate will
+     *                                        be supported. <p>
      *
-     *            MessageDrivenBean beanos do not implement this method because they
-     *            are created on-demand by the container. <p>
+     *                                        MessageDrivenBean beanos do not implement this method because they
+     *                                        are created on-demand by the container. <p>
      */
     // d142250
     @Override
@@ -347,9 +347,9 @@ public class MessageDrivenBeanO extends ManagedBeanOBase implements MessageDrive
      * enterprise bean. <p>
      *
      * @param id the <code>BeanId</code> to use when activating this
-     *            <code>BeanO</code>.
+     *               <code>BeanO</code>.
      * @param tx the current <code>ContainerTx</code> when this instance is being
-     *            activated.
+     *               activated.
      */
     @Override
     public final void activate(BeanId id, ContainerTx tx) // d114677 d139352-2
@@ -374,11 +374,11 @@ public class MessageDrivenBeanO extends ManagedBeanOBase implements MessageDrive
      * inform this <code>BeanO</code> that a method is about to be
      * invoked on its associated enterprise bean. <p>
      *
-     * @param s the <code>EJSDeployedSupport</code> instance associated
-     *            with the pre/postInvoke, which contains an indication of
-     *            which method is being invoked on this <code>BeanO</code>.
+     * @param s  the <code>EJSDeployedSupport</code> instance associated
+     *               with the pre/postInvoke, which contains an indication of
+     *               which method is being invoked on this <code>BeanO</code>.
      * @param tx the <code>ContainerTx</code> for the transaction which
-     *            this method is being invoked in.
+     *               this method is being invoked in.
      *
      * @return the Enterprise Bean instance the method will be invoke on.
      */
@@ -661,7 +661,7 @@ public class MessageDrivenBeanO extends ManagedBeanOBase implements MessageDrive
      * getTimerServcie() must provide its own checking. <p>
      *
      * @exception IllegalStateException If this instance is in a state that does
-     *                not allow timer service method operations.
+     *                                      not allow timer service method operations.
      **/
     // LI2281.07
     @Override
@@ -879,8 +879,8 @@ public class MessageDrivenBeanO extends ManagedBeanOBase implements MessageDrive
      * @return The EJB Timer Service.
      *
      * @exception IllegalStateException The Container throws the exception
-     *                if the instance is not allowed to use this method (e.g. if the bean
-     *                is a stateful session bean)
+     *                                      if the instance is not allowed to use this method (e.g. if the bean
+     *                                      is a stateful session bean)
      **/
     // LI2281.07
     @Override
@@ -929,40 +929,6 @@ public class MessageDrivenBeanO extends ManagedBeanOBase implements MessageDrive
     // --------------------------------------------------------------------------
     // End MessageDrivenContext interface
     // --------------------------------------------------------------------------
-
-    // --------------------------------------------------------------------------
-    //
-    // Methods from EJBContextExtension interface
-    //
-    // --------------------------------------------------------------------------
-
-    /**
-     * Flush the persistent state of all entity EJB instances that have
-     * been modified in the current transaction. <p>
-     *
-     * See EJBContextExtension.flushCache() for details. <p>
-     *
-     * Overridden to insure proper bean state. <p>
-     */
-    // LI3492-2
-    @Override
-    public void flushCache() {
-        // Calling flushCache is not allowed from setMessageDrivenContext.
-        if ((state == PRE_CREATE)) // prevent in setMessageDrivenContext
-        {
-            IllegalStateException ise;
-
-            ise = new IllegalStateException("MessageDrivenBean: flushCache not " +
-                                            "allowed from state = " +
-                                            getStateName(state));
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "flushCache: " + ise);
-
-            throw ise;
-        }
-
-        super.flushCache();
-    }
 
     // --------------------------------------------------------------------------
     //
