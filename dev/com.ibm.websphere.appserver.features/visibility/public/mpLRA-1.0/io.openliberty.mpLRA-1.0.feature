@@ -14,5 +14,5 @@ IBM-API-Package: \
 -bundles=io.openliberty.microprofile.lra.1.0.internal, \
          io.openliberty.org.jboss.narayana.rts, \
          com.ibm.ws.org.jboss.logging
-kind=noship
-edition=full
+kind=beta
+edition=core
