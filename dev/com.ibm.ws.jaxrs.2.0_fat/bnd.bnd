@@ -40,6 +40,7 @@ src: \
   test-applications/providerCache/src,\
   test-applications/providers/src,\
   test-applications/resourcealgorithm/src,\
+  test-applications/resourceinfo/src,\
   test-applications/resourcepkg/src,\
   test-applications/responseAPI/src,\
   test-applications/restmetrics/src,\

@@ -138,3 +138,5 @@ addRequiredLibraries {
   dependsOn createWadlTempDir
   dependsOn addDerby
 }
+
+addRequiredLibraries.dependsOn addJakartaTransformer
