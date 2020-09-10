@@ -440,11 +440,13 @@ org.jboss.arquillian.core:arquillian-core-api:1.3.0.Final
 org.jboss.arquillian.core:arquillian-core-spi:1.3.0.Final
 org.jboss.arquillian.test:arquillian-test-spi:1.3.0.Final
 org.jboss.logging:jboss-logging:3.4.1.Final
+org.jboss.narayana.arjunacore:arjuna:5.10.5.Final
 org.jboss.narayana.rts:lra-client:5.10.5.Final
 org.jboss.narayana.rts:lra-coordinator-jar:5.10.5.Final
 org.jboss.narayana.rts:lra-proxy-api:5.10.5.Final
 org.jboss.narayana.rts:lra-service-base:5.10.5.Final
 org.jboss.narayana.rts:narayana-lra:5.10.5.Final
+org.jboss.narayana:common:5.10.5.Final
 org.jboss.resteasy:resteasy-cdi:4.5.2.Final
 org.jboss.resteasy:resteasy-client-api:4.5.2.Final
 org.jboss.resteasy:resteasy-client:4.5.2.Final
