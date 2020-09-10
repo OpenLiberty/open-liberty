@@ -15,7 +15,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -25,9 +24,6 @@ public class SimpleResource {
 
     @Context
     ResourceInfo resourceInfo;
-
-    @Context
-    HttpHeaders headers;
 
     @GET
     public Response get() {

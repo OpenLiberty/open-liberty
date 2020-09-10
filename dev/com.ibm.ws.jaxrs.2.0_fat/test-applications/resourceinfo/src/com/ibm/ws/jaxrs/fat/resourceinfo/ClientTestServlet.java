@@ -114,6 +114,11 @@ public class ClientTestServlet extends HttpServlet {
         ret.append(test(r, IResourceImpl.class, "interfaceGet"));
     }
 
+    public void testConcreteSuperAndConcreteSubClassResource(Map<String, String> param, StringBuilder ret) {
+        Response r = client.target(getAddress("subclass")).request().accept(MediaType.TEXT_PLAIN).get();
+        ret.append(test(r, SubClassResource.class, "get"));
+    }
+
     private String test(Response r, Class<?> resourceClass, String method) {
         assertEquals("NULL", r.getHeaderString("ClassFromPreMatchRequestFilter"));
         assertEquals("NULL", r.getHeaderString("MethodFromPreMatchRequestFilter"));

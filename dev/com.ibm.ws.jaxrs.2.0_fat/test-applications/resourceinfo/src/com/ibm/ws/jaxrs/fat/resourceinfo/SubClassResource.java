@@ -17,15 +17,15 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Path("interface")
+@Path("subclass")
 @Produces(MediaType.TEXT_PLAIN)
-public class IResourceImpl implements IResource{
+public class SubClassResource extends SimpleResource {
 
     @Context
     ResourceInfo resourceInfo;
 
     @Override
-    public Response interfaceGet() {
+    public Response get() {
         return App.process(resourceInfo.getResourceClass(), resourceInfo.getResourceMethod());
     }
 }

@@ -73,4 +73,9 @@ public class ResourceInfoTest extends AbstractTest {
     public void testInterfaceAndImplClassResource() throws Exception {
         this.runTestOnServer(target, "testInterfaceAndImplClassResource", null, "OK");
     }
+
+    @Test
+    public void testConcreteSuperAndConcreteSubClassResource() throws Exception {
+        this.runTestOnServer(target, "testConcreteSuperAndConcreteSubClassResource", null, "OK");
+    }
 }
