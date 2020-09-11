@@ -44,10 +44,10 @@ public class EJBBinding {
         this.interfaceName = interfaceName;
         this.interfaceIndex = interfaceIndex;
         this.isLocal = local;
-		
-		if (homeRecord != null) {
+
+        if (homeRecord != null) {
             this.j2eeNames.add(homeRecord.getJ2EEName());
-		}
+        }
     }
 
     public boolean isHome() {
