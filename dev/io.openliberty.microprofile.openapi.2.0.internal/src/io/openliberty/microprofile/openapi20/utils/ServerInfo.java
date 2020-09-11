@@ -10,44 +10,28 @@
  *******************************************************************************/
 package io.openliberty.microprofile.openapi20.utils;
 
-import org.eclipse.microprofile.openapi.OASFactory;
-import org.eclipse.microprofile.openapi.models.OpenAPI;
-import org.eclipse.microprofile.openapi.models.servers.Server;
-
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
-
 /**
  *
  */
 public class ServerInfo {
-    private static final TraceComponent tc = Tr.register(ServerInfo.class);
 
     private int httpPort = -1;
     private int httpsPort = -1;
     private String host;
-    private String applicationPath;
-    private boolean isUserServer = false;
 
     public ServerInfo() {
-
     }
 
-    public ServerInfo(String host, int httpPort, int httpsPort, String applicationPath, boolean isUserServer) {
+    public ServerInfo(String host, int httpPort, int httpsPort) {
         this.host = host;
         this.httpPort = httpPort;
         this.httpsPort = httpsPort;
-        this.applicationPath = applicationPath;
-        this.isUserServer = isUserServer;
     }
 
     public ServerInfo(ServerInfo serverInfo) {
         this.host = serverInfo.host;
         this.httpPort = serverInfo.httpPort;
         this.httpsPort = serverInfo.httpsPort;
-        this.applicationPath = serverInfo.applicationPath;
-        this.isUserServer = serverInfo.isUserServer;
     }
 
     /**
@@ -92,72 +76,14 @@ public class ServerInfo {
         this.host = host;
     }
 
-    /**
-     * @return the applicationPath
-     */
-    public String getApplicationPath() {
-        return applicationPath;
-    }
-
-    /**
-     * @param applicationPath the applicationPath to set
-     */
-    public void setApplicationPath(String applicationPath) {
-        this.applicationPath = applicationPath;
-    }
-
-    /**
-     * @return value to indicate whether the server information was set by user
-     */
-    public boolean getIsUserServer() {
-        return isUserServer;
-    }
-
-    /**
-     * @param isUserServer value to indicate whether the server information was set by user
-     */
-    public void setIsUserServer(boolean isUserServer) {
-        this.isUserServer = isUserServer;
-    }
-
-    @Trivial
-    public void updateOpenAPIWithServers(OpenAPI openapi) {
-        if (isUserServer) {
-            if (LoggingUtils.isEventEnabled(tc)) {
-                Tr.event(this, tc, "Server information was already set by the user. So not setting Liberty's server information");
-            }
-            return;
-        }
-
-        //Remove any servers added by Liberty previously
-        openapi.setServers(null);
-
-        if (httpPort > 0) {
-            String port = httpPort == 80 ? "" : (":" + httpPort);
-            String url = "http://" + host + port;
-            if (applicationPath != null) {
-                url += applicationPath;
-            }
-            Server server = OASFactory .createServer();
-            server.setUrl(url);
-            openapi.addServer(server);
-        }
-        if (httpsPort > 0) {
-            String port = httpsPort == 443 ? "" : (":" + httpsPort);
-            String secureUrl = "https://" + host + port;
-            if (applicationPath != null) {
-                secureUrl += applicationPath;
-            }
-            Server secureServer = OASFactory .createServer();
-            secureServer.setUrl(secureUrl);
-            openapi.addServer(secureServer);
-        }
-    }
-
     @Override
     public String toString() {
-        return "ServerInfo [host=" + this.host + ", httpPort=" + this.httpPort + ", httpsPort="
-               + this.httpsPort + ", applicationPath=" + this.applicationPath + ", isUserServer="
-               + this.isUserServer + "]";
+        StringBuilder builder = new StringBuilder();
+        builder.append("ServerInfo : [");
+        builder.append("host=").append(this.host).append(", ");
+        builder.append("httpPort=").append(this.httpPort).append(", ");
+        builder.append("httpsPort=").append(this.httpsPort);
+        builder.append("]");
+        return builder.toString();
     }
 }

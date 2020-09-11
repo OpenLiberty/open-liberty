@@ -13,7 +13,9 @@ package io.openliberty.microprofile.openapi20.servlets;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,10 +23,11 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
-import org.eclipse.microprofile.openapi.models.OpenAPI;
+import org.eclipse.microprofile.openapi.models.servers.Server;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
+import io.openliberty.microprofile.openapi20.DefaultHostListener;
 import io.openliberty.microprofile.openapi20.utils.Constants;
 import io.openliberty.microprofile.openapi20.utils.OpenAPIUtils;
 import io.openliberty.microprofile.openapi20.utils.ProxySupportUtil;
@@ -34,7 +37,7 @@ import io.smallrye.openapi.runtime.io.Format;
 public abstract class OpenAPIServletBase extends HttpServlet {
 
     private static final long serialVersionUID = -6021365340147075272L;
-    
+
     /**
      * The getResponseFormat method determines the format of the document that should be sent in the body of the
      * response. The client can specify the desired format using either the Accept header or by specifying a format
@@ -73,16 +76,55 @@ public abstract class OpenAPIServletBase extends HttpServlet {
         return format;
     }
     
-    protected void processServers(HttpServletRequest request, OpenAPI openAPIModel) {
-        
-        // Only update the servers if the OpenAPI model does not include any
-        if (!OpenAPIUtils.containsServersDefinition(openAPIModel)) {
-            ServerInfo serverInfo = new ServerInfo();
-            ProxySupportUtil.processRequest(request, serverInfo);
-            OpenAPIUtils.addServersToOpenAPIModel(openAPIModel, serverInfo);
-        }
+    /**
+     * The getDefaultHostServerInfo method returns the ServerInfo object for the default_host virtual host.
+     * 
+     * @return ServerInfo
+     *          The server info for the default_host virtual host
+     */
+    protected ServerInfo getDefaultHostServerInfo() throws ServletException {
+        return DefaultHostListener.getInstance().getDefaultHostServerInfo();
     }
     
+    /**
+     * The getOpenAPIModelServers method generates a list of servers based on the information available in:
+     * 
+     *  - The ServerInfo for the default_host virtual host
+     *  - The HTTP request url
+     *  - The HTTP Referer header
+     * 
+     * @param request
+     *          The HTTPServletRequest
+     * @return List<Server>
+     *          The list of OpenAPI model servers
+     * @throws ServletException
+     */
+    protected List<Server> getOpenAPIModelServers(final HttpServletRequest request) throws ServletException {
+        return getOpenAPIModelServers(request, null);
+    }
+
+    /**
+     * The getOpenAPIModelServers method generates a list of servers based on the information available in:
+     * 
+     *  - The ServerInfo for the default_host virtual host
+     *  - The HTTP request url
+     *  - The HTTP Referer header
+     *  - The context root for the web module that was used to generate the OpenAPI model
+     * 
+     * @param request
+     *          The HTTPServletRequest
+     * @param applciationPath
+     *          The application path for the application that was used to generate the OpenAPI model
+     * @return List<Server>
+     *          The list of OpenAPI model servers
+     * @throws ServletException
+     */
+    protected List<Server> getOpenAPIModelServers(final HttpServletRequest request, final String applciationPath) throws ServletException {
+        ServerInfo serverInfo = new ServerInfo(getDefaultHostServerInfo());
+        ProxySupportUtil.processRequest(request, serverInfo);
+        return OpenAPIUtils.getOpenAPIModelServers(serverInfo, applciationPath);
+    }
+
     /**
      * The writeResponse method generates the HTTP response based on the parameters passed in to the method.
      * 

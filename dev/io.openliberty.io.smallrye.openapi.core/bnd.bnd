@@ -43,7 +43,7 @@ Service-Component: \
     properties:="resources=META-INF/services/io.smallrye.openapi.runtime.scanner.spi.AnnotationScanner"
   
 -buildpath: \
-    io.smallrye:smallrye-open-api-core;strategy=exact;version=2.1.0.SNAPSHOT-20200817,\
+    io.smallrye:smallrye-open-api-core;strategy=exact;version=2.1.0.SNAPSHOT-20200917,\
     io.openliberty.org.eclipse.microprofile.openapi.2.0;version=latest,\
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
     com.ibm.ws.logging;version=latest,\
