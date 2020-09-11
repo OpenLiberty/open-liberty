@@ -91,8 +91,6 @@ public class LibertyAuthFilter implements ContainerRequestFilter {
     private void handleMessage(Message message) throws UnauthenticatedException{
         SecurityContext jaxrsSecurityContext = message.get(SecurityContext.class);
         if (jaxrsSecurityContext != null && jaxrsSecurityContext instanceof SecurityContext) {
-            System.out.println("handleMessage javax");
-            System.out.println(jaxrsSecurityContext);
             Method method = getTargetMethod(message);
             if (parseMethodSecurity(method, jaxrsSecurityContext)) {
                 return;

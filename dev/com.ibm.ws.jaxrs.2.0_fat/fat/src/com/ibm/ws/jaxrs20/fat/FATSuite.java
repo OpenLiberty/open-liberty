@@ -63,12 +63,13 @@ import com.ibm.ws.jaxrs20.fat.uriInfo.UriInfoTest;
 import com.ibm.ws.jaxrs20.fat.wadl.WADLTest;
 import com.ibm.ws.jaxrs20.fat.webcontainer.JAXRSWebContainerTest;
 
+import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-//                AlwaysPassesTest.class,
+                AlwaysPassesTest.class,
                 AnnotationScanTest.class,
                 BeanParamTest.class,
                 CheckFeature12Test.class,
