@@ -22,4 +22,6 @@ public interface TAIConfig {
     public boolean isInvokeForFormLogin();
 
     public boolean isDisableLtpaCookie();
+
+    public boolean isInitAtFirstRequest();
 }

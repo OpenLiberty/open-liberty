@@ -73,11 +73,13 @@ public class TAIConfigImplTest {
         taiProps.put(TAIConfigImpl.KEY_INVOKE_FOR_FORM_LOGIN, false);
         taiProps.put(TAIConfigImpl.KEY_FAIL_OVER_TO_APP_AUTH_TYPE, false);
         taiProps.put(TAIConfigImpl.KEY_DISABLE_LTPA_COOKIE, false);
+        taiProps.put(TAIConfigImpl.KEY_INIT_AT_FIRST_REQUEST, false);
 
         taiConfig = new TAIConfigImpl(taiProps);
         assertFalse(taiConfig.isFailOverToAppAuthType());
         assertFalse(taiConfig.isInvokeForFormLogin());
         assertFalse(taiConfig.isInvokeForUnprotectedURI());
+        assertFalse(taiConfig.isInitAtFirstRequest());
     }
 
     @Test
@@ -103,10 +105,12 @@ public class TAIConfigImplTest {
         taiProps.put(TAIConfigImpl.KEY_INVOKE_FOR_FORM_LOGIN, true);
         taiProps.put(TAIConfigImpl.KEY_FAIL_OVER_TO_APP_AUTH_TYPE, true);
         taiProps.put(TAIConfigImpl.KEY_DISABLE_LTPA_COOKIE, true);
+        taiProps.put(TAIConfigImpl.KEY_INIT_AT_FIRST_REQUEST, true);
 
         taiConfig = new TAIConfigImpl(taiProps);
         assertTrue(taiConfig.isFailOverToAppAuthType());
         assertTrue(taiConfig.isInvokeForFormLogin());
         assertTrue(taiConfig.isInvokeForUnprotectedURI());
+        assertTrue(taiConfig.isInitAtFirstRequest());
     }
 }

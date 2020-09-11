@@ -26,11 +26,13 @@ public class TAIConfigImpl implements TAIConfig {
     static final String KEY_INVOKE_FOR_FORM_LOGIN = "invokeForFormLogin";
     static final String KEY_FAIL_OVER_TO_APP_AUTH_TYPE = "failOverToAppAuthType";
     public static final String KEY_DISABLE_LTPA_COOKIE = "disableLtpaCookie";
+    public static final String KEY_INIT_AT_FIRST_REQUEST = "initAtFirstRequest";
 
     private boolean failOverToAppAuthType = false;
     private boolean invokeForUnprotectedURI = false;
     private boolean invokeForFormLogin = false;
     private boolean disableLtpaCookie = false;
+    private boolean initAtFirstRequest = false;
     private String id = null;
     static final String KEY_ID = "id";
 
@@ -49,6 +51,7 @@ public class TAIConfigImpl implements TAIConfig {
         invokeForFormLogin = (Boolean) props.get(KEY_INVOKE_FOR_FORM_LOGIN);
         failOverToAppAuthType = (Boolean) props.get(KEY_FAIL_OVER_TO_APP_AUTH_TYPE);
         disableLtpaCookie = (Boolean) props.get(KEY_DISABLE_LTPA_COOKIE);
+        initAtFirstRequest = (Boolean) props.get(KEY_INIT_AT_FIRST_REQUEST);
         printTaiConfig();
     }
 
@@ -86,4 +89,11 @@ public class TAIConfigImpl implements TAIConfig {
     public boolean isDisableLtpaCookie() {
         return disableLtpaCookie;
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isInitAtFirstRequest() {
+        return initAtFirstRequest;
+    }
+
 }

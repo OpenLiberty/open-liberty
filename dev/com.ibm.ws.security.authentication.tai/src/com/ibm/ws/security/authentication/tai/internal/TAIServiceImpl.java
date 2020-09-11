@@ -49,7 +49,9 @@ public class TAIServiceImpl implements TAIService {
     private final Map<String, Boolean> disableLtpaCookieTais = new HashMap<String, Boolean>();
 
     private final Set<String> orderOfInterceptorIds = new TreeSet<String>();
-    private boolean startInitializeTais = false; // Start initialize TAI when the first authenticate request come in
+    // Initialize TAI when the first authenticate request come in. Default is initialized at server start up.
+    private boolean initAtFirstRequest = false;
+    private boolean alreadyInitInFirstRequest = false; // Keep track whether we already initialize TAI in the first request
 
     protected synchronized void setInterceptorService(ServiceReference<TrustAssociationInterceptor> ref) {
         String id = getComponentId(ref);
@@ -68,11 +70,13 @@ public class TAIServiceImpl implements TAIService {
     protected synchronized void activate(ComponentContext cc, Map<String, Object> props) {
         interceptorServiceRef.activate(cc);
         taiConfig = new TAIConfigImpl(props);
+        initAtFirstRequest = taiConfig.isInitAtFirstRequest();
         initAllTAIs(null);
     }
 
     protected synchronized void modified(Map<String, Object> props) {
         taiConfig = new TAIConfigImpl(props);
+        initAtFirstRequest = taiConfig.isInitAtFirstRequest();
     }
 
     protected synchronized void deactivate(ComponentContext cc) {
@@ -82,7 +86,7 @@ public class TAIServiceImpl implements TAIService {
     }
 
     void initAllTAIs(String newTaiId) {
-        if (!startInitializeTais)
+        if (initAtFirstRequest && !alreadyInitInFirstRequest)
             return;
         if (newTaiId != null) {
             orderOfInterceptorIds.add(newTaiId);
@@ -97,7 +101,7 @@ public class TAIServiceImpl implements TAIService {
      * @param id
      */
     void initTAI(String id) {
-        if (!startInitializeTais)
+        if (initAtFirstRequest && !alreadyInitInFirstRequest)
             return;
         Object interceptor = interceptorServiceRef.getService(id);
         if (interceptor != null) {
@@ -225,7 +229,13 @@ public class TAIServiceImpl implements TAIService {
 
     @Override
     public void initializeTais() {
-        startInitializeTais = true;
         initAllTAIs(null);
+        // Marked already initialed in the first request so any new or update TAI will be initialized right a way
+        alreadyInitInFirstRequest = true;
+    }
+
+    @Override
+    public boolean isInitAtFirstRequest() {
+        return taiConfig.isInitAtFirstRequest();
     }
 }

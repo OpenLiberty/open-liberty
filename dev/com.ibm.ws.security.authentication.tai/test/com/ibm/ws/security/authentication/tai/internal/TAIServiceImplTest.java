@@ -179,6 +179,7 @@ public class TAIServiceImplTest {
         taiProps.put(TAIConfigImpl.KEY_INVOKE_FOR_FORM_LOGIN, value);
         taiProps.put(TAIConfigImpl.KEY_FAIL_OVER_TO_APP_AUTH_TYPE, value);
         taiProps.put(TAIConfigImpl.KEY_DISABLE_LTPA_COOKIE, value);
+        taiProps.put(TAIConfigImpl.KEY_INIT_AT_FIRST_REQUEST, value);
         return taiProps;
     }
 
