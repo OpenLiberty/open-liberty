@@ -15,7 +15,7 @@ IBM-API-Package: \
 -bundles= \
     io.openliberty.microprofile.lra.coordinator.1.0.internal
 -files= \
-    lib/mpLRACoordinator_5.10.5.jar
+    lib/mpLRACoordinator_5.10.6.jar
 kind=noship
 edition=full
 
