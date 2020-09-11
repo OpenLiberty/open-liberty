@@ -1,9 +1,9 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=io.openliberty.messagingServer-2.0
+symbolicName=io.openliberty.messagingServer-3.0
 visibility=public
 IBM-API-Package: com.ibm.websphere.messaging.mbean; type="ibm-api"
-IBM-ShortName: messagingServer-2.0
-Subsystem-Name: Message Server 2.0
+IBM-ShortName: messagingServer-3.0
+Subsystem-Name: Message Server 3.0
 -features=com.ibm.websphere.appserver.transaction-2.0, \
  com.ibm.websphere.appserver.channelfw-1.0, \
  com.ibm.websphere.appserver.eeCompatible-9.0
