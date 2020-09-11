@@ -8,7 +8,7 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.jwt.internal;
+package com.ibm.ws.security.jwt.config;
 
 import static org.junit.Assert.assertEquals;
 
@@ -65,7 +65,8 @@ public class JwtConfigUtilTest extends CommonTestClass {
         String result = JwtConfigUtil.getSignatureAlgorithm(testName.getMethodName(), props, SIG_ALG_ATTR_NAME);
         assertEquals("Did not get the default signature algorithm as expected.", DEFAULT_SIG_ALG, result);
 
-        verifyLogMessage(outputMgr, MSG_CWWKS6055W_BETA_SIGNATURE_ALGORITHM_USED + ".+" + "null");
+        // No signature algorithm configured should just default and not emit a warning message
+        verifyNoLogMessage(outputMgr, MSG_BASE);
     }
 
     @Test

@@ -327,5 +327,5 @@ JWT_AMR_CLAIM_NOT_VALID.useraction=Obtain a new token for one of the trusted AMR
 
 # 0=JWT configuration ID, 1=Signature algorithm configured in server.xml, 2=Signature algorithm that will be used by default
 BETA_SIGNATURE_ALGORITHM_USED=CWWKS6055W: The [{0}] configuration specifies the {1} signature algorithm, but that algorithm is only available in the beta edition. The {2} signature algorithm is used instead.
-BETA_SIGNATURE_ALGORITHM_USED.explanation=Support for the signature algorithm that is specified in the message might be incomplete, so the signature algorithm can only be used in the beta edition.
+BETA_SIGNATURE_ALGORITHM_USED.explanation=Support for the signature algorithm that is specified in the message might be incomplete, so the signature algorithm can be used only in the beta edition.
 BETA_SIGNATURE_ALGORITHM_USED.useraction=Configure a signature algorithm that is supported, or use the beta edition of this product to use the signature algorithm that is specified in the message.
