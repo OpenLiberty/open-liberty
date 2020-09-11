@@ -27,4 +27,6 @@ public interface TAIService {
     public boolean isDisableLtpaCookie(String taiId);
 
     public void initializeTais();
+
+    public boolean isInitializeAtFirstRequest();
 }
