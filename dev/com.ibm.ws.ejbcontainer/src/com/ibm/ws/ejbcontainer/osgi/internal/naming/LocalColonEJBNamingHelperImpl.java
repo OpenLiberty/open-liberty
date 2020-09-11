@@ -77,7 +77,7 @@ public class LocalColonEJBNamingHelperImpl extends EJBNamingInstancer implements
     public synchronized boolean bind(EJBBinding binding, String name, boolean isSimpleName) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         boolean notAmbiguous = true;
-        EJBBinding localBinding = new EJBBinding(binding.homeRecord, binding.interfaceName, binding.interfaceIndex, binding.isLocal);
+        EJBBinding newBinding = new EJBBinding(binding.homeRecord, binding.interfaceName, binding.interfaceIndex, binding.isLocal);
 
         if (isTraceOn && tc.isEntryEnabled()) {
             Tr.entry(tc, "bind: " + name);
@@ -87,26 +87,26 @@ public class LocalColonEJBNamingHelperImpl extends EJBNamingInstancer implements
 
         // There won't be a previous binding for an ambiguous simple binding name
         if (isSimpleName) {
-            localBinding.setAmbiguousReference();
+            newBinding.setAmbiguousReference();
             notAmbiguous = false;
         }
 
         if (previousBinding != null) {
-            localBinding.setAmbiguousReference();
-            localBinding.addJ2EENames(previousBinding.getJ2EENames());
+            newBinding.setAmbiguousReference();
+            newBinding.addJ2EENames(previousBinding.getJ2EENames());
             notAmbiguous = false;
         }
 
         Lock writeLock = javaColonLock.writeLock();
         writeLock.lock();
         try {
-            localColonEJBBindings.put(name, localBinding);
+            localColonEJBBindings.put(name, newBinding);
         } finally {
             writeLock.unlock();
         }
 
         if (isTraceOn && tc.isEntryEnabled()) {
-            Tr.exit(tc, "bind: " + notAmbiguous);
+            Tr.exit(tc, "bind: notAmbiguous = " + notAmbiguous);
         }
 
         return notAmbiguous;

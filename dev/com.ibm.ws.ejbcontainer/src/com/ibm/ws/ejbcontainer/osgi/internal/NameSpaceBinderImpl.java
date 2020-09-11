@@ -270,7 +270,7 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
             BindingsHelper bh = BindingsHelper.getRemoteHelper(hr);
             BundleContext bc = ejbRemoteRuntimeServiceRef.getReference().getBundle().getBundleContext();
             BeanMetaData bmd = hr.getBeanMetaData();
-            EJBBinding localBinding = new EJBBinding(bindingObject.homeRecord, bindingObject.interfaceName, bindingObject.interfaceIndex, bindingObject.isLocal);
+            EJBBinding newBinding = new EJBBinding(bindingObject.homeRecord, bindingObject.interfaceName, bindingObject.interfaceIndex, bindingObject.isLocal);
 
             Lock readLock = remoteLock.readLock();
             readLock.lock();
@@ -284,12 +284,12 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
 
             // There won't be a previous binding for an ambiguous simple binding name
             if (isSimpleName) {
-                localBinding.setAmbiguousReference();
+                newBinding.setAmbiguousReference();
             }
 
             if (previousBinding != null) {
-                localBinding.setAmbiguousReference();
-                localBinding.addJ2EENames(previousBinding.getJ2EENames());
+                newBinding.setAmbiguousReference();
+                newBinding.addJ2EENames(previousBinding.getJ2EENames());
                 removePreviousRemoteBinding(bindingName);
             }
 
@@ -300,7 +300,7 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
             properties.put(Constants.OBJECTCLASS, Reference.class.getName());
 
             // Create our wrapper Reference Object to bind
-            EJBRemoteReferenceBinding ref = new EJBRemoteReferenceBinding(localBinding, bindingName);
+            EJBRemoteReferenceBinding ref = new EJBRemoteReferenceBinding(newBinding, bindingName);
 
             ServiceRegistration<?> registration = bc.registerService(Reference.class, ref, properties);
 
@@ -312,17 +312,17 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
             writeLock.lock();
 
             try {
-                svRemoteBindings.put(bindingName, localBinding);
+                svRemoteBindings.put(bindingName, newBinding);
             } finally {
                 writeLock.unlock();
             }
 
-            if (!localBinding.isAmbiguousReference) {
+            if (!newBinding.isAmbiguousReference) {
                 // Only add this binding if it is not an AmbiguousEJBReference,
                 // otherwise we will try to remove it multiple times (once for each EJB)
                 // from the list of ServiceRegistrations when stopping the app
                 bh.ivRemoteBindings.add(bindingName);
-                sendBindingMessage(localBinding.interfaceName, bindingName, bmd);
+                sendBindingMessage(newBinding.interfaceName, bindingName, bmd);
             }
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
