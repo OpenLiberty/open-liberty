@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2018 IBM Corporation and others.
+# Copyright (c) 2018, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -19,8 +19,8 @@
 # Messages used by MonitorMetrics Impl -  range is 2000-2199
 #-----------------------------------------------------------------------------------------------------------------------------
 FEATURE_REGISTERED=CWPMI2001I: \u53ef\u4ee5\u901a\u8fc7 mpMetrics \u6765\u68c0\u7d22\u76d1\u63a7\u5ea6\u91cf\u3002
-FEATURE_REGISTERED.explanation=\u5df2\u542f\u7528 monitor-1.0 \u548c mpMetrics-1.1 \u529f\u80fd\u90e8\u4ef6\uff0c\u53ef\u4ee5\u901a\u8fc7 mpMetrics \u6765\u68c0\u7d22\u76d1\u63a7\u5ea6\u91cf\u3002
+FEATURE_REGISTERED.explanation=\u542f\u7528\u4e86\u201c\u6027\u80fd\u76d1\u89c6\u201d\u529f\u80fd\u90e8\u4ef6\u548c MicroProfile Metrics \u529f\u80fd\u90e8\u4ef6\u3002\u53ef\u4ee5\u901a\u8fc7 MicroProfile Metrics \u6765\u68c0\u7d22\u76d1\u89c6\u6307\u6807\u3002
 FEATURE_REGISTERED.useraction=\u7528\u6237\u65e0\u9700\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
 FEATURE_UNREGISTERED=CWPMI2002I: \u6240\u6709\u76d1\u63a7\u5ea6\u91cf\u90fd\u5df2\u4ece mpMetrics \u4e2d\u6ce8\u9500\u3002
-FEATURE_UNREGISTERED.explanation=\u5df2\u4ece\u670d\u52a1\u5668\u4e2d\u79fb\u9664 monitor-1.0 \u529f\u80fd\u90e8\u4ef6\u548c/\u6216 mpMetrics-1.1 \u529f\u80fd\u90e8\u4ef6\uff0c\u6240\u6709\u76d1\u63a7\u5ea6\u91cf\u90fd\u5df2\u4ece mpMetrics \u4e2d\u6ce8\u9500\u3002
+FEATURE_UNREGISTERED.explanation=\u5df2\u4ece\u670d\u52a1\u5668\u4e2d\u79fb\u9664\u201c\u6027\u80fd\u76d1\u89c6\u201d\u529f\u80fd\u90e8\u4ef6\u548c/\u6216 MicroProfile Metrics \u529f\u80fd\u90e8\u4ef6\u3002\u5df2\u4ece MicroProfile Metrics \u4e2d\u6ce8\u9500\u6240\u6709\u76d1\u89c6\u6307\u6807\u3002
 FEATURE_UNREGISTERED.useraction=\u7528\u6237\u65e0\u9700\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002

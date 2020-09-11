@@ -81,6 +81,7 @@ OPENTRACING_UNHANDLED_JAXRS_EXCEPTION.useraction=To zachowanie mo\u017ce by\u010
 OPENTRACING_TRACERFACTORY_NOT_PROVIDED=CWMOT0010W: Interfejs OpenTracing nie mo\u017ce \u015bledzi\u0107 \u017c\u0105da\u0144 JAX-RS, poniewa\u017c klasa OpentracingTracerFactory nie zosta\u0142a podana lub biblioteki klienta dla zaplecza \u015bledzenia nie s\u0105 wymienione w \u015bcie\u017cce klas.
 OPENTRACING_TRACERFACTORY_NOT_PROVIDED.explanation=\u017b\u0105dania JAX-RS s\u0105 wykonywane normalnie, ale nie s\u0105 \u015bledzone.
 OPENTRACING_TRACERFACTORY_NOT_PROVIDED.useraction=Informacje na temat sposobu w\u0142\u0105czania i konfigurowania \u015bledzenia rozproszonego OpenTracing zawiera odpowiednia dokumentacja. To ostrze\u017cenie mo\u017cna bezpiecznie zignorowa\u0107, je\u015bli interfejs OpenTracing nie jest u\u017cywany.
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message
 #-----------------------------------------------------------------------------------------------------------------------------

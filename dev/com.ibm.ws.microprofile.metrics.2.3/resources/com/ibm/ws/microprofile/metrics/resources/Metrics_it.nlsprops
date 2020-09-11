@@ -128,6 +128,17 @@ session.activeSessions.description=Il numero di sessioni attive contemporaneamen
 session.invalidated.total.description=Il numero di sessioni da cui \u00e8 stata effettuata l'uscita dal momento dell'abilitazione di questa metrica.
 session.invalidatedbyTimeout.total.description=Il numero di sessioni da cui \u00e8 stata effettuata l'uscita per timeout dal momento dell'abilitazione di questa metrica.
 
+grpc.server.rpcStarted.total.description=Il numero totale di RPC avviate sul server.
+grpc.server.rpcCompleted.total.description=Il numero totale di RPC completate sul server, indipendentemente dall'esito positivo o negativo.
+grpc.server.sentMessages.total.description=Il numero totale di messaggi di flusso inviati dal server.
+grpc.server.receivedMessages.total.description=Il numero totale di messaggi di flusso ricevuti dal client.
+grpc.server.responseTime.total.description=Il tempo di risposta totale delle RPC completate.
+
+grpc.client.rpcStarted.total.description=Il numero totale di RPC avviate sul client.
+grpc.client.rpcCompleted.total.description=Il numero totale di RPC completate sul client, indipendentemente dall'esito positivo o negativo.
+grpc.client.sentMessages.total.description=Il numero totale di messaggi di flusso inviati dal client.
+grpc.client.receivedMessages.total.description=Il numero totale di messaggi di flusso ricevuti dal server.
+grpc.client.responseTime.total.description=Il tempo di risposta totale delle RPC completate.
 
 REST.request.description=Il numero di richiami e il tempo di risposta totale di questo metodo di risorsa RESTful dall'avvio del server.
 #-----------------------------------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2018 IBM Corporation and others.
+# Copyright (c) 2018, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -19,9 +19,9 @@
 # Messages used by MonitorMetrics Impl -  range is 2000-2199
 #-----------------------------------------------------------------------------------------------------------------------------
 FEATURE_REGISTERED=CWPMI2001I: A megfigyel\u00e9si m\u00e9r\u0151sz\u00e1mok az mpMetrics szolg\u00e1ltat\u00e1son kereszt\u00fcl k\u00e9rhet\u0151k le.
-FEATURE_REGISTERED.explanation=A monitor-1.0 \u00e9s mpMetrics-1.1 szolg\u00e1ltat\u00e1sok enged\u00e9lyezve vannak, \u00e9s a megfigyel\u00e9si m\u00e9r\u0151sz\u00e1mok az mpMetrics szolg\u00e1ltat\u00e1son kereszt\u00fcl k\u00e9rhet\u0151k le.
+FEATURE_REGISTERED.explanation=A teljes\u00edtm\u00e9nyfigyel\u0151 szolg\u00e1ltat\u00e1s \u00e9s a MicroProfile m\u00e9r\u0151sz\u00e1mok szolg\u00e1ltat\u00e1s enged\u00e9lyezett. A megfigyel\u00e9si m\u00e9r\u0151sz\u00e1mok az MicroProfile m\u00e9r\u0151sz\u00e1mokon kereszt\u00fcl k\u00e9rhet\u0151k le.
 FEATURE_REGISTERED.useraction=Semmit sem kell tennie.
 
 FEATURE_UNREGISTERED=CWPMI2002I: Az \u00f6sszes megfigyel\u00e9si m\u00e9r\u0151sz\u00e1m regisztr\u00e1l\u00e1sa meg lett sz\u00fcntetve az mpMetrics szolg\u00e1ltat\u00e1sban.
-FEATURE_UNREGISTERED.explanation=A monitor-1.0 szolg\u00e1ltat\u00e1s \u00e9s/vagy az mpMetrics-1.1 szolg\u00e1ltat\u00e1s elt\u00e1vol\u00edt\u00e1sra ker\u00fclt a kiszolg\u00e1l\u00f3r\u00f3l, \u00e9s az \u00f6sszes megfigyel\u00e9si m\u00e9r\u0151sz\u00e1m regisztr\u00e1ci\u00f3ja elt\u00e1vol\u00edt\u00e1sra ker\u00fclt az mpMetrics szolg\u00e1ltat\u00e1sb\u00f3l.
+FEATURE_UNREGISTERED.explanation=A teljes\u00edtm\u00e9nyfigyel\u0151 szolg\u00e1ltat\u00e1s, a MicroProfile m\u00e9r\u0151sz\u00e1mok szolg\u00e1ltat\u00e1s vagy mindk\u00e9t szolg\u00e1ltat\u00e1s elt\u00e1vol\u00edt\u00e1sra ker\u00fclt a kiszolg\u00e1l\u00f3r\u00f3l. Az \u00f6sszes megfigyel\u00e9si m\u00e9r\u0151sz\u00e1m regisztr\u00e1ci\u00f3ja megsz\u0171nt a MicroProfile m\u00e9r\u0151sz\u00e1mok szolg\u00e1ltat\u00e1sban.
 FEATURE_UNREGISTERED.useraction=Semmit sem kell tennie.
