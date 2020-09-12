@@ -27,74 +27,92 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 @SuppressWarnings("serial")
-public class JmsMbeanTestServlet extends HttpServlet {
-    public static final String JMXMessage = "This is MessagingMBeanServlet";
-
+public class JMSMBeanTestServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
-        // TODO Auto-generated method stub
         super.init();
     }
 
-    @Override
-    protected void doGet(HttpServletRequest request,
-                         HttpServletResponse response) throws ServletException, IOException {
+    /**
+     * Handle a GET request to this servlet: Invoke the test method specified as
+     * request paramater "test".
+     *
+     * The test method throws an exception when it fails.  If no exception
+     * is thrown by the test method, indicate success through the response
+     * output.  If an exception is thrown, omit the success indication.
+     * Instead, display an error indication and display the exception stack
+     * to the response output.
+     *
+     * @param request The HTTP request which is being processed.
+     * @param response The HTTP response which is being processed.
+     *
+     * @throws ServletException Thrown in case of a servlet processing error.
+     * @throws IOException Thrown in case of an input/output error.
+     */
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+
         String test = request.getParameter("test");
+
         PrintWriter out = response.getWriter();
         out.println("Starting " + test + "<br>");
-        final TraceComponent tc = Tr.register(JmsMbeanTestServlet.class);
+
+        // The injection engine doesn't like this at the class level.
+        TraceComponent tc = Tr.register(JMSMBeanTestServlet.class);
+
         Tr.entry(this, tc, test);
         try {
             System.out.println(" Starting : " + test);
-            getClass().getMethod(test, HttpServletRequest.class,
-                                 HttpServletResponse.class).invoke(this, request, response);
+            getClass()
+                .getMethod(test, HttpServletRequest.class, HttpServletResponse.class)
+                .invoke(this, request, response);
             out.println(test + " COMPLETED SUCCESSFULLY");
             System.out.println(" Ending : " + test);
+
             Tr.exit(this, tc, test);
-        } catch (Throwable x) {
-            if (x instanceof InvocationTargetException)
-                x = x.getCause();
-            Tr.exit(this, tc, test, x);
-            out.println("<pre>ERROR in " + test + ":");
-            System.out.println(" Ending : " + test);
-            x.printStackTrace(out);
-            out.println("</pre>");
-        }
-    }
 
-    public void testJmsProviderMbean(HttpServletRequest request,
-                                     HttpServletResponse response) throws Throwable {
-
-        try {
-
-            MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-
-            //Construct ObjectName for JMSProvider.
-            ObjectName queryObject = new ObjectName("WebSphere:j2eeType=JMSResource,name=JMS-2.0Provider,J2EEServer=TestServer");
-
-            //Query with MBean server for JMSProivder objectName
-            Set<ObjectName> ons = mbs.queryNames(queryObject, null);
-
-            System.out.println("with Proper name returnObjectName  :" + ons.toString());
-
-            if (!ons.contains(queryObject)) {
-                //the return set does not have Provider MBean Object.. then throw the error.
-                throw new WrongException("JMSProvider MBean could not be retrieved");
+        } catch ( Throwable e ) {
+            if ( e instanceof InvocationTargetException ) {
+                e = e.getCause();
             }
 
-        } catch (Error e) {
-            throw new WrongException(e.toString());
-        }
+            out.println("<pre>ERROR in " + test + ":");
+            System.out.println(" Ending : " + test);
+            System.out.println(" <ERROR> " + e.getMessage() + " </ERROR>");
+            e.printStackTrace(out);
+            out.println("</pre>");
 
-    }
-
-    public class WrongException extends Exception {
-        String str;
-
-        public WrongException(String str) {
-            this.str = str;
-            System.out.println(" <ERROR> " + str + " </ERROR>");
+            Tr.exit(this, tc, test, e);
         }
     }
 
+    //
+
+    public void testJMSProviderMBean(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
+
+        String queryText =
+            "WebSphere:j2eeType=JMSResource," +
+            "name=JMS-2.0Provider," +
+            "J2EEServer=JMSMBeanServer";
+        ObjectName queryObject = new ObjectName(queryText);
+        System.out.println("Query [ " + queryObject + " ]");
+
+        Set<ObjectName> objectNames =
+            mbeanServer.queryNames(queryObject, null);
+        System.out.println("Results:");
+        if ( objectNames.isEmpty() ) {
+            System.out.println("  ** NONE **");
+        } else {
+            for ( ObjectName objectName : objectNames ) {
+                System.out.println("  [ " + objectName + " ]");
+            }
+        }
+
+        if ( !objectNames.contains(queryObject) ) {
+            throw new Exception("Failed to retrieve JMSProvider MBean [ " + queryText + " ]");
+        }
+    }
 }

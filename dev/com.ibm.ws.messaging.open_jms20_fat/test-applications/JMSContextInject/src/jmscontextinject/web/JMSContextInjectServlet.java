@@ -51,8 +51,6 @@ public class JMSContextInjectServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        System.out.println("JMSContextInjectServlet.init ENTRY");
-
         super.init();
 
         try {
@@ -193,7 +191,7 @@ public class JMSContextInjectServlet extends HttpServlet {
     //
 
     public void testP2P_B_SecOff(
-        HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         String methodName = "testP2P_B_SecOff";
 
@@ -219,7 +217,7 @@ public class JMSContextInjectServlet extends HttpServlet {
     }
 
     public void testP2P_TCP_SecOff(
-        HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         TextMessage messageOut = jmsContextQueueTCP.createTextMessage("testP2P_TCP_SecOff");
         jmsContextQueueTCP.createProducer().send(jmsQueue, messageOut);
@@ -238,7 +236,7 @@ public class JMSContextInjectServlet extends HttpServlet {
     }
 
     public void testPubSub_B_SecOff(
-        HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         String methodName = "testPubSub_B_SecOff";
 
@@ -269,7 +267,7 @@ public class JMSContextInjectServlet extends HttpServlet {
     }
 
     public void testPubSub_TCP_SecOff(
-        HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         TextMessage message = jmsContextTopicTCP.createTextMessage("testPubSub_TCP_SecOff");
         Topic jmsTopic = jmsContextTopicTCP.createTopic("Topic1");
@@ -289,47 +287,55 @@ public class JMSContextInjectServlet extends HttpServlet {
     }
 
     public void testPubSubDurable_B_SecOff(
-        HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        TextMessage message = jmsContextTopic.createTextMessage("testPubSubDurable_B_SecOff");
         Topic jmsTopic = jmsContextTopic.createTopic("Topic1");
-        jmsContextTopic.createProducer().send(jmsTopic, message);
 
         JMSConsumer jmsConsumer = jmsContextTopic.createDurableConsumer(jmsTopic, "sub1");
-        TextMessage messageIn = (TextMessage) jmsConsumer.receive(500);
 
-        boolean testFailed = false;
-        if ( (messageIn == null) || !messageIn.getText().equals("testPubSubDurable_B_SecOff") ) {
-            testFailed = true;
-        }
+        String msgOutText = "testPubSubDurable_B_SecOff";
+        TextMessage msgOut = jmsContextTopic.createTextMessage(msgOutText);
+        jmsContextTopic.createProducer().send(jmsTopic, msgOut);
+        TextMessage msgIn = (TextMessage) jmsConsumer.receive(500);
 
-        if ( testFailed ) {
-            throw new Exception("testPubSubDurable_B_SecOff failed: Expected message was not received");
+        jmsConsumer.close();
+
+        if ( msgIn == null ) {
+            throw new Exception("testPubSubDurable_B_SecOff failed: Null received message");
+        } else {
+            String msgInText = msgIn.getText();
+            if ( !msgInText.equals(msgOutText) ) {
+                throw new Exception("testPubSubDurable_B_SecOff failed: Sent [ " + msgOutText + " ] but received [ " + msgInText + " ]");
+            }
         }
     }
 
     public void testPubSubDurable_TCP_SecOff(
-        HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        TextMessage message = jmsContextTopicTCP.createTextMessage("testPubSubDurable_TCP_SecOff");
         Topic jmsTopic = jmsContextTopicTCP.createTopic("Topic1");
-        jmsContextTopicTCP.createProducer().send(jmsTopic, message);
 
         JMSConsumer jmsConsumer = jmsContextTopicTCP.createDurableConsumer(jmsTopic, "sub2");
-        TextMessage messageIn = (TextMessage) jmsConsumer.receive(500);
 
-        boolean testFailed = false;
-        if ( (messageIn == null) || !messageIn.getText().equals("testPubSubDurable_TCP_SecOff") ) {
-            testFailed = true;
-        }
+        String msgOutText = "testPubSubDurable_TCP_SecOff";
+        TextMessage msgOut = jmsContextTopicTCP.createTextMessage(msgOutText);
+        jmsContextTopicTCP.createProducer().send(jmsTopic, msgOut);
+        TextMessage msgIn = (TextMessage) jmsConsumer.receive(500);
 
-        if ( testFailed ) {
-            throw new Exception("testPubSubDurable_TCP_SecOff failed: Expected message was not received");
+        jmsConsumer.close();
+
+        if ( msgIn == null ) {
+            throw new Exception("testPubSubDurable_TCP_SecOff failed: Null received message");
+        } else {
+            String msgInText = msgIn.getText();
+            if ( !msgInText.equals(msgOutText) ) {
+                throw new Exception("testPubSubDurable_TCP_SecOff failed: Sent [ " + msgOutText + " ] but received [ " + msgInText + " ]");
+            }
         }
     }
 
     public void testNegativeSetters_B_SecOff(
-        HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         Topic jmsTopic = jmsContextTopic.createTopic("Topic1");
         JMSConsumer jmsConsumer = jmsContextTopic.createConsumer(jmsTopic, "sub1");
@@ -412,7 +418,7 @@ public class JMSContextInjectServlet extends HttpServlet {
     }
 
     public void testNegativeSetters_TCP_SecOff(
-        HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         boolean testFailed = false;
 
@@ -492,7 +498,7 @@ public class JMSContextInjectServlet extends HttpServlet {
     }
 
     public void testMessageOrder_B_SecOff(
-        HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JMSProducer producer1 = jmsContextQueue.createProducer();
         JMSProducer producer2 = jmsContextQueueNew.createProducer();
@@ -534,7 +540,7 @@ public class JMSContextInjectServlet extends HttpServlet {
     }
 
     public void testMessageOrder_TCP_SecOff(
-        HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JMSProducer producer1 = jmsContextQueueTCP.createProducer();
         JMSProducer producer2 = jmsContextQueueNewTCP.createProducer();
@@ -576,7 +582,7 @@ public class JMSContextInjectServlet extends HttpServlet {
     }
 
     public void testGetAutoStart_B_SecOff(
-        HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         boolean testFailed = false;
         if ( !jmsContextQueue.getAutoStart() ) {
@@ -589,7 +595,7 @@ public class JMSContextInjectServlet extends HttpServlet {
     }
 
     public void testGetAutoStart_TCP_SecOff(
-        HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         boolean testFailed = false;
         if ( !jmsContextQueueTCP.getAutoStart() ) {
@@ -602,7 +608,7 @@ public class JMSContextInjectServlet extends HttpServlet {
     }
 
     public void testBrowser_B_SecOff(
-        HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         TextMessage messageOut = jmsContextQueue.createTextMessage("testBrowser_B_SecOff");
         jmsContextQueue.createProducer().send(jmsQueue, messageOut);
@@ -631,7 +637,7 @@ public class JMSContextInjectServlet extends HttpServlet {
     }
 
     public void testBrowser_TCP_SecOff(
-        HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         TextMessage messageOut = jmsContextQueueTCP.createTextMessage("testBrowser_TCP_SecOff");
         jmsContextQueueTCP.createProducer().send(jmsQueue, messageOut);
@@ -659,15 +665,34 @@ public class JMSContextInjectServlet extends HttpServlet {
         }
     }
 
+    // 'statelessBean' has injected JMS Connection Factory 'jndi_JMS_BASE_QCF'.
+    //  The invocation 'statelessBean.sendMessage' does a JNDI lookup of 'jndi_INPUT_Q',
+    // creates a producer on that queue, then sends a text message through it.
+
     @TransactionAttribute(value = TransactionAttributeType.REQUIRED)
     public void testEJBCallSecOff(
-        HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        String message = statelessBean.hello();
-        System.out.println("Sent message [ " + message + " ]");
-        statelessBean.sendMessage(message);
+        if ( statelessBean == null ) {
+            throw new Exception("Failed injection of stateless EJB");
+        }
 
-        TextMessage rec_msg = (TextMessage) jmsContextQueue.createConsumer(jmsQueue).receive(30000);
-        System.out.println("Received message [ " + rec_msg.getText() + " ]");
+        JMSConsumer jmsConsumer = jmsContextQueue.createConsumer(jmsQueue);
+
+        String msgOutText = statelessBean.hello();
+        System.out.println("Sending message [ " + msgOutText + " ]");
+        statelessBean.sendMessage(msgOutText);
+        TextMessage msgIn = (TextMessage) jmsConsumer.receive(30000);
+
+        if ( msgIn == null ) {
+            throw new Exception("Failed to receive message [ " + msgOutText + " ]");
+        }
+
+        String msgInText = msgIn.getText();
+        System.out.println("Received message [ " + msgInText + " ]");
+
+        if ( (msgInText == null) || !msgInText.equals(msgOutText) ) {
+            throw new Exception("Sent message text [ " + msgOutText + " ] was received as [ " + msgInText + " ]");
+        }
     }
 }
