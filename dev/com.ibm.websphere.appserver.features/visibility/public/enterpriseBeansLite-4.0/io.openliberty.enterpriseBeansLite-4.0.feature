@@ -5,6 +5,7 @@ singleton=true
 IBM-App-ForceRestart: install, \
  uninstall
 IBM-ShortName: enterpriseBeansLite-4.0
+IBM-AlsoKnownAs: ejbLite-4.0
 IBM-API-Package: com.ibm.websphere.ejbcontainer.mbean; type="ibm-api"
 Subsystem-Category: JakartaEE9Application
 -features=io.openliberty.jakartaeePlatform-9.0, \
