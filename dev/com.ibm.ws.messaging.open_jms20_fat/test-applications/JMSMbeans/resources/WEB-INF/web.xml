@@ -10,8 +10,7 @@
   <servlet id="Default">
     <servlet-name>JMSMBean FAT Servlet</servlet-name>
     <display-name>JMSMBean FAT Servlet</display-name>
-    <servlet-class>jmsmbeans.web.JmsMbeanTestServlet</servlet-class>
-   <!-- <load-on-startup></load-on-startup> -->
+    <servlet-class>jmsmbeans.web.JMSMBeanTestServlet</servlet-class>
   </servlet>
 
   <servlet-mapping id="ServletMapping_Default">

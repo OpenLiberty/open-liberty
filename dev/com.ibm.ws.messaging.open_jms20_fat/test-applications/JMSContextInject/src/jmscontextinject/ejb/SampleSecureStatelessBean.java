@@ -33,15 +33,13 @@ public class SampleSecureStatelessBean {
     }
 
     public void sendMessage(String text) {
-        System.out.println("sending message");
+        System.out.println("Sending message [ " + text + " ]");
 
         try {
-            Queue queue = (Queue) new InitialContext().lookup("java:comp/env/jndi_INPUT_Q");
-
+            Queue queue = (Queue) new InitialContext().lookup("java:comp/env/jndi_INPUT_Q1");
             Message msg = jmscontext.createTextMessage(text);
             jmscontext.createProducer().send(queue, msg);
-
-            System.out.println("Sent message");
+            System.out.println("Sent message [ " + text + " ]");
 
         } catch ( NamingException ex ) {
             ex.printStackTrace();

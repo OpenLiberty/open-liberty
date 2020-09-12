@@ -265,9 +265,9 @@ public class JMSProducer_118073Servlet extends HttpServlet {
         JMSContext jmsContext = tcfBindings.createContext();
 
         JMSProducer producer = jmsContext.createProducer();
-        producer.setJMSReplyTo(topic2);
+        producer.setJMSReplyTo(topic1);
 
-        String expectedReplyTo = "topic://Default.Topic?topicSpace=NewTopic2";
+        String expectedReplyTo = "topic://testTopic1?topicSpace=NewTopic1";
         String actualReplyTo = producer.getJMSReplyTo().toString();
 
         boolean testFailed = false;
@@ -278,7 +278,9 @@ public class JMSProducer_118073Servlet extends HttpServlet {
         jmsContext.close();
 
         if ( testFailed ) {
-            throw new Exception("testSetGetJMSReplyTo_Topic_B_SecOff failed");
+            throw new Exception("testSetGetJMSReplyTo_Topic_B_SecOff failed;" +
+                                " expected reply-to [ " + expectedReplyTo + " ];" +
+                                " actual reply-to [ " + actualReplyTo + " ]");
         }
     }
 
@@ -288,9 +290,9 @@ public class JMSProducer_118073Servlet extends HttpServlet {
         JMSContext jmsContext = tcfTCP.createContext();
 
         JMSProducer producer = jmsContext.createProducer();
-        producer.setJMSReplyTo(topic2);
+        producer.setJMSReplyTo(topic1);
 
-        String expectedReplyTo = "topic://Default.Topic?topicSpace=NewTopic2";
+        String expectedReplyTo = "topic://testTopic1?topicSpace=NewTopic1";
         String actualReplyTo = producer.getJMSReplyTo().toString();
 
         boolean testFailed = false;
@@ -301,7 +303,9 @@ public class JMSProducer_118073Servlet extends HttpServlet {
         jmsContext.close();
 
         if ( testFailed ) {
-            throw new Exception("testSetGetJMSReplyTo_Topic_TCP_SecOff failed");
+            throw new Exception("testSetGetJMSReplyTo_Topic_TCP_SecOff failed;" +
+                                " expected reply-to [ " + expectedReplyTo + " ];" +
+                                " actual reply-to [ " + actualReplyTo + " ]");
         }
     }
 

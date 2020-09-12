@@ -35,11 +35,9 @@ import com.ibm.ws.messaging.JMS20.fat.TestUtils;
 
 @Mode(TestMode.FULL)
 public class JMSProducer_Test118073 {
-    // Use JMSContextClient instead
-
-    private static LibertyServer clientServer =
+    private static final LibertyServer clientServer =
         LibertyServerFactory.getLibertyServer("JMSProducerClient");
-    private static LibertyServer engineServer =
+    private static final LibertyServer engineServer =
         LibertyServerFactory.getLibertyServer("JMSProducerEngine");
 
     private static final int clientPort = clientServer.getHttpDefaultPort();
@@ -57,14 +55,18 @@ public class JMSProducer_Test118073 {
 
     @BeforeClass
     public static void testConfigFileChange() throws Exception {
-        // TODO: Why not for this test?
-        // engineServer.copyFileToLibertyInstallRoot("lib/features", "features/testjmsinternals-1.0.mf");
+        engineServer.copyFileToLibertyInstallRoot(
+            "lib/features",
+            "features/testjmsinternals-1.0.mf");
         engineServer.setServerConfigurationFile("JMSProducerEngine.xml");
-        engineServer.startServer("JMSProducerEngine_118073B.log");
 
-        clientServer.copyFileToLibertyInstallRoot("lib/features", "features/testjmsinternals-1.0.mf");
+        clientServer.copyFileToLibertyInstallRoot(
+            "lib/features",
+            "features/testjmsinternals-1.0.mf");
         clientServer.setServerConfigurationFile("JMSProducerClient.xml");
         TestUtils.addDropinsWebApp(clientServer, producerAppName, producerPackages);
+
+        engineServer.startServer("JMSProducerEngine_118073B.log");
         clientServer.startServer("JMSProducerClient_118073B.log");
     }
 

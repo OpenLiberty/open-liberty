@@ -1,8 +1,6 @@
 <server>
 
   <featureManager>
-    <feature>osgiconsole-1.0</feature>
-
     <feature>jndi-1.0</feature>
     <feature>servlet-3.1</feature>
     <feature>ejbLite-3.2</feature>
@@ -10,15 +8,19 @@
 
     <feature>wasJmsClient-2.0</feature>
     <feature>testjmsinternals-1.0</feature>
+
+    <feature>timedexit-1.0</feature>
   </featureManager>
 
   <include location="../fatTestPorts.xml"/>
 
   <variable name="onError" value="FAIL"/>
   
+  <!--
   <logging 
     traceSpecification="*=info:logservice=all:SIBJms*=all:com.ibm.ws.cdi.*=all"
     maxFileSize="200"/>
+   -->
 
   <!-- Avoid MissingDoPrivDetectionSecurityManager warning CWWKE0921W potential violation warnings -->
 

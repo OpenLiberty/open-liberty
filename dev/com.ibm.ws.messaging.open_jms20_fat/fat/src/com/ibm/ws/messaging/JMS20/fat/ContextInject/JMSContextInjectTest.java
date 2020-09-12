@@ -29,211 +29,153 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
-/**
- *
- */
+import com.ibm.ws.messaging.JMS20.fat.TestUtils;
+
 @Mode(TestMode.FULL)
 public class JMSContextInjectTest {
 
-    private static LibertyServer server = LibertyServerFactory
-                    .getLibertyServer("TestServer");
+    private static final LibertyServer engineServer =
+        LibertyServerFactory.getLibertyServer("JMSContextInjectEngine");
+    private static final LibertyServer clientServer =
+        LibertyServerFactory.getLibertyServer("JMSContextInjectClient");
 
-    private static LibertyServer server1 = LibertyServerFactory
-                    .getLibertyServer("TestServer1");
+    private static final int clientPort = clientServer.getHttpDefaultPort();
+    private static final String clientHostName = clientServer.getHostname();
 
-    private static final int PORT = server.getHttpDefaultPort();
-    private static final String HOST = server.getHostname();
-
-    boolean val = false;
+    private static final String contextInjectAppName = "JMSContextInject";
+    private static final String contextInjectContextRoot = "JMSContextInject";
+    private static final String[] contextInjectPackages =
+        new String[] { "jmscontextinject.ejb", "jmscontextinject.web" };
 
     private boolean runInServlet(String test) throws IOException {
-
-        boolean result = false;
-        URL url = new URL("http://" + HOST + ":" + PORT + "/JMSContextInject?test="
-                          + test);
-        System.out.println("The Servlet URL is : " + url.toString());
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        try {
-            con.setDoInput(true);
-            con.setDoOutput(true);
-            con.setUseCaches(false);
-            con.setRequestMethod("GET");
-            con.connect();
-
-            InputStream is = con.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
-            String sep = System.lineSeparator();
-            StringBuilder lines = new StringBuilder();
-            for (String line = br.readLine(); line != null; line = br
-                            .readLine())
-                lines.append(line).append(sep);
-
-            if (lines.indexOf(test + " COMPLETED SUCCESSFULLY") < 0) {
-                org.junit.Assert.fail("Missing success message in output. "
-                                      + lines);
-                result = false;
-            }
-            else
-                result = true;
-
-            return result;
-
-        } finally {
-            con.disconnect();
-        }
+        return TestUtils.runInServlet(clientHostName, clientPort, contextInjectContextRoot, test); // throws IOException
     }
+
+    //
 
     @BeforeClass
     public static void testConfigFileChange() throws Exception {
 
-        server.copyFileToLibertyInstallRoot("lib/features",
-                                            "features/testjmsinternals-1.0.mf");
+        engineServer.copyFileToLibertyInstallRoot(
+            "lib/features",
+            "features/testjmsinternals-1.0.mf");
+        engineServer.setServerConfigurationFile("JMSContextInjectEngine.xml");
 
-        server1.setServerConfigurationFile("JMSContext_Server.xml");
-        server1.startServer("JMSConsumer_118077_Server.log");
-        String changedMessageFromLog = server1.waitForStringInLog(
-                                                                  "CWWKF0011I.*", server1.getMatchingLogFile("trace.log"));
-        assertNotNull("Could not find the upload message in the new file",
-                      changedMessageFromLog);
+        clientServer.copyFileToLibertyInstallRoot(
+            "lib/features",
+            "features/testjmsinternals-1.0.mf");
+        clientServer.setServerConfigurationFile("JMSContextInjectClient.xml");
+        TestUtils.addDropinsWebApp(clientServer, contextInjectAppName, contextInjectPackages);
 
-        server.setServerConfigurationFile("JMSContext_Client.xml");
-
-        server.startServer("JMSConsumer_118077_Client.log");
-        changedMessageFromLog = server.waitForStringInLog(
-                                                          "CWWKF0011I.*", server.getMatchingLogFile("trace.log"));
-        assertNotNull("Could not find the server start info message in the new file",
-                      changedMessageFromLog);
-
+        engineServer.startServer("JMSContectInjectEngine.log");
+        clientServer.startServer("JMSContectInjectClient.log");
     }
 
     @org.junit.AfterClass
     public static void tearDown() {
         try {
-            System.out.println("Stopping server");
-            server.stopServer();
-            server1.stopServer();
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
+            clientServer.stopServer();
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+
+        try {
+            engineServer.stopServer();
+        } catch ( Exception e ) {
             e.printStackTrace();
         }
     }
 
+    //
+
     @Mode(TestMode.FULL)
     @Test
     public void testP2P_TCP_SecOff() throws Exception {
-
-        val = runInServlet("testP2P_TCP_SecOff");
-        assertTrue("testP2P_TCP_SecOff failed ", val);
-
+        boolean testResult = runInServlet("testP2P_TCP_SecOff");
+        assertTrue("testP2P_TCP_SecOff failed", testResult);
     }
 
     @Mode(TestMode.FULL)
     @Test
     public void testPubSub_TCP_SecOff() throws Exception {
-
-        val = runInServlet("testPubSub_TCP_SecOff");
-        assertTrue("testPubSub_TCP_SecOff failed ", val);
-
+        boolean testResult = runInServlet("testPubSub_TCP_SecOff");
+        assertTrue("testPubSub_TCP_SecOff failed", testResult);
     }
 
     @Mode(TestMode.FULL)
     @Test
     public void testPubSubDurable_B_SecOff() throws Exception {
-
-        val = runInServlet("testPubSubDurable_B_SecOff");
-        assertTrue("testPubSubDurable_B_SecOff failed ", val);
-
+        boolean testResult = runInServlet("testPubSubDurable_B_SecOff");
+        assertTrue("testPubSubDurable_B_SecOff failed", testResult);
     }
 
     @Mode(TestMode.FULL)
     @Test
     public void testPubSubDurable_TCP_SecOff() throws Exception {
-
-        val = runInServlet("testPubSubDurable_TCP_SecOff");
-        assertTrue("testPubSubDurable_TCP_SecOff failed ", val);
-
+        boolean testResult = runInServlet("testPubSubDurable_TCP_SecOff");
+        assertTrue("testPubSubDurable_TCP_SecOff failed", testResult);
     }
 
     @Mode(TestMode.FULL)
     @Test
     public void testNegativeSetters_B_SecOff() throws Exception {
-
-        val = runInServlet("testNegativeSetters_B_SecOff");
-        assertTrue("testNegativeSetters_B_SecOff failed ", val);
-
+        boolean testResult = runInServlet("testNegativeSetters_B_SecOff");
+        assertTrue("testNegativeSetters_B_SecOff failed", testResult);
     }
 
     @Mode(TestMode.FULL)
     @Test
     public void testNegativeSetters_TCP_SecOff() throws Exception {
-
-        val = runInServlet("testNegativeSetters_TCP_SecOff");
-        assertTrue("testNegativeSetters_TCP_SecOff failed ", val);
-
+        boolean testResult = runInServlet("testNegativeSetters_TCP_SecOff");
+        assertTrue("testNegativeSetters_TCP_SecOff failed", testResult);
     }
 
     @Mode(TestMode.FULL)
     @Test
     public void testMessageOrder_B_SecOff() throws Exception {
-
-        val = runInServlet("testMessageOrder_B_SecOff");
-        assertTrue("testMessageOrder_B_SecOff failed ", val);
-
+        boolean testResult = runInServlet("testMessageOrder_B_SecOff");
+        assertTrue("testMessageOrder_B_SecOff failed", testResult);
     }
 
     @Mode(TestMode.FULL)
-    //   @Test
+    // @Test
     public void testMessageOrder_TCP_SecOff() throws Exception {
-
-        val = runInServlet("testMessageOrder_TCP_SecOff");
-        assertTrue("testMessageOrder_TCP_SecOff failed ", val);
-
+        boolean testResult = runInServlet("testMessageOrder_TCP_SecOff");
+        assertTrue("testMessageOrder_TCP_SecOff failed", testResult);
     }
 
     @Mode(TestMode.FULL)
     @Test
     public void testGetAutoStart_B_SecOff() throws Exception {
-
-        val = runInServlet("testGetAutoStart_B_SecOff");
-        assertTrue("testGetAutoStart_B_SecOff failed ", val);
-
+        boolean testResult = runInServlet("testGetAutoStart_B_SecOff");
+        assertTrue("testGetAutoStart_B_SecOff failed", testResult);
     }
 
     @Mode(TestMode.FULL)
     @Test
     public void testGetAutoStart_TCP_SecOff() throws Exception {
-
-        val = runInServlet("testGetAutoStart_TCP_SecOff");
-        assertTrue("testGetAutoStart_TCP_SecOff failed ", val);
-
+        boolean testResult = runInServlet("testGetAutoStart_TCP_SecOff");
+        assertTrue("testGetAutoStart_TCP_SecOff failed", testResult);
     }
 
     @Mode(TestMode.FULL)
     @Test
     public void testBrowser_B_SecOff() throws Exception {
-
-        val = runInServlet("testBrowser_B_SecOff");
-        assertTrue("testBrowser_B_SecOff failed ", val);
-
+        boolean testResult = runInServlet("testBrowser_B_SecOff");
+        assertTrue("testBrowser_B_SecOff failed", testResult);
     }
 
     @Mode(TestMode.FULL)
-    //  @Test
+    // @Test
     public void testBrowser_TCP_SecOff() throws Exception {
-
-        val = runInServlet("testBrowser_TCP_SecOff");
-        assertTrue("testBrowser_TCP_SecOff failed ", val);
-
+        boolean testResult = runInServlet("testBrowser_TCP_SecOff");
+        assertTrue("testBrowser_TCP_SecOff failed", testResult);
     }
 
     @Mode(TestMode.FULL)
     @Test
     public void testEJBCallSecOff() throws Exception {
-
-        val = runInServlet("testEJBCallSecOff");
-        assertTrue("testEJBCallSecOff failed ", val);
-
+        boolean testResult = runInServlet("testEJBCallSecOff");
+        assertTrue("testEJBCallSecOff failed", testResult);
     }
-
 }

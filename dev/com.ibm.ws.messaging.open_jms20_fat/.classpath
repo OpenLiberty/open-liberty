@@ -1,30 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.jms.2.0"/>
 	<classpathentry kind="src" path="fat/src"/>
-	<classpathentry kind="src" path="test-applications/JMSProducer/src"/>
-	<classpathentry kind="src" path="test-applications/SharedSubscription/src"/>
-	<classpathentry kind="src" path="test-applications/jmsmdb/src"/>
-	<classpathentry kind="src" path="test-applications/JMSRedelivery_120846/src"/>
-	<classpathentry kind="src" path="test-applications/JMSConsumer_118077/src"/>
-	<classpathentry kind="src" path="test-applications/JMSConsumer_118076/src"/>
-	<classpathentry kind="src" path="test-applications/JMSProducer_118073/src"/>
-	<classpathentry kind="src" path="test-applications/SharedSubscriptionWithMsgSel/src"/>
 	<classpathentry kind="src" path="test-applications/DurableUnshared/src"/>
+	<classpathentry kind="src" path="test-applications/JMSConsumer_118076/src"/>
+	<classpathentry kind="src" path="test-applications/JMSConsumer_118077/src"/>
 	<classpathentry kind="src" path="test-applications/JMSContextInject/src"/>
-	<classpathentry kind="src" path="test-applications/JMSDefaultConnectionFactoryTest/src"/>
-	<classpathentry kind="src" path="test-applications/JMSMbeans/src"/>
-	<classpathentry kind="src" path="test-applications/mdbapp/src"/>
-	<classpathentry kind="src" path="test-applications/mdbapp1/src"/>
-	<classpathentry kind="src" path="test-applications/JMSDefaultCFVariation/src"/>
+	<classpathentry kind="src" path="test-applications/JMSDCF/src"/>
+	<classpathentry kind="src" path="test-applications/JMSDCFVar/src"/>
+	<classpathentry kind="src" path="test-applications/JMSMBeans/src"/>
+	<classpathentry kind="src" path="test-applications/JMSProducer/src"/>
+	<classpathentry kind="src" path="test-applications/JMSProducer_118073/src"/>
+	<classpathentry kind="src" path="test-applications/JMSRedelivery_120846/src"/>
+	<classpathentry kind="src" path="test-applications/SharedSubscription/src"/>
+	<classpathentry kind="src" path="test-applications/SharedSubscriptionWithMsgSel/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.logging"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.security.registry_test.servlet"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.ejb.3.1"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.jms.2.0"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.servlet.3.0"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.cdi.1.0"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.transaction.1.1"/>
 	<classpathentry kind="lib" path="/ant_build/lib/junit.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/fattest.simplicity"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.servlet.3.0"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.cdi.1.0"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
