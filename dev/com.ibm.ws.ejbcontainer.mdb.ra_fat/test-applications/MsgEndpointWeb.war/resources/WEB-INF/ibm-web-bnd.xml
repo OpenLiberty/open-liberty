@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-bnd xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://websphere.ibm.com/xml/ns/javaee"
+    xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-bnd_1_0.xsd" version="1.0">
+  <resource-env-ref name="BaseMessageProvider" binding-name="tra/BaseMessageProvider"/>
+  <resource-env-ref name="MessageProvider" binding-name="tra/MessageProvider"/>
+  <resource-env-ref name="FAT_TRA_DS" binding-name="jdbc/FAT_TRA_DS"/>
+</web-bnd>
