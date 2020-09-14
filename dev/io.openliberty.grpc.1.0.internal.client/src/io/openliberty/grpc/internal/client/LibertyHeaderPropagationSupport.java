@@ -27,16 +27,22 @@ public class LibertyHeaderPropagationSupport {
 	 * @param headerMap
 	 */
 	@SuppressWarnings("rawtypes")
-	public static void handleHeaderPropagation(MethodDescriptor method, Metadata headerMap) {
+	public static void handleHeaderPropagation(String host, MethodDescriptor method, Metadata headerMap) {
 
-		String headersToPropagate = GrpcClientConfigHolder.getHeaderPropagationSupport(method.getFullMethodName());
+		String headersToPropagate = GrpcClientConfigHolder.getHeaderPropagationSupport(host, method.getFullMethodName());
+		if (tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled()) {
+			Tr.debug(tc, "checking header propagation for " + host + "$" + method.getFullMethodName());
+		}
 
 		if (headersToPropagate == null || headersToPropagate.isEmpty()) {
-			if (tc.isDebugEnabled()) {
-				Tr.debug(tc, "no header propagation configured");
+			if (tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled()) {
+				Tr.debug(tc, "no header propagation configured for " + host + "/" + method.getFullMethodName());
 			}
 			return;
 		} else {
+			if (tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled()) {
+				Tr.debug(tc, "propagating headers: " + headersToPropagate);
+			}
 			List<String> headerNames = Arrays.asList(headersToPropagate.split("\\s*,\\s*"));
 			if (!headerNames.isEmpty()) {
 				for (String headerName : headerNames) {
@@ -73,8 +79,8 @@ public class LibertyHeaderPropagationSupport {
 	private static void addHeader(String headerName, String headerValue, Metadata headers) {
 		Metadata.Key<String> key = Metadata.Key.of(headerName, Metadata.ASCII_STRING_MARSHALLER);
 		headers.put(key, headerValue);
-		if (tc.isDebugEnabled()) {
-			Tr.debug(tc, "Authorization header with Bearer token is added successfully");
+		if (tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled()) {
+			Tr.debug(tc, "addHeader " + headerName + " with value " + headerValue);
 		}
 	}
 }
