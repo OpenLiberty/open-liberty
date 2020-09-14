@@ -157,7 +157,7 @@ ssl.client.keystore.create.error.CWPKI0031E.useraction=Compruebe que los valores
 # -------------------------------------------------------------------------------------------------
 ssl.self.signed.create.error.CWPKI0032E=CWPKI0032E: Se ha producido un error al crear un certificado autofirmado.  Excepci\u00f3n: {0}
 ssl.self.signed.create.error.CWPKI0032E.explanation=Se ha producido un error durante el inicio del proceso al crear este certificado.
-ssl.self.signed.create.error.CWPKI0032E.useraction=Compruebe que los valores de propiedad del certificado autofirmado predereterminados (com.ibm.ssl.defaultCertReq*) sean v\u00e1lidos.
+ssl.self.signed.create.error.CWPKI0032E.useraction=Compruebe que los valores de propiedad del certificado autofirmado predeterminados (com.ibm.ssl.defaultCertReq*) sean v\u00e1lidos.
 # -------------------------------------------------------------------------------------------------
 ssl.keystore.load.error.CWPKI0033E=CWPKI0033E: El almac\u00e9n de claves situado en {0} no se ha cargado debido al siguiente error: {1}
 ssl.keystore.load.error.CWPKI0033E.explanation=Se ha producido un error al crear o abrir el almac\u00e9n de claves.
@@ -251,7 +251,7 @@ ssl.trustmanager.signer.prompt.answer.yes=s
 ssl.trustmanager.signer.prompt.answer.no=n
 ssl.trustmanager.signer.prompt.answer.full.yes=s\u00ed
 ssl.trustmanager.signer.prompt.CWPKI0108I=Puede que sea necesario volver a realizar la solicitud si el socket excede el tiempo de espera mientras espera una respuesta para la solicitud.  Si es necesario volver a realizar la petici\u00f3n, tenga en cuenta que la petici\u00f3n no se volver\u00e1 a visualizar si se especifica (s), que indica que el firmante ya se ha a\u00f1adido al almac\u00e9n de confianza.
-ssl.trustmanager.signer.prompt.CWPKI0109I=  Caduca:       
+ssl.trustmanager.signer.prompt.CWPKI0109I=  Caduca: 
 
 ################################################################################
 # Range 200-299 reserved for KeySet Messages
@@ -285,7 +285,7 @@ ssl.signer.retrieval.usage.CWPKI0300I=CWPKI0300I: Utilice las opciones -listRemo
 \n\
 Uso: retrieveSigners <nombreAlmac\u00e9nClavesRemoto> <nombreAlmac\u00e9nClavesLocal> [options]\n\
 \ \
-        options: [-profileName <nombrePerfil>] [-remoteAlias <aliasDeAlm\u00e1c\u00e9nRemoto>] [-localAlias <almacenarComoAlias>] [-listRemoteKeyStoreNames] [-listLocalKeyStoreNames] [-autoAcceptBootstrapSigner] [-uploadSigners] [-host <host>] [-port <puerto>] [-conntype <RMI|SOAP>] [-user <usuario>] [-password <contrase\u00f1a>] [-trace] [-logfile <nombre_archivo>] [-replacelog] [-quiet] [-help]\n
+options: [-profileName <nombrePerfil>] [-remoteAlias <aliasDeAlm\u00e1c\u00e9nRemoto>] [-localAlias <almacenarComoAlias>] [-listRemoteKeyStoreNames] [-listLocalKeyStoreNames] [-autoAcceptBootstrapSigner] [-uploadSigners] [-host <host>] [-port <puerto>] [-conntype <RMI|SOAP>] [-user <usuario>] [-password <contrase\u00f1a>] [-trace] [-logfile <nombre_archivo>] [-replacelog] [-quiet] [-help]\n
 ssl.signer.retrieval.usage.CWPKI0300I.explanation=Este mensaje es meramente informativo.
 ssl.signer.retrieval.usage.CWPKI0300I.useraction=No se requiere ninguna acci\u00f3n.
 # -------------------------------------------------------------------------------------------------
@@ -394,7 +394,7 @@ ssl.ca.client.cert.does.not.exist.explanation=El sistema no ha podido recibir el
 ssl.ca.client.cert.does.not.exist.useraction=Vuelva a ejecutar el mandato utilizando un certificado recuperado de una entidad emisora de certificados (CA) que se gener\u00f3 con la petici\u00f3n de certificado procedente de este alias especificado en este almac\u00e9n de claves.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.keystore.not.found=CWPKI0410E: El almac\u00e9n de claves local especificado como alias {0} no se ha encontrado en el cliente.
-ssl.ca.client.keystore.not.found.explanation=No se ha encontrado el almac\u00e9n de claves local. 
+ssl.ca.client.keystore.not.found.explanation=No se ha encontrado el almac\u00e9n de claves local.  
 ssl.ca.client.keystore.not.found.useraction=Compruebe que el almac\u00e9n de claves existe en el cliente y que tiene un alias en ssl.client.props.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.cert.publickey.not.found=CWPKI0411E: En el almac\u00e9n de claves {0} no se ha encontrado un certificado con una clave p\u00fablica que coincida con la clave p\u00fablica del certificado de la autoridad certificadora (CA) .
@@ -597,12 +597,12 @@ ssl.key.error.CWPKI0812E=CWPKI0812E: Error al intentar obtener la clave [{0}] de
 ssl.key.error.CWPKI0812E.explanation=Se ha producido un error al intentar recuperar la clave del archivo de almac\u00e9n de claves. Es posible que haya un problema con la clave o que la contrase\u00f1a de clave no sea correcta. 
 ssl.key.error.CWPKI0812E.useraction=Compruebe el almac\u00e9n de claves para asegurarse de que la entrada de clave existe y aseg\u00farese de que se haya configurado la contrase\u00f1a correcta para acceder a la entrada de clave.
 #--------------------------------------------------------------------------------------------------
-ssl.unrecoverablekey.error.CWPKI0813E=CWPKI0813E: Error al intentar inicializar el keymanager para el almac\u00e9n de claves [{0}]. La contrase\u00f1a de la clave privada no es correcta o el almac\u00e9n de claves tiene varias claves privadas con distintas contrase\u00f1as. Este almac\u00e9n de claves no se puede utilizar para SSL.El mensaje de excepci\u00f3n es: [{1}].
-ssl.unrecoverablekey.error.CWPKI0813E.explanation=Se ha producido un error al intentar inicializar el gestor de claves. No se puede crear un SSLContext cuando la contrase\u00f1a de la clave privada no es correcta o cuando el almac\u00e9n de claves tiene varias claves con diferentes contrase\u00f1as. 
-ssl.unrecoverablekey.error.CWPKI0813E.useraction=Aseg\u00farese de que la clave privada escorrecta y de que el almac\u00e9n de claves no tiene varias claves con diferentes contrase\u00f1as antes de utilizar el almac\u00e9n de claves para las conexiones SSL.
+ssl.unrecoverablekey.error.CWPKI0813E=CWPKI0813E: Error al intentar inicializar el keymanager para el almac\u00e9n de claves [{0}]. La contrase\u00f1a de la clave privada no es correcta o el almac\u00e9n de claves tiene varias claves privadas con distintas contrase\u00f1as.  Este almac\u00e9n de claves no se puede utilizar para SSL.  El mensaje de excepci\u00f3n es: [{1}].
+ssl.unrecoverablekey.error.CWPKI0813E.explanation=Se ha producido un error al intentar inicializar el gestor de claves.  No se puede crear un SSLContext cuando la contrase\u00f1a de la clave privada no es correcta o cuando el almac\u00e9n de claves tiene varias claves con diferentes contrase\u00f1as. 
+ssl.unrecoverablekey.error.CWPKI0813E.useraction=Aseg\u00farese de que la clave privada es correcta y de que el almac\u00e9n de claves no tiene varias claves con diferentes contrase\u00f1as antes de utilizar el almac\u00e9n de claves para las conexiones SSL.
 #--------------------------------------------------------------------------------------------------
-ssl.hwkeystore.load.error.CWPKI0814E=CWPKI0814E: Se ha producido un error al inicializar el almac\u00e9n de claves de hardware [{0}]. Compruebe el archivo de configuraci\u00f3n de hardware {1} para asegurarse de que los atributos est\u00e1n establecidos correctamente. La excepci\u00f3n devuelta del proveedor es [{2}].
-ssl.hwkeystore.load.error.CWPKI0814E.explanation=Hay algo incorrecto con la configuraci\u00f3n de hardware que impide que el almac\u00e9n de claves se pueda utilizar. Si hay una configuraci\u00f3n SSL que hace referencia a este almac\u00e9n de claves no se podr\u00e1 utilizar.
+ssl.hwkeystore.load.error.CWPKI0814E=CWPKI0814E: Se ha producido un error al inicializar el almac\u00e9n de claves de hardware [{0}].  Compruebe el archivo de configuraci\u00f3n de hardware {1} para asegurarse de que los atributos est\u00e1n establecidos correctamente.  La excepci\u00f3n devuelta del proveedor es [{2}].
+ssl.hwkeystore.load.error.CWPKI0814E.explanation=Hay algo incorrecto con la configuraci\u00f3n de hardware que impide que el almac\u00e9n de claves se pueda utilizar.  Si hay una configuraci\u00f3n SSL que hace referencia a este almac\u00e9n de claves no se podr\u00e1 utilizar.
 ssl.hwkeystore.load.error.CWPKI0814E.useraction=Aseg\u00farese de que el archivo de configuraci\u00f3n de hardware contiene los atributos, el nombre y la biblioteca necesarios. Aseg\u00farese de que otros atributos del archivo de configuraci\u00f3n se ajustan a la especificaci\u00f3n de dispositivo de hardware.
 #--------------------------------------------------------------------------------------------------
 ssl.dynamicSelection.conflict.CWPKI0815W=CWPKI0815W: M\u00e1s de un elemento OutboundConnection especifica el host [{0}] y el puerto [{1} como filtro. Se usar\u00e1 el elemento OutboundConnection configurado en el elemento SSL [{2}].
@@ -635,7 +635,7 @@ ssl.defaultKeyStore.loaded.CWPKI0821I.useraction=No se requiere ninguna acci\u00
 #--------------------------------------------------------------------------------------------------
 ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W=CWPKI0822W: Se ha especificado una configuraci\u00f3n m\u00ednima predeterminada de almac\u00e9n de claves y los almacenes de clave key.jks y key.p12 existen en la ubicaci\u00f3n de almac\u00e9n de claves predeterminada. Se utilizar\u00e1 key.jks como almac\u00e9n de claves predeterminado.
 ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W.explanation=Con una configuraci\u00f3n m\u00ednima predeterminada de almac\u00e9n de claves, y con los archivos key.jks y key.p12 definidos en la ubicaci\u00f3n de almac\u00e9n de claves predeterminada, el archivo key.jks se utilizar\u00e1 como almac\u00e9n de claves predeterminado.
-ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W.useraction=Para hacer que el archivo key.p12 sea el almac\u00e9n de claves predeterminado, cambie la configuraci\u00f3n de almac\u00e9n de claves de modo que especifique la ubicaci\u00f3n de key.p12 o elimine el archivo key.jks de la configuraci\u00f3n. Para continuar con el archivo key.jks como almac\u00e9n de claves predeterminado, no es necesario realizar ning\u00fan cambio.
+ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W.useraction=Para hacer que el archivo key.p12 sea el almac\u00e9n de claves predeterminado, cambie la configuraci\u00f3n de almac\u00e9n de claves de modo que especifique la ubicaci\u00f3n de key.p12 o elimine el archivo key.jks de la configuraci\u00f3n. Para continuar con el archivo key.jks como almac\u00e9n de claves predeterminado, no es necesario realizar ning\u00fan cambio. 
 #--------------------------------------------------------------------------------------------------
 ssl.client.handshake.error.CWPKI0823E=CWPKI0823E: ERROR EN EL RECONOCIMIENTO DE COMUNICACI\u00d3N: Se ha enviado un firmante con un SubjectDN [{0}] desde el host [{1}].  Puede que sea necesario a\u00f1adir el firmante al almac\u00e9n de confianza local [{2}] situado en el alias de configuraci\u00f3n SSL [{3}].  El mensaje de error ampliado de la excepci\u00f3n del reconocimiento de comunicaci\u00f3n SSL es: [{4}].
 ssl.client.handshake.error.CWPKI0823E.explanation=Se ha producido un error durante el reconocimiento de comunicaci\u00f3n SSL.  Puede que requiera una exportaci\u00f3n/importaci\u00f3n de firmante del host de destino al almac\u00e9n de confianza de cliente.
@@ -649,7 +649,7 @@ ssl.cacerts.error.CWPKI0825W=CWPKI0825W: El atributo trustDefaultCerts est\u00e1
 ssl.cacerts.error.CWPKI0825W.explanation=El almac\u00e9n de confianza predeterminado no se ha inicializado porque no ha se podido recuperar del gestor de confianza. El almac\u00e9n de confianza predeterminado no se utiliza para establecer la confianza. S\u00f3lo se utiliza la configuraci\u00f3n SSL configurada.
 ssl.cacerts.error.CWPKI0825W.useraction=Aseg\u00farese de que el archivo de almac\u00e9n de confianza predeterminado existe y que se puede acceder al mismo.
 # -------------------------------------------------------------------------------------------------
-ssl.environment.cert.error.CWPKI0826W=CWPKI0826W: El certificado no se ha recuperado de la variable de entorno {0}. El certificado no se ha a\u00f1adido al almac\u00e9n de confianza {1}. La excepci\u00f3n que se devuelve es: {2}.
+ssl.environment.cert.error.CWPKI0826W=CWPKI0826W: El certificado no se ha recuperado de la variable de entorno {0}. El certificado no se ha a\u00f1adido al almac\u00e9n de confianza {1}.  La excepci\u00f3n que se devuelve es: {2}.
 ssl.environment.cert.error.CWPKI0826W.explanation=No se puede acceder al certificado especificado en la variable de entorno y no se incluye en el almac\u00e9n de confianza. Este problema podr\u00eda estar causado por la variable de entorno, el nombre del archivo o el certificado. La imposibilidad de a\u00f1adir el certificado no invalida la configuraci\u00f3n SSL, pero podr\u00eda crear problemas al establecer la confianza de las conexiones de salida.
 ssl.environment.cert.error.CWPKI0826W.useraction=Este problema puede deberse varias causas. Aseg\u00farese de que la variable de entorno o el archivo contenga un certificado de 64 bits base.
 # -------------------------------------------------------------------------------------------------
@@ -663,5 +663,9 @@ ssl.client.handshake.cacerts.error.CWPKI0828E.useraction=Revise el mensaje de er
 # -------------------------------------------------------------------------------------------------
 ssl.update.certificate.error=CWPKI0829E: Error de actualizaci\u00f3n de certificado SSL. {0}
 ssl.update.certificate.error.explanation=El certificado SSL no se ha podido actualizar en la ubicaci\u00f3n especificada.
-ssl.update.certificate.error.useraction=Compruebe que el proceso de servidor puede acceder a la ubicaci\u00f3n. Revise los registros de FFDC para encontrar errores adicionales asociados a la generaci\u00f3n o la carga de las claves.
+ssl.update.certificate.error.useraction=Compruebe que el proceso de servidor puede acceder a la ubicaci\u00f3n.  Revise los registros de FFDC para encontrar errores adicionales asociados a la generaci\u00f3n o la carga de las claves.
+# -------------------------------------------------------------------------------------------------
+ssl.certificate.add.CWPKI0830I=CWPKI0830I: Se est\u00e1 a\u00f1adiendo un certificado con el SubjectDN {0} de la variable de entorno {1} al almac\u00e9n de claves {2}.
+ssl.certificate.add.CWPKI0830I.explanation=Se ha recuperado un certificado de una variable de entorno de la configuraci\u00f3n y se est\u00e1 a\u00f1adiendo al archivo de almac\u00e9n de claves.
+ssl.certificate.add.CWPKI0830I.useraction=No se requiere ninguna acci\u00f3n.
 # -------------------------------------------------------------------------------------------------

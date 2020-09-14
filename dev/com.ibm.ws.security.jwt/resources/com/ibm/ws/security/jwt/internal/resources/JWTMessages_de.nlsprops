@@ -276,8 +276,8 @@ JWT_SIGNER_CERT_NOT_AVAILABLE.useraction=\u00dcberpr\u00fcfen Sie, dass der in d
 # single quoted terms do NOT use double single quotes when there are no replacement variables
 # Intended to be a child of JWT_ERROR_GETTING_PUBLIC_KEY
 JWT_SIGNER_CERT_AMBIGUOUS=CWWKS6047E: Es kann nicht festgestellt werden, welches Unterzeichnerzertifikat im Truststore verwendet werden soll. F\u00fcgen Sie der JWT-Konsumentenkonfiguration das Attribut 'trustedAlias' bzw. der MP-JWT-Konfiguration das Attribut 'keyName' hinzu.
-JWT_SIGNER_CERT_AMBIGUOUS.explanation=Es wurden mehrere Unterzeichnerzertifikate im konfigurierten Truststore gefunden. Wenn mehrere Zertifikate im Truststore vorhanden sind, muss das Attribut 'trustedAlias' in der JWT-Konsumentenkonfiguration bzw. das Attribut 'keyName' in der MP-JWT-Konfiguration angegeben werden, um festzulegen, welches der Zertifikate verwendet werden soll.
-JWT_SIGNER_CERT_AMBIGUOUS.useraction=Geben Sie an, welches Zertifikat im Truststore verwendet werden soll, indem Sie den Alias des entsprechenden Unterzeichnerzertifikats im Attribut 'trustedAlias' der JWT-Konsumentenkonfiguration bzw. das Attribut 'keyName' der MP-JWT-Konfiguration hinzuf\u00fcgen.
+JWT_SIGNER_CERT_AMBIGUOUS.explanation=Es wurden mehrere Unterzeichnerzertifikate im konfigurierten Truststore gefunden. Wenn mehrere Zertifikate im Truststore vorhanden sind, muss das Attribut 'trustedAlias' in der JWT-Konsumentenkonfiguration angegeben werden, um festzulegen, welches Zertifikat verwendet werden soll.
+JWT_SIGNER_CERT_AMBIGUOUS.useraction=Geben Sie an, welches Zertifikat im Truststore verwendet werden soll, indem Sie den Aliasnamen des entsprechenden Unterzeichnerzertifikats entweder dem Attribut 'trustedAlias' der JWT-Konsumentenkonfiguration oder dem Attribut 'keyName' der MP-JWT-Konfiguration hinzuf\u00fcgen.
 
 # Do not translate "JSON Web Token", "JWT"
 JWT_PROPAGATION_INVALID_TOKEN_ERR=CWWKS6048E: Die Filter-API f\u00fcr Clientanforderungen hat das JSON Web Token (JWT) nicht weitergegeben.
@@ -311,3 +311,14 @@ JWT_TRUSTED_ISSUERS_NULL.useraction=Stellen Sie sicher, dass in der in der Nachr
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6053E: Das HTTP-Schema wird am angegebenen Endpunkt {0} verwendet. Es ist aber HTTPS erforderlich.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.explanation=F\u00fcr den angegebenen Endpunkt ist HTTPS erforderlich, in der Anforderungs-URL wurde jedoch HTTP verwendet.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.useraction=\u00dcberpr\u00fcfen Sie die Anforderungs-URL und stellen Sie sicher, dass HTTPS verwendet wird, oder \u00e4ndern Sie die Konfiguration so, dass HTTPS nicht erforderlich ist.
+
+# 0=Signature algorithm from MP Config properties, 1=Default algorithm that will be used
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED=CWWKS6053W: Der Signaturalgorithmus [{0}], der \u00fcber die MicroProfile-Config-Eigenschaften angegeben wurde, wird nicht unterst\u00fctzt. Der Signaturalgorithmus [{1}] wird verwendet.
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.explanation=Es werden nur bestimmte RSA-, Elliptical-Curve- und HMAC-Signaturalgorithmen unterst\u00fctzt. Der Signaturalgorithmus, der \u00fcber die MicroProfile-Config-Eigenschaften angegeben wurde, ist keiner der unterst\u00fctzten Signaturalgorithmen.
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.useraction=Geben Sie einen unterst\u00fctzten Signaturalgorithmus in den MicroProfile-Config-Eigenschaften an. Zu den unterst\u00fctzten Signaturalgorithmen geh\u00f6ren ES256, ES384, ES512, RS256, RS384, RS512, HS256, HS384 und HS512.
+
+# Do not translate "JSON Web Token", "AMR", "JWT"
+# 0=AMR claim of the token, 1=JWT configuration ID, 2=AMR specified in server configuration
+JWT_AMR_CLAIM_NOT_VALID=CWWKS6054E: Der AMR [{0}] des bereitgestellten JWT (JSON Web Token) wird nicht als vertrauensw\u00fcrdiger AMR in der JWT-Konfiguration [{1}] aufgelistet. Die vertrauensw\u00fcrdigen AMRs sind [{2}].
+JWT_AMR_CLAIM_NOT_VALID.explanation=In der Serverkonfiguration wird angegeben, welche AMRs bei der Validierung von JWTs als vertrauensw\u00fcrdig eingestuft werden. Das angegebene Token ist nicht f\u00fcr eine dieser vertrauensw\u00fcrdigen AMRs bestimmt und deshalb kann das Token nicht validiert werden.
+JWT_AMR_CLAIM_NOT_VALID.useraction=Rufen Sie ein neues Token f\u00fcr einen der vertrauensw\u00fcrdigen AMRs ab, die in Ihrer JWT-Konfiguration angegeben sind, oder f\u00fcgen Sie den in der Nachricht angegebenen AMR als vertrauensw\u00fcrdigen AMR in Ihrer JWT-Konfiguration hinzu.

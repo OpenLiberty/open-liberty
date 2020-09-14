@@ -173,7 +173,7 @@ warning.singleServer=CWWKE0027W: Somente um servidor pode ser especificado na li
 ignorados (servidor={0}, ignorado={1}).
 warning.singleServer.explanation=Pode ser especificado somente um servidor na linha de comandos. O primeiro nome do \
 servidor foi processado; os nomes restantes foram ignorados.
-warning.singleServer.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria. Especifique somente um servidor para evitar este aviso.
+warning.singleServer.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria. Especifique somente um servidor para evitar este aviso.
   
 error.serverAlreadyRunning=CWWKE0029E: Uma inst\u00e2ncia do servidor {0} j\u00e1 est\u00e1 em execu\u00e7\u00e3o.
 error.serverAlreadyRunning.explanation=Voc\u00ea est\u00e1 tentando iniciar um servidor que j\u00e1 est\u00e1 em execu\u00e7\u00e3o.
@@ -806,6 +806,9 @@ error.missing.version.files=CWWKE0952E: As informa\u00e7\u00f5es de vers\u00e3o 
 error.missing.version.files.explanation=O diret\u00f3rio que cont\u00e9m os arquivos de informa\u00e7\u00f5es de vers\u00e3o n\u00e3o existe ou n\u00e3o pode ser lido pelo usu\u00e1rio atual.
 error.missing.version.files.useraction=Assegure-se de que o diret\u00f3rio exista e possa ser lido pelo usu\u00e1rio atual. 
 
+warning.earlyRelease=CWWKE0953W: Esta vers\u00e3o de {0} \u00e9 uma vers\u00e3o de libera\u00e7\u00e3o anterior n\u00e3o suportada.
+warning.earlyRelease.explanation=Novos recursos que n\u00e3o s\u00e3o totalmente testados s\u00e3o disponibilizados em libera\u00e7\u00f5es iniciais para obter feedback antes de serem inclu\u00eddos em uma libera\u00e7\u00e3o suportada.
+warning.earlyRelease.useraction=N\u00e3o use uma vers\u00e3o de libera\u00e7\u00e3o anterior em sistemas de produ\u00e7\u00e3o, uma vez que as vers\u00f5es de libera\u00e7\u00e3o anteriores n\u00e3o s\u00e3o suportadas.
 info.serverStarting=Iniciando servidor {0}.
 info.serverStarted=Servidor {0} iniciado.
 info.serverStartedWithPID=O servidor {0} foi \

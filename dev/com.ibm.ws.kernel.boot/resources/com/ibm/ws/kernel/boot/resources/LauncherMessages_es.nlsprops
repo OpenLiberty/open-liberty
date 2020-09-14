@@ -700,8 +700,11 @@ error.package.usr.jar.useraction=Proporcione un nombre de archivo para --archive
 
 error.missing.version.files=CWWKE0952E: La informaci\u00f3n de versi\u00f3n no se puede leer en el directorio {0}.
 error.missing.version.files.explanation=El directorio que contiene archivos de informaci\u00f3n de versi\u00f3n no existe o bien el usuario actual no lo puede leer.
-error.missing.version.files.useraction=Aseg\u00farese de que el directorio existe y que el usuario actual lo puede leer.
+error.missing.version.files.useraction=Aseg\u00farese de que el directorio existe y que el usuario actual lo puede leer. 
 
+warning.earlyRelease=CWWKE0953W: Esta versi\u00f3n de {0} es una primera versi\u00f3n de release no soportada.
+warning.earlyRelease.explanation=En este primer release se incluyen caracter\u00edsticas que no est\u00e1n totalmente probadas para extraer conclusiones antes de incluirlas en un release soportado.
+warning.earlyRelease.useraction=No utilice una primera versi\u00f3n de release en un sistema de producci\u00f3n, ya que estas versiones no est\u00e1n soportadas.
 
 info.serverStarting=Se est\u00e1 iniciando el servidor {0}.
 info.serverStarted=Servidor {0} iniciado.
