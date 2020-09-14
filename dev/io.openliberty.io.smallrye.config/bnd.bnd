@@ -12,7 +12,7 @@
 
 bVersion=1.0
 
-Bundle-SymbolicName: io.openliberty.microprofile.config.2.0.internal; singleton:=true
+Bundle-SymbolicName: io.openliberty.io.smallrye.config; singleton:=true
 
 WS-TraceGroup: APPCONFIG
 
@@ -36,6 +36,7 @@ Include-Resource: \
   META-INF=resources/META-INF
 
 Import-Package: \
+  !sun.misc,\
   javax.enterprise.*; version="[1.1,3)",\
   *
 
@@ -45,14 +46,15 @@ Private-Package: \
 	io.openliberty.microprofile.config.internal.extension
 
 -buildpath: \
-  io.smallrye.config:smallrye-config;strategy=exact;version=1.8.0, \
-  io.smallrye.config:smallrye-config-common;strategy=exact;version=1.8.0, \
-  io.smallrye.common:smallrye-common-annotation;strategy=exact;version=1.0.2, \
-  io.smallrye.common:smallrye-common-expression;strategy=exact;version=1.0.2, \
-  io.smallrye.common:smallrye-common-constraint;strategy=exact;version=1.0.2, \
-  io.smallrye.common:smallrye-common-function;strategy=exact;version=1.0.2, \
-  com.ibm.websphere.javaee.cdi.1.2;version=latest, \
-  com.ibm.websphere.javaee.annotation.1.2;version=latest, \
+  io.smallrye.config:smallrye-config;version=latest, \
+  io.smallrye.config:smallrye-config-common;version=latest, \
+  io.smallrye.common:smallrye-common-annotation;version=latest, \
+  io.smallrye.common:smallrye-common-expression;version=latest, \
+  io.smallrye.common:smallrye-common-constraint;version=latest, \
+  io.smallrye.common:smallrye-common-function;version=latest, \
+  io.smallrye.common:smallrye-common-classloader;version=latest, \
+  com.ibm.websphere.javaee.cdi.2.0;version=latest, \
+  com.ibm.websphere.javaee.annotation.1.3;version=latest, \
   io.openliberty.org.eclipse.microprofile.config.2.0;version=latest, \
   io.openliberty.microprofile.config.internal.common;version=latest, \
   io.openliberty.microprofile.config.internal.serverxml;version=latest, \
