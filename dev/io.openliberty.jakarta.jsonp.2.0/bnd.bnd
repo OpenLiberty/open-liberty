@@ -24,7 +24,7 @@ Export-Package: \
    jakarta.json.stream;version=2.0
  
 Include-Resource: \
-  @${repo;jakarta.json:jakarta.json-api;2.0.0.RC2}!/!module-info.class
+  @${repo;jakarta.json:jakarta.json-api;2.0.0.RC3;EXACT}!/!module-info.class
 
 instrument.disabled: true
 
