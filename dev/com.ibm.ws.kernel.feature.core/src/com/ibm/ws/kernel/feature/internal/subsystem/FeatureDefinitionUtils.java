@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.feature.internal.subsystem;
 
+import static com.ibm.ws.kernel.feature.internal.FeatureManager.EE_COMPATIBLE_NAME;
+
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
@@ -373,7 +375,7 @@ public class FeatureDefinitionUtils {
         private boolean supersededChecked = false;
         private String supersededBy = null;
 
-        private Collection<FeatureResource> subsystemContent = null;
+        private List<FeatureResource> subsystemContent = null;
         private Collection<Filter> featureCapabilityFilters = null;
         private Map<String, Collection<HeaderElementDefinition>> headerElements = null;
 
@@ -627,7 +629,7 @@ public class FeatureDefinitionUtils {
 
         Collection<FeatureResource> getConstituents(SubsystemContentType type) {
             // Check to see if we've already figured out our content...
-            Collection<FeatureResource> result = subsystemContent;
+            List<FeatureResource> result = subsystemContent;
 
             if (result == null) {
                 String contents = null;
@@ -642,7 +644,12 @@ public class FeatureDefinitionUtils {
 
                 result = new ArrayList<FeatureResource>(data.size());
                 for (Map.Entry<String, Map<String, String>> entry : data.entrySet()) {
-                    result.add(new FeatureResourceImpl(entry.getKey(), entry.getValue(), iAttr.bundleRepositoryType, iAttr.featureName, iAttr.activationType));
+                    FeatureResourceImpl resource = new FeatureResourceImpl(entry.getKey(), entry.getValue(), iAttr.bundleRepositoryType, iAttr.featureName, iAttr.activationType);
+                    if (entry.getKey().lastIndexOf(EE_COMPATIBLE_NAME) >= 0) {
+                        result.add(0, resource);
+                    } else {
+                        result.add(resource);
+                    }
                 }
 
                 subsystemContent = result;
