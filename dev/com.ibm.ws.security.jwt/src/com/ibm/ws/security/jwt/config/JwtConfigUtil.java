@@ -69,7 +69,7 @@ public class JwtConfigUtil {
         String signatureAlgorithm = JwtUtils.trimIt((String) props.get(sigAlgAttrName));
         boolean isBetaEnabled = ProductInfo.getBetaEdition();
         if (!isBetaEnabled && isBetaAlgorithm(signatureAlgorithm)) {
-            if (signatureAlgorithm != null && !isBetaMessageIssuedForConfig(configId)) {
+            if (!isBetaMessageIssuedForConfig(configId)) {
                 Tr.warning(tc, "BETA_SIGNATURE_ALGORITHM_USED", new Object[] { configId, signatureAlgorithm, defaultSignatureAlgorithm });
                 issuedBetaMessageForConfigs.add(configId);
             }
@@ -83,7 +83,7 @@ public class JwtConfigUtil {
 
     private static boolean isBetaAlgorithm(String algorithm) {
         if (algorithm == null) {
-            return true;
+            return false;
         }
         return !algorithm.matches("RS256|HS256");
     }

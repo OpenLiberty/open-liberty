@@ -54,8 +54,8 @@ public class JwtMessageConstants extends com.ibm.ws.security.fat.common.MessageC
     public static final String CWWKS6047E_MULTIKEY_NO_ALIAS = "CWWKS6047E";
 
     public static final String CWWKS6052E_JWT_TRUSTED_ISSUERS_NULL = "CWWKS6052E";
-
     public static final String CWWKS6054E_INVALID_AMR_CLAIM = "CWWKS6054E";
+    public static final String CWWKS6055W_BETA_SIGNATURE_ALGORITHM_USED = "CWWKS6055W";
 
     public static final String CWPKI0812E_CANT_FIND_KEY = "CWPKI0812E";
 
