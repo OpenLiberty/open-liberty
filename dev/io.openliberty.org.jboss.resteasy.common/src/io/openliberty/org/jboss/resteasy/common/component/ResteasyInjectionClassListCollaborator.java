@@ -50,7 +50,7 @@ public class ResteasyInjectionClassListCollaborator implements WebAppInjectionCl
             if (!isWebModule(moduleContainer)) {
                 return Collections.<String> emptyList();
             }
-            return getJaxRsInjectionClasses(moduleContainer);
+            return getRESTfulWSInjectionClasses(moduleContainer);
         } catch (UnableToAdaptException e) {
             return Collections.<String> emptyList();
         }
@@ -64,42 +64,40 @@ public class ResteasyInjectionClassListCollaborator implements WebAppInjectionCl
         return false;
     }
 
-    private static final Set<String> JAXRS_INTERFACE_NAMES;
+    private static final Set<String> RESTFUL_WS_INTERFACE_NAMES;
     static {
-        JAXRS_INTERFACE_NAMES = new HashSet<String>();
-        JAXRS_INTERFACE_NAMES.add("javax.ws.rs.ext.MessageBodyWriter");
-        JAXRS_INTERFACE_NAMES.add("javax.ws.rs.ext.MessageBodyReader");
-        JAXRS_INTERFACE_NAMES.add("javax.ws.rs.ext.ExceptionMapper");
-        JAXRS_INTERFACE_NAMES.add("javax.ws.rs.ext.ContextResolver");
-        JAXRS_INTERFACE_NAMES.add("javax.ws.rs.ext.ReaderInterceptor");
-        JAXRS_INTERFACE_NAMES.add("javax.ws.rs.ext.WriterInterceptor");
-        JAXRS_INTERFACE_NAMES.add("javax.ws.rs.ext.ParamConverterProvider");
+        RESTFUL_WS_INTERFACE_NAMES = new HashSet<String>();
+        RESTFUL_WS_INTERFACE_NAMES.add("javax.ws.rs.ext.MessageBodyWriter");
+        RESTFUL_WS_INTERFACE_NAMES.add("javax.ws.rs.ext.MessageBodyReader");
+        RESTFUL_WS_INTERFACE_NAMES.add("javax.ws.rs.ext.ExceptionMapper");
+        RESTFUL_WS_INTERFACE_NAMES.add("javax.ws.rs.ext.ContextResolver");
+        RESTFUL_WS_INTERFACE_NAMES.add("javax.ws.rs.ext.ReaderInterceptor");
+        RESTFUL_WS_INTERFACE_NAMES.add("javax.ws.rs.ext.WriterInterceptor");
+        RESTFUL_WS_INTERFACE_NAMES.add("javax.ws.rs.ext.ParamConverterProvider");
 
-        JAXRS_INTERFACE_NAMES.add("javax.ws.rs.container.ContainerRequestFilter");
-        JAXRS_INTERFACE_NAMES.add("javax.ws.rs.container.ContainerResponseFilter");
-        JAXRS_INTERFACE_NAMES.add("javax.ws.rs.container.DynamicFeature");
+        RESTFUL_WS_INTERFACE_NAMES.add("javax.ws.rs.container.ContainerRequestFilter");
+        RESTFUL_WS_INTERFACE_NAMES.add("javax.ws.rs.container.ContainerResponseFilter");
+        RESTFUL_WS_INTERFACE_NAMES.add("javax.ws.rs.container.DynamicFeature");
 
-        JAXRS_INTERFACE_NAMES.add("org.apache.cxf.jaxrs.ext.ContextResolver");
-
-        JAXRS_INTERFACE_NAMES.add("javax.ws.rs.core.Application");
+        RESTFUL_WS_INTERFACE_NAMES.add("org.apache.cxf.jaxrs.ext.ContextResolver");
     }
 
-    private static final Set<String> JAXRS_ABSTRACT_CLASS_NAMES;
+    private static final Set<String> RESTFUL_WS_ABSTRACT_CLASS_NAMES;
     static {
-        JAXRS_ABSTRACT_CLASS_NAMES = new HashSet<String>();
-        JAXRS_ABSTRACT_CLASS_NAMES.add("javax.ws.rs.core.Application");
+        RESTFUL_WS_ABSTRACT_CLASS_NAMES = new HashSet<String>();
+        RESTFUL_WS_ABSTRACT_CLASS_NAMES.add("javax.ws.rs.core.Application");
     }
 
     /**
-     * Answer the JAX-RS injection classes for a web module.
+     * Answer the RESTful WS injection classes for a web module.
      *
      * @param moduleContainer The web module container in which to
-     *     locate JAX-RS injection classes
+     *     locate RESTful WS injection classes
      *
-     * @return The list of JAX-RS injection classes of the
+     * @return The list of RESTful WS injection classes of the
      *     web module.
      */
-    private static List<String> getJaxRsInjectionClasses(Container moduleContainer) {
+    private static List<String> getRESTfulWSInjectionClasses(Container moduleContainer) {
         WebAnnotations webAnnotations;
         AnnotationTargets_Targets annotationTargets;
         try {
@@ -116,10 +114,10 @@ public class ResteasyInjectionClassListCollaborator implements WebAppInjectionCl
         candidateClassNames.addAll( annotationTargets.getAllInheritedAnnotatedClasses(Path.class.getName()) );
         candidateClassNames.addAll( annotationTargets.getAllInheritedAnnotatedClasses(ApplicationPath.class.getName()) );
 
-        for ( String interfaceName : JAXRS_INTERFACE_NAMES) {
+        for ( String interfaceName : RESTFUL_WS_INTERFACE_NAMES) {
             candidateClassNames.addAll( annotationTargets.getAllImplementorsOf(interfaceName) );
         }
-        for ( String abstractClassName : JAXRS_ABSTRACT_CLASS_NAMES ) {
+        for ( String abstractClassName : RESTFUL_WS_ABSTRACT_CLASS_NAMES ) {
             candidateClassNames.addAll( annotationTargets.getSubclassNames(abstractClassName) );
         }
 

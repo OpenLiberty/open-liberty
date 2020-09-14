@@ -36,6 +36,12 @@
     snapshotUrl       = ${fileuri;${build}/release}; \
     local             = ${build}/local
 
+fetch.oss.source.repository: \
+  aQute.bnd.repository.maven.provider.MavenBndRepository; \
+    name              = RemoteSource; \
+    releaseUrl        = https://repo.maven.apache.org/maven2/; \
+    index             = ${build}/oss_source_dependencies.maven
+
 fetch.oss.repository: \
   aQute.bnd.repository.maven.provider.MavenBndRepository; \
     name              = RemotePublic; \
@@ -54,13 +60,15 @@ fetch.ibm.java.repository:
 
 push.ibm.repository:
 
--plugin.3.RemotePublic:  ${fetch.oss.repository}
+-plugin.3.RemoteSource:  ${fetch.oss.source.repository}
 
--plugin.4.RemoteIBM:     ${fetch.oss.ibm.repository}
+-plugin.4.RemotePublic:  ${fetch.oss.repository}
 
--plugin.5.RemoteIBMJava: ${fetch.ibm.java.repository}
+-plugin.5.RemoteIBM:     ${fetch.oss.ibm.repository}
 
--plugin.6.RemotePublish: ${push.ibm.repository}
+-plugin.6.RemoteIBMJava: ${fetch.ibm.java.repository}
+
+-plugin.7.RemotePublish: ${push.ibm.repository}
 
 -releaserepo: Release
 -baselinerepo: Release

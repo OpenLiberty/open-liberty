@@ -1,0 +1,71 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/JAXBLocalizationResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+add_namespace_resolvers=N\u00e9vt\u00e9r felold\u00f3k hozz\u00e1ad\u00e1sa
+
+create_descriptors=le\u00edr\u00f3k l\u00e9trehoz\u00e1sa
+
+create_mappings=Lek\u00e9pez\u00e9sek hozz\u00e1ad\u00e1sa a(z) {0} le\u00edr\u00f3hoz
+
+error=Hiba: 
+
+generate_files=Telep\u00edt\u00e9si XML \u00e9s munkamenet konfigur\u00e1ci\u00f3 \u00edr\u00e1sa
+
+generate_source=Megval\u00f3s\u00edt\u00e1si oszt\u00e1lyok el\u0151\u00e1ll\u00edt\u00e1sa
+
+impl_package_missing=Megval\u00f3s\u00edt\u00e1si oszt\u00e1ly csomagneve hi\u00e1nyzik
+
+io_exception_error=Hiba: Nem v\u00e1rt IOException
+
+malformed_url_error=Hiba: Nem v\u00e1rt MalformedURLException
+
+missing_customization=Bemeneti szem\u00e9lyre szab\u00e1si f\u00e1jl hi\u00e1nyzik
+
+missing_output_dir=TopLink kimeneti k\u00f6nyvt\u00e1rn\u00e9v hi\u00e1nyzik
+
+missing_project_dir=TopLink munkater\u00fclet projekt k\u00f6nyvt\u00e1rn\u00e9v hi\u00e1nyzik
+
+missing_schema_file=Bemeneti s\u00e9maf\u00e1jl hi\u00e1nyzik
+
+missing_src_dir=Forr\u00e1s kimeneti k\u00f6nyvt\u00e1rn\u00e9v hi\u00e1nyzik
+
+missing_target_package=C\u00e9l csomagn\u00e9v hi\u00e1nyzik
+
+read_customization=Szem\u00e9lyre szab\u00e1si f\u00e1jl olvas\u00e1sa
+
+setup_inheritance=\u00d6r\u00f6kl\u00e9s be\u00e1ll\u00edt\u00e1sa
+
+start_mw_project=Lek\u00e9pez\u00e9si munkater\u00fclet projekt l\u00e9trehoz\u00e1sa
+
+start_orajaxb=orajaxb megh\u00edv\u00e1sa
+
+start_toplink=TopLink el\u0151\u00e1ll\u00edt\u00e1s megh\u00edv\u00e1sa
+
+version=V\u00e1ltozat: 
+

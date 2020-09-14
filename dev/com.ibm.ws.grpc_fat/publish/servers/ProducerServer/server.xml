@@ -10,11 +10,12 @@
 		<feature>grpc-1.0</feature>
 		<feature>grpcClient-1.0</feature>
 		<feature>mpRestClient-1.3</feature>
-		<feature>mpConfig-1.3</feature>
 		<feature>mpOpenAPI-1.1</feature>
 		<feature>componenttest-1.0</feature>
-				<feature>ssl-1.0</feature>
-	</featureManager>
+        <feature>mpMetrics-2.3</feature>
+    </featureManager>
+
+    <mpMetrics authentication = "false"/>
 	
 	<include location="../fatTestCommon.xml"/>
 	
@@ -32,7 +33,7 @@
 	<ssl id="defaultSSLConfig" trustDefaultCerts="true" />
 
 	<logging
-		traceSpecification="*=info=enabled:io.openliberty.grpc*=all:com.ibm.testapp.g3store*=all"
+		traceSpecification="*=info=enabled:io.openliberty.grpc*=all:com.ibm.testapp.g3store*=all:com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:HTTPChannel=all:TCPChannel=all:com.ibm.ws.http*=all"
 		maxFileSize="40" maxFiles="20" traceFormat="BASIC" />
 
 </server>

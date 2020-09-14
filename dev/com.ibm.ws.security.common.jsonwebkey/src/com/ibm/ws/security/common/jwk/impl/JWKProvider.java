@@ -12,6 +12,7 @@ package com.ibm.ws.security.common.jwk.impl;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.interfaces.ECPublicKey;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -22,6 +23,7 @@ import java.util.TimerTask;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.security.common.crypto.KeyAlgorithmChecker;
 import com.ibm.ws.security.common.jwk.constants.TraceConstants;
 import com.ibm.ws.security.common.jwk.interfaces.JWK;
 import com.ibm.ws.webcontainer.security.jwk.JSONWebKey;
@@ -52,6 +54,8 @@ public class JWKProvider {
     protected PrivateKey privateKey = null;
 
     protected String publicKeyKid = null;
+
+    private KeyAlgorithmChecker keyAlgChecker = new KeyAlgorithmChecker();
 
     protected JWKProvider() {
         this(DEFAULT_KEY_SIZE, RS256, DEFAULT_ROTATION_TIME);
@@ -129,8 +133,7 @@ public class JWKProvider {
         JWK jwk = null;
         if (isValidJwkAlgorithm(alg)) {
             if (publicKey != null && privateKey != null) {
-                jwk = Jose4jRsaJWK.getInstance(alg, use, publicKey, privateKey, publicKeyKid);
-                jwk.generateKey();
+                jwk = generateJwkForValidAlgorithmWithExistingKeys(alg, size, publicKey, privateKey);
             } else {
                 jwk = generateJwkForValidAlgorithm(alg, size);
             }
@@ -139,28 +142,44 @@ public class JWKProvider {
     }
 
     boolean isValidJwkAlgorithm(String alg) {
-        if (alg == null) {
-            return false;
-        }
-        return alg.matches("[RE]S[0-9]{3,}");
+        return keyAlgChecker.isRSAlgorithm(alg) || keyAlgChecker.isESAlgorithm(alg);
     }
 
-    JWK generateJwkForValidAlgorithm(String alg, int size) {
+    JWK generateJwkForValidAlgorithmWithExistingKeys(String alg, int size, PublicKey publicKey, PrivateKey privateKey) {
         JWK jwk = null;
-        if (isRsaAlgorithm(alg)) {
-            jwk = generateRsaJWK(alg, size);
-        } else if (isEcAlgorithm(alg)) {
-            jwk = generateEcJwk(alg);
+        if (keyAlgChecker.isRSAlgorithm(alg)) {
+            jwk = generateRsaJwkWithExistingKeys(alg, publicKey, privateKey);
+        } else if (keyAlgChecker.isESAlgorithm(alg)) {
+            jwk = generateEcJwkWithExistingKeys(alg, publicKey, privateKey);
+        }
+        if (jwk != null) {
+            jwk.generateKey();
         }
         return jwk;
     }
 
-    boolean isRsaAlgorithm(String alg) {
-        return alg.matches("RS[0-9]{3,}");
+    JWK generateRsaJwkWithExistingKeys(String alg, PublicKey publicKey, PrivateKey privateKey) {
+        return Jose4jRsaJWK.getInstance(alg, use, publicKey, privateKey, publicKeyKid);
     }
 
-    boolean isEcAlgorithm(String alg) {
-        return alg.matches("ES[0-9]{3,}");
+    JWK generateEcJwkWithExistingKeys(String alg, PublicKey publicKey, PrivateKey privateKey) {
+        Jose4jEllipticCurveJWK jwk = null;
+        if (publicKey instanceof ECPublicKey) {
+            jwk = Jose4jEllipticCurveJWK.getInstance((ECPublicKey) publicKey, alg, null);
+            jwk.setPrivateKey(privateKey);
+            jwk.setKeyId(publicKeyKid);
+        }
+        return jwk;
+    }
+
+    JWK generateJwkForValidAlgorithm(String alg, int size) {
+        JWK jwk = null;
+        if (keyAlgChecker.isRSAlgorithm(alg)) {
+            jwk = generateRsaJWK(alg, size);
+        } else if (keyAlgChecker.isESAlgorithm(alg)) {
+            jwk = generateEcJwk(alg);
+        }
+        return jwk;
     }
 
     protected JWK generateRsaJWK(String alg, int size) {

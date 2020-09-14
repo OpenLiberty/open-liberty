@@ -15,6 +15,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 class StringUtils {
 
     /**
@@ -55,6 +57,7 @@ class StringUtils {
      * @param value
      * @return
      */
+    @Trivial
     String escapeValue(String value) {
         int start = 0;
         int pos = getNextLocation(start, value);
@@ -76,6 +79,7 @@ class StringUtils {
     /*
      * Convert evaluated attribute value into a String.
      */
+    @Trivial
     String convertToString(Object value) {
         if (value == null) {
             return null;

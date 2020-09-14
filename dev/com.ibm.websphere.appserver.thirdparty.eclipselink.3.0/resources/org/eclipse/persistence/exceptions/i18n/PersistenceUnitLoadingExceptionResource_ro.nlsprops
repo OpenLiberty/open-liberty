@@ -1,0 +1,67 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/PersistenceUnitLoadingExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+30001=A fost aruncat\u0103 o excep\u0163ie la \u00eencercarea de \u00eenc\u0103rcare a unit\u0103\u0163ii de persisten\u0163\u0103 pentru directorul: {0}
+
+30002=A fost aruncat\u0103 o excep\u0163ie la \u00eencercarea de \u00eenc\u0103rcare a unit\u0103\u0163ii de persisten\u0163\u0103 pentru fi\u015fierul jar: {0}
+
+30003=A fost aruncat\u0103 o excep\u0163ie \u00een timpul proces\u0103rii unit\u0103\u0163ii de persisten\u0163\u0103 la URL: {0}
+
+30004=A fost aruncat\u0103 o excep\u0163ie \u00een timpul proces\u0103rii persistence.xml din URL: {0}
+
+30005=A fost aruncat\u0103 o excep\u0163ie \u00een timpul c\u0103ut\u0103rii arhivelor de presisten\u0163\u0103 cu ClassLoader: {0}
+
+30006=A fost aruncat\u0103 o excep\u0163ie \u00een timpul c\u0103ut\u0103rii entit\u0103\u0163ilor la URL: {0}
+
+30007=A fost aruncat\u0103 o excep\u0163ie \u00een timpul \u00eenc\u0103rc\u0103rii clasei: {0} pentru a verifica dac\u0103 implementeaz\u0103 @Entity, @Embeddable sau @MappedSuperclass.
+
+30008=Calea de fi\u015fier returnat\u0103 a fost goal\u0103 sau nul\u0103
+
+30009=A fost aruncat\u0103 o excep\u0163ie \u00een timpul \u00eencerc\u0103rii de \u00eenc\u0103rcare a unit\u0103\u0163ii de persisten\u0163\u0103 la url: {0}
+
+30010=A fost aruncat\u0103 o excep\u0163ie \u00een timpul \u00eenc\u0103rc\u0103rii fi\u015fierului ORM XML: {0}
+
+30011=EclipseLink nu a putut ob\u0163ine clase din URL: {0}.  EclipseLink a \u00eencercat s\u0103 citeasc\u0103 acest URL ca \u015fi jarFile \u015fi ca \u015fi Director, \u015fi nu a putut fi procesat.
+
+30012=EclipseLink nu a putut ob\u0163ine informa\u0163iile unit\u0103\u0163ii de persisten\u0163\u0103 de la URL:{0}
+
+30013=A fost aruncat\u0103 o excep\u0163ie \u00een timpul \u00eencerc\u0103rii de construire a numelui unit\u0103\u0163ii de persisten\u0163\u0103 pentru unitatea de persisten\u0163\u0103 [{1}] de la URL: {0}.
+
+30014=Unitatea de persisten\u0163\u0103 specific\u0103 modul de validare ca \u015fi "CALLBACK", dar o ValidatorFactory de validare bean nu a putut fi ini\u0163ializat\u0103. V\u0103 rug\u0103m s\u0103 face\u0163i referire la excep\u0163ia imbricat\u0103 pentru detalii. V\u0103 rug\u0103m s\u0103 v\u0103 asigura\u0163i c\u0103 API de validare bean \u015fi Furnizorul de validare bean sunt disponibile \u00een calea de clase.
+
+30015=A fost aruncat\u0103 o excep\u0163ie \u00een timpul \u00eenc\u0103rc\u0103rii clasei grupului de validare: {0}.
+
+30016=Numele de sesiune {0} nu poate fi utilizat de unitatea de persisten\u0163\u0103 {1}, este deja utilizat de unitatea de persisten\u0163\u0103 {2}
+
+30017=Unitatea de persisten\u0163\u0103 {0} este definit\u0103 at\u00e2t \u00een URL:{1} c\u00e2t \u015fi \u00een URL:{2}. Nu pot exista mai multe unit\u0103\u0163i de persisten\u0163\u0103 cu acela\u015fi nume \u00eenc\u0103rcate de acela\u015fi classloader.
+
+30018=Excep\u0163ie: {1} a survenit \u00een timpul \u00eencerc\u0103rii de instan\u0163iere a ArchiveFactory specificat de utilizator: {0}.
+
+30019=Apela\u0163i refreshMetadata \u00eentr-o EntityManagerFactory pentru unitatea de persisten\u0163\u0103 {0}.  Metadatele nu pot fi re\u00eemprosp\u0103tate deoarece aceast\u0103 EntityManagerFactory a fost creat\u0103 dintr-un obiect sesiune derivat dintr-o unitate de persisten\u0163\u0103.
+

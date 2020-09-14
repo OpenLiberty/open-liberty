@@ -45,6 +45,12 @@
 	<jwtBuilder
 		id="specificClaims_someNotSet"
 		claims="uid, cn, sn, yourClaim" />
+		
+	<jwtBuilder id="AMRTestValid" amrInclude="amrTest" />
+	
+	<jwtBuilder id="AMRTestInvalid" amrInclude="random" />
+	
+	<jwtBuilder id="AMRTestEmpty" amrInclude="" />
 
 	<jwtBuilder
 		id="key_x509"
@@ -291,5 +297,165 @@
 		jwkEnabled="true"
 		signatureAlgorithm="HS512"
 		sharedKey="someKeyvalue" />										
+
+
+	<jwtBuilder
+		id="key_sigAlg_RS256_badRSKeyAlias"
+		signatureAlgorithm="RS256"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="rs384" />
+		
+	<jwtBuilder
+		id="key_sigAlg_RS256_badESKeyAlias"
+		signatureAlgorithm="RS256"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="es256" />
+		
+	<jwtBuilder
+		id="key_sigAlg_RS256_badPSKeyAlias"
+		signatureAlgorithm="RS256"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="ps256" />
+		
+	<jwtBuilder
+		id="key_sigAlg_RS384_badRSKeyAlias"
+		signatureAlgorithm="RS384"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="rs512" />
+
+	<jwtBuilder
+		id="key_sigAlg_RS384_badESKeyAlias"
+		signatureAlgorithm="RS384"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="es384" />
+
+	<jwtBuilder
+		id="key_sigAlg_RS384_badPSKeyAlias"
+		signatureAlgorithm="RS384"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="ps384" />
+
+	<jwtBuilder
+		id="key_sigAlg_RS512_badRSKeyAlias"
+		signatureAlgorithm="RS512"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="rs256" />
+
+	<jwtBuilder
+		id="key_sigAlg_RS512_badESKeyAlias"
+		signatureAlgorithm="RS512"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="es512" />
+
+	<jwtBuilder
+		id="key_sigAlg_RS512_badPSKeyAlias"
+		signatureAlgorithm="RS512"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="ps512" />
+
+	<jwtBuilder
+		id="key_sigAlg_ES256_badESKeyAlias"
+		signatureAlgorithm="ES256"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="es384" />
+
+	<jwtBuilder
+		id="key_sigAlg_ES256_badRSKeyAlias"
+		signatureAlgorithm="ES256"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="rs256" />
+	<jwtBuilder
+		id="key_sigAlg_ES256_badPSKeyAlias"
+		signatureAlgorithm="ES256"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="ps256" />
+		
+	<jwtBuilder
+		id="key_sigAlg_ES384_badESKeyAlias"
+		signatureAlgorithm="ES384"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="es512" />
+		
+	<jwtBuilder
+		id="key_sigAlg_ES384_badRSKeyAlias"
+		signatureAlgorithm="ES384"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="rs384" />
+		
+	<jwtBuilder
+		id="key_sigAlg_ES384_badPSKeyAlias"
+		signatureAlgorithm="ES384"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="ps384" />
+
+	<jwtBuilder
+		id="key_sigAlg_ES512_badESKeyAlias"
+		signatureAlgorithm="ES512"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="es256" />
+
+	<jwtBuilder
+		id="key_sigAlg_ES512_badRSKeyAlias"
+		signatureAlgorithm="ES512"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="rs512" />
+
+	<jwtBuilder
+		id="key_sigAlg_ES512_badPSKeyAlias"
+		signatureAlgorithm="ES512"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="ps512" />
+
+	<jwtBuilder
+		id="key_sigAlg_PS256_badPSKeyAlias"
+		signatureAlgorithm="PS256"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="ps384" />
+		
+	<jwtBuilder
+		id="key_sigAlg_PS256_badESKeyAlias"
+		signatureAlgorithm="PS256"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="es256" />
+		
+	<jwtBuilder
+		id="key_sigAlg_PS256_badRSKeyAlias"
+		signatureAlgorithm="PS256"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="rs256" />
+		
+	<jwtBuilder
+		id="key_sigAlg_PS384_badPSKeyAlias"
+		signatureAlgorithm="PS384"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="ps512" />
+
+	<jwtBuilder
+		id="key_sigAlg_PS384_badESKeyAlias"
+		signatureAlgorithm="PS384"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="es384" />
+
+	<jwtBuilder
+		id="key_sigAlg_PS384_badRSKeyAlias"
+		signatureAlgorithm="PS384"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="rs384" />
+
+	<jwtBuilder
+		id="key_sigAlg_PS512_badPSKeyAlias"
+		signatureAlgorithm="PS512"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="ps256" />
+	<jwtBuilder
+		id="key_sigAlg_PS512_badESKeyAlias"
+		signatureAlgorithm="PS512"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="es512" />
+	<jwtBuilder
+		id="key_sigAlg_PS512_badRSKeyAlias"
+		signatureAlgorithm="PS512"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="rs512" />
 
 </server>

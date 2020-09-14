@@ -10,8 +10,10 @@
  *******************************************************************************/
 package com.ibm.testapp.g3store.restProducer.client;
 
+import static com.ibm.ws.fat.grpc.monitoring.GrpcMetricsTestUtils.getMetric;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -67,13 +69,15 @@ public class ProducerEndpointFATServlet extends FATServlet {
         return AccessController.doPrivileged((PrivilegedAction<String>) () -> System.getProperty(key));
     }
 
+    private static String hostname = getSysProp("testing.ProducerServer.hostname");
+
     private RestClientBuilder builder;
 
     @Override
     public void init() throws ServletException {
 
         // The baseURL URL of the remote endpoint
-        String baseUrlStr = "http://" + "localhost:" + getSysProp("bvt.prop.HTTP_secondary") + "/StoreProducerApp/v1P/";
+        String baseUrlStr = "http://" + hostname + ":" + getSysProp("bvt.prop.HTTP_secondary") + "/StoreProducerApp/v1P/";
 
         LOG.info("baseUrl = " + baseUrlStr);
 
@@ -233,7 +237,7 @@ public class ProducerEndpointFATServlet extends FATServlet {
 
         } finally {
             LOG.info(m + " ------------------------------------------------------------");
-            LOG.info(m + " ----- invoking Producer rest client to delete all apps to test grpc server streaming ----- ");
+            LOG.info(m + " ----- invoking Producer rest client to delete all apps to test gRPC server streaming ----- ");
 
             // call Remote REST service
             Response r = service.deleteAllApps();
@@ -416,6 +420,34 @@ public class ProducerEndpointFATServlet extends FATServlet {
         LOG.info(m + " ----------------------------------------------------------------");
         LOG.info(m + " ------------ testClientStreaming--START -----------------------");
 
+        startlientStreaming(req, resp);
+
+        LOG.info(m + " ------------ testClientStreaming--FINISH -----------------------");
+        LOG.info(m + " ----------------------------------------------------------------");
+    }
+
+    @Test
+    public void testClientStreamingMetrics(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+
+        String m = "testClientStreamingMetrics";
+        LOG.info(m + " ----------------------------------------------------------------");
+        LOG.info(m + " ------------ testClientStreamingMetrics--START -----------------------");
+
+        startlientStreaming(req, resp);
+
+        // retrieve the metrics
+        int httpPort = Integer.parseInt(getSysProp("bvt.prop.HTTP_default"));
+        String metricValue = getMetric("localhost", httpPort, "/metrics/vendor/grpc.server.receivedMessages.total");
+        if (metricValue == null || Integer.parseInt(metricValue) < 200) {
+            fail(String.format("Incorrect metric value [%s]. Expected [%s], got [%s]", "grpc.server.receivedMessages.total", ">=200", metricValue));
+        }
+        LOG.info(m + " ------------ testClientStreamingMetrics--FINISH -----------------------");
+        LOG.info(m + " ----------------------------------------------------------------");
+    }
+
+    private void startlientStreaming(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        String m = "startlientStreaming";
+
         // before coming here, code in ProducerGrpcServiceClient will have made the GRPC calls
         // to ManagedChannelBuilder.forAddress and newStub to setup the RPC code for client side usage
 
@@ -423,8 +455,8 @@ public class ProducerEndpointFATServlet extends FATServlet {
         LOG.info("testClientStreamApp: service = " + service.toString());
         try {
             // call Remote REST service
-            // tell the rest client to send data to the grpc client.  grpc client will then make
-            // grpc calls to the grpc server.
+            // tell the rest client to send data to the gRPC client.  gRPC client will then make
+            // gRPC calls to the gRPC server.
             LOG.info(m + " ------------------------------------------------------------");
             LOG.info(m + " ----- invoking producer REST client to perform clientStream test: clientStreamApp()");
 
@@ -435,14 +467,23 @@ public class ProducerEndpointFATServlet extends FATServlet {
             LOG.info(m + ": client stream entity/result: " + result);
             boolean isValidResponse = result.contains("success");
             assertTrue(isValidResponse);
-
         } catch (Exception e) {
             e.getMessage();
             e.printStackTrace();
-        } finally {
-            LOG.info(m + " ------------ testClientStreaming--FINISH -----------------------");
-            LOG.info(m + " ----------------------------------------------------------------");
         }
+    }
+
+    @Test
+    public void testServerStreaming(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+
+        String m = "testServerStreaming";
+        LOG.info(m + " ----------------------------------------------------------------");
+        LOG.info(m + " ------------ testServerStreaming--START -----------------------");
+
+        startServerStreaming(req, resp);
+
+        LOG.info(m + " ------------ testServerStreaming--FINISH -----------------------");
+        LOG.info(m + " ----------------------------------------------------------------");
     }
 
     /**
@@ -451,11 +492,28 @@ public class ProducerEndpointFATServlet extends FATServlet {
      * @throws Exception
      */
     @Test
-    public void testServerStreaming(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    public void testServerStreamingMetrics(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
-        String m = "testServerStreaming";
+        String m = "testServerStreamingMetrics";
         LOG.info(m + " ----------------------------------------------------------------");
-        LOG.info(m + " ------------ testServerStreaming--START -----------------------");
+        LOG.info(m + " ------------ testServerStreamingMetrics--START -----------------------");
+
+        startServerStreaming(req, resp);
+
+        // retrieve the metrics
+        int httpPort = Integer.parseInt(getSysProp("bvt.prop.HTTP_secondary"));
+        String metricValue = getMetric("localhost", httpPort, "/metrics/vendor/grpc.client.receivedMessages.total");
+        if (metricValue == null || Integer.parseInt(metricValue) < 200) {
+            fail(String.format("Incorrect metric value [%s]. Expected [%s], got [%s]", "grpc.client.receivedMessages.total", ">=200", metricValue));
+        }
+
+        LOG.info(m + " ------------ testServerStreamingMetrics--FINISH -----------------------");
+        LOG.info(m + " ----------------------------------------------------------------");
+    }
+
+    private void startServerStreaming(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+
+        String m = "startServerStreaming";
 
         // before coming here, code in ProducerGrpcServiceClient will have made the GRPC calls
         // to ManagedChannelBuilder.forAddress and newStub to setup the RPC code for client side usage
@@ -464,8 +522,8 @@ public class ProducerEndpointFATServlet extends FATServlet {
         LOG.info("testServerStreamApp: service = " + service.toString());
         try {
             // call Remote REST service
-            // tell the rest client to send data to the grpc client.  grpc client will then make
-            // grpc calls to the grpc server.
+            // tell the rest client to send data to the gRPC client.  gRPC client will then make
+            // gRPC calls to the gRPC server.
             LOG.info(m + " ------------------------------------------------------------");
             LOG.info(m + " ----- invoking producer REST client to perform serverStream test: serverStreamApp()");
 
@@ -480,8 +538,85 @@ public class ProducerEndpointFATServlet extends FATServlet {
         } catch (Exception e) {
             e.getMessage();
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * @param req
+     * @param resp
+     * @throws Exception
+     */
+    @Test
+    public void testTwoWayStreaming(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+
+        String m = "testTwoWayStreaming";
+        LOG.info(m + " ----------------------------------------------------------------");
+        LOG.info(m + " ------------ testTwoWayStreaming--START -----------------------");
+
+        // before coming here, code in ProducerGrpcServiceClient will have made the GRPC calls
+        // to ManagedChannelBuilder.forAddress and newStub to setup the RPC code for client side usage
+
+        ProducerServiceRestClient service = builder.build(ProducerServiceRestClient.class);
+        LOG.info("testTwoWayStream: service = " + service.toString());
+        try {
+            // call Remote REST service
+            // tell the rest client to send data to the gRPC client.  gRPC client will then make
+            // gRPC calls to the gRPC server.
+            LOG.info(m + " ------------------------------------------------------------");
+            LOG.info(m + " ----- invoking producer REST client to perform TwoWayStream test: twoWayStreamApp(false)");
+            Response r = service.twoWayStreamApp(false);
+
+            // check response
+            String result = r.readEntity(String.class);
+            LOG.info(m + ": client stream entity/result: " + result);
+            boolean isValidResponse = result.contains("success");
+            assertTrue(isValidResponse);
+
+        } catch (Exception e) {
+            e.getMessage();
+            e.printStackTrace();
         } finally {
-            LOG.info(m + " ------------ testServerStreaming--FINISH -----------------------");
+            LOG.info(m + " ------------ testTwoWayStreaming--FINISH -----------------------");
+            LOG.info(m + " ----------------------------------------------------------------");
+        }
+    }
+
+    /**
+     * @param req
+     * @param resp
+     * @throws Exception
+     */
+    @Test
+    public void testTwoWayStreamingAsyncThread(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+
+        String m = "testTwoWayStreamingAsyncThread";
+        LOG.info(m + " ----------------------------------------------------------------");
+        LOG.info(m + " ------------ testTwoWayStreamingAsyncThread--START -------------");
+
+        // before coming here, code in ProducerGrpcServiceClient will have made the GRPC calls
+        // to ManagedChannelBuilder.forAddress and newStub to setup the RPC code for client side usage
+
+        ProducerServiceRestClient service = builder.build(ProducerServiceRestClient.class);
+        LOG.info("testTwoWayStreamAsyncThread: service = " + service.toString());
+        try {
+            // call Remote REST service
+            // tell the rest client to send data to the gRPC client.  gRPC client will then make
+            // gRPC calls to the gRPC server.
+            LOG.info(m + " ------------------------------------------------------------");
+            LOG.info(m + " ----- invoking producer REST client to perform TwoWayStream test: twoWayStreamApp(true)");
+            Response r = service.twoWayStreamApp(true);
+
+            // check response
+            String result = r.readEntity(String.class);
+            LOG.info(m + ": client stream entity/result: " + result);
+            boolean isValidResponse = result.contains("success");
+            assertTrue(isValidResponse);
+
+        } catch (Exception e) {
+            e.getMessage();
+            e.printStackTrace();
+        } finally {
+            LOG.info(m + " ------------ testTwoWayStreamingAsyncThread--FINISH ------------");
             LOG.info(m + " ----------------------------------------------------------------");
         }
     }

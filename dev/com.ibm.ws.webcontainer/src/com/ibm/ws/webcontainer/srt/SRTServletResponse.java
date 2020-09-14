@@ -2369,7 +2369,13 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
     }
 // Added by V8 merge:
     private void setCommonHeaders() {
+        String methodName = "setCommonHeaders";
         String xPoweredByValue = null;
+
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+            logger.logp(Level.FINE, CLASS_NAME, methodName, "DISABLE_X_POWERED_BY [ " + WCCustomProperties.DISABLE_X_POWERED_BY + " ]");
+        }
+
         if (!WCCustomProperties.DISABLE_X_POWERED_BY){
             if (WCCustomProperties.X_POWERED_BY==null){
                 xPoweredByValue = getXPoweredbyHeader();

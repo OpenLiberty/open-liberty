@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,15 +10,23 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.tai;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
+import com.ibm.ws.security.common.http.AuthUtils;
 import com.ibm.ws.security.mp.jwt.MicroProfileJwtConfig;
 import com.ibm.ws.security.mp.jwt.TraceConstants;
+import com.ibm.ws.security.mp.jwt.config.MpConstants;
 import com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException;
 import com.ibm.ws.security.mp.jwt.impl.utils.MicroProfileJwtTaiRequest;
 
@@ -39,6 +47,16 @@ public class TAIRequestHelper {
     private static final String ACCESS_TOKEN = "access_token";
     private static final String AUTHN_TYPE = "MP-JWT";
     public static final String KEY_AUTHORIZATION_HEADER_SCHEME = "authorizationHeaderScheme";
+
+    private final AuthUtils authUtils = new AuthUtils();
+
+    private Map<String, String> mpConfigProps = null;
+
+    public void setMpConfigProperties(Map<String, String> mpConfigProps) {
+        if (mpConfigProps != null) {
+            this.mpConfigProps = new HashMap<String, String>(mpConfigProps);
+        }
+    }
 
     /**
      * Creates a new {@link MicroProfileJwtTaiRequest} object and sets the object as an attribute in the request object provided.
@@ -61,20 +79,15 @@ public class TAIRequestHelper {
 
     /**
      * Returns whether the provided request should be handled by the microprofile jwt TAI, based on the request path and
-     * information
-     * in the {@link McroProfileJwtTaiRequest} object provided.
-     *
-     * @param request
-     * @param mpJwtTaiRequest
-     * @return
+     * information in the {@link McroProfileJwtTaiRequest} object provided.
      */
-    public boolean requestShouldBeHandledByTAI(HttpServletRequest request, MicroProfileJwtTaiRequest mpJwtTaiRequest, boolean defaultConfig) {
+    public boolean requestShouldBeHandledByTAI(HttpServletRequest request, MicroProfileJwtTaiRequest mpJwtTaiRequest) {
         String methodName = "requestShouldBeHandledByTAI";
         if (tc.isDebugEnabled()) {
             Tr.entry(tc, methodName, request, mpJwtTaiRequest);
         }
 
-        mpJwtTaiRequest = setTaiRequestConfigInfo(request, mpJwtTaiRequest, defaultConfig);
+        mpJwtTaiRequest = setTaiRequestConfigInfo(request, mpJwtTaiRequest, isNewMpJwtAndMpConfig());
         boolean result = false;
         boolean ignoreAppAuthMethod = true;
 
@@ -104,6 +117,14 @@ public class TAIRequestHelper {
         }
 
         return result;
+    }
+
+    private boolean isNewMpJwtAndMpConfig() {
+        boolean newMpjwtAndMpConfig = false;
+        if (mpConfigProps != null && !mpConfigProps.isEmpty()) {
+            newMpjwtAndMpConfig = true;
+        }
+        return newMpjwtAndMpConfig;
     }
 
     // if we don't have a valid bearer header, and jwtsso is active, we should defer.
@@ -157,7 +178,7 @@ public class TAIRequestHelper {
         if (tc.isDebugEnabled()) {
             Tr.entry(tc, methodName, req, clientConfig);
         }
-        String token = getBearerTokenFromHeader(req);
+        String token = getBearerTokenFromHeader(req, clientConfig);
         if (token == null) {
             token = getBearerTokenFromParameter(req);
         }
@@ -167,24 +188,97 @@ public class TAIRequestHelper {
         return token;
     }
 
-    String getBearerTokenFromHeader(HttpServletRequest req) {
+    String getBearerTokenFromHeader(HttpServletRequest req, MicroProfileJwtConfig clientConfig) {
         String methodName = "getBearerTokenFromHeader";
         if (tc.isDebugEnabled()) {
             Tr.entry(tc, methodName, req);
         }
-        String hdrValue = req.getHeader(Authorization_Header);
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "Authorization header=", hdrValue);
-        }
-        String bearerAuthzMethod = (String) req.getAttribute(KEY_AUTHORIZATION_HEADER_SCHEME);
-        if (hdrValue != null && hdrValue.startsWith(bearerAuthzMethod)) {
-            hdrValue = hdrValue.substring(bearerAuthzMethod.length());
-            hdrValue = hdrValue.replaceAll("\\s", "");
+        String token = null;
+        String tokenHeaderName = getTokenHeaderName(clientConfig);
+        if ("Cookie".equals(tokenHeaderName)) {
+            token = getTokenFromCookie(req, clientConfig);
+        } else {
+            token = getTokenFromHeader(tokenHeaderName, req);
         }
         if (tc.isDebugEnabled()) {
-            Tr.exit(tc, methodName, hdrValue);
+            Tr.exit(tc, methodName, token);
         }
-        return hdrValue;
+        return token;
+    }
+
+    String getTokenHeaderName(MicroProfileJwtConfig clientConfig) {
+        String serverConfigTokenHeader = clientConfig.getTokenHeader();
+        if (serverConfigTokenHeader != null) {
+            return serverConfigTokenHeader;
+        }
+        String defaultValue = Authorization_Header;
+        String tokenHeaderName = getValueFromMpConfigProps(MpConstants.TOKEN_HEADER, defaultValue);
+        if (!isSupportedTokenHeaderName(tokenHeaderName)) {
+            Tr.warning(tc, "MP_CONFIG_VALUE_NOT_SUPPORTED", new Object[] { tokenHeaderName, MpConstants.TOKEN_HEADER, getSupportedTokenHeaderNames(), defaultValue });
+            return defaultValue;
+        }
+        return tokenHeaderName;
+    }
+
+    String getValueFromMpConfigProps(String propName, String defaultValue) {
+        if (mpConfigProps == null) {
+            return defaultValue;
+        }
+        String mpConfigPropValue = mpConfigProps.get(propName);
+        if (mpConfigPropValue == null || mpConfigPropValue.isEmpty()) {
+            return defaultValue;
+        }
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Obtained " + propName + " from MP Config properties: [" + mpConfigPropValue + "]");
+        }
+        return mpConfigPropValue;
+    }
+
+    boolean isSupportedTokenHeaderName(String tokenHeader) {
+        List<String> supportedNames = getSupportedTokenHeaderNames();
+        return supportedNames.contains(tokenHeader);
+    }
+
+    List<String> getSupportedTokenHeaderNames() {
+        List<String> supportedNames = new ArrayList<String>();
+        supportedNames.add(Authorization_Header);
+        supportedNames.add("Cookie");
+        return supportedNames;
+    }
+
+    @Sensitive
+    String getTokenFromCookie(HttpServletRequest req, MicroProfileJwtConfig clientConfig) {
+        String tokenCookieName = getTokenCookieName(clientConfig);
+        Cookie[] cookies = req.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie != null && cookie.getName().equals(tokenCookieName)) {
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Found a " + tokenCookieName + " cookie as expected");
+                    }
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null;
+    }
+
+    String getTokenCookieName(MicroProfileJwtConfig clientConfig) {
+        String serverConfigCookieName = clientConfig.getCookieName();
+        if (serverConfigCookieName != null) {
+            return serverConfigCookieName;
+        }
+        return getValueFromMpConfigProps(MpConstants.TOKEN_COOKIE, "Bearer");
+    }
+
+    @Sensitive
+    String getTokenFromHeader(String tokenHeaderName, HttpServletRequest req) {
+        String hdrValue = req.getHeader(tokenHeaderName);
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, tokenHeaderName + " header null? ", (hdrValue == null));
+        }
+        String expectedHeaderScheme = (String) req.getAttribute(KEY_AUTHORIZATION_HEADER_SCHEME);
+        return authUtils.getBearerTokenFromHeader(hdrValue, expectedHeaderScheme);
     }
 
     String getBearerTokenFromParameter(HttpServletRequest req) {

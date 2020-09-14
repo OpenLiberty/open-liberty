@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,13 +12,14 @@
 package com.ibm.ws.security.jwt.internal;
 
 import java.security.Key;
-import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import javax.security.auth.Subject;
 
 import org.jose4j.lang.JoseException;
 import org.osgi.framework.ServiceReference;
@@ -35,6 +36,8 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.security.auth.WSSubject;
+import com.ibm.websphere.security.cred.WSCredential;
 import com.ibm.websphere.security.jwt.Builder;
 import com.ibm.websphere.security.jwt.Claims;
 import com.ibm.websphere.security.jwt.InvalidBuilderException;
@@ -43,6 +46,7 @@ import com.ibm.websphere.security.jwt.InvalidTokenException;
 import com.ibm.websphere.security.jwt.JwtException;
 import com.ibm.websphere.security.jwt.JwtToken;
 import com.ibm.websphere.security.jwt.KeyException;
+import com.ibm.ws.security.common.crypto.KeyAlgorithmChecker;
 import com.ibm.ws.security.jwt.config.JwtConfig;
 import com.ibm.ws.security.jwt.utils.Constants;
 import com.ibm.ws.security.jwt.utils.IssuerUtils;
@@ -73,6 +77,8 @@ public class BuilderImpl implements Builder {
     private String sharedKey;
     private Key privateKey;
     private String configId;
+
+    private final KeyAlgorithmChecker keyAlgChecker = new KeyAlgorithmChecker();
 
     private final static String DEFAULT_ID = "defaultJWT";
     private final static String KEY_JWT_SERVICE = "jwtConfig";
@@ -160,7 +166,15 @@ public class BuilderImpl implements Builder {
         if (jwtConfig.getSharedKey() != null) {
             sharedKey = jwtConfig.getSharedKey();
         }
-
+        
+        List<String> amrAttr = jwtConfig.getAMRAttributes();// getProperty(amrAttributes);
+        if (amrAttr != null) {
+            try {
+                checkAmrAttrInSubject(amrAttr);
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+            }
+        }
     }
 
     private JwtConfig getTheServiceConfig(String builderConfigId) {
@@ -425,7 +439,7 @@ public class BuilderImpl implements Builder {
             String err = Tr.formatMessage(tc, "JWT_INVALID_ALGORITHM_ERR", new Object[] { algorithm, getValidAlgorithmListForJavaSecurityKey() });
             throw new KeyException(err);
         }
-        if (!isValidKeyType(key)) {
+        if (!isValidKeyType(key, algorithm)) {
             String err = Tr.formatMessage(tc, "JWT_INVALID_KEY_ERR", new Object[] { algorithm, key });
             throw new KeyException(err);
         }
@@ -435,10 +449,7 @@ public class BuilderImpl implements Builder {
     }
 
     boolean isValidAlgorithmForJavaSecurityKey(String algorithm) {
-        if (algorithm == null || algorithm.isEmpty()) {
-            return false;
-        }
-        return algorithm.matches("[RE]S[0-9]{3,}");
+        return (keyAlgChecker.isRSAlgorithm(algorithm) || keyAlgChecker.isESAlgorithm(algorithm));
     }
 
     String getValidAlgorithmListForJavaSecurityKey() {
@@ -450,11 +461,11 @@ public class BuilderImpl implements Builder {
                 Constants.SIGNATURE_ALG_ES512;
     }
 
-    boolean isValidKeyType(Key key) {
-        if (key == null || !(key instanceof PrivateKey)) {
+    boolean isValidKeyType(Key key, String algorithm) {
+        if (key == null) {
             return false;
         }
-        return true;
+        return keyAlgChecker.isPrivateKeyValidType(key, algorithm);
     }
 
     // shared key for signing
@@ -479,10 +490,7 @@ public class BuilderImpl implements Builder {
     }
 
     boolean isValidAlgorithmForStringKey(String algorithm) {
-        if (algorithm == null || algorithm.isEmpty()) {
-            return false;
-        }
-        return algorithm.matches("HS[0-9]{3,}");
+        return keyAlgChecker.isHSAlgorithm(algorithm);
     }
 
     String getValidAlgorithmListForStringKey() {
@@ -847,6 +855,43 @@ public class BuilderImpl implements Builder {
             // JsonElement jsonElem = entry.getValue();
         }
         return this;
+    }
+    
+	/**
+	 * Checks the attributes provided exists in the subject, if so add it to the
+	 * claims as "amr" values
+	 *
+	 * @param amrAttr
+	 * @throws Exception
+	 */
+    private void checkAmrAttrInSubject(List<String> amrAttr) throws Exception {
+        Subject subj = WSSubject.getRunAsSubject();
+        List<Object> amrValues = new ArrayList<Object>();
+        if (subj != null) {
+            WSCredential wscred = getWSCredential(subj);
+            for (String attr : amrAttr) {
+                Object subjValue = wscred != null ? wscred.get(attr) : null;
+                if (subjValue != null) {
+                    amrValues.add(subjValue);
+                }
+            }
+        }
+        if (amrValues.size() > 0) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Builder Claims Key: amr: [" + amrValues + "]");
+            }
+            getClaims().put("amr", amrValues);
+        }
+    }
+
+    private WSCredential getWSCredential(Subject subject) {
+        WSCredential wsCredential = null;
+        Set<WSCredential> wsCredentials = subject.getPublicCredentials(WSCredential.class);
+        Iterator<WSCredential> wsCredentialsIterator = wsCredentials.iterator();
+        if (wsCredentialsIterator.hasNext()) {
+            wsCredential = wsCredentialsIterator.next();
+        }
+        return wsCredential;
     }
 
 }

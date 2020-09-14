@@ -1,9 +1,9 @@
 var messages = {
     WELCOME_SECTION: "Seção de boas-vindas",
     WELCOME_SECTION_CONTENT: "Conteúdo da seção de boas-vindas",
-    WELCOME_MESSAGE: "Bem-vindo aos ",
+    WELCOME_MESSAGE: "Bem-vindo ao ",
     WELCOME_IBM_OPEN_SOURCE: "Um projeto de software livre IBM",
-    WELCOME_LIGHTWEIGHT: "Uma estrutura aberta leve para a construção e execução de microsserviços Java nativos de nuvem rápidos e eficientes.",
+    WELCOME_LIGHTWEIGHT: "Uma estrutura aberta leve para o desenvolvimento e a execução de microsserviços Java nativos de nuvem rápidos e eficientes.",
     UFO: "UFO e feixe",
     CLOUDS: "Nuvens",
     LOGOS_SECTION: "Seção de logotipos",
@@ -25,8 +25,8 @@ var messages = {
     UPDATE_BANNER_SECTION: "Seção de atualização de banner",
     UPDATE_BANNER_SECTION_CONTENT: "Conteúdo da seção de atualização de banner",
     HEADER_UPDATE_AVAILABLE: "Atualização disponível: ",
-    HEADER_DOWNLOAD_LINK: "Clique para fazer download {0}", // Product name
-    HEADER_UPDATE_AVAILABLE_DOWNLOAD_LINK: "Atualização disponível. Clique para fazer download {0}", // Product name
+    HEADER_DOWNLOAD_LINK: "Clique para fazer o download do {0}", // Product name
+    HEADER_UPDATE_AVAILABLE_DOWNLOAD_LINK: "Atualização disponível. Clique para fazer o download do {0}", // Product name
     UPDATE_BANNER_CLOSE_BUTTON: "Fechar banner de atualização",
     CONTEXT_ROOT_NOT_FOUND: "Raiz de contexto não encontrada"
 };

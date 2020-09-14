@@ -44,12 +44,17 @@ public interface ConsumerServiceRestClient {
     public Response getAppInfo(@PathParam("appName") String appName) throws Exception;
 
     @GET
+    @Path("/appInfo_BadAuth/{appName}")
+    @ClientHeaderParam(name = "Authorization", value = "{getBadAuthValue}")
+    public Response getAppInfoBadAuth(@PathParam("appName") String appName) throws Exception;
+
+    @GET
     @Path("/priceQuery")
     public Response getPrices(@QueryParam("appName") List<String> appNames) throws Exception;
 
     @GET
-    @Path("/appNames")
-    public Response getAllAppNames() throws Exception;
+    @Path("/appNames/{testMethodName}")
+    public Response getAllAppNames(@PathParam("testMethodName") String testMethodName) throws Exception;
 
     @GET
     @Path("/appNames_CC")
@@ -57,6 +62,10 @@ public interface ConsumerServiceRestClient {
 
     default String getAuthValue() throws UnsupportedEncodingException {
         return ConsumerUtils.createBasicAuthHeaderValue("dev", "hello");
+    }
+
+    default String getBadAuthValue() throws UnsupportedEncodingException {
+        return ConsumerUtils.createBasicAuthHeaderValue("dev2", "hello2");
     }
 
 }

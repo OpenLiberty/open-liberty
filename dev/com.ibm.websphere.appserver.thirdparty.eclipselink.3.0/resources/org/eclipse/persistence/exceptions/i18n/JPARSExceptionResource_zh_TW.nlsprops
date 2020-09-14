@@ -1,0 +1,69 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/JPARSExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+61000=\u5728\u6301\u7e8c\u6027\u55ae\u5143 {2} \u4e2d\u627e\u4e0d\u5230 ID \u70ba {1} \u7684\u5be6\u9ad4\u985e\u578b {0}\u3002
+
+61001=\u93c8\u7d50\u6240\u53c3\u7167\u7684\u5be6\u9ad4\u4e0d\u5b58\u5728\uff0c\u5be6\u9ad4\u985e\u578b\u70ba {0}\uff0cID \u70ba {1}\u3002
+
+61002=\u914d\u7f6e\u7121\u6548\u3002
+
+61003=\u4ee5 PUT \u5efa\u7acb\u6301\u7e8c\u6027\u55ae\u5143 {1} \u4e2d\u7684\u5be6\u9ad4\u985e\u578b {0}\uff0c\u4f46\u7531\u65bc\u5e8f\u5217\u7522\u751f\u6216\u968e\u5c64\u5f0f\uff0c\u5be6\u9ad4\u4e0d\u662f\u7b49\u51aa\u7684\u3002
+
+61004=\u7121\u6cd5\u5f15\u5c0e\u6301\u7e8c\u6027\u74b0\u5883\u5b9a\u7fa9 {0}\u3002
+
+61005=\u91dd\u5c0d\u6301\u7e8c\u6027\u55ae\u5143 {1} \u4e2d\u7684\u5be6\u9ad4\u985e\u578b {0}\uff0c\u627e\u4e0d\u5230\u985e\u5225\u6216\u985e\u5225\u63cf\u8ff0\u5b50\u3002
+
+61006=\u91dd\u5c0d\u6301\u7e8c\u6027\u55ae\u5143 {3} \u4e2d\u5be6\u9ad4\u985e\u578b\u70ba {1} \u4e14 ID \u70ba {2} \u7684\u5c6c\u6027 {0}\uff0c\u627e\u4e0d\u5230\u9069\u7576\u7684\u8cc7\u6599\u5eab\u5c0d\u6620\u3002
+
+61007=\u5728\u6301\u7e8c\u6027\u55ae\u5143 {3} \u4e2d\uff0c\u627e\u4e0d\u5230\u5be6\u9ad4\u985e\u578b\u70ba {1} \u4e14 ID \u70ba {2} \u7684\u5c6c\u6027 {0}\u3002
+
+61008=\u5728\u6301\u7e8c\u6027\u55ae\u5143 {3} \u4e2d\uff0c\u627e\u4e0d\u5230\u5be6\u9ad4\u985e\u578b\u70ba {1} \u4e14 ID \u70ba {2} \u7684\u5c6c\u6027 {0} \u7684\u9078\u53d6\u67e5\u8a62\u3002
+
+61009=\u5206\u9801\u8981\u6c42 URL \u4e2d\u7684\u53c3\u6578\u7121\u6548\u3002
+
+61010=\u7121\u6cd5\u66f4\u65b0\u6301\u7e8c\u6027\u55ae\u5143 {3} \u4e2d\u5be6\u9ad4\u985e\u578b\u70ba {1} \u4e14 ID \u70ba {2} \u7684\u5c6c\u6027 {0}\u3002
+
+61011=\u91dd\u5c0d\u6301\u7e8c\u6027\u55ae\u5143 {3} \u4e2d\u5be6\u9ad4\u985e\u578b\u70ba {1} \u4e14 ID \u70ba {2} \u7684\u5c6c\u6027 {0}\uff0c\u5c6c\u6027\u79fb\u9664\u8981\u6c42 URL \u4e2d\u7684\u53c3\u6578\u7121\u6548\u3002
+
+61012=\u91dd\u5c0d\u6301\u7e8c\u6027\u55ae\u5143 {3} \u4e2d\u5be6\u9ad4\u985e\u578b\u70ba {1} \u4e14 ID \u70ba {2} \u7684\u5c6c\u6027 {0}\uff0c\u7121\u6cd5\u9806\u5229\u5efa\u7f6e\u5c0b\u627e\u8981\u6c42\u7684\u56de\u61c9\u3002
+
+61013=JNDI \u540d\u7a31 {0} \u7684\u968e\u6bb5\u4f5c\u696d Bean \u67e5\u95b1\u5931\u6557\u3002
+
+61014=\u91dd\u5c0d\u6301\u7e8c\u6027\u55ae\u5143 {1} \u4e2d\u7684\u67e5\u8a62 {0}\uff0c\u7121\u6cd5\u9806\u5229\u5efa\u7f6e\u5c0b\u627e\u5177\u540d\u67e5\u8a62\u8981\u6c42\u7684\u56de\u61c9\u3002
+
+61015=\u8981\u6c42\u4e2d\u7684\u670d\u52d9\u7248\u672c {0} \u7121\u6548\u3002
+
+61016=\u7528\u65bc\u4e0d\u53ef\u5206\u9801\u8cc7\u6e90\u7684\u5206\u9801\u67e5\u8a62\u53c3\u6578\uff08limit \u6216 offset\uff09\u3002
+
+61017=\u76f8\u540c\u7684\u8981\u6c42\u4e2d\u4e0d\u80fd\u540c\u6642\u4f7f\u7528 "fields" \u548c "excludeFields"\u3002
+
+61018=\u7121\u6548\u53c3\u6578\u503c ("{0}" = "{1}")\u3002
+
+61999=\u767c\u751f {0}\u3002
+

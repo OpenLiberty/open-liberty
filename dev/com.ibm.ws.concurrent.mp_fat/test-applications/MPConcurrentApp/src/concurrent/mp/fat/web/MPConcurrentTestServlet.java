@@ -1622,9 +1622,9 @@ public class MPConcurrentTestServlet extends FATServlet {
         // However, application code cannot access declarative services or the service registry,
         // so we are cheating and using reflection. Do not copy this approach in real applications.
         ClassLoader loader = defaultManagedExecutor.getClass().getClassLoader();
-        Class<?> CompletionStageFactory = loader.loadClass("com.ibm.ws.concurrent.mp.spi.CompletionStageFactory");
+        Class<?> CompletionStageFactory = loader.loadClass("com.ibm.ws.threading.CompletionStageFactory");
         Object completionStageFactory = CompletionStageFactory.newInstance();
-        Method supplyAsync = CompletionStageFactory.getMethod("supplyAsync", Supplier.class, ExecutorService.class);
+        Method supplyAsync = CompletionStageFactory.getMethod("supplyAsync", Supplier.class, Executor.class);
 
         Supplier<String> supplyThreadName = () -> Thread.currentThread().getName();
 

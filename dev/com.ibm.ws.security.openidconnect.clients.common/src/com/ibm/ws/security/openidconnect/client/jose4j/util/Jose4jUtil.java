@@ -370,7 +370,7 @@ public class Jose4jUtil {
     public JwKRetriever createJwkRetriever(ConvergedClientConfig oidcClientConfig) {
         JwKRetriever retriever = null;
         if (oidcClientConfig != null) { // to support unittests, config cannot be null
-            retriever = new JwKRetriever(oidcClientConfig.getId(), oidcClientConfig.getSslRef(), oidcClientConfig.getJwkEndpointUrl(), oidcClientConfig.getJwkSet(), this.sslSupport, oidcClientConfig.isHostNameVerificationEnabled(), oidcClientConfig.getJwkClientId(), oidcClientConfig.getJwkClientSecret());
+            retriever = new JwKRetriever(oidcClientConfig.getId(), oidcClientConfig.getSslRef(), oidcClientConfig.getJwkEndpointUrl(), oidcClientConfig.getJwkSet(), this.sslSupport, oidcClientConfig.isHostNameVerificationEnabled(), oidcClientConfig.getJwkClientId(), oidcClientConfig.getJwkClientSecret(), oidcClientConfig.getSignatureAlgorithm());
         }
         return retriever;
     }

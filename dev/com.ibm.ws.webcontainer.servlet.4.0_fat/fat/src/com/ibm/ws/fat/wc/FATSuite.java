@@ -17,6 +17,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.fat.util.FatLogHandler;
+import com.ibm.ws.fat.wc.tests.WC5JakartaServletTest;
 import com.ibm.ws.fat.wc.tests.WCAddJspFileTest;
 import com.ibm.ws.fat.wc.tests.WCApplicationMBeanStatusTest;
 import com.ibm.ws.fat.wc.tests.WCContextRootPrecedence;
@@ -60,7 +61,6 @@ import componenttest.rules.repeater.RepeatTests;
                 WCPushBuilderTest.class,
                 WCServletClarificationTest.class,
                 WCContextRootPrecedence.class,
-                WCGetMappingTest.class,
                 WCEncodingTest.class,
                 WCTrailersTest.class,
                 // TFB:
@@ -70,21 +70,23 @@ import componenttest.rules.repeater.RepeatTests;
                 // I'm still determining if this is purely a local problem.
                 //              WCPushBuilderSecurityTest.class,
                 WCAddJspFileTest.class,
-                WCServletPathForDefaultMappingDefault.class,
-                WCServletPathForDefaultMappingFalse.class,
-                WCGetMappingSlashStarTest.class,
                 WCServletContainerInitializerFilterServletNameMappingTest.class,
                 WCApplicationMBeanStatusTest.class,
                 // @Server Annotations
+                WC5JakartaServletTest.class,
+                WCGetMappingTest.class,
                 WCServletContainerInitializerExceptionTest.class,
-                WCSameSiteCookieAttributeTests.class
+                WCSameSiteCookieAttributeTests.class,
+                WCServletPathForDefaultMappingDefault.class,
+                WCServletPathForDefaultMappingFalse.class,
+                WCGetMappingSlashStarTest.class
+
 })
+
 public class FATSuite {
 
     @ClassRule
-    public static RepeatTests repeat = RepeatTests
-                    .with(new EmptyAction().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE9_FEATURES());
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(FeatureReplacementAction.EE9_FEATURES());
 
     /**
      * @see {@link FatLogHandler#generateHelpFile()}

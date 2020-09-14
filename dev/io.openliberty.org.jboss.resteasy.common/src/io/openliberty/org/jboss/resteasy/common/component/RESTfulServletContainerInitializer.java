@@ -42,17 +42,19 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
     private final static String IBM_REST_SERVLET_NAME = "com.ibm.websphere.jaxrs.server.IBMRestServlet";
     private final static String RESTEASY_DISPATCHER_NAME = "org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher";
     private final static String RESTEASY_DISPATCHER_30_NAME = "org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher";
+    private final static String APPLICATION = "javax.ws.rs.Application";
 
 
     public void onStartup(Set<Class<?>> classes, ServletContext servletContext) throws ServletException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "onStartup ", new Object[] {classes, servletContext});
         }
-        addMappingParam(servletContext);
         if (classes == null) {
             return;
         }
-        //super.onStartup(classes, ctx);
+        addMappingParam(servletContext);
+
+        // auto-discovered application classes, providers, and resources
         Set<Class<?>> appClasses = new HashSet<Class<?>>();
         Set<Class<?>> providers = new HashSet<Class<?>>();
         Set<Class<?>> resources = new HashSet<Class<?>>();
@@ -84,58 +86,77 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
         }
     }
 
+    private Set<ServletRegistration> getServletsForApplication(Class<?> applicationClass, ServletContext servletContext) {
+        Set<ServletRegistration> set = new HashSet<>();
+        ServletRegistration reg = servletContext.getServletRegistration(applicationClass.getName());
+        if (reg != null) {
+            set.add(reg);
+        }
+        for (ServletRegistration sr : servletContext.getServletRegistrations().values()) {
+            String appClassName = sr.getInitParameter(APPLICATION);
+            if (applicationClass.getName().equals(appClassName)) {
+                set.add(sr);
+            }
+        }
+        return set;
+    }
 
     @Override
     protected void register(Class<?> applicationClass, Set<Class<?>> providers, Set<Class<?>> resources, ServletContext servletContext) {
-        ApplicationPath path = applicationClass.getAnnotation(ApplicationPath.class);
-        ServletRegistration.Dynamic reg;
-        String mapping;
-        String prefix;
-        if (path == null) {
-            if (servletContext.getServletRegistration(applicationClass.getName()) == null) {
-                // Application subclass has no @ApplicationPath and no declared mappings to use
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "register - no @ApplicationPath and no servlet mapping for "+ applicationClass.getName());
+        
+        Set<ServletRegistration> servletsForApp = getServletsForApplication(applicationClass, servletContext);
+        // ignore @ApplicationPath if application is already mapped in web.xml
+        if (!servletsForApp.isEmpty()) {
+            for (ServletRegistration servletReg : servletsForApp) {
+                String servletClassName = servletReg.getClassName();
+                if (servletClassName == null) {
+                    ServletRegistration.Dynamic dynReg = servletContext.addServlet(servletReg.getName(), HttpServlet30Dispatcher.class);
                 }
-                return;
-            }
-            reg = servletContext.addServlet(applicationClass.getName(), HttpServlet30Dispatcher.class);
-            Collection<String> mappings = reg.getMappings();
-            if (mappings == null || mappings.isEmpty()) {
-                // no declared mappings
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "register - no @ApplicationPath; servlet declared, but no mappings for "+ applicationClass.getName());
+                    Tr.debug(tc, "register - mapping app " + applicationClass.getName() + " via web.xml servlet, " + servletReg.getName());
                 }
-                return;
+                registerResourcesAndProviders(servletReg, providers, resources);
             }
-            mapping = mappings.iterator().next();
-            prefix = mapping;
-            while (!prefix.equals("/") && (prefix.endsWith("/") || prefix.endsWith("*"))) {
-                prefix = prefix.substring(0, prefix.length() - 1);
-            }
-        } else {
-            mapping = path.value();
-            if (!mapping.startsWith("/")) mapping = "/" + mapping;
-            prefix = mapping;
-            if (!prefix.equals("/") && prefix.endsWith("/")) prefix = prefix.substring(0, prefix.length() - 1);
-            if (!mapping.endsWith("/*")) {
-                if (mapping.endsWith("/")) mapping += "*";
-                else mapping += "/*";
-            }
-            reg = servletContext.addServlet(applicationClass.getName(), HttpServlet30Dispatcher.class);
-            reg.setLoadOnStartup(1);
-            reg.setAsyncSupported(true);
-            reg.addMapping(mapping);
+            return;
         }
 
-        reg.setInitParameter("javax.ws.rs.Application", applicationClass.getName());
+        ApplicationPath path = applicationClass.getAnnotation(ApplicationPath.class);
+        if (path == null) {
+            // Application subclass has no @ApplicationPath and no declared mappings to use
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "register - no @ApplicationPath and no servlet mapping for "+ applicationClass.getName());
+            }
+            return;
+        }
+        ServletRegistration.Dynamic reg;
+        String mapping = path.value();
+        String prefix;
+
+        if (!mapping.startsWith("/")) mapping = "/" + mapping;
+        prefix = mapping;
+        if (!prefix.equals("/") && prefix.endsWith("/")) prefix = prefix.substring(0, prefix.length() - 1);
+        if (!mapping.endsWith("/*")) {
+            if (mapping.endsWith("/")) mapping += "*";
+            else mapping += "/*";
+        }
+
+        reg = servletContext.addServlet(applicationClass.getName(), HttpServlet30Dispatcher.class);
+        reg.setLoadOnStartup(1);
+        reg.setAsyncSupported(true);
+        reg.addMapping(mapping);
+
+        reg.setInitParameter(APPLICATION, applicationClass.getName());
         // resteasy.servlet.mapping.prefix
-        reg.setInitParameter("resteasy.servlet.mapping.prefix", prefix);
+        reg.setInitParameter(RESTEASY_MAPPING_PREFIX, prefix);
         
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "register - mapping app " + applicationClass.getName() + " to " + mapping);
         }
 
+        registerResourcesAndProviders(reg, providers, resources);
+    }
+
+    private void registerResourcesAndProviders(ServletRegistration reg, Set<Class<?>> providers, Set<Class<?>> resources) {
         if (resources.size() > 0) {
             StringBuilder builder = new StringBuilder();
             boolean first = true;
@@ -167,7 +188,7 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
 
     /**
      * RESTEasy requires a resteasy.servlet.mapping.prefix parameter to be set if the 
-     * web.xml declares a servlet to handle JAX-RS requests AND if that servlet is mapped
+     * web.xml declares a servlet to handle RESTful WS requests AND if that servlet is mapped
      * to paths other than "/*". For example, if the IBMRestServlet is mapped to "/rest/*"
      * then the following code would also be needed in the web.xml:
      * <pre>
@@ -180,14 +201,15 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
      * This method adds that programmatically.
      */
     private void addMappingParam(ServletContext ctx) {
+        boolean globallyMapped = false;
         if (ctx.getInitParameter(RESTEASY_MAPPING_PREFIX) != null) {
-            // user has already set this for the entire web app - use their settings - we're done!
-            return;
+            // user has already set this for the entire web app - use their settings
+            globallyMapped = true;
         }
 
         boolean mapped = false;
-        Map<String, ? extends ServletRegistration> servletRegistrations = ctx.getServletRegistrations();
-        for(Map.Entry<String, ? extends ServletRegistration> entry : servletRegistrations.entrySet()) {
+        Map<String, ? extends ServletRegistration> servletRegistrationMap = ctx.getServletRegistrations();
+        for(Map.Entry<String, ? extends ServletRegistration> entry : servletRegistrationMap.entrySet()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "addMappingParam servletRegistrations " + entry.getKey() + " = " + entry.getValue());
             }
@@ -216,7 +238,9 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "addMappingParam using mapping: " + mapping);
                     }
-                    reg.setInitParameter(RESTEASY_MAPPING_PREFIX, mapping);
+                    if (!globallyMapped) {
+                        reg.setInitParameter(RESTEASY_MAPPING_PREFIX, mapping);
+                    }
                     mapped = true;
                 }
             }

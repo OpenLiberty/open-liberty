@@ -75,6 +75,28 @@ public class ConsumerUtils {
     }
 
     /**
+     * @param user
+     * @param pw
+     * @param baseUrlStr
+     * @return
+     * @throws MalformedURLException
+     * @throws UnsupportedEncodingException
+     */
+    public static WebRequest buildJwtSSOTokenEndpointRequest(String user, String pw, String baseUrlStr) throws MalformedURLException, UnsupportedEncodingException {
+
+        String jwtTokenEndpoint = "jwt/defaultJwtSso";
+        String jwtBuilderUrl = baseUrlStr + jwtTokenEndpoint;
+
+        _log.info(" ----------------------------jwtBuilderUrl= " + jwtBuilderUrl);
+
+        WebRequest request = new WebRequest(new URL(jwtBuilderUrl));
+        // Token endpoint requires authentication, so provide credentials
+        request.setAdditionalHeader("Authorization", createBasicAuthHeaderValue(user, pw));
+
+        return request;
+    }
+
+    /**
      * JWT /token endpoint should return a JSON object whose only key, "token", stores the JWT built by the builder.
      */
     /**
@@ -195,6 +217,82 @@ public class ConsumerUtils {
         }
 
         return base;
+    }
+
+    /**
+     * default value "bvt.prop.HTTP_default" added where Store server.xml is using
+     *
+     * @return
+     */
+    public static int getStoreServerPort() {
+        String port = getSysProp("bvt.prop.HTTP_default");
+        return Integer.valueOf(port);
+    }
+
+    /**
+     * default value "localhost" added in bootstrap.properties
+     *
+     * @return
+     */
+    public static String getStoreServerHost() {
+        return getSysProp("testing.StoreServer.hostname");
+    }
+
+    /**
+     * default value "bvt.prop.member_1.http" added where Consumer server.xml is using
+     *
+     * @return
+     */
+    public static int getConsumerServerPort() {
+        String port = getSysProp("bvt.prop.member_1.http");
+        return Integer.valueOf(port);
+    }
+
+    /**
+     * default value "localhost" added in bootstrap.properties
+     *
+     * @return
+     */
+    public static String getConsumerServerHost() {
+        return getSysProp("testing.ConsumerServer.hostname");
+    }
+
+    /**
+     * @param baseUrlStr
+     * @return
+     * @throws Exception
+     */
+    public static String getJwtFromTokenEndpoint(String baseUrlStr, String jwtid, String user, String password) throws Exception {
+
+        WebRequest request = buildJwtTokenEndpointRequest(jwtid, user, password, baseUrlStr);
+
+        printRequestHeaders(request, "getJwtFromTokenEndpoint");
+
+        WebClient wc = new WebClient();
+        wc.getOptions().setUseInsecureSSL(true);
+
+        WebResponse response = wc.getPage(request).getWebResponse();
+
+        return ConsumerUtils.extractJwtFromTokenEndpointResponse(response);
+    }
+
+    /**
+     * @param baseUrlStr
+     * @return
+     * @throws Exception
+     */
+    private String getJwtSSoFromTokenEndpoint(String baseUrlStr, String jwtid, String user, String password) throws Exception {
+
+        WebRequest request = buildJwtSSOTokenEndpointRequest(user, password, baseUrlStr);
+
+        printRequestHeaders(request, "getJwtFromTokenEndpoint");
+
+        WebClient wc = new WebClient();
+        wc.getOptions().setUseInsecureSSL(true);
+
+        WebResponse response = wc.getPage(request).getWebResponse();
+
+        return ConsumerUtils.extractJwtFromTokenEndpointResponse(response);
     }
 
 }

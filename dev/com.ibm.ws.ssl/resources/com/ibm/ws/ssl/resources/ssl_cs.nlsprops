@@ -59,11 +59,11 @@ ssl.init.error.CWPKI0008E=CWPKI0008E: P\u0159i inicializaci SSL do\u0161lo k chy
 ssl.init.error.CWPKI0008E.explanation=Do\u0161lo k neo\u010dek\u00e1van\u00e9 chyb\u011b b\u011bhem inicializace zabezpe\u010den\u00ed.
 ssl.init.error.CWPKI0008E.useraction=Jde o obecnou chybu. \
 Vyhledejte p\u0159edchoz\u00ed zpr\u00e1vy souvisej\u00edc\u00ed s inicializac\u00ed SSL nebo s probl\u00e9mem konfigurace. \
-Povolen\u00ed trasov\u00e1n\u00ed lad\u011bn\u00ed prost\u0159ednictv\u00edm volby SSL=all=enabled m\u016f\u017ee v\u00e9st ke z\u00edsk\u00e1n\u00ed dal\u0161\u00edch informac\u00ed.
+Povolen\u00ed trasov\u00e1n\u00ed lad\u011bn\u00ed prost\u0159ednictv\u00edm volby SSL=all=enabled m\u016f\u017ee v\u00e9st k z\u00edsk\u00e1n\u00ed dal\u0161\u00edch informac\u00ed.
 # -------------------------------------------------------------------------------------------------
 ssl.init.nullsecobject.CWPKI0009E=CWPKI0009E: Syst\u00e9m nem\u016f\u017ee vytvo\u0159it objekt zabezpe\u010den\u00ed b\u011bhem inicializace.
 ssl.init.nullsecobject.CWPKI0009E.explanation=Objekt zabezpe\u010den\u00ed nelze vytvo\u0159it z \u00falo\u017ei\u0161t\u011b. Jedn\u00e1 se o intern\u00ed chybu. Soubor security.xml je pravd\u011bpodobn\u011b po\u0161kozen nebo chyb\u00ed. 
-ssl.init.nullsecobject.CWPKI0009E.useraction=Obra\u0165te se na servisn\u00edho z\u00e1stupce.
+ssl.init.nullsecobject.CWPKI0009E.useraction=Obra\u0165te se na z\u00e1stupce servisu.
 # -------------------------------------------------------------------------------------------------
 ssl.init.nullprocesstype.CWPKI0010E=CWPKI0010E: Syst\u00e9m nem\u016f\u017ee b\u011bhem inicializace z\u00edskat typ procesu produktu WebSphere Application Server.
 ssl.init.nullprocesstype.CWPKI0010E.explanation=CMSG0001
@@ -89,7 +89,7 @@ ssl.stop.error.CWPKI0015E=CWPKI0015E: P\u0159i zastavov\u00e1n\u00ed komponenty 
 ssl.stop.error.CWPKI0015E.explanation=P\u0159i zastavov\u00e1n\u00ed komponenty SSL do\u0161lo k neo\u010dek\u00e1van\u00e9 chyb\u011b.
 ssl.stop.error.CWPKI0015E.useraction=Jde o obecnou chybu. \
 Vyhledejte p\u0159edchoz\u00ed zpr\u00e1vy souvisej\u00edc\u00ed s chybou nebo s probl\u00e9mem konfigurace. \
-Povolen\u00ed trasov\u00e1n\u00ed lad\u011bn\u00ed prost\u0159ednictv\u00edm volby SSL=all=enabled m\u016f\u017ee v\u00e9st ke z\u00edsk\u00e1n\u00ed dal\u0161\u00edch informac\u00ed.
+Povolen\u00ed trasov\u00e1n\u00ed lad\u011bn\u00ed prost\u0159ednictv\u00edm volby SSL=all=enabled m\u016f\u017ee v\u00e9st k z\u00edsk\u00e1n\u00ed dal\u0161\u00edch informac\u00ed.
 # -------------------------------------------------------------------------------------------------
 ssl.expiration.warning.CWPKI0016W=CWPKI0016W: Platnost certifik\u00e1tu s aliasem {0} z \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f {1} vypr\u0161\u00ed za {2} dn\u016f.
 ssl.expiration.warning.CWPKI0016W.explanation=Platnost certifik\u00e1tu v \u00falo\u017ei\u0161ti kl\u00ed\u010d\u016f v nejbli\u017e\u0161\u00ed dob\u011b vypr\u0161\u00ed.
@@ -558,7 +558,7 @@ ssl.create.certificate.end.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e
 #--------------------------------------------------------------------------------------------------
 ssl.create.certificate.error=CWPKI0804E: Chyba p\u0159i vytv\u00e1\u0159en\u00ed certifik\u00e1tu SSL. {0}
 ssl.create.certificate.error.explanation=Certifik\u00e1t SSL nelze v zadan\u00e9m um\u00edst\u011bn\u00ed vytvo\u0159it.
-ssl.create.certificate.error.useraction=Zajist\u011bte, aby k um\u00edst\u011bn\u00ed mohl p\u0159istupovat proces serveru. Ud\u00e1losti FFDC mohou nazna\u010dovat z\u00e1va\u017enou chybu p\u0159i generov\u00e1n\u00ed nebo na\u010d\u00edt\u00e1n\u00ed kl\u00ed\u010d\u016f.
+ssl.create.certificate.error.useraction=Zajist\u011bte, aby k um\u00edst\u011bn\u00ed mohl p\u0159istupovat proces serveru. Zkontrolujte protokoly FFDC a vyhledejte dal\u0161\u00ed chyby, kter\u00e9 jsou p\u0159idru\u017eeny k vygenerov\u00e1n\u00ed nebo na\u010dten\u00ed kl\u00ed\u010d\u016f.
 
 # Messages for the CWPKI0804E message descriptor {0}.
 ssl.create.certificate.error.reason1=Nelze vytvo\u0159it soubor s kl\u00ed\u010di SSL: {0}
@@ -593,14 +593,14 @@ ssl.keystore.modified.CWPKI0811I.explanation=Ur\u010den\u00fd soubor \u00falo\u0
 ssl.keystore.modified.CWPKI0811I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 #--------------------------------------------------------------------------------------------------
 ssl.key.error.CWPKI0812E=CWPKI0812E: Chyba p\u0159i pokusu z\u00edskat kl\u00ed\u010d [{0}] z \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f [{1}]. Ujist\u011bte se, \u017ee polo\u017eka je kl\u00ed\u010dem a heslo kl\u00ed\u010de je spr\u00e1vn\u00e9. Vr\u00e1cena v\u00fdjimka: [{2}].
-ssl.key.error.CWPKI0812E.explanation=P\u0159i pokusu o obnovu kl\u00ed\u010de ze souboru \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f do\u0161lo k chyb\u011b. M\u016f\u017ee j\u00edt o probl\u00e9m s kl\u00ed\u010dem, nebo m\u016f\u017ee b\u00fdt heslo kl\u00ed\u010de nespr\u00e1vn\u00e9. 
+ssl.key.error.CWPKI0812E.explanation=P\u0159i pokusu o obnovu kl\u00ed\u010de ze souboru \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f do\u0161lo k chyb\u011b. M\u016f\u017ee j\u00edt o probl\u00e9m s kl\u00ed\u010dem, nebo m\u016f\u017ee b\u00fdt heslo ke kl\u00ed\u010di nespr\u00e1vn\u00e9. 
 ssl.key.error.CWPKI0812E.useraction=Zkontrolujte \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f a ujist\u011bte se, \u017ee polo\u017eka kl\u00ed\u010de existuje. D\u00e1le se ujist\u011bte, \u017ee pro p\u0159\u00edstup k t\u00e9to polo\u017ece kl\u00ed\u010de je nakonfigurovan\u00e9 spr\u00e1vn\u00e9 heslo.
 #--------------------------------------------------------------------------------------------------
 ssl.unrecoverablekey.error.CWPKI0813E=CWPKI0813E: Chyba p\u0159i pokusu o inicializaci spr\u00e1vce kl\u00ed\u010d\u016f pro \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f [{0}]. Heslo soukrom\u00e9ho kl\u00ed\u010de je chybn\u00e9 nebo m\u00e1 \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f v\u00edce \
 soukrom\u00fdch kl\u00ed\u010d\u016f s r\u016fzn\u00fdmi hesly. Toto \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f nelze pou\u017e\u00edt pro SSL. Zpr\u00e1va v\u00fdjimky: [{1}].
-ssl.unrecoverablekey.error.CWPKI0813E.explanation=P\u0159i pokusu o inicializaci spr\u00e1vce kl\u00ed\u010d\u016f do\u0161lo k chyb\u011b. Kdy\u017e nen\u00ed spr\u00e1vn\u00e9 heslo soukrom\u00e9ho kl\u00ed\u010de nebo kdy\u017e m\u00e1 \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f v\u00edce \
+ssl.unrecoverablekey.error.CWPKI0813E.explanation=P\u0159i pokusu o inicializaci spr\u00e1vce kl\u00ed\u010d\u016f do\u0161lo k chyb\u011b. Kdy\u017e nen\u00ed spr\u00e1vn\u00e9 heslo k soukrom\u00e9mu kl\u00ed\u010di nebo kdy\u017e m\u00e1 \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f v\u00edce \
 soukrom\u00fdch kl\u00ed\u010d\u016f s r\u016fzn\u00fdmi hesly, nelze vytvo\u0159it SSLContext. 
-ssl.unrecoverablekey.error.CWPKI0813E.useraction=Ne\u017e pou\u017eijete \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f pro p\u0159ipojen\u00ed SSL, je t\u0159eba zajistit, aby bylo pou\u017eito spr\u00e1vn\u00e9 heslo soukrom\u00e9ho kl\u00ed\u010de a aby \
+ssl.unrecoverablekey.error.CWPKI0813E.useraction=Ne\u017e pou\u017eijete \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f pro p\u0159ipojen\u00ed SSL, je t\u0159eba zajistit, aby bylo pou\u017eito spr\u00e1vn\u00e9 heslo k soukrom\u00e9mu kl\u00ed\u010di a aby \
 \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f nem\u011blo v\u00edce kl\u00ed\u010d\u016f s r\u016fzn\u00fdmi hesly.
 #--------------------------------------------------------------------------------------------------
 ssl.hwkeystore.load.error.CWPKI0814E=CWPKI0814E: Chyba p\u0159i inicializaci \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f hardwaru [{0}]. Zkontrolujte soubor konfigurace hardwaru {1} a ujist\u011bte se, \u017ee jsou atributy spr\u00e1vn\u011b nastaveny. Vr\u00e1cen\u00e1 v\u00fdjimka od poskytovatele je {2}.
@@ -664,4 +664,12 @@ ssl.using.cacerts.CWPKI0827I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u0
 ssl.client.handshake.cacerts.error.CWPKI0828E=CWPKI0828E: Atribut trustDefaultCerts je povolen, ale nebyla d\u016fv\u011bryhodnost nebyla pomoc\u00ed v\u00fdchoz\u00edho \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti vytvo\u0159ena. Roz\u0161\u00ed\u0159en\u00e1 chybov\u00e1 zpr\u00e1va t\u00fdkaj\u00edc\u00ed se v\u00fdjimky komunikace v\u00fdm\u011bnou potvrzen\u00ed SSL: {0}.
 ssl.client.handshake.cacerts.error.CWPKI0828E.explanation=V\u00fdchoz\u00ed \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti nen\u00ed pro vytvo\u0159en\u00ed d\u016fv\u011bryhodnosti spr\u00e1vn\u011b nakonfigurov\u00e1no. 
 ssl.client.handshake.cacerts.error.CWPKI0828E.useraction=Prostudov\u00e1n\u00edm roz\u0161\u00ed\u0159en\u00e9 chybov\u00e9 zpr\u00e1vy zjist\u011bte, jak\u00e9 zm\u011bny maj\u00ed b\u00fdt v konfiguraci provedeny.
+# -------------------------------------------------------------------------------------------------
+ssl.update.certificate.error=CWPKI0829E: Chyba aktualizace certifik\u00e1tu SSL. {0}
+ssl.update.certificate.error.explanation=Certifik\u00e1t SSL nelze v zadan\u00e9m um\u00edst\u011bn\u00ed aktualizovat.
+ssl.update.certificate.error.useraction=Zajist\u011bte, aby k um\u00edst\u011bn\u00ed mohl p\u0159istupovat proces serveru. Zkontrolujte protokoly FFDC a vyhledejte dal\u0161\u00ed chyby, kter\u00e9 jsou p\u0159idru\u017eeny k vygenerov\u00e1n\u00ed nebo na\u010dten\u00ed kl\u00ed\u010d\u016f.
+# -------------------------------------------------------------------------------------------------
+ssl.certificate.add.CWPKI0830I=CWPKI0830I: Certifik\u00e1t s n\u00e1zvem SubjectDN ({0}) z prom\u011bnn\u00e9 prost\u0159ed\u00ed {1} je p\u0159id\u00e1v\u00e1n do \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f {2}.
+ssl.certificate.add.CWPKI0830I.explanation=Certifik\u00e1t byl na\u010dten z prom\u011bnn\u00e9 prost\u0159ed\u00ed v konfiguraci a je p\u0159id\u00e1v\u00e1n do souboru \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f.
+ssl.certificate.add.CWPKI0830I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 # -------------------------------------------------------------------------------------------------

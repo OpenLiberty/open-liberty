@@ -52,6 +52,12 @@ autoFVT.doLast {
      from project(':com.ibm.ws.security.fat.common').file('publish/shared/securityKeys')
      into new File(autoFvtDir, 'publish/servers/' + server + '/')
     }
+    /* Copy all shared key/trust stores from the common security jwt FAT */
+    copy { 
+     from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/securityKeys')
+     into new File(autoFvtDir, 'publish/servers/' + server + '/')
+    }
+    
   	/* Copy all shared key/trust stores from this project
   		overwrites shared jks files from the common security FAT 
   	*/
@@ -67,6 +73,13 @@ autoFVT.doLast {
      from new File(autoFvtDir, 'publish/servers/' + server + '/securityKeys')
      into new File(autoFvtDir, 'publish/servers/' + server + '/')
     }
+
+    /* copy the all signature alg config file from security_fat.common */
+    copy {
+      from project(':com.ibm.ws.security.fat.common').file('publish/shared/config')
+      into new File(autoFvtDir, 'publish/shared/config')
+    }
+    
   }
   
   	/* copy builder assistance apps */  

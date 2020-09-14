@@ -377,7 +377,7 @@ public class EcJwkTest {
 
     //@Test
     public void testParseECJwk() {
-        JwKRetriever jwkRetriever = new JwKRetriever("id", "sslref", "jwkep", jwkset, sslsupport, false, null, null);
+        JwKRetriever jwkRetriever = new JwKRetriever("id", "sslref", "jwkep", jwkset, sslsupport, false, null, null, "ES256");
         String jwksString = jwkProvider.getJwkSetString();
         JWKSet jwkset = new JWKSet();
 

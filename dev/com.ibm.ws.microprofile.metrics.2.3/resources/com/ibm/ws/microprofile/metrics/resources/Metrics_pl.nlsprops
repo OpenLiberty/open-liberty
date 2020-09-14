@@ -128,7 +128,16 @@ session.activeSessions.description=Liczba jednocze\u015bnie aktywnych sesji. (Se
 session.invalidated.total.description=Liczba sesji wylogowanych od momentu w\u0142\u0105czenia tego pomiaru.
 session.invalidatedbyTimeout.total.description=Liczba sesji, kt\u00f3re zosta\u0142y wylogowane z powodu przekroczenia limitu czasu od momentu w\u0142\u0105czenia tego pomiaru.
 
-
+grpc.server.rpcStarted.total.description=\u0141\u0105czna liczba wywo\u0142a\u0144 RPC uruchomionych na serwerze.
+grpc.server.rpcCompleted.total.description=\u0141\u0105czna liczba wywo\u0142a\u0144 RPC uko\u0144czonych na serwerze (obejmuje zar\u00f3wno wywo\u0142ania zako\u0144czone powodzeniem, jak i zako\u0144czone niepowodzeniem).
+grpc.server.sentMessages.total.description=\u0141\u0105czna liczba komunikat\u00f3w strumieni wys\u0142anych przez serwer.
+grpc.server.receivedMessages.total.description=\u0141\u0105czna liczba komunikat\u00f3w strumieni odebranych z klienta.
+grpc.server.responseTime.total.description=\u0141\u0105czny czas odpowiedzi uko\u0144czonych wywo\u0142a\u0144 RPC.
+grpc.client.rpcStarted.total.description=\u0141\u0105czna liczba wywo\u0142a\u0144 RPC uruchomionych na kliencie.
+grpc.client.rpcCompleted.total.description=\u0141\u0105czna liczba wywo\u0142a\u0144 RPC uko\u0144czonych na kliencie (obejmuje zar\u00f3wno wywo\u0142ania zako\u0144czone powodzeniem, jak i zako\u0144czone niepowodzeniem).
+grpc.client.sentMessages.total.description=\u0141\u0105czna liczba komunikat\u00f3w strumieni wys\u0142anych przez klienta.
+grpc.client.receivedMessages.total.description=\u0141\u0105czna liczba komunikat\u00f3w strumieni odebranych z serwera.
+grpc.client.responseTime.total.description=\u0141\u0105czny czas odpowiedzi uko\u0144czonych wywo\u0142a\u0144 RPC.
 REST.request.description=Liczba wywo\u0142a\u0144 i \u0142\u0105czny czas odpowiedzi tej metody zasobu RESTful od momentu uruchomienia serwera.
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message

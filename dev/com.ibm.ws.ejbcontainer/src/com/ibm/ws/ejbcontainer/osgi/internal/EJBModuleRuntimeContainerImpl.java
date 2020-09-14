@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -76,7 +76,7 @@ public class EJBModuleRuntimeContainerImpl implements ModuleRuntimeContainer {
     public ModuleMetaData createModuleMetaData(ExtendedModuleInfo moduleInfo) throws MetaDataException {
 
         if (runtime == null || injectionEngine == null) {
-            // Configuration update of transaction might be unsetting us 
+            // Configuration update of transaction might be unsetting us
             // while another startup processes thread is using us
             // making it possible our resources are null while calling this
             // method - 186703
@@ -85,6 +85,14 @@ public class EJBModuleRuntimeContainerImpl implements ModuleRuntimeContainer {
                 Tr.debug(tc, "EJBRuntime null: " + (runtime == null) + " InjectionEngine null: " + (injectionEngine == null));
             }
 
+            return null;
+        }
+
+        // If the server is stopping; don't bother starting any EJB modules
+        if (runtime.isStopping()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Server is stopping; EJB module will not be started : " + moduleInfo.getName());
+            }
             return null;
         }
 
@@ -127,11 +135,22 @@ public class EJBModuleRuntimeContainerImpl implements ModuleRuntimeContainer {
     public Future<Boolean> startModule(ExtendedModuleInfo moduleInfo) throws StateChangeException {
 
         if (runtime == null || futureMonitor == null) {
-            // Configuration update of transaction might be unsetting us 
+            // Configuration update of transaction might be unsetting us
             // while another startup processes thread is using us
             // making it possible our resources are null while calling this
             // method - 186703
             throw new StateChangeException("EJBRuntime available: " + (runtime != null) + " FutureMonitor available: " + (futureMonitor != null));
+        }
+
+        // Pre-create result in case server begins shutting down and futureMonitor is unset while starting module
+        Future<Boolean> result = futureMonitor.createFutureWithResult(true);
+
+        // If the server is stopping; don't bother starting any EJB modules
+        if (runtime.isStopping()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Server is stopping; EJB module will not be started : " + moduleInfo.getName());
+            }
+            return result;
         }
 
         try {
@@ -147,7 +166,7 @@ public class EJBModuleRuntimeContainerImpl implements ModuleRuntimeContainer {
             throw new StateChangeException(e.getCause());
         }
 
-        return futureMonitor.createFutureWithResult(true);
+        return result;
     }
 
     @Override

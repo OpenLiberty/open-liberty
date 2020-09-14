@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2018 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -90,6 +90,15 @@ public class ApplicationClientDDParser extends DDParser {
         			return new ApplicationClientType(getDeploymentDescriptorPath());
         		}
         	}
+        }
+        else if ("9".equals(vers)) {
+            if (maxVersion >= ApplicationClient.VERSION_9) {
+                if ("https://jakarta.ee/xml/ns/jakartaee".equals(namespace)) {
+                    version = ApplicationClient.VERSION_9;
+                    eePlatformVersion = 90;
+                    return new ApplicationClientType(getDeploymentDescriptorPath());
+                }
+            }
         }
 
         throw new ParseException(invalidDeploymentDescriptorNamespace(vers));

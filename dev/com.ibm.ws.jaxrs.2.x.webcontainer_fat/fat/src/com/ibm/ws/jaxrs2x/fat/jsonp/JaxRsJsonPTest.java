@@ -15,7 +15,10 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -28,21 +31,26 @@ import com.ibm.ws.jaxrs2x.fat.TestUtils;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(FATRunner.class)
 public class JaxRsJsonPTest {
 
     @Server("jaxrs2x.service.JaxRsJsonPTest")
     public static LibertyServer server;
-    
+
     private static final String jsonpwar = "jsonp";
 
     @BeforeClass
     public static void setup() throws Exception {
 
-        ShrinkHelper.defaultDropinApp(server, jsonpwar, "com.ibm.ws.jaxrs2x.fat.jsonp.service");
+        WebArchive archive = ShrinkHelper.defaultDropinApp(server, jsonpwar, "com.ibm.ws.jaxrs2x.fat.jsonp.service");
+
+        if (JakartaEE9Action.isActive()) {
+            Path someArchive = Paths.get("publish/servers/" + server.getServerName() + "/dropins/jsonp.war");
+            JakartaEE9Action.transformApp(someArchive);
+        }
 
         // Make sure we don't fail because we try to start an
         // already started server
@@ -52,7 +60,7 @@ public class JaxRsJsonPTest {
             System.out.println(e.toString());
         }
     }
-    
+
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer();
@@ -88,7 +96,6 @@ public class JaxRsJsonPTest {
             String resp = TestUtils.accessWithURLConn(url, "POST", "application/json", 200, t.getBytes());
             Log.info(this.getClass(), "testPutJsonObject", "response=" + resp);
             assertTrue("the return is not right, the response is:" + resp, (resp.indexOf("1") > -1));
-
         } catch (IOException e) {
             fail("test fails: " + e);
         }
@@ -102,7 +109,6 @@ public class JaxRsJsonPTest {
             String resp = TestUtils.accessWithURLConn(url, "POST", "application/json", 200, t.getBytes());
             Log.info(this.getClass(), "testPutJsonArray", "response=" + resp);
             assertTrue("the return is not right, the response is:" + resp, (resp.indexOf("1") > -1));
-
         } catch (IOException e) {
             fail("test fails: " + e);
         }
@@ -119,7 +125,6 @@ public class JaxRsJsonPTest {
             String expectResp = "[{\"name\":\"alex\",\"age\":20,\"gender\":\"M\",\"job\":{\"title\":\"softengineer\",\"woritems\":10},\"fav\":[\"sport\",\"travel\"]},{\"name\":\"alex\",\"age\":21,\"gender\":\"F\",\"job\":{\"title\":\"softengineer\",\"woritems\":10},\"fav\":[\"sport\",\"travel\"]},{\"name\":\"alex\",\"age\":22,\"gender\":\"M\",\"job\":{\"title\":\"softengineer\",\"woritems\":10},\"fav\":[\"sport\",\"travel\"]},{\"name\":\"alex\",\"age\":23,\"gender\":\"F\",\"job\":{\"title\":\"softengineer\",\"woritems\":10},\"fav\":[\"sport\",\"travel\"]},{\"name\":\"alex\",\"age\":24,\"gender\":\"M\",\"job\":{\"title\":\"softengineer\",\"woritems\":10},\"fav\":[\"sport\",\"travel\"]}]";
 
             assertTrue("the return is not right, the response is:" + resp, (expectResp.equals(resp.trim())));
-
         } catch (IOException e) {
             fail("test fails: " + e);
         }
@@ -134,11 +139,8 @@ public class JaxRsJsonPTest {
             String t = "{\"firstName\":\"alex\",\"lastName\":\"zan\",}";
             String resp = TestUtils.accessWithURLConn(url, "POST", "application/json", badRequestRC, t.getBytes());
             Log.info(this.getClass(), "testPostBadJsonObject", "response=" + resp);
-
         } catch (IOException e) {
-
             boolean check = (e.toString().indexOf("Server returned HTTP response code: 400") > -1);
-
             assertTrue("the return code should be 400, but the exception is " + e, check);
         }
     }

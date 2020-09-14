@@ -3,7 +3,7 @@ symbolicName=com.ibm.websphere.appserver.openidConnectClient-1.0
 visibility=public
 IBM-API-Package: com.ibm.websphere.security.openidconnect; type="ibm-api"
 IBM-ShortName: openidConnectClient-1.0
-Subsystem-Name: OpenID Connect Client
+Subsystem-Name: OpenID Connect Client 1.0
 # due to ConvergedClientConfig having jwt deps, oidc client now has jwt deps.
 -features=com.ibm.websphere.appserver.javax.cdi-1.0; ibm.tolerates:="1.2,2.0"; apiJar=false, \
   com.ibm.websphere.appserver.oauth-2.0, \

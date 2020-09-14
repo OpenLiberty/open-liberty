@@ -10,7 +10,7 @@ package com.ibm.ws.grpc.fat.beer.service;
  *
  * Protobuf type {@code beer.Beer}
  */
-public  final class Beer extends
+public final class Beer extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:beer.Beer)
     BeerOrBuilder {
@@ -116,6 +116,7 @@ private static final long serialVersionUID = 0L;
    * <code>string beerName = 1;</code>
    * @return The beerName.
    */
+  @java.lang.Override
   public java.lang.String getBeerName() {
     java.lang.Object ref = beerName_;
     if (ref instanceof java.lang.String) {
@@ -132,6 +133,7 @@ private static final long serialVersionUID = 0L;
    * <code>string beerName = 1;</code>
    * @return The bytes for beerName.
    */
+  @java.lang.Override
   public com.google.protobuf.ByteString
       getBeerNameBytes() {
     java.lang.Object ref = beerName_;
@@ -152,6 +154,7 @@ private static final long serialVersionUID = 0L;
    * <code>string beerMaker = 2;</code>
    * @return The beerMaker.
    */
+  @java.lang.Override
   public java.lang.String getBeerMaker() {
     java.lang.Object ref = beerMaker_;
     if (ref instanceof java.lang.String) {
@@ -168,6 +171,7 @@ private static final long serialVersionUID = 0L;
    * <code>string beerMaker = 2;</code>
    * @return The bytes for beerMaker.
    */
+  @java.lang.Override
   public com.google.protobuf.ByteString
       getBeerMakerBytes() {
     java.lang.Object ref = beerMaker_;
@@ -188,14 +192,14 @@ private static final long serialVersionUID = 0L;
    * <code>.beer.BeerType beerType = 3;</code>
    * @return The enum numeric value on the wire for beerType.
    */
-  public int getBeerTypeValue() {
+  @java.lang.Override public int getBeerTypeValue() {
     return beerType_;
   }
   /**
    * <code>.beer.BeerType beerType = 3;</code>
    * @return The beerType.
    */
-  public com.ibm.ws.grpc.fat.beer.service.BeerType getBeerType() {
+  @java.lang.Override public com.ibm.ws.grpc.fat.beer.service.BeerType getBeerType() {
     @SuppressWarnings("deprecation")
     com.ibm.ws.grpc.fat.beer.service.BeerType result = com.ibm.ws.grpc.fat.beer.service.BeerType.valueOf(beerType_);
     return result == null ? com.ibm.ws.grpc.fat.beer.service.BeerType.UNRECOGNIZED : result;
@@ -207,6 +211,7 @@ private static final long serialVersionUID = 0L;
    * <code>float beerRating = 4;</code>
    * @return The beerRating.
    */
+  @java.lang.Override
   public float getBeerRating() {
     return beerRating_;
   }
@@ -726,7 +731,7 @@ private static final long serialVersionUID = 0L;
      * <code>.beer.BeerType beerType = 3;</code>
      * @return The enum numeric value on the wire for beerType.
      */
-    public int getBeerTypeValue() {
+    @java.lang.Override public int getBeerTypeValue() {
       return beerType_;
     }
     /**
@@ -735,6 +740,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setBeerTypeValue(int value) {
+      
       beerType_ = value;
       onChanged();
       return this;
@@ -743,6 +749,7 @@ private static final long serialVersionUID = 0L;
      * <code>.beer.BeerType beerType = 3;</code>
      * @return The beerType.
      */
+    @java.lang.Override
     public com.ibm.ws.grpc.fat.beer.service.BeerType getBeerType() {
       @SuppressWarnings("deprecation")
       com.ibm.ws.grpc.fat.beer.service.BeerType result = com.ibm.ws.grpc.fat.beer.service.BeerType.valueOf(beerType_);
@@ -778,6 +785,7 @@ private static final long serialVersionUID = 0L;
      * <code>float beerRating = 4;</code>
      * @return The beerRating.
      */
+    @java.lang.Override
     public float getBeerRating() {
       return beerRating_;
     }

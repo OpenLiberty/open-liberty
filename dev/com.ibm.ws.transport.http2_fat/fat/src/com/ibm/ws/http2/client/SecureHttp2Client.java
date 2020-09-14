@@ -71,10 +71,10 @@ public class SecureHttp2Client {
      * Make secure http2 requests to the given host:port/{requestUris}. Return a set containing the string of each complete
      * response received from the server.
      *
-     * @param String   host
-     * @param int      port
-     * @param String[] requestUris
-     * @param int      expectedPushStreams number of total expected resources pushed for the request set
+     * @param String host
+     * @param        int port
+     * @param        String[] requestUris
+     * @param        int expectedPushStreams number of total expected resources pushed for the request set
      * @return The set of responses received from the server
      * @throws Exception
      */
@@ -112,7 +112,7 @@ public class SecureHttp2Client {
             executeRequest(endpoint, target, requestUri, responseMessages, latch);
         }
 
-        latch.await(5, TimeUnit.SECONDS);
+        latch.await(29, TimeUnit.SECONDS);
 
         LOGGER.logp(Level.INFO, CLASS_NAME, "drivePushRequests", "requests complete, shutting down client");
         requester.initiateShutdown();
@@ -139,13 +139,11 @@ public class SecureHttp2Client {
 
             @Override
             public void checkServerTrusted(final X509Certificate[] chain,
-                                           final String authType) throws CertificateException {
-            }
+                                           final String authType) throws CertificateException {}
 
             @Override
             public void checkClientTrusted(final X509Certificate[] chain,
-                                           final String authType) throws CertificateException {
-            }
+                                           final String authType) throws CertificateException {}
         } };
     }
 
@@ -166,20 +164,16 @@ public class SecureHttp2Client {
             }
 
             @Override
-            public void onFrameInput(final HttpConnection connection, final int streamId, final RawFrame frame) {
-            }
+            public void onFrameInput(final HttpConnection connection, final int streamId, final RawFrame frame) {}
 
             @Override
-            public void onFrameOutput(final HttpConnection connection, final int streamId, final RawFrame frame) {
-            }
+            public void onFrameOutput(final HttpConnection connection, final int streamId, final RawFrame frame) {}
 
             @Override
-            public void onInputFlowControl(final HttpConnection connection, final int streamId, final int delta, final int actualSize) {
-            }
+            public void onInputFlowControl(final HttpConnection connection, final int streamId, final int delta, final int actualSize) {}
 
             @Override
-            public void onOutputFlowControl(final HttpConnection connection, final int streamId, final int delta, final int actualSize) {
-            }
+            public void onOutputFlowControl(final HttpConnection connection, final int streamId, final int delta, final int actualSize) {}
         };
     }
 
@@ -244,8 +238,7 @@ public class SecureHttp2Client {
                     }
 
                     @Override
-                    public void releaseResources() {
-                    }
+                    public void releaseResources() {}
 
                 };
             }

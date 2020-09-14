@@ -1,0 +1,633 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/ValidationExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+7001=Trebuie s\u0103 v\u0103 loga\u0163i la ServerSession \u00eenainte de a ob\u0163ine ClientSessions.
+
+7002=Pool-ul numit [{0}] nu exist\u0103.
+
+7003=Dimensiunea maxim\u0103 trebuie s\u0103 fie mai mare dec\u00e2t dimensiunea minim\u0103.
+
+7004=Pool-urile trebuiesc configurate \u00eenainte de logare.
+
+7008=Tipul Java [{0}] nu este un tip de baz\u0103 de dat valid.
+
+7009=Lipse\u015fte descriptorul pentru [{0}].  Verifica\u0163i dac\u0103 descriptorul a fost \u00eenregistrat corespunz\u0103tor \u00een Sesiune.
+
+7010=Indexul de pornire este \u00een afara intervalului.
+
+7011=Indexul de oprire este \u00een afara intervalului.
+
+7012=A survenit o eroare fatal\u0103.
+
+7013=Utiliza\u0163i SessionManager API perimat \u015fi nu a putut fi g\u0103sit nici un fi\u015fier EclipseLink.properties \u00een calea dumneavoastr\u0103 de clase.  Nici o sesiunea nu a putut fi citit\u0103 din fi\u015fier.
+
+7017=Descriptorii de copii nu au o hart\u0103 de identitate, ei \u00ee\u015fi partajeaz\u0103 p\u0103rin\u0163ii
+
+7018=Erare de fi\u015fier.
+
+7023=Instan\u0163\u0103 de logare incorect\u0103, furnizat\u0103.  Trebuie furnizat un DatabaseLogin.
+
+7024=Politic\u0103 de combinare invalid\u0103.
+
+7025=Singurele chei valide pentru DatabaseRows sunt \u015eiruri \u015fi DatabaseFields.
+
+7027=Secven\u0163a numit\u0103 [{0}] este setat\u0103 incorect.  Incrementul acesteia nu se potrive\u015fte cu dimensiunea sa preinstalat\u0103.
+
+7028=writeObject() nu este permis \u00eentr-un UnitOfWork.
+
+7030=Nu pute\u0163i seta dimensiunea pool-ului de citire dup\u0103 logare.
+
+7031=Nu pute\u0163i ad\u0103uga descriptori pentru un SessionBroker.
+
+7032=Nu exist\u0103 o sesiune \u00eenregistrat\u0103 pentru clasa [{0}].
+
+7033=Nu exist\u0103 o sesiunea \u00eenregistrat\u0103 cu numele [{0}].
+
+7038=Eroare la mesajul de logare pentru istoricul Sesiunii.
+
+7039=Nu se poate \u00eenl\u0103tura din setul de clase numai citire dintr-un UnitOfWork imbricat. {0}Setul unui UnitOfWork imbricat al claselor numai citire trebuie s\u0103 fie egal sau s\u0103 fie un superset al setului p\u0103rintelui s\u0103u de clase numai citire.
+
+7040=Nu se poate modifica setul de clase numai citire \u00eentr-un UnitOfWork dup\u0103 ce acel UnitOfWork a fost utilizat. {0}Modific\u0103rile la setul numai citire trebuiesc f\u0103cute la ob\u0163inerea UnitOfWork sau imediat dup\u0103.
+
+7042=Clasa platformei bazei de date [{0}] nu a fost g\u0103sit\u0103.
+
+7043=[{0}] nu are nici un tabel de creat \u00een baza de date.
+
+7044=Clasa containerului specificat [{0}] nu poate fi utilizata ca \u015fi container deoarece nu implementeaz\u0103 Colec\u0163ie sau Hart\u0103.
+
+7047=Containerul specificat [{0}] nu necesit\u0103 chei.  A\u0163i \u00eencercat s\u0103 utiliza\u0163i metoda [{1}].
+
+7048=Nici metoda de instan\u0163\u0103, nici c\u00e2mpul numit [{0}] nu exist\u0103 pentru clasa de articol [{1}], \u015fi prin urmare, nu pot fi utilizate pentru crearea unei chei pentru Hart\u0103.
+
+7051=Atribut lips\u0103 [{1}] pentru descriptorul [{0}], apelat din [{2}]
+
+7052=S-a \u00eencercat utilizarea [{0}] (cu metoda cheie [{1}]) ca un container pentru DirectCollectionMapping.  Metoda useMapClass() nu poate fi utilizat\u0103, numai useCollectionClass() API este suportat\u0103 pentru DirectCollectionMappings.
+
+7053=edi\u0163ia() \u00eencercat\u0103 \u00eentr-o Sesiune ce nu este o ClientSession.  Numai ClientSessions poate fi eliberat.
+
+7054=ob\u0163inerea() \u00eencercat\u0103 \u00eentr-o Sesiune ce nu este o ServerSession.  ClientSessions pot fi ob\u0163inute numai de la ServerSessions.
+
+7055=Blocarea optimist\u0103 nu este suportat\u0103 pentru generarea procedurii stocate.
+
+7056=A fost \u00eenregistrat obiectul gre\u015fit \u00een UnitOfWork.  Obiectul [{0}] ar trebui s\u0103 fie obiectul din cache-ul p\u0103rinte [{1}].
+
+7058=Conector invalid [{0}] (trebuie s\u0103 fie de tip DefaultConnector).
+
+7059=Nume invalid al sursei de date [{0}].
+
+7060=Nu se poate ob\u0163ine sursa de date [{0}].
+
+7061=A survenit o excep\u0163ie \u00een JTS.
+
+7062=Blocarea la nivel de c\u00e2mp nu este suportat\u0103 \u00eenafara unei UnitOfWork.  Pentru a utiliza blocarea la nivel de c\u00e2mp, o UnitOfWork trebuie s\u0103 fie utilizat\u0103 pentru toate scrierile.
+
+7063=A survenit o excep\u0163ie \u00een containerul EJB.
+
+7064=A survenit o excep\u0163ie la extragerea cheii primare EJB reflective.  Asigura\u0163i-v\u0103 c\u0103 obiectul cheie primar\u0103 este definit corect. {2}Chie: [{0}] {2}Bean: [{1}]
+
+7065=Clasa la distan\u0163\u0103 pentru bean nu poate fi \u00eenc\u0103rcat\u0103 sau g\u0103sit\u0103.  Asigura\u0163i-v\u0103 c\u0103 este setat \u00eenc\u0103rc\u0103torul de clas\u0103 corect. {2}Bean: [{0}] {2}Clas\u0103 la distan\u0163\u0103: [{1}]
+
+7066=Nu se pot crea sau \u00eenl\u0103tura bean-uri dec\u00e2t dac\u0103 este prezent\u0103 tranzac\u0163ia JTS. {1}Bean: [{0}]
+
+7068=Clasa proiect [{0}] nu a fost g\u0103sit\u0103 pentru proiectul [{1}] utiliz\u00e2nd \u00eenc\u0103rc\u0103torul de clas\u0103 implicit.
+
+7071=Nu se pot utiliza parametrii de intare/ie\u015fire f\u0103r\u0103 utilizarea leg\u0103rii.
+
+7072=Clasa platformei de baz\u0103 de date [{0}] nu a fost g\u0103sit\u0103 pentru proiectul [{1}] utiliz\u00e2nd \u00eenc\u0103rc\u0103torul de clas\u0103 implicit.
+
+7073=Tipul de obiect Oracle cu numele de tip [{0}] nu este definit.
+
+7074=Numele tipului de obiect Oracle [{0}] nu este definit.
+
+7075=Dimensiunea maxim\u0103 pentru tipul Oracle VARRAY [{0}].  Trebuie s\u0103 fie definit\u0103 o dimensiune maxim\u0103.
+
+7076=La generarea clasei de proiect, descrierile proiectului nu trebuiesc s\u0103 fie ini\u0163ializate. {1}Descriptor: [{0}]
+
+7077=Interfa\u0163a acas\u0103 [{0}], specificat\u0103 \u00een timpul cre\u0103rii BMPWrapperPolicy, nu con\u0163ine o metod\u0103 corect\u0103 findByPrimaryKey().  O metod\u0103 findByPrimaryKey() trebuie s\u0103 existe, ce ia clasa PrimaryKey pentru acest bean.
+
+7079=Descriptorul pentru [{0}] nu a fost g\u0103sit \u00een sesiunea [{1}].  Face\u0163i clic pe proiectul utilizat pentru aceast\u0103 sesiune.
+
+7080=A fost aruncat\u0103 o FinderException la \u00eencercarea de \u00eenc\u0103rcare [{0}], a clasei [{1}], cu cheia primar\u0103 [{2}].
+
+7081=Obiectul agregat [{0}] nu poate fi \u00eenregistrat direct \u00een UnitOfWork.  Trebuie asociat cu obiectul surs\u0103 (proprietar).
+
+7084=Fi\u015fierul [{0}] nu este un tip valid pentru citire.  ProjectReader-ului trebuie s\u0103 i se dea fi\u015fierul XML Project implementat.
+
+7086=Tipul de sesiune [{0}] cu numele de sesiune [{1}] nu a fost definit corespunz\u0103tor.
+
+7087=Tipul de sesiune [{0}] nu a fost g\u0103sit pentru [{1}] utiliz\u00e2nd \u00eenc\u0103rc\u0103torul de clas\u0103 implicit\u0103.
+
+7088=Nu se poate crea o instan\u0163\u0103 a controlerului de tranzac\u0163ii externe [{0}], specificat \u00een fi\u015fierul de propriet\u0103\u0163i.
+
+7089=A survenit o excep\u0163ie la c\u0103utarea sau invocarea metodei de amendare sesiune [{0}] din clasa [{1}] cu parametrii [{2}].
+
+7091=Nu se pot seta clase de ascult\u0103tori.
+
+7092=Nu se poate ad\u0103uga o interogare ale c\u0103rei tipuri intr\u0103 \u00een conflict cu o interogare existent\u0103. Interogare de ad\u0103ugat: [{0}] este numit\u0103: [{1}] cu argumente [{2}]. Interogarea existent\u0103 \u00een conflict: [{3}] este numit\u0103: [{4}] cu argumentele: [{5}].
+
+7093=\u00cen interogarea numit\u0103 [{0}], clasa [{2}] pentru argumentul numit [{1}] nu poate fi g\u0103sit\u0103. Include\u0163i clasa lips\u0103 \u00een calea dumneavoastr\u0103 de clase.
+
+7095=Resursa sessions.xml [{0}] nu a fost g\u0103sit\u0103 \u00een calea resursei.  Verifica\u0163i dac\u0103 numele/calea resursei \u015fi classloader transmis \u00een SessionManager.getSession sunt corecte.  sessions.xml ar trebui incluse \u00een root al jar-ului implementat al aplica\u0163iei, dac\u0103 sessions.xml este implementat \u00eentr-un subdirector \u00een jar-ul aplica\u0163iei, asigura\u0163i-v\u0103 c\u0103 este utilizat\u0103 calea corect\u0103 a resursei "/" not "\".
+
+7096=Nu se poate utiliza metoda commit() pentru a comite din nou UnitOfWork.
+
+7097=Opera\u0163ie ce nu e suportat\u0103: [{0}].
+
+7099=Resursa XML a proiectului de implementare [{0}] nu a fost g\u0103sit\u0103 \u00een calea resursei.  Verifica\u0163i dac\u0103 numele/calea resursei \u015fi classloader-ul transmis c\u0103tre XMLProjectReader sunt corecte.  XML-ul proiectului ar trebui inclus \u00een root-ul jar-ului de implementare a aplica\u0163iei, dac\u0103 XML-ul proiectului este implementat \u00eentr-un subdirector din jar-ul aplica\u0163iei, asigura\u0163i-v\u0103 c\u0103 este utilizat\u0103 calea corect\u0103 a resursei utiliz\u00e2nd "/" not "\".
+
+7100=Nu s-a putut g\u0103si sesiunea cu numele [{0}] \u00een fi\u015fierul session.xml [{1}]
+
+7101=Nici un "meta-inf/eclipselink-ejb-jar.xml" nu a putut fi g\u0103sit \u00een classpath-ul dumneavoastr\u0103.  Sesiunea CMP nu a putut fi citit\u0103 din fi\u015fier.
+
+7102=A fost\u00eent\u00e2lnit\u0103 o valoare null pentru o cheie cache \u00een timp ce \u00eencearc\u0103 s\u0103 \u00eenl\u0103ture {2} un obiect din harta identitate: [{0}]{2} ce con\u0163ine un obiect de clas\u0103: [{1}] (sau o clas\u0103 din aceast\u0103 ierarhie){2}Cea mai probabil\u0103 cauz\u0103 a aceste situa\u0163ii este c\u0103 obiectul a fost deja colectat-{2}gunoi \u015fi astfel, nu exist\u0103 \u00een harta de identitat\u0103.{2}Lua\u0163i \u00een considerare o hart\u0103 de identitate alternativ\u0103 pentru a \u00eempiedica aceast\u0103 situa\u0163ie.{2}Face\u0163i referire la documenta\u0163ia EclipseLink pentru mai multe detalii cu privire la h\u0103r\u0163ile de identitate.
+
+7103=A fost \u00eent\u00e2lnit\u0103 o referin\u0163\u0103 nul\u0103 \u00een timpul \u00eencerc\u0103rii de invocare{1}metod\u0103: [{0}] la un obiect ce utilizeaz\u0103 indirec\u0163ie proxy.{1}Verifica\u0163i dac\u0103 acest obiect nu este nul \u00eenainte de a-i invoca metodele.
+
+7104=Secven\u0163ionarea log\u0103rii ar trebui s\u0103 nu utilizeze Controler de tranzac\u0163ii externe.
+
+7105=Eroare \u00eent\u00e2lnit\u0103 la convertirea clasei de criptare: [{0}]
+
+7106=Eroare \u00eent\u00e2lnit\u0103 \u00een timpul pornirii cript\u0103rii.
+
+7107=Eroare \u00eent\u00e2lnit\u0103 \u00een timpul decript\u0103rii \u015firului.
+
+7108=Aceast\u0103 opera\u0163ie nu este suportat\u0103 pentru platforme non-rela\u0163ionale.
+
+7109=Logarea \u00een proiectul utilizat pentru a crea sesiunea este nul\u0103, trebuie s\u0103 fie o logare valid\u0103.
+
+7110=O HistoricalSession presetat\u0103, lucreaz\u0103 numai cu baze de date Oracle 9R2 sau ulterioare, deoarece utilizeaz\u0103 caracteristica Flashback de la Oracle.
+
+7111=Nu pute\u0163i ob\u0163ine o HistoricalSession de la o UnitOfWork, o alt\u0103 HistoricalSession, o ServerSession sau o ServerSessionBroker.  Pute\u0163i achizi\u0163iona una de la o sesiune obi\u015fnuit, o ClientSession sau o ClientSessionBroker.
+
+7112=A\u0163i specificat c\u0103 EclipseLink utilizeaz\u0103 caracteristca : {0}, dar aceast\u0103 caracteristic\u0103 nu este disponibil\u0103 \u00een versiunea JDK ce ruleaz\u0103 momentan :{1}.
+
+7113={0} nu suport\u0103 apelare cu returnare.
+
+7114=\u00cen prezent nu sunt suportate date izolate \u00eentr-un broker de sesiune e client. Sesiunea numit\u0103 {0} con\u0163ine descriptori ce reprezint date izolate.
+
+7115=O Conexiune exclusiv\u0103 nu poate fi utilizat\u0103 pentru citirile ClientSession f\u0103r\u0103 date izolate.  Actualiza\u0163i ConnectionPolicy utilizat pentru \u00eendep\u0103rtarea configura\u0163iei ExclusiveConnection sau proiectul pentru setarea anumitor date pentru a fi exclusive.
+
+7116=Sunt utilizate argumente invalide.  V\u0103 rug\u0103m s\u0103 face\u0163i referire la API-ul public al metodei de apelare \u015fi s\u0103 utiliza\u0163i valori valide pentru argumente.
+
+7117=Exist\u0103 o \u00eencercare de utilizare a mai mult de un cursor \u00een SQLCall {0}
+
+7118=Metoda setCustomSQLArgumentType a fost apelat\u0103 \u00een SQLCall {0}, dar aceast\u0103 apelare nu utilizeaz\u0103 SQL personalizat
+
+7119=SQLCall nepreg\u0103tit {0} a \u00eencercat translatarea
+
+7120=Parametrul {0} \u00een SQLCall {1} nu poate fi utilizat ca \u015fi cursor, deoarece are un alt tip de parametru dec\u00e2t OUT
+
+7121={0} nu suport\u0103 func\u0163ii stocate
+
+7122=Conexiunea exclusiv\u0103 asociat\u0103 cu sesiunea este indisponibil\u0103 pentru interogare \u00een {0}
+
+7123=Un writeChanges() cu succes a fost apelat \u00een aceast\u0103 UnitOfWork.  Deoarece procesul de comitere a fost pornit, dar nu a fost \u00eenc\u0103 finalizat, singurele opera\u0163iuni suportate acum sunt comitere, commitAndResume, eliberare, orice interogare la nivel de non-obiect sau execu\u0163ie SQLCall.  Opera\u0163iunea {0} nu este permis la acest moment.
+
+7124=Un writeChanges() cu succes, a fost apelat la aceast\u0103 UnitOfWork.  Dat fiind pericolul ca modific\u0103rile par\u0163iale s\u0103 fi fost scrise \u00een depozitul de date, dar nu \u015fi deulate \u00eenapoi (dac\u0103 \u00een interiorul unei tranzac\u0163ii externe), singurele opera\u0163ii suportate acum sunt eliberarea, derularea \u00eenapoi a tranzac\u0163iei globale, orice interogare la nivel de non-obiect sau execu\u0163ia SQLCall.  Opera\u0163iunea {0} a fost \u00eencercat\u0103.
+
+7125=O dat\u0103 ce UnitOfWork a fost comis \u015fi/sau eliberat, nu ar mai trebui efectuat\u0103 nici o opera\u0163iune asupra acestuia.  Opera\u0163iunea {0} a fost \u00eencercat\u0103 asupra acestuia.
+
+7126=Nu se poate apela writeChanges pentru un UnitOfWork imbricat.  Un UnitOfWork imbricat nu scrie niciodat\u0103 modific\u0103rile direct \u00een depozitul de date, numai p\u0103rintele UnitOfWork face aceasta.
+
+7127=Pute\u0163i scrie modific\u0103ri numai o dat\u0103 \u00een depozitul de date, a\u015fa cum pute\u0163i numai o dat\u0103 s\u0103 apela\u0163i comitere.
+
+7128=Sesiunea [{0}] este deja logat\u0103.
+
+7129=Argumentele metodei nu pot avea valoare nul\u0103.
+
+7130=Nu este suportat UnitOfWork imbricat pentru urm\u0103rirea modific\u0103rii de atribute.
+
+7131={0} este de tip gre\u015fit.  Tipul de eveniment modificare colec\u0163ie trebuie s\u0103 fie ad\u0103ugat sau \u00eenl\u0103turat.
+
+7132={0} este clasa de eveniment gre\u015fit\u0103.  Numai PropertyChangeEvent \u015fi CollectionChangeEvent sunt suportate.
+
+7133=Comiterea veche nu este suportat\u0103 pentru urm\u0103rirea modific\u0103rii atributului.
+
+7134=Platforma de server {0} este numai citire dup\u0103 logare.
+
+7135=Nu pute\u0163i comite \u015fi rezuma un UnitOfWork ce con\u0163ine orice modificare pentru toate interog\u0103rile
+
+7136=Nu este suportat UnitOfWork imbricat pentru o modificare pentru toate interog\u0103rile
+
+7137=Obiectul este adus par\u0163ial (utiliz\u00e2nd un grup de aducere), atributul de ne-aducere ({0}) nu este editabil.
+
+7139=Modificarea pentru toate interog\u0103rile nu poate fi lansat\u0103 \u00eentr-un UnitOfWork ce con\u0163ine alte opera\u0163ii de scriere.
+
+7140=Tipul de secven\u0163\u0103 {0} nu are metoda {1}.
+
+7141=Secven\u0163a {0} este de tip DefaultSequence, ce nu poate fi utilizat\u0103 \u00een metoda setDefaultSequence.
+
+7142=Secven\u0163a {0} nu poate fi setat\u0103 ca \u015fi implicit\u0103, deoarece o secven\u0163\u0103 cu acel nume a fost deja ad\u0103ugat\u0103
+
+7143=Secven\u0163a {0} nu poate fi ad\u0103ugat\u0103, deoarece o secven\u0163\u0103 cu acel nume a fost deja setat\u0103 ca valoare implicit\u0103.
+
+7144={0}: platforma {1} nu suport\u0103 {2}.
+
+7145={2} \u00eencearc\u0103 s\u0103 se conecteze la secven\u0163a {0}, dar este deja conectat\u0103 la {1}. Este posibil ca cele dou\u0103 sesiuni s\u0103 partajeze obiectul DatasourcePlatform
+
+7146=QuerySequence {1} nu are o interogare de selectare.
+
+7147=Platforma {0} nu poate crea secven\u0163a implicit\u0103 de platform\u0103 - nu \u00eenlocuie\u015fte metoda createPlatformDefaultSequence
+
+7148=Nu se poate utiliza commitAndResume() cu un UnitOfWork JTA/sincronizat.
+
+7149=Atributul cheii primare compuse [{2}] de tipe [{4}] a clasei de intrare [{0}] ar trebui s\u0103 fie de acela\u015fi tip a\u015fa cum a fost definit \u00een clasa sa de chei primare [{1}]. Astfel, ar trebui s\u0103 fie de tip [{3}].
+
+7150=Specifica\u0163ie invalid\u0103 a cheii primare compuse. Numele c\u00e2mpurilor de chei primare sau propriet\u0103\u0163i din clasa de chei primare [{1}] \u015fi cele ale clasei de bean entitate [{0}] trebuie s\u0103 corespund\u0103 \u015fi tipurile acestea trebuiesc s\u0103 fie acelea\u015fi. De asemenea, asigura\u0163i-v\u0103 c\u0103 a\u0163i specificat elementele ID pentru atributele corespunz\u0103toare \u00een XML \u015fi/sau un @Id \u00een c\u00e2mpurile corespunz\u0103toare sau propriet\u0103\u0163ile clasei de entit\u0103\u0163i.
+
+7151=Tipul [{1}] pentru atributul [{0}] din clasa de entit\u0103\u0163i [{2}] nu este un tip valid pentru o mapare enumerat\u0103. Atributul trebuie definit ca \u015fi enumerare Java.
+
+7153=Adnot\u0103rile de mapare nu pot aplicate pentru c\u00e2mpurile sau propriet\u0103\u0163ile ce au un @Transient specificat. [{0}] \u00eencalc\u0103 aceast\u0103 restric\u0163ie.
+
+7154=Atributul [{3}] \u00een clasa de intrare [{2}] are o valoare mapat dup\u0103, de [{1}] ce nu exist\u0103 \u00een clasa sa de de\u0163inere intr\u0103ri [{0}]. Dac\u0103 clasa de de\u0163inere intrare este o @MappedSuperclass, aceasta este invalid\u0103 \u015fi atributul dumneavoastr\u0103 ar trebui s\u0103 fac\u0103 referire la subclasa corect\u0103.
+
+7155=Tipul [{1}] pentru atributul [{0}] \u00een clasa de intr\u0103ri [{2}] nu este un tip valid pentru o mapare serializat\u0103. Tipul de atribut trebuie s\u0103 implementeze interfa\u0163a Serializabil.
+
+7156=Nu a putut fi g\u0103sit\u0103 clasa numit\u0103 [{0}]. Asigura\u0163i-v\u0103 c\u0103 numele/calea clasei sunt corecte \u015fi disponibile pentru classloader.
+
+7157=Clasa de entit\u0103\u0163i [{0}] trebuie s\u0103 utilizeze o @JoinColumn \u00een loc de @Column pentru a-\u015fi mapa atributul rela\u0163ional [{1}].
+
+7158=A fost \u00eent\u00e2lnit\u0103 o eroare la construirea @NamedQuery [{1}] din clasa de entitate [{0}].
+
+7159=Cheia de mapare [{0}] din clasa de entit\u0103\u0163i [{1}] nu a putut fi g\u0103sit\u0103 pentru maparea [{2}].
+
+7160=@OneToMany pentru numele de atribut [{1}] \u00een clasa de entitate [{0}] nu ar trebui s\u0103 aib\u0103 JoinColumn(s) specificat. Unde un @OneToMany nu este mapat de o alt\u0103 entitate (i.e. est partea de de\u0163inere \u015fi este uni-direc\u0163ional\u0103) un @JoinTable trebuie specificat, nu @JoinColumn(s). Dac\u0103 @JoinTable nu est specificat, un tabel de uniune implicit va fi utilizat \u00een schimb; Specifica\u0163i @JoinTable numai dac\u0103 ar trebui \u00eenlocuit\u0103 configura\u0163ia implicit\u0103.
+
+7161=Clasa de entit\u0103\u0163i [{0}] nu are o cheie primar\u0103 specificat\u0103. Ar trebui s\u0103 defineasc\u0103 fie un @Id, @EmbeddedId sau un @IdClass. Dac\u0103 a\u0163i definit PK utiliz\u00e2nd oricare dintre aceste adnot\u0103ri, atunci asigura\u0163i-v\u0103 c\u0103 nu ave\u0163i un tip de acces amestecat (at\u00e2t c\u00e2mpurile c\u00e2t \u015fi propriet\u0103\u0163ile adnotat) \u00een ierarhia dumneavoastr\u0103 de clas\u0103 entit\u0103\u0163i.
+
+7162=Clasa de entit\u0103\u0163i [{0}] are multiple adnot\u0103ri @EmbeddedId specificate (\u00een atributele [{1}] \u015fi [{2}]). Numai un @EmbeddedId poate fi specificat per Entitate.
+
+7163=Clasa de entit\u0103\u0163i [{0}] are at\u00e2t un @EmbdeddedId (\u00een atributul [{1}]) c\u00e2t \u015fi @Id (\u00een atributul [{2}]. Nu pot fi specificate ambele tipuri de ID \u00een aceea\u015fi entitate.
+
+7164=Tipul [{1}] pentru atributul [{0}] din clasa de entit\u0103\u0163i [{2}] nu este un tp valid pentru o mapare lob. Pentru un lob de tip BLOB, atributl trebuie definit ca \u015fi java.sql.Blob, byte[], Byte[] sau un tip Seralizabil. Pentru un lob de tip CLOB, atributul trebuie specificat ca \u015fi tip java.sql.Clob, char[], Character[] sau \u015eir.
+
+7165=Tipul [{1}] pentru atribut [{0}] \u00een clasa de entitate [{2}] nu esteun tip valid pentru o mapare temporal\u0103. Atributul trebuie definit ca \u015fi java.util.Date sau java.util.Calendar.
+
+7166=Un generator de tabel ce utilizeaz\u0103 numele rezervat [{0}] pentru "numele" sau, a fost g\u0103sit \u00een [{1}]. Nu poate utliza acest nume deoarece este rezervat pentru setarea ca \u015fi implicit a unui generator de secven\u0163\u0103 "nume secven\u0163\u0103".
+
+7167=Un generator de secven\u0163\u0103 ce utilizeaz\u0103 numele rezervat [{0}] pentru "nume secven\u0163\u0103" al s\u0103u, a fost g\u0103sit \u00een [{1}]. Nu poate utiliza acest nume deoarece este rezervat pentru setarea ca \u015fi implicit\u0103 a "nume" pentru generatorul de tabel.
+
+7168=Atributul [{0}] de tip [{1}] \u00een clasa de entit\u0103\u0163i [{2}] nu este valid pentru o proprietate de versiune. Urm\u0103toarele tipuri sunt suportate: int, \u00centreg, scurt, Scurt, lung, Lung, Amprent\u0103 de timp.
+
+7169=Clasa [{0}] are dou\u0103 @GeneratedValues: pentru c\u00e2mpurile [{1}] \u015fi [{2}]. Numai una este permis\u0103.
+
+7172=Erare \u00eent\u00e2lnit\u0103 la instan\u0163ierea clasei [{0}].
+
+7173=Un eveniment de modificare proprietate a fost declan\u015fat \u00eentr-o proprietate cu numele [{1}] din [{0}].  Totu\u015fi, aceast\u0103 proprietate nu exist\u0103.
+
+7174=Metoda de aducere [{1}] \u00eentr-o clas\u0103 de entit\u0103\u0163i [{0}] nu are definit\u0103 o metod\u0103 de setare corespunz\u0103toare.
+
+7175=Maparea [{0}] nu suport\u0103 blocarea optimist a versiunii de cascadare suport.
+
+7176=Maparea [{0}] nu suport\u0103 blocarea optimist\u0103 a versiunii de cascadare suport deoarece are o interogare personalizat\u0103.
+
+7177=Descriptorul de agregat [{0}] are map\u0103ri de\u0163inute privat. Descriptorii de agregat nu suport\u0103 blocarea optimist\u0103 a versiunii de cascadare.
+
+7178=OracleOCIProxyConnector necesit\u0103 surs\u0103 de dat OracleOCIConnectionPool.
+
+7179=OracleJDBC_10_1_0_2ProxyConnectionCustomizer necesit\u0103 surs\u0103 de date ce produce OracleConnections.
+
+7180=OracleJDBC_10_1_0_2ProxyConnectionCustomizer necesit\u0103 Oracle JDBC versiunea 10.1.0.2 sau superioar\u0103 astfel \u00eenc\u00e2t OracleConnection declar\u0103 metoda openProxySession.
+
+7181=OracleJDBC_10_1_0_2ProxyConnectionCustomizer necesit\u0103 ca valoarea propriet\u0103\u0163ii PersistenceUnitProperties.ORACLE_PROXY_TYPE f\u0103 fie ori I\u00centreg, ori s\u0103 poat\u0103 fi convertit\u0103 la \u00centreg: de exemplu OracleConnection.PROXYTYPE_USER_NAME sau Integer.toString(OracleConnection.PROXYTYPE_USER_NAME)
+
+7182=EC - Nu a put fi g\u0103sit\u0103 clasa de driver-e [{0}]
+
+7183=Eroare la \u00eenchiderea fi\u015fierului persistence.xml.
+
+7184=Proprietatea de sistem [{0}] nu este specificat\u0103. Trebuie setat\u0103 la o clas\u0103 ce define\u015fte o metod\u0103 "getContainerConfig()".
+
+7185=Nu se poate g\u0103si clasa [{0}] specificat\u0103 \u00een [{1}]
+
+7186=Nu se poate invoca metoda [{0}] pentru clasa [{1}] specificat\u0103 \u00een [{2}]
+
+7187=[{0}] ar trebui s\u0103 defineasc\u0103 o metod\u0103 static\u0103 public\u0103 [{1}] ce nu are parametrii \u015fi returneaz\u0103 Colec\u0163ie
+
+7188=Este necesar\u0103 lista cu clase non-null.
+
+7189=Nu se poate crea classloader temporar din \u00eenc\u0103rc\u0103torul curent: [{0}]
+
+7190=[{0}] a e\u015fuat
+
+7191=Clasa de entit\u0103\u0163i [{0}] nu a fost g\u0103sit\u0103 utiliz\u00e2nd \u00eenc\u0103rc\u0103torul de clase [{1}].
+
+7192=ClassFileTransformer [{0}] arunc\u0103 o excep\u0163ie la efectuarea transform() pentru clasa [{1}].
+
+7193=Fi\u015fierele JAR \u00een XML persisten\u0163\u0103 nu sunt suportate \u00een aceast\u0103 versiune de EclipseLink.
+
+7194=Nu s-a putut lega: [{0}] la: [{1}].
+
+7195=Excep\u0163ie la configurarea EntityManagerFactory.
+
+7196=[{0}] de tip [{1}] nu poate fi aruncat la [{2}].
+
+7197=A fost detectat\u0103 o cheie primar\u0103 null sau zero \u00een clona UnitOfWork [{0}], cheia primar\u0103 [{1}]. Seta\u0163i IdValidation sau proprietatea "eclipselink.id-validation" a descriptorului.
+
+7198=Clasa: [{0}] nu a fost g\u0103sit\u0103 la conversia din numele claselor la clase.
+
+7199=Un tabel primar nu a fost definit pentru entitatea {0} \u00een fi\u015fierul de map\u0103ri entitate: {1}.  Un tabel primar este necesar pentru procesarea unei rela\u0163ii de entitate.
+
+7200=Atributul [{1}] nu a fost g\u0103sit \u00een clasa \u00eencastrabil\u0103 [{0}]. Este referit \u00eentr-o \u00eenlocuire de atribut pentru atributul \u00eencorporabil [{3}] pentru clasa [{2}].
+
+7201=A survenit o excep\u0163ie la parsarea fi\u015fierului map\u0103ri de entitate: {0}.
+
+7202=Numele ignorare atribut {0} este invalid - asigura\u0163i-v\u0103 c\u0103 un atribut cu acela\u015fi nume exist\u0103 \u00een {1} \u00eencastrat.
+
+7203=Elementul de mapare [{1}] pentru clasa [{2}] are un tip de colec\u0163ie nesuportat [{0}]. Numai Setare, List\u0103, Mapare \u015fi Colec\u0163ie sunt suportate.
+
+7207=Atributul [{1}] din clasa de entit\u0103\u0163i [{0}] are un tip invalid pentru un lob de tip BLOB. Atributul trebuie definit ca fiind de tip java.sql.Blob, byte[], Byte[] sau Serializabil.
+
+7208=Atributul [{1}] \u00eentr-o clas\u0103 de entit\u0103\u0163i [{0}] are un tip invalid pentru un lob de tip CLOB. Atributul trebuie definit ca fiind de tip java.sql.Clob, char[], Character[] sau \u015eir.
+
+7212=Atributul [{0}] din clasa de entit\u0103\u0163i [{1}] nu specific\u0103 un tip temporal. Trebuie specificat un tip temporal pentru c\u00e2mpurile sau propriet\u0103\u0163ile persistente de tip java.util.Date \u015fi java.util.Calendar.
+
+7213=Referin\u0163ele mappedBy circulare au fost specificate (Clasa: [{0}], atribut: [{1}] \u015fi Clasa: [{2}], atribut: [{3}]. Acesta este invalid, numai o parte poate fi proprietarul rela\u0163iei. De aceea, specifica\u0163i o valoare mappedBy numai \u00een partea ce nu este proprietar al rela\u0163iei.
+
+7214=Entitatea \u0163int\u0103 a atributului rela\u0163iei [{0}] \u00een clasa [{1}] nu poate fi determinat.  Atunci c\u00e2nd nu utiliza\u0163i generice, asigura\u0163i-v\u0103 c\u0103 entitatea \u0163int\u0103 este definit\u0103 \u00een maparea rela\u0163iei.
+
+7215=Nu a putut fi \u00eenc\u0103rcat c\u00e2mpul numit [{0}] \u00een clasa [{1}]. Asigura\u0163i-v\u0103 c\u0103 exist\u0103 un c\u00e2mp corespunz\u0103tor cu acel nume definit \u00een clas\u0103.
+
+7216=Nu a putut fi \u00eenc\u0103rcat\u0103 metoda pentru numele propriet\u0103\u0163ii [{0}] \u00een clasa [{1}]. Asigura\u0163i-v\u0103 c\u0103 exist\u0103 metod\u0103 de ob\u0163inere corespunz\u0103toare pentru acel nume de proprietate definit \u00een clas\u0103.
+
+7217=Valoarea de ordonare dup\u0103 [{0}], specificat\u0103 \u00een elementul [{2}] din entitatea [{3}], este invalid. Nu exist\u0103 nici o proprietate sau c\u00e2mp cu acel nume \u00een entitatea \u0163int\u0103 [{1}].
+
+7218=[{0}] nu \u00eenlocuie\u015fte metoda getCreateTempTableSqlPrefix. DatabasePlatforms ce suport\u0103 tabele temporare trebuie s\u0103 \u00eenlocuiasc\u0103 aceast\u0103 metod\u0103.
+
+7219=[{0}] nu \u00eenlocuie\u015fte metoda valueFromRowInternalWithJoin, dar metoda sa isJoiningSupported returneaz\u0103 true. Maparea referin\u0163ei str\u0103ine ce suport\u0103 uniunea, trebuie s\u0103 \u00eenlocuiasc\u0103 aceast\u0103 metod\u0103.
+
+7220=@JoinColumns \u00een elementul adnotat [{0}] din clasa de entit\u0103\u0163i [{1}] este incomplet. Atunci c\u00e2nd clasa entit\u0103\u0163ii surs\u0103 utilizeaz\u0103 o cheie primar\u0103 compus\u0103, un @JoinColumn trebuie specificat pentru fiecare coloan\u0103 unit\u0103 utiliz\u00e2nd @JoinColumns. At\u00e2t numele c\u00e2t \u015fi elementele referencedColumnName trebuiesc specificate \u00een fiecare astfel de @JoinColumn.
+
+7222=O @PrimaryKeyJoinColumns incomplet\u0103 a fost specificat\u0103 \u00een elementul adnotat [{0}]. Atunci c\u00e2nd este specificat @PrimaryKeyJoinColumns pentru o entitate ce are o cheie primar\u0103 compus\u0103, un @PrimaryKeyJoinColumn trebuie specificat pentru fiecare coloan\u0103 de unire chei primare utiliz\u00e2nd @PrimaryKeyJoinColumns. At\u00e2t numele c\u00e2t \u015fi elementele referencedColumnName trebuiesc specificate \u00een fiecare astfel de @PrimaryKeyJoinColumn.
+
+7223=Un @PrimaryKeyJoinColumns a fost g\u0103sit \u00een elementul adnotat [{0}]. Atunci c\u00e2nd o entitate utilizeaz\u0103 o singur\u0103 cheie primar\u0103, numai un singur (sau zero) @PrimaryKeyJoinColumn ar trebui specificat.
+
+7224=Metoda [{1}] din clasa de ascultare [{0}] este o metod\u0103 callback invalid\u0103.
+
+7225=Metoda [{1}] nu a putut fi g\u0103sit\u0103 \u00een clasa de ascult\u0103tori [{0}].
+
+7226=Metoda [{1}] din clasa de ascult\u0103tori [{0}] are un modificator invalid. Metodele callback nu pot fi statice sau finale.
+
+7227=Clasa de ascult\u0103tori [{0}] are multiple metode callback de ciclu de via\u0163\u0103 pentru acela\u015fi eveniment ciclu de via\u0163\u0103 ([{1}] \u015fi [{2}]).
+
+7228=Metoda Callback [{1}] din clasa de ascult\u0103tori [{0}] are o semn\u0103tur\u0103 incorect\u0103. Nu ar trebui s\u0103 aib\u0103 parametrii.
+
+7229=Metoda Callback [{3}] din clasa de ascult\u0103tori entitate [{2}] are o semn\u0103tur\u0103 incorect\u0103. Metoda trebuie s\u0103 ia 1 parametru care este cel mai asignabil din clasa de entit\u0103\u0163i. Aici, clasa de parametrii [{1}] nu este asignabil\u0103 din clasa de entit\u0103\u0163i [{0}].
+
+7231=Nu poate persista obiectul deta\u015fat [{0}]. {3}Class> {1} Primary Key> {2}
+
+7232=Clasa de entit\u0103\u0163i [{0}] con\u0163ine mai multe declara\u0163ii @Id, dar nu define\u015fte elemente <id> \u00een documentul instan\u0163ei de mapare entit\u0103\u0163i.  V\u0103 rug\u0103m s\u0103 v\u0103 asigura\u0163i c\u0103 dac\u0103 exist\u0103 mai multe declara\u0163ii @Id pentru o clas\u0103 de entit\u0103\u0163i dat\u0103, defini\u0163ia <entity> corespunz\u0103toare con\u0163ine un element <id> pentru fiecare.
+
+7233=Maparea metadatelor nu poate fi aplicat\u0103 pentru propriet\u0103\u0163i/metode ce accept\u0103 argumente. Atributul [{0}] din clasa [{1}] \u00eencalc\u0103 aceast\u0103 restric\u0163ie. Asigura\u0163i-v\u0103 c\u0103 metoda nu are argumente dac\u0103 este mapat\u0103 cu adnot\u0103ri sau \u00eentr-un fi\u015fier de mapare XML.
+
+7234=Genera\u0163ia DDL necesit\u0103 ca transformatorul de clas\u0103, utilizat cu maparea de transformare a atributului [{1}] din descriptorul [{0}], specific\u0103 un tip de returnare pentru metoda sa [{2}] (\u015fi nu Obiect). Genera\u0163ia DDL necesit\u0103 acest tip specific de returnare astfel \u00eenc\u00e2t s\u0103 poat\u0103 genera tipul de c\u00e2mp corect.
+
+7235=Transformatorul de clas\u0103 utilizat cu maparea de transformare a atributului [{1}] din descriptorul [{0}] nu implementeaz\u0103 metoda [{2}]. Aceast\u0103 metod\u0103 este parte din interfa\u0163a FieldTransformer \u015fi trebuie implementat\u0103. Re\u0163ine\u0163i de asemenea, atunci c\u00e2nd este implementat\u0103, tipul s\u0103u returnat ar trebui s\u0103 fie de asemenea un tip explicit (\u015fi nu Obiect) atunci c\u00e2nd se utilizeaz\u0103 genera\u0163ia DDL.
+
+7237=Numele entit\u0103\u0163ii trebuie s\u0103 fie unic \u00eentr-o unitate de persisten\u0163\u0103. Numele entit\u0103\u0163ii [{0}] este utilizat pentru clasele de entit\u0103\u0163i [{1}] \u015fi [{2}].
+
+7238=Generatorul de tabel specificat \u00een [{2}] cu nume == [{0}] intr\u0103 \u00een conflict cu generatorul de secven\u0163\u0103 cu acela\u015fi nume specificat \u00een [{1}].
+
+7240=Generatorul de tabel specificat \u00een [{2}] cu valoarea coloanei pk == [{0}] intr\u0103 \u00een conflict cu generatorul de secven\u0163\u0103 specificat \u00een [{1}] cu nume de secven\u0163\u0103 == [{0}]. Nu pot utiliza aceea\u015fi valoare.
+
+7242=A fost f\u0103cut\u0103 o \u00eencercare de traversare a unei rela\u0163ii utiliz\u00e2ndu-se o indirec\u0163ie ce avea o Sesiune nul\u0103.  Aceasta se \u00eent\u00e2mpl\u0103 de obicei atunci c\u00e2nd este serializat\u0103 o entitate cu o rela\u0163ie LAZY neinstan\u0163iat\u0103 \u015fi rela\u0163ia este traversat\u0103 dup\u0103 serializare.  Pentru a evita aceast\u0103 problem\u0103, instan\u0163ia\u0163i rela\u0163ia LAZY \u00eenainte de serializare.
+
+7243=Lips\u0103 metadate pentru clasa [{0}]. Asigura\u0163i-v\u0103 c\u0103 clasa nu est exclus\u0103 din unitatea dumneavoastr\u0103 persistent\u0103 de o setare <exclude-unlisted-classes>true</exclude-unlisted-classes>. Dac\u0103 acesta este cazul, ve\u0163i avea nevoie s\u0103 include\u0163i clasa direct prin ad\u0103ugarea unei intr\u0103ri <class>[{0}]</class> pentru unitatea dumneavoastr\u0103 de persisten\u0163\u0103.
+
+7244=A fost \u00eent\u00e2lnit\u0103 o maparea incompatibil\u0103 \u00eentre [{0}] \u015fi [{1}]. Aceasta are loc de obicei atunci c\u00e2nd cardinalitatea unei map\u0103ri nu corespunde cu cardinalitatea backpointer-ului s\u0103u.
+
+7245=Clasa ce poate fi \u00eenglobat\u0103 [{0}] este utilizat\u0103 cu tipuri de acces ce se afl\u0103 \u00een conflict. Clasa [{1}] utilizeaz\u0103 accesul [{2}] \u015fi clasa [{3}] utilizeaz\u0103 accesul [{4}]. Atunci c\u00e2nd se partajeaz\u0103 un obiect \u00eenglobat \u00eentre clase, tipurile de acces ale acelor clase \u00eenglobate trebuie s\u0103 fie acela\u015fi.
+
+7246=Clasa Intrare [{0}] are un atribut \u00eenglobat [{1}] de tip [{2}] ce nu este o clas\u0103 ce poate fi \u00cenglobat\u0103. Motivul probabil: @Embeddable lips\u0103 sau <embeddable> lips\u0103 \u00een orm.xml dac\u0103 metadata-complete = true
+
+7247=O referin\u0163\u0103 circular\u0103 a fost descoperit\u0103 la procesarea ID-urilor derivate din urm\u0103toarele clase Intrare: [{0}] 
+
+7249=Entitatea [{0}] utilizeaz\u0103 [{1}] ca \u015fi clas\u0103 ID \u00eenglobat\u0103 a c\u0103rei tip de acces a fost determinat ca \u015fi [{2}]. Dar [{1}] nu define\u015fte nici un [{2}]. Este posibil s\u0103 nu fi furnizat suficiente metadate \u00een clasa dumneavoastr\u0103 de ID [{1}].
+
+7250=[{0}] utilizeaz\u0103 o non-entitate [{1}] ca \u015fi entitate \u0163int\u0103 \u00een atributul rela\u0163ional [{2}].
+
+7251=Atributul [{1}] de clas\u0103 [{0}] este mapat la o coloan\u0103 de chei primare \u00een baza de date. Actualiz\u0103rile nu sunt permise.
+
+7252=Exist\u0103 mai multe fi\u015fiere de mapare numite [{1}] \u00een calea de clase pentru unitatea de persisten\u0163\u0103 numit\u0103 [ {0} ].
+
+7253=Nu exist\u0103 un fi\u015fier de mapare numit [{1}] \u00een calea de clase pentru unitatea de persisten\u0163\u0103 numit\u0103 [{0}].
+
+7254=Convertorul cu numele [{1}] \u00een clasa [{0}] a mapat valoarea datei [{2}] pentru mai multe valori de obiecte. O valoare de conversie trebuie s\u0103 mapeze fiecare valoare de dat\u0103 o singur\u0103 dat\u0103.
+
+7255=Clasa [{0}] specific\u0103 o @Convert \u00een [{1}]. Acesta este invalid. O @Convert este suportat\u0103 numai cu @Basic, @BasicCollection, @BasicMap \u015fi @ElementCollection. Pentru prea multe map\u0103ri ce utilizeaz\u0103 o mapare, pute\u0163i utiliza numai o @MapKeyConvert.
+
+7256=Convertorul cu numele [{1}] utilizat cu elementul [{2}] \u00een clasa [{0}] nu a fost g\u0103sit \u00een unitatea de persisten\u0163\u0103. V\u0103 rug\u0103m s\u0103 v\u0103 asigura\u0163i c\u0103 a\u0163i furnizat numele corect de convertor.
+
+7257=Nu se poate instan\u0163ia valoarea datei cu tipul [{2}] \u015fi valoarea [{1}] din numele convertorului de tip obiect [{0}]
+
+7258=Nu se poate instan\u0163ia valoarea obiectului cu tipul [{2}] \u015fi valoarea [{1}] din convertorul de tip obiect numit [{0}]
+
+7259=Nu se poate determina tipul de date pentru atributul [{1}] din clasa de entit\u0103\u0163i [{0}] ce utilizeaz\u0103 numele convertorului [{2}]. Trebuie specificat un tip utiliz\u00e2nd tipul de date din convertor sau atributul dumneavoastr\u0103 ar trebui s\u0103 utilizeze o specifica\u0163ie generic\u0103.
+
+7260=Nu se poate determina tipul de obiect pentru atributul [{1}] din clasa de entit\u0103\u0163i [{0}] ce utilizeaz\u0103 numele convertorului [{2}]. Trebuie specificat un tip utiliz\u00e2nd tipul de obiect din convertor sau atributul dumneavoastr\u0103 ar trebui s\u0103 utilizeze o specifica\u0163ie generic\u0103.
+
+7261=Tipul [{1}] pentru atributul [{0}] din clasa entit\u0103\u0163ii [{2}] nu este un tip valid pentru o mapare de colec\u0163ie de baz\u0103. Atributul trebuie s\u0103 fie de tip Collection.class, List.class sau Set.class.
+
+7262=Tipul [{1}] pentru atributul [{0}] \u00een clasa de intr\u0103ri [{2}] nu este un tip valid pentru o mapare de hart\u0103 de baz\u0103. Atributul trebuie s\u0103 fie de tip Map.class.
+
+7263=Clasa [{0}] are o specificare de blocare optimist\u0103 incomplet\u0103. Pentru o politic\u0103 de blocare optimist\u0103 de tip SELECTED_COLUMNS, coloanele selectate trebuiesc specificate \u015fi numele acelor coloane nu pot fi omise.
+
+7264=Clasa [{0}] are o specifica\u0163ie de blocare optimist\u0103 incomplet\u0103. Pentru o politic\u0103 de blocare optimist\u0103 de tip VERSION_COLUMN, o @Version trebuie specificat\u0103 \u00een c\u00e2mpul versiune sau proprietate.
+
+7265=O adnotare @Cache nu este permis\u0103 \u00eentr-o clas\u0103 ce poate fi \u00eenglobat\u0103.
+
+7266=Adnotarea @Cache \u00eentr-o clas\u0103 [{0}] are specificate at\u00e2t expiry() c\u00e2t \u015fi expiryTimeOfDay(). Numai una dintre cele dou\u0103 poate fi specificat\u0103 \u00eentr-o setare de adnotare @Cache.
+
+7267=Clasa handler de excep\u0163ii specificat\u0103 [{0}] este invalid\u0103, clasa trebuie s\u0103 existe \u00een calea de clase \u015fi implementat\u0103 \u00een interfa\u0163a ExceptionHandler.
+
+7268=Clasa ascult\u0103tori de evenimente de sesiune specificat\u0103 [{0}] este invalid\u0103, clasa trebuie s\u0103 existe \u00een calea de clase \u015fi implementat\u0103 \u00een interfa\u0163a SessionEventListener.
+
+7270=Valoarea specificat\u0103 a dimensiunii declara\u0163iilor din cache [{0}] este invalid\u0103 [{1}].
+
+7271=Valoarea boolean\u0103 specificat\u0103 [{0}] pentru setarea sql nativ este invalid\u0103, valoarea trebuie s\u0103 fie "true" sau "false".
+
+7272=Valoarea boolean\u0103 specificat\u0103 [{0}] pentru activarea memor\u0103rii \u00een cache a declara\u0163iei SQL este invalid\u0103, valoarea trebuie s\u0103 fie "true" sau "false".
+
+7273=Valoarea boolean\u0103 specificat\u0103 [{0}] pentru copierea interog\u0103rilor numite de descriptor \u00een sesiune este invalid\u0103, valoarea trebuie s\u0103 fie "true" sau "false".
+
+7274=A fost aruncat\u0103 o Excep\u0163ie la \u00eencercarea de creare a fi\u015fierului istoric [{0}]:[{1}].
+
+7275=Nu se poate instan\u0163ia clasa handler de excep\u0163ii [{0}] specificat\u0103 \u00een proprietatea eclipselink.exception-handler [{1}].
+
+7276=Nu se poate instan\u0163ia clasa ascult\u0103tor de evenimente de sesiune [{0}] specificat\u0103 \u00een proprietatea eclipselink.session-event-listener [{1}].
+
+7277=Numele fi\u015fierului istoric nu a fost specificat.
+
+7278=Valoarea boolean\u0103 specificat\u0103 [{0}] pentru proprietatea de persisten\u0163\u0103 [{1}] este invalid\u0103, valoarea trebuie s\u0103 fie "true" sau "false".
+
+7282=StructConverter: {0} nu poate fi definit \u00een maparea {1}.  StructConverters poate fi utilizat numai pentru map\u0103ri directe.
+
+7283=Au fost ad\u0103ugate dou\u0103 StructConverters pentru clasa {0}.  Numai un StructConverter poate fi ad\u0103ugat per clas\u0103.
+
+7284=Clasa [{0}] nu este un comparator valid. Clasa trebuie s\u0103 implementeze interfa\u0163a Comparator.
+
+7285=Clasa profiler specificat\u0103 [{0}] este invalid\u0103, clasa trebuie s\u0103 existe \u00een calea de clase \u015fi s\u0103 implementeze interfa\u0163a SessionProfiler.
+
+7286=Nu se poate instan\u0163ia clasa profiler [{0}] specificat\u0103 \u00een proprietatea eclipselink.profiler [{1}].
+
+7287=Transformatorul de citire specificat pentru elementul [{0}] nu implementeaz\u0103 interfa\u0163a necesar\u0103 AttributeTransformer.
+
+7288=Transformatorul specificat pentru elementul [{0}] are \u015fi clas\u0103 \u015fi metod\u0103. Este necesar\u0103 ori clasa, ori metoda, dar nu am\u00e2ndou\u0103.
+
+7289=Transformatorul de citire specificat pentru elementul [{0}] nu are nici clas\u0103, nici metod\u0103. Este necesar\u0103 ori clasa, ori metoda, dar nu am\u00e2ndou\u0103.
+
+7290=Transformatorul de scriere specificat pentru coloana [{1}] a elementului [{0}] nu implementeaz\u0103 interfa\u0163a necesar\u0103 FieldTransformer.
+
+7291=Transformatorul de scriere specificat pentru coloana [{1}] a elementului [{0}] are at\u00e2t clas\u0103 c\u00e2t \u015fi metod\u0103. Este necesar\u0103 ori clasa, ori metoda, dar nu am\u00e2ndou\u0103.
+
+7292=Transformatorul de scriere specificat pentru coloana [{1}] a elementului [{0}] nu are nici clas\u0103, nici metod\u0103. Este necesar\u0103 ori clasa, ori metoda, dar nu am\u00e2ndou\u0103.
+
+7293=Transformatorul de scriere specificat pentru elementul [{0}] fie nu are o coloan\u0103, fie coloana nu are un nume.
+
+7294=Variabila unu la un element [{1}] are mai multe intr\u0103ri mapate pentru acela\u015fi discriminator [{0}]. Fiecare intrare ce implementeaz\u0103 variabila unu \u00eentr-o interfa\u0163\u0103 trebuie s\u0103 aib\u0103 propriul discriminator unic.
+
+7295=CloneCopyPolicy specificat \u00een clasa [{0}] nu specific\u0103 fie o metod\u0103, fie o workingCopyMethod.  Este necesar ca una dintre acestea s\u0103 fie specificat\u0103.
+
+7296=Clasa [{0}] are mai multe Adnot\u0103ri CopyPolicy.  Numai o CopyPolicyAnnotation este permis\u0103 per clas\u0103.
+
+7297=A fost aruncat\u0103 o excep\u0163ie \u00een timpul instan\u0163ierii reflective a Clasei [{0}].  Aceasta \u00eenseamn\u0103 c\u0103 aceast\u0103 clas\u0103 este specificat\u0103 \u00een metadatele dumneavoastr\u0103 \u015fi pentru un anumit motiv, java nu poate instan\u0163ia reflectivitatea cu un constructor no-args.  Verifica\u0163i excep\u0163ia \u00eenl\u0103n\u0163uit\u0103 pentru informa\u0163ii suplimentare.  Not\u0103: Pentru a vizualiza excep\u0163ia \u00eenl\u0103n\u0163uit\u0103 este posibil s\u0103 trebuiasc\u0103 s\u0103 v\u0103 cre\u015fte\u0163i nivelul de \u00eenregistrare \u00een istoric.
+
+7298=Maparea [{2}] din clasa ID \u00eenglobat\u0103 [{3}] este o mapare invalid\u0103 pentru aceast\u0103 clas\u0103. O clas\u0103 ce poate fi \u00eenglobat\u0103 \u015fi care este utilizat\u0103 cu specifica\u0163iile ID \u00eenglobate (atribut [{0}] de la sursa [{1}]) poate con\u0163ine numai map\u0103ri de baz\u0103. Fie \u00eenl\u0103tura\u0163i maparea non-baz\u0103, fie modifica\u0163i specifica\u0163iile ID \u00eenglobate \u00een sursa ce va fi \u00eenglobat\u0103.
+
+7299=Adnot\u0103ri ce intr\u0103 \u00een conflict cu acela\u015fi nume [{0}] au fost g\u0103site. Primul [{1}] a fost g\u0103sit \u00een [{2}] \u015fi al doilea [{3}] a fost g\u0103sit \u00een [{4}]. Adnot\u0103rile cu nume trebuie s\u0103 fie unice peste unitatea de persisten\u0163\u0103.
+
+7300=Elemente XML \u00een conflict [{1}] cu acela\u015fi nume [{0}] au fost g\u0103site. Primul a fost g\u0103sit \u00een fi\u015fierul de mapare [{2}] \u015fi cel de-al doilea \u00een fi\u015fierul de mapare [{3}]. Elementele XML cu nume trebuie s\u0103 fie unice peste unitatea de persisten\u0163\u0103.
+
+7301=Au fost g\u0103site adnot\u0103ri \u00een conflict. Prima [{0}] a fost g\u0103sit\u0103 \u00een [{1}] \u015fi cea de-a doua [{2}] a fost g\u0103sit\u0103 \u00een [{3}]. V\u0103 rug\u0103m s\u0103 corecta\u0163i aceasta prin \u00eenl\u0103turarea adnot\u0103rii ce nu se aplic\u0103.
+
+7302=Elemente XML \u00een conflict [{0}] au fost g\u0103site pentru elementul [{1}]. Primul a fost g\u0103sit \u00een fi\u015fierul de mapare [{2}] \u015fi cel de-al doilea \u00een fi\u015fierul de mapare [{3}]. V\u0103 rug\u0103m s\u0103 corecta\u0163i aceasta prin \u00eenl\u0103turarea elementului XML ce nu se aplic\u0103.
+
+7303=Proprietatea PersistenceUnitProperties.ORACLE_PROXY_TYPE setat\u0103 pe [{0}], necesar\u0103 pentru aceast\u0103 proprietate de tip proxy [{1}] nu a fost g\u0103sit\u0103.
+
+7304=Proprietatea PersistenceUnitProperties.ORACLE_PROXY_TYPE setat\u0103 pe tipul necunoscut [{0}], tipurile cunoscute sunt [{1}], [{2}], [{3}].
+
+7305=A fost aruncat\u0103 o excep\u0163ie \u00een timpul proces\u0103rii fi\u015fierului de mapare din URL: [{0}].
+
+7306=Elementul adnotat [{0}] din clasa [{1}] are specificat un tip de acces explicit incorect. Ar trebui s\u0103 specifice un tip de acces de [{2}].
+
+7307=Lipse\u015fte un \u015fir contextual de logare pentru contextul [{0}]. Aceasta este o excep\u0163ie intern\u0103 ce a survenit la extragerea unui mesaj din istoric pentru procesarea metadatelor JPA, v\u0103 rug\u0103m s\u0103 raporta\u0163i un defect ascuns.
+
+7308=Valoarea specificat\u0103 [{0}] pentru proprietatea de persisten\u0163\u0103 [{1}] este invalid\u0103 - [{2}].
+
+7309=Atributul numit [{1}] din clasa \u00eencorporabil\u0103 [{0}] nu este o mapare valid\u0103 pentru utilizarea cu o \u00eenlocuire de atribut pentru atributul [{3}] pentru clasa [{2}].
+
+7310=Clasa \u0163int\u0103 a atributului de colec\u0163ie element [{0}] din clasa [{1}] nu poate fi determinat.  Atunci c\u00e2nd nu utiliza\u0163i generice, asigura\u0163i-v\u0103 c\u0103 este definit\u0103 clasa \u0163int\u0103 \u00een maparea de colec\u0163ie element.
+
+7311=O clas\u0103 \u0163int\u0103 invalid\u0103 este utilizat\u0103 cu atributul de colec\u0163ie element [{0}] \u00een clasa [{1}].  Sunt permise numai tipurile de baz\u0103 \u015fi clasele ce pot fi \u00eenglobate.
+
+7312=O clas\u0103 invalid\u0103 ce poate fi \u00eenglobat\u0103 [{0}] este utilizat\u0103 cu atributul de colec\u0163ie element [{1}] \u00een clasa [{2}]. Vede\u0163i sec\u0163iunea 2.6 a specifica\u0163iei: " O clas\u0103 ce poate fi \u00eenglobat\u0103 (ce include o clas\u0103 ce poate fi \u00eenglobat\u0103 \u00eentr-o alt\u0103 clas\u0103 ce poate fi \u00eenglobat\u0103) con\u0163inut\u0103 \u00eentr-o colec\u0163ie de element trebuie s\u0103 nu con\u0163in\u0103 o colec\u0163ie de element \u015fi nici o rela\u0163ie cu o intrare alta dec\u00e2t de la mai multe la una sau de la una la mai multe. Clasa ce poate fi \u00eenglobat\u0103 trebuie s\u0103 fie pe partea proprie a unei asemenea rela\u0163ii \u015fi rela\u0163ia trebuie mapat\u0103 de o mapare de cheie extern\u0103." Maparea atributului [{3}] pe clasa ce poate fi \u00eenglobat\u0103 nu respect\u0103 aceasta.
+
+7313=Atributul [{1}] nu a fost g\u0103sit \u00een clasa ce poate fi \u00eenglobat\u0103 [{0}]. Este referit \u00eentr-o \u00eenlocuire de asociere pentru atributul \u00eencorporabil [{3}] pentru clasa [{2}].
+
+7314=Maparea [{0}] este utilizat\u0103 pentru maparea cheii \u00eentr-o MappedKeyMapContainerPolicy \u015fi utilizeaz\u0103 indirec\u0163ia.  Map\u0103rile utilizate pentru Mapare chei nu pot utiliza indirec\u0163ii.
+
+7315=Clasa de mapare chei a atributului de colec\u0163ie element [{0}] \u00een clasa [{1}] nu poate fi determinat\u0103.  La specificarea unei chei de conversie cu un element de colec\u0163ie, asigura\u0163i-v\u0103 c\u0103 utiliza\u0163i o defini\u0163ie generic\u0103 astfel \u00eenc\u00e2t un tip de clas\u0103 s\u0103 poat\u0103 fi determinat pentru convertor.
+
+7316=Valoarea MapsId [{0}] din atributul de mapare [{1}] nu este valid. Trebuie s\u0103 fie definit un atribut echivalent cu acest nume pentru IdClass [{2}].
+
+7317=Listarea c\u00e2mpului ordonat nu este suportat\u0103 pentru [{0}].
+
+7318=[{0}] are ordinea de listare setat\u0103, dar CollectionChangeEvent.REMOVE a fost trimis f\u0103r\u0103 index.
+
+7319=Atributul numit [{1}] din clasa \u00eencorporabil\u0103 [{0}] nu este o rela\u0163ie valid\u0103 pentru utilizarea cu \u00eenlocuirea de asociere numit\u0103 [{2}] din [{3}]. O \u00eenlocuire de asociere poate fi specificat\u0103 numai c\u00e2nd \u00eencorporabilul este \u00een partea de\u0163in\u0103toare a rela\u0163iei.
+
+7320=Atributul [{0}] din clasa [{1}] (sau mo\u015ftenit dintr-o super-clas\u0103 mapat\u0103) nu este un tip valid de utilizat cu o specifica\u0163ie de coloan\u0103 ordonat\u0103. Atunci c\u00e2nd specifica\u0163i o coloan\u0103 ordonat\u0103, atributul trebuie s\u0103 fie de tip List\u0103.
+
+7321=C\u00e2mpul [{1}] din maparea de id derivat [{2}] din clasa [{3}] este un c\u00e2mp de id invalid din clasa de referin\u0163\u0103 [{0}]. Asigura\u0163i-v\u0103 c\u0103 exist\u0103 o mapare de id corespunz\u0103toare pentru acel c\u00e2mp. 
+
+7322=Numele de coloan\u0103 referit [{0}] din \u00eenlocuirea de asociere numit\u0103 [{1}] pentru atributul [{2}] din clasa [{3}] nu este un c\u00e2mp valid de cheie primar\u0103 mapat\u0103. Asigura\u0163i-v\u0103 c\u0103 exist\u0103 o mapare de id corespunz\u0103toare pentru acel c\u00e2mp
+
+7323=Tabelul cu numele [{1}] din [{2}] are mai multe constr\u00e2ngeri unice cu numele [{0}]. Acest lucru nu este permis, numele de constr\u00e2ngeri unice trebuie s\u0103 fie unice peste toate tabelele.
+
+7324=Clasa de intr\u0103ri [{1}] specific\u0103 at\u00e2t metadate @ClassExtractor c\u00e2t \u015fi discriminator. Atunci c\u00e2nd utiliza\u0163i un ClassExtractor, un @DiscriminatorColumn \u015fi/sau un @DiscriminatorValue nu ar trebui specificate \u00een aceast\u0103 clas\u0103 \u015fi nici nu ar trebui s\u0103 fie definite metadate de valoare discriminator \u00een sub-clasele acesteia.
+
+7325=Maparea setului de rezultate sql [{0}] utilizat\u0103 cu interogarea numit\u0103 [{1}] din [{2}] nu este o mapare de setare rezultate sql recunoscute. Asigura\u0163i-v\u0103 c\u0103 numele este corect \u015fi c\u0103 o mapare de set de rezultate sql cu acel nume exist\u0103.
+
+7326=Atributul [{0}] din clasa [{1}] mapat \u00een [{2}] ce utilizeaz\u0103 acces Virtual, nu specific\u0103 un tip de atribut. Atunci c\u00e2nd utiliza\u0163i acces Virtual, trebuie specificat un tip de atribut. Pentru de la unu la unu sau de la mai mul\u0163i la uni, tipul de atribut este specificat utiliz\u00e2nd o intrare \u0163int\u0103. Pentru o variabil\u0103 de la unu la unu este specificat utiliz\u00e2nd clasa \u0163int\u0103.
+
+7327=Clasa ce poate fi \u00eenglobat\u0103 [{0}] este utilizat\u0103 \u00een clasele cu metode de acces \u00een conflict. Clasa [{1}] utilizeaz\u0103 metode de acces [{2}] \u015fi clasa [{3}] utilizeaz\u0103 metode de acces [{4}]. La partajarea unui obiect ce poate fi \u00eenglobat \u00eentre clase, metodele de acces ale acelor clase ce \u00eenglobeaz\u0103, trebuie s\u0103 fie acelea\u015fi.
+
+7328=La utilizarea accesului Virtual, un DynamicClassLoader trebuie furnizat la crearea EntityManagerFactory utiliz\u00e2nd proprietatea eclipselink [eclipselink.classloader]. Astfel, createEntityManagerFactory(String persistenceUnitName, propriet\u0103\u0163i de mapare) \u015fi ad\u0103uga\u0163i un nou DynamicClassLoader() la propriet\u0103\u0163ile de mapare.
+
+7329=Atribut {1} de {0} nu este mapat.
+
+7330=Atribut {1} de {0} referen\u0163iaz\u0103 un grup de aducere imbricat dar, fie nu este mapat cu ForeignReferenceMapping, fie maparea nu are descriptor de referin\u0163\u0103.
+
+7331=Atribut {1} de {0} referen\u0163iaz\u0103 un grup de aducere imbricat, dar clasa \u0163int\u0103 nu suport\u0103 grupuri de aducere.
+
+7332=Atributul cheie primar\u0103 compus, derivat [{2}] de tip [{4}] din [{1}] ar trebui s\u0103 fie de acela\u015fi tip ca \u015fi c\u00e2mpul id p\u0103rinte al s\u0103u din [{0}]. Astfel, ar trebui s\u0103 fie de tip [{3}].
+
+7334=Clasa [{0}] are o specifica\u0163ie incomplet\u0103 de cheie primar\u0103. La specificarea coloanelor de chei primare, numele acelor coloane trebuie specificat.
+
+7335=Duplica\u0163i valoarea parti\u0163iei [{1}] dat\u0103 pentru @ValuePartitioning numit [{0}]
+
+7336=Mai multe propriet\u0103\u0163i contextuale [{2}] \u015fi [{3}] specificate pentru acela\u015fi c\u00e2mp discriminator chiria\u015f [{1}] pentru clasa [{0}]
+
+7337=Coloana discriminator chiria\u015f mapat\u0103 [{1}] \u00een clasa [{0}] trebuie marcat\u0103 ca \u015fi numai citire. \u00cen JPA, acest lucru este f\u0103cut prin setarea insertable=false \u015fi updatable=false pe coloana e.g. @Column(name="TENANT_ID", insertable=false, updatable=false).
+
+7338=Nu pute\u0163i ad\u0103uga secven\u0163a \u00eentr-un SessionBroker.
+
+7339=[{0}] alias este utilizat de clasele [{1}] \u015fi [{2}]. Aliasul descriptor trebuie s\u0103 fie unic.
+
+7340=Exist\u0103 mai multe c\u00e2mpuri de mapare numite [{0}] \u00een calea de clase.
+
+7341=Nu a fost specificat un eclipselink-orm.xml pentru XMLMetadataSource.  V\u0103 rug\u0103m s\u0103 specifica\u0163i unul utiliz\u00e2nd fie proprietatea unit\u0103\u0163ii de persisten\u0163\u0103 eclipselink.metadata-source.xml.file, fie eclipselink.metadata-source.xml.url
+
+7342=Valoarea boolean\u0103 specificat\u0103 [{0}] pentru setarea permite interog\u0103ri sql native, este invalid\u0103, valoarea trebuie s\u0103 fie ori "true" ori "false".
+
+7343=Au fost specifica\u0163i mai mul\u0163i identificatori VPD (proprietate contextual\u0103 de discriminator chiria\u015f). Entitatea [{1}] utilizeaz\u0103 [{0}] \u015fi Entitatea [{3]} utilizeaz\u0103 [{2}]. Atunci c\u00e2nd utiliza\u0163i o strategie VPD multi-chiria\u015f, poate exista numai o coloan\u0103 discriminator chiria\u015f per entitate \u015fi proprietatea sa cotextual\u0103 trebuie s\u0103 fie consistent\u0103 peste toate entit\u0103\u0163ile VPD mult-chiria\u015f.
+
+7344=VPD (conexiuni \u015fi generare DDL) nu este suportat pentru platforma: [{0}].
+
+7345={0} fi\u015fierul specificat pentru XMLMetadataSource nu a fost g\u0103sit
+
+7346=Proprietatea contextual\u0103 multi-chiria\u015f [{0}] nu a fost furnizat\u0103. Atunci c\u00e2nd proprietatea unitate de persisten\u0163\u0103 (eclipselink.multitenant.tenants-share-emf) este setat\u0103 pe false, toate propriet\u0103\u0163ile contextuale multi-chiria\u015f trebuiesc furnizate \u00eenainte. Acest lucru se poate face direct prin defini\u0163ia unit\u0103\u0163ii de persisten\u0163\u0103 sau prin trecerea unei h\u0103r\u0163i de proprietate ce con\u0163ine toate propriet\u0103\u0163ile contextuale multi-chiria\u015f pentru crearea apel\u0103rii EntityManagerFactory.
+
+7347=Clasa [{0}] specific\u0103 metadatele convertite la nivel de tip f\u0103r\u0103 specificarea unui nume de atribut pentru fiecare. Un nume de atribut trebuie furnizat pentru toate metadatele convertite la nivel de tip pentru a v\u0103 asigura aplica\u0163iile corecte la un atribut de clas\u0103 super.
+
+7348=Maparea \u00eenglobat\u0103 [{1}] din [{0}] nu specific\u0103 un nume de atribut pentru care va fi aplicat\u0103 conversia. Trebuie s\u0103 specifica\u0163i un nume de atribut \u00een \u00cenglobabil.
+
+7350=Numele atributului de conversie [{3}] din maparea [{1}] din clasa [{0}] nu a fost g\u0103sit \u00een clasa ce poate fi \u00eenglobat\u0103 [{2}]. V\u0103 rug\u0103m s\u0103 v\u0103 asigura\u0163i c\u0103 atributul exist\u0103 \u015fi este numit corect.
+
+7351=Convertorul de clas\u0103 [{2}] specificat\u0103 \u00een atributul de mapare [{1}] din clasa [{0}] nu a fost g\u0103sit. V\u0103 rug\u0103m s\u0103 v\u0103 asigura\u0163i c\u0103 numele clasei convertor este corect \u015fi exist\u0103 \u00een defini\u0163ia unit\u0103\u0163ii de persisten\u0163\u0103.
+
+7352=Clasa convertor [{0}] trebuie s\u0103 implementeze interfa\u0163a JPA javax.persistence.AttributeConverter<X, Y> pentru a fi o clas\u0103 convertor valid\u0103.
+
+7353=Atributul de mapare [{1}] din clasa [{0}] nu este un tip de mapare valid pentru o specifica\u0163ie de conversie.
+
+7354=Atributul de mapare [{1}] din clasa [{0}] nu este un tip de mapare valid pentru o specifica\u0163ie de conversie cheie mapat\u0103.
+
+7355=Atributul de mapare [{1}] din clasa [{0}] nu este un tip de mapare valid pentru o conversie ce utilizeaz\u0103 o specifica\u0163ie de nume atribut. Un nume de atribut ar trebui specificat numai pentru trecerea unui tip de mapare \u00cenglobat.
+
+7356=Procedur\u0103: [{1}] nu poate fi executat deoarece {0} nu suport\u0103 momentan parametrii de ie\u015fire multiplii
+

@@ -25,7 +25,7 @@
 	
 	<AD name="%jsonAccessLogFields" description="%jsonAccessLogFields.desc" id="jsonAccessLogFields" required="false" type="String" default="default">
 			<Option label="%jsonAccessLogFields.default" value="default"/>
-            <Option label="%jsonAccessLogFields.logformat" value="logFormat"/>
+            <Option label="%jsonAccessLogFields.logFormat" value="logFormat"/>
 	</AD>
 	
 	<AD name="%tag" description="%tag.desc" id="tag" required="false" type="String" cardinality="1024"/>

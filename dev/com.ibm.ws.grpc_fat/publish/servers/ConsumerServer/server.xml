@@ -77,7 +77,7 @@
 	</application>
 
 	<logging
-		traceSpecification="*=info=enabled:io.openliberty.grpc*=all:com.ibm.testapp.g3store*=all"
+		traceSpecification="*=info=enabled:io.openliberty.grpc*=all:com.ibm.testapp.g3store*=all:com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:HTTPChannel=all:TCPChannel=all:com.ibm.ws.http*=all"
 		maxFileSize="200" maxFiles="4" traceFormat="BASIC" />
 		
 		
@@ -85,12 +85,17 @@
 		id="defaultJWT" 
 		issuer="testIssuer"
 		 />
+		 
+	<jwtBuilder
+		id="defaultBadJWT" 
+		issuer="testIssuerBad"
+		 />
 		
-	<grpcTarget target="test.g3store.grpc.AppConsumerService/getAppInfo" headersToPropagate="authorization"/>
-	<grpcTarget target="test.g3store.grpc.AppConsumerService/getAllAppNames" headersToPropagate="authorization"/>
-	<!-- <grpcTarget target="test.g3store.grpc.AppConsumerService/getAllAppNames" authnToken="jwt"/> -->
-
-
-		
-
+	<grpcClient path="test.g3store.grpc.AppConsumerService/getAppInfo" headersToPropagate="authorization"/>
+	<grpcClient path="test.g3store.grpc.AppConsumerService/getAllAppNames" headersToPropagate="authorization"/>
+	<grpcClient path="test.g3store.grpc.AppConsumerService/getAppNameSetBadRoles" headersToPropagate="authorization"/>
+	<grpcClient path="test.g3store.grpc.AppConsumerService/getNameCookieJWTHeader" headersToPropagate="Cookie"/>
+	<grpcClient path="test.g3store.grpc.AppConsumerService/getAppSetBadRoleCookieJWTHeader" headersToPropagate="Cookie"/>
+	
+	<!-- <grpcClient path="test.g3store.grpc.AppConsumerService/getAllAppNames" authnToken="jwt"/> -->
 </server>

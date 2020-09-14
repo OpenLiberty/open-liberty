@@ -1,0 +1,359 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/QueryExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+6001=Les requ\u00eates SQL de pr\u00e9s\u00e9lection doivent fournir une requ\u00eate suppl\u00e9mentaire pour l''extraction de la taille de l''ensemble de r\u00e9sultats.
+
+6002=Les objets agr\u00e9g\u00e9s ne peuvent pas \u00eatre \u00e9crits/supprim\u00e9s/interrog\u00e9s ind\u00e9pendamment de leurs propri\u00e9taires. {1}Descripteur : [{0}]
+
+6003=Le nombre d''arguments fournis \u00e0 la requ\u00eate pour l''ex\u00e9cution ne correspond pas au nombre d''arguments dans la d\u00e9finition de requ\u00eate.
+
+6004=L''objet [{0}], de classe [{1}], avec le code hach\u00e9 d''identit\u00e9 (System.identityHashCode()) [{2}], {3}ne provient pas de cet espace d''objet d''unit\u00e9 d''oeuvre, mais de celui de la session parent.  L''objet n''a jamais \u00e9t\u00e9 enregistr\u00e9 dans cette unit\u00e9 d''oeuvre, {3}mais il a \u00e9t\u00e9 lu depuis la session parent et li\u00e9 \u00e0 un objet enregistr\u00e9 dans l''unit\u00e9 d''oeuvre.  Assurez-vous d''enregistrer correctement{3}vos objets.  Si vous rencontrez encore des probl\u00e8mes, vous pouvez utiliser la m\u00e9thode UnitOfWork.validateObjectSpace() pour {3}d\u00e9boguer l''emplacement de l''erreur.  Pour plus d''informations, consultez le manuel ou la Foire aux questions.
+
+6005=L''objet [{0}], de la classe [{1}], avec le code hach\u00e9 d''identit\u00e9 (System.identityHashCode()) [{2}], {3}est l''objet d''origine dans un nouvel objet enregistr\u00e9.  L''unit\u00e9 d''oeuvre clone les nouveaux objets enregistr\u00e9s, vous devez donc vous assurer qu''un objet {3}est enregistr\u00e9 avant qu''il soit r\u00e9f\u00e9renc\u00e9 par un autre objet.  Si vous ne voulez pas que le nouvel objet sit clon\u00e9, utilisez l''API {3}UnitOfWork.registerNewObject(Object).  Si vous rencontrez encore des probl\u00e8mes, vous pouvez utiliser la m\u00e9thode UnitOfWork.validateObjectSpace() {3} pour d\u00e9boguer l''emplacement de l''erreur.  Pour plus d''informations, consultez le manuel ou la Foire aux questions.
+
+6006=Le mappage [{0}] ne prend pas en charge la lecture par lots.
+
+6007=Descripteur manquant pour [{0}].
+
+6008=Descripteur manquant pour [{0}] pour la requ\u00eate nomm\u00e9e [{1}].
+
+6013=Requ\u00eate de taille incorrecte transmise \u00e0 CursoredStream.
+
+6014=Les objets ne peuvent pas \u00eatre \u00e9crits pendant une unit\u00e9 d''oeuvre, ils doivent \u00eatre enregistr\u00e9s.
+
+6015=Cl\u00e9 de requ\u00eate [{0}] non valide dans l''expression.
+
+6016=Les objets ou la base de donn\u00e9es ne peuvent pas \u00eatre modifi\u00e9s via une session serveur.  Toutes les modifications doivent \u00eatre effectu\u00e9es via l''unit\u00e9 d''oeuvre d''une session client.
+
+6020=Aucune classe concr\u00e8te n''est indiqu\u00e9e pour le type sur la ligne [{0}].
+
+6021=Les curseurs ne sont pas pris en charge pour les descripteurs d''interface, ou les descripteurs de table \u00e0 plusieurs classes abstraites \u00e0 l''aide  d''expressions.  Utilisez plut\u00f4t des requ\u00eates SQL personnalis\u00e9es ou plusieurs requ\u00eates.
+
+6023=La liste de zones \u00e0 ins\u00e9rer dans la table [{0}] est vide.  Vous devez d\u00e9finir au moins un mappage pour cette table.
+
+6024=La modification des requ\u00eates requiert un objet \u00e0 modifier.
+
+6026=La requ\u00eate nomm\u00e9e [{0}] n''est pas d\u00e9finie. Classe de domaine : [{1}]
+
+6027=Requ\u00eate envoy\u00e9e \u00e0 une unit\u00e9 d''oeuvre d\u00e9sactiv\u00e9e.
+
+6028=Une tentative a \u00e9t\u00e9 effectu\u00e9e pour lire au-del\u00e0 de la fin du flux.
+
+6029=Une classe de r\u00e9f\u00e9rence doit \u00eatre fournie.
+
+6030=L''actualisation n''est pas possible si la mise en cache n''est pas activ\u00e9e.
+
+6031=size() est pris en charge uniquement dans les requ\u00eates d''expression, sauf si une requ\u00eate de taille est fournie.
+
+6032=L''instruction SQL n''a pas \u00e9t\u00e9 correctement d\u00e9finie.
+
+6034=Expression d''\u00e9l\u00e9ment de requ\u00eate non valide [{0}].
+
+6041=L''objet de la s\u00e9lection transmis \u00e0 une requ\u00eate ReadObjectQuery \u00e9tait nul.
+
+6042=Un nom de session doit \u00eatre sp\u00e9cifi\u00e9 pour les requ\u00eates de niveau non objet.  Voir la m\u00e9thode setSessionName(String).
+
+6043=Les \u00e9l\u00e9ments ReportQueries sans cl\u00e9s primaires ne peuvent pas utiliser readObject(). {1}ReportQueryResult : [{0}].
+
+6044=La lecture de cl\u00e9 primaire depuis la ligne [{0}] pendant l''ex\u00e9cution de la requ\u00eate a \u00e9t\u00e9 d\u00e9tect\u00e9e comme \u00e9tant nulle.  Les cl\u00e9s primaires ne doivent pas contenir des valeur nulle.
+
+6045=Aucun descripteur n''est d\u00e9fini pour la sous-classe [{0}], indiqu\u00e9e sur la ligne lors de la cr\u00e9ation de l''objet.
+
+6046=Impossible de supprimer un objet d''une classe en lecture seule.  La classe [{0}] est d\u00e9clar\u00e9e en lecture seule uniquement dans cette unit\u00e9 d''oeuvre.
+
+6047=Op\u00e9rateur [{0}] non valide dans l''expression.
+
+6048=Utilisation interdite de l''\u00e9l\u00e9ment getField() [{0}] dans l''expression.
+
+6049=Utilisation interdite de l''\u00e9l\u00e9ment getTable() [{0}] dans l''expression.
+
+6050=Non concordance de taille dans le r\u00e9sultat de l''\u00e9l\u00e9ment ReportQuery.  [{0}] attendu, mais [{1}] extrait
+
+6051=Les requ\u00eates d''objet partielles ne sont pas autoris\u00e9es pour la gestion du cache ou pour \u00e9dition.  Vous devez utiliser dontMaintainCache().
+
+6052=Une jointure externe (getAllowingNull ou anyOfAllowingNone) est valide uniquement pour les mappages OneToOne, OneToMany, ManyToMany, AggregateCollection et DirectCollection, et ne peut pas \u00eatre utilis\u00e9e pour le mappage [{0}].
+
+6054=Impossible d''ajouter l''objet [{0}], de classe [{1}], \u00e0 la classe de conteneur [{2}] avec la strat\u00e9gie [{3}].
+
+6055=L''appel de m\u00e9thode de la m\u00e9thode[{0}] sur l''objet [{1}], de classe [{2}], a d\u00e9clench\u00e9 une exception.
+
+6056=Impossible de cr\u00e9er un clone de l''objet [{0}], de classe [{1}], avec [{2}].
+
+6057=La m\u00e9thode [{0}] n''est pas une m\u00e9thode valide pour l''appel sur l''objet [{1}].
+
+6058=La m\u00e9thode [{0}] n''a pas \u00e9t\u00e9 trouv\u00e9e dans la classe [{1}].
+
+6059=La classe [{0}] ne peut pas \u00eatre utilis\u00e9e comme conteneur pour les r\u00e9sultats d''une requ\u00eate car elle ne peut pas \u00eatre instanci\u00e9e.
+
+6060=Impossible d''utiliser l''objet [{0}] de type [{1}] comme cl\u00e9 dans [{2}] de type [{3}].  La cl\u00e9 ne peut pas \u00eatre compar\u00e9e aux cl\u00e9s actuellement dans la mappe.
+
+6061=Impossible d''acc\u00e9der de mani\u00e8re r\u00e9flective \u00e0 la m\u00e9thode [{0}] pour l''objet [{1}], de classe [{2}].
+
+6062=La m\u00e9thode [{0}], appel\u00e9e de mani\u00e8re r\u00e9flexive sur l''objet [{1}], de classe [{2}], a d\u00e9clench\u00e9 une exception.
+
+6063=Op\u00e9ration [{0}] non valide sur le curseur.
+
+6064=Impossible de retirer l''objet [{0}], de classe[{1}], de la classe de conteneur [{2}] avec la strat\u00e9gie [{3}].
+
+6065=Impossible d''ajouter l''objet [{0}], de classe[{1}], au conteneur [{2}].
+
+6066=L''objet [{0}], de la classe [{1}], avec le code hach\u00e9 d''identit\u00e9 (System.identityHashCode()) [{2}], {3}a \u00e9t\u00e9 supprim\u00e9, mais il a encore des r\u00e9f\u00e9rences.  Les objets supprim\u00e9s ne peuvent pas \u00eatre r\u00e9f\u00e9renc\u00e9s apr\u00e8s avoir \u00e9t\u00e9 supprim\u00e9s. {3}Assurez-vous d''enregistrer correctement.  Si vous rencontrez encore des probl\u00e8mes, vous pouvez utiliser la m\u00e9thode UnitOfWork.validateObjectSpace() {3} pour d\u00e9boguer l''emplacement de l''erreur.  Pour plus d''informations, consultez le manuel ou la Foire aux questions.
+
+6067=Impossible d''acc\u00e9der de mani\u00e8re r\u00e9flective \u00e0 la zone [{0}] pour l''objet [{1}], de classe [{2}].
+
+6068=Impossible de comparer la r\u00e9f\u00e9rence de table \u00e0 [{0}] dans l''expression.
+
+6069=La zone [{0}] dans cette expression comporte une tableau non valide dans ce contexte.
+
+6070=Utilisation non valide d''une cl\u00e9 de requ\u00eate [{0}] repr\u00e9sentant une relation "to-many" dans une expression.  Utilisez anyOf() au lieu de get().
+
+6071=Utilisation non valide de anyOf() pour une cl\u00e9 de requ\u00eate [{0}] ne repr\u00e9sentant pas une relation to-many dans une expression.  Utilisez get() au lieu de anyOf().
+
+6072=L''interrogation dans un \u00e9l\u00e9ment VariableOneToOneMapping n''est pas pris en charge. {2}Descripteur : [{0}] {2}Mappage : [{1}]
+
+6073=Expression incorrectement form\u00e9 dans la requ\u00eate.  Tentative d''impression d''une r\u00e9f\u00e9rence d''objet dans une instruction SQL pour la cl\u00e9 de requ\u00eate [{0}].
+
+6074=Cette expression ne peut pas d\u00e9terminer si l''objet est conforme en m\u00e9moire.  Vous devez d\u00e9finir requ\u00eate pour v\u00e9rifier la base de donn\u00e9es.
+
+6075=Les comparaisons d''objet peuvent uniquement utiliser les op\u00e9rateurs equal() ou notEqual().  Les autres comparaisons doivent \u00eatre effectu\u00e9es via des cl\u00e9s de requ\u00eate ou des comparaisons de niveau attribut direct. {1}Expression : [{0}]
+
+6076=Les comparaisons d''objet peuvent uniquement \u00eatre utilis\u00e9es avec OneToOneMappings.  D''autres comparaisons de mappage doivent \u00eatre effectu\u00e9es via des cl\u00e9s de requ\u00eate ou des comparaisons de niveau attribut direct. {2}Mappage : [{0}] {2}Expression : [{1}]
+
+6077=Les comparaisons d''objet ne peuvent pas \u00eatre utilis\u00e9es dans les requ\u00eates de param\u00e8tre.  Vous devez cr\u00e9er l''expression de mani\u00e8re dynamique. {1}Expression : [{0}]
+
+6078=La classe de l''argument pour la comparaison d''objet est incorrecte. {3}Expression : [{0}] {3}Mappage : [{1}] {3}Argument : [{2}]
+
+6079=La comparaison d''objet \u00e0 NULL ne peut pas \u00eatre utilis\u00e9e pour les relations de cl\u00e9 externe cibles.  Interrogez plut\u00f4t la cl\u00e9 primaire source. {3}Expression : [{0}] {3}Mappage : [{1}] {3}Argument : [{2}]
+
+6080=Appel de base de donn\u00e9es non valide [{0}].  L''appel doit \u00eatre une instance de DatabaseCall.
+
+6081=Accesseur de base de donn\u00e9es non valide [{0}].  L''accesseur doit \u00eatre une instance de DatabaseAccessor.
+
+6082=La m\u00e9thode [{0}] avec les types d''argument [{1}] ne peut pas \u00eatre appel\u00e9e sur Expression.
+
+6083=Les requ\u00eates utilisant in() ne peuvent pas \u00eatre param\u00e9tr\u00e9es.  D\u00e9sactivez la pr\u00e9paration ou la liaison de requ\u00eate.
+
+6084=La requ\u00eate de r\u00e9acheminement n''a pas \u00e9t\u00e9 correctement configur\u00e9e.  Le nom de classe ou de m\u00e9thode n''a pas \u00e9t\u00e9 d\u00e9fini.
+
+6085=La m\u00e9thode de la requ\u00eate de r\u00e9acheminement n''est pas d\u00e9finie ou elle est d\u00e9finie avec des arguments erron\u00e9s.  Elle doit \u00eatre d\u00e9clar\u00e9e "public static" et comporter des arguments (DatabaseQuery, Record, Session) ou (Session, Vector). {2}Classe : [{0}] {2}M\u00e9thode : [{1}]
+
+6086=L''appel de m\u00e9thode de la requ\u00eate de r\u00e9acheminement a d\u00e9clench\u00e9 une exception.
+
+6087=La classe d''objet exemple [{0}] ne correspond pas \u00e0 la classe d''objet de r\u00e9f\u00e9rence [{1}].
+
+6088=Il n''y a pas d''attributs pour l''\u00e9l\u00e9ment ReportQuery.
+
+6089=L''expression n''a pas \u00e9t\u00e9 correctement initialis\u00e9e.  Un seul \u00e9l\u00e9ment ExpressionBuilder doit \u00eatre utilis\u00e9 pour une requ\u00eate. {1}Pour les expressions parall\u00e8les, la classe de requ\u00eate doit \u00eatre fournie au constructeur ExpressionBuilder, et l''\u00e9l\u00e9ment ExpressionBuilder de la requ\u00eate doit {1}toujours \u00eatre \u00e0 gauche dans l''expression. {1}Expression : [{0}]
+
+6090=Impossible de d\u00e9finir ReportQuery sur "check cache only".
+
+6091=Le type de la constante [{0}], utilis\u00e9 pour la comparaison dans l''expression, ne correspond pas au type de l''attribut [{1}].
+
+6092=El\u00e9ment ValueHolder non instanci\u00e9 d\u00e9tect\u00e9. Vous devez instancier les \u00e9l\u00e9ments Valueholders pertinents pour ex\u00e9cuter cette requ\u00eate en m\u00e9moire.
+
+6093=Expression de type non valide sur [{0}].  La classe n''a pas de descripteur, ou elle a un descripteur qui n''utilise pas l''h\u00e9ritage ou qui utilise un \u00e9l\u00e9ment ClassExtractor pour l''h\u00e9ritage
+
+6094=Le nom du param\u00e8tre [{0}] dans les crit\u00e8res de s\u00e9lection de la requ\u00eate ne correspond \u00e0 aucun nom de param\u00e8tre d\u00e9fini dans la requ\u00eate.
+
+6095=La m\u00e9thode clone publique est obligatoire.
+
+6096=La m\u00e9thode clone est inaccessible.
+
+6097=La m\u00e9thode clone a g\u00e9n\u00e9r\u00e9 une exception : {0}.
+
+6098=Exception d''appel inattendue : {0}.
+
+6099=La jointure entre classes d''h\u00e9ritage avec plusieurs sous-classes \u00e0 plusieurs tables n''est pas prise en charge : {0}, {1}
+
+6100=Plusieurs valeurs d\u00e9tect\u00e9es pour une requ\u00eate de lecture d''objet unique.
+
+6101=L''ex\u00e9cution de cette requ\u00eate peut entra\u00eener une violation de l''int\u00e9grit\u00e9 du cache de session global qui doit contenir uniquement les versions les plus r\u00e9centes des objets.  Pour ex\u00e9cuter une requ\u00eate qui renvoie des objets du pass\u00e9, essayez l''une des actions suivantes : utilisez un \u00e9l\u00e9ment HistoricalSession (acquireSessionAsOf), tous les objets lus seront mis en cache et automatiquement lus en m\u00eame temps.  Cela s''appliquera m\u00eame au d\u00e9clenchement des relations d''objet.  D\u00e9finissez shouldMaintainCache sur false.  Vous pouvez cr\u00e9er une expression d''objet dans le pass\u00e9, si aucune de ses zones n''est repr\u00e9sent\u00e9e dans l''ensemble de r\u00e9sultats (i.e. utilis\u00e9e uniquement dans la clause where).
+
+6102=A pr\u00e9sent, les requ\u00eates historiques fonctionnent uniquement avec des bases de donn\u00e9es Oracle 9R2 ou versions suivantes, car elles utilisent la fonction Flashback d''Oracle.
+
+6103=Vous ne pouvez pas ex\u00e9cuter une requ\u00eate WriteQuery depuis l''int\u00e9rieur d''une session HistoricalSession en lecture seule.  Pour restaurer des objets du pass\u00e9, essayez les op\u00e9rations suivantes : lisez le m\u00eame objet s''il est maintenant avec une unit\u00e9 d''oeuvre et valider l''unit\u00e9 d''oeuvre.
+
+6104=L''objet, {0}, n''existe pas dans le cache.
+
+6105=La requ\u00eate doit \u00eatre r\u00e9initialis\u00e9e strat\u00e9gie de flux de curseur.
+
+6106=L''objet de type [{0}] avec la cl\u00e9 primaire [{1}] n''existe pas dans le cache.
+
+6107=Instructions de mise \u00e0 jour manquantes sur on UpdateAllQuery.
+
+6108=La mise \u00e0 jour de toutes les requ\u00eates ne prend pas en charge l''h\u00e9ritage avec plusieurs tables
+
+6109=Le groupe d''extraction nomm\u00e9 ({0}) n''est pas d\u00e9fini au niveau du descripteur.
+
+6110=La requ\u00eate de lecture ne peut pas se conformer \u00e0 l''attribut non extrait ({0}) de l''objet partiellement extrait dans la mappe d''identit\u00e9 d''unit\u00e9 d''oeuvre.
+
+6111=L''attribut de groupe d''extraction ({0}) n''est pas d\u00e9fini ou n''est pas mapp\u00e9.
+
+6112=Le groupe d''extraction ne peut pas \u00eatre d\u00e9fini dans la requ\u00eate de rapport.
+
+6113=Le groupe d''extraction ne peut pas \u00eatre utilis\u00e9 avec la lecture d''attribut partielle.
+
+6114=Vous devez d\u00e9finir un gestionnaire de groupe d''extraction au descripteur ({0}) afin de d\u00e9finir un groupe d''extraction sur la requ\u00eate ({1})
+
+6115=Les requ\u00eates sur les classes isol\u00e9es, ou les requ\u00eates d\u00e9finies pour l''utilisation de connexions exclusives, ne doivent pas \u00eatre ex\u00e9cut\u00e9es sur un \u00e9l\u00e9ment ServerSession ou, dans CMP, \u00e0 l''ext\u00e9rieur d''une transaction.
+
+6116=Aucun appel ou interaction n''a \u00e9t\u00e9 sp\u00e9cifi\u00e9 pour l''op\u00e9ration tent\u00e9e.
+
+6117=Impossible de d\u00e9finir une requ\u00eate, qui utilise un r\u00e9sultat de pr\u00e9s\u00e9lection, pour la mise en cache des r\u00e9sultats de requ\u00eate.
+
+6118=Une requ\u00eate sur une classe isol\u00e9e ne doit pas mettre en cache les r\u00e9sultats de requ\u00eate sur la requ\u00eate.
+
+6119=L''expression de jointure {0} n''est pas valide, ou elle est pour un type de mappage qui ne prend pas en charge la jointure.
+
+6120=L''attribut partiel {0} n''est pas un attribut valide de la classe {1}.
+
+6121=La requ\u00eate n''a pas \u00e9t\u00e9 correctement d\u00e9finie, le g\u00e9n\u00e9rateur d''expression est manquant.  Pour les sous-requ\u00eates et les requ\u00eates parall\u00e8les, assurez-vous que le assurer est toujours sur la gauche.
+
+6122=L''expression n''est pas une expression valide. {0}
+
+6123=La classe de conteneur sp\u00e9cifi\u00e9e  [{0}] ne peut pas \u00eatre utilis\u00e9e car le conteneur doit impl\u00e9menter {1}.
+
+6124=La requ\u00eate obligatoire de {0}, a d\u00e9tect\u00e9 {1}
+
+6125=ReadQuery.clearQueryResults() ne peut plus \u00eatre appel\u00e9. L''appel de clearQueryResults requiert d\u00e9sormais que la session soit fournie. clearQueryResults(session) doit \u00eatre appel\u00e9.
+
+6126=Une requ\u00eate est en cours d''ex\u00e9cution et elle utilise les r\u00e9sultats de requ\u00eate mis en cache et conformes.  Ces deux param\u00e8tres sont incompatibles.
+
+6127=Un appel r\u00e9flexif a \u00e9chou\u00e9 sur la classe EclipseLink {0}, votre environnement doit \u00eatre configur\u00e9 pour autoriser la r\u00e9flexion Java.
+
+6128=La lecture par lots n''est pas prise en charge sur les requ\u00eates qui utilisent les appels personnalis\u00e9s.
+
+6129=L''actualisation n''est pas possible si la requ\u00eate n''acc\u00e8de pas \u00e0 la base de donn\u00e9es.
+
+6130=La requ\u00eate SQL personnalis\u00e9e n''a pas pu fournir de colonne de discrimination : {0}, comme d\u00e9fini dans SQLResultSetMapping : {1}.
+
+6131=L''\u00e9l\u00e9ment DeleteAllQuery qui d\u00e9finit les objets \u00e0 supprimer \u00e0 l''aide de la m\u00e9thode setObjects avec un argument non nul doit aussi d\u00e9finir les crit\u00e8res de s\u00e9lection correspondants. {1}Objets : [{2}]{1}Descripteur : [{0}]
+
+6132=Argument de requ\u00eate {0} non trouv\u00e9 dans la liste de param\u00e8tres fournie pendant l''ex\u00e9cution de requ\u00eate.
+
+6133=Le premier argument de la m\u00e9thode addUpdate d\u00e9finit une zone \u00e0 laquelle affecter une nouvelle valeur - il ne peut pas \u00eatre nul.
+
+6134=Le nom d''attribut ou l''expression transmis comme premier param\u00e8tre \u00e0 la m\u00e9thode addUpdate ne d\u00e9finit pas de zone. {1}Nom d''attribut ou expression : [{2}]{1}Descripteur : [{0}]
+
+6135=Le nom d''attribut ou l''expression transmis comme premier param\u00e8tre \u00e0 la m\u00e9thode addUpdate d\u00e9finit une zone d''une table qui n''est pas mapp\u00e9e au descripteur de requ\u00eate. {1}Nom d''attribut ou expression : [{2}]{1}Zone erron\u00e9e : [{3}]{1}Descripteur : [{0}]
+
+6136=Les classes mapp\u00e9es \u00e0 un h\u00e9ritage  plusieurs tables ne peuvent pas \u00eatre des \u00e9l\u00e9ments ReportQuery. El\u00e9ment : {0}, Expression : {1}.
+
+6137=Une exception a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e lors de l''ex\u00e9cution d''une requ\u00eate avec une expression de constructeur : {0}
+
+6138=La requ\u00eate requiert du stockage temporaire, mais {0} ne prend pas en charge les tables temporaires.
+
+6139=Probl\u00e8me lors de la recherche de mappage pour {0} d\u00e9fini dans le r\u00e9sultat de zone nomm\u00e9 {1}
+
+6140=Vous avez tent\u00e9 d''affecter des expressions \u00e0 l''\u00e9l\u00e9ment de rapport {1} de type {0}.  Les expressions de jointure sont uniquement applicables sur les \u00e9l\u00e9ments qui renvoient un objet persistant.
+
+6141=Une exception ClassCastException a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e lors d''une tentative de conversion de {0} en une classe dans un indice de requ\u00eate.
+
+6142=La valeur {1} fournie dans l''indice de requ\u00eate {0} a acc\u00e9d\u00e9 \u00e0 une relation interdite.  La relation {2} n''est pas une relation OneToOne ou OneToMany.
+
+6143=La valeur {1} fournie dans l''indice de requ\u00eate {0} a acc\u00e9d\u00e9 \u00e0 une relation inexistante.  La relation {2} n''existe pas.
+
+6144=La valeur {1} fournie dans l''indice de requ\u00eate {0} ne contenait pas suffisamment de jetons.  La jointure doit commencer par la variable d''identification de la requ\u00eate.  Par exemple, dans la requ\u00eate "SELECT x from X x", pour faire r\u00e9f\u00e9rence \u00e0 un "y" appartenant \u00e0 "x", vous devez utiliser l''indice "x.y".
+
+6145=Le comptage distinct sur une classe de cl\u00e9 primaire compos\u00e9e [{0}] n''est pas pris en charge. Descripteur [{1}] 
+
+6146=La valeur {1} fournie dans l''indice de requ\u00eate {0} n''est pas une valeur valide ; les valeurs valides sont un entier ou des cha\u00eenes qui peuvent \u00eatre analys\u00e9s syntaxiquement par des valeurs int.
+
+6147=L''expression {0} n''est pas valide pour la lecture d''attribut partielle.
+
+6148=L''ajout de {0} \u00e0 PLSQLStoredProcedureCall n''est pas pris en charge.
+
+6149=PLSQLStoredProcedureCall ne peut pas utiliser un argument non nomm\u00e9.
+
+6150=Une valeur nulle ne peut pas \u00eatre utilis\u00e9e en tant que cl\u00e9 dans un conteneur de type [{1}]. V\u00e9rifiez que vos valeurs de cl\u00e9 pour les objets de type [{0}] ne peuvent pas \u00eatre nulles.
+
+6151=Une exception s''est produite lors de la tentative de d\u00e9finition d''un agent de r\u00e9acheminement {0} transmis via un indice de requ\u00eate JPA {1}.  V\u00e9rifiez que l''agent de r\u00e9acheminement fourni impl\u00e9mente org.eclipse.persistence.queries.QueryRedirector.
+
+6152=Une exception s''est produite lors de la tentative d''instanciation de la classe {0} transmise via un indice de requ\u00eate JPA {1}.  V\u00e9rifiez que cette classe a un constructeur par d\u00e9faut.
+
+6153=L''\u00e9l\u00e9ment CompatibleType doit \u00eatre d\u00e9fini sur un type complexe : {0}.
+
+6154=L''\u00e9l\u00e9ment TypeName doit \u00eatre d\u00e9fini sur un type complexe : {0}.
+
+6155=Aucune table de relation n''a \u00e9t\u00e9 trouv\u00e9e dans {0}. {2}Expression joinCriteria : [{1}]
+
+6156=Une exception s''est produite lors de la tentative de d\u00e9finition de la lecture de la cl\u00e9 de mappe pour [{0}] : [{1}].
+
+6157=L''\u00e9l\u00e9ment [{0}] est en cours d''ajout \u00e0 une mappe sans une cl\u00e9.  Cela signifie g\u00e9n\u00e9ralement que la base de donn\u00e9es ne peut pas contenir une cl\u00e9 qui est attendue.
+
+6158=L''\u00e9l\u00e9ment MapContainerPolicy a \u00e9t\u00e9 invit\u00e9 \u00e0 d\u00e9sencapsuler l''\u00e9l\u00e9ment [{0}] qui n''est pas un \u00e9l\u00e9ment de mappe.  Cela signifie qu''une strat\u00e9gie de conteneur incorrecte est utilis\u00e9e.
+
+6159=Mappage introuvable pour MapEntryExpression avec la base : [{0}].
+
+6160=L''\u00e9l\u00e9ment MapEntryExpression avec la base : [{0}] fait r\u00e9f\u00e9rence au mappage [{1}] qui n''est pas un mappage de collection.  Les mappes peuvent uniquement exister dans les mappes de collection.
+
+6161=L''\u00e9l\u00e9ment MapEntryExpression avec la base : [{0}] fait r\u00e9f\u00e9rence au mappage [{1}] qui ne fait pas r\u00e9f\u00e9rence \u00e0 une mappe.
+
+6162=La colonne de classement de liste [{0}] contient des valeurs erron\u00e9es :{2}{1}
+
+6163=L''\u00e9l\u00e9ment index() requiert QueryKeyExpression, qui ne peut pas \u00eatre appliqu\u00e9 \u00e0 [{0}]
+
+6164=L''\u00e9l\u00e9ment index() requiert QueryKeyExpression avec CollectionMapping qui comporte une colonne de classement de liste non nulle. [{1}] ne respecte pas cette condition dans [{0}]
+
+6165=Une extraction par lots qui utilise IN requiert une cl\u00e9 primaire cl\u00e9 singleton.
+
+6166=Une tentative a \u00e9t\u00e9 effectu\u00e9e pour un transtypage \u00e0 l''ext\u00e9rieur d''une hi\u00e9rarchie d''h\u00e9ritage.  [{0}] n''appara\u00eet pas dans la hi\u00e9rarchie de classe pour [{1}]. Remarque : Cette exception peut aussi indiquer que vous effectuez un transtypage sur une relation d''h\u00e9ritage Table-Per-Class qui n''est pas prise en charge pour le transtypage.
+
+6167=Un transtypage a \u00e9t\u00e9 appel\u00e9 sur une expression qui n''utilise pas un h\u00e9ritage : [{0}].
+
+6168=La requ\u00eate n''a pas pu \u00eatre pr\u00e9par\u00e9e, une erreur inattendue s''est produite : [{0}].
+
+6169=Un mappage a \u00e9t\u00e9 configur\u00e9 pour l''utilisation de l''extraction par lots IN, mais la requ\u00eate d''origine n''\u00e9tait pas configur\u00e9e pour l''utilisation de l''extraction par lots IN et il doit s''agir de : [{0}].
+
+6171=Partitionnement non pris en charge pour le type de session [{0}]. Seules les sessions ServerSession et ClientSession sont prises en charge.
+
+6172=Pool de connexions manquant pour le partitionnement de [{0}].
+
+6173=Le pool de connexions [{0}] n''a pas pu basculer, tous les serveurs sont arr\u00eat\u00e9s.
+
+6174=Aucune valeur n''a \u00e9t\u00e9 fournie pour la propri\u00e9t\u00e9 de session [{0}]. Cette exception est possible lors de l''utilisation de crit\u00e8res suppl\u00e9mentaires ou de colonnes de discrimination de titulaire sans sp\u00e9cification de la propri\u00e9t\u00e9 contextuelle associ\u00e9e. Ces propri\u00e9t\u00e9s doivent \u00eatre d\u00e9finies via EntityManager, EntityManagerFactory ou des propri\u00e9t\u00e9s d''unit\u00e9 de persistance. Si vous utilisez EclipseLink, ces propri\u00e9t\u00e9s doivent \u00eatre d\u00e9finies directement sur la session.
+
+6175=Les requ\u00eates SQL natives ont \u00e9t\u00e9 d\u00e9sactiv\u00e9es. Ceci s''effectue en d\u00e9finissant la propri\u00e9t\u00e9 d''unit\u00e9 de persistance "eclipselink.jdbc.allow-native-sql-queries" sur false ou en ayant au moins une entit\u00e9 \u00e0 service partag\u00e9 d\u00e9finie dans votre unit\u00e9 de persistance. V\u00e9rifiez la sp\u00e9cification de votre unit\u00e9 de persistance. Pour autoriser les requ\u00eates SQL natif, d\u00e9finissez cette propri\u00e9t\u00e9 sur true. Les requ\u00eate individuelles peuvent aussi ignorer ce param\u00e8tre en d\u00e9finissant l''indice de requ\u00eate "eclipselink.jdbc.allow-native-sql-query" sur true.
+
+6176=Une exception a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e lors de l''initialisation du constructeur depuis la classe [{0}] :  [{1}]
+
+6177=Le r\u00e9sultat de la colonne [{0}] est introuvable dans les r\u00e9sultats de la requ\u00eate.
+
+6178=L''\u00e9l\u00e9ment isResultSetAccessOptimizedQuery d\u00e9fini sur true est en conflit avec d''autres param\u00e8tres de requ\u00eate.
+
+6179=Echec de d\u00e9s\u00e9rialisation de l''\u00e9l\u00e9ment sopObject depuis [{0}] dans [{1}]
+
+6180=L''\u00e9l\u00e9ment sopObject s\u00e9rialis\u00e9 est introuvable dans [{0}] de [{1}]
+
+6181=L''\u00e9l\u00e9ment sopObject comporte une version erron\u00e9e [{0}] dans [{1}] de [{2}]
+
+6182=sopObject comporte une cl\u00e9 primaire erron\u00e9e [{0}] dans [{1}] de [{2}]
+
+6183=Le type de mappage {1} pour l''attribut {2} de {0} n''est pas pris en charge avec l''exemple de fonctionnalit\u00e9 Query By.  Si l''attribut peut \u00eatre ignor\u00e9, ajoutez-le \u00e0 la liste des \u00e9l\u00e9ments \u00e0 ignorer ou d\u00e9finissez un exemple de validation sur false dans la strat\u00e9gie.
+

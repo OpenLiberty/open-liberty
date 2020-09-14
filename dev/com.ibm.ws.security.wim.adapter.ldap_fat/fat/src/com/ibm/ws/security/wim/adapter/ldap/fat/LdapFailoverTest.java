@@ -203,10 +203,15 @@ public class LdapFailoverTest {
         String primaryServerJNDICall = "JNDI_CALL search\\(Name,String,SearchControls\\) \\[ldap://localhost:" + String.valueOf(ds1.getLdapPort()) + "\\]";
         String failoverServerJNDICall = "JNDI_CALL search\\(Name,String,SearchControls\\) \\[ldap://localhost:" + String.valueOf(ds2.getLdapPort()) + "\\]";
 
+        Log.info(c, "setUp", "primaryServerJNDICall: " + primaryServerJNDICall);
+        Log.info(c, "setUp", "failoverServerJNDICall: " + failoverServerJNDICall);
+
         String returnUser = servlet.checkPassword(USER_DN, PWD);
         List<String> trMsgs = libertyServer.findStringsInLogsAndTraceUsingMark(primaryServerJNDICall);
         assertFalse("Should find: " + primaryServerJNDICall, trMsgs.isEmpty());
         assertNotNull("Should find user on checkPassword using " + USER_DN, returnUser);
+
+        Thread.sleep(2000); // avoiding hitting the context pool purge window
 
         /* shutting the primary server down */
         ds1.shutDown();
@@ -218,7 +223,7 @@ public class LdapFailoverTest {
         /* restarting the primary server */
         ds1.getLdapServer().startListening();
         libertyServer.setMarkToEndOfLog(libertyServer.getMostRecentTraceFile());
-        Thread.sleep(10000L);
+        Thread.sleep(5000L);
 
         /* Call before return to primary query interval expires. We should stay on the fail-over server. */
         returnUser = servlet.checkPassword(USER_DN, PWD);

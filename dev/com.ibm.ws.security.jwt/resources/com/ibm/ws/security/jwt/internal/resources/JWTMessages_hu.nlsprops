@@ -26,8 +26,8 @@ JWT_BUILDER_CONFIG_MODIFIED.useraction=Nincs.
 
 # Do not translate "JSON Web Token", "JWT"
 JWT_ENDPOINT_SERVICE_ACTIVATED=CWWKS6002I: A JSON Web Token (JWT) v\u00e9gpont szolg\u00e1ltat\u00e1s el\u00e9rhet\u0151.
-JWT_ENDPOINT_SERVICE_ACTIVATED.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
-JWT_ENDPOINT_SERVICE_ACTIVATED.useraction=Nem kell semmit tennie.
+JWT_ENDPOINT_SERVICE_ACTIVATED.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+JWT_ENDPOINT_SERVICE_ACTIVATED.useraction=Nincs teend\u0151.
 
 # Do not translate "JSON Web Token", "JWT", "jwt-1.0"
 JWT_OSGI_ENDPOINT_SERVICE_ERROR=CWWKS6003E: Konfigur\u00e1ci\u00f3s hiba t\u00f6rt\u00e9nt. A JSON Web Token (JWT) v\u00e9gpont szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy rendelkezik konfigur\u00e1lt jwt-1.0 szolg\u00e1ltat\u00e1ssal.
@@ -78,8 +78,8 @@ JWT_CLAIMSMAP_NULL_KEY_OR_VALUE.useraction=Gondoskodjon \u00e9rv\u00e9nyes ig\u0
 
 # Do not translate "JSON Web Token", "JWT"
 JWT_CONSUMER_SERVICE_ACTIVATED=CWWKS6012I: A JSON Web Token (JWT) fogyaszt\u00f3i szolg\u00e1ltat\u00e1s el\u00e9rhet\u0151.
-JWT_CONSUMER_SERVICE_ACTIVATED.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
-JWT_CONSUMER_SERVICE_ACTIVATED.useraction=Nem kell semmit tennie.
+JWT_CONSUMER_SERVICE_ACTIVATED.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+JWT_CONSUMER_SERVICE_ACTIVATED.useraction=Nincs teend\u0151.
 
 # Do not translate "JSON Web Token", "JWT"
 JWT_CONSUMER_SERVICE_NOT_ACTIVATED=CWWKS6013E: A JSON Web Token (JWT) fogyaszt\u00f3t nem lehet l\u00e9trehozni, mert a fogyaszt\u00f3i szolg\u00e1ltat\u00e1s nincs aktiv\u00e1lva.
@@ -313,3 +313,13 @@ JWT_TRUSTED_ISSUERS_NULL.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6053E: HTTP s\u00e9ma ker\u00fclt felhaszn\u00e1l\u00e1sra a megadott v\u00e9gponton: {0}, HTTPS sz\u00fcks\u00e9ges.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.explanation=A megadott v\u00e9gpont HTTPS haszn\u00e1lat\u00e1t ig\u00e9nyli, de HTTP ker\u00fclt alkalmaz\u00e1sra a k\u00e9r\u00e9s URL c\u00edm\u00e9ben.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.useraction=Ellen\u0151rizze a k\u00e9r\u00e9s URL c\u00edm\u00e9t, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az HTTPS protokollt haszn\u00e1l-e, illetve m\u00f3dos\u00edtsa \u00fagy a konfigur\u00e1ci\u00f3t, hogy ne HTTPS-t haszn\u00e1ljon.
+
+# 0=Signature algorithm from MP Config properties, 1=Default algorithm that will be used
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED=CWWKS6053W: A MicroProfile Config tulajdons\u00e1gok \u00e1ltal meghat\u00e1rozott [{0}] al\u00e1\u00edr\u00e1si algoritmus nem t\u00e1mogatott. A(z) [{1}] al\u00e1\u00edr\u00e1si algoritmus ker\u00fcl alkalmaz\u00e1sra.
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.explanation=Csak bizonyos RSA t\u00edpusok, az elliptikus g\u00f6rbe \u00e9s a HMAC al\u00e1\u00edr\u00e1si algoritmusok t\u00e1mogatottak. A MicroProfile Config tulajdons\u00e1gok \u00e1ltal meghat\u00e1rozott al\u00e1\u00edr\u00e1si algoritmus nem tartozik a t\u00e1mogatott al\u00e1\u00edr\u00e1si algoritmusok k\u00f6z\u00e9.
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.useraction=Adjon meg t\u00e1mogatott al\u00e1\u00edr\u00e1si algoritmust a MicroProfile Config tulajdons\u00e1gokban. T\u00e1mogatott al\u00e1\u00edr\u00e1si algoritmusok: ES256, ES384, ES512, RS256, RS384, RS512, HS256, HS384 \u00e9s HS512.
+# Do not translate "JSON Web Token", "AMR", "JWT"
+# 0=AMR claim of the token, 1=JWT configuration ID, 2=AMR specified in server configuration
+JWT_AMR_CLAIM_NOT_VALID=CWWKS6054E: A megadott JSON web token (JWT) [{0}] AMR t\u00edpus nem szerepel megb\u00edzhat\u00f3 AMR le\u00edr\u00e1sk\u00e9nt a(z) [{1}] JWT konfigur\u00e1ci\u00f3ban. A megb\u00edzhat\u00f3 AMR le\u00edr\u00e1sok: [{2}].
+JWT_AMR_CLAIM_NOT_VALID.explanation=A kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3 meghat\u00e1rozza a JWT-k \u00e9rv\u00e9nyes\u00edt\u00e9se sor\u00e1n haszn\u00e1lt megb\u00edzhat\u00f3 hiteles\u00edt\u00e9si met\u00f3dus le\u00edr\u00e1sokat (AMR). A megadott token rendeltet\u00e9se nem egy megb\u00edzhat\u00f3 AMR, ez\u00e9rt a tokent nem \u00e9rv\u00e9nyes\u00edthet\u0151.
+JWT_AMR_CLAIM_NOT_VALID.useraction=Szerezzen be egy, a JWT konfigur\u00e1ci\u00f3ban szerepl\u0151 megb\u00edzhat\u00f3 AMR rendeltet\u00e9s\u0171 \u00faj tokent, vagy vegye fel az \u00fczenetben szerepl\u0151 AMR-t a JWT konfigur\u00e1ci\u00f3ba megb\u00edzhat\u00f3 AMR-k\u00e9nt.

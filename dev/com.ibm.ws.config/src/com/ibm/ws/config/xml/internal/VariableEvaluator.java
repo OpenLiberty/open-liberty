@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 
 import com.ibm.websphere.config.ConfigEvaluatorException;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.config.xml.internal.EvaluationContext.NestedInfo;
 import com.ibm.ws.config.xml.internal.metatype.ExtendedAttributeDefinition;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
@@ -39,11 +40,13 @@ public class VariableEvaluator {
         this.configEvaluator = configEvaluator;
     }
 
+    @Sensitive
     private String lookupVariableFromRegistry(String variableName) {
         return variableRegistry == null ? null : variableRegistry.lookupVariable(variableName);
     }
 
-    String resolveVariables(String str, EvaluationContext context, boolean ignoreWarnings) throws ConfigEvaluatorException {
+    @Sensitive
+    String resolveVariables(@Sensitive String str, EvaluationContext context, boolean ignoreWarnings) throws ConfigEvaluatorException {
 
         // Look for normal variables of the form $(variableName)
         Matcher matcher = XMLConfigConstants.VAR_PATTERN.matcher(str);
@@ -78,6 +81,7 @@ public class VariableEvaluator {
      *
      * @param variable the variable name
      */
+    @Sensitive
     private String getProperty(String variable, EvaluationContext context, boolean ignoreWarnings, boolean useEnvironment) throws ConfigEvaluatorException {
         return stringUtils.convertToString(getPropertyObject(variable, context, ignoreWarnings, useEnvironment));
     }
@@ -88,6 +92,7 @@ public class VariableEvaluator {
      *
      * @param variable the variable name
      */
+    @Sensitive
     private Object getPropertyObject(String variable, EvaluationContext context, boolean ignoreWarnings, boolean useEnvironment) throws ConfigEvaluatorException {
         Object realValue = null;
 
@@ -241,6 +246,7 @@ public class VariableEvaluator {
      * Replaces list variable expressions in raw string values
      */
     @SuppressWarnings("unchecked")
+    @Sensitive
     Object processVariableLists(Object rawValue, ExtendedAttributeDefinition attributeDef,
                                 EvaluationContext context, boolean ignoreWarnings) throws ConfigEvaluatorException {
         if (attributeDef != null && !attributeDef.resolveVariables())
@@ -307,6 +313,7 @@ public class VariableEvaluator {
         return null;
     }
 
+    @Sensitive
     private Object lookupDefaultVariable(String variableName) {
         if (variableRegistry == null)
             return null;

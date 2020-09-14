@@ -210,6 +210,12 @@ public class ClientTestServlet extends HttpServlet {
 
     protected static String compareResult(Future<Response> future, String check) throws Exception
     {
+        //277486 adding delay to allow CompletionCallback.onComplete() to execute
+        try {
+            Thread.sleep(2000);
+        } catch (Exception e) {
+            //no-op
+        }
         Response response = future.get();
         //System.out.println(response.getStatus());
         intequalCompare(200, response.getStatus());

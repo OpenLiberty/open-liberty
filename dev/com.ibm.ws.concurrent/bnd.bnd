@@ -35,8 +35,7 @@ jakartaeeMe: true
 -dsannotations: \
   com.ibm.ws.concurrent.internal.ContextServiceImpl,\
   com.ibm.ws.concurrent.internal.ManagedExecutorServiceImpl,\
-  com.ibm.ws.concurrent.internal.ManagedScheduledExecutorServiceImpl,\
-  com.ibm.ws.concurrent.mp.spi.CompletionStageFactory
+  com.ibm.ws.concurrent.internal.ManagedScheduledExecutorServiceImpl
 
 Service-Component:\
   com.ibm.ws.concurrent.managedThreadFactory;\
@@ -50,7 +49,7 @@ Service-Component:\
     threadGroupTracker=com.ibm.ws.concurrent.internal.ThreadGroupTracker;\
     properties:='\
       contextService.target=(id=unbound),\
-      creates.objectClass=|java.util.concurrent.ThreadFactory|jakarta.enterprise.concurrent.ManagedThreadFactory|javax.enterprise.concurrent.ManagedThreadFactory',\
+      creates.objectClass=|java.util.concurrent.ThreadFactory|javax.enterprise.concurrent.ManagedThreadFactory',\
   com.ibm.ws.concurrent.tracker;\
       provide:='\
         com.ibm.ws.container.service.metadata.ComponentMetaDataListener,\

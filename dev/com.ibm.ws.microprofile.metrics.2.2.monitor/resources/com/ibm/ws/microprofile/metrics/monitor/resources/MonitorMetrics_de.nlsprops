@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -19,9 +19,9 @@
 # Messages used by MonitorMetrics Impl -  range is 2000-2199
 #-----------------------------------------------------------------------------------------------------------------------------
 FEATURE_REGISTERED=CWPMI2003I: Die \u00dcberwachungsmetriken k\u00f6nnen \u00fcber das Feature mpMetrics abgerufen werden.
-FEATURE_REGISTERED.explanation=Die Features monitor-1.0 und mpMetrics-2.2 sind aktiviert und \u00dcberwachungsmetriken k\u00f6nnen \u00fcber das Feature mpMetrics abgerufen werden.
+FEATURE_REGISTERED.explanation=Das Performance-Monitoring-Feature und ein MicroProfile-Metrics-Feature wurden aktiviert. Die \u00dcberwachungsmetriken k\u00f6nnen \u00fcber das MicroProfile-Metrics-Feature abgerufen werden.
 FEATURE_REGISTERED.useraction=Es ist keine Benutzeraktion erforderlich.
 
 FEATURE_UNREGISTERED=CWPMI2004I: Die Registrierung aller \u00dcberwachungsmetriken wurde in mpMetrics aufgehoben.
-FEATURE_UNREGISTERED.explanation=Das Feature monitor-1.0, das Feature mpMetrics-2.2 oder beide Features wurden aus dem Server entfernt und die Registrierung aller \u00dcberwachungsmetriken wurde in mpMetrics aufgehoben.
+FEATURE_UNREGISTERED.explanation=Das Performance-Monitoring-Feature, das MicroProfile-Metrics-Feature oder beide Features wurden vom Server entfernt. Die Registrierung aller \u00dcberwachungsmetriken wurde in MicroProfile Metrics aufgehoben.
 FEATURE_UNREGISTERED.useraction=Es ist keine Benutzeraktion erforderlich.

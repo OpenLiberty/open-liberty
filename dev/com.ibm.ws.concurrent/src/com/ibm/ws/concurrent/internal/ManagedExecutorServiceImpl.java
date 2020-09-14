@@ -30,6 +30,7 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -62,6 +63,7 @@ import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
+import com.ibm.ws.threading.CompletionStageExecutor;
 import com.ibm.ws.threading.PolicyExecutor;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleContext;
@@ -81,9 +83,22 @@ import com.ibm.wsspi.threadcontext.WSContextService;
            property = { "creates.objectClass=java.util.concurrent.ExecutorService",
                         "creates.objectClass=javax.enterprise.concurrent.ManagedExecutorService",
                         "creates.objectClass=org.eclipse.microprofile.context.ManagedExecutor" })
-public class ManagedExecutorServiceImpl implements ExecutorService, 
-                ManagedExecutor, ManagedExecutorService, //
+public class ManagedExecutorServiceImpl implements ExecutorService, //
+                ManagedExecutor, ManagedExecutorService, CompletionStageExecutor, //
                 ResourceFactory, ApplicationRecycleComponent, WSManagedExecutorService {
+
+    static {
+        // Initialize ForkJoinPool when this class is initialized to avoid it failing later with access
+        // control issues since ForkJoinPool doesn't have doPriv calls for getting some properties
+        AccessController.doPrivileged(new PrivilegedAction<Void>() {
+            @Override
+            public Void run() {
+                ForkJoinPool.commonPool();
+                return null;
+            }
+        });
+    }
+
     private static final TraceComponent tc = Tr.register(ManagedExecutorServiceImpl.class);
 
     /**
@@ -203,7 +218,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService,
     /**
      * Constructor for ManagedExecutorBuilder (from MicroProfile Context Propagation).
      */
-    public ManagedExecutorServiceImpl(String name, int hash, PolicyExecutor policyExecutor, WSContextService mpThreadContext,
+    public ManagedExecutorServiceImpl(String name, int hash, PolicyExecutor policyExecutor, ThreadContextImpl mpThreadContext,
                                       AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> tranContextProviderRef) {
         this.name.set(name);
         this.hash = hash;
@@ -212,6 +227,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService,
         this.mpContextService = mpThreadContext;
         this.tranContextProviderRef = tranContextProviderRef;
         allowLifeCycleMethods = true;
+        mpThreadContext.managedExecutor = this;
     }
 
     /**
@@ -302,6 +318,41 @@ public class ManagedExecutorServiceImpl implements ExecutorService,
     @Override
     public <U> CompletionStage<U> completedStage(U value) {
         return ManagedCompletableFuture.completedStage(value, this);
+    }
+
+    /**
+     * This method was added to MicroProfile Context Propagation after v1.0.
+     *
+     * @return copy of the completion stage, where dependent stages of the copy uses this managed executor by default.
+     */
+    @Trivial
+    public final <T> CompletableFuture<T> copy(CompletableFuture<T> stage) {
+        return (CompletableFuture<T>) copy((CompletionStage<T>) stage);
+    }
+
+    /**
+     * This method was added to MicroProfile Context Propagation after v1.0.
+     *
+     * @return copy of the completion stage, where dependent stages of the copy uses this managed executor by default.
+     */
+    public <T> CompletionStage<T> copy(CompletionStage<T> stage) {
+        if (mpContextService == null || !MPContextPropagationVersion.atLeast(MPContextPropagationVersion.V1_1))
+            throw new UnsupportedOperationException();
+
+        final CompletableFuture<T> copy = ManagedCompletableFuture.JAVA8 //
+                        ? new ManagedCompletableFuture<T>(new CompletableFuture<T>(), this, null) //
+                        : new ManagedCompletableFuture<T>(this, null);
+
+        stage.whenComplete((result, failure) -> {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(stage, tc, "whenComplete", result, failure);
+            if (failure == null)
+                copy.complete(result);
+            else
+                copy.completeExceptionally(failure);
+        });
+
+        return copy;
     }
 
     /**
@@ -440,8 +491,8 @@ public class ManagedExecutorServiceImpl implements ExecutorService,
      * We prepend the managed executor name if it isn't already included in the policy executor's identifier.
      *
      * @param policyExecutorIdentifier unique identifier for the policy executor. Some examples:
-     *                                     concurrencyPolicy[longRunningPolicy]
-     *                                     managedExecutorService[executor1]/longRunningPolicy[default-0]
+     *            concurrencyPolicy[longRunningPolicy]
+     *            managedExecutorService[executor1]/longRunningPolicy[default-0]
      * @return identifier to use in messages and for matching of tasks upon shutdown.
      */
     @Trivial
@@ -449,6 +500,18 @@ public class ManagedExecutorServiceImpl implements ExecutorService,
         return policyExecutorIdentifier.startsWith("managed") //
                         ? policyExecutorIdentifier //
                         : new StringBuilder(name.get()).append(" (").append(policyExecutorIdentifier).append(')').toString();
+    }
+
+    /**
+     * This method was added to MicroProfile Context Propagation after v1.0.
+     *
+     * @return the backing instance of MicroProfile ThreadContext.
+     */
+    public org.eclipse.microprofile.context.ThreadContext getThreadContext() {
+        if (mpContextService == null || !MPContextPropagationVersion.atLeast(MPContextPropagationVersion.V1_1))
+            throw new UnsupportedOperationException();
+        else
+            return (org.eclipse.microprofile.context.ThreadContext) mpContextService;
     }
 
     @Override

@@ -57,10 +57,10 @@ configurations {
 dependencies {
  
  	// Adding libraries the application to run in FAT
-	storeAppWarLibs 'com.google.protobuf:protobuf-java-util:3.11.4',
+	storeAppWarLibs 'com.google.protobuf:protobuf-java-util:3.13.0',
 	'com.google.code.gson:gson:2.8.6',
 	'com.google.guava:guava:28.1-android', // following are dependencies of this 28.1-android
-	'com.google.errorprone:error_prone_annotations:2.3.4',
+	'com.google.errorprone:error_prone_annotations:2.4.0',
 	'com.google.guava:failureaccess:1.0.1',
 	'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava',
 	'org.codehaus.mojo:animal-sniffer-annotations:1.18',
@@ -74,17 +74,17 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 	
     //
-    implementation 'com.google.protobuf:protobuf-java-util:3.11.4'
+    implementation 'com.google.protobuf:protobuf-java-util:3.13.0'
     // @jar is needed since some of the dependencies of java-util were overwritten
-    providedCompile 'io.grpc:grpc-protobuf:1.28.1@jar'
-    compileOnly 'io.grpc:grpc-stub:1.28.1'   
-    providedCompile 'io.grpc:grpc-services:1.28.1@jar'
-    providedCompile 'io.grpc:grpc-netty-shaded:1.28.1@jar'
+    providedCompile 'io.grpc:grpc-protobuf:1.31.1@jar'
+    compileOnly 'io.grpc:grpc-stub:1.31.1'
+    providedCompile 'io.grpc:grpc-services:1.31.1@jar'
+    providedCompile 'io.grpc:grpc-netty:1.31.1@jar'
     //dynamic caching map
     implementation 'com.ibm.websphere.appserver.api:com.ibm.websphere.appserver.api.distributedMap:2.0.37'
 	
     // provided
-    providedCompile 'com.google.protobuf:protobuf-java:3.11.4'  
+    providedCompile 'com.google.protobuf:protobuf-java:3.13.0'
     providedCompile 'javax.annotation:javax.annotation-api:1.2'
     providedCompile 'jakarta.platform:jakarta.jakartaee-api:8.0.0'
     providedCompile 'org.eclipse.microprofile:microprofile:3.2'
@@ -101,19 +101,19 @@ dependencies {
       'commons-codec:commons-codec:1.6',
       'commons-logging:commons-logging:1.1.3',
       'xml-apis:xml-apis:1.4.01',
-      'io.grpc:grpc-core:1.28.0',
-      'io.grpc:grpc-stub:1.28.1',
-      'io.grpc:grpc-protobuf:1.28.1',
-      'io.grpc:grpc-netty-shaded:1.28.1',
-      'com.google.protobuf:protobuf-java:3.11.4',
-      'com.google.protobuf:protobuf-java-util:3.11.4'     
+      'io.grpc:grpc-core:1.31.1',
+      'io.grpc:grpc-stub:1.31.1',
+      'io.grpc:grpc-protobuf:1.31.1',
+      'io.grpc:grpc-netty:1.31.1',
+      'com.google.protobuf:protobuf-java:3.13.0',
+      'com.google.protobuf:protobuf-java-util:3.13.0'
 }
 
 protobuf {
 	
-    protoc { artifact = "com.google.protobuf:protoc:3.11.4" }
+    protoc { artifact = "com.google.protobuf:protoc:3.13.0" }
     plugins {
-        grpc { artifact = "io.grpc:protoc-gen-grpc-java:1.28.1" }
+        grpc { artifact = "io.grpc:protoc-gen-grpc-java:1.31.1" }
     }
     generateProtoTasks {
         all()*.plugins { 

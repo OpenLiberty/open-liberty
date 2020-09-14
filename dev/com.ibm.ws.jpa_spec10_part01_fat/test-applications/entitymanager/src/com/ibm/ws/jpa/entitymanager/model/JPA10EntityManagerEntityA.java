@@ -67,6 +67,6 @@ public class JPA10EntityManagerEntityA {
 
     @Override
     public String toString() {
-        return "JPA20EntityManagerEntityA [id=" + id + ", strData=" + strData + "]";
+        return "JPA10EntityManagerEntityA [id=" + id + ", strData=" + strData + "]";
     }
 }

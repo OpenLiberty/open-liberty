@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012-2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,17 +22,17 @@ import com.ibm.ws.kernel.boot.internal.FileUtils;
 
 public class DirEntryConfig implements ArchiveEntryConfig {
 
-    private final String entryPath;
-    private final File source;
-    private final DirPattern dirPattern;
+    protected final String entryPath;
+    protected final File source;
+    protected final DirPattern dirPattern;
 
     /**
      * Create a dir entry config.
-     * 
-     * @param entryPath the entry prefix added to the archive
-     * @param source the base directory
+     *
+     * @param entryPath        the entry prefix added to the archive
+     * @param source           the base directory
      * @param includeByDefault if a file underneath base directory is included by default when no pattern apply to it.
-     * @param strategy when a file matches both the includePattern and excludePattern, decide which take preference.
+     * @param strategy         when a file matches both the includePattern and excludePattern, decide which take preference.
      */
     public DirEntryConfig(String entryPath, File source, boolean includeByDefault, PatternStrategy strategy) throws IOException {
 
@@ -79,13 +79,13 @@ public class DirEntryConfig implements ArchiveEntryConfig {
 
     /**
      * filter the directory according to the dir pattern
-     * 
+     *
      * @param dirContent the relative paths of the files which we need add to the archive
      * @param dirPattern
      * @param parentPath
      * @throws IOException
      */
-    private void filterDirectory(List<String> dirContent, DirPattern dirPattern, String parentPath) throws IOException {
+    protected void filterDirectory(List<String> dirContent, DirPattern dirPattern, String parentPath) throws IOException {
         // setup the working directory
         File workingDirectory = new File(source, parentPath);
 

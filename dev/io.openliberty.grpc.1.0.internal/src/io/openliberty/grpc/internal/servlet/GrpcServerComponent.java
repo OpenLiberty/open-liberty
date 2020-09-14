@@ -45,7 +45,6 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.webcontainer.osgi.webapp.WebApp;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
-import com.ibm.wsspi.injectionengine.InjectionException;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 import io.grpc.BindableService;
@@ -132,6 +131,22 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
 
 								String urlPattern = "/" + serviceName + "/*";
 								servletRegistration.addMapping(urlPattern);
+								
+								
+								/*
+								 * If response needs to be wrapped, enable this code to add wrapper Filter
+								 * 
+								FilterRegistration.Dynamic filterRegistration = ((WebApp) sc).addFilter("grpcFilter",
+										new GrpcResponseFilter());
+								if (filterRegistration == null) { 
+									// it may be already added if multiple services
+									//get from config
+									filterRegistration = ((WebApp) sc).getFilterConfig("grpcFilter");	
+								}
+								filterRegistration.setAsyncSupported(true);		
+								filterRegistration.addMappingForUrlPatterns(null, true, urlPattern);
+								*/
+
 								// keep track of this service name -> application path mapping
 								currentApp.addServiceName(serviceName, sc.getContextPath(), service.getClass());
 								

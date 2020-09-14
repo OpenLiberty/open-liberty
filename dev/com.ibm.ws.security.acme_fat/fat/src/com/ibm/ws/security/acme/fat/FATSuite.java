@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.acme.fat;
 
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -31,13 +32,22 @@ import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 	 })
 public class FATSuite {
 
-	/*
-	 * This static block should be the first static initialization in this class
-	 * so that the testcontainers config is cleared before we start our new
-	 * testcontainers.
-	 */
-	static {
+	@BeforeClass
+	public static void prepDockerCA() throws Exception {
+
+		/*
+		 * This static block should be the first static initialization in this class so
+		 * that the testcontainers config is cleared before we start our new
+		 * testcontainers.
+		 */
+
 		ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
+
+		// Filter out any external docker servers in the 'libhpike' cluster
+		ExternalTestServiceDockerClientStrategy.serviceFilter = (svc) -> {
+			return !svc.getAddress().contains("libhpike-dockerengine");
+		};
+
 	}
 
 }

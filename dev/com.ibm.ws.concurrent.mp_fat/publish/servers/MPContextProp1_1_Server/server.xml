@@ -1,0 +1,36 @@
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+    <featureManager>
+        <feature>componenttest-2.0</feature>
+        <feature>jdbc-4.2</feature>
+        <feature>jndi-1.0</feature>
+        <feature>mpContextPropagation-1.1</feature>
+        <feature>servlet-5.0</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+    
+    <application location="MPContextProp1_1_App.war">
+        <classloader commonLibraryRef="customContextProviderLib"/>
+    </application>
+
+    <library id="customContextProviderLib">
+        <file name="${server.config.dir}/lib/customContextProviders.jar"/>
+    </library>
+
+    <!-- Needed for application to use a ForkJoinPool, access the thread context class loader, and shut down an unmanaged ExecutorService that the test application creates -->
+    <javaPermission codebase="${server.config.dir}/apps/MPContextProp1_1_App.war" className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission codebase="${server.config.dir}/apps/MPContextProp1_1_App.war" className="java.lang.RuntimePermission" name="modifyThread"/>
+    <javaPermission codebase="${server.config.dir}/apps/MPContextProp1_1_App.war" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
+    <javaPermission codebase="${server.config.dir}/apps/MPContextProp1_1_App.war" className="java.util.PropertyPermission" name="java.util.concurrent.ForkJoinPool.*" actions="read"/>
+</server>

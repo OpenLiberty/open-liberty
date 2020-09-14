@@ -24,13 +24,15 @@ import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.ws.install.internal.InstallUtils.InputStreamFileWriter;
 import com.ibm.ws.install.internal.asset.ESAAsset;
+
+import test.common.SharedOutputManager;
 
 /**
  *
@@ -38,7 +40,17 @@ import com.ibm.ws.install.internal.asset.ESAAsset;
 public class ESAAssetTest {
 
     @Rule
-    public SharedOutputManager outputMgr = SharedOutputManager.getInstance();
+    public static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("*=all");
+
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        outputMgr.captureStreams();
+    }
+
+    @AfterClass
+    public static void tearDownAfterClass() throws Exception {
+        outputMgr.restoreStreams();
+    }
 
     @Test
     public void testNonExistESA() {

@@ -48,6 +48,11 @@ public class FATSuite {
         // Allows local tests to switch between using a local docker client, to using a remote docker client.
         ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
 
+        // Filter out any external docker servers in the 'libhpike' cluster
+        ExternalTestServiceDockerClientStrategy.serviceFilter = (svc) -> {
+            return !svc.getAddress().contains("libhpike-dockerengine");
+        };
+
         network = Network.newNetwork();
         krb5 = new KerberosContainer(network);
         krb5.start();

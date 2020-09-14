@@ -29,7 +29,9 @@ public abstract class AbstractTest {
         @Override
         protected void failed(Throwable e, Description description) {
             try {
-                getServer().dumpServer("serverDump");
+                System.runFinalization();
+                System.gc();
+                getServer().serverDump("heap");
             } catch (Exception e1) {
                 System.out.println("Failed to dump server");
                 e1.printStackTrace();

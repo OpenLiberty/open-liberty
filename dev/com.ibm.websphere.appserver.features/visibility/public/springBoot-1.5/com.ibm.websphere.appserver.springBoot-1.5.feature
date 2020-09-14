@@ -4,7 +4,7 @@ visibility=public
 singleton=true
 IBM-ShortName: springBoot-1.5
 IBM-Process-Types: server
-Subsystem-Name: Spring Boot Support version 1.5
+Subsystem-Name: Spring Boot Support 1.5
 -features=com.ibm.websphere.appserver.springBootHandler-1.0
 kind=ga
 edition=core

@@ -61,12 +61,19 @@ public class HttpConnector {
 		StringBuilder agent = new StringBuilder("acme4j");
 
 		try (InputStream in = HttpConnector.class.getResourceAsStream("/org/shredzone/acme4j/version.properties")) {
-			Properties prop = new Properties();
-			prop.load(in);
-			agent.append('/').append(prop.getProperty("version"));
+			if (in == null) {
+				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+					Tr.debug(tc,
+							"Could not read /org/shredzone/acme4j/version.properties, ignore and skip library version.");
+				}
+			} else {
+				Properties prop = new Properties();
+				prop.load(in);
+				agent.append('/').append(prop.getProperty("version"));
+			}
 		} catch (Exception ex) {
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-				Tr.debug(tc, "Could not read library version", ex);
+				Tr.debug(tc, "Could not read library version, ignore and skip adding it.", ex);
 			}
 		}
 

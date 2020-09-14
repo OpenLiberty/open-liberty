@@ -14,5 +14,5 @@ Subsystem-Name: Automatic Certificate Management Environment (ACME) Support 2.0
   com.ibm.websphere.appserver.restHandler-1.0
 -bundles=\
   com.ibm.ws.security.acme
-kind=noship
-edition=full
+kind=ga
+edition=base

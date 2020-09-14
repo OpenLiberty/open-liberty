@@ -13,15 +13,7 @@
 	<classpathentry kind="src" path="test-applications/JMSRedelivery_120846/src"/>
 	<classpathentry kind="src" path="test-applications/SharedSubscription/src"/>
 	<classpathentry kind="src" path="test-applications/SharedSubscriptionWithMsgSel/src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.logging"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.security.registry_test.servlet"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.ejb.3.1"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.jms.2.0"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.servlet.3.0"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.cdi.1.0"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.transaction.1.1"/>
-	<classpathentry kind="lib" path="/ant_build/lib/junit.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/fattest.simplicity"/>
-	<classpathentry kind="output" path="build/classes"/>
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/SessionLoaderExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+9000=Mai multe [{0}] SessionLoaderExceptions au fost aruncate:
+
+9001=Nume tag necunoscut: [{0}] \u00een nodul XML: [{1}].
+
+9002=Nu se poate \u00eenc\u0103rca clasa Proiect [{0}].
+
+9003=Nu se poate procesa tagul XML [{0}] cu valoarea [{1}].
+
+9004=Fi\u015fierul xml al proiectului [{0}] nu a fost g\u0103sit \u00een calea de clase \u015fi nici \u00een sistemul de fi\u015fiere.
+
+9005=A fost aruncat\u0103 o excep\u0163ie \u00een timpul \u00eenc\u0103rc\u0103rii fi\u015fierului xml al proiectului [{0}].
+
+9006=O {0} a fost aruncat\u0103 \u00een timpul pars\u0103rii fi\u015fierului XML.  Survine la linia {1} \u015fi coloana {2} \u00een documentul XML.
+
+9007=A fost aruncat\u0103 o excep\u0163ie \u00een timpul pars\u0103rii fi\u015fierului XML.
+
+9008=Valoare nea\u015fteptat\u0103 [{0}] a tagului [{1}].
+
+9009=Tagul [{0}] are atribut necunoscut.
+
+9010=O {0} a fost aruncat\u0103 \u00een timpul pars\u0103rii fi\u015fierului XML fa\u0163\u0103 de schema XML.
+
+9011=Clasa platform\u0103 de server {0} a fost \u00eenl\u0103turat\u0103 \u015fi versiunea serverului de aplica\u0163ii corespunz\u0103tor nu mai este suportat\u0103
+
+9012=Nu se poate \u00eenc\u0103rca fi\u015fierul xml de sesiune fie deoarece con\u0163ine format invalid, fie formatul XML nu este suportat.
+

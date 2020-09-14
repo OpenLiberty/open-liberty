@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -144,7 +144,7 @@ ERROR_CREATING_JWT.explanation=Nie mo\u017cna utworzy\u0107 konsumenta znacznik\
 ERROR_CREATING_JWT.useraction=Sprawd\u017a, czy podana konfiguracja znacznika MicroProfile JWT istnieje w konfiguracji serwera. Sprawd\u017a, czy podany \u0142a\u0144cuch znacznika jest poprawnie sformatowany. Zapoznaj si\u0119 z czynno\u015bci\u0105 u\u017cytkownika dotycz\u0105c\u0105 b\u0142\u0119du wy\u015bwietlonego w tym komunikacie. Sprawd\u017a dzienniki serwera pod k\u0105tem dodatkowych komunikat\u00f3w o b\u0142\u0119dach.
 
 MP_JWT_FRONT_END_ERROR=CWWKS5525E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas uwierzytelniania u\u017cytkownika za pomoc\u0105 znacznika WWW JSON (JSON Web Token \u2013 JWT) MicroProfile.
-MP_JWT_FRONT_END_ERROR.explanation=Wyst\u0105pi\u0142 problem podczas uwierzytelniania u\u017cytkownika.  Przyczyn\u0105 mo\u017ce by\u0107 problem z po\u0142\u0105czeniem mi\u0119dzy aplikacj\u0105 i dostawc\u0105 us\u0142ug b\u0119d\u0105cym inn\u0105 firm\u0105 lub problem z danymi uwierzytelniania.
+MP_JWT_FRONT_END_ERROR.explanation=Wyst\u0105pi\u0142 problem podczas uwierzytelniania u\u017cytkownika. Przyczyn\u0105 mo\u017ce by\u0107 problem z po\u0142\u0105czeniem mi\u0119dzy aplikacj\u0105 i dostawc\u0105 us\u0142ug b\u0119d\u0105cym inn\u0105 firm\u0105 lub problem z danymi uwierzytelniania.
 MP_JWT_FRONT_END_ERROR.useraction=Skontaktuj si\u0119 z administratorem systemu, aby rozwi\u0105za\u0107 ten problem.
 
 MPJWT_NOT_FOUND_IN_APPLICATION=CWWKS5526W: Sk\u0142adnik MicroProfile JWT nie mo\u017ce wykona\u0107 uwierzytelniania, poniewa\u017c oczekuje typu uwierzytelniania [{0}] w aplikacji, a znaleziono typ [{1}]. Atrybut [{2}] ma ustawion\u0105 warto\u015b\u0107 [{3}]. 
@@ -155,3 +155,8 @@ MPJWT_NOT_FOUND_IN_APPLICATION.useraction=Upewnij si\u0119, \u017ce konfiguracja
 JWT_PREVIOUSLY_LOGGED_OUT=CWWKS5527E: Funkcja MicroProfile JWT nie mo\u017ce przeprowadzi\u0107 uwierzytelniania, poniewa\u017c dla funkcji JWT podanej w \u017c\u0105daniu nast\u0105pi\u0142o wcze\u015bniej wylogowanie.
 JWT_PREVIOUSLY_LOGGED_OUT.explanation=Wyst\u0105pi\u0142o wcze\u015bniejsze wywo\u0142anie metody HttpServletRequest.logout() dla podmiotu, kt\u00f3ry zosta\u0142 wcze\u015bniej uwierzytelniony przy u\u017cyciu tej funkcji JWT.  
 JWT_PREVIOUSLY_LOGGED_OUT.useraction=Prze\u015blij ponownie to \u017c\u0105danie przy u\u017cyciu innej funkcji JWT.
+
+# 0=MP Config property value, 1=MP Config property name (e.g. "mp.jwt.token.header"), 2=List of supported values for the property, 3=Default value that will be used
+MP_CONFIG_VALUE_NOT_SUPPORTED=CWWKS5528W: Warto\u015b\u0107 konfiguracji MicroProfile [{0}] {1} nie jest obs\u0142ugiwana. Jedyne obs\u0142ugiwane warto\u015bci to {2}. Warto\u015b\u0107 {3} jest u\u017cywana domy\u015blnie.
+MP_CONFIG_VALUE_NOT_SUPPORTED.explanation=W\u0142a\u015bciwo\u015b\u0107 konfiguracji MicroProfile podana w komunikacie ma predefiniowany zestaw obs\u0142ugiwanych warto\u015bci. Inne warto\u015bci s\u0105 ignorowane i zamiast nich u\u017cywana jest warto\u015b\u0107 domy\u015blna.
+MP_CONFIG_VALUE_NOT_SUPPORTED.useraction=Dla w\u0142a\u015bciwo\u015bci podanej w komunikacje okre\u015bl jedn\u0105 z obs\u0142ugiwanych warto\u015bci.

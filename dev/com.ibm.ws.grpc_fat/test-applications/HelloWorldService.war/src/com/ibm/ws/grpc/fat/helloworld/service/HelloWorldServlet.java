@@ -22,6 +22,7 @@ import io.grpc.examples.helloworld.GreeterGrpc;
 import io.grpc.examples.helloworld.HelloReply;
 import io.grpc.examples.helloworld.HelloRequest;
 import io.grpc.stub.StreamObserver;
+import io.openliberty.grpc.annotation.GrpcService;
 
 /**
  * A simple gRPC service that can be deployed on Liberty with the grpcServlet-1.0 feature.
@@ -33,7 +34,14 @@ import io.grpc.stub.StreamObserver;
 public class HelloWorldServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    // implementation of the "GreeterGrpc" service
+    /**
+     * GreeterGrpc service implementation.
+     *
+     * Optional @GrpcService annotation registers HelloWorldServerAnnotationInterceptor and
+     * HelloWorldServerAnnotationInterceptor2
+     */
+    @GrpcService(interceptors = { HelloWorldServerAnnotationInterceptor.class,
+                                  HelloWorldServerAnnotationInterceptor2.class })
     public static final class GreeterImpl extends GreeterGrpc.GreeterImplBase {
 
         @Inject

@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.Locale;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -41,7 +42,7 @@ import test.common.SharedOutputManager;
 public class ProductTest {
 
     @Rule
-    public SharedOutputManager outputMgr = SharedOutputManager.getInstance();
+    public static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("*=all");
 
     private static File imageDir;
 
@@ -52,8 +53,14 @@ public class ProductTest {
      */
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
+        outputMgr.captureStreams();
         imageDir = new File("build/unittest/wlpDirs/developers/wlp").getAbsoluteFile();
         System.out.println("setUpBeforeClass() imageDir set to " + imageDir);
+    }
+
+    @AfterClass
+    public static void tearDownAfterClass() throws Exception {
+        outputMgr.restoreStreams();
     }
 
     @Test

@@ -10,7 +10,7 @@
  *******************************************************************************/
 
 @org.osgi.annotation.versioning.Version("1.0")
-@TraceOptions(traceGroup = "JAXRS", messageBundle="io.openliberty.org.jboss.resteasy.common.nls.JAXRSServer")
+@TraceOptions(traceGroup = "RESTfulWS", messageBundle="io.openliberty.org.jboss.resteasy.common.nls.RESTfulWSServer")
 package com.ibm.websphere.jaxrs.server;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;

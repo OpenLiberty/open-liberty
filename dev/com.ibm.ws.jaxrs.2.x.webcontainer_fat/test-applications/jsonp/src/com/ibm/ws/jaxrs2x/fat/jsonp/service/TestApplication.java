@@ -14,8 +14,10 @@ package com.ibm.ws.jaxrs2x.fat.jsonp.service;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
+@ApplicationPath("/Test")
 public class TestApplication extends Application {
 
     @Override

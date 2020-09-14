@@ -173,9 +173,9 @@ CWPKI2035E=CWPKI2035E: Der ACME-Service konnte das signierte Zertifikat nicht im
 CWPKI2035E.explanation=Das Zertifikat wurde erfolgreich von der Zertifizierungsstelle abgerufen, aber es kann nicht lokal gespeichert werden.
 CWPKI2035E.useraction=Suchen Sie in der Fehlernachricht nach Details zum Fehler. Vergewissern Sie sich, dass die Position der Keystore-Datei richtig ist und der Server Schreibberechtigung hat.
 
-CWPKI2036E=CWPKI2036E: Der ACME-Dienst hat beim Warten auf den Start der Webautorisierungsanwendung das Zeitlimit \u00fcberschritten. Die Anwendung muss eine Zertifikatsanforderung bei einer ACME-Zertifizierungsstelle ausf\u00fchren. Der Service hat {0} Minuten gewartet.
-CWPKI2036E.explanation=Die Anwendung, die f\u00fcr die Ausf\u00fchrung der Zertifikatsanforderung verwendet wurde, ist nicht im erwarteten Zeitrahmen gestartet. Ein signiertes Zertifikat kann nicht angefordert werden.
-CWPKI2036E.useraction=Suchen Sie in der Protokolldatei nach fr\u00fcheren Nachrichten oder Fehlern.
+CWPKI2036W=CWPKI2036W: Der ACME-Dienst hat beim Warten auf den Start der Webautorisierungsanwendung das Zeitlimit \u00fcberschritten. Die Anwendung muss eine Zertifikatsanforderung bei einer ACME-Zertifizierungsstelle ausf\u00fchren. Es wurde versucht, eine Zertifikatsanforderung abzusetzen. Der Service hat auf {0} gewartet.
+CWPKI2036W.explanation=Die Anwendung, die f\u00fcr die Ausf\u00fchrung der Zertifikatsanforderung verwendet wurde, ist nicht im erwarteten Zeitrahmen gestartet. Wenn die Anwendung startet, wird die Anforderung fortgesetzt. Wenn die Anwendung nicht startet, schl\u00e4ft die Zertifikatsanforderung fehl.
+CWPKI2036W.useraction=Suchen Sie in der Protokolldatei nach fr\u00fcheren Nachrichten oder Fehlern. Suchen Sie im Protokoll nach einer CWWKT0016I-Nachricht, in der eine Webanwendung mit der 'acme-challenge'-URL enthalten ist, die angibt, dass die interne Anwendung gestartet wurde.
 
 CWPKI2037E=CWPKI2037E: Die Dom\u00e4nen f\u00fcr den ACME-Service waren null oder leer.
 CWPKI2037E.explanation=Die Dom\u00e4nen waren entweder null oder leer und k\u00f6nnen nicht verwendet werden.
@@ -318,3 +318,7 @@ CWPKI2072W.useraction=Stellen Sie sicher, dass das Verzeichnis mit der archivier
 CWPKI2073W=CWPKI2073W: Es wurde keine Kontaktperson f\u00fcr das Konto angegeben. Es wird empfohlen, diese Eigenschaft in der Serverkonfiguration zu definieren. Wenn ein Schl\u00fcssel verloren geht oder das Konto beeintr\u00e4chtigt wird, ist der Zugriff auf das Konto nicht mehr m\u00f6glich.
 CWPKI2073W.explanation=Der Wert f\u00fcr die Eigenschaft accountContact wurde in der Serverkonfiguration nicht angegeben.
 CWPKI2073W.useraction=Legen Sie die Eigenschaft accountContact in der Serverkonfiguration fest.
+
+CWPKI2074W=CWPKI2074W: Der ACME-Service hat das Zeitlimit \u00fcberschritten, w\u00e4hrend er auf das Signal gewartet hat, dass der HTTP-Port offen ist. Zum Ausf\u00fchren einer Zertifikatsanforderung mit einer ACME-Zertifizierungsstelle muss ein HTTP-Port verf\u00fcgbar sein. Es wurde versucht, eine Zertifikatsanforderung abzusetzen. Der Service hat auf {0} gewartet.
+CWPKI2074W.explanation=Der Service versucht, eine Zertifikatsanforderung abzusetzen. Wenn ein HTTP-Port offen ist, wird die Anforderung fortgesetzt. Wenn kein HTTP-Port offen ist, schl\u00e4gt die Zertifikatsanforderung fehl.
+CWPKI2074W.useraction=Suchen Sie in der Protokolldatei nach fr\u00fcheren Nachrichten oder Fehlern. Suchen Sie im Protokoll nach CWWKO0219I-Nachrichten, in denen die verf\u00fcgbaren Endpunkte und Ports aufgelistet sind. 

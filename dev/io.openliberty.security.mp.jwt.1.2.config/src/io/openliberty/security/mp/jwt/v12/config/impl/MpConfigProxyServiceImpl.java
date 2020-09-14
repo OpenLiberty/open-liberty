@@ -68,6 +68,13 @@ public class MpConfigProxyServiceImpl extends com.ibm.ws.security.mp.jwt.v11.con
     }
 
     @Override
+    public Set<String> getSupportedConfigPropertyNames() {
+        Set<String> allSupportedProps = super.getSupportedConfigPropertyNames();
+        allSupportedProps.addAll(ACCEPTABLE_MP_CONFIG_PROPERTY_NAMES);
+        return allSupportedProps;
+    }
+
+    @Override
     protected boolean isAcceptableMpConfigProperty(String propertyName) {
         if (ACCEPTABLE_MP_CONFIG_PROPERTY_NAMES.contains(propertyName)) {
             return true;

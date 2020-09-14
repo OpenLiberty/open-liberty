@@ -46,11 +46,11 @@ public class MPJwtBasicTests extends CommonMpJwtFat {
     protected static Class<?> thisClass = MPJwtBasicTests.class;
     protected static ServerBootstrapUtils bootstrapUtils = new ServerBootstrapUtils();
 
-    // disable repeat for simple testing
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(AuthHeaderPrefixRepeatActions.asBearerType());
-//                    .andWith(AuthHeaderPrefixRepeatActions.asTokenType())
-//                    .andWith(AuthHeaderPrefixRepeatActions.asMiscType());
+    public static RepeatTests r = RepeatTests
+                    .with(AuthHeaderPrefixRepeatActions.asBearerType())
+                    .andWith(AuthHeaderPrefixRepeatActions.asTokenType())
+                    .andWith(AuthHeaderPrefixRepeatActions.asMiscType());
 
     @Server("com.ibm.ws.security.mp.jwt.1.1.fat")
     public static LibertyServer resourceServer;

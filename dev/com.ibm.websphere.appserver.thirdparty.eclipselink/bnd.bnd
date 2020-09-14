@@ -102,11 +102,11 @@ DynamicImport-Package: \
 Private-Package: com.ibm.ws.eclipselink.osgi
 
 Include-Resource: \
-  @${repo;org.eclipse.persistence.antlr;3.2.0.v201302191141;EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence.asm;7.3.1.v202004011257;EXACT}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence.antlr;3.5.2.v202005201612;EXACT}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence.asm;8.0.1.v202008070940;EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence.core;2.6.8.WAS;EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence.jpa.jpql;2.6.8.WAS;EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence.jpa.modelgen;2.6.8.WAS-v20200421-cf583f2;EXACT}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence.jpa.modelgen;2.6.8.WAS-v20200807-b093148;EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence.jpa;2.6.8.WAS;EXACT}!/!META-INF/maven/*,\
   org/eclipse/persistence/internal/helper=${bin}/org/eclipse/persistence/internal/helper
 

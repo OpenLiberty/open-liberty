@@ -9,5 +9,5 @@ singleton=true
  io.openliberty.webcontainer.security.internal; start-phase:=SERVICE_EARLY, \
  com.ibm.ws.webcontainer.security.admin, \
  io.openliberty.security.authentication.internal.tai
-kind=noship
-edition=full
+kind=beta
+edition=core

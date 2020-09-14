@@ -246,6 +246,33 @@
 		trustedAlias="RS256"
 	>
 	</jwtConsumer>
+
+	<jwtConsumer
+		id="RS256_trustedAliasRS"
+		issuer="client01"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="RS384"
+	>
+	</jwtConsumer>
+
+	<jwtConsumer
+		id="RS256_trustedAliasES"
+		issuer="client01"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="ES256"
+	>
+	</jwtConsumer>
+
+	<jwtConsumer
+		id="RS256_trustedAliasPS"
+		issuer="client01"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="PS256"
+	>
+	</jwtConsumer>
 	
 	<jwtConsumer
 		id="RS384"
@@ -255,6 +282,33 @@
 		trustedAlias="RS384"
 	>
 	</jwtConsumer>
+
+	<jwtConsumer
+		id="RS384_trustedAliasRS"
+		issuer="client01"
+		signatureAlgorithm="RS384"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="RS512"
+	>
+	</jwtConsumer>
+
+	<jwtConsumer
+		id="RS384_trustedAliasES"
+		issuer="client01"
+		signatureAlgorithm="RS384"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="ES384"
+	>
+	</jwtConsumer>
+
+	<jwtConsumer
+		id="RS384_trustedAliasPS"
+		issuer="client01"
+		signatureAlgorithm="RS384"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="PS384"
+	>
+	</jwtConsumer>
 	
 	<jwtConsumer
 		id="RS512"
@@ -262,6 +316,31 @@
 		signatureAlgorithm="RS512"
 		trustStoreRef="trust_allSigAlg"
 		trustedAlias="RS512"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="RS512_trustedAliasRS"
+		issuer="client01"
+		signatureAlgorithm="RS512"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="RS256"
+	>
+	</jwtConsumer>		
+	<jwtConsumer
+		id="RS512_trustedAliasES"
+		issuer="client01"
+		signatureAlgorithm="RS512"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="ES512"
+	>
+	</jwtConsumer>		
+	<jwtConsumer
+		id="RS512_trustedAliasPS"
+		issuer="client01"
+		signatureAlgorithm="RS512"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="PS512"
 	>
 	</jwtConsumer>		
 	
@@ -275,11 +354,65 @@
 	</jwtConsumer>		
 
 	<jwtConsumer
+		id="ES256_trustedAliasRS"
+		issuer="client01"
+		signatureAlgorithm="ES256"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="RS256"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="ES256_trustedAliasES"
+		issuer="client01"
+		signatureAlgorithm="ES256"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="ES384"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="ES256_trustedAliasPS"
+		issuer="client01"
+		signatureAlgorithm="ES256"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="PS256"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
 		id="ES384"
 		issuer="client01"
 		signatureAlgorithm="ES384"
 		trustStoreRef="trust_allSigAlg"
 		trustedAlias="ES384"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="ES384_trustedAliasRS"
+		issuer="client01"
+		signatureAlgorithm="ES384"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="RS384"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="ES384_trustedAliasES"
+		issuer="client01"
+		signatureAlgorithm="ES384"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="ES512"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="ES384_trustedAliasPS"
+		issuer="client01"
+		signatureAlgorithm="ES384"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="PS384"
 	>
 	</jwtConsumer>		
 	
@@ -289,6 +422,33 @@
 		signatureAlgorithm="ES512"
 		trustStoreRef="trust_allSigAlg"
 		trustedAlias="ES512"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="ES512_trustedAliasRS"
+		issuer="client01"
+		signatureAlgorithm="ES512"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="RS512"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="ES512_trustedAliasES"
+		issuer="client01"
+		signatureAlgorithm="ES512"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="ES256"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="ES512_trustedAliasPS"
+		issuer="client01"
+		signatureAlgorithm="ES512"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="PS512"
 	>
 	</jwtConsumer>		
 	
@@ -302,11 +462,65 @@
 	</jwtConsumer>		
 
 	<jwtConsumer
+		id="PS256_trustedAliasRS"
+		issuer="client01"
+		signatureAlgorithm="PS256"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="RS256"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="PS256_trustedAliasES"
+		issuer="client01"
+		signatureAlgorithm="PS256"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="ES256"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="PS256_trustedAliasPS"
+		issuer="client01"
+		signatureAlgorithm="PS256"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="PS384"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
 		id="PS384"
 		issuer="client01"
 		signatureAlgorithm="PS384"
 		trustStoreRef="trust_allSigAlg"
 		trustedAlias="PS384"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="PS384_trustedAliasRS"
+		issuer="client01"
+		signatureAlgorithm="PS384"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="RS384"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="PS384_trustedAliasES"
+		issuer="client01"
+		signatureAlgorithm="PS384"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="ES384"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="PS384_trustedAliasPS"
+		issuer="client01"
+		signatureAlgorithm="PS384"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="PS512"
 	>
 	</jwtConsumer>		
 	
@@ -316,6 +530,33 @@
 		signatureAlgorithm="PS512"
 		trustStoreRef="trust_allSigAlg"
 		trustedAlias="PS512"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="PS512_trustedAliasRS"
+		issuer="client01"
+		signatureAlgorithm="PS512"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="RS512"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="PS512_trustedAliasES"
+		issuer="client01"
+		signatureAlgorithm="PS512"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="ES512"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="PS512_trustedAliasPS"
+		issuer="client01"
+		signatureAlgorithm="PS512"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="PS256"
 	>
 	</jwtConsumer>		
 	

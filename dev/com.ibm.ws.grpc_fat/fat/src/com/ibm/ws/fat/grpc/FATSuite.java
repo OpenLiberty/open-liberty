@@ -16,13 +16,17 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+                ClientConfigTests.class,
                 HelloWorldCDITests.class,
                 HelloWorldTest.class,
+                HelloWorldTlsTest.class,
+                SecureHelloWorldTest.class,
                 GrpcMetricsTest.class,
                 ServiceSupportTests.class,
                 ServiceConfigTests.class,
                 ServiceInterceptorTests.class,
                 StoreServicesTests.class,
+                StoreServicesSecurityTests.class,
                 // leave out for now, to avoid intermittent build breaks StreamingTests.class,
                 ClientInterceptorTests.class,
 

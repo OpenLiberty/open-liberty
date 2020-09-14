@@ -29,6 +29,7 @@ import javax.json.JsonObject;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -90,7 +91,9 @@ public class DelayAppStartupHealthCheckTest {
 
     @After
     public void cleanUp() throws Exception {
-        server1.stopServer(EXPECTED_FAILURES);
+        if (server1.isStarted()) {
+            server1.stopServer(EXPECTED_FAILURES);
+        }
     }
 
     @Test
@@ -110,64 +113,95 @@ public class DelayAppStartupHealthCheckTest {
             }
         }
 
-        // Need to ensure the server is not finish starting when readiness endpoint is hit so start the server on a separate thread
-        // Note: this does not guarantee that we hit the endpoint during server startup, but it is highly likely that it will
-        StartServerOnThread startServerThread = new StartServerOnThread();
-        log("testReadinessEndpointOnServerStart", "Starting DelayedHealthCheck server on separate thread.");
-        startServerThread.start();
+        StartServerOnThread startServerThread;
+        HttpURLConnection conReady = null;
+        int num_of_attempts = 0;
+        int max_num_of_attempts = 5;
+        int responseCode = -1;
+        long start_time = System.currentTimeMillis();
+        long time_out = 180000; // 180000ms = 3min
+        boolean connectionExceptionEncountered = false;
+        boolean first_time = true;
+        boolean app_ready = false;
+        boolean repeat = true;
 
-        try {
-            HttpURLConnection conReady = null;
-            int responseCode = -1;
-            boolean connectionExceptionEncountered = false;
-            boolean first_time = true;
-            boolean app_ready = false;
-            long start_time = System.currentTimeMillis();
-            long time_out = 180000; // 180000ms = 3min
+        while (repeat) {
+            num_of_attempts += 1;
 
-            // Repeatedly hit the readiness endpoint until a response of 200 is received
-            while (!app_ready) {
-                try {
-                    conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, READY_ENDPOINT);
-                    responseCode = conReady.getResponseCode();
-                } catch (ConnectException ce) {
-                    if (ce.getMessage().contains("Connection refused")) {
-                        connectionExceptionEncountered = true;
+            // Need to ensure the server is not finish starting when readiness endpoint is hit so start the server on a separate thread
+            // Note: this does not guarantee that we hit the endpoint during server startup, but it is highly likely that it will
+            startServerThread = new StartServerOnThread();
+            log("testReadinessEndpointOnServerStart", "Starting DelayedHealthCheck server on separate thread.");
+            startServerThread.start();
+
+            try {
+                conReady = null;
+                responseCode = -1;
+                connectionExceptionEncountered = false;
+                first_time = true;
+                app_ready = false;
+                start_time = System.currentTimeMillis();
+
+                // Repeatedly hit the readiness endpoint until a response of 200 is received
+                while (!app_ready) {
+                    try {
+                        conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, READY_ENDPOINT);
+                        responseCode = conReady.getResponseCode();
+                    } catch (ConnectException ce) {
+                        if (ce.getMessage().contains("Connection refused")) {
+                            connectionExceptionEncountered = true;
+                        }
+                    } catch (SocketTimeoutException ste) {
+                        log("testReadinessEndpointOnServerStart", "Encountered a SocketTimeoutException. Retrying connection. Exception: " + ste.getMessage());
+                        continue;
+                    } catch (SocketException se) {
+                        log("testReadinessEndpointOnServerStart", "Encountered a SocketException. Retrying connection. Exception: " + se.getMessage());
+                        continue;
                     }
-                } catch (SocketTimeoutException ste) {
-                    log("testReadinessEndpointOnServerStart", "Encountered a SocketTimeoutException. Retrying connection. Exception: " + ste.getMessage());
-                    continue;
-                } catch (SocketException se) {
-                    log("testReadinessEndpointOnServerStart", "Encountered a SocketException. Retrying connection. Exception: " + se.getMessage());
-                    continue;
-                }
 
-                // We need to ensure we get a connection refused in the case of the server not finished starting up
-                // We expect a connection refused as the ports are not open until server is fully started
-                if (first_time) {
-                    log("testReadinessEndpointOnServerStart", "Testing the /health/ready endpoint as the server is still starting up.");
-                    String failure_message = "The connection was not refused as required, but instead completed with response code: " + responseCode +
-                                             " This is likely due to a rare timing issue where the server starts faster than we can hit the readiness endpoint."
-                                             + "In that case there are no issues with the feature and this failure may be disregarded.";
-                    assertTrue(failure_message, conReady == null && connectionExceptionEncountered);
-                    first_time = false;
-                } else {
-                    if (responseCode == 200) {
-                        app_ready = true;
-                    } else if (System.currentTimeMillis() - start_time > time_out) {
-                        throw new TimeoutException("Timed out waiting for server and app to be ready. Timeout set to " + time_out + "ms.");
+                    // We need to ensure we get a connection refused in the case of the server not finished starting up
+                    // We expect a connection refused as the ports are not open until server is fully started
+                    if (first_time) {
+                        log("testReadinessEndpointOnServerStart", "Testing the /health/ready endpoint as the server is still starting up.");
+                        String message = "The connection was not refused as required, but instead completed with response code: " + responseCode +
+                                         " This is likely due to a rare timing issue where the server starts faster than we can hit the readiness endpoint.";
+
+                        if (conReady == null && connectionExceptionEncountered) {
+                            first_time = false;
+                        } else {
+                            if (num_of_attempts == max_num_of_attempts) {
+                                log("testReadinessEndpointOnServerStart",
+                                    message + " Skipping test case due to multiple failed attempts in hitting the readiness endpoint faster than the server can start.");
+                                startServerThread.join();
+                                Assume.assumeTrue(false); // Skip the test
+                            }
+
+                            log("testReadinessEndpointOnServerStart", message + " At this point the test will be re-run. Number of current attempts ---> " + num_of_attempts);
+                            startServerThread.join();
+                            cleanUp();
+                            break; // We repeat the test case
+                        }
+                    } else {
+                        if (responseCode == 200) {
+                            app_ready = true;
+                            repeat = false;
+                            startServerThread.join();
+                        } else if (System.currentTimeMillis() - start_time > time_out) {
+                            throw new TimeoutException("Timed out waiting for server and app to be ready. Timeout set to " + time_out + "ms.");
+                        }
                     }
-                }
 
+                }
+            } catch (Exception e) {
+                startServerThread.join();
+                fail("Encountered an issue while Testing the /health/ready endpoint as the server and/or application(s) are starting up ---> " + e);
             }
-        } catch (Exception e) {
-            startServerThread.join();
-            fail("Encountered an issue while Testing the /health/ready endpoint as the server and/or application(s) are starting up ---> " + e);
+
         }
 
         // Access an application endpoint to verify the application is actually ready
         log("testReadinessEndpointOnServerStart", "Testing an application endpoint, after server and application has started.");
-        HttpURLConnection conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, APP_ENDPOINT);
+        conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, APP_ENDPOINT);
         assertEquals("The Response Code was not 200 for the following endpoint: " + conReady.getURL().toString(), SUCCESS_RESPONSE_CODE,
                      conReady.getResponseCode());
         HttpUtils.findStringInUrl(server1, APP_ENDPOINT, "Testing Delayed Servlet initialization.");

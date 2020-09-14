@@ -467,8 +467,24 @@ public class AcmeFatUtils {
 	 *            The server to check.
 	 */
 	public static final void waitForSslToCreateKeystore(LibertyServer server) {
-		assertNotNull("ACME did not create a new certificate.",
-				server.waitForStringInLog("CWPKI0803A: SSL certificate created"));
+		/*
+		 * Temporary extra debug for RTC bug 277292
+		 */
+		if (server.waitForStringInLog("CWPKI0803A: SSL certificate created") == null) {
+			Log.info(AcmeFatUtils.class, "waitForSslToCreateKeystore",
+					"SSL Cert not created -- requesting javacore to see if RTC bug 277292 was recreated.");
+			try {
+				server.javadumpThreads();
+			} catch (Exception e) {
+				Log.error(AcmeFatUtils.class, "waitForSslToCreateKeystore", e,
+						"Tried to request a java thread dump, but it failed.");
+			}
+			junit.framework.Assert.fail(
+					"ACME did not create a new certificate. Issued javacore. Check if RTC bug 277292 was recreated.");
+		}
+
+		// assertNotNull("ACME did not create a new certificate.",
+		// server.waitForStringInLog("CWPKI0803A: SSL certificate created"));
 	}
 
 	/**
@@ -634,7 +650,10 @@ public class AcmeFatUtils {
 
 				StatusLine statusLine = response.getStatusLine();
 				if (statusLine.getStatusCode() != 200) {
-					fail(methodName + ": Expected response 200, but received response: " + statusLine);
+					/*
+					 * We can still get the certificate even if we get a non-200 response.
+					 */
+					Log.info(AcmeFatUtils.class, "assertAndGetServerCertificate", "Expected response 200, but received response: " + statusLine +". " + response);
 				}
 
 				/*

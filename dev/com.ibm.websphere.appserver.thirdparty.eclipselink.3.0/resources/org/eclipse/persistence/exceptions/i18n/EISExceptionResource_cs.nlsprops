@@ -1,0 +1,67 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/EISExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+17007=Mus\u00ed b\u00fdt nastavena vlastnost {0}.
+
+17008=Byla rozpozn\u00e1na neplatn\u00e1 vlastnost {0}.
+
+17009=Mus\u00ed b\u00fdt nastavena vlastnost {0} nebo {1}.
+
+17010=V\u00fdstupn\u00ed z\u00e1znam obsahuje nepodporovan\u00fd typ zpr\u00e1vy.
+
+17011=Nebyla ur\u010dena \u017e\u00e1dn\u00e1 tov\u00e1rna p\u0159ipojen\u00ed.
+
+17012=InteractionSspec mus\u00ed b\u00fdt CciJMSInteractionSpec.
+
+17013=Z\u00e1znam mus\u00ed b\u00fdt CciJMSRecord.
+
+17014=Nezn\u00e1m\u00fd typ specifikace interakce.
+
+17015=Vstup mus\u00ed obsahovat jedin\u00fd textov\u00fd prvek.
+
+17016=Do\u0161lo k vypr\u0161en\u00ed \u010dasov\u00e9ho limitu - nebyla p\u0159ijata \u017e\u00e1dn\u00e1 zpr\u00e1va.
+
+17017=Vstupn\u00ed z\u00e1znam obsahuje nepodporovan\u00fd typ zpr\u00e1vy.
+
+17018=Metodu "begin()" nelze vyvolat na relaci bez transakc\u00ed.
+
+17019=Probl\u00e9m p\u0159i testov\u00e1n\u00ed relace s transakcemi: 
+
+17020=InteractionSspec mus\u00ed b\u00fdt AQInteractionSpec.
+
+17021=Z\u00e1znam mus\u00ed b\u00fdt AQRecord.
+
+17022=Vstup mus\u00ed obsahovat jedin\u00fd nezpracovan\u00fd prvek.
+
+17023=Do\u0161lo k v\u00fdjimce p\u0159i nastaven\u00ed atribut\u016f MQQueueConnectionFactory.
+
+17024=Nelze odstranit soubor: {0}
+
+17025=Toto mapov\u00e1n\u00ed vy\u017eaduje prvek seskupen\u00ed ciz\u00edch kl\u00ed\u010d\u016f, proto\u017ee existuje v\u00edce ciz\u00edch kl\u00ed\u010d\u016f.
+

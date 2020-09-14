@@ -13,5 +13,5 @@ addRequiredLibraries.dependsOn addDerby
 
 dependencies {
   requiredLibs project(':com.ibm.ws.microprofile.openapi')
-  requiredLibs project(':com.ibm.websphere.org.eclipse.microprofile.openapi.1.0')
+  requiredLibs project(path: ':com.ibm.websphere.org.eclipse.microprofile', configuration: 'openapi10')
 }

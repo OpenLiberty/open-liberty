@@ -61,7 +61,7 @@ public class BoulderContainer extends CAContainer {
 
 	private static final long SHORT_SLEEP = 1000;
 	
-	private static final long WAITING_FOR_RUNNING_BOULDER = 8;
+	private static final long WAITING_FOR_RUNNING_BOULDER = 15;
 
 	public Network bluenet = Network.builder().createNetworkCmdModifier(cmd -> {
 		cmd.withDriver("bridge");

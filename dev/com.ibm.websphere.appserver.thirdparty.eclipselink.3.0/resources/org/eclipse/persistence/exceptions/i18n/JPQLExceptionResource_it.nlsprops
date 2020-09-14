@@ -1,0 +1,111 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/JPQLExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+8001=Problema di riconoscimento della sintassi durante l''analisi della query [{0}]. Il parser ha restituito [{1}].
+
+8002=Problema generale durante l''analisi della query [{0}]. Il parser ha restituito [{1}].
+
+8003=La classe [{0}] non \u00e8 stata trovata. Il parser ha restituito [{1}].
+
+8004=Errore durante la compilazione della query [{0}], riga {1}, colonna {2}: variabile di identificazione sconosciuta [{3}]. La clausola FROM della query non dichiara una variabile di identificazione [{3}].
+
+8005=Errore durante la compilazione della query [{0}]. Si \u00e8 verificato un problema durante la risoluzione del nome classe \u2013 La classe [{1}] non \u00e8 stata trovata.
+
+8006=Errore durante la compilazione della query [{0}]. Si \u00e8 verificato un problema durante la risoluzione del nome classe \u2013 Il descrittore per [{1}] non \u00e8 stato trovato.
+
+8007=Errore durante la compilazione della query [{0}]. Si \u00e8 verificato un problema durante la risoluzione del nome classe \u2013 L''associazione per [{1}] non \u00e8 stata trovata.
+
+8008=Errore durante la compilazione della query [{0}]. Si \u00e8 verificato un problema durante la creazione dell''espressione di query - expressionBuilder per [{1}] non trovato.
+
+8009=Problema durante la compilazione della query [{0}]. L''espressione [{1}] non \u00e8 attualmente supportata.
+
+8010=Problema generale durante l''analisi della query [{0}].
+
+8011=Errore durante la compilazione della query [{0}], riga {1}, colonna {2}: dichiarazione del membro di raccolta non valida [{3}], previsto campo di associazione con valore di raccolta.
+
+8012=Problema durante la compilazione della query [{0}]. Non ancora implementato: {1}.
+
+8013=Errore durante la compilazione della query [{0}], riga {1}, colonna {2}: classe costruttore [{3}] non trovata.
+
+8014=Errore durante la compilazione della query [{0}], riga {1}, colonna {2}: argomento SIZE non valido [{3}], previsto campo di associazione con valore di raccolta.
+
+8015=Errore durante la compilazione della query [{0}], riga {1}, colonna {2}: valore letterale enum non valido, tipo enum {3} non ha un valore letterale enum {4}.
+
+8016=Errore durante la compilazione della query [{0}], riga {1}, colonna {2}: espressione SELECT non valida [{3}] per la query con raggruppamento [{4}]. Solo gli elementi aggregati GROUP BY o le loro espressioni costruttore sono consentiti nella clausola SELECT di una query GROUP BY.
+
+8017=Errore durante la compilazione della query [{0}], riga {1}, colonna {2}: espressione HAVING non valida [{3}] per la query con raggruppamento [{4}]. La clausola HAVING deve specificare le condizioni di ricerca sugli elementi di raggruppamento o funzioni aggregato valide per gli elementi di raggruppamento.
+
+8018=Errore durante la compilazione della query [{0}], riga {1}, colonna {2}: utilizzo multiplo del parametro [{3}] non valido presumendo tipi di parametri diversi [{4}] e [{5}].
+
+8019=Errore durante la compilazione della query [{0}], riga {1}, colonna {2}: pi\u00f9 dichiarazioni di variabile di identificazione [{3}], precedentemente dichiarata come [{4} {3}].
+
+8020=Errore durante la compilazione della query [{0}], riga {1}, colonna {2}: argomento funzione {3} non valido [{4}], previsto argomento di tipo [{5}].
+
+8021=Errore durante la compilazione della query [{0}], riga {1}, colonna {2}: elemento ORDER BY non valido [{3}] di tipo [{4}], prevista espressione di tipo ordinabile.
+
+8022=Errore durante la compilazione della query [{0}], riga {1}, colonna {2}: argomento espressione {3} non valido [{4}], previsto argomento di tipo [{5}].
+
+8023=Errore di sintassi durante l''analisi della query [{0}].
+
+8024=Errore di sintassi durante l''analisi della query [{0}], riga {1}, colonna {2}: errore di sintassi in [{3}].
+
+8025=Errore di sintassi durante l''analisi della query [{0}], riga {1}, colonna {2}: token non previsto [{3}].
+
+8026=Errore di sintassi durante l''analisi della query [{0}], riga {1}, colonna {2}: carattere non previsto [{3}].
+
+8027=Errore di sintassi durante l''analisi della query [{0}], riga {1}, colonna {2}: carattere previsto [{3}], trovato [{4}].
+
+8028=Errore di sintassi durante l''analisi della query [{0}], riga {1}, colonna {2}: fine query non prevista.
+
+8029=Errore durante la compilazione della query [{0}], riga {1}, colonna {2}: espressione di navigazione non valida [{3}], impossibile navigare espressione [{4}] di tipo [{5}] all''interno di una query.
+
+8030=Errore durante la compilazione della query [{0}], riga {1}, colonna {2}: campo associazione o stato sconosciuti [{3}] della classe [{4}].
+
+8031=Errore durante la compilazione della query [{0}], riga {1}, colonna {2}: {3} dell''entit\u00e0 incorporata {4} non \u00e8 supportato.
+
+8032=Errore durante la compilazione della query [{0}], riga {1}, colonna {2}: accesso non valido dell''attributo [{3}] nella destinazione clausola SET [{4}], solo i campi stato e i campi associazioni con valori singoli possono essere aggiornati in una clausola SET.
+
+8033=Errore durante la compilazione della query [{0}], riga {1}, colonna {2}: espressione di navigazione non valida [{3}], impossibile navigare il campo associazione [{4}] nella destinazione clausola SET.
+
+8034=Errore durante la compilazione della query [{0}]. Tipo di entit\u00e0 sconosciuto [{1}].
+
+8035=Errore durante la compilazione della query [{0}], riga {1}, colonna {2}: espressione enum equal non valida, impossibile confrontare il valore enum di tipo [{3}} con un valore non enum di tipo [{4}].
+
+8036=Errore durante la compilazione della query [{0}], riga {1}, colonna {2}: espressione di navigazione non valida [{3}], impossibile navigare il campo associazione con valore di raccolta [{4}].
+
+8037=Errore durante la compilazione della query [{0}], riga {1}, colonna {2}: tipo di entit\u00e0 sconosciuto [{3}].
+
+8038=Errore durante la compilazione della query [{0}], riga {1}, colonna {2}: si \u00e8 verificato un problema durante la risoluzione del nome classe \u2013 La classe [{3}] non \u00e8 stata trovata.
+
+8039=Errore durante la compilazione della query [{0}], riga {1}, colonna {2}: la variabile {3} non \u00e8 un''associazione e una chiave associata \u00e8 richiesta da essa.
+
+8040=Errore durante la compilazione della query [{0}], riga {1}, colonna {2}: l''alias {3} viene utilizzato nella clausola ORDER BY, ma non \u00e8 definito nella query.
+
+8041=Errore durante la compilazione della query [{0}], riga {1}, colonna {2}: l''indice pu\u00f2 essere utilizzato solo su una variabile e viene richiamato sulla non variabile {3}.
+

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,7 +63,8 @@ class WebFragmentsInfoImpl implements WebFragmentsInfo {
         WebApp webApp = containerToAdapt.adapt(WebApp.class); // throws UnableToAdaptException
         if (webApp != null) {
             this.servletSchemaLevel = webApp.getVersion();
-            if ("4.0".equals(servletSchemaLevel) || "3.1".equals(servletSchemaLevel) || "3.0".equals(servletSchemaLevel) || "2.5".equals(servletSchemaLevel)) {
+            if ("5.0".equals(servletSchemaLevel) || "4.0".equals(servletSchemaLevel) || "3.1".equals(servletSchemaLevel) || "3.0".equals(servletSchemaLevel)
+                || "2.5".equals(servletSchemaLevel)) {
                 this.isMetadataComplete = webApp.isSetMetadataComplete() && webApp.isMetadataComplete();
             } else {
                 this.isMetadataComplete = true; // Default to true for earlier versions.

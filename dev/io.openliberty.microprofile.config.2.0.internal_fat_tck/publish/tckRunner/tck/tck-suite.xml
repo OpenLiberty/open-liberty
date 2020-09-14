@@ -15,18 +15,48 @@
             <method-selector>
                 <script language="beanshell">
                      <![CDATA[
-                     // ConfigProviderTest
-                     !method.getName().startsWith("testInjectedConfigSerializable") &&
-                     
-                     // EmptyValuesTest
-                     !method.getName().startsWith("testEmptyStringValues") &&
-                     !method.getName().startsWith("testEmptyStringProgrammaticLookup") &&
-                     !method.getName().startsWith("testEmptyStringPropertyFromConfigFile") &&
-                     
-                     // ConfigProviderTest
-                     // Currently fails due to a bug: https://github.com/eclipse/microprofile-config/issues/563
-                     // This test should be added back to the test set when the TCK version is upated to incllude the fix
-                     !method.getName().startsWith("testEnvironmentConfigSource")
+                     !method.getName().equals("testEnvironmentConfigSource")
+                     !method.getName().equals("testInjectedConfigSerializable")
+                     !method.getName().equals("testConfigProfileWithDev")
+                     !method.getName().equals("testConfigPropertiesPlainInjection")
+                     !method.getName().equals("testConfigPropertiesDefaultOnBeanPL")
+                     !method.getName().equals("testConfigPropertiesNoPrefixOnBeanThenSupplyPrefixProgrammatic")
+                     !method.getName().equals("testConfigPropertiesProgrammatic")
+                     !method.getName().equals("testConfigPropertiesNoPrefixOnBean")
+                     !method.getName().equals("testConfigPropertiesNoPrefixOnBeanProgrammatic")
+                     !method.getName().equals("testConfigPropertiesWithPrefixProgrammatic")
+                     !method.getName().equals("testNoConfigPropertiesAnnotationInjection")
+                     !method.getName().equals("testNoConfigPropertiesAnnotationNoPrefixProgrammatic")
+                     !method.getName().equals("testConfigPropertiesWithoutPrefix")
+                     !method.getName().equals("testConfigPropertiesNoPrefixOnBeanThenSupplyPrefix")
+                     !method.getName().equals("testNoConfigPropertiesAnnotationWithPrefixProgrammatic")
+                     !method.getName().equals("testConfigPropertiesWithPrefix")
+                     !method.getName().equals("testConfigPropertiesDefaultOnBean")
+                     !method.getName().equals("testConfigPropertiesWithoutPrefixProgrammatic")
+                     !method.getName().equals("testEmptyStringPropertyFromConfigFile")
+                     !method.getName().equals("testEmptyStringProgrammaticLookup")
+                     !method.getName().equals("testEmptyStringValues")
+                     !method.getName().equals("test")
+                     !method.getName().equals("testGetBooleanPrimitiveConverter")
+                     !method.getName().equals("testDouble")
+                     !method.getName().equals("testIntPrimitive")
+                     !method.getName().equals("testGetDoublePrimitiveConverter")
+                     !method.getName().equals("testBooleanPrimitive")
+                     !method.getName().equals("testInteger")
+                     !method.getName().equals("testGetIntPrimitiveConverter")
+                     !method.getName().equals("testLong")
+                     !method.getName().equals("testCharacter")
+                     !method.getName().equals("testGetIntegerConverter")
+                     !method.getName().equals("testGetLongConverter")
+                     !method.getName().equals("testLongPrimitive")
+                     !method.getName().equals("testGetBooleanConverter")
+                     !method.getName().equals("testCharPrimitive")
+                     !method.getName().equals("testDoublePrimitive")
+                     !method.getName().equals("testGetCharPrimitiveConverter")
+                     !method.getName().equals("testGetDoubleConverter")
+                     !method.getName().equals("testGetLongPrimitiveConverter")
+                     !method.getName().equals("testGetCharacterConverter")
+                     !method.getName().equals("testBoolean")
                 ]]>
                 </script>
             </method-selector>

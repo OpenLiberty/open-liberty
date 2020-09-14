@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 - 2018 IBM Corporation and others.
+ * Copyright (c) 2017 - 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.Version;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -111,13 +112,19 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
 
     public static final String CFG_KEY_SIGALG = "signatureAlgorithm";
 
-    String signatureAlgorithm = "RS256";
+    String signatureAlgorithm = null;
 
     public static final String KEY_authFilterRef = "authFilterRef";
     protected String authFilterRef;
 
     public static final String CFG_KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS = "useSystemPropertiesForHttpClientConnections";
     private boolean useSystemPropertiesForHttpClientConnections = false;
+
+    public static final String KEY_TOKEN_HEADER = "tokenHeader";
+    protected String tokenHeader;
+
+    public static final String KEY_COOKIE_NAME = "cookieName";
+    protected String cookieName;
 
     @com.ibm.websphere.ras.annotation.Sensitive
     private String sharedKey;
@@ -197,17 +204,30 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     }
 
     void loadConfigValuesForHigherVersions(ComponentContext cc, Map<String, Object> props) {
+        MpJwtRuntimeVersion runtimeVersion = getMpJwtRuntimeVersion();
+        if (runtimeVersion == null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Failed to find runtime version");
+            }
+            return;
+        }
+        Version version = runtimeVersion.getVersion();
+        if (version.compareTo(MpJwtRuntimeVersion.VERSION_1_2) < 0) {
+            return;
+        }
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Loading additional properties for runtime version " + MpJwtRuntimeVersion.VERSION_1_2 + " and above");
+        }
+        tokenHeader = configUtils.getConfigAttribute(props, KEY_TOKEN_HEADER);
+        cookieName = configUtils.getConfigAttribute(props, KEY_COOKIE_NAME);
+    }
+
+    MpJwtRuntimeVersion getMpJwtRuntimeVersion() {
         MicroProfileJwtService mpJwtService = mpJwtServiceRef.getService();
         if (mpJwtService == null) {
-            return;
+            return null;
         }
-        MpJwtRuntimeVersion runtimeVersion = mpJwtService.getMpJwtRuntimeVersion();
-        if (runtimeVersion == null) {
-            System.out.println("Failed to find runtime version");
-            return;
-        }
-        // TODO
-        System.out.println("Loaded MP JWT runtime: " + runtimeVersion + " (version " + runtimeVersion.getVersion() + ")");
+        return mpJwtService.getMpJwtRuntimeVersion();
     }
 
     protected void debug() {
@@ -529,6 +549,23 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     @Override
     public boolean getUseSystemPropertiesForHttpClientConnections() {
         return this.useSystemPropertiesForHttpClientConnections;
+    }
+
+    @Override
+    public String getTokenHeader() {
+        return tokenHeader;
+    }
+
+    @Override
+    public String getCookieName() {
+        return cookieName;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public List<String> getAMRClaim() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

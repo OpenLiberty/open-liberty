@@ -130,6 +130,9 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
         if (newContext.containsKey(clazz)) {
             return true;
         }
+        if (cdiService == null) {
+            return false;
+        }
         if (cdiService.isWeldProxy(clazz)) {
             return true;
         }

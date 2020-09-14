@@ -31,7 +31,3 @@ invalid.keepalive.timeout.useraction=Nakonfigurujte platnou hodnotu pro keepAliv
 invalid.client.inbound.msg.size=CWWKT0304E: Hodnota maxInboundMessageSize klienta gRPC {0} nen\u00ed platn\u00e1. Hodnoty mus\u00ed b\u00fdt v\u011bt\u0161\u00ed ne\u017e 0.
 invalid.client.inbound.msg.size.explanation=Nakonfigurovan\u00e1 hodnota pro maxInboundMessageSize nen\u00ed platn\u00e1.
 invalid.client.inbound.msg.size.useraction=Nakonfigurujte platnou hodnotu pro maxInboundMessageSize.
-
-invalid.authn.token=CWWKT0305E: Hodnota authnToken klienta gRPC "{0}" nen\u00ed platn\u00e1. Hodnota mus\u00ed b\u00fdt rovna "jwt" nebo "oauth".
-invalid.authn.token.explanation=Nakonfigurovan\u00e1 hodnota pro authnToken nen\u00ed platn\u00e1.
-invalid.authn.token.useraction=Nakonfigurujte platnou hodnotu pro authnToken.

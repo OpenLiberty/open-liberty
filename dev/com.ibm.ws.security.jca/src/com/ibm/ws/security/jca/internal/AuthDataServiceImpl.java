@@ -161,7 +161,7 @@ public class AuthDataServiceImpl implements AuthDataService {
     private Subject obtainSubject(ManagedConnectionFactory managedConnectionFactory, AuthData authData) throws LoginException {
         if (authData.getKrb5Principal() != null) {
             SerializableProtectedString pass = authData.getPassword() == null ? null : new SerializableProtectedString(authData.getPassword());
-            return krb5Service.getOrCreateSubject(authData.getKrb5Principal(), pass);
+            return krb5Service.getOrCreateSubject(authData.getKrb5Principal(), pass, authData.getKrb5TicketCache());
         } else {
             Subject subject = createSubject(managedConnectionFactory, authData);
             addInvocationSubjectPrincipal(subject);

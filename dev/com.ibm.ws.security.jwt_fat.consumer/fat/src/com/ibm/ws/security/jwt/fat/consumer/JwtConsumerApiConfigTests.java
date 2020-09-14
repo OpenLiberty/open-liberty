@@ -371,6 +371,67 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
     }
 
     /**
+     * server.xml has a config that specifies a signature algorithm of RS256, but a trustAlias referring to an RS384 public key.
+     * This test ensures that after building a jwt using the RS256 private key, we can NOT use a consumer with the same sigAlg,
+     * but a public key of a different type.
+     *
+     * @throws Exception
+     */
+    @Test
+    @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
+    public void JwtConsumerApiConfigTests_SigAlgRS256_trustAliasMisMatchRS() throws Exception {
+
+        String consumerId = JwtConsumerConstants.SIGALG_RS256 + "_trustedAliasRS";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_RS256", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6041E_JWT_SIGNATURE_INVALID, currentAction, consumerServer, consumerId);
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a signature algorithm of RS256, but a trustAlias referring to an ES256 public key.
+     * This test ensures that after building a jwt using the RS256 private key, we can NOT use a consumer with a mismatch between
+     * its sigAlg and public key
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwtConsumerApiConfigTests_SigAlgRS256_trustAliasMisMatchES() throws Exception {
+
+        String consumerId = JwtConsumerConstants.SIGALG_RS256 + "_trustedAliasES";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_RS256", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a signature algorithm of RS256, but a trustAlias referring to a PS256 public key.
+     * This test ensures that after building a jwt using the RS256 private key, we can NOT use a consumer with a mismatch between
+     * its sigAlg and public key
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwtConsumerApiConfigTests_SigAlgRS256_trustAliasMisMatchPS() throws Exception {
+
+        String consumerId = JwtConsumerConstants.SIGALG_RS256 + "_trustedAliasPS";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_RS256", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
      * server.xml has a config that specifies a signature algorithm of RS384 - this test ensures that
      * after building a jwt using the RS384 private key, we can use the consumer with the matching algorithm
      * and trust alias (for the public key) to "consume" it.
@@ -387,6 +448,67 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         Expectations expectations = consumerHelpers.addGoodConsumerAlgExpectations(currentAction, consumerServer, JwtConsumerConstants.SIGALG_RS384);
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, JwtConsumerConstants.SIGALG_RS384, jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a signature algorithm of RS384, but a trustAlias referring to an RS512 public key.
+     * This test ensures that after building a jwt using the RS384 private key, we can NOT use a consumer with the same sigAlg,
+     * but a public key of a different type.
+     *
+     * @throws Exception
+     */
+    @Test
+    @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
+    public void JwtConsumerApiConfigTests_SigAlgRS384_trustAliasMisMatchRS() throws Exception {
+
+        String consumerId = JwtConsumerConstants.SIGALG_RS384 + "_trustedAliasRS";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_RS384", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6041E_JWT_SIGNATURE_INVALID, currentAction, consumerServer, consumerId);
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a signature algorithm of RS384, but a trustAlias referring to an ES384 public key.
+     * This test ensures that after building a jwt using the RS384 private key, we can NOT use a consumer with a mismatch between
+     * its sigAlg and public key
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwtConsumerApiConfigTests_SigAlgRS384_trustAliasMisMatchES() throws Exception {
+
+        String consumerId = JwtConsumerConstants.SIGALG_RS384 + "_trustedAliasES";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_RS384", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a signature algorithm of RS384, but a trustAlias referring to a PS384 public key.
+     * This test ensures that after building a jwt using the RS384 private key, we can NOT use a consumer with a mismatch between
+     * its sigAlg and public key
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwtConsumerApiConfigTests_SigAlgRS384_trustAliasMisMatchPS() throws Exception {
+
+        String consumerId = JwtConsumerConstants.SIGALG_RS384 + "_trustedAliasPS";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_RS384", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
 
     }
@@ -411,6 +533,67 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
     }
 
     /**
+     * server.xml has a config that specifies a signature algorithm of RS512, but a trustAlias referring to an RS256 public key.
+     * This test ensures that after building a jwt using the RS512 private key, we can NOT use a consumer with the same sigAlg,
+     * but a public key of a different type.
+     *
+     * @throws Exception
+     */
+    @Test
+    @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
+    public void JwtConsumerApiConfigTests_SigAlgRS512_trustAliasMisMatchRS() throws Exception {
+
+        String consumerId = JwtConsumerConstants.SIGALG_RS512 + "_trustedAliasRS";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_RS512", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6041E_JWT_SIGNATURE_INVALID, currentAction, consumerServer, consumerId);
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a signature algorithm of RS512, but a trustAlias referring to an ES512 public key.
+     * This test ensures that after building a jwt using the RS512 private key, we can NOT use a consumer with a mismatch between
+     * its sigAlg and public key
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwtConsumerApiConfigTests_SigAlgRS512_trustAliasMisMatchES() throws Exception {
+
+        String consumerId = JwtConsumerConstants.SIGALG_RS512 + "_trustedAliasES";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_RS512", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a signature algorithm of RS512, but a trustAlias referring to a PS512 public key.
+     * This test ensures that after building a jwt using the RS512 private key, we can NOT use a consumer with a mismatch between
+     * its sigAlg and public key
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwtConsumerApiConfigTests_SigAlgRS512_trustAliasMisMatchPS() throws Exception {
+
+        String consumerId = JwtConsumerConstants.SIGALG_RS512 + "_trustedAliasPS";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_RS512", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
      * server.xml has a config that specifies a signature algorithm of ES256 - this test ensures that
      * after building a jwt using the ES256 private key, we can use the consumer with the matching algorithm
      * and trust alias (for the public key) to "consume" it.
@@ -425,6 +608,66 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         Expectations expectations = consumerHelpers.addGoodConsumerAlgExpectations(currentAction, consumerServer, JwtConsumerConstants.SIGALG_ES256);
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, JwtConsumerConstants.SIGALG_ES256, jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a signature algorithm of ES256, but a trustAlias referring to an RS256 public key.
+     * This test ensures that after building a jwt using the ES256 private key, we can NOT use a consumer with a mismatch between
+     * its sigAlg and public key
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwtConsumerApiConfigTests_SigAlgES256_trustAliasMisMatchRS() throws Exception {
+
+        String consumerId = JwtConsumerConstants.SIGALG_ES256 + "_trustedAliasRS";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_ES256", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a signature algorithm of ES256, but a trustAlias referring to an ES384 public key.
+     * This test ensures that after building a jwt using the ES256 private key, we can NOT use a consumer with a mismatch between
+     * its sigAlg and public key
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwtConsumerApiConfigTests_SigAlgES256_trustAliasMisMatchES() throws Exception {
+
+        String consumerId = JwtConsumerConstants.SIGALG_ES256 + "_trustedAliasES";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_ES256", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a signature algorithm of ES256, but a trustAlias referring to a PS256 public key.
+     * This test ensures that after building a jwt using the ES256 private key, we can NOT use a consumer with a mismatch between
+     * its sigAlg and public key
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwtConsumerApiConfigTests_SigAlgES256_trustAliasMisMatchPS() throws Exception {
+
+        String consumerId = JwtConsumerConstants.SIGALG_ES256 + "_trustedAliasPS";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_ES256", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
 
     }
@@ -449,6 +692,66 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
     }
 
     /**
+     * server.xml has a config that specifies a signature algorithm of ES384, but a trustAlias referring to an RS384 public key.
+     * This test ensures that after building a jwt using the ES384 private key, we can NOT use a consumer with a mismatch between
+     * its sigAlg and public key
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwtConsumerApiConfigTests_SigAlgES384_trustAliasMisMatchRS() throws Exception {
+
+        String consumerId = JwtConsumerConstants.SIGALG_ES384 + "_trustedAliasRS";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_ES384", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a signature algorithm of ES384, but a trustAlias referring to an ES512 public key.
+     * This test ensures that after building a jwt using the ES384 private key, we can NOT use a consumer with a mismatch between
+     * its sigAlg and public key
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwtConsumerApiConfigTests_SigAlgES384_trustAliasMisMatchES() throws Exception {
+
+        String consumerId = JwtConsumerConstants.SIGALG_ES384 + "_trustedAliasES";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_ES384", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a signature algorithm of ES384, but a trustAlias referring to a PS384 public key.
+     * This test ensures that after building a jwt using the ES384 private key, we can NOT use a consumer with a mismatch between
+     * its sigAlg and public key
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwtConsumerApiConfigTests_SigAlgES384_trustAliasMisMatchPS() throws Exception {
+
+        String consumerId = JwtConsumerConstants.SIGALG_ES384 + "_trustedAliasPS";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_ES384", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
      * server.xml has a config that specifies a signature algorithm of ES512 - this test ensures that
      * after building a jwt using the ES512 private key, we can use the consumer with the matching algorithm
      * and trust alias (for the public key) to "consume" it.
@@ -463,6 +766,66 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         Expectations expectations = consumerHelpers.addGoodConsumerAlgExpectations(currentAction, consumerServer, JwtConsumerConstants.SIGALG_ES512);
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, JwtConsumerConstants.SIGALG_ES512, jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a signature algorithm of ES512, but a trustAlias referring to an RS512 public key.
+     * This test ensures that after building a jwt using the ES512 private key, we can NOT use a consumer with a mismatch between
+     * its sigAlg and public key
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwtConsumerApiConfigTests_SigAlgES512_trustAliasMisMatchRS() throws Exception {
+
+        String consumerId = JwtConsumerConstants.SIGALG_ES512 + "_trustedAliasRS";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_ES512", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a signature algorithm of ES512, but a trustAlias referring to an ES256 public key.
+     * This test ensures that after building a jwt using the ES512 private key, we can NOT use a consumer with a mismatch between
+     * its sigAlg and public key
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwtConsumerApiConfigTests_SigAlgES512_trustAliasMisMatchES() throws Exception {
+
+        String consumerId = JwtConsumerConstants.SIGALG_ES512 + "_trustedAliasES";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_ES512", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a signature algorithm of ES512, but a trustAlias referring to a PS512 public key.
+     * This test ensures that after building a jwt using the ES512 private key, we can NOT use a consumer with a mismatch between
+     * its sigAlg and public key
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwtConsumerApiConfigTests_SigAlgES512_trustAliasMisMatchPS() throws Exception {
+
+        String consumerId = JwtConsumerConstants.SIGALG_ES512 + "_trustedAliasPS";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_ES512", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
 
     }
@@ -489,6 +852,66 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         }
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, JwtConsumerConstants.SIGALG_PS256, jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a signature algorithm of PS256, but a trustAlias referring to an RS256 public key.
+     * This test ensures that after building a jwt using the PS256 private key, we can NOT use a consumer with a mismatch between
+     * its sigAlg and public key
+     *
+     * @throws Exception
+     */
+    //TODO @Test
+    public void JwtConsumerApiConfigTests_SigAlgPS256_trustAliasMisMatchRS() throws Exception {
+
+        String consumerId = JwtConsumerConstants.SIGALG_PS256 + "_trustedAliasRS";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_PS256", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a signature algorithm of PS256, but a trustAlias referring to an ES256 public key.
+     * This test ensures that after building a jwt using the PS256 private key, we can NOT use a consumer with a mismatch between
+     * its sigAlg and public key
+     *
+     * @throws Exception
+     */
+    //TODO @Test
+    public void JwtConsumerApiConfigTests_SigAlgPS256_trustAliasMisMatchES() throws Exception {
+
+        String consumerId = JwtConsumerConstants.SIGALG_PS256 + "_trustedAliasES";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_PS256", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a signature algorithm of PS256, but a trustAlias referring to a PS384 public key.
+     * This test ensures that after building a jwt using the PS256 private key, we can NOT use a consumer with a mismatch between
+     * its sigAlg and public key
+     *
+     * @throws Exception
+     */
+    //TODO @Test
+    public void JwtConsumerApiConfigTests_SigAlgPS256_trustAliasMisMatchPS() throws Exception {
+
+        String consumerId = JwtConsumerConstants.SIGALG_PS256 + "_trustedAliasPS";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_PS256", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
 
     }
@@ -521,6 +944,66 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
     }
 
     /**
+     * server.xml has a config that specifies a signature algorithm of PS384, but a trustAlias referring to an RS384 public key.
+     * This test ensures that after building a jwt using the PS384 private key, we can NOT use a consumer with a mismatch between
+     * its sigAlg and public key
+     *
+     * @throws Exception
+     */
+    //TODO @Test
+    public void JwtConsumerApiConfigTests_SigAlgPS384_trustAliasMisMatchRS() throws Exception {
+
+        String consumerId = JwtConsumerConstants.SIGALG_PS384 + "_trustedAliasRS";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_PS384", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a signature algorithm of PS384, but a trustAlias referring to an ES384 public key.
+     * This test ensures that after building a jwt using the PS384 private key, we can NOT use a consumer with a mismatch between
+     * its sigAlg and public key
+     *
+     * @throws Exception
+     */
+    //TODO @Test
+    public void JwtConsumerApiConfigTests_SigAlgPS384_trustAliasMisMatchES() throws Exception {
+
+        String consumerId = JwtConsumerConstants.SIGALG_PS384 + "_trustedAliasES";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_PS384", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a signature algorithm of PS384, but a trustAlias referring to a PS512 public key.
+     * This test ensures that after building a jwt using the PS384 private key, we can NOT use a consumer with a mismatch between
+     * its sigAlg and public key
+     *
+     * @throws Exception
+     */
+    //TODO @Test
+    public void JwtConsumerApiConfigTests_SigAlgPS384_trustAliasMisMatchPS() throws Exception {
+
+        String consumerId = JwtConsumerConstants.SIGALG_PS384 + "_trustedAliasPS";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_PS384", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
      * server.xml has a config that specifies a signature algorithm of PS512 - this test ensures that
      * after building a jwt using the PS512 private key, we can use the consumer with the matching algorithm
      * and trust alias (for the public key) to "consume" it.
@@ -542,6 +1025,66 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         }
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, JwtConsumerConstants.SIGALG_PS512, jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a signature algorithm of PS512, but a trustAlias referring to an RS512 public key.
+     * This test ensures that after building a jwt using the PS512 private key, we can NOT use a consumer with a mismatch between
+     * its sigAlg and public key
+     *
+     * @throws Exception
+     */
+    //TODO @Test
+    public void JwtConsumerApiConfigTests_SigAlgPS512_trustAliasMisMatchRS() throws Exception {
+
+        String consumerId = JwtConsumerConstants.SIGALG_PS512 + "_trustedAliasRS";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_PS512", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a signature algorithm of PS512, but a trustAlias referring to an ES512 public key.
+     * This test ensures that after building a jwt using the PS512 private key, we can NOT use a consumer with a mismatch between
+     * its sigAlg and public key
+     *
+     * @throws Exception
+     */
+    //TODO @Test
+    public void JwtConsumerApiConfigTests_SigAlgPS512_trustAliasMisMatchES() throws Exception {
+
+        String consumerId = JwtConsumerConstants.SIGALG_PS512 + "_trustedAliasES";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_PS512", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a signature algorithm of PS512, but a trustAlias referring to a PS256 public key.
+     * This test ensures that after building a jwt using the PS512 private key, we can NOT use a consumer with a mismatch between
+     * its sigAlg and public key
+     *
+     * @throws Exception
+     */
+    //TODO @Test
+    public void JwtConsumerApiConfigTests_SigAlgPS512_trustAliasMisMatchPS() throws Exception {
+
+        String consumerId = JwtConsumerConstants.SIGALG_PS512 + "_trustedAliasPS";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_PS512", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
 
     }
@@ -1168,6 +1711,106 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         Thread.sleep(15 * 1000);
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, "clockSkew_short", jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+    
+    /**
+     * server.xml has a config that has authenticationMethodsReferences set to
+     * "OTP iris, pwd kba". For multiple values (array) in server.xml, the
+     * provided jwtClaim must be an exact match on one of the elements. We
+     * expect a failure indicating that the provided amrClaim is not listed in
+     * the trusted ones
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void JwtConsumerApiConfigTests_multiple_invalid_amr() throws Exception {
+
+        consumerServer.reconfigureServerUsingExpandedConfiguration(_testName, "server_jwtConsumerAmr.xml");
+        builder.setClaim("amr", new String[] { "iris", "pwd" });
+        String jwtToken = buildToken();
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(
+                JwtMessageConstants.CWWKS6054E_INVALID_AMR_CLAIM + ".+" + "multipleJwtConsumer", currentAction,
+                consumerServer, "multipleJwtConsumer");
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, "multipleJwtConsumer", jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that has authenticationMethodsReferences set to
+     * "OTP iris, pwd kba". For multiple values (array) in server.xml, the
+     * provided jwtClaim must be an exact match on one of the elements. We
+     * expect a successful outcome since the provided values match the exact
+     * element of the server.xml
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void JwtConsumerApiConfigTests_multiple_valid_amr() throws Exception {
+
+        consumerServer.reconfigureServerUsingExpandedConfiguration(_testName, "server_jwtConsumerAmr.xml");
+        builder.setClaim("amr", new String[] { "pwd", "kba" });
+        String jwtToken = buildToken();
+
+        Expectations expectations = addGoodConsumerClientResponseAndClaimsExpectations();
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, "multipleJwtConsumer", jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that has authenticationMethodsReferences set to
+     * "OTP iris". For single value (not array) in server.xml, the provided
+     * jwtClaim must include all the required values from server and any other.
+     * We expect a failure indicating that the provided amrClaim is not listed
+     * since not all of the required values are specified
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void JwtConsumerApiConfigTests_single_invalid_amr() throws Exception {
+
+        consumerServer.reconfigureServerUsingExpandedConfiguration(_testName, "server_jwtConsumerAmr.xml");
+        builder.setClaim("amr", new String[] { "OTP" });
+        String jwtToken = buildToken();
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(
+                JwtMessageConstants.CWWKS6054E_INVALID_AMR_CLAIM + ".+" + "singleJwtConsumer", currentAction,
+                consumerServer, "singleJwtConsumer");
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, "singleJwtConsumer", jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that has authenticationMethodsReferences set to
+     * "OTP iris". For single value (not array) in server.xml, the provided
+     * jwtClaim must include all the required values from server and any other.
+     * We expect a successful outcome since the provided values includes the
+     * required values
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void JwtConsumerApiConfigTests_single_valid_amr() throws Exception {
+
+        consumerServer.reconfigureServerUsingExpandedConfiguration(_testName, "server_jwtConsumerAmr.xml");
+        builder.setClaim("amr", new String[] { "OTP", "iris", "pwd", "kba" });
+        String jwtToken = buildToken();
+
+        Expectations expectations = addGoodConsumerClientResponseAndClaimsExpectations();
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, "singleJwtConsumer", jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
 
     }
