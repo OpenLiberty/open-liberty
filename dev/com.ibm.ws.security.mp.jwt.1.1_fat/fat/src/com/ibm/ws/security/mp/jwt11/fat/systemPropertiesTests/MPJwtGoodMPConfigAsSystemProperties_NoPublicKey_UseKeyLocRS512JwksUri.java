@@ -16,11 +16,13 @@ import org.junit.runner.RunWith;
 
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
 import com.ibm.ws.security.mp.jwt11.fat.sharedTests.MPJwtWithGoodAltSigAlgMPConfig;
-import com.ibm.ws.security.mp.jwt11.fat.utils.MPConfigSettings;
+import com.ibm.ws.security.mp.jwt11.fat.utils.MP11ConfigSettings;
 
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.LibertyServer;
 
 /**
  * This is the test class that will verify that we get the correct behavior when we
@@ -33,23 +35,25 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * require a different server for each config setting).
  **/
 
-@SuppressWarnings("restriction")
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseKeyLocRS512JwksUri extends MPJwtWithGoodAltSigAlgMPConfig {
 
     public static Class<?> thisClass = MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseKeyLocRS512JwksUri.class;
 
+    @Server("com.ibm.ws.security.mp.jwt.1.1.fat.jvmOptions")
+    public static LibertyServer sysPropResourceServer;
+
     @BeforeClass
     public static void setUp() throws Exception {
 
         String sigAlg = MpJwtFatConstants.SIGALG_RS512;
-        commonSetup(sigAlg, JwksUriFlag, MPConfigSettings.PublicKeyNotSet, MPConfigLocation.ENV_VAR);
+        commonSetup(sysPropResourceServer, sigAlg, JwksUriFlag, MP11ConfigSettings.PublicKeyNotSet, MPConfigLocation.SYSTEM_PROP);
 
     }
 
     @Test
-    public void MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseKeyLocES512JwksUri_test() throws Exception {
+    public void MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseKeyLocRS512JwksUri_test() throws Exception {
         genericGoodTest();
     }
 }

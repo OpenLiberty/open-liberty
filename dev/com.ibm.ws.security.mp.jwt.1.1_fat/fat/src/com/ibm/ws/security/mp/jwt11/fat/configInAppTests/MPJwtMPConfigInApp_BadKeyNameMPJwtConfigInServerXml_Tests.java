@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,8 +14,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
-import com.ibm.ws.security.mp.jwt11.fat.sharedTests.MPJwtMPConfigTests;
-import com.ibm.ws.security.mp.jwt11.fat.utils.MPConfigSettings;
+import com.ibm.ws.security.mp.jwt11.fat.sharedTests.MPJwt11MPConfigTests;
+import com.ibm.ws.security.mp.jwt11.fat.utils.MP11ConfigSettings;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
@@ -35,7 +35,7 @@ import componenttest.topology.impl.LibertyServer;
 
 @Mode(TestMode.FULL)
 @AllowedFFDC({ "com.ibm.websphere.security.jwt.KeyException", "java.security.cert.CertificateException" })
-public class MPJwtMPConfigInApp_BadKeyNameMPJwtConfigInServerXml_Tests extends MPJwtMPConfigTests {
+public class MPJwtMPConfigInApp_BadKeyNameMPJwtConfigInServerXml_Tests extends MPJwt11MPConfigTests {
 
     public static Class<?> thisClass = MPJwtMPConfigInApp_BadKeyNameMPJwtConfigInServerXml_Tests.class;
 
@@ -48,7 +48,7 @@ public class MPJwtMPConfigInApp_BadKeyNameMPJwtConfigInServerXml_Tests extends M
         setUpAndStartBuilderServer(jwtBuilderServer, "server_using_buildApp.xml");
 
         // let's pick a default config - use a pemFile located in the app
-        MPConfigSettings mpConfigSettings = new MPConfigSettings(MPConfigSettings.PemFile, MPConfigSettings.PublicKeyNotSet, MPConfigSettings.IssuerNotSet, MpJwtFatConstants.X509_CERT);
+        MP11ConfigSettings mpConfigSettings = new MP11ConfigSettings(MP11ConfigSettings.PemFile, MP11ConfigSettings.PublicKeyNotSet, MP11ConfigSettings.IssuerNotSet, MpJwtFatConstants.X509_CERT);
         setUpAndStartRSServerForTests(resourceServer, "rs_server_AltConfigInApp_badServerXmlKeyName.xml", mpConfigSettings, MPConfigLocation.IN_APP);
 
     }

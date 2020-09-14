@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,7 @@ public class MpJwtMessageConstants extends MessageConstants {
     public static final String CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ = "CWWKS5523E";
     public static final String CWWKS5524E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ = "CWWKS5524E";
     public static final String CWWKS5526W_WRONG_AUTH_TYPE = "CWWKS5526W";
+    public static final String CWWKS5528W_BAD_HEADER_VALUE_IN_MP_CONFIG = "CWWKS5528W";
 
     public static final String CWWKS5603E_CLAIM_CANNOT_BE_INJECTED = "CWWKS5603E";
 

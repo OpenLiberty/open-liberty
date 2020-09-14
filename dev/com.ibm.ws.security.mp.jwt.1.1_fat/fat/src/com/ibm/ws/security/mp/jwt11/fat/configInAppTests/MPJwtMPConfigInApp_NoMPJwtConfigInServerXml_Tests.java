@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,8 +15,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
-import com.ibm.ws.security.mp.jwt11.fat.sharedTests.MPJwtMPConfigTests;
-import com.ibm.ws.security.mp.jwt11.fat.utils.MPConfigSettings;
+import com.ibm.ws.security.mp.jwt11.fat.sharedTests.MPJwt11MPConfigTests;
+import com.ibm.ws.security.mp.jwt11.fat.utils.MP11ConfigSettings;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
@@ -37,7 +37,7 @@ import componenttest.topology.impl.LibertyServer;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-public class MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_Tests extends MPJwtMPConfigTests {
+public class MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_Tests extends MPJwt11MPConfigTests {
 
     public static Class<?> thisClass = MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_Tests.class;
 
@@ -50,7 +50,8 @@ public class MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_Tests extends MPJwtMPCo
         setUpAndStartBuilderServer(jwtBuilderServer, "server_using_buildApp.xml");
 
         // server has an empty mpJwt config
-        MPConfigSettings mpConfigSettings = new MPConfigSettings(MPConfigSettings.PemFile, MPConfigSettings.PublicKeyNotSet, MPConfigSettings.IssuerNotSet, MpJwtFatConstants.X509_CERT);
+        MP11ConfigSettings mpConfigSettings = new MP11ConfigSettings(MP11ConfigSettings.PemFile, MP11ConfigSettings.PublicKeyNotSet, MP11ConfigSettings
+                        .buildDefaultIssuerString(jwtBuilderServer), MpJwtFatConstants.X509_CERT);
         setUpAndStartRSServerForTests(resourceServer, "rs_server_AltConfigInApp_noServerXmlConfig.xml", mpConfigSettings, MPConfigLocation.IN_APP);
 
     }
