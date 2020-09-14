@@ -25,11 +25,11 @@ IBM-API-Package: \
  -features=\
   com.ibm.websphere.appserver.classloading-1.0,\
   com.ibm.websphere.appserver.injection-1.0,\
-  io.openliberty.jakarta.mailImpl-2.0.feature,\
+  io.openliberty.jakarta.mailImpl-2.0,\
   com.ibm.websphere.appserver.eeCompatible-9.0
 -bundles=\
   io.openliberty.jakarta.activation.2.0; location:="dev/api/spec/,lib/";mavenCoordinates="jakarta.activation:jakarta.activation-api:2.0", \
-  io.openliberty.jakarta.mail.2.0, \
+  io.openliberty.mail.2.0.internal, \
   com.ibm.ws.javamail.config
 -jars=io.openliberty.jakarta.mail.2.0; location:=dev/api/spec/; mavenCoordinates="jakarta.mail:jakarta.mail-api:2.0.0", \
  io.openliberty.mail.2.0.thirdparty; location:=dev/api/third-party/; mavenCoordinates="com.sun.mail:jakarta.mail:2.0.0"

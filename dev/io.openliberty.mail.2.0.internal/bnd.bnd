@@ -17,7 +17,7 @@ bSymbolicName=io.openliberty.mail.2.0.internal
 
 Bundle-Name: Mail 2.0 API
 Bundle-SymbolicName: io.openliberty.mail.2.0.internal
-Bundle-Description: Openlinerty mail 2.0 API; This feature allows applications to configure mail sessions. 
+Bundle-Description: Openliberty mail 2.0 API; This feature allows applications to configure mail sessions. 
 
 WS-TraceGroup: Mail
 
