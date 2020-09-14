@@ -626,6 +626,15 @@ public class ConsumerEndpointFATServlet extends FATServlet {
     private void assertDeleteMultipleAppData(String m, ProducerServiceRestClient service, String app1, String app2, String app3, String app4) throws Exception {
 
         _log.info(m + " ----- invoking Producer Rest client to delete apps to test grpc server streaming ----- ");
+
+        if (service == null) {
+            try {
+                service = builderProducer.build(ProducerServiceRestClient.class);
+            } catch (Exception e) {
+                _log.severe(m + " , Error creating ProducerServiceRestClient proxy");
+                throw e;
+            }
+        }
         // call Remote REST service to delete
         Response r2 = service.deleteAllApps();
 
@@ -934,10 +943,10 @@ public class ConsumerEndpointFATServlet extends FATServlet {
         ConsumerServiceRestClient client = null;
         boolean isValidResponse = false;
 
-        String app1 = "myAppConsumer1";
-        String app2 = "myAppConsumer2";
-        String app3 = "myAppConsumer3";
-        String app4 = "myAppConsumer4";
+        String app1 = "myAppConsumerMultiAppPrices1";
+        String app2 = "myAppConsumerMultiAppPrices2";
+        String app3 = "myAppConsumerMultiAppPrices3";
+        String app4 = "myAppConsumerMultiAppPrices4";
 
         try {
 
@@ -1003,10 +1012,10 @@ public class ConsumerEndpointFATServlet extends FATServlet {
 
         ConsumerServiceRestClient client = null;
 
-        String app1 = "myAppConsumer1";
-        String app2 = "myAppConsumer2";
-        String app3 = "myAppConsumer3";
-        String app4 = "myAppConsumer4";
+        String app1 = "myAppConsumerMultiAppNames1";
+        String app2 = "myAppConsumerMultiAppNames2";
+        String app3 = "myAppConsumerMultiAppNames3";
+        String app4 = "myAppConsumerMultiAppNames4";
 
         try {
 
@@ -1045,7 +1054,6 @@ public class ConsumerEndpointFATServlet extends FATServlet {
         } finally {
 
             _log.info(m + " ------------------------------------------------------------");
-
             this.assertDeleteMultipleAppData(m, service, app1, app2, app3, app4);
 
             _log.info(m + " ----------------testGetMultiAppNames--FINISH--------------");
@@ -1072,10 +1080,10 @@ public class ConsumerEndpointFATServlet extends FATServlet {
         ConsumerServiceRestClient client = null;
         boolean isValidResponse = false;
 
-        String app1 = "myAppConsumer1";
-        String app2 = "myAppConsumer2";
-        String app3 = "myAppConsumer3";
-        String app4 = "myAppConsumer4";
+        String app1 = "myAppConsumer_MultiAppsInfo1";
+        String app2 = "myAppConsumer_MultiAppsInfo2";
+        String app3 = "myAppConsumer_MultiAppsInfo3";
+        String app4 = "myAppConsumer_MultiAppsInfo4";
 
         try {
 
