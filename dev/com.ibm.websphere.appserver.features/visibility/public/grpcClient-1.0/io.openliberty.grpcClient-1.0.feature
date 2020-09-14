@@ -14,7 +14,6 @@ IBM-API-Package: \
   io.netty.channel.group; type="internal", \
   io.netty.channel.internal; type="internal", \
   io.netty.handler.ssl; type="internal", \
-  io.openliberty.grpc.annotation; type="ibm-api",\
   io.openliberty.grpc.internal.client; type="internal"
 IBM-ShortName: grpcClient-1.0
 Subsystem-Version: 1.0.0
