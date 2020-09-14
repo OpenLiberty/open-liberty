@@ -2,13 +2,14 @@
 symbolicName=io.openliberty.internal.grpc-1.0
 singleton=true
 IBM-API-Package: \
+  com.google.common.collect; type="stable",\
   com.google.common.util.concurrent; type="stable",\
   com.google.protobuf;  type="stable",\
   io.grpc;  type="stable", \
   io.grpc.protobuf;  type="stable", \
   io.grpc.stub;  type="stable", \
   io.grpc.stub.annotations;  type="stable", \
-  io.grpc.internal; type="internal",\
+  io.grpc.internal; type="internal"
 Subsystem-Name: gRPC internal 1.0
 -bundles=\
   io.openliberty.grpc.1.0.internal.common
