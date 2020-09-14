@@ -38,4 +38,4 @@ Import-Package: \
 publish.wlp.jar.suffix: dev/api/third-party
 
 -buildpath: \
-	com.ibm.ws.com.sun.mail.jakarta.mail.2.0
+	io.openliberty.com.sun.mail.jakarta.mail.2.0

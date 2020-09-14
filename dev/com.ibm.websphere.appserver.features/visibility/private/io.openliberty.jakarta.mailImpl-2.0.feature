@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.jakarta.mail-2.0
+symbolicName=io.openliberty.jakarta.mailImpl-2.0
 visibility=private
 singleton=true
 Subsystem-Version: 2.0
