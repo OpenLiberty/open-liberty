@@ -18,12 +18,16 @@ import java.lang.annotation.Target;
 import io.grpc.ServerInterceptor;
 
 /**
- * Optional configuration annotation for a Liberty gRPC service class
+ * GrpcService is an optional annotation that specifies a class as a Liberty-managed gRPC service.
+ * Classes with this annotation must implement {@link io.grpc.BindableService io.grpc.BindableService}. 
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface GrpcService {
 
+	/**
+	 * Specifies the {@link io.grpc.ServerInterceptor io.grpc.ServerInterceptor} classes to be registered with a service
+	 */
     Class<? extends ServerInterceptor>[] interceptors() default {};
 
 }

@@ -20,8 +20,6 @@ Subsystem-Name: gRPC internal 1.0
   com.ibm.websphere.appserver.containerServices-1.0,\
   com.ibm.websphere.appserver.httptransport-1.0, \
   com.ibm.websphere.appserver.javax.annotation-1.3; ibm.tolerates:=1.2
--jars=\
-  io.openliberty.grpc; location:="dev/api/ibm/,lib/"
 kind=beta
 edition=full
 WLP-Activation-Type: parallel
