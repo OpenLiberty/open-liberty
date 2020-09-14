@@ -1114,7 +1114,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
     private static Object coerceType(Class<?> desiredType, Object val) {
         if (desiredType.isAssignableFrom(val.getClass()))
             return val;
-
+        
         if (val instanceof Number) {
             Number num = (Number) val;
             if (desiredType == long.class || desiredType == Long.class)
@@ -1123,6 +1123,15 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                 return num.intValue();
             if (desiredType == short.class || desiredType == Short.class)
                 return num.shortValue();
+        }
+        if (val instanceof String) {
+            String str = (String) val;
+            if (desiredType == long.class || desiredType == Long.class)
+                return Long.valueOf(str);
+            if (desiredType == int.class || desiredType == Integer.class)
+                return Integer.valueOf(str);
+            if (desiredType == short.class || desiredType == Short.class)
+                return Short.valueOf(str);
         }
         
         return val;
