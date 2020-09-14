@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -59,6 +59,11 @@ public class AppClientTest extends AppClientTestBase {
         parse(appClient80() + appClientTail());
     }
 
+    @Test(expected = DDParser.ParseException.class)
+    public void testEE6AppClient90() throws Exception {
+        parse(appClient90() + appClientTail());
+    }
+
     // JavaEE7 cases ...
 
     // Parse everything except 8.0.
@@ -98,6 +103,11 @@ public class AppClientTest extends AppClientTestBase {
         parse(appClient80() + appClientTail(), ApplicationClient.VERSION_7);
     }
 
+    @Test(expected = DDParser.ParseException.class)
+    public void testEE7AppClient90() throws Exception {
+        parse(appClient90() + appClientTail(), ApplicationClient.VERSION_7);
+    }
+
     // JavaEE8 cases ...
 
     // Parse everything.
@@ -135,5 +145,10 @@ public class AppClientTest extends AppClientTestBase {
     @Test
     public void testEE8AppClient80() throws Exception {
         parse(appClient80() + appClientTail(), ApplicationClient.VERSION_8);
+    }
+
+    @Test(expected = DDParser.ParseException.class)
+    public void testEE8AppClient90() throws Exception {
+        parse(appClient90() + appClientTail(), ApplicationClient.VERSION_8);
     }
 }
